@@ -4,8 +4,8 @@ import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear
 const publicRoot=new URL('../web/public/',import.meta.url);
 export const manifest=JSON.parse(readFileSync(new URL('models/characters/manifest.json',publicRoot),'utf8'));
 const formats={5121:['readUInt8',1,255],5123:['readUInt16LE',2,65535],5125:['readUInt32LE',4,4294967295],5126:['readFloatLE',4]},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
-export function readGlb(url){
- const bytes=readFileSync(new URL(`.${url}`,publicRoot)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size),cache=new Map();
+export function readGlb(url,publicDirectory=publicRoot){
+ const bytes=readFileSync(new URL(`.${url}`,publicDirectory)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size),cache=new Map();
  const access=index=>{
   if(cache.has(index))return cache.get(index);
   const a=json.accessors[index],view=json.bufferViews[a.bufferView],[read,size,max]=formats[a.componentType],width=widths[a.type];

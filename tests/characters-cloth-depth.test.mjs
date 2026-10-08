@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {readGlb,manifest} from './character-bank-fixture.mjs';
+import {readGlb,manifest,assets} from './character-predecessor-fixture.mjs';
 import sharp from '../web/node_modules/sharp/lib/index.js';
 
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -11,13 +11,13 @@ const source=new URL('../assets/source/characters-3d/authoring/cloth_depth.py',i
 const expectedSource=hash(readFileSync(source));
 function stable(value){if(Array.isArray(value))return value.map(stable);if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])]));return value;}
 const pixelCache=new Map();
-function pixels(uri){if(!pixelCache.has(uri))pixelCache.set(uri,sharp(new URL(`../web/public/models/characters/${uri}`,import.meta.url).pathname).removeAlpha().raw().toBuffer({resolveWithObject:true}));return pixelCache.get(uri);}
+function pixels(uri){if(!pixelCache.has(uri))pixelCache.set(uri,sharp(new URL(uri,assets).pathname).removeAlpha().raw().toBuffer({resolveWithObject:true}));return pixelCache.get(uri);}
 const linear=value=>value/255<=.04045?value/255/12.92:((value/255+.055)/1.055)**2.4;
 const navy=new Set(['35,44,59','38,46,58']);
 
 for(const preset of ['granadero','worker'])for(const record of manifest.appearances[preset].lods)test(`${preset} LOD${record.lod} cloth depth retains all original surface resources and native data`,async()=>{
  const {json,access}=readGlb(record.url),meta=record.clothDepth;
- const bytes=readFileSync(new URL(`../web/public${record.url}`,import.meta.url)),jsonBytes=bytes.readUInt32LE(12),binary=bytes.subarray(28+jsonBytes);
+ const bytes=readFileSync(new URL(record.url.replace('/models/characters/',''),assets)),jsonBytes=bytes.readUInt32LE(12),binary=bytes.subarray(28+jsonBytes);
  assert.ok(meta,'The pilot is installed and has a preservation receipt');
  assert.equal(meta.recipe.sourceSha256,expectedSource);
  assert.deepEqual(json.extras.clothDepth,meta);
@@ -34,7 +34,7 @@ for(const preset of ['granadero','worker'])for(const record of manifest.appearan
   if(preset==='worker'){assert.equal(item.originalMaterial,item.material);assert.equal(item.colourUri,null);assert.equal(item.colourSha256,null);}
   else{
    assert.equal(image.uri,item.colourUri);assert.notEqual(item.originalMaterial,item.material);
-   const textureHash=hash(readFileSync(new URL(`../web/public/models/characters/${image.uri}`,import.meta.url)));assert.equal(textureHash,item.colourSha256);assert.equal(image.uri,`textures/${textureHash.slice(0,20)}.png`,'New colour texture bytes are content addressed');
+   const textureHash=hash(readFileSync(new URL(image.uri,assets)));assert.equal(textureHash,item.colourSha256);assert.equal(image.uri,`textures/${textureHash.slice(0,20)}.png`,'New colour texture bytes are content addressed');
    const cloned=structuredClone(material);cloned.name=oldMaterial.name;delete cloned.extras.originalMaterial;if(!oldMaterial.extras)delete cloned.extras;
    cloned.pbrMetallicRoughness.baseColorTexture=oldMaterial.pbrMetallicRoughness.baseColorTexture;assert.deepEqual(cloned,oldMaterial,'Only an owned colour-map binding changes; normal/roughness/metal/skin resources stay exact');
    let lifted=0;
@@ -85,21 +85,19 @@ test('the six other appearance families keep their current colour resources',()=
 test('a fresh cloth pilot is deterministic, repeatable, and rejects altered delivered colours or recipes before any write',()=>{
  const result=JSON.parse(execFileSync('python3',['-c',String.raw`
 from pathlib import Path
-import copy,hashlib,importlib.util,json,shutil,struct,subprocess,tempfile
-root=Path.cwd()
+import copy,hashlib,importlib.util,json,shutil,struct,subprocess,tempfile,sys
+root=Path.cwd();sys.path.insert(0,str(root/'tools/characters-3d'))
+from apparel_surface_context import create_predecessor_snapshot
 def module(name,path):
  spec=importlib.util.spec_from_file_location(name,path);value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
 glb=module('cloth_test_glb',root/'tools/characters-3d/merge-animation-bank.py')
 digest=lambda raw:hashlib.sha256(raw).hexdigest()
 with tempfile.TemporaryDirectory(prefix='granaderos-cloth-depth-test-') as folder:
- target=Path(folder);assets=target/'web/public/models/characters';assets.mkdir(parents=True)
- shutil.copytree(root/'web/public/models/characters/textures',assets/'textures')
- for relative in ('tools/characters-3d/build-cloth-depth.py','tools/characters-3d/merge-animation-bank.py','assets/source/characters-3d/authoring/cloth_depth.py'):
-  path=target/relative;path.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(root/relative,path)
- manifest=json.loads((root/'web/public/models/characters/manifest.json').read_text())
+ target=Path(folder)/'root';create_predecessor_snapshot(root,target);assets=target/'web/public/models/characters'
+ manifest=json.loads((assets/'manifest.json').read_text())
  for preset in ('granadero','worker'):
   for record in manifest['appearances'][preset]['lods']:
-   path=root/'web/public/models/characters'/Path(record['url']).name;doc,binary=glb.read_glb(path);meta=record.pop('clothDepth')
+   path=assets/Path(record['url']).name;doc,binary=glb.read_glb(path);meta=record.pop('clothDepth')
    for item in meta['primitives']:
     primitive=doc['meshes'][item['mesh']]['primitives'][item['primitive']];primitive['attributes']['COLOR_0']=item['originalColourAccessor'];primitive['material']=item['originalMaterial']
    doc['accessors']=doc['accessors'][:meta['originalAccessorCount']];doc['bufferViews']=doc['bufferViews'][:meta['originalViewCount']]

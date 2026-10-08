@@ -9,6 +9,7 @@ systems and their recorded scope.
 - [Tactical visual assets and compilation](TACTICAL-VISUALS.md)
 - [Character cloth depth reference pilot](character-cloth-depth-review-2026-10-08.md) *(workspace)*
 - [Cloth depth across six more character families](character-family-cloth-depth-review-2026-10-08.md) *(workspace)*
+- [Character cloth, leather and metal surfaces](character-apparel-surfaces-review-2026-10-08.md) *(workspace)*
 - [Colonial buildings, 1810–1820](buildings.md)
 - [Illustrated character sprites](character-sprites.md)
 - [Custom-character portraits](custom-character-portraits.md)

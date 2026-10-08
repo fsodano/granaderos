@@ -32,9 +32,9 @@
           "lod": 0,
           "url": "/models/characters/granadero-lod0.glb",
           "triangles": 76666,
-          "bytes": 4884064,
+          "bytes": 4889116,
           "drawCalls": 8,
-          "sha256": "a539a0064791db7c54e4af6d50e050b291bbece38f53aa9e49bdfb9f38583061",
+          "sha256": "9994d5c75f0a8e95fc6568b7247e24b8edee4c7a3fc1c54613ff33ee2e16db53",
           "clothDepth": {
             "recipe": {
               "method": "broad-rest-space-cloth-fold-colours-v2",
@@ -85,15 +85,147 @@
                 "vertexCount": 1424
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "a539a0064791db7c54e4af6d50e050b291bbece38f53aa9e49bdfb9f38583061",
+            "beforeBytes": 4884064,
+            "originalRecordJSONSha256": "9d393223d235ca7a0aa6c0eceb3d6bb2adb289ce10823f8e842119d5506682c1",
+            "recordPatches": [],
+            "originalJSONSha256": "ed7e93ca9b38ef6b715355f9ca2ab2cc6d8a03ac7ce60dab1d13a323a5c9d2e0",
+            "originalBinarySha256": "ec304da50a308dd8aa53e3530a1a5152a2bcb53406eae7b31f479da345430ef5",
+            "originalBinaryBytes": 4852008,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+              "textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+              "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/040b6c27fc46ce2da454.png": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/c74d1bdaf5f3ed21a420.png": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835",
+              "textures/3bb81102c0b19c0f3604.png": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78",
+              "textures/18bd9589742c675e9df5.png": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5",
+              "textures/ffd58295d122c45a1753.png": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/c967dd067e94b4a98e78.png",
+                    "sha256": "c967dd067e94b4a98e7830ba063e3824eed32091823901545f02fcee5c5df307"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/54e54591830dd0833605.png",
+                    "sha256": "54e54591830dd0833605c12dc7191e4911f54df1fa7d4d5060de849b4c178bcc"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/207de4b157da92e11066.png",
+                    "sha256": "207de4b157da92e11066f7e31eaea04320c540c6236be4e2af6c92d717f8d0d0"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/084050fdd3bb4cd39eeb.png",
+                    "sha256": "084050fdd3bb4cd39eebc32e067c017a182e0ca7966537df0bd3e0bd5a5bb239"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      3,
+                      7
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/granadero-lod1.glb",
           "triangles": 48454,
-          "bytes": 3322652,
+          "bytes": 3327704,
           "drawCalls": 8,
-          "sha256": "7ac4542717753b50f1baa47d53f67256bb4fd8e2f5a6625d78f0ea9f96e7f1c7",
+          "sha256": "8d3bc3ccdb5e8a49cd030c4312792cb438b8761c6e3a8a5b062c74930adbe3de",
           "clothDepth": {
             "recipe": {
               "method": "broad-rest-space-cloth-fold-colours-v2",
@@ -144,15 +276,147 @@
                 "vertexCount": 650
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "7ac4542717753b50f1baa47d53f67256bb4fd8e2f5a6625d78f0ea9f96e7f1c7",
+            "beforeBytes": 3322652,
+            "originalRecordJSONSha256": "f0d5fd653fade579e3eaa681113c23a27a98e72b2a5055d074a7a65f0683da51",
+            "recordPatches": [],
+            "originalJSONSha256": "675749daf629612b842f3186317af2982033b7c072ba23f8fa05354d91e5d52f",
+            "originalBinarySha256": "4728c66c898dafa772979187a3c244f7f334e073ebc13b9af78445c42cc8243d",
+            "originalBinaryBytes": 3290660,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+              "textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+              "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/040b6c27fc46ce2da454.png": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/c74d1bdaf5f3ed21a420.png": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835",
+              "textures/3bb81102c0b19c0f3604.png": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78",
+              "textures/18bd9589742c675e9df5.png": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5",
+              "textures/ffd58295d122c45a1753.png": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/c967dd067e94b4a98e78.png",
+                    "sha256": "c967dd067e94b4a98e7830ba063e3824eed32091823901545f02fcee5c5df307"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/54e54591830dd0833605.png",
+                    "sha256": "54e54591830dd0833605c12dc7191e4911f54df1fa7d4d5060de849b4c178bcc"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/207de4b157da92e11066.png",
+                    "sha256": "207de4b157da92e11066f7e31eaea04320c540c6236be4e2af6c92d717f8d0d0"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/084050fdd3bb4cd39eeb.png",
+                    "sha256": "084050fdd3bb4cd39eebc32e067c017a182e0ca7966537df0bd3e0bd5a5bb239"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      3,
+                      7
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/granadero-lod2.glb",
           "triangles": 17915,
-          "bytes": 1100984,
+          "bytes": 1106032,
           "drawCalls": 7,
-          "sha256": "44be7e03e4a048f4d16cc169da1536060d26ded409c8e10eb1898d300648c0b4",
+          "sha256": "2cb5f9de7901cce4a262e6fdf47c4a6d4529f9092125e4675c552978cd957f80",
           "clothDepth": {
             "recipe": {
               "method": "broad-rest-space-cloth-fold-colours-v2",
@@ -203,6 +467,138 @@
                 "vertexCount": 357
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "44be7e03e4a048f4d16cc169da1536060d26ded409c8e10eb1898d300648c0b4",
+            "beforeBytes": 1100984,
+            "originalRecordJSONSha256": "d562c3343150021639ae6922236aedc62be17c29c60a8bdc15e75e0e31e8c254",
+            "recordPatches": [],
+            "originalJSONSha256": "70e29ca0cee55c772819c0e42aab7179a3dda2a1111cb89ed7b5e72809c9d36c",
+            "originalBinarySha256": "52677d6bef10bda0979343761f00f8ce29f6b101e1246177d6fe9c787996ba5e",
+            "originalBinaryBytes": 1069284,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+              "textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+              "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/040b6c27fc46ce2da454.png": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/db0dd096ce52f78a260d.png": "db0dd096ce52f78a260d6d545733e52a07e9abfc85b44e39bc1061a132f1cdfe",
+              "textures/3ba0430ec0e2e7158fa7.png": "3ba0430ec0e2e7158fa7c82e3cac15e1bd42a8dfbf6bcc9994f800efaa4ee9cb",
+              "textures/ac9a975213b8d91f675a.png": "ac9a975213b8d91f675a42d12df74b8f57101775e337c9d3aaf619907b69e8da",
+              "textures/d59a76abdc3a396d8e68.png": "d59a76abdc3a396d8e683b73826c2f51d8debd90a52e8562c0afb80c54ff95eb"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/7263ce1336ebfc68e520.png",
+                    "sha256": "7263ce1336ebfc68e520934573f70796e9f0a6de3daba197b76348fb831b2ae9"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/a09657df1b18fe6f6d14.png",
+                    "sha256": "a09657df1b18fe6f6d14ff3d20f6cf5c2a0a2b1526c5814756b590d6e25b537a"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/4e1847cec0a0819e2d8b.png",
+                    "sha256": "4e1847cec0a0819e2d8b43f42f5bcf3ec3456e0cf15a42c8cb41291c35bf5d76"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/9eb4471a87cb45e57d1a.png",
+                    "sha256": "9eb4471a87cb45e57d1ae4510e634eda9a1cdac0c33a6ac9f6a95691fae8ea68"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      3,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         }
       ],
@@ -410,9 +806,9 @@
           "lod": 0,
           "url": "/models/characters/royalist-lod0.glb",
           "triangles": 76309,
-          "bytes": 4740820,
+          "bytes": 4745680,
           "drawCalls": 8,
-          "sha256": "fbbbe0ecb869ba09b9cdea6ca7e1a4c56664b74a94a8dcd3ea080929eba74105",
+          "sha256": "50d1b0a49abacdbaaae4408bcef4d2485ac163ab53367c5a3a2944e7d024f4e4",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -527,15 +923,146 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "fbbbe0ecb869ba09b9cdea6ca7e1a4c56664b74a94a8dcd3ea080929eba74105",
+            "beforeBytes": 4740820,
+            "originalRecordJSONSha256": "80a7b4093307261608710029d9a70e7b65650ac47f8718a793a6734c86503cfe",
+            "recordPatches": [],
+            "originalJSONSha256": "fddcf0343851254c703bc95b2ea7940579712f44f4b41e155933e93d5f7a99e4",
+            "originalBinarySha256": "abfd0655bbd02dae4c158b340f01187d32729b08f10478538f7f483ff61338ec",
+            "originalBinaryBytes": 4707800,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+              "textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+              "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/e3c6887d5bede0fbc1e4.png": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+              "textures/a4d52e34a5ed852382b9.png": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+              "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 4,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/c24dfe98d1920c6cea67.png",
+                    "sha256": "c24dfe98d1920c6cea677ac6be24c8c21e191cdca08fc92ff08a4314fecd4b83"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/7a7b91b2771d1f9233f9.png",
+                    "sha256": "7a7b91b2771d1f9233f99effd24a88d2b0cad798342913df8d1db4af868b9d20"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/2f6d7926b8cc43ca1ffc.png",
+                    "sha256": "2f6d7926b8cc43ca1ffcef7d9dca67f30de773307bf89e97b138a19a8d7a289b"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/084050fdd3bb4cd39eeb.png",
+                    "sha256": "084050fdd3bb4cd39eebc32e067c017a182e0ca7966537df0bd3e0bd5a5bb239"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      3,
+                      7
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/royalist-lod1.glb",
           "triangles": 48383,
-          "bytes": 3249048,
+          "bytes": 3253908,
           "drawCalls": 8,
-          "sha256": "23119f74aaa3bde846800986b497a9ece6f8e3523fb224d20cc42e74687d50b1",
+          "sha256": "040f4571a15240dcd2c7f6f113053b78586ef62814709580901bfeef80dd3cb1",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -650,15 +1177,146 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "23119f74aaa3bde846800986b497a9ece6f8e3523fb224d20cc42e74687d50b1",
+            "beforeBytes": 3249048,
+            "originalRecordJSONSha256": "5b8c0824f3b1e88d4946cb8b5f4ff6653a00bd486e0d6f9960a353ae8992fa36",
+            "recordPatches": [],
+            "originalJSONSha256": "742674a146cdbace593675c13bfe137b1a6128002507df8785c68126b22f88d8",
+            "originalBinarySha256": "32833bc12b39eb1f467880a3acc5ed222b4d81b4c51ce1b7b07eee1be000828d",
+            "originalBinaryBytes": 3216092,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+              "textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+              "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/e3c6887d5bede0fbc1e4.png": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+              "textures/a4d52e34a5ed852382b9.png": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+              "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 4,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/c24dfe98d1920c6cea67.png",
+                    "sha256": "c24dfe98d1920c6cea677ac6be24c8c21e191cdca08fc92ff08a4314fecd4b83"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/7a7b91b2771d1f9233f9.png",
+                    "sha256": "7a7b91b2771d1f9233f99effd24a88d2b0cad798342913df8d1db4af868b9d20"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      7
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/2f6d7926b8cc43ca1ffc.png",
+                    "sha256": "2f6d7926b8cc43ca1ffcef7d9dca67f30de773307bf89e97b138a19a8d7a289b"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/084050fdd3bb4cd39eeb.png",
+                    "sha256": "084050fdd3bb4cd39eebc32e067c017a182e0ca7966537df0bd3e0bd5a5bb239"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      3,
+                      7
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/royalist-lod2.glb",
           "triangles": 17858,
-          "bytes": 1068512,
+          "bytes": 1073372,
           "drawCalls": 7,
-          "sha256": "58e7f5d6bcb9853a0f5f1ac23007afd4f1f1bfdcf977aeccde1b35f17b582811",
+          "sha256": "675afe8ef043bcf4cac1258698695b2e0435084029c8c35e6d4fd65bc969faca",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -770,6 +1428,137 @@
                   "protectedVertexCount": 0,
                   "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
                 }
+              }
+            ],
+            "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "58e7f5d6bcb9853a0f5f1ac23007afd4f1f1bfdcf977aeccde1b35f17b582811",
+            "beforeBytes": 1068512,
+            "originalRecordJSONSha256": "749ec5939a10f4e48c3f8cd86ca6fd81542d1c0ed306d5a70675049b21b1a510",
+            "recordPatches": [],
+            "originalJSONSha256": "f455a62999448787cf3662d4f390001e2af93621969ba0d1d27179718ebeb8a0",
+            "originalBinarySha256": "68746dd3049b92b43501086660bf2d5c4c1b889a9da618cc133a0799db1098e1",
+            "originalBinaryBytes": 1035808,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+              "textures/8cbf285a07c9ac6f5db6.png": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+              "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/35352ce8175250721c1f.png": "35352ce8175250721c1fa7f67c65adb94609f1ca7f7ae8f616d67696e487d2e3",
+              "textures/465ec17af5d67ed742e5.png": "465ec17af5d67ed742e5d22f1f6c5b8dac0d7a9d292b9e5ad5edf8a5c34a872c",
+              "textures/7ba8a99b0e70d6156272.png": "7ba8a99b0e70d615627236bcca1dbf961dff7bbbcaec8dfa5c2f7008bd1c1f22"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 4,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/c940013af80473abdc84.png",
+                    "sha256": "c940013af80473abdc846d2c46502ab0241d781d634816feba8b6b04a6f21eb3"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/25a1460efcd285bb6bf0.png",
+                    "sha256": "25a1460efcd285bb6bf017972f377d26d1995e4cb637dec9d3986698ced60152"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/aab44917bbd644c0c8f0.png",
+                    "sha256": "aab44917bbd644c0c8f0b1d9da89f01c35099ff1735d5ae8f642e34526a760bc"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/9eb4471a87cb45e57d1a.png",
+                    "sha256": "9eb4471a87cb45e57d1ae4510e634eda9a1cdac0c33a6ac9f6a95691fae8ea68"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      3,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
               }
             ],
             "documentPatches": []
@@ -980,9 +1769,9 @@
           "lod": 0,
           "url": "/models/characters/worker-lod0.glb",
           "triangles": 63192,
-          "bytes": 4283932,
+          "bytes": 4288924,
           "drawCalls": 7,
-          "sha256": "98ae2a429f6fb043683dce990e55aaf1bbb73a22364bf6a0f8a32c0387a4b3dc",
+          "sha256": "38660c3fadb002f3c278c5367fd3771579c6251454dc63a6426ba120d33d47dc",
           "clothDepth": {
             "recipe": {
               "method": "broad-rest-space-cloth-fold-colours-v2",
@@ -1033,15 +1822,154 @@
                 "vertexCount": 1308
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "98ae2a429f6fb043683dce990e55aaf1bbb73a22364bf6a0f8a32c0387a4b3dc",
+            "beforeBytes": 4283932,
+            "originalRecordJSONSha256": "a3bd9fef1bb6b3c5241f26e06c8538529bc04b2e49e64e5b86eb7cadf30fda1a",
+            "recordPatches": [],
+            "originalJSONSha256": "1a3dc20999e6c60e7bf4050509b907a586cd8b150c90010230d0229b910f901f",
+            "originalBinarySha256": "b4e2e9f0443affd748c28a3e3c084e78c26b07a3ab8ebe7932b1759eca563865",
+            "originalBinaryBytes": 4252412,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/040b6c27fc46ce2da454.png": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/d3947bf8ce7ee3fb076e.png": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603",
+              "textures/eb7d7e234e6b60198b7f.png": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b",
+              "textures/2184ae3386ac18625140.png": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa",
+              "textures/ddbf803c43fc641d3512.png": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/cfd7669292fe4d474a99.png",
+                    "sha256": "cfd7669292fe4d474a99f20907f43f9664f9110eba8a0ff263f35eb25723dc3c"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/78841d61265e79a3f9e6.png",
+                    "sha256": "78841d61265e79a3f9e65662327ce5bf56367e743136c1830ac3f08757393684"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/8248a88fb7b4ad97da08.png",
+                    "sha256": "8248a88fb7b4ad97da087d92d6d037d7a790750157e32f76509039ee1dd49e8e"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/84a46d0d39e312f5300c.png",
+                    "sha256": "84a46d0d39e312f5300c4bfebc73415b5b4d330b2db8227fd0b79515211bae95"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/worker-lod1.glb",
           "triangles": 40434,
-          "bytes": 2959820,
+          "bytes": 2964812,
           "drawCalls": 7,
-          "sha256": "6b2468ad4ca2977166073ef4a11ceb4086d3d45675e9c842a9256af3ac590d6b",
+          "sha256": "44963dfba39d963a9f88ef982b9a1391d1bc78411d15eab96a2911ca2c04b973",
           "clothDepth": {
             "recipe": {
               "method": "broad-rest-space-cloth-fold-colours-v2",
@@ -1092,15 +2020,154 @@
                 "vertexCount": 534
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "6b2468ad4ca2977166073ef4a11ceb4086d3d45675e9c842a9256af3ac590d6b",
+            "beforeBytes": 2959820,
+            "originalRecordJSONSha256": "87c489540fb6a06cfe1f45d2f060437a8baef633c98b22d94d91b2d1cef01d03",
+            "recordPatches": [],
+            "originalJSONSha256": "f59cf0bb655a13f000ea2df0a0ad94bbaa518a6ca312187d0138e46b85122b09",
+            "originalBinarySha256": "81278b117f9ec1b18fc66e6c4f95b8118ed506f5ddc90ec58173a01cbc97d392",
+            "originalBinaryBytes": 2928360,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/040b6c27fc46ce2da454.png": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/d3947bf8ce7ee3fb076e.png": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603",
+              "textures/eb7d7e234e6b60198b7f.png": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b",
+              "textures/2184ae3386ac18625140.png": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa",
+              "textures/ddbf803c43fc641d3512.png": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/cfd7669292fe4d474a99.png",
+                    "sha256": "cfd7669292fe4d474a99f20907f43f9664f9110eba8a0ff263f35eb25723dc3c"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/78841d61265e79a3f9e6.png",
+                    "sha256": "78841d61265e79a3f9e65662327ce5bf56367e743136c1830ac3f08757393684"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/8248a88fb7b4ad97da08.png",
+                    "sha256": "8248a88fb7b4ad97da087d92d6d037d7a790750157e32f76509039ee1dd49e8e"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/84a46d0d39e312f5300c.png",
+                    "sha256": "84a46d0d39e312f5300c4bfebc73415b5b4d330b2db8227fd0b79515211bae95"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/worker-lod2.glb",
           "triangles": 16597,
-          "bytes": 1082500,
+          "bytes": 1087492,
           "drawCalls": 7,
-          "sha256": "e73b702b2149ad5a54593a178e6a4f0eff79bfb2649845d3d44052fb78a1d73d",
+          "sha256": "f70226e178dd00aaafd590513bb0f0d0b3158d379370a9cec779252f586723c6",
           "clothDepth": {
             "recipe": {
               "method": "broad-rest-space-cloth-fold-colours-v2",
@@ -1151,6 +2218,145 @@
                 "vertexCount": 241
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "e73b702b2149ad5a54593a178e6a4f0eff79bfb2649845d3d44052fb78a1d73d",
+            "beforeBytes": 1082500,
+            "originalRecordJSONSha256": "3085165d95e8c46567af54d75a319db12eb4c4e146cf3487a9cad957ed0d3f2a",
+            "recordPatches": [],
+            "originalJSONSha256": "44d24c408f953e4ed57682fe2ae5a736539a9e83e3d72682514ec50ba25250a7",
+            "originalBinarySha256": "9ec190e8383fb085286efd0a531713c29d3b31975689f0ee38bddc00b0078a74",
+            "originalBinaryBytes": 1051000,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+              "textures/3a317df510b9935d80c4.png": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+              "textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/040b6c27fc46ce2da454.png": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/940c90a65502a117ca0b.png": "940c90a65502a117ca0b309670a7eca7522df2d3cd9c24b002c3d81cd31dcbe7",
+              "textures/93f40634d5f47b42afdb.png": "93f40634d5f47b42afdb76dd3ebf22ce420022219eccaf65e1972ef860632a44",
+              "textures/e53e4d4ad46335cf9f8d.png": "e53e4d4ad46335cf9f8de5173b245d63ae1afc73367a5266f10bbd3432db18eb",
+              "textures/ddbf803c43fc641d3512.png": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/fbca7ec4156fc62f2d8a.png",
+                    "sha256": "fbca7ec4156fc62f2d8afd396ccb2472ee4b3883722b003e9e3983bb4d62f796"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/29ca92e7514cecb00d0b.png",
+                    "sha256": "29ca92e7514cecb00d0bd3d663506f434d6926c29316464a4acc4f2fc24bd33d"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/e08841d0cb25bd6850f4.png",
+                    "sha256": "e08841d0cb25bd6850f40607c942a68e91f33b6fcc3ffe9668f82d1b90df5e08"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/a40b54336c3f565a38bb.png",
+                    "sha256": "a40b54336c3f565a38bbfe1b3a61447e28f1c4f437bf5c1e67c7e5b047a9fd10"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         }
       ],
@@ -1358,9 +2564,9 @@
           "lod": 0,
           "url": "/models/characters/surgeon-lod0.glb",
           "triangles": 59637,
-          "bytes": 3969328,
+          "bytes": 3974496,
           "drawCalls": 6,
-          "sha256": "b90a90259d44520ac9ec49130382fd7d3d24b8f0f686b0f942901d91a7f8a5d0",
+          "sha256": "037651376b702524146691573a7ff4a6aad1d15947840864c520d9ad3c3af79d",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -1475,15 +2681,148 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "b90a90259d44520ac9ec49130382fd7d3d24b8f0f686b0f942901d91a7f8a5d0",
+            "beforeBytes": 3969328,
+            "originalRecordJSONSha256": "b899e925b6a83064f6425d1e0027cb780fd1f3dc847669603239cad05ef8caa0",
+            "recordPatches": [],
+            "originalJSONSha256": "4ac3f6889173889ccf4544304958a12d625ef65ff49e06c4acece081bc7381aa",
+            "originalBinarySha256": "4b0c6d468e7d250c9a11eeb88f65eae40e5063d3553b0fe423c28e3ed5ae5a51",
+            "originalBinaryBytes": 3936756,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+              "textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+              "textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/491089fb9520714de5b5.png": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+              "textures/6323715e4e2b8cd3db7c.png": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+              "textures/e735cf2c599a1dc3ddf1.png": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369",
+              "textures/ef9d99ded16d9fbc7e29.png": "ef9d99ded16d9fbc7e29f55bca35545d70c479afeb771f13e1be9297e6488e98",
+              "textures/3f82d47782058f31deba.png": "3f82d47782058f31debaa791ee91898e9205735831b15b77f75e1d13d9d172d5"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/d5777d4390c20b3f9fa1.png",
+                    "sha256": "d5777d4390c20b3f9fa1bb51d61a1e7743b724d24a85fc91739563ad4eeeff28"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 5,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/68d3a0387085d5741427.png",
+                    "sha256": "68d3a0387085d57414276d7ca9309794c93436912c6283b508b05d82e80bc7f2"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/e637a590a6cb398f89dc.png",
+                    "sha256": "e637a590a6cb398f89dc956848406be630d33c0012a3729bc515a0d8b1f1dc3e"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/97626d11207a2f3ae59c.png",
+                    "sha256": "97626d11207a2f3ae59cef68784f361a88f5d66f8491c1ada8c0b0eb032efe81"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/surgeon-lod1.glb",
           "triangles": 38132,
-          "bytes": 2751088,
+          "bytes": 2756256,
           "drawCalls": 6,
-          "sha256": "1488a00c98b04a4625e4ee9710f0efc78354c9af28f0a44d1299ff5dabc1b1f5",
+          "sha256": "3e5ce213fce265eb0ed398ac965fb9737f0a7a749b9560ddc1378bb60c5ae644",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -1598,15 +2937,148 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "1488a00c98b04a4625e4ee9710f0efc78354c9af28f0a44d1299ff5dabc1b1f5",
+            "beforeBytes": 2751088,
+            "originalRecordJSONSha256": "0a463d167e8426f24369a8ab3bbc2a7be2eff9016cdd31d713e4f2a029b49c1b",
+            "recordPatches": [],
+            "originalJSONSha256": "0638c4e0a96fe9582bf7a2eb7592bc78c6c44b638589e64cd1bf5b20e895d435",
+            "originalBinarySha256": "1befd60e6dd71a7bcd3c92fd781d592a242b68c4e42c97003462987137bd72a0",
+            "originalBinaryBytes": 2718576,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+              "textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+              "textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/491089fb9520714de5b5.png": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+              "textures/6323715e4e2b8cd3db7c.png": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+              "textures/e735cf2c599a1dc3ddf1.png": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369",
+              "textures/ef9d99ded16d9fbc7e29.png": "ef9d99ded16d9fbc7e29f55bca35545d70c479afeb771f13e1be9297e6488e98",
+              "textures/3f82d47782058f31deba.png": "3f82d47782058f31debaa791ee91898e9205735831b15b77f75e1d13d9d172d5"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/d5777d4390c20b3f9fa1.png",
+                    "sha256": "d5777d4390c20b3f9fa1bb51d61a1e7743b724d24a85fc91739563ad4eeeff28"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 5,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/68d3a0387085d5741427.png",
+                    "sha256": "68d3a0387085d57414276d7ca9309794c93436912c6283b508b05d82e80bc7f2"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/e637a590a6cb398f89dc.png",
+                    "sha256": "e637a590a6cb398f89dc956848406be630d33c0012a3729bc515a0d8b1f1dc3e"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/97626d11207a2f3ae59c.png",
+                    "sha256": "97626d11207a2f3ae59cef68784f361a88f5d66f8491c1ada8c0b0eb032efe81"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/surgeon-lod2.glb",
           "triangles": 14352,
-          "bytes": 918848,
+          "bytes": 924012,
           "drawCalls": 6,
-          "sha256": "d6fc3a0fd179d13ec1d791bccfda8c2b86873b9144fb878d58f4c7889e3b7ca0",
+          "sha256": "ac9120412e970dcd7db19ba8866aa2fd95e7131419428afb4e2d7fcbf49b24a7",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -1718,6 +3190,139 @@
                   "protectedVertexCount": 0,
                   "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
                 }
+              }
+            ],
+            "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "d6fc3a0fd179d13ec1d791bccfda8c2b86873b9144fb878d58f4c7889e3b7ca0",
+            "beforeBytes": 918848,
+            "originalRecordJSONSha256": "75076da76ba3634774fd45ab19c7006168be428680dd3b8de5b504dab049d0d2",
+            "recordPatches": [],
+            "originalJSONSha256": "c71cadc9fec9cc2cdd4c58e6fea458b71165a688fc0e2fb0f265fb4c629403fe",
+            "originalBinarySha256": "1a18c06d483d41c95360157aee6c1c5681ac1497648f4b557b49e013c817d7ef",
+            "originalBinaryBytes": 886344,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/8c172dc9580b54c81b2b.png": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+              "textures/2b37ee7756a9b82dfffb.png": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/f2f7c8420ab2e6bf72af.png": "f2f7c8420ab2e6bf72afeff90a8a3f99af3df31725d997cf18decedc55f96871",
+              "textures/e31e4b28bb224684cf57.png": "e31e4b28bb224684cf571b7b88d6c627361dcd8906d8d7594c66989626e4edbd",
+              "textures/431f49c3e8d9e53ce775.png": "431f49c3e8d9e53ce77579c389f28aac3f7b32521543c5d414114065e452487e",
+              "textures/dad05b97473c1bda2943.png": "dad05b97473c1bda2943f318db3e730665f8a841f2d7d6176b2f8a013e002e1b",
+              "textures/e1a7e63228556d4147d6.png": "e1a7e63228556d4147d6d89438f407de7554ec436cdd055e6789366707ae32b1"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/827a561e802667d6a5ee.png",
+                    "sha256": "827a561e802667d6a5eec636bb9ac7d98079eb869d22c1a235947c3dc7f9b908"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 5,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/be5e92a6789f3e62d039.png",
+                    "sha256": "be5e92a6789f3e62d03941a71d318bdb3b213c2c3879d81592c9a857082e6ded"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/9825f1192c3daf90d409.png",
+                    "sha256": "9825f1192c3daf90d409e250755799e3d984ce7f0327edc95ab8133ff12dbe4e"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/953140ef3e0c23084c23.png",
+                    "sha256": "953140ef3e0c23084c23ebae1a2576db1bc501aced0da876e1d127fb69839a51"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
               }
             ],
             "documentPatches": []
@@ -1928,9 +3533,9 @@
           "lod": 0,
           "url": "/models/characters/gaucho-lod0.glb",
           "triangles": 58149,
-          "bytes": 3857636,
+          "bytes": 3862804,
           "drawCalls": 7,
-          "sha256": "92433163d61089c4ee9205dbab433024ca5e31bc277fb4937d413ecd7696e7fc",
+          "sha256": "b13d7ea28b1871ee38791142f2753fd50050aa6460d95e2bb2ecb5abc864326f",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -2045,15 +3650,148 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "92433163d61089c4ee9205dbab433024ca5e31bc277fb4937d413ecd7696e7fc",
+            "beforeBytes": 3857636,
+            "originalRecordJSONSha256": "fa4c3c446a6e0249d6c2abb2af9a47ad35cb77c83ed82927606f302b2b87c612",
+            "recordPatches": [],
+            "originalJSONSha256": "a947bff86ee180dc095a39447d6c20c2dcd2b4de4956eac8a847c51358c4b0a8",
+            "originalBinarySha256": "74bd47040e26db92a9ee6df50b62010007103a0933c37b810ebd01f0603a6dc6",
+            "originalBinaryBytes": 3823800,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+              "textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/ea43152d1732ed05f4ea.png": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+              "textures/b6163461b8122d6787f8.png": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+              "textures/32c4f3619e14232ca1c9.png": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4",
+              "textures/fda208aa6522c10908fc.png": "fda208aa6522c10908fc4b0d0e72f6f93c1f0328d4b53e00a0ba0725f44a1465",
+              "textures/3f2ba7b080982af7d9ee.png": "3f2ba7b080982af7d9ee3c2ecc225149d95b8b6c5a4949915427062d595c06c5"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/9fc3804e84dc648f6ba2.png",
+                    "sha256": "9fc3804e84dc648f6ba213a811d4c209a18f36ac3a9a24c4aa4403f1d57d3b7c"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 5,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/be8f9d8dc78785bed8ff.png",
+                    "sha256": "be8f9d8dc78785bed8ff7b7f7dfe9e15c1e2a18b278a2798152d2064d9d182cc"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/37b9de5f69fd7608034c.png",
+                    "sha256": "37b9de5f69fd7608034ccaee8ed5e0a2da280a989247aac671de73b1e56638c1"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/7ee566c19de5720564bb.png",
+                    "sha256": "7ee566c19de5720564bbafd908abfc8869b6bfa1052348e05de1a6665fb00686"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/gaucho-lod1.glb",
           "triangles": 35840,
-          "bytes": 2604024,
+          "bytes": 2609192,
           "drawCalls": 7,
-          "sha256": "f10d9c11302e64a35083a20abe6d84ef6c8fca90afaf8ec50a00e1a005bf78c0",
+          "sha256": "7d89714c60d0788d568ac5d5a1be96f0885762063a35a563f254f2205fc7273d",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -2168,15 +3906,148 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "f10d9c11302e64a35083a20abe6d84ef6c8fca90afaf8ec50a00e1a005bf78c0",
+            "beforeBytes": 2604024,
+            "originalRecordJSONSha256": "c01b5850aec63c00f6d4b8ce77e7ecb0c25b8f6fc7e03cef0ff6292fcee8b8ca",
+            "recordPatches": [],
+            "originalJSONSha256": "6f7e20e3465408872745b78b19721dfb42e31ee1deccfe8ca1017f3e7ae607c6",
+            "originalBinarySha256": "e1eeb2d6b6dfc73b0e9fb28b990d3f22e5c0e0221fcf3b305f4a540eb35ae1d7",
+            "originalBinaryBytes": 2570244,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+              "textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/ea43152d1732ed05f4ea.png": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+              "textures/b6163461b8122d6787f8.png": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+              "textures/32c4f3619e14232ca1c9.png": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4",
+              "textures/fda208aa6522c10908fc.png": "fda208aa6522c10908fc4b0d0e72f6f93c1f0328d4b53e00a0ba0725f44a1465",
+              "textures/3f2ba7b080982af7d9ee.png": "3f2ba7b080982af7d9ee3c2ecc225149d95b8b6c5a4949915427062d595c06c5"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/9fc3804e84dc648f6ba2.png",
+                    "sha256": "9fc3804e84dc648f6ba213a811d4c209a18f36ac3a9a24c4aa4403f1d57d3b7c"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 5,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/be8f9d8dc78785bed8ff.png",
+                    "sha256": "be8f9d8dc78785bed8ff7b7f7dfe9e15c1e2a18b278a2798152d2064d9d182cc"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/37b9de5f69fd7608034c.png",
+                    "sha256": "37b9de5f69fd7608034ccaee8ed5e0a2da280a989247aac671de73b1e56638c1"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/7ee566c19de5720564bb.png",
+                    "sha256": "7ee566c19de5720564bbafd908abfc8869b6bfa1052348e05de1a6665fb00686"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/gaucho-lod2.glb",
           "triangles": 12009,
-          "bytes": 769492,
+          "bytes": 774660,
           "drawCalls": 7,
-          "sha256": "5b4b902a3340b7b4f347a9c75e2b0918d0d3a193a807c3f95364e4a3bdef1a83",
+          "sha256": "8c9f54d263b38a102c97550e6fc16c65a7f936049bb816d5c4f533bc214a1459",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -2288,6 +4159,139 @@
                   "protectedVertexCount": 0,
                   "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
                 }
+              }
+            ],
+            "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "5b4b902a3340b7b4f347a9c75e2b0918d0d3a193a807c3f95364e4a3bdef1a83",
+            "beforeBytes": 769492,
+            "originalRecordJSONSha256": "7b28052baa37e647d443b92626fd28b1b5e8ca2632fad4a922d45b319796d2ad",
+            "recordPatches": [],
+            "originalJSONSha256": "86bb639f7b1b16df304a268514b5c3ef58f716f0fcaa42756356d36b8df11917",
+            "originalBinarySha256": "3158f29e7fadc61bbd566c26d3d87d32ee55c8c169af921a5f734ea2d0c9e526",
+            "originalBinaryBytes": 735728,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/bf154685e393a585d17b.png": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+              "textures/1b6188df5f9a698957f1.png": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/8d624207fb5fdba71f3a.png": "8d624207fb5fdba71f3ad01c27b53a216b489218ba8420bd97806c824f19a225",
+              "textures/94c58f92a66daac53b99.png": "94c58f92a66daac53b99596d44ee274b3728cd8deb773a0d56f27dc51c8c227f",
+              "textures/d93693724cacd6f0c6f1.png": "d93693724cacd6f0c6f11964ce62840313df8ce20e8efb85f94881fcd997a535",
+              "textures/9277bf6b7f4b71b54f3b.png": "9277bf6b7f4b71b54f3b8e4c8698ade268e6de58f1a07402c62ef70db2751ebe",
+              "textures/b853d116e906ea504175.png": "b853d116e906ea504175d1aa88c4cb61433926bcb401065803308ce558ce5b24"
+            },
+            "primitives": [
+              {
+                "mesh": 3,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/2cf49ca4ca8ca013e49f.png",
+                    "sha256": "2cf49ca4ca8ca013e49f9eeb9a362c5d29479d8f876dd53ee91871ec89d8535f"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 5,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/ed46dda08d7935c7fa0f.png",
+                    "sha256": "ed46dda08d7935c7fa0f660e82ec29261b4307b3a202643c89bbf1545e0eccec"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/fb2dcefd820fb5650cb7.png",
+                    "sha256": "fb2dcefd820fb5650cb7e373dea2f9d95df297a45fc7de6eb87913434273c012"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/52f5ef9335469abc8de3.png",
+                    "sha256": "52f5ef9335469abc8de3d0a0d8a0c454c75cddd141e4dc8d310251c3a4397f94"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
               }
             ],
             "documentPatches": []
@@ -2498,9 +4502,9 @@
           "lod": 0,
           "url": "/models/characters/friar-lod0.glb",
           "triangles": 58020,
-          "bytes": 3901244,
+          "bytes": 3906368,
           "drawCalls": 6,
-          "sha256": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+          "sha256": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2733,15 +4737,161 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+            "beforeBytes": 3901244,
+            "originalRecordJSONSha256": "cc876f64423faeb417abc5b2164ccc035f80f279d5905543a7f2dca7dce6693a",
+            "recordPatches": [],
+            "originalJSONSha256": "949bdd92efbeccc74bf1647f3fb8a356f6465c98a5f3e3af37292a139417dc0d",
+            "originalBinarySha256": "ba96e0588eeeb9535371ce0ac11709bf63f7e92ccd04ff130350e358cc61866b",
+            "originalBinaryBytes": 3863668,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+              "textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/8d399752680e68257da6.png": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+              "textures/1475bcc494750a798dc8.png": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+              "textures/a966ec3d74fe209f0820.png": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9",
+              "textures/3691556479aefad5c194.png": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/67fcab1ed73da3fc5cff.png",
+                    "sha256": "67fcab1ed73da3fc5cffc0233a501a6d426f5133a995705342a1325d2485e7b9"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/67fcab1ed73da3fc5cff.png",
+                    "sha256": "67fcab1ed73da3fc5cffc0233a501a6d426f5133a995705342a1325d2485e7b9"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/dd3a76bd9c6e07bd0844.png",
+                    "sha256": "dd3a76bd9c6e07bd084414f2096fb1afd463a88002f609a9f962cb6c2fbba855"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/252d3926f49491a0a8ed.png",
+                    "sha256": "252d3926f49491a0a8ed2fbd8f1f238e1b597285dd592c3bacd7fe579ec532fd"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/friar-lod1.glb",
           "triangles": 39341,
-          "bytes": 2840600,
+          "bytes": 2846140,
           "drawCalls": 6,
-          "sha256": "773cbdbae0bdb634ee88a26a17582765b62d788a6d063e51bda073bea48717e6",
+          "sha256": "4d7a54382c80a83a0dd62f3f4a4001a89c1e8668cb35cce9e83eadc19563f8b7",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -2804,7 +4954,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/friar-lod0.glb",
-            "sourceSha256": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+            "sourceSha256": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           },
@@ -3000,15 +5150,182 @@
                 "after": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8"
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "773cbdbae0bdb634ee88a26a17582765b62d788a6d063e51bda073bea48717e6",
+            "beforeBytes": 2840600,
+            "originalRecordJSONSha256": "8fd6b04583d0d75ac8d3baaff53aade3a261fcf9910f06c3ccf5b5a653924c25",
+            "recordPatches": [
+              {
+                "path": [
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+                "after": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149"
+              }
+            ],
+            "originalJSONSha256": "d9c3c9218a21c36c6a53de522dc61b07305c38993715850586e2bd09ed46e738",
+            "originalBinarySha256": "52d6888e13ce6de2627512678d79b16028a2ebf10e02f1cbb13429cf87c59b2e",
+            "originalBinaryBytes": 2802328,
+            "originalMaterialCount": 5,
+            "originalTextureCount": 12,
+            "originalImageCount": 12,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+              "textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/8d399752680e68257da6.png": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+              "textures/1475bcc494750a798dc8.png": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+              "textures/a966ec3d74fe209f0820.png": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9",
+              "textures/3691556479aefad5c194.png": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 4,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/67fcab1ed73da3fc5cff.png",
+                    "sha256": "67fcab1ed73da3fc5cffc0233a501a6d426f5133a995705342a1325d2485e7b9"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 4,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/67fcab1ed73da3fc5cff.png",
+                    "sha256": "67fcab1ed73da3fc5cffc0233a501a6d426f5133a995705342a1325d2485e7b9"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/dd3a76bd9c6e07bd0844.png",
+                    "sha256": "dd3a76bd9c6e07bd084414f2096fb1afd463a88002f609a9f962cb6c2fbba855"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/252d3926f49491a0a8ed.png",
+                    "sha256": "252d3926f49491a0a8ed2fbd8f1f238e1b597285dd592c3bacd7fe579ec532fd"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  2,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+                "after": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149"
+              }
+            ]
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/friar-lod2.glb",
           "triangles": 17982,
-          "bytes": 1139472,
+          "bytes": 1145424,
           "drawCalls": 6,
-          "sha256": "4e6869d47eaae5a15981ba52cd4d8a90220d0d647ca3865a30d67867c06e31c5",
+          "sha256": "4822ccbbace3d7563de1ec73f233af3c12cfa13ccc8ff84874d8ec79b3c20fad",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -3071,7 +5388,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/friar-lod0.glb",
-            "sourceSha256": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+            "sourceSha256": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           },
@@ -3268,6 +5585,177 @@
                 ],
                 "before": "f903132a8d7faebab4b2219760e3ce3c68997cba44e10baccb3c1739b59417da",
                 "after": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8"
+              }
+            ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "4e6869d47eaae5a15981ba52cd4d8a90220d0d647ca3865a30d67867c06e31c5",
+            "beforeBytes": 1139472,
+            "originalRecordJSONSha256": "f0464a437a9eccab62b84bca6881793d7473617a31e767af7370628cdf8b36c8",
+            "recordPatches": [
+              {
+                "path": [
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+                "after": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149"
+              }
+            ],
+            "originalJSONSha256": "67e8c19e78ec2ce7ff75d2fd7c96bd24f8a6865b57ece2e69c175b5494c98f38",
+            "originalBinarySha256": "8b0b6d4281d12fe06b42da01890f5dff73645b3dc021c229535f1585d71ac627",
+            "originalBinaryBytes": 1099840,
+            "originalMaterialCount": 7,
+            "originalTextureCount": 16,
+            "originalImageCount": 16,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+              "textures/79b468f44254a4b58d1f.png": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+              "textures/5fbafa4e4224acc6b55d.png": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+              "textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+              "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+              "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+              "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+              "textures/55f2e13925123daea921.png": "55f2e13925123daea921e254ee30bbd2109adc583faf6ce9e2b1feabb34ae63a",
+              "textures/89a9d994989390a0e185.png": "89a9d994989390a0e1858cdb750bc432af0782e017c302677249a69ca4eef39a",
+              "textures/392889f6329752c020dd.png": "392889f6329752c020ddacf276bbf849c8e5b9ba5365641a059ff76a1d614f47",
+              "textures/3691556479aefad5c194.png": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+              "textures/af73a7186075e3b44859.png": "af73a7186075e3b44859362ff6f8940cf7e0439e040ff583c71a5d194385e43c"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 5,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/67fcab1ed73da3fc5cff.png",
+                    "sha256": "67fcab1ed73da3fc5cffc0233a501a6d426f5133a995705342a1325d2485e7b9"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 6,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/e27ecf52d074632eb95e.png",
+                    "sha256": "e27ecf52d074632eb95ebbd073caaaf7ceb0842b9cd236c780e85607baf32361"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 9,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/16102780bee7c42bd18b.png",
+                    "sha256": "16102780bee7c42bd18beb4c86887f9b322d039154f4ffe741394479a82f6854"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/0bdaf745653e4e53fddf.png",
+                    "sha256": "0bdaf745653e4e53fddfb09523d9ed4ffceb8efb33fd8cb220157617290c9a5d"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  2,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "8b373d3b24bb80d5ff991617e0fe8498fa252573dc05cd9ac92a90e84d632dd8",
+                "after": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149"
               }
             ]
           }
@@ -3477,9 +5965,9 @@
           "lod": 0,
           "url": "/models/characters/woman-scout-lod0.glb",
           "triangles": 59860,
-          "bytes": 4071020,
+          "bytes": 4075880,
           "drawCalls": 6,
-          "sha256": "83a3f477b3771761a4fbb00f3a33cd744e4e77b49c6f870b72b3cc49c03c5434",
+          "sha256": "c5c968c486739e2688c29690ced7d14adf221f12e7a4353f9ba2097f27b1b08c",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -3594,15 +6082,146 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "83a3f477b3771761a4fbb00f3a33cd744e4e77b49c6f870b72b3cc49c03c5434",
+            "beforeBytes": 4071020,
+            "originalRecordJSONSha256": "cb4e773b6b36f3fda1fc2b724f3a0e1c47f8861b251d68fb70b67d126537eb87",
+            "recordPatches": [],
+            "originalJSONSha256": "e6ed8bceb0dc72cd674ffed82d770296e7539c6728ffcddfa848496b419a5b86",
+            "originalBinarySha256": "4fa95c452e44eb54975be4b69fa1eca5ffd018890c58961fae0b4aa465fd7f70",
+            "originalBinaryBytes": 4039148,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+              "textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+              "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+              "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 4,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/8e496f48d570157aee11.png",
+                    "sha256": "8e496f48d570157aee113cc4766628a3c68f38b401ef9859bf8a6a87aa466210"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/97d80db5ab63221dcdb8.png",
+                    "sha256": "97d80db5ab63221dcdb88938aac5913c890491ed93a7c7ff0f329665411ad416"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/fcb9567a8dd36d8ee771.png",
+                    "sha256": "fcb9567a8dd36d8ee77129257504ef2c2acb478d5c365e316bba7e6876f7b468"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/e71abac8456e72da6092.png",
+                    "sha256": "e71abac8456e72da60922b47d2c4a67cf49ae81e2935e079f64b85df396b873f"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-scout-lod1.glb",
           "triangles": 36615,
-          "bytes": 2763916,
+          "bytes": 2768776,
           "drawCalls": 6,
-          "sha256": "6f6f979fde16dbdab4cc41894ddd34562ad07da24f9c49947c615bf02f842ee5",
+          "sha256": "d92dd6bf421d012a232f3ae5710d25bfa1cccb91a963bdd5ef09b0144a948786",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -3717,15 +6336,146 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "6f6f979fde16dbdab4cc41894ddd34562ad07da24f9c49947c615bf02f842ee5",
+            "beforeBytes": 2763916,
+            "originalRecordJSONSha256": "ffb2bdd7da9e076ddfec27256810b22e8cbc18aa4f110f2d407164601de4af5d",
+            "recordPatches": [],
+            "originalJSONSha256": "fb904a5b7dd8ce011a69fedf362cf12b6a13ef39b9495e86e31de8d7b4b55c78",
+            "originalBinarySha256": "60064507bdd4c4b1a9f59b38584e468e70aa487b189c962c4dbcbe503f66ee8f",
+            "originalBinaryBytes": 2732100,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+              "textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+              "textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+              "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+              "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 4,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/8e496f48d570157aee11.png",
+                    "sha256": "8e496f48d570157aee113cc4766628a3c68f38b401ef9859bf8a6a87aa466210"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/97d80db5ab63221dcdb8.png",
+                    "sha256": "97d80db5ab63221dcdb88938aac5913c890491ed93a7c7ff0f329665411ad416"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/fcb9567a8dd36d8ee771.png",
+                    "sha256": "fcb9567a8dd36d8ee77129257504ef2c2acb478d5c365e316bba7e6876f7b468"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/e71abac8456e72da6092.png",
+                    "sha256": "e71abac8456e72da60922b47d2c4a67cf49ae81e2935e079f64b85df396b873f"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-scout-lod2.glb",
           "triangles": 12503,
-          "bytes": 915456,
+          "bytes": 920312,
           "drawCalls": 6,
-          "sha256": "ea0d9176be44aed584c51cbb25c796779d4c8c2fab6afd50a3e7a2e6955c4326",
+          "sha256": "3285e760a225430cce305801b55e486ee27fcc9f3e6a1442652bd794d5d667c9",
           "familyClothDepth": {
             "recipe": {
               "method": "family-rest-space-cloth-fold-colours-v1",
@@ -3837,6 +6587,137 @@
                   "protectedVertexCount": 0,
                   "protectedMaskSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
                 }
+              }
+            ],
+            "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "ea0d9176be44aed584c51cbb25c796779d4c8c2fab6afd50a3e7a2e6955c4326",
+            "beforeBytes": 915456,
+            "originalRecordJSONSha256": "bed6948918fd5e033b93f08f34abb712449c1f2dbb664181024c3c44aee05703",
+            "recordPatches": [],
+            "originalJSONSha256": "978587ee97e939d4516ef0b555b9f25f2ffe35e57f6a090d5e6cf61e9e9d143d",
+            "originalBinarySha256": "16e360b95334704f856e32dd8e13e14a201bd6131b0dddfd34229d845cb89c7d",
+            "originalBinaryBytes": 883600,
+            "originalMaterialCount": 4,
+            "originalTextureCount": 11,
+            "originalImageCount": 11,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+              "textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/c3782e00498e23e6a224.png": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+              "textures/6dd4cdb2fff9b1b7b2ee.png": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4",
+              "textures/e229e1eb9ffd5725d876.png": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 4,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/ccffb1f0a795c6f085cd.png",
+                    "sha256": "ccffb1f0a795c6f085cd8d77e8e90f79fb680c8ffd377cf95f217a0fa1ea422a"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 1,
+                "primitive": 0,
+                "part": "legwear",
+                "originalMaterial": 0,
+                "material": 5,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/ee02fe2be23cc7b571e5.png",
+                    "sha256": "ee02fe2be23cc7b571e5bef2c18dd6f9e44b6fb8e1f1c43ddffeac6766363b1a"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/64de69653765586b8286.png",
+                    "sha256": "64de69653765586b8286d89fa2943c6272381e090051487c31478b8e37f36ad9"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/3eb83c94f81ccb3015ed.png",
+                    "sha256": "3eb83c94f81ccb3015ed5de908ed459c04aa65dae00b4d699f50c3cf5d30353a"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
               }
             ],
             "documentPatches": []
@@ -4047,9 +6928,9 @@
           "lod": 0,
           "url": "/models/characters/woman-shawl-lod0.glb",
           "triangles": 61269,
-          "bytes": 4088408,
+          "bytes": 4092824,
           "drawCalls": 6,
-          "sha256": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+          "sha256": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -4362,15 +7243,132 @@
               }
             ],
             "documentPatches": []
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+            "beforeBytes": 4088408,
+            "originalRecordJSONSha256": "b95c9fcbda7e26961285fc707e748b5261a16bd4a1a6fd70411675ec8634ef8e",
+            "recordPatches": [],
+            "originalJSONSha256": "ed9c138a7b23747097f1bc2e224c9ce2a5d3ad984c8eac29d4213e6976bc3459",
+            "originalBinarySha256": "a4ff918cb4030b2e43aeab1f490ca5b3f385b345e415d48a44e0046e5de395a5",
+            "originalBinaryBytes": 4048620,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+              "textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/230ddcfcde0deb6c86d4.png": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+              "textures/756a3307c4231b534a82.png": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+              "textures/ad3939922a6916be23f6.png": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/52302e9c0a5b6205d982.png",
+                    "sha256": "52302e9c0a5b6205d982aa73da8c20882acf3c5b4638693b8c52b4e27947880d"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/21e95830acf9042b1292.png",
+                    "sha256": "21e95830acf9042b1292b23d5554fba8bce2a84a4eb85124f26516202f956034"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/84a46d0d39e312f5300c.png",
+                    "sha256": "84a46d0d39e312f5300c4bfebc73415b5b4d330b2db8227fd0b79515211bae95"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": []
           }
         },
         {
           "lod": 1,
           "url": "/models/characters/woman-shawl-lod1.glb",
           "triangles": 38888,
-          "bytes": 2834200,
+          "bytes": 2839036,
           "drawCalls": 6,
-          "sha256": "d75f8238d4baeff4ee3ebe424994193d4f29798fa2f6403342b6cf6aecf91764",
+          "sha256": "17ca88ce466fc8b1c30bfc359011cbd861e23c3886743282f58a11dd9b3c0283",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -4434,7 +7432,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+            "sourceSha256": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0
           },
@@ -4709,15 +7707,153 @@
                 "after": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e"
               }
             ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "d75f8238d4baeff4ee3ebe424994193d4f29798fa2f6403342b6cf6aecf91764",
+            "beforeBytes": 2834200,
+            "originalRecordJSONSha256": "71776faa5c29d7e9cf764028e7b4b8e8991721f9df4a0fe1d6e8c5ffef75f9d8",
+            "recordPatches": [
+              {
+                "path": [
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+                "after": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8"
+              }
+            ],
+            "originalJSONSha256": "d215fb43849b888f5d13b965ee7dbf8dc051275ecf30121767fa90578a1c5136",
+            "originalBinarySha256": "67ee71b26a30975261408ff0fd5114a4516f1310f417676c3132f9c09d1d31d2",
+            "originalBinaryBytes": 2793692,
+            "originalMaterialCount": 6,
+            "originalTextureCount": 13,
+            "originalImageCount": 13,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+              "textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/230ddcfcde0deb6c86d4.png": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+              "textures/756a3307c4231b534a82.png": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+              "textures/ad3939922a6916be23f6.png": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 6,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/52302e9c0a5b6205d982.png",
+                    "sha256": "52302e9c0a5b6205d982aa73da8c20882acf3c5b4638693b8c52b4e27947880d"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/21e95830acf9042b1292.png",
+                    "sha256": "21e95830acf9042b1292b23d5554fba8bce2a84a4eb85124f26516202f956034"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/84a46d0d39e312f5300c.png",
+                    "sha256": "84a46d0d39e312f5300c4bfebc73415b5b4d330b2db8227fd0b79515211bae95"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  1,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+                "after": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8"
+              }
+            ]
           }
         },
         {
           "lod": 2,
           "url": "/models/characters/woman-shawl-lod2.glb",
           "triangles": 15088,
-          "bytes": 1003784,
+          "bytes": 1008928,
           "drawCalls": 6,
-          "sha256": "526238446b1743e9dffc1e639bcf467837a2f7f78be39f9840ddf8ae0a458029",
+          "sha256": "b52abcf86421958313f5bba80dca6616c74b7a00a3404a3456461e678351f3a4",
           "nativeClothSupport": {
             "method": "current-native-prone-cloth-shape",
             "sourceClip": "prone.idle.long-gun",
@@ -4781,7 +7917,7 @@
           "nativeClothTopology": {
             "method": "reviewed-close-garment-topology",
             "sourceUrl": "/models/characters/woman-shawl-lod0.glb",
-            "sourceSha256": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+            "sourceSha256": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8",
             "retainedOtherCoarseMeshesAndRig": true,
             "maximumExtraWorldDisplacement": 0.002
           },
@@ -5057,6 +8193,147 @@
                 ],
                 "before": "64f09afe0d7ec85f49cb0d55bf7a640c9355a64b7f4ffbc7bde377a98d31e05e",
                 "after": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e"
+              }
+            ]
+          },
+          "apparelSurface": {
+            "recipe": {
+              "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+              "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+              "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+              "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+              "foldSourceSha256": {
+                "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+                "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+              },
+              "clothFactorBounds": [
+                0.82,
+                1.24
+              ],
+              "bootFactorBounds": [
+                0.96,
+                1.24
+              ],
+              "bootRoughnessBounds": [
+                0.74,
+                0.82
+              ],
+              "metalRoughness": {
+                "Equipment_Blackened_Steel": 0.48,
+                "Equipment_Aged_Brass": 0.48
+              },
+              "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+              "selection": "original-pigment-and-original-metal-rough-tile-role"
+            },
+            "beforeSha256": "526238446b1743e9dffc1e639bcf467837a2f7f78be39f9840ddf8ae0a458029",
+            "beforeBytes": 1003784,
+            "originalRecordJSONSha256": "c42ac918daa7ddd6b6d8bf2f9eb3573f9bdfcc20f1e2847d2e27476b100ccee2",
+            "recordPatches": [
+              {
+                "path": [
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+                "after": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8"
+              }
+            ],
+            "originalJSONSha256": "f7223b4652b7d4cfa178e8ca398bab620c7fad8671a7e82663d36b39ab8647b0",
+            "originalBinarySha256": "beab2bdacc9fae1e69538b798f196b70bb406bd95378c04e9f49ce37740a344c",
+            "originalBinaryBytes": 962328,
+            "originalMaterialCount": 7,
+            "originalTextureCount": 16,
+            "originalImageCount": 16,
+            "originalHadExtras": true,
+            "originalImages": {
+              "textures/b14cf99a684846cb69e9.png": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+              "textures/c87059b901355578ac69.png": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+              "textures/c2e31d1ddd86e7509c38.png": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+              "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+              "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+              "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+              "textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+              "textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+              "textures/7e88592eeb20ec0f16ff.png": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+              "textures/0620e2e93cecf73291dd.png": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+              "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+              "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+              "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+              "textures/614541eb0bf63d3a9b6e.png": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150",
+              "textures/9f2116257d14fb045d70.png": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+              "textures/a6e08a37dd3d86917cf4.png": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744"
+            },
+            "primitives": [
+              {
+                "mesh": 2,
+                "primitive": 0,
+                "part": "outfit",
+                "originalMaterial": 0,
+                "material": 7,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/0453829285e9d226a4f2.png",
+                    "sha256": "0453829285e9d226a4f21f2c3bba96775426e06c293aa6e62806dba876207e05"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      0,
+                      3
+                    ],
+                    "role": "cloth"
+                  },
+                  {
+                    "tile": [
+                      1,
+                      3
+                    ],
+                    "role": "cloth"
+                  }
+                ]
+              },
+              {
+                "mesh": 0,
+                "primitive": 0,
+                "part": "footwear",
+                "originalMaterial": 0,
+                "material": 8,
+                "maps": [
+                  {
+                    "field": "baseColorTexture",
+                    "uri": "textures/3de7eb1b4021955c5884.png",
+                    "sha256": "3de7eb1b4021955c588495a0cbb8106fdfdbfb244bc88df3342f6dd6a3318469"
+                  },
+                  {
+                    "field": "metallicRoughnessTexture",
+                    "uri": "textures/a40b54336c3f565a38bb.png",
+                    "sha256": "a40b54336c3f565a38bbfe1b3a61447e28f1c4f437bf5c1e67c7e5b047a9fd10"
+                  }
+                ],
+                "roles": [
+                  {
+                    "tile": [
+                      2,
+                      3
+                    ],
+                    "role": "boot"
+                  }
+                ]
+              }
+            ],
+            "documentPatches": [
+              {
+                "path": [
+                  "meshes",
+                  1,
+                  "extras",
+                  "nativeClothTopology",
+                  "sourceSha256"
+                ],
+                "before": "5a6772d75ccf7bb03f4dac6e74db2226bfca0e4609c0373fc2c70e99fc081a8e",
+                "after": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8"
               }
             ]
           }
@@ -35441,8 +38718,8 @@
         "stowedSocket": "hipLeft"
       }
     },
-    "bytes": 600676,
-    "sha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+    "bytes": 605108,
+    "sha256": "bce32b84d42b92b7d14ffdb6a08b3b0fef54f277de5b87cbdddd02d4692dfab3",
     "aliases": {
       "medical": "medkits",
       "medkit": "medkits",
@@ -35471,6 +38748,303 @@
         ],
         "scale": 1
       }
+    },
+    "apparelSurface": {
+      "recipe": {
+        "method": "broad-apparel-pigment-boot-wear-and-matte-equipment-v1",
+        "source": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+        "sourceSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+        "installerSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+        "foldSourceSha256": {
+          "cloth_depth.py": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+          "family_cloth_depth.py": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+        },
+        "clothFactorBounds": [
+          0.82,
+          1.24
+        ],
+        "bootFactorBounds": [
+          0.96,
+          1.24
+        ],
+        "bootRoughnessBounds": [
+          0.74,
+          0.82
+        ],
+        "metalRoughness": {
+          "Equipment_Blackened_Steel": 0.48,
+          "Equipment_Aged_Brass": 0.48
+        },
+        "retainedClothRoughnessNormalsBinaryAndFoldReceipts": true,
+        "selection": "original-pigment-and-original-metal-rough-tile-role"
+      },
+      "beforeSha256": "237c0e3dd3e7a3af5fbb0c05ee94a3aa95c25951b346877e43c9af4fb673edf5",
+      "beforeBytes": 600676,
+      "originalRecordJSONSha256": "acc90924937b7fddf6c8a01513b66f0ab198a4815e34c4b7a9bff0fc99ef8c22",
+      "recordPatches": [],
+      "originalJSONSha256": "7a9717feeebb2f317fa08142c87aa03d3e125085c0fa8922ab625266b723b72d",
+      "originalBinarySha256": "12fdf10e7a450ce113d391b441b307953ce54d445ad970fab6d897d85dba3182",
+      "originalBinaryBytes": 555788,
+      "originalMaterialCount": 6,
+      "originalTextureCount": 0,
+      "originalImageCount": 0,
+      "originalHadExtras": false,
+      "originalImages": {},
+      "primitives": [
+        {
+          "mesh": 0,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 1,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 3,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 4,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 6,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 7,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 9,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 10,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 12,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 13,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 15,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 16,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 18,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 19,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 21,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 22,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 24,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 25,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 27,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 30,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 33,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 36,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 41,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 42,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 43,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 1,
+          "material": 7,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 44,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 45,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        },
+        {
+          "mesh": 54,
+          "primitive": 0,
+          "part": null,
+          "originalMaterial": 0,
+          "material": 6,
+          "maps": [],
+          "roles": []
+        }
+      ],
+      "documentPatches": []
     }
   },
   "garments": {
