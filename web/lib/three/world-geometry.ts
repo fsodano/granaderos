@@ -23,6 +23,22 @@ export class WorldGeometry {
     let geometry=this.cache.get(kind);if(geometry)return geometry;
     if(kind==='box')geometry=new BoxGeometry(1,1,1);
     else if(kind==='cone')geometry=new ConeGeometry(1,1,10);
+    else if(kind==='grass-tuft'){
+      // Three tapered leaves share a rooted centre. Each leaf bends through
+      // its middle instead of making a solid spike. Reverse faces retain
+      // lighting from either side without another material or draw call.
+      const vertices:number[]=[],colours:number[]=[];
+      for(const [index,height,lean]of [[0,.72,.40],[1,1,.29],[2,.44,.90]]){
+        const angle=index*2.0943951024,dx=Math.cos(angle),dz=Math.sin(angle),width=.024;
+        const point=(reach:number,y:number,halfWidth:number)=>new Vector3(dx*reach-dz*halfWidth,y,dz*reach+dx*halfWidth);
+        const a=point(0,0,-width),b=point(0,0,width),c=point(height*lean*.36,height*.56,width*.65),d=point(height*lean*.36,height*.56,-width*.65),tip=point(height*lean,height,0);
+        for(const face of [[a,b,c],[a,c,d],[d,c,tip]])for(const side of [face,[...face].reverse()])for(const p of side){
+          vertices.push(p.x,p.y,p.z);const shade=.83+.20*p.y/height;colours.push(shade,shade,shade);
+        }
+      }
+      geometry=new BufferGeometry().setAttribute('position',new BufferAttribute(new Float32Array(vertices),3));
+      geometry.setAttribute('color',new BufferAttribute(new Float32Array(colours),3));geometry.computeVertexNormals();
+    }
     else if(kind==='cylinder')geometry=new CylinderGeometry(1,1,1,12);
     else if(kind==='taper')geometry=new CylinderGeometry(.82,1,1,12);
     else if(kind==='flare')geometry=new CylinderGeometry(1,.35,1,12);
