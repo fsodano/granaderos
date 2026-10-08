@@ -1,0 +1,714 @@
+✖ granadero LOD0 climbUp: reachable tall rung hands retain contact and native body (1330.844042ms)
+✖ granadero LOD0 climbDown: reachable tall rung hands retain contact and native body (436.935042ms)
+✖ granadero LOD1 climbUp: reachable tall rung hands retain contact and native body (370.310959ms)
+✖ granadero LOD1 climbDown: reachable tall rung hands retain contact and native body (391.383916ms)
+✖ granadero LOD2 climbUp: reachable tall rung hands retain contact and native body (339.511416ms)
+✖ granadero LOD2 climbDown: reachable tall rung hands retain contact and native body (367.862583ms)
+✖ woman-scout LOD0 climbUp: reachable tall rung hands retain contact and native body (1351.159625ms)
+✖ woman-scout LOD0 climbDown: reachable tall rung hands retain contact and native body (403.3315ms)
+✖ woman-scout LOD1 climbUp: reachable tall rung hands retain contact and native body (353.362333ms)
+✖ woman-scout LOD1 climbDown: reachable tall rung hands retain contact and native body (371.035375ms)
+✖ woman-scout LOD2 climbUp: reachable tall rung hands retain contact and native body (321.906792ms)
+✖ woman-scout LOD2 climbDown: reachable tall rung hands retain contact and native body (383.858083ms)
+✖ granadero: finite and unreachable targets retain native fallback (10.109958ms)
+✖ woman-scout: finite and unreachable targets retain native fallback (8.084792ms)
+✖ granadero climbUp: invalid climb inputs keep native mixer and all bone matrices finite (3.982208ms)
+✖ granadero climbDown: invalid climb inputs keep native mixer and all bone matrices finite (4.436875ms)
+✖ woman-scout climbUp: invalid climb inputs keep native mixer and all bone matrices finite (3.522708ms)
+✖ woman-scout climbDown: invalid climb inputs keep native mixer and all bone matrices finite (3.299417ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 0
+ℹ fail 18
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7197.891375
+
+✖ failing tests:
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD0 climbUp: reachable tall rung hands retain contact and native body (1330.844042ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6466071428571418: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD0 climbDown: reachable tall rung hands retain contact and native body (436.935042ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6533333333333333: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD1 climbUp: reachable tall rung hands retain contact and native body (370.310959ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6466071428571418: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD1 climbDown: reachable tall rung hands retain contact and native body (391.383916ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6533333333333333: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD2 climbUp: reachable tall rung hands retain contact and native body (339.511416ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6466071428571418: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ granadero LOD2 climbDown: reachable tall rung hands retain contact and native body (367.862583ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6533333333333333: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD0 climbUp: reachable tall rung hands retain contact and native body (1351.159625ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6466071428571418: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD0 climbDown: reachable tall rung hands retain contact and native body (403.3315ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6533333333333333: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD1 climbUp: reachable tall rung hands retain contact and native body (353.362333ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6466071428571418: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD1 climbDown: reachable tall rung hands retain contact and native body (371.035375ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6533333333333333: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD2 climbUp: reachable tall rung hands retain contact and native body (321.906792ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6466071428571418: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:62:122
+✖ woman-scout LOD2 climbDown: reachable tall rung hands retain contact and native body (383.858083ms)
+  AssertionError [ERR_ASSERTION]: 5.6m 0.6533333333333333: no reachable hand is rejected
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:72:107)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:82:53
+✖ granadero: finite and unreachable targets retain native fallback (10.109958ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    Map(53) {
+      'Root' => {
+        position: [
+          0,
+          -0.02971166825041469,
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.27756100330779226,
+  -       0.10500039161646665,
+  -       0.7449301476856663,
+  -       0.5975063868045025
+        ],
+        scale: [
+          0.9999999403953552,
+          1,
+          1.0000001192092896
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.7796415544424038,
+  -       0.02452311488054969,
+  -       -0.521814785127711,
+  -       0.3453505964047209
+        ],
+        scale: [
+          0.9999999403953552,
+          0.9999998807907104,
+          1
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.25341981178310213,
+  -       0.19681763940645827,
+  -       -0.30347393957369273,
+  -       0.8971871509411564
+        ],
+        scale: [
+          0.9999998807907104,
+          0.9999998807907104,
+          1
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.7002078757039367,
+  -       -0.19614468241481314,
+  -       0.2616981308014942,
+  -       0.6346260967668889
+        ],
+        scale: [
+          0.9999998807907104,
+          1.0000001192092896,
+          1.000000238418579
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.24265315221612768,
+  -       0.7054809110108449,
+  -       -0.2654726599128876,
+  -       0.6106884629315192
+        ],
+        scale: [
+          0.9999998807907104,
+          1,
+          0.9999999403953552
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.23648660692780732,
+  -       -0.7089462645159251,
+  -       0.2661158364597459,
+  -       0.6088116624687956
+        ],
+        scale: [
+          0.9999999403953552,
+          1.0000001192092896,
+          1.0000001192092896
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.23212548683840403,
+  -       0.17567041329739944,
+  -       -0.47543965801126337,
+  -       0.8301896143906449
+        ],
+        scale: [
+          0.9999999403953552,
+          0.9999998807907104,
+          0.9999999403953552
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.2046118586565084,
+  -       -0.16373100540713081,
+  -       0.4659857195178331,
+  -       0.8450937547816494
+        ],
+        scale: [
+          1,
+          1,
+          0.9999999403953552
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.8701103292740956,
+  -       -0.4237428188687994,
+  -       0.2260871793641349,
+  -       0.11061024217864425
+        ],
+        scale: [
+          1.0000004768371582,
+          1,
+          1.0000020265579224
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.6675989050059844,
+  -       -0.365544686310198,
+  -       0.12531900958058753,
+  -       0.6363834773019568
+        ],
+        scale: [
+          1.0000003576278687,
+          0.9999999403953552,
+          1.000002145767212
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.2550083047068843,
+  -       -0.18024412034187737,
+  -       -0.3930349476688522,
+  -       0.8648736043628841
+        ],
+        scale: [
+          0.9999998807907104,
+          0.9999999403953552,
+          1.0000001192092896
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.3102031639308038,
+  -       0.166122382002589,
+  -       0.3955066615120423,
+  -       0.8483818904153386
+        ],
+        scale: [
+          1.0000001192092896,
+          1,
+          1.000000238418579
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:84:167)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Map(53) { 'Root' => { position: [Array], scale: [Array], rotation: [Array] }, 'pelvis' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_02' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_03' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'neck_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'head' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_r' => { position: [Array], scale: [Array], rotation: [Array] } },
+    expected: Map(53) { 'Root' => { position: [Array], scale: [Array], rotation: [Array] }, 'pelvis' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_02' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_03' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'neck_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'head' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_r' => { position: [Array], scale: [Array], rotation: [Array] } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:82:53
+✖ woman-scout: finite and unreachable targets retain native fallback (8.084792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    Map(53) {
+      'Root' => {
+        position: [
+          0,
+          -0.027695332524630387,
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.26252318550246434,
+  -       0.08741832394313112,
+  -       0.7680760559896914,
+  -       0.5774935375637833
+        ],
+        scale: [
+          0.9999999403953552,
+          1,
+          0.9999998807907104
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.8111267860085398,
+  -       0.03327196243464084,
+  -       -0.49393557239585006,
+  -       0.3114385394539155
+        ],
+        scale: [
+          0.9999999403953552,
+          1.0000001192092896,
+          0.9999999403953552
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.22872594755340533,
+  -       0.27306042887401344,
+  -       -0.34192595004249005,
+  -       0.869602833359274
+        ],
+        scale: [
+          0.9999998807907104,
+          1.0000001192092896,
+          0.9999999403953552
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.6881192656636503,
+  -       -0.21823757867403135,
+  -       0.29675638709684643,
+  -       0.6251398901000009
+        ],
+        scale: [
+          0.9999998807907104,
+          1.0000001192092896,
+          1.0000001192092896
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.23042725880920276,
+  -       0.7383684550485656,
+  -       -0.22176564518476943,
+  -       0.5937468329201039
+        ],
+        scale: [
+          1,
+          1,
+          0.9999998807907104
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.2215709727054163,
+  -       -0.7408181462486624,
+  -       0.22850393614423375,
+  -       0.591507167673954
+        ],
+        scale: [
+          1,
+          0.9999998807907104,
+          1
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.13901715318915323,
+  -       0.08660936391006428,
+  -       -0.3934009266163693,
+  -       0.9046594925995786
+        ],
+        scale: [
+          0.9999998807907104,
+          1.0000001192092896,
+          1.0000001192092896
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.11954685044882224,
+  -       -0.07770348252567,
+  -       0.3741402062252569,
+  -       0.9163459290401053
+        ],
+        scale: [
+          0.9999997615814209,
+          0.9999999403953552,
+          1
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       -0.8457002883196163,
+  -       -0.4608412749950484,
+  -       0.1748234381112403,
+  -       0.2045803193956383
+        ],
+        scale: [
+          0.9999999403953552,
+          1,
+          0.9999997019767761
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.6978427671283136,
+  -       -0.378156086864287,
+  -       0.07231774580888607,
+  -       0.603973169913457
+        ],
+        scale: [
+          0.9999998211860657,
+          0.9999998807907104,
+          0.9999995827674866
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.2671595501769953,
+  -       -0.20659175711951286,
+  -       -0.45547888181963964,
+  -       0.823701771793547
+        ],
+        scale: [
+          0.9999999403953552,
+          0.9999998211860657,
+          0.9999998807907104
+  ...
+        rotation: [
+  +       NaN,
+  +       NaN,
+  +       NaN,
+  +       NaN
+  -       0.3167168644121563,
+  -       0.18964793254147239,
+  -       0.45758252243298747,
+  -       0.8089142875753533
+        ],
+        scale: [
+          0.9999999403953552,
+          0.9999998211860657,
+          1
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:84:167)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Map(53) { 'Root' => { position: [Array], scale: [Array], rotation: [Array] }, 'pelvis' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_02' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_03' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'neck_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'head' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_r' => { position: [Array], scale: [Array], rotation: [Array] } },
+    expected: Map(53) { 'Root' => { position: [Array], scale: [Array], rotation: [Array] }, 'pelvis' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_02' => { position: [Array], scale: [Array], rotation: [Array] }, 'spine_03' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'clavicle_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'upperarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'lowerarm_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'hand_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'index_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'middle_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'pinky_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ring_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_01_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_02_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'thumb_03_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'neck_01' => { position: [Array], scale: [Array], rotation: [Array] }, 'head' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_l' => { position: [Array], scale: [Array], rotation: [Array] }, 'thigh_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'calf_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'foot_r' => { position: [Array], scale: [Array], rotation: [Array] }, 'ball_r' => { position: [Array], scale: [Array], rotation: [Array] } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:88:97
+✖ granadero climbUp: invalid climb inputs keep native mixer and all bone matrices finite (3.982208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 3.4778889846801757
+  - 3.0008334159851073
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:90:461)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3.4778889846801757,
+    expected: 3.0008334159851073,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:88:97
+✖ granadero climbDown: invalid climb inputs keep native mixer and all bone matrices finite (4.436875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 2.5955926640828455
+  - 3.0008334159851073
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:90:461)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2.5955926640828455,
+    expected: 3.0008334159851073,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:88:97
+✖ woman-scout climbUp: invalid climb inputs keep native mixer and all bone matrices finite (3.522708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 3.4778889846801757
+  - 3.0008334159851073
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:90:461)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3.4778889846801757,
+    expected: 3.0008334159851073,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/characters-tall-climbing-contact.test.mjs:88:97
+✖ woman-scout climbDown: invalid climb inputs keep native mixer and all bone matrices finite (3.299417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 2.5955926640828455
+  - 3.0008334159851073
+  
+      at TestContext.<anonymous> (file:///private/tmp/granaderos-varied-roof-climb-audit-4ec028f5/tests/characters-tall-climbing-contact.test.mjs:90:461)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2.5955926640828455,
+    expected: 3.0008334159851073,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

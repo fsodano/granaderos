@@ -2,6 +2,7 @@ import {Object3D,Quaternion,Vector3} from 'three';
 import {ladderGeometry,sampleLadderClimb,referenceClimbFraction} from '../../../game/climb-geometry.js';
 import type {ClipSpec} from './actor-assets';
 export type ClimbGeometry={height:number;span:number;baseSpan?:number;edgeSpan:number;ladderSpan:number;steps:number;kind?:string};
+const finiteGeometry=(g:ClimbGeometry)=>Number.isFinite(g.height)&&Number.isFinite(g.span)&&Number.isFinite(g.edgeSpan)&&Number.isFinite(g.ladderSpan)&&Number.isFinite(g.steps)&&Number.isFinite(g.baseSpan??0);
 type Limb={base:Object3D;middle:Object3D;end:Object3D;first:number;second:number;contact:Vector3};
 /** Only authored link height/rung differences change native limb rotations.
  * The reference ladder uses its stored native clips without a runtime fit. */
@@ -32,7 +33,8 @@ export class NativeClimbContactFit {
   this.model.updateWorldMatrix(true,true);this.adjusted=false;
  }
  nativeFraction(geometry:ClimbGeometry,fraction:number,spec:ClipSpec){
-  const support=spec.climbSupport;if(!support)return fraction;
+  const safeFraction=Number.isFinite(fraction)?Math.max(0,Math.min(1,fraction)):0;
+  const support=spec.climbSupport;if(!support||!finiteGeometry(geometry)||!Number.isFinite(fraction))return safeFraction;
   return referenceClimbFraction(geometry,fraction,ladderGeometry([0,0,0],[0,support.height,support.span],support.span));
  }
  private rotateToward(bone:Object3D,before:Vector3,after:Vector3){
@@ -55,7 +57,7 @@ export class NativeClimbContactFit {
  }
  apply(geometry:ClimbGeometry,fraction:number,spec:ClipSpec){
   this.rejectedFits=0;this.maximumAdjustment=0;
-  const support=spec.climbSupport;if(!support||/stair/.test(geometry.kind??''))return;
+  const support=spec.climbSupport;if(!support||!finiteGeometry(geometry)||!Number.isFinite(fraction)||/stair/.test(geometry.kind??''))return;
   if(Math.abs(geometry.height-support.height)<.001&&Math.abs(geometry.span-support.span)<.001)return;
   for(const [bone,rotation]of this.nativeRotations)rotation.copy(bone.quaternion);this.adjusted=true;
   const actual=sampleLadderClimb({...geometry,halfWidth:.23,rungRadius:.026},fraction,support.feetRest),reference=sampleLadderClimb(ladderGeometry([0,0,0],[0,support.height,support.span],support.span),this.nativeFraction(geometry,fraction,spec),support.feetRest);
@@ -70,8 +72,18 @@ export class NativeClimbContactFit {
    }
    this.root.localToWorld(this.target);limb.end.getWorldQuaternion(this.endRotation);this.current.copy(limb.contact).applyQuaternion(this.endRotation);this.target.sub(this.current);
    limb.end.getWorldPosition(this.current);
-   const adjustment=this.target.distanceTo(this.current);this.maximumAdjustment=Math.max(this.maximumAdjustment,adjustment);
-   if(adjustment>this.adjustmentLimit){this.rejectedFits++;continue;}
+   const adjustment=this.target.distanceTo(this.current);
+   if(!Number.isFinite(adjustment)){this.rejectedFits++;continue;}
+   this.maximumAdjustment=Math.max(this.maximumAdjustment,adjustment);
+   // A different rung count can select a lower native palm while the
+   // actual rung trajectory remains inside this arm's unchanged reach.
+   // Keep the displacement fallback for feet and fading hands.
+   let reachableRungHand=false;
+   if(role==='hand'&&weight>=.999&&Number.isFinite(adjustment)){
+    limb.base.getWorldPosition(this.start);const reach=this.target.distanceTo(this.start);
+    reachableRungHand=Number.isFinite(reach)&&reach>=Math.abs(limb.first-limb.second)+.0005&&reach<=limb.first+limb.second-.0005;
+   }
+   if(adjustment>this.adjustmentLimit&&!reachableRungHand){this.rejectedFits++;continue;}
    this.solve(limb);
   }
  }
