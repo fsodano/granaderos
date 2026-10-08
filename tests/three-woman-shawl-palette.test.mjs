@@ -41,7 +41,14 @@ for (const lod of [0, 1, 2]) test(`woman-shawl LOD${lod} separates the charcoal 
   assert.equal(digest(raw), record.sha256); assert.equal(raw.length, record.bytes);
   const size = raw.readUInt32LE(12), doc = JSON.parse(raw.subarray(20, 20 + size)), binary = raw.subarray(28 + size);
   const node = doc.nodes.find(n => n.name === `Human_legwear_LOD${lod}`), primitive = doc.meshes[node.mesh].primitives[0];
-  const material = doc.materials[primitive.material], retained = doc.materials.find(m => m.name === 'Apparel_Atlas' && m.normalTexture.index === material.normalTexture.index && m.pbrMetallicRoughness.metallicRoughnessTexture.index === material.pbrMetallicRoughness.metallicRoughnessTexture.index);
+  let material = doc.materials[primitive.material];
+  if (doc.meshes[node.mesh].extras.nativeSkirtHem) {
+    assert.equal(material.name, 'Apparel_Atlas_Charcoal_Legwear_Rust_Hem');
+    // The hem has its own active-map/channel checks. Keep this regression on
+    // the retained charcoal recipe and original UV/material payloads.
+    material = doc.materials.find(m => m.name === 'Apparel_Atlas_Charcoal_Legwear');
+  }
+  const retained = doc.materials.find(m => m.name === 'Apparel_Atlas' && m.normalTexture.index === material.normalTexture.index && m.pbrMetallicRoughness.metallicRoughnessTexture.index === material.pbrMetallicRoughness.metallicRoughnessTexture.index);
   assert.ok(retained, 'The original legwear material stays in the body');
   assert.equal(material.name, 'Apparel_Atlas_Charcoal_Legwear');
   const cloned = structuredClone(material); cloned.name = retained.name;
