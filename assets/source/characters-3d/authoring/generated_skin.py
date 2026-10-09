@@ -14,7 +14,7 @@ REFERENCE=(.846873231509858,.4232676699860717,.2788942634768104)
 LIGHT_SRGB='#d5a07d'
 
 def uses_generated_skin(preset):
-    return preset=='granadero'
+    return preset in ('granadero','worker')
 
 def registered_uv(uv,position):
     result=uv.copy();u,v=uv[:,0],uv[:,1]

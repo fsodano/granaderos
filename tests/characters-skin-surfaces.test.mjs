@@ -56,7 +56,7 @@ function range(values){let low=Infinity,high=-Infinity;for(const value of values
 for(const appearance of Object.values(manifest.appearances))for(const lod of appearance.lods)test(`${appearance.id} LOD${lod.lod} facial PBR maps retain source detail`,async()=>{
  const model=glb(lod.url),{json,path}=model,material=json.materials.findIndex(m=>m.name===appearance.materials.skin);
  assert.ok(material>=0,'Skin stays a separate material');
- const skin=json.materials[material],pbr=skin.pbrMetallicRoughness,generated=appearance.id==='granadero'&&Boolean(skin.extras?.skinAlbedoSourceSha256);
+ const skin=json.materials[material],pbr=skin.pbrMetallicRoughness,generated=['granadero','worker'].includes(appearance.id)&&Boolean(skin.extras?.skinAlbedoSourceSha256);
  const channels=[
   {role:'colour',texture:pbr.baseColorTexture,components:[0,1,2]},
   {role:'normal',texture:skin.normalTexture,components:[0,1]},

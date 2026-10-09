@@ -115,6 +115,9 @@ def optimize_character(ctx,lod=0):
   while reduced_coat.modifiers.find(reduction.name)>0:bpy.ops.object.modifier_move_up(modifier=reduction.name)
   if len(reduced_coat.data.polygons)>150:bpy.ops.object.modifier_apply(modifier=reduction.name)
   else:reduced_coat.modifiers.remove(reduction)
+  if lod<2:
+   from collar_rim import refine_reduced_collar
+   refine_reduced_collar(ctx,lod)
   from crossbelts import fit_crossbelts
   fit_crossbelts(ctx,cleanup_seams=lod<2)
  # Allocate useful UV space and material-scale pigment after the fitted

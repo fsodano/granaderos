@@ -29,7 +29,7 @@ test('legacy and invalid-reference materials retain the existing Three palette c
   material.dispose();
  }
 });
-for(const lod of manifest.appearances.granadero.lods)test(`Granadero LOD${lod.lod} keeps generated albedo separate from native surface maps`,()=>{
+for(const id of ['granadero','worker'])for(const lod of manifest.appearances[id].lods)test(`${id} LOD${lod.lod} keeps generated albedo separate from native surface maps`,()=>{
  const {json,access}=readGlb(lod.url),mi=json.materials.findIndex(m=>m.name==='Skin'),skin=json.materials[mi],colour=skin.pbrMetallicRoughness.baseColorTexture,normal=skin.normalTexture,roughness=skin.pbrMetallicRoughness.metallicRoughnessTexture;
  assert.equal(colour.texCoord,1);assert.equal(normal.texCoord??0,0);assert.equal(roughness.texCoord??0,0);
  const image=json.images[json.textures[colour.index].source],png=readFileSync(new URL(image.uri,directory));assert.equal(digest(png),digest(readFileSync(generated)),'The original generated PNG bytes are packaged intact');assert.equal(skin.extras.skinAlbedoSourceSha256,digest(png));
@@ -47,8 +47,26 @@ for(const lod of manifest.appearances.granadero.lods)test(`Granadero LOD${lod.lo
   assert.ok(faceMoved>0&&hands>0,'The test samples actual face and hand skin');
  }
 });
-test('the seven other appearance families keep their existing palette and native albedo domain',()=>{
- for(const appearance of Object.values(manifest.appearances).filter(a=>a.id!=='granadero'))for(const lod of appearance.lods){const {json}=readGlb(lod.url),skin=json.materials.find(m=>m.name===appearance.materials.skin);assert.equal(skin.extras?.skinAlbedoReference,undefined);assert.equal(skin.pbrMetallicRoughness.baseColorTexture.texCoord??0,0);}
+// Eyebrow beds are separate fitted skin ribbons. A coloured albedo already
+// supplies their pigment; dark vertex colour would multiply it a second time.
+for(const id of ['granadero','worker'])for(const lod of manifest.appearances[id].lods)test(`${id} LOD${lod.lod} avoids doubled pigment on fitted eyebrow beds`,()=>{
+ const {json,access}=readGlb(lod.url),skin=json.materials.findIndex(m=>m.name==='Skin');let beds=0;
+ for(const primitive of json.meshes.flatMap(mesh=>mesh.primitives).filter(p=>p.material===skin)){
+  const position=access(primitive.attributes.POSITION),colour=access(primitive.attributes.COLOR_0),count=position.length/3,parent=Array.from({length:count},(_,i)=>i),indices=access(primitive.indices);
+  const find=i=>{while(parent[i]!==i){parent[i]=parent[parent[i]];i=parent[i];}return i;};
+  for(let i=0;i<indices.length;i+=3){const a=find(indices[i]);parent[find(indices[i+1])]=a;parent[find(indices[i+2])]=a;}
+  const groups=new Map();for(let i=0;i<count;i++){const key=find(i);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(i);}
+  for(const vertices of groups.values()){
+   const low=[0,1,2].map(axis=>Math.min(...vertices.map(i=>position[i*3+axis]))),high=[0,1,2].map(axis=>Math.max(...vertices.map(i=>position[i*3+axis]))),extent=high.map((v,i)=>v-low[i]);
+   if(low[1]<1.65||high[1]>1.69||low[2]<.13||low[0]*high[0]<=0||extent[0]<.025||extent[0]>.06||extent[1]>.012||extent[2]>.03)continue;
+   beds++;const width=colour.length/count;
+   for(const vertex of vertices)for(let channel=0;channel<3;channel++)assert.ok(Math.abs(colour[vertex*width+channel]-1)<1e-6,'The fitted brow bed does not darken the albedo twice');
+  }
+ }
+ assert.equal(beds,2,'Both fitted eyebrow beds are sampled from exported skin triangles');
+});
+test('the six other appearance families keep their existing palette and native albedo domain',()=>{
+ for(const appearance of Object.values(manifest.appearances).filter(a=>!['granadero','worker'].includes(a.id)))for(const lod of appearance.lods){const {json}=readGlb(lod.url),skin=json.materials.find(m=>m.name===appearance.materials.skin);assert.equal(skin.extras?.skinAlbedoReference,undefined);assert.equal(skin.pbrMetallicRoughness.baseColorTexture.texCoord??0,0);}
 });
 
 

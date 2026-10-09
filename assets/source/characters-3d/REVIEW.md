@@ -637,3 +637,44 @@ assertion payloads match the preceding contact-check checkpoint; there are
 no new failures. All 2,155 recorded inputs stayed unchanged during that run.
 This compares candidate checkpoints, not a verified `main` baseline. The
 run excludes the later private collar and face trials.
+
+## Military upper collar rim, 8 October
+
+Granadero and Royalist LOD0/1 now use regular upper collar rows after the
+accepted coat reduction. The existing 69 sewn lower edges remain exact. The
+upper rim no longer repeats the inward rear detour of the lower neckline.
+Twelve matched idle, rifle-aim and reload pose pairs show a smoother edge.
+Each of the four bodies adds 420 triangles, with no new texture or draw call.
+
+Native skin, rig, other meshes, materials and textures remain exact. All
+non-collar coat positions, triangles, weights, UVs, colours and cloth morph
+positions are exact. Recomputed shading normals change at the sewn edge;
+morph-normal export rounding is at most 1.491e-7. Eighteen affected checks
+pass in the private delivery, including six unchanged LOD2 cases.
+
+The reduced LOD2 trial had a visible side pocket and was rejected. Its
+original bodies and source path remain unchanged. Lower seam irregularities,
+crossbelt dents, and existing collar/skin intersections remain. This is a
+limited upper-rim correction, not a collision-free neckline. The four-body
+allowlist, preservation proofs and actual views are in
+`artifacts/character-anatomy-review/delivery/military-collar-rim/`.
+
+## Worker skin surface, 8 October
+
+The worker now uses the unchanged Granadero skin-colour PNG with its registered
+second UV set at all three detail levels. Native geometry, normals, UV0,
+weights, rig, cloth morphs and normal/roughness maps remain exact. The two
+fitted brow beds use neutral vertex colour to avoid doubling the albedo
+pigment. The source predicate supplies both changes; no exported colour
+patch or raster edit is needed. No new texture, triangle or draw call is added.
+
+Matched actual lab views show clearer cheek colour, lips and stubble. The
+gain is subtle at a 256 px full-body view. This is reuse of the shared skin,
+not a new facial identity: broad brows, furrow and stubble remain shared.
+The separate small jaw trial was rejected and is not included.
+
+All 64 affected palette, skin and eye checks pass in the delivery; the native
+worker baseline fails the six new worker contracts as expected. The composed
+library preserves all other body records, animation banks and texture bytes.
+Evidence is in `artifacts/character-anatomy-review/delivery/worker-skin-surface/`.
+The user accepted faces for now and redirected further work to clothing.
