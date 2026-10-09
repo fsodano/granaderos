@@ -26,6 +26,7 @@ systems and their recorded scope.
 - [Gathered sacks and woven rugs](storage-cloth-review-2026-10-08.md) *(workspace)*
 - [Room floor character](room-floors-review-2026-10-08.md) *(workspace)*
 - [Tactical graphics phone gallery](tactical-reference-gallery-2026-10-08.md)
+- [Building exterior pictures](building-exterior-pictures-2026-10-09.md)
 - [Colonial buildings, 1810–1820](buildings.md)
 - [Illustrated character sprites](character-sprites.md)
 - [Custom-character portraits](custom-character-portraits.md)
