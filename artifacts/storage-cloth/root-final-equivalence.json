@@ -1,0 +1,60 @@
+{
+  "root": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+  "expectedOrderedIntegrationInputSha256": "bf581e7734992cfa54bc67d2d2f5e5a7133430bc73d2aff345c8847ad26394fc",
+  "actualOrderedIntegrationInputSha256": "bf581e7734992cfa54bc67d2d2f5e5a7133430bc73d2aff345c8847ad26394fc",
+  "expectedFiles": 10423,
+  "actualFiles": 10423,
+  "missing": [],
+  "extra": [],
+  "changed": [],
+  "exactRuntimeTestAssetAndConfigurationInputs": true,
+  "expectedEngine": {
+    "dirtyPorcelain": null,
+    "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "head": null,
+    "indexStage": 0,
+    "initialized": false,
+    "mode": "160000",
+    "path": "engine",
+    "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine",
+    "uninitializedDirectoryContents": []
+  },
+  "actualEngine": {
+    "path": "engine",
+    "mode": "160000",
+    "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "indexStage": 0,
+    "initialized": false,
+    "head": null,
+    "dirtyPorcelain": null,
+    "uninitializedDirectoryContents": [],
+    "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+  },
+  "expectedInputEntriesIncludingEngine": 10424,
+  "actualInputEntriesIncludingEngine": 10424,
+  "engineGitlinkInitializationAndDirtyStateExact": true,
+  "expectedInitialSourceIdentity": {
+    "id": "a803acbe5766",
+    "revision": "4bd9290453c1bcbb1ea3b2ed2833991a0d75f3d4",
+    "source": "a803acbe5766fd6983b70ca3920d4692d1e092ccab62aa45cf94fc30d37c71f0",
+    "version": "0.4.0-dev.1"
+  },
+  "actualSourceIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "a803acbe5766",
+    "source": "a803acbe5766fd6983b70ca3920d4692d1e092ccab62aa45cf94fc30d37c71f0",
+    "revision": "4d18c36defa1a5b9ab67fb9a1bc0e9c58fa230cb"
+  },
+  "sourceAndVersionExact": true,
+  "expectedProductionIdentity": {
+    "id": "a803acbe5766",
+    "revision": "4bd9290453c1bcbb1ea3b2ed2833991a0d75f3d4",
+    "source": "a803acbe5766fd6983b70ca3920d4692d1e092ccab62aa45cf94fc30d37c71f0",
+    "version": "0.4.0-dev.1"
+  },
+  "productionGateSealed": true,
+  "currentSourceAndVersionEqualSealedProduction": true,
+  "dependenciesExact": true,
+  "expectedDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+  "actualDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f"
+}
