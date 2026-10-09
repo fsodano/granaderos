@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-10-08",
+  "updated": "2026-10-09",
   "baseline": "64ddf5156e0192e628d972f3700c010675c472b7",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
@@ -769,6 +769,11 @@
       "id": "E-SERVICE-GUARANTEE-TREASURY-CAP",
       "path": "docs/verification/service-guarantee-treasury-cap.md",
       "description": "The accepted cap correction rejects a complete manual refund atomically when treasury room is insufficient, preserves unpaid automatic departure amounts on strict v2 receipts and collects them once in numeric order after admitted commands. Root 190 financial/save/render checks pass in 61.4 seconds; 54 author and 65 independent focused checks overlap and are separate receipts. Actual manual overlap and paid saved custody continuations pass. Declared near-cap fixtures, older v1 receipts and unchanged 303/304 sources are retained; no global treasury, compensation or full R03 acceptance is claimed."
+    },
+    {
+      "id": "E-CURRENT-RULE-RECONCILIATION",
+      "path": "docs/verification/current-rule-reconciliation-2026-10-09.md",
+      "description": "Local commit cfbdf4fc, source 8476681dc25a, passed all 61 tests in eight contract, conduct, relationship, garment and repair files, with no skips. This corrects stale missing-rule claims while preserving broader statuses, historical receipts and remaining campaign failures."
     }
   ],
   "queue": [
@@ -4991,10 +4996,16 @@
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-CURRENT-RULE-RECONCILIATION"
       ],
       "sourceRow": "JA2-I07",
-      "sourceNotes": "Carried tools and fitted bayonets now have timed queued repair; see A03. Add condition/repair to supported protection. Dealer buyback/preferences and artillery resale remain partial (S02). Live inventory/merchant UI verification is pending; numerical condition and price formulas are Granaderos tuning."
+      "sourceNotes": "Carried tools, fitted bayonets and valid worn/packed garments have timed finite queued repair. Actual regional garment wear and repair do not establish ballistic protection. Dealer buyback/preferences, artillery resale and complete live inventory/merchant acceptance remain partial. Numerical condition and price formulas are Granaderos tuning. Loose-blade impact/wear correction is a separate reproduced finding in the 9 October review. See current-rule-reconciliation-2026-10-09.md.",
+      "testFiles": [
+        "tests/equipment-repair.test.mjs",
+        "tests/equipment-repair-render.test.mjs",
+        "tests/outfit-equipment.test.mjs"
+      ]
     },
     {
       "id": "JA2-I08",
@@ -5195,15 +5206,21 @@
       "priority": "P1",
       "published": "This complete capability is not accepted in the published release.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Local carried-equipment repair exists. Ground stores, artillery, vehicles and protection repair remain missing.",
+      "remaining": "Local carried weapons, fittings, tools and worn/packed garment repair exist. Shared ground stores, artillery, vehicles, field-repair ceilings and historically supported ballistic protection remain open.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-CURRENT-RULE-RECONCILIATION"
       ],
       "sourceRow": "JA2-A03",
-      "sourceNotes": "Shared sector-ground/armory, artillery and vehicle repair queues are absent. Protection has no supported repair model yet. Mechanical-only rate, one-point jam clearing, tool price and wear costs are Granaderos tuning, not exact JA2 formulas."
+      "sourceNotes": "The selected local owner has a finite continuing carried-equipment queue, including ruined owned clothing. Shared sector-ground/armory, artillery and vehicle repair queues remain absent. Ordinary garment repair is supported; ballistic protection is not established by that repair. Mechanical-only rate, one-point jam clearing, finite materials and wear costs are declared Granaderos tuning. See current-rule-reconciliation-2026-10-09.md.",
+      "testFiles": [
+        "tests/equipment-repair.test.mjs",
+        "tests/equipment-repair-render.test.mjs",
+        "tests/outfit-equipment.test.mjs"
+      ]
     },
     {
       "id": "JA2-A04",
@@ -5308,10 +5325,15 @@
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-CURRENT-RULE-RECONCILIATION"
       ],
       "sourceRow": "JA2-R02",
-      "sourceNotes": "Renewal and expiry now pause explicit waits with persisted notices and paid renewal controls; see [contract attention](contract-attention.md). Add renewal refusal/availability reasons driven by relationships and morale."
+      "sourceNotes": "Renewal and expiry pause explicit waits with persisted notices and paid renewal controls. Authored relationship refusals and saved civilian-conscience objections guard future service. An explicitly authored paid character with low_morale_refusal also refuses renewal below 30 personal morale, preserving the actual paid term and allowing ordinary recovery. These bounded rules exist; profile-dependent tolerances, buddy overrides and complete live contract acceptance remain separate. See current-rule-reconciliation-2026-10-09.md.",
+      "testFiles": [
+        "tests/low-morale-renewal.test.mjs",
+        "tests/morale-renewal-integration.test.mjs"
+      ]
     },
     {
       "id": "JA2-R03",
@@ -5352,10 +5374,15 @@
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-CURRENT-RULE-RECONCILIATION"
       ],
       "sourceRow": "JA2-R04",
-      "sourceNotes": "Fatigue-specific morale events and civilian conduct remain to be implemented. Numerical event weights and recovery rates are Granaderos tuning; live personnel UI checks remain pending."
+      "sourceNotes": "Fatigue-specific morale events and broader civilian-conduct morale effects remain open. A directly witnessed intentional killing of an explicitly authored noncombatant can already create a saved service objection; that rule adds no individual morale loss. Numerical event weights and recovery rates are Granaderos tuning; complete live personnel acceptance remains pending. See current-rule-reconciliation-2026-10-09.md.",
+      "testFiles": [
+        "tests/service-objections.test.mjs",
+        "tests/service-objections-context.test.mjs"
+      ]
     },
     {
       "id": "JA2-R05",
@@ -5365,15 +5392,19 @@
       "priority": "P1",
       "published": "This complete capability is not accepted in the published release.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Local cohesion exists. Authored likes/dislikes, complaints, refusal and departure remain missing.",
+      "remaining": "Directed authored service refusals, preferred deployment companions, bounded shared-service cohesion and witnessed-companion-loss consequences exist. Timed conflicts, evolving directed opinions, forced early departure and complete relationship acceptance remain open.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-CURRENT-RULE-RECONCILIATION"
       ],
       "sourceRow": "JA2-R05",
-      "sourceNotes": "Authored interpersonal preferences, complaints, willingness to serve together, and departure are absent. Neutral cohesion does not substitute for those rules; no historical friendships or hostility have been invented."
+      "sourceNotes": "Optional stable-ID relationships already affect future paid service and issued deployment morale. Current witnessed preferred-companion loss has a saved bounded consequence. Older pinned packages without the fields remain neutral. No historical friendship or hostility is inferred; timed tolerance, learned opinions and forced early departure remain separate. See current-rule-reconciliation-2026-10-09.md.",
+      "testFiles": [
+        "tests/service-relationships.test.mjs"
+      ]
     },
     {
       "id": "JA2-R06",
