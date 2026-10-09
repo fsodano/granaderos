@@ -1,0 +1,58 @@
+{
+  "geometryProbe": {
+    "cells": 768,
+    "occupied": 169,
+    "bare": 599,
+    "occupancy": 0.22005208333333334,
+    "totalExtraTriangles": 2274,
+    "meanExtraTriangles": 2.9609375,
+    "maximumExtraTriangles": 18,
+    "projectedAt44": {
+      "pixelsPerMetre": 25,
+      "widthRange": [
+        1.672134067821185,
+        4.175741163065272
+      ],
+      "heightRange": [
+        0.8444782487553759,
+        1.9724466265277574
+      ]
+    },
+    "projectedAt88": {
+      "pixelsPerMetre": 50,
+      "widthRange": [
+        3.34426813564237,
+        8.351482326130544
+      ],
+      "heightRange": [
+        1.6889564975107518,
+        3.9448932530555147
+      ]
+    },
+    "method": "Projection of exact native chip geometry at the fixed isometric elevation; does not prove browser visibility, texture or performance acceptance."
+  },
+  "bounds": {
+    "maximumTrianglesPerDecoratedCell": 18,
+    "maximumExtraStoneMaterialBatchesPerChunk": 1,
+    "maximumRisePerCellMetres": 0.016068760691711627,
+    "unchangedSimulation": true,
+    "newAssetFiles": 0,
+    "newShaderCode": 0
+  },
+  "privateProbeSource": {
+    "patchSha256": "59fd5120b22cf05f5dc62073411058eecc51ec272053b31243cf91bb7d91a49c",
+    "note": "Root adds restrained vertex contrast and an admitted-light check; positions and geometry budget remain exact."
+  },
+  "rootFiles": {
+    "web/lib/three/world-soil-fragments.ts": "67ab67a21c3c2bbd88697028168d962ecf74968566376d1fc6124bfbc7c505c4",
+    "web/lib/three/world-terrain.ts": "a8c8407e64bfc9200bf3d851f30de49aec68924f85cfa704f343a05bf4c63a92",
+    "tests/three-soil-fragments.test.mjs": "804f8b9fe0cc3f8ddf82ebe653ca3caa921f8b506cecfb83bc7d9c5d3954a148"
+  },
+  "liveMovement": {
+    "from": "I9",
+    "to": "J10",
+    "ordinaryOrderComplete": true,
+    "pausedControlEnabled": true,
+    "browserErrors": []
+  }
+}
