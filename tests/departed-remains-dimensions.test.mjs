@@ -79,6 +79,9 @@ test('corpse validation uses source or requested dimensions and still rejects co
  ]){const bad=structuredClone(campaign);edit(bad);assert.throws(()=>validateDeploymentReturnState(bad));}
  const requested=structuredClone(campaign);
  delete requested.sectorStates.retiro;
+ // The legacy dimensions-only fixture predates saved resident positions.
+ // Remove the linked cache with its deliberately omitted source scene.
+ for(const record of Object.values(requested.operativeState))if(record.residentSector==='retiro'&&record.residentScene==null)delete record.residentPosition;
  requested.pendingBattle={sector:'retiro',width:64,height:48};
  assert.doesNotThrow(()=>validateDeploymentReturnState(requested));
  requested.pendingBattle.width=20;
