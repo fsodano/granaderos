@@ -160,6 +160,9 @@ def create_predecessor_snapshot(root, target, *, allow_stale_donor=False, link_a
 def apparel_surface_context(tool, root, receipt=None, *, selected_presets=None):
     """Return True after a verified private layered native replay."""
     root = Path(root).resolve()
+    from coarse_garment_context import coarse_garment_context
+    if coarse_garment_context(tool, root, receipt, selected_presets=selected_presets):
+        return True
     if os.environ.get(PRIVATE_ENV) == str(root):
         return False
     tool = Path(tool).name

@@ -92,13 +92,13 @@ test('family export restores exact baseline bytes, repeats exactly, and rejects 
 from pathlib import Path
 import copy,hashlib,importlib.util,json,shutil,struct,subprocess,tempfile,sys
 root=Path.cwd();sys.path.insert(0,str(root/'tools/characters-3d'))
-from apparel_surface_context import create_predecessor_snapshot
+from coarse_garment_context import create_historical_snapshot
 def module(n,p):
  s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 tool=module('family_test',root/'tools/characters-3d/build-family-cloth-depth.py');glb=module('family_glb',root/'tools/characters-3d/merge-animation-bank.py')
 digest=lambda raw:hashlib.sha256(raw).hexdigest()
 with tempfile.TemporaryDirectory(prefix='granaderos-family-depth-test-') as folder:
- target=Path(folder)/'root';create_predecessor_snapshot(root,target);out=target/'web/public/models/characters'
+ target=Path(folder)/'root';snapshot=create_historical_snapshot(root,target,stage='folds');assert snapshot['releasedInputsExact'];out=target/'web/public/models/characters'
  manifest=json.loads((out/'manifest.json').read_text());expected={p.name:digest(p.read_bytes())for p in out.glob('*.glb')};originals={}
  for preset in tool.recipe_for(root)[0].PRESETS:
   for i,record in enumerate(manifest['appearances'][preset]['lods']):
