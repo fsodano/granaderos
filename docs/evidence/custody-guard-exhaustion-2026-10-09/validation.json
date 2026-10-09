@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "codeRevision": "85742fa0ec30f8755d42c2682753ea2c407714c7",
+  "production": {
+    "version": "0.4.0-dev.1",
+    "id": "9d03e36370d6",
+    "source": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+    "revision": "85742fa0ec30f8755d42c2682753ea2c407714c7"
+  },
+  "full": {
+    "exitCode": 1,
+    "complete": true,
+    "files": 927,
+    "excludedFiles": [],
+    "counts": {
+      "tests": 6973,
+      "passed": 6963,
+      "failed": 7,
+      "cancelled": 0,
+      "skipped": 3,
+      "todo": 0
+    },
+    "durationMs": 1256028.527708,
+    "frozenInputDigest": "56b0afa121f466e6c8b9693f2d232a1d08ba98e461c635fe8fe7607a4b3671b0",
+    "frozenEntries": 13647,
+    "beforeAfterInputsEqual": true,
+    "engineGitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "failedFiles": [
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "failed": 1
+      },
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "failed": 1
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "failed": 2
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "failed": 1
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "failed": 1
+      },
+      {
+        "file": "tests/fresh-northern-route.test.mjs",
+        "failed": 1
+      }
+    ]
+  },
+  "affected": {
+    "custodyFiles": 2,
+    "tests": 27,
+    "passed": 27,
+    "skipped": 0,
+    "additionalFiles": 5,
+    "additionalTests": 24,
+    "additionalPassed": 24,
+    "additionalSkipped": 0,
+    "baselineControl": {
+      "tests": 27,
+      "passed": 25,
+      "failed": 2,
+      "skipped": 0,
+      "productionFrom": "b8b14e2d544cec16535edbb26624ef80ac502720"
+    }
+  },
+  "otherChecks": {
+    "typecheck": true,
+    "documentation": true,
+    "baselineReferences": 38,
+    "shardSelfTests": 5,
+    "shardCoverageFiles": 927,
+    "build": {
+      "staticFiles": 1377,
+      "assetReferences": 1045
+    },
+    "python": {
+      "passed": 15,
+      "skipped": 0,
+      "candidateInputsIdentical": 39
+    },
+    "cpp17Strict": true,
+    "whitespace": true
+  },
+  "limits": [
+    "The seven full-suite failures remain unresolved.",
+    "Three dependent opening route checks were skipped after rescue failure.",
+    "The new exhausted-guard integrated regression uses the declared detention scenario, not a full campaign combat proof.",
+    "Existing invalid modern saves remain rejected; the change prevents new invalid exhausted-guard records.",
+    "The documentation and evidence commit follows the frozen executing code commit."
+  ]
+}

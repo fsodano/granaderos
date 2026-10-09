@@ -1,0 +1,44 @@
+{
+  "review": "independent read-only detention-care exhaustion correction",
+  "timestampUtc": "2026-10-09T21:38:34.661338+00:00",
+  "head": "b8b14e2d544cec16535edbb26624ef80ac502720",
+  "worktree": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "modifiedPaths": [
+    "M game/detention-care.js",
+    " M tests/campaign-detention.test.mjs",
+    " M tests/detention-care.test.mjs"
+  ],
+  "reviewedSha256": {
+    "game/detention-care.js": "753f55f304a0589c4d1760b83bd27e7c6af0cd0c5a7682839f772fab5c3db54c",
+    "game/actor-condition.js": "2ecb7a9ea99720114684f2bde34deaeae93480feaf0906a06cfecc716e982953",
+    "tests/detention-care.test.mjs": "c384e4bbe2c39cb936429c87d2d1cd2e6227b996b5fff7ddc197f7df6f10e92b",
+    "tests/campaign-detention.test.mjs": "656b8d791968c12949bbada06319b9f1c242a7b78c13316e101b06a42d0f83e8"
+  },
+  "result": "no correctness finding; proposed condition normalization is appropriate",
+  "invariants": {
+    "guardHealthWoundsAndEquipment": "unchanged; refresh only recomputes condition/readiness for the existing energy debit",
+    "finiteSuppliesAndCareReceipts": "existing dressing debit, patient update, receipt provenance and one-care-per-hour guards unchanged",
+    "canonicalGroup": "matching existing guard gets the same energy and derived condition; valid group units require hp/maxHp; identity, route, status and inventory untouched",
+    "activeTacticalSector": "existing exclusion unchanged",
+    "rollback": "no dispatch/clone/rejection path changed",
+    "baselineCompatibility": "old tactical-condition and new actor-condition unconscious predicates are identical; no schema or validation weakening; already-invalid modern snapshots remain rejected"
+  },
+  "evidence": {
+    "integratedLog": "/tmp/granaderos-custody-collapse-integrated.log",
+    "integratedTests": {
+      "tests": 27,
+      "pass": 27,
+      "fail": 0,
+      "skip": 0,
+      "durationMs": 4406.611375
+    },
+    "baselineLog": "/tmp/granaderos-custody-collapse-before.log",
+    "baselineFailure": "new guard-collapse regression rejects post-care weaponReady at zero energy before patch",
+    "coverage": "native guard creation, finite prisoner care, field/group condition and equipment checks, actual capture settlement, official campaign restore, next rescue deployment and pair-save equality",
+    "diffCheck": "pass"
+  },
+  "limitations": [
+    "Logs inspected directly; reviewer did not repeat root test run.",
+    "No source, index, branch or repository file writes."
+  ]
+}

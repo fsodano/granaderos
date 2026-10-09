@@ -1,0 +1,146 @@
+failing tests:
+
+test at tests/fresh-campaign-recovery.test.mjs:32:1
+✖ a funded Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture, Jujuy and Humahuaca (895000.884709ms)
+  AssertionError [ERR_ASSERTION]: {"type":"travel","sector":"cordoba"}Cada escala debe ser una celda terrestre accesible.
+  + actual - expected
+  
+  + 'Cada escala debe ser una celda terrestre accesible.'
+  - null
+  
+      at order (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-recovery.mjs:206:34)
+      at reuniteFreshNorthernSquad (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-recovery.mjs:221:2)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-campaign-recovery.test.mjs:147:17)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Cada escala debe ser una celda terrestre accesible.',
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/fresh-ending-route.test.mjs:16:1
+✖ an ordinary 3200-peso Retiro-only campaign wins all localities with actual combat and continues after saved victory and service expiry (243756.393542ms)
+  AssertionError [ERR_ASSERTION]: {"sector":"tucuman","preparationSeconds":0,"startSeconds":1153632,"elapsedSeconds":68,"status":"retreat","turns":9,"actions":55,"units":[{"id":"104","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"140","side":"player","hp":0,"ammo":11,"loaded":0,"routed":true},{"id":"134","side":"player","hp":36,"ammo":10,"loaded":0,"routed":true},{"id":"125","side":"player","hp":27,"ammo":9,"loaded":0,"routed":true},{"id":"133","side":"player","hp":25,"ammo":12,"loaded":0,"routed":true},{"id":"enemy-0","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-1","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-2","side":"enemy","hp":100,"ammo":10,"loaded":1,"routed":false},{"id":"enemy-3","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-4","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-5","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-6","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":false},{"id":"enemy-7","side":"enemy","hp":42,"ammo":12,"loaded":0,"routed":true},{"id":"enemy-8","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-9","side":"enemy","hp":39,"ammo":11,"loaded":0,"routed":true},{"id":"enemy-10","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false}]}
+  + actual - expected
+  
+  + 'retreat'
+  - 'victory'
+  
+      at fightNorthernSector (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs:285:9)
+      at freshStockNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:335:16)
+      at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:255:29)
+      at freshCuyoRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-cuyo-fixture.mjs:22:73)
+      at freshHistoricalEnding (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-ending-fixture.mjs:29:83)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-ending-route.test.mjs:17:36)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'retreat',
+    expected: 'victory',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/opening-playthrough.test.mjs:102:10
+✖ reserves recapture the persistent garrison and stabilize the released captives with finite supplies (146993.807ms)
+  AssertionError [ERR_ASSERTION]: {"sector":"tucuman","preparationSeconds":0,"startSeconds":678681,"elapsedSeconds":3801,"status":"retreat","turns":29,"actions":273,"units":[{"id":"112","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"122","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"140","side":"player","hp":0,"ammo":8,"loaded":0,"routed":true},{"id":"133","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"100","side":"player","hp":0,"ammo":2,"loaded":0,"routed":true},{"id":"101","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"127","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"103","side":"player","hp":0,"ammo":6,"loaded":0,"routed":true},{"id":"144","side":"player","hp":0,"ammo":8,"loaded":1,"routed":false},{"id":"108","side":"player","hp":8,"ammo":6,"loaded":1,"routed":false},{"id":"102","side":"player","hp":0,"ammo":0,"loaded":0,"routed":false},{"id":"138","side":"player","hp":7,"ammo":1,"loaded":1,"routed":false},{"id":"enemy-0","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-1","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-2","side":"enemy","hp":100,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-3","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-4","side":"enemy","hp":0,"ammo":11,"loaded":0,"routed":true},{"id":"enemy-5","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-6","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"enemy-7","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-8","side":"enemy","hp":15,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-9","side":"enemy","hp":15,"ammo":10,"loaded":1,"routed":false},{"id":"enemy-10","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-11","side":"enemy","hp":0,"ammo":11,"loaded":0,"routed":false},{"id":"enemy-12","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"121","side":"player","hp":0,"ammo":13,"loaded":1,"routed":false}]}
+  + actual - expected
+  
+  + 'retreat'
+  - 'victory'
+  
+      at fightNorthernSector (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs:285:9)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/opening-playthrough.test.mjs:133:16)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at TestContext.test (node:internal/test_runner/test:377:20)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/opening-playthrough.test.mjs:102:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'retreat',
+    expected: 'victory',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/fresh-northern-route.test.mjs:8:1
+✖ a funded Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay (168063.177833ms)
+  AssertionError [ERR_ASSERTION]: a public map sweep must reveal the actual representative
+      at meetNorthernRearPort (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:143:9)
+      at freshCreatedNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:234:5)
+      at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:255:77)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-route.test.mjs:10:25)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/fresh-historical-loss.test.mjs:6:1
+✖ a funded Mendoza victory cannot conceal the subsequent death of its required engineer (169056.019458ms)
+  AssertionError [ERR_ASSERTION]: a public map sweep must reveal the actual representative
+      at meetNorthernRearPort (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:143:9)
+      at freshCreatedNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:234:5)
+      at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:255:77)
+      at freshMendozaLoss (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/historical-loss-fixture.mjs:14:57)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-historical-loss.test.mjs:7:39)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/fresh-cuyo-route.test.mjs:2:1
+✖ a funded campaign prepares Cuyo with real battles, living roles, finite arsenal recovery, funding and physical late recruitment (170170.786958ms)
+  AssertionError [ERR_ASSERTION]: a public map sweep must reveal the actual representative
+      at meetNorthernRearPort (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:143:9)
+      at freshCreatedNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:234:5)
+      at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:255:77)
+      at freshCuyoRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-cuyo-fixture.mjs:22:73)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-cuyo-route.test.mjs:3:27)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+Slowest test files:
+  895.29s tests/fresh-campaign-recovery.test.mjs
+  712.56s tests/characters-library-pipeline.test.mjs
+  557.87s tests/characters-coarse-garment-surfaces.test.mjs
+  285.96s tests/characters-apparel-surfaces.test.mjs
+  278.84s tests/characters-climb-crest-continuity.test.mjs
+  258.83s tests/illustrated-sprite-repack.test.mjs
+  244.07s tests/fresh-ending-route.test.mjs
+  239.02s tests/opening-playthrough.test.mjs
+  181.41s tests/fresh-coastal-route.test.mjs
+  170.43s tests/fresh-cuyo-route.test.mjs
+Completed 927/927 files. Timing report: /Users/fsodano/.codex/worktrees/blast-structures/granaderos/.cache/test-times/full.json

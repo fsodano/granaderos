@@ -1,7 +1,7 @@
 import {detentionManifest} from './detention.js';
 import {firstAidPlan} from './first-aid.js';
 import {civilianRestoredHp} from './civilian-health.js';
-import {isUnconscious} from './tactical-condition.js';
+import {isUnconscious,refreshMilitaryCondition} from './actor-condition.js';
 
 // The occupying guards may use confiscated dressings to stabilize prisoners.
 // This is one strategic treatment per able guard per hour, never a supply grant
@@ -23,9 +23,9 @@ export function advanceDetentionCare(campaign,roster){
    const sourceId=captives.find(n=>campaign.operativeState[n.detention.operativeId]===source).detention.operativeId;
    const plan=firstAidPlan({...guard,medkits:source.medkits},npc,{targetKind:'npc'});if(!plan.valid)continue;
    const record=campaign.operativeState[npc.detention.operativeId],before={hp:npc.hp,bleeding:npc.bleeding??0};
-   source.medkits-=plan.dressingsUsed;guard.energy-=3;
+   source.medkits-=plan.dressingsUsed;guard.energy-=3;refreshMilitaryCondition(guard);
    // A stationary enemy group and its sector snapshot describe the same guard.
-   for(const group of campaign.enemyGroups??[])for(const unit of group.units??[])if(unit.id===guard.id)unit.energy=guard.energy;
+   for(const group of campaign.enemyGroups??[])for(const unit of group.units??[])if(unit.id===guard.id){unit.energy=guard.energy;refreshMilitaryCondition(unit);}
    Object.assign(npc,{hp:plan.hpAfter,bleeding:plan.bleedingAfter,bandaged:plan.bandagedAfter,civilianWoundVersion:1,unconscious:isUnconscious({hp:plan.hpAfter,energy:npc.energy})});
    if(!npc.bleeding)delete npc.bleedSource;
    if(plan.hpGain>0)npc.civilianFirstAid={version:1,hpRestored:civilianRestoredHp(npc)+plan.hpGain};
