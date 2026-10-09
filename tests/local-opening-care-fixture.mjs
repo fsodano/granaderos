@@ -13,18 +13,27 @@ import {transportPath} from '../game/logistics.js';
 import {workAssignmentReason} from '../game/assignments.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {careRules} from '../game/campaign-care-rules.js';
+import {operativeLocation} from '../game/squads.js';
 
 // Actual finite found equipment and doctor/patient/repair/rest orders only.
 // Select roles from current survivors; preserve all real wounds and casualties.
-export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor'}={}){
+export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor',caregiverIds=[]}={}){
  assert.ok(['doctor','rest'].includes(recovery),'Choose actual doctor care or stable rest.');
  const earlierDeaths=Object.entries(s.operativeState).filter(([,record])=>!record.alive).map(([id])=>id);
  const returnSector=s.location;
+ const field=[...s.squad],careIds=[...new Set([...field,...caregiverIds])];
+ for(const id of caregiverIds)assert.ok(s.recruited.includes(id)&&s.operativeState[id].alive&&operativeLocation(s,id)===returnSector,'an auxiliary caregiver must actually serve at this clinic');
  const localMedical=sectorInventoryModel(s,s.location,rosterFor(s),s.squad.find(id=>s.operativeState[id].hp>=15)).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
  const sources=Object.entries(FINITE_SECTOR_CACHES).filter(([at])=>s.sectors[at]?.owner==='patriot'&&transportPath(s,s.location,at)).map(([at,source])=>{const chest=s.sectorStates[at]?.props.find(prop=>prop.id===source.chest);return {at,available:chest?chest.contents.filter(item=>item.item==='medkits').reduce((sum,item)=>sum+item.count,0):source.medical};}).sort((a,b)=>Number(b.at===s.location)-Number(a.at===s.location)||b.available-a.available);
  let careSector=recovery==='rest'?returnSector:localMedical?s.location:sources.find(source=>source.available>0)?.at??s.location;
  const care={hours:0,restHours:0,stockWaitHours:0,contractCost:0,dressingsBought:0,dressingCost:0,weaponCost:0,workshopCost:0,dressingsFound:0,donatedDressings:0,weaponsFound:0,repairPointsSpent:0,repairHours:0};
- const renewCareContracts=()=>{for(const id of s.squad){const contract=s.contracts[id],expiry=contractExpiresSeconds(contract);if(expiry!==null&&expiry<s.hour*3600+(s.secondOfHour??0)+24*3600){const money=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'week',expectedExpiresAt:contract.expiresAt});care.contractCost+=money-s.resources.treasury;}}};
+ const carriedDressings=()=>careIds.reduce((sum,id)=>sum+s.operativeState[id].medkits,0);care.initialDressings=carriedDressings();
+ const renewCareContracts=()=>{for(const id of careIds){const contract=s.contracts[id],expiry=contractExpiresSeconds(contract);if(expiry!==null&&expiry<s.hour*3600+(s.secondOfHour??0)+24*3600){const money=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'week',expectedExpiresAt:contract.expiresAt});care.contractCost+=money-s.resources.treasury;}}};
+ const restUntilReady=id=>{
+  s=order(s,{type:'assignCare',id,assignment:'rest'});
+  for(let hour=0;(s.operativeState[id].asleep||s.operativeState[id].energy<=10)&&hour<72;hour++){renewCareContracts();s=advanceCampaignHours(s,1);care.stockWaitHours++;}
+  assert.ok(!s.operativeState[id].asleep&&s.operativeState[id].energy>10,'The actual caregiver must finish sleep and rest before using finite stock.');
+ };
  renewCareContracts();
  // Treat the actual survivors at their present clinic. Stabilize their wounds
  // before any medical courier or whole-squad journey can spend strategic time.
@@ -44,16 +53,19 @@ export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor'}={}){
   care.restFinishedAt={hour:s.hour,second:s.secondOfHour??0};
  }else while(true){
   renewCareContracts();
-  const roster=rosterFor(s).filter(o=>s.squad.includes(o.id)),patient=roster.filter(o=>s.operativeState[o.id].hp<o.maxHp||s.operativeState[o.id].bleeding).sort((a,b)=>Number(s.operativeState[b.id].bleeding>0)-Number(s.operativeState[a.id].bleeding>0)||a.medical-b.medical)[0];if(!patient)break;
+  const roster=rosterFor(s).filter(o=>careIds.includes(o.id)),patient=roster.filter(o=>field.includes(o.id)&&(s.operativeState[o.id].hp<o.maxHp||s.operativeState[o.id].bleeding)).sort((a,b)=>Number(s.operativeState[b.id].bleeding>0)-Number(s.operativeState[a.id].bleeding>0)||a.medical-b.medical)[0];if(!patient)break;
   assert.ok(care.hours<48,'recovery must use bounded, paid campaign care');
-  const doctor=roster.filter(o=>o.id!==patient.id&&o.medical>=20&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&(s.operativeState[o.id].energy??100)>10).sort((a,b)=>Number(s.operativeState[a.id].asleep)-Number(s.operativeState[b.id].asleep)||b.medical-a.medical)[0];assert.ok(doctor,'a living local doctor is required');
-  for(const o of roster)s=order(s,{type:'assignCare',id:o.id,assignment:'active'});
+  const doctor=roster.filter(o=>o.id!==patient.id&&o.medical>=20&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&(caregiverIds.length||s.operativeState[o.id].energy>10)).sort((a,b)=>(caregiverIds.length?0:Number(s.operativeState[a.id].asleep)-Number(s.operativeState[b.id].asleep))||b.medical-a.medical)[0];assert.ok(doctor,'a living local doctor is required');
+  for(const o of roster)s=order(s,{type:'assignCare',id:o.id,assignment:caregiverIds.length?'rest':'active'});
   // Marching and medical work can put the selected doctor to sleep. Let that
   // actual recovery finish before assigning care; do not wake an exhausted actor.
-  for(let hour=0;s.operativeState[doctor.id].asleep&&hour<72;hour++){renewCareContracts();s=advanceCampaignHours(s,1);}
-  assert.equal(s.operativeState[doctor.id].asleep,false,'The doctor must finish actual sleep before working.');
+  restUntilReady(doctor.id);s=order(s,{type:'assignCare',id:doctor.id,assignment:'active'});
   if(!s.operativeState[doctor.id].medkits){
-   const donor=roster.find(o=>o.id!==doctor.id&&s.operativeState[o.id].medkits>0&&!sectorInventoryModel(s,s.location,rosterFor(s),o.id).reason);
+   let donor=roster.find(o=>o.id!==doctor.id&&s.operativeState[o.id].medkits>0&&!sectorInventoryModel(s,s.location,rosterFor(s),o.id).reason);
+   if(!donor){
+    const stocked=roster.find(o=>o.id!==doctor.id&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&s.operativeState[o.id].medkits>0&&(s.operativeState[o.id].asleep||s.operativeState[o.id].energy<=10));
+    if(stocked){restUntilReady(stocked.id);restUntilReady(doctor.id);s=order(s,{type:'assignCare',id:doctor.id,assignment:'active'});donor=roster.find(o=>o.id!==doctor.id&&s.operativeState[o.id].medkits>0&&!sectorInventoryModel(s,s.location,rosterFor(s),o.id).reason);}
+   }
    if(donor){s=order(s,{type:'sectorInventory',sector:s.location,operativeId:donor.id,direction:'drop',item:'medkits',count:1});const row=sectorInventoryModel(s,s.location,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row);s=order(s,{type:'sectorInventory',sector:s.location,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});care.donatedDressings++;}
   }
   if(!s.operativeState[doctor.id].medkits){
@@ -63,11 +75,13 @@ export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor'}={}){
   assert.equal(careAssignmentReason(s,doctor,'doctor'),'');s=order(s,{type:'assignCare',id:doctor.id,assignment:'doctor'});s=order(s,{type:'assignCare',id:patient.id,assignment:'patient'});
   const stock=s.operativeState[doctor.id].medkits;s=saved({campaign:advanceCampaignHours(s,1)}).campaign;assert.equal(s.operativeState[doctor.id].medkits,stock-1);care.hours++;
  }
+ care.remainingDressings=carriedDressings();
+ assert.equal(care.initialDressings+care.dressingsFound-care.remainingDressings,care.hours,'every native medical work hour spends exactly one actual finite dressing');
  // Worn firearms receive real mechanical work and spend carried kit points.
- for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
+ for(const id of careIds)s=order(s,{type:'assignCare',id,assignment:'active'});
  for(let hour=0;s.squad.some(id=>s.operativeState[id].asleep)&&hour<72;hour++){renewCareContracts();s=advanceCampaignHours(s,1);}
  assert.ok(s.squad.every(id=>!s.operativeState[id].asleep),'real sleep must finish before local equipment recovery');
- if(s.squad.some(id=>s.operativeState[id].condition<100)&&!rosterFor(s).some(op=>s.squad.includes(op.id)&&op.mechanical>=20&&repairMaterialPoints(s.operativeState[op.id])>0)){
+ if(s.squad.some(id=>s.operativeState[id].condition<100||s.operativeState[id].jammed)&&!rosterFor(s).some(op=>s.squad.includes(op.id)&&op.mechanical>=20&&repairMaterialPoints(s.operativeState[op.id])>0)){
   const mechanic=rosterFor(s).filter(op=>s.squad.includes(op.id)&&op.mechanical>=20).sort((a,b)=>b.mechanical-a.mechanical)[0];assert.ok(mechanic);
   const localTools=sectorInventorySites(s,s.location).some(site=>sectorInventoryModel(s,site.id,rosterFor(s),mechanic.id).entries.some(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).kind==='repair-kit'));
   if(localTools)careSector=s.location;
@@ -94,17 +108,17 @@ export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor'}={}){
   }
   s=leaveFiniteCache(p);
  }
- // Hourly repair restores wear. A retained ignition failure still needs the
- // ordinary paid reprime in finishReloadsBeforeMarch before the next attack.
- while(s.squad.some(id=>s.operativeState[id].condition<100)){
+ // Both wear and a retained ignition failure need finite material work. The
+ // carried-equipment queue admits a full-condition jam without a fake wound.
+ while(s.squad.some(id=>s.operativeState[id].condition<100||s.operativeState[id].jammed)){
   assert.ok(care.repairHours<48,'finite weapon repair must finish through bounded hourly work');renewCareContracts();
-  let roster=rosterFor(s).filter(o=>s.squad.includes(o.id)),target=roster.find(o=>s.operativeState[o.id].condition<100),mechanic=roster.filter(o=>o.mechanical>=20&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&(s.operativeState[o.id].energy??100)>10&&!s.operativeState[o.id].asleep).sort((a,b)=>Number(repairMaterialPoints(s.operativeState[b.id])>0)-Number(repairMaterialPoints(s.operativeState[a.id])>0)||b.mechanical-a.mechanical)[0];assert.ok(mechanic,'a living qualified mechanic with actual energy is required');
+  let roster=rosterFor(s).filter(o=>s.squad.includes(o.id)),target=roster.find(o=>s.operativeState[o.id].condition<100||s.operativeState[o.id].jammed),mechanic=roster.filter(o=>o.mechanical>=20&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&(s.operativeState[o.id].energy??100)>10&&!s.operativeState[o.id].asleep).sort((a,b)=>Number(repairMaterialPoints(s.operativeState[b.id])>0)-Number(repairMaterialPoints(s.operativeState[a.id])>0)||b.mechanical-a.mechanical)[0];assert.ok(mechanic,'a living qualified mechanic with actual energy is required');
   if(!repairMaterialPoints(s.operativeState[mechanic.id]))s=collectRouteItems(s,mechanic.id,{kind:'repair-kit'},1).campaign;
   // Collection can advance real time and complete work or put an actor to
   // sleep. Select the current target and validate the current worker again.
-  roster=rosterFor(s).filter(o=>s.squad.includes(o.id));target=roster.find(o=>s.operativeState[o.id].condition<100);
+  roster=rosterFor(s).filter(o=>s.squad.includes(o.id));target=roster.find(o=>s.operativeState[o.id].condition<100||s.operativeState[o.id].jammed);
   if(!target)continue;
-  const repairScope='primary';
+  const repairScope=s.operativeState[target.id].jammed?'equipment':'primary';
   mechanic=roster.filter(o=>o.mechanical>=20&&!workAssignmentReason(s,o,'repair',{targetId:target.id,repairScope},roster)).sort((a,b)=>b.mechanical-a.mechanical)[0];
   assert.ok(mechanic,'repair must use a current target and an available mechanic with finite materials');
   s=order(s,{type:'assignWork',operativeId:mechanic.id,assignment:'repair',targetId:target.id,repairScope});const points=repairMaterialPoints(s.operativeState[mechanic.id]);s=advanceCampaignHours(s,1);const spent=points-repairMaterialPoints(s.operativeState[mechanic.id]);assert.ok(spent>0,'actual repair must spend finite materials');care.repairPointsSpent+=spent;care.repairHours++;
@@ -125,5 +139,6 @@ export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor'}={}){
  assert.equal(care.dressingCost,care.dressingsBought*10);assert.equal(care.weaponCost,0);assert.equal(care.workshopCost,0);
  for(const o of rosterFor(s).filter(o=>s.squad.includes(o.id))){assert.equal(s.operativeState[o.id].hp,o.maxHp);assert.equal(s.operativeState[o.id].energy,100);}
  for(const id of earlierDeaths)assert.equal(s.operativeState[id].alive,false,'rest or care cannot restore an actual casualty');
+ assert.deepEqual(s.squad,field,'auxiliary local care must preserve the actual living field cohort');
  return {campaign:saved({campaign:s}).campaign,care};
 }

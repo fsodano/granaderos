@@ -15,8 +15,11 @@ import {defaultProfile} from '../game/character-profile.js';
 import {createBattle,actBattle,endTurn,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {enterSector} from '../game/world.js';
-import {hiringArrivalOptions} from '../game/hiring-arrivals.js';
-import {contractQuote} from '../game/contracts.js';
+import {hiringArrivalOptions,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {operativeLocation} from '../game/squads.js';
+import {cellTravelPlan} from '../game/world-cells.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {fight as cautiousFight} from './cuyo-route-driver.mjs';
 import {fight as createdOpeningFight} from './created-coastal-opening-driver.mjs';
 import {fight as localOpeningFight} from './local-buenos-aires-driver.mjs';
@@ -73,9 +76,28 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
  assert.ok(first.every(id=>s.recruited.includes(id)&&s.contracts[id].started===6));notes.push({stage:'ready',hour:s.hour,funds:s.resources.treasury,squad:[...s.squad]});
  }
  for(const sector of prefix?['san_nicolas','san_lorenzo']:['buenos_aires','san_nicolas','san_lorenzo']){
-  // The new local recruits have no matching reserve. Use the controlled
-  // depot's actual finite cartridges before loading and leaving for battle.
-  if(kind==='local'&&sector!=='buenos_aires')s=supplyRouteAmmunition(s,s.squad,{target:10}).campaign;
+  // Recovered rifles and spent cartridges need matching finite reserve in
+  // every route. Use the real depot/known loot before paid loading and march.
+  if(sector!=='buenos_aires'){
+   let supplied;
+   try{supplied=supplyRouteAmmunition(s,s.squad,{target:10});s=supplied.campaign;}
+   catch(error){
+    if(!error.message.startsWith('Finite ammunition shortage for '))throw error;
+    const origin=s.location,field=[...s.squad],now=s.hour*3600+(s.secondOfHour??0),outward=cellTravelPlan(s,'buenos_aires'),returning=cellTravelPlan({...s,location:'buenos_aires'},origin);
+    assert.equal(s.sectors.buenos_aires.owner,'patriot');assert.notEqual(origin,'buenos_aires');assert.equal(outward.reason,null);assert.equal(returning.reason,null);
+    assert.ok(field.every(id=>s.operativeState[id].alive&&s.operativeState[id].hp>=15&&!s.operativeState[id].bleeding),'native wound care must finish before a depot round trip');
+    const horizon=now+(outward.hours+returning.hours+24)*3600;let contractCost=0;
+    for(const id of field){const contract=s.contracts[id],expiry=contractExpiresSeconds(contract);if(expiry!==null&&expiry<=horizon){const cash=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'week',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});contractCost+=cash-s.resources.treasury;}}
+    report({event:'coastalLocalAmmoShortage',destination:sector,sector:origin,reason:error.message});
+    s=completeTestTravel(s,{sector:'buenos_aires'});assert.equal(s.pendingEncounter,null);assert.equal(s.pendingBattle,null);assert.equal(s.location,'buenos_aires');assert.equal(s.squads.find(q=>q.id===s.activeSquadId).journey,undefined);
+    supplied=supplyRouteAmmunition(s,s.squad,{target:10});s=supplied.campaign;
+    s=completeTestTravel(s,{sector:origin});assert.equal(s.pendingEncounter,null);assert.equal(s.pendingBattle,null);assert.equal(s.location,origin);assert.equal(s.squads.find(q=>q.id===s.activeSquadId).journey,undefined);assert.deepEqual(s.squad,field);
+    notes.push({stage:'finite-ammunition-depot-trip',destination:sector,origin,depot:'buenos_aires',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-now,contractCost,shortage:error.message});
+   }
+   for(const transaction of supplied.transactions)report(transaction);
+   notes.push({stage:'finite-coastal-ammunition',destination:sector,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,transactions:supplied.transactions});
+   s=saved({campaign:s}).campaign;
+  }
   if(kind==='stock'||kind==='local'&&['buenos_aires','san_nicolas'].includes(sector)){
    // The real approach must arrive in daylight. The small local force
    // cannot scout this town as if night visibility were the daytime range.
@@ -135,21 +157,36 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
    notes.push({stage:'local-final-recovery',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],...recovery.care});onCheckpoint?.('local-final-recovery',s,notes);
   }
   if(kind!=='local'&&sector!=='san_lorenzo'){
-   // Replace a fallen medical role before spending the finite coastal stocks
-   // on full recovery. The physician takes an actual vacant field position.
+   // A full field squad can still pay a local clinic physician. The original
+   // survivors keep their positions; only actual vacancies need replacements.
+   const field=[...s.squad],clinic=s.location,fieldSquad=s.activeSquadId;
    const needsCare=s.squad.some(id=>s.operativeState[id].hp<s.operativeState[id].maxHp||s.operativeState[id].bleeding>0);
    const physician=rosterFor(s).some(op=>s.squad.includes(op.id)&&op.medical>=70&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding);
+   const localPhysician=rosterFor(s).find(op=>s.recruited.includes(op.id)&&!s.squad.includes(op.id)&&operativeLocation(s,op.id)===clinic&&op.medical>=70&&s.operativeState[op.id].alive&&!s.operativeState[op.id].captured&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding);
    const availableForHire=id=>s.operativeState[id].alive&&!s.recruited.includes(id)&&contractQuote(s,rosterFor(s).find(op=>op.id===id),'week').available;
-   const relief=needsCare&&!physician?[112,107,116].find(availableForHire):undefined;
+   const relief=needsCare&&!physician&&!localPhysician?[112,107,116].find(availableForHire):undefined;
    const available=[...new Set([...(relief===undefined?[]:[relief]),131,136,141,137,113,124,112,108])].filter(availableForHire),replacements=available.slice(0,6-s.squad.length);
+   const auxiliary=kind==='hired'?(relief!==undefined&&!replacements.includes(relief)?relief:localPhysician?.id):undefined,hires=[...replacements,...(auxiliary===relief&&relief!==undefined?[relief]:[])],cash=s.resources.treasury;
    assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const location=s.location;
-   for(const id of replacements)s=order(s,{type:'recruitCivic',id,term:'week',destination:location});
-   if(replacements.length){assert.ok(replacements.every(id=>!s.recruited.includes(id)));s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;assert.ok(replacements.every(id=>s.recruited.includes(id)&&s.operativeState[id].location===location));}
+   const quotes=hires.map(id=>({id,...contractQuote(s,rosterFor(s).find(op=>op.id===id),'week')}));
+   for(const id of hires)s=order(s,{type:'recruitCivic',id,term:'week',destination:location});
+   const arrivals=hires.map(id=>s.hiringArrivals.find(arrival=>arrival.operativeId===id));
+   if(hires.length){
+    assert.ok(hires.every(id=>!s.recruited.includes(id)));assert.ok(arrivals.every(arrival=>arrival.travelHours===6));
+    if(auxiliary!==undefined){for(const id of field){assert.ok(s.operativeState[id].hp>=15&&!s.operativeState[id].bleeding,'stabilize the actual clinic patients before waiting for a physician');s=order(s,{type:'assignCare',id,assignment:'rest'});}}
+    const due=Math.max(...arrivals.map(hireArrivalDueSeconds));while(s.hour*3600+(s.secondOfHour??0)<due)s=advanceCampaignHours(s,1);
+    s=saved({campaign:s}).campaign;assert.ok(hires.every(id=>s.recruited.includes(id)&&operativeLocation(s,id)===location));assert.equal(s.resources.treasury,cash-quotes.reduce((sum,quote)=>sum+quote.total,0));
+   }
+   if(auxiliary!==undefined&&!s.squads.some(squad=>squad.members.includes(auxiliary))){s=order(s,{type:'createSquad',ids:[auxiliary],name:'Atención local',sector:clinic});s=order(s,{type:'selectSquad',id:fieldSquad});}
+   for(const id of field)assert.ok(s.squad.includes(id),'paid local care must not replace a living field survivor');
+   for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
    // Replacements may arrive with short guns. Recover rifles left by this
    // actual battle through ordinary approach, pickup and equipment orders.
    const depot=visit(s),rearmed=equipOpeningRifles(depot.battle,s.squad);
    s=leave(sync({campaign:depot.campaign,battle:rearmed.battle}));
-   s=prepareLocalOpening(s,{buyWeapons:false}).campaign;
+   const recovery=prepareLocalOpening(s,{buyWeapons:false,caregiverIds:auxiliary===undefined?[]:[auxiliary]});s=recovery.campaign;
+   notes.push({stage:'paid-clinic-recovery',clinic,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,field,caregiverIds:auxiliary===undefined?[]:[auxiliary],hires,arrivals:structuredClone(arrivals),hireCost:quotes.reduce((sum,quote)=>sum+quote.total,0),...recovery.care});
+   onCheckpoint?.('paid-clinic-recovery',s,notes);
   }
  }
  assert.equal(s.phase,2);assert.equal(s.flags.sanLorenzo,true);assert.equal(s.missions.san_lorenzo.completed,true);assert.equal(s.missionAllies.san_lorenzo.hp>0,true);assert.equal(s.pendingBattle,null);assert.ok(s.resources.treasury>0);if(!['local','stock'].includes(kind))assert.ok(dead.size>0);assert.equal(s.completed,false);
