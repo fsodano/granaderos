@@ -15,6 +15,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {ammunitionByType,totalReserveAmmunition} from '../game/ammunition-types.js';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
+import {travelLegHours} from '../game/squad-travel.js';
 
 const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
 const tacticalOrder=(b,action)=>{const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
@@ -40,8 +41,8 @@ export function runOpeningCampaign({report=()=>{}}={}){
  assert.equal(c.squad.length,6);c=collectRouteItems(c,107,{item:'medkits'},12).campaign;
  c=supplyRouteAmmunition(c,c.squad,{target:20,report}).campaign;
  order({type:'academy'});order({type:'travel',sector:'buenos_aires'});
- // Sleep through staging until departure at midnight, then make the real
- // twelve-hour approach for a daylight battle. Notices may pause the wait.
+ // Finish actual staging sleep. Schedule departure from the resulting clock
+ // and current assault duration before the daylight battle.
  for(const operativeId of c.squad)order({type:'setSleep',operativeId,asleep:true});
  waitFor(12);
  let dressingBearer=115;
@@ -114,6 +115,10 @@ export function runOpeningCampaign({report=()=>{}}={}){
 
   }
   c=supplyRouteAmmunition(c,c.squad,{target:6,report}).campaign;
+  if(sector==='san_nicolas'){
+   const departureDelay=(12-travelLegHours(c.location,sector)-c.hour%24+48)%24;
+   if(departureDelay)waitFor(departureDelay);
+  }
   // San Lorenzo is local. Wait through darkness before starting its assault.
   if(sector==='san_lorenzo'&&(c.hour%24<6||c.hour%24>=20))waitFor((30-c.hour%24)%24);
   order({type:'attack',sector});const request=c.pendingBattle;

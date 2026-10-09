@@ -46,9 +46,18 @@ export function freshNorthernRoute({onCheckpoint,report=()=>{}}={}){
  for(const id of supportIds)s=order(s,{type:'recruitCivic',id,term:'week',destination:s.location});
  s=advanceCampaignHours(s,6);s=order(s,{type:'createSquad',ids:supportIds,name:'Apoyo de Córdoba',sector:s.location});const support=s.activeSquadId;s=rearm(s);
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=finishReloadsBeforeMarch(s);}
+ // A routed casualty can reach Buenos Aires before a doctor could return
+ // from Córdoba. Book the rear clinic before the columns start their march.
+ const rearPhysician=[146,...rosterFor(s).filter(op=>op.medical>=70).sort((a,b)=>b.medical-a.medical).map(op=>op.id)].find(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.recruited.includes(id)&&!s.hiringArrivals.some(arrival=>arrival.operativeId===id)&&contractQuote(s,rosterFor(s).find(op=>op.id===id),'week').available);assert.ok(rearPhysician,'the rear clinic needs an available paid physician');
+ const rearQuote=contractQuote(s,rosterFor(s).find(op=>op.id===rearPhysician),'week'),rearCash=s.resources.treasury;
+ s=order(s,{type:'recruitCivic',id:rearPhysician,term:'week',destination:'buenos_aires'});
+ const rearArrival=s.hiringArrivals.find(arrival=>arrival.operativeId===rearPhysician);assert.ok(rearArrival);assert.equal(rearArrival.destination,'buenos_aires');assert.equal(rearArrival.travelHours,6);assert.equal(rearCash-s.resources.treasury,rearQuote.price);assert.ok(!s.recruited.includes(rearPhysician));
+ report({event:'rearClinicBooked',id:rearPhysician,cost:rearQuote.price,bookedAt:rearArrival.bookedAt,dueAt:rearArrival.dueAt,destination:rearArrival.destination});
  report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
  for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
+ assert.ok(s.recruited.includes(rearPhysician));assert.equal(s.operativeState[rearPhysician].location,'buenos_aires');assert.equal(s.contracts[rearPhysician].started,rearArrival.dueAt);
+ s=order(s,{type:'assignCare',operativeId:rearPhysician,assignment:'doctor'});
  report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);
  for(const sector of ['cordoba']){
@@ -84,7 +93,7 @@ export function freshNorthernRoute({onCheckpoint,report=()=>{}}={}){
   const candidates=[...new Set([115,123,114,137,113,124,112,134,139,108,111,117,121,126,129,133,130,...affordable])].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)),replacements=candidates.slice(0,6-s.squad.length);
   assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const at=s.location;
   for(const id of replacements)s=order(s,{type:'recruitCivic',id,term:'week',destination:at});
-  if(replacements.length){assert.ok(replacements.every(id=>!s.recruited.includes(id)));s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;assert.ok(replacements.every(id=>s.recruited.includes(id)&&s.operativeState[id].location===at));}
+  if(replacements.length){assert.ok(replacements.every(id=>!s.recruited.includes(id)));s=saved({campaign:advanceCampaignHours(s,6)}).campaign;assert.ok(replacements.every(id=>s.recruited.includes(id)&&s.operativeState[id].location===at));}
   s=rearm(s);
   if(hasWorkshop(s,s.location))for(const id of s.squad)for(const type of ['resupply','repairWeapon']){const next=dispatchCampaign(s,{type,operativeId:id});if(!next.lastError){assert.ok(next.resources.treasury<s.resources.treasury);s=next;}}
   s=supplyRouteAmmunition(s,s.squad).campaign;

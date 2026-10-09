@@ -12,7 +12,7 @@ import {recoverRescueForce} from './rescue-recovery.mjs';
 import {prepareSaltaAssault,completeNorthernMission} from './salta-route.mjs';
 import {runOpeningCampaign} from './opening-campaign.mjs';
 import {prepareNorthernSupport} from './northern-support-fixture.mjs';
-import {stageNorthernCare,prepareNorthernSquad,prepareTucumanSquad,prepareRescueSquad,stabilizeRescued,fightNorthernSector,advanceOnCitadelOrder,northernReconOrder} from './northern-route.mjs';
+import {stageNorthernCare,prepareNorthernSquad,prepareTucumanSquad,prepareRescueSquad,stabilizeRescued,fightNorthernSector,advanceOnCitadelOrder,northernReconOrder,northernCombatOrder} from './northern-route.mjs';
 
 const assertBattleClock=({campaign,summary})=>{assert.ok(summary.turns>=1&&summary.actions>0);assert.equal(campaign.hour*3600+(campaign.secondOfHour??0),summary.startSeconds+summary.elapsedSeconds);};
 const preserveDeaths=(before,after)=>{for(const [id,r] of Object.entries(before.operativeState))if(!r.alive)assert.equal(after.operativeState[id].alive,false);};
@@ -61,7 +61,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   for(const id of prepared.campaign.squad)assert.equal(prepared.campaign.operativeState[id].alive,true);
   const support=prepareNorthernSupport(prepared.campaign,'cordoba',{maxWeeklyPrice:routeHiringCeiling(prepared.campaign,250),preferMarksmanship:true});
   assert.equal(support.campaign.pendingBattle.squad.length,12);
-  const result=fightNorthernSector(support.campaign,'cordoba',{controller:northernReconOrder});evidence.battles.push({...result.summary,support:{ids:support.ids,cost:support.cost}});
+  const result=fightNorthernSector(support.campaign,'cordoba',{controller:northernCombatOrder});evidence.battles.push({...result.summary,support:{ids:support.ids,cost:support.cost}});
   for(const id of opening.casualties)assert.equal(result.campaign.operativeState[id].alive,false);
   assert.equal(result.campaign.phase,2);assert.equal(result.campaign.completed,false);cordoba=result.campaign;
  });
