@@ -21,19 +21,28 @@ graphics branch and current runtime selection. The archive verifier checks all
 size is 1,408,613,954 bytes. No individual archived blob exceeds 18,626,420 bytes.
 Duplicate bytes reuse their Git blob objects.
 
-Dependency symlinks, caches and repeated rendered evidence are local generated
-outputs. They are not unfinished authored source. Their original directories
-are retained. An app worktree marked `locked initializing` is checked separately
-from completed authored worktrees.
+The later authorized cleanup audit found 97 additional historical source files
+inside ignored caches and review directories. Their exact bytes are preserved
+in the [inactive diagnostic archive](../../assets/source/worktree-diagnostics/2026-10-09/README.md).
+They are historical scripts and notes, not active runtime changes. All 17 old
+worktrees were removed after source verification. The main checkout and active
+test worktree remain. Shared runtime files remain in a separate local preview
+cache so that 33 existing review servers retain their dependencies and source.
 
 ## Gameplay and campaign checks
 
-The final complete frozen run at `f88155f9` covered all 927 files, with zero
+The integration's complete frozen run at `f88155f9` covered all 927 files, with zero
 exclusions: 6,971 tests, 6,961 passed, seven failed and three skipped. Runtime
 identity was `2368ae747c42`; all 13,641 source entries matched before and after
 execution. The [full report](../evidence/pending-work-integration-2026-10-09/full-frozen-report.json)
 and [exact failed checks](../evidence/pending-work-integration-2026-10-09/full-frozen-failures.txt)
 are retained. This remains a failed complete gate.
+
+The subsequent [custody exhaustion correction and complete gate](custody-guard-exhaustion-2026-10-09.md)
+record code commit `85742fa0`: 6,973 tests, 6,963 passed, seven failed and three
+skipped across the same 927 files. The executing files remained frozen. The
+earlier care formation assertion is resolved; three created routes now stop at
+the later rear-port meeting helper. The complete campaign gate remains failed.
 
 Three failed files stop at one care-helper order assertion: all six actual
 actors remain, but doctor112 and actor115 return in the opposite squad order.
