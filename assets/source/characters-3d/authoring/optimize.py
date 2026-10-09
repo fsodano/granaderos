@@ -10,6 +10,8 @@ RATIOS=(.22,.075,.028)
 
 def optimize_character(ctx,lod=0):
  rig=ctx['rig'];objects=ctx['objects']
+ from coarse_garment_surfaces import prepare,after_reduction,capture_packed
+ coarse=prepare(ctx,lod)
  if lod>0:
   omit=('Crest_Sun_Ray','Crest_Leaf','Crest_Central_Relief','Chinstrap_Brass_Scale')
   if lod==2:omit+=('Red_Epaulette_Fringe','Natural_Eyebrow','Iris','Pupil','Fine_Collar_Gold_Edge','Cuff_Gold_Edge','Shako_Crest_Crown','Tailored_Shoulder_Seam','Coat_Back_Panel_Seam','Coat_Centre_Closure','Epaulette_Inner_Braid','Epaulette_Metal_Crescent','Epaulette_Button','Crest_Lower_Scroll','Crest_Laurel')
@@ -90,6 +92,7 @@ def optimize_character(ctx,lod=0):
    total=sum(x[1] for x in groups[:4])
    if total:
     for idx,val in groups[:4]:obj.vertex_groups[idx].add([v.index],val/total,'REPLACE')
+  after_reduction(ctx,obj,coarse)
   if obj.data.materials and obj.data.materials[0]!=ctx['M']['skin']:
    uv=obj.data.uv_layers.active or obj.data.uv_layers.new(name='UVMap')
    for poly in obj.data.polygons:
@@ -100,6 +103,7 @@ def optimize_character(ctx,lod=0):
      uv.data[li].uv=((tx+(2+u*(tile-4))/tile)/side,(ty+(2+v*(tile-4))/tile)/side)
     poly.material_index=0
    obj.data.materials.clear();obj.data.materials.append(atlas)
+  capture_packed(ctx,obj,coarse,sources,side,tile)
   for key in list(obj.keys()):
    if key not in ('part','appearance'):del obj[key]
  from collar_seam import fit_collar

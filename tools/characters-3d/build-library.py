@@ -8,13 +8,14 @@ from pathlib import Path
 import argparse,subprocess,sys,json,os,struct,concurrent.futures,hashlib,tempfile,shutil
 from library_manifest import checked_job_records, merge_job_manifest, strict_json
 from library_jobs import current_job_pins, prepared_job_files, install_job_files
+from importlib.util import spec_from_file_location, module_from_spec
 ROOT=Path(__file__).resolve().parents[2];HERE=ROOT/'assets/source/characters-3d/authoring';OUT=ROOT/'web/public/models/characters';META=HERE/'.build'
 PRESETS=['granadero','royalist','worker','surgeon','gaucho','friar','woman-scout','woman-shawl']
 p=argparse.ArgumentParser();p.add_argument('--blender',default='/Applications/Blender.app/Contents/MacOS/Blender');p.add_argument('--only',choices=['appearance','garments','equipment','horse','animations']);p.add_argument('--preset',choices=PRESETS);p.add_argument('--lod',type=int,choices=[0,1,2]);p.add_argument('--review',action='store_true');p.add_argument('--jobs',type=int,default=2);p.add_argument('--manifest-only',action='store_true');a=p.parse_args()
 previous_manifest=strict_json((OUT/'manifest.json').read_text())if(OUT/'manifest.json').exists()else{}
 manifest_before=(OUT/'manifest.json').read_bytes()if(OUT/'manifest.json').exists()else None
 jobs=[]
-private_jobs=None;JOB_OUT=OUT;JOB_META=META;job_pins={}
+private_jobs=None;JOB_OUT=OUT;JOB_META=META;job_pins={};coarse_records={}
 if not a.manifest_only:
  for kind in ([a.only]if a.only else ['appearance','garments','equipment','horse','animations']):
   presets=([a.preset]if a.preset else PRESETS)if kind=='appearance' else ['granadero','woman-scout']if kind in ('garments','animations')else ['granadero']
@@ -36,6 +37,19 @@ if not a.manifest_only:
   print(next(line for line in content.splitlines()if line.startswith('ASSET_READY')),flush=True)
  with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs)as pool:list(pool.map(run,jobs))
 byname=checked_job_records(JOB_META,JOB_OUT,jobs)
+if any(kind=='appearance' and preset=='gaucho' and lod in (1,2) for kind,preset,lod in jobs):
+ spec=spec_from_file_location('source_coarse_graft',ROOT/'tools/characters-3d/build-coarse-garment-surfaces.py');coarse=module_from_spec(spec);spec.loader.exec_module(coarse)
+ coarse_records,coarse_files,coarse_receipt=coarse.prepare_selected_jobs(ROOT,jobs,JOB_OUT)
+ for name,raw in coarse_files.items():
+  path=JOB_OUT/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(raw)
+ for name,record in coarse_records.items():
+  byname[name].update(record)
+  raw=(JOB_OUT/name).read_bytes();document=json.loads(raw[20:20+struct.unpack_from('<I',raw,12)[0]])
+  for image in document.get('images',[]):
+   uri=image.get('uri')
+   if uri and not (JOB_OUT/uri).exists():
+    target=JOB_OUT/uri;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes((OUT/uri).read_bytes())
+ if coarse_records:(JOB_META/'coarse-garment-graft-receipt.json').write_text(json.dumps(coarse_receipt,indent=2)+'\n')
 job_files=prepared_job_files(JOB_OUT,byname)if jobs else{}
 bones={'root':'Root','hips':'pelvis','spine':'spine_02','chest':'spine_03','neck':'neck_01','head':'head','handRight':'hand_r','handLeft':'hand_l','footRight':'foot_r','footLeft':'foot_l'}
 manifest={'version':1,'units':'metres','up':'+Y','forward':'+Z','bodyHeight':1.76,'bones':bones,'skinTones':{'light':'#d5a07d','brown':'#9d6844','dark':'#623c29'},'appearances':{},'animationLibraries':{},'equipment':{'url':'/models/characters/equipment.glb','items':{}},'garments':{},'horse':{},'provenance':'assets/source/characters-3d/README.md'}
@@ -76,9 +90,15 @@ horses=[byname['horse-lod'+str(i)+'.glb']for i in range(3)if 'horse-lod'+str(i)+
 if horses:manifest['horse']={'height':1.51,'saddle':horses[0]['saddle'],'lods':[{k:h[k]for k in ('lod','url','triangles','bytes','sha256')}for h in horses],'clips':horses[0]['clips'],'actions':{'idle':'HorseIdle','walk':'HorseWalk','run':'HorseRun'},'riderSeatLocal':'clip.seatAnchor'}
 manifest['complete']=all(len(x['lods'])==3 for x in manifest['appearances'].values())and len(manifest['animationLibraries'])==2 and len(manifest['garments'])==2 and len(horses)==3 and bool(manifest['equipment']['items'])
 manifest=merge_job_manifest(previous_manifest,manifest,OUT,jobs,{name:JOB_OUT/name for name in byname})
+# A proved graft retains all original native support and layered receipts. The
+# ordinary source export's six-field summary must never discard that lineage.
+for name,record in coarse_records.items():
+ preset=name.rsplit('-lod',1)[0];index=next(i for i,row in enumerate(manifest['appearances'][preset]['lods']) if row['lod']==record['lod'])
+ manifest['appearances'][preset]['lods'][index]=record
 canonical=subprocess.check_output(['node','-e',"let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',v=>s+=v);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+'\\n'));"],input=json.dumps(manifest),text=True)
 assert strict_json(canonical)==manifest,'Canonical manifest changes source values'
 assert((OUT/'manifest.json').read_bytes()if(OUT/'manifest.json').exists()else None)==manifest_before,'Concurrent source manifest change'
+if coarse_records:coarse._check_source_inputs(JOB_OUT,coarse_receipt['sourceInputs'])
 if jobs:install_job_files(OUT,job_files,job_pins)
 OUT.mkdir(parents=True,exist_ok=True)
 if not (OUT/'manifest.json').exists() or (OUT/'manifest.json').read_text()!=canonical:(OUT/'manifest.json').write_text(canonical)
@@ -142,3 +162,7 @@ if manifest['complete']:
  # Keep the accepted cloth form/hem stages exact below a reversible material
  # layer. This last pass adds broad pigment, boot wear and matte gun fittings.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-apparel-surfaces.py')],cwd=ROOT,check=True)
+
+ # Strict correction lineage and final donor checks remain explicit after the
+ # complete native and frozen colour replay. Library rig checks are separate.
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-coarse-garment-surfaces.py'),'--verify-only'],cwd=ROOT,check=True)

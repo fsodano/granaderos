@@ -16,7 +16,7 @@ META.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 scene=bpy.context.scene;scene.render.fps=30
 
-def export(ctx,path,animations=False):
+def export(ctx,path,animations=False,reviewed_face=True):
  bpy.ops.object.select_all(action='DESELECT')
  for o in ctx['export_objects']:o.select_set(True)
  bpy.context.view_layer.objects.active=ctx.get('rig') or ctx['export_objects'][0]
@@ -25,7 +25,7 @@ def export(ctx,path,animations=False):
  raw,doc=pack(path,{m.name:list(m.diffuse_color) for m in bpy.data.materials})
  # Reviewed face sources are applied only to body appearances. The current
  # rig, hands, clothing, equipment and animation exports remain authoritative.
- if args.kind=='appearance':
+ if args.kind=='appearance' and reviewed_face:
   from face_source import apply_reviewed_face
   apply_reviewed_face(path,args.preset,args.lod)
   raw=path.read_bytes();length=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+length])
@@ -33,7 +33,7 @@ def export(ctx,path,animations=False):
  return {'url':'/models/characters/'+path.name,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'triangles':triangles,'meshes':len(doc.get('meshes',[])),'drawCalls':sum(len(m['primitives'])for m in doc.get('meshes',[])),'materials':[m['name']for m in doc.get('materials',[])],'bones':len(ctx['rig'].data.bones) if ctx.get('rig') else 0,'nodes':[n.get('name')for n in doc.get('nodes',[])]},doc
 
 if args.kind in ('appearance','garments','animations'):
- ctx=create_character(args.preset);gender=ctx['gender']
+ ctx=create_character(args.preset);gender=ctx['gender'];ctx['source_kind']=args.kind
  if args.kind=='garments':
   from garments import create_garments
   create_garments(ctx);optimize_character(ctx,1);name=gender+'-garments'
@@ -52,6 +52,14 @@ if args.kind in ('appearance','garments','animations'):
   add_cloth_correctives(ctx);create_sockets(ctx);name=args.preset+'-lod'+str(args.lod)
  facts,doc=export(ctx,OUT/(name+'.glb'),args.kind=='animations');facts.update(kind=args.kind,preset=args.preset,gender=gender,lod=args.lod,height=ctx['body_height'])
  if args.kind=='appearance':facts['sockets']=ctx['sockets']
+ if args.kind=='appearance' and 'coarse_garment_surface' in ctx:
+  surface=ctx['coarse_garment_surface']
+  private=dict(ctx);private['export_objects']=[ctx['rig'],ctx['coarse_patch_object']]
+  patch_path=OUT/(name+'-coarse-patch.glb')
+  surface['patch'],_=export(private,patch_path,reviewed_face=False)
+  facts['coarseGarmentSurface']=surface
+  from coarse_garment_surfaces import proposal
+  (OUT/(name+'-coarse-patch.json')).write_text(json.dumps(proposal(surface),indent=2)+'\n')
  if args.kind=='animations':facts['clips']=motion['clips'];facts['locomotionSpeed']=motion['locomotionSpeed']
 elif args.kind=='equipment':
  from equipment_library import create_library

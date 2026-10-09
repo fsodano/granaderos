@@ -4,9 +4,11 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import sharp from '../web/node_modules/sharp/lib/index.js';
-import {readGlb,manifest} from './character-bank-fixture.mjs';
+import {historicalApparelView} from './character-predecessor-fixture.mjs';
 
-const root=new URL('..',import.meta.url),assets=new URL('../web/public/models/characters/',import.meta.url);
+// Verify the active correction and colour layers before restoring/replaying the
+// frozen apparel output. Keep all old golden anchors and assertions unchanged.
+const {readGlb,manifest,assets}=historicalApparelView(),root=new URL('..',import.meta.url);
 const baseline=JSON.parse(readFileSync(new URL('./character-apparel-surfaces-baseline.json',import.meta.url)));
 const hash=raw=>createHash('sha256').update(raw).digest('hex');
 const cache=new Map();
@@ -118,16 +120,17 @@ test('both frozen fold recipe sources and native animation banks remain exact',(
 test('fresh broad surfaces reproduce installed bytes, unwind exact predecessor GLBs, repeat exactly, and reject corrupt maps/recipes/binary and late collisions before writes',()=>{
  const result=JSON.parse(execFileSync('python3',['-c',String.raw`
 from pathlib import Path
-import copy,hashlib,importlib.util,json,shutil,subprocess,tempfile
+import copy,hashlib,importlib.util,json,shutil,subprocess,tempfile,sys
 root=Path.cwd()
+sys.path.insert(0,str(root/'tools/characters-3d'))
+from coarse_garment_context import create_historical_snapshot
 def module(name,path):
  s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 tool=module('surface_test_installer',root/'tools/characters-3d/build-apparel-surfaces.py');glb=module('surface_test_glb',root/'tools/characters-3d/merge-animation-bank.py')
 digest=lambda raw:hashlib.sha256(raw).hexdigest()
 with tempfile.TemporaryDirectory(prefix='granaderos-apparel-test-') as folder:
- target=Path(folder);out=target/'web/public/models/characters'
- for directory in ('tools/characters-3d','assets/source/characters-3d/authoring'):shutil.copytree(root/directory,target/directory,ignore=shutil.ignore_patterns('__pycache__','.build','vendor','generated'))
- shutil.copytree(root/'web/public/models/characters',out)
+ target=Path(folder)/'root';out=target/'web/public/models/characters'
+ snapshot=create_historical_snapshot(root,target,stage='apparel');assert snapshot['releasedInputsExact']
  mp=out/'manifest.json';installed=json.loads(mp.read_text());manifest=copy.deepcopy(installed);expected={p.name:digest(p.read_bytes())for p in out.glob('*.glb')};originals={}
  groups=[(p,manifest['appearances'][p]['lods'])for p in tool.recipe_for(root)[0].PRESETS]+[('equipment',[manifest['equipment']])]
  for preset,records in groups:

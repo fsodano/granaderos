@@ -15,9 +15,9 @@ predecessor_scope=None;predecessor=None
 def predecessor_root():
  global predecessor_scope,predecessor
  if predecessor is None:
-  from apparel_surface_context import create_predecessor_snapshot
+  from coarse_garment_context import create_historical_snapshot
   predecessor_scope=tempfile.TemporaryDirectory(prefix='granaderos-native-fixture-');predecessor=Path(predecessor_scope.name)/'predecessor'
-  snapshot=create_predecessor_snapshot(root,predecessor,link_assets=True);assert snapshot['releasedInputsExact']
+  snapshot=create_historical_snapshot(root,predecessor,stage='native',link_assets=True);assert snapshot['releasedInputsExact']
  return predecessor
 def native_body_and_record(preset,lod):
  s=importlib.util.spec_from_file_location('native_fixture_glb',root/'tools/characters-3d/merge-animation-bank.py');glb=importlib.util.module_from_spec(s);s.loader.exec_module(glb)
