@@ -19,11 +19,19 @@ import {fight as createdOpeningFight} from './created-coastal-opening-driver.mjs
 import {fight as localFinalFight} from './local-san-lorenzo-driver.mjs';
 import {prepareLocalOpening} from './local-opening-care-fixture.mjs';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
+import {stockPortOpening} from './stock-port-opening.mjs';
+import {fight as recordedFight} from './opening-driver.mjs';
+import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 
 const profile=()=>({...defaultProfile(),classId:'soldado',attributes:{maxHp:85,agility:75,dexterity:75,strength:55,leadership:35,wisdom:35,marksmanship:85,mechanical:35,explosives:35,medical:35}});
 const stock=kind=>initialCampaign(8,kind==='local'?defaultContentPackage():fundedRouteContent());
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const actorStates=b=>b.units.filter(u=>u.side==='player').map(({id,hp,bleeding,medkits,routed})=>({id,hp,bleeding,medkits,routed}));
+const stockCoastalFight=(request,previous)=>recordedFight(request,previous,{controller:(battle,unit)=>{
+ const action=hiredAssaultOrder(battle,unit);
+ const hold=unit.missionAlly&&battle.units.some(other=>other.side==='player'&&!other.missionAlly&&other.hp>=15&&!other.unconscious&&!other.routed&&!other.departure&&!other.surrendered);
+ return hold&&['move','charge','climb','exit'].includes(action?.type)?null:action;
+}});
 
 function recruitLocal(s,id=3){
  let p=visit(s);const npc=p.battle.npcs.find(n=>n.operativeId===id),actor=p.battle.units.find(u=>u.hp>=15&&!u.unconscious&&!u.routed);assert.ok(npc);assert.ok(actor);
@@ -36,8 +44,15 @@ function recruitLocal(s,id=3){
  return saved({campaign:leave(saved({campaign:s,battle:p.battle}))}).campaign;
 }
 
-export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFinished,fightOpening,fightFinal}={}){
- let s=stock(kind);const openingFunds=kind==='local'?3200:ROUTE_STARTING_TREASURY;const notes=[],dead=new Set();
+export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFinished,fightOpening,fightFinal,report=()=>{},openingCheckpoint}={}){
+ const prefix=kind==='stock'?(openingCheckpoint??stockPortOpening()):null;
+ let s=prefix?saved({campaign:prefix.campaign}).campaign:stock(kind);const openingFunds=kind==='local'?3200:ROUTE_STARTING_TREASURY;const notes=prefix?[...prefix.notes]:[],dead=new Set(Object.entries(s.operativeState).filter(([,record])=>!record.alive).map(([id])=>Number(id)));
+ if(prefix){
+  assert.equal(s.contentCampaign.package.rules.startingTreasury,3200);assert.equal(s.sectors.buenos_aires.owner,'patriot');assert.ok(s.townIncome.activations.buenos_aires);assert.ok(s.resources.treasury>0);
+  for(const note of prefix.notes)report({event:'stockOpeningCheckpoint',...note});onCheckpoint?.('stock-port-opening',s,notes);
+  const depot=visit(s),rearmed=equipOpeningRifles(depot.battle,s.squad);s=leave(sync({campaign:depot.campaign,battle:rearmed.battle}));
+  const recovery=prepareLocalOpening(s,{buyWeapons:false});s=recovery.campaign;notes.push({stage:'stock-opening-recovery',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],...recovery.care});onCheckpoint?.('stock-opening-recovery',s,notes);report({event:'stockOpeningRecovered',...notes.at(-1)});
+ }else{
  assert.deepEqual(Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'),['retiro']);assert.equal(s.resources.treasury,openingFunds);assert.deepEqual(s.recruited,[]);
  if(kind==='created'||kind==='local'){
   const chosen=profile();if(kind==='local'){chosen.attributes.strength=40;chosen.attributes.leadership=50;}
@@ -52,15 +67,16 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
  assert.equal(s.hiringArrivals.length,first.length);assert.ok(first.every(id=>!s.recruited.includes(id)));
  s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;
  assert.ok(first.every(id=>s.recruited.includes(id)&&s.contracts[id].started===6));notes.push({stage:'ready',hour:s.hour,funds:s.resources.treasury,squad:[...s.squad]});
- for(const sector of ['buenos_aires','san_nicolas','san_lorenzo']){
-  if(kind==='local'&&['buenos_aires','san_nicolas'].includes(sector)){
+ }
+ for(const sector of prefix?['san_nicolas','san_lorenzo']:['buenos_aires','san_nicolas','san_lorenzo']){
+  if(kind==='stock'||kind==='local'&&['buenos_aires','san_nicolas'].includes(sector)){
    // The twelve-hour approach must arrive in daylight. The small local force
    // cannot scout this town as if night visibility were the daytime range.
    const wait=(12-travelLegHours(s.location,sector)-s.hour%24+48)%24;if(wait)s=advanceCampaignHours(s,wait);
   }
-  if(kind==='local'&&sector!=='buenos_aires')s=finishReloadsBeforeMarch(s);
+  if(kind==='stock'||kind==='local'&&sector!=='buenos_aires')s=finishReloadsBeforeMarch(s,{report});
   s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
-  const engage=sector==='buenos_aires'?(fightOpening??(kind==='created'?createdOpeningFight:cautiousFight)):sector==='san_lorenzo'?(fightFinal??(kind==='local'?localFinalFight:cautiousFight)):cautiousFight;
+  const engage=sector==='buenos_aires'?(fightOpening??(kind==='created'?createdOpeningFight:cautiousFight)):sector==='san_lorenzo'?(fightFinal??(kind==='stock'?stockCoastalFight:kind==='local'?localFinalFight:cautiousFight)):kind==='stock'?stockCoastalFight:cautiousFight;
   const {battle,orders,actions}=engage(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:sector==='san_lorenzo'?(kind==='local'?['10','57']:['57']):[]});onBattleFinished?.({sector,battle,orders,actions});assert.equal(battle.status,'victory',`${kind}: ${sector}, turn ${battle.turn}; ${JSON.stringify(battle.units.filter(u=>u.hp>0&&!u.routed&&!u.unconscious).map(({id,side,x,y,hp,energy,loaded,ammo})=>({id,side,x,y,hp,energy,loaded,ammo})))}`);
   // Replay every legal order with the normal campaign clock. Reload halfway
   // through the real engagement, then verify its deterministic final state.
@@ -70,7 +86,7 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
    catch(error){onReplayFailure?.({sector,index:i,action:orders[i],before:p});throw error;}
   }
   assert.deepEqual(p.battle.units,battle.units);assert.equal(p.battle.seed,battle.seed);assert.equal(p.battle.elapsedSeconds,battle.elapsedSeconds);p=saved(p);
-  const battleNotes={sector,actions,turns:battle.turn,hour:p.campaign.hour,second:p.campaign.secondOfHour,funds:p.campaign.resources.treasury,units:actorStates(battle)};
+  const battleNotes={sector,status:battle.status,actions,turns:battle.turn,hour:p.campaign.hour,second:p.campaign.secondOfHour,funds:p.campaign.resources.treasury,units:actorStates(battle)};
   for(const u of battle.units.filter(u=>u.side==='player'&&!u.missionAlly&&u.hp===0))dead.add(Number(u.id));
   if(sector==='san_lorenzo')assert.ok(battle.units.some(u=>u.id==='57'&&u.missionAlly&&u.hp>0));
   p=tactical(p,{type:'explore'});
@@ -84,10 +100,10 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
    assert.deepEqual(p.battle.units,aid.battle.units);
    assert.ok(p.battle.units.filter(u=>u.missionAlly&&u.hp>0).every(u=>u.bleeding===0),'The surviving commander must receive finite field aid before strategic time resumes.');
   }
-  p=saved(p);const report={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
-  s=saved({campaign:order(p.campaign,report)}).campaign;assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,report).lastError);
+  p=saved(p);const resultReport={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
+  s=saved({campaign:order(p.campaign,resultReport)}).campaign;assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,resultReport).lastError);
   for(const id of dead){assert.equal(s.operativeState[id].alive,false);assert.equal(s.operativeState[id].hp,0);assert.ok(!s.squad.includes(id));assert.ok(dispatchCampaign(s,{type:'recruitCivic',id,term:'week'}).lastError);}
-  notes.push({...battleNotes,settledFunds:s.resources.treasury,phase:s.phase,deaths:[...dead]});onCheckpoint?.(sector,s,notes);
+  notes.push({...battleNotes,settledFunds:s.resources.treasury,phase:s.phase,deaths:[...dead]});onCheckpoint?.(sector,s,notes);report({event:'coastalBattleSettled',...notes.at(-1)});
   if(kind==='local'&&sector==='buenos_aires'){
    s=recruitLocal(s,4);s=recruitLocal(s,10);const recovery=prepareLocalOpening(s);s=recovery.campaign;
    notes.push({stage:'local-recovery',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],...recovery.care});onCheckpoint?.('local-recovery',s,notes);
@@ -109,7 +125,7 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
    s=prepareLocalOpening(s,{buyWeapons:false}).campaign;
   }
  }
- assert.equal(s.phase,2);assert.equal(s.flags.sanLorenzo,true);assert.equal(s.missions.san_lorenzo.completed,true);assert.equal(s.missionAllies.san_lorenzo.hp>0,true);assert.equal(s.pendingBattle,null);assert.ok(s.resources.treasury>0);assert.ok(dead.size>0);assert.equal(s.completed,false);
+ assert.equal(s.phase,2);assert.equal(s.flags.sanLorenzo,true);assert.equal(s.missions.san_lorenzo.completed,true);assert.equal(s.missionAllies.san_lorenzo.hp>0,true);assert.equal(s.pendingBattle,null);assert.ok(s.resources.treasury>0);if(kind!=='stock')assert.ok(dead.size>0);assert.equal(s.completed,false);
  if(kind==='local'){
   assert.equal(s.hiringArrivals.length,0);assert.ok(Object.keys(s.contracts).every(id=>[1000,3,4,10].includes(Number(id))));
   assert.ok(s.recruited.every(id=>[1000,3,4,10].includes(id)));

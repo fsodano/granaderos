@@ -26,9 +26,10 @@ export function stabilizeBeforeMarch(s){
  assert.equal(care.cost,care.dressingsBought*10);return {campaign:s,care};
 }
 
-export function freshHistoricalEnding(options){return finishHistoricalFromCuyo(freshCuyoRoute(),options);}
+export function freshHistoricalEnding(options={}){return finishHistoricalFromCuyo(freshCuyoRoute({...options,routeKind:options.routeKind??'stock'}),options);}
 export function finishHistoricalFromCuyo(prefix,options){
  const coast=finishCreatedCoast(prefix,options);
  const north=finishCreatedNorthernReturn(coast,options);
- return finishCreatedFinalCapitalReturn(north,options);
+ const final=finishCreatedFinalCapitalReturn(north,options);
+ return {...final,prefix:[...(prefix.prefix??[]),...prefix.notes]};
 }

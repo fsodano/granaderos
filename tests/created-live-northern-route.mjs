@@ -15,7 +15,7 @@ import {contractQuote} from '../game/contracts.js';
 import {squadTravelStatus} from '../game/squad-travel.js';
 import {doctorRate} from '../game/medical-care.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {actBattle,getReachable,actionCosts,BLADES} from '../game/tactical.js';
+import {actBattle,getReachable,BLADES} from '../game/tactical.js';
 import {targetPreview} from '../game/ja2-hud.js';
 import {visit,leave} from './local-contract-fixture.mjs';
 import {syncBattleTime} from '../game/time.js';
@@ -180,14 +180,9 @@ order({type:'squad',ids:field});
 for(const id of [142,145]){assert.equal(c.contracts[id].started,c.hour);assert.equal(c.contracts[id].expiresAt,c.hour+24);assert.equal(rosterFor(c).find(o=>o.id===id).weapon,0);assert.equal(c.operativeState[id].headwear,null);}
 let p=visit(c);const beforeVisit=structuredClone(c),moves=[];
 const tactical=a=>{const n=actBattle(p.battle,a);assert.equal(n.lastError,null,JSON.stringify(a)+' '+n.lastError);const pair=syncBattleTime(p.campaign,n);assert.equal(pair.error,null);p=decodeSave(encodeSave(pair.campaign,pair.battle));moves.push(a);};
-let command=p.battle.units.find(u=>u.id==='57');assert.equal(command.condition,99);
-if(command.activeSlot!=='primary')tactical({type:'weapon',unitId:'57',slot:'primary'});
-command=structuredClone(p.battle.units.find(u=>u.id==='57'));
-const cost=actionCosts(p.battle,command).repair;assert.ok(command.ap>=cost);
-tactical({type:'repair',unitId:'57'});
-const repaired=p.battle.units.find(u=>u.id==='57');assert.equal(repaired.condition,100);
-for(const key of ['hp','loaded','ammo','ammunitionVersion','ammunition','ammunitionCounts','reloadProgress','weapon','weaponDefinition','weaponMetadata','weaponFittings','weaponFittingPattern','weaponInstanceId','inventory','blade','bladeCondition','headwear','outfit','legwear','medkits','rations','toolkitPoints'])assert.deepEqual(repaired[key],command[key],key+' survives actual maintenance');
-assert.ok(repaired.ap<=command.ap);assert.ok(repaired.energy<=command.energy);
+// Body discovery needs no maintenance or perfect-condition gun. Keep the
+// commander's actual worn firearm and supplies while the physician approaches.
+const command=structuredClone(p.battle.units.find(u=>u.id==='57'));
 const doctor=p.battle.units.find(u=>u.id==='135'),body=p.battle.units.find(u=>u.id==='6');assert.equal(body.hp,0);assert.equal(Boolean(body.knownToPlayer),false);
 const points=getReachable(p.battle,doctor),point=points.find(q=>q.x===43&&q.y===15&&(q.tacticalLevel??0)===0);assert.ok(point,'the actual physician has the known six-step body approach');
 const preview=targetPreview(p.battle,doctor,point,{mode:'move',reachable:points});assert.equal(preview.valid,true);
@@ -195,8 +190,11 @@ const gunRecords=structuredClone(p.battle.artillery),bodyKit=structuredClone(bod
 tactical({type:'move',unitId:'135',x:point.x,y:point.y,tacticalLevel:0});
 assert.deepEqual(p.battle.artillery,gunRecords);const discovered=p.battle.units.find(u=>u.id==='6');assert.equal(discovered.knownToPlayer,true);
 for(const key of ['hp','weapon','condition','blade','bladeCondition','inventory','headwear','outfit','legwear','loaded','ammo','ammunitionVersion','ammunition'])assert.deepEqual(discovered[key],bodyKit[key]);
+const retainedCommand=p.battle.units.find(u=>u.id==='57');
+for(const key of ['hp','loaded','ammo','ammunitionVersion','ammunition','ammunitionCounts','reloadProgress','weapon','weaponDefinition','weaponMetadata','weaponFittings','weaponFittingPattern','weaponInstanceId','condition','inventory','blade','bladeCondition','headwear','outfit','legwear','medkits','rations','toolkitPoints'])assert.deepEqual(retainedCommand[key],command[key],key+' survives actual body discovery');
+assert.ok(retainedCommand.ap<=command.ap);assert.ok(retainedCommand.energy<=command.energy);
 c=decodeSave(encodeSave(leave(p))).campaign;
-assert.equal(c.operativeState[57].condition,100);assert.equal(c.resources.treasury,beforeVisit.resources.treasury);
+assert.equal(c.operativeState[57].condition,command.condition);assert.equal(c.resources.treasury,beforeVisit.resources.treasury);
 const equip=(id,row,slot)=>{assert.equal(row.reachable,true,row.reason);const clock={hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},terms=structuredClone(c.contracts),keys=new Set(inventory(id).carried.map(r=>r.inventoryKey).filter(Boolean)),stack=JSON.parse(row.expected);order({type:'sectorInventory',sector:'jujuy',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});assert.equal(inventory(id).entries.find(r=>r.key===row.key)?.count??0,row.count-1);const carried=inventory(id).carried.find(r=>r.inventoryKey&&!keys.has(r.inventoryKey)&&r.equip?.some(e=>e.slot===slot&&e.valid));assert.ok(carried);const {item,...record}=stack;assert.deepEqual(JSON.parse(carried.expected),record);order({type:'sectorInventory',sector:'jujuy',operativeId:id,direction:'equip',inventoryKey:carried.inventoryKey,expected:carried.expected,slot});if(slot==='blade')assert.deepEqual(JSON.parse(inventory(id).carried.find(r=>r.item==='blade').store.expected),stack);else assert.deepEqual(c.operativeState[id][slot],record);assert.deepEqual({hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury},clock);assert.deepEqual(c.contracts,terms);events.push({event:'exactFiniteReliefKit',id,slot,key:row.key,stack});};
 for(const [id,bodyId]of [[142,'5'],[145,'6']])for(const [slot,kind]of [['headwear','hat'],['outfit','poncho'],['legwear','trousers'],['blade',null]]){const row=inventory(id).entries.find(r=>{const stack=JSON.parse(r.expected);return r.reachable&&r.key.startsWith(JSON.stringify(['body',bodyId]).slice(0,-1))&&(kind?stack.kind==='outfit'&&stack.outfit===kind&&stack.condition===100:Boolean(BLADES[stack.weapon])&&stack.condition>0);});assert.ok(row,'exact discovered fallen body kit '+bodyId+' '+slot);equip(id,row,slot);}
 for(const [id,r]of Object.entries(initial.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);

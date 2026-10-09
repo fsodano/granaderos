@@ -1,5 +1,12 @@
 # Fresh historical victory and saved continuation
 
+**Current status — 4 October 2026:** The completion figures and methods below
+describe the dated September source. The current ordinary 3,200-peso route has
+separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
+Its coastal battles, finite aid, stable rest and Córdoba continuation pass;
+the current full ending remains under test. Separate 32,000-peso funded
+fixtures do not establish ordinary-start acceptance.
+
 The [persistent ammunition record](strategic-ammunition-custody.md) contains
 the later route checkpoints, actual costs and surviving force. The original
 source and dated results below remain historical evidence.

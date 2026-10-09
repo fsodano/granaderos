@@ -1,6 +1,6 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
- {file:'tests/fresh-ending-route.test.mjs',reason:'Complete stock campaign with actual battles, saved victory and contract expiry.'},
+ {file:'tests/fresh-ending-route.test.mjs',reason:'Complete campaign route with actual battles, saved victory and contract expiry.'},
  {file:'tests/fresh-campaign-recovery.test.mjs',reason:'Complete campaign route with paid recovery, permanent losses and coordinated assaults.'},
  {file:'tests/fresh-cuyo-route.test.mjs',reason:'Fresh Cuyo campaign route with defense, paid supply, foundry and army funding.'},
  {file:'tests/fresh-northern-route.test.mjs',reason:'Fresh northern campaign route with actual combat and recovery.'},

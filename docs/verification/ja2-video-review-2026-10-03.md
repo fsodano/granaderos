@@ -729,11 +729,11 @@ custody bounds; the assertion respects that log, and production validation now
 closes both restoration and stored-resume gaps. No test expectation was relaxed
 to admit free materials.
 
-The older extended northern-route helper still assumes a free one-point repair
-and unchanged material inventory. That top-up needs removal with its actual
-wear retained, or actual kit acquisition and debit. Either choice needs its
-time/practice consequences checked in a complete route rerun; this batch does not
-claim that extended route passes. Full stock campaign/video acceptance, wider
+At this maintenance checkpoint, the older extended northern-route helper still
+assumed a free one-point repair and unchanged material inventory. The subsequent
+[stock campaign work](stock-campaign-route-2026-10-04.md) removes that top-up and
+retains actual wear; the complete route remains under test. This maintenance
+batch does not claim that extended route passes. Full stock campaign/video acceptance, wider
 physics, personality behavior and recorded voices remain open. Map and cannon
 presentation remain with the separately owned 3D effort.
 
