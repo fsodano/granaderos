@@ -13,12 +13,16 @@ import {runCivilianPhase} from '../game/npc-ai.js';
 import {advanceCivilianBleeding,applyCivilianHarm} from '../game/civilian-harm.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function captured({custodySupplies=0,sameSectorRescue=false,captiveEnergy=100,captureSecond=0}={}){
+function captured({custodySupplies=0,sameSectorRescue=false,captiveEnergy=100,captureSecond=0,custodyGuardEnergy}={}){
  let s=initialCampaign();if(captureSecond)s=order(s,{type:'advanceStrategicTime',seconds:captureSecond});s=order(s,{type:'recruitCivic',id:112,term:'week'});s.operativeState[112].location=s.location;s.operativeState[112].medkits=4; // Declared finite rescue dressings in the prepared detention scenario.
 s=order(s,{type:'squad',ids:[3,4,10]});s.operativeState[112].location='buenos_aires';s.location='humahuaca';s.squads[0].location=s.location;s.sectors.humahuaca.owner='patriot';
  launchEnemyGroup(s,'north','humahuaca',{immediate:true});s=order(s,{type:'wait',hours:1});s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
  let b=enterSector(s.pendingBattle);const u=b.units.find(u=>Number(u.id)===3);u.hp=11;u.energy=captiveEnergy;u.bleeding=2;u.bandaged=20;u.unconscious=true;u.stance='prone';u.movementMode='prone';
  for(const u of b.units.filter(u=>u.side==='player')){u.surrendered=true;u.ap=0;u.medkits=custodySupplies;refreshMilitaryCondition(u);}b.status='defeat';
+ if(custodyGuardEnergy!==undefined){
+  const guards=b.units.filter(u=>u.side==='enemy');for(const guard of guards)guard.medical=0;
+  Object.assign(guards[0],{medical:40,energy:custodyGuardEnergy,weaponReady:true});refreshMilitaryCondition(guards[0]);
+ }
  s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'defeat',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
  for(const id of ['cordoba','tucuman','salta','jujuy'])s.sectors[id].owner='patriot';s.location=sameSectorRescue?'humahuaca':'jujuy';s.squad=[112];s.squads[0].members=[112];s.squads[0].location=s.location;
  return order(s,{type:'attack',sector:'humahuaca'});
@@ -118,6 +122,19 @@ test('guards stabilize prisoners with finite confiscated dressings during elapse
  const {campaign:next,battle,error}=prepareCampaignBattle(campaign);assert.equal(error,null);assert.equal(battle.npcs.find(n=>n.detention?.operativeId===3).hp,15);
  assert.deepEqual(decodeSave(encodeSave(next,battle)).campaign,next);
  const forged=structuredClone(campaign);forged.detentionRecords[receipt.npc.id].care[0].dressings=0;assert.throws(()=>restoreCampaign(serializeCampaign(forged)));
+});
+
+test('custody care that exhausts a guard preserves an official campaign save and the next rescue deployment',()=>{
+ const campaign=captured({custodySupplies:2,custodyGuardEnergy:3}),prisoner=campaign.operativeState[3];
+ assert.equal(prisoner.hp,15);assert.equal(prisoner.bleeding,0);assert.equal(prisoner.captured,true);
+ assert.equal([3,4,10].reduce((n,id)=>n+campaign.operativeState[id].medkits,0),5,'one real dressing is consumed');
+ const fieldGuard=campaign.sectorStates.humahuaca.units.find(u=>u.side==='enemy'&&u.medical===40),groupGuard=campaign.enemyGroups.flatMap(g=>g.units??[]).find(u=>u.id===fieldGuard.id);
+ assert.ok(groupGuard);
+ assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+ for(const guard of [fieldGuard,groupGuard]){assert.equal(guard.energy,0);assert.equal(guard.unconscious,true);assert.equal(guard.ap,0);assert.equal(guard.weaponReady,undefined);}
+ const {campaign:next,battle,error}=prepareCampaignBattle(campaign);assert.equal(error,null);
+ assert.deepEqual(decodeSave(encodeSave(next,battle)),{campaign:next,battle});
+ assert.equal(battle.units.find(u=>u.id===fieldGuard.id).unconscious,true);
 });
 
 function freeAdjacentPrisoner(){
