@@ -1,0 +1,21 @@
+{
+  "route": "I9 → J10",
+  "completedCell": 1,
+  "pauseAvailable": null,
+  "metrics": {
+    "data-active-actors": "1",
+    "data-actors": "1",
+    "data-draw-calls": "67",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "120.0",
+    "data-geometries": "68",
+    "data-loaded-actors": "1",
+    "data-lod": "2",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "40",
+    "data-triangles": "116382"
+  },
+  "errors": []
+}

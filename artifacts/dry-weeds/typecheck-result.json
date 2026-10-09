@@ -1,0 +1,16 @@
+{
+  "gate": "typecheck",
+  "command": [
+    "npm",
+    "run",
+    "typecheck"
+  ],
+  "cwd": "/tmp/granaderos-piece09-final-candidate.c8k3cypq",
+  "environmentOverrides": {},
+  "startedUtc": "2026-10-09T02:51:43.501580+00:00",
+  "status": "passed",
+  "log": "/tmp/granaderos-piece09-final-gates.cczy_cuw/typecheck.log",
+  "exitCode": 0,
+  "seconds": 16.729,
+  "finishedUtc": "2026-10-09T02:52:00.231837+00:00"
+}

@@ -1,0 +1,34 @@
+{
+  "label": "piece09-dry-weeds",
+  "inputPatch": "/tmp/granaderos-dry-weeds-private.patch",
+  "inputPatchSha256": "7928e6b3c91e9ea60253e95fbd93d4b5d661a675ac815d792a46e51e3588daf4",
+  "beforeCommit": "c21ab8cebdc56838510223388deac5dad0e81b8c",
+  "strategy": "exact-hunks",
+  "files": [
+    "tests/three-dry-weeds.test.mjs",
+    "web/lib/three/world-dry-weeds.ts",
+    "web/lib/three/world-terrain.ts"
+  ],
+  "applyLog": "",
+  "afterCommit": "4a9b690826e7a6212589c12a1614e6ef2c8b4bc1",
+  "resolvedPatch": "/tmp/granaderos-future-pieces-integration-evidence/piece09-dry-weeds.patch",
+  "resolvedPatchSha256": "7928e6b3c91e9ea60253e95fbd93d4b5d661a675ac815d792a46e51e3588daf4",
+  "adjustments": "No integration adjustment.",
+  "sourceHashes": {
+    "tests/three-dry-weeds.test.mjs": {
+      "beforeSha256": null,
+      "afterSha256": "f19b2eda012edca4437af34030206305a712b9c8e3cdf3175e870f8f98db0566",
+      "afterGitBlob": "40ed3651d2607ddeb0796d3304208d2f402a7940"
+    },
+    "web/lib/three/world-dry-weeds.ts": {
+      "beforeSha256": null,
+      "afterSha256": "72bb514cb23ffe8c2b62a671bb5e99cff35585c6b2ef39d8c83fe9c47dc425e0",
+      "afterGitBlob": "27f3552275a7a3668dcd706407abdf3c74dc157a"
+    },
+    "web/lib/three/world-terrain.ts": {
+      "beforeSha256": "a8c8407e64bfc9200bf3d851f30de49aec68924f85cfa704f343a05bf4c63a92",
+      "afterSha256": "d45d1cbad126a67c64ac7a0fcdffdd4f6e86cc493dbe91bfe5ee2b962bc79019",
+      "afterGitBlob": "4f387eedf6d46c0e1b2f507e09a5d1b9e4085040"
+    }
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "piece": 9,
+  "title": "Thin dry weeds",
+  "privateCheckout": "/tmp/granaderos-terrain-edge-private",
+  "commit": "9ad1d82c91cb6743e3be22161f8131531b875de5",
+  "dependsOnPrivatePiece8": "9f64858f0ae82754c0374ea309b99f9e0ac94598",
+  "patch": "/tmp/granaderos-dry-weeds-private.patch",
+  "patchSha256": "7928e6b3c91e9ea60253e95fbd93d4b5d661a675ac815d792a46e51e3588daf4",
+  "allowlist": [
+    "web/lib/three/world-dry-weeds.ts",
+    "web/lib/three/world-terrain.ts",
+    "tests/three-dry-weeds.test.mjs"
+  ],
+  "files": {
+    "web/lib/three/world-dry-weeds.ts": {
+      "sha256": "72bb514cb23ffe8c2b62a671bb5e99cff35585c6b2ef39d8c83fe9c47dc425e0",
+      "bytes": 2439
+    },
+    "web/lib/three/world-terrain.ts": {
+      "sha256": "d45d1cbad126a67c64ac7a0fcdffdd4f6e86cc493dbe91bfe5ee2b962bc79019",
+      "bytes": 5498
+    },
+    "tests/three-dry-weeds.test.mjs": {
+      "sha256": "f19b2eda012edca4437af34030206305a712b9c8e3cdf3175e870f8f98db0566",
+      "bytes": 8269
+    }
+  },
+  "scope": "Occasional bent taper with two joined branches on admitted outdoor level0 dry-grass and scrub. Blocked, room, building, road, paved, green-grass and upper-level cells are excluded.",
+  "geometry": "One or two stems, six triangles each; all faces inside their own cell. Both root edges meet the exact authored elevation. Source buffers are disposed after WorldBatch copies them.",
+  "material": "Existing world:grass cache key, opaque DoubleSide roughness0.94. Bounded brown vertex colour, existing illumination factor, no new texture, material batch or shader.",
+  "cache": "Own tile/type/room/building/blocked/elevation and scene kind already participate in the terrain cache. No neighbour lookup, time seed, simulation RNG or visibility calculation is added.",
+  "checks": {
+    "affected": "42/42 passed",
+    "typecheck": "passed",
+    "diffCheck": "passed",
+    "reversePatchApplyCheck": "passed",
+    "liveBrowser": "pending root review",
+    "quickBuild": "root owned; not run here"
+  },
+  "probe": {
+    "grass": {
+      "cells": 768,
+      "occupied": 136,
+      "bare": 632,
+      "occupancy": 0.17708333333333334,
+      "stems": 158,
+      "totalExtraTriangles": 948,
+      "meanExtraTriangles": 1.234375,
+      "maximumExtraTriangles": 12,
+      "extraMaterialBatches": 0,
+      "worldHeightMetres": [
+        0.2972973585128784,
+        0.5174875259399414
+      ],
+      "leanMetres": [
+        0.00016796110869266175,
+        0.1519421102917321
+      ],
+      "projectedAt44": {
+        "pixelsPerMetre": 25,
+        "widthRange": [
+          0.14158812288749736,
+          6.270102359268683
+        ],
+        "heightRange": [
+          6.023899580307016,
+          12.894960363053091
+        ],
+        "rootThicknessRange": [
+          8.42936970218023e-05,
+          0.5485918095874989
+        ]
+      },
+      "projectedAt88": {
+        "pixelsPerMetre": 50,
+        "widthRange": [
+          0.28317624577499473,
+          12.540204718537366
+        ],
+        "heightRange": [
+          12.047799160614032,
+          25.789920726106182
+        ],
+        "rootThicknessRange": [
+          0.0001685873940436046,
+          1.0971836191749977
+        ]
+      }
+    },
+    "scrub": {
+      "cells": 768,
+      "occupied": 183,
+      "bare": 585,
+      "occupancy": 0.23828125,
+      "stems": 215,
+      "totalExtraTriangles": 1290,
+      "meanExtraTriangles": 1.6796875,
+      "maximumExtraTriangles": 12,
+      "extraMaterialBatches": 0,
+      "worldHeightMetres": [
+        0.2972973585128784,
+        0.5174875259399414
+      ],
+      "leanMetres": [
+        0.00016796110869266175,
+        0.1519421102917321
+      ],
+      "projectedAt44": {
+        "pixelsPerMetre": 25,
+        "widthRange": [
+          0.14158812288749736,
+          6.270102359268683
+        ],
+        "heightRange": [
+          6.023899580307016,
+          12.894960363053091
+        ],
+        "rootThicknessRange": [
+          8.42936970218023e-05,
+          0.5485918095874989
+        ]
+      },
+      "projectedAt88": {
+        "pixelsPerMetre": 50,
+        "widthRange": [
+          0.28317624577499473,
+          12.540204718537366
+        ],
+        "heightRange": [
+          12.047799160614032,
+          25.789920726106182
+        ],
+        "rootThicknessRange": [
+          0.0001685873940436046,
+          1.0971836191749977
+        ]
+      }
+    },
+    "actualDryGrassChunk": {
+      "cells": 64,
+      "totalTriangles": 1434,
+      "extraWeedTriangles": 90,
+      "grassBatches": 1,
+      "totalBatches": 2
+    }
+  },
+  "nativeProjection": {
+    "svg": "/tmp/granaderos-dry-weeds-private/native-projection.svg",
+    "png": "/tmp/granaderos-dry-weeds-private/native-projection.png",
+    "method": "Projection of exact native weed triangles at fixed isometric elevation. Does not prove live browser visibility, lighting, occlusion or sustained performance."
+  },
+  "limitations": [
+    "Some flat stems turn edge-on and remain faint. Native projection is an offline geometry check, not live lighting, occlusion, image acceptance or a sustained FPS benchmark.",
+    "Root/shared browser, root docs/worktree and public assets were not changed."
+  ]
+}
