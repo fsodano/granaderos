@@ -1,0 +1,98 @@
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
+const url=process.env.GRANADEROS_REVIEW_URL||'http://127.0.0.1:3157/renderer-sandbox';
+const output=resolve(process.env.GRANADEROS_REVIEW_OUTPUT||'artifacts/three-paid-rifle-contact-review');
+const sourceRoot=resolve(process.env.GRANADEROS_SOURCE_ROOT||process.cwd());
+const acceptedHelpers=['39aa3b406af77de6e2864d580b00c2ce1327f17cabd33d8fec7e75d5abd65805','79236396011afc08d23cc7e933da809aa5082036495a778f720baf75d69e7774'];
+const expected={'web/lib/three/melee-contact-fit.ts':process.env.GRANADEROS_HELPER_SHA256};
+const sourceFiles=[...Object.keys(expected),'web/lib/three/actor-runtime.ts','web/lib/three/presentation.ts','web/lib/three/scene-actors.ts','web/public/models/characters/manifest.json','web/public/models/characters/equipment.glb','web/public/models/characters/male-animations.glb','web/public/models/characters/female-animations.glb','web/public/models/characters/granadero-lod0.glb','web/public/models/characters/woman-scout-lod0.glb','web/public/models/characters/royalist-lod0.glb'];
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+async function sourceReceipt(captureRoot=sourceRoot){const basis=JSON.parse(await readFile(process.env.GRANADEROS_SOURCE_BASIS||resolve(captureRoot,'basis.json'),'utf8')),hashes={};for(const file of Object.keys(basis.hashes)){hashes[file]=sha(await readFile(resolve(captureRoot,file)));assert.equal(hashes[file],basis.hashes[file],`Pinned source: ${file}`);}return {root:captureRoot,commit:basis.commit,hashes};}
+const beforeSource=await sourceReceipt();assert.ok(acceptedHelpers.includes(beforeSource.hashes['web/lib/three/melee-contact-fit.ts'])||beforeSource.hashes['web/lib/three/melee-contact-fit.ts']===process.env.GRANADEROS_HELPER_SHA256,'Review requires the frozen physical rifle helper or its performance successor');for(const [file,hash]of Object.entries(expected))if(hash)assert.equal(beforeSource.hashes[file],hash,`Review the declared exact source: ${file}`);if(process.env.GRANADEROS_REVIEW_COMMIT)assert.equal(beforeSource.commit,process.env.GRANADEROS_REVIEW_COMMIT,'Review the declared commit');
+await mkdir(output,{recursive:true});
+const browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_EXECUTABLE?{executablePath:process.env.CHROMIUM_EXECUTABLE}:{}),args:['--disable-background-timer-throttling','--disable-renderer-backgrounding']});
+const report={hostStart:{at:new Date().toISOString(),processes:execFileSync('ps',['-Ao','pid,pcpu,comm'],{encoding:'utf8'})},url,source:beforeSource,cases:[],errors:[],scope:'Visible ordinary combat scenario, paid preserve-facing movement and existing owned Brown Bess selection, both anatomies and cardinal/diagonal targets. DOM/captures only; no injected state, saved-file edits or private renderer/model reads. RAF and LongTask observers measure public browser timing during the ordinary thirteen-actor paid first strike; no screenshots or DOM polling occurs during its measured interval. It is a dev-server benchmark, not production acceptance.'};
+try{
+ const cases=[
+  {case:'male-cardinal',anatomy:'male',appearance:'granadero',id:'rifle',card:'1. Fusil.',name:'Fusil',move:'F10',target:'Realista rifle',targetCell:'F11'},
+  {case:'male-diagonal',anatomy:'male',appearance:'granadero',id:'rifle',card:'1. Fusil.',name:'Fusil',move:'E10',target:'Realista rifle',targetCell:'F11'},
+  {case:'female-cardinal',anatomy:'female',appearance:'woman-scout',id:'grenade',card:'4. Granada.',name:'Granada',move:'N9',target:'Realista grenade',targetCell:'N10'},
+  {case:'female-diagonal',anatomy:'female',appearance:'woman-scout',id:'grenade',card:'4. Granada.',name:'Granada',move:'M9',target:'Realista grenade',targetCell:'N10'},
+ ];
+ const selected=process.env.GRANADEROS_RIFLE_CASES?.split(',');
+ const filtered=cases.filter(s=>!selected||selected.includes(s.case));
+ const variants=process.env.GRANADEROS_PAIR_SOURCE_ROOT?filtered.flatMap((scenario,index)=>{const order=index%2?['prototype','baseline']:['baseline','prototype'];return order.map(variant=>({...scenario,physicalCase:scenario.case,case:scenario.case+'-'+variant,variant,sourceRoot:variant==='baseline'?sourceRoot:resolve(process.env.GRANADEROS_PAIR_SOURCE_ROOT),url:variant==='baseline'?url:process.env.GRANADEROS_PAIR_URL}));}):filtered;
+ for(const scenario of variants){
+  const activeSource=await sourceReceipt(scenario.sourceRoot??sourceRoot);
+  const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[],network=[],pending=[];page.setDefaultTimeout(20000);
+  page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error'&&!message.location().url.endsWith('/favicon.ico'))errors.push(message.text());});
+  page.on('response',response=>{if(response.status()>=400&&!new URL(response.url()).pathname.endsWith('/favicon.ico'))errors.push(`${response.status()} ${response.url()}`);if(/\/models\/characters\/|\/(?:melee-contact-fit|actor-runtime|presentation|scene-actors)\.ts(?:\?|$)/.test(response.url()))pending.push((async()=>{try{network.push({url:response.url(),status:response.status(),sha256:sha(await response.body())});}catch(error){network.push({url:response.url(),bodyUnavailable:String(error)});}})());});
+  await page.addInitScript(()=>{
+   const data={raf:[],longTasks:[],warmSlices:[],workerMeasures:[],phases:[],events:[],baselineStart:0,inputStartedAt:0,strikeStart:0,stop:0};
+   Object.defineProperty(window,'__rifleFrameReview',{value:data});
+   let before=0;
+   function frame(at){if(before&&at<data.stop||!data.stop){const field=document.querySelector('.tactical-field');data.raf.push({at,delta:before?at-before:0,phase:field?.getAttribute('data-enemy-frame')??null});if(data.raf.length>10000)data.raf.shift();}before=at;requestAnimationFrame(frame);}requestAnimationFrame(frame);
+   try{new PerformanceObserver(list=>{for(const entry of list.getEntries())data.longTasks.push({start:entry.startTime,duration:entry.duration,name:entry.name,attribution:entry.attribution?.map(item=>({name:item.name,containerType:item.containerType,containerName:item.containerName}))});}).observe({type:'longtask',buffered:true});}catch(error){data.events.push({type:'observer-error',message:String(error)});}
+   new PerformanceObserver(list=>{for(const entry of list.getEntries()){if(entry.name==='granaderos-melee-own-geometry-prewarm-slice')data.warmSlices.push({start:entry.startTime,duration:entry.duration,detail:entry.detail});if((entry.name.startsWith('granaderos-melee-worker-')||entry.name.startsWith('granaderos-melee-ready-')))data.workerMeasures.push({name:entry.name,start:entry.startTime,duration:entry.duration,detail:entry.detail});}}).observe({type:'measure',buffered:true});
+   document.addEventListener('keydown',event=>{const label=event.target?.getAttribute?.('aria-label');if(event.key==='Enter'&&/^Realista (rifle|grenade) ·/.test(label??'')){data.strikeStart=performance.now();data.events.push({type:'paid-target-keydown',at:data.strikeStart,label});}},true);
+   const observe=()=>{new MutationObserver(records=>{for(const record of records)if(record.type==='attributes'&&record.attributeName==='data-enemy-frame')data.phases.push({at:performance.now(),frame:record.target.getAttribute('data-enemy-frame')});}).observe(document.body,{subtree:true,attributes:true,attributeFilter:['data-enemy-frame']});};if(document.body)observe();else document.addEventListener('DOMContentLoaded',observe,{once:true});
+  });
+  const ready=()=>page.waitForFunction(()=>{const canvas=document.querySelector('[data-sector-renderer="three"]');return canvas?.dataset.loadedActors==='13'&&canvas.dataset.actors==='13'&&!document.querySelector('.tactical-three-status');},{timeout:60000});
+  await page.goto(scenario.url??url,{waitUntil:'domcontentloaded',timeout:60000});await ready();await page.getByRole('button',{name:'Combate',exact:true}).click();await ready();
+  const card=page.locator(`[aria-label^="${scenario.card}"]`);await card.click();
+  // The visible slot uses her existing rifle. The normal paid equip order
+  // stows the retained grenade stack through the game rules.
+  if(scenario.anatomy==='female'){
+   await page.locator('.tactical-field').focus();await page.keyboard.press('w');
+   await page.getByRole('button',{name:'Fin del turno',exact:true}).click({trial:true});
+
+  }
+  await card.click({button:'right'});await page.getByText('Cargas y accesorios',{exact:true}).click();
+  const hands=await page.locator('[aria-label="Manos del combatiente"] button').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label')));
+  assert.ok(hands.some(label=>label==='Mano principal: Brown Bess'),`${scenario.case} uses its existing owned rifle`);const beforeInventory={hands,mainText:await page.locator('[aria-label="Manos del combatiente"] button').first().innerText(),pockets:await page.locator('.ja2-inventory .slot-grid').innerText()};assert.ok(beforeInventory.mainText.includes('1 carga(s)'),'The firearm starts loaded');
+  await page.screenshot({path:resolve(output,`${scenario.case}-owned-equipment.png`)});await page.getByRole('button',{name:'Listo',exact:true}).click();
+  const moveBefore=await card.getAttribute('aria-label');
+  // Alt+Enter is the visible preserve-facing movement control. No unpaid facing is set.
+  await page.getByRole('button',{name:`${scenario.move}, accesible`,exact:true}).press('Alt+Enter');
+  await page.waitForSelector(`[data-unit-id="${scenario.id}"][data-moving="true"]`);
+  await page.waitForSelector(`[data-unit-id="${scenario.id}"][data-moving="false"]`,{timeout:45000});
+  assert.equal(await page.locator(`[aria-label="${scenario.move}, ${scenario.name}"]`).count(),1);
+  await page.getByRole('button',{name:'Fin del turno',exact:true}).click({trial:true});
+  const moveAfter=await card.getAttribute('aria-label');assert.notEqual(moveAfter,moveBefore,'Ordinary combat movement spends PA');
+  await page.getByRole('button',{name:'Cámara',exact:true}).click();for(let i=0;i<3;i++){const zoom=page.getByRole('button',{name:'Acercar campo',exact:true});if(await zoom.isEnabled())await zoom.click();}await page.getByRole('button',{name:'Cámara',exact:true}).click();
+  await page.locator('.tactical-field').focus();await page.keyboard.press('Escape');await page.keyboard.press('b');
+  const target=page.getByRole('button',{name:new RegExp(`^${scenario.target} ·`)}),before={card:await card.getAttribute('aria-label'),target:await target.getAttribute('aria-label'),actorCell:scenario.move,targetCell:scenario.targetCell,hands};
+  assert.ok(before.target.includes('100 salud'));assert.equal(await page.locator(`[aria-label="${scenario.targetCell}, ${scenario.target}"]`).count(),1);
+  await page.screenshot({path:resolve(output,`${scenario.case}-ready.png`)});
+  await page.evaluate(()=>{window.__rifleFrameReview.baselineStart=performance.now();});// No additional idle wait: this review uses the ordinary visible route.
+  await page.evaluate(()=>{window.__rifleFrameReview.inputStartedAt=performance.now();});
+  await target.press('Enter');await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(20,20);
+  // No screenshots or polling during the measured rendered interval.
+  await page.waitForTimeout(3000);
+  const performanceReview=await page.evaluate(()=>{const data=window.__rifleFrameReview;data.stop=performance.now();return data;});
+  const frames=performanceReview.phases.filter(entry=>entry.at>=performanceReview.strikeStart).map(entry=>({wallElapsedMs:entry.at-performanceReview.strikeStart,frame:entry.frame}));
+  const summarize=(from,to)=>{const samples=performanceReview.raf.filter(entry=>entry.at>=from&&entry.at<=to),tasks=performanceReview.longTasks.filter(entry=>entry.start+entry.duration>from&&entry.start<to),deltas=samples.map(entry=>entry.delta).sort((a,b)=>a-b);return {from,to,frames:samples.length,maxGapMs:Math.max(0,...deltas),p95GapMs:deltas[Math.floor((deltas.length-1)*.95)]??0,gapsOver50:samples.filter(entry=>entry.delta>50),longTasks:tasks,totalLongTaskMs:tasks.reduce((sum,entry)=>sum+entry.duration,0)};};
+  performanceReview.baseline=summarize(performanceReview.baselineStart,performanceReview.inputStartedAt);
+  performanceReview.strike=summarize(performanceReview.inputStartedAt,performanceReview.stop);
+  await page.getByRole('button',{name:'Fin del turno',exact:true}).click({trial:true});
+  const after={card:await card.getAttribute('aria-label'),target:await target.getAttribute('aria-label')};assert.notEqual(after.card,before.card,'The single paid strike spends PA');
+  assert.equal(await page.locator(`[aria-label="${scenario.move}, ${scenario.name}"]`).count(),1,'The admitted rifle strike does not add a movement step');
+  assert.equal(await page.locator('.tactical-field').getAttribute('data-enemy-frame'),null,'The paid action completes');
+  const phases=new Set(frames.map(frame=>frame.frame?.split(':')[2]).filter(Boolean));assert.ok(phases.has('prepare')&&phases.has('contact')&&phases.has('impact'),'The visible finite paid strike presents all three phases');assert.ok(frames.filter(frame=>frame.frame).every(frame=>frame.frame.endsWith(':melee')),'The sequence contains only the paid melee action');
+  const healthLabels=[before.target,after.target];assert.ok(healthLabels.length<=2,'Damage cannot be committed twice');
+  await page.screenshot({path:resolve(output,`${scenario.case}-complete.png`)});
+  await card.click({button:'right'});await page.getByText('Cargas y accesorios',{exact:true}).click();
+  const afterInventory={hands:await page.locator('[aria-label="Manos del combatiente"] button').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-label'))),mainText:await page.locator('[aria-label="Manos del combatiente"] button').first().innerText(),pockets:await page.locator('.ja2-inventory .slot-grid').innerText()};
+  assert.deepEqual(afterInventory.hands,beforeInventory.hands,'The same rifle and visible hand ownership remain');assert.ok(afterInventory.mainText.includes('1 carga(s)'),'The butt strike retains its charge');assert.equal(afterInventory.pockets,beforeInventory.pockets,'Visible pocket ammunition and retained supplies are unchanged');
+  await page.screenshot({path:resolve(output,`${scenario.case}-retained-equipment.png`)});await page.getByRole('button',{name:'Listo',exact:true}).click();
+  await Promise.allSettled(pending);assert.deepEqual(errors,[]);for(const response of network){const match=new URL(response.url).pathname.match(/\/models\/characters\/(.+)$/);if(match&&activeSource.hashes[`web/public/models/characters/${match[1]}`])assert.equal(response.sha256,activeSource.hashes[`web/public/models/characters/${match[1]}`],'Served native model bytes match the source capture receipt');}
+  assert.deepEqual(await sourceReceipt(scenario.sourceRoot??sourceRoot),activeSource,'Pinned source and models remain exact for each measured case');
+  report.cases.push({...scenario,source:activeSource,moveBefore,moveAfter,before,after,beforeInventory,afterInventory,frames,healthLabels,performanceReview,network,errors});await page.close();
+ }
+ report.hostEnd={at:new Date().toISOString(),processes:execFileSync('ps',['-Ao','pid,pcpu,comm'],{encoding:'utf8'})};report.sourceAfter=await sourceReceipt();assert.deepEqual(report.sourceAfter,beforeSource,'Source and native asset hashes remain exact throughout capture');
+}catch(error){report.errors.push(String(error));for(const [index,page] of browser.contexts().flatMap(c=>c.pages()).entries()){await page.screenshot({path:resolve(output,`failed-${index}.png`)});await writeFile(resolve(output,`failed-dom-${index}.json`),JSON.stringify({text:await page.locator('body').innerText(),labels:await page.locator('[aria-label]').evaluateAll(nodes=>nodes.map(n=>({tag:n.tagName,label:n.getAttribute('aria-label')})))},null,2));}throw error;}finally{await writeFile(resolve(output,'report.json'),JSON.stringify(report,null,2)+'\n');await browser.close();}
+console.log(JSON.stringify({source:report.source,cases:report.cases.map(({case:caseName,anatomy,before,after,errors})=>({case:caseName,anatomy,before,after,errors})),errors:report.errors,output},null,2));

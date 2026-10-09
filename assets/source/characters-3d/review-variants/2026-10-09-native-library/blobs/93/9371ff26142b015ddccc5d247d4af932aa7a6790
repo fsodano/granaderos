@@ -1,0 +1,19 @@
+import hashlib,json,struct
+def read(path):
+ b=path.read_bytes();n=struct.unpack_from('<I',b,12)[0];return json.loads(b[20:20+n]),b[28+n:]
+def access(doc,binary,index):
+ a=doc['accessors'][index];v=doc['bufferViews'][a['bufferView']];size={5121:1,5123:2,5125:4,5126:4}[a['componentType']]*{'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];offset=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size)
+ raw=b''.join(binary[offset+i*stride:offset+i*stride+size]for i in range(a['count']))
+ return {'componentType':a['componentType'],'count':a['count'],'type':a['type'],'normalized':a.get('normalized',False),'sha256':hashlib.sha256(raw).hexdigest(),'firstLast':list(struct.unpack_from('<f',raw,0)+struct.unpack_from('<f',raw,len(raw)-4))if a['type']=='SCALAR'and a['componentType']==5126 else None}
+def tracks(doc,binary,clip):
+ result={}
+ for channel in clip['channels']:
+  sampler=clip['samplers'][channel['sampler']];key=(doc['nodes'][channel['target']['node']]['name'],channel['target']['path']);result[key]={'interpolation':sampler.get('interpolation','LINEAR'),'input':access(doc,binary,sampler['input']),'output':access(doc,binary,sampler['output'])}
+ return result
+def meshes(doc,binary):
+ return[(mesh['name'],[(primitive.get('mode',4),access(doc,binary,primitive['indices'])if 'indices'in primitive else None,{k:access(doc,binary,v)for k,v in primitive['attributes'].items()},primitive.get('material'))for primitive in mesh['primitives']])for mesh in doc.get('meshes',[])]
+def differences(a,b,path=''):
+ if isinstance(a,dict)and isinstance(b,dict):
+  return sum((differences(a.get(k),b.get(k),path+'/'+k)for k in sorted(a.keys()|b.keys())),[])
+ if isinstance(a,list)and isinstance(b,list)and len(a)==len(b):return sum((differences(x,y,path+'/'+str(i))for i,(x,y)in enumerate(zip(a,b))),[])
+ return[]if a==b else[{'path':path,'before':a,'after':b}]

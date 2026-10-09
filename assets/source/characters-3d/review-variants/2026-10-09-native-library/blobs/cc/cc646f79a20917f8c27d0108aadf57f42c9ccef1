@@ -1,0 +1,39 @@
+const { chromium } = require('playwright-core');
+const fs = require('fs');
+const path = require('path');
+
+const OUT = '/Users/fsodano/fibradev/games/granaderos-tactical-ja2/artifacts/qa-ja2';
+const EXE = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const errors = [];
+
+(async () => {
+  const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  page.on('console', m => {
+    const t = m.text();
+    if (m.type() === 'error' && !t.includes('favicon')) errors.push('console: ' + t.slice(0, 200));
+  });
+  page.on('pageerror', e => errors.push('pageerror: ' + String(e.message).slice(0, 200)));
+  await page.goto('http://localhost:3100', { waitUntil: 'networkidle', timeout: 90000 });
+  await page.getByRole('button', { name: /Combate de San Lorenzo/ }).click();
+  await page.waitForSelector('.ja2-strip', { timeout: 90000 });
+  await page.waitForTimeout(2000);
+  await page.screenshot({ path: path.join(OUT, 'squad-1280.png') });
+  await page.locator('.ja2-portrait-cell').nth(0).click({ button: 'right' });
+  await page.waitForSelector('.ja2-inventory', { timeout: 15000 });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: path.join(OUT, 'inventory-1280.png') });
+  // help toggle position vs strip top
+  const geom = await page.evaluate(() => {
+    const t = document.querySelector('.tactical-help-toggle');
+    const s = document.querySelector('.ja2-strip');
+    if (!t || !s) return null;
+    const tr = t.getBoundingClientRect(), sr = s.getBoundingClientRect();
+    return { toggleBottom: Math.round(tr.bottom), stripTop: Math.round(sr.top), clears: tr.bottom <= sr.top };
+  });
+  await browser.close();
+  const report = { geom, errors };
+  fs.writeFileSync(path.join(OUT, 'recheck.json'), JSON.stringify(report, null, 2));
+  console.log(JSON.stringify(report, null, 2));
+  if (errors.length) process.exitCode = 2;
+})().catch(e => { console.error('QA RECHECK FAILED:', e.message); process.exit(1); });

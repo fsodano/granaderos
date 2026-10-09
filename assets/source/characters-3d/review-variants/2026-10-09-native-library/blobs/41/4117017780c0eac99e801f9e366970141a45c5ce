@@ -1,0 +1,112 @@
+const { chromium } = require('playwright-core');
+const fs = require('fs');
+const path = require('path');
+
+const OUT = '/Users/fsodano/fibradev/games/granaderos-tactical-ja2/artifacts/qa-ja2';
+fs.mkdirSync(OUT, { recursive: true });
+const EXE = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const errors = [];
+const shots = [];
+const shot = (p, name) => { const f = path.join(OUT, name); shots.push(f); return p.screenshot({ path: f }); };
+
+(async () => {
+  const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+
+  // ---- 1280x800: full scenario pass ----
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text().slice(0, 300)); });
+  page.on('pageerror', e => errors.push('pageerror: ' + String(e.message).slice(0, 300)));
+  await page.goto('http://localhost:3100', { waitUntil: 'networkidle', timeout: 90000 });
+  await page.getByRole('button', { name: /Combate de San Lorenzo/ }).click();
+  await page.waitForSelector('.ja2-strip', { timeout: 90000 });
+  await page.waitForTimeout(2000);
+
+  const cells = await page.locator('.ja2-portrait-cell').count();
+  const empties = await page.locator('.empty-portrait-slot').count();
+  const stripBox = await page.locator('.ja2-strip').boundingBox();
+  const vpH = 800;
+
+  // S1: select second portrait
+  await page.locator('.ja2-portrait-cell').nth(1).click();
+  await page.waitForTimeout(600);
+  const activeIdx = await page.evaluate(() => [...document.querySelectorAll('.ja2-portrait-cell')].findIndex(c => c.classList.contains('active')));
+  const ctxWeapon = await page.locator('.ja2-context .ja2-weapon-line, .ja2-context').first().textContent().catch(() => '');
+  await shot(page, 'squad-1280.png');
+
+  // S2: right-click -> inventory
+  await page.locator('.ja2-portrait-cell').nth(0).click({ button: 'right' });
+  await page.waitForSelector('.ja2-inventory', { timeout: 15000 });
+  await page.waitForTimeout(800);
+  const inv = await page.evaluate(() => ({
+    header: !!document.querySelector('.ja2-inv-header'),
+    statRows: document.querySelectorAll('.ja2-stats > div').length,
+    stance: !!document.querySelector('.ja2-stance-grid'),
+    doll: !!document.querySelector('.paper-doll'),
+    hands: document.querySelectorAll('.hand-slot').length,
+    handNames: [...document.querySelectorAll('.hand-slot span')].map(s => s.textContent),
+    slotCells: document.querySelectorAll('.slot-cell').length,
+    pertrechos: !!document.querySelector('.pertrechos'),
+    radar: !!document.querySelector('.ja2-inventory .ja2-radar'),
+    done: !!document.querySelector('.ja2-done'),
+  }));
+  await shot(page, 'inventory-1280.png');
+
+  // DONE -> back to squad
+  await page.getByRole('button', { name: 'Listo' }).click();
+  await page.waitForSelector('.ja2-roster', { timeout: 15000 });
+  await page.waitForTimeout(500);
+  const backToSquad = await page.locator('.ja2-roster').count();
+
+  // S4: orders smoke — stance toggle (state change), mode button (no state change), reload (likely lastError, proves dispatch)
+  await page.locator('.ja2-order-grid button').filter({ hasText: /Cuerpo a tierra|De pie/ }).first().click();
+  await page.waitForTimeout(600);
+  const stanceAfter = await page.evaluate(() => document.querySelector('.ja2-order-grid button[aria-label="De pie"], .ja2-order-grid button[aria-label="Cuerpo a tierra"]')?.getAttribute('aria-label'));
+  await page.locator('.ja2-order-grid button').filter({ hasText: /^Disparar/ }).first().click();
+  await page.waitForTimeout(400);
+  await page.locator('.ja2-order-grid button').filter({ hasText: /^Recargar/ }).first().click();
+  await page.waitForTimeout(600);
+  const logText = await page.locator('.ja2-log-overlay').textContent().catch(() => '');
+  // End turn (enemy phase resolves synchronously) — generous timeout
+  await page.locator('.gold-button.end-turn').click();
+  await page.waitForTimeout(8000);
+  const turnText = await page.locator('.ja2-locale').textContent().catch(() => '');
+  await shot(page, 'after-endturn-1280.png');
+  await page.close();
+
+  // ---- 768x1024 squad ----
+  const c2 = await browser.newContext({ viewport: { width: 768, height: 1024 } });
+  const p2 = await c2.newPage();
+  p2.on('pageerror', e => errors.push('768 pageerror: ' + String(e.message).slice(0, 200)));
+  await p2.goto('http://localhost:3100', { waitUntil: 'networkidle', timeout: 90000 });
+  await p2.getByRole('button', { name: /Combate de San Lorenzo/ }).click();
+  await p2.waitForSelector('.ja2-strip', { timeout: 90000 });
+  await p2.waitForTimeout(2000);
+  await shot(p2, 'squad-768.png');
+  await p2.close(); await c2.close();
+
+  // ---- 375x667 squad ----
+  const c3 = await browser.newContext({ viewport: { width: 375, height: 667 } });
+  const p3 = await c3.newPage();
+  p3.on('pageerror', e => errors.push('375 pageerror: ' + String(e.message).slice(0, 200)));
+  await p3.goto('http://localhost:3100', { waitUntil: 'networkidle', timeout: 90000 });
+  await p3.getByRole('button', { name: /Combate de San Lorenzo/ }).click();
+  await p3.waitForSelector('.ja2-strip', { timeout: 90000 });
+  await p3.waitForTimeout(2000);
+  await shot(p3, 'squad-375.png');
+  await p3.close(); await c3.close();
+
+  await browser.close();
+
+  const report = {
+    cells, empties, activeIdxAfterClick1: activeIdx,
+    stripHeightPx: stripBox ? Math.round(stripBox.height) : null,
+    stripRatio: stripBox ? +(stripBox.height / vpH).toFixed(2) : null,
+    inv, backToSquad, stanceAfter,
+    turnText: (turnText || '').replace(/\s+/g, ' ').slice(0, 160),
+    logTail: (logText || '').replace(/\s+/g, ' ').slice(0, 200),
+    errors, shots,
+  };
+  fs.writeFileSync(path.join(OUT, 'report.json'), JSON.stringify(report, null, 2));
+  console.log(JSON.stringify(report, null, 2));
+  if (errors.length) process.exitCode = 2;
+})().catch(e => { console.error('QA SCRIPT FAILED:', e.message); process.exit(1); });

@@ -40,7 +40,7 @@ branches would overwrite later changes; only their ancestry needs integration.
 ## Human library and private studies
 
 The [review-source archive](../../assets/source/characters-3d/review-variants/2026-10-09-native-library/README.md)
-contains all 1,679 unique source/art/test/receipt blobs from the four human
+contains all 1,788 unique source/art/test/receipt blobs from the four human
 checkpoint histories, selected private studies, and available temporary authored
 source/art referenced by their receipts. Its manifest records exact
 hashes, source branches/commits, all original paths and review status. Duplicate
@@ -96,3 +96,20 @@ SHA-256 digest, plus every archived private-path alias. The archive patch adds
 only review-source/documentation paths and is prepared against the current
 integration base. Production models, animation banks, source authoring hooks,
 current tests and runtime code remain exact.
+
+## Final all-worktree ignored-source supplement
+
+The independent audit compared 963 ignored authored script, patch and source-
+model paths against integration `af952d7f`. It found 845 already reachable paths
+and 118 aliases of 109 previously unpreserved blobs (17,201,539 bytes). Those
+109 blobs are now inactive review-source variants. Exact absolute/relative
+paths, SHA-256/Git identities, file modes and discovery checkout heads/branches
+are retained in `worktree-source-overlaps.json` and `external-files.json`.
+The branch names describe the discovery checkout; these ignored files had no
+committed source branch, and the ledger does not invent one. The two early
+primary-worktree human model sources account for 16,472,218 bytes.
+
+This supplement includes QA scripts and old preparation/source patches from the
+primary, tactical graphics, and detached gameplay/validation worktrees. It does
+not enable them, overwrite accepted runtime files, copy dependencies, or copy
+repeated render images/contact sheets. All original ignored files remain intact.

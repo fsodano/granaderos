@@ -1,0 +1,18 @@
+import {register} from 'node:module';
+import {createHash} from 'node:crypto';
+import {writeFile} from 'node:fs/promises';
+register('../tests/tactical-render-loader.mjs',import.meta.url);
+const {Mesh}=await import('../web/node_modules/three/build/three.module.js');
+const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
+const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
+const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const T=1.2360585147470482,records=[];
+for(const id of ['ayuntamiento','palacio'])for(const rotation of [0,90,180,270])for(const view of ['exterior','partial','interior'])for(const roof of ['original','slab','roof-route'])for(const finish of ['limewash','ochre','adobe','stone','brick']){
+ const s=createArchitectureReviewBattle(id,rotation,view,roof),b=s.buildings[0];b.wallFinish=finish;
+ const input={terrain:{width:s.width,height:s.height,tiles:s.tiles,buildings:s.buildings,upperSurfaces:s.upperSurfaces},revealedRooms:s.revealedRooms},g=new WorldGeometry(),m=new WorldMaterials({tileMetres:T,assetUrl:p=>p}),before=JSON.stringify(input),n=buildBuilding(b,input,T,g,m),meshes=[];
+ n.updateMatrixWorld(true);
+ n.traverse(o=>{if(!(o instanceof Mesh))return;let ancestor=o;while(ancestor){if(ancestor.name.endsWith('-storey-bands'))return;ancestor=ancestor.parent;}const hash=createHash('sha256');for(const [name,a]of Object.entries(o.geometry.attributes).sort()){hash.update(name);hash.update(Buffer.from(a.array.buffer,a.array.byteOffset,a.array.byteLength));}if(o.geometry.index)hash.update(Buffer.from(o.geometry.index.array.buffer));const material=o.material;meshes.push({name:o.name,geometry:hash.digest('hex'),matrix:o.matrixWorld.elements,material:{name:material.name,colour:material.color?.getHexString(),roughness:material.roughness,metalness:material.metalness,vertexColors:material.vertexColors,map:material.map?.name,userData:material.userData,polygonOffset:material.polygonOffset,polygonOffsetFactor:material.polygonOffsetFactor,polygonOffsetUnits:material.polygonOffsetUnits}});});
+ if(JSON.stringify(input)!==before)throw Error('authored state mutated');records.push({id,rotation,view,roof,finish,height:n.userData.height,openings:n.userData.openings,cutaway:n.userData.cutawayRooms,meshes});disposeWorldNode(n);g.dispose();m.dispose();
+}
+await writeFile(process.argv[2],JSON.stringify(records,null,2)+'\n');console.log(`${records.length} actual compiled states; ${records.reduce((n,r)=>n+r.meshes.length,0)} non-band meshes`);

@@ -1,0 +1,177 @@
+--- a/game/battle-presentation.js
++++ b/game/battle-presentation.js
+@@ -106,7 +106,7 @@
+   if(shotComplete)shotIds.delete(event.unitId);
+   const artilleryComplete=event.type==='result'&&presentedArtillery.delete(event.unitId);
+   const crew=actionCrews.get(event.unitId),crewIds=crew&&crew.action===event.action?crew.crewIds.filter(id=>known.has(bodyKey('unit',id))):[];
+-  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(nearMissIds.length?{nearMissIds}:{}),...(crewIds.length?{crewIds:[...crewIds]}:{}),...(seen&&['bayonet','normal'].includes(event.meleeStyle)?{meleeStyle:event.meleeStyle}:{}),...(shotVisual?{shotVisual,shotHand:shotVisual.shotHand,shotId:shotVisual.shotId}:{}),...(artilleryVisual?{artilleryVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(artilleryComplete?{artilleryComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel,...(['melee','charge'].includes(event.action)?{kind:event.targetKind==='npc'?'npc':'unit'}:{})}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
++  frames.push({state:current,visibleIds:[...visible],unitId:seen?event.unitId:null,type:event.type,action:event.action,impacts,...(nearMissIds.length?{nearMissIds}:{}),...(crewIds.length?{crewIds:[...crewIds]}:{}),...(seen&&['bayonet','normal'].includes(event.meleeStyle)?{meleeStyle:event.meleeStyle}:{}),...(shotVisual?{shotVisual,shotHand:shotVisual.shotHand,shotId:shotVisual.shotId}:{}),...(artilleryVisual?{artilleryVisual}:{}),...(shotComplete?{shotComplete:true}:{}),...(artilleryComplete?{artilleryComplete:true}:{}),...(event.contactComplete&&seen?{contactComplete:true}:{}),...(event.performed===false?{performed:false}:{}),...(seen&&event.action==='heal'&&(event.targetId===undefined||event.targetKind!=='npc'&&String(event.targetId)===String(event.unitId))?{careSelf:true}:{}),...(target?{targetPoint:{id:target.id,x:target.x,y:target.y,tacticalLevel:target.tacticalLevel,...(['melee','charge','heal'].includes(event.action)?{kind:event.targetKind==='npc'?'npc':'unit'}:{})}}:{}),...(event.grenadeVisual&&seen?{grenadeVisual:snapshot(event.grenadeVisual)}:{}),...(event.knifeVisual&&seen?{knifeVisual:snapshot(event.knifeVisual)}:{})});
+   if(event.type==='result'){actionCrews.delete(event.unitId);actionStarts.delete(event.unitId);}
+  };
+  try{const state=execute();if(frames.some(frame=>frame.nearMissIds))markFirearmNearMissPresented(state);return {state,frames};}finally{recorder=parent;}
+--- a/web/lib/three/presentation.ts
++++ b/web/lib/three/presentation.ts
+@@ -25,7 +25,8 @@
+ export type ActorEntry={key:string;kind:ActorKind;actor:any};
+ export type ContactTarget={key:string;appearance:string;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;bodyHeights:Record<string,number>};
+ export type ContactSupport={floors:readonly {minX:number;maxX:number;minZ:number;maxZ:number;height:number}[]};
+-export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTurn?:{fromYaw:number;toYaw:number};contactTarget?:ContactTarget;contactSupport?:ContactSupport};
++export type CareCue={mode:'self'}|{mode:'patient';target:ContactTarget;support:ContactSupport};
++export type ActorCue={id:string;action:string;shotHand?:'primary'|'offhand';hand?:'handRight'|'handLeft';startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;fromPosture?:string;toPosture?:string;work?:readonly AnimationWork[];contactTurn?:{fromYaw:number;toYaw:number};contactTarget?:ContactTarget;contactSupport?:ContactSupport;care?:CareCue;healInterval?:true};
+ export type VisualItem={id:string;reference:string;socket:'handRight'|'handLeft'|'back'|'hip';fittings?:any};
+ export type ActorVisual={key:string;id:string;kind:ActorKind;appearance:string;skin:string;side:string;tacticalLevel:number;position:[number,number,number];yaw:number;posture:string;mounted:boolean;action:string;idleAction:string;equipment:string;items:VisualItem[];garments:Record<string,string|null>;cue?:ActorCue;contactWarm?:{targets:ContactTarget[];support:ContactSupport};motion?:Motion;selected:boolean;bodyHeights:Record<string,number>};
+ export const actorKey=(kind:ActorKind,id:string)=>`${kind}:${id}`;
+@@ -128,7 +129,7 @@
+         const shotHand=frame.shotHand??frame.shotVisual?.shotHand,shotId=frame.shotId??frame.shotVisual?.shotId;
+         const held=items.find(item=>item.reference===shotHand&&['handRight','handLeft'].includes(item.socket));
+         if(shotHand&&!held)throw Error(`Missing admitted firing hand: ${key}:${shotHand}`);
+-        cue={id:`${frame.sequenceId}:${frame.actionId}${shotId===undefined?'':`:shot:${shotId}`}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,...(held?{shotHand,hand:held.socket as 'handRight'|'handLeft'}:{}),...(frame.actionWork?{work:frame.actionWork}:{}),phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
++        cue={id:`${frame.sequenceId}:${frame.actionId}${shotId===undefined?'':`:shot:${shotId}`}:${key}`,action:frame.type==='prepare'&&['fire','firePoint'].includes(frame.action)?'aim':semantic,...(held?{shotHand,hand:held.socket as 'handRight'|'handLeft'}:{}),...(frame.actionWork?{work:frame.actionWork}:{}),...(frame.healInterval?{healInterval:true as const}:{}),phase:frame.type,phaseStartedAt:frame.startedAt,phaseDurationMs:frame.durationMs,startedAt:['fire','firePoint'].includes(frame.action)?frame.startedAt:frame.actionStartedAt??frame.startedAt,durationMs:['fire','firePoint'].includes(frame.action)?frame.durationMs:frame.actionDurationMs??frame.durationMs};
+       }
+     }
+     // Frame impacts are already disclosure-filtered by the recorder. The
+@@ -165,6 +166,18 @@
+       }
+     }
+   }
++  // A patient cue uses only the current admitted body, never a saved/future
++  // model. The resolver reads its current animated pose at the point of use.
++  if(frame?.action==='heal'&&frame.healInterval&&frame.performed!==false&&['prepare','result'].includes(frame.type)){
++    for(const visual of result)if(visual.kind==='unit'&&visual.id===frame.unitId&&visual.cue?.action==='heal'){
++      if(frame.careSelf===true){visual.cue={...visual.cue,care:{mode:'self'}};continue;}
++      if(!['unit','npc'].includes(point?.kind)||typeof point.id!=='string'||!point.id||![point.x,point.y].every(Number.isFinite))continue;
++      const key=actorKey(point.kind,point.id),matches=result.filter(target=>target.key===key),target=matches.length===1?matches[0]:undefined,entry=entries.find(entry=>entry.key===key);
++      if(!target||!entry||key===visual.key||entry.actor.x!==point.x||entry.actor.y!==point.y||tacticalLevel(entry.actor)!==tacticalLevel(point)||!target.position.every(Number.isFinite)||!Number.isFinite(target.yaw))continue;
++      const source=entries.find(entry=>entry.key===visual.key)!;
++      visual.cue={...visual.cue,care:{mode:'patient',target:{key,appearance:target.appearance,position:[...target.position],yaw:target.yaw,posture:target.posture,mounted:target.mounted,action:target.action,bodyHeights:{...target.bodyHeights}},support:contactSupport(state,source.actor,visual,revealed,result)}};
++    }
++  }
+   // Warm candidates contain only current rendered bodies and disclosed
+   // support. They carry no order, impact or future state.
+   for(const visual of result)if(visual.selected&&!visual.cue&&!visual.motion?.moving&&visual.posture==='standing'&&!visual.mounted&&visual.equipment==='long-gun'){
+--- a/web/lib/three/animation-clock.ts
++++ b/web/lib/three/animation-clock.ts
+@@ -1,20 +1,26 @@
+ /** Pure visual time mapping. No animation event is a gameplay command. */
+ export type AnimationClockClip={duration:number;loop:boolean;playbackRate?:number;locomotionSpeed?:number;nativeStrideSpeed?:number;markers?:Record<string,number>};
+ export type AnimationWork={from:number;to:number;hand?:'primary'|'offhand';barrel?:number};
+-export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;work?:readonly AnimationWork[]};
++export type AnimationClockCue={action:string;startedAt:number;durationMs?:number;phase?:string;phaseStartedAt?:number;phaseDurationMs?:number;work?:readonly AnimationWork[];healInterval?:true};
+ export type AnimationClockMotion={moving?:boolean;elapsedMs?:number;elapsedDistance?:number;signedDistance?:number;speed?:number;signedForwardSpeed?:number;segmentFraction?:number};
+ export type AnimationClockInput={clip:AnimationClockClip;action:string;cue?:AnimationClockCue;motion?:AnimationClockMotion;now:number;reducedMotion?:boolean};
+ export type AnimationClockSample={time?:number;rate:number;complete:boolean;phaseComplete:boolean;cueControlsAction:boolean;workIndex?:number};
+ const clamp=(value:number,min:number,max:number)=>Math.max(min,Math.min(max,value));
+ const wrap=(time:number,duration:number)=>(time%duration+duration)%duration;
+ const locomotion=new Set(['walk','run','crawl','strafeLeft','strafeRight','artilleryMove']);
+-const nativeActions=new Set(['reload','reprime','repair','unload','artilleryReload','throwGrenade','throwKnife','throwTorch','boleadoras']);
++const nativeActions=new Set(['heal','reload','reprime','repair','unload','artilleryReload','throwGrenade','throwKnife','throwTorch','boleadoras']);
+ export const usesNativeActionTiming=(action:string)=>nativeActions.has(action);
+ 
+ /** A recorded phase and the body clock share the same native pose interval. */
+-export function animationPhaseRange(clip:AnimationClockClip,action:string,phase=''){
++export function animationPhaseRange(clip:AnimationClockClip,action:string,phase='',healInterval=false){
+   const duration=Math.max(.000001,clip.duration),marker=clip.markers??{};
+   const contact=marker.contact,release=marker.shot??marker.release;
++  // An accepted recorded treatment plays one native interval. Direct and
++  // unpaired gestures keep their original full-clip playback.
++  if(action==='heal'&&healInterval){
++    if(phase==='prepare')return [0,duration*.25] as const;
++    if(phase==='result')return [duration*.25,duration] as const;
++  }
+   if(Number.isFinite(contact)){
+     const ready=contact*.45;
+     if(phase==='prepare')return [0,ready] as const;
+@@ -35,8 +41,8 @@
+ 
+ /** A charge may stop partway or resume an earlier paid portion. Multiple
+  * charges retain their separate native intervals instead of inventing work. */
+-export function animationPhaseRanges(clip:AnimationClockClip,action:string,phase='',work?:readonly AnimationWork[]){
+-  if(!work?.length||!['reload','artilleryReload'].includes(action))return [animationPhaseRange(clip,action,phase)];
++export function animationPhaseRanges(clip:AnimationClockClip,action:string,phase='',work?:readonly AnimationWork[],healInterval=false){
++  if(!work?.length||!['reload','artilleryReload'].includes(action))return [animationPhaseRange(clip,action,phase,healInterval)];
+   const duration=clip.duration,ready=(clip.markers?.contact??duration*.45)*.45/duration;
+   const ranges=work.map(({from,to})=>[clamp(from,0,1),clamp(to,from,1)] as const);
+   const first=ranges[0],split=clamp(ready,first[0],first[1]);
+@@ -68,7 +74,7 @@
+     const start=cue.phaseStartedAt??cue.startedAt;
+     const span=Math.max(.001,(cue.phaseDurationMs??cue.durationMs??duration*1000)/1000);
+     const elapsed=Math.max(0,(now-start)/1000),fraction=clamp(elapsed/span,0,1);
+-    const ranges=animationPhaseRanges(clip,action,phase,cue.work);
++    const ranges=animationPhaseRanges(clip,action,phase,cue.work,cue.healInterval);
+     const length=ranges.reduce((sum,[begin,end])=>sum+end-begin,0);
+     let distance=length*fraction,time=ranges.at(-1)![1],rangeIndex=ranges.length-1;
+     for(let index=0;index<ranges.length;index++){
+--- a/web/lib/three/action-timing.ts
++++ b/web/lib/three/action-timing.ts
+@@ -70,6 +70,23 @@
+   return result;
+ }
+ 
++/** An accepted observed treatment has preparation and result for the same
++ * current actor. This flag carries no patient state or hidden position. */
++export function admittedHealingIntervals(frames:readonly any[]){
++  const result=frames.map(frame=>({...frame}));
++  for(let index=0;index<frames.length;index++){
++    const start=frames[index];
++    if(start.type!=='prepare'||start.action!=='heal'||!start.unitId||start.performed===false)continue;
++    let endIndex=index+1;
++    while(endIndex<frames.length&&frames[endIndex].type!=='prepare'&&frames[endIndex].type!=='result')endIndex++;
++    const end=frames[endIndex];
++    if(end?.type!=='result'||end.action!=='heal'||end.unitId!==start.unitId||end.performed===false)continue;
++    if(!start.state.units.some((unit:any)=>unit.id===start.unitId)||!end.state.units.some((unit:any)=>unit.id===end.unitId))continue;
++    result[index].healInterval=true;result[endIndex].healInterval=true;
++  }
++  return result;
++}
++
+ /** Only the admitted actor selects a native visual delay. Rules and simulation
+  * time remain unchanged; unseen actions retain the ordinary playback delay. */
+ export function nativeActionFrameDuration(frame:any,requested:number){
+@@ -77,14 +94,14 @@
+   const unit=frame.state.units.find((unit:any)=>unit.id===frame.unitId);
+   if(!unit||unit.hp<=0||unit.unconscious||unit.knockedDown)return requested;
+   const action=semanticOrder(frame.action,frame,unit);
+-  if(!action||!usesNativeActionTiming(action))return requested;
++  if(!action||!usesNativeActionTiming(action)||action==='heal'&&!frame.healInterval)return requested;
+   const capability=resolveActorAction({action,posture:actorPosture(unit),mounted:Boolean(unit.mounted),equipment:spriteEquipment(unit)});
+   if(!capability)throw Error(`Unsupported action timing: ${action}`);
+   const appearance=spriteAppearance(unit),bank=profile.appearances[appearance as keyof typeof profile.appearances];
+   const actions=profile.banks[bank as keyof typeof profile.banks]?.actions;
+   const clip:AnimationClockClip|undefined=actions?.[capability.clip as keyof typeof actions];
+   if(!clip)throw Error(`Missing native action timing: ${appearance}:${capability.clip}`);
+-  const ranges=animationPhaseRanges(clip,action,frame.type,frame.actionWork);
++  const ranges=animationPhaseRanges(clip,action,frame.type,frame.actionWork,frame.healInterval);
+   const duration=ranges.reduce((sum,[begin,end])=>sum+end-begin,0)*1000;
+   return frame.actionWork&&duration===0?0:Math.max(requested,duration);
+ }
+--- a/web/lib/useEnemyPlayback.ts
++++ b/web/lib/useEnemyPlayback.ts
+@@ -4,7 +4,7 @@
+ import {BATTLE_PLAYBACK,battleFrameDuration,battleFrameFocus} from '../../game/battle-playback.js';
+ import {movementStepDuration} from './three/movement-timing';
+ import {surfaceMotionPoint} from './tactical-elevation';
+-import {admittedReloadWork,admittedThrownRelease,nativeActionFrameDuration} from './three/action-timing';
++import {admittedReloadWork,admittedThrownRelease,admittedHealingIntervals,nativeActionFrameDuration} from './three/action-timing';
+ import {admittedMountTransitions,mountFrameDuration} from './three/mount-presentation';
+ import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
+ const stepMs=BATTLE_PLAYBACK.step;
+@@ -41,7 +41,7 @@
+    if(!current()||validate?.(result.state)===false)return;
+    let cameraFocus:any=null,index=0,previous=source,grenadeEffect:any=null,actionId=0,actionStartedAt=0,actionDurationMs=0;
+    const sequenceId=`${generation}:${++presentationSequence.current}`;
+-   const frames=admittedMountTransitions(admittedThrownRelease(admittedReloadWork(result.frames)));
++   const frames=admittedMountTransitions(admittedHealingIntervals(admittedThrownRelease(admittedReloadWork(result.frames))));
+    let timingState=source;const durations=frames.map((next:any)=>{const duration=presentedFrameDuration(next,timingState);timingState=next.state;return duration;});
+    for(const next of frames){
+     if(!current())return;
+--- a/tools/characters-3d/compile-locomotion-profile.mjs
++++ b/tools/characters-3d/compile-locomotion-profile.mjs
+@@ -81,7 +81,7 @@
+  bank.locomotionSpeed.crawl=measured.speed;
+  const gaits=bank.clips.filter(clip=>['walk','run','crawl','strafeLeft','strafeRight'].includes(clip.gesture));
+  for(const gait of gaits)if(!((gait.nativeStrideSpeed??gait.locomotionSpeed)>0))throw Error(`Missing native movement speed: ${gender}:${gait.name}`);
+- const actions=bank.clips.filter(clip=>['reload','reprime','repair','unload','artilleryReload','throw','throwKnife','bolas','mount','dismount','climbUp','climbDown'].includes(clip.gesture));
++ const actions=bank.clips.filter(clip=>['heal','reload','reprime','repair','unload','artilleryReload','throw','throwKnife','bolas','mount','dismount','climbUp','climbDown'].includes(clip.gesture));
+  banks[gender]={crawl:{nativeStrideSpeed:measured.speed,duration:clip.duration,playbackRate:clip.playbackRate??1},clips:Object.fromEntries(gaits.map(clip=>[clip.name,{nativeStrideSpeed:clip.nativeStrideSpeed??clip.locomotionSpeed,duration:clip.duration,playbackRate:clip.playbackRate??1}])),actions:Object.fromEntries(actions.map(clip=>[clip.name,{duration:clip.duration,loop:clip.loop,markers:clip.markers}]))};
+ }
+ const horse=Object.fromEntries(['walk','run'].map(action=>{

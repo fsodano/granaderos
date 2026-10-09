@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE);
+const out=resolve(process.env.GRANADEROS_REVIEW_OUTPUT),files=['web/lib/three/actor-runtime.ts','web/lib/three/projection.ts','web/app/TacticalThreeScene.tsx','web/public/models/characters/manifest.json','web/lib/three/locomotion-profile.json','web/lib/three/animation-clock.ts','web/lib/three/action-timing.ts',...['friar','woman-shawl'].flatMap(id=>[0,1,2].map(l=>`web/public/models/characters/${id}-lod${l}.glb`))];
+const identity=async()=>({commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),hashes:Object.fromEntries(await Promise.all(files.map(async f=>[f,createHash('sha256').update(await readFile(f)).digest('hex')])))});
+await mkdir(out,{recursive:true});const report={source:await identity(),cases:[],errors:[]};
+const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,args:['--disable-background-timer-throttling','--disable-renderer-backgrounding']});
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:1100}});page.setDefaultTimeout(45000);
+ page.on('pageerror',e=>report.errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&!m.location().url.endsWith('favicon.ico'))report.errors.push(m.text())});
+ await page.goto(process.env.GRANADEROS_REVIEW_URL,{waitUntil:'domcontentloaded'});
+ await page.waitForFunction(()=>{const c=document.querySelector('[data-sector-renderer="three"]');return c&&Number(c.dataset.actors)>0&&c.dataset.actors===c.dataset.loadedActors&&c.dataset.pendingActors==='0'&&!document.querySelector('.tactical-three-status')});await page.getByRole('button',{name:'100 personajes',exact:true}).click();assert.equal(await page.getByRole('button',{name:'100 personajes',exact:true}).getAttribute('aria-pressed'),'true');
+ const ready=lod=>page.waitForFunction(lod=>{const c=document.querySelector('[data-sector-renderer="three"]');return c?.dataset.actors==='100'&&c.dataset.loadedActors==='100'&&c.dataset.pendingActors==='0'&&c.dataset.lod===String(lod)},lod);
+ await page.waitForTimeout(5000);console.log('INITIAL_DIAGNOSTIC',await page.locator('[data-sector-renderer="three"]').evaluate(c=>({...c.dataset})));await ready(1);const before=await page.locator('.ja2-roster').count();
+ for(const [zoom,lod,direction] of [[1,2,'Alejar campo'],[2,1,'Acercar campo'],[3,0,'Acercar campo'],[2,1,'Alejar campo'],[1,2,'Alejar campo']]){
+  await page.getByRole('button',{name:'Cámara',exact:true}).click();await page.getByRole('button',{name:direction,exact:true}).click();await page.getByRole('button',{name:'Cámara',exact:true}).click();await ready(lod);
+  const sample=await page.evaluate(async()=>{
+   const c=document.querySelector('[data-sector-renderer="three"]'),snapshots=[],deltas=[],tasks=[];let last=performance.now(),start=last;
+   const observer=new PerformanceObserver(list=>tasks.push(...list.getEntries().map(e=>({duration:e.duration,startTime:e.startTime}))));observer.observe({type:'longtask',buffered:false});
+   await new Promise(resolve=>{function frame(now){deltas.push(now-last);last=now;if(now-start>=4500){observer.disconnect();resolve()}else{if(!snapshots.length||now-start>snapshots.length*1000)snapshots.push({...c.dataset});requestAnimationFrame(frame)}}requestAnimationFrame(frame)});
+   deltas.sort((a,b)=>a-b);return {snapshots,frames:deltas.length,frameGapP95Ms:deltas[Math.floor(deltas.length*.95)],frameGapMaxMs:deltas.at(-1),longTasks:tasks};
+  });
+  assert.ok(sample.snapshots.every(s=>s.actors==='100'&&s.loadedActors==='100'&&s.pendingActors==='0'&&s.lod===String(lod)));
+  await page.screenshot({path:resolve(out,`zoom-${zoom}-pass-${report.cases.length+1}.png`)});report.cases.push({zoom,lod,...sample});console.log('NORMAL_100_LOD',zoom,lod,sample.frameGapP95Ms,sample.frameGapMaxMs);
+ }
+ report.rosterCountBefore=before;report.rosterCountAfter=await page.locator('.ja2-roster').count();assert.equal(report.rosterCountAfter,before);assert.deepEqual(report.errors,[]);
+ report.sourceAfter=await identity();assert.deepEqual(report.source.hashes,report.sourceAfter.hashes);
+ await writeFile(resolve(out,'report.json'),JSON.stringify(report,null,2)+'\n');
+}finally{await browser.close()}

@@ -1,0 +1,28 @@
+from pathlib import Path
+import json,sys,hashlib,subprocess,importlib.util,argparse
+EV=Path(__file__).resolve().parent;p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.add_argument('--base-assets',type=Path,default=EV/'base');proof_options=p.parse_args();ROOT=proof_options.repo;ASSETS=ROOT/'web/public/models/characters';sys.path.insert(0,str(EV));from gltf_proof import read,tracks,differences
+spec=importlib.util.spec_from_file_location('native_builder',ROOT/'tools/characters-3d/build-prone-rifle-support.py');builder=importlib.util.module_from_spec(spec);spec.loader.exec_module(builder)
+original=json.loads((proof_options.base_assets/'manifest.json').read_text());updated=json.loads((ASSETS/'manifest.json').read_text());receipt={};allowed=set()
+for gender in('male','female'):
+ before,data=read(proof_options.base_assets/(gender+'-animations.glb'));after,new=read(ASSETS/(gender+'-animations.glb'));assert builder.native_payload(before,data)==builder.native_payload(after,new)
+ old={c['name']:c for c in before['animations']};fixed={c['name']:c for c in after['animations']};assert list(old)==list(fixed);changed=[];retained=[];untouched=[]
+ for name,c in old.items():
+  a,b=tracks(before,data,c),tracks(after,new,fixed[name]);assert a.keys()==b.keys()
+  if name not in builder.NAMES:assert a==b,name+' changed';untouched.append(name);continue
+  for key,value in a.items():
+   if key[0]in builder.LEGS and key[1]=='rotation':
+    assert value['input']==b[key]['input']and value['interpolation']==b[key]['interpolation'];assert value['output']['count']==b[key]['output']['count'];assert value['output']!=b[key]['output'];changed.append({'clip':name,'bone':key[0],'path':key[1],'exactInputAndInterpolation':value['input'],'before':value['output'],'after':b[key]['output']})
+   else:assert value==b[key],str((name,key))+' changed';retained.append({'clip':name,'bone':key[0],'path':key[1],'exact':value})
+ for index,c in enumerate(original['animationLibraries'][gender]['clips']):
+  if c['name']in builder.NAMES:allowed.add('/animationLibraries/'+gender+'/clips/'+str(index)+'/nativeBootSupport')
+ for key in('bytes','sha256'):allowed.add('/animationLibraries/'+gender+'/'+key)
+ assert len(changed)==54and len(retained)==1377and len(untouched)==325
+ receipt[gender]={'changedChannels':changed,'unchangedSelectedChannels':retained,'untouchedClips':untouched,'nativeMeshRigSkinAllOtherFields':'exact','releasedRifleGuardAndLance':['stand.idle.long-gun','stand.butt.long-gun','stand.idle.lance']}
+changes=differences(original,updated);assert {d['path']for d in changes}==allowed
+pins=json.loads((EV/'base-pins.json').read_text());assert hashlib.sha256((ROOT/'web/lib/three/locomotion-profile.json').read_bytes()).hexdigest()==pins['files']['web/lib/three/locomotion-profile.json']
+assets={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()for p in ASSETS.iterdir()if p.is_file()and p.name!='manifest.json'}
+subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-rifle-support.py'),'--receipt',str(EV/'idempotence-receipt.json')],cwd=ROOT,stdout=(EV/'idempotence.log').open('w'),check=True)
+assert all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==hashvalue for p,hashvalue in assets.items()),'A repeated native build changes published assets'
+assert json.loads((ASSETS/'manifest.json').read_text())==updated
+(EV/'preservation-proof.json').write_text(json.dumps({'baseMain':pins['commit'],'banks':receipt,'manifestChanges':changes,'unchangedProfile':pins['files']['web/lib/three/locomotion-profile.json'],'idempotentAssets':'all character asset bytes exact after repeated builder','sourceBasis':'current supported native prone idle and exact matching static Root/pelvis; no fixed old bank copy'},indent=2)+'\n')
+print('NATIVE_PRONE_RIFLE_PRESERVATION_PASS',{'changedPerBank':54,'retainedSelectedPerBank':1377,'otherClipsPerBank':325,'manifestNamespaces':len(changes),'idempotence':True})

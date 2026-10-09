@@ -1,0 +1,26 @@
+import {readFile, writeFile, copyFile, mkdir} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+import {resolve} from 'node:path';
+const root = process.cwd();
+const require = createRequire(resolve(root, 'web/package.json'));
+const sharp = require('sharp');
+const jobs = JSON.parse(await readFile('assets/prompts/portrait-expansion/part-1.json', 'utf8'));
+const [mode, arg, generatedSource] = process.argv.slice(2);
+if (mode === 'save') {
+  const job = jobs.find(job => job.id === arg);
+  if (!job) throw new Error(`Unknown portrait ${arg}`);
+  await copyFile(generatedSource, job.source);
+  const output = await sharp(job.source).resize(384, 384, {fit:'cover'}).webp({quality:86}).toBuffer();
+  for (const base of ['assets/web', 'web/public/art']) await writeFile(`${base}/${job.id}.webp`, output);
+  console.log(JSON.stringify({id:job.id,source:job.source,generatedSource,bytes:output.length}));
+} else if (mode === 'review') {
+  const start = Number(arg);
+  const batch = jobs.slice(start, start+8);
+  const composites = [];
+  for (let i=0;i<batch.length;i++) composites.push({input:await sharp(`assets/web/${batch[i].id}.webp`).resize(384,384).toBuffer(),left:(i%4)*384,top:Math.floor(i/4)*384});
+  await mkdir('assets/previews/portrait-expansion', {recursive:true});
+  const file=`assets/previews/portrait-expansion/part-1-${String(start+1).padStart(2,'0')}.webp`;
+  await sharp({create:{width:1536,height:Math.ceil(batch.length/4)*384,channels:3,background:'#21180f'}}).composite(composites).webp({quality:90}).toFile(file);
+  console.log(file);
+  console.log(batch.map((job,i)=>`${i+1}: ${job.id}`).join('\n'));
+}

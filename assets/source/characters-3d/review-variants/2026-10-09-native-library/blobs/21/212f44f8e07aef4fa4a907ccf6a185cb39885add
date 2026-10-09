@@ -1,0 +1,85 @@
+import assert from 'node:assert/strict';
+import {register} from 'node:module';
+import test from 'node:test';
+register('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/tests/tactical-render-loader.mjs',import.meta.url);
+const {ActorRuntime}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/web/lib/three/actor-runtime.ts');
+const {presentActors}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/web/lib/three/presentation.ts');
+const {TILE_METRES}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/web/lib/three/projection.ts');
+const {publishedActor}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/tests/published-actor-fixture.mjs');
+const {createRendererSandboxBattle}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/web/app/renderer-sandbox/fixtures.js');
+const {presentedActBattle,actBattle}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/game/tactical.js');
+const {selectActorClipVariant}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/game/actor-action-contract.js');
+const {Vector3,Triangle,Matrix4}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/web/node_modules/three/build/three.module.js');
+const {capsuleSurfaceGap}=await import('file:///Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/tests/skinned-surface-contact-fixture.mjs');
+
+async function pair(appearance='granadero',diagonal=false,posture='standing',lod=0){
+ const state=createRendererSandboxBattle('combat'),unit=state.units.find(unit=>unit.id==='sabre'),target=state.units.find(unit=>unit.id==='target-sabre');
+ unit.spriteAppearance=appearance;target.y+=diagonal?1:0;target.stance=posture;
+ const result=presentedActBattle(state,{type:'melee',unitId:unit.id,targetId:target.id}),contact=result.frames.find(frame=>frame.type==='contact');
+ assert.ok(contact,`The rules admit the real strike: ${result.state.lastError}`);
+ const frame={...contact,sequenceId:'native-contact-review',actionId:1,index:1,startedAt:420,durationMs:650,actionStartedAt:0,actionDurationMs:1970};
+ // Build the complete admitted pair; presentActors supplies target identity
+ // and disclosed floor support before any runtime object is constructed.
+ const admitted=frame.state.units.filter(actor=>['sabre','target-sabre'].includes(actor.id)).map(actor=>({key:`unit:${actor.id}`,kind:'unit',actor})),actors=presentActors(frame.state,admitted,{},new Set(),{frame,now:420}),attacker=actors.find(actor=>actor.id==='sabre'),defender=actors.find(actor=>actor.id==='target-sabre');
+ assert.ok(attacker.cue.contactTarget);assert.ok(attacker.cue.contactSupport.floors.length);
+ const [asset,other]=await Promise.all([publishedActor(appearance,lod),publishedActor(defender.appearance,lod)]),body=new ActorRuntime(other,defender);body.tick(.1,1070);body.root.updateMatrixWorld(true);
+ return {attacker,defender,asset,body,frame,result};
+}
+function faces(root){
+ const faces=[];root.traverse(mesh=>{
+  if(!mesh.isSkinnedMesh||!mesh.visible)return;
+  const position=mesh.geometry.attributes.position,index=mesh.geometry.index,vertices=Array.from({length:position.count},(_,index)=>mesh.localToWorld(mesh.getVertexPosition(index,new Vector3())));
+  for(let offset=0;offset<index.count;offset+=3){const face=[vertices[index.getX(offset)],vertices[index.getX(offset+1)],vertices[index.getX(offset+2)]];if(new Triangle(...face).getArea()>1e-10)faces.push(face);}
+ });return faces;
+}
+function contactGap(runtime,surface){
+ const weapon=runtime.model.getObjectByName('primary:1810');assert.ok(weapon);
+ if(runtime.action.getClip().name.endsWith('.hilt'))return capsuleSurfaceGap(weapon.localToWorld(new Vector3(0,-.052,0)),weapon.localToWorld(new Vector3(0,.074,0)),.017,surface);
+ let gap=Infinity;const point=t=>weapon.localToWorld(new Vector3(-.060*t*t*.45,.078+.76*t,0));
+ for(let index=0;index<24;index++)gap=Math.min(gap,capsuleSurfaceGap(point(index/24),point((index+1)/24),.006,surface));return gap;
+}
+function nativeBones(asset){const bones=new Map();asset.body.scene.traverse(node=>{if(node.isBone)bones.set(node.name,{position:node.position.clone(),scale:node.scale.clone()});});return bones;}
+function assertNative(runtime,bones,position){
+ assert.deepEqual(runtime.root.position.toArray(),position,'The saved actor cell is the fixed wrapper transform');
+ runtime.model.traverse(node=>{const native=bones.get(node.name);if(!native)return;if(node.name!=='Root')assert.ok(node.position.distanceTo(native.position)<1e-6,`${node.name} keeps its native joint offset through GLTF float precision`);assert.ok(node.scale.distanceTo(native.scale)<1e-6,`${node.name} keeps its native scale through GLTF float precision`);});
+}
+function lowestSole(runtime){
+ const footwear=runtime.model.getObjectByName(runtime.asset.appearance.parts.footwear.replace('{lod}',String(runtime.asset.lod))),position=footwear.geometry.attributes.position;
+ let minimum=Infinity;for(let index=0;index<position.count;index++)minimum=Math.min(minimum,footwear.localToWorld(footwear.getVertexPosition(index,new Vector3())).y);return minimum;
+}
+
+function gap(a,b){let minimum=Infinity;for(const face of a)for(let i=0;i<3;i++){const start=face[i],end=face[(i+1)%3];if(start.distanceToSquared(end)<1e-12)continue;minimum=Math.min(minimum,capsuleSurfaceGap(start,end,0,b));if(minimum<=1e-8)return minimum;}return minimum;}
+function strikingFaces(runtime){const item=runtime.model.getObjectByName('primary:1810'),hilt=runtime.action.getClip().name.endsWith('.hilt'),result=[];item.traverse(mesh=>{if(!mesh.isMesh||!mesh.visible||!(hilt?/Leather_Grip|Crossguard/:/Curved_Blade/).test(mesh.name))return;const p=mesh.geometry.attributes.position,index=mesh.geometry.index;for(let i=0;i<index.count;i+=3){const face=[0,1,2].map(offset=>mesh.localToWorld(new Vector3().fromBufferAttribute(p,index.getX(i+offset))));if(new Triangle(...face).getArea()>1e-10)result.push(face);}});assert.ok(result.length);return result;}
+function soleCenter(runtime,side){const mesh=runtime.model.getObjectByName(runtime.asset.appearance.parts.footwear.replace('{lod}',String(runtime.asset.lod))),sole=runtime.meleeFit.soles.get(side),center=new Vector3();for(const index of sole.outline)center.add(mesh.localToWorld(mesh.getVertexPosition(index,new Vector3())));return center.divideScalar(sole.outline.length);}
+function weaponFaces(runtime,weapon){const item=runtime.model.getObjectByName('primary:1810'),faces=[];item.traverse(mesh=>{if(!mesh.isMesh||!mesh.visible||!/Leather_Grip/.test(mesh.name))return;const p=mesh.geometry.attributes.position,index=mesh.geometry.index;for(let i=0;i<index.count;i+=3)faces.push([0,1,2].map(offset=>mesh.localToWorld(new Vector3().fromBufferAttribute(p,index.getX(i+offset)))));});return faces;}
+function palmFaces(runtime){return faces(runtime.model,(mesh,index)=>{if(mesh.material.name!=='Skin')return false;if(index===undefined)return true;let weight=0;for(let slot=0;slot<4;slot++)if(mesh.skeleton.bones[mesh.geometry.attributes.skinIndex.getComponent(index,slot)].name==='hand_r')weight+=mesh.geometry.attributes.skinWeight.getComponent(index,slot);return weight>.5;});}
+function assertFreeGuard(runtime,source){
+ runtime.model.getObjectByName('upperarm_l').traverse(node=>{if(!node.isBone)return;const native=source.model.getObjectByName(node.name);assert.ok(node.quaternion.toArray().every((value,index)=>Math.abs(value-native.quaternion.toArray()[index])<1e-8),`${node.name} keeps the free native guard`);assert.ok(node.position.distanceTo(native.position)<1e-8);});
+ const current=runtime.model.getObjectByName('spine_03').worldToLocal(runtime.model.getObjectByName('hand_l').getWorldPosition(new Vector3())),native=source.model.getObjectByName('spine_03').worldToLocal(source.model.getObjectByName('hand_l').getWorldPosition(new Vector3()));assert.ok(current.distanceTo(native)<1e-8,'The free guard keeps its native position relative to the chest');
+}
+function gripMatrix(runtime,weapon){const item=runtime.model.getObjectByName('primary:1810');return new Matrix4().copy(runtime.model.getObjectByName('hand_r').matrixWorld).invert().multiply(item.matrixWorld);}
+function assertGrip(runtime,source,weapon){const current=gripMatrix(runtime,weapon).elements,native=gripMatrix(source,weapon).elements;assert.ok(current.every((value,index)=>Math.abs(value-native[index])<1e-8),'The same owned gun keeps its native wrist grip');}
+function assertStrikingReach(runtime,source,label){
+ const plan=runtime.meleeFit.plan;if(!plan)return;
+ // Recover the intended wrist from the independently rendered source pose,
+ // not from the solver's clamped endpoint or its reported reach counter.
+ const time=runtime.action.time,contact=runtime.clipSpec.markers.contact,end=runtime.action.getClip().duration,smooth=value=>{const t=Math.max(0,Math.min(1,value));return t*t*(3-2*t);},weight=time<=contact?smooth(time/contact):1-smooth((time-contact)/((plan.handRecovery??end*.9)-contact));
+ const nativeShoulder=source.model.getObjectByName('upperarm_r').getWorldPosition(new Vector3()),nativeElbow=source.model.getObjectByName('lowerarm_r').getWorldPosition(new Vector3()),nativeWrist=source.model.getObjectByName('hand_r').getWorldPosition(new Vector3()),length=nativeShoulder.distanceTo(nativeElbow)+nativeElbow.distanceTo(nativeWrist),desired=nativeWrist.add(plan.hand.clone().applyQuaternion(runtime.root.quaternion).multiplyScalar(weight)),shoulder=runtime.model.getObjectByName('upperarm_r').getWorldPosition(new Vector3()),wrist=runtime.model.getObjectByName('hand_r').getWorldPosition(new Vector3());
+ assert.ok(Math.max(0,shoulder.distanceTo(desired)-(length-.001))<1e-7,`${label} intended wrist stays within original measured arm reach`);
+ assert.ok(wrist.distanceTo(desired)<1e-6,`${label} actual native wrist reaches its intended path without a hidden clamp`);
+}
+
+
+
+const report=[];
+for(const appearance of ['granadero','woman-scout'])for(const diagonal of [false,true])for(const posture of ['standing','crouched']){
+ const f=await pair(appearance,diagonal,posture),seen=new Set();
+ for(let i=0;i<12;i++){
+  const name=selectActorClipVariant('stand.slash.blade',`strike:${i}`);if(seen.has(name))continue;seen.add(name);
+  const visual={...f.attacker,cue:{...f.attacker.cue,id:`strike:${i}`}},runtime=new ActorRuntime(f.asset,visual,undefined,()=>({model:f.body.model,root:f.body.root}));runtime.tick(.1,1070);
+  const point=name=>runtime.model.getObjectByName(name).getWorldPosition(new Vector3()),wrist=point('hand_r'),angle=point('middle_01_r').sub(wrist).angleTo(wrist.clone().sub(point('lowerarm_r')))*180/Math.PI;
+  const row={appearance,diagonal,posture,name,rejectedFits:runtime.meleeFit.rejectedFits,hasPlan:Boolean(runtime.meleeFit.plan),bendAtContactDegrees:angle,bodyAdvance:runtime.meleeFit.bodyAdvance,walkingStep:runtime.meleeFit.walkingStep,nativePathSamples:runtime.meleeFit.nativePath.length};report.push(row);console.log(JSON.stringify(row));runtime.dispose();
+ }
+ f.body.dispose();
+}
+const fs=await import('node:fs/promises');await fs.writeFile('/tmp/granaderos-standing-blade-all-contact-candidates.json',JSON.stringify(report,null,2));

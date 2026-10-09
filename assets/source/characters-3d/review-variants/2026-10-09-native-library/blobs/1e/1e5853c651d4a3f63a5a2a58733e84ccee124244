@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE);
+const url=process.env.GRANADEROS_REVIEW_URL,root=process.cwd(),out=resolve(process.env.GRANADEROS_REVIEW_OUTPUT), baseline=resolve(process.env.GRANADEROS_REVIEW_BASELINE);
+const files=['web/lib/three/actor-runtime.ts','web/public/models/characters/manifest.json','web/public/models/characters/male-animations.glb','web/public/models/characters/female-animations.glb',...['friar','woman-shawl'].flatMap(id=>[0,1,2].map(l=>`web/public/models/characters/${id}-lod${l}.glb`))];
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const identity=async()=>({commit:process.env.GRANADEROS_REVIEW_BASIS,hashes:Object.fromEntries(await Promise.all(files.map(async f=>[f,sha(await readFile(resolve(root,f)))])))});
+await mkdir(out,{recursive:true});const source=await identity(),report={url,source,cases:[],errors:[]};
+const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,args:['--disable-background-timer-throttling','--disable-renderer-backgrounding']});
+try{
+for(const mode of ['baseline','candidate']) {
+const [index,name,id] = [8,'Mujer con rebozo','woman-shawl'];
+const routed = ['manifest.json', ...[0,1,2].map(l=>`woman-shawl-lod${l}.glb`)];
+const expected = structuredClone(source.hashes);
+for (const f of routed) expected['web/public/models/characters/'+f] = sha(await readFile(resolve(mode==='baseline'?baseline:root,'web/public/models/characters',f)));
+ const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[],network=[],pending=[];page.setDefaultTimeout(60000);
+ page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&!m.location().url.endsWith('favicon.ico'))errors.push(m.text())});
+ page.on('response',r=>{const path=new URL(r.url()).pathname;if(r.status()>=400&&!path.endsWith('favicon.ico'))errors.push(`${r.status()} ${path}`);const file='web/public'+path;if(files.includes(file))pending.push((async()=>network.push({file,sha256:sha(await r.body())}))())});
+ if(mode==='baseline')await page.route('**/models/characters/*', async route => { const file=new URL(route.request().url()).pathname.split('/').at(-1); if(routed.includes(file))await route.fulfill({status:200,body:await readFile(resolve(baseline,'web/public/models/characters',file)),contentType:file.endsWith('.json')?'application/json':'model/gltf-binary'});else await route.continue(); });
+ const ready=()=>page.waitForFunction(()=>{const c=document.querySelector('[data-sector-renderer="three"]');return c&&Number(c.dataset.actors)>0&&c.dataset.actors===c.dataset.loadedActors&&!document.querySelector('.tactical-three-status')});
+ await page.goto(url,{waitUntil:'domcontentloaded'});await ready();await page.getByRole('button',{name:'Ocho personajes',exact:true}).click();await ready();
+ if(index>6)await page.getByRole('button',{name:'Combatientes siguientes',exact:true}).click();const card=page.locator(`[aria-label^="${index}. ${name}."]`);assert.equal(await card.count(),1);await card.click({button:'right'});await page.getByRole('button',{name:'Listo',exact:true}).click();await page.locator('.tactical-field').focus();await page.keyboard.press('Escape');await page.keyboard.press('w');await page.waitForTimeout(700);const selectedCard=await card.getAttribute('aria-label');assert.ok(selectedCard.includes('Mano principal: Pistola'),'Use the owned primary pistol through the ordinary weapon control: '+selectedCard);
+ await page.getByRole('button',{name:'Cámara',exact:true}).click();await page.getByRole('button',{name:'Centrar cámara en el combatiente seleccionado',exact:true}).click();await page.getByRole('button',{name:'Cámara',exact:true}).click();await page.waitForFunction(()=>{const c=document.querySelector('[data-sector-renderer=\"three\"]');return c?.dataset.lod==='1'&&c.dataset.pendingActors==='0'});
+ for(const [posture,label]of [['standing',null],['crouched','Agachado'],['prone','Cuerpo a tierra']]){
+  let inventory=null;if(label){await card.click({button:'right'});await page.getByText('Postura y órdenes',{exact:true}).click();await page.getByRole('button',{name:new RegExp(`^Cambiar a ${label}:`)}).click();await page.waitForTimeout(1500);inventory=await page.locator('.ja2-inventory').innerText();assert.ok(inventory.includes(posture==='prone'?'Cuerpo a tierra':'Agachado'));await page.getByRole('button',{name:'Listo',exact:true}).click()}
+  for(const [lod,direction] of [[1,null],[0,'Acercar campo'],[1,'Alejar campo'],[2,'Alejar campo'],[1,'Acercar campo']]) {
+   if(direction){await page.getByRole('button',{name:'Cámara',exact:true}).click();await page.getByRole('button',{name:direction,exact:true}).click();await page.getByRole('button',{name:'Cámara',exact:true}).click();}
+   await page.waitForFunction(lod=>{const c=document.querySelector('[data-sector-renderer="three"]');return c?.dataset.lod===String(lod)&&c.dataset.pendingActors==='0'},lod);
+   await page.waitForTimeout(700);
+   if(lod===1&&direction)continue;
+   await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(20,20);
+   const screenshot=`${mode}-${id}-${posture}-lod${lod}.png`;
+   await page.screenshot({path:resolve(out,screenshot)});
+   report.cases.push({mode,id,posture,lod,screenshot,inventory,card:await card.getAttribute('aria-label'),actors:await page.locator('[data-sector-renderer="three"]').getAttribute('data-actors')});
+  }
+ }
+ await Promise.all(pending);for(const n of network)assert.equal(n.sha256,expected[n.file]);assert.deepEqual(errors,[]);report.cases.at(-1).network=network;report.cases.at(-1).expected=expected;console.log('PALETTE_UI',mode,id);await page.close();
+}
+report.sourceAfter=await identity();assert.deepEqual(report.sourceAfter,source);
+}catch(e){report.errors.push(String(e));for(const [i,p]of browser.contexts().flatMap(c=>c.pages()).entries()){await p.screenshot({path:resolve(out,'failed-'+i+'.png')});await writeFile(resolve(out,'failed-dom-'+i+'.json'),JSON.stringify({text:await p.locator('body').innerText(),labels:await p.locator('[aria-label]').evaluateAll(n=>n.map(x=>x.getAttribute('aria-label')))},null,2))}throw e}finally{await writeFile(resolve(out,'report.json'),JSON.stringify(report,null,2)+'\n');await browser.close()}
