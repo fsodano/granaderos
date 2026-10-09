@@ -3,6 +3,7 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {rockForm} from './world-rock-forms';
 import {leafSpray} from './world-leaf-sprays';
+import {floorRugBodyGeometry,floorRugTrimGeometry,storageSackGeometry} from './world-storage-cloth';
 
 export type PolygonUV=(point:Vector3)=>readonly [number,number];
 /** Roof courses run along the low eave, with their spacing measured on the
@@ -70,6 +71,9 @@ export class WorldGeometry {
     else if(kind==='shelf-jar')geometry=shelfVesselGeometry('jar');
     else if(kind==='shelf-bottle')geometry=shelfVesselGeometry('bottle');
     else if(kind==='shelf-bowl')geometry=shelfVesselGeometry('bowl');
+    else if(kind==='storage-sack-0'||kind==='storage-sack-1')geometry=storageSackGeometry(Number(kind.slice(-1)));
+    else if(kind==='floor-rug-body')geometry=floorRugBodyGeometry();
+    else if(kind==='floor-rug-trim')geometry=floorRugTrimGeometry();
     else throw Error(`Unknown world primitive ${kind}`);
     this.cache.set(kind,geometry);return geometry;
   }

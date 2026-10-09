@@ -118,7 +118,15 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
         part.primitive('cylinder',dark,[a,h,b],[r*.79,.025,r*.79],undefined,light);
       }barrel.dispose();
     }else if(prop.type==='hay'||prop.type==='sacks'){
-      const m=materials.get(prop.type==='hay'?'thatch':'linen');for(let n=0;n<4;n++){const a=(n%2-.5)*w*.34,b=(Math.floor(n/2)-.5)*d*.34;part.primitive(prop.type==='hay'?'box':'sphere',m,[a,h*(n===3?.57:.32),b],[w*.33,h*.34,d*.31],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),n*.12),light);}
+      const m=materials.get(prop.type==='hay'?'thatch':'linen');for(let n=0;n<4;n++){
+        const a=(n%2-.5)*w*.34,b=(Math.floor(n/2)-.5)*d*.34,kind=prop.type==='hay'?'box':`storage-sack-${(n+Math.floor(seeded(prop.x,prop.y,1723)*2))%2}`;
+        let fit=1;
+        if(prop.type==='sacks'){
+          const bounds=geometry.get(kind).boundingBox!,rx=Math.max(Math.abs(bounds.min.x),Math.abs(bounds.max.x))*w*.33,rz=Math.max(Math.abs(bounds.min.z),Math.abs(bounds.max.z))*d*.31,c=Math.cos(n*.12),s=Math.sin(n*.12);
+          fit=Math.min(1,(w*.5-Math.abs(a))/(c*rx+s*rz),(d*.5-Math.abs(b))/(s*rx+c*rz));
+        }
+        part.primitive(kind,m,[a,h*(n===3?.57:.32),b],[w*.33*fit,h*.34,d*.31*fit],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),n*.12),light);
+      }
       if(prop.type==='hay')for(let n=0;n<6;n++)box(dark,(n-2.5)*w*.1,h*.66,0,.006,.015,d*.60);
     }else if(prop.type==='cart'){
       const cw=w*.68,cd=d*.62,bedZ=d*.10,radius=Math.min(.36,w*.30,d*.30),axleY=radius*1.04*1.09+.01,axleZ=d*.10;
@@ -178,7 +186,7 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
       const pot=lathe([[.08,0],[.14,.04],[.18,h*.42],[.16,h*.76],[.07,h*.90],[.07,h],[.06,h],[.06,h*.9]]);part.add(pot,materials.get('ceramic'),new importMatrix(),light);pot.dispose();
       for(const a of [-1,1])part.primitive('torus',materials.get('ceramic'),[a*.15,h*.62,0],[.065,.09,.065],undefined,light);
     }else if(prop.type==='rug'){
-      box(materials.get('rug'),0,.009,0,w*.84,.018,d*.84);for(const a of [-1,1])box(linen,a*w*.35,.022,0,.035,.005,d*.77);for(const b of [-1,1])box(linen,0,.022,b*d*.35,w*.77,.005,.035);
+      part.primitive('floor-rug-body',materials.get('rug'),[0,0,0],[w,1,d],undefined,light);part.primitive('floor-rug-trim',linen,[0,0,0],[w,1,d],undefined,light);
     }else if(prop.type==='candle'){
       part.primitive('cylinder',materials.get('brass'),[0,.02,0],[.09,.035,.09],undefined,light);part.primitive('cylinder',materials.get('wax'),[0,h*.45,0],[.035,h*.85,.035],undefined,light);part.primitive('cone',materials.get('flame',{emissive:true}),[0,h+.035,0],[.025,.07,.025],undefined,light);
     }else if(prop.type==='broken-timber'||prop.type==='rubble'){
