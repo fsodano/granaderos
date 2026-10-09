@@ -1,0 +1,113 @@
+{
+  "status": "worker-only shared-albedo incremental pilot; pending parent review/publication",
+  "timestampUTC": "2026-10-08T11:23:09.247300+00:00",
+  "sourcePatch": "/tmp/granadero-worker-face-albedo-pilot/worker-skin.patch",
+  "sourcePatchSha256": "585a62c7c14e46dc148a49c2f42bbc84c0cc76c76d9495b34fa2edc0f02d570b",
+  "sourceFiles": [
+    "assets/source/characters-3d/authoring/generated_skin.py",
+    "tests/characters-generated-skin.test.mjs",
+    "tests/characters-skin-surfaces.test.mjs"
+  ],
+  "candidateDirectory": "/tmp/granadero-worker-face-albedo-pilot/models",
+  "baselineManifestSha256": "bb8fe5a0b13496cdf49d9b8787ed9af9179aa99a52b4148f77c78e26ab06c1a8",
+  "currentCanonicalManifestObserved": "9d515a3ecc142ced0e745454ddfa7bf1141afd68e3f4c18d8fca7fd493bdcdf3",
+  "mergeRule": "Merge only these 3 worker GLBs/body records. Keep current manifest, all animation libraries, collar changes and other appearances. No new texture bytes are required: the exact generated PNG is already published for Granadero.",
+  "bodyRecords": [
+    {
+      "path": "worker-lod0.glb",
+      "expectedPreviousSha256": "6382ca27feeb99e6ac7c099822bb9cad82cf23acec09397747d75491dfccb861",
+      "record": {
+        "lod": 0,
+        "url": "/models/characters/worker-lod0.glb",
+        "triangles": 80771,
+        "bytes": 4207288,
+        "drawCalls": 6,
+        "sha256": "e019b035e082ba67e5e06a062e15eb3408b0378caadf957dd232762fc9d6e498"
+      },
+      "proof": "/tmp/granadero-worker-face-albedo-pilot/albedo-proof-lod0.json"
+    },
+    {
+      "path": "worker-lod1.glb",
+      "expectedPreviousSha256": "63ed88232a21273547558213860d92e8f76d52a065821e9ec83ebb0c37677111",
+      "record": {
+        "lod": 1,
+        "url": "/models/characters/worker-lod1.glb",
+        "triangles": 50872,
+        "bytes": 2973052,
+        "drawCalls": 6,
+        "sha256": "27bf16d99a16c944a9d53497b3172331b65be938432bab7a3902a75c4fac5848"
+      },
+      "proof": "/tmp/granadero-worker-face-albedo-pilot/albedo-proof-lod1.json"
+    },
+    {
+      "path": "worker-lod2.glb",
+      "expectedPreviousSha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+      "record": {
+        "lod": 2,
+        "url": "/models/characters/worker-lod2.glb",
+        "triangles": 21852,
+        "bytes": 1135964,
+        "drawCalls": 6,
+        "sha256": "a15c8a823636e2578342ce9b0780fc63446d38f22d8da2b5e0d6b30229dd5c36"
+      },
+      "proof": "/tmp/granadero-worker-face-albedo-pilot/albedo-proof-lod2.json"
+    }
+  ],
+  "assetAllowlist": [
+    "worker-lod0.glb",
+    "worker-lod1.glb",
+    "worker-lod2.glb"
+  ],
+  "existingAlbedo": {
+    "uri": "textures/040b6c27fc46ce2da45430.png",
+    "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+    "rasterEdits": false
+  },
+  "sourceReproduction": "All three GLBs were authored from source with worker opt-in. character.py uses the existing uses_generated_skin predicate for neutral brow-bed pigment. There is no post-export COLOR0 patch.",
+  "tests": {
+    "pass": 64,
+    "fail": 0,
+    "log": "/tmp/granadero-worker-face-albedo-pilot/texture-eye-tests.log",
+    "negativeBaseline": {
+      "expectedFail": 6,
+      "pass": 0,
+      "log": "/tmp/granadero-worker-face-albedo-pilot/native-negative-tests.log",
+      "reason": "Native worker assets lack UV1 albedo and retain dark brow-bed pigment; the new delivery contracts reject them."
+    }
+  },
+  "visualReview": {
+    "liveBefore": "/tmp/granadero-worker-face-albedo-pilot/live-before.png",
+    "liveAfter": "/tmp/granadero-worker-face-albedo-pilot/live-after.png",
+    "matchedStudio": [
+      "after-three-quarter",
+      "after-front",
+      "after-lod1",
+      "after-lod2"
+    ],
+    "gameSize": "/tmp/granadero-worker-face-albedo-pilot/after-game/worker/stand.idle.unarmed.sample-1.png",
+    "observedGain": "Visible skin variation, cheek/jaw stubble and stronger brow detail in face views, including the current lab lighting. The 256px full-body gain is subtle.",
+    "remainingLimits": [
+      "Shared Granadero texture traits: broad brow tails/furrow and the same stubble. This is not a new individual facial identity.",
+      "The native worker facial geometry is unchanged. The small separate jaw pilot is excluded.",
+      "No reference-level or all-character completion claim.",
+      "Close lower-LOD facets remain in the existing geometry.",
+      "No new draw calls or triangles; UV1 adds a second skin coordinate attribute."
+    ],
+    "lowerLODReview": "Inspected actual LOD1 and LOD2 face exports. No new UV seam, misplaced iris/lip pigment or brow-bed halo appeared in these views. Existing LOD2 eye/jaw facets remain."
+  },
+  "runtimeBrowser": {
+    "actualApp": "Copied current production lab, same renderer/light/palette code",
+    "candidateModel": "e019b035",
+    "baselineModel": "6382ca27",
+    "palette": "light",
+    "pose": "Paused Idle after selecting motion while paused",
+    "consoleErrors": [],
+    "privatePorts": [
+      3193,
+      3194
+    ],
+    "tabsClosed": true,
+    "serversStopped": true,
+    "user3147Untouched": true
+  }
+}

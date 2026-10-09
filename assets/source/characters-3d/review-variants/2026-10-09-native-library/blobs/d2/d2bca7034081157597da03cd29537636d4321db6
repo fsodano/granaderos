@@ -1,0 +1,23 @@
+{
+  "sampleHz": 60,
+  "timeRange": [
+    0.2,
+    0.7
+  ],
+  "referenceTimes": [
+    0.183333,
+    0.34,
+    0.42,
+    0.5,
+    0.62
+  ],
+  "classification": "AABB and majority parity from six oblique BVH rays, followed by nearest-surface distance only for inside points",
+  "toleranceMetres": 0.0015,
+  "files": {
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/manifest.json": "f9c0bd5f4f0fac883a8a20014fb2e04e284e9845eb174386fe1243a960c63be8",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/male-animations.glb": "0860a196f1086f53c95f241c4eec6ce8b27aa5c8b21b54d3ec04f3d390ef92ef",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/female-animations.glb": "eca43efc797898435a645862d9941ace46360608c4e6eb07f07138d08e589265",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/granadero-lod0.glb": "50041f99086062f97cd27c2209932e3da77d88281f0488951de0bdf0b5e59b6f",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/woman-scout-lod0.glb": "62a3854b3e612fc93bc604fe3ef4babcc6713c040ebc9c678285e1108153aac2"
+  }
+}

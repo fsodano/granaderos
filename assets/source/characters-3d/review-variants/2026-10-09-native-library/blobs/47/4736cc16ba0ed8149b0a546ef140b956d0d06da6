@@ -1,0 +1,17 @@
+{
+  "generated": true,
+  "scope": "Granadero only; unchanged generated PNG bytes",
+  "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+  "prompt": "granadero-skin-prompt.txt",
+  "generation": "granadero-skin-generation.json",
+  "originalInput": "vendor/makehuman/young_lightskinned_male_diffuse.png",
+  "referenceLinearRgb": [
+    0.846873231509858,
+    0.4232676699860717,
+    0.2788942634768104
+  ],
+  "referenceSampling": "Median linear-sRGB value at 228 original cheek UV samples",
+  "albedoUV": "UV1 has bounded lip-width and outer-brow registration; UV0 normal/roughness retained",
+  "neutralEyebrowBed": "Granadero source uses neutral COLOR_0 for its two fitted eyebrow beds; geometric brow hairs retained",
+  "rasterEdits": false
+}

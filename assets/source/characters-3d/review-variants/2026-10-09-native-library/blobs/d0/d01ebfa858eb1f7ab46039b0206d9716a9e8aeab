@@ -1,0 +1,82 @@
+{
+  "status": "accepted focused crossbelt repair",
+  "scope": [
+    "granadero",
+    "royalist"
+  ],
+  "tests": {
+    "passed": 51,
+    "failed": 0,
+    "log": "/tmp/granadero-crossbelt-diagnostic/gates-accepted.log",
+    "oldAssetNegative": "Granadero LOD0 fails with 6.02 mm coat penetration in crouched reload at 1.92 s"
+  },
+  "structure": "PASS:24 appearance LODs;334 clips per anatomy;26 equipment;3 horse LODs",
+  "rigGuard": {
+    "granadero-lod0.glb": "Exact native joint hierarchy and inverse binds preserved",
+    "granadero-lod1.glb": "Exact native joint hierarchy and inverse binds preserved",
+    "granadero-lod2.glb": "Exact native joint hierarchy and inverse binds preserved",
+    "royalist-lod0.glb": "Exact native joint hierarchy and inverse binds preserved",
+    "royalist-lod1.glb": "Exact native joint hierarchy and inverse binds preserved",
+    "royalist-lod2.glb": "Exact native joint hierarchy and inverse binds preserved"
+  },
+  "locomotionCalibration": "PASS",
+  "models": {
+    "granadero-lod0.glb": {
+      "sha256": "968a672e75f8dc267044ec8700e75a9269e98326c0e5a111e69a842fc7b284c7",
+      "triangles": 50576,
+      "previousTriangles": 47054,
+      "increasePercent": 7.49,
+      "metadata": "/tmp/granadero-crossbelt-diagnostic/metadata/granadero-lod0.json"
+    },
+    "granadero-lod1.glb": {
+      "sha256": "d2d75c72990938c608e7397960fa14b1af12d06cfb74a7f4e2657d120f8b9c1b",
+      "triangles": 27748,
+      "previousTriangles": 25908,
+      "increasePercent": 7.1,
+      "metadata": "/tmp/granadero-crossbelt-diagnostic/metadata/granadero-lod1.json"
+    },
+    "granadero-lod2.glb": {
+      "sha256": "d9c49746fee26b31ffb39c593205f6c9e0b820d6df7021f4549a429f6599cb6a",
+      "triangles": 11514,
+      "previousTriangles": 10458,
+      "increasePercent": 10.1,
+      "metadata": "/tmp/granadero-crossbelt-diagnostic/metadata/granadero-lod2.json"
+    },
+    "royalist-lod0.glb": {
+      "sha256": "1e214dd383db9d57b66f6830418cf245b2e2a968afb6782dae3ac28cf017f359",
+      "triangles": 50219,
+      "previousTriangles": 46697,
+      "increasePercent": 7.54,
+      "metadata": "/tmp/granadero-crossbelt-diagnostic/metadata/royalist-lod0.json"
+    },
+    "royalist-lod1.glb": {
+      "sha256": "fdfe9f2079d8bf16e6ad89611357b434bef5f833763e8945b55de4146a41b4c4",
+      "triangles": 27677,
+      "previousTriangles": 25837,
+      "increasePercent": 7.12,
+      "metadata": "/tmp/granadero-crossbelt-diagnostic/metadata/royalist-lod1.json"
+    },
+    "royalist-lod2.glb": {
+      "sha256": "8cf3cf31dd83b43ea609c42d3dce0adb784ea39b9727d013b0b30a1199ac552e",
+      "triangles": 11457,
+      "previousTriangles": 10401,
+      "increasePercent": 10.15,
+      "metadata": "/tmp/granadero-crossbelt-diagnostic/metadata/royalist-lod2.json"
+    }
+  },
+  "source": {
+    "assets/source/characters-3d/authoring/crossbelts.py": "813d8016e852034a6a06584c30994a3a8b2b70ebd746f4704c6949d7b0791166",
+    "assets/source/characters-3d/authoring/optimize.py": "716d4736df5ada4da5c22adefa4ad71cfa9df25fdb9253b6511b6b933b506209",
+    "tests/characters-crossbelt-contact.test.mjs": "76326be4434062a4e8375f5042788c136c37b763d1c9e8b4cc6fad56ed28901e"
+  },
+  "renders": [
+    "/tmp/granadero-crossbelt-diagnostic/accepted-crawl-lod0/index.json",
+    "/tmp/granadero-crossbelt-diagnostic/accepted-crouch-lod0/index.json",
+    "/tmp/granadero-crossbelt-diagnostic/accepted-crouch-lod1/index.json",
+    "/tmp/granadero-crossbelt-diagnostic/accepted-crouch-lod2/index.json",
+    "/tmp/granadero-crossbelt-diagnostic/accepted-prone-lod0/index.json",
+    "/tmp/granadero-crossbelt-diagnostic/accepted-prone-lod1/index.json",
+    "/tmp/granadero-crossbelt-diagnostic/accepted-prone-lod2/index.json"
+  ],
+  "limits": "Focused strap, coat, native-rig and selected-pose validation; not a claim of universal collision freedom."
+}

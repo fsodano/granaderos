@@ -1,0 +1,170 @@
+[
+  {
+    "preset": "granadero",
+    "name": "stand.idle.unarmed",
+    "duration": 2,
+    "samples": 241,
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.030447130565077,
+        "maximumShaftBendDeg": 111.15274908805605,
+        "maximumCrossingPairs": 125,
+        "firstCrossing": {
+          "time": 0,
+          "count": 125
+        }
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.042685269663333546,
+        "maximumShaftBendDeg": 111.15270458760897,
+        "maximumCrossingPairs": 100,
+        "firstCrossing": {
+          "time": 0,
+          "count": 100
+        }
+      }
+    }
+  },
+  {
+    "preset": "granadero",
+    "name": "stand.walk.unarmed",
+    "duration": 1.0666669607162476,
+    "samples": 130,
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.026365265373960674,
+        "maximumShaftBendDeg": 111.15275731788685,
+        "maximumCrossingPairs": 126,
+        "firstCrossing": {
+          "time": 0,
+          "count": 125
+        }
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.03936499620240868,
+        "maximumShaftBendDeg": 111.15265846894013,
+        "maximumCrossingPairs": 100,
+        "firstCrossing": {
+          "time": 0,
+          "count": 100
+        }
+      }
+    }
+  },
+  {
+    "preset": "granadero",
+    "name": "stand.run.unarmed",
+    "duration": 0.7666670083999634,
+    "samples": 94,
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.016994426969029742,
+        "maximumShaftBendDeg": 111.15237492413684,
+        "maximumCrossingPairs": 125,
+        "firstCrossing": {
+          "time": 0,
+          "count": 125
+        }
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.02829266312008951,
+        "maximumShaftBendDeg": 111.15257433195266,
+        "maximumCrossingPairs": 100,
+        "firstCrossing": {
+          "time": 0,
+          "count": 100
+        }
+      }
+    }
+  },
+  {
+    "preset": "woman-scout",
+    "name": "stand.idle.unarmed",
+    "duration": 2,
+    "samples": 241,
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.054893036748356744,
+        "maximumShaftBendDeg": 113.07480789005709,
+        "maximumCrossingPairs": 106,
+        "firstCrossing": {
+          "time": 0,
+          "count": 106
+        }
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.06403758818835048,
+        "maximumShaftBendDeg": 113.07475195985515,
+        "maximumCrossingPairs": 105,
+        "firstCrossing": {
+          "time": 0,
+          "count": 105
+        }
+      }
+    }
+  },
+  {
+    "preset": "woman-scout",
+    "name": "stand.walk.unarmed",
+    "duration": 1.0666669607162476,
+    "samples": 130,
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.05403371346093736,
+        "maximumShaftBendDeg": 113.07473414924829,
+        "maximumCrossingPairs": 107,
+        "firstCrossing": {
+          "time": 0,
+          "count": 106
+        }
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.06415874715344926,
+        "maximumShaftBendDeg": 113.07479781945577,
+        "maximumCrossingPairs": 108,
+        "firstCrossing": {
+          "time": 0,
+          "count": 105
+        }
+      }
+    }
+  },
+  {
+    "preset": "woman-scout",
+    "name": "stand.run.unarmed",
+    "duration": 0.7666670083999634,
+    "samples": 94,
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.04668737359765865,
+        "maximumShaftBendDeg": 113.07440780133513,
+        "maximumCrossingPairs": 105,
+        "firstCrossing": {
+          "time": 0,
+          "count": 105
+        }
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.05496432392312196,
+        "maximumShaftBendDeg": 113.07450004918843,
+        "maximumCrossingPairs": 104,
+        "firstCrossing": {
+          "time": 0,
+          "count": 104
+        }
+      }
+    }
+  }
+]

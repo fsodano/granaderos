@@ -1,0 +1,11 @@
+Frozen delivery: Granadero and Royalist LOD0/1 collar rim only.
+
+Apply collar-rim-lod01.patch. It adds a new helper and an LOD0/1-only hook before crossbelt fitting. Current hand and hair source hooks are preserved.
+
+Copy only the four GLBs and body-records.json records. Verify each existingBodySha256 first. texture-delta.json is empty. Do not copy the full private manifest or animation banks.
+
+18/18 affected checks pass. Each model adds 420 triangles, with no draw-call increase. Binds, native anatomy, other meshes and textures are exact. Non-collar coat positions, weights, UVs, colours, triangles and morph positions are exact. Morph-normal export rounding is <=1.491e-7; sewn-edge rest normals change as disclosed in acceptance.json.
+
+12 matched actual pose pairs are in views/ and four compare-*.png sheets. Upper collar rim is smoother; lower collar seam and strap defects remain. Actual triangle intersections are recorded; this is not a collision-free neckline claim.
+
+LOD2 is unchanged and the helper/hook are disabled there. The rejected LOD2 correspondence trial is archived separately. No shared files or published assets were changed by this task.

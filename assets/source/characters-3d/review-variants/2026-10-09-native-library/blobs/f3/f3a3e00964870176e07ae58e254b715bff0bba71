@@ -1,0 +1,20 @@
+{
+  "status": "accepted-private-natural-leg-fit",
+  "scope": "46 static prone clips on each native anatomy; six leg rotations only",
+  "visual": "Narrow knee planes retained; rejected incoming wide-knee pose despite its passing floor gates",
+  "proof": "source-pose-proof.json",
+  "staticAndOrdinaryRuntimeTests": {
+    "pass": 17,
+    "fail": 0,
+    "log": "source-gates.log",
+    "firearmRoutes": 114,
+    "interactionRoutes": 54
+  },
+  "nativeGeometryAndOtherChannels": "unchanged",
+  "inputTimes": "exact in selected final candidate",
+  "floorMetres": 0.002,
+  "maximumKneeShiftMetres": 0.0009,
+  "maximumLegRotationDegrees": 0.481,
+  "sourceRebuild": "six prone idle clips from shared authoring, then rifle/work/interaction propagation",
+  "limit": "Static support and tested transition routes only; not a universal collision proof"
+}

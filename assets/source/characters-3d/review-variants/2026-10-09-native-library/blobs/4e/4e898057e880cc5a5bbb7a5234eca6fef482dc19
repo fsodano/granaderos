@@ -1,0 +1,685 @@
+{
+  "version": 1,
+  "gitRevision": "ce679b33c7ed6c63f23e4c946f9a4e7464915582",
+  "manifestSha256": "a5fb99a2afea555c9043eb6a7f61b7aef73e354ee4de0d85be9ce755efdbefc7",
+  "manifestPath": "/private/tmp/granadero-rifle-head-clearance/models/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 700,
+    "samples": 48,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "e7b0ab6e0e61fe698e0cb179bf0545730b938851804b16e7496383c533ae675c",
+    "snapshot": "frozen-sources/tools/characters-3d/render-review.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "dbd9c6c0fe7dc5a776f418940a0598f71e216d2a7e4413df151a6376c551c20e",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero",
+    "woman-scout"
+  ],
+  "coverage": [
+    {
+      "clip": "prone.aim.long-gun",
+      "item": "1800"
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "/private/tmp/granadero-rifle-head-clearance/models/granadero-lod0.glb",
+        "sha256": "957b2cf949eaf263df67d1f987a695f5c216c14f1365a464768eb20d2058515d",
+        "bytes": 5309164,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/4f51c65706c915611c4a.png": "4f51c65706c915611c4a6ece7b932184475164e4f08791c5554895c41ee98704",
+          "textures/bbd181263ad3acfb2683.png": "bbd181263ad3acfb2683af8a8e2e770ebd9ca8db54623724a2a9a50795e4b746",
+          "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+          "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+          "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+          "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2"
+        },
+        "texturePaths": {
+          "textures/4f51c65706c915611c4a.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/4f51c65706c915611c4a.png",
+          "textures/bbd181263ad3acfb2683.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/bbd181263ad3acfb2683.png",
+          "textures/09fa758893afdf340aac.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/09fa758893afdf340aac.png",
+          "textures/ca4f162e85fafee194c7.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/ca4f162e85fafee194c7.png",
+          "textures/cfe00d87638eab122eb8.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/cfe00d87638eab122eb8.png",
+          "textures/bde948d56c47e9a9c68c.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/bde948d56c47e9a9c68c.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-rifle-head-clearance/models/male-animations.glb",
+        "sha256": "82a5180af99e1f1d6ea71481fc0db334104d1736eed9f77b81003ec4934a2745",
+        "bytes": 17851912,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/459240e5f2a4cda05956.png": "459240e5f2a4cda059560d8dfd17d88a41a9a8be62e5bc46f2d9aa596e05f0fe",
+          "textures/5ea2609d02011f56d93c.png": "5ea2609d02011f56d93cdafb508a332ba2baa72ac3fd4779eb87fad393cf4b2d",
+          "textures/eca27423f69dde195b1b.png": "eca27423f69dde195b1b21d3f0dbf17fb62baea284e1e79c7ed42fe76dc87a54",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/459240e5f2a4cda05956.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/459240e5f2a4cda05956.png",
+          "textures/5ea2609d02011f56d93c.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/5ea2609d02011f56d93c.png",
+          "textures/eca27423f69dde195b1b.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/eca27423f69dde195b1b.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-rifle-head-clearance/models/equipment.glb",
+        "sha256": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+        "bytes": 599736,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {
+        "Human_outfit_LOD0": [
+          "Basis",
+          "cloth_crouched",
+          "cloth_prone",
+          "cloth_supine"
+        ]
+      }
+    },
+    "woman-scout": {
+      "body": {
+        "path": "/private/tmp/granadero-rifle-head-clearance/models/woman-scout-lod0.glb",
+        "sha256": "fb424c540fbcbc938d744a79c90a9abe86265d497049c11f27219d1ad071a4d9",
+        "bytes": 3311264,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+          "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+          "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea",
+          "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+          "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+          "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b"
+        },
+        "texturePaths": {
+          "textures/f98f3d1f919d7d128ace.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/f98f3d1f919d7d128ace.png",
+          "textures/9c4d0ad1822c0e3d56d2.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/9c4d0ad1822c0e3d56d2.png",
+          "textures/98f3ec35fdedc87adac0.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/98f3ec35fdedc87adac0.png",
+          "textures/5b28ef6bb29b5654ff1a.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/5b28ef6bb29b5654ff1a.png",
+          "textures/5818150cab42cf0b2325.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/5818150cab42cf0b2325.png",
+          "textures/e35f74c0f83556345583.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/e35f74c0f83556345583.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-rifle-head-clearance/models/female-animations.glb",
+        "sha256": "5b284d0c8d8bc709528e1e440cdad6dfabbf3fa8f9a6028006215cc97f6ee664",
+        "bytes": 17129824,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/92342cd3338e93eafcc4.png": "92342cd3338e93eafcc405c37ab5c0bdacd83afa0fb4992cbbf561364bf29b56",
+          "textures/3737dbaf296c446cf15e.png": "3737dbaf296c446cf15ee088985a9b893e686d37a24e3188fe7656fb19bf40b0",
+          "textures/14cdbc7eb7ccb5fab02a.png": "14cdbc7eb7ccb5fab02a2266c19fb61489aee2128cd1c0d0b72d251565612818",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/92342cd3338e93eafcc4.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/92342cd3338e93eafcc4.png",
+          "textures/3737dbaf296c446cf15e.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/3737dbaf296c446cf15e.png",
+          "textures/14cdbc7eb7ccb5fab02a.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/14cdbc7eb7ccb5fab02a.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-rifle-head-clearance/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-rifle-head-clearance/models/equipment.glb",
+        "sha256": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+        "bytes": 599736,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "prone.aim.long-gun",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "granadero/prone.aim.long-gun.sample-1.png",
+      "sha256": "4061039e1eee68334a0dd99eb8a63b5ae39e037003dbec5ab76dc7954eeda94f",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 1.0,
+        "cloth_crouched": 0.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.2049999
+        ],
+        "head": [
+          -0.1750532,
+          -0.5809246,
+          0.3657483
+        ],
+        "upperarm_l": [
+          0.1157291,
+          -0.5066335,
+          0.2715586
+        ],
+        "upperarm_r": [
+          -0.2541789,
+          -0.4245529,
+          0.2715586
+        ],
+        "hand_l": [
+          -0.0870701,
+          -0.8022333,
+          0.2361558
+        ],
+        "hand_r": [
+          -0.2601569,
+          -0.650117,
+          0.2362855
+        ],
+        "foot_l": [
+          0.1550016,
+          0.8441557,
+          0.1141507
+        ],
+        "foot_r": [
+          -0.1550017,
+          0.8441557,
+          0.1141507
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "prone.aim.long-gun",
+      "phase": "sample-1",
+      "view": "head",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "granadero/prone.aim.long-gun.sample-1.head.png",
+      "sha256": "94c1b69b15df1eb6d285e60017303e11664bb51de80b17edf13f508836dc6521",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 1.0,
+        "cloth_crouched": 0.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.2049999
+        ],
+        "head": [
+          -0.1750532,
+          -0.5809246,
+          0.3657483
+        ],
+        "upperarm_l": [
+          0.1157291,
+          -0.5066335,
+          0.2715586
+        ],
+        "upperarm_r": [
+          -0.2541789,
+          -0.4245529,
+          0.2715586
+        ],
+        "hand_l": [
+          -0.0870701,
+          -0.8022333,
+          0.2361558
+        ],
+        "hand_r": [
+          -0.2601569,
+          -0.650117,
+          0.2362855
+        ],
+        "foot_l": [
+          0.1550016,
+          0.8441557,
+          0.1141507
+        ],
+        "foot_r": [
+          -0.1550017,
+          0.8441557,
+          0.1141507
+        ]
+      },
+      "cameraTarget": [
+        -0.1750531941652298,
+        -0.5809245705604553,
+        0.5057482719421387
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "prone.aim.long-gun",
+      "phase": "sample-1",
+      "view": "hands",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "granadero/prone.aim.long-gun.sample-1.hands.png",
+      "sha256": "37fea793ee08837b583dea3de313ce9300f02c22257ce02d15ae47edfd467764",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 1.0,
+        "cloth_crouched": 0.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.2049999
+        ],
+        "head": [
+          -0.1750532,
+          -0.5809246,
+          0.3657483
+        ],
+        "upperarm_l": [
+          0.1157291,
+          -0.5066335,
+          0.2715586
+        ],
+        "upperarm_r": [
+          -0.2541789,
+          -0.4245529,
+          0.2715586
+        ],
+        "hand_l": [
+          -0.0870701,
+          -0.8022333,
+          0.2361558
+        ],
+        "hand_r": [
+          -0.2601569,
+          -0.650117,
+          0.2362855
+        ],
+        "foot_l": [
+          0.1550016,
+          0.8441557,
+          0.1141507
+        ],
+        "foot_r": [
+          -0.1550017,
+          0.8441557,
+          0.1141507
+        ]
+      },
+      "cameraTarget": [
+        -0.173613503575325,
+        -0.7261751294136047,
+        0.23622064292430878
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "prone.aim.long-gun",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "woman-scout/prone.aim.long-gun.sample-1.png",
+      "sha256": "319ece1539780fdf7f3a75ad1df3f0db49b4b1901492a73e7b6fb81ef75edcac",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 1.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.2049999
+        ],
+        "head": [
+          -0.3053627,
+          -0.5848097,
+          0.3792488
+        ],
+        "upperarm_l": [
+          -0.0039864,
+          -0.5461923,
+          0.284772
+        ],
+        "upperarm_r": [
+          -0.3051686,
+          -0.3868124,
+          0.2847721
+        ],
+        "hand_l": [
+          -0.2164326,
+          -0.7783495,
+          0.2439682
+        ],
+        "hand_r": [
+          -0.3531331,
+          -0.6530265,
+          0.2465872
+        ],
+        "foot_l": [
+          0.1549997,
+          0.7844888,
+          0.1084197
+        ],
+        "foot_r": [
+          -0.1549998,
+          0.7844889,
+          0.1084197
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "prone.aim.long-gun",
+      "phase": "sample-1",
+      "view": "head",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "woman-scout/prone.aim.long-gun.sample-1.head.png",
+      "sha256": "70cce61a8c4d89ba91fbde3dc0392ff9f43292cf377cd61b461c5f353ad807d0",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 1.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.2049999
+        ],
+        "head": [
+          -0.3053627,
+          -0.5848097,
+          0.3792488
+        ],
+        "upperarm_l": [
+          -0.0039864,
+          -0.5461923,
+          0.284772
+        ],
+        "upperarm_r": [
+          -0.3051686,
+          -0.3868124,
+          0.2847721
+        ],
+        "hand_l": [
+          -0.2164326,
+          -0.7783495,
+          0.2439682
+        ],
+        "hand_r": [
+          -0.3531331,
+          -0.6530265,
+          0.2465872
+        ],
+        "foot_l": [
+          0.1549997,
+          0.7844888,
+          0.1084197
+        ],
+        "foot_r": [
+          -0.1549998,
+          0.7844889,
+          0.1084197
+        ]
+      },
+      "cameraTarget": [
+        -0.3053627014160156,
+        -0.5848097205162048,
+        0.5192487835884094
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "prone.aim.long-gun",
+      "phase": "sample-1",
+      "view": "hands",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "woman-scout/prone.aim.long-gun.sample-1.hands.png",
+      "sha256": "0b9a927d615a56d7298e6ce1ac57ad7b7bd63ac281017930848593eb89d043bd",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 1.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.2049999
+        ],
+        "head": [
+          -0.3053627,
+          -0.5848097,
+          0.3792488
+        ],
+        "upperarm_l": [
+          -0.0039864,
+          -0.5461923,
+          0.284772
+        ],
+        "upperarm_r": [
+          -0.3051686,
+          -0.3868124,
+          0.2847721
+        ],
+        "hand_l": [
+          -0.2164326,
+          -0.7783495,
+          0.2439682
+        ],
+        "hand_r": [
+          -0.3531331,
+          -0.6530265,
+          0.2465872
+        ],
+        "foot_l": [
+          0.1549997,
+          0.7844888,
+          0.1084197
+        ],
+        "foot_r": [
+          -0.1549998,
+          0.7844889,
+          0.1084197
+        ]
+      },
+      "cameraTarget": [
+        -0.28478285670280457,
+        -0.7156879901885986,
+        0.24527770280838013
+      ],
+      "cameraScale": 0.9
+    }
+  ],
+  "complete": true
+}

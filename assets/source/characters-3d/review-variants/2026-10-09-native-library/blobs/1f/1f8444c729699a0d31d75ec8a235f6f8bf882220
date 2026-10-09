@@ -1,0 +1,174 @@
+{
+  "male": [
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_02_l",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_03_l",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0.0000017075472925031877
+    },
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_02_r",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_03_r",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.butt.long-gun",
+      "bone": "thumb_02_l",
+      "oldKeys": 242,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.butt.long-gun",
+      "bone": "thumb_03_l",
+      "oldKeys": 242,
+      "newKeys": 2,
+      "maxAngleDegrees": 0.0000017075472925031877
+    },
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "neck_01",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 10.427017434174592
+    },
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "head",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 17.611024748433895
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "neck_01",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 22.92213257930493
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "head",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 26.002204789673485
+    },
+    {
+      "clip": "mounted.aim.long-gun",
+      "bone": "neck_01",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 0.000009035490975690204
+    },
+    {
+      "clip": "mounted.aim.long-gun",
+      "bone": "head",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 0.000010799477313527668
+    }
+  ],
+  "female": [
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_02_l",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_03_l",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_02_r",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0.0000017075472925031877
+    },
+    {
+      "clip": "stand.idle.long-gun",
+      "bone": "thumb_03_r",
+      "oldKeys": 241,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.butt.long-gun",
+      "bone": "thumb_02_l",
+      "oldKeys": 242,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "stand.butt.long-gun",
+      "bone": "thumb_03_l",
+      "oldKeys": 242,
+      "newKeys": 2,
+      "maxAngleDegrees": 0
+    },
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "neck_01",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 3.7180258460596205
+    },
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "head",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 6.432165464614241
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "neck_01",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 9.638356475701652
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "head",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 14.8358246147354
+    },
+    {
+      "clip": "mounted.aim.long-gun",
+      "bone": "neck_01",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 0.000022459278078588168
+    },
+    {
+      "clip": "mounted.aim.long-gun",
+      "bone": "head",
+      "oldKeys": 2,
+      "newKeys": 2,
+      "maxAngleDegrees": 0.000007040397847728099
+    }
+  ]
+}

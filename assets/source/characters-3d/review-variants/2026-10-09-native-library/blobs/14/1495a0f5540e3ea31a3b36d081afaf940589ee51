@@ -1,0 +1,29 @@
+from pathlib import Path
+import json,struct,hashlib,shutil,math
+import numpy as np
+from PIL import Image
+root=Path('/tmp/granadero-generated-skin-palette-pilot');model=root/'models/granadero-lod0.glb';b=model.read_bytes();n=struct.unpack_from('<I',b,12)[0];j=json.loads(b[20:20+n]);binary=b[28+n:];mi=next(i for i,m in enumerate(j['materials'])if m['name']=='Skin');mat=j['materials'][mi];prim=next(p for me in j['meshes']for p in me['primitives']if p['material']==mi)
+def access(i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];dtype={5121:'u1',5123:'<u2',5125:'<u4',5126:'<f4'}[a['componentType']];width={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];size=np.dtype(dtype).itemsize;start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size*width);x=np.ndarray((a['count'],width),dtype=dtype,buffer=binary,offset=start,strides=(stride,size)).astype(float)
+ if a.get('normalized'):x/=np.iinfo(dtype).max
+ return x
+# Restore the production Skin vertex pigment already present in the source buffer.
+assert j['accessors'][38]['count']==j['accessors'][prim['attributes']['POSITION']]['count'];prim['attributes']['COLOR_0']=38
+p=access(prim['attributes']['POSITION']);uv=access(prim['attributes']['TEXCOORD_0']);colour=access(38)
+image_uri=j['images'][j['textures'][mat['pbrMetallicRoughness']['baseColorTexture']['index']]['source']]['uri'];png=root/'models'/image_uri;image=np.asarray(Image.open(png).convert('RGB')).astype(float)/255
+mask=(np.abs(p[:,0])>.025)&(np.abs(p[:,0])<.06)&(p[:,1]>1.60)&(p[:,1]<1.63)&(p[:,2]>.115)&(uv[:,0]>.80)&(uv[:,0]<.92)&(uv[:,1]>.43)&(uv[:,1]<.61)
+# Read only: use the actual UV samples at both cheeks. PNG bytes are never changed.
+srgb=image[np.clip(np.rint(uv[mask,1]*(image.shape[0]-1)).astype(int),0,image.shape[0]-1),np.clip(np.rint(uv[mask,0]*(image.shape[1]-1)).astype(int),0,image.shape[1]-1)]
+linear=np.where(srgb<=.04045,srgb/12.92,((srgb+.055)/1.055)**2.4);ref=np.median(linear,axis=0)
+assert mask.sum()>20
+mat.setdefault('extras',{})['skinAlbedoReference']=ref.tolist();mat['extras']['skinAlbedoReferenceSpace']='linear-srgb';mat['extras']['skinPaletteCompensation']='paletteLinear/referenceRGB'
+# Keep all geometry and COLOR_0. Exported fallback represents light palette.
+manifest=json.loads((root/'models/manifest.json').read_text());factors={}
+for name,hex in manifest['skinTones'].items():
+ c=np.array([int(hex[k:k+2],16)/255 for k in (1,3,5)]);c=np.where(c<=.04045,c/12.92,((c+.055)/1.055)**2.4);factors[name]=(c/ref).tolist()
+mat['pbrMetallicRoughness']['baseColorFactor']=[min(1,x)for x in factors['light']]+[1]
+def write(path,doc,data):
+ js=json.dumps(doc,separators=(',',':')).encode();js+=b' '*((-len(js))%4);data+=b'\0'*((-len(data))%4);out=struct.pack('<III',0x46546c67,2,28+len(js)+len(data))+struct.pack('<II',len(js),0x4e4f534a)+js+struct.pack('<II',len(data),0x004e4942)+data;path.write_bytes(out)
+write(model,j,binary)
+record={'bodySha256':hashlib.sha256(model.read_bytes()).hexdigest(),'pngSha256':hashlib.sha256(png.read_bytes()).hexdigest(),'nativeVertexColourRestored':True,'referenceLinearRgb':ref.tolist(),'cheekVertexSamples':int(mask.sum()),'paletteFactorsLinear':factors,'geometryBinaryIdenticalToPriorTrial':True,'compensation':'Runtime replaces factor with palette/reference; raw texture and vertex pigments unchanged.'}
+(root/'compensation.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record,indent=2))

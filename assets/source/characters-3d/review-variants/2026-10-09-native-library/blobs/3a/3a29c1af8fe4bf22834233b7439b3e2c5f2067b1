@@ -1,0 +1,220 @@
+{
+  "status": "frozen_private_military_cloth_candidate",
+  "scope": "granadero and royalist, LOD0/1/2; six bodies only",
+  "candidate": "/tmp/granadero-cloth-study/models",
+  "bodySha256": "ec51b87ad3a7d5165c22f9d967d904755760cffa6528a6d52641abeb7d8531ed",
+  "sourcePatch": "/tmp/granadero-cloth-study/military-cloth-study.patch",
+  "sourceFiles": {
+    "optimize.py": "cdde5eff033516f1e16e306c812ae3ddeceaefa1bb36cd6f947b57ab86a4c8ac",
+    "uniform_folds.py": "0c94f02e9adb2372e2a8844eab01f6d0c3afe5ad99c07055958fb73650e483dd",
+    "garment_detail.py": "dc83cb610160e3da3dd1579b590b4c4a5764e1fac01cd205fcfaae6c642713cb",
+    "character.py": "9d1d476ddf0af8ed18d7b33b989dfc1d0eded3c4da6332d1ba143f31dc48958e"
+  },
+  "triangles": {
+    "before": 54130,
+    "after": 59996,
+    "increase": 5866,
+    "percent": 10.84
+  },
+  "preservation": {
+    "beforeSha256": "9fc5450135118e8965eae770ee66956599e6aa496ae3f4c4d9610e244df02107",
+    "afterSha256": "ec51b87ad3a7d5165c22f9d967d904755760cffa6528a6d52641abeb7d8531ed",
+    "nativeSignatureIdentical": true,
+    "surfaces": {
+      "Human_footwear_LOD0": {
+        "POSITION": true,
+        "NORMAL": true,
+        "TEXCOORD_0": true,
+        "COLOR_0": true,
+        "JOINTS_0": true,
+        "WEIGHTS_0": true,
+        "indices": true
+      },
+      "Human_headwear_LOD0": {
+        "POSITION": true,
+        "NORMAL": true,
+        "TEXCOORD_0": true,
+        "COLOR_0": true,
+        "JOINTS_0": true,
+        "WEIGHTS_0": true,
+        "indices": true
+      },
+      "Human_legwear_LOD0": {
+        "POSITION": true,
+        "NORMAL": true,
+        "TEXCOORD_0": true,
+        "COLOR_0": true,
+        "JOINTS_0": true,
+        "WEIGHTS_0": true,
+        "indices": true
+      },
+      "Human_outfit_LOD0": {
+        "POSITION": false,
+        "NORMAL": false,
+        "TEXCOORD_0": false,
+        "COLOR_0": false,
+        "JOINTS_0": false,
+        "WEIGHTS_0": false,
+        "indices": false
+      },
+      "Human_skin_LOD0": {
+        "POSITION": true,
+        "NORMAL": true,
+        "TEXCOORD_0": true,
+        "COLOR_0": true,
+        "JOINTS_0": true,
+        "WEIGHTS_0": true,
+        "indices": true
+      }
+    }
+  },
+  "tests": {
+    "crossbeltAndCoatContact": {
+      "passed": 15,
+      "failed": 0,
+      "log": "/tmp/granadero-cloth-study/six-contact-tests.log"
+    }
+  },
+  "renderSettings": {
+    "sameCameraAndLightAsDelivery": true,
+    "idleTimeSeconds": 0,
+    "inspectionSize": 1000,
+    "comparisonSize": 560
+  },
+  "visualAssessment": {
+    "improvements": [
+      "Elbow has several curved compression folds instead of a smooth sleeve cylinder.",
+      "Short diagonal gathers rise above the waist belt.",
+      "Collar has a 2.6 mm inward return; cuffs have a 3.5 mm facing shell and 1.8 mm sewn edge."
+    ],
+    "limits": [
+      "The improvement is modest at the 560 px full-body view; it is clearest in the torso detail view.",
+      "This is a cloth refinement, not proof of the complete high-detail reference target.",
+      "Coat-only LOD0 retention adds 5866 triangles per military body. LOD1 and LOD2 remain at existing retention and slightly decrease in total triangles.",
+      "Crouch reload at3.07s has a forearm/head overlap in both the delivery baseline and this candidate. This pre-existing motion issue is not changed by this cloth study.",
+      "Visual contact review samples idle, crouched reload3.07s and prone reload1.92s; regression tests cover additional moments, not every possible action frame."
+    ],
+    "review": "Viewed final Granadero1000/560 idle, face/head/torso; royalist700 idle/torso; both military LOD1/2 at560; Granadero prone/crouch details. No new cuff opening or strap penetration seen in these frames."
+  },
+  "renders": {
+    "before560": "/tmp/granadero-cloth-study/game-before/granadero/stand.idle.unarmed.sample-1.png",
+    "after560": "/tmp/granadero-cloth-study/game-after/granadero/stand.idle.unarmed.sample-1.png",
+    "afterDetails": "/tmp/granadero-cloth-study/review3/granadero",
+    "crouchReload": "/tmp/granadero-cloth-study/contact-crouch/granadero",
+    "proneReload": "/tmp/granadero-cloth-study/contact-prone/granadero",
+    "royalist": "/tmp/granadero-cloth-study/royalist-review",
+    "lod1": "/tmp/granadero-cloth-study/lod1-review",
+    "lod2": "/tmp/granadero-cloth-study/lod2-review",
+    "crouchBefore": "/tmp/granadero-cloth-study/contact-crouch-before"
+  },
+  "bodies": [
+    {
+      "filename": "granadero-lod0.glb",
+      "beforeSha256": "9fc5450135118e8965eae770ee66956599e6aa496ae3f4c4d9610e244df02107",
+      "sha256": "ec51b87ad3a7d5165c22f9d967d904755760cffa6528a6d52641abeb7d8531ed",
+      "nativeSignatureIdentical": true,
+      "untouchedSurfaces": {
+        "Human_footwear_LOD0": true,
+        "Human_headwear_LOD0": true,
+        "Human_legwear_LOD0": true,
+        "Human_skin_LOD0": true
+      },
+      "trianglesBefore": 54130,
+      "trianglesAfter": 59996,
+      "sameImageUris": true
+    },
+    {
+      "filename": "granadero-lod1.glb",
+      "beforeSha256": "731b29f079747cc93db653c0a60389fc622912f1d17d398d95481ed259977981",
+      "sha256": "0cf517f5fe225c06fc0ba03ca92710e6782ae02fb40045b2e3707059a3b94743",
+      "nativeSignatureIdentical": true,
+      "untouchedSurfaces": {
+        "Human_footwear_LOD1": true,
+        "Human_headwear_LOD1": true,
+        "Human_legwear_LOD1": true,
+        "Human_skin_LOD1": true
+      },
+      "trianglesBefore": 31022,
+      "trianglesAfter": 30983,
+      "sameImageUris": true
+    },
+    {
+      "filename": "granadero-lod2.glb",
+      "beforeSha256": "6cdc58dbedd5e7a1537c753a2e11d777b719ebaa3df4d13bf4c8223967cf8dc4",
+      "sha256": "35038dc9c59d243eb52bca4e55eca04389a3165e2d76e569eb92238d7a9b35b3",
+      "nativeSignatureIdentical": true,
+      "untouchedSurfaces": {
+        "Human_footwear_LOD2": true,
+        "Human_headwear_LOD2": true,
+        "Human_legwear_LOD2": true,
+        "Human_skin_LOD2": true
+      },
+      "trianglesBefore": 12813,
+      "trianglesAfter": 12758,
+      "sameImageUris": true
+    },
+    {
+      "filename": "royalist-lod0.glb",
+      "beforeSha256": "11ff8b3b7b4dc321e301b574380cc43114352c7bfd1768818257bea0998594e4",
+      "sha256": "908d3b2ddd984e6f1d1d1131df07e03295dec477c20419ed91e2caab65310d9a",
+      "nativeSignatureIdentical": true,
+      "untouchedSurfaces": {
+        "Human_footwear_LOD0": true,
+        "Human_headwear_LOD0": true,
+        "Human_legwear_LOD0": true,
+        "Human_skin_LOD0": true
+      },
+      "trianglesBefore": 53773,
+      "trianglesAfter": 59639,
+      "sameImageUris": true
+    },
+    {
+      "filename": "royalist-lod1.glb",
+      "beforeSha256": "830cbc8be56cd23b42ba10d2a961fa2efa8aef8238ac65d547cb5d426e980014",
+      "sha256": "e730eb1371a2889651ba45a450c7634c2697e7efe7c2f9cd48910a7a582ad047",
+      "nativeSignatureIdentical": true,
+      "untouchedSurfaces": {
+        "Human_footwear_LOD1": true,
+        "Human_headwear_LOD1": true,
+        "Human_legwear_LOD1": true,
+        "Human_skin_LOD1": true
+      },
+      "trianglesBefore": 30951,
+      "trianglesAfter": 30912,
+      "sameImageUris": true
+    },
+    {
+      "filename": "royalist-lod2.glb",
+      "beforeSha256": "7a3d565ed8dca6872667fb3e63eae5e110b20d53c525362b2df6414ff447129c",
+      "sha256": "f0c60df2651bb88cb8cab5897c6927f2fa3f9ad3362c1736d854cee6bc02c913",
+      "nativeSignatureIdentical": true,
+      "untouchedSurfaces": {
+        "Human_footwear_LOD2": true,
+        "Human_headwear_LOD2": true,
+        "Human_legwear_LOD2": true,
+        "Human_skin_LOD2": true
+      },
+      "trianglesBefore": 12756,
+      "trianglesAfter": 12701,
+      "sameImageUris": true
+    }
+  ],
+  "sourceConditions": {
+    "presets": [
+      "granadero",
+      "royalist"
+    ],
+    "coatLODRatios": {
+      "0": 0.42,
+      "1": 0.075,
+      "2": 0.028
+    },
+    "normalDisplacementBoundsMetres": [
+      -0.005,
+      0.01
+    ],
+    "collarReturnMetres": 0.0026,
+    "cuffShellMetres": 0.0035,
+    "cuffEdgeRadiusMetres": 0.0018
+  }
+}

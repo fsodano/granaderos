@@ -1,0 +1,58 @@
+{
+  "bodies": [
+    {
+      "file": "woman-scout-lod1.glb",
+      "materialsExact": true,
+      "textureBindingsImagesSamplersExact": true,
+      "externalTextureSha256": {
+        "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+        "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+        "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+        "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea",
+        "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+        "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292"
+      }
+    },
+    {
+      "file": "woman-scout-lod2.glb",
+      "materialsExact": true,
+      "textureBindingsImagesSamplersExact": true,
+      "externalTextureSha256": {
+        "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+        "textures/c3782e00498e23e6a224.png": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+        "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+        "textures/e229e1eb9ffd5725d876.png": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7",
+        "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+        "textures/6dd4cdb2fff9b1b7b2ee.png": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4"
+      }
+    },
+    {
+      "file": "woman-shawl-lod1.glb",
+      "materialsExact": true,
+      "textureBindingsImagesSamplersExact": true,
+      "externalTextureSha256": {
+        "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+        "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+        "textures/ad3939922a6916be23f6.png": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010",
+        "textures/230ddcfcde0deb6c86d4.png": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+        "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+        "textures/756a3307c4231b534a82.png": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c"
+      }
+    },
+    {
+      "file": "woman-shawl-lod2.glb",
+      "materialsExact": true,
+      "textureBindingsImagesSamplersExact": true,
+      "externalTextureSha256": {
+        "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+        "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+        "textures/9f2116257d14fb045d70.png": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+        "textures/614541eb0bf63d3a9b6e.png": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150",
+        "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+        "textures/a6e08a37dd3d86917cf4.png": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744"
+      }
+    }
+  ],
+  "newExternalTextures": [],
+  "newTextureBytes": 0
+}

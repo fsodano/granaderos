@@ -1,0 +1,20 @@
+exec(open('/tmp/granadero-hair-naturalism-pilot/prove-preservation.py').read().split('report={}')[0])
+def values(j,b,i):
+ a=j['accessors'][i];c={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4}[a['type']];f={5126:'f',5123:'H',5121:'B',5125:'I'}[a['componentType']];data=acc(j,b,i);return list(struct.iter_unpack('<'+f*c,data))
+for mode in ['baseline','worker-delivery/models']:
+ j,b=read(R/mode/'worker-lod0.glb');mesh=next(m for m in j['meshes']if m['name']=='Exposed_Human_Skin');p=next(p for p in mesh['primitives']if j['materials'][p['material']]['name']=='Apparel_Atlas');pos=values(j,b,p['attributes']['POSITION']);ind=[i[0]for i in values(j,b,p['indices'])];parent=list(range(len(pos)))
+ def root(i):
+  while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]
+  return i
+ def join(a,b):parent[root(a)]=root(b)
+ lookup={}
+ for i,v in enumerate(pos):
+  key=tuple(round(x,7)for x in v)
+  if key in lookup:join(i,lookup[key])
+  else:lookup[key]=i
+ for i in range(0,len(ind),3):join(ind[i],ind[i+1]);join(ind[i],ind[i+2])
+ groups={}
+ for i in range(0,len(ind),3):groups.setdefault(root(ind[i]),[]).append(ind[i:i+3])
+ print(mode,'components',len(groups))
+ for group in sorted(groups.values(),key=len,reverse=True)[:12]:
+  points=[pos[i]for tri in group for i in tri];print(len(group),[[round(f(v[d]for v in points),4)for d in range(3)]for f in (min,max)])

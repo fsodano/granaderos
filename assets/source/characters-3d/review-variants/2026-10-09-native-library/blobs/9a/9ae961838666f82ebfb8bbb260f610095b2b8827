@@ -1,0 +1,161 @@
+{
+  "0": {
+    "opaqueVsSkin": {
+      "samples": 76986,
+      "minimumRadialClearanceM": 0.00021731160444754538,
+      "worst": {
+        "triangle": 292,
+        "barycentric": [
+          0.08333333333333333,
+          0.0,
+          0.9166666666666666
+        ],
+        "position": [
+          0.07172051817178726,
+          1.655055046081543,
+          0.022376464679837227
+        ]
+      }
+    },
+    "cardsVsSkin": {
+      "samples": 72000,
+      "minimumRadialClearanceM": 0.00024995038158889815,
+      "worst": {
+        "triangle": 3596,
+        "barycentric": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "position": [
+          -0.020152661949396133,
+          1.7066723108291626,
+          0.14914017915725708
+        ]
+      }
+    },
+    "cardsVsOpaque": {
+      "samples": 68154,
+      "minimumRadialClearanceM": 0.00011909050463071447,
+      "worst": {
+        "triangle": 181,
+        "barycentric": [
+          0.25,
+          0.0,
+          0.75
+        ],
+        "position": [
+          0.043695468455553055,
+          1.736891508102417,
+          -0.0004770018276758492
+        ]
+      }
+    }
+  },
+  "1": {
+    "opaqueVsSkin": {
+      "samples": 35035,
+      "minimumRadialClearanceM": 0.00020933366203951254,
+      "worst": {
+        "triangle": 125,
+        "barycentric": [
+          0.0,
+          0.4166666666666667,
+          0.5833333333333333
+        ],
+        "position": [
+          0.07211130857467651,
+          1.65657377243042,
+          0.023258501663804054
+        ]
+      }
+    },
+    "cardsVsSkin": {
+      "samples": 72000,
+      "minimumRadialClearanceM": 0.0002499728524132938,
+      "worst": {
+        "triangle": 3596,
+        "barycentric": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "position": [
+          -0.020149964839220047,
+          1.7066656351089478,
+          0.1491210162639618
+        ]
+      }
+    },
+    "cardsVsOpaque": {
+      "samples": 68159,
+      "minimumRadialClearanceM": 8.86078931722073e-05,
+      "worst": {
+        "triangle": 101,
+        "barycentric": [
+          0.25,
+          0.0,
+          0.75
+        ],
+        "position": [
+          0.045146819204092026,
+          1.7396007776260376,
+          0.004090251866728067
+        ]
+      }
+    }
+  },
+  "2": {
+    "opaqueVsSkin": {
+      "samples": 16744,
+      "minimumRadialClearanceM": -3.796507121511805e-06,
+      "worst": {
+        "triangle": 75,
+        "barycentric": [
+          0.3333333333333333,
+          0.25,
+          0.41666666666666663
+        ],
+        "position": [
+          0.028876960277557373,
+          1.7342991828918457,
+          0.12410027533769608
+        ]
+      }
+    },
+    "cardsVsSkin": {
+      "samples": 72000,
+      "minimumRadialClearanceM": 0.00023962584964712375,
+      "worst": {
+        "triangle": 3758,
+        "barycentric": [
+          0.75,
+          0.25,
+          0.0
+        ],
+        "position": [
+          0.01770244911313057,
+          1.7056242227554321,
+          0.14999979734420776
+        ]
+      }
+    },
+    "cardsVsOpaque": {
+      "samples": 68148,
+      "minimumRadialClearanceM": -7.254814800156106e-06,
+      "worst": {
+        "triangle": 3512,
+        "barycentric": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "position": [
+          -0.030769359320402145,
+          1.721031665802002,
+          0.13876178860664368
+        ]
+      }
+    }
+  }
+}

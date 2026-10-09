@@ -1,0 +1,34 @@
+{
+  "source": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models",
+  "sourceManifest": "9d405c2ce2828093704e8e72f172f67b6bb449b169cf1c0abddfe1880b16b800",
+  "review": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/after-appearance-pass/index.json",
+  "records": [
+    {
+      "preset": "granadero",
+      "old": "ef8afa98a70f2b1e1d31637cc4df83631ee0284d20153614411fb37d837c8cbe",
+      "new": "50041f99086062f97cd27c2209932e3da77d88281f0488951de0bdf0b5e59b6f",
+      "file": "granadero-lod0.glb"
+    },
+    {
+      "preset": "royalist",
+      "old": "ab5e58362d09570bc3ba274b233282341f35adf607c89681c6ddc4527660d038",
+      "new": "244e013b2d367d2a65b6178ad37152cc148f4fcb14fc3b92463d3fab9059d0c3",
+      "file": "royalist-lod0.glb"
+    },
+    {
+      "preset": "worker",
+      "old": "d55b46ef5405ae65728a8572a0e51112f07f598ca80b20aec5cd5aa8f2e75c94",
+      "new": "910e6209a6e7be6a25affc3dec3da17f3d981242957359180ffa230ed268eeb2",
+      "file": "worker-lod0.glb"
+    },
+    {
+      "preset": "surgeon",
+      "old": "c64058235f3f846669341165842aa64313326f574c7efaa4b3d78c454200d9a3",
+      "new": "1205aa0339f6dd6cacfdc1c0edb5bc315685875083a48ee5e0a8ea26070726a1",
+      "file": "surgeon-lod0.glb"
+    }
+  ],
+  "banks": "unchanged",
+  "equipment": "unchanged",
+  "lods": "LOD0 only"
+}

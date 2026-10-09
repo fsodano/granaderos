@@ -1,0 +1,2885 @@
+{
+  "version": 1,
+  "gitRevision": "98a8a4e32b7b5643cd79af9e2c1e787fa188e4e0",
+  "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd",
+  "manifestPath": "/private/tmp/granadero-throw-review/models/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 480,
+    "samples": 4,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "294b25d21ffbd912f4d99f88de5715ff6c1616a1d33eae5c080c6f32156642ee",
+    "snapshot": "frozen-sources/tools/characters-3d/render-review.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "d83e2750526f62d430c1e9c6e9b277d7ed0991aaa3da0944198ed59c0d4abbc9",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero",
+    "woman-scout"
+  ],
+  "coverage": [
+    {
+      "clip": "mounted.gesture.throw",
+      "item": "grenade"
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "/private/tmp/granadero-throw-review/models/granadero-lod0.glb",
+        "sha256": "50041f99086062f97cd27c2209932e3da77d88281f0488951de0bdf0b5e59b6f",
+        "bytes": 2993000,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+          "textures/9cf786dd1636a37659be.png": "9cf786dd1636a37659be83671d24df2d6734b0f7d84b4b2a3d49999774e7f09a",
+          "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/7a4750f0f9e8ddae313c.png": "/private/tmp/granadero-throw-review/models/textures/7a4750f0f9e8ddae313c.png",
+          "textures/9cf786dd1636a37659be.png": "/private/tmp/granadero-throw-review/models/textures/9cf786dd1636a37659be.png",
+          "textures/c115e786c16ea09b4835.png": "/private/tmp/granadero-throw-review/models/textures/c115e786c16ea09b4835.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-throw-review/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-throw-review/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-throw-review/models/male-animations.glb",
+        "sha256": "2acb3ad46075db3506713368dc41a17c49eddbf040776aae313a16daa46466ff",
+        "bytes": 510824,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-throw-review/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "horse": {
+        "path": "/private/tmp/granadero-throw-review/models/horse-lod0.glb",
+        "sha256": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+        "bytes": 676556,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    },
+    "woman-scout": {
+      "body": {
+        "path": "/private/tmp/granadero-throw-review/models/woman-scout-lod0.glb",
+        "sha256": "62a3854b3e612fc93bc604fe3ef4babcc6713c040ebc9c678285e1108153aac2",
+        "bytes": 1505520,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/4f6735c3c59381167fa8.png": "4f6735c3c59381167fa8ee9ab958e8b98d99ef626610a44eb1f111265c238b94",
+          "textures/d69cb3f32570c7a401e6.png": "d69cb3f32570c7a401e665e5b0e65ad47e0760a49658ebe71a716723f48925f8",
+          "textures/2138b79add80457b1518.png": "2138b79add80457b1518e95f6a427d474c40c350e0d7c0f87038d030dd9aa39e",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/4f6735c3c59381167fa8.png": "/private/tmp/granadero-throw-review/models/textures/4f6735c3c59381167fa8.png",
+          "textures/d69cb3f32570c7a401e6.png": "/private/tmp/granadero-throw-review/models/textures/d69cb3f32570c7a401e6.png",
+          "textures/2138b79add80457b1518.png": "/private/tmp/granadero-throw-review/models/textures/2138b79add80457b1518.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-throw-review/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-throw-review/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-throw-review/models/female-animations.glb",
+        "sha256": "54394ba5c63b8e2d8aa62607d883aa7479887cf3a088993d66f33ce158080d98",
+        "bytes": 509800,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-throw-review/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "horse": {
+        "path": "/private/tmp/granadero-throw-review/models/horse-lod0.glb",
+        "sha256": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+        "bytes": 676556,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-1.png",
+      "sha256": "d543601cf0aae86aac8bb8b0b20d27c5ca678dbe39a40e19f81b523cdbd780e3",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0094411,
+          0.0252873,
+          2.3399773
+        ],
+        "upperarm_l": [
+          0.1863939,
+          0.0157274,
+          2.1392293
+        ],
+        "upperarm_r": [
+          -0.1914025,
+          0.0439561,
+          2.1327119
+        ],
+        "hand_l": [
+          0.2415385,
+          -0.1902927,
+          2.0328264
+        ],
+        "hand_r": [
+          -0.4538624,
+          0.010233,
+          2.0521605
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1581468,
+          0.9743064
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1581465,
+          0.9743067
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-1",
+      "view": "l-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-1.l-hand.png",
+      "sha256": "9c10fe391c4b6e27fefb7547dca47cdca08376f9ae955968a355fa4ba7d54548",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0094411,
+          0.0252873,
+          2.3399773
+        ],
+        "upperarm_l": [
+          0.1863939,
+          0.0157274,
+          2.1392293
+        ],
+        "upperarm_r": [
+          -0.1914025,
+          0.0439561,
+          2.1327119
+        ],
+        "hand_l": [
+          0.2415385,
+          -0.1902927,
+          2.0328264
+        ],
+        "hand_r": [
+          -0.4538624,
+          0.010233,
+          2.0521605
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1581468,
+          0.9743064
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1581465,
+          0.9743067
+        ]
+      },
+      "cameraTarget": [
+        0.20547841489315033,
+        -0.26427266001701355,
+        2.0723769664764404
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-1",
+      "view": "r-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-1.r-hand.png",
+      "sha256": "9685902404ed71316a9c64d74881b29fb3d19cfae5cce8b429d496542b946531",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0094411,
+          0.0252873,
+          2.3399773
+        ],
+        "upperarm_l": [
+          0.1863939,
+          0.0157274,
+          2.1392293
+        ],
+        "upperarm_r": [
+          -0.1914025,
+          0.0439561,
+          2.1327119
+        ],
+        "hand_l": [
+          0.2415385,
+          -0.1902927,
+          2.0328264
+        ],
+        "hand_r": [
+          -0.4538624,
+          0.010233,
+          2.0521605
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1581468,
+          0.9743064
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1581465,
+          0.9743067
+        ]
+      },
+      "cameraTarget": [
+        -0.49645739793777466,
+        -0.06822235137224197,
+        2.0713443756103516
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-2",
+      "view": "iso",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-2.png",
+      "sha256": "9700daa439123cf667d129780372e2a3aa7563a66adccc71b7ef7b77479c3e2a",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0098185,
+          0.0257667,
+          2.3399773
+        ],
+        "upperarm_l": [
+          0.1854881,
+          0.0085033,
+          2.1392291
+        ],
+        "upperarm_r": [
+          -0.1909032,
+          0.051591,
+          2.1327119
+        ],
+        "hand_l": [
+          0.2404922,
+          -0.2409891,
+          2.0882132
+        ],
+        "hand_r": [
+          -0.3958628,
+          0.225092,
+          2.3632419
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1581486,
+          0.9743067
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1581483,
+          0.9743071
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-2",
+      "view": "l-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-2.l-hand.png",
+      "sha256": "86f7caefbebce610a566bd2c161d6fe829ca6426d17178e9fb379c41050dae6f",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0098185,
+          0.0257667,
+          2.3399773
+        ],
+        "upperarm_l": [
+          0.1854881,
+          0.0085033,
+          2.1392291
+        ],
+        "upperarm_r": [
+          -0.1909032,
+          0.051591,
+          2.1327119
+        ],
+        "hand_l": [
+          0.2404922,
+          -0.2409891,
+          2.0882132
+        ],
+        "hand_r": [
+          -0.3958628,
+          0.225092,
+          2.3632419
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1581486,
+          0.9743067
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1581483,
+          0.9743071
+        ]
+      },
+      "cameraTarget": [
+        0.20258796215057373,
+        -0.3039363622665405,
+        2.142421007156372
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-2",
+      "view": "r-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-2.r-hand.png",
+      "sha256": "6edc2d1fbd61ae650ec1579d197208504e84f9de9c190554627b3e56cd86e6d8",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0098185,
+          0.0257667,
+          2.3399773
+        ],
+        "upperarm_l": [
+          0.1854881,
+          0.0085033,
+          2.1392291
+        ],
+        "upperarm_r": [
+          -0.1909032,
+          0.051591,
+          2.1327119
+        ],
+        "hand_l": [
+          0.2404922,
+          -0.2409891,
+          2.0882132
+        ],
+        "hand_r": [
+          -0.3958628,
+          0.225092,
+          2.3632419
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1581486,
+          0.9743067
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1581483,
+          0.9743071
+        ]
+      },
+      "cameraTarget": [
+        -0.37872737646102905,
+        0.24836768209934235,
+        2.449857234954834
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-3",
+      "view": "iso",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-3.png",
+      "sha256": "92277fc137529ed483cd34073cef77f96bfccc179d64f81828661f770f02c610",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0074227,
+          -0.005458,
+          2.3388312
+        ],
+        "upperarm_l": [
+          0.1880276,
+          0.0142476,
+          2.138448
+        ],
+        "upperarm_r": [
+          -0.1907651,
+          0.007309,
+          2.1323364
+        ],
+        "hand_l": [
+          0.242955,
+          -0.0894463,
+          1.9576602
+        ],
+        "hand_r": [
+          -0.2761054,
+          -0.0509343,
+          2.3841212
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1656484,
+          0.9758471
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.165648,
+          0.9758474
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-3",
+      "view": "l-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-3.l-hand.png",
+      "sha256": "451279218507a06b893227d07c499d4583507a2523b964c6dbe08f4b2bed68bf",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0074227,
+          -0.005458,
+          2.3388312
+        ],
+        "upperarm_l": [
+          0.1880276,
+          0.0142476,
+          2.138448
+        ],
+        "upperarm_r": [
+          -0.1907651,
+          0.007309,
+          2.1323364
+        ],
+        "hand_l": [
+          0.242955,
+          -0.0894463,
+          1.9576602
+        ],
+        "hand_r": [
+          -0.2761054,
+          -0.0509343,
+          2.3841212
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1656484,
+          0.9758471
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.165648,
+          0.9758474
+        ]
+      },
+      "cameraTarget": [
+        0.2050318866968155,
+        -0.17237412929534912,
+        1.9529271125793457
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-3",
+      "view": "r-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-3.r-hand.png",
+      "sha256": "bfe95c282371d65c57a3bc8789041bdc4d890c8280877dfd1cb470ffe43d955d",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0074227,
+          -0.005458,
+          2.3388312
+        ],
+        "upperarm_l": [
+          0.1880276,
+          0.0142476,
+          2.138448
+        ],
+        "upperarm_r": [
+          -0.1907651,
+          0.007309,
+          2.1323364
+        ],
+        "hand_l": [
+          0.242955,
+          -0.0894463,
+          1.9576602
+        ],
+        "hand_r": [
+          -0.2761054,
+          -0.0509343,
+          2.3841212
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1656484,
+          0.9758471
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.165648,
+          0.9758474
+        ]
+      },
+      "cameraTarget": [
+        -0.21410582959651947,
+        -0.07467208057641983,
+        2.446812152862549
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-4",
+      "view": "iso",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-4.png",
+      "sha256": "fcf31473892fc0bf6b9c99059885831322f2426d4ba08bd198ff04bdadb9fca0",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0061862,
+          -0.0117186,
+          2.3384137
+        ],
+        "upperarm_l": [
+          0.188553,
+          0.0159495,
+          2.1382799
+        ],
+        "upperarm_r": [
+          -0.1898707,
+          -0.0021074,
+          2.1320524
+        ],
+        "hand_l": [
+          0.2426726,
+          -0.0070573,
+          1.921474
+        ],
+        "hand_r": [
+          -0.2155172,
+          -0.2146122,
+          2.4339268
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1671632,
+          0.9761685
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1671629,
+          0.9761688
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-4",
+      "view": "l-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-4.l-hand.png",
+      "sha256": "de5a564fc189a95cc62e424a7e1a602b8773b8ac589cdd05e2a0deada6b0c8ea",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0061862,
+          -0.0117186,
+          2.3384137
+        ],
+        "upperarm_l": [
+          0.188553,
+          0.0159495,
+          2.1382799
+        ],
+        "upperarm_r": [
+          -0.1898707,
+          -0.0021074,
+          2.1320524
+        ],
+        "hand_l": [
+          0.2426726,
+          -0.0070573,
+          1.921474
+        ],
+        "hand_r": [
+          -0.2155172,
+          -0.2146122,
+          2.4339268
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1671632,
+          0.9761685
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1671629,
+          0.9761688
+        ]
+      },
+      "cameraTarget": [
+        0.1892915517091751,
+        -0.06667368859052658,
+        1.8774974346160889
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-4",
+      "view": "r-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-4.r-hand.png",
+      "sha256": "ea675ed319d90dad89f539e6daf0df02a0fc2fdd8c1bb3ad7aa3a805d0477b96",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0061862,
+          -0.0117186,
+          2.3384137
+        ],
+        "upperarm_l": [
+          0.188553,
+          0.0159495,
+          2.1382799
+        ],
+        "upperarm_r": [
+          -0.1898707,
+          -0.0021074,
+          2.1320524
+        ],
+        "hand_l": [
+          0.2426726,
+          -0.0070573,
+          1.921474
+        ],
+        "hand_r": [
+          -0.2155172,
+          -0.2146122,
+          2.4339268
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1671632,
+          0.9761685
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1671629,
+          0.9761688
+        ]
+      },
+      "cameraTarget": [
+        -0.1519245058298111,
+        -0.24850626289844513,
+        2.4900050163269043
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-5",
+      "view": "iso",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-5.png",
+      "sha256": "5724166ad7ab9d0e2f6caa0a15023a8c668ac288ffa5b3cdde61fee48babfb6e",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0061572,
+          -0.0118462,
+          2.3384047
+        ],
+        "upperarm_l": [
+          0.1885639,
+          0.0159904,
+          2.1382763
+        ],
+        "upperarm_r": [
+          -0.1898483,
+          -0.0023053,
+          2.1320457
+        ],
+        "hand_l": [
+          0.2427833,
+          -0.0005493,
+          1.9187701
+        ],
+        "hand_r": [
+          -0.2093722,
+          -0.2264247,
+          2.4370267
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1671941,
+          0.976175
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1671938,
+          0.9761752
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-5",
+      "view": "l-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-5.l-hand.png",
+      "sha256": "0997821d878b6df431035e888987fc10683f465e3849b82b118eec8bde3aedd4",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0061572,
+          -0.0118462,
+          2.3384047
+        ],
+        "upperarm_l": [
+          0.1885639,
+          0.0159904,
+          2.1382763
+        ],
+        "upperarm_r": [
+          -0.1898483,
+          -0.0023053,
+          2.1320457
+        ],
+        "hand_l": [
+          0.2427833,
+          -0.0005493,
+          1.9187701
+        ],
+        "hand_r": [
+          -0.2093722,
+          -0.2264247,
+          2.4370267
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1671941,
+          0.976175
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1671938,
+          0.9761752
+        ]
+      },
+      "cameraTarget": [
+        0.18760786950588226,
+        -0.05639653652906418,
+        1.8721401691436768
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-5",
+      "view": "r-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-5.r-hand.png",
+      "sha256": "4add66e031a4453f49503c7bc2e6bfe9812fc0af77a173841b804619e21a9a5b",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0061572,
+          -0.0118462,
+          2.3384047
+        ],
+        "upperarm_l": [
+          0.1885639,
+          0.0159904,
+          2.1382763
+        ],
+        "upperarm_r": [
+          -0.1898483,
+          -0.0023053,
+          2.1320457
+        ],
+        "hand_l": [
+          0.2427833,
+          -0.0005493,
+          1.9187701
+        ],
+        "hand_r": [
+          -0.2093722,
+          -0.2264247,
+          2.4370267
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1671941,
+          0.976175
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1671938,
+          0.9761752
+        ]
+      },
+      "cameraTarget": [
+        -0.14621934294700623,
+        -0.26126959919929504,
+        2.4930191040039062
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-6",
+      "view": "iso",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-6.png",
+      "sha256": "d9fae37ffb701350a8d8a85730ffc56d30fc8caa4e45ab313421af19214c436d",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0069661,
+          -0.0062261,
+          2.3387883
+        ],
+        "upperarm_l": [
+          0.1882196,
+          0.0164567,
+          2.1384623
+        ],
+        "upperarm_r": [
+          -0.1904373,
+          0.0042049,
+          2.132277
+        ],
+        "hand_l": [
+          0.2429233,
+          0.0026705,
+          1.918334
+        ],
+        "hand_r": [
+          -0.1000406,
+          -0.3379294,
+          2.4154756
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1658085,
+          0.9758807
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1658081,
+          0.9758811
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-6",
+      "view": "l-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-6.l-hand.png",
+      "sha256": "b7c206ecbf5a9a03be413c9f6bf63186ea02a65c855dc4bdcfb2b616eff8cbc8",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0069661,
+          -0.0062261,
+          2.3387883
+        ],
+        "upperarm_l": [
+          0.1882196,
+          0.0164567,
+          2.1384623
+        ],
+        "upperarm_r": [
+          -0.1904373,
+          0.0042049,
+          2.132277
+        ],
+        "hand_l": [
+          0.2429233,
+          0.0026705,
+          1.918334
+        ],
+        "hand_r": [
+          -0.1000406,
+          -0.3379294,
+          2.4154756
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1658085,
+          0.9758807
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1658081,
+          0.9758811
+        ]
+      },
+      "cameraTarget": [
+        0.18734793365001678,
+        -0.05188119411468506,
+        1.870657205581665
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-6",
+      "view": "r-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "granadero/mounted.gesture.throw.sample-6.r-hand.png",
+      "sha256": "70aed1e59d13132a50ac79d4917aefa88c356d1eae0c977cccb3894661330e6b",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.6660194
+        ],
+        "head": [
+          -0.0069661,
+          -0.0062261,
+          2.3387883
+        ],
+        "upperarm_l": [
+          0.1882196,
+          0.0164567,
+          2.1384623
+        ],
+        "upperarm_r": [
+          -0.1904373,
+          0.0042049,
+          2.132277
+        ],
+        "hand_l": [
+          0.2429233,
+          0.0026705,
+          1.918334
+        ],
+        "hand_r": [
+          -0.1000406,
+          -0.3379294,
+          2.4154756
+        ],
+        "foot_l": [
+          0.4012133,
+          0.1658085,
+          0.9758807
+        ],
+        "foot_r": [
+          -0.4012134,
+          0.1658081,
+          0.9758811
+        ]
+      },
+      "cameraTarget": [
+        -0.03644891828298569,
+        -0.38184070587158203,
+        2.464111804962158
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-1.png",
+      "sha256": "42465288923370301f5a7c072ed8c5b6aa0267c160f0e7604e78dc8b41e4df1d",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0079158,
+          0.05733,
+          2.3849699
+        ],
+        "upperarm_l": [
+          0.1688631,
+          0.0440671,
+          2.1729813
+        ],
+        "upperarm_r": [
+          -0.1708923,
+          0.0694535,
+          2.1671202
+        ],
+        "hand_l": [
+          0.2239889,
+          -0.1640971,
+          2.0580409
+        ],
+        "hand_r": [
+          -0.4177427,
+          0.033496,
+          2.0906203
+        ],
+        "foot_l": [
+          0.3965646,
+          0.149988,
+          0.9784113
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1499881,
+          0.9784114
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-1",
+      "view": "l-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-1.l-hand.png",
+      "sha256": "1d9619f0555e92c90f4dc99d5c8e47601b3fd2c99afa69df3724e6894d09ce9b",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0079158,
+          0.05733,
+          2.3849699
+        ],
+        "upperarm_l": [
+          0.1688631,
+          0.0440671,
+          2.1729813
+        ],
+        "upperarm_r": [
+          -0.1708923,
+          0.0694535,
+          2.1671202
+        ],
+        "hand_l": [
+          0.2239889,
+          -0.1640971,
+          2.0580409
+        ],
+        "hand_r": [
+          -0.4177427,
+          0.033496,
+          2.0906203
+        ],
+        "foot_l": [
+          0.3965646,
+          0.149988,
+          0.9784113
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1499881,
+          0.9784114
+        ]
+      },
+      "cameraTarget": [
+        0.18876807391643524,
+        -0.22550040483474731,
+        2.098431348800659
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-1",
+      "view": "r-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-1.r-hand.png",
+      "sha256": "0d05993bc5a3d2fd1f2aa0a3e4d9cbe16b8522d207b2ac00ee7d6c19c4beb41c",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0079158,
+          0.05733,
+          2.3849699
+        ],
+        "upperarm_l": [
+          0.1688631,
+          0.0440671,
+          2.1729813
+        ],
+        "upperarm_r": [
+          -0.1708923,
+          0.0694535,
+          2.1671202
+        ],
+        "hand_l": [
+          0.2239889,
+          -0.1640971,
+          2.0580409
+        ],
+        "hand_r": [
+          -0.4177427,
+          0.033496,
+          2.0906203
+        ],
+        "foot_l": [
+          0.3965646,
+          0.149988,
+          0.9784113
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1499881,
+          0.9784114
+        ]
+      },
+      "cameraTarget": [
+        -0.4447905123233795,
+        -0.03994235023856163,
+        2.113368034362793
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-2",
+      "view": "iso",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-2.png",
+      "sha256": "571c66bcb50d8342a357d338a5687710b366b776b761065a34dbd5dc9cd04ecd",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0072629,
+          0.0577115,
+          2.3849699
+        ],
+        "upperarm_l": [
+          0.1688566,
+          0.0374986,
+          2.1729813
+        ],
+        "upperarm_r": [
+          -0.1696353,
+          0.0762477,
+          2.1671207
+        ],
+        "hand_l": [
+          0.2238602,
+          -0.2141359,
+          2.1134002
+        ],
+        "hand_r": [
+          -0.362737,
+          0.2356371,
+          2.3843255
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1499898,
+          0.9784114
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.14999,
+          0.9784117
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-2",
+      "view": "l-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-2.l-hand.png",
+      "sha256": "989ecaef3b04cf20a2e2cfbf3333772d6120fa51a1bed02a70712d6406f76eb0",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0072629,
+          0.0577115,
+          2.3849699
+        ],
+        "upperarm_l": [
+          0.1688566,
+          0.0374986,
+          2.1729813
+        ],
+        "upperarm_r": [
+          -0.1696353,
+          0.0762477,
+          2.1671207
+        ],
+        "hand_l": [
+          0.2238602,
+          -0.2141359,
+          2.1134002
+        ],
+        "hand_r": [
+          -0.362737,
+          0.2356371,
+          2.3843255
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1499898,
+          0.9784114
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.14999,
+          0.9784117
+        ]
+      },
+      "cameraTarget": [
+        0.18759776651859283,
+        -0.2656071186065674,
+        2.165149688720703
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-2",
+      "view": "r-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-2.r-hand.png",
+      "sha256": "243234ce0fc338961b0a381a43cedc69b30b4fed9e9370c13ba88972cbc87744",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0072629,
+          0.0577115,
+          2.3849699
+        ],
+        "upperarm_l": [
+          0.1688566,
+          0.0374986,
+          2.1729813
+        ],
+        "upperarm_r": [
+          -0.1696353,
+          0.0762477,
+          2.1671207
+        ],
+        "hand_l": [
+          0.2238602,
+          -0.2141359,
+          2.1134002
+        ],
+        "hand_r": [
+          -0.362737,
+          0.2356371,
+          2.3843255
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1499898,
+          0.9784114
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.14999,
+          0.9784117
+        ]
+      },
+      "cameraTarget": [
+        -0.3387201428413391,
+        0.25266897678375244,
+        2.4603209495544434
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-3",
+      "view": "iso",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-3.png",
+      "sha256": "ef088b42efe65ca71dc15dbc6bcbe6f722e67b7c185f1a8e31987c8282a322e3",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0083072,
+          0.0248924,
+          2.385277
+        ],
+        "upperarm_l": [
+          0.168494,
+          0.0397428,
+          2.1734121
+        ],
+        "upperarm_r": [
+          -0.1721574,
+          0.0335029,
+          2.1679163
+        ],
+        "hand_l": [
+          0.2234005,
+          -0.0660892,
+          1.9840913
+        ],
+        "hand_r": [
+          -0.2524636,
+          -0.0254208,
+          2.4045084
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1575188,
+          0.9798635
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1575189,
+          0.9798635
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-3",
+      "view": "l-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-3.l-hand.png",
+      "sha256": "18f8c850ea384832316ada03aaf14d860d0bfdafc852a781fb05d427e793ed8a",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0083072,
+          0.0248924,
+          2.385277
+        ],
+        "upperarm_l": [
+          0.168494,
+          0.0397428,
+          2.1734121
+        ],
+        "upperarm_r": [
+          -0.1721574,
+          0.0335029,
+          2.1679163
+        ],
+        "hand_l": [
+          0.2234005,
+          -0.0660892,
+          1.9840913
+        ],
+        "hand_r": [
+          -0.2524636,
+          -0.0254208,
+          2.4045084
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1575188,
+          0.9798635
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1575189,
+          0.9798635
+        ]
+      },
+      "cameraTarget": [
+        0.185188427567482,
+        -0.13794197142124176,
+        1.988480806350708
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-3",
+      "view": "r-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-3.r-hand.png",
+      "sha256": "757361801ef0ae76a4a108780659f97bd5ee8d2a7958f11a6b41bc6be6f3f77e",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0083072,
+          0.0248924,
+          2.385277
+        ],
+        "upperarm_l": [
+          0.168494,
+          0.0397428,
+          2.1734121
+        ],
+        "upperarm_r": [
+          -0.1721574,
+          0.0335029,
+          2.1679163
+        ],
+        "hand_l": [
+          0.2234005,
+          -0.0660892,
+          1.9840913
+        ],
+        "hand_r": [
+          -0.2524636,
+          -0.0254208,
+          2.4045084
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1575188,
+          0.9798635
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1575189,
+          0.9798635
+        ]
+      },
+      "cameraTarget": [
+        -0.18890482187271118,
+        -0.04429960623383522,
+        2.451901435852051
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-4",
+      "view": "iso",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-4.png",
+      "sha256": "5e2e34b1c9bfcc512aa868b02820367d8c948e2597bb7b78285d49d7c8c91ae3",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0077993,
+          0.0182247,
+          2.3851442
+        ],
+        "upperarm_l": [
+          0.1684399,
+          0.0406152,
+          2.1734738
+        ],
+        "upperarm_r": [
+          -0.1718798,
+          0.0243765,
+          2.1678736
+        ],
+        "hand_l": [
+          0.2226101,
+          0.015456,
+          1.9481516
+        ],
+        "hand_r": [
+          -0.1958481,
+          -0.1798842,
+          2.4515073
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1590399,
+          0.980167
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.15904,
+          0.9801672
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-4",
+      "view": "l-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-4.l-hand.png",
+      "sha256": "552293be5e15c93b099d537e5dc078418eda44cc275de73f1e70d1a06b6d7651",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0077993,
+          0.0182247,
+          2.3851442
+        ],
+        "upperarm_l": [
+          0.1684399,
+          0.0406152,
+          2.1734738
+        ],
+        "upperarm_r": [
+          -0.1718798,
+          0.0243765,
+          2.1678736
+        ],
+        "hand_l": [
+          0.2226101,
+          0.015456,
+          1.9481516
+        ],
+        "hand_r": [
+          -0.1958481,
+          -0.1798842,
+          2.4515073
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1590399,
+          0.980167
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.15904,
+          0.9801672
+        ]
+      },
+      "cameraTarget": [
+        0.17057116329669952,
+        -0.039551232010126114,
+        1.9180119037628174
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-4",
+      "view": "r-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-4.r-hand.png",
+      "sha256": "ea4aacfcc01943866064fc2ab31e1f0c629855b0e641e60f85a27c0c431b255b",
+      "item": "grenade",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0077993,
+          0.0182247,
+          2.3851442
+        ],
+        "upperarm_l": [
+          0.1684399,
+          0.0406152,
+          2.1734738
+        ],
+        "upperarm_r": [
+          -0.1718798,
+          0.0243765,
+          2.1678736
+        ],
+        "hand_l": [
+          0.2226101,
+          0.015456,
+          1.9481516
+        ],
+        "hand_r": [
+          -0.1958481,
+          -0.1798842,
+          2.4515073
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1590399,
+          0.980167
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.15904,
+          0.9801672
+        ]
+      },
+      "cameraTarget": [
+        -0.13366597890853882,
+        -0.20564281940460205,
+        2.497465133666992
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-5",
+      "view": "iso",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-5.png",
+      "sha256": "cc0f0d9718d3ed085abf43494659856e41d565df200a66e3cb09d6b3ba14bbb2",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0077858,
+          0.0180885,
+          2.3851407
+        ],
+        "upperarm_l": [
+          0.1684386,
+          0.0406383,
+          2.173475
+        ],
+        "upperarm_r": [
+          -0.1718707,
+          0.0241848,
+          2.1678722
+        ],
+        "hand_l": [
+          0.2227034,
+          0.021944,
+          1.9454448
+        ],
+        "hand_r": [
+          -0.1900959,
+          -0.1910109,
+          2.4544282
+        ],
+        "foot_l": [
+          0.3965646,
+          0.159071,
+          0.9801732
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1590711,
+          0.9801733
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-5",
+      "view": "l-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-5.l-hand.png",
+      "sha256": "1acf5d4a0d8962da44ba99a15179167a684b091065c011910c6adb170f5d7bd1",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0077858,
+          0.0180885,
+          2.3851407
+        ],
+        "upperarm_l": [
+          0.1684386,
+          0.0406383,
+          2.173475
+        ],
+        "upperarm_r": [
+          -0.1718707,
+          0.0241848,
+          2.1678722
+        ],
+        "hand_l": [
+          0.2227034,
+          0.021944,
+          1.9454448
+        ],
+        "hand_r": [
+          -0.1900959,
+          -0.1910109,
+          2.4544282
+        ],
+        "foot_l": [
+          0.3965646,
+          0.159071,
+          0.9801732
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1590711,
+          0.9801733
+        ]
+      },
+      "cameraTarget": [
+        0.16912207007408142,
+        -0.030071835964918137,
+        1.9128005504608154
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-5",
+      "view": "r-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-5.r-hand.png",
+      "sha256": "3165a0ae05cc00c84d85d898f5f0d9de8a8bbff56af2b779ebbe0df16ad390dc",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0077858,
+          0.0180885,
+          2.3851407
+        ],
+        "upperarm_l": [
+          0.1684386,
+          0.0406383,
+          2.173475
+        ],
+        "upperarm_r": [
+          -0.1718707,
+          0.0241848,
+          2.1678722
+        ],
+        "hand_l": [
+          0.2227034,
+          0.021944,
+          1.9454448
+        ],
+        "hand_r": [
+          -0.1900959,
+          -0.1910109,
+          2.4544282
+        ],
+        "foot_l": [
+          0.3965646,
+          0.159071,
+          0.9801732
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1590711,
+          0.9801733
+        ]
+      },
+      "cameraTarget": [
+        -0.12847965955734253,
+        -0.21765530109405518,
+        2.5006425380706787
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-6",
+      "view": "iso",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-6.png",
+      "sha256": "caaec962927b315dcf3f646b870e45cbcf2b8d667a2bd483eca89c482fb1b73a",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0082041,
+          0.0240669,
+          2.3852639
+        ],
+        "upperarm_l": [
+          0.1684043,
+          0.0416465,
+          2.1734474
+        ],
+        "upperarm_r": [
+          -0.172125,
+          0.0306283,
+          2.1678851
+        ],
+        "hand_l": [
+          0.2231272,
+          0.0257123,
+          1.9447696
+        ],
+        "hand_r": [
+          -0.0866757,
+          -0.2954939,
+          2.434258
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1576796,
+          0.9798954
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1576797,
+          0.9798954
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-6",
+      "view": "l-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-6.l-hand.png",
+      "sha256": "80a4b1605d6ebd1be93e2a2bcab242da2fbc46a37ba4a8efe869f3056605aef3",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0082041,
+          0.0240669,
+          2.3852639
+        ],
+        "upperarm_l": [
+          0.1684043,
+          0.0416465,
+          2.1734474
+        ],
+        "upperarm_r": [
+          -0.172125,
+          0.0306283,
+          2.1678851
+        ],
+        "hand_l": [
+          0.2231272,
+          0.0257123,
+          1.9447696
+        ],
+        "hand_r": [
+          -0.0866757,
+          -0.2954939,
+          2.434258
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1576796,
+          0.9798954
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1576797,
+          0.9798954
+        ]
+      },
+      "cameraTarget": [
+        0.1691712737083435,
+        -0.02528287097811699,
+        1.911146640777588
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "mounted.gesture.throw",
+      "phase": "sample-6",
+      "view": "r-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/mounted.gesture.throw.sample-6.r-hand.png",
+      "sha256": "4851f8a6ffe74e7f6fdcabdbcc45a253484c76ed06c9ecb609302aeb9bbbbb67",
+      "item": "grenade",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.04576205834746361,
+        0.6486522555351257
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199993,
+          1.6727831
+        ],
+        "head": [
+          -0.0082041,
+          0.0240669,
+          2.3852639
+        ],
+        "upperarm_l": [
+          0.1684043,
+          0.0416465,
+          2.1734474
+        ],
+        "upperarm_r": [
+          -0.172125,
+          0.0306283,
+          2.1678851
+        ],
+        "hand_l": [
+          0.2231272,
+          0.0257123,
+          1.9447696
+        ],
+        "hand_r": [
+          -0.0866757,
+          -0.2954939,
+          2.434258
+        ],
+        "foot_l": [
+          0.3965646,
+          0.1576796,
+          0.9798954
+        ],
+        "foot_r": [
+          -0.3965642,
+          0.1576797,
+          0.9798954
+        ]
+      },
+      "cameraTarget": [
+        -0.02668525092303753,
+        -0.33064141869544983,
+        2.476778984069824
+      ],
+      "cameraScale": 0.26
+    }
+  ],
+  "complete": true
+}

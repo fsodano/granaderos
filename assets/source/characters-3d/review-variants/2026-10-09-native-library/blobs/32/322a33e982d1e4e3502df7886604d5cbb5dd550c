@@ -1,0 +1,8 @@
+{
+  "candidate": "/tmp/granadero-gesture-floor/models",
+  "frames": "/tmp/granadero-gesture-floor/review/index.html",
+  "sampleRate": 120,
+  "tests": "male/female ordinary task arcs and actual prone hand-surface clearance: 4/4 pass",
+  "visualReview": "Both isometric motion sheets inspected: offer, tool, equip, ration; 72 exact exported full and hand frames generated.",
+  "source": "posture_support.clear_working_hands; ordinary tasks only, preserves accepted pickup/heal/free"
+}

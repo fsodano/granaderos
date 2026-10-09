@@ -1,0 +1,69 @@
+{
+  "scope": "23 focused clips per anatomy; actual exported GLB checks, not full updated 334-clip banks",
+  "sourceFiles": {
+    "assets/source/characters-3d/authoring/motion.py": "4da3e68a092a767bf6698371f731d88db4f4390cfffc16874b8583f638d1b750",
+    "assets/source/characters-3d/authoring/posture_support.py": "a0d0079b434200bb80355effd41cc3b36c21598f8efa7d096dbb96f3e64b9191",
+    "assets/source/characters-3d/authoring/export_timing.py": "90924e259fb1fa07ba332ab60e3c44163324adb5492eb7c3fc6c8dfa2383d505"
+  },
+  "candidateLibrary": "/tmp/granadero-posture-assist/library",
+  "completePatchedLibrary": "/tmp/granadero-posture-assist/complete-library",
+  "tests": {
+    "postureContact": {
+      "pass": 18,
+      "fail": 0
+    },
+    "longGarment": {
+      "pass": 14,
+      "fail": 0
+    },
+    "exportTiming": {
+      "pass": 3,
+      "fail": 0
+    }
+  },
+  "nativeCrawlSpeedMetersPerSecond": {
+    "male": 0.260825,
+    "female": 0.262094
+  },
+  "knownLimits": [
+    "Full 334-clip regeneration and integration are owned by root.",
+    "Granadero base coat tails still extend below the ground in supine rest; this needs a garment corrective, not a raised body.",
+    "Rifle/pistol fit and mounted motion changes are owned by other agents.",
+    "The bundled scout body shows a possible braid gap during prone recovery. The appearance agent is comparing its hash with the latest repaired body."
+  ],
+  "visualReview": [
+    "Both isometric recovery sheets inspected: palm preparation, boot pivots, low kneel and rise.",
+    "Both crawl sheets inspected: opposite leg assistance, no simultaneous frog stance.",
+    "Both prone/standing fall and prone recovery sheets inspected."
+  ],
+  "maleBank": {
+    "path": "/tmp/granadero-posture-assist/male-animations.glb",
+    "sha256": "e2756fe4ab607fafec77b783b8b9c3ab8664c1aaa3493de1d56255141c0d1321"
+  },
+  "femaleBank": {
+    "path": "/tmp/granadero-posture-assist/female-animations.glb",
+    "sha256": "bae7160c5deb29ab54bfae36aa450609bfbfa99128cc1b10496ea197a35f7892"
+  },
+  "replays": {
+    "crawl.granadero": {
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/bank-scan/final-postures/crawl/granadero.mp4",
+      "sha256": "372a05768f2b1453a9bbac08d59396308eca155664fac216d1229039397dc5ee",
+      "timing": "authored seconds, approximately 24 samples per second"
+    },
+    "crawl.woman-scout": {
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/bank-scan/final-postures/crawl/woman-scout.mp4",
+      "sha256": "63fcb4c0e100a63e9983df2929de66c0886ce7870610a4cb0447d1aa647b3723",
+      "timing": "authored seconds, approximately 24 samples per second"
+    },
+    "recovery.granadero": {
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/bank-scan/final-postures/recovery/granadero.mp4",
+      "sha256": "17843e068e07807caffed3774a246c4c5f8be5582af9329085d4e200eebe78b1",
+      "timing": "authored seconds, approximately 24 samples per second"
+    },
+    "recovery.woman-scout": {
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/bank-scan/final-postures/recovery/woman-scout.mp4",
+      "sha256": "381a9aec432d6abb24531e3f42c964b869c4edfc912ad1754100467ebfdcdd50",
+      "timing": "authored seconds, approximately 24 samples per second"
+    }
+  }
+}

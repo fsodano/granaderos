@@ -1,0 +1,5338 @@
+{
+  "status": "REJECTED: sleeve envelope is too inflated and smooth; retained as a private construction experiment",
+  "baseline": {
+    "files": {
+      "female-animations.glb": "5e4d62112e8e6693abb3989cc47c48634d7a9ac50777d5246463e3cebe34d174",
+      "woman-scout-lod1.glb": "02f98914ca23cdbab43480edabbdd5cad170cd8b05b0e444016515d2c0d0cf94",
+      "friar-lod2.glb": "d134235b384d82a72a36c3e4a764bf75cbb5a1b2e62412c9bc6d0d52bdfbd686",
+      "gaucho-lod1.glb": "cc884292707dd3d5ad86c32dce8649e58602dcfa1951d679e1950491e8e4b24e",
+      "worker-lod1.glb": "25fcd84ac58ce979f0c947ca071ed9788136eb9e1465605bf048c331f9c9279b",
+      "male-animations.glb": "9caf54205c1e4c38e976ba1f46c23b985f6e04d460146c4c220cade4b646b8a0",
+      "worker-lod0.glb": "27ec304416220e85c721f327e8d691f6a78e5cdcd433bb95e9e107ea031028a9",
+      "gaucho-lod0.glb": "40f286bbc56e8c90621005dbece1df4c1d1f6fdb1c624ee9bd6ee51a54a2806a",
+      "woman-scout-lod0.glb": "54d20755699a380660cfd20a83d0948bab9802b541b54ad2644f727cd5cd7060",
+      "woman-scout-lod2.glb": "31c666ee9e0a9080c6f4844188c19489b514d53e12da87df2658682a7df34fac",
+      "friar-lod1.glb": "ec48c3c9eaa27ad11c0b0c9889f6258537f8ba272a8fe7bc7787f4419c44a80e",
+      "gaucho-lod2.glb": "53a9c146f6ddf9c57312a0b3e5352c221e747b488eea84764dac3a31663ed276",
+      "worker-lod2.glb": "441a857a008cb64b39ec0046dff75086f8fed847305fb7f6360e44d992b1e37a",
+      "friar-lod0.glb": "b72a20bbd219ee7c80f667f6a55c7701c9d2e400c54b2503af55d0bf0c312a5d",
+      "horse-lod0.glb": "6aaee15ea8437d40473a976844c2173b89bfa939887c7e3f85e19b4ab615171e",
+      "horse-lod1.glb": "fefbd6609e8a2ff461a46c298ef7fe011265565b9b5ce51e000989697d6b7a02",
+      "horse-lod2.glb": "e08b9d4a8787c064160fcc63bdbf7b9810407525fffeedc7a2c7bd0a28c49028",
+      "royalist-lod0.glb": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853",
+      "royalist-lod1.glb": "84cf7f066a202fd495ad5ff915e872f4932e7e4863bd8e3b8af05fae688a22d5",
+      "manifest.json": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+      "royalist-lod2.glb": "edaa87211e7a96045928bad8ca5d5f2e2e9e4feca6de7ed06c701977ef66b634",
+      "female-garments.glb": "3f920ae8138572411a8fae63c6a848b839a0facda228a23ded3a251532048deb",
+      "woman-shawl-lod2.glb": "f8c540455bbb2efdc7a1bd8d775295c80c55eb73c0fe03ef5cc40bb801df2767",
+      "surgeon-lod2.glb": "f9801b4087169667fe497734f461658050d9bdc8dac5041c936df588d24c3fbf",
+      "surgeon-lod0.glb": "913905f38df1be298fdf71f25e5d750619ca3cca6ed0a83511a225b602204410",
+      "woman-shawl-lod0.glb": "647fcbc89e4620090a789dfdd49f2c8b5a90fd9f77aad6018d147f5a1569b8a9",
+      "woman-shawl-lod1.glb": "a7e33b5e2779f7ce0f069d32a414fdfe918a57a50cbf06fb02f03e026abe500a",
+      "surgeon-lod1.glb": "aee9c5a71cd1567e05ddc17b78b03ef7bde531835b624b8a9da7fb69ace301ca",
+      "male-garments.glb": "3b4c847fe202acbea1465d6e0fb647a8292f8f93df3671ac1fbb966c5125f3cc",
+      "granadero-lod2.glb": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5",
+      "equipment.glb": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+      "granadero-lod0.glb": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+      "granadero-lod1.glb": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d"
+    },
+    "source": {
+      "throwing_motion.py": "884df47b452698a35b7ed5e5d5c145a235d4dc66761d506d347ee171471f18f8",
+      "equipment.py": "5c1932d8e9aaf2db146f4d92a4667c5b5eb8be537aba16f6a55ce905f96a8525",
+      "generated_skin.py": "6a848cb58a5a09e7adf2503c127fae51e91823f22a84721c134cacc4070d0e9b",
+      "build.py": "482a4dc8f4f90b88bcdc0707b7434b5f0baf1c7e06152172f0ec932f1102a080",
+      "optimize.py": "eff72cf00746fce5635a6c2974aa5fafa9980392c22713ebe2177c32b190e27c",
+      "climbing_motion.py": "23272f95fde1f55a18f57d52cc21712cc1281c14ffa98b99cd01864b1d688e24",
+      "horse.py": "fc867cd141a0c7fe8c6bb30a7f6a8804086806c6295b468a91b1153c2047cac0",
+      "reviewed_motion.py": "e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee",
+      "guard_support.py": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7",
+      "rifle_guard_curves.py": "91fbada6e2153990e95550fef9ad37dd7c03498ddf683c8dcb1ff38cd441b4e2",
+      "shako_detail.py": "648088d765ebb1dd6951a57658929e3b6491416edc509a59ea2fbc5a1b830130",
+      "riding_motion.py": "1641a18f49b6487bbc5d37f6054549638f2a7cd4ecbb2899a3fe6198f079e026",
+      "prepare_skin_maps.py": "cc99231f3335da8d9f2d052ef503a5c8e8729f34dd5c1512862a0f75e14da848",
+      "sideways_support.py": "f9554bc7ce93336dd5aac6ea4f9131835543fb370d0df421a79e809815253fb8",
+      "gesture_support.py": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b",
+      "crouch_idle_support.py": "243798a22bb99b48d19321ff5702694d6003544af02b960edf2a1f28d482a47a",
+      "uniform_folds.py": "5816113a702fbf7f55b173c1c9cf1fedcf9e709d0526caa789814c66b46a00e8",
+      "lance_idle_support.py": "de5cd5f2a6ef19f27b4fe10245c751cca63eebba63178c413b9eefccf1b14b52",
+      "gltf_pack.py": "fa5cafa3fd7c587e4795c91300d03eca2b81e3d29c46eef8d66ff814c98fc73d",
+      "garment_detail.py": "dc83cb610160e3da3dd1579b590b4c4a5764e1fac01cd205fcfaae6c642713cb",
+      "posture_support.py": "d605f1372da9e646e5e5acd9089396d21d2dfb18bb3a70904bc691037989e7b2",
+      "static_prone_support.py": "a5163e3b144aed4e58edb6866eed22bc0bb52cc547498f57cacd370430b7dde8",
+      "relaxed_hands.py": "1a2b235897bb1b0041a6ec11e1746be355d1c326b2f09695c10a77fc927d4af6",
+      "cloth_correctives.py": "2fb6be1654de3e77bcca0507146bbe784fd0e264bf52e65c17552f4d3b55f9b3",
+      "lance_grips.py": "ae1a80c6cee00a612c9e1aa28079608093d1f2d7a4e742668e61312dc0bbbe51",
+      "equipment_library.py": "cc6b11f9f93649533be3e81287571e6936faffa52e0e8cf34425d4b13920d449",
+      "motion.py": "3e0b0408d1df6b0834024f86de661eb806b6797d42e8f6b19a396a92be969148",
+      "rifle_loading.py": "292c0f598661a65213c9efe84e9eb0db04a5d3595f486bb70753bee692824bef",
+      "bayonet_support.py": "a47ebc84469b5ccaf50095ed225d08366673ba3252acac14c657e7caff9c3820",
+      "crouched_sideways_support.py": "729c5db60e1497a1607d5bd7aa729b9306a2baa3795501fa12843e1cd5367e06",
+      "export_gesture_support.py": "d9a8d08d55839549a668e213d20a8c43fad7d399e02c5e95f6a7a52179605cb3",
+      "mounted_motion.py": "e3801c9826bcc3a4670a6eee200e5c20177e8940933586aa5f5b93fa45367622",
+      "export_guard_support.py": "3c05f14caf47f4cb17d016dcf4f0503ecd70ae30326f5d238be9efa43cbe69be",
+      "character.py": "454c00684deb83f2e6c5bd8c1cdc7cdfd08e01b6d79955387a0eed041380fef5",
+      "appearances.py": "cfa2955072db5f87450e758e37299028edc065a0f420e931729f2d9c9354e978",
+      "prone_arm_support.py": "7ac3fe37a10914d91eeb3ce38af76048a4d9c9a17cb2680b02cdafdb6d784c4a",
+      "facial_structure.py": "edefb2a261086066f501c26917bc85ffbe06f5d3e9bce2b6562c472cfbd4d174",
+      "grounding_motion.py": "caaf250342b1d17400cf7b289edee2ae8a6399e0431215a125537b765d3efeeb",
+      "task_wrists.py": "6df7093c4397361b7e35c91fcaa37b97d8b1710bc9e83370e266f2ffe1920b0e",
+      "sockets.py": "b359eebd1df8b154dfa3eaacf8bf5d81f5d24bf95699ec069f5bf6d44d2311f9",
+      "surface_atlas.py": "957ff658124abcd431b5f668215fac5fbc72b147376e0a8369ba79546ba45eb5",
+      "anatomy_surface.py": "24db3a442d9a3d4df15f2467fd803f204dfc8521022871bbb899629efcbd6986",
+      "crossbelts.py": "e9f26701a760b783ba9b5d594dc1b1b94afd046c6e063757ef88afc57de8ad04",
+      "firearm_grips.py": "f8319501a4c35e3877c9ab40ec735dbac5f7f66acf7fecf950bead47b76ab49d",
+      "garments.py": "f2d63899ada3249fd060bce6b8c36f2b2fac9afa0ceef1d6fbb011ded25f3925",
+      "equipment_dimensions.py": "74f36fa8c1aa5140c02ee6a360f75a58723ccc476f136089c5a5b244bd9312d2",
+      "pistol_loading.py": "8c53680ca84c457663df6073a2e77b3e751024ce467545eefa9663c3d6604e80",
+      "export_timing.py": "4951b651f15a6e86501a8d056f6f006cc9c19e2adcc62d40e1d9452ca64b8fcd",
+      "export_motion_increment.py": "63d8b7b175e9dc66bd4bb9ab00c49df7eeeec3aac8b6bc6be04fd7ae941071b3",
+      "maintenance_pose.py": "16bf84024f2ff447c126d091d08fed625db9038f376353cb4c9e40868875ea13"
+    }
+  },
+  "preservation": {
+    "bodySha256": "7ec7374a95ff885b3950fb8aab3e85dc8542ceecfb26bb56174ba34bb0c4531a",
+    "nativeNodeTransformsAndInverseBindExact": true,
+    "changes": [
+      {
+        "mesh": "Fitted_Boot_l",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Shaped_Shako",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Tailored_Breeches",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Tailored_Coat",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [
+          "POSITION",
+          "NORMAL",
+          "TEXCOORD_0",
+          "COLOR_0",
+          "JOINTS_0",
+          "WEIGHTS_0"
+        ],
+        "nativePartPreserved": false
+      },
+      {
+        "mesh": "Exposed_Human_Skin",
+        "material": "Skin",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Exposed_Human_Skin",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": false
+      }
+    ],
+    "otherGLBsUnchanged": {
+      "female-animations.glb": true,
+      "woman-scout-lod1.glb": true,
+      "friar-lod2.glb": true,
+      "gaucho-lod1.glb": true,
+      "worker-lod1.glb": true,
+      "male-animations.glb": true,
+      "worker-lod0.glb": true,
+      "gaucho-lod0.glb": true,
+      "woman-scout-lod0.glb": true,
+      "woman-scout-lod2.glb": true,
+      "friar-lod1.glb": true,
+      "gaucho-lod2.glb": true,
+      "worker-lod2.glb": true,
+      "friar-lod0.glb": true,
+      "horse-lod0.glb": true,
+      "horse-lod1.glb": true,
+      "horse-lod2.glb": true,
+      "royalist-lod0.glb": true,
+      "royalist-lod1.glb": true,
+      "royalist-lod2.glb": true,
+      "female-garments.glb": true,
+      "woman-shawl-lod2.glb": true,
+      "surgeon-lod2.glb": true,
+      "surgeon-lod0.glb": true,
+      "woman-shawl-lod0.glb": true,
+      "woman-shawl-lod1.glb": true,
+      "surgeon-lod1.glb": true,
+      "male-garments.glb": true,
+      "granadero-lod2.glb": true,
+      "equipment.glb": true,
+      "granadero-lod1.glb": true
+    },
+    "beforeTriangles": 86481,
+    "afterTriangles": 86535,
+    "beforeBytes": 5345112,
+    "afterBytes": 5422352
+  },
+  "sourceEnvelope": {
+    "vertices": 9890,
+    "changed": 1009,
+    "maxDisplacementMm": 15.0,
+    "stations": [
+      [
+        -0.125,
+        0.05691664188517229
+      ],
+      [
+        -0.1,
+        0.05489926761801939
+      ],
+      [
+        -0.07500000000000001,
+        0.054132925630848115
+      ],
+      [
+        -0.04999999999999999,
+        0.05334709869278314
+      ],
+      [
+        -0.024999999999999994,
+        0.05084411233135135
+      ],
+      [
+        0.0,
+        0.049440936701399346
+      ],
+      [
+        0.024999999999999994,
+        0.05020911859131091
+      ],
+      [
+        0.04999999999999999,
+        0.051039471838999276
+      ],
+      [
+        0.07500000000000001,
+        0.048990919410444526
+      ],
+      [
+        0.10000000000000003,
+        0.046664694112425006
+      ],
+      [
+        0.125,
+        0.04430681622674073
+      ],
+      [
+        0.15000000000000002,
+        0.042834207765527134
+      ],
+      [
+        0.175,
+        0.04209668131328382
+      ]
+    ],
+    "boundariesUnchanged": 296,
+    "sourceTopologyUVWeightsUnchanged": true
+  },
+  "morph": {
+    "name": "coat_elbow_l",
+    "selectedVertices": 579,
+    "bindAngleDegrees": 46.37019867144617,
+    "authoredAngleDegrees": 110,
+    "maxRestMorphDeltaMm": 50.04891771360845,
+    "nativeSkeletonWeightsUnchanged": true,
+    "driver": "clamp((native elbow angle - bind angle) / (110deg - bind angle), 0, 1)",
+    "boundaryMaskAttribute": "Pilot_Sleeve_L"
+  },
+  "folds": {
+    "minimumPoseFoldMm": -1.8779943443820621,
+    "maximumPoseFoldMm": 3.608038560485552,
+    "innerBendOnly": true,
+    "outerSilhouetteUnchangedByFolds": true,
+    "foldCount": 2
+  },
+  "frames": [
+    {
+      "clip": "stand.idle.unarmed",
+      "timeSeconds": 0.5,
+      "jointPositionsExact": true,
+      "elbow": {
+        "angleDegrees": 28.843011185655502,
+        "morphWeight": 0
+      },
+      "before": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": [],
+          "exactCrossingTrianglePairs": 29,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                811,
+                5544,
+                5395
+              ],
+              "nativeTriangle": [
+                8286,
+                8296,
+                10598
+              ],
+              "hits": [
+                [
+                  0.15038572251796722,
+                  0.024661611765623093,
+                  1.2793103456497192
+                ],
+                [
+                  0.15049070119857788,
+                  0.024304602295160294,
+                  1.278401255607605
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                811,
+                5395,
+                2789
+              ],
+              "nativeTriangle": [
+                8286,
+                10598,
+                10597
+              ],
+              "hits": [
+                [
+                  0.15064069628715515,
+                  0.02366485260426998,
+                  1.2769567966461182
+                ],
+                [
+                  0.15057635307312012,
+                  0.024013325572013855,
+                  1.2776590585708618
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                811,
+                5395,
+                2789
+              ],
+              "nativeTriangle": [
+                8286,
+                8296,
+                10598
+              ],
+              "hits": [
+                [
+                  0.15049070119857788,
+                  0.024304602295160294,
+                  1.278401255607605
+                ],
+                [
+                  0.15057635307312012,
+                  0.024013327434659004,
+                  1.2776590585708618
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                848,
+                3107,
+                811
+              ],
+              "nativeTriangle": [
+                10597,
+                10598,
+                10611
+              ],
+              "hits": [
+                [
+                  0.1507112979888916,
+                  0.02330801635980606,
+                  1.2762606143951416
+                ],
+                [
+                  0.15098163485527039,
+                  0.0222164299339056,
+                  1.2744134664535522
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                848,
+                3107,
+                811
+              ],
+              "nativeTriangle": [
+                10598,
+                10612,
+                10611
+              ],
+              "hits": [
+                [
+                  0.15114368498325348,
+                  0.02143275924026966,
+                  1.2732492685317993
+                ],
+                [
+                  0.15098163485527039,
+                  0.0222164299339056,
+                  1.2744134664535522
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2789,
+                848,
+                811
+              ],
+              "nativeTriangle": [
+                8286,
+                10598,
+                10597
+              ],
+              "hits": [
+                [
+                  0.15064069628715515,
+                  0.02366485260426998,
+                  1.2769567966461182
+                ],
+                [
+                  0.15069779753684998,
+                  0.023369058966636658,
+                  1.2763864994049072
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2789,
+                848,
+                811
+              ],
+              "nativeTriangle": [
+                10597,
+                10598,
+                10611
+              ],
+              "hits": [
+                [
+                  0.1507112979888916,
+                  0.02330801635980606,
+                  1.2762606143951416
+                ],
+                [
+                  0.15069779753684998,
+                  0.02336905524134636,
+                  1.2763864994049072
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1780,
+                2131,
+                4140
+              ],
+              "nativeTriangle": [
+                8362,
+                10589,
+                10599
+              ],
+              "hits": [
+                [
+                  0.15774187445640564,
+                  -0.015388092026114464,
+                  1.276668906211853
+                ],
+                [
+                  0.1582792103290558,
+                  -0.014230283908545971,
+                  1.2726060152053833
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2131,
+                835,
+                4140
+              ],
+              "nativeTriangle": [
+                8362,
+                10589,
+                10599
+              ],
+              "hits": [
+                [
+                  0.1582792103290558,
+                  -0.014230283908545971,
+                  1.2726060152053833
+                ],
+                [
+                  0.1583934873342514,
+                  -0.013894694857299328,
+                  1.2717105150222778
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2131,
+                835,
+                4140
+              ],
+              "nativeTriangle": [
+                10599,
+                10589,
+                10602
+              ],
+              "hits": [
+                [
+                  0.15778708457946777,
+                  -0.009628222323954105,
+                  1.2668412923812866
+                ],
+                [
+                  0.1583934873342514,
+                  -0.013894693925976753,
+                  1.2717105150222778
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2787,
+                846,
+                835
+              ],
+              "nativeTriangle": [
+                10598,
+                10599,
+                10612
+              ],
+              "hits": [
+                [
+                  0.15678003430366516,
+                  -0.0010486375540494919,
+                  1.2569350004196167
+                ],
+                [
+                  0.1576441377401352,
+                  -0.004161533899605274,
+                  1.2571873664855957
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2787,
+                846,
+                835
+              ],
+              "nativeTriangle": [
+                10599,
+                10602,
+                10612
+              ],
+              "hits": [
+                [
+                  0.1576525866985321,
+                  -0.006453802343457937,
+                  1.2598421573638916
+                ],
+                [
+                  0.1576441377401352,
+                  -0.004161533899605274,
+                  1.2571873664855957
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": [],
+          "exactCrossingTrianglePairs": 12,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                4027,
+                426,
+                3334
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.1865220069885254,
+                  -0.033812157809734344,
+                  1.270550012588501
+                ],
+                [
+                  -0.18522095680236816,
+                  -0.03316710144281387,
+                  1.2753185033798218
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4028,
+                3334,
+                426
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.1865220069885254,
+                  -0.033812157809734344,
+                  1.270550012588501
+                ],
+                [
+                  -0.1866518259048462,
+                  -0.03387192636728287,
+                  1.2700293064117432
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4028,
+                426,
+                3689
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.1866518259048462,
+                  -0.03387192636728287,
+                  1.2700293064117432
+                ],
+                [
+                  -0.18682779371738434,
+                  -0.03405998274683952,
+                  1.2703688144683838
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4027,
+                3006,
+                426
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19218716025352478,
+                  -0.03647751361131668,
+                  1.278644323348999
+                ],
+                [
+                  -0.19069373607635498,
+                  -0.03643673285841942,
+                  1.2749220132827759
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4027,
+                3006,
+                426
+              ],
+              "nativeTriangle": [
+                1731,
+                3764,
+                3765
+              ],
+              "hits": [
+                [
+                  -0.18762588500976562,
+                  -0.034829966723918915,
+                  1.270555019378662
+                ],
+                [
+                  -0.1888883411884308,
+                  -0.036100123077631,
+                  1.271040916442871
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4027,
+                3006,
+                426
+              ],
+              "nativeTriangle": [
+                3765,
+                3764,
+                1713
+              ],
+              "hits": [
+                [
+                  -0.1888883411884308,
+                  -0.036100123077631,
+                  1.271040916442871
+                ],
+                [
+                  -0.19069373607635498,
+                  -0.03643673285841942,
+                  1.2749220132827759
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2627,
+                3006,
+                4027
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19784702360630035,
+                  -0.037979479879140854,
+                  1.2780234813690186
+                ],
+                [
+                  -0.19218716025352478,
+                  -0.03647751361131668,
+                  1.278644323348999
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2627,
+                243,
+                3006
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19975976645946503,
+                  -0.038354165852069855,
+                  1.2792664766311646
+                ],
+                [
+                  -0.19784702360630035,
+                  -0.037979479879140854,
+                  1.2780234813690186
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3958,
+                243,
+                2627
+              ],
+              "nativeTriangle": [
+                1695,
+                1713,
+                1696
+              ],
+              "hits": [
+                [
+                  -0.201285719871521,
+                  -0.037691082805395126,
+                  1.2807424068450928
+                ],
+                [
+                  -0.19989922642707825,
+                  -0.038386572152376175,
+                  1.279301404953003
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3958,
+                243,
+                2627
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19975976645946503,
+                  -0.038354165852069855,
+                  1.2792664766311646
+                ],
+                [
+                  -0.19989922642707825,
+                  -0.038386572152376175,
+                  1.279301404953003
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3689,
+                426,
+                3006
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.18682779371738434,
+                  -0.03405998647212982,
+                  1.2703688144683838
+                ],
+                [
+                  -0.1870713084936142,
+                  -0.03427959978580475,
+                  1.2704418897628784
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3689,
+                426,
+                3006
+              ],
+              "nativeTriangle": [
+                1731,
+                3764,
+                3765
+              ],
+              "hits": [
+                [
+                  -0.18762588500976562,
+                  -0.034829962998628616,
+                  1.270555019378662
+                ],
+                [
+                  -0.1870713084936142,
+                  -0.03427959978580475,
+                  1.2704418897628784
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "after": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 1,
+          "worst": [
+            [
+              -0.0018542954639997333,
+              3112,
+              [
+                0.15079890191555023,
+                -0.001142852008342743,
+                1.2314364910125732
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 48,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                823,
+                5400,
+                2463
+              ],
+              "nativeTriangle": [
+                8286,
+                10598,
+                10597
+              ],
+              "hits": [
+                [
+                  0.1506108194589615,
+                  0.02370135858654976,
+                  1.2767912149429321
+                ],
+                [
+                  0.15061534941196442,
+                  0.02367447316646576,
+                  1.2767326831817627
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2463,
+                2784,
+                823
+              ],
+              "nativeTriangle": [
+                8286,
+                10598,
+                10597
+              ],
+              "hits": [
+                [
+                  0.15062466263771057,
+                  0.02360985055565834,
+                  1.2765753269195557
+                ],
+                [
+                  0.15061534941196442,
+                  0.02367447502911091,
+                  1.2767326831817627
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2784,
+                2782,
+                823
+              ],
+              "nativeTriangle": [
+                8286,
+                10598,
+                10597
+              ],
+              "hits": [
+                [
+                  0.15062466263771057,
+                  0.02360985055565834,
+                  1.2765753269195557
+                ],
+                [
+                  0.15063704550266266,
+                  0.02354944497346878,
+                  1.2764662504196167
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2784,
+                2782,
+                823
+              ],
+              "nativeTriangle": [
+                10597,
+                10598,
+                10611
+              ],
+              "hits": [
+                [
+                  0.15063704550266266,
+                  0.02354944497346878,
+                  1.2764662504196167
+                ],
+                [
+                  0.15096068382263184,
+                  0.022128596901893616,
+                  1.273666501045227
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2784,
+                2782,
+                823
+              ],
+              "nativeTriangle": [
+                10598,
+                10612,
+                10611
+              ],
+              "hits": [
+                [
+                  0.1518193781375885,
+                  0.017663106322288513,
+                  1.26601243019104
+                ],
+                [
+                  0.15096068382263184,
+                  0.022128596901893616,
+                  1.273666501045227
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3110,
+                862,
+                2783
+              ],
+              "nativeTriangle": [
+                10611,
+                10612,
+                10625
+              ],
+              "hits": [
+                [
+                  0.15290306508541107,
+                  0.009123718366026878,
+                  1.2502611875534058
+                ],
+                [
+                  0.15235601365566254,
+                  0.012154201976954937,
+                  1.2526018619537354
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3110,
+                2783,
+                2782
+              ],
+              "nativeTriangle": [
+                10611,
+                10612,
+                10625
+              ],
+              "hits": [
+                [
+                  0.15235601365566254,
+                  0.012154201976954937,
+                  1.2526018619537354
+                ],
+                [
+                  0.15208064019680023,
+                  0.014467676170170307,
+                  1.2550898790359497
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2784,
+                3110,
+                2782
+              ],
+              "nativeTriangle": [
+                10598,
+                10612,
+                10611
+              ],
+              "hits": [
+                [
+                  0.1518193781375885,
+                  0.017663106322288513,
+                  1.26601243019104
+                ],
+                [
+                  0.15208157896995544,
+                  0.01450430415570736,
+                  1.255155324935913
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2784,
+                3110,
+                2782
+              ],
+              "nativeTriangle": [
+                10611,
+                10612,
+                10625
+              ],
+              "hits": [
+                [
+                  0.15208064019680023,
+                  0.014467676170170307,
+                  1.2550898790359497
+                ],
+                [
+                  0.15208157896995544,
+                  0.01450430229306221,
+                  1.255155324935913
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3110,
+                3458,
+                862
+              ],
+              "nativeTriangle": [
+                10611,
+                10612,
+                10625
+              ],
+              "hits": [
+                [
+                  0.1527218073606491,
+                  0.006832629442214966,
+                  1.2455596923828125
+                ],
+                [
+                  0.15290306508541107,
+                  0.009123717434704304,
+                  1.2502611875534058
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1777,
+                2127,
+                847
+              ],
+              "nativeTriangle": [
+                8362,
+                8111,
+                10589
+              ],
+              "hits": [
+                [
+                  0.15747681260108948,
+                  -0.016121365129947662,
+                  1.2808399200439453
+                ],
+                [
+                  0.15733936429023743,
+                  -0.015392282977700233,
+                  1.279821753501892
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                847,
+                2127,
+                4161
+              ],
+              "nativeTriangle": [
+                8362,
+                10589,
+                10599
+              ],
+              "hits": [
+                [
+                  0.15809118747711182,
+                  -0.014644430950284004,
+                  1.2740308046340942
+                ],
+                [
+                  0.15731291472911835,
+                  -0.015265462920069695,
+                  1.2795445919036865
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": [],
+          "exactCrossingTrianglePairs": 12,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                4044,
+                430,
+                3345
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.1865220069885254,
+                  -0.033812157809734344,
+                  1.270550012588501
+                ],
+                [
+                  -0.18522095680236816,
+                  -0.03316710144281387,
+                  1.2753185033798218
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4045,
+                3345,
+                430
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.1865220069885254,
+                  -0.033812157809734344,
+                  1.270550012588501
+                ],
+                [
+                  -0.1866518259048462,
+                  -0.03387192636728287,
+                  1.2700293064117432
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4045,
+                430,
+                3702
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.1866518259048462,
+                  -0.03387192636728287,
+                  1.2700293064117432
+                ],
+                [
+                  -0.18682779371738434,
+                  -0.03405998274683952,
+                  1.2703688144683838
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4044,
+                3000,
+                430
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19218716025352478,
+                  -0.03647751361131668,
+                  1.278644323348999
+                ],
+                [
+                  -0.19069373607635498,
+                  -0.03643673285841942,
+                  1.2749220132827759
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4044,
+                3000,
+                430
+              ],
+              "nativeTriangle": [
+                1731,
+                3764,
+                3765
+              ],
+              "hits": [
+                [
+                  -0.18762588500976562,
+                  -0.034829966723918915,
+                  1.270555019378662
+                ],
+                [
+                  -0.1888883411884308,
+                  -0.036100123077631,
+                  1.271040916442871
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4044,
+                3000,
+                430
+              ],
+              "nativeTriangle": [
+                3765,
+                3764,
+                1713
+              ],
+              "hits": [
+                [
+                  -0.1888883411884308,
+                  -0.036100123077631,
+                  1.271040916442871
+                ],
+                [
+                  -0.19069373607635498,
+                  -0.03643673285841942,
+                  1.2749220132827759
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2622,
+                3000,
+                4044
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19784702360630035,
+                  -0.037979479879140854,
+                  1.2780234813690186
+                ],
+                [
+                  -0.19218716025352478,
+                  -0.03647751361131668,
+                  1.278644323348999
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2622,
+                247,
+                3000
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19975976645946503,
+                  -0.038354165852069855,
+                  1.2792664766311646
+                ],
+                [
+                  -0.19784702360630035,
+                  -0.037979479879140854,
+                  1.2780234813690186
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3974,
+                247,
+                2622
+              ],
+              "nativeTriangle": [
+                1695,
+                1713,
+                1696
+              ],
+              "hits": [
+                [
+                  -0.201285719871521,
+                  -0.037691082805395126,
+                  1.2807424068450928
+                ],
+                [
+                  -0.19989922642707825,
+                  -0.038386572152376175,
+                  1.279301404953003
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3974,
+                247,
+                2622
+              ],
+              "nativeTriangle": [
+                1696,
+                1713,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.19975976645946503,
+                  -0.038354165852069855,
+                  1.2792664766311646
+                ],
+                [
+                  -0.19989922642707825,
+                  -0.038386572152376175,
+                  1.279301404953003
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3702,
+                430,
+                3000
+              ],
+              "nativeTriangle": [
+                1731,
+                1714,
+                3764
+              ],
+              "hits": [
+                [
+                  -0.18682779371738434,
+                  -0.03405998647212982,
+                  1.2703688144683838
+                ],
+                [
+                  -0.1870713084936142,
+                  -0.03427959978580475,
+                  1.2704418897628784
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3702,
+                430,
+                3000
+              ],
+              "nativeTriangle": [
+                1731,
+                3764,
+                3765
+              ],
+              "hits": [
+                [
+                  -0.18762588500976562,
+                  -0.034829962998628616,
+                  1.270555019378662
+                ],
+                [
+                  -0.1870713084936142,
+                  -0.03427959978580475,
+                  1.2704418897628784
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "frameFiles": [
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.idle.unarmed/granadero/stand.idle.unarmed.sample-1.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.idle.unarmed/granadero/stand.idle.unarmed.sample-1.coat.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.idle.unarmed/granadero/stand.idle.unarmed.sample-1.sleeve.png"
+      ]
+    },
+    {
+      "clip": "stand.aim.short-gun",
+      "timeSeconds": 0,
+      "jointPositionsExact": true,
+      "elbow": {
+        "angleDegrees": 99.23340739433824,
+        "morphWeight": 0.8307932386890817
+      },
+      "before": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 19,
+          "worst": [
+            [
+              -0.007996932719834149,
+              3131,
+              [
+                0.2936097979545593,
+                0.06620071828365326,
+                1.1677340269088745
+              ]
+            ],
+            [
+              -0.007476834813132882,
+              3466,
+              [
+                0.29551535844802856,
+                0.06618993729352951,
+                1.1653494834899902
+              ]
+            ],
+            [
+              -0.006489133287686855,
+              1853,
+              [
+                0.3085230886936188,
+                0.012214303016662598,
+                1.2004668712615967
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 175,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                3129,
+                3130,
+                2805
+              ],
+              "nativeTriangle": [
+                10095,
+                10096,
+                10079
+              ],
+              "hits": [
+                [
+                  0.2948867380619049,
+                  0.07982876151800156,
+                  1.1693707704544067
+                ],
+                [
+                  0.2945369482040405,
+                  0.08032768964767456,
+                  1.170318603515625
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3129,
+                3130,
+                2805
+              ],
+              "nativeTriangle": [
+                10096,
+                10069,
+                10079
+              ],
+              "hits": [
+                [
+                  0.2935977876186371,
+                  0.07958486676216125,
+                  1.1707206964492798
+                ],
+                [
+                  0.2945369482040405,
+                  0.08032768964767456,
+                  1.170318603515625
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3816,
+                3462
+              ],
+              "nativeTriangle": [
+                10095,
+                10079,
+                10078
+              ],
+              "hits": [
+                [
+                  0.29599854350090027,
+                  0.07725118845701218,
+                  1.1652032136917114
+                ],
+                [
+                  0.29777008295059204,
+                  0.07873987406492233,
+                  1.165803074836731
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3127,
+                2805
+              ],
+              "nativeTriangle": [
+                10068,
+                10069,
+                10086
+              ],
+              "hits": [
+                [
+                  0.2852417528629303,
+                  0.07315084338188171,
+                  1.1772319078445435
+                ],
+                [
+                  0.2863960266113281,
+                  0.07541399449110031,
+                  1.1769667863845825
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3127,
+                2805
+              ],
+              "nativeTriangle": [
+                10095,
+                10079,
+                10078
+              ],
+              "hits": [
+                [
+                  0.29665228724479675,
+                  0.07904656231403351,
+                  1.1670066118240356
+                ],
+                [
+                  0.2955063581466675,
+                  0.07962250709533691,
+                  1.1685725450515747
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3127,
+                2805
+              ],
+              "nativeTriangle": [
+                10095,
+                10096,
+                10079
+              ],
+              "hits": [
+                [
+                  0.2948867380619049,
+                  0.07982876151800156,
+                  1.1693707704544067
+                ],
+                [
+                  0.2955063581466675,
+                  0.07962251454591751,
+                  1.1685725450515747
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3127,
+                2805
+              ],
+              "nativeTriangle": [
+                10096,
+                10086,
+                10069
+              ],
+              "hits": [
+                [
+                  0.2863960266113281,
+                  0.07541398704051971,
+                  1.1769667863845825
+                ],
+                [
+                  0.28680136799812317,
+                  0.07554453611373901,
+                  1.1765670776367188
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3127,
+                2805
+              ],
+              "nativeTriangle": [
+                10096,
+                10069,
+                10079
+              ],
+              "hits": [
+                [
+                  0.2935977876186371,
+                  0.07958486676216125,
+                  1.1707206964492798
+                ],
+                [
+                  0.28680136799812317,
+                  0.07554454356431961,
+                  1.1765670776367188
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3462,
+                3127
+              ],
+              "nativeTriangle": [
+                10068,
+                10069,
+                10086
+              ],
+              "hits": [
+                [
+                  0.2848697602748871,
+                  0.07235199213027954,
+                  1.1774266958236694
+                ],
+                [
+                  0.2852417528629303,
+                  0.07315085083246231,
+                  1.1772319078445435
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3130,
+                3462,
+                3127
+              ],
+              "nativeTriangle": [
+                10095,
+                10079,
+                10078
+              ],
+              "hits": [
+                [
+                  0.29777008295059204,
+                  0.07873987406492233,
+                  1.165803074836731
+                ],
+                [
+                  0.29665228724479675,
+                  0.0790465697646141,
+                  1.1670066118240356
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3816,
+                3463,
+                3462
+              ],
+              "nativeTriangle": [
+                10095,
+                10079,
+                10078
+              ],
+              "hits": [
+                [
+                  0.2959483861923218,
+                  0.07586415857076645,
+                  1.1634786128997803
+                ],
+                [
+                  0.29599854350090027,
+                  0.07725118845701218,
+                  1.1652032136917114
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3816,
+                1450,
+                925
+              ],
+              "nativeTriangle": [
+                10095,
+                10079,
+                10078
+              ],
+              "hits": [
+                [
+                  0.2966034710407257,
+                  0.07537317276000977,
+                  1.1623780727386475
+                ],
+                [
+                  0.2943953573703766,
+                  0.07491601258516312,
+                  1.1634060144424438
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 7,
+          "worst": [
+            [
+              -0.004539501958788605,
+              1979,
+              [
+                -0.06710442900657654,
+                -0.20019687712192535,
+                1.4736424684524536
+              ]
+            ],
+            [
+              -0.0034448163096385542,
+              3996,
+              [
+                -0.061641544103622437,
+                -0.19859039783477783,
+                1.4759531021118164
+              ]
+            ],
+            [
+              -0.003189966177160386,
+              1975,
+              [
+                -0.06926998496055603,
+                -0.19654405117034912,
+                1.469508171081543
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 126,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                328,
+                4039,
+                2685
+              ],
+              "nativeTriangle": [
+                3381,
+                3398,
+                3878
+              ],
+              "hits": [
+                [
+                  -0.04297773912549019,
+                  -0.2005254626274109,
+                  1.4868121147155762
+                ],
+                [
+                  -0.04841787368059158,
+                  -0.1989254653453827,
+                  1.4843751192092896
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1286,
+                1280,
+                1629
+              ],
+              "nativeTriangle": [
+                3427,
+                3410,
+                3411
+              ],
+              "hits": [
+                [
+                  0.0014740857295691967,
+                  -0.2053118795156479,
+                  1.4383169412612915
+                ],
+                [
+                  0.0023954645730555058,
+                  -0.2057705670595169,
+                  1.4397120475769043
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1286,
+                1280,
+                1629
+              ],
+              "nativeTriangle": [
+                3428,
+                3411,
+                3401
+              ],
+              "hits": [
+                [
+                  0.0048315455205738544,
+                  -0.2057405561208725,
+                  1.4443624019622803
+                ],
+                [
+                  0.00482881860807538,
+                  -0.20602287352085114,
+                  1.444138765335083
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1286,
+                1280,
+                1629
+              ],
+              "nativeTriangle": [
+                3427,
+                3411,
+                3428
+              ],
+              "hits": [
+                [
+                  0.0023954648058861494,
+                  -0.2057705670595169,
+                  1.4397120475769043
+                ],
+                [
+                  0.00482881860807538,
+                  -0.20602285861968994,
+                  1.444138765335083
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1286,
+                1279,
+                1280
+              ],
+              "nativeTriangle": [
+                3427,
+                3410,
+                3411
+              ],
+              "hits": [
+                [
+                  0.002475650515407324,
+                  -0.19900839030742645,
+                  1.438094973564148
+                ],
+                [
+                  0.0014740853803232312,
+                  -0.2053118795156479,
+                  1.4383169412612915
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2320,
+                2685,
+                4040
+              ],
+              "nativeTriangle": [
+                3380,
+                3398,
+                3381
+              ],
+              "hits": [
+                [
+                  -0.05547432601451874,
+                  -0.19598257541656494,
+                  1.4792569875717163
+                ],
+                [
+                  -0.05639815330505371,
+                  -0.19567841291427612,
+                  1.4787009954452515
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2320,
+                328,
+                2685
+              ],
+              "nativeTriangle": [
+                3381,
+                3398,
+                3878
+              ],
+              "hits": [
+                [
+                  -0.04841787368059158,
+                  -0.1989254653453827,
+                  1.4843751192092896
+                ],
+                [
+                  -0.04947308823466301,
+                  -0.1984192132949829,
+                  1.483580231666565
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2320,
+                328,
+                2685
+              ],
+              "nativeTriangle": [
+                3380,
+                3398,
+                3381
+              ],
+              "hits": [
+                [
+                  -0.05547432601451874,
+                  -0.19598257541656494,
+                  1.4792569875717163
+                ],
+                [
+                  -0.04947308823466301,
+                  -0.1984192132949829,
+                  1.483580231666565
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1975,
+                2320,
+                1976
+              ],
+              "nativeTriangle": [
+                3363,
+                3380,
+                3381
+              ],
+              "hits": [
+                [
+                  -0.058737825602293015,
+                  -0.19536495208740234,
+                  1.477323055267334
+                ],
+                [
+                  -0.06526713818311691,
+                  -0.1945326328277588,
+                  1.4728658199310303
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1975,
+                2320,
+                1976
+              ],
+              "nativeTriangle": [
+                3368,
+                3385,
+                3380
+              ],
+              "hits": [
+                [
+                  -0.06672929972410202,
+                  -0.19345982372760773,
+                  1.4720872640609741
+                ],
+                [
+                  -0.06664776802062988,
+                  -0.19348889589309692,
+                  1.4721382856369019
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1975,
+                2320,
+                1976
+              ],
+              "nativeTriangle": [
+                3368,
+                3380,
+                3363
+              ],
+              "hits": [
+                [
+                  -0.06664777547121048,
+                  -0.19348889589309692,
+                  1.4721382856369019
+                ],
+                [
+                  -0.06526713818311691,
+                  -0.1945326328277588,
+                  1.4728658199310303
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                332,
+                3995,
+                3647
+              ],
+              "nativeTriangle": [
+                3402,
+                3385,
+                3379
+              ],
+              "hits": [
+                [
+                  -0.07188503444194794,
+                  -0.2000117003917694,
+                  1.476209044456482
+                ],
+                [
+                  -0.0730496197938919,
+                  -0.19911238551139832,
+                  1.4739493131637573
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "after": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 15,
+          "worst": [
+            [
+              -0.01367490243865177,
+              3136,
+              [
+                0.282929390668869,
+                0.04513949155807495,
+                1.1665568351745605
+              ]
+            ],
+            [
+              -0.011089750856626779,
+              2483,
+              [
+                0.28110337257385254,
+                0.03852979838848114,
+                1.1758065223693848
+              ]
+            ],
+            [
+              -0.01104795205174014,
+              2804,
+              [
+                0.28029146790504456,
+                0.044567517936229706,
+                1.1699973344802856
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 60,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.2728111743927002,
+                  -0.021241800859570503,
+                  1.2602061033248901
+                ],
+                [
+                  0.27412149310112,
+                  -0.02116468921303749,
+                  1.2602916955947876
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8367,
+                8368,
+                8385
+              ],
+              "hits": [
+                [
+                  0.27433013916015625,
+                  -0.021510425955057144,
+                  1.2635221481323242
+                ],
+                [
+                  0.27412149310112,
+                  -0.02116468921303749,
+                  1.2602916955947876
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3801,
+                1476,
+                845
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.2714570164680481,
+                  -0.021425239741802216,
+                  1.2602962255477905
+                ],
+                [
+                  0.2728111743927002,
+                  -0.021241800859570503,
+                  1.2602061033248901
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3801,
+                4220,
+                1476
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.2651505470275879,
+                  -0.02067008800804615,
+                  1.257948398590088
+                ],
+                [
+                  0.2714570164680481,
+                  -0.021425239741802216,
+                  1.2602962255477905
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.26513251662254333,
+                  -0.02066195197403431,
+                  1.2579313516616821
+                ],
+                [
+                  0.26428478956222534,
+                  -0.02033849060535431,
+                  1.2572342157363892
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                8368,
+                10430,
+                10431
+              ],
+              "hits": [
+                [
+                  0.26193875074386597,
+                  -0.019553523510694504,
+                  1.2558927536010742
+                ],
+                [
+                  0.26428478956222534,
+                  -0.02033849060535431,
+                  1.2572342157363892
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                10430,
+                8386,
+                10431
+              ],
+              "hits": [
+                [
+                  0.26113635301589966,
+                  -0.019405856728553772,
+                  1.2560784816741943
+                ],
+                [
+                  0.26193875074386597,
+                  -0.019553525373339653,
+                  1.2558927536010742
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                1007,
+                1476
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.26513251662254333,
+                  -0.02066195383667946,
+                  1.2579313516616821
+                ],
+                [
+                  0.2651505470275879,
+                  -0.02067008800804615,
+                  1.257948398590088
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3825,
+                3129,
+                3128
+              ],
+              "nativeTriangle": [
+                10068,
+                10069,
+                10086
+              ],
+              "hits": [
+                [
+                  0.2774016261100769,
+                  0.06345150619745255,
+                  1.1701055765151978
+                ],
+                [
+                  0.27821844816207886,
+                  0.0652904286980629,
+                  1.1695443391799927
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3825,
+                3129,
+                3128
+              ],
+              "nativeTriangle": [
+                10096,
+                10086,
+                10069
+              ],
+              "hits": [
+                [
+                  0.2791820168495178,
+                  0.0654980018734932,
+                  1.168381929397583
+                ],
+                [
+                  0.27821844816207886,
+                  0.0652904361486435,
+                  1.1695443391799927
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3825,
+                906,
+                3129
+              ],
+              "nativeTriangle": [
+                10068,
+                10069,
+                10086
+              ],
+              "hits": [
+                [
+                  0.2774016261100769,
+                  0.06345150619745255,
+                  1.1701055765151978
+                ],
+                [
+                  0.2769652307033539,
+                  0.062404245138168335,
+                  1.1705074310302734
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3825,
+                906,
+                3129
+              ],
+              "nativeTriangle": [
+                10068,
+                10086,
+                10085
+              ],
+              "hits": [
+                [
+                  0.2760850191116333,
+                  0.060578107833862305,
+                  1.1713286638259888
+                ],
+                [
+                  0.2769652307033539,
+                  0.062404245138168335,
+                  1.1705074310302734
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 7,
+          "worst": [
+            [
+              -0.004539501958788605,
+              1976,
+              [
+                -0.06710442900657654,
+                -0.20019687712192535,
+                1.4736424684524536
+              ]
+            ],
+            [
+              -0.0034448163096385542,
+              4013,
+              [
+                -0.061641544103622437,
+                -0.19859039783477783,
+                1.4759531021118164
+              ]
+            ],
+            [
+              -0.003189966177160386,
+              1972,
+              [
+                -0.06926998496055603,
+                -0.19654405117034912,
+                1.469508171081543
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 126,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                3666,
+                1274,
+                3664
+              ],
+              "nativeTriangle": [
+                3383,
+                3400,
+                3401
+              ],
+              "hits": [
+                [
+                  -0.006396198645234108,
+                  -0.1925344616174698,
+                  1.4641363620758057
+                ],
+                [
+                  -0.006041711661964655,
+                  -0.1928553283214569,
+                  1.4642328023910522
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3666,
+                1274,
+                3664
+              ],
+              "nativeTriangle": [
+                3400,
+                3417,
+                3418
+              ],
+              "hits": [
+                [
+                  0.004351787269115448,
+                  -0.2140817493200302,
+                  1.4651877880096436
+                ],
+                [
+                  -0.0014793798327445984,
+                  -0.1982066035270691,
+                  1.4652795791625977
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3666,
+                1274,
+                3664
+              ],
+              "nativeTriangle": [
+                3400,
+                3418,
+                3401
+              ],
+              "hits": [
+                [
+                  -0.0015991549007594585,
+                  -0.1978607028722763,
+                  1.4652845859527588
+                ],
+                [
+                  -0.0014793805312365294,
+                  -0.1982066035270691,
+                  1.4652795791625977
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3666,
+                1274,
+                3664
+              ],
+              "nativeTriangle": [
+                3417,
+                3435,
+                3418
+              ],
+              "hits": [
+                [
+                  0.005127744749188423,
+                  -0.2178623527288437,
+                  1.464911699295044
+                ],
+                [
+                  0.004351787269115448,
+                  -0.2140817493200302,
+                  1.4651877880096436
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1272,
+                3664,
+                1274
+              ],
+              "nativeTriangle": [
+                3383,
+                3400,
+                3401
+              ],
+              "hits": [
+                [
+                  -0.006350019946694374,
+                  -0.19253475964069366,
+                  1.464074730873108
+                ],
+                [
+                  -0.006396198645234108,
+                  -0.1925344616174698,
+                  1.4641363620758057
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1272,
+                3664,
+                1274
+              ],
+              "nativeTriangle": [
+                3400,
+                3417,
+                3418
+              ],
+              "hits": [
+                [
+                  0.007168854121118784,
+                  -0.21435949206352234,
+                  1.4599339962005615
+                ],
+                [
+                  0.007128612138330936,
+                  -0.21398869156837463,
+                  1.4597504138946533
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1272,
+                3664,
+                1274
+              ],
+              "nativeTriangle": [
+                3400,
+                3418,
+                3401
+              ],
+              "hits": [
+                [
+                  0.007128613535314798,
+                  -0.21398869156837463,
+                  1.4597504138946533
+                ],
+                [
+                  0.007231262046843767,
+                  -0.21348726749420166,
+                  1.4592918157577515
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1272,
+                3664,
+                1274
+              ],
+              "nativeTriangle": [
+                3428,
+                3401,
+                3418
+              ],
+              "hits": [
+                [
+                  0.006782079115509987,
+                  -0.21027635037899017,
+                  1.4578379392623901
+                ],
+                [
+                  0.007231262978166342,
+                  -0.21348726749420166,
+                  1.4592918157577515
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1272,
+                3664,
+                1274
+              ],
+              "nativeTriangle": [
+                3417,
+                3435,
+                3418
+              ],
+              "hits": [
+                [
+                  0.005127745680510998,
+                  -0.2178623527288437,
+                  1.464911699295044
+                ],
+                [
+                  0.007168852724134922,
+                  -0.21435949206352234,
+                  1.4599339962005615
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1277,
+                1271,
+                1621
+              ],
+              "nativeTriangle": [
+                3427,
+                3410,
+                3411
+              ],
+              "hits": [
+                [
+                  0.0014740857295691967,
+                  -0.2053118795156479,
+                  1.4383169412612915
+                ],
+                [
+                  0.0023954645730555058,
+                  -0.2057705670595169,
+                  1.4397120475769043
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1277,
+                1271,
+                1621
+              ],
+              "nativeTriangle": [
+                3428,
+                3411,
+                3401
+              ],
+              "hits": [
+                [
+                  0.0048315455205738544,
+                  -0.2057405561208725,
+                  1.4443624019622803
+                ],
+                [
+                  0.00482881860807538,
+                  -0.20602287352085114,
+                  1.444138765335083
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1277,
+                1271,
+                1621
+              ],
+              "nativeTriangle": [
+                3427,
+                3411,
+                3428
+              ],
+              "hits": [
+                [
+                  0.0023954648058861494,
+                  -0.2057705670595169,
+                  1.4397120475769043
+                ],
+                [
+                  0.00482881860807538,
+                  -0.20602285861968994,
+                  1.444138765335083
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "frameFiles": [
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.aim.short-gun/granadero/stand.aim.short-gun.sample-1.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.aim.short-gun/granadero/stand.aim.short-gun.sample-1.coat.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.aim.short-gun/granadero/stand.aim.short-gun.sample-1.sleeve.png"
+      ]
+    },
+    {
+      "clip": "stand.reload.long-gun.1800",
+      "timeSeconds": 1.92,
+      "jointPositionsExact": true,
+      "elbow": {
+        "angleDegrees": 70.56614722131093,
+        "morphWeight": 0.3802612619349298
+      },
+      "before": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": [],
+          "exactCrossingTrianglePairs": 13,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                4136,
+                3786,
+                833
+              ],
+              "nativeTriangle": [
+                8367,
+                8368,
+                8385
+              ],
+              "hits": [
+                [
+                  0.1188230812549591,
+                  -0.11795681715011597,
+                  1.4702136516571045
+                ],
+                [
+                  0.12313643097877502,
+                  -0.1153295561671257,
+                  1.4706989526748657
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4136,
+                3786,
+                833
+              ],
+              "nativeTriangle": [
+                8367,
+                8385,
+                8384
+              ],
+              "hits": [
+                [
+                  0.12352821230888367,
+                  -0.115085668861866,
+                  1.4707393646240234
+                ],
+                [
+                  0.12313644587993622,
+                  -0.1153295487165451,
+                  1.4706989526748657
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4136,
+                3786,
+                833
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11855433136224747,
+                  -0.11744165420532227,
+                  1.4697091579437256
+                ],
+                [
+                  0.1188230812549591,
+                  -0.11795681715011597,
+                  1.4702136516571045
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3786,
+                4216,
+                1484
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11441400647163391,
+                  -0.11307665705680847,
+                  1.4635409116744995
+                ],
+                [
+                  0.11795999109745026,
+                  -0.11516542732715607,
+                  1.468083143234253
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3786,
+                1484,
+                833
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11795999109745026,
+                  -0.11516542732715607,
+                  1.468083143234253
+                ],
+                [
+                  0.11855433136224747,
+                  -0.11744165420532227,
+                  1.4697091579437256
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4216,
+                1015,
+                1484
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.1137189194560051,
+                  -0.11312495917081833,
+                  1.4628559350967407
+                ],
+                [
+                  0.11441400647163391,
+                  -0.11307665705680847,
+                  1.4635409116744995
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4216,
+                3164,
+                1015
+              ],
+              "nativeTriangle": [
+                8368,
+                10430,
+                10431
+              ],
+              "hits": [
+                [
+                  0.11158889532089233,
+                  -0.11288633942604065,
+                  1.4603699445724487
+                ],
+                [
+                  0.1129203587770462,
+                  -0.1131252646446228,
+                  1.462044358253479
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4216,
+                3164,
+                1015
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.1137189194560051,
+                  -0.11312495172023773,
+                  1.4628559350967407
+                ],
+                [
+                  0.1129203587770462,
+                  -0.1131252646446228,
+                  1.462044358253479
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4216,
+                3164,
+                1015
+              ],
+              "nativeTriangle": [
+                10430,
+                8386,
+                10431
+              ],
+              "hits": [
+                [
+                  0.11150838434696198,
+                  -0.11122366786003113,
+                  1.4580581188201904
+                ],
+                [
+                  0.11158889532089233,
+                  -0.11288634687662125,
+                  1.4603699445724487
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2152,
+                2490,
+                2491
+              ],
+              "nativeTriangle": [
+                10542,
+                10083,
+                10066
+              ],
+              "hits": [
+                [
+                  0.10016398876905441,
+                  -0.20325860381126404,
+                  1.4993089437484741
+                ],
+                [
+                  0.10020970553159714,
+                  -0.20326551795005798,
+                  1.4993759393692017
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2152,
+                2490,
+                2491
+              ],
+              "nativeTriangle": [
+                10065,
+                10066,
+                10083
+              ],
+              "hits": [
+                [
+                  0.10038077086210251,
+                  -0.2033500075340271,
+                  1.4994964599609375
+                ],
+                [
+                  0.10020970553159714,
+                  -0.20326551795005798,
+                  1.4993759393692017
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2150,
+                2490,
+                2152
+              ],
+              "nativeTriangle": [
+                10542,
+                10083,
+                10066
+              ],
+              "hits": [
+                [
+                  0.10016398876905441,
+                  -0.20325860381126404,
+                  1.4993089437484741
+                ],
+                [
+                  0.10027644038200378,
+                  -0.203250914812088,
+                  1.499207615852356
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 56,
+          "worst": [
+            [
+              -0.014383951655872806,
+              1319,
+              [
+                -0.3485003411769867,
+                -0.14058440923690796,
+                1.2936663627624512
+              ]
+            ],
+            [
+              -0.01295382095736386,
+              2019,
+              [
+                -0.35462361574172974,
+                -0.14598701894283295,
+                1.293114423751831
+              ]
+            ],
+            [
+              -0.012636493716854602,
+              4036,
+              [
+                -0.3508515954017639,
+                -0.13625922799110413,
+                1.2918012142181396
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 325,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                3974,
+                3637,
+                281
+              ],
+              "nativeTriangle": [
+                1746,
+                3312,
+                3313
+              ],
+              "hits": [
+                [
+                  -0.337837815284729,
+                  -0.1304745227098465,
+                  1.3197301626205444
+                ],
+                [
+                  -0.3377118706703186,
+                  -0.13043636083602905,
+                  1.3197216987609863
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3974,
+                3637,
+                281
+              ],
+              "nativeTriangle": [
+                1746,
+                3313,
+                1747
+              ],
+              "hits": [
+                [
+                  -0.3377118706703186,
+                  -0.13043636083602905,
+                  1.3197216987609863
+                ],
+                [
+                  -0.3376286029815674,
+                  -0.1304030418395996,
+                  1.319687008857727
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3974,
+                3637,
+                281
+              ],
+              "nativeTriangle": [
+                1747,
+                3313,
+                3767
+              ],
+              "hits": [
+                [
+                  -0.33780473470687866,
+                  -0.13040070235729218,
+                  1.3194983005523682
+                ],
+                [
+                  -0.3376286029815674,
+                  -0.1304030418395996,
+                  1.319687008857727
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3974,
+                3637,
+                281
+              ],
+              "nativeTriangle": [
+                3312,
+                3330,
+                3313
+              ],
+              "hits": [
+                [
+                  -0.3378521203994751,
+                  -0.13047881424427032,
+                  1.3197309970855713
+                ],
+                [
+                  -0.337837815284729,
+                  -0.1304745227098465,
+                  1.3197301626205444
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3637,
+                1268,
+                281
+              ],
+              "nativeTriangle": [
+                1747,
+                3313,
+                3767
+              ],
+              "hits": [
+                [
+                  -0.33780473470687866,
+                  -0.13040070235729218,
+                  1.3194983005523682
+                ],
+                [
+                  -0.3378109335899353,
+                  -0.13040901720523834,
+                  1.3195050954818726
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3637,
+                1268,
+                281
+              ],
+              "nativeTriangle": [
+                3313,
+                3882,
+                3767
+              ],
+              "hits": [
+                [
+                  -0.3378661572933197,
+                  -0.1304824948310852,
+                  1.319557547569275
+                ],
+                [
+                  -0.3378109335899353,
+                  -0.13040901720523834,
+                  1.3195050954818726
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3637,
+                1268,
+                281
+              ],
+              "nativeTriangle": [
+                3312,
+                3330,
+                3313
+              ],
+              "hits": [
+                [
+                  -0.3378521203994751,
+                  -0.13047881424427032,
+                  1.3197309970855713
+                ],
+                [
+                  -0.33787965774536133,
+                  -0.13050059974193573,
+                  1.3195723295211792
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3637,
+                1268,
+                281
+              ],
+              "nativeTriangle": [
+                3313,
+                3330,
+                3882
+              ],
+              "hits": [
+                [
+                  -0.33787965774536133,
+                  -0.13050059974193573,
+                  1.3195723295211792
+                ],
+                [
+                  -0.3378661572933197,
+                  -0.1304824948310852,
+                  1.319557547569275
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                306,
+                3982,
+                2966
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.35825222730636597,
+                  -0.13047640025615692,
+                  1.3213930130004883
+                ],
+                [
+                  -0.35928669571876526,
+                  -0.1290310025215149,
+                  1.3209213018417358
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                306,
+                3982,
+                2966
+              ],
+              "nativeTriangle": [
+                3334,
+                3346,
+                3329
+              ],
+              "hits": [
+                [
+                  -0.35541683435440063,
+                  -0.13284695148468018,
+                  1.3179569244384766
+                ],
+                [
+                  -0.35658466815948486,
+                  -0.13205239176750183,
+                  1.3199124336242676
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                306,
+                1614,
+                3982
+              ],
+              "nativeTriangle": [
+                3334,
+                3346,
+                3329
+              ],
+              "hits": [
+                [
+                  -0.35541683435440063,
+                  -0.13284695148468018,
+                  1.3179569244384766
+                ],
+                [
+                  -0.3551598787307739,
+                  -0.13378435373306274,
+                  1.315446138381958
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                306,
+                1614,
+                3982
+              ],
+              "nativeTriangle": [
+                3329,
+                3346,
+                3347
+              ],
+              "hits": [
+                [
+                  -0.3551598787307739,
+                  -0.13378435373306274,
+                  1.315446138381958
+                ],
+                [
+                  -0.354782372713089,
+                  -0.13465532660484314,
+                  1.3141459226608276
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "after": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": [],
+          "exactCrossingTrianglePairs": 9,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8367,
+                8368,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11897651106119156,
+                  -0.11744625866413116,
+                  1.4701404571533203
+                ],
+                [
+                  0.12317691743373871,
+                  -0.11529156565666199,
+                  1.4707006216049194
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8367,
+                8385,
+                8384
+              ],
+              "hits": [
+                [
+                  0.12351889163255692,
+                  -0.11511080712080002,
+                  1.4707422256469727
+                ],
+                [
+                  0.12317691743373871,
+                  -0.11529156565666199,
+                  1.4707006216049194
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11867159605026245,
+                  -0.11694953590631485,
+                  1.4696074724197388
+                ],
+                [
+                  0.11897651106119156,
+                  -0.11744626611471176,
+                  1.4701404571533203
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3801,
+                1476,
+                845
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11801285296678543,
+                  -0.11511854827404022,
+                  1.4681159257888794
+                ],
+                [
+                  0.11867159605026245,
+                  -0.11694953590631485,
+                  1.4696074724197388
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3801,
+                4220,
+                1476
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11442235857248306,
+                  -0.11305151879787445,
+                  1.4635380506515503
+                ],
+                [
+                  0.11801285296678543,
+                  -0.11511854827404022,
+                  1.4681159257888794
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                1007,
+                1476
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11374404281377792,
+                  -0.11311119049787521,
+                  1.4628753662109375
+                ],
+                [
+                  0.11442235857248306,
+                  -0.11305151879787445,
+                  1.4635380506515503
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                8368,
+                10430,
+                10431
+              ],
+              "hits": [
+                [
+                  0.11159838736057281,
+                  -0.11285322159528732,
+                  1.4603626728057861
+                ],
+                [
+                  0.11293672770261765,
+                  -0.1131027415394783,
+                  1.4620509147644043
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.11374403536319733,
+                  -0.11311119049787521,
+                  1.4628753662109375
+                ],
+                [
+                  0.11293672770261765,
+                  -0.1131027415394783,
+                  1.4620509147644043
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                10430,
+                8386,
+                10431
+              ],
+              "hits": [
+                [
+                  0.1115051656961441,
+                  -0.11123824864625931,
+                  1.4580646753311157
+                ],
+                [
+                  0.11159838736057281,
+                  -0.11285322159528732,
+                  1.4603626728057861
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 57,
+          "worst": [
+            [
+              -0.014383951655872806,
+              1312,
+              [
+                -0.3485003411769867,
+                -0.14058440923690796,
+                1.2936663627624512
+              ]
+            ],
+            [
+              -0.01295382095736386,
+              2016,
+              [
+                -0.35462361574172974,
+                -0.14598701894283295,
+                1.293114423751831
+              ]
+            ],
+            [
+              -0.012636493716854602,
+              4053,
+              [
+                -0.3508515954017639,
+                -0.13625922799110413,
+                1.2918012142181396
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 325,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                3991,
+                3649,
+                285
+              ],
+              "nativeTriangle": [
+                1746,
+                3312,
+                3313
+              ],
+              "hits": [
+                [
+                  -0.337837815284729,
+                  -0.1304745227098465,
+                  1.3197301626205444
+                ],
+                [
+                  -0.3377118706703186,
+                  -0.13043636083602905,
+                  1.3197216987609863
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3991,
+                3649,
+                285
+              ],
+              "nativeTriangle": [
+                1746,
+                3313,
+                1747
+              ],
+              "hits": [
+                [
+                  -0.3377118706703186,
+                  -0.13043636083602905,
+                  1.3197216987609863
+                ],
+                [
+                  -0.3376286029815674,
+                  -0.1304030418395996,
+                  1.319687008857727
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3991,
+                3649,
+                285
+              ],
+              "nativeTriangle": [
+                1747,
+                3313,
+                3767
+              ],
+              "hits": [
+                [
+                  -0.33780473470687866,
+                  -0.13040070235729218,
+                  1.3194983005523682
+                ],
+                [
+                  -0.3376286029815674,
+                  -0.1304030418395996,
+                  1.319687008857727
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3991,
+                3649,
+                285
+              ],
+              "nativeTriangle": [
+                3312,
+                3330,
+                3313
+              ],
+              "hits": [
+                [
+                  -0.3378521203994751,
+                  -0.13047881424427032,
+                  1.3197309970855713
+                ],
+                [
+                  -0.337837815284729,
+                  -0.1304745227098465,
+                  1.3197301626205444
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3649,
+                1259,
+                285
+              ],
+              "nativeTriangle": [
+                1747,
+                3313,
+                3767
+              ],
+              "hits": [
+                [
+                  -0.33780473470687866,
+                  -0.13040070235729218,
+                  1.3194983005523682
+                ],
+                [
+                  -0.3378109335899353,
+                  -0.13040901720523834,
+                  1.3195050954818726
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3649,
+                1259,
+                285
+              ],
+              "nativeTriangle": [
+                3313,
+                3882,
+                3767
+              ],
+              "hits": [
+                [
+                  -0.3378661572933197,
+                  -0.1304824948310852,
+                  1.319557547569275
+                ],
+                [
+                  -0.3378109335899353,
+                  -0.13040901720523834,
+                  1.3195050954818726
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3649,
+                1259,
+                285
+              ],
+              "nativeTriangle": [
+                3312,
+                3330,
+                3313
+              ],
+              "hits": [
+                [
+                  -0.3378521203994751,
+                  -0.13047881424427032,
+                  1.3197309970855713
+                ],
+                [
+                  -0.33787965774536133,
+                  -0.13050059974193573,
+                  1.3195723295211792
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3649,
+                1259,
+                285
+              ],
+              "nativeTriangle": [
+                3313,
+                3330,
+                3882
+              ],
+              "hits": [
+                [
+                  -0.33787965774536133,
+                  -0.13050059974193573,
+                  1.3195723295211792
+                ],
+                [
+                  -0.3378661572933197,
+                  -0.1304824948310852,
+                  1.319557547569275
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                310,
+                3999,
+                2960
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.35825222730636597,
+                  -0.13047640025615692,
+                  1.3213930130004883
+                ],
+                [
+                  -0.35928669571876526,
+                  -0.1290310025215149,
+                  1.3209213018417358
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                310,
+                3999,
+                2960
+              ],
+              "nativeTriangle": [
+                3334,
+                3346,
+                3329
+              ],
+              "hits": [
+                [
+                  -0.35541683435440063,
+                  -0.13284695148468018,
+                  1.3179569244384766
+                ],
+                [
+                  -0.35658466815948486,
+                  -0.13205239176750183,
+                  1.3199124336242676
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                310,
+                1606,
+                3999
+              ],
+              "nativeTriangle": [
+                3334,
+                3346,
+                3329
+              ],
+              "hits": [
+                [
+                  -0.35541683435440063,
+                  -0.13284695148468018,
+                  1.3179569244384766
+                ],
+                [
+                  -0.3551598787307739,
+                  -0.13378435373306274,
+                  1.315446138381958
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                310,
+                1606,
+                3999
+              ],
+              "nativeTriangle": [
+                3329,
+                3346,
+                3347
+              ],
+              "hits": [
+                [
+                  -0.3551598787307739,
+                  -0.13378435373306274,
+                  1.315446138381958
+                ],
+                [
+                  -0.354782372713089,
+                  -0.13465532660484314,
+                  1.3141459226608276
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "frameFiles": [
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.reload.long-gun.1800/granadero/stand.reload.long-gun.1800.sample-1.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.reload.long-gun.1800/granadero/stand.reload.long-gun.1800.sample-1.coat.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.reload.long-gun.1800/granadero/stand.reload.long-gun.1800.sample-1.sleeve.png"
+      ]
+    },
+    {
+      "clip": "stand.slash.blade.forehand",
+      "timeSeconds": 0.36,
+      "jointPositionsExact": true,
+      "elbow": {
+        "angleDegrees": 55.55622253903387,
+        "morphWeight": 0.14436669101252525
+      },
+      "before": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 14,
+          "worst": [
+            [
+              -0.007047075530863367,
+              924,
+              [
+                0.27278003096580505,
+                0.01916983723640442,
+                1.135900616645813
+              ]
+            ],
+            [
+              -0.006106391232606256,
+              1026,
+              [
+                0.2817744314670563,
+                0.026371842250227928,
+                1.1420003175735474
+              ]
+            ],
+            [
+              -0.005018042622396024,
+              926,
+              [
+                0.2961311340332031,
+                0.03627878054976463,
+                1.1504582166671753
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 110,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                912,
+                1445,
+                1808
+              ],
+              "nativeTriangle": [
+                10047,
+                10057,
+                10040
+              ],
+              "hits": [
+                [
+                  0.33593320846557617,
+                  0.012789416126906872,
+                  1.0970373153686523
+                ],
+                [
+                  0.33598899841308594,
+                  0.01179073378443718,
+                  1.0981849431991577
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                912,
+                1445,
+                1808
+              ],
+              "nativeTriangle": [
+                10047,
+                10040,
+                10030
+              ],
+              "hits": [
+                [
+                  0.3359890282154083,
+                  0.01179073192179203,
+                  1.0981849431991577
+                ],
+                [
+                  0.33573266863822937,
+                  0.008138078264892101,
+                  1.101232886314392
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                912,
+                1445,
+                1808
+              ],
+              "nativeTriangle": [
+                10064,
+                10057,
+                10047
+              ],
+              "hits": [
+                [
+                  0.33593320846557617,
+                  0.012789415195584297,
+                  1.0970373153686523
+                ],
+                [
+                  0.3355503976345062,
+                  0.013771412894129753,
+                  1.095090389251709
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                912,
+                1445,
+                1808
+              ],
+              "nativeTriangle": [
+                10053,
+                10047,
+                10030
+              ],
+              "hits": [
+                [
+                  0.3347479999065399,
+                  0.012135336175560951,
+                  1.0947394371032715
+                ],
+                [
+                  0.33573266863822937,
+                  0.008138083852827549,
+                  1.101232886314392
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                912,
+                1445,
+                1808
+              ],
+              "nativeTriangle": [
+                10070,
+                10064,
+                10047
+              ],
+              "hits": [
+                [
+                  0.3355503976345062,
+                  0.013771412894129753,
+                  1.095090389251709
+                ],
+                [
+                  0.33512169122695923,
+                  0.01291932724416256,
+                  1.0948805809020996
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                912,
+                1445,
+                1808
+              ],
+              "nativeTriangle": [
+                10070,
+                10047,
+                10053
+              ],
+              "hits": [
+                [
+                  0.33512169122695923,
+                  0.012919329106807709,
+                  1.0948805809020996
+                ],
+                [
+                  0.3347479999065399,
+                  0.012135336175560951,
+                  1.0947394371032715
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1808,
+                3132,
+                918
+              ],
+              "nativeTriangle": [
+                10053,
+                10047,
+                10030
+              ],
+              "hits": [
+                [
+                  0.3315383791923523,
+                  0.010856331326067448,
+                  1.0914024114608765
+                ],
+                [
+                  0.33005833625793457,
+                  0.004845740273594856,
+                  1.0966182947158813
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1808,
+                3132,
+                918
+              ],
+              "nativeTriangle": [
+                10053,
+                10030,
+                10036
+              ],
+              "hits": [
+                [
+                  0.3286529779434204,
+                  -0.0013426579535007477,
+                  1.102064609527588
+                ],
+                [
+                  0.33005833625793457,
+                  0.004845741204917431,
+                  1.0966182947158813
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1808,
+                3132,
+                918
+              ],
+              "nativeTriangle": [
+                10070,
+                10047,
+                10053
+              ],
+              "hits": [
+                [
+                  0.3274731934070587,
+                  0.014379685744643211,
+                  1.0851731300354004
+                ],
+                [
+                  0.3315383791923523,
+                  0.010856330394744873,
+                  1.0914024114608765
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2148,
+                918,
+                3132
+              ],
+              "nativeTriangle": [
+                10053,
+                10030,
+                10036
+              ],
+              "hits": [
+                [
+                  0.3286529779434204,
+                  -0.001342669129371643,
+                  1.102064609527588
+                ],
+                [
+                  0.32731956243515015,
+                  -0.001552843488752842,
+                  1.1002528667449951
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2148,
+                918,
+                3132
+              ],
+              "nativeTriangle": [
+                10036,
+                10048,
+                10053
+              ],
+              "hits": [
+                [
+                  0.32431498169898987,
+                  0.006850461941212416,
+                  1.0876394510269165
+                ],
+                [
+                  0.32731956243515015,
+                  -0.0015528388321399689,
+                  1.1002528667449951
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2148,
+                918,
+                3132
+              ],
+              "nativeTriangle": [
+                10053,
+                10065,
+                10070
+              ],
+              "hits": [
+                [
+                  0.3245159387588501,
+                  0.010032951831817627,
+                  1.084884524345398
+                ],
+                [
+                  0.32654207944869995,
+                  0.013866051100194454,
+                  1.0842605829238892
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 36,
+          "worst": [
+            [
+              -0.008216988062486053,
+              346,
+              [
+                -0.2573397159576416,
+                -0.334805428981781,
+                1.210221767425537
+              ]
+            ],
+            [
+              -0.007702014067035634,
+              1618,
+              [
+                -0.27904337644577026,
+                -0.37805402278900146,
+                1.1798977851867676
+              ]
+            ],
+            [
+              -0.006771420361474156,
+              459,
+              [
+                -0.2538720965385437,
+                -0.3586982488632202,
+                1.1916029453277588
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 504,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                292,
+                4041,
+                1667
+              ],
+              "nativeTriangle": [
+                3862,
+                3861,
+                3426
+              ],
+              "hits": [
+                [
+                  -0.24983319640159607,
+                  -0.35592710971832275,
+                  1.1986393928527832
+                ],
+                [
+                  -0.2504369914531708,
+                  -0.3559775948524475,
+                  1.1995644569396973
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                330,
+                341,
+                3653
+              ],
+              "nativeTriangle": [
+                3399,
+                3417,
+                3400
+              ],
+              "hits": [
+                [
+                  -0.29214316606521606,
+                  -0.37040314078330994,
+                  1.2064801454544067
+                ],
+                [
+                  -0.29185694456100464,
+                  -0.36981409788131714,
+                  1.2070571184158325
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                330,
+                341,
+                3653
+              ],
+              "nativeTriangle": [
+                3400,
+                3417,
+                3418
+              ],
+              "hits": [
+                [
+                  -0.2886001765727997,
+                  -0.36440110206604004,
+                  1.209935188293457
+                ],
+                [
+                  -0.29185694456100464,
+                  -0.36981409788131714,
+                  1.2070571184158325
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                330,
+                341,
+                3653
+              ],
+              "nativeTriangle": [
+                3334,
+                3346,
+                3329
+              ],
+              "hits": [
+                [
+                  -0.2776298522949219,
+                  -0.3558848202228546,
+                  1.1918476819992065
+                ],
+                [
+                  -0.2776438295841217,
+                  -0.35591596364974976,
+                  1.1918126344680786
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                330,
+                341,
+                3653
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27777770161628723,
+                  -0.3562917411327362,
+                  1.1912561655044556
+                ],
+                [
+                  -0.2776438295841217,
+                  -0.35591596364974976,
+                  1.1918126344680786
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4000,
+                2973,
+                330
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27739930152893066,
+                  -0.3595453202724457,
+                  1.1883872747421265
+                ],
+                [
+                  -0.27794161438941956,
+                  -0.3576371669769287,
+                  1.1896636486053467
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2973,
+                3307,
+                330
+              ],
+              "nativeTriangle": [
+                3399,
+                3416,
+                3417
+              ],
+              "hits": [
+                [
+                  -0.29380688071250916,
+                  -0.376995712518692,
+                  1.202424168586731
+                ],
+                [
+                  -0.29370972514152527,
+                  -0.37667879462242126,
+                  1.2026803493499756
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2973,
+                3307,
+                330
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27779215574264526,
+                  -0.35669708251953125,
+                  1.1908206939697266
+                ],
+                [
+                  -0.27794161438941956,
+                  -0.3576371669769287,
+                  1.1896636486053467
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3307,
+                341,
+                330
+              ],
+              "nativeTriangle": [
+                3399,
+                3417,
+                3400
+              ],
+              "hits": [
+                [
+                  -0.29214316606521606,
+                  -0.37040314078330994,
+                  1.2064801454544067
+                ],
+                [
+                  -0.2933907210826874,
+                  -0.37525326013565063,
+                  1.2036242485046387
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3307,
+                341,
+                330
+              ],
+              "nativeTriangle": [
+                3399,
+                3416,
+                3417
+              ],
+              "hits": [
+                [
+                  -0.29370972514152527,
+                  -0.37667879462242126,
+                  1.2026803493499756
+                ],
+                [
+                  -0.2933907210826874,
+                  -0.37525326013565063,
+                  1.2036242485046387
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3307,
+                341,
+                330
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27777770161628723,
+                  -0.3562917709350586,
+                  1.1912561655044556
+                ],
+                [
+                  -0.27779215574264526,
+                  -0.35669708251953125,
+                  1.1908206939697266
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2652,
+                329,
+                2973
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27680617570877075,
+                  -0.3622659742832184,
+                  1.186339020729065
+                ],
+                [
+                  -0.2769191265106201,
+                  -0.36120519042015076,
+                  1.1872875690460205
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "after": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 4,
+          "worst": [
+            [
+              -0.0046925364586059,
+              1018,
+              [
+                0.2735448181629181,
+                0.03229343146085739,
+                1.1402250528335571
+              ]
+            ],
+            [
+              -0.0027990170201519504,
+              905,
+              [
+                0.2590760588645935,
+                0.015133527107536793,
+                1.1555047035217285
+              ]
+            ],
+            [
+              -0.002247574317152612,
+              3475,
+              [
+                0.2678317725658417,
+                0.02809472382068634,
+                1.1377599239349365
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 76,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8367,
+                8385,
+                8384
+              ],
+              "hits": [
+                [
+                  0.24999591708183289,
+                  -0.05612197518348694,
+                  1.2390440702438354
+                ],
+                [
+                  0.24967479705810547,
+                  -0.057382505387067795,
+                  1.2326761484146118
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8367,
+                8368,
+                8385
+              ],
+              "hits": [
+                [
+                  0.2495468407869339,
+                  -0.05804837495088577,
+                  1.2293273210525513
+                ],
+                [
+                  0.24967479705810547,
+                  -0.057382505387067795,
+                  1.2326761484146118
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4154,
+                3801,
+                845
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.24912652373313904,
+                  -0.057994719594717026,
+                  1.2294422388076782
+                ],
+                [
+                  0.2495468556880951,
+                  -0.05804837495088577,
+                  1.2293273210525513
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3801,
+                1476,
+                845
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.2446153461933136,
+                  -0.05752164497971535,
+                  1.2315521240234375
+                ],
+                [
+                  0.24912652373313904,
+                  -0.057994719594717026,
+                  1.2294422388076782
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3801,
+                4220,
+                1476
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.2396744340658188,
+                  -0.05661953240633011,
+                  1.2305898666381836
+                ],
+                [
+                  0.2446153461933136,
+                  -0.05752164497971535,
+                  1.2315521240234375
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                1007,
+                1476
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.23789523541927338,
+                  -0.05614575371146202,
+                  1.2289738655090332
+                ],
+                [
+                  0.2396744340658188,
+                  -0.05661953240633011,
+                  1.2305898666381836
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                8368,
+                10431,
+                8385
+              ],
+              "hits": [
+                [
+                  0.23789523541927338,
+                  -0.05614575371146202,
+                  1.2289738655090332
+                ],
+                [
+                  0.23779800534248352,
+                  -0.05612162500619888,
+                  1.2289005517959595
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                8368,
+                10430,
+                10431
+              ],
+              "hits": [
+                [
+                  0.23642899096012115,
+                  -0.05575632303953171,
+                  1.2280166149139404
+                ],
+                [
+                  0.23779800534248352,
+                  -0.05612162873148918,
+                  1.2289005517959595
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4220,
+                3170,
+                1007
+              ],
+              "nativeTriangle": [
+                10430,
+                8386,
+                10431
+              ],
+              "hits": [
+                [
+                  0.23281818628311157,
+                  -0.05408545583486557,
+                  1.229775071144104
+                ],
+                [
+                  0.23642899096012115,
+                  -0.05575632303953171,
+                  1.2280166149139404
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3170,
+                1839,
+                1007
+              ],
+              "nativeTriangle": [
+                10430,
+                8386,
+                10431
+              ],
+              "hits": [
+                [
+                  0.2321747988462448,
+                  -0.053525280207395554,
+                  1.2294842004776
+                ],
+                [
+                  0.23281818628311157,
+                  -0.05408545583486557,
+                  1.229775071144104
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                3170,
+                4215,
+                1839
+              ],
+              "nativeTriangle": [
+                10430,
+                8386,
+                10431
+              ],
+              "hits": [
+                [
+                  0.23058587312698364,
+                  -0.05283844843506813,
+                  1.2303695678710938
+                ],
+                [
+                  0.2321747988462448,
+                  -0.053525280207395554,
+                  1.2294842004776
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                1483,
+                901,
+                907
+              ],
+              "nativeTriangle": [
+                10029,
+                10460,
+                10459
+              ],
+              "hits": [
+                [
+                  0.2833002209663391,
+                  0.027916796505451202,
+                  1.1649937629699707
+                ],
+                [
+                  0.2832500636577606,
+                  0.028012879192829132,
+                  1.1650102138519287
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 36,
+          "worst": [
+            [
+              -0.008216988062486053,
+              350,
+              [
+                -0.2573397159576416,
+                -0.334805428981781,
+                1.210221767425537
+              ]
+            ],
+            [
+              -0.007702014067035634,
+              1610,
+              [
+                -0.27904337644577026,
+                -0.37805402278900146,
+                1.1798977851867676
+              ]
+            ],
+            [
+              -0.006771420361474156,
+              463,
+              [
+                -0.2538720965385437,
+                -0.3586982488632202,
+                1.1916029453277588
+              ]
+            ]
+          ],
+          "exactCrossingTrianglePairs": 504,
+          "crossingExamples": [
+            {
+              "coatTriangle": [
+                296,
+                4058,
+                1660
+              ],
+              "nativeTriangle": [
+                3862,
+                3861,
+                3426
+              ],
+              "hits": [
+                [
+                  -0.24983319640159607,
+                  -0.35592710971832275,
+                  1.1986393928527832
+                ],
+                [
+                  -0.2504369914531708,
+                  -0.3559775948524475,
+                  1.1995644569396973
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2647,
+                2967,
+                4017
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.2769191265106201,
+                  -0.36120519042015076,
+                  1.1872875690460205
+                ],
+                [
+                  -0.27739930152893066,
+                  -0.3595453202724457,
+                  1.1883872747421265
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4017,
+                2967,
+                334
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27739930152893066,
+                  -0.3595453202724457,
+                  1.1883872747421265
+                ],
+                [
+                  -0.27794161438941956,
+                  -0.3576371669769287,
+                  1.1896636486053467
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                333,
+                2647
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27680617570877075,
+                  -0.3622659742832184,
+                  1.186339020729065
+                ],
+                [
+                  -0.27675941586494446,
+                  -0.36253586411476135,
+                  1.1861205101013184
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                333,
+                2647
+              ],
+              "nativeTriangle": [
+                3346,
+                3364,
+                3347
+              ],
+              "hits": [
+                [
+                  -0.27678000926971436,
+                  -0.3631604015827179,
+                  1.1857006549835205
+                ],
+                [
+                  -0.2768063247203827,
+                  -0.36314821243286133,
+                  1.1857266426086426
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                333,
+                2647
+              ],
+              "nativeTriangle": [
+                3351,
+                3363,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27681827545166016,
+                  -0.3629695773124695,
+                  1.1858586072921753
+                ],
+                [
+                  -0.27675941586494446,
+                  -0.36253586411476135,
+                  1.1861205101013184
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                333,
+                2647
+              ],
+              "nativeTriangle": [
+                3346,
+                3363,
+                3364
+              ],
+              "hits": [
+                [
+                  -0.27681827545166016,
+                  -0.3629695773124695,
+                  1.1858586072921753
+                ],
+                [
+                  -0.2768063247203827,
+                  -0.36314821243286133,
+                  1.1857266426086426
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                2647,
+                333,
+                2967
+              ],
+              "nativeTriangle": [
+                3334,
+                3351,
+                3346
+              ],
+              "hits": [
+                [
+                  -0.27680617570877075,
+                  -0.3622659742832184,
+                  1.186339020729065
+                ],
+                [
+                  -0.2769191265106201,
+                  -0.36120519042015076,
+                  1.1872875690460205
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                2647,
+                2312
+              ],
+              "nativeTriangle": [
+                3347,
+                3880,
+                3881
+              ],
+              "hits": [
+                [
+                  -0.2689609229564667,
+                  -0.3573765754699707,
+                  1.1851130723953247
+                ],
+                [
+                  -0.27159303426742554,
+                  -0.3597436249256134,
+                  1.185097098350525
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                2647,
+                2312
+              ],
+              "nativeTriangle": [
+                3347,
+                3364,
+                3880
+              ],
+              "hits": [
+                [
+                  -0.2722679674625397,
+                  -0.3607996106147766,
+                  1.1848645210266113
+                ],
+                [
+                  -0.27159303426742554,
+                  -0.3597436249256134,
+                  1.185097098350525
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                2647,
+                2312
+              ],
+              "nativeTriangle": [
+                3346,
+                3364,
+                3347
+              ],
+              "hits": [
+                [
+                  -0.27678000926971436,
+                  -0.3631604015827179,
+                  1.1857006549835205
+                ],
+                [
+                  -0.2756383717060089,
+                  -0.3633609116077423,
+                  1.185083031654358
+                ]
+              ]
+            },
+            {
+              "coatTriangle": [
+                4052,
+                2312,
+                2680
+              ],
+              "nativeTriangle": [
+                3347,
+                3364,
+                3880
+              ],
+              "hits": [
+                [
+                  -0.2722679674625397,
+                  -0.3607996106147766,
+                  1.1848645210266113
+                ],
+                [
+                  -0.272647500038147,
+                  -0.362576961517334,
+                  1.1855019330978394
+                ]
+              ]
+            }
+          ],
+          "actualSkinEquipmentCrossingPairs": 0,
+          "actualSkinEquipmentExamples": []
+        }
+      },
+      "frameFiles": [
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.slash.blade.forehand/granadero/stand.slash.blade.forehand.sample-1.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.slash.blade.forehand/granadero/stand.slash.blade.forehand.sample-1.coat.png",
+        "/tmp/granadero-coat-sleeve-pilot/after-v2/stand.slash.blade.forehand/granadero/stand.slash.blade.forehand.sample-1.sleeve.png"
+      ]
+    }
+  ],
+  "gates": {
+    "existingCrossbeltAndCoat": {
+      "pass": 2,
+      "fail": 0,
+      "log": "/tmp/granadero-coat-sleeve-pilot/contact-gates-v2.log"
+    },
+    "actualSkinEquipmentCrossings": "zero in the local sleeve patch in both arms at all four requested times",
+    "rigAndMotion": "native nodes/IBMs and animation GLBs exact; pose joint world positions equal before/after"
+  },
+  "remaining": [
+    "Visible improvement is limited to the sleeve envelope. The coat remains smooth; inner folds are restrained and weak at full-body scale.",
+    "The full native body, which is mostly omitted under the production uniform, still intersects the sleeve. The left idle local triangle-pair count increases from 29 to 48. Pair count is not penetration depth or severity.",
+    "Only four requested moments are inspected. No dense whole-clip, all-LOD, or full-library garment acceptance is claimed.",
+    "The added coat_elbow_l target is not driven by current production or lab code. The private render applies a measured elbow-angle driver."
+  ],
+  "sourceFiles": {
+    "character.py": "6b84b56f71148a0989e00533441961b096fa338dfc7ee8bfc7f09523def677e7",
+    "build.py": "cec3188626fe057dc93afb29b14f1a9dd3e36f9ef5bafba0926c01ab90781da6",
+    "native_sleeve_pilot.py": "1808a3f42f013b8dccb857d2a33bb96506929b0f0f2d0655a4c3e8d7e8a920f0"
+  },
+  "renderHelperSha256": "f7e6eb1605eeb6640702c194bfa93b7c854ccebeddffe7ae3f3eb97851f7c39c",
+  "changedLibraryFiles": [
+    "manifest.json",
+    "granadero-lod0.glb"
+  ],
+  "drawCalls": 6,
+  "morphTargets": [
+    {
+      "mesh": "Tailored_Coat",
+      "names": [
+        "cloth_crouched",
+        "cloth_prone",
+        "cloth_supine",
+        "coat_elbow_l"
+      ]
+    }
+  ],
+  "decision": "Root visual review rejected V2 after pistol, idle and loading comparisons. No source, runtime or asset publication."
+}

@@ -1,0 +1,52 @@
+{
+  "recommendation": "Retain only the neck cleanup for review. Reject the wool and lighting treatments as solutions to the game-scale visual-quality problem. No more small variations planned.",
+  "neck": {
+    "patch": "/tmp/granadero-uniform-shape-pilot/neck-only.patch",
+    "source": "source/assets/source/characters-3d/authoring",
+    "models": "neck-models",
+    "sha256": "3cdbfab10c56099212f61d8a0106c7bdafb544d3a35b07b2ddd665d18d4b00a6",
+    "broaderFoldFunctions": "Unchanged from the original accepted source; only neck smoothing hook/helper added",
+    "tests": {
+      "pass": 15,
+      "fail": 0,
+      "log": "neck-gates.log"
+    }
+  },
+  "material": {
+    "scope": "Only navy coat/trouser atlas tiles plus their vertex pigments",
+    "recipe": "40% brighter linear faded navy, 16% desaturation, at most 5.5% broad smooth dye variation, anatomically located panel/shoulder/elbow/belt/knee wear",
+    "result": "Mild fading and darker panel regions are visible, but the broad coat still reads smooth; it is not convincing worn wool at full-body scale.",
+    "sourceBuilderPatch": "Not prepared because treatment is rejected. Private exported-GLB diagnostic is reproducible with make-pilot.py.",
+    "proof": {
+      "changedVertices": {
+        "Tailored_Breeches": 1086,
+        "Tailored_Coat": 6009
+      },
+      "navyTiles": [
+        [
+          0,
+          1792
+        ],
+        [
+          512,
+          1792
+        ]
+      ],
+      "originalBinaryPrefixExact": true,
+      "changes": "Only appended outfit/trouser COLOR_0 accessors and one apparel colour texture; all geometry/normal/UV/weights/bind data exact",
+      "sha256": "0f15d9ea8acb9766991836b9b360a0f9c88b1f2cb67c2718a307077d3a038ae1"
+    }
+  },
+  "lighting": {
+    "scope": "Render-only stronger key/fill ratio; original geometry/material",
+    "result": "Full-body result is effectively unchanged; not recommended",
+    "source": "render-lighting-study.py"
+  },
+  "diagnosis": [
+    "All PBR maps are exported. The optimizer replaces the original cloth shader with one shared atlas, so changing only the initial cloth shader would not survive export.",
+    "Navy albedo is only [.017,.025,.044] linear; roughness is .88/.91. Existing coarse atlas colour modulation is only 0.6%, while the strongest weave is 64 cycles per panel and mostly filters away at game size.",
+    "Broad coat geometry comes from a smoothed native body surface with cloth offset and a flattened front panel. Fine weave, weak dye variation and lighting changes do not supply missing panel/fold structure."
+  ],
+  "nextUsefulDirection": "Preserve the clean neck and focus the next shape study on clear cloth construction and broad tension/compression forms at actual game size; not more pore, weave or random-noise strength.",
+  "publicOrSharedWrites": false
+}

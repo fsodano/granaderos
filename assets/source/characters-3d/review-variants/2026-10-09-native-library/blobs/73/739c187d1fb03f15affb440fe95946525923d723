@@ -1,0 +1,19 @@
+{
+  "status": "private candidate; not published",
+  "scope": "Native neck and head local rotation correction for male/female crouch and prone rifle aim only.",
+  "source": "source/assets/source/characters-3d/authoring/firearm_grips.py",
+  "baselineManifest": "ab759698ded658b97613c66398a5403234b21b359c4f60e222f4c95b90fa3141",
+  "modelManifest": "42a2bfee1b9dbb7c68c658f429f930e1d67bb41a34009a2e4201fdd9e039ee2b",
+  "results": {
+    "sourceExport": "Complete for both anatomies. Native sight and wrist tests pass.",
+    "surface": "Four actual exported aim clips, 61 samples each at30Hz; no sampled hand/head, sleeve/head, sleeve/collar crossings. Floor remains clear.",
+    "reviewedMotionTests": "18/20 pass; both descending-cut source-provenance failures reproduce on the published baseline.",
+    "preservation": "Only crouch/prone head and neck rotations change materially. Six constant thumb tracks are compacted losslessly by the shared packer; mounted head/neck differences below0.000023 degrees."
+  },
+  "remaining": [
+    "Apply the helper consistently to rifle idle/fire and reload/unload ready endpoints before publication.",
+    "Review native neck/head relative angles and sight direction, not only sight position.",
+    "Combine with the loading correction on current bodies.",
+    "Resolve current descending-cut source provenance through an honest source/bank integration."
+  ]
+}

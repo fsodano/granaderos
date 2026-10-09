@@ -1,0 +1,1595 @@
+{
+  "version": 1,
+  "gitRevision": "255838ae5b2b37e19bbc5a5ea678b91fdced316d",
+  "manifestSha256": "8289da29ffbe904ce1db437ed6b9af6fa22d591616b4c330dfe330d167422b38",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "6dfff96e1c5c0e2356286a79a12a7213f6bf3d3e07c4843f99c7d7a4440fa584"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "6efc8d85cf20be54beb25f9ff47345b849eb92b81a5524ee1bddeb5cb0219237"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "presets": [
+    "granadero",
+    "woman-scout"
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "web/public/models/characters/granadero-lod0.glb",
+        "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "bytes": 1964996,
+        "published": true
+      },
+      "bank": {
+        "path": "web/public/models/characters/male-animations.glb",
+        "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
+        "bytes": 11521284,
+        "published": true
+      },
+      "equipment": {
+        "path": "web/public/models/characters/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": true
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    },
+    "woman-scout": {
+      "body": {
+        "path": "web/public/models/characters/woman-scout-lod0.glb",
+        "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+        "bytes": 1286968,
+        "published": true
+      },
+      "bank": {
+        "path": "web/public/models/characters/female-animations.glb",
+        "sha256": "1bc7c12f0c57c40d2e2054b5ef83f0c1152318edbb697e7f52438f34d5934d02",
+        "bytes": 11349456,
+        "published": true
+      },
+      "equipment": {
+        "path": "web/public/models/characters/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": true
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "stand.idle.unarmed",
+      "phase": "pose",
+      "view": "iso",
+      "timeSeconds": 0.5,
+      "durationSeconds": 2,
+      "file": "granadero/stand.idle.unarmed.pose.png",
+      "sha256": "54ae2e1db32d5a6a862af8356d4e1b71ee533e818cd8f9a04bbd5340b4685f31",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9453967
+        ],
+        "head": [
+          -0.0075785,
+          -0.0010523,
+          1.6188377
+        ],
+        "upperarm_l": [
+          0.1910462,
+          -0.0049786,
+          1.4174495
+        ],
+        "upperarm_r": [
+          -0.1873996,
+          0.0131927,
+          1.4132237
+        ],
+        "hand_l": [
+          0.220956,
+          -0.1076584,
+          0.9251368
+        ],
+        "hand_r": [
+          -0.2251586,
+          -0.10081,
+          0.9210333
+        ],
+        "foot_l": [
+          0.0495215,
+          0.0471683,
+          0.0724157
+        ],
+        "foot_r": [
+          -0.0695054,
+          0.0525585,
+          0.110031
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.idle.unarmed",
+      "phase": "pose",
+      "view": "head",
+      "timeSeconds": 0.5,
+      "durationSeconds": 2,
+      "file": "granadero/stand.idle.unarmed.pose.head.png",
+      "sha256": "7c903eafbc02fcd777faf8bcffdacb13b2c134a7c3f8d5f884660f4c43bfec47",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9453967
+        ],
+        "head": [
+          -0.0075785,
+          -0.0010523,
+          1.6188377
+        ],
+        "upperarm_l": [
+          0.1910462,
+          -0.0049786,
+          1.4174495
+        ],
+        "upperarm_r": [
+          -0.1873996,
+          0.0131927,
+          1.4132237
+        ],
+        "hand_l": [
+          0.220956,
+          -0.1076584,
+          0.9251368
+        ],
+        "hand_r": [
+          -0.2251586,
+          -0.10081,
+          0.9210333
+        ],
+        "foot_l": [
+          0.0495215,
+          0.0471683,
+          0.0724157
+        ],
+        "foot_r": [
+          -0.0695054,
+          0.0525585,
+          0.110031
+        ]
+      },
+      "cameraTarget": [
+        -0.007578500080853701,
+        -0.0010522999800741673,
+        1.7588376998901367
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.idle.unarmed",
+      "phase": "pose",
+      "view": "hands",
+      "timeSeconds": 0.5,
+      "durationSeconds": 2,
+      "file": "granadero/stand.idle.unarmed.pose.hands.png",
+      "sha256": "1e17ec5facb565fca6fcc33350e84985a31a6da4210874b5d6dfdc2c086919e3",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9453967
+        ],
+        "head": [
+          -0.0075785,
+          -0.0010523,
+          1.6188377
+        ],
+        "upperarm_l": [
+          0.1910462,
+          -0.0049786,
+          1.4174495
+        ],
+        "upperarm_r": [
+          -0.1873996,
+          0.0131927,
+          1.4132237
+        ],
+        "hand_l": [
+          0.220956,
+          -0.1076584,
+          0.9251368
+        ],
+        "hand_r": [
+          -0.2251586,
+          -0.10081,
+          0.9210333
+        ],
+        "foot_l": [
+          0.0495215,
+          0.0471683,
+          0.0724157
+        ],
+        "foot_r": [
+          -0.0695054,
+          0.0525585,
+          0.110031
+        ]
+      },
+      "cameraTarget": [
+        -0.002101302146911621,
+        -0.10423420369625092,
+        0.92308509349823
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.punch.unarmed",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "granadero/stand.punch.unarmed.contact.png",
+      "sha256": "5c0dd25392223490dfa74516b4183c3219bead47802547d70a13ea24ccc5d555",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.2207234,
+          0.8514014
+        ],
+        "head": [
+          0.1404493,
+          -0.5631668,
+          1.3901188
+        ],
+        "upperarm_l": [
+          0.2324336,
+          -0.318882,
+          1.2871324
+        ],
+        "upperarm_r": [
+          -0.056259,
+          -0.5469706,
+          1.1965706
+        ],
+        "hand_l": [
+          0.1824261,
+          -0.4660157,
+          1.3299247
+        ],
+        "hand_r": [
+          -0.0109315,
+          -1.0189801,
+          1.3979226
+        ],
+        "foot_l": [
+          0.0957733,
+          -0.2243434,
+          0.0722379
+        ],
+        "foot_r": [
+          -0.1140205,
+          0.3442466,
+          0.2126373
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.punch.unarmed",
+      "phase": "contact",
+      "view": "head",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "granadero/stand.punch.unarmed.contact.head.png",
+      "sha256": "c037e6c716113bcaf7860c6776b86420e11a21b84640f48e0a5f0cfc996b9ce5",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.2207234,
+          0.8514014
+        ],
+        "head": [
+          0.1404493,
+          -0.5631668,
+          1.3901188
+        ],
+        "upperarm_l": [
+          0.2324336,
+          -0.318882,
+          1.2871324
+        ],
+        "upperarm_r": [
+          -0.056259,
+          -0.5469706,
+          1.1965706
+        ],
+        "hand_l": [
+          0.1824261,
+          -0.4660157,
+          1.3299247
+        ],
+        "hand_r": [
+          -0.0109315,
+          -1.0189801,
+          1.3979226
+        ],
+        "foot_l": [
+          0.0957733,
+          -0.2243434,
+          0.0722379
+        ],
+        "foot_r": [
+          -0.1140205,
+          0.3442466,
+          0.2126373
+        ]
+      },
+      "cameraTarget": [
+        0.14044930040836334,
+        -0.5631667971611023,
+        1.5301188230514526
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.punch.unarmed",
+      "phase": "contact",
+      "view": "hands",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "granadero/stand.punch.unarmed.contact.hands.png",
+      "sha256": "c98cdd9ceb8429ef32967728bad6c4d6fce04af239527d57c6b62c04dd1e3e5c",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.2207234,
+          0.8514014
+        ],
+        "head": [
+          0.1404493,
+          -0.5631668,
+          1.3901188
+        ],
+        "upperarm_l": [
+          0.2324336,
+          -0.318882,
+          1.2871324
+        ],
+        "upperarm_r": [
+          -0.056259,
+          -0.5469706,
+          1.1965706
+        ],
+        "hand_l": [
+          0.1824261,
+          -0.4660157,
+          1.3299247
+        ],
+        "hand_r": [
+          -0.0109315,
+          -1.0189801,
+          1.3979226
+        ],
+        "foot_l": [
+          0.0957733,
+          -0.2243434,
+          0.0722379
+        ],
+        "foot_r": [
+          -0.1140205,
+          0.3442466,
+          0.2126373
+        ]
+      },
+      "cameraTarget": [
+        0.08574729412794113,
+        -0.7424979209899902,
+        1.3639236688613892
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.contact.png",
+      "sha256": "4fb0e556a5a3d207ea1a1bafc505cb326f7ea5f759c4ffa113d6bcefde66f02c",
+      "item": "1800",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.0034666,
+          0.8995066
+        ],
+        "head": [
+          -0.0168374,
+          -0.040947,
+          1.5650456
+        ],
+        "upperarm_l": [
+          0.1833638,
+          -0.0440809,
+          1.370083
+        ],
+        "upperarm_r": [
+          -0.1884816,
+          0.0286651,
+          1.3671794
+        ],
+        "hand_l": [
+          0.0031753,
+          -0.4502096,
+          1.4203963
+        ],
+        "hand_r": [
+          -0.1401513,
+          -0.2260426,
+          1.4086506
+        ],
+        "foot_l": [
+          0.1057533,
+          0.1456349,
+          0.0722631
+        ],
+        "foot_r": [
+          -0.1240231,
+          -0.0454219,
+          0.1098853
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "contact",
+      "view": "head",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.contact.head.png",
+      "sha256": "0efe1722620f1adabace94440ca6a24984f06177579a790cbf45b9b10e11d7a9",
+      "item": "1800",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.0034666,
+          0.8995066
+        ],
+        "head": [
+          -0.0168374,
+          -0.040947,
+          1.5650456
+        ],
+        "upperarm_l": [
+          0.1833638,
+          -0.0440809,
+          1.370083
+        ],
+        "upperarm_r": [
+          -0.1884816,
+          0.0286651,
+          1.3671794
+        ],
+        "hand_l": [
+          0.0031753,
+          -0.4502096,
+          1.4203963
+        ],
+        "hand_r": [
+          -0.1401513,
+          -0.2260426,
+          1.4086506
+        ],
+        "foot_l": [
+          0.1057533,
+          0.1456349,
+          0.0722631
+        ],
+        "foot_r": [
+          -0.1240231,
+          -0.0454219,
+          0.1098853
+        ]
+      },
+      "cameraTarget": [
+        -0.01683739945292473,
+        -0.04094700142741203,
+        1.7050455808639526
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "contact",
+      "view": "hands",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.contact.hands.png",
+      "sha256": "9fa6aa9bde642739f8127563d41bc7acdf3bb04eabb119f4358f6b7d902cffbf",
+      "item": "1800",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.0034666,
+          0.8995066
+        ],
+        "head": [
+          -0.0168374,
+          -0.040947,
+          1.5650456
+        ],
+        "upperarm_l": [
+          0.1833638,
+          -0.0440809,
+          1.370083
+        ],
+        "upperarm_r": [
+          -0.1884816,
+          0.0286651,
+          1.3671794
+        ],
+        "hand_l": [
+          0.0031753,
+          -0.4502096,
+          1.4203963
+        ],
+        "hand_r": [
+          -0.1401513,
+          -0.2260426,
+          1.4086506
+        ],
+        "foot_l": [
+          0.1057533,
+          0.1456349,
+          0.0722631
+        ],
+        "foot_r": [
+          -0.1240231,
+          -0.0454219,
+          0.1098853
+        ]
+      },
+      "cameraTarget": [
+        -0.06848800182342529,
+        -0.3381260931491852,
+        1.4145234823226929
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.slash.knife.thrust",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "granadero/stand.slash.knife.thrust.contact.png",
+      "sha256": "1668c72a59b903f822352402b242b32fbb97809e05275cea3f8080c49af6d13f",
+      "item": "1813",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1248757,
+          0.8764443
+        ],
+        "head": [
+          0.0336217,
+          -0.2842804,
+          1.5242805
+        ],
+        "upperarm_l": [
+          0.192556,
+          -0.1365457,
+          1.3463576
+        ],
+        "upperarm_r": [
+          -0.1483611,
+          -0.2992332,
+          1.316733
+        ],
+        "hand_l": [
+          0.2409793,
+          -0.1405353,
+          1.0887949
+        ],
+        "hand_r": [
+          -0.1303845,
+          -0.7579896,
+          1.2652935
+        ],
+        "foot_l": [
+          0.0899462,
+          0.1467655,
+          0.0722726
+        ],
+        "foot_r": [
+          -0.124018,
+          -0.1554179,
+          0.1098855
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.slash.knife.thrust",
+      "phase": "contact",
+      "view": "head",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "granadero/stand.slash.knife.thrust.contact.head.png",
+      "sha256": "8ba2cfcac5909a135e2e89d3e775318878fdb2fc9d1a542c094af4330a1971da",
+      "item": "1813",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1248757,
+          0.8764443
+        ],
+        "head": [
+          0.0336217,
+          -0.2842804,
+          1.5242805
+        ],
+        "upperarm_l": [
+          0.192556,
+          -0.1365457,
+          1.3463576
+        ],
+        "upperarm_r": [
+          -0.1483611,
+          -0.2992332,
+          1.316733
+        ],
+        "hand_l": [
+          0.2409793,
+          -0.1405353,
+          1.0887949
+        ],
+        "hand_r": [
+          -0.1303845,
+          -0.7579896,
+          1.2652935
+        ],
+        "foot_l": [
+          0.0899462,
+          0.1467655,
+          0.0722726
+        ],
+        "foot_r": [
+          -0.124018,
+          -0.1554179,
+          0.1098855
+        ]
+      },
+      "cameraTarget": [
+        0.03362169861793518,
+        -0.284280389547348,
+        1.6642805337905884
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.slash.knife.thrust",
+      "phase": "contact",
+      "view": "hands",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "granadero/stand.slash.knife.thrust.contact.hands.png",
+      "sha256": "2328777dd0e41ce6eab36f6e80dfd3f5c5bdd480d4ea9dac311f91583801c0b3",
+      "item": "1813",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1248757,
+          0.8764443
+        ],
+        "head": [
+          0.0336217,
+          -0.2842804,
+          1.5242805
+        ],
+        "upperarm_l": [
+          0.192556,
+          -0.1365457,
+          1.3463576
+        ],
+        "upperarm_r": [
+          -0.1483611,
+          -0.2992332,
+          1.316733
+        ],
+        "hand_l": [
+          0.2409793,
+          -0.1405353,
+          1.0887949
+        ],
+        "hand_r": [
+          -0.1303845,
+          -0.7579896,
+          1.2652935
+        ],
+        "foot_l": [
+          0.0899462,
+          0.1467655,
+          0.0722726
+        ],
+        "foot_r": [
+          -0.124018,
+          -0.1554179,
+          0.1098855
+        ]
+      },
+      "cameraTarget": [
+        0.05529739707708359,
+        -0.44926244020462036,
+        1.177044153213501
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.idle.unarmed",
+      "phase": "pose",
+      "view": "iso",
+      "timeSeconds": 0.5,
+      "durationSeconds": 2,
+      "file": "woman-scout/stand.idle.unarmed.pose.png",
+      "sha256": "0adcaf39b236448116d076060155511b480f8e50ac6535a52a15ff8726a90d1f",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257627,
+          0.9166607
+        ],
+        "head": [
+          -0.0072162,
+          0.0119424,
+          1.6281292
+        ],
+        "upperarm_l": [
+          0.173602,
+          0.0041131,
+          1.4158554
+        ],
+        "upperarm_r": [
+          -0.1667379,
+          0.0204548,
+          1.4120554
+        ],
+        "hand_l": [
+          0.2033846,
+          -0.0851383,
+          0.9505833
+        ],
+        "hand_r": [
+          -0.203932,
+          -0.0801844,
+          0.9469091
+        ],
+        "foot_l": [
+          0.0463603,
+          0.0242156,
+          0.0778218
+        ],
+        "foot_r": [
+          -0.065865,
+          0.0293532,
+          0.1136134
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.idle.unarmed",
+      "phase": "pose",
+      "view": "head",
+      "timeSeconds": 0.5,
+      "durationSeconds": 2,
+      "file": "woman-scout/stand.idle.unarmed.pose.head.png",
+      "sha256": "b6690d2f5867b537073d8f41ba5b5d0b5499890371530c50c91841755af49645",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257627,
+          0.9166607
+        ],
+        "head": [
+          -0.0072162,
+          0.0119424,
+          1.6281292
+        ],
+        "upperarm_l": [
+          0.173602,
+          0.0041131,
+          1.4158554
+        ],
+        "upperarm_r": [
+          -0.1667379,
+          0.0204548,
+          1.4120554
+        ],
+        "hand_l": [
+          0.2033846,
+          -0.0851383,
+          0.9505833
+        ],
+        "hand_r": [
+          -0.203932,
+          -0.0801844,
+          0.9469091
+        ],
+        "foot_l": [
+          0.0463603,
+          0.0242156,
+          0.0778218
+        ],
+        "foot_r": [
+          -0.065865,
+          0.0293532,
+          0.1136134
+        ]
+      },
+      "cameraTarget": [
+        -0.007216200232505798,
+        0.01194239966571331,
+        1.7681292295455933
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.idle.unarmed",
+      "phase": "pose",
+      "view": "hands",
+      "timeSeconds": 0.5,
+      "durationSeconds": 2,
+      "file": "woman-scout/stand.idle.unarmed.pose.hands.png",
+      "sha256": "b58d983941faacb4f2a257be3102f21562593fb9883bbe922c20dc5fe85b613e",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257627,
+          0.9166607
+        ],
+        "head": [
+          -0.0072162,
+          0.0119424,
+          1.6281292
+        ],
+        "upperarm_l": [
+          0.173602,
+          0.0041131,
+          1.4158554
+        ],
+        "upperarm_r": [
+          -0.1667379,
+          0.0204548,
+          1.4120554
+        ],
+        "hand_l": [
+          0.2033846,
+          -0.0851383,
+          0.9505833
+        ],
+        "hand_r": [
+          -0.203932,
+          -0.0801844,
+          0.9469091
+        ],
+        "foot_l": [
+          0.0463603,
+          0.0242156,
+          0.0778218
+        ],
+        "foot_r": [
+          -0.065865,
+          0.0293532,
+          0.1136134
+        ]
+      },
+      "cameraTarget": [
+        -0.00027370452880859375,
+        -0.08266134560108185,
+        0.9487462043762207
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.punch.unarmed",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "woman-scout/stand.punch.unarmed.contact.png",
+      "sha256": "3ed5f31183bf64dda966fc801e35d2e01f2f885a0a7aa75e530ebdefb5cf0c12",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.2396903,
+          0.8226448
+        ],
+        "head": [
+          0.1316969,
+          -0.5852416,
+          1.4085582
+        ],
+        "upperarm_l": [
+          0.2095509,
+          -0.3482085,
+          1.2897308
+        ],
+        "upperarm_r": [
+          -0.0500729,
+          -0.5533308,
+          1.208288
+        ],
+        "hand_l": [
+          0.1595621,
+          -0.4953583,
+          1.3325394
+        ],
+        "hand_r": [
+          -0.0069639,
+          -1.0005021,
+          1.3991398
+        ],
+        "foot_l": [
+          0.0925927,
+          -0.2472608,
+          0.07762
+        ],
+        "foot_r": [
+          -0.1102806,
+          0.3154545,
+          0.2217582
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.punch.unarmed",
+      "phase": "contact",
+      "view": "head",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "woman-scout/stand.punch.unarmed.contact.head.png",
+      "sha256": "1ca70c6d612bf782eef98b8b4e3b1efec2ec5e8ef56a46ae9fa5eaf27932fb90",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.2396903,
+          0.8226448
+        ],
+        "head": [
+          0.1316969,
+          -0.5852416,
+          1.4085582
+        ],
+        "upperarm_l": [
+          0.2095509,
+          -0.3482085,
+          1.2897308
+        ],
+        "upperarm_r": [
+          -0.0500729,
+          -0.5533308,
+          1.208288
+        ],
+        "hand_l": [
+          0.1595621,
+          -0.4953583,
+          1.3325394
+        ],
+        "hand_r": [
+          -0.0069639,
+          -1.0005021,
+          1.3991398
+        ],
+        "foot_l": [
+          0.0925927,
+          -0.2472608,
+          0.07762
+        ],
+        "foot_r": [
+          -0.1102806,
+          0.3154545,
+          0.2217582
+        ]
+      },
+      "cameraTarget": [
+        0.1316968947649002,
+        -0.5852416157722473,
+        1.548558235168457
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.punch.unarmed",
+      "phase": "contact",
+      "view": "hands",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "woman-scout/stand.punch.unarmed.contact.hands.png",
+      "sha256": "2be5a762a91cec9d269225f6ef9ec819c164f60296d8f2183e872dcc5d9687fc",
+      "item": null,
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.2396903,
+          0.8226448
+        ],
+        "head": [
+          0.1316969,
+          -0.5852416,
+          1.4085582
+        ],
+        "upperarm_l": [
+          0.2095509,
+          -0.3482085,
+          1.2897308
+        ],
+        "upperarm_r": [
+          -0.0500729,
+          -0.5533308,
+          1.208288
+        ],
+        "hand_l": [
+          0.1595621,
+          -0.4953583,
+          1.3325394
+        ],
+        "hand_r": [
+          -0.0069639,
+          -1.0005021,
+          1.3991398
+        ],
+        "foot_l": [
+          0.0925927,
+          -0.2472608,
+          0.07762
+        ],
+        "foot_r": [
+          -0.1102806,
+          0.3154545,
+          0.2217582
+        ]
+      },
+      "cameraTarget": [
+        0.07629910111427307,
+        -0.7479301691055298,
+        1.3658396005630493
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "woman-scout/stand.fire.long-gun.contact.png",
+      "sha256": "1c8e2ddc4c38fd38c8498c8a22e8937ba3e3383601337633342515e0d9361737",
+      "item": "1800",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0155003,
+          0.8707501
+        ],
+        "head": [
+          -0.0134778,
+          -0.0346879,
+          1.5732819
+        ],
+        "upperarm_l": [
+          0.1688692,
+          -0.0343166,
+          1.3696562
+        ],
+        "upperarm_r": [
+          -0.1655346,
+          0.0311046,
+          1.3670453
+        ],
+        "hand_l": [
+          -0.0021627,
+          -0.456949,
+          1.4215961
+        ],
+        "hand_r": [
+          -0.1377973,
+          -0.2339259,
+          1.4085515
+        ],
+        "foot_l": [
+          0.1025729,
+          0.1227177,
+          0.0776464
+        ],
+        "foot_r": [
+          -0.1203658,
+          -0.0687431,
+          0.1134488
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "phase": "contact",
+      "view": "head",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "woman-scout/stand.fire.long-gun.contact.head.png",
+      "sha256": "3757670bb034bd5a1b902616100d61e5f0c03fddb1fceeed7cf2a8ff90638737",
+      "item": "1800",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0155003,
+          0.8707501
+        ],
+        "head": [
+          -0.0134778,
+          -0.0346879,
+          1.5732819
+        ],
+        "upperarm_l": [
+          0.1688692,
+          -0.0343166,
+          1.3696562
+        ],
+        "upperarm_r": [
+          -0.1655346,
+          0.0311046,
+          1.3670453
+        ],
+        "hand_l": [
+          -0.0021627,
+          -0.456949,
+          1.4215961
+        ],
+        "hand_r": [
+          -0.1377973,
+          -0.2339259,
+          1.4085515
+        ],
+        "foot_l": [
+          0.1025729,
+          0.1227177,
+          0.0776464
+        ],
+        "foot_r": [
+          -0.1203658,
+          -0.0687431,
+          0.1134488
+        ]
+      },
+      "cameraTarget": [
+        -0.013477800413966179,
+        -0.03468789905309677,
+        1.7132818698883057
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "phase": "contact",
+      "view": "hands",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "woman-scout/stand.fire.long-gun.contact.hands.png",
+      "sha256": "21b823939d9cff1caa60c9e88d86a4b82c72dd57fc649bb76534920d4a76d3b3",
+      "item": "1800",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0155003,
+          0.8707501
+        ],
+        "head": [
+          -0.0134778,
+          -0.0346879,
+          1.5732819
+        ],
+        "upperarm_l": [
+          0.1688692,
+          -0.0343166,
+          1.3696562
+        ],
+        "upperarm_r": [
+          -0.1655346,
+          0.0311046,
+          1.3670453
+        ],
+        "hand_l": [
+          -0.0021627,
+          -0.456949,
+          1.4215961
+        ],
+        "hand_r": [
+          -0.1377973,
+          -0.2339259,
+          1.4085515
+        ],
+        "foot_l": [
+          0.1025729,
+          0.1227177,
+          0.0776464
+        ],
+        "foot_r": [
+          -0.1203658,
+          -0.0687431,
+          0.1134488
+        ]
+      },
+      "cameraTarget": [
+        -0.06997999548912048,
+        -0.3454374372959137,
+        1.4150737524032593
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.slash.knife.thrust",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "woman-scout/stand.slash.knife.thrust.contact.png",
+      "sha256": "da64b0fc90d6ff2518dd249cf4e2b0bf2209204751d937e36281440f04157e1e",
+      "item": "1813",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1438426,
+          0.8476877
+        ],
+        "head": [
+          0.0235691,
+          -0.2851716,
+          1.5399905
+        ],
+        "upperarm_l": [
+          0.167046,
+          -0.1466684,
+          1.3486871
+        ],
+        "upperarm_r": [
+          -0.1395438,
+          -0.2929747,
+          1.3220453
+        ],
+        "hand_l": [
+          0.2157251,
+          -0.1507175,
+          1.0911559
+        ],
+        "hand_r": [
+          -0.1213527,
+          -0.7513515,
+          1.2624179
+        ],
+        "foot_l": [
+          0.087653,
+          0.123785,
+          0.0776555
+        ],
+        "foot_r": [
+          -0.1203605,
+          -0.1787397,
+          0.1134489
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.slash.knife.thrust",
+      "phase": "contact",
+      "view": "head",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "woman-scout/stand.slash.knife.thrust.contact.head.png",
+      "sha256": "c0ade6e98a9b8507aad270c11561ed42dd7b58648027ba1e4d91780dcdcd0aeb",
+      "item": "1813",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1438426,
+          0.8476877
+        ],
+        "head": [
+          0.0235691,
+          -0.2851716,
+          1.5399905
+        ],
+        "upperarm_l": [
+          0.167046,
+          -0.1466684,
+          1.3486871
+        ],
+        "upperarm_r": [
+          -0.1395438,
+          -0.2929747,
+          1.3220453
+        ],
+        "hand_l": [
+          0.2157251,
+          -0.1507175,
+          1.0911559
+        ],
+        "hand_r": [
+          -0.1213527,
+          -0.7513515,
+          1.2624179
+        ],
+        "foot_l": [
+          0.087653,
+          0.123785,
+          0.0776555
+        ],
+        "foot_r": [
+          -0.1203605,
+          -0.1787397,
+          0.1134489
+        ]
+      },
+      "cameraTarget": [
+        0.023569099605083466,
+        -0.28517159819602966,
+        1.679990530014038
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.slash.knife.thrust",
+      "phase": "contact",
+      "view": "hands",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "woman-scout/stand.slash.knife.thrust.contact.hands.png",
+      "sha256": "2db563bfeda30ddd7757593ab4ce861ed5799c8f299999d41008ff26d833e3ec",
+      "item": "1813",
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1438426,
+          0.8476877
+        ],
+        "head": [
+          0.0235691,
+          -0.2851716,
+          1.5399905
+        ],
+        "upperarm_l": [
+          0.167046,
+          -0.1466684,
+          1.3486871
+        ],
+        "upperarm_r": [
+          -0.1395438,
+          -0.2929747,
+          1.3220453
+        ],
+        "hand_l": [
+          0.2157251,
+          -0.1507175,
+          1.0911559
+        ],
+        "hand_r": [
+          -0.1213527,
+          -0.7513515,
+          1.2624179
+        ],
+        "foot_l": [
+          0.087653,
+          0.123785,
+          0.0776555
+        ],
+        "foot_r": [
+          -0.1203605,
+          -0.1787397,
+          0.1134489
+        ]
+      },
+      "cameraTarget": [
+        0.047186195850372314,
+        -0.4510344862937927,
+        1.1767868995666504
+      ],
+      "cameraScale": 0.9
+    }
+  ],
+  "complete": true
+}

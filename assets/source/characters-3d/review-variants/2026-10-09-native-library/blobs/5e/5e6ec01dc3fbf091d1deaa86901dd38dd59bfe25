@@ -1,0 +1,157 @@
+{
+  "scope": "Female left native hand surface retention at existing LOD0 reduction, only LOD1/2 of Scout and Shawl. Existing frozen relaxed-thumb bank unchanged.",
+  "frozenAtUtc": "2026-10-08T10:52:07.649388+00:00",
+  "deliveryRoot": "/tmp/granadero-hand-web-pilot/retention/delivery",
+  "privateModels": "/tmp/granadero-hand-web-pilot/retention/models",
+  "expectedInputManifestSha256": "9e823274db42b5dc9efe1e3032c18f31025d6a6b29646997b294490a1c07d964",
+  "integration": "Apply source.patch and test.patch as narrow patches; do not replace optimize.py wholesale because another agent owns a collar helper. Copy ONLY the four listed GLBs after verifying expected existingBodySha256, then update ONLY their four appearance LOD records in the current manifest. Never copy this private manifest or its banks over the canonical library.",
+  "bodyRecords": [
+    {
+      "appearance": "woman-scout",
+      "file": "woman-scout-lod1.glb",
+      "record": {
+        "lod": 1,
+        "url": "/models/characters/woman-scout-lod1.glb",
+        "triangles": 40785,
+        "bytes": 2408736,
+        "drawCalls": 5,
+        "sha256": "7e25d030019b88a5f8fb0351192049562246429f0193904dc00546e682e7881d"
+      },
+      "sourceGeneratedSha256": "0c536cf93eb4e5b819a44a2961e3d1968a8c0a147bb3bafa235c5d947633f785",
+      "existingBodySha256": "02f98914ca23cdbab43480edabbdd5cad170cd8b05b0e444016515d2c0d0cf94"
+    },
+    {
+      "appearance": "woman-scout",
+      "file": "woman-scout-lod2.glb",
+      "record": {
+        "lod": 2,
+        "url": "/models/characters/woman-scout-lod2.glb",
+        "triangles": 16177,
+        "bytes": 791472,
+        "drawCalls": 5,
+        "sha256": "abf4b6373a38f3a131bc78a4d325beb8c18a155739ef7a7ab6c6d3a2e9e5788c"
+      },
+      "sourceGeneratedSha256": "5d9a2e13c9a2e8a38461ea131e4d9baf35805a06a9f9c870b345fbc6f9c2e5a8",
+      "existingBodySha256": "31c666ee9e0a9080c6f4844188c19489b514d53e12da87df2658682a7df34fac"
+    },
+    {
+      "appearance": "woman-shawl",
+      "file": "woman-shawl-lod1.glb",
+      "record": {
+        "lod": 1,
+        "url": "/models/characters/woman-shawl-lod1.glb",
+        "triangles": 53539,
+        "bytes": 3043404,
+        "drawCalls": 5,
+        "sha256": "2e748c0afb8b64485554ffc5d6319e0459a9c82ebc3a7f398bf70cc4410bc824"
+      },
+      "sourceGeneratedSha256": "74b4ed0882590f4ccae50082970947c5159c5144e74d770e4d569d30bfb1d050",
+      "existingBodySha256": "a7e33b5e2779f7ce0f069d32a414fdfe918a57a50cbf06fb02f03e026abe500a"
+    },
+    {
+      "appearance": "woman-shawl",
+      "file": "woman-shawl-lod2.glb",
+      "record": {
+        "lod": 2,
+        "url": "/models/characters/woman-shawl-lod2.glb",
+        "triangles": 21807,
+        "bytes": 1071416,
+        "drawCalls": 5,
+        "sha256": "506eda4d30b06fa59f62df33947fe5fc8691ecd7bf1640450848f45565c27482"
+      },
+      "sourceGeneratedSha256": "0b89ddb2535f132a09fa0f1aa50ea25115a2d66341b4bfbab62119763079e952",
+      "existingBodySha256": "f8c540455bbb2efdc7a1bd8d775295c80c55eb73c0fe03ef5cc40bb801df2767"
+    }
+  ],
+  "source": {
+    "path": "/tmp/granadero-hand-web-pilot/retention/delivery/assets/source/characters-3d/authoring/optimize.py",
+    "sha256": "03e1defee93985d98de1538cac6e905a336e5ffad0cdc0a00ac7808855df95aa",
+    "patchSha256": "5f1e27cc7df8f40a03a47d099da712aa8306baed094f4c1a91bc2c53f29e789b",
+    "originalReductionBudgetPreserved": true,
+    "handReduction": "RATIOS[0] = 0.22",
+    "lod0AndMaleUntouched": true,
+    "sourceBuildCommand": "python3 tools/characters-3d/build-appearance-increment.py --preset woman-scout --preset woman-shawl --lod 1 --lod 2 --jobs 2 --directory PRIVATE_LIBRARY --source-directory PRIVATE_AUTHORING_SOURCE",
+    "sourceBuildOutput": "/tmp/granadero-hand-web-pilot/retention/source-generated-bodies"
+  },
+  "preservation": {
+    "allNonLeftHandTrianglesIncludingMorphAttributesExact": true,
+    "allNonSkinAccessorPayloadsExact": true,
+    "leftHandMatchesExistingLod0Exactly": true,
+    "nativeRigRestInverseBindNodesExact": true,
+    "sourcePoseBankBytesUnchanged": true,
+    "materialsImagesSamplersExternalTextureBytesExact": true,
+    "newTextures": [],
+    "newTextureBytes": 0,
+    "newDrawCalls": 0
+  },
+  "costs": [
+    {
+      "file": "woman-scout-lod1.glb",
+      "addedTriangles": 2014,
+      "addedBytes": 81396,
+      "drawCalls": 5
+    },
+    {
+      "file": "woman-scout-lod2.glb",
+      "addedTriangles": 2656,
+      "addedBytes": 108288,
+      "drawCalls": 5
+    },
+    {
+      "file": "woman-shawl-lod1.glb",
+      "addedTriangles": 2014,
+      "addedBytes": 81392,
+      "drawCalls": 5
+    },
+    {
+      "file": "woman-shawl-lod2.glb",
+      "addedTriangles": 2656,
+      "addedBytes": 108288,
+      "drawCalls": 5
+    }
+  ],
+  "validation": {
+    "tests": 54,
+    "pass": 54,
+    "fail": 0,
+    "samplingHz": 120,
+    "appearances": [
+      "granadero",
+      "woman-scout",
+      "woman-shawl"
+    ],
+    "lods": [
+      0,
+      1,
+      2
+    ],
+    "clips": [
+      "stand.idle.unarmed",
+      "stand.walk.unarmed",
+      "stand.run.unarmed"
+    ],
+    "bothHands": true,
+    "maximumWebCrossingPairs": 0,
+    "minimumWebAreaRatio": 0.22093730645910176,
+    "maximumActualThumbShaftBendDeg": 60.32522414903061,
+    "perClipHandSamples": 8370,
+    "gateLimitsUnchanged": [
+      "zero non-shared-edge/seam crossings",
+      "connected-web triangle area > 0.15 of native",
+      "actual thumb shaft bend < 90 deg"
+    ],
+    "regressionPatch": "/tmp/granadero-hand-web-pilot/retention/delivery/test.patch",
+    "regressionTests": 27,
+    "regressionScope": "All 3 LODs, both anatomies, both female appearances, all 3 clips. Weight-selected connected web, with actual topology diagnostics rather than fixed historical triangle count."
+  },
+  "renderEvidence": {
+    "directory": "/tmp/granadero-hand-web-pilot/retention/final-review",
+    "view": "Actual exported idle, light palette with production compensation, both hands and isometric full body, both female appearances at LOD1/2. Renders use final composed bodies."
+  },
+  "knownLimits": [
+    "Loose thumb extension and unchanged sharp inner index crease remain; this is not a claim of complete natural hand anatomy.",
+    "Male coarse index seam remains unchanged.",
+    "Current-source full rebuild changes old Shawl cloth morphs even with unmodified optimizer. This delivery composes only the source-built retained Skin primitive into the existing bodies, then proves every other triangle and morph POSITION/NORMAL payload exact. The generated retained left-hand source component is reproducible; unrelated cloth-bake drift is not included.",
+    "Collision checks measure non-shared triangle crossings and area, not contact pressure or all possible action poses. Armed/punch thumb channels are unchanged."
+  ]
+}

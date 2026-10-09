@@ -1,0 +1,17 @@
+--- a/web/lib/three/actor-runtime.ts
++++ b/web/lib/three/actor-runtime.ts
+@@ -100,7 +100,13 @@
+     const skinName=this.asset.appearance.materials?.skin??'Skin';
+     this.model.traverse(node=>{if(!(node instanceof Mesh))return;
+       const materials=Array.isArray(node.material)?node.material:[node.material];
+-      const updated=materials.map(material=>{if(material.name!==skinName&&material.userData.role!=='skin')return material;let owned=material;if(!this.ownedMaterials.has(material)){owned=material.clone();this.ownedMaterials.add(owned);}if(owned instanceof MeshStandardMaterial)owned.color.set(this.asset.manifest.skinTones?.[visual.skin]??({light:'#d5a788',brown:'#965d40',dark:'#51301f'} as Record<string,string>)[visual.skin]);return owned;});
++      const updated=materials.map(material=>{if(material.name!==skinName&&material.userData.role!=='skin')return material;let owned=material;if(!this.ownedMaterials.has(material)){owned=material.clone();this.ownedMaterials.add(owned);}if(owned instanceof MeshStandardMaterial){
++        owned.color.set(this.asset.manifest.skinTones?.[visual.skin]??({light:'#d5a788',brown:'#965d40',dark:'#51301f'} as Record<string,string>)[visual.skin]);
++        const reference=owned.userData.skinAlbedoReference;
++        if(Array.isArray(reference)&&reference.length===3&&reference.every(value=>Number.isFinite(value)&&value>0)){
++          owned.color.r/=reference[0];owned.color.g/=reference[1];owned.color.b/=reference[2];
++        }
++      }return owned;});
+       node.material=Array.isArray(node.material)?updated:updated[0];
+     });
+   }

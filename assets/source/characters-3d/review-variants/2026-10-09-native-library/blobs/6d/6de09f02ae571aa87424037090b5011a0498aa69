@@ -1,0 +1,12 @@
+from pathlib import Path
+import subprocess,concurrent.futures,json
+r=Path('/tmp/granadero-hair-naturalism-pilot/worker-delivery');root=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos')
+def render(job):
+ view,lod,size=job;script=r/'render-rear.py' if view=='rear' else root/'tools/characters-3d/render-review.py';out=r/f'review-{view}-lod{lod}-{size}'
+ if (out/'review.json').exists() and json.loads((out/'review.json').read_text()).get('complete'):return
+ cmd=['python3',str(script),'--library-dir',str(r/'models'),'--presets','worker','--clips','stand.idle.unarmed','--times','0','--size',str(size),'--samples','32','--skin','light','--lod',str(lod),'--output',str(out)]
+ if size==800:cmd+=['--face-details']
+ with (r/f'render-{view}-lod{lod}-{size}.log').open('w')as log:subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT,check=True)
+ print('DONE',view,lod,size,flush=True)
+jobs=[(v,l,800)for l in range(3)for v in ('front','rear')]+[(v,l,560)for l in (0,2)for v in ('front','rear')]
+with concurrent.futures.ThreadPoolExecutor(max_workers=2)as pool:list(pool.map(render,jobs))

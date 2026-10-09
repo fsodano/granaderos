@@ -1,0 +1,27 @@
+{
+  "status": "Private visual direction retained; unchanged atlas rejected for final publication",
+  "actualExportedBody": true,
+  "images": {
+    "before-face.png": "ad74976f3ace4912e2d16a614ded9875fff45ca12d6d1ebfeaffb1dd8c35ea96",
+    "trial-face.png": "4be92c11814c1a086ca5258b09f9e05e8344e10c1a50a1145f99758c2bf963c3",
+    "trial-isometric.png": "c4424a3b3e06e55babdfe63c665269c0393e3055a4ee0479c864c1936ac1e62b"
+  },
+  "change": "Generated albedo on accepted native body; no geometry, pose or rig changes",
+  "visibleGain": [
+    "eyebrow hairs",
+    "cheek and jaw variation",
+    "pores and short stubble detail"
+  ],
+  "remaining": [
+    "red pigment beyond near geometric lip corner",
+    "broad eyebrow tail halo",
+    "coarse cheek freckles",
+    "runtime skin palettes not compatible with uncorrected albedo factor"
+  ],
+  "secondImageEdit": {
+    "status": "failed",
+    "reason": "Image tool output moderation blocked full body UV atlas as sexual",
+    "requestId": "e3919ea3-f801-49ad-9403-ead10891447f"
+  },
+  "livePreviewChanged": false
+}

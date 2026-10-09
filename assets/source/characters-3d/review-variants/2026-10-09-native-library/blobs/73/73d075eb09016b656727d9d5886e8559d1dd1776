@@ -1,0 +1,82 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -297,6 +297,9 @@
+         relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
+         vertex.co+=vertex.normal*relief
+     coat.data.update()
++    if preset == 'granadero':
++        from coat_ease_pilot import shape_ease
++        shape_ease(coat,heads)
+     # Breeches follow native thigh, knee and pelvis topology with cloth ease.
+     trousers=subset('Tailored_Breeches',lambda f:all(.425<points[i].z<1.055 and limb_weight(i,hand_bones|arm_bones)<.05 for i,uv in f),mats['trousers'])
+     smooth(trousers,7,.64)
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/coat_ease_pilot.py
+@@ -0,0 +1,67 @@
++"""Private, bounded wool ease on the accepted native coat surface.
++
++No new topology, weights, UV coordinates, driver, or accessory geometry.
++The collar, shoulder yoke, crossbelt support and cuff openings remain fixed.
++"""
++import math, json, hashlib
++from pathlib import Path
++from mathutils import Vector
++
++
++def shape_ease(coat, heads):
++    def smooth(a,b,x):
++        u=max(0,min(1,(x-a)/(b-a)))
++        return u*u*(3-2*u)
++    def bell(x,w): return math.exp(-(x/w)**2)
++    def digest(values):
++        return hashlib.sha256(json.dumps(values,separators=(',',':')).encode()).hexdigest()
++    def preserved():
++        return {
++            'topology':digest([list(f.vertices) for f in coat.data.polygons]),
++            'uv':digest([[list(v.uv) for v in layer.data] for layer in coat.data.uv_layers]),
++            'weights':digest([[(coat.vertex_groups[g.group].name,g.weight) for g in v.groups] for v in coat.data.vertices]),
++        }
++    before=preserved();original=[v.co.copy() for v in coat.data.vertices]
++    # The crossbelt is copied from these exact support triangles later.
++    # Protect its full width and an extra taper band on both torso faces.
++    slope=.266/.389;fixed=[];amounts=[]
++    for vertex in coat.data.vertices:
++        p=vertex.co.copy();normal=vertex.normal.copy()
++        names={coat.vertex_groups[g.group].name:g.weight for g in vertex.groups}
++        side='l' if p.x>0 else 'r'
++        elbow=heads['lowerarm_'+side];wrist=heads['hand_'+side];shoulder=heads['upperarm_'+side]
++        axis=(wrist-elbow).normalized();delta=p-elbow
++        arm_weight=sum(names.get(k+'_'+side,0) for k in ('upperarm','lowerarm'))
++        value=0
++        if arm_weight>.72 and delta.length<.155:
++            along=delta.dot(axis);radial=delta-axis*along
++            cuff=smooth(.092,.125,(p-wrist).length)
++            yoke=smooth(.115,.170,(p-shoulder).length)
++            extent=1-smooth(.105,.155,delta.length)
++            # Broad eased sleeve volume, with one shallow inner elbow tuck.
++            # Its material is gathered on the flexion side, not in ring ribs.
++            palm_side=max(0,min(1,-normal.y))
++            loft=.0047*bell(along,.086)
++            tuck=.0020*bell(along+.008,.024)*palm_side
++            value=(loft-tuck)*cuff*yoke*extent
++        elif arm_weight<.08 and 1.079<p.z<1.215:
++            band=smooth(1.079,1.094,p.z)*(1-smooth(1.165,1.215,p.z))
++            support=abs(p.x-(.144+slope*(p.z-1.435)))
++            strap=smooth(.038,.060,support)
++            closure=smooth(.018,.045,abs(p.x))
++            # A single restrained pillow of wool above the tightly held belt.
++            value=.0045*bell(p.z-1.123,.047)*band*strap*closure
++        if value:
++            vertex.co+=normal*value
++        else:fixed.append(vertex.index)
++        amounts.append(value)
++    coat.data.update()
++    after=preserved();assert before==after
++    assert max(amounts)<.0050001
++    assert all((coat.data.vertices[i].co-original[i]).length==0 for i in fixed)
++    Path('/tmp/granadero-coat-ease-pilot/ease-proof.json').write_text(json.dumps({
++        'preserved':before,'vertices':len(original),'changed':sum(v>0 for v in amounts),
++        'fixed':len(fixed),'maxDisplacementMm':max(amounts)*1000,
++        'meanChangedDisplacementMm':sum(amounts)/sum(v>0 for v in amounts)*1000,
++        'description':'Bounded elbow sleeve ease and waist cloth loft; accepted seam support fixed',
++    },indent=2))

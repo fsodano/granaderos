@@ -1,0 +1,195 @@
+{
+  "status": "Frozen private source-consistent candidate. Current-body checks pass. Not published or integrated.",
+  "authoritativeCandidateDirectory": "/tmp/granadero-rifle-head-clearance/current-models",
+  "canonicalBaselineManifestSha256": "d94e9c11e6842ed924638bd8c173bb43814c34234d79055fd4afdff8b86ff69d",
+  "candidateManifestSha256": "9833a73f614350b4711271ceffb10cc1cbe3dc1facbaeb510074ce10c809ab58",
+  "source30BaselineManifestSha256": "6c2747997a9a24c8c315b155f08e50aef0e538fdd4487da66c941831261e3bbe",
+  "sourcePatch": {
+    "path": "/tmp/granadero-rifle-head-clearance/consistent-source.patch",
+    "sha256": "bbe4a3a67b07661116044bdb484cede2d83030bc00a13c9358f4a2d076883713",
+    "files": [
+      "firearm_grips.py",
+      "rifle_loading.py",
+      "motion.py"
+    ]
+  },
+  "sourceDirectory": "/tmp/granadero-rifle-head-clearance/consistent-source/assets/source/characters-3d/authoring",
+  "sourceImplementation": "Shared local ready-head corrections; loading keeps the old head planning frame for unchanged arm/cartridge paths and returns the corrected head blend. Firing adds a small recoil-linked neck correction with a world-orientation head counterrotation. The weapon/arms/body are unchanged in the delivered delta.",
+  "selectedMotionScope": {
+    "anatomies": [
+      "male",
+      "female"
+    ],
+    "clipsPerAnatomy": 32,
+    "channelsPerAnatomy": 64,
+    "postures": [
+      "crouch",
+      "prone"
+    ],
+    "actions": [
+      "aim",
+      "fire",
+      "reload",
+      "unload"
+    ],
+    "bones": [
+      "neck_01",
+      "head"
+    ],
+    "property": "rotation",
+    "variantItems": [
+      "1800",
+      "1801",
+      "1802",
+      "1803",
+      "1804",
+      "1807"
+    ]
+  },
+  "sourceExportEvidence": {
+    "initial32ClipBuilds": [
+      "consistent-male-build.log",
+      "consistent-female-build.log"
+    ],
+    "finalFireBuilds": [
+      "recoil-male-build.log",
+      "recoil-female-build.log"
+    ],
+    "nonFireSourceMatchesFinalLogic": "The recoil branch is inactive at recoil=0; only the two fire clips per anatomy were re-exported after that addition."
+  },
+  "preservation": {
+    "perAnatomy": {
+      "male": {
+        "baselineSha256": "e48fbf8e8b9fda4219b59582730453221003dad669e0a3b36e50b99e91b5d598",
+        "candidateSha256": "302090b2205efd8c955a9b27216351183532b9027f4d973307a282fb022e5123",
+        "preservedChannels": 53042,
+        "nonselectedPayloadsExact": true,
+        "allInputTimesExact": true,
+        "nativeNodeTransformsExact": true,
+        "animationExtrasExact": true
+      },
+      "female": {
+        "baselineSha256": "ee8c093b487012b45472565b42a35df8c0b10693d2104a5dec1e4012bf24d932",
+        "candidateSha256": "e056daa7ab2a4a13a1f7ed545be3a0c028335f6ea337c225d40516d34bd7e198",
+        "preservedChannels": 53042,
+        "nonselectedPayloadsExact": true,
+        "allInputTimesExact": true,
+        "nativeNodeTransformsExact": true,
+        "animationExtrasExact": true
+      }
+    },
+    "allInputTimesExact": true,
+    "eventsAndAllManifestClipMetadataExact": true,
+    "nativeNodeTransformsExact": true,
+    "currentBodyFilesExact": {
+      "granadero-lod0.glb": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7",
+      "woman-scout-lod0.glb": "54d20755699a380660cfd20a83d0948bab9802b541b54ad2644f727cd5cd7060"
+    },
+    "currentSkinPayloadsExactToSource30Baseline": true,
+    "proofFiles": [
+      "final-preservation.json",
+      "current-body-proof.json",
+      "current-skin-geometry-proof.json"
+    ]
+  },
+  "actualSurfaceValidation": {
+    "libraryManifest": "9833a73f614350b4711271ceffb10cc1cbe3dc1facbaeb510074ce10c809ab58",
+    "lod": 0,
+    "appearances": [
+      "granadero",
+      "woman-scout"
+    ],
+    "cases": 64,
+    "sampleRateHz": 120,
+    "surfaceSamples": 24432,
+    "handHeadTriangleCrossings": 0,
+    "sleeveHeadTriangleCrossings": 0,
+    "sleeveCollarTriangleCrossings": 0,
+    "sweepFiles": [
+      "current-contacts-crouch.json",
+      "current-contacts-prone.json"
+    ],
+    "minimumActualHeadRightHandGapDuringAimAndFireM": 0.0012453991910827077,
+    "fireGapFile": "current-fire-surfaces.json"
+  },
+  "readyEndpointValidation": {
+    "checks": 128,
+    "maximumEyeLineErrorM": 0.001990562250960317,
+    "maximumGazeErrorDegrees": 3.721211360444065,
+    "eyeLineLimitM": 0.002,
+    "gazeLimitDegrees": 4,
+    "endpointsMatchSharedAim": true,
+    "file": "consistent-ready-endpoints.json"
+  },
+  "angularContinuity": {
+    "sampleRateHz": 120,
+    "maximumLocalSpeedDegreesPerSecond": 243.10886595288753,
+    "maximumLocalFrameStepDegrees": 2.025907216274063,
+    "maximumAddedRecoilNeckDegrees": 6.89401886006568,
+    "file": "final-head-kinematics.json"
+  },
+  "sourceArmSolverComparison": {
+    "deliveredNonHeadCurves": "Byte-identical to source30/canonical banks. No regenerated arm tracks are merged.",
+    "maximumRegeneratedArmDifferenceDegrees": 0.05578302338200862,
+    "file": "consistent-curves.json"
+  },
+  "regression": {
+    "patch": "/tmp/granadero-rifle-head-clearance/regression.patch",
+    "file": "tests/characters-rifle-ready-head.test.mjs",
+    "tests": 4,
+    "candidatePass": 4,
+    "baselineFail": 4,
+    "baselineFailGapM": [
+      -0.008795,
+      -0.012825,
+      -0.002912,
+      -0.013511
+    ],
+    "scope": "Actual skinned right hand vs actual face/neck triangles, 120Hz recoil window, shot/peak/settle samples, exact aim/fire ready endpoints, real native eye/gaze, and bounded local angular speed.",
+    "logs": [
+      "regression-baseline.log",
+      "regression-candidate.log"
+    ]
+  },
+  "visualReview": {
+    "source30BodySequences": [
+      "final-granadero-head-sequence.png",
+      "final-woman-scout-head-sequence.png"
+    ],
+    "currentBodyRecoil": [
+      "current-review-prone/granadero/prone.fire.long-gun.sample-1.head.png",
+      "current-review-prone/woman-scout/prone.fire.long-gun.sample-1.head.png"
+    ],
+    "currentBodyRenderIndex": "current-review-prone/index.json",
+    "inspected": "Both anatomy close-up ready/recoil/return views, plus isometric full-body recoil. Cheek remains outside right hand; no sleeve/head crossing. Current Scout braid is the one already present in d94e9c11 body."
+  },
+  "headOnlyIncrement": {
+    "male": {
+      "sha256": "daf85b2d1609ad09ccbb0403bc51f62a52e3477fb63de5acd43365bfd306399e",
+      "bytes": 156180,
+      "clips": 32,
+      "channels": 64
+    },
+    "female": {
+      "sha256": "0b801d60143c775c9a99017b2a2b7b6c8dfb543cf44eee869c75690d5ea15f27",
+      "bytes": 156564,
+      "clips": 32,
+      "channels": 64
+    }
+  },
+  "mergeInstructions": [
+    "Apply consistent-source.patch and regression.patch to the matching current source.",
+    "Use head-neck-increment/{male,female}.glb with the exact64-channel allowlist in head-neck-increment/receipt.json. Replace only neck_01/head rotation outputs for its32 clips per anatomy; assert all time inputs remain byte-identical.",
+    "Current canonical bank hashes must equal preservation baselineSha256 before copying full paired bank files; otherwise merge only the allowed channels.",
+    "Keep current bodies, skin, equipment, animation metadata, markers, durations, and all other channels. Update only bank sha256/bytes in the current manifest. Do not copy the older whole manifest or any candidate body file.",
+    "Run the new4-test actual-surface regression after the merge."
+  ],
+  "limits": [
+    "The geometric sweep covers current Granadero and Scout LOD0; it is not an all-headwear or all-LOD collision certification.",
+    "The 1mm gap check samples every actual right-hand vertex against deformed head/neck triangles. Separate dense triangle-edge sweep checks crossings; neither is a general closed-volume collision proof.",
+    "During firing recoil the eye can briefly leave the sight line (maximum9.70mm), and actual facing can differ from the bore by6.24degrees. The2mm/4degree limits are enforced at exact ready endpoints, not while the rifle recoils.",
+    "The ready eye fit is near the2mm limit (1.991mm); keep the native landmarks and exact source values.",
+    "Source regeneration varies arm solves by up to0.0558degrees. Delivered arm/finger/root/leg/item curves are byte-identical because only head/neck rotations are merged.",
+    "No current geometry, rifle position, hand target, or clock was changed. No shared source, canonical asset, public asset, or Git state was written by this task."
+  ]
+}

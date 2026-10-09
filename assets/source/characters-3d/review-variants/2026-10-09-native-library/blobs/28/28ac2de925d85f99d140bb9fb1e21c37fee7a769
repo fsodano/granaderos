@@ -1,0 +1,898 @@
+[
+  {
+    "preset": "granadero",
+    "clip": "crouch.aim.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0019179214873423457,
+    "gazeErrorDegrees": 2.4677623109229625
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.aim.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.0019179214873423457,
+    "gazeErrorDegrees": 2.4677623109229625
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.fire.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0019179587918162896,
+    "gazeErrorDegrees": 2.467770401385203
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.fire.long-gun",
+    "time": 1.100000023841858,
+    "eyeLineErrorM": 0.0019178850961129447,
+    "gazeErrorDegrees": 2.4677764916419456
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0019183025824112351,
+    "gazeErrorDegrees": 2.4677829744666284
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019182936246609147,
+    "gazeErrorDegrees": 2.4677829337571215
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001917893511161173,
+    "gazeErrorDegrees": 2.4677849485140797
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.0019178845535070654,
+    "gazeErrorDegrees": 2.4677849078081513
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.aim.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0019800196773169165,
+    "gazeErrorDegrees": 3.1067680418170363
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.aim.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.0019800196773169165,
+    "gazeErrorDegrees": 3.1067680418170363
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.fire.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0019799027257806166,
+    "gazeErrorDegrees": 3.106771791491845
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.fire.long-gun",
+    "time": 1.100000023841858,
+    "eyeLineErrorM": 0.0019798794901607843,
+    "gazeErrorDegrees": 3.1067727576226774
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001979812343624613,
+    "gazeErrorDegrees": 3.1067620098437883
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.0019183025824112351,
+    "gazeErrorDegrees": 2.4677829744666284
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1800",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019182936246609147,
+    "gazeErrorDegrees": 2.4677829337571215
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.001917893511161173,
+    "gazeErrorDegrees": 2.4677849485140797
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1800",
+    "time": 2,
+    "eyeLineErrorM": 0.0019178845535070654,
+    "gazeErrorDegrees": 2.4677849078081513
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.001979812343624613,
+    "gazeErrorDegrees": 3.1067620098437883
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1800",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1800",
+    "time": 2,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.0019183025824112351,
+    "gazeErrorDegrees": 2.4677829744666284
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1801",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019182936246609147,
+    "gazeErrorDegrees": 2.4677829337571215
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.001917893511161173,
+    "gazeErrorDegrees": 2.4677849485140797
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1801",
+    "time": 2,
+    "eyeLineErrorM": 0.0019178845535070654,
+    "gazeErrorDegrees": 2.4677849078081513
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.001979812343624613,
+    "gazeErrorDegrees": 3.1067620098437883
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1801",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1801",
+    "time": 2,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.0019183025824112351,
+    "gazeErrorDegrees": 2.4677829744666284
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1802",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019182936246609147,
+    "gazeErrorDegrees": 2.4677829337571215
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.0019178927408736645,
+    "gazeErrorDegrees": 2.4677827802721777
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1802",
+    "time": 2,
+    "eyeLineErrorM": 0.0019178845535070654,
+    "gazeErrorDegrees": 2.4677849078081513
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.001979812343624613,
+    "gazeErrorDegrees": 3.1067620098437883
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1802",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1802",
+    "time": 2,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.0019183025824112351,
+    "gazeErrorDegrees": 2.4677829744666284
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1803",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019182936246609147,
+    "gazeErrorDegrees": 2.4677829337571215
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.0019178927408736645,
+    "gazeErrorDegrees": 2.4677827802721777
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1803",
+    "time": 2,
+    "eyeLineErrorM": 0.0019178845535070654,
+    "gazeErrorDegrees": 2.4677849078081513
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.001979812343624613,
+    "gazeErrorDegrees": 3.1067620098437883
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1803",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1803",
+    "time": 2,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.0019183025824112351,
+    "gazeErrorDegrees": 2.4677829744666284
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1804",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019182936246609147,
+    "gazeErrorDegrees": 2.4677829337571215
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.0019178927408736645,
+    "gazeErrorDegrees": 2.4677827802721777
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1804",
+    "time": 2,
+    "eyeLineErrorM": 0.0019178845535070654,
+    "gazeErrorDegrees": 2.4677849078081513
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.001979812343624613,
+    "gazeErrorDegrees": 3.1067620098437883
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1804",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1804",
+    "time": 2,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.0019183025824112351,
+    "gazeErrorDegrees": 2.4677829744666284
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.reload.long-gun.1807",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019182936246609147,
+    "gazeErrorDegrees": 2.4677829337571215
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.0019178927408736645,
+    "gazeErrorDegrees": 2.4677827802721777
+  },
+  {
+    "preset": "granadero",
+    "clip": "crouch.unload.long-gun.1807",
+    "time": 2,
+    "eyeLineErrorM": 0.0019178845535070654,
+    "gazeErrorDegrees": 2.4677849078081513
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.reload.long-gun.1807",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.0019797939616677898,
+    "gazeErrorDegrees": 3.106764838091173
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.unload.long-gun.1807",
+    "time": 2,
+    "eyeLineErrorM": 0.0019797958126567387,
+    "gazeErrorDegrees": 3.106762589626166
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.aim.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001990495684069353,
+    "gazeErrorDegrees": 1.185935380605025
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.aim.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.001990495684069353,
+    "gazeErrorDegrees": 1.185935380605025
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.fire.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001990465812722279,
+    "gazeErrorDegrees": 1.185932273818054
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.fire.long-gun",
+    "time": 1.100000023841858,
+    "eyeLineErrorM": 0.001990562250960317,
+    "gazeErrorDegrees": 1.185932338142356
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001990266044073893,
+    "gazeErrorDegrees": 1.185943675143017
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019902758563591113,
+    "gazeErrorDegrees": 1.1859443184845027
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001990398013035895,
+    "gazeErrorDegrees": 1.185956285502355
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.0019904071904812584,
+    "gazeErrorDegrees": 1.185956590879985
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.aim.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0015712553374541561,
+    "gazeErrorDegrees": 3.721211360444065
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.aim.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.0015712553374541561,
+    "gazeErrorDegrees": 3.721211360444065
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.fire.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.0015712553374541561,
+    "gazeErrorDegrees": 3.721211360444065
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.fire.long-gun",
+    "time": 1.100000023841858,
+    "eyeLineErrorM": 0.0015712553374541561,
+    "gazeErrorDegrees": 3.721211360444065
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun",
+    "time": 2,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.001990266044073893,
+    "gazeErrorDegrees": 1.185943675143017
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1800",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019902758563591113,
+    "gazeErrorDegrees": 1.1859443184845027
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.001990398013035895,
+    "gazeErrorDegrees": 1.185956285502355
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1800",
+    "time": 2,
+    "eyeLineErrorM": 0.0019904071904812584,
+    "gazeErrorDegrees": 1.185956590879985
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1800",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1800",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1800",
+    "time": 2,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.001990266044073893,
+    "gazeErrorDegrees": 1.185943675143017
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1801",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019902758563591113,
+    "gazeErrorDegrees": 1.1859443184845027
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.001990398013035895,
+    "gazeErrorDegrees": 1.185956285502355
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1801",
+    "time": 2,
+    "eyeLineErrorM": 0.0019904071904812584,
+    "gazeErrorDegrees": 1.185956590879985
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1801",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1801",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1801",
+    "time": 2,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.001990266044073893,
+    "gazeErrorDegrees": 1.185943675143017
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1802",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019902758563591113,
+    "gazeErrorDegrees": 1.1859443184845027
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.001990398013035895,
+    "gazeErrorDegrees": 1.185956285502355
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1802",
+    "time": 2,
+    "eyeLineErrorM": 0.0019904071904812584,
+    "gazeErrorDegrees": 1.185956590879985
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.0015711465614881733,
+    "gazeErrorDegrees": 3.7212006753987303
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1802",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1802",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1802",
+    "time": 2,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.001990266044073893,
+    "gazeErrorDegrees": 1.185943675143017
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1803",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019902758563591113,
+    "gazeErrorDegrees": 1.1859443184845027
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.001990398013035895,
+    "gazeErrorDegrees": 1.185956285502355
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1803",
+    "time": 2,
+    "eyeLineErrorM": 0.0019904071904812584,
+    "gazeErrorDegrees": 1.185956590879985
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.0015711465614881733,
+    "gazeErrorDegrees": 3.7212006753987303
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1803",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1803",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1803",
+    "time": 2,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.001990266044073893,
+    "gazeErrorDegrees": 1.185943675143017
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1804",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019902758563591113,
+    "gazeErrorDegrees": 1.1859443184845027
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.001990398013035895,
+    "gazeErrorDegrees": 1.185956285502355
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1804",
+    "time": 2,
+    "eyeLineErrorM": 0.0019904071904812584,
+    "gazeErrorDegrees": 1.185956590879985
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.0015711465614881733,
+    "gazeErrorDegrees": 3.7212006753987303
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1804",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1804",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1804",
+    "time": 2,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.0019902713503455686,
+    "gazeErrorDegrees": 1.185946501239458
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.reload.long-gun.1807",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0019902758563591113,
+    "gazeErrorDegrees": 1.1859443184845027
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.0019904026844670556,
+    "gazeErrorDegrees": 1.1859587736427826
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.unload.long-gun.1807",
+    "time": 2,
+    "eyeLineErrorM": 0.0019904071904812584,
+    "gazeErrorDegrees": 1.185956590879985
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.reload.long-gun.1807",
+    "time": 4.800000190734863,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1807",
+    "time": 0,
+    "eyeLineErrorM": 0.001571148421245374,
+    "gazeErrorDegrees": 3.721200637152128
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.unload.long-gun.1807",
+    "time": 2,
+    "eyeLineErrorM": 0.0015711476303232519,
+    "gazeErrorDegrees": 3.7212002198047105
+  }
+]

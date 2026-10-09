@@ -1,0 +1,98 @@
+[
+  {
+    "gender": "male",
+    "name": "stand.slash.blade",
+    "maxUnaffectedJointTranslation": 0.0000011450562108328094,
+    "maxUnaffectedLocalAngle": 0.0007579934954525502
+  },
+  {
+    "gender": "male",
+    "name": "stand.slash.knife",
+    "maxUnaffectedJointTranslation": 0,
+    "maxUnaffectedLocalAngle": 0.0006584747525419047
+  },
+  {
+    "gender": "male",
+    "name": "stand.slash.blade.forehand",
+    "maxUnaffectedJointTranslation": 0.0000011450562108328094,
+    "maxUnaffectedLocalAngle": 0.0006600643871247267
+  },
+  {
+    "gender": "male",
+    "name": "stand.slash.blade.backhand",
+    "maxUnaffectedJointTranslation": 0.0000011450562108328094,
+    "maxUnaffectedLocalAngle": 0.0006967356955806951
+  },
+  {
+    "gender": "male",
+    "name": "stand.slash.blade.thrust",
+    "maxUnaffectedJointTranslation": 0.0000011450562108328094,
+    "maxUnaffectedLocalAngle": 0.0005948622689476912
+  },
+  {
+    "gender": "male",
+    "name": "stand.slash.blade.hilt",
+    "maxUnaffectedJointTranslation": 0.0000011450562108328094,
+    "maxUnaffectedLocalAngle": 0.0007292255680499803
+  },
+  {
+    "gender": "male",
+    "name": "stand.slash.knife.backhand",
+    "maxUnaffectedJointTranslation": 0,
+    "maxUnaffectedLocalAngle": 0.0006892343880694328
+  },
+  {
+    "gender": "male",
+    "name": "stand.slash.knife.thrust",
+    "maxUnaffectedJointTranslation": 0,
+    "maxUnaffectedLocalAngle": 0.0007055602832146459
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.blade",
+    "maxUnaffectedJointTranslation": 6.134323253097006e-7,
+    "maxUnaffectedLocalAngle": 0.0007190415940383376
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.knife",
+    "maxUnaffectedJointTranslation": 0,
+    "maxUnaffectedLocalAngle": 0.0007163434637520261
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.blade.forehand",
+    "maxUnaffectedJointTranslation": 6.134323253097006e-7,
+    "maxUnaffectedLocalAngle": 0.0007190415940383376
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.blade.backhand",
+    "maxUnaffectedJointTranslation": 6.134323253097006e-7,
+    "maxUnaffectedLocalAngle": 0.0007190415940383376
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.blade.thrust",
+    "maxUnaffectedJointTranslation": 6.134323253097006e-7,
+    "maxUnaffectedLocalAngle": 0.0007248914068136594
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.blade.hilt",
+    "maxUnaffectedJointTranslation": 6.134323253097006e-7,
+    "maxUnaffectedLocalAngle": 0.0007190415940383376
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.knife.backhand",
+    "maxUnaffectedJointTranslation": 0,
+    "maxUnaffectedLocalAngle": 0.0007986092188235432
+  },
+  {
+    "gender": "female",
+    "name": "stand.slash.knife.thrust",
+    "maxUnaffectedJointTranslation": 0,
+    "maxUnaffectedLocalAngle": 0.0007163434637520261
+  }
+]

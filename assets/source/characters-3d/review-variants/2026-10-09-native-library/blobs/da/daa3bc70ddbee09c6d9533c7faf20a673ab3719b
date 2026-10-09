@@ -1,0 +1,63 @@
+{
+  "status": "Private LOD follow-up complete; no source, regression or public asset changes",
+  "baselineBodiesManifestSha256": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+  "library": "/tmp/granadero-relaxed-hands/lod-review-models",
+  "candidateBanks": {
+    "male": "9caf54205c1e4c38e976ba1f46c23b985f6e04d460146c4c220cade4b646b8a0",
+    "female": "5e4d62112e8e6693abb3989cc47c48634d7a9ac50777d5246463e3cebe34d174"
+  },
+  "bodyFiles": {
+    "granadero": {
+      "1": {
+        "url": "/models/characters/granadero-lod1.glb",
+        "sha256": "a50f3d2a0de9368a01b62d9724f906caf8265dfca45c3152cf7ae2693c5a64f9"
+      },
+      "2": {
+        "url": "/models/characters/granadero-lod2.glb",
+        "sha256": "b373ef830906ebbb2d8861f1ff758f931b8f10b863e713e817a0abbe01cc8b03"
+      }
+    },
+    "woman-scout": {
+      "1": {
+        "url": "/models/characters/woman-scout-lod1.glb",
+        "sha256": "02f98914ca23cdbab43480edabbdd5cad170cd8b05b0e444016515d2c0d0cf94"
+      },
+      "2": {
+        "url": "/models/characters/woman-scout-lod2.glb",
+        "sha256": "31c666ee9e0a9080c6f4844188c19489b514d53e12da87df2658682a7df34fac"
+      }
+    }
+  },
+  "clips": [
+    "stand.idle.unarmed",
+    "stand.walk.unarmed",
+    "stand.run.unarmed"
+  ],
+  "lods": [
+    1,
+    2
+  ],
+  "anatomies": [
+    "male",
+    "female"
+  ],
+  "hands": [
+    "left",
+    "right"
+  ],
+  "sampling": "Full authored clip, at least 60 Hz, including both endpoints",
+  "tests": {
+    "total": 12,
+    "pass": 12,
+    "fail": 0,
+    "skipped": 0
+  },
+  "result": "No new distal-finger/palm or finger/finger triangle crossings detected on the coarser LOD1 or LOD2 hand meshes. Every tested surface group contains actual exported triangles.",
+  "limits": [
+    "Same test scope as LOD0: distal two finger segments versus palm and all other digits.",
+    "Connected thumb/web-root folds and soft-tissue compression are not certified by this test. The known sharp web crease remains.",
+    "Numerical contact result only; this follow-up does not relabel coarse geometry or overall hand anatomy as visually fixed."
+  ],
+  "log": "/tmp/granadero-relaxed-hands/lod-review-tests.log",
+  "privateTest": "/tmp/granadero-relaxed-hands/runtime/tests/characters-relaxed-hands-lod-review.test.mjs"
+}

@@ -1,0 +1,136 @@
+{
+  "male": {
+    "channels": 53106,
+    "changed": [
+      [
+        "stand.idle.long-gun",
+        "thumb_02_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.long-gun",
+        "thumb_03_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.long-gun",
+        "thumb_02_r",
+        "rotation"
+      ],
+      [
+        "stand.idle.long-gun",
+        "thumb_03_r",
+        "rotation"
+      ],
+      [
+        "stand.butt.long-gun",
+        "thumb_02_l",
+        "rotation"
+      ],
+      [
+        "stand.butt.long-gun",
+        "thumb_03_l",
+        "rotation"
+      ],
+      [
+        "crouch.aim.long-gun",
+        "neck_01",
+        "rotation"
+      ],
+      [
+        "crouch.aim.long-gun",
+        "head",
+        "rotation"
+      ],
+      [
+        "prone.aim.long-gun",
+        "neck_01",
+        "rotation"
+      ],
+      [
+        "prone.aim.long-gun",
+        "head",
+        "rotation"
+      ],
+      [
+        "mounted.aim.long-gun",
+        "neck_01",
+        "rotation"
+      ],
+      [
+        "mounted.aim.long-gun",
+        "head",
+        "rotation"
+      ]
+    ],
+    "added": [],
+    "removed": []
+  },
+  "female": {
+    "channels": 53106,
+    "changed": [
+      [
+        "stand.idle.long-gun",
+        "thumb_02_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.long-gun",
+        "thumb_03_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.long-gun",
+        "thumb_02_r",
+        "rotation"
+      ],
+      [
+        "stand.idle.long-gun",
+        "thumb_03_r",
+        "rotation"
+      ],
+      [
+        "stand.butt.long-gun",
+        "thumb_02_l",
+        "rotation"
+      ],
+      [
+        "stand.butt.long-gun",
+        "thumb_03_l",
+        "rotation"
+      ],
+      [
+        "crouch.aim.long-gun",
+        "neck_01",
+        "rotation"
+      ],
+      [
+        "crouch.aim.long-gun",
+        "head",
+        "rotation"
+      ],
+      [
+        "prone.aim.long-gun",
+        "neck_01",
+        "rotation"
+      ],
+      [
+        "prone.aim.long-gun",
+        "head",
+        "rotation"
+      ],
+      [
+        "mounted.aim.long-gun",
+        "neck_01",
+        "rotation"
+      ],
+      [
+        "mounted.aim.long-gun",
+        "head",
+        "rotation"
+      ]
+    ],
+    "added": [],
+    "removed": []
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "status": "Accepted focused throwing trajectory and contact candidate; integrated full-bank check still required",
+  "library": "/tmp/granadero-throw-review/models",
+  "scope": {
+    "anatomies": [
+      "male",
+      "female"
+    ],
+    "clipsPerAnatomy": 9,
+    "durationSeconds": 1.3,
+    "releaseSeconds": 0.754,
+    "samplesHz": 120,
+    "testsPassed": 13,
+    "renderedFrames": 330
+  },
+  "sourceSha256": {
+    "assets/source/characters-3d/authoring/throwing_motion.py": "884df47b452698a35b7ed5e5d5c145a235d4dc66761d506d347ee171471f18f8",
+    "tests/characters-throwing.test.mjs": "5b186b4e9573fcb12de3582251e7e8c30ed988d7a352dbfb93746906a25eb1ac",
+    "tests/character-bank-fixture.mjs": "ccb25bd4c1001b980e39786b22abd4f5ed799e51f04741bb69719fc2dd846a09"
+  },
+  "banks": {
+    "male": "2acb3ad46075db3506713368dc41a17c49eddbf040776aae313a16daa46466ff",
+    "female": "54394ba5c63b8e2d8aa62607d883aa7479887cf3a088993d66f33ce158080d98"
+  },
+  "visualReview": {
+    "views": [
+      "isometric",
+      "right hand",
+      "left hand"
+    ],
+    "findings": [
+      "No reversal of the wrist over the forearm in the inspected preparation and release frames.",
+      "Knife preparation clears the head through the previously failing 0.45 and 0.50 second frames.",
+      "Grip opens into forward follow-through at the unchanged release marker.",
+      "Prone support hand stays planted; held bolas weights stay above the floor."
+    ],
+    "limits": [
+      "This private library contains only the nine selected throwing clips per anatomy, not a complete release bank.",
+      "Candidate uses the frozen pre-integration body/equipment/mounted base. Root must rebuild and rerun the same tests with the final rider fit and current source.",
+      "Small cuff gaps remain visible in the existing candidate body at some hand rotations. This review does not claim garment mesh completion.",
+      "No new projectile ballistics or gameplay timing was authored."
+    ]
+  },
+  "renders": [
+    {
+      "clip": "crouch.gesture.bolas",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/crouch.gesture.bolas/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "crouch.gesture.throw",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/crouch.gesture.throw/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "mounted.gesture.bolas",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/mounted.gesture.bolas/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "mounted.gesture.throw",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/mounted.gesture.throw/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "prone.gesture.bolas",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/prone.gesture.bolas/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "prone.gesture.throw",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/prone.gesture.throw/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "stand.gesture.bolas",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/stand.gesture.bolas/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "stand.gesture.throw",
+      "frames": 36,
+      "index": "/tmp/granadero-throw-review/accepted-review/stand.gesture.throw/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    },
+    {
+      "clip": "stand.gesture.throwKnife",
+      "frames": 42,
+      "index": "/tmp/granadero-throw-review/accepted-review/stand.gesture.throwKnife/index.json",
+      "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd"
+    }
+  ]
+}

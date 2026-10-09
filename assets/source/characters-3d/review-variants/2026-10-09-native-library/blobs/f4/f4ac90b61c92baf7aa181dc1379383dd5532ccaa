@@ -1,0 +1,111 @@
+--- a/assets/source/characters-3d/authoring/optimize.py
++++ b/assets/source/characters-3d/authoring/optimize.py
+@@ -56,6 +56,41 @@
+   for vertex,point in zip(skin.data.vertices,native):vertex.co=point
+   skin.data.update()
+ 
++
++def _left_hand_component_vertices(obj):
++ """Select only the disconnected native left-hand/forearm island."""
++ adjacency=[[] for _ in obj.data.vertices]
++ for edge in obj.data.edges:
++  a,b=edge.vertices;adjacency[a].append(b);adjacency[b].append(a)
++ groups={group.index for group in obj.vertex_groups
++         if group.name in ('hand_l','lowerarm_l')
++         or (group.name.endswith('_l') and group.name.startswith(('thumb_','index_','middle_','ring_','pinky_')))}
++ seen=set();selected=set()
++ for vertex in obj.data.vertices:
++  if vertex.index in seen:continue
++  stack=[vertex.index];seen.add(vertex.index);component=[];weight=0
++  while stack:
++   index=stack.pop();component.append(index)
++   weight+=sum(group.weight for group in obj.data.vertices[index].groups if group.group in groups)
++   for neighbor in adjacency[index]:
++    if neighbor not in seen:seen.add(neighbor);stack.append(neighbor)
++  if weight>.5*len(component):selected.update(component)
++ return selected
++
++def _preserve_female_left_hand(ctx,objects,lod):
++ if ctx['gender']!='female' or lod==0:return
++ for skin in list(objects):
++  if not skin.name.startswith('Exposed_Human_Skin'):continue
++  selected=_left_hand_component_vertices(skin)
++  if not selected or len(selected)==len(skin.data.vertices):
++   raise ValueError('Expected a disconnected native left hand')
++  # Keep the complete original skin during BOTH reductions. Removing islands
++  # beforehand would redistribute the decimator budget to unrelated surfaces.
++  hand=skin.copy();hand.data=skin.data.copy();hand.name='Exposed_Human_Left_Hand'
++  bpy.context.collection.objects.link(hand);objects.append(hand)
++  hand['retain_left_hand_skin']=True
++  skin['replace_reduced_left_hand']=True
++
+ def optimize_character(ctx,lod=0):
+  rig=ctx['rig'];objects=ctx['objects']
+  # Fitted brow pigment remains at every LOD; close hairs add fine relief.
+@@ -87,6 +122,7 @@
+  from garment_detail import prepare_apparel_surface
+  prepare_apparel_surface(ctx, objects)
+  _preserve_head_skin(ctx,objects)
++ _preserve_female_left_hand(ctx,objects,lod)
+  # Use a single attribute name on every object before decimation and joining.
+  # Appearance pieces and owned garments may have been added after the native
+  # body's face/cloth pigments. Missing attributes would otherwise become black
+@@ -138,6 +174,7 @@
+   fitted_cloth=any(obj.data.attributes.get(name) is not None for name in ('Long_Cloth','Fitted_Cloth'))
+   ratio=LONG_CLOTH_RATIOS[lod] if fitted_cloth else RATIOS[lod]
+   if obj.get('retain_head_skin'):ratio=HEAD_SKIN_RATIOS[lod]
++  if obj.get('retain_left_hand_skin'):ratio=RATIOS[0]
+   if obj.data.attributes.get('Hair_Surface') is not None or obj.name.startswith(('Short_Hair','Braided_Hair','Bound_Hair')):
+    ratio=HAIR_RATIOS[lod]
+   dec=obj.modifiers.new('Real_Mesh_LOD_'+str(lod),'DECIMATE');dec.ratio=min(1,max(ratio,minimum/max(1,len(obj.data.polygons))));dec.use_collapse_triangulate=True
+@@ -155,6 +192,11 @@
+   if obj.get('replace_reduced_head'):
+    head_vertices=_head_component_vertices(obj)
+    _keep_vertices(obj,set(range(len(obj.data.vertices)))-head_vertices)
++  if obj.get('retain_left_hand_skin'):
++   _keep_vertices(obj,_left_hand_component_vertices(obj))
++  elif obj.get('replace_reduced_left_hand'):
++   left_vertices=_left_hand_component_vertices(obj)
++   _keep_vertices(obj,set(range(len(obj.data.vertices)))-left_vertices)
+   # At most four normalized bone influences, preserving the strongest native
+   # weights. The exporter therefore has one four-influence joint attribute.
+   for v in obj.data.vertices:
+--- a/tests/characters-relaxed-thumb-web.test.mjs
++++ b/tests/characters-relaxed-thumb-web.test.mjs
+@@ -40,22 +40,22 @@
+    web:ids.some(k=>(vertices[k].weights['thumb_01_'+side]??0)>.08)&&ids.some(k=>(vertices[k].weights['hand_'+side]??0)>.08),box:new Box3(),points:[]});
+  }
+  const web=faces.filter(f=>f.web),pairs=[];
+- assert.ok(web.length>100,'the test includes the connected thumb root, not just distal finger pads');
++ assert.ok(web.length>0,'the weight-selected connected thumb root exists at this detail level');
+  for(const a of web)for(const b of faces){
+   if(a.id>=b.id&&b.web)continue;
+   if([...a.seams].some(key=>b.seams.has(key)))continue;
+   pairs.push([a,b]);
+  }
+  const indices=[...new Set(faces.flatMap(f=>f.ids))],points=new Map(indices.map(i=>[i,new Vector3()]));
+- return {web,pairs,update(){
++ return {web,pairs,faceCount:faces.length,update(){
+   for(const i of indices)skin.localToWorld(skin.applyBoneTransform(i,points.get(i).copy(vertices[i].rest)));
+   for(const face of faces){face.points=face.ids.map(i=>points.get(i));face.box.setFromPoints(face.points);}
+  }};
+ }
+ const evidence=[];
+-for(const preset of ['granadero','woman-scout'])for(const gesture of ['idle','walk','run']){
+- test(`${preset}: ${gesture} preserves the connected relaxed thumb web on both hands`,async()=>{
+-  const asset=await publishedActor(preset,0),model=clone(asset.body.scene),name=`stand.${gesture}.unarmed`;
++for(const lod of [0,1,2])for(const preset of ['granadero','woman-scout','woman-shawl'])for(const gesture of ['idle','walk','run']){
++ test(`${preset} LOD${lod}: ${gesture} preserves the connected relaxed thumb web on both hands`,async()=>{
++  const asset=await publishedActor(preset,lod),model=clone(asset.body.scene),name=`stand.${gesture}.unarmed`;
+   const clip=asset.animation.animations.find(c=>c.name===name);assert.ok(clip,name);
+   let skin;const bones={};model.traverse(o=>{if(o.isBone)bones[o.name]=o;if(o.isSkinnedMesh&&o.material.name==='Skin')skin=o;});assert.ok(skin);
+   const mixer=new AnimationMixer(model),action=mixer.clipAction(clip);action.setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();
+@@ -76,7 +76,7 @@
+     if(crossings&&!row.firstCrossing)row.firstCrossing={time,count:crossings};
+    }
+   }
+-  const result={preset,name,duration:clip.duration,samples:samples+1,hands:rows};evidence.push(result);
++  const result={preset,lod,name,duration:clip.duration,samples:samples+1,topology:Object.fromEntries(Object.entries(hands).map(([side,h])=>[side,{handTriangles:h.faceCount,webTriangles:h.web.length}])),hands:rows};evidence.push(result);
+   if(process.env.THUMB_WEB_REPORT)writeFileSync(process.env.THUMB_WEB_REPORT,JSON.stringify(evidence,null,2));
+   for(const row of Object.values(rows)){
+    assert.equal(row.maximumCrossingPairs,0,`${name} ${row.side}: connected web crosses other hand skin: ${JSON.stringify(row.firstCrossing)}`);

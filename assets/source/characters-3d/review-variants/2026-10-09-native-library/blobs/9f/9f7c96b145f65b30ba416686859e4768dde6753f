@@ -1,0 +1,254 @@
+{
+  "granadero": [
+    {
+      "time": 0.183333,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 0,
+          "headGapMm": 266.4209008216858,
+          "worst": null
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 245.50656974315643,
+          "headGapMm": 152.54570543766022,
+          "worst": [
+            822,
+            "pinky_03_r",
+            [
+              -0.32604044675827026,
+              0.0665777325630188,
+              1.4188652038574219
+            ],
+            [
+              -0.08502428978681564,
+              0.08777602016925812,
+              1.4605224132537842
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "time": 0.34,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 0,
+          "headGapMm": 40.2257964015007,
+          "worst": null
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 182.80987441539764,
+          "worst": null
+        }
+      ]
+    },
+    {
+      "time": 0.42,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 32.13218227028847,
+          "headGapMm": 0.020531664631562307,
+          "worst": [
+            2242,
+            "thumb_01_l",
+            [
+              0.11672341823577881,
+              -0.48264288902282715,
+              1.3421434164047241
+            ],
+            [
+              0.11301132291555405,
+              -0.4682278037071228,
+              1.370619773864746
+            ]
+          ]
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 341.5236473083496,
+          "worst": null
+        }
+      ]
+    },
+    {
+      "time": 0.5,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 31.207794323563576,
+          "headGapMm": 0.024837696400936693,
+          "worst": [
+            3701,
+            "thumb_01_l",
+            [
+              0.1353074312210083,
+              -0.5030646324157715,
+              1.3125234842300415
+            ],
+            [
+              0.13187098503112793,
+              -0.4949503540992737,
+              1.342461347579956
+            ]
+          ]
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 299.5150685310364,
+          "worst": null
+        }
+      ]
+    },
+    {
+      "time": 0.62,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 3.696347586810589,
+          "headGapMm": 0.14954997459426522,
+          "worst": [
+            5410,
+            "index_01_l",
+            [
+              0.08118698000907898,
+              -0.4798904061317444,
+              1.399901032447815
+            ],
+            [
+              0.08188486099243164,
+              -0.48052406311035156,
+              1.3963268995285034
+            ]
+          ]
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 112.79428750276566,
+          "worst": null
+        }
+      ]
+    }
+  ],
+  "woman-scout": [
+    {
+      "time": 0.183333,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 0,
+          "headGapMm": 260.3464722633362,
+          "worst": null
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 129.51551377773285,
+          "worst": null
+        }
+      ]
+    },
+    {
+      "time": 0.34,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 0,
+          "headGapMm": 50.837498158216476,
+          "worst": null
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 169.17623579502106,
+          "worst": null
+        }
+      ]
+    },
+    {
+      "time": 0.42,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 36.98284551501274,
+          "headGapMm": 0.024035458409343846,
+          "worst": [
+            5354,
+            "thumb_01_l",
+            [
+              0.10679411888122559,
+              -0.5088125467300415,
+              1.3434852361679077
+            ],
+            [
+              0.09295141696929932,
+              -0.4966411590576172,
+              1.375547170639038
+            ]
+          ]
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 300.53162574768066,
+          "worst": null
+        }
+      ]
+    },
+    {
+      "time": 0.5,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 37.16045990586281,
+          "headGapMm": 0.01485406028223224,
+          "worst": [
+            2016,
+            "index_01_l",
+            [
+              0.098968505859375,
+              -0.5181999802589417,
+              1.385465145111084
+            ],
+            [
+              0.13121700286865234,
+              -0.5048381686210632,
+              1.3982086181640625
+            ]
+          ]
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 284.5683693885803,
+          "worst": null
+        }
+      ]
+    },
+    {
+      "time": 0.62,
+      "hands": [
+        {
+          "side": "l",
+          "headSignedDepthMm": 0,
+          "headGapMm": 20.421212539076805,
+          "worst": null
+        },
+        {
+          "side": "r",
+          "headSignedDepthMm": 0,
+          "headGapMm": 101.86675190925598,
+          "worst": null
+        }
+      ]
+    }
+  ]
+}

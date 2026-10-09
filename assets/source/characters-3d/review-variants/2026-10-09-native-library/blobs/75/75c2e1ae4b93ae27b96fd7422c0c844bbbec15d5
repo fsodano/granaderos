@@ -1,0 +1,45 @@
+--- a/tools/characters-3d/render-review.py
++++ b/tools/characters-3d/render-review.py
+@@ -63,6 +63,17 @@
+     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+ 
+ 
++def skin_palette_linear(tone, reference=None):
++    """Match game/skin-palette.js, including coloured-albedo compensation."""
++    value=tone.lstrip('#')
++    srgb=[int(value[i:i+2],16)/255 for i in (0,2,4)]
++    linear=[v/12.92 if v<=.04045 else ((v+.055)/1.055)**2.4 for v in srgb]
++    valid=isinstance(reference,list) and len(reference)==3 and all(
++        type(v) in (int,float) and math.isfinite(v) and v>0 for v in reference)
++    if valid:linear=[v/r for v,r in zip(linear,reference)]
++    return linear+[1]
++
++
+ def parse_args():
+     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+     parser.add_argument('--blender', default='/Applications/Blender.app/Contents/MacOS/Blender')
+@@ -226,10 +237,12 @@
+         if args.skin:
+             # Three Color.set(hex) converts sRGB to linear and replaces the
+             # material factor. Keep the exported texture and vertex pigment.
+-            hex_color=manifest['skinTones'][args.skin].lstrip('#')
+-            srgb=[int(hex_color[i:i+2],16)/255 for i in (0,2,4)]
+-            linear=[v/12.92 if v<=.04045 else ((v+.055)/1.055)**2.4 for v in srgb]+[1]
+             skin_name=appearance.get('materials',{}).get('skin','Skin')
++            raw=body_path.read_bytes()
++            document=json.loads(raw[20:20+int.from_bytes(raw[12:16],'little')])
++            native_skin=next(m for m in document['materials'] if m['name']==skin_name)
++            reference=native_skin.get('extras',{}).get('skinAlbedoReference')
++            linear=skin_palette_linear(manifest['skinTones'][args.skin],reference)
+             body_materials={m for obj in body_objects if obj.type=='MESH' for m in obj.data.materials if m}
+             skin_materials=[m for m in body_materials if m.name==skin_name or m.name.startswith(skin_name+'.') or m.get('role')=='skin']
+             if not skin_materials:raise ValueError('No runtime Skin material imported for '+preset)
+@@ -246,7 +259,7 @@
+                         factor=material.node_tree.nodes.new('ShaderNodeMixRGB');factor.blend_type='MULTIPLY';factor.inputs[0].default_value=1;factor.inputs[2].default_value=linear
+                         material.node_tree.links.new(source,factor.inputs[1]);material.node_tree.links.new(factor.outputs[0],base)
+                     else:base.default_value=linear
+-            asset_records['runtimeSkin']={'hexSRGB':manifest['skinTones'][args.skin],'colorLinear':linear,'materials':[m.name for m in skin_materials]}
++            asset_records['runtimeSkin']={'hexSRGB':manifest['skinTones'][args.skin],'colorLinear':linear,'albedoReference':reference,'materials':[m.name for m in skin_materials]}
+         # Imported action curves use Blender's bone basis. Refuse transfer if
+         # independent imports reconstructed different rest frames.
+         bind_error=max(abs(x-y) for bone in rig.data.bones for a,b in zip(bone.matrix_local,bank_rig.data.bones[bone.name].matrix_local) for x,y in zip(a,b))

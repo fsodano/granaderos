@@ -1,0 +1,325 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -5,6 +5,7 @@
+ keep the native adult proportions.
+ Source assets and their CC0 provenance are in vendor/makehuman.
+ """
++from generated_skin import uses_generated_skin
+ from pathlib import Path
+ import json
+ import math
+@@ -615,7 +616,9 @@
+                 density=max(0,1-across*across)**.8
+                 density*=math.sin(math.pi*t)**.30
+                 density*=.90+.10*math.sin(j*2.399)
+-                brow_tones.append((1-.65*density,1-.70*density,1-.73*density,1))
++                # The generated Granadero atlas already includes brow pigment.
++                # Keep the fitted bed and hairs, but do not paint it twice.
++                brow_tones.append((1,1,1,1) if uses_generated_skin(preset) else (1-.65*density,1-.70*density,1-.73*density,1))
+             if j:
+                 for column in range(columns-1):
+                     a=(j-1)*columns+column;brow_faces.append((a,a+1,a+columns+1,a+columns))
+--- a/assets/source/characters-3d/authoring/build.py
++++ b/assets/source/characters-3d/authoring/build.py
+@@ -25,6 +25,10 @@
+  if animations and ctx.get("rig"):trim_endpoints(path,authored_durations(ctx["rig"]))
+  from gltf_pack import pack
+  raw,doc=pack(path,{m.name:list(m.diffuse_color) for m in bpy.data.materials})
++ if args.kind=='appearance':
++  from generated_skin import apply_generated_skin
++  generated=apply_generated_skin(path,args.preset)
++  if generated is not None:raw,doc=generated
+  from rifle_guard_curves import preserve_export as preserve_rifle_guard_curves
+  restored=preserve_rifle_guard_curves(path,ctx) if animations else None
+  if restored is not None:raw,doc=restored
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/generated_skin.py
+@@ -0,0 +1,73 @@
++"""Register the unchanged generated Granadero albedo after lossless GLB packing.
++
++UV0, native geometry, weights, normals and all existing buffer bytes stay intact.
++The new UV1 is used by the albedo alone; normal/roughness retain UV0.
++"""
++from pathlib import Path
++import hashlib,json,struct
++import numpy as np
++
++HERE=Path(__file__).resolve().parent
++SOURCE=HERE/'generated/granadero-skin-colour.png'
++SOURCE_SHA256='040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d'
++REFERENCE=(.846873231509858,.4232676699860717,.2788942634768104)
++LIGHT_SRGB='#d5a07d'
++
++def uses_generated_skin(preset):
++    return preset=='granadero'
++
++def registered_uv(uv,position):
++    result=uv.copy();u,v=uv[:,0],uv[:,1]
++    mouth=np.exp(-((u-.914)/.018)**2-((v-.516)/.040)**2)
++    mouth[mouth<.0001]=0
++    result[:,1]+=.28*(v-.516)*mouth
++    def bump(value,centre,radius):
++        t=np.clip(1-((value-centre)/radius)**2,0,1)
++        return t*t*(3-2*t)
++    face=(position[:,1]>1.65)&(np.abs(position[:,0])>.032)&(np.abs(position[:,0])<.082)&(position[:,2]>.10)
++    brow=np.zeros(len(uv))
++    for centre,tail in ((.485,.457),(.547,.575)):
++        brow+=.30*(v-centre)*bump(u,.815,.015)*bump(v,tail,.023)*face
++    result[:,1]+=np.clip(brow,-.004,.004)
++    return result
++
++def apply_generated_skin(path,preset):
++    if not uses_generated_skin(preset):return None
++    path=Path(path);raw=path.read_bytes();size=struct.unpack_from('<I',raw,12)[0]
++    doc=json.loads(raw[20:20+size]);binary=raw[28+size:]
++    material_id=next(i for i,m in enumerate(doc['materials'])if m['name']=='Skin')
++    material=doc['materials'][material_id]
++    source=SOURCE.read_bytes()
++    if hashlib.sha256(source).hexdigest()!=SOURCE_SHA256:raise ValueError('Generated Granadero source pixels changed')
++    def read(index):
++        a=doc['accessors'][index];view=doc['bufferViews'][a['bufferView']]
++        width={'VEC2':2,'VEC3':3}[a['type']]
++        if a['componentType']!=5126 or 'sparse'in a:raise ValueError('Expected packed native float skin attributes')
++        return np.ndarray((a['count'],width),dtype='<f4',buffer=binary,
++            offset=view.get('byteOffset',0)+a.get('byteOffset',0),
++            strides=(view.get('byteStride',width*4),4)).copy()
++    for mesh in doc['meshes']:
++        for primitive in mesh['primitives']:
++            if primitive['material']!=material_id:continue
++            attributes=primitive['attributes']
++            if 'TEXCOORD_1'in attributes:raise ValueError('Generated albedo was already registered')
++            uv=registered_uv(read(attributes['TEXCOORD_0']),read(attributes['POSITION']))
++            binary+=b'\0'*(-len(binary)%4);offset=len(binary);data=uv.tobytes();binary+=data
++            view=len(doc['bufferViews']);doc['bufferViews'].append({'buffer':0,'byteOffset':offset,'byteLength':len(data),'target':34962})
++            index=len(doc['accessors']);doc['accessors'].append({'bufferView':view,'componentType':5126,'count':len(uv),'type':'VEC2','min':uv.min(0).tolist(),'max':uv.max(0).tolist()})
++            attributes['TEXCOORD_1']=index
++    texture=doc['textures'][material['pbrMetallicRoughness']['baseColorTexture']['index']]
++    image=len(doc['images']);uri='textures/'+SOURCE_SHA256[:20]+'.png'
++    doc['images'].append({'name':'skin-granadero-generated-colour','uri':uri})
++    index=len(doc['textures']);doc['textures'].append({**texture,'source':image})
++    material['pbrMetallicRoughness']['baseColorTexture']={'index':index,'texCoord':1}
++    srgb=[int(LIGHT_SRGB[i:i+2],16)/255 for i in (1,3,5)]
++    linear=[v/12.92 if v<=.04045 else ((v+.055)/1.055)**2.4 for v in srgb]
++    material['pbrMetallicRoughness']['baseColorFactor']=[v/r for v,r in zip(linear,REFERENCE)]+[1]
++    material.setdefault('extras',{}).update({'skinAlbedoReference':list(REFERENCE),'skinAlbedoReferenceSpace':'linear-srgb','skinAlbedoSourceSha256':SOURCE_SHA256})
++    doc['buffers'][0]['byteLength']=len(binary)
++    encoded=json.dumps(doc,separators=(',',':')).encode();encoded+=b' '*(-len(encoded)%4);binary+=b'\0'*(-len(binary)%4)
++    output=struct.pack('<III',0x46546c67,2,28+len(encoded)+len(binary))+struct.pack('<II',len(encoded),0x4e4f534a)+encoded+struct.pack('<II',len(binary),0x004e4942)+binary
++    destination=path.parent/uri;destination.parent.mkdir(parents=True,exist_ok=True);destination.write_bytes(source)
++    path.write_bytes(output)
++    return output,doc
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/generated/granadero-skin.json
+@@ -0,0 +1,17 @@
++{
++  "generated": true,
++  "scope": "Granadero only; unchanged generated PNG bytes",
++  "sha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
++  "prompt": "granadero-skin-prompt.txt",
++  "generation": "granadero-skin-generation.json",
++  "originalInput": "vendor/makehuman/young_lightskinned_male_diffuse.png",
++  "referenceLinearRgb": [
++    0.846873231509858,
++    0.4232676699860717,
++    0.2788942634768104
++  ],
++  "referenceSampling": "Median linear-sRGB value at 228 original cheek UV samples; see private compensation.json",
++  "albedoUV": "UV1 has bounded lip-width and outer-brow registration; UV0 normal/roughness retained",
++  "neutralEyebrowBed": "Granadero source uses neutral COLOR_0 for its two fitted eyebrow beds; geometric brow hairs retained",
++  "rasterEdits": false
++}
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/generated/granadero-skin-prompt.txt
+@@ -0,0 +1 @@
++Use case: precise-object-edit. Asset: a technical albedo UV texture for an adult male 3D game character, not a portrait or rendered scene. Edit target is the provided square MakeHuman skin atlas. Preserve the exact UV island silhouettes, placement, rotation, scale, face feature coordinates, ears, eyelid openings, nose, lips, and seams. Preserve the body and hand islands and the empty peach background. Change only the large head/face island on the right: give its facial skin the believable detail of a real healthy adult man around 30, with natural fine pores, slight warm/cool variation, subtle sparse freckles, real individual dark eyebrow hairs, fine lip creases, natural nasal folds, and a very short subtle shaved-beard shadow and fine follicles on the jaw and upper lip. The source head is splayed sideways in UV space; keep that exact sideways layout, do not straighten it or add a normal face somewhere else. Restrained readable detail appropriate to a realistic small isometric game human. Neutral diffuse albedo: no baked directional light, highlights, shadows, ambient occlusion, dark eye sockets, cosmetics, scars, bruises, dirt, or dramatic aging. No new eyes, teeth, beard clumps, head hair, clothing, text or watermark. Do not smooth the facial skin into porcelain. Maintain the source overall healthy light warm skin tone. Output one 2048 by 2048 square texture atlas with the same UV coordinate layout, ready to put directly on the existing mesh.
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/generated/granadero-skin-generation.json
+@@ -0,0 +1,7 @@
++{
++  "mode": "built-in image_gen",
++  "input": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/vendor/makehuman/young_lightskinned_male_diffuse.png",
++  "output": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/skin-texture-pilot/generated-skin-v1.png",
++  "generatedSource": "/Users/fsodano/.codex/generated_images/01a10d9d-3ef6-7270-961e-05b2444ecaf7/exec-65c1232f-56e8-461e-a9f0-9b2aa57272bf.png",
++  "status": "private material trial; not published"
++}
+--- /dev/null
++++ b/game/skin-palette.js
+@@ -0,0 +1,11 @@
++/** Apply a selected tone without double-tinting an optional coloured albedo.
++ * Materials without a valid reference retain the existing palette behaviour.
++ * @param {{color:{set:(tone:string)=>unknown,r:number,g:number,b:number},userData?:Record<string,unknown>}} material
++ * @param {string} tone
++ */
++export function applySkinPalette(material,tone){
++  material.color.set(tone);
++  const reference=material.userData?.skinAlbedoReference;
++  if(!Array.isArray(reference)||reference.length!==3||!reference.every(value=>Number.isFinite(value)&&value>0))return;
++  material.color.r/=reference[0];material.color.g/=reference[1];material.color.b/=reference[2];
++}
+--- a/web/lib/three/actor-runtime.ts
++++ b/web/lib/three/actor-runtime.ts
+@@ -1,3 +1,4 @@
++import {applySkinPalette} from '../../../game/skin-palette.js';
+ import {AnimationMixer,AnimationAction,Group,Mesh,SkinnedMesh,Skeleton,Material,MeshStandardMaterial,LoopOnce,LoopRepeat,Vector3,Quaternion,Object3D} from 'three';
+ import {clone} from 'three/addons/utils/SkeletonUtils.js';
+ import {resolveActorAction,selectActorClipVariant} from '../../../game/actor-action-contract.js';
+@@ -100,7 +101,7 @@
+     const skinName=this.asset.appearance.materials?.skin??'Skin';
+     this.model.traverse(node=>{if(!(node instanceof Mesh))return;
+       const materials=Array.isArray(node.material)?node.material:[node.material];
+-      const updated=materials.map(material=>{if(material.name!==skinName&&material.userData.role!=='skin')return material;let owned=material;if(!this.ownedMaterials.has(material)){owned=material.clone();this.ownedMaterials.add(owned);}if(owned instanceof MeshStandardMaterial)owned.color.set(this.asset.manifest.skinTones?.[visual.skin]??({light:'#d5a788',brown:'#965d40',dark:'#51301f'} as Record<string,string>)[visual.skin]);return owned;});
++      const updated=materials.map(material=>{if(material.name!==skinName&&material.userData.role!=='skin')return material;let owned=material;if(!this.ownedMaterials.has(material)){owned=material.clone();this.ownedMaterials.add(owned);}if(owned instanceof MeshStandardMaterial)applySkinPalette(owned,this.asset.manifest.skinTones?.[visual.skin]??({light:'#d5a788',brown:'#965d40',dark:'#51301f'} as Record<string,string>)[visual.skin]);return owned;});
+       node.material=Array.isArray(node.material)?updated:updated[0];
+     });
+   }
+--- a/playgrounds/granadero-3d/src/main.js
++++ b/playgrounds/granadero-3d/src/main.js
+@@ -1,3 +1,4 @@
++import {applySkinPalette} from '../../../game/skin-palette.js';
+ import * as THREE from 'three';
+ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+@@ -191,7 +192,7 @@
+  const chosen=locomotion?(state.weapon==='none'?locomotion:state.weapon[0].toUpperCase()+state.weapon.slice(1)+locomotion):readyClips[state.weapon];
+  playClip(chosen,{fade});updateBayonet();updateControls();
+ }
+-function applySkin(tone){state.skin=tone;for(const material of skinMaterials)material.color.set(palettes[tone]);updateControls();}
++function applySkin(tone){state.skin=tone;for(const material of skinMaterials)applySkinPalette(material,palettes[tone]);updateControls();}
+ function updateBayonet(){if(bayonet)bayonet.visible=state.weapon==='rifle'&&(chosenAttack==='BayonetThrust'||state.clip==='BayonetThrust'&&state.attacking);}
+ function selectWeapon(weapon){
+  if(!state.ready)return;
+--- a/tests/characters-skin-surfaces.test.mjs
++++ b/tests/characters-skin-surfaces.test.mjs
+@@ -1,6 +1,7 @@
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import {readFileSync} from 'node:fs';
++import {createHash} from 'node:crypto';
+ import {resolve,sep} from 'node:path';
+ import {pathToFileURL} from 'node:url';
+ import sharp from '../web/node_modules/sharp/lib/index.js';
+@@ -28,12 +29,12 @@
+  }
+  return {path,json,access};
+ }
+-function faceUVs(model,material){
++function faceUVs(model,material,channel=0){
+  const {json,access}=model,head=json.skins[0].joints.findIndex(index=>json.nodes[index].name==='head');
+  assert.ok(head>=0,'The native head joint is present');
+  const uvs=[];
+  for(const primitive of json.meshes.flatMap(mesh=>mesh.primitives).filter(p=>p.material===material)){
+-  const uv=access(primitive.attributes.TEXCOORD_0),normal=access(primitive.attributes.NORMAL),joints=access(primitive.attributes.JOINTS_0),weights=access(primitive.attributes.WEIGHTS_0),indices=access(primitive.indices).flat();
++  const uv=access(primitive.attributes[`TEXCOORD_${channel}`]),normal=access(primitive.attributes.NORMAL),joints=access(primitive.attributes.JOINTS_0),weights=access(primitive.attributes.WEIGHTS_0),indices=access(primitive.indices).flat();
+   // Native head weights and outward forward normals select the actual face,
+   // without depending on an appearance's scale or an arbitrary UV rectangle.
+   const faceVertex=i=>joints[i].reduce((sum,joint,c)=>sum+(joint===head?weights[i][c]:0),0)>.5&&normal[i][2]>.25;
+@@ -55,7 +56,7 @@
+ for(const appearance of Object.values(manifest.appearances))for(const lod of appearance.lods)test(`${appearance.id} LOD${lod.lod} facial PBR maps retain source detail`,async()=>{
+  const model=glb(lod.url),{json,path}=model,material=json.materials.findIndex(m=>m.name===appearance.materials.skin);
+  assert.ok(material>=0,'Skin stays a separate material');
+- const skin=json.materials[material],uvs=faceUVs(model,material),pbr=skin.pbrMetallicRoughness;
++ const skin=json.materials[material],pbr=skin.pbrMetallicRoughness,generated=appearance.id==='granadero'&&Boolean(skin.extras?.skinAlbedoSourceSha256);
+  const channels=[
+   {role:'colour',texture:pbr.baseColorTexture,components:[0,1,2]},
+   {role:'normal',texture:skin.normalTexture,components:[0,1]},
+@@ -63,11 +64,22 @@
+  ];
+  for(const {role,texture,components} of channels){
+   assert.ok(texture,`Skin ${role} remains connected after export`);
+-  assert.equal(texture.texCoord??0,0,`${role} uses the retained native UV set`);
++  const registered=generated&&role==='colour',channel=registered?1:0,uvs=faceUVs(model,material,channel);
++  assert.equal(texture.texCoord??0,channel,`${role} uses its retained or registered UV set`);
+   const image=json.images[json.textures[texture.index].source];
+-  assert.equal(image.name,`skin-${appearance.gender}-${role}`,`${role} belongs to the correct native anatomy`);
++  assert.equal(image.name,registered?'skin-granadero-generated-colour':`skin-${appearance.gender}-${role}`,`${role} belongs to the correct appearance source`);
+   assert.ok(image.uri&&!image.uri.startsWith('data:'),'The image is a packaged library texture');
+-  const [actual,expected]=await Promise.all([pixels(new URL(image.uri,path)),pixels(new URL(`skin-${appearance.gender}-${role}.png`,source))]);
++  if(registered){
++   const bytes=readFileSync(new URL(image.uri,path)),original=readFileSync(new URL('../../generated/granadero-skin-colour.png',source));
++   const hash=value=>createHash('sha256').update(value).digest('hex');
++   assert.equal(hash(bytes),hash(original),'Generated albedo retains the exact registered source PNG');
++   assert.equal(skin.extras.skinAlbedoSourceSha256,hash(original),'Tagged albedo identifies its exact source');
++   const native=faceUVs(model,material,0);assert.equal(native.length,uvs.length);
++   const shifts=uvs.map((uv,i)=>Math.hypot(uv[0]-native[i][0],uv[1]-native[i][1]));
++   assert.ok(shifts.some(value=>value>1e-6),'Generated lips and brows use a local face registration');
++   assert.ok(shifts.every(value=>Number.isFinite(value)&&value<.005),'Registration remains within the reviewed local face offset');
++  }
++  const [actual,expected]=await Promise.all([pixels(new URL(image.uri,path)),pixels(registered?new URL('../../generated/granadero-skin-colour.png',source):new URL(`skin-${appearance.gender}-${role}.png`,source))]);
+   assert.deepEqual([actual.info.width,actual.info.height],[expected.info.width,expected.info.height],`${role} keeps the authored resolution`);
+   for(const axis of [0,1])assert.ok(range(uvs.map(uv=>uv[axis]))*(axis?actual.info.height:actual.info.width)>1,'The face does not collapse onto a single texture texel');
+   for(const component of components){
+--- /dev/null
++++ b/tests/characters-generated-skin.test.mjs
+@@ -0,0 +1,50 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import {resolve,sep} from 'node:path';
++import {pathToFileURL} from 'node:url';
++import {createHash} from 'node:crypto';
++import {Color,MeshStandardMaterial} from '../web/node_modules/three/build/three.module.js';
++import {applySkinPalette} from '../game/skin-palette.js';
++import {manifest,readGlb} from './character-bank-fixture.mjs';
++const directory=process.env.GRANADEROS_CHARACTER_LIBRARY?pathToFileURL(resolve(process.env.GRANADEROS_CHARACTER_LIBRARY)+sep):new URL('../web/public/models/characters/',import.meta.url);
++const generated=new URL('../assets/source/characters-3d/authoring/generated/granadero-skin-colour.png',import.meta.url);
++const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
++const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-10,`${a} differs from ${b}`);
++
++test('a coloured albedo reproduces each selected tone and changes palettes without accumulating tint',()=>{
++ const reference=[.846873231509858,.4232676699860717,.2788942634768104],material=new MeshStandardMaterial();material.userData.skinAlbedoReference=reference;
++ for(const tone of [...Object.values(manifest.skinTones),manifest.skinTones.light]){
++  applySkinPalette(material,tone);const target=new Color(tone);
++  for(const [i,key]of ['r','g','b'].entries())close(material.color[key]*reference[i],target[key]);
++ }
++ const clone=material.clone();applySkinPalette(clone,manifest.skinTones.dark);assert.notDeepEqual(clone.color,material.color,'Actor-owned material changes do not alter another palette instance');material.dispose();clone.dispose();
++});
++test('legacy and invalid-reference materials retain the existing Three palette colour',()=>{
++ for(const reference of [undefined,null,[],[1,1],[1,0,1],[1,-1,1],[1,Infinity,1],['1',1,1]]){
++  const material=new MeshStandardMaterial();if(reference!==undefined)material.userData.skinAlbedoReference=reference;
++  for(const tone of Object.values(manifest.skinTones)){applySkinPalette(material,tone);assert.deepEqual(material.color,new Color(tone));}
++  material.dispose();
++ }
++});
++for(const lod of manifest.appearances.granadero.lods)test(`Granadero LOD${lod.lod} keeps generated albedo separate from native surface maps`,()=>{
++ const {json,access}=readGlb(lod.url),mi=json.materials.findIndex(m=>m.name==='Skin'),skin=json.materials[mi],colour=skin.pbrMetallicRoughness.baseColorTexture,normal=skin.normalTexture,roughness=skin.pbrMetallicRoughness.metallicRoughnessTexture;
++ assert.equal(colour.texCoord,1);assert.equal(normal.texCoord??0,0);assert.equal(roughness.texCoord??0,0);
++ const image=json.images[json.textures[colour.index].source],png=readFileSync(new URL(image.uri,directory));assert.equal(digest(png),digest(readFileSync(generated)),'The original generated PNG bytes are packaged intact');assert.equal(skin.extras.skinAlbedoSourceSha256,digest(png));
++ assert.equal(skin.extras.skinAlbedoReferenceSpace,'linear-srgb');assert.ok(skin.extras.skinAlbedoReference.every(value=>Number.isFinite(value)&&value>0));
++ const target=new Color(manifest.skinTones.light);for(const [i,key]of ['r','g','b'].entries())close(skin.pbrMetallicRoughness.baseColorFactor[i]*skin.extras.skinAlbedoReference[i],target[key]);
++ const handJoints=new Set(json.skins[0].joints.map((node,index)=>/^(hand_|thumb_|index_|middle_|ring_|pinky_)/.test(json.nodes[node].name)?index:-1));handJoints.delete(-1);
++ for(const primitive of json.meshes.flatMap(m=>m.primitives).filter(p=>p.material===mi)){
++  const uv0=access(primitive.attributes.TEXCOORD_0),uv1=access(primitive.attributes.TEXCOORD_1),joint=access(primitive.attributes.JOINTS_0),weight=access(primitive.attributes.WEIGHTS_0),position=access(primitive.attributes.POSITION),count=json.accessors[primitive.attributes.POSITION].count;
++  assert.equal(uv0.length,count*2);assert.equal(uv1.length,count*2);let faceMoved=0,hands=0;
++  for(let vertex=0;vertex<count;vertex++){
++   const delta=Math.hypot(uv1[vertex*2]-uv0[vertex*2],uv1[vertex*2+1]-uv0[vertex*2+1]);assert.ok(Number.isFinite(delta)&&delta<.005,'Registration remains local and bounded');
++   if(position[vertex*3+1]>1.55&&delta>1e-6)faceMoved++;
++   if([0,1,2,3].some(slot=>handJoints.has(joint[vertex*4+slot])&&weight[vertex*4+slot]>.5)){hands++;assert.equal(delta,0,'Hand and nail UV registration is unchanged');}
++  }
++  assert.ok(faceMoved>0&&hands>0,'The test samples actual face and hand skin');
++ }
++});
++test('the seven other appearance families keep their existing palette and native albedo domain',()=>{
++ for(const appearance of Object.values(manifest.appearances).filter(a=>a.id!=='granadero'))for(const lod of appearance.lods){const {json}=readGlb(lod.url),skin=json.materials.find(m=>m.name===appearance.materials.skin);assert.equal(skin.extras?.skinAlbedoReference,undefined);assert.equal(skin.pbrMetallicRoughness.baseColorTexture.texCoord??0,0);}
++});
+--- a/tests/three-actor-runtime.test.mjs
++++ b/tests/three-actor-runtime.test.mjs
+@@ -558,3 +558,19 @@
+   assert.ok(runtime.action.paused&&runtime.action.isScheduled(),'The clamped terminal action still contributes to the body');
+   runtime.update(v,3000);runtime.tick(0,3000);matchesBody();runtime.tick(.1,3100);matchesBody();runtime.tick(.03,3130);matchesBody();runtime.dispose();
+ });
++
++
++test('actor palette changes compensate a tagged skin albedo without changing another instance',()=>{
++  const f=fixture('registeredSkin'),reference=[.846873231509858,.4232676699860717,.2788942634768104];
++  f.skin.userData.skinAlbedoReference=reference;
++  const a=new ActorRuntime(f.asset,visual(f,{skin:'light'})),b=new ActorRuntime(f.asset,visual(f,{key:'unit:second',skin:'dark'}));
++  const aSkin=a.model.getObjectByName(f.body.name).material,bSkin=b.model.getObjectByName(f.body.name).material;
++  const expected=new MeshStandardMaterial();
++  for(const tone of ['light','brown','dark','light']){
++    a.update(visual(f,{skin:tone}),0);expected.color.set(f.asset.manifest.skinTones[tone]);
++    for(const [i,key]of ['r','g','b'].entries())assert.ok(Math.abs(aSkin.color[key]*reference[i]-expected.color[key])<1e-10);
++    expected.color.set(f.asset.manifest.skinTones.dark);
++    for(const [i,key]of ['r','g','b'].entries())assert.ok(Math.abs(bSkin.color[key]*reference[i]-expected.color[key])<1e-10);
++  }
++  assert.equal(f.skin.color.getHexString(),'c68b62');a.dispose();b.dispose();expected.dispose();
++});

@@ -1,0 +1,14 @@
+{
+  "trackedSource": [
+    "assets/source/characters-3d/authoring/rifle_loading.py"
+  ],
+  "publicationAssetFiles": [
+    "web/public/models/characters/male-animations.glb",
+    "web/public/models/characters/female-animations.glb",
+    "web/public/models/characters/manifest.json"
+  ],
+  "privateOnly": [
+    "locomotion-profile.json"
+  ],
+  "copyingInstruction": "Root may publish only the two banks and the manifest after checking current canonical fingerprints. The private calibration profile has a private source path; keep the production profile."
+}

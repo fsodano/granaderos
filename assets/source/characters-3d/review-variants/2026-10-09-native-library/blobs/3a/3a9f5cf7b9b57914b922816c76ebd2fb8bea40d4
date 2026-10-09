@@ -1,0 +1,23 @@
+{
+  "sampleHz": 60,
+  "timeRange": [
+    0.2,
+    0.7
+  ],
+  "runtime": "ActorRuntime admitted strike -> stand.punch.unarmed; actual skinned mesh vertices",
+  "independentCheck": "Blender BVHTree six-ray parity",
+  "toleranceMetres": 0.0015,
+  "largestDepthMm": {
+    "maleHead": 0.587,
+    "femaleHead": 0,
+    "maleHat": 0
+  },
+  "review": "guard-recovery-review/index.html",
+  "files": {
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/manifest.json": "f689da27a729243343d15321e940b185a8db5a442a3b6a8f0bad8d1fb3a9149e",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/male-animations.glb": "d78af4427c338a6893e4533ef074e866181fb267edd444c8d5432d927648ad2d",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/female-animations.glb": "85bca1c973e0efdd2d0e7a380ef5de959c8b511e8f10fa0d2e84bdd8d5210b53",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/granadero-lod0.glb": "50041f99086062f97cd27c2209932e3da77d88281f0488951de0bdf0b5e59b6f",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/woman-scout-lod0.glb": "62a3854b3e612fc93bc604fe3ef4babcc6713c040ebc9c678285e1108153aac2"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "scope": "Actual Three.js GLTFLoader and production-lab preparation. Shader compilation and exact PNG decode for all three private worker LODs.",
+  "models": [
+    {
+      "lod": 0,
+      "url": "/models/characters/worker-lod0.glb",
+      "sha256": "f364bd78340b20076ad8459c448301ce633c0a8e566c7609c57c66f730d77e28",
+      "alphaTest": 0.3799999952316284,
+      "transparent": false,
+      "doubleSide": true,
+      "depthWrite": true,
+      "roughness": 0.8600000143051147,
+      "textureDimensions": [
+        1254,
+        1254
+      ],
+      "textureColorSpace": "srgb",
+      "textureChannel": 0,
+      "textureMipmaps": true,
+      "minFilter": 1008,
+      "compiledShaders": 3,
+      "rendererTriangles": 77078,
+      "rendererDraws": 4
+    },
+    {
+      "lod": 1,
+      "url": "/models/characters/worker-lod1.glb",
+      "sha256": "4d2d4285ec26299953b41b35f2cb8448edf29ed9122de46a47c3ef179f24905f",
+      "alphaTest": 0.3799999952316284,
+      "transparent": false,
+      "doubleSide": true,
+      "depthWrite": true,
+      "roughness": 0.8600000143051147,
+      "textureDimensions": [
+        1254,
+        1254
+      ],
+      "textureColorSpace": "srgb",
+      "textureChannel": 0,
+      "textureMipmaps": true,
+      "minFilter": 1008,
+      "compiledShaders": 3,
+      "rendererTriangles": 49161,
+      "rendererDraws": 4
+    },
+    {
+      "lod": 2,
+      "url": "/models/characters/worker-lod2.glb",
+      "sha256": "cb65bbffda4aa3aeea4dc9c0eba69d7e95e50a69bac231ecf6b06424615a466f",
+      "alphaTest": 0.3799999952316284,
+      "transparent": false,
+      "doubleSide": true,
+      "depthWrite": true,
+      "roughness": 0.8600000143051147,
+      "textureDimensions": [
+        1254,
+        1254
+      ],
+      "textureColorSpace": "srgb",
+      "textureChannel": 0,
+      "textureMipmaps": true,
+      "minFilter": 1008,
+      "compiledShaders": 3,
+      "rendererTriangles": 21057,
+      "rendererDraws": 4
+    }
+  ],
+  "errors": [],
+  "pass": true
+}

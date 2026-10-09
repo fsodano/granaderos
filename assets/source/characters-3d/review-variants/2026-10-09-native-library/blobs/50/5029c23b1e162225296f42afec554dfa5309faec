@@ -1,0 +1,37 @@
+{
+  "spec": {
+    "name": "prone.gesture.throw",
+    "duration": 1.3,
+    "loop": false,
+    "events": {
+      "release": 0.754
+    },
+    "gesture": "throw",
+    "posture": "prone",
+    "equipment": "any",
+    "clip": "prone.gesture.throw",
+    "markers": {
+      "release": 0.754
+    },
+    "source": {
+      "type": "native-contact-authoring"
+    },
+    "sampleRate": 15,
+    "timingAuthority": "simulation",
+    "rootMotion": "in-place",
+    "freeHands": [
+      "handRight",
+      "handLeft"
+    ],
+    "handProps": [
+      {
+        "hand": "handRight",
+        "categories": [
+          "supply"
+        ],
+        "untilMarker": "release"
+      }
+    ]
+  },
+  "failures": []
+}

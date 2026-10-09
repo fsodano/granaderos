@@ -1,0 +1,264 @@
+{
+  "directory": "/tmp/granadero-face-reset/models",
+  "canonical": "/tmp/granadero-full-review/models",
+  "baselineForNativeSignature": "/tmp/granadero-equipment-sideways-integration/models",
+  "nativeChecks": {
+    "passed": 26,
+    "failed": 0,
+    "checks": "joint names, hierarchy, rest transforms and exact native inverse-bind matrices"
+  },
+  "assets": [
+    {
+      "name": "granadero-lod0.glb",
+      "sha256": "9fc5450135118e8965eae770ee66956599e6aa496ae3f4c4d9610e244df02107",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "granadero-lod1.glb",
+      "sha256": "731b29f079747cc93db653c0a60389fc622912f1d17d398d95481ed259977981",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "granadero-lod2.glb",
+      "sha256": "6cdc58dbedd5e7a1537c753a2e11d777b719ebaa3df4d13bf4c8223967cf8dc4",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "royalist-lod0.glb",
+      "sha256": "11ff8b3b7b4dc321e301b574380cc43114352c7bfd1768818257bea0998594e4",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "royalist-lod1.glb",
+      "sha256": "830cbc8be56cd23b42ba10d2a961fa2efa8aef8238ac65d547cb5d426e980014",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "royalist-lod2.glb",
+      "sha256": "7a3d565ed8dca6872667fb3e63eae5e110b20d53c525362b2df6414ff447129c",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "worker-lod0.glb",
+      "sha256": "ef6b0fac4252b7553f0c9017a7e5969d09e1ad070bd71bc2baa691efe95ff73c",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "worker-lod1.glb",
+      "sha256": "a9357b6b19d1614b42fda37e5c8e417a1277373ce45b6679462c36848b2ef9e7",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "worker-lod2.glb",
+      "sha256": "083a4d857e6f64b9902a6051ca3c53a36b52b2f4644ab1609134f2fa78cf5481",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "surgeon-lod0.glb",
+      "sha256": "c5a8c62f819aa8df04474d85029c190c924d496c72046a36d6ce63c19e16614c",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "surgeon-lod1.glb",
+      "sha256": "c549bab323865e8bee39b3a543b1d5d5a8c065659f710bf6af47b3dfde04ce52",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "surgeon-lod2.glb",
+      "sha256": "5a15fa35a439eb31b10c87c9d6eee3581c0a9c466de9d5d900ef39a9cfcd72d1",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "gaucho-lod0.glb",
+      "sha256": "88fa8d51109807f570cb94e871fb2b8fa2d173b715d8ae7feaf9dfae2185bc15",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "gaucho-lod1.glb",
+      "sha256": "ae2329c4bbde13cb8df1db5ada92fdab6ed51c40dc8b4bef550a64565f15f220",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "gaucho-lod2.glb",
+      "sha256": "7afbe1cc16f04fb27fee9557f295e64d76b397924fb0806025e2a852abab25b0",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "friar-lod0.glb",
+      "sha256": "6cb1a91475ebb3a0968168af888cd554d4105c2920907e2f0aebc67bbee51808",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "friar-lod1.glb",
+      "sha256": "5c85d3584407530ff7b0e68956c23c121825a2d38824943d6aa7197a01ea67be",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "friar-lod2.glb",
+      "sha256": "f332faa00f90577c5ab419eea431e6fd4a1a861f596a699354bbf9edc9a3336d",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "woman-scout-lod0.glb",
+      "sha256": "afe08d1507cbfb5b80a68fcc93fa177785a7d71f6d15904fdc3cf1684442ec39",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "woman-scout-lod1.glb",
+      "sha256": "efff522137cc63b41fe6e2813a1b892ee978ad49abb33ca9fcf018185d50a575",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "woman-scout-lod2.glb",
+      "sha256": "d6f430b3b89b2927d440529bb0ae5ec69a63051055000783a578bfc9661d3c13",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "woman-shawl-lod0.glb",
+      "sha256": "20777eb2097152ad71fce0ff9de82f6b11f29e3009a1ec9f5bab2ec2717dfe79",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "woman-shawl-lod1.glb",
+      "sha256": "5480fc7064d6c779424ec3096721b2a60a8c5fa7d70eb83c6c1fb10f2d601c19",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "woman-shawl-lod2.glb",
+      "sha256": "b8e4c5be6c9a318b5271dd6e1a2cc3c65675349b2bd205cecf162ccab925e2a1",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "male-garments.glb",
+      "sha256": "3b4c847fe202acbea1465d6e0fb647a8292f8f93df3671ac1fbb966c5125f3cc",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    },
+    {
+      "name": "female-garments.glb",
+      "sha256": "3f920ae8138572411a8fae63c6a848b839a0facda228a23ded3a251532048deb",
+      "nativeSignatureExact": true,
+      "canonicalBytesExact": true
+    }
+  ],
+  "source": [
+    {
+      "name": "character.py",
+      "sha256": "acae5b71635288280e9f4cf872f58757a97ad1c4f6e598f4fbfc41f5cd2e26ab",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "anatomy_surface.py",
+      "sha256": "24db3a442d9a3d4df15f2467fd803f204dfc8521022871bbb899629efcbd6986",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "surface_atlas.py",
+      "sha256": "5acb145dc7b81c7beb64ed1a46c7a4db211e045fad7401e33a783042a0076c5f",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "garment_detail.py",
+      "sha256": "6051717585d35ca2340ba0f7d3183ae1566fe2d493c3f4b0bae4eefc45938ac1",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "optimize.py",
+      "sha256": "dcd098eed06a7a40aeaba6ecdf09d231e95382dcd168923993138161da8004d2",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "vendor/makehuman/skin-female-normal.png",
+      "sha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "vendor/makehuman/skin-male-colour.png",
+      "sha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "vendor/makehuman/skin-male-roughness.png",
+      "sha256": "6eb27af5269a59753a87f626d6611bb54a8c175fc860068c3da620e0e84c4274",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "vendor/makehuman/skin-male-normal.png",
+      "sha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "vendor/makehuman/skin-female-colour.png",
+      "sha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+      "frozenCopyExact": true
+    },
+    {
+      "name": "vendor/makehuman/skin-female-roughness.png",
+      "sha256": "8b934f7929ec6c3124592577b92fc92ad15436a9e0f2f6d9960999b72655ddba",
+      "frozenCopyExact": true
+    }
+  ],
+  "vendorIsIndependentCopy": true,
+  "skinSurfaceTests": {
+    "log": "/tmp/granadero-appearance-final/skin-surfaces.log",
+    "count": 24,
+    "status": "passed",
+    "passed": 24,
+    "failed": 0
+  },
+  "visualReview": {
+    "status": "reviewed",
+    "presets": [
+      "granadero",
+      "woman-scout"
+    ],
+    "pose": "stand.idle.unarmed at 0 seconds",
+    "views": [
+      "isometric full body",
+      "isometric head"
+    ],
+    "result": "No new material discontinuity, missing facial map, detached fitting, or mesh hole in the sampled frames. New clean facial pigmentation, hair direction and reduced cloth relief are present. This is sampled visual evidence, not a claim of perfect realism.",
+    "images": [
+      {
+        "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/face-reset/delivery/granadero/stand.idle.unarmed.sample-1.png",
+        "sha256": "ebdd05eb680b72ea20ad7a489b6bd683b0e6ca2958e893b910327901a45cb662"
+      },
+      {
+        "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/face-reset/delivery/granadero/stand.idle.unarmed.sample-1.head.png",
+        "sha256": "b085c563abc8be2986993e58c01ce99f02406ee619f7b141584047128c20fa28"
+      },
+      {
+        "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/face-reset/delivery/woman-scout/stand.idle.unarmed.sample-1.png",
+        "sha256": "abba258906353f737cadcdb9fdab63a54498067fda50e51f9eb8cdb13c966877"
+      },
+      {
+        "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/face-reset/delivery/woman-scout/stand.idle.unarmed.sample-1.head.png",
+        "sha256": "3fa6e98bf9c394059b2c0dd2eaae0fec6a0b89a7bae2792ba61cf1b34b49c44a"
+      }
+    ]
+  }
+}

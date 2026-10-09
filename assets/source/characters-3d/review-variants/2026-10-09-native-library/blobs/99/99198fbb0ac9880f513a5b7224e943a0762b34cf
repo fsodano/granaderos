@@ -1,0 +1,32 @@
+{
+  "manifestCopies": {
+    "public": {
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/manifest.json",
+      "sha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23"
+    },
+    "live": {
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/live-preview/models/manifest.json",
+      "sha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23"
+    },
+    "canonical": {
+      "path": "/tmp/granadero-full-review/models/manifest.json",
+      "sha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23"
+    }
+  },
+  "liveBody": "9abd7909",
+  "liveSelections": {
+    "character": "Granadero \u00b7 juego",
+    "equipment": "Sin arma",
+    "motion": "Quieto",
+    "skin": "Blanco",
+    "speed": 1,
+    "pixelated": false,
+    "view": "isometric"
+  },
+  "liveConsoleWarningsAndErrors": [],
+  "screenshots": [
+    "live-face.png",
+    "live-full.png"
+  ],
+  "scope": "Current live review; no startup or crowd performance claim."
+}
