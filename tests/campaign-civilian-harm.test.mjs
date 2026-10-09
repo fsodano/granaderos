@@ -15,6 +15,7 @@ import {createBattle,actBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const act=(b,a)=>{const next=actBattle(b,a);assert.equal(next.lastError,null,next.lastError);return next;};
@@ -173,7 +174,7 @@ test('real finite grenade death survives synchronization, live save, final repor
  // The liberated Cuyo corridor and old wound are this late-campaign fixture.
  // The grenade is declared finite carried property. Hire, travel, equip and throw use real orders.
  s.phase=3;for(const id of ['buenos_aires','cordoba','mendoza'])s.sectors[id].owner='patriot';
- s=order(s,{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'travel',sector:'mendoza'});
+ s=order(s,{type:'recruitCivic',id:110,term:'week'});s=completeTestTravel(order(s,{type:'travel',sector:'mendoza'}),{sector:'mendoza'});
  const cash=s.resources.treasury;assertTradeRejected(s,grenadeOffer(s,rosterFor(s).find(op=>op.id===110),isSupplied,1).action);s=withCarriedGrenades(s,110,1);assert.equal(s.resources.treasury,cash);
  const personal=sectorInventoryModel(s,'mendoza',rosterFor(s),110).personal,item='inventory:grenade:arsenal';
  s=order(s,{type:'sectorInventory',sector:'mendoza',operativeId:110,direction:'equip',slot:'mainhand',inventoryKey:item,expected:JSON.stringify(extractItemQuantity(personal,item,1).stack)});

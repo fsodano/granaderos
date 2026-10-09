@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {physicalEntryAnchor} from '../game/sector-expansion.js';
-import {WORLD_CELLS,worldCell,adjacentCells} from '../game/world-cells.js';
+import {WORLD_CELLS,worldCell,adjacentCells,roadConnects} from '../game/world-cells.js';
 import {CAMPAIGN_SECTORS} from '../game/data.js';
 import {sectorExits,findSectorExit,entryFromSector,exitAnchorFor,boundaryMatches,validEntry,inwardFromBoundary,validateSectorExits} from '../game/tactical-exits.js';
 import {buildSectorMap} from '../game/maps.js';
@@ -51,13 +51,15 @@ test('new travel and mission entries use explicit target edges, not the opposite
   assert.equal(entryFromSector('tucuman', 'tucuman'), null);
 });
 
-test('every route enters a reachable road boundary with a legal inward step', () => {
+test('every route enters a reachable exterior boundary with a legal inward step', () => {
   for (const [source, scene] of [...CAMPAIGN_SECTORS.map(s => [s.id, null]), ['san_lorenzo', null], ['tucuman', 'yatasto']]) {
     for (const exit of sectorExits(source, scene)) {
       const map = buildSectorMap({sector: exit.destination, squad: [{id: 'probe'}], enemies: [], exploration: true});
       const s = createBattle(map.squad, map), u = s.units[0],anchor=physicalEntryAnchor(exit.entryEdge,exit.entryAnchor,s.width,s.height,exit.destination);
       assert.equal(boundaryMatches(s, anchor, exit.entryEdge), true);
-      assert.equal(s.tiles.find(t => t.x === anchor.x && t.y === anchor.y).type, 'road');
+      const tile=s.tiles.find(t => t.x === anchor.x && t.y === anchor.y);
+      if(!worldCell(exit.destination)||worldCell(exit.destination).anchor||roadConnects(source,exit.destination))assert.equal(tile.type,'road',exit.id);
+      assert.equal(tile.blocked,false,exit.id);
       assert.ok(getReachable(s, u).some(t => t.x === anchor.x && t.y === anchor.y), exit.id);
       assert.ok(Number.isFinite(movementStepCost(s, u, anchor, inwardFromBoundary(anchor, exit.entryEdge))));
     }

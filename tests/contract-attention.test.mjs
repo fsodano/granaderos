@@ -12,6 +12,7 @@ const wait=(s,hours)=>order(s,{type:'wait',hours});
 const hire=(s=initialCampaign(),id=103)=>order(s,{type:'recruitCivic',id,term:'day'});
 const notice=s=>s.contractAttention.notice;
 const saved=s=>decodeSave(encodeSave(s)).campaign;
+const ruralDestination='cell-27-27'; // One real four-hour leg preserves mid-leg warning and expiry.
 
 test('real paid contract warns at two hours, preserves service and stops again on actual expiry',()=>{
  const start=hire(),cash=start.resources.treasury;let s=wait(start,24);
@@ -59,20 +60,20 @@ test('dead, captured, permanent and dismissed soldiers do not produce renewal wa
 });
 
 test('queued travel can pause for a renewal without moving a soldier or resetting the route',()=>{
- let s=wait(hire(),20);s=order(s,{type:'travel',sector:'buenos_aires',queue:true});s=wait(s,6);
+ let s=wait(hire(),20);s=order(s,{type:'travel',sector:ruralDestination,queue:true});assert.equal(s.squads[0].journey.legHours,4);s=wait(s,6);
  assert.equal(s.hour,22);assert.equal(s.squads[0].journey.elapsed,2);assert.equal(s.location,'retiro');assert.equal(s.operativeState[103].fatigue,4);
  s=order(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:24});assert.equal(s.squads[0].journey.elapsed,2);
- s=wait(s,12);assert.equal(s.hour,32);assert.equal(s.location,'buenos_aires');assert.equal(s.contracts[103].expiresAt,48);assert.ok(s.recruited.includes(103));assert.equal(s.operativeState[103].fatigue,24);
+ s=wait(s,12);assert.equal(s.hour,24);assert.equal(s.location,ruralDestination);assert.equal(s.contracts[103].expiresAt,48);assert.ok(s.recruited.includes(103));assert.equal(s.operativeState[103].fatigue,8);
 });
 
 test('expiry on a queued route reports once and preserves departure until a real arrival',()=>{
- let s=order(wait(hire(),20),{type:'travel',sector:'buenos_aires',queue:true});s=wait(s,10);s=wait(s,10);
+ let s=order(wait(hire(),21),{type:'travel',sector:ruralDestination,queue:true});s=wait(s,10);s=wait(s,10);
  assert.equal(s.hour,24);assert.equal(s.contracts[103].departurePending,true);assert.ok(s.recruited.includes(103));assert.equal(notice(s).events[0].code,'expired');
- s=wait(saved(s),1);assert.equal(s.hour,25);assert.equal(notice(s),null);s=wait(s,10);assert.equal(s.hour,32);assert.ok(!s.recruited.includes(103));assert.equal(s.location,'buenos_aires');
+ s=order(saved(s),{type:'advanceStrategicTime',seconds:1800});assert.equal(s.hour,24);assert.equal(s.secondOfHour,1800);assert.equal(notice(s),null);assert.ok(s.recruited.includes(103));assert.equal(s.location,'retiro');s=order(s,{type:'advanceStrategicTime',seconds:1800});assert.equal(s.hour,25);assert.equal(s.secondOfHour,0);assert.ok(!s.recruited.includes(103));assert.equal(s.location,ruralDestination);
 });
 
 test('blocking travel and tactical synchronization retain their full elapsed duration',()=>{
- let s=order(wait(hire(),20),{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,32);assert.equal(s.location,'buenos_aires');assert.ok(!s.recruited.includes(103));assert.equal(notice(s),null);
+ let s=order(wait(hire(),21),{type:'travel',sector:ruralDestination});assert.equal(s.hour,25);assert.equal(s.location,ruralDestination);assert.ok(!s.recruited.includes(103));assert.equal(notice(s),null);
  s=order(wait(hire(),20),{type:'visitSector'});const id=s.pendingBattle.id;s=order(s,{type:'syncTacticalTime',battleId:id,elapsedSeconds:6*3600});assert.equal(s.hour,26);assert.equal(s.contracts[103].departurePending,true);assert.ok(s.recruited.includes(103));assert.equal(notice(s),null);
  const restored=restoreCampaign(serializeCampaign(s));assert.deepEqual(order(restored,{type:'syncTacticalTime',battleId:id,elapsedSeconds:6*3600}),restored);
 });
@@ -96,8 +97,8 @@ test('insufficient funds reject renewal without acknowledging or changing the wa
 });
 
 test('renewing an expired traveling contract cancels deferred departure without restoring supplies',()=>{
- let s=order(wait(hire(),20),{type:'travel',sector:'buenos_aires',queue:true});s=wait(wait(s,10),10);assert.equal(s.contracts[103].departurePending,true);
+ let s=order(wait(hire(),21),{type:'travel',sector:ruralDestination,queue:true});s=wait(wait(s,10),10);assert.equal(s.contracts[103].departurePending,true);
  s.operativeState[103].rations=1;s.operativeState[103].torches=1;const r=structuredClone(s.operativeState[103]),journey=structuredClone(s.squads[0].journey);
  s=order(s,{type:'renewContract',id:103,term:'day',expectedExpiresAt:24});assert.equal(s.contracts[103].departurePending,undefined);assert.equal(s.contracts[103].expiresAt,48);assert.equal(s.hour,24);assert.deepEqual(s.squads[0].journey,journey);assert.equal(s.operativeState[103].rations,r.rations);assert.equal(s.operativeState[103].torches,r.torches);
- s=wait(saved(s),12);assert.ok(s.recruited.includes(103));assert.equal(s.location,'buenos_aires');assert.equal(s.operativeState[103].rations,1);
+ s=wait(saved(s),12);assert.ok(s.recruited.includes(103));assert.equal(s.location,ruralDestination);assert.equal(s.operativeState[103].rations,1);
 });

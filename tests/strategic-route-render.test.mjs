@@ -14,8 +14,8 @@ test('fresh command screen has an empty squad, recruitment access and a visible 
  assert.match(html,/0 soldados/);assert.match(html,/Crear o contratar/);assert.match(html,/Velocidad del tiempo/);assert.match(html,/>▶ Iniciar<\/button>/);assert.match(html,/Creá tu oficial o contratá soldados/);assert.doesNotMatch(html,/data-squad-route/);
 });
 test('resumed routes stay visible on the map and roster while order panels start closed',()=>{
- let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'wait',hours:5});assert.equal(s.lastError,null);
- const html=render(h(Campaign,{state:s,dispatch:noop,onBattle:noop,onOpenDesk:noop}));assert.match(html,/data-squad-route="squad-1"/);assert.ok(html.includes(`${worldCell('ensenada').grid}<small>19 h`));assert.doesNotMatch(html,/Regresar · 5 h/);assert.doesNotMatch(html,/role="dialog"/);assert.doesNotMatch(html,/class="strategy-orders"/);assert.match(html,/data-travel-presence="squad-1"/);assert.doesNotMatch(html,/atlas-squad-marker/);
+ let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'advanceStrategicTime',seconds:1800});assert.equal(s.lastError,null);
+ const html=render(h(Campaign,{state:s,dispatch:noop,onBattle:noop,onOpenDesk:noop}));assert.match(html,/data-squad-route="squad-1"/);assert.ok(html.includes(`${worldCell('ensenada').grid}<small>4 h 30 min`));assert.doesNotMatch(html,/Regresar ·/);assert.doesNotMatch(html,/role="dialog"/);assert.doesNotMatch(html,/class="strategy-orders"/);assert.match(html,/data-travel-presence="squad-1"/);assert.doesNotMatch(html,/atlas-squad-marker/);
 });
 test('map draft is a separate path and has no dispatch side effects',()=>{
  const s=initialCampaign(),before=structuredClone(s),actions=[];

@@ -5,6 +5,7 @@ import {defaultContentPackage} from '../game/content-package.js';
 import {advanceMorale} from '../game/morale.js';
 import {strategicIsolationStatus} from '../game/strategic-isolation.js';
 import {contractExpiresSeconds} from '../game/contracts.js';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 
 const saved=s=>restoreCampaign(serializeCampaign(s));
 const order=(s,a)=>{const before=structuredClone(s),next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);assert.deepEqual(s,before);return saved(next);};
@@ -37,7 +38,7 @@ test('actual hourly rest has a capped loss, rolling-second guard and once-only s
 });
 
 test('fractional real travel and timed return use own party; only an actual same-cell regroup resets the episode',()=>{
- let s=prepared();s=order(s,{type:'createSquad',name:'Cejas en marcha',ids:[130]});s=order(s,{type:'travel',sector:'buenos_aires',queue:true});
+ let s=prepared();s=order(s,{type:'createSquad',name:'Cejas en marcha',ids:[130]});s=order(s,{type:'travel',sector:'cell-27-27',queue:true});
  s=order(s,{type:'advanceStrategicTime',seconds:3600});s=order(s,{type:'advanceStrategicTime',seconds:1800});assert.equal(r(s).morale,39);
  const q=s.squads.find(q=>q.members.includes(130));assert.equal(q.location,'retiro');assert.equal(q.journey.elapsed,1);assert.equal(q.journey.elapsedSecond,1800);
  assert.equal(strategicIsolationStatus(s,op(s)).active,true,'the origin resident has not accompanied the traveling party');
@@ -69,7 +70,7 @@ test('real sleep pauses the episode, exact expiry precedes the tick, and old omi
  const expiry=contractExpiresSeconds(s.contracts[130]);assert.equal(expiry,30*3600);
  while(stamp(s)<expiry-1){const seconds=Math.min(3600,expiry-1-stamp(s)),before=stamp(s);s=order(s,{type:'advanceStrategicTime',seconds});assert.ok(stamp(s)>before);}
  const last=structuredClone(r(s).strategicIsolation),morale=r(s).morale,cash=s.resources.treasury;s=order(s,{type:'advanceStrategicTime',seconds:1});assert.equal(stamp(s),expiry);assert.equal(s.recruited.includes(130),false);assert.equal(s.contracts[130],undefined);assert.equal(r(s).morale,morale);assert.deepEqual(r(s).strategicIsolation,last);assert.equal(s.resources.treasury,cash);
- let old=alone(prepared({oldPinned:true}));old=order(old,{type:'assignCare',operativeId:130,assignment:'rest'});old=order(old,{type:'wait',hours:6});assert.equal(r(old).morale,41);assert.equal(r(old).strategicIsolation,undefined);assert.equal(notices(old).length,0);
+ let old=alone(prepared({oldPinned:true}));old=order(old,{type:'assignCare',operativeId:130,assignment:'rest'});old=advanceCampaignHours(old,6);assert.equal(r(old).morale,41);assert.equal(r(old).strategicIsolation,undefined);assert.equal(notices(old).length,0);
 });
 
 test('fractional final loss and historical receipts validate strictly; deployed time cannot charge a second fear rule',()=>{

@@ -1,3 +1,4 @@
+import {worldCell,roadConnects} from '../game/world-cells.js';
 import {tacticalGridLabel} from '../game/tactical-grid.js';
 import {initialCampaign} from '../game/campaign.js';
 import {roadsideDiscoveriesFor} from '../game/roadside-discoveries.js';
@@ -78,7 +79,9 @@ test('all campaign routes arrive at the new physical edges with a legal inward s
   const state=enterSector({sector:exit.destination,squad,enemies:[],exploration:true});
   const anchor=physicalEntryAnchor(exit.entryEdge,exit.entryAnchor,state.width,state.height,exit.destination);
   assert.ok(boundaryMatches(state,anchor,exit.entryEdge));
-  assert.equal(state.tiles[anchor.y*state.width+anchor.x].type,'road',exit.id);
+  const tile=state.tiles[anchor.y*state.width+anchor.x];
+  if(worldCell(exit.destination)?.anchor||roadConnects(source.id,exit.destination))assert.equal(tile.type,'road',exit.id);
+  assert.equal(tile.blocked,false,exit.id);
   for(const unit of state.units){assert.ok(boundaryMatches(state,unit,exit.entryEdge),exit.id);assert.ok(Number.isFinite(movementStepCost(state,unit,unit,inwardFromBoundary(unit,exit.entryEdge))));}
  }
 });

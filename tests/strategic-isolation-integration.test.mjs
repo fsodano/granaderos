@@ -4,6 +4,7 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {actionCosts,shotChance,teamCanSee,createBattle} from '../game/tactical.js';
 import {targetPreview} from '../game/ja2-hud.js';
 import {enterSector} from '../game/world.js';
+import {travelLegHours} from '../game/squad-travel.js';
 import {ammoCount} from '../game/ammo-types.js';
 import {contractQuote} from '../game/contracts.js';
 import {strategicIsolationStatus} from '../game/strategic-isolation.js';
@@ -54,10 +55,20 @@ test('paid earned isolation persists through a clamped native shot, controlled a
   perform({kind:'campaign',action:{type:'wait',hours:1}});assert.equal(route.pair.campaign.operativeState[130].strategicIsolation,undefined);assert.equal(route.pair.campaign.operativeState[130].morale,beforeRegroup);
   perform({kind:'campaign',action:{type:'renewContract',id:130,term:'day'}});assert.equal(route.pair.campaign.resources.treasury,3032);
   const personal=route.pair.campaign.operativeState[130].morale;assert.equal(personal,beforeRegroup+2);
+  // Finish the real finite pistol reload at the friendly staging sector.
+  // This avoids exposing the replacement while a partial combat reload waits.
+  perform({kind:'campaign',action:{type:'visitSector'}});
+  if(nervousActor(route.pair.battle,130).activeSlot!=='primary')perform({kind:'tactical',action:{type:'weapon',unitId:'130',slot:'primary'}});
+  if(!nervousActor(route.pair.battle,130).loaded)perform({kind:'tactical',action:{type:'reload',unitId:'130'}});
+  perform({kind:'leave'});
+  // The actual wait keeps the authored second observation in daylight after
+  // the shorter city march; both paid clocks remain in the official replay.
+  perform({kind:'campaign',action:{type:'wait',hours:12-travelLegHours('retiro','buenos_aires')}});
   perform({kind:'campaign',action:{type:'attack',sector:'buenos_aires'}});
   assert.equal(route.pair.campaign.operativeState[130].morale,personal,'the actual traveling companion prevents further strategic losses');
   assert.equal(nervousActor(route.pair.battle,130).personalMorale,personal);assert.equal(nervousActor(route.pair.battle,130).shock,0,'ordinary deployment resets transient shock only');
   assert.equal(Object.hasOwn(nervousActor(route.pair.battle,130),'strategicIsolation'),false);
+  perform({kind:'tactical',action:{type:'movement',unitId:'100',movement:'run'}});
   perform({kind:'tactical',action:{type:'move',unitId:'100',x:17,y:0}});
   perform({kind:'tactical',action:{type:'move',unitId:'130',x:26,y:0}});
   if(nervousActor(route.pair.battle,130).loaded===0)perform({kind:'tactical',action:{type:'reload',unitId:'130'}});
@@ -67,10 +78,17 @@ test('paid earned isolation persists through a clamped native shot, controlled a
    perform({kind:'tactical',action:{type:'enemyTurn'}});
    assert.equal(nervousActor(route.pair.battle,130).shock,0,'paid nearby regroup prevents the tactical fear effect in both controls');
    perform({kind:'tactical',action:{type:'reload',unitId:'130'}});
-   perform({kind:'tactical',action:{type:'move',unitId:'100',x:17,y:0}});
+   perform({kind:'tactical',action:{type:'move',unitId:'100',x:23,y:1}});
    perform({kind:'tactical',action:{type:'look',unitId:'100',x:14,y:3}});
-   perform({kind:'tactical',action:{type:'move',unitId:'130',x:22,y:0}});
+   // Keep the loaded doctor at his actual observation post, preserving enough
+   // PA for the shot and withdrawal. Sosa has moved clear of the firing lane.
   }
+  // The loaded-pistol probe must not shoot through the replacement. Spend the
+  // actual movement cost to clear the observed line and retain military support.
+  perform({kind:'tactical',action:{type:'move',unitId:'100',x:26,y:3}});
+  perform({kind:'tactical',action:{type:'look',unitId:'100',x:14,y:3}});
+  perform({kind:'tactical',action:{type:'enemyTurn'}});
+  assert.equal(nervousActor(route.pair.battle,130).shock,0,'the paid nearby support remains during the real observation turn');
   strategic.push({personal,beforeRegroup,stamp:stamp(route.pair.campaign)});
  }
  const candidates=routes[0].pair.battle.units.filter(u=>u.side==='enemy'&&u.hp>0&&teamCanSee(routes[0].pair.battle,'player',u));
@@ -82,9 +100,10 @@ test('paid earned isolation persists through a clamped native shot, controlled a
  assert.ok(selected,'a real observed, loaded and affordable shot must remain available');
  assert.equal(selected.previews[0].chance,1);assert.equal(selected.previews[1].chance,1,'the real far native shot is clamped; it does not itself prove lower accuracy');
  // Pure geometric comparison only. Actual earned actor/observed target records
- // are copied into a declared three-cell flat lane; no paid route is changed or fired.
+ // are copied into a declared nine-cell flat lane; no paid route is changed or fired.
+ // This distance preserves the earned morale difference after integer rounding.
  const controlled=routes.map(route=>{
-  const scene=createBattle([{...nervousActor(route.pair.battle,130),x:1,y:3,facing:2}],{width:12,height:8,night:false,seed:route.pair.battle.seed,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',cover:0,blocked:false})),props:[],enemies:[{...nervousActor(route.pair.battle,selected.targetId),x:4,y:3,facing:6}],npcs:[]});
+  const scene=createBattle([{...nervousActor(route.pair.battle,130),x:1,y:3,facing:2}],{width:12,height:8,night:false,seed:route.pair.battle.seed,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',cover:0,blocked:false})),props:[],enemies:[{...nervousActor(route.pair.battle,selected.targetId),x:10,y:3,facing:6}],npcs:[]});
   return shotChance(scene,scene.units[0],scene.units[1],4);
  });
  assert.ok(controlled[0]<controlled[1],`controlled forecast must show the retained morale difference: ${controlled}`);
@@ -99,6 +118,7 @@ test('paid earned isolation persists through a clamped native shot, controlled a
   shotReceipts.push({chance,pa,seedBefore:before.battle.seed,seedAfter:route.pair.battle.seed,roundsBefore:rounds(u),roundsAfter:rounds(after),seconds:route.pair.battle.elapsedSeconds-before.battle.elapsedSeconds});
   // The ordinary retreat preserves every actual participant and wound. No
   // clinical health, gear, seed or outcome is assigned after initial admission.
+  perform({kind:'tactical',action:{type:'move',unitId:'100',x:27,y:0}});
   const exit=route.pair.battle.exits.find(e=>e.destination==='retiro');perform({kind:'tactical',action:{type:'exit',unitIds:['130','100'],exitId:exit.id}});
   const report={type:'battleResult',battleId:route.pair.campaign.pendingBattle.id,outcome:route.pair.battle.status,sectorState:route.pair.battle,survivors:route.pair.battle.units.filter(u=>u.side==='player')};
   const returnedUnits=structuredClone(report.survivors);
@@ -118,5 +138,5 @@ test('paid earned isolation persists through a clamped native shot, controlled a
   assert.equal(route.pair.campaign.contracts[130].expiresAt,54);assert.equal(route.pair.campaign.contracts[100].expiresAt,51);
  }
  assert.deepEqual(shotReceipts[0],shotReceipts[1],'the clamped paid shot preserves exact costs and random draws');
- t.diagnostic(JSON.stringify({scenario:'declared original pre-kinetic seed42 clinical screen; actual hostile wounds/miss/capture earn43.7 morale, not a stock campaign victory',controlledForecast:{context:'pure declared three-cell flat lane, not an executed native shot',chance:controlled},prices:[36,60,36,36],treasury:3032,strategic,shotReceipts,finalMorale:routes.map(route=>route.pair.campaign.operativeState[130].morale),orders:routes.map(route=>route.events.length),finalClock:routes.map(route=>({hour:route.pair.campaign.hour,second:route.pair.campaign.secondOfHour})),custody:[130,100,110].map(id=>({id,...Object.fromEntries(['hp','bleeding','medkits','carriedLoaded','carriedAmmo','captured'].map(key=>[key,routes[0].pair.campaign.operativeState[id][key]]))}))}));
+ t.diagnostic(JSON.stringify({scenario:'declared original pre-kinetic seed42 clinical screen; actual hostile wounds/miss/capture earn43.7 morale, not a stock campaign victory',controlledForecast:{context:'pure declared nine-cell flat lane, not an executed native shot',chance:controlled},prices:[36,60,36,36],treasury:3032,strategic,shotReceipts,finalMorale:routes.map(route=>route.pair.campaign.operativeState[130].morale),orders:routes.map(route=>route.events.length),finalClock:routes.map(route=>({hour:route.pair.campaign.hour,second:route.pair.campaign.secondOfHour})),custody:[130,100,110].map(id=>({id,...Object.fromEntries(['hp','bleeding','medkits','carriedLoaded','carriedAmmo','captured'].map(key=>[key,routes[0].pair.campaign.operativeState[id][key]]))}))}));
 });

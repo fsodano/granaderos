@@ -1,3 +1,4 @@
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {withCarriedGrenades,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -27,7 +28,7 @@ function cuyRoute(){
  // Hiring, travel, money, stock, inventory and all later custody are real orders.
  s.phase=3;for(const id of ['buenos_aires','cordoba','mendoza'])s.sectors[id].owner='patriot';
  s=hire(s);assert.equal(grenadeOffer(s,rosterOp(s),isSupplied).available,false);
- s=order(s,{type:'travel',sector:'mendoza'});assert.equal(s.location,'mendoza');assert.ok(s.hour>0);assert.equal(isSupplied(s,'mendoza'),true);return s;
+ s=completeTestTravel(s,{sector:'mendoza'});assert.equal(s.location,'mendoza');assert.ok(s.hour>0);assert.equal(isSupplied(s,'mendoza'),true);return s;
 }
 function cursorAction(u,type,options={}){return {type,unitId:u.id,expectedSource:equipmentFingerprint(u,type==='pickupEquipment'?options.sourceId:'cursor'),...(options.destinationId?{expectedDestination:equipmentFingerprint(u,options.destinationId)}:{}),...options};}
 function arrange(s,type,options={},id=110){const u=personal(s,id);return order(s,{...cursorAction(u,type,options),type:'sectorInventory',sector:s.location,operativeId:id,direction:'arrange',kind:'cursor',cursorAction:type});}

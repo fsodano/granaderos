@@ -12,6 +12,7 @@ import {sameCell} from '../game/tactical-space.js';
 import {syncBattleTime} from '../game/time.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {travelLegHours} from '../game/squad-travel.js';
 
 const owned=c=>Object.entries(c.sectors).filter(([,s])=>s.owner==='patriot').map(([id])=>id).sort();
 const assaultHireIds=[128,142,123,115,131,110];
@@ -37,6 +38,8 @@ test('an explicitly funded hired-only squad earns its first expansion from Retir
  // Each initial hire carries one finite service allowance; entry buys nothing.
  const stagingTreasury=c.resources.treasury,carriedBefore=Object.fromEntries(c.squad.map(id=>[id,c.operativeState[id].carriedAmmo]));
  assert.ok(Object.values(carriedBefore).every(count=>count===10));
+ const daylight=(12-c.hour%24-travelLegHours(c.location,'buenos_aires')+24)%24;
+ if(daylight)order({type:'wait',hours:daylight});
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(c.pendingBattle);
  assert.equal(c.hour,12);assert.equal(c.officer,null);assert.deepEqual(owned(c),['retiro']);assert.equal(request.enemies.length,4);

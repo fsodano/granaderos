@@ -4,6 +4,7 @@ import {defaultContentPackage} from '../game/content-package.js';
 import {contractQuote} from '../game/contracts.js';
 import {createBattle,actBattle,presentedActBattle,canSee} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {travelLegHours} from '../game/squad-travel.js';
 
 export const conductActor=b=>b.units.find(unit=>unit.id==='100');
 export const conductWitness=b=>b.units.find(unit=>unit.id==='107');
@@ -28,6 +29,8 @@ export function preparedConductArena({oldPinned=false,hiddenWitness=false,nearby
  }
  for(let i=0;i<6;i++)campaign=conductOrder(campaign,{type:'advanceStrategicTime',seconds:3600});
  assert.deepEqual(campaign.recruited,[107,100]);assert.equal(campaign.resources.treasury,3080);
+ // The late-day witnessed event must still precede the real 30-hour expiry.
+ campaign=conductOrder(campaign,{type:'wait',hours:18-campaign.hour-travelLegHours('retiro','buenos_aires')});
  campaign=conductOrder(campaign,{type:'attack',sector:'buenos_aires'});const request=campaign.pendingBattle,width=48,height=16;
  // Initial prepared arena only. All native people, HP, skills, finite gear,
  // terms and hostile force are retained. This is not an opening victory.

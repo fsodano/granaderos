@@ -67,7 +67,7 @@ test('enemy crew selection and firing use the authored model rather than its ori
 });
 
 test('a real authored emplacement retains finite configured ammunition and names through shots, return and saved reentry',async()=>{
- const {issuedBattery,wonBattery}=await import('./stationed-artillery-fixture.mjs');const d=authored({name:'Pedrero del Litoral',fireAP:12,initialAmmo:2}),issued=issuedBattery(d).pendingBattle.artillery[0];assert.equal(issued.ammo,2);assert.equal(issued.loaded,true);let p=visit(wonBattery(d));const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.ammo,0);assert.equal(gun.loaded,false);assert.equal(gun.id,issued.id);
+ const {issuedBattery,wonBattery}=await import('./stationed-artillery-fixture.mjs');const d=authored({name:'Pedrero del Litoral',fireAP:12,initialAmmo:2}),issued=issuedBattery(d).pendingBattle.artillery[0];assert.equal(issued.ammo,2);assert.equal(issued.loaded,true);let p=visit(wonBattery(d,{reserveCharges:0}));const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.ammo,0);assert.equal(gun.loaded,false);assert.equal(gun.id,issued.id);
  // Actual combat can leave every survivor away from this empty gun. Approach
  // through ordinary movement before testing its finite-ammunition boundary.
  const approach=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.routed&&!u.unconscious&&!u.asleep&&u.stance!=='prone').flatMap(u=>getReachable(p.battle,u).filter(spot=>artilleryContact(p.battle,{...u,...spot},gun)).map(spot=>({u,spot}))).sort((a,b)=>a.spot.cost-b.spot.cost)[0];assert.ok(approach);

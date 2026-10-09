@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,restoreCampaign,serializeCampaign,rosterFor} from '../game/campaign.js';
-import {createBattle,actBattle,endTurn} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
@@ -20,6 +20,7 @@ const report=(s,b)=>({type:s.pendingBattle.exploration?'leaveSector':'battleResu
 const reject=(s,a)=>{const text=serializeCampaign(s),n=dispatchCampaign(s,a);assert.ok(n.lastError);assert.deepEqual({...n,lastError:null},JSON.parse(text));};
 function prepared({attack=false,horses=false,corpseCartridges=0}={}){
  let s=withStoredGear(initialCampaign(),1801);s=order(s,{type:'equip',operativeId:3,itemId:1801,slot:'weapon'});s=order(s,{type:'travel',sector:'buenos_aires'});
+ const daylight=(12-s.hour%24+24)%24;if(daylight)s=order(s,{type:'wait',hours:daylight});
  if(corpseCartridges)s=withCarriedAmmo(s,3,'ammoMusket',corpseCartridges);
  if(horses)for(const id of [3,4,10]){s=withOwnedMount(s,{name:`Caballo ${id}`}).state;s=order(s,{type:'horseAction',order:{type:'assign',horseId:s.horseState.horses.at(-1).id,operativeId:id}});}
  return order(s,attack?{type:'attack',sector:'san_nicolas'}:{type:'visitSector'});
@@ -59,7 +60,7 @@ test('exit reports reject active labels and forged route topology without changi
 
 test('a death after a paid departure leaves one finite body at the destination through save and reentry',()=>{
  let s=prepared({corpseCartridges:10}),b=field(s,{3:{x:9,y:0,hp:16,bleeding:3,bandaged:0,condition:27}});const initialOwnedRounds=stockAndCarriedAmmo(s);assert.equal(initialOwnedRounds,30);b=cross(b,3,'retiro');assert.ok(b.units.find(u=>u.id==='3').departure);b=endTurn(b);assert.equal(b.units.find(u=>u.id==='3').hp,0);s=order(s,report(s,b));assert.equal(s.sectorRemains.retiro.length,1);assert.equal(s.operativeState[3].alive,false);assert.equal(s.sectorRemains.retiro[0].unit.condition,27);
- const bad=structuredClone(s);bad.sectorRemains.retiro[0].unit.ammo=-1;assert.throws(()=>restoreCampaign(serializeCampaign(bad)));s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);const body=b.units.find(u=>u.id==='3');assert.equal(body.hp,0);assert.equal(body.condition,27);assert.equal(body.y,b.height-1);const rounds=body.ammo;assert.equal(rounds,10);assert.equal(stockAndCarriedAmmo(s)+rounds,initialOwnedRounds);b=act(b,{type:'loot',unitId:'4',targetId:'3',item:'inventory:ammo:musket_75',count:rounds});assert.equal(b.units.find(u=>u.id==='3').ammo,0);s=order(s,report(s,b));assert.equal(stockAndCarriedAmmo(s),initialOwnedRounds);assert.deepEqual(s.sectorRemains.retiro,[]);s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.units.filter(u=>u.id==='3').length,1);assert.equal(b.units.find(u=>u.id==='3').condition,27);
+ const bad=structuredClone(s);bad.sectorRemains.retiro[0].unit.ammo=-1;assert.throws(()=>restoreCampaign(serializeCampaign(bad)));s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);const body=b.units.find(u=>u.id==='3');assert.equal(body.hp,0);assert.equal(body.condition,27);assert.equal(body.y,b.height-1);const rounds=body.ammo;assert.equal(rounds,10);assert.equal(stockAndCarriedAmmo(s)+rounds,initialOwnedRounds);const looter=b.units.find(u=>u.id==='4'),beside=getReachable(b,looter).find(p=>Math.max(Math.abs(p.x-body.x),Math.abs(p.y-body.y))===1);assert.ok(beside,'The returning soldier can walk to the arrival body.');b=act(b,{type:'move',unitId:'4',x:beside.x,y:beside.y});b=act(b,{type:'look',unitId:'4',x:body.x,y:body.y});b=act(b,{type:'loot',unitId:'4',targetId:'3',item:'inventory:ammo:musket_75',count:rounds});assert.equal(b.units.find(u=>u.id==='3').ammo,0);s=order(s,report(s,b));assert.equal(stockAndCarriedAmmo(s),initialOwnedRounds);assert.deepEqual(s.sectorRemains.retiro,[]);s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.units.filter(u=>u.id==='3').length,1);assert.equal(b.units.find(u=>u.id==='3').condition,27);
 });
 
 test('a partial exit saves without relocating the pending squad or inventing a legacy departure',()=>{
@@ -122,7 +123,7 @@ test('corpse-inclusive return ledgers restore above the live-unit limit while pr
 test('returning defenders free coastal captives without requiring a change of sector owner',()=>{
  let s=order(initialCampaign(),{type:'recruitCivic',id:100,term:'week'});
  s=order(s,{type:'createSquad',ids:[100],name:'Rescate'});
- s=order(s,{type:'travel',sector:'buenos_aires',queue:true});
+ s=order(s,{type:'travel',sector:'cell-27-27',queue:true});
  s=order(s,{type:'wait',hours:2});
  launchEnemyGroup(s,'coast','retiro',{immediate:true});
  s=order(s,{type:'wait',hours:1});

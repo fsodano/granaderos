@@ -1,3 +1,4 @@
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign as freshCampaign,dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campaign.js';
@@ -17,7 +18,7 @@ import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 // The stock opening acceptance test earns Buenos Aires through real combat.
 function atArsenal(sector='buenos_aires'){
  let s=initialCampaign();if(sector==='cordoba')Object.assign(s.sectors.cordoba,{owner:'patriot',loyalty:65});
- return order(s,{type:'travel',sector});
+ return completeTestTravel(s,{sector});
 }
 function recovered(sector='buenos_aires'){
  const start=atArsenal(sector),before=structuredClone(start),pair=takeFiniteCache(visit(start),sector==='buenos_aires'?4:3,[]),state=leaveFiniteCache(pair);

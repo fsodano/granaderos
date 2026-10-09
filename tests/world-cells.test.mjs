@@ -7,7 +7,7 @@ import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,serializeCampaign,restoreCampaign,isSupplied,operativeLocation,dailyIncome} from '../game/campaign.js';
-import {WORLD_CELLS,worldCell,locationId,worldOwner,cellTravelPlan,cellTravelReason} from '../game/world-cells.js';
+import {WORLD_CELLS,worldCell,locationId,worldOwner,cellTravelPlan,cellTravelReason,cellLegHours} from '../game/world-cells.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {campaignContentReport} from '../game/campaign-content.js';
 import {hiringArrivalReason} from '../game/hiring-arrivals.js';
@@ -19,6 +19,7 @@ import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const ready=()=>order(secureArea(initialCampaign(42),'buenos_aires','ensenada'),{type:'recruitCivic',id:110,term:'week'});
 const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
@@ -91,10 +92,10 @@ test('grid routing uses land, avoids occupied districts and checks winter closur
  const winter={...s,hour:90*24,sectors:{...s.sectors,uspallata:{...s.sectors.uspallata,owner:'patriot'}}};assert.match(cellTravelReason(winter,'uspallata'),/nieve/);assert.equal(cellTravelPlan(winter,'uspallata').path.length,0);
  const summer={...s,sectors:{...s.sectors,uspallata:{...s.sectors.uspallata,owner:'patriot'}}};assert.equal(cellTravelReason(summer,'uspallata'),null);
 });
-test('a contract expiring between cells stops at the last reached cell and saves its departure there',()=>{
- let s=ready();s.contracts[110].expiresAt=3;const path=cellTravelPlan(s,'cell-26-27').path;
- s=travel(s,'cell-26-27');assert.equal(s.location,path[1]);assert.equal(s.squad.length,0);assert.equal(s.hour,3);
- assert.equal(s.operativeState[110].location,path[1]);assert.equal(s.recruited.includes(110),false);assert.equal(saved(s).campaign.location,path[1]);
+test('a contract expiring between cells retains its traveler until the next real arrival and saves departure there',()=>{
+ let s=ready();s.contracts[110].expiresAt=2;const path=cellTravelPlan(s,'cell-26-27').path;
+ s=travel(s,'cell-26-27');assert.equal(s.location,path[2]);assert.equal(s.squad.length,0);assert.equal(s.hour,cellLegHours(path[0],path[1])+cellLegHours(path[1],path[2]));
+ assert.equal(s.operativeState[110].location,path[2]);assert.equal(s.recruited.includes(110),false);assert.equal(saved(s).campaign.location,path[2]);
 });
 test('safe arrivals during a cell march stay at their destination, without joining or moving into a nearby district',()=>{
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;d.characters.find(c=>c.id==='person-111').arrivalHours=2;
@@ -120,7 +121,7 @@ test('cells do not manufacture locality services, income, militia, or supply and
 });
 test('a raid that takes the next town during a leg halts before that town without undoing elapsed time',()=>{
  let s=ready();s.sectors.salta.owner='patriot';s.location='cell-11-7';s.squads[0].location=s.location;s.operativeState[110].location=s.location;s.hour=118;launchEnemyGroup(s,'north','salta',{immediate:true});
- s=travel(s,'salta');assert.equal(s.hour,120);assert.equal(s.sectors.salta.owner,'royalist');assert.equal(s.location,'cell-11-7');assert.match(s.log.map(l=>l.text).join(' '),/se detiene/);assert.ok(saved(s));
+ s=travel(s,'salta');assert.equal(s.hour,120);assert.equal(s.sectors.salta.owner,'royalist');assert.equal(s.location,'cell-11-7');assert.match(s.log.map(l=>l.text).join(' '),/regresa por la etapa recorrida/);assert.equal(s.squads[0].journey,undefined);assert.ok(saved(s));
 });
 test('an assault from an adjacent field keeps its exact origin when retreating and saving',()=>{
  let s=travel(ready(),'cell-21-26');s=order(s,{type:'attack',sector:'san_nicolas'});
@@ -151,7 +152,7 @@ test('forty visited cells fit the existing browser save limit after actual march
  const encoded=encodeSave(s);assert.ok(saveByteLength(encoded)<MAX_SAVE_BYTES,`${saveByteLength(encoded)} bytes`);
  const restored=decodeSave(encoded).campaign;assert.equal(Object.keys(restored.sectorStates).length,40);assert.equal(restored.location,'retiro');
  for(const [id,scene]of Object.entries(restored.sectorStates)){assert.equal(scene.sectorId,id);assert.equal(scene.sourceMapId,id);}
- assert.equal(visit(travel(restored,'cell-8-29')).battle.sourceMapId,'cell-8-29');
+ const returned=completeTestTravel(restored,{sector:'cell-8-29'});assert.equal(returned.location,'cell-8-29');assert.equal(returned.squads[0].journey,undefined);assert.equal(visit(returned).battle.sourceMapId,'cell-8-29');
 });
 test('compressed active and retained cells preserve all terrain fields and accept earlier tile arrays',()=>{
  const pair=visit(travel(ready(),'cell-26-28'));

@@ -8,6 +8,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {addEquipment,takeEquipment} from '../game/equipment.js';
 import {playerKnownCampaign} from '../game/player-known-state.js';
 import {reconcileLogisticsAttention,logisticsEventText} from '../game/logistics-attention.js';
+import {cellTravelPlan} from '../game/world-cells.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const wait=(s,hours=24)=>order(s,{type:'wait',hours});
 const saved=s=>decodeSave(encodeSave(s)).campaign;
@@ -47,8 +48,8 @@ test('a full armory keeps a paid gun until an actual storage slot is available',
 });
 test('blocking travel finishes and leaves an unseen overdue interruption for the next explicit wait',()=>{
  let s=buy(staffed());s.equipmentShipments[0].due=1;s.blockade=true;
- s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,12);assert.equal(s.location,'buenos_aires');assert.equal(s.logisticsNotice,null);assert.deepEqual(s.logisticsAttention.reported,{});
- s=wait(saved(s),24);assert.equal(s.hour,12);assert.equal(s.logisticsNotice.advancedHours,0);assert.equal(s.logisticsNotice.events[0].code,'blockade');
+ const hours=cellTravelPlan(s,'buenos_aires').hours;s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,hours);assert.equal(s.location,'buenos_aires');assert.equal(s.logisticsNotice,null);assert.deepEqual(s.logisticsAttention.reported,{});
+ s=wait(saved(s),24);assert.equal(s.hour,hours);assert.equal(s.logisticsNotice.advancedHours,0);assert.equal(s.logisticsNotice.events[0].code,'blockade');
 });
 test('public interruption notices detach cargo and omit private bindings',()=>{
  const s=wait(overdue()),view=playerKnownCampaign(s);assert.equal(view.logisticsAttention,undefined);assert.equal(view.logisticsNotice.events[0].code,'blockade');assert.equal(view.logisticsNotice.events[0].binding,undefined);view.logisticsNotice.events[0].quantity=100;assert.equal(s.logisticsNotice.events[0].quantity,1);

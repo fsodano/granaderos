@@ -5,6 +5,7 @@ import {sanLorenzoAlly} from '../game/missions.js';
 import {enterSector} from '../game/world.js';
 import {civilianIncidents} from '../game/civilian-harm.js';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 
 test('an essential resident death remains loadable when the campaign diary is already full',()=>{
  let s=order(initialCampaign(8),{type:'recruitCivic',id:110,term:'month'});
@@ -13,7 +14,7 @@ test('an essential resident death remains loadable when the campaign diary is al
  s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;
  s.missionAllies.san_lorenzo=createBattle([sanLorenzoAlly(s)],{width:8,height:8,enemies:[],exploration:true}).units[0];
  for(const id of ['buenos_aires','cordoba','tucuman','salta'])s.sectors[id].owner='patriot';
- s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});
+ s=completeTestTravel(order(s,{type:'travel',sector:'tucuman'}),{sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});
  let p={campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0})};
  const target=()=>p.battle.npcs.find(n=>n.id==='yatasto-san-martin');
  const spot=getReachable(p.battle,'110').find(t=>Math.abs(t.x-target().x)+Math.abs(t.y-target().y)===1);assert.ok(spot);

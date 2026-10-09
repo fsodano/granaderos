@@ -6,13 +6,14 @@ import {defaultProfile} from '../game/character-profile.js';import {enterSector}
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {extractItemQuantity} from '../game/tactical-inventory.js';
 import {stackAmmunitionByType,unitAmmunitionByType} from '../game/physical-ammunition.js';
+import {travelLegHours} from '../game/squad-travel.js';
 const step=(s,a)=>{const n=reduce(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const start=()=>step(secureArea(initialCampaign()),{type:'createOfficer',name:'Elena Valdés',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'guerrilla_tactician',crisis:'rally',specialty:'teacher',temperament:'steady'}});
 const waitTo=(s,h)=>{while(s.hour<h)s=step(s,{type:'wait',hours:Math.min(240,h-s.hour)});return s;};
 const roundTrip=(s)=>{s=step(s,{type:'visitSector'});const b=enterSector(s.pendingBattle,s.sectorStates[s.location]);const restored=decodeSave(encodeSave(s,b));return step(restored.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});};
 test('established-area mixed terms survive field visit, expires, save, and depleted-kit rehire',()=>{
  let s=start();const terms=[[100,'day'],[101,'week'],[102,'month']];for(const[id,term]of terms)s=step(s,{type:'recruitCivic',id,term});s=withStoredGear(s,1803);s=step(s,{type:'equip',operativeId:100,slot:'weapon',itemId:1803});const storedOld=s.armory[1804];
- secureArea(s,['buenos_aires']);s=step(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,12);s=roundTrip(s);assert.deepEqual(s.recruited,[1000,100,101,102]);
+ secureArea(s,['buenos_aires']);s=step(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,travelLegHours('retiro','buenos_aires'));s=roundTrip(s);assert.deepEqual(s.recruited,[1000,100,101,102]);
  s=waitTo(s,23);
  const model=()=>sectorInventoryModel(s,'buenos_aires',rosterFor(s),100);
  const carried=model().personal,weapon=extractItemQuantity(carried,'primary',1).stack,ammunition=unitAmmunitionByType(carried),oldKeys=new Set(model().entries.map(row=>row.key));

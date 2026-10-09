@@ -88,7 +88,11 @@ test('automatic capacity refusal and an authored zero allocation cannot create f
 
 test('actual wounded combat promotion moves through valid city approaches and cannot reuse its old source post',async()=>{
  const {combatMilitia,militiaCombatReturn}=await import('./militia-combat-fixture.mjs'),{visit,saved,leave}=await import('./local-contract-fixture.mjs');
- const prepared=combatMilitia(),fought=militiaCombatReturn(prepared.s,prepared.id);let s=fought.s;const original=structuredClone(s.garrisons.retiro.find(u=>u.id===prepared.id)),treasury=s.resources.treasury,hour=s.hour,second=s.secondOfHour;
+ const prepared=combatMilitia(),fought=militiaCombatReturn(prepared.s,prepared.id,{configureBattle:battle=>{
+  // This compact firing range has a west gate for the actual road return.
+  const gate=battle.tiles.find(t=>t.x===3&&t.y===8);
+  Object.assign(gate,{type:'grass',blocked:false,blocksSight:false,cover:0});
+ }});let s=fought.s;const original=structuredClone(s.garrisons.retiro.find(u=>u.id===prepared.id)),treasury=s.resources.treasury,hour=s.hour,second=s.secondOfHour;
  s=transfer(s,'buenos_aires',1,1);assert.equal(s.resources.treasury,treasury);assert.equal(s.hour,hour);assert.equal(s.secondOfHour,second);assert.equal(s.garrisons.buenos_aires[0].hp,44);assert.equal(s.garrisons.buenos_aires[0].militiaExperience,3);
  let p=visit(save(s));assert.ok(!p.battle.units.some(u=>Number(u.id)===prepared.id));s=leave(p);s=order(restForMarch(s),{type:'travel',sector:'buenos_aires'});p=visit(restForMarch(s));let u=p.battle.units.find(u=>Number(u.id)===prepared.id);
  assert.equal(u.y,0);assert.equal(p.battle.tiles.find(t=>t.x===u.x&&t.y===u.y).blocked,false);assert.equal(u.militiaArrival,undefined);

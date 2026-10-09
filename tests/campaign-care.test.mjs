@@ -50,9 +50,10 @@ test('a critical stable patient needs a doctor and cannot heal through sleep',()
 
 test('travel and deployment require active assignments and cannot grant recovery',()=>{
  let s=medicalTeam();assert.ok(dispatch(s,{type:'travel',sector:'ensenada'}).lastError);assert.ok(dispatch(s,{type:'visitSector'}).lastError);assert.ok(dispatch(s,{type:'attack',sector:'san_nicolas'}).lastError);
- s=assign(s,3,'active');s=assign(s,10,'active');s=order(s,{type:'travel',sector:'ensenada'});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,16);assert.equal(s.operativeState[3].fatigue,84);
+ // The actual rural detour crosses exhaustion before the final destination.
+ s=assign(s,3,'active');s=assign(s,10,'active');s=order(s,{type:'travel',sector:'ensenada',waypoints:['cell-23-29']});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].fatigue,60+s.hour*2);assert.equal(s.operativeState[3].energy,Math.min(20,100-s.operativeState[3].fatigue));assert.equal(s.operativeState[3].sleepCollapsed,true);assert.equal(s.squads[0].journey.reason,'exhausted');
  assert.ok(dispatch(s,{type:'visitSector'}).lastError,'collapse requires recovery before voluntary deployment');
- s=order(s,{type:'wait',hours:8});s=order(s,{type:'setSleep',operativeId:3,asleep:false});s=order(s,{type:'cancelTravel',choice:'stop'});assert.equal(s.location,'buenos_aires','resting does not complete a paused route');const {hp,energy}=s.operativeState[3];
+ s=order(s,{type:'wait',hours:8});s=order(s,{type:'setSleep',operativeId:3,asleep:false});s=order(s,{type:'cancelTravel',choice:'stop'});assert.equal(s.location,'cell-23-29','resting does not complete a paused route');const {hp,energy}=s.operativeState[3];
  s=order(s,{type:'visitSector'});assert.ok(dispatch(s,{type:'assignCare',operativeId:3,assignment:'rest'}).lastError);s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:86400});assert.equal(s.operativeState[3].hp,hp);assert.equal(s.operativeState[3].energy,energy);
 });
 

@@ -57,7 +57,7 @@ test('roads cost less than open terrain and horses require usable mounts for eve
  assert.ok(cellStepHours(road.id)<cellStepHours(field.id));
  const s=preparedCampaign();assert.equal(previewStrategicRoute(s,s.activeSquadId,'buenos_aires','horse').valid,false);
  for(const id of s.squad)s.horseState.horses.push({id:`test-${id}`,assignedTo:id,condition:100,stamina:100,returned:false});
- const ride=previewStrategicRoute(s,s.activeSquadId,'buenos_aires','horse'),walk=previewStrategicRoute(s,s.activeSquadId,'buenos_aires');assert.equal(ride.valid,true);assert.ok(ride.hours<walk.hours);
+ const ride=previewStrategicRoute(s,s.activeSquadId,'ensenada','horse'),walk=previewStrategicRoute(s,s.activeSquadId,'ensenada');assert.equal(ride.valid,true);assert.ok(ride.hours<walk.hours);
  s.horseState.horses[0].stamina=0;assert.equal(previewStrategicRoute(s,s.activeSquadId,'buenos_aires','horse').valid,false);
 });
 test('fourteen-day renewal banks exactly fourteen days and preserves permanent service',()=>{

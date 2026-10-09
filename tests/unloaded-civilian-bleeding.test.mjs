@@ -12,6 +12,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {civilianIncidents} from '../game/civilian-harm.js';
 import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
 import {approachNPC} from './approach-npc.mjs';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 const A='cell-27-27';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const saved=p=>decodeSave(encodeSave(p.campaign,p.battle??null));
@@ -125,7 +126,7 @@ test('a historical command casualty outside the loaded sector preserves the expl
  // Prepared northern chapter and controlled road, not a claimed campaign route.
  s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;
  for(const sector of ['buenos_aires','cordoba','mendoza','tucuman','salta'])s.sectors[sector].owner='patriot';
- s=order(s,{type:'travel',sector:'mendoza'});let p=visit(s);
+ s=completeTestTravel(s,{sector:'mendoza'});let p=visit(s);
  for(let attempts=0;attempts<8;attempts++){
   const target=p.battle.npcs.find(n=>n.id==='san-martin'),u=p.battle.units[0];
   if(Math.hypot(u.x-target.x,u.y-target.y)<=1.5)break;

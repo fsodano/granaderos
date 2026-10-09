@@ -111,7 +111,7 @@ test('old reports show uncertainty and expire without following unseen casualtie
 });
 
 test('moving troops have one dot each on their known route and no stationary duplicate or numbered pin',t=>{
- let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'wait',hours:5});assert.equal(s.lastError,null);
+ let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'advanceStrategicTime',seconds:1800});assert.equal(s.lastError,null);
  const before=structuredClone(s),doc=map(t,s,{onSquad:noop}),travel=doc.querySelector('[data-travel-presence="squad-1"]');
  assert.ok(travel);assert.equal(travel.querySelectorAll('[data-presence-dot="player"]').length,3);assert.equal(dots(doc,'retiro','player').length,0);
  assert.equal(travel.querySelectorAll('text').length,0);assert.match(travel.getAttribute('aria-label'),/3 combatientes en marcha/);assert.ok(doc.querySelector('[data-squad-route]'));

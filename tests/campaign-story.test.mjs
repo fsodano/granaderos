@@ -74,7 +74,12 @@ test('an authored death condition uses an actual tactical death and historical n
 test('a campaign ending during the approach prevents a new battle, and a defeat during travel keeps the last reached locality',()=>{
  for(const mode of ['victory-attack','defeat-attack','defeat-travel']){
   const d=content();d.characters.find(c=>c.id==='person-110').arrivalHours=0;if(mode==='defeat-travel')d.startingTerritory.buenos_aires.owner='patriot';if(mode.startsWith('defeat'))d.campaignStory.failureConditions=[day(2)];
-  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'wait',hours:20});s=order(s,{type:mode.endsWith('travel')?'travel':'attack',sector:'buenos_aires'});assert.equal(s.pendingBattle,null,mode);assert.equal(s.location,'retiro',mode);assert.equal(s.completed,mode.startsWith('victory'));assert.equal(s.defeated,mode.startsWith('defeat'));assert.ok(saved({campaign:s}));
+  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'week'});
+  // Begin half an hour before midnight and advance the real queued route.
+  // The ending occurs inside the first road step, before any sector arrival.
+  s=order(s,{type:'wait',hours:23});s=order(s,{type:'advanceStrategicTime',seconds:1800});
+  s=order(s,{type:mode.endsWith('travel')?'travel':'attack',sector:'buenos_aires',queue:true});
+  s=order(s,{type:'advanceStrategicTime',seconds:1800});assert.equal(s.hour,24,mode);assert.equal(s.secondOfHour??0,0,mode);assert.equal(s.pendingBattle,null,mode);assert.equal(s.location,'retiro',mode);assert.equal(s.completed,mode.startsWith('victory'));assert.equal(s.defeated,mode.startsWith('defeat'));assert.ok(saved({campaign:s}));
  }
 });
 

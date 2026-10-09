@@ -9,6 +9,7 @@ import {syncBattleTime} from '../game/time.js';
 import {createBattle} from '../game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
 import {defaultErrands} from '../game/quest-definitions.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const officer=(oldChoice=false)=>{
  const initial=initialCampaign(8);
@@ -51,7 +52,7 @@ test('direct questions report the current leadership, territorial or regional re
 });
 
 test('replaying a mission report cannot advance the conference a second time',()=>{
- let s=secureArea(officer());s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});let b=approachNPC(enterSector(s.pendingBattle),'1000','yatasto-belgrano');
+ let s=secureArea(officer());s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';s=completeTestTravel(s,{sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});let b=approachNPC(enterSector(s.pendingBattle),'1000','yatasto-belgrano');
  s=talk(s,b,'yatasto-belgrano','mission');s=repeatUnchanged(s,b,'yatasto-belgrano',s.lastConversation.text);
  b=approachNPC(b,'1000','yatasto-san-martin');s=talk(s,b,'yatasto-san-martin','mission');const mission=structuredClone(s.missions);s=repeatUnchanged(s,b,'yatasto-san-martin',s.lastConversation.text);assert.deepEqual(s.missions,mission);assert.notEqual(s.missions.yatasto.stage,'completed');
 });

@@ -56,10 +56,10 @@ test('the requested roster can start a route while the map remains usable for it
 });
 
 test('a saved journey keeps its ETA in the roster and opens only its Destination controls',async t=>{
- let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'wait',hours:5});const m=await mount(t,s);
+ let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'advanceStrategicTime',seconds:1800});s=decodeSave(encodeSave(s)).campaign;const m=await mount(t,s);
  assert.equal(m.doc.querySelector('[role="dialog"]'),null);assert.ok(m.doc.querySelector('[data-squad-route]'));
- assert.equal(m.button('Marchas'),undefined);const trigger=m.button('Destino: Cabral',m.doc.querySelector('.strategy-layout'));assert.equal(trigger.disabled,false);assert.match(trigger.textContent,/19 h/);trigger.focus();await m.click(trigger);
- const menu=m.doc.querySelector('[role="dialog"]');assert.equal(menu.getAttribute('aria-label'),'Destino de Cabral');assert.match(menu.textContent,/Regresar · 5 h/);assert.equal(menu.querySelector('.strategy-panel-tabs'),null);assert.equal(menu.querySelector('.travel-status'),null);assert.deepEqual(m.actions,[]);assert.deepEqual(m.state(),s);
+ assert.equal(m.button('Marchas'),undefined);const trigger=m.button('Destino: Cabral',m.doc.querySelector('.strategy-layout'));assert.equal(trigger.disabled,false);assert.match(trigger.textContent,/4 h 30 min/);trigger.focus();await m.click(trigger);
+ const menu=m.doc.querySelector('[role="dialog"]');assert.equal(menu.getAttribute('aria-label'),'Destino de Cabral');assert.match(menu.textContent,/Regresar · 30 min/);assert.equal(menu.querySelector('.strategy-panel-tabs'),null);assert.equal(menu.querySelector('.travel-status'),null);assert.deepEqual(m.actions,[]);assert.deepEqual(m.state(),s);
  await m.key(menu.querySelector('button[aria-label="Cerrar"]'),'Escape');assert.equal(m.doc.querySelector('[role="dialog"]'),null);assert.equal(m.doc.activeElement,trigger);
 });
 
@@ -83,9 +83,9 @@ test('Destination cancels an unstarted route without spending time or changing p
 });
 
 test('a paid ordinary stop keeps the current leg, its elapsed cost and its actual next arrival',async t=>{
- let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'wait',hours:5});const m=await mount(t,s),elapsed=squadTravelStatus(s.squads[0]).elapsedSeconds;
+ let s=dispatchCampaign(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});s=dispatchCampaign(s,{type:'advanceStrategicTime',seconds:1800});const m=await mount(t,s),elapsed=squadTravelStatus(s.squads[0]).elapsedSeconds;
  await m.click(m.button('Destino: Cabral',m.doc.querySelector('.strategy-layout')));await m.click(m.button('Detenerse en el próximo sector',m.doc.querySelector('.strategic-person-menu')));
- assert.equal(m.state().lastError,null);assert.deepEqual(m.state().squads[0].journey.path,['retiro','buenos_aires']);assert.equal(squadTravelStatus(m.state().squads[0]).elapsedSeconds,elapsed);assert.equal(m.state().hour,s.hour);assert.equal(m.state().location,'retiro');assert.deepEqual(m.state().operativeState,s.operativeState);
+ assert.equal(m.state().lastError,null);assert.deepEqual(m.state().squads[0].journey.path,['retiro','cell-27-29']);assert.equal(squadTravelStatus(m.state().squads[0]).elapsedSeconds,elapsed);assert.equal(m.state().hour,s.hour);assert.equal(m.state().secondOfHour,s.secondOfHour);assert.equal(m.state().location,'retiro');assert.deepEqual(m.state().operativeState,s.operativeState);
 });
 
 test('even one paid second uses Return, preserves its precise progress and disables another cancellation while returning',async t=>{

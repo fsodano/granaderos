@@ -6,6 +6,7 @@ import {careStatus} from '../game/medical-care.js';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {order,saved,visit} from './local-contract-fixture.mjs';
 import {preparedCare,DOCTOR,PATIENT,OTHER_DOCTOR,OTHER_PATIENT} from './medical-care-fixture.mjs';
+import {previewStrategicRoute} from '../game/strategic-route.js';
 const op=(s,id)=>rosterFor(s).find(o=>o.id===id);
 function preparedRest({id=PATIENT,bleeding=0,hp,term='week',twoPairs=false}={}){
  const s=preparedCare({term,twoPairs}),r=s.operativeState[id];Object.assign(r,{energy:8,fatigue:60,bleeding});if(hp!==undefined)r.hp=hp;
@@ -47,5 +48,7 @@ test('contract expiry stops rest and clears partial hours without an extra recov
 });
 
 test('a resting headquarters squad recovers while a different squad makes an actual march',()=>{
- let s=order(preparedRest({id:DOCTOR,twoPairs:true}),{type:'assignCare',id:DOCTOR,assignment:'rest'});s=order(s,{type:'createSquad',name:'Marcha independiente',ids:[OTHER_DOCTOR,OTHER_PATIENT]});s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(s.hour,12);assert.equal(s.operativeState[DOCTOR].energy,100);assert.equal(s.operativeState[DOCTOR].fatigue,0);assert.match(careStatus(s,op(s,DOCTOR),rosterFor(s)),/descanso terminó/);assert.equal(s.squads.find(q=>q.members.includes(DOCTOR)).location,'retiro');assert.equal(s.location,'buenos_aires');assert.ok(saved({campaign:s}));
+ let s=order(preparedRest({id:DOCTOR,twoPairs:true}),{type:'assignCare',id:DOCTOR,assignment:'rest'});s=order(s,{type:'createSquad',name:'Marcha independiente',ids:[OTHER_DOCTOR,OTHER_PATIENT]});
+ // A real rural detour leaves enough elapsed march time for full local rest.
+ const route=previewStrategicRoute(s,s.activeSquadId,'buenos_aires','march',['cell-23-29']);assert.ok(route.valid);assert.ok(route.hours>=12);s=order(s,{...route.action,queue:false});assert.equal(s.hour,route.hours);assert.equal(s.operativeState[DOCTOR].energy,100);assert.equal(s.operativeState[DOCTOR].fatigue,0);assert.match(careStatus(s,op(s,DOCTOR),rosterFor(s)),/descanso terminó/);assert.equal(s.squads.find(q=>q.members.includes(DOCTOR)).location,'retiro');assert.equal(s.location,'buenos_aires');assert.ok(saved({campaign:s}));
 });

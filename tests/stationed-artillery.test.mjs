@@ -8,11 +8,12 @@ import {actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
 import {issuedBattery,wonBattery,fireStationed,exhaustStationed,wakeBatteryCrew} from './stationed-artillery-fixture.mjs';
 import {fight} from './opening-driver.mjs';
-import {northernCombatOrder} from './northern-route.mjs';
+import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {propBlocksAt} from '../game/props.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 
 test('declared finite stock is issued once and real victory retains the same owned physical cannon',()=>{
  const s=issuedBattery();assert.equal(s.armory.swivel,0);assert.deepEqual(deployedArtillery(s),[]);assert.equal(s.pendingBattle.artillery.length,1);assert.equal(s.pendingBattle.artillery[0].id,'piece-1');assert.equal(ownedArtilleryCount(s),1);
@@ -36,9 +37,9 @@ test('actual withdrawal leaves the issued gun to the occupation and a real retur
  p=secondaryRetreat(p);s=order(p.campaign,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});s=saved({campaign:s}).campaign;assert.equal(s.armory.swivel,0);assert.equal(ownedArtilleryCount(s),0);assert.equal(s.sectorStates.san_nicolas.artillery[0].side,'enemy');
  for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'rest'});s=advanceCampaignHours(s,10);for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
  s=order(s,{type:'attack',sector:'san_nicolas'});const previous=s.sectorStates.san_nicolas,request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
- // Coordinate ordinary cover, body-region shots and aid against the unchanged
- // saved force. The abandoned gun remains enemy-owned until actual victory.
- const result=fight(request,previous,{controller:northernCombatOrder});assert.equal(result.battle.status,'victory');
+ // Coordinate short infantry bounds, cover, visible close attacks and aid
+ // against the unchanged saved force. The abandoned gun stays enemy-owned.
+ const result=fight(request,previous,{controller:hiredAssaultOrder});assert.equal(result.battle.status,'victory');
  const replay=result.orders.reduce((battle,action)=>{const next=action.type==='endTurn'?endTurn(battle):actBattle(battle,action);assert.equal(next.lastError,null);return next;},enterSector(request,previous));assert.deepEqual(replay,result.battle);
  p=saved(sync({campaign:s,battle:result.battle}));s=saved({campaign:order(p.campaign,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;
  const recovered=s.sectorStates.san_nicolas.artillery[0];assert.equal(recovered.side,'player');assert.equal(recovered.id,gun.id);assert.ok(recovered.ammo+Number(recovered.loaded)<=gun.ammo+Number(gun.loaded));for(const key of ['type','x','y','loaded','ammo'])assert.deepEqual(recovered[key],result.battle.artillery.find(g=>g.id===gun.id)[key],key);assert.equal(ownedArtilleryCount(s),1);
@@ -81,6 +82,6 @@ test('the separate Yatasto conference does not copy stationed town artillery int
  // Prepared northern story boundary, reusing the actual issued, fired and
  // returned piece. This checks scene separation, not a northern conquest route.
  let s=leave(fireStationed(visit(wonBattery())));s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';
- const town=structuredClone(s.sectorStates.san_nicolas);s.sectorStates.san_nicolas.artillery=[];town.sectorId='tucuman';for(const e of town.returnLedger?.entries??[])e.sector='tucuman';s.sectorStates.tucuman=town;s=order(s,{type:'travel',sector:'tucuman'});s=wakeBatteryCrew(s);s=saved({campaign:s}).campaign;const before=structuredClone(s.sectorStates.tucuman.artillery);
+ const town=structuredClone(s.sectorStates.san_nicolas);s.sectorStates.san_nicolas.artillery=[];town.sectorId='tucuman';for(const e of town.returnLedger?.entries??[])e.sector='tucuman';s.sectorStates.tucuman=town;s=completeTestTravel(s,{sector:'tucuman'});s=wakeBatteryCrew(s);s=saved({campaign:s}).campaign;const before=structuredClone(s.sectorStates.tucuman.artillery);
  s=order(s,{type:'visitMission',mission:'yatasto'});let p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour})});assert.deepEqual(p.battle.artillery,[]);assert.deepEqual(p.campaign.sectorStates.tucuman.artillery,before);s=leave(p);p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);for(const key of ['id','loaded','ammo','x','y'])assert.equal(p.battle.artillery[0][key],before[0][key]);
 });

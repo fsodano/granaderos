@@ -11,6 +11,7 @@ import {battleFromRequest,prepareCampaignBattle} from '../game/battle-handoff.js
 import {encodeSave,decodeSave} from '../game/save.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {makeOutfit} from '../game/outfits.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 
 const order=(state,action)=>{const next=dispatchCampaign(state,action);assert.equal(next.lastError,null,next.lastError);return next;};
 const act=(state,action)=>{const next=actBattle(state,{unitId:'p',...action});assert.equal(next.lastError,null,next.lastError);return next;};
@@ -90,11 +91,11 @@ test('sector visits, assaults and defensive encounters issue regional weather th
 test('Yatasto and San Lorenzo retain their regional weather on their real mission deployment paths',()=>{
  let north=initialCampaign();north.phase=2;north.flags.sanLorenzo=true;
  for(const id of ['cordoba','tucuman','salta'])north.sectors[id].owner='patriot';
- north=order(north,{type:'travel',sector:'tucuman'});
+ north=completeTestTravel(north,{sector:'tucuman'});assert.equal(north.location,'tucuman');assert.equal(north.squads[0].journey,undefined);
  const conference=assertDeployment(order(north,{type:'visitMission',mission:'yatasto'}),'tucuman','yatasto');
  assert.equal(conference.battle.sceneId,'yatasto');assert.equal(regionalClimate(conference.battle.sectorId).id,regionalClimate('yatasto').id);
  let coast=initialCampaign();coast.phase=1;coast.flags.academy=true;coast.sectors.san_nicolas.owner='patriot';
- coast=order(coast,{type:'travel',sector:'san_nicolas'});
+ coast=completeTestTravel(coast,{sector:'san_nicolas'});assert.equal(coast.location,'san_nicolas');assert.equal(coast.squads[0].journey,undefined);
  const combat=assertDeployment(order(coast,{type:'attack',sector:'san_lorenzo'}),'san_lorenzo');
  assert.ok(combat.battle.units.some(u=>u.missionAlly&&u.id==='57'));
 });

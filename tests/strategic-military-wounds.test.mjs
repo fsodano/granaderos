@@ -18,7 +18,7 @@ test('optional strategic bleeding rate keeps legacy content identity and rejects
 });
 
 test('actual military wounds consume configured hourly health through waits and saves without a daily heal',()=>{
- let s=woundedService({term:'week',careRules:rules(50)}),id=localId(s);const before=structuredClone(current(s)),loss=Math.ceil(before.bleeding/2);assert.ok(loss>0);
+ let s=woundedService({term:'week',careRules:rules(50),contactHour:20}),id=localId(s);const before=structuredClone(current(s)),loss=Math.ceil(before.bleeding/2);assert.ok(loss>0);
  const batch=order(s,{type:'wait',hours:3});for(let i=0;i<3;i++)s=order(saved({campaign:s}).campaign,{type:'wait',hours:1});assert.deepEqual(current(s),current(batch));assert.equal(current(s).hp,before.hp-loss*3);assert.equal(current(s).torches,before.torches);assert.equal(current(s).bleeding,before.bleeding);
  const toMidnight=24-s.hour%24;assert.ok(current(s).hp>loss*toMidnight);{const hp=current(s).hp;s=order(s,{type:'wait',hours:toMidnight});assert.equal(current(s).hp,hp-loss*toMidnight,'midnight does not heal an open wound');}
  assert.match(careStatus(s,rosterFor(s).find(o=>o.id===id),rosterFor(s)),/Hemorragia/);assert.ok(saved({campaign:s}));

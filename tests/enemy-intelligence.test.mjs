@@ -45,9 +45,9 @@ test('an undefended occupied town sends a presence report without a troop count 
  assert.equal(s.blockade,true);const r=enemyIntelligenceReports(s)[0];assert.equal(r.sector,'buenos_aires');assert.equal(r.source,'occupation');assert.equal(r.strength,null);save(s);
 });
 test('direct travel cannot keep scouting the departure sector during the march',()=>{
- let s=initialCampaign();const g=launchEnemyGroup(s,'coast','retiro');s=order(s,{type:'travel',sector:'buenos_aires'});
- assert.equal(s.hour,12);assert.equal(s.location,'buenos_aires');const r=enemyIntelligenceReports(s).find(r=>r.id===g.id);
- assert.equal(r.source,'occupation');assert.equal(r.observedAt,8);assert.equal(r.ageHours,4);assert.equal(r.strength,null);assert.equal(r.stale,true);save(s);
+ let s=initialCampaign();const g=launchEnemyGroup(s,'coast','retiro');s=order(s,{type:'wait',hours:7});s=order(s,{type:'travel',sector:'buenos_aires'});
+ assert.equal(s.hour,9);assert.equal(s.location,'buenos_aires');const r=enemyIntelligenceReports(s).find(r=>r.id===g.id);
+ assert.equal(r.source,'occupation');assert.equal(r.observedAt,8);assert.equal(r.ageHours,1);assert.equal(r.strength,null);assert.equal(r.stale,true);save(s);
 });
 test('expired reports do not track an unseen force; returning scouts can verify an empty last position',()=>{
  let s=frontier();s.sectors.tucuman.militia=[0,0,0];s.hour+=73;assert.deepEqual(enemyIntelligenceReports(s),[]);refreshEnemyIntelligence(s);assert.deepEqual(s.enemyIntelligence.reports,{});

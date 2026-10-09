@@ -30,7 +30,7 @@ test('a real 600-second Buenos Aires wait cannot exhaust unseen enemy patrols',(
   assert.ok(rested.units.filter(v=>v.side==='player').every(v=>!canSee(rested,v,u)&&!canSee(rested,u,v)));
  }
  for(const u of rested.units){const original=b.units.find(v=>v.id===u.id);for(const key of ['hp','ap','loaded','ammo','medkits','fatigue'])assert.equal(u[key],original[key],`${u.id}: ${key}`);}
- assert.ok(rested.units.filter(u=>u.side==='player').every(u=>u.energy===76));
+ assert.ok(rested.units.filter(u=>u.side==='player').every(u=>u.energy===maximumEnergy(u)));
  // An equal amount of ordinary ambient time gives guards the same movement
  // and recovery. The player's wait does not grant a special enemy refill.
  let stepped=b;for(let i=0;i<100;i++)stepped=tick(stepped);
