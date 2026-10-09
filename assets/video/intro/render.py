@@ -166,6 +166,13 @@ def validate_sources() -> tuple[dict, dict, list[dict]]:
     revision = captures.get("commit")
     if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-fA-F]{40}", revision):
         raise SystemExit("Capture manifest must identify a complete 40-character Git revision.")
+    if captures.get("schema", 1) >= 2:
+        build = captures.get("build", {})
+        source = build.get("source", "")
+        if not re.fullmatch(r"[0-9a-f]{64}", source) or build.get("revision") != revision or build.get("id") != source[:12]:
+            raise SystemExit("Capture manifest must bind the recorded game revision to its actual source digest.")
+        if captures.get("captureScriptSha256") != sha256(HERE / "capture.mjs"):
+            raise SystemExit("Capture script changed after the recorded game session.")
     if not artwork.get("prompt") or not artwork.get("kind"):
         raise SystemExit("Artwork metadata must include its generation prompt and source kind.")
     records = captures.get("clips", [])
@@ -181,6 +188,15 @@ def validate_sources() -> tuple[dict, dict, list[dict]]:
         if len(matches) != 1:
             raise SystemExit(f"Capture manifest must identify {path.name} exactly once.")
         record = matches[0]
+        if captures.get("schema", 1) >= 2:
+            evidence = record.get("evidence", [])
+            hashes = record.get("evidenceSha256", {})
+            if not evidence or set(evidence) != set(hashes):
+                raise SystemExit(f"Capture evidence must identify every screenshot for {path.name}.")
+            for reference in evidence:
+                screenshot = ROOT / reference
+                if not screenshot.is_file() or sha256(screenshot) != hashes[reference]:
+                    raise SystemExit(f"Capture evidence hash does not match {reference}.")
         digest = sha256(path)
         if not record.get("sha256") or record["sha256"] != digest:
             raise SystemExit(f"Capture manifest hash does not match {path.name}.")
@@ -432,6 +448,7 @@ def write_metadata(captures: dict, artwork: dict, verified: list[dict], encoded:
         "duration_seconds": DURATION, "resolution": [WIDTH, HEIGHT], "fps": FPS,
         "rendered_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "capture_date": captures.get("date"), "captured_revision": captures.get("commit"),
+        "captured_source_sha256": captures.get("build", {}).get("source"),
         "capture_origin": captures.get("origin"),
         "visuals": {
             "opening_and_closing": "AI-generated historical illustration; an artistic interpretation, not archival footage or gameplay.",
