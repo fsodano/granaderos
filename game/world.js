@@ -158,7 +158,8 @@ export function enterSector(request,previous=null,{placement=false}={}){
      arriving.push(unit);continue;
    }
    if(unit.entryEdge!==undefined||unit.entryAnchor!==undefined)throw Error('La posición de entrada necesita un traslado explícito.');
-   const prior=unit.entryReason==='resident'?previous?.units.find(v=>v.side==='player'&&v.id===unit.id&&sourceRecord(previous,v,request.sector)):null;
+   const prior=unit.entryReason==='resident'?(unit.residentPosition??previous?.units.find(v=>v.side==='player'&&v.id===unit.id&&sourceRecord(previous,v,request.sector))):null;
+   delete unit.residentPosition;
    Object.assign(unit,reserve(prior??unit));
  }
  if(arriving.length){
