@@ -1,0 +1,36 @@
+{
+  "readOnly": true,
+  "candidateWritten": false,
+  "battleRevealedRooms": [
+    "floor-review-house:interior",
+    "floor-review-house:upper-office"
+  ],
+  "roomFloors": [
+    {
+      "material": "world:terrain-wood",
+      "vertices": 174,
+      "planes": [
+        3.00600004196167
+      ],
+      "roomFloorJoints": true,
+      "polygonOffset": false,
+      "polygonOffsetFactor": 0,
+      "polygonOffsetUnits": 0
+    }
+  ],
+  "upperDeck": [
+    {
+      "material": "world:upper-wood",
+      "vertices": 1908,
+      "planes": [
+        2.799999952316284,
+        3
+      ],
+      "roomFloorJoints": false,
+      "polygonOffset": true,
+      "polygonOffsetFactor": -1,
+      "polygonOffsetUnits": -1
+    }
+  ],
+  "finding": "Room wood finish is generated at3.006; retained walking deck top is3.0 with unchanged upper-wood material and depth offset. The new room plane is nominally above the retained deck; actual unchanged upper views do not establish a visible new finish."
+}

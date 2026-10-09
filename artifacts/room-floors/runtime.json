@@ -1,0 +1,45 @@
+{
+  "nodeVersion": "v25.9.0",
+  "nodePath": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "npmVersion": "11.12.1",
+  "npmPath": "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+  "pythonVersion": "3.9.6",
+  "pythonPath": "/Library/Developer/CommandLineTools/usr/bin/python3",
+  "genericPythonPath": "/usr/bin/python3",
+  "numpyVersion": "1.26.4",
+  "numpyPath": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy/__init__.py",
+  "pillowVersion": "11.2.1",
+  "pillowPath": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL/__init__.py",
+  "environment": {
+    "PATH": "/usr/bin:/bin:/opt/homebrew/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/fsodano/.dotnet:/Users/fsodano/.dotnet/tools:/Users/fsodano/.bun/bin:/Users/fsodano/.local/bin:/Users/fsodano/.opencode/bin:/opt/homebrew/opt/openjdk/bin:/opt/homebrew/opt/openjdk/bin:/Users/fsodano/.nvm/versions/node/v25.1.0/bin:/opt/homebrew/opt/openjdk/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:~/.dotnet/tools:/opt/homebrew/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/fsodano/.codex/tmp/arg0/codex-arg0iwt5YJ:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/fsodano/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/fsodano/.dotnet:/Users/fsodano/.dotnet/tools:/Users/fsodano/.bun/bin:/Users/fsodano/Library/pnpm:/Users/fsodano/.local/bin:/Users/fsodano/.opencode/bin:/opt/homebrew/opt/openjdk/bin:/Users/fsodano/.nvm/versions/node/v25.1.0/bin:/Users/fsodano/.cargo/bin:/Applications/Obsidian.app/Contents/MacOS:/usr/local/share/dotnet/x64:./node_modules/.bin:/Users/fsodano/.lmstudio/bin:/Users/fsodano/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS:/Applications/Obsidian.app/Contents/MacOS:/usr/local/share/dotnet/x64:./node_modules/.bin:/Users/fsodano/.lmstudio/bin",
+    "GRANADEROS_TEST_CONCURRENCY": "4",
+    "GRANADEROS_BASE_PATH": null,
+    "NODE_OPTIONS": null,
+    "NODE_ENV": null,
+    "CI": null,
+    "TZ": null,
+    "UV_THREADPOOL_SIZE": null
+  },
+  "executables": {
+    "node": {
+      "path": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "sha256": "32e234a5b6bec67d72a016f2baadf7fadf3afd328470b395b73af473fdee0d85",
+      "bytes": 68384
+    },
+    "npm": {
+      "path": "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+      "sha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7",
+      "bytes": 54
+    },
+    "python3": {
+      "path": "/usr/bin/python3",
+      "sha256": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9",
+      "bytes": 118640
+    },
+    "git": {
+      "path": "/usr/bin/git",
+      "sha256": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9",
+      "bytes": 118640
+    }
+  }
+}

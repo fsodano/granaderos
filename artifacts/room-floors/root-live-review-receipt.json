@@ -1,0 +1,202 @@
+{
+  "piece": 18,
+  "status": "Root live form accepted; final gates passed and source/runtime/production inputs sealed.",
+  "source": "755475a0cd6e40c218f25b35802d00eabca94a35e75ccb176b086cc7f4c2f953",
+  "rootReportedGroundFinish": "Plank joints and entrance wear are clearer at 88; quiet at 44.",
+  "rootReportedUpperScope": "Upper deck and hatch appearance preserved.",
+  "rootReportedMovement": "Subir; mouse G7 on the upper level; keyboard Enter G8; Bajar; final ground G8. The observer was selected by mouse G8, then the Granadero HUD was selected before the legitimate keyboard order.",
+  "movementPhotos": [
+    "18-after-climb-playback.jpg",
+    "18-after-upper-climbed.jpg",
+    "18-after-upper-walk.jpg",
+    "18-after-descent-playback.jpg",
+    "18-after-descent-complete.jpg"
+  ],
+  "pairedCounters": {
+    "house": {
+      "close": {
+        "before": {
+          "data-draw-calls": "85",
+          "data-triangles": "126736",
+          "data-geometries": "102",
+          "data-textures": "28",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "after": {
+          "data-draw-calls": "85",
+          "data-triangles": "126736",
+          "data-geometries": "102",
+          "data-textures": "28",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.0",
+        "settledFpsAfter": "120.0"
+      },
+      "game": {
+        "before": {
+          "data-draw-calls": "114",
+          "data-triangles": "71128",
+          "data-geometries": "109",
+          "data-textures": "43",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "after": {
+          "data-draw-calls": "114",
+          "data-triangles": "71128",
+          "data-geometries": "109",
+          "data-textures": "43",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.0",
+        "settledFpsAfter": "119.9"
+      }
+    },
+    "upper": {
+      "close": {
+        "before": {
+          "data-draw-calls": "81",
+          "data-triangles": "149388",
+          "data-geometries": "67",
+          "data-textures": "41",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "after": {
+          "data-draw-calls": "81",
+          "data-triangles": "149388",
+          "data-geometries": "67",
+          "data-textures": "41",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.2",
+        "settledFpsAfter": "120.0"
+      },
+      "game": {
+        "before": {
+          "data-draw-calls": "86",
+          "data-triangles": "71819",
+          "data-geometries": "81",
+          "data-textures": "71",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "after": {
+          "data-draw-calls": "86",
+          "data-triangles": "71819",
+          "data-geometries": "81",
+          "data-textures": "71",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.1",
+        "settledFpsAfter": "120.0"
+      }
+    }
+  },
+  "errors": [],
+  "photosAndMetrics": {
+    "18-before-house-44.jpg": {
+      "sha256": "2d6bfd7a0e451eff9c1d0f7ac8b0bbcf3e045232ff5c49e7c190ded6af02c1e9",
+      "bytes": 89593
+    },
+    "18-before-house-88.jpg": {
+      "sha256": "c85235ca89aa996bfe29984aa9019a5c46bc239f5e362a9e70813aaa0655530b",
+      "bytes": 99794
+    },
+    "18-before-upper-44.jpg": {
+      "sha256": "559e494974df139691da309c7fb0eb8719e9dd35d7da990ae698f8d79158622b",
+      "bytes": 114138
+    },
+    "18-before-upper-88.jpg": {
+      "sha256": "48fa546d9a671ec06a8f3c2c07f69e152c3b3830c2c63ec4fd162cea829b2573",
+      "bytes": 125939
+    },
+    "18-after-house-44.jpg": {
+      "sha256": "1a6872fe272575af619ce7ccd64af6d8c80d70f0a76831bb3ef7ec80b75bb78b",
+      "bytes": 89820
+    },
+    "18-after-house-88.jpg": {
+      "sha256": "77fbe06218ec60f8a4f196903d2dcbd46d272eff86f21ac8713a7415e1f9a571",
+      "bytes": 99977
+    },
+    "18-after-upper-44.jpg": {
+      "sha256": "559e494974df139691da309c7fb0eb8719e9dd35d7da990ae698f8d79158622b",
+      "bytes": 114138
+    },
+    "18-after-upper-88.jpg": {
+      "sha256": "33d7cae56d0793cd1036c9641cdefa207223550da65ed29a558869121be449e9",
+      "bytes": 125931
+    },
+    "18-after-climb-playback.jpg": {
+      "sha256": "84c386c2c1d0523972a8b4625b9f1f7390ef0a1faaada2cc0087453d1078626a",
+      "bytes": 119018
+    },
+    "18-after-upper-climbed.jpg": {
+      "sha256": "6b04fb417027faa7d04bfff05da8fa8fe2bddbf051708088ef8b0c20c2e2d315",
+      "bytes": 111910
+    },
+    "18-after-upper-walk.jpg": {
+      "sha256": "9c0cbe79475a3098c543a82861c5f252af6c9dcd17ddb0d398c33980674d5204",
+      "bytes": 110818
+    },
+    "18-after-descent-playback.jpg": {
+      "sha256": "b983c91bb24e0b2bc51c1108b22b256526fa8de248339b8a27acb23d40a407d2",
+      "bytes": 124250
+    },
+    "18-after-descent-complete.jpg": {
+      "sha256": "71de8a2972c2b6e076f975c8b006a05c129d1ce0d489eba66a8da33c643bb7e1",
+      "bytes": 125675
+    },
+    "18-before-house-metrics.json": {
+      "sha256": "61a497467d3092d2deee4be930f886c4315cf2e6fb31e82b4cab5b7b7e0bd9f0",
+      "bytes": 811
+    },
+    "18-before-upper-metrics.json": {
+      "sha256": "fece7958ef78faecbc785c70e636d3724717d9504e29577479bab13db2dd9310",
+      "bytes": 808
+    },
+    "18-after-house-metrics.json": {
+      "sha256": "6bf76b1d84a8830f5efcc6be6a112aafa6929d1b0c9696b397e0f17731012c5c",
+      "bytes": 811
+    },
+    "18-after-upper-metrics.json": {
+      "sha256": "750998aab9222712fa0957836065f79f5bebdb0c5f5312dc89b490bc2d183aca",
+      "bytes": 808
+    },
+    "18-movement-metrics.json": {
+      "sha256": "d77a9bac26a3332c358c962bcbfd2be92a77046002c857e2380aee90f2c01b51",
+      "bytes": 567
+    }
+  },
+  "costs": "geometry-shader-costs.json",
+  "materialPlaneProof": "upper-floor-material-plane-proof.json",
+  "copiedReadOnly": true,
+  "rootWritten": false,
+  "browserUsed": false,
+  "finalGateReceipt": "gate-receipt.json"
+}

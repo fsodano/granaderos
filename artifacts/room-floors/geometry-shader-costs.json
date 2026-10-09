@@ -1,0 +1,205 @@
+{
+  "retainedAuthorFacts": "/tmp/granaderos-future-pieces-integration-evidence/reviews/piece18-room-floors/evidence/facts.json",
+  "retainedAuthorFactsSha256": "885a9848c55c83b872dd85475d5d153ec12085f034690f60836aec8ce5fe4642",
+  "geometry": {
+    "addedTriangles": 0,
+    "addedFinalAttributeBytes": 0,
+    "addedBuildingFloorBatches": 0,
+    "newGeometryCacheEntries": 0,
+    "temporaryColourAttributeBytesPerRect": 72
+  },
+  "textures": {
+    "addedTextures": 0,
+    "addedTextureBytes": 0,
+    "addedTextureLookupsPerFragment": 0,
+    "woodBytes": 27124,
+    "woodSha256": "2489ffd744984a966cbd45cb9214c4f41bdbb77398fc67b890b04d7393409bbc",
+    "allNineMapsByteExactCompilerCheck": true
+  },
+  "materialAndShader": {
+    "roomWoodCachedVariantMaximum": 1,
+    "additionalRoomWoodProgramVariantMaximum": 1,
+    "variantReplacesOldRoomWoodWithinBuildingBatch": true,
+    "globalExtraMaterialOnlyIfOrdinaryTerrainWoodAlsoPresent": true,
+    "newVaryings": 0,
+    "newUniforms": 0,
+    "addedWoodFragmentWork": "5 step comparisons, 2 fract, 1 floor, 1 mod, 1 abs, 1 fwidth, 1 max, 2 min, 1 clamp and bounded scalar arithmetic; inside existing USE_MAP branch. Root reviewed browser compilation with visible ground joints and no errors. Driver timings are not measured."
+  },
+  "buildingRebuildCPU": "6 retained corner samples per rectangle. Each uses4 common tile-grid samples,2 sines and a bounded loop over this room's admitted adjacent doors. Computed only when the existing building cache rebuilds.",
+  "authorNativeProbes": [
+    {
+      "id": "authored-office",
+      "trianglesBefore": 2794,
+      "trianglesAfter": 2794,
+      "batchesBefore": 14,
+      "batchesAfter": 14,
+      "finalAttributeBytesBefore": 368808,
+      "finalAttributeBytesAfter": 368808,
+      "sampledRoomShadeRange": [
+        0.9515246152877808,
+        1.0873409509658813
+      ]
+    },
+    {
+      "id": "open-climb",
+      "trianglesBefore": 5830,
+      "trianglesAfter": 5830,
+      "batchesBefore": 30,
+      "batchesAfter": 30,
+      "finalAttributeBytesBefore": 769560,
+      "finalAttributeBytesAfter": 769560,
+      "sampledRoomShadeRange": [
+        0.9513261914253235,
+        1.0058399438858032
+      ]
+    },
+    {
+      "id": "joint-detail",
+      "trianglesBefore": 8,
+      "trianglesAfter": 8,
+      "batchesBefore": 1,
+      "batchesAfter": 1,
+      "finalAttributeBytesBefore": 1056,
+      "finalAttributeBytesAfter": 1056,
+      "sampledRoomShadeRange": [
+        0.9728810787200928,
+        1.0645629167556763
+      ]
+    }
+  ],
+  "authorNativeProjection": [
+    {
+      "bucket": 44,
+      "pixelsPerMetre": 25,
+      "jointPhysicalWidthMetres": 0.028,
+      "jointPerpendicularPixels": 0.45023446049629123,
+      "plankEndSegmentPixelsRange": [
+        3.5728872580812276,
+        5.160837150561774
+      ],
+      "boardLengthPixels": 32.75146653241126,
+      "maxAAJointCoverage": 0.33464821167207176
+    },
+    {
+      "bucket": 88,
+      "pixelsPerMetre": 50,
+      "jointPhysicalWidthMetres": 0.028,
+      "jointPerpendicularPixels": 0.9004689209925825,
+      "plankEndSegmentPixelsRange": [
+        7.145774516162455,
+        10.321674301123547
+      ],
+      "boardLengthPixels": 65.50293306482251,
+      "maxAAJointCoverage": 0.6692964233441435
+    }
+  ],
+  "currentRootLiveCounters": {
+    "house": {
+      "close": {
+        "before": {
+          "data-draw-calls": "85",
+          "data-triangles": "126736",
+          "data-geometries": "102",
+          "data-textures": "28",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "after": {
+          "data-draw-calls": "85",
+          "data-triangles": "126736",
+          "data-geometries": "102",
+          "data-textures": "28",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.0",
+        "settledFpsAfter": "120.0"
+      },
+      "game": {
+        "before": {
+          "data-draw-calls": "114",
+          "data-triangles": "71128",
+          "data-geometries": "109",
+          "data-textures": "43",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "after": {
+          "data-draw-calls": "114",
+          "data-triangles": "71128",
+          "data-geometries": "109",
+          "data-textures": "43",
+          "data-active-actors": "1",
+          "data-loaded-actors": "1",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.0",
+        "settledFpsAfter": "119.9"
+      }
+    },
+    "upper": {
+      "close": {
+        "before": {
+          "data-draw-calls": "81",
+          "data-triangles": "149388",
+          "data-geometries": "67",
+          "data-textures": "41",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "after": {
+          "data-draw-calls": "81",
+          "data-triangles": "149388",
+          "data-geometries": "67",
+          "data-textures": "41",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "1"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.2",
+        "settledFpsAfter": "120.0"
+      },
+      "game": {
+        "before": {
+          "data-draw-calls": "86",
+          "data-triangles": "71819",
+          "data-geometries": "81",
+          "data-textures": "71",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "after": {
+          "data-draw-calls": "86",
+          "data-triangles": "71819",
+          "data-geometries": "81",
+          "data-textures": "71",
+          "data-active-actors": "2",
+          "data-loaded-actors": "2",
+          "data-pending-actors": "0",
+          "data-lod": "2"
+        },
+        "exact": true,
+        "settledFpsBefore": "120.1",
+        "settledFpsAfter": "120.0"
+      }
+    }
+  },
+  "shaderCompileReview": "Root accepted the actual browser views with no errors. Ground joints and entrance wear are clearer at 88 and quiet at 44.",
+  "upperViewScope": "Retained upper deck/slab/hatch appearance; the separate upper-wood shader is unchanged. Upper floor views prove preservation and route compatibility.",
+  "performanceScope": "Short settled display FPS readings; no GPU time or sustained performance measurement."
+}

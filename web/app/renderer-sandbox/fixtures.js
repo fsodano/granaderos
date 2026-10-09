@@ -1,3 +1,4 @@
+import {UPPER_OFFICE_SCENARIO,createUpperOfficeBattle} from './upper-office-fixture.js';
 import {VARIED_ROOF_CLIMB_SCENARIO,createVariedRoofClimbBattle} from './varied-roof-climb-fixture.js';
 import {createBattle,actBattle} from '../../../game/tactical.js';
 import {buildSectorMap} from '../../../game/maps.js';
@@ -33,6 +34,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   FOUR_BORE_LOADING_SCENARIO,
   {id:'mounted',label:'Montura y azotea',help:'Jinete: caminar, correr y montar/desmontar. Escaladora: subir por el acceso junto a la casa. Vigía: moverse por la azotea. La puerta está abierta.'},
   CLIMB_HATCH_SCENARIO,
+  UPPER_OFFICE_SCENARIO,
   {id:'night',label:'Noche',help:'Las fogatas iluminan los blancos. El fusil ya disparó y dejó humo: puedes recargarlo. Todos llevan antorchas; equipa una para añadir luz.'},
   {id:'performance24',label:'24 personajes',help:'Sector abierto para comprobar movimiento y variedad con 24 personajes.'},
   {id:'performance60',label:'60 personajes',help:'Sector abierto para comprobar movimiento y variedad con 60 personajes.'},
@@ -193,6 +195,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id==='combat'||id==='night')return combat(id==='night');
   if(id==='mounted')return mounted();
   if(id==='climb-hatches')return createClimbHatchBattle();
+  if(id==='upper-office')return createUpperOfficeBattle();
   if(id==='tucuman')return performance(8,true);
   if(['performance24','performance60','performance100'].includes(id))return performance(Number(id.replace('performance','')));
   throw new Error(`Unknown renderer scenario: ${id}`);

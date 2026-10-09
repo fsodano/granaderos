@@ -1,0 +1,257 @@
+{
+  "piece": 18,
+  "candidate": "/tmp/granaderos-piece18-final-candidate.phevbpzz",
+  "commit": "47474fe904ee92edae8db56be1e0560048c6a9fe",
+  "productionIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "755475a0cd6e",
+    "source": "755475a0cd6e40c218f25b35802d00eabca94a35e75ccb176b086cc7f4c2f953",
+    "revision": "47474fe904ee92edae8db56be1e0560048c6a9fe"
+  },
+  "scope": {
+    "sourceInputFiles": 10427,
+    "sourceEntriesIncludingEngine": 10428,
+    "allAcceptedFiles": 11338,
+    "completeInputDigest": "41f99bf500ab4eaae551fd2d770cbe874184b07e207f880318e7af00f8372e82",
+    "runtimeTestAssetDigest": "b2051220848aff959ae4a46c6e399e46c7634b946c620a808dba4a8f5572564c",
+    "dependencyFiles": 42417,
+    "dependencySymlinkEntries": 44,
+    "dependencyDigest": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+    "engine": {
+      "path": "engine",
+      "mode": "160000",
+      "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+      "indexStage": 0,
+      "initialized": false,
+      "head": null,
+      "dirtyPorcelain": null,
+      "uninitializedDirectoryContents": [],
+      "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+    },
+    "runtimeAssetFiles": 2521,
+    "nonSystemDynamicLibraries": 24
+  },
+  "gates": {
+    "focused": {
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--test",
+        "--test-concurrency=4",
+        "tests/three-room-floors.test.mjs",
+        "tests/three-building-surfaces.test.mjs",
+        "tests/three-building-details.test.mjs",
+        "tests/three-sector-world.test.mjs",
+        "tests/three-building-supports.test.mjs",
+        "tests/three-prop-footprints.test.mjs",
+        "tests/room-dressing-semantics.test.mjs",
+        "tests/renderer-furnishings-detail-fixture.test.mjs",
+        "tests/renderer-upper-office-fixture.test.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "seconds": 8.919,
+      "startedUtc": "2026-10-09T05:17:28.880937+00:00",
+      "finishedUtc": "2026-10-09T05:17:37.800267+00:00",
+      "logSha256": "d5ea5a9e47b7aced8f6936258a4cc896771a600ed05f289b4f126254f25ae78c"
+    },
+    "typecheck": {
+      "command": [
+        "/opt/homebrew/bin/npm",
+        "run",
+        "typecheck"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "seconds": 14.741,
+      "startedUtc": "2026-10-09T05:17:28.880950+00:00",
+      "finishedUtc": "2026-10-09T05:17:43.622419+00:00",
+      "logSha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    "build": {
+      "command": [
+        "/opt/homebrew/bin/npm",
+        "run",
+        "build"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "seconds": 20.908,
+      "startedUtc": "2026-10-09T05:17:28.880943+00:00",
+      "finishedUtc": "2026-10-09T05:17:49.789627+00:00",
+      "logSha256": "503b241fcff58eda87fb517c202b1e45cde1a948c9cd21eee6ceef741faeec6b"
+    },
+    "quick": {
+      "command": [
+        "/opt/homebrew/bin/npm",
+        "run",
+        "test:quick"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "seconds": 2582.477,
+      "startedUtc": "2026-10-09T05:17:55.689670+00:00",
+      "finishedUtc": "2026-10-09T06:00:58.407226+00:00",
+      "logSha256": "be3b107d710209e4695efb07e825f2530021f91af124e5f9099a190ca1956e57"
+    }
+  },
+  "focusedCounts": {
+    "tests": 73,
+    "suites": 0,
+    "pass": 73,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 8834.279125
+  },
+  "quick": {
+    "suite": "quick",
+    "totalFiles": 912,
+    "expectedFiles": 904,
+    "complete": true,
+    "summary": {
+      "counts": {
+        "tests": 6869,
+        "failed": 0,
+        "passed": 6869,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 6726,
+        "suites": 0
+      },
+      "duration_ms": 2582202.519709,
+      "success": true
+    },
+    "concurrency": 4,
+    "cpus": 12
+  },
+  "quickCompletedFiles": 904,
+  "production": {
+    "files": 1377,
+    "verifiedAssetReferences": 1045,
+    "outputDigest": "f6a9e3499ab1eaf18e6643b9883c5a8cb39640bddb8e53fb504f1a9f96b0654f"
+  },
+  "runtimeVersions": {
+    "nodeVersion": "v25.9.0",
+    "npmVersion": "11.12.1",
+    "pythonVersion": "3.9.6",
+    "numpyVersion": "1.26.4",
+    "pillowVersion": "11.2.1"
+  },
+  "runtimeEnvironment": {
+    "PATH": "/usr/bin:/bin:/opt/homebrew/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/fsodano/.dotnet:/Users/fsodano/.dotnet/tools:/Users/fsodano/.bun/bin:/Users/fsodano/.local/bin:/Users/fsodano/.opencode/bin:/opt/homebrew/opt/openjdk/bin:/opt/homebrew/opt/openjdk/bin:/Users/fsodano/.nvm/versions/node/v25.1.0/bin:/opt/homebrew/opt/openjdk/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:~/.dotnet/tools:/opt/homebrew/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/fsodano/.codex/tmp/arg0/codex-arg0iwt5YJ:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/fsodano/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/fsodano/.dotnet:/Users/fsodano/.dotnet/tools:/Users/fsodano/.bun/bin:/Users/fsodano/Library/pnpm:/Users/fsodano/.local/bin:/Users/fsodano/.opencode/bin:/opt/homebrew/opt/openjdk/bin:/Users/fsodano/.nvm/versions/node/v25.1.0/bin:/Users/fsodano/.cargo/bin:/Applications/Obsidian.app/Contents/MacOS:/usr/local/share/dotnet/x64:./node_modules/.bin:/Users/fsodano/.lmstudio/bin:/Users/fsodano/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS:/Applications/Obsidian.app/Contents/MacOS:/usr/local/share/dotnet/x64:./node_modules/.bin:/Users/fsodano/.lmstudio/bin",
+    "GRANADEROS_TEST_CONCURRENCY": "4",
+    "GRANADEROS_BASE_PATH": null,
+    "NODE_OPTIONS": null,
+    "NODE_ENV": null,
+    "CI": null,
+    "TZ": null,
+    "UV_THREADPOOL_SIZE": null
+  },
+  "checks": {
+    "fullStandardQuickOnceFourWorkers": true,
+    "fullSelectionNoFilters": true,
+    "sourceInputsBeforeAfterExact": true,
+    "sourceExactToAcceptedPreview": true,
+    "dependenciesBeforeAfterExact": true,
+    "engineBeforeAfterExact": true,
+    "runtimeToolsVersionsPackagesLibrariesExact": true,
+    "productionOutputBeforeAfterExact": true,
+    "productionSourceExact": true,
+    "fixtureExact": true,
+    "workingTreeClean": true,
+    "diffCheckPassed": true,
+    "implementationChangedDuringGates": false,
+    "rootWritten": false,
+    "browserUsed": false
+  },
+  "owned18Files": [
+    "tests/three-room-floors.test.mjs",
+    "web/lib/three/world-buildings.ts",
+    "web/lib/three/world-materials.ts",
+    "web/lib/three/world-room-floors.ts"
+  ],
+  "sharedUpperOfficeFixturePins": {
+    "web/app/renderer-sandbox/fixtures.js": {
+      "sha256": "b829ac9e057622e438af31fa187793ed505827d7f53a716b916d5d88dd0fc34b",
+      "bytes": 19235
+    },
+    "web/app/renderer-sandbox/upper-office-fixture.js": {
+      "sha256": "36ff300dd7f8a49869362fa5407366cf156c21f89ff4d7a37e957713df27749c",
+      "bytes": 2329
+    },
+    "tests/renderer-upper-office-fixture.test.mjs": {
+      "sha256": "d3a434ef55ef30ec1dd4b4476e98c52f895b29511013e9fb8edf3e1e3b15c063",
+      "bytes": 2934
+    }
+  },
+  "pairedSourceProof": {
+    "beforePreview": "/tmp/granaderos-piece18-corrected-floor-before-preview",
+    "afterPreview": "/tmp/granaderos-piece18-corrected-floor-after-preview",
+    "oldPreviewUntouched": "/tmp/granaderos-piece17-corrected-live-preview",
+    "oldScenarioCount": 24,
+    "oldSnapshotsExact": true,
+    "oldScenarioEntriesExact": true,
+    "oldSnapshotHashes": {
+      "varied-roof-climbs": "49025f9d94a2d90914c5641d643a2739292d97c3ba5d119c2a3ec5e6c918699a",
+      "characters": "4ce6c3113d103dbba7808ad8513d20b1c0873d15a930755dc37853f8f83489a5",
+      "architecture": "c205fa1838b18e1f149e41e320db5712297727babd46f63183d40c94a3daa30a",
+      "catalog": "d7beab9578dd1fe4bf025891d06db1df002732dea5bfe54ca953e19980f2503c",
+      "furnishings-detail": "2aeee73e54d41f691a1edd9d96d45ab11d3af6dd4917ade53f7537e8760a1bc6",
+      "furnishings": "23a4c1bf53af0942720cdcfa699404a319fcac37fd02d59f3972ad2cf1448570",
+      "terrain-detail": "ddb6d8ae1106945610e760b839a1e7c0cc2ed6e866e13a8d49e1c74aa06801bf",
+      "postures": "e20a954a9818fbff8b460f829a32297510a18099df64075a15d9b4d95b04a76e",
+      "equipped-crouch": "aacacb0a3d482991a6beb896be7de180f107f877034544cbfa3b2f2eb31a8cb7",
+      "combat": "043dd00d59851af3893e04a2dc69db616608231fe4d94536b0bd31b43dd72571",
+      "bayonets": "d100a651993b97c8fae42d93f130db76112d4c8c7af4ba0924637a5af70db27c",
+      "prone-work": "6df95a798ca7b8c68c2213ad0b45d4cdbd6bb351231f6d4a39207465668cf113",
+      "reach-actions": "30aa54c4405a92be68611f291276a99be0d9eb197d4f8309e532cd76a3a3c6bf",
+      "partial-loading": "7ce179cd0b53f554d36565afe187badf5401a43476a60aa291d9d53f08415f3b",
+      "paired-loading": "4542d6968856a892d12b21ca4262c6bf38c9de6edfc95b9fc1fb373abe9c798b",
+      "four-bore-loading": "da114ac8a7ed33e1234849b9c75d36fa8e7706f1d6b564f952fd616afc1a30d6",
+      "mounted": "7b8fa6063df693211789e87abede4c2fca4a036e30e9070d2257ead7771eecbd",
+      "climb-hatches": "95a8b74ebc86b298274312c69014eb1083bb4b2661bb12a5ba40e7d6603b6789",
+      "night": "3b42614f9a42aeec4dcc992c40659781003bc14d36d20cbe540202e6eca457d0",
+      "performance24": "d798fe58b5df881c55796cfb50066974ffd2e4ecbb814288168c2f2fd71ca199",
+      "performance60": "d4f0d1c0a329b7106223af96809dddc91c8d8b0ac9378f111e41b3e69ce759f7",
+      "performance100": "a3df6c9ea033c78ab09a27a09ba0de8a8fd1b9bda56915fc97da03cd9eb944d3",
+      "tucuman": "07c08aba93bb723bf37a5229f992ba1cb40c987b045eefea91658ab405597129",
+      "empty": "1159a32b44f58c57ef15796891f087cd5d38baace4c74880e9955eec3de36073"
+    },
+    "newUpperOfficeSnapshotSha256": "739f11396add5f43f4ce1a95ed853eaf24038c8c50cbfd0bce6f376b6cf63473",
+    "upperBeforeAfterBattleExact": true,
+    "beforeInputCount": 11336,
+    "afterInputCount": 11338,
+    "onlyOwned18InputsDiffer": [
+      "tests/three-room-floors.test.mjs",
+      "web/lib/three/world-buildings.ts",
+      "web/lib/three/world-materials.ts",
+      "web/lib/three/world-room-floors.ts"
+    ],
+    "allOtherInputsExact": true,
+    "browserUsed": false,
+    "rootWritten": false
+  },
+  "liveReview": "root-live-review-receipt.json",
+  "costs": "geometry-shader-costs.json",
+  "materialPlaneProof": "upper-floor-material-plane-proof.json",
+  "readOnlyHelper": {
+    "file": "verify-final-equivalence.py",
+    "sha256": "493113cafc1bc9d876a610109c57d1578649ebfdadcfa361c99dbec120dc3912",
+    "strictPrivateProofPassed": true,
+    "strictRuntimePathPrefix": "/usr/bin:/bin:/opt/homebrew/bin"
+  },
+  "completePrivateManifestPins": {
+    "inputs-before.json": "24a55e8c64a66a4d4e0d2fdd8196d3c3e02207c9e753de75d1e07c176f711a3f",
+    "inputs-after.json": "24a55e8c64a66a4d4e0d2fdd8196d3c3e02207c9e753de75d1e07c176f711a3f",
+    "source-inputs.json": "69c9a0b2269804ce20020c17e4a56e8372d17953c0f4edd8a2eed22cf73df616",
+    "dependency-inputs-before.json": "f826042f46379457fe76c3edf52937fe637a3123e0d7b6d6e96f572f5fd163a4",
+    "dependency-inputs-after.json": "2ff4d418e6b8c8cafec41c8e7e53eb38ce351bca6c153792ea4e518714facdbd",
+    "runtime-assets-before.json": "d853de5e5076cc0e5db3abe32185b502783265c06232ab9231b5a6c8019979df",
+    "runtime-assets-after.json": "8bea47796ae10f02d9d8602be1d152c0521b24db07df4102ec8b68a3d633f72e",
+    "production-output-hashes.json": "dbc208e07dee44c7da86a3ef5120494013f758015ac246355cc5e465466678d1"
+  },
+  "privateEvidenceDirectory": "/private/tmp/granaderos-piece18-final-gate-evidence",
+  "rawLogsNeededForRepository": false
+}
