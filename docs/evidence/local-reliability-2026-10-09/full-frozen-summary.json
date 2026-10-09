@@ -1,0 +1,134 @@
+{
+  "sourceCommit": "5f3ee12b5bbc7dba0a698a7b9564df34227e747a",
+  "productionSource": "c32f9baede2f715049e30b8df6bfadc7d9ca57cdff60799cb71902052f0b3f8c",
+  "inputDigestBefore": "bf78fc558ffcbc8856c3551fdc5c3c76265936aaa85f17e7b3b940f5aad266ee",
+  "inputDigestAfter": "bf78fc558ffcbc8856c3551fdc5c3c76265936aaa85f17e7b3b940f5aad266ee",
+  "inputFileCount": 11788,
+  "suite": "full",
+  "selectedFiles": 927,
+  "excludedFiles": 0,
+  "complete": true,
+  "node": "v25.9.0",
+  "concurrency": 8,
+  "summary": {
+    "counts": {
+      "tests": 6970,
+      "failed": 10,
+      "passed": 6957,
+      "cancelled": 0,
+      "skipped": 3,
+      "todo": 0,
+      "topLevel": 6819,
+      "suites": 0
+    },
+    "duration_ms": 2114291.519458,
+    "success": false
+  },
+  "failedFiles": [
+    {
+      "file": "tests/fresh-campaign-recovery.test.mjs",
+      "duration_ms": 1334524.661542,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      },
+      "success": false
+    },
+    {
+      "file": "tests/opening-playthrough.test.mjs",
+      "duration_ms": 357533.014417,
+      "counts": {
+        "tests": 8,
+        "failed": 2,
+        "passed": 3,
+        "cancelled": 0,
+        "skipped": 3,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      },
+      "success": false
+    },
+    {
+      "file": "tests/fresh-ending-route.test.mjs",
+      "duration_ms": 327353.626875,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-historical-loss.test.mjs",
+      "duration_ms": 325844.770416,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-cuyo-route.test.mjs",
+      "duration_ms": 324161.911417,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-coastal-route.test.mjs",
+      "duration_ms": 129526.712,
+      "success": false,
+      "counts": {
+        "tests": 4,
+        "failed": 3,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 3,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/partial-reload-controls.test.mjs",
+      "duration_ms": 7860.500625,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    }
+  ]
+}

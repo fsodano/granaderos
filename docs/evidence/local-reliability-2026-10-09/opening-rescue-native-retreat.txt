@@ -1,0 +1,1 @@
+{"done":true,"recordedOrders":316,"status":"retreat","turns":29,"actions":273,"elapsedSeconds":3801,"hour":189,"second":2073,"captured":[{"id":"108","hp":8,"sector":"tucuman"},{"id":"138","hp":7,"sector":"tucuman"}],"newDeaths":["100","101","102","103","112","122","126","127","129","130","133","140","144"]}

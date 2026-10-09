@@ -122,6 +122,8 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.ok(prepared.supportHires.length>0);
   for(const id of prepared.supportHires){assert.ok(prepared.hired.includes(id));assert.equal(prepared.campaign.contracts[id].term,'day');assert.ok(prepared.campaign.contracts[id].expiresAt>prepared.campaign.hour);}
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.ok(prepared.campaign.pendingBattle.squad.some(unit=>Number(unit.id)===id));
+  for(const unit of prepared.campaign.pendingBattle.squad){const family=ammoTypeFor(unit);assert.ok(family,'each relief soldier enters with a selected firearm');assert.ok(unit.loaded+ammoCount(unit,family)>=10,'the deployed relief retains ten real matching cartridges after its march');}
+  for(const receipt of prepared.ammunitionTransactions){assert.equal(receipt.sector,'cordoba');assert.ok(receipt.quantity>0);assert.equal(receipt.cost,0);assert.ok([...prepared.fieldIds,...prepared.supportIds].includes(receipt.action.operativeId));}
   for(const defense of prepared.staging.defenses)for(const unit of defense.units.filter(unit=>unit.side==='player'&&unit.hp<=0))assert.equal(prepared.campaign.operativeState[unit.id].alive,false,'actual defense casualties stay dead');
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp,'paid care restores the living relief before its next assault');
   assert.ok(prepared.staging.recovery.patients.length?prepared.staging.recovery.usedDressings>0:prepared.staging.recovery.usedDressings===0,'only actual staging wounds consume dressings');

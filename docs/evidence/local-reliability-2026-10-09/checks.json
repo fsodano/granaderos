@@ -90,6 +90,61 @@
       "output": "docs/evidence/local-reliability-2026-10-09/opening-diagnostic.txt",
       "outputSha256": "a3d59bb3ef2af5ffee0af1c559954558d65dff6175fd4bf1f82eeae1b66ccaca",
       "rawOutputSha256": "d99082ca9f38f22450fc039c08e64bfe7490181d976f397ae063b3e52bb9d6bc"
+    },
+    {
+      "name": "paid-roof-unload-reload",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "--test",
+        "--test-reporter=spec",
+        "tests/route-roof-defenders.test.mjs"
+      ],
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 4322.232959,
+      "output": "docs/evidence/local-reliability-2026-10-09/roof-unload-reload.txt",
+      "outputSha256": "e9d73874be8fa1d02c566d1b1d115084d8ed28777e9f278555195d3e6fb2649a",
+      "rawOutputSha256": "e9d73874be8fa1d02c566d1b1d115084d8ed28777e9f278555195d3e6fb2649a"
+    },
+    {
+      "name": "torch-motion",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "--test",
+        "--test-reporter=spec",
+        "tests/torch-motion-render.test.mjs"
+      ],
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 3728.322042,
+      "output": "docs/evidence/local-reliability-2026-10-09/torch-motion.txt",
+      "outputSha256": "be88d05adf8e1812c10a058748ad7e3a894c3c49a4c3cbd548cc33b2c17dbf86",
+      "rawOutputSha256": "be88d05adf8e1812c10a058748ad7e3a894c3c49a4c3cbd548cc33b2c17dbf86"
+    },
+    {
+      "name": "full-frozen-c32",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "tools/test-runner.mjs"
+      ],
+      "total": 6970,
+      "passed": 6957,
+      "failed": 10,
+      "skipped": 3,
+      "cancelled": 0,
+      "durationMs": 2114291.519458,
+      "files": 927,
+      "excludedFiles": 0,
+      "inputDigestBefore": "bf78fc558ffcbc8856c3551fdc5c3c76265936aaa85f17e7b3b940f5aad266ee",
+      "inputDigestAfter": "bf78fc558ffcbc8856c3551fdc5c3c76265936aaa85f17e7b3b940f5aad266ee",
+      "output": "docs/evidence/local-reliability-2026-10-09/full-frozen-summary.json",
+      "outputSha256": "9ef65f1cf44783d4c57d960e88fb18139a404f4c087a3c4029f118da626a1b15"
     }
   ],
   "typecheck": "passed",
@@ -150,7 +205,9 @@
     "This is local development evidence, not published-main or full JA2 parity acceptance.",
     "The opening diagnostic passed three subtests then failed at a five-person replacement squad; three dependent subtests skipped. Its top-level failure is included in the reported two failures.",
     "The earlier927-file quick selection excluded8extended files and ran while inputs changed; its6929passes and20failures are diagnostic, not an exact-source acceptance receipt.",
-    "Long campaign fixture work remains in progress; no unchanged full927-file pass is claimed."
+    "Long campaign fixture work remains in progress; no unchanged full927-file pass is claimed.",
+    "The later supplied opening rescue retreats in native combat. The funded return contact loses with four defenders. Exact replay and native settlement of those outcomes do not establish a passed campaign route.",
+    "The unchanged full927-file run completed:6957 passed,10failed,3skipped; seven files failed. It is a complete diagnostic, not a passing release gate."
   ],
   "productionSourceBefore": "c32f9baede2f715049e30b8df6bfadc7d9ca57cdff60799cb71902052f0b3f8c",
   "productionSourceAfter": "c32f9baede2f715049e30b8df6bfadc7d9ca57cdff60799cb71902052f0b3f8c",
@@ -196,5 +253,33 @@
       "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ],
-  "retainedOutputNormalization": "Trailing horizontal whitespace removed; test content and line endings retained. Raw stdout hashes are recorded separately."
+  "retainedOutputNormalization": "Trailing horizontal whitespace removed; test content and line endings retained. Raw stdout hashes are recorded separately.",
+  "nativeDiagnostics": [
+    {
+      "name": "supplied-opening-rescue-native-retreat",
+      "status": "retreat",
+      "orders": 316,
+      "turns": 29,
+      "actions": 273,
+      "elapsedSeconds": 3801,
+      "replayAndSaveChecked": true,
+      "completedCampaignRoute": false,
+      "output": "docs/evidence/local-reliability-2026-10-09/opening-rescue-native-retreat.txt",
+      "outputSha256": "feaaabbdeba510349983723305158cde59ae4ecd08d3103d10b58ab533fd741f",
+      "rawOutputSha256": "feaaabbdeba510349983723305158cde59ae4ecd08d3103d10b58ab533fd741f"
+    },
+    {
+      "name": "funded-return-contact-native-defeat",
+      "status": "defeat",
+      "orders": 58,
+      "turns": 8,
+      "actions": 42,
+      "elapsedSeconds": 187,
+      "replayAndSaveChecked": true,
+      "completedCampaignRoute": false,
+      "output": "docs/evidence/local-reliability-2026-10-09/funded-return-contact-native-defeat.txt",
+      "outputSha256": "5015a69a10ddb091177a9ed21f38017013838b68ec95285067f6a17c89ef07f8",
+      "rawOutputSha256": "5015a69a10ddb091177a9ed21f38017013838b68ec95285067f6a17c89ef07f8"
+    }
+  ]
 }

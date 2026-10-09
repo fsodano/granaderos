@@ -20,11 +20,13 @@ import {stagedBatteryController} from './staged-battery-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {fight as fightWithCover} from './cuyo-route-driver.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {contractQuote} from '../game/contracts.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
 import {fightNorthernSector,northernCombatOrder,prepareNorthernSquad} from './northern-route.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
+import {encodeSave} from '../game/save.js';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
 test('a funded Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture, Jujuy and Humahuaca',()=>{
@@ -52,7 +54,14 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  assert.deepEqual(result.campaign,prior);
  assert.deepEqual(prepared.squad,[120,111,125,103,140,112]);
  const paid=prepared.squad.reduce((sum,id)=>sum+prepared.contracts[id].paid,0);
- assert.equal(prepared.resources.treasury,prior.resources.treasury-paid-preparationEvents.find(e=>e.event==='freshSanLorenzoPreparation').ammunitionCost);
+ const preparation=preparationEvents.find(e=>e.event==='freshSanLorenzoPreparation');
+ assert.equal(prepared.resources.treasury,prior.resources.treasury-paid-preparation.ammunitionCost-preparation.retainedPhysicianExtension);
+ assert.ok(preparation.retainedPhysicianExtension>0);
+ assert.equal(prepared.contracts[107].paid,preparation.retainedPhysicianExtension);
+ assert.equal(preparation.retainedPhysicianExtension,contractRenewalQuote(prior,rosterFor(prior).find(op=>op.id===107),'fortnight').price);
+ assert.equal(contractExpiresSeconds(prepared.contracts[107])-contractExpiresSeconds(prior.contracts[107]),14*24*3600);
+ const laterClinicQuote=contractRenewalQuote(prepared,rosterFor(prepared).find(op=>op.id===107),'day');
+ assert.equal(laterClinicQuote.available,false);assert.match(laterClinicQuote.reason,/Gaspar Villalba/,'the directed rivalry still rejects a later renewal');
  assert.ok(prepared.operativeState[112].medkits>prior.operativeState[112].medkits);
  for(const [id,record]of Object.entries(prior.operativeState))if(!record.alive)assert.equal(prepared.operativeState[id].alive,false);
  assert.equal(prepared.flags.sanLorenzo,false);
@@ -110,7 +119,8 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  const defense=careBattles.length?{campaign:healed}:fightNorthernSector(prepareFreshCordobaDefense(healed),'cordoba',{controller:cautiousCombatOrder});
  assert.equal(defense.campaign.sectors.cordoba.owner,'patriot');
  assert.equal(defense.campaign.pendingEncounter,null);
- const beforeTucuman=structuredClone(defense.campaign),tucumanReady=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true});
+ const onCheckpoint=(name,campaign)=>{if(process.env.GRANADEROS_RECOVERY_CHECKPOINT_PREFIX){const battle=campaign.pendingBattle?enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.pendingBattle.sector]):null;writeFileSync(`${process.env.GRANADEROS_RECOVERY_CHECKPOINT_PREFIX}-${name}.json`,encodeSave(campaign,battle));}};
+ const beforeTucuman=structuredClone(defense.campaign),tucumanReady=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true,onCheckpoint});
  assert.deepEqual(defense.campaign,beforeTucuman);
  const survivors=beforeTucuman.recruited.filter(id=>beforeTucuman.operativeState[id].alive&&!beforeTucuman.operativeState[id].captured);
  for(const id of survivors){

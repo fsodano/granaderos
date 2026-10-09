@@ -19,11 +19,15 @@ import {actBattle,getReachable} from '../game/tactical.js';
 import {sameCell,spacePoint,tacticalLevel} from '../game/tactical-space.js';
 import {doctorRate} from '../game/medical-care.js';
 import {careRules} from '../game/campaign-care-rules.js';
-import {contractQuote} from '../game/contracts.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {operativeLocation} from '../game/squads.js';
 import {worldOwner} from '../game/world-cells.js';
 import {collectPhysicalCacheItems} from './finite-care-cache.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
+import {artilleryProfile} from '../game/artillery-definitions.js';
+import {FINITE_ARTILLERY_ARSENALS} from '../game/finite-artillery-arsenals.js';
+import {visit as visitLocalRoute} from './local-contract-fixture.mjs';
+import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 import {collectRouteItems,collectRouteMedicalSupplies,discoverRouteCache,recoverRouteFirearm} from './finite-route-equipment.mjs';
 import {meetLocalIncomeRepresentative} from './route-town-income.mjs';
 import {travelLegHours} from '../game/squad-travel.js';
@@ -100,7 +104,18 @@ export function recoverFreshCapital(start,{report=()=>{}}={}){
  if(campaign.operativeState[doctor].hp<campaign.operativeState[doctor].maxHp){
   treatingDoctor=116;
   if(!campaign.recruited.includes(treatingDoctor))order({type:'recruitCivic',id:treatingDoctor,term:'week'});
-  if(campaign.operativeState[treatingDoctor].medkits<10)campaign=collectPhysicalCacheItems(campaign,treatingDoctor,{item:'medkits'},10-campaign.operativeState[treatingDoctor].medkits).campaign;
+  // The wounded doctor's collected stock remains real personal equipment.
+  // Hand it to the treating physician before drawing another finite cache.
+  if(treatingDoctor!==doctor&&campaign.operativeState[doctor].medkits){
+   const count=campaign.operativeState[doctor].medkits,before=campaign.operativeState[treatingDoctor].medkits;
+   order({type:'sectorInventory',sector:'buenos_aires',operativeId:doctor,direction:'drop',item:'medkits',count});
+   let remaining=count;
+   while(remaining){const row=sectorInventoryModel(campaign,'buenos_aires',rosterFor(campaign),treatingDoctor).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'the treating physician can collect the donated finite dressings');const quantity=Math.min(remaining,row.count);order({type:'sectorInventory',sector:'buenos_aires',operativeId:treatingDoctor,direction:'take',sourceKey:row.key,expected:row.expected,count:quantity});remaining-=quantity;}
+   assert.equal(campaign.operativeState[doctor].medkits,0);assert.equal(campaign.operativeState[treatingDoctor].medkits,before+count);
+   report({event:'freshCapitalMedicalDonation',donor:doctor,doctor:treatingDoctor,count});
+  }
+  const treatingRate=doctorRate(rosterFor(campaign).find(unit=>unit.id===treatingDoctor),campaign),needed=Math.max(10,campaign.squad.reduce((sum,id)=>{const patient=campaign.operativeState[id];return sum+(id!==treatingDoctor&&patient.alive?Math.ceil((patient.maxHp-patient.hp)/treatingRate)+Number(patient.bleeding>0):0);},0));
+  if(campaign.operativeState[treatingDoctor].medkits<needed)campaign=collectPhysicalCacheItems(campaign,treatingDoctor,{item:'medkits'},needed-campaign.operativeState[treatingDoctor].medkits).campaign;
  }
  const patients=campaign.squad.filter(id=>id!==treatingDoctor&&campaign.operativeState[id].hp<campaign.operativeState[id].maxHp);
  const before=campaign.operativeState[treatingDoctor].medkits;
@@ -195,6 +210,16 @@ export function prepareFreshSanLorenzo(start,{report=()=>{}}={}){
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;};
  assert.equal(campaign.sectors.san_nicolas.owner,'patriot');
  const field=[120,111,125,103,140,112],cash=campaign.resources.treasury;
+ // Book the surviving clinic physician through the next northern operation
+ // before signing her authored rival. Later renewal keeps its real refusal.
+ let retainedPhysicianExtension=0;
+ if(campaign.recruited.includes(107)&&campaign.operativeState[107].alive&&!campaign.recruited.includes(112)){
+  const contract=campaign.contracts[107],quote=contractRenewalQuote(campaign,rosterFor(campaign).find(op=>op.id===107),'fortnight'),before=campaign.resources.treasury,expiry=contractExpiresSeconds(contract);
+  assert.ok(quote.available,quote.reason);assert.ok(expiry>campaign.hour*3600+(campaign.secondOfHour??0));
+  order({type:'renewContract',id:107,term:'fortnight',expectedExpiresAt:contract.expiresAt});
+  retainedPhysicianExtension=before-campaign.resources.treasury;assert.equal(retainedPhysicianExtension,quote.price);
+  assert.equal(contractExpiresSeconds(campaign.contracts[107]),expiry+quote.hours*3600);
+ }
  for(const id of field){assert.ok(campaign.operativeState[id].alive);if(!campaign.recruited.includes(id))order({type:'recruitCivic',id,term:'week'});}
  order({type:'squad',ids:field});const ammunitionCost=deploymentCost(campaign);order({type:'visitSector'});
  const salvage=equipOpeningRifles(enterSector(campaign.pendingBattle,campaign.sectorStates.san_nicolas),field);
@@ -211,7 +236,7 @@ export function prepareFreshSanLorenzo(start,{report=()=>{}}={}){
  campaign=supplyRouteAmmunition(campaign,field,{target:6,report}).campaign;
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- report({event:'freshSanLorenzoPreparation',hour:campaign.hour,field,paid:cash-campaign.resources.treasury,ammunitionCost,recoveredDressings:recovered,transfers:salvage.transfers,unfilled:salvage.unfilled});
+ report({event:'freshSanLorenzoPreparation',hour:campaign.hour,field,paid:cash-campaign.resources.treasury,retainedPhysicianExtension,ammunitionCost,recoveredDressings:recovered,transfers:salvage.transfers,unfilled:salvage.unfilled});
  return campaign;
 }
 
@@ -272,7 +297,20 @@ export function prepareFreshCordobaAssault(start,doctors,{report=()=>{}}={}){
  // physicians before asking the exhausted pistol cache for more cartridges.
  for(const operativeId of doctors){
   const primary=sectorInventoryModel(campaign,campaign.location,rosterFor(campaign),operativeId).personal;
-  if(primary.weaponDropped||![1800,1801,1802].includes(primary.weapon))campaign=recoverRoutePrimary(campaign,operativeId,{replace:true,required:false,report});
+  if(primary.weaponDropped||![1800,1801,1802,1803].includes(primary.weapon)){
+   // The completed convent remains physically accessible from San Nicolás.
+   // Field survivors may already own the town's last long guns. Give the
+   // physicians an actually observed convent musket and keep their pistols.
+   const model=()=>sectorInventoryModel(campaign,'san_lorenzo',rosterFor(campaign),operativeId),source=model().entries.find(row=>row.reachable&&[1800,1801,1803].includes(JSON.parse(row.expected).weapon));
+   if(source){
+    const keys=new Set(Object.keys(model().personal.inventory??{})),incoming=JSON.parse(source.expected),cash=campaign.resources.treasury;
+    order({type:'sectorInventory',sector:'san_lorenzo',operativeId,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
+    const gun=model().carried.find(row=>!keys.has(row.inventoryKey)&&row.equip?.some(e=>e.slot==='primary')&&JSON.parse(row.expected).weapon===incoming.weapon);assert.ok(gun);
+    order({type:'sectorInventory',sector:'san_lorenzo',operativeId,direction:'equip',inventoryKey:gun.inventoryKey,expected:gun.expected,slot:'primary'});
+    assert.equal(campaign.resources.treasury,cash);assert.equal(model().entries.find(row=>row.key===source.key)?.count??0,source.count-1);
+    report({event:'finiteCordobaMedicalArmament',operativeId,sector:'san_lorenzo',sourceKey:source.key,weapon:incoming.weapon});
+   }else campaign=recoverRoutePrimary(campaign,operativeId,{replace:true,required:false,report});
+  }
  }
  const deploying=squads.flatMap(id=>campaign.squads.find(squad=>squad.id===id).members);
  campaign=supplyRouteAmmunition(campaign,deploying,{report}).campaign;
@@ -544,8 +582,9 @@ for(let leg=0;leg<4&&c.location!=='cordoba'&&!c.pendingEncounter;leg++){
  return c;
 }
 
-export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false}={}){
+export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,onCheckpoint=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
+onCheckpoint('tucuman-preparation-input',c);
 const order=a=>{
  // Regrouping also consumes paid time. Keep the doctor and remote survivors
  // employed before each wait, rather than discovering an expired hire later.
@@ -702,7 +741,26 @@ for(let i=0;i<24&&fieldIds.some(id=>c.operativeState[id].energy<100||c.operative
 for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
 for(const id of fieldIds){while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<c.hour+30){const contract=c.contracts[id];order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}}
 // A physically recovered support gun can cover the infantry approach.
-if(artillerySupport){const battery=prepareRouteBattery(c,['bronze4'],{report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});}
+if(artillerySupport){
+ const previous=c.activeSquadId,required=artilleryProfile(c,{type:'bronze4'}).crew;
+ const fit=id=>c.squads.find(squad=>squad.id===id).members.filter(id=>{const r=c.operativeState[id];return r.alive&&r.hp>=15&&!r.unconscious&&!r.routed&&!r.captured&&!r.asleep&&r.energy>10;});
+ const crew=assaultSquads.find(id=>fit(id).length>=required);assert.ok(crew,'the actual artillery crew must come from a capable serving assault squad');
+ onCheckpoint('tucuman-battery-prior-squad',c);
+ if(c.activeSquadId!==crew)order({type:'selectSquad',id:crew});
+ report({event:'tucumanBatteryCrew',previous,previousMembers:c.squads.find(squad=>squad.id===previous).members,selected:crew,fit:fit(crew),required});
+ onCheckpoint('tucuman-battery-input',c);
+ const localGuns=state=>[...(state.artilleryDepots[state.location]??[]),...(state.sectorStates[state.location]?.artillery??[])].filter(gun=>gun.side==='player'&&gun.type==='bronze4');
+ const arsenal=FINITE_ARTILLERY_ARSENALS[c.location];
+ if(!localGuns(c).length&&c.sectors[c.location]?.owner==='patriot'&&!c.artilleryArsenalRecoveries[c.location]&&arsenal?.pieces.some(gun=>gun.type==='bronze4')){
+  const beforeSeconds=c.hour*3600+(c.secondOfHour??0),cash=c.resources.treasury,pair=visitLocalRoute(c),carrier=pair.battle.units.find(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.asleep&&(unit.energy??0)>10);assert.ok(carrier,'a real serving local soldier must physically recover the controlled arsenal');
+  c=leaveFiniteCache(takeFiniteCache(pair,carrier.id,[]));
+  const guns=localGuns(c);assert.ok(guns.length,'the actual local arsenal visit must admit canonical player-owned guns');
+  for(const gun of guns){const source=arsenal.pieces.find(piece=>piece.id===gun.id);assert.ok(source,'the recovered local gun must retain a canonical finite source');for(const key of ['type','side','loaded','ammo'])assert.equal(gun[key],source[key]);}
+  report({event:'tucumanLocalArsenalRecovered',sector:c.location,carrier:carrier.id,recovery:structuredClone(c.artilleryArsenalRecoveries[c.location]),elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-beforeSeconds,cost:cash-c.resources.treasury,guns:guns.map(({id,type,side,loaded,ammo})=>({id,type,side,loaded,ammo}))});
+ }
+ const battery=prepareRouteBattery(c,['bronze4'],{keepServing:fieldIds,report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
+ onCheckpoint('tucuman-battery-ready',c);
+}
 // Stage the actual squads through the ordinary clock before the coordinated march.
 // Enemy movement and contract costs continue during this wait.
 order({type:'wait',hours:4});
@@ -715,5 +773,6 @@ order({type:'beginAssault',sector:'tucuman'});
  assert.equal(c.pendingBattle.squad.length,fieldIds.length);
  const battle=enterSector(c.pendingBattle,c.sectorStates.tucuman);
  assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
+ onCheckpoint('tucuman-ready',c);
  return c;
 }
