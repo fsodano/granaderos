@@ -1,0 +1,16 @@
+from pathlib import Path
+import json
+BASE=Path('/tmp/granadero-outward-detail-pilot')
+exec((BASE/'ellipsoid-only-proof/prove-outward-details.py').read_text().split("report={'before':")[0],globals())
+results=[]
+for path in sorted(AFTER.glob('*-lod*.glb')):
+ if path.name.startswith('horse-'):continue
+ a,ad,ah=read(BEFORE/path.name);b,bd,bh=read(path)
+ def skin(doc):return [p for m in doc['meshes']for p in m['primitives']if doc['materials'][p['material']]['name']=='Skin']
+ sa=skin(a);sb=skin(b);eq=len(sa)==len(sb)>0
+ for pa,pb in zip(sa,sb):
+  eq=eq and pa['attributes'].keys()==pb['attributes'].keys()and all(payload(a,ad,i)==payload(b,bd,pb['attributes'][n])for n,i in pa['attributes'].items())and payload(a,ad,pa['indices'])==payload(b,bd,pb['indices'])and pa.get('targets')==pb.get('targets')
+ def tris(doc):return sum(doc['accessors'][p['indices']]['count']//3 for m in doc['meshes']for p in m['primitives'])
+ results.append({'name':path.name,'beforeSha256':ah,'afterSha256':bh,'beforeTriangles':tris(a),'afterTriangles':tris(b),'nativeSkinAttributesAndIndicesEqual':eq,'nativeSignatureEqual':rig.native_signature(BEFORE/path.name)==rig.native_signature(path),'nodesEqual':a['nodes']==b['nodes'],'materialsEqual':a['materials']==b['materials'],'imagesEqual':a['images']==b['images'],'textureBytesEqual':all((BEFORE/i['uri']).read_bytes()==(AFTER/i['uri']).read_bytes()for i in a['images'])})
+report={'checked':len(results),'allNativeSkinUnchanged':all(r['nativeSkinAttributesAndIndicesEqual']for r in results),'allNativeRigUnchanged':all(r['nativeSignatureEqual']and r['nodesEqual']for r in results),'allMaterialsTexturesUnchanged':all(r['materialsEqual']and r['imagesEqual']and r['textureBytesEqual']for r in results),'assets':results}
+(BASE/'native-skin-preservation-24.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items()if k!='assets'},indent=2));print(json.dumps([r for r in results if r['name'].startswith('granadero-')],indent=2))

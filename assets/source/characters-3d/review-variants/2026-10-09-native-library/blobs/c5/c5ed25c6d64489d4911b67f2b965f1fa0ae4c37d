@@ -1,0 +1,78 @@
+"""Private continuous military leather band on the actual reduced coat."""
+import math,json
+from pathlib import Path
+import bpy,bmesh
+from mathutils import Vector
+from garment_detail import solidify
+ROOT=Path('/tmp/granadero-shoulder-strap-pilot')
+SLOPE=.266/.389
+HALF=.043*.5*math.sqrt(1+SLOPE*SLOPE)
+
+def profile():
+ rows=[(1.042,.144+SLOPE*(1.042-1.435),HALF)]
+ z0,z1=1.385,1.455;c0=.144+SLOPE*(z0-1.435);c1=.144
+ for i in range(6):
+  u=i/5;h=z1-z0;z=z0+h*u
+  centre=(2*u**3-3*u*u+1)*c0+(u**3-2*u*u+u)*h*SLOPE+(-2*u**3+3*u*u)*c1
+  width=HALF+(.021-HALF)*(u*u*(3-2*u));rows.append((z,centre,width))
+ rows.append((1.7,.144,.021));return rows
+ROWS=profile()
+
+def bounds(z):
+ for a,b in zip(ROWS,ROWS[1:]):
+  if z<=b[0]:
+   t=max(0,min(1,(z-a[0])/(b[0]-a[0])))
+   lo=(a[1]-a[2])*(1-t)+(b[1]-b[2])*t;hi=(a[1]+a[2])*(1-t)+(b[1]+b[2])*t
+   dlo=((b[1]-b[2])-(a[1]-a[2]))/(b[0]-a[0]);dhi=((b[1]+b[2])-(a[1]+a[2]))/(b[0]-a[0])
+   return lo,hi,dlo,dhi
+ return .123,.165,0,0
+
+def fit_crossbelts(ctx, *, cleanup_seams=False):
+ objects=ctx['objects'];old=[o for o in objects if o.name.startswith(('Single_Crossbelt','Crossbelt_Shoulder'))];insertion=min(objects.index(o)for o in old)
+ for o in old:objects.remove(o);bpy.data.objects.remove(o,do_unlink=True)
+ coat=ctx['coat'];bm=bmesh.new();bm.from_mesh(coat.data)
+ area=sum(f.calc_area()for f in bm.faces);boundary=sum(e.calc_length()for e in bm.edges if e.is_boundary)
+ planes=[((0,0,z),(0,0,1))for z,_,_ in ROWS[:-1]]
+ for a,b in zip(ROWS,ROWS[1:]):
+  for sign in (-1,1):
+   xa=a[1]+sign*a[2];xb=b[1]+sign*b[2];slope=(xb-xa)/(b[0]-a[0]);planes.append(((xa,0,a[0]),(1,0,-slope)))
+ # The support owns the same seam vertices and native weights as the band.
+ for p,n in planes:bmesh.ops.bisect_plane(bm,geom=[*bm.verts,*bm.edges,*bm.faces],dist=1e-7,plane_co=Vector(p),plane_no=Vector(n).normalized(),clear_inner=False,clear_outer=False)
+ if cleanup_seams:
+  bmesh.ops.triangulate(bm,faces=list(bm.faces));tiny=[e for e in bm.edges if e.calc_length()<.0008 and all(.07<v.co.x<.23 and 1.34<v.co.z<1.56 for v in e.verts)]
+  if tiny:bmesh.ops.dissolve_degenerate(bm,dist=.0008,edges=tiny)
+ bmesh.ops.triangulate(bm,faces=list(bm.faces));bm.normal_update()
+ area_error=abs(sum(f.calc_area()for f in bm.faces)-area);boundary_error=abs(sum(e.calc_length()for e in bm.edges if e.is_boundary)-boundary)
+ assert area_error<2e-5,area_error;assert boundary_error<2e-5,boundary_error
+ bm.to_mesh(coat.data);bm.free();coat.data.update()
+ selected=[]
+ for face in coat.data.polygons:
+  lo,hi,_,_=bounds(face.center.z)
+  if face.area>1e-10 and face.center.z>=1.042-1e-6 and lo-1e-6<=face.center.x<=hi+1e-6:selected.append(face)
+ lookup={};coords=[];weights=[];faces=[];uvs=[];source_uv=coat.data.uv_layers.active.data;proof=[]
+ for face in selected:
+  poly=[]
+  for i in face.vertices:
+   if i not in lookup:
+    v=coat.data.vertices[i];p=v.co.copy();n=v.normal.copy();lo,hi,dlo,dhi=bounds(p.z)
+    candidates=[]
+    for x,derivative in [(lo,dlo),(hi,dhi)]:
+     plane=Vector((1,0,-derivative)).normalized();distance=(p.x-x)/math.sqrt(1+derivative*derivative);candidates.append((abs(distance),distance,plane))
+    distance,signed,plane=min(candidates,key=lambda item:item[0]);strength=max(0,min(1,(.006-distance)/.0052));strength=strength*strength*(3-2*strength)
+    # The edge offset stays in its longitudinal plane. This removes the
+    # lateral sawtooth caused by normal offsets at compressed coat vertices,
+    # while retaining exactly the same local normal clearance.
+    base=p-plane*(signed*strength) if distance<.00081 else p
+    direction=n-plane*n.dot(plane)*strength
+    denominator=direction.dot(n)
+    if denominator<.25:direction=n;denominator=1
+    q=base+direction*((.007+(p-base).dot(n))/denominator)
+    lookup[i]=len(coords);coords.append(q);weights.append({coat.vertex_groups[g.group].name:g.weight for g in v.groups});proof.append({'edgeDistanceMm':distance*1000,'normalClearanceMm':(q-p).dot(n)*1000,'offsetMm':(q-p).length*1000,'edgeProjection':strength})
+   poly.append(lookup[i])
+  faces.append(poly);uvs.append([tuple(source_uv[j].uv)for j in face.loop_indices])
+ obj=ctx['mesh']('Single_Crossbelt_Continuous',coords,faces,ctx['M']['cream'],weights,uvs);solidify(obj,.002)
+ obj['part']='outfit';obj['appearance']=ctx['preset'];colours=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+ for vertex,entry in zip(obj.data.vertices,colours.data):
+  p=vertex.co;shade=.962-.035*(.5+.5*math.sin(p.z*19+p.x*13))-.025*math.exp(-((p.z-1.055)/.06)**2);entry.color=(shade,shade*.99,shade*.965,1)
+ objects.remove(obj);objects.insert(insertion,obj)
+ ROOT.joinpath('strap-source-proof.json').write_text(json.dumps({'preset':ctx['preset'],'singleContinuousBand':True,'verticesBeforeSolidify':len(coords),'facesBeforeSolidify':len(faces),'thicknessMm':2,'normalClearanceMm':[min(r['normalClearanceMm']for r in proof),max(r['normalClearanceMm']for r in proof)],'maxOffsetMm':max(r['offsetMm']for r in proof),'supportAreaChange':area_error,'supportBoundaryChange':boundary_error,'copiedNativeSupportWeights':True,'profile':ROWS},indent=2))

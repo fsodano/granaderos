@@ -1,0 +1,12 @@
+from pathlib import Path
+import hashlib,json,difflib,shutil
+T=Path('/tmp/granadero-generated-skin-palette-pilot/all-lod-review');SOURCE=T/'source';REPO=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');OUT=T/'delivery';OUT.mkdir(exist_ok=True)
+files=['assets/source/characters-3d/authoring/character.py','assets/source/characters-3d/authoring/build.py','assets/source/characters-3d/authoring/generated_skin.py','assets/source/characters-3d/authoring/generated/granadero-skin.json','assets/source/characters-3d/authoring/generated/granadero-skin-prompt.txt','assets/source/characters-3d/authoring/generated/granadero-skin-generation.json','assets/source/characters-3d/authoring/generated/granadero-skin-colour.png','game/skin-palette.js','web/lib/three/actor-runtime.ts','playgrounds/granadero-3d/src/main.js','tests/characters-skin-surfaces.test.mjs','tests/characters-generated-skin.test.mjs','tests/three-actor-runtime.test.mjs']
+patch=[];records=[]
+for name in files:
+ p=SOURCE/name;target=OUT/'overlay'/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target)
+ old=REPO/name;records.append({'path':name,'beforeSha256':hashlib.sha256(old.read_bytes()).hexdigest()if old.exists()else None,'afterSha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size,'binary':p.suffix=='.png'})
+ if p.suffix!='.png':patch.extend(difflib.unified_diff(old.read_text().splitlines(keepends=True)if old.exists()else [],p.read_text().splitlines(keepends=True),fromfile='a/'+name if old.exists()else '/dev/null',tofile='b/'+name))
+(OUT/'source-runtime-tests.patch').write_text(''.join(patch))
+(OUT/'allowlist.json').write_text(json.dumps({'sourceFiles':records,'assetFiles':['granadero-lod0.glb','granadero-lod1.glb','granadero-lod2.glb','textures/040b6c27fc46ce2da454.png'],'manifestScope':'Only the three appearances.granadero.lods records: url,triangles,bytes,drawCalls,sha256. Preserve current banks and every other metadata record.'},indent=2)+'\n')
+print(json.dumps({'patch':str(OUT/'source-runtime-tests.patch'),'sourceFiles':len(records),'originalPngBytes':(SOURCE/files[6]).stat().st_size}))

@@ -1,0 +1,5 @@
+import sys
+sys.path.insert(0,'/tmp/granadero-main-collar-seam-pilot/source/assets/source/characters-3d/authoring')
+from character import create_character
+from optimize import optimize_character
+optimize_character(create_character('granadero'),0)

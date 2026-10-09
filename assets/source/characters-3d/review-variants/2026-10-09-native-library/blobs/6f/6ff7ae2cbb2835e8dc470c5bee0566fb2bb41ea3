@@ -1,0 +1,75 @@
+"""Native relaxed fists, scoped to unarmed standing idle and locomotion."""
+import math
+import bpy
+from mathutils import Vector, Matrix
+
+THUMB_PAD_M=.020
+THUMB_FORWARD_M=-.035
+NAMES=('stand.idle.unarmed','stand.walk.unarmed','stand.run.unarmed')
+FINGER_DIRECTIONS={
+    'index':(76,161,202),
+    'middle':(78,172,214),
+    'ring':(80,165,207),
+    'pinky':(82,160,202),
+}
+
+
+def _frame(direction,normal):
+    y=direction.normalized();z=(normal-y*y.dot(normal)).normalized()
+    return Matrix((y.cross(z).normalized(),y,z)).transposed()
+
+
+def _set(rig,name,rotation):
+    bone=rig.pose.bones[name]
+    bone.matrix=Matrix.LocRotScale(bone.head.copy(),rotation,Vector((1,1,1)))
+    bpy.context.view_layer.update()
+
+
+def apply_relaxed_hands(rig, *, right_thumb_untwist=0.0):
+    """Set directions and their hinge together; never use an ambiguous >180° arc."""
+    from reviewed_motion import _palm_basis
+    for side in ('l','r'):
+        forward,normal=_palm_basis(rig,side);hinge=forward.cross(normal).normalized()
+        hand=rig.pose.bones['hand_'+side]
+        delta=hand.matrix.to_quaternion()@hand.bone.matrix_local.to_quaternion().inverted()
+        for finger,angles in FINGER_DIRECTIONS.items():
+            for number,degrees in enumerate(angles,1):
+                bone=rig.data.bones[f'{finger}_{number:02d}_{side}']
+                rest=(bone.tail_local-bone.head_local).normalized()
+                direction=forward*math.cos(math.radians(degrees))+normal*math.sin(math.radians(degrees))
+                native_hinge=rest.cross(normal).normalized()
+                turn=(_frame(direction,hinge.cross(direction))@_frame(rest,native_hinge.cross(rest)).inverted()).to_quaternion()
+                _set(rig,bone.name,delta@turn@bone.matrix_local.to_quaternion())
+        # Rest the thumb outside the curled index, with room for both pads.
+        # Solve in the palm frame so arm swing cannot alter thumb axial roll.
+        world_normal=delta@normal;world_forward=delta@forward
+        names=[f'thumb_{i:02d}_{side}'for i in (1,2,3)]
+        first=rig.pose.bones[names[0]];index=rig.pose.bones['index_02_'+side]
+        target=index.head+world_normal*THUMB_PAD_M+world_forward*THUMB_FORWARD_M
+        base=first.head.copy();direction=target-base
+        l1=rig.data.bones[names[0]].length;l2=sum(rig.data.bones[n].length for n in names[1:])
+        distance=min(direction.length,l1+l2-.001);direction.normalize();target=base+direction*distance
+        pole=world_normal-direction*direction.dot(world_normal)
+        if pole.length<.001:pole=world_forward-direction*direction.dot(world_forward)
+        pole.normalize();along=(l1*l1-l2*l2+distance*distance)/(2*distance)
+        joint=base+direction*along+pole*math.sqrt(max(0,l1*l1-along*along))
+        for name,shaft in zip(names,(joint-base,target-joint,target-joint)):
+            bone=rig.data.bones[name];rest=(bone.tail_local-bone.head_local).normalized()
+            local=delta.inverted()@shaft.normalized()
+            turn=(_frame(local,normal)@_frame(rest,normal).inverted()).to_quaternion()
+            _set(rig,name,delta@turn@bone.matrix_local.to_quaternion())
+        if side == 'r' and right_thumb_untwist:
+            # Private one-hand pilot: reduce base axial roll while retaining
+            # the thumb shaft direction and the downstream world frames.
+            first = rig.pose.bones[names[0]]
+            second = rig.pose.bones[names[1]]
+            second_rotation = second.matrix.to_quaternion().copy()
+            old_rotation = first.matrix.to_quaternion().copy()
+            native_rotation = first.bone.matrix_local.to_quaternion()
+            native_axis = (first.bone.tail_local-first.bone.head_local).normalized()
+            current_axis = delta.inverted() @ (old_rotation @ Vector((0,1,0)))
+            minimum = delta @ native_axis.rotation_difference(current_axis) @ native_rotation
+            corrected = old_rotation.slerp(minimum, right_thumb_untwist)
+            _set(rig, names[0], corrected)
+            _set(rig, names[1], second_rotation)
+    bpy.context.view_layer.update()

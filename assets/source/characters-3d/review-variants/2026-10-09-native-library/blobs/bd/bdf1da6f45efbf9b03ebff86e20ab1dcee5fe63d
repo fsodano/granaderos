@@ -1,0 +1,84 @@
+"""Private shoulder fitting study, using the actual coat surface and weights."""
+import math
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+from mathutils.geometry import barycentric_transform
+
+
+def fit_epaulettes(ctx, lod):
+    if ctx['preset'] != 'granadero' or lod != 0:
+        return
+    coat = ctx['coat']
+    coat.data.calc_loop_triangles()
+    triangles = [tuple(t.vertices) for t in coat.data.loop_triangles]
+    points = [v.co.copy() for v in coat.data.vertices]
+    bvh = BVHTree.FromPolygons(points, triangles, all_triangles=True)
+    original_weights = [
+        {coat.vertex_groups[g.group].name: g.weight for g in v.groups}
+        for v in coat.data.vertices
+    ]
+
+    def sample(point):
+        p, normal, index, distance = bvh.ray_cast(
+            Vector((point.x, point.y, 1.9)), Vector((0, 0, -1)), .8)
+        if p is None or p.z < 1.34:
+            p, normal, index, distance = bvh.find_nearest(point)
+            if p is None or distance > .10:
+                raise ValueError(f'No close shoulder surface for {tuple(point)}; distance {distance}')
+        ids = triangles[index]
+        factors = barycentric_transform(p, *[points[i] for i in ids],
+            Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1)))
+        weights = {}
+        for vertex, factor in zip(ids, factors):
+            for bone, weight in original_weights[vertex].items():
+                weights[bone] = weights.get(bone, 0) + max(0, factor) * weight
+        kept = sorted(weights.items(), key=lambda pair: -pair[1])[:4]
+        total = sum(w for _, w in kept)
+        if not total:
+            raise ValueError('Shoulder surface has no native weights')
+        return p, normal, {bone: weight / total for bone, weight in kept}
+
+    def assign(obj, rows):
+        obj.vertex_groups.clear()
+        groups = {name: obj.vertex_groups.new(name=name)
+                  for name in sorted({name for row in rows for name in row})}
+        for index, weights in enumerate(rows):
+            for name, value in weights.items():
+                groups[name].add([index], value, 'REPLACE')
+
+    count = 0
+    for suffix in ('l', 'r'):
+        pad = next(o for o in ctx['objects'] if o.name == 'Crimson_Epaulette_' + suffix)
+        centre = sum((v.co for v in pad.data.vertices), Vector()) / len(pad.data.vertices)
+        prefix = ('Crimson_Epaulette_' + suffix, 'Epaulette_Shoulder_Board_' + suffix,
+                  'Epaulette_Metal_Crescent_' + suffix, 'Epaulette_Inner_Braid_' + suffix,
+                  'Epaulette_Button_' + suffix, 'Red_Epaulette_Fringe_' + suffix)
+        for obj in [o for o in ctx['objects'] if o.name.startswith(prefix)]:
+            rows = []
+            if obj.name.startswith('Red_Epaulette_Fringe_'):
+                anchor = sum((v.co for v in list(obj.data.vertices)[:7]), Vector()) / 7
+                p, normal, weights = sample(anchor)
+                delta = p + normal * .004 - anchor
+                for vertex in obj.data.vertices:
+                    vertex.co += delta
+                    rows.append(weights)
+            else:
+                for vertex in obj.data.vertices:
+                    old = vertex.co.copy()
+                    p, normal, weights = sample(old)
+                    if obj.name.startswith('Crimson_Epaulette_'):
+                        # A thin padded cloth base follows the shoulder; the
+                        # former ellipse was a rigid cap intersected by wool.
+                        clearance = .002 + .35 * (old.z - centre.z + .008)
+                    elif obj.name.startswith('Epaulette_Shoulder_Board_'):
+                        clearance = .0035
+                    elif obj.name.startswith('Epaulette_Button_'):
+                        clearance = .004 + (old.z - centre.z - .0035)
+                    else:
+                        clearance = .006 + (old.z - centre.z - .006)
+                    vertex.co = p + normal * max(.0015, clearance)
+                    rows.append(weights)
+            assign(obj, rows)
+            obj.data.update()
+            count += 1
+    print('FITTED_SHOULDER_PARTS', count, flush=True)

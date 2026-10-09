@@ -1,0 +1,26 @@
+{
+  "targetManifestBefore": "ab759698ded658b97613c66398a5403234b21b359c4f60e222f4c95b90fa3141",
+  "genders": {
+    "male": {
+      "before": "25e775ba8e5049d5a843d1a4d8762faf63429831367258f663120eef4d6e8277",
+      "after": "e48fbf8e8b9fda4219b59582730453221003dad669e0a3b36e50b99e91b5d598",
+      "selectedClips": 56,
+      "changedArmChannels": 336,
+      "preservedOtherChannels": 52770,
+      "allOtherMetadataPreserved": true,
+      "nativeBootSupportPreserved": true,
+      "allDurationsAndMarkersPreserved": true
+    },
+    "female": {
+      "before": "caa0973b37af92fa64e6d17b285469d7fc4220ddb91ed74fd278ab0b6d2e50b1",
+      "after": "ee8c093b487012b45472565b42a35df8c0b10693d2104a5dec1e4012bf24d932",
+      "selectedClips": 56,
+      "changedArmChannels": 336,
+      "preservedOtherChannels": 52770,
+      "allOtherMetadataPreserved": true,
+      "nativeBootSupportPreserved": true,
+      "allDurationsAndMarkersPreserved": true
+    }
+  },
+  "targetManifestAfter": "7b7a06a4a511498007fca7d1333321fa60ac2f236784eecf1ab4308a13e71768"
+}

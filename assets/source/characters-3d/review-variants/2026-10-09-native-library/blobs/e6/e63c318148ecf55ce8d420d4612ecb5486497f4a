@@ -1,0 +1,51 @@
+from pathlib import Path
+import json,struct,hashlib,copy,shutil
+r=Path('/tmp/granadero-hand-web-pilot');base=r/'pose-baseline';candidate=r/'paired-models';out=r/'delivery';(out/'deltas').mkdir(exist_ok=True);(out/'tests').mkdir(exist_ok=True)
+sha=lambda b:hashlib.sha256(b).hexdigest()
+def load(p):
+ raw=p.read_bytes();n=struct.unpack_from('<I',raw,12)[0];return json.loads(raw[20:20+n]),raw[28+n:],raw
+sizes={5120:1,5121:1,5122:2,5123:2,5125:4,5126:4};components={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}
+def accessor(j,b,i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];size=sizes[a['componentType']]*components[a['type']];stride=v.get('byteStride',size);start=v.get('byteOffset',0)+a.get('byteOffset',0)
+ raw=b''.join(b[start+k*stride:start+k*stride+size]for k in range(a['count']))
+ return {k:v for k,v in a.items()if k not in('bufferView','byteOffset')},raw
+def channels(j,b):
+ out={}
+ for clip in j['animations']:
+  for c in clip['channels']:
+   s=clip['samplers'][c['sampler']];key=(clip['name'],j['nodes'][c['target']['node']]['name'],c['target']['path']);out[key]=(s.get('interpolation','LINEAR'),accessor(j,b,s['input']),accessor(j,b,s['output']))
+ return out
+receipt={'scope':'Both thumb chains only, standing unarmed idle/walk/run. No geometry, other fingers, weapon grips, clocks, or body motion changes.','banks':{},'bodies':{},'source':{},'limitations':['LOD0 web test covers non-coplanar surface crossings; it is not an exhaustive volumetric collision proof.','The angular crease/opening inside the curled index finger remains unchanged.','Weapon and punch thumb poses are unchanged and were not re-certified by these scoped checks.']}
+profiles=json.loads((candidate/'pilot.json').read_text())
+for gender in ['male','female']:
+ name=gender+'-animations.glb';ja,ba,ra=load(base/name);jb,bb,rb=load(candidate/name);a=channels(ja,ba);b=channels(jb,bb);assert a.keys()==b.keys();changed=[k for k in a if a[k]!=b[k]];allowed=[tuple(k)for k in profiles[gender]['changedChannels']];assert sorted(changed)==sorted(allowed);assert len(changed)==18
+ for key in changed:assert a[key][:2]==b[key][:2],('clock changed',key)
+ for ca,cb in zip(ja['animations'],jb['animations']):assert {k:v for k,v in ca.items()if k not in('channels','samplers')}=={k:v for k,v in cb.items()if k not in('channels','samplers')}
+ assert ja['nodes']==jb['nodes'];assert bb[:len(ba)]==ba
+ delta=copy.deepcopy(jb);delta['animations']=[];delta['accessors']=[];delta['bufferViews']=[];payload=bytearray()
+ def push(i):
+  meta,data=accessor(jb,bb,i);payload.extend(b'\0'*(-len(payload)%4));v=len(delta['bufferViews']);delta['bufferViews'].append({'buffer':0,'byteOffset':len(payload),'byteLength':len(data)});payload.extend(data);n=len(delta['accessors']);delta['accessors'].append({**meta,'bufferView':v});return n
+ for clip in jb['animations']:
+  if clip['name']not in{c[0]for c in changed}:continue
+  d={k:copy.deepcopy(v)for k,v in clip.items()if k not in('channels','samplers')};d['channels']=[];d['samplers']=[]
+  for c in clip['channels']:
+   key=(clip['name'],jb['nodes'][c['target']['node']]['name'],c['target']['path'])
+   if key not in changed:continue
+   s=clip['samplers'][c['sampler']];d['channels'].append({**c,'sampler':len(d['samplers'])});d['samplers'].append({**s,'input':push(s['input']),'output':push(s['output'])})
+  delta['animations'].append(d)
+ payload.extend(b'\0'*(-len(payload)%4));delta['buffers']=[{'byteLength':len(payload)}];js=json.dumps(delta,separators=(',',':')).encode();js+=b' '*(-len(js)%4);raw=struct.pack('<4sII',b'glTF',2,28+len(js)+len(payload))+struct.pack('<I4s',len(js),b'JSON')+js+struct.pack('<I4s',len(payload),b'BIN\0')+payload
+ path=out/'deltas'/f'{gender}-relaxed-thumb.glb';path.write_bytes(raw);dj,db,_=load(path);assert channels(dj,db)=={k:b[k]for k in changed}
+ receipt['banks'][gender]={'baselineSha256':sha(ra),'candidateSha256':sha(rb),'deltaSha256':sha(raw),'deltaBytes':len(raw),'changedChannels':len(changed),'preservedChannels':len(a)-len(changed),'allowlist':[list(k)for k in changed],'allNonselectedInputOutputPayloadsExact':True,'selectedInputTimesExact':True,'allClipMetadataExact':True,'nativeNodeTransformsExact':True,'originalBinaryPrefixExact':True}
+for p in base.glob('*.glb'):
+ if p.name in('male-animations.glb','female-animations.glb'):continue
+ other=candidate/p.name;assert p.read_bytes()==other.read_bytes();receipt['bodies'][p.name]=sha(p.read_bytes())
+for name in ['motion.py','relaxed_hands.py']:
+ p=out/'assets/source/characters-3d/authoring'/name;receipt['source'][name]={'baselineSha256':sha((r/'delivery-baseline'/name).read_bytes()),'candidateSha256':sha(p.read_bytes())}
+for name in ['characters-relaxed-thumb-web.test.mjs']:
+ shutil.copy2(r/'runtime/tests'/name,out/'tests'/name)
+receipt['sourceEquivalence']=json.loads((out/'source-equivalence.json').read_text())
+for row in receipt['sourceEquivalence']:row.pop('bones')
+receipt['validation']={'candidateTests':{'pass':12,'fail':0,'log':str(r/'final-gates.log')},'baselineWebTests':{'pass':0,'fail':6,'log':str(r/'baseline-web-120hz.log')},'candidateDenseWebEvidence':str(r/'final-web-120hz.json'),'baselineDenseWebEvidence':str(r/'baseline-web-120hz.json'),'frequencyHz':120,'samplesPerAnatomy':465,'handsPerAnatomy':2}
+receipt['renders']={name:str(r/('final-'+name))for name in ['idle','walk','run']}
+(out/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');(out/'allowlist.json').write_text(json.dumps({g:receipt['banks'][g]['allowlist']for g in receipt['banks']},indent=2)+'\n')
+print(json.dumps({g:{k:v for k,v in d.items()if k not in('allowlist',)}for g,d in receipt['banks'].items()},indent=2))

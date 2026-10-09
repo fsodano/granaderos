@@ -1,0 +1,13 @@
+import json,numpy as np
+from pathlib import Path
+P=Path(__file__).parent;rows=[]
+for tag in ['backhand','lod1-backhand','lod2-backhand']:
+ d=json.load(open(P/('models-'+tag+'.json')));r=np.array(d['rest']);p=np.array(d['points']);uv=np.array(d['uv']);tile=np.floor(uv*4).astype(int);vi=np.where((tile[:,0]==1)&(tile[:,1]==3))[0];si=np.where((tile[:,0]==0)&(tile[:,1]==3))[0];pairs=[]
+ for v in vi:
+  if not(r[v,1]>1.2):continue
+  match=si[np.linalg.norm(r[si]-r[v],axis=1)<1e-6]
+  if not len(match):continue
+  gaps=np.linalg.norm(p[match]-p[v],axis=1)*1000
+  pairs.append({'v':int(v),'s':match.tolist(),'rest':r[v].tolist(),'bestMatchingGapMm':float(gaps.min()),'worstMatchingGapMm':float(gaps.max()),'vestWeights':d['weights'][v],'shirtWeights':[d['weights'][i]for i in match]})
+ row={'pose':tag,'pairedVertices':len(pairs),'maxBestGapMm':max(x['bestMatchingGapMm']for x in pairs),'maxWorstGapMm':max(x['worstMatchingGapMm']for x in pairs),'over.1mm':[x for x in pairs if x['bestMatchingGapMm']>.1]};rows.append(row);print({k:v for k,v in row.items()if k!='over.1mm'})
+(P/'seam-gaps-all-lods.json').write_text(json.dumps(rows,indent=2)+'\n')

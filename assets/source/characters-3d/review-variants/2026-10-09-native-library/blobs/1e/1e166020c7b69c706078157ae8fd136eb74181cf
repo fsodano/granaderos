@@ -1,0 +1,13 @@
+# Rejected bounded coat-ease trial
+
+The trial passes the two relevant contact checks, but its visible gain is too small. Do not integrate or publish it.
+
+The same accepted coat mesh received at most 4.70 mm of elbow and waist ease. The authored collar, shoulder yoke, cuffs and crossbelt bands stayed fixed. Topology, UVs and native weights are unchanged before optimisation. The optimiser does retessellate the moved cloth. The exported native Skin, rig, boots, trousers, headwear, generated textures and every other GLB are unchanged.
+
+The sleeve is slightly fuller at inspection scale. The waist change is barely visible. The navy material still reads as smooth plastic, and the change does not make it read as woven cloth.
+
+Compare `compare-iso.png`, `compare-coat.png` and `compare-sleeve.png`. Exact poses are idle .5 s, pistol aim 0 s and rifle reload 1.92 s. These are real exported GLB renders at 700 px and 16 samples, with matching lighting.
+
+`receipt.json` records hashes, limits, changes and acceptance results. `rejected-diagnostic-source.patch` is evidence only. No tracked/shared files were changed.
+
+The limited inside-elbow probe also worsens the pistol left elbow warning from 8.00 mm to 10.63 mm below the native body surface. These warnings exist in the baseline too; this is not a full collision audit. It is another reason to keep the trial rejected.

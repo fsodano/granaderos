@@ -1,0 +1,35 @@
+from pathlib import Path
+import json,struct,hashlib,shutil
+import numpy as np
+ROOT=Path('/tmp/granadero-generated-skin-palette-pilot/all-lod-review');SOURCE=ROOT/'models';OUT=ROOT/'models-brow-neutral';shutil.copytree(SOURCE,OUT)
+path=OUT/'granadero-lod0.glb';raw=path.read_bytes();n=struct.unpack_from('<I',raw,12)[0];j=json.loads(raw[20:20+n]);binary=raw[28+n:];original=binary
+p=next(p for m in j['meshes']for p in m['primitives']if j['materials'][p['material']]['name']=='Skin')
+def read(i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];width={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4}[a['type']];dtype={5121:'u1',5123:'<u2',5125:'<u4',5126:'<f4'}[a['componentType']];size=np.dtype(dtype).itemsize
+ x=np.ndarray((a['count'],width),dtype=dtype,buffer=binary,offset=v.get('byteOffset',0)+a.get('byteOffset',0),strides=(v.get('byteStride',width*size),size)).astype(float)
+ if a.get('normalized'):x/=np.iinfo(dtype).max
+ return x
+pos=read(p['attributes']['POSITION']);idx=read(p['indices']).astype(int).reshape(-1,3);col=read(p['attributes']['COLOR_0']);parent=list(range(len(pos)))
+def find(i):
+ while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]
+ return i
+for face in idx:
+ for i in face[1:]:parent[find(i)]=find(face[0])
+groups={}
+for i in range(len(pos)):groups.setdefault(find(i),[]).append(i)
+beds=[]
+for ids in groups.values():
+ pts=pos[ids];lo=pts.min(0);hi=pts.max(0);dim=hi-lo;centre=(lo+hi)/2
+ if centre[1]>1.66 and .011<abs(centre[0])<.060 and .03<dim[0]<.055 and .003<dim[1]<.012 and len(ids)>100:
+  beds.append(ids)
+  print({'vertices':len(ids),'bounds':[lo.tolist(),hi.tolist()],'colourMin':col[ids].min(0).tolist()})
+assert len(beds)==2 and all(len(x)==441 for x in beds),[len(x)for x in beds]
+selected=[i for ids in beds for i in ids];before=col.copy();col[selected]=1
+# Preserve the original COLOR_0 encoding and every other vertex value.
+a=j['accessors'][p['attributes']['COLOR_0']];dtype={5121:'u1',5123:'<u2',5126:'<f4'}[a['componentType']]
+if a.get('normalized'):encoded=np.rint(col*np.iinfo(dtype).max).astype(dtype)
+else:encoded=col.astype(dtype)
+data=encoded.tobytes();binary+=b'\0'*(-len(binary)%4);start=len(binary);binary+=data;view=len(j['bufferViews']);j['bufferViews'].append({'buffer':0,'byteOffset':start,'byteLength':len(data),'target':34962});new=dict(a);new['bufferView']=view;new.pop('byteOffset',None);new.pop('min',None);new.pop('max',None);ai=len(j['accessors']);j['accessors'].append(new);p['attributes']['COLOR_0']=ai;j['buffers'][0]['byteLength']=len(binary)
+js=json.dumps(j,separators=(',',':')).encode();js+=b' '*(-len(js)%4);binary+=b'\0'*(-len(binary)%4);out=struct.pack('<III',0x46546c67,2,28+len(js)+len(binary))+struct.pack('<II',len(js),0x4e4f534a)+js+struct.pack('<II',len(binary),0x004e4942)+binary;path.write_bytes(out)
+m=json.loads((OUT/'manifest.json').read_text());lod=m['appearances']['granadero']['lods'][0];lod.update({'sha256':hashlib.sha256(out).hexdigest(),'bytes':len(out)});(OUT/'manifest.json').write_text(json.dumps(m,indent=2)+'\n')
+receipt={'bodySha256':lod['sha256'],'bedVertices':len(selected),'originalBinaryPrefixUnchanged':binary[:len(original)]==original,'allNonBedColourValuesUnchanged':bool(np.array_equal(col[[i for i in range(len(pos))if i not in set(selected)]],before[[i for i in range(len(pos))if i not in set(selected)]])),'scope':'Only two441-vertex Skin eyebrow-bed COLOR_0 patches neutralized. Hair and original skin colours retained.'};(ROOT/'brow-neutral-proof.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))

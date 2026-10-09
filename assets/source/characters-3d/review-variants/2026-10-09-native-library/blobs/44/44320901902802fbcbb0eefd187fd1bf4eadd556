@@ -1,0 +1,34 @@
+# Why V2 became padded
+
+V2 was rejected. Its failure was geometric, not a missing material or texture.
+
+1. `prepare_envelope` replaced the sleeve's two cross-section axes with one radius. It then added 9.5 mm and allowed up to 15 mm of outward movement. This rounded and inflated the forearm as well as filling the elbow notch.
+2. The centreline was two straight segments joined at the elbow. It did not provide a continuous cloth station through the bend. The scalar radial envelope therefore treated the joint as two joined tubes.
+3. The corrective smoothed the deformed patch and pushed it outward to a minimum skin clearance. It did not preserve material edge lengths. The largest inverse-skinned morph move reached 48.7 mm in rest coordinates.
+4. The 3.6 mm inner-fold treatment was much smaller than that broad expansion. Adding more grooves would not have corrected the padded construction.
+5. Native skin weights vary strongly around an elbow section. At the measured rest elbow station, lower-arm weight spans about 0.25–0.91. The coat inherits that uneven muscle/skin crease, although a sleeve's material should transition more evenly along its length.
+
+## Exported section evidence
+
+The same measurement script reads both actual GLBs. These are ellipse-span area proxies, not a watertight volume measurement. Rest elbow position and frame are identical.
+
+| Distance from elbow | Current area proxy mm² | V2 area proxy mm² | Change |
+| --- | ---: | ---: | ---: |
+| Upper arm, −60 mm | 7,849 | 11,035 | +40.6% |
+| Elbow, 0 mm | 4,108 | 6,821 | +66.0% |
+| Forearm, +60 mm | 6,938 | 10,099 | +45.6% |
+| Forearm, +120 mm | 5,036 | 8,331 | +65.4% |
+
+`section-diagnosis.json` contains the raw spans and local weight ranges. No body or rig was changed.
+
+## Specific V3 experiment
+
+V3 keeps the connected coat mesh and sewn boundaries. It does not need a new open panel or another collar join.
+
+- Use a continuous curved centreline through the elbow.
+- Keep separate front/back and transverse ellipse axes. Smooth the small local shape irregularities without adding a fixed radial allowance. Limit target section growth and permit small inward as well as outward cloth moves.
+- Reassign only the interior sleeve's upper/lower-arm blend by longitudinal cloth rows. Preserve the total native-arm influence and taper to the unchanged shoulder and cuff weights.
+- Bake one elbow-angle corrective with rest-edge stretch constraints and weak bending constraints. Keep the outer elbow extended, and let the inner material compress into shallow oblique folds.
+- Use actual local crossings and a multi-ray body-volume check for collision diagnosis. Do not treat one nearest normal as proof of being inside.
+
+This is a testable construction change. It is not yet accepted. Review the same four actual exported poses, actual surface crossings, section areas and remaining edge stretch before deciding whether to proceed. No shared source or assets are changed.

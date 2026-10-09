@@ -1,0 +1,21 @@
+# Private shoulder strap study — not ready to publish
+
+Baseline: published manifest b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23.
+Only Granadero LOD0 was rebuilt. No shared files or published assets changed.
+
+V2 replaces three overlapping pieces with one 2 mm leather band. Its centre and width turn smoothly around the shoulder. Edge vertices keep the same 7 mm local normal clearance, but the normal offset is constrained to the longitudinal edge plane. Interval-local seam cuts avoid the unnecessary shoulder wedges from V1.
+
+The static panel shelf is removed. Idle and both aim views have cleaner continuous edges. The raised-arm loading edge still inherits the coat's sharp shoulder deformation. The two existing sampled contact tests pass, but broader actual geometry checks show that this is not a complete moving-strap fix.
+
+The unchanged baseline also has coat/strap crossings. In the checked standing reload frame at 1.92 s there are 55 crossing triangle pairs in baseline and 40 in V2. Counts depend on tessellation and are not penetration depths. A 30 Hz support-plane sweep fails both models: 6.41 mm baseline versus 6.27 mm V2. Actual edge/triangle intersections confirm that at least some folds are real crossings, not only an unreliable open-surface sign test.
+
+Evidence:
+- `compare-v2-shoulder.png`, `compare-v2-coat.png`, `compare-v2-iso.png`: four matched views.
+- `after-v2-dense-frame`: the compressed crouch-loading shoulder at 0.1667 s.
+- `strap-receipt-v2.json`: exact asset/preservation details.
+- `contact-gates-v2.log`: 2 existing tests pass.
+- `contact-dense-{before,v2}.log`: broader signed checks, both fail.
+- `intersections-{before-models,models}.json`: actual local triangle crossing samples.
+- `strap-source-proposal.patch`: source proposal without private logging side effects.
+
+The source proposal is not an integration recommendation. The broad moving shoulder requires a coherent cloth/strap deformation; increasing strap offset would hide part of the symptom and make the band float.

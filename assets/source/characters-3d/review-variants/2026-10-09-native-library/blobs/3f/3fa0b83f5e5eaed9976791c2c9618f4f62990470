@@ -1,0 +1,150 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -633,7 +633,10 @@
+                 radius=brow_random.uniform(.000038,.000068)
+                 tube('Natural_Eyebrow_Hair_'+suffix,[start,(start+end)*.5+Vector((0,-.000055,.000015)),end],[radius,radius*.82,.000012],mats['hair'],'head',4)
+     from anatomy_surface import scalp_patch, fitted_fingernails, hand_frames, hand_tone
+-    hair=scalp_patch(mesh,faces,points,uvs,assignments,mats['hair'],preset in ('granadero','royalist'),gender=='female')
++    scalp_material=mats['hair']
++    if preset=='woman-scout':
++        scalp_material=mats['hair'].copy();scalp_material.name='Scout_Swept_Hair'
++    hair=scalp_patch(mesh,faces,points,uvs,assignments,scalp_material,preset in ('granadero','royalist'),gender=='female',natural=preset=='woman-scout')
+     subdiv(hair,1)
+     # User photograph: broad woven yellow band, brass plate and red cords.
+     hat_y=-.052;hat_base=1.692;hrings=[(hat_base,.087,.105),(1.725,.092,.108),(1.838,.101,.111),(1.851,.102,.111)]
+@@ -738,6 +741,9 @@
+     mesh('Tall_Red_Plume',plumev,plumef,mats['plume'],'head')
+     ctx = {'rig':rig,'arm':arm,'objects':objects,'export_objects':[rig]+objects,'materials':mats,'M':mats,'heads':heads,'tails':tails,'rest':rest,'HEADS':heads,'TAILS':tails,'REST':rest,'source_points':points,'source_weights':source_weights,'source_assignments':assignments,'body_height':height,'height':1.948,'body_bounds':(tuple(min(points[i][a] for i in used) for a in range(3)),tuple(max(points[i][a] for i in used) for a in range(3))),'mesh':mesh,'ellipsoid':ellipsoid,'tube':tube,'source_weight_at':source_weight_at,'preset':preset,'gender':gender,'coat':coat,'trousers':trousers,'subset':subset,'source_faces':faces,'skin':skin,'native_skin_points':native_skin_points}
+     fitted_fingernails(ctx,mats['skin'])
++    if preset=='woman-scout':
++        from hair_construction import add_scout_locks
++        add_scout_locks(ctx,hair)
+     apply_appearance(ctx)
+     ctx['export_objects'] = [rig]+objects
+     for cloth in (coat,trousers):
+--- a/assets/source/characters-3d/authoring/anatomy_surface.py
++++ b/assets/source/characters-3d/authoring/anatomy_surface.py
+@@ -48,7 +48,7 @@
+     return {name:value/total for name,value in weights.items() if value>1e-7}
+ 
+ 
+-def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False, female=False):
++def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False, female=False, natural=False):
+     """Clip crossing faces at the hairline instead of dropping whole polygons."""
+     def boundary(p):
+         if military:
+@@ -62,9 +62,18 @@
+             back=max(0,min(1,(p.y+.055)/.070))
+             back=back*back*(3-2*back)
+             forehead=1.716-.043*temple*temple
++            if natural:
++                # A slight unequal centre and temple recession avoids a drawn
++                # ruler edge. The nape remains the existing braid support.
++                forehead=1.712-.034*temple*temple
++                forehead+=.0030*math.exp(-((p.x-.036)/.019)**2)
++                forehead-=.0032*math.exp(-((p.x+.012)/.015)**2)
++                edge+=.0011*math.sin(p.x*227+1.2)+.0007*math.sin(p.x*683-.4)
+             nape=1.612+.013*min(1,(abs(p.x)/.073)**2)
+             hairline=forehead*(1-back)+nape*back
+             ear_clearance=.077-abs(p.x)+max(0,p.z-1.670)*.34
++            if natural and p.y<.008:
++                ear_clearance+=.008*max(0,min(1,(.008-p.y)/.05))
+             return min(p.z-hairline-edge,ear_clearance)
+         hairline=1.711-.043*temple*temple
+         return min(p.z-1.640-edge, max(p.y+.024, p.z-hairline-edge))
+@@ -110,6 +119,22 @@
+             edge=max(0,min(1,boundary(p)/.011));edge=edge*edge*(3-2*edge)
+             thickness=.00065+(thickness+relief-.00065)*edge
+             shade=1-.24*part-.035*(1-lock)
++            if natural:
++                # Unequal swept bundles replace the repeated sinusoidal ribs.
++                influence=max(0,min(1,(p.z-1.658)/.048)) if p.y>.015 else 1.0
++                influence=influence*influence*(3-2*influence)
++                bundles=[(-.075,.010,.0010),(-.058,.009,.0017),(-.039,.013,.0012),
++                         (-.016,.010,.0020),(.005,.011,.0013),(.027,.009,.0017),
++                         (.047,.012,.0011),(.067,.010,.0016)]
++                relief=0;variation=0
++                for i,(anchor,width,height) in enumerate(bundles):
++                    curve=anchor*(1-.37*back)+.007*math.sin(math.pi*back+i*.68)*math.sin(math.pi*back)
++                    response=math.exp(-((p.x-curve)/width)**2)
++                    relief=max(relief,height*response)
++                    variation+=response*(.08*math.sin(i*2.1)-.035)
++                natural_thickness=.00030+(.0031+relief-.00030)*edge
++                thickness=thickness*(1-influence)+natural_thickness*influence
++                shade=shade*(1-influence)+( .89+variation+.045*math.sin(p.y*59+p.x*43) )*influence
+         else:shade=1
+         tones.data[vertex.index].color=(shade,shade,shade,1)
+         vertex.co+=vertex.normal*thickness
+--- a/assets/source/characters-3d/authoring/surface_atlas.py
++++ b/assets/source/characters-3d/authoring/surface_atlas.py
+@@ -117,6 +117,19 @@
+         rough += .040 * lines + .055 * polish + .010 * grain
+         shade += .010 * lines + .017 * broad
+         height = .015 * lines
++    elif kind == 'hair' and 'scout_swept' in name.lower():
++        # Unequal swept locks share one fitted scalp. Dense fine fibres vary
++        # in spacing and bend, while broad pigment avoids regular raised ribs.
++        warp = u + .014*np.sin(math.tau*v*1.4 + u*5) + .009*v*v
++        phase = 61*warp + .43*np.sin(math.tau*warp*7) + .21*np.sin(math.tau*warp*17)
++        fibres = .65*np.cos(math.tau*phase) + .35*np.cos(math.tau*(phase*1.73+.2*v))
++        locks = np.zeros_like(u)
++        for center,width,strength in ((.07,.055,-.11),(.20,.04,.065),(.32,.06,-.08),(.45,.035,.06),(.59,.08,-.11),(.74,.047,.05),(.90,.065,-.085)):
++            curve=center+.014*np.sin(math.tau*v*.7+center*4)
++            locks += strength*np.exp(-((u-curve)/width)**2)
++        shade += locks + .065*fibres + .022*broad
++        rough = np.full_like(rough,.66) + .035*fibres + .06*locks
++        height = .08*fibres
+     elif kind == 'hair':
+         strands = (.60 * np.cos(math.tau * u * 32 + .6 * np.sin(math.tau * v * 2))
+                    + .20 * np.cos(math.tau * u * 77 + .35 * np.sin(math.tau * v))
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/hair_construction.py
+@@ -0,0 +1,48 @@
++"""Scout-only surface-fitted hairline and temple locks; no face displacement."""
++import math
++import random
++from mathutils import Vector
++from anatomy_surface import surface_weights
++
++def add_scout_locks(ctx,scalp):
++    skin=ctx['skin'];rng=random.Random(30721);locks=[]
++    # Sparse soft tips interrupt the cap boundary. They are visible small
++    # bundles, not a dense set of subpixel hairs.
++    for x in(-.064,-.053,-.043,-.030,-.018,-.007,.007,.020,.034,.049,.063):
++        temple=max(0,min(1,(abs(x)-.035)/.046))
++        z=1.712-.034*temple*temple+.003*math.exp(-((x-.036)/.019)**2)-.0032*math.exp(-((x+.012)/.015)**2)
++        locks.append((x,z+rng.uniform(.004,.008),x+rng.uniform(-.005,.005),z-rng.uniform(.0008,.0025),rng.uniform(.0003,.0006),rng.uniform(-.0015,.0015)))
++    for sign in(-1,1):
++        # Roots begin inside the swept cap; only the small final ends lie on
++        # the temple skin. These are connected wisps, never pasted patches.
++        locks.append((sign*.061,1.719,sign*.071,1.679,.0010,sign*.004))
++        locks.append((sign*.074,1.718,sign*.078,1.673,.00065,sign*.002))
++    count=0
++    for number,(x0,z0,x1,z1,width,bend)in enumerate(locks):
++        coords=[];weights=[];polys=[];uv=[];tones=[];rows=11;columns=5
++        for row in range(rows):
++            t=row/(rows-1);x=x0*(1-t)+x1*t+bend*math.sin(math.pi*t);z=z0*(1-t)+z1*t
++            taper=(.78+.22*math.sin(math.pi*t))*(1-t)**.70+.016
++            for col in range(columns):
++                across=col/(columns-1)*2-1;probe=Vector((x+across*width*taper,-1,z))
++                hit,p,n,face=skin.ray_cast(probe,Vector((0,1,0)))
++                if not hit:break
++                skinpoint=p.copy();skinface=face
++                hair_hit,hp,hn,_=scalp.ray_cast(probe,Vector((0,1,0)))
++                if hair_hit and hp.y<p.y and(hp-p).length<.012:p,n=hp,hn
++                # Thin lenticular section, tapered flush at the end and edges.
++                rise=.00007+width*.30*max(0,1-across*across)*(1-t)**.55
++                coords.append(p+n*rise);weights.append(surface_weights(skin,skinpoint,skinface));uv.append((col/(columns-1),t))
++                variation=.72+.12*math.sin(number*2.17)+.14*max(0,1-across*across)
++                tones.append((variation,variation*.94,variation*.85,1))
++            else:continue
++            break
++        if len(coords)!=rows*columns:continue
++        for row in range(rows-1):
++            for col in range(columns-1):
++                i=row*columns+col;polys.append((i,i+1,i+columns+1,i+columns))
++        obj=ctx['mesh']('Scout_Hairline_Lock_'+str(number),coords,polys,scalp.data.materials[0],weights,[[uv[i]for i in f]for f in polys])
++        colors=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
++        for entry,tone in zip(colors.data,tones):entry.color=tone
++        obj.data.color_attributes.active_color_index=0;obj.data.color_attributes.render_color_index=0;count+=1
++    print('SCOUT_HAIR_LOCKS',count,'sourceTriangles',count*80,flush=True)

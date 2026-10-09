@@ -1,0 +1,12 @@
+--- a/web/lib/three/actor-runtime.ts
++++ b/web/lib/three/actor-runtime.ts
+@@ -296,6 +296,9 @@
+     this.poseCloth(Math.min(delta,.1));
+     const attached=this.equipment.userData.attached as Object3D[],freeGuard=!attached.some(item=>item.userData.hand==='handLeft');
+     const meleeWeapon=attached.find(item=>item.userData.hand==='handRight'&&(this.itemSpec(item.userData.itemId)?.category==='sabre'||freeGuard&&this.itemSpec(item.userData.itemId)?.category==='pistol'));
++    // Contact fitting samples the strike's impact pose. Use its item grip too,
++    // then restore the visible grip for this frame after the fitted body pose.
++    if(meleeWeapon&&visual.cue)this.placeEquipment(this.clipSpec.markers?.contact??this.action.time);
+     this.meleeFit.apply(visual.cue,clip,this.clipSpec,meleeWeapon,this.action.time,this.contactActor);
+     this.placeEquipment(this.action.time);this.timedProps(this.action.time);
+     if(this.horse&&this.horseMixer){

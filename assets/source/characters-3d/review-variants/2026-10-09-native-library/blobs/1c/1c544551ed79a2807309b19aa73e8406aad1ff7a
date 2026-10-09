@@ -1,0 +1,7 @@
+from pathlib import Path
+import json,subprocess,concurrent.futures,sys
+b=Path('/tmp/granadero-collar-rim-pilot');kind=sys.argv[1];library=__import__('os').environ.get('COAT_LIBRARY') or ('before-models' if kind=='before'else'models');plans=json.loads((b/'plans.json').read_text())
+def run(plan):
+ clip,t=plan;command=['/Applications/Blender.app/Contents/MacOS/Blender','--background','--threads','4','--factory-startup','--python',str(b/'render-review.py'),'--','--worker','--library-dir',str(b/library),'--output',str(b/kind/clip),'--presets','granadero','--clips',clip,'--times',str(t),'--size','700','--samples','16']
+ with(b/(kind+'-'+clip+'.log')).open('w')as f:subprocess.run(command,stdout=f,stderr=subprocess.STDOUT,check=True)
+with concurrent.futures.ThreadPoolExecutor(max_workers=2)as p:list(p.map(run,plans))

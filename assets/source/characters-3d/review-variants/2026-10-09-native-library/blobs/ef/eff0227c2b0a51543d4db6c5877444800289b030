@@ -1,0 +1,36 @@
+--- a/assets/source/characters-3d/authoring/facial_structure.py
++++ b/assets/source/characters-3d/authoring/facial_structure.py
+@@ -42,6 +42,33 @@
+         shift=relief*front*mature
+         if abs(shift)>=.000005:vertex.co+=n*shift
+     skin.data.update()
++    define_adult_planes(skin, eye_z)
++
++
++def define_adult_planes(skin, eye_z):
++    """A bounded adult facial-plane trial on the existing skin, not the rig."""
++    def g(v,c,w):return math.exp(-((v-c)/w)**2)
++    def smooth(v):
++        t=max(0,min(1,v));return t*t*(3-2*t)
++    samples=[(v,v.co.copy(),v.normal.copy())for v in skin.data.vertices]
++    for vertex,p,n in samples:
++        x=abs(p.x);z=p.z
++        if not (.024<x<.082 and eye_z-.092<z<eye_z+.025 and p.y<-.065):continue
++        outer=smooth((x-.024)/.014)*smooth((.082-x)/.010)
++        front=smooth((-n.y-.20)/.60)
++        neck=smooth((z-eye_z+.092)/.017)
++        # A flat zero over the true eye and lip regions protects fitted edges.
++        eye=1-smooth((.059-x)/.010)*smooth((z-eye_z+.025)/.009)*smooth((eye_z+.030-z)/.012)
++        mouth=1-smooth((.040-x)/.008)*smooth((z-eye_z+.082)/.010)*smooth((eye_z-.041-z)/.010)
++        relief=.0043*g(x,.050,.020)*g(z,eye_z-.026,.013)
++        relief-=.0040*g(x,.054,.020)*g(z,eye_z-.050,.019)
++        relief-=.0027*g(x,.070,.013)*g(z,eye_z+.001,.025)
++        relief+=.0025*g(x,.065,.012)*g(z,eye_z-.075,.014)
++        crease_x=.025+.18*max(0,eye_z-z-.032)
++        relief-=.00075*g(x,crease_x,.004)*g(z,eye_z-.045,.015)
++        shift=relief*outer*front*neck*eye*mouth
++        vertex.co+=n*max(-.0030,min(.0030,shift))
++    skin.data.update()
+ 
+ 
+ def soften_lower_lid(skin, eye_z):

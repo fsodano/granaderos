@@ -1,0 +1,26 @@
+from pathlib import Path
+import struct,json,hashlib,sys
+r=Path('/tmp/granadero-shoulder-strap-pilot');after=sys.argv[1] if len(sys.argv)>1 else 'models'
+def load(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];return json.loads(b[20:20+n]),b[28+n:]
+def acc(j,b,i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];width={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];size={5121:1,5123:2,5125:4,5126:4}[a['componentType']]*width;start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size);return b''.join(b[start+n*stride:start+n*stride+size]for n in range(a['count']))
+name='granadero-lod0.glb';pa=r/'before-models'/name;pb=r/after/name;a,ab=load(pa);b,bb=load(pb)
+assert len(a['nodes'])==len(b['nodes'])
+for x,y in zip(a['nodes'],b['nodes']):
+ assert {k:v for k,v in x.items() if k!='weights'}=={k:v for k,v in y.items() if k!='weights'}, (x['name'],y['name'])
+assert a['skins'][0]['joints']==b['skins'][0]['joints'];assert acc(a,ab,a['skins'][0]['inverseBindMatrices'])==acc(b,bb,b['skins'][0]['inverseBindMatrices'])
+changes=[]
+for ma,mb in zip(a['meshes'],b['meshes']):
+ assert ma['name']==mb['name'] or ma['name']=='Tailored_Coat' and mb['name']=='Tailored_Coat_Independent_Panels',(ma['name'],mb['name'])
+ for p1,p2 in zip(ma['primitives'],mb['primitives']):
+  mat=a['materials'][p1['material']]['name'];is_native=mat=='Skin' or any(x in ma['name'].lower() for x in ('breech','boot','shako'))
+  diff=[]
+  for key in p1['attributes']:
+   if acc(a,ab,p1['attributes'][key])!=acc(b,bb,p2['attributes'][key]):diff.append(key)
+  if is_native:assert not [key for key in diff if mat=='Skin' or key!='TEXCOORD_0'],(ma['name'],mat,diff);assert acc(a,ab,p1['indices'])==acc(b,bb,p2['indices'])
+  changes.append({'mesh':ma['name'],'material':mat,'changedAttributes':diff,'nativePartPreserved':is_native})
+untouched={p.name:hashlib.sha256(p.read_bytes()).hexdigest()==hashlib.sha256((r/after/p.name).read_bytes()).hexdigest() for p in (r/'before-models').glob('*.glb')if p.name!=name};assert all(untouched.values())
+tri=lambda j:sum(j['accessors'][p['indices']]['count']//3for m in j['meshes']for p in m['primitives'])
+result={'bodySha256':hashlib.sha256(pb.read_bytes()).hexdigest(),'nativeNodeTransformsAndInverseBindExact':True,'changes':changes,'otherGLBsUnchanged':untouched,'beforeTriangles':tri(a),'afterTriangles':tri(b),'beforeBytes':pa.stat().st_size,'afterBytes':pb.stat().st_size}
+(r/('preservation-'+after+'.json')).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

@@ -1,0 +1,142 @@
+"""Private bounded cutout fringe. Original generated PNG is not edited."""
+import math,random
+from pathlib import Path
+import bpy
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+from mathutils.geometry import barycentric_transform
+
+
+def add_fringe(mesh,faces,points,assignments,hair,preset):
+    triangles=[]
+    for face in faces:
+        ids=[i for i,uv in face]
+        if min(points[i].z for i in ids)<1.60:continue
+        for i in range(1,len(ids)-1):triangles.append((ids[0],ids[i],ids[i+1]))
+    bvh=BVHTree.FromPolygons(points,triangles,all_triangles=True)
+    hair_bvh=BVHTree.FromPolygons([v.co for v in hair.data.vertices],[list(p.vertices)for p in hair.data.polygons])
+    def hair_layer(origin,direction,result,t):
+        point,normal,weights=result
+        h,hn,hi,hd=hair_bvh.ray_cast(Vector(origin),Vector(direction),.8)
+        if h is not None and (h-point).length<.009:
+            return h,normal,weights,.00008-.00085*max(0,1-t/.32)**2
+        return point,normal,weights,.00025
+    normals=[Vector() for p in points]
+    for a,b,c in triangles:
+        n=(points[b]-points[a]).cross(points[c]-points[a])
+        for i in (a,b,c):normals[i]+=n
+    for n in normals:
+        if n.length:n.normalize()
+    def fit(origin,direction):
+        p,n,i,d=bvh.ray_cast(Vector(origin),Vector(direction),.8)
+        if p is None:return None
+        ids=triangles[i];bary=barycentric_transform(p,*[points[k]for k in ids],Vector((1,0,0)),Vector((0,1,0)),Vector((0,0,1)))
+        w={}
+        for k,b in zip(ids,bary):
+            for bone,value in assignments[k].items():w[bone]=w.get(bone,0)+max(0,b)*value
+        total=sum(w.values());n=sum((normals[k]*max(0,b)for k,b in zip(ids,bary)),Vector()).normalized()
+        return p,n,{k:v/total for k,v in w.items()if v>1e-7}
+    mat=bpy.data.materials.new('Short_Hair_Cutout');mat.use_nodes=True;mat.diffuse_color=(.53,.46,.43,1);mat.use_backface_culling=False;mat['preserve_cutout']=True
+    p=mat.node_tree.nodes.get('Principled BSDF');p.inputs['Roughness'].default_value=.86;p.inputs['Specular IOR Level'].default_value=.20
+    image=bpy.data.images.load(str(Path(__file__).parent/'generated/hair-strands-v1.png'),check_existing=True)
+    tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=image;tex.interpolation='Linear'
+    multiply=mat.node_tree.nodes.new('ShaderNodeMix');multiply.data_type='RGBA';multiply.blend_type='MULTIPLY';multiply.inputs[0].default_value=1;multiply.inputs[7].default_value=(.53,.46,.43,1)
+    mat.node_tree.links.new(tex.outputs['Color'],multiply.inputs[6]);mat.node_tree.links.new(multiply.outputs[2],p.inputs['Base Color'])
+    clip=mat.node_tree.nodes.new('ShaderNodeMath');clip.operation='GREATER_THAN';clip.inputs[1].default_value=.38
+    mat.node_tree.links.new(tex.outputs['Alpha'],clip.inputs[0]);mat.node_tree.links.new(clip.outputs[0],p.inputs['Alpha'])
+    vv=[];ww=[];nn=[];ff=[];uv=[];rng=random.Random(1217)
+    centre=Vector((0,-.006,1.657))
+    def radial(phi,azimuth):
+        direction=Vector((math.sin(phi)*math.cos(azimuth),math.sin(phi)*math.sin(azimuth),math.cos(phi)))
+        origin=centre+direction*.4
+        native=fit(origin,-direction)
+        if native is None:return None
+        hp,hn,hi,hd=hair_bvh.ray_cast(origin,-direction,.399)
+        return native,hp
+    columns=60;step=math.tau/columns;ends=[]
+    for col in range(columns):
+        azimuth=col*step
+        low,high=.08,1.95
+        for i in range(22):
+            phi=(low+high)/2;result=radial(phi,azimuth)
+            if result and result[1] is not None:low=phi
+            else:high=phi
+        end=low;ends.append(end)
+        bands=1
+        for band in range(bands):
+            start=.010
+            stop=end+.025
+            # Each card keeps the source bundle's root-to-tip direction.
+            # Separate UV edges and alpha overlaps avoid triangle mirror folds.
+            first=len(vv);rows=21;valid=True;tile=(col+band*2)%6
+            for row in range(rows):
+                t=row/(rows-1);phi=start+(stop-start)*t
+                for side in (-1,0,1):
+                    angle=azimuth+side*step*.67
+                    result=radial(phi,angle)
+                    if result is None:valid=False;break
+                    (point,normal,weights),hp=result
+                    height=.00024+.00012*(col%2)+.00012*band-.00060*max(0,1-t/.05)**2
+                    if hp is not None:point=hp
+                    else:height=.00022
+                    vv.append(point+normal*height);nn.append(normal);ww.append(weights)
+                    v=.94-.70*(t/.95) if t<=.95 else .24-.21*((t-.95)/.05)
+                    uv.append(((tile+.05+.90*(side+1)/2)/6,v))
+                if not valid:break
+            if not valid:
+                del vv[first:];del ww[first:];del nn[first:];del uv[first:];continue
+            for row in range(rows-1):
+                for side in range(2):
+                    a=first+row*3+side;face=(a,a+1,a+4,a+3)
+                    if (vv[a+1]-vv[a]).cross(vv[a+3]-vv[a]).dot(nn[a])<0:face=tuple(reversed(face))
+                    ff.append(face)
+    # Keep the opaque underlayer beneath the final five millimetres of tips.
+    # The cards were fitted against the full shell above, so trimming this layer
+    # does not move the accepted head surface or shorten the visible strands.
+    old_uv=hair.data.uv_layers.active
+    old_weights=[]
+    for vertex in hair.data.vertices:
+        old_weights.append({hair.vertex_groups[g.group].name:g.weight for g in vertex.groups})
+    def interior(p):
+        delta=p-centre;phi=math.acos(max(-1,min(1,delta.z/delta.length)))
+        a=(math.atan2(delta.y,delta.x)%math.tau)/step;i=int(a);f=a-i
+        end=ends[i]*(1-f)+ends[(i+1)%columns]*f
+        return end-.055-phi
+    coords=[];weights=[];polys=[];texcoords=[];seen={}
+    for polygon in hair.data.polygons:
+        values=[(hair.data.vertices[hair.data.loops[li].vertex_index].co.copy(),old_uv.data[li].uv.copy(),old_weights[hair.data.loops[li].vertex_index])for li in polygon.loop_indices]
+        out=[]
+        for a,b in zip(values,values[1:]+values[:1]):
+            da,db=interior(a[0]),interior(b[0])
+            if da>=0:out.append(a)
+            if (da>=0)!=(db>=0):
+                t=da/(da-db);w={k:a[2].get(k,0)*(1-t)+b[2].get(k,0)*t for k in a[2].keys()|b[2].keys()}
+                out.append((a[0].lerp(b[0],t),a[1].lerp(b[1],t),w))
+        if len(out)<3:continue
+        ids=[]
+        for point,tex,w in out:
+            key=tuple(round(v,8)for v in point)
+            if key not in seen:seen[key]=len(coords);coords.append(point);weights.append(w)
+            ids.append(seen[key])
+        polys.append(ids);texcoords.append([tex for point,tex,w in out])
+    hair.vertex_groups.clear();hair.data.clear_geometry();hair.data.from_pydata(coords,[],polys);hair.data.update()
+    for polygon in hair.data.polygons:polygon.use_smooth=True
+    for vertex in hair.data.vertices:
+        point=vertex.co-vertex.normal*.00070
+        q,n,i,d=bvh.find_nearest(point)
+        if q is not None and (point-q).dot(n)<.00020:point=q+n*.00020
+        vertex.co=point
+    hair.data.update()
+    layer=hair.data.uv_layers.active or hair.data.uv_layers.new(name='UVMap')
+    for polygon,values in zip(hair.data.polygons,texcoords):
+        for li,value in zip(polygon.loop_indices,values):layer.data[li].uv=value
+    names=set(k for w in weights for k in w);groups={name:hair.vertex_groups.new(name=name)for name in names}
+    for i,w in enumerate(weights):
+        for name,value in w.items():
+            if value>1e-7:groups[name].add([i],value,'REPLACE')
+    attr=hair.data.attributes.get('Hair_Surface')or hair.data.attributes.new(name='Hair_Surface',type='FLOAT',domain='POINT')
+    for v in attr.data:v.value=1
+    pigment=hair.data.color_attributes.get('Human_Surface_Tone')or hair.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+    for v in pigment.data:v.color=(.98,.98,.98,1)
+    obj=mesh('Native_Fitted_Hair_Fringe',vv,ff,mat,ww,[[uv[i]for i in f]for f in ff]);obj['preserve_cutout']=True
+    return obj

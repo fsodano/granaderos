@@ -1,0 +1,489 @@
+#!/usr/bin/env python3
+"""Render reproducible contact frames from the actual published character GLBs.
+
+python3 tools/characters-3d/render-review.py --pilot
+python3 tools/characters-3d/render-review.py
+python3 tools/characters-3d/render-review.py --presets friar woman-shawl --clips prone.idle.unarmed crouch.idle.unarmed
+
+Blender imports exported bodies, matching native animation banks, equipment,
+textures and shape keys. It does not call the model or motion authoring code.
+The HTML index is a contact sheet; PNGs and JSON are local review artifacts.
+"""
+from pathlib import Path
+import argparse, hashlib, html, json, math, os, subprocess, sys
+
+ROOT = Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos')
+PUBLIC = ROOT / 'web/public'
+LIBRARY = PUBLIC / 'models/characters'
+DEFAULT_OUTPUT = ROOT / 'artifacts/character-anatomy-review/baseline'
+REVIEW_LIGHTING = {'world': {'colorLinear': [.20,.22,.20], 'strength': .45},
+    'areas': [{'position': [2,-4,6], 'power':650, 'size':4},
+              {'position': [-3,-1,4], 'power':220, 'size':4},
+              {'position': [1,4,5], 'power':350, 'size':4}],
+    'areaShape':'DISK','areaTarget':[0,0,1]}
+REVIEW_FLOOR = {'size':200,'position':[0,0,-.006],'colorLinear':[.12,.14,.12,1],'roughness':.9}
+# Exported semantics and corresponding physical props. No gameplay commands.
+REVIEW_CLIPS = [
+ ('stand.idle.unarmed', None), ('stand.walk.unarmed', None), ('stand.run.unarmed', None),
+ ('stand.aim.short-gun', '1805'), ('stand.fire.short-gun', '1805'),
+ ('stand.aim.long-gun', '1800'), ('stand.fire.long-gun', '1800'),
+ ('stand.slash.knife.thrust', '1813'), ('stand.slash.blade.forehand', '1809'),
+ ('stand.slash.blade.backhand', '1809'), ('stand.punch.unarmed', None),
+ ('crouch.idle.unarmed', None), ('prone.idle.unarmed', None),
+ ('stand.run.long-gun', '1800'), ('stand.run.short-gun', '1805'),
+ ('stand.run.knife', '1813'), ('stand.run.blade', '1809'),
+ ('crouch.walk.unarmed', None), ('prone.crawl.unarmed', None),
+ ('stand.reload.long-gun.1800', '1800'), ('stand.reload.short-gun.1805', '1805'),
+ ('mounted.idle.unarmed', None), ('mounted.run.blade', '1809'),
+ ('mounted.fire.short-gun', '1805'), ('mounted.reload.long-gun.1800', '1800'),
+ ('life.stand.die', None), ('life.stand.collapse', None),
+]
+# Together with REVIEW_CLIPS, these cover every distinct accepted standing
+# reference motion, plus the posture/loading/fall review above. Guard aliases
+# do not need duplicate captures, and the two-contact lab combination is not a
+# production action.
+EXTRA_REVIEWED_CLIPS = [
+ ('stand.walk.long-gun', '1800'), ('stand.butt.long-gun', '1800'),
+ ('stand.bayonet.long-gun', '1800'), ('stand.walk.short-gun', '1805'),
+ ('stand.butt.short-gun', '1805'), ('stand.idle.blade', '1809'),
+ ('stand.walk.blade', '1809'), ('stand.slash.blade', '1809'),
+ ('stand.slash.blade.thrust', '1809'), ('stand.slash.blade.hilt', '1809'),
+ ('stand.idle.knife', '1813'), ('stand.walk.knife', '1813'),
+ ('stand.slash.knife', '1813'), ('stand.slash.knife.backhand', '1813'),
+]
+# Additional explicit diagnostics do not change the standing reference sweep.
+DIAGNOSTIC_ITEMS = {f'{posture}.gesture.{gesture}':item
+    for posture in ('stand','crouch','prone','mounted')
+    for gesture,item in (('throw','grenade'),('throwKnife','1813'),('bolas','boleadoras'))}
+PILOT = [('stand.idle.unarmed', None), ('stand.punch.unarmed', None),
+         ('stand.fire.long-gun', '1800'), ('stand.slash.knife.thrust', '1813')]
+
+
+
+def sleeve_clearance(rig,body_objects):
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+    import bpy
+    vendor=Path('/tmp/granadero-coat-ease-pilot/source/assets/source/characters-3d/authoring/vendor/makehuman')
+    verts=[];faces=[];active=''
+    for line in (vendor/'base.obj').read_text().splitlines():
+        a=line.split()
+        if not a:continue
+        if a[0]=='v':verts.append(Vector(tuple(map(float,a[1:4]))))
+        elif a[0]=='g':active=a[1]
+        elif a[0]=='f' and active=='body':faces.append(tuple(int(x.split('/')[0])-1 for x in a[1:]))
+    for line in (vendor/'caucasian-male-young.target').read_text().splitlines():
+        a=line.split()
+        if len(a)==4 and a[0].isdigit():verts[int(a[0])]+=Vector(tuple(map(float,a[1:])))
+    used={i for f in faces for i in f};minimum=min(verts[i].y for i in used);scale=1.76/(max(verts[i].y for i in used)-minimum)
+    points=[Vector((p.x*scale,-p.z*scale,(p.y-minimum)*scale))for p in verts]
+    assign={i:{}for i in used}
+    for bone,weights in json.loads((vendor/'weights.game_engine.json').read_text())['weights'].items():
+        for i,w in weights:
+            if i in assign:assign[i][bone]=w
+    transforms={b.name:rig.matrix_world@b.matrix@b.bone.matrix_local.inverted()@rig.matrix_world.inverted()for b in rig.pose.bones}
+    posed=[]
+    for i,p in enumerate(points):
+        if i not in assign:posed.append(p);continue
+        w=assign[i];total=sum(w.values());posed.append(sum((transforms[n]@p*value for n,value in w.items()),Vector())/total if total else p)
+    body=BVHTree.FromPolygons(posed,faces);result={}
+    o=next(o for o in body_objects if o.name.startswith('Human_outfit'))
+    ev=o.evaluated_get(bpy.context.evaluated_depsgraph_get());data=ev.to_mesh()
+    for side in ('l','r'):
+        el=rig.matrix_world@rig.pose.bones['lowerarm_'+side].head;sh=rig.matrix_world@rig.pose.bones['upperarm_'+side].head;wr=rig.matrix_world@rig.pose.bones['hand_'+side].head
+        inside=((sh-el).normalized()+(wr-el).normalized()).normalized();worst=[]
+        for v in data.vertices:
+            influence=sum(g.weight for g in v.groups if o.vertex_groups[g.group].name in ('upperarm_'+side,'lowerarm_'+side))
+            if influence<.68:continue
+            p=o.matrix_world@v.co;d=p-el
+            if d.length>.10 or d.normalized().dot(inside)<.15:continue
+            q,n,_,dist=body.find_nearest(p);signed=(p-q).dot(n)
+            if signed<-.001:worst.append((signed,v.index,list(p)))
+        worst.sort();result[side]={'pointsBelowNativeBodyByMoreThan1mm':len(worst),'worst':worst[:3]}
+    ev.to_mesh_clear();return result
+
+def digest(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--blender', default='/Applications/Blender.app/Contents/MacOS/Blender')
+    parser.add_argument('--output', type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument('--presets', nargs='+')
+    parser.add_argument('--library-dir', type=Path, default=LIBRARY,
+                        help='Complete exported library, including manifest, banks, equipment and textures')
+    parser.add_argument('--body-dir', type=Path, help='Use unpublished body GLBs from this directory; banks and equipment remain published')
+    parser.add_argument('--lod', type=int, choices=[0,1,2], default=0, help='Exported character detail level; default 0')
+    parser.add_argument('--skin', choices=['light','brown','dark'], help='Use the production runtime skin palette instead of the exported base factor')
+    parser.add_argument('--details', action='store_true', help='Also render head and hands close views')
+    parser.add_argument('--face-details', action='store_true', help='Also render the actual face at inspection scale; preserves the isometric direction')
+    parser.add_argument('--hand-details', action='store_true', help='Also render each individual hand for finger/contact review')
+    parser.add_argument('--clips', nargs='+')
+    parser.add_argument('--times', nargs='+', type=float,
+                        help='Exact sample times in seconds; requires one selected clip')
+    parser.add_argument('--pilot', action='store_true', help='Granadero and exploradora, four key poses each')
+    parser.add_argument('--all-reviewed', action='store_true', help='Include all 29 distinct accepted standing motions in the wider posture review')
+    parser.add_argument('--size', type=int, default=560)
+    parser.add_argument('--samples', type=int, default=12)
+    parser.add_argument('--worker', action='store_true', help=argparse.SUPPRESS)
+    args=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else None)
+    if args.pilot and args.all_reviewed:parser.error('--pilot and --all-reviewed are separate review sizes')
+    if args.times is not None:
+        if args.clips is None or len(args.clips)!=1:parser.error('--times requires exactly one --clips selection')
+        if any(not math.isfinite(time) or time<0 for time in args.times):parser.error('--times must be finite, nonnegative seconds')
+    return args
+
+
+def asset_path(url):
+    prefix = '/models/characters/'
+    if not url.startswith(prefix):
+        raise ValueError('Asset outside character library: '+url)
+    path = (LIBRARY / url[len(prefix):]).resolve()
+    if not path.is_relative_to(LIBRARY.resolve()):
+        raise ValueError('Asset outside character library: '+url)
+    return path
+
+
+def asset_record(spec, override=None):
+    path = override or asset_path(spec['url'])
+    actual = digest(path)
+    if override is None and actual != spec['sha256']:
+        raise ValueError('Manifest and file differ; finish the asset build first: '+str(path))
+    result={'path': str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path), 'sha256': actual, 'bytes': path.stat().st_size, 'published': override is None and LIBRARY.resolve() == (PUBLIC/'models/characters').resolve(), 'manifestVerified': override is None}
+    raw=path.read_bytes();document=json.loads(raw[20:20+int.from_bytes(raw[12:16],'little')])
+    result['textures']={image['uri']:digest(path.parent/image['uri']) for image in document.get('images',[]) if image.get('uri') and not image['uri'].startswith('data:')}
+    result['texturePaths']={uri:str((path.parent/uri).resolve()) for uri in result['textures']}
+    return result
+
+
+def write_index(output, report):
+    (output/'index.json').write_text(json.dumps(report, indent=2)+'\n')
+    cards=[]
+    for preset in report['presets']:
+        groups={}
+        for frame in report['frames']:
+            if frame['preset']==preset:groups.setdefault(frame['clip'],[]).append(frame)
+        rows=[]
+        for clip, frames in groups.items():
+            figures=''.join(f'<figure><a href="{html.escape(f["file"])}"><img loading="lazy" src="{html.escape(f["file"])}" alt="{html.escape(preset+": "+clip)}"></a><figcaption>{html.escape(f["phase"])} · {f.get("view","iso")} · {f["timeSeconds"]:.3f} s</figcaption></figure>' for f in frames)
+            rows.append(f'<article><h3>{html.escape(clip)}</h3><div class="frames">{figures}</div></article>')
+        cards.append(f'<section id="{preset}"><h2>{html.escape(preset)}</h2>{"".join(rows)}</section>')
+    navigation=' '.join(f'<a href="#{p}">{p}</a>' for p in report['presets'])
+    document='''<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Revisión anatómica · Granaderos</title><style>body{font:15px system-ui;margin:24px;background:#202622;color:#ecece4}a{color:#d4c290}nav{position:sticky;top:0;background:#202622;padding:12px 0;display:flex;gap:16px;flex-wrap:wrap}h2{border-top:1px solid #777;padding-top:24px}h3{font-size:14px;color:#c9cfbd}article{margin:22px 0}.frames{display:flex;gap:12px;flex-wrap:wrap}figure{margin:0;max-width:30%;min-width:220px}img{width:100%;display:block;background:#383b35}figcaption{padding:6px 0;color:#bac2ae}small{color:#b7c3b6}</style><h1>Revisión anatómica de los modelos exportados</h1><p>Fotogramas reales de los GLB, vista isométrica fija. Esta revisión no certifica una animación perfecta.</p><p><a href="index.json">Fuentes, versiones y tiempos exactos</a></p><small>Las correcciones de tela usan el peso estable de cada postura. Sin transición entre acciones. Sin efectos de disparo.</small><nav>'''+navigation+'</nav>'+''.join(cards)+'</html>'
+    (output/'index.html').write_text(document)
+
+
+def worker(args):
+    global LIBRARY
+    import bpy
+    from mathutils import Matrix, Quaternion, Vector
+    LIBRARY=args.library_dir.resolve()
+    manifest_path=LIBRARY/'manifest.json'
+    manifest=json.loads(manifest_path.read_text())
+    presets=args.presets or (['granadero','woman-scout'] if args.pilot else list(manifest['appearances']))
+    plans=PILOT if args.pilot else REVIEW_CLIPS
+    if args.all_reviewed:plans=REVIEW_CLIPS+EXTRA_REVIEWED_CLIPS
+    if args.clips:
+        item_by_clip={**dict(REVIEW_CLIPS+EXTRA_REVIEWED_CLIPS),**DIAGNOSTIC_ITEMS}
+        defaults={'blade':'1809','knife':'1813','long-gun':'1800','short-gun':'1805','lance':'1812'}
+        for bank in manifest['animationLibraries'].values():
+            for clip in bank['clips']:
+                item_by_clip.setdefault(clip['name'],defaults.get(clip.get('equipment')))
+        plans=[(name,item_by_clip.get(name)) for name in args.clips]
+    output=args.output.resolve();output.mkdir(parents=True,exist_ok=True)
+    revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+    report={'version':1,'gitRevision':revision,'manifestSha256':digest(manifest_path),'manifestPath':str(manifest_path),
+        'renderer':'Blender '+bpy.app.version_string+' / Cycles CPU',
+        'renderSettings':{'size':args.size,'samples':args.samples,'denoise':True,'viewTransform':'AgX','look':'AgX - Medium High Contrast','fps':30},
+        'lighting':REVIEW_LIGHTING,'floor':REVIEW_FLOOR,
+        'tool':{'path':str(Path(__file__).resolve()),'sha256':digest(__file__)},
+        'runtimeClothSource':{'path':'web/lib/three/actor-runtime.ts','sha256':digest(ROOT/'web/lib/three/actor-runtime.ts')},
+        'camera':{'projection':'orthographic','position':[5,-5,5.2],'target':[0,0,1.0],'scale':3.0},
+        'skin':{'palette':args.skin,'hexSRGB':manifest['skinTones'][args.skin]} if args.skin else 'exported material base color; no runtime palette override',
+        'cloth':'exported morph targets with settled runtime posture weights; no crossfade smoothing',
+        'lod':args.lod,'presets':presets,'coverage':[{'clip':name,'item':item} for name,item in plans],'assets':{},'frames':[],'complete':False}
+    for field in ('tool','runtimeClothSource'):
+        record=report[field];source=ROOT/record['path'];content=source.read_bytes()
+        if hashlib.sha256(content).hexdigest()!=record['sha256']:raise ValueError('Review source changed before capture: '+str(source))
+        snapshot=output/'frozen-sources'/record['path'].lstrip('/');snapshot.parent.mkdir(parents=True,exist_ok=True);snapshot.write_bytes(content)
+        record['snapshot']=str(snapshot.relative_to(output))
+    convert=Matrix(((1,0,0,0),(0,0,-1,0),(0,1,0,0),(0,0,0,1)))
+
+    def imported(path):
+        before=set(bpy.data.objects)
+        bpy.ops.import_scene.gltf(filepath=str(path),bone_heuristic='TEMPERANCE',guess_original_bind_pose=False,import_pack_images=False)
+        return list(set(bpy.data.objects)-before)
+
+    def transform(spec):
+        rotation=spec.get('rotation',[0,0,0]);q=Quaternion((1,0,0),rotation[0]) @ Quaternion((0,1,0),rotation[1]) @ Quaternion((0,0,1),rotation[2])
+        scale=spec.get('scale',1)
+        return convert @ Matrix.LocRotScale(Vector(spec.get('position',[0,0,0])),q,Vector((scale,)*3)) @ convert.inverted()
+
+    def descendants(obj):
+        return [obj]+[child for immediate in obj.children for child in descendants(immediate)]
+
+    def cloth_weights(spec,time,face_up=0,has_supine=False):
+        posture=spec.get('posture');duration=spec['duration'];gesture=spec.get('gesture')
+        prone=float(posture=='prone');crouched=float(posture=='crouched')
+        if gesture=='transition':
+            f=min(1,max(0,time/duration));a=spec.get('fromPosture');b=spec.get('toPosture')
+            prone=(1-f if a=='prone' else 0)+(f if b=='prone' else 0)
+            crouched=(1-f if a=='crouched' else 0)+(f if b=='crouched' else 0)
+        elif gesture in ('dead','unconscious'):prone,crouched=1,0
+        elif gesture in ('die','collapse','knockdown'):
+            f=min(1,max(0,time/spec.get('markers',{}).get('ground',duration)));prone+=(1-prone)*f;crouched*=1-f
+        elif gesture=='recover':prone,crouched=1-min(1,max(0,time/duration)),0
+        if has_supine:
+            facing=min(1,max(0,(face_up-.10)/.65));supine=prone*facing*facing*(3-2*facing)
+            return {'cloth_prone':prone-supine,'cloth_crouched':crouched,'cloth_supine':supine}
+        return {'cloth_prone':prone,'cloth_crouched':crouched}
+
+    # Freeze the input identity before source artists start their rebuilds.
+    for preset in presets:
+        appearance=manifest['appearances'][preset];body_spec=next(level for level in appearance['lods'] if level['lod']==args.lod)
+        bank=manifest['animationLibraries'][appearance['animationLibrary']]
+        override=args.body_dir.resolve()/Path(body_spec['url']).name if args.body_dir else None
+        report['assets'][preset]={'body':asset_record(body_spec,override),'bank':asset_record(bank),'equipment':asset_record(manifest['equipment'])}
+        if any(name.startswith(('mounted.','life.mounted.')) for name,item in plans):report['assets'][preset]['horse']=asset_record(manifest['horse']['lods'][0])
+    write_index(output,report)
+    def keyed_value(keys,time,field):
+        value=keys[0][field]
+        for a,b in zip(keys,keys[1:]):
+            if time>=b['time']:value=b[field];continue
+            u=max(0,(time-a['time'])/(b['time']-a['time']))
+            return [x+(y-x)*u for x,y in zip(a[field],b[field])] if isinstance(value,list) else a[field]+(b[field]-a[field])*u
+        return value
+    for preset in presets:
+        bpy.ops.wm.read_factory_settings(use_empty=True)
+        scene=bpy.context.scene;scene.render.fps=30
+        appearance=manifest['appearances'][preset];body_spec=next(level for level in appearance['lods'] if level['lod']==args.lod)
+        bank_spec=manifest['animationLibraries'][appearance['animationLibrary']]
+        body_path=(args.body_dir.resolve()/Path(body_spec['url']).name) if args.body_dir else asset_path(body_spec['url'])
+        asset_records=report['assets'][preset]
+        for key,spec in [('body',body_spec),('bank',bank_spec),('equipment',manifest['equipment'])]:
+            if digest(body_path if key=='body' else asset_path(spec['url']))!=asset_records[key]['sha256']:raise ValueError('Asset changed since coverage snapshot: '+spec['url'])
+        bank_objects=imported(asset_path(bank_spec['url']));bank_rig=next(o for o in bank_objects if o.type=='ARMATURE')
+        body_objects=imported(body_path);rig=next(o for o in body_objects if o.type=='ARMATURE')
+        body_names={o.name:o for o in body_objects}
+        if args.skin:
+            # Three Color.set(hex) converts sRGB to linear and replaces the
+            # material factor. Keep the exported texture and vertex pigment.
+            hex_color=manifest['skinTones'][args.skin].lstrip('#')
+            srgb=[int(hex_color[i:i+2],16)/255 for i in (0,2,4)]
+            linear=[v/12.92 if v<=.04045 else ((v+.055)/1.055)**2.4 for v in srgb]+[1]
+            skin_name=appearance.get('materials',{}).get('skin','Skin')
+            body_materials={m for obj in body_objects if obj.type=='MESH' for m in obj.data.materials if m}
+            skin_materials=[m for m in body_materials if m.name==skin_name or m.name.startswith(skin_name+'.') or m.get('role')=='skin']
+            if not skin_materials:raise ValueError('No runtime Skin material imported for '+preset)
+            for material in skin_materials:
+                material.diffuse_color=linear
+                factor=next((node for node in material.node_tree.nodes if node.label=='Color Factor' and node.type in ('MIX','MIX_RGB')),None)
+                if factor:
+                    color=next(i for i in factor.inputs if i.type=='RGBA' and not i.is_linked)
+                    color.default_value=linear
+                else:
+                    base=next(node for node in material.node_tree.nodes if node.type=='BSDF_PRINCIPLED').inputs['Base Color']
+                    if base.is_linked:
+                        source=base.links[0].from_socket
+                        factor=material.node_tree.nodes.new('ShaderNodeMixRGB');factor.blend_type='MULTIPLY';factor.inputs[0].default_value=1;factor.inputs[2].default_value=linear
+                        material.node_tree.links.new(source,factor.inputs[1]);material.node_tree.links.new(factor.outputs[0],base)
+                    else:base.default_value=linear
+            asset_records['runtimeSkin']={'hexSRGB':manifest['skinTones'][args.skin],'colorLinear':linear,'materials':[m.name for m in skin_materials]}
+        # Imported action curves use Blender's bone basis. Refuse transfer if
+        # independent imports reconstructed different rest frames.
+        bind_error=max(abs(x-y) for bone in rig.data.bones for a,b in zip(bone.matrix_local,bank_rig.data.bones[bone.name].matrix_local) for x,y in zip(a,b))
+        if bind_error>1e-5:raise ValueError(f'{preset}: incompatible imported bind frames ({bind_error})')
+        for obj in bank_objects:bpy.data.objects.remove(obj,do_unlink=True)
+        equipment_objects=imported(asset_path(manifest['equipment']['url']))
+        equipment={o.name:o for o in equipment_objects}
+        horse_objects=[];horse_rig=None
+        if any(name.startswith(('mounted.','life.mounted.')) for name,item in plans):
+            horse_objects=imported(asset_path(manifest['horse']['lods'][0]['url']));horse_rig=next(o for o in horse_objects if o.type=='ARMATURE')
+            horse_rig.animation_data_create()
+            for track in horse_rig.animation_data.nla_tracks:track.mute=True
+            horse_rig.animation_data.action=None
+            horse_saddle=next(o for o in horse_objects if o.name==manifest['horse']['saddle']['node'])
+            for action_name in manifest['horse']['actions'].values():
+                action=bpy.data.actions[action_name]
+                for layer in action.layers:
+                    for strip in layer.strips:
+                        for bag in strip.channelbags:
+                            for curve in bag.fcurves:curve.modifiers.new('CYCLES')
+        for obj in horse_objects:obj.hide_render=True
+        for obj in equipment_objects:obj.hide_render=True
+        rig.animation_data_create()
+        for track in rig.animation_data.nla_tracks:track.mute=True
+        if rig.animation_data.action:rig.animation_data.action=None
+        shapes=[o for o in body_objects if o.type=='MESH' and o.data.shape_keys]
+        has_supine=any(o.data.shape_keys.key_blocks.get('cloth_supine') is not None for o in shapes)
+        chest_front_local=(rig.matrix_world @ rig.pose.bones['spine_03'].matrix).to_quaternion().inverted() @ Vector((0,-1,0))
+        asset_records['nativeBindMaximumError']=bind_error
+        asset_records['shapeKeys']={o.name:[key.name for key in o.data.shape_keys.key_blocks] for o in shapes}
+        report['assets'][preset]=asset_records
+
+        world=bpy.data.worlds.new('Review World');background=world.node_tree.nodes.new('ShaderNodeBackground');background.inputs[0].default_value=(*REVIEW_LIGHTING['world']['colorLinear'],1);background.inputs[1].default_value=REVIEW_LIGHTING['world']['strength'];world_output=world.node_tree.nodes.new('ShaderNodeOutputWorld');world.node_tree.links.new(background.outputs[0],world_output.inputs['Surface']);scene.world=world
+        for lamp in REVIEW_LIGHTING['areas']:
+            location,power,size=lamp['position'],lamp['power'],lamp['size']
+            light=bpy.data.lights.new('Review area','AREA');light.energy=power;light.shape='DISK';light.size=size
+            obj=bpy.data.objects.new('Review area',light);scene.collection.objects.link(obj);obj.location=location;obj.rotation_euler=(Vector((0,0,1))-obj.location).to_track_quat('-Z','Y').to_euler()
+        bpy.ops.mesh.primitive_plane_add(size=REVIEW_FLOOR['size'],location=REVIEW_FLOOR['position']);floor=bpy.context.object
+        material=bpy.data.materials.new('Review floor');material.diffuse_color=REVIEW_FLOOR['colorLinear'];material.use_nodes=True;material.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=material.diffuse_color;material.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=REVIEW_FLOOR['roughness'];floor.data.materials.append(material)
+        camera=bpy.data.cameras.new('Review isometric');camera.type='ORTHO';camera.ortho_scale=3.0
+        camera_obj=bpy.data.objects.new('Review isometric',camera);scene.collection.objects.link(camera_obj);camera_obj.location=(5,-5,5.2);camera_obj.rotation_euler=(Vector((0,0,1))-camera_obj.location).to_track_quat('-Z','Y').to_euler();scene.camera=camera_obj
+        scene.render.engine='CYCLES';scene.cycles.device='CPU';scene.cycles.samples=args.samples;scene.cycles.use_denoising=True
+        scene.render.resolution_x=args.size;scene.render.resolution_y=args.size;scene.render.resolution_percentage=100
+        scene.render.image_settings.file_format='PNG';scene.render.film_transparent=False
+        scene.view_settings.view_transform='AgX';scene.view_settings.look='AgX - Medium High Contrast'
+        scene.render.use_file_extension=True
+        specs={c['name']:c for c in bank_spec['clips']}
+        attached_fittings=[]
+        for clip_name,item in plans:
+            spec=specs[clip_name];action=bpy.data.actions.get(clip_name)
+            if action is None:raise ValueError('Imported action is missing: '+clip_name)
+            rig.animation_data.action=action
+            if len(action.slots):rig.animation_data.action_slot=action.slots[0]
+            for obj in attached_fittings:obj.parent=None
+            attached_fittings=[];fitting_names=[]
+            for obj in equipment_objects:obj.hide_render=True
+            mounted=spec.get('posture')=='mounted';horse_action_name=None
+            for obj in horse_objects:obj.hide_render=not mounted
+            if mounted:
+                horse_action_name=manifest['horse']['actions'][spec['gesture'] if spec['gesture'] in ('walk','run') else 'idle']
+                horse_action=bpy.data.actions[horse_action_name];horse_rig.animation_data.action=horse_action
+                if len(horse_action.slots):horse_rig.animation_data.action_slot=horse_action.slots[0]
+            held_object=None;held_spec=None
+            if item:
+                item_spec=manifest['equipment']['items'][item];obj=equipment[item_spec['node']]
+                socket=body_names[appearance['sockets'][item_spec['socket']]['node']]
+                obj.parent=socket;obj.matrix_parent_inverse=Matrix.Identity(4);obj.matrix_basis=transform(item_spec)
+                for child in descendants(obj):child.hide_render=False
+                held_object=obj;held_spec=item_spec
+                if spec.get('gesture')=='bayonet':
+                    # The representative Brown Bess uses the same exported
+                    # socket-bayonet fitting as the visible production lab.
+                    if item!='1800':raise ValueError('Add the actual bayonet fitting for item '+item)
+                    fit=manifest['equipment']['fittings']['india_socket'];fitting=equipment[fit['node']]
+                    fitting.parent=obj;fitting.matrix_parent_inverse=Matrix.Identity(4);fitting.matrix_basis=transform(fit)
+                    for child in descendants(fitting):child.hide_render=False
+                    attached_fittings.append(fitting);fitting_names.append('india_socket')
+            duration=spec['duration'];marker=spec.get('markers',{}).get('contact',spec.get('markers',{}).get('shot',spec.get('markers',{}).get('release')))
+            if args.times is not None:
+                if any(time>duration for time in args.times):raise ValueError('Requested time exceeds clip duration: '+clip_name)
+                phases=[(f'sample-{number+1}',time) for number,time in enumerate(args.times)]
+            elif args.pilot:phases=[('contact' if marker is not None else 'pose',min(duration,(marker+.04 if spec.get('gesture')=='fire' else marker) if marker is not None else duration*.25))]
+            elif spec.get('gesture') in ('reload','reprime','unload'):
+                phases=[('prepare',duration*.15),('charge',duration*.38),('ramrod',duration*.64),('recover',duration*.94)]
+            elif spec.get('gesture') in ('die','collapse','knockdown'):
+                phases=[('fall',duration*.2),('ground',spec['markers']['ground']),('settled',duration*.96)]
+            elif marker is not None:phases=[('prepare',marker*.55),('contact' if spec.get('gesture')!='fire' else 'recoil',min(duration,marker+(.04 if spec.get('gesture')=='fire' else 0))),('recover',min(duration,marker+(duration-marker)*.65))]
+            else:phases=[('phase-1',duration*.05),('phase-2',duration*.35),('phase-3',duration*.68)]
+            for phase,time in phases:
+                # glTF seconds are imported at the scene's 30 fps, beginning0.
+                rig.location=(0,0,0)
+                frame=time*30;scene.frame_set(int(frame),subframe=frame-int(frame))
+                active_props=['fitting:'+name for name in fitting_names]
+                held_visible=False
+                if held_object:
+                    held_object.matrix_basis=transform(held_spec)
+                    hand_prop=next((prop for prop in spec.get('handProps',[]) if prop['hand']=='handRight' and held_spec.get('category') in prop['categories']),None)
+                    release=spec.get('markers',{}).get(hand_prop.get('untilMarker')) if hand_prop else None
+                    if hand_prop and hand_prop.get('untilMarker') and release is None:raise ValueError('Missing held prop release marker: '+clip_name)
+                    held_visible=release is None or time<release
+                    for child in descendants(held_object):child.hide_render=not held_visible
+                    grip=next((offset for offset in spec.get('gripOffsets',[]) if offset['hand']=='handRight'),None)
+                    if grip:
+                        held_object.location+=convert.to_3x3() @ Vector(keyed_value(grip['keys'],time,'position'))
+                        keys=grip['keys'];left=right=keys[-1];weight=0
+                        for a,b in zip(keys,keys[1:]):
+                            if time<=b['time']:
+                                left,right=a,b;weight=max(0,min(1,(time-a['time'])/(b['time']-a['time'])))
+                                break
+                        def offset_rotation(key):
+                            x,y,z,w=key.get('rotationQuaternion',[0,0,0,1])
+                            return Quaternion((w,x,y,z)).normalized()
+                        rotation=offset_rotation(left).slerp(offset_rotation(right),weight)
+                        basis=convert.to_quaternion()
+                        rotation=basis@rotation@basis.inverted()
+                        held_object.matrix_basis=Matrix.LocRotScale(held_object.location,
+                            held_object.matrix_basis.to_quaternion()@rotation,
+                            held_object.scale)
+                for prop in spec.get('propCues',[]):
+                    prop_spec=manifest['equipment']['items'][prop['item']];prop_object=equipment[prop_spec['node']]
+                    active=prop['start']<=time<=prop['end']
+                    for child in descendants(prop_object):child.hide_render=not active
+                    if active:
+                        prop_object.parent=body_names[prop['socket']];prop_object.matrix_parent_inverse=Matrix.Identity(4);prop_object.matrix_basis=transform({**prop_spec,**prop,'scale':prop_spec.get('scale',1)*prop.get('scale',1)});active_props.append(prop['item'])
+                bpy.context.view_layer.update()
+                if mounted:
+                    anchor=convert.to_3x3() @ Vector(spec['seatAnchor']);weight=keyed_value(spec['seatWeight'],time,'weight') if spec.get('seatWeight') else 1
+                    rig.location=(horse_saddle.matrix_world.translation-anchor)*weight
+                chest_front=(rig.matrix_world @ rig.pose.bones['spine_03'].matrix).to_quaternion() @ chest_front_local
+                weights=cloth_weights(spec,time,chest_front.z,has_supine)
+                for obj in shapes:
+                    for name,value in weights.items():
+                        key=obj.data.shape_keys.key_blocks.get(name)
+                        if key:
+                            if name=='cloth_prone' and obj.data.shape_keys.key_blocks.get('cloth_supine') is None:value+=weights.get('cloth_supine',0)
+                            key.value=value
+                bpy.context.view_layer.update()
+                prototype_elbows={}
+                for side in ('l','r'):
+                    names=['upperarm_'+side,'lowerarm_'+side,'hand_'+side]
+                    rest=[rig.data.bones[n].head_local for n in names]
+                    posed=[rig.pose.bones[n].head for n in names]
+                    bind=(rest[1]-rest[0]).angle(rest[2]-rest[1])
+                    angle=(posed[1]-posed[0]).angle(posed[2]-posed[1])
+                    weight=max(0,min(1,(angle-bind)/(math.radians(110)-bind)))
+                    for obj in shapes:
+                        key=obj.data.shape_keys.key_blocks.get('coat_elbow_'+side)
+                        if key:key.value=weight
+                    prototype_elbows[side]={'angleDegrees':math.degrees(angle),'morphWeight':weight}
+                print('PROTOTYPE_ELBOWS',json.dumps(prototype_elbows),flush=True)
+                bpy.context.view_layer.update()
+                sleeve_diagnostic=sleeve_clearance(rig,body_objects)
+                joints={name:[round(v,7) for v in rig.matrix_world @ rig.pose.bones[name].head] for name in ('pelvis','head','upperarm_l','upperarm_r','hand_l','hand_r','foot_l','foot_r')}
+                views=[('iso',Vector((0,0,1.3 if mounted else 1)),3.65 if mounted else 3.0),('coat',rig.matrix_world@rig.pose.bones['spine_03'].head,.85),('sleeve',rig.matrix_world@rig.pose.bones['lowerarm_l'].head,.45)]
+                if args.details:
+                    head=Vector(joints['head'])+Vector((0,0,.14))
+                    hands=(Vector(joints['hand_l'])+Vector(joints['hand_r']))*.5
+                    views.extend([('head',head,.90),('hands',hands,.90)])
+                if args.hand_details:
+                    for side in ('l','r'):
+                        centre=rig.matrix_world @ rig.pose.bones['hand_'+side].head.lerp(rig.pose.bones['middle_01_'+side].head,.8)
+                        views.append((side+'-hand',centre,.26))
+                if args.face_details:
+                    head_bone=rig.pose.bones['head']
+                    face_rest=head_bone.bone.head_local+Vector((0,-.09,.005))
+                    face=rig.matrix_world @ head_bone.matrix @ head_bone.bone.matrix_local.inverted() @ face_rest
+                    views.append(('face',face,.32))
+                for view,target,scale in views:
+                    camera.ortho_scale=scale;camera_obj.location=target+Vector((5,-5,4.2));camera_obj.rotation_euler=(target-camera_obj.location).to_track_quat('-Z','Y').to_euler()
+                    filename=f'{preset}/{clip_name}.{phase}'+('' if view=='iso' else '.'+view)+'.png';path=output/filename;path.parent.mkdir(parents=True,exist_ok=True)
+                    scene.render.filepath=str(path);bpy.ops.render.render(write_still=True)
+                    record={'preset':preset,'clip':clip_name,'phase':phase,'view':view,'timeSeconds':time,'durationSeconds':duration,'file':filename,'sha256':digest(path),'item':item,'heldItemVisible':held_visible,'activeProps':active_props,'horseClip':horse_action_name,'seatOffsetBlenderZUp':list(rig.location),'motionSource':spec.get('reviewedPose',spec.get('source')),'clothWeights':weights,'elbowCorrectives':prototype_elbows,'sleeveClearanceDiagnostic':sleeve_diagnostic,'jointsBlenderZUp':joints,'cameraTarget':list(target),'cameraScale':scale}
+                    report['frames'].append(record);write_index(output,report)
+                    print('REVIEW_FRAME',path,flush=True)
+        # Detect concurrent publication rather than silently mixing revisions.
+        for key,spec in [('body',body_spec),('bank',bank_spec),('equipment',manifest['equipment'])]:
+            if digest(body_path if key=='body' else asset_path(spec['url']))!=asset_records[key]['sha256']:raise ValueError('Asset changed during review: '+spec['url'])
+    report['complete']=True;write_index(output,report)
+    print('REVIEW_COMPLETE',len(report['frames']),output/'index.html',flush=True)
+
+
+if __name__=='__main__':
+    args=parse_args()
+    if args.worker:worker(args)
+    else:
+        output=args.output.resolve();output.mkdir(parents=True,exist_ok=True)
+        command=[args.blender,'--background','--factory-startup','--python',str(Path(__file__).resolve()),'--','--worker',*sys.argv[1:]]
+        with (output/'render.log').open('w') as log:
+            process=subprocess.Popen(command,cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+            completed=False
+            for line in process.stdout:
+                log.write(line);log.flush()
+                if line.startswith(('REVIEW_FRAME','REVIEW_COMPLETE')):
+                    print(line.rstrip(),flush=True);completed|=line.startswith('REVIEW_COMPLETE')
+            result=process.wait()
+        if result or not completed:
+            print((output/'render.log').read_text()[-5000:],file=sys.stderr);sys.exit(result or 1)

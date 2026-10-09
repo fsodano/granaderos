@@ -1,0 +1,39 @@
+"""Read exported triangles. No Blender/source-generator assumptions or asset writes."""
+from pathlib import Path
+import json,struct,math,hashlib,collections,argparse
+p=argparse.ArgumentParser();p.add_argument('glb');p.add_argument('--output');args=p.parse_args()
+# Reuse the verified accessor/component reader, without its executable audit.
+helper=Path(__file__).with_name('ellipsoid-only-proof')/'prove-outward-details.py'
+code=helper.read_text().split("report={'before':")[0]
+# Aggregate actual front-facing triangle and supplied vertex normal area.
+code=code.replace('normalOutward=0','normalOutward=0;faceFront=0;normalFront=0')
+code=code.replace('area+=w','area+=w\n   if n[2]>0:faceFront+=w\n   if vnormal[2]>0:normalFront+=w')
+code=code.replace("'faceNormalAgreement':normalAgreement/area", "'faceNormalAgreement':normalAgreement/area,'frontFaceAreaFraction':faceFront/area,'frontVertexNormalAreaFraction':normalFront/area")
+exec(code,globals())
+path=Path(args.glb);doc,data,sha=read(path);parts=[]
+for mesh in doc['meshes']:
+ for primitive in mesh['primitives']:
+  if doc['materials'][primitive['material']]['name']!='Skin':parts.extend(components(doc,data,mesh,primitive))
+# Use exported Skin head extent and millimetre scale, not render-vertex indices.
+skin_points=[]
+for mesh in doc['meshes']:
+ for primitive in mesh['primitives']:
+  if doc['materials'][primitive['material']]['name']=='Skin':skin_points.extend(access(doc,data,primitive['attributes']['POSITION']))
+head_top=max(p[1] for p in skin_points)
+sclera=[c for c in parts if c['closed'] and all(.017<d<.029 for d in c['dimensions']) and head_top-.16<c['center'][1]<head_top and abs(c['center'][0])<.07]
+errors=[];checks=[]
+if len(sclera)!=2:errors.append(f'Expected two closed sclera, found {len(sclera)}')
+for eye in sclera:
+ side='left' if eye['center'][0]>0 else 'right'
+ checks.append({'part':'sclera_'+side,**eye})
+ if eye['signedVolume']<=0 or eye['outwardFaceAreaFraction']<.999 or eye['outwardVertexNormalAreaFraction']<.999:errors.append(side+' sclera has inward faces or vertex normals')
+ for name,low,high in [('iris',.007,.013),('pupil',.002,.005)]:
+  matches=[c for c in parts if not c['closed'] and low<c['dimensions'][0]<high and low<c['dimensions'][1]<high and c['dimensions'][2]<.003 and sum((c['center'][i]-eye['center'][i])**2 for i in (0,1))<.002**2 and .007<c['center'][2]-eye['center'][2]<.017]
+  if len(matches)!=1:errors.append(f'{side} {name}: expected one front patch, found {len(matches)}')
+  for c in matches:
+   checks.append({'part':name+'_'+side,**c})
+   if c['frontFaceAreaFraction']<.999 or c['frontVertexNormalAreaFraction']<.999:errors.append(side+' '+name+' faces backwards')
+report={'path':str(path),'sha256':sha,'nativeForward':[0,0,1],'weldToleranceMetres':1e-7,'checks':checks,'errors':errors,'pass':not errors}
+if args.output:Path(args.output).write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps({'path':str(path),'sha256':sha,'pass':not errors,'parts':[{'part':c['part'],'triangles':c['triangles'],'signedVolume':c['signedVolume'],'outwardFaceAreaFraction':c['outwardFaceAreaFraction'],'frontFaceAreaFraction':c['frontFaceAreaFraction'],'frontVertexNormalAreaFraction':c['frontVertexNormalAreaFraction']}for c in checks],'errors':errors},indent=2))
+raise SystemExit(0 if not errors else 1)

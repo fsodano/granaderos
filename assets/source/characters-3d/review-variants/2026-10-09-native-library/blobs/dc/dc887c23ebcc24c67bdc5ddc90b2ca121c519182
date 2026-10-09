@@ -1,0 +1,15 @@
+from pathlib import Path
+import sys,json,runpy
+r=Path('/tmp/granadero-main-collar-seam-pilot');src=r/'source/assets/source/characters-3d/authoring';sys.path.insert(0,str(src))
+import collar_seam
+original=collar_seam.fit_collar
+def fit(ctx,lod):
+ mesh=ctx['mesh']
+ def capture(name,coords,*args,**kw):
+  if name=='Crimson_Collar_Sewn':(r/f"collar-source-{ctx['preset']}-lod{lod}.json").write_text(json.dumps([list(p)for p in coords]))
+  return mesh(name,coords,*args,**kw)
+ ctx['mesh']=capture
+ try:return original(ctx,lod)
+ finally:ctx['mesh']=mesh
+collar_seam.fit_collar=fit
+runpy.run_path(str(src/'build.py'),run_name='__main__')

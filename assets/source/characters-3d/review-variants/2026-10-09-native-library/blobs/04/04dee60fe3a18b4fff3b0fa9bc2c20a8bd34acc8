@@ -1,0 +1,39 @@
+from pathlib import Path
+import sys,json,hashlib,numpy as np,collections,difflib
+R=Path('/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos');P=Path(__file__).parent
+sys.path.insert(0,str(R/'assets/source/characters-3d/authoring'));from accepted_faces import load,native_signature,digest
+before=P/'baseline-models/worker-lod0.glb';after=P/'models/worker-lod0.glb';d,a,b=load(before);e,ea,eb=load(after);outfit=next(n['mesh']for n in d['nodes']if n.get('name')=='Human_outfit_LOD0')
+assert native_signature(d,a)==native_signature(e,ea);assert d['nodes']==e['nodes'];assert d['materials']==e['materials'];assert d['images']==e['images'];assert d['textures']==e['textures']
+rows=[]
+for mi,m in enumerate(d['meshes']):
+ if mi==outfit:continue
+ n=e['meshes'][mi];assert m['name']==n['name'];assert len(m['primitives'])==len(n['primitives'])
+ for x,y in zip(m['primitives'],n['primitives']):
+  assert x['material']==y['material'];assert set(x['attributes'])==set(y['attributes'])
+  for key in x['attributes']:assert np.array_equal(a(x['attributes'][key]),ea(y['attributes'][key])),(m['name'],key)
+  assert np.array_equal(a(x['indices']),ea(y['indices']))
+  for one,two in zip(x.get('targets',[]),y.get('targets',[])):
+   for key in one:assert np.array_equal(a(one[key]),ea(two[key])),(m['name'],'morph',key)
+ rows.append({'mesh':m['name'],'allDecodedAttributesIndicesMorphsExact':True})
+def triangles(doc,access):
+ result={}
+ for p in doc['meshes'][outfit]['primitives']:
+  values={k:access(v)for k,v in p['attributes'].items()};ix=access(p['indices']).reshape(-1,3)
+  for tri in ix:
+   tile=tuple(np.floor(values['TEXCOORD_0'][tri].mean(0)*4).astype(int));parts=[]
+   for i in tri:parts.append(b''.join(values[k][i].tobytes()for k in sorted(values)if k!='NORMAL'))
+   result.setdefault(str(tile),collections.Counter())[hashlib.sha256(b''.join(sorted(parts))).hexdigest()]+=1
+ return result
+x=triangles(d,a);y=triangles(e,ea);regions={}
+for key in x.keys()|y.keys():
+ old=x.get(key,collections.Counter());new=y.get(key,collections.Counter());regions[key]={'beforeTriangles':sum(old.values()),'afterTriangles':sum(new.values()),'retainedTrianglesWithExactPositionWeightUVColour':sum((old&new).values()),'removedOrChangedTriangles':sum((old-new).values()),'newOrChangedTriangles':sum((new-old).values())}
+shadersUnchanged=True
+otherfiles=[]
+for f in (P/'baseline-models').rglob('*'):
+ if not f.is_file()or f.name in('worker-lod0.glb','manifest.json'):continue
+ assert f.read_bytes()==(P/'models'/f.relative_to(P/'baseline-models')).read_bytes();otherfiles.append(str(f.relative_to(P/'baseline-models')))
+receipt={'beforeSha256':digest(before),'afterSha256':digest(after),'sourceRevision':json.loads((P/'baseline.json').read_text())['revision'],'nativeBonesNodesBindsExact':True,'allMaterialsTextureBindingsExact':True,'nonOutfitMeshes':rows,'outfitTriangleRegions':regions,'otherLibraryFilesExact':len(otherfiles),'sourceChangedOnly':['worker_waistcoat.py','optimize.py'],'scope':'Private WorkerLOD0 waistcoat and occluded shirt interior only. Native sleeve/collar/face/hair/hands are retained. No publication.'}
+(P/'preservation.json').write_text(json.dumps(receipt,indent=2)+'\n');patch=[]
+for name in ['optimize.py','worker_waistcoat.py']:
+ old=R/'assets/source/characters-3d/authoring'/name;new=P/'source/assets/source/characters-3d/authoring'/name;patch+=list(difflib.unified_diff(old.read_text().splitlines(True)if old.exists()else[],new.read_text().splitlines(True),fromfile='a/assets/source/characters-3d/authoring/'+name if old.exists()else'/dev/null',tofile='b/assets/source/characters-3d/authoring/'+name))
+(P/'source.patch').write_text(''.join(patch));print(json.dumps(receipt,indent=2))

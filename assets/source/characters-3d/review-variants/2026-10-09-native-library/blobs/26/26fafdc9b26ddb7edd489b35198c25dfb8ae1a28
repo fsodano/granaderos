@@ -1,0 +1,127 @@
+"""Worker/friar fitted short hair trial; native Skin and rig stay unchanged."""
+import math, random
+import bpy
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+from mathutils.geometry import closest_point_on_tri, barycentric_transform
+
+
+def create_hair(mesh, faces, points, uvs, assignments, source_material, preset):
+    material=source_material.copy();material.name='Natural_Fitted_Hair'
+    material.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=.71
+    native=[]
+    for face in faces:
+        ids=[i for i,uv in face]
+        if min(points[i].z for i in ids)<1.58:continue
+        for i in range(1,len(ids)-1):native.append((ids[0],ids[i],ids[i+1]))
+    bvh=BVHTree.FromPolygons(points,native,all_triangles=True)
+    normals=[Vector((0,0,0)) for p in points]
+    for a,b,c in native:
+        n=(points[b]-points[a]).cross(points[c]-points[a])
+        for i in (a,b,c):normals[i]+=n
+    for n in normals:
+        if n.length:n.normalize()
+    def edge(point):
+        temple=max(0,min(1,(abs(point.x)-.061)/.021))
+        irregular=.0007*math.sin(point.x*163)+.0004*math.sin(point.x*377+point.y*29)
+        front=1.710+.009*math.exp(-((abs(point.x)-.047)/.018)**2)-.044*temple**1.5+irregular
+        ear=.076-abs(point.x)+max(0,point.z-1.670)*.40
+        boundary=min(point.z-1.635,max(point.y+.024,point.z-front),ear)
+        if preset=='friar':
+            # A real trimmed tonsure boundary, not crown vertices buried in Skin.
+            boundary=min(boundary,1.7365-point.z+.0007*math.sin(point.x*179+point.y*71))
+        return boundary
+    def fitting(direction):
+        centre=Vector((0,-.006,1.657));direction=Vector(direction).normalized()
+        point,normal,index,distance=bvh.ray_cast(centre+direction*.4,-direction,.7)
+        if point is None:return None
+        ids=native[index];blend=barycentric_transform(point,*[points[i]for i in ids],Vector((1,0,0)),Vector((0,1,0)),Vector((0,0,1)))
+        w={}
+        for i,b in zip(ids,blend):
+            for name,value in assignments[i].items():w[name]=w.get(name,0)+max(0,b)*value
+        normal=sum((normals[i]*max(0,b) for i,b in zip(ids,blend)),Vector()).normalized()
+        total=sum(w.values());return point,normal,{name:value/total for name,value in w.items()if value>1e-7}
+    def hair_uv(p):
+        angle=math.atan2(p.z-1.655,-(p.y+.020))
+        if angle<0:angle+=math.tau
+        return (max(0,min(1,.5+p.x/.175)),max(0,min(1,angle/(math.pi*1.25))))
+    coords=[];weights=[];polygons=[];texcoords=[];lookup={}
+    for face in faces:
+        if min(points[i].z for i,uv in face)<1.58:continue
+        polygon=[(points[i],assignments[i])for i,uv in face];output=[]
+        for start,end in zip(polygon,polygon[1:]+polygon[:1]):
+            a,b=edge(start[0]),edge(end[0])
+            if a>=0:output.append(start)
+            if (a>=0)!=(b>=0):
+                lo,hi=0.,1.
+                for _ in range(22):
+                    t=(lo+hi)*.5
+                    if (edge(start[0].lerp(end[0],t))>=0)==(a>=0):lo=t
+                    else:hi=t
+                t=(lo+hi)*.5;wa,wb=start[1],end[1]
+                w={name:wa.get(name,0)*(1-t)+wb.get(name,0)*t for name in wa.keys()|wb.keys()}
+                output.append((start[0].lerp(end[0],t),w))
+        if len(output)<3:continue
+        ids=[]
+        for p,w in output:
+            key=tuple(round(v,8)for v in p)
+            if key not in lookup:lookup[key]=len(coords);coords.append(p.copy());weights.append(w)
+            ids.append(lookup[key])
+        polygons.append(ids);texcoords.append([hair_uv(p)for p,w in output])
+    base=mesh('Natural_Hair_Base',coords,polygons,material,weights,texcoords)
+    for vertex in base.data.vertices:
+        width=max(0,min(1,edge(vertex.co)/.005));width=width*width*(3-2*width)
+        vertex.co+=vertex.normal*(.0002+.00065*width)
+    base.data.update();base['natural_hair']=True
+    attr=base.data.attributes.new(name='Hair_Surface',type='FLOAT',domain='POINT')
+    for v in attr.data:v.value=1
+    # Unequal, overlapping shallow locks. Ends taper into the scalp rather than
+    # creating a continuous solid rim. Each sample retains native surface weights.
+    rng=random.Random(7301 if preset=='worker'else 7302)
+    vv=[];ww=[];ff=[];uv=[];tones=[]
+    for lock in range(180):
+        column=lock%60;band=lock//60
+        lateral=-1.36+2.72*(column+.30+rng.random()*.40)/60
+        start=.12+band*.88+rng.uniform(-.05,.08);stop=min(3.02,start+rng.uniform(.99,1.20))
+        width=rng.uniform(.009,.018);bend=rng.uniform(-.025,.025);amplitude=rng.uniform(.00015,.00038)
+        shade=rng.uniform(.92,1.02)
+        segments=22;rows=[]
+        for row in range(segments+1):
+            t=row/segments;angle=start+(stop-start)*t
+            flow=lateral+bend*math.sin(t*math.pi)
+            def direction(offset):
+                theta=flow+offset
+                return (math.sin(theta),-math.cos(theta)*math.cos(angle),math.cos(theta)*math.sin(angle))
+            centre_fit=fitting(direction(0))
+            if centre_fit is None or edge(centre_fit[0])<-.0003:continue
+            rows.append((t,flow,angle,centre_fit))
+        if len(rows)<3:continue
+        last=None
+        for row,(t,flow,angle,centre_fit) in enumerate(rows):
+            def direction(offset):
+                theta=flow+offset
+                return (math.sin(theta),-math.cos(theta)*math.cos(angle),math.cos(theta)*math.sin(angle))
+            local=row/(len(rows)-1)
+            tip=math.sin(math.pi*local)**.65
+            along=max(0,min(1,edge(centre_fit[0])/.003))
+            size=width*max(.0001,tip);first=len(vv);valid=True
+            for column in range(5):
+                across=(column-2)/2
+                fit=fitting(direction(across*size))
+                if fit is None:valid=False;break
+                p,n,w=fit
+                base_edge=max(0,min(1,edge(p)/.005));base_edge=base_edge*base_edge*(3-2*base_edge)
+                ridge=max(0,1-across*across)**1.5
+                height=.00017+.00065*base_edge+amplitude*ridge*tip*along
+                vv.append(p+n*height);ww.append(w);tones.append((shade,shade,shade));uv.append(hair_uv(p))
+            if not valid:
+                del vv[first:];del ww[first:];del tones[first:];del uv[first:];last=None;continue
+            if last is not None:
+                for column in range(4):ff.append((last+column,last+column+1,first+column+1,first+column))
+            last=first
+    locks=mesh('Natural_Hair_Tapered_Locks',vv,ff,material,ww,[[uv[i]for i in f]for f in ff])
+    attr=locks.data.attributes.new(name='Hair_Surface',type='FLOAT',domain='POINT')
+    for v in attr.data:v.value=1
+    pigment=locks.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+    for entry,value in zip(pigment.data,tones):entry.color=(*value,1)
+    return base

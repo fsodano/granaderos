@@ -1,0 +1,36 @@
+from pathlib import Path
+import bpy,math,json
+from mathutils import Vector
+root=Path('/tmp/granadero-face-material-pilot')
+bpy.ops.wm.read_factory_settings(use_empty=True)
+bpy.ops.import_scene.gltf(filepath=str(root/'models/granadero-lod0.glb'))
+# Keep the actual native head triangles and their original UV coordinates.
+source=next(o for o in bpy.context.scene.objects if o.type=='MESH' and any(m and m.name=='Skin' for m in o.data.materials))
+verts=[];faces=[];uvs=[];normals=[]
+for p in source.data.polygons:
+ if source.data.materials[p.material_index].name!='Skin':continue
+ if min((source.matrix_world@source.data.vertices[i].co).z for i in p.vertices)<1.50:continue
+ face=[];uv=[]
+ for li in p.loop_indices:
+  v=source.data.loops[li].vertex_index;face.append(len(verts));verts.append(source.matrix_world@source.data.vertices[v].co);uv.append(source.data.uv_layers.active.data[li].uv.copy());normals.append((source.matrix_world.to_3x3()@source.data.corner_normals[li].vector).normalized())
+ faces.append(face);uvs.append(uv)
+for o in list(bpy.data.objects):bpy.data.objects.remove(o,do_unlink=True)
+mesh=bpy.data.meshes.new('actual_exported_head');mesh.from_pydata(verts,[],faces);mesh.update()
+obj=bpy.data.objects.new('actual_exported_head',mesh);bpy.context.collection.objects.link(obj)
+uv=mesh.uv_layers.new(name='nativeUV')
+for p,coords in zip(mesh.polygons,uvs):
+ p.use_smooth=True
+ for li,co in zip(p.loop_indices,coords):uv.data[li].uv=co
+mesh.normals_split_custom_set(normals)
+mat=bpy.data.materials.new('Measured_Cavity');mat.use_nodes=True;mesh.materials.append(mat)
+nodes=mat.node_tree.nodes;nodes.clear();links=mat.node_tree.links
+out=nodes.new('ShaderNodeOutputMaterial');emit=nodes.new('ShaderNodeEmission');ao=nodes.new('ShaderNodeAmbientOcclusion');ao.samples=64;ao.inputs['Distance'].default_value=.012
+links.new(ao.outputs['AO'],emit.inputs['Color']);links.new(emit.outputs[0],out.inputs['Surface'])
+image=bpy.data.images.new('head-cavity',width=2048,height=2048,alpha=False);image.generated_color=(1,1,1,1);image.colorspace_settings.name='Non-Color'
+tex=nodes.new('ShaderNodeTexImage');tex.image=image;nodes.active=tex
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=64;scene.render.bake.margin=8;scene.render.bake.use_clear=False
+bpy.context.view_layer.objects.active=obj;obj.select_set(True)
+bpy.ops.object.bake(type='EMIT')
+image.filepath_raw=str(root/'head-cavity.png');image.file_format='PNG';image.save()
+(root/'cavity-source.json').write_text(json.dumps({'source':'actual exported granadero-lod0.glb head skin triangles','vertices':len(verts),'faces':len(faces),'distanceMeters':.012,'samples':64,'uv':'unchanged native','onlyHead':True},indent=2))
+print('CAVITY_READY')

@@ -1,0 +1,19 @@
+{
+  "cwd": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
+  "head": "b596abe94115d83e5110ea14d2ab93a44d27d2e3",
+  "started": 1791417208.080469,
+  "inputs": {
+    "web/public/models/characters/manifest.json": "09715e3639fd18c8ea8bf80ce03b9942b53e634b466a398e57faf31544c68ea8",
+    "web/public/models/characters/male-animations.glb": "9c442370280b20bdc0808d3ed210e88737c63203f7efb2b92df62f934934714c",
+    "web/public/models/characters/female-animations.glb": "3bb2e760b7522510f24e26e56e7975132ee190bafc384456bd42177746b5be9c",
+    "web/lib/three/locomotion-profile.json": "b95e9e48bd0f1a251c609e92f52e824f395dfea0fc4d86f2fe3a00d530ebb17f"
+  },
+  "exitCode": 1,
+  "seconds": 1249.294,
+  "inputsAfter": {
+    "web/public/models/characters/manifest.json": "09715e3639fd18c8ea8bf80ce03b9942b53e634b466a398e57faf31544c68ea8",
+    "web/public/models/characters/male-animations.glb": "9c442370280b20bdc0808d3ed210e88737c63203f7efb2b92df62f934934714c",
+    "web/public/models/characters/female-animations.glb": "3bb2e760b7522510f24e26e56e7975132ee190bafc384456bd42177746b5be9c",
+    "web/lib/three/locomotion-profile.json": "b95e9e48bd0f1a251c609e92f52e824f395dfea0fc4d86f2fe3a00d530ebb17f"
+  }
+}

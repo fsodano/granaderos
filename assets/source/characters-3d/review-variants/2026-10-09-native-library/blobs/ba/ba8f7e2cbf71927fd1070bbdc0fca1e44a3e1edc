@@ -1,0 +1,85 @@
+"""Broad tailored compression folds on the existing military cloth topology.
+
+Native skin, weights and joints stay intact. The collar/sleeve boundary loops
+are fixed; each gather tapers into a smooth cloth panel, without periodic rings.
+"""
+import math
+from mathutils import Vector
+
+
+def relax_neck_gathers(coat):
+    """Spread narrow native neck valleys into the upper cloth, not its seam."""
+    neighbours=[[] for _ in coat.data.vertices];edges={}
+    for face in coat.data.polygons:
+        ids=list(face.vertices)
+        for a,b in zip(ids,ids[1:]+ids[:1]):
+            key=tuple(sorted((a,b)));edges[key]=edges.get(key,0)+1
+    boundary=set()
+    for (a,b),count in edges.items():
+        neighbours[a].append(b);neighbours[b].append(a)
+        if count==1:boundary.update((a,b))
+    original=[v.co.copy() for v in coat.data.vertices]
+    amounts=[]
+    for i,p in enumerate(original):
+        if i in boundary or p.z>=1.525 or p.z<=1.365 or abs(p.x)>=.175 or p.y>=-.025:
+            amounts.append(0);continue
+        zfade=min(1,(1.528-p.z)/.015,(p.z-1.365)/.035)
+        xfade=min(1,(.175-abs(p.x))/.035)
+        amounts.append(.48*max(0,zfade)*max(0,xfade))
+    for _ in range(8):
+        prior=[v.co.copy() for v in coat.data.vertices]
+        for i,(vertex,amount) in enumerate(zip(coat.data.vertices,amounts)):
+            if not amount or not neighbours[i]:continue
+            mean=sum((prior[j] for j in neighbours[i]),Vector())/len(neighbours[i])
+            delta=prior[i].lerp(mean,amount)-original[i]
+            if delta.length>.008:delta=delta.normalized()*.008
+            vertex.co=original[i]+delta
+    assert all((coat.data.vertices[i].co-original[i]).length==0 for i in boundary)
+    coat.data.update()
+
+
+def compression_relief(point, normal, heads, garment='coat'):
+    def bell(value,width):return math.exp(-(value/width)**2)
+    def fold(value,width):
+        # A broad roll of compressed wool with a shallow return valley.
+        return bell(value-width*.38,width)-.43*bell(value+width*.85,width*.88)
+    side='l' if point.x>0 else 'r';sign=1 if side=='l' else -1
+    forward=max(0,-normal.y);value=0
+    if garment=='breeches':
+        knee=heads['calf_'+side];delta=point-knee
+        front=max(0,min(1,.40-normal.y*.65));back=max(0,normal.y)
+        if abs(delta.z)<.18:
+            for centre,slant,width,power in ((.074,.35,.025,.010),(.012,-.31,.020,.009),(-.046,.18,.024,.006)):
+                curve=delta.z-centre+delta.x*sign*slant
+                value+=power*fold(curve,width)*bell(delta.x,.086)*(front*.70+back)
+        thigh=bell(point.z-.877,.123)*bell(abs(point.x)-.110,.075)*forward
+        value+=.0085*fold(point.z-.885+(abs(point.x)-.110)*.58,.027)*thigh
+        value+=.0045*fold(point.z-.967-(abs(point.x)-.12)*.40,.024)*thigh
+        # Leave the waistband and native boot overlap unchanged.
+        fade=max(0,min(1,(1.032-point.z)/.042,(point.z-.458)/.045))
+        return max(-.004,min(.011,value*fade))
+    shoulder=heads['upperarm_'+side];elbow=heads['lowerarm_'+side];wrist=heads['hand_'+side]
+    axis=(wrist-elbow).normalized();across=axis.cross(Vector((0,-1,0))).normalized()
+    delta=point-elbow;along=delta.dot(axis);cross=delta.dot(across)
+    front=max(0,min(1,.58-normal.y*.48))
+    if delta.length<.175:
+        for centre,slant,width,amplitude in ((-.035,.34,.025,.012),(.025,-.30,.020,.010),(.078,.24,.024,.006)):
+            curve=along-centre+cross*slant+.12*cross*cross/.07
+            value+=amplitude*fold(curve,width)*bell(cross,.063)*front
+    delta=point-wrist;along=delta.dot(axis)
+    if -.165<along<-.074:
+        value+=.007*fold(along+.112+delta.dot(across)*.28,.021)*bell(delta.y,.052)
+    x=abs(point.x)
+    armhole=bell(x-.155,.074)*bell(point.z-(shoulder.z-.113),.105)
+    value+=.0090*fold(point.z-(shoulder.z-.118)+(x-.155)*.64,.029)*armhole*forward*max(0,min(1,(x-.09)/.065))
+    value+=.0055*fold(point.z-(shoulder.z-.180)-(x-.135)*.38,.026)*armhole*forward
+    # The belt catches two unequal oblique rolls; they fade up the chest.
+    waist=bell(point.z-1.133,.092)*bell(x-.083,.11)*forward
+    asymmetric=.008 if side=='l' else -.005
+    value+=.0125*fold(point.z-1.111+asymmetric+(x-.06)*.29,.026)*waist
+    value+=.0075*fold(point.z-1.178-asymmetric-(x-.085)*.40,.030)*waist
+    # Keep the independently fitted belt/hem and sewn openings at their source.
+    neck_fade=max(0,min(1,(1.478-point.z)/.045))
+    hem_fade=max(0,min(1,(point.z-1.062)/.038))
+    wrist_fade=max(0,min(1,(-along-.075)/.025)) if delta.length<.14 else 1
+    return max(-.0045,min(.0125,value*neck_fade*hem_fade*wrist_fade))

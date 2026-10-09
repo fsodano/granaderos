@@ -1,0 +1,46 @@
+from pathlib import Path
+import shutil
+old=Path('/tmp/granadero-shoulder-strap-pilot');b=Path('/tmp/granadero-collar-rim-pilot');b.mkdir(exist_ok=True)
+for name in ['models','before-models']:
+ if not(b/name).exists():shutil.copytree(old/'before-models',b/name)
+s=b/'source/assets/source/characters-3d/authoring'
+if not s.exists():shutil.copytree(old/'source-before',s)
+helper='''"""Regular upper collar rows with an unchanged sewn native base."""
+import math
+from mathutils import Vector
+
+def collar_directions(vertices):
+    points=[(v.co.x,v.co.y+.036,i) for i,v in enumerate(vertices)]
+    # The native sewn edge has small inward detours at its rear. Follow its
+    # outer angular order without copying those detours into the visible rim.
+    ordered=sorted(points)
+    def cross(o,a,b):return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])
+    halves=[]
+    for sequence in (ordered,list(reversed(ordered))):
+        h=[]
+        for p in sequence:
+            while len(h)>=2 and cross(h[-2],h[-1],p)<=0:h.pop()
+            h.append(p)
+        halves.extend(h[:-1])
+    ids=sorted({p[2] for p in halves});count=len(vertices);angles=[None]*count
+    for k,a in enumerate(ids):
+        b=ids[(k+1)%len(ids)];end=b if b>a else b+count
+        start=math.atan2(points[a][1],points[a][0]);stop=math.atan2(points[b][1],points[b][0])
+        delta=(stop-start)%math.tau
+        if delta>math.pi:raise ValueError('The sewn collar must retain its native outer winding')
+        for j in range(a,end):angles[j%count]=start+delta*(j-a)/(end-a)
+    for i in range(1,count):
+        while angles[i]<angles[i-1]:angles[i]+=math.tau
+    step=math.tau/count;phase=sum(a-i*step for i,a in enumerate(angles))/count
+    return [[Vector((math.cos(a*(1-f)+(phase+i*step)*f),math.sin(a*(1-f)+(phase+i*step)*f),0)) for i,a in enumerate(angles)] for f in (.15,.60,1.)]
+'''
+(s/'collar_rim.py').write_text(helper)
+p=s/'character.py';t=p.read_text();t=t.replace("    collar_levels=(None,1.516,1.525,1.533)","    collar_levels=(None,1.516,1.525,1.533)\n    regular_collar=preset in ('granadero','royalist')\n    if regular_collar:\n        from collar_rim import collar_directions\n        collar_rows=collar_directions(neckline)")
+t=t.replace('        for vertex in neckline:\n            p=vertex.co.copy()','        for column,vertex in enumerate(neckline):\n            p=vertex.co.copy()')
+t=t.replace("                hit,q,n,face=skin.ray_cast(centre+direction*.17,-direction)","                if regular_collar:direction=collar_rows[row-1][column]\n                hit,q,n,face=skin.ray_cast(centre+direction*.17,-direction)",1)
+t=t.replace("    collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)","    collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)\n    if regular_collar:\n        # Protect the visible rows during the combined coat reduction. The\n        # base stays joined to the coat and keeps its original native points.\n        protection=collar.vertex_groups.new(name='Collar_Rim_Protection')\n        protection.add(list(range(count,len(collarv))),1,'REPLACE')")
+p.write_text(t)
+p=s/'optimize.py';t=p.read_text();t=t.replace('  reduction.use_collapse_triangulate=True','  reduction.use_collapse_triangulate=True\n  protection=reduced_coat.vertex_groups.get(\'Collar_Rim_Protection\')\n  if protection:\n   reduction.vertex_group=protection.name\n   reduction.invert_vertex_group=True\n   reduction.vertex_group_factor=1',1)
+t=t.replace('  from crossbelts import fit_crossbelts','  if protection:reduced_coat.vertex_groups.remove(protection)\n  from crossbelts import fit_crossbelts',1);p.write_text(t)
+for name in ['run-review.py','render-review.py','plans.json','preservation.py']:
+ t=(old/name).read_text().replace(str(old),str(b));(b/name).write_text(t)

@@ -1,0 +1,41 @@
+from pathlib import Path
+import json,hashlib,shutil,struct,sys
+import numpy as np
+ROOT=Path('/tmp/granadero-generated-skin-palette-pilot');TASK=ROOT/'all-lod-review';CANON=Path('/tmp/granadero-full-review/models');OUT=TASK/'models';BASE=TASK/'baseline';PNG=ROOT/'models-registration/textures/040b6c27fc46ce2da454.png'
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+manifest_hash=sha(CANON/'manifest.json');manifest=json.loads((CANON/'manifest.json').read_text())
+for destination in (BASE,OUT):shutil.copytree(CANON,destination,dirs_exist_ok=False)
+assert sha(CANON/'manifest.json')==manifest_hash
+assert sha(PNG)=='040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d'
+(OUT/'textures').mkdir(exist_ok=True);shutil.copy2(PNG,OUT/'textures'/PNG.name)
+ref=json.loads((ROOT/'compensation.json').read_text());records=[]
+def unpack(path):
+ b=path.read_bytes();n=struct.unpack_from('<I',b,12)[0];return json.loads(b[20:20+n]),b[28+n:]
+def pack(doc,binary):
+ raw=json.dumps(doc,separators=(',',':')).encode();raw+=b' '*(-len(raw)%4);binary+=b'\0'*(-len(binary)%4)
+ return struct.pack('<III',0x46546c67,2,28+len(raw)+len(binary))+struct.pack('<II',len(raw),0x4e4f534a)+raw+struct.pack('<II',len(binary),0x004e4942)+binary
+def access(doc,data,i):
+ a=doc['accessors'][i];v=doc['bufferViews'][a['bufferView']];width={'VEC2':2,'VEC3':3,'VEC4':4}[a['type']];assert a['componentType']==5126
+ return np.ndarray((a['count'],width),dtype='<f4',buffer=data,offset=v.get('byteOffset',0)+a.get('byteOffset',0),strides=(v.get('byteStride',width*4),4)).copy()
+def registered_uv(uv,pos):
+ uv=uv.copy();u,w=uv[:,0].copy(),uv[:,1].copy();mouth=np.exp(-((u-.914)/.018)**2-((w-.516)/.040)**2);mouth[mouth<.0001]=0;uv[:,1]+=.28*(w-.516)*mouth
+ def bump(v,centre,radius):
+  t=np.clip(1-((v-centre)/radius)**2,0,1);return t*t*(3-2*t)
+ brow_u=bump(u,.815,.015);face=(pos[:,1]>1.65)&(np.abs(pos[:,0])>.032)&(np.abs(pos[:,0])<.082)&(pos[:,2]>.10);brow=np.zeros(len(uv))
+ for centre,tail in [(.485,.457),(.547,.575)]:brow+=.30*(w-centre)*brow_u*bump(w,tail,.023)*face
+ uv[:,1]+=np.clip(brow,-.004,.004);return uv
+for lod in manifest['appearances']['granadero']['lods']:
+ path=OUT/Path(lod['url']).name;before=sha(path);doc,binary=unpack(path);original=binary
+ mi=next(i for i,m in enumerate(doc['materials'])if m['name']=='Skin');material=doc['materials'][mi]
+ image_id=len(doc['images']);doc['images'].append({'name':'skin-granadero-generated-colour','uri':'textures/'+PNG.name});old_texture=doc['textures'][material['pbrMetallicRoughness']['baseColorTexture']['index']];texture_id=len(doc['textures']);doc['textures'].append({**old_texture,'source':image_id});material['pbrMetallicRoughness']['baseColorTexture']={'index':texture_id,'texCoord':1};material['pbrMetallicRoughness']['baseColorFactor']=ref['paletteFactorsLinear']['light']+[1]
+ material.setdefault('extras',{}).update({'skinAlbedoReference':ref['referenceLinearRgb'],'skinAlbedoReferenceSpace':'linear-srgb','skinPaletteCompensation':'paletteLinear/referenceRGB','skinAlbedoSourceSha256':sha(PNG)})
+ changes=[]
+ for mesh in doc['meshes']:
+  for p in mesh['primitives']:
+   if p['material']!=mi:continue
+   uv=access(doc,binary,p['attributes']['TEXCOORD_0']);pos=access(doc,binary,p['attributes']['POSITION']);registered=registered_uv(uv,pos);binary+=b'\0'*(-len(binary)%4);data=registered.tobytes();start=len(binary);binary+=data;view=len(doc['bufferViews']);doc['bufferViews'].append({'buffer':0,'byteOffset':start,'byteLength':len(data),'target':34962});ai=len(doc['accessors']);doc['accessors'].append({'bufferView':view,'componentType':5126,'count':len(registered),'type':'VEC2','min':registered.min(0).tolist(),'max':registered.max(0).tolist()});p['attributes']['TEXCOORD_1']=ai
+   changes.append({'mesh':mesh['name'],'vertices':len(uv),'maxUvDelta':float(np.linalg.norm(registered-uv,axis=1).max())})
+ doc['buffers'][0]['byteLength']=len(binary);path.write_bytes(pack(doc,binary));lod.update({'sha256':sha(path),'bytes':path.stat().st_size});records.append({'lod':lod['lod'],'beforeSha256':before,'afterSha256':sha(path),'originalBinaryPrefixIdentical':binary[:len(original)]==original,'addedUvBytes':len(binary)-len(original),'normalTexCoord':material['normalTexture'].get('texCoord',0),'roughnessTexCoord':material['pbrMetallicRoughness']['metallicRoughnessTexture'].get('texCoord',0),'changes':changes})
+(OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');assert sha(CANON/'manifest.json')==manifest_hash
+receipt={'canonicalManifestBeforeAndAfter':manifest_hash,'candidateManifest':sha(OUT/'manifest.json'),'pngSha256':sha(PNG),'pngBytesUnchanged':(OUT/'textures'/PNG.name).read_bytes()==PNG.read_bytes(),'palettes':ref,'bodies':records,'scope':'Only three Granadero Skin base-color texture/material reference and appended UV1; all prior binary/accessors and native geometry, rig, weights, UV0, COLOR_0 unchanged. All other assets copied unchanged.'}
+(TASK/'preparation-proof.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))

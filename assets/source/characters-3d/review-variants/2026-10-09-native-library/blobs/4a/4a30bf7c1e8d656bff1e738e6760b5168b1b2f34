@@ -1,0 +1,57 @@
+import struct,json,hashlib,sys
+from pathlib import Path
+R=Path('/tmp/granadero-hair-naturalism-pilot')
+def read(path):
+ b=path.read_bytes();n=struct.unpack_from('<I',b,12)[0];j=json.loads(b[20:20+n]);return j,b[28+n:]
+def acc(j,b,i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];size={5120:1,5121:1,5122:2,5123:2,5125:4,5126:4}[a['componentType']]*{'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size);return b''.join(b[start+k*stride:start+k*stride+size]for k in range(a['count']))
+def digest(data):return hashlib.sha256(data).hexdigest()
+def joint_digest(j,b,p):
+ raw=acc(j,b,p['attributes']['JOINTS_0']);weights=struct.unpack('<'+'f'*(len(acc(j,b,p['attributes']['WEIGHTS_0']))//4),acc(j,b,p['attributes']['WEIGHTS_0']));size=len(raw)//len(weights);fmt='B' if size==1 else 'H';values=struct.unpack('<'+fmt*len(weights),raw);return digest(json.dumps([sorted((value,weight)for value,weight in zip(values[i:i+4],weights[i:i+4])if weight>0)for i in range(0,len(values),4)]).encode())
+def info(path):
+ j,b=read(path);out={'sha256':digest(path.read_bytes()),'triangles':sum(j['accessors'][p['indices']]['count']//3 for m in j['meshes']for p in m['primitives']),'draws':sum(len(m['primitives'])for m in j['meshes'])}
+ out['skin']=[{**{k:digest(acc(j,b,i))for k,i in p['attributes'].items()},'indices':digest(acc(j,b,p['indices']))}for m in j['meshes']for p in m['primitives']if j['materials'][p['material']]['name']=='Skin']
+ out['rig']=[{'inverseBind':digest(acc(j,b,s['inverseBindMatrices'])),'joints':[{k:v for k,v in j['nodes'][i].items()if k in ('name','translation','rotation','scale')}for i in s['joints']]}for s in j['skins']]
+ out['unchanged_meshes']={m['name']:[{**{k:digest(acc(j,b,i))for k,i in p['attributes'].items()if k not in ('TEXCOORD_0','JOINTS_0')},'JOINTS_0_effective':joint_digest(j,b,p),'indices':digest(acc(j,b,p['indices']))}for p in m['primitives']]for m in j['meshes']if m['name']!='Exposed_Human_Skin'}
+ return out
+
+
+R=Path('/tmp/granadero-worker-face-albedo-pilot');BASE=Path('/tmp/granadero-worker-face-identity-pilot/before')
+lod=int(sys.argv[1]) if len(sys.argv)>1 else 0;name=f'worker-lod{lod}.glb'
+a,ab=read(BASE/name);b,bb=read(R/'models'/name)
+assert a['nodes']==b['nodes']
+for sa,sb in zip(a['skins'],b['skins']):
+ assert sa['joints']==sb['joints']
+ assert acc(a,ab,sa['inverseBindMatrices'])==acc(b,bb,sb['inverseBindMatrices'])
+colour=[];uvs=0
+for ma,mb in zip(a['meshes'],b['meshes']):
+ assert ma['name']==mb['name']
+ for pa,pb in zip(ma['primitives'],mb['primitives']):
+  assert acc(a,ab,pa['indices'])==acc(b,bb,pb['indices'])
+  assert joint_digest(a,ab,pa)==joint_digest(b,bb,pb)
+  for key,idx in pa['attributes'].items():
+   if key in ('JOINTS_0','WEIGHTS_0'):continue
+   before=acc(a,ab,idx);after=acc(b,bb,pb['attributes'][key])
+   if before==after:continue
+   assert a['materials'][pa['material']]['name']=='Skin' and key=='COLOR_0',(ma['name'],key)
+   positions=list(struct.iter_unpack('<3f',acc(a,ab,pa['attributes']['POSITION'])))
+   ca=a['accessors'][idx];width={'VEC3':3,'VEC4':4}[ca['type']];fmt={5121:'B',5123:'H',5126:'f'}[ca['componentType']];one=255 if fmt=='B' else 65535 if fmt=='H' else 1
+   for i,(x,y)in enumerate(zip(struct.iter_unpack('<'+str(width)+fmt,before),struct.iter_unpack('<'+str(width)+fmt,after))):
+    if x!=y:
+     assert all(abs(v-one)<1e-6 for v in y)
+     colour.append(positions[i])
+  if 'TEXCOORD_1'in pb['attributes']:
+   assert a['materials'][pa['material']]['name']=='Skin'
+   uvs+=1
+  for ta,tb in zip(pa.get('targets',[]),pb.get('targets',[])):
+   for key,idx in ta.items():assert acc(a,ab,idx)==acc(b,bb,tb[key])
+assert colour and all(p[1]>1.65 and abs(p[0])<.070 for p in colour)
+oldskin=next(m for m in a['materials']if m['name']=='Skin');newskin=next(m for m in b['materials']if m['name']=='Skin')
+assert oldskin['normalTexture']==newskin['normalTexture']
+assert oldskin['pbrMetallicRoughness']['metallicRoughnessTexture']==newskin['pbrMetallicRoughness']['metallicRoughnessTexture']
+for old,new in zip(a['materials'],b['materials']):
+ if old['name']!='Skin':assert old==new
+img=b['images'][b['textures'][newskin['pbrMetallicRoughness']['baseColorTexture']['index']]['source']]
+sha=digest((R/'models'/img['uri']).read_bytes());assert sha=='040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d'
+report={'candidateSha256':digest((R/'models'/name).read_bytes()),'baselineSha256':digest((BASE/name).read_bytes()),'geometryNormalsUV0WeightsRigMorphsExact':True,'allOtherMaterialsExact':True,'normalRoughnessTextureAndUVExact':True,'neutralBrowBedVertices':len(colour),'neutralBrowBounds':[[min(p[k]for p in colour),max(p[k]for p in colour)]for k in range(3)],'newUV1SkinPrimitives':uvs,'albedoPNGExactSha256':sha,'rasterEdits':False,'skinReference':newskin['extras']['skinAlbedoReference'],'triangleAndDrawCountUnchanged':True}
+(R/f'albedo-proof-lod{lod}.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

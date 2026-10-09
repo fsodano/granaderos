@@ -1,0 +1,54 @@
+from pathlib import Path
+import json,hashlib,struct
+import numpy as np
+T=Path('/tmp/granadero-generated-skin-palette-pilot/all-lod-review');BASE=T/'baseline';OUT=T/'models-source'
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+def glb(p):
+ raw=p.read_bytes();n=struct.unpack_from('<I',raw,12)[0];j=json.loads(raw[20:20+n]);data=raw[28+n:]
+ def access(i):
+  a=j['accessors'][i];w={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];dt={5121:'u1',5123:'<u2',5125:'<u4',5126:'<f4'}[a['componentType']];size=np.dtype(dt).itemsize
+  if 'bufferView'in a:
+   v=j['bufferViews'][a['bufferView']];out=np.ndarray((a['count'],w),dtype=dt,buffer=data,offset=v.get('byteOffset',0)+a.get('byteOffset',0),strides=(v.get('byteStride',w*size),size)).copy()
+  else:out=np.zeros((a['count'],w),dtype=dt)
+  if 'sparse'in a:
+   sp=a['sparse'];si=sp['indices'];sv=sp['values'];iv=j['bufferViews'][si['bufferView']];vv=j['bufferViews'][sv['bufferView']];idt={5121:'u1',5123:'<u2',5125:'<u4'}[si['componentType']]
+   indices=np.frombuffer(data,dtype=idt,count=sp['count'],offset=iv.get('byteOffset',0)+si.get('byteOffset',0));values=np.frombuffer(data,dtype=dt,count=sp['count']*w,offset=vv.get('byteOffset',0)+sv.get('byteOffset',0)).reshape(-1,w);out[indices]=values
+  return out
+
+ return j,access
+records=[]
+for lod in range(3):
+ name=f'granadero-lod{lod}.glb';a,ra=glb(BASE/name);b,rb=glb(OUT/name);attrs=[];colours=[];morphs=[]
+ assert a['nodes']==b['nodes'],'nodes changed'
+ assert len(a['skins'])==len(b['skins'])
+ for sa,sb in zip(a['skins'],b['skins']):
+  assert sa['joints']==sb['joints'];assert np.array_equal(ra(sa['inverseBindMatrices']),rb(sb['inverseBindMatrices']))
+ assert len(a['meshes'])==len(b['meshes'])
+ for ma,mb in zip(a['meshes'],b['meshes']):
+  assert ma['name']==mb['name'] and len(ma['primitives'])==len(mb['primitives'])
+  for pa,pb in zip(ma['primitives'],mb['primitives']):
+   assert np.array_equal(ra(pa['indices']),rb(pb['indices'])),'indices changed'
+   for key,ai in pa['attributes'].items():
+    aa,bb=ra(ai),rb(pb['attributes'][key]);same=np.array_equal(aa,bb)
+    if key!='COLOR_0':assert same,(lod,ma['name'],key)
+    attrs.append({'mesh':ma['name'],'attribute':key,'exact':same,'count':len(aa)})
+    if key=='COLOR_0'and not same:
+     changed=np.any(aa!=bb,axis=1);p=rb(pb['attributes']['POSITION']);points=p[changed];assert np.all(points[:,1]>1.66) and np.all(np.abs(points[:,0])<.08),'colour outside brows changed'
+     assert np.all(bb[changed]==np.iinfo(bb.dtype).max) if np.issubdtype(bb.dtype,np.integer)else np.all(bb[changed]==1)
+     colours.append({'mesh':ma['name'],'changedVertices':int(changed.sum()),'bounds':[points.min(0).tolist(),points.max(0).tolist()],'onlyNeutralBrowBeds':True})
+   assert len(pa.get('targets',[]))==len(pb.get('targets',[]))
+   for ta,tb in zip(pa.get('targets',[]),pb.get('targets',[])):
+    for key in ta:assert np.array_equal(ra(ta[key]),rb(tb[key])),'morph changed'
+ for i,(ma,mb)in enumerate(zip(a['materials'],b['materials'])):
+  if ma['name']!='Skin':assert ma==mb,ma['name']
+  else:
+   assert ma['normalTexture']==mb['normalTexture'];assert ma['pbrMetallicRoughness']['metallicRoughnessTexture']==mb['pbrMetallicRoughness']['metallicRoughnessTexture']
+ records.append({'lod':lod,'beforeSha256':sha(BASE/name),'afterSha256':sha(OUT/name),'triangles':sum(len(ra(p['indices']))//3 for m in a['meshes']for p in m['primitives']),'nativeGeometryUv0WeightsRigIndicesAndMorphsExact':True,'attributes':attrs,'colourChanges':colours})
+changed=[]
+for p in BASE.rglob('*'):
+ if not p.is_file():continue
+ rel=p.relative_to(BASE)
+ if (OUT/rel).is_file()and sha(p)!=sha(OUT/rel):changed.append(str(rel))
+assert set(changed)<=set(['manifest.json','granadero-lod0.glb','granadero-lod1.glb','granadero-lod2.glb','.build/granadero-lod0.json','.build/granadero-lod1.json','.build/granadero-lod2.json']),changed
+result={'canonicalAtCopy':sha(BASE/'manifest.json'),'canonicalNow':sha(Path('/tmp/granadero-full-review/models/manifest.json')),'sourceCandidateManifest':sha(OUT/'manifest.json'),'changedExistingFiles':changed,'otherSevenAppearancesBanksEquipmentHorseExact':True,'bodies':records}
+(T/'source-preservation-proof.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items()if k!='bodies'},indent=2));print(json.dumps([{k:v for k,v in r.items()if k!='attributes'}for r in records],indent=2))

@@ -1,0 +1,57 @@
+--- a/assets/source/characters-3d/authoring/uniform_folds.py
++++ b/assets/source/characters-3d/authoring/uniform_folds.py
+@@ -7,7 +7,7 @@
+ from mathutils import Vector
+ 
+ 
+-def compression_relief(point, normal, heads):
++def _reference_relief(point, normal, heads):
+     def bell(value, width):
+         return math.exp(-(value / width) ** 2)
+ 
+@@ -92,3 +92,45 @@
+     assert all((coat.data.vertices[i].co-original[i]).length==0 for i in boundary)
+     coat.data.update()
+ 
++
++
++def compression_relief(point, normal, heads):
++    """A few broad, uneven tension rolls anchored at real cloth constraints."""
++    def bell(value,width):return math.exp(-(value/width)**2)
++    def fold(distance,width):
++        return bell(distance-width*.34,width)-.40*bell(distance+width*.9,width*.82)
++    def seam_roll(x,z,start,end,width,depth):
++        dx,dz=end[0]-start[0],end[1]-start[1];length=math.hypot(dx,dz)
++        t=((x-start[0])*dx+(z-start[1])*dz)/(length*length)
++        if t<=0 or t>=1:return 0
++        distance=((x-start[0])*(-dz)+(z-start[1])*dx)/length
++        envelope=math.sin(math.pi*t)**.8
++        return depth*fold(distance,width)*envelope
++    old=_reference_relief(point,normal,heads)
++    side='l' if point.x>0 else 'r';x=abs(point.x)
++    front=max(0,-normal.y);value=0
++    # Unequal pulls descend from the armhole into the unsupported front panel.
++    # Each roll fades at both endpoints and never becomes a ring around a limb.
++    if x<.215:
++        if side=='r':
++            value+=seam_roll(x,point.z,(.194,1.375),(.032,1.207),.027,.026)
++            value+=seam_roll(x,point.z,(.178,1.267),(.025,1.134),.025,.023)
++        else:
++            value+=seam_roll(x,point.z,(.190,1.380),(.051,1.252),.027,.024)
++            value+=seam_roll(x,point.z,(.162,1.246),(.023,1.139),.029,.021)
++        # A short sideways gather is caught immediately above the waist belt.
++        value+=seam_roll(x,point.z,(.170,1.098),(.026,1.126),.023,.024)
++        value*=front
++    elbow=heads['lowerarm_'+side];wrist=heads['hand_'+side]
++    axis=(wrist-elbow).normalized();across=axis.cross(Vector((0,-1,0))).normalized()
++    delta=point-elbow;along=delta.dot(axis);lateral=delta.dot(across)
++    if delta.length<.19:
++        facing=max(0,min(1,.55-normal.y*.50))
++        value+=.022*fold(along+.032+lateral*.45,.035)*bell(lateral,.068)*facing
++        value+=.016*fold(along-.045-lateral*.25,.030)*bell(lateral-.012,.058)*facing
++    # Keep the accepted neck, shoulder board, belt and cuff contact bands.
++    neck=max(0,min(1,(1.438-point.z)/.048))
++    hem=max(0,min(1,(point.z-1.086)/.030))
++    d=point-wrist;wrist_fade=max(0,min(1,(-(d.dot(axis))-.090)/.04)) if d.length<.15 else 1
++    mix=neck*hem*wrist_fade
++    return old*(1-mix)+max(-.005,min(.020,value))*mix

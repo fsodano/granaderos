@@ -1,0 +1,703 @@
+{
+  "version": 1,
+  "gitRevision": "a5d9f55ec5a63fb29a5244d51d9616c72df95785",
+  "manifestSha256": "209abdee142fb3d9c81297b8f93ca74e4a18132bdd5edd4b0bdd1995b13795e9",
+  "manifestPath": "/private/tmp/granadero-crossbelt-diagnostic/library/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 560,
+    "samples": 8,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "08eee9782c2cd7fddd9721fbc12862d7ba3cf82a47ea6267ae5a0f8b0f601b4a",
+    "snapshot": "frozen-sources/tools/characters-3d/render-review.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "d4f3871ad8901bd14ca65414278345a60501ce2d7f0b5b1151192e876176333e",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero",
+    "royalist"
+  ],
+  "coverage": [
+    {
+      "clip": "crouch.reload.long-gun.1800",
+      "item": "1800"
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "/private/tmp/granadero-crossbelt-diagnostic/library/granadero-lod0.glb",
+        "sha256": "968a672e75f8dc267044ec8700e75a9269e98326c0e5a111e69a842fc7b284c7",
+        "bytes": 3354324,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+          "textures/9cf786dd1636a37659be.png": "9cf786dd1636a37659be83671d24df2d6734b0f7d84b4b2a3d49999774e7f09a",
+          "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/7a4750f0f9e8ddae313c.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/7a4750f0f9e8ddae313c.png",
+          "textures/9cf786dd1636a37659be.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/9cf786dd1636a37659be.png",
+          "textures/c115e786c16ea09b4835.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/c115e786c16ea09b4835.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-crossbelt-diagnostic/library/male-animations.glb",
+        "sha256": "529396a3d90df46e0fb7355cfade28d04480bbce8e1c4c530aa4dae92fde6f61",
+        "bytes": 16441752,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/459240e5f2a4cda05956.png": "459240e5f2a4cda059560d8dfd17d88a41a9a8be62e5bc46f2d9aa596e05f0fe",
+          "textures/5ea2609d02011f56d93c.png": "5ea2609d02011f56d93cdafb508a332ba2baa72ac3fd4779eb87fad393cf4b2d",
+          "textures/eca27423f69dde195b1b.png": "eca27423f69dde195b1b21d3f0dbf17fb62baea284e1e79c7ed42fe76dc87a54",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/459240e5f2a4cda05956.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/459240e5f2a4cda05956.png",
+          "textures/5ea2609d02011f56d93c.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/5ea2609d02011f56d93c.png",
+          "textures/eca27423f69dde195b1b.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/eca27423f69dde195b1b.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-crossbelt-diagnostic/library/equipment.glb",
+        "sha256": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+        "bytes": 599736,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {
+        "Human_outfit_LOD0": [
+          "Basis",
+          "cloth_crouched",
+          "cloth_prone",
+          "cloth_supine"
+        ]
+      }
+    },
+    "royalist": {
+      "body": {
+        "path": "/private/tmp/granadero-crossbelt-diagnostic/library/royalist-lod0.glb",
+        "sha256": "1e214dd383db9d57b66f6830418cf245b2e2a968afb6782dae3ac28cf017f359",
+        "bytes": 3313328,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+          "textures/ed07531304d70739a659.png": "ed07531304d70739a6590091d9a5709280dc92865e27ffc12dfe15eccdc64bcf",
+          "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/7a4750f0f9e8ddae313c.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/7a4750f0f9e8ddae313c.png",
+          "textures/ed07531304d70739a659.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/ed07531304d70739a659.png",
+          "textures/c115e786c16ea09b4835.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/c115e786c16ea09b4835.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-crossbelt-diagnostic/library/male-animations.glb",
+        "sha256": "529396a3d90df46e0fb7355cfade28d04480bbce8e1c4c530aa4dae92fde6f61",
+        "bytes": 16441752,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/459240e5f2a4cda05956.png": "459240e5f2a4cda059560d8dfd17d88a41a9a8be62e5bc46f2d9aa596e05f0fe",
+          "textures/5ea2609d02011f56d93c.png": "5ea2609d02011f56d93cdafb508a332ba2baa72ac3fd4779eb87fad393cf4b2d",
+          "textures/eca27423f69dde195b1b.png": "eca27423f69dde195b1b21d3f0dbf17fb62baea284e1e79c7ed42fe76dc87a54",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/459240e5f2a4cda05956.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/459240e5f2a4cda05956.png",
+          "textures/5ea2609d02011f56d93c.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/5ea2609d02011f56d93c.png",
+          "textures/eca27423f69dde195b1b.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/eca27423f69dde195b1b.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-crossbelt-diagnostic/library/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-crossbelt-diagnostic/library/equipment.glb",
+        "sha256": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+        "bytes": 599736,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {
+        "Human_outfit_LOD0": [
+          "Basis",
+          "cloth_crouched",
+          "cloth_prone",
+          "cloth_supine"
+        ]
+      }
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "crouch.reload.long-gun.1800",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 3.07,
+      "durationSeconds": 4.8,
+      "file": "granadero/crouch.reload.long-gun.1800.sample-1.png",
+      "sha256": "fd5695f4a291e435c9d0e596cd3112463510a35c46a78a1b7d2109e06b99f8bd",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [
+        "ramrod"
+      ],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 1.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.66
+        ],
+        "head": [
+          0.0132038,
+          -0.4332946,
+          1.1365615
+        ],
+        "upperarm_l": [
+          0.2016985,
+          -0.291323,
+          0.9738574
+        ],
+        "upperarm_r": [
+          -0.1768336,
+          -0.3053429,
+          0.9831328
+        ],
+        "hand_l": [
+          0.010505,
+          -0.5704998,
+          1.2752463
+        ],
+        "hand_r": [
+          -0.0135023,
+          -0.3366482,
+          0.903614
+        ],
+        "foot_l": [
+          0.1300001,
+          0.0150005,
+          0.0895417
+        ],
+        "foot_r": [
+          -0.1300001,
+          0.0150004,
+          0.0895416
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "crouch.reload.long-gun.1800",
+      "phase": "sample-1",
+      "view": "head",
+      "timeSeconds": 3.07,
+      "durationSeconds": 4.8,
+      "file": "granadero/crouch.reload.long-gun.1800.sample-1.head.png",
+      "sha256": "e9a5c823a92358e606c79ab22d1768c5e9c3beba5b4a7ca42546b5eb417c1b94",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [
+        "ramrod"
+      ],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 1.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.66
+        ],
+        "head": [
+          0.0132038,
+          -0.4332946,
+          1.1365615
+        ],
+        "upperarm_l": [
+          0.2016985,
+          -0.291323,
+          0.9738574
+        ],
+        "upperarm_r": [
+          -0.1768336,
+          -0.3053429,
+          0.9831328
+        ],
+        "hand_l": [
+          0.010505,
+          -0.5704998,
+          1.2752463
+        ],
+        "hand_r": [
+          -0.0135023,
+          -0.3366482,
+          0.903614
+        ],
+        "foot_l": [
+          0.1300001,
+          0.0150005,
+          0.0895417
+        ],
+        "foot_r": [
+          -0.1300001,
+          0.0150004,
+          0.0895416
+        ]
+      },
+      "cameraTarget": [
+        0.013203799724578857,
+        -0.4332945942878723,
+        1.2765614986419678
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "crouch.reload.long-gun.1800",
+      "phase": "sample-1",
+      "view": "hands",
+      "timeSeconds": 3.07,
+      "durationSeconds": 4.8,
+      "file": "granadero/crouch.reload.long-gun.1800.sample-1.hands.png",
+      "sha256": "a79427721cc41b4001d52335f35b92745d9c7317e64fd8cbbcdcd7cd6c48a723",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [
+        "ramrod"
+      ],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 1.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.66
+        ],
+        "head": [
+          0.0132038,
+          -0.4332946,
+          1.1365615
+        ],
+        "upperarm_l": [
+          0.2016985,
+          -0.291323,
+          0.9738574
+        ],
+        "upperarm_r": [
+          -0.1768336,
+          -0.3053429,
+          0.9831328
+        ],
+        "hand_l": [
+          0.010505,
+          -0.5704998,
+          1.2752463
+        ],
+        "hand_r": [
+          -0.0135023,
+          -0.3366482,
+          0.903614
+        ],
+        "foot_l": [
+          0.1300001,
+          0.0150005,
+          0.0895417
+        ],
+        "foot_r": [
+          -0.1300001,
+          0.0150004,
+          0.0895416
+        ]
+      },
+      "cameraTarget": [
+        -0.0014986498281359673,
+        -0.453574001789093,
+        1.0894300937652588
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "royalist",
+      "clip": "crouch.reload.long-gun.1800",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 3.07,
+      "durationSeconds": 4.8,
+      "file": "royalist/crouch.reload.long-gun.1800.sample-1.png",
+      "sha256": "95999dee9d7c2df86adafbec038c81b7452aec0363832f9310735bb85a4aa9f1",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [
+        "ramrod"
+      ],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 1.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.66
+        ],
+        "head": [
+          0.0132038,
+          -0.4332946,
+          1.1365615
+        ],
+        "upperarm_l": [
+          0.2016985,
+          -0.291323,
+          0.9738574
+        ],
+        "upperarm_r": [
+          -0.1768336,
+          -0.3053429,
+          0.9831328
+        ],
+        "hand_l": [
+          0.010505,
+          -0.5704998,
+          1.2752463
+        ],
+        "hand_r": [
+          -0.0135023,
+          -0.3366482,
+          0.903614
+        ],
+        "foot_l": [
+          0.1300001,
+          0.0150005,
+          0.0895417
+        ],
+        "foot_r": [
+          -0.1300001,
+          0.0150004,
+          0.0895416
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "royalist",
+      "clip": "crouch.reload.long-gun.1800",
+      "phase": "sample-1",
+      "view": "head",
+      "timeSeconds": 3.07,
+      "durationSeconds": 4.8,
+      "file": "royalist/crouch.reload.long-gun.1800.sample-1.head.png",
+      "sha256": "61b78ceb96af470e93de8c9fd5092178e6834f5934058c677282e2f605adacc9",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [
+        "ramrod"
+      ],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 1.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.66
+        ],
+        "head": [
+          0.0132038,
+          -0.4332946,
+          1.1365615
+        ],
+        "upperarm_l": [
+          0.2016985,
+          -0.291323,
+          0.9738574
+        ],
+        "upperarm_r": [
+          -0.1768336,
+          -0.3053429,
+          0.9831328
+        ],
+        "hand_l": [
+          0.010505,
+          -0.5704998,
+          1.2752463
+        ],
+        "hand_r": [
+          -0.0135023,
+          -0.3366482,
+          0.903614
+        ],
+        "foot_l": [
+          0.1300001,
+          0.0150005,
+          0.0895417
+        ],
+        "foot_r": [
+          -0.1300001,
+          0.0150004,
+          0.0895416
+        ]
+      },
+      "cameraTarget": [
+        0.013203799724578857,
+        -0.4332945942878723,
+        1.2765614986419678
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "royalist",
+      "clip": "crouch.reload.long-gun.1800",
+      "phase": "sample-1",
+      "view": "hands",
+      "timeSeconds": 3.07,
+      "durationSeconds": 4.8,
+      "file": "royalist/crouch.reload.long-gun.1800.sample-1.hands.png",
+      "sha256": "ef45eeb96ff3413c2c44ab500433326702b3971f867fdd8a06b22953df9807ff",
+      "item": "1800",
+      "heldItemVisible": true,
+      "activeProps": [
+        "ramrod"
+      ],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 1.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.66
+        ],
+        "head": [
+          0.0132038,
+          -0.4332946,
+          1.1365615
+        ],
+        "upperarm_l": [
+          0.2016985,
+          -0.291323,
+          0.9738574
+        ],
+        "upperarm_r": [
+          -0.1768336,
+          -0.3053429,
+          0.9831328
+        ],
+        "hand_l": [
+          0.010505,
+          -0.5704998,
+          1.2752463
+        ],
+        "hand_r": [
+          -0.0135023,
+          -0.3366482,
+          0.903614
+        ],
+        "foot_l": [
+          0.1300001,
+          0.0150005,
+          0.0895417
+        ],
+        "foot_r": [
+          -0.1300001,
+          0.0150004,
+          0.0895416
+        ]
+      },
+      "cameraTarget": [
+        -0.0014986498281359673,
+        -0.453574001789093,
+        1.0894300937652588
+      ],
+      "cameraScale": 0.9
+    }
+  ],
+  "complete": true
+}

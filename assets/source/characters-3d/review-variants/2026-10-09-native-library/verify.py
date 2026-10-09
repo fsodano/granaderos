@@ -13,9 +13,10 @@ for row in blobs.values():
  assert hashlib.sha256(data).hexdigest()==row['sha256'],row['archivePath']+' SHA-256'
  assert hashlib.sha1(f'blob {len(data)}\0'.encode()+data).hexdigest()==row['gitBlob'],row['archivePath']+' Git identity'
  assert row['runtimeEnabled'] is False
-for row in json.loads((HERE/'private-files.json').read_text())['files']:
+external=json.loads((HERE/'external-files.json').read_text()) if (HERE/'external-files.json').exists() else {'files':[]}
+for row in json.loads((HERE/'private-files.json').read_text())['files']+external['files']:
  if 'archivePath' in row:
   stored=blobs[row['gitBlob']]
   assert stored['archivePath']==row['archivePath'] and stored['sha256']==row['sha256']
- else:assert row['storage']=='main-history'
-print(json.dumps({'verifiedBlobs':len(blobs),'logicalBytes':sum(r['bytes']for r in blobs.values()),'runtimeAssetsChanged':False}))
+ else:assert row['storage'] in ('main-history','existing-integration-history')
+print(json.dumps({'verifiedBlobs':len(blobs),'logicalBytes':sum(r['bytes']for r in blobs.values()),'externalPaths':len(external['files']),'runtimeAssetsChanged':False}))

@@ -1,0 +1,228 @@
+"""Small fitted human surfaces; native joints and skin weights stay unchanged."""
+import math
+from mathutils import Vector
+from mathutils.geometry import barycentric_transform, closest_point_on_tri
+
+
+def sewn_boundary(obj, predicate, normal=Vector((0,0,1))):
+    """Follow mesh edges; sorting by angle can join unrelated folded edges."""
+    counts={}
+    for face in obj.data.polygons:
+        ids=list(face.vertices)
+        for a,b in zip(ids,ids[1:]+ids[:1]):
+            key=tuple(sorted((a,b)));counts[key]=counts.get(key,0)+1
+    neighbours={}
+    for (a,b),count in counts.items():
+        if count==1 and predicate(obj.data.vertices[a]) and predicate(obj.data.vertices[b]):
+            neighbours.setdefault(a,[]).append(b);neighbours.setdefault(b,[]).append(a)
+    if len(neighbours)<3 or any(len(edges)!=2 for edges in neighbours.values()):
+        raise ValueError('A sewn edge must form a closed native surface loop')
+    first=min(neighbours);indices=[first];previous=None;current=first
+    while True:
+        following=next(i for i in sorted(neighbours[current]) if i!=previous)
+        if following==first:break
+        if following in indices:raise ValueError('A sewn edge crosses another boundary')
+        indices.append(following);previous,current=current,following
+    if len(indices)!=len(neighbours):raise ValueError('A sewn edge contains disconnected loops')
+    vertices=[obj.data.vertices[i] for i in indices]
+    area=sum((a.co.cross(b.co) for a,b in zip(vertices,vertices[1:]+vertices[:1])),Vector())
+    if area.dot(normal)<0:vertices.reverse()
+    return vertices
+
+
+def surface_weights(obj, point, face):
+    """Interpolate a fitted point's actual skin weights on its native face."""
+    vertices=list(obj.data.polygons[face].vertices);candidates=[]
+    for index in range(1,len(vertices)-1):
+        ids=[vertices[0],vertices[index],vertices[index+1]]
+        coords=[obj.data.vertices[i].co for i in ids]
+        nearest=closest_point_on_tri(point,*coords)
+        blend=barycentric_transform(nearest,*coords,Vector((1,0,0)),Vector((0,1,0)),Vector((0,0,1)))
+        candidates.append(((nearest-point).length_squared,ids,blend))
+    _,ids,blend=min(candidates,key=lambda candidate:candidate[0]);weights={}
+    for index,factor in zip(ids,blend):
+        for group in obj.data.vertices[index].groups:
+            name=obj.vertex_groups[group.group].name
+            weights[name]=weights.get(name,0)+max(0,factor)*group.weight
+    total=sum(weights.values())
+    return {name:value/total for name,value in weights.items() if value>1e-7}
+
+
+def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False, female=False, preset=None):
+    """Clip crossing faces at the hairline instead of dropping whole polygons."""
+    def boundary(p):
+        if military:
+            return min(p.z-1.67, max(p.y+.025, p.z-1.739))
+        temple=max(0, min(1, (abs(p.x)-.035)/.046))
+        # Short, unequal ends soften the cut edge without changing the style.
+        edge=.0014*math.sin(p.x*510+p.y*37)+.0006*math.sin(p.x*1130-p.y*59)
+        if female:
+            # A swept-back scalp reaches the nape behind the ears. A cropped
+            # cap with a braid attached leaves an exposed military hairline.
+            back=max(0,min(1,(p.y+.055)/.070))
+            back=back*back*(3-2*back)
+            forehead=1.716-.043*temple*temple
+            nape=1.612+.013*min(1,(abs(p.x)/.073)**2)
+            hairline=forehead*(1-back)+nape*back
+            ear_clearance=.077-abs(p.x)+max(0,p.z-1.670)*.34
+            return min(p.z-hairline-edge,ear_clearance)
+        hairline=1.711-.043*temple*temple
+        bound=min(p.z-1.640-edge, max(p.y+.024, p.z-hairline-edge))
+        return min(bound,1.735-p.z) if preset=="friar" else bound
+    coords=[];weights=[];polygons=[];texcoords=[];lookup={}
+    for face in faces:
+        polygon=[(points[i],Vector(uvs[uv]),assignments[i]) for i,uv in face]
+        output=[]
+        for start,end in zip(polygon,polygon[1:]+polygon[:1]):
+            a,b=boundary(start[0]),boundary(end[0])
+            if a>=0:output.append(start)
+            if (a>=0)!=(b>=0):
+                # The edge crossing also interpolates native UVs and weights.
+                t=a/(a-b);wa,wb=start[2],end[2]
+                w={name:wa.get(name,0)*(1-t)+wb.get(name,0)*t for name in wa.keys()|wb.keys()}
+                output.append((start[0].lerp(end[0],t),start[1].lerp(end[1],t),w))
+        if len(output)<3:continue
+        indices=[]
+        for point,uv,w in output:
+            key=tuple(round(value,8) for value in point)
+            if key not in lookup:
+                lookup[key]=len(coords);coords.append(point);weights.append(w)
+            indices.append(lookup[key])
+        polygons.append(indices);texcoords.append([uv for point,uv,w in output])
+    obj=mesh('Short_Hair',coords,polygons,material,weights,texcoords)
+    if preset=='friar':obj['native_tonsure']=True
+    detail=obj.data.attributes.new(name='Hair_Surface',type='FLOAT',domain='POINT')
+    for entry in detail.data:entry.value=1
+    tones=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+    for vertex in obj.data.vertices:
+        p=vertex.co.copy()
+        thickness=.0015 if military else .0045 if female else .0022
+        if not military:
+            # Broad locks run back from the forehead, converging gently at
+            # the gathered nape. Millimetre relief changes only the hair shell.
+            back=max(0,min(1,(p.y+.10)/.19))
+            phase=(p.x/(1-.30*back))*570+.40*math.sin(p.y*26)
+            lock=(.5+.5*math.cos(phase))**1.5
+            fine=.5+.5*math.sin(phase*2.17+p.y*17)
+            part_x=.023+.006*back
+            part=math.exp(-((p.x-part_x)/.0032)**2)*max(0,min(1,(p.z-1.695)/.025))
+            relief=.00115*lock+.00030*fine-.00065*part
+            # A sharp 4.5 mm rim reads as a helmet. Feather the same fitted
+            # surface down to the scalp over its final centimetre.
+            edge=max(0,min(1,boundary(p)/.011));edge=edge*edge*(3-2*edge)
+            thickness=.00065+(thickness+relief-.00065)*edge
+            shade=1-.24*part-.035*(1-lock)
+        else:shade=1
+        tones.data[vertex.index].color=(shade,shade,shade,1)
+        vertex.co+=vertex.normal*thickness
+    obj.data.update()
+    return obj
+
+
+def hand_frames(rig):
+    result=[]
+    for side in ('l','r'):
+        bones=rig.data.bones;wrist=bones['hand_'+side].head_local
+        forward=(bones['middle_01_'+side].head_local-wrist).normalized()
+        across=bones['index_01_'+side].head_local-bones['pinky_01_'+side].head_local
+        palm=across.cross(forward).normalized()*(-1 if side=='l' else 1)
+        result.append((side,wrist,forward,palm))
+    return result
+
+
+def fitted_fingernails(ctx, material):
+    """Thin patches follow the real distal phalanges and their native weights."""
+    rig=ctx['rig'];skin=ctx['skin'];mesh=ctx['mesh']
+    for side,wrist,forward,palm in hand_frames(rig):
+        for finger in ('thumb','index','middle','ring','pinky'):
+            bone=rig.data.bones[finger+'_03_'+side]
+            axis=(bone.tail_local-bone.head_local).normalized()
+            dorsal=-palm+axis*palm.dot(axis);dorsal.normalize()
+            lateral=axis.cross(dorsal).normalized()
+            half_width=min(.0054,max(.0027,bone.length*(.30 if finger=='thumb' else .245)))
+            vv=[];ww=[];ff=[];uv=[]
+            for row in range(7):
+                t=row/6;centre=bone.head_local.lerp(bone.tail_local,.21+.57*t)
+                taper=.72+.28*math.sin(math.pi*t)
+                for column in range(5):
+                    across=(column/4-.5)*2
+                    probe=centre+lateral*(across*half_width*taper)
+                    hit,point,normal,face=skin.ray_cast(probe+dorsal*.035,-dorsal)
+                    if not hit or (point-probe).length>.021:
+                        # Never place a floating nail when a native fit fails.
+                        vv=[];break
+                    vv.append(point+normal*.00035);ww.append(surface_weights(skin,point,face))
+                    # Reuse the native skin image and Skin palette. A fixed
+                    # pink atlas material would ignore brown/dark skin choices.
+                    loops=list(skin.data.polygons[face].loop_indices);candidates=[]
+                    for index in range(1,len(loops)-1):
+                        triangle=[loops[0],loops[index],loops[index+1]]
+                        points=[skin.data.vertices[skin.data.loops[li].vertex_index].co for li in triangle]
+                        tex=[Vector((*skin.data.uv_layers.active.data[li].uv,0)) for li in triangle]
+                        nearest=closest_point_on_tri(point,*points)
+                        candidates.append(((nearest-point).length_squared,barycentric_transform(nearest,*points,*tex)))
+                    uv.append(min(candidates,key=lambda candidate:candidate[0])[1].xy)
+                if not vv:break
+            if len(vv)!=35:continue
+            for row in range(6):
+                for column in range(4):
+                    i=row*5+column;ff.append((i,i+1,i+6,i+5))
+            obj=mesh('Skin_Fingernail_'+finger+'_'+side,vv,ff,material,ww,[[uv[i] for i in face] for face in ff])
+            obj['anatomy_surface']='nail'
+
+
+def hand_tone(point, rig, frames):
+    """Warm joints and shallow creases retain the hand's unmodified volume."""
+    side,wrist,forward,palm=min(frames,key=lambda frame:(point-frame[1]).length_squared)
+    if (point-wrist).length>.22:return (1,1,1)
+    crease=0;knuckle=0
+    for finger in ('thumb','index','middle','ring','pinky'):
+        for segment in (1,2,3):
+            bone=rig.data.bones[f'{finger}_{segment:02d}_{side}']
+            axis=(bone.tail_local-bone.head_local).normalized();delta=point-bone.head_local
+            along=delta.dot(axis);radial=(delta-axis*along).length
+            if radial>.014:continue
+            band=math.exp(-(along/.0027)**2)*math.exp(-((radial-.006)/.010)**2)
+            palmar=max(0,min(1,.5+delta.dot(palm)*60))
+            crease=max(crease,band*(.4+.6*palmar))
+            knuckle=max(knuckle,math.exp(-(delta.length/.011)**2)*(1-palmar))
+    return (.97-.065*crease,.95-.10*crease-.025*knuckle,.94-.10*crease-.035*knuckle)
+
+
+def cloth_relief(point, normal, heads, garment):
+    """Short sewn compression folds, located from the native joints.
+
+    Creases taper across the panel and have unequal spacing and slant. They
+    must not become concentric rings around an elbow or horizontal leg bands.
+    """
+    def g(value,width):return math.exp(-(value/width)**2)
+    def ridge(value,width):return g(value-width*.55,width)-.72*g(value+width*.70,width*.68)
+    value=0
+    side='l' if point.x>0 else 'r';sign=1 if side=='l' else -1
+    if garment=='coat':
+        elbow=heads['lowerarm_'+side];wrist=heads['hand_'+side]
+        axis=(wrist-elbow).normalized();delta=point-elbow
+        if delta.length<.18:
+            along=delta.dot(axis);lateral=delta.x*sign
+            front=max(0,min(1,.45-normal.y*.7))
+            for centre,slant,width,power in [(-.037,.48,.011,.0060),(.013,-.35,.013,.0055),(.066,.23,.012,.0038)]:
+                value+=power*ridge(along-centre+lateral*slant,width)*g(lateral,.068)*front
+        d=point-wrist;along=d.dot(axis)
+        if -.15<along<-.07:
+            value+=.0038*ridge(along+.108+d.x*sign*.23,.010)*g(d.y,.05)
+        front=max(0,min(1,-normal.y))
+        waist=g(point.z-1.107,.045)*g(point.x,.17)*front
+        value+=.0045*ridge(point.z-1.104+(abs(point.x)-.055)*.29,.009)*waist
+        value+=.0034*ridge(point.z-1.134-(abs(point.x)-.090)*.22,.011)*waist
+        underarm=g(abs(point.x)-.160,.065)*g(point.z-1.356,.072)*front
+        value+=.0048*ridge(point.z-1.360+(abs(point.x)-.16)*.63,.012)*underarm
+    else:
+        knee=heads['calf_'+side];delta=point-knee
+        if abs(delta.z)<.16:
+            front=max(0,min(1,.48-normal.y*.6));back=max(0,min(1,normal.y))
+            for centre,slant,width,power in [(.071,.24,.014,.0048),(.024,-.36,.011,.0060),(-.038,.18,.013,.0045)]:
+                value+=power*ridge(delta.z-centre+delta.x*sign*slant,width)*g(delta.x,.087)*(front*.7+back)
+        thigh=g(point.z-.865,.115)*g(abs(point.x)-.102,.075)*max(0,-normal.y)
+        value+=.0040*ridge(point.z-.877+(abs(point.x)-.100)*.56,.014)*thigh
+        value+=.0028*ridge(point.z-.939-(abs(point.x)-.120)*.25,.011)*thigh
+    return max(-.0055,min(.0075,value))

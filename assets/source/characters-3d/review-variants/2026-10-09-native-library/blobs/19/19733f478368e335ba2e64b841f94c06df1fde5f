@@ -1,0 +1,18 @@
+import sys,json,math
+from pathlib import Path
+import bpy
+HERE=Path('/tmp/granadero-hand-web-pilot/pose-source');sys.path.insert(0,str(HERE));sys.path.insert(0,str(HERE.parent))
+text=(HERE/'character.py').read_text();namespace={'__file__':str(HERE/'character.py')};exec(text[:text.index('    objects = []')]+'    return rig\n',namespace)
+import relaxed_hands,relaxed_thumb
+rig=namespace['create_character']('granadero');rows=[]
+for forward in[-.02]:
+ for pad in[.038,.040,.042]:
+  for outside in[.018,.020,.022]:
+   roll=0
+   relaxed_hands.apply_relaxed_hands(rig)
+   relaxed_thumb.apply_thumb(rig,forward,pad,roll,outside=outside)
+   bones={}
+   for name in ['thumb_01_r','thumb_02_r','thumb_03_r']:
+    b=rig.pose.bones[name];q=(b.parent.matrix.inverted()@b.matrix).to_quaternion();bones[name]=[q.x,q.y,q.z,q.w]
+   a,b,c=[rig.pose.bones[n].head.copy()for n in bones];bend=math.degrees((b-a).angle(c-b));rows.append({'forward':forward,'pad':pad,'roll':roll,'outside':outside,'actualShaftBendDegrees':bend,'bones':bones})
+Path('/tmp/granadero-hand-web-pilot/natural-thumb-grid.json').write_text(json.dumps(rows));print('THUMB_GRID_READY',len(rows))

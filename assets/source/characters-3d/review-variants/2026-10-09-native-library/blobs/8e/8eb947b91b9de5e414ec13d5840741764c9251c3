@@ -1,0 +1,55 @@
+"""Private pilot: native head cavity bake plus restrained source skin finish.
+Changes images/material references only. All GLB binary geometry remains exact.
+"""
+from pathlib import Path
+from PIL import Image,ImageDraw,ImageFilter
+import json,struct,hashlib,numpy as np,shutil
+root=Path(__file__).parent;baseline=Path('/tmp/granadero-face-shape-study/models');out=root/'models'
+path=baseline/'granadero-lod0.glb';raw=path.read_bytes();size=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+size]);binary=raw[28+size:]
+def arr(index):
+ a=doc['accessors'][index];v=doc['bufferViews'][a['bufferView']];width={'VEC2':2,'VEC3':3,'SCALAR':1}[a['type']];dtype={5126:'<f4',5125:'<u4',5123:'<u2'}[a['componentType']]
+ return np.frombuffer(binary,dtype=dtype,count=a['count']*width,offset=v.get('byteOffset',0)+a.get('byteOffset',0)).reshape((-1,width))
+mask=Image.new('L',(2048,2048));draw=ImageDraw.Draw(mask)
+for mesh in doc['meshes']:
+ for primitive in mesh['primitives']:
+  if doc['materials'][primitive['material']]['name']!='Skin':continue
+  pos=arr(primitive['attributes']['POSITION']);uv=arr(primitive['attributes']['TEXCOORD_0']);indices=arr(primitive['indices']).reshape((-1,3))
+  for ids in indices:
+   if pos[ids,1].min()>1.50:draw.polygon([(float(u*2047),float(v*2047))for u,v in uv[ids]],fill=255)
+mask=mask.filter(ImageFilter.MaxFilter(5));mask.save(root/'head-mask.png');blend=np.asarray(mask).astype(float)/255
+skin=next(m for m in doc['materials']if m['name']=='Skin')
+def image_for(index):return doc['images'][doc['textures'][index]['source']]
+def load(index):return np.asarray(Image.open(baseline/image_for(index)['uri']).convert('RGB')).astype(float)/255
+normalindex=skin['normalTexture']['index'];roughindex=skin['pbrMetallicRoughness']['metallicRoughnessTexture']['index'];colourindex=skin['pbrMetallicRoughness']['baseColorTexture']['index']
+normal=load(normalindex)*2-1
+# The exported normal was mostly below two degrees. Retain its original source
+# directions and make that measured pore relief visible under the same light.
+n=normal.copy();n[:,:,:2]*=3.25;n[:,:,2]=1;n/=np.linalg.norm(n,axis=2)[:,:,None]
+normout=normal*(1-blend[:,:,None])+n*blend[:,:,None];normout/=np.linalg.norm(normout,axis=2)[:,:,None]
+rough=load(roughindex);r=rough[:,:,1];finished=np.clip(.58+(r-.678)*2.0,.39,.72);rough[:,:,1]=r*(1-blend)+finished*blend
+colour=load(colourindex)
+ao=np.asarray(Image.open(root/'head-cavity.png').convert('L').filter(ImageFilter.GaussianBlur(.35))).astype(float)/255
+# Short-range cavity only. No hat/light/directional shadow was part of the bake.
+cavity=1-.42*(1-ao)*blend
+# Work in linear colour. The source chroma and all hand pixels are retained.
+linear=np.where(colour<=.04045,colour/12.92,((colour+.055)/1.055)**2.4)*cavity[:,:,None]
+colour=np.where(linear<=.0031308,linear*12.92,1.055*linear**(1/2.4)-.055)
+normal_pixels=normout*.5+.5
+normal_pixels[blend==0]=load(normalindex)[blend==0]
+images=[(normalindex,normal_pixels),(roughindex,rough),(colourindex,colour)]
+for index,pixels in images:
+ img=image_for(index);tmp=root/(img['name']+'-pilot.png');Image.fromarray(np.round(np.clip(pixels,0,1)*255).astype(np.uint8)).save(tmp)
+ digest=hashlib.sha256(tmp.read_bytes()).hexdigest();uri='textures/'+digest[:20]+'.png';shutil.copy2(tmp,out/uri);img['uri']=uri
+encoded=json.dumps(doc,separators=(',',':')).encode();encoded+=b' '*(-len(encoded)%4)
+result=struct.pack('<III',0x46546c67,2,28+len(encoded)+len(binary))+struct.pack('<II',len(encoded),0x4e4f534a)+encoded+struct.pack('<II',len(binary),0x004e4942)+binary
+(out/'granadero-lod0.glb').write_bytes(result)
+manifest=json.loads((out/'manifest.json').read_text())
+def update(x):
+ if isinstance(x,dict):
+  if x.get('url')=='/models/characters/granadero-lod0.glb':x.update(bytes=len(result),sha256=hashlib.sha256(result).hexdigest())
+  for value in x.values():update(value)
+ elif isinstance(x,list):
+  for value in x:update(value)
+update(manifest);(out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+proof={'baselineSha256':hashlib.sha256(raw).hexdigest(),'candidateSha256':hashlib.sha256(result).hexdigest(),'binaryPayloadUnchanged':binary==result[28+len(encoded):],'changed':'3 head-only texture maps; same geometry, UVs, rig, skin weights, material factor and motions','normalSlopeDegrees':list(np.percentile(np.degrees(np.arctan2(np.linalg.norm(normout[:,:,:2],axis=-1),normout[:,:,2]))[blend>.99],[50,95,99])),'headCavityMultiplier':list(np.percentile(cavity[blend>.99],[0,1,50,99]))}
+(root/'preservation.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof,indent=2))

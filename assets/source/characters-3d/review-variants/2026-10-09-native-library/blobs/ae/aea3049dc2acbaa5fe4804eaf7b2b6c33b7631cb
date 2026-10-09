@@ -1,0 +1,52 @@
+"""One private macro-wool material experiment on unchanged exported geometry."""
+from pathlib import Path
+from PIL import Image
+import numpy as np,json,struct,hashlib,shutil,argparse
+root=Path(__file__).parent
+parser=argparse.ArgumentParser();parser.add_argument('--base',type=Path,default=Path('/tmp/granadero-face-shape-study/models'));parser.add_argument('--output',type=Path,default=root/'models');args=parser.parse_args();base=args.base;out=args.output;shutil.copytree(base,out,dirs_exist_ok=True)
+raw=(base/'granadero-lod0.glb').read_bytes();size=int.from_bytes(raw[12:16],'little');doc=json.loads(raw[20:20+size]);binary=bytearray(raw[28+size:]);original_binary=bytes(binary)
+def array(index):
+ a=doc['accessors'][index];v=doc['bufferViews'][a['bufferView']];n={'VEC2':2,'VEC3':3,'VEC4':4,'SCALAR':1}[a['type']];dtype={5126:'<f4',5125:'<u4',5123:'<u2',5121:'u1'}[a['componentType']];item=np.dtype(dtype).itemsize;offset=v.get('byteOffset',0)+a.get('byteOffset',0)
+ return np.ndarray((a['count'],n),dtype=dtype,buffer=binary,offset=offset,strides=(v.get('byteStride',item*n),item)).copy()
+def append(values,kind):
+ values=np.asarray(values,dtype='<f4');binary.extend(b'\0'*(-len(binary)%4));off=len(binary);binary.extend(values.tobytes());doc['bufferViews'].append({'buffer':0,'byteOffset':off,'byteLength':values.nbytes});doc['accessors'].append({'bufferView':len(doc['bufferViews'])-1,'componentType':5126,'count':len(values),'type':kind});return len(doc['accessors'])-1
+mat=next(m for m in doc['materials']if m['name']=='Apparel_Atlas');texture=doc['textures'][mat['pbrMetallicRoughness']['baseColorTexture']['index']];image=doc['images'][texture['source']];im=np.asarray(Image.open(base/image['uri']).convert('RGBA')).copy();h,w=im.shape[:2]
+tilemask=np.zeros((h,w),bool);tiles=[]
+for y in range(0,h,256):
+ for x in range(0,w,256):
+  rgb=np.median(im[y+12:y+244,x+12:x+244,:3],axis=(0,1))
+  if min(np.linalg.norm(rgb-v) for v in (np.array([35,44,59]),np.array([37,46,58])))<4:
+   tilemask[y:y+256,x:x+256]=True;tiles.append([x,y])
+# Slight desaturation and a lighter faded navy allow panel contrast to survive.
+# Dye variation is low amplitude and smooth (roughly 5-10 cm at the torso).
+rgb=im[:,:,:3]/255;lin=np.where(rgb<=.04045,rgb/12.92,((rgb+.055)/1.055)**2.4);lum=lin@np.array([.2126,.7152,.0722]);faded=(lin*.84+lum[:,:,None]*np.array([.93,.99,1.08])*.16)*1.40
+for x,y in tiles:
+ rng=np.random.default_rng(1421+x*19+y*7);small=rng.uniform(-1,1,(7,5)).astype(np.float32)
+ noise=np.asarray(Image.fromarray(small).resize((256,256),Image.Resampling.BICUBIC));faded[y:y+256,x:x+256]*=(1+.055*noise[:,:,None])
+lin[tilemask]=faded[tilemask];srgb=np.where(lin<=.0031308,lin*12.92,1.055*lin**(1/2.4)-.055);im[:,:,:3]=np.round(np.clip(srgb,0,1)*255).astype('u1')
+def tile_at(uv):
+ return tilemask[np.clip((uv[:,1]*h).astype(int),0,h-1),np.clip((uv[:,0]*w).astype(int),0,w-1)]
+def g(value,width):return np.exp(-(value/width)**2)
+changed={}
+for mesh in doc['meshes']:
+ if mesh['name'] not in ('Tailored_Coat','Tailored_Breeches'):continue
+ for primitive in mesh['primitives']:
+  attr=primitive['attributes'];pos=array(attr['POSITION']);n=array(attr['NORMAL']);uv=array(attr['TEXCOORD_0']);colour=array(attr['COLOR_0']);selected=tile_at(uv)
+  x=np.abs(pos[:,0]);z=pos[:,1];front=np.clip(n[:,2],0,1)
+  if mesh['name']=='Tailored_Coat':
+   panel=.85-.19*g(x-.142,.058)*g(z-1.31,.13)*front
+   shoulder=.16*g(z-1.456,.063)*g(x-.15,.10)
+   # Uneven wear is tied to seams, elbow bends and the belt, not screen noise.
+   cuff=.11*g(z-1.00,.10)*np.clip((x-.20)/.10,0,1)
+   elbow=.18*g(z-1.21,.085)*g(x-.32,.11)
+   waist=.13*g(z-1.112,.032)*front
+   underbelt=.18*g(z-1.063,.023)*front
+   shade=panel+shoulder+cuff+elbow+waist-underbelt
+  else:
+   shade=.80+.18*g(z-.55,.072)*front+.12*g(z-.89,.105)*front-.13*g(z-.96,.032)
+  shade=np.clip(shade,.62,1.02);colour[selected,:3]*=shade[selected,None];colour[:,:3]=np.clip(colour[:,:3],0,1)
+  primitive['attributes']['COLOR_0']=append(colour,'VEC4' if colour.shape[1]==4 else 'VEC3');changed[mesh['name']]=int(selected.sum())
+tmp=root/'wool-colour.png';Image.fromarray(im).save(tmp);digest=hashlib.sha256(tmp.read_bytes()).hexdigest();uri='textures/'+digest[:20]+'.png';shutil.copy2(tmp,out/uri);image['uri']=uri
+binary.extend(b'\0'*(-len(binary)%4));doc['buffers'][0]['byteLength']=len(binary);j=json.dumps(doc,separators=(',',':')).encode();j+=b' '*(-len(j)%4);result=struct.pack('<III',0x46546c67,2,28+len(j)+len(binary))+struct.pack('<II',len(j),0x4e4f534a)+j+struct.pack('<II',len(binary),0x004e4942)+binary;(out/'granadero-lod0.glb').write_bytes(result)
+m=json.loads((out/'manifest.json').read_text());m['appearances']['granadero']['lods'][0].update(bytes=len(result),sha256=hashlib.sha256(result).hexdigest());(out/'manifest.json').write_text(json.dumps(m,indent=2)+'\n')
+proof={'changedVertices':changed,'navyTiles':tiles,'originalBinaryPrefixExact':bytes(binary[:len(original_binary)])==original_binary,'changes':'Only appended outfit/trouser COLOR_0 accessors and one apparel colour texture; all geometry/normal/UV/weights/bind data exact','sha256':hashlib.sha256(result).hexdigest()};(root/('material-proof.json' if out.name=='models' else out.name+'-proof.json')).write_text(json.dumps(proof,indent=2)+'\n');print(proof)

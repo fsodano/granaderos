@@ -1,0 +1,27 @@
+import { writeFileSync } from 'node:fs';
+import {publishedActor} from '../runtime/tests/published-actor-fixture.mjs';
+import {AnimationMixer,LoopOnce,Vector3,Quaternion,Triangle} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+import {clone} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
+const rows=[];
+for(const preset of ['granadero','woman-scout']){
+ const asset=await publishedActor(preset,0),model=clone(asset.body.scene);model.updateMatrixWorld(true);const bones={};let skin;model.traverse(o=>{if(o.isBone)bones[o.name]=o;if(o.isSkinnedMesh&&o.material.name==='Skin')skin=o;});
+ const rest=Object.fromEntries(Object.entries(bones).map(([n,b])=>[n,{q:b.getWorldQuaternion(new Quaternion()),p:b.getWorldPosition(new Vector3())}]));
+ const clip=asset.animation.animations.find(c=>c.name==='stand.idle.unarmed');const mixer=new AnimationMixer(model);mixer.clipAction(clip).setLoop(LoopOnce,1).play();mixer.setTime(.5);model.updateMatrixWorld(true);skin.skeleton.update();
+ const g=skin.geometry,p=g.attributes.position,ind=g.index,si=g.attributes.skinIndex,sw=g.attributes.skinWeight;
+ const vertices=Array.from({length:p.count},(_,i)=>{const weights={};for(let s=0;s<4;s++){const w=sw.getComponent(i,s);if(w)weights[skin.skeleton.bones[si.getComponent(i,s)].name]=w;}const r=new Vector3().fromBufferAttribute(p,i);return{rest:r,posed:skin.localToWorld(skin.applyBoneTransform(i,r.clone())),weights};});
+ for(const side of ['l','r']){
+  const hand=bones['hand_'+side],delta=hand.getWorldQuaternion(new Quaternion()).multiply(rest['hand_'+side].q.clone().invert());
+  const forward=rest['middle_01_'+side].p.clone().sub(rest['hand_'+side].p).normalize();const across=rest['index_01_'+side].p.clone().sub(rest['pinky_01_'+side].p);const normal=across.clone().cross(forward).normalize().multiplyScalar(side==='l'?-1:1);across.addScaledVector(forward,-across.dot(forward)).normalize();
+  const basis=[forward,normal,across].map(v=>v.applyQuaternion(delta));
+  const pos=n=>bones[n+'_'+side].getWorldPosition(new Vector3());
+  const shafts={};for(const digit of ['thumb','index']){
+   const first=pos(digit+'_02').sub(pos(digit+'_01')).normalize(),second=pos(digit+'_03').sub(pos(digit+'_02')).normalize(),third=new Vector3(0,1,0).applyQuaternion(bones[digit+'_03_'+side].getWorldQuaternion(new Quaternion())).normalize();
+   shafts[digit]={firstSecondDeg:first.angleTo(second)*180/Math.PI,secondThirdDeg:second.angleTo(third)*180/Math.PI,directions:[first,second,third].map(v=>basis.map(axis=>v.dot(axis)))};
+  }
+  const indexFaces=[];
+  for(let k=0;k<ind.count;k+=3){const ids=[ind.getX(k),ind.getX(k+1),ind.getX(k+2)],vs=ids.map(i=>vertices[i]);if(!vs.every(v=>Object.entries(v.weights).reduce((a,[n,w])=>a+(n.startsWith('index_')&&n.endsWith('_'+side)?w:0),0)>.5))continue;const ar=new Triangle(...vs.map(v=>v.rest)).getArea(),ap=new Triangle(...vs.map(v=>v.posed)).getArea();indexFaces.push({face:k/3,ratio:ap/ar,ids,weights:vs.map(v=>v.weights),centerFromIndexPipMm:vs.reduce((v,x)=>v.add(x.posed),new Vector3()).multiplyScalar(1/3).sub(pos('index_02')).multiplyScalar(1000).toArray()});}
+  indexFaces.sort((a,b)=>a.ratio-b.ratio);
+  rows.push({preset,side,shafts,indexFaceCount:indexFaces.length,indexFacesBelow20Percent:indexFaces.filter(f=>f.ratio<.2).length,minimumIndexAreaRatio:indexFaces[0]?.ratio,worstIndexFaces:indexFaces.slice(0,5)});
+ }
+}
+writeFileSync('/tmp/granadero-hand-web-pilot/retention/residual-diagnosis.json',JSON.stringify(rows,null,2));console.log(JSON.stringify(rows.map(({worstIndexFaces,...r})=>r),null,2));

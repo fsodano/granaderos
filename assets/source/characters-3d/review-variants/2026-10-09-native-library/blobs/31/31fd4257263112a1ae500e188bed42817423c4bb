@@ -1,0 +1,30 @@
+from pathlib import Path
+from PIL import Image
+import json,struct,hashlib,copy,numpy as np
+r=Path('/tmp/granadero-coat-material-pilot');out=r/'models-v2'
+def load(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];return json.loads(b[20:20+n]),b[28+n:]
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+a,ab=load(r/'before-models/granadero-lod0.glb');b,bb=load(out/'granadero-lod0.glb')
+assert ab==bb
+for key in ['nodes','skins','accessors','bufferViews','meshes','buffers']:assert a[key]==b[key],key
+def material(j,m):
+ m=copy.deepcopy(m)
+ def visit(d):
+  for k,v in d.items():
+   if isinstance(v,dict):
+    if k.endswith('Texture') and 'index'in v:v['image']=j['images'][j['textures'][v.pop('index')]['source']].get('uri')
+    visit(v)
+ visit(m);return m
+ma=material(a,a['materials'][0]);mb=material(b,b['materials'][0]);assert material(a,a['materials'][1])==material(b,b['materials'][1]);assert ma['pbrMetallicRoughness']['baseColorTexture']==mb['pbrMetallicRoughness']['baseColorTexture']
+layout=json.loads((r/'tile-layout.json').read_text());i=layout['sources'].index('Navy_Wool');side=layout['side'];tile=layout['tileSize'];size=side*tile;x=i%side*tile;y=size-(i//side+1)*tile
+mask=np.zeros((size,size),bool);mask[y:y+tile,x:x+tile]=True;checks={}
+for channel,typ in [('normalTexture',None),('metallicRoughnessTexture','pbrMetallicRoughness')]:
+ v1=ma if typ is None else ma[typ];v2=mb if typ is None else mb[typ]
+ old=np.asarray(Image.open(r/'before-models'/v1[channel]['image']).convert('RGB'));new=np.asarray(Image.open(out/v2[channel]['image']).convert('RGB'))
+ assert np.array_equal(old[~mask],new[~mask]);checks[channel]={'otherTilesExact':True,'changedNavyTexels':int(np.any(old!=new,axis=2).sum())}
+path=mb['extensions']['KHR_materials_sheen']['sheenColorTexture']['image'];sheen=np.asarray(Image.open(out/path).convert('RGB'));assert np.max(sheen[~mask])==0
+checks['sheen']={'otherTilesBlack':True,'navyPixelRGB':sheen[y+12,x+12].tolist(),'imageBytes':(out/path).stat().st_size}
+other={p.name:sha(p)==sha(out/p.name) for p in (r/'before-models').glob('*.glb')if p.name!='granadero-lod0.glb'};assert all(other.values())
+proof={'binaryExact':True,'binarySha256':hashlib.sha256(ab).hexdigest(),'rigUVWeightsMorphsIndicesPositionsExact':True,'skinAndAlbedoExact':True,'beforeBodySha256':sha(r/'before-models/granadero-lod0.glb'),'afterBodySha256':sha(out/'granadero-lod0.glb'),'maskChecks':checks,'otherGLBsExact':other,'material':mb}
+(r/'v2-proof.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps({k:v for k,v in proof.items() if k not in ('material','otherGLBsExact')},indent=2))
