@@ -43,7 +43,7 @@ import {advanceUnloadedCivilians,nextUnloadedCivilianDeath,migrateResidentWounds
 import {synchronizeCampaignPresence,nextCampaignPresenceChange,validateCampaignPresence,acknowledgeSuccessionDeaths} from './campaign-presence.js';
 import {isContractOperative,gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
-import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
+import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,adjacentCells} from './world-cells.js';
 import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {validateForceWeapon} from './content-force-equipment.js';
 import {weaponSaveReplacer,weaponSpecification,validateWeaponCarrier,validateWeaponReferences,setWeaponDefinition,weaponRecord} from './weapon-definition.js';
@@ -1009,21 +1009,6 @@ export function dispatchCampaign(previous,action){
         requireThat(s.squad.length>0,'No hay combatientes en esta escuadra.');
         const destination=locationId(action.sector);requireThat(destination,'El destino no existe.');action={...action,sector:destination};
         if(destination!==s.location)prepareCampaignAmmunition(s,rosterFor(s),s.squad,{supplied:isSupplied(s,s.location),commit:true});
-        if(!sector(s.location)||!sector(destination)){
-          requireThat((action.mode??'march')==='march','Las postas, carretas y flotillas necesitan una ruta entre localidades. Para esta celda, elegí marcha a pie.');
-          const plan=cellTravelPlan(s,destination);requireThat(!plan.reason,plan.reason);requireThat(plan.path.length>1,'La escuadra ya está en esa celda.');
-          for(const next of plan.path.slice(1)){
-            const reason=cellTravelReason(s,next);if(reason){note(s,`La marcha se detiene: ${reason}`);break;}
-            // Consume each leg before changing position. Contract departures
-            // remain at the last reached cell; arriving hires never join en route.
-            for(let hour=0;hour<cellStepHours(next)&&s.squad.length&&!s.defeated;hour++)tick(s,1,{joinArrivals:false,traveling:[...s.squad],mountain:worldCell(next).biome==='mountain',travelLeg:[s.location,next]});
-            if(!s.squad.length||s.defeated){note(s,'La marcha se interrumpe antes de alcanzar la siguiente celda.');break;}
-            const blocked=cellTravelReason(s,next);if(blocked){note(s,`La marcha se detiene: ${blocked}`);break;}
-            recordStrategicArrival(s,s.squad,s.location,next);
-            s.location=next;synchronizeSquad(s);
-          }
-          note(s,`La escuadra queda en ${campaignPlace(s.location).name}.`);break;
-        }
         const q=activeSquad(s);queueSquadTravel(s,q,{...action,intent:'travel'});
         for(let hours=0;hours<240&&q.journey?.status==='moving'&&!s.defeated&&!s.pendingEncounter;hours++)tick(s,1,{joinArrivals:false});
         note(s,`La escuadra queda en ${campaignPlace(s.location).name}.`);break;

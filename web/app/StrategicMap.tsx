@@ -11,7 +11,7 @@ import {Landmark,Pickaxe,Users,Shield,Package} from 'lucide-react';
 import geography from '../../game/strategic-geography.json';
 import {MAP_PLACES,MAP_MODES,project,sectorPosition,sectorIncome,MAP_TILE_SIZE,mapTilesForSector,mapTileBounds,mapTileOutline} from '../../game/strategic-map.js';
 import {CAMPAIGN_SECTORS} from '../../game/campaign.js';
-import {WORLD_CELLS,worldCell,campaignPlace,worldOwner} from '../../game/world-cells.js';
+import {WORLD_CELLS,ROAD_CELLS,ROAD_SEGMENTS,roadEdgesForCell,worldCell,campaignPlace,worldOwner} from '../../game/world-cells.js';
 import {CITIES} from '../../game/cities.js';
 import Horses from './Horses';
 import './strategic-map.css';
@@ -46,18 +46,20 @@ export default function StrategicMap({state:s,battle,selected,onSelect,dispatch,
  {geography.rivers.map((g,i)=><path key={i} d={geometryPath(g)} stroke="#80b1b6" strokeWidth="2.7" fill="none"/>)}
  <rect x="36" y="36" width="648" height="588" fill="url(#atlas-grid)"/>
  <g className="atlas-region-labels"><text x="90" y="350" transform="rotate(-83 90 350)">CORDILLERA DE LOS ANDES</text><text x="297" y="542">PAMPAS</text><text x="362" y="178">GRAN CHACO</text><text x="125" y="451">CUYO</text><text x="550" y="490" transform="rotate(28 550 490)">RÍO DE LA PLATA</text><text x="590" y="573">ATLÁNTICO</text><text x="50" y="550" transform="rotate(-90 50 550)">CHILE</text></g>
- {CAMPAIGN_SECTORS.flatMap(d=>d.neighbors.filter(id=>d.id<id).map(id=>{const p=position(d.id),q=position(id);return <path key={`${d.id}-${id}`} d={`M${p.x},${p.y}L${q.x},${q.y}`} stroke="#dfd3a1" strokeWidth="1.4" data-road="true" strokeDasharray="4 5" fill="none"/>;}))}
+ <g className="atlas-district-fills" pointerEvents="none" aria-hidden="true">{WORLD_CELLS.filter(tile=>tile.district).map(tile=><rect key={tile.id} x={tile.x} y={tile.y} width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} fill={worldOwner(s,tile.id)==='patriot'?'#7f9e61':'#876448'} fillOpacity=".85"/>)}</g>
+ <g className="atlas-roads" pointerEvents="none" aria-hidden="true">{ROAD_SEGMENTS.map(({from,to})=>{const p=position(from),q=position(to),path=`M${p.x},${p.y}L${q.x},${q.y}`;return <g key={`${from}-${to}`}><path className="atlas-road-bed" d={path}/><path className="atlas-road" data-road="true" data-road-from={from} data-road-to={to} d={path}/></g>;})}</g>
  {WORLD_CELLS.map(tile=>{
- const owner=worldOwner(s,tile.id),active=selectedCell.id===tile.id,row=presence.get(tile.location),counts=strategicPresenceLabel(row);
- const label=[tile.name,owner==='patriot'?'patriota':owner==='royalist'?'realista':tile.land?'terreno abierto':'agua abierta',counts].filter(Boolean).join(' · ');
+ const owner=worldOwner(s,tile.id),active=selectedCell.id===tile.id,row=presence.get(tile.location),counts=strategicPresenceLabel(row),road=ROAD_CELLS.has(tile.id),edges=roadEdgesForCell(tile.id);
+ const directions:Record<string,string>={N:'norte',E:'este',S:'sur',W:'oeste'};
+ const label=[tile.name,owner==='patriot'?'patriota':owner==='royalist'?'realista':tile.land?'terreno abierto':'agua abierta',road?`Camino conectado al ${edges.map(edge=>directions[edge]).join(', ')}`:null,counts].filter(Boolean).join(' · ');
  const choose=()=>{onSelect(tile.location);onInspect?.(tile.location);};
- return <g key={tile.id} data-map-cell={tile.id} data-map-sector={tile.location} role="button" tabIndex={active?0:-1} aria-pressed={active} aria-label={label} onMouseEnter={()=>onHover?.(tile.location)} onFocus={()=>onHover?.(tile.location)} onClick={choose} onKeyDown={e=>{
+ return <g key={tile.id} data-map-cell={tile.id} data-map-sector={tile.location} data-road-cell={road} data-road-edges={edges.join('')||undefined} role="button" tabIndex={active?0:-1} aria-pressed={active} aria-label={label} onMouseEnter={()=>onHover?.(tile.location)} onFocus={()=>onHover?.(tile.location)} onClick={choose} onKeyDown={e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();choose();}
   const delta=({ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]} as Record<string,number[]>)[e.key];
   if(delta){e.preventDefault();const next=worldCell(`cell-${tile.col+delta[0]}-${tile.row+delta[1]}`);if(next){onSelect(next.location);e.currentTarget.ownerSVGElement?.querySelector<SVGGElement>(`[data-map-cell="${next.id}"]`)?.focus();}}
  }}>
  <title>{label}</title>
- <rect className="atlas-district" data-district={tile.id} x={tile.x} y={tile.y} width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} fill={tile.district?(owner==='patriot'?'#7f9e61':'#876448'):'transparent'} fillOpacity={tile.district?'.85':1} stroke="#1c291b" strokeWidth=".5"/>
+ <rect className="atlas-district" data-district={tile.id} x={tile.x} y={tile.y} width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} fill="transparent" stroke="#1c291b" strokeWidth=".5"/>
  {active&&<rect className="atlas-district-selected" x={tile.x+2} y={tile.y+2} width={MAP_TILE_SIZE-4} height={MAP_TILE_SIZE-4} fill="none" stroke="#fff3ad" strokeWidth="2"/>}
  {row&&<g data-sector-presence={tile.location} data-enemy-stale={row.staleEnemy||undefined}><PresenceDots players={row.players.length} militia={row.militia} enemies={row.enemies} unknown={row.unknownEnemy} x={tile.x+MAP_TILE_SIZE/2} y={tile.y+MAP_TILE_SIZE/2}/></g>}
  </g>;})}
@@ -85,6 +87,6 @@ export default function StrategicMap({state:s,battle,selected,onSelect,dispatch,
 
  {mode==='horses'&&<button className="line-button atlas-manage-toggle" aria-expanded={management} onClick={()=>{setManagement(!management);if(!management)onOpenPanel?.();}}>{management?'Cerrar administración':'Administrar esta vista'}</button>}
  {management&&<StrategicPanel title={mode==='resources'?'Ingresos de los puertos':mode==='items'?'Objetos del sector':'Monturas'} onClose={()=>setManagement(false)}>{mode==='resources'?<SectorIncomeTable state={s} onSelect={id=>{onSelect(id);setManagement(false);}}/>:mode==='items'?<SectorInventory key={selected} state={s} sectorId={selected} dispatch={dispatch}/>:<div className="atlas-management"><Horses state={s} dispatch={dispatch}/></div>}</StrategicPanel>}
- <details className="atlas-note"><summary>Lectura del mapa · Caminos: marcha más rápida</summary><p>Seleccioná una celda con el ratón o las flechas del teclado. Cada celda terrestre conserva su escena y sus objetos. Los barrios comparten el control de su localidad; sus ingresos, milicias y servicios pertenecen al sector principal. El agua abierta requiere transporte. La geografía y las rutas son una adaptación de campaña, no límites históricos.</p></details>
+ <details className="atlas-note"><summary>Lectura del mapa · Caminos: marcha más rápida</summary><p className="atlas-route-help"><span className="atlas-road-key" aria-hidden="true"/>La ruta elige el menor tiempo. Los caminos conectados son más rápidos. Entre sectores vecinos de la misma ciudad: 1 h. Agregá escalas para rodear patrullas conocidas.</p><p>Seleccioná una celda con el ratón o las flechas del teclado. Cada celda terrestre conserva su escena y sus objetos. Los barrios comparten el control de su localidad; sus ingresos, milicias y servicios pertenecen al sector principal. El agua abierta requiere transporte. La geografía y las rutas son una adaptación de campaña, no límites históricos.</p></details>
  </div>;
 }
