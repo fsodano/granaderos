@@ -1,0 +1,50 @@
+{
+  "forms": [
+    {
+      "kind": "shelf-jar",
+      "storedVertices": 126,
+      "triangles": 208,
+      "sourceAttributeAndIndexBytes": 6792
+    },
+    {
+      "kind": "shelf-bottle",
+      "storedVertices": 126,
+      "triangles": 208,
+      "sourceAttributeAndIndexBytes": 6792
+    },
+    {
+      "kind": "shelf-bowl",
+      "storedVertices": 90,
+      "triangles": 144,
+      "sourceAttributeAndIndexBytes": 4824
+    }
+  ],
+  "cacheNewBytes": 18408,
+  "merged": [
+    {
+      "material": "world:wood",
+      "vertices": 216,
+      "triangles": 72,
+      "attributeBytes": 9504
+    },
+    {
+      "material": "world:food",
+      "vertices": 1680,
+      "triangles": 560,
+      "attributeBytes": 73920
+    },
+    {
+      "material": "world:ceramic",
+      "vertices": 1248,
+      "triangles": 416,
+      "attributeBytes": 54912
+    }
+  ],
+  "totalTriangles": 1048,
+  "totalMergedAttributeBytes": 138336,
+  "baselineTriangles": 312,
+  "baselineMergedAttributeBytes": 41184,
+  "extraTextures": 0,
+  "extraMaterialBatches": 0,
+  "extraMergedAttributeBytes": 97152
+}

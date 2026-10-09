@@ -50,8 +50,8 @@ local gates pass. Record its PR beside the status; an open PR is not publication
 | 12 | Timber furniture construction | Show tabletop/bench boards and narrow joints; use edge rails instead of a solid apron. Add chest lid construction, hinges and handles. Preserve open states, usable sides and all four rotations. | [PR #316](https://github.com/fsodano/granaderos/pull/316) merged; [record](../art/timber-furniture-review-2026-10-08.md) |
 | 13 | Soft bedding | Round mattress and pillow forms; add blanket folds and a hanging edge. Keep the bed frame, floor height, authored footprint and rotations. Review beside a standing character. | [PR #317](https://github.com/fsodano/granaderos/pull/317) merged; [record](../art/soft-bedding-review-2026-10-08.md) |
 | 14 | Complete washstand | Carry the existing pitcher/handle, basin water and hanging towel from the authored furniture view into native 3D. Give the towel a folded outline. Keep every part within the washstand footprint. | [PR #318](https://github.com/fsodano/granaderos/pull/318) merged; [record](../art/washstand-review-2026-10-08.md) |
-| 15 | Complete cooking hearth | Add the existing cooking pot, rim, bail handle and supporting iron. Keep embers and the stone firebox visible. Face generated hearths into their admitted room while preserving authored rotations. Preserve fire and light rules. | Ready: native live review, 70 affected checks, 6,851 quick tests, typecheck, build and installed-root source/runtime proof pass; [record](../art/hearth-review-2026-10-08.md). |
-| 16 | Varied shelf vessels | Replace repeated generic cylinders with a few vessel profiles, visible lips and openings. Preserve office/archive ledgers and semantic room selection. | Native live review, typecheck and build pass. Standard quick has passed 6,856 tests, including all six focused files after the collector error; final integrity seal is being recorded. |
+| 15 | Complete cooking hearth | Add the existing cooking pot, rim, bail handle and supporting iron. Keep embers and the stone firebox visible. Face generated hearths into their admitted room while preserving authored rotations. Preserve fire and light rules. | [PR #319](https://github.com/fsodano/granaderos/pull/319) merged; [record](../art/hearth-review-2026-10-08.md) |
+| 16 | Varied shelf vessels | Replace repeated generic cylinders with a few vessel profiles, visible lips and openings. Preserve office/archive ledgers and semantic room selection. | Ready: native live review, final local gates and sealed complete input proof pass; [record](../art/shelf-vessels-review-2026-10-08.md). |
 | 17 | Gathered sacks and woven rugs | Add tied sack mouths and broad creases; add rug bands and fringe. Keep floor contact, footprints and door clearances. Use shared batches and materials. | Private final candidate ready: native live review, 69 affected checks, 6,862 quick tests, typecheck, build and complete input proof pass. Publication follows piece 16. |
 | 18 | Room floor character | Extend the existing semantic floor finishes with continuous plank joints, restrained room variation and entrance wear. Clip around climb openings. Preserve the upper walking deck and hatch appearance. Add no raised surface that implies a new obstacle. | Private final candidate ready: live ground/upper views, ordinary climb/walk/descent, 6,869 quick tests, typecheck, build and complete input proof pass. Publication follows pieces 15–17. |
 
@@ -59,13 +59,13 @@ If review finds a specific mismatch that these pieces do not address, add a
 bounded piece with its own acceptance criteria. Do not count a passing test or
 a completed checklist as proof that the reference's appearance has been reached.
 
-Pieces 1–14 have completed review; accepted improvements are merged and piece 5
-is a rejected private trial. Pieces 15–18 have completed native browser review,
-typecheck and production build. All four standard quick runs have passed.
-Piece 16 retains an unknown standalone affected-process exit after a collector
-error. Its full quick passed all six focused files and the overall process;
-the final integrity seal will retain that distinction. Publish the remaining
-pieces in order after their final integrity proofs pass.
+Pieces 1–15 have completed review; accepted improvements are merged and piece 5
+is a rejected private trial. Pieces 16–18 have completed native browser review,
+typecheck, production build and their standard quick runs. Piece 16 retains an
+unknown standalone affected-process exit after a collector error. Its full
+quick passed all six focused files and the overall process. The separate
+execution-gap proof records that distinction. Publish in order after installed
+root proofs pass.
 
 ## Delivery and checks
 

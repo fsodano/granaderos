@@ -1,0 +1,276 @@
+{
+  "renderer": "Root verified actual CUA/browser Battlefield",
+  "acceptanceOwner": "root",
+  "accepted": true,
+  "photographCopyUTC": "2026-10-09T05:04:37.683469+00:00",
+  "beforeSource": "4c643a22f19ac4e7ad602de842705de8610f16ba0ef9ad268b0a6b2cbd032d65",
+  "afterSource": "162ef299a2910112841ce95f5f02d7eb1de0f07fa9d2f43d548d0c7498d79e81",
+  "views": {
+    "kitchen": {
+      "cellUI": "I13",
+      "rawCell": {
+        "x": 12,
+        "y": 8,
+        "tacticalLevel": 0
+      },
+      "beforeClock": "paused12:03",
+      "afterClock": "paused12:02",
+      "clockMatched": false
+    },
+    "store": {
+      "cellUI": "N7",
+      "rawCell": {
+        "x": 6,
+        "y": 13,
+        "tacticalLevel": 0
+      },
+      "beforeClock": "paused12:03",
+      "afterClock": "paused12:03",
+      "clockMatched": true
+    }
+  },
+  "ordinaryStoreRoute": "I7 through open K7 to N7",
+  "visualFindings": "Vessel profiles and lips clear at88px; quiet at44px. Kitchen/wash and store household shelves accepted; office/archive ledger appearance unchanged.",
+  "counters": {
+    "kitchen": {
+      "44": {
+        "before": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "114",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "120.1",
+          "data-geometries": "109",
+          "data-loaded-actors": "1",
+          "data-lod": "2",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "43",
+          "data-triangles": "68712"
+        },
+        "after": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "114",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "120.0",
+          "data-geometries": "109",
+          "data-loaded-actors": "1",
+          "data-lod": "2",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "43",
+          "data-triangles": "70920"
+        },
+        "drawDelta": 0,
+        "triangleDelta": 2208
+      },
+      "88": {
+        "before": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "99",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "120.0",
+          "data-geometries": "102",
+          "data-loaded-actors": "1",
+          "data-lod": "1",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "28",
+          "data-triangles": "126638"
+        },
+        "after": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "99",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "119.8",
+          "data-geometries": "102",
+          "data-loaded-actors": "1",
+          "data-lod": "1",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "28",
+          "data-triangles": "128110"
+        },
+        "drawDelta": 0,
+        "triangleDelta": 1472
+      }
+    },
+    "store": {
+      "44": {
+        "before": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "112",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "119.9",
+          "data-geometries": "109",
+          "data-loaded-actors": "1",
+          "data-lod": "2",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "43",
+          "data-triangles": "68112"
+        },
+        "after": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "112",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "120.1",
+          "data-geometries": "109",
+          "data-loaded-actors": "1",
+          "data-lod": "2",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "43",
+          "data-triangles": "70320"
+        },
+        "drawDelta": 0,
+        "triangleDelta": 2208
+      },
+      "88": {
+        "before": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "79",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "120.1",
+          "data-geometries": "109",
+          "data-loaded-actors": "1",
+          "data-lod": "1",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "43",
+          "data-triangles": "122346"
+        },
+        "after": {
+          "data-active-actors": "1",
+          "data-actors": "1",
+          "data-draw-calls": "79",
+          "data-effects": "0",
+          "data-engine": "three.js r184",
+          "data-fps": "119.9",
+          "data-geometries": "109",
+          "data-loaded-actors": "1",
+          "data-lod": "1",
+          "data-pending-actors": "0",
+          "data-sector-renderer": "three",
+          "data-textures": "43",
+          "data-triangles": "123082"
+        },
+        "drawDelta": 0,
+        "triangleDelta": 736
+      }
+    }
+  },
+  "browserErrors": {
+    "before-kitchen": [],
+    "before-store": [],
+    "after-kitchen": [],
+    "after-store": []
+  },
+  "limits": [
+    "Kitchen clocks differ by one minute; these are not time-matched captures.",
+    "Counters reflect the accepted views and their LOD2 to LOD1 history. Store close counters retain109geometries/43textures. No geometry or GPU memory reduction is claimed.",
+    "Snapshot FPS is not a sustained performance test."
+  ],
+  "files": [
+    {
+      "source": "/tmp/granaderos-graphics-review/16-before-kitchen-44.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-before-kitchen-44.jpg",
+      "sha256": "4270bd893d5e82e578b25a739c243f15c1414cc17387ad08017de28995d4654c",
+      "bytes": 97044,
+      "bundlePath": "artifacts/shelf-vessels/before-kitchen-44px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-before-kitchen-88.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-before-kitchen-88.jpg",
+      "sha256": "d9420f588c04f04253515a7d857c5f7abb73ed3e83a6ed4a1b396e3c65900aac",
+      "bytes": 113250,
+      "bundlePath": "artifacts/shelf-vessels/before-kitchen-88px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-before-kitchen-metrics.json",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-before-kitchen-metrics.json",
+      "sha256": "93b14d46fb0ae2ee030f88708f762c0cab4d2a3fb2d13f770084c6e79f007e05",
+      "bytes": 811,
+      "bundlePath": "artifacts/shelf-vessels/before-kitchen-metrics.json"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-before-store-44.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-before-store-44.jpg",
+      "sha256": "32f1ef32dadfd44bf9a18037af2c1161e390a0dab1cb8bdf76771f86c8959292",
+      "bytes": 89541,
+      "bundlePath": "artifacts/shelf-vessels/before-store-44px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-before-store-88.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-before-store-88.jpg",
+      "sha256": "8895e13c2374c9698c3c6cdf8a60ed54bf71197649035465acd7c40922fabf78",
+      "bytes": 104166,
+      "bundlePath": "artifacts/shelf-vessels/before-store-88px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-before-store-metrics.json",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-before-store-metrics.json",
+      "sha256": "3cccecefca616a8051b4419d1a1f671a970a0716b44ef5f5750ef71e538167ac",
+      "bytes": 811,
+      "bundlePath": "artifacts/shelf-vessels/before-store-metrics.json"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-after-kitchen-44.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-after-kitchen-44.jpg",
+      "sha256": "33fa3bd19b6ef5fd804203ec3854be2c6908a5f7e5f6dfdbe9970bb73363adb4",
+      "bytes": 97053,
+      "bundlePath": "artifacts/shelf-vessels/after-kitchen-44px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-after-kitchen-88.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-after-kitchen-88.jpg",
+      "sha256": "fc13c1baa9485d80dcc46271de1af4432b54c60c9a7f65aef9c14f09d57fc55a",
+      "bytes": 113310,
+      "bundlePath": "artifacts/shelf-vessels/after-kitchen-88px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-after-kitchen-metrics.json",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-after-kitchen-metrics.json",
+      "sha256": "de54ed3fce33a19945d68d75056165c8139d1c52b4170163e2750fffe9659bc9",
+      "bytes": 811,
+      "bundlePath": "artifacts/shelf-vessels/after-kitchen-metrics.json"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-after-store-44.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-after-store-44.jpg",
+      "sha256": "7bbfe81f2f2120878e85a87057ae76ae8fa3efe71a2a6610286276ffbb03520b",
+      "bytes": 89541,
+      "bundlePath": "artifacts/shelf-vessels/after-store-44px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-after-store-88.jpg",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-after-store-88.jpg",
+      "sha256": "79cc40f662e9e7bb6166b048c0b7befc5a7adf8ede511b026acb6aa39a942558",
+      "bytes": 104163,
+      "bundlePath": "artifacts/shelf-vessels/after-store-88px.jpg"
+    },
+    {
+      "source": "/tmp/granaderos-graphics-review/16-after-store-metrics.json",
+      "copy": "/tmp/granaderos-piece16-final-gates-evidence/live-review/16-after-store-metrics.json",
+      "sha256": "d914a1bdb79c71466a51b8f0fe61a353a4332394ac3d762a5ef5af0a4b148c12",
+      "bytes": 811,
+      "bundlePath": "artifacts/shelf-vessels/after-store-metrics.json"
+    }
+  ],
+  "agentUsedBrowser": false,
+  "rootWritten": false,
+  "finalGateStatus": "PASS"
+}

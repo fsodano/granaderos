@@ -1,0 +1,34 @@
+{
+  "name": "affected",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "--test",
+    "--test-concurrency=4",
+    "tests/three-shelf-vessels.test.mjs",
+    "tests/three-prop-footprints.test.mjs",
+    "tests/prop-footprints.test.mjs",
+    "tests/three-sector-world.test.mjs",
+    "tests/room-dressing-semantics.test.mjs",
+    "tests/renderer-furnishings-detail-fixture.test.mjs"
+  ],
+  "cwd": "/tmp/granaderos-piece16-final-candidate",
+  "seconds": 4.501955541999999,
+  "durationSource": "Actual Node test summary; collector wall time was not persisted",
+  "exitCode": null,
+  "exitCodeEvidence": "Underlying process returned before optional parser failed, but its return code was not persisted. Do not claim a measured0. Complete Node summary shows39/39,0failures/skips.",
+  "countSummaryPassed": true,
+  "actualCounts": {
+    "tests": 39,
+    "pass": 39,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "fileCount": 6,
+  "implementationEditsForGate": false,
+  "outsideRepoCollectorFailed": true,
+  "outsideRepoCollectorError": "AttributeError NoneType.group while reading # summary instead of actual \u2139 summary",
+  "gateRepeated": false,
+  "sourceOrAssetsChanged": false
+}

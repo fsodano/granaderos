@@ -1,0 +1,17 @@
+{
+  "status": "SEALED_SUCCESSFUL_PRIVATE_GATE",
+  "sealedUTC": "2026-10-09T06:21:03.738509+00:00",
+  "rootSourceWritten": false,
+  "sharedBrowserUsedByThisAgent": false,
+  "actualLiveAcceptanceOwner": "root",
+  "rootEquivalenceAndFinalPRPending": true,
+  "noRawLogsCopied": true,
+  "sourceManifest": "6614e8976c6756052437b7d56f940e45e723bae66ce46015b987c7efcf2f5418",
+  "sourceProductionIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "162ef299a291",
+    "source": "162ef299a2910112841ce95f5f02d7eb1de0f07fa9d2f43d548d0c7498d79e81",
+    "revision": "498c41e0c2b9681d8af25f0db23217e507ba84e2"
+  },
+  "deliveryFileSha256": "e70cd8a78bf93f4a17d967f8017f536cbcb19de282471dbde78de189313f3c37"
+}

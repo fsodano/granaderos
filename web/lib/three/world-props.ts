@@ -145,7 +145,11 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
           box(dark,a,.112+bh,0,.012,.004,bd+.004);
         }
       }else{
-        for(let n=0;n<5;n++){const a=(n-2)*sw*.15,by=h*(n%2?.68:.38);part.primitive('cylinder',materials.get(n%2?'ceramic':'food'),[a,by+.11,0],[.07,.20,.07],undefined,light);}
+        const vesselKinds=['shelf-jar','shelf-bottle','shelf-bowl','shelf-jar','shelf-bottle'],vesselScale=Math.min(1,Math.max(0,Math.min(h*.30-.06,h*.35-.10))*.94/.257);
+        for(let n=0;vesselScale>0&&n<5;n++){
+          const a=(n-2)*sw*.15,base=h*(n%2?.65:.35)+.03;
+          part.primitive(vesselKinds[n],materials.get(n%2?'ceramic':'food'),[a,base,0],[1,vesselScale,1],undefined,light);
+        }
       }
     }else if(prop.type==='hearth'){
       box(stone,0,.04,0,w*.65,.08,d*.58);box(materials.get('brick'),0,h*.5,d*.20,w*.68,h,.18);for(const a of [-1,1])box(stone,a*w*.27,h*.34,0,w*.13,h*.68,d*.47);box(stone,0,h*.73,0,w*.67,.18,d*.53);

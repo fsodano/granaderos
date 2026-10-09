@@ -1,0 +1,33 @@
+{
+  "game": {
+    "data-active-actors": "1",
+    "data-actors": "1",
+    "data-draw-calls": "112",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "119.9",
+    "data-geometries": "109",
+    "data-loaded-actors": "1",
+    "data-lod": "2",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "43",
+    "data-triangles": "68112"
+  },
+  "close": {
+    "data-active-actors": "1",
+    "data-actors": "1",
+    "data-draw-calls": "79",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "120.1",
+    "data-geometries": "109",
+    "data-loaded-actors": "1",
+    "data-lod": "1",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "43",
+    "data-triangles": "122346"
+  },
+  "errors": []
+}

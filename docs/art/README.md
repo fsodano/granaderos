@@ -22,6 +22,7 @@ systems and their recorded scope.
 - [Soft bedding](soft-bedding-review-2026-10-08.md) *(workspace)*
 - [Complete washstand](washstand-review-2026-10-08.md) *(workspace)*
 - [Complete cooking hearth](hearth-review-2026-10-08.md) *(workspace)*
+- [Varied shelf vessels](shelf-vessels-review-2026-10-08.md) *(workspace)*
 - [Colonial buildings, 1810–1820](buildings.md)
 - [Illustrated character sprites](character-sprites.md)
 - [Custom-character portraits](custom-character-portraits.md)
