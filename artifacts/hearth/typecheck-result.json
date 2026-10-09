@@ -1,0 +1,23 @@
+{
+  "name": "typecheck",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+    "run",
+    "typecheck"
+  ],
+  "cwd": "/tmp/granaderos-piece15-corrected-final-candidate",
+  "startUTC": "2026-10-09T04:30:09.049344+00:00",
+  "finishUTC": "2026-10-09T04:30:31.554521+00:00",
+  "seconds": 22.505,
+  "exitCode": 0,
+  "environment": {
+    "GRANADEROS_TEST_CONCURRENCY": null,
+    "GRANADEROS_BASE_PATH": null,
+    "NODE_ENV": null,
+    "NODE_OPTIONS": null,
+    "CI": null
+  },
+  "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "implementationEditsForGate": false
+}

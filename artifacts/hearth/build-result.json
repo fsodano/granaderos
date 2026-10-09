@@ -1,0 +1,33 @@
+{
+  "name": "build",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+    "run",
+    "build"
+  ],
+  "cwd": "/tmp/granaderos-piece15-corrected-final-candidate",
+  "startUTC": "2026-10-09T04:30:31.640892+00:00",
+  "finishUTC": "2026-10-09T04:31:02.693376+00:00",
+  "seconds": 31.053,
+  "exitCode": 0,
+  "environment": {
+    "GRANADEROS_TEST_CONCURRENCY": null,
+    "GRANADEROS_BASE_PATH": null,
+    "NODE_ENV": null,
+    "NODE_OPTIONS": null,
+    "CI": null
+  },
+  "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "implementationEditsForGate": false,
+  "productionSourceIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "4c643a22f19a",
+    "source": "4c643a22f19ac4e7ad602de842705de8610f16ba0ef9ad268b0a6b2cbd032d65",
+    "revision": "ab9cfd27e5a8cdb212a3bfd973e2f5fa176ac2ac"
+  },
+  "productionBuildInfoSha256": "744fa2dca63fa33f2be9738984c5905e99eec0b1caeeedafdf221b613cebde56",
+  "sourceIdentityMatchesActualProduction": true,
+  "exportFileCount": 1377,
+  "assetReferenceCount": 1045
+}

@@ -1,0 +1,69 @@
+{
+  "status": "FAIL",
+  "source": "4c643a22f19ac4e7ad602de842705de8610f16ba0ef9ad268b0a6b2cbd032d65",
+  "runtime": {
+    "genericPython": "3.14.6",
+    "Pillow": "12.1.1",
+    "numpyInstalled": false
+  },
+  "quickFiles": 900,
+  "standardSelectedFiles": 900,
+  "standardAvailableFiles": 908,
+  "concurrency": 4,
+  "extraFilters": false,
+  "counts": {
+    "tests": 6793,
+    "failed": 18,
+    "passed": 6770,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0,
+    "topLevel": 6650,
+    "suites": 0
+  },
+  "seconds": 2240.703,
+  "exitCode": 1,
+  "failedFiles": [
+    "tests/characters-cloth-depth.test.mjs",
+    "tests/characters-family-cloth-depth.test.mjs",
+    "tests/characters-apparel-surfaces.test.mjs",
+    "tests/three-woman-shawl-hem.test.mjs",
+    "tests/three-woman-shawl-palette.test.mjs",
+    "tests/characters-library-pipeline.test.mjs",
+    "tests/characters-coarse-garment-surfaces.test.mjs",
+    "tests/characters-cloth-material-roles.test.mjs"
+  ],
+  "observedFailure": "Delivered apparel surface differs from its recipe",
+  "rawReportedCaseCounts": {
+    "tests": 6788,
+    "passed": 6770,
+    "failed": 13,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0,
+    "topLevel": 6645,
+    "suites": 0
+  },
+  "countExplanation": "Five test files abort before reporting case counts. The runner adds one failure/test for each aborted file. Use officialRunnerCounts for overall status; rawReportedCaseCounts covers only emitted case summaries.",
+  "completeBeforeAfterInputsExact": true,
+  "allRepositoryInputFiles": 11331,
+  "originalEvidence": {
+    "delivery.json": {
+      "path": "/tmp/granaderos-piece15-final-gates-evidence/delivery.json",
+      "sha256": "d5c1fdb36f9c11ae0dc18cce0a77885177ce705d613bfbb859c0ccd44ee87fad"
+    },
+    "quick-result.json": {
+      "path": "/tmp/granaderos-piece15-final-gates-evidence/quick-result.json",
+      "sha256": "982c616f6c827925d3db118af989afe16b350471407fd8c72346bc407adbbe1c"
+    },
+    "quick-timing-report.json": {
+      "path": "/tmp/granaderos-piece15-final-gates-evidence/quick-timing-report.json",
+      "sha256": "7d3c74e5beb26d9c36d7f1ee756e50bd38f24f854b28d338682c35c9f167b764"
+    },
+    "quick.log": {
+      "path": "/tmp/granaderos-piece15-final-gates-evidence/quick.log",
+      "sha256": "c1de6a1690ac74fb60ae7eb296ca2e1433d352952202eee9439cf48f1da53ab9"
+    }
+  },
+  "limits": "This run failed and does not establish a successful final gate. Root authorized the eight affected files under the required3.9 runtime and one full standard quick retry if they passed. Original full logs/receipt remain outside this compact repository bundle."
+}

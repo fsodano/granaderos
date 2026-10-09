@@ -1,0 +1,11 @@
+{
+  "currentCandidate": "/tmp/granaderos-piece15-corrected-final-candidate",
+  "acceptedOld15": "/tmp/granaderos-hearth-inward-piece15-candidate",
+  "clearancePatch": "/tmp/granaderos-piece13-clearance-correction-evidence/blanket-clearance-correction.patch",
+  "clearancePatchSha256": "a6328fa3dd430affb9f63ed8386289e5959c275bc19f469db8552fb353707227",
+  "accepted15SevenFileFeatureDataExact": true,
+  "onlyAdditionalGeometryDiffIsAccepted13Clearance": true,
+  "originalBeddingTestReconstructedExact": true,
+  "rootWritten": false,
+  "candidateWritten": false
+}

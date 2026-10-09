@@ -1,0 +1,96 @@
+{
+  "prefix": "/tmp/granaderos-piece14-corrected-final-candidate",
+  "candidate": "/tmp/granaderos-piece15-corrected-final-candidate",
+  "prefixCommit": "04c3abbce5eaf699306870374a7046b151320bb7",
+  "inputFileCountBefore": 11329,
+  "inputFileCountAfter": 11331,
+  "ownedChanges": {
+    "tests/three-hearth-cookware.test.mjs": {
+      "before": null,
+      "after": {
+        "sha256": "031bc652a1d77b1222ca8fd972c1bc854035209f176e0e5a8bb5843ad784220d",
+        "bytes": 11415
+      }
+    },
+    "tests/three-hearth-orientation.test.mjs": {
+      "before": null,
+      "after": {
+        "sha256": "1c80ba1b161ff4293f7751ce58793f7731b01ed597a6aff5deb97be259b4fca4",
+        "bytes": 9706
+      }
+    },
+    "web/lib/three/presentation.ts": {
+      "before": {
+        "sha256": "c78f1984a7684717b8b8a17255a1b27daa39a1f4d1c4b75343f603287b0cf44d",
+        "bytes": 22211
+      },
+      "after": {
+        "sha256": "def93ba6e42c30c1ab00caa9628801cabbf42db3e9a3c0db6e2df713e54effcd",
+        "bytes": 22426
+      }
+    },
+    "web/lib/three/sector-world.ts": {
+      "before": {
+        "sha256": "c6338c76299d141bb61a872953c1dc9dc668da0e509b5b62f83e78f23496ed8d",
+        "bytes": 9842
+      },
+      "after": {
+        "sha256": "ad0289310043020d5ba35187bef87ab6665fb66e25590b24d1dcf58d0d46f974",
+        "bytes": 9908
+      }
+    },
+    "web/lib/three/world-geometry.ts": {
+      "before": {
+        "sha256": "d5e9f853045e5cdd0df4e27ae2f641acc432f81ca0d21b0724eb0d2779d2e4d5",
+        "bytes": 13830
+      },
+      "after": {
+        "sha256": "5bea6c57f9644686198d01e3ab4bfc00357440ae58203ee8a9f1c089a7559b50",
+        "bytes": 14106
+      }
+    },
+    "web/lib/three/world-props.ts": {
+      "before": {
+        "sha256": "8cf2f2fcd3dae7b4619a82a2d95a57d502b669cab21a37b2ab2d259a46640f13",
+        "bytes": 13684
+      },
+      "after": {
+        "sha256": "58a3a01f8a5fd4c1bf4e05ec80ab56d47bdc17e70f659a74b615bdea1a484b26",
+        "bytes": 16389
+      }
+    },
+    "web/lib/three/world-types.ts": {
+      "before": {
+        "sha256": "ce875212d9c625832a2de1d50656494f93a9dd45486d1c41a87c7b39320f2234",
+        "bytes": 3580
+      },
+      "after": {
+        "sha256": "f3e75f63c5c1bb4bb9fb5159c0b2b0b5375ac69fbd93a21f98ccb10c3d186b89",
+        "bytes": 3611
+      }
+    }
+  },
+  "allOtherInputsExact": true,
+  "allOtherInputCount": 11324,
+  "allOtherInputSha256": "2a75d3462542ff8b4c61fa6206d8378422656fc1cf8b275fc8e14b23008db60b",
+  "engine": {
+    "before": [
+      {
+        "path": "engine",
+        "pin": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+        "initialized": false
+      }
+    ],
+    "after": [
+      {
+        "path": "engine",
+        "pin": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+        "initialized": false
+      }
+    ]
+  },
+  "onlyFull15PatchAppliedOnce": true,
+  "corrected13Carried": true,
+  "frozen6TerrainAndSharedFurnitureCarried": true,
+  "rootWritten": false
+}

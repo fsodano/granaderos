@@ -28,8 +28,9 @@ camera control sequence. Browser idle phase can vary between captures. The
 fixed-time offline pairs provide exact pose comparisons. The live review also
 checks close LOD0, rifle equipment, ordinary aiming and movement, crouch and prone.
 
-The coarse vest and shawl's pale flecks remain a known geometry defect. The
-coarse poncho's dark facets remain a known normal defect. Piece 4 handles them.
+Piece 4 [corrects the coarse poncho normals](character-poncho-normals-review-2026-10-08.md).
+The later [vest and shawl fit trials](character-outer-garment-fit-review-2026-10-08.md)
+found no clear improvement at play size. Piece 5 retains their original models.
 Uniform facings, seams, trim, polished blades, grip leather and cream crossbelts
 stay exact. The shawl's special UV1 charcoal/rust map stays exact.
 

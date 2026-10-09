@@ -5,13 +5,33 @@ import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldInput,WorldProp} from './world-types';
 
+/** Generated hearths face free cells inside their admitted room. */
+export function visualPropRotation(prop:WorldProp,input:WorldInput){
+  const fallback=prop.rotation??0,roomId=prop.roomId,prefix=roomId?`${roomId}:dressing-`:'';
+  if(prop.rotation!==undefined||prop.type!=='hearth'||!prop.decorative||!prop.generatedRoomDressing||!roomId||!prop.buildingId||!prop.id.startsWith(prefix)||!/^\d+$/.test(prop.id.slice(prefix.length)))return fallback;
+  if(!new Set(input.revealedRooms??[]).has(roomId))return fallback;
+  const building=input.terrain.buildings?.find(item=>item.id===prop.buildingId),room=building?.rooms?.find(item=>item.id===roomId),level=prop.tacticalLevel??0;
+  if(!room||(room.tacticalLevel??room.cells[0]?.tacticalLevel??0)!==level)return fallback;
+  const cells=new Set(room.cells.filter(cell=>(cell.tacticalLevel??room.tacticalLevel??0)===level).map(cell=>`${cell.x},${cell.y}`));
+  if(!cells.has(`${prop.x},${prop.y}`))return fallback;
+  // The rear must meet the room edge and the opening must lead into the room.
+  // Equal runs use the fixed north, east, south, west order.
+  let rotation=fallback,longest=0;
+  for(const [angle,dx,dy]of [[0,0,-1],[90,1,0],[180,0,1],[270,-1,0]]){
+    if(cells.has(`${prop.x-dx},${prop.y-dy}`))continue;
+    let run=0;while(cells.has(`${prop.x+dx*(run+1)},${prop.y+dy*(run+1)}`))run++;
+    if(run>longest){rotation=angle;longest=run;}
+  }
+  return rotation;
+}
+
 /** Furniture occupies its authored footprint; only its mesh rotates. */
 export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
   const batch=new WorldBatch(geometry);
   for(const prop of props){
     const light=illuminationAt(input,prop),width=(prop.footprint?.width??1)*T,depth=(prop.footprint?.height??1)*T;
     const x=(prop.x+((prop.footprint?.width??1)-1)*.5)*T,z=(prop.y+((prop.footprint?.height??1)-1)*.5)*T,y=prop.elevation??0;
-    const angle=(prop.rotation??0)*Math.PI/180,rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),-angle);
+    const angle=visualPropRotation(prop,input)*Math.PI/180,rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),-angle);
     const frame=new Group();frame.position.set(x,y,z);frame.quaternion.copy(rotation);frame.updateMatrix();
     const wood=materials.get(prop.material==='stone'?'stone':'wood'),dark=materials.get('darkwood'),iron=materials.get('iron'),linen=materials.get('linen'),stone=materials.get('stone');
     // Rotated long furniture fits inside the same authoritative cells.
@@ -130,6 +150,26 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
     }else if(prop.type==='hearth'){
       box(stone,0,.04,0,w*.65,.08,d*.58);box(materials.get('brick'),0,h*.5,d*.20,w*.68,h,.18);for(const a of [-1,1])box(stone,a*w*.27,h*.34,0,w*.13,h*.68,d*.47);box(stone,0,h*.73,0,w*.67,.18,d*.53);
       box(materials.get('ember',{emissive:true}),0,.105,0,w*.24,.025,d*.18);for(const a of [-1,1])pole(dark,[a*.17,.13,-.12],[-a*.17,.13,.12],.035);
+      // The authored iron pot hangs in front of the unchanged firebox. Its rolled rim
+      // opens into a real cavity, and the bail joins both rim-side hinges.
+      const rim=.330,bailY=rim-.012,lintel=h*.73-.09,outside=lintel<bailY+.088+.006;
+      const potZ=outside?-d*.265-.145:-d*.265-.012;
+      part.primitive('hearth-pot',iron,[0,.170,potZ],[1,1,1],undefined,light);
+      part.primitive('hearth-bail',iron,[0,bailY,potZ],[.132,.088,.132],undefined,light);
+      for(const a of [-1,1])pole(iron,[a*.137,bailY,potZ-.0125],[a*.137,bailY,potZ+.0125],.008);
+      if(outside){
+        // A short firebox stores the same pot on an outside iron arm. Keep
+        // its natural size instead of crushing it into the stone lintel.
+        const anchorZ=-d*.265+.012,top=h*.73+.09,beamY=Math.max(top+.006,bailY+.100);
+        box(iron,0,beamY,(anchorZ+potZ)*.5,.020,.012,anchorZ-potZ+.012);
+        pole(iron,[0,top-.004,anchorZ],[0,beamY,anchorZ],.005);
+        pole(iron,[0,bailY+.088,potZ],[0,beamY,potZ],.005);
+      }else{
+        const anchorZ=-d*.265+.020;
+        box(iron,0,lintel+.002,anchorZ,.36,.012,.020);
+        box(iron,0,lintel+.002,(anchorZ+potZ)*.5,.020,.012,anchorZ-potZ+.012);
+        pole(iron,[0,bailY+.088,potZ],[0,lintel+.002,potZ],.005);
+      }
     }else if(prop.type==='pottery'){
       const pot=lathe([[.08,0],[.14,.04],[.18,h*.42],[.16,h*.76],[.07,h*.90],[.07,h],[.06,h],[.06,h*.9]]);part.add(pot,materials.get('ceramic'),new importMatrix(),light);pot.dispose();
       for(const a of [-1,1])part.primitive('torus',materials.get('ceramic'),[a*.15,h*.62,0],[.065,.09,.065],undefined,light);

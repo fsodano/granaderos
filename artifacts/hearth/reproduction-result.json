@@ -1,0 +1,43 @@
+{
+  "name": "reproduction",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "--test",
+    "--test-concurrency=4",
+    "tests/characters-apparel-surfaces.test.mjs",
+    "tests/characters-cloth-depth.test.mjs",
+    "tests/characters-cloth-material-roles.test.mjs",
+    "tests/characters-coarse-garment-surfaces.test.mjs",
+    "tests/characters-family-cloth-depth.test.mjs",
+    "tests/characters-library-pipeline.test.mjs",
+    "tests/three-woman-shawl-palette.test.mjs",
+    "tests/three-woman-shawl-hem.test.mjs"
+  ],
+  "cwd": "/tmp/granaderos-piece15-corrected-final-candidate",
+  "startUTC": "2026-10-09T05:10:11.419755+00:00",
+  "finishUTC": "2026-10-09T05:23:48.819988+00:00",
+  "seconds": 817.387,
+  "exitCode": 0,
+  "environment": {
+    "GRANADEROS_TEST_CONCURRENCY": null,
+    "GRANADEROS_BASE_PATH": null,
+    "NODE_ENV": null,
+    "NODE_OPTIONS": null,
+    "CI": null
+  },
+  "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "implementationEditsForGate": false,
+  "actualCounts": {
+    "tests": 80,
+    "pass": 80,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "fileCount": 8,
+  "correctGenericPython": "3.9.6",
+  "Pillow": "11.2.1",
+  "NumPy": "1.26.4",
+  "previousEighteenRunnerFailuresEliminatedByUsedRuntimeCorrectionOnly": true
+}
