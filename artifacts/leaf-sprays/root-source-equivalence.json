@@ -1,0 +1,58 @@
+{
+  "root": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+  "expectedOrderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+  "actualOrderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+  "expectedFiles": 10413,
+  "actualFiles": 10413,
+  "missing": [],
+  "extra": [],
+  "changed": [],
+  "exactRuntimeTestAssetAndConfigurationInputs": true,
+  "expectedEngine": {
+    "path": "engine",
+    "mode": "160000",
+    "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "indexStage": 0,
+    "initialized": false,
+    "head": null,
+    "dirtyPorcelain": null,
+    "uninitializedDirectoryContents": [],
+    "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+  },
+  "actualEngine": {
+    "path": "engine",
+    "mode": "160000",
+    "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "indexStage": 0,
+    "initialized": false,
+    "head": null,
+    "dirtyPorcelain": null,
+    "uninitializedDirectoryContents": [],
+    "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+  },
+  "engineGitlinkInitializationAndDirtyStateExact": true,
+  "expectedInitialSourceIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "1be6fd7e6d96",
+    "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+    "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+  },
+  "actualSourceIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "1be6fd7e6d96",
+    "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+    "revision": "cf5805c49641e1b7fc1c91b35ad744e05677ff24"
+  },
+  "sourceAndVersionExact": true,
+  "expectedProductionIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "1be6fd7e6d96",
+    "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+    "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+  },
+  "productionGateSealed": true,
+  "currentSourceAndVersionEqualSealedProduction": true,
+  "dependenciesExact": true,
+  "expectedDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+  "actualDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f"
+}

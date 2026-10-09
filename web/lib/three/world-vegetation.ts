@@ -13,7 +13,7 @@ export function buildVegetationChunk(id:string,tiles:readonly WorldTile[],input:
     if(!['forest','scrub'].includes(tile.type)||tile.buildingId)continue;
     const seed=seeded(tile.x,tile.y),light=illuminationAt(input,tile),x=tile.x*T,z=tile.y*T,ground=tile.elevation??0,tree=tile.type==='forest'&&seed>.2;
     const faded=soft.has(`${tile.x},${tile.y}`),leaf=materials.get(seed>.7?'poplar':'leaf',{opacity:faded?.42:1});
-    if(!tree){for(let n=0;n<4;n++){const dx=(seeded(tile.x,tile.y,n+23)-.5)*.53,dz=(seeded(tile.y,tile.x,n+11)-.5)*.53,r=.23+seeded(tile.x,tile.y,n+63)*.15,angle=seeded(tile.y,tile.x,n+41)*Math.PI*2;batch.primitive(`crown-${n%3}`,leaf,[x+dx,ground+r*.48,z+dz],[r*1.15,r*.55,r*.84],new Quaternion().setFromAxisAngle(up,angle),light*(.88+n*.035));}continue;}
+    if(!tree){for(let n=0;n<4;n++){const dx=(seeded(tile.x,tile.y,n+23)-.5)*.53,dz=(seeded(tile.y,tile.x,n+11)-.5)*.53,r=.23+seeded(tile.x,tile.y,n+63)*.15,angle=seeded(tile.y,tile.x,n+41)*Math.PI*2;batch.primitive(`leaf-spray-${n%3}`,leaf,[x+dx,ground+r*.48,z+dz],[r*1.15,r*.55,r*.84],new Quaternion().setFromAxisAngle(up,angle),light*(.88+n*.035));}continue;}
     const height=2.6+seed*2.1,trunk=materials.get('trunk'),leanAngle=seeded(tile.y,tile.x,73)*Math.PI*2,lean=.10+seeded(tile.x,tile.y,71)*.18;
     const direction=new Vector3(Math.cos(leanAngle),0,Math.sin(leanAngle));
     const root=new Vector3(x,ground,z),knot=root.clone().addScaledVector(direction,lean*.18).add(new Vector3(0,height*.22,0));
@@ -32,8 +32,8 @@ export function buildVegetationChunk(id:string,tiles:readonly WorldTile[],input:
     }
     const poplar=seed>.7;
     // Broad trees carry irregular shallow sprays on forked branches. Poplar
-    // sprays stay upright and close to the leader, rather than becoming balls
-    // on a common ring. Twelve crowns retain the previous foliage budget.
+    // sprays stay upright and close to the leader. Open folded leaves retain
+    // every old crown bound, while using fewer faces than the closed lobes.
     for(let n=0;n<6;n++){
       const variation=seeded(tile.x,tile.y,n+17),angle=n*2.399+seed*5+variation*.55;
       const originHeight=.39+variation*.18,start=originHeight<=.46?knot.clone().lerp(shoulder,(originHeight-.22)/.24):shoulder.clone().lerp(leader,(originHeight-.46)/.27);
@@ -44,7 +44,7 @@ export function buildVegetationChunk(id:string,tiles:readonly WorldTile[],input:
         const reach=(poplar?.11:.20)+variation*.07,forkAngle=angle+side*(.7+variation*.3),fork=end.clone().add(new Vector3(Math.cos(forkAngle)*reach,.08+variation*.08,Math.sin(forkAngle)*reach));
         batch.cylinder(trunk,end,fork,.009+(1-variation)*.003,light*.9,'taper');
         const r=(poplar?.23:.31)+variation*(poplar?.10:.13),rotation=new Quaternion().setFromAxisAngle(up,forkAngle).multiply(new Quaternion().setFromAxisAngle(new Vector3(1,0,0),side*(.12+variation*.23)));
-        batch.primitive(`crown-${(n+(side>0?1:0))%3}`,leaf,fork.clone().add(new Vector3(0,poplar?.16:.08,0)),[r*(poplar?.82:1.48),r*(poplar?1.50:.62),r*(.78+variation*.15)],rotation,light*(.78+n*.028+variation*.05));
+        batch.primitive(`leaf-spray-${(n+(side>0?1:0))%3}`,leaf,fork.clone().add(new Vector3(0,poplar?.16:.08,0)),[r*(poplar?.82:1.48),r*(poplar?1.50:.62),r*(.78+variation*.15)],rotation,light*(.78+n*.028+variation*.05));
       }
     }
   }

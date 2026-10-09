@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-10-09T03:29:27.417933+00:00",
+  "engine": {
+    "path": "engine",
+    "mode": "160000",
+    "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "indexStage": 0,
+    "initialized": false,
+    "head": null,
+    "dirtyPorcelain": null,
+    "uninitializedDirectoryContents": [],
+    "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+  },
+  "candidateCommit": "219f6866f16bb97f5fbe1b282eade56f9174ca73",
+  "timing": "Read during the fixed gate run; private clone did not initialize or edit the engine. Final state is rechecked by the equivalence helper."
+}

@@ -1,0 +1,27 @@
+{
+  "route": [
+    "I9",
+    "J10",
+    "K11",
+    "M11",
+    "O11"
+  ],
+  "completed": true,
+  "controls": "ordinary cell buttons; pause after each order",
+  "metrics": {
+    "data-active-actors": "1",
+    "data-actors": "1",
+    "data-draw-calls": "68",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "120.0",
+    "data-geometries": "69",
+    "data-loaded-actors": "1",
+    "data-lod": "2",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "40",
+    "data-triangles": "115456"
+  },
+  "errors": []
+}

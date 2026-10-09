@@ -1,0 +1,32 @@
+{
+  "close": {
+    "data-active-actors": "1",
+    "data-actors": "1",
+    "data-draw-calls": "62",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "120.0",
+    "data-geometries": "62",
+    "data-loaded-actors": "1",
+    "data-lod": "1",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "25",
+    "data-triangles": "178132"
+  },
+  "normal": {
+    "data-active-actors": "1",
+    "data-actors": "1",
+    "data-draw-calls": "68",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "120.0",
+    "data-geometries": "69",
+    "data-loaded-actors": "1",
+    "data-lod": "2",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "40",
+    "data-triangles": "122776"
+  }
+}
