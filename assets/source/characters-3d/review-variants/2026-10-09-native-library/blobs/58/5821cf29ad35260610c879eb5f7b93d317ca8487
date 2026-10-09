@@ -1,0 +1,861 @@
+{
+  "status": "REJECTED for production; private visual study only",
+  "scope": "Granadero LOD0, eight fixed exported poses, native source30 bank unchanged",
+  "prototypeSource": "/tmp/granadero-tailored-coat-prototype",
+  "baselineBodySha256": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7",
+  "firstIntegratedBodySha256": "b1d23e2fd1e5cfa84c76e77dc155c5e998de6d21014b56624e1ae2059b93fcd5",
+  "neckTrialBodySha256": "c7eb39adc415d24388741686ffa65cbcd33a8469ded3da6c9d25741bc88db8e3",
+  "bankSha256": "e48fbf8e8b9fda4219b59582730453221003dad669e0a3b36e50b99e91b5d598",
+  "manifestSha256": "ca77e0a300ffd791421d7242a9a306388ea22acebea733d1d1be5b4e6139ce48",
+  "sourceHashes": {
+    "throwing_motion.py": "884df47b452698a35b7ed5e5d5c145a235d4dc66761d506d347ee171471f18f8",
+    "equipment.py": "5c1932d8e9aaf2db146f4d92a4667c5b5eb8be537aba16f6a55ce905f96a8525",
+    "build.py": "f4ed236e7cc8c9299b2a39e5e4a5920da06e300c03aaf143ed9ccbfb11f8fa5f",
+    "optimize.py": "eff72cf00746fce5635a6c2974aa5fafa9980392c22713ebe2177c32b190e27c",
+    "climbing_motion.py": "23272f95fde1f55a18f57d52cc21712cc1281c14ffa98b99cd01864b1d688e24",
+    "horse.py": "fc867cd141a0c7fe8c6bb30a7f6a8804086806c6295b468a91b1153c2047cac0",
+    "reviewed_motion.py": "e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee",
+    "guard_support.py": "cc1100741c56e0a3808b5350671d78ccc808dd597c55ac1e1827f2a5ba55cda7",
+    "rifle_guard_curves.py": "91fbada6e2153990e95550fef9ad37dd7c03498ddf683c8dcb1ff38cd441b4e2",
+    "riding_motion.py": "1641a18f49b6487bbc5d37f6054549638f2a7cd4ecbb2899a3fe6198f079e026",
+    "prepare_skin_maps.py": "cc99231f3335da8d9f2d052ef503a5c8e8729f34dd5c1512862a0f75e14da848",
+    "sideways_support.py": "f9554bc7ce93336dd5aac6ea4f9131835543fb370d0df421a79e809815253fb8",
+    "gesture_support.py": "d054298c8c1c0827efec2d0a3366bff6bb9a1e49dc12ba024b69e40c5f53390b",
+    "crouch_idle_support.py": "243798a22bb99b48d19321ff5702694d6003544af02b960edf2a1f28d482a47a",
+    "uniform_folds.py": "5816113a702fbf7f55b173c1c9cf1fedcf9e709d0526caa789814c66b46a00e8",
+    "lance_idle_support.py": "de5cd5f2a6ef19f27b4fe10245c751cca63eebba63178c413b9eefccf1b14b52",
+    "tailored_coat.py": "73d80399051bb24b38a2bbcd18528ddd8d847e03893ac9815405fd0872c3782e",
+    "gltf_pack.py": "fa5cafa3fd7c587e4795c91300d03eca2b81e3d29c46eef8d66ff814c98fc73d",
+    "garment_detail.py": "dc83cb610160e3da3dd1579b590b4c4a5764e1fac01cd205fcfaae6c642713cb",
+    "posture_support.py": "d605f1372da9e646e5e5acd9089396d21d2dfb18bb3a70904bc691037989e7b2",
+    "static_prone_support.py": "a5163e3b144aed4e58edb6866eed22bc0bb52cc547498f57cacd370430b7dde8",
+    "cloth_correctives.py": "2fb6be1654de3e77bcca0507146bbe784fd0e264bf52e65c17552f4d3b55f9b3",
+    "lance_grips.py": "ae1a80c6cee00a612c9e1aa28079608093d1f2d7a4e742668e61312dc0bbbe51",
+    "coat_settle.py": "96a8c6081dceea7f4a118cfd4d72565b0ee7157b604bdea6e1bbb76c05761124",
+    "equipment_library.py": "cc6b11f9f93649533be3e81287571e6936faffa52e0e8cf34425d4b13920d449",
+    "motion.py": "d88cace04e4c7a54ef1ad82139c2d573d191f10d56d124dae810e934f2cf47b2",
+    "rifle_loading.py": "f29d0b9a4355d2e8c9282d41d4bdf0d1af33cc7e9a298a2c995ff1c6a031092a",
+    "bayonet_support.py": "a47ebc84469b5ccaf50095ed225d08366673ba3252acac14c657e7caff9c3820",
+    "crouched_sideways_support.py": "729c5db60e1497a1607d5bd7aa729b9306a2baa3795501fa12843e1cd5367e06",
+    "export_gesture_support.py": "d9a8d08d55839549a668e213d20a8c43fad7d399e02c5e95f6a7a52179605cb3",
+    "mounted_motion.py": "e3801c9826bcc3a4670a6eee200e5c20177e8940933586aa5f5b93fa45367622",
+    "export_guard_support.py": "3c05f14caf47f4cb17d016dcf4f0503ecd70ae30326f5d238be9efa43cbe69be",
+    "coat_elbow_correctives.py": "b876a9cff4194fc2a6d7c5eec92d1ab86779cecf8cd7d320945d37a79171a987",
+    "character.py": "3435826692b84634aa8d7e935ab485b0acb3a5185345ae5f9a1020a23a2cd9bb",
+    "appearances.py": "cfa2955072db5f87450e758e37299028edc065a0f420e931729f2d9c9354e978",
+    "prone_arm_support.py": "7ac3fe37a10914d91eeb3ce38af76048a4d9c9a17cb2680b02cdafdb6d784c4a",
+    "facial_structure.py": "edefb2a261086066f501c26917bc85ffbe06f5d3e9bce2b6562c472cfbd4d174",
+    "grounding_motion.py": "caaf250342b1d17400cf7b289edee2ae8a6399e0431215a125537b765d3efeeb",
+    "task_wrists.py": "6df7093c4397361b7e35c91fcaa37b97d8b1710bc9e83370e266f2ffe1920b0e",
+    "sockets.py": "b359eebd1df8b154dfa3eaacf8bf5d81f5d24bf95699ec069f5bf6d44d2311f9",
+    "surface_atlas.py": "5acb145dc7b81c7beb64ed1a46c7a4db211e045fad7401e33a783042a0076c5f",
+    "anatomy_surface.py": "24db3a442d9a3d4df15f2467fd803f204dfc8521022871bbb899629efcbd6986",
+    "crossbelts.py": "e9f26701a760b783ba9b5d594dc1b1b94afd046c6e063757ef88afc57de8ad04",
+    "firearm_grips.py": "bc2b522253cbff868d69ad07b5d03979be8323d14fba678c3946a4b2796516d6",
+    "garments.py": "f2d63899ada3249fd060bce6b8c36f2b2fac9afa0ceef1d6fbb011ded25f3925",
+    "equipment_dimensions.py": "74f36fa8c1aa5140c02ee6a360f75a58723ccc476f136089c5a5b244bd9312d2",
+    "pistol_loading.py": "8c53680ca84c457663df6073a2e77b3e751024ce467545eefa9663c3d6604e80",
+    "export_timing.py": "4951b651f15a6e86501a8d056f6f006cc9c19e2adcc62d40e1d9452ca64b8fcd",
+    "export_motion_increment.py": "63d8b7b175e9dc66bd4bb9ab00c49df7eeeec3aac8b6bc6be04fd7ae941071b3",
+    "maintenance_pose.py": "16bf84024f2ff447c126d091d08fed625db9038f376353cb4c9e40868875ea13"
+  },
+  "matches": {
+    "sameNativePoseAndTimeAndCameraAllEight": true,
+    "nativeSkinAndRigAndOtherAssets": {
+      "bodySha256": "c7eb39adc415d24388741686ffa65cbcd33a8469ded3da6c9d25741bc88db8e3",
+      "nativeNodeTransformsAndInverseBindExact": true,
+      "changes": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "material": "Apparel_Atlas",
+          "changedAttributes": [],
+          "nativePartPreserved": true
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "material": "Apparel_Atlas",
+          "changedAttributes": [
+            "TEXCOORD_0"
+          ],
+          "nativePartPreserved": true
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "material": "Apparel_Atlas",
+          "changedAttributes": [],
+          "nativePartPreserved": true
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "material": "Apparel_Atlas",
+          "changedAttributes": [
+            "POSITION",
+            "NORMAL",
+            "TEXCOORD_0",
+            "COLOR_0",
+            "JOINTS_0",
+            "WEIGHTS_0"
+          ],
+          "nativePartPreserved": false
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "material": "Skin",
+          "changedAttributes": [],
+          "nativePartPreserved": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "material": "Apparel_Atlas",
+          "changedAttributes": [
+            "POSITION",
+            "NORMAL",
+            "TEXCOORD_0",
+            "COLOR_0",
+            "JOINTS_0",
+            "WEIGHTS_0"
+          ],
+          "nativePartPreserved": false
+        }
+      ],
+      "otherGLBsUnchanged": {
+        "female-animations.glb": true,
+        "woman-scout-lod1.glb": true,
+        "friar-lod2.glb": true,
+        "gaucho-lod1.glb": true,
+        "worker-lod1.glb": true,
+        "male-animations.glb": true,
+        "worker-lod0.glb": true,
+        "gaucho-lod0.glb": true,
+        "woman-scout-lod0.glb": true,
+        "woman-scout-lod2.glb": true,
+        "friar-lod1.glb": true,
+        "gaucho-lod2.glb": true,
+        "worker-lod2.glb": true,
+        "friar-lod0.glb": true,
+        "horse-lod0.glb": true,
+        "horse-lod1.glb": true,
+        "horse-lod2.glb": true,
+        "royalist-lod0.glb": true,
+        "royalist-lod1.glb": true,
+        "royalist-lod2.glb": true,
+        "female-garments.glb": true,
+        "woman-shawl-lod2.glb": true,
+        "surgeon-lod2.glb": true,
+        "surgeon-lod0.glb": true,
+        "woman-shawl-lod0.glb": true,
+        "woman-shawl-lod1.glb": true,
+        "surgeon-lod1.glb": true,
+        "male-garments.glb": true,
+        "granadero-lod2.glb": true,
+        "equipment.glb": true,
+        "granadero-lod1.glb": true
+      },
+      "beforeTriangles": 87197,
+      "afterTriangles": 97822,
+      "beforeBytes": 5302048,
+      "afterBytes": 6006284
+    }
+  },
+  "finalExport": {
+    "url": "/models/characters/granadero-lod0.glb",
+    "bytes": 6006284,
+    "sha256": "c7eb39adc415d24388741686ffa65cbcd33a8469ded3da6c9d25741bc88db8e3",
+    "triangles": 97822,
+    "meshes": 5,
+    "drawCalls": 6,
+    "materials": [
+      "Apparel_Atlas",
+      "Skin"
+    ],
+    "bones": 53,
+    "nodes": [
+      "index_03_l",
+      "index_02_l",
+      "index_01_l",
+      "middle_03_l",
+      "middle_02_l",
+      "middle_01_l",
+      "pinky_03_l",
+      "pinky_02_l",
+      "pinky_01_l",
+      "ring_03_l",
+      "ring_02_l",
+      "ring_01_l",
+      "thumb_03_l",
+      "thumb_02_l",
+      "thumb_01_l",
+      "socket_handLeft_pistol",
+      "socket_handLeft_rifle",
+      "socket_handLeft_sabre",
+      "socket_handLeft_tool",
+      "hand_l",
+      "lowerarm_l",
+      "upperarm_l",
+      "clavicle_l",
+      "index_03_r",
+      "index_02_r",
+      "index_01_r",
+      "middle_03_r",
+      "middle_02_r",
+      "middle_01_r",
+      "pinky_03_r",
+      "pinky_02_r",
+      "pinky_01_r",
+      "ring_03_r",
+      "ring_02_r",
+      "ring_01_r",
+      "thumb_03_r",
+      "thumb_02_r",
+      "thumb_01_r",
+      "socket_handRight_pistol",
+      "socket_handRight_rifle",
+      "socket_handRight_sabre",
+      "socket_handRight_tool",
+      "hand_r",
+      "lowerarm_r",
+      "upperarm_r",
+      "clavicle_r",
+      "head",
+      "neck_01",
+      "socket_back",
+      "spine_03",
+      "spine_02",
+      "spine_01",
+      "ball_l",
+      "foot_l",
+      "calf_l",
+      "thigh_l",
+      "ball_r",
+      "foot_r",
+      "calf_r",
+      "thigh_r",
+      "socket_hipLeft",
+      "socket_hipRight",
+      "pelvis",
+      "Root",
+      "Human_footwear_LOD0",
+      "Human_headwear_LOD0",
+      "Human_legwear_LOD0",
+      "Human_outfit_LOD0",
+      "Human_skin_LOD0",
+      "Granadero_Rig"
+    ],
+    "kind": "appearance",
+    "preset": "granadero",
+    "gender": "male",
+    "lod": 0,
+    "height": 1.76,
+    "sockets": {
+      "handRight_rifle": {
+        "node": "socket_handRight_rifle",
+        "bone": "hand_r",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "handRight_pistol": {
+        "node": "socket_handRight_pistol",
+        "bone": "hand_r",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "handRight_sabre": {
+        "node": "socket_handRight_sabre",
+        "bone": "hand_r",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "handRight_tool": {
+        "node": "socket_handRight_tool",
+        "bone": "hand_r",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "handLeft_rifle": {
+        "node": "socket_handLeft_rifle",
+        "bone": "hand_l",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "handLeft_pistol": {
+        "node": "socket_handLeft_pistol",
+        "bone": "hand_l",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "mirror": {
+          "socket": "handRight_pistol",
+          "localAxis": "z"
+        }
+      },
+      "handLeft_sabre": {
+        "node": "socket_handLeft_sabre",
+        "bone": "hand_l",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "handLeft_tool": {
+        "node": "socket_handLeft_tool",
+        "bone": "hand_l",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "back": {
+        "node": "socket_back",
+        "bone": "spine_03",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "hipLeft": {
+        "node": "socket_hipLeft",
+        "bone": "pelvis",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      },
+      "hipRight": {
+        "node": "socket_hipRight",
+        "bone": "pelvis",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1
+      }
+    }
+  },
+  "cost": {
+    "trianglesBefore": 87197,
+    "trianglesAfter": 97822,
+    "triangleDelta": 10625,
+    "bytesBefore": 5302048,
+    "bytesAfter": 6006284,
+    "byteDelta": 704236,
+    "drawCalls": 6
+  },
+  "driverTests": {
+    "actualExportedPoses": 8,
+    "reverseSeekDeterminism": true,
+    "actualActorRuntimeAimHook": true,
+    "existingRuntimeTests": "36/36",
+    "GranaderoLOD0CrossbeltGate": "1/1 with driver enabled; unchanged 1 mm gate",
+    "labHooks": "syntax checked; same shared driver; not browser-reviewed"
+  },
+  "visibleBenefits": [
+    "Looser torso with less rib/muscle tracing",
+    "More sleeve volume and a broader cloth bend",
+    "Front fastening overlap reads as layered cloth",
+    "The gain at small isometric scale is modest; close views show most of the added detail."
+  ],
+  "rejectionReasons": [
+    "Jagged raised shoulder silhouette remains",
+    "Skin opening below collar worsens in the single neck-order trial",
+    "Tight rifle elbow poses retain pointed/compressed fold silhouettes",
+    "Sampled inner-sleeve points still enter the native body in several poses; this is not a clearance-ready garment"
+  ],
+  "seamDiagnosis": {
+    "originalPolarSortFalseNeckEdges": 12,
+    "maximumFalseConnectionM": 0.0744076868,
+    "trial": "Preserve actual sewn loop and arc-length map lower rings",
+    "result": "Removes wrong connectivity but does not create a correctly fitted neck/shoulder panel; not accepted"
+  },
+  "poses": [
+    {
+      "clip": "stand.idle.unarmed",
+      "timeSeconds": 0.5,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 28.843011185655502,
+          "morphWeight": 0
+        },
+        "r": {
+          "angleDegrees": 26.217819440424638,
+          "morphWeight": 0
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        }
+      }
+    },
+    {
+      "clip": "stand.walk.blade",
+      "timeSeconds": 0.18,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 31.39579097285318,
+          "morphWeight": 0
+        },
+        "r": {
+          "angleDegrees": 58.62559002372713,
+          "morphWeight": 0.1926045396820922
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        }
+      }
+    },
+    {
+      "clip": "stand.run.long-gun",
+      "timeSeconds": 0.16,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 43.096212379597674,
+          "morphWeight": 0
+        },
+        "r": {
+          "angleDegrees": 102.43782479439558,
+          "morphWeight": 0.8811535561390673
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 11,
+          "worst": [
+            [
+              -0.01843908103182912,
+              906,
+              [
+                0.10722440481185913,
+                -0.1772506833076477,
+                1.1934407949447632
+              ]
+            ],
+            [
+              -0.01198257808573544,
+              4696,
+              [
+                0.11095249652862549,
+                -0.18341636657714844,
+                1.1936575174331665
+              ]
+            ],
+            [
+              -0.01185669971164316,
+              5713,
+              [
+                0.10399557650089264,
+                -0.1777830719947815,
+                1.1747822761535645
+              ]
+            ]
+          ]
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        }
+      }
+    },
+    {
+      "clip": "stand.aim.short-gun",
+      "timeSeconds": 0,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 99.23340739433824,
+          "morphWeight": 0.8307932386890817
+        },
+        "r": {
+          "angleDegrees": 39.594080693997824,
+          "morphWeight": 0
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 1,
+          "worst": [
+            [
+              -0.0014297523739514872,
+              1319,
+              [
+                -0.0944628119468689,
+                -0.1676931530237198,
+                1.4237101078033447
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 93.1239056345994,
+          "morphWeight": 0.7347768810677163
+        },
+        "r": {
+          "angleDegrees": 118.86221676698516,
+          "morphWeight": 1
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 28,
+          "worst": [
+            [
+              -0.010967865760903805,
+              5153,
+              [
+                -0.006741076707839966,
+                -0.21966326236724854,
+                1.2502764463424683
+              ]
+            ],
+            [
+              -0.010149666777579114,
+              930,
+              [
+                -0.0036906003952026367,
+                -0.22443562746047974,
+                1.259482741355896
+              ]
+            ],
+            [
+              -0.008857006876496598,
+              5734,
+              [
+                -0.006941407918930054,
+                -0.22932389378547668,
+                1.2406158447265625
+              ]
+            ]
+          ]
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 58,
+          "worst": [
+            [
+              -0.01537329819984734,
+              5272,
+              [
+                -0.32169869542121887,
+                -0.044234246015548706,
+                1.4658308029174805
+              ]
+            ],
+            [
+              -0.013290486051118933,
+              1333,
+              [
+                -0.34919723868370056,
+                -0.02435082569718361,
+                1.4469857215881348
+              ]
+            ],
+            [
+              -0.013069253880530596,
+              1332,
+              [
+                -0.35234493017196655,
+                -0.023591265082359314,
+                1.4393573999404907
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "clip": "stand.slash.blade.backhand",
+      "timeSeconds": 0.36,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 55.55616448242593,
+          "morphWeight": 0.14436577860031063
+        },
+        "r": {
+          "angleDegrees": 10.053086500643198,
+          "morphWeight": 0
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 14,
+          "worst": [
+            [
+              -0.005910629726713523,
+              3307,
+              [
+                0.21028175950050354,
+                -0.17561089992523193,
+                1.159833550453186
+              ]
+            ],
+            [
+              -0.0051248031322757015,
+              5717,
+              [
+                0.21692334115505219,
+                -0.17188909649848938,
+                1.1626248359680176
+              ]
+            ],
+            [
+              -0.004844368930207565,
+              7599,
+              [
+                0.2113713175058365,
+                -0.18599188327789307,
+                1.1490930318832397
+              ]
+            ]
+          ]
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 49,
+          "worst": [
+            [
+              -0.020992100005969405,
+              3905,
+              [
+                -0.04300662875175476,
+                -0.19427162408828735,
+                1.2829681634902954
+              ]
+            ],
+            [
+              -0.020937902154400945,
+              1311,
+              [
+                -0.04585835337638855,
+                -0.17208358645439148,
+                1.3116278648376465
+              ]
+            ],
+            [
+              -0.02040077419951558,
+              4352,
+              [
+                -0.041953861713409424,
+                -0.1947929859161377,
+                1.2857922315597534
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "clip": "stand.reload.long-gun.1800",
+      "timeSeconds": 1.92,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 70.56614722131093,
+          "morphWeight": 0.3802612619349298
+        },
+        "r": {
+          "angleDegrees": 116.11422675821393,
+          "morphWeight": 1
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 72,
+          "worst": [
+            [
+              -0.017974392045289278,
+              1315,
+              [
+                -0.3258205056190491,
+                -0.13912028074264526,
+                1.3043960332870483
+              ]
+            ],
+            [
+              -0.016697186045348644,
+              2462,
+              [
+                -0.3238605260848999,
+                -0.14137841761112213,
+                1.3015987873077393
+              ]
+            ],
+            [
+              -0.016387878451496363,
+              2946,
+              [
+                -0.32921212911605835,
+                -0.13711056113243103,
+                1.3015496730804443
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "clip": "prone.reload.long-gun.1800",
+      "timeSeconds": 3.07,
+      "elbowCorrectives": {
+        "l": {
+          "angleDegrees": 90.1487298736552,
+          "morphWeight": 0.6880192973754177
+        },
+        "r": {
+          "angleDegrees": 124.50598841778836,
+          "morphWeight": 1
+        }
+      },
+      "sleeveDiagnostic": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 57,
+          "worst": [
+            [
+              -0.010155812102311756,
+              2982,
+              [
+                -0.10205614566802979,
+                -0.5112442970275879,
+                0.1327664852142334
+              ]
+            ],
+            [
+              -0.010031908401288092,
+              3923,
+              [
+                -0.10769450664520264,
+                -0.5104004144668579,
+                0.12542593479156494
+              ]
+            ],
+            [
+              -0.009730540681630373,
+              2955,
+              [
+                -0.08881483972072601,
+                -0.5070654153823853,
+                0.10777902603149414
+              ]
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "diagnosticLimits": "Sleeve diagnostic selects vertices within 10cm of each posed elbow, with more than68% native upper/lower-arm weight, on the inner elbow half-space. Signed nearest distance uses the full native body. This is a sampled warning, not a full triangle collision proof. The initial unfiltered diagnostic also selected adjacent torso cloth and should not be used as isolated sleeve proof.",
+  "sourceProposal": "source-prototype.patch includes original prototype construction, bake, private receipts and the rejected neck-order trial; do not apply for release",
+  "runtimeProposal": "runtime-proposal/runtime.patch adds optional shared native-angle driver and actor/lab hooks; keep unpublished until garment passes",
+  "published": false,
+  "sharedFilesChanged": false
+}

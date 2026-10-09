@@ -1,0 +1,14 @@
+[
+  {
+    "file": "woman-shawl-lod1.glb",
+    "freshBaselineVersusStoredExact": false,
+    "candidateVersusFreshBaselineNonLeftExact": false,
+    "freshBaselineSha256": "6260ac2d0fbb9e5780e4b2e1c8f6a1f6cbd26e6f71778bbfdf3a66fb80b18c3f"
+  },
+  {
+    "file": "woman-shawl-lod2.glb",
+    "freshBaselineVersusStoredExact": false,
+    "candidateVersusFreshBaselineNonLeftExact": false,
+    "freshBaselineSha256": "f01e2671e59c8b0264c2e1b9355fc3bc18c030ad5046aa33b2682e368dd67e77"
+  }
+]

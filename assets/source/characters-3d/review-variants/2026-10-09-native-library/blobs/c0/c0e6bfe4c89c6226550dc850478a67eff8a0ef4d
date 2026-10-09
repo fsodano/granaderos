@@ -1,0 +1,31 @@
+{
+  "status": "rejected; do not publish",
+  "baseline": {
+    "source": "/tmp/granadero-visible-face-final/source",
+    "bodySha256": "957b2cf949eaf263df67d1f987a695f5c216c14f1365a464768eb20d2058515d",
+    "scope": "Only Granadero LOD0 coat relief; accepted eyes and neck cleanup retained"
+  },
+  "sourceScope": "Only uniform_folds.py in a private frozen source; Granadero LOD0 only",
+  "shape": "A few unequal underarm-to-chest rolls, broad elbow compression and above-belt gather; capped 20 mm outward / 5 mm inward; previous neck, shoulder-board, cuff and waist-belt bands retained",
+  "visualFinding": [
+    "Idle and pistol views now show a clear game-scale change. This meets visibility but not the quality goal.",
+    "The relief reads as rounded bulges through the chest and underarm, rather than controlled sewn folds.",
+    "The fitted diagonal strap follows those bulges; a tensioned strap should constrain the cloth beneath it.",
+    "Rifle aim hides most front gathers, while the remaining sleeve still reads smooth."
+  ],
+  "decision": "Stop scalar relief variations. The native-body-derived coat needs a garment panel and support-constraint redesign: controlled underarm and side-seam topology, broad tension folds, and suppressed cloth depth under the tensioned crossbelt. This trial is not an accepted replacement.",
+  "checks": {
+    "actualExportedGLB": true,
+    "sameCameraLightingAndPose": true,
+    "nativeRigOrWeightsEdited": false,
+    "animationsEdited": false,
+    "extensiveRegressionAudit": "Not run because the visual trial is rejected"
+  },
+  "candidateSha256": "248f8dfc8e9b7b73e26d49a7816ebfb32b7dfb5a7e93b87e241b14cc28d61a61",
+  "sheets": [
+    "idle-comparison.png",
+    "pistol-comparison.png",
+    "rifle-comparison.png"
+  ],
+  "sharedOrPublicChanges": false
+}

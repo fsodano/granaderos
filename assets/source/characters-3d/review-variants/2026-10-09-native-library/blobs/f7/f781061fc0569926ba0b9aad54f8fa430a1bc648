@@ -1,0 +1,82 @@
+[
+  {
+    "file": "woman-scout-lod1.glb",
+    "before": {
+      "sha256": "02f98914ca23cdbab43480edabbdd5cad170cd8b05b0e444016515d2c0d0cf94",
+      "triangles": 38771,
+      "leftHandTriangles": 1217,
+      "bytes": 2327340,
+      "drawCalls": 5
+    },
+    "after": {
+      "sha256": "7e25d030019b88a5f8fb0351192049562246429f0193904dc00546e682e7881d",
+      "triangles": 40785,
+      "leftHandTriangles": 3231,
+      "bytes": 2408736,
+      "drawCalls": 5
+    },
+    "nativeSkeletonExact": true,
+    "allNonLeftHandTriangleAttributesExact": true,
+    "preservedTriangles": 37554
+  },
+  {
+    "file": "woman-scout-lod2.glb",
+    "before": {
+      "sha256": "31c666ee9e0a9080c6f4844188c19489b514d53e12da87df2658682a7df34fac",
+      "triangles": 13521,
+      "leftHandTriangles": 575,
+      "bytes": 683184,
+      "drawCalls": 5
+    },
+    "after": {
+      "sha256": "abf4b6373a38f3a131bc78a4d325beb8c18a155739ef7a7ab6c6d3a2e9e5788c",
+      "triangles": 16177,
+      "leftHandTriangles": 3231,
+      "bytes": 791472,
+      "drawCalls": 5
+    },
+    "nativeSkeletonExact": true,
+    "allNonLeftHandTriangleAttributesExact": true,
+    "preservedTriangles": 12946
+  },
+  {
+    "file": "woman-shawl-lod1.glb",
+    "before": {
+      "sha256": "a7e33b5e2779f7ce0f069d32a414fdfe918a57a50cbf06fb02f03e026abe500a",
+      "triangles": 51525,
+      "leftHandTriangles": 1217,
+      "bytes": 2962012,
+      "drawCalls": 5
+    },
+    "after": {
+      "sha256": "2e748c0afb8b64485554ffc5d6319e0459a9c82ebc3a7f398bf70cc4410bc824",
+      "triangles": 53539,
+      "leftHandTriangles": 3231,
+      "bytes": 3043404,
+      "drawCalls": 5
+    },
+    "nativeSkeletonExact": true,
+    "allNonLeftHandTriangleAttributesExact": true,
+    "preservedTriangles": 50308
+  },
+  {
+    "file": "woman-shawl-lod2.glb",
+    "before": {
+      "sha256": "f8c540455bbb2efdc7a1bd8d775295c80c55eb73c0fe03ef5cc40bb801df2767",
+      "triangles": 19151,
+      "leftHandTriangles": 575,
+      "bytes": 963128,
+      "drawCalls": 5
+    },
+    "after": {
+      "sha256": "506eda4d30b06fa59f62df33947fe5fc8691ecd7bf1640450848f45565c27482",
+      "triangles": 21807,
+      "leftHandTriangles": 3231,
+      "bytes": 1071416,
+      "drawCalls": 5
+    },
+    "nativeSkeletonExact": true,
+    "allNonLeftHandTriangleAttributesExact": true,
+    "preservedTriangles": 18576
+  }
+]

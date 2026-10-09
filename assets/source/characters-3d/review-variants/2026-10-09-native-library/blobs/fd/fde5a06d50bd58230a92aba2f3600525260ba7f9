@@ -1,0 +1,239 @@
+{
+  "manifestSha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+  "lod": 0,
+  "clip": "stand.idle.unarmed",
+  "timeSeconds": 0,
+  "palette": "light",
+  "hexSRGB": "#d5a07d",
+  "camera": "same orthographic isometric view; face scale 0.32 m",
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "renderSettings": {
+    "size": 800,
+    "samples": 32,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "paletteMethod": "Granadero uses its exported factor, which exactly equals light linear RGB divided by its albedo reference. Native faces use the renderer light override. The same final palette contract is verified numerically; no asset pixels or source files changed.",
+  "gallery": [
+    {
+      "preset": "granadero",
+      "label": "Granadero",
+      "face": "generated/granadero/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "generated/granadero/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+      "faceSha256": "e780e4109eb7a131fab558376ab7eedeb643db882e2353149e0969644ed479ca",
+      "cameraTarget": [
+        0.0016812309622764587,
+        -0.0905209630727768,
+        1.6325327157974243
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.7856988195222304,
+        0.830520789627063,
+        0.7353279118534788
+      ],
+      "albedo": "registered generated PNG",
+      "finding": "Visible pores, stubble and lip colour add detail. The eyebrow pigment still has a broad, soft outer tail. This is an incremental skin gain, not completed face realism."
+    },
+    {
+      "preset": "royalist",
+      "label": "Realista",
+      "face": "native/royalist/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "native/royalist/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853",
+      "faceSha256": "8a92b42095d49032595708d2091e213491ed4392968e49b3374bf5d29f6db33e",
+      "cameraTarget": [
+        0.0016812309622764587,
+        -0.0905209630727768,
+        1.6325327157974243
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.665387298282272,
+        0.35153259950043936,
+        0.20507873639031693
+      ],
+      "albedo": "native male/female map",
+      "finding": "The cheeks, brow and lips remain smooth. The face shape matches the other native male characters; the uniform supplies most of the identity."
+    },
+    {
+      "preset": "worker",
+      "label": "Trabajador",
+      "face": "native/worker/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "native/worker/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "27ec304416220e85c721f327e8d691f6a78e5cdcd433bb95e9e107ea031028a9",
+      "faceSha256": "ba1389221d5b7021865f3957c31e29fdaa327d3a16a7a3a2b88af9e886d176a2",
+      "cameraTarget": [
+        0.0016812309622764587,
+        -0.0905209630727768,
+        1.6325327157974243
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.665387298282272,
+        0.35153259950043936,
+        0.20507873639031693
+      ],
+      "albedo": "native male/female map",
+      "finding": "The same smooth male face remains. Hair has regular broad grooves and a sharp, continuous forehead edge, which reads as a moulded cap."
+    },
+    {
+      "preset": "surgeon",
+      "label": "Cirujano",
+      "face": "native/surgeon/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "native/surgeon/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "913905f38df1be298fdf71f25e5d750619ca3cca6ed0a83511a225b602204410",
+      "faceSha256": "295c6e168fca3718fa1dbcae1f2bc0f2a7a941b976a6424575c93a1b5c7fbf2b",
+      "cameraTarget": [
+        0.0016812309622764587,
+        -0.0905209630727768,
+        1.6325327157974243
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.665387298282272,
+        0.35153259950043936,
+        0.20507873639031693
+      ],
+      "albedo": "native male/female map",
+      "finding": "The face and hair are visually almost identical to the worker at this angle. The cap-like hair and low skin variation remain."
+    },
+    {
+      "preset": "gaucho",
+      "label": "Gaucho",
+      "face": "native/gaucho/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "native/gaucho/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "40f286bbc56e8c90621005dbece1df4c1d1f6fdb1c624ee9bd6ee51a54a2806a",
+      "faceSha256": "3fe0c86c136b3d7387477a58100bc2dad944a4a66e69d5b7a4661a99ff10dd42",
+      "cameraTarget": [
+        0.0016812309622764587,
+        -0.0905209630727768,
+        1.6325327157974243
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.665387298282272,
+        0.35153259950043936,
+        0.20507873639031693
+      ],
+      "albedo": "native male/female map",
+      "finding": "The hat changes the silhouette, but the visible nose, jaw, brows and skin are the same native male design. Fine face detail is weak."
+    },
+    {
+      "preset": "friar",
+      "label": "Fraile",
+      "face": "native/friar/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "native/friar/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "b72a20bbd219ee7c80f667f6a55c7701c9d2e400c54b2503af55d0bf0c312a5d",
+      "faceSha256": "15a6320895d14c1baeb89353d444ca96f28883bbc97d0629d71ce0baa3e4e78d",
+      "cameraTarget": [
+        0.0016812309622764587,
+        -0.0905209630727768,
+        1.6325327157974243
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.665387298282272,
+        0.35153259950043936,
+        0.20507873639031693
+      ],
+      "albedo": "native male/female map",
+      "finding": "The tonsure has a saw-tooth polygon boundary and thick hair ring. The bald scalp is more visibly mottled than the smooth face, so the two surfaces do not read as one skin treatment."
+    },
+    {
+      "preset": "woman-scout",
+      "label": "Exploradora",
+      "face": "native/woman-scout/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "native/woman-scout/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "54d20755699a380660cfd20a83d0948bab9802b541b54ad2644f727cd5cd7060",
+      "faceSha256": "ea9194a3f6cc1310dfb41211ea61acf1e1b7d70424731523f908812723443121",
+      "cameraTarget": [
+        0.0019941814243793488,
+        -0.07739431411027908,
+        1.642006278038025
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.665387298282272,
+        0.35153259950043936,
+        0.20507873639031693
+      ],
+      "albedo": "native male/female map",
+      "finding": "The female face is very smooth. Hair has thick, regular ridges, a hard temple edge and a rope-like braid. The face lacks local skin and eyebrow variation."
+    },
+    {
+      "preset": "woman-shawl",
+      "label": "Mujer con rebozo",
+      "face": "native/woman-shawl/stand.idle.unarmed.sample-1.face.png",
+      "isometric": "native/woman-shawl/stand.idle.unarmed.sample-1.png",
+      "bodySha256": "647fcbc89e4620090a789dfdd49f2c8b5a90fd9f77aad6018d147f5a1569b8a9",
+      "faceSha256": "37e155fbc04fd1a4c36fca3d1e993d004052bb6db7d926ec7241fe424cb542c0",
+      "cameraTarget": [
+        0.0019941814243793488,
+        -0.07739431411027908,
+        1.642006278038025
+      ],
+      "cameraScale": 0.32,
+      "lightSkinLinearFactor": [
+        0.665387298282272,
+        0.35153259950043936,
+        0.20507873639031693
+      ],
+      "albedo": "native male/female map",
+      "finding": "The face repeats the scout's native female shape and pigment. Hair still reads as a smooth cap; the different bun and clothing supply the identity."
+    }
+  ],
+  "mainFindings": [
+    "The seven native faces still lack the Granadero's local skin detail. They are not improved by this gallery.",
+    "Male faces share the same visible nose, jaw and brow design; both women likewise share their female design. Clothes and hair carry most character identity.",
+    "Broad, regular hair grooves and hard boundaries still read as moulded caps. The friar tonsure edge is visibly jagged."
+  ],
+  "scope": "Read-only actual exported-model face review. No movement sweep, new texture, source edit or asset change. The PNG sheet only scales and arranges the actual render images."
+}

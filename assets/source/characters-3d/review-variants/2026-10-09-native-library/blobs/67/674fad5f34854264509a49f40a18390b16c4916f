@@ -1,0 +1,148 @@
+{
+  "status": "accepted private pistol-butt candidate",
+  "scope": "Paired standing pistol-butt right-arm repair only; no rifle delta",
+  "preservation": {
+    "male": {
+      "oldSHA256": "18775a9848ca3e38eda6d55c1264ef86b56c3fc6fdad9db816264e96578de94e",
+      "newSHA256": "9dbeb71b56dd8bfd5a19dd3ef7f706ceb3ad27633bf2519de5e07c6f38ee9cac",
+      "changedChannels": [
+        [
+          "stand.butt.short-gun",
+          "upperarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.short-gun",
+          "lowerarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.short-gun",
+          "hand_r",
+          "rotation"
+        ]
+      ],
+      "preservedChannels": 53103,
+      "nativeNodesExact": true,
+      "metadataChanges": [
+        {
+          "clip": "stand.butt.short-gun",
+          "field": "reviewedPose.sourceSha256",
+          "old": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569",
+          "new": "e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee"
+        }
+      ],
+      "allOtherMetadataExact": true
+    },
+    "female": {
+      "oldSHA256": "6a61b83aa990be398f62c4a27aee08eee9d6c6337d54184e269ffa2c07b14a1f",
+      "newSHA256": "7a62f6c76bd25c5cb4a21d54a24e68a770e9f7c84e862b2ffb0e2b2608c2ef1a",
+      "changedChannels": [
+        [
+          "stand.butt.short-gun",
+          "upperarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.short-gun",
+          "lowerarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.short-gun",
+          "hand_r",
+          "rotation"
+        ]
+      ],
+      "preservedChannels": 53103,
+      "nativeNodesExact": true,
+      "metadataChanges": [
+        {
+          "clip": "stand.butt.short-gun",
+          "field": "reviewedPose.sourceSha256",
+          "old": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569",
+          "new": "e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee"
+        }
+      ],
+      "allOtherMetadataExact": true
+    }
+  },
+  "dense120Hz": {
+    "male": {
+      "duration": 1,
+      "markers": {
+        "contact": 0.42
+      },
+      "maxBend": {
+        "degrees": 51.44239320571116,
+        "time": 0.4666666666666667
+      },
+      "maxJointSpeed": {
+        "radiansPerSecond": 21.240765664773217,
+        "bone": "lowerarm_r",
+        "time": 0.13333333333333333
+      },
+      "maxWristSpeed": {
+        "metresPerSecond": 6.0296576294448645,
+        "time": 0.13333333333333333
+      }
+    },
+    "female": {
+      "duration": 1,
+      "markers": {
+        "contact": 0.42
+      },
+      "maxBend": {
+        "degrees": 52.17350597450094,
+        "time": 0.4666666666666667
+      },
+      "maxJointSpeed": {
+        "radiansPerSecond": 21.441916495326083,
+        "bone": "lowerarm_r",
+        "time": 0.11666666666666667
+      },
+      "maxWristSpeed": {
+        "metresPerSecond": 5.6639984935925085,
+        "time": 0.13333333333333333
+      }
+    }
+  },
+  "runtimeTests": {
+    "pass": 17,
+    "fail": 0,
+    "log": "runtime-gates.log",
+    "files": [
+      "three-pistol-butt-contact-fit.test.mjs",
+      "three-melee-contact-fit.test.mjs",
+      "three-melee-facing-contact-fit.test.mjs",
+      "three-scene-contact-order.test.mjs"
+    ]
+  },
+  "newRegression": {
+    "path": "delivery/characters-pistol-butt-wrists.test.mjs",
+    "sha256": "5476a553bdbd4a5b855b33a288b3418d26d1bba8d54c23eaf79a747ce6483422",
+    "candidate": {
+      "pass": 2,
+      "fail": 0
+    },
+    "unchangedPublicBaseline": {
+      "pass": 0,
+      "fail": 2
+    }
+  },
+  "visualEvidence": {
+    "before": "before-review/index.html",
+    "after": "after-review/index.html",
+    "times": [
+      0.42,
+      0.4666667,
+      0.52
+    ],
+    "anatomies": [
+      "granadero",
+      "woman-scout"
+    ],
+    "findings": "Powered wrist is less folded, especially female. Grip and fingers remain seated in the inspected impact and follow-through closeups. Body weight transfer and free guard remain unchanged. The shorter wrist path stays in front of the torso."
+  },
+  "limits": "A bounded physical wrist angle and inspected frames support this repair; this is not a claim of perfect motion or a check of every weapon action."
+}

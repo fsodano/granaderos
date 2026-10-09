@@ -1,0 +1,41 @@
+[
+  {
+    "path": "worker-lod0.glb",
+    "expectedPreviousSha256": "6382ca27feeb99e6ac7c099822bb9cad82cf23acec09397747d75491dfccb861",
+    "record": {
+      "lod": 0,
+      "url": "/models/characters/worker-lod0.glb",
+      "triangles": 80771,
+      "bytes": 4207288,
+      "drawCalls": 6,
+      "sha256": "e019b035e082ba67e5e06a062e15eb3408b0378caadf957dd232762fc9d6e498"
+    },
+    "proof": "/tmp/granadero-worker-face-albedo-pilot/albedo-proof-lod0.json"
+  },
+  {
+    "path": "worker-lod1.glb",
+    "expectedPreviousSha256": "63ed88232a21273547558213860d92e8f76d52a065821e9ec83ebb0c37677111",
+    "record": {
+      "lod": 1,
+      "url": "/models/characters/worker-lod1.glb",
+      "triangles": 50872,
+      "bytes": 2973052,
+      "drawCalls": 6,
+      "sha256": "27bf16d99a16c944a9d53497b3172331b65be938432bab7a3902a75c4fac5848"
+    },
+    "proof": "/tmp/granadero-worker-face-albedo-pilot/albedo-proof-lod1.json"
+  },
+  {
+    "path": "worker-lod2.glb",
+    "expectedPreviousSha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+    "record": {
+      "lod": 2,
+      "url": "/models/characters/worker-lod2.glb",
+      "triangles": 21852,
+      "bytes": 1135964,
+      "drawCalls": 6,
+      "sha256": "a15c8a823636e2578342ce9b0780fc63446d38f22d8da2b5e0d6b30229dd5c36"
+    },
+    "proof": "/tmp/granadero-worker-face-albedo-pilot/albedo-proof-lod2.json"
+  }
+]

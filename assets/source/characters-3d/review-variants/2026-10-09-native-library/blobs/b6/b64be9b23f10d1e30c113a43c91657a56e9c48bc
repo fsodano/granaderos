@@ -1,0 +1,82 @@
+[
+  {
+    "actualNavyTriangleCountBefore": 11354,
+    "actualNavyTriangleCountAfter": 11354,
+    "actualNavyPositionsAndNativeWeightsExact": true,
+    "baselineSeamEdges": 69,
+    "candidateSeamEdges": 69,
+    "allAcceptedExportedSewnEdgesExact": true,
+    "openCollarLowerEdgesBefore": 0,
+    "openCollarLowerEdgesAfter": 0,
+    "rimBefore": {
+      "distinctAngles": 78,
+      "maximumAngularGapDegrees": 17.36933015094993
+    },
+    "rimAfter": {
+      "distinctAngles": 114,
+      "maximumAngularGapDegrees": 5.329596114527402
+    },
+    "preset": "granadero",
+    "lod": 0
+  },
+  {
+    "actualNavyTriangleCountBefore": 11354,
+    "actualNavyTriangleCountAfter": 11354,
+    "actualNavyPositionsAndNativeWeightsExact": true,
+    "baselineSeamEdges": 69,
+    "candidateSeamEdges": 69,
+    "allAcceptedExportedSewnEdgesExact": true,
+    "openCollarLowerEdgesBefore": 0,
+    "openCollarLowerEdgesAfter": 0,
+    "rimBefore": {
+      "distinctAngles": 78,
+      "maximumAngularGapDegrees": 17.36933015094993
+    },
+    "rimAfter": {
+      "distinctAngles": 115,
+      "maximumAngularGapDegrees": 5.221364387027188
+    },
+    "preset": "granadero",
+    "lod": 1
+  },
+  {
+    "actualNavyTriangleCountBefore": 11191,
+    "actualNavyTriangleCountAfter": 11191,
+    "actualNavyPositionsAndNativeWeightsExact": true,
+    "baselineSeamEdges": 69,
+    "candidateSeamEdges": 69,
+    "allAcceptedExportedSewnEdgesExact": true,
+    "openCollarLowerEdgesBefore": 0,
+    "openCollarLowerEdgesAfter": 0,
+    "rimBefore": {
+      "distinctAngles": 78,
+      "maximumAngularGapDegrees": 17.36933015094993
+    },
+    "rimAfter": {
+      "distinctAngles": 114,
+      "maximumAngularGapDegrees": 5.329596114527402
+    },
+    "preset": "royalist",
+    "lod": 0
+  },
+  {
+    "actualNavyTriangleCountBefore": 11191,
+    "actualNavyTriangleCountAfter": 11191,
+    "actualNavyPositionsAndNativeWeightsExact": true,
+    "baselineSeamEdges": 69,
+    "candidateSeamEdges": 69,
+    "allAcceptedExportedSewnEdgesExact": true,
+    "openCollarLowerEdgesBefore": 0,
+    "openCollarLowerEdgesAfter": 0,
+    "rimBefore": {
+      "distinctAngles": 78,
+      "maximumAngularGapDegrees": 17.36933015094993
+    },
+    "rimAfter": {
+      "distinctAngles": 115,
+      "maximumAngularGapDegrees": 5.221364387027188
+    },
+    "preset": "royalist",
+    "lod": 1
+  }
+]

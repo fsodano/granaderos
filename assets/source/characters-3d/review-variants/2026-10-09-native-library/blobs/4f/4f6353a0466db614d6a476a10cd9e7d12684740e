@@ -1,0 +1,18 @@
+{
+  "male": {
+    "maximum": 0.000001302957168661809,
+    "worst": {
+      "clip": "crouch.strafeLeft.knife",
+      "bone": "ball_r",
+      "error": 0.000001302957168661809
+    }
+  },
+  "female": {
+    "maximum": 7.182731805281466e-7,
+    "worst": {
+      "clip": "stand.gesture.heal",
+      "bone": "middle_03_l",
+      "error": 7.182731805281466e-7
+    }
+  }
+}

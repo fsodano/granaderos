@@ -1,0 +1,339 @@
+{
+  "version": 1,
+  "gitRevision": "255838ae5b2b37e19bbc5a5ea678b91fdced316d",
+  "manifestSha256": "8289da29ffbe904ce1db437ed6b9af6fa22d591616b4c330dfe330d167422b38",
+  "manifestPath": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 560,
+    "samples": 8,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "af37742112f11d6f0d3d4ea5369c2e71584af26179bb3e2981848566cb514a83"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "6efc8d85cf20be54beb25f9ff47345b849eb92b81a5524ee1bddeb5cb0219237"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": {
+    "palette": "light",
+    "hexSRGB": "#d5a07d"
+  },
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "presets": [
+    "granadero"
+  ],
+  "coverage": [
+    {
+      "clip": "stand.bayonet.long-gun",
+      "item": "1800"
+    },
+    {
+      "clip": "stand.fire.long-gun",
+      "item": "1800"
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "artifacts/character-anatomy-review/integration-candidate/models/granadero-lod0.glb",
+        "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "bytes": 1964996,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+          "textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+          "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        "texturePaths": {
+          "textures/409b7f25641a2c1cf7e2.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/409b7f25641a2c1cf7e2.png",
+          "textures/76c6ed4f73557a4a0a53.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/76c6ed4f73557a4a0a53.png",
+          "textures/040aa7bd60f397241c0c.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/040aa7bd60f397241c0c.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/2e15a426be9ee20c39a7.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/2e15a426be9ee20c39a7.png"
+        }
+      },
+      "bank": {
+        "path": "artifacts/character-anatomy-review/integration-candidate/models/male-animations.glb",
+        "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
+        "bytes": 11521284,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+          "textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+          "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        "texturePaths": {
+          "textures/cfef86f82ac5d996af20.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/cfef86f82ac5d996af20.png",
+          "textures/a536d20596728975d3d5.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/a536d20596728975d3d5.png",
+          "textures/55aaf791e83ec37fa219.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/55aaf791e83ec37fa219.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/2e15a426be9ee20c39a7.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/2e15a426be9ee20c39a7.png"
+        }
+      },
+      "equipment": {
+        "path": "artifacts/character-anatomy-review/integration-candidate/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "runtimeSkin": {
+        "hexSRGB": "#d5a07d",
+        "colorLinear": [
+          0.665387298282272,
+          0.35153259950043936,
+          0.20507873639031693,
+          1
+        ],
+        "materials": [
+          "Skin.001"
+        ]
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "stand.bayonet.long-gun",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.42,
+      "durationSeconds": 1,
+      "file": "granadero/stand.bayonet.long-gun.contact.png",
+      "sha256": "ac2240a13fd12d71b1fdfef64e86637d0fdc3532e90a644c71a04aba0d31e935",
+      "item": "1800",
+      "activeProps": [
+        "fitting:india_socket"
+      ],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "BayonetThrust",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1740756,
+          0.8764443
+        ],
+        "head": [
+          -0.0233145,
+          -0.2917157,
+          1.5357555
+        ],
+        "upperarm_l": [
+          0.1731292,
+          -0.2891203,
+          1.3353921
+        ],
+        "upperarm_r": [
+          -0.1939962,
+          -0.1955267,
+          1.3407353
+        ],
+        "hand_l": [
+          -0.0550563,
+          -0.675833,
+          1.3079944
+        ],
+        "hand_r": [
+          -0.1359064,
+          -0.4223216,
+          1.300602
+        ],
+        "foot_l": [
+          0.1213343,
+          0.1426438,
+          0.0722137
+        ],
+        "foot_r": [
+          -0.1240163,
+          -0.2154167,
+          0.1098757
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "contact",
+      "view": "iso",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.contact.png",
+      "sha256": "60d0cb8053266b0f0005d17ffa09ba64df8178fe7b42c531efb0c1da1566f42e",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.0034666,
+          0.8995066
+        ],
+        "head": [
+          -0.0168374,
+          -0.040947,
+          1.5650456
+        ],
+        "upperarm_l": [
+          0.1833638,
+          -0.0440809,
+          1.370083
+        ],
+        "upperarm_r": [
+          -0.1884816,
+          0.0286651,
+          1.3671794
+        ],
+        "hand_l": [
+          0.0031753,
+          -0.4502096,
+          1.4203963
+        ],
+        "hand_r": [
+          -0.1401513,
+          -0.2260426,
+          1.4086506
+        ],
+        "foot_l": [
+          0.1057533,
+          0.1456349,
+          0.0722631
+        ],
+        "foot_r": [
+          -0.1240231,
+          -0.0454219,
+          0.1098853
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    }
+  ],
+  "complete": true
+}

@@ -1,0 +1,17 @@
+from pathlib import Path
+import json,struct,hashlib
+root=Path('/tmp/granadero-hand-web-pilot');before=root/'paired-models';after=root/'retention/models';rows=[];all_references=set()
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+def read(p):
+ b=p.read_bytes();return json.loads(b[20:20+struct.unpack_from('<I',b,12)[0]])
+for preset in ('woman-scout','woman-shawl'):
+ for lod in (1,2):
+  name=f'{preset}-lod{lod}.glb';a=read(before/name);b=read(after/name)
+  for key in ('materials','textures','images','samplers','extensionsUsed','extensionsRequired'):
+   assert a.get(key)==b.get(key),(name,key)
+  refs={i['uri']for i in b['images']if'uri'in i};textures={}
+  for uri in refs:
+   assert (before/uri).read_bytes()==(after/uri).read_bytes(),(name,uri);textures[uri]=sha(after/uri)
+  all_references.update(refs);rows.append({'file':name,'materialsExact':True,'textureBindingsImagesSamplersExact':True,'externalTextureSha256':textures})
+old={p.name for p in (before/'textures').iterdir()};new={p.name for p in (after/'textures').iterdir()};additions=sorted(new-old);assert not additions,additions
+report={'bodies':rows,'newExternalTextures':additions,'newTextureBytes':0};(root/'retention/material-preservation.json').write_text(json.dumps(report,indent=2)+'\n');print('Material definitions and all external texture bytes are exact; no additions.')

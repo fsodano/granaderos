@@ -1,0 +1,129 @@
+{
+  "note": "Supplemental record added after capture; original capture tool identity is preserved below. Lighting constants were transcribed without changes from the preserved capture script.",
+  "recordedAtUTC": "2026-10-07T13:43:22.012981+00:00",
+  "captureIndexSha256": "83abe6458b6ec379b4dfeeac6ccb6b36bed70f21043dce2bed3b3b3db34bb0c7",
+  "captureTool": {
+    "path": "render-review.capture.py",
+    "sha256": "c5337e708fc49ea089c7615362da3fc154b5f8b1e5bb890768e6694366c1a083"
+  },
+  "currentToolSha256": "ea737a6a95e2600e5c4618c99508119b23486549bdaf040b24bab95bf7ed74a2",
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "renderSettings": {
+    "size": 560,
+    "samples": 8,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "sourceAssetsAndTextures": {
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/granadero-lod0.glb": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/male-animations.glb": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/equipment.glb": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/horse-lod0.glb": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/royalist-lod0.glb": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/cde52c5fc44edc14b3d6.png": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/worker-lod0.glb": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/c4ad653360cce21ee393.png": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/79b3320dd2f22a4941bf.png": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/surgeon-lod0.glb": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/72fcd3fee9a0c97e77fe.png": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/e35c2780ff9208044a69.png": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/f77574e15506128045f5.png": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/gaucho-lod0.glb": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/02fc23efbfd8542db951.png": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/190fcfc8745e6197a795.png": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/friar-lod0.glb": "be43f8c985a94cfe2bd31729fe5a895f81468468c598ee77bb5412e66a3e6171",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/ede54015ca90cc29311f.png": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/55e296edc51c20d99a47.png": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/woman-scout-lod0.glb": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/female-animations.glb": "1bc7c12f0c57c40d2e2054b5ef83f0c1152318edbb697e7f52438f34d5934d02",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/woman-shawl-lod0.glb": "110570d33449fcb2b887a9f06a89f4857cc2f476ecf7963c7c4f5ffe181dc563",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/textures/8a4e28b91cfa07b8dbd2.png": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6"
+  },
+  "coverage": {
+    "presets": 8,
+    "clipsPerPreset": 27,
+    "motionFramesPerPreset": 84,
+    "motionFrames": 672,
+    "separateDetailFrames": 24,
+    "separatePilotFrames": 24,
+    "availableBankClipsPerGender": 334,
+    "fullBankVisualValidation": false
+  },
+  "verification": "All 672 frame hashes, captured source asset and external texture hashes, and 8 native bind frames were checked after capture. Every native bind maximum error was0.",
+  "visualReview": "All eight16-pose overview sheets, eight idle head/hand details, and the initial four-pose two-body pilot were inspected. Static samples do not prove fluid timing or complete anatomical accuracy."
+}

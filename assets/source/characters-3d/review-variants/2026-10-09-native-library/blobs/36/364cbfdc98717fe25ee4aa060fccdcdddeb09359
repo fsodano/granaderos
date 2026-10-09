@@ -1,0 +1,42 @@
+import {readFileSync,writeFileSync,copyFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,Quaternion,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+const root='/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public',out='/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate';
+const manifest=JSON.parse(readFileSync(out+'/models/manifest.json','utf8'));
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+const format={5121:['readUInt8',1,255],5123:['readUInt16LE',2,65535],5125:['readUInt32LE',4,4294967295],5126:['readFloatLE',4]},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
+function glb(url){const bytes=readFileSync(out+'/models/'+url.split('/').at(-1)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size),cache=new Map();const access=index=>{if(cache.has(index))return cache.get(index);const a=json.accessors[index],view=json.bufferViews[a.bufferView],[read,size,max]=format[a.componentType],width=widths[a.type];const values=Array.from({length:a.count*width},(_,i)=>{const value=binary[read]((view.byteOffset??0)+(a.byteOffset??0)+Math.floor(i/width)*(view.byteStride??size*width)+i%width*size);return a.normalized?value/max:value;});cache.set(index,values);return values;};return {json,access,sha256:hash(bytes)};}
+function rig(json){const nodes=json.nodes.map(def=>{const node=new Object3D();node.name=def.name;if(def.matrix)node.matrix.fromArray(def.matrix).decompose(node.position,node.quaternion,node.scale);else{if(def.translation)node.position.fromArray(def.translation);if(def.rotation)node.quaternion.fromArray(def.rotation);if(def.scale)node.scale.fromArray(def.scale);}return node;});json.nodes.forEach((def,i)=>(def.children??[]).forEach(child=>nodes[i].add(nodes[child])));const scene=new Group();for(const i of json.scenes[json.scene??0].nodes)scene.add(nodes[i]);scene.updateMatrixWorld(true);return scene;}
+function clip(data,def){return new AnimationClip(def.name,-1,def.channels.map(channel=>{const sampler=def.samplers[channel.sampler],property={translation:'position',rotation:'quaternion',scale:'scale'}[channel.target.path],Track=property==='quaternion'?QuaternionKeyframeTrack:VectorKeyframeTrack;return new Track(`${data.json.nodes[channel.target.node].name}.${property}`,data.access(sampler.input),data.access(sampler.output),sampler.interpolation==='STEP'?InterpolateDiscrete:InterpolateLinear);}));}
+const monitored=['pelvis','spine_01','spine_02','spine_03','neck_01','head','clavicle_l','clavicle_r','upperarm_l','upperarm_r','lowerarm_l','lowerarm_r','hand_l','hand_r','thigh_l','thigh_r','calf_l','calf_r','foot_l','foot_r','toe_l','toe_r'];
+const positional=['head','neck_01','pelvis','hand_l','hand_r','lowerarm_l','lowerarm_r','calf_l','calf_r','foot_l','foot_r','toe_l','toe_r'];
+const report={sampleHz:120,manifestSha256:hash(readFileSync(out+'/models/manifest.json')),banks:{},clips:[]};
+for(const [gender,preset] of [['male','granadero'],['female','woman-scout']]){
+ const body=glb(manifest.appearances[preset].lods[0].url),bank=glb(manifest.animationLibraries[gender].url),specs=new Map(manifest.animationLibraries[gender].clips.map(c=>[c.name,c]));
+ report.banks[gender]={body:body.sha256,bank:bank.sha256,clips:bank.json.animations.length};
+ for(const [number,definition] of bank.json.animations.filter(clip=>clip.name==='stand.punch.unarmed').entries()){
+  const spec=specs.get(definition.name),scene=rig(body.json),bones=Object.fromEntries(body.json.skins[0].joints.map(i=>{const name=body.json.nodes[i].name;return [name,scene.getObjectByName(name)]})),restLengths=Object.fromEntries(Object.entries(bones).map(([name,b])=>[name,b.position.length()]));
+  const names=monitored.filter(name=>bones[name]),positionNames=positional.filter(name=>bones[name]),firstQ={},firstP={},previousQ={},previousP={};
+  const headRest=bones.spine_03.getWorldQuaternion(new Quaternion()).invert().multiply(bones.head.getWorldQuaternion(new Quaternion()));
+  const animation=clip(bank,definition),mixer=new AnimationMixer(scene),action=mixer.clipAction(animation).setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();
+  const count=Math.ceil(animation.duration*120),dt=animation.duration/count;
+  const stats={gender,name:spec.name,duration:animation.duration,posture:spec.posture,gesture:spec.gesture,equipment:spec.equipment,loop:spec.loop,markers:spec.markers,lengthError:{value:0},scaleError:{value:0},angularStep:{value:0},positionStep:{value:0},headRelative:{value:0},minimumHeights:{},perBoneAngular:{},loopSeam:{angle:0,distance:0}};
+  for(let frame=0;frame<=count;frame++){
+   const time=frame*dt;mixer.setTime(time);scene.updateMatrixWorld(true);
+   for(const [name,bone] of Object.entries(bones)){
+    if(name!=='Root'){const error=Math.abs(bone.position.length()-restLengths[name]);if(error>stats.lengthError.value)stats.lengthError={value:error,time,bone:name};}
+    const scale=Math.max(Math.abs(bone.scale.x-1),Math.abs(bone.scale.y-1),Math.abs(bone.scale.z-1));if(scale>stats.scaleError.value)stats.scaleError={value:scale,time,bone:name};
+   }
+   for(const name of names){const q=bones[name].quaternion.clone();if(frame===0)firstQ[name]=q.clone();else {const angle=q.angleTo(previousQ[name])*180/Math.PI;const value=angle/dt;if(value>stats.angularStep.value)stats.angularStep={value,degrees:angle,time,previousTime:time-dt,bone:name};if(!stats.perBoneAngular[name]||value>stats.perBoneAngular[name].value)stats.perBoneAngular[name]={value,degrees:angle,time,previousTime:time-dt};}previousQ[name]=q;}
+   for(const name of positionNames){const p=bones[name].getWorldPosition(new Vector3());if(frame===0)firstP[name]=p.clone();else {const step=p.distanceTo(previousP[name]),value=step/dt;if(value>stats.positionStep.value)stats.positionStep={value,metres:step,time,previousTime:time-dt,bone:name};}previousP[name]=p;if(!stats.minimumHeights[name]||p.y<stats.minimumHeights[name].value)stats.minimumHeights[name]={value:p.y,time,position:p.toArray()};}
+   const relative=bones.spine_03.getWorldQuaternion(new Quaternion()).invert().multiply(bones.head.getWorldQuaternion(new Quaternion()));const angle=relative.angleTo(headRest)*180/Math.PI;if(angle>stats.headRelative.value)stats.headRelative={value:angle,time};
+  }
+  if(spec.loop){for(const name of names){const angle=previousQ[name].angleTo(firstQ[name])*180/Math.PI;if(angle>stats.loopSeam.angle)stats.loopSeam={...stats.loopSeam,angle,angleBone:name};}for(const name of positionNames){const distance=previousP[name].distanceTo(firstP[name]);if(distance>stats.loopSeam.distance)stats.loopSeam={...stats.loopSeam,distance,distanceBone:name};}}
+  report.clips.push(stats);mixer.stopAllAction();mixer.uncacheRoot(scene);
+  if((number+1)%100===0)console.log(gender,number+1);
+ }
+}
+writeFileSync(out+'/scan.json',JSON.stringify(report,null,2));
+const top=(key,filter=()=>true)=>report.clips.filter(filter).sort((a,b)=>key(b)-key(a)).slice(0,16);
+const ordinary=c=>!c.name.startsWith('life.')&&c.posture!=='mounted';
+console.log(JSON.stringify({banks:report.banks,length:top(c=>c.lengthError.value).map(c=>[c.gender,c.name,c.lengthError]),angular:top(c=>c.angularStep.value,ordinary).map(c=>[c.gender,c.name,c.angularStep]),position:top(c=>c.positionStep.value,ordinary).map(c=>[c.gender,c.name,c.positionStep]),head:top(c=>c.headRelative.value,ordinary).map(c=>[c.gender,c.name,c.headRelative]),loop:top(c=>c.loopSeam.distance).map(c=>[c.gender,c.name,c.loopSeam]),ground:top(c=>-Math.min(...Object.values(c.minimumHeights).map(p=>p.value)),c=>ordinary(c)&&['standing','crouched'].includes(c.posture)).map(c=>[c.gender,c.name,Object.entries(c.minimumHeights).sort((a,b)=>a[1].value-b[1].value).slice(0,2)])},null,2));

@@ -1,0 +1,485 @@
+{
+  "status": "rejected-visual-gain-insufficient",
+  "baseline": {
+    "manifestSha256": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+    "characterSourceSha256": "bd923581a224393ed15b8e8573b632bd1677b5136a367e35a98e61efc912c09d"
+  },
+  "candidateBodySha256": "4aae7ff8d12e1e0d213e2354c4663a0ce847d2645b6a788f152c8f50f18f22fc",
+  "candidateManifestSha256": "aaec907124ebd52cb808d3406b391007380520b37efab64328a234da1e0246dc",
+  "scope": "One Granadero LOD0 private cloth-ease trial; no source or asset publication",
+  "visualFindings": [
+    "Elbow outline is slightly fuller in the close view. It remains rounded and smooth.",
+    "Waist drape is barely visible in the matched isometric image.",
+    "The existing navy material still reads as smooth plastic. The change adds no clear fabric character.",
+    "No collar/shoulder opening was introduced by this bounded trial in the sampled views."
+  ],
+  "decision": "Do not integrate. Retain the accepted coat. A future material pass should address the missing woven/fibrous response; this task adds no material or texture edits.",
+  "sourceProof": {
+    "preserved": {
+      "topology": "eacef6f6cfde537385214c5c84dd52d17eb0a8a0e3c4fe67916439508dc359c6",
+      "uv": "c0fa8bbb8093f0e0294733d4bbd2282a8bc8f5a2247760a0fb433fff19625add",
+      "weights": "0c7ce0c3442d1796fc57c863e1a9474eb72c806cde8f41f009ac751558cced0e"
+    },
+    "vertices": 9890,
+    "changed": 3021,
+    "fixed": 6869,
+    "maxDisplacementMm": 4.699999443681301,
+    "meanChangedDisplacementMm": 2.487063403673147,
+    "description": "Bounded elbow sleeve ease and waist cloth loft; accepted seam support fixed"
+  },
+  "nativePreservation": {
+    "bodySha256": "4aae7ff8d12e1e0d213e2354c4663a0ce847d2645b6a788f152c8f50f18f22fc",
+    "nativeNodeTransformsAndInverseBindExact": true,
+    "changes": [
+      {
+        "mesh": "Fitted_Boot_l",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Shaped_Shako",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Tailored_Breeches",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Tailored_Coat",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [
+          "POSITION",
+          "NORMAL",
+          "TEXCOORD_0",
+          "COLOR_0",
+          "JOINTS_0",
+          "WEIGHTS_0"
+        ],
+        "nativePartPreserved": false
+      },
+      {
+        "mesh": "Exposed_Human_Skin",
+        "material": "Skin",
+        "changedAttributes": [],
+        "nativePartPreserved": true
+      },
+      {
+        "mesh": "Exposed_Human_Skin",
+        "material": "Apparel_Atlas",
+        "changedAttributes": [],
+        "nativePartPreserved": false
+      }
+    ],
+    "otherGLBsUnchanged": {
+      "female-animations.glb": true,
+      "woman-scout-lod1.glb": true,
+      "friar-lod2.glb": true,
+      "gaucho-lod1.glb": true,
+      "worker-lod1.glb": true,
+      "male-animations.glb": true,
+      "worker-lod0.glb": true,
+      "gaucho-lod0.glb": true,
+      "woman-scout-lod0.glb": true,
+      "woman-scout-lod2.glb": true,
+      "friar-lod1.glb": true,
+      "gaucho-lod2.glb": true,
+      "worker-lod2.glb": true,
+      "friar-lod0.glb": true,
+      "horse-lod0.glb": true,
+      "horse-lod1.glb": true,
+      "horse-lod2.glb": true,
+      "royalist-lod0.glb": true,
+      "royalist-lod1.glb": true,
+      "royalist-lod2.glb": true,
+      "female-garments.glb": true,
+      "woman-shawl-lod2.glb": true,
+      "surgeon-lod2.glb": true,
+      "surgeon-lod0.glb": true,
+      "woman-shawl-lod0.glb": true,
+      "woman-shawl-lod1.glb": true,
+      "surgeon-lod1.glb": true,
+      "male-garments.glb": true,
+      "granadero-lod2.glb": true,
+      "equipment.glb": true,
+      "granadero-lod1.glb": true
+    },
+    "beforeTriangles": 87197,
+    "afterTriangles": 87144,
+    "beforeBytes": 5452964,
+    "afterBytes": 5452624
+  },
+  "materialsExact": true,
+  "textures": {
+    "textures/4f51c65706c915611c4a.png": {
+      "before": "4f51c65706c915611c4a6ece7b932184475164e4f08791c5554895c41ee98704",
+      "after": "4f51c65706c915611c4a6ece7b932184475164e4f08791c5554895c41ee98704",
+      "unchanged": true
+    },
+    "textures/bbd181263ad3acfb2683.png": {
+      "before": "bbd181263ad3acfb2683af8a8e2e770ebd9ca8db54623724a2a9a50795e4b746",
+      "after": "bbd181263ad3acfb2683af8a8e2e770ebd9ca8db54623724a2a9a50795e4b746",
+      "unchanged": true
+    },
+    "textures/09fa758893afdf340aac.png": {
+      "before": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+      "after": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+      "unchanged": true
+    },
+    "textures/ca4f162e85fafee194c7.png": {
+      "before": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "after": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "unchanged": true
+    },
+    "textures/cfe00d87638eab122eb8.png": {
+      "before": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "after": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "unchanged": true
+    },
+    "textures/bde948d56c47e9a9c68c.png": {
+      "before": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+      "after": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+      "unchanged": true
+    },
+    "textures/040b6c27fc46ce2da454.png": {
+      "before": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+      "after": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+      "unchanged": true
+    }
+  },
+  "triangles": {
+    "before": 87197,
+    "after": 87144
+  },
+  "drawCalls": {
+    "before": 6,
+    "after": 6
+  },
+  "gates": {
+    "coatSeamAreaAndBoundaryBuildInvariant": "passed unchanged",
+    "crossbeltContactAndCoatFloor": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "log": "contact-gates.log"
+    }
+  },
+  "sampledSleeveDiagnostic": {
+    "stand.idle.unarmed": {
+      "before": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        }
+      },
+      "after": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        }
+      }
+    },
+    "stand.aim.short-gun": {
+      "before": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 19,
+          "worst": [
+            [
+              -0.007996932719834149,
+              3131,
+              [
+                0.2936097979545593,
+                0.06620071828365326,
+                1.1677340269088745
+              ]
+            ],
+            [
+              -0.007476834813132882,
+              3466,
+              [
+                0.29551535844802856,
+                0.06618993729352951,
+                1.1653494834899902
+              ]
+            ],
+            [
+              -0.006489133287686855,
+              1853,
+              [
+                0.3085230886936188,
+                0.012214303016662598,
+                1.2004668712615967
+              ]
+            ]
+          ]
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 7,
+          "worst": [
+            [
+              -0.004539501958788605,
+              1979,
+              [
+                -0.06710442900657654,
+                -0.20019687712192535,
+                1.4736424684524536
+              ]
+            ],
+            [
+              -0.0034448163096385542,
+              3996,
+              [
+                -0.061641544103622437,
+                -0.19859039783477783,
+                1.4759531021118164
+              ]
+            ],
+            [
+              -0.003189966177160386,
+              1975,
+              [
+                -0.06926998496055603,
+                -0.19654405117034912,
+                1.469508171081543
+              ]
+            ]
+          ]
+        }
+      },
+      "after": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 22,
+          "worst": [
+            [
+              -0.01063340320251882,
+              2781,
+              [
+                0.2903153896331787,
+                0.05960612744092941,
+                1.1673468351364136
+              ]
+            ],
+            [
+              -0.008119228528812528,
+              881,
+              [
+                0.2901473939418793,
+                0.06314894556999207,
+                1.1674470901489258
+              ]
+            ],
+            [
+              -0.0066017964272759855,
+              1015,
+              [
+                0.30101409554481506,
+                0.013129808008670807,
+                1.1980915069580078
+              ]
+            ]
+          ]
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 3,
+          "worst": [
+            [
+              -0.0021269755307002924,
+              1953,
+              [
+                -0.06857872009277344,
+                -0.2015954852104187,
+                1.4764153957366943
+              ]
+            ],
+            [
+              -0.001451177435228601,
+              1949,
+              [
+                -0.06304949522018433,
+                -0.1997753083705902,
+                1.4785441160202026
+              ]
+            ],
+            [
+              -0.0012794364556611981,
+              302,
+              [
+                -0.0752795934677124,
+                -0.20047715306282043,
+                1.4676406383514404
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    "stand.reload.long-gun.1800": {
+      "before": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 56,
+          "worst": [
+            [
+              -0.014383951655872806,
+              1319,
+              [
+                -0.3485003411769867,
+                -0.14058440923690796,
+                1.2936663627624512
+              ]
+            ],
+            [
+              -0.01295382095736386,
+              2019,
+              [
+                -0.35462361574172974,
+                -0.14598701894283295,
+                1.293114423751831
+              ]
+            ],
+            [
+              -0.012636493716854602,
+              4036,
+              [
+                -0.3508515954017639,
+                -0.13625922799110413,
+                1.2918012142181396
+              ]
+            ]
+          ]
+        }
+      },
+      "after": {
+        "l": {
+          "pointsBelowNativeBodyByMoreThan1mm": 0,
+          "worst": []
+        },
+        "r": {
+          "pointsBelowNativeBodyByMoreThan1mm": 60,
+          "worst": [
+            [
+              -0.016911528208765958,
+              1596,
+              [
+                -0.3455753028392792,
+                -0.14608699083328247,
+                1.2969837188720703
+              ]
+            ],
+            [
+              -0.015281713684089482,
+              442,
+              [
+                -0.34177565574645996,
+                -0.13771776854991913,
+                1.2952696084976196
+              ]
+            ],
+            [
+              -0.015132210829051473,
+              291,
+              [
+                -0.34956836700439453,
+                -0.14788818359375,
+                1.295514464378357
+              ]
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "render": {
+    "method": "Actual exported GLB + existing native bank and equipment, Blender CPU Cycles",
+    "resolution": [
+      700,
+      700
+    ],
+    "samples": 16,
+    "views": [
+      "isometric fullbody",
+      "coat crop",
+      "left sleeve crop"
+    ],
+    "poses": [
+      [
+        "stand.idle.unarmed",
+        0.5
+      ],
+      [
+        "stand.aim.short-gun",
+        0
+      ],
+      [
+        "stand.reload.long-gun.1800",
+        1.92
+      ]
+    ],
+    "images": 18,
+    "palettes": "Exported default factor; generated PNG unchanged",
+    "perFrameProvenance": "before/ and after/ clip-specific index.json"
+  },
+  "limitations": [
+    "Only the two directly affected existing contact tests were run.",
+    "The full library was not rebuilt or published.",
+    "The cloth optimiser retessellates the moved coat, so exported coat attributes are not byte-identical. Authoring topology/UVs/weights and native Skin/rig remain exact.",
+    "The sampled sleeve diagnostic is not a complete self-collision proof.",
+    "The limited inside-elbow skin probe worsens the pistol left elbow from 8.00 to 10.63 mm below the full native body surface; existing baseline warnings are also present. This is further reason to reject, not proof that the full garment is collision-free."
+  ],
+  "files": {
+    "rejected-diagnostic-source.patch": "81c66a304a85225fa7ad3d7d3cba52da1113912ce16cb4f9b4bbf2b71d1897af",
+    "render-review.py": "deda0f063bb94b8985619c6642859a3691b67f964c57007e2b3d1ec03da33f8d",
+    "run-review.py": "5c6c9906474c45234acb2b91f246f428ad9a5168234bc8f1a2ca6d6681e1d837",
+    "contact-gates.log": "73c86afb57ffa5c562805afcaae4d111e75ea38137cfa1e05933590ac03136e5",
+    "compare-iso.png": "675bf02706ca0a6d621a66cc27df17d23fadf2fa15faeb24f0781785ca0767cf",
+    "compare-coat.png": "a99921a702d8402dcb3c6a6b31a83634f847e0a1b5646af288f33568049a2109",
+    "compare-sleeve.png": "07477dcefa005e06117a6cbdeefca654a72a355270d69bfdf8323a53fe0c3054"
+  },
+  "sampledInsideElbowDepthMm": {
+    "stand.idle.unarmed": {
+      "before": {
+        "l": 0,
+        "r": 0
+      },
+      "after": {
+        "l": 0,
+        "r": 0
+      }
+    },
+    "stand.aim.short-gun": {
+      "before": {
+        "l": 7.997,
+        "r": 4.54
+      },
+      "after": {
+        "l": 10.633,
+        "r": 2.127
+      }
+    },
+    "stand.reload.long-gun.1800": {
+      "before": {
+        "l": 0,
+        "r": 14.384
+      },
+      "after": {
+        "l": 0,
+        "r": 16.912
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+from pathlib import Path
+import struct,json,hashlib,collections,importlib.util,sys
+ROOT=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');BASE=Path('/tmp/granadero-hand-web-pilot/retention');OLD=Path('/tmp/granadero-hand-web-pilot/paired-models');NEW=BASE/'models';sys.path.insert(0,str(ROOT/'tools/characters-3d'))
+spec=importlib.util.spec_from_file_location('appearance_increment',ROOT/'tools/characters-3d/build-appearance-increment.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+TYPES={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16};FORMATS={5121:'B',5123:'H',5125:'I',5126:'f'}
+def facts(path):
+ raw=path.read_bytes();size=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+size]);blob=raw[28+size:]
+ def access(i):
+  a=doc['accessors'][i];v=doc['bufferViews'][a['bufferView']];fmt='<'+FORMATS[a['componentType']]*TYPES[a['type']];step=v.get('byteStride',struct.calcsize(fmt));off=v.get('byteOffset',0)+a.get('byteOffset',0)
+  return [struct.unpack_from(fmt,blob,off+n*step)for n in range(a['count'])]
+ fixed=collections.Counter();head=0;total=0
+ for mesh_index,mesh in enumerate(doc['meshes']):
+  node=next(n for n in doc['nodes'] if n.get('mesh')==mesh_index);part=node.get('name',mesh['name']);joint_names=[doc['nodes'][j]['name'] for j in doc['skins'][node.get('skin',0)]['joints']]
+  for p in mesh['primitives']:
+   attrs={k:access(v)for k,v in p['attributes'].items()};idx=[i[0]for i in access(p['indices'])];total+=len(idx)//3;mat=doc['materials'][p['material']]['name']
+   if 'JOINTS_0'in attrs:
+    # Equal influences can change slot order during export. Compare the exact
+    # named bone-to-weight mapping, not numeric slots or tie-break order.
+    attrs['DEFORM']=[tuple(sorted((joint_names[j],w)for j,w in zip(joints,weights)if w!=0))for joints,weights in zip(attrs.pop('JOINTS_0'),attrs.pop('WEIGHTS_0'))]
+   for k in range(0,len(idx),3):
+    ids=idx[k:k+3]
+    if not(mat=='Skin' and all(sum(w for name,w in attrs['DEFORM'][i] if name.endswith('_l'))>.99 for i in ids)):continue
+    head+=1
+    corners=[tuple((name,attrs[name][i])for name in sorted(attrs))for i in ids];corners=min(tuple(corners[j:]+corners[:j])for j in range(3));fixed[(part.split('_LOD')[0],mat,corners)]+=1
+ return fixed,dict(sha256=hashlib.sha256(raw).hexdigest(),triangles=total,leftHandTriangles=head,bytes=len(raw),drawCalls=sum(len(m['primitives'])for m in doc['meshes']))
+
+report=[]
+for preset in ('woman-scout','woman-shawl'):
+ base=OLD/(preset+'-lod0.glb');original,_=facts(base)
+ for lod in (1,2):
+  candidate=NEW/(preset+'-lod'+str(lod)+'.glb');surface,_=facts(candidate)
+  assert original==surface,(preset,lod,'retained hand differs from existing LOD0')
+  report.append({'preset':preset,'lod':lod,'existingLod0LeftHandAttributesExact':True,'triangles':sum(surface.values())})
+(BASE/'retained-hand-proof.json').write_text(json.dumps(report,indent=2)+'\n');print(report)

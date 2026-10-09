@@ -1,0 +1,10 @@
+{
+  "manifestSha256": "6c2747997a9a24c8c315b155f08e50aef0e538fdd4487da66c941831261e3bbe",
+  "source": "/tmp/granadero-rifle-carry-unload/publication30/models",
+  "canonical": true,
+  "public": true,
+  "liveAssets": true,
+  "browserReloadVerified": false,
+  "appearanceChanged": false,
+  "remaining": "Shared ready-aim right-hand/head overlap is a separate pending correction."
+}

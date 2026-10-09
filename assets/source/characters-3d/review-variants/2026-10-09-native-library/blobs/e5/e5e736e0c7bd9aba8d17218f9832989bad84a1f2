@@ -1,0 +1,327 @@
+{
+  "scope": "Both thumb chains only, standing unarmed idle/walk/run. No geometry, other fingers, weapon grips, clocks, or body motion changes.",
+  "banks": {
+    "male": {
+      "baselineSha256": "9caf54205c1e4c38e976ba1f46c23b985f6e04d460146c4c220cade4b646b8a0",
+      "candidateSha256": "50e17bdd8545c7b31ad4b338a300f0c65936d64c6e7f8e41cfc83e0f9fd3e68b",
+      "deltaSha256": "8700abc6a246f318fcd45f8e509de08bc3368d6ac332e277a54c013a1b542456",
+      "deltaBytes": 36508,
+      "changedChannels": 18,
+      "preservedChannels": 53088,
+      "allowlist": [
+        [
+          "stand.idle.unarmed",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_03_r",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_03_r",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_03_r",
+          "rotation"
+        ]
+      ],
+      "allNonselectedInputOutputPayloadsExact": true,
+      "selectedInputTimesExact": true,
+      "allClipMetadataExact": true,
+      "nativeNodeTransformsExact": true,
+      "originalBinaryPrefixExact": true
+    },
+    "female": {
+      "baselineSha256": "5e4d62112e8e6693abb3989cc47c48634d7a9ac50777d5246463e3cebe34d174",
+      "candidateSha256": "acd207a21f486dfe5032a3d7e73fa5fdefbea7237209529d696b1bb4ce10c99d",
+      "deltaSha256": "c5ba74451e4107c9db2b7aff20150bc6b03880a61b077e0269c1c0d62af49c0f",
+      "deltaBytes": 36704,
+      "changedChannels": 18,
+      "preservedChannels": 53088,
+      "allowlist": [
+        [
+          "stand.idle.unarmed",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.unarmed",
+          "thumb_03_r",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.walk.unarmed",
+          "thumb_03_r",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.run.unarmed",
+          "thumb_03_r",
+          "rotation"
+        ]
+      ],
+      "allNonselectedInputOutputPayloadsExact": true,
+      "selectedInputTimesExact": true,
+      "allClipMetadataExact": true,
+      "nativeNodeTransformsExact": true,
+      "originalBinaryPrefixExact": true
+    }
+  },
+  "bodies": {
+    "woman-scout-lod1.glb": "02f98914ca23cdbab43480edabbdd5cad170cd8b05b0e444016515d2c0d0cf94",
+    "friar-lod2.glb": "d134235b384d82a72a36c3e4a764bf75cbb5a1b2e62412c9bc6d0d52bdfbd686",
+    "gaucho-lod1.glb": "cc884292707dd3d5ad86c32dce8649e58602dcfa1951d679e1950491e8e4b24e",
+    "worker-lod1.glb": "25fcd84ac58ce979f0c947ca071ed9788136eb9e1465605bf048c331f9c9279b",
+    "worker-lod0.glb": "27ec304416220e85c721f327e8d691f6a78e5cdcd433bb95e9e107ea031028a9",
+    "gaucho-lod0.glb": "40f286bbc56e8c90621005dbece1df4c1d1f6fdb1c624ee9bd6ee51a54a2806a",
+    "woman-scout-lod0.glb": "54d20755699a380660cfd20a83d0948bab9802b541b54ad2644f727cd5cd7060",
+    "woman-scout-lod2.glb": "31c666ee9e0a9080c6f4844188c19489b514d53e12da87df2658682a7df34fac",
+    "friar-lod1.glb": "ec48c3c9eaa27ad11c0b0c9889f6258537f8ba272a8fe7bc7787f4419c44a80e",
+    "gaucho-lod2.glb": "53a9c146f6ddf9c57312a0b3e5352c221e747b488eea84764dac3a31663ed276",
+    "worker-lod2.glb": "441a857a008cb64b39ec0046dff75086f8fed847305fb7f6360e44d992b1e37a",
+    "friar-lod0.glb": "b72a20bbd219ee7c80f667f6a55c7701c9d2e400c54b2503af55d0bf0c312a5d",
+    "horse-lod0.glb": "6aaee15ea8437d40473a976844c2173b89bfa939887c7e3f85e19b4ab615171e",
+    "horse-lod1.glb": "fefbd6609e8a2ff461a46c298ef7fe011265565b9b5ce51e000989697d6b7a02",
+    "horse-lod2.glb": "e08b9d4a8787c064160fcc63bdbf7b9810407525fffeedc7a2c7bd0a28c49028",
+    "royalist-lod0.glb": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853",
+    "royalist-lod1.glb": "84cf7f066a202fd495ad5ff915e872f4932e7e4863bd8e3b8af05fae688a22d5",
+    "royalist-lod2.glb": "edaa87211e7a96045928bad8ca5d5f2e2e9e4feca6de7ed06c701977ef66b634",
+    "female-garments.glb": "3f920ae8138572411a8fae63c6a848b839a0facda228a23ded3a251532048deb",
+    "woman-shawl-lod2.glb": "f8c540455bbb2efdc7a1bd8d775295c80c55eb73c0fe03ef5cc40bb801df2767",
+    "surgeon-lod2.glb": "f9801b4087169667fe497734f461658050d9bdc8dac5041c936df588d24c3fbf",
+    "surgeon-lod0.glb": "913905f38df1be298fdf71f25e5d750619ca3cca6ed0a83511a225b602204410",
+    "woman-shawl-lod0.glb": "647fcbc89e4620090a789dfdd49f2c8b5a90fd9f77aad6018d147f5a1569b8a9",
+    "woman-shawl-lod1.glb": "a7e33b5e2779f7ce0f069d32a414fdfe918a57a50cbf06fb02f03e026abe500a",
+    "surgeon-lod1.glb": "aee9c5a71cd1567e05ddc17b78b03ef7bde531835b624b8a9da7fb69ace301ca",
+    "male-garments.glb": "3b4c847fe202acbea1465d6e0fb647a8292f8f93df3671ac1fbb966c5125f3cc",
+    "granadero-lod2.glb": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5",
+    "equipment.glb": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+    "granadero-lod0.glb": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+    "granadero-lod1.glb": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d"
+  },
+  "source": {
+    "motion.py": {
+      "baselineSha256": "3e0b0408d1df6b0834024f86de661eb806b6797d42e8f6b19a396a92be969148",
+      "candidateSha256": "688a2a062eac566be3e809b9540f38155d9e5cf28bc882c51798f72afcda61ec"
+    },
+    "relaxed_hands.py": {
+      "baselineSha256": "1a2b235897bb1b0041a6ec11e1746be355d1c326b2f09695c10a77fc927d4af6",
+      "candidateSha256": "f13135ee503cc63706a733d41e23543e733bdfcec222dfc3f2a1d26cbecfc17c"
+    }
+  },
+  "limitations": [
+    "LOD0 web test covers non-coplanar surface crossings; it is not an exhaustive volumetric collision proof.",
+    "The angular crease/opening inside the curled index finger remains unchanged.",
+    "Weapon and punch thumb poses are unchanged and were not re-certified by these scoped checks.",
+    "Thumbs form a loose, slightly extended resting hand, not a tight fist; left-side views make that extension clear. Final visual acceptance remains with the parent review."
+  ],
+  "sourceEquivalence": [
+    {
+      "preset": "granadero",
+      "gender": "male",
+      "maximumQuaternionComponentDifferenceFromCandidate": 3.427267074584961e-07,
+      "maximumLocalFingerDifferenceWithRotatedHands": 1.3709068298339844e-06
+    },
+    {
+      "preset": "woman-scout",
+      "gender": "female",
+      "maximumQuaternionComponentDifferenceFromCandidate": 3.844499588012695e-06,
+      "maximumLocalFingerDifferenceWithRotatedHands": 4.380941390991211e-06
+    }
+  ],
+  "validation": {
+    "candidateTests": {
+      "pass": 12,
+      "fail": 0,
+      "log": "/tmp/granadero-hand-web-pilot/final-gates.log"
+    },
+    "baselineWebTests": {
+      "pass": 0,
+      "fail": 6,
+      "log": "/tmp/granadero-hand-web-pilot/baseline-web-120hz.log"
+    },
+    "candidateDenseWebEvidence": "/tmp/granadero-hand-web-pilot/final-web-120hz.json",
+    "baselineDenseWebEvidence": "/tmp/granadero-hand-web-pilot/baseline-web-120hz.json",
+    "frequencyHz": 120,
+    "samplesPerAnatomy": 465,
+    "handsPerAnatomy": 2
+  },
+  "renders": {
+    "idle": "/tmp/granadero-hand-web-pilot/final-idle",
+    "walk": "/tmp/granadero-hand-web-pilot/final-walk",
+    "run": "/tmp/granadero-hand-web-pilot/final-run",
+    "matchedBeforeLight": "/tmp/granadero-hand-web-pilot/final-before-light",
+    "matchedAfterLight": "/tmp/granadero-hand-web-pilot/final-after-light",
+    "matchedBeforeWalk": "/tmp/granadero-hand-web-pilot/final-before-walk",
+    "matchedBeforeRun": "/tmp/granadero-hand-web-pilot/final-before-run"
+  },
+  "renderReview": "Current central palette-corrected renderer, identical isometric hand camera, light palette, 768 pixels, 16 samples. Also inspected final idle/walk/run with exported material factors.",
+  "regressionSha256": "a1f3fded244076be11dacefae36bd3e00cb712abb861d31706d6a530efda7c55",
+  "frozenArtifacts": {
+    "source.patch": "153e6de37ae90c719b5198380d0901dce58d652c7a12222d7aa387c0315ee580",
+    "test.patch": "85c2c753a1aa562c685241b03b82f95000f8de83ba7874618e3c18937aec5d47",
+    "changes.patch": "95fc8d711bd103f8f64fe89f52309218dfec9d08dc4bbe3aa04994707514ede5",
+    "allowlist.json": "453a65b5d1e568b1ab4ab8bf0f3982eeb41e5db52887f9963f3c3f7aebf490ea"
+  },
+  "matchedMovementComparisons": {
+    "walk": {
+      "beforeIndex": "/tmp/granadero-hand-web-pilot/final-before-walk/index.json",
+      "afterIndex": "/tmp/granadero-hand-web-pilot/final-walk/index.json",
+      "beforeManifest": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+      "afterManifest": "ca856fcc268a729f250f1a2d4b80d29bae3ae9c4cbad50bb01866b878d825033",
+      "skinMode": "exported material base color; no runtime palette override"
+    },
+    "run": {
+      "beforeIndex": "/tmp/granadero-hand-web-pilot/final-before-run/index.json",
+      "afterIndex": "/tmp/granadero-hand-web-pilot/final-run/index.json",
+      "beforeManifest": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+      "afterManifest": "ca856fcc268a729f250f1a2d4b80d29bae3ae9c4cbad50bb01866b878d825033",
+      "skinMode": "exported material base color; no runtime palette override"
+    }
+  }
+}

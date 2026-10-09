@@ -1,0 +1,102 @@
+[
+  {
+    "appearance": "granadero",
+    "name": "crouch.aim.long-gun",
+    "sampleHz": 30,
+    "samples": 61,
+    "minimumSleeveHeight": {
+      "l": 0.8304337735837443,
+      "r": 0.9855562765725058
+    },
+    "minimumSleeveTime": {
+      "l": 0.13333333333333333,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 0.9707822345376109,
+      "r": 0.9651174913437076
+    },
+    "minimumHandTime": {
+      "l": 1.9333333333333333,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.aim.long-gun",
+    "sampleHz": 30,
+    "samples": 61,
+    "minimumSleeveHeight": {
+      "l": 0.04551828184690698,
+      "r": 0.14608658311965186
+    },
+    "minimumSleeveTime": {
+      "l": 0,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 0.22062787259417344,
+      "r": 0.18628063175262785
+    },
+    "minimumHandTime": {
+      "l": 0,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "crouch.aim.long-gun",
+    "sampleHz": 30,
+    "samples": 61,
+    "minimumSleeveHeight": {
+      "l": 0.900327848489537,
+      "r": 1.0171657913592667
+    },
+    "minimumSleeveTime": {
+      "l": 0,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 1.000501169718803,
+      "r": 0.996765323246865
+    },
+    "minimumHandTime": {
+      "l": 0,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.aim.long-gun",
+    "sampleHz": 30,
+    "samples": 61,
+    "minimumSleeveHeight": {
+      "l": 0.0530848109545904,
+      "r": 0.13125422576222748
+    },
+    "minimumSleeveTime": {
+      "l": 0,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 0.2307031207654598,
+      "r": 0.2037857434740355
+    },
+    "minimumHandTime": {
+      "l": 0,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  }
+]

@@ -1,0 +1,99 @@
+{
+  "head": "b0de3e459f45a2f43a8fed1eeeecb63cab38c804",
+  "manifestSha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+  "sourceFileCount": 1335,
+  "scope": "Committed contact classifier correction and review notes. No model or motion change. Agents work only on private candidates.",
+  "exitCode": 1,
+  "changedInputs": [],
+  "counts": {
+    "tests": 6293,
+    "pass": 6283,
+    "fail": 10,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "previousCounts": {
+    "tests": 6292,
+    "pass": 6281,
+    "fail": 11,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "selectedFiles": 858,
+  "completed": "Completed 858/858 files. Timing report: /Users/fsodano/.codex/worktrees/human-character-library/granaderos/.cache/test-times/quick.json",
+  "newFailures": [],
+  "resolvedFailures": [
+    {
+      "location": "tests/characters-throwing.test.mjs:150:49",
+      "name": "female actual throwing hands and held items clear the head and floor",
+      "error": "AssertionError [ERR_ASSERTION]: prone.gesture.throw 0.717s: a hand or held object entered the head\n  \n  true !== false\n  \n      at file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/characters-throwing.test.mjs:154:10\n      at file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/character-bank-fixture.mjs:38:28\n      at Array.map (<anonymous>)\n      at sampleBank (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/character-bank-fixture.mjs:32:25)\n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/characters-throwing.test.mjs:152:99)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1201:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n      at Test.postRun (node:internal/test_runner/test:1330:19)\n      at Test.run (node:internal/test_runner/test:1258:12) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: true,\n    expected: false,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }"
+    }
+  ],
+  "repeatedFailures": [
+    {
+      "location": "tests/characters-rider-fit.test.mjs:118:49",
+      "name": "granadero mounted falls clear the horse and hand off to the actual prone destination",
+      "error": "AssertionError [ERR_ASSERTION]: knockdown foot_l disagrees with prone.idle.unarmed by 0.00399969965545152 m\n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/characters-rider-fit.test.mjs:132:176)\n      at async Test.run (node:internal/test_runner/test:1208:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/characters-rider-fit.test.mjs:118:49",
+      "name": "woman-scout mounted falls clear the horse and hand off to the actual prone destination",
+      "error": "AssertionError [ERR_ASSERTION]: knockdown foot_l disagrees with prone.idle.unarmed by 0.004000128506264334 m\n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/characters-rider-fit.test.mjs:132:176)\n      at async Test.run (node:internal/test_runner/test:1208:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/three-church-tower-foot.test.mjs:47:1",
+      "name": "tower feet follow normal route exclusion and disclosure while unpainted legacy and civic towers retain their previous materials",
+      "error": "TypeError: Cannot read properties of undefined (reading 'name')\n      at file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/three-church-tower-foot.test.mjs:53:248\n      at Array.every (<anonymous>)\n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/three-church-tower-foot.test.mjs:53:222)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1201:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n      at Test.postRun (node:internal/test_runner/test:1330:19)\n      at Test.run (node:internal/test_runner/test:1258:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/artillery-battlefield-playback.test.mjs:68:1",
+      "name": "mounted Battlefield uses the accepted horse state to emit exactly one mount or dismount cue",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  0 !== 1\n  \n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/artillery-battlefield-playback.test.mjs:76:10)\n      at async Test.run (node:internal/test_runner/test:1208:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 0,\n    expected: 1,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/three-authored-flat-roofs.test.mjs:20:1",
+      "name": "actual chapel and chimney templates follow explicit terraces and blocked metric slab elevations through four rotations",
+      "error": "AssertionError [ERR_ASSERTION]: chimney masonry must still enter the roof\n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/three-authored-flat-roofs.test.mjs:25:53)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1201:25)\n      at Test.start (node:internal/test_runner/test:1096:17)\n      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/elevation-interface.test.mjs:131:1",
+      "name": "paid climb and descent interpolate the roof inset without snapping the actor foot or hit frame",
+      "error": "AssertionError [ERR_ASSERTION]: 245.379320490434 != 254.5\n      at close (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/elevation-interface.test.mjs:24:39)\n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/elevation-interface.test.mjs:138:4)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1201:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n      at Test.postRun (node:internal/test_runner/test:1330:19)\n      at Test.run (node:internal/test_runner/test:1258:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/actor-unit-motion-distance.test.mjs:44:1",
+      "name": "presented climb keeps its link and final segment fraction",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 0.01299638895332932\n  - 0.5\n  \n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/actor-unit-motion-distance.test.mjs:50:112)\n      at async Test.run (node:internal/test_runner/test:1208:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 0.01299638895332932,\n    expected: 0.5,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/characters-reviewed-motion.test.mjs:92:2",
+      "name": "male fresh descending cuts record the current reviewed source provenance",
+      "error": "AssertionError [ERR_ASSERTION]: stand.slash.blade: rebuilt cut uses the current reviewed source\n  + actual - expected\n  \n  + 'b68d20ba844a664f361daad0e7ea605e0cb84768feb0b9b4b4f73bcc28552594'\n  - 'e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee'\n  \n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/characters-reviewed-motion.test.mjs:95:11)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1201:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n      at Test.postRun (node:internal/test_runner/test:1330:19)\n      at Test.run (node:internal/test_runner/test:1258:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: 'b68d20ba844a664f361daad0e7ea605e0cb84768feb0b9b4b4f73bcc28552594',\n    expected: 'e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/characters-reviewed-motion.test.mjs:92:2",
+      "name": "female fresh descending cuts record the current reviewed source provenance",
+      "error": "AssertionError [ERR_ASSERTION]: stand.slash.blade: rebuilt cut uses the current reviewed source\n  + actual - expected\n  \n  + 'b68d20ba844a664f361daad0e7ea605e0cb84768feb0b9b4b4f73bcc28552594'\n  - 'e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee'\n  \n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/characters-reviewed-motion.test.mjs:95:11)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1201:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n      at Test.postRun (node:internal/test_runner/test:1330:19)\n      at Test.run (node:internal/test_runner/test:1258:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: 'b68d20ba844a664f361daad0e7ea605e0cb84768feb0b9b4b4f73bcc28552594',\n    expected: 'e16dc547a15a8406a14ca64bf9679ce429f020b9548429ba19c4d8060713bdee',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    },
+    {
+      "location": "tests/three-projection.test.mjs:38:1",
+      "name": "climb sampling retains the recorded access link and metric height",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  1.2765625 !== 1.5\n  \n      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/three-projection.test.mjs:40:78)\n      at Test.runInAsyncScope (node:async_hooks:226:14)\n      at Test.run (node:internal/test_runner/test:1201:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)\n      at Test.postRun (node:internal/test_runner/test:1330:19)\n      at Test.run (node:internal/test_runner/test:1258:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 1.2765625,\n    expected: 1.5,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+      "assertionPayloadMatchesPrevious": true
+    }
+  ],
+  "changedRepeatedAssertionPayloads": [],
+  "repeatedAssertionPayloadsMatchPreviousExactly": true,
+  "comparisonLimit": "The previous run is a prior candidate checkpoint, not a verified origin/main baseline."
+}

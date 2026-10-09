@@ -1,0 +1,63 @@
+--- /dev/null
++++ b/tests/characters-rifle-ready-head.test.mjs
+@@ -0,0 +1,60 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {AnimationMixer,Box3,LoopOnce,Quaternion,Triangle,Vector3} from '../web/node_modules/three/build/three.module.js';
++import {clone} from '../web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
++import {publishedActor} from './published-actor-fixture.mjs';
++import {headSurface,skinnedSurface} from './skinned-surface-contact-fixture.mjs';
++
++// Native eye landmarks in the exported bind frame, not an invented gaze axis.
++const localRotation=bone=>bone.quaternion.clone().normalize();
++const eyes={granadero:[-.029511534,1.650874138,.131320670],'woman-scout':[-.031627864,1.642763257,.122219481]};
++function headDistance(surface){
++ let faces=surface();
++ function build(ids){
++  const box=new Box3().setFromPoints(ids.flatMap(i=>faces[i]));
++  if(ids.length<=8)return{box,ids};
++  const extent=box.getSize(new Vector3()),axis=extent.x>extent.y?(extent.x>extent.z?'x':'z'):(extent.y>extent.z?'y':'z');
++  ids.sort((a,b)=>faces[a].reduce((s,p)=>s+p[axis],0)-faces[b].reduce((s,p)=>s+p[axis],0));
++  const mid=Math.floor(ids.length/2);return{box,children:[build(ids.slice(0,mid)),build(ids.slice(mid))]};
++ }
++ const root=build(faces.map((_,i)=>i)),triangle=new Triangle(),closest=new Vector3(),normal=new Vector3(),offset=new Vector3();
++ function refit(node){node.box.makeEmpty();if(node.ids){for(const i of node.ids)for(const p of faces[i])node.box.expandByPoint(p);}else for(const c of node.children){refit(c);node.box.union(c.box);}}
++ function nearest(point,node,best){
++  if(node.box.distanceToPoint(point)>best.distance)return;
++  if(node.ids)for(const i of node.ids){triangle.set(...faces[i]);triangle.closestPointToPoint(point,closest);const distance=point.distanceTo(closest);if(distance<best.distance){triangle.getNormal(normal);best.distance=distance;best.signed=Math.sign(normal.dot(offset.subVectors(point,closest)))*distance;}}
++  else{const [a,b]=node.children,first=a.box.distanceToPoint(point)<=b.box.distanceToPoint(point);nearest(point,first?a:b,best);nearest(point,first?b:a,best);}
++ }
++ return {update(){faces=surface();refit(root);},gap(point){const best={distance:Infinity,signed:Infinity};nearest(point,root,best);return best.signed;}};
++}
++for(const preset of ['granadero','woman-scout'])for(const posture of ['crouch','prone'])test(`${preset} ${posture} rifle ready and recoil keep the actual hand outside the face`,async()=>{
++ const asset=await publishedActor(preset,0),model=clone(asset.body.scene);model.updateMatrixWorld(true);model.traverse(m=>{if(m.isSkinnedMesh)m.skeleton.update();});
++ const head=model.getObjectByName('head'),neck=model.getObjectByName('neck_01'),eyeLocal=head.worldToLocal(new Vector3(...eyes[preset])),facingLocal=new Vector3(0,0,1).applyQuaternion(head.getWorldQuaternion(new Quaternion()).invert());
++ const distance=headDistance(headSurface(model)),hand=skinnedSurface(model,(mesh,bone)=>bone===undefined?mesh.material.name==='Skin':/^(hand|index|middle|ring|pinky|thumb).*_r$/.test(bone));
++ const mixer=new AnimationMixer(model);let ready;
++ for(const gesture of ['aim','fire']){
++  const name=`${posture}.${gesture}.long-gun`,clip=asset.animation.animations.find(c=>c.name===name),spec=asset.clips.find(c=>c.name===name),action=mixer.clipAction(clip).setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();
++  const times=new Set([0,clip.duration]);if(gesture==='fire'){
++   const from=Math.max(0,spec.markers.shot-.01),to=Math.min(clip.duration,spec.markers.shot+.34),count=Math.ceil((to-from)*120);
++   for(let i=0;i<=count;i++)times.add(from+(to-from)*i/count);
++   for(const dt of [0,.045,.22])times.add(spec.markers.shot+dt);
++  }
++  let previous;
++  for(const time of [...times].sort((a,b)=>a-b)){
++   mixer.setTime(time);model.updateMatrixWorld(true);model.traverse(m=>{if(m.isSkinnedMesh)m.skeleton.update();});distance.update();
++   // Every exported hand vertex is tested against actual deformed face/neck
++   // triangles. This is a surface-gap regression, not a general volume proof.
++   let gap=Infinity;for(const point of new Set(hand().flat()))gap=Math.min(gap,distance.gap(point));
++   assert.ok(gap>=.001,`${name} ${time.toFixed(4)}s: actual head/hand gap ${(gap*1000).toFixed(3)} mm is below 1 mm`);
++   if(time===0||time===clip.duration){
++    const socket=model.getObjectByName('socket_handRight_rifle'),eye=eyeLocal.clone().applyMatrix4(head.matrixWorld).applyMatrix4(socket.matrixWorld.clone().invert()),gaze=facingLocal.clone().applyQuaternion(head.getWorldQuaternion(new Quaternion())),bore=new Vector3(1,0,0).applyQuaternion(socket.getWorldQuaternion(new Quaternion()));
++    assert.ok(Math.hypot(eye.y-.078,eye.z)<=.002,`${name}: the ready eye is within 2 mm of the sight line`);
++    assert.ok(gaze.angleTo(bore)<=4*Math.PI/180,`${name}: the actual ready face points within four degrees of the bore`);
++    if(!ready)ready=[localRotation(neck),localRotation(head)];
++    else assert.ok(ready[0].angleTo(localRotation(neck))<.00001&&ready[1].angleTo(localRotation(head))<.00001,`${name}: ready endpoints match aim`);
++   }
++   if(previous)for(const [i,bone]of[neck,head].entries())assert.ok(previous.q[i].angleTo(localRotation(bone))/(time-previous.time)<2*Math.PI,`${name}: no head/neck rotation step during recoil`);
++   previous={time,q:[localRotation(neck),localRotation(head)]};
++  }
++  action.stop();
++ }
++});

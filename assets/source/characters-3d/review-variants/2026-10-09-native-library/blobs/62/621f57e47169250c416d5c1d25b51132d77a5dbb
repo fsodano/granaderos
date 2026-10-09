@@ -1,0 +1,37 @@
+# Lance carry and brace acceptance
+
+The source and exact channel delta are frozen. No shared checkout source or asset was changed by this task.
+
+## Scope
+
+- 17 existing non-thrust lance clips for each native anatomy: carry/idle/gait and standing, crouched, mounted brace.
+- 150 local rotation channels per bank: three right arm bones for the 17 clips; three left arm bones and both fists for the three brace clips.
+- All input times, translation/scale curves, legs, torso, head, attack clips and unrelated motion channels remain byte-exact.
+- Six brace clip records receive only `gripOffsets`; all current canonical metadata is retained.
+- Native bone lengths, skin geometry, sockets and lance geometry remain unchanged.
+
+## Validation
+
+- Six exported tests pass against the private final library and against a private merge into the latest canonical candidate, including its PR234 guard metadata.
+- All ten finger groups contact the actual shaft within 1.18 mm, with zero sampled skin penetration in both anatomies and all three brace postures.
+- Wrists remain below 45 degrees; wrist-only axial twist stays below 5 degrees. Tests sample 34 clips at 120 Hz and check arm continuity, floor clearance, loop seams and rear elbow height.
+- Source/export finger parity checked all 17 clips per anatomy: maximum local quaternion difference 0.000000302 radians.
+- Eight rider gates passed; held lance/horse penetration was zero. The later finger-only correction does not change the held shaft transform.
+- Actual final GLB views were inspected: `accepted-brace` (10 full/hand/head views), `accepted-brace-postures` (12 crouched/mounted frames), plus `travel-review` (24 carry/gait frames).
+- QA separately fixed the normal runtime item-frame transition: carry/brace previously snapped 55 degrees at tick zero. That runtime patch is required with this asset change; root has applied it.
+
+## Delivery
+
+Apply `lance-source.patch` to the current repository. Copy `tests/characters-lance-grips.test.mjs` to the repository tests directory. The test imports the existing character-bank fixture and web Three installation.
+
+Apply the exact asset delta with:
+
+    python3 /tmp/granadero-lance-wrist/merge-lance-delta.py --directory /tmp/granadero-full-review/models
+
+The merger verifies each selected current input/output curve against the reviewed baseline, preserves all current unrelated binary channel payloads, and changes only six brace grip metadata entries plus derived bank sizes/hashes. It rejects concurrent target changes. Do not copy the old full private bank or manifest over canonical assets.
+
+Successful integration rehearsal: `merge-proof.log`, `merge-proof-gates.log`, and `merge-proof/models/lance-delta-proof.json`. Each bank retains 52,956 channels exactly. Final file hashes are in `delivery-hashes.json`.
+
+## Limits
+
+This is a bounded carry/brace correction. Thrust attacks are preserved. It does not claim a complete anatomical audit of every action or final acceptance of appearance. Source parity checks compare the static grip at the start of each retained clip; dynamic continuity and contact use the actual exported bank.

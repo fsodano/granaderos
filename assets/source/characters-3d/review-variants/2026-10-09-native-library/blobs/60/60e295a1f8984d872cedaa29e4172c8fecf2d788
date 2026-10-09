@@ -1,0 +1,27 @@
+{
+  "status": "accepted review-tool correction; game assets and palette unchanged",
+  "sourceSha256": "14acf9acb165b5bf90958d533963c08ee8ec750ebce36a6aba2051433601e7b6",
+  "tests": {
+    "pass": 7,
+    "fail": 0,
+    "scope": "Generated-skin exports and offline/live colour parity over all palettes and valid/invalid references"
+  },
+  "actualReview": {
+    "hexSRGB": "#d5a07d",
+    "colorLinear": [
+      0.7856988195222304,
+      0.830520789627063,
+      0.7353279118534788,
+      1
+    ],
+    "albedoReference": [
+      0.846873231509858,
+      0.4232676699860717,
+      0.2788942634768104
+    ],
+    "materials": [
+      "Skin.001"
+    ]
+  },
+  "manifestSha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23"
+}

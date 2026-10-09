@@ -1,0 +1,39 @@
+from pathlib import Path
+import copy,hashlib,importlib.util,json,shutil,struct
+root=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');delivery=Path('/tmp/granadero-hand-web-pilot/delivery');out=Path('/tmp/granadero-thumb-integration/models')
+shutil.copytree(root/'web/public/models/characters',out,dirs_exist_ok=True)
+spec=importlib.util.spec_from_file_location('merge',root/'tools/characters-3d/merge-animation-bank.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+receipt=json.loads((delivery/'receipt.json').read_text());manifest=json.loads((out/'manifest.json').read_text());allow=json.loads((delivery/'allowlist.json').read_text());proof={}
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+def payload(doc,blob,index):
+ a=doc['accessors'][index];v=doc['bufferViews'][a['bufferView']];assert a['componentType']==5126 and not a.get('sparse');width={'SCALAR':1,'VEC4':4}[a['type']];step=v.get('byteStride',width*4);start=v.get('byteOffset',0)+a.get('byteOffset',0)
+ return b''.join(blob[start+i*step:start+i*step+width*4]for i in range(a['count']))
+def channels(doc,blob):
+ result={}
+ for a in doc['animations']:
+  for c in a['channels']:
+   s=a['samplers'][c['sampler']];key=(a['name'],doc['nodes'][c['target']['node']]['name'],c['target']['path'])
+   result[key]=(payload(doc,blob,s['input']),payload(doc,blob,s['output']),s.get('interpolation','LINEAR'))
+ return result
+# Channel proof below also contains VEC3 translation/scale.
+original_payload=payload
+def payload(doc,blob,index):
+ a=doc['accessors'][index];v=doc['bufferViews'][a['bufferView']];assert a['componentType']==5126 and not a.get('sparse');width={'SCALAR':1,'VEC3':3,'VEC4':4}[a['type']];step=v.get('byteStride',width*4);start=v.get('byteOffset',0)+a.get('byteOffset',0)
+ return b''.join(blob[start+i*step:start+i*step+width*4]for i in range(a['count']))
+for gender in ('male','female'):
+ p=out/(gender+'-animations.glb');assert sha(p)==receipt['banks'][gender]['baselineSha256'];before,old=mod.read_glb(p);doc=copy.deepcopy(before);blob=bytearray(old);delta=delivery/'deltas'/(gender+'-relaxed-thumb.glb');assert sha(delta)==receipt['banks'][gender]['deltaSha256'];d,db=mod.read_glb(delta);updated=set()
+ for clip in d['animations']:
+  target=next(a for a in doc['animations']if a['name']==clip['name'])
+  for c in clip['channels']:
+   key=(clip['name'],d['nodes'][c['target']['node']]['name'],c['target']['path']);assert list(key)in allow[gender] and key not in updated
+   tc=next(c for c in target['channels']if doc['nodes'][c['target']['node']]['name']==key[1]and c['target']['path']==key[2]);ds=clip['samplers'][c['sampler']];ts=target['samplers'][tc['sampler']]
+   assert payload(d,db,ds['input'])==payload(doc,blob,ts['input']);data=payload(d,db,ds['output']);access=d['accessors'][ds['output']];assert access['type']=='VEC4'
+   view=len(doc['bufferViews']);doc['bufferViews'].append({'buffer':0,'byteOffset':len(blob),'byteLength':len(data)});blob.extend(data);ai=len(doc['accessors']);doc['accessors'].append({'bufferView':view,'componentType':5126,'count':access['count'],'type':'VEC4'});tc['sampler']=len(target['samplers']);target['samplers'].append({**ts,'output':ai});updated.add(key)
+ assert updated==set(map(tuple,allow[gender]));mod.write_glb(p,doc,blob);assert sha(p)==receipt['banks'][gender]['candidateSha256'],(gender,sha(p))
+ beforech=channels(before,old);afterch=channels(doc,blob);assert beforech.keys()==afterch.keys();changed=[key for key in beforech if beforech[key]!=afterch[key]];assert set(changed)==updated
+ assert doc['nodes']==before['nodes'] and blob[:len(old)]==old
+ proof[gender]={'sha256':sha(p),'changedChannels':len(changed),'preservedChannels':len(beforech)-len(changed),'candidatePayloadsExact':True,'nativeNodesExact':True,'originalBinaryPrefixExact':True}
+ manifest['animationLibraries'][gender].update({'sha256':sha(p),'bytes':p.stat().st_size})
+(out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+for name,expected in receipt['bodies'].items():assert sha(out/name)==expected,name
+Path('/tmp/granadero-thumb-integration/proof.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof,indent=2))

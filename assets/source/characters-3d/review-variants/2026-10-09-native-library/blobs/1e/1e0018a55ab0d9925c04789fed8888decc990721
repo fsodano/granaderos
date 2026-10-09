@@ -1,0 +1,37 @@
+{
+  "scope": "Exported isometric final body/standing-motion review",
+  "presetsReviewed": [
+    "granadero",
+    "royalist",
+    "worker",
+    "surgeon"
+  ],
+  "checks": [
+    "all 12 selected actions at 3 recorded moments",
+    "full body silhouette and limb overlap",
+    "closed grip and resting hands",
+    "head and collar seams",
+    "coat tails while crawling and fallen"
+  ],
+  "finding": "No new blocking defect in the inspected images. Later loading, climb and recovery corrections are reviewed separately.",
+  "files": {
+    "artifacts/character-anatomy-review/combined-final/a/sheets/royalist.motion-01.png": "217a9f2fc53ce76138353c3299b42cfbbe7c29c1f568581d913f624efffd3179",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/royalist.motion-03.png": "0151a619e7daf9add7a818a4e51185cca875e610a8276b8602dfd568f9f61125",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/granadero.overview.png": "7f83748ebc78afc02e4d3424caa98dd7f921df3fcbfbc8a90d414e5e8ea4909e",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/royalist.motion-02.png": "8877db4f8d2f627068178d65709fe9b7ab12ca568fedb431d1ab153957345be0",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/surgeon.motion-03.png": "a41ab124c6ed4d3f0662b5dcfdf48cbb001e224a453a26573899259cc01e3939",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/surgeon.motion-02.png": "b06ca7ade63c63c99a7b934a7311cb7148a81f4ce2283a9ffca962383baca547",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/all.hands.png": "be2336fcd4c75043cec5740e78705cd59496aebedbed511652c2261e39132a71",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/surgeon.motion-01.png": "6550130c41f598f1cd8b137c018f10fe43f1c945f59244fbe3ee7589fd2ad0bd",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/royalist.overview.png": "b2090f6b943eb7c481552b764dbca5ab2bf4ac081953da64cf253e06064c7c95",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/worker.motion-03.png": "d0270ba03379bacc7b6a56d0f6e68d65ce249304daa830100269a23b06f65bdd",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/worker.motion-02.png": "e83baacc39e3c332f6b49e9b86c3d0bc334889269203b0eee8df5cec1b19046a",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/all.head.png": "daf7ca0273ec98024b7dbf53ae7be404b0849d4ca1c63dd42e8611a7cbf3194a",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/worker.motion-01.png": "1e0d89639e08d13285c46afab76a5e0d10ade3d2789e23d26b92af6ec4d42e72",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/surgeon.overview.png": "b613bb6ad12f1a9233785661ecd6fb801a38086f68cb7df58a6675d4c1bf43d9",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/worker.overview.png": "b8bc0b8eda53deb412ab99dac0cbfee0e8e0a080348698cb0c35f2ca0e082f31",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/granadero.motion-03.png": "1de528de291da2865f7bbd37a5107887d8818e8a39b92a484d431d053d099ce9",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/granadero.motion-02.png": "97cd955e3ee6ce89e7c9b59e0279a41e3afc129673fe839b7a5c6ba7fff633fb",
+    "artifacts/character-anatomy-review/combined-final/a/sheets/granadero.motion-01.png": "a8ef7e553cd5b2ea71f1758a132703b351a35b57625fb5709e07ae4d9135f133"
+  }
+}

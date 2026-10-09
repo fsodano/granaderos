@@ -1,0 +1,2764 @@
+{
+  "granadero": [
+    {
+      "time": 0.183333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 266.4209008216858,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 292.4986183643341,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 152.54570543766022,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 187.46984004974365,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.2,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 252.89225578308105,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 280.6175649166107,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 139.37725126743317,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 179.21236157417297,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.216667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 255.5268406867981,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 282.7655076980591,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 135.79478859901428,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 180.26545643806458,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.233333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 257.94100761413574,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 284.9104106426239,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 136.39739155769348,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 186.1943006515503,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.25,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 245.785191655159,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 274.5784521102905,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 126.06863677501678,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 166.9471114873886,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.266667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 233.1296056509018,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 263.74492049217224,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 116.85709655284882,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 149.2834836244583,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.283333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 194.79990005493164,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 224.6299684047699,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 107.1222797036171,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 104.53274846076965,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.3,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 155.31300008296967,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 183.06919932365417,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 105.29311746358871,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 101.68559849262238,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.316667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 111.40351742506027,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 132.38222897052765,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 132.59005546569824,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 137.80340552330017,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.333333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 70.55675238370895,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 81.13390952348709,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 159.3696027994156,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 181.84170126914978,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.34,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 56.57864362001419,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 60.223497450351715,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 182.80987441539764,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 210.94606816768646,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.35,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 35.44701263308525,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 32.30411559343338,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 217.50956773757935,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 240.0805801153183,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.366667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 6.0852644965052605,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 8.29349271953106,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 258.650541305542,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 272.70668745040894,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.383333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 2.463393611833453,
+            "gapMm": 0.021046585970907472,
+            "insideVertices": 25,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 3650,
+              "bone": "thumb_03_l",
+              "position": [
+                0.12939661741256714,
+                -0.43389853835105896,
+                1.4252233505249023
+              ],
+              "nearest": [
+                0.1318131387233734,
+                -0.4335719645023346,
+                1.424873948097229
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 3.4335816744714975,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 312.31489777565,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 311.0197186470032,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.4,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 6.325771100819111,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 18.0496908724308,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 341.04928374290466,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 329.45728302001953,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.416667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 4.9248370341956615,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 7.482384797185659,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 341.56835079193115,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 327.73879170417786,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.42,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 4.720968659967184,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 4.975924734026194,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 341.5236473083496,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 327.26719975471497,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.433333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 2.3225226905196905,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 9.382540360093117,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 340.91445803642273,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 324.6411085128784,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.45,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 0.750322244130075,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 11.66781410574913,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 340.91222286224365,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 324.3046700954437,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.466667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0.42368719005025923,
+            "gapMm": 0.08146405161824077,
+            "insideVertices": 3,
+            "ambiguousVertices": 1,
+            "worst": {
+              "vertex": 1893,
+              "bone": "middle_01_l",
+              "position": [
+                0.21074819564819336,
+                -0.5307010412216187,
+                1.415250539779663
+              ],
+              "nearest": [
+                0.21103622019290924,
+                -0.5303978323936462,
+                1.4151825904846191
+              ],
+              "votes": 4
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 13.498145155608654,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 340.93213081359863,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 323.9883482456207,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.483333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 6.5137650817632675,
+            "gapMm": 0.05213264375925064,
+            "insideVertices": 16,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 1893,
+              "bone": "middle_01_l",
+              "position": [
+                0.20455068349838257,
+                -0.5419124364852905,
+                1.4080371856689453
+              ],
+              "nearest": [
+                0.20905274152755737,
+                -0.5377532243728638,
+                1.405832290649414
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 11.034417897462845,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 325.6976008415222,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 311.2618923187256,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.5,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 12.211169116199017,
+            "gapMm": 0.09093469270737842,
+            "insideVertices": 62,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 1893,
+              "bone": "middle_01_l",
+              "position": [
+                0.19802254438400269,
+                -0.5528766512870789,
+                1.4007376432418823
+              ],
+              "nearest": [
+                0.20630285143852234,
+                -0.5448888540267944,
+                1.3966456651687622
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 9.466683492064476,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 299.5150685310364,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 286.7298722267151,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.516667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 19.484588876366615,
+            "gapMm": 0.014168747838994022,
+            "insideVertices": 227,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 1860,
+              "bone": "middle_01_l",
+              "position": [
+                0.1873287558555603,
+                -0.5712442994117737,
+                1.392171025276184
+              ],
+              "nearest": [
+                0.19627033174037933,
+                -0.559146523475647,
+                1.3797879219055176
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 12.182937934994698,
+            "insideVertices": 0,
+            "ambiguousVertices": 4,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 254.7331154346466,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 253.52346897125244,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.533333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 30.529826879501343,
+            "gapMm": 0.00503623959957622,
+            "insideVertices": 720,
+            "ambiguousVertices": 1,
+            "worst": {
+              "vertex": 5994,
+              "bone": "thumb_03_l",
+              "position": [
+                0.15498366951942444,
+                -0.5644325017929077,
+                1.3437178134918213
+              ],
+              "nearest": [
+                0.17509837448596954,
+                -0.5465735197067261,
+                1.3581582307815552
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 1.4399247011169791,
+            "insideVertices": 0,
+            "ambiguousVertices": 3,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 203.32719385623932,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 212.21017837524414,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.55,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 37.340182811021805,
+            "gapMm": 0.03450718941166997,
+            "insideVertices": 1008,
+            "ambiguousVertices": 3,
+            "worst": {
+              "vertex": 5346,
+              "bone": "index_02_l",
+              "position": [
+                0.13535428047180176,
+                -0.5498302578926086,
+                1.3625779151916504
+              ],
+              "nearest": [
+                0.16109667718410492,
+                -0.5277025103569031,
+                1.3781336545944214
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 1.7141607822850347,
+            "gapMm": 0.10964561079163104,
+            "insideVertices": 10,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 5379,
+              "bone": "pinky_01_l",
+              "position": [
+                0.20572936534881592,
+                -0.5917735695838928,
+                1.378502607345581
+              ],
+              "nearest": [
+                0.20729666948318481,
+                -0.5922693610191345,
+                1.378016710281372
+              ],
+              "votes": 6
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 167.8781658411026,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 190.99992513656616,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.566667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 33.668532967567444,
+            "gapMm": 0.00459325747215189,
+            "insideVertices": 930,
+            "ambiguousVertices": 19,
+            "worst": {
+              "vertex": 7284,
+              "bone": "hand_l",
+              "position": [
+                0.12715142965316772,
+                -0.5339587330818176,
+                1.3672370910644531
+              ],
+              "nearest": [
+                0.12812697887420654,
+                -0.567476749420166,
+                1.3702638149261475
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 2.3138015531003475,
+            "gapMm": 0.10388855298515409,
+            "insideVertices": 8,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 5978,
+              "bone": "pinky_01_l",
+              "position": [
+                0.1768186390399933,
+                -0.591038703918457,
+                1.3721386194229126
+              ],
+              "nearest": [
+                0.17889206111431122,
+                -0.5919727087020874,
+                1.3717117309570312
+              ],
+              "votes": 6
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 125.66784024238586,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 160.26966273784637,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.583333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 21.69080264866352,
+            "gapMm": 0.05672821862390265,
+            "insideVertices": 687,
+            "ambiguousVertices": 12,
+            "worst": {
+              "vertex": 3583,
+              "bone": "index_03_l",
+              "position": [
+                0.11049622297286987,
+                -0.5210471153259277,
+                1.3577442169189453
+              ],
+              "nearest": [
+                0.12413511425256729,
+                -0.5271860361099243,
+                1.3420348167419434
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 1.9459411269053817,
+            "gapMm": 0.006345305791910505,
+            "insideVertices": 9,
+            "ambiguousVertices": 1,
+            "worst": {
+              "vertex": 3604,
+              "bone": "ring_01_l",
+              "position": [
+                0.141950786113739,
+                -0.5786417722702026,
+                1.3670519590377808
+              ],
+              "nearest": [
+                0.1414271593093872,
+                -0.5771883726119995,
+                1.3682352304458618
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 112.2022420167923,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 139.1257792711258,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.6,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 14.616002328693867,
+            "gapMm": 0.0024186288101191167,
+            "insideVertices": 230,
+            "ambiguousVertices": 4,
+            "worst": {
+              "vertex": 6012,
+              "bone": "hand_l",
+              "position": [
+                0.09516274929046631,
+                -0.5015096068382263,
+                1.3781369924545288
+              ],
+              "nearest": [
+                0.1000623032450676,
+                -0.5066970586776733,
+                1.365381121635437
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 0.2553317171987146,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 101.26615315675735,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 120.68983167409897,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.616667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 6.049202289432287,
+            "gapMm": 0.21770928287878633,
+            "insideVertices": 18,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 5410,
+              "bone": "index_01_l",
+              "position": [
+                0.08643156290054321,
+                -0.4855203628540039,
+                1.398751139640808
+              ],
+              "nearest": [
+                0.08880074322223663,
+                -0.48672980070114136,
+                1.3933181762695312
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 9.56267211586237,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 110.90181022882462,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 128.8537085056305,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.62,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 2.3415391333401203,
+            "gapMm": 0.1386898074997589,
+            "insideVertices": 5,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 5410,
+              "bone": "index_01_l",
+              "position": [
+                0.08486557006835938,
+                -0.48069310188293457,
+                1.400047779083252
+              ],
+              "nearest": [
+                0.0857783630490303,
+                -0.48116862773895264,
+                1.3979445695877075
+              ],
+              "votes": 5
+            }
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 11.749266646802425,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 112.79428750276566,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 130.47373294830322,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.633333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 12.38273922353983,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 20.404992625117302,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 120.12016773223877,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 136.77574694156647,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.65,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 28.026677668094635,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 35.045888274908066,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 128.31106781959534,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 144.4985717535019,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.666667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 43.31211745738983,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 52.99024283885956,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 136.29251718521118,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 152.02467143535614,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.683333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 57.78935179114342,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 70.77780365943909,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 143.26930046081543,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 158.22306275367737,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.7,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1726,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 72.63434678316116,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 88.95912021398544,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1718,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 150.10835230350494,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          },
+          "hat": {
+            "depthMm": 0,
+            "gapMm": 164.32277858257294,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    }
+  ],
+  "woman-scout": [
+    {
+      "time": 0.183333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 260.3464722633362,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 129.51551377773285,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.2,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 246.00139260292053,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 131.2376856803894,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.216667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 248.54356050491333,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 133.58525931835175,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.233333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 251.08179450035095,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 135.31221449375153,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.25,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 239.55023288726807,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 129.92268800735474,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.266667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 227.84993052482605,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 120.61113119125366,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.283333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 191.5837973356247,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 101.32253915071487,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.3,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 154.71361577510834,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 93.51537376642227,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.316667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 111.7357686161995,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 114.61158096790314,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.333333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 74.32646304368973,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 144.88205313682556,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.34,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 61.708495020866394,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 169.17623579502106,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.35,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 43.872348964214325,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 205.3828239440918,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.366667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 12.842531315982342,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 249.34710562229156,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.383333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 2.052236581221223,
+            "gapMm": 0.10403331543784589,
+            "insideVertices": 18,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 1660,
+              "bone": "index_01_l",
+              "position": [
+                0.11202123761177063,
+                -0.4332342743873596,
+                1.4280964136123657
+              ],
+              "nearest": [
+                0.11394127458333969,
+                -0.43271932005882263,
+                1.427586555480957
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 294.37756538391113,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.4,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 6.233632564544678,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 308.5508942604065,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.416667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 4.7340658493340015,
+            "insideVertices": 0,
+            "ambiguousVertices": 1,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 301.7747700214386,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.42,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 1.0984214022755623,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 300.53162574768066,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.433333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0.4652785137295723,
+            "gapMm": 0.12035116378683597,
+            "insideVertices": 2,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 3487,
+              "bone": "middle_01_l",
+              "position": [
+                0.19023817777633667,
+                -0.5387802124023438,
+                1.412566900253296
+              ],
+              "nearest": [
+                0.1903761476278305,
+                -0.5383944511413574,
+                1.412346363067627
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 295.96462845802307,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.45,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 1.005038502626121,
+            "gapMm": 0.15863617591094226,
+            "insideVertices": 4,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 3487,
+              "bone": "middle_01_l",
+              "position": [
+                0.19210505485534668,
+                -0.5412294268608093,
+                1.4101990461349487
+              ],
+              "nearest": [
+                0.19240137934684753,
+                -0.5403971076011658,
+                1.4097199440002441
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 295.85182666778564,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.466667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 1.395777682773769,
+            "gapMm": 0.010787617611640599,
+            "insideVertices": 6,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 3487,
+              "bone": "middle_01_l",
+              "position": [
+                0.19396185874938965,
+                -0.5436539053916931,
+                1.4078097343444824
+              ],
+              "nearest": [
+                0.1944398283958435,
+                -0.5424339175224304,
+                1.407328724861145
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 295.76754570007324,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.483333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 1.8715061014518142,
+            "gapMm": 0.013994404071127065,
+            "insideVertices": 23,
+            "ambiguousVertices": 0,
+            "worst": {
+              "vertex": 1762,
+              "bone": "middle_02_l",
+              "position": [
+                0.19514304399490356,
+                -0.5526546239852905,
+                1.3999333381652832
+              ],
+              "nearest": [
+                0.1956925392150879,
+                -0.5511080026626587,
+                1.3990341424942017
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 290.82047939300537,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.5,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 2.0481054671108723,
+            "gapMm": 0.03417910556891002,
+            "insideVertices": 31,
+            "ambiguousVertices": 39,
+            "worst": {
+              "vertex": 4615,
+              "bone": "middle_02_l",
+              "position": [
+                0.18897736072540283,
+                -0.5598294138908386,
+                1.390956163406372
+              ],
+              "nearest": [
+                0.18933013081550598,
+                -0.5583179593086243,
+                1.3896198272705078
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 284.5683693885803,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.516667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 16.355078667402267,
+            "gapMm": 0.025063309294637293,
+            "insideVertices": 175,
+            "ambiguousVertices": 149,
+            "worst": {
+              "vertex": 4653,
+              "bone": "thumb_03_l",
+              "position": [
+                0.15384545922279358,
+                -0.5708832740783691,
+                1.3494852781295776
+              ],
+              "nearest": [
+                0.1657356172800064,
+                -0.5618224740028381,
+                1.3561196327209473
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 244.50160562992096,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.533333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 33.17109867930412,
+            "gapMm": 0.005504340606421465,
+            "insideVertices": 760,
+            "ambiguousVertices": 31,
+            "worst": {
+              "vertex": 6568,
+              "bone": "thumb_03_l",
+              "position": [
+                0.13629481196403503,
+                -0.5805119276046753,
+                1.3465700149536133
+              ],
+              "nearest": [
+                0.16658638417720795,
+                -0.5670039057731628,
+                1.3470951318740845
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 189.27904963493347,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.55,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 39.38483074307442,
+            "gapMm": 0.00987443399935728,
+            "insideVertices": 1063,
+            "ambiguousVertices": 15,
+            "worst": {
+              "vertex": 1663,
+              "bone": "index_01_l",
+              "position": [
+                0.11665746569633484,
+                -0.5638962984085083,
+                1.369389533996582
+              ],
+              "nearest": [
+                0.14458611607551575,
+                -0.5416730046272278,
+                1.386041283607483
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 150.128111243248,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.566667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 35.353802144527435,
+            "gapMm": 0.03911348176188767,
+            "insideVertices": 920,
+            "ambiguousVertices": 27,
+            "worst": {
+              "vertex": 1669,
+              "bone": "index_01_l",
+              "position": [
+                0.10809153318405151,
+                -0.5481511354446411,
+                1.3707482814788818
+              ],
+              "nearest": [
+                0.1079542487859726,
+                -0.5833322405815125,
+                1.37423574924469
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 108.43733698129654,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.583333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 21.29334583878517,
+            "gapMm": 0.047411627747351304,
+            "insideVertices": 371,
+            "ambiguousVertices": 54,
+            "worst": {
+              "vertex": 2907,
+              "bone": "hand_l",
+              "position": [
+                0.09466254711151123,
+                -0.5292514562606812,
+                1.3764230012893677
+              ],
+              "nearest": [
+                0.10746701061725616,
+                -0.5359678864479065,
+                1.360791563987732
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 95.46475857496262,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.6,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 2.1051003132015467,
+            "gapMm": 0.4518506466411054,
+            "insideVertices": 6,
+            "ambiguousVertices": 91,
+            "worst": {
+              "vertex": 6624,
+              "bone": "index_01_l",
+              "position": [
+                0.0788012146949768,
+                -0.5158206224441528,
+                1.388159990310669
+              ],
+              "nearest": [
+                0.07865919917821884,
+                -0.5166049599647522,
+                1.386211633682251
+              ],
+              "votes": 5
+            }
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 89.03347700834274,
+            "insideVertices": 0,
+            "ambiguousVertices": 25,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.616667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 17.114223912358284,
+            "insideVertices": 0,
+            "ambiguousVertices": 30,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 99.761001765728,
+            "insideVertices": 0,
+            "ambiguousVertices": 27,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.62,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 20.951978862285614,
+            "insideVertices": 0,
+            "ambiguousVertices": 40,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 101.86675190925598,
+            "insideVertices": 0,
+            "ambiguousVertices": 24,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.633333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 35.09322553873062,
+            "insideVertices": 0,
+            "ambiguousVertices": 12,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 110.04453897476196,
+            "insideVertices": 0,
+            "ambiguousVertices": 4,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.65,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 45.06606608629227,
+            "insideVertices": 0,
+            "ambiguousVertices": 12,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 118.91621351242065,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.666667,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 54.853882640600204,
+            "insideVertices": 0,
+            "ambiguousVertices": 3,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 127.54754722118378,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.683333,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 65.46416878700256,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 135.16810536384583,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    },
+    {
+      "time": 0.7,
+      "hands": [
+        {
+          "side": "l",
+          "vertices": 1658,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 77.7706652879715,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        },
+        {
+          "side": "r",
+          "vertices": 1663,
+          "head": {
+            "depthMm": 0,
+            "gapMm": 142.6410675048828,
+            "insideVertices": 0,
+            "ambiguousVertices": 0,
+            "worst": null
+          }
+        }
+      ]
+    }
+  ]
+}

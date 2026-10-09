@@ -1,0 +1,71 @@
+{
+  "baseCommit": "b36c9c39f26720b69a85c175d098c86923e24c72",
+  "privateTree": "/tmp/granadero-lance-transition",
+  "files": {
+    "web/lib/three/actor-runtime.ts": "e3e730bf462417698ea6e7dae1318b804c3bf1b7d3cdecb8802ebe2949c8fc47",
+    "tests/three-actor-runtime.test.mjs": "677461187ec4acb4dbf689d293c393fac9a6942ecee8c693f74301b97d619e3f",
+    "tests/characters-lance-transition.test.mjs": "8a2082b430b39d584d153614f20d47f2898f443e9dd6d6bf16bb286064178ddf"
+  },
+  "patch": "/tmp/granadero-lance-transition/grip-blend.patch",
+  "checks": {
+    "focused": "38/38 passed (both native transitions, body-weight test, existing runtime)",
+    "contact": "17/17 passed (unchanged pistol 1 mm, sabre, facing, frame ordering)",
+    "typecheck": "passed: npm run typecheck",
+    "tightenedPalmGate": "2/2 passed against final frozen lance bank at 120 Hz; 1 mm right-palm bound"
+  },
+  "before": [
+    {
+      "appearance": "granadero",
+      "toBraceJumpDegrees": 55.00000276727505,
+      "toCarryJumpDegrees": 55.00000811204663,
+      "maximumStepDegrees": 55.00000811204663,
+      "maximumPalmGap": 0.0003041115993361529
+    },
+    {
+      "appearance": "woman-scout",
+      "toBraceJumpDegrees": 55.00000241310706,
+      "toCarryJumpDegrees": 55.00000135148415,
+      "maximumStepDegrees": 55.00000241310706,
+      "maximumPalmGap": 0.00043106760219980417
+    }
+  ],
+  "after": [
+    {
+      "appearance": "granadero",
+      "toBraceJumpDegrees": 0,
+      "toCarryJumpDegrees": 4.00455336570039e-06,
+      "maximumStepDegrees": 7.223186916573406,
+      "maximumPalmGap": 0.0006256521801399871
+    },
+    {
+      "appearance": "woman-scout",
+      "toBraceJumpDegrees": 0,
+      "toCarryJumpDegrees": 1.0029569411827041e-05,
+      "maximumStepDegrees": 6.7328729250015025,
+      "maximumPalmGap": 0.0007931308447529477
+    }
+  ],
+  "limits": [
+    "Palm contact metric is nearest actual skinned hand surface to 17 mm shaft radius, not a full finger penetration audit. Authoring agent owns static finger fit."
+  ],
+  "finalLibrary": {
+    "directory": "/tmp/granadero-lance-wrist/models",
+    "sha256": {
+      "manifest.json": "7a1c07f3318d6f831551941f9a04ab18c90ff71ba42c40dd50b682206ff6bc6f",
+      "male-animations.glb": "48927a4967f110041b4accf265b96b417bd5532cb0a60aebd889543d1e9288b7",
+      "female-animations.glb": "c60df784d047a0fae3049887cf47e48e2479639e0688a40703c8bade855c161f",
+      "granadero-lod0.glb": "968a672e75f8dc267044ec8700e75a9269e98326c0e5a111e69a842fc7b284c7",
+      "woman-scout-lod0.glb": "d1671bcbb906d17e37fbe15de0476af5856c7bad36edf4cc20a11f45f826b5e4",
+      "equipment.glb": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255"
+    }
+  },
+  "evidence": {
+    "before": "/tmp/granadero-lance-transition/candidate-before.json",
+    "publishedBaseline": "/tmp/granadero-lance-transition/published-before.json",
+    "after": "/tmp/granadero-lance-transition/final-lance-metrics.json",
+    "runtimeLog": "/tmp/granadero-lance-transition/focused-gates.log",
+    "contactLog": "/tmp/granadero-lance-transition/contact-gates.log",
+    "finalLanceLog": "/tmp/granadero-lance-transition/final-lance-gates.log",
+    "typecheckLog": "/tmp/granadero-lance-transition/typecheck.log"
+  }
+}

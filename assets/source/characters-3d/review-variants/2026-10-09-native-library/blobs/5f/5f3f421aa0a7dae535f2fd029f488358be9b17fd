@@ -1,0 +1,40 @@
+{
+  "status": "Not recommended for integration: insufficient visible improvement",
+  "scope": "One private Granadero LOD0 short-stubble geometry study over the adult pigment option. Clean-shaven and pigment-only assets retained separately. No shared or published changes.",
+  "candidate": {
+    "lod": 0,
+    "url": "/models/characters/granadero-lod0.glb",
+    "triangles": 98175,
+    "bytes": 6753604,
+    "drawCalls": 6,
+    "sha256": "3b9a95eb64148a59a28eaa00d466bf09061e858bc0567899e83510d880027ac5"
+  },
+  "hairs": 2700,
+  "addedTriangles": 10800,
+  "addedBytes": 1447200,
+  "sourceHairLengthMm": [
+    0.4,
+    1.0
+  ],
+  "sourceHairRadiusMm": [
+    0.025,
+    0.045
+  ],
+  "fitting": "Roots are sampled on the final reduced native skin. Each hair inherits barycentric skin weights. The source excludes the lip region and samples both root/tip against the finished chinstrap with a 1.6 mm clearance requirement.",
+  "review": "No visible pasted edge or dot pattern in the rendered close face. Hair detail is barely visible at the requested camera and effectively absent at fullbody scale. The small visual gain does not justify the extra triangles and bytes; retain as a rejected comparison.",
+  "sameCameraLightingPose": true,
+  "nativeRigPreservedByAppearanceBuild": true,
+  "sourceContainedGranaderoOnly": true,
+  "noNewMaterial": true,
+  "faceComparison": "/tmp/granadero-stubble-pilot/comparison-face.png",
+  "fullbodyComparison": "/tmp/granadero-stubble-pilot/comparison-fullbody.png",
+  "sourcePatch": "/tmp/granadero-stubble-pilot/delivery/rejected-study.patch",
+  "sourceHashes": {
+    "facial_stubble.py": "ef6dfd8d07d3619a23c792b11354f8b6c9cfa15cd54cd1ade1232e512f91d746",
+    "optimize.py": "22fc6b7d3d8b2e34c6cf784e6c94facd1a987ea7004013b282052cc6b1303719"
+  },
+  "limits": [
+    "Only one neutral pose, Granadero LOD0 and light skin palette reviewed.",
+    "The recorded clearance is an authoring selection rule; no separate dense posed hair-contact test was run for this rejected study."
+  ]
+}

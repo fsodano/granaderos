@@ -1,0 +1,13 @@
+from pathlib import Path
+import hashlib,json,subprocess,time
+root=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');out=Path('/tmp/granadero-hair-hand-checkpoint')
+def snapshot():
+ paths=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard'],cwd=root,text=True).splitlines()
+ prefixes=('tests/','game/','tools/','web/app/','web/components/','web/lib/','web/public/models/characters/','assets/source/characters-3d/','playgrounds/granadero-3d/')
+ return {p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in sorted(set(paths)) if (p.startswith(prefixes) or p in ('package.json','package-lock.json','web/package.json','web/tsconfig.json')) and (root/p).is_file() and 'node_modules' not in Path(p).parts}
+start=snapshot();(out/'input-hashes.json').write_text(json.dumps(start,indent=2)+'\n')
+r={'head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),'manifestSha256':start['web/public/models/characters/manifest.json'],'sourceFileCount':len(start),'scope':'Composed relaxed-thumb banks, retained female reduced left hands and worker cutout hair. Private collar and face candidates excluded.','startedAt':time.time()}
+(out/'run.json').write_text(json.dumps(r,indent=2)+'\n')
+with (out/'quick.log').open('w') as log:result=subprocess.run(['npm','run','test:quick'],cwd=root,stdout=log,stderr=subprocess.STDOUT)
+end=snapshot();r.update({'exitCode':result.returncode,'elapsedSeconds':time.time()-r['startedAt'],'changedInputs':[p for p in start.keys()|end.keys() if start.get(p)!=end.get(p)]})
+(out/'run.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r,indent=2))

@@ -1,0 +1,2536 @@
+{
+  "version": 1,
+  "source": "web/public/models/characters/manifest.json",
+  "appearances": {
+    "granadero": "male",
+    "royalist": "male",
+    "worker": "male",
+    "surgeon": "male",
+    "gaucho": "male",
+    "friar": "male",
+    "woman-scout": "female",
+    "woman-shawl": "female"
+  },
+  "banks": {
+    "male": {
+      "crawl": {
+        "nativeStrideSpeed": 0.143763,
+        "duration": 1.966659,
+        "playbackRate": 1
+      },
+      "clips": {
+        "stand.walk.unarmed": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.unarmed": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.unarmed": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.long-gun": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.long-gun": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.long-gun": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.short-gun": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.short-gun": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.short-gun": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.blade": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.blade": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.blade": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.blade": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.unarmed": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.unarmed": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.long-gun": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.long-gun": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.short-gun": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.short-gun": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.blade": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.blade": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.blade": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.unarmed": {
+          "nativeStrideSpeed": 0.143763,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.long-gun": {
+          "nativeStrideSpeed": 0.260825,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.short-gun": {
+          "nativeStrideSpeed": 0.260825,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.blade": {
+          "nativeStrideSpeed": 0.260825,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.unarmed": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.unarmed": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.long-gun": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.long-gun": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.short-gun": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.short-gun": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.blade": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.blade": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.walk.lance": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "stand.walk.knife": {
+          "nativeStrideSpeed": 1.448,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.lance": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.run.knife": {
+          "nativeStrideSpeed": 2.242,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.lance": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeLeft.knife": {
+          "nativeStrideSpeed": 1.1159,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.lance": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.knife": {
+          "nativeStrideSpeed": 1.1113,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.lance": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.walk.knife": {
+          "nativeStrideSpeed": 0.8403,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.lance": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.knife": {
+          "nativeStrideSpeed": 0.7564,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.lance": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.knife": {
+          "nativeStrideSpeed": 0.8492,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.lance": {
+          "nativeStrideSpeed": 0.260825,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.knife": {
+          "nativeStrideSpeed": 0.260825,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.lance": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.walk.knife": {
+          "nativeStrideSpeed": 1.4052,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.lance": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.run.knife": {
+          "nativeStrideSpeed": 1.007,
+          "duration": 0.75833,
+          "playbackRate": 1
+        }
+      },
+      "actions": {
+        "stand.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "stand.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "crouch.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "crouch.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "prone.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "prone.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "mounted.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "mounted.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "stand.gesture.throwKnife": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "life.climbUp": {
+          "duration": 4.616667,
+          "loop": false,
+          "markers": {
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
+          }
+        },
+        "life.climbDown": {
+          "duration": 4.616667,
+          "loop": false,
+          "markers": {
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
+          }
+        },
+        "life.mount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
+          }
+        },
+        "life.dismount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
+          }
+        },
+        "crew.artilleryReload": {
+          "duration": 4,
+          "loop": false,
+          "markers": {
+            "contact": 1.8,
+            "ready": 3.7
+          }
+        },
+        "stand.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        }
+      }
+    },
+    "female": {
+      "crawl": {
+        "nativeStrideSpeed": 0.143432,
+        "duration": 1.966659,
+        "playbackRate": 1
+      },
+      "clips": {
+        "stand.walk.unarmed": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.unarmed": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.unarmed": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.long-gun": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.long-gun": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.long-gun": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.short-gun": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.short-gun": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.short-gun": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.walk.blade": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.blade": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.blade": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.blade": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.unarmed": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.unarmed": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.unarmed": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.long-gun": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.long-gun": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.long-gun": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.short-gun": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.short-gun": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.short-gun": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.walk.blade": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.blade": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.blade": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.unarmed": {
+          "nativeStrideSpeed": 0.143432,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.long-gun": {
+          "nativeStrideSpeed": 0.262093,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.short-gun": {
+          "nativeStrideSpeed": 0.262093,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.blade": {
+          "nativeStrideSpeed": 0.262093,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.unarmed": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.unarmed": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.long-gun": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.long-gun": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.short-gun": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.short-gun": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.walk.blade": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.blade": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.walk.lance": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "stand.walk.knife": {
+          "nativeStrideSpeed": 1.383,
+          "duration": 1.066667,
+          "playbackRate": 1.25
+        },
+        "stand.run.lance": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "stand.run.knife": {
+          "nativeStrideSpeed": 2.133,
+          "duration": 0.766667,
+          "playbackRate": 1.25
+        },
+        "stand.strafeLeft.lance": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeLeft.knife": {
+          "nativeStrideSpeed": 1.0544,
+          "duration": 1.183329,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.lance": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "stand.strafeRight.knife": {
+          "nativeStrideSpeed": 1.0316,
+          "duration": 1.283328,
+          "playbackRate": 1
+        },
+        "crouch.walk.lance": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.walk.knife": {
+          "nativeStrideSpeed": 0.7993,
+          "duration": 1.533327,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.lance": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeLeft.knife": {
+          "nativeStrideSpeed": 0.9402,
+          "duration": 1.61666,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.lance": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "crouch.strafeRight.knife": {
+          "nativeStrideSpeed": 0.9318,
+          "duration": 1.399994,
+          "playbackRate": 1
+        },
+        "prone.crawl.lance": {
+          "nativeStrideSpeed": 0.262093,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "prone.crawl.knife": {
+          "nativeStrideSpeed": 0.262093,
+          "duration": 1.966659,
+          "playbackRate": 1
+        },
+        "mounted.walk.lance": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.walk.knife": {
+          "nativeStrideSpeed": 1.3273,
+          "duration": 1.083329,
+          "playbackRate": 1
+        },
+        "mounted.run.lance": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        },
+        "mounted.run.knife": {
+          "nativeStrideSpeed": 0.9754,
+          "duration": 0.75833,
+          "playbackRate": 1
+        }
+      },
+      "actions": {
+        "stand.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.long-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.short-gun": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reprime.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.repair.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.unload.short-gun": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "stand.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "crouch.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "crouch.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "prone.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "prone.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "mounted.gesture.throw": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "mounted.gesture.bolas": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "stand.gesture.throwKnife": {
+          "duration": 1.3,
+          "loop": false,
+          "markers": {
+            "release": 0.754
+          }
+        },
+        "life.climbUp": {
+          "duration": 4.616667,
+          "loop": false,
+          "markers": {
+            "support": 0.554,
+            "crest": 3.508667,
+            "roof": 4.201167
+          }
+        },
+        "life.climbDown": {
+          "duration": 4.616667,
+          "loop": false,
+          "markers": {
+            "support": 1.108,
+            "crest": 0.4155,
+            "roof": 0.4155
+          }
+        },
+        "life.mount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 2.07,
+            "support": 0.759,
+            "clear": 0.46
+          }
+        },
+        "life.dismount": {
+          "duration": 2.3,
+          "loop": false,
+          "markers": {
+            "seat": 0.23,
+            "support": 0.644,
+            "clear": 1.84
+          }
+        },
+        "crew.artilleryReload": {
+          "duration": 4,
+          "loop": false,
+          "markers": {
+            "contact": 1.8,
+            "ready": 3.7
+          }
+        },
+        "stand.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1800": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1800": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1801": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1801": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1802": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1802": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1803": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1803": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1804": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1804": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "crouch.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "prone.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "mounted.reload.long-gun.1807": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.unload.long-gun.1807": {
+          "duration": 2,
+          "loop": false,
+          "markers": {
+            "contact": 0.9,
+            "ready": 1.84
+          }
+        },
+        "stand.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1805": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1806": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "stand.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "crouch.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "prone.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        },
+        "mounted.reload.short-gun.1808.barrel1": {
+          "duration": 4.8,
+          "loop": false,
+          "markers": {
+            "contact": 2.16,
+            "ready": 4.416
+          }
+        }
+      }
+    }
+  },
+  "horse": {
+    "walk": {
+      "nativeStrideSpeed": 0.87949,
+      "duration": 1.1,
+      "playbackRate": 1
+    },
+    "run": {
+      "nativeStrideSpeed": 2.22906,
+      "duration": 0.7333333333333333,
+      "playbackRate": 1
+    }
+  },
+  "itemClips": {
+    "1800": {
+      "stand.reload.long-gun": "stand.reload.long-gun.1800",
+      "stand.unload.long-gun": "stand.unload.long-gun.1800",
+      "crouch.reload.long-gun": "crouch.reload.long-gun.1800",
+      "crouch.unload.long-gun": "crouch.unload.long-gun.1800",
+      "prone.reload.long-gun": "prone.reload.long-gun.1800",
+      "prone.unload.long-gun": "prone.unload.long-gun.1800",
+      "mounted.reload.long-gun": "mounted.reload.long-gun.1800",
+      "mounted.unload.long-gun": "mounted.unload.long-gun.1800"
+    },
+    "1801": {
+      "stand.reload.long-gun": "stand.reload.long-gun.1801",
+      "stand.unload.long-gun": "stand.unload.long-gun.1801",
+      "crouch.reload.long-gun": "crouch.reload.long-gun.1801",
+      "crouch.unload.long-gun": "crouch.unload.long-gun.1801",
+      "prone.reload.long-gun": "prone.reload.long-gun.1801",
+      "prone.unload.long-gun": "prone.unload.long-gun.1801",
+      "mounted.reload.long-gun": "mounted.reload.long-gun.1801",
+      "mounted.unload.long-gun": "mounted.unload.long-gun.1801"
+    },
+    "1802": {
+      "stand.reload.long-gun": "stand.reload.long-gun.1802",
+      "stand.unload.long-gun": "stand.unload.long-gun.1802",
+      "crouch.reload.long-gun": "crouch.reload.long-gun.1802",
+      "crouch.unload.long-gun": "crouch.unload.long-gun.1802",
+      "prone.reload.long-gun": "prone.reload.long-gun.1802",
+      "prone.unload.long-gun": "prone.unload.long-gun.1802",
+      "mounted.reload.long-gun": "mounted.reload.long-gun.1802",
+      "mounted.unload.long-gun": "mounted.unload.long-gun.1802"
+    },
+    "1803": {
+      "stand.reload.long-gun": "stand.reload.long-gun.1803",
+      "stand.unload.long-gun": "stand.unload.long-gun.1803",
+      "crouch.reload.long-gun": "crouch.reload.long-gun.1803",
+      "crouch.unload.long-gun": "crouch.unload.long-gun.1803",
+      "prone.reload.long-gun": "prone.reload.long-gun.1803",
+      "prone.unload.long-gun": "prone.unload.long-gun.1803",
+      "mounted.reload.long-gun": "mounted.reload.long-gun.1803",
+      "mounted.unload.long-gun": "mounted.unload.long-gun.1803"
+    },
+    "1804": {
+      "stand.reload.long-gun": "stand.reload.long-gun.1804",
+      "stand.unload.long-gun": "stand.unload.long-gun.1804",
+      "crouch.reload.long-gun": "crouch.reload.long-gun.1804",
+      "crouch.unload.long-gun": "crouch.unload.long-gun.1804",
+      "prone.reload.long-gun": "prone.reload.long-gun.1804",
+      "prone.unload.long-gun": "prone.unload.long-gun.1804",
+      "mounted.reload.long-gun": "mounted.reload.long-gun.1804",
+      "mounted.unload.long-gun": "mounted.unload.long-gun.1804"
+    },
+    "1805": {
+      "stand.reload.short-gun": "stand.reload.short-gun.1805",
+      "crouch.reload.short-gun": "crouch.reload.short-gun.1805",
+      "prone.reload.short-gun": "prone.reload.short-gun.1805",
+      "mounted.reload.short-gun": "mounted.reload.short-gun.1805"
+    },
+    "1806": {
+      "stand.reload.short-gun": "stand.reload.short-gun.1806",
+      "crouch.reload.short-gun": "crouch.reload.short-gun.1806",
+      "prone.reload.short-gun": "prone.reload.short-gun.1806",
+      "mounted.reload.short-gun": "mounted.reload.short-gun.1806"
+    },
+    "1807": {
+      "stand.reload.long-gun": "stand.reload.long-gun.1807",
+      "stand.unload.long-gun": "stand.unload.long-gun.1807",
+      "crouch.reload.long-gun": "crouch.reload.long-gun.1807",
+      "crouch.unload.long-gun": "crouch.unload.long-gun.1807",
+      "prone.reload.long-gun": "prone.reload.long-gun.1807",
+      "prone.unload.long-gun": "prone.unload.long-gun.1807",
+      "mounted.reload.long-gun": "mounted.reload.long-gun.1807",
+      "mounted.unload.long-gun": "mounted.unload.long-gun.1807"
+    },
+    "1808": {
+      "stand.reload.short-gun": "stand.reload.short-gun.1808",
+      "crouch.reload.short-gun": "crouch.reload.short-gun.1808",
+      "prone.reload.short-gun": "prone.reload.short-gun.1808",
+      "mounted.reload.short-gun": "mounted.reload.short-gun.1808"
+    },
+    "1812": {
+      "stand.idle.blade": "stand.idle.lance",
+      "stand.walk.blade": "stand.walk.lance",
+      "stand.run.blade": "stand.run.lance",
+      "stand.strafeLeft.blade": "stand.strafeLeft.lance",
+      "stand.strafeRight.blade": "stand.strafeRight.lance",
+      "stand.slash.blade": "stand.thrust.lance",
+      "stand.brace.blade": "stand.brace.lance",
+      "crouch.idle.blade": "crouch.idle.lance",
+      "crouch.walk.blade": "crouch.walk.lance",
+      "crouch.strafeLeft.blade": "crouch.strafeLeft.lance",
+      "crouch.strafeRight.blade": "crouch.strafeRight.lance",
+      "crouch.slash.blade": "crouch.thrust.lance",
+      "crouch.brace.blade": "crouch.brace.lance",
+      "prone.idle.blade": "prone.idle.lance",
+      "prone.crawl.blade": "prone.crawl.lance",
+      "mounted.idle.blade": "mounted.idle.lance",
+      "mounted.walk.blade": "mounted.walk.lance",
+      "mounted.run.blade": "mounted.run.lance",
+      "mounted.slash.blade": "mounted.thrust.lance",
+      "mounted.brace.blade": "mounted.brace.lance"
+    },
+    "1813": {
+      "stand.idle.blade": "stand.idle.knife",
+      "stand.walk.blade": "stand.walk.knife",
+      "stand.run.blade": "stand.run.knife",
+      "stand.strafeLeft.blade": "stand.strafeLeft.knife",
+      "stand.strafeRight.blade": "stand.strafeRight.knife",
+      "stand.slash.blade": "stand.slash.knife",
+      "stand.brace.blade": "stand.brace.knife",
+      "crouch.idle.blade": "crouch.idle.knife",
+      "crouch.walk.blade": "crouch.walk.knife",
+      "crouch.strafeLeft.blade": "crouch.strafeLeft.knife",
+      "crouch.strafeRight.blade": "crouch.strafeRight.knife",
+      "crouch.slash.blade": "crouch.slash.knife",
+      "crouch.brace.blade": "crouch.brace.knife",
+      "prone.idle.blade": "prone.idle.knife",
+      "prone.crawl.blade": "prone.crawl.knife",
+      "mounted.idle.blade": "mounted.idle.knife",
+      "mounted.walk.blade": "mounted.walk.knife",
+      "mounted.run.blade": "mounted.run.knife",
+      "mounted.slash.blade": "mounted.slash.knife",
+      "mounted.brace.blade": "mounted.brace.knife"
+    }
+  },
+  "itemAliases": {
+    "medical": "medkits",
+    "medkit": "medkits",
+    "torch": "torches",
+    "bolas": "boleadoras",
+    "ration": "rations",
+    "ammo": "ammunition",
+    "inventory:key": "key",
+    "inventory:lockpick": "lockpick",
+    "inventory:crowbar": "crowbar",
+    "inventory:pliers": "pliers"
+  }
+}

@@ -1,0 +1,332 @@
+{
+  "version": 1,
+  "gitRevision": "a5d9f55ec5a63fb29a5244d51d9616c72df95785",
+  "manifestSha256": "07a3be6d75860e24c1865ec35fa771ab174a1810906f51bd86ef784103b41913",
+  "manifestPath": "/private/tmp/granadero-full-review/models/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 1000,
+    "samples": 24,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "e7b0ab6e0e61fe698e0cb179bf0545730b938851804b16e7496383c533ae675c",
+    "snapshot": "frozen-sources/tools/characters-3d/render-review.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "d4f3871ad8901bd14ca65414278345a60501ce2d7f0b5b1151192e876176333e",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero"
+  ],
+  "coverage": [
+    {
+      "clip": "stand.idle.unarmed",
+      "item": null
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "/private/tmp/granadero-full-review/models/granadero-lod0.glb",
+        "sha256": "968a672e75f8dc267044ec8700e75a9269e98326c0e5a111e69a842fc7b284c7",
+        "bytes": 3354324,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+          "textures/9cf786dd1636a37659be.png": "9cf786dd1636a37659be83671d24df2d6734b0f7d84b4b2a3d49999774e7f09a",
+          "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/7a4750f0f9e8ddae313c.png": "/private/tmp/granadero-full-review/models/textures/7a4750f0f9e8ddae313c.png",
+          "textures/9cf786dd1636a37659be.png": "/private/tmp/granadero-full-review/models/textures/9cf786dd1636a37659be.png",
+          "textures/c115e786c16ea09b4835.png": "/private/tmp/granadero-full-review/models/textures/c115e786c16ea09b4835.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-full-review/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-full-review/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-full-review/models/male-animations.glb",
+        "sha256": "9c442370280b20bdc0808d3ed210e88737c63203f7efb2b92df62f934934714c",
+        "bytes": 17302384,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/459240e5f2a4cda05956.png": "459240e5f2a4cda059560d8dfd17d88a41a9a8be62e5bc46f2d9aa596e05f0fe",
+          "textures/5ea2609d02011f56d93c.png": "5ea2609d02011f56d93cdafb508a332ba2baa72ac3fd4779eb87fad393cf4b2d",
+          "textures/eca27423f69dde195b1b.png": "eca27423f69dde195b1b21d3f0dbf17fb62baea284e1e79c7ed42fe76dc87a54",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/459240e5f2a4cda05956.png": "/private/tmp/granadero-full-review/models/textures/459240e5f2a4cda05956.png",
+          "textures/5ea2609d02011f56d93c.png": "/private/tmp/granadero-full-review/models/textures/5ea2609d02011f56d93c.png",
+          "textures/eca27423f69dde195b1b.png": "/private/tmp/granadero-full-review/models/textures/eca27423f69dde195b1b.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-full-review/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-full-review/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-full-review/models/equipment.glb",
+        "sha256": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+        "bytes": 599736,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {
+        "Human_outfit_LOD0": [
+          "Basis",
+          "cloth_crouched",
+          "cloth_prone",
+          "cloth_supine"
+        ]
+      }
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "stand.idle.unarmed",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "granadero/stand.idle.unarmed.sample-1.png",
+      "sha256": "dd1da38e5101499614a8f4dc2cb81c59142819cb71d3b77165291f9759bf5be3",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Idle",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9451658
+        ],
+        "head": [
+          -0.0090391,
+          -0.0020323,
+          1.6191231
+        ],
+        "upperarm_l": [
+          0.1870278,
+          -0.0026985,
+          1.4183753
+        ],
+        "upperarm_r": [
+          -0.19166,
+          0.008363,
+          1.4118576
+        ],
+        "hand_l": [
+          0.2240177,
+          -0.1051052,
+          0.9279274
+        ],
+        "hand_r": [
+          -0.2225564,
+          -0.105028,
+          0.9200526
+        ],
+        "foot_l": [
+          0.0507626,
+          0.0456382,
+          0.0722874
+        ],
+        "foot_r": [
+          -0.0690159,
+          0.0545813,
+          0.1098943
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.idle.unarmed",
+      "phase": "sample-1",
+      "view": "face",
+      "timeSeconds": 0.0,
+      "durationSeconds": 2,
+      "file": "granadero/stand.idle.unarmed.sample-1.face.png",
+      "sha256": "e78db568f52f0e5cc5c0b266f24aa0401b3073a37a21055b0c14bafeb141a740",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Idle",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0,
+        "cloth_supine": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9451658
+        ],
+        "head": [
+          -0.0090391,
+          -0.0020323,
+          1.6191231
+        ],
+        "upperarm_l": [
+          0.1870278,
+          -0.0026985,
+          1.4183753
+        ],
+        "upperarm_r": [
+          -0.19166,
+          0.008363,
+          1.4118576
+        ],
+        "hand_l": [
+          0.2240177,
+          -0.1051052,
+          0.9279274
+        ],
+        "hand_r": [
+          -0.2225564,
+          -0.105028,
+          0.9200526
+        ],
+        "foot_l": [
+          0.0507626,
+          0.0456382,
+          0.0722874
+        ],
+        "foot_r": [
+          -0.0690159,
+          0.0545813,
+          0.1098943
+        ]
+      },
+      "cameraTarget": [
+        0.0016812309622764587,
+        -0.0905209630727768,
+        1.6325327157974243
+      ],
+      "cameraScale": 0.32
+    }
+  ],
+  "complete": true
+}

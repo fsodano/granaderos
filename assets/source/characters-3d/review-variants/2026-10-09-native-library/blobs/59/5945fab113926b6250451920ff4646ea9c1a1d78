@@ -1,0 +1,18 @@
+{
+  "male": {
+    "sha256": "50e17bdd8545c7b31ad4b338a300f0c65936d64c6e7f8e41cfc83e0f9fd3e68b",
+    "changedChannels": 18,
+    "preservedChannels": 53088,
+    "candidatePayloadsExact": true,
+    "nativeNodesExact": true,
+    "originalBinaryPrefixExact": true
+  },
+  "female": {
+    "sha256": "acd207a21f486dfe5032a3d7e73fa5fdefbea7237209529d696b1bb4ce10c99d",
+    "changedChannels": 18,
+    "preservedChannels": 53088,
+    "candidatePayloadsExact": true,
+    "nativeNodesExact": true,
+    "originalBinaryPrefixExact": true
+  }
+}

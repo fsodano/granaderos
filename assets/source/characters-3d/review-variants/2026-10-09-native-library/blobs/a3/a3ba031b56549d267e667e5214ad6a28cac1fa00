@@ -1,0 +1,122 @@
+[
+  {
+    "appearance": "granadero",
+    "lod": 0,
+    "clip": "stand.idle.unarmed",
+    "timeSeconds": 0.5,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-fitted/before/granadero/lod0/stand.idle.unarmed/granadero/stand.idle.unarmed.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/granadero/lod0/stand.idle.unarmed/granadero/stand.idle.unarmed.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "granadero",
+    "lod": 0,
+    "clip": "stand.aim.long-gun",
+    "timeSeconds": 0,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-fitted/before/granadero/lod0/stand.aim.long-gun/granadero/stand.aim.long-gun.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/granadero/lod0/stand.aim.long-gun/granadero/stand.aim.long-gun.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "granadero",
+    "lod": 0,
+    "clip": "stand.reload.long-gun.1800",
+    "timeSeconds": 1.92,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-fitted/before/granadero/lod0/stand.reload.long-gun.1800/granadero/stand.reload.long-gun.1800.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/granadero/lod0/stand.reload.long-gun.1800/granadero/stand.reload.long-gun.1800.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "granadero",
+    "lod": 1,
+    "clip": "stand.idle.unarmed",
+    "timeSeconds": 0.5,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/granadero/lod1/stand.idle.unarmed/granadero/stand.idle.unarmed.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/granadero/lod1/stand.idle.unarmed/granadero/stand.idle.unarmed.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "granadero",
+    "lod": 1,
+    "clip": "stand.aim.long-gun",
+    "timeSeconds": 0,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/granadero/lod1/stand.aim.long-gun/granadero/stand.aim.long-gun.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/granadero/lod1/stand.aim.long-gun/granadero/stand.aim.long-gun.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "granadero",
+    "lod": 1,
+    "clip": "stand.reload.long-gun.1800",
+    "timeSeconds": 1.92,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/granadero/lod1/stand.reload.long-gun.1800/granadero/stand.reload.long-gun.1800.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/granadero/lod1/stand.reload.long-gun.1800/granadero/stand.reload.long-gun.1800.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "royalist",
+    "lod": 0,
+    "clip": "stand.idle.unarmed",
+    "timeSeconds": 0.5,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/royalist/lod0/stand.idle.unarmed/royalist/stand.idle.unarmed.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/royalist/lod0/stand.idle.unarmed/royalist/stand.idle.unarmed.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "royalist",
+    "lod": 0,
+    "clip": "stand.aim.long-gun",
+    "timeSeconds": 0,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/royalist/lod0/stand.aim.long-gun/royalist/stand.aim.long-gun.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/royalist/lod0/stand.aim.long-gun/royalist/stand.aim.long-gun.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "royalist",
+    "lod": 0,
+    "clip": "stand.reload.long-gun.1800",
+    "timeSeconds": 1.92,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/royalist/lod0/stand.reload.long-gun.1800/royalist/stand.reload.long-gun.1800.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/royalist/lod0/stand.reload.long-gun.1800/royalist/stand.reload.long-gun.1800.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "royalist",
+    "lod": 1,
+    "clip": "stand.idle.unarmed",
+    "timeSeconds": 0.5,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/royalist/lod1/stand.idle.unarmed/royalist/stand.idle.unarmed.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/royalist/lod1/stand.idle.unarmed/royalist/stand.idle.unarmed.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "royalist",
+    "lod": 1,
+    "clip": "stand.aim.long-gun",
+    "timeSeconds": 0,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/royalist/lod1/stand.aim.long-gun/royalist/stand.aim.long-gun.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/royalist/lod1/stand.aim.long-gun/royalist/stand.aim.long-gun.sample-1.collar.png"
+    }
+  },
+  {
+    "appearance": "royalist",
+    "lod": 1,
+    "clip": "stand.reload.long-gun.1800",
+    "timeSeconds": 1.92,
+    "paths": {
+      "before": "/tmp/granadero-collar-rim-pilot/review-six/before/royalist/lod1/stand.reload.long-gun.1800/royalist/stand.reload.long-gun.1800.sample-1.collar.png",
+      "after": "/tmp/granadero-collar-rim-pilot/review-fitted/after/royalist/lod1/stand.reload.long-gun.1800/royalist/stand.reload.long-gun.1800.sample-1.collar.png"
+    }
+  }
+]

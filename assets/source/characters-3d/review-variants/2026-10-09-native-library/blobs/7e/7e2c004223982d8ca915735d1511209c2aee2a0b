@@ -1,0 +1,54 @@
+{
+  "status": "accepted",
+  "baseMain": "facf789099606b6f336c3a84c0be8dac91c3fccb",
+  "upstreamPR226ContactCommit": "f9fd6f233dd71f83ddaf32046fe7bcdd686a3624",
+  "sharedRepositoryEdits": false,
+  "candidateLibrary": "/tmp/granadero-full-review/models",
+  "files": {
+    "web/lib/three/melee-contact-fit.ts": {
+      "path": "/tmp/granadero-contact-pr226/web/lib/three/melee-contact-fit.ts",
+      "sha256": "2b96140a28d84e570915cc719fa5c1f366db44d69f6548f5194deae3e43aaeb4"
+    },
+    "web/lib/three/actor-runtime.ts": {
+      "path": "/tmp/granadero-contact-pr226/web/lib/three/actor-runtime.ts",
+      "sha256": "75878288cc5c345936434c7dae19f463cf347be0c9092019bf8081bd910f6248"
+    },
+    "tests/three-melee-facing-contact-fit.test.mjs": {
+      "path": "/tmp/granadero-contact-pr226/tests/three-melee-facing-contact-fit.test.mjs",
+      "sha256": "6324f7a7e72431149c86d2f2552bc39bf465027e5034042872306c73f700f0cf"
+    }
+  },
+  "patch": "/tmp/granadero-contact-pr226/compatibility.patch",
+  "fitterAndFixturePatch": "/tmp/granadero-contact-pr226/fitter-and-fixture.patch",
+  "runtimeContactOnlyPatch": "/tmp/granadero-contact-pr226/runtime-contact-grip.patch",
+  "tests": {
+    "pass": 21,
+    "fail": 0,
+    "files": [
+      "three-melee-contact-fit.test.mjs",
+      "three-pistol-butt-contact-fit.test.mjs",
+      "three-scene-contact-order.test.mjs",
+      "three-melee-facing-contact-fit.test.mjs",
+      "three-melee-facing-presentation.test.mjs",
+      "three-contact-target-model.test.mjs"
+    ],
+    "log": "/tmp/granadero-contact-pr226/final-gates.log",
+    "onlyAssertionFileChange": "zero-transfer fixture receives an optional 6 cm in-cell target presentation offset; exact 0 / 4 mm and all other assertions unchanged"
+  },
+  "typecheck": {
+    "pass": true,
+    "log": "/tmp/granadero-contact-pr226/typecheck.log"
+  },
+  "patchAppliesCleanly": true,
+  "fortyPlans": {
+    "count": 40,
+    "sameDiscretePlans": true,
+    "maximumVectorComponentDifference": 1.2212453270876722e-15,
+    "reason": "PR226 uses sampleRoot decomposition at the admitted heading; vector roundoff only."
+  },
+  "zeroTransferFixture": "/tmp/granadero-contact-pr226/zero-transfer-fixture-evidence.json",
+  "limits": [
+    "CPU actual-asset path/contact tests; no new browser timing or art review.",
+    "Runtime patch is only the 3-line contact-time grip delta; retain other branch runtime features during rebase."
+  ]
+}

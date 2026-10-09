@@ -1,0 +1,802 @@
+[
+  {
+    "appearance": "granadero",
+    "name": "prone.aim.long-gun",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.04551828184690698,
+      "r": 0.14608658311965186
+    },
+    "minimumSleeveTime": {
+      "l": 0,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 0.22062787259417344,
+      "r": 0.18628063175262785
+    },
+    "minimumHandTime": {
+      "l": 0,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.fire.long-gun",
+    "sampleHz": 120,
+    "samples": 134,
+    "minimumSleeveHeight": {
+      "l": 0.04551820355152351,
+      "r": 0.14608661631777217
+    },
+    "minimumSleeveTime": {
+      "l": 0,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 0.2206278884630914,
+      "r": 0.18628065799820792
+    },
+    "minimumHandTime": {
+      "l": 0,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.reload.long-gun",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.01245777851929807,
+      "r": 0.011092996799173811
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 4.176083354850782
+    },
+    "minimumHandHeight": {
+      "l": 0.037971658799068345,
+      "r": 0.18628072479570884
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.unload.long-gun",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.0405378634563335,
+      "r": 0.012817302044259002
+    },
+    "minimumSleeveTime": {
+      "l": 0.09166666666666666,
+      "r": 0.3416666666666667
+    },
+    "minimumHandHeight": {
+      "l": 0.006701094017327149,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.reload.long-gun.1800",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.017253668269717103,
+      "r": 0.011837755225044795
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 4.1677644637056614
+    },
+    "minimumHandHeight": {
+      "l": 0.03797181323626085,
+      "r": 0.18628072479570884
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.unload.long-gun.1800",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.040286753517664725,
+      "r": 0.013509597648995664
+    },
+    "minimumSleeveTime": {
+      "l": 0.09166666666666666,
+      "r": 0.35
+    },
+    "minimumHandHeight": {
+      "l": 0.00480080955136037,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.reload.long-gun.1801",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.016292477579595142,
+      "r": 0.01175116498425413
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 4.1677644637056614
+    },
+    "minimumHandHeight": {
+      "l": 0.03797181323626085,
+      "r": 0.18628072479570884
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.unload.long-gun.1801",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.04033355092017888,
+      "r": 0.013416911547503409
+    },
+    "minimumSleeveTime": {
+      "l": 0.09166666666666666,
+      "r": 0.35
+    },
+    "minimumHandHeight": {
+      "l": 0.005100540545165649,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.reload.long-gun.1802",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.010963325714325439,
+      "r": 0.011525708295527345
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 4.176083354850782
+    },
+    "minimumHandHeight": {
+      "l": 0.03797181323626085,
+      "r": 0.18628072479570884
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.unload.long-gun.1802",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.040583981560909144,
+      "r": 0.01322942191824391
+    },
+    "minimumSleeveTime": {
+      "l": 0.09166666666666666,
+      "r": 0.3333333333333333
+    },
+    "minimumHandHeight": {
+      "l": 0.007712136031205647,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.reload.long-gun.1803",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.01299030802161609,
+      "r": 0.021151096904866176
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 0.5074523598523859
+    },
+    "minimumHandHeight": {
+      "l": 0.03797181323626085,
+      "r": 0.18628072479570884
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.unload.long-gun.1803",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.039833253710716526,
+      "r": 0.020347964104050747
+    },
+    "minimumSleeveTime": {
+      "l": 0.1,
+      "r": 0.31666666666666665
+    },
+    "minimumHandHeight": {
+      "l": 0.006419924668290925,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.reload.long-gun.1804",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.011666870737378696,
+      "r": 0.015081430879872081
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 4.176083354850782
+    },
+    "minimumHandHeight": {
+      "l": 0.03797181323626085,
+      "r": 0.18628072479570884
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.unload.long-gun.1804",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.040370798013482506,
+      "r": 0.015762901243103172
+    },
+    "minimumSleeveTime": {
+      "l": 0.09166666666666666,
+      "r": 0.325
+    },
+    "minimumHandHeight": {
+      "l": 0.007183293827496809,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.reload.long-gun.1807",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.016613168394741296,
+      "r": 0.036109400249505284
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 0.4492201218365383
+    },
+    "minimumHandHeight": {
+      "l": 0.03797181323626085,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "granadero",
+    "name": "prone.unload.long-gun.1807",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.038897979222448816,
+      "r": 0.034897881093231484
+    },
+    "minimumSleeveTime": {
+      "l": 0.125,
+      "r": 0.2833333333333333
+    },
+    "minimumHandHeight": {
+      "l": 0.0049973407368316194,
+      "r": 0.18628073781239954
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.aim.long-gun",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.0530848109545904,
+      "r": 0.13125422576222748
+    },
+    "minimumSleeveTime": {
+      "l": 0,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 0.2307031207654598,
+      "r": 0.2037857434740355
+    },
+    "minimumHandTime": {
+      "l": 0,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.fire.long-gun",
+    "sampleHz": 120,
+    "samples": 134,
+    "minimumSleeveHeight": {
+      "l": 0.0530848109545904,
+      "r": 0.13125422576222748
+    },
+    "minimumSleeveTime": {
+      "l": 0,
+      "r": 0
+    },
+    "minimumHandHeight": {
+      "l": 0.2307031207654598,
+      "r": 0.2037857434740355
+    },
+    "minimumHandTime": {
+      "l": 0,
+      "r": 0
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.reload.long-gun",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.04082583245930885,
+      "r": 0.04603144263340454
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 4.184402245995903
+    },
+    "minimumHandHeight": {
+      "l": 0.058249701884237,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 4.800000190734863
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.unload.long-gun",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.04905531559632311,
+      "r": 0.04938400556242946
+    },
+    "minimumSleeveTime": {
+      "l": 0.075,
+      "r": 1.3083333333333333
+    },
+    "minimumHandHeight": {
+      "l": 0.017146098443791558,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 2
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.reload.long-gun.1800",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.04751594888277501,
+      "r": 0.04676023371049604
+    },
+    "minimumSleeveTime": {
+      "l": 1.954939419103454,
+      "r": 4.184402245995903
+    },
+    "minimumHandHeight": {
+      "l": 0.0582496758490706,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 4.800000190734863
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.unload.long-gun.1800",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.0481928913141334,
+      "r": 0.050820786628725974
+    },
+    "minimumSleeveTime": {
+      "l": 0.075,
+      "r": 1.3
+    },
+    "minimumHandHeight": {
+      "l": 0.014741685075590578,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 2
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.reload.long-gun.1801",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.046251142810620566,
+      "r": 0.04663658687604412
+    },
+    "minimumSleeveTime": {
+      "l": 1.954939419103454,
+      "r": 4.184402245995903
+    },
+    "minimumHandHeight": {
+      "l": 0.0582496758490706,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 4.800000190734863
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.unload.long-gun.1801",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.04833419444075226,
+      "r": 0.05049512234613451
+    },
+    "minimumSleeveTime": {
+      "l": 0.075,
+      "r": 1.3
+    },
+    "minimumHandHeight": {
+      "l": 0.015131789980406918,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 2
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.reload.long-gun.1802",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.03837316610087417,
+      "r": 0.046673581035181655
+    },
+    "minimumSleeveTime": {
+      "l": 1.971577201393696,
+      "r": 4.1927211371410245
+    },
+    "minimumHandHeight": {
+      "l": 0.0582496758490706,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 4.800000190734863
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.unload.long-gun.1802",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.04926848001267757,
+      "r": 0.048553690557864175
+    },
+    "minimumSleeveTime": {
+      "l": 0.075,
+      "r": 1.3083333333333333
+    },
+    "minimumHandHeight": {
+      "l": 0.018395258655216393,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 2
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.reload.long-gun.1803",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.04162893170274206,
+      "r": 0.04793297872426677
+    },
+    "minimumSleeveTime": {
+      "l": 1.963258310248575,
+      "r": 0.5074523598523859
+    },
+    "minimumHandHeight": {
+      "l": 0.0582496758490706,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 4.800000190734863
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.unload.long-gun.1803",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.04714597570653194,
+      "r": 0.04769763802334831
+    },
+    "minimumSleeveTime": {
+      "l": 0.08333333333333333,
+      "r": 0.31666666666666665
+    },
+    "minimumHandHeight": {
+      "l": 0.01679730399484041,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 2
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.reload.long-gun.1804",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.03958031405014677,
+      "r": 0.045516028560469296
+    },
+    "minimumSleeveTime": {
+      "l": 1.971577201393696,
+      "r": 0.5074523598523859
+    },
+    "minimumHandHeight": {
+      "l": 0.0582496758490706,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 4.800000190734863
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.unload.long-gun.1804",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.04845161970300316,
+      "r": 0.04729871238499306
+    },
+    "minimumSleeveTime": {
+      "l": 0.075,
+      "r": 0.31666666666666665
+    },
+    "minimumHandHeight": {
+      "l": 0.0177418550540999,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 2
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.reload.long-gun.1807",
+    "sampleHz": 120,
+    "samples": 578,
+    "minimumSleeveHeight": {
+      "l": 0.04667496739107939,
+      "r": 0.061858091442917276
+    },
+    "minimumSleeveTime": {
+      "l": 1.954939419103454,
+      "r": 0.4575390129816594
+    },
+    "minimumHandHeight": {
+      "l": 0.0582496758490706,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 0.8235702233669869,
+      "r": 4.800000190734863
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  },
+  {
+    "appearance": "woman-scout",
+    "name": "prone.unload.long-gun.1807",
+    "sampleHz": 120,
+    "samples": 241,
+    "minimumSleeveHeight": {
+      "l": 0.044378647901426656,
+      "r": 0.06021021027983252
+    },
+    "minimumSleeveTime": {
+      "l": 0.1,
+      "r": 0.2916666666666667
+    },
+    "minimumHandHeight": {
+      "l": 0.014998341678390929,
+      "r": 0.20378564147054243
+    },
+    "minimumHandTime": {
+      "l": 1.3583333333333334,
+      "r": 2
+    },
+    "crossings": [],
+    "handHeadCrossings": [],
+    "collarCrossings": []
+  }
+]

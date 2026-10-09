@@ -1,0 +1,64 @@
+import {banks,manifest,sampleBank,readGlb,nativeScene} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/character-bank-fixture.mjs';
+import {Vector3,Matrix4,Box3,Ray,Triangle} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
+const equipment=readGlb(manifest.equipment.url),equipmentScene=nativeScene(equipment.json);
+const heldPoints=Object.fromEntries(['1813','grenade','boleadoras'].map(id=>{
+ const item=equipmentScene.getObjectByName(manifest.equipment.items[id].node),inverse=item.matrixWorld.clone().invert(),points=[];
+ item.traverse(node=>{
+  const definition=equipment.json.nodes.find(entry=>entry.name===node.name);if(definition?.mesh===undefined)return;
+  const transform=new Matrix4().multiplyMatrices(inverse,node.matrixWorld);
+  for(const primitive of equipment.json.meshes[definition.mesh].primitives){
+   const positions=equipment.access(primitive.attributes.POSITION);
+   for(let i=0;i<positions.length;i+=3)points.push(new Vector3().fromArray(positions,i).applyMatrix4(transform));
+  }
+ });
+ assert.ok(points.length>20,`${id}: the held-object check uses exported geometry`);return [id,points];
+}));
+
+function headContactProbe(bank){
+ const skin=bank.body.json.skins[0],names=skin.joints.map(i=>bank.body.json.nodes[i].name),inverse=bank.body.access(skin.inverseBindMatrices),head=names.indexOf('head');
+ const inverseBinds=names.map((_,i)=>new Matrix4().fromArray(inverse,i*16)),headLocal=inverseBinds[head],triangles=[],hands=[];
+ for(const node of bank.body.json.nodes){
+  if(node.mesh===undefined||node.skin===undefined||!node.name.includes('skin'))continue;
+  for(const primitive of bank.body.json.meshes[node.mesh].primitives){
+   const positions=bank.body.access(primitive.attributes.POSITION),joints=bank.body.access(primitive.attributes.JOINTS_0),weights=bank.body.access(primitive.attributes.WEIGHTS_0),vertices=[];
+   for(let i=0;i<positions.length/3;i++){
+    const p=new Vector3().fromArray(positions,i*3),j=joints.slice(i*4,i*4+4),w=weights.slice(i*4,i*4+4);
+    const headWeight=w.reduce((sum,value,k)=>sum+(j[k]===head?value:0),0);
+    vertices.push(headWeight>.99?p.clone().applyMatrix4(headLocal):undefined);
+    if(w.reduce((sum,value,k)=>sum+(/^(hand_|thumb_|index_|middle_|ring_|pinky_)/.test(names[j[k]])?value:0),0)>.8)hands.push({p,j,w});
+   }
+   const indices=primitive.indices===undefined?vertices.map((_,i)=>i):bank.body.access(primitive.indices);
+   for(let i=0;i<indices.length;i+=3){const triangle=indices.slice(i,i+3).map(index=>vertices[index]);if(triangle.every(Boolean))triangles.push(triangle);}
+  }
+ }
+ assert.ok(triangles.length>100&&hands.length>100,'The contact check uses exported head and hand surfaces');
+ const bounds=new Box3().setFromPoints(triangles.flat()),ray=new Ray(new Vector3(),new Vector3(1,.137,.081).normalize()),hit=new Vector3();
+ // Bin triangles in the plane normal to the ray. This retains the same exact
+ // surface intersections without testing every head triangle for every finger.
+ const u=new Vector3().crossVectors(ray.direction,new Vector3(0,1,0)).normalize(),v=new Vector3().crossVectors(ray.direction,u).normalize(),axes=[u,v];
+ const ranges=axes.map(axis=>{const values=triangles.flat().map(point=>point.dot(axis));return [Math.min(...values),Math.max(...values)];});
+ const bin=(value,axis)=>Math.max(0,Math.min(15,Math.floor((value-ranges[axis][0])/(ranges[axis][1]-ranges[axis][0])*16))),buckets=Array.from({length:256},()=>[]);
+ for(const triangle of triangles){const spans=axes.map((axis,i)=>{const values=triangle.map(point=>point.dot(axis));return [bin(Math.min(...values),i),bin(Math.max(...values),i)];});for(let x=spans[0][0];x<=spans[0][1];x++)for(let y=spans[1][0];y<=spans[1][1];y++)buckets[x*16+y].push(triangle);}
+ const inside=point=>{
+  if(!bounds.containsPoint(point))return false;
+  ray.origin.copy(point);const hits=[];
+  for(const triangle of buckets[bin(point.dot(u),0)*16+bin(point.dot(v),1)])if(ray.intersectTriangle(...triangle,false,hit))hits.push(point.distanceTo(hit));
+  hits.sort((a,b)=>a-b);const distinct=hits.filter((distance,i)=>distance>.002&&(!i||distance-hits[i-1]>.00001));
+  return distinct.length%2===1;
+ };
+ return (scene,heldItem)=>{
+  const matrices=names.map((name,i)=>new Matrix4().multiplyMatrices(scene.getObjectByName(name).matrixWorld,inverseBinds[i])),headInverse=scene.getObjectByName('head').matrixWorld.clone().invert();
+  let minimum=Infinity,contact=false, contacts=[];
+  for(const vertex of hands){const point=new Vector3();for(let k=0;k<4;k++)if(vertex.w[k])point.addScaledVector(vertex.p.clone().applyMatrix4(matrices[vertex.j[k]]),vertex.w[k]);minimum=Math.min(minimum,point.y);point.applyMatrix4(headInverse);if(inside(point)){contact=true;contacts.push({kind:'hand',bones:vertex.j.map((j,i)=>[names[j],vertex.w[i]]).filter(v=>v[1]),local:point.toArray(),near:Math.min(...triangles.map(v=>new Triangle(...v).closestPointToPoint(point,new Vector3()).distanceTo(point)))});}}
+  if(heldItem){const socket=scene.getObjectByName(heldItem==='1813'?'socket_handRight_sabre':'socket_handRight_tool');for(const vertex of heldPoints[heldItem]){const point=socket.localToWorld(vertex.clone());minimum=Math.min(minimum,point.y);if(inside(point.applyMatrix4(headInverse))){contact=true;contacts.push({kind:heldItem,local:point.toArray(),near:Math.min(...triangles.map(v=>new Triangle(...v).closestPointToPoint(point,new Vector3()).distanceTo(point)))});}}}
+  return {contact,minimum,contacts};
+ };
+}
+
+const bank=banks.female, probe=headContactProbe(bank),spec=bank.specs.find(c=>c.name==='prone.gesture.throw');
+const result=sampleBank(bank,spec.name,Array.from({length:157},(_,i)=>i/156),(point,scene,time)=>probe(scene,time<spec.markers.release?'grenade':undefined));
+const failures=result.filter(v=>v.contact);
+writeFileSync('/tmp/granadero-prone-throw-head-review/baseline-contact-distance.json',JSON.stringify({spec,failures},null,2));
+console.log(JSON.stringify(failures.map(v=>({time:v.time,contacts:v.contacts.length,kinds:[...new Set(v.contacts.map(c=>c.kind))],first:v.contacts[0]})),null,2));

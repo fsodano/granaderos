@@ -1,0 +1,8 @@
+{
+  "LOD2ControlFlowIdenticalToPreviousSource": true,
+  "LOD0AndLOD1ControlFlowIdenticalToPrivateExportWorker": true,
+  "scope": "optimize_character passes cleanup_seams=(lod<2) only at existing military strap fitting call",
+  "beforeSha256": "813d8016e852034a6a06584c30994a3a8b2b70ebd746f4704c6949d7b0791166",
+  "workerSha256": "dbf2e9f07ac0846b3cee220b41a944ad71883deaa32cac87ee6fccf22f84c0dd",
+  "finalSha256": "e9f26701a760b783ba9b5d594dc1b1b94afd046c6e063757ef88afc57de8ad04"
+}

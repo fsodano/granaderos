@@ -1,0 +1,33 @@
+from pathlib import Path
+from collections import Counter,defaultdict
+import json,struct,math
+from PIL import Image
+B=Path('/tmp/granadero-collar-rim-pilot')
+def load(directory,preset,lod):
+ raw=(directory/(preset+'-lod'+str(lod)+'.glb')).read_bytes();n=struct.unpack_from('<I',raw,12)[0];j=json.loads(raw[20:20+n]);binary=raw[28+n:]
+ def acc(i):
+  a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];w={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4}[a['type']];f={5121:'B',5123:'H',5125:'I',5126:'f'}[a['componentType']];size=struct.calcsize('<'+f*w);start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size);return [struct.unpack_from('<'+f*w,binary,start+k*stride)for k in range(a['count'])]
+ mesh=j['meshes'][next(n['mesh']for n in j['nodes']if n['name'].startswith('Human_outfit'))];p=mesh['primitives'][0];a={k:acc(i)for k,i in p['attributes'].items()};indices=[i[0]for i in acc(p['indices'])]
+ mat=j['materials'][p['material']];image=j['images'][j['textures'][mat['pbrMetallicRoughness']['baseColorTexture']['index']]['source']]['uri'];im=Image.open(directory/image).convert('RGB');pix=im.load()
+ def kind(i):
+  u,v=a['TEXCOORD_0'][i];col=pix[min(im.width-1,max(0,int(u*im.width))),min(im.height-1,max(0,int(v*im.height)))];return 'navy'if all(abs(x-y)<9 for x,y in zip(col,(35,44,59)if preset=='granadero'else(207,200,179)))else'red'if col[0]>col[1]*1.7 and col[1]<90 else'other'
+ def vertex(i):return tuple(a[k][i]for k in ['POSITION','JOINTS_0','WEIGHTS_0'])
+ navy=[];edges=defaultdict(list);top=[]
+ for k in range(0,len(indices),3):
+  ids=indices[k:k+3];typ=kind(ids[0]);points=[a['POSITION'][i]for i in ids]
+  if typ=='navy':navy.append(tuple(sorted(vertex(i)for i in ids)))
+  if typ not in ['navy','red']or not all(abs(p[0])<.13 and 1.48<p[1]<1.55 and abs(p[2])<.14 for p in points):continue
+  for i,q in zip(ids,ids[1:]+ids[:1]):
+   key=tuple(sorted((vertex(i),vertex(q))));edges[key].append(typ)
+  if typ=='red':top.extend(p for p in points if abs(p[1]-1.533)<1e-6)
+ shared=[key for key,types in edges.items()if set(types)=={'navy','red'}];open_edges=[key for key,types in edges.items()if types==['red']and max(p[0][1]for p in key)<1.510]
+ # The GLB Y axis is up; Blender Y becomes -Z.
+ angles=sorted(set(round(math.atan2(-p[2]+.036,p[0]),6)for p in top));gap=max(((angles[(i+1)%len(angles)]-a)%math.tau for i,a in enumerate(angles)),default=0)
+ return {'navy':Counter(navy),'seam':set(shared),'open':open_edges,'topCount':len(angles),'topGap':math.degrees(gap)}
+results=[]
+for preset in ['granadero','royalist']:
+ for lod in range(2):
+  a=load(B/'before-models',preset,lod);b=load(B/'models',preset,lod);proof={'actualNavyTriangleCountBefore':sum(a['navy'].values()),'actualNavyTriangleCountAfter':sum(b['navy'].values()),'actualNavyPositionsAndNativeWeightsExact':a['navy']==b['navy'],'baselineSeamEdges':len(a['seam']),'candidateSeamEdges':len(b['seam']),'allAcceptedExportedSewnEdgesExact':a['seam']==b['seam'],'openCollarLowerEdgesBefore':len(a['open']),'openCollarLowerEdgesAfter':len(b['open']),'rimBefore':{'distinctAngles':a['topCount'],'maximumAngularGapDegrees':a['topGap']},'rimAfter':{'distinctAngles':b['topCount'],'maximumAngularGapDegrees':b['topGap']}}
+  proof.update(preset=preset,lod=lod);results.append(proof)
+  assert proof['actualNavyPositionsAndNativeWeightsExact'] and proof['allAcceptedExportedSewnEdgesExact'] and proof['openCollarLowerEdgesAfter']==0
+(B/'four-seam-proof.json').write_text(json.dumps(results,indent=2));print(json.dumps(results,indent=2))

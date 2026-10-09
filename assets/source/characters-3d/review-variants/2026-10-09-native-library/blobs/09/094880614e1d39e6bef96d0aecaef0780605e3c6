@@ -1,0 +1,131 @@
+--- /dev/null
++++ b/game/actor-elbow-cloth.js
+@@ -0,0 +1,35 @@
++/** Drive authored sleeve corrections from the final native elbow pose.
++ * Models without these optional morph targets are unchanged.
++ * @param {any} model A cloned, natively skinned character.
++ */
++export function createElbowCloth(model) {
++ const entries=[];
++ model.traverse(mesh=>{
++  if(!mesh.isSkinnedMesh||!mesh.morphTargetInfluences)return;
++  for(const side of ['l','r']){
++   const target=mesh.morphTargetDictionary?.['coat_elbow_'+side];
++   if(target===undefined)continue;
++   const names=['upperarm_'+side,'lowerarm_'+side,'hand_'+side];
++   const indices=names.map(name=>mesh.skeleton.bones.findIndex(bone=>bone.name===name));
++   if(indices.some(index=>index<0))throw Error('Elbow corrective lacks its native arm');
++   const bones=indices.map(index=>mesh.skeleton.bones[index]);
++   const rest=indices.map(index=>model.position.clone().setFromMatrixPosition(mesh.skeleton.boneInverses[index].clone().invert()));
++   const bind=rest[1].clone().sub(rest[0]).angleTo(rest[2].clone().sub(rest[1]));
++   const full=110*Math.PI/180;
++   if(!(full>bind))throw Error('Invalid elbow corrective range');
++   entries.push({mesh,target,bones,bind,range:full-bind});
++  }
++ });
++ const points=[model.position.clone(),model.position.clone(),model.position.clone()];
++ const upper=model.position.clone(),lower=model.position.clone();
++ return {apply(){
++  if(!entries.length)return;
++  model.updateWorldMatrix(true,true);
++  for(const {mesh,target,bones,bind,range}of entries){
++   for(let i=0;i<3;i++)points[i].setFromMatrixPosition(bones[i].matrixWorld);
++   upper.copy(points[1]).sub(points[0]);lower.copy(points[2]).sub(points[1]);
++   const angle=upper.lengthSq()>1e-12&&lower.lengthSq()>1e-12?upper.angleTo(lower):bind;
++   mesh.morphTargetInfluences[target]=Math.max(0,Math.min(1,(angle-bind)/range));
++  }
++ }};
++}
+--- a/web/lib/three/actor-runtime.ts
++++ b/web/lib/three/actor-runtime.ts
+@@ -1,3 +1,4 @@
++import {createElbowCloth} from '../../../game/actor-elbow-cloth.js';
+ import {AnimationMixer,AnimationAction,Group,Mesh,SkinnedMesh,Skeleton,Material,MeshStandardMaterial,LoopOnce,LoopRepeat,Vector3,Quaternion,Object3D} from 'three';
+ import {clone} from 'three/addons/utils/SkeletonUtils.js';
+ import {resolveActorAction,selectActorClipVariant} from '../../../game/actor-action-contract.js';
+@@ -40,6 +41,7 @@
+   private gestureSupport:NativeGestureBlendSupport;
+   private climbFit?:NativeClimbContactFit;
+   private meleeFit:NativeMeleeContactFit;
++  private elbowCloth:ReturnType<typeof createElbowCloth>;
+   private clothMeshes:{mesh:Mesh;prone:number;crouched:number;supine?:number}[]=[];private clothProne=0;private clothCrouched=0;private clothSupine=0;
+   private clothChest?:Object3D;private clothChestForward=new Vector3(0,0,1);private clothFacing=new Vector3();private clothRotation=new Quaternion();
+   private actionHand:HandRole='handRight';private actionBarrel=0;
+@@ -59,6 +61,7 @@
+         this.clothChestForward.transformDirection(this.model.matrixWorld).applyQuaternion(this.clothChest.getWorldQuaternion(this.clothRotation).invert());
+       }
+     }
++    this.elbowCloth=createElbowCloth(this.model);
+     this.gaitSupport=new NativeGaitTransitionSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
+     this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
+     this.climbFit=new NativeClimbContactFit(this.model,this.root);
+@@ -358,6 +361,7 @@
+     // then restore the visible grip for this frame after the fitted body pose.
+     if(meleeWeapon&&visual.cue)this.placeEquipment(this.clipSpec.markers?.contact??this.action.time,true);
+     this.meleeFit.apply(visual.cue,clip,this.clipSpec,meleeWeapon,this.action.time,this.contactActor);
++    this.elbowCloth.apply();
+     this.placeEquipment(this.action.time);this.timedProps(this.action.time);
+     if(this.horse&&this.horseMixer){
+       const visibility=this.clipSpec.horseVisibility;
+--- a/playgrounds/granadero-3d/src/main.js
++++ b/playgrounds/granadero-3d/src/main.js
+@@ -1,3 +1,4 @@
++import {createElbowCloth} from '/shared/actor-elbow-cloth.js';
+ import * as THREE from 'three';
+ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+@@ -17,7 +18,7 @@
+ const meleeVariants={sabre:['SabreSlash','SabreBackhand'],knife:['KnifeSlash','KnifeBackhand']};
+ const meleeTurns={sabre:0,knife:0};
+ const attackOptions={none:[['Punch','Puñetazo']],sabre:[['SabreSlash','Corte descendente'],['SabreForehand','Derecha a izquierda · nudillos abajo'],['SabreBackhand','Izquierda a derecha · nudillos arriba'],['SabreCombination','Dos cortes enlazados'],['SabreThrust','Estocada'],['SabreHiltStrike','Golpe con la empuñadura']],knife:[['KnifeSlash','Corte diagonal'],['KnifeBackhand','Corte de revés'],['KnifeThrust','Puñalada']],rifle:[['RifleFire','Disparo'],['BayonetThrust','Estocada de bayoneta'],['RifleButtStrike','Culatazo']],pistol:[['PistolFire','Disparo'],['PistolStrike','Golpe con la pistola']]};
+-let chosenAttack=null;
++let chosenAttack=null,elbowCloth=null;
+ function availableAttacks(){return attackOptions[state.weapon].filter(([name])=>!state.ready||clips.some(clip=>clip.name===name));}
+ function updateAttackChoices(){
+  const select=$('#action-choice');select.replaceChildren();
+@@ -257,7 +258,7 @@
+  clearEffects();mixer?.stopAllAction();if(model){mixer?.uncacheRoot(model);scene.remove(model);}
+  for(const material of ownedMaterials)material.dispose();ownedMaterials.clear();skinMaterials.clear();
+  for(const key of Object.keys(weapons))delete weapons[key];for(const key of Object.keys(muzzles))delete muzzles[key];
+- model=null;mixer=null;currentAction=null;bayonet=null;clips=[];travelPhase=0;
++ model=null;mixer=null;currentAction=null;elbowCloth=null;bayonet=null;clips=[];travelPhase=0;
+  const name=characterChoices.find(([id])=>id===characterId)?.[1]??characterId;
+  $('#character-title').textContent=name;$('#scene').setAttribute('aria-label',`${name} en vista isométrica. Arrastrá para mover la vista. Usá la rueda para acercarte.`);
+  $('#loading').classList.remove('hidden');$('#loading').innerHTML='<span class="loading-ring"></span><strong>Cargando el personaje…</strong><span>Modelo y movimientos</span>';updateControls();
+@@ -294,7 +295,7 @@
+   for(const weapon of ['rifle','sabre','pistol','knife'])if(!weapons[weapon])throw Error(`Falta el modelo de ${weapon}.`);
+   for(const weapon of ['rifle','pistol'])if(!muzzles[weapon])throw Error(`Falta la boca de ${weapon}.`);
+   if(!skinMaterials.size)throw Error('Falta el material de piel.');
+-  scene.add(model);clips=asset.animations;mixer=new THREE.AnimationMixer(model);
++  elbowCloth=createElbowCloth(model);scene.add(model);clips=asset.animations;mixer=new THREE.AnimationMixer(model);
+   mixer.addEventListener('finished',event=>{if(event.action===currentAction&&state.attacking)returnToSelectedPose();});
+   state.ready=true;applySkin(state.skin);selectWeapon(state.weapon);
+   if([...$('#action-choice').options].some(option=>option.value===previousAttack)){chosenAttack=previousAttack;$('#action-choice').value=previousAttack;}
+@@ -359,7 +360,7 @@
+   const before=action?.time??0;
+   mixer.update(delta);
+   applyProductionGripOffsets(weapons,manifest.clips?.find(spec=>spec.name===state.clip),currentAction?.time??0);
+-  model.updateMatrixWorld(true);
++  model.updateMatrixWorld(true);elbowCloth?.apply();
+   if(wasAttacking&&!attackEvent&&action){
+    const at=actionEventTime(action.getClip()),after=action.time;
+    if(before<=at&&after>=at){attackEvent=true;weaponEvent();}
+--- a/playgrounds/granadero-3d/server.mjs
++++ b/playgrounds/granadero-3d/server.mjs
+@@ -13,6 +13,7 @@
+ const server=createServer(async(req,res)=>{
+  try{
+   const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
++  if(!production&&pathname==='/shared/actor-elbow-cloth.js'){res.writeHead(200,{'Content-Type':types['.js'],'Cache-Control':'no-cache'});res.end(await readFile(resolve(root,'../../game/actor-elbow-cloth.js')));return;}
+   const publicPath=pathname.startsWith('/assets/')&&!process.argv.includes('--dist')?`public${pathname}`:pathname.replace(/^\//,'');
+   const relative=!production&&pathname.startsWith('/vendor/three/')?`node_modules/three/${pathname.slice('/vendor/three/'.length)}`:publicPath;
+   const fromLibrary=!production&&pathname.startsWith('/models/characters/');
+--- a/playgrounds/granadero-3d/build.mjs
++++ b/playgrounds/granadero-3d/build.mjs
+@@ -26,4 +26,6 @@
+  }
+ }
+ for(const path of files){const destination=new URL(path,target);await mkdir(dirname(fileURLToPath(destination)),{recursive:true});await cp(new URL(path,publicRoot),destination);}
++await mkdir(new URL('shared/',target),{recursive:true});
++await cp(new URL('../../game/actor-elbow-cloth.js',import.meta.url),new URL('shared/actor-elbow-cloth.js',target));
+ console.log('Standalone character laboratory built in dist/.');

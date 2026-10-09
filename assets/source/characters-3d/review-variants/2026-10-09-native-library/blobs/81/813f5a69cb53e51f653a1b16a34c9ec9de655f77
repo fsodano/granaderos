@@ -1,0 +1,34 @@
+{
+  "status": "private-palette-and-registration-options-frozen",
+  "option": "Per-Skin material skinAlbedoReference RGB in linear space; apply selected palette/reference before existing texture and COLOR_0 multiplication",
+  "productionChangesRequired": [
+    "Source: use unchanged generated PNG and export Skin extras.skinAlbedoReference.",
+    "Runtime: apply optional reference compensation when palette changes; old materials have no reference and retain existing behavior.",
+    "Review renderer: use the same optional reference rule."
+  ],
+  "pixelEditing": false,
+  "PNG_SHA256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+  "bodyGeometryUVsAndWeights": "unchanged in palette-only trial; production COLOR_0 restored from original existing accessor",
+  "palettes": [
+    "light",
+    "brown",
+    "dark"
+  ],
+  "uvTrial": {
+    "status": "final bounded trial complete; modest improvement, parent review pending",
+    "library": "/tmp/granadero-generated-skin-palette-pilot/models-registration",
+    "comparisonWithoutWarp": "/tmp/granadero-generated-skin-palette-pilot/review/outward-combined/granadero/stand.idle.unarmed.sample-1.face.png",
+    "render": "/tmp/granadero-generated-skin-palette-pilot/review/registration-combined/granadero/stand.idle.unarmed.sample-1.face.png",
+    "baseColorOnly": "TEXCOORD_1; normal/roughness remain original TEXCOORD_0",
+    "proof": "uv-registration-proof.json",
+    "finding": "Lip corners contract modestly. Brow tail is narrower but retains a soft painted halo. No new eye/nose shift or hard seam visible in the one matched face view. No further iteration.",
+    "limits": "This view does not establish all-face-angle, hand/nail or lower-LOD registration."
+  },
+  "limits": [
+    "One male Granadero LOD0, one pose, one lighting setup; all three palettes rendered.",
+    "Face placement, nails/hand texture registration and all LODs still need visual coverage before a production rollout.",
+    "Generated map retains its baked colour/feature proportions; material compensation does not remove those."
+  ],
+  "runtimeMathCheck": "Three Color conversion and private Blender palette factors agree within3.8e-11 for all three choices.",
+  "outwardBody": "Combined body uses the separately authored outward ellipsoid winding correction; its geometry binary remains exact."
+}

@@ -1,0 +1,21 @@
+{
+  "manifestSha256": "d94e9c11e6842ed924638bd8c173bb43814c34234d79055fd4afdff8b86ff69d",
+  "granaderoBodySha256": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7",
+  "affectedChecks": "75/75 pass",
+  "libraryVerification": "PASS",
+  "scope": "Outward eyes and raised details, source30 loading arms, four military shoulder seam meshes",
+  "knownLimits": "Face remains smooth. Generated facial albedo and independent coat remain private. Broad quick snapshot had15 failures, four strap failures repaired in this checkpoint; no claim remaining eleven are all main baseline.",
+  "commit": "b80b436221eef521a863e6d4552df812d247b9f3",
+  "pullRequest": "https://github.com/fsodano/granaderos/pull/239",
+  "productionBuild": "PASS",
+  "browser": {
+    "url": "http://localhost:3147/",
+    "modelLabel": "7976c43a",
+    "pixelated": false,
+    "speed": 1,
+    "view": "isometric",
+    "screenshot": "live-close.png",
+    "warningsAndErrors": [],
+    "captureNote": "Default browser viewport was0x0. A temporary1280x900 override restored screenshot capture. Reset before ending the review."
+  }
+}

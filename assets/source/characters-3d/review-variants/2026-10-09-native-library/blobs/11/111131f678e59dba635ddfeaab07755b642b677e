@@ -1,0 +1,96 @@
+{
+  "male": {
+    "beforeSha256": "da48a34b597a09a35500dd471bc0ea9cdbfa323070bcfacc4735797a8136e95d",
+    "afterSha256": "9d9075877569ff737bc5dfbf41a1d31744f183b6552377e6c6c8cab51532b16c",
+    "changed": [
+      [
+        "stand.idle.lance",
+        "thigh_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "calf_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "foot_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "thigh_r",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "calf_r",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "foot_r",
+        "rotation"
+      ]
+    ],
+    "preservedChannels": 53100,
+    "preservedChannelHash": "c0cc5ccde6b11422266667a08b003ee92aaa22908a1ff9b0c02736e9e9d1a1cb",
+    "preservedDuration": 1.9999920129776,
+    "incomingLegDuration": 1.9666666984558105,
+    "nativeBootSupport": {
+      "method": "native-leg-rotations",
+      "surface": "complete-native-boot",
+      "floor": 0.002,
+      "sampleRate": 30,
+      "maximumLift": 0.003908
+    }
+  },
+  "female": {
+    "beforeSha256": "a1cc665e214330227c06edff38da4207811c18aa17667a75ebb7cc42395f92d5",
+    "afterSha256": "889a3501619dd21c0a76e41b3cea7a6f42bee853a1e81594375d7c0635947113",
+    "changed": [
+      [
+        "stand.idle.lance",
+        "thigh_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "calf_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "foot_l",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "thigh_r",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "calf_r",
+        "rotation"
+      ],
+      [
+        "stand.idle.lance",
+        "foot_r",
+        "rotation"
+      ]
+    ],
+    "preservedChannels": 53100,
+    "preservedChannelHash": "90c3115cc4e248dab0a1f893350fab815f2ec3480db310ff0059542702f32e1a",
+    "preservedDuration": 1.9999920129776,
+    "incomingLegDuration": 1.9666666984558105,
+    "nativeBootSupport": {
+      "method": "native-leg-rotations",
+      "surface": "complete-native-boot",
+      "floor": 0.002,
+      "sampleRate": 30,
+      "maximumLift": 0.006104
+    }
+  }
+}

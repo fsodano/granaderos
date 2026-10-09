@@ -1,0 +1,1200 @@
+{
+  "sourceIndex": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/combined-final/a/index.json",
+  "sourceIndexSha256": "7adc702f75410f9fc9b3b09c4ff905e8873b3c600105a5fc04dae10879f7761d",
+  "sourceComplete": true,
+  "toolSha256": "082f9ac6d45c2fc39f6874b8032050407d7ccd089012ca746a89c6c8972d7154",
+  "font": {
+    "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+    "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+  },
+  "sheets": [
+    {
+      "file": "sheets/granadero.overview.png",
+      "sha256": "7f83748ebc78afc02e4d3424caa98dd7f921df3fcbfbc8a90d414e5e8ea4909e",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.phase-2.png",
+          "sha256": "93e0ff6ca390b05c7b2eac7d14d62a6e0b5b78380cf9bcb6f25952ce5ebcf1d4",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "granadero/stand.fire.short-gun.recoil.png",
+          "sha256": "4fcc7208855097b57239a97f12bccd805cbab4fe825c0eeeb8af54b2ca51522f",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "granadero/stand.fire.long-gun.recoil.png",
+          "sha256": "6359ab58ce1419538c376cce81df2a9e882799d36658264519e3373bacb0feed",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "granadero/stand.slash.knife.thrust.contact.png",
+          "sha256": "751a3e959c742170e30579cc365283ba43ca1ea9586dc0cc4c0535c27105c4c0",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "granadero/stand.slash.blade.backhand.contact.png",
+          "sha256": "d09ee37802316d8913e83134eb1f270ba8c2d424f2cebae99fac2d83701472ac",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "granadero/stand.punch.unarmed.contact.png",
+          "sha256": "fdc5a44d57b7c1644937a8fbf702c61a15108371d8f50a10eb462d2b9f24d507",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "granadero/life.stand.die.ground.png",
+          "sha256": "d591dcb555a05b4dc56c1ee47f5cae7a226603249dbf4d3daeb5e955aea15688",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        }
+      ]
+    },
+    {
+      "file": "sheets/granadero.motion-01.png",
+      "sha256": "a8ef7e553cd5b2ea71f1758a132703b351a35b57625fb5709e07ae4d9135f133",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.phase-1.png",
+          "sha256": "1a09d9a1d0532bd6804bfea030d9b57774ec46b9de00ed62bc9df22a3436798c",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "granadero/stand.idle.unarmed.phase-2.png",
+          "sha256": "93e0ff6ca390b05c7b2eac7d14d62a6e0b5b78380cf9bcb6f25952ce5ebcf1d4",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "granadero/stand.idle.unarmed.phase-3.png",
+          "sha256": "f2978e6deda8fd5d00a259e7216b5134aec4f74b1d3fa27d32aa67c21554a392",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 1.36
+        },
+        {
+          "file": "granadero/stand.run.blade.phase-1.png",
+          "sha256": "5e082275234af1dac97d60f90c212d163c8109484467e34796eddde992266d4f",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "granadero/stand.run.blade.phase-2.png",
+          "sha256": "ebfe47c74016f6dc55e3c25bd58d87a820455c037e6bc47e8a2611650ce0f211",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "granadero/stand.run.blade.phase-3.png",
+          "sha256": "25aafe5c4d6637ab5c470b011ce7fcf6e5033bb8e9448776b96bcd6d0a73288d",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "granadero/stand.run.short-gun.phase-1.png",
+          "sha256": "a9a2920578ff8d296a03abd1462fc6ba409694ef4c5b270c697354da51f5f713",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "granadero/stand.run.short-gun.phase-2.png",
+          "sha256": "b2cffe095075bd7ea2fbd56f1cd0d033f3d8b7118b7327534b018790b75ec455",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "granadero/stand.run.short-gun.phase-3.png",
+          "sha256": "93e5cf34d8e738b73910271903ceeeed806151283b2d2d84c141a68cc1d92bae",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "granadero/stand.run.knife.phase-1.png",
+          "sha256": "b21efd0905ca036af222a7a60f088ecc6be7a73767f76e1de493336273f3fe43",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "granadero/stand.run.knife.phase-2.png",
+          "sha256": "d4a90dab364942834d02771eb755a0e4e0e976dc88b86ad1ad86e37d95e48f8d",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "granadero/stand.run.knife.phase-3.png",
+          "sha256": "1b8824bf8bf401b105e1891b2400cfd9ccc3ddb2783fcb19e89c7dc650e13714",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.52133356
+        }
+      ]
+    },
+    {
+      "file": "sheets/granadero.motion-02.png",
+      "sha256": "97cd955e3ee6ce89e7c9b59e0279a41e3afc129673fe839b7a5c6ba7fff633fb",
+      "frames": [
+        {
+          "file": "granadero/stand.fire.long-gun.prepare.png",
+          "sha256": "da792f920b71b1a169cf0f878520b8e501ca6a4d792b0e52844323dd47f2be3c",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "granadero/stand.fire.long-gun.recoil.png",
+          "sha256": "6359ab58ce1419538c376cce81df2a9e882799d36658264519e3373bacb0feed",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "granadero/stand.fire.long-gun.recover.png",
+          "sha256": "94592cc0cb10d1e29827a3884e8bc33977495f28c6f79aadacedeb27bd515b78",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.555
+        },
+        {
+          "file": "granadero/stand.fire.short-gun.prepare.png",
+          "sha256": "214a86a2021fbe604a0cfe88d471ebef57ed699033d37b7e5ee1fd7ea6a0b862",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "granadero/stand.fire.short-gun.recoil.png",
+          "sha256": "4fcc7208855097b57239a97f12bccd805cbab4fe825c0eeeb8af54b2ca51522f",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "granadero/stand.fire.short-gun.recover.png",
+          "sha256": "0e7ac85574277f847811a91b4610e7fdc1f280c2718d090f8a9883942d8f4a81",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.49
+        },
+        {
+          "file": "granadero/stand.slash.blade.prepare.png",
+          "sha256": "59e7ff035c56705ad78c050f9cb0df78bbd5fd7867d66e7315c937d145e6d4b5",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "granadero/stand.slash.blade.contact.png",
+          "sha256": "482b307147a17ef2b3b9fbea17a8a80fbfb80c3cdf31f8ad21fd6780fb9383eb",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "granadero/stand.slash.blade.recover.png",
+          "sha256": "3c20bdcafe7fc4e05c8056e9ce36f6ef87fa03b151152d3b4336e79321ea91c7",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.776
+        },
+        {
+          "file": "granadero/stand.slash.blade.backhand.prepare.png",
+          "sha256": "b74c05005287dd4621067aa5e51969b1d428eb95ac11a921d8b61332b6d0a4c3",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "granadero/stand.slash.blade.backhand.contact.png",
+          "sha256": "d09ee37802316d8913e83134eb1f270ba8c2d424f2cebae99fac2d83701472ac",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "granadero/stand.slash.blade.backhand.recover.png",
+          "sha256": "c67238d87682ff672751355642de7b35e06ac4d0d15470f23ada08425269f9d9",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.776
+        }
+      ]
+    },
+    {
+      "file": "sheets/granadero.motion-03.png",
+      "sha256": "1de528de291da2865f7bbd37a5107887d8818e8a39b92a484d431d053d099ce9",
+      "frames": [
+        {
+          "file": "granadero/stand.slash.knife.thrust.prepare.png",
+          "sha256": "e3dd8b69829404cd1d580b7b8f10edcd55c230f0840f5edf42af941dae1173a7",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "granadero/stand.slash.knife.thrust.contact.png",
+          "sha256": "751a3e959c742170e30579cc365283ba43ca1ea9586dc0cc4c0535c27105c4c0",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "granadero/stand.slash.knife.thrust.recover.png",
+          "sha256": "d9958915d64d5814b705edd13aff85728e3213bab56ad10980009736ba30f939",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "granadero/stand.punch.unarmed.prepare.png",
+          "sha256": "3e0ef436f7bb4ad75c1f2cd0ca541379698b773750c385c91a8804fde8c955b3",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "granadero/stand.punch.unarmed.contact.png",
+          "sha256": "fdc5a44d57b7c1644937a8fbf702c61a15108371d8f50a10eb462d2b9f24d507",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "granadero/stand.punch.unarmed.recover.png",
+          "sha256": "5c628538ab0e7e25cc509abf942663d1f21dc00b1f562be2c9dcf5a49fa4a26c",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "granadero/prone.crawl.unarmed.phase-1.png",
+          "sha256": "f59ea87e9e5e20c4d9ff07098e0a436ba21accc5824a4b72a9b0946e239bc5bb",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.09833295
+        },
+        {
+          "file": "granadero/prone.crawl.unarmed.phase-2.png",
+          "sha256": "388c1771741f9e1d4d048457365197e2c286c9c1baa1d2278d1ea864a01adbdc",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.6883306499999999
+        },
+        {
+          "file": "granadero/prone.crawl.unarmed.phase-3.png",
+          "sha256": "c9d0e4229ca3a3b217f6a55976968a29c20e4c9404e36c8c3fba589e9fab91ac",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 1.33732812
+        },
+        {
+          "file": "granadero/life.stand.die.fall.png",
+          "sha256": "6d172c71ec1d9a7cbc95294ee48eaa3df66d758173ceefe022f1b40ebdf963db",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.2566656
+        },
+        {
+          "file": "granadero/life.stand.die.ground.png",
+          "sha256": "d591dcb555a05b4dc56c1ee47f5cae7a226603249dbf4d3daeb5e955aea15688",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        },
+        {
+          "file": "granadero/life.stand.die.settled.png",
+          "sha256": "f346b4990d90dccee36b4ec7da78ab99b1b02ebe79b041c63a9c2c4066a68427",
+          "clip": "life.stand.die",
+          "timeSeconds": 1.23199488
+        }
+      ]
+    },
+    {
+      "file": "sheets/royalist.overview.png",
+      "sha256": "b2090f6b943eb7c481552b764dbca5ab2bf4ac081953da64cf253e06064c7c95",
+      "frames": [
+        {
+          "file": "royalist/stand.idle.unarmed.phase-2.png",
+          "sha256": "6c1a25403b1e7a178f0502446065fc4b13329df7667a002de49c110fe93d22c8",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "royalist/stand.fire.short-gun.recoil.png",
+          "sha256": "15ddc8f975fd30f4f350bd16814940024a0a0f9637bef2027d412685c3b10f43",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "royalist/stand.fire.long-gun.recoil.png",
+          "sha256": "57a3845c3ddd6301544c8a1aae2f88b7ce91ff81212fecf7cb8db1d0315ecd8a",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "royalist/stand.slash.knife.thrust.contact.png",
+          "sha256": "fadaab3c27bd4d33c6a829569716c9f3208548082c356f0eae3935af66d8de37",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "royalist/stand.slash.blade.backhand.contact.png",
+          "sha256": "6c15d6fc0e56fb44bea46e1b24a4cc951b47d8952875b409c016ef612bcbed37",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "royalist/stand.punch.unarmed.contact.png",
+          "sha256": "7c1221d93a4c904510dc8a617525cabe2a1fb2f2efcadf739610b6eaefb9e1ae",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "royalist/life.stand.die.ground.png",
+          "sha256": "ac54b16071b335e32d2be4bf51a4ad422ad8e5edb67c80e7a4e16ec5560c1eb0",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        }
+      ]
+    },
+    {
+      "file": "sheets/royalist.motion-01.png",
+      "sha256": "217a9f2fc53ce76138353c3299b42cfbbe7c29c1f568581d913f624efffd3179",
+      "frames": [
+        {
+          "file": "royalist/stand.idle.unarmed.phase-1.png",
+          "sha256": "3ae5ccbf00abede4104e22116dc32f5f466a933383196429eca6875c53137fa6",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "royalist/stand.idle.unarmed.phase-2.png",
+          "sha256": "6c1a25403b1e7a178f0502446065fc4b13329df7667a002de49c110fe93d22c8",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "royalist/stand.idle.unarmed.phase-3.png",
+          "sha256": "d49dea9951da1b005cf5dc14dc94ef3a089832663f572e952fc37b6cfad66ee5",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 1.36
+        },
+        {
+          "file": "royalist/stand.run.blade.phase-1.png",
+          "sha256": "1c09580b876b63625a51af04bfe601f0db2be37ef6ddb6fc2ca400f5c0eeae95",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "royalist/stand.run.blade.phase-2.png",
+          "sha256": "5711a66bbedbf6122abe5e4b264a466cb140618c5a09dbc2604eb047eccec521",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "royalist/stand.run.blade.phase-3.png",
+          "sha256": "f1bd1315ced9c94eed51dfcf2541411334add6241ce490fd5800975c5e1fd2ff",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "royalist/stand.run.short-gun.phase-1.png",
+          "sha256": "a6a9ee47dd0ed2712c686d0ac2f88af676e4db3a0d089a7a5fef79dbbc240ad5",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "royalist/stand.run.short-gun.phase-2.png",
+          "sha256": "ffa91d25542df33b592cfe85689b4a2b47439220a3a0dd539f6188ea451869dc",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "royalist/stand.run.short-gun.phase-3.png",
+          "sha256": "b5c52491ff0cf58ff53ba3780bcc591da157629b5e1e890e18574f713268ba4f",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "royalist/stand.run.knife.phase-1.png",
+          "sha256": "a96c5c745a3bc56be25fec6ce6d61fde8392521749e77b976e0f66a8e745a264",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "royalist/stand.run.knife.phase-2.png",
+          "sha256": "f80629a1d4dbc0c3fd0b4a56aca560dba2294367c617b712625595a592349a14",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "royalist/stand.run.knife.phase-3.png",
+          "sha256": "39f33a54a648f736832c2915a38fc686b12fcabed28e82ae4ed84ab6835427af",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.52133356
+        }
+      ]
+    },
+    {
+      "file": "sheets/royalist.motion-02.png",
+      "sha256": "8877db4f8d2f627068178d65709fe9b7ab12ca568fedb431d1ab153957345be0",
+      "frames": [
+        {
+          "file": "royalist/stand.fire.long-gun.prepare.png",
+          "sha256": "9d46b9b31bbf2ab8983dcb0cd05a20fb4e2537672ea8948cebb3837288d4fd7a",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "royalist/stand.fire.long-gun.recoil.png",
+          "sha256": "57a3845c3ddd6301544c8a1aae2f88b7ce91ff81212fecf7cb8db1d0315ecd8a",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "royalist/stand.fire.long-gun.recover.png",
+          "sha256": "0d620dca0adc13c92dcd077c261cef3aa4902a134442c6bc0e33983b4874e953",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.555
+        },
+        {
+          "file": "royalist/stand.fire.short-gun.prepare.png",
+          "sha256": "fc901fdd4694429836d0f76eddfd3b4c61b4bdfa3bb46c0346c867327e138fb9",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "royalist/stand.fire.short-gun.recoil.png",
+          "sha256": "15ddc8f975fd30f4f350bd16814940024a0a0f9637bef2027d412685c3b10f43",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "royalist/stand.fire.short-gun.recover.png",
+          "sha256": "98d5cffb98df6e83077bf7af8f3da78caf12a5ff5247c2025036b5ac1c8c1e8d",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.49
+        },
+        {
+          "file": "royalist/stand.slash.blade.prepare.png",
+          "sha256": "f99bc4ec47c0ead6fdf6a3574a25a65fce70f09a81349da90bc4e7df2f1bfc28",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "royalist/stand.slash.blade.contact.png",
+          "sha256": "e1fa51a5410fe9e7a9934c42edef3693c4224caba325af369110469c6a8dcf9e",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "royalist/stand.slash.blade.recover.png",
+          "sha256": "016fbffb4dea8dad76207e83393c40f32c73137f6576331893021b95f142bc60",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.776
+        },
+        {
+          "file": "royalist/stand.slash.blade.backhand.prepare.png",
+          "sha256": "db6cd09b97fc4e3b84404afb4c91482f99f47744c68ff1ed9151e2fc1d7cc255",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "royalist/stand.slash.blade.backhand.contact.png",
+          "sha256": "6c15d6fc0e56fb44bea46e1b24a4cc951b47d8952875b409c016ef612bcbed37",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "royalist/stand.slash.blade.backhand.recover.png",
+          "sha256": "3a01809e9a825738216907d6004d2ab62af5cdaea1b0983f0192fbe1c7f1cc3e",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.776
+        }
+      ]
+    },
+    {
+      "file": "sheets/royalist.motion-03.png",
+      "sha256": "0151a619e7daf9add7a818a4e51185cca875e610a8276b8602dfd568f9f61125",
+      "frames": [
+        {
+          "file": "royalist/stand.slash.knife.thrust.prepare.png",
+          "sha256": "43d954c6f786c7485cca456bc98a2f9f63dbdc213fb309d2a359395fb53afd5d",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "royalist/stand.slash.knife.thrust.contact.png",
+          "sha256": "fadaab3c27bd4d33c6a829569716c9f3208548082c356f0eae3935af66d8de37",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "royalist/stand.slash.knife.thrust.recover.png",
+          "sha256": "14724b517c77f1bb5e6ff24c74956a9be2a5a3e9fd533aa14fba1e40e2e5c28e",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "royalist/stand.punch.unarmed.prepare.png",
+          "sha256": "74396dc7677b01ab800f55364b529b234c21d98dd14519b2e78abd1fd88f87a2",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "royalist/stand.punch.unarmed.contact.png",
+          "sha256": "7c1221d93a4c904510dc8a617525cabe2a1fb2f2efcadf739610b6eaefb9e1ae",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "royalist/stand.punch.unarmed.recover.png",
+          "sha256": "b87f3df59a5bc76eeb83068383b6d361debfedc3f6af4ed403bf709e455eb19e",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "royalist/prone.crawl.unarmed.phase-1.png",
+          "sha256": "55d785bac5b0a2132a6b0a69af170cefbdc9b3b99c58f5ee4611076b3a4b4290",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.09833295
+        },
+        {
+          "file": "royalist/prone.crawl.unarmed.phase-2.png",
+          "sha256": "0db3c0feaf3a6d77d875be7b90a0f30c47fbb08454696a4559fa94d1ba9f5b43",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.6883306499999999
+        },
+        {
+          "file": "royalist/prone.crawl.unarmed.phase-3.png",
+          "sha256": "087a100e30b07ab992c80c6f79a6538d3f7311a31f1372813fd095d93300ee88",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 1.33732812
+        },
+        {
+          "file": "royalist/life.stand.die.fall.png",
+          "sha256": "d09578530cf09d0a90c07b01e3cc6cb4d0ce1132c642a2d6a69c7c6f083add22",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.2566656
+        },
+        {
+          "file": "royalist/life.stand.die.ground.png",
+          "sha256": "ac54b16071b335e32d2be4bf51a4ad422ad8e5edb67c80e7a4e16ec5560c1eb0",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        },
+        {
+          "file": "royalist/life.stand.die.settled.png",
+          "sha256": "c842efe4f377da3fc11299aa08ffa05c466030b68a98bac06713b8147b1c0387",
+          "clip": "life.stand.die",
+          "timeSeconds": 1.23199488
+        }
+      ]
+    },
+    {
+      "file": "sheets/worker.overview.png",
+      "sha256": "b8bc0b8eda53deb412ab99dac0cbfee0e8e0a080348698cb0c35f2ca0e082f31",
+      "frames": [
+        {
+          "file": "worker/stand.idle.unarmed.phase-2.png",
+          "sha256": "2864203abb5a784cccd46a3db49067fc9587725c84e5aa2557fbac36f2ea3829",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "worker/stand.fire.short-gun.recoil.png",
+          "sha256": "4f274ceafd9cead8abec2f4aaabeb1e7797146ed28f6c66f525f607c4a1744aa",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "worker/stand.fire.long-gun.recoil.png",
+          "sha256": "7fbbad430b25c17772c973e85efd1373e75159ab02db2bc192c4cd55dc04b2fe",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "worker/stand.slash.knife.thrust.contact.png",
+          "sha256": "b6fdfff57d5ab29fb9201c28c96336b121eb225efae483c0d56ae693f370f728",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "worker/stand.slash.blade.backhand.contact.png",
+          "sha256": "23b1732d4865ce6b72bde96c28d996bf1643a1183983bb4410964b4c064b0ea8",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "worker/stand.punch.unarmed.contact.png",
+          "sha256": "aef4095ff572dc955c533659fccf2cc46e914cbfebcf5627d14e86b2c963df7f",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "worker/life.stand.die.ground.png",
+          "sha256": "b8b3bb5cf8e76cea05ebae74689039cb5851c42401dab89ea5158be1a646aaf7",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        }
+      ]
+    },
+    {
+      "file": "sheets/worker.motion-01.png",
+      "sha256": "1e0d89639e08d13285c46afab76a5e0d10ade3d2789e23d26b92af6ec4d42e72",
+      "frames": [
+        {
+          "file": "worker/stand.idle.unarmed.phase-1.png",
+          "sha256": "300b68c3b6557d8a18bdb9ccd06cab5769e9a8162a9164a85c34226b05c9cd98",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "worker/stand.idle.unarmed.phase-2.png",
+          "sha256": "2864203abb5a784cccd46a3db49067fc9587725c84e5aa2557fbac36f2ea3829",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "worker/stand.idle.unarmed.phase-3.png",
+          "sha256": "5c19141efa0ae918f5817cd38101f6f4d9360744ba4238dec09f8e01778f0f6f",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 1.36
+        },
+        {
+          "file": "worker/stand.run.blade.phase-1.png",
+          "sha256": "7ef5bf09612425031b82d0d02653a7530bbe598598df255b68567a2fbbd72917",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "worker/stand.run.blade.phase-2.png",
+          "sha256": "a35509af8e1d964acd48c15c44828b8b85a6f5ddd6026c1c679bce28e40bdb4a",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "worker/stand.run.blade.phase-3.png",
+          "sha256": "c47d183e8669752b8d5ab99cced5d144d1ef902343950add6dec647952300cab",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "worker/stand.run.short-gun.phase-1.png",
+          "sha256": "6a393ecf4e5aa430ced38762c429d38919204b19b36fcf8adbe569601a468007",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "worker/stand.run.short-gun.phase-2.png",
+          "sha256": "e7e9ca295242d638c84fca21bf84a1835ae7e35e255b2eb540ef4139d0f86d19",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "worker/stand.run.short-gun.phase-3.png",
+          "sha256": "9719e831568aaaf2bdd0527864c2b255c1940c57b9773b086542a09bc4923fe6",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "worker/stand.run.knife.phase-1.png",
+          "sha256": "ec585e2003144b2f7251420dffc98b08bc1fc20b2c14b0ff7638aab5b7f9866b",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "worker/stand.run.knife.phase-2.png",
+          "sha256": "cb58827f2909814d9320f2fd962d0771c0e2ae7392479e61c666358961d35ded",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "worker/stand.run.knife.phase-3.png",
+          "sha256": "73220c2f2d1dad90a7c280278d066d5a18f74f4945d58c14f3dfa371004597ad",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.52133356
+        }
+      ]
+    },
+    {
+      "file": "sheets/worker.motion-02.png",
+      "sha256": "e83baacc39e3c332f6b49e9b86c3d0bc334889269203b0eee8df5cec1b19046a",
+      "frames": [
+        {
+          "file": "worker/stand.fire.long-gun.prepare.png",
+          "sha256": "569fdb1e99ceace619c6a39475434ddecff9a1fa13131b952f2317f8b42e982c",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "worker/stand.fire.long-gun.recoil.png",
+          "sha256": "7fbbad430b25c17772c973e85efd1373e75159ab02db2bc192c4cd55dc04b2fe",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "worker/stand.fire.long-gun.recover.png",
+          "sha256": "ae4bb922f503cbbc699dd95fce44587b66a51b104ab4d4fc808d37743573437c",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.555
+        },
+        {
+          "file": "worker/stand.fire.short-gun.prepare.png",
+          "sha256": "3f8fd65c628af8252be99b92c4586e28a0cfe0f7cc14b8de6f949edf7c9d6128",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "worker/stand.fire.short-gun.recoil.png",
+          "sha256": "4f274ceafd9cead8abec2f4aaabeb1e7797146ed28f6c66f525f607c4a1744aa",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "worker/stand.fire.short-gun.recover.png",
+          "sha256": "7b7d22a8dc5fa8fb0165063c3c8e4b4d88d496db4a223faff870adfed109a99e",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.49
+        },
+        {
+          "file": "worker/stand.slash.blade.prepare.png",
+          "sha256": "ea4cbde5a75433c389fb7ca5745f514357db910a14e50f068329aa0f027b4e19",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "worker/stand.slash.blade.contact.png",
+          "sha256": "0ba0328b8d9a8e2b937b06b4925ec05e33b4be4a190e8506779f66c4c6092531",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "worker/stand.slash.blade.recover.png",
+          "sha256": "a7b31e38cf35c232ba7ca2689b3586334e9850e66b24a9197eae9ac7be3fa52d",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.776
+        },
+        {
+          "file": "worker/stand.slash.blade.backhand.prepare.png",
+          "sha256": "b5a8704530191fcb2f5a17b5175f92876152b22fe1869c56f4b2b1e75c5d27c8",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "worker/stand.slash.blade.backhand.contact.png",
+          "sha256": "23b1732d4865ce6b72bde96c28d996bf1643a1183983bb4410964b4c064b0ea8",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "worker/stand.slash.blade.backhand.recover.png",
+          "sha256": "ac5ab073aa379f8443f5b5788df10a0e7b9121cd1e4cc63837635bd4e1fdc96f",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.776
+        }
+      ]
+    },
+    {
+      "file": "sheets/worker.motion-03.png",
+      "sha256": "d0270ba03379bacc7b6a56d0f6e68d65ce249304daa830100269a23b06f65bdd",
+      "frames": [
+        {
+          "file": "worker/stand.slash.knife.thrust.prepare.png",
+          "sha256": "b4359250e22d06aec870bfa56f0797559da4ac862014d35f1727d7a7d637fcb5",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "worker/stand.slash.knife.thrust.contact.png",
+          "sha256": "b6fdfff57d5ab29fb9201c28c96336b121eb225efae483c0d56ae693f370f728",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "worker/stand.slash.knife.thrust.recover.png",
+          "sha256": "840fa95e886de1d906e0f8db844aff567e25984fe20dc8c0060f3c0be4d7f0e5",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "worker/stand.punch.unarmed.prepare.png",
+          "sha256": "a77c96abb895f6ccf109f844b0a10e9a60413f17886cc480e31647a2892b8423",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "worker/stand.punch.unarmed.contact.png",
+          "sha256": "aef4095ff572dc955c533659fccf2cc46e914cbfebcf5627d14e86b2c963df7f",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "worker/stand.punch.unarmed.recover.png",
+          "sha256": "c8f216f8a237416d89d872b1855498986ad195af65d86cf1bfa2fb87446f8ac9",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "worker/prone.crawl.unarmed.phase-1.png",
+          "sha256": "12754a60bc10d245db4229992cefed9ec6a4523ac56541820f225997c8971c0f",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.09833295
+        },
+        {
+          "file": "worker/prone.crawl.unarmed.phase-2.png",
+          "sha256": "6eed74a5e9d3b5a149f4d12c18223fe92165ba0a6d54f23c3332086fb18d5b41",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.6883306499999999
+        },
+        {
+          "file": "worker/prone.crawl.unarmed.phase-3.png",
+          "sha256": "017f515d2eac454b1c0cff64eb434b79894fdcb4d0bc70d02eaa5427d1ceea97",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 1.33732812
+        },
+        {
+          "file": "worker/life.stand.die.fall.png",
+          "sha256": "604acbfecbc9cb6a7e9a3cff136e7abdf74c27ad83dfc7cbc879d716989dfe10",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.2566656
+        },
+        {
+          "file": "worker/life.stand.die.ground.png",
+          "sha256": "b8b3bb5cf8e76cea05ebae74689039cb5851c42401dab89ea5158be1a646aaf7",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        },
+        {
+          "file": "worker/life.stand.die.settled.png",
+          "sha256": "e29543e1fd247e7f423b89e6fed75691d0d425871433266dcf78ee0f4e53bccb",
+          "clip": "life.stand.die",
+          "timeSeconds": 1.23199488
+        }
+      ]
+    },
+    {
+      "file": "sheets/surgeon.overview.png",
+      "sha256": "b613bb6ad12f1a9233785661ecd6fb801a38086f68cb7df58a6675d4c1bf43d9",
+      "frames": [
+        {
+          "file": "surgeon/stand.idle.unarmed.phase-2.png",
+          "sha256": "a51744e1f19cbfb9e2775cdf6c7bfd952331a62379dd162a98557e9574d55187",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "surgeon/stand.fire.short-gun.recoil.png",
+          "sha256": "c479152c2a487d2ea43a6cfc107b106969a7c72eedac5d1005152643e429f98f",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "surgeon/stand.fire.long-gun.recoil.png",
+          "sha256": "5a897fc9203e2f068055d75201def673334cc95ee374c24354ccf2df87e34092",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "surgeon/stand.slash.knife.thrust.contact.png",
+          "sha256": "511f24533ab69515f0b3578bb5e83ab9aece456548df679dcf9d52df2efe900a",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "surgeon/stand.slash.blade.backhand.contact.png",
+          "sha256": "497f1adaf066bde406ad2339c20999bae2b9cb36acf962910e63b35d74202d9a",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "surgeon/stand.punch.unarmed.contact.png",
+          "sha256": "353560cb263fc32f31183f3b0da7e75c9e6ecccb1e88587e53c0e9dd5d76f7d5",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "surgeon/life.stand.die.ground.png",
+          "sha256": "f3f51c73ace103f0bc86c96d2e2de48ebc9bfd31699be61eff9a257ad37eff6d",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        }
+      ]
+    },
+    {
+      "file": "sheets/surgeon.motion-01.png",
+      "sha256": "6550130c41f598f1cd8b137c018f10fe43f1c945f59244fbe3ee7589fd2ad0bd",
+      "frames": [
+        {
+          "file": "surgeon/stand.idle.unarmed.phase-1.png",
+          "sha256": "a61561345aed9296769751e77b5664385e9f03684879ed8b843fc85dea02361c",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "surgeon/stand.idle.unarmed.phase-2.png",
+          "sha256": "a51744e1f19cbfb9e2775cdf6c7bfd952331a62379dd162a98557e9574d55187",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.7
+        },
+        {
+          "file": "surgeon/stand.idle.unarmed.phase-3.png",
+          "sha256": "b1696002bd1765c91716d5c3a041c4cbaca34b05d079f206eb11f22343e7d5bf",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 1.36
+        },
+        {
+          "file": "surgeon/stand.run.blade.phase-1.png",
+          "sha256": "dc9aca6c078ccb2c4c3e48dbc00f4cabc448c77f0a949ed93cd37c6702a65cfc",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "surgeon/stand.run.blade.phase-2.png",
+          "sha256": "5ede26dc8b88c65b314f3eeaaf7c6793046fe65eca486a8fbc51a6357a0d63e1",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "surgeon/stand.run.blade.phase-3.png",
+          "sha256": "d111907d0c0ac9d9d2e7a47417e1698869cd5bb90ecb3618a711e768bd5d1c4a",
+          "clip": "stand.run.blade",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "surgeon/stand.run.short-gun.phase-1.png",
+          "sha256": "828dba4d582b1781b665caf6fe44f3f1f3c66619c544701b72059f52746b8cf0",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "surgeon/stand.run.short-gun.phase-2.png",
+          "sha256": "1ab5d3d143e7edc8ac58f820ec547160a3f33338aa1e529d6f9c3737f8d8f8a9",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "surgeon/stand.run.short-gun.phase-3.png",
+          "sha256": "8685982bed4dbf2f4f759e63fb05df13c9542dc78883c6d7add0e8e000c1b3c2",
+          "clip": "stand.run.short-gun",
+          "timeSeconds": 0.52133356
+        },
+        {
+          "file": "surgeon/stand.run.knife.phase-1.png",
+          "sha256": "c69956a2a7673a924539a5d78570b56fa713a83fba1cc4d96e9e3fb7f46c844c",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.03833335
+        },
+        {
+          "file": "surgeon/stand.run.knife.phase-2.png",
+          "sha256": "7245b63ac81249ec393a6a969f5ac9f68eb45615e6d7ccc0a6635706859da99b",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.26833345
+        },
+        {
+          "file": "surgeon/stand.run.knife.phase-3.png",
+          "sha256": "74d5d7c9df0d7ae69066156c1efa78b71717cd9cb71e5077115ed9481d3252b0",
+          "clip": "stand.run.knife",
+          "timeSeconds": 0.52133356
+        }
+      ]
+    },
+    {
+      "file": "sheets/surgeon.motion-02.png",
+      "sha256": "b06ca7ade63c63c99a7b934a7311cb7148a81f4ce2283a9ffca962383baca547",
+      "frames": [
+        {
+          "file": "surgeon/stand.fire.long-gun.prepare.png",
+          "sha256": "b5ccf2601af4566ceec6a011542649529cf7f9b34fa6b9f57b744e9d7d152779",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "surgeon/stand.fire.long-gun.recoil.png",
+          "sha256": "5a897fc9203e2f068055d75201def673334cc95ee374c24354ccf2df87e34092",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "surgeon/stand.fire.long-gun.recover.png",
+          "sha256": "4eb6b40efaa5fba7717d6b87e9e4c065c84fea188cfbd631083161643ec64357",
+          "clip": "stand.fire.long-gun",
+          "timeSeconds": 0.555
+        },
+        {
+          "file": "surgeon/stand.fire.short-gun.prepare.png",
+          "sha256": "fc0b11a880a47e26f375e90a54df54bf8e86b0ebd62d7505a86c26915b50b7d5",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.05500000000000001
+        },
+        {
+          "file": "surgeon/stand.fire.short-gun.recoil.png",
+          "sha256": "c479152c2a487d2ea43a6cfc107b106969a7c72eedac5d1005152643e429f98f",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.14
+        },
+        {
+          "file": "surgeon/stand.fire.short-gun.recover.png",
+          "sha256": "4a515115086c567de43ebfeaef2aec2f0bcc9c8f4e6ac32542af99d0e9a3b181",
+          "clip": "stand.fire.short-gun",
+          "timeSeconds": 0.49
+        },
+        {
+          "file": "surgeon/stand.slash.blade.prepare.png",
+          "sha256": "f39eb147d22a0cab5773fbcd63a853f50ca302ede3d1206d34bba809a467e169",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "surgeon/stand.slash.blade.contact.png",
+          "sha256": "4c6fc205ea169cb645d5c659352922030937e6e5532d8f4c38ce1502fce4294a",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "surgeon/stand.slash.blade.recover.png",
+          "sha256": "eab80d318fa6ee0548b20a3179620cded8f77ad98c889cd2e287a48bb81d5ef6",
+          "clip": "stand.slash.blade",
+          "timeSeconds": 0.776
+        },
+        {
+          "file": "surgeon/stand.slash.blade.backhand.prepare.png",
+          "sha256": "9592670e2a11c96c6a166fc36a2989101cda97f21ffb48dedc228932fe88106e",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.198
+        },
+        {
+          "file": "surgeon/stand.slash.blade.backhand.contact.png",
+          "sha256": "497f1adaf066bde406ad2339c20999bae2b9cb36acf962910e63b35d74202d9a",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.36
+        },
+        {
+          "file": "surgeon/stand.slash.blade.backhand.recover.png",
+          "sha256": "c345cf80839bfac0c8e2bf650306596fa2b4e3fd119f66dc43cd53943d521682",
+          "clip": "stand.slash.blade.backhand",
+          "timeSeconds": 0.776
+        }
+      ]
+    },
+    {
+      "file": "sheets/surgeon.motion-03.png",
+      "sha256": "a41ab124c6ed4d3f0662b5dcfdf48cbb001e224a453a26573899259cc01e3939",
+      "frames": [
+        {
+          "file": "surgeon/stand.slash.knife.thrust.prepare.png",
+          "sha256": "93f4e23940f43731216514bb9ebbf57e9e50a7298a69af09968a5cc83e4d2c8a",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "surgeon/stand.slash.knife.thrust.contact.png",
+          "sha256": "511f24533ab69515f0b3578bb5e83ab9aece456548df679dcf9d52df2efe900a",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "surgeon/stand.slash.knife.thrust.recover.png",
+          "sha256": "cd12e8506d45a6da1e7afc3689e5c543da55ae1ea65aac84e2b55ba29c0ab3a1",
+          "clip": "stand.slash.knife.thrust",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "surgeon/stand.punch.unarmed.prepare.png",
+          "sha256": "53d93ab898f9816c10f0bc084069395c9067161fa1ae56b48ffb903e8598deb7",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.231
+        },
+        {
+          "file": "surgeon/stand.punch.unarmed.contact.png",
+          "sha256": "353560cb263fc32f31183f3b0da7e75c9e6ecccb1e88587e53c0e9dd5d76f7d5",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.42
+        },
+        {
+          "file": "surgeon/stand.punch.unarmed.recover.png",
+          "sha256": "b9c7f51b145b3f695f7a45f9822f09a08ed461b224166dc750c5453636d3daec",
+          "clip": "stand.punch.unarmed",
+          "timeSeconds": 0.797
+        },
+        {
+          "file": "surgeon/prone.crawl.unarmed.phase-1.png",
+          "sha256": "feb7a0c13d46ddc82add488d6b97186f8f1e2955e465e6fab1d9aadc49bf9404",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.09833295
+        },
+        {
+          "file": "surgeon/prone.crawl.unarmed.phase-2.png",
+          "sha256": "910d48c420ff3027975bff0a22e66cac4d899bdd3960425fcc2ae846eb4ea36a",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 0.6883306499999999
+        },
+        {
+          "file": "surgeon/prone.crawl.unarmed.phase-3.png",
+          "sha256": "0444d06ef6451946c431f8fab7497ccf6f64b2538644234e94d6727b5b7f2848",
+          "clip": "prone.crawl.unarmed",
+          "timeSeconds": 1.33732812
+        },
+        {
+          "file": "surgeon/life.stand.die.fall.png",
+          "sha256": "de455ab0e329254136bed11290b34d17375ec52c5b275e90f508584b8eaebc1c",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.2566656
+        },
+        {
+          "file": "surgeon/life.stand.die.ground.png",
+          "sha256": "f3f51c73ace103f0bc86c96d2e2de48ebc9bfd31699be61eff9a257ad37eff6d",
+          "clip": "life.stand.die",
+          "timeSeconds": 0.872663176
+        },
+        {
+          "file": "surgeon/life.stand.die.settled.png",
+          "sha256": "174758cd8cd37bed3cbc41ec5c50e9f5a72c86aade5122d27259804b66de8489",
+          "clip": "life.stand.die",
+          "timeSeconds": 1.23199488
+        }
+      ]
+    },
+    {
+      "file": "sheets/all.head.png",
+      "sha256": "daf7ca0273ec98024b7dbf53ae7be404b0849d4ca1c63dd42e8611a7cbf3194a",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.phase-1.head.png",
+          "sha256": "e5ef86ccab7547a9fb532ce9e33bafcd51fb3773e0d3a2ee58f7fca0aa853757",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "royalist/stand.idle.unarmed.phase-1.head.png",
+          "sha256": "c33b21878b35d90350b7f2cb7b52a6090b136e9a8ef78b191c6529bbb7ecc7c5",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "worker/stand.idle.unarmed.phase-1.head.png",
+          "sha256": "d2d9cf27ce885f77fc1e5f052617be8fe0cf0ef4f8f2909c2ceeed0109f8504b",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "surgeon/stand.idle.unarmed.phase-1.head.png",
+          "sha256": "5dbc104366b42733ed3db46bcb8d14415274d37619c95e0df38141bb2f3ec54e",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        }
+      ]
+    },
+    {
+      "file": "sheets/all.hands.png",
+      "sha256": "be2336fcd4c75043cec5740e78705cd59496aebedbed511652c2261e39132a71",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.phase-1.hands.png",
+          "sha256": "a8b0130668c226c43b68eaf6994678d844a23acea1719006733684c7037bd107",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "royalist/stand.idle.unarmed.phase-1.hands.png",
+          "sha256": "f32a1b8f8311ef21634e33164471603c6238fadc9bb4413e242802bad33ff730",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "worker/stand.idle.unarmed.phase-1.hands.png",
+          "sha256": "b063f6c4d0741ae84341708511736afbc4bdfb016d8a870450fcf8245022bd18",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        },
+        {
+          "file": "surgeon/stand.idle.unarmed.phase-1.hands.png",
+          "sha256": "3b197ce64580643683e3490a131be89f11560f635ee20b58cb31234f3ada6108",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "status": "Frozen four-body delivery; parent integration pending",
+  "scope": {
+    "appearances": [
+      "granadero",
+      "royalist"
+    ],
+    "lods": [
+      0,
+      1
+    ],
+    "lod2": "Unchanged, source hook disabled, rejected trial kept private",
+    "sourceFiles": [
+      "assets/source/characters-3d/authoring/collar_rim.py",
+      "assets/source/characters-3d/authoring/optimize.py"
+    ]
+  },
+  "currentPublicManifestSha256AtHandoff": "bb8fe5a0b13496cdf49d9b8787ed9af9179aa99a52b4148f77c78e26ab06c1a8",
+  "existingBodyHashesStillMatchCurrentPublic": true,
+  "sourcePatchAppliesToCurrentOptimize": true,
+  "validation": {
+    "command": "GRANADEROS_CHARACTER_LIBRARY=/tmp/granadero-collar-rim-pilot/models node --test --test-concurrency=2 --test-name-pattern='granadero|royalist' tests/characters-crossbelt-contact.test.mjs tests/characters-coat-contact.test.mjs tests/characters-skin-surfaces.test.mjs",
+    "tests": 18,
+    "pass": 18,
+    "fail": 0,
+    "changedBodyCases": 12,
+    "unchangedLOD2Cases": 6,
+    "helperPythonCompile": true
+  },
+  "preservation": {
+    "nativeNodesHierarchyBinds": "exact",
+    "skinHeadHandsBootsBreechesHatAndOtherMeshes": "all decoded accessors and morphs exact",
+    "materialsAndImageReferences": "exact",
+    "existingTextures": "exact; empty texture delta",
+    "nonCollarCoat": "positions, native weights, UVs, colours, triangles and morph POSITION exact",
+    "coatMorphNormalMaxComponentDifference": 1.4901161193847656e-07,
+    "coatMorphNormalChangedTriangleCornersAcrossTargetsPerBody": {
+      "granadero-lod0.glb": 204,
+      "granadero-lod1.glb": 198,
+      "royalist-lod0.glb": 204,
+      "royalist-lod1.glb": 198
+    },
+    "coatRestShadingNormals": "234 triangle corners per body change along the joined collar boundary; max component difference 0.9325817227363586. This is intentional shading recomputation, not an exact-normal claim.",
+    "sewnLowerCollarEdges": "all 69 accepted edges exact; zero new open lower edges",
+    "allOtherPrivateLibraryGLBs": "byte-identical to frozen baseline including both animation banks and LOD2; do not merge the private whole library"
+  },
+  "cost": [
+    {
+      "file": "granadero-lod0.glb",
+      "beforeTriangles": 86481,
+      "afterTriangles": 86901,
+      "addedTriangles": 420,
+      "addedBytes": 12472,
+      "drawCalls": 6
+    },
+    {
+      "file": "granadero-lod1.glb",
+      "beforeTriangles": 61724,
+      "afterTriangles": 62144,
+      "addedTriangles": 420,
+      "addedBytes": 11720,
+      "drawCalls": 6
+    },
+    {
+      "file": "royalist-lod0.glb",
+      "beforeTriangles": 86840,
+      "afterTriangles": 87260,
+      "addedTriangles": 420,
+      "addedBytes": 12472,
+      "drawCalls": 6
+    },
+    {
+      "file": "royalist-lod1.glb",
+      "beforeTriangles": 61455,
+      "afterTriangles": 61875,
+      "addedTriangles": 420,
+      "addedBytes": 11720,
+      "drawCalls": 6
+    }
+  ],
+  "views": {
+    "poses": [
+      {
+        "clip": "stand.idle.unarmed",
+        "timeSeconds": 0.5
+      },
+      {
+        "clip": "stand.aim.long-gun",
+        "timeSeconds": 0
+      },
+      {
+        "clip": "stand.reload.long-gun.1800",
+        "timeSeconds": 1.92
+      }
+    ],
+    "matchedPairs": 12,
+    "source": "actual exported GLBs with unchanged native animation banks",
+    "resolution": [
+      600,
+      600
+    ],
+    "samples": 12,
+    "projection": "orthographic isometric; unchanged renderer/camera per pair",
+    "comparisonSheets": [
+      "compare-granadero-lod0.png",
+      "compare-granadero-lod1.png",
+      "compare-royalist-lod0.png",
+      "compare-royalist-lod1.png"
+    ]
+  },
+  "neckSurfaceCheck": {
+    "method": "actual skinned triangle edge intersections; no signed-distance classification on open skin",
+    "results": [
+      {
+        "appearance": "granadero",
+        "lod": 0,
+        "samples": [
+          {
+            "clip": "stand.idle.unarmed",
+            "timeSeconds": 0.5,
+            "intersectingTrianglePairsBefore": 203,
+            "intersectingTrianglePairsAfter": 45
+          },
+          {
+            "clip": "stand.aim.short-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 204,
+            "intersectingTrianglePairsAfter": 45
+          },
+          {
+            "clip": "stand.aim.long-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 289,
+            "intersectingTrianglePairsAfter": 129
+          },
+          {
+            "clip": "stand.reload.long-gun.1800",
+            "timeSeconds": 1.92,
+            "intersectingTrianglePairsBefore": 204,
+            "intersectingTrianglePairsAfter": 45
+          }
+        ]
+      },
+      {
+        "appearance": "granadero",
+        "lod": 1,
+        "samples": [
+          {
+            "clip": "stand.idle.unarmed",
+            "timeSeconds": 0.5,
+            "intersectingTrianglePairsBefore": 190,
+            "intersectingTrianglePairsAfter": 44
+          },
+          {
+            "clip": "stand.aim.short-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 194,
+            "intersectingTrianglePairsAfter": 44
+          },
+          {
+            "clip": "stand.aim.long-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 264,
+            "intersectingTrianglePairsAfter": 112
+          },
+          {
+            "clip": "stand.reload.long-gun.1800",
+            "timeSeconds": 1.92,
+            "intersectingTrianglePairsBefore": 192,
+            "intersectingTrianglePairsAfter": 44
+          }
+        ]
+      },
+      {
+        "appearance": "royalist",
+        "lod": 0,
+        "samples": [
+          {
+            "clip": "stand.idle.unarmed",
+            "timeSeconds": 0.5,
+            "intersectingTrianglePairsBefore": 203,
+            "intersectingTrianglePairsAfter": 45
+          },
+          {
+            "clip": "stand.aim.short-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 204,
+            "intersectingTrianglePairsAfter": 45
+          },
+          {
+            "clip": "stand.aim.long-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 289,
+            "intersectingTrianglePairsAfter": 129
+          },
+          {
+            "clip": "stand.reload.long-gun.1800",
+            "timeSeconds": 1.92,
+            "intersectingTrianglePairsBefore": 204,
+            "intersectingTrianglePairsAfter": 45
+          }
+        ]
+      },
+      {
+        "appearance": "royalist",
+        "lod": 1,
+        "samples": [
+          {
+            "clip": "stand.idle.unarmed",
+            "timeSeconds": 0.5,
+            "intersectingTrianglePairsBefore": 190,
+            "intersectingTrianglePairsAfter": 44
+          },
+          {
+            "clip": "stand.aim.short-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 194,
+            "intersectingTrianglePairsAfter": 44
+          },
+          {
+            "clip": "stand.aim.long-gun",
+            "timeSeconds": 0,
+            "intersectingTrianglePairsBefore": 264,
+            "intersectingTrianglePairsAfter": 112
+          },
+          {
+            "clip": "stand.reload.long-gun.1800",
+            "timeSeconds": 1.92,
+            "intersectingTrianglePairsBefore": 192,
+            "intersectingTrianglePairsAfter": 44
+          }
+        ]
+      }
+    ],
+    "limit": "This is not a collision-free neckline claim. Existing intersections remain at the preserved lower rear seam and under the jaw in rifle aim. Triangle-pair counts depend on tessellation and are not penetration depth."
+  },
+  "remainingDefects": [
+    "Lower red/navy seam and shoulder crossbelt dents unchanged.",
+    "LOD2 collar trial rejected: visible side skin spot/pocket from coarse row correspondence. Original LOD2 body is retained.",
+    "Existing collar/skin intersections remain; upper-rim improvement is visually accepted only within this stated scope."
+  ],
+  "excludedTrials": [
+    "pre-reduction collar protection",
+    "independent strap band",
+    "all sleeve and material trials",
+    "dense LOD2 first row"
+  ],
+  "integration": "Apply the narrow source patch. Replace only the four GLBs and four records listed in body-records.json after checking existingBodySha256. Do not copy the private full manifest or banks."
+}

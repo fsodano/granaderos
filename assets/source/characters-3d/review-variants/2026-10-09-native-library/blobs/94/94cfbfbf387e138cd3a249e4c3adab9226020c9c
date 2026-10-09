@@ -1,0 +1,94 @@
+import {banks,manifest,sampleBank,readGlb,nativeScene} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/character-bank-fixture.mjs';
+import {Vector3,Matrix4,Box3,Ray,Triangle} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
+const directions=[[1,.173,.311],[-1,.237,.131],[.217,1,.413],[.367,-1,.113],[.113,.233,1],[.431,.157,-1]].map(v=>new Vector3(...v).normalize());
+
+function surface(triangles){
+ function build(items){
+  const box=new Box3();for(const triangle of items)box.expandByPoint(triangle.a).expandByPoint(triangle.b).expandByPoint(triangle.c);
+  if(items.length<=12)return {box,triangles:items};
+  const extent=box.getSize(new Vector3()),axis=extent.x>extent.y?(extent.x>extent.z?'x':'z'):(extent.y>extent.z?'y':'z');
+  items.sort((a,b)=>(a.a[axis]+a.b[axis]+a.c[axis])-(b.a[axis]+b.b[axis]+b.c[axis]));const middle=items.length>>1;
+  return {box,left:build(items.slice(0,middle)),right:build(items.slice(middle))};
+ }
+ assert.ok(triangles.length>0);const tree=build(triangles),scratch=new Vector3();
+ function inside(point){
+  // A nearest triangle normal is not a signed distance for an open head/
+  // neck patch. Bounds reject distant hands; several oblique rays avoid
+  // treating a single neck or eye opening as the entire volume boundary.
+  if(!tree.box.containsPoint(point))return false;
+  let votes=0;
+  for(const direction of directions){
+   const ray=new Ray(point,direction),hits=[];
+   function visit(node){
+    if(!ray.intersectBox(node.box,scratch))return;
+    if(node.triangles){for(const t of node.triangles){const hit=ray.intersectTriangle(t.a,t.b,t.c,false,scratch);if(hit)hits.push(hit.distanceTo(point));}}
+    else{visit(node.left);visit(node.right);}
+   }
+   visit(tree);hits.sort((a,b)=>a-b);let count=0,last=-Infinity;
+   for(const distance of hits)if(distance-last>1e-6){count++;last=distance;}
+   votes+=count%2;
+  }
+  return votes>=4;
+ }
+ function depth(point){
+  if(!inside(point))return 0;let nearest=Infinity;
+  function visit(node){
+   if(node.box.distanceToPoint(point)>=nearest)return;
+   if(node.triangles){for(const t of node.triangles)nearest=Math.min(nearest,t.closestPointToPoint(point,scratch).distanceTo(point));}
+   else{visit(node.left);visit(node.right);}
+  }
+  visit(tree);return nearest;
+ }
+ return {inside,depth};
+}
+
+
+const equipment=readGlb(manifest.equipment.url),equipmentScene=nativeScene(equipment.json);
+const heldPoints=Object.fromEntries(['1813','grenade','boleadoras'].map(id=>{
+ const item=equipmentScene.getObjectByName(manifest.equipment.items[id].node),inverse=item.matrixWorld.clone().invert(),points=[];
+ item.traverse(node=>{
+  const definition=equipment.json.nodes.find(entry=>entry.name===node.name);if(definition?.mesh===undefined)return;
+  const transform=new Matrix4().multiplyMatrices(inverse,node.matrixWorld);
+  for(const primitive of equipment.json.meshes[definition.mesh].primitives){
+   const positions=equipment.access(primitive.attributes.POSITION);
+   for(let i=0;i<positions.length;i+=3)points.push(new Vector3().fromArray(positions,i).applyMatrix4(transform));
+  }
+ });
+ assert.ok(points.length>20,`${id}: the held-object check uses exported geometry`);return [id,points];
+}));
+
+function headContactProbe(bank){
+ const skin=bank.body.json.skins[0],names=skin.joints.map(i=>bank.body.json.nodes[i].name),inverse=bank.body.access(skin.inverseBindMatrices),head=names.indexOf('head');
+ const inverseBinds=names.map((_,i)=>new Matrix4().fromArray(inverse,i*16)),headLocal=inverseBinds[head],triangles=[],hands=[];
+ for(const node of bank.body.json.nodes){
+  if(node.mesh===undefined||node.skin===undefined||!node.name.includes('skin'))continue;
+  for(const primitive of bank.body.json.meshes[node.mesh].primitives){
+   const positions=bank.body.access(primitive.attributes.POSITION),joints=bank.body.access(primitive.attributes.JOINTS_0),weights=bank.body.access(primitive.attributes.WEIGHTS_0),vertices=[];
+   for(let i=0;i<positions.length/3;i++){
+    const p=new Vector3().fromArray(positions,i*3),j=joints.slice(i*4,i*4+4),w=weights.slice(i*4,i*4+4);
+    const headWeight=w.reduce((sum,value,k)=>sum+(j[k]===head?value:0),0);
+    vertices.push(headWeight>.99?p.clone().applyMatrix4(headLocal):undefined);
+    if(w.reduce((sum,value,k)=>sum+(/^(hand_|thumb_|index_|middle_|ring_|pinky_)/.test(names[j[k]])?value:0),0)>.8)hands.push({p,j,w});
+   }
+   const indices=primitive.indices===undefined?vertices.map((_,i)=>i):bank.body.access(primitive.indices);
+   for(let i=0;i<indices.length;i+=3){const triangle=indices.slice(i,i+3).map(index=>vertices[index]);if(triangle.every(Boolean))triangles.push(triangle);}
+  }
+ }
+ assert.ok(triangles.length>100&&hands.length>100,'The contact check uses exported head and hand surfaces');
+ const inside=surface(triangles.map(v=>new Triangle(...v))).inside;
+ return (scene,heldItem)=>{
+  const matrices=names.map((name,i)=>new Matrix4().multiplyMatrices(scene.getObjectByName(name).matrixWorld,inverseBinds[i])),headInverse=scene.getObjectByName('head').matrixWorld.clone().invert();
+  let minimum=Infinity,contact=false, contacts=[];
+  for(const vertex of hands){const point=new Vector3();for(let k=0;k<4;k++)if(vertex.w[k])point.addScaledVector(vertex.p.clone().applyMatrix4(matrices[vertex.j[k]]),vertex.w[k]);minimum=Math.min(minimum,point.y);point.applyMatrix4(headInverse);if(inside(point)){contact=true;contacts.push({kind:'hand',bones:vertex.j.map((j,i)=>[names[j],vertex.w[i]]).filter(v=>v[1]),local:point.toArray()});}}
+  if(heldItem){const socket=scene.getObjectByName(heldItem==='1813'?'socket_handRight_sabre':'socket_handRight_tool');for(const vertex of heldPoints[heldItem]){const point=socket.localToWorld(vertex.clone());minimum=Math.min(minimum,point.y);if(inside(point.applyMatrix4(headInverse))){contact=true;contacts.push({kind:heldItem,local:point.toArray()});}}}
+  return {contact,minimum,contacts};
+ };
+}
+
+const bank=banks.female, probe=headContactProbe(bank),spec=bank.specs.find(c=>c.name==='prone.gesture.throw');
+const result=sampleBank(bank,spec.name,Array.from({length:157},(_,i)=>i/156),(point,scene,time)=>probe(scene,time<spec.markers.release?'grenade':undefined));
+const failures=result.filter(v=>v.contact);
+writeFileSync('/tmp/granadero-prone-throw-head-review/multiray-contact.json',JSON.stringify({spec,failures},null,2));
+console.log(JSON.stringify(failures.map(v=>({time:v.time,contacts:v.contacts.length,kinds:[...new Set(v.contacts.map(c=>c.kind))],first:v.contacts[0]})),null,2));

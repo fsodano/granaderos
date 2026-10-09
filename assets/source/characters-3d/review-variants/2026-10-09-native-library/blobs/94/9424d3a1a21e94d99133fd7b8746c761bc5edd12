@@ -1,0 +1,24 @@
+{
+  "baseManifestSha256": "9d515a3ecc142ced0e745454ddfa7bf1141afd68e3f4c18d8fca7fd493bdcdf3",
+  "bodies": [
+    {
+      "file": "worker-lod0.glb",
+      "old": "6382ca27feeb99e6ac7c099822bb9cad82cf23acec09397747d75491dfccb861",
+      "new": "e019b035e082ba67e5e06a062e15eb3408b0378caadf957dd232762fc9d6e498"
+    },
+    {
+      "file": "worker-lod1.glb",
+      "old": "63ed88232a21273547558213860d92e8f76d52a065821e9ec83ebb0c37677111",
+      "new": "27bf16d99a16c944a9d53497b3172331b65be938432bab7a3902a75c4fac5848"
+    },
+    {
+      "file": "worker-lod2.glb",
+      "old": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+      "new": "a15c8a823636e2578342ce9b0780fc63446d38f22d8da2b5e0d6b30229dd5c36"
+    }
+  ],
+  "textures": [],
+  "manifestSha256": "ece0d1d7649a83693391901fa16a8f0c8e48b017a09aa7eb100161e0e6fe632e",
+  "otherManifestValuesExact": true,
+  "allOtherGlbsByteExact": true
+}

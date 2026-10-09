@@ -1,0 +1,32 @@
+import {readFileSync,writeFileSync,copyFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {AnimationClip,AnimationMixer,Group,InterpolateDiscrete,InterpolateLinear,LoopOnce,Object3D,Quaternion,QuaternionKeyframeTrack,Vector3,VectorKeyframeTrack,Matrix4} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+const root='/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public',out='/tmp/granadero-bank-audit';
+const manifest=JSON.parse(readFileSync(root+'/models/characters/manifest.json','utf8'));
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+const format={5121:['readUInt8',1,255],5123:['readUInt16LE',2,65535],5125:['readUInt32LE',4,4294967295],5126:['readFloatLE',4]},widths={SCALAR:1,VEC2:2,VEC3:3,VEC4:4,MAT4:16};
+function glb(url){const bytes=readFileSync(out+'/'+url.split('/').at(-1)),size=bytes.readUInt32LE(12),json=JSON.parse(bytes.subarray(20,20+size)),binary=bytes.subarray(28+size),cache=new Map();const access=index=>{if(cache.has(index))return cache.get(index);const a=json.accessors[index],view=json.bufferViews[a.bufferView],[read,size,max]=format[a.componentType],width=widths[a.type];const values=Array.from({length:a.count*width},(_,i)=>{const value=binary[read]((view.byteOffset??0)+(a.byteOffset??0)+Math.floor(i/width)*(view.byteStride??size*width)+i%width*size);return a.normalized?value/max:value;});cache.set(index,values);return values;};return {json,access,sha256:hash(bytes)};}
+function rig(json){const nodes=json.nodes.map(def=>{const node=new Object3D();node.name=def.name;if(def.matrix)node.matrix.fromArray(def.matrix).decompose(node.position,node.quaternion,node.scale);else{if(def.translation)node.position.fromArray(def.translation);if(def.rotation)node.quaternion.fromArray(def.rotation);if(def.scale)node.scale.fromArray(def.scale);}return node;});json.nodes.forEach((def,i)=>(def.children??[]).forEach(child=>nodes[i].add(nodes[child])));const scene=new Group();for(const i of json.scenes[json.scene??0].nodes)scene.add(nodes[i]);scene.updateMatrixWorld(true);return scene;}
+function clip(data,def){return new AnimationClip(def.name,-1,def.channels.map(channel=>{const sampler=def.samplers[channel.sampler],property={translation:'position',rotation:'quaternion',scale:'scale'}[channel.target.path],Track=property==='quaternion'?QuaternionKeyframeTrack:VectorKeyframeTrack;return new Track(`${data.json.nodes[channel.target.node].name}.${property}`,data.access(sampler.input),data.access(sampler.output),sampler.interpolation==='STEP'?InterpolateDiscrete:InterpolateLinear);}));}
+const monitored=['pelvis','spine_01','spine_02','spine_03','neck_01','head','clavicle_l','clavicle_r','upperarm_l','upperarm_r','lowerarm_l','lowerarm_r','hand_l','hand_r','thigh_l','thigh_r','calf_l','calf_r','foot_l','foot_r','toe_l','toe_r'];
+const positional=['head','neck_01','pelvis','hand_l','hand_r','lowerarm_l','lowerarm_r','calf_l','calf_r','foot_l','foot_r','toe_l','toe_r'];
+
+const plans=['stand.gesture.pickup','crouch.walk.unarmed','crouch.strafeRight.unarmed','crouch.strafeLeft.knife','stand.run.lance','transition.crouch.prone','transition.prone.crouch'];
+const report=[];
+for(const [gender,preset] of [['male','granadero'],['female','woman-scout']]){
+ const body=glb(manifest.appearances[preset].lods[0].url),bank=glb(manifest.animationLibraries[gender].url),skin=body.json.skins[0],ib=body.access(skin.inverseBindMatrices),joints=skin.joints.map(i=>body.json.nodes[i].name),inverses=joints.map((_,i)=>new Matrix4().fromArray(ib,i*16));
+ const candidates=[];
+ for(const node of body.json.nodes){if(node.mesh===undefined||node.skin===undefined)continue;const kind=node.name.includes('footwear')?'boot':node.name.includes('outfit')?'sleeve':null;if(!kind)continue;
+  for(const primitive of body.json.meshes[node.mesh].primitives){const p=body.access(primitive.attributes.POSITION),ji=body.access(primitive.attributes.JOINTS_0),w=body.access(primitive.attributes.WEIGHTS_0);for(let i=0;i<p.length/3;i++){
+   const weights=w.slice(i*4,i*4+4),indices=ji.slice(i*4,i*4+4),arm=weights.reduce((total,value,index)=>total+(joints[indices[index]].startsWith('lowerarm_')?value:0),0);
+   if(kind==='sleeve'&&arm<.5)continue;candidates.push({kind,position:new Vector3().fromArray(p,i*3),indices,weights});
+  }}
+ }
+ for(const name of plans){const scene=rig(body.json),bones=joints.map(name=>scene.getObjectByName(name)),animation=clip(bank,bank.json.animations.find(c=>c.name===name)),mixer=new AnimationMixer(scene),action=mixer.clipAction(animation).setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();const result={gender,name,boot:{value:Infinity},sleeve:{value:Infinity}},count=Math.ceil(animation.duration*60);
+  for(let step=0;step<=count;step++){const time=animation.duration*step/count;mixer.setTime(time);scene.updateMatrixWorld(true);const matrices=bones.map((bone,i)=>new Matrix4().multiplyMatrices(bone.matrixWorld,inverses[i]));
+   for(const vertex of candidates){const p=new Vector3();for(let i=0;i<4;i++)if(vertex.weights[i])p.addScaledVector(vertex.position.clone().applyMatrix4(matrices[vertex.indices[i]]),vertex.weights[i]);if(p.y<result[vertex.kind].value)result[vertex.kind]={value:p.y,time,position:p.toArray()};}
+  }
+  report.push(result);mixer.stopAllAction();mixer.uncacheRoot(scene);
+ }
+}
+writeFileSync(out+'/ground-mesh.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));

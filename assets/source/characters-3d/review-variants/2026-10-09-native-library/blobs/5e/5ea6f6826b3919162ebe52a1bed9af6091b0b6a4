@@ -1,0 +1,13 @@
+# Female lower-LOD left-hand retention
+
+This private delivery retains the existing LOD0 left-hand surface in Scout and Shawl LOD1/2. It adds no materials, textures, joints, or draw calls. The frozen thumb motion is unchanged.
+
+Apply only `source.patch` and `test.patch`; do not copy the complete optimizer over concurrent collar changes. Copy only the four files in `models/` after checking their original hashes in `proof/body-records.json`. Update those four appearance LOD records in the current canonical manifest. Do not copy a private manifest or animation bank.
+
+All 54 exported checks pass at 120 Hz. The regression expands to all three LODs and both hands on Granadero, Scout, and Shawl. It keeps zero crossings, the connected-web area bound, and actual thumb-shaft angle bound.
+
+Every non-left-hand triangle is exact, including named native weights, normals, UVs, pigments, and all cloth morph positions/normals. Raw non-Skin accessor payloads and native rest matrices are exact. Materials, samplers, image bindings, and external texture bytes are exact.
+
+The source build correctly reproduces the retained hand. A separate full-rebuild drift changes old Shawl cloth morphs even without this optimizer patch. To exclude that unrelated drift, the delivery composes only the source-built Skin primitive into each existing body, with exact non-left Skin triangle proof. `proof/compose-hand-only.py` records this deterministic step.
+
+The loose thumb extension and sharp inner index crease remain. This does not claim complete hand anatomy. See `receipt.json` for hashes, costs, evidence, limits, and integration instructions.

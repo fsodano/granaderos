@@ -1,0 +1,128 @@
+{
+  "0": {
+    "equal": true,
+    "maximumLocalUVDelta": 1.1920928955078125e-07,
+    "before": {
+      "Fitted_Boot_l": {
+        "hairTriangles": 0,
+        "otherTriangles": 1853
+      },
+      "Tailored_Breeches": {
+        "hairTriangles": 0,
+        "otherTriangles": 1840
+      },
+      "Tailored_Coat": {
+        "hairTriangles": 0,
+        "otherTriangles": 25505
+      },
+      "Exposed_Human_Skin": {
+        "hairTriangles": 1085,
+        "otherTriangles": 10352
+      }
+    },
+    "after": {
+      "Fitted_Boot_l": {
+        "hairTriangles": 0,
+        "otherTriangles": 1853
+      },
+      "Tailored_Breeches": {
+        "hairTriangles": 0,
+        "otherTriangles": 1840
+      },
+      "Tailored_Coat": {
+        "hairTriangles": 0,
+        "otherTriangles": 25505
+      },
+      "Exposed_Human_Skin": {
+        "hairTriangles": 846,
+        "otherTriangles": 10352
+      }
+    },
+    "removedTriangles": 0,
+    "addedTriangles": 0
+  },
+  "1": {
+    "equal": true,
+    "maximumLocalUVDelta": 1.1920928955078125e-07,
+    "before": {
+      "Fitted_Boot_l": {
+        "hairTriangles": 0,
+        "otherTriangles": 1084
+      },
+      "Tailored_Breeches": {
+        "hairTriangles": 0,
+        "otherTriangles": 627
+      },
+      "Tailored_Coat": {
+        "hairTriangles": 0,
+        "otherTriangles": 14155
+      },
+      "Exposed_Human_Skin": {
+        "hairTriangles": 494,
+        "otherTriangles": 10352
+      }
+    },
+    "after": {
+      "Fitted_Boot_l": {
+        "hairTriangles": 0,
+        "otherTriangles": 1084
+      },
+      "Tailored_Breeches": {
+        "hairTriangles": 0,
+        "otherTriangles": 627
+      },
+      "Tailored_Coat": {
+        "hairTriangles": 0,
+        "otherTriangles": 14155
+      },
+      "Exposed_Human_Skin": {
+        "hairTriangles": 385,
+        "otherTriangles": 10352
+      }
+    },
+    "removedTriangles": 0,
+    "addedTriangles": 0
+  },
+  "2": {
+    "equal": true,
+    "maximumLocalUVDelta": 0.0,
+    "before": {
+      "Fitted_Boot_l": {
+        "hairTriangles": 0,
+        "otherTriangles": 562
+      },
+      "Tailored_Breeches": {
+        "hairTriangles": 0,
+        "otherTriangles": 233
+      },
+      "Tailored_Coat": {
+        "hairTriangles": 0,
+        "otherTriangles": 6439
+      },
+      "Exposed_Human_Skin": {
+        "hairTriangles": 236,
+        "otherTriangles": 1452
+      }
+    },
+    "after": {
+      "Fitted_Boot_l": {
+        "hairTriangles": 0,
+        "otherTriangles": 562
+      },
+      "Tailored_Breeches": {
+        "hairTriangles": 0,
+        "otherTriangles": 233
+      },
+      "Tailored_Coat": {
+        "hairTriangles": 0,
+        "otherTriangles": 6439
+      },
+      "Exposed_Human_Skin": {
+        "hairTriangles": 184,
+        "otherTriangles": 1452
+      }
+    },
+    "removedTriangles": 0,
+    "addedTriangles": 0
+  }
+}

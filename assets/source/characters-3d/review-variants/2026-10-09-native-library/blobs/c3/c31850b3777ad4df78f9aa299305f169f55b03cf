@@ -1,0 +1,12 @@
+{
+  "exitCode": 1,
+  "error": "ValueError: male: native hierarchy or inverse bind matrices differ; no assets were published.",
+  "guardRejected": true,
+  "allFilesPreserved": true,
+  "filesChecked": 104,
+  "mutation": {
+    "file": "male-animations.glb",
+    "firstInverseBindValueBefore": 1.0,
+    "delta": 0.01
+  }
+}
