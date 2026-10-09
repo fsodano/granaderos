@@ -1,0 +1,40 @@
+{
+  "gate": "quick",
+  "command": [
+    "npm",
+    "run",
+    "test:quick"
+  ],
+  "cwd": "/tmp/granaderos-piece09-final-candidate.c8k3cypq",
+  "environmentOverrides": {
+    "GRANADEROS_TEST_CONCURRENCY": "4"
+  },
+  "startedUtc": "2026-10-09T02:51:43.506499+00:00",
+  "status": "passed",
+  "log": "/tmp/granaderos-piece09-final-gates.cczy_cuw/quick.log",
+  "exitCode": 0,
+  "seconds": 2495.935,
+  "finishedUtc": "2026-10-09T03:33:19.480442+00:00",
+  "quickSummary": {
+    "suite": "quick",
+    "totalFiles": 899,
+    "expectedFiles": 891,
+    "complete": true,
+    "summary": {
+      "counts": {
+        "tests": 6801,
+        "failed": 0,
+        "passed": 6801,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 6658,
+        "suites": 0
+      },
+      "duration_ms": 2495623.852292,
+      "success": true
+    },
+    "concurrency": 4,
+    "cpus": 12
+  }
+}

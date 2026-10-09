@@ -5,6 +5,7 @@ import {illuminationAt,worldKey} from './world-materials';
 import {climbOpenings,surfaceRectangles} from './world-climb-openings';
 import {soilGrassTop} from './world-terrain-boundaries';
 import {soilFragments} from './world-soil-fragments';
+import {dryWeeds} from './world-dry-weeds';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldInput,WorldTile} from './world-types';
@@ -20,6 +21,7 @@ export function buildTerrainChunk(id:string,tiles:readonly WorldTile[],input:Wor
     const material=tile.type==='water'?materials.get('water'):materials.terrain(kind);
     if(!soilGrassTop(batch,tile,all,input.terrain.sceneId??input.terrain.sectorId,T,materials,light))cellTop(batch,material,x-T*.5,z-T*.5,x+T*.5,z+T*.5,height,light);
     soilFragments(batch,tile,kind,T,materials,light);
+    dryWeeds(batch,tile,kind,T,materials,light);
     // Exact authored cell heights remain flat. Vertical skirts join unequal
     // neighbours without changing the grid or inventing slope movement.
     for(const [dx,dy]of [[-1,0],[1,0],[0,-1],[0,1]]){

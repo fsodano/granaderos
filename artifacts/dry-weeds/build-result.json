@@ -1,0 +1,22 @@
+{
+  "gate": "build",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/tmp/granaderos-piece09-final-candidate.c8k3cypq",
+  "environmentOverrides": {},
+  "startedUtc": "2026-10-09T02:51:43.506087+00:00",
+  "status": "passed",
+  "log": "/tmp/granaderos-piece09-final-gates.cczy_cuw/build.log",
+  "exitCode": 0,
+  "seconds": 25.159,
+  "finishedUtc": "2026-10-09T02:52:08.665793+00:00",
+  "buildInfo": {
+    "version": "0.4.0-dev.1",
+    "id": "744d77cc5983",
+    "source": "744d77cc59834d418ecc876ac28e85948a1a789d843a407f002c6f39fec52dce",
+    "revision": "a979747efbfdb29b238c313a940fc152a736f6db"
+  }
+}

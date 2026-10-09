@@ -1,0 +1,23 @@
+{
+  "expectedProductionIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "744d77cc5983",
+    "source": "744d77cc59834d418ecc876ac28e85948a1a789d843a407f002c6f39fec52dce",
+    "revision": "a979747efbfdb29b238c313a940fc152a736f6db"
+  },
+  "actualProductionIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "744d77cc5983",
+    "source": "744d77cc59834d418ecc876ac28e85948a1a789d843a407f002c6f39fec52dce",
+    "revision": "6bccb6281c2c2299f9e3b4af859f61301624f690"
+  },
+  "productionSourceIdentityEqual": true,
+  "root": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+  "expectedFiles": 10409,
+  "actualFiles": 10409,
+  "missing": [],
+  "extra": [],
+  "different": [],
+  "equal": true,
+  "scope": "All tracked and non-ignored untracked non-doc/artifact source, tests and assets; exact bytes, gitlink and production source identity. Read-only check."
+}

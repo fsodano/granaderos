@@ -15,6 +15,7 @@ systems and their recorded scope.
 - [Relaxed free arm at standing rest](character-standing-free-arm-review-2026-10-08.md) *(workspace)*
 - [Irregular soil and grass edges](terrain-boundaries-review-2026-10-08.md) *(workspace)*
 - [Sparse soil fragments](soil-fragments-review-2026-10-08.md) *(workspace)*
+- [Thin dry weeds](dry-weeds-review-2026-10-08.md) *(workspace)*
 - [Colonial buildings, 1810–1820](buildings.md)
 - [Illustrated character sprites](character-sprites.md)
 - [Custom-character portraits](custom-character-portraits.md)

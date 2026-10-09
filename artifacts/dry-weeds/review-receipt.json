@@ -1,0 +1,166 @@
+{
+  "piece": 9,
+  "sourceBase": "6bccb6281c2c2299f9e3b4af859f61301624f690",
+  "scope": "thin dry weeds on admitted outdoor dry grass/scrub",
+  "rootFocused": {
+    "pass": 44,
+    "fail": 0,
+    "durationMs": 2117.161625
+  },
+  "privateFinalGates": {
+    "quick": {
+      "gate": "quick",
+      "command": [
+        "npm",
+        "run",
+        "test:quick"
+      ],
+      "cwd": "/tmp/granaderos-piece09-final-candidate.c8k3cypq",
+      "environmentOverrides": {
+        "GRANADEROS_TEST_CONCURRENCY": "4"
+      },
+      "startedUtc": "2026-10-09T02:51:43.506499+00:00",
+      "status": "passed",
+      "log": "/tmp/granaderos-piece09-final-gates.cczy_cuw/quick.log",
+      "exitCode": 0,
+      "seconds": 2495.935,
+      "finishedUtc": "2026-10-09T03:33:19.480442+00:00",
+      "quickSummary": {
+        "suite": "quick",
+        "totalFiles": 899,
+        "expectedFiles": 891,
+        "complete": true,
+        "summary": {
+          "counts": {
+            "tests": 6801,
+            "failed": 0,
+            "passed": 6801,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "topLevel": 6658,
+            "suites": 0
+          },
+          "duration_ms": 2495623.852292,
+          "success": true
+        },
+        "concurrency": 4,
+        "cpus": 12
+      }
+    },
+    "typecheck": {
+      "gate": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "/tmp/granaderos-piece09-final-candidate.c8k3cypq",
+      "environmentOverrides": {},
+      "startedUtc": "2026-10-09T02:51:43.501580+00:00",
+      "status": "passed",
+      "log": "/tmp/granaderos-piece09-final-gates.cczy_cuw/typecheck.log",
+      "exitCode": 0,
+      "seconds": 16.729,
+      "finishedUtc": "2026-10-09T02:52:00.231837+00:00"
+    },
+    "build": {
+      "gate": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/tmp/granaderos-piece09-final-candidate.c8k3cypq",
+      "environmentOverrides": {},
+      "startedUtc": "2026-10-09T02:51:43.506087+00:00",
+      "status": "passed",
+      "log": "/tmp/granaderos-piece09-final-gates.cczy_cuw/build.log",
+      "exitCode": 0,
+      "seconds": 25.159,
+      "finishedUtc": "2026-10-09T02:52:08.665793+00:00",
+      "buildInfo": {
+        "version": "0.4.0-dev.1",
+        "id": "744d77cc5983",
+        "source": "744d77cc59834d418ecc876ac28e85948a1a789d843a407f002c6f39fec52dce",
+        "revision": "a979747efbfdb29b238c313a940fc152a736f6db"
+      }
+    }
+  },
+  "live": {
+    "normalScaleDraws": {
+      "before": 67,
+      "after": 67
+    },
+    "normalScaleTriangles": {
+      "before": 116130,
+      "after": 116382
+    },
+    "closeScaleDraws": {
+      "before": 61,
+      "after": 61
+    },
+    "closeScaleTriangles": {
+      "before": 171492,
+      "after": 171738
+    },
+    "normalScaleTextures": 40,
+    "closeScaleTextures": 25,
+    "afterNormalFps": 120.1,
+    "afterCloseFps": 120.0,
+    "movementFps": 120.0,
+    "movement": "I9 to J10 completed through ordinary order",
+    "browserErrors": 0
+  },
+  "geometry": {
+    "maximumAddedTrianglesPerCell": 12,
+    "addedMaterialBatches": 0,
+    "addedTextures": 0,
+    "addedShaderWork": 0
+  },
+  "captures": {
+    "docs/art/tactical-reference-2026-10-08/dry-weeds-after-44.jpg": {
+      "sha256": "8248113384125fbb0fed884b1d9186ecc5d3597e27dcea1dbf2a55874780a811",
+      "bytes": 93413
+    },
+    "docs/art/tactical-reference-2026-10-08/dry-weeds-after-88.jpg": {
+      "sha256": "a044f386c9d40746ab4ab1f01247fa501a9b74b28b520dd273d4f9d37a577cc0",
+      "bytes": 111799
+    },
+    "docs/art/tactical-reference-2026-10-08/dry-weeds-before-44.jpg": {
+      "sha256": "7c977cd919988a7f0ef2ece138887bb177aa9ff6e0180899f99856483068d10b",
+      "bytes": 93230
+    },
+    "docs/art/tactical-reference-2026-10-08/dry-weeds-before-88.jpg": {
+      "sha256": "8be9ebe4cff00ff46df6d71aa04d79a0708f3d92d7f8979487aafccc69e3c7ac",
+      "bytes": 111552
+    },
+    "docs/art/tactical-reference-2026-10-08/dry-weeds-movement.jpg": {
+      "sha256": "891a4a3a2230e508163044624e457f0dc7ebb6d4678a04bff7289a73ea17e166",
+      "bytes": 93580
+    },
+    "docs/art/tactical-reference-2026-10-08/dry-weeds-native-projection.png": {
+      "sha256": "f536f5212f09f47d86f2b40d61e7a9af4616a5ac93a2db70550fe53ce9c82fb8",
+      "bytes": 16879
+    }
+  },
+  "sourceFiles": {
+    "tests/three-dry-weeds.test.mjs": "f19b2eda012edca4437af34030206305a712b9c8e3cdf3175e870f8f98db0566",
+    "web/lib/three/world-dry-weeds.ts": "72bb514cb23ffe8c2b62a671bb5e99cff35585c6b2ef39d8c83fe9c47dc425e0",
+    "web/lib/three/world-terrain.ts": "d45d1cbad126a67c64ac7a0fcdffdd4f6e86cc493dbe91bfe5ee2b962bc79019"
+  },
+  "rootInputEquivalence": {
+    "exact": true,
+    "files": 10409,
+    "sourceIdentity": "744d77cc59834d418ecc876ac28e85948a1a789d843a407f002c6f39fec52dce",
+    "privateRevision": "a979747efbfdb29b238c313a940fc152a736f6db",
+    "rootRevision": "6bccb6281c2c2299f9e3b4af859f61301624f690",
+    "gitRevisionMayDiffer": true,
+    "finalCheckPassed": true
+  },
+  "docs": {
+    "audit": true,
+    "relativeLinks": 43,
+    "missing": 0
+  }
+}

@@ -1,0 +1,40 @@
+[
+  {
+    "stage": "before",
+    "size": 44,
+    "metrics": {
+      "data-active-actors": "1",
+      "data-actors": "1",
+      "data-draw-calls": "67",
+      "data-effects": "0",
+      "data-engine": "three.js r184",
+      "data-fps": "104.9",
+      "data-geometries": "68",
+      "data-loaded-actors": "1",
+      "data-lod": "2",
+      "data-pending-actors": "0",
+      "data-sector-renderer": "three",
+      "data-textures": "40",
+      "data-triangles": "116130"
+    }
+  },
+  {
+    "stage": "before",
+    "size": 88,
+    "metrics": {
+      "data-active-actors": "1",
+      "data-actors": "1",
+      "data-draw-calls": "61",
+      "data-effects": "0",
+      "data-engine": "three.js r184",
+      "data-fps": "120.0",
+      "data-geometries": "61",
+      "data-loaded-actors": "1",
+      "data-lod": "1",
+      "data-pending-actors": "0",
+      "data-sector-renderer": "three",
+      "data-textures": "25",
+      "data-triangles": "171492"
+    }
+  }
+]

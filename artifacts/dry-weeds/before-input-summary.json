@@ -1,0 +1,15 @@
+{
+  "trackedFiles": 11320,
+  "runtimeTestAssetFiles": 10409,
+  "assetFiles": 8366,
+  "allTrackedDigest": "198b97b38f9bce8f8a8943ae335d924f90a704df3923f6a421240c5dc0c45fb8",
+  "runtimeTestAssetDigest": "3ff2a0edccddc9afc3fc6a1ad7c7143049d37c8afc8230387182b42875095e9c",
+  "assetsDigest": "882d3b4dabe19417fcd7de3d1cedee8a65e73a361c1bf9ae87f4b5d6aca90601",
+  "buildIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "744d77cc5983",
+    "source": "744d77cc59834d418ecc876ac28e85948a1a789d843a407f002c6f39fec52dce",
+    "revision": "a979747efbfdb29b238c313a940fc152a736f6db"
+  },
+  "bytes": 2964810661
+}

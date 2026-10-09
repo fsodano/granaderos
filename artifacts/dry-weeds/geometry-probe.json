@@ -1,0 +1,107 @@
+{
+  "grass": {
+    "cells": 768,
+    "occupied": 136,
+    "bare": 632,
+    "occupancy": 0.17708333333333334,
+    "stems": 158,
+    "totalExtraTriangles": 948,
+    "meanExtraTriangles": 1.234375,
+    "maximumExtraTriangles": 12,
+    "extraMaterialBatches": 0,
+    "worldHeightMetres": [
+      0.2972973585128784,
+      0.5174875259399414
+    ],
+    "leanMetres": [
+      0.000010024927159132307,
+      0.15122551054966757
+    ],
+    "projectedAt44": {
+      "pixelsPerMetre": 25,
+      "widthRange": [
+        0.13572971094448308,
+        6.270102359268683
+      ],
+      "heightRange": [
+        5.965174903131822,
+        12.837221461502669
+      ],
+      "rootThicknessRange": [
+        0.000050576218213059694,
+        0.30449412175180496
+      ]
+    },
+    "projectedAt88": {
+      "pixelsPerMetre": 50,
+      "widthRange": [
+        0.27145942188896616,
+        12.540204718537366
+      ],
+      "heightRange": [
+        11.930349806263644,
+        25.674442923005337
+      ],
+      "rootThicknessRange": [
+        0.00010115243642611939,
+        0.6089882435036099
+      ]
+    }
+  },
+  "scrub": {
+    "cells": 768,
+    "occupied": 183,
+    "bare": 585,
+    "occupancy": 0.23828125,
+    "stems": 215,
+    "totalExtraTriangles": 1290,
+    "meanExtraTriangles": 1.6796875,
+    "maximumExtraTriangles": 12,
+    "extraMaterialBatches": 0,
+    "worldHeightMetres": [
+      0.2972973585128784,
+      0.5174875259399414
+    ],
+    "leanMetres": [
+      0.000010024927159132307,
+      0.15122551054966757
+    ],
+    "projectedAt44": {
+      "pixelsPerMetre": 25,
+      "widthRange": [
+        0.13572971094448308,
+        6.270102359268683
+      ],
+      "heightRange": [
+        5.965174903131822,
+        12.837221461502669
+      ],
+      "rootThicknessRange": [
+        0.000050576218213059694,
+        0.30449412175180496
+      ]
+    },
+    "projectedAt88": {
+      "pixelsPerMetre": 50,
+      "widthRange": [
+        0.27145942188896616,
+        12.540204718537366
+      ],
+      "heightRange": [
+        11.930349806263644,
+        25.674442923005337
+      ],
+      "rootThicknessRange": [
+        0.00010115243642611939,
+        0.6089882435036099
+      ]
+    }
+  },
+  "actualDryGrassChunk": {
+    "cells": 64,
+    "totalTriangles": 1434,
+    "extraWeedTriangles": 90,
+    "grassBatches": 1,
+    "totalBatches": 2
+  }
+}
