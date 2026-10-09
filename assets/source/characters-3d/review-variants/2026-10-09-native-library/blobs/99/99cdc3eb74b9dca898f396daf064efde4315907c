@@ -1,0 +1,36 @@
+from pathlib import Path
+import json,hashlib,importlib.util,struct
+ROOT=Path(__file__).resolve().parents[1]
+def module(name,file):
+ spec=importlib.util.spec_from_file_location(name,ROOT/file);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+merge=module('merge','tools/characters-3d/merge-animation-bank.py');util=module('support','tools/characters-3d/build-prone-work-support.py')
+base=ROOT/'support-evidence/pistol-base-assets';assets=ROOT/'web/public/models/characters'
+selected={'prone.'+g+'.short-gun'for g in ['idle','aim','fire']};arms={'upperarm_l','lowerarm_l','hand_l'}
+def raw(rows):return b''.join(struct.pack('<'+'f'*len(row),*row)for row in rows)
+receipt={}
+for gender in ['male','female']:
+ b,bb=merge.read_glb(base/(gender+'-animations.glb'));a,ab=merge.read_glb(assets/(gender+'-animations.glb'));bt,at=util.tracks(b,bb),util.tracks(a,ab);assert bt.keys()==at.keys();assert util.native_payload(b,bb)==util.native_payload(a,ab)
+ changed=[];inputs=[];interpolations=[];retained=0;other=0
+ for name,channels in bt.items():
+  assert channels.keys()==at[name].keys();assert max(v[1][-1][0]for v in channels.values())==max(v[1][-1][0]for v in at[name].values())
+  for key,before in channels.items():
+   after=at[name][key]
+   if name in selected and key[0]in arms and key[1]=='rotation':
+    assert raw(before[2])!=raw(after[2]),(gender,name,key,str(base),str(assets),len(before[2]),len(after[2]));changed.append([name,*key]);
+    if before[0]!=after[0]:interpolations.append([name,*key,before[0],after[0]]);assert name=='prone.idle.short-gun'and before[0]=='STEP'and after[0]=='LINEAR'
+    if raw(before[1])!=raw(after[1]):inputs.append([name,*key]);assert name=='prone.idle.short-gun'
+   else:
+    assert before[0]==after[0]and raw(before[1])==raw(after[1])and raw(before[2])==raw(after[2]),(name,key)
+    if name in selected:retained+=1
+  if name not in selected:other+=1
+ receipt[gender]={'changedOutputChannels':changed,'changedInputChannels':inputs,'changedInterpolationChannels':interpolations,'retainedSelectedChannelsExactFloatBytes':retained,'allOtherClipsExactFloatBytes':other,'nativeRigGeometrySkinOffsetsScalesExact':True,'actualPeriodsExact':True,'sha256':hashlib.sha256((assets/(gender+'-animations.glb')).read_bytes()).hexdigest()}
+before=json.loads((base/'manifest.json').read_text());after=json.loads((assets/'manifest.json').read_text())
+def diff(a,b,path=''):
+ if isinstance(a,dict)and isinstance(b,dict):return sum((diff(a.get(k),b.get(k),path+'/'+k)for k in sorted(a.keys()|b.keys())),[])
+ if isinstance(a,list)and isinstance(b,list)and len(a)==len(b):return sum((diff(x,y,path+'/'+str(i))for i,(x,y)in enumerate(zip(a,b))),[])
+ return []if a==b else [{'path':path,'before':a,'after':b}]
+changes=diff(before,after);assert len(changes)==10
+for change in changes:assert change['path'].endswith(('/bytes','/sha256','/nativeProneForearmSupport'))
+receipt['manifestChanges']=changes;receipt['allOtherManifestValuesExact']=True
+profile=ROOT/'web/lib/three/locomotion-profile.json';receipt['locomotionProfileSha256']=hashlib.sha256(profile.read_bytes()).hexdigest()
+(ROOT/'support-evidence/pistol-preservation-proof.json').write_text(json.dumps(receipt,indent=2)+'\n');print('PRESERVATION_PASS',json.dumps({g:{k:v for k,v in receipt[g].items()if not k.startswith('changed')}for g in ['male','female']}))

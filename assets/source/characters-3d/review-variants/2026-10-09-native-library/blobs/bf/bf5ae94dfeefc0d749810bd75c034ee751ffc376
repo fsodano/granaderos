@@ -1,0 +1,13 @@
+import {register} from 'node:module';register('../tests/tactical-render-loader.mjs',import.meta.url);
+import {writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';
+const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
+const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
+const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const T=1.2360585147470482,result={};
+for(const rotation of [0,90,180,270])for(const finish of ['adobe','limewash','ochre','stone','brick'])for(const roof of ['original','slab']){
+ const battle=createArchitectureReviewBattle('capilla',rotation,'exterior',roof),b=battle.buildings[0];b.wallFinish=finish;
+ const input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},g=new WorldGeometry(),m=new WorldMaterials({tileMetres:T,assetUrl:p=>p}),node=buildBuilding(b,input,T,g,m),pier=node.getObjectByName(`building-detail:${b.id}:chapel-corner-piers`);
+ result[`${rotation}:${finish}:${roof}`]=pier.children.filter(mesh=>!mesh.material.name.endsWith('-outline')).map(mesh=>({name:mesh.material.name,colour:mesh.material.color.getHexString(),recipe:mesh.material.userData.architectureFinish??null,attributes:Object.fromEntries(Object.entries(mesh.geometry.attributes).map(([name,attr])=>[name,createHash('sha256').update(Buffer.from(attr.array.buffer,attr.array.byteOffset,attr.array.byteLength)).digest('hex')]))}));disposeWorldNode(node);g.dispose();m.dispose();
+}
+await writeFile(new URL(process.argv[2]??'retained-surfaces.json',import.meta.url),JSON.stringify(result,null,2)+'\n');

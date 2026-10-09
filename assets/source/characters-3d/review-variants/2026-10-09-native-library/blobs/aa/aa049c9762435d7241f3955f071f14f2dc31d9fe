@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""Install the guarded source postpass and bake only current named heal channels."""
+from pathlib import Path
+import argparse,json,shutil,subprocess,hashlib
+CUT=Path(__file__).resolve().parents[1]
+NEW=['tools/characters-3d/build-prone-heal-arm-support.mjs','tests/three-prone-heal-arm-support.test.mjs','docs/verification/prone-heal-arm-floor-support.md']
+ANCHOR="  # Preserve the retained 30 Hz parent trajectory and fit crouched boot support\n"
+INSERT="  # Prone self-care keeps the opposite native forearm supported, with clear fingers.\n  subprocess.run(['node',str(ROOT/'tools/characters-3d/build-prone-heal-arm-support.mjs')],cwd=ROOT,check=True)\n"
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);a=p.parse_args();root=a.repo.resolve();build=root/'tools/characters-3d/build-library.py';text=build.read_text();assert ANCHOR in text,'Missing native postpass insertion anchor'
+ for f in NEW:assert not(root/f).exists()or(root/f).read_bytes()==(CUT/f).read_bytes(),'Conflicting source '+f
+ # The installer never copies frozen bank or manifest bytes. The builder checks
+ # current named channels and native payloads before each publication.
+ assets=root/'web/public/models/characters';mp=assets/'manifest.json';old=json.loads(mp.read_text());profile=root/'web/lib/three/locomotion-profile.json';profileRaw=profile.read_bytes();other={p.name:sha(p)for p in assets.glob('*.glb')if p.name not in ['male-animations.glb','female-animations.glb']}
+ for f in NEW:
+  target=root/f;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(CUT/f,target)
+ if INSERT not in text:build.write_text(text.replace(ANCHOR,INSERT+ANCHOR))
+ subprocess.run(['node',str(root/NEW[0]),'--root',str(root)],cwd=root,check=True)
+ new=json.loads(mp.read_text())
+ for gender in ['male','female']:
+  before=old['animationLibraries'][gender];after=new['animationLibraries'][gender]
+  for x,y in zip(before['clips'],after['clips']):
+   if x['name']=='prone.gesture.heal':y.pop('nativeProneHealArmSupport',None);x.pop('nativeProneHealArmSupport',None)
+   assert x==y,'Unrelated current clip metadata changed '+gender+':'+x['name']
+  for key in ['sha256','bytes']:before.pop(key);after.pop(key)
+ assert old==new,'Unrelated manifest metadata changed'
+ assert profile.read_bytes()==profileRaw,'Profile changed'
+ assert all(sha(assets/f)==pin for f,pin in other.items()),'Nonselected asset changed'
+ print('PRONE_HEAL_FLOOR_INSTALLED',json.dumps({'profileExact':True,'otherAssetsExact':True,'unrelatedMetadataExact':True}))
+if __name__=='__main__':main()

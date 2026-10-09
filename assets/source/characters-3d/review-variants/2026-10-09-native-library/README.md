@@ -10,24 +10,30 @@ clothing asset, gameplay rule or test limit is replaced by this archive.
 
 ## Inventory
 
-- `manifest.json`: 1,679 unique blobs, exact Git and SHA-256 hashes, original
+- `manifest.json`: 1,788 unique blobs, exact Git and SHA-256 hashes, original
   paths, source commits, source branches and review status.
 - `private-files.json`: 2,158 selected private paths, including duplicate aliases
   and content already preserved in main history.
-- `external-files.json`: 17,761 available temporary-source/art paths, receipt
+- `external-files.json`: 18,724 available temporary and worktree source/art paths, receipt
   references and exact identities. Where a study recorded no Git branch, that
   missing provenance is stated explicitly.
+- `worktree-source-overlaps.json`: all-worktree ignored authored-source audit,
+  exact checkout provenance, and content already reachable from integration.
 - `blobs/`: exact bytes, deduplicated by their Git blob identity.
 - `squash-overlaps.json`: exact complete patch-id matches for 23 local source
   branches and their existing main squash commits.
 - `branch-overlaps.json`: compared paths and the original branch tips.
 
-The archive has 1,391,412,415 logical bytes. Of these, 895,190,119 bytes are
+The archive has 1,408,613,954 logical bytes. Of these, 895,190,119 bytes are
 already stored in local human-branch Git objects; the new archive paths reuse
 those objects. The 630 unique private blobs total 183,689,175 bytes. The largest
 individual blob is 18,626,420 bytes. The external supplement adds 480 unique
 source/art/receipt blobs totaling 312,533,121 bytes. No dependency or generated
-distribution code is included.
+distribution code is included. The final all-worktree supplement preserves 109
+unique QA/pilot script, patch and source-model blobs totaling 17,201,539 bytes.
+Its 963 path receipts distinguish committed overlap from previously ignored
+authorship. The early primary-worktree human Blender/GLB study stays inactive;
+none of these older assets replace the current library.
 
 The original `artifacts/character-anatomy-review/` remains intact. Its repeated
 rendered evidence files are not copied into production source. Dependency and

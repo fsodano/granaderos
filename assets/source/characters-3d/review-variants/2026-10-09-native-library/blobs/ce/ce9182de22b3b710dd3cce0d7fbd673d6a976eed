@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Apply only palette source hunks and three body fields to the current tree."""
+from pathlib import Path
+import argparse, copy, hashlib, json, subprocess
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('root', type=Path)
+parser.add_argument('--receipt', type=Path)
+args = parser.parse_args()
+root, cut = args.root.resolve(), Path(__file__).resolve().parent
+sha = lambda raw: hashlib.sha256(raw).hexdigest()
+allow = json.loads((cut / 'allowlist.json').read_text())
+hashes = json.loads((cut / 'source-hashes.json').read_text())
+assert all(sha((cut / f).read_bytes()) == hashes[f] for f in allow), 'Frozen source changed'
+rows = json.loads((cut / 'manifest-records.json').read_text())
+hunks = json.loads((cut / 'source-hunks.json').read_text())
+assets = root / 'web/public/models/characters'
+manifest_path = assets / 'manifest.json'
+manifest_before = manifest_path.read_bytes()
+manifest = json.loads(manifest_before)
+original = copy.deepcopy(manifest)
+changed_body_files = {Path(row['after']['url']).name for row in rows}
+protected_models = {str(p.relative_to(root)): sha(p.read_bytes()) for p in assets.rglob('*')
+                    if p.is_file() and p.name not in changed_body_files | {'manifest.json'}}
+protected_sources = ['web/lib/three/actor-runtime.ts', 'web/lib/three/animation-clock.ts',
+                     'web/lib/three/action-timing.ts', 'web/lib/three/movement-timing.ts',
+                     'web/lib/three/locomotion-profile.json', 'web/lib/three/presentation.ts',
+                     'web/lib/useEnemyPlayback.ts', 'tools/characters-3d/compile-locomotion-profile.mjs',
+                     'tools/characters-3d/build-reviewed-long-cloth-lods.py',
+                     'tools/characters-3d/fit-reviewed-long-cloth-lods.mjs']
+protected = {**protected_models, **{f: sha((root / f).read_bytes()) for f in protected_sources}}
+pending = {}
+for f in allow:
+    if f.endswith('/manifest.json'):
+        continue
+    path = root / f
+    if f in hunks:
+        text = path.read_text()
+        for hunk in hunks[f]:
+            if hunk['new'] in text:
+                assert text.count(hunk['new']) == 1, 'Ambiguous installed hunk: ' + f
+            else:
+                assert text.count(hunk['old']) == 1, 'Ambiguous source hunk: ' + f
+                text = text.replace(hunk['old'], hunk['new'])
+        pending[path] = text.encode()
+    else:
+        raw = (cut / f).read_bytes()
+        if path.is_file() and f not in {f'web/public/models/characters/{x}' for x in changed_body_files}:
+            assert path.read_bytes() == raw, 'Different existing new file: ' + f
+        pending[path] = raw
+for row in rows:
+    before, after, lod = row['before'], row['after'], row['lod']
+    record = manifest['appearances']['woman-shawl']['lods'][lod]
+    actual = (assets / Path(record['url']).name).read_bytes()
+    assert record['url'] == before['url'] == after['url']
+    assert record['sha256'] == sha(actual) and record['bytes'] == len(actual)
+    assert record['sha256'] in (before['sha256'], after['sha256']), 'Affected body changed'
+    record.update(sha256=after['sha256'], bytes=after['bytes'])
+    if lod:
+        assert record['nativeClothTopology']['sourceSha256'] in (before['nativeClothTopology']['sourceSha256'], after['nativeClothTopology']['sourceSha256'])
+        record['nativeClothTopology']['sourceSha256'] = after['nativeClothTopology']['sourceSha256']
+mask = copy.deepcopy(manifest)
+for row in rows:
+    old, lod = original['appearances']['woman-shawl']['lods'][row['lod']], row['lod']
+    value = mask['appearances']['woman-shawl']['lods'][lod]
+    value.update(sha256=old['sha256'], bytes=old['bytes'])
+    if lod:
+        value['nativeClothTopology']['sourceSha256'] = old['nativeClothTopology']['sourceSha256']
+assert mask == original, 'An unowned manifest field changed'
+assert manifest_path.read_bytes() == manifest_before, 'Concurrent manifest mutation'
+assert all(sha((root / p).read_bytes()) == pin for p, pin in protected.items()), 'Concurrent protected mutation'
+for path, raw in pending.items():
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(raw)
+canonical = subprocess.check_output(['node', '-e', "let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',v=>s+=v);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+'\\n'));"], input=json.dumps(manifest), text=True)
+manifest_path.write_text(canonical)
+assert all(sha((root / p).read_bytes()) == pin for p, pin in protected.items()), 'Protected source changed'
+assert json.loads(manifest_path.read_text()) == manifest
+receipt = {'result': 'PASS', 'protectedPins': protected,
+           'animationLibrariesExact': manifest['animationLibraries'] == original['animationLibraries'],
+           'manifestOnlyEightPaletteFieldsChanged': True,
+           'actualCurrentBankHashes': {k: v['sha256'] for k, v in manifest['animationLibraries'].items()},
+           'bodyHashes': {r['lod']: r['after']['sha256'] for r in rows}}
+if args.receipt:
+    args.receipt.write_text(json.dumps(receipt, indent=2) + '\n')
+print('Applied three palette bodies, eight body fields and narrow source hunks; current banks/clocks/profile exact')

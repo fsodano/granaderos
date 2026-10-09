@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+"""Apply only four reviewed body records; preserve current clocks and all other metadata."""
+from pathlib import Path
+import json,hashlib,subprocess,sys
+cut=Path(__file__).resolve().parent
+root=Path(sys.argv[1]).resolve()
+sha=lambda raw:hashlib.sha256(raw).hexdigest()
+rows=json.loads((cut/'manifest-records.json').read_text())
+allow=json.loads((cut/'allowlist.json').read_text())
+manifest_path=root/'web/public/models/characters/manifest.json'
+manifest=json.loads(manifest_path.read_text())
+original=json.loads(manifest_path.read_text())
+pins=['web/lib/three/actor-runtime.ts','web/lib/three/animation-clock.ts','web/lib/three/action-timing.ts','web/lib/three/movement-timing.ts','web/lib/three/locomotion-profile.json','tools/characters-3d/compile-locomotion-profile.mjs','web/lib/three/presentation.ts','web/app/useEnemyPlayback.ts']
+protected={p:sha((root/p).read_bytes())for p in pins if(root/p).is_file()}
+for anatomy,expected in [('male','63fd64af5b31c93c34a63d6548a6de3d124e73a42a374bfb6bd4d92052aa1317'),('female','8e5f0f867c177baa762559421be9026c957142345b4bb5d3d15f1225d31792b7')]:
+ record=manifest['animationLibraries'][anatomy]
+ assert record['sha256']==expected and sha((root/('web/public/.'+record['url'])).read_bytes())==expected,'Current native bank changed; revalidate the cut'
+for row in rows:
+ old,new=row['before'],row['after'];path=root/('web/public/.'+old['url'])
+ assert manifest['appearances'][row['id']]['lods'][row['lod']] in (old,new),'Affected body metadata changed'
+ assert sha(path.read_bytes()) in (old['sha256'],new['sha256']),'Affected body changed'
+ donor=manifest['appearances'][row['id']]['lods'][0]
+ assert donor['sha256']==new['nativeClothTopology']['sourceSha256']
+ assert sha((root/('web/public/.'+donor['url'])).read_bytes())==donor['sha256']
+ assert sha((cut/('web/public/.'+new['url'])).read_bytes())==new['sha256']
+ manifest['appearances'][row['id']]['lods'][row['lod']]=new
+for row in rows:manifest['appearances'][row['id']]['lods'][row['lod']]=original['appearances'][row['id']]['lods'][row['lod']]
+assert manifest==original,'A different manifest record changed'
+for row in rows:manifest['appearances'][row['id']]['lods'][row['lod']]=row['after']
+for f in allow:
+ if f.endswith('/manifest.json'):continue
+ target=root/f;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes((cut/f).read_bytes())
+text=subprocess.check_output(['node','-e',"let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',v=>s+=v);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+'\\n'));"],input=json.dumps(manifest),text=True)
+manifest_path.write_text(text)
+assert {p:sha((root/p).read_bytes())for p in protected}==protected,'Current runtime or profile changed'
+assert json.loads(manifest_path.read_text())['animationLibraries']==original['animationLibraries']
+print('Applied four reviewed garment bodies and four records; current clocks/profile/banks exact')

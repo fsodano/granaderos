@@ -1,0 +1,11 @@
+--- a/tools/characters-3d/build-library.py
++++ b/tools/characters-3d/build-library.py
+@@ -98,6 +98,8 @@
+   subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-pistol-forearm-support.py')],cwd=ROOT,check=True)
+   # Bake rifle elbow planes from each retained native wrist and body curve.
+   subprocess.run(['node',str(ROOT/'tools/characters-3d/build-prone-rifle-arm-support.mjs')],cwd=ROOT,check=True)
++  # Prone self-care keeps the opposite native forearm supported, with clear fingers.
++  subprocess.run(['node',str(ROOT/'tools/characters-3d/build-prone-heal-arm-support.mjs')],cwd=ROOT,check=True)
+   # Preserve the retained 30 Hz parent trajectory and fit crouched boot support
+   # at 60 Hz without replacing native upper-body, Root or pace channels.
+   leg_bones=[name+'_'+side for side in ('l','r')for name in ('thigh','calf','foot','ball')]

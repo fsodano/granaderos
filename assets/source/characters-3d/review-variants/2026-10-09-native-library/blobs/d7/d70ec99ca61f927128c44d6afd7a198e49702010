@@ -1,0 +1,13 @@
+from pathlib import Path
+import importlib.util,hashlib,json,shutil
+r=Path.cwd();src=Path('/tmp/granaderos-bayonet-native-support-source-cut');a=r/'artifacts/three-bayonet-native-source-cut-review';(a/'base').mkdir(exist_ok=True)
+def mod(name,p):
+ s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+merge=mod('merge',r/'tools/characters-3d/merge-animation-bank.py');pack=mod('pack',r/'assets/source/characters-3d/authoring/gltf_pack.py');proof=mod('proof',r/'tools/characters-3d/build-guard-support.py');assets=r/'web/public/models/characters';mp=assets/'manifest.json';manifest=json.loads(mp.read_text());fixed=json.loads((src/'web/public/models/characters/manifest.json').read_text());receipts={};name='stand.bayonet.long-gun'
+shutil.copy2(mp,a/'base/manifest.json')
+for gender in ['male','female']:
+ p=assets/(gender+'-animations.glb');shutil.copy2(p,a/'base'/p.name);before=merge.read_glb(p);frozen=merge.read_glb(src/'web/public/models/characters'/p.name);old=proof.channels(*before)[name];ready=proof.channels(*frozen)[name]
+ assert all(v==ready[k] for k,v in old.items() if k[0] not in proof.LEGS or k[1]!='rotation'),'Selected Root/body/weapon basis differs'
+ merge.merge(p,src/'increments'/(gender+'-bayonet-support.glb'),bones=proof.LEGS,existing_only=True);raw,_=pack.pack(p,{});after=merge.read_glb(p);receipts[gender]=proof.prove_preserved(before,after,{name});assert proof.channels(*after)[name]==ready,'Named increment differs from frozen accepted clip'
+ bank=manifest['animationLibraries'][gender];record=next(x for x in bank['clips'] if x['name']==name);record['nativeBootSupport']=next(x for x in fixed['animationLibraries'][gender]['clips'] if x['name']==name)['nativeBootSupport'];bank['bytes']=len(raw);bank['sha256']=hashlib.sha256(raw).hexdigest()
+mp.write_text(json.dumps(manifest,indent=2)+'\n');(a/'named-composition-proof.json').write_text(json.dumps({'baseMain':'3e51e1a3f1b67e814ac52e1ca0f531d6374cae40','banks':receipts,'selectedClipExactFrozen':True,'retainedRootBodyWeaponBasisExact':True},indent=2)+'\n');print('ONE_NATIVE_CLIP_PER_BANK_EXACT_AND_ALL_CURRENT_OTHER_CLIPS_RETAINED')

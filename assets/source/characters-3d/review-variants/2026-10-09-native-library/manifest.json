@@ -41,8 +41,8 @@
     "650599c2bdc0bcab028b5fb1fe85841cb8dcbeb9",
     "a5d9f55ec5a63fb29a5244d51d9616c72df95785"
   ],
-  "blobCount": 1679,
-  "logicalBytes": 1391412415,
+  "blobCount": 1788,
+  "logicalBytes": 1408613954,
   "dependencyFilesExcluded": 1234,
   "renderedEvidenceFilesLeftInOriginalDirectory": 3663,
   "blobs": [
@@ -29898,6 +29898,2631 @@
       "sourceBranchNote": "The temporary study did not record a Git branch. Its exact original path, file identity and receipt references are retained.",
       "status": "external-review-variant-not-enabled",
       "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "5d948136d20e991a7f7ceee7746b9398f8f79863",
+      "sha256": "75d78de61912fc76bf0272e3bfeb5c1635d3914d5533de4a88bbe9a7c9133ec2",
+      "bytes": 1638,
+      "archivePath": "blobs/5d/5d948136d20e991a7f7ceee7746b9398f8f79863",
+      "paths": [
+        "/Users/fsodano/fibradev/games/granaderos/artifacts/portrait-expansion-part-1.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/fibradev/games/granaderos",
+          "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+          "checkoutBranch": "codex/pending-review-references",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2cdfd448735375468641aa416f63cf4297e3c472",
+      "sha256": "d9ae011e0b01ecc99fa0490b4610fdb6e2c572ec4ddae4877b1462adbff6a0b8",
+      "bytes": 885,
+      "archivePath": "blobs/2c/2cdfd448735375468641aa416f63cf4297e3c472",
+      "paths": [
+        "/Users/fsodano/fibradev/games/granaderos/artifacts/portrait-expansion-root.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/fibradev/games/granaderos",
+          "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+          "checkoutBranch": "codex/pending-review-references",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "4117017780c0eac99e801f9e366970141a45c5ce",
+      "sha256": "30ec97cc4feea80940840427ba07c7bf6dc9a0ac190a71151c3635b06c0b44b6",
+      "bytes": 5993,
+      "archivePath": "blobs/41/4117017780c0eac99e801f9e366970141a45c5ce",
+      "paths": [
+        "/Users/fsodano/fibradev/games/granaderos/artifacts/qa-ja2/qa.js"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/fibradev/games/granaderos",
+          "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+          "checkoutBranch": "codex/pending-review-references",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "cc646f79a20917f8c27d0108aadf57f42c9ccef1",
+      "sha256": "229a48b5a867ba86e6e76ec99a39924306dcde32c6b748f5fc5c495f1e491aa4",
+      "bytes": 2082,
+      "archivePath": "blobs/cc/cc646f79a20917f8c27d0108aadf57f42c9ccef1",
+      "paths": [
+        "/Users/fsodano/fibradev/games/granaderos/artifacts/qa-ja2/qa2.js"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/fibradev/games/granaderos",
+          "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+          "checkoutBranch": "codex/pending-review-references",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d413bf90dc461d08d675b41ab5e77cbe76830e51",
+      "sha256": "52842c20ab027181a9416860043c6a00c1a50ecf84306aa8cccf48766b5cfd4d",
+      "bytes": 2229,
+      "archivePath": "blobs/d4/d413bf90dc461d08d675b41ab5e77cbe76830e51",
+      "paths": [
+        "/Users/fsodano/fibradev/games/granaderos/artifacts/qa-ja2/qa3.js"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/fibradev/games/granaderos",
+          "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+          "checkoutBranch": "codex/pending-review-references",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "49a15714549a74936024aee0ff0cbf09f7e6989f",
+      "sha256": "7aea16cca0be2a6526f3e959ca20253f0aaa200898e2e5bc0c8cb7affce4c170",
+      "bytes": 8170198,
+      "archivePath": "blobs/49/49a15714549a74936024aee0ff0cbf09f7e6989f",
+      "paths": [
+        "/Users/fsodano/fibradev/games/granaderos/playgrounds/granadero-3d/authoring/human-review/granadero-human.blend"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/fibradev/games/granaderos",
+          "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+          "checkoutBranch": "codex/pending-review-references",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d4b8ef16af7c62932135c4ceae62e5c78897e037",
+      "sha256": "4921a38bf3b6afeea30eed115743141621454e55fa078ba7d366021c17e2d795",
+      "bytes": 8302020,
+      "archivePath": "blobs/d4/d4b8ef16af7c62932135c4ceae62e5c78897e037",
+      "paths": [
+        "/Users/fsodano/fibradev/games/granaderos/playgrounds/granadero-3d/authoring/human-review/granadero-human.glb"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/fibradev/games/granaderos",
+          "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+          "checkoutBranch": "codex/pending-review-references",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "3d7cd31c7a24aa6558e086d4143bbc2255990140",
+      "sha256": "7e1842885104aeb2a8dc23f93af422ab474840f638fb11b7e96a044ccb444f7b",
+      "bytes": 4861,
+      "archivePath": "blobs/3d/3d7cd31c7a24aa6558e086d4143bbc2255990140",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos/artifacts/character-coarse-garment-surfaces/builder-boundary-probe.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+          "checkoutHead": "c93283155b5c58e5dc4659df0259564e762d3355",
+          "checkoutBranch": "codex/building-exterior-pictures",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "e4227f3221eceb2fddcfb791c7e59075a888707b",
+      "sha256": "a6328fa3dd430affb9f63ed8386289e5959c275bc19f469db8552fb353707227",
+      "bytes": 10915,
+      "archivePath": "blobs/e4/e4227f3221eceb2fddcfb791c7e59075a888707b",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos/artifacts/soft-bedding/blanket-clearance-correction.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+          "checkoutHead": "c93283155b5c58e5dc4659df0259564e762d3355",
+          "checkoutBranch": "codex/building-exterior-pictures",
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1d6731887ea9b4184e193e980afaa25320bb10f5",
+      "sha256": "50b4acde6bf4b65178a30f4951fb95a1b5b52026229b0018e9dbe3b58060a10a",
+      "bytes": 11445,
+      "archivePath": "blobs/1d/1d6731887ea9b4184e193e980afaa25320bb10f5",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/main-sabre-thrust-comparison.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "a87e9b53d0bdd0fc9a90ed08ba48abaea4c3e2f1",
+      "sha256": "6693a313480941f7397d990c34b4ccb7bcc87dd3f01914357fa1a0317094103b",
+      "bytes": 11655,
+      "archivePath": "blobs/a8/a87e9b53d0bdd0fc9a90ed08ba48abaea4c3e2f1",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/standing-blade-main-thrust-cycle.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "94d8fe1b06998f8470e272f0e3306ca33336dad0",
+      "sha256": "d649a470d0bc350953bd05701b0a58d9ecbb9ea04a95ee6ddfd44431a61954b5",
+      "bytes": 8078,
+      "archivePath": "blobs/94/94d8fe1b06998f8470e272f0e3306ca33336dad0",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/standing-thrust-main-paid-cycle.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "6051b84e51adfe1265b5e262dbfc4a2ccf43149a",
+      "sha256": "70c1374f8d010fd2544bdcd9b415d39755eec5d11cd720c688ff92bd299009bf",
+      "bytes": 10112,
+      "archivePath": "blobs/60/6051b84e51adfe1265b5e262dbfc4a2ccf43149a",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-all-appearance-prone-pistol-review/all-appearance-paid-review.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d70ec99ca61f927128c44d6afd7a198e49702010",
+      "sha256": "73e563604b513a4ac80434e0fb9f5e8e86b18c080aa09ef52adb2224c04b309b",
+      "bytes": 2182,
+      "archivePath": "blobs/d7/d70ec99ca61f927128c44d6afd7a198e49702010",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-bayonet-native-source-cut-review/apply-increment.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "73f4dad7677bef987ec43dc495e9d68d3d236b96",
+      "sha256": "222a7437681fc45d3f33252e56f960ff0dbecb4bf92e7b05d68517e0d2e9ba61",
+      "bytes": 7359,
+      "archivePath": "blobs/73/73f4dad7677bef987ec43dc495e9d68d3d236b96",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-chapel-pier-edges-current-review/catalog-current-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-civic-storey-bands-current-review/catalog-current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "bf5ae94dfeefc0d749810bd75c034ee751ffc376",
+      "sha256": "7689ff0381aaaaec646bf072594024bf46626898021b964d7a0b369e0e0d93e9",
+      "bytes": 1835,
+      "archivePath": "blobs/bf/bf5ae94dfeefc0d749810bd75c034ee751ffc376",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-chapel-pier-edges-current-review/frozen-source/evidence/chapel-retained-surfaces.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "f024f6a178ff392c3eababac7670c00538c6d816",
+      "sha256": "f9e9a0e2ccceda03e53c618e96ae5932c820d92a013f71672c3268f0c1598fd5",
+      "bytes": 1842,
+      "archivePath": "blobs/f0/f024f6a178ff392c3eababac7670c00538c6d816",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-chapel-pier-edges-current-review/frozen-source/evidence/chapel-source-bounds.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "32120ab74757e605db788c4552536e64b896f26e",
+      "sha256": "492b611065dac2d74edb258afee692ba3975a9aa6d605d1662d4e2e29a66873e",
+      "bytes": 52932,
+      "archivePath": "blobs/32/32120ab74757e605db788c4552536e64b896f26e",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-chapel-pier-edges-current-review/frozen-source/minimal.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "236361bcd94f72ab54f25fe9d440fcaabc973c07",
+      "sha256": "ad926bd096a65565539f5c31900eea00ed86378f3d918a031c13004cba246547",
+      "bytes": 8046,
+      "archivePath": "blobs/23/236361bcd94f72ab54f25fe9d440fcaabc973c07",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-civic-cornice-current-review/catalog-current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "31431be8fb95bad49280b18679119606fb51fae2",
+      "sha256": "abd7b0fa2c04f113f09a7279b104c12c0895b61bdaa5eadac9adb5c8d3a85365",
+      "bytes": 8007,
+      "archivePath": "blobs/31/31431be8fb95bad49280b18679119606fb51fae2",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-civic-storey-bands-current-review/catalog-after-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "b697253e967cd8c79ad6ed8d03941c311f06801c",
+      "sha256": "d3ba32d740b3d7702feb120f233e22e7a2225cc9434d1a28f4a977e77bbc684e",
+      "bytes": 2680,
+      "archivePath": "blobs/b6/b697253e967cd8c79ad6ed8d03941c311f06801c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-civic-storey-bands-current-review/current-preservation.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "72cdaa2f18a768ba187d563b42a143d169bad4c5",
+      "sha256": "c89c5b65523693a40677f69453c95e5a6c9f11ec4e8bde7ef043249211437a46",
+      "bytes": 68782,
+      "archivePath": "blobs/72/72cdaa2f18a768ba187d563b42a143d169bad4c5",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-civic-storey-bands-current-review/frozen-source/minimal.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "38d1e52508a5d836664dd08cb44742fbc9f16896",
+      "sha256": "6d939952da9fd0738996981edf9bc83d5400ef3bfeb3ae1def3f7baf4cc8708d",
+      "bytes": 2662,
+      "archivePath": "blobs/38/38d1e52508a5d836664dd08cb44742fbc9f16896",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-civic-storey-bands-current-review/frozen-source/private-evidence/civic-preserved-geometry.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "fd584caee31fbe072944a46db5f0189b34bf588c",
+      "sha256": "b0c3977a9e556cc1b4dc5fc8e801ffef3f1d4718544ad46d7c58e848a81f76fe",
+      "bytes": 8847,
+      "archivePath": "blobs/fd/fd584caee31fbe072944a46db5f0189b34bf588c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-climb-crest-current-review/root-varied-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "dbb8165a22a58871b75509f892ec75903d64d983",
+      "sha256": "5cb6c40818b15835345548e63f1fd0226793478581e6e498786993af292d4e3a",
+      "bytes": 8397,
+      "archivePath": "blobs/db/dbb8165a22a58871b75509f892ec75903d64d983",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-climb-rung-phase-current-review/root-varied-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-climb-rung-phase-current-review/root-varied-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "edcffd004a2ad4ae884b25021c1efea24eb81451",
+      "sha256": "befe9a27bc148ad145bf796b6bba45f67f8cbdb0954f3b50c63d0a6515c3026d",
+      "bytes": 4413,
+      "archivePath": "blobs/ed/edcffd004a2ad4ae884b25021c1efea24eb81451",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-current-frame-review/normal-profile.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "b25c0fae7f6c47e077382ae0daa28947873c22f8",
+      "sha256": "751ac17f54b013456882c1b42ace228f642dddc9d26878bd1d75ab44ecd7d4b9",
+      "bytes": 4694,
+      "archivePath": "blobs/b2/b25c0fae7f6c47e077382ae0daa28947873c22f8",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-current-frame-review/wide-profile.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ec7be6bd4236d1d07f5161097d5448d9274d1ab7",
+      "sha256": "c55a091e66eb9164635ab52a57975ce5f521c450ee2fec79223f80ca1316840f",
+      "bytes": 10715,
+      "archivePath": "blobs/ec/ec7be6bd4236d1d07f5161097d5448d9274d1ab7",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-grass-current-review/clinical-grass-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-grass-current-review/clinical-grass-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "fd15144554c7a5b3a7e3af19562e928cfbd8b5b8",
+      "sha256": "3939eedc5b34bbdfb0d257e3cc7791cefb417a0d75b7bb54bb560333add4b4c6",
+      "bytes": 3080,
+      "archivePath": "blobs/fd/fd15144554c7a5b3a7e3af19562e928cfbd8b5b8",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/candidate-lod0-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2ad8cf97aa5753e84159724548cccdc80f0509b0",
+      "sha256": "1c3700a7723e3ababa6575d7a7aee501948871f1b4e42c9b523b1d1300212112",
+      "bytes": 6006,
+      "archivePath": "blobs/2a/2ad8cf97aa5753e84159724548cccdc80f0509b0",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/close-cloth-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "eab86a9b3dc8eed8806b48a99ee6cb2e026f401c",
+      "sha256": "ffc306780a924f464df6cd3b735b75d1dc15ef5cfda2ffc8702d928df5d1cc2b",
+      "bytes": 2787,
+      "archivePath": "blobs/ea/eab86a9b3dc8eed8806b48a99ee6cb2e026f401c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/cloth-only-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d8a3623514f6a36ebc077bd77bc60edb8fff5362",
+      "sha256": "2c8015fe848ace437159713210806dae15b974491d5ec180b5fb8c7e3cd50b02",
+      "bytes": 1807,
+      "archivePath": "blobs/d8/d8a3623514f6a36ebc077bd77bc60edb8fff5362",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/collision-cloth-mesh.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "67f0115c2f10daf409a65f765388bcb35670aefc",
+      "sha256": "7de67411304a1818aab5211608939bf6cecb4f84724ccea22ecbeeab297f698c",
+      "bytes": 1678,
+      "archivePath": "blobs/67/67f0115c2f10daf409a65f765388bcb35670aefc",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/collision-mesh.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "60b425d6bf53eff3182cba71f5158bcc6f1152da",
+      "sha256": "683f66c43bd88e78db2bb188ffdd82284150adc0271b79bfb982bb20ae59d4c6",
+      "bytes": 5250,
+      "archivePath": "blobs/60/60b425d6bf53eff3182cba71f5158bcc6f1152da",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/filtered-fit-proposal.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "b6b1af8042691dd2ce98e78244cc5ebd074b3c9a",
+      "sha256": "7708cbaf6596877075d48b1c14fbaf000e10520d599aa1a7b2e61e9fdf8c8c43",
+      "bytes": 5235,
+      "archivePath": "blobs/b6/b6b1af8042691dd2ce98e78244cc5ebd074b3c9a",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/fit-proposal.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "afd2c269475143c3d73ee269155b46128d0ae259",
+      "sha256": "e7bf9bcf8cca6925683dcb3f3cc490555c7976131a94626ab0fe50f401a16329",
+      "bytes": 4265,
+      "archivePath": "blobs/af/afd2c269475143c3d73ee269155b46128d0ae259",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "05e929abce16761ab0e7dc7600f8a32bb8d2ac2e",
+      "sha256": "6d2a20c8b868cb6da5a61d97ee25387042581a11b83a45aedb79f7ba332efeea",
+      "bytes": 5525,
+      "archivePath": "blobs/05/05e929abce16761ab0e7dc7600f8a32bb8d2ac2e",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-cloth-boot-clearance-review/upward-fit-proposal.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c1a6fef4136ee1fd63c43295879468ee43b0bcef",
+      "sha256": "509965364ae975281bb55bb9ecfcbcc62230d35e5d07a041b2c0f37ceaa3f2a7",
+      "bytes": 2622,
+      "archivePath": "blobs/c1/c1a6fef4136ee1fd63c43295879468ee43b0bcef",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-garment-current-review/after-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ebb84a4d1f28854d789595837688ee2f95ee1a8c",
+      "sha256": "d2b1ea77db370c66ae92a459dbe78c9e18ff092e24c62f753a24030f93c82805",
+      "bytes": 4657,
+      "archivePath": "blobs/eb/ebb84a4d1f28854d789595837688ee2f95ee1a8c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-garment-current-review/cloth-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "7cfaa17637bb1566c6ddd55477a09cf200a39e7d",
+      "sha256": "4bdb1e8e2be76d0accfc7661f04ad2052ea04b6f068af9360d4de0260054e02e",
+      "bytes": 3321,
+      "archivePath": "blobs/7c/7cfaa17637bb1566c6ddd55477a09cf200a39e7d",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-garment-current-review/fit-proposal.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "88f4719a2d77eb9c33f1fb0580074bd2f5ed6886",
+      "sha256": "9cb38671a61c434004e9eb79dee6fab6ee86790c7f279e31451554d80d7af816",
+      "bytes": 2625,
+      "archivePath": "blobs/88/88f4719a2d77eb9c33f1fb0580074bd2f5ed6886",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-garment-current-review/probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d0428735b40d4c3efb5e1aa836c081f28b2e9c13",
+      "sha256": "bff2842b68eff1991183ccd8e4ea9a4a9046b3f6f5708f7353ba50f73d931f47",
+      "bytes": 3148,
+      "archivePath": "blobs/d0/d0428735b40d4c3efb5e1aa836c081f28b2e9c13",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-long-garment-current-review/vertex-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "b61e6045f80be56d11c8844b5c755e6166aefe06",
+      "sha256": "b0b8d3e94bef93506bf3699f0474f02febc344b132cdcabe50eaca4ab4f543ea",
+      "bytes": 5387,
+      "archivePath": "blobs/b6/b61e6045f80be56d11c8844b5c755e6166aefe06",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-low-ceiling-current-review/actual-authored-idle-clearance.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "a6db1697f94e66b26b781ad4d6c531abf7abe34b",
+      "sha256": "949ab21fdb359d05b4d546e6a2bef8ccd23b450eecabe43e758ff12406d90564",
+      "bytes": 7276,
+      "archivePath": "blobs/a6/a6db1697f94e66b26b781ad4d6c531abf7abe34b",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-low-ceiling-current-review/native-standing-height.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ac5efa5d8fa7acf2b9ff626b888b99990a72e1ce",
+      "sha256": "f85117a0c6d502e77db6fecc64410f5ae08137f46632073cfcde6177fc4fcafd",
+      "bytes": 8086,
+      "archivePath": "blobs/ac/ac5efa5d8fa7acf2b9ff626b888b99990a72e1ce",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-palace-portico-current-review/catalog-current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "050d9bd179466a4bd0f608a5a1b5d1bad3675ffa",
+      "sha256": "37728fdb6a4b6d73e2f252da1e5d7f008d5215d0c60d32945f7daef91324f3b9",
+      "bytes": 9201,
+      "archivePath": "blobs/05/050d9bd179466a4bd0f608a5a1b5d1bad3675ffa",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-patient-care-current-review/before-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "139e5c8fd1e85e5c821250d0d5a30b20d68a3498",
+      "sha256": "a3a25c8ac30d629a85b4bbb939de671ef81acc16d2f18149e23ffefd8390baa7",
+      "bytes": 10497,
+      "archivePath": "blobs/13/139e5c8fd1e85e5c821250d0d5a30b20d68a3498",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-patient-care-current-review/current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "e8c37ae5d725d61e443ccec00b196f46a78a5b51",
+      "sha256": "85c2fd6597e199471bde2d9d4725af4a0acd5fe910433baa8898fbfe4af56f09",
+      "bytes": 4182,
+      "archivePath": "blobs/e8/e8c37ae5d725d61e443ccec00b196f46a78a5b51",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-patient-care-current-review/render-current-sprites.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "aa049c9762435d7241f3955f071f14f2dc31d9fe",
+      "sha256": "afc01c0f89d2f3417bc18cfbc9d085c0be0bee2a4c7e46e9a4b761db8ff01897",
+      "bytes": 2653,
+      "archivePath": "blobs/aa/aa049c9762435d7241f3955f071f14f2dc31d9fe",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/apply-source.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2a81a78a7b1ddbabf839cc5c7cf9551317502715",
+      "sha256": "fc9835ef1ddd88f7950457e51f355df9a2d8015f78f4e98e3bef38878d57eff4",
+      "bytes": 6087,
+      "archivePath": "blobs/2a/2a81a78a7b1ddbabf839cc5c7cf9551317502715",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/heal-allappearance-paid-arm-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "bef7b91e5eccc7893b8c4da57c2314588555cf73",
+      "sha256": "d89bf8f7abde04765de67acc7b7ec51eafaa322f77e84f09a6a7111e5323b3f3",
+      "bytes": 2028,
+      "archivePath": "blobs/be/bef7b91e5eccc7893b8c4da57c2314588555cf73",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/heal-held-fade-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "969568b3162c7bc4cf52d7f414c97ef0128edf6d",
+      "sha256": "41366740435c1340fbad369ce050cc0cb86332e943a2c4ef73487afb50a6ed82",
+      "bytes": 825,
+      "archivePath": "blobs/96/969568b3162c7bc4cf52d7f414c97ef0128edf6d",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/heal-idle-arm-points.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "5d19b4b2964cc884aa2b8845e43042530ecee6c0",
+      "sha256": "0b3e301d41ea40f88c3c7638f6624f486b502d2162bd4b7c95099d170f011657",
+      "bytes": 2066,
+      "archivePath": "blobs/5d/5d19b4b2964cc884aa2b8845e43042530ecee6c0",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/heal-native-arm-baseline.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "bbb8e05913aac17050e90628a6babe3915747ba5",
+      "sha256": "cbe446d3fe7a3ed1048eaeb2327d5e49e223fd10062525b5cb48f537040d9adc",
+      "bytes": 2062,
+      "archivePath": "blobs/bb/bbb8e05913aac17050e90628a6babe3915747ba5",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/heal-native-idle-arm.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "fa938cef40ea1e1b704fc3be2061a86329401bac",
+      "sha256": "f0f4143c3e741f18b864405fea07ab1d47d3a49f3a494e15e9f2db93aec3239b",
+      "bytes": 6120,
+      "archivePath": "blobs/fa/fa938cef40ea1e1b704fc3be2061a86329401bac",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/heal-paid-arm-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "85d8d453847c77f369dbbfa296e6b028571444e7",
+      "sha256": "fd222ab30554f3b6be1557c57fe142b48bdac96e0b31bd55c25b15efeb6561d0",
+      "bytes": 3913,
+      "archivePath": "blobs/85/85d8d453847c77f369dbbfa296e6b028571444e7",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/healing-floor-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "5b37f9783dd841d300b34fb1b10dec8b4639dd12",
+      "sha256": "8a3bffa55645cb810ed9223dc824670133d95bf9aca77164f07dca296a00d9eb",
+      "bytes": 868,
+      "archivePath": "blobs/5b/5b37f9783dd841d300b34fb1b10dec8b4639dd12",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/frozen-source/support-evidence/native-postpass.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "50f27dedbe1db66202036bc62696873e31b3b3aa",
+      "sha256": "72246974fa1166139c49fee57819b6fb3a118b6d6c6de65834d10e05ea20f3d3",
+      "bytes": 9237,
+      "archivePath": "blobs/50/50f27dedbe1db66202036bc62696873e31b3b3aa",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-heal-arm-floor-current-review/paid-heal-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-patient-contact-current-review/paid-heal-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/paid-heal-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "59c873ebd348574464bda4f3b828aae67d358dde",
+      "sha256": "4757bf1a2e1ef8690882c660338574755cd9a52b63b8f7fedbd547d23eaa1425",
+      "bytes": 7940,
+      "archivePath": "blobs/59/59c873ebd348574464bda4f3b828aae67d358dde",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-patient-contact-current-review/accepted-pose-before-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9371ff26142b015ddccc5d247d4af932aa7a6790",
+      "sha256": "9760addb3062c56e1b1565876b46aa66ab89d348705065b3a4097cda19dac0c9",
+      "bytes": 1887,
+      "archivePath": "blobs/93/9371ff26142b015ddccc5d247d4af932aa7a6790",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-rifle-source-cut-review/proof-tools/gltf_proof.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "341b3c117aef0eb67a57e1a73365b70f8ba5148c",
+      "sha256": "99e8159474c92880bc3c5147a18a842cdcfd3febf8c1dc925064ace3c7b49b91",
+      "bytes": 3957,
+      "archivePath": "blobs/34/341b3c117aef0eb67a57e1a73365b70f8ba5148c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-prone-rifle-source-cut-review/proof-tools/prove-final.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2477183d919352c4a5db89f20572dd9736328e3d",
+      "sha256": "6db19a90da499b4583c64849db0dbd9026970d67db56b41a1077af8a6905c20e",
+      "bytes": 6309,
+      "archivePath": "blobs/24/2477183d919352c4a5db89f20572dd9736328e3d",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-pulperia-sign-current-review/catalog-current-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-rectangular-window-bars-current-review/catalog-current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ad290e7c92846eb01d8e32b28b5c9777c5f3fddc",
+      "sha256": "52b8957abcc1ce756f7fadfc6840bb136becb5f00c7839f5b8c4e7ca57609eb5",
+      "bytes": 8087,
+      "archivePath": "blobs/ad/ad290e7c92846eb01d8e32b28b5c9777c5f3fddc",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-reachable-climb-hand-current-review/current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2bb03963bf83e632320a55ba2e035b7586e021f1",
+      "sha256": "dbd9e66cdedeb495e8a06b39583845118d85660ebde2f0d775332d0a6551e3f8",
+      "bytes": 8089,
+      "archivePath": "blobs/2b/2bb03963bf83e632320a55ba2e035b7586e021f1",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-roof-fingers-current-review/before-route.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "f43b740a8ebd0dff167a7279be6870e1f9537d9c",
+      "sha256": "9bada5846ea468ebf9dddbbc132da0b95c5d10672516793031dcbafbfd429330",
+      "bytes": 7654,
+      "archivePath": "blobs/f4/f43b740a8ebd0dff167a7279be6870e1f9537d9c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-standing-planted-reach-current-review/paid-reach-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-gesture-step-return-current-review/paid-reach-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "a1e2772bfbc7266ab0ed5ab8b0a19289cc1b8867",
+      "sha256": "16ad481044edd0d28a3bba5ea069313503bef23a0dc33abf590ccd72943dab45",
+      "bytes": 8226,
+      "archivePath": "blobs/a1/a1e2772bfbc7266ab0ed5ab8b0a19289cc1b8867",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-window-frame-paint-current-review/catalog-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-window-sills-current-review/catalog-current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "88f7bd0e10aaf8c1b9a4a91bae08d551a7206eef",
+      "sha256": "e2e732ce23636d4e033a74dd8b94b738890ff31a485dbde87781d906e202d3a3",
+      "bytes": 8188,
+      "archivePath": "blobs/88/88f7bd0e10aaf8c1b9a4a91bae08d551a7206eef",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-window-sills-current-review/catalog-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1acb24a7e977698321763e984f58ab5a0e6b0722",
+      "sha256": "3f8e1592fe5080a27b554bba257bfcebf59f9faa5a2f5a22ce82d96af7c9bebc",
+      "bytes": 2714,
+      "archivePath": "blobs/1a/1acb24a7e977698321763e984f58ab5a0e6b0722",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos/artifacts/three-window-sills-current-review/render-current-sprites.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "212f44f8e07aef4fa4a907ccf6a185cb39885add",
+      "sha256": "5d620e4b7916c2591ce75fe53b4e6789e58357e47ba4d8df2e422b31c565f4b9",
+      "bytes": 11326,
+      "archivePath": "blobs/21/212f44f8e07aef4fa4a907ccf6a185cb39885add",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/standing-blade-contact-diagnostic.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "fe39388c577750a8030668be40f9b23e01f2cccb",
+      "sha256": "cd1fda03785bce4dbf00de50d3aed20ae883ae4def7afff06efd650cc232f618",
+      "bytes": 11660,
+      "archivePath": "blobs/fe/fe39388c577750a8030668be40f9b23e01f2cccb",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/standing-blade-thrust-cycle.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "43bea3e7d0caa7c6193830a44cbc6f37d7ca70dc",
+      "sha256": "7220e2d7152397d81119a1a3acfc69b92e34933c5885b27fd536a07bb3d1598c",
+      "bytes": 5674,
+      "archivePath": "blobs/43/43bea3e7d0caa7c6193830a44cbc6f37d7ca70dc",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-coarse-long-cloth-current-review/coarse-cloth-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "e9e2e6fac214f77f66d2e208c4d1b5d8fdfce0e5",
+      "sha256": "8196cef63466fafd087823b94d1a1dcd93328f722329f21d4c6d145176748422",
+      "bytes": 19603,
+      "archivePath": "blobs/e9/e9e2e6fac214f77f66d2e208c4d1b5d8fdfce0e5",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-coarse-long-cloth-current-review/current-independent-preservation.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "7f04aabac64fed027b2b1966ca6c760d7707b06e",
+      "sha256": "1a3db1ae8fbfc996f56c4606588b9b90a23e3ad8ee5b978a6ffdb660a7cc4795",
+      "bytes": 2965,
+      "archivePath": "blobs/7f/7f04aabac64fed027b2b1966ca6c760d7707b06e",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-coarse-long-cloth-current-review/frozen-source/apply-cut.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ef83a3700e8ea4d838190aaaef5bb878ecd858fc",
+      "sha256": "617b5dea798a1aebeae7e8264002e297e7cd83b27080a774dfec8b80bce02673",
+      "bytes": 19505,
+      "archivePath": "blobs/ef/ef83a3700e8ea4d838190aaaef5bb878ecd858fc",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-coarse-long-cloth-current-review/frozen-source/independent-cloth-preservation-audit.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "3c52d6ce1db9e9dc592ec97f702a24716ff17ab6",
+      "sha256": "f1ef36680fd9aedd0c39d9847302c5176aa25696807c6a5bc399ac9b2131aacc",
+      "bytes": 5913,
+      "archivePath": "blobs/3c/3c52d6ce1db9e9dc592ec97f702a24716ff17ab6",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-coarse-long-cloth-current-review/frozen-source/review/coarse-views-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9986d26c88a17e2abdde4f4a79a5fef434482489",
+      "sha256": "8f938f7ca02ce717ecd1dfdcac3b10688bdc01279a3ca7d2caf104b5e6817618",
+      "bytes": 6794,
+      "archivePath": "blobs/99/9986d26c88a17e2abdde4f4a79a5fef434482489",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-coarse-long-cloth-current-review/frozen-source/review/normal-100-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "56b41518b04769a52bc5a7016bfd576aa5fc3122",
+      "sha256": "6c6573250c9e3e23ce0fa74024d289c9d885c875aafeb06ef35f5ce49c5b1f91",
+      "bytes": 4432,
+      "archivePath": "blobs/56/56b41518b04769a52bc5a7016bfd576aa5fc3122",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-coarse-long-cloth-current-review/normal-100-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "55986c72d00ed547e5392dcd9a674d04d1761cac",
+      "sha256": "9fff52db851a83a33e6b6052d6ab79c1ca90665b92a15d1c108cf232d2dfac98",
+      "bytes": 5593,
+      "archivePath": "blobs/55/55986c72d00ed547e5392dcd9a674d04d1761cac",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-equipped-crouch-current-cut-review/equipped-crouch-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "3c00cf9171f6130066775c2c77a0420800f2e9e8",
+      "sha256": "22958f4699e261b69fa5483e44617460d6eeccadf0e49bb5c9e119ff870086b6",
+      "bytes": 5368,
+      "archivePath": "blobs/3c/3c00cf9171f6130066775c2c77a0420800f2e9e8",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-gesture-step-return-current-review/close-cloth-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "7980a6dd659a0b0cabac1dd3b78ac81eeaff7143",
+      "sha256": "4d29eea5361a434cc6681d63f4056e0b62998083f7ccaee1d21e1d1d9129b178",
+      "bytes": 3050,
+      "archivePath": "blobs/79/7980a6dd659a0b0cabac1dd3b78ac81eeaff7143",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-gesture-step-return-current-review/frozen-evidence/probe-ordinary-pose-parity.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c495051baa63c3424433c2649f3cc10ed714e7a4",
+      "sha256": "aac51475b916f59eda8dc043f9febc46f30c55f01808d7fd37713c174a4d46ed",
+      "bytes": 2752,
+      "archivePath": "blobs/c4/c495051baa63c3424433c2649f3cc10ed714e7a4",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/frozen-source/support-evidence/apply-source.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "cc9a200615e5b86761388c96f585c5dd56072f9c",
+      "sha256": "dde7b56cfc855b09b38fae2c846bd133e526b7536487856cb371afd18002d53e",
+      "bytes": 17895,
+      "archivePath": "blobs/cc/cc9a200615e5b86761388c96f585c5dd56072f9c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/frozen-source/support-evidence/heal-groundwork.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "5dfea396dbd941c06338bb7e65cce9c8d37a5adb",
+      "sha256": "d4eb801e361d0519759945f7e48ce7ed49e8095d4d41c6f3a551d7e2761faa2b",
+      "bytes": 5709,
+      "archivePath": "blobs/5d/5dfea396dbd941c06338bb7e65cce9c8d37a5adb",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/frozen-source/support-evidence/healing-baseline-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9500ae6e21d58205862758a0769a8612abe68ad5",
+      "sha256": "90511097aded296967002ff002275153af1d1c9cfd5e772818cdbeea1ce7916b",
+      "bytes": 5859,
+      "archivePath": "blobs/95/9500ae6e21d58205862758a0769a8612abe68ad5",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/frozen-source/support-evidence/healing-groundwork-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "bcb777e9dbea140fe5afa9c2fd85a27207fa0462",
+      "sha256": "51953f97b350bfb6b832991a3485596dc14173786cc7fbb2cf103922e8742192",
+      "bytes": 3901,
+      "archivePath": "blobs/bc/bcb777e9dbea140fe5afa9c2fd85a27207fa0462",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/frozen-source/support-evidence/healing-groundwork-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "876361e116104a13500c95fbd7607e0b57e85cf2",
+      "sha256": "aff3cda50ac2b86cbcd646c8d01320c5820faf1b2848e54364766eed5441ba1c",
+      "bytes": 905,
+      "archivePath": "blobs/87/876361e116104a13500c95fbd7607e0b57e85cf2",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/frozen-source/support-evidence/healing-ui-inspect.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "5261d5d244baee5212f7a85fca3d55bd92fa03dc",
+      "sha256": "d347d29381f86768991c1b2665717a6af51393ff42a4d2ba97da50bcb39615e1",
+      "bytes": 1257,
+      "archivePath": "blobs/52/5261d5d244baee5212f7a85fca3d55bd92fa03dc",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-heal-patient-native-clock-current-review/frozen-source/support-evidence/healing-ui-select-inspect.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9ac475b2839d18b8fe90d2a48bcff4dd9c14802f",
+      "sha256": "a8e9737cc18e7a6aee9bf57fc3dfec9ef7ac872a4ef9be1129a3588e852de326",
+      "bytes": 7454,
+      "archivePath": "blobs/9a/9ac475b2839d18b8fe90d2a48bcff4dd9c14802f",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-firearm-work-current-review/prone-work-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "33b062ccda8e68289aa3610a1c5260812686857d",
+      "sha256": "fa8011a40bd68f2a25bcf3a34748d846ca7465bcbf7601ec5fc5da2a18881fed",
+      "bytes": 8351,
+      "archivePath": "blobs/33/33b062ccda8e68289aa3610a1c5260812686857d",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-interaction-current-review/paid-prone-reach-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "6447759df29a28ce733fc54462fd81afe4728a11",
+      "sha256": "4b665c1c3914ea4e17b11094691bab4e0c7aaf1b76477ef425849ede2afaf087",
+      "bytes": 4438,
+      "archivePath": "blobs/64/6447759df29a28ce733fc54462fd81afe4728a11",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/actor-runtime.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9b648f393027cbc7c4d7ee6212fbfe89022a5c62",
+      "sha256": "20b1788c0a1e665fd1b8bd1c1cbd59c730ea3b9866402af9435e9e644df4dcbc",
+      "bytes": 3369,
+      "archivePath": "blobs/9b/9b648f393027cbc7c4d7ee6212fbfe89022a5c62",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/apply-source.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "baa9018c5c6544cae1c0b436fb64e57a85849a09",
+      "sha256": "0d71d7694777bcf13bca975b5680315a0d47ac6f022b5f4e8b52cc609fdae330",
+      "bytes": 869,
+      "archivePath": "blobs/ba/baa9018c5c6544cae1c0b436fb64e57a85849a09",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/build-library.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "72e9c6d211ca564a6068aa48735ae596394dea9c",
+      "sha256": "f3dd05ded81f79574838b6c166daae0fbba8758c7ea8f9d2b0415979ce333a03",
+      "bytes": 1546,
+      "archivePath": "blobs/72/72e9c6d211ca564a6068aa48735ae596394dea9c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/native-arm-reach-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "416b3bbc713d4fb8d6b7359fc6431d412f36f699",
+      "sha256": "803d718b7ccdc0b8a13a31782f06cf9637b1e65682dcde085534ceb7c6bd6dd4",
+      "bytes": 4134,
+      "archivePath": "blobs/41/416b3bbc713d4fb8d6b7359fc6431d412f36f699",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/pistol-consumer-cost.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "f4c3a5de6c929253c30f0d71a5c5afa7d45e9175",
+      "sha256": "5737f67964c1156e1ba184c67e8f5f78204ba41b22e53c2caad0d9cef3840f77",
+      "bytes": 11154,
+      "archivePath": "blobs/f4/f4c3a5de6c929253c30f0d71a5c5afa7d45e9175",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/pistol-paid-blend-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "99cdc3eb74b9dca898f396daf064efde4315907c",
+      "sha256": "72853854b944ae6abdd54e703b3a5af5fb4a6f42feff472e479c162726286fe1",
+      "bytes": 3358,
+      "archivePath": "blobs/99/99cdc3eb74b9dca898f396daf064efde4315907c",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/pistol-preservation-proof.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "4e5ab745ca9ba0a3e1fe7cdb52696b2f468c8c34",
+      "sha256": "95a7b7fd7d123a27aa4e4e736b8cccf71715ec3dd24d00e895e37c41d07b4800",
+      "bytes": 4386,
+      "archivePath": "blobs/4e/4e5ab745ca9ba0a3e1fe7cdb52696b2f468c8c34",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/pistol-prone-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "0e4797dcc5822e984a7eb69b3b9fe87e9938ae10",
+      "sha256": "6a026dc7cd4dc8f6cbe557349a69047835e7767d057b2e82609d480fa03c40a1",
+      "bytes": 5064,
+      "archivePath": "blobs/0e/0e4797dcc5822e984a7eb69b3b9fe87e9938ae10",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/frozen-evidence/upper-item-probe.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "590e396fb68d01a20f9ccc2ec18ea38359710afa",
+      "sha256": "f7e82d3a2094070d87dd51314a891d14bc6c301a8ea647efe8e14adf9f4de6fc",
+      "bytes": 6597,
+      "archivePath": "blobs/59/590e396fb68d01a20f9ccc2ec18ea38359710afa",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-prone-pistol-current-review/ordinary-pistol-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c27b74d67c5bf3c32081b0ffbec078c3c40eb595",
+      "sha256": "5f02315ccea7e101e4e4b0428ce3d4dcb4059f8bffc90ffb8088cff5278427b8",
+      "bytes": 16368,
+      "archivePath": "blobs/c2/c27b74d67c5bf3c32081b0ffbec078c3c40eb595",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-rifle-worker-current-review/ordinary-no-idle-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2f2e6079816f184b55eb1e151febf8f004076b57",
+      "sha256": "562510bef8b26f86a06e6f045c701644e4cbd6c1f7087a1eea77236892298077",
+      "bytes": 2507,
+      "archivePath": "blobs/2f/2f2e6079816f184b55eb1e151febf8f004076b57",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-standing-native-gesture-source-cut-review/compose-current.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "805d83cca00b5419b782c17eddc780f16e837f09",
+      "sha256": "5a9dd0b40d424e90dd7f36605cfdee7dd000458f07ac3637039e8beceb9579d8",
+      "bytes": 6004,
+      "archivePath": "blobs/80/805d83cca00b5419b782c17eddc780f16e837f09",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-hem-current-review/hem-before-ui.mjs",
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-palette-current-review/palette-current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "15ef29f589e2b13a1b02a953ca9bb54a07c86ad9",
+      "sha256": "58bb8f9200339c113d5280b2a6b41918b268936ef6dfb1b12f71b45de47a1a91",
+      "bytes": 6957,
+      "archivePath": "blobs/15/15ef29f589e2b13a1b02a953ca9bb54a07c86ad9",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-hem-current-review/hem-current-angle-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "5021979cb607c3ddb9791466fd63cfe0bff23358",
+      "sha256": "13c925e15b25aa466f2424e3420116ba579f36f7cdbc9b2eef7c39c27557e413",
+      "bytes": 6314,
+      "archivePath": "blobs/50/5021979cb607c3ddb9791466fd63cfe0bff23358",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-hem-current-review/hem-current-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ce9182de22b3b710dd3cce0d7fbd673d6a976eed",
+      "sha256": "a5e28db070f31c79fbe9bca707bdcc2f8a96440e5cde714bdf5a6aeab65ae50d",
+      "bytes": 5229,
+      "archivePath": "blobs/ce/ce9182de22b3b710dd3cce0d7fbd673d6a976eed",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-palette-current-review/frozen-source/apply-cut.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "a4b6e23f7bbfd69cfdc9b75d9a57760966bc4cc4",
+      "sha256": "e24cb6be2247acd78d7b3dc47854171839c9a9447f8a32d7834d6e5895159f95",
+      "bytes": 11225,
+      "archivePath": "blobs/a4/a4b6e23f7bbfd69cfdc9b75d9a57760966bc4cc4",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-palette-current-review/frozen-source/independent-preservation-check.py"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1e5853c651d4a3f63a5a2a58733e84ccee124244",
+      "sha256": "af3429fc17d4a0aaab0838effbc6f3a36569a0b4e4b2e844ab5c316fdc7acb1e",
+      "bytes": 6477,
+      "archivePath": "blobs/1e/1e5853c651d4a3f63a5a2a58733e84ccee124244",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-palette-current-review/frozen-source/normal-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2bc5b9bfe167968b0ea824fcea492d803674132e",
+      "sha256": "4de8cb65d69684b58c37f43774720d1038814d7311ccfdf7aa8a9f626098929a",
+      "bytes": 2789,
+      "archivePath": "blobs/2b/2bc5b9bfe167968b0ea824fcea492d803674132e",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-palette-current-review/frozen-source/source.patch"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "061d9c566ce11bb75a350a5a942c20ae93e6ff46",
+      "sha256": "1b658c3cb1b53240820b5a492607642a7ded1cf45e01d80a9d3ff3e69aafb56e",
+      "bytes": 5739,
+      "archivePath": "blobs/06/061d9c566ce11bb75a350a5a942c20ae93e6ff46",
+      "paths": [
+        "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos/artifacts/three-woman-shawl-palette-current-review/palette-ui.mjs"
+      ],
+      "source": "ignored-worktree-authored-qa-pilot-source",
+      "sourceCommits": [],
+      "sourceBranches": [],
+      "sourceCheckoutContexts": [
+        {
+          "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+          "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+          "checkoutBranch": null,
+          "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+        }
+      ],
+      "sourceBranchRecorded": false,
+      "sourceBranchNote": "This ignored file had no committed source branch. The exact discovery checkout and branch context are recorded separately.",
+      "status": "archived-worktree-qa-or-pilot-not-enabled",
+      "runtimeEnabled": false
     }
   ],
   "coverage": {
@@ -29911,7 +32536,17 @@
     "selectedExternalSourcePaths": 17761,
     "externalUniqueSourceArtReceiptBlobs": 480,
     "completeSelectedExternalSourceFilesPreserved": true,
-    "unavailableLiteralSourceReferences": 0
+    "unavailableLiteralSourceReferences": 0,
+    "worktreeSourceSupplement": {
+      "integrationCompared": "af952d7f81809e5c150b3ae8f6225ed1eb6bb78c",
+      "examinedIgnoredAuthoredPaths": 963,
+      "alreadyReachablePaths": 845,
+      "newUniqueBlobs": 109,
+      "newUniqueBytes": 17201539,
+      "runtimeChanged": false,
+      "repeatedRenderedOutputsExcluded": true,
+      "dependenciesAndCachesExcluded": true
+    }
   },
   "externalSourceRoots": [
     "/tmp/granadero-adult-pigment-pilot",
@@ -29950,5 +32585,43 @@
     "/tmp/granadero-worker-face-albedo-pilot",
     "/tmp/granadero-worker-face-identity-pilot",
     "/tmp/granadero-worker-neckline-pilot"
+  ],
+  "worktreeSourceRoots": [
+    {
+      "worktree": "/Users/fsodano/fibradev/games/granaderos",
+      "checkoutHead": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+      "checkoutBranch": "codex/pending-review-references",
+      "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+    },
+    {
+      "worktree": "/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos",
+      "checkoutHead": "5f65ef08d51659fe1fa10d4f2a85f586dca78123",
+      "checkoutBranch": "codex/character-clothing-followup",
+      "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+    },
+    {
+      "worktree": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
+      "checkoutHead": "1a1fcef891249f371c34ad9d340b522aef862fe6",
+      "checkoutBranch": "codex/human-anatomy-review",
+      "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+    },
+    {
+      "worktree": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+      "checkoutHead": "c93283155b5c58e5dc4659df0259564e762d3355",
+      "checkoutBranch": "codex/building-exterior-pictures",
+      "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+    },
+    {
+      "worktree": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+      "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+      "checkoutBranch": null,
+      "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+    },
+    {
+      "worktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+      "checkoutHead": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+      "checkoutBranch": null,
+      "provenanceNote": "Ignored authored QA/pilot file found in this checkout; the checkout branch is context, not a claim that the file was committed there."
+    }
   ]
 }

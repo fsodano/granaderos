@@ -1,0 +1,13 @@
+import {readFile,copyFile,writeFile,mkdir} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+import {resolve} from 'node:path';
+const require=createRequire(resolve('web/package.json')),sharp=require('sharp');
+const jobs=JSON.parse(await readFile('assets/prompts/balanced-portraits.json','utf8'));
+const [id,source]=process.argv.slice(2),job=jobs.find(j=>j.id===id);
+if(!job)throw Error('Unknown job');
+await copyFile(source,job.source);
+const data=await sharp(job.source).resize(384,384,{fit:'cover'}).webp({quality:86}).toBuffer();
+for(const base of ['assets/web','web/public/art'])await writeFile(`${base}/${id}.webp`,data);
+await mkdir('artifacts/portrait-root-progress',{recursive:true});
+await writeFile(`artifacts/portrait-root-progress/${id}.json`,JSON.stringify({id,source:job.source,bytes:data.length}));
+console.log(JSON.stringify({id,bytes:data.length}));

@@ -1,0 +1,1160 @@
+diff --git a/web/lib/three/world-chapel-pier-edges.ts b/web/lib/three/world-chapel-pier-edges.ts
+new file mode 100644
+--- /dev/null
++++ b/web/lib/three/world-chapel-pier-edges.ts
+@@ -0,0 +1,29 @@
++import {CylinderGeometry,Matrix4,Quaternion,Vector3} from 'three';
++import type {MeshStandardMaterial} from 'three';
++import type {WorldBatch} from './world-geometry';
++
++type Rectangle={minX:number;maxX:number;minZ:number;maxZ:number};
++type Border={rect:Rectangle;support:Rectangle;bottom:number;top:number;base:number;light:number;bottomStroke?:boolean;topStroke?:number};
++
++/** ArchitectureVolume outlines its retained faces at .45 source units and
++ * its exposed cap at .5. Keep that local recipe on the real closed pier. */
++export function addChapelPierEdges(batch:WorldBatch,material:MeshStandardMaterial,border:Border){
++  const {rect,support,bottom,top,base,light}=border,V=25.066666666666666;
++  const corners=[[rect.minX,rect.minZ],[rect.maxX,rect.minZ],[rect.maxX,rect.maxZ],[rect.minX,rect.maxZ]].map(([x,z])=>new Vector3(x,base+bottom,z));
++  const raised=corners.map(point=>new Vector3(point.x,base+top,point.z));
++  const edge=(a:Vector3,b:Vector3,width:number)=>{
++    const vector=b.clone().sub(a);if(vector.lengthSq()<1e-12)return;
++    const radius=width/V*.5,line=new CylinderGeometry(radius,radius,vector.length(),6),matrix=new Matrix4().compose(a.clone().add(b).multiplyScalar(.5),new Quaternion().setFromUnitVectors(new Vector3(0,1,0),vector.normalize()),new Vector3(1,1,1));
++    line.applyMatrix4(matrix);
++    // A fallback corner can clip a source face at the support boundary.
++    // Its stroke must keep the same cell and never continue below the floor.
++    const points=line.getAttribute('position');
++    for(let n=0;n<points.count;n++)points.setXYZ(n,Math.max(support.minX,Math.min(support.maxX,points.getX(n))),Math.max(base,points.getY(n)),Math.max(support.minZ,Math.min(support.maxZ,points.getZ(n))));
++    line.computeVertexNormals();batch.add(line,material,undefined,light);line.dispose();
++  };
++  for(let n=0;n<4;n++){
++    const next=(n+1)%4;edge(corners[n],raised[n],.45);
++    if(border.bottomStroke)edge(corners[n],corners[next],.45);
++    if(border.topStroke)edge(raised[n],raised[next],border.topStroke);
++  }
++}
+diff --git a/web/lib/three/world-chapel-piers.ts b/web/lib/three/world-chapel-piers.ts
+--- a/web/lib/three/world-chapel-piers.ts
++++ b/web/lib/three/world-chapel-piers.ts
+@@ -5,6 +5,7 @@
+ import {WorldBatch} from './world-geometry';
+ import {illuminationAt} from './world-materials';
+ import {buildingArtInset} from './world-building-placement';
++import {addChapelPierEdges} from './world-chapel-pier-edges';
+ import type {WorldGeometry} from './world-geometry';
+ import type {WorldMaterials} from './world-materials';
+ import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
+@@ -18,6 +19,10 @@
+   const recipe=architectureFinish(appearance.wallFinish,'volume')!,texture='/art/architecture-plaster-v2.png',wall=materials.get(appearance.wallFinish,{architectureRole:'volume',texture}),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),copingColours:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('chapel-pier-coping',{colour:copingColours[appearance.wallFinish]??copingColours.adobe});
+   // pier() uses plaster even when its authored pigment is stone or brick.
+   applyArchitectureFinish(wall,{...recipe,texture,textureOpacity:.36,multiplyOpacity:0});
++  const shadows:Record<string,string>={adobe:'#776448',limewash:'#aaa18a',ochre:'#8f754f',stone:'#5e635c',brick:'#6f5140'},outline=materials.get('chapel-pier-outline',{colour:shadows[appearance.wallFinish]??shadows.adobe}),stoneOutline=materials.get('chapel-foot-outline',{colour:'#776d54'});
++  // A clipped fallback stroke can share its support plane. Bias only these
++  // local borders so they retain the source line without depth flicker.
++  for(const material of [outline,stoneOutline]){material.polygonOffset=true;material.polygonOffsetFactor=-1;material.polygonOffsetUnits=-1;}
+   const at=(u:number,v:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,0,(p.y+inset)*T);};
+   const rectangle=(u0:number,v0:number,u1:number,v1:number)=>{const a=at(u0,v0),c=at(u1,v1);return {minX:Math.min(a.x,c.x),maxX:Math.max(a.x,c.x),minZ:Math.min(a.z,c.z),maxZ:Math.max(a.z,c.z)};};
+   const walking=(rect:ReturnType<typeof rectangle>,top:number)=>(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+top+.01&&(surface.x+.5)*T>rect.minX+1e-6&&(surface.x-.5)*T<rect.maxX-1e-6&&(surface.y+.5)*T>rect.minZ+1e-6&&(surface.y-.5)*T<rect.maxZ-1e-6);
+@@ -28,11 +33,16 @@
+   if(capitalBottom>foot+.20)feature('chapel-corner-piers',batch=>{
+     for(const u of [0,frame.width]){
+       const p=frame.at(u,0),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(tile?.type!=='wall')continue;
+-      const footRect=supported(tile,rectangle(u-.21,-.39,u+.21,.20));if(walking(footRect,capitalTop))continue;
++      const footRect=supported(tile,rectangle(u-.21,-.39,u+.21,.20)),radius=.5/V*.5;
++      if(walking({minX:footRect.minX-radius,maxX:footRect.maxX+radius,minZ:footRect.minZ-radius,maxZ:footRect.maxZ+radius},capitalTop+radius))continue;
+       box(batch,footRect,0,foot,stone);
+-      box(batch,supported(tile,rectangle(u-.14,-.34,u+.14,.15)),foot,capitalBottom,wall);
++      const shaft=supported(tile,rectangle(u-.14,-.34,u+.14,.15));box(batch,shaft,foot,capitalBottom,wall);
+       const capital=supported(tile,rectangle(u-.19,-.37,u+.19,.19));
+       box(batch,capital,capitalBottom,capitalTop-.5/V,wall);box(batch,capital,capitalTop-.5/V,capitalTop,coping);
++      const support={minX:(tile.x-.49)*T,maxX:(tile.x+.49)*T,minZ:(tile.y-.49)*T,maxZ:(tile.y+.49)*T},border={support,base,light};
++      addChapelPierEdges(batch,stoneOutline,{...border,rect:footRect,bottom:0,top:foot,bottomStroke:true,topStroke:.45});
++      addChapelPierEdges(batch,outline,{...border,rect:shaft,bottom:foot,top:capitalBottom});
++      addChapelPierEdges(batch,outline,{...border,rect:capital,bottom:capitalBottom,top:capitalTop,bottomStroke:true,topStroke:.5});
+     }
+   });
+ 
+diff --git a/tests/three-chapel-pier-edges.test.mjs b/tests/three-chapel-pier-edges.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/tests/three-chapel-pier-edges.test.mjs
+@@ -0,0 +1,63 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {register} from 'node:module';
++register('./tactical-render-loader.mjs',import.meta.url);
++const {Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/build/three.module.js');
++const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
++const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
++const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
++const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
++const {ISO_PITCH}=await import('../web/lib/three/projection.ts');
++const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
++const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
++const {ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
++const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
++const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270];
++function fixture(rotation,view='exterior',roof='original'){
++ const battle=createArchitectureReviewBattle('capilla',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
++ return {b,input,frame,feature:node=>node.getObjectByName(`building-detail:${b.id}:chapel-corner-piers`),point(u,v,y){const p=frame.at(u,v);return new Vector3(p.x*T,y,p.y*T);},build(){const before=JSON.stringify(input),node=buildBuilding(b,input,T,geometry,materials);node.updateMatrixWorld(true);assert.equal(JSON.stringify(input),before,'decoration may not change collision, openings or room disclosure');return node;},dispose(node){disposeWorldNode(node);geometry.dispose();materials.dispose();}};
++}
++function source(finish){const f=fixture(0);f.b.wallFinish=finish;const parts=[];const visit=node=>{if(!node)return;if(Array.isArray(node)){node.forEach(visit);return;}if(node.type===ArchitectureVolume&&String(node.props.label).startsWith('chapel-corner-'))parts.push(node.props);visit(node.props?.children);};for(const object of buildingDetails({...f.b,walls:f.input.terrain.tiles.filter(tile=>tile.buildingId===f.b.id)},new Set(),(x,y)=>({x:(x-y)*26,y:(x+y)*14})))visit(object.node);assert.equal(parts.length,6);const frame=f.frame,h=getBuildingProfile(f.b).wallHeight;f.dispose(f.build());return {parts,frame,h};}
++function strokes(part){const result=[];const visit=node=>{if(!node)return;if(Array.isArray(node)){node.forEach(visit);return;}if(node.type==='polygon'&&node.props.strokeWidth)result.push(node.props);visit(node.props?.children);};visit(ArchitectureVolume(part));return result;}
++function edgesFor(f,direct,height){const result={body:[],foot:[]};for(const part of direct.parts){const kind=part.label.split('-').at(-1),bottom=kind==='base'?0:kind==='shaft'?getBuildingProfile(f.b).plinthHeight/V:height+(part.bottom-direct.h)/V,top=kind==='base'?part.top/V:kind==='shaft'?height+(direct.parts.find(p=>p.label===part.label.replace('-shaft','-capital')).bottom-direct.h)/V:height+(part.top-direct.h)/V;
++ const lower=part.points.map(p=>{const u=(p.x-direct.frame.origin.x)*direct.frame.u.x+(p.y-direct.frame.origin.y)*direct.frame.u.y,v=(p.x-direct.frame.origin.x)*direct.frame.v.x+(p.y-direct.frame.origin.y)*direct.frame.v.y;return f.point(u,v,bottom);}),upper=lower.map(p=>new Vector3(p.x,top,p.z)),edges=result[kind==='base'?'foot':'body'];for(let n=0;n<4;n++){const next=(n+1)%4;edges.push({a:lower[n],b:upper[n],radius:.45/V*.5});if(kind!=='shaft'){edges.push({a:lower[n],b:lower[next],radius:.45/V*.5},{a:upper[n],b:upper[next],radius:(kind==='capital'?.5:.45)/V*.5});}}
++ }return result;}
++function distance(point,a,b){const d=b.clone().sub(a),t=Math.max(0,Math.min(1,point.clone().sub(a).dot(d)/d.lengthSq()));return point.distanceTo(a.clone().addScaledVector(d,t));}
++function support(f,node){node.traverse(mesh=>{if(!(mesh instanceof Mesh))return;const p=mesh.geometry.getAttribute('position');for(let n=0;n<p.count;n++){assert.ok(p.getY(n)>=-1e-6,'source lower strokes cannot enter the ground');const x=p.getX(n)/T,z=p.getZ(n)/T,tile=f.input.terrain.tiles.find(tile=>tile.x===Math.round(x)&&tile.y===Math.round(z));assert.equal(tile?.type,'wall','the entire stroke belongs to an intact actual wall support');assert.ok(Math.abs(x-tile.x)<=.49001&&Math.abs(z-tile.y)<=.49001,'fallback borders retain the complete solid-cell limit');}});}
++
++ test('chapel border pigments and complete physical strokes follow the actual direct source recipe at all four rotations',()=>{
++ for(const finish of ['adobe','limewash','ochre','stone','brick']){const direct=source(finish),shaft=direct.parts.find(p=>p.label.endsWith('-shaft')),foot=direct.parts.find(p=>p.label.endsWith('-base')),capital=direct.parts.find(p=>p.label.endsWith('-capital'));assert.equal(Number(strokes(shaft).find(p=>p.fill==='none').strokeWidth),.45);assert.equal(Number(strokes(foot)[0].strokeWidth),.45);assert.equal(Number(strokes(capital).find(p=>p.fill===capital.palette.trim).strokeWidth),.5);
++  for(const rotation of rotations){const f=fixture(rotation);f.b.wallFinish=finish;const node=f.build(),pier=f.feature(node),expected=edgesFor(f,direct,node.userData.height);for(const [name,part,key]of [['world:chapel-pier-outline',shaft,'body'],['world:chapel-foot-outline',foot,'foot']]){const mesh=pier.children.find(mesh=>mesh.material.name===name);assert.ok(mesh,'current source face borders must be present');assert.equal(mesh.material.color.getHexString(),part.palette.shadow.slice(1));assert.equal(mesh.material.map,null);const p=mesh.geometry.getAttribute('position');let max=0;for(let n=0;n<p.count;n++){const point=new Vector3(p.getX(n),p.getY(n),p.getZ(n)),nearest=expected[key].map(edge=>({...edge,d:distance(point,edge.a,edge.b)})).sort((a,b)=>a.d/a.radius-b.d/b.radius)[0];assert.ok(nearest.d<=nearest.radius+2e-5,`${rotation}/${finish}/${name}: source edge radius ${nearest.radius}, got ${nearest.d}`);max=Math.max(max,nearest.d/nearest.radius);}assert.ok(p.count>100&&max>.98,'measure the full visible source stroke, rather than only its axis');}support(f,pier);f.dispose(node);}
++ }
++});
++
++ test('native body, footing and coping retain their source recipes and metric UVs while local borders keep normal day and night illumination',()=>{
++ for(const rotation of rotations)for(const night of [false,true]){const f=fixture(rotation),direct=source(f.b.wallFinish);f.input.terrain.night=night;f.input.illumination={[`0:${f.b.x},${f.b.y}`]:.5};const node=f.build(),pier=f.feature(node),body=pier.children.find(mesh=>mesh.material.name===`world:${f.b.wallFinish}`),foot=pier.children.find(mesh=>mesh.material.name==='world:stone'),coping=pier.children.find(mesh=>mesh.material.name==='world:chapel-pier-coping');assert.equal(body.material.color.getHexString(),direct.parts[0].palette.base.slice(1));assert.equal(body.material.userData.architectureFinish.textureOpacity,.36);assert.equal(body.material.userData.architectureFinish.texture,'/art/architecture-plaster-v2.png');assert.equal(foot.material.userData.architectureFinish.textureOpacity,.60);assert.equal(foot.material.color.getHexString(),'a99a79');assert.equal(coping.material.color.getHexString(),direct.parts[0].palette.trim.slice(1));
++  for(const mesh of [body,foot]){const p=mesh.geometry.getAttribute('position'),n=mesh.geometry.getAttribute('normal'),uv=mesh.geometry.getAttribute('uv');for(let i=0;i<p.count;i++){const expected=Math.abs(n.getY(i))>.5?[p.getX(i),p.getZ(i)]:Math.abs(n.getX(i))>Math.abs(n.getZ(i))?[p.getZ(i)*(n.getX(i)>0?-1:1),p.getY(i)]:[p.getX(i)*(n.getZ(i)>0?1:-1),p.getY(i)];assert.ok(Math.abs(uv.getX(i)-expected[0])<2e-5&&Math.abs(uv.getY(i)-expected[1])<2e-5,'the released metric wall UVs remain exact');}}
++  const expected=night?.27+.73*.5:1;for(const mesh of pier.children){const c=mesh.geometry.getAttribute('color');for(let i=0;i<c.count;i++)assert.ok(Math.abs(c.getX(i)-expected)<1e-6&&Math.abs(c.getY(i)-expected)<1e-6&&Math.abs(c.getZ(i)-expected)<1e-6);}f.dispose(node);
++ }
++});
++
++ test('source borders are actually visible before the masonry at the ordinary camera angle without changing shaft exposure',()=>{
++ const camera=new Vector3(Math.cos(ISO_PITCH)/Math.SQRT2,Math.sin(ISO_PITCH),Math.cos(ISO_PITCH)/Math.SQRT2);
++ for(const rotation of rotations){const f=fixture(rotation),node=f.build(),pier=f.feature(node),out=new Vector3(-f.frame.v.x,0,-f.frame.v.y);for(const u of [0,f.frame.width]){const sample=u===0?.04:u-.04,ray=new Raycaster(f.point(sample,-1,1.3),out.clone().negate(),0,2*T),body=ray.intersectObject(pier,true)[0],wall=ray.intersectObject(node.getObjectByName(`building-fabric:${f.b.id}`),true)[0];assert.ok(Math.abs(wall.distance-body.distance-(.34*T-.09))<1e-5,'the original 33 cm shaft relief remains exact');if(out.x+out.z<=0)continue;
++  const points=[f.point(u-.14,-.34,1.3),f.point(u+.14,-.34,1.3)],target=points.sort((a,b)=>b.x+b.z-a.x-a.z)[0],hit=new Raycaster(target.clone().addScaledVector(camera,20),camera.clone().negate(),0,20.1).intersectObject(node,true)[0];assert.equal(hit?.object.material.name,'world:chapel-pier-outline','the actual camera can see the source shaft edge before another wall or roof');}
++  f.dispose(node);
++ }
++});
++
++ test('standing door crossings and complete window approaches remain clear across all rotations, roof edits and clipped corner supports',()=>{
++ for(const rotation of rotations)for(const roof of ['original','slab','terrace','roof-route']){const f=fixture(rotation,'exterior',roof);f.frame.door.open=true;const node=f.build(),pier=f.feature(node);for(const offset of [-.20,0,.20])for(const y of [1.3,1.8]){const start=f.point(f.frame.doorU,-1,y).add(new Vector3(offset*f.frame.u.x,0,offset*f.frame.u.y));assert.equal(new Raycaster(start,new Vector3(f.frame.v.x,0,f.frame.v.y),0,T*1.6).intersectObject(node,true).length,0);}
++  if(pier){support(f,pier);for(const tile of f.input.terrain.tiles.filter(t=>t.type==='window'&&t.buildingId===f.b.id)){const onX=tile.x===f.b.x||tile.x===f.b.x+f.b.width-1,sign=onX?(tile.x===f.b.x?-1:1):(tile.y===f.b.y?-1:1);for(const x of [-.20,0,.20])for(const y of [1.3,1.8]){const start=onX?new Vector3((tile.x+sign)*T,y,tile.y*T+x):new Vector3(tile.x*T+x,y,(tile.y+sign)*T),dir=onX?new Vector3(-sign,0,0):new Vector3(0,0,-sign);assert.equal(new Raycaster(start,dir,0,T*1.6).intersectObject(pier,true).length,0,'source borders cannot conceal an authored window');}}}f.dispose(node);
++ }
++ for(const rotation of rotations)for(const type of ['rubble','window','door']){const f=fixture(rotation),point=f.frame.at(0,0);f.input.terrain.tiles.find(tile=>tile.x===point.x&&tile.y===point.y).type=type;f.input.terrain.tiles=[f.frame.door,...f.input.terrain.tiles.filter(t=>t!==f.frame.door)];const node=f.build(),pier=f.feature(node);assert.equal(buildingArtInset(f.b,f.input),.4);support(f,pier);f.dispose(node);}
++});
++
++ test('complete source stroke bounds respect short slabs, active roof routes, lower upper cells, ordinary disclosure and unpainted legacy selection',()=>{
++ for(const rotation of rotations){const short=fixture(rotation,'exterior','slab');short.input.terrain.upperSurfaces=short.input.terrain.upperSurfaces.map(s=>({...s,elevation:1.8}));const node=short.build(),pier=short.feature(node);support(short,pier);let top=0;pier.traverse(mesh=>{if(mesh instanceof Mesh){const p=mesh.geometry.getAttribute('position');for(let i=0;i<p.count;i++)top=Math.max(top,p.getY(i));}});assert.ok(Math.abs(top-(1.8+2.5/V+.25/V))<2e-5,'complete bounds include the half-width of the actual source cap stroke');short.dispose(node);
++  for(const blocked of [false,true]){const f=fixture(rotation),corners=[f.frame.at(0,0),f.frame.at(f.frame.width,0)];f.input.terrain.upperSurfaces=corners.map(p=>({...p,tacticalLevel:1,elevation:2.2,blocked,kind:'platform',buildingId:f.b.id,type:'floor'}));const n=f.build();assert.equal(Boolean(f.feature(n)),blocked,'the new borders obey the same actual upper cell exclusion');f.dispose(n);}
++  for(const view of ['partial','interior']){const f=fixture(rotation,view),n=f.build();assert.equal(f.feature(n),undefined);f.dispose(n);}
++  const route=fixture(rotation,'exterior','roof-route'),r=route.build();assert.equal(route.feature(r),undefined);route.dispose(r);
++  const legacy=fixture(rotation);legacy.b.architecture='chapel';legacy.b.kind=undefined;legacy.b.wallFinish=undefined;const old=legacy.build();assert.equal(legacy.feature(old),undefined);legacy.dispose(old);
++ }
++});
+diff --git a/tests/three-chapel-piers.test.mjs b/tests/three-chapel-piers.test.mjs
+--- a/tests/three-chapel-piers.test.mjs
++++ b/tests/three-chapel-piers.test.mjs
+@@ -22,7 +22,9 @@
+  for(const rotation of rotations){
+   const f=fixture(rotation),building=f.build(),node=f.feature(building),height=building.userData.height,coping=node.children.find(mesh=>mesh.material.name==='world:chapel-pier-coping');assert.ok(node);supported(f,node);assert.ok(coping);
+   for(const u of [0,f.frame.width]){
+-   const sample=u===0?u+.04:u-.04,top=new Raycaster(f.point(sample,-.365,height+2),new Vector3(0,-1,0),0,3).intersectObject(building,true)[0];assert.ok(top?.object===coping,'both capitals must remain readable outside the real roof eave');assert.ok(Math.abs(top.point.y-(height+2.5/V))<1e-5);
++   // Probe the retained coping face inside its source edge, still well
++   // beyond the real .16-tile roof eave. The .5-unit border has its own hull.
++   const sample=u===0?u+.04:u-.04,top=new Raycaster(f.point(sample,-.350,height+2),new Vector3(0,-1,0),0,3).intersectObject(building,true)[0];assert.ok(top?.object===coping,'both capitals must remain readable outside the real roof eave');assert.ok(Math.abs(top.point.y-(height+2.5/V))<1e-5);
+    const out=new Vector3(-f.frame.v.x,0,-f.frame.v.y),ray=new Raycaster(f.point(sample,-1,1.3),out.clone().negate(),0,2*T),body=ray.intersectObject(node,true)[0],wall=ray.intersectObject(building.getObjectByName(`building-fabric:${f.b.id}`),true)[0];assert.ok(body&&wall);assert.ok(Math.abs(wall.distance-body.distance-(.34*T-.09))<1e-5,'the whole source shaft projects about 33 cm beyond the wall');
+   }
+   const foot=node.children.find(mesh=>mesh.material.name==='world:stone');assert.ok(Math.abs(new Box3().setFromObject(foot).max.y-getBuildingProfile(f.b).plinthHeight/V)<1e-5);f.dispose(building);
+@@ -60,8 +62,10 @@
+ 
+ test('chapel piers respect actual slab heights, usable upper surfaces, legacy selection and normal room disclosure',()=>{
+  for(const rotation of rotations){
+-  for(const roof of ['slab','terrace','roof-route']){const f=fixture(rotation,'exterior',roof),building=f.build(),node=f.feature(building);if(roof==='roof-route')assert.equal(Boolean(node),false,'the capital above the roof must not occupy an accessible upper corner');else{assert.ok(node);supported(f,node);assert.ok(Math.abs(new Box3().setFromObject(node).max.y-building.userData.height-2.5/V)<1e-5);}f.dispose(building);}
+-  const short=fixture(rotation,'exterior','slab');short.input.terrain.upperSurfaces=short.input.terrain.upperSurfaces.map(surface=>({...surface,elevation:1.8}));const shortBuilding=short.build();assert.ok(Math.abs(new Box3().setFromObject(short.feature(shortBuilding)).max.y-1.8-2.5/V)<1e-5);short.dispose(shortBuilding);
++  // Include the exposed source cap stroke's .25-unit radius, while the
++  // coping-plane ray above continues to prove its unchanged physical height.
++  for(const roof of ['slab','terrace','roof-route']){const f=fixture(rotation,'exterior',roof),building=f.build(),node=f.feature(building);if(roof==='roof-route')assert.equal(Boolean(node),false,'the capital above the roof must not occupy an accessible upper corner');else{assert.ok(node);supported(f,node);assert.ok(Math.abs(new Box3().setFromObject(node).max.y-building.userData.height-2.5/V-.25/V)<1e-5);}f.dispose(building);}
++  const short=fixture(rotation,'exterior','slab');short.input.terrain.upperSurfaces=short.input.terrain.upperSurfaces.map(surface=>({...surface,elevation:1.8}));const shortBuilding=short.build();assert.ok(Math.abs(new Box3().setFromObject(short.feature(shortBuilding)).max.y-1.8-2.5/V-.25/V)<1e-5);short.dispose(shortBuilding);
+   for(const blocked of [false,true]){const f=fixture(rotation),corners=[f.frame.at(0,0),f.frame.at(f.frame.width,0)];f.input.terrain.upperSurfaces=corners.map(p=>({...p,tacticalLevel:1,elevation:2.2,blocked,kind:'platform',buildingId:f.b.id,type:'floor'}));const building=f.build();assert.equal(Boolean(f.feature(building)),blocked);f.dispose(building);}
+   for(const view of ['partial','interior']){const f=fixture(rotation,view),building=f.build();assert.equal(Boolean(f.feature(building)),false);f.dispose(building);}
+   const legacy=fixture(rotation);legacy.b.architecture='chapel';legacy.b.kind=undefined;legacy.b.wallFinish=undefined;const building=legacy.build();assert.equal(Boolean(legacy.feature(building)),false);legacy.dispose(building);
+diff --git a/docs/art/reviews/chapel-pier-edges/README.md b/docs/art/reviews/chapel-pier-edges/README.md
+new file mode 100644
+--- /dev/null
++++ b/docs/art/reviews/chapel-pier-edges/README.md
+@@ -0,0 +1,35 @@
++# Chapel pier edges: current source comparison
++
++The ordinary chapel front already had its two supported corner piers. Their smooth edges made the shafts and capitals blend into the adjacent wall. The current direct `pier()` source draws each `ArchitectureVolume` face with a 0.45-unit border in its palette shadow colour, and its exposed cap with a 0.5-unit border. This small correction restores those local edges on the retained native piers.
++
++Private review base: main `12b281c5`. The affected source and retained geometry are identical on main `dfe41950`. This cut owns only the chapel edge helper, its call site, focused tests and this comparison record. The current source sprite sets the dimensions and paint. The supplied playtest references are readability examples; they do not supply historical chapel decoration.
++
++![Before, ordinary playable chapel view](before.png)
++![After, same ordinary playable chapel view](after.png)
++![Current direct chapel sprite](current-sprite.png)
++
++The paired normal camera views show a clearer shaft edge and separate foot and capital. The native shaft still projects 33.0 cm beyond the actual wall. Every existing pier position, normal, metric UV, light attribute, base pigment and texture recipe is byte-identical before and after in 40 compiled cases: four rotations, five paints and original or closed-slab roofs. The source plaster exception remains at 0.36 opacity, with the separate warm stone foot at 0.60. Native lighting remains responsible for the broad face shading; this correction does not tint the full faces again.
++
++The local cylinders reproduce the source stroke diameters: 17.95 mm on face edges and 19.95 mm on the cap. Complete strokes stay inside their actual intact wall cells, including clipped edited-corner fallbacks, and never enter the ground. The cap stroke adds its own 9.97 mm half-width above the retained coping plane. The upper-route exclusion measures that complete hull. Usable upper cells omit the occupied pier, and room disclosure removes it with the ordinary facade cutaway.
++
++Validation: 19 affected chapel and nave-edge checks pass; 25 further surface, door, placement and window checks pass. TypeScript passes. The five new tests read the actual current React source formulas and measure complete stroke bounds, palettes, normal camera ray visibility, metric UVs, day/night lighting, standing door crossings and window approaches. They cover all four rotations, five authored paints, edited corner openings, original roofs, slabs, terraces, legal roof routes, a short 1.8 m slab, lower upper cells, legacy selection and ordinary disclosure. Input state is unchanged. The original helper fails three of these five checks: absent source edges, absent camera edge separation and absent source stroke hull. The original failure evidence remains in the private review artifacts.
++
++Two old pier assertions needed a measured update. The coping ray now samples 0.350 tiles outside the front wall, inside the new border but still outside the actual 0.16-tile eave, and continues to require the original coping material and exact plane height. The complete top-bound assertion adds the source cap stroke's half-width. Their previous failures are retained in the private artifacts; neither the coping height nor the pier body was altered.
++
++Live review: 12 original before views and 36 after views pass without browser errors. Each set uses normal catalogue controls and visits exterior, partial and interior states at all four rotations. The after sets include original roofs, closed slabs and legal roof routes. The normal 0-degree front, 90-degree exterior, closed slab, accessible roof and disclosed interior were visually checked. This record confirms the local edge correction. It does not claim full visual parity or complete building polish; the previously disclosed source/native window-aperture proportion difference remains.
++
++Focused checks:
++
++```sh
++node --test tests/three-chapel-pier-edges.test.mjs tests/three-chapel-piers.test.mjs tests/three-chapel-placement.test.mjs tests/three-church-nave-edges.test.mjs
++node --test tests/three-building-surfaces.test.mjs tests/three-building-doors.test.mjs tests/three-building-placement.test.mjs tests/three-rectangular-window-bars.test.mjs tests/three-parish-window-bars.test.mjs
++npm run typecheck
++```
++
++Normal browser reproduction:
++
++```sh
++node tools/verify-three-catalog.mjs --full capilla
++node tools/verify-three-catalog.mjs --full --roof=slab capilla
++node tools/verify-three-catalog.mjs --full --roof=roof-route capilla
++```
+diff --git a/docs/art/reviews/chapel-pier-edges/source-bounds.json b/docs/art/reviews/chapel-pier-edges/source-bounds.json
+new file mode 100644
+--- /dev/null
++++ b/docs/art/reviews/chapel-pier-edges/source-bounds.json
+@@ -0,0 +1,945 @@
++{
++  "source": "Current buildingDetails()/pier() and ArchitectureVolume()",
++  "tileMetres": 1.2360585147470482,
++  "verticalUnitsPerMetre": 25.066666666666666,
++  "sourceStroke": {
++    "faceUnits": 0.45,
++    "capUnits": 0.5,
++    "faceDiameterMetres": 0.01795212765957447,
++    "capDiameterMetres": 0.0199468085106383
++  },
++  "retainedNativeReliefMetres": 0.33025989501399644,
++  "maximumCapitalHullAboveActualHeightMetres": 0.10970744680851063,
++  "palettes": [
++    {
++      "finish": "adobe",
++      "sourceWallHeight": 53,
++      "parts": [
++        {
++          "label": "chapel-corner-0-0-shaft",
++          "plan": [
++            {
++              "u": -0.14000000000000057,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": -0.14000000000000057,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#b49a71",
++            "trim": "#cab48e",
++            "shadow": "#776448"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-0-0-base",
++          "plan": [
++            {
++              "u": -0.21000000000000085,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": -0.21000000000000085,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-0-0-capital",
++          "plan": [
++            {
++              "u": -0.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": -0.1899999999999995,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#b49a71",
++            "trim": "#cab48e",
++            "shadow": "#776448"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-shaft",
++          "plan": [
++            {
++              "u": 3.8599999999999994,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": 3.8599999999999994,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#b49a71",
++            "trim": "#cab48e",
++            "shadow": "#776448"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-base",
++          "plan": [
++            {
++              "u": 3.79,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": 3.79,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-4-0-capital",
++          "plan": [
++            {
++              "u": 3.8100000000000005,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": 3.8100000000000005,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#b49a71",
++            "trim": "#cab48e",
++            "shadow": "#776448"
++          },
++          "texture": "plaster",
++          "cap": true
++        }
++      ]
++    },
++    {
++      "finish": "limewash",
++      "sourceWallHeight": 53,
++      "parts": [
++        {
++          "label": "chapel-corner-0-0-shaft",
++          "plan": [
++            {
++              "u": -0.14000000000000057,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": -0.14000000000000057,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-0-0-base",
++          "plan": [
++            {
++              "u": -0.21000000000000085,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": -0.21000000000000085,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-0-0-capital",
++          "plan": [
++            {
++              "u": -0.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": -0.1899999999999995,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-shaft",
++          "plan": [
++            {
++              "u": 3.8599999999999994,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": 3.8599999999999994,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-base",
++          "plan": [
++            {
++              "u": 3.79,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": 3.79,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-4-0-capital",
++          "plan": [
++            {
++              "u": 3.8100000000000005,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": 3.8100000000000005,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster",
++          "cap": true
++        }
++      ]
++    },
++    {
++      "finish": "ochre",
++      "sourceWallHeight": 53,
++      "parts": [
++        {
++          "label": "chapel-corner-0-0-shaft",
++          "plan": [
++            {
++              "u": -0.14000000000000057,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": -0.14000000000000057,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-0-0-base",
++          "plan": [
++            {
++              "u": -0.21000000000000085,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": -0.21000000000000085,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-0-0-capital",
++          "plan": [
++            {
++              "u": -0.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": -0.1899999999999995,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-shaft",
++          "plan": [
++            {
++              "u": 3.8599999999999994,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": 3.8599999999999994,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-base",
++          "plan": [
++            {
++              "u": 3.79,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": 3.79,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-4-0-capital",
++          "plan": [
++            {
++              "u": 3.8100000000000005,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": 3.8100000000000005,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster",
++          "cap": true
++        }
++      ]
++    },
++    {
++      "finish": "stone",
++      "sourceWallHeight": 53,
++      "parts": [
++        {
++          "label": "chapel-corner-0-0-shaft",
++          "plan": [
++            {
++              "u": -0.14000000000000057,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": -0.14000000000000057,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#928f80",
++            "trim": "#c5bd9f",
++            "shadow": "#5e635c"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-0-0-base",
++          "plan": [
++            {
++              "u": -0.21000000000000085,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": -0.21000000000000085,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-0-0-capital",
++          "plan": [
++            {
++              "u": -0.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": -0.1899999999999995,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#928f80",
++            "trim": "#c5bd9f",
++            "shadow": "#5e635c"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-shaft",
++          "plan": [
++            {
++              "u": 3.8599999999999994,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": 3.8599999999999994,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#928f80",
++            "trim": "#c5bd9f",
++            "shadow": "#5e635c"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-base",
++          "plan": [
++            {
++              "u": 3.79,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": 3.79,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-4-0-capital",
++          "plan": [
++            {
++              "u": 3.8100000000000005,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": 3.8100000000000005,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#928f80",
++            "trim": "#c5bd9f",
++            "shadow": "#5e635c"
++          },
++          "texture": "plaster",
++          "cap": true
++        }
++      ]
++    },
++    {
++      "finish": "brick",
++      "sourceWallHeight": 53,
++      "parts": [
++        {
++          "label": "chapel-corner-0-0-shaft",
++          "plan": [
++            {
++              "u": -0.14000000000000057,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 0.13999999999999968,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": -0.14000000000000057,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#a17258",
++            "trim": "#cfb490",
++            "shadow": "#6f5140"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-0-0-base",
++          "plan": [
++            {
++              "u": -0.21000000000000085,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 0.20999999999999996,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": -0.21000000000000085,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-0-0-capital",
++          "plan": [
++            {
++              "u": -0.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 0.1900000000000004,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": -0.1899999999999995,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#a17258",
++            "trim": "#cfb490",
++            "shadow": "#6f5140"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-shaft",
++          "plan": [
++            {
++              "u": 3.8599999999999994,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": -0.33999999999999986
++            },
++            {
++              "u": 4.14,
++              "v": 0.15000000000000036
++            },
++            {
++              "u": 3.8599999999999994,
++              "v": 0.15000000000000036
++            }
++          ],
++          "bottom": 0,
++          "top": 54,
++          "palette": {
++            "base": "#a17258",
++            "trim": "#cfb490",
++            "shadow": "#6f5140"
++          },
++          "texture": "plaster",
++          "cap": true
++        },
++        {
++          "label": "chapel-corner-4-0-base",
++          "plan": [
++            {
++              "u": 3.79,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": -0.39000000000000057
++            },
++            {
++              "u": 4.21,
++              "v": 0.1999999999999993
++            },
++            {
++              "u": 3.79,
++              "v": 0.1999999999999993
++            }
++          ],
++          "bottom": 0,
++          "top": 10,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "label": "chapel-corner-4-0-capital",
++          "plan": [
++            {
++              "u": 3.8100000000000005,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": -0.3699999999999992
++            },
++            {
++              "u": 4.1899999999999995,
++              "v": 0.1899999999999995
++            },
++            {
++              "u": 3.8100000000000005,
++              "v": 0.1899999999999995
++            }
++          ],
++          "bottom": 50.5,
++          "top": 55.5,
++          "palette": {
++            "base": "#a17258",
++            "trim": "#cfb490",
++            "shadow": "#6f5140"
++          },
++          "texture": "plaster",
++          "cap": true
++        }
++      ]
++    }
++  ]
++}
