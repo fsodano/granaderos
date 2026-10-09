@@ -144,16 +144,21 @@ export function planMountReturn(s,request,snapshot,entries){
 export function migrateDeploymentReturns(s){s.sectorRemains??={};for(const r of Object.values(s.operativeState??{}))r.capturedAmmunition??={loaded:0,ammo:0};return s;}
 const sameEntry=(a,b)=>Boolean(a&&b&&a.entryEdge===b.entryEdge&&a.entryAnchor?.x===b.entryAnchor?.x&&a.entryAnchor?.y===b.entryAnchor?.y);
 const knownExit=id=>{if(typeof id!=='string')return null;const source=id.split(':')[0];return sectorExits(source==='yatasto'?'tucuman':source,source==='yatasto'?'yatasto':null).find(e=>e.id===id);};
-function remainsDimensions(s,exit){
+function remainsGeometry(s,exit){
   const source=exit.id.slice(0,exit.id.indexOf(':'));
   const saved=source==='yatasto'?s.sceneStates?.[source]:s.sectorStates?.[source];
   const request=(s.pendingBattle?.sceneId??s.pendingBattle?.sector)===source?s.pendingBattle:null;
-  const map=saved??request?.resumeSnapshot??request;
+  const map=expandCellScene(saved??request?.resumeSnapshot??request);
   // The body still has source-map coordinates until its destination is entered.
   // Older records without a source map retain the compact-map validation bounds.
   const width=map?.width??20,height=map?.height??16;
   need(Number.isInteger(width)&&width>=4&&width<=128&&Number.isInteger(height)&&height>=4&&height<=128,'Las dimensiones del campo del caído son inválidas.');
-  return {width,height};
+  // A departed body's paths still belong to the source field. Admit them
+  // against its retained physical geometry, including roof access. Older
+  // dimension-only ground records keep their original validation bounds;
+  // they cannot establish support for an upper path without a real scene.
+  if(Array.isArray(map?.tiles))return {width,height,tiles:map.tiles,buildings:map.buildings??[],upperSurfaces:map.upperSurfaces,climbLinks:map.climbLinks};
+  return {width,height,tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}))};
 }
 function validateReturnLedger(snapshot){
   if(snapshot.returnLedger===undefined)return;
@@ -191,8 +196,7 @@ export function validateDeploymentReturnState(s){
       const exit=knownExit(r.unit.departure?.exitId);need(exit&&exit.destination===at&&sameEntry(r,exit),'La llegada del caído no corresponde a su salida.');
       const unit=clone(r.unit);delete unit.departure;
       const rawFields=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','rations','torches','boleadoras','activeSlot','weaponFittings','weaponFittingPattern','bladeFittingPattern'];need(rawFields.every(k=>Object.hasOwn(unit,k)&&unit[k]!==undefined),'El equipo del caído está incompleto.');
-      const {width,height}=remainsDimensions(s,exit);
-      validateBattleSnapshot({...(unit.ammunitionVersion===undefined?{}:{ammunitionVersion:unit.ammunitionVersion}),width,height,units:[unit],tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),status:'defeat'});
+      validateBattleSnapshot({...(unit.ammunitionVersion===undefined?{}:{ammunitionVersion:unit.ammunitionVersion}),...remainsGeometry(s,exit),units:[unit],status:'defeat'});
     }
   }
   for(const [id,r] of Object.entries(s.operativeState)){
