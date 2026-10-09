@@ -1,0 +1,248 @@
+{
+  "schema": 1,
+  "date": "2026-10-09T20:03:42.005Z",
+  "commit": "3735cc7023d35a9c378c2c357142b37ed166eb9b",
+  "origin": "http://127.0.0.1:3210",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "browser": {
+    "engine": "Chromium",
+    "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "recording": "Playwright recordVideo, real browser frames, no speed change",
+    "version": "154.0.8037.98"
+  },
+  "errors": [],
+  "clips": [
+    {
+      "name": "recruitment",
+      "path": "assets/video/intro/source/recruitment.mp4",
+      "duration": 8,
+      "actions": [
+        "Browse the live contract catalogue.",
+        "Open Alistair Kerr's service sheet, then close it with Escape.",
+        "Hire Alistair Kerr for one day through the ordinary contract button."
+      ],
+      "evidence": [
+        "assets/video/intro/source/evidence/recruitment-before.png",
+        "assets/video/intro/source/evidence/recruitment-service-sheet.png",
+        "assets/video/intro/source/evidence/recruitment-after.png"
+      ],
+      "actionEvidence": {
+        "afterHire": "48 de 48 mercenarios · 1 en tus filas · 0 en viaje",
+        "contractButton": "Renovar · 162 pesos"
+      },
+      "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
+      "rawTrimStart": 4.497,
+      "rawTrimEnd": 12.497,
+      "sha256": "bb006db2fff20588a49cc8aadecf50b19db7711e90472453632cfba4ca8f282e",
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1600,
+            "height": 900,
+            "r_frame_rate": "25/1",
+            "start_time": "0.000000",
+            "duration": "8.000000",
+            "nb_frames": "200"
+          }
+        ],
+        "format": {
+          "start_time": "0.000000",
+          "duration": "8.000000",
+          "size": "1150916"
+        }
+      }
+    },
+    {
+      "name": "campaign-map",
+      "path": "assets/video/intro/source/campaign-map.mp4",
+      "duration": 7,
+      "actions": [
+        "Show the live campaign atlas after hiring one combatant.",
+        "Switch from the cities layer to the troops layer.",
+        "Select the Buenos Aires / Retiro sector and inspect its ordinary sector panel."
+      ],
+      "evidence": [
+        "assets/video/intro/source/evidence/campaign-map-cities.png",
+        "assets/video/intro/source/evidence/campaign-map-troops.png"
+      ],
+      "actionEvidence": {
+        "selectedSector": "Celda 28,29 · Buenos Aires · Fuerte y Retiro · Cuarteles de Retiro · patriota · 1 combatientes propios",
+        "troopsView": "true"
+      },
+      "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
+      "rawTrimStart": 14.236999999999998,
+      "rawTrimEnd": 21.237,
+      "sha256": "bbb9eb8b3554227d4290d2efb13a6d3aef990bb038be318c930655763c851d29",
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1600,
+            "height": 900,
+            "r_frame_rate": "25/1",
+            "start_time": "0.000000",
+            "duration": "7.000000",
+            "nb_frames": "175"
+          }
+        ],
+        "format": {
+          "start_time": "0.000000",
+          "duration": "7.000000",
+          "size": "591389"
+        }
+      }
+    },
+    {
+      "name": "preparation",
+      "path": "assets/video/intro/source/preparation.mp4",
+      "duration": 7,
+      "actions": [
+        "Open the selected rifleman's live equipment panel.",
+        "Inspect the Charleville and its charges/accessories.",
+        "Close the equipment panel through Listo."
+      ],
+      "evidence": [
+        "assets/video/intro/source/evidence/preparation-equipment.png"
+      ],
+      "actionEvidence": {
+        "beforeEquipment": "3. Lorenzo Barcala. Salud 85, 25 puntos de acción, energía 100, moral 80. Ve 2 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+        "equipmentText": "GRANADEROS\nSan Lorenzo · 3 de febrero de 1813\nTurno 1 · Ejército patriota\n3 avistados\nMover\nCámara\nBarcala\nBarcala\nEjército patriota · Nivel 4\n←\n3/4\n→\nPostura y órdenes\nAgilidad\n80\nDestreza\n91\nFuerza\n79\nLiderazgo\n78\nSabiduría\n85\nNivel\n4\nPuntería\n84\nPólvora y artillería\n80\nMecánica\n72\nMedicina\n35\nSalud\n85 / 85\nPuntos de acción\n25 / 25\nPostura\nDe pie\nOrientación\nE\nEnergía\n100 / 100\nMoral\n80%\nMás detalles\nVESTIMENTA\nCABEZA\nVacía\nTORSO\nVacía\nPIERNAS\nVacía\nMano principal\nCharleville\n1 carga(s) · 100%\nSegunda mano\n↔ Arma de dos manos\nCargas y accesorios\nCarga para esta arma\nCartuchos de mosquete · carga principal\nCargas de perdigones · daño 26 · alcance 6 · abanico\nVaciá el arma y terminá la recarga antes de cambiar de carga.\nDescargar arma · 3 PA\nDisparo\nCombate cercano\nDar o soltar Charleville\nDar o soltar Bayoneta de Cubo\nBayoneta de encastre sin identificar · suelta · estado 100% · 0.5 kg\nFijar al Brown Bess · 3 PA\nLa bayoneta no corresponde a este fusil.\nPeso\n8.0 / 39.5 kg\n\nBolsillos · 4 grandes / 8 pequeños\n\nClic: uno. Mayús + clic: todos. Botón derecho: detalles.\nGrande\nGrande\nGrande\nGrande\nRaciones\n2\nVendas\n2\nBoleadoras\n1\nAntorchas\n2\nCartuchos de mosquete\n12\nBayoneta de Cubo\n1\nPequeño\nPequeño\nCharleville · detalles\n23,27 · San Lorenzo · 3 de febrero de 1813\nDía 1 · 08:00\nSan Lorenzo · 3 de febrero de 1813\n\nTurno 1 · Ejército patriota\n\nRetirada\nListo"
+      },
+      "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
+      "rawTrimStart": 6.501999999999999,
+      "rawTrimEnd": 13.501999999999999,
+      "sha256": "95d3c1ad6a28e61ce532d7938376abab0d845ea6ed46358226de49f5fc53938c",
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1600,
+            "height": 900,
+            "r_frame_rate": "25/1",
+            "start_time": "0.000000",
+            "duration": "7.000000",
+            "nb_frames": "175"
+          }
+        ],
+        "format": {
+          "start_time": "0.000000",
+          "duration": "7.000000",
+          "size": "1460894"
+        }
+      }
+    },
+    {
+      "name": "battle",
+      "path": "assets/video/intro/source/battle.mp4",
+      "duration": 12,
+      "actions": [
+        "Select the ordinary firearm targeting mode with F.",
+        "Target Soldado realista 1 and fire the Charleville with Enter.",
+        "Reload with the ordinary Alt+R shortcut and consume one reserve cartridge."
+      ],
+      "evidence": [
+        "assets/video/intro/source/evidence/battle-before.png",
+        "assets/video/intro/source/evidence/battle-after-shot.png",
+        "assets/video/intro/source/evidence/battle-after-reload.png"
+      ],
+      "actionEvidence": {
+        "before": "3. Lorenzo Barcala. Salud 85, 15,75 puntos de acción, energía 81, moral 62. Ve 4 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+        "renderer": {
+          "sectorRenderer": "three",
+          "engine": "three.js r184",
+          "effects": "0",
+          "fps": "51.2",
+          "drawCalls": "228",
+          "triangles": "528377",
+          "actors": "8",
+          "loadedActors": "8",
+          "activeActors": "6",
+          "pendingActors": "0",
+          "lod": "1",
+          "geometries": "528",
+          "textures": "112"
+        },
+        "setup": "In a fresh San Lorenzo skirmish, complete the ordinary first enemy turn with Fin del turno and resume any interruptions through Continuar turno enemigo. Barcala starts the second player turn with 30 PA by retaining five. Select Barcala, choose Run with R and issue a normal movement order from T35 to U44 before the recorded interval. Recenter and pan the native camera. This move clears the convent roof and foliage and leaves enough PA for fire and reload. Cabral fell during the preceding real enemy turn.",
+        "afterShot": "3. Lorenzo Barcala. Salud 85, 13 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 0 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+        "afterReload": "3. Lorenzo Barcala. Salud 85, 2,5 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 1 carga(s). 11 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente"
+      },
+      "rawVideo": ".cache/trailer-capture/raw/page@bfe716955554178a50d383428f6c60c0.webm",
+      "rawTrimStart": 30.197000000000003,
+      "rawTrimEnd": 42.197,
+      "sha256": "4788c95298afe1a93c15f8d5147f1412eff6da9746bb9c46e820b58ba5da5497",
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1600,
+            "height": 900,
+            "r_frame_rate": "25/1",
+            "start_time": "0.000000",
+            "duration": "12.000000",
+            "nb_frames": "300"
+          }
+        ],
+        "format": {
+          "start_time": "0.000000",
+          "duration": "12.000000",
+          "size": "3397269"
+        }
+      }
+    },
+    {
+      "name": "maneuver",
+      "path": "assets/video/intro/source/maneuver.mp4",
+      "duration": 10,
+      "actions": [
+        "Select Manuel Dorrego.",
+        "Issue a normal ground movement order to AC39.",
+        "Lower the selected combatant to a crouched posture.",
+        "Use the native camera wheel to survey the sector."
+      ],
+      "evidence": [
+        "assets/video/intro/source/evidence/maneuver-before.png",
+        "assets/video/intro/source/evidence/maneuver-crouched.png",
+        "assets/video/intro/source/evidence/maneuver-after.png"
+      ],
+      "actionEvidence": {
+        "before": "2. Manuel Dorrego. Salud 84, 25 puntos de acción, energía 100, moral 80. Ve 0 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+        "initialPosition": "standing",
+        "afterMove": "2. Manuel Dorrego. Salud 84, 19 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+        "destination": "AC39, Manuel Dorrego",
+        "afterPosture": "2. Manuel Dorrego. Salud 84, 18,25 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente"
+      },
+      "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
+      "rawTrimStart": 26.857,
+      "rawTrimEnd": 36.857,
+      "sha256": "3aba0e3da7c8886e78f8d3cbde11122aa71f7f873b0c151313f7c7635d1716b1",
+      "media": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "width": 1600,
+            "height": 900,
+            "r_frame_rate": "25/1",
+            "start_time": "0.000000",
+            "duration": "10.000000",
+            "nb_frames": "250"
+          }
+        ],
+        "format": {
+          "start_time": "0.000000",
+          "duration": "10.000000",
+          "size": "3814730"
+        }
+      }
+    }
+  ],
+  "scope": "Fresh isolated contexts. Live UI recorded at normal browser zoom. Clip trimming and H.264 encoding only; no synthetic game frames, crop, playback speed changes, or game state injection. Screenshots document the captured actions."
+}

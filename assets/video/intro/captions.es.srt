@@ -1,41 +1,39 @@
 1
-00:00:00,000 --> 00:00:06,000
+00:00:00,000 --> 00:00:07,000
+BUENOS AIRES · 1812
 GRANADEROS
-Estrategia y combate por turnos
-en la independencia argentina.
+La independencia se conquista.
 
 2
-00:00:06,000 --> 00:00:11,000
-Formá tu tropa
-Reclutá combatientes y elegí sus contratos.
+00:00:07,000 --> 00:00:15,000
+Formá tu escuadra.
+Reclutá combatientes y conocé a tu gente.
 
 3
-00:00:11,000 --> 00:00:16,000
-Conocé a cada combatiente
-Atributos, especialidades y equipo propio.
+00:00:15,000 --> 00:00:22,000
+Elegí tu camino.
+Organizá tus fuerzas en el mapa de campaña.
 
 4
-00:00:16,000 --> 00:00:22,000
-Sostené la campaña
-Organizá escuadras y decidí tu próximo destino.
+00:00:22,000 --> 00:00:29,000
+Prepará cada salida.
+Revisá armas y munición.
 
 5
-00:00:22,000 --> 00:00:29,000
-Cada decisión cuenta
-Dirigí a cada soldado en combates por turnos.
+00:00:29,000 --> 00:00:41,000
+04 · SAN LORENZO · 3 DE FEBRERO DE 1813
+Cada orden cuenta.
+Dirigí a cada soldado en combate por turnos.
 
 6
-00:00:29,000 --> 00:00:35,000
-Prepará tu equipo
-Administrá armas, suministros y munición.
+00:00:41,000 --> 00:00:51,000
+Sostené el combate.
+Administrá tus acciones y tu munición.
 
 7
-00:00:35,000 --> 00:00:40,000
-Creá nuevas historias
-Editá personajes, reglas y encargos.
-
-8
-00:00:40,000 --> 00:00:45,000
-La campaña te espera.
+00:00:51,000 --> 00:00:56,000
+GRANADEROS
+La independencia se conquista.
 Jugá en tu navegador
-fsodano.github.io/granaderos
+fsodano.github.io/granaderos/
+Versión en desarrollo.
