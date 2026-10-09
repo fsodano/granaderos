@@ -61,6 +61,10 @@ export class WorldGeometry {
     else if(kind==='bed-mattress')geometry=new RoundedBoxGeometry(1,1,1,1,.12);
     else if(kind==='bed-pillow')geometry=new RoundedBoxGeometry(1,1,1,1,.28);
     else if(kind==='bed-blanket')geometry=bedBlanketGeometry();
+    else if(kind==='washstand-basin')geometry=lathe([[0,-.012],[.12,-.012],[.12,0],[.16,.025],[.19,.10],[.18,.13],[.16,.12],[.13,.04],[.10,.035],[0,.035]]);
+    else if(kind==='washstand-pitcher')geometry=washstandPitcherGeometry();
+    else if(kind==='washstand-handle')geometry=washstandHandleGeometry();
+    else if(kind==='washstand-towel')geometry=washstandTowelGeometry();
     else throw Error(`Unknown world primitive ${kind}`);
     this.cache.set(kind,geometry);return geometry;
   }
@@ -86,6 +90,37 @@ function bedBlanketGeometry(){
   const stride=columns.length+3;
   for(let row=0;row<rows.length-1;row++)for(let column=0;column<stride-1;column++){
     const a=row*stride+column,b=a+1,c=a+stride,d=c+1;indices.push(a,c,b,b,c,d);
+  }
+  const geometry=new BufferGeometry().setAttribute('position',new BufferAttribute(new Float32Array(positions),3)).setAttribute('uv',new BufferAttribute(new Float32Array(uv),2)).setIndex(indices);
+  geometry.computeVertexNormals();return geometry;
+}
+function washstandPitcherGeometry(){
+  const geometry=lathe([[0,0],[.048,0],[.049,.015],[.067,.045],[.071,.110],[.059,.167],[.036,.196],[.039,.232],[.043,.240],[.032,.240],[.029,.200],[.047,.164],[.056,.107],[.049,.046],[0,.028]]),position=geometry.getAttribute('position');
+  // A narrow neck and outside handle retain the authored jug proportions.
+  // A small lip points towards the basin without raising its 24 cm rim.
+  for(let n=0;n<position.count;n++){
+    const x=position.getX(n),y=position.getY(n),z=position.getZ(n),radius=Math.hypot(x,z);
+    if(radius>0&&y>.196){const sector=Math.max(0,(-x/radius-.82)/.18),lip=Math.min(1,(y-.196)/.036);position.setX(n,x-.018*sector*lip);}
+  }
+  geometry.computeVertexNormals();return geometry;
+}
+function washstandHandleGeometry(){
+  const geometry=new TorusGeometry(1,.15,4,12,Math.PI);geometry.rotateZ(-Math.PI*.5);
+  const position=geometry.getAttribute('position');
+  // An open D handle joins the shoulder and body without passing through the
+  // jug cavity. Its upper attachment leans towards the narrower shoulder.
+  for(let n=0;n<position.count;n++)position.setX(n,position.getX(n)-.22*Math.max(0,position.getY(n)));
+  geometry.computeVertexNormals();return geometry;
+}
+/** Top folds rest on the table; a narrow sheet bends over its front edge. */
+function washstandTowelGeometry(){
+  const columns=[-.5,-.30,0,.30,.5],path=[[-.5,0,1],[.05,0,1],[.5,0,1],[.55,-.035,.99],[.565,-.120,.94],[.55,-.235,.97],[.53,-.350,1.02]],positions:number[]=[],uv:number[]=[],indices:number[]=[];
+  for(let row=0;row<path.length;row++)for(const x of columns){
+    const [z,y,width]=path[row],crease=Math.sin(x*Math.PI*3),top=row<3;
+    positions.push(x*width,y+(top?.006*crease*crease:row===path.length-1?.014*Math.cos(x*Math.PI*4+1):0),z+(top?0:.035*crease));uv.push(x+.5,row/(path.length-1));
+  }
+  for(let row=0;row<path.length-1;row++)for(let column=0;column<columns.length-1;column++){
+    const a=row*columns.length+column,b=a+1,c=a+columns.length,d=c+1;indices.push(a,c,b,b,c,d);
   }
   const geometry=new BufferGeometry().setAttribute('position',new BufferAttribute(new Float32Array(positions),3)).setAttribute('uv',new BufferAttribute(new Float32Array(uv),2)).setIndex(indices);
   geometry.computeVertexNormals();return geometry;

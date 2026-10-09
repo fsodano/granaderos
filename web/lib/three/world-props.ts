@@ -32,8 +32,13 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
         for(const b of [-1,1])box(wood,0,h-.14,b*td*.33,tw*.80+.075,.14,.05);
       }else box(wood,0,h-.18,0,tw*.90,.14,td*.7);
       if(prop.type==='washstand'){
-        const bowl=lathe([[.12,0],[.16,.025],[.19,.10],[.18,.13],[.16,.12],[.13,.04],[.10,.035]]);part.add(bowl,materials.get('ceramic'),frame.matrix.clone().identity().makeTranslation(0,h+.012,0),light);bowl.dispose();
-        box(linen,w*.22,h+.008,0,.18,.015,td*.8);
+        const ceramic=materials.get('ceramic'),pitcherX=w*.29,pitcherZ=-d*.16;
+        part.primitive('washstand-basin',ceramic,[0,h+.012,0],[1,1,1],undefined,light);
+        part.primitive('cylinder',materials.get('water'),[0,h+.097,0],[.145,.002,.145],undefined,light);
+        part.primitive('washstand-pitcher',ceramic,[pitcherX,h,pitcherZ],[1,1,1],undefined,light);
+        part.primitive('washstand-handle',ceramic,[pitcherX+.061,h+.122,pitcherZ],[.038,.050,.038],undefined,light);
+        const drape=Math.min(1,Math.max(.05,(h-.04)/.364));
+        part.primitive('washstand-towel',linen,[-w*.25,h,d*.18],[.18,drape,d*.32],undefined,light);
       }
     }else if(prop.type==='bed'){
       box(wood,0,.18,0,w*.72,.15,d*.90);for(const a of [-1,1])for(const b of [-1,1])box(wood,a*w*.31,.15,b*d*.40,.08,.3,.08);
