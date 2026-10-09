@@ -1,0 +1,341 @@
+{
+  "createdUtc": "2026-10-09T06:32:40.006382+00:00",
+  "finalCount": {
+    "acceptedImprovements": 17,
+    "acceptedPieces": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "note": "The rejected first blanket candidate is a replaced preparation within accepted piece13; it is not a second rejected plan piece.",
+    "rejectedPiece": 5,
+    "rejectedTrialPieces": 1
+  },
+  "finalDelivery": {
+    "allAcceptedPRsMerged": true,
+    "earlierMergeEvidence": [
+      {
+        "bytes": 30920,
+        "path": "/tmp/granaderos-character-pieces-1-to-6-audit.json",
+        "sha256": "085a10cb82b81426ed6c8cdf62c482aee773766bbf5eac99ab65c6b6b7023050"
+      },
+      {
+        "bytes": 1506,
+        "path": "/tmp/granaderos-character-pieces-1-to-6-audit.md",
+        "sha256": "27b381ee85c0bd249c6c87a0c98045379cf6034f7be9d01542e1f77a7e48a28b"
+      },
+      {
+        "bytes": 30006,
+        "path": "/tmp/granaderos-pieces07-11-completion-audit.json",
+        "sha256": "8e49746a859de53f41999c6eb66a65a0817b3241d418e361d52bd3b43abb96b8"
+      },
+      {
+        "bytes": 2732,
+        "path": "/tmp/granaderos-pieces07-11-completion-audit.md",
+        "sha256": "79f16ef4e8576490530b5b0910c4265b169e024dd3836a6aa7b225e3b6584520"
+      },
+      {
+        "bytes": 6862,
+        "path": "/tmp/granaderos-pieces12-14-completion-audit/completion-audit.json",
+        "sha256": "1f213be9f9cbeff4bffc82f14f567a81d961acd82c8cf14e97a62d7381fe67a6"
+      },
+      {
+        "bytes": 2634,
+        "path": "/tmp/granaderos-pieces12-14-completion-audit/completion-audit.md",
+        "sha256": "90dac1f4a732e9b3051216bfc19a997d5ad10658088eacc96d6a1c42749a7359"
+      },
+      {
+        "bytes": 5731,
+        "path": "/tmp/granaderos-pieces12-14-completion-audit/merged-source-and-photo-proof.json",
+        "sha256": "a7a8e3667dcd0163b3d83fc4babac9e578ea0810043c05058f202b581b4db396"
+      }
+    ],
+    "lastFourMergeEvidence": [
+      {
+        "headRefOid": "839e15f11befd4eaac85ebaf243915761a7ebab4",
+        "mergeCommit": {
+          "oid": "c53aeb68cacb3c84623e63352260f5d19bceccc9"
+        },
+        "mergedAt": "2026-10-09T06:22:43Z",
+        "pr": 319,
+        "state": "MERGED",
+        "title": "Complete native cooking hearth and inward direction",
+        "url": "https://github.com/fsodano/granaderos/pull/319"
+      },
+      {
+        "headRefOid": "fc9391ac387f59bc9b16dd9d932a9ae40e81cc95",
+        "mergeCommit": {
+          "oid": "4d18c36defa1a5b9ab67fb9a1bc0e9c58fa230cb"
+        },
+        "mergedAt": "2026-10-09T06:25:29Z",
+        "pr": 320,
+        "state": "MERGED",
+        "title": "Give household shelves distinct open vessels",
+        "url": "https://github.com/fsodano/granaderos/pull/320"
+      },
+      {
+        "headRefOid": "91fa939eeeac7ce538857dea15213a0fc32ee5e1",
+        "mergeCommit": {
+          "oid": "f95ee3d7021c5c227acb73a29ea4b6200fa21f05"
+        },
+        "mergedAt": "2026-10-09T06:26:59Z",
+        "pr": 321,
+        "state": "MERGED",
+        "title": "Add tied sack folds and woven rug edges",
+        "url": "https://github.com/fsodano/granaderos/pull/321"
+      },
+      {
+        "headRefOid": "4d0f6dae5f1d5cc4668c1b88dc6e98a919be7dfc",
+        "mergeCommit": {
+          "oid": "896e1e93db3c54bba9e9de4137def2b9572e2cb6"
+        },
+        "mergedAt": "2026-10-09T06:28:16Z",
+        "pr": 322,
+        "state": "MERGED",
+        "title": "Add continuous room floor joints and entrance wear",
+        "url": "https://github.com/fsodano/granaderos/pull/322"
+      }
+    ],
+    "lastPR": {
+      "headRefOid": "4d0f6dae5f1d5cc4668c1b88dc6e98a919be7dfc",
+      "mergeCommit": {
+        "oid": "896e1e93db3c54bba9e9de4137def2b9572e2cb6"
+      },
+      "mergedAt": "2026-10-09T06:28:16Z",
+      "pr": 322,
+      "state": "MERGED",
+      "title": "Add continuous room floor joints and entrance wear",
+      "url": "https://github.com/fsodano/granaderos/pull/322"
+    },
+    "reviewedMetadataHead": "4d0f6dae5f1d5cc4668c1b88dc6e98a919be7dfc"
+  },
+  "findings": [],
+  "implementationBlockers": [],
+  "metadataCorrections": [
+    {
+      "file": "docs/art/character-apparel-surfaces-review-2026-10-08.md",
+      "lines": {
+        "Piece 5 retains their original models": 33,
+        "corrects the coarse poncho normals": 31
+      },
+      "meaning": "Piece4 corrects poncho normals only; rejected vest/shawl trials retain original models.",
+      "piece": 3,
+      "status": "resolved in PR319"
+    },
+    {
+      "afterClock": "12:01",
+      "beforeClock": "12:02",
+      "captureSourceAssetAndGateFieldsUnchanged": true,
+      "changedReceiptKeysOnly": [
+        "captionCorrection",
+        "comparison"
+      ],
+      "engineEntries": 1,
+      "exactClockOrAnimationPhaseMatchClaimed": false,
+      "files": [
+        "docs/art/soft-bedding-review-2026-10-08.md",
+        "artifacts/soft-bedding/review-receipt.json"
+      ],
+      "lines": {
+        "10,417 regular": 63,
+        "10,418 input entries": 64,
+        "before views are paused at 12:02": 15
+      },
+      "piece": 13,
+      "regularInputs": 10417,
+      "status": "resolved in PR319",
+      "totalEntries": 10418
+    }
+  ],
+  "operations": {
+    "gatesRepeated": 0,
+    "rendersRepeated": 0,
+    "rootWrites": 0,
+    "testsRepeated": 0
+  },
+  "preservationAgainstSealed18": {
+    "allOtherPiece17SourceInputsExact": true,
+    "correctedBeddingTimberWashstandTestsExactFrom14": [
+      "tests/three-soft-bedding.test.mjs",
+      "tests/three-timber-furniture.test.mjs",
+      "tests/three-washstand-details.test.mjs"
+    ],
+    "dependenciesDigest": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+    "enginePin": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "evidence": [
+      {
+        "bytes": 1554168,
+        "path": "/tmp/granaderos-piece18-final-gate-evidence/source-inputs.json",
+        "sha256": "69c9a0b2269804ce20020c17e4a56e8372d17953c0f4edd8a2eed22cf73df616"
+      },
+      {
+        "bytes": 3829406,
+        "path": "/tmp/granaderos-piece18-final-gate-evidence/inputs-before.json",
+        "sha256": "24a55e8c64a66a4d4e0d2fdd8196d3c3e02207c9e753de75d1e07c176f711a3f"
+      },
+      {
+        "bytes": 3829406,
+        "path": "/tmp/granaderos-piece18-final-gate-evidence/inputs-after.json",
+        "sha256": "24a55e8c64a66a4d4e0d2fdd8196d3c3e02207c9e753de75d1e07c176f711a3f"
+      },
+      {
+        "bytes": 3980,
+        "path": "/tmp/granaderos-piece18-final-gate-evidence/composition.json",
+        "sha256": "b1d253c12b88ae2195c78970960c7639e071041dde42574d26fbb99505d9fb11"
+      },
+      {
+        "bytes": 2920,
+        "path": "/tmp/granaderos-piece18-final-gate-evidence/paired-input-proof.json",
+        "sha256": "de4545bfb273cf041be1995ed61231af9a74350be86f345a5339178882f6a35a"
+      },
+      {
+        "bytes": 11970,
+        "path": "/tmp/granaderos-piece18-final-gate-evidence/gate-receipt.json",
+        "sha256": "69f6267e3897b36d1aa7390db1a0ea1ee8d5763a7d65ba48a2dc1743ba198bf2"
+      }
+    ],
+    "featureOwned18": [
+      "tests/three-room-floors.test.mjs",
+      "web/lib/three/world-buildings.ts",
+      "web/lib/three/world-materials.ts",
+      "web/lib/three/world-room-floors.ts"
+    ],
+    "frozen6OnlyLaterReviewChanges": [
+      "web/app/graphics-review/page.tsx",
+      "web/app/renderer-sandbox/fixtures.js"
+    ],
+    "gameFilesChangedFromSealed14": [],
+    "nineCharacterAuthorInstallerPinsExact": [
+      {
+        "exact": true,
+        "path": "assets/source/characters-3d/authoring/cloth_depth.py",
+        "sha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe"
+      },
+      {
+        "exact": true,
+        "path": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+        "sha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2"
+      },
+      {
+        "exact": true,
+        "path": "tools/characters-3d/build-cloth-depth.py",
+        "sha256": "6e2e180185b8badc2220e9d524845f263b804ebc10acd1be30fd00e30080d248"
+      },
+      {
+        "exact": true,
+        "path": "tools/characters-3d/build-family-cloth-depth.py",
+        "sha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10"
+      },
+      {
+        "exact": true,
+        "path": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+        "sha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486"
+      },
+      {
+        "exact": true,
+        "path": "tools/characters-3d/build-apparel-surfaces.py",
+        "sha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4"
+      },
+      {
+        "exact": true,
+        "path": "assets/source/characters-3d/authoring/standing_free_arm_rest.py",
+        "sha256": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364"
+      },
+      {
+        "exact": true,
+        "path": "tools/characters-3d/build-standing-free-arm-rest.py",
+        "sha256": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7"
+      },
+      {
+        "exact": true,
+        "path": "tools/characters-3d/standing_arm_context.py",
+        "sha256": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d"
+      }
+    ],
+    "piece17To18OnlyChanges": [
+      "tests/renderer-upper-office-fixture.test.mjs",
+      "tests/three-room-floors.test.mjs",
+      "web/app/renderer-sandbox/fixtures.js",
+      "web/app/renderer-sandbox/upper-office-fixture.js",
+      "web/lib/three/world-buildings.ts",
+      "web/lib/three/world-materials.ts",
+      "web/lib/three/world-room-floors.ts"
+    ],
+    "productionIdentity": {
+      "id": "755475a0cd6e",
+      "revision": "47474fe904ee92edae8db56be1e0560048c6a9fe",
+      "source": "755475a0cd6e40c218f25b35802d00eabca94a35e75ccb176b086cc7f4c2f953",
+      "version": "0.4.0-dev.1"
+    },
+    "publicFilesChangedFromSealed14": [],
+    "regularSourceInputs": 10427,
+    "sharedUpperOfficeReviewFixture": [
+      "tests/renderer-upper-office-fixture.test.mjs",
+      "web/app/renderer-sandbox/fixtures.js",
+      "web/app/renderer-sandbox/upper-office-fixture.js"
+    ],
+    "sourceEntriesIncludingEngine": 10428,
+    "threeRejectedOverlayBodiesExact": [
+      {
+        "baselineSha256": "f70226e178dd00aaafd590513bb0f0d0b3158d379370a9cec779252f586723c6",
+        "exact": true,
+        "path": "web/public/models/characters/worker-lod2.glb"
+      },
+      {
+        "baselineSha256": "17ca88ce466fc8b1c30bfc359011cbd861e23c3886743282f58a11dd9b3c0283",
+        "exact": true,
+        "path": "web/public/models/characters/woman-shawl-lod1.glb"
+      },
+      {
+        "baselineSha256": "b52abcf86421958313f5bba80dca6616c74b7a00a3404a3456461e678351f3a4",
+        "exact": true,
+        "path": "web/public/models/characters/woman-shawl-lod2.glb"
+      }
+    ]
+  },
+  "retainedEvidenceLimits": [
+    "Pieces1\u20134 quick totals are historical committed records. Piece6 has a separate machine-readable final record. No later full-input seal is invented for early runs.",
+    "Pieces7\u20138 have no later-style complete-input/runtime/production seal in committed artifacts; piece7 has no separate committed native-control receipt. Existing docs, merged PRs, pictures and historical logs support their gates.",
+    "Pieces9\u201311 retained author probes may still say pending live review. Final live receipts record acceptance; author probes must stay labeled historical/offline.",
+    "Piece10 original 6514 subset and final 10411 regular inputs plus engine are different declared scopes.",
+    "Live pairs may differ in displayed minute, pose or retained LOD resources. Short FPS samples do not prove sustained performance, GPU time or final reference parity.",
+    "The feature PR322 plan row says ready. The verified remote merge is the delivery authority; root can update the final summary row."
+  ],
+  "rootOwnedProofs": {
+    "isolatedRootStrictProof": {
+      "allRegularInputsExact": true,
+      "bytes": 4791,
+      "entriesIncludingEngine": 10428,
+      "path": "/tmp/granaderos-piece18-root-final-equivalence.json",
+      "regularFiles": 10427,
+      "sha256": "2ab6b513f4b611dd50ffe9c1acb2de5969fcb62fc6d6010f3d5b6bba53735947",
+      "sourceVersionDependenciesRuntimeAndEngineExact": true
+    },
+    "primaryRawProof": {
+      "bytes": 2007,
+      "engineExact": false,
+      "equal": false,
+      "intentionalBoundary": "Primary engine is initialized and clean at the same pin. Candidate and isolated root engine are uninitialized. This raw nonzero proof is retained. Primary runtime and dependency equality is not claimed.",
+      "path": "/tmp/granaderos-final-primary-main-source-proof.json",
+      "productionSourceAndVersionExact": true,
+      "regularSourcesExact": true,
+      "sha256": "9b4af15876022613485ee6995f6eb3b35c7f490e080fbd4fbb5393ba1c1999ed"
+    },
+    "rootOwnsFinalMergedSourceRuntimeAndPublicPhotoChecks": true
+  },
+  "scope": "Read-only completion audit. Existing audits and sealed manifests are reused. No tests, renders, public image checks or full runtime proof were repeated. Root writes: zero."
+}

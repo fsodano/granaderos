@@ -53,19 +53,27 @@ local gates pass. Record its PR beside the status; an open PR is not publication
 | 15 | Complete cooking hearth | Add the existing cooking pot, rim, bail handle and supporting iron. Keep embers and the stone firebox visible. Face generated hearths into their admitted room while preserving authored rotations. Preserve fire and light rules. | [PR #319](https://github.com/fsodano/granaderos/pull/319) merged; [record](../art/hearth-review-2026-10-08.md) |
 | 16 | Varied shelf vessels | Replace repeated generic cylinders with a few vessel profiles, visible lips and openings. Preserve office/archive ledgers and semantic room selection. | [PR #320](https://github.com/fsodano/granaderos/pull/320) merged; [record](../art/shelf-vessels-review-2026-10-08.md) |
 | 17 | Gathered sacks and woven rugs | Add tied sack mouths and broad creases; add rug bands and fringe. Keep floor contact, footprints and door clearances. Use shared batches and materials. | [PR #321](https://github.com/fsodano/granaderos/pull/321) merged; [record](../art/storage-cloth-review-2026-10-08.md) |
-| 18 | Room floor character | Extend the existing semantic floor finishes with continuous plank joints, restrained room variation and entrance wear. Clip around climb openings. Preserve the upper walking deck and hatch appearance. Add no raised surface that implies a new obstacle. | Ready: native live review, final local gates and sealed complete input proof pass; [record](../art/room-floors-review-2026-10-08.md). |
+| 18 | Room floor character | Extend the existing semantic floor finishes with continuous plank joints, restrained room variation and entrance wear. Clip around climb openings. Preserve the upper walking deck and hatch appearance. Add no raised surface that implies a new obstacle. | [PR #322](https://github.com/fsodano/granaderos/pull/322) merged; [record](../art/room-floors-review-2026-10-08.md) |
 
 If review finds a specific mismatch that these pieces do not address, add a
 bounded piece with its own acceptance criteria. Do not count a passing test or
 a completed checklist as proof that the reference's appearance has been reached.
 
-Pieces 1–17 have completed review; accepted improvements are merged and piece 5
-is a rejected private trial. Pieces 18–18 have completed native browser review,
-typecheck, production build and their standard quick runs. Piece 16 retains an
-unknown standalone affected-process exit after a collector error. Its full
-quick passed all six focused files and the overall process. The separate
-execution-gap proof records that distinction. Publish in order after installed
-root proofs pass.
+All 18 pieces have completed review. Seventeen accepted improvements are
+merged in PRs #306–#322. Piece 5 is a rejected private trial; its original models
+remain installed. Final quick passed 6,869/6,869 tests in 904 files, with zero
+failures or skips. Typecheck, production build and the isolated root's complete
+source/runtime/dependency/engine proof pass. Source identity is
+`755475a0cd6e40c218f25b35802d00eabca94a35e75ccb176b086cc7f4c2f953`.
+
+Piece 16 retains an unknown standalone affected-process exit after a collector
+error. Its full quick passed all six focused files and the overall process.
+Primary main has exact source bytes and a clean engine at the pinned commit;
+its engine is initialized, unlike the private candidates. This does not imply
+an exact primary runtime/dependency match.
+
+See the [phone picture gallery](../art/tactical-reference-gallery-2026-10-08.md)
+and [completion audit](../verification/tactical-reference-delivery-2026-10-09.md).
 
 ## Delivery and checks
 

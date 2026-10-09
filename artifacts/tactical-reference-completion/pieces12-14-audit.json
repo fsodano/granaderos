@@ -1,0 +1,168 @@
+{
+  "auditedMain": "cdfdfe577b40edc5a1233d50c6de10654a679382",
+  "sourceAndPhotoProofSha256": "a7a8e3667dcd0163b3d83fc4babac9e578ea0810043c05058f202b581b4db396",
+  "implementationBlockers": [],
+  "metadataFinding": {
+    "piece": 13,
+    "file": "docs/art/soft-bedding-review-2026-10-08.md",
+    "line": 17,
+    "receipt": "artifacts/soft-bedding/review-receipt.json:1",
+    "claim": "both paused at12:02",
+    "actual": "before12:02; corrected after44/88 show12:01",
+    "sourcePhotosExactToCorrectedCaptures": true,
+    "rootConfirmed": "Root completed the doc/receipt caption correction privately: before12:02 / after12:01, with no exact clock/animation-phase claim. Current main at cdfdfe57 retains old metadata until next PR."
+  },
+  "gates": {
+    "12": {
+      "quickPassed": 6823,
+      "files": 896,
+      "skips": 0,
+      "seconds": 2149.115,
+      "typecheckSeconds": 15.113,
+      "buildSeconds": 22.872,
+      "runtime": "Node25.1/npm11.6.2/Python3.9.6"
+    },
+    "13": {
+      "quickPassed": 6831,
+      "files": 897,
+      "skips": 0,
+      "seconds": 2525.786,
+      "focusedPassed": 38,
+      "typecheckSeconds": 10.72,
+      "buildSeconds": 17.418,
+      "runtime": "Node25.1/npm11.6.2/Python3.9.6"
+    },
+    "14": {
+      "quickPassed": 6838,
+      "files": 898,
+      "skips": 0,
+      "seconds": 2653.436,
+      "focusedPassed": 45,
+      "typecheckSeconds": 12.635,
+      "buildSeconds": 19.613,
+      "runtime": "Node25.9/npm11.12.1/genericPython3.9.6"
+    }
+  },
+  "rejected13QuickStopReceipt": {
+    "path": "/tmp/granaderos-piece13-final-gates.w7ld0t5h/rejected-gate-receipt.json",
+    "sha256": "f70b52ccd71ae57a194cfeba5e02c7fe12e24c6d09e39c118857380d7d69e8b7",
+    "separateFromOld14Stop": true,
+    "receipt": {
+      "piece": 13,
+      "candidate": "/tmp/granaderos-piece13-final-candidate.pw8o9h74",
+      "commit": "b9d3a795ca9e89346347064ad35f29a052b6a008",
+      "acceptanceStatus": "rejected",
+      "reason": "The blanket penetrated upward mattress triangle interiors in live review. Selected contact rays had not proved clearance.",
+      "quick": {
+        "status": "stopped",
+        "stopReason": "Rejected in live review: blanket triangle interiors penetrate the rounded mattress. Stop requested by root. This is not a test suite failure.",
+        "secondsAtStop": 1363.685,
+        "completedFilesAtStop": 272,
+        "selectedFiles": 897,
+        "failedFilesAtStop": [],
+        "onlyKnownQuickProcessTree": true
+      },
+      "testSuiteFailureClaim": false,
+      "typecheck": {
+        "gate": "typecheck",
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "cwd": "/tmp/granaderos-piece13-final-candidate.pw8o9h74",
+        "environmentOverrides": {
+          "nodeBinDirectory": "/Users/fsodano/.nvm/versions/node/v25.1.0/bin"
+        },
+        "startedUtc": "2026-10-09T03:45:24.156680+00:00",
+        "status": "passed",
+        "log": "/tmp/granaderos-piece13-final-gates.w7ld0t5h/typecheck.log",
+        "exitCode": 0,
+        "seconds": 29.527,
+        "finishedUtc": "2026-10-09T03:45:53.685681+00:00"
+      },
+      "build": {
+        "gate": "build",
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/tmp/granaderos-piece13-final-candidate.pw8o9h74",
+        "environmentOverrides": {
+          "nodeBinDirectory": "/Users/fsodano/.nvm/versions/node/v25.1.0/bin"
+        },
+        "startedUtc": "2026-10-09T03:45:24.165548+00:00",
+        "status": "passed",
+        "log": "/tmp/granaderos-piece13-final-gates.w7ld0t5h/build.log",
+        "exitCode": 0,
+        "seconds": 38.121,
+        "finishedUtc": "2026-10-09T03:46:02.288050+00:00",
+        "buildInfo": {
+          "version": "0.4.0-dev.1",
+          "id": "fcc7745c4536",
+          "source": "fcc7745c45369ddd3330dae04e0603325ecc4ae1c5492e130ea7bb26d74c17c9",
+          "revision": "b9d3a795ca9e89346347064ad35f29a052b6a008"
+        }
+      },
+      "allTrackedSourceTestAssetInputsUnchanged": true,
+      "dependenciesAndRuntimeExecutablesUnchanged": true,
+      "workingTreeClean": true,
+      "beforeInputSummary": {
+        "trackedFiles": 11329,
+        "runtimeTestAssetFiles": 10418,
+        "assetFiles": 8366,
+        "allTrackedDigest": "797d43f0c095feda1c6df66783d5639093cc3376858f25bc12caa787806eb61d",
+        "runtimeTestAssetDigest": "fbd1d75de35e768578044dcd2c736c794d07a3e5909af4bcaea22b2eb80c09b3",
+        "assetsDigest": "882d3b4dabe19417fcd7de3d1cedee8a65e73a361c1bf9ae87f4b5d6aca90601",
+        "buildIdentity": {
+          "version": "0.4.0-dev.1",
+          "id": "fcc7745c4536",
+          "source": "fcc7745c45369ddd3330dae04e0603325ecc4ae1c5492e130ea7bb26d74c17c9",
+          "revision": "b9d3a795ca9e89346347064ad35f29a052b6a008"
+        },
+        "bytes": 2964876297
+      },
+      "afterInputSummary": {
+        "trackedFiles": 11329,
+        "runtimeTestAssetFiles": 10418,
+        "assetFiles": 8366,
+        "allTrackedDigest": "797d43f0c095feda1c6df66783d5639093cc3376858f25bc12caa787806eb61d",
+        "runtimeTestAssetDigest": "fbd1d75de35e768578044dcd2c736c794d07a3e5909af4bcaea22b2eb80c09b3",
+        "assetsDigest": "882d3b4dabe19417fcd7de3d1cedee8a65e73a361c1bf9ae87f4b5d6aca90601",
+        "buildIdentity": {
+          "version": "0.4.0-dev.1",
+          "id": "fcc7745c4536",
+          "source": "fcc7745c45369ddd3330dae04e0603325ecc4ae1c5492e130ea7bb26d74c17c9",
+          "revision": "b9d3a795ca9e89346347064ad35f29a052b6a008"
+        },
+        "bytes": 2964876297
+      },
+      "evidenceSha256": {
+        "quick.log": "4c46246769d108a4f56883b00f59f8e2e97c33aee92b253d8b51f51c5976a9e0",
+        "quick-stopped-timing-report.json": "b3012ba0b0e6a3add1e4e0f612f302c6047a9025eafae173e85b3970388dc474",
+        "visual-rejection-stop.json": "f368c280ff5ca1dd2e837ee7d17c5f2c00754ef48ab446cbd535a0e08690bf8a",
+        "before-all-tracked.json": "1a6da5dfee91122194144e932d2ff0d60e580dab421e1a4a469b8ed002045cfc",
+        "after-all-tracked.json": "1a6da5dfee91122194144e932d2ff0d60e580dab421e1a4a469b8ed002045cfc",
+        "runtime-inputs-after.json": "73d63807c63f91eef619a0a5189f8095936e8bdee7663fb5b19fbdafa94eb281",
+        "blanket-clearance-readonly.json": "f844a4da1e6e2a4b838b43a28f4468b6beecac3b32b64a13747e4cef5f276d85"
+      },
+      "candidateAndLogsPreserved": true,
+      "correctedCandidateIsSeparate": "/tmp/granaderos-piece13-clearance-correction.rsodae8u"
+    }
+  },
+  "testsRepeated": 0,
+  "rendersRepeated": 0,
+  "rootWrites": 0,
+  "piece17GateKeptRunning": true,
+  "countWordingClarification": {
+    "piece": 13,
+    "regularInputs": 10417,
+    "engineEntries": 1,
+    "totalEntries": 10418,
+    "helperExpectedFilesIncludesEngine": true,
+    "rootPreparedClarification": true,
+    "currentMainRetainsOldWordingUntilNextPR": true,
+    "inputSealAndHelperUnchanged": true
+  }
+}

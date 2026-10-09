@@ -1,0 +1,51 @@
+[
+  {
+    "path": "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-88.jpg",
+    "url": "https://raw.githubusercontent.com/fsodano/granaderos/896e1e93db3c54bba9e9de4137def2b9572e2cb6/docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-88.jpg",
+    "status": 200,
+    "sha256": "925837730f9e553c7873c8e2c802324ad84e4eff2d2f5a0d9e121d76d60d9545",
+    "bytes": 145062
+  },
+  {
+    "path": "docs/art/tactical-reference-2026-10-08/leaf-sprays-after-88.jpg",
+    "url": "https://raw.githubusercontent.com/fsodano/granaderos/896e1e93db3c54bba9e9de4137def2b9572e2cb6/docs/art/tactical-reference-2026-10-08/leaf-sprays-after-88.jpg",
+    "status": 200,
+    "sha256": "edecba15047ed87e061a1cabe564e05d75a09c0643811b8b8195a4f4b22770ea",
+    "bytes": 133589
+  },
+  {
+    "path": "docs/art/tactical-reference-2026-10-08/room-floors-after-house-88.jpg",
+    "url": "https://raw.githubusercontent.com/fsodano/granaderos/896e1e93db3c54bba9e9de4137def2b9572e2cb6/docs/art/tactical-reference-2026-10-08/room-floors-after-house-88.jpg",
+    "status": 200,
+    "sha256": "77fbe06218ec60f8a4f196903d2dcbd46d272eff86f21ac8713a7415e1f9a571",
+    "bytes": 99977
+  },
+  {
+    "path": "artifacts/hearth/hearth-after-88px.jpg",
+    "url": "https://raw.githubusercontent.com/fsodano/granaderos/896e1e93db3c54bba9e9de4137def2b9572e2cb6/artifacts/hearth/hearth-after-88px.jpg",
+    "status": 200,
+    "sha256": "d9420f588c04f04253515a7d857c5f7abb73ed3e83a6ed4a1b396e3c65900aac",
+    "bytes": 113250
+  },
+  {
+    "path": "artifacts/shelf-vessels/after-store-88px.jpg",
+    "url": "https://raw.githubusercontent.com/fsodano/granaderos/896e1e93db3c54bba9e9de4137def2b9572e2cb6/artifacts/shelf-vessels/after-store-88px.jpg",
+    "status": 200,
+    "sha256": "79cc40f662e9e7bb6166b048c0b7befc5a7adf8ede511b026acb6aa39a942558",
+    "bytes": 104163
+  },
+  {
+    "path": "docs/art/tactical-reference-2026-10-08/storage-cloth-after-store-88.jpg",
+    "url": "https://raw.githubusercontent.com/fsodano/granaderos/896e1e93db3c54bba9e9de4137def2b9572e2cb6/docs/art/tactical-reference-2026-10-08/storage-cloth-after-store-88.jpg",
+    "status": 200,
+    "sha256": "859713d08518b58149c39d86887d8d36af672e6e1c310c744ae21be815fcf8e1",
+    "bytes": 104231
+  },
+  {
+    "path": "docs/art/tactical-reference-2026-10-08/storage-cloth-after-office-88.jpg",
+    "url": "https://raw.githubusercontent.com/fsodano/granaderos/896e1e93db3c54bba9e9de4137def2b9572e2cb6/docs/art/tactical-reference-2026-10-08/storage-cloth-after-office-88.jpg",
+    "status": 200,
+    "sha256": "6a667bb35ea14560fe24fad9b67a388e7191eb9c0736ed3ded61f431eeeeda59",
+    "bytes": 113267
+  }
+]

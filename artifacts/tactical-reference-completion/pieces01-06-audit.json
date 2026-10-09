@@ -1,0 +1,664 @@
+{
+  "scope": "Compact read-only completion evidence audit of plan pieces 1 through 6. No tests, full scans, or renders. Existing photographs were opened.",
+  "currentMain": "cdfdfe577b40edc5a1233d50c6de10654a679382",
+  "workingHead": "cdfdfe577b40edc5a1233d50c6de10654a679382",
+  "workingTreeEqualsMain": true,
+  "reviewDocs": [
+    {
+      "piece": 1,
+      "path": "docs/art/character-cloth-depth-review-2026-10-08.md",
+      "sha256": "14737322a31503d2aad79e2b0841b6fc2f68b6beb11da7aca482f4221521c388",
+      "linkedPhotos": [
+        "docs/art/tactical-reference-2026-10-08/cloth-before-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/cloth-after-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/cloth-before-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/cloth-after-88.jpg"
+      ]
+    },
+    {
+      "piece": 2,
+      "path": "docs/art/character-family-cloth-depth-review-2026-10-08.md",
+      "sha256": "886dc1b95712607fb7e2b0ca31977a409a5a12174ce78d71c432b17142eb632a",
+      "linkedPhotos": [
+        "docs/art/tactical-reference-2026-10-08/family-before-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/family-after-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/family-before-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/family-after-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/family-before-rear-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/family-after-rear-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/family-before-crouch-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/family-after-crouch-88.jpg"
+      ]
+    },
+    {
+      "piece": 3,
+      "path": "docs/art/character-apparel-surfaces-review-2026-10-08.md",
+      "sha256": "74fcad082e0e36fe5a562940293d6dd6981fde7d204bb69e0a30fdb0fd449d60",
+      "linkedPhotos": [
+        "docs/art/tactical-reference-2026-10-08/apparel-before-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/apparel-after-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/apparel-before-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/apparel-after-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/apparel-before-rear-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/apparel-after-rear-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/apparel-before-rear-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/apparel-after-rear-88.jpg"
+      ]
+    },
+    {
+      "piece": 4,
+      "path": "docs/art/character-poncho-normals-review-2026-10-08.md",
+      "sha256": "2012872659404d39d685a23a96033346126192d33ac6765ed68b4b38b7ae78f9",
+      "linkedPhotos": [
+        "docs/art/tactical-reference-2026-10-08/poncho-before-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-side-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-side-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-side-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-side-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-rear-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-rear-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-rear-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-rear-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-rifle-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-rifle-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-rifle-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-rifle-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-crouch-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-crouch-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-crouch-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-crouch-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-prone-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-prone-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-before-prone-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-after-prone-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/poncho-fixed-time-pairs.png",
+        "docs/art/tactical-reference-2026-10-08/poncho-movement.jpg"
+      ]
+    },
+    {
+      "piece": 5,
+      "path": "docs/art/character-outer-garment-fit-review-2026-10-08.md",
+      "sha256": "c4fac4d3bd689542b2efef3ae39b6a0418e71cf7d987139f5991d6e27c322d15",
+      "linkedPhotos": [
+        "docs/art/tactical-reference-2026-10-08/outer-garment-rejected-fit.png"
+      ]
+    },
+    {
+      "piece": 6,
+      "path": "docs/art/character-standing-free-arm-review-2026-10-08.md",
+      "sha256": "5edd1ef5f18885a64181c46c40707521f7ec47ad191a7c282ec01cd42e79814f",
+      "linkedPhotos": [
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-front-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-front-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-paired-pistols-front-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-paired-pistols-front-44.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-paired-pistols-front-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-paired-pistols-front-88.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-1.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-2.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-3.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-1.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-2.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-3.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-1.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-2.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-3.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-1.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-2.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-3.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-root-contact-paired-44.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-root-contact-paired-88.png",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-crouch.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-prone.jpg",
+        "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-movement.jpg"
+      ]
+    }
+  ],
+  "linkedImageCount": 72,
+  "linkedImagePins": {
+    "docs/art/tactical-reference-2026-10-08/cloth-before-44.jpg": {
+      "sha256": "1f6632710e40611fc29682dcd3df3bd92d4bbbe9466571590897c1646b8e4c79",
+      "bytes": 94006
+    },
+    "docs/art/tactical-reference-2026-10-08/cloth-after-44.jpg": {
+      "sha256": "089414a1bb64b2ab779ade28986a8d1a2e9a7270a26854edc378be45502a4c53",
+      "bytes": 93976
+    },
+    "docs/art/tactical-reference-2026-10-08/cloth-before-88.jpg": {
+      "sha256": "d7cf913fe6ad3cd0837bc2f89e6c22057a8146606a2ac4c1fc275b64908aebdd",
+      "bytes": 129860
+    },
+    "docs/art/tactical-reference-2026-10-08/cloth-after-88.jpg": {
+      "sha256": "084b69f78a6fb536840ed5386a1aa8a9d49454996466077dfb224da43fcf853b",
+      "bytes": 129863
+    },
+    "docs/art/tactical-reference-2026-10-08/family-before-44.jpg": {
+      "sha256": "a792b2d9b96ec2efc526d7219612c232c39eadb99e2e5976a6da36c95ce33925",
+      "bytes": 95948
+    },
+    "docs/art/tactical-reference-2026-10-08/family-after-44.jpg": {
+      "sha256": "9628cc5b6cf576812e0ed26d4c03836ad5a73cf29ecbe9ea1d93b3c212d35dd3",
+      "bytes": 95933
+    },
+    "docs/art/tactical-reference-2026-10-08/family-before-88.jpg": {
+      "sha256": "dd1ca9ba3be3fcd055ade6f61f78857455218c1208d3ee6d951f0ec14e38da57",
+      "bytes": 131688
+    },
+    "docs/art/tactical-reference-2026-10-08/family-after-88.jpg": {
+      "sha256": "de7bec75ae84ed95bf0b9e139e73423b1220ebdea994073a5fd0d6f6cd707c68",
+      "bytes": 131711
+    },
+    "docs/art/tactical-reference-2026-10-08/family-before-rear-88.jpg": {
+      "sha256": "88f6bf0bec371ccba4b92b3d500875e4f42bf108771cdd521843590d8a0891bf",
+      "bytes": 123303
+    },
+    "docs/art/tactical-reference-2026-10-08/family-after-rear-88.jpg": {
+      "sha256": "f5c2616443488adbd3cd6eb6b6c30aa332883eb2ec2b581a33a110ccf16a16ee",
+      "bytes": 123319
+    },
+    "docs/art/tactical-reference-2026-10-08/family-before-crouch-88.jpg": {
+      "sha256": "08bf1c60c30ec1cbc42ba3c1531f7cfee415ae24889e4902042aa283e4610cd6",
+      "bytes": 122867
+    },
+    "docs/art/tactical-reference-2026-10-08/family-after-crouch-88.jpg": {
+      "sha256": "1e86ec8ff0b6c6eee15d6ec19985dc745ceb65bbbc63d1eee4aafd4e25817f13",
+      "bytes": 122899
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-before-44.jpg": {
+      "sha256": "b852710f4f4c887add3373c657b7e9df41554eb4af137fc3febeae50ee7eeaac",
+      "bytes": 96941
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-after-44.jpg": {
+      "sha256": "95f7c0e3e5d14d3cff26e4a8c65dbd93fe3f7e3a52f587754fcffaced9075d59",
+      "bytes": 96942
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-before-88.jpg": {
+      "sha256": "0f6b3b2cd17c2a3f98a4ae075b3852a651672dd39b13d4e41de0fb9934342053",
+      "bytes": 145116
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-after-88.jpg": {
+      "sha256": "711cc2694b852b44b1b1bb252547c43d65aa3e61aef08b7ca694a9fda10dc19c",
+      "bytes": 145214
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-before-rear-44.jpg": {
+      "sha256": "43101f59ad71022c77f7ea7b7eb25bdbd8c769fe352c8a286c64f787723b37a3",
+      "bytes": 96984
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-after-rear-44.jpg": {
+      "sha256": "582f3e80e7c8fa33c0160238282210b14ce302a6aa9b48325556c00f849de657",
+      "bytes": 96987
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-before-rear-88.jpg": {
+      "sha256": "631e4d11e05195fc62d0a69f28bc0e99a88d81665d8660a8eab3160cadf43f34",
+      "bytes": 145148
+    },
+    "docs/art/tactical-reference-2026-10-08/apparel-after-rear-88.jpg": {
+      "sha256": "63dcaf844ef8bffe8f1e6c658e2fe14d385387b0300e437ffa0736d423728f13",
+      "bytes": 145173
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-44.jpg": {
+      "sha256": "95f7c0e3e5d14d3cff26e4a8c65dbd93fe3f7e3a52f587754fcffaced9075d59",
+      "bytes": 96942
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-44.jpg": {
+      "sha256": "243d2af5d9e7a884487fb3d78d8d17d280fd20bd7339d45168f255f6ad09ae0f",
+      "bytes": 96942
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-88.jpg": {
+      "sha256": "711cc2694b852b44b1b1bb252547c43d65aa3e61aef08b7ca694a9fda10dc19c",
+      "bytes": 145214
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-88.jpg": {
+      "sha256": "0927dca6f258d200aefa71d0deef7af351c29f807145a53c82dc2237be36abbd",
+      "bytes": 145144
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-side-44.jpg": {
+      "sha256": "0b5029b795986268d56769ff4fc7ec46a367b33851327f6b8fab4cc136c9d688",
+      "bytes": 97025
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-side-44.jpg": {
+      "sha256": "91adf1686ae579eee9ccf5bb289b043f26a63d32351f243f95b2413d3a6b4b31",
+      "bytes": 97038
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-side-88.jpg": {
+      "sha256": "c34602e662fe777eb9be244b43cae4c39d09c97a7d23f18897f73f630c53f8cf",
+      "bytes": 145658
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-side-88.jpg": {
+      "sha256": "723125e6b358537f6051a081e4184563fda9a6a2a35f052e7fdf795815f5403a",
+      "bytes": 145703
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-rear-44.jpg": {
+      "sha256": "582f3e80e7c8fa33c0160238282210b14ce302a6aa9b48325556c00f849de657",
+      "bytes": 96987
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-rear-44.jpg": {
+      "sha256": "6f1e518c5d624175771792dcbaad1761dedf3b18ee4a812c2207aeec8c884dcd",
+      "bytes": 96995
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-rear-88.jpg": {
+      "sha256": "63dcaf844ef8bffe8f1e6c658e2fe14d385387b0300e437ffa0736d423728f13",
+      "bytes": 145173
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-rear-88.jpg": {
+      "sha256": "0e1da98654d8126bd4011685841155e9c3321dfb0ffa595767f5932cb63096c3",
+      "bytes": 145108
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-rifle-44.jpg": {
+      "sha256": "f84a27e705ab599f9a66ba1e1acd39d5c4c132fdc1c20eec1dab73ec300efe25",
+      "bytes": 97967
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-rifle-44.jpg": {
+      "sha256": "76827290f711587f57c69d201807d717dc5c200493a3f2abf2cc02b2a5e2e71e",
+      "bytes": 97949
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-rifle-88.jpg": {
+      "sha256": "8a23ae75c523888f5e643cc391ad935d619edf05cc6cbaef868812245dc5414f",
+      "bytes": 146757
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-rifle-88.jpg": {
+      "sha256": "50ee54b6b6bd6a0079c95b72a1e3010aa098245248a1ddaf756c508953736083",
+      "bytes": 146712
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-crouch-44.jpg": {
+      "sha256": "1e488c54e7cf6b0d282340e479f8eb7398b4e8409d05b96f955ad6db9db13fa4",
+      "bytes": 96679
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-crouch-44.jpg": {
+      "sha256": "5e51a9cc0f83cc3190a42f8309c52328410d3d74e58d878dee75658055968edd",
+      "bytes": 96663
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-crouch-88.jpg": {
+      "sha256": "1fffe30b4bd467fcf23d7612a706074865f923702d30953df83a21b7496ef889",
+      "bytes": 144559
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-crouch-88.jpg": {
+      "sha256": "2985b23f8f15c8b817d0512827849ddc403b20830237c196f227802b7875cd46",
+      "bytes": 144563
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-prone-44.jpg": {
+      "sha256": "fee6fc4f3fc4c89d3c37de842df86f1f531e8be49b9a486aa99b56cb4dcd12f0",
+      "bytes": 96652
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-prone-44.jpg": {
+      "sha256": "8cd058f821f90e6fcb79e68275cb8fe5d3424682df87a1726b4e753e5de6ee6a",
+      "bytes": 96653
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-before-prone-88.jpg": {
+      "sha256": "c849538bf16ceacef809f5de771893d430cfa17e678c9f25931f688ba516df2c",
+      "bytes": 145737
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-after-prone-88.jpg": {
+      "sha256": "bb574ed89870d1d44790b0185ede026ad448ed89b6b71a5f0520cdcf9969566f",
+      "bytes": 145679
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-fixed-time-pairs.png": {
+      "sha256": "11e2870ce05d10672593ac495533ea4a2457d0b1d8b7d094313d1b183c1a5311",
+      "bytes": 903108
+    },
+    "docs/art/tactical-reference-2026-10-08/poncho-movement.jpg": {
+      "sha256": "22c02f80619882cf36cbeda2250b05f04b281e00dc38048501b617f55a96d1fd",
+      "bytes": 95996
+    },
+    "docs/art/tactical-reference-2026-10-08/outer-garment-rejected-fit.png": {
+      "sha256": "bdcb0e988f4a521508408c4d726a1875fd6ca7c458fb18479de907de544e7a7a",
+      "bytes": 118304
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-front-44.jpg": {
+      "sha256": "243d2af5d9e7a884487fb3d78d8d17d280fd20bd7339d45168f255f6ad09ae0f",
+      "bytes": 96942
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-44.jpg": {
+      "sha256": "17ac36192944496b9389455452368bcdc31c5b11b974a0900a6917c2e5e6bd6f",
+      "bytes": 96901
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-front-88.jpg": {
+      "sha256": "b49e29f2976d08cb4f1158463a975194b135eadba2308eb641de4633d5f61898",
+      "bytes": 145189
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-88.jpg": {
+      "sha256": "925837730f9e553c7873c8e2c802324ad84e4eff2d2f5a0d9e121d76d60d9545",
+      "bytes": 145062
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-paired-pistols-front-44.jpg": {
+      "sha256": "30248d9349e026eac78b65c76e733883d00f6a426fd154b9b432323e63436bbf",
+      "bytes": 97697
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-paired-pistols-front-44.jpg": {
+      "sha256": "eee6b591853e11f5e85b28e692b7653b50897386da2cca7759090e4bb3e13f61",
+      "bytes": 97584
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-paired-pistols-front-88.jpg": {
+      "sha256": "d1600120d160a17925934f8009306df9beb8ac2a8d1f7feb429ca8ea2d7bb546",
+      "bytes": 146181
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-paired-pistols-front-88.jpg": {
+      "sha256": "f00558262cbeaf89e4814d7443b1dd7fdf880b0f35aed3b61f49daf07dd4ac81",
+      "bytes": 145828
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-1.png": {
+      "sha256": "ec466bd4e29bcf95ae3fe58110cc25693f1143100f0580c15e9ac668b201ecfb",
+      "bytes": 320843
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-2.png": {
+      "sha256": "05e78b18cc78aa45eb4cdb257536ce4f8e5d3748802e270512e973b6df5c3519",
+      "bytes": 321118
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-3.png": {
+      "sha256": "f173fbe6f7414b118440851d8869d1a937fdf8817c550ba69bfe6bcad755b94f",
+      "bytes": 319933
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-1.png": {
+      "sha256": "5ef9ea00e2f325f62b08bf568f4a0b6ef4659856b965e30705a87ff68e2cca85",
+      "bytes": 942806
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-2.png": {
+      "sha256": "f905c42dfc68332eba30f5da9d29d2860ec36bf5b55287fd79cc188181f0670f",
+      "bytes": 944939
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-3.png": {
+      "sha256": "090b3ef658653b744ee13034b55cf0fcfe6c791c7edd46e3765698045d37fd59",
+      "bytes": 948195
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-1.png": {
+      "sha256": "9f33f1eb4c7cb207e16506f20ec2688c5881010687e861897db6049a24c07e1c",
+      "bytes": 322527
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-2.png": {
+      "sha256": "ff1e136fa3895f38144ad087408bd19bc0c8c59f6f58f929a118172d1018936d",
+      "bytes": 322566
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-3.png": {
+      "sha256": "3ddd1cb66c76039c72b74acd41547cbf4d96a1bf440f2ba16d97daa1e26f3650",
+      "bytes": 321143
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-1.png": {
+      "sha256": "03377d261132dd187a7e38b86b678885902dae2a59555f9b24b83c10266bc704",
+      "bytes": 943141
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-2.png": {
+      "sha256": "f8b7e9467022476c2e9a3a2cf9fc07f982549d51c673d74d3c4defe55cfb2036",
+      "bytes": 946960
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-3.png": {
+      "sha256": "e8189c2d7a36d3f0f9bf6ea30a10e12ca48a2de51ab1c5a6602c6e006662d310",
+      "bytes": 947503
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-root-contact-paired-44.png": {
+      "sha256": "20e35903e7ebd7a772751c9999c964c53c685b0c84aa4b3406005dc7a9cd2547",
+      "bytes": 44159
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-root-contact-paired-88.png": {
+      "sha256": "99d355e16c16e3dd37bd407755f070408bef581eae7bd63a53a1ddf6bcd060dd",
+      "bytes": 136553
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-crouch.jpg": {
+      "sha256": "e66329ffb06704ebc82a137f60825546b787dbce87c3f42d9f83488cba918df4",
+      "bytes": 145707
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-prone.jpg": {
+      "sha256": "ced2822f33d6972d394f7c7aaa10591f736c661b316a755ac586bcc3eb158144",
+      "bytes": 146386
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-movement.jpg": {
+      "sha256": "740f899f727cfd01d5e5d08980e40334de2767b9e095bd597f1a7a159bd8dd5d",
+      "bytes": 146953
+    }
+  },
+  "missingRelativeLinks": [],
+  "frozenSourcePins": [
+    {
+      "path": "assets/source/characters-3d/authoring/cloth_depth.py",
+      "sha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+      "exactGit": true,
+      "currentMainSha256": "4abe75b557ff66a88df9b76f295e31f1e5169c12bcbc97f91fb8a44252609ffe",
+      "currentMainExact": true
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/family_cloth_depth.py",
+      "sha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+      "exactGit": true,
+      "currentMainSha256": "417a371c610ca358bf682e4828233c1aff66cd3599b3726abb066c1303426fe2",
+      "currentMainExact": true
+    },
+    {
+      "path": "tools/characters-3d/build-cloth-depth.py",
+      "sha256": "6e2e180185b8badc2220e9d524845f263b804ebc10acd1be30fd00e30080d248",
+      "exactGit": true,
+      "currentMainSha256": "6e2e180185b8badc2220e9d524845f263b804ebc10acd1be30fd00e30080d248",
+      "currentMainExact": true
+    },
+    {
+      "path": "tools/characters-3d/build-family-cloth-depth.py",
+      "sha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+      "exactGit": true,
+      "currentMainSha256": "536dfa4fb0b4b4c05323ff656be831e7755aefaa4e4870f84186e510a7de6d10",
+      "currentMainExact": true
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/apparel_surfaces.py",
+      "sha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+      "currentMainSha256": "56a483ea997c647d543a361c7a59c2eb4d4def3fb5f892e73a8d3295cce6a486",
+      "currentMainExact": true
+    },
+    {
+      "path": "tools/characters-3d/build-apparel-surfaces.py",
+      "sha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+      "currentMainSha256": "febc0e725dcd0347e98c1b3785a70335dc0e5ac20d46f65687e5779574ed25f4",
+      "currentMainExact": true
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/standing_free_arm_rest.py",
+      "sha256": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364",
+      "currentMainSha256": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364",
+      "currentMainExact": true
+    },
+    {
+      "path": "tools/characters-3d/build-standing-free-arm-rest.py",
+      "sha256": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+      "currentMainSha256": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+      "currentMainExact": true
+    },
+    {
+      "path": "tools/characters-3d/standing_arm_context.py",
+      "sha256": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d",
+      "currentMainSha256": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d",
+      "currentMainExact": true
+    }
+  ],
+  "mergedPRs": [
+    {
+      "piece": 1,
+      "pr": 306,
+      "remoteStateObserved": "MERGED",
+      "mergeCommit": "591444aee1ee241274e70df3cfb61fa040a55062",
+      "mergeIsAncestorOfCurrentMain": true
+    },
+    {
+      "piece": 2,
+      "pr": 307,
+      "remoteStateObserved": "MERGED",
+      "mergeCommit": "ca15f647de772dd6f863004058239b9f64480e4c",
+      "mergeIsAncestorOfCurrentMain": true
+    },
+    {
+      "piece": 3,
+      "pr": 308,
+      "remoteStateObserved": "MERGED",
+      "mergeCommit": "13833b09a6e11380b8e2018cda14728bb329e906",
+      "mergeIsAncestorOfCurrentMain": true
+    },
+    {
+      "piece": 4,
+      "pr": 309,
+      "remoteStateObserved": "MERGED",
+      "mergeCommit": "53712f598f7e2abc0c4ce4f8a8c8a980850e1f83",
+      "mergeIsAncestorOfCurrentMain": true
+    },
+    {
+      "piece": 6,
+      "pr": 312,
+      "remoteStateObserved": "MERGED",
+      "mergeCommit": "6bccb6281c2c2299f9e3b4af859f61301624f690",
+      "mergeIsAncestorOfCurrentMain": true
+    }
+  ],
+  "recordedFinalQuickGates": [
+    {
+      "piece": 1,
+      "tests": 6721,
+      "files": 884,
+      "failed": 0,
+      "skipped": 0,
+      "source": "committed review record; not rerun"
+    },
+    {
+      "piece": 2,
+      "tests": 6743,
+      "files": 885,
+      "failed": 0,
+      "skipped": 0,
+      "source": "committed review record; not rerun"
+    },
+    {
+      "piece": 3,
+      "tests": 6770,
+      "files": 886,
+      "failed": 0,
+      "skipped": 0,
+      "source": "committed review record; not rerun"
+    },
+    {
+      "piece": 4,
+      "tests": 6775,
+      "files": 887,
+      "failed": 0,
+      "skipped": 0,
+      "source": "committed review record; not rerun"
+    },
+    {
+      "piece": 6,
+      "tests": 6796,
+      "files": 890,
+      "failed": 0,
+      "skipped": 0,
+      "source": "committed review record; not rerun"
+    }
+  ],
+  "preservationReceiptPins": [
+    {
+      "path": "artifacts/character-cloth-depth/receipt.json",
+      "sha256": "ae486498acbb1a838e59c60d58a0f212f531e7ba4331eef845c709da00842b00",
+      "bytes": 2733
+    },
+    {
+      "path": "artifacts/character-cloth-depth/repeat-receipt.json",
+      "sha256": "77da53c4140a8e3376c002b6233b316bbbde687c58b152b18e34abd626df7c82",
+      "bytes": 2701
+    },
+    {
+      "path": "artifacts/character-family-cloth-depth/receipt.json",
+      "sha256": "fd2a380b6f890c417c282bbd423b0e9bd347535d011905a057c0726bd3ca4ff4",
+      "bytes": 8107
+    },
+    {
+      "path": "artifacts/character-family-cloth-depth/repeat-receipt.json",
+      "sha256": "4216a754d7ce60f5e5960ec987188ec4ee4434591cd331200b999886dfe5d0d4",
+      "bytes": 8015
+    },
+    {
+      "path": "artifacts/character-family-cloth-depth/independent-audit.json",
+      "sha256": "1458b8b75abc152ef62a9fb064ce215d1052262314d42d4345a7066da15d014e",
+      "bytes": 22814
+    },
+    {
+      "path": "artifacts/character-apparel-surfaces/layer-restoration-audit.json",
+      "sha256": "1f7072cddf6568b9acbd13f17d6ae9481dd9cdc5ec1c3e4ef80873773e1ab24f",
+      "bytes": 38705
+    },
+    {
+      "path": "artifacts/character-coarse-garment-surfaces/whitespace-reseal-proof.json",
+      "sha256": "824d7af6aec34ca60971aa261b69d01470a89772df269df77ad34d82f4434aa9",
+      "bytes": 782
+    },
+    {
+      "path": "artifacts/character-coarse-garment-surfaces/final-private-receipts-6/verify-only.json",
+      "sha256": "906f2d4346103ac49fe2444e785f504080818e3e91ceba6bf28157b225626387",
+      "bytes": 431
+    },
+    {
+      "path": "artifacts/character-coarse-garment-surfaces/final-private-receipts-6/rejections.json",
+      "sha256": "2b10839174ded3230affc8b7b461b137df9702f3e7462e8febe0d77f7411c997",
+      "bytes": 785
+    },
+    {
+      "path": "artifacts/standing-free-arm/review-receipt.json",
+      "sha256": "851a0994ee3c12d02d67d0a5b2240d847e7a29e2c7c465115ccc1c8825e42397",
+      "bytes": 14204
+    },
+    {
+      "path": "artifacts/standing-free-arm/source-guard-equivalence.json",
+      "sha256": "9715953232ecd8d22ad5cb22e57e2073fa61d45eeb4d98187c7a332aef89e997",
+      "bytes": 2138
+    },
+    {
+      "path": "artifacts/standing-free-arm/earlier-render-equivalence.json",
+      "sha256": "f2265464250264295bc586df7d3ae612861512a2aa645a2a56ba75bbb9e07e55",
+      "bytes": 3327
+    }
+  ],
+  "piece5": {
+    "status": "REJECTED_TRIAL",
+    "acceptedPR": null,
+    "threeOriginalOverlayBodiesRetained": [
+      {
+        "path": "web/public/models/characters/worker-lod2.glb",
+        "baseline": "c675edf0",
+        "baselineSha256": "f70226e178dd00aaafd590513bb0f0d0b3158d379370a9cec779252f586723c6",
+        "currentMainSha256": "f70226e178dd00aaafd590513bb0f0d0b3158d379370a9cec779252f586723c6",
+        "bytes": 1087492,
+        "completeGLBExact": true
+      },
+      {
+        "path": "web/public/models/characters/woman-shawl-lod1.glb",
+        "baseline": "c675edf0",
+        "baselineSha256": "17ca88ce466fc8b1c30bfc359011cbd861e23c3886743282f58a11dd9b3c0283",
+        "currentMainSha256": "17ca88ce466fc8b1c30bfc359011cbd861e23c3886743282f58a11dd9b3c0283",
+        "bytes": 2839036,
+        "completeGLBExact": true
+      },
+      {
+        "path": "web/public/models/characters/woman-shawl-lod2.glb",
+        "baseline": "c675edf0",
+        "baselineSha256": "b52abcf86421958313f5bba80dca6616c74b7a00a3404a3456461e678351f3a4",
+        "currentMainSha256": "b52abcf86421958313f5bba80dca6616c74b7a00a3404a3456461e678351f3a4",
+        "bytes": 1008928,
+        "completeGLBExact": true
+      }
+    ],
+    "scope": "Private worker LOD2 and shawl LOD1/2 fit probes; no delivered garment geometry correction. Existing vest/shawl flecks remain a known limitation.",
+    "publishedSourceScope": "coarse_garment_surfaces.py is poncho-only; no shell fitting dispatch is delivered."
+  },
+  "findings": [
+    {
+      "severity": "documentation",
+      "path": "docs/art/character-apparel-surfaces-review-2026-10-08.md",
+      "line": 32,
+      "text": "Piece 4 handles them.",
+      "issue": "This historical sentence includes vest/shawl flecks. Final piece 4 handles only poncho normals. Piece 5 rejected the vest/shawl trial; those assets remain exact.",
+      "resolution": "Root corrected this sentence and linked the later records in its pending documentation-only change. Current origin/main still contains the historical sentence until that documentation is merged."
+    }
+  ],
+  "limits": [
+    "Audit does not rerun gates. Pieces 1\u20134 quick totals are from committed visual records, with preservation/source receipts present. Piece 6 has a separate machine-readable final quick record.",
+    "Historical captures are not presented as current-main byte captures. Later layer and receipt changes have explicit preservation/equivalence records.",
+    "The audit covers existing completion evidence, not JA2 visual parity or zero garment intersections."
+  ],
+  "rootWritten": false,
+  "outstandingMaterialConcerns": []
+}
