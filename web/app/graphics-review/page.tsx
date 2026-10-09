@@ -10,7 +10,7 @@ const scenes=[
   {id:'postures',name:'Posturas'},
   {id:'combat',name:'Armas'},
   {id:'terrain-detail',name:'Terreno'},
-  {id:'furnishings',name:'Mobiliario'},
+  {id:'furnishings-detail',name:'Mobiliario'},
 ] as const;
 
 /** Compact review surface; all orders and presentation use the real battlefield. */

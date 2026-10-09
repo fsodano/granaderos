@@ -1,0 +1,30 @@
+{
+  "beforePreviewPath": "/tmp/granaderos-piece12-before-preview",
+  "afterGatedCandidatePath": "/tmp/granaderos-piece12-final-gates",
+  "piece12PatchSha256": "e56f382ebf3d225129e1e9adfeb3eb64f695ee7ee9cca444ff2818961e0a90a3",
+  "exactChangedFiles": [
+    {
+      "path": "tests/three-timber-furniture.test.mjs",
+      "beforePreviewSha256": null,
+      "afterCandidateSha256": "19b023868b313928cb113792e60c571c4339c115c1643c7f2f0245e4b5621002",
+      "exactToPreTimberStage": true
+    },
+    {
+      "path": "web/lib/three/world-props.ts",
+      "beforePreviewSha256": "9f4d3796b53773a8e49c68663d130c56dc4142c190271c5c0e5047dd655553e5",
+      "afterCandidateSha256": "00e649dc88ebb13bec10c901efc9b634104afe640b0243753aea804e7086cb3b",
+      "exactToPreTimberStage": true
+    }
+  ],
+  "allOtherInputFilesExact": 11325,
+  "allTwoReversedInputsExactToPreTimberStage": true,
+  "frozen6Retained": true,
+  "terrainFixtureExtensionRetained": true,
+  "expandedFurnishingsFixtureAndButtonExactBetweenPreviews": true,
+  "publicAssetsExactBetweenPreviews": true,
+  "dependencyCopiesPrivate": true,
+  "gatedCandidateTouched": false,
+  "extraGatesOrBrowserRun": false,
+  "devCommand": "npm --prefix web run dev -- --host 127.0.0.1 --port <fresh-port>",
+  "reviewRoute": "/graphics-review -> Mobiliario"
+}

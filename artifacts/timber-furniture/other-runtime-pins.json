@@ -1,0 +1,27 @@
+{
+  "python": {
+    "executable": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+    "version": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e"
+  },
+  "optionalPythonModules": {
+    "PIL": {
+      "version": "11.2.1",
+      "moduleFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL/__init__.py",
+      "entryFileSha256": "43828e12947b4bf5ec8f7d1fbceb2f47de311295f8294b15794c1a54fd5f53cd"
+    },
+    "numpy": {
+      "version": "1.26.4",
+      "moduleFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy/__init__.py",
+      "entryFileSha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+    },
+    "trimesh": {
+      "installed": false
+    }
+  },
+  "blenderDefault": {
+    "path": "/Applications/Blender.app/Contents/MacOS/Blender",
+    "binarySha256": "bf5d3ccd1d6094d2da319dca9d9b256902463406440f1843308a2a5f25896de6",
+    "notInvokedByThisRecorder": true
+  }
+}

@@ -1,0 +1,319 @@
+{
+  "candidatePath": "/tmp/granaderos-piece12-final-gates",
+  "beforePreviewPath": "/tmp/granaderos-piece12-before-preview",
+  "stage12Commit": "a7c4c138597b4c65480fd02bbe0e36cbee8c8cc1",
+  "frozenOverlayPath": "/tmp/granaderos-piece6-gate-overlay",
+  "fixturePatchPath": "/tmp/granaderos-terrain-detail-fixture-review/terrain-detail-fixture-extension.patch",
+  "allRepositoryInputManifestSha256": "af670272b3321dc5f7bbed8bbca20b099cc4a2cf6bce523b50dd53e943347fb7",
+  "runtimeTestAssetInputManifestSha256": "6ed2cb941c28ee58f308bfd5069effee89708b41a7b0f50594489170da880492",
+  "productionSourceIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "de26db679503",
+    "source": "de26db679503d1da92025deeec69c65d527f06f6480a2cace098fe36d1763c70",
+    "revision": "a7c4c138597b4c65480fd02bbe0e36cbee8c8cc1"
+  },
+  "sealedRuntime": {
+    "node": {
+      "version": "v25.1.0",
+      "execPath": "/Users/fsodano/.nvm/versions/node/v25.1.0/bin/node",
+      "platform": "darwin",
+      "arch": "arm64",
+      "binarySha256": "6341aad90f8f6d2fc9203ea509131b36cbd4529ec83167d3976be11ee7784430"
+    },
+    "npm": {
+      "version": "11.6.2",
+      "cliPath": "/Users/fsodano/.nvm/versions/node/v25.1.0/lib/node_modules/npm/bin/npm-cli.js",
+      "cliSha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7",
+      "packageRoot": "/Users/fsodano/.nvm/versions/node/v25.1.0/lib/node_modules/npm"
+    },
+    "python": {
+      "version": "3.9.6",
+      "executable": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e",
+      "stdlibRoot": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+      "sharedFramework": {
+        "path": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Python3",
+        "sha256": "26422f0b21cb1e07236384afa4043c7401d39d09358c91df8bf3f5496f14712f"
+      }
+    },
+    "host": {
+      "system": "Darwin",
+      "release": "25.6.0",
+      "machine": "arm64",
+      "macVersion": "26.6.2"
+    },
+    "optionalPythonPackages": {
+      "PIL": {
+        "installed": true,
+        "version": "11.2.1",
+        "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL",
+        "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL/__init__.py",
+        "entrySha256": "43828e12947b4bf5ec8f7d1fbceb2f47de311295f8294b15794c1a54fd5f53cd"
+      },
+      "numpy": {
+        "installed": true,
+        "version": "1.26.4",
+        "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy",
+        "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy/__init__.py",
+        "entrySha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+      },
+      "trimesh": {
+        "installed": false
+      }
+    }
+  },
+  "strictRuntimeProof": "/private/tmp/granaderos-piece12-final-gates-evidence/after-self-equivalence.json",
+  "gates": {
+    "quick": {
+      "name": "quick",
+      "command": [
+        "npm",
+        "run",
+        "test:quick"
+      ],
+      "startUTC": "2026-10-09T03:39:44.857158+00:00",
+      "finishUTC": "2026-10-09T04:15:33.778837+00:00",
+      "seconds": 2149.115,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": "4",
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false,
+      "reportedFileCount": 896,
+      "reportComplete": true,
+      "summary": {
+        "counts": {
+          "tests": 6823,
+          "failed": 0,
+          "passed": 6823,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 6680,
+          "suites": 0
+        },
+        "duration_ms": 2148860.033541,
+        "success": true
+      },
+      "concurrency": 4,
+      "actualCountsFromFileReports": {
+        "tests": 6823,
+        "passed": 6823,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 6680,
+        "suites": 0
+      },
+      "failedFiles": []
+    },
+    "typecheck": {
+      "name": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "startUTC": "2026-10-09T03:39:44.857160+00:00",
+      "finishUTC": "2026-10-09T03:39:59.970484+00:00",
+      "seconds": 15.113,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false
+    },
+    "build": {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startUTC": "2026-10-09T03:39:44.857160+00:00",
+      "finishUTC": "2026-10-09T03:40:07.729486+00:00",
+      "seconds": 22.872,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false,
+      "verifiedExportFiles": 1377,
+      "verifiedAssetReferences": 1045,
+      "productionSourceIdentity": {
+        "version": "0.4.0-dev.1",
+        "id": "de26db679503",
+        "source": "de26db679503d1da92025deeec69c65d527f06f6480a2cace098fe36d1763c70",
+        "revision": "a7c4c138597b4c65480fd02bbe0e36cbee8c8cc1"
+      },
+      "buildInfoSha256": "d3faa0a490f2cc3c4885caa10e85c712a45130b7c4362d555c88b8fd339213a0"
+    }
+  },
+  "integrity": {
+    "allRepositoryInputsExactBeforeAfter": true,
+    "runtimeTestAssetInputManifestExact": true,
+    "allRepositoryInputFiles": 11327,
+    "runtimeTestAssetInputFiles": 6519,
+    "inputDelta": [],
+    "trackedDiffCheck": {
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "untrackedWhitespaceErrors": [],
+    "sourceIdentityAndAllNonDocumentSelfEquivalenceExit": 0,
+    "implementationEditsForGates": false,
+    "rootWritten": false,
+    "browserOrPRAction": false
+  },
+  "evidencePins": {
+    "runtime_inventory.py": {
+      "sha256": "3f620e1725310bfc2c94278c96debc0c090885751bc5046ed14594702d7430d2",
+      "bytes": 2614
+    },
+    "furnishings-review-overlay.patch": {
+      "sha256": "7d4bc2f2a3fbd807b180432a3ab67646e07e44d5de1e2f7f678d7b5012993ebd",
+      "bytes": 18836
+    },
+    "run-gate.py": {
+      "sha256": "ad2050a8ded09575f4f17f8989d21977d28cff52c81ec7f1f137e72a0076e2be",
+      "bytes": 1353
+    },
+    "preparation.json": {
+      "sha256": "4740cfd3f45933360618c5c60cc70e0f20e1ba358211868fe579f300d80a09ce",
+      "bytes": 7333
+    },
+    "quick-selection.json": {
+      "sha256": "6e1dbbb06cc41b36c1175d3e7cd88634c237f10d9a628bdc2be91c05a3d911f4",
+      "bytes": 40689
+    },
+    "after-inputs.json": {
+      "sha256": "eaa6e368a19b5cccb7458c20798aad346c696addd176a2c3ae4b8ad716e982fe",
+      "bytes": 1991302
+    },
+    "finish-evidence.py": {
+      "sha256": "675f08ab843e6948783e99b6d1431141ac6fb9bfb3c604d802555ab7e0bcd45a",
+      "bytes": 7734
+    },
+    "seal-runtime.py": {
+      "sha256": "ef190893cd77ffb292eaf74003a60265ee0a742b2943464ad2ce03cb415c9fd1",
+      "bytes": 2229
+    },
+    "final-integrity.json": {
+      "sha256": "e9e79a6b7b9230882653dc0b109fc5b2cc89d9a16ed64df79335e4d126718476",
+      "bytes": 461
+    },
+    "gitlink-inputs.json": {
+      "sha256": "cb73d31be24f6bb2b2f348f26abce1a49b86d6d9f1ebbfb0f5889388fcd7425a",
+      "bytes": 154
+    },
+    "quick-timing-report.json": {
+      "sha256": "f2fb727e2322b1d632d44dadd83d11f0a2904280c82a3350647f2757da055c05",
+      "bytes": 366949
+    },
+    "quick.log": {
+      "sha256": "109803d09ff3664d207b0b424ad3db23f14ce46d9b7d2c557e1c1a033f5bc23f",
+      "bytes": 1352280
+    },
+    "runtime-seal.json": {
+      "sha256": "2aed5619a07dd9c73126e00227a29761eaea7de1f177d511e290f85d49a0b7d1",
+      "bytes": 9444325
+    },
+    "typecheck.log": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+      "bytes": 117
+    },
+    "verify-runtime.py": {
+      "sha256": "acdaee2117b531e2c4e5eaaabee4369d0eab326bdd6893bc19841e5148eea04c",
+      "bytes": 2798
+    },
+    "quick-result.json": {
+      "sha256": "cf7a3f2b90fd4e8d073a1a1e5ae9e69e92c5c28eb047a1732a2aabd98c0d8e8f",
+      "bytes": 715
+    },
+    "after-self-equivalence.json": {
+      "sha256": "b55c23c38f46f2bc8f88ae63314f108318e6b429ebb8e078b3d787735de34b2f",
+      "bytes": 5497
+    },
+    "dependency-inputs.json": {
+      "sha256": "373b2f526fe2ece7a21cda2119eaba63c4efacba72a1d39ee6f6434aacf97ea3",
+      "bytes": 6843202
+    },
+    "runtime-self-equivalence.json": {
+      "sha256": "b55c23c38f46f2bc8f88ae63314f108318e6b429ebb8e078b3d787735de34b2f",
+      "bytes": 5497
+    },
+    "other-runtime-pins.json": {
+      "sha256": "d224010b981f99c847fb38081599636ba5db530fbdb4b3fe3127de9ebae06d8d",
+      "bytes": 1101
+    },
+    "prepare-before-preview.py": {
+      "sha256": "445d1050dc9af74a2919bde3a0ae1ee0372f71a7e8c6808a5cac08fbab02398f",
+      "bytes": 3196
+    },
+    "self-equivalence.json": {
+      "sha256": "e50d0787f19db7204c4f75d6e43bb2287abee262d02b5d3516cfdc6410fc2f8d",
+      "bytes": 704
+    },
+    "verify-final-equivalence.py": {
+      "sha256": "00b51ec66d3c728a618d60c4d7b4c645267803dca460a5c46bced9933d103f51",
+      "bytes": 3301
+    },
+    "typecheck-result.json": {
+      "sha256": "3eaa87d0a55a0d8fa613c60dabddaa1a9b92597132e8e1f9ba7a5ba26bc6c6f7",
+      "bytes": 382
+    },
+    "before-inputs.json": {
+      "sha256": "366b7ad343eff4a2dbd7fd880d268593803b05b72bf25484343162745db59f40",
+      "bytes": 1991303
+    },
+    "before-preview-proof.json": {
+      "sha256": "415408577b8391fc52efad1b86dd1ce8a73d7ae5f544f2f58c0f1b6731934b75",
+      "bytes": 1293
+    },
+    "hash-inputs.py": {
+      "sha256": "434e0e278ae2897b3b3dcffa14055b8a72648937021a3447528ca775b0b75cd5",
+      "bytes": 2218
+    },
+    "non-document-input-summary.json": {
+      "sha256": "a8dd9062fc68b43d0fd2b3129fec75fe947f9e5704485605541069f813cb1108",
+      "bytes": 348
+    },
+    "prepare.py": {
+      "sha256": "19d94266bb2b22937970fc3e53d7fc3fefa3fb0de700dfb5d3f92ffba2c447ea",
+      "bytes": 4600
+    },
+    "build-result.json": {
+      "sha256": "5cffc242c3217e356bd451d4d399cd8aaed7cb7db97249e4d3986b7d5b0772be",
+      "bytes": 763
+    },
+    "production-source-identity.json": {
+      "sha256": "d3faa0a490f2cc3c4885caa10e85c712a45130b7c4362d555c88b8fd339213a0",
+      "bytes": 193
+    },
+    "button-hunk.patch": {
+      "sha256": "2d3190ceef5e41ac9ab1da164ccedee0c9ae06f33164530b70d7dafb0e3369c6",
+      "bytes": 475
+    },
+    "build.log": {
+      "sha256": "7e9b34d74f52e0fa0e4af474c251766c79238dafa3143558bb49004eb8cbf4cf",
+      "bytes": 2841
+    }
+  },
+  "furnishingsOverlayPath": "/private/tmp/granaderos-piece12-final-gates-evidence/furnishings-review-overlay",
+  "furnishingsPatchPath": "/private/tmp/granaderos-piece12-final-gates-evidence/furnishings-review-overlay.patch",
+  "notes": [
+    "Each requested gate ran once. No implementation changes were made to pass gates.",
+    "Dependencies were copied privately. Root source, public files and browser were not changed by this agent.",
+    "The BEFORE preview reverses only the two exact owned piece-12 inputs; all other 11,325 input files remain exact.",
+    "The browser/live graphics review is owned by root and is not part of these offline gate results.",
+    "A final integrated Git revision can differ while all 10,416 non-document input hashes, engine gitlink pin and the production source identity stay exact."
+  ]
+}
