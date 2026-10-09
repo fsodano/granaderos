@@ -13,6 +13,7 @@ import {transportPath} from '../game/logistics.js';
 import {contractExpiresSeconds} from '../game/contracts.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {workAssignmentReason} from '../game/assignments.js';
+import {cellTravelPlan} from '../game/world-cells.js';
 
 // Public collection at the actual person's location. Temporarily return a
 // local squad to service only when it must physically discover its cache.
@@ -72,7 +73,7 @@ export function repairRouteFirearms(state,ids,{maxHours=48}={}){
  let s=state;const targets=()=>ids.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].weaponDropped&&s.operativeState[id].condition<100);
  for(let hour=0;targets().length&&hour<maxHours;hour++){
   let target=targets()[0];const site=operativeLocation(s,target);
-  let roster=rosterFor(s),mechanic=roster.filter(op=>s.recruited.includes(op.id)&&s.operativeState[op.id].alive&&!s.operativeState[op.id].captured&&operativeLocation(s,op.id)===site&&op.mechanical>=20&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&s.operativeState[op.id].energy>10).sort((a,b)=>b.mechanical-a.mechanical)[0];assert.ok(mechanic,'actual repair needs a qualified available local mechanic');
+  let roster=rosterFor(s),mechanic=roster.filter(op=>s.recruited.includes(op.id)&&s.operativeState[op.id].alive&&!s.operativeState[op.id].captured&&operativeLocation(s,op.id)===site&&op.mechanical>=20&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&s.operativeState[op.id].energy>10).sort((a,b)=>Number(repairMaterialPoints(s.operativeState[b.id])>0)-Number(repairMaterialPoints(s.operativeState[a.id])>0)||b.mechanical-a.mechanical)[0];assert.ok(mechanic,'actual repair needs a qualified available local mechanic');
   if(!repairMaterialPoints(s.operativeState[mechanic.id]))s=collectRouteItems(s,mechanic.id,{kind:'repair-kit'},1).campaign;
   // Cache discovery spends real time. Other work may finish the target,
   // and the selected carrier may no longer be awake or able to work.
@@ -89,7 +90,7 @@ export function repairRouteFirearms(state,ids,{maxHours=48}={}){
 // When a clinic has exhausted its actual local stock, a paid doctor can carry
 // dressings from another controlled cache. Patients stay in their real clinic;
 // the journey, rest, contract extensions and source debit are ordinary orders.
-export function collectRouteMedicalSupplies(start,operativeId,requested,{report=()=>{}}={}){
+export function collectRouteMedicalSupplies(start,operativeId,requested,{report=()=>{},resolveEncounter}={}){
  try{return collectRouteItems(start,operativeId,{item:'medkits'},requested);}
  catch(error){if(!error.message.startsWith('finite local equipment or carrying room is exhausted:'))throw error;}
  let s=start;const clinic=operativeLocation(s,operativeId),previous=s.activeSquadId,home=s.squads.find(q=>q.members.includes(operativeId)&&!q.journey),assignment=s.operativeState[operativeId].assignment;
@@ -101,7 +102,9 @@ export function collectRouteMedicalSupplies(start,operativeId,requested,{report=
   return {at,available,path:transportPath(s,clinic,at)};
  }).filter(source=>source.available>0).sort((a,b)=>b.available-a.available||a.path.length-b.path.length);
  const source=sources[0];assert.ok(source,'no controlled finite medical source remains for an actual courier');
- const horizon=(2*(source.path.length-1)*12+24)*3600,now=s.hour*3600+(s.secondOfHour??0);
+ const outward=cellTravelPlan({...s,location:clinic},source.at),returning=cellTravelPlan({...s,location:source.at},clinic);
+ assert.equal(outward.reason,null);assert.equal(returning.reason,null);
+ const horizon=(outward.hours+returning.hours+24)*3600,now=s.hour*3600+(s.secondOfHour??0);
  for(const id of s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured)){
   let contract=s.contracts[id];while(contractExpiresSeconds(contract)!==null&&contractExpiresSeconds(contract)<=now+horizon){
    const cash=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});report({event:'medicalCourierRenewal',id,cost:cash-s.resources.treasury,hour:s.hour});contract=s.contracts[id];
@@ -109,7 +112,21 @@ export function collectRouteMedicalSupplies(start,operativeId,requested,{report=
  }
  if(home)s=order(s,{type:'selectSquad',id:home.id});s=order(s,{type:'assignCare',id:operativeId,assignment:'active'});
  if(!home||home.members.length>1)s=order(s,{type:'createSquad',ids:[operativeId],name:'Vendas recuperadas',sector:clinic});
- const travel=at=>{s=completeTestTravel(s,{sector:at});assert.equal(s.pendingEncounter,null,'resolve the actual medical courier encounter before continuing care');assert.equal(s.pendingBattle,null);assert.equal(s.location,at);assert.ok(s.recruited.includes(operativeId),'the real courier must remain under paid service');};
+ const travel=at=>{
+  for(let leg=0;leg<32;leg++){
+   s=completeTestTravel(s,{sector:at});
+   if(s.pendingEncounter){
+    assert.ok(typeof resolveEncounter==='function','resolve the actual medical courier encounter before continuing care');
+    report({event:'medicalCourierEncounter',operativeId,clinic,destination:at,encounter:structuredClone(s.pendingEncounter),hour:s.hour,secondOfHour:s.secondOfHour??0});
+    s=resolveEncounter(s);
+    assert.equal(s.pendingEncounter,null,'the actual medical courier encounter must finish before travel resumes');
+    assert.equal(s.pendingBattle,null);assert.ok(s.operativeState[operativeId].alive&&!s.operativeState[operativeId].captured,'the actual courier must survive and remain free');
+    continue;
+   }
+   assert.equal(s.pendingBattle,null);assert.equal(s.location,at);assert.ok(s.recruited.includes(operativeId),'the real courier must remain under paid service');return;
+  }
+  assert.fail('the actual medical courier journey must finish within the bounded encounter plan');
+ };
  const departure=s.hour*3600+(s.secondOfHour??0);travel(source.at);
  const found=collectRouteItems(s,operativeId,{item:'medkits'},requested);s=found.campaign;travel(clinic);
  if(home&&!s.squads.find(q=>q.id===home.id).members.includes(operativeId))s=order(s,{type:'assignToSquad',operativeId,squadId:home.id});
