@@ -67,6 +67,9 @@ export class WorldGeometry {
     else if(kind==='washstand-towel')geometry=washstandTowelGeometry();
     else if(kind==='hearth-pot')geometry=lathe([[0,0],[.082,0],[.105,.017],[.132,.070],[.140,.134],[.142,.153],[.139,.160],[.127,.160],[.125,.147],[.127,.130],[.119,.074],[.090,.022],[0,.022]]);
     else if(kind==='hearth-bail')geometry=new TorusGeometry(1,.04,4,12,Math.PI);
+    else if(kind==='shelf-jar')geometry=shelfVesselGeometry('jar');
+    else if(kind==='shelf-bottle')geometry=shelfVesselGeometry('bottle');
+    else if(kind==='shelf-bowl')geometry=shelfVesselGeometry('bowl');
     else throw Error(`Unknown world primitive ${kind}`);
     this.cache.set(kind,geometry);return geometry;
   }
@@ -126,6 +129,20 @@ function washstandTowelGeometry(){
   }
   const geometry=new BufferGeometry().setAttribute('position',new BufferAttribute(new Float32Array(positions),3)).setAttribute('uv',new BufferAttribute(new Float32Array(uv),2)).setIndex(indices);
   geometry.computeVertexNormals();return geometry;
+}
+/** Small storage vessels have an outside foot, rolled lip and real cavity.
+ * Eight radial segments limit the cached geometry cost. */
+function shelfVesselGeometry(kind:'jar'|'bottle'|'bowl'){
+  const profiles={
+    jar:[[0,0],[.039,0],[.053,.014],[.069,.074],[.063,.130],[.036,.166],[.036,.181],[.043,.181],[.043,.191],[.030,.191],[.027,.175],[.052,.126],[.057,.057],[0,.024]],
+    bottle:[[0,0],[.031,0],[.043,.014],[.052,.082],[.047,.157],[.020,.202],[.020,.245],[.027,.245],[.027,.257],[.014,.257],[.013,.207],[.035,.156],[.039,.035],[0,.025]],
+    bowl:[[0,0],[.043,0],[.055,.012],[.066,.062],[.070,.093],[.070,.103],[.058,.103],[.054,.080],[.043,.025],[0,.025]],
+  } as const;
+  const points=profiles[kind],geometry=lathe(points,8),colours=new Float32Array(geometry.getAttribute('position').count*3),inside=kind==='bowl'?6:9;
+  // Shared ceramic/food materials retain the admitted room light. A restrained
+  // cavity shade survives the day sky's fill without adding a material batch.
+  for(let n=0;n<colours.length/3;n++){const shade=n%points.length>=inside ? .68 : 1;colours.fill(shade,n*3,n*3+3);}
+  geometry.setAttribute('color',new BufferAttribute(colours,3));return geometry;
 }
 export class WorldBatch {
   private parts=new Map<MeshStandardMaterial,BufferGeometry[]>();

@@ -1,0 +1,15 @@
+{
+  "candidate": "/tmp/granaderos-piece16-final-candidate",
+  "exactLiveCopy": "/tmp/granaderos-piece16-corrected-live-preview",
+  "all11332InputsExactToAcceptedLiveCopy": true,
+  "onlyOwnedThreeFilesDifferFromSealed15Prefix": [
+    "tests/three-shelf-vessels.test.mjs",
+    "web/lib/three/world-geometry.ts",
+    "web/lib/three/world-props.ts"
+  ],
+  "allOtherInputsExact": true,
+  "source": "162ef299a2910112841ce95f5f02d7eb1de0f07fa9d2f43d548d0c7498d79e81",
+  "inputManifestSha256": "6614e8976c6756052437b7d56f940e45e723bae66ce46015b987c7efcf2f5418",
+  "inputCount": 11332,
+  "readOnly": true
+}

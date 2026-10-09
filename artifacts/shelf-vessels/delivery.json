@@ -1,0 +1,588 @@
+{
+  "status": "PASS",
+  "candidate": "/tmp/granaderos-piece16-final-candidate",
+  "exactLiveSource": "/tmp/granaderos-piece16-corrected-live-preview",
+  "commit": "498c41e0c2b9681d8af25f0db23217e507ba84e2",
+  "sourceIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "162ef299a291",
+    "source": "162ef299a2910112841ce95f5f02d7eb1de0f07fa9d2f43d548d0c7498d79e81",
+    "revision": "498c41e0c2b9681d8af25f0db23217e507ba84e2"
+  },
+  "fullGateStarted": true,
+  "startCondition": "Root accepted all16 live views and15 corrected reproduction80/80. Independent frozen16 gates may run now; publish after successful15seal.",
+  "runtimePATHPrefix": "/usr/bin:/bin:/opt/homebrew/bin",
+  "explicitNode": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "explicitNpmCLI": "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+  "expectedGenericPython": "3.9.6 with NumPy/Pillow",
+  "rootWritten": false,
+  "browserUsed": false,
+  "startUTC": "2026-10-09T05:38:26.786413+00:00",
+  "previousSchedulingHoldRevokedByRoot": true,
+  "stopAndReevaluateIf15SourceChanges": true,
+  "liveCopy": "/tmp/granaderos-piece16-corrected-live-preview",
+  "livePort": 3211,
+  "allRepositoryInputFiles": 11332,
+  "allRepositoryInputManifestSha256": "6614e8976c6756052437b7d56f940e45e723bae66ce46015b987c7efcf2f5418",
+  "sourceProductionIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "162ef299a291",
+    "source": "162ef299a2910112841ce95f5f02d7eb1de0f07fa9d2f43d548d0c7498d79e81",
+    "revision": "498c41e0c2b9681d8af25f0db23217e507ba84e2"
+  },
+  "privateDependencyFiles": 42461,
+  "privateDependencySha256": "1b804d74588845a39a9de49ff81024164c61cf456343b400fc49993580e8530f",
+  "runtime": {
+    "node": {
+      "version": "v25.9.0",
+      "execPath": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "platform": "darwin",
+      "arch": "arm64",
+      "binarySha256": "32e234a5b6bec67d72a016f2baadf7fadf3afd328470b395b73af473fdee0d85"
+    },
+    "npm": {
+      "version": "11.12.1",
+      "cliPath": "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+      "cliSha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7",
+      "packageRoot": "/opt/homebrew/lib/node_modules/npm"
+    },
+    "python": {
+      "version": "3.9.6",
+      "executable": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e",
+      "stdlibRoot": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+      "sharedFramework": {
+        "path": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Python3",
+        "sha256": "26422f0b21cb1e07236384afa4043c7401d39d09358c91df8bf3f5496f14712f"
+      }
+    },
+    "host": {
+      "system": "Darwin",
+      "release": "25.6.0",
+      "machine": "arm64",
+      "macVersion": "26.6.2"
+    },
+    "optionalPythonPackages": {
+      "PIL": {
+        "installed": true,
+        "version": "11.2.1",
+        "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL",
+        "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL/__init__.py",
+        "entrySha256": "43828e12947b4bf5ec8f7d1fbceb2f47de311295f8294b15794c1a54fd5f53cd"
+      },
+      "numpy": {
+        "installed": true,
+        "version": "1.26.4",
+        "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy",
+        "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy/__init__.py",
+        "entrySha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+      },
+      "trimesh": {
+        "installed": false
+      }
+    }
+  },
+  "actualGenericTestPython": {
+    "version": "3.9.6",
+    "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e",
+    "PIL": "11.2.1",
+    "numpy": "1.26.4"
+  },
+  "gitlinks": {
+    "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+  },
+  "gates": {
+    "affected": {
+      "name": "affected",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "--test",
+        "--test-concurrency=4",
+        "tests/three-shelf-vessels.test.mjs",
+        "tests/three-prop-footprints.test.mjs",
+        "tests/prop-footprints.test.mjs",
+        "tests/three-sector-world.test.mjs",
+        "tests/room-dressing-semantics.test.mjs",
+        "tests/renderer-furnishings-detail-fixture.test.mjs"
+      ],
+      "cwd": "/tmp/granaderos-piece16-final-candidate",
+      "seconds": 4.501955541999999,
+      "durationSource": "Actual Node test summary; collector wall time was not persisted",
+      "exitCode": null,
+      "exitCodeEvidence": "Underlying process returned before optional parser failed, but its return code was not persisted. Do not claim a measured0. Complete Node summary shows39/39,0failures/skips.",
+      "countSummaryPassed": true,
+      "actualCounts": {
+        "tests": 39,
+        "pass": 39,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "fileCount": 6,
+      "implementationEditsForGate": false,
+      "outsideRepoCollectorFailed": true,
+      "outsideRepoCollectorError": "AttributeError NoneType.group while reading # summary instead of actual \u2139 summary",
+      "gateRepeated": false,
+      "sourceOrAssetsChanged": false,
+      "executionGapClosure": {
+        "status": "PASS",
+        "standaloneAffectedExitCode": null,
+        "standaloneCollectorFailed": true,
+        "standaloneAffectedRunRepeated": false,
+        "closedByOneStandardQuick": true,
+        "quickExitCode": 0,
+        "availableFocusedCountsFromFullQuickRows": {
+          "tests": 39,
+          "passed": 39,
+          "failed": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "allFocusedRowsExportCaseCounts": true,
+        "standaloneAffectedSummaryCounts": {
+          "tests": 39,
+          "pass": 39,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "caseCountLimit": "The Node runner does not export case counts for every completed file. The standalone 39/39 summary is retained separately; closure depends on all six measured successful file completions and overall quick exit 0.",
+        "files": [
+          {
+            "file": "tests/three-shelf-vessels.test.mjs",
+            "selectedInStandardQuick": true,
+            "nodeIsolatedFileCompletionPassed": true,
+            "filePassLinePresent": true,
+            "measuredResult": {
+              "file": "tests/three-shelf-vessels.test.mjs",
+              "duration_ms": 770.361208,
+              "success": true,
+              "counts": {
+                "tests": 5,
+                "failed": 0,
+                "passed": 5,
+                "cancelled": 0,
+                "skipped": 0,
+                "todo": 0,
+                "topLevel": 5,
+                "suites": 0
+              }
+            }
+          },
+          {
+            "file": "tests/three-prop-footprints.test.mjs",
+            "selectedInStandardQuick": true,
+            "nodeIsolatedFileCompletionPassed": true,
+            "filePassLinePresent": true,
+            "measuredResult": {
+              "file": "tests/three-prop-footprints.test.mjs",
+              "duration_ms": 533.386542,
+              "success": true,
+              "counts": {
+                "tests": 3,
+                "failed": 0,
+                "passed": 3,
+                "cancelled": 0,
+                "skipped": 0,
+                "todo": 0,
+                "topLevel": 3,
+                "suites": 0
+              }
+            }
+          },
+          {
+            "file": "tests/prop-footprints.test.mjs",
+            "selectedInStandardQuick": true,
+            "nodeIsolatedFileCompletionPassed": true,
+            "filePassLinePresent": true,
+            "measuredResult": {
+              "file": "tests/prop-footprints.test.mjs",
+              "duration_ms": 709.527917,
+              "success": true,
+              "counts": {
+                "tests": 5,
+                "failed": 0,
+                "passed": 5,
+                "cancelled": 0,
+                "skipped": 0,
+                "todo": 0,
+                "topLevel": 5,
+                "suites": 0
+              }
+            }
+          },
+          {
+            "file": "tests/three-sector-world.test.mjs",
+            "selectedInStandardQuick": true,
+            "nodeIsolatedFileCompletionPassed": true,
+            "filePassLinePresent": true,
+            "measuredResult": {
+              "file": "tests/three-sector-world.test.mjs",
+              "duration_ms": 935.523417,
+              "success": true,
+              "counts": {
+                "tests": 15,
+                "failed": 0,
+                "passed": 15,
+                "cancelled": 0,
+                "skipped": 0,
+                "todo": 0,
+                "topLevel": 15,
+                "suites": 0
+              }
+            }
+          },
+          {
+            "file": "tests/room-dressing-semantics.test.mjs",
+            "selectedInStandardQuick": true,
+            "nodeIsolatedFileCompletionPassed": true,
+            "filePassLinePresent": true,
+            "measuredResult": {
+              "file": "tests/room-dressing-semantics.test.mjs",
+              "duration_ms": 1648.891542,
+              "success": true,
+              "counts": {
+                "tests": 6,
+                "failed": 0,
+                "passed": 6,
+                "cancelled": 0,
+                "skipped": 0,
+                "todo": 0,
+                "topLevel": 6,
+                "suites": 0
+              }
+            }
+          },
+          {
+            "file": "tests/renderer-furnishings-detail-fixture.test.mjs",
+            "selectedInStandardQuick": true,
+            "nodeIsolatedFileCompletionPassed": true,
+            "filePassLinePresent": true,
+            "measuredResult": {
+              "file": "tests/renderer-furnishings-detail-fixture.test.mjs",
+              "duration_ms": 1357.399084,
+              "success": true,
+              "counts": {
+                "tests": 5,
+                "failed": 0,
+                "passed": 5,
+                "cancelled": 0,
+                "skipped": 0,
+                "todo": 0,
+                "topLevel": 5,
+                "suites": 0
+              }
+            }
+          }
+        ],
+        "measurement": "Node test runner uses process isolation. Its completed per-file result and FILE PASS line measure successful file completion. A separate numeric exit code for each child is not exported by this runner.",
+        "runnerSource": {
+          "path": "tools/test-runner-lib.mjs",
+          "sha256": "c5b254c2fbb1efb5a6235314591d9bef194ec172613819894e7be61981edf3fd"
+        }
+      }
+    },
+    "typecheck": {
+      "name": "typecheck",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "/tmp/granaderos-piece16-final-candidate",
+      "startUTC": "2026-10-09T05:40:41.927626+00:00",
+      "finishUTC": "2026-10-09T05:41:02.250220+00:00",
+      "seconds": 20.323,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null,
+        "NODE_OPTIONS": null,
+        "CI": null
+      },
+      "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "implementationEditsForGate": false
+    },
+    "build": {
+      "name": "build",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "cwd": "/tmp/granaderos-piece16-final-candidate",
+      "startUTC": "2026-10-09T05:41:02.291494+00:00",
+      "finishUTC": "2026-10-09T05:41:36.278019+00:00",
+      "seconds": 33.987,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null,
+        "NODE_OPTIONS": null,
+        "CI": null
+      },
+      "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "implementationEditsForGate": false,
+      "productionSourceIdentity": {
+        "version": "0.4.0-dev.1",
+        "id": "162ef299a291",
+        "source": "162ef299a2910112841ce95f5f02d7eb1de0f07fa9d2f43d548d0c7498d79e81",
+        "revision": "498c41e0c2b9681d8af25f0db23217e507ba84e2"
+      },
+      "productionBuildInfoSha256": "41ed62dc979e0495d9e3f1791b9f2b237cfe45fe04364faa9b709c926f0655e1",
+      "sourceIdentityMatchesActualProduction": true,
+      "exportFileCount": 1377,
+      "assetReferenceCount": 1045
+    },
+    "quick": {
+      "name": "quick",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:quick"
+      ],
+      "cwd": "/tmp/granaderos-piece16-final-candidate",
+      "startUTC": "2026-10-09T05:41:36.334123+00:00",
+      "finishUTC": "2026-10-09T06:18:36.040312+00:00",
+      "seconds": 2219.405,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": "4",
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null,
+        "NODE_OPTIONS": null,
+        "CI": null
+      },
+      "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "implementationEditsForGate": false,
+      "reportedFileCount": 901,
+      "reportComplete": true,
+      "summary": {
+        "counts": {
+          "tests": 6856,
+          "failed": 0,
+          "passed": 6856,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 6713,
+          "suites": 0
+        },
+        "duration_ms": 2219076.345083,
+        "success": true
+      },
+      "concurrency": 4,
+      "officialRunnerCounts": {
+        "tests": 6856,
+        "failed": 0,
+        "passed": 6856,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 6713,
+        "suites": 0
+      },
+      "failedFiles": []
+    }
+  },
+  "integrity": {
+    "candidate": "/tmp/granaderos-piece16-final-candidate",
+    "allRepositoryInputFiles": 11332,
+    "allRepositoryInputsExactBeforeAfter": true,
+    "inputDelta": [],
+    "diffChecks": {
+      "tracked": {
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "staged": {
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "gitWorkingTreeStatus": "",
+    "strictSourceRuntimeDependencySelfEquivalenceExit": 0,
+    "implementationEditsForGates": false,
+    "rootWritten": false,
+    "sharedBrowserUsed": false
+  },
+  "strictReadOnlyEquivalenceHelper": "/tmp/granaderos-piece16-final-gates-evidence/verify-final-equivalence.py",
+  "livePhotosAndMetrics": "/tmp/granaderos-piece16-final-gates-evidence/live-review/copy-manifest.json",
+  "visualReviewDraft": "/tmp/granaderos-piece16-final-gates-evidence/visual-review.md",
+  "evidencePins": {
+    "runtime_inventory.py": {
+      "sha256": "3f620e1725310bfc2c94278c96debc0c090885751bc5046ed14594702d7430d2",
+      "bytes": 2614
+    },
+    "run-gate.py": {
+      "sha256": "81f256ff973dd9d01e668af44d427bb3af344424f79af2f56d2c960c7c0c593c",
+      "bytes": 2488
+    },
+    "after-inputs.json": {
+      "sha256": "5dfde97acea9ae60ef1ec2de92b2e664504f5416ba01548ebb67d2edd66e8555",
+      "bytes": 1992057
+    },
+    "finish-evidence.py": {
+      "sha256": "99efc88fbce4eaf3f751106a731bc35596759b9298ec5af3a1f5f71edc45f1ea",
+      "bytes": 8086
+    },
+    "seal-runtime.py": {
+      "sha256": "92321d90e01c6a1e60cd852b47ceee8e134b58a007544fc9501ad078997a259f",
+      "bytes": 2233
+    },
+    "final-integrity.json": {
+      "sha256": "96fb3f101a2257ae73fee28e92d49c84133127a033480df47a581940c33c232a",
+      "bytes": 534
+    },
+    "gitlink-inputs.json": {
+      "sha256": "354bda0326063f0ce282c1530965161e6623afd2a9e6c6b070db42cac9c0df61",
+      "bytes": 77
+    },
+    "quick-timing-report.json": {
+      "sha256": "e4a66c1924cbf195acae8d95d26fa1480ba873f827bd30ddc65fec73822f95c4",
+      "bytes": 369016
+    },
+    "quick.log": {
+      "sha256": "e6e4a7301f94d41135efe89044ded4f8f7e46430b26cf80dacba9bf052a38b15",
+      "bytes": 1355553
+    },
+    "runtime-seal.json": {
+      "sha256": "ed30843275c9e499655f61cdb1a77b7f9b98874b4e93c74affd9f9ab95534ba5",
+      "bytes": 9370744
+    },
+    "typecheck.log": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+      "bytes": 117
+    },
+    "verify-runtime.py": {
+      "sha256": "e06e7dc4846744c587fba50c165d7407759617e54203793c334f2b701d0bdd14",
+      "bytes": 4378
+    },
+    "quick-result.json": {
+      "sha256": "9d109bd0fe20cfd808aec37173c8029e6344a323e6a58361e50c2f1ac298e173",
+      "bytes": 973
+    },
+    "after-self-equivalence.json": {
+      "sha256": "2b7394bdebff3f57e5475be95dca6a43b1dbd913d1613a6a04bee93fc6c8535a",
+      "bytes": 5945
+    },
+    "dependency-inputs.json": {
+      "sha256": "76ae69565ef2c53e4a06c0633bf06d28f2aa096c527a28ad9eae5adcc36ee1e2",
+      "bytes": 6843573
+    },
+    "capture-gitlinks.py": {
+      "sha256": "3dcf42b2bb2f8fe5a402964f9bd1ecfcc0d6fc0a684929f87c71cd901f57cd6c",
+      "bytes": 678
+    },
+    "generic-runtime-before.json": {
+      "sha256": "3b8d8c67c7d5cd4c608220079061132e7ac3b5b2e14854a075c052740bdfe231",
+      "bytes": 543
+    },
+    "run-sequence.py": {
+      "sha256": "ebb324fe26d1ffe32ee19c165d7b6e1f0ccd27a3ed58daeca24e5e509c9f4e2f",
+      "bytes": 354
+    },
+    "before-self-equivalence.json": {
+      "sha256": "2b7394bdebff3f57e5475be95dca6a43b1dbd913d1613a6a04bee93fc6c8535a",
+      "bytes": 5945
+    },
+    "verify-final-equivalence.py": {
+      "sha256": "da80c3619df32ba4501511537d6119fed54df6db1b01044eed4b4b1f2fc01c7e",
+      "bytes": 3301
+    },
+    "typecheck-result.json": {
+      "sha256": "7bfaa95ecea5c6e7b4431582d3c69ef556670c6492c14173ba50d36ba38e54f1",
+      "bytes": 640
+    },
+    "before-inputs.json": {
+      "sha256": "685f5b797422ffca147802b1b494d4993540a3a0f434ad4fd14336a3718a3bbf",
+      "bytes": 1992058
+    },
+    "linked-runtime-pins.json": {
+      "sha256": "991823484890a192afded6554c3ae78ba1a1bafb3bf55992bc6d135b8e36f8c0",
+      "bytes": 9233
+    },
+    "hash-inputs.py": {
+      "sha256": "c530d31e77526038d2c79bb6bb569b89ccd42fabdfe4cc0b8b8890956cd9c5cf",
+      "bytes": 2222
+    },
+    "composition.json": {
+      "sha256": "76232b9c699080d925cbe87de5a098b33bf3ff057f7c2549f61b954596387e60",
+      "bytes": 1041
+    },
+    "affected.log": {
+      "sha256": "85d48583c89b86565fd5aa648d9b5f7376f6c7378908189dc68aae7ebbff4ad4",
+      "bytes": 3982
+    },
+    "affected-result.json": {
+      "sha256": "b23ca5beea013b38f4e5c9b5109489ded7769e9a81aab9841f09d70329d761e9",
+      "bytes": 1226
+    },
+    "affected-execution-gap-closure.json": {
+      "sha256": "92862ba2820ff8645d2bb5ac0c8c04d1ed472682aa901ef965f23ab6959f2115",
+      "bytes": 4492
+    },
+    "gate-commands.json": {
+      "sha256": "11cbc3889e4ca16b1b9795312970586292964b644990c4d00f896f0b5eb018be",
+      "bytes": 1196
+    },
+    "collector-error.json": {
+      "sha256": "7734e7fe1eed3075a350b97a78610b8a70a5af917d78a4605096d13b3329d873",
+      "bytes": 347
+    },
+    "piece15-to16-live-exact-input-proof.json": {
+      "sha256": "dcce438942684abbb251f3bc6b9b51bbe63d9ddadeebc433f91fbd4c0b38e98e",
+      "bytes": 598
+    },
+    "build-result.json": {
+      "sha256": "edd7f87d38309b618c493d505077ceb948ce741d256b942fe3dbd3bf38efbe12",
+      "bytes": 1072
+    },
+    "production-source-identity.json": {
+      "sha256": "41ed62dc979e0495d9e3f1791b9f2b237cfe45fe04364faa9b709c926f0655e1",
+      "bytes": 193
+    },
+    "build.log": {
+      "sha256": "2376ff2c17582341e7bdb7505744aa74384a715e86b8705d350ebae481991929",
+      "bytes": 3156
+    }
+  },
+  "limits": [
+    "Root owns actual CUA review, documentation, PR and merge.",
+    "Kitchen BEFORE12:03 and AFTER12:02 clocks differ. Store clocks match12:03. Cached resource counts carry the disclosed LOD history; no GPU memory or sustained FPS claim.",
+    "All tracked and nonignored inputs except docs/artifacts and ignored generated caches are proved exact. Engine/gitlink state is strict.",
+    "Only used Node25.9/npm11.12/Python3.9 stdlibrary/Pillow/NumPy and private dependency code is required for replay. Exact25 non-OS Node linkage/default Blender pins are checked. OS shared libraries are outside byte scope."
+  ],
+  "sharedBrowserUsed": false,
+  "implementationChangesForGates": false,
+  "eachGateRanOnce": true,
+  "affectedExecutionGapClosedByStandardQuick": true,
+  "affectedCollectorLimit": {
+    "actualTestsPassed": {
+      "tests": 39,
+      "pass": 39,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "collectorExit": 1,
+    "underlyingExitNotPersisted": true,
+    "parserRepairOnlyOutsideRepository": true,
+    "successfulAffectedRunNotRepeated": true,
+    "resumeOnly": [
+      "typecheck",
+      "build",
+      "quick"
+    ]
+  }
+}

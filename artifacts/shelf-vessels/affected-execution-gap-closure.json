@@ -1,0 +1,158 @@
+{
+  "status": "PASS",
+  "standaloneAffectedExitCode": null,
+  "standaloneCollectorFailed": true,
+  "standaloneAffectedRunRepeated": false,
+  "closedByOneStandardQuick": true,
+  "quickExitCode": 0,
+  "availableFocusedCountsFromFullQuickRows": {
+    "tests": 39,
+    "passed": 39,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "allFocusedRowsExportCaseCounts": true,
+  "standaloneAffectedSummaryCounts": {
+    "tests": 39,
+    "pass": 39,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "caseCountLimit": "The Node runner does not export case counts for every completed file. The standalone 39/39 summary is retained separately; closure depends on all six measured successful file completions and overall quick exit 0.",
+  "files": [
+    {
+      "file": "tests/three-shelf-vessels.test.mjs",
+      "selectedInStandardQuick": true,
+      "nodeIsolatedFileCompletionPassed": true,
+      "filePassLinePresent": true,
+      "measuredResult": {
+        "file": "tests/three-shelf-vessels.test.mjs",
+        "duration_ms": 770.361208,
+        "success": true,
+        "counts": {
+          "tests": 5,
+          "failed": 0,
+          "passed": 5,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 5,
+          "suites": 0
+        }
+      }
+    },
+    {
+      "file": "tests/three-prop-footprints.test.mjs",
+      "selectedInStandardQuick": true,
+      "nodeIsolatedFileCompletionPassed": true,
+      "filePassLinePresent": true,
+      "measuredResult": {
+        "file": "tests/three-prop-footprints.test.mjs",
+        "duration_ms": 533.386542,
+        "success": true,
+        "counts": {
+          "tests": 3,
+          "failed": 0,
+          "passed": 3,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 3,
+          "suites": 0
+        }
+      }
+    },
+    {
+      "file": "tests/prop-footprints.test.mjs",
+      "selectedInStandardQuick": true,
+      "nodeIsolatedFileCompletionPassed": true,
+      "filePassLinePresent": true,
+      "measuredResult": {
+        "file": "tests/prop-footprints.test.mjs",
+        "duration_ms": 709.527917,
+        "success": true,
+        "counts": {
+          "tests": 5,
+          "failed": 0,
+          "passed": 5,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 5,
+          "suites": 0
+        }
+      }
+    },
+    {
+      "file": "tests/three-sector-world.test.mjs",
+      "selectedInStandardQuick": true,
+      "nodeIsolatedFileCompletionPassed": true,
+      "filePassLinePresent": true,
+      "measuredResult": {
+        "file": "tests/three-sector-world.test.mjs",
+        "duration_ms": 935.523417,
+        "success": true,
+        "counts": {
+          "tests": 15,
+          "failed": 0,
+          "passed": 15,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 15,
+          "suites": 0
+        }
+      }
+    },
+    {
+      "file": "tests/room-dressing-semantics.test.mjs",
+      "selectedInStandardQuick": true,
+      "nodeIsolatedFileCompletionPassed": true,
+      "filePassLinePresent": true,
+      "measuredResult": {
+        "file": "tests/room-dressing-semantics.test.mjs",
+        "duration_ms": 1648.891542,
+        "success": true,
+        "counts": {
+          "tests": 6,
+          "failed": 0,
+          "passed": 6,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 6,
+          "suites": 0
+        }
+      }
+    },
+    {
+      "file": "tests/renderer-furnishings-detail-fixture.test.mjs",
+      "selectedInStandardQuick": true,
+      "nodeIsolatedFileCompletionPassed": true,
+      "filePassLinePresent": true,
+      "measuredResult": {
+        "file": "tests/renderer-furnishings-detail-fixture.test.mjs",
+        "duration_ms": 1357.399084,
+        "success": true,
+        "counts": {
+          "tests": 5,
+          "failed": 0,
+          "passed": 5,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 5,
+          "suites": 0
+        }
+      }
+    }
+  ],
+  "measurement": "Node test runner uses process isolation. Its completed per-file result and FILE PASS line measure successful file completion. A separate numeric exit code for each child is not exported by this runner.",
+  "runnerSource": {
+    "path": "tools/test-runner-lib.mjs",
+    "sha256": "c5b254c2fbb1efb5a6235314591d9bef194ec172613819894e7be61981edf3fd"
+  }
+}

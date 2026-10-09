@@ -1,0 +1,249 @@
+{
+  "identity": {
+    "node": {
+      "version": "v25.9.0",
+      "execPath": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "platform": "darwin",
+      "arch": "arm64",
+      "binarySha256": "32e234a5b6bec67d72a016f2baadf7fadf3afd328470b395b73af473fdee0d85"
+    },
+    "npm": {
+      "version": "11.12.1",
+      "cliPath": "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+      "cliSha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7",
+      "packageRoot": "/opt/homebrew/lib/node_modules/npm"
+    },
+    "python": {
+      "version": "3.9.6",
+      "executable": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+      "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e",
+      "stdlibRoot": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+      "sharedFramework": {
+        "path": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Python3",
+        "sha256": "26422f0b21cb1e07236384afa4043c7401d39d09358c91df8bf3f5496f14712f"
+      }
+    },
+    "host": {
+      "system": "Darwin",
+      "release": "25.6.0",
+      "machine": "arm64",
+      "macVersion": "26.6.2"
+    },
+    "optionalPythonPackages": {
+      "PIL": {
+        "installed": true,
+        "version": "11.2.1",
+        "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL",
+        "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL/__init__.py",
+        "entrySha256": "43828e12947b4bf5ec8f7d1fbceb2f47de311295f8294b15794c1a54fd5f53cd"
+      },
+      "numpy": {
+        "installed": true,
+        "version": "1.26.4",
+        "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy",
+        "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy/__init__.py",
+        "entrySha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+      },
+      "trimesh": {
+        "installed": false
+      }
+    }
+  },
+  "treeDigests": {
+    "webNodeModules": {
+      "capturedRoot": "/tmp/granaderos-piece16-final-candidate/web/node_modules",
+      "fileCount": 42461,
+      "manifestSha256": "1b804d74588845a39a9de49ff81024164c61cf456343b400fc49993580e8530f",
+      "generatedFilesReportedSeparately": 79
+    },
+    "npmDistribution": {
+      "capturedRoot": "/opt/homebrew/lib/node_modules/npm",
+      "fileCount": 1766,
+      "manifestSha256": "b3a658707aff9d3b4450d613b7ed3d3a06668ac0957d532137b2acdd23b92a04",
+      "generatedFilesReportedSeparately": 0
+    },
+    "pythonStdlib": {
+      "capturedRoot": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+      "fileCount": 1637,
+      "manifestSha256": "5cdb702604c414a16c12c7c651f6ab068e204906b4846320542f9844f5194413",
+      "generatedFilesReportedSeparately": 0
+    },
+    "pythonPackage:PIL": {
+      "capturedRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL",
+      "fileCount": 129,
+      "manifestSha256": "07b1fc1ead3e42ac41600335d65c1fe3ab19469953137c739406e39e4adf2c34",
+      "generatedFilesReportedSeparately": 0
+    },
+    "pythonPackage:numpy": {
+      "capturedRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy",
+      "fileCount": 910,
+      "manifestSha256": "dee9359e8d2dd034cb9e4e2160cad7f196133b1437e6611885f45f6bab3cbc9c",
+      "generatedFilesReportedSeparately": 1
+    }
+  },
+  "fullRuntimeManifest": {
+    "path": "/tmp/granaderos-piece16-final-gates-evidence/runtime-seal.json",
+    "sha256": "ed30843275c9e499655f61cdb1a77b7f9b98874b4e93c74affd9f9ab95534ba5",
+    "bytes": 9370744
+  },
+  "scope": "Used executable/dependency code and Python 3.9 standard library/Pillow/NumPy only; OS shared libraries are outside byte scope. Generated caches are excluded.",
+  "linkedRuntimePins": {
+    "capturedUTC": "2026-10-09T05:05:17.747168+00:00",
+    "capturePhase": "Reused exact used Node/Blender pins and verified before piece16 gates; no added runtime scope",
+    "node": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "nonOSLinkedFiles": {
+      "/opt/homebrew/Cellar/node/25.9.0_2/bin/node": {
+        "sha256": "32e234a5b6bec67d72a016f2baadf7fadf3afd328470b395b73af473fdee0d85",
+        "bytes": 68384
+      },
+      "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicuuc.78.3.dylib": {
+        "sha256": "177dab8ae0bf0b1357d7ec6404a1e145bcc3d927aa15c3064171d23b2a1fd263",
+        "bytes": 1866592
+      },
+      "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicudata.78.3.dylib": {
+        "sha256": "e7dafc3fe6613326daa30d1c930aa66219ab5524fe576b0e7b3039451652b6bf",
+        "bytes": 33195120
+      },
+      "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicui18n.78.3.dylib": {
+        "sha256": "f319e50c965a1a0065d2cc5595d8553ff60b0e78a2e76bc3173774fd112de9ed",
+        "bytes": 3168272
+      },
+      "/opt/homebrew/Cellar/openssl@3/3.6.2/lib/libssl.3.dylib": {
+        "sha256": "26ecfd43c742914a142c8b414b1f308cefe0531fcc6e38b6d45021649850e758",
+        "bytes": 884560
+      },
+      "/opt/homebrew/Cellar/openssl@3/3.6.2/lib/libcrypto.3.dylib": {
+        "sha256": "ef2239cec921003b54b61968f00489271e2a2805d7d1b4e69d632423f38efe1e",
+        "bytes": 4845712
+      },
+      "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib": {
+        "sha256": "e2847c4613b386683c234913ae3b7b04299254096caf7616e3b3cd9bb97a39ab",
+        "bytes": 649648
+      },
+      "/opt/homebrew/Cellar/uvwasi/0.0.23/lib/libuvwasi.dylib": {
+        "sha256": "c922288c5179279316b32b2c83d5c50d7b87216b442473ada8c99ef4a58ba312",
+        "bytes": 83232
+      },
+      "/opt/homebrew/Cellar/libuv/1.52.1/lib/libuv.1.0.0.dylib": {
+        "sha256": "34d4e2cd30b56dca5bda539f4448667360f0994c6b337ffebc5d37d818bc15d5",
+        "bytes": 206320
+      },
+      "/opt/homebrew/Cellar/sqlite/3.53.2/lib/libsqlite3.3.53.2.dylib": {
+        "sha256": "9e4ab895749ed559870520a40e4c0ead0ecffb27678e5186b30a6076e6de0b35",
+        "bytes": 1270496
+      },
+      "/opt/homebrew/Cellar/libngtcp2/1.22.1/lib/libngtcp2.16.dylib": {
+        "sha256": "e82462c1d2c68aa714e20e8665a3c35de8ae50e9631f640ceabfd3e41f25feca",
+        "bytes": 346416
+      },
+      "/opt/homebrew/Cellar/libnghttp3/1.15.0/lib/libnghttp3.9.6.1.dylib": {
+        "sha256": "f16407d21bebb61f141026116f304bd02ac9c2c44f7e2aee051293290c8bcd2f",
+        "bytes": 199808
+      },
+      "/opt/homebrew/Cellar/libnghttp2/1.68.1/lib/libnghttp2.14.dylib": {
+        "sha256": "0a5cf2e5ff6052174b8039696bfbcbcf14d972fd51f22cdb85f6426f3b946034",
+        "bytes": 201024
+      },
+      "/opt/homebrew/Cellar/nbytes/0.1.4/lib/libnbytes.dylib": {
+        "sha256": "2ebb8415d537b47420fc46efb6d6271b93befd22b30ad2afba75ab5e2be55fcc",
+        "bytes": 52944
+      },
+      "/opt/homebrew/Cellar/merve/1.2.2/lib/libmerve.1.2.2.dylib": {
+        "sha256": "59516d6964b86b1a0e05434f0676e1820c78ae1603474eb7fc5d74ccfd36488a",
+        "bytes": 97808
+      },
+      "/opt/homebrew/Cellar/simdutf/8.2.0/lib/libsimdutf.33.0.0.dylib": {
+        "sha256": "fec1efa20490244aa3fc102f5629937a144511714b07aa77ab04be0493010671",
+        "bytes": 239856
+      },
+      "/opt/homebrew/Cellar/hdrhistogram_c/0.11.9/lib/libhdr_histogram.6.2.3.dylib": {
+        "sha256": "d1f4ba22087781611f0187787217ffef1ef97b96cd76ff2af3fb600a4434bbb6",
+        "bytes": 75600
+      },
+      "/opt/homebrew/Cellar/c-ares/1.34.6/lib/libcares.2.19.5.dylib": {
+        "sha256": "e5595a0c640a2341e2df5a0fedaa63e7e9afe99b01c9880338064e0746414518",
+        "bytes": 243456
+      },
+      "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib": {
+        "sha256": "32e38a8ab06c8770ea4bfaf11ea324d7bcb6fe5f07eaff9d6260f93984ee6729",
+        "bytes": 653328
+      },
+      "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib": {
+        "sha256": "3426742c78df5c3b523071df603f07f2bb8dea6bd8e65c366a2c6adf2bf0a3ad",
+        "bytes": 167264
+      },
+      "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib": {
+        "sha256": "d7ac1e69b6c443341fb4302de0169d187489d58d8a641c8eadd6db9ca2cd0cbf",
+        "bytes": 87728
+      },
+      "/opt/homebrew/Cellar/simdjson/4.6.1/lib/libsimdjson.33.0.0.dylib": {
+        "sha256": "ce58863124905a82f6689febfe82e73104b5784a0b49f2c4d1a85e2304080893",
+        "bytes": 112768
+      },
+      "/opt/homebrew/Cellar/ada-url/3.4.4/lib/libada.3.4.4.dylib": {
+        "sha256": "a55588fab581b41c9b918f4a5bab044e946091eb72cbed3bc82a8df00db189a2",
+        "bytes": 613248
+      },
+      "/opt/homebrew/Cellar/llhttp/9.3.1/lib/libllhttp.9.3.1.dylib": {
+        "sha256": "84d500746c0e7017b2f2a8cfb001c8788cbb83ca065db126368d1da868ac18c5",
+        "bytes": 95008
+      },
+      "/opt/homebrew/Cellar/node/25.9.0_2/lib/libnode.141.dylib": {
+        "sha256": "a9d4a6ac7ae673af0f40f13dedccf251fa24c4a706c493db215e2490e2254c96",
+        "bytes": 65894560
+      }
+    },
+    "nonOSLinkedFileCount": 25,
+    "nonOSLinkedManifestSha256": "d02d95b54e089f243af954bde9f717f83c752fd92d7a8ac9917c318bf7b9255c",
+    "loadReferenceResolutions": {
+      "@rpath/libnode.141.dylib": "/opt/homebrew/Cellar/node/25.9.0_2/lib/libnode.141.dylib",
+      "/opt/homebrew/opt/llhttp/lib/libllhttp.9.3.dylib": "/opt/homebrew/Cellar/llhttp/9.3.1/lib/libllhttp.9.3.1.dylib",
+      "/opt/homebrew/opt/libuv/lib/libuv.1.dylib": "/opt/homebrew/Cellar/libuv/1.52.1/lib/libuv.1.0.0.dylib",
+      "/opt/homebrew/opt/ada-url/lib/libada.3.dylib": "/opt/homebrew/Cellar/ada-url/3.4.4/lib/libada.3.4.4.dylib",
+      "/opt/homebrew/opt/simdjson/lib/libsimdjson.33.dylib": "/opt/homebrew/Cellar/simdjson/4.6.1/lib/libsimdjson.33.0.0.dylib",
+      "/opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib",
+      "/opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib",
+      "/opt/homebrew/opt/c-ares/lib/libcares.2.dylib": "/opt/homebrew/Cellar/c-ares/1.34.6/lib/libcares.2.19.5.dylib",
+      "/opt/homebrew/opt/hdrhistogram_c/lib/libhdr_histogram.6.dylib": "/opt/homebrew/Cellar/hdrhistogram_c/0.11.9/lib/libhdr_histogram.6.2.3.dylib",
+      "/opt/homebrew/opt/merve/lib/libmerve.1.dylib": "/opt/homebrew/Cellar/merve/1.2.2/lib/libmerve.1.2.2.dylib",
+      "/opt/homebrew/opt/nbytes/lib/libnbytes.dylib": "/opt/homebrew/Cellar/nbytes/0.1.4/lib/libnbytes.dylib",
+      "/opt/homebrew/opt/libnghttp2/lib/libnghttp2.14.dylib": "/opt/homebrew/Cellar/libnghttp2/1.68.1/lib/libnghttp2.14.dylib",
+      "/opt/homebrew/opt/libnghttp3/lib/libnghttp3.9.dylib": "/opt/homebrew/Cellar/libnghttp3/1.15.0/lib/libnghttp3.9.6.1.dylib",
+      "/opt/homebrew/opt/libngtcp2/lib/libngtcp2.16.dylib": "/opt/homebrew/Cellar/libngtcp2/1.22.1/lib/libngtcp2.16.dylib",
+      "/opt/homebrew/opt/sqlite/lib/libsqlite3.dylib": "/opt/homebrew/Cellar/sqlite/3.53.2/lib/libsqlite3.3.53.2.dylib",
+      "/opt/homebrew/opt/uvwasi/lib/libuvwasi.dylib": "/opt/homebrew/Cellar/uvwasi/0.0.23/lib/libuvwasi.dylib",
+      "/opt/homebrew/opt/zstd/lib/libzstd.1.dylib": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib",
+      "/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib": "/opt/homebrew/Cellar/openssl@3/3.6.2/lib/libcrypto.3.dylib",
+      "/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib": "/opt/homebrew/Cellar/openssl@3/3.6.2/lib/libssl.3.dylib",
+      "/opt/homebrew/opt/icu4c@78/lib/libicui18n.78.dylib": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicui18n.78.3.dylib",
+      "/opt/homebrew/opt/icu4c@78/lib/libicuuc.78.dylib": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicuuc.78.3.dylib",
+      "@loader_path/libicudata.78.dylib": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicudata.78.3.dylib",
+      "/opt/homebrew/opt/icu4c@78/lib/libicudata.78.dylib": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicudata.78.3.dylib",
+      "@loader_path/libicuuc.78.dylib": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicuuc.78.3.dylib",
+      "/opt/homebrew/Cellar/openssl@3/3.6.2/lib/libcrypto.3.dylib": "/opt/homebrew/Cellar/openssl@3/3.6.2/lib/libcrypto.3.dylib",
+      "/opt/homebrew/opt/simdutf/lib/libsimdutf.33.dylib": "/opt/homebrew/Cellar/simdutf/8.2.0/lib/libsimdutf.33.0.0.dylib",
+      "@rpath/libbrotlicommon.1.dylib": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+      "/opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+      "/opt/homebrew/opt/node/lib/libnode.141.dylib": "/opt/homebrew/Cellar/node/25.9.0_2/lib/libnode.141.dylib"
+    },
+    "systemSharedLibrariesOutsideFileHashScope": [
+      "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+      "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+      "/usr/lib/libSystem.B.dylib",
+      "/usr/lib/libc++.1.dylib",
+      "/usr/lib/libresolv.9.dylib",
+      "/usr/lib/libz.1.dylib"
+    ],
+    "blenderDefault": {
+      "path": "/Applications/Blender.app/Contents/MacOS/Blender",
+      "binarySha256": "bf5d3ccd1d6094d2da319dca9d9b256902463406440f1843308a2a5f25896de6",
+      "notInvokedByThisRecorder": true
+    },
+    "blenderBinaryMatchesEarlierAcceptedPin": true,
+    "candidateWritten": false,
+    "rootWritten": false,
+    "originalCaptureUTC": "2026-10-09T04:42:03.103318+00:00",
+    "sourcePinReceipt": "/tmp/granaderos-piece15-final-gates-evidence/linked-runtime-pins.json",
+    "beforePiece16AllPinsExact": true
+  }
+}

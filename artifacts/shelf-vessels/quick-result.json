@@ -1,0 +1,40 @@
+{
+  "name": "quick",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+    "run",
+    "test:quick"
+  ],
+  "cwd": "/tmp/granaderos-piece16-final-candidate",
+  "startUTC": "2026-10-09T05:41:36.334123+00:00",
+  "finishUTC": "2026-10-09T06:18:36.040312+00:00",
+  "seconds": 2219.405,
+  "exitCode": 0,
+  "environment": {
+    "GRANADEROS_TEST_CONCURRENCY": "4",
+    "GRANADEROS_BASE_PATH": null,
+    "NODE_ENV": null,
+    "NODE_OPTIONS": null,
+    "CI": null
+  },
+  "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "implementationEditsForGate": false,
+  "reportedFileCount": 901,
+  "reportComplete": true,
+  "summary": {
+    "counts": {
+      "tests": 6856,
+      "failed": 0,
+      "passed": 6856,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "topLevel": 6713,
+      "suites": 0
+    },
+    "duration_ms": 2219076.345083,
+    "success": true
+  },
+  "concurrency": 4
+}

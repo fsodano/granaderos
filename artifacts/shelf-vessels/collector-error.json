@@ -1,0 +1,19 @@
+{
+  "actualTestsPassed": {
+    "tests": 39,
+    "pass": 39,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "collectorExit": 1,
+  "underlyingExitNotPersisted": true,
+  "parserRepairOnlyOutsideRepository": true,
+  "successfulAffectedRunNotRepeated": true,
+  "resumeOnly": [
+    "typecheck",
+    "build",
+    "quick"
+  ]
+}
