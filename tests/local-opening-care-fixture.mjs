@@ -139,6 +139,14 @@ export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor',caregiv
  assert.equal(care.dressingCost,care.dressingsBought*10);assert.equal(care.weaponCost,0);assert.equal(care.workshopCost,0);
  for(const o of rosterFor(s).filter(o=>s.squad.includes(o.id))){assert.equal(s.operativeState[o.id].hp,o.maxHp);assert.equal(s.operativeState[o.id].energy,100);}
  for(const id of earlierDeaths)assert.equal(s.operativeState[id].alive,false,'rest or care cannot restore an actual casualty');
+ assert.deepEqual([...s.squad].sort((a,b)=>a-b),[...field].sort((a,b)=>a-b),'local recovery must retain the same actual living field cohort before restoring its order');
+ if(s.squad.some((id,index)=>id!==field[index])){
+  // A doctor rejoins at the end of a squad after a real finite courier trip.
+  // Restore only the issued formation order through the ordinary squad action.
+  const expected=structuredClone(s);expected.squad=[...field];expected.squads.find(q=>q.id===s.activeSquadId).members=[...field];
+  s=order(s,{type:'squad',ids:field});
+  assert.deepEqual(s,expected,'restoring field order must leave time, cash, health, contracts, supplies and every other campaign record unchanged');
+ }
  assert.deepEqual(s.squad,field,'auxiliary local care must preserve the actual living field cohort');
  return {campaign:saved({campaign:s}).campaign,care};
 }
