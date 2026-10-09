@@ -1,0 +1,232 @@
+# Ordinary stock campaign acceptance — 4 October 2026
+
+This record uses the current default campaign, seed 8, 3,200 pesos, Retiro alone
+and no recruited personnel. The created officer has a legal 550-point profile.
+Every hire, arrival, cache transfer, reload, treatment, journey and battle uses
+ordinary orders. Money, health, ammunition, personnel, ownership, random state
+and successful outcomes are not assigned during the route.
+
+The September fresh-route records retain their original source and figures.
+Current created/hired long-route fixtures declare a separate 32,000-peso funded
+package. Those scenarios do not establish ordinary 3,200-peso acceptance.
+
+The earned checkpoints through Mendoza preparation used the gameplay source based on `0a7bece9`
+(`01fdda9ce685` with the working stock test-suite description). Later gameplay
+fixes need an integrated fresh run; these saved receipts do not establish a
+whole campaign on an untested later source. The scoped Mendoza battle uses the
+integrated `ad4098fd` source, computed identity `af1729372736`; that identity is
+not a claim that the working stock candidate has received a new production build.
+
+## Confirmed checkpoints
+
+| Checkpoint | Actual campaign time | Treasury | Evidence |
+| --- | --- | --- | --- |
+| Opening arrivals | Hour 6 | 2,588 pesos | Five actual paid day hires cost 612 pesos; service begins on arrival and expires at hour 30. |
+| Buenos Aires port opening | Hour 25, second 602 | 10,838 pesos | Actual victory, full town control, physical representative agreement and one midnight payment of 8,000 pesos. The next hour pays nothing extra. |
+| Opening recovery | Hour 53, second 650 | 14,554 pesos | Actual care, donated/found dressings, finite repair materials and contract renewals. |
+| San Nicolás | Hour 84, second 799 | 22,804 pesos | Actual coordinated victory, complete saved replay and settlement. Operative 123 is dead. |
+| San Lorenzo | Hour 216, second 1,127 | 66,330 pesos | Actual victory, complete saved replay and settlement. Operatives 123 and 131 are dead. |
+| Urgent northern aid | Hour 216, second 1,145 | 66,330 pesos | Three physically available dressings and six paid orders stabilize the three actual bleeding survivors. |
+| Stable northern recovery | Hour 677, second 1,255 | 208,124 pesos | 450 actual rest hours, four repair hours spending nine kit points and 8,568 pesos of renewals. All six living members have full health and energy. |
+| Córdoba | Hour 701 | 210,466 pesos | The fresh uncached continuation passes actual battle replay and settlement. |
+| First Córdoba defense | Hour 726, second 2,612 | 213,691 pesos | Actual waiting group 1 is defeated. Its battle wounds and deaths remain in the official save. |
+| Recovery-time Córdoba defense | Hour 870, second 2,656 | 258,021 pesos | From the earned first-defense save, ordinary fortification costs 300 pesos. Actual group 2 interrupts rest and loses a real five-turn battle with 135 actions. |
+| Tucumán preparation | Hour 1,283, second 2,672 | 365,883 pesos | The accepted second defense restarts care with its actual survivors. Four wounded survivors complete 396 real rest hours; every earlier casualty remains dead. |
+| Tucumán | Hour 1,283, second 2,738 | 366,133 pesos | Actual eight-turn victory with 334 actions, deterministic replay, official save and settlement. No new player death occurs in this battle. |
+| Salta | Hour 1,332, second 93 | 378,614 pesos | From the earned Tucumán save, ordinary contract extensions retain the intended force. Existing cautious combat orders win in fourteen turns, 431 actions and 99 seconds. Paz is dead; ten actual local survivors remain. |
+| Yatasto | Hour 1,339, second 199 | 378,194 pesos | The scoped continuation uses Azurduy as an actual local envoy. Ordinary posta travel, a paid Silva renewal and the northern agreement cost 420 pesos. All ten survivors retain their exact health and equipment; all sixteen earlier deaths remain. Official save and deterministic replay pass. |
+| Mendoza staged | Hour 1,426, second 1,746 | 384,506 pesos | From the earned pre-ammunition Cuyo save, the stock-only preparation preserves 27 native weapons and supplies twelve compatible rounds per actual participant. An actual courier brings 27 rounds from known Tucumán bodies. All sixteen earlier deaths remain. The accepted paired save issues the assault; this is not a battle victory. |
+| Mendoza | Hour 1,426, second 1,861 | 384,756 pesos | The exact prepared assault wins on integrated source in eleven turns, 609 actions and 115 seconds. All 651 recorded orders replay and official settlement passes. Seven deployed soldiers and Barcala die; five survivors still need urgent care. |
+| Mendoza and rural first aid | Hour 1,427, second 2,039 | 384,756 pesos | A distinct ordinary medical-assignment plan stabilizes all five survivors. Two hourly dressings and five paid tactical strokes consume seven existing dressings. All 24 earlier deaths remain; exact saves and the complete 24-order replay pass. |
+| Foundry organization | Hour 1,427, second 2,128 | 384,106 pesos | From the accepted first-aid save, actual local delegates meet living Beltrán and pay 500 pesos for the foundry and 150 for emancipation. Barcala remains dead. One deliberate specialist release returns every actual carried item; official save and deterministic function replay pass. |
+
+Stable rest uses the game's existing one-health-per-six-hours rule. It requires
+conscious, uncaptured people with no bleeding. The recovery bound comes from
+their actual wounds. The recovery preserves ammunition, dressing counts and
+earlier deaths. Its treasury is exactly 64,692 + 19 × 8,000 − 8,568 pesos;
+the paid time and renewals remain part of the campaign.
+
+Hourly mechanical work restores actual wear using finite materials. It does not
+clear an ignition failure. A loaded jammed gun receives an ordinary paid reprime
+before departure, preserving its ammunition. Collection can advance the clock,
+so a repair worker and target are selected again from their current condition.
+
+The optional old commander top-up before northern body discovery was removed.
+That approach now retains his actual worn weapon and equipment. It does not
+require perfect condition or a free repair.
+
+## Remaining acceptance
+
+The fresh uncached run passes Córdoba and its subsequent defense. A scoped
+continuation from that earned official save now passes recovery, a second real
+defense and Tucumán. Its relief plan exposed two separate test-helper errors:
+the cache approach chose a roof coordinate above a ground chest, and the courier
+requested twenty extra dressings despite already owning eighteen. The corrected
+ground approach passes actual collection and four focused checks. The delivery
+now uses twenty owned dressings in total, including a real two-dressing donation
+from Quiroga. Córdoba's existing gun reaches Tucumán with its loaded charge and
+six reserves unchanged.
+
+The relief plan now explicitly renews its intended supporters during the nested
+gun transport waits. A focused three-gun test proves actual paid extensions for
+a named remote reserve, exact expiry seconds, unchanged health and charges,
+normal expiry when retention is omitted, and deterministic saved replay.
+
+The first Salta tactic wins but loses the three provincial officers. The
+existing cautious tactic wins a shorter battle and keeps Quiroga and Azurduy
+alive, while Paz remains dead. It leaves ten actual survivors in Salta, all
+stable; Quiroga retains his real fifteen-health wound. An earlier helper forced
+Paz to carry the agreement. Yatasto's public mission rules accept
+an actual capable speaker in Tucumán through ordinary observed adjacent
+conversations. They do not require actor eleven. The corrected mission helper
+selects Azurduy, checks every actual acute survivor before waits and retains
+serving paid contracts at their exact expiry seconds. This accepted checkpoint
+has no bleeding, so it needs no aid or new equipment. The generalized acute-care
+branch received a source review but has not been exercised by this checkpoint.
+These scoped results do not replace a fresh run of the whole final candidate.
+
+The unchanged scoped Cuyo continuation from the earned Yatasto save passes
+finite hospital care and two actual gun shipments. It stops before Mendoza:
+actor 101 lacks three musket rounds for the helper's twelve-round target. This
+is an actual finite shortage after the available depot, known loot and cache
+paths are exhausted. The failed attempt emitted no full failure-state save;
+its numeric reports do not establish an accepted Cuyo checkpoint.
+
+Read-only state reports then preserve the actual assembly and pre-ammunition
+checkpoint. The old rearm step converts useful native pistols and shotguns to
+muskets without matching that force to finite ammunition. The stock-only plan
+retains native guns and the existing twelve-round target for all 27 soldiers.
+Actual off-family carried pistol rounds enter the local depot through ordinary
+store orders. Courier Güemes makes a four-hour trip each way and collects
+12 + 12 + 3 musket rounds from known Tucumán bodies, leaving twenty of the
+original forty-seven. He returns and stores those actual rounds. The 29 loaded
+charges in unused local guns and both recovered bronze pieces remain intact.
+
+The scoped preparation passes on the original gameplay source and creates an
+official paired Mendoza assault save. Fifteen paid renewals retain exact
+expiry seconds and cost 9,217 pesos. Its treasury is exactly
+385,793 + 8,000 port income − 9,217 renewals − 20 courier travel − 50 assault
+approaches = 384,506 pesos. Immediate queued orders report no debit; the actual
+posta fee is paid during journey advancement. Health, native gun/load metadata,
+condition, dressings and non-ammunition equipment remain unchanged. Independent
+source and saved-state review pass. This proves preparation only.
+
+The exact prepared assault then runs on main's merged roof-defense source.
+Ordinary entry equals the saved initial battle; the existing battery controller
+wins in eleven turns with 609 actions and 115 actual seconds. All 651 recorded
+orders replay, the terminal battle/campaign pair passes official save validation,
+and settlement adds the ordinary 250-peso victory payment. No army, health,
+cartridges, seeds or successful outcomes are recreated or assigned.
+
+The seven new deployed soldier deaths are 136, 119, 103, 140, 113, 141 and 8.
+An accidental actual shot by 108 also kills Barcala (7). This is eight
+new campaign deaths, not seven; all sixteen earlier casualties persist. Twenty
+deployed soldiers survive and none is captured. The physical ammunition ledger
+retains 280 rounds on people and bodies and six in original dropped guns, from
+324 before combat: 38 actual charges were consumed. Nine paid dressing strokes
+spend nine of the 48 carried dressings. Eight actual bronze-gun shots leave
+both pieces loaded, with three and one reserve charges respectively.
+
+Five actual survivors remain acute after settlement. Mendoza patients 122 and
+129 have 8 and 7 health with four bleeding each. Routed survivors 127, 144 and
+9 are in neutral `cell-6-24`, with 20/16/53 health and 4/4/2 bleeding. Strategic
+care is unavailable in that neutral cell; its three people carry only one
+dressing. Finite local aid or lawful travel must resolve all five before a
+global recovery or funding wait is accepted.
+
+A separate first care trial chooses medic 146 for local patients 122 and 129.
+His ordinary nineteen-cell approach takes 59 seconds. Both patients die from
+their actual bleeding before the dressing can be applied. The doctor still
+owns both dressings; cash and firearm seed are unchanged. The four accepted
+orders replay and the official active pair retains both deaths at hour 1,426,
+second 1,921. Its return settlement is pending. This failed care branch does
+not establish recovery or replace the immutable Mendoza settlement above.
+The rural survivors have not been visited or treated in this trial.
+
+The accepted alternative starts from the immutable Mendoza settlement. Doctors
+146 and 107 spend one real medical-assignment hour and two owned dressings to
+stop the two local critical bleeds before any tactical approach. The three
+rural patients lose one actual health each during that hour. The doctor then
+collects four of the six known dressings on body 136 through ordinary field
+orders. Two local and three rural manual strokes cost 100 clinical action
+points and five dressings. Reaching the rural patients uses Mendoza's actual
+northern boundary; no location, control or patient is assigned.
+
+This alternative ends at hour 1,427, second 2,039 after one hour and 178 field
+seconds. Patients 122/129/127/144/9 have 15/15/19/15/50 health and no bleeding;
+Quiroga's additional two-point field loss remains. Living dressing stock falls
+from 29 to 26 and body 136 from six to two: the combined stock spends exactly
+seven. All 24 prior deaths, contracts, nonmedical gear, firearm ammunition and
+gun records remain exact. The complete 24-order replay and official saves pass
+after lossless expansion of the saved cell scene. This scoped result does not
+establish full recovery or the later campaign.
+
+The reusable stock-only helper then derives its doctor and finite supply
+choices from that same immutable settlement. It completes 32 ordinary orders
+at hour 1,427, second 2,037 with the same five final health and bleeding values,
+the same cash and the same seven-dressing clinical cost. Doctors 146 and 139
+provide the actual hourly work. The courier collects four existing dressings
+from two known enemy sources and body 136. A complete saved-order replay and
+a second complete helper execution agree; every tactical order also agrees
+with the presented executor. The helper preserves all 24 prior deaths and the
+actual contracts, firearm ammunition and nonmedical equipment. This separate
+receipt verifies the reusable policy; it does not replace the earlier distinct
+care trials or prove a fresh full campaign on the final working candidate.
+After independent review, accepted orders are recorded before the post-action
+safety check, so an interrupted run retains its final valid action. The full
+successful helper proof passes again with that reporting correction.
+
+The public campaign requires living engineer Beltrán (2) and commander San
+Martín (57), not Barcala. Both remain alive. The test route's fixed Barcala
+foundry recruiter and trainer choices now use actual eligible surviving
+leaders. The scoped foundry continuation selects actual delegates in Mendoza,
+meets Beltrán and pays the ordinary 650 pesos for the two projects. Beltrán
+joins with his actual 76 health; Barcala stays dead and unrecruited. The helper's
+deliberate release of costly specialist 142 returns his exact rifle and loaded
+charge, ten spare rounds, bayonet, clothing and carried supplies to the local
+service-return inventory. The two recovered gun records remain unchanged.
+Official save and deterministic function replay pass at hour 1,427, second
+2,128, with 384,106 pesos. This does not prove training, army funding, the
+mountain column or the ending. Their remaining fixed-person assumptions still
+need actual eligible leaders and troops.
+
+The same foundry helper also passes independently from the reusable care
+helper's accepted save. It ends at hour 1,427, second 2,064 with 384,106 pesos,
+the actual living engineer, dead Barcala, all 24 prior deaths and the same exact
+specialist property return. Official save and complete function replay agree.
+These two foundry receipts retain their distinct medical predecessors.
+
+A read-only audit finds two remaining mountain-helper assumptions. Uspallata
+still selects dead Barcala's squad before any travel; the actual local leaders
+must be selected by role. Los Patos assumes eight fixed deployment IDs and two
+fixed dressing recipients with at least 60 medical skill. The current surviving
+force does not establish that composition. Its next real preparation must
+select compatible living roles and transfer only their actual finite dressing
+deficits. Funding, rest, hiring arrivals and nested gun journeys must also
+retain the intended force through its exact expiry seconds. These are open
+helper corrections, not proved mountain journeys or victories.
+
+Cuyo, all thirteen controlled localities, saved victory
+and the subsequent 48 hours of actual service expiry and agreed port payments
+remain unproved. A coastal or recovery checkpoint does not establish the full
+ending.
+
+Before the subsequent mission-helper edits, the complete short suite passed
+4,884 checks across all 700 selected files, with no failures or skips. The final
+unchanged candidate must pass again before publication. The independent
+eight-file helper batch was merged in [PR #164](https://github.com/fsodano/granaderos/pull/164).
+Its complete short suite passed 4,884/4,884 tests across 700/700 files with no
+failures, cancellations or skips. The tested and merged tree is
+`e6bcae961c602935280f5ed9cd450fdda99fae9d`; merge commit
+`e4147b09e6f251d0c92ae1dbdc6fcd7683914aa1`. That batch does not contain the
+broader stock-ending fixtures or establish the full ending. Cannon and map
+presentation remain with the separate 3D work.
+The subsequent [PR #165](https://github.com/fsodano/granaderos/pull/165) corrects
+guerrilla defense to use the occupied surface's cover. Its complete short suite
+passes 4,885/4,885 checks across 700/700 files, with no failures or skips; the
+tested and merged tree is `f26ca1d40d099b9dcb60346ecfa4c37c5921b545`, merge
+`ad4098fdcd5ba26b7c1d48d819b0dbf9039e41c4`. Its affected, type, production-build
+and audit gates pass. Those results cover that isolated batch, not the later
+working stock fixtures or the full ordinary campaign.
+Full-video acceptance, wider personality behavior, quest choices and physical
+model refinement remain open in the [video requirements](ja2-video-review-2026-10-03.md).

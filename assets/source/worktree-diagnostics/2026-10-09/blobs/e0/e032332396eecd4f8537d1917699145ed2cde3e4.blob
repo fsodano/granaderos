@@ -1,0 +1,28 @@
+# Independent shoulder-pad V3 review
+
+Recommendation: accept V3 as a bounded cap topology and normal repair. Do not describe it as a complete shoulder fit correction.
+
+The matched actual idle renders show that the dark hole in the upper red cap is gone. The inspected V3 rifle-aim and backhand-contact head crops also show a continuous cap. The pointed front-inner notch remains; it was present before V3.
+
+## Source cause and safe scope
+
+The native ellipsoid generator winds the cap faces inward. Both source caps have signed volume -0.000082241 m³ before cleanup and +0.000082241 m³ after. Each has two groups of 28 coincident pole vertices. Those duplicates have identical bone weights and no UV layer. Welding changes 308 vertices to 254 without moving any surviving coordinate. Face-normal recalculation and outward winding therefore correct a real topology/normal defect.
+
+This is not strictly normals-only: pole welding changes topology, and subsequent decimation produces 180 rather than 200 triangles per cap. The helper affects only Crimson_Epaulette_l/r. It does not require a general ellipsoid rewrite or any face, hand, body, or animation change.
+
+An independent triangle-payload comparison of the final Granadero LOD0 exports finds 13,533 identical triangles within Tailored_Coat. All 400 removed and 360 added triangles lie within the two cap bounds. The comparison includes all vertex attributes (positions, normals, UVs, colors, joint indices and weights), independent of vertex ordering. The parent's six-body receipt separately confirms unchanged other meshes, native rig, materials and images.
+
+## Remaining dent
+
+The source uses a flat ellipsoid with radii 43 × 59 × 8 mm, positioned from one downward shoulder ray. The underlying coat curves upward toward the neck. A dense upper-cap sample detects coat surface above that cap by up to 12.2 mm in rest. With exact current exported idle skin matrices at 0.5 s, the visible right cap has up to 13.1 mm vertical cover and the left cap 17.3 mm. Source and exported shoulder joint positions agree within 0.001 mm in this probe.
+
+This is vertical surface cover, not a penetration-depth metric. Some inner pad overlap is expected under the board. It nevertheless explains why a cut-shaped cap/coat boundary remains after the inward normals are fixed. The pad, board and trim use one 65% clavicle / 35% upper-arm weight mix; the coat has its native local weight blend. Their relative fit can therefore change with movement.
+
+A separate bounded follow-up should fit the pad and board underside to a local, smooth coat envelope, preserve padding thickness and the attached trim, and inspect idle plus raised-arm poses. Do not raise the whole assembly or deform the body to hide the notch. V3 can stand on its own while that fit remains unfinished.
+
+## Evidence and limits
+
+- `source-surface-probe.json`: native pole, winding, positions, and upper-cap/coat measurements.
+- `coat-triangle-proof.json`: actual Granadero LOD0 before/after triangle payload check.
+- Reviewed actual images: before-idle and after-v3-idle `granadero/stand.idle.unarmed.sample-1.face.png`; after-v3-motion `granadero/stand.aim.long-gun.phase-2.head.png` and `granadero/stand.slash.blade.backhand.contact.head.png`.
+- No shared source or assets were changed. This is not an all-action clearance audit. I did not independently render every LOD or every Royalist pose.

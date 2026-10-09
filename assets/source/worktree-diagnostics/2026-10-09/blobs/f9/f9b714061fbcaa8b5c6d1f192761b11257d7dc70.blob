@@ -1,0 +1,78 @@
+# Six-outfit clothing review
+
+Frozen current main `37fdbf8f`. Accepted faces are included. **18 actual LOD0 frames**: rest at 0.500 s, run at 0.192 s, and pickup reach at 0.700 s. The same isometric camera, lighting and calibrated light skin palette are used. No shared file or asset was changed.
+
+Open [the complete matrix](index.html). Each sheet links to original 800 × 800 frames. These are actual exported model renders; no AI image edits or appearance retouching.
+
+## Priority findings
+
+### P1 C1 — friar, woman-shawl
+
+The upper skirt/habit edge rises away from the bent torso as an open circular rim. Dark inside faces and the underlying upper garment are visible. Large fan-shaped folds stack behind the legs. This is an attachment/deformation defect at this sampled pose.
+
+Scope: Visible surface separation; no claim of bare skin penetration. Next check: Check the actual waist join and skin weights through the standing pickup descent. Verify whether a task-driven cloth corrective is required.
+
+[Image 1](reach/friar/stand.gesture.pickup.sample-1.png) [Image 2](reach/woman-shawl/stand.gesture.pickup.sample-1.png)
+
+### P2 C2 — gaucho
+
+The rear poncho lies across the raised back like a rigid sheet. One side strip projects almost horizontally behind the upper arm, with a large dark opening below it. The rest hem also has sharp repeated points.
+
+Scope: Rigid-looking shape in this frame; a poncho side opening alone is not proof of a hole. Next check: Inspect the free side/rear panel weights and hang direction under forward lean, keeping the intended arm opening.
+
+[Image 1](reach/gaucho/stand.gesture.pickup.sample-1.png) [Image 2](rest/gaucho/stand.idle.unarmed.sample-1.png)
+
+### P2 C3 — royalist, surgeon
+
+Rear coat tails rotate upward above the hips and end in thin curled tips. They read as stiff attached plates, with no cloth hanging below the hip in this deep lean.
+
+Scope: Visible panel silhouette at one pose, not a full-cycle rigidity test. Next check: Inspect the tail attachment and free-end deformation against the actual hip/spine bend.
+
+[Image 1](reach/royalist/stand.gesture.pickup.sample-1.png) [Image 2](reach/surgeon/stand.gesture.pickup.sample-1.png)
+
+### P2 C4 — woman-scout
+
+The white rear belt/waist edge becomes an uneven raised strip with a sharp protruding end at the right hip. The green back shows large outlined panel ridges in the deep lean.
+
+Scope: Visible raised edge; the image does not prove a through-hole. Next check: Check the belt-to-shirt support and seam weights in this pose before adding fold detail.
+
+[Image 1](reach/woman-scout/stand.gesture.pickup.sample-1.png)
+
+### P3 C5 — friar, woman-shawl
+
+The long hems deform into large repeated zigzag/accordion lobes around the advancing and trailing legs. The silhouettes avoid an obvious bare-leg breakthrough in this frame but still look coarse and mechanically folded.
+
+Scope: Silhouette assessment at one run phase only. Next check: Review the opposite run phase and the skirt-to-leg weighting before changes to material detail.
+
+[Image 1](run/friar/stand.run.unarmed.sample-1.png) [Image 2](run/woman-shawl/stand.run.unarmed.sample-1.png)
+
+### P3 C6 — royalist, surgeon, woman-scout
+
+The torso and sleeves remain broad, smooth body-shaped volumes. Narrow raised seams and hard collars provide most of the detail; the elbows show little cloth compression in the run sample. The Surgeon cravat reads as a round hard button at this scale.
+
+Scope: Art/shape limitation, not a proved intersection or motion defect. Next check: Use the accepted independent garment construction approach for broad panel ease and elbow compression; do not use more small noise as a substitute.
+
+[Image 1](sheets/royalist.png) [Image 2](sheets/surgeon.png) [Image 3](sheets/woman-scout.png)
+
+## Outfit matrix
+
+| Outfit | Rest | Run sample | Reach sample |
+|---|---|---|---|
+| Royalist | Smooth uniform; hard collar and raised trim. No obvious exposed body in this frame. | Sleeves remain smooth at bent elbows. | Upturned, thin coat tails (C3). |
+| Gaucho | Sharp pointed poncho folds/hem. | Side opening and rear strip retain a stiff shape. | Large rear sheet and projecting side flap (C2). |
+| Friar | Light angular chest patches need a separate material/overlap check. | Coarse skirt lobes (C5). | Open waist rim and folded skirt fan (C1). |
+| Surgeon | Smooth coat; cravat reads as a hard button. | No clear new hole in this view; sleeves remain smooth. | Upturned coat tails (C3). |
+| Scout | Smooth shirt/trousers with narrow raised seam. | No clear body breakthrough in this frame. | Uneven raised waist/belt edge (C4). |
+| Shawl | Shawl front edge is sharply cut; no clear bare-body breakthrough. | Coarse skirt lobes (C5). | Large open skirt waist rim and underlying shirt exposure (C1). |
+
+## Runtime link and limits
+
+`ActorRuntime.poseCloth` and the review renderer select cloth shapes from the declared posture. `stand.gesture.pickup` is marked standing, although its mid-pose bends the body deeply. At 0.700 s, both `cloth_prone` and `cloth_crouched` are zero for all six renders. A task-depth cloth correction is a possible missing path; this review does not prove that it alone will fix the geometry.
+
+This is a bounded visual matrix, not an all-motion or all-LOD acceptance. Only one run phase and one reach phase were inspected. No numerical penetration sweep, crossfade or weapon-contact check was run. Dark gaps and lighter patches are not automatically classified as skin showing through. The frame JSON files record exact body, bank, equipment, texture, renderer and runtime hashes.
+
+- [Input pins](pins.json)
+- [Structured findings](findings.json)
+- [Rest frame records](rest/index.json)
+- [Run frame records](run/index.json)
+- [Reach frame records](reach/index.json)

@@ -1,0 +1,14 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import assert from 'node:assert/strict';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign} from '../game/campaign.js';
+import {fightNorthernSector} from '../tests/northern-route.mjs';
+import {cautiousCombatOrder} from '../tests/cautious-driver.mjs';
+const start=decodeSave(readFileSync('/tmp/granaderos-stock-ending/tucuman-rest-interrupted.save.json','utf8')).campaign;
+const issued=dispatchCampaign(start,{type:'respondToEncounter',groupId:start.pendingEncounter.groupId,choice:'tactical'});
+assert.equal(issued.lastError,null,issued.lastError);
+const result=fightNorthernSector(issued,'cordoba',{controller:cautiousCombatOrder,report:record=>console.log(JSON.stringify(record))});
+for(const [id,r] of Object.entries(start.operativeState))if(!r.alive)assert.equal(result.campaign.operativeState[id].alive,false);
+writeFileSync('/tmp/granaderos-stock-ending/recovery-defense.save.json',encodeSave(result.campaign));
+writeFileSync('/tmp/granaderos-stock-ending/recovery-defense.note.json',JSON.stringify(result.summary,null,2));
+console.log(JSON.stringify({done:true,hour:result.campaign.hour,second:result.campaign.secondOfHour,treasury:result.campaign.resources.treasury,dead:Object.entries(result.campaign.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id))}));

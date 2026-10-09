@@ -1,0 +1,42 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {freshCuyoRoute} from '../tests/fresh-cuyo-fixture.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {rosterFor} from '../game/campaign.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {ammoTypeFor,ammoStock} from '../game/ammo-types.js';
+import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
+const directory='/tmp/granaderos-stock-ending',source=`${directory}/cautious-yatasto-completed.save.json`,earned=decodeSave(fs.readFileSync(source,'utf8')).campaign,original=structuredClone(earned),events=[];
+let lastCheckpoint=null;
+function ammunitionSummary(c){
+ const roster=rosterFor(c),owners=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured).map(id=>{
+  const op=roster.find(op=>op.id===id),r=c.operativeState[id],unit=carriedAmmunition(op,r);
+  return {id,location:r.location,hp:r.hp,bleeding:r.bleeding,condition:r.condition,weapon:unit.weapon,weaponDropped:unit.weaponDropped??false,family:ammoTypeFor(unit),loaded:unit.loaded,stock:ammoStock(unit),packedWeapons:Object.entries(unit.inventory??{}).filter(([,v])=>v.weapon).map(([key,v])=>({key,weapon:v.weapon,count:v.count,loaded:v.loaded??0,condition:v.condition})),expiresAt:c.contracts[id]?.expiresAt,expiresSecond:c.contracts[id]?.expiresSecond??0};
+ });
+ const sites=[];
+ for(const [sector,state]of Object.entries(c.sectors).filter(([,state])=>state.owner==='patriot'))for(const site of sectorInventorySites(c,sector)){
+  const id=owners.find(o=>o.location===sector&&o.hp>=15)?.id,model=sectorInventoryModel(c,site.id,roster,id),rows=model.entries.flatMap(row=>{const stack=JSON.parse(row.expected);return stack.kind==='ammunition'||stack.weapon?[{sourceKey:row.key,kind:row.kind,reachable:row.reachable,item:stack.item,ammoType:stack.ammoType,count:row.count,weapon:stack.weapon,loaded:stack.loaded??0,condition:stack.condition}]:[];});
+  if(rows.length)sites.push({sector,site:site.id,actor:id??null,reason:model.reason,rows});
+ }
+ const summary={owners,depots:structuredClone(c.ammunitionStores),sites};
+ const totals=Object.fromEntries(sites.map(site=>[site.site,site.rows.reduce((out,row)=>{if(row.ammoType)out[row.ammoType]=(out[row.ammoType]??0)+row.count;return out;},{})]));
+ return {summary,concise:{owners:owners.map(({packedWeapons,...o})=>({...o,packedWeapons})),depots:c.ammunitionStores,knownSourceTotals:totals,knownWeaponCounts:Object.fromEntries(sites.map(site=>[site.site,site.rows.filter(row=>row.weapon).reduce((n,row)=>n+row.count,0)]))}};
+}
+const brief=c=>({hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,phase:c.phase,location:c.location,squad:c.squad,pendingBattle:c.pendingBattle?.id??null,pendingEncounter:c.pendingEncounter,dead:Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id)),living:c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured).map(id=>({id,location:c.operativeState[id].location,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding,medkits:c.operativeState[id].medkits,expiresAt:c.contracts[id]?.expiresAt,expiresSecond:c.contracts[id]?.expiresSecond??0}))});
+function checkpoint(stage,campaign,notes){
+ const name=stage.replace(/[^a-zA-Z0-9_-]/g,'_'),request=campaign.pendingBattle;
+ const battle=request?enterSector(request,request.sceneId?campaign.sceneStates?.[request.sceneId]:campaign.sectorStates?.[request.sector]):null;
+ const encoded=encodeSave(campaign,battle),restored=decodeSave(encoded);assert.deepEqual(restored.campaign,campaign);assert.deepEqual(restored.battle,battle);
+ const path=`${directory}/cautious-cuyo-${name}.save.json`;fs.writeFileSync(path,encoded);if(notes)fs.writeFileSync(`${directory}/cautious-cuyo-${name}.notes.json`,JSON.stringify(notes,null,2));lastCheckpoint=path;console.log('CHECKPOINT',JSON.stringify({stage,path,...brief(campaign)}));
+}
+console.log('START',JSON.stringify({source,...brief(earned)}));checkpoint('start',earned);
+try{
+ const result=freshCuyoRoute({northernCheckpoint:earned,routeKind:'stock',onCheckpoint:checkpoint,report:event=>{
+  const {campaign,...publicEvent}=event;events.push({...publicEvent,...(campaign?{state:brief(campaign)}:{})});console.log('EVENT',JSON.stringify(events.at(-1)));
+  if(campaign){checkpoint(`event-${events.length}-${event.event??'state'}`,campaign);if(['createdCuyoAssembled','createdMendozaAmmunition'].includes(event.event)){const ammo=ammunitionSummary(campaign);fs.writeFileSync(`${directory}/cautious-cuyo-${event.event}.ammo.json`,JSON.stringify(ammo.summary,null,2));console.log('AMMO',JSON.stringify({stage:event.event,...ammo.concise}));}}
+ }});
+ assert.deepEqual(earned,original);checkpoint('complete',result.campaign,result.notes);fs.writeFileSync(`${directory}/cautious-cuyo-result.notes.json`,JSON.stringify(result,null,2));console.log('DONE',JSON.stringify(brief(result.campaign)));
+}catch(error){
+ assert.deepEqual(earned,original);fs.writeFileSync(`${directory}/cautious-cuyo-failure.note.json`,JSON.stringify({source,lastCheckpoint,error:error.stack,events},null,2));console.error('FAILURE',JSON.stringify({lastCheckpoint,error:error.stack}));process.exitCode=1;
+}

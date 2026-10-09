@@ -1,0 +1,8 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {prepareFreshTucumanAssault} from './fresh-campaign-route-diagnostic.mjs';
+const start=decodeSave(readFileSync('/tmp/granaderos-stock-ending/cordoba-defense.save.json','utf8')).campaign;
+const prepared=prepareFreshTucumanAssault(start,{recovery:'rest',report:record=>console.log(JSON.stringify(record))});
+writeFileSync('/tmp/granaderos-stock-ending/tucuman-prepared.save.json',encodeSave(prepared,enterSector(prepared.pendingBattle,prepared.sectorStates.tucuman)));
+console.log(JSON.stringify({prepared:true,hour:prepared.hour,treasury:prepared.resources.treasury}));

@@ -1,0 +1,20 @@
+# Repaired receiver: ordinary first-strike review
+
+All eight paired ordinary routes pass on pinned current original ActorRuntime 672f9272 and repaired worker receiver 0aaf1689 with composed consumer 474212b4. Each worker first prepare/contact installs the original exact fitted plan. No original-admission call occurs during those ready phases; impact/recovery delegates to the original helper as intended. All 13 actors are loaded. The same Chrome process alternates original and worker routes; no additional idle wait, state injection, saved-state edit, private renderer read, free turn, or changed paid clock is used.
+
+Each action spends exactly 4 displayed PA, changes target health once from 100 to 82, and retains current cells, owned Brown Bess, one charge, and 12 reserve cartridges. Errors are empty; all pinned source and served native body/equipment/bank bytes remain exact.
+
+| Route | Original maximum RAF gap | Repaired worker maximum RAF gap | First prepare fit | First contact fit | Worker long tasks |
+| --- | ---: | ---: | ---: | ---: | --- |
+| male cardinal | 116.7 ms | 66.6 ms | 28.2 ms | 19.2 ms | 84 ms |
+| male diagonal | 233.3 ms | 83.3 ms | 33.0 ms | 19.3 ms | 86 ms |
+| female cardinal | 116.6 ms | 66.7 ms | 25.9 ms | 18.5 ms | None |
+| female diagonal | 183.3 ms | 83.3 ms | 29.2 ms | 18.3 ms | None |
+
+Initial readiness finishes 231–709 ms before the ordinary Enter input through normal inventory, movement and camera controls. Initial snapshot costs 2.8–3.7 ms; delivery costs 5.8–7.0 ms; worker jobs cost 126.6–252.4 ms. New post-recovery prewarm jobs on diagonal routes are recorded separately and are not first-strike readiness evidence.
+
+This is a development-server measurement on the actual host workload recorded in report.json. First current admission still costs 25.9–33.0 ms and paid frame gaps still reach 66.6–83.3 ms; male routes contain 84/86 ms long tasks. These results establish a bounded improvement, not sustained 60 FPS or complete motion polish. Immediate/unready/stale/failed cues retain original synchronous physical admission and can retain its first-fit hitch.
+
+The preceding report failed only because a recorder assertion counted the intended original recovery delegation as a readiness miss. It remains retained at ../paired-native-original-fallback-no-idle/report.json. The corrected recorder limits that assertion to prepare/contact; the game source was not changed.
+
+Source: /tmp/granaderos-rifle-raf-responsiveness-review/worker-native-original-fallback-identity-review. Report: /tmp/granaderos-rifle-raf-responsiveness-review/evidence/paired-native-original-fallback-no-idle-v2/report.json. Exact 55-check installed-source regression: /tmp/granaderos-rifle-original-fallback-installed-check.log.

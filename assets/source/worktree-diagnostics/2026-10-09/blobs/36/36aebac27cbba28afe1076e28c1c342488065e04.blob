@@ -1,0 +1,35 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {syncBattleTime} from '../game/time.js';
+import {fight} from '../tests/opening-driver.mjs';
+import {fightNorthernSector} from '../tests/northern-route.mjs';
+import {coastalBatteryController} from '../tests/coastal-command-driver.mjs';
+import {unitAmmunitionByType,addAmmoCounts} from '../game/physical-ammunition.js';
+import {repairMaterialPoints} from '../game/repair-materials.js';
+const directory='/tmp/granaderos-stock-ending',source=`${directory}/stock-mendoza-prepared.save.json`,identity=await buildIdentity(process.cwd());
+const originalPair=decodeSave(fs.readFileSync(source,'utf8')),original=structuredClone(originalPair),campaign=originalPair.campaign;
+const initial=enterSector(campaign.pendingBattle,campaign.sectorStates.mendoza);
+assert.deepEqual(initial,originalPair.battle,'ordinary issued entry must match the official saved initial battle');
+const totals=b=>b.units.filter(u=>u.side==='player').reduce((s,u)=>{addAmmoCounts(s.ammunition,unitAmmunitionByType(u));s.dressings+=u.medkits??0;s.repairPoints+=repairMaterialPoints(u);return s;},{ammunition:{},dressings:0,repairPoints:0});
+const people=b=>b.units.filter(u=>u.side==='player').map(u=>({id:u.id,hp:u.hp,maxHp:u.maxHp,bleeding:u.bleeding,bandaged:u.bandaged,energy:u.energy,morale:u.morale,routed:u.routed??false,unconscious:u.unconscious??false,weapon:u.weapon,condition:u.condition,loaded:u.loaded,ammunition:unitAmmunitionByType(u),dressings:u.medkits,repairPoints:repairMaterialPoints(u)}));
+const guns=b=>b.artillery.map(g=>({id:g.id,side:g.side,type:g.type,loaded:g.loaded,ammo:g.ammo,x:g.x,y:g.y,crewIds:g.crewIds}));
+function checkpoint(stage,c,b=null){const encoded=encodeSave(c,b),restored=decodeSave(encoded);assert.deepEqual(restored.campaign,c);assert.deepEqual(restored.battle,b);const path=`${directory}/stock-mendoza-${stage}.save.json`;fs.writeFileSync(path,encoded);console.log('CHECKPOINT',JSON.stringify({stage,path,hour:c.hour,secondOfHour:c.secondOfHour??0,treasury:c.resources.treasury,status:b?.status??null}));return path;}
+console.log('SOURCE',JSON.stringify(identity));console.log('INITIAL',JSON.stringify({source,hour:campaign.hour,secondOfHour:campaign.secondOfHour,treasury:campaign.resources.treasury,seed:initial.seed,totals:totals(initial),people:people(initial),guns:guns(initial)}));
+const policy=coastalBatteryController(initial,{sharedArtillerySight:true}),events=[];let first=null,last=null,reportedTurn=-1;
+try{
+ first=fight(campaign.pendingBattle,campaign.sectorStates.mendoza,{controller:(b,u)=>{last=b;if(b.turn!==reportedTurn){reportedTurn=b.turn;console.log('TURN',JSON.stringify({turn:b.turn,phase:b.phase,mode:b.mode,elapsedSeconds:b.elapsedSeconds,players:b.units.filter(v=>v.side==='player').map(v=>({id:v.id,hp:v.hp,bleeding:v.bleeding,routed:v.routed??false}))}));}return policy(b,u);}});
+ const terminal=syncBattleTime(campaign,first.battle);assert.equal(terminal.error,null);checkpoint('battle-terminal',terminal.campaign,terminal.battle);fs.writeFileSync(`${directory}/stock-mendoza-orders.json`,JSON.stringify(first.orders));
+ let calls=0;
+ const result=fightNorthernSector(campaign,'mendoza',{controller:policy,expectedOutcome:first.battle.status,executeBattle:(request,previous,options)=>calls++===0?first:fight(request,previous,options),report:event=>{events.push(event);console.log('EVENT',JSON.stringify(event));}});
+ assert.equal(calls,2);assert.deepEqual(originalPair,original);assert.equal((await buildIdentity(process.cwd())).source,identity.source);
+ const settlement=checkpoint('settled',result.campaign),deadBefore=Object.entries(campaign.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id)),deadAfter=Object.entries(result.campaign.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+ for(const id of deadBefore)assert.equal(result.campaign.operativeState[id].alive,false);
+ const note={source,identity,settlement,summary:result.summary,recordedOrders:first.orders.length,cash:{before:campaign.resources.treasury,after:result.campaign.resources.treasury},clock:{before:[campaign.hour,campaign.secondOfHour],after:[result.campaign.hour,result.campaign.secondOfHour]},totals:{before:totals(initial),after:totals(first.battle)},people:people(first.battle),guns:{before:guns(initial),after:guns(first.battle)},deadBefore,deadAfter,newDeaths:deadAfter.filter(id=>!deadBefore.includes(id)),captured:result.campaign.recruited.filter(id=>result.campaign.operativeState[id].captured),events};
+ fs.writeFileSync(`${directory}/stock-mendoza-battle.note.json`,JSON.stringify(note,null,2));console.log('DONE',JSON.stringify(note));
+}catch(error){
+ assert.deepEqual(originalPair,original);if(last&&!first){const p=syncBattleTime(campaign,last);if(!p.error)checkpoint('failed-order-checkpoint',p.campaign,p.battle);}
+ fs.writeFileSync(`${directory}/stock-mendoza-battle-failure.note.json`,JSON.stringify({source,identity,error:error.stack,events,actualStatus:first?.battle.status??last?.status,actualTurn:first?.battle.turn??last?.turn},null,2));console.error('FAILURE',error.stack);process.exitCode=1;
+}

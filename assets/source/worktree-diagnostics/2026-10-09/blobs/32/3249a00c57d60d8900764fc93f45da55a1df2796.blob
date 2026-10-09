@@ -1,0 +1,19 @@
+import {writeFileSync,mkdirSync} from 'node:fs';
+import {freshHistoricalEnding} from '../tests/fresh-ending-fixture.mjs';
+import {encodeSave} from '../game/save.js';
+
+const directory='/tmp/granaderos-stock-ending';
+mkdirSync(directory,{recursive:true});
+const started=Date.now();
+const result=freshHistoricalEnding({
+ onCheckpoint(stage,campaign,notes){
+  const file=stage.replace(/[^a-zA-Z0-9_-]/g,'_');
+  writeFileSync(`${directory}/${file}.save.json`,encodeSave(campaign));
+  writeFileSync(`${directory}/${file}.notes.json`,JSON.stringify(notes,null,2));
+  console.log(JSON.stringify({checkpoint:stage,hour:campaign.hour,second:campaign.secondOfHour,treasury:campaign.resources.treasury,phase:campaign.phase,squad:campaign.squad,seconds:Math.round((Date.now()-started)/1000)}));
+ },
+ report(event){console.log(JSON.stringify(event));}
+});
+writeFileSync(`${directory}/ending.save.json`,encodeSave(result.campaign));
+writeFileSync(`${directory}/ending.notes.json`,JSON.stringify(result,null,2));
+console.log(JSON.stringify({completed:result.campaign.completed,seconds:Math.round((Date.now()-started)/1000)}));

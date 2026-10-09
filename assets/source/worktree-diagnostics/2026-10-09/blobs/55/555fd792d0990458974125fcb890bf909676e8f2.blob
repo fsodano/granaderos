@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import assert from 'node:assert/strict';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {fightNorthernSector} from '../tests/northern-route.mjs';
+import {cautiousCombatOrder} from '../tests/cautious-driver.mjs';
+import {completeHiredNorthernMission} from '../tests/fresh-northern-command.mjs';
+const directory='/tmp/granaderos-stock-ending';
+const start=decodeSave(readFileSync(`${directory}/current-salta-prepared.save.json`,'utf8'));
+assert.deepEqual(enterSector(start.campaign.pendingBattle,start.campaign.sectorStates.salta),start.battle);
+const result=fightNorthernSector(start.campaign,'salta',{controller:cautiousCombatOrder,report:record=>console.log(JSON.stringify(record))});
+const encoded=encodeSave(result.campaign);decodeSave(encoded);writeFileSync(`${directory}/cautious-salta.save.json`,encoded);
+writeFileSync(`${directory}/cautious-salta.note.json`,JSON.stringify(result.summary,null,2));
+console.log(JSON.stringify({checkpoint:'cautious-salta',hour:result.campaign.hour,second:result.campaign.secondOfHour,treasury:result.campaign.resources.treasury,dead:Object.entries(result.campaign.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id))}));
+const ending=completeHiredNorthernMission(result.campaign);
+const endingSave=encodeSave(ending);decodeSave(endingSave);writeFileSync(`${directory}/cautious-yatasto.save.json`,endingSave);
+console.log(JSON.stringify({done:true,hour:ending.hour,second:ending.secondOfHour,treasury:ending.resources.treasury,phase:ending.phase}));

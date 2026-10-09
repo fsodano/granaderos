@@ -1,0 +1,15 @@
+# Runtime follow-up, 8 October 2026
+
+The integration agent confirmed the matched visual choice but found a limit during actual paid combat fitting. The six-channel standing blade donor passes six native wrist/grip checks. It passes 36 of 40 paid contact pairs; diagonal backhand fails for both anatomies against standing and crouched targets. Current main passes all 40 contact pairs, while retaining the visually folded native wrist.
+
+Decision: keep the diagonal backhand rejection. Integrate the fully validated thrust correction first. Backhand still needs a fit that preserves the straighter wrist and reaches its real target. The paid hilt fit reaches about 77 degrees at the wrist, so that action also remains open. Native screenshot success does not approve the whole action set.
+
+The integration chat owns bank/runtime updates. This clothing branch does not change motion banks. The face gameplay verification is merged in PR #285 on main 7cd854a7. The integration agent reports character creation, San Lorenzo combat, all 24 body/LOD loads, saved appearance, a real rifle shot and finite reload checked with the merged faces.
+
+## Further paid-phase review — 2026-10-08
+
+The integration agent narrowed the selected candidate to `stand.slash.blade.thrust`, with six right-arm/wrist/thumb rotation outputs per anatomy. The knife-thrust donor is held because it slightly increases an existing diagonal prepare/contact yaw jump (about 207 mm on main). The backhand and hilt donor cases remain open.
+
+The sabre candidate includes a narrow prepare-to-contact fit interpolation. The reported 24 sabre cases cover both anatomies, cardinal/diagonal approaches, standing/crouched targets, and LOD0/1/2. Across 11,496 paid-clock samples, reported maximum wrist bend is 42.296 degrees, maximum paid wrist speed is 1.9904 m/s, and maximum exact phase-edge hand jump is 0.000577 mm. Action duration remains 1,970 ms. The integration agent also verified visible combat: 3.5 displayed PA, damage once, finite completion and no browser errors on both characters.
+
+These are integration-agent results. Final publication and the frozen PR head are pending at this record. They do not establish all-motion acceptance or validate the knife's native fallback against every target.

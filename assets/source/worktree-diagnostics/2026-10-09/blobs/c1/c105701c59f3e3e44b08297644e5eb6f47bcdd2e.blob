@@ -1,0 +1,11 @@
+import {readFile,readdir,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {resolve,relative} from 'node:path';
+import {buildIdentity} from '../tools/build-identity.mjs';
+const root=resolve(new URL('..',import.meta.url).pathname);
+async function files(dir){const result=[];for(const e of await readdir(resolve(root,dir),{withFileTypes:true})){const p=`${dir}/${e.name}`;if(e.isDirectory())result.push(...await files(p));else if(e.isFile())result.push(p);else throw Error(`Unsupported test entry ${p}`);}return result;}
+const paths=(await files('tests')).sort(),hash=createHash('sha256'),manifest={};
+for(const p of paths){const bytes=await readFile(resolve(root,p));hash.update(p).update('\0').update(bytes).update('\0');manifest[p]=createHash('sha256').update(bytes).digest('hex');}
+const receipt={production:await buildIdentity(root),tests:{algorithm:'sorted tests/** file path UTF-8, NUL, file bytes, NUL; SHA256',paths:paths.length,testFiles:paths.filter(p=>p.endsWith('.test.mjs')).length,sha256:hash.digest('hex'),manifest}};
+if(process.argv.includes('--check')){const frozen=JSON.parse(await readFile(resolve(root,'.cache/wounded-frozen-inputs.json'),'utf8'));if(frozen.production.source!==receipt.production.source||frozen.tests.sha256!==receipt.tests.sha256)throw Error('Frozen source/test inputs changed');console.log(JSON.stringify({unchanged:true,source:receipt.production.source,tests:receipt.tests.sha256,paths:paths.length,testFiles:receipt.tests.testFiles}));}
+else{await writeFile(resolve(root,'.cache/wounded-frozen-inputs.json'),JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({source:receipt.production.source,tests:receipt.tests.sha256,paths:paths.length,testFiles:receipt.tests.testFiles}));}

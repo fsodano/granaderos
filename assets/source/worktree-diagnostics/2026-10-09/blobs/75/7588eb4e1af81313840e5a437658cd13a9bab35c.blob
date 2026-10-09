@@ -1,0 +1,44 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {stabilizeStockMendozaSurvivors} from '../tests/created-cuyo-route.mjs';
+import {dispatchCampaign} from '../game/campaign.js';
+import {enterSector} from '../game/world.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {expandCellScene} from '../game/cell-scene-storage.js';
+import {actBattle,presentedActBattle} from '../game/tactical.js';
+import {syncBattleTime} from '../game/time.js';
+const directory='/tmp/granaderos-stock-ending',path=`${directory}/stock-mendoza-settled.save.json`,initial=decodeSave(fs.readFileSync(path,'utf8')).campaign,original=structuredClone(initial),identity=await buildIdentity(process.cwd()),history=[],notes=[];
+function canonical(c){const n=structuredClone(c);for(const key of ['sectorStates','sceneStates'])if(n[key])n[key]=Object.fromEntries(Object.entries(n[key]).map(([id,scene])=>[id,expandCellScene(scene)]));return n;}
+function savePair(c,b){const n=decodeSave(encodeSave(c,b));assert.deepEqual(canonical(n.campaign),canonical(c));assert.deepEqual(n.battle,b);return n;}
+const report=note=>{
+ if(note.event==='stockMendozaCareOrder')history.push({kind:note.kind,action:note.action});
+ if(note.event==='stockMendozaCareCheckpoint'){
+  const {campaign,battle,...summary}=note,p=savePair(campaign,battle),file=`${directory}/stock-mendoza-care-helper-${notes.filter(n=>n.event===note.event).length}-${note.stage}.save.json`;
+  fs.writeFileSync(file,encodeSave(p.campaign,p.battle));notes.push({...summary,path:file});console.log('CHECKPOINT',JSON.stringify({...summary,path:file}));
+ }else if(note.event!=='stockMendozaCareOrder'){const {campaign,...summary}=note;notes.push(summary);console.log('RECEIPT',JSON.stringify(summary));}
+};
+console.log('SOURCE',JSON.stringify(identity));
+const accepted=stabilizeStockMendozaSurvivors(initial,{report});
+assert.deepEqual(initial,original);savePair(accepted,null);
+let replay={campaign:structuredClone(original),battle:null};
+for(const event of history){
+ if(event.kind==='campaign'){
+  const c=dispatchCampaign(replay.campaign,event.action);assert.equal(c.lastError,null,c.lastError);replay={campaign:c,battle:event.action.type==='visitSector'?enterSector(c.pendingBattle,c.sectorStates[c.location]):replay.battle};
+ }else if(event.kind==='tactical'){
+  const b=actBattle(replay.battle,event.action);assert.equal(b.lastError,null,b.lastError);assert.deepEqual(presentedActBattle(replay.battle,event.action).state,b);
+  const p=syncBattleTime(replay.campaign,b);assert.equal(p.error,null,p.error);replay={campaign:p.campaign,battle:p.battle};
+ }else if(event.kind==='leave'){
+  const c=dispatchCampaign(replay.campaign,{type:'leaveSector',battleId:replay.campaign.pendingBattle.id,sectorState:replay.battle,survivors:replay.battle.units.filter(u=>u.side==='player')});assert.equal(c.lastError,null,c.lastError);replay={campaign:c,battle:null};
+ }else throw Error('unknown care replay event');
+ replay=savePair(replay.campaign,replay.battle);
+}
+assert.deepEqual(canonical(replay.campaign),canonical(accepted));assert.equal(replay.battle,null);
+const repeated=stabilizeStockMendozaSurvivors(initial);assert.deepEqual(canonical(repeated),canonical(accepted));
+const alive=initial.recruited.filter(id=>initial.operativeState[id].alive&&!initial.operativeState[id].captured),dead=Object.entries(initial.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+for(const id of dead)assert.equal(accepted.operativeState[id].alive,false);
+for(const id of alive){const a=accepted.operativeState[id],b=initial.operativeState[id];assert.ok(a.hp>=15&&!a.bleeding);for(const key of ['inventory','condition','rations','torches','boleadoras','weaponFittings','bladeMetadata','weaponMetadata','headwear','outfit','legwear','ammo','carriedAmmo','carriedLoaded','jammed'])assert.deepEqual(a[key],b[key],`${id}/${key} custody`);assert.deepEqual(accepted.contracts[id],initial.contracts[id]);}
+assert.deepEqual(accepted.artillery,initial.artillery);assert.deepEqual(accepted.artilleryDepot,initial.artilleryDepot);
+const consumed=notes.find(n=>n.event==='stockMendozaCareAccepted'),summary={identity,input:path,orders:history.length,completeSavedOrderReplay:true,completeFunctionReplay:true,ordinaryPresentedEqual:true,officialSaveEqualAfterLosslessCellExpansion:true,
+ clockBefore:[initial.hour,initial.secondOfHour],clockAfter:[accepted.hour,accepted.secondOfHour],cashBefore:initial.resources.treasury,cashAfter:accepted.resources.treasury,consumed,people:alive.map(id=>({id,hp:accepted.operativeState[id].hp,bleeding:accepted.operativeState[id].bleeding,medkits:accepted.operativeState[id].medkits,location:accepted.operativeState[id].location,energy:accepted.operativeState[id].energy})),priorDeaths:dead};
+fs.writeFileSync(`${directory}/stock-mendoza-care-helper-history.json`,JSON.stringify(history,null,2));fs.writeFileSync(`${directory}/stock-mendoza-care-helper.note.json`,JSON.stringify(summary,null,2));fs.writeFileSync(`${directory}/stock-mendoza-care-helper-accepted.save.json`,encodeSave(accepted));assert.equal((await buildIdentity(process.cwd())).source,identity.source);console.log('DONE',JSON.stringify(summary));

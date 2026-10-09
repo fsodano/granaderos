@@ -1,0 +1,11 @@
+import {chromium} from '/Users/fsodano/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+const context=await browser.newContext({viewport:{width:1600,height:900}});const page=await context.newPage();
+page.on('pageerror',e=>console.error(e.message));
+await page.goto('http://127.0.0.1:3210/',{waitUntil:'networkidle',timeout:120000});
+console.log(await page.locator('body').innerText());
+await page.screenshot({path:'.cache/trailer-capture/menu.png'});
+await page.getByRole('button',{name:'Nueva campaña →',exact:true}).click();await page.getByRole('button',{name:'Omitir introducción →',exact:true}).click();
+console.log('CAMPAIGN',await page.locator('body').innerText());await page.screenshot({path:'.cache/trailer-capture/campaign.png'});
+await page.getByRole('button',{name:'Tu granadero',exact:true}).click();console.log('CREATE',await page.locator('body').innerText());await page.screenshot({path:'.cache/trailer-capture/create.png'});
+await browser.close();

@@ -1,0 +1,192 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor,operativeLocation} from '../game/campaign.js';
+import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {hiringArrivalReason} from '../game/hiring-arrivals.js';
+import {artilleryTransportQuote} from '../game/artillery-transport.js';
+import {enterSector} from '../game/world.js';
+import {syncBattleTime} from '../game/time.js';
+import {actBattle,endTurn,presentedActBattle,presentedEndTurn,interruptAvailable} from '../game/tactical.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
+import {coastalBatteryController} from '../tests/coastal-command-driver.mjs';
+
+const root=fileURLToPath(new URL('..',import.meta.url));
+const input='/tmp/granaderos-stock-ending/stock-mountain-stopped.save.json';
+const prefix='/tmp/granaderos-stock-ending/stock-tucuman-recapture';
+const sha=value=>createHash('sha256').update(value).digest('hex');
+const inputText=fs.readFileSync(input,'utf8'),inputHash=sha(inputText);
+const original=decodeSave(inputText).campaign;
+const oldDead=Object.keys(original.operativeState).map(Number).filter(id=>!original.operativeState[id].alive);
+const oldServing=original.recruited.filter(id=>original.operativeState[id].alive&&!original.operativeState[id].captured);
+const hires=[105,128,145,109,135,147],support=[1,117,100,107,116,130];
+const clock=c=>c.hour*3600+(c.secondOfHour??0);
+const sourceBefore=await buildIdentity(root);
+const fixedTests=[];
+function testFiles(directory){for(const entry of fs.readdirSync(directory,{withFileTypes:true})){const file=path.join(directory,entry.name);if(entry.isDirectory())testFiles(file);else if(entry.isFile())fixedTests.push(path.relative(root,file));}}
+testFiles(path.join(root,'tests'));fixedTests.sort();
+const testHash=()=>{const hash=createHash('sha256');for(const name of fixedTests){hash.update(name);hash.update('\0');hash.update(fs.readFileSync(path.join(root,name)));hash.update('\0');}return hash.digest('hex');};
+const testsBefore=testHash();
+assert.equal(fixedTests.length,880);
+assert.equal(testsBefore,'c23d5fff9445c90b91fb2f285cb3bf29a0b916e432ab7a438b6b5f4e623b2f99');
+let c=structuredClone(original),b=null,lastStage='input';
+let history=[],events=[];
+const serving=()=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
+function brief(state=c){
+ const roster=rosterFor(state);
+ return {hour:state.hour,second:state.secondOfHour??0,treasury:state.resources.treasury,location:state.location,
+  pendingBattle:state.pendingBattle?.id??null,pendingEncounter:state.pendingEncounter,
+  living:state.recruited.filter(id=>state.operativeState[id]?.alive).map(id=>{const r=state.operativeState[id],o=roster.find(o=>o.id===id),u=carriedAmmunition(o,r),family=ammoTypeFor({...u,activeSlot:'primary'});return{id,at:operativeLocation(state,id),hp:r.hp,maxHp:r.maxHp,bleeding:r.bleeding,energy:r.energy,fatigue:r.fatigue,asleep:r.asleep,assignment:r.assignment,weapon:u.weapon,loaded:u.loaded,ammo:ammoCount(u,family),family,dropped:Boolean(u.weaponDropped),condition:r.condition,medkits:r.medkits,expiresAt:state.contracts[id]?.expiresAt??null,expiresSecond:state.contracts[id]?.expiresSecond??0};}),
+  dead:Object.keys(state.operativeState).map(Number).filter(id=>!state.operativeState[id].alive),
+  gunDepots:state.artilleryDepots,gunTransfers:state.artilleryTransfers};
+}
+function save(stage){
+ if(c.pendingBattle&&!b)b=enterSector(c.pendingBattle,c.sectorStates[c.pendingBattle.sector]);
+ const text=encodeSave(c,b),decoded=decodeSave(text);
+ assert.deepEqual(decoded.campaign,c);assert.deepEqual(decoded.battle,b);
+ fs.writeFileSync(prefix+'-'+stage+'.save.json',text);
+ fs.writeFileSync(prefix+'-latest.save.json',text);
+ fs.writeFileSync(prefix+'-history.json',JSON.stringify(history,null,2));
+ lastStage=stage;
+ console.log(JSON.stringify({event:'checkpoint',stage,...brief()}));
+ return decoded;
+}
+function safe(){
+ assert.equal(c.pendingEncounter,null,'A real encounter stops recapture preparation.');
+ for(const id of oldServing){const r=c.operativeState[id];assert.ok(r.alive&&!r.captured&&c.recruited.includes(id)&&c.contracts[id],`Serving survivor ${id} must remain.`);}
+ for(const id of serving()){
+  const r=c.operativeState[id],expiry=contractExpiresSeconds(c.contracts[id]);
+  assert.ok(r.hp>=15&&r.bleeding===0,`Actual acute patient ${id} needs finite care before an hour.`);
+  assert.ok(expiry===null||expiry>clock(c),`The actual term for ${id} has expired.`);
+ }
+ for(const id of oldDead)assert.equal(c.operativeState[id].alive,false,`Earlier death ${id} is permanent.`);
+}
+function raw(action){
+ assert.equal(c.pendingBattle,null,'Return the real battle before preparation.');
+ const next=dispatchCampaign(c,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
+ c=next;history.push({kind:'campaign',action:structuredClone(action)});
+ events.push({event:'acceptedCampaignOrder',action:structuredClone(action),hour:c.hour,second:c.secondOfHour??0,cash:c.resources.treasury});
+ save('accepted');safe();return c;
+}
+function retain(seconds=3600){
+ safe();
+ for(const id of serving()){
+  let expiry=contractExpiresSeconds(c.contracts[id]);
+  while(expiry!==null&&expiry<=clock(c)+seconds+1){
+   const quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'day');
+   assert.ok(quote.available&&c.resources.treasury>=quote.price,`Actual renewal ${id}: ${quote.reason??'cash'}`);
+   const contract=c.contracts[id],cash=c.resources.treasury;
+   raw({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});
+   assert.equal(c.resources.treasury,cash-quote.price);
+   events.push({event:'paidRenewal',id,price:quote.price,expiresAt:c.contracts[id].expiresAt,expiresSecond:c.contracts[id].expiresSecond??0});
+   expiry=contractExpiresSeconds(c.contracts[id]);
+  }
+ }
+}
+function order(action){retain(action.type==='wait'?(action.hours??1)*3600:3600);return raw(action);}
+function waitHour(){order({type:'wait',hours:1});}
+function travelGroups(ids,destination,intent='travel'){
+ for(const id of ids){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});order({type:intent==='attack'?'attack':'travel',sector:destination,mode:'posta',queue:true});}
+ for(let attempt=0;attempt<36;attempt++){
+  const qs=ids.map(id=>c.squads.find(q=>q.id===id));
+  if(qs.every(q=>intent==='attack'?q.journey?.status==='ready':q.location===destination&&!q.journey))return;
+  assert.ok(qs.every(q=>!q.journey||q.journey.status==='moving'||q.journey.status==='ready'),'An actual paused journey stops the proof.');waitHour();
+ }
+ throw Error('The bounded ordinary journey did not complete.');
+}
+async function preparation(){
+ safe();save('before');
+ assert.equal(c.location,'mendoza');assert.equal(hiringArrivalReason(c,'mendoza'),null);
+ const gunId='arsenal:cordoba:2',untouched=structuredClone(c.artilleryDepots.mendoza.find(g=>g.id==='arsenal:buenos_aires:1'));
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+ const quote=artilleryTransportQuote(c,'mendoza',gunId,'cordoba','carts','depot');assert.equal(quote.available,true,quote.reason);assert.equal(quote.hours,18);assert.equal(quote.cost,0);
+ order({type:'transportArtillery',sector:'mendoza',artilleryId:gunId,to:'cordoba',mode:'carts',source:'depot'});
+ const shipped=structuredClone(c.artilleryTransfers.find(t=>t.id===gunId));assert.equal(shipped.gun.loaded,true);assert.equal(shipped.gun.ammo,3);events.push({event:'finiteGunShipment',transfer:shipped});
+ const prices=[];
+ for(const id of hires){const q=contractQuote(c,rosterFor(c).find(op=>op.id===id),'week'),cash=c.resources.treasury;assert.ok(q.available);order({type:'recruitCivic',id,term:'week',destination:'mendoza'});assert.equal(c.resources.treasury,cash-q.price);prices.push({id,price:q.price});}
+ assert.equal(prices.reduce((sum,p)=>sum+p.price,0),335580);events.push({event:'paidReinforcements',prices});
+ for(let attempt=0;!hires.every(id=>c.recruited.includes(id))&&attempt<12;attempt++)waitHour();
+ assert.ok(hires.every(id=>c.recruited.includes(id)));save('arrivals');
+ order({type:'squad',ids:hires,returnToService:true});const main=c.activeSquadId;
+ order({type:'createSquad',name:'Apoyo real a Tucumán',ids:support,sector:'mendoza',returnToService:true});const second=c.activeSquadId;
+ const squads=[main,second];travelGroups(squads,'cordoba');
+ for(const id of squads){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});}
+ // Rest only after real travel. Arrival at Tucumán is at the next 08:00 hour.
+ let departure=c.hour;
+ while((departure+4)%24!==8)departure++;
+ departure=Math.max(departure,shipped.dueAt);
+ while((departure+4)%24!==8)departure++;
+ for(let attempt=0;c.hour<departure&&attempt<48;attempt++)waitHour();
+ assert.equal(c.hour,departure);assert.deepEqual(c.artilleryDepots.cordoba.find(g=>g.id===gunId),shipped.gun);
+ assert.deepEqual(c.artilleryDepots.mendoza.find(g=>g.id===untouched.id),untouched);
+ order({type:'selectSquad',id:main});order({type:'configureArtillery',types:[`depot:${gunId}`]});
+ travelGroups(squads,'tucuman','attack');order({type:'selectSquad',id:main});
+ retain(3600);const next=dispatchCampaign(c,{type:'beginAssault',sector:'tucuman'});assert.equal(next.lastError,null,next.lastError);
+ c=next;history.push({kind:'campaign',action:{type:'beginAssault',sector:'tucuman'}});
+ assert.ok(c.pendingBattle);assert.deepEqual(new Set(c.pendingBattle.squad.map(u=>u.id)),new Set([...hires,...support]));
+ b=enterSector(c.pendingBattle,c.sectorStates.tucuman);assert.equal(b.night,false);
+ save('prepared');
+ const final=structuredClone(c),finalBattle=structuredClone(b);let replay=decodeSave(inputText).campaign;
+ for(const entry of history){assert.equal(entry.kind,'campaign');replay=dispatchCampaign(replay,entry.action);assert.equal(replay.lastError,null,JSON.stringify(entry.action)+': '+replay.lastError);}
+ assert.deepEqual(replay,final);assert.deepEqual(enterSector(replay.pendingBattle,replay.sectorStates.tucuman),finalBattle);
+ const sourceAfter=await buildIdentity(root);assert.deepEqual(sourceAfter,sourceBefore);assert.equal(testHash(),testsBefore);assert.equal(sha(fs.readFileSync(input,'utf8')),inputHash);
+ fs.writeFileSync(prefix+'-preparation.note.json',JSON.stringify({source:sourceBefore,inputHash,testsDigest:testsBefore,testDigestExclusions:['fresh-mountain-route.mjs','fresh-route-orders.test.mjs'],events,history,summary:brief(),gun:shipped.gun,untouched,replay:true},null,2));
+ console.log(JSON.stringify({event:'preparedExactReplay',source:sourceBefore.id,orders:history.length,...brief()}));
+}
+async function battle(){
+ const prepared=decodeSave(fs.readFileSync(prefix+'-prepared.save.json','utf8'));
+ c=prepared.campaign;b=prepared.battle;
+ const initial=structuredClone(prepared),controller=coastalBatteryController(b,{sharedArtillerySight:true});
+ const preHistory=JSON.parse(fs.readFileSync(prefix+'-history.json','utf8'));
+ history=[...preHistory];let actions=0,frames=0;
+ const accept=action=>{
+  const before=structuredClone(b),ordinary=action.type==='endTurn'?endTurn(b):actBattle(b,action);
+  assert.equal(ordinary.lastError,null,JSON.stringify(action)+': '+ordinary.lastError);
+  const presented=action.type==='endTurn'?presentedEndTurn(b):presentedActBattle(b,action);
+  assert.deepEqual(presented.state,ordinary);assert.deepEqual(b,before);
+  b=ordinary;frames+=presented.frames.length;actions+=action.type!=='endTurn';
+  history.push({kind:'tactical',action:structuredClone(action)});
+  const pair=syncBattleTime(c,b);assert.equal(pair.error,null,pair.error);c=pair.campaign;b=pair.battle;
+  save('active');
+  if(actions%25===0||b.status!=='active')console.log(JSON.stringify({event:'battleProgress',actions,turn:b.turn,status:b.status,seconds:b.elapsedSeconds,live:b.units.filter(u=>u.side==='player'&&u.hp>0).map(u=>({id:u.id,hp:u.hp,bleeding:u.bleeding,routed:u.routed})),gun:b.artillery.map(g=>({id:g.id,loaded:g.loaded,ammo:g.ammo}))}));
+ };
+ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
+  const ids=b.units.filter(u=>u.side==='player'&&!u.militia).sort((a,d)=>d.marksmanship-a.marksmanship).map(u=>u.id);
+  for(let attempt=0;attempt<16&&b.status==='active';attempt++){
+   let acted=false;
+   for(const id of ids){if(b.status!=='active')break;const u=b.units.find(u=>u.id===id);if(!interruptAvailable(b,u)||u.ap<3)continue;const action=controller(b,u);if(!action)continue;accept(action);acted=true;}
+   if(!acted)break;
+  }
+  if(b.status==='active')accept({type:'endTurn'});
+ }
+ assert.ok(['victory','defeat','retreat'].includes(b.status),'The finite battle limit stopped without a terminal result.');
+ save('terminal');const terminal=structuredClone({campaign:c,battle:b});
+ const action={type:'battleResult',battleId:c.pendingBattle.id,outcome:b.status,sectorState:b,survivors:b.units.filter(u=>u.side==='player')};
+ const next=dispatchCampaign(c,action);assert.equal(next.lastError,null,next.lastError);c=next;b=null;
+ history.push({kind:'settlement',battleId:action.battleId,outcome:action.outcome});save('settled');
+ for(const id of oldDead)assert.equal(c.operativeState[id].alive,false);
+ let replay=decodeSave(inputText).campaign,replayBattle=null;
+ for(const entry of history){
+  if(entry.kind==='campaign'){replay=dispatchCampaign(replay,entry.action);assert.equal(replay.lastError,null);if(replay.pendingBattle)replayBattle=enterSector(replay.pendingBattle,replay.sectorStates.tucuman);}
+  else if(entry.kind==='tactical'){replayBattle=entry.action.type==='endTurn'?endTurn(replayBattle):actBattle(replayBattle,entry.action);assert.equal(replayBattle.lastError,null);const pair=syncBattleTime(replay,replayBattle);assert.equal(pair.error,null);replay=pair.campaign;replayBattle=pair.battle;}
+  else{assert.deepEqual({campaign:replay,battle:replayBattle},terminal);replay=dispatchCampaign(replay,{type:'battleResult',battleId:entry.battleId,outcome:entry.outcome,sectorState:replayBattle,survivors:replayBattle.units.filter(u=>u.side==='player')});assert.equal(replay.lastError,null);replayBattle=null;}
+ }
+ assert.deepEqual(replay,c);assert.equal(replayBattle,b);
+ assert.deepEqual(await buildIdentity(root),sourceBefore);assert.equal(testHash(),testsBefore);assert.equal(sha(fs.readFileSync(input,'utf8')),inputHash);
+ const newDeaths=Object.keys(c.operativeState).map(Number).filter(id=>!c.operativeState[id].alive&&!oldDead.includes(id));
+ fs.writeFileSync(prefix+'-battle.note.json',JSON.stringify({source:sourceBefore,inputHash,testsDigest:testsBefore,testFileCount:fixedTests.length,testDigestExclusions:[],actions,frames,turns:terminal.battle.turn,elapsedSeconds:terminal.battle.elapsedSeconds,status:terminal.battle.status,newDeaths,initial:brief(initial.campaign),final:brief(),history,ordinaryPresentedEqual:true,savedReplayEqual:true},null,2));
+ console.log(JSON.stringify({event:'recaptureTerminal',status:terminal.battle.status,turns:terminal.battle.turn,actions,frames,seconds:terminal.battle.elapsedSeconds,newDeaths,source:sourceBefore.id,...brief()}));
+}
+try{
+ assert.equal(sourceBefore.id,'f28f0f90bd89');
+ if(process.argv[2]==='battle')await battle();else await preparation();
+}catch(error){
+ try{save('stopped');}catch(saveError){console.error('Stopped pair could not be saved: '+saveError.message);}
+ fs.writeFileSync(prefix+'-stopped.note.json',JSON.stringify({source:sourceBefore,inputHash,stage:lastStage,error:error.stack,events,history,summary:brief()},null,2));
+ console.error(error.stack);process.exitCode=1;
+}

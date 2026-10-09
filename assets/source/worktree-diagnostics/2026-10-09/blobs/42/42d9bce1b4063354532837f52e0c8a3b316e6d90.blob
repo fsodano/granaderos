@@ -1,0 +1,49 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {expandCellScene} from '../game/cell-scene-storage.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
+import {rosterFor} from '../game/campaign.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {extractItemQuantity} from '../game/tactical-inventory.js';
+import {startFreshFoundry} from '../tests/fresh-cuyo-route.mjs';
+const directory='/tmp/granaderos-stock-ending';
+const source=`${directory}/stock-mendoza-care-helper-accepted.save.json`;
+const identity=await buildIdentity(process.cwd());
+const pair=decodeSave(fs.readFileSync(source,'utf8'));
+assert.equal(pair.battle,null);assert.equal(pair.campaign.pendingBattle,null);
+const original=structuredClone(pair.campaign),dead=Object.entries(original.operativeState).filter(([,r])=>!r.alive).map(([id])=>id);
+const serving=original.recruited.filter(id=>original.operativeState[id].alive&&!original.operativeState[id].captured);
+for(const id of serving){const r=original.operativeState[id];assert.ok(r.hp>=15&&!r.bleeding,`acute ${id} must receive actual aid first`);}
+const canonical=c=>{const n=structuredClone(c);for(const key of ['sectorStates','sceneStates'])if(n[key])for(const id of Object.keys(n[key]))n[key][id]=expandCellScene(n[key][id]);return n;};
+const events=[];
+console.log('SOURCE',JSON.stringify({source,identity,hour:original.hour,secondOfHour:original.secondOfHour,treasury:original.resources.treasury}));
+try{
+ const after=startFreshFoundry(pair.campaign,{report:event=>{events.push(event);console.log('EVENT',JSON.stringify(event));}});
+ assert.deepEqual(pair.campaign,original);assert.equal(after.flags.foundry,true);assert.equal(after.flags.emancipation,true);
+ assert.ok(after.recruited.includes(2)&&after.operativeState[2].alive);assert.equal(after.operativeState[7].alive,false);assert.ok(!after.recruited.includes(7));
+ for(const id of dead)assert.equal(after.operativeState[id].alive,false);
+ const releases=events.filter(e=>e.event==='foundrySpecialistReleased');
+ const collector=after.squad.find(id=>after.operativeState[id].alive&&after.operativeState[id].hp>=15);
+ const priorKeys=new Set(sectorInventoryModel(original,'mendoza',rosterFor(original),0).entries.map(row=>row.key));
+ const returned=sectorInventoryModel(after,'mendoza',rosterFor(after),collector).entries.filter(row=>!priorKeys.has(row.key)&&row.key.startsWith('ground:service-return-')).map(row=>JSON.parse(row.expected));
+ const expectedReturns=[];
+ for(const id of serving){
+  assert.ok(after.operativeState[id].alive&&!after.operativeState[id].captured);
+  if(releases.some(e=>e.id===id)){
+   assert.equal(original.contracts[id].kind,'paid');assert.equal(original.contracts[id].term,'day');
+   assert.equal(after.contracts[id],undefined);assert.ok(!after.recruited.includes(id));
+   for(const key of ['hp','maxHp','bleeding','bandaged','energy','fatigue','morale','location'])assert.deepEqual(after.operativeState[id][key],original.operativeState[id][key],`ordinary dismissal retains ${id}'s actual ${key}`);
+   const model=sectorInventoryModel(original,'mendoza',rosterFor(original),id);
+   expectedReturns.push(...model.carried.map(row=>extractItemQuantity(model.personal,row.item,row.count).stack));
+  }else{assert.ok(after.recruited.includes(id));const expiry=contractExpiresSeconds(after.contracts[id]);assert.ok(expiry===null||expiry>after.hour*3600+(after.secondOfHour??0));}
+ }
+ const stackKey=s=>`${s.item}:${s.weapon??s.outfit??s.ammoType??''}`,sortStacks=a=>[...a].sort((a,b)=>stackKey(a).localeCompare(stackKey(b)));
+ assert.deepEqual(sortStacks(returned),sortStacks(expectedReturns),'the ordinary released specialist retains every finite item in local custody once');
+ const encoded=encodeSave(after),decoded=decodeSave(encoded);assert.deepEqual(canonical(decoded.campaign),canonical(after));assert.equal(decoded.battle,null);
+ const replay=startFreshFoundry(decodeSave(fs.readFileSync(source,'utf8')).campaign);assert.deepEqual(canonical(replay),canonical(after));
+ const accepted=`${directory}/stock-foundry-helper-care-accepted.save.json`;fs.writeFileSync(accepted,encoded);
+ const note={source,identity,accepted,functionReplay:true,officialSaveEqualAfterLosslessCellExpansion:true,clock:{before:[original.hour,original.secondOfHour],after:[after.hour,after.secondOfHour]},cash:{before:original.resources.treasury,after:after.resources.treasury},flags:{foundry:after.flags.foundry,emancipation:after.flags.emancipation},engineer:{recruited:after.recruited.includes(2),hp:after.operativeState[2].hp},barcala:{alive:after.operativeState[7].alive,recruited:after.recruited.includes(7)},priorDeaths:dead.map(Number),serving,normalReleases:releases.map(e=>e.id),exactReturnedStacks:returned,events};
+ fs.writeFileSync(`${directory}/stock-foundry-helper-care-accepted.note.json`,JSON.stringify(note,null,2));assert.equal((await buildIdentity(process.cwd())).source,identity.source);console.log('DONE',JSON.stringify(note));
+}catch(error){fs.writeFileSync(`${directory}/stock-foundry-helper-care-failure.note.json`,JSON.stringify({source,identity,error:error.stack,events},null,2));console.error(error.stack);process.exitCode=1;}

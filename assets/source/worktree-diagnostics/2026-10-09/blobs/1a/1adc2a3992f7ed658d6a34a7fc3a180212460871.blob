@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {freshNorthernRoute} from '../tests/fresh-northern-fixture.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+const directory='/tmp/granaderos-stock-ending';
+const campaign=decodeSave(readFileSync(`${directory}/coastal.save.json`,'utf8')).campaign;
+const notes=JSON.parse(readFileSync(`${directory}/san_lorenzo.notes.json`,'utf8'));
+const result=freshNorthernRoute({routeKind:'stock',coastalCheckpoint:{campaign,notes},
+ onCheckpoint(stage,state,records){
+  const name=stage.replace(/[^a-zA-Z0-9_-]/g,'_');
+  writeFileSync(`${directory}/${name}.save.json`,encodeSave(state));
+  writeFileSync(`${directory}/${name}.notes.json`,JSON.stringify(records,null,2));
+  console.log(JSON.stringify({checkpoint:stage,hour:state.hour,second:state.secondOfHour,treasury:state.resources.treasury,phase:state.phase,squad:state.squad}));
+ },
+ report(event){console.log(JSON.stringify(event));}
+});
+writeFileSync(`${directory}/northern.save.json`,encodeSave(result.campaign));
+console.log(JSON.stringify({done:true,hour:result.campaign.hour,treasury:result.campaign.resources.treasury}));

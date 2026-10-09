@@ -1,0 +1,62 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {defaultContentPackage} from '../game/content-package.js';
+import {defaultProfile,createOfficerRecord} from '../game/recruitment.js';
+import {contractQuote} from '../game/contracts.js';
+import {prepareCampaignBattle} from '../game/battle-handoff.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {syncBattleTime} from '../game/time.js';
+import {actBattle,presentedActBattle,endTurn,presentedEndTurn} from '../game/tactical.js';
+
+const prefix='/tmp/granaderos-wounded-native-recovery-preparation';
+const inputPath='/tmp/granaderos-wounded-native-approach-continuation-stopped.save.json';
+const hash=value=>createHash('sha256').update(value).digest('hex');
+const input=readFileSync(inputPath,'utf8'),inputSHA=hash(input);
+const frozenFiles=['game/tactical.js','game/tactical-condition.js','game/weapon-reload.js','game/tactical-ai.js','game/maps.js','game/maps/buenos_aires.json','game/campaign.js','game/content-package.js','game/recruitment.js','game/character-profile.js'];
+const digests=()=>Object.fromEntries(frozenFiles.map(path=>[path,hash(readFileSync(new URL('../'+path,import.meta.url)))]));
+const frozen=digests(),initial=decodeSave(encodeSave(initialCampaign(8,defaultContentPackage()))),initialCopy=structuredClone(initial);
+const history=JSON.parse(readFileSync('/tmp/granaderos-wounded-native-approach-continuation-history.json','utf8')),initialLength=history.length,records=[];
+let pair=decodeSave(input);
+const brief=()=>({hour:pair.campaign.hour,second:pair.campaign.secondOfHour??0,cash:pair.campaign.resources.treasury,location:pair.campaign.location,squad:pair.campaign.squad,dead:[107,110].map(id=>({id,...pair.campaign.operativeState[id]})),members:pair.campaign.squad.map(id=>({id,...pair.campaign.operativeState[id],contract:pair.campaign.contracts[id]}))});
+function save(label){const value=encodeSave(pair.campaign,pair.battle??null);assert.deepEqual(decodeSave(value),pair);const path=prefix+'-'+label+'.save.json';writeFileSync(path,value);return {path,sha:hash(value)};}
+function order(action){
+ const before=pair,copy=structuredClone(pair),next=dispatchCampaign(pair.campaign,action);
+ assert.deepEqual(pair,copy);
+ if(next.lastError){writeFileSync(prefix+'-rejected.raw.json',JSON.stringify({action,result:next}));throw Error(next.lastError);}
+ pair=decodeSave(encodeSave(next));history.push({kind:'campaign',action});
+ const row={number:history.length,action:action.type==='battleResult'?{type:action.type,battleId:action.battleId,outcome:action.outcome}:action,...brief(),save:save(String(history.length).padStart(3,'0'))};
+ records.push(row);writeFileSync(prefix+'-history.json',JSON.stringify(history));writeFileSync(prefix+'-records.json',JSON.stringify(records,null,2));console.log(JSON.stringify(row));
+ assert.deepEqual(digests(),frozen);assert.equal(hash(readFileSync(inputPath)),inputSHA);
+ if(pair.campaign.pendingEncounter)throw Error('Actual unexpected strategic encounter');
+ if(pair.campaign.defeated)throw Error('Actual campaign is terminal');
+ return before;
+}
+async function replay(){let r=decodeSave(encodeSave(initial.campaign));for(const event of history){
+ if(event.kind==='campaign'||event.kind==='attackHandoff'){
+  const c=dispatchCampaign(r.campaign,event.action);assert.equal(c.lastError,null,c.lastError);
+  if(event.kind==='attackHandoff'){const p=prepareCampaignBattle(c,event.options);assert.equal(p.error,null,p.error);r=decodeSave(encodeSave(p.campaign,p.battle));}else r=decodeSave(encodeSave(c));
+ }else if(event.kind==='handoff'){const p=prepareCampaignBattle(r.campaign,event.options);assert.equal(p.error,null,p.error);r=decodeSave(encodeSave(p.campaign,p.battle));}
+ else{const ending=event.action.type==='endTurn',b=ending?endTurn(r.battle):actBattle(r.battle,event.action),shown=ending?presentedEndTurn(r.battle):presentedActBattle(r.battle,event.action);assert.deepEqual(shown.state,b);assert.equal(b.lastError,null,b.lastError);const p=syncBattleTime(r.campaign,b);assert.equal(p.error,null,p.error);r=decodeSave(encodeSave(p.campaign,p.battle));}
+ }assert.deepEqual(r,pair);}
+try{
+ assert.equal(inputSHA,'c323955a9c7edb4d7c2c604626200bebe2ab280dc20bff09dce32acf775ad282');assert.equal(initialLength,32);assert.equal(pair.battle.status,'defeat');
+ console.log(JSON.stringify({stage:'initial',inputPath,inputSHA,frozen,history:initialLength,scope:'Same actual native campaign after two deaths. Current public default creator profile and paid finite hires only.'}));
+ await replay();
+ order({type:'battleResult',battleId:pair.campaign.pendingBattle.id,outcome:pair.battle.status,survivors:pair.battle.units.filter(u=>u.side==='player'),sectorState:pair.battle});
+ assert.deepEqual([107,110].map(id=>pair.campaign.operativeState[id].alive),[false,false]);assert.equal(pair.campaign.resources.treasury,2192);
+ const answers={origin:'cabildo',doctrine:'line_marksman',crisis:'rescue',specialty:'night',temperament:'optimistic'},profile=defaultProfile();
+ assert.equal(createOfficerRecord('Guardia del Cabildo',answers,profile).maxHp,55);assert.equal(Object.values(profile.attributes).reduce((a,b)=>a+b,0),550);
+ order({type:'createOfficer',name:'Guardia del Cabildo',answers,profile});assert.equal(pair.campaign.contracts[1000].paid,0);
+ for(const [id,price] of [[100,252],[102,280],[130,252],[136,588],[141,504]]){
+  const op=rosterFor(pair.campaign).find(o=>o.id===id),quote=contractQuote(pair.campaign,op,'week');assert.equal(quote.available,true,quote.reason);assert.equal(quote.price,price);
+  console.log(JSON.stringify({stage:'actual-quote',id,quote}));order({type:'recruitCivic',id,term:'week'});
+ }
+ assert.equal(pair.campaign.resources.treasury,316);order({type:'wait',hours:6});
+ assert.deepEqual(new Set(pair.campaign.squad),new Set([1000,100,102,130,136,141]));assert.ok(!pair.battle);assert.ok(!pair.campaign.pendingBattle);assert.ok(!pair.campaign.pendingEncounter);
+ for(const id of pair.campaign.squad){assert.equal(pair.campaign.operativeState[id].alive,true);assert.equal(pair.campaign.operativeState[id].bleeding??0,0);}
+ await replay();assert.deepEqual(initial,initialCopy);assert.deepEqual(digests(),frozen);
+ const accepted=save('accepted');writeFileSync(prefix+'-receipt.json',JSON.stringify({stage:'accepted',initialLength,newOrders:history.length-initialLength,acceptedOrders:history.length,inputPath,inputSHA,frozen,accepted,...brief(),replay:true,ordinaryPresented:true,inputUnchanged:true},null,2));
+ console.log(JSON.stringify({stage:'accepted',acceptedOrders:history.length,newOrders:history.length-initialLength,...brief(),accepted,exactReplay:true,ordinaryPresented:true,inputUnchanged:true}));
+}catch(error){const stopped=save('stopped');writeFileSync(prefix+'-stop.json',JSON.stringify({reason:error.message,inputSHA,frozen,history,records,stopped},null,2));console.log(JSON.stringify({stage:'stopped',reason:error.message,acceptedOrders:history.length,stopped,...brief()}));await replay();process.exitCode=1;}

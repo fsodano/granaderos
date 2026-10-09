@@ -1,0 +1,71 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {addAmmoCounts,unitAmmunitionByType,fieldAmmunitionByType} from '../game/physical-ammunition.js';
+import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
+import {enterSector} from '../game/world.js';
+import {syncBattleTime} from '../game/time.js';
+import {actBattle,presentedActBattle} from '../game/tactical.js';
+import {retainedMilitaryBodies} from '../game/military-remains.js';
+import {handRecord} from '../game/tactical-inventory.js';
+import {weaponSpecification} from '../game/weapon-definition.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+const dir='/tmp/granaderos-stock-ending/',input=dir+'stock-tucuman-aid-accepted.save.json',target=dir+'stock-salta-recapture-reassignment-stopped.save.json',receipt=dir+'stock-salta-recapture-reassignment-stopped.receipt.json';
+const sha=x=>createHash('sha256').update(x).digest('hex'),inputText=fs.readFileSync(input,'utf8'),targetText=fs.readFileSync(target,'utf8'),initial=decodeSave(inputText),accepted=decodeSave(targetText),prior=JSON.parse(fs.readFileSync(receipt,'utf8')),history=prior.history;
+assert.equal(history.length,128);assert.equal(prior.savedError,null);assert.equal(prior.replayError,null);
+const expectedSource='b6d0d4ffc4ec228c2c8684f88d2ad247f8b2e63d694a324f83502abe47c71848',expectedTests='ea274572be1264a7be6744d9f5dd5d89d9081a1b9018f56c7fe5331374970f0a',source=await buildIdentity(process.cwd());assert.equal(source.source,expectedSource);
+const files=[];function collect(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())collect(f);else if(e.isFile())files.push(path.relative(process.cwd(),f));}}collect(path.join(process.cwd(),'tests'));files.sort();const digest=()=>{const h=createHash('sha256');for(const f of files){h.update(f);h.update('\0');h.update(fs.readFileSync(f));h.update('\0');}return h.digest('hex');};assert.equal(files.length,880);assert.equal(digest(),expectedTests);
+// Ownership, defined BEFORE replay from the existing world sourceRecord rule,
+// authoritative return destinations and canonical personal mortality.
+// This is a ledger of current in-game custody; historical departures are not stock.
+function bodyAuthority(c,b,u){
+ if(u.departure)return 'departed-history';
+ const owner=b.sectorId==='san_lorenzo'?'san_nicolas':b.sectorId,entry=b.returnLedger?.entries?.find(e=>e.unitId===u.id);
+ if(entry&&(entry.sector!==owner||!['resident','dead'].includes(entry.kind)))return 'return-ledger-other-custody';
+ const record=c.operativeState?.[u.id];
+ if(record?.alive===false&&u.hp>0)return 'older-living-mirror-of-confirmed-dead-person';
+ // A current living recruited actor is counted once in the personal record.
+ if(c.recruited.some(id=>String(id)===u.id)&&record?.alive&&!record.captured)return 'living-owned-personal-mirror';
+ return null;
+}
+function totals(c,{raw=false}={}){const ammo={},parts={},excluded=[],ids=new Set(c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured).map(String)),roster=rosterFor(c);let dressings=0;
+ for(const id of ids){const u=carriedAmmunition(roster.find(o=>String(o.id)===id),c.operativeState[id]);const n=unitAmmunitionByType(u);parts['personal:'+id]=n;addAmmoCounts(ammo,n);dressings+=u.medkits??0;}
+ for(const[type,scenes]of[['sector',c.sectorStates??{}],['scene',c.sceneStates??{}]])for(const[at,b]of Object.entries(scenes)){
+ const n=fieldAmmunitionByType(b);parts[`${type}:${at}:field`]=n;addAmmoCounts(ammo,n);
+ for(const g of b.groundItems??[])if(!g.heldBy)dressings+=g.type==='medkits'?g.count:g.item==='medkits'?g.count:0;
+ for(const owner of [...(b.props??[]),...(b.npcs??[])])for(const stack of [...(owner.contents??[]),...(owner.questGifts??[])])if(stack.item==='medkits')dressings+=stack.count;
+ const sourceUnits=b.units.filter(u=>!u.departure&&(!b.returnLedger?.entries?.find(e=>e.unitId===u.id)||b.returnLedger.entries.some(e=>e.unitId===u.id&&e.sector===(b.sectorId==='san_lorenzo'?'san_nicolas':b.sectorId)&&['resident','dead'].includes(e.kind))));
+ const retained=retainedMilitaryBodies({...b,units:sourceUnits},[],b.sectorId);
+ for(const u of b.units??[]){if(ids.has(u.id))continue;const reason=raw?null:bodyAuthority(c,b,u);if(reason){excluded.push({scene:`${type}:${at}`,id:u.id,reason,hp:u.hp,departure:u.departure??null,returnEntry:b.returnLedger?.entries?.find(e=>e.unitId===u.id)??null,ammunition:unitAmmunitionByType(u)});continue;}if(!raw&&u.hp<=0)assert.ok(retained.some(v=>v.id===u.id),'A retained dead owner must be admitted by the existing retention helper.');const n=unitAmmunitionByType(u);parts[`${type}:${at}:body:${u.id}`]=n;addAmmoCounts(ammo,n);dressings+=u.medkits??0;}
+ }
+ for(const[at,d]of Object.entries(c.ammunitionStores??{})){const n={};for(const[f,v]of Object.entries(d))addAmmoCounts(n,{[AMMUNITION_FAMILIES[f].type]:v});parts['depot:'+at]=n;addAmmoCounts(ammo,n);}
+ return{ammo:Object.fromEntries(Object.values(AMMUNITION_FAMILIES).map(f=>[f.type,ammo[f.type]??0])),dressings,parts,excluded};}
+const baseline=totals(initial.campaign),oldRaw=totals(initial.campaign,{raw:true}),steps=[],rawChanges=[],targetHash=sha(targetText);let p=structuredClone(initial),last=oldRaw,shownFrames=0;
+for(let i=0;i<history.length;i++){
+ const step=history[i],before=p,ordinaryInput=structuredClone(p.battle);
+ if(step.kind==='campaign'){const n=dispatchCampaign(p.campaign,step.action);assert.equal(n.lastError,null);p={campaign:n,battle:n.pendingBattle?enterSector(n.pendingBattle,n.sectorStates[n.pendingBattle.sector]):null};}
+ else if(step.kind==='tactical'){const n=actBattle(p.battle,step.action),shown=presentedActBattle(p.battle,step.action);assert.equal(n.lastError,null);assert.deepEqual(shown.state,n);assert.deepEqual(p.battle,ordinaryInput);shownFrames+=shown.frames.length;const s=syncBattleTime(p.campaign,n);assert.equal(s.error,null);p={campaign:s.campaign,battle:s.battle};}
+ else{const n=dispatchCampaign(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(n.lastError,null);p={campaign:n,battle:null};}
+ assert.deepEqual(decodeSave(encodeSave(p.campaign,p.battle)),p);
+ const current=totals(p.campaign),raw=totals(p.campaign,{raw:true});assert.deepEqual(current.ammo,baseline.ammo,`Physical current-custody ammunition must conserve at accepted event ${i+1}.`);assert.equal(current.dressings,baseline.dressings,`Physical current-custody dressings must conserve at accepted event ${i+1}.`);
+ if(JSON.stringify(raw.ammo)!==JSON.stringify(last.ammo)){
+  const changes=[];for(const key of new Set([...Object.keys(last.parts),...Object.keys(raw.parts)]))if(JSON.stringify(last.parts[key]??{})!==JSON.stringify(raw.parts[key]??{}))changes.push({key,before:last.parts[key]??{},after:raw.parts[key]??{}});
+  rawChanges.push({index:i+1,step,before:last.ammo,after:raw.ammo,changes,excluded:current.excluded});
+ }
+ steps.push({index:i+1,kind:step.kind,action:step.action,clock:p.campaign.hour*3600+(p.campaign.secondOfHour??0),correctedAmmo:current.ammo,correctedDressings:current.dressings});last=raw;
+ if((i+1)%32===0)console.log(JSON.stringify({event:'acceptedPrefixVerified',through:i+1}));
+}
+assert.deepEqual(p,accepted);assert.equal(sha(fs.readFileSync(input,'utf8')),sha(inputText));assert.equal(sha(fs.readFileSync(target,'utf8')),targetHash);assert.deepEqual(await buildIdentity(process.cwd()),source);assert.equal(digest(),expectedTests);
+const end=totals(p.campaign);assert.deepEqual(baseline.parts['sector:cordoba:body:1'],{musket_75:11});assert.deepEqual(end.parts['sector:cordoba:body:1'],{musket_75:11});const priorDead=Object.keys(initial.campaign.operativeState).filter(id=>!initial.campaign.operativeState[id].alive),serving=initial.campaign.recruited.filter(id=>initial.campaign.operativeState[id].alive&&!initial.campaign.operativeState[id].captured);for(const id of priorDead)assert.equal(p.campaign.operativeState[id].alive,false);for(const id of serving){assert.equal(p.campaign.operativeState[id].hp,initial.campaign.operativeState[id].hp);assert.equal(p.campaign.operativeState[id].bleeding,initial.campaign.operativeState[id].bleeding);}
+const sourceCorpses=initial.campaign.sectorStates,finalCorpses=p.campaign.sectorStates;assert.deepEqual(finalCorpses.cordoba.units.find(u=>u.id==='1').inventory,sourceCorpses.cordoba.units.find(u=>u.id==='1').inventory);const sharedBodies=['1','enemy-group-4-0','enemy-group-4-2'].map(id=>{const u=sourceCorpses.tucuman.units.find(u=>u.id===id);assert.ok(u.departure,'Every identified disappearing mirror had already departed BEFORE this preparation.');return{id,departure:u.departure,weapon:handRecord(u,'primary'),loose:unitAmmunitionByType(u),inventory:u.inventory,returnEntry:sourceCorpses.tucuman.returnLedger?.entries.find(e=>e.unitId===id)??null,post:p.campaign.sectorStates.tucuman.units.find(u=>u.id===id)??null};});
+const field=[2,101,102,108,121,122,126,129,139,105,109,130],recovered=[122,129],profileReceipts=field.map(id=>{const initialActor=carriedAmmunition(rosterFor(initial.campaign).find(o=>o.id===id),initial.campaign.operativeState[id]),actual=carriedAmmunition(rosterFor(p.campaign).find(o=>o.id===id),p.campaign.operativeState[id]);let expected,sourceStack=null,sourceKey=null;if(recovered.includes(id)){const row=sectorInventoryModel(initial.campaign,'mendoza',rosterFor(initial.campaign),id).entries.find(e=>{const stack=JSON.parse(e.expected);return e.reachable&&stack.weapon===initialActor.weapon&&stack.condition===initialActor.condition;});assert.ok(row);sourceStack=JSON.parse(row.expected);sourceKey=row.key;expected=weaponSpecification(sourceStack);const remaining=sectorInventoryModel(p.campaign,'mendoza',rosterFor(p.campaign),id).entries?.find(e=>e.key===sourceKey); // no local actor at the final battlefield; source itself is verified below directly.
+ const take=history.find(s=>s.action?.type==='sectorInventory'&&s.action.operativeId===id&&s.action.direction==='take'&&s.action.sourceKey===sourceKey);assert.ok(take);assert.equal(take.action.count,1);assert.equal(take.action.expected,row.expected);assert.equal(p.campaign.sectorStates.mendoza.droppedWeapons[Number(sourceKey.split(':')[1])].taken,true);
+ }else expected=weaponSpecification(initialActor);
+ assert.deepEqual(weaponSpecification(actual),expected);assert.equal(actual.condition,initialActor.condition);assert.equal(weaponSpecification(actual).materialRangeSlope,undefined);assert.equal(actual.loaded,1);assert.equal(actual.ammo,11);
+ return{id,type:recovered.includes(id)?'recovered-from-expected-finite-stack':'still-owned-original-profile',sourceKey,sourceStack,expectedProfile:expected,actualHand:handRecord(actual,'primary'),compatibleLoaded:actual.loaded,compatibleReserve:actual.ammo};});
+const out={source,testsDigest:expectedTests,testFiles:files.length,input,inputHash:sha(inputText),admittedPair:target,admittedPairHash:targetHash,ordersVerified:steps.length,ordinaryPresentedEqual:true,frames:shownFrames,officialReplayEqual:true,ownershipRule:{source:'game/world.js sourceRecord; game/military-remains.js retainedMilitaryBodies; canonical operativeState.alive',exclude:['departure present','returnLedger owner other than scene or disposition other than resident/dead','older living copy of canonical dead person'],livingOwnedCountedOnce:'authoritative personal record'},initialCorrected:baseline.ammo,finalCorrected:end.ammo,initialDressings:baseline.dressings,finalDressings:end.dressings,initialRaw:oldRaw.ammo,finalRaw:totals(p.campaign,{raw:true}).ammo,initialExcluded:baseline.excluded,finalExcluded:end.excluded,rawChanges,priorDepartedRecords:sharedBodies,canonicalCordobaCorpseInventoryUnchanged:true,canonicalCordobaCorpseIncludedOnce:{initial:baseline.parts['sector:cordoba:body:1'],final:end.parts['sector:cordoba:body:1']},priorDead:priorDead.map(Number),serving,profileReceipts,steps};fs.writeFileSync(dir+'stock-salta-recapture-custody-audit.receipt.json',JSON.stringify(out,null,2));console.log(JSON.stringify({event:'custodyAuditAccepted',orders:steps.length,initial:baseline.ammo,final:end.ammo,dressings:end.dressings,rawChangedEvents:rawChanges.map(e=>e.index),source:source.id}));

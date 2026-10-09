@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import {decodeSave} from '../game/save.js';
+import {rosterFor} from '../game/campaign.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {addAmmoCounts,unitAmmunitionByType,fieldAmmunitionByType} from '../game/physical-ammunition.js';
+import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
+const dir='/tmp/granaderos-stock-ending/';
+const paths=['stock-tucuman-aid-accepted','stock-salta-recapture-continuation-stopped','stock-salta-recapture-reassignment-mendoza-equipped','stock-salta-recapture-reassignment-cordoba-equipped','stock-salta-recapture-reassignment-tucuman-ready','stock-salta-recapture-reassignment-stopped'];
+function sections(state){const ids=new Set(state.recruited.filter(id=>state.operativeState[id].alive&&!state.operativeState[id].captured).map(String)),roster=rosterFor(state),out={};for(const id of ids){out['personal:'+id]=unitAmmunitionByType(carriedAmmunition(roster.find(o=>o.id===Number(id)),state.operativeState[id]));}for(const [type,scenes]of[['sector',state.sectorStates??{}],['scene',state.sceneStates??{}]])for(const [key,b]of Object.entries(scenes)){out[`${type}:${key}:field`]=fieldAmmunitionByType(b);for(const u of b.units??[])if(!ids.has(u.id))out[`${type}:${key}:body:${u.id}`]=unitAmmunitionByType(u);}for(const [key,d]of Object.entries(state.ammunitionStores??{})){out['depot:'+key]={};for(const[f,n]of Object.entries(d))addAmmoCounts(out['depot:'+key],{[AMMUNITION_FAMILIES[f].type]:n});}return out;}
+const data=paths.map(name=>{const{campaign:c}=decodeSave(fs.readFileSync(dir+name+'.save.json','utf8')),s=sections(c),total={};for(const value of Object.values(s))addAmmoCounts(total,value);return{name,hour:c.hour,second:c.secondOfHour,total,sections:s};});
+const differences=[];for(let i=1;i<data.length;i++){const a=data[i-1],b=data[i],diff=[];for(const key of new Set([...Object.keys(a.sections),...Object.keys(b.sections)])){const x=a.sections[key]??{},y=b.sections[key]??{},d={};for(const f of new Set([...Object.keys(x),...Object.keys(y)]))if((x[f]??0)!==(y[f]??0))d[f]=(y[f]??0)-(x[f]??0);if(Object.keys(d).length)diff.push({key,before:x,after:y,delta:d});}differences.push({from:a.name,to:b.name,diff});}
+fs.writeFileSync(dir+'stock-salta-ammunition-audit.json',JSON.stringify({stages:data.map(({sections,...rest})=>rest),differences},null,2));console.log(JSON.stringify({stages:data.map(({sections,...rest})=>rest),differences},null,2));

@@ -1,0 +1,24 @@
+# Frozen coarse long-cloth cut
+
+Prepared and validated without shared worktree or Git writes. Assets/manifest basis is 71dd700d, byte-exact through current dfe419 main. Current clocks/cues/profile were separately retained and tested on dfe419. The installer updates only four complete body LOD records and the nine-file allowlist; it copies no runtime, clocks, profile, compiler, animation banks, skin layers or textures.
+
+Apply from this folder:
+
+    python3 apply-cut.py /absolute/path/to/repository
+
+The installer rejects changed affected bodies, donor hashes or banks. It merges only the four approved records into the current manifest, preserves all seven rifle metadata records and all eight heal profile entries, then asserts protected source/profile hashes. Stage only `allowlist.json`. Full file hashes are in `source-hashes.json`. These source/assets are frozen; later edits must use a separate cut.
+
+Focused current-main validation:
+
+    node --test tests/characters-long-garments.test.mjs tests/three-long-cloth-boot-clearance.test.mjs tests/three-coarse-long-cloth-boot-clearance.test.mjs
+    node tools/characters-3d/compile-locomotion-profile.mjs --check
+    python3 tools/characters-3d/verify-library.py
+    npm run typecheck
+
+23 tests passed on dfe419 plus this exact cut; profile and type checks pass. The native verifier passed on the identical candidate/banks. The builder repeats with byte-identical four assets. `build-receipt.json`, `repeat-receipt.json`, `current-dfe419-preservation.json` and the independent receipt/checker document this boundary. Independent receipt SHA: 9b5140524a54630adf49fbfce45765c8979ec54e75442f10790ab2239995a22a; checker SHA: 617b5dea798a1aebeae7e8264002e297e7cd83b27080a774dfec8b80bce02673.
+
+Normal controls: all 12 friar/shawl × LOD1/2 × standing/crouched/prone shots are in `review/coarse-views`, with exact network/source pins and no errors. `review/normal-100` contains four same-browser baseline/candidate/candidate/baseline normal 100 runs (20 view samples). Same source and actual assets; baseline uses exact archived original four files and manifest. Wide triangles+8.13%, middle~+4.03%, close geometry exact. This costs 824,532 bytes/14,944 triangles over four bodies. Timing is short loaded-host evidence, not 60 FPS acceptance. Six candidate 55–58ms long tasks are retained, as are three baseline 55–57ms tasks and all long RAF gaps.
+
+The twelve complete coarse native meshes and every rig/bind/material prefix are exact. Reviewed donor cloth rest/attributes/indices and first two original shapes are exact. LOD2 appends its matching atlas records; no new texture files. Only the coarsest shawl third shape adds 48 sewn-cohort native trouser offsets, with 2 mm world/2.333 mm native maximum extra travel. Full fixed-prone garment and boot surfaces clear all 546 start/middle/end checks; every individual native shape vector remains<150mm. Crawling retains its original shape and has added weight 0. Complete moving-cloth clearance and full supplied-reference parity remain outside this bounded cut. The existing burgundy 3D skirt versus blue-gray sprite remains documented.
+
+Failed global/local fits, subdivision and seam-flip proposals remain in `/tmp/granaderos-long-cloth-lod-review`; old failed browser hash-harness runs also remain. They are not acceptance evidence. No unrelated Blender or shared server was stopped.
