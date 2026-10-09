@@ -1,0 +1,28 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {finishStockMendozaAssault} from '../tests/created-cuyo-route.mjs';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {depotSelection} from '../game/artillery-depots.js';
+import {rosterFor} from '../game/campaign.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {ammoTypeFor,ammoStock} from '../game/ammo-types.js';
+const directory='/tmp/granaderos-stock-ending',source=`${directory}/cautious-cuyo-event-28-createdMendozaAmmunition.save.json`;
+const start=decodeSave(fs.readFileSync(source,'utf8')).campaign,original=structuredClone(start),events=[];
+const field=start.recruited.filter(id=>start.operativeState[id].alive&&!start.operativeState[id].captured&&start.operativeState[id].location==='cordoba');
+const selections=start.artilleryDepots.cordoba.filter(gun=>gun.type==='bronze4').map(depotSelection);
+assert.equal(selections.length,2);
+const brief=c=>({hour:c.hour,secondOfHour:c.secondOfHour??0,treasury:c.resources.treasury,location:c.location,field,dead:Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id)),pendingBattle:c.pendingBattle?.id??null,pendingEncounter:c.pendingEncounter,owners:field.map(id=>{const u=carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]);return {id,hp:u.hp,bleeding:u.bleeding,weapon:u.weapon,condition:u.condition,weaponInstanceId:u.weaponInstanceId,ammunitionChoice:u.ammunitionChoice,family:ammoTypeFor(u),loaded:u.loaded,stock:ammoStock(u),expiry:c.contracts[id]};})});
+function checkpoint(stage,c){
+ const request=c.pendingBattle,b=request?enterSector(request,request.sceneId?c.sceneStates[request.sceneId]:c.sectorStates[request.sector]):null;
+ const encoded=encodeSave(c,b),restored=decodeSave(encoded);assert.deepEqual(restored.campaign,c);assert.deepEqual(restored.battle,b);
+ const path=`${directory}/stock-mendoza-${stage}.save.json`;fs.writeFileSync(path,encoded);console.log('CHECKPOINT',JSON.stringify({stage,path,...brief(c)}));
+}
+console.log('START',JSON.stringify({source,selections,...brief(start)}));
+try{
+ const campaign=finishStockMendozaAssault(start,field,selections,{report:event=>{
+  const {campaign,...note}=event;events.push(note);console.log('EVENT',JSON.stringify(note));
+  if(campaign)checkpoint(event.event,campaign);
+ }});
+ assert.deepEqual(start,original);checkpoint('prepared',campaign);fs.writeFileSync(`${directory}/stock-mendoza-ammo.note.json`,JSON.stringify({source,selections,events,state:brief(campaign)},null,2));console.log('DONE',JSON.stringify(brief(campaign)));
+}catch(error){assert.deepEqual(start,original);fs.writeFileSync(`${directory}/stock-mendoza-ammo-failure.note.json`,JSON.stringify({source,error:error.stack,events},null,2));console.error('FAILURE',error.stack);process.exitCode=1;}

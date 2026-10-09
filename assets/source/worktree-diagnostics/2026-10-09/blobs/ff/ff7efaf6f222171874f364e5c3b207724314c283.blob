@@ -1,0 +1,45 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+const dir='/tmp/granaderos-stock-ending/',prefix=dir+'stock-public-projects',out=prefix+'-readonly-audit.receipt.json';
+assert.equal(fs.existsSync(out),false,'Preserve previous receipts.');
+const sha=data=>createHash('sha256').update(data).digest('hex');
+const read=name=>{const text=fs.readFileSync(name,'utf8');const pair=decodeSave(text);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)),pair);return {name,text,pair,hash:sha(text)};};
+const input=read(dir+'stock-controlled-recovery-continuation-accepted.save.json');
+assert.equal(input.hash,'0731f2e0b96332d2aaf5f02cbbf7315aedbecee641af3b588bffefb1a6c4fe2f');
+const before=read(prefix+'-before.save.json'),after=read(prefix+'-accepted.save.json');assert.deepEqual(before.pair,input.pair);
+assert.equal(after.hash,'acf5b17c5b96fa9d0638aab4b203d7c99cee171420dc13e3cacd682df7cbf017');
+const originalReceiptText=fs.readFileSync(prefix+'-receipt.json','utf8'),receipt=JSON.parse(originalReceiptText);
+assert.deepEqual(receipt.fullReplay,{original:10,recovery:163,projects:3,total:176,exact:true,ordinaryPresentedEqual:true,officialEveryAction:true});
+assert.equal(receipt.error,null);assert.equal(receipt.debit,3350);
+const logs=[
+ 'Se abonan 3000 pesos para instruir y equipar al Ejército de los Andes.',
+ 'El parlamento acuerda el tránsito y respeta la autonomía pehuenche.',
+ 'Se refuerzan las defensas de Mendoza · El Plumerillo.'
+];
+let previous=before;const steps=[];
+for(let i=0;i<3;i++){
+ const current=read(prefix+'-order-'+(i+1)+'.save.json');
+ assert.equal(current.pair.campaign.log.length,80);assert.equal(previous.pair.campaign.log.length,80);
+ const entry={hour:1577,secondOfHour:3319,text:logs[i]};
+ assert.deepEqual(current.pair.campaign.log,[entry,...previous.pair.campaign.log.slice(0,79)]);
+ steps.push({index:i+1,action:receipt.history[i].action,beforeHash:previous.hash,afterHash:current.hash,debit:previous.pair.campaign.resources.treasury-current.pair.campaign.resources.treasury,newLog:entry});previous=current;
+}
+assert.deepEqual(previous.pair,after.pair);
+const expected=structuredClone(before.pair);expected.campaign.flags.armyFunded=true;expected.campaign.flags.parliament=true;
+expected.campaign.resources.treasury-=3350;expected.campaign.reputation.indigenous=60;
+expected.campaign.sectors.mendoza.loyalty=52;expected.campaign.sectors.mendoza.fort=1;
+const cityEvent={key:'mendoza:quest:quest-parliament',cityId:'mendoza',sectorId:'mendoza',kind:'quest',eventId:'quest-parliament',hour:1577,delta:8,before:44,after:52};
+expected.campaign.cityLoyaltyEvents.push(cityEvent);
+expected.campaign.log=[...logs.toReversed().map(text=>({hour:1577,secondOfHour:3319,text})),...before.pair.campaign.log.slice(0,77)];
+assert.deepEqual(after.pair,expected,'Only exact paid-project effects may change.');
+const source=await buildIdentity(process.cwd());assert.equal(source.source,'7c9b603b2c65c3cd3c62a0ae97cb3a7885627380ffbdfb9eb5c1db18b23df07e');assert.equal(source.revision,'2bd8bb50f1910303433b53a7eaf7e69c979ba682');
+const files=[...new Set(execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--','tests'],{encoding:'utf8'}).split('\0').filter(Boolean))].sort();const h=createHash('sha256');for(const path of files){h.update(path);h.update('\0');h.update(fs.readFileSync(path));h.update('\0');}
+const tests={count:files.length,digest:h.digest('hex')};assert.deepEqual(tests,{count:883,digest:'003daf7b2d8a5d4ab59beb534efd19a0042577ca4d85c3cd30b55dddf59b2b46'});
+const artifacts=[input.name,before.name,after.name,prefix+'-receipt.json',prefix+'-history.json',prefix+'-events.json',process.argv[1],process.cwd()+'/.cache/stock-public-projects-proof.mjs'].map(path=>({path,sha256:sha(fs.readFileSync(path))}));
+assert.equal(fs.readFileSync(prefix+'-receipt.json','utf8'),originalReceiptText);
+const report={kind:'read-only public-project audit',noGameplayActions:true,source,tests,inputHash:input.hash,acceptedHash:after.hash,originalReceiptPreserved:true,reportingCorrection:'Original newLog used length growth. The capped 80-entry log keeps length 80. This audit proves each exact prepend and dropped tail from saved states; no gameplay or original receipt changed.',steps,cityEvent,exactWholePairComparison:true,permittedChangedKeys:['cityLoyaltyEvents','resources','reputation','sectors','flags','log'],personnelDeathsCaptiveTermsGearRngTimeExact:true,debit:3350,final:{hour:1577,secondOfHour:3319,cash:90528,phase:3,armyFunded:true,parliament:true,mendoza:{loyalty:52,fort:1},indigenousStanding:60},fullReplay:receipt.fullReplay,artifacts};
+fs.writeFileSync(out,JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({event:'readOnlyAuditPassed',path:out,sha256:sha(fs.readFileSync(out)),acceptedHash:after.hash,fullReplay:report.fullReplay,exactWholePairComparison:true}));

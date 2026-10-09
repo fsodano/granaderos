@@ -1,0 +1,47 @@
+# Bounded motion comparison — 8 October 2026
+
+Current main `37fdbf8f` versus frozen PR239 `fe1487c1`. Both current bank bytes match the existing `77683c0c` comparison snapshot. Main has since merged the accepted faces. No tracked file or model was changed by this review.
+
+Keep current main as the integration base. Do not choose one complete animation bank. Many body movements are the same; the useful differences are in the hand and arm fits.
+
+| Action | Actual difference | Decision |
+|---|---|---|
+| Unarmed walk/run | Only 30 finger/thumb rotations differ. Root, torso, arm swing and legs agree within 0.1 degree / 0.1 mm. | Keep the gait. Judge relaxed hands separately on current bodies/all LODs. |
+| Sabre/knife walk/run | Only 15 free-left-hand finger rotations differ. Weapon arm/body/legs agree. | Keep the gait and weapon carry. No whole-clip replacement needed. |
+| Eight sabre/knife strikes | Only right upperarm/lowerarm/hand and three thumb rotations differ. Body/free arm/legs/contact timing agree. Current physical wrist maxima 92–142 degrees; PR239 35 degrees. | Prefer PR239's six-channel correction as a narrow donor. Retain current body and gameplay support/contact fitting. Test paid contact/facing before integration. |
+| Punch | Left arm, both finger rows and right hand differ; right power-arm path, torso and legs agree. Wrist bends are small in both. | No basis here to choose the whole old punch. Keep body drive/contact; compare fist/free-arm shape visually. |
+| Rifle walk/run | Arm/finger fits differ; body and legs agree. Current wrist bends right 20–22 degrees / left 27–35 degrees; old right 29–33 / left 39–40. | Retain current rifle carry. Old carry has no clear measured benefit. |
+| Pistol walk/run | Right arm and fingers differ; gait/free-arm swing agree. Current right bend 38–62 degrees; old 30–57. | Hold whole-clip replacement. The small gain needs actual item and visual checks. |
+| Pistol fire | Right arm/fingers/head differ. Current bend 10–21 degrees; old 32–33. | Retain current firing fit unless matched contact/visual evidence shows a defect. |
+| Rifle fire | Both arms/fingers/spine/head differ. Current right bend ≈60 degrees; old ≈34. | Old upper-body fit is a useful donor, but verify sight line, shoulder stock, palms and ready transitions on current equipment. |
+| Pistol strike | Right arm/fingers/head differ. Current right bend 79–82 degrees; old 51–52. | Prefer a targeted old reach correction, with its required item-offset metadata and unchanged current impact checks. |
+| Rifle butt strike | Both arm/finger/spine/head fits differ. Current right 101–102 degrees / left 97–106; old right 38–40 / left 65. | Old fit is the stronger anatomy donor. It uses sequential regrip plus exact item compensation. Do not copy rotations alone. Keep current whole-boot, facing and actual cap-contact limits. |
+| Bayonet | Arm/finger/spine/head fits differ. Current right bend 60–66 degrees; old 47–61. | No clear whole-clip winner; current grip/point/contact review is still needed. |
+| Prone pistol | Existing 240 Hz evidence: old aim/fire wrist ≈30 degrees, current 77–84. But old forearms hover 44–49 mm with no support patch; old reload penetrates floor 122–131 mm. | Use old wrist direction only as a donor. Reject a wholesale replacement. Keep current support and refit reload. |
+| Standing heal | Root, torso, arms and legs all differ. | Keep current, as agreed in the integration review. This is not a hand-only replacement. |
+
+All named standing actions have the same duration and contact/shot markers. The clip clocks do not favor either bank; spacing and naturalness still require actual motion review.
+
+The physical wrist comparison uses the actual native elbow→wrist and wrist→middle-MCP directions on the same current body rig at 120 Hz, plus exact markers. Large local quaternion changes are not treated as anatomical bend. This metric identifies folds; it does not prove naturalness, surface contact or gameplay correctness.
+
+The unchanged focused blade checks pass **6/6 with PR239** and **4/6 with current main**. The current failures are the two native wrist-bound checks. Both sets pass forehand knuckles-down, backhand knuckles-up and forward thrust direction. The included grip check is loose 18 mm cylinder proximity, not exact paid-contact acceptance.
+
+A matched actual-export backhand view at 0.466666667 s uses the same current Granadero body, equipment, light palette and isometric camera. Images and imported asset hashes are under `visual-current/` and `visual-pr239/`. These show a single peak pose, not a complete visual acceptance. The full-body camera is fixed; each hand close view uses the same hand-following framing rule.
+
+The current hand visibly folds back into the cuff at this pose. PR239 keeps the hand outside the cuff and in a much straighter line with the forearm. Both full-body views retain the same stance, torso twist and free-arm position. The blade direction changes with the corrected hand, so exact runtime target-contact validation is still required. The existing cuff cutouts remain visible and are not fixed by this motion comparison.
+
+- Current full body: `visual-current/granadero/stand.slash.blade.backhand.sample-1.png`
+- PR239 full body: `visual-pr239/granadero/stand.slash.blade.backhand.sample-1.png`
+- Current right hand: `visual-current/granadero/stand.slash.blade.backhand.sample-1.r-hand.png`
+- PR239 right hand: `visual-pr239/granadero/stand.slash.blade.backhand.sample-1.r-hand.png`
+
+## Evidence
+
+- `independent-bounded-comparison.json`: exact selected channel allowlists, timings, metadata differences, body/bank pins and wrist metrics.
+- `independent-channel-differences.json`: full numeric channel inventory.
+- `independent-physical-wrists.json`: selected physical wrist measurements.
+- `current-blade-check.log` and `pr239-blade-check.log`: focused test output.
+- Existing prone proof: `/tmp/granaderos-prone-pistol-current-runtime-review/audit/pr239-prone-short-gun-native-comparison.json`.
+- Existing heal comparison: `/tmp/granaderos-clinical-body-successor-f2e33df7/support-evidence/pr239-standing-heal-sampled-comparison.json`.
+
+No 334-clip visual sweep or broad acceptance claim was made. Exact runtime target contact, support, held-item compensation, transition continuity and reduced-body hand surfaces remain required before any donor is integrated. Keep old body assets and runtime out of a motion-only transfer.

@@ -1,0 +1,40 @@
+# Piece 4: distant garment defects
+
+Read-only diagnosis. No source or model changes were made. The asset input is the complete frozen library at `/tmp/granaderos-graphics-baseline-89daba6a/characters`. The source input is commit `89daba6a9f9c8e8e17e853680f34d4bee840ab5a`.
+
+## Findings
+
+| Defect | Measured cause | Source boundary |
+| --- | --- | --- |
+| Worker LOD2 vest pale flecks | Shirt triangles cross the vest shell. 84 of 267 vest triangles have an edge intersection with the shirt. Nearest-surface samples reach 4.16 mm inside the shirt. | `appearances.py` creates `Worker_Waistcoat` from the close coat with a 3 mm normal offset. `optimize.py` then decimates the coat and vest separately. |
+| Woman-shawl LOD1/2 pale shoulder flecks | Shirt triangles cross the shawl shell. LOD1 has 125 of 680 crossing shell triangles. LOD2 has 52 of 253, with samples as far as 14.96 mm inside the shirt. | `appearances.py` creates `Burgundy_Shawl` from the close coat with a 9 mm normal offset. The coat and shawl receive separate reductions. Some fine source fold intersections also exist at LOD0. |
+| Gaucho coarse poncho dark facets | Coarse interpolated normals disagree with the actual faces. 79 of 414 LOD1 poncho triangles and 53 of 154 LOD2 triangles have a corner normal with dot product below -0.1 against the face normal. LOD0 has only 9 of 1,218 such triangles. The minimum LOD2 corner dot product is -0.755. | `draped()` applies the 3 mm solidify shell before the independent decimation. The coarse shell mixes inner/outer and rim shading directions. |
+
+All nine examined outfit LODs have zero triangles whose three vertices sample different pigment tiles. Each targeted overlay has one constant UV anchor. The gaucho poncho has no degenerate triangles and no missing black colour attribute: its retained colour factors stay in approximately 0.627–0.954. The dark facets remain with the normal map disconnected. They disappear in a temporary render that uses geometric face normals. This confirms a vertex-normal problem, rather than a missing paint or normal-map problem.
+
+The edge intersections were tested on the exported rest mesh with segment ray casts against the shirt BVH. Signed gaps use nearest face normals and are local diagnostics; the shirt is not assumed to be a closed solid. Native standing renders confirm the visible pale patches.
+
+## Smallest source corrections
+
+1. Give worker and shawl coarse shells the final shirt topology. Build each shell from the already reduced coat, keep the existing garment region, copy the same weights, then apply an outward offset with a local clearance check. Do not reduce the resulting shell a second time. This removes independent approximations at the shared surface. Check the current coarse source thresholds first: the worker LOD2 coat has 172 eligible triangles versus the current 267-triangle vest; the shawl has 806 eligible LOD1 triangles versus 680, and 392 eligible LOD2 triangles versus 253. These counts use the current all-vertices region tests. They are a useful upper budget, not a final exported result.
+2. For the gaucho, first use geometric face normals on the coarse poncho only. This is the smallest proven repair: zero added triangles and zero added draw calls. Retain LOD0 smooth shading. If smoother coarse panels are needed, calculate normals separately for the outer panel, inner panel, and rim; split at the neck, side openings, and hem. Do not average across the 3 mm shell. Moving solidify after coarse reduction is a larger alternative and is not required for the first repair.
+3. Do not hide these defects with darker pigment, more texture noise, or a whole-family geometry replacement. Rebuild only the selected native source LODs and pass them through the existing frozen surface layers.
+
+## Detail at tactical size
+
+The native 80-pixel frames give approximately 44 pixels of actor height. The woman’s pale shoulder band and the gaucho’s dark lower band remain visible at this size. The worker has smaller pale boundary pixels. The worker’s central shirt line and gaucho’s red neck scarf already give useful large-scale detail.
+
+The close source already contains `Coat_Centre_Closure`, `Coat_Back_Panel_Seam`, and `Tailored_Shoulder_Seam`; the exporter deliberately omits them at LOD2. Their 0.7 mm radii are far below a tactical pixel. Do not restore the full tubes. If the repaired 44-pixel review shows a missing closure, use one fitted strip with three segments (6 triangles). A simplified back seam can use at most four segments (8 triangles), but requires a rear capture before selection. Military strap edges already have their own fitted geometry and must be reviewed on military actors before any replacement. Do not add straps to these civilian appearances or invent a shawl fastener.
+
+Use a maximum of 48 extra detail triangles per selected coarse body. Keep all details in the existing outfit material batch. The shell coupling budget is worker LOD2 no triangle growth, shawl LOD1 at most +128 and shawl LOD2 at most +144 triangles. The gaucho normal repair adds no triangles. Those are proposed limits; the final installer must measure actual output and reject excess.
+
+## Preservation and review gates
+
+- Keep the original close models, pilot/family/apparel colour recipes, all original images, and bank files exact. Keep the charcoal skirt, burgundy shawl, UV1 hem, and coarse donor identity checks.
+- Allow only the selected outfit geometry/normals, their exact new records, and required donor updates. Preserve the rig, bind matrices, sockets, equipment, animation clips, other parts, material roles, and UV0 palette resources.
+- For the coupled vest/shawl, prove identical shared surface topology and weights. Reject shirt intersections in the target patch, including triangle interiors. Require positive clearance without a large silhouette expansion.
+- For the poncho, require every coarse corner normal to agree with its intended panel face and no interpolation across opposite shell sides. Preserve the neck opening, side slits, hem, weights, and bounds.
+- Review front, side, and rear at about 44-pixel actor height, plus enlarged diagnosis views. Include idle, aim, arm raise, crouch, prone, and mounted cases where supported. Require no newly exposed underlay, flicker, or lost silhouette.
+- Measure triangles, draws, and bounds per body. Require no added draw calls, enforce the budgets above, strict top-layer verification, strict lower donor verification on an unwrapped snapshot, exact completed replay, and fresh-source allowlists.
+
+Evidence is under `/tmp/granaderos-distant-detail-89daba6a`: `geometry-audit.json`, the original `lod2` renders, `no-normal` and `flat-normals` gaucho diagnostics, and the `44px` contact frames. Diagnostic rendering only changed material/normal flags in Blender memory; it did not write GLBs or textures.

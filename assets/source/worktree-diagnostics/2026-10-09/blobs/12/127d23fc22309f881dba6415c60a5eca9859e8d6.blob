@@ -1,0 +1,8 @@
+import {chromium} from '/Users/fsodano/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});const ctx=await browser.newContext({viewport:{width:1600,height:900}});const p=await ctx.newPage();
+await p.goto('http://127.0.0.1:3210/',{waitUntil:'networkidle',timeout:120000});await p.getByRole('button',{name:'Combate de San Lorenzo ⚔',exact:true}).click();await p.waitForFunction(()=>{const c=document.querySelector('canvas[data-sector-renderer="three"]');return c?.dataset.loadedActors===c?.dataset.actors&&Number(c?.dataset.actors)>0&&c.dataset.pendingActors==='0'},{timeout:60000});await p.waitForTimeout(2000);
+console.log((await p.locator('body').innerText()).slice(0,16000));await p.screenshot({path:'.cache/trailer-capture/battle-initial.png'});
+await p.getByRole('button',{name:'Fin del turno',exact:true}).click();
+for(let i=0;i<20;i++){await p.waitForTimeout(1000);const c=p.getByRole('button',{name:'Continuar turno enemigo',exact:true});if(await c.isVisible()&&await c.isEnabled())await c.click();if((await p.locator('body').innerText()).includes('Turno 2 · Ejército patriota'))break;}
+console.log('TURN',await p.locator('body').innerText());console.log('RIFLE',await p.locator('[aria-label^="3. Lorenzo Barcala."]').getAttribute('aria-label'));await p.screenshot({path:'.cache/trailer-capture/turn-two.png'});
+await browser.close();

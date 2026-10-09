@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
+import {completeHiredNorthernMission} from '../tests/fresh-northern-command.mjs';
+const path='/tmp/granaderos-stock-ending',input=fs.readFileSync(`${path}/cautious-salta.save.json`,'utf8'),start=decodeSave(input).campaign,prior=structuredClone(start),notes=[];
+const summary=s=>({hour:s.hour,secondOfHour:s.secondOfHour,treasury:s.resources.treasury,phase:s.phase,location:s.location,mission:s.missions.yatasto,dead:Object.entries(s.operativeState).filter(([,r])=>r.alive===false).map(([id])=>Number(id)),survivors:s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured).map(id=>({id,hp:s.operativeState[id].hp,bleeding:s.operativeState[id].bleeding,location:s.operativeState[id].location,medkits:s.operativeState[id].medkits,energy:s.operativeState[id].energy,expiry:contractExpiresSeconds(s.contracts[id])}))});
+console.log('START',JSON.stringify(summary(start)));
+const result=completeHiredNorthernMission(start,{report:n=>{const {campaign,...note}=n;notes.push({...note,...(campaign?summary(campaign):{})});console.log('EVENT',JSON.stringify(notes.at(-1)));},onCheckpoint:(stage,campaign)=>fs.writeFileSync(`${path}/cautious-yatasto-${stage}.save.json`,encodeSave(campaign))});
+assert.deepEqual(start,prior);assert.deepEqual(decodeSave(encodeSave(result)).campaign,result);
+for(const id of prior.recruited.filter(id=>prior.operativeState[id].alive&&!prior.operativeState[id].captured)){
+ assert.equal(result.operativeState[id].alive,true);assert.equal(result.operativeState[id].captured,false);assert.equal(result.operativeState[id].hp,prior.operativeState[id].hp);assert.equal(result.operativeState[id].medkits,prior.operativeState[id].medkits);
+ for(const key of ['inventory','carriedLoaded','carriedAmmo','ammo','condition','weaponMetadata','bladeMetadata','headwear','outfit','legwear'])assert.deepEqual(result.operativeState[id][key],prior.operativeState[id][key],`${id} ${key}`);
+}
+const replay=completeHiredNorthernMission(decodeSave(input).campaign);assert.deepEqual(replay,result);
+fs.writeFileSync(`${path}/cautious-yatasto-completed.save.json`,encodeSave(result));fs.writeFileSync(`${path}/cautious-yatasto-completed.note.json`,JSON.stringify({input:summary(prior),events:notes,result:summary(result)},null,2));
+console.log('PASS deterministic replay, official save, exact native gear/rounds/dressings/HP, every actual death and active paid term');

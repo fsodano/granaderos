@@ -1,0 +1,13 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {buildIdentity} from '../tools/build-identity.mjs';
+const root=new URL('..',import.meta.url).pathname;
+const paths=[...new Set(execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--','tests'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean))].sort();
+const hash=createHash('sha256');
+for(const path of paths){hash.update(path);hash.update('\0');hash.update(readFileSync(new URL(`../${path}`,import.meta.url)));hash.update('\0');}
+const source=await buildIdentity(root),actual={source:source.source,tests:{count:paths.length,digest:hash.digest('hex')}};
+const manifest=new URL('./stock-input-freeze.json',import.meta.url);
+if(process.argv.includes('--verify')){const expected=JSON.parse(readFileSync(manifest,'utf8'));if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(`Input freeze changed: ${JSON.stringify({expected,actual})}`);}
+else writeFileSync(manifest,JSON.stringify(actual,null,2));
+console.log(JSON.stringify(actual));

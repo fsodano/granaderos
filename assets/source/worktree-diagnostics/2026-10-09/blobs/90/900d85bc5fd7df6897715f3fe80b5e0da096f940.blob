@@ -1,0 +1,22 @@
+{
+  "assets/source/characters-3d/authoring/appearances.py": [
+    {
+      "old": "from mathutils import Vector\n",
+      "new": "from mathutils import Vector\nfrom appearance_palette import WOMAN_SHAWL_SKIRT_LINEAR, WOMAN_SHAWL_BURGUNDY_LINEAR\n"
+    },
+    {
+      "old": " 'woman-shawl':dict(gender='female',title='Mujer con mant\u00f3n',coat=(.58,.50,.36),trousers=(.105,.025,.035),headwear=None),\n",
+      "new": " 'woman-shawl':dict(gender='female',title='Mujer con mant\u00f3n',coat=(.58,.50,.36),trousers=WOMAN_SHAWL_SKIRT_LINEAR,shawl=WOMAN_SHAWL_BURGUNDY_LINEAR,headwear=None),\n"
+    },
+    {
+      "old": " if p=='woman-shawl':\n  draped('Long_Skirt',ctx,top=1.06,bottom=.10,shoulder=False,material=M['trousers'],width=.20,depth=.145)\n  coat=ctx['coat'];vv=[v.co+v.normal*.009 for v in coat.data.vertices];ww=[{coat.vertex_groups[g.group].name:g.weight for g in v.groups} for v in coat.data.vertices]\n  ff=[tuple(f.vertices) for f in coat.data.polygons if all(coat.data.vertices[i].co.z>1.265 for i in f.vertices)]\n  mesh('Burgundy_Shawl',vv,ff,M['trousers'],ww)\n",
+      "new": " if p=='woman-shawl':\n  # The reference has a charcoal skirt and a burgundy shawl. Separate pigment\n  # roles while retaining the original wool roughness and normal treatment.\n  M['shawl']=M['trousers'].copy();M['shawl'].name='Burgundy_Shawl_Wool'\n  color('shawl',spec['shawl'])\n  draped('Long_Skirt',ctx,top=1.06,bottom=.10,shoulder=False,material=M['trousers'],width=.20,depth=.145)\n  coat=ctx['coat'];vv=[v.co+v.normal*.009 for v in coat.data.vertices];ww=[{coat.vertex_groups[g.group].name:g.weight for g in v.groups} for v in coat.data.vertices]\n  ff=[tuple(f.vertices) for f in coat.data.polygons if all(coat.data.vertices[i].co.z>1.265 for i in f.vertices)]\n  mesh('Burgundy_Shawl',vv,ff,M['shawl'],ww)\n"
+    }
+  ],
+  "assets/source/characters-3d/REVIEW.md": [
+    {
+      "old": "| woman-shawl | Female | Light shirt, burgundy shawl and skirt, hair bun |\n",
+      "new": "| woman-shawl | Female | Light shirt, burgundy shawl, charcoal skirt, hair bun |\n"
+    }
+  ]
+}

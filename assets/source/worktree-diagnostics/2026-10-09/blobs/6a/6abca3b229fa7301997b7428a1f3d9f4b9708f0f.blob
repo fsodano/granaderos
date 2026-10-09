@@ -1,0 +1,13 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+import {buildIdentity} from '../tools/build-identity.mjs';
+const paths=[...new Set(execFileSync('git',['ls-files','-z','--cached','--others','--exclude-standard','--','tests'],{encoding:'utf8'}).split('\0').filter(Boolean))].sort();
+const hash=createHash('sha256');
+for(const p of paths){hash.update(p);hash.update('\0');hash.update(await readFile(p));hash.update('\0');}
+const current={tests:{count:paths.length,digest:hash.digest('hex')},source:await buildIdentity(process.cwd())};
+const path='.cache/scatter-input-freeze.json';
+if(process.argv.includes('--verify')){const saved=JSON.parse(await readFile(path,'utf8'));assert.deepEqual(current.tests,saved.tests);assert.equal(current.source.source,saved.source.source);}
+else await writeFile(path,JSON.stringify(current,null,2));
+console.log(JSON.stringify({tests:current.tests,sourceId:current.source.id,verified:process.argv.includes('--verify')}));
