@@ -6,6 +6,7 @@ import {climbOpenings,surfaceRectangles} from './world-climb-openings';
 import {soilGrassTop} from './world-terrain-boundaries';
 import {soilFragments} from './world-soil-fragments';
 import {dryWeeds} from './world-dry-weeds';
+import {ROCK_FORM_COUNT} from './world-rock-forms';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldInput,WorldTile} from './world-types';
@@ -35,8 +36,9 @@ export function buildTerrainChunk(id:string,tiles:readonly WorldTile[],input:Wor
     const rock=tile.blocked&&!['wall','door','window','water'].includes(tile.type)||tile.type==='stone'&&tile.material==='stone'&&!tile.buildingId;
     if(rock){
       const seed=seeded(tile.x,tile.y),scale=tile.blocked?.65:.24,h=tile.obstacleHeight??(tile.blocked?1.05:.22);
-      batch.primitive('rock',materials.get('stone'),[x+.10,height+h*.42,z],[scale,h*.56,scale*.75],undefined,light);
-      batch.primitive('rock',materials.get('stone'),[x-.22,height+h*.23,z+.17],[scale*.6,h*.35,scale*.6],undefined,light*(.91+seed*.09));
+      const form=Math.floor(seeded(tile.x,tile.y,1201)*ROCK_FORM_COUNT)%ROCK_FORM_COUNT,companion=(form+1+Math.floor(seeded(tile.y,tile.x,1223)*2))%ROCK_FORM_COUNT;
+      batch.primitive(`rock-form-${form}`,materials.get('stone'),[x+.10,height+h*.42,z],[scale,h*.56,scale*.75],undefined,light);
+      batch.primitive(`rock-form-${companion}`,materials.get('stone'),[x-.22,height+h*.23,z+.17],[scale*.6,h*.35,scale*.6],undefined,light*(.91+seed*.09));
     }
     if(tile.type==='rubble')for(let n=0;n<7;n++){
       const a=seeded(tile.x,tile.y,n*7),b=seeded(tile.y,tile.x,n*11),r=.08+a*.13;

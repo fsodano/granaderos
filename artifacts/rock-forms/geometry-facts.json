@@ -1,0 +1,222 @@
+{
+  "piece": 10,
+  "title": "Varied rock forms",
+  "privateCheckout": "/tmp/granaderos-terrain-edge-private",
+  "commit": "a7ebabd3d4aa1cd6399ed4f98852f9ec8783b08e",
+  "dependsOnPrivatePiece9": "9ad1d82c91cb6743e3be22161f8131531b875de5",
+  "patch": "/tmp/granaderos-rock-forms-private.patch",
+  "patchSha256": "227928ef04f468d02e67ac28dd70582957831170a9c965bdceeac3bf8fefb337",
+  "allowlist": [
+    "web/lib/three/world-rock-forms.ts",
+    "web/lib/three/world-geometry.ts",
+    "web/lib/three/world-terrain.ts",
+    "tests/three-rock-forms.test.mjs"
+  ],
+  "files": {
+    "web/lib/three/world-rock-forms.ts": {
+      "sha256": "bc333235be3c4ee8e387500fd2543c34de160e1908e1e978131bbe5a72483ed1",
+      "bytes": 1493
+    },
+    "web/lib/three/world-geometry.ts": {
+      "sha256": "73d1f95fc3004fd90297792113a5dcbac51dc85b8b829f9f613bf6b2af1826c4",
+      "bytes": 9087
+    },
+    "web/lib/three/world-terrain.ts": {
+      "sha256": "0bf0bd1eab038adadd3a1fdabb4b857d355059e8726c93102442acff7ea04236",
+      "bytes": 5746
+    },
+    "tests/three-rock-forms.test.mjs": {
+      "sha256": "6f03c6592ac865579e98d8079181d8cc1a539b25abed75b235cbd2c933560c28",
+      "bytes": 8660
+    }
+  },
+  "scope": "Three bounded cached terrain-only forms. Broader broken caps and unequal shoulders; original generic rock for rubble, props and hearths stays byte-exact.",
+  "preservation": [
+    "All 12 original connected corners and 20 oriented faces per rock are retained.",
+    "Original six axis extrema and complete old convex plan footprint bound every new corner.",
+    "The two existing instance translations/scales, terrain elevation and burial depth remain exact. Authored obstacle height is never exceeded.",
+    "Material identity, roughness 0.94, complete texture UV arrays and existing per-instance vertex lighting are exact.",
+    "Tile records, obstruction, visibility, simulation RNG and saved positions are untouched. Only admitted presentation coordinates choose the forms."
+  ],
+  "cost": {
+    "trianglesPerRockBefore": 20,
+    "trianglesPerRockAfter": 20,
+    "trianglesPerRockCellBefore": 40,
+    "trianglesPerRockCellAfter": 40,
+    "extraTriangles": 0,
+    "extraMaterialBatches": 0,
+    "mergedRockBufferBytesBefore": 5280,
+    "mergedRockBufferBytesAfter": 5280,
+    "maximumNewPrimitiveCacheBytes": 5760,
+    "newCachedForms": 3,
+    "note": "Three new 60-corner position/normal/UV primitive buffers, 1920 bytes each. Old generic rock may remain cached for existing props/rubble. No texture/shader/asset is added; cache bytes are not a GPU allocation or timing measurement."
+  },
+  "projection": [
+    {
+      "form": 2,
+      "blocked": false,
+      "before44": {
+        "pixelsPerMetre": 25,
+        "width": 17.447625971881752,
+        "height": 6.783336131032229
+      },
+      "after44": {
+        "pixelsPerMetre": 25,
+        "width": 17.332694018461677,
+        "height": 6.767032923703946
+      },
+      "before88": {
+        "pixelsPerMetre": 50,
+        "width": 34.895251943763505,
+        "height": 13.566672262064458
+      },
+      "after88": {
+        "pixelsPerMetre": 50,
+        "width": 34.66538803692335,
+        "height": 13.534065847407891
+      }
+    },
+    {
+      "form": 2,
+      "blocked": true,
+      "before44": {
+        "pixelsPerMetre": 25,
+        "width": 32.45630443616237,
+        "height": 27.67206753361564
+      },
+      "after44": {
+        "pixelsPerMetre": 25,
+        "width": 32.145030730409786,
+        "height": 27.255891959382794
+      },
+      "before88": {
+        "pixelsPerMetre": 50,
+        "width": 64.91260887232474,
+        "height": 55.34413506723128
+      },
+      "after88": {
+        "pixelsPerMetre": 50,
+        "width": 64.29006146081957,
+        "height": 54.51178391876559
+      }
+    },
+    {
+      "form": 0,
+      "blocked": false,
+      "before44": {
+        "pixelsPerMetre": 25,
+        "width": 17.447625971881752,
+        "height": 6.783336131032229
+      },
+      "after44": {
+        "pixelsPerMetre": 25,
+        "width": 17.229837268848872,
+        "height": 6.795190711809429
+      },
+      "before88": {
+        "pixelsPerMetre": 50,
+        "width": 34.895251943763505,
+        "height": 13.566672262064458
+      },
+      "after88": {
+        "pixelsPerMetre": 50,
+        "width": 34.459674537697744,
+        "height": 13.590381423618858
+      }
+    },
+    {
+      "form": 0,
+      "blocked": true,
+      "before44": {
+        "pixelsPerMetre": 25,
+        "width": 32.45630443616237,
+        "height": 27.67206753361564
+      },
+      "after44": {
+        "pixelsPerMetre": 25,
+        "width": 31.86646008150582,
+        "height": 27.704173443964585
+      },
+      "before88": {
+        "pixelsPerMetre": 50,
+        "width": 64.91260887232474,
+        "height": 55.34413506723128
+      },
+      "after88": {
+        "pixelsPerMetre": 50,
+        "width": 63.73292016301164,
+        "height": 55.40834688792917
+      }
+    },
+    {
+      "form": 1,
+      "blocked": false,
+      "before44": {
+        "pixelsPerMetre": 25,
+        "width": 17.447625971881752,
+        "height": 6.783336131032229
+      },
+      "after44": {
+        "pixelsPerMetre": 25,
+        "width": 17.197356273208342,
+        "height": 6.402520569894475
+      },
+      "before88": {
+        "pixelsPerMetre": 50,
+        "width": 34.895251943763505,
+        "height": 13.566672262064458
+      },
+      "after88": {
+        "pixelsPerMetre": 50,
+        "width": 34.394712546416685,
+        "height": 12.80504113978895
+      }
+    },
+    {
+      "form": 1,
+      "blocked": true,
+      "before44": {
+        "pixelsPerMetre": 25,
+        "width": 32.45630443616237,
+        "height": 27.67206753361564
+      },
+      "after44": {
+        "pixelsPerMetre": 25,
+        "width": 31.778490915876073,
+        "height": 25.896648836891963
+      },
+      "before88": {
+        "pixelsPerMetre": 50,
+        "width": 64.91260887232474,
+        "height": 55.34413506723128
+      },
+      "after88": {
+        "pixelsPerMetre": 50,
+        "width": 63.55698183175215,
+        "height": 51.793297673783925
+      }
+    }
+  ],
+  "checks": {
+    "affected": "46/46 passed",
+    "typecheck": "passed",
+    "diffCheck": "passed",
+    "reversePatchApplyCheck": "passed",
+    "privateRenders": 48,
+    "liveBrowser": "pending root review",
+    "quickBuild": "root owned; not run here"
+  },
+  "artifacts": {
+    "probe": "/tmp/granaderos-rock-forms-private/probe.json",
+    "pairedRender": "/tmp/granaderos-rock-forms-private/paired-sheet.png",
+    "frames": "/tmp/granaderos-rock-forms-private/frames.json",
+    "renderDifferences": "/tmp/granaderos-rock-forms-private/render-differences.json"
+  },
+  "renderMethod": "Exact native WorldBatch triangle/UV/normal/colour output. Fixed isometric camera, 25/50 pixels per metre approximate44/88 standing-character buckets. Offline renders are visual evidence only; live acceptance and sustained performance remain untested.",
+  "stoneTextureSha256": "e666253dc2c03968c8221cd4d3774a8190498fc4682b2110c43cd9f5588be6eb",
+  "limits": [
+    "The offline pairs show the larger blocked-rock change clearly; natural stone is smaller and needs live review.",
+    "Offline Cycles12 samples use the exact native triangles/UV/vertex shade and retained stone texture with fixed review light. Browser lighting, occlusion, image acceptance and sustained FPS remain untested.",
+    "Root/shared browser, root docs/worktree and public assets were not changed."
+  ]
+}

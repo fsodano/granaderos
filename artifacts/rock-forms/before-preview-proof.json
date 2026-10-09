@@ -1,0 +1,41 @@
+{
+  "beforePreviewPath": "/tmp/granaderos-piece10-before-preview",
+  "afterGatedCandidatePath": "/tmp/granaderos-piece10-final-gates",
+  "piece10PatchSha256": "227928ef04f468d02e67ac28dd70582957831170a9c965bdceeac3bf8fefb337",
+  "exactChangedFiles": [
+    {
+      "path": "tests/three-rock-forms.test.mjs",
+      "beforePreviewSha256": null,
+      "afterCandidateSha256": "6f03c6592ac865579e98d8079181d8cc1a539b25abed75b235cbd2c933560c28",
+      "exactToStage9": true
+    },
+    {
+      "path": "web/lib/three/world-geometry.ts",
+      "beforePreviewSha256": "e2ceaef97d5132944be0424dc0c20ccf32b9eaef16720b3eadb80a35419109bb",
+      "afterCandidateSha256": "73d1f95fc3004fd90297792113a5dcbac51dc85b8b829f9f613bf6b2af1826c4",
+      "exactToStage9": true
+    },
+    {
+      "path": "web/lib/three/world-rock-forms.ts",
+      "beforePreviewSha256": null,
+      "afterCandidateSha256": "bc333235be3c4ee8e387500fd2543c34de160e1908e1e978131bbe5a72483ed1",
+      "exactToStage9": true
+    },
+    {
+      "path": "web/lib/three/world-terrain.ts",
+      "beforePreviewSha256": "d45d1cbad126a67c64ac7a0fcdffdd4f6e86cc493dbe91bfe5ee2b962bc79019",
+      "afterCandidateSha256": "0bf0bd1eab038adadd3a1fdabb4b857d355059e8726c93102442acff7ea04236",
+      "exactToStage9": true
+    }
+  ],
+  "allOtherInputFilesExact": 11318,
+  "allFourReversedInputsExactToStage9": true,
+  "frozen15OverlayRetained": true,
+  "terrainFixtureExtensionRetained": true,
+  "publicAssetsExactBetweenPreviews": true,
+  "dependencyCopiesPrivate": true,
+  "gatedCandidateTouched": false,
+  "extraGatesOrBrowserRun": false,
+  "devCommand": "npm --prefix web run dev -- --host 127.0.0.1 --port <fresh-port>",
+  "reviewRoute": "/graphics-review -> Terreno"
+}
