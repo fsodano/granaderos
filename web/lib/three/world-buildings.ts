@@ -4,7 +4,8 @@ import {buildingAppearance} from '../../../game/building-appearance.js';
 import {buildingStyle} from '../../../game/building-types.js';
 import {BUILDING_OPENINGS} from '../../../game/building-scale.js';
 import {roomDecorProfile} from '../../../game/room-dressing.js';
-import {WorldBatch,cellTop,roofTextureProjector} from './world-geometry';
+import {WorldBatch,roofTextureProjector} from './world-geometry';
+import {roomFloorFinish,roomFloorPart} from './world-room-floors';
 import {illuminationAt} from './world-materials';
 import {architecturalDetails,roofEdgeDetails} from './world-building-details';
 import {civicCorniceRoofJoin} from './world-civic-cornice';
@@ -133,9 +134,9 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   }
   const openings=climbOpenings(input,T);
   for(const [index,room]of (b.rooms??[]).entries())if(known.has(room.id)){
-    const decor=roomDecorProfile(b,room,index),floor=materials.terrain(decor.floor==='stone'?'cobble':decor.floor),level=room.tacticalLevel??0;
+    const decor=roomDecorProfile(b,room,index),floor=materials.roomFloor(decor.floor==='stone'?'cobble':decor.floor),finish=roomFloorFinish(room,walls.filter(tile=>tile.type==='door'),T,decor.floor),level=room.tacticalLevel??0;
     for(const cell of room.cells){const cellLevel=cell.tacticalLevel??level,surface=(cellLevel?input.terrain.upperSurfaces:input.terrain.tiles)?.find(tile=>tile.x===cell.x&&tile.y===cell.y&&(tile.tacticalLevel??0)===cellLevel),y=surface?.elevation??base;
-      for(const part of buildingFloorRectangles(b,input,{...cell,tacticalLevel:cellLevel,elevation:y},T,openings,wallInset))cellTop(batch,floor,part.minX,part.minZ,part.maxX,part.maxZ,y+.006,illuminationAt(input,{...cell,tacticalLevel:cellLevel}));
+      for(const part of buildingFloorRectangles(b,input,{...cell,tacticalLevel:cellLevel,elevation:y},T,openings,wallInset))roomFloorPart(batch,floor,part,y+.006,cellLevel,illuminationAt(input,{...cell,tacticalLevel:cellLevel}),finish);
     }
   }
   if(!roofs.length&&!allOpen){

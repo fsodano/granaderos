@@ -24,6 +24,7 @@ systems and their recorded scope.
 - [Complete cooking hearth](hearth-review-2026-10-08.md) *(workspace)*
 - [Varied shelf vessels](shelf-vessels-review-2026-10-08.md) *(workspace)*
 - [Gathered sacks and woven rugs](storage-cloth-review-2026-10-08.md) *(workspace)*
+- [Room floor character](room-floors-review-2026-10-08.md) *(workspace)*
 - [Colonial buildings, 1810–1820](buildings.md)
 - [Illustrated character sprites](character-sprites.md)
 - [Custom-character portraits](custom-character-portraits.md)

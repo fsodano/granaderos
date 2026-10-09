@@ -1,0 +1,13 @@
+{
+  "engine": {
+    "path": "engine",
+    "mode": "160000",
+    "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "indexStage": 0,
+    "initialized": false,
+    "head": null,
+    "dirtyPorcelain": null,
+    "uninitializedDirectoryContents": [],
+    "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+  }
+}

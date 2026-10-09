@@ -1,0 +1,14 @@
+{
+  "web/app/renderer-sandbox/fixtures.js": {
+    "sha256": "b829ac9e057622e438af31fa187793ed505827d7f53a716b916d5d88dd0fc34b",
+    "bytes": 19235
+  },
+  "web/app/renderer-sandbox/upper-office-fixture.js": {
+    "sha256": "36ff300dd7f8a49869362fa5407366cf156c21f89ff4d7a37e957713df27749c",
+    "bytes": 2329
+  },
+  "tests/renderer-upper-office-fixture.test.mjs": {
+    "sha256": "d3a434ef55ef30ec1dd4b4476e98c52f895b29511013e9fb8edf3e1e3b15c063",
+    "bytes": 2934
+  }
+}

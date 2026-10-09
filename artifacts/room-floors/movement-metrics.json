@@ -1,0 +1,20 @@
+{
+  "canvas": {
+    "data-active-actors": "2",
+    "data-actors": "2",
+    "data-draw-calls": "72",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "119.9",
+    "data-geometries": "77",
+    "data-loaded-actors": "2",
+    "data-lod": "1",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "71",
+    "data-triangles": "153708"
+  },
+  "errors": [],
+  "route": "Subir; G7upper mouse; G8upper Enter; Bajar",
+  "upperFinishClaim": "visible groundfinish improved; existingupperdeck/slab/hatch preserved"
+}
