@@ -1,0 +1,23 @@
+import bpy,sys,math
+from pathlib import Path
+from mathutils import Vector,Quaternion
+R=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');O=R/'artifacts/character-anatomy-review/punch-wrist-candidate';sys.path.insert(0,str(O/'source/assets/source/characters-3d/authoring'));import reviewed_motion as rm
+for preset in ['granadero','woman-scout']:
+ bpy.ops.wm.open_mainfile(filepath=str(O/(preset+'.fitted-fist.blend')));rig=next(o for o in bpy.data.objects if o.type=='ARMATURE');scene=bpy.context.scene
+ world=bpy.data.worlds.new('World');background=world.node_tree.nodes.new('ShaderNodeBackground');background.inputs[0].default_value=(.32,.35,.33,1);background.inputs[1].default_value=.7;output=world.node_tree.nodes.new('ShaderNodeOutputWorld');world.node_tree.links.new(background.outputs[0],output.inputs['Surface']);scene.world=world
+ target=rig.matrix_world@(rig.pose.bones['hand_r'].head.lerp(rig.pose.bones['middle_01_r'].head,.8))
+ for delta,power,size in [((2,-4,5),450,3),((-3,-2,3),220,3),((0,4,4),260,3)]:
+  data=bpy.data.lights.new('Area','AREA');data.energy=power;data.size=size;obj=bpy.data.objects.new('Area',data);scene.collection.objects.link(obj);obj.location=target+Vector(delta);obj.rotation_euler=(target-obj.location).to_track_quat('-Z','Y').to_euler()
+ cam=bpy.data.cameras.new('Camera');cam.type='ORTHO';cam.ortho_scale=.24;co=bpy.data.objects.new('Camera',cam);scene.collection.objects.link(co);scene.camera=co
+ scene.render.engine='CYCLES';scene.cycles.samples=16;scene.cycles.use_denoising=True;scene.render.resolution_x=560;scene.render.resolution_y=560;scene.render.resolution_percentage=100;scene.view_settings.view_transform='AgX';scene.render.image_settings.file_format='PNG'
+ long,normal=rm._palm_basis(rig,'r');axis=long.cross(normal).normalized()
+ hand=rig.pose.bones['hand_r'];hand_delta=hand.matrix.to_quaternion() @ hand.bone.matrix_local.to_quaternion().inverted()
+ for label,mcp,pip,dip in [('native-plane',80,100,45),('native-relaxed',75,95,40)]:
+  for finger in ['index','middle','ring','pinky']:
+   for i,angle in enumerate([mcp,mcp+pip,mcp+pip+dip],1):
+    pb=rig.pose.bones[f'{finger}_{i:02d}_r'];direction=long*math.cos(math.radians(angle))+normal*math.sin(math.radians(angle));rest=pb.bone.tail_local-pb.bone.head_local
+    q=hand_delta @ rest.normalized().rotation_difference(direction) @ pb.bone.matrix_local.to_quaternion()
+    rm._set_world_rotation(rig,pb.name,q)
+  bpy.context.view_layer.update()
+  for view,delta in [('iso',(5,-5,5.2)),('palm',(-5,-5,5.2))]:
+   co.location=target+Vector(delta);co.rotation_euler=(target-co.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=str(O/f'{preset}.{label}.{view}.png');bpy.ops.render.render(write_still=True)

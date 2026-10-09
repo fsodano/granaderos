@@ -1,0 +1,58 @@
+{
+  "male": {
+    "clips": [
+      "crouch.repair.long-gun",
+      "crouch.repair.short-gun",
+      "crouch.reprime.long-gun",
+      "crouch.reprime.short-gun",
+      "crouch.unload.short-gun",
+      "mounted.repair.long-gun",
+      "mounted.repair.short-gun",
+      "mounted.reprime.long-gun",
+      "mounted.reprime.short-gun",
+      "mounted.unload.short-gun",
+      "prone.repair.long-gun",
+      "prone.repair.short-gun",
+      "prone.reprime.long-gun",
+      "prone.reprime.short-gun",
+      "prone.unload.short-gun",
+      "stand.repair.long-gun",
+      "stand.repair.short-gun",
+      "stand.reprime.long-gun",
+      "stand.reprime.short-gun",
+      "stand.unload.short-gun"
+    ],
+    "changedRotationChannels": 714,
+    "preservedChannels": 52386,
+    "beforeSha256": "8f925e4b5204ae655603612466118d7cc0b2bcdf3f3f3b8b5dd66bb627903db7",
+    "sha256": "18775a9848ca3e38eda6d55c1264ef86b56c3fc6fdad9db816264e96578de94e"
+  },
+  "female": {
+    "clips": [
+      "crouch.repair.long-gun",
+      "crouch.repair.short-gun",
+      "crouch.reprime.long-gun",
+      "crouch.reprime.short-gun",
+      "crouch.unload.short-gun",
+      "mounted.repair.long-gun",
+      "mounted.repair.short-gun",
+      "mounted.reprime.long-gun",
+      "mounted.reprime.short-gun",
+      "mounted.unload.short-gun",
+      "prone.repair.long-gun",
+      "prone.repair.short-gun",
+      "prone.reprime.long-gun",
+      "prone.reprime.short-gun",
+      "prone.unload.short-gun",
+      "stand.repair.long-gun",
+      "stand.repair.short-gun",
+      "stand.reprime.long-gun",
+      "stand.reprime.short-gun",
+      "stand.unload.short-gun"
+    ],
+    "changedRotationChannels": 709,
+    "preservedChannels": 52386,
+    "beforeSha256": "5d44c1b67169393148fc43aed21ff7e769a4987324a3df9c9798f4fa68c64cfc",
+    "sha256": "6a61b83aa990be398f62c4a27aee08eee9d6c6337d54184e269ffa2c07b14a1f"
+  }
+}

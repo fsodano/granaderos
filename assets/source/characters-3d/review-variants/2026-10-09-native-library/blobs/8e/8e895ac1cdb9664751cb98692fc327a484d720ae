@@ -1,0 +1,295 @@
+{
+  "scope": "Actual exported rifle1800 and native male/female aim, fire, carry; no pose edits.",
+  "method": "Eye white sphere and pupil vertices are identified in exported geometry by their source-fitted rest landmarks. Distances use posed vertices in actual gun coordinates. Cheek means exported right facial skin20\u201370mm below the native eye; shoulder means cloth within120mm of the rest shoulder joint. Stock distances use its actual exported walnut triangles.",
+  "sourceRecords": {
+    "granadero": {
+      "body": {
+        "path": "web/public/models/characters/granadero-lod0.glb",
+        "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "bytes": 1964996,
+        "published": true,
+        "textures": {
+          "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+          "textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+          "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        }
+      },
+      "bank": {
+        "path": "web/public/models/characters/male-animations.glb",
+        "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
+        "bytes": 11521284,
+        "published": true,
+        "textures": {
+          "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+          "textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+          "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        }
+      },
+      "equipment": {
+        "path": "web/public/models/characters/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": true,
+        "textures": {}
+      }
+    },
+    "woman-scout": {
+      "body": {
+        "path": "web/public/models/characters/woman-scout-lod0.glb",
+        "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+        "bytes": 1286968,
+        "published": true,
+        "textures": {
+          "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+          "textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+          "textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        }
+      },
+      "bank": {
+        "path": "web/public/models/characters/female-animations.glb",
+        "sha256": "1bc7c12f0c57c40d2e2054b5ef83f0c1152318edbb697e7f52438f34d5934d02",
+        "bytes": 11349456,
+        "published": true,
+        "textures": {
+          "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+          "textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+          "textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        }
+      },
+      "equipment": {
+        "path": "web/public/models/characters/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": true,
+        "textures": {}
+      }
+    }
+  },
+  "rows": [
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "time": 0.1,
+      "rightEyeGunSpace": [
+        -0.16373522579669952,
+        0.09364786744117737,
+        0.18940094113349915
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 134.40094113349915,
+      "eyeSideBoreMM": 93.64786744117737,
+      "gazeDirectionGunSpace": [
+        0.9435760378837585,
+        -0.3217261731624603,
+        -0.07846426963806152
+      ],
+      "gazeToBoreAngleDegrees": 19.338951739195004,
+      "buttCenterToShoulderClothMM": 6.329297336853223,
+      "rightCheekSkinToStockMM": 99.15708005428314,
+      "rightShoulderGunSpace": [
+        -0.3531448245048523,
+        0.006920847576111555,
+        -0.03764110431075096
+      ]
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "time": 0.1,
+      "rightEyeGunSpace": [
+        -0.16491305828094482,
+        0.09396674484014511,
+        0.1902363896369934
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 135.2363896369934,
+      "eyeSideBoreMM": 93.96674484014511,
+      "gazeDirectionGunSpace": [
+        0.9436460137367249,
+        -0.32173219323158264,
+        -0.07759319990873337
+      ],
+      "gazeToBoreAngleDegrees": 19.3268410438337,
+      "buttCenterToShoulderClothMM": 5.664405354122307,
+      "rightCheekSkinToStockMM": 99.82769191265106,
+      "rightShoulderGunSpace": [
+        -0.3538651168346405,
+        0.007160528562963009,
+        -0.03703446313738823
+      ]
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "time": 0.133,
+      "rightEyeGunSpace": [
+        -0.1440294086933136,
+        0.09046066552400589,
+        0.1923331767320633
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 137.3331767320633,
+      "eyeSideBoreMM": 90.46066552400589,
+      "gazeDirectionGunSpace": [
+        0.9410428404808044,
+        -0.3222406506538391,
+        -0.10295281559228897
+      ],
+      "gazeToBoreAngleDegrees": 19.772568192510622,
+      "buttCenterToShoulderClothMM": 18.051395299682138,
+      "rightCheekSkinToStockMM": 100.7932797074318,
+      "rightShoulderGunSpace": [
+        -0.336759090423584,
+        0.002312774071469903,
+        -0.029678868129849434
+      ]
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.long-gun",
+      "time": 0.2,
+      "rightEyeGunSpace": [
+        -0.08058550953865051,
+        0.13633814454078674,
+        0.5634182691574097
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 508.4182691574096,
+      "eyeSideBoreMM": 136.33814454078674,
+      "gazeDirectionGunSpace": [
+        0.902412474155426,
+        -0.40435004234313965,
+        0.14883792400360107
+      ],
+      "gazeToBoreAngleDegrees": 25.522989261683975,
+      "buttCenterToShoulderClothMM": 212.24719772058782,
+      "rightCheekSkinToStockMM": 455.93902468681335,
+      "rightShoulderGunSpace": [
+        -0.22984716296195984,
+        0.023432619869709015,
+        0.3130623400211334
+      ]
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "time": 0.1,
+      "rightEyeGunSpace": [
+        -0.1756126880645752,
+        0.09963781386613846,
+        0.1911914199590683
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 136.1914199590683,
+      "eyeSideBoreMM": 99.63781386613846,
+      "gazeDirectionGunSpace": [
+        0.9427489638328552,
+        -0.32503485679626465,
+        -0.07467758655548096
+      ],
+      "gazeToBoreAngleDegrees": 19.48154460817362,
+      "buttCenterToShoulderClothMM": 10.249968926590991,
+      "rightCheekSkinToStockMM": 99.83859956264496,
+      "rightShoulderGunSpace": [
+        -0.3485105633735657,
+        0.029560506343841553,
+        -0.03728122636675835
+      ]
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "time": 0.1,
+      "rightEyeGunSpace": [
+        -0.17681804299354553,
+        0.09996455162763596,
+        0.19193270802497864
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 136.93270802497864,
+      "eyeSideBoreMM": 99.96455162763596,
+      "gazeDirectionGunSpace": [
+        0.9428196549415588,
+        -0.32502296566963196,
+        -0.07383250445127487
+      ],
+      "gazeToBoreAngleDegrees": 19.46939625022045,
+      "buttCenterToShoulderClothMM": 9.513541608787193,
+      "rightCheekSkinToStockMM": 100.53125023841858,
+      "rightShoulderGunSpace": [
+        -0.34928974509239197,
+        0.029818404465913773,
+        -0.036703769117593765
+      ]
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "time": 0.133,
+      "rightEyeGunSpace": [
+        -0.15622034668922424,
+        0.09630415588617325,
+        0.19346660375595093
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 138.46660375595093,
+      "eyeSideBoreMM": 96.30415588617325,
+      "gazeDirectionGunSpace": [
+        0.9403212666511536,
+        -0.32552850246429443,
+        -0.0991317629814148
+      ],
+      "gazeToBoreAngleDegrees": 19.89442088409486,
+      "buttCenterToShoulderClothMM": 8.49376753691159,
+      "rightCheekSkinToStockMM": 99.30387139320374,
+      "rightShoulderGunSpace": [
+        -0.33299562335014343,
+        0.02508273720741272,
+        -0.029850279912352562
+      ]
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.long-gun",
+      "time": 0.2,
+      "rightEyeGunSpace": [
+        -0.08081381022930145,
+        0.11700558662414551,
+        0.5600630044937134
+      ],
+      "boreHeight": 0.055,
+      "frontSightHeight": 0.0765,
+      "eyeAboveBoreMM": 505.0630044937133,
+      "eyeSideBoreMM": 117.00558662414551,
+      "gazeDirectionGunSpace": [
+        0.8994343876838684,
+        -0.40862685441970825,
+        0.15505456924438477
+      ],
+      "gazeToBoreAngleDegrees": 25.91618066611784,
+      "buttCenterToShoulderClothMM": 210.89285249975836,
+      "rightCheekSkinToStockMM": 438.80680203437805,
+      "rightShoulderGunSpace": [
+        -0.2079923301935196,
+        0.019052725285291672,
+        0.30245867371559143
+      ]
+    }
+  ],
+  "conclusion": "At the shot marker, eye is135\u2013137mm above and94\u2013100mm beside the bore. Right cheek is~100mm from stock. Butt center is6\u201310mm from shoulder cloth. Carry is a separate lower position."
+}

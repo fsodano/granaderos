@@ -1,0 +1,266 @@
+{
+  "manifestBefore": "7375f601d52d703dc3b36c94127d6b4878df72fff477bdec8d1c71103eb43e20",
+  "manifestAfter": "7375f601d52d703dc3b36c94127d6b4878df72fff477bdec8d1c71103eb43e20",
+  "bodyBefore": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2",
+  "bodyAfter": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+  "animation": "9caf54205c1e4c38e976ba1f46c23b985f6e04d460146c4c220cade4b646b8a0",
+  "equipment": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+  "method": "Actual skinned hand triangle versus actual rigid headwear triangle crossing; exact exported held item with current gripOffsets. Two-way segment/triangle BVH intersection. Full selected actions at 30 Hz plus semantic markers. No source authoring geometry. No gameplay target fitting or crossfade.",
+  "rows": [
+    {
+      "clip": "stand.aim.long-gun",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 61,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.fire.long-gun",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 27,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.reload.long-gun.1800",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 148,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.unload.long-gun.1800",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 62,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.reload.long-gun.1807",
+      "item": "1807",
+      "sampleHz": 30,
+      "samples": 148,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.unload.long-gun.1807",
+      "item": "1807",
+      "sampleHz": 30,
+      "samples": 62,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "crouch.aim.long-gun",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 61,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "crouch.fire.long-gun",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 36,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "crouch.reload.long-gun.1800",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 148,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "crouch.unload.long-gun.1800",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 62,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "crouch.reload.long-gun.1807",
+      "item": "1807",
+      "sampleHz": 30,
+      "samples": 148,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "crouch.unload.long-gun.1807",
+      "item": "1807",
+      "sampleHz": 30,
+      "samples": 62,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 61,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "prone.fire.long-gun",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 36,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "prone.reload.long-gun.1800",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 148,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "prone.unload.long-gun.1800",
+      "item": "1800",
+      "sampleHz": 30,
+      "samples": 62,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "prone.reload.long-gun.1807",
+      "item": "1807",
+      "sampleHz": 30,
+      "samples": 148,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "prone.unload.long-gun.1807",
+      "item": "1807",
+      "sampleHz": 30,
+      "samples": 62,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.slash.blade",
+      "item": "1809",
+      "sampleHz": 30,
+      "samples": 32,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.slash.blade.forehand",
+      "item": "1809",
+      "sampleHz": 30,
+      "samples": 32,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.slash.blade.backhand",
+      "item": "1809",
+      "sampleHz": 30,
+      "samples": 32,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "crouch.slash.blade",
+      "item": "1809",
+      "sampleHz": 30,
+      "samples": 40,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "mounted.slash.blade",
+      "item": "1809",
+      "sampleHz": 30,
+      "samples": 40,
+      "contacts": [],
+      "newContactSamples": 0,
+      "beforeContactSamples": 0,
+      "afterContactSamples": 0
+    },
+    {
+      "clip": "stand.punch.unarmed",
+      "item": null,
+      "sampleHz": 30,
+      "samples": 32,
+      "contacts": [
+        {
+          "time": 0.5,
+          "part": "hand_l",
+          "before": [
+            0.11684599315104438,
+            0.040463944651584274,
+            -0.03154396406054963
+          ],
+          "after": [
+            0.11684599315104438,
+            0.040463944651584274,
+            -0.03154396406054963
+          ]
+        }
+      ],
+      "newContactSamples": 0,
+      "beforeContactSamples": 1,
+      "afterContactSamples": 1
+    }
+  ]
+}

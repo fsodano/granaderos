@@ -1,0 +1,43 @@
+import sys,json,struct
+from pathlib import Path
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+R=Path('/tmp/granadero-hair-naturalism-pilot/worker-delivery');models=R/'models-v6';report={}
+def read(data,j,i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];n={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4}[a['type']];f={5126:'f',5125:'I',5123:'H',5121:'B'}[a['componentType']];size=struct.calcsize('<'+f*n);start=v.get('byteOffset',0)+a.get('byteOffset',0);return[struct.unpack_from('<'+f*n,data,start+k*v.get('byteStride',size))for k in range(a['count'])]
+for lod in range(3):
+ raw=(models/f'worker-lod{lod}.glb').read_bytes();n=struct.unpack_from('<I',raw,12)[0];j=json.loads(raw[20:20+n]);data=raw[28+n:];scalp=[];under=[];cards=[]
+ for mesh in j['meshes']:
+  for p in mesh['primitives']:
+   mat=j['materials'][p['material']]['name'];v=[Vector(x)for x in read(data,j,p['attributes']['POSITION'])];ind=[x[0]for x in read(data,j,p['indices'])]
+   if mat=='Skin':scalp +=[[v[i]for i in ind[k:k+3]]for k in range(0,len(ind),3)if min(v[i].y for i in ind[k:k+3])>1.60]
+   if mat=='Short_Hair_Cutout':cards +=[[v[i]for i in ind[k:k+3]]for k in range(0,len(ind),3)]
+   if mat=='Apparel_Atlas'and mesh['name']=='Exposed_Human_Skin':
+    parent=list(range(len(v)))
+    def root(i):
+     while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]
+     return i
+    def join(a,b):parent[root(a)]=root(b)
+    lookup={}
+    for i,q in enumerate(v):
+     key=tuple(round(x,7)for x in q)
+     if key in lookup:join(i,lookup[key])
+     else:lookup[key]=i
+    for k in range(0,len(ind),3):join(ind[k],ind[k+1]);join(ind[k],ind[k+2])
+    h={root(i)for i,q in enumerate(v)if q.y>1.745}
+    under +=[[v[i]for i in ind[k:k+3]]for k in range(0,len(ind),3)if root(ind[k])in h]
+ def bvh(tris):return BVHTree.FromPolygons([p for t in tris for p in t],[(i*3,i*3+1,i*3+2)for i in range(len(tris))],all_triangles=True)
+ skin=bvh(scalp);shell=bvh(under);centre=Vector((0,1.657,.006))
+ def check(tris,surface,steps):
+  low=1;worst=None;count=0
+  for t,tri in enumerate(tris):
+   for a in range(steps+1):
+    for b in range(steps+1-a):
+     weights=(a/steps,b/steps,1-(a+b)/steps);point=sum((p*w for p,w in zip(tri,weights)),Vector());direction=(point-centre).normalized();q,n,f,d=surface.ray_cast(centre+direction*.4,-direction,.4)
+     if q is None:continue
+     clearance=(point-centre).length-(q-centre).length;count+=1
+     if clearance<low:low=clearance;worst={'triangle':t,'barycentric':weights,'position':list(point)}
+  return{'samples':count,'minimumRadialClearanceM':low,'worst':worst}
+ report[lod]={'opaqueVsSkin':check(under,skin,12),'cardsVsSkin':check(cards,skin,4),'cardsVsOpaque':check(cards,shell,4)}
+ print(lod,report[lod],flush=True)
+(R/'surface-clearance.json').write_text(json.dumps(report,indent=2))

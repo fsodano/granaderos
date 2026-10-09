@@ -1,0 +1,177 @@
+{
+  "path": "/tmp/granadero-full-review/models/granadero-lod0.glb",
+  "sha256": "957b2cf949eaf263df67d1f987a695f5c216c14f1365a464768eb20d2058515d",
+  "nativeForward": [
+    0,
+    0,
+    1
+  ],
+  "weldToleranceMetres": 1e-07,
+  "checks": [
+    {
+      "part": "sclera_left",
+      "mesh": "Exposed_Human_Skin",
+      "material": "Apparel_Atlas",
+      "triangles": 152,
+      "vertices": 78,
+      "center": [
+        0.029604585841298103,
+        1.650874137878418,
+        0.131500706076622
+      ],
+      "dimensions": [
+        0.022980254143476486,
+        0.023000001907348633,
+        0.02195647358894348
+      ],
+      "closed": true,
+      "boundaryEdges": 0,
+      "nonmanifoldEdges": 0,
+      "signedVolume": -5.740081425989158e-06,
+      "outwardFaceAreaFraction": 0.0,
+      "outwardVertexNormalAreaFraction": 0.0,
+      "faceNormalAgreement": 1.0,
+      "frontFaceAreaFraction": 0.521713592947957,
+      "frontVertexNormalAreaFraction": 0.5204489997574859
+    },
+    {
+      "part": "iris_left",
+      "mesh": "Exposed_Human_Skin",
+      "material": "Apparel_Atlas",
+      "triangles": 384,
+      "vertices": 240,
+      "center": [
+        0.029511533677577972,
+        1.650874137878418,
+        0.14212725311517715
+      ],
+      "dimensions": [
+        0.010999999940395355,
+        0.010999917984008789,
+        0.0012741535902023315
+      ],
+      "closed": false,
+      "boundaryEdges": 96,
+      "nonmanifoldEdges": 0,
+      "signedVolume": -4.404237615430226e-08,
+      "outwardFaceAreaFraction": 0.0,
+      "outwardVertexNormalAreaFraction": 0.0,
+      "faceNormalAgreement": 1.0,
+      "frontFaceAreaFraction": 0.0,
+      "frontVertexNormalAreaFraction": 0.0
+    },
+    {
+      "part": "pupil_left",
+      "mesh": "Exposed_Human_Skin",
+      "material": "Apparel_Atlas",
+      "triangles": 144,
+      "vertices": 97,
+      "center": [
+        0.029511533677577972,
+        1.650874137878418,
+        0.14282599836587906
+      ],
+      "dimensions": [
+        0.0034400001168251038,
+        0.0034399032592773438,
+        0.0001293569803237915
+      ],
+      "closed": false,
+      "boundaryEdges": 48,
+      "nonmanifoldEdges": 0,
+      "signedVolume": -3.4599173379874085e-10,
+      "outwardFaceAreaFraction": 0.0,
+      "outwardVertexNormalAreaFraction": 0.0,
+      "faceNormalAgreement": 1.0,
+      "frontFaceAreaFraction": 0.0,
+      "frontVertexNormalAreaFraction": 0.0
+    },
+    {
+      "part": "sclera_right",
+      "mesh": "Exposed_Human_Skin",
+      "material": "Apparel_Atlas",
+      "triangles": 152,
+      "vertices": 78,
+      "center": [
+        -0.029665823094546795,
+        1.650874137878418,
+        0.13137272372841835
+      ],
+      "dimensions": [
+        0.02259829081594944,
+        0.023000001907348633,
+        0.023617349565029144
+      ],
+      "closed": true,
+      "boundaryEdges": 0,
+      "nonmanifoldEdges": 0,
+      "signedVolume": -5.791773847323663e-06,
+      "outwardFaceAreaFraction": 0.0,
+      "outwardVertexNormalAreaFraction": 0.0,
+      "faceNormalAgreement": 1.0,
+      "frontFaceAreaFraction": 0.5192892848819156,
+      "frontVertexNormalAreaFraction": 0.5030769426160063
+    },
+    {
+      "part": "iris_right",
+      "mesh": "Exposed_Human_Skin",
+      "material": "Apparel_Atlas",
+      "triangles": 384,
+      "vertices": 240,
+      "center": [
+        -0.029511533677577972,
+        1.650874137878418,
+        0.14212725311517715
+      ],
+      "dimensions": [
+        0.010999999940395355,
+        0.010999917984008789,
+        0.0012741535902023315
+      ],
+      "closed": false,
+      "boundaryEdges": 96,
+      "nonmanifoldEdges": 0,
+      "signedVolume": -4.404237615430224e-08,
+      "outwardFaceAreaFraction": 0.0,
+      "outwardVertexNormalAreaFraction": 0.0,
+      "faceNormalAgreement": 1.0,
+      "frontFaceAreaFraction": 0.0,
+      "frontVertexNormalAreaFraction": 0.0
+    },
+    {
+      "part": "pupil_right",
+      "mesh": "Exposed_Human_Skin",
+      "material": "Apparel_Atlas",
+      "triangles": 144,
+      "vertices": 97,
+      "center": [
+        -0.029511533677577972,
+        1.650874137878418,
+        0.14282599836587906
+      ],
+      "dimensions": [
+        0.0034400001168251038,
+        0.0034399032592773438,
+        0.0001293569803237915
+      ],
+      "closed": false,
+      "boundaryEdges": 48,
+      "nonmanifoldEdges": 0,
+      "signedVolume": -3.4599173379874085e-10,
+      "outwardFaceAreaFraction": 0.0,
+      "outwardVertexNormalAreaFraction": 0.0,
+      "faceNormalAgreement": 1.0,
+      "frontFaceAreaFraction": 0.0,
+      "frontVertexNormalAreaFraction": 0.0
+    }
+  ],
+  "errors": [
+    "left sclera has inward faces or vertex normals",
+    "left iris faces backwards",
+    "left pupil faces backwards",
+    "right sclera has inward faces or vertex normals",
+    "right iris faces backwards",
+    "right pupil faces backwards"
+  ],
+  "pass": false
+}

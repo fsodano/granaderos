@@ -1,0 +1,2931 @@
+{
+  "version": 1,
+  "gitRevision": "255838ae5b2b37e19bbc5a5ea678b91fdced316d",
+  "manifestSha256": "f9c0bd5f4f0fac883a8a20014fb2e04e284e9845eb174386fe1243a960c63be8",
+  "manifestPath": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 480,
+    "samples": 8,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "24f77e316d7411729bbed1b4c633658137a37f4ca52aa9a8c65896f764e995eb",
+    "snapshot": "frozen-sources/tools/characters-3d/render-review.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "839582c9bb2609ad34f6caaa2511dcc56d3bf04ae65b978ef7ded4af868eda7b",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero",
+    "woman-scout"
+  ],
+  "coverage": [
+    {
+      "clip": "stand.walk.unarmed",
+      "item": null
+    },
+    {
+      "clip": "stand.run.unarmed",
+      "item": null
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "artifacts/character-anatomy-review/punch-wrist-candidate/models/granadero-lod0.glb",
+        "sha256": "50041f99086062f97cd27c2209932e3da77d88281f0488951de0bdf0b5e59b6f",
+        "bytes": 2993000,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+          "textures/9cf786dd1636a37659be.png": "9cf786dd1636a37659be83671d24df2d6734b0f7d84b4b2a3d49999774e7f09a",
+          "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/7a4750f0f9e8ddae313c.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/7a4750f0f9e8ddae313c.png",
+          "textures/9cf786dd1636a37659be.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/9cf786dd1636a37659be.png",
+          "textures/c115e786c16ea09b4835.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/c115e786c16ea09b4835.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "artifacts/character-anatomy-review/punch-wrist-candidate/models/male-animations.glb",
+        "sha256": "0860a196f1086f53c95f241c4eec6ce8b27aa5c8b21b54d3ec04f3d390ef92ef",
+        "bytes": 11565744,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+          "textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+          "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        "texturePaths": {
+          "textures/cfef86f82ac5d996af20.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/cfef86f82ac5d996af20.png",
+          "textures/a536d20596728975d3d5.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/a536d20596728975d3d5.png",
+          "textures/55aaf791e83ec37fa219.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/55aaf791e83ec37fa219.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/2e15a426be9ee20c39a7.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/2e15a426be9ee20c39a7.png"
+        }
+      },
+      "equipment": {
+        "path": "artifacts/character-anatomy-review/punch-wrist-candidate/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    },
+    "woman-scout": {
+      "body": {
+        "path": "artifacts/character-anatomy-review/punch-wrist-candidate/models/woman-scout-lod0.glb",
+        "sha256": "62a3854b3e612fc93bc604fe3ef4babcc6713c040ebc9c678285e1108153aac2",
+        "bytes": 1505520,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/4f6735c3c59381167fa8.png": "4f6735c3c59381167fa8ee9ab958e8b98d99ef626610a44eb1f111265c238b94",
+          "textures/d69cb3f32570c7a401e6.png": "d69cb3f32570c7a401e665e5b0e65ad47e0760a49658ebe71a716723f48925f8",
+          "textures/2138b79add80457b1518.png": "2138b79add80457b1518e95f6a427d474c40c350e0d7c0f87038d030dd9aa39e",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/4f6735c3c59381167fa8.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/4f6735c3c59381167fa8.png",
+          "textures/d69cb3f32570c7a401e6.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/d69cb3f32570c7a401e6.png",
+          "textures/2138b79add80457b1518.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/2138b79add80457b1518.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "artifacts/character-anatomy-review/punch-wrist-candidate/models/female-animations.glb",
+        "sha256": "eca43efc797898435a645862d9941ace46360608c4e6eb07f07138d08e589265",
+        "bytes": 11394136,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/01f30a1649e149138639.png": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+          "textures/ca8dfdb29da067ef8ac1.png": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+          "textures/a27b9aff9f8c8edf1136.png": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        "texturePaths": {
+          "textures/01f30a1649e149138639.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/01f30a1649e149138639.png",
+          "textures/ca8dfdb29da067ef8ac1.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/ca8dfdb29da067ef8ac1.png",
+          "textures/a27b9aff9f8c8edf1136.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/a27b9aff9f8c8edf1136.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/2e15a426be9ee20c39a7.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate/models/textures/2e15a426be9ee20c39a7.png"
+        }
+      },
+      "equipment": {
+        "path": "artifacts/character-anatomy-review/punch-wrist-candidate/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-1",
+      "view": "iso",
+      "timeSeconds": 0.05333335,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-1.png",
+      "sha256": "0b5a6fdf14cfc429ef8d0af0f1adbd64e2b2bf49c6416997d65a81199118bb2e",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9307628
+        ],
+        "head": [
+          -0.0232651,
+          -0.0670627,
+          1.5974232
+        ],
+        "upperarm_l": [
+          0.1724596,
+          -0.0467188,
+          1.4048599
+        ],
+        "upperarm_r": [
+          -0.2055051,
+          -0.0279302,
+          1.385913
+        ],
+        "hand_l": [
+          0.2278436,
+          -0.2196092,
+          0.9559906
+        ],
+        "hand_r": [
+          -0.2605769,
+          -0.039612,
+          0.8986374
+        ],
+        "foot_l": [
+          0.0275168,
+          0.1585155,
+          0.0814107
+        ],
+        "foot_r": [
+          -0.0804677,
+          -0.0812449,
+          0.1244887
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-1",
+      "view": "l-hand",
+      "timeSeconds": 0.05333335,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-1.l-hand.png",
+      "sha256": "c99b704a586d72778fd6acdc76b37358f48ca9cc4a847460c21ff8a105f9cb41",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9307628
+        ],
+        "head": [
+          -0.0232651,
+          -0.0670627,
+          1.5974232
+        ],
+        "upperarm_l": [
+          0.1724596,
+          -0.0467188,
+          1.4048599
+        ],
+        "upperarm_r": [
+          -0.2055051,
+          -0.0279302,
+          1.385913
+        ],
+        "hand_l": [
+          0.2278436,
+          -0.2196092,
+          0.9559906
+        ],
+        "hand_r": [
+          -0.2605769,
+          -0.039612,
+          0.8986374
+        ],
+        "foot_l": [
+          0.0275168,
+          0.1585155,
+          0.0814107
+        ],
+        "foot_r": [
+          -0.0804677,
+          -0.0812449,
+          0.1244887
+        ]
+      },
+      "cameraTarget": [
+        0.22719717025756836,
+        -0.27951914072036743,
+        0.8870850205421448
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-1",
+      "view": "r-hand",
+      "timeSeconds": 0.05333335,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-1.r-hand.png",
+      "sha256": "70d4924e5e64e270e95caecbed5db8e3e674923b4af4f9e75f2cfe75ac1bb34e",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9307628
+        ],
+        "head": [
+          -0.0232651,
+          -0.0670627,
+          1.5974232
+        ],
+        "upperarm_l": [
+          0.1724596,
+          -0.0467188,
+          1.4048599
+        ],
+        "upperarm_r": [
+          -0.2055051,
+          -0.0279302,
+          1.385913
+        ],
+        "hand_l": [
+          0.2278436,
+          -0.2196092,
+          0.9559906
+        ],
+        "hand_r": [
+          -0.2605769,
+          -0.039612,
+          0.8986374
+        ],
+        "foot_l": [
+          0.0275168,
+          0.1585155,
+          0.0814107
+        ],
+        "foot_r": [
+          -0.0804677,
+          -0.0812449,
+          0.1244887
+        ]
+      },
+      "cameraTarget": [
+        -0.25418639183044434,
+        -0.06686872988939285,
+        0.8117246627807617
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-2",
+      "view": "iso",
+      "timeSeconds": 0.37333345,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-2.png",
+      "sha256": "fa0c5201111666a91a075a60e2c75f220038e3011686a5f17f30566c2cb9da8b",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9069539
+        ],
+        "head": [
+          -0.0225579,
+          -0.0580104,
+          1.5736496
+        ],
+        "upperarm_l": [
+          0.1753282,
+          -0.0470308,
+          1.3851943
+        ],
+        "upperarm_r": [
+          -0.2011349,
+          -0.0138549,
+          1.3579136
+        ],
+        "hand_l": [
+          0.2315273,
+          -0.2407436,
+          0.9417995
+        ],
+        "hand_r": [
+          -0.2573499,
+          0.0449647,
+          0.8812361
+        ],
+        "foot_l": [
+          0.0683093,
+          0.4269161,
+          0.2337308
+        ],
+        "foot_r": [
+          -0.0302966,
+          -0.0712058,
+          0.0771911
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-2",
+      "view": "l-hand",
+      "timeSeconds": 0.37333345,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-2.l-hand.png",
+      "sha256": "8731c6906919f6b9760de015ca8be0ac722d20b8fb48f68585e466528c5a8a1d",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9069539
+        ],
+        "head": [
+          -0.0225579,
+          -0.0580104,
+          1.5736496
+        ],
+        "upperarm_l": [
+          0.1753282,
+          -0.0470308,
+          1.3851943
+        ],
+        "upperarm_r": [
+          -0.2011349,
+          -0.0138549,
+          1.3579136
+        ],
+        "hand_l": [
+          0.2315273,
+          -0.2407436,
+          0.9417995
+        ],
+        "hand_r": [
+          -0.2573499,
+          0.0449647,
+          0.8812361
+        ],
+        "foot_l": [
+          0.0683093,
+          0.4269161,
+          0.2337308
+        ],
+        "foot_r": [
+          -0.0302966,
+          -0.0712058,
+          0.0771911
+        ]
+      },
+      "cameraTarget": [
+        0.23182526230812073,
+        -0.3027755618095398,
+        0.8747954368591309
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-2",
+      "view": "r-hand",
+      "timeSeconds": 0.37333345,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-2.r-hand.png",
+      "sha256": "5a29958577249d2105405ad453db79111a321a305c4226d3ab74018495d3aaa7",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9069539
+        ],
+        "head": [
+          -0.0225579,
+          -0.0580104,
+          1.5736496
+        ],
+        "upperarm_l": [
+          0.1753282,
+          -0.0470308,
+          1.3851943
+        ],
+        "upperarm_r": [
+          -0.2011349,
+          -0.0138549,
+          1.3579136
+        ],
+        "hand_l": [
+          0.2315273,
+          -0.2407436,
+          0.9417995
+        ],
+        "hand_r": [
+          -0.2573499,
+          0.0449647,
+          0.8812361
+        ],
+        "foot_l": [
+          0.0683093,
+          0.4269161,
+          0.2337308
+        ],
+        "foot_r": [
+          -0.0302966,
+          -0.0712058,
+          0.0771911
+        ]
+      },
+      "cameraTarget": [
+        -0.2416990101337433,
+        0.03496561199426651,
+        0.7918344736099243
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-3",
+      "view": "iso",
+      "timeSeconds": 0.72533356,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-3.png",
+      "sha256": "906b383ace8006863df7aed5e123d37439c10635cd578e19ddd32a074668a4b0",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9022896
+        ],
+        "head": [
+          0.0031072,
+          -0.0911293,
+          1.5675659
+        ],
+        "upperarm_l": [
+          0.1981068,
+          -0.0489399,
+          1.3721695
+        ],
+        "upperarm_r": [
+          -0.180156,
+          -0.0659483,
+          1.3581229
+        ],
+        "hand_l": [
+          0.2553031,
+          0.093638,
+          0.9165191
+        ],
+        "hand_r": [
+          -0.2288271,
+          -0.2372941,
+          0.9046172
+        ],
+        "foot_l": [
+          0.0981913,
+          -0.36996,
+          0.1015426
+        ],
+        "foot_r": [
+          -0.0350319,
+          0.3945538,
+          0.1294383
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-3",
+      "view": "l-hand",
+      "timeSeconds": 0.72533356,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-3.l-hand.png",
+      "sha256": "bdb020fa168bcc61e977ce9c958e9e7e678621e411e0e991530d04e86d5df1d6",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9022896
+        ],
+        "head": [
+          0.0031072,
+          -0.0911293,
+          1.5675659
+        ],
+        "upperarm_l": [
+          0.1981068,
+          -0.0489399,
+          1.3721695
+        ],
+        "upperarm_r": [
+          -0.180156,
+          -0.0659483,
+          1.3581229
+        ],
+        "hand_l": [
+          0.2553031,
+          0.093638,
+          0.9165191
+        ],
+        "hand_r": [
+          -0.2288271,
+          -0.2372941,
+          0.9046172
+        ],
+        "foot_l": [
+          0.0981913,
+          -0.36996,
+          0.1015426
+        ],
+        "foot_r": [
+          -0.0350319,
+          0.3945538,
+          0.1294383
+        ]
+      },
+      "cameraTarget": [
+        0.23178154230117798,
+        0.12524862587451935,
+        0.8341474533081055
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-3",
+      "view": "r-hand",
+      "timeSeconds": 0.72533356,
+      "durationSeconds": 1.066667,
+      "file": "granadero/stand.walk.unarmed.phase-3.r-hand.png",
+      "sha256": "ab655bd508fe277293c0057f64f32481f8b40960ba02620c9b310a81f4163b8d",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9022896
+        ],
+        "head": [
+          0.0031072,
+          -0.0911293,
+          1.5675659
+        ],
+        "upperarm_l": [
+          0.1981068,
+          -0.0489399,
+          1.3721695
+        ],
+        "upperarm_r": [
+          -0.180156,
+          -0.0659483,
+          1.3581229
+        ],
+        "hand_l": [
+          0.2553031,
+          0.093638,
+          0.9165191
+        ],
+        "hand_r": [
+          -0.2288271,
+          -0.2372941,
+          0.9046172
+        ],
+        "foot_l": [
+          0.0981913,
+          -0.36996,
+          0.1015426
+        ],
+        "foot_r": [
+          -0.0350319,
+          0.3945538,
+          0.1294383
+        ]
+      },
+      "cameraTarget": [
+        -0.22727160155773163,
+        -0.29566431045532227,
+        0.8344168663024902
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-1",
+      "view": "iso",
+      "timeSeconds": 0.03833335,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-1.png",
+      "sha256": "48ad1095634f04e5c3b2370b38b562c659ca03127ea5d50b1be9edc507a91c95",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9699852
+        ],
+        "head": [
+          -0.0027398,
+          -0.152809,
+          1.6210083
+        ],
+        "upperarm_l": [
+          0.1884916,
+          -0.0912291,
+          1.4256207
+        ],
+        "upperarm_r": [
+          -0.1888904,
+          -0.1225225,
+          1.4124782
+        ],
+        "hand_l": [
+          0.26351,
+          -0.1634291,
+          1.1702377
+        ],
+        "hand_r": [
+          -0.2639507,
+          -0.3573639,
+          1.243495
+        ],
+        "foot_l": [
+          0.0661661,
+          -0.1169394,
+          0.1620621
+        ],
+        "foot_r": [
+          -0.0895777,
+          0.4456547,
+          0.2514359
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-1",
+      "view": "l-hand",
+      "timeSeconds": 0.03833335,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-1.l-hand.png",
+      "sha256": "77f74f070236fbe7b27ea3df4424d9efacef7597121fc97c2565a5cf72d303f3",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9699852
+        ],
+        "head": [
+          -0.0027398,
+          -0.152809,
+          1.6210083
+        ],
+        "upperarm_l": [
+          0.1884916,
+          -0.0912291,
+          1.4256207
+        ],
+        "upperarm_r": [
+          -0.1888904,
+          -0.1225225,
+          1.4124782
+        ],
+        "hand_l": [
+          0.26351,
+          -0.1634291,
+          1.1702377
+        ],
+        "hand_r": [
+          -0.2639507,
+          -0.3573639,
+          1.243495
+        ],
+        "foot_l": [
+          0.0661661,
+          -0.1169394,
+          0.1620621
+        ],
+        "foot_r": [
+          -0.0895777,
+          0.4456547,
+          0.2514359
+        ]
+      },
+      "cameraTarget": [
+        0.257546603679657,
+        -0.24874363839626312,
+        1.1382458209991455
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-1",
+      "view": "r-hand",
+      "timeSeconds": 0.03833335,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-1.r-hand.png",
+      "sha256": "396b37b82646800908d2f7e694721e2db0d69907259d57972531579f1b3d5ac9",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9699852
+        ],
+        "head": [
+          -0.0027398,
+          -0.152809,
+          1.6210083
+        ],
+        "upperarm_l": [
+          0.1884916,
+          -0.0912291,
+          1.4256207
+        ],
+        "upperarm_r": [
+          -0.1888904,
+          -0.1225225,
+          1.4124782
+        ],
+        "hand_l": [
+          0.26351,
+          -0.1634291,
+          1.1702377
+        ],
+        "hand_r": [
+          -0.2639507,
+          -0.3573639,
+          1.243495
+        ],
+        "foot_l": [
+          0.0661661,
+          -0.1169394,
+          0.1620621
+        ],
+        "foot_r": [
+          -0.0895777,
+          0.4456547,
+          0.2514359
+        ]
+      },
+      "cameraTarget": [
+        -0.2520863115787506,
+        -0.4453613758087158,
+        1.2647851705551147
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-2",
+      "view": "iso",
+      "timeSeconds": 0.26833345,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-2.png",
+      "sha256": "52725dbd6048bb11a679b36326dd4494399cefacf92e88eec8bfe909d68f53e1",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.8505855
+        ],
+        "head": [
+          0.0173654,
+          -0.1767769,
+          1.4919127
+        ],
+        "upperarm_l": [
+          0.2015351,
+          -0.1240561,
+          1.2834277
+        ],
+        "upperarm_r": [
+          -0.1770742,
+          -0.1272837,
+          1.2980496
+        ],
+        "hand_l": [
+          0.2739646,
+          -0.3522601,
+          1.0995136
+        ],
+        "hand_r": [
+          -0.2549161,
+          -0.2245882,
+          1.0563141
+        ],
+        "foot_l": [
+          -0.0253955,
+          0.2208849,
+          0.0718855
+        ],
+        "foot_r": [
+          -0.1217697,
+          0.15911,
+          0.35636
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-2",
+      "view": "l-hand",
+      "timeSeconds": 0.26833345,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-2.l-hand.png",
+      "sha256": "76f83ed3ec52cf01984e0de8bd44e7e374d60c6d25129e107e5a91cb66652bf8",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.8505855
+        ],
+        "head": [
+          0.0173654,
+          -0.1767769,
+          1.4919127
+        ],
+        "upperarm_l": [
+          0.2015351,
+          -0.1240561,
+          1.2834277
+        ],
+        "upperarm_r": [
+          -0.1770742,
+          -0.1272837,
+          1.2980496
+        ],
+        "hand_l": [
+          0.2739646,
+          -0.3522601,
+          1.0995136
+        ],
+        "hand_r": [
+          -0.2549161,
+          -0.2245882,
+          1.0563141
+        ],
+        "foot_l": [
+          -0.0253955,
+          0.2208849,
+          0.0718855
+        ],
+        "foot_r": [
+          -0.1217697,
+          0.15911,
+          0.35636
+        ]
+      },
+      "cameraTarget": [
+        0.26296934485435486,
+        -0.4413757026195526,
+        1.1161006689071655
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-2",
+      "view": "r-hand",
+      "timeSeconds": 0.26833345,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-2.r-hand.png",
+      "sha256": "4ae0c2f915064c7413fc01469c8153a2e268440f493d7c4758ffd766d1dd7bad",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.8505855
+        ],
+        "head": [
+          0.0173654,
+          -0.1767769,
+          1.4919127
+        ],
+        "upperarm_l": [
+          0.2015351,
+          -0.1240561,
+          1.2834277
+        ],
+        "upperarm_r": [
+          -0.1770742,
+          -0.1272837,
+          1.2980496
+        ],
+        "hand_l": [
+          0.2739646,
+          -0.3522601,
+          1.0995136
+        ],
+        "hand_r": [
+          -0.2549161,
+          -0.2245882,
+          1.0563141
+        ],
+        "foot_l": [
+          -0.0253955,
+          0.2208849,
+          0.0718855
+        ],
+        "foot_r": [
+          -0.1217697,
+          0.15911,
+          0.35636
+        ]
+      },
+      "cameraTarget": [
+        -0.24816718697547913,
+        -0.3128011226654053,
+        1.0337194204330444
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-3",
+      "view": "iso",
+      "timeSeconds": 0.52133356,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-3.png",
+      "sha256": "90e125e7e2279d76f7124987969e053385db2536f509ed7cbc731db24b445b6d",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9336717
+        ],
+        "head": [
+          -0.0211351,
+          -0.1480233,
+          1.5847876
+        ],
+        "upperarm_l": [
+          0.1700607,
+          -0.1153111,
+          1.3885115
+        ],
+        "upperarm_r": [
+          -0.2078843,
+          -0.091127,
+          1.3765959
+        ],
+        "hand_l": [
+          0.2411549,
+          -0.2851831,
+          1.1704942
+        ],
+        "hand_r": [
+          -0.2873209,
+          -0.2192288,
+          1.1512609
+        ],
+        "foot_l": [
+          -0.0027258,
+          0.4615076,
+          0.3881978
+        ],
+        "foot_r": [
+          -0.0333804,
+          -0.1134486,
+          0.0974003
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-3",
+      "view": "l-hand",
+      "timeSeconds": 0.52133356,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-3.l-hand.png",
+      "sha256": "eb1d1ed210b80c84b85e76909d08a30cd86de68cf8e59a686645e1bf0bf4d210",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9336717
+        ],
+        "head": [
+          -0.0211351,
+          -0.1480233,
+          1.5847876
+        ],
+        "upperarm_l": [
+          0.1700607,
+          -0.1153111,
+          1.3885115
+        ],
+        "upperarm_r": [
+          -0.2078843,
+          -0.091127,
+          1.3765959
+        ],
+        "hand_l": [
+          0.2411549,
+          -0.2851831,
+          1.1704942
+        ],
+        "hand_r": [
+          -0.2873209,
+          -0.2192288,
+          1.1512609
+        ],
+        "foot_l": [
+          -0.0027258,
+          0.4615076,
+          0.3881978
+        ],
+        "foot_r": [
+          -0.0333804,
+          -0.1134486,
+          0.0974003
+        ]
+      },
+      "cameraTarget": [
+        0.23228713870048523,
+        -0.37606197595596313,
+        1.1704705953598022
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-3",
+      "view": "r-hand",
+      "timeSeconds": 0.52133356,
+      "durationSeconds": 0.766667,
+      "file": "granadero/stand.run.unarmed.phase-3.r-hand.png",
+      "sha256": "a59f73e397edf3fea6145b11746bd9d738b53a1962d81ca3ee8e3185699f9e32",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9336717
+        ],
+        "head": [
+          -0.0211351,
+          -0.1480233,
+          1.5847876
+        ],
+        "upperarm_l": [
+          0.1700607,
+          -0.1153111,
+          1.3885115
+        ],
+        "upperarm_r": [
+          -0.2078843,
+          -0.091127,
+          1.3765959
+        ],
+        "hand_l": [
+          0.2411549,
+          -0.2851831,
+          1.1704942
+        ],
+        "hand_r": [
+          -0.2873209,
+          -0.2192288,
+          1.1512609
+        ],
+        "foot_l": [
+          -0.0027258,
+          0.4615076,
+          0.3881978
+        ],
+        "foot_r": [
+          -0.0333804,
+          -0.1134486,
+          0.0974003
+        ]
+      },
+      "cameraTarget": [
+        -0.2789992392063141,
+        -0.3094566762447357,
+        1.1399798393249512
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-1",
+      "view": "iso",
+      "timeSeconds": 0.05333335,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-1.png",
+      "sha256": "2b68dc50f6e218b63507da9d383b415e985074727633cb77b870cfbf0fa5d546",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9043248
+        ],
+        "head": [
+          -0.0200404,
+          -0.0636931,
+          1.6053939
+        ],
+        "upperarm_l": [
+          0.1556058,
+          -0.0462437,
+          1.4002665
+        ],
+        "upperarm_r": [
+          -0.1843013,
+          -0.029347,
+          1.3832269
+        ],
+        "hand_l": [
+          0.2110109,
+          -0.2043037,
+          0.9478446
+        ],
+        "hand_r": [
+          -0.2390008,
+          -0.033425,
+          0.8981416
+        ],
+        "foot_l": [
+          0.0262738,
+          0.1289912,
+          0.088292
+        ],
+        "foot_r": [
+          -0.0753942,
+          -0.0991533,
+          0.1293638
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-1",
+      "view": "l-hand",
+      "timeSeconds": 0.05333335,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-1.l-hand.png",
+      "sha256": "7af56148da80c751cc12d63f11864e516fa9e69a6f9a2f9500e87050c55d1f50",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9043248
+        ],
+        "head": [
+          -0.0200404,
+          -0.0636931,
+          1.6053939
+        ],
+        "upperarm_l": [
+          0.1556058,
+          -0.0462437,
+          1.4002665
+        ],
+        "upperarm_r": [
+          -0.1843013,
+          -0.029347,
+          1.3832269
+        ],
+        "hand_l": [
+          0.2110109,
+          -0.2043037,
+          0.9478446
+        ],
+        "hand_r": [
+          -0.2390008,
+          -0.033425,
+          0.8981416
+        ],
+        "foot_l": [
+          0.0262738,
+          0.1289912,
+          0.088292
+        ],
+        "foot_r": [
+          -0.0753942,
+          -0.0991533,
+          0.1293638
+        ]
+      },
+      "cameraTarget": [
+        0.21527642011642456,
+        -0.24416792392730713,
+        0.8768875598907471
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-1",
+      "view": "r-hand",
+      "timeSeconds": 0.05333335,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-1.r-hand.png",
+      "sha256": "848b91061fc7c9a0ba438569550e40520bfcd6c0172c0295d8b990e1a1c49ae1",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9043248
+        ],
+        "head": [
+          -0.0200404,
+          -0.0636931,
+          1.6053939
+        ],
+        "upperarm_l": [
+          0.1556058,
+          -0.0462437,
+          1.4002665
+        ],
+        "upperarm_r": [
+          -0.1843013,
+          -0.029347,
+          1.3832269
+        ],
+        "hand_l": [
+          0.2110109,
+          -0.2043037,
+          0.9478446
+        ],
+        "hand_r": [
+          -0.2390008,
+          -0.033425,
+          0.8981416
+        ],
+        "foot_l": [
+          0.0262738,
+          0.1289912,
+          0.088292
+        ],
+        "foot_r": [
+          -0.0753942,
+          -0.0991533,
+          0.1293638
+        ]
+      },
+      "cameraTarget": [
+        -0.24384397268295288,
+        -0.0403573140501976,
+        0.8170815110206604
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-2",
+      "view": "iso",
+      "timeSeconds": 0.37333345,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-2.png",
+      "sha256": "2e52ee3d067f5a82132ff10897b36b40a796c7f759ed6f812d6f5be6697981cb",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.88085
+        ],
+        "head": [
+          -0.0196632,
+          -0.0544567,
+          1.5819812
+        ],
+        "upperarm_l": [
+          0.1574863,
+          -0.0456121,
+          1.3805941
+        ],
+        "upperarm_r": [
+          -0.1810704,
+          -0.0157767,
+          1.35606
+        ],
+        "hand_l": [
+          0.2137663,
+          -0.2214297,
+          0.9328325
+        ],
+        "hand_r": [
+          -0.2380937,
+          0.0428991,
+          0.8788823
+        ],
+        "foot_l": [
+          0.0642903,
+          0.384498,
+          0.2326756
+        ],
+        "foot_r": [
+          -0.0284059,
+          -0.08971,
+          0.083481
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-2",
+      "view": "l-hand",
+      "timeSeconds": 0.37333345,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-2.l-hand.png",
+      "sha256": "4c98202b2eea7330f8d34aa78fae797cd5b7ef7b9d6dfa550fbcc0b2a3853033",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.88085
+        ],
+        "head": [
+          -0.0196632,
+          -0.0544567,
+          1.5819812
+        ],
+        "upperarm_l": [
+          0.1574863,
+          -0.0456121,
+          1.3805941
+        ],
+        "upperarm_r": [
+          -0.1810704,
+          -0.0157767,
+          1.35606
+        ],
+        "hand_l": [
+          0.2137663,
+          -0.2214297,
+          0.9328325
+        ],
+        "hand_r": [
+          -0.2380937,
+          0.0428991,
+          0.8788823
+        ],
+        "foot_l": [
+          0.0642903,
+          0.384498,
+          0.2326756
+        ],
+        "foot_r": [
+          -0.0284059,
+          -0.08971,
+          0.083481
+        ]
+      },
+      "cameraTarget": [
+        0.21900443732738495,
+        -0.262369304895401,
+        0.8625561594963074
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-2",
+      "view": "r-hand",
+      "timeSeconds": 0.37333345,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-2.r-hand.png",
+      "sha256": "c8f9f3e0eb26eb79e867e466fb9175268eec0176fe079d3f310b6d88d12054fb",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.88085
+        ],
+        "head": [
+          -0.0196632,
+          -0.0544567,
+          1.5819812
+        ],
+        "upperarm_l": [
+          0.1574863,
+          -0.0456121,
+          1.3805941
+        ],
+        "upperarm_r": [
+          -0.1810704,
+          -0.0157767,
+          1.35606
+        ],
+        "hand_l": [
+          0.2137663,
+          -0.2214297,
+          0.9328325
+        ],
+        "hand_r": [
+          -0.2380937,
+          0.0428991,
+          0.8788823
+        ],
+        "foot_l": [
+          0.0642903,
+          0.384498,
+          0.2326756
+        ],
+        "foot_r": [
+          -0.0284059,
+          -0.08971,
+          0.083481
+        ]
+      },
+      "cameraTarget": [
+        -0.23711611330509186,
+        0.044725533574819565,
+        0.7974085807800293
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-3",
+      "view": "iso",
+      "timeSeconds": 0.72533356,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-3.png",
+      "sha256": "eae486af12d3e965249e189e20cd4fefaeb8c3c52cd92177821b14d5608a1dc0",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.8825205
+        ],
+        "head": [
+          0.0007797,
+          -0.0875436,
+          1.5842881
+        ],
+        "upperarm_l": [
+          0.1776655,
+          -0.0508369,
+          1.3757354
+        ],
+        "upperarm_r": [
+          -0.1625096,
+          -0.0661327,
+          1.3631028
+        ],
+        "hand_l": [
+          0.2310346,
+          0.0824911,
+          0.9175698
+        ],
+        "hand_r": [
+          -0.2115459,
+          -0.2209212,
+          0.906298
+        ],
+        "foot_l": [
+          0.091824,
+          -0.3737215,
+          0.1127881
+        ],
+        "foot_r": [
+          -0.0339336,
+          0.3541602,
+          0.1392377
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-3",
+      "view": "l-hand",
+      "timeSeconds": 0.72533356,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-3.l-hand.png",
+      "sha256": "e6ff1bfee92d61a3b73c45b5eb4cc2f4df7b45b2b048d0f26d5c3ea0354aef99",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.8825205
+        ],
+        "head": [
+          0.0007797,
+          -0.0875436,
+          1.5842881
+        ],
+        "upperarm_l": [
+          0.1776655,
+          -0.0508369,
+          1.3757354
+        ],
+        "upperarm_r": [
+          -0.1625096,
+          -0.0661327,
+          1.3631028
+        ],
+        "hand_l": [
+          0.2310346,
+          0.0824911,
+          0.9175698
+        ],
+        "hand_r": [
+          -0.2115459,
+          -0.2209212,
+          0.906298
+        ],
+        "foot_l": [
+          0.091824,
+          -0.3737215,
+          0.1127881
+        ],
+        "foot_r": [
+          -0.0339336,
+          0.3541602,
+          0.1392377
+        ]
+      },
+      "cameraTarget": [
+        0.2229028344154358,
+        0.10646681487560272,
+        0.8401017785072327
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.walk.unarmed",
+      "phase": "phase-3",
+      "view": "r-hand",
+      "timeSeconds": 0.72533356,
+      "durationSeconds": 1.066667,
+      "file": "woman-scout/stand.walk.unarmed.phase-3.r-hand.png",
+      "sha256": "69229103ca509e4545616cbbb916cd2e779e800eea5ef499a92da23e7cf0ee0f",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Walk",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.8825205
+        ],
+        "head": [
+          0.0007797,
+          -0.0875436,
+          1.5842881
+        ],
+        "upperarm_l": [
+          0.1776655,
+          -0.0508369,
+          1.3757354
+        ],
+        "upperarm_r": [
+          -0.1625096,
+          -0.0661327,
+          1.3631028
+        ],
+        "hand_l": [
+          0.2310346,
+          0.0824911,
+          0.9175698
+        ],
+        "hand_r": [
+          -0.2115459,
+          -0.2209212,
+          0.906298
+        ],
+        "foot_l": [
+          0.091824,
+          -0.3737215,
+          0.1127881
+        ],
+        "foot_r": [
+          -0.0339336,
+          0.3541602,
+          0.1392377
+        ]
+      },
+      "cameraTarget": [
+        -0.21599438786506653,
+        -0.25809741020202637,
+        0.8339074850082397
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-1",
+      "view": "iso",
+      "timeSeconds": 0.03833335,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-1.png",
+      "sha256": "118ad4c5d0daec7b0ae7287d13c7ef6aae968fe7fe06bd05d4a5b6735c0784ac",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9304457
+        ],
+        "head": [
+          -0.007376,
+          -0.1543101,
+          1.6160734
+        ],
+        "upperarm_l": [
+          0.1660375,
+          -0.1006921,
+          1.404932
+        ],
+        "upperarm_r": [
+          -0.1733456,
+          -0.1288346,
+          1.393113
+        ],
+        "hand_l": [
+          0.2410574,
+          -0.1653747,
+          1.1455526
+        ],
+        "hand_r": [
+          -0.2484091,
+          -0.3515193,
+          1.2176704
+        ],
+        "foot_l": [
+          0.0618735,
+          -0.1332059,
+          0.1539226
+        ],
+        "foot_r": [
+          -0.0852896,
+          0.4023987,
+          0.2389955
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-1",
+      "view": "l-hand",
+      "timeSeconds": 0.03833335,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-1.l-hand.png",
+      "sha256": "00e73fa4711b0bb1d0c187a93b275ebc5b45779cf440efe67b7708422c31d149",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9304457
+        ],
+        "head": [
+          -0.007376,
+          -0.1543101,
+          1.6160734
+        ],
+        "upperarm_l": [
+          0.1660375,
+          -0.1006921,
+          1.404932
+        ],
+        "upperarm_r": [
+          -0.1733456,
+          -0.1288346,
+          1.393113
+        ],
+        "hand_l": [
+          0.2410574,
+          -0.1653747,
+          1.1455526
+        ],
+        "hand_r": [
+          -0.2484091,
+          -0.3515193,
+          1.2176704
+        ],
+        "foot_l": [
+          0.0618735,
+          -0.1332059,
+          0.1539226
+        ],
+        "foot_r": [
+          -0.0852896,
+          0.4023987,
+          0.2389955
+        ]
+      },
+      "cameraTarget": [
+        0.23415260016918182,
+        -0.24194830656051636,
+        1.1185144186019897
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-1",
+      "view": "r-hand",
+      "timeSeconds": 0.03833335,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-1.r-hand.png",
+      "sha256": "4a3597a85e5403b39aa204e457bec53dd3467ab8f5e2d7cd5a92dd56ae426604",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9304457
+        ],
+        "head": [
+          -0.007376,
+          -0.1543101,
+          1.6160734
+        ],
+        "upperarm_l": [
+          0.1660375,
+          -0.1006921,
+          1.404932
+        ],
+        "upperarm_r": [
+          -0.1733456,
+          -0.1288346,
+          1.393113
+        ],
+        "hand_l": [
+          0.2410574,
+          -0.1653747,
+          1.1455526
+        ],
+        "hand_r": [
+          -0.2484091,
+          -0.3515193,
+          1.2176704
+        ],
+        "foot_l": [
+          0.0618735,
+          -0.1332059,
+          0.1539226
+        ],
+        "foot_r": [
+          -0.0852896,
+          0.4023987,
+          0.2389955
+        ]
+      },
+      "cameraTarget": [
+        -0.23659050464630127,
+        -0.4296441674232483,
+        1.2376471757888794
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-2",
+      "view": "iso",
+      "timeSeconds": 0.26833345,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-2.png",
+      "sha256": "8458f2986ad591550b0bf613e9c460e307e876c572da86c7d15b39024fec2384",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.8223416
+        ],
+        "head": [
+          0.0192513,
+          -0.1797806,
+          1.4976996
+        ],
+        "upperarm_l": [
+          0.1845587,
+          -0.1344135,
+          1.2735507
+        ],
+        "upperarm_r": [
+          -0.1559281,
+          -0.1373161,
+          1.2867004
+        ],
+        "hand_l": [
+          0.2565752,
+          -0.3491486,
+          1.0837007
+        ],
+        "hand_r": [
+          -0.2340237,
+          -0.2266593,
+          1.0410295
+        ],
+        "foot_l": [
+          -0.0241255,
+          0.1881666,
+          0.0736984
+        ],
+        "foot_r": [
+          -0.1148098,
+          0.1295825,
+          0.3446883
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-2",
+      "view": "l-hand",
+      "timeSeconds": 0.26833345,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-2.l-hand.png",
+      "sha256": "0ac9df9f704fbf114f6a781f29698d5985e9dabbbae57f16d2a60a0806751d47",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.8223416
+        ],
+        "head": [
+          0.0192513,
+          -0.1797806,
+          1.4976996
+        ],
+        "upperarm_l": [
+          0.1845587,
+          -0.1344135,
+          1.2735507
+        ],
+        "upperarm_r": [
+          -0.1559281,
+          -0.1373161,
+          1.2867004
+        ],
+        "hand_l": [
+          0.2565752,
+          -0.3491486,
+          1.0837007
+        ],
+        "hand_r": [
+          -0.2340237,
+          -0.2266593,
+          1.0410295
+        ],
+        "foot_l": [
+          -0.0241255,
+          0.1881666,
+          0.0736984
+        ],
+        "foot_r": [
+          -0.1148098,
+          0.1295825,
+          0.3446883
+        ]
+      },
+      "cameraTarget": [
+        0.24560430645942688,
+        -0.42836517095565796,
+        1.0994051694869995
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-2",
+      "view": "r-hand",
+      "timeSeconds": 0.26833345,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-2.r-hand.png",
+      "sha256": "d7b5ceafcf2d98a4423f3a0ce26a45bba0d8fef78ecbff36acfc77579524e56d",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.8223416
+        ],
+        "head": [
+          0.0192513,
+          -0.1797806,
+          1.4976996
+        ],
+        "upperarm_l": [
+          0.1845587,
+          -0.1344135,
+          1.2735507
+        ],
+        "upperarm_r": [
+          -0.1559281,
+          -0.1373161,
+          1.2867004
+        ],
+        "hand_l": [
+          0.2565752,
+          -0.3491486,
+          1.0837007
+        ],
+        "hand_r": [
+          -0.2340237,
+          -0.2266593,
+          1.0410295
+        ],
+        "foot_l": [
+          -0.0241255,
+          0.1881666,
+          0.0736984
+        ],
+        "foot_r": [
+          -0.1148098,
+          0.1295825,
+          0.3446883
+        ]
+      },
+      "cameraTarget": [
+        -0.22645221650600433,
+        -0.3056991696357727,
+        1.0226551294326782
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-3",
+      "view": "iso",
+      "timeSeconds": 0.52133356,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-3.png",
+      "sha256": "8c0c0bddac0544d402ca9c1010766d92ec3f7e740e4fb62b444d101528f7fce5",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9092159
+        ],
+        "head": [
+          -0.0181925,
+          -0.1493164,
+          1.5953006
+        ],
+        "upperarm_l": [
+          0.1517473,
+          -0.1220671,
+          1.3831151
+        ],
+        "upperarm_r": [
+          -0.1881421,
+          -0.1003181,
+          1.3723992
+        ],
+        "hand_l": [
+          0.222358,
+          -0.280388,
+          1.1605041
+        ],
+        "hand_r": [
+          -0.2680446,
+          -0.2168944,
+          1.1414351
+        ],
+        "foot_l": [
+          -0.0024755,
+          0.4173591,
+          0.3826753
+        ],
+        "foot_r": [
+          -0.0304654,
+          -0.1299874,
+          0.1057485
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-3",
+      "view": "l-hand",
+      "timeSeconds": 0.52133356,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-3.l-hand.png",
+      "sha256": "04d19f81dcf11d0eddd66c368c273d8e69b25dd2fc4cce9bb3135945b7c37c7e",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9092159
+        ],
+        "head": [
+          -0.0181925,
+          -0.1493164,
+          1.5953006
+        ],
+        "upperarm_l": [
+          0.1517473,
+          -0.1220671,
+          1.3831151
+        ],
+        "upperarm_r": [
+          -0.1881421,
+          -0.1003181,
+          1.3723992
+        ],
+        "hand_l": [
+          0.222358,
+          -0.280388,
+          1.1605041
+        ],
+        "hand_r": [
+          -0.2680446,
+          -0.2168944,
+          1.1414351
+        ],
+        "foot_l": [
+          -0.0024755,
+          0.4173591,
+          0.3826753
+        ],
+        "foot_r": [
+          -0.0304654,
+          -0.1299874,
+          0.1057485
+        ]
+      },
+      "cameraTarget": [
+        0.21314497292041779,
+        -0.36135587096214294,
+        1.1617639064788818
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.run.unarmed",
+      "phase": "phase-3",
+      "view": "r-hand",
+      "timeSeconds": 0.52133356,
+      "durationSeconds": 0.766667,
+      "file": "woman-scout/stand.run.unarmed.phase-3.r-hand.png",
+      "sha256": "c6300b7c3a6895fa1b2b5f83383d37c5d1c48f2fbcfad15c41e2dd1d24b5ee79",
+      "item": null,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "Run",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "2dfd01442f4f0f840556fb6e0b36a23499cfa5dc30822f6877544f6914809ef4"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257628,
+          0.9092159
+        ],
+        "head": [
+          -0.0181925,
+          -0.1493164,
+          1.5953006
+        ],
+        "upperarm_l": [
+          0.1517473,
+          -0.1220671,
+          1.3831151
+        ],
+        "upperarm_r": [
+          -0.1881421,
+          -0.1003181,
+          1.3723992
+        ],
+        "hand_l": [
+          0.222358,
+          -0.280388,
+          1.1605041
+        ],
+        "hand_r": [
+          -0.2680446,
+          -0.2168944,
+          1.1414351
+        ],
+        "foot_l": [
+          -0.0024755,
+          0.4173591,
+          0.3826753
+        ],
+        "foot_r": [
+          -0.0304654,
+          -0.1299874,
+          0.1057485
+        ]
+      },
+      "cameraTarget": [
+        -0.2592059075832367,
+        -0.2973965108394623,
+        1.1322953701019287
+      ],
+      "cameraScale": 0.26
+    }
+  ],
+  "complete": true
+}

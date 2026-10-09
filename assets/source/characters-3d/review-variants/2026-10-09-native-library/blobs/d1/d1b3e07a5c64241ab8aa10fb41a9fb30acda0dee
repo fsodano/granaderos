@@ -1,0 +1,17 @@
+{
+  "0": {
+    "allNodeRecordsExact": true,
+    "allMorphRecordsExact": true,
+    "nativeSkinMaterialExact": true
+  },
+  "1": {
+    "allNodeRecordsExact": true,
+    "allMorphRecordsExact": true,
+    "nativeSkinMaterialExact": true
+  },
+  "2": {
+    "allNodeRecordsExact": true,
+    "allMorphRecordsExact": true,
+    "nativeSkinMaterialExact": true
+  }
+}

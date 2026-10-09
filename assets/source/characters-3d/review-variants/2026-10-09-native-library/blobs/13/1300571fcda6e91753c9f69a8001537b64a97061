@@ -1,0 +1,16 @@
+{
+  "male": {
+    "selectedFingerRotationChannels": 90,
+    "authoredQuaternionKeys": 852,
+    "maxWithinClipFingerLocalStepDegrees": 2.4148365394514667e-06,
+    "maxSelectedClipTransitionFingerLocalStepDegrees": 2.4148365394514667e-06,
+    "allSelectedTimesStrictlyIncreasing": true
+  },
+  "female": {
+    "selectedFingerRotationChannels": 90,
+    "authoredQuaternionKeys": 852,
+    "maxWithinClipFingerLocalStepDegrees": 2.9575586669421963e-06,
+    "maxSelectedClipTransitionFingerLocalStepDegrees": 2.9575586669421963e-06,
+    "allSelectedTimesStrictlyIncreasing": true
+  }
+}

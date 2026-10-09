@@ -1,0 +1,2867 @@
+{
+  "version": 1,
+  "gitRevision": "98a8a4e32b7b5643cd79af9e2c1e787fa188e4e0",
+  "manifestSha256": "73b458fc2428860890948c6ece518897bc9a733832bfefb59ad7822d528843cd",
+  "manifestPath": "/private/tmp/granadero-throw-review/models/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 480,
+    "samples": 4,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "294b25d21ffbd912f4d99f88de5715ff6c1616a1d33eae5c080c6f32156642ee",
+    "snapshot": "frozen-sources/tools/characters-3d/render-review.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "d83e2750526f62d430c1e9c6e9b277d7ed0991aaa3da0944198ed59c0d4abbc9",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero",
+    "woman-scout"
+  ],
+  "coverage": [
+    {
+      "clip": "stand.gesture.bolas",
+      "item": "boleadoras"
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "/private/tmp/granadero-throw-review/models/granadero-lod0.glb",
+        "sha256": "50041f99086062f97cd27c2209932e3da77d88281f0488951de0bdf0b5e59b6f",
+        "bytes": 2993000,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+          "textures/9cf786dd1636a37659be.png": "9cf786dd1636a37659be83671d24df2d6734b0f7d84b4b2a3d49999774e7f09a",
+          "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/7a4750f0f9e8ddae313c.png": "/private/tmp/granadero-throw-review/models/textures/7a4750f0f9e8ddae313c.png",
+          "textures/9cf786dd1636a37659be.png": "/private/tmp/granadero-throw-review/models/textures/9cf786dd1636a37659be.png",
+          "textures/c115e786c16ea09b4835.png": "/private/tmp/granadero-throw-review/models/textures/c115e786c16ea09b4835.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-throw-review/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-throw-review/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-throw-review/models/male-animations.glb",
+        "sha256": "2acb3ad46075db3506713368dc41a17c49eddbf040776aae313a16daa46466ff",
+        "bytes": 510824,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-throw-review/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    },
+    "woman-scout": {
+      "body": {
+        "path": "/private/tmp/granadero-throw-review/models/woman-scout-lod0.glb",
+        "sha256": "62a3854b3e612fc93bc604fe3ef4babcc6713c040ebc9c678285e1108153aac2",
+        "bytes": 1505520,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/4f6735c3c59381167fa8.png": "4f6735c3c59381167fa8ee9ab958e8b98d99ef626610a44eb1f111265c238b94",
+          "textures/d69cb3f32570c7a401e6.png": "d69cb3f32570c7a401e665e5b0e65ad47e0760a49658ebe71a716723f48925f8",
+          "textures/2138b79add80457b1518.png": "2138b79add80457b1518e95f6a427d474c40c350e0d7c0f87038d030dd9aa39e",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/4f6735c3c59381167fa8.png": "/private/tmp/granadero-throw-review/models/textures/4f6735c3c59381167fa8.png",
+          "textures/d69cb3f32570c7a401e6.png": "/private/tmp/granadero-throw-review/models/textures/d69cb3f32570c7a401e6.png",
+          "textures/2138b79add80457b1518.png": "/private/tmp/granadero-throw-review/models/textures/2138b79add80457b1518.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-throw-review/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/private/tmp/granadero-throw-review/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-throw-review/models/female-animations.glb",
+        "sha256": "54394ba5c63b8e2d8aa62607d883aa7479887cf3a088993d66f33ce158080d98",
+        "bytes": 509800,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-throw-review/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-1.png",
+      "sha256": "6e3fce61b8bc05e529176108701c221949b83ef86cb196a0dbbb8a28c60ebf6c",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0005009,
+          0.9413389
+        ],
+        "head": [
+          -0.0096554,
+          0.0075303,
+          1.6152965
+        ],
+        "upperarm_l": [
+          0.1784004,
+          -0.0479463,
+          1.4145485
+        ],
+        "upperarm_r": [
+          -0.1820809,
+          0.0685867,
+          1.4080311
+        ],
+        "hand_l": [
+          0.2336081,
+          -0.2536583,
+          1.3083984
+        ],
+        "hand_r": [
+          -0.5929245,
+          0.0413002,
+          1.5497942
+        ],
+        "foot_l": [
+          0.0516469,
+          0.0386192,
+          0.0756277
+        ],
+        "foot_r": [
+          -0.0687672,
+          0.0548334,
+          0.1060602
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-1",
+      "view": "l-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-1.l-hand.png",
+      "sha256": "bd5717c213b455d889612480f20f6ce74b56dae3de63a197135b0847584dcbfa",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0005009,
+          0.9413389
+        ],
+        "head": [
+          -0.0096554,
+          0.0075303,
+          1.6152965
+        ],
+        "upperarm_l": [
+          0.1784004,
+          -0.0479463,
+          1.4145485
+        ],
+        "upperarm_r": [
+          -0.1820809,
+          0.0685867,
+          1.4080311
+        ],
+        "hand_l": [
+          0.2336081,
+          -0.2536583,
+          1.3083984
+        ],
+        "hand_r": [
+          -0.5929245,
+          0.0413002,
+          1.5497942
+        ],
+        "foot_l": [
+          0.0516469,
+          0.0386192,
+          0.0756277
+        ],
+        "foot_r": [
+          -0.0687672,
+          0.0548334,
+          0.1060602
+        ]
+      },
+      "cameraTarget": [
+        0.1975346952676773,
+        -0.3276043236255646,
+        1.347999930381775
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-1",
+      "view": "r-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-1.r-hand.png",
+      "sha256": "c60ee7d851862c789968c23177dc0c2f6fcd48102a3235b1ddef643eca747fe6",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0005009,
+          0.9413389
+        ],
+        "head": [
+          -0.0096554,
+          0.0075303,
+          1.6152965
+        ],
+        "upperarm_l": [
+          0.1784004,
+          -0.0479463,
+          1.4145485
+        ],
+        "upperarm_r": [
+          -0.1820809,
+          0.0685867,
+          1.4080311
+        ],
+        "hand_l": [
+          0.2336081,
+          -0.2536583,
+          1.3083984
+        ],
+        "hand_r": [
+          -0.5929245,
+          0.0413002,
+          1.5497942
+        ],
+        "foot_l": [
+          0.0516469,
+          0.0386192,
+          0.0756277
+        ],
+        "foot_r": [
+          -0.0687672,
+          0.0548334,
+          0.1060602
+        ]
+      },
+      "cameraTarget": [
+        -0.5831682085990906,
+        0.008433906361460686,
+        1.6344239711761475
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-2",
+      "view": "iso",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-2.png",
+      "sha256": "00c7906d6e10313abe40ad2dbd8df8e3f969e0e3cb3d531675ec4f835467bfa4",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.002895,
+          0.9413317
+        ],
+        "head": [
+          -0.0092858,
+          0.0142458,
+          1.6152891
+        ],
+        "upperarm_l": [
+          0.1583938,
+          -0.0873639,
+          1.4145368
+        ],
+        "upperarm_r": [
+          -0.1604195,
+          0.1172941,
+          1.4080284
+        ],
+        "hand_l": [
+          0.2134168,
+          -0.3359343,
+          1.3623523
+        ],
+        "hand_r": [
+          -0.3277138,
+          0.2823829,
+          1.61516
+        ],
+        "foot_l": [
+          0.0513337,
+          -0.0431247,
+          0.0793534
+        ],
+        "foot_r": [
+          -0.0687455,
+          0.054833,
+          0.1060428
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-2",
+      "view": "l-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-2.l-hand.png",
+      "sha256": "dbabad3c81685b4089d1536b6b71fba6a5688bc7bb5c53c1e3c1cb987bee6c2c",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.002895,
+          0.9413317
+        ],
+        "head": [
+          -0.0092858,
+          0.0142458,
+          1.6152891
+        ],
+        "upperarm_l": [
+          0.1583938,
+          -0.0873639,
+          1.4145368
+        ],
+        "upperarm_r": [
+          -0.1604195,
+          0.1172941,
+          1.4080284
+        ],
+        "hand_l": [
+          0.2134168,
+          -0.3359343,
+          1.3623523
+        ],
+        "hand_r": [
+          -0.3277138,
+          0.2823829,
+          1.61516
+        ],
+        "foot_l": [
+          0.0513337,
+          -0.0431247,
+          0.0793534
+        ],
+        "foot_r": [
+          -0.0687455,
+          0.054833,
+          0.1060428
+        ]
+      },
+      "cameraTarget": [
+        0.17553602159023285,
+        -0.3990960419178009,
+        1.4163265228271484
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-2",
+      "view": "r-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-2.r-hand.png",
+      "sha256": "9b3e369e03bd2ddd2f6423329b2df5a3b202e501021d5885e42594ebee27cc6a",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.002895,
+          0.9413317
+        ],
+        "head": [
+          -0.0092858,
+          0.0142458,
+          1.6152891
+        ],
+        "upperarm_l": [
+          0.1583938,
+          -0.0873639,
+          1.4145368
+        ],
+        "upperarm_r": [
+          -0.1604195,
+          0.1172941,
+          1.4080284
+        ],
+        "hand_l": [
+          0.2134168,
+          -0.3359343,
+          1.3623523
+        ],
+        "hand_r": [
+          -0.3277138,
+          0.2823829,
+          1.61516
+        ],
+        "foot_l": [
+          0.0513337,
+          -0.0431247,
+          0.0793534
+        ],
+        "foot_r": [
+          -0.0687455,
+          0.054833,
+          0.1060428
+        ]
+      },
+      "cameraTarget": [
+        -0.25991156697273254,
+        0.2749280035495758,
+        1.675863265991211
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-3",
+      "view": "iso",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-3.png",
+      "sha256": "d61a993af991aca18a8f34114ba8c4176eb70e422f3be1255b8c1ed7d66f4c9a",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0931559,
+          0.9298242
+        ],
+        "head": [
+          0.0051634,
+          -0.1617463,
+          1.5982934
+        ],
+        "upperarm_l": [
+          0.1852454,
+          -0.0703369,
+          1.4034673
+        ],
+        "upperarm_r": [
+          -0.1749669,
+          -0.1871221,
+          1.390143
+        ],
+        "hand_l": [
+          0.2407353,
+          -0.1741234,
+          1.2229042
+        ],
+        "hand_r": [
+          -0.2971331,
+          -0.3752873,
+          1.5775484
+        ],
+        "foot_l": [
+          0.0509819,
+          -0.054545,
+          0.068442
+        ],
+        "foot_r": [
+          -0.0687564,
+          0.0528225,
+          0.1111107
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-3",
+      "view": "l-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-3.l-hand.png",
+      "sha256": "6f5d59c1614c0b6fb7fb91dbf478a42961ec4a1dc4dfd27b5d95d603b261d7ba",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0931559,
+          0.9298242
+        ],
+        "head": [
+          0.0051634,
+          -0.1617463,
+          1.5982934
+        ],
+        "upperarm_l": [
+          0.1852454,
+          -0.0703369,
+          1.4034673
+        ],
+        "upperarm_r": [
+          -0.1749669,
+          -0.1871221,
+          1.390143
+        ],
+        "hand_l": [
+          0.2407353,
+          -0.1741234,
+          1.2229042
+        ],
+        "hand_r": [
+          -0.2971331,
+          -0.3752873,
+          1.5775484
+        ],
+        "foot_l": [
+          0.0509819,
+          -0.054545,
+          0.068442
+        ],
+        "foot_r": [
+          -0.0687564,
+          0.0528225,
+          0.1111107
+        ]
+      },
+      "cameraTarget": [
+        0.20281900465488434,
+        -0.2570497393608093,
+        1.2180906534194946
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-3",
+      "view": "r-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-3.r-hand.png",
+      "sha256": "d4ab00702da7676225f36e04f00c2907f68b0c942650b2e4dce9f9f83e0fdcb5",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0931559,
+          0.9298242
+        ],
+        "head": [
+          0.0051634,
+          -0.1617463,
+          1.5982934
+        ],
+        "upperarm_l": [
+          0.1852454,
+          -0.0703369,
+          1.4034673
+        ],
+        "upperarm_r": [
+          -0.1749669,
+          -0.1871221,
+          1.390143
+        ],
+        "hand_l": [
+          0.2407353,
+          -0.1741234,
+          1.2229042
+        ],
+        "hand_r": [
+          -0.2971331,
+          -0.3752873,
+          1.5775484
+        ],
+        "foot_l": [
+          0.0509819,
+          -0.054545,
+          0.068442
+        ],
+        "foot_r": [
+          -0.0687564,
+          0.0528225,
+          0.1111107
+        ]
+      },
+      "cameraTarget": [
+        -0.21497005224227905,
+        -0.39315101504325867,
+        1.613153338432312
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-4",
+      "view": "iso",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-4.png",
+      "sha256": "f8da2544fef1bb61adf275a48695d6f118b8518e8f82303f389300ec7f48ae4e",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1106207,
+          0.9274955
+        ],
+        "head": [
+          0.0171456,
+          -0.1920145,
+          1.5937924
+        ],
+        "upperarm_l": [
+          0.1767374,
+          -0.0615359,
+          1.4034029
+        ],
+        "upperarm_r": [
+          -0.1534417,
+          -0.2463082,
+          1.3831518
+        ],
+        "hand_l": [
+          0.2309996,
+          -0.0845499,
+          1.1866337
+        ],
+        "hand_r": [
+          -0.2104979,
+          -0.5861019,
+          1.5702642
+        ],
+        "foot_l": [
+          0.0509577,
+          -0.0545494,
+          0.0684595
+        ],
+        "foot_r": [
+          -0.0687953,
+          0.0495898,
+          0.1183136
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-4",
+      "view": "l-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-4.l-hand.png",
+      "sha256": "f9e6ceaa32ef26e7e82235da6930526021c0b03cef4824ea51351d0155e92138",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1106207,
+          0.9274955
+        ],
+        "head": [
+          0.0171456,
+          -0.1920145,
+          1.5937924
+        ],
+        "upperarm_l": [
+          0.1767374,
+          -0.0615359,
+          1.4034029
+        ],
+        "upperarm_r": [
+          -0.1534417,
+          -0.2463082,
+          1.3831518
+        ],
+        "hand_l": [
+          0.2309996,
+          -0.0845499,
+          1.1866337
+        ],
+        "hand_r": [
+          -0.2104979,
+          -0.5861019,
+          1.5702642
+        ],
+        "foot_l": [
+          0.0509577,
+          -0.0545494,
+          0.0684595
+        ],
+        "foot_r": [
+          -0.0687953,
+          0.0495898,
+          0.1183136
+        ]
+      },
+      "cameraTarget": [
+        0.1776457130908966,
+        -0.14416567981243134,
+        1.1426234245300293
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-4",
+      "view": "r-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-4.r-hand.png",
+      "sha256": "c40759b33989b0a11b5a270c8f1753341a99e5c953dfca423861c2d4fb6a1693",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1106207,
+          0.9274955
+        ],
+        "head": [
+          0.0171456,
+          -0.1920145,
+          1.5937924
+        ],
+        "upperarm_l": [
+          0.1767374,
+          -0.0615359,
+          1.4034029
+        ],
+        "upperarm_r": [
+          -0.1534417,
+          -0.2463082,
+          1.3831518
+        ],
+        "hand_l": [
+          0.2309996,
+          -0.0845499,
+          1.1866337
+        ],
+        "hand_r": [
+          -0.2104979,
+          -0.5861019,
+          1.5702642
+        ],
+        "foot_l": [
+          0.0509577,
+          -0.0545494,
+          0.0684595
+        ],
+        "foot_r": [
+          -0.0687953,
+          0.0495898,
+          0.1183136
+        ]
+      },
+      "cameraTarget": [
+        -0.12456068396568298,
+        -0.5936067700386047,
+        1.6001983880996704
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-5",
+      "view": "iso",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-5.png",
+      "sha256": "1fefb37792a8ee03cf8d2cf299ebb4921a9793afc3561903828b64b5b27d6c43",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1109772,
+          0.927448
+        ],
+        "head": [
+          0.0174256,
+          -0.1926055,
+          1.593698
+        ],
+        "upperarm_l": [
+          0.1764948,
+          -0.0613403,
+          1.4034117
+        ],
+        "upperarm_r": [
+          -0.1528933,
+          -0.2475012,
+          1.3829961
+        ],
+        "hand_l": [
+          0.230816,
+          -0.0778866,
+          1.1839311
+        ],
+        "hand_r": [
+          -0.2043226,
+          -0.5992637,
+          1.5698873
+        ],
+        "foot_l": [
+          0.0509572,
+          -0.0545496,
+          0.0684599
+        ],
+        "foot_r": [
+          -0.0687935,
+          0.0494017,
+          0.1187036
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-5",
+      "view": "l-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-5.l-hand.png",
+      "sha256": "0af6ce57861f39d1d43b621ee9e391ddf28b815470d29977829a23bb9cf2f551",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1109772,
+          0.927448
+        ],
+        "head": [
+          0.0174256,
+          -0.1926055,
+          1.593698
+        ],
+        "upperarm_l": [
+          0.1764948,
+          -0.0613403,
+          1.4034117
+        ],
+        "upperarm_r": [
+          -0.1528933,
+          -0.2475012,
+          1.3829961
+        ],
+        "hand_l": [
+          0.230816,
+          -0.0778866,
+          1.1839311
+        ],
+        "hand_r": [
+          -0.2043226,
+          -0.5992637,
+          1.5698873
+        ],
+        "foot_l": [
+          0.0509572,
+          -0.0545496,
+          0.0684599
+        ],
+        "foot_r": [
+          -0.0687935,
+          0.0494017,
+          0.1187036
+        ]
+      },
+      "cameraTarget": [
+        0.17566034197807312,
+        -0.13373292982578278,
+        1.1372767686843872
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-5",
+      "view": "r-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-5.r-hand.png",
+      "sha256": "4ab1c80db04b99a6fde62f8f94b5e7266e3ef1176679d60f97afa62c5be49234",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1109772,
+          0.927448
+        ],
+        "head": [
+          0.0174256,
+          -0.1926055,
+          1.593698
+        ],
+        "upperarm_l": [
+          0.1764948,
+          -0.0613403,
+          1.4034117
+        ],
+        "upperarm_r": [
+          -0.1528933,
+          -0.2475012,
+          1.3829961
+        ],
+        "hand_l": [
+          0.230816,
+          -0.0778866,
+          1.1839311
+        ],
+        "hand_r": [
+          -0.2043226,
+          -0.5992637,
+          1.5698873
+        ],
+        "foot_l": [
+          0.0509572,
+          -0.0545496,
+          0.0684599
+        ],
+        "foot_r": [
+          -0.0687935,
+          0.0494017,
+          0.1187036
+        ]
+      },
+      "cameraTarget": [
+        -0.11872729659080505,
+        -0.6078253984451294,
+        1.6005098819732666
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-6",
+      "view": "iso",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-6.png",
+      "sha256": "3d5c604b6fd23eafbb1a9ea0907011af02ad9bdc7b3338bcc0f384c7422d38dc",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0950016,
+          0.9295781
+        ],
+        "head": [
+          0.0094077,
+          -0.1648099,
+          1.5978152
+        ],
+        "upperarm_l": [
+          0.1811442,
+          -0.0561645,
+          1.4043076
+        ],
+        "upperarm_r": [
+          -0.1664471,
+          -0.2061711,
+          1.3885745
+        ],
+        "hand_l": [
+          0.2360045,
+          -0.069946,
+          1.1842178
+        ],
+        "hand_r": [
+          -0.1428992,
+          -0.6825105,
+          1.5141274
+        ],
+        "foot_l": [
+          0.0509622,
+          -0.0545476,
+          0.0684511
+        ],
+        "foot_r": [
+          -0.0687742,
+          0.0499078,
+          0.1176571
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-6",
+      "view": "l-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-6.l-hand.png",
+      "sha256": "7f1b042f132486366552d3500daaf4b10769859b0bc41b614f8d6c58a064fc37",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0950016,
+          0.9295781
+        ],
+        "head": [
+          0.0094077,
+          -0.1648099,
+          1.5978152
+        ],
+        "upperarm_l": [
+          0.1811442,
+          -0.0561645,
+          1.4043076
+        ],
+        "upperarm_r": [
+          -0.1664471,
+          -0.2061711,
+          1.3885745
+        ],
+        "hand_l": [
+          0.2360045,
+          -0.069946,
+          1.1842178
+        ],
+        "hand_r": [
+          -0.1428992,
+          -0.6825105,
+          1.5141274
+        ],
+        "foot_l": [
+          0.0509622,
+          -0.0545476,
+          0.0684511
+        ],
+        "foot_r": [
+          -0.0687742,
+          0.0499078,
+          0.1176571
+        ]
+      },
+      "cameraTarget": [
+        0.18046161532402039,
+        -0.12449486553668976,
+        1.1364998817443848
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-6",
+      "view": "r-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "granadero/stand.gesture.bolas.sample-6.r-hand.png",
+      "sha256": "2387a192331e541409529f0309de4696f77d79afafccbb0e75ef411326269aef",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0950016,
+          0.9295781
+        ],
+        "head": [
+          0.0094077,
+          -0.1648099,
+          1.5978152
+        ],
+        "upperarm_l": [
+          0.1811442,
+          -0.0561645,
+          1.4043076
+        ],
+        "upperarm_r": [
+          -0.1664471,
+          -0.2061711,
+          1.3885745
+        ],
+        "hand_l": [
+          0.2360045,
+          -0.069946,
+          1.1842178
+        ],
+        "hand_r": [
+          -0.1428992,
+          -0.6825105,
+          1.5141274
+        ],
+        "foot_l": [
+          0.0509622,
+          -0.0545476,
+          0.0684511
+        ],
+        "foot_r": [
+          -0.0687742,
+          0.0499078,
+          0.1176571
+        ]
+      },
+      "cameraTarget": [
+        -0.06385525315999985,
+        -0.7127962708473206,
+        1.5483680963516235
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-1.png",
+      "sha256": "d6c1c956f504db5baa22b021d929aa2a042628134e7446db5de297e41512f152",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0194678,
+          0.9104174
+        ],
+        "head": [
+          -0.0013262,
+          0.0193858,
+          1.6226047
+        ],
+        "upperarm_l": [
+          0.1673382,
+          -0.0351951,
+          1.4106157
+        ],
+        "upperarm_r": [
+          -0.1568461,
+          0.0696042,
+          1.4047546
+        ],
+        "hand_l": [
+          0.2225428,
+          -0.2430512,
+          1.2959137
+        ],
+        "hand_r": [
+          -0.5428295,
+          0.0399608,
+          1.5383776
+        ],
+        "foot_l": [
+          0.0484284,
+          0.0157105,
+          0.0788387
+        ],
+        "foot_r": [
+          -0.0651263,
+          0.0314989,
+          0.1074586
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-1",
+      "view": "l-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-1.l-hand.png",
+      "sha256": "718f1822d95f6f4e283017d2a303a15afee4906ddcee667900c5ffe27985fb48",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0194678,
+          0.9104174
+        ],
+        "head": [
+          -0.0013262,
+          0.0193858,
+          1.6226047
+        ],
+        "upperarm_l": [
+          0.1673382,
+          -0.0351951,
+          1.4106157
+        ],
+        "upperarm_r": [
+          -0.1568461,
+          0.0696042,
+          1.4047546
+        ],
+        "hand_l": [
+          0.2225428,
+          -0.2430512,
+          1.2959137
+        ],
+        "hand_r": [
+          -0.5428295,
+          0.0399608,
+          1.5383776
+        ],
+        "foot_l": [
+          0.0484284,
+          0.0157105,
+          0.0788387
+        ],
+        "foot_r": [
+          -0.0651263,
+          0.0314989,
+          0.1074586
+        ]
+      },
+      "cameraTarget": [
+        0.18730202317237854,
+        -0.3044101595878601,
+        1.3363540172576904
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-1",
+      "view": "r-hand",
+      "timeSeconds": 0.156,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-1.r-hand.png",
+      "sha256": "61e5cd5a5d88e1a244c438932fff62a772d75c0aec82561ba92b20a36ea2232b",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0194678,
+          0.9104174
+        ],
+        "head": [
+          -0.0013262,
+          0.0193858,
+          1.6226047
+        ],
+        "upperarm_l": [
+          0.1673382,
+          -0.0351951,
+          1.4106157
+        ],
+        "upperarm_r": [
+          -0.1568461,
+          0.0696042,
+          1.4047546
+        ],
+        "hand_l": [
+          0.2225428,
+          -0.2430512,
+          1.2959137
+        ],
+        "hand_r": [
+          -0.5428295,
+          0.0399608,
+          1.5383776
+        ],
+        "foot_l": [
+          0.0484284,
+          0.0157105,
+          0.0788387
+        ],
+        "foot_r": [
+          -0.0651263,
+          0.0314989,
+          0.1074586
+        ]
+      },
+      "cameraTarget": [
+        -0.5268110036849976,
+        0.012104026973247528,
+        1.613275170326233
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-2",
+      "view": "iso",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-2.png",
+      "sha256": "fd6ab4cac0acee90f173521fb9d41c49cbf17f2891d8adfa223d0f1d2599dd1b",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0160719,
+          0.9104103
+        ],
+        "head": [
+          0.0057137,
+          0.0230026,
+          1.6225992
+        ],
+        "upperarm_l": [
+          0.1548725,
+          -0.0727922,
+          1.4106063
+        ],
+        "upperarm_r": [
+          -0.1318393,
+          0.1112588,
+          1.4047532
+        ],
+        "hand_l": [
+          0.2098963,
+          -0.3235045,
+          1.3498579
+        ],
+        "hand_r": [
+          -0.2911307,
+          0.2630726,
+          1.5999112
+        ],
+        "foot_l": [
+          0.0481207,
+          -0.066035,
+          0.0826049
+        ],
+        "foot_r": [
+          -0.0651045,
+          0.0314985,
+          0.1074408
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-2",
+      "view": "l-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-2.l-hand.png",
+      "sha256": "7fd332a2a0966ea12b7f7eeafa4bfcdc102b56136db653624bac6810b80a0ff8",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0160719,
+          0.9104103
+        ],
+        "head": [
+          0.0057137,
+          0.0230026,
+          1.6225992
+        ],
+        "upperarm_l": [
+          0.1548725,
+          -0.0727922,
+          1.4106063
+        ],
+        "upperarm_r": [
+          -0.1318393,
+          0.1112588,
+          1.4047532
+        ],
+        "hand_l": [
+          0.2098963,
+          -0.3235045,
+          1.3498579
+        ],
+        "hand_r": [
+          -0.2911307,
+          0.2630726,
+          1.5999112
+        ],
+        "foot_l": [
+          0.0481207,
+          -0.066035,
+          0.0826049
+        ],
+        "foot_r": [
+          -0.0651045,
+          0.0314985,
+          0.1074408
+        ]
+      },
+      "cameraTarget": [
+        0.17364048957824707,
+        -0.3751556873321533,
+        1.4014325141906738
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-2",
+      "view": "r-hand",
+      "timeSeconds": 0.338,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-2.r-hand.png",
+      "sha256": "8e0d3d06d52173398668f5fe887713b4d37a894249bec23697b05bd11ae841cc",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0160719,
+          0.9104103
+        ],
+        "head": [
+          0.0057137,
+          0.0230026,
+          1.6225992
+        ],
+        "upperarm_l": [
+          0.1548725,
+          -0.0727922,
+          1.4106063
+        ],
+        "upperarm_r": [
+          -0.1318393,
+          0.1112588,
+          1.4047532
+        ],
+        "hand_l": [
+          0.2098963,
+          -0.3235045,
+          1.3498579
+        ],
+        "hand_r": [
+          -0.2911307,
+          0.2630726,
+          1.5999112
+        ],
+        "foot_l": [
+          0.0481207,
+          -0.066035,
+          0.0826049
+        ],
+        "foot_r": [
+          -0.0651045,
+          0.0314985,
+          0.1074408
+        ]
+      },
+      "cameraTarget": [
+        -0.2301437258720398,
+        0.25788697600364685,
+        1.6537251472473145
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-3",
+      "view": "iso",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-3.png",
+      "sha256": "28a78ca241df54b28ed6fd908a7d5f1c5a477d9bcd4c0f7b80c239416e69dd8e",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1121228,
+          0.8989028
+        ],
+        "head": [
+          -0.0035968,
+          -0.1544905,
+          1.608925
+        ],
+        "upperarm_l": [
+          0.1600133,
+          -0.0722664,
+          1.4019543
+        ],
+        "upperarm_r": [
+          -0.163929,
+          -0.1772925,
+          1.3899717
+        ],
+        "hand_l": [
+          0.2154856,
+          -0.1781944,
+          1.2128521
+        ],
+        "hand_r": [
+          -0.2748835,
+          -0.3553798,
+          1.5666305
+        ],
+        "foot_l": [
+          0.047788,
+          -0.0774501,
+          0.0716605
+        ],
+        "foot_r": [
+          -0.0651093,
+          0.0296018,
+          0.1122239
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-3",
+      "view": "l-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-3.l-hand.png",
+      "sha256": "076fab3c103673d6f2d5a42c2a1166ae33e84a561226dd801a6e0e95b1ca6fc7",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1121228,
+          0.8989028
+        ],
+        "head": [
+          -0.0035968,
+          -0.1544905,
+          1.608925
+        ],
+        "upperarm_l": [
+          0.1600133,
+          -0.0722664,
+          1.4019543
+        ],
+        "upperarm_r": [
+          -0.163929,
+          -0.1772925,
+          1.3899717
+        ],
+        "hand_l": [
+          0.2154856,
+          -0.1781944,
+          1.2128521
+        ],
+        "hand_r": [
+          -0.2748835,
+          -0.3553798,
+          1.5666305
+        ],
+        "foot_l": [
+          0.047788,
+          -0.0774501,
+          0.0716605
+        ],
+        "foot_r": [
+          -0.0651093,
+          0.0296018,
+          0.1122239
+        ]
+      },
+      "cameraTarget": [
+        0.17725342512130737,
+        -0.2500414252281189,
+        1.2171597480773926
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-3",
+      "view": "r-hand",
+      "timeSeconds": 0.65,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-3.r-hand.png",
+      "sha256": "28cdea2931a75068aa66681c112f634582412c02a83a1680f9e80927169e76e8",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1121228,
+          0.8989028
+        ],
+        "head": [
+          -0.0035968,
+          -0.1544905,
+          1.608925
+        ],
+        "upperarm_l": [
+          0.1600133,
+          -0.0722664,
+          1.4019543
+        ],
+        "upperarm_r": [
+          -0.163929,
+          -0.1772925,
+          1.3899717
+        ],
+        "hand_l": [
+          0.2154856,
+          -0.1781944,
+          1.2128521
+        ],
+        "hand_r": [
+          -0.2748835,
+          -0.3553798,
+          1.5666305
+        ],
+        "foot_l": [
+          0.047788,
+          -0.0774501,
+          0.0716605
+        ],
+        "foot_r": [
+          -0.0651093,
+          0.0296018,
+          0.1122239
+        ]
+      },
+      "cameraTarget": [
+        -0.20133055746555328,
+        -0.3692951798439026,
+        1.5988571643829346
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-4",
+      "view": "iso",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-4.png",
+      "sha256": "b88a4ef882dc94ebca3bcc818b802990ecea702df8e1faeb8ceb5503fb0892d7",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1295876,
+          0.8965741
+        ],
+        "head": [
+          0.0038443,
+          -0.1879826,
+          1.6049124
+        ],
+        "upperarm_l": [
+          0.1491508,
+          -0.0693934,
+          1.4019626
+        ],
+        "upperarm_r": [
+          -0.1477824,
+          -0.235561,
+          1.3837507
+        ],
+        "hand_l": [
+          0.2034645,
+          -0.0945623,
+          1.1766757
+        ],
+        "hand_r": [
+          -0.1972564,
+          -0.555389,
+          1.5601033
+        ],
+        "foot_l": [
+          0.0477627,
+          -0.0774547,
+          0.0716789
+        ],
+        "foot_r": [
+          -0.0651531,
+          0.0265501,
+          0.1190249
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-4",
+      "view": "l-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-4.l-hand.png",
+      "sha256": "761c943eeda4fad6b5658d6e7fa54148e0993d934ce7bd0d11bc8182dcde595f",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1295876,
+          0.8965741
+        ],
+        "head": [
+          0.0038443,
+          -0.1879826,
+          1.6049124
+        ],
+        "upperarm_l": [
+          0.1491508,
+          -0.0693934,
+          1.4019626
+        ],
+        "upperarm_r": [
+          -0.1477824,
+          -0.235561,
+          1.3837507
+        ],
+        "hand_l": [
+          0.2034645,
+          -0.0945623,
+          1.1766757
+        ],
+        "hand_r": [
+          -0.1972564,
+          -0.555389,
+          1.5601033
+        ],
+        "foot_l": [
+          0.0477627,
+          -0.0774547,
+          0.0716789
+        ],
+        "foot_r": [
+          -0.0651531,
+          0.0265501,
+          0.1190249
+        ]
+      },
+      "cameraTarget": [
+        0.15144307911396027,
+        -0.1495690494775772,
+        1.1465046405792236
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-4",
+      "view": "r-hand",
+      "timeSeconds": 0.745,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-4.r-hand.png",
+      "sha256": "eb11621ff686a18a955f81141e07a2d41182ac150b3f879b50206810d9f9ea10",
+      "item": "boleadoras",
+      "heldItemVisible": true,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1295876,
+          0.8965741
+        ],
+        "head": [
+          0.0038443,
+          -0.1879826,
+          1.6049124
+        ],
+        "upperarm_l": [
+          0.1491508,
+          -0.0693934,
+          1.4019626
+        ],
+        "upperarm_r": [
+          -0.1477824,
+          -0.235561,
+          1.3837507
+        ],
+        "hand_l": [
+          0.2034645,
+          -0.0945623,
+          1.1766757
+        ],
+        "hand_r": [
+          -0.1972564,
+          -0.555389,
+          1.5601033
+        ],
+        "foot_l": [
+          0.0477627,
+          -0.0774547,
+          0.0716789
+        ],
+        "foot_r": [
+          -0.0651531,
+          0.0265501,
+          0.1190249
+        ]
+      },
+      "cameraTarget": [
+        -0.11994116008281708,
+        -0.5558255314826965,
+        1.5858794450759888
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-5",
+      "view": "iso",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-5.png",
+      "sha256": "784518ed2499e75027588e73469c0ef5b38cbee920ea4eee7004f2bf7d70b7cd",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1299441,
+          0.8965266
+        ],
+        "head": [
+          0.0040339,
+          -0.1886522,
+          1.6048265
+        ],
+        "upperarm_l": [
+          0.1488706,
+          -0.0693297,
+          1.4019705
+        ],
+        "upperarm_r": [
+          -0.1473512,
+          -0.2367461,
+          1.3836105
+        ],
+        "hand_l": [
+          0.2032378,
+          -0.0880322,
+          1.173965
+        ],
+        "hand_r": [
+          -0.1915523,
+          -0.5677893,
+          1.5597562
+        ],
+        "foot_l": [
+          0.0477621,
+          -0.0774547,
+          0.071679
+        ],
+        "foot_r": [
+          -0.0651517,
+          0.0263727,
+          0.1193928
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-5",
+      "view": "l-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-5.l-hand.png",
+      "sha256": "7667b99af2d21494e4851904c2c60d155f86cc7342bf920d6e1234c5ec7476af",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1299441,
+          0.8965266
+        ],
+        "head": [
+          0.0040339,
+          -0.1886522,
+          1.6048265
+        ],
+        "upperarm_l": [
+          0.1488706,
+          -0.0693297,
+          1.4019705
+        ],
+        "upperarm_r": [
+          -0.1473512,
+          -0.2367461,
+          1.3836105
+        ],
+        "hand_l": [
+          0.2032378,
+          -0.0880322,
+          1.173965
+        ],
+        "hand_r": [
+          -0.1915523,
+          -0.5677893,
+          1.5597562
+        ],
+        "foot_l": [
+          0.0477621,
+          -0.0774547,
+          0.071679
+        ],
+        "foot_r": [
+          -0.0651517,
+          0.0263727,
+          0.1193928
+        ]
+      },
+      "cameraTarget": [
+        0.14966948330402374,
+        -0.14004725217819214,
+        1.1412979364395142
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-5",
+      "view": "r-hand",
+      "timeSeconds": 0.754,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-5.r-hand.png",
+      "sha256": "22fb3d154802573aa61387280b55200370cf4289c8e8b73f6775ddc7cbf9eccb",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1299441,
+          0.8965266
+        ],
+        "head": [
+          0.0040339,
+          -0.1886522,
+          1.6048265
+        ],
+        "upperarm_l": [
+          0.1488706,
+          -0.0693297,
+          1.4019705
+        ],
+        "upperarm_r": [
+          -0.1473512,
+          -0.2367461,
+          1.3836105
+        ],
+        "hand_l": [
+          0.2032378,
+          -0.0880322,
+          1.173965
+        ],
+        "hand_r": [
+          -0.1915523,
+          -0.5677893,
+          1.5597562
+        ],
+        "foot_l": [
+          0.0477621,
+          -0.0774547,
+          0.071679
+        ],
+        "foot_r": [
+          -0.0651517,
+          0.0263727,
+          0.1193928
+        ]
+      },
+      "cameraTarget": [
+        -0.11435270309448242,
+        -0.5682673454284668,
+        1.5858757495880127
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-6",
+      "view": "iso",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-6.png",
+      "sha256": "fc356dd02a4688de5898734c28eaa7704a374d76e3c365b3acf479704b4d9cf9",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1139685,
+          0.8986567
+        ],
+        "head": [
+          -0.0016575,
+          -0.1586323,
+          1.6084681
+        ],
+        "upperarm_l": [
+          0.1546057,
+          -0.06063,
+          1.402693
+        ],
+        "upperarm_r": [
+          -0.1579864,
+          -0.1955324,
+          1.388544
+        ],
+        "hand_l": [
+          0.2094856,
+          -0.0765626,
+          1.1740527
+        ],
+        "hand_r": [
+          -0.1316838,
+          -0.6433052,
+          1.5070097
+        ],
+        "foot_l": [
+          0.0477672,
+          -0.0774528,
+          0.07167
+        ],
+        "foot_r": [
+          -0.065132,
+          0.0268502,
+          0.1184041
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-6",
+      "view": "l-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-6.l-hand.png",
+      "sha256": "a3bd725bcdd25135987fbf58f2e5acd272d605ba66c816417022602ade283586",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1139685,
+          0.8986567
+        ],
+        "head": [
+          -0.0016575,
+          -0.1586323,
+          1.6084681
+        ],
+        "upperarm_l": [
+          0.1546057,
+          -0.06063,
+          1.402693
+        ],
+        "upperarm_r": [
+          -0.1579864,
+          -0.1955324,
+          1.388544
+        ],
+        "hand_l": [
+          0.2094856,
+          -0.0765626,
+          1.1740527
+        ],
+        "hand_r": [
+          -0.1316838,
+          -0.6433052,
+          1.5070097
+        ],
+        "foot_l": [
+          0.0477672,
+          -0.0774528,
+          0.07167
+        ],
+        "foot_r": [
+          -0.065132,
+          0.0268502,
+          0.1184041
+        ]
+      },
+      "cameraTarget": [
+        0.15555144846439362,
+        -0.12755602598190308,
+        1.1403920650482178
+      ],
+      "cameraScale": 0.26
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.gesture.bolas",
+      "phase": "sample-6",
+      "view": "r-hand",
+      "timeSeconds": 0.91,
+      "durationSeconds": 1.3,
+      "file": "woman-scout/stand.gesture.bolas.sample-6.r-hand.png",
+      "sha256": "dbadc845cb9c0bb4cb5a1842ca511862ca01f7e20e4db8638908a2192c5db7ee",
+      "item": "boleadoras",
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.1139685,
+          0.8986567
+        ],
+        "head": [
+          -0.0016575,
+          -0.1586323,
+          1.6084681
+        ],
+        "upperarm_l": [
+          0.1546057,
+          -0.06063,
+          1.402693
+        ],
+        "upperarm_r": [
+          -0.1579864,
+          -0.1955324,
+          1.388544
+        ],
+        "hand_l": [
+          0.2094856,
+          -0.0765626,
+          1.1740527
+        ],
+        "hand_r": [
+          -0.1316838,
+          -0.6433052,
+          1.5070097
+        ],
+        "foot_l": [
+          0.0477672,
+          -0.0774528,
+          0.07167
+        ],
+        "foot_r": [
+          -0.065132,
+          0.0268502,
+          0.1184041
+        ]
+      },
+      "cameraTarget": [
+        -0.059845637530088425,
+        -0.6640462279319763,
+        1.5394339561462402
+      ],
+      "cameraScale": 0.26
+    }
+  ],
+  "complete": true
+}

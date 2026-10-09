@@ -1,0 +1,12 @@
+{
+  "bodySha256": "ccf5f8b6b5bc9897d983e616d01bd275cbe8e70dc3baf74a7b646fe221ed900e",
+  "maximumAlbedoUvDisplacement": 0.0047806501388549805,
+  "maximumGeneratedPixelDisplacement": 5.9949352741241455,
+  "browMaximumPixelDisplacement": 5.016,
+  "browChangedVertices": 607,
+  "browEyeOpeningUUnchanged": true,
+  "existingBinaryPrefixIdentical": true,
+  "generatedPngSha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+  "change": "New TEXCOORD_1 only on outward body; Skin baseColor only, normal/roughness remain original TEXCOORD_0.",
+  "browDeltaClampedUv": 0.004
+}

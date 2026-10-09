@@ -1,0 +1,33 @@
+{
+  "nativeBoneTransformsAndInverseBindsExact": [
+    "friar-lod0.glb",
+    "friar-lod1.glb",
+    "friar-lod2.glb",
+    "gaucho-lod0.glb",
+    "gaucho-lod1.glb",
+    "gaucho-lod2.glb",
+    "granadero-lod0.glb",
+    "granadero-lod1.glb",
+    "granadero-lod2.glb",
+    "royalist-lod0.glb",
+    "royalist-lod1.glb",
+    "royalist-lod2.glb",
+    "surgeon-lod0.glb",
+    "surgeon-lod1.glb",
+    "surgeon-lod2.glb",
+    "woman-scout-lod0.glb",
+    "woman-scout-lod1.glb",
+    "woman-scout-lod2.glb",
+    "woman-shawl-lod0.glb",
+    "woman-shawl-lod1.glb",
+    "woman-shawl-lod2.glb",
+    "worker-lod0.glb",
+    "worker-lod1.glb",
+    "worker-lod2.glb"
+  ],
+  "count": 24,
+  "bankHashesUnchanged": {
+    "male": true,
+    "female": true
+  }
+}

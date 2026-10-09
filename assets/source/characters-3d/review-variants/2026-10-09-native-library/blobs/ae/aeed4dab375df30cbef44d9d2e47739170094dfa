@@ -1,0 +1,30 @@
+{
+  "bodySha256": "5c90b5e2c909f0cbe7f4f8ade4b88722f86fca7a94d4ef9a3326d635a02cf311",
+  "pngSha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+  "nativeVertexColourRestored": true,
+  "referenceLinearRgb": [
+    0.846873231509858,
+    0.4232676699860717,
+    0.2788942634768104
+  ],
+  "cheekVertexSamples": 228,
+  "paletteFactorsLinear": {
+    "light": [
+      0.7856988195222304,
+      0.830520789627063,
+      0.7353279118534788
+    ],
+    "brown": [
+      0.3981276093084371,
+      0.32705454455571137,
+      0.20726647249907906
+    ],
+    "dark": [
+      0.14422320565245084,
+      0.10675562437160029,
+      0.07950642123993025
+    ]
+  },
+  "geometryBinaryIdenticalToPriorTrial": true,
+  "compensation": "Runtime replaces factor with palette/reference; raw texture and vertex pigments unchanged."
+}

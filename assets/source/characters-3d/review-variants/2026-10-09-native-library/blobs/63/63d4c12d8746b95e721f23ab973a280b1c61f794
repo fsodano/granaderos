@@ -1,0 +1,15 @@
+--- a/assets/source/characters-3d/authoring/optimize.py
++++ b/assets/source/characters-3d/authoring/optimize.py
+@@ -71,7 +71,11 @@
+  if ctx.get('preset') in ('granadero','royalist') and any(o.name.startswith('Single_Crossbelt') for o in objects):
+   reduced_coat=ctx['coat'];bpy.context.view_layer.objects.active=reduced_coat
+   reduction=reduced_coat.modifiers.new('Crossbelt_Support_LOD','DECIMATE')
+-  reduction.ratio=min(1,max(.42 if ctx.get('preset') in ('granadero','royalist') and lod==0 else RATIOS[lod],(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
++  # Retain the accepted moving coat support at LOD1. Decimation otherwise
++  # changes shoulder folds under the sewn belt during compressed reloads.
++  # Other body parts still use their normal LOD ratios; clearance is unchanged.
++  military_ratio=(.42,.42,RATIOS[2])[lod]
++  reduction.ratio=min(1,max(military_ratio,(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
+   reduction.use_collapse_triangulate=True
+   while reduced_coat.modifiers.find(reduction.name)>0:bpy.ops.object.modifier_move_up(modifier=reduction.name)
+   if len(reduced_coat.data.polygons)>150:bpy.ops.object.modifier_apply(modifier=reduction.name)

@@ -1,0 +1,87 @@
+import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {resolve,sep} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import sharp from '../web/node_modules/sharp/lib/index.js';
+import {AnimationMixer,LoopOnce,Ray,Triangle,Vector3} from '../web/node_modules/three/build/three.module.js';
+import {clone} from '../web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
+import {publishedActor} from './published-actor-fixture.mjs';
+const directory=process.env.GRANADEROS_CHARACTER_LIBRARY?pathToFileURL(resolve(process.env.GRANADEROS_CHARACTER_LIBRARY)+sep):new URL('../web/public/models/characters/',import.meta.url);
+async function atlas(url){
+ const path=new URL(url.slice('/models/characters/'.length),directory),bytes=readFileSync(path),document=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12)));
+ const material=document.materials.find(m=>m.name.startsWith('Apparel_Atlas'));
+ const texture=document.textures[material.pbrMetallicRoughness.baseColorTexture.index];
+ const uri=document.images[texture.source].uri;
+ return sharp(new URL(uri,path).pathname).raw().toBuffer({resolveWithObject:true});
+}
+for(const preset of ['granadero','royalist'])for(const lod of [0,1,2])test(`${preset} LOD${lod} shoulder crossbelt stays outside its moving coat`,async()=>{
+ const asset=await publishedActor(preset,lod),model=clone(asset.body.scene),mesh=model.getObjectByName(`Human_outfit_LOD${lod}`);
+ const {data,info}=await atlas(asset.appearance.lods[lod].url),uv=mesh.geometry.attributes.uv,position=mesh.geometry.attributes.position,index=mesh.geometry.index;
+ const target=preset==='granadero'?{strap:[206,203,186],coat:[35,44,59]}:{strap:[227,220,203],coat:[207,200,179]};
+ function kind(vertex){
+  const x=Math.min(info.width-1,Math.max(0,Math.floor(uv.getX(vertex)*info.width))),y=Math.min(info.height-1,Math.max(0,Math.floor(uv.getY(vertex)*info.height)));
+  const offset=(y*info.width+x)*info.channels;
+  return Object.entries(target).find(([,color])=>color.every((value,c)=>Math.abs(data[offset+c]-value)<9))?.[0];
+ }
+ const faces={coat:[],strap:[]};
+ for(let i=0;i<index.count;i+=3){
+  const ids=[index.getX(i),index.getX(i+1),index.getX(i+2)],type=kind(ids[0]);if(!type)continue;
+  const points=ids.map(v=>new Vector3().fromBufferAttribute(position,v)),triangle=new Triangle(...points),centre=triangle.getMidpoint(new Vector3());
+  if(centre.x<.07||centre.x>.23||centre.y<1.34||centre.y>1.56)continue;
+  if(type==='strap'){
+   const n=triangle.getNormal(new Vector3());
+   // Test outward faces, not the underside or the sewn edge of the strap.
+   if(!(n.y>.35||(centre.z>.04&&n.z>.35)||(centre.z<-.04&&n.z<-.35)))continue;
+  }
+  faces[type].push({ids,centre,triangle});
+ }
+ assert.ok(faces.strap.length>10,'The actual cream strap surface is selected');
+ assert.ok(faces.coat.length>10,'The actual coat surface is selected');
+ // A nearest centroid can select the other side of a compressed shoulder
+ // fold. Prefer the triangle whose three native skin-weight sets match the
+ // sewn strap; it is the same moving support, even when nearby faces fold.
+ const weights=mesh.geometry.attributes.skinWeight,joints=mesh.geometry.attributes.skinIndex;
+ const skinKey=vertex=>Array.from({length:4},(_,c)=>[joints.getComponent(vertex,c),weights.getComponent(vertex,c)])
+  .filter(([,weight])=>weight>0).sort((a,b)=>a[0]-b[0]).map(([joint,weight])=>`${joint}:${weight.toFixed(6)}`).join(',');
+ const supportKey=face=>face.ids.map(skinKey).sort().join('|'),matching=new Map();
+ for(const face of faces.coat){const key=supportKey(face);if(!matching.has(key))matching.set(key,[]);matching.get(key).push(face);}
+ const supported=faces.strap.flatMap(face=>{
+  let best=null;
+  for(const coat of matching.get(supportKey(face))??faces.coat){
+   const near=coat.triangle.closestPointToPoint(face.centre,new Vector3()),distance=near.distanceTo(face.centre);
+   if(!best||distance<best.distance)best={coat,distance};
+  }
+  // Solid leather also has inward and side faces. Only its outer wearing
+  // surface must remain outside the matching native coat patch.
+  if(face.triangle.getNormal(new Vector3()).dot(best.coat.triangle.getNormal(new Vector3()))<.75)return [];
+  return [{...face,coat:best.coat}];
+ });
+ assert.ok(supported.length>10,'The outward wearing surface has coat support');
+ const mixer=new AnimationMixer(model);let worst={depth:0};
+ for(const [name,times]of [
+  ['prone.reload.long-gun.1800',[.96,1.92,3.07]],
+  ['crouch.reload.long-gun.1800',[.96,1.92,3.07]],
+  ['stand.reload.long-gun.1800',[.96,1.92,3.07]],
+  ['prone.crawl.unarmed',[.10,.69,1.34]],
+ ]){
+  const clip=asset.animation.animations.find(c=>c.name===name);assert.ok(clip,name);
+  mixer.stopAllAction();const action=mixer.clipAction(clip);action.setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();
+  for(const time of times){
+   mixer.setTime(time);model.updateMatrixWorld(true);mesh.skeleton.update();
+   const points=Array.from({length:position.count},(_,v)=>mesh.getVertexPosition(v,new Vector3()).applyMatrix4(mesh.matrixWorld));
+   for(const {ids,coat:restCoat} of supported){
+    const strap=new Triangle(...ids.map(i=>points[i])),p=strap.getMidpoint(new Vector3());
+    const coat=new Triangle(...restCoat.ids.map(i=>points[i])),normal=coat.getNormal(new Vector3());
+    const ray=new Ray(p.clone().addScaledVector(normal,.025),normal.clone().negate());
+    const hit=ray.intersectTriangle(coat.a,coat.b,coat.c,false,new Vector3());
+    if(!hit)continue;
+    const depth=.025-hit.distanceTo(ray.origin);
+    if(depth>0&&depth<.025&&depth>worst.depth)worst={depth,name,time};
+   }
+  }
+ }
+ mixer.stopAllAction();mixer.uncacheRoot(model);
+ assert.ok(worst.depth<.001,`Coat enters the strap by ${(worst.depth*1000).toFixed(2)} mm: ${worst.name} at ${worst.time}s`);
+});

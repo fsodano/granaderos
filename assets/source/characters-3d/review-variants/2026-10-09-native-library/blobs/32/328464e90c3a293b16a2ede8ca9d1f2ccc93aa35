@@ -1,0 +1,26 @@
+[
+  {
+    "file": "woman-shawl-lod1.glb",
+    "changedTriangleCount": 3812,
+    "maximumMorphComponentChangeM": {
+      "MORPH0:NORMAL": 0.00029608607292175293,
+      "MORPH0:POSITION": 2.384185791015625e-07,
+      "MORPH1:NORMAL": 1.6248971819877625,
+      "MORPH1:POSITION": 0.027157112956047058,
+      "MORPH2:NORMAL": 1.5818644165992737,
+      "MORPH2:POSITION": 0.04602045565843582
+    }
+  },
+  {
+    "file": "woman-shawl-lod2.glb",
+    "changedTriangleCount": 1742,
+    "maximumMorphComponentChangeM": {
+      "MORPH0:NORMAL": 0.000500028720125556,
+      "MORPH0:POSITION": 2.384185791015625e-07,
+      "MORPH1:NORMAL": 0.04254448413848877,
+      "MORPH1:POSITION": 0.006381630897521973,
+      "MORPH2:NORMAL": 1.2396158874034882,
+      "MORPH2:POSITION": 0.037143534049391747
+    }
+  }
+]

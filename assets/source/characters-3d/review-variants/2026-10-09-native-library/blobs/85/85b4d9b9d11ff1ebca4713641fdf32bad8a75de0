@@ -1,0 +1,14 @@
+{
+  "male": {
+    "all53106ChannelPayloadsExactToAccepted": true,
+    "all334ClipMetadataExactToAccepted": true,
+    "nativeNodesExact": true,
+    "sha256": "18315f4cd514b6ded2c9c6dde7f6ffb4d0a72e889e34c3294ada64829f26a5e6"
+  },
+  "female": {
+    "all53106ChannelPayloadsExactToAccepted": true,
+    "all334ClipMetadataExactToAccepted": true,
+    "nativeNodesExact": true,
+    "sha256": "bc2c4a9eef366a0998668e29926900ad4fb9442d86df177e0f9ae72ba70e416b"
+  }
+}

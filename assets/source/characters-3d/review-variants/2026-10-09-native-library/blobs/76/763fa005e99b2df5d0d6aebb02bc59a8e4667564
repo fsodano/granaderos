@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "appearances": {
+    "granadero": {
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/granadero-lod0.glb",
+          "triangles": 87197,
+          "bytes": 5302048,
+          "drawCalls": 6,
+          "sha256": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/granadero-lod1.glb",
+          "triangles": 61526,
+          "bytes": 3911964,
+          "drawCalls": 6,
+          "sha256": "b183069f9447523e04b2eeeb610559b1ae4127351cc87b494cc65dbfaf6e7759"
+        }
+      ]
+    },
+    "royalist": {
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/royalist-lod0.glb",
+          "triangles": 86840,
+          "bytes": 5260804,
+          "drawCalls": 6,
+          "sha256": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/royalist-lod1.glb",
+          "triangles": 61455,
+          "bytes": 3902644,
+          "drawCalls": 6,
+          "sha256": "84cf7f066a202fd495ad5ff915e872f4932e7e4863bd8e3b8af05fae688a22d5"
+        }
+      ]
+    }
+  },
+  "textures": {
+    "textures/4f51c65706c915611c4a.png": "4f51c65706c915611c4a6ece7b932184475164e4f08791c5554895c41ee98704",
+    "textures/bbd181263ad3acfb2683.png": "bbd181263ad3acfb2683af8a8e2e770ebd9ca8db54623724a2a9a50795e4b746",
+    "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+    "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+    "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+    "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+    "textures/e3c6887d5bede0fbc1e4.png": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+    "textures/a4d52e34a5ed852382b9.png": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4"
+  }
+}

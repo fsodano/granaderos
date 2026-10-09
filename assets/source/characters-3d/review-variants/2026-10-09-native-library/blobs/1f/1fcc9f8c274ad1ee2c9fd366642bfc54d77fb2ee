@@ -1,0 +1,58 @@
+--- a/playgrounds/granadero-3d/server.mjs
++++ b/playgrounds/granadero-3d/server.mjs
+@@ -16,8 +16,10 @@
+   const publicPath=pathname.startsWith('/assets/')&&!process.argv.includes('--dist')?`public${pathname}`:pathname.replace(/^\//,'');
+   const relative=!production&&pathname.startsWith('/vendor/three/')?`node_modules/three/${pathname.slice('/vendor/three/'.length)}`:publicPath;
+   const fromLibrary=!production&&pathname.startsWith('/models/characters/');
+-  const allowedRoot=fromLibrary?libraryRoot:base;
+-  const file=resolve(allowedRoot,fromLibrary?pathname.slice('/models/characters/'.length):relative||'index.html');
++  // This one shared palette helper is the lab's only repository module route.
++  const sharedPalette=!production&&pathname==='/game/skin-palette.js';
++  const allowedRoot=sharedPalette?resolve(root,'../../game'):fromLibrary?libraryRoot:base;
++  const file=resolve(allowedRoot,sharedPalette?'skin-palette.js':fromLibrary?pathname.slice('/models/characters/'.length):relative||'index.html');
+   if(file!==allowedRoot&&!file.startsWith(allowedRoot+sep)){res.writeHead(403).end();return;}
+   if(!(await stat(file)).isFile()){res.writeHead(404).end();return;}
+   res.writeHead(200,{'Content-Type':types[extname(file)]??'application/octet-stream','Cache-Control':'no-cache'});
+--- a/playgrounds/granadero-3d/build.mjs
++++ b/playgrounds/granadero-3d/build.mjs
+@@ -6,6 +6,9 @@
+ await mkdir(target,{recursive:true});
+ for(const name of ['index.html','src'])await cp(new URL(name,import.meta.url),new URL(name,target),{recursive:true});
+ await cp(new URL('public/assets',import.meta.url),new URL('assets',target),{recursive:true});
++// Package the same single shared module served by the development route.
++await mkdir(new URL('game',target),{recursive:true});
++await cp(new URL('../../game/skin-palette.js',import.meta.url),new URL('game/skin-palette.js',target));
+ await mkdir(new URL('vendor/three',target),{recursive:true});
+ for(const name of ['build','examples/jsm'])await cp(new URL(`node_modules/three/${name}`,import.meta.url),new URL(`vendor/three/${name}`,target),{recursive:true});
+ // Copy only the models this lab can select. Production sources stay in one place.
+--- a/playgrounds/granadero-3d/tests/server.test.mjs
++++ b/playgrounds/granadero-3d/tests/server.test.mjs
+@@ -2,6 +2,7 @@
+ import assert from 'node:assert/strict';
+ import {spawn,execFileSync} from 'node:child_process';
+ import {fileURLToPath} from 'node:url';
++import {readFileSync} from 'node:fs';
+ const root=fileURLToPath(new URL('..',import.meta.url));
+ const servers=[];
+ async function start(production){
+@@ -23,12 +24,19 @@
+ for(const mode of ['development','production']){
+  test(`${mode} serves the model and all imported runtime modules`,async()=>{
+   const base=mode==='development'?development:production;
+-  for(const [path,type] of [['/','text/html'],['/src/main.js','text/javascript'],['/src/character-library.js','text/javascript'],['/src/style.css','text/css'],['/vendor/three/build/three.module.js','text/javascript'],['/vendor/three/build/three.core.js','text/javascript'],['/vendor/three/examples/jsm/loaders/GLTFLoader.js','text/javascript'],['/vendor/three/examples/jsm/controls/OrbitControls.js','text/javascript'],['/vendor/three/examples/jsm/environments/RoomEnvironment.js','text/javascript'],['/vendor/three/examples/jsm/utils/BufferGeometryUtils.js','text/javascript'],['/vendor/three/examples/jsm/utils/SkeletonUtils.js','text/javascript'],['/assets/granadero.glb','model/gltf-binary'],['/assets/asset-manifest.json','application/json']]){
++  for(const [path,type] of [['/','text/html'],['/src/main.js','text/javascript'],['/game/skin-palette.js','text/javascript'],['/src/character-library.js','text/javascript'],['/src/style.css','text/css'],['/vendor/three/build/three.module.js','text/javascript'],['/vendor/three/build/three.core.js','text/javascript'],['/vendor/three/examples/jsm/loaders/GLTFLoader.js','text/javascript'],['/vendor/three/examples/jsm/controls/OrbitControls.js','text/javascript'],['/vendor/three/examples/jsm/environments/RoomEnvironment.js','text/javascript'],['/vendor/three/examples/jsm/utils/BufferGeometryUtils.js','text/javascript'],['/vendor/three/examples/jsm/utils/SkeletonUtils.js','text/javascript'],['/assets/granadero.glb','model/gltf-binary'],['/assets/asset-manifest.json','application/json']]){
+    const response=await fetch(base+path);
+    assert.equal(response.status,200,`${mode} ${path}`);
+    assert.ok(response.headers.get('content-type')?.startsWith(type),`${path}: ${type}`);
+    assert.ok((await response.arrayBuffer()).byteLength>0,`${path} empty`);
+   }
++ });
++ test(`${mode} serves only the allowed shared palette helper`,async()=>{
++  const base=mode==='development'?development:production;
++  const response=await fetch(base+'/game/skin-palette.js');
++  assert.equal(response.status,200);
++  assert.equal(await response.text(),readFileSync(new URL('../../../game/skin-palette.js',import.meta.url),'utf8'));
++  assert.equal((await fetch(base+'/game/actor-action-contract.js')).status,404,'Other repository modules are not exposed');
+  });
+  test(`${mode} serves every selectable game character with its animation bank and textures`,async()=>{
+   const base=mode==='development'?development:production;

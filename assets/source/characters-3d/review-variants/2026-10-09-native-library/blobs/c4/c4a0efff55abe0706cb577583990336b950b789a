@@ -1,0 +1,2099 @@
+{
+  "version": 1,
+  "gitRevision": "255838ae5b2b37e19bbc5a5ea678b91fdced316d",
+  "manifestSha256": "2f74e804cf4813d278cba977597017212af5f550cede0edd8ce222434320d5cc",
+  "manifestPath": "/private/tmp/granadero-posture-assist/library/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 560,
+    "samples": 4,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "6054b6c2b0787eec0f65ff8e64bebba5c0bcf010b8e77be7c0601097a56b5b66",
+    "snapshot": "frozen-sources/tools/characters-3d/render-review.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "839582c9bb2609ad34f6caaa2511dcc56d3bf04ae65b978ef7ded4af868eda7b",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero",
+    "woman-scout"
+  ],
+  "coverage": [
+    {
+      "clip": "life.stand.recover",
+      "item": null
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "/private/tmp/granadero-posture-assist/library/granadero-lod0.glb",
+        "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3",
+        "bytes": 1964996,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/409b7f25641a2c1cf7e2.png": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+          "textures/76c6ed4f73557a4a0a53.png": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+          "textures/040aa7bd60f397241c0c.png": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        "texturePaths": {
+          "textures/409b7f25641a2c1cf7e2.png": "/private/tmp/granadero-posture-assist/library/textures/409b7f25641a2c1cf7e2.png",
+          "textures/76c6ed4f73557a4a0a53.png": "/private/tmp/granadero-posture-assist/library/textures/76c6ed4f73557a4a0a53.png",
+          "textures/040aa7bd60f397241c0c.png": "/private/tmp/granadero-posture-assist/library/textures/040aa7bd60f397241c0c.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-posture-assist/library/textures/042e670c62ad34a45c14.png",
+          "textures/2e15a426be9ee20c39a7.png": "/private/tmp/granadero-posture-assist/library/textures/2e15a426be9ee20c39a7.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-posture-assist/library/male-animations.glb",
+        "sha256": "e2756fe4ab607fafec77b783b8b9c3ab8664c1aaa3493de1d56255141c0d1321",
+        "bytes": 1355608,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-posture-assist/library/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    },
+    "woman-scout": {
+      "body": {
+        "path": "/private/tmp/granadero-posture-assist/library/woman-scout-lod0.glb",
+        "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39",
+        "bytes": 1286968,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/4b36fb5abe80124daabc.png": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+          "textures/e80f68933ff3fbf30557.png": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+          "textures/f63de566801fcea8ef97.png": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        "texturePaths": {
+          "textures/4b36fb5abe80124daabc.png": "/private/tmp/granadero-posture-assist/library/textures/4b36fb5abe80124daabc.png",
+          "textures/e80f68933ff3fbf30557.png": "/private/tmp/granadero-posture-assist/library/textures/e80f68933ff3fbf30557.png",
+          "textures/f63de566801fcea8ef97.png": "/private/tmp/granadero-posture-assist/library/textures/f63de566801fcea8ef97.png",
+          "textures/042e670c62ad34a45c14.png": "/private/tmp/granadero-posture-assist/library/textures/042e670c62ad34a45c14.png",
+          "textures/2e15a426be9ee20c39a7.png": "/private/tmp/granadero-posture-assist/library/textures/2e15a426be9ee20c39a7.png"
+        }
+      },
+      "bank": {
+        "path": "/private/tmp/granadero-posture-assist/library/female-animations.glb",
+        "sha256": "bae7160c5deb29ab54bfae36aa450609bfbfa99128cc1b10496ea197a35f7892",
+        "bytes": 1350544,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "equipment": {
+        "path": "/private/tmp/granadero-posture-assist/library/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.0,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-1.png",
+      "sha256": "5e2923eddeefbb4faa77acebb9327f30c2d86f765bfccef87c87bf4c36308476",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 1,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.1272882
+        ],
+        "head": [
+          0.1426742,
+          0.639615,
+          0.1352383
+        ],
+        "upperarm_l": [
+          0.2866845,
+          0.3888903,
+          0.1173287
+        ],
+        "upperarm_r": [
+          -0.0783828,
+          0.4875683,
+          0.1409473
+        ],
+        "hand_l": [
+          0.4886274,
+          -0.0749267,
+          0.0410001
+        ],
+        "hand_r": [
+          -0.5359514,
+          0.526382,
+          0.0410002
+        ],
+        "foot_l": [
+          0.2527293,
+          -0.8706828,
+          0.0754448
+        ],
+        "foot_r": [
+          -0.4867823,
+          -0.7782093,
+          0.0654321
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-2",
+      "view": "iso",
+      "timeSeconds": 0.17,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-2.png",
+      "sha256": "aca58f1e57bce7d018b491549a7e43eebe1c8f56c9f9b66ae11c7564df8aedf7",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.9497534965655037,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.1316723
+        ],
+        "head": [
+          0.1415321,
+          0.6389588,
+          0.1753938
+        ],
+        "upperarm_l": [
+          0.2860894,
+          0.3896244,
+          0.1457354
+        ],
+        "upperarm_r": [
+          -0.0793339,
+          0.4860261,
+          0.1729722
+        ],
+        "hand_l": [
+          0.4494739,
+          -0.0374362,
+          0.0788401
+        ],
+        "hand_r": [
+          -0.4858116,
+          0.4639637,
+          0.0366977
+        ],
+        "foot_l": [
+          0.2516787,
+          -0.8647483,
+          0.0758966
+        ],
+        "foot_r": [
+          -0.4867778,
+          -0.7782144,
+          0.0654315
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-3",
+      "view": "iso",
+      "timeSeconds": 0.34,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-3.png",
+      "sha256": "850351d5e797b430c231c4e0700b520f1cc9baabf17c29757bb4ee40c0697203",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.8995069931310073,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.143905
+        ],
+        "head": [
+          0.1376329,
+          0.6269767,
+          0.2854889
+        ],
+        "upperarm_l": [
+          0.2839035,
+          0.384469,
+          0.2241012
+        ],
+        "upperarm_r": [
+          -0.0825541,
+          0.4737142,
+          0.2603431
+        ],
+        "hand_l": [
+          0.3423965,
+          0.075291,
+          0.1061129
+        ],
+        "hand_r": [
+          -0.3694674,
+          0.3339174,
+          0.0371556
+        ],
+        "foot_l": [
+          0.2445127,
+          -0.8244975,
+          0.0794954
+        ],
+        "foot_r": [
+          -0.4860994,
+          -0.7767829,
+          0.0654216
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-4",
+      "view": "iso",
+      "timeSeconds": 0.51,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-4.png",
+      "sha256": "efcc63de855f92edd9b725610e593ff697a3965983db1d74560d50887bc27e0e",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.8492604896965111,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.1623709
+        ],
+        "head": [
+          0.129714,
+          0.5811787,
+          0.4457333
+        ],
+        "upperarm_l": [
+          0.2791086,
+          0.3569399,
+          0.339273
+        ],
+        "upperarm_r": [
+          -0.0890197,
+          0.4334318,
+          0.3861755
+        ],
+        "hand_l": [
+          0.2500221,
+          0.1661618,
+          0.051027
+        ],
+        "hand_r": [
+          -0.2536691,
+          0.1923945,
+          0.0493249
+        ],
+        "foot_l": [
+          0.2320681,
+          -0.7549422,
+          0.090693
+        ],
+        "foot_r": [
+          -0.4779873,
+          -0.7544863,
+          0.0632055
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-5",
+      "view": "iso",
+      "timeSeconds": 0.68,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-5.png",
+      "sha256": "e6ad4e762a9e9dd191647d9fa8636f7df43d21c653e3fc6fb3ccc3f8ab46bc2f",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.7990139862620148,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.1854909
+        ],
+        "head": [
+          0.1166593,
+          0.4802478,
+          0.6259845
+        ],
+        "upperarm_l": [
+          0.2707487,
+          0.2909922,
+          0.4704611
+        ],
+        "upperarm_r": [
+          -0.0995496,
+          0.3496117,
+          0.5253448
+        ],
+        "hand_l": [
+          0.2398578,
+          0.1749958,
+          0.0498004
+        ],
+        "hand_r": [
+          -0.2380243,
+          0.1777092,
+          0.0568237
+        ],
+        "foot_l": [
+          0.2161068,
+          -0.6664327,
+          0.1018339
+        ],
+        "foot_r": [
+          -0.4523781,
+          -0.6878003,
+          0.0575111
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-6",
+      "view": "iso",
+      "timeSeconds": 1.01,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-6.png",
+      "sha256": "7d983ecb579ca49eaeb85c99d83c526da6170702423a20dd2f240ea41477600f",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.7014766560656396,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.2377928
+        ],
+        "head": [
+          0.0780971,
+          0.1199207,
+          0.8892111
+        ],
+        "upperarm_l": [
+          0.2447659,
+          0.0448196,
+          0.6670815
+        ],
+        "upperarm_r": [
+          -0.1300356,
+          0.0648185,
+          0.7189773
+        ],
+        "hand_l": [
+          0.2407945,
+          0.1520232,
+          0.1601252
+        ],
+        "hand_r": [
+          -0.2129782,
+          0.1481479,
+          0.2143093
+        ],
+        "foot_l": [
+          0.182252,
+          -0.4792683,
+          0.1029355
+        ],
+        "foot_r": [
+          -0.370881,
+          -0.4758733,
+          0.0465275
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-7",
+      "view": "iso",
+      "timeSeconds": 1.35,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-7.png",
+      "sha256": "bb9fb9ea71180f7879ef8eec15f65de2f0f2d5e1b40f03e8153201b99c36ddb5",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.600983649196647,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.2917365
+        ],
+        "head": [
+          0.0359295,
+          -0.3071463,
+          0.8854207
+        ],
+        "upperarm_l": [
+          0.2154212,
+          -0.2503647,
+          0.6721073
+        ],
+        "upperarm_r": [
+          -0.162405,
+          -0.2535311,
+          0.7005088
+        ],
+        "hand_l": [
+          0.2295137,
+          0.0324812,
+          0.2381564
+        ],
+        "hand_r": [
+          -0.2092606,
+          0.0124874,
+          0.2582969
+        ],
+        "foot_l": [
+          0.1557554,
+          -0.3322617,
+          0.0825439
+        ],
+        "foot_r": [
+          -0.2702168,
+          -0.2137628,
+          0.0448799
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-8",
+      "view": "iso",
+      "timeSeconds": 1.7,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-8.png",
+      "sha256": "d80967bca7bfdde3463bfea805d4508e1678270f7c5034847948de96affbbab0",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.4975349656550371,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.3342308
+        ],
+        "head": [
+          0.0103723,
+          -0.5604931,
+          0.6980066
+        ],
+        "upperarm_l": [
+          0.1974647,
+          -0.4199852,
+          0.5423459
+        ],
+        "upperarm_r": [
+          -0.1813291,
+          -0.4255769,
+          0.5496516
+        ],
+        "hand_l": [
+          0.1912689,
+          -0.1661501,
+          0.2912472
+        ],
+        "hand_r": [
+          -0.1649118,
+          -0.1817199,
+          0.092728
+        ],
+        "foot_l": [
+          0.1500003,
+          -0.3000009,
+          0.0762964
+        ],
+        "foot_r": [
+          -0.1837323,
+          0.0120635,
+          0.0852536
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-9",
+      "view": "iso",
+      "timeSeconds": 2.03,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-9.png",
+      "sha256": "e1c438503c79d2cf246ecf76463ef8daa465a39fa5792d29cdac2ed6c5febede",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.39999763545866196,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.3500752
+        ],
+        "head": [
+          0.0038973,
+          -0.6184163,
+          0.6000323
+        ],
+        "upperarm_l": [
+          0.1929328,
+          -0.4555327,
+          0.4740526
+        ],
+        "upperarm_r": [
+          -0.1859552,
+          -0.4590911,
+          0.474838
+        ],
+        "hand_l": [
+          0.1676488,
+          -0.356505,
+          0.4299709
+        ],
+        "hand_r": [
+          -0.1195073,
+          -0.3475659,
+          0.0506343
+        ],
+        "foot_l": [
+          0.1499896,
+          -0.3001189,
+          0.0912729
+        ],
+        "foot_r": [
+          -0.1500611,
+          0.0998062,
+          0.1181674
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-10",
+      "view": "iso",
+      "timeSeconds": 2.37,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-10.png",
+      "sha256": "77baa5dde3e685b02b652b73d113aaa4dbb27f33d25b17bb22e377b663efb7df",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.2995046285896693,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.4433879
+        ],
+        "head": [
+          -0.0009127,
+          -0.5668301,
+          0.8071833
+        ],
+        "upperarm_l": [
+          0.1901871,
+          -0.4236249,
+          0.6578181
+        ],
+        "upperarm_r": [
+          -0.1887103,
+          -0.4230727,
+          0.6602284
+        ],
+        "hand_l": [
+          0.1174077,
+          -0.4348289,
+          0.5863098
+        ],
+        "hand_r": [
+          -0.1317749,
+          -0.3470875,
+          0.2069965
+        ],
+        "foot_l": [
+          0.1343793,
+          -0.2455565,
+          0.1116188
+        ],
+        "foot_r": [
+          -0.1371767,
+          0.0928887,
+          0.185567
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-11",
+      "view": "iso",
+      "timeSeconds": 2.7,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-11.png",
+      "sha256": "ddfc0e0cfa64494cbe25922696b2acf0285aed1e08b8c5f4431e386444822251",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.20196729839329408,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.6413105
+        ],
+        "head": [
+          -0.0077721,
+          -0.3866604,
+          1.2013557
+        ],
+        "upperarm_l": [
+          0.1866568,
+          -0.2961729,
+          1.0155011
+        ],
+        "upperarm_r": [
+          -0.1921515,
+          -0.2877235,
+          1.0169964
+        ],
+        "hand_l": [
+          0.1393767,
+          -0.4914699,
+          0.7997951
+        ],
+        "hand_r": [
+          -0.162581,
+          -0.2890692,
+          0.5252162
+        ],
+        "foot_l": [
+          0.1012251,
+          -0.1299962,
+          0.1193117
+        ],
+        "foot_r": [
+          -0.1100212,
+          0.0778357,
+          0.2398562
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "life.stand.recover",
+      "phase": "sample-12",
+      "view": "iso",
+      "timeSeconds": 3.38332,
+      "durationSeconds": 3.38332,
+      "file": "granadero/life.stand.recover.sample-12.png",
+      "sha256": "13f116330667cbbaf15c617f538abbf5fecb0a86eb2f5289b768a749296d2664",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9413389
+        ],
+        "head": [
+          -0.0090215,
+          -0.0019987,
+          1.6152962
+        ],
+        "upperarm_l": [
+          0.1870415,
+          -0.0033888,
+          1.4145483
+        ],
+        "upperarm_r": [
+          -0.1916027,
+          0.0090705,
+          1.4080305
+        ],
+        "hand_l": [
+          0.223653,
+          -0.1059317,
+          0.9241005
+        ],
+        "hand_r": [
+          -0.2229174,
+          -0.1042058,
+          0.9162259
+        ],
+        "foot_l": [
+          0.0509785,
+          0.0454337,
+          0.0762957
+        ],
+        "foot_r": [
+          -0.0687891,
+          0.0548351,
+          0.1060678
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-1",
+      "view": "iso",
+      "timeSeconds": 0.0,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-1.png",
+      "sha256": "8235ad49736d81bd817ba3f014cda6d6ed4a7ddf0aa5df3ead7daf74a0a7b44c",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 1,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.1483763
+        ],
+        "head": [
+          0.1435836,
+          0.6434615,
+          0.138639
+        ],
+        "upperarm_l": [
+          0.2701344,
+          0.3851831,
+          0.1286514
+        ],
+        "upperarm_r": [
+          -0.0581739,
+          0.473925,
+          0.1498918
+        ],
+        "hand_l": [
+          0.4598174,
+          -0.0483329,
+          0.041
+        ],
+        "hand_r": [
+          -0.4867206,
+          0.49971,
+          0.0409999
+        ],
+        "foot_l": [
+          0.2391004,
+          -0.8544343,
+          0.0879081
+        ],
+        "foot_r": [
+          -0.4639202,
+          -0.7665699,
+          0.077068
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-2",
+      "view": "iso",
+      "timeSeconds": 0.17,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-2.png",
+      "sha256": "a8f9d4878d900be50617337cacbe5691202c06ee265198197263261f1130cdb5",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.9497534965655037,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.1522051
+        ],
+        "head": [
+          0.1425155,
+          0.6439033,
+          0.1791759
+        ],
+        "upperarm_l": [
+          0.2695478,
+          0.3863993,
+          0.1572867
+        ],
+        "upperarm_r": [
+          -0.0590806,
+          0.4730941,
+          0.181781
+        ],
+        "hand_l": [
+          0.4252239,
+          -0.0189995,
+          0.078065
+        ],
+        "hand_r": [
+          -0.4446045,
+          0.4380918,
+          0.0406519
+        ],
+        "foot_l": [
+          0.2381948,
+          -0.8486626,
+          0.0884615
+        ],
+        "foot_r": [
+          -0.4637115,
+          -0.7661452,
+          0.0771091
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-3",
+      "view": "iso",
+      "timeSeconds": 0.34,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-3.png",
+      "sha256": "f07f9de007eb16b4f9b0ca661d9745d73701fc4b75c8e1bb5e4528a169920926",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.8995069931310073,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.1632874
+        ],
+        "head": [
+          0.1388065,
+          0.6347334,
+          0.2910389
+        ],
+        "upperarm_l": [
+          0.2673694,
+          0.3823439,
+          0.2367754
+        ],
+        "upperarm_r": [
+          -0.0621892,
+          0.4626028,
+          0.2693681
+        ],
+        "hand_l": [
+          0.3305185,
+          0.0692475,
+          0.104983
+        ],
+        "hand_r": [
+          -0.3486298,
+          0.3046234,
+          0.0436708
+        ],
+        "foot_l": [
+          0.2319889,
+          -0.8095635,
+          0.092526
+        ],
+        "foot_r": [
+          -0.4630171,
+          -0.7646819,
+          0.0770604
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-4",
+      "view": "iso",
+      "timeSeconds": 0.51,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-4.png",
+      "sha256": "f2927d02a46bdc10dd142be46b3aada83607f0c46a9c362fb2c132eab06001e0",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.8492604896965111,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.1800166
+        ],
+        "head": [
+          0.131128,
+          0.5924463,
+          0.4548214
+        ],
+        "upperarm_l": [
+          0.2625393,
+          0.3558052,
+          0.3538692
+        ],
+        "upperarm_r": [
+          -0.0685218,
+          0.4245949,
+          0.396049
+        ],
+        "hand_l": [
+          0.2487887,
+          0.1403048,
+          0.051034
+        ],
+        "hand_r": [
+          -0.2523814,
+          0.1640678,
+          0.0487866
+        ],
+        "foot_l": [
+          0.2212048,
+          -0.7419884,
+          0.1036622
+        ],
+        "foot_r": [
+          -0.4557341,
+          -0.7431649,
+          0.0744205
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-5",
+      "view": "iso",
+      "timeSeconds": 0.68,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-5.png",
+      "sha256": "1a394e44046a65ef03b6c40c117f2737aea4dd410a52fcdc2efebb73a283ca32",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.7990139862620148,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.2009624
+        ],
+        "head": [
+          0.1182735,
+          0.494322,
+          0.6407083
+        ],
+        "upperarm_l": [
+          0.2540533,
+          0.289912,
+          0.487593
+        ],
+        "upperarm_r": [
+          -0.0789593,
+          0.3426289,
+          0.5369504
+        ],
+        "hand_l": [
+          0.239606,
+          0.1466402,
+          0.0493031
+        ],
+        "hand_r": [
+          -0.222249,
+          0.1690209,
+          0.1038542
+        ],
+        "foot_l": [
+          0.2073578,
+          -0.6559994,
+          0.1147544
+        ],
+        "foot_r": [
+          -0.4318544,
+          -0.6773624,
+          0.0668409
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-6",
+      "view": "iso",
+      "timeSeconds": 1.01,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-6.png",
+      "sha256": "bebcbf0ca27bbc94eb00da9ab47f8c18b60d6afd9c171341b96fa67596578b90",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.7014766560656396,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.2483454
+        ],
+        "head": [
+          0.0796576,
+          0.1320956,
+          0.9189211
+        ],
+        "upperarm_l": [
+          0.2274735,
+          0.0392423,
+          0.6886553
+        ],
+        "upperarm_r": [
+          -0.1095889,
+          0.0572275,
+          0.7353256
+        ],
+        "hand_l": [
+          0.2368666,
+          0.1208136,
+          0.2075088
+        ],
+        "hand_r": [
+          -0.2000692,
+          0.1198572,
+          0.2597891
+        ],
+        "foot_l": [
+          0.1779704,
+          -0.4741644,
+          0.1132267
+        ],
+        "foot_r": [
+          -0.3558748,
+          -0.4682475,
+          0.0498633
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-7",
+      "view": "iso",
+      "timeSeconds": 1.35,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-7.png",
+      "sha256": "30cec75d8b82067a90fc35c8d725344aa608b3277a93e1358a29a2ee545d9a17",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.600983649196647,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.2972158
+        ],
+        "head": [
+          0.0367177,
+          -0.3096199,
+          0.92722
+        ],
+        "upperarm_l": [
+          0.1972181,
+          -0.2653195,
+          0.6933774
+        ],
+        "upperarm_r": [
+          -0.1425644,
+          -0.2681672,
+          0.7189192
+        ],
+        "hand_l": [
+          0.2220836,
+          -0.0116454,
+          0.2771133
+        ],
+        "hand_r": [
+          -0.1985333,
+          -0.0288903,
+          0.297187
+        ],
+        "foot_l": [
+          0.1549889,
+          -0.331342,
+          0.0889143
+        ],
+        "foot_r": [
+          -0.2620643,
+          -0.2095952,
+          0.0409947
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-8",
+      "view": "iso",
+      "timeSeconds": 1.7,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-8.png",
+      "sha256": "4af4c9ce6fe8d7ed8f027ca74ac6318ed1c58254aa91c28d9e232468ad0049ea",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.4975349656550371,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.3357137
+        ],
+        "head": [
+          0.0102721,
+          -0.5812106,
+          0.7416982
+        ],
+        "upperarm_l": [
+          0.1785339,
+          -0.4431102,
+          0.5585852
+        ],
+        "upperarm_r": [
+          -0.1621187,
+          -0.4481388,
+          0.565155
+        ],
+        "hand_l": [
+          0.1851898,
+          -0.1803488,
+          0.2773596
+        ],
+        "hand_r": [
+          -0.1631667,
+          -0.219218,
+          0.1340646
+        ],
+        "foot_l": [
+          0.1499987,
+          -0.3000002,
+          0.081682
+        ],
+        "foot_r": [
+          -0.1814459,
+          0.013224,
+          0.0810887
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-9",
+      "view": "iso",
+      "timeSeconds": 2.03,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-9.png",
+      "sha256": "fa09be7c19e8b3cd5df591920b3b71597ce765e378292a40032f8c56cbab16c6",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.39999763545866196,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.3500726
+        ],
+        "head": [
+          0.0034749,
+          -0.6465576,
+          0.6420942
+        ],
+        "upperarm_l": [
+          0.1737678,
+          -0.4813596,
+          0.4873795
+        ],
+        "upperarm_r": [
+          -0.1669695,
+          -0.4845596,
+          0.4880858
+        ],
+        "hand_l": [
+          0.1588655,
+          -0.3627383,
+          0.4087317
+        ],
+        "hand_r": [
+          -0.1194507,
+          -0.3564258,
+          0.0504764
+        ],
+        "foot_l": [
+          0.1499792,
+          -0.300052,
+          0.0932449
+        ],
+        "foot_r": [
+          -0.1500535,
+          0.0998054,
+          0.1124337
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-10",
+      "view": "iso",
+      "timeSeconds": 2.37,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-10.png",
+      "sha256": "9ef62eeb43975850ac633df6bff54d18119ee53af28cc43ef1fa52832bc50869",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.2995046285896693,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257628,
+          0.4385045
+        ],
+        "head": [
+          -0.0013942,
+          -0.5905973,
+          0.8464541
+        ],
+        "upperarm_l": [
+          0.1710527,
+          -0.4480601,
+          0.6708819
+        ],
+        "upperarm_r": [
+          -0.1696931,
+          -0.4475634,
+          0.6730493
+        ],
+        "hand_l": [
+          0.0976503,
+          -0.4088734,
+          0.541791
+        ],
+        "hand_r": [
+          -0.1320918,
+          -0.3530058,
+          0.2174047
+        ],
+        "foot_l": [
+          0.1338726,
+          -0.2491612,
+          0.112128
+        ],
+        "foot_r": [
+          -0.136599,
+          0.089204,
+          0.1758144
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-11",
+      "view": "iso",
+      "timeSeconds": 2.7,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-11.png",
+      "sha256": "8ac49eac5b47267e61102a8e7baa8761abc6ae05afeaf874c6a54fc475618527",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0.20196729839329408,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0257627,
+          0.6260777
+        ],
+        "head": [
+          -0.0081875,
+          -0.3977096,
+          1.2326932
+        ],
+        "upperarm_l": [
+          0.1676758,
+          -0.3118246,
+          1.0268312
+        ],
+        "upperarm_r": [
+          -0.1729898,
+          -0.3042259,
+          1.0281757
+        ],
+        "hand_l": [
+          0.0828913,
+          -0.4202828,
+          0.7552938
+        ],
+        "hand_r": [
+          -0.1587643,
+          -0.2856092,
+          0.5508661
+        ],
+        "foot_l": [
+          0.099651,
+          -0.1412692,
+          0.1209008
+        ],
+        "foot_r": [
+          -0.1082251,
+          0.0663468,
+          0.2278567
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "life.stand.recover",
+      "phase": "sample-12",
+      "view": "iso",
+      "timeSeconds": 3.38332,
+      "durationSeconds": 3.38332,
+      "file": "woman-scout/life.stand.recover.sample-12.png",
+      "sha256": "68d66fc2224cde2ddce70a7f562afe71470c514550f7d82de716b1646d62e1a4",
+      "item": null,
+      "heldItemVisible": false,
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "database": "CMU",
+        "file": "140_01.bvh",
+        "startFrame": 130,
+        "endFrame": 536,
+        "description": "getting up from face down",
+        "sampleRate": 120
+      },
+      "clothWeights": {
+        "cloth_prone": 0,
+        "cloth_crouched": 0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0257627,
+          0.9104174
+        ],
+        "head": [
+          -0.0085901,
+          0.0111262,
+          1.6226047
+        ],
+        "upperarm_l": [
+          0.168588,
+          0.0052423,
+          1.4106158
+        ],
+        "upperarm_r": [
+          -0.1719304,
+          0.0164471,
+          1.4047545
+        ],
+        "hand_l": [
+          0.2050149,
+          -0.0836124,
+          0.9470858
+        ],
+        "hand_r": [
+          -0.2031858,
+          -0.0832899,
+          0.9399191
+        ],
+        "foot_l": [
+          0.0477885,
+          0.022525,
+          0.0816816
+        ],
+        "foot_r": [
+          -0.0651479,
+          0.0315008,
+          0.107466
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    }
+  ],
+  "complete": true
+}

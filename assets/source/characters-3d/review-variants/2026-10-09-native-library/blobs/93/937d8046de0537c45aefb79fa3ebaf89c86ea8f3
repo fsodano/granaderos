@@ -1,0 +1,84 @@
+{
+  "command": "npm run test:quick",
+  "runs": 1,
+  "exitCode": 1,
+  "seconds": 1249.294,
+  "files": {
+    "selected": 809,
+    "completed": 809,
+    "passed": 805,
+    "failed": 4,
+    "excludedByQuickProfile": 8,
+    "totalDiscovered": 817
+  },
+  "tests": {
+    "tests": 5646,
+    "pass": 5642,
+    "fail": 4,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "failures": [
+    {
+      "file": "tests/artillery-battlefield-playback.test.mjs",
+      "line": 68,
+      "test": "mounted Battlefield uses the accepted horse state to emit exactly one mount or dismount cue",
+      "actual": 0,
+      "expected": 1,
+      "exactBaselineText": "0 !== 1",
+      "classification": "existing baseline failure",
+      "baselineLog": "/tmp/granadero-full-review/current-main-baseline.log",
+      "testSourceEqualsPristineBaseline": true
+    },
+    {
+      "file": "tests/actor-unit-motion-distance.test.mjs",
+      "line": 44,
+      "test": "presented climb keeps its link and final segment fraction",
+      "actual": 0.01299638895332932,
+      "expected": 0.5,
+      "exactBaselineText": "0.01299638895332932",
+      "classification": "existing baseline failure",
+      "baselineLog": "/tmp/granadero-full-review/current-main-baseline.log",
+      "testSourceEqualsPristineBaseline": true
+    },
+    {
+      "file": "tests/elevation-interface.test.mjs",
+      "line": 131,
+      "test": "paid climb and descent interpolate the roof inset without snapping the actor foot or hit frame",
+      "actual": 245.379320490434,
+      "expected": 254.5,
+      "exactBaselineText": "245.379320490434 != 254.5",
+      "classification": "existing baseline failure",
+      "baselineLog": "/tmp/granadero-full-review/current-main-baseline.log",
+      "testSourceEqualsPristineBaseline": true
+    },
+    {
+      "file": "tests/three-projection.test.mjs",
+      "line": 38,
+      "test": "climb sampling retains the recorded access link and metric height",
+      "actual": 1.2765625,
+      "expected": 1.5,
+      "exactBaselineText": "1.2765625 !== 1.5",
+      "classification": "existing baseline failure",
+      "baselineLog": "/tmp/granadero-full-review/current-main-baseline.log",
+      "testSourceEqualsPristineBaseline": true
+    }
+  ],
+  "newFailures": 0,
+  "assetInputsUnchanged": true,
+  "assetSha256": {
+    "web/public/models/characters/manifest.json": "09715e3639fd18c8ea8bf80ce03b9942b53e634b466a398e57faf31544c68ea8",
+    "web/public/models/characters/male-animations.glb": "9c442370280b20bdc0808d3ed210e88737c63203f7efb2b92df62f934934714c",
+    "web/public/models/characters/female-animations.glb": "3bb2e760b7522510f24e26e56e7975132ee190bafc384456bd42177746b5be9c",
+    "web/lib/three/locomotion-profile.json": "b95e9e48bd0f1a251c609e92f52e824f395dfea0fc4d86f2fe3a00d530ebb17f"
+  },
+  "headAtStart": "b596abe94115d83e5110ea14d2ab93a44d27d2e3",
+  "headAtCompletion": "b36c9c39f26720b69a85c175d098c86923e24c72",
+  "log": "/tmp/granadero-appearance-final/test-quick.log",
+  "context": "/tmp/granadero-appearance-final/test-quick-context.json",
+  "limitations": [
+    "The quick profile excludes eight extended campaign/repack files.",
+    "This run precedes incoming PR234 guard clips and the final lance correction; those require focused validation after integration.",
+    "The result is not a fully green suite because the four existing baseline assertions still fail."
+  ]
+}

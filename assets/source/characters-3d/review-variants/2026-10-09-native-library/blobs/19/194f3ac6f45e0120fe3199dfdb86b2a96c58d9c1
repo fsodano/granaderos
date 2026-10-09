@@ -1,0 +1,29 @@
+{
+  "baseManifestSha256": "9e823274db42b5dc9efe1e3032c18f31025d6a6b29646997b294490a1c07d964",
+  "bodies": [
+    {
+      "file": "woman-scout-lod1.glb",
+      "old": "02f98914ca23cdbab43480edabbdd5cad170cd8b05b0e444016515d2c0d0cf94",
+      "new": "7e25d030019b88a5f8fb0351192049562246429f0193904dc00546e682e7881d"
+    },
+    {
+      "file": "woman-scout-lod2.glb",
+      "old": "31c666ee9e0a9080c6f4844188c19489b514d53e12da87df2658682a7df34fac",
+      "new": "abf4b6373a38f3a131bc78a4d325beb8c18a155739ef7a7ab6c6d3a2e9e5788c"
+    },
+    {
+      "file": "woman-shawl-lod1.glb",
+      "old": "a7e33b5e2779f7ce0f069d32a414fdfe918a57a50cbf06fb02f03e026abe500a",
+      "new": "2e748c0afb8b64485554ffc5d6319e0459a9c82ebc3a7f398bf70cc4410bc824"
+    },
+    {
+      "file": "woman-shawl-lod2.glb",
+      "old": "f8c540455bbb2efdc7a1bd8d775295c80c55eb73c0fe03ef5cc40bb801df2767",
+      "new": "506eda4d30b06fa59f62df33947fe5fc8691ecd7bf1640450848f45565c27482"
+    }
+  ],
+  "textures": [],
+  "manifestSha256": "0faeba27670537ad35ad5f123897715790eb353b7762dc165763a21f95a24372",
+  "otherManifestValuesExact": true,
+  "allOtherGlbsByteExact": true
+}

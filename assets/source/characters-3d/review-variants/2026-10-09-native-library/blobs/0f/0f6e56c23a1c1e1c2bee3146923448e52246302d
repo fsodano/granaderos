@@ -1,0 +1,7 @@
+{
+  "mode": "built-in image_gen",
+  "input": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/vendor/makehuman/young_lightskinned_male_diffuse.png",
+  "output": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/skin-texture-pilot/generated-skin-v1.png",
+  "generatedSource": "/Users/fsodano/.codex/generated_images/01a10d9d-3ef6-7270-961e-05b2444ecaf7/exec-65c1232f-56e8-461e-a9f0-9b2aa57272bf.png",
+  "status": "private material trial; not published"
+}

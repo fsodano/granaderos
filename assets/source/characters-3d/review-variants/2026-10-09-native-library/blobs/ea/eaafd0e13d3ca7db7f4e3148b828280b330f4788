@@ -1,0 +1,483 @@
+{
+  "version": 1,
+  "units": "metres",
+  "up": "+Y",
+  "forward": "+Z",
+  "bodyHeight": 1.76,
+  "bones": {
+    "root": "Root",
+    "hips": "pelvis",
+    "spine": "spine_02",
+    "chest": "spine_03",
+    "neck": "neck_01",
+    "head": "head",
+    "handRight": "hand_r",
+    "handLeft": "hand_l",
+    "footRight": "foot_r",
+    "footLeft": "foot_l"
+  },
+  "skinTones": {
+    "light": "#d5a07d",
+    "brown": "#9d6844",
+    "dark": "#623c29"
+  },
+  "appearances": {
+    "granadero": {
+      "id": "granadero",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [
+        {
+          "lod": 2,
+          "url": "/models/characters/granadero-lod2.glb",
+          "triangles": 9826,
+          "bytes": 788860,
+          "drawCalls": 6,
+          "sha256": "fe0547a02d342cc3791fb4a383118a5a35b5f798529027e799279a55424aaa03"
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "royalist": {
+      "id": "royalist",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {},
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "worker": {
+      "id": "worker",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {},
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "surgeon": {
+      "id": "surgeon",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {},
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "gaucho": {
+      "id": "gaucho",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {},
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "friar": {
+      "id": "friar",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {},
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "woman-scout": {
+      "id": "woman-scout",
+      "gender": "female",
+      "height": 1.76,
+      "animationLibrary": "female",
+      "lods": [],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {},
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "woman-shawl": {
+      "id": "woman-shawl",
+      "gender": "female",
+      "height": 1.76,
+      "animationLibrary": "female",
+      "lods": [],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {},
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    }
+  },
+  "animationLibraries": {},
+  "equipment": {
+    "url": "/models/characters/equipment.glb",
+    "items": {},
+    "aliases": {
+      "medical": "medkits",
+      "medkit": "medkits",
+      "torch": "torches",
+      "bolas": "boleadoras",
+      "ration": "rations",
+      "ammo": "ammunition",
+      "inventory:key": "key",
+      "inventory:lockpick": "lockpick",
+      "inventory:crowbar": "crowbar",
+      "inventory:pliers": "pliers"
+    },
+    "fittings": {
+      "india_socket": {
+        "node": "item_1811",
+        "hostWeapon": 1800,
+        "position": [
+          1.045,
+          0.055,
+          0.018
+        ],
+        "rotation": [
+          0,
+          0,
+          -1.5707963267948966
+        ],
+        "scale": 1
+      }
+    }
+  },
+  "garments": {},
+  "horse": {},
+  "provenance": "assets/source/characters-3d/README.md",
+  "complete": false
+}

@@ -1,0 +1,69 @@
+from pathlib import Path
+import json,struct,hashlib,math,sys,collections
+ROOT=Path('/tmp/granadero-outward-detail-pilot');BEFORE=Path('/tmp/granadero-full-review/models');AFTER=ROOT/'models'
+sys.path.insert(0,'/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tools/characters-3d');import importlib
+rig=importlib.import_module('build-appearance-increment')
+hashbytes=lambda b:hashlib.sha256(b).hexdigest()
+def read(path):
+ raw=path.read_bytes();n=struct.unpack_from('<I',raw,12)[0];return json.loads(raw[20:20+n]),raw[28+n:],hashbytes(raw)
+def access(doc,data,i):
+ a=doc['accessors'][i];v=doc['bufferViews'][a['bufferView']];width={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];fmt={5126:'f',5125:'I',5123:'H',5121:'B'}[a['componentType']];size=struct.calcsize('<'+fmt)*width;step=v.get('byteStride',size);off=v.get('byteOffset',0)+a.get('byteOffset',0)
+ return [struct.unpack_from('<'+fmt*width,data,off+j*step)for j in range(a['count'])]
+def payload(doc,data,i):
+ return hashbytes(json.dumps(access(doc,data,i),separators=(',',':')).encode())
+def sub(a,b):return tuple(x-y for x,y in zip(a,b))
+def dot(a,b):return sum(x*y for x,y in zip(a,b))
+def cross(a,b):return(a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
+def length(a):return math.sqrt(dot(a,a))
+def components(doc,data,mesh,primitive):
+ pos=access(doc,data,primitive['attributes']['POSITION']);norm=access(doc,data,primitive['attributes']['NORMAL']);idx=[r[0]for r in access(doc,data,primitive['indices'])]
+ welded={};canonical=[];representatives={}
+ for i,p in enumerate(pos):
+  key=tuple(round(x/1e-7)for x in p);j=welded.setdefault(key,len(welded));canonical.append(j);representatives[j]=p
+ parent=list(range(len(welded)))
+ def find(a):
+  while parent[a]!=a:parent[a]=parent[parent[a]];a=parent[a]
+  return a
+ faces=[]
+ for offset in range(0,len(idx),3):
+  raw=idx[offset:offset+3];ids=tuple(canonical[i]for i in raw)
+  if len(set(ids))<3:continue
+  a,b,c=[pos[i]for i in raw]
+  if length(cross(sub(b,a),sub(c,a)))<1e-14:continue
+  for j in ids[1:]:parent[find(j)]=find(ids[0])
+  faces.append((raw,ids))
+ groups=collections.defaultdict(list)
+ for f in faces:groups[find(f[1][0])].append(f)
+ result=[]
+ for group in groups.values():
+  vertices=set(i for _raw,ids in group for i in ids);points=[representatives[i]for i in vertices];lo=[min(p[a]for p in points)for a in range(3)];hi=[max(p[a]for p in points)for a in range(3)];center=tuple((a+b)/2 for a,b in zip(lo,hi));dims=[b-a for a,b in zip(lo,hi)]
+  counts=collections.Counter();area=0;outward=0;volume=0;normalAgreement=0;normalOutward=0
+  for raw,ids in group:
+   for a,b in zip(ids,ids[1:]+ids[:1]):counts[tuple(sorted((a,b)))]+=1
+   a,b,c=[pos[i]for i in raw];n=cross(sub(b,a),sub(c,a));w=length(n);centroid=tuple((a[k]+b[k]+c[k])/3 for k in range(3));r=sub(centroid,center);vnormal=tuple(sum(norm[i][k]for i in raw)/3 for k in range(3));area+=w
+   if dot(n,r)>0:outward+=w
+   if dot(n,vnormal)>0:normalAgreement+=w
+   if dot(vnormal,r)>0:normalOutward+=w
+   volume+=dot(sub(a,center),cross(sub(b,center),sub(c,center)))/6
+  result.append({'mesh':mesh['name'],'material':doc['materials'][primitive['material']]['name'],'triangles':len(group),'vertices':len(vertices),'center':center,'dimensions':dims,'closed':all(v==2 for v in counts.values()),'boundaryEdges':sum(v==1 for v in counts.values()),'nonmanifoldEdges':sum(v>2 for v in counts.values()),'signedVolume':volume,'outwardFaceAreaFraction':outward/area,'outwardVertexNormalAreaFraction':normalOutward/area,'faceNormalAgreement':normalAgreement/area})
+ return result
+report={'before':{},'after':{},'primitiveEquality':[]}
+documents=[]
+for label,directory in [('before',BEFORE),('after',AFTER)]:
+ path=directory/'granadero-lod0.glb';doc,data,sha=read(path);documents.append((doc,data));details=[];triangles=0
+ for mesh in doc['meshes']:
+  for p in mesh['primitives']:
+   triangles+=doc['accessors'][p['indices']]['count']//3
+   if doc['materials'][p['material']]['name']=='Apparel_Atlas':details+=components(doc,data,mesh,p)
+ report[label]={'path':str(path),'sha256':sha,'bytes':path.stat().st_size,'triangles':triangles,'components':details}
+a,ad=documents[0];b,bd=documents[1]
+for am,bm in zip(a['meshes'],b['meshes']):
+ for ap,bp in zip(am['primitives'],bm['primitives']):
+  attrs={name:payload(a,ad,value)==payload(b,bd,bp['attributes'][name])for name,value in ap['attributes'].items()};report['primitiveEquality'].append({'mesh':am['name'],'material':a['materials'][ap['material']]['name'],'attributes':attrs,'indices':payload(a,ad,ap['indices'])==payload(b,bd,bp['indices'])})
+report['nativeSignatureEqual']=rig.native_signature(BEFORE/'granadero-lod0.glb')==rig.native_signature(AFTER/'granadero-lod0.glb');report['nodesEqual']=a['nodes']==b['nodes'];report['materialsEqual']=a['materials']==b['materials'];report['imagesEqual']=a['images']==b['images'];report['textureBytesEqual']=all((BEFORE/i['uri']).read_bytes()==(AFTER/i['uri']).read_bytes()for i in a['images']);report['motionBankHashes']={name:{'before':hashbytes((BEFORE/name).read_bytes()),'after':hashbytes((AFTER/name).read_bytes())}for name in ['male-animations.glb','female-animations.glb']}
+(ROOT/'outward-details-proof.json').write_text(json.dumps(report,indent=2)+'\n')
+for label in ['before','after']:
+ r=report[label];print(label,r['sha256'],r['triangles'])
+ for c in r['components']:
+  if c['closed']and(c['center'][1]>1.55 and all(.017<x<.029 for x in c['dimensions'])or .075<c['dimensions'][0]<.095 and .10<c['dimensions'][2]<.13 or .008<c['dimensions'][0]<.014 and .008<c['dimensions'][1]<.014 and c['center'][1]<1.52):print({k:c[k]for k in ['mesh','center','dimensions','triangles','signedVolume','outwardFaceAreaFraction','outwardVertexNormalAreaFraction','faceNormalAgreement']})
+print('primitiveEquality',json.dumps(report['primitiveEquality']));print('native',report['nativeSignatureEqual'],'nodes',report['nodesEqual'],'textures',report['textureBytesEqual'])

@@ -1,0 +1,756 @@
+{
+  "version": 1,
+  "gitRevision": "255838ae5b2b37e19bbc5a5ea678b91fdced316d",
+  "manifestSha256": "8289da29ffbe904ce1db437ed6b9af6fa22d591616b4c330dfe330d167422b38",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "tool": {
+    "path": "tools/characters-3d/render-review.py",
+    "sha256": "b2c350d6c8384f7058a153ed4fdf760ba8e1dc1d4fc227ba8265507dc971e936"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "6efc8d85cf20be54beb25f9ff47345b849eb92b81a5524ee1bddeb5cb0219237"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "presets": [
+    "granadero"
+  ],
+  "coverage": [
+    {
+      "clip": "stand.fire.long-gun",
+      "item": "1800"
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "/private/tmp/granaderos-surface-review/models/granadero-lod0.glb",
+        "sha256": "a5fac10154942f62b15028821c6dc30fba82f62bddbecce3e0177e6d3dc0761f",
+        "bytes": 2892388,
+        "published": false,
+        "textures": {
+          "textures/71fed8cbe1701e3fa0e5.png": "71fed8cbe1701e3fa0e5874d00e2e73aa7d510b3d7416c8d970baec72368bccb",
+          "textures/e77f5b37ce4143f879dd.png": "e77f5b37ce4143f879ddb79be69f03acffe1518cad7f8883c4321b911e01785f",
+          "textures/e4443c92c7315d16d686.png": "e4443c92c7315d16d68622fd30b8b81564254566ebc1e469e705a613f128a55e",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        }
+      },
+      "bank": {
+        "path": "web/public/models/characters/male-animations.glb",
+        "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
+        "bytes": 11521284,
+        "published": true,
+        "textures": {
+          "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+          "textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+          "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        }
+      },
+      "equipment": {
+        "path": "web/public/models/characters/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": true,
+        "textures": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "prepare",
+      "view": "iso",
+      "timeSeconds": 0.05500000000000001,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.prepare.png",
+      "sha256": "e77a5624866daccce7fb22017ccd83499f0985f0286580fa7d499ffad822a80d",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9001657
+        ],
+        "head": [
+          -0.0173392,
+          -0.0658667,
+          1.5650655
+        ],
+        "upperarm_l": [
+          0.1826655,
+          -0.0666945,
+          1.3687459
+        ],
+        "upperarm_r": [
+          -0.1886702,
+          0.0086612,
+          1.3679658
+        ],
+        "hand_l": [
+          0.0033182,
+          -0.485673,
+          1.4105922
+        ],
+        "hand_r": [
+          -0.1402097,
+          -0.2615491,
+          1.407456
+        ],
+        "foot_l": [
+          0.1057628,
+          0.145638,
+          0.0722873
+        ],
+        "foot_r": [
+          -0.1240162,
+          -0.0454185,
+          0.1098939
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "prepare",
+      "view": "head",
+      "timeSeconds": 0.05500000000000001,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.prepare.head.png",
+      "sha256": "8a9bbf77a830ae96124171daf46ee773498cdd1c4a69812777236d7bf297b714",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9001657
+        ],
+        "head": [
+          -0.0173392,
+          -0.0658667,
+          1.5650655
+        ],
+        "upperarm_l": [
+          0.1826655,
+          -0.0666945,
+          1.3687459
+        ],
+        "upperarm_r": [
+          -0.1886702,
+          0.0086612,
+          1.3679658
+        ],
+        "hand_l": [
+          0.0033182,
+          -0.485673,
+          1.4105922
+        ],
+        "hand_r": [
+          -0.1402097,
+          -0.2615491,
+          1.407456
+        ],
+        "foot_l": [
+          0.1057628,
+          0.145638,
+          0.0722873
+        ],
+        "foot_r": [
+          -0.1240162,
+          -0.0454185,
+          0.1098939
+        ]
+      },
+      "cameraTarget": [
+        -0.017339199781417847,
+        -0.06586670130491257,
+        1.7050654888153076
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "prepare",
+      "view": "hands",
+      "timeSeconds": 0.05500000000000001,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.prepare.hands.png",
+      "sha256": "4fb1efe279fa54437d577ac5401faf62b6a991ea1cc4960fc003f66ce85008b9",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          -0.0067958,
+          0.9001657
+        ],
+        "head": [
+          -0.0173392,
+          -0.0658667,
+          1.5650655
+        ],
+        "upperarm_l": [
+          0.1826655,
+          -0.0666945,
+          1.3687459
+        ],
+        "upperarm_r": [
+          -0.1886702,
+          0.0086612,
+          1.3679658
+        ],
+        "hand_l": [
+          0.0033182,
+          -0.485673,
+          1.4105922
+        ],
+        "hand_r": [
+          -0.1402097,
+          -0.2615491,
+          1.407456
+        ],
+        "foot_l": [
+          0.1057628,
+          0.145638,
+          0.0722873
+        ],
+        "foot_r": [
+          -0.1240162,
+          -0.0454185,
+          0.1098939
+        ]
+      },
+      "cameraTarget": [
+        -0.06844574958086014,
+        -0.3736110329627991,
+        1.4090241193771362
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "recoil",
+      "view": "iso",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.recoil.png",
+      "sha256": "088652e31787766a0829ec077cf76da89fc55a8f22ae5e6c226df1fe7cd9b677",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.0034666,
+          0.8995066
+        ],
+        "head": [
+          -0.0168374,
+          -0.040947,
+          1.5650456
+        ],
+        "upperarm_l": [
+          0.1833638,
+          -0.0440809,
+          1.370083
+        ],
+        "upperarm_r": [
+          -0.1884816,
+          0.0286651,
+          1.3671794
+        ],
+        "hand_l": [
+          0.0031753,
+          -0.4502096,
+          1.4203963
+        ],
+        "hand_r": [
+          -0.1401513,
+          -0.2260426,
+          1.4086506
+        ],
+        "foot_l": [
+          0.1057533,
+          0.1456349,
+          0.0722631
+        ],
+        "foot_r": [
+          -0.1240231,
+          -0.0454219,
+          0.1098853
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "recoil",
+      "view": "head",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.recoil.head.png",
+      "sha256": "18dfc3a7087edd1be31616700177d06d6fde8150f542068f4eb8d05ed3280b1d",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.0034666,
+          0.8995066
+        ],
+        "head": [
+          -0.0168374,
+          -0.040947,
+          1.5650456
+        ],
+        "upperarm_l": [
+          0.1833638,
+          -0.0440809,
+          1.370083
+        ],
+        "upperarm_r": [
+          -0.1884816,
+          0.0286651,
+          1.3671794
+        ],
+        "hand_l": [
+          0.0031753,
+          -0.4502096,
+          1.4203963
+        ],
+        "hand_r": [
+          -0.1401513,
+          -0.2260426,
+          1.4086506
+        ],
+        "foot_l": [
+          0.1057533,
+          0.1456349,
+          0.0722631
+        ],
+        "foot_r": [
+          -0.1240231,
+          -0.0454219,
+          0.1098853
+        ]
+      },
+      "cameraTarget": [
+        -0.01683739945292473,
+        -0.04094700142741203,
+        1.7050455808639526
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "recoil",
+      "view": "hands",
+      "timeSeconds": 0.14,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.recoil.hands.png",
+      "sha256": "680814d075ac9305da55fa5040432a59d3fea7f00ea0de11d3ee64283eb52447",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          -0.0,
+          0.0034666,
+          0.8995066
+        ],
+        "head": [
+          -0.0168374,
+          -0.040947,
+          1.5650456
+        ],
+        "upperarm_l": [
+          0.1833638,
+          -0.0440809,
+          1.370083
+        ],
+        "upperarm_r": [
+          -0.1884816,
+          0.0286651,
+          1.3671794
+        ],
+        "hand_l": [
+          0.0031753,
+          -0.4502096,
+          1.4203963
+        ],
+        "hand_r": [
+          -0.1401513,
+          -0.2260426,
+          1.4086506
+        ],
+        "foot_l": [
+          0.1057533,
+          0.1456349,
+          0.0722631
+        ],
+        "foot_r": [
+          -0.1240231,
+          -0.0454219,
+          0.1098853
+        ]
+      },
+      "cameraTarget": [
+        -0.06848800182342529,
+        -0.3381260931491852,
+        1.4145234823226929
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "recover",
+      "view": "iso",
+      "timeSeconds": 0.555,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.recover.png",
+      "sha256": "db7ce305ac8839f5f12147971403388203b4b58397adf5324298d0c5a6ab6bc3",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0071567,
+          0.8997599
+        ],
+        "head": [
+          -0.0173563,
+          -0.0667428,
+          1.5646286
+        ],
+        "upperarm_l": [
+          0.1826412,
+          -0.0674886,
+          1.3682619
+        ],
+        "upperarm_r": [
+          -0.1886763,
+          0.0079575,
+          1.36756
+        ],
+        "hand_l": [
+          0.0032572,
+          -0.4859516,
+          1.4105922
+        ],
+        "hand_r": [
+          -0.1401799,
+          -0.2617693,
+          1.4074562
+        ],
+        "foot_l": [
+          0.1057629,
+          0.1456383,
+          0.0722873
+        ],
+        "foot_r": [
+          -0.1240162,
+          -0.0454188,
+          0.1098938
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "cameraScale": 3.0
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "recover",
+      "view": "head",
+      "timeSeconds": 0.555,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.recover.head.png",
+      "sha256": "52e54ae5c375fcdf19d4b1e25a25417332eca912a51168780f1a99e26569cb00",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0071567,
+          0.8997599
+        ],
+        "head": [
+          -0.0173563,
+          -0.0667428,
+          1.5646286
+        ],
+        "upperarm_l": [
+          0.1826412,
+          -0.0674886,
+          1.3682619
+        ],
+        "upperarm_r": [
+          -0.1886763,
+          0.0079575,
+          1.36756
+        ],
+        "hand_l": [
+          0.0032572,
+          -0.4859516,
+          1.4105922
+        ],
+        "hand_r": [
+          -0.1401799,
+          -0.2617693,
+          1.4074562
+        ],
+        "foot_l": [
+          0.1057629,
+          0.1456383,
+          0.0722873
+        ],
+        "foot_r": [
+          -0.1240162,
+          -0.0454188,
+          0.1098938
+        ]
+      },
+      "cameraTarget": [
+        -0.017356300726532936,
+        -0.06674280017614365,
+        1.704628586769104
+      ],
+      "cameraScale": 0.9
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "phase": "recover",
+      "view": "hands",
+      "timeSeconds": 0.555,
+      "durationSeconds": 0.8,
+      "file": "granadero/stand.fire.long-gun.recover.hands.png",
+      "sha256": "9909fda47e16585ea3af79b2fd6dab29db2eec86bcb85d46287b9a1ac6db6083",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": null,
+      "seatOffsetBlenderZUp": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "motionSource": {
+        "name": "RifleFire",
+        "origin": "approved-granadero-preview",
+        "sourceSha256": "37e5340a84c58d0bb08a65acc2dc6fc2163652362eff8b8b86536db420ae45e5"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          0.0,
+          -0.0071567,
+          0.8997599
+        ],
+        "head": [
+          -0.0173563,
+          -0.0667428,
+          1.5646286
+        ],
+        "upperarm_l": [
+          0.1826412,
+          -0.0674886,
+          1.3682619
+        ],
+        "upperarm_r": [
+          -0.1886763,
+          0.0079575,
+          1.36756
+        ],
+        "hand_l": [
+          0.0032572,
+          -0.4859516,
+          1.4105922
+        ],
+        "hand_r": [
+          -0.1401799,
+          -0.2617693,
+          1.4074562
+        ],
+        "foot_l": [
+          0.1057629,
+          0.1456383,
+          0.0722873
+        ],
+        "foot_r": [
+          -0.1240162,
+          -0.0454188,
+          0.1098938
+        ]
+      },
+      "cameraTarget": [
+        -0.0684613510966301,
+        -0.3738604485988617,
+        1.4090242385864258
+      ],
+      "cameraScale": 0.9
+    }
+  ],
+  "complete": true
+}

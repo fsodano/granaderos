@@ -1,0 +1,9 @@
+{
+  "mode": "built-in image_gen",
+  "source": "/Users/fsodano/.codex/generated_images/01a10d9d-3ef6-7270-961e-05b2444ecaf7/exec-9d7efbb8-945c-4831-983d-7b48986e8e2c.png",
+  "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+  "transparentBackground": true,
+  "prompt": "prompt.txt",
+  "status": "private hair-card pilot; no model acceptance yet",
+  "rasterEdits": false
+}

@@ -1,0 +1,854 @@
+{
+  "scope": [
+    "stand.idle.long-gun",
+    "stand.butt.long-gun"
+  ],
+  "candidate": "/tmp/granadero-rifle-butt-refit/candidate-final",
+  "sourceFiles": {
+    "README.md": "6ac973ea1fd25b0182995a37e8fced0454df9565680cda7677e0981b05734d17",
+    "source-hooks.patch": "eeb5eeb3f790ec5504110562253e035c3ce43b7d69029a14af2103b99dca6dc0",
+    "tools/characters-3d/build-motion-increment.py": "b56e0b5b3008e156110fb2e36782d4cf8b055072a748997e4b5a6c5d95c8c0f4",
+    "tools/characters-3d/build-library.py": "3e071d700adb782df847eed87a43de53ebe0aa8e410e7e46fd6cb1cae5fd7b30",
+    "tests/three-rifle-butt-whole-path.test.mjs": "635f43ab7034f8f87d398826e188d2cc1ebae976c89bd5b2422aafd9a984736d",
+    "tests/three-melee-facing-contact-fit.test.mjs": "4dcb163791f8016d376cbc4b1e92e5bc2434254194376cd4ab946578932ca1f2",
+    "tests/three-rifle-butt-contact-fit.test.mjs": "d33e7b4583c20ddaf5a6ee2b0c491bcd20a76643a80972aea3620880a36bbc75",
+    "tests/characters-rifle-guard-curves.test.mjs": "30869b98c78945ad71501a58baead8fc8db1cc10edd7796e1e7a28202160cb20",
+    "assets/source/characters-3d/authoring/rifle_guard_curves_female.json": "2af9a923a7e782b57f75eb9f35b017c232bd580d2cf78872129f03d62382f7b1",
+    "assets/source/characters-3d/authoring/build.py": "f37af2da7ac938ecc4575c6a43c8dc625a9502fe35327d8f161c7234026968ae",
+    "assets/source/characters-3d/authoring/rifle_guard_curves_male.json": "ba4c1a647dfea8d5d66f10c619714d775e0034680686a27008c1bf7fcd056979",
+    "assets/source/characters-3d/authoring/rifle_guard_curves.py": "91fbada6e2153990e95550fef9ad37dd7c03498ddf683c8dcb1ff38cd441b4e2",
+    "assets/source/characters-3d/authoring/motion.py": "d88cace04e4c7a54ef1ad82139c2d573d191f10d56d124dae810e934f2cf47b2",
+    "assets/source/characters-3d/authoring/export_motion_increment.py": "63d8b7b175e9dc66bd4bb9ab00c49df7eeeec3aac8b6bc6be04fd7ae941071b3"
+  },
+  "assetDeltaFiles": {
+    "merge-rifle-butt-delta.py": "01abdc09be51637bcaac7b070baede6a7d5ccc13a6cb0c66999a72a01c532502",
+    "male-before.glb": "9d9075877569ff737bc5dfbf41a1d31744f183b6552377e6c6c8cab51532b16c",
+    "female-before.glb": "889a3501619dd21c0a76e41b3cea7a6f42bee853a1e81594375d7c0635947113",
+    "male-keys.json": "c501e075a35b9901a2159ed8947513eed930f6254edaffb30c5fe5bd0aeac257",
+    "female-keys.json": "405d2db73af6dd0f667d9646b0d72bf70a71e3df49b0d1f67afc0a6a8f91716f",
+    "male-grip.json": "73f009526ee4167e002d2aad91cca7e1eddaa48920b859c65ff14f72cb3e6517",
+    "female-grip.json": "2e31e27682d2b49bd9dbe54adca23c639fb5afc1a557e8ff6a5d8ef7641f56d8",
+    "male-idle-grip.json": "ffec24b2c531798d86d78e7e88fd409ce810a7c960d867b6bc4b901132d5ed8f",
+    "female-idle-grip.json": "4af5e75e777d1dae4851329029b7a87a774652e88bd77bc99a0dc58aa536c6a0"
+  },
+  "bankHashes": {
+    "male": "2f78fe0999c1ed62c56799664e4ac22eccb4abfcf32bb84f4c317fb06c931a52",
+    "female": "8f0afd69e432c510069e0d42507be97ebf58495fb6063a8cb6c95b58ffee9017"
+  },
+  "sourceExportProof": {
+    "male": {
+      "nativeBind": "pass",
+      "clockRejection": "pass",
+      "maxSourceQuaternionDistance": 2.6721005497165606e-07,
+      "unmodifiedActionFCurves": 454,
+      "exactExportRotationChannels": 72,
+      "unchangedExportChannels": 246,
+      "restoredAfterOrdinaryPacking": true,
+      "outputSha256": "6cd165e512631c309c614963e6913bec87b38ff4350a8dfc760eecef59c36499"
+    },
+    "female": {
+      "nativeBind": "pass",
+      "clockRejection": "pass",
+      "maxSourceQuaternionDistance": 2.4766876549620065e-07,
+      "unmodifiedActionFCurves": 454,
+      "exactExportRotationChannels": 72,
+      "unchangedExportChannels": 246,
+      "restoredAfterOrdinaryPacking": true,
+      "outputSha256": "58d03db38004b31e613d94cde2ad0994239ca60a49ec077ecd5fe63e0c4698ba"
+    }
+  },
+  "nativeAuthoringBindProof": {
+    "male": {
+      "actualAuthoringSkeletonBind": "pass",
+      "nativeBones": 53
+    },
+    "female": {
+      "actualAuthoringSkeletonBind": "pass",
+      "nativeBones": 53
+    }
+  },
+  "newSourceRegressions": {
+    "pass": 4,
+    "fail": 0
+  },
+  "runtimeGate": {
+    "tests": 27,
+    "pass": 27,
+    "fail": 0,
+    "log": "/tmp/granadero-rifle-butt-refit/runtime-final.log",
+    "runtimeFiles": {
+      "web/lib/three/actor-runtime.ts": "dbd9c6c0fe7dc5a776f418940a0598f71e216d2a7e4413df151a6376c551c20e",
+      "web/lib/three/melee-contact-fit.ts": "2da613eef1f4d27de943ace6824b4005d8400defd6d7720939a2b0dd8216c84e"
+    },
+    "command": "GRANADEROS_CHARACTER_LIBRARY=/tmp/granadero-rifle-butt-refit/candidate-final node --test --test-concurrency=4 tests/three-melee-contact-fit.test.mjs tests/three-melee-facing-contact-fit.test.mjs tests/three-pistol-butt-contact-fit.test.mjs tests/three-rifle-boot-skinning.test.mjs tests/three-rifle-butt-contact-fit.test.mjs tests/three-rifle-butt-whole-path.test.mjs tests/three-rifle-paid-facing-contact-fit.test.mjs tests/three-scene-contact-order.test.mjs"
+  },
+  "heldSurfaceGate": {
+    "sampleRateHz": 120,
+    "rifles": [
+      1800,
+      1801,
+      1802,
+      1803,
+      1804,
+      1807
+    ],
+    "clips": [
+      "stand.idle.long-gun",
+      "stand.butt.long-gun"
+    ],
+    "anatomies": [
+      "male",
+      "female"
+    ],
+    "failures": 0,
+    "maximumHeldPalmGapMm": 0.9498990418883775,
+    "log": "/tmp/granadero-rifle-butt-refit/hold-final.log"
+  },
+  "maximumSkinOverlapMm": {
+    "male": 0.07276135862787705,
+    "female": 0.5417662083670018
+  },
+  "exactPreservation": {
+    "male": {
+      "beforeSha256": "da31fa81d389b35887585126ae9eb9f3779ecc0f35b78a39d2a523dd0af4fe81",
+      "afterSha256": "2f78fe0999c1ed62c56799664e4ac22eccb4abfcf32bb84f4c317fb06c931a52",
+      "changedRotationChannels": 72,
+      "changed": [
+        [
+          "stand.idle.long-gun",
+          "upperarm_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "lowerarm_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "hand_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "upperarm_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "lowerarm_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "hand_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "upperarm_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "lowerarm_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "hand_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "upperarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "lowerarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "hand_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_03_r",
+          "rotation"
+        ]
+      ],
+      "preservedChannels": 53034,
+      "preservedChannelHash": "0c5c4adcf278726c651eef2b9be0c87b38f5f9eaae46876bdac36b0fc4b24ae0"
+    },
+    "female": {
+      "beforeSha256": "ccd59d1984ac3fa5720714a9c903e069398badde80b07f93ba93683bcc6b08a7",
+      "afterSha256": "8f0afd69e432c510069e0d42507be97ebf58495fb6063a8cb6c95b58ffee9017",
+      "changedRotationChannels": 72,
+      "changed": [
+        [
+          "stand.idle.long-gun",
+          "upperarm_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "lowerarm_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "hand_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "upperarm_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "lowerarm_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "hand_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "index_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "middle_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "pinky_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "ring_03_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.idle.long-gun",
+          "thumb_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "upperarm_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "lowerarm_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "hand_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_01_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_02_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_03_l",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "upperarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "lowerarm_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "hand_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "index_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "middle_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "pinky_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "ring_03_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_01_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_02_r",
+          "rotation"
+        ],
+        [
+          "stand.butt.long-gun",
+          "thumb_03_r",
+          "rotation"
+        ]
+      ],
+      "preservedChannels": 53034,
+      "preservedChannelHash": "36966af6bc0fcbafae3084ac19b4c83704add276ab01e68c49df43a076addb75"
+    },
+    "metadata": "Only guard/butt gripOffsets, butt hand-contact intervals, and derived bank hash/byte counts changed; all other current fields retained."
+  },
+  "independentSourceReview": "motion_qa_plan read-only review: no blocker; tests not rerun by reviewer",
+  "frozen": true
+}

@@ -1,0 +1,89 @@
+{
+  "status": "accepted after paired exported isometric review",
+  "files": {
+    "game/climb-geometry.js": "fb4ea995ee3eace424f662b9844fac7eb109180fb0ff577aabce439ddf7579ac",
+    "assets/source/characters-3d/authoring/climbing_motion.py": "23272f95fde1f55a18f57d52cc21712cc1281c14ffa98b99cd01864b1d688e24",
+    "tests/characters-climbing-support.test.mjs": "c260736bf890f356b7f811fa434495566b40e5a968f40e3d9b0753c0e87bf631",
+    "/tmp/granadero-climb-knees/models/male-animations.glb": "093103b7669860812e1563409ff11559deae84a6b94c640babbe29ed418e79bd",
+    "/tmp/granadero-climb-knees/models/female-animations.glb": "8816cd25bdfb436763f02fb1190358e6ee9103f3f9c51309b95c4b0c0e79716c",
+    "/tmp/granadero-climb-knees/models/manifest.json": "938eadd54b24bb491a2d18d761eb59ab262b526e5a2d53ab8095c756e8af539b"
+  },
+  "selectedClips": [
+    "life.climbUp",
+    "life.climbDown"
+  ],
+  "library": "/tmp/granadero-climb-knees/models",
+  "review": "/tmp/granadero-climb-knees/deeper-review/index.html",
+  "sheets": [
+    "/tmp/granadero-climb-knees/deeper-review/granadero-sheet.png",
+    "/tmp/granadero-climb-knees/deeper-review/woman-scout-sheet.png"
+  ],
+  "validation": {
+    "testFile": "tests/characters-climbing-support.test.mjs",
+    "passed": 15,
+    "failed": 0,
+    "testLog": "/tmp/granadero-climb-knees/deeper-gates.log",
+    "denseHz": 120,
+    "roofKneeMetresPerSecond": {
+      "male": 3.6966,
+      "female": 3.6991
+    },
+    "originalRoofKneeMetresPerSecond": {
+      "male": 50.2,
+      "female": 47.0
+    },
+    "floorToleranceMetres": 0.004,
+    "supportToleranceMetres": 0.025
+  },
+  "scope": "Import only the selected two clips per anatomy; the other private bank clips and body copies predate final parent integration.",
+  "reviewFindings": [
+    "No exposed shaft-through-upper-thigh patch in either reviewed crest sequence.",
+    "The trunk supports a forward mantle and the head stays above the palms.",
+    "The knee and elbow bend planes are continuous; the released arms reach idle before the exact terminal pose.",
+    "Native bones and declared duration, support markers and saved endpoints remain unchanged."
+  ],
+  "limits": [
+    "The closed-volume probe finds buried boot/trouser overlap in deep flexion; acceptance is based on exposed surfaces in exact exported frames and native contact gates.",
+    "The existing rapid hand transfer remains within the same authored timing."
+  ],
+  "male": [
+    {
+      "name": "life.climbUp",
+      "duration": 4.616667,
+      "markers": {
+        "support": 0.554,
+        "crest": 3.508667,
+        "roof": 4.201167
+      }
+    },
+    {
+      "name": "life.climbDown",
+      "duration": 4.616667,
+      "markers": {
+        "support": 1.108,
+        "crest": 0.4155,
+        "roof": 0.4155
+      }
+    }
+  ],
+  "female": [
+    {
+      "name": "life.climbUp",
+      "duration": 4.616667,
+      "markers": {
+        "support": 0.554,
+        "crest": 3.508667,
+        "roof": 4.201167
+      }
+    },
+    {
+      "name": "life.climbDown",
+      "duration": 4.616667,
+      "markers": {
+        "support": 1.108,
+        "crest": 0.4155,
+        "roof": 0.4155
+      }
+    }
+  ]
+}

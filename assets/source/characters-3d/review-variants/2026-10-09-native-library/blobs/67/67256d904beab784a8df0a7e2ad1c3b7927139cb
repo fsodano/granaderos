@@ -1,0 +1,70 @@
+{
+  "male": {
+    "thigh_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.11564969712592015
+    },
+    "thigh_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.1156538221426789
+    },
+    "calf_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.321021741635629
+    },
+    "calf_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.321021741635629
+    },
+    "foot_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.4258133948227138
+    },
+    "foot_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.4258133948227138
+    },
+    "ball_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 1.9913252241518875e-05
+    },
+    "ball_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 1.9913252241518875e-05
+    }
+  },
+  "female": {
+    "thigh_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.10436422297694062
+    },
+    "thigh_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.10436422297694062
+    },
+    "calf_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.4030001247210315
+    },
+    "calf_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.4030001247210315
+    },
+    "foot_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.4806107681675911
+    },
+    "foot_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.4806107681675911
+    },
+    "ball_l": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.0
+    },
+    "ball_r": {
+      "sourceOriginalErrorDegrees": 0.0,
+      "adjustmentDegrees": 0.0
+    }
+  }
+}

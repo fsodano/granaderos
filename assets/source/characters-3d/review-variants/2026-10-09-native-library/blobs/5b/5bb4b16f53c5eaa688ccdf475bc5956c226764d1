@@ -1,0 +1,15 @@
+{
+  "sharedSourceSha256": "03e1defee93985d98de1538cac6e905a336e5ffad0cdc0a00ac7808855df95aa",
+  "privateSourceSha256": "c9896c23124249c452e9e44e66490855cda0a3682f107bba925dca98c15dd110",
+  "onlyFourIntendedHairChanges": true,
+  "reverseHairOverlayEqualsCurrentSharedSource": true,
+  "preservedFemaleLeftHandHelpersAndAllHooks": true,
+  "maleWorkerEarlyReturnUnchanged": true,
+  "currentOptimizerReproduction": {
+    "lod": 2,
+    "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/repro-current-optimizer/worker-lod2.glb",
+    "sha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+    "matchesFrozenV6": true,
+    "log": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/repro-current-optimizer.log"
+  }
+}

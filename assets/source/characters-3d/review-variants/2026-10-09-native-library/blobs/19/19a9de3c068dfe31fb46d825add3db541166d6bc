@@ -1,0 +1,474 @@
+{
+  "version": 1,
+  "gitRevision": "255838ae5b2b37e19bbc5a5ea678b91fdced316d",
+  "manifestSha256": "9d405c2ce2828093704e8e72f172f67b6bb449b169cf1c0abddfe1880b16b800",
+  "manifestPath": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/manifest.json",
+  "renderer": "Blender 5.0.0 Alpha / Cycles CPU",
+  "renderSettings": {
+    "size": 560,
+    "samples": 8,
+    "denoise": true,
+    "viewTransform": "AgX",
+    "look": "AgX - Medium High Contrast",
+    "fps": 30
+  },
+  "lighting": {
+    "world": {
+      "colorLinear": [
+        0.2,
+        0.22,
+        0.2
+      ],
+      "strength": 0.45
+    },
+    "areas": [
+      {
+        "position": [
+          2,
+          -4,
+          6
+        ],
+        "power": 650,
+        "size": 4
+      },
+      {
+        "position": [
+          -3,
+          -1,
+          4
+        ],
+        "power": 220,
+        "size": 4
+      },
+      {
+        "position": [
+          1,
+          4,
+          5
+        ],
+        "power": 350,
+        "size": 4
+      }
+    ],
+    "areaShape": "DISK",
+    "areaTarget": [
+      0,
+      0,
+      1
+    ]
+  },
+  "floor": {
+    "size": 200,
+    "position": [
+      0,
+      0,
+      -0.006
+    ],
+    "colorLinear": [
+      0.12,
+      0.14,
+      0.12,
+      1
+    ],
+    "roughness": 0.9
+  },
+  "tool": {
+    "path": "artifacts/character-anatomy-review/mounted-reload-diagnostic.py",
+    "sha256": "59e2898212843de0ebd9a888c7a70124b8823a69aab4805e08493ee1fa3c56aa",
+    "snapshot": "frozen-sources/artifacts/character-anatomy-review/mounted-reload-diagnostic.py"
+  },
+  "runtimeClothSource": {
+    "path": "web/lib/three/actor-runtime.ts",
+    "sha256": "0b3c456257c1252fba4c0ed38abc595a524b2f82e1dc12d63b87588910211903",
+    "snapshot": "frozen-sources/web/lib/three/actor-runtime.ts"
+  },
+  "camera": {
+    "projection": "orthographic",
+    "position": [
+      5,
+      -5,
+      5.2
+    ],
+    "target": [
+      0,
+      0,
+      1.0
+    ],
+    "scale": 3.0
+  },
+  "skin": "exported material base color; no runtime palette override",
+  "cloth": "exported morph targets with settled runtime posture weights; no crossfade smoothing",
+  "lod": 0,
+  "presets": [
+    "granadero"
+  ],
+  "coverage": [
+    {
+      "clip": "mounted.reload.long-gun.1800",
+      "item": "1800"
+    }
+  ],
+  "assets": {
+    "granadero": {
+      "body": {
+        "path": "artifacts/character-anatomy-review/integration-candidate/models/granadero-lod0.glb",
+        "sha256": "50041f99086062f97cd27c2209932e3da77d88281f0488951de0bdf0b5e59b6f",
+        "bytes": 2993000,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+          "textures/9cf786dd1636a37659be.png": "9cf786dd1636a37659be83671d24df2d6734b0f7d84b4b2a3d49999774e7f09a",
+          "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc"
+        },
+        "texturePaths": {
+          "textures/7a4750f0f9e8ddae313c.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/7a4750f0f9e8ddae313c.png",
+          "textures/9cf786dd1636a37659be.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/9cf786dd1636a37659be.png",
+          "textures/c115e786c16ea09b4835.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/c115e786c16ea09b4835.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/8fbdf67dd0f7b843cf01.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/8fbdf67dd0f7b843cf01.png"
+        }
+      },
+      "bank": {
+        "path": "artifacts/character-anatomy-review/integration-candidate/models/male-animations.glb",
+        "sha256": "29a7e08f2b053b0f2de30375d48eef7b75f2c19a60a23d7abcc8815b21afca24",
+        "bytes": 11521284,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {
+          "textures/cfef86f82ac5d996af20.png": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+          "textures/a536d20596728975d3d5.png": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+          "textures/55aaf791e83ec37fa219.png": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+          "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+          "textures/2e15a426be9ee20c39a7.png": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357"
+        },
+        "texturePaths": {
+          "textures/cfef86f82ac5d996af20.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/cfef86f82ac5d996af20.png",
+          "textures/a536d20596728975d3d5.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/a536d20596728975d3d5.png",
+          "textures/55aaf791e83ec37fa219.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/55aaf791e83ec37fa219.png",
+          "textures/042e670c62ad34a45c14.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/042e670c62ad34a45c14.png",
+          "textures/2e15a426be9ee20c39a7.png": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/models/textures/2e15a426be9ee20c39a7.png"
+        }
+      },
+      "equipment": {
+        "path": "artifacts/character-anatomy-review/integration-candidate/models/equipment.glb",
+        "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+        "bytes": 605248,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "horse": {
+        "path": "artifacts/character-anatomy-review/integration-candidate/models/horse-lod0.glb",
+        "sha256": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+        "bytes": 676556,
+        "published": false,
+        "manifestVerified": true,
+        "textures": {},
+        "texturePaths": {}
+      },
+      "nativeBindMaximumError": 0.0,
+      "shapeKeys": {}
+    }
+  },
+  "frames": [
+    {
+      "preset": "granadero",
+      "clip": "mounted.reload.long-gun.1800",
+      "phase": "prepare",
+      "view": "iso",
+      "timeSeconds": 0.72,
+      "durationSeconds": 4.8,
+      "file": "granadero/mounted.reload.long-gun.1800.prepare.png",
+      "sha256": "c3a62376c137c538f9a8466f1bd311f9fceb6ffc3da4a5f4099857968ce7cffb",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.5618312
+        ],
+        "head": [
+          -0.0090214,
+          0.0247966,
+          2.2357888
+        ],
+        "upperarm_l": [
+          0.1870416,
+          0.0234064,
+          2.0350406
+        ],
+        "upperarm_r": [
+          -0.1916026,
+          0.0358658,
+          2.0285232
+        ],
+        "hand_l": [
+          0.2112479,
+          -0.1343942,
+          1.5975974
+        ],
+        "hand_r": [
+          -0.3065338,
+          -0.1702932,
+          1.6703925
+        ],
+        "foot_l": [
+          0.3190715,
+          0.1581473,
+          0.9743068
+        ],
+        "foot_r": [
+          -0.3153112,
+          0.158147,
+          0.9743069
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.reload.long-gun.1800",
+      "phase": "charge",
+      "view": "iso",
+      "timeSeconds": 1.8239999999999998,
+      "durationSeconds": 4.8,
+      "file": "granadero/mounted.reload.long-gun.1800.charge.png",
+      "sha256": "a9ff5d0210abd424d31fc158d727a4e45a3bf84aedf076223ac56dc4de292f45",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.5618312
+        ],
+        "head": [
+          -0.0090214,
+          0.0247966,
+          2.2357888
+        ],
+        "upperarm_l": [
+          0.1870416,
+          0.0234064,
+          2.0350406
+        ],
+        "upperarm_r": [
+          -0.1916026,
+          0.0358658,
+          2.0285232
+        ],
+        "hand_l": [
+          0.0507069,
+          -0.2808007,
+          2.0249019
+        ],
+        "hand_r": [
+          -0.3065338,
+          -0.1702932,
+          1.6703925
+        ],
+        "foot_l": [
+          0.3190715,
+          0.1581473,
+          0.9743068
+        ],
+        "foot_r": [
+          -0.3153112,
+          0.158147,
+          0.9743069
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.reload.long-gun.1800",
+      "phase": "ramrod",
+      "view": "iso",
+      "timeSeconds": 3.072,
+      "durationSeconds": 4.8,
+      "file": "granadero/mounted.reload.long-gun.1800.ramrod.png",
+      "sha256": "7baa9bcbe1ae698f1837b1c99afc86b1ac3e1162a1887f2a0c27826523752f16",
+      "item": "1800",
+      "activeProps": [
+        "ramrod"
+      ],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.5618312
+        ],
+        "head": [
+          -0.0090214,
+          0.0247966,
+          2.2357888
+        ],
+        "upperarm_l": [
+          0.1870416,
+          0.0234064,
+          2.0350406
+        ],
+        "upperarm_r": [
+          -0.1916026,
+          0.0358658,
+          2.0285232
+        ],
+        "hand_l": [
+          0.1488659,
+          -0.3113401,
+          2.1540327
+        ],
+        "hand_r": [
+          -0.3065338,
+          -0.1702932,
+          1.6703925
+        ],
+        "foot_l": [
+          0.3190715,
+          0.1581473,
+          0.9743068
+        ],
+        "foot_r": [
+          -0.3153112,
+          0.158147,
+          0.9743069
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    },
+    {
+      "preset": "granadero",
+      "clip": "mounted.reload.long-gun.1800",
+      "phase": "recover",
+      "view": "iso",
+      "timeSeconds": 4.512,
+      "durationSeconds": 4.8,
+      "file": "granadero/mounted.reload.long-gun.1800.recover.png",
+      "sha256": "b10235acaed94415f5ff76ba370fcb431ecda125e688e1afb273424261fff1e9",
+      "item": "1800",
+      "activeProps": [],
+      "horseClip": "HorseIdle",
+      "seatOffsetBlenderZUp": [
+        1.0610574463498779e-07,
+        0.02679515816271305,
+        0.6166717410087585
+      ],
+      "motionSource": {
+        "type": "native-contact-authoring"
+      },
+      "clothWeights": {
+        "cloth_prone": 0.0,
+        "cloth_crouched": 0.0
+      },
+      "jointsBlenderZUp": {
+        "pelvis": [
+          1e-07,
+          0.0199994,
+          1.5618312
+        ],
+        "head": [
+          -0.0090214,
+          0.0247966,
+          2.2357888
+        ],
+        "upperarm_l": [
+          0.1870416,
+          0.0234064,
+          2.0350406
+        ],
+        "upperarm_r": [
+          -0.1916026,
+          0.0358658,
+          2.0285232
+        ],
+        "hand_l": [
+          -0.1713395,
+          -0.1557648,
+          1.7064435
+        ],
+        "hand_r": [
+          -0.2388168,
+          -0.3416679,
+          1.7299399
+        ],
+        "foot_l": [
+          0.3190715,
+          0.1581473,
+          0.9743068
+        ],
+        "foot_r": [
+          -0.3153112,
+          0.158147,
+          0.9743069
+        ]
+      },
+      "cameraTarget": [
+        0.0,
+        0.0,
+        1.2999999523162842
+      ],
+      "cameraScale": 3.65
+    }
+  ],
+  "complete": true
+}

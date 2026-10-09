@@ -1,0 +1,40 @@
+[
+  {
+    "file": "woman-scout-lod1.glb",
+    "allNonSkinPrimitiveAccessorPayloadsExact": true,
+    "nativeSkeletonInverseBindAndNodesExact": true,
+    "morphTargetsExact": 0,
+    "morphAttributesExact": [],
+    "meshTargetNamesAndDefaultWeightsExact": true
+  },
+  {
+    "file": "woman-scout-lod2.glb",
+    "allNonSkinPrimitiveAccessorPayloadsExact": true,
+    "nativeSkeletonInverseBindAndNodesExact": true,
+    "morphTargetsExact": 0,
+    "morphAttributesExact": [],
+    "meshTargetNamesAndDefaultWeightsExact": true
+  },
+  {
+    "file": "woman-shawl-lod1.glb",
+    "allNonSkinPrimitiveAccessorPayloadsExact": true,
+    "nativeSkeletonInverseBindAndNodesExact": true,
+    "morphTargetsExact": 3,
+    "morphAttributesExact": [
+      "NORMAL",
+      "POSITION"
+    ],
+    "meshTargetNamesAndDefaultWeightsExact": true
+  },
+  {
+    "file": "woman-shawl-lod2.glb",
+    "allNonSkinPrimitiveAccessorPayloadsExact": true,
+    "nativeSkeletonInverseBindAndNodesExact": true,
+    "morphTargetsExact": 3,
+    "morphAttributesExact": [
+      "NORMAL",
+      "POSITION"
+    ],
+    "meshTargetNamesAndDefaultWeightsExact": true
+  }
+]

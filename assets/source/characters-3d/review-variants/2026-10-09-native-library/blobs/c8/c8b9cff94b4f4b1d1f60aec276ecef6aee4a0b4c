@@ -1,0 +1,13 @@
+{
+  "changedRotationChannels": 12,
+  "otherChannelsExact": 53094,
+  "metadata": "selected nativeArmSupport only",
+  "femaleBankUnchanged": true,
+  "posesReviewed": [
+    "prone.crawl.unarmed at0 and.5s"
+  ],
+  "tests": {
+    "pass": 24,
+    "fail": 0
+  }
+}

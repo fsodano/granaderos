@@ -1,0 +1,66 @@
+"""Compose source-built retained hand without rebuilding unrelated cloth morphs.
+
+The source builder still produces the retained native island. Before publishing
+that narrow component, keep the existing body document and garment payloads.
+The exact per-triangle proof rejects any other skin change.
+"""
+from pathlib import Path
+import copy, hashlib, json, struct, sys
+ROOT=Path('/tmp/granadero-hand-web-pilot/retention')
+BASE=ROOT.parent/'paired-models'
+MODELS=ROOT/'models'
+GENERATED=ROOT/'source-generated-bodies'
+GENERATED.mkdir(exist_ok=True)
+sys.path.insert(0,str(ROOT/'source'))
+from gltf_pack import pack
+
+def read(path):
+ raw=path.read_bytes();n=struct.unpack_from('<I',raw,12)[0]
+ return json.loads(raw[20:20+n]),bytearray(raw[28+n:])
+
+def write(path,doc,binary):
+ binary.extend(b'\0'*(-len(binary)%4));doc['buffers']=[{'byteLength':len(binary)}]
+ j=json.dumps(doc,separators=(',',':')).encode();j+=b' '*(-len(j)%4)
+ path.write_bytes(struct.pack('<III',0x46546c67,2,28+len(j)+len(binary))+struct.pack('<II',len(j),0x4e4f534a)+j+struct.pack('<II',len(binary),0x004e4942)+binary)
+
+def skin_primitive(doc):
+ matches=[(mi,pi,p)for mi,m in enumerate(doc['meshes'])for pi,p in enumerate(m['primitives'])if doc['materials'][p['material']]['name']=='Skin']
+ assert len(matches)==1
+ return matches[0]
+
+records=[]
+for preset in ('woman-scout','woman-shawl'):
+ for lod in (1,2):
+  name=f'{preset}-lod{lod}.glb';out=MODELS/name;generated=GENERATED/name
+  if not generated.exists():generated.write_bytes(out.read_bytes())
+  old,blob=read(BASE/name);new,extra=read(generated)
+  assert old['nodes']==new['nodes'],name
+  assert len(old['skins'])==len(new['skins'])==1 and old['skins'][0]['joints']==new['skins'][0]['joints'],name
+  assert old['materials']==new['materials'],name
+  mi,pi,source=skin_primitive(new);omi,opi,target=skin_primitive(old)
+  assert not source.get('targets') and not target.get('targets'),name
+  assert old['meshes'][omi]['name']==new['meshes'][mi]['name'],name
+  views={};accessors={}
+  def add_view(i):
+   if i in views:return views[i]
+   v=copy.deepcopy(new['bufferViews'][i]);start=v.get('byteOffset',0);data=extra[start:start+v['byteLength']]
+   blob.extend(b'\0'*(-len(blob)%4));v['byteOffset']=len(blob);v['buffer']=0;blob.extend(data)
+   old['bufferViews'].append(v);views[i]=len(old['bufferViews'])-1;return views[i]
+  def add_accessor(i):
+   if i in accessors:return accessors[i]
+   a=copy.deepcopy(new['accessors'][i])
+   if 'bufferView'in a:a['bufferView']=add_view(a['bufferView'])
+   for entry in a.get('sparse',{}).values():
+    if isinstance(entry,dict)and'bufferView'in entry:entry['bufferView']=add_view(entry['bufferView'])
+   old['accessors'].append(a);accessors[i]=len(old['accessors'])-1;return accessors[i]
+  p=copy.deepcopy(source);p['attributes']={k:add_accessor(a)for k,a in p['attributes'].items()};p['indices']=add_accessor(p['indices']);p['material']=target['material']
+  old['meshes'][omi]['primitives'][opi]=p
+  write(out,old,blob);raw,final=pack(out,{})
+  record={'lod':lod,'url':'/models/characters/'+name,'triangles':sum(final['accessors'][p['indices']]['count']//3 for m in final['meshes']for p in m['primitives']),'bytes':len(raw),'drawCalls':sum(len(m['primitives'])for m in final['meshes']),'sha256':hashlib.sha256(raw).hexdigest()}
+  records.append({'appearance':preset,'file':name,'record':record,'sourceGeneratedSha256':hashlib.sha256(generated.read_bytes()).hexdigest(),'existingBodySha256':hashlib.sha256((BASE/name).read_bytes()).hexdigest()})
+manifest=json.loads((MODELS/'manifest.json').read_text())
+for item in records:
+ lods=manifest['appearances'][item['appearance']]['lods'];index=next(i for i,r in enumerate(lods)if r['lod']==item['record']['lod']);lods[index]=item['record']
+(MODELS/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+(ROOT/'body-records.json').write_text(json.dumps(records,indent=2)+'\n')
+print(json.dumps(records,indent=2))

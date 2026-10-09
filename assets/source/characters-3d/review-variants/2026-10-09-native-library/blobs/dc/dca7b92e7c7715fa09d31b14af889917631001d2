@@ -1,0 +1,26 @@
+{
+  "manifestSha256": "39c7f8a0468c67ce26baa546415bcff850d651d0f33f3f36d17dd9fff40d1f0c",
+  "nativeSkinPreserved": true,
+  "eyeGeometryTests": {
+    "oldBodiesFail": 24,
+    "correctedBodiesPass": 24
+  },
+  "focused": {
+    "pass": 71,
+    "fail": 4,
+    "failure": "New source30 reload/shoulder crossbelt interaction; private repair underway"
+  },
+  "typecheck": "pass",
+  "build": "pass",
+  "libraryVerification": "pass",
+  "broadQuick": "running",
+  "liveAX": {
+    "url": "http://localhost:3147/",
+    "modelId": "3e9941ac",
+    "motion": "Quieto",
+    "weapon": "Sin arma",
+    "pixelation": false
+  },
+  "liveScreenshot": "unavailable: browser capture returned0width",
+  "stillImages": "Actual exported GLBs rendered in Blender; not live browser screenshots"
+}

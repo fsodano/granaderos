@@ -1,0 +1,29 @@
+from pathlib import Path
+import json,hashlib,struct,difflib,shutil,datetime
+R=Path('/tmp/granadero-hair-naturalism-pilot/worker-delivery');ROOT=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');BASE=R.parent/'baseline';MODEL=R/'models-v6';SRC=R/'source/assets/source/characters-3d/authoring';prefix='assets/source/characters-3d/authoring/'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def doc(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];return json.loads(b[20:20+n])
+files=['character.py','anatomy_surface.py','surface_atlas.py','optimize.py','hair_fringe.py'];patch='';source_records=[]
+for name in files:
+ old=ROOT/prefix/name;new=SRC/name;patch+='diff --git a/'+prefix+name+' b/'+prefix+name+'\n';patch+=('new file mode 100644\n' if not old.exists()else'');patch+=''.join(difflib.unified_diff(old.read_text().splitlines(True)if old.exists()else[],new.read_text().splitlines(True),fromfile='a/'+prefix+name if old.exists()else'/dev/null',tofile='b/'+prefix+name));source_records.append({'path':prefix+name,'beforeSha256':sha(old)if old.exists()else None,'afterSha256':sha(new)})
+(R/'worker-hair.patch').write_text(patch)
+original=ROOT/'artifacts/character-anatomy-review/delivery/hair-fringe-pilot/source'
+for source,dest in [('prompt.txt','hair-strands-v1-prompt.txt'),('generation.json','hair-strands-v1-generation.json')]:shutil.copy2(original/source,SRC/'generated'/dest)
+textures=set();body_records=[];facts=json.loads((MODEL/'manifest.json').read_text());oldfacts=json.loads((BASE/'manifest.json').read_text())
+for lod in range(3):
+ name=f'worker-lod{lod}.glb';j=doc(MODEL/name)
+ for image in j.get('images',[]):
+  uri=image['uri'];target=BASE/uri
+  if not target.exists()or sha(MODEL/uri)!=sha(target):textures.add(uri)
+ before=next(x for x in oldfacts['appearances']['worker']['lods']if x['lod']==lod);after=next(x for x in facts['appearances']['worker']['lods']if x['lod']==lod)
+ body_records.append({'path':name,'expectedPreviousSha256':sha(BASE/name),'record':after,'trianglesAdded':after['triangles']-before['triangles'],'drawsAdded':after['drawCalls']-before['drawCalls']})
+for path in BASE.glob('*.glb'):
+ if path.name not in [x['path']for x in body_records]:assert sha(path)==sha(MODEL/path.name),path.name
+published=ROOT/'web/public/models/characters';assert all(sha(published/x['path'])==x['expectedPreviousSha256']for x in body_records)
+png=SRC/'generated/hair-strands-v1.png';assert sha(png)==sha(original/'hair-strands-v1.png')=='ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381'
+allowlist=[{'path':x['path'],'sha256':sha(MODEL/x['path']),'bytes':(MODEL/x['path']).stat().st_size}for x in body_records]+[{'path':p,'sha256':sha(MODEL/p),'bytes':(MODEL/p).stat().st_size}for p in sorted(textures)]
+receipt={'status':'worker-only incremental pilot; pending parent merge; no publication','timestampUTC':datetime.datetime.now(datetime.timezone.utc).isoformat(),'sourceDirectory':str(SRC),'sourcePatch':str(R/'worker-hair.patch'),'sourcePatchSha256':sha(R/'worker-hair.patch'),'libraryDirectory':str(MODEL),'baselineManifestSha256':sha(BASE/'manifest.json'),'currentPublishedManifestObserved':sha(published/'manifest.json'),'mergeRule':'Merge only the three worker body records and this file allowlist into the current manifest. Never copy this older complete private manifest or its banks.','bodyRecords':body_records,'assetAllowlist':allowlist,'sourceRecords':source_records,'sourceImage':{'path':str(png),'sha256':sha(png),'bytes':png.stat().st_size,'originalPrompt':str(original/'prompt.txt'),'originalReceipt':str(original/'generation.json'),'rasterEdits':False},'geometry':{'cutoutTrianglesPerLOD':4800,'cutoutDrawsPerLOD':1,'nativeSkinRigAndNamedMeshProof':str(R/'preservation.json'),'allOtherApparelTrianglesAndTextureTiles':str(R/'detail-preservation.json'),'allNodesMorphsAndSkinMaterial':str(R/'node-morph-preservation.json'),'surfaceClearance':str(R/'surface-clearance.json')},'tests':{'workerSkinAndEyes':{'pass':6,'fail':0,'log':str(R/'worker-skin-eyes-tests.log')},'libraryStructure':'PASS','structureLog':str(R/'structure-tests.log')},'visualReview':{'frontRearAllLODs':'review-v6-{front,rear}-lod{0,1,2}-800','labSize':'review-v6-{front,rear}-lod{0,2}-560','gameSize':['review-v6-front-lod1-256','review-v6-front-lod2-128'],'observedGain':'Fine strand direction and broken thin hairline replace broad plastic grooves and the hard forehead band. The crown no longer has the visible triangle patches in the inspected front/rear frames.','remainingLimits':['The close-cropped cut remains regular and uniform.','The native face and its low-detail reduction are unchanged.','At tactical size the gain is subtle; this is not reference-level character quality.','Existing clothing/collar shapes are preserved, including the rear collar defects visible in both baseline and candidate.','The separate 1254px RGBA texture and fixed 4800-triangle strand layer add cost; crowd performance has not been benchmarked.','Inspection covers idle front/rear and all three LODs, not every animation.']}}
+if (R/'browser-material-proof.json').exists():receipt['runtimeBrowser']=json.loads((R/'browser-material-proof.json').read_text())
+(R/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');(R/'asset-allowlist.json').write_text(json.dumps(allowlist,indent=2)+'\n')
+print(json.dumps({'bodyRecords':body_records,'assetCount':len(allowlist),'sourcePatch':str(R/'worker-hair.patch')},indent=2))

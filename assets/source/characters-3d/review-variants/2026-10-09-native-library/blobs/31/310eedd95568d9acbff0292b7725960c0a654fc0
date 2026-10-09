@@ -1,0 +1,253 @@
+{
+  "status": "worker-only incremental pilot; pending parent merge; no publication",
+  "timestampUTC": "2026-10-08T10:57:47.072740+00:00",
+  "sourceDirectory": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/source/assets/source/characters-3d/authoring",
+  "sourcePatch": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/worker-hair.patch",
+  "sourcePatchSha256": "3219b390f8414e78c6063fa9a3325704897c57bf00676cdbe59ae6c908e28d67",
+  "libraryDirectory": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/models-v6",
+  "baselineManifestSha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+  "currentPublishedManifestObserved": "56a48afe8d307181511fc5dd1352bdfe1ecd66f8b5fbffab1790953f4e81486f",
+  "mergeRule": "Merge only the three worker body records and this file allowlist into the current manifest. Never copy this older complete private manifest or its banks.",
+  "bodyRecords": [
+    {
+      "path": "worker-lod0.glb",
+      "expectedPreviousSha256": "27ec304416220e85c721f327e8d691f6a78e5cdcd433bb95e9e107ea031028a9",
+      "record": {
+        "lod": 0,
+        "url": "/models/characters/worker-lod0.glb",
+        "triangles": 80771,
+        "bytes": 4056372,
+        "drawCalls": 6,
+        "sha256": "6382ca27feeb99e6ac7c099822bb9cad82cf23acec09397747d75491dfccb861"
+      },
+      "trianglesAdded": 4561,
+      "drawsAdded": 1
+    },
+    {
+      "path": "worker-lod1.glb",
+      "expectedPreviousSha256": "25fcd84ac58ce979f0c947ca071ed9788136eb9e1465605bf048c331f9c9279b",
+      "record": {
+        "lod": 1,
+        "url": "/models/characters/worker-lod1.glb",
+        "triangles": 50872,
+        "bytes": 2888392,
+        "drawCalls": 6,
+        "sha256": "63ed88232a21273547558213860d92e8f76d52a065821e9ec83ebb0c37677111"
+      },
+      "trianglesAdded": 4691,
+      "drawsAdded": 1
+    },
+    {
+      "path": "worker-lod2.glb",
+      "expectedPreviousSha256": "441a857a008cb64b39ec0046dff75086f8fed847305fb7f6360e44d992b1e37a",
+      "record": {
+        "lod": 2,
+        "url": "/models/characters/worker-lod2.glb",
+        "triangles": 21852,
+        "bytes": 1098024,
+        "drawCalls": 6,
+        "sha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd"
+      },
+      "trianglesAdded": 4748,
+      "drawsAdded": 1
+    }
+  ],
+  "assetAllowlist": [
+    {
+      "path": "worker-lod0.glb",
+      "sha256": "6382ca27feeb99e6ac7c099822bb9cad82cf23acec09397747d75491dfccb861",
+      "bytes": 4056372
+    },
+    {
+      "path": "worker-lod1.glb",
+      "sha256": "63ed88232a21273547558213860d92e8f76d52a065821e9ec83ebb0c37677111",
+      "bytes": 2888392
+    },
+    {
+      "path": "worker-lod2.glb",
+      "sha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+      "bytes": 1098024
+    },
+    {
+      "path": "textures/2184ae3386ac18625140.png",
+      "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa",
+      "bytes": 395710
+    },
+    {
+      "path": "textures/93f40634d5f47b42afdb.png",
+      "sha256": "93f40634d5f47b42afdb76dd3ebf22ce420022219eccaf65e1972ef860632a44",
+      "bytes": 314984
+    },
+    {
+      "path": "textures/940c90a65502a117ca0b.png",
+      "sha256": "940c90a65502a117ca0b309670a7eca7522df2d3cd9c24b002c3d81cd31dcbe7",
+      "bytes": 441809
+    },
+    {
+      "path": "textures/d3947bf8ce7ee3fb076e.png",
+      "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603",
+      "bytes": 522293
+    },
+    {
+      "path": "textures/ddbf803c43fc641d3512.png",
+      "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+      "bytes": 2485369
+    },
+    {
+      "path": "textures/e53e4d4ad46335cf9f8d.png",
+      "sha256": "e53e4d4ad46335cf9f8de5173b245d63ae1afc73367a5266f10bbd3432db18eb",
+      "bytes": 360836
+    },
+    {
+      "path": "textures/eb7d7e234e6b60198b7f.png",
+      "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b",
+      "bytes": 331284
+    }
+  ],
+  "sourceRecords": [
+    {
+      "path": "assets/source/characters-3d/authoring/character.py",
+      "beforeSha256": "454c00684deb83f2e6c5bd8c1cdc7cdfd08e01b6d79955387a0eed041380fef5",
+      "afterSha256": "b69d87762b47e3c5678edba3f37020d59329981aaa358edf127ab99d97b9f11e"
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/anatomy_surface.py",
+      "beforeSha256": "24db3a442d9a3d4df15f2467fd803f204dfc8521022871bbb899629efcbd6986",
+      "afterSha256": "4b4755571da40a296ed3752bab5c7a46fc391c9e16d6f9169a950871e34e8e03"
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/surface_atlas.py",
+      "beforeSha256": "957ff658124abcd431b5f668215fac5fbc72b147376e0a8369ba79546ba45eb5",
+      "afterSha256": "5c108e864f3f7d50907843cc49832043ae0073b877fcb1c516aed04a51b8da55"
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/optimize.py",
+      "beforeSha256": "03e1defee93985d98de1538cac6e905a336e5ffad0cdc0a00ac7808855df95aa",
+      "afterSha256": "c9896c23124249c452e9e44e66490855cda0a3682f107bba925dca98c15dd110"
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/hair_fringe.py",
+      "beforeSha256": null,
+      "afterSha256": "5f023fad32afe892c529deda182adbea85f6b18ae2d5708cf73e44930f855ff3"
+    }
+  ],
+  "sourceImage": {
+    "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/source/assets/source/characters-3d/authoring/generated/hair-strands-v1.png",
+    "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+    "bytes": 2485369,
+    "originalPrompt": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/hair-fringe-pilot/source/prompt.txt",
+    "originalReceipt": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/delivery/hair-fringe-pilot/source/generation.json",
+    "rasterEdits": false
+  },
+  "geometry": {
+    "cutoutTrianglesPerLOD": 4800,
+    "cutoutDrawsPerLOD": 1,
+    "nativeSkinRigAndNamedMeshProof": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/preservation.json",
+    "allOtherApparelTrianglesAndTextureTiles": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/detail-preservation.json",
+    "allNodesMorphsAndSkinMaterial": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/node-morph-preservation.json",
+    "surfaceClearance": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/surface-clearance.json"
+  },
+  "tests": {
+    "workerSkinAndEyes": {
+      "pass": 6,
+      "fail": 0,
+      "log": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/worker-skin-eyes-tests.log"
+    },
+    "libraryStructure": "PASS",
+    "structureLog": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/structure-tests.log"
+  },
+  "visualReview": {
+    "frontRearAllLODs": "review-v6-{front,rear}-lod{0,1,2}-800",
+    "labSize": "review-v6-{front,rear}-lod{0,2}-560",
+    "gameSize": [
+      "review-v6-front-lod1-256",
+      "review-v6-front-lod2-128"
+    ],
+    "observedGain": "Fine strand direction and broken thin hairline replace broad plastic grooves and the hard forehead band. The crown no longer has the visible triangle patches in the inspected front/rear frames.",
+    "remainingLimits": [
+      "The close-cropped cut remains regular and uniform.",
+      "The native face and its low-detail reduction are unchanged.",
+      "At tactical size the gain is subtle; this is not reference-level character quality.",
+      "Existing clothing/collar shapes are preserved, including the rear collar defects visible in both baseline and candidate.",
+      "The separate 1254px RGBA texture and fixed 4800-triangle strand layer add cost; crowd performance has not been benchmarked.",
+      "Inspection covers idle front/rear and all three LODs, not every animation."
+    ]
+  },
+  "runtimeBrowser": {
+    "scope": "Actual Three.js GLTFLoader and production-lab preparation. Shader compilation and exact PNG decode for all three private worker LODs.",
+    "models": [
+      {
+        "lod": 0,
+        "url": "/models/characters/worker-lod0.glb",
+        "sha256": "6382ca27feeb99e6ac7c099822bb9cad82cf23acec09397747d75491dfccb861",
+        "alphaTest": 0.3799999952316284,
+        "transparent": false,
+        "doubleSide": true,
+        "depthWrite": true,
+        "roughness": 0.8600000143051147,
+        "textureDimensions": [
+          1254,
+          1254
+        ],
+        "textureColorSpace": "srgb",
+        "textureChannel": 0,
+        "textureMipmaps": true,
+        "minFilter": 1008,
+        "compiledShaders": 3,
+        "rendererTriangles": 77078,
+        "rendererDraws": 4
+      },
+      {
+        "lod": 1,
+        "url": "/models/characters/worker-lod1.glb",
+        "sha256": "63ed88232a21273547558213860d92e8f76d52a065821e9ec83ebb0c37677111",
+        "alphaTest": 0.3799999952316284,
+        "transparent": false,
+        "doubleSide": true,
+        "depthWrite": true,
+        "roughness": 0.8600000143051147,
+        "textureDimensions": [
+          1254,
+          1254
+        ],
+        "textureColorSpace": "srgb",
+        "textureChannel": 0,
+        "textureMipmaps": true,
+        "minFilter": 1008,
+        "compiledShaders": 3,
+        "rendererTriangles": 49161,
+        "rendererDraws": 4
+      },
+      {
+        "lod": 2,
+        "url": "/models/characters/worker-lod2.glb",
+        "sha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+        "alphaTest": 0.3799999952316284,
+        "transparent": false,
+        "doubleSide": true,
+        "depthWrite": true,
+        "roughness": 0.8600000143051147,
+        "textureDimensions": [
+          1254,
+          1254
+        ],
+        "textureColorSpace": "srgb",
+        "textureChannel": 0,
+        "textureMipmaps": true,
+        "minFilter": 1008,
+        "compiledShaders": 3,
+        "rendererTriangles": 21057,
+        "rendererDraws": 4
+      }
+    ],
+    "errors": [],
+    "pass": true
+  },
+  "currentOptimizerReproduction": {
+    "lod": 2,
+    "path": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/repro-current-optimizer/worker-lod2.glb",
+    "sha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+    "matchesFrozenV6": true,
+    "log": "/tmp/granadero-hair-naturalism-pilot/worker-delivery/repro-current-optimizer.log"
+  }
+}

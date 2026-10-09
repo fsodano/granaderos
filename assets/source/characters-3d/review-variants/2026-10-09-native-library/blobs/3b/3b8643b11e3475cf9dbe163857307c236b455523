@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>Private worker hair loading proof</title>
+<style>body{background:#252b24;color:#eee;font:16px system-ui;margin:20px}#views{display:flex;gap:12px}canvas{display:block;width:320px;height:400px}pre{white-space:pre-wrap}button{margin:10px;padding:12px}</style>
+<script type="importmap">{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/examples/jsm/"}}</script>
+<h1>Worker hair · private material loading proof</h1><p id="status">Loading all three detail levels…</p><div id="views"></div><button id="save" disabled>Save proof JSON</button><pre id="proof"></pre>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {prepareProductionCharacter} from '/src/character-library.js';
+import {applySkinPalette} from '/game/skin-palette.js';
+const errors=[];window.addEventListener('error',e=>errors.push(e.message));
+const report={scope:'Actual Three.js GLTFLoader and production-lab preparation. Shader compilation and exact PNG decode for all three private worker LODs.',models:[],errors};
+try{
+ const lib=await fetch('/models/characters/manifest.json').then(r=>r.json()),a=lib.appearances.worker,loader=new GLTFLoader();
+ const bank=await loader.loadAsync(lib.animationLibraries[a.animationLibrary].url),equipment=await loader.loadAsync(lib.equipment.url);
+ for(const spec of a.lods){
+  const body=await loader.loadAsync(spec.url),prepared=prepareProductionCharacter(body,bank,equipment,lib,a);
+  for(const obj of Object.values(prepared.weapons))obj.visible=false;prepared.bayonet.visible=false;
+  let hair;prepared.scene.traverse(o=>{if(o.isMesh){const ms=(Array.isArray(o.material)?o.material:[o.material]).map(m=>{const owned=m.clone();if(m.name==='Skin')applySkinPalette(owned,lib.skinTones.light);if(m.name==='Short_Hair_Cutout')hair=owned;return owned;});o.material=Array.isArray(o.material)?ms:ms[0];}});
+  if(!hair)throw Error('Missing cutout material LOD'+spec.lod);
+  const scene=new THREE.Scene();scene.background=new THREE.Color('#4b5147');scene.add(prepared.scene);
+  scene.add(new THREE.HemisphereLight(0xe3e7dc,0x5d5646,2.5));const light=new THREE.DirectionalLight(0xfff0df,3.5);light.position.set(2,4,3);scene.add(light);
+  const mixer=new THREE.AnimationMixer(prepared.scene);const idle=prepared.animations.find(c=>c.name==='Idle');if(idle){mixer.clipAction(idle).play();mixer.update(0);}
+  const box=new THREE.Box3().setFromObject(prepared.scene),target=new THREE.Vector3(0,1.68,0);
+  const camera=new THREE.OrthographicCamera(-.16,.16,.20,-.20,.01,20);camera.position.copy(target).add(new THREE.Vector3(5,4.2,5));camera.lookAt(target);
+  const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(320,400);renderer.setPixelRatio(1);renderer.toneMapping=THREE.ACESFilmicToneMapping;await renderer.compileAsync(scene,camera);renderer.render(scene,camera);
+  const panel=document.createElement('section');panel.innerHTML='<h2>LOD '+spec.lod+'</h2>';panel.append(renderer.domElement);document.querySelector('#views').append(panel);
+  const save=document.createElement('button');save.textContent='Save LOD '+spec.lod+' view';save.onclick=()=>{const a=document.createElement('a');a.download='worker-runtime-v6-lod'+spec.lod+'.png';a.href=renderer.domElement.toDataURL();a.click();};panel.append(save);
+  const map=hair.map,record={lod:spec.lod,url:spec.url,sha256:spec.sha256,alphaTest:hair.alphaTest,transparent:hair.transparent,doubleSide:hair.side===THREE.DoubleSide,depthWrite:hair.depthWrite,roughness:hair.roughness,textureDimensions:[map.image.width,map.image.height],textureColorSpace:map.colorSpace,textureChannel:map.channel,textureMipmaps:map.generateMipmaps,minFilter:map.minFilter,compiledShaders:renderer.info.programs.length,rendererTriangles:renderer.info.render.triangles,rendererDraws:renderer.info.render.calls};
+  if(Math.abs(record.alphaTest-.38)>1e-6||record.transparent||!record.doubleSide||record.textureDimensions[0]!==1254)throw Error('Cutout contract changed in LOD'+spec.lod);
+  report.models.push(record);
+ }
+ report.pass=report.models.length===3&&!errors.length;document.querySelector('#status').textContent='PASS: all three hair materials decoded, compiled and rendered.';
+ document.querySelector('#proof').textContent=JSON.stringify(report,null,2);document.querySelector('#save').disabled=false;document.querySelector('#save').onclick=()=>{const a=document.createElement('a');a.download='worker-runtime-v6-proof.json';a.href=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));a.click();};
+}catch(e){report.error=e.stack;document.querySelector('#status').textContent='FAIL: '+e.message;document.querySelector('#proof').textContent=JSON.stringify(report,null,2);}
+</script>

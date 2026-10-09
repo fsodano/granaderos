@@ -1,0 +1,43 @@
+{
+  "granadero-lod0.glb": {
+    "skinPrimitives": {
+      "Exposed_Human_Skin|Skin|0": {
+        "exact": true,
+        "payloadHashes": {
+          "POSITION": "3a5d3590c1ec295fb507c4fec69b6a7ddb9169dd5e832a5e6cdb27186b4a5586",
+          "NORMAL": "470caf34570cc3f65bfb3567c263606f9ef504026c98d990a45658a8be0644f0",
+          "TEXCOORD_0": "243e241e9261b41f6e293851de90825bc9f2c1d32461b0d25e65d8454469faf8",
+          "COLOR_0": "0644be646a60a55067037de1b5a7a98ded2a9c4cc20d76816185535520de9bcc",
+          "JOINTS_0": "0aecd9f356e078f46a83cc241f037b1cec584b86b845099ff6c3899b65f3d668",
+          "WEIGHTS_0": "e30468c58eeb2038f566f5ca804df02e16b66a2e47f9bc527dde4b4b84ce2ef3",
+          "indices": "b9e28a21bcc52e8faca6dfa7f8bf1b08bc23b13927d14b7c51be96b019911096"
+        }
+      }
+    },
+    "changedParts": [
+      "Shaped_Shako|Apparel_Atlas|0",
+      "Tailored_Coat|Apparel_Atlas|0",
+      "Exposed_Human_Skin|Apparel_Atlas|1"
+    ]
+  },
+  "woman-scout-lod0.glb": {
+    "skinPrimitives": {
+      "Exposed_Human_Skin|Skin|0": {
+        "exact": true,
+        "payloadHashes": {
+          "POSITION": "5d906e0e491028dd2000cf56e19471d9c417b1ecfba832ab3150ca0ba1d41db2",
+          "NORMAL": "6edbb16e9a08d92f5485f2231763d31dbdcaab38f6e9e2ec2263f20f31792e11",
+          "TEXCOORD_0": "616dcd42ab47c261d64a13e78f5fe8b61a7edab9c14bebf371567089cb7c9b31",
+          "COLOR_0": "5b49c876925d99843ae3024189baa1458cfa0c61f7abffdc43299a81e8b1dbd7",
+          "JOINTS_0": "61da4b51228a69d4da9bd495f4e963804d30ffa397c2c64b8652d2b3d08e09bd",
+          "WEIGHTS_0": "a89429d2078768169591b397d35762a5f2091d2154e37c1fec2e0542a222385a",
+          "indices": "810d2ac75b7623886db649d926c65ca2f833d1762232788c4430462cf496eb24"
+        }
+      }
+    },
+    "changedParts": [
+      "Tailored_Coat|Apparel_Atlas|0",
+      "Exposed_Human_Skin|Apparel_Atlas|1"
+    ]
+  }
+}

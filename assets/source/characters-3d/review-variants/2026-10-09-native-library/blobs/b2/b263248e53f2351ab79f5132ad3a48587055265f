@@ -1,0 +1,14 @@
+<!doctype html><meta charset=utf-8><title>Worker shared skin pilot</title><style>body{background:#252b24;color:#eee;font:16px system-ui}.row{display:flex}figure{margin:10px}img{max-width:560px;max-height:700px}figcaption{padding:8px}a{color:#edce91}</style><h1>Worker shared skin pilot</h1><p>Original V6 geometry and hair. Reuses the exact accepted Granadero albedo; eyebrow beds are neutral. No raster edits. No new facial identity.</p><h2>Actual lab · light palette</h2><div class=row><figure><img src=live-before.png><figcaption>Native skin</figcaption></figure><figure><img src=live-after.png><figcaption>Shared detailed skin</figcaption></figure></div>
+<h2>three-quarter</h2><div class=row>
+<figure><img src="../granadero-worker-face-identity-pilot/before-three-quarter/worker/stand.idle.unarmed.sample-1.face.png"><figcaption>Native skin</figcaption></figure>
+<figure><img src="after-three-quarter/worker/stand.idle.unarmed.sample-1.face.png"><figcaption>Shared detailed skin</figcaption></figure></div>
+<h2>front</h2><div class=row>
+<figure><img src="../granadero-worker-face-identity-pilot/before-front/worker/stand.idle.unarmed.sample-1.face.png"><figcaption>Native skin</figcaption></figure>
+<figure><img src="after-front/worker/stand.idle.unarmed.sample-1.face.png"><figcaption>Shared detailed skin</figcaption></figure></div>
+<h2>game</h2><div class=row>
+<figure><img src="../granadero-worker-face-identity-pilot/before-game/worker/stand.idle.unarmed.sample-1.png"><figcaption>Native skin</figcaption></figure>
+<figure><img src="after-game/worker/stand.idle.unarmed.sample-1.png"><figcaption>Shared detailed skin</figcaption></figure></div>
+<h2>Lower detail levels</h2><div class=row>
+<figure><img src="after-lod1/worker/stand.idle.unarmed.sample-1.face.png"><figcaption>LOD1</figcaption></figure>
+<figure><img src="after-lod2/worker/stand.idle.unarmed.sample-1.face.png"><figcaption>LOD2</figcaption></figure>
+</div><p><a href=receipt.json>Delivery receipt</a> · <a href=worker-skin.patch>Minimal source patch</a></p>

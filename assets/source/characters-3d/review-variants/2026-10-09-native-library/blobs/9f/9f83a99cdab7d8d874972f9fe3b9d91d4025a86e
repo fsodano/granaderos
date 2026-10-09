@@ -1,0 +1,24 @@
+{
+  "status": "private-repair-complete-pending-root-integration",
+  "sourcePatch": "/tmp/granadero-crossbelt-source30/source.patch",
+  "finalSource": "/tmp/granadero-crossbelt-source30/source-final/assets/source/characters-3d/authoring",
+  "assetDirectory": "/tmp/granadero-crossbelt-source30/models",
+  "mergeOnly": [
+    "granadero-lod0.glb",
+    "granadero-lod1.glb",
+    "royalist-lod0.glb",
+    "royalist-lod1.glb"
+  ],
+  "metadataDelta": "/tmp/granadero-crossbelt-source30/appearance-delta.json",
+  "diagnosis": "One0.595mm seam edge formed a6.22mm^2 coat triangle. At stand.reload.long-gun.1800 t1.92 it shrank to0.91mm^2 and its normal reversed. It was the sole over-limit matched support triangle in the Granadero LOD0 diagnostic.",
+  "repair": "Remove local degenerate edges shorter than0.8mm within the shoulder support, then sew the strap from the cleaned triangles. Belt offset stays7mm; no weapon/body/arm animation changed.",
+  "testCommand": "GRANADEROS_CHARACTER_LIBRARY=/tmp/granadero-crossbelt-source30/models node --test --test-concurrency=2 tests/characters-crossbelt-contact.test.mjs",
+  "testResult": "6/6 pass, unchanged1mm gate",
+  "beforeDepthMm": 6.06469793068903,
+  "afterGranadero0SampledDepthMm": 0,
+  "sourceEquivalenceProof": "source-equivalence.json",
+  "preservationProof": "preservation.json",
+  "triangleChangePerBody": -256,
+  "visualReview": "Actual exported Granadero and Royalist LOD0 at the failed1.92s pose; both isometric shoulder directions and fullbody; no new belt gap or global clearance increase seen.",
+  "limitations": "Acceptance covers the existing six contact tests and the failed-pose visual review. It does not claim every animation is cloth-intersection-free."
+}

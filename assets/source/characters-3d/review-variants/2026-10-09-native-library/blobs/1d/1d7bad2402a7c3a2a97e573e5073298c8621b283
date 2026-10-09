@@ -1,0 +1,74 @@
+import {register} from 'node:module';register('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/tactical-render-loader.mjs',import.meta.url);
+import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';import {pathToFileURL} from 'node:url';import {Box3,Ray,Triangle,Vector3} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';import {GLTFLoader} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';const {ActorRuntime}=await import('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/lib/three/actor-runtime.ts');
+const directory=pathToFileURL(process.argv[2]+'/'),manifest=JSON.parse(readFileSync(new URL('manifest.json',directory)));const directions=[[1,.173,.311],[-1,.237,.131],[.217,1,.413],[.367,-1,.113],[.113,.233,1],[.431,.157,-1]].map(v=>new Vector3(...v).normalize());
+async function load(url){
+ assert.ok(url.startsWith('/models/characters/'));
+ const bytes=readFileSync(new URL(url.slice('/models/characters/'.length),directory)),size=bytes.readUInt32LE(12),doc=JSON.parse(bytes.subarray(20,20+size));
+ // Keep exported skin weights, geometry and animation. Only image decoding
+ // is omitted from this CPU geometry test.
+ delete doc.images;delete doc.textures;delete doc.samplers;doc.materials=(doc.materials??[]).map(({name})=>({name}));
+ const json=Buffer.from(JSON.stringify(doc)),padded=Buffer.concat([json,Buffer.alloc((4-json.length%4)%4,32)]),binary=bytes.subarray(20+size),header=Buffer.from(bytes.subarray(0,20));
+ header.writeUInt32LE(20+padded.length+binary.length,8);header.writeUInt32LE(padded.length,12);
+ const buffer=Buffer.concat([header,padded,binary]);return new GLTFLoader().parseAsync(buffer.buffer.slice(buffer.byteOffset,buffer.byteOffset+buffer.length),'');
+}
+
+function surface(triangles){
+ function build(items){
+  const box=new Box3();for(const triangle of items)box.expandByPoint(triangle.a).expandByPoint(triangle.b).expandByPoint(triangle.c);
+  if(items.length<=12)return {box,triangles:items};
+  const extent=box.getSize(new Vector3()),axis=extent.x>extent.y?(extent.x>extent.z?'x':'z'):(extent.y>extent.z?'y':'z');
+  items.sort((a,b)=>(a.a[axis]+a.b[axis]+a.c[axis])-(b.a[axis]+b.b[axis]+b.c[axis]));const middle=items.length>>1;
+  return {box,left:build(items.slice(0,middle)),right:build(items.slice(middle))};
+ }
+ assert.ok(triangles.length>0);const tree=build(triangles),scratch=new Vector3();
+ function inside(point){
+  // A nearest triangle normal is not a signed distance for an open head/
+  // neck patch. Bounds reject distant hands; several oblique rays avoid
+  // treating a single neck or eye opening as the entire volume boundary.
+  if(!tree.box.containsPoint(point))return false;
+  let votes=0;
+  for(const direction of directions){
+   const ray=new Ray(point,direction),hits=[];
+   function visit(node){
+    if(!ray.intersectBox(node.box,scratch))return;
+    if(node.triangles){for(const t of node.triangles){const hit=ray.intersectTriangle(t.a,t.b,t.c,false,scratch);if(hit)hits.push(hit.distanceTo(point));}}
+    else{visit(node.left);visit(node.right);}
+   }
+   visit(tree);hits.sort((a,b)=>a-b);let count=0,last=-Infinity;
+   for(const distance of hits)if(distance-last>1e-6){count++;last=distance;}
+   votes+=count%2;
+  }
+  return votes>=4;
+ }
+ function depth(point){
+  if(!inside(point))return 0;let nearest=Infinity;
+  function visit(node){
+   if(node.box.distanceToPoint(point)>=nearest)return;
+   if(node.triangles){for(const t of node.triangles)nearest=Math.min(nearest,t.closestPointToPoint(point,scratch).distanceTo(point));}
+   else{visit(node.left);visit(node.right);}
+  }
+  visit(tree);return nearest;
+ }
+ return {inside,depth};
+}
+
+
+function posed(mesh){mesh.skeleton.update();return Array.from({length:mesh.geometry.attributes.position.count},(_,i)=>mesh.getVertexPosition(i,new Vector3()).applyMatrix4(mesh.matrixWorld));}
+function topology(mesh){const a=mesh.geometry.attributes,j=a.skinIndex,w=a.skinWeight;return Array.from({length:j.count},(_,i)=>{let slot=0;for(let k=1;k<4;k++)if(w.getComponent(i,k)>w.getComponent(i,slot))slot=k;return mesh.skeleton.bones[j.getComponent(i,slot)].name;});}
+const report={};
+for(const preset of ['granadero','woman-scout']){
+ const appearance=manifest.appearances[preset],bank=manifest.animationLibraries[appearance.animationLibrary];const [body,animation,equipment,horse]=await Promise.all([load(appearance.lods[0].url),load(bank.url),load(manifest.equipment.url),load(manifest.horse.lods[0].url)]);report[preset]=[];
+ for(const action of ['idle','walk','run','strike']){
+  const visual={key:`unit:${preset}`,id:preset,kind:'unit',appearance:preset,skin:'light',side:'player',tacticalLevel:0,position:[0,0,0],yaw:0,posture:'mounted',mounted:true,action,idleAction:'idle',equipment:'unarmed',items:[],garments:{headwear:null,outfit:null,legwear:null},selected:false,bodyHeights:{},cue:action==='strike'?{id:'strike',action:'strike',startedAt:0}:undefined};
+  const actor=new ActorRuntime({manifest,appearance,body,animation,equipment,horse,clips:bank.clips,lod:0},visual),hb=actor.root.children.find(n=>n!==actor.model).getObjectByName('Horse_Body'),meshes=[],horseMeshes=[];hb.traverse(n=>{if(n.isMesh)horseMeshes.push(n);});
+  actor.model.traverse(mesh=>{if(mesh.isSkinnedMesh&&/^Human_(legwear|footwear)/.test(mesh.name))meshes.push({mesh,names:topology(mesh)});});
+  for(const fraction of [0,.25,.5,.75]){
+   const time=actor.action.getClip().duration*fraction;actor.action.time=time;if(actor.horseAction)actor.horseAction.time=actor.horseAction.getClip().duration*fraction;actor.tick(0,time*1000);actor.root.updateMatrixWorld(true);
+   const triangles=[];for(const horseMesh of horseMeshes){const hp=posed(horseMesh),ix=horseMesh.geometry.index;for(let i=0;i<ix.count;i+=3)triangles.push(new Triangle(...[0,1,2].map(j=>hp[ix.getX(i+j)])));}const target=surface(triangles),hits={};
+   for(const {mesh,names}of meshes){const vertices=posed(mesh);for(let i=0;i<vertices.length;i++){const depth=target.depth(vertices[i]);if(depth>.001){const name=names[i];hits[name]??={count:0,depth:0};hits[name].count++;if(depth>hits[name].depth)Object.assign(hits[name],{depth,mesh:mesh.name,vertex:i,point:vertices[i].toArray()});}}}
+   const bones=Object.fromEntries(['pelvis','thigh_l','thigh_r','calf_l','calf_r','foot_l','foot_r'].map(n=>[n,actor.model.getObjectByName(n).getWorldPosition(new Vector3()).toArray()]));const crossSections={};for(const [name,xyz]of Object.entries(bones)){const probe=new Vector3(...xyz),ray=new Ray(new Vector3(2,probe.y,probe.z),new Vector3(-1,0,0)),found=[],scratch=new Vector3();for(const triangle of triangles){const point=ray.intersectTriangle(triangle.a,triangle.b,triangle.c,false,scratch);if(point)found.push(point.x);}crossSections[name]={riderX:probe.x,horseMinX:found.length?Math.min(...found):null,horseMaxX:found.length?Math.max(...found):null};}const tack=[];if(action==='idle'&&fraction===0){actor.root.children.find(n=>n!==actor.model).traverse(mesh=>{if(!mesh.isSkinnedMesh||!mesh.name.startsWith('Iron_Stirrup'))return;const points=posed(mesh),centre=points.reduce((a,p)=>a.add(p),new Vector3()).divideScalar(points.length);centre.y=Math.min(...points.map(p=>p.y))+.010;tack.push({name:mesh.name,ballTarget:centre.toArray(),targetDepth:target.depth(centre),maximumIronDepth:Math.max(...points.map(p=>target.depth(p)))});});}report[preset].push({action,fraction,hits,bones,crossSections,tack});console.log('RIDER',preset,action,fraction,JSON.stringify(hits));
+  }
+  actor.dispose();
+ }
+}
+writeFileSync(process.argv[3],JSON.stringify(report,null,2));

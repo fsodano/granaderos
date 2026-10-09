@@ -1,0 +1,38 @@
+{
+  "male": {
+    "changed": [
+      "stand.slash.blade",
+      "stand.slash.knife"
+    ],
+    "identical": [
+      "stand.idle.blade",
+      "stand.brace.blade",
+      "stand.idle.knife",
+      "stand.brace.knife",
+      "stand.slash.blade.forehand",
+      "stand.slash.blade.backhand",
+      "stand.slash.blade.thrust",
+      "stand.slash.blade.hilt",
+      "stand.slash.knife.backhand",
+      "stand.slash.knife.thrust"
+    ]
+  },
+  "female": {
+    "changed": [
+      "stand.slash.blade",
+      "stand.slash.knife"
+    ],
+    "identical": [
+      "stand.idle.blade",
+      "stand.brace.blade",
+      "stand.idle.knife",
+      "stand.brace.knife",
+      "stand.slash.blade.forehand",
+      "stand.slash.blade.backhand",
+      "stand.slash.blade.thrust",
+      "stand.slash.blade.hilt",
+      "stand.slash.knife.backhand",
+      "stand.slash.knife.thrust"
+    ]
+  }
+}

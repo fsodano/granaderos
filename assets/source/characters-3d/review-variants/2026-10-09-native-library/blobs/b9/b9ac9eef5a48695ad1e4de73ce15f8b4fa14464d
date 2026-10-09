@@ -1,0 +1,6 @@
+{
+  "status": "resolved-locally",
+  "resolution": "Female left-hand LOD0 skin retained in reduced LOD1/2 meshes; 54 sampled gates pass. Pending next remote checkpoint.",
+  "manifestSha256": "56a48afe8d307181511fc5dd1352bdfe1ecd66f8b5fbffab1790953f4e81486f",
+  "evidence": "../female-hand-retention/receipt.json"
+}

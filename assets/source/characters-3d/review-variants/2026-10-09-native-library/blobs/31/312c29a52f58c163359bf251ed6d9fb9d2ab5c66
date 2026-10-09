@@ -1,0 +1,12 @@
+from pathlib import Path
+import json,struct,hashlib,copy
+r=Path('/tmp/granadero-generated-skin-palette-pilot');source=Path('/tmp/granadero-outward-detail-pilot/models/granadero-lod0.glb');b=source.read_bytes();n=struct.unpack_from('<I',b,12)[0];j=json.loads(b[20:20+n]);binary=b[28+n:];mat=next(m for m in j['materials']if m['name']=='Skin');tex=j['textures'][mat['pbrMetallicRoughness']['baseColorTexture']['index']];newtex=len(j['images']);j['images'].append({'uri':'textures/040b6c27fc46ce2da454.png'});tex['source']=newtex;ref=json.loads((r/'compensation.json').read_text());mat.setdefault('extras',{})['skinAlbedoReference']=ref['referenceLinearRgb'];mat['extras']['skinAlbedoReferenceSpace']='linear-srgb';mat['pbrMetallicRoughness']['baseColorFactor']=ref['paletteFactorsLinear']['light']+[1]
+js=json.dumps(j,separators=(',',':')).encode();js+=b' '*((-len(js))%4);out=struct.pack('<III',0x46546c67,2,28+len(js)+len(binary))+struct.pack('<II',len(js),0x4e4f534a)+js+struct.pack('<II',len(binary),0x004e4942)+binary;p=r/'models-outward/granadero-lod0.glb';p.write_bytes(out)
+# Copy outward body dependencies intact; texture bytes are not edited.
+import shutil
+for im in j['images']:
+ if 'uri' not in im:continue
+ src=source.parent/im['uri'];dest=p.parent/im['uri']
+ if src.exists():dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(src,dest)
+mp=p.parent/'manifest.json';m=json.loads(mp.read_text());lod=m['appearances']['granadero']['lods'][0];lod['sha256']=hashlib.sha256(out).hexdigest();lod['bytes']=len(out);mp.write_text(json.dumps(m,indent=2)+'\n')
+(r/'outward-combined-proof.json').write_text(json.dumps({'outwardSourceSha256':hashlib.sha256(b).hexdigest(),'combinedSha256':hashlib.sha256(out).hexdigest(),'allGeometryAnimationAndUVAccessorPayloadsIdenticalToOutwardBody':True,'generatedPngSha256':hashlib.sha256((p.parent/'textures/040b6c27fc46ce2da454.png').read_bytes()).hexdigest()},indent=2)+'\n')

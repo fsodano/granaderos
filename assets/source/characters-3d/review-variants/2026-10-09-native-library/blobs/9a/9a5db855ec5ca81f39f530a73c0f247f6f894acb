@@ -1,0 +1,493 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -296,6 +296,11 @@
+         relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
+         vertex.co+=vertex.normal*relief
+     coat.data.update()
++    if preset=='granadero':
++        from tailored_coat import construct_coat
++        coat=construct_coat(coat,mesh,mats['navy'],points,faces,assignments,heads,objects)
++        from coat_settle import settle_coat
++        settle_coat(coat,points,faces,heads)
+     # Breeches follow native thigh, knee and pelvis topology with cloth ease.
+     trousers=subset('Tailored_Breeches',lambda f:all(.425<points[i].z<1.055 and limb_weight(i,hand_bones|arm_bones)<.05 for i,uv in f),mats['trousers'])
+     smooth(trousers,7,.64)
+@@ -445,6 +450,27 @@
+             x=sign*(.071+.033*(z-1.105)/.28);p=surface(x,z,False,.007);path.append(p)
+             ellipsoid('Brass_Coat_Button',p,(.0055,.003,.0055),mats['brass'],coat_weight_at(p),12,8)
+         ribbon('Red_Front_Piping',path,.0018,mats['red'])
++    if preset=='granadero':
++        # The fastening overlap has real thickness, held beneath the crossbelt.
++        # It is part of the existing front closure, not an added pocket.
++        from garment_detail import coat_panel
++        coat_panel({'coat':coat,'mesh':mesh,'tube':tube,'objects':objects},
++            'Front_Wool_Overlap',mats['navy'],[
++                lambda p:p.x+.024,lambda p:.004-p.x,
++                lambda p:p.z-1.079,lambda p:1.486-p.z,
++                lambda p:-.055-p.y],clearance=.0018,thickness=.0022,edge_radius=.0010)
++        for side,sign in (('l',1),('r',-1)):
++            sh=heads['upperarm_'+side];el=heads['lowerarm_'+side];wr=heads['hand_'+side]
++            upper=(el-sh).normalized();lower=(wr-el).normalized()
++            length=(el-sh).length+(wr-el).length;path=[]
++            for k in range(35):
++                d=.045+(length-.145)*k/34
++                if d<(el-sh).length:centre=sh+upper*d;axis=upper
++                else:centre=el+lower*(d-(el-sh).length);axis=lower
++                radial=Vector((sign*.8,-.6,0));radial=(radial-axis*radial.dot(axis)).normalized()
++                hit,q,n,_=coat.ray_cast(centre+radial*.145,-radial)
++                if hit:path.append(q+n*.0010)
++            fitted_seam('Tailored_Sleeve_Seam_'+side,path,.0011)
+     # Rear tails end above the knee; blend pelvis/thigh weights prevents rigid
+     # planks crossing the legs while the soldier walks.
+     waist_ring=ring_at(1.035,.003)
+--- a/assets/source/characters-3d/authoring/build.py
++++ b/assets/source/characters-3d/authoring/build.py
+@@ -46,7 +46,10 @@
+  else:
+   optimize_character(ctx,args.lod)
+   from cloth_correctives import add_cloth_correctives
+-  add_cloth_correctives(ctx);create_sockets(ctx);name=args.preset+'-lod'+str(args.lod)
++  add_cloth_correctives(ctx)
++  from coat_elbow_correctives import bake_elbow_correctives
++  bake_elbow_correctives(ctx)
++  create_sockets(ctx);name=args.preset+'-lod'+str(args.lod)
+  facts,doc=export(ctx,OUT/(name+'.glb'),args.kind=='animations');facts.update(kind=args.kind,preset=args.preset,gender=gender,lod=args.lod,height=ctx['body_height'])
+  if args.kind=='appearance':facts['sockets']=ctx['sockets']
+  if args.kind=='animations':
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/tailored_coat.py
+@@ -0,0 +1,170 @@
++"""Private independent fitted-coat construction, not an offset skin subset.
++
++Torso panel rows run from waist to shoulder. Side cut-outs form sewn armholes;
++closed sleeve loops bridge those armholes through the native elbow to cuff.
++Only weights are transferred from the source human, by triangle barycentrics.
++"""
++import math,json
++from pathlib import Path
++import bpy,bmesh
++from mathutils import Vector
++from mathutils.bvhtree import BVHTree
++from mathutils.geometry import barycentric_transform
++
++
++def _lerp_profile(z,profile):
++    for (za,a),(zb,b) in zip(profile,profile[1:]):
++        if z<=zb:
++            t=max(0,min(1,(z-za)/(zb-za)));t=t*t*(3-2*t)
++            return a+(b-a)*t
++    return profile[-1][1]
++
++
++def construct_coat(old,mesh,mat,points,faces,assignments,heads,objects):
++    from anatomy_surface import sewn_boundary
++    neckline=sewn_boundary(old,lambda v:v.co.z>1.485 and abs(v.co.x)<.13)
++    # Keep the real sewn loop. Its concave neck notches are not sortable by
++    # polar angle: that creates long false edges across the collar opening.
++    neck=[v.co.copy() for v in neckline];n=len(neck)
++    lengths=[(b-a).length for a,b in zip(neck,neck[1:]+neck[:1])]
++    perimeter=sum(lengths);distance=0;angles=[]
++    start=math.atan2(neck[0].x,-(neck[0].y+.036))
++    for length in lengths:
++        angles.append((start+math.tau*distance/perimeter)%math.tau)
++        distance+=length
++    # These are garment design dimensions: chest ease, a fitted waist and a
++    # shoulder yoke. No original body vertex is used as a garment vertex.
++    levels=[.985,1.015,1.040,1.072,1.086,1.108,1.125,1.152,1.19,1.232,1.275,1.31,1.34,1.365,1.395,1.425,1.451,1.475,1.493,1.508]
++    widths=[(.985,.172),(1.07,.171),(1.19,.183),(1.32,.205),(1.425,.207),(1.451,.191),(1.475,.147),(1.493,.096),(1.508,.063)]
++    fronts=[(.985,.134),(1.07,.135),(1.19,.147),(1.32,.155),(1.425,.131),(1.451,.115),(1.475,.093),(1.493,.078),(1.508,.061)]
++    backs=[(.985,.137),(1.07,.138),(1.19,.146),(1.32,.143),(1.425,.120),(1.451,.104),(1.475,.081),(1.493,.067),(1.508,.057)]
++    cv=[];cf=[];panels=[]
++    for j,z in enumerate(levels):
++        for k,a in enumerate(angles):
++            c=math.cos(a);s=math.sin(a)
++            # Subtle four-panel flattening makes front/back cloth rather than
++            # a round body cylinder. Side panels carry the chest ease.
++            x=_lerp_profile(z,widths)*math.copysign(abs(s)**.82,s)
++            y=-.006+(-_lerp_profile(z,fronts) if c>=0 else _lerp_profile(z,backs))*abs(c)**.86
++            p=Vector((x,y,z))
++            if j==len(levels)-1:p=neck[k].copy()
++            # Lower panel rows rise toward the armhole, producing diagonal
++            # grain/tension directions rather than circumferential wrinkle rings.
++            if 1.086<=z<=1.31:
++                side=abs(s)**2;front=max(0,c)
++                p.z+=.035*side*front*math.sin(math.pi*(z-1.086)/(.31-.086))
++            cv.append(p)
++    hole_faces={'l':set(),'r':set()}
++    for j in range(len(levels)-1):
++        for k,a in enumerate(angles):
++            ka=(k+1)%n;mid=(a+((angles[ka]-a)%math.tau)*.5)%math.tau
++            hole=None
++            if 11<=j<=16:
++                if abs(((mid-math.pi/2+math.pi)%math.tau)-math.pi)<.57:hole='l'
++                if abs(((mid-3*math.pi/2+math.pi)%math.tau)-math.pi)<.57:hole='r'
++            ids=(j*n+k,j*n+ka,(j+1)*n+ka,(j+1)*n+k)
++            if hole:hole_faces[hole].add(ids)
++            else:cf.append(ids);panels.append('front' if math.cos(mid)>.36 else ('back' if math.cos(mid)<-.36 else 'side'))
++    sleeve_records={}
++    for side in ('l','r'):
++        # Build one ordered armhole boundary from the removed panel faces.
++        counts={}
++        for face in hole_faces[side]:
++            for a,b in zip(face,face[1:]+face[:1]):
++                edge=tuple(sorted((a,b)));counts[edge]=counts.get(edge,0)+1
++        adj={}
++        for (a,b),count in counts.items():
++            if count==1:adj.setdefault(a,[]).append(b);adj.setdefault(b,[]).append(a)
++        loop=[min(adj)];previous=None
++        while True:
++            nxt=next(k for k in adj[loop[-1]] if k!=previous)
++            if nxt==loop[0]:break
++            previous=loop[-1];loop.append(nxt)
++        sh=heads['upperarm_'+side];el=heads['lowerarm_'+side];wr=heads['hand_'+side]
++        upper=(el-sh).normalized();lower=(wr-el).normalized();forward=Vector((0,-1,0))
++        across=upper.cross(forward).normalized();forward=across.cross(upper).normalized()
++        # Keep the actual sewn boundary order. Projected-angle sorting is not
++        # valid for this non-planar armhole and used to disconnect forty edges.
++        # Arc length maps that cyclic boundary to a continuous sleeve ring.
++        projected=[((cv[i]-sh).dot(forward),(cv[i]-sh).dot(across)) for i in loop]
++        area=sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(projected,projected[1:]+projected[:1]))
++        direction=1 if area>0 else -1
++        lengths=[(cv[b]-cv[a]).length for a,b in zip(loop,loop[1:]+loop[:1])]
++        total=sum(lengths);distance=0;start=math.atan2(projected[0][1],projected[0][0]);angle=[]
++        for length in lengths:
++            angle.append(start+direction*math.tau*distance/total);distance+=length
++        count=len(loop);previous_loop=loop;sleeve_records[side]=[]
++        # Sleeve panels carry ease at biceps and at the back elbow, tapering to
++        # the established 32 mm cuff radius. Extra elbow rows support corrections.
++        stations=[.035,.08,.14,.21,.29,.38,.47,.53,.58,.625,.67,.705,.74,.785,.83,.88,.93,.97,1.0]
++        pathlen=(el-sh).length+(wr-el).length-.02;el_t=(el-sh).length/pathlen
++        for t in stations:
++            d=t*pathlen
++            if t<el_t:
++                centre=sh+upper*d;axis=upper
++            else:
++                centre=el+lower*(d-(el-sh).length);axis=lower
++            # Smooth the sleeve centreline around the elbow without moving it.
++            span=.085
++            if abs(d-(el-sh).length)<span:
++                start=el-upper*span;end=el+lower*span;u=(d-((el-sh).length-span))/(2*span)
++                centre=(1-u)**2*start+2*u*(1-u)*el+u*u*end
++                axis=((el-start)*(1-u)+(end-el)*u).normalized()
++            up=axis.cross(Vector((0,-1,0))).normalized();front=up.cross(axis).normalized()
++            radius=_lerp_profile(t,[(0,.071),(.22,.069),(.46,.061),(.57,.056),(.68,.051),(.82,.043),(.94,.035),(1,.032)])
++            ring=[]
++            for k,a in enumerate(angle):
++                radial=front*math.cos(a)+up*math.sin(a)
++                p=centre+radial*radius
++                # Sleeve cap blends into the armhole perimeter over its first
++                # 8 cm; the garment is welded at every boundary vertex.
++                blend=min(1,t/.16);blend=blend*blend*(3-2*blend)
++                p=cv[loop[k]].lerp(p,blend)
++                ring.append(len(cv));cv.append(p)
++                sleeve_records[side].append((len(cv)-1,t,a))
++            for k in range(count):cf.append((previous_loop[k],previous_loop[(k+1)%count],ring[(k+1)%count],ring[k]));panels.append('sleeve_'+side)
++            previous_loop=ring
++    # Exactly four open loops are allowed: neck, hem and the two cuffs.
++    edge_counts={}
++    for face in cf:
++        for a,b in zip(face,face[1:]+face[:1]):
++            edge=tuple(sorted((a,b)));edge_counts[edge]=edge_counts.get(edge,0)+1
++    open_edges=[edge for edge,count in edge_counts.items() if count==1]
++    expected_boundary=2*n+sum(len(record)//len(stations) for record in sleeve_records.values())
++    assert len(open_edges)==expected_boundary,(len(open_edges),expected_boundary)
++    assert max(edge_counts.values())==2
++    # Triangle interpolation transfers the original native human's weights.
++    tri=[]
++    for face in faces:
++        ids=[i for i,_ in face]
++        for i in range(1,len(ids)-1):tri.append((ids[0],ids[i],ids[i+1]))
++    bvh=BVHTree.FromPolygons(points,tri,all_triangles=True)
++    weights=[]
++    for p in cv:
++        q,_normal,index,_distance=bvh.find_nearest(p);ids=tri[index]
++        bc=barycentric_transform(q,*[points[i] for i in ids],Vector((1,0,0)),Vector((0,1,0)),Vector((0,0,1)))
++        w={}
++        for vid,factor in zip(ids,bc):
++            for name,value in assignments[vid].items():w[name]=w.get(name,0)+value*max(0,factor)
++        total=sum(w.values());weights.append({name:value/total for name,value in w.items() if value>1e-7})
++    coat=mesh('Tailored_Coat_Independent_Panels',cv,cf,mat,weights)
++    # Recaclulate normals on the entire stitched surface; armhole boundary is
++    # shared, never overlapped by an independent floating tube.
++    bm=bmesh.new();bm.from_mesh(coat.data);bmesh.ops.recalc_face_normals(bm,faces=bm.faces)
++    # The sewn coat is open at neck and waist; choose its exterior explicitly.
++    test=[f for f in bm.faces if abs(f.calc_center_median().x)<.08 and 1.10<f.calc_center_median().z<1.35 and f.calc_center_median().y<-.08]
++    if sum(f.normal.y*f.calc_area() for f in test)>0:bmesh.ops.reverse_faces(bm,faces=bm.faces)
++    bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS')
++    bm.to_mesh(coat.data);bm.free();coat.data.update()
++    objects.remove(old);bpy.data.objects.remove(old,do_unlink=True)
++    coat['independent_coat']=True
++    panel_mask=coat.data.attributes.new(name='Study_Coat_Panel',type='FLOAT',domain='POINT')
++    for entry in panel_mask.data:entry.value=1
++
++    # Subdivision interpolates our garment panel mesh; it does not reuse the
++    # original native skin topology. The rig weights interpolate with it.
++    bpy.context.view_layer.objects.active=coat;sub=coat.modifiers.new('Sewn_Panel_Surface','SUBSURF');sub.levels=1
++    while coat.modifiers.find(sub.name)>0:bpy.ops.object.modifier_move_up(modifier=sub.name)
++    bpy.ops.object.modifier_apply(modifier=sub.name);coat.data.update()
++    Path('/tmp/granadero-tailored-coat-integration/construction.json').write_text(json.dumps({'method':'independent panel grid with welded armhole loops and lofted sleeves','torsoCircumferenceVertices':n,'torsoRows':len(levels),'sleeveRows':len(stations),'controlVertices':len(cv),'controlFaces':len(cf),'verticesAfterSubdivision':len(coat.data.vertices),'panelKinds':sorted(set(panels)),'boundaryEdges':len(open_edges),'expectedBoundaryEdges':expected_boundary,'nativeWeights':'triangle barycentric transfer from unmodified human source','nativeBodyAndRig':'unchanged'},indent=2))
++    return coat
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/coat_settle.py
+@@ -0,0 +1,114 @@
++"""Private cloth-construction trial, constrained to existing native coat mesh.
++
++The body is a fixed collision surface. Sewn openings, waist, button closure,
++shoulder seams and the tensioned crossbelt keep their fitted rest positions.
++Only the cloth between those constraints settles; skin and weights are intact.
++"""
++import json,math
++from pathlib import Path
++import bpy
++from mathutils import Vector
++
++
++def settle_coat(coat, points, faces, heads):
++    scene=bpy.context.scene
++    original=[v.co.copy() for v in coat.data.vertices]
++    weights=[tuple((g.group,g.weight) for g in v.groups) for v in coat.data.vertices]
++    edges={}
++    for f in coat.data.polygons:
++        ids=list(f.vertices)
++        for a,b in zip(ids,ids[1:]+ids[:1]):
++            pair=tuple(sorted((a,b)));edges[pair]=edges.get(pair,0)+1
++    boundary={i for edge,count in edges.items() if count==1 for i in edge}
++    pins=coat.vertex_groups.new(name='Study_Sewn_Constraints')
++    pin_weights=[];kinds={}
++    slope=.266/.389
++    for v in coat.data.vertices:
++        p=v.co;value=0;kind='free_panel'
++        if v.index in boundary or p.z>1.487:
++            value=1;kind='opening'
++        # Closure and belt act as sewn supports, with soft adjacent falloff.
++        if abs(p.x)<.014 and p.y<-.07:
++            value=max(value,1);kind='centre_closure'
++        if 1.026<p.z<1.078:
++            value=max(value,1);kind='waist'
++        # The strap must hold its original path, not follow a new cloth bulge.
++        c=.144+slope*(p.z-1.435)
++        d=abs(p.x-c)/(1+slope*slope)**.5
++        if 1.040<p.z<1.480 and d<.039:
++            value=1;kind='crossbelt'
++        if .113<p.x<.175 and p.z>1.425:
++            value=1;kind='crossbelt_shoulder'
++        # Shoulder line, above upper arm: y at the seam apex, not full sleeve.
++        side='l' if p.x>0 else 'r'
++        sh=heads['upperarm_'+side];el=heads['lowerarm_'+side];wr=heads['hand_'+side]
++        arm=(el-sh).normalized();rel=p-sh
++        along=rel.dot(arm);radial=rel-arm*along
++        if abs(along)<.027 and radial.z>.020:
++            value=1;kind='shoulder_seam'
++        # Fixed cuff; progressively less influence above it supplies sleeve ease.
++        forearm=(wr-el).normalized();wrel=p-wr;wd=wrel.dot(forearm)
++        if wrel.length<.15 and wd>-.076:
++            value=1;kind='cuff'
++        # Narrow side seam supports the rear/side panel, with front panels free.
++        if 1.09<p.z<1.37 and abs(p.x)>.155 and abs(p.y-.010)<.014:
++            value=max(value,.75);kind='side_seam'
++        if value:pins.add([v.index],value,'REPLACE')
++        pin_weights.append(value);kinds[kind]=kinds.get(kind,0)+1
++    # A private collider uses the native body, not the coat itself.
++    ids=sorted({i for face in faces for i,_uv in face});index={old:i for i,old in enumerate(ids)}
++    data=bpy.data.meshes.new('Study_Native_Body_Collision')
++    data.from_pydata([points[i] for i in ids],[],[[index[i] for i,_uv in face] for face in faces]);data.update()
++    body=bpy.data.objects.new('Study_Native_Body_Collision',data);bpy.context.collection.objects.link(body)
++    body.modifiers.new('Body_Collision','COLLISION')
++    body.collision.thickness_outer=.004;body.collision.thickness_inner=.002
++    body.collision.damping=.5;body.collision.cloth_friction=10
++    collection=bpy.data.collections.new('Study_Colliders');scene.collection.children.link(collection);collection.objects.link(body)
++    armatures=[(m,m.show_viewport,m.show_render) for m in coat.modifiers if m.type=='ARMATURE']
++    for m,_,_ in armatures:m.show_viewport=False;m.show_render=False
++    bpy.ops.object.select_all(action='DESELECT');coat.select_set(True);bpy.context.view_layer.objects.active=coat
++    mod=coat.modifiers.new('Study_Wool_Settle','CLOTH')
++    s=mod.settings;s.quality=8;s.mass=.22;s.air_damping=6;s.time_scale=.5
++    s.tension_stiffness=28;s.compression_stiffness=12;s.shear_stiffness=18;s.bending_stiffness=1.8
++    s.tension_damping=12;s.compression_damping=12;s.shear_damping=10;s.bending_damping=1
++    s.vertex_group_mass=pins.name;s.pin_stiffness=1
++    c=mod.collision_settings;c.use_collision=True;c.collection=collection;c.distance_min=.003
++    c.collision_quality=4;c.use_self_collision=True;c.self_distance_min=.004;c.self_friction=8
++    mod.point_cache.frame_start=1;mod.point_cache.frame_end=56
++    for frame in range(1,57):
++        scene.frame_set(frame);bpy.context.view_layer.update()
++        if frame%10==0:print('CLOTH_SETTLE_FRAME',frame,flush=True)
++    evaluated=coat.evaluated_get(bpy.context.evaluated_depsgraph_get());mesh=evaluated.to_mesh()
++    settled=[v.co.copy() for v in mesh.vertices];evaluated.to_mesh_clear()
++    assert len(settled)==len(original)
++    coat.modifiers.remove(mod)
++    # Heavy wool keeps broad panels. Filter the physical displacement field,
++    # rather than blur the garment shape, native silhouette or sewn endpoints.
++    adjacency=[set() for _ in original]
++    for a,b in edges:adjacency[a].add(b);adjacency[b].add(a)
++    delta=[q-p for q,p in zip(settled,original)]
++    for _ in range(28):
++        prior=[d.copy() for d in delta]
++        for i in range(len(delta)):
++            if pin_weights[i]>=.999:delta[i]=Vector();continue
++            if adjacency[i]:delta[i]=prior[i]*.42+sum((prior[j] for j in adjacency[i]),Vector())*(.58/len(adjacency[i]))
++    for i,v in enumerate(coat.data.vertices):
++        p=original[i]
++        arm_weight=sum(g.weight for g in v.groups if coat.vertex_groups[g.group].name.startswith(('upperarm_','lowerarm_')))
++        amount=1
++        if arm_weight<.55 and 1.078<p.z<1.48:
++            c=.144+slope*(p.z-1.435);distance=abs(p.x-c)/(1+slope*slope)**.5
++            strap=math.exp(-((distance-.060)/.035)**2)
++            waist=math.exp(-((p.z-1.112)/.040)**2)
++            armhole=math.exp(-((abs(p.x)-.17)/.050)**2-((p.z-1.36)/.08)**2)
++            amount=.22+.78*max(strap,waist,armhole)
++        v.co=original[i] if pin_weights[i]>=.999 else original[i]+delta[i]*amount
++    coat.vertex_groups.remove(pins)
++    for m,viewport,render in armatures:m.show_viewport=viewport;m.show_render=render
++    bpy.data.objects.remove(body,do_unlink=True);bpy.data.meshes.remove(data);bpy.data.collections.remove(collection)
++    scene.frame_set(0);coat.data.update()
++    assert weights==[tuple((g.group,g.weight) for g in v.groups) for v in coat.data.vertices]
++    movement=[(v.co-original[i]).length for i,v in enumerate(coat.data.vertices)]
++    report={'method':'native body collision and sewn constraints, gravity cloth settle','vertices':len(original),'frames':56,'woolBendingStiffness':1.8,'displacementSmoothingPasses':28,'crossbeltEnvelope':'fixed 78 mm front/back band and fixed shoulder bridge','pinCounts':kinds,'maxDisplacementM':max(movement),'meanDisplacementM':sum(movement)/len(movement),'fixedConstraintDisplacementM':max([movement[i] for i,w in enumerate(pin_weights) if w>=.999],default=0),'nativeWeightsUnchanged':True}
++    Path('/tmp/granadero-tailored-coat-integration/panel-settle.json').write_text(json.dumps(report,indent=2)+'\n')
++    print('CLOTH_SETTLE_RESULT',json.dumps(report),flush=True)
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/coat_elbow_correctives.py
+@@ -0,0 +1,144 @@
++"""Private native-arm cloth correction bake for the independent coat.
++
++Small sleeve patches settle as the actual native forearm bends. The posed
++cloth is mapped back through each vertex's unchanged skin matrix into glTF
++morph targets. A review driver weights these targets by physical elbow angle.
++"""
++import math,json
++from pathlib import Path
++import bpy
++from mathutils import Vector,Matrix,Quaternion
++from mathutils.kdtree import KDTree
++from mathutils.bvhtree import BVHTree
++from mathutils.geometry import barycentric_transform
++
++
++def bake_elbow_correctives(ctx):
++    if ctx['preset']!='granadero':return
++    rig=ctx['rig'];scene=bpy.context.scene
++    outfit=next(o for o in ctx['objects'] if o.name.startswith('Human_outfit'))
++    saved={b.name:b.matrix_basis.copy() for b in rig.pose.bones}
++    for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
++    bpy.context.view_layer.update()
++    source=ctx['source_points'];faces=ctx['source_faces'];assign=ctx['source_assignments']
++    ids=sorted({i for f in faces for i,_ in f});idmap={i:j for j,i in enumerate(ids)}
++    data=bpy.data.meshes.new('Bend_Native_Body');data.from_pydata([source[i] for i in ids],[],[[idmap[i] for i,_ in f] for f in faces]);data.update()
++    body=bpy.data.objects.new('Bend_Native_Body',data);bpy.context.collection.objects.link(body)
++    groups={name:body.vertex_groups.new(name=name) for name in rig.pose.bones.keys()}
++    for i,old in enumerate(ids):
++        for name,w in assign[old].items():groups[name].add([i],w,'REPLACE')
++    arm=body.modifiers.new('Native_Skeleton','ARMATURE');arm.object=rig
++    body.modifiers.new('Collision','COLLISION');body.collision.thickness_outer=.003;body.collision.thickness_inner=.002
++    body.collision.cloth_friction=7
++    collection=bpy.data.collections.new('Bend_Colliders');scene.collection.children.link(collection);collection.objects.link(body)
++    patches=[];records={}
++    for side in ('l','r'):
++        sh=ctx['heads']['upperarm_'+side];el=ctx['heads']['lowerarm_'+side];wr=ctx['heads']['hand_'+side]
++        upper=(el-sh).normalized();lower=(wr-el).normalized();normal=upper.cross(lower).normalized();bind_angle=upper.angle(lower)
++        desired=math.radians(110);delta=desired-bind_angle
++        bone=rig.pose.bones['lowerarm_'+side];bone.rotation_mode='QUATERNION'
++        local=bone.bone.matrix_local.to_quaternion().inverted()@normal
++        bone.rotation_quaternion=Quaternion();bone.keyframe_insert('rotation_quaternion',frame=1)
++        bone.rotation_quaternion=Quaternion(local,delta);bone.keyframe_insert('rotation_quaternion',frame=33)
++        candidates=set();panel=outfit.data.attributes.get('Study_Coat_Panel')
++        for v in outfit.data.vertices:
++            if (v.co-el).length>.155 or (panel is not None and panel.data[v.index].value<.9):continue
++            w={outfit.vertex_groups[g.group].name:g.weight for g in v.groups}
++            if w.get('upperarm_'+side,0)+w.get('lowerarm_'+side,0)>.68:candidates.add(v.index)
++        selected_faces=[tuple(f.vertices) for f in outfit.data.polygons if all(i in candidates for i in f.vertices)]
++        chosen=sorted({i for f in selected_faces for i in f});lookup={i:j for j,i in enumerate(chosen)}
++        pd=bpy.data.meshes.new('Bend_Sleeve_'+side);pd.from_pydata([outfit.data.vertices[i].co for i in chosen],[],[[lookup[i] for i in f] for f in selected_faces]);pd.update()
++        patch=bpy.data.objects.new('Bend_Sleeve_'+side,pd);bpy.context.collection.objects.link(patch)
++        vg={g.name:patch.vertex_groups.new(name=g.name) for g in outfit.vertex_groups}
++        for j,i in enumerate(chosen):
++            for g in outfit.data.vertices[i].groups:vg[outfit.vertex_groups[g.group].name].add([j],g.weight,'REPLACE')
++        pins=patch.vertex_groups.new(name='Sewn_Ends');counts={}
++        for f in pd.polygons:
++            fids=list(f.vertices)
++            for a,b in zip(fids,fids[1:]+fids[:1]):
++                edge=tuple(sorted((a,b)));counts[edge]=counts.get(edge,0)+1
++        boundary={i for edge,count in counts.items() if count==1 for i in edge}
++        for v in pd.vertices:
++            d=(v.co-el).length;w=1 if v.index in boundary else max(0,min(1,(d-.065)/.065))
++            if w:pins.add([v.index],w,'REPLACE')
++        pa=patch.modifiers.new('Native_Skeleton','ARMATURE');pa.object=rig
++        cloth=patch.modifiers.new('Bend_Cloth','CLOTH');s=cloth.settings
++        s.quality=8;s.mass=.22;s.air_damping=8;s.time_scale=.7;s.tension_stiffness=35;s.compression_stiffness=5;s.shear_stiffness=15;s.bending_stiffness=.22
++        s.tension_damping=12;s.compression_damping=12;s.shear_damping=12;s.bending_damping=1;s.vertex_group_mass=pins.name;s.pin_stiffness=1
++        c=cloth.collision_settings;c.collection=collection;c.use_collision=True;c.distance_min=.003;c.collision_quality=4;c.use_self_collision=True;c.self_distance_min=.003
++        cloth.point_cache.frame_start=1;cloth.point_cache.frame_end=56
++        patches.append((side,patch,chosen,pins,boundary))
++        records[side]={'bindAngleDegrees':math.degrees(bind_angle),'fullAngleDegrees':110,'patchVertices':len(chosen)}
++    for frame in range(1,57):
++        scene.frame_set(frame);bpy.context.view_layer.update()
++        if frame%10==0:print('ELBOW_CLOTH_FRAME',frame,flush=True)
++    if not outfit.data.shape_keys:outfit.shape_key_add(name='Basis')
++    transforms={b.name:b.matrix@b.bone.matrix_local.inverted() for b in rig.pose.bones}
++    body_eval=body.evaluated_get(bpy.context.evaluated_depsgraph_get());body_mesh=body_eval.to_mesh()
++    body_surface=BVHTree.FromPolygons([body.matrix_world@v.co for v in body_mesh.vertices],[tuple(f.vertices)for f in body_mesh.polygons])
++    body_eval.to_mesh_clear()
++    for side,patch,chosen,pins,boundary in patches:
++        key=outfit.shape_key_add(name='coat_elbow_'+side);key.value=0
++        evaluation=patch.evaluated_get(bpy.context.evaluated_depsgraph_get());pm=evaluation.to_mesh()
++        # The solver's tight inside-elbow tucks can fold through themselves.
++        # Fair only that region on the posed native arm. This does not alter
++        # the outer sleeve, cuff boundary, torso panels or any body vertex.
++        positions=[v.co.copy() for v in pm.vertices];initial=[v.copy()for v in positions]
++        neighbours=[set() for _ in positions]
++        for face in patch.data.polygons:
++            ids=list(face.vertices)
++            for a,b in zip(ids,ids[1:]+ids[:1]):neighbours[a].add(b);neighbours[b].add(a)
++        sh=rig.pose.bones['upperarm_'+side].head;el=rig.pose.bones['lowerarm_'+side].head;wr=rig.pose.bones['hand_'+side].head
++        inner=((sh-el).normalized()+(wr-el).normalized()).normalized()
++        amounts=[]
++        for j,p in enumerate(positions):
++            d=p-el;inside=d.normalized().dot(inner) if d.length else 0
++            amounts.append(0 if j in boundary else max(0,min(1,inside/.60))*max(0,min(1,(.135-d.length)/.065)))
++        for _ in range(24):
++            prior=[p.copy() for p in positions]
++            for j,amount in enumerate(amounts):
++                if amount==0 or not neighbours[j]:continue
++                mean=sum((prior[k] for k in neighbours[j]),Vector())/len(neighbours[j])
++                p=prior[j].lerp(mean,.48*amount)
++                q,n,_face,_distance=body_surface.find_nearest(p);clearance=(p-q).dot(n)
++                if clearance<.008:p+=n*(.008-clearance)
++                positions[j]=p
++        records[side]['innerElbowFairingMaxM']=max((a-b).length for a,b in zip(positions,initial))
++        records[side]['innerElbowClearanceM']=.008
++        distances=[]
++        for j,original in enumerate(chosen):
++            v=outfit.data.vertices[original];skin=Matrix(((0,0,0,0),)*4);total=0
++            for g in v.groups:
++                name=outfit.vertex_groups[g.group].name
++                if name in transforms:skin+=transforms[name]*g.weight;total+=g.weight
++            if not total or j in boundary:continue
++            q=(skin*(1/total)).inverted_safe()@positions[j]
++            key.data[original].co=q;distances.append((q-v.co).length)
++        # Interpolate the fitted cloth triangle, not one nearest vertex.
++        # A hard nearest-vertex cutoff left adjacent seam corners following
++        # different corrections and made small spikes at the inner elbow.
++        outfit.data.calc_loop_triangles()
++        cloth_triangles=[tuple(t.vertices) for t in outfit.data.loop_triangles
++            if all(panel.data[i].value>.9 for i in t.vertices)]
++        cloth_surface=BVHTree.FromPolygons([v.co for v in outfit.data.vertices],cloth_triangles,all_triangles=True)
++        seam_followed=0
++        for v in outfit.data.vertices:
++            if panel.data[v.index].value>.9 or (v.co-ctx['heads']['lowerarm_'+side]).length>.19:continue
++            q,_normal,triangle,distance=cloth_surface.find_nearest(v.co)
++            if triangle is None or distance>.020:continue
++            ids=cloth_triangles[triangle]
++            delta=barycentric_transform(q,
++                *[outfit.data.vertices[i].co for i in ids],
++                *[key.data[i].co-outfit.data.vertices[i].co for i in ids])
++            strength=max(0,min(1,(.020-distance)/.010))
++            if delta.length>.000001:
++                key.data[v.index].co=v.co+delta*strength;seam_followed+=1
++        records[side]['seamVerticesFollowingClothTriangles']=seam_followed
++        evaluation.to_mesh_clear();records[side]['maxRestDeltaM']=max(distances,default=0)
++        bpy.data.objects.remove(patch,do_unlink=True)
++    rig.animation_data_clear()
++    for b in rig.pose.bones:b.matrix_basis=saved[b.name]
++    bpy.data.objects.remove(body,do_unlink=True);bpy.data.collections.remove(collection)
++    scene.frame_set(0);bpy.context.view_layer.update()
++    Path('/tmp/granadero-tailored-coat-integration/elbow-bake.json').write_text(json.dumps(records,indent=2)+'\n')
++    print('ELBOW_CORRECTIVES',json.dumps(records),flush=True)

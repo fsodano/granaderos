@@ -1,0 +1,58 @@
+[
+  {
+    "appearance": "woman-scout",
+    "file": "woman-scout-lod1.glb",
+    "record": {
+      "lod": 1,
+      "url": "/models/characters/woman-scout-lod1.glb",
+      "triangles": 40785,
+      "bytes": 2408736,
+      "drawCalls": 5,
+      "sha256": "7e25d030019b88a5f8fb0351192049562246429f0193904dc00546e682e7881d"
+    },
+    "sourceGeneratedSha256": "0c536cf93eb4e5b819a44a2961e3d1968a8c0a147bb3bafa235c5d947633f785",
+    "existingBodySha256": "02f98914ca23cdbab43480edabbdd5cad170cd8b05b0e444016515d2c0d0cf94"
+  },
+  {
+    "appearance": "woman-scout",
+    "file": "woman-scout-lod2.glb",
+    "record": {
+      "lod": 2,
+      "url": "/models/characters/woman-scout-lod2.glb",
+      "triangles": 16177,
+      "bytes": 791472,
+      "drawCalls": 5,
+      "sha256": "abf4b6373a38f3a131bc78a4d325beb8c18a155739ef7a7ab6c6d3a2e9e5788c"
+    },
+    "sourceGeneratedSha256": "5d9a2e13c9a2e8a38461ea131e4d9baf35805a06a9f9c870b345fbc6f9c2e5a8",
+    "existingBodySha256": "31c666ee9e0a9080c6f4844188c19489b514d53e12da87df2658682a7df34fac"
+  },
+  {
+    "appearance": "woman-shawl",
+    "file": "woman-shawl-lod1.glb",
+    "record": {
+      "lod": 1,
+      "url": "/models/characters/woman-shawl-lod1.glb",
+      "triangles": 53539,
+      "bytes": 3043404,
+      "drawCalls": 5,
+      "sha256": "2e748c0afb8b64485554ffc5d6319e0459a9c82ebc3a7f398bf70cc4410bc824"
+    },
+    "sourceGeneratedSha256": "74b4ed0882590f4ccae50082970947c5159c5144e74d770e4d569d30bfb1d050",
+    "existingBodySha256": "a7e33b5e2779f7ce0f069d32a414fdfe918a57a50cbf06fb02f03e026abe500a"
+  },
+  {
+    "appearance": "woman-shawl",
+    "file": "woman-shawl-lod2.glb",
+    "record": {
+      "lod": 2,
+      "url": "/models/characters/woman-shawl-lod2.glb",
+      "triangles": 21807,
+      "bytes": 1071416,
+      "drawCalls": 5,
+      "sha256": "506eda4d30b06fa59f62df33947fe5fc8691ecd7bf1640450848f45565c27482"
+    },
+    "sourceGeneratedSha256": "0b89ddb2535f132a09fa0f1aa50ea25115a2d66341b4bfbab62119763079e952",
+    "existingBodySha256": "f8c540455bbb2efdc7a1bd8d775295c80c55eb73c0fe03ef5cc40bb801df2767"
+  }
+]

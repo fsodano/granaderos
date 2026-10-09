@@ -1,0 +1,183 @@
+{
+  "status": "rejected-insufficient-cloth-benefit",
+  "baseline": {
+    "manifestSha256": "7375f601d52d703dc3b36c94127d6b4878df72fff477bdec8d1c71103eb43e20",
+    "bodySha256": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2"
+  },
+  "v1Status": "rejected: too ribbed and too light blue",
+  "v2Finding": "The grouped refinement retains dark navy and removes broad ribs, but its remaining visual change is too small and still reads as a smooth fitted shell. No meaningful woven-wool improvement at matched isometric scale.",
+  "decision": "Retain the current material. No further variants in this study.",
+  "parameters": {
+    "navyRoughnessMean": 0.94,
+    "weaveFrequency": 96,
+    "weaveHeight": 0.04,
+    "sheenLinearColor": [
+      0.012,
+      0.015,
+      0.021
+    ],
+    "sheenRoughness": 0.9,
+    "newNoise": false,
+    "albedoChanges": false
+  },
+  "preservation": {
+    "binaryExact": true,
+    "binarySha256": "bbef009a8c8bcd968f4cbef7c323666e3f69cb1e5413a5b4f11d63d43244c5dd",
+    "rigUVWeightsMorphsIndicesPositionsExact": true,
+    "skinAndAlbedoExact": true,
+    "beforeBodySha256": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2",
+    "afterBodySha256": "7346b96cd0bf77b830c11805ddcced96bd5760b12eb1a8ee737b65b427b4d495",
+    "maskChecks": {
+      "normalTexture": {
+        "otherTilesExact": true,
+        "changedNavyTexels": 64380
+      },
+      "metallicRoughnessTexture": {
+        "otherTilesExact": true,
+        "changedNavyTexels": 65536
+      },
+      "sheen": {
+        "otherTilesBlack": true,
+        "navyPixelRGB": [
+          29,
+          33,
+          40
+        ],
+        "imageBytes": 56004
+      }
+    },
+    "otherGLBsExact": {
+      "female-animations.glb": true,
+      "woman-scout-lod1.glb": true,
+      "friar-lod2.glb": true,
+      "gaucho-lod1.glb": true,
+      "worker-lod1.glb": true,
+      "male-animations.glb": true,
+      "worker-lod0.glb": true,
+      "gaucho-lod0.glb": true,
+      "woman-scout-lod0.glb": true,
+      "woman-scout-lod2.glb": true,
+      "friar-lod1.glb": true,
+      "gaucho-lod2.glb": true,
+      "worker-lod2.glb": true,
+      "friar-lod0.glb": true,
+      "horse-lod0.glb": true,
+      "horse-lod1.glb": true,
+      "horse-lod2.glb": true,
+      "royalist-lod0.glb": true,
+      "royalist-lod1.glb": true,
+      "royalist-lod2.glb": true,
+      "female-garments.glb": true,
+      "woman-shawl-lod2.glb": true,
+      "surgeon-lod2.glb": true,
+      "surgeon-lod0.glb": true,
+      "woman-shawl-lod0.glb": true,
+      "woman-shawl-lod1.glb": true,
+      "surgeon-lod1.glb": true,
+      "male-garments.glb": true,
+      "granadero-lod2.glb": true,
+      "equipment.glb": true,
+      "granadero-lod1.glb": true
+    },
+    "material": {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_specular": {
+          "specularFactor": 0.5600000023841858
+        },
+        "KHR_materials_sheen": {
+          "sheenColorFactor": [
+            1,
+            1,
+            1
+          ],
+          "sheenColorTexture": {
+            "image": "textures/b268e50b7c31283e223a.png"
+          },
+          "sheenRoughnessFactor": 0.8999999761581421
+        }
+      },
+      "name": "Apparel_Atlas",
+      "normalTexture": {
+        "image": "textures/832e5609dbeece49fcf4.png"
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "image": "textures/bbd181263ad3acfb2683.png"
+        },
+        "metallicRoughnessTexture": {
+          "image": "textures/917a5329a6e8280fcb9a.png"
+        },
+        "baseColorFactor": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    }
+  },
+  "loader": {
+    "passed": true,
+    "materialClass": "MeshPhysicalMaterial",
+    "sheen": 1,
+    "sheenRoughness": 0.8999999761581421,
+    "sheenColorSpace": "srgb",
+    "normalColorSpace": "",
+    "roughnessColorSpace": "",
+    "normalScale": [
+      1,
+      -1
+    ],
+    "sheenPixels": [
+      2048,
+      2048
+    ],
+    "note": "Actual bundled loader and PNG content; CPU material check only, no WebGL performance claim"
+  },
+  "cost": {
+    "triangles": 87197,
+    "drawCalls": 6,
+    "apparelImageBytes": {
+      "before": 2398794,
+      "after": 2427496
+    },
+    "netImageBytes": 28702,
+    "extraSheenGPUBytesRGBA8WithMips": 22369621,
+    "performance": "No GPU benchmark; extra sheen map and physical-material shader work are not justified by the small gain"
+  },
+  "render": {
+    "method": "Actual exported body, native bank and equipment; matched Blender GLB import",
+    "clip": "stand.aim.short-gun",
+    "timeSeconds": 0,
+    "views": [
+      "isometric fullbody",
+      "coat crop"
+    ],
+    "resolution": [
+      700,
+      700
+    ],
+    "samples": 16,
+    "provenance": "before/stand.aim.short-gun/index.json and after-v2/stand.aim.short-gun/index.json"
+  },
+  "source": {
+    "files": [
+      "optimize.py",
+      "surface_atlas.py"
+    ],
+    "scope": "Granadero-only enable flag and Navy_Wool semantic source material; no fixed atlas coordinate",
+    "diagnosticPatch": "rejected-v2-source.patch",
+    "frozenDirectory": "source-v2/assets/source/characters-3d/authoring"
+  },
+  "files": {
+    "compare-v2-iso.png": "555dc5de00971b404ddd8810bfa88142fa09862aa0a6d7ef9dc003cd51cfcd33",
+    "compare-v2-coat.png": "25965edf9f71b83fa81b555862f360fd954f5e3d9543fdd0726e5534676d024e",
+    "rejected-v2-source.patch": "8ffe55def51eba731d89b59718202210edaf3a2abbc0ad2aab95e826e43d9a5c",
+    "v2-proof.json": "10bac7d28e442e195a7a815f7d860a5b920ca02694eb8c9fc6f7965040aa95ab",
+    "loader-proof-v2.json": "d5855aecbc498353f639e8f4eda0c9d8d8c7937bb5de39dfcb53d328e3fe195d",
+    "render-review.py": "877e108e0ff61db3181da3a0fa963abdbb93672e4cdafcdee3905b0e669813a2"
+  },
+  "sharedWrites": false,
+  "published": false
+}

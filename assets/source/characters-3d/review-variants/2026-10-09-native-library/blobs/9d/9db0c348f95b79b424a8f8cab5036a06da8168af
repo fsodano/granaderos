@@ -1,0 +1,103 @@
+{
+  "status": "ready for parent integration as a bounded Granadero skin improvement; not reference-level completion",
+  "createdUtc": "2026-10-08T07:35:58.662790+00:00",
+  "privateLibrary": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/models-source",
+  "mergeBaseManifest": "e53b7eeb2411149380208be792b621d9a7da1fb5825557e651f150550ed96455",
+  "candidateManifest": "66fe3427055a765bd5a924eb54e3a403c0112f025b8bf36fd2e84ec0bad04751",
+  "sourcePatch": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/delivery/source-runtime-tests.patch",
+  "sourcePatchSha256": "6f82fb626766ed52cb83706e1822e953ca916985766e5958998c1d4726c99ba2",
+  "sourceOverlay": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/delivery/overlay",
+  "bodyDeltaRecords": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/delivery/body-delta-records.json",
+  "sourceAndAssetAllowlist": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/delivery/allowlist.json",
+  "geometryProof": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source-preservation-proof.json",
+  "scope": {
+    "appearance": "granadero only",
+    "otherSevenAppearances": "byte-identical to baseline; no generated metadata",
+    "nativeRigGeometryUv0NormalsWeightsIndicesMorphs": "exact, all three Granadero LODs",
+    "browColour": "only fitted eyebrow-bed COLOR0 neutralized; hair geometry retained",
+    "animationsEquipmentHorse": "byte-identical to private copy; do not copy old banks during integration"
+  },
+  "texture": {
+    "originalSha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 2032518,
+    "rasterEdits": false,
+    "publicPath": "textures/040b6c27fc46ce2da454.png",
+    "sourcePath": "assets/source/characters-3d/authoring/generated/granadero-skin-colour.png",
+    "promptPath": "assets/source/characters-3d/authoring/generated/granadero-skin-prompt.txt",
+    "generationPath": "assets/source/characters-3d/authoring/generated/granadero-skin-generation.json",
+    "registration": "Albedo-only UV1, local mouth/outer-brow offset <.005; original UV0 normal and roughness. Hand/nail UVs exact.",
+    "palette": "linear selected palette / linear reference RGB; untagged and invalid-reference materials retain existing Three colour behaviour"
+  },
+  "checks": [
+    {
+      "name": "generated skin contract, all24 skin PBR, all24 eye surface, runtime palette and existing actor runtime tests",
+      "pass": 91,
+      "fail": 0,
+      "skip": 0,
+      "log": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/final-focused-tests.log"
+    },
+    {
+      "name": "same skin/eye tests against original native-albedo bodies",
+      "pass": 48,
+      "fail": 0,
+      "skip": 0,
+      "log": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/native-fallback-tests.log"
+    },
+    {
+      "name": "source-based three-LOD export plus strict native signature gate",
+      "pass": true,
+      "log": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/source-build-final.log"
+    },
+    {
+      "name": "source patch apply check",
+      "pass": true
+    },
+    {
+      "name": "lab development and production module/model/texture routes, shared-helper bytes and forbidden paths",
+      "pass": 8,
+      "fail": 0,
+      "skip": 0,
+      "log": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/lab-palette-tests.log"
+    }
+  ],
+  "renderReview": {
+    "sourceJobs": 9,
+    "successfulJobs": 9,
+    "actualExportImages": 36,
+    "matchingBaselineImages": 36,
+    "framing": "same isometric lighting and camera; face and both hands at700px plus full body; all3LODs x all3production palettes",
+    "sourceFrames": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/review/source-lod{0,1,2}-{light,brown,dark}/granadero",
+    "baselineFrames": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/review/baseline-lod{0,1,2}-{light,brown,dark}/granadero",
+    "findings": [
+      "Face has clearer cheek/jaw variation, lip colour and subtle stubble. Neutral brow beds remove duplicated pigment without changing the original generated image.",
+      "No new visible nail seam in the reviewed hand views; all9face/palette pairs remain coherent.",
+      "Full-body improvement is subtle at game size; the close face gain is stronger."
+    ],
+    "remainingLimits": [
+      "Broad outer brow tail is still present in the generated image.",
+      "Existing idle fingers remain curled and can read as claws; this pass does not change hand animation.",
+      "LOD1/2 hand facets and gaps, plus coarse LOD2 collar/epaulettes, are unchanged geometry.",
+      "Idle left-hand angle does not expose every nail surface; dynamic hand posing is outside this texture-only pass.",
+      "No live WebGL render was performed privately; parent must check the merged lab/runtime."
+    ]
+  },
+  "integration": [
+    "Apply source-runtime-tests.patch and copy the one source PNG from delivery/overlay; PNG bytes must remain exact.",
+    "Apply delivery/lab-shared-palette.patch so both development and static lab serve the imported helper.",
+    "Copy only the three Granadero GLBs and one public PNG from models-source. Merge only the three appearance LOD records into the CURRENT canonical manifest.",
+    "Do not copy the private full manifest, animation banks, equipment, or other appearance files.",
+    "Keep current canonical head/neck motion changes."
+  ],
+  "labSupplement": {
+    "patch": "/tmp/granadero-generated-skin-palette-pilot/all-lod-review/delivery/lab-shared-palette.patch",
+    "sha256": "6c2ac41de053f4358592dc81569a276242fa0d6ce5ebf2f8640ebfc365088613",
+    "files": [
+      "playgrounds/granadero-3d/server.mjs",
+      "playgrounds/granadero-3d/build.mjs",
+      "playgrounds/granadero-3d/tests/server.test.mjs"
+    ],
+    "scope": "Exact shared helper route in development; single helper copied for static lab. No arbitrary repository file exposure."
+  }
+}

@@ -1,0 +1,30 @@
+# PR237 lance idle integration
+
+Frozen source and asset integration. The shared checkout and canonical assets were not changed by this task.
+
+## Scope and preserved work
+
+Upstream commit `370b1401` changes exactly six rotation tracks per anatomy in `stand.idle.lance`: thigh, calf and foot, on both sides. The ball joints and all upper-body channels are unchanged upstream. The prepared merger applies only those six tracks and the clip's `nativeBootSupport` metadata. It retains every unrelated current field, including reviewed lance grips, PR234 guard support, crawl and side-step metadata.
+
+The incoming GLB ends at 59/30 seconds because the previous exporter dropped its final fractional frame. The final candidate already retains the authored 1.999992-second duration. The merger keeps that duration and adds the first leg pose at that retained final time to close the loop. No upper-body time or value is changed.
+
+## Source conflict resolution
+
+The incoming source calls the older `grounding_motion` API. The final authoring source has a newer posture solver. `source-integration.patch` adds the incoming complete-boot algorithm as `lance_idle_support.py`, called only for standing lance idle after loop closure. It leaves the common posture solver and all reviewed lance hand logic unchanged. The small selected-build optimization is retained.
+
+The incoming test's duration assertion now checks the stored clip against its authored manifest duration. The 1.999992-second manifest assertion, full boot vertex count, unchanged native joint dimensions and 0.5–3.5 mm floor limits are retained.
+
+## Acceptance
+
+- `gates.log`: 10/10 tests pass: incoming complete-boot support (2), final lance wrist/finger constraints (6), and runtime carry/brace transition (2).
+- Both native source checks pass (`male-source-check.json`, `female-source-check.json`). At five sampled poses, fitting leaves every non-leg position and quaternion exactly unchanged and supports the complete source boot within the same floor limits.
+- The source diagnostic retains authored duration. Its maximum lift is 0.003895 m male / 0.006088 m female, compared with incoming metadata 0.003908 / 0.006104 m. These are sampled agreement measurements; no claim of source/export byte parity is made.
+- `models/lance-idle-support-proof.json` records current before/after bank hashes and the hash of all retained channel payloads. Each bank preserves 53,100 channels exactly.
+
+## Apply
+
+Apply `source-integration.patch` to the current shared repository after its merge retains our motion.py. Run:
+
+    python3 /tmp/granadero-lance-idle-pr237/merge-lance-idle-support.py --directory /tmp/granadero-full-review/models
+
+The merger retains current metadata and checks target file hashes again before replacement. Do not copy complete upstream banks or manifests. No full bank rebuild was performed.

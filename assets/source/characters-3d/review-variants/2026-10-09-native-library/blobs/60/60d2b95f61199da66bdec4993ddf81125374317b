@@ -1,0 +1,749 @@
+{
+  "canonicalAtCopy": "d94e9c11e6842ed924638bd8c173bb43814c34234d79055fd4afdff8b86ff69d",
+  "canonicalNow": "e53b7eeb2411149380208be792b621d9a7da1fb5825557e651f150550ed96455",
+  "sourceCandidateManifest": "66fe3427055a765bd5a924eb54e3a403c0112f025b8bf36fd2e84ec0bad04751",
+  "changedExistingFiles": [
+    "manifest.json",
+    "granadero-lod2.glb",
+    "granadero-lod0.glb",
+    "granadero-lod1.glb",
+    ".build/granadero-lod2.json",
+    ".build/granadero-lod0.json",
+    ".build/granadero-lod1.json"
+  ],
+  "otherSevenAppearancesBanksEquipmentHorseExact": true,
+  "bodies": [
+    {
+      "lod": 0,
+      "beforeSha256": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7",
+      "afterSha256": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2",
+      "triangles": 87197,
+      "nativeGeometryUv0WeightsRigIndicesAndMorphsExact": true,
+      "attributes": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 1395
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 1395
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 1395
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 1395
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 1395
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 1395
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 14313
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 14313
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 14313
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 14313
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 14313
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 14313
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 1202
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 1202
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 1202
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 1202
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 1202
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 1202
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 19642
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 19642
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 19642
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 19642
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 19642
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 19642
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 18791
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 18791
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 18791
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "COLOR_0",
+          "exact": false,
+          "count": 18791
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 18791
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 18791
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 16098
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 16098
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 16098
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 16098
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 16098
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 16098
+        }
+      ],
+      "colourChanges": [
+        {
+          "mesh": "Exposed_Human_Skin",
+          "changedVertices": 672,
+          "bounds": [
+            [
+              -0.050716597586870193,
+              1.6626092195510864,
+              0.14242413640022278
+            ],
+            [
+              0.050716694444417953,
+              1.669110894203186,
+              0.15735585987567902
+            ]
+          ],
+          "onlyNeutralBrowBeds": true
+        }
+      ]
+    },
+    {
+      "lod": 1,
+      "beforeSha256": "b183069f9447523e04b2eeeb610559b1ae4127351cc87b494cc65dbfaf6e7759",
+      "afterSha256": "a50f3d2a0de9368a01b62d9724f906caf8265dfca45c3152cf7ae2693c5a64f9",
+      "triangles": 61526,
+      "nativeGeometryUv0WeightsRigIndicesAndMorphsExact": true,
+      "attributes": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 936
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 936
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 936
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 936
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 936
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 936
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 5604
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 5604
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 5604
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 5604
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 5604
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 5604
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 525
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 525
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 525
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 525
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 525
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 525
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 18768
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 18768
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 18768
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 18768
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 18768
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 18768
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 10509
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 10509
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 10509
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "COLOR_0",
+          "exact": false,
+          "count": 10509
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 10509
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 10509
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 15888
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 15888
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 15888
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 15888
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 15888
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 15888
+        }
+      ],
+      "colourChanges": [
+        {
+          "mesh": "Exposed_Human_Skin",
+          "changedVertices": 672,
+          "bounds": [
+            [
+              -0.050716597586870193,
+              1.6626092195510864,
+              0.14242413640022278
+            ],
+            [
+              0.050716694444417953,
+              1.669110894203186,
+              0.15735585987567902
+            ]
+          ],
+          "onlyNeutralBrowBeds": true
+        }
+      ]
+    },
+    {
+      "lod": 2,
+      "beforeSha256": "a5facb84ec4ba0c1c267863efe764eff3e7a5823de983a83b4920df6475d60ef",
+      "afterSha256": "b373ef830906ebbb2d8861f1ff758f931b8f10b863e713e817a0abbe01cc8b03",
+      "triangles": 18664,
+      "nativeGeometryUv0WeightsRigIndicesAndMorphsExact": true,
+      "attributes": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 576
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 576
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 576
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 576
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 576
+        },
+        {
+          "mesh": "Fitted_Boot_l",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 576
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 3791
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 3791
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 3791
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 3791
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 3791
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 3791
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 289
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 289
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 289
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 289
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 289
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 289
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 4498
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 4498
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 4498
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 4498
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 4498
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 4498
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 4669
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 4669
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 4669
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "COLOR_0",
+          "exact": false,
+          "count": 4669
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 4669
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 4669
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "POSITION",
+          "exact": true,
+          "count": 1457
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "NORMAL",
+          "exact": true,
+          "count": 1457
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "TEXCOORD_0",
+          "exact": true,
+          "count": 1457
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "COLOR_0",
+          "exact": true,
+          "count": 1457
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "JOINTS_0",
+          "exact": true,
+          "count": 1457
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "attribute": "WEIGHTS_0",
+          "exact": true,
+          "count": 1457
+        }
+      ],
+      "colourChanges": [
+        {
+          "mesh": "Exposed_Human_Skin",
+          "changedVertices": 672,
+          "bounds": [
+            [
+              -0.050716597586870193,
+              1.6626092195510864,
+              0.14242413640022278
+            ],
+            [
+              0.050716694444417953,
+              1.669110894203186,
+              0.15735585987567902
+            ]
+          ],
+          "onlyNeutralBrowBeds": true
+        }
+      ]
+    }
+  ]
+}
