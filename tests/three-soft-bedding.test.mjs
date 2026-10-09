@@ -1,0 +1,175 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {register} from 'node:module';
+register('./tactical-render-loader.mjs',import.meta.url);
+const {Box3,BufferAttribute,Matrix4,Quaternion,Raycaster,Vector3}=await import('../web/node_modules/three/build/three.module.js');
+const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
+const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
+const {buildProps}=await import('../web/lib/three/world-props.ts');
+const T=1.2360585147470482,eps=1e-5;
+// Position bytes from the seven original frame parts at ca507596, before
+// bedding changes. Supports append after these 84 unchanged triangles.
+const frameHashes={
+ 0:'92fbffdac56c067ae1f4f32d5f0a108df8af97d138837ec01b185240dddfa8d4',
+ 90:'d08f70fe2d2176cb8cbe7550cb1c3f0de266c5a7f146068dab54292e329ed1b1',
+ 180:'2b93572c191cc7643938c17575cf5a08dc16f1f7ed62d2a3e819ea2d7291466e',
+ 270:'868cb8fea650ba3cf56182f66508b4fd829e901a60cd177ac0529309b5f34125'
+};
+function render(options={},input={terrain:{tiles:[]}}){
+ const prop={id:'bed',type:'bed',x:2,y:3,footprint:{width:1,height:2},rotation:0,...options},before=structuredClone(prop),h=prop.obstacleHeight??.55;
+ Object.freeze(prop.footprint);Object.freeze(prop);
+ const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),group=buildProps('bedding',[prop],input,T,geometry,materials);
+ assert.deepEqual(prop,before);group.updateMatrixWorld(true);
+ const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),-prop.rotation*Math.PI/180),centre=new Vector3((prop.x+(prop.footprint.width-1)*.5)*T,prop.elevation??0,(prop.y+(prop.footprint.height-1)*.5)*T),swapped=prop.rotation===90||prop.rotation===270;
+ const w=(swapped?prop.footprint.height:prop.footprint.width)*T,d=(swapped?prop.footprint.width:prop.footprint.height)*T,point=values=>new Vector3(...values).applyQuaternion(rotation).add(centre),direction=values=>new Vector3(...values).applyQuaternion(rotation);
+ const mesh=kind=>group.children.find(child=>child.material.name===`world:${kind}`);
+ return {prop,h,w,d,group,mesh,centre,rotation,geometry,hit(position,vector,far,object=group){return new Raycaster(point(position),direction(vector),0,far).intersectObject(object,true);},dispose(){disposeWorldNode(group);geometry.dispose();materials.dispose();}};
+}
+
+test('soft bedding keeps the floor root, authored footprint and closed height in every rotation',()=>{
+ for(const footprint of [{width:1,height:1},{width:1,height:2},{width:2,height:1},{width:1,height:3},{width:3,height:1},{width:2,height:2},{width:8,height:8}])for(const rotation of [0,90,180,270])for(const elevation of [0,3])for(const obstacleHeight of [.4,.55,.75]){
+  const r=render({footprint,rotation,elevation,obstacleHeight}),b=new Box3().setFromObject(r.group),frame=new Box3().setFromObject(r.mesh('wood')),p=r.prop;
+  assert.ok(b.min.x>=(p.x-.5)*T-eps&&b.max.x<=(p.x+p.footprint.width-.5)*T+eps,'bedding must fit the actual X cells');
+  assert.ok(b.min.z>=(p.y-.5)*T-eps&&b.max.z<=(p.y+p.footprint.height-.5)*T+eps,'bedding must fit the actual Z cells');
+  assert.ok(Math.abs(b.min.y-elevation)<eps,'existing legs must still meet the floor');
+  assert.ok(Math.abs(b.max.y-(elevation+obstacleHeight+.09))<eps,'the old pillow height must remain the highest point');
+  for(const axis of ['x','z'])assert.ok(Math.abs(b.min[axis]-frame.min[axis])<eps&&Math.abs(b.max[axis]-frame.max[axis])<eps,'soft parts must retain the unchanged frame bounds');
+  const blanket=new Box3().setFromObject(r.mesh('rug'));assert.ok(blanket.min.y>elevation+.255,'loose cloth must clear the wooden platform');
+  assert.equal(p.obstacleHeight,obstacleHeight);r.dispose();
+ }
+});
+
+test('the seven original bed-frame parts keep their exact position bytes through all rotations',()=>{
+ for(const rotation of [0,90,180,270]){
+  const r=render({rotation}),positions=r.mesh('wood').geometry.getAttribute('position').array;
+  assert.equal(createHash('sha256').update(positions.subarray(0,84*9)).digest('hex'),frameHashes[rotation]);r.dispose();
+ }
+});
+
+test('mattress and pillow retain their sizes while rounding the old square corners',()=>{
+ for(const rotation of [0,90,180,270]){
+  const r=render({rotation}),linen=r.mesh('linen'),bounds=new Box3().setFromObject(linen);
+  assert.ok(Math.abs(bounds.min.y-(r.h-.12))<eps&&Math.abs(bounds.max.y-(r.h+.09))<eps,'cushion thickness and vertical profile must remain exact');
+  const mattress=r.hit([0,r.h+.02,0],[0,-1,0],.04,linen)[0],pillow=r.hit([0,r.h+.12,-r.d*.29],[0,-1,0],.15,linen)[0];
+  assert.ok(mattress&&Math.abs(mattress.point.y-r.h)<eps);assert.ok(pillow&&Math.abs(pillow.point.y-(r.h+.09))<eps);
+  assert.equal(r.hit([r.w*.69*.5-.002,r.h+.05,r.d*.84*.5-.002],[0,-1,0],.20,linen).length,0,'mattress corners must have rounded cutbacks');
+  assert.equal(r.hit([r.w*.50*.5-.002,r.h+.12,-r.d*.29-r.d*.19*.5+.002],[0,-1,0],.10,linen).length,0,'pillow corners must have rounded cutbacks');
+  const normal=linen.geometry.getAttribute('normal');let curved=false;
+  for(let n=0;n<normal.count;n++)curved||=Math.abs(normal.getY(n))>.1&&Math.abs(normal.getY(n))<.98;
+  assert.ok(curved,'cushions must have smooth edge directions instead of only box normals');r.dispose();
+ }
+});
+
+test('support rails meet both the platform and mattress, and the pillow rests on the mattress',()=>{
+ for(const rotation of [0,90,180,270])for(const obstacleHeight of [.4,.55,.75]){
+  const r=render({rotation,obstacleHeight}),wood=r.mesh('wood'),linen=r.mesh('linen'),mattressBottom=r.h-.12;
+  for(const side of [-1,1]){
+   const railTop=r.hit([side*r.w*.25,mattressBottom-.002,0],[0,1,0],.004,wood)[0],mattress=r.hit([side*r.w*.25,mattressBottom+.002,0],[0,-1,0],.004,linen)[0];
+   assert.ok(railTop&&mattress&&Math.abs(railTop.point.y-mattress.point.y)<eps,'mattress must touch its support rails');
+   const base=r.hit([side*r.w*.25,.257,0],[0,-1,0],.004,wood);assert.ok(base.length>=2,'support rails must meet the original platform');
+   for(const hit of base)assert.ok(Math.abs(hit.point.y-.255)<eps);
+  }
+  const pillowContact=r.hit([0,r.h-.002,-r.d*.29],[0,1,0],.004,linen);assert.ok(pillowContact.length>=2,'pillow and mattress surfaces must meet');
+  for(const hit of pillowContact)assert.ok(Math.abs(hit.point.y-r.h)<eps);r.dispose();
+ }
+});
+
+test('blanket folds clear the mattress and continue into one soft hanging edge',()=>{
+ for(const rotation of [0,90,180,270]){
+  const r=render({rotation}),cloth=r.mesh('rug'),linen=r.mesh('linen'),troughZ=r.d*(.10+.52*.15),foldZ=r.d*(.10+.52*.32);
+  const trough=r.hit([0,r.h+.01,troughZ],[0,-1,0],.02,cloth)[0],mattress=r.hit([0,r.h+.01,troughZ],[0,-1,0],.02,linen)[0];
+  assert.ok(trough&&mattress&&Math.abs(trough.point.y-mattress.point.y-.002)<eps,'a broad fold trough must leave the thin sheet above the mattress');
+  const crest=r.hit([r.w*.70*.12,r.h+.06,foldZ],[0,-1,0],.06,cloth)[0];assert.ok(crest&&crest.point.y>r.h+.02&&crest.point.y<r.h+.04,'fold crests must remain broad and below the pillow');
+  const p=cloth.geometry.getAttribute('position');let lowVertices=0;
+  for(let n=0;n<p.count;n++)if(p.getY(n)<r.h-.10){lowVertices++;assert.ok(p.getY(n)>r.h-.203);}
+  assert.ok(lowVertices>12,'the folded surface must carry a substantial hanging edge');r.dispose();
+ }
+});
+
+
+// Native float32 positions from the rejected frozen piece 13. Keep this
+// independent fixture: selected contact rays previously missed edge crossings.
+const rejectedSheet="AAAAvznHULwAAAC/zczMvjNOUjsAAAC/7FE4vhSheTsAAAC/j8L1PRKDoTsAAAC/exSuPqjnnDsAAAC/AAAAPzLtQbwAAAC/8KcGPxsvXb0AAAC/XI8CP921BL4AAAC/AAAAP1yPQr4AAAC/AAAAv2htUzukcL2+zczMvk/OoDykcL2+7FE4vtx2xjykcL2+j8L1PcNT9TykcL2+exSuPtbk4jykcL2+AAAAP2+G+DukcL2+8KcGPzm0SL2kcL2+XI8CP5OpAr6kcL2+AAAAP5NlOb6kcL2+AAAAv79iZrxcj0K+zczMvhubBztcj0K+7FE4voFdKztcj0K+j8L1PUnBQztcj0K+exSuPlgAKjtcj0K+AAAAPy91Yrxcj0K+8KcGP4nSXr1cj0K+XI8CP87fBL5cj0K+AAAAPz7FTr5cj0K+AAAAv4fyQTqPwvW8zczMvt2cljyPwvW87FE4vggUvTyPwvW8j8L1PfiNxzyPwvW8exSuPg1jpTyPwvW8AAAAP7ZOizqPwvW88KcGP83MTL2PwvW8XI8CP28SA76PwvW8AAAAP79zO76PwvW8AAAAv28Sg7yamRk+zczMvgAAAACamRk+7FE4vgAAAACamRk+j8L1PQAAAACamRk+exSuPgAAAACamRk+AAAAP28Sg7yamRk+8KcGP65HYb2amRk+XI8CP7geBb6amRk+AAAAPzXSP76amRk+AAAAv8FzGTwK16M+zczMvnDb5zwK16M+7FE4vqtZBj0K16M+j8L1PfN67TwK16M+exSuPj7UuzwK16M+AAAAP7zFpzsK16M+8KcGPxQ/Rr0K16M+XI8CP6lqAr4K16M+AAAAP0tRTb4K16M+AAAAvzLtQbwAAAA/zczMvnBIljsAAAA/7FE4vlOxozsAAAA/j8L1Pdh8hTsAAAA/exSuPo5fVzsAAAA/AAAAPznHULwAAAA/8KcGPxsvXb0AAAA/XI8CP921BL4AAAA/AAAAP8D2Nr4AAAA/";
+const rejectedIndexSha='d83a68785ad5df222c4b8f560d559c8ee291923d3ac4377df7ff8b02efea2c28';
+function rejectedPositions(){const bytes=Uint8Array.from(Buffer.from(rejectedSheet,'base64'));return new Float32Array(bytes.buffer);}
+function crossXZ(a,b,c){return (b[0]-a[0])*(c[2]-a[2])-(b[2]-a[2])*(c[0]-a[0]);}
+function polygonArea(points){return Math.abs(points.reduce((sum,a,n)=>{const b=points[(n+1)%points.length];return sum+a[0]*b[2]-a[2]*b[0];},0))*.5;}
+function triangleRows(geometry){
+ const p=geometry.getAttribute('position'),index=geometry.index,rows=[];
+ for(let n=0;n<(index?.count??p.count);n+=3){
+  const points=[0,1,2].map(corner=>{const i=index?index.getX(n+corner):n+corner;return [p.getX(i),p.getY(i),p.getZ(i)];});
+  if(Math.abs(crossXZ(...points))>1e-12)rows.push({id:n/3,points});
+ }
+ return rows;
+}
+function clipTriangleXZ(polygon,triangle){
+ const sign=Math.sign(crossXZ(...triangle));
+ for(let edge=0;edge<3;edge++){
+  const a=triangle[edge],b=triangle[(edge+1)%3],side=p=>sign*crossXZ(a,b,p),out=[];
+  for(let n=0;n<polygon.length;n++){
+   const p=polygon[n],q=polygon[(n+1)%polygon.length],fp=side(p),fq=side(q),pin=fp>=-1e-12,qin=fq>=-1e-12;
+   if(pin)out.push(p);
+   if(pin!==qin){const t=fp/(fp-fq);out.push(p.map((v,k)=>v+(q[k]-v)*t));}
+  }
+  polygon=out;if(!polygon.length)break;
+ }
+ return polygon;
+}
+function triangleHeight(triangle,p){
+ const [a,b,c]=triangle,det=crossXZ(a,b,c),s=((p[0]-a[0])*(c[2]-a[2])-(p[2]-a[2])*(c[0]-a[0]))/det,t=((b[0]-a[0])*(p[2]-a[2])-(b[2]-a[2])*(p[0]-a[0]))/det;
+ return a[1]+s*(b[1]-a[1])+t*(c[1]-a[1]);
+}
+// An affine height difference reaches its minimum at a vertex of the clipped
+// overlap polygon. This includes points inside either source triangle.
+function affineOverlapMinimum(sheet,upwardMattress){
+ let minimum=Infinity,overlaps=0,pair;
+ for(const a of sheet)for(const b of upwardMattress){
+  const polygon=clipTriangleXZ(a.points,b.points);if(polygon.length<3||polygonArea(polygon)<1e-12)continue;
+  overlaps++;
+  for(const point of polygon){const gap=triangleHeight(a.points,point)-triangleHeight(b.points,point);if(gap<minimum){minimum=gap;pair=[a.id,b.id,point];}}
+ }
+ return {minimum,overlaps,pair};
+}
+
+test('every merged float32 blanket overlap clears the upward mattress faces in all supported beds',()=>{
+ for(const footprint of [{width:1,height:1},{width:1,height:2},{width:2,height:1},{width:1,height:3},{width:3,height:1},{width:2,height:2},{width:8,height:8}])for(const rotation of [0,90,180,270])for(const elevation of [0,3])for(const obstacleHeight of [.4,.55,.75]){
+  const r=render({footprint,rotation,elevation,obstacleHeight}),sheet=triangleRows(r.mesh('rug').geometry),mattress=triangleRows(r.mesh('linen').geometry).filter(row=>crossXZ(...row.points)<0),gap=affineOverlapMinimum(sheet,mattress);
+  assert.ok(gap.overlaps>0);assert.ok(gap.minimum>.0011,JSON.stringify({footprint,rotation,elevation,obstacleHeight,...gap}));r.dispose();
+ }
+});
+
+test('the full affine interior check rejects frozen bedding and bounds the correction while preserving the hem',()=>{
+ const geometry=new WorldGeometry(),sheet=geometry.get('bed-blanket'),p=sheet.getAttribute('position'),old=rejectedPositions(),hem=[];
+ assert.equal(createHash('sha256').update(sheet.index.array).digest('hex'),rejectedIndexSha,'all oriented sheet triangles must remain exact');
+ for(let n=0;n<p.count;n++){
+  assert.equal(p.getX(n),old[n*3]);assert.equal(p.getZ(n),old[n*3+2]);const change=p.getY(n)-old[n*3+1];assert.ok(change>=-1e-8&&change<=.018+1e-8);
+  if(n%9>=6){assert.equal(p.getY(n),old[n*3+1]);hem.push(p.getX(n),p.getY(n),p.getZ(n));}
+ }
+ assert.equal(createHash('sha256').update(new Float32Array(hem)).digest('hex'),'5fae88ef601ca907234f66199e121a2568cbc34dfbed76ca5849a2904c97f645');
+ // A raised mattress triangle lies wholly inside the sheet projection. A
+ // corner-only check cannot see it, but the overlap polygon has a -8mm gap.
+ const a={id:0,points:[[0,.002,0],[1,.002,0],[0,.002,1]]},b={id:1,points:[[.2,.010,.2],[.2,.010,.4],[.4,.010,.2]]};assert.ok(Math.abs(affineOverlapMinimum([a],[b]).minimum+.008)<1e-10);
+ for(const rotation of [0,90,180,270]){
+  const r=render({rotation}),frozen=sheet.clone().setAttribute('position',new BufferAttribute(old.slice(),3)),native=frozen.toNonIndexed(),drape=Math.min(1,Math.max(.05,(r.h-.275)/.202));
+  native.applyMatrix4(new Matrix4().compose(new Vector3(0,r.h,r.d*.10),new Quaternion(),new Vector3(r.w*.70,drape,r.d*.52)));
+  native.applyMatrix4(new Matrix4().compose(r.centre,r.rotation,new Vector3(1,1,1)));
+  const gap=affineOverlapMinimum(triangleRows(native),triangleRows(r.mesh('linen').geometry).filter(row=>crossXZ(...row.points)<0));assert.ok(gap.minimum<-.0075,'the frozen rejected sheet must fail the whole-triangle clearance gate');
+  native.dispose();frozen.dispose();r.dispose();
+ }
+ geometry.dispose();
+});
+
+test('bedding has a fixed triangle cap, shared materials, admitted light and disposable cached forms',()=>{
+ for(const material of ['wood','stone'])for(const footprint of [{width:1,height:2},{width:2,height:1},{width:8,height:8}]){
+  const r=render({material,footprint},{terrain:{tiles:[],night:true},illumination:{'0:2,3':.25}}),triangles=r.group.children.reduce((sum,mesh)=>sum+(mesh.geometry.index?.count??mesh.geometry.getAttribute('position').count)/3,0);
+  assert.equal(triangles,420);assert.equal(r.group.children.length,3);assert.deepEqual(r.group.children.map(mesh=>mesh.material.name),[`world:${material}`,'world:linen','world:rug']);
+  for(const mesh of r.group.children)for(const attribute of ['position','normal','uv','color'])for(const value of mesh.geometry.getAttribute(attribute).array)assert.ok(Number.isFinite(value));
+  for(const mesh of r.group.children)for(const value of mesh.geometry.getAttribute('color').array)assert.ok(Math.abs(value-(.27+.73*.25))<eps);r.dispose();
+ }
+ const geometry=new WorldGeometry();let released=0;
+ for(const kind of ['bed-mattress','bed-pillow','bed-blanket']){
+  const first=geometry.get(kind);assert.equal(geometry.get(kind),first);first.addEventListener('dispose',()=>released++);
+ }
+ geometry.dispose();geometry.dispose();assert.equal(released,3);
+});

@@ -1,0 +1,28 @@
+{
+  "bedTrianglesBeforeAfter": [
+    120,
+    420
+  ],
+  "bedBatchesBeforeAfter": [
+    3,
+    3
+  ],
+  "cachedPrimitiveTriangles": {
+    "mattress": 108,
+    "pillow": 108,
+    "blanket": 96
+  },
+  "originalFrameTriangles": 84,
+  "supportRailTriangles": 24,
+  "sevenPropFixtureTrianglesBeforeAfter": [
+    3852,
+    4152
+  ],
+  "sevenPropFixtureBatchesBeforeAfter": [
+    6,
+    6
+  ],
+  "newTextures": 0,
+  "clearanceCorrectionAddedTriangles": 0,
+  "clearanceCorrectionAddedBatches": 0
+}

@@ -37,8 +37,15 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
       }
     }else if(prop.type==='bed'){
       box(wood,0,.18,0,w*.72,.15,d*.90);for(const a of [-1,1])for(const b of [-1,1])box(wood,a*w*.31,.15,b*d*.40,.08,.3,.08);
-      box(linen,0,h-.06,0,w*.69,.12,d*.84);box(materials.get('rug'),0,h+.008,d*.10,w*.70,.025,d*.52);
-      box(linen,0,h+.045,-d*.29,w*.50,.09,d*.19);box(wood,0,h*.70,-d*.45,w*.77,h*.65,.08);box(wood,0,h*.50,d*.45,w*.76,h*.4,.07);
+      part.primitive('bed-mattress',linen,[0,h-.06,0],[w*.69,.12,d*.84],undefined,light);
+      const drape=Math.min(1,Math.max(.05,(h-.275)/.202));
+      part.primitive('bed-blanket',materials.get('rug'),[0,h,d*.10],[w*.70,drape,d*.52],undefined,light);
+      part.primitive('bed-pillow',linen,[0,h+.045,-d*.29],[w*.50,.09,d*.19],undefined,light);
+      box(wood,0,h*.70,-d*.45,w*.77,h*.65,.08);box(wood,0,h*.50,d*.45,w*.76,h*.4,.07);
+      // Two support rails close the old platform-to-mattress gap.
+      // The seven existing frame parts retain their vertices and dimensions.
+      const support=Math.max(0,h-.12-.255);
+      for(const a of [-1,1])box(wood,a*w*.25,.255+support*.5,0,.075,support,d*.72);
     }else if(prop.type==='chest'){
       const cw=w*.68,cd=d*.51,timber=prop.material!=='stone',wall=.035;
       if(timber){
