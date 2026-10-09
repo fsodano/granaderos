@@ -3,6 +3,7 @@ import {validateItemStack} from './tactical-inventory.js';
 import {finiteSectorCache} from './finite-sector-caches.js';
 import {hasCharacterAbility} from './character-abilities.js';
 import {makeOutfit} from './outfits.js';
+import {destroyStructure} from './structure-blast.js';
 import {roadsideDiscoveryForMap,ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID,ROADSIDE_SHIRT_ID} from './roadside-discoveries.js';
 
 // Classic JA2 manual, printed pp. 25–27: held tools, keys, lock picks,
@@ -92,6 +93,7 @@ export function environmentActionProfile(unit, target, verb) {
     if (unit.bound || unit.entangled || unit.mounted) return reject('El combatiente debe estar libre y desmontado para abrir la brecha.');
   } else try {validateEnvironment(target);} catch (error) {return reject(error.message);}
   if (!ENVIRONMENT_VERBS.includes(verb)) return reject('Seleccioná una acción del entorno.');
+  if (target.destroyed && verb !== 'inspect') return reject('La explosión destruyó el objeto. Sus restos quedan abiertos.');
   if (unit.hp !== undefined && unit.hp < 15 || unit.energy !== undefined && unit.energy <= 0 || unit.departure || unit.surrendered || unit.routed || unit.knockedDown) return reject('El combatiente no puede manipular el objeto.');
   if (verb === 'open' && target.open) return reject('El objeto ya está abierto.');
   if (verb === 'close' && !target.open) return reject('El objeto ya está cerrado.');
@@ -165,6 +167,7 @@ export function resolveEnvironmentInteraction(unit, target, {verb, roll} = {}) {
   if (REQUIRED[verb]) wornTool(result.unit, tool.wear);
   if (verb === 'breach') {
     Object.assign(next, {blocked: false, blocksSight: false, type: 'rubble', cover: 15});
+    if (next.structureDamage !== undefined) destroyStructure(next);
     delete next.obstacleHeight; delete next.projectileResistance;
     return {...result, success: true, outcome: 'wall-breached', message: 'Abre una brecha con la barreta.', noiseKind: 'melee'};
   }
@@ -209,6 +212,7 @@ export function environmentTargetSummary(unit, target) {
   if (breachableWall(target)) return {id: target.id ?? `wall:${target.x}:${target.y}`, type: 'wall', label: target.material === 'wood' ? 'Barricada de madera' : 'Pared de adobe', material: target.material, broken: false};
   validateEnvironment(target);
   const summary = {id: target.id ?? target.doorId, type: target.type, label: target.type === 'door' ? 'Puerta' : 'Cofre', open: Boolean(target.open), locked: Boolean(target.locked), broken: Boolean(target.broken)};
+  for (const key of ['structureDamage','destroyed']) if (target[key] !== undefined) summary[key] = target[key];
   if (trapKnown(unit, target)) summary.trap = {type: target.trap.type, armed: isArmed(target)};
   if (target.open) summary.contents = visibleContainerContents(target);
   return summary;

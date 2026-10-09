@@ -76,6 +76,7 @@ import {chooseEnemyAction,choosePatrolAction} from './tactical-ai.js';
 import {AP_CARRY_LIMIT,CRITICAL_HEALTH,STANCES,isUnconscious,effectiveWounds,maxActionPoints,actionPointBudget,stanceCost,movementStance,refreshCondition} from './tactical-condition.js';
 export {AP_CARRY_LIMIT,CRITICAL_HEALTH,maxActionPoints,actionPointBudget,stanceCost};
 import {propBlocksAt,propCells} from './props.js';
+import {applyStructureBlast,destroyStructure} from './structure-blast.js';
 import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
 import {fieldPractice as practice} from './skill-training.js';
 import {COMBAT_BALANCE,penetratingFirearmDamage} from './combat-balance.js';
@@ -1079,6 +1080,7 @@ function grenadeBlast(s,source,origin,intended){
     if(visible)say(s,`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`);
   }
   // Sound can make survivors take cover only after this blast is resolved.
+  applyStructureBlast(s,origin,GRENADE_THROW.radius);
   notifyCivilians();
 }
 // The attack cursor can inspect only bodies already known to this side. Actual
@@ -2242,7 +2244,7 @@ for(const event of trace.events){
   if(victim.hp<hp)artilleryVisual.impacts.push({...contact,outcome:'hit',victimId:victim.id,victimKind:event.victimKind??'unit'});
   if(event.victimKind!=='npc'&&a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
  }else if(event.type==='breach'){
-  const ground=tile(s,event.x,event.y),contact=displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;
+  const ground=tile(s,event.x,event.y),contact=displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');if(ground.structureDamage!==undefined)destroyStructure(ground);else{ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;}
   artilleryVisual.impacts.push({...contact,outcome:'cover',material});
   say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
  }else say(s,'La bala se detiene contra la fortificación.');

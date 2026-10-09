@@ -18,13 +18,14 @@ export const groundTileAt=(state,point)=>surfaceAt(state,{x:point.x,y:point.y});
 
 export function terrainCoverProfile(tile){
  if(!tile||tile.type==='door'&&tile.open)return null;
- const low=tile.type==='window'?.8:tile.type==='rubble'?.35:0;
+ const low=tile.type==='window'?.8:tile.type==='rubble'?(tile.destroyed?.15:.35):0;
  const solid=tile.blocked&&!['window','water'].includes(tile.type);
  const height=tile.obstacleHeight??(low||(solid?2.5:0));if(!height)return null;
  const material=tile.type==='door'?'wood':Object.hasOwn(resistance,tile.material)?tile.material:tile.type==='stone'||tile.type==='cliff'?'stone':'adobe';
  return {height,material,resistance:tile.projectileResistance??resistance[material]};
 }
 export function propCoverProfile(prop){
+ if(prop.destroyed)return null;
  const spec=furniture[prop.type];if(!spec)return null;
  const material=Object.hasOwn(resistance,prop.material)?prop.material:spec.material;
  return {height:prop.obstacleHeight??spec.height,material,resistance:prop.projectileResistance??resistance[material]};

@@ -21,6 +21,7 @@ import {CARE_COMPOSURE_RELIEF} from './care-composure.js';
 const scalar=value=>value===null||['string','number','boolean'].includes(typeof value);
 const pick=(value,keys)=>Object.fromEntries(keys.filter(key=>value?.[key]!==undefined&&scalar(value[key])).map(key=>[key,value[key]]));
 const POSITION=['x','y','tacticalLevel'];
+const STRUCTURE=['structureDamage','destroyed'];
 const ACTOR=['id','name','nickname','side',...POSITION,'hp','maxHp','stance','movementMode','facing','mounted','unconscious','knockedDown','entangled','routed','surrendered','militia','missionAlly'];
 const OWN=['ammunitionVersion','ap','maxAP','carriedAP','energy','fatigue','bleeding','bandaged','shock','morale','weapon','blade','condition','bladeCondition','weaponDropped','weaponReady','weaponMode','loaded','reloadProgress','ammo','jammed','medkits','rations','torches','boleadoras','activeSlot','activeItem','leftHandItem','activeTool','activeSupply','stealthMode','agility','dexterity','strength','wisdom','leadership','marksmanship','medical','mechanical','explosives','stealth','experienceLevel','militiaRank','militiaExperience'];
 const ITEM=['item','ammoType','kind','grenadeType','outfit','label','name','count','weight','weapon','loaded','reloadProgress','condition','jammed','itemType','toolKey','fittingPattern'];
@@ -75,7 +76,7 @@ export function playerKnownBattle(state){
   const environment=[];
   for(const target of [...tiles.filter(tile=>tile.type==='door'),...(state.props??[]).filter(prop=>prop.type==='chest'&&seen(prop))]){
     const summary=environmentTargetSummary({side:'player'},target),kind=target.type==='door'?'door':'container';
-    environment.push({...pick(target,POSITION),...pick(summary,['id','type','label','open','locked','broken']),kind,
+    environment.push({...pick(target,POSITION),...pick(summary,['id','type','label','open','locked','broken',...STRUCTURE]),kind,
       ...(summary.trap?{trap:pick(summary.trap,['type','armed'])}:{}),
       ...(summary.contents?{contents:summary.contents.map((stack,index)=>({...item(stack),index}))}:{})});
   }
@@ -107,10 +108,10 @@ export function playerKnownBattle(state){
   const result={...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','phase','mode','status','sectorCleared','night','elapsedSeconds']),weather:pick(state.weather,['rain','humidity']),
     units:[...players.map(ownActor),...visible.map(unit=>pick(unit,ACTOR))],departedPlayers:state.units.filter(unit=>unit.side==='player'&&unit.departure).map(departure),
     npcs:visibleNpcs.map(npc=>pick(npc,['id','name',...POSITION,'hp','maxHp','bleeding','bandaged','unconscious','knockedDown','stance','mission'])),
-    tiles:tiles.map(tile=>pick(tile,[...POSITION,'elevation','type','blocked','cover','open','buildingId','roomId'])),
-    ...(state.upperSurfaces?{upperSurfaces:surfaces.map(surface=>pick(surface,['id',...POSITION,'elevation','type','kind','blocked','cover','slabThickness','material','buildingId','roomId']))}:{}),
+    tiles:tiles.map(tile=>pick(tile,[...POSITION,'elevation','type','blocked','cover','open','buildingId','roomId',...STRUCTURE])),
+    ...(state.upperSurfaces?{upperSurfaces:surfaces.map(surface=>pick(surface,['id',...POSITION,'elevation','type','kind','blocked','cover','slabThickness','material','buildingId','roomId',...STRUCTURE]))}:{}),
     ...(state.climbLinks?{climbLinks:state.climbLinks.filter(link=>knownCells.has(spaceKey(link.from))&&knownCells.has(spaceKey(link.to))).map(link=>({...pick(link,['id','kind']),from:pick(link.from,POSITION),to:pick(link.to,POSITION)}))}:{}),
-    props:(state.props??[]).filter(seen).map(prop=>({...pick(prop,['id','type',...POSITION,'blocksMovement']),...(prop.footprint?{footprint:pick(prop.footprint,['width','height'])}:{})})),
+    props:(state.props??[]).filter(seen).map(prop=>({...pick(prop,['id','type',...POSITION,'blocksMovement',...STRUCTURE]),...(prop.footprint?{footprint:pick(prop.footprint,['width','height'])}:{})})),
     environment,contacts,orders,
     artillery:(state.artillery??[]).filter(gun=>gun.side==='player'||seen(gun)).map(gun=>pick(gun,gun.side==='player'?['id','side','type',...POSITION,'loaded','ammo','facing','reloadProgress']:['id','side','type',...POSITION,'facing'])),
     groundItems:(state.groundItems??[]).filter(ground=>!ground.heldBy&&ground.count>0&&seen(ground)).map(ground=>({...pick(ground,['id',...POSITION,'type']),...item(ground.stack??ground)})),

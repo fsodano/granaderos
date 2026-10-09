@@ -9,7 +9,7 @@ export function propCells(prop){
 }
 export function propBlocksAt(state,x,y,level=0){return (state.props??[]).some(p=>{
  const {width,height}=propSize(p);
- return tacticalLevel(p)===level&&p.blocksMovement!==false&&x>=p.x&&x<p.x+width&&y>=p.y&&y<p.y+height;
+ return !p.destroyed&&tacticalLevel(p)===level&&p.blocksMovement!==false&&x>=p.x&&x<p.x+width&&y>=p.y&&y<p.y+height;
 });}
 const key=spaceKey;
 const adjacent=(a,b)=>sameSurface(a,b)&&Math.abs(a.x-b.x)+Math.abs(a.y-b.y)===1;
