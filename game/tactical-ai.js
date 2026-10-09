@@ -195,12 +195,12 @@ function fieldAid(state, unit, costs, targets, paths) {
 function backupWeapon(state, unit, costs, targets) {
   if (readyGun(unit)) return null;
   const blade = bladeFor(unit);
-  if (blade.id !== 0 && targets.some(target => atHand(unit,target,blade.reach) && hasLineOfSight(state, unit, target))) return null;
+  if (blade.usable !== false && blade.id !== 0 && targets.some(target => atHand(unit,target,blade.reach) && hasLineOfSight(state, unit, target))) return null;
   const held = weaponFor(unit);
   const serviceable = held.capacity > 0 && firearmServiceable(unit) && (unit.jammed || unit.loaded > 0 || availableAmmunition(unit,unit) > 0);
   // Do not unpack guns just to stand idle. With contact, a prepared spare can
   // permit a shot this turn when the held weapon needs a long reload.
-  if (!targets.length && (serviceable || held.capacity === 0 && blade.id !== 0)) return null;
+  if (!targets.length && (serviceable || held.capacity === 0 && blade.usable !== false && blade.id !== 0)) return null;
   const candidates = [];
   if (unit.offHand?.count === 1) {
     const ownTurn = {...state, phase: unit.side === 'enemy' ? 'enemy' : 'player'};
@@ -394,7 +394,7 @@ export function chooseEnemyAction(state, unit, {maintenanceContext=null}={}) {
   const scavenge = chooseScavengingAction(state, unit, targets, paths);
   if (scavenge) return scavenge;
 
-  if (weaponFor(unit).capacity <= 0 || !firearmServiceable(unit) || (!unit.loaded && !availableAmmunition(unit,unit))) {
+  if (blade.usable !== false && (weaponFor(unit).capacity <= 0 || !firearmServiceable(unit) || (!unit.loaded && !availableAmmunition(unit,unit)))) {
     // Close for an affordable melee attack; never spend the entire turn rushing
     // across open ground towards an armed enemy who can shoot on arrival.
     const reacting = state.phase === 'interrupt' || Boolean(state.reactionStack?.length);

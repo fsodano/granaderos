@@ -8,6 +8,7 @@ import {practiceFirearmNearMiss} from '../game/firearm-near-miss-practice.js';
 import {targetPreview} from '../game/ja2-hud.js';
 import {battleFrameDuration,battleFrameFocus} from '../game/battle-playback.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {captureBattlePresentation,recordBattleFrame} from '../game/battle-presentation.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 
@@ -54,11 +55,15 @@ test('a known stone reflection warns about an off-axis ally and does not promise
 });
 
 test('hidden bodies and stone furniture cannot alter complete public reflected flight, timing or camera',()=>{
- const clear=field(),normal=shoot(clear),normalFlight=flights(normal).map(publicFrame);assert.equal(normalFlight.length,2);assert.ok(actor(normal.ordinary,'e').hp<100);
- for(const kind of ['body','stone']){
+ const clear=field(),stone=clear.tiles.find(tile=>tile.x===8&&tile.y===5);
+ assert.equal(teamCanSee(clear,'player',stone),true,'the actual opaque stone face is observed');
+ assert.equal(teamCanSee(clear,'player',{x:stone.x,y:stone.y}),false,'a generic point cannot grant sight through that stone');
+ const normal=shoot(clear),normalFlight=flights(normal).map(publicFrame);assert.equal(normalFlight.length,2);assert.ok(actor(normal.ordinary,'e').hp<100);
+ assert.deepEqual(normalFlight[0].shotVisual.impact,firearmFlightPreview(clear,actor(clear),point).ricochets[0].impact,'the observed stone face supplies the exact public reflected leg');
+ for(const kind of ['body','stone','stone-adjacent']){
   const hidden=field();
   if(kind==='body')hidden.npcs=[{id:'private-body',name:'Nombre privado',x:6,y:4,hp:100,stance:'standing',roomId:'unrevealed'}];
-  else hidden.props=[{id:'private-stone',type:'barrels',x:3,y:4,material:'stone',obstacleHeight:2,blocksSight:false,blocksMovement:false,roomId:'unrevealed'}];
+  else hidden.props=[{id:'private-stone',type:'barrels',x:kind==='stone-adjacent'?8:3,y:4,material:'stone',obstacleHeight:2,blocksSight:false,blocksMovement:false,roomId:'unrevealed'}];
   assert.deepEqual(firearmVolleyPreview(hidden,actor(hidden),actor(hidden,'e'),4),firearmVolleyPreview(clear,actor(clear),actor(clear,'e'),4));
   assert.deepEqual(firearmBystanderRisk(hidden,actor(hidden),actor(hidden,'e')),firearmBystanderRisk(clear,actor(clear),actor(clear,'e')));
   const result=shoot(hidden);assert.deepEqual(flights(result).map(publicFrame),normalFlight);assert.equal(actor(result.ordinary,'e').hp,100,'the filtered display cannot invent downstream injury');
@@ -67,6 +72,60 @@ test('hidden bodies and stone furniture cannot alter complete public reflected f
   for(const frame of result.shown.frames){assert.ok(!frame.impacts.some(impact=>impact.unitId==='private-body'));assert.doesNotMatch(JSON.stringify({visual:frame.shotVisual,impacts:frame.impacts,target:frame.targetPoint}),/private-body|private-stone|trajectoryModel|segments|ricochets|sourceId/);}
   assert.doesNotMatch(result.ordinary.log.join(' '),/Nombre privado|private-stone/);
  }
+});
+
+test('valid exterior building and room membership cannot clip a visible paid stone reflection',()=>{
+ const clear=field(),normal=shoot(clear),normalFlight=flights(normal).map(publicFrame);
+ for(const room of [false,true]){
+  const tagged=field(),stone=tagged.tiles.find(tile=>tile.x===8&&tile.y===5);
+  tagged.buildings=[{id:'stone-building',x:8,y:5,width:2,height:2,rooms:room?[{id:'stone-room',cells:[{x:8,y:5}]}]:[]}];
+  stone.buildingId='stone-building';if(room)stone.roomId='stone-room';
+  assert.equal(teamCanSee(tagged,'player',stone),true);
+  assert.strictEqual(firearmKnownTerrain(tagged,actor(tagged)).tiles.find(tile=>tile.x===8&&tile.y===5),stone,'the actual exterior face stays known');
+  const result=shoot(tagged);assert.deepEqual(flights(result).map(publicFrame),normalFlight);
+  assert.deepEqual(result.ordinary.units,normal.ordinary.units);assert.equal(result.ordinary.elapsedSeconds,normal.ordinary.elapsedSeconds);
+ }
+});
+
+test('only an exact observed exterior stone contact can admit a reflected endpoint or origin',()=>{
+ const s=field(),flight=firearmFlightPreview(s,actor(s),point),bounce=flight.ricochets[0];
+ const contact={sourceId:bounce.sourceId,point:{...bounce.impact},normal:{...bounce.normal}};
+ const first={source:{...flight.segments[0].source},impact:{...bounce.impact},outcome:'cover',material:'stone',impactSurfaceContact:contact};
+ const second={source:{...bounce.impact},impact:{...flight.bodyImpacts[0].impact},discharge:false,sourceSurfaceContact:contact};
+ const capture=(scene,visual)=>captureBattlePresentation(scene,()=>{const next=structuredClone(scene);recordBattleFrame(next,{type:'projectile',action:'firePoint',unitId:'p',shotVisual:visual});return next;},(state,body)=>teamCanSee(state,'player',body));
+ const admitted=capture(s,first),continuation=capture(s,second);
+ assert.deepEqual(admitted.frames[0].shotVisual.impact,bounce.impact);assert.equal(admitted.frames[0].shotVisual.material,'stone');
+ assert.deepEqual(continuation.frames[0].shotVisual.source,bounce.impact);assert.equal(continuation.frames[0].shotVisual.discharge,false);
+ for(const result of [admitted,continuation]){assert.deepEqual(result.state,s);assert.doesNotMatch(JSON.stringify(result.frames.map(frame=>frame.shotVisual)),/SurfaceContact|sourceId|surface:/);}
+ for(const change of [
+  visual=>{visual.impactSurfaceContact.sourceId='surface:0:9,5';},
+  visual=>{visual.impactSurfaceContact.normal={x:1,y:0,height:0};},
+  visual=>{visual.impactSurfaceContact.point.x+=.1;},
+  visual=>{visual.impact={x:8,y:5,height:1.175,tacticalLevel:0};visual.impactSurfaceContact.point={...visual.impact};},
+ ]){
+  const forged=structuredClone(first);change(forged);const result=capture(s,forged);
+  assert.notDeepEqual(result.frames[0].shotVisual?.impact,forged.impact,'unmatched or interior points cannot use visible-face admission');
+ }
+ const unmatched=structuredClone(second);unmatched.sourceSurfaceContact.sourceId='surface:0:9,5';
+ assert.ok(capture(s,unmatched).frames.every(frame=>!frame.shotVisual),'an unmatched opaque origin cannot disclose a continuation');
+ const hidden=field();Object.assign(hidden.tiles.find(tile=>tile.x===4&&tile.y===4),{type:'wall',material:'adobe',blocked:true,blocksSight:true});
+ assert.equal(teamCanSee(hidden,'player',hidden.tiles.find(tile=>tile.x===8&&tile.y===5)),false);
+ const unproved=structuredClone(first);delete unproved.impactSurfaceContact;
+ assert.deepEqual(capture(hidden,first).frames,capture(hidden,unproved).frames,'a real but concealed stone source cannot grant a public contact');
+ const concealed=field();Object.assign(actor(concealed,'e'),{x:8,y:5});assert.equal(teamCanSee(concealed,'player',actor(concealed,'e')),false);
+ const result=capture(concealed,first);assert.deepEqual(result.frames[0].shotVisual.impact,bounce.impact);
+ assert.ok(result.frames.every(frame=>!frame.visibleIds.includes('e')&&!frame.impacts.length));
+ assert.doesNotMatch(JSON.stringify(result.frames.map(frame=>frame.shotVisual)),/Enemigo observado|victimId|victimKind/);
+ const privateNeighbour=field();privateNeighbour.props=[{id:'private-neighbour',type:'chest',x:8,y:4,material:'stone',obstacleHeight:2,blocksSight:false,roomId:'unrevealed'}];
+ assert.equal(teamCanSee(privateNeighbour,'player',privateNeighbour.props[0]),true,'the direct recorder observer has no interior guard');
+ assert.deepEqual(capture(privateNeighbour,first).frames.map(frame=>frame.shotVisual),admitted.frames.map(frame=>frame.shotVisual),'interior admission is still required for an adjacent prop');
+ const privateTerrain=field();Object.assign(privateTerrain.tiles.find(tile=>tile.x===8&&tile.y===4),{type:'wall',material:'stone',blocked:true,blocksSight:false});
+ assert.notDeepEqual(capture(privateTerrain,first).frames[0].shotVisual?.impact,bounce.impact,'an observed adjoining stone column still prevents a false exterior face');
+ // A direct recorder can provide a narrower exterior observation set. This
+ // case isolates that callback contract; native exterior sight is tested above.
+ const exteriorObserver=(state,surface)=>!(surface.x===8&&surface.y===4)&&teamCanSee(state,'player',surface);
+ const terrainCapture=captureBattlePresentation(privateTerrain,()=>{const next=structuredClone(privateTerrain);recordBattleFrame(next,{type:'projectile',action:'firePoint',unitId:'p',shotVisual:first});return next;},(state,body)=>teamCanSee(state,'player',body),exteriorObserver);
+ assert.deepEqual(terrainCapture.frames.map(frame=>frame.shotVisual),admitted.frames.map(frame=>frame.shotVisual),'an adjacent terrain volume excluded by the exterior observer cannot reveal itself through the contact veto');
 });
 
 test('an unobserved stone tile cannot bend or shorten the admitted path, while known stone and supporting geometry stay intact',()=>{

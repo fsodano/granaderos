@@ -43,13 +43,15 @@ test('a deliberate blocked shot spends its charge and AP but cannot damage throu
 });
 
 test('wood spends its actual depth once across a furniture footprint and separate barriers add force loss',()=>{
-  const clear=field(),wood=field({props:[{id:'barrels',type:'barrels',x:5,y:3,footprint:{width:2,height:1},obstacleHeight:2}]});
+  // An authored open screen permits sight; its full wood volume still absorbs
+  // the ball. This isolates material depth from the separate sight admission.
+  const clear=field(),wood=field({props:[{id:'barrels',type:'barrels',x:5,y:3,footprint:{width:2,height:1},obstacleHeight:2,blocksSight:false}]});
   const trace=firearmProjectilePath(wood,...wood.units);assert.equal(trace.obstacles.length,1);close(trace.damageFactor,(58-24*2*torsoLengthPerX)/58);
   const direct=order(clear,{type:'fire',targetId:'e',aim:4}),through=order(wood,{type:'fire',targetId:'e',aim:4});
   assert.ok(through.units[1].hp>direct.units[1].hp);assert.ok(through.units[1].hp<100);
   assert.deepEqual(presentedActBattle(wood,{unitId:'p',type:'fire',targetId:'e',aim:4}).state,through);
   assert.deepEqual(order(validateBattleSnapshot(JSON.parse(JSON.stringify(wood))),{type:'fire',targetId:'e',aim:4}),through);
-  wood.props.push({id:'second',type:'barrels',x:4,y:3,obstacleHeight:2},{id:'third',type:'barrels',x:3,y:3,obstacleHeight:2});
+  wood.props.push({id:'second',type:'barrels',x:4,y:3,obstacleHeight:2,blocksSight:false},{id:'third',type:'barrels',x:3,y:3,obstacleHeight:2,blocksSight:false});
   assert.equal(firearmProjectilePath(wood,...wood.units).blocked,true);
 });
 
@@ -112,7 +114,8 @@ test('an embedded body receives only entry-to-body loss before the remaining cov
 });
 
 test('overlapping distinct materials add their lengths while a shared prop spanning cells is not debited twice',()=>{
-  const s=field({props:[{id:'one',type:'hay',x:3,y:3,footprint:{width:2,height:1},obstacleHeight:2,projectileResistance:5},{id:'two',type:'barrels',x:4,y:3,footprint:{width:2,height:1},obstacleHeight:2,projectileResistance:7}]}),path=firearmProjectilePath(s,...s.units);
+  // Both known screens permit sight while retaining their actual resistance.
+  const s=field({props:[{id:'one',type:'hay',x:3,y:3,footprint:{width:2,height:1},obstacleHeight:2,projectileResistance:5,blocksSight:false},{id:'two',type:'barrels',x:4,y:3,footprint:{width:2,height:1},obstacleHeight:2,projectileResistance:7,blocksSight:false}]}),path=firearmProjectilePath(s,...s.units);
   close(path.damageFactor,(58-(5*2+7*2)*torsoLengthPerX)/58);assert.equal(path.obstacles.length,2);
   const permuted={...s,props:[...s.props].reverse()};assert.deepEqual(firearmProjectilePath(permuted,...permuted.units),path);
 });
@@ -139,10 +142,13 @@ test('enemy scoring does not choose to fire a blocked torso shot when no AP rema
 });
 
 test('blunderbuss spread traces each victim and cannot damage a friend or enemy through hard cover',()=>{
+  // The opaque screen hides the bodies. A deliberate coordinate shot still
+  // spends its finite charge and tests physical interception of every share.
   const s=field({props:[{id:'barrier',type:'barrels',x:4,y:3,material:'stone',obstacleHeight:2}]});
   Object.assign(s.units[0],{weapon:1807});s.units[1].x=6;
   s.units.push({...structuredClone(s.units[0]),id:'friend',x:5,y:3});
-  const next=order(s,{type:'fire',targetId:'e',aim:4});
+  assert.equal(canSee(s,s.units[0],s.units[1]),false);
+  const next=order(s,{type:'firePoint',x:s.units[1].x,y:s.units[1].y,aim:4});
   assert.equal(next.units[1].hp,100);assert.equal(next.units[2].hp,s.units[2].hp);assert.equal(next.units[0].loaded,0);
 });
 

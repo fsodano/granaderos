@@ -2,6 +2,9 @@
 // changes orders, randomness, AP, visibility or the returned authoritative state.
 import {projectileTrajectoryPoint} from './projectile-trajectory.js';
 import {markFirearmNearMissPresented} from './firearm-near-miss-feedback.js';
+import {surfaceAt,tacticalLevel} from './tactical-space.js';
+import {obstacleVolumesAt} from './sight-geometry.js';
+import {isInteriorVisible} from './tactical-visibility.js';
 let recorder=null,recordingShotHand=null;
 export function withBattleShotHand(hand,execute){const previous=recordingShotHand;recordingShotHand=hand==='offhand'?'offhand':'primary';try{return execute();}finally{recordingShotHand=previous;}}
 export function recordBattleFrame(state,event){
@@ -22,13 +25,44 @@ function snapshot(value,previous){
 const bodyEntries=state=>[...state.units.map(body=>({body,kind:'unit'})),...(state.npcs??[]).map(body=>({body,kind:'npc'}))];
 const bodyKey=(kind,id)=>`${kind}:${id}`;
 function visibleSignature(state,visible){return JSON.stringify(bodyEntries(state).filter(({body,kind})=>visible.has(bodyKey(kind,body.id))).map(({body:u,kind})=>[kind,u.id,u.x,u.y,u.tacticalLevel,u.hp,u.energy,u.loaded,u.stance,u.unconscious,u.departure,u.fled]));}
-function observedShot(state,raw,known,canObserve){
+function observedStoneContact(state,point,contact,canObserve,canObserveExterior){
+ if(!contact||!point||!contact.point||tacticalLevel(point)!==tacticalLevel(contact.point)||!['x','y','height'].every(key=>Number.isFinite(point[key])&&Number.isFinite(contact.point[key])&&Math.abs(point[key]-contact.point[key])<1e-8))return false;
+ const match=typeof contact.sourceId==='string'&&/^surface:(\d+):(\d+),(\d+)$/.exec(contact.sourceId);
+ if(!match)return false;
+ const cell={tacticalLevel:Number(match[1]),x:Number(match[2]),y:Number(match[3])},surface=surfaceAt(state,cell);
+ const volume=surface&&obstacleVolumesAt(state,cell).find(volume=>volume.id===contact.sourceId&&volume.kind==='cover'&&volume.stoneFace);
+ if(!volume||tacticalLevel(point)!==cell.tacticalLevel||point.height<=volume.bottom+1e-8||point.height>=volume.top-1e-8)return false;
+ const normal=contact.normal,bounds=volume.bounds;
+ if(!normal||normal.height!==0)return false;
+ const onFace=normal.y===0&&Math.abs(normal.x)===1?
+  Math.abs(point.x-(normal.x<0?bounds.minX:bounds.maxX))<1e-8&&point.y>bounds.minY+1e-8&&point.y<bounds.maxY-1e-8:
+  normal.x===0&&Math.abs(normal.y)===1&&Math.abs(point.y-(normal.y<0?bounds.minY:bounds.maxY))<1e-8&&point.x>bounds.minX+1e-8&&point.x<bounds.maxX-1e-8;
+ if(!onFace)return false;
+ if(!canObserveExterior(state,surface))return false;
+ const outside={x:Math.floor(point.x+normal.x*.25+.5),y:Math.floor(point.y+normal.y*.25+.5)};
+ // Private neighbouring material still affects physics, but cannot veto a
+ // visible exterior contact in the public presentation.
+ if(obstacleVolumesAt(state,outside).some(other=>{
+  if(!other.stoneFace||point.height<=other.bottom+1e-8||point.height>=other.top-1e-8)return false;
+  if(other.kind==='cover'){
+   const neighbour=surfaceAt(state,{...outside,tacticalLevel:other.tacticalLevel});
+   return neighbour&&canObserveExterior(state,neighbour);
+  }
+  if(other.kind==='prop'){
+   const prop=(state.props??[]).find(prop=>other.id===`prop:${prop.id}`);
+   return prop&&isInteriorVisible(state,prop,new Set(state.revealedRooms??[]))&&canObserve(state,prop);
+  }
+  return false;
+ }))return false;
+ return true;
+}
+function observedShot(state,raw,known,canObserve,canObserveExterior){
  if(!raw)return null;
  // An unseen interception cannot disclose a concealed body or its coordinates.
  // In that case only the observed part of the original ray is shown.
  const hiddenVictim=raw.victimId&&(!raw.victimObserved||!known.has(bodyKey(raw.victimKind??'unit',raw.victimId))),end=hiddenVictim?raw.destination:raw.impact;
  if(![raw.source,end].every(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)))return null;
- if(raw.discharge===false&&!canObserve(state,{...raw.source,x:Math.round(raw.source.x),y:Math.round(raw.source.y)}))return null;
+ if(raw.discharge===false&&!canObserve(state,{...raw.source,x:Math.round(raw.source.x),y:Math.round(raw.source.y)})&&!observedStoneContact(state,raw.source,raw.sourceSurfaceContact,canObserve,canObserveExterior))return null;
  const distance=Math.hypot(end.x-raw.source.x,end.y-raw.source.y),points=[];
  if(raw.trajectoryModel!==undefined){
   const model=raw.trajectoryModel,start=projectileTrajectoryPoint(model,0),finish=projectileTrajectoryPoint(model,1);
@@ -51,7 +85,11 @@ function observedShot(state,raw,known,canObserve){
  }
  let last=raw.source,complete=true;
  for(const point of points){
-  if(!canObserve(state,{...point,x:Math.round(point.x),y:Math.round(point.y)})){complete=false;break;}
+  // Only an exact known side-face endpoint can use its surface's visibility.
+  // Every intermediate sample remains an ordinary point; no opaque cell is
+  // made transparent, and the private contact proof is omitted below.
+  const contact=point===points.at(-1)&&end===raw.impact?raw.impactSurfaceContact:null;
+  if(!canObserve(state,{...point,x:Math.round(point.x),y:Math.round(point.y)})&&!observedStoneContact(state,point,contact,canObserve,canObserveExterior)){complete=false;break;}
   last=point;
  }
  if(last===raw.source)return null;
@@ -76,7 +114,7 @@ function observedArtillery(state,raw,known,canObserve){
  const impacts=(raw.impacts??[]).filter(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)&&observed(point)&&(!point.victimId||known.has(bodyKey(point.victimKind??'unit',point.victimId)))).map(point=>({...clean(point),outcome:point.outcome,...(point.material?{material:point.material}:{})}));
  return {visible:true,source,canister,discharge:raw.discharge!==false,displayHeight:'ground-relative',durationMs:Math.min(650,Math.max(320,Math.round(distance*35))),impacts,...(typeof raw.cannonId==='string'?{cannonId:raw.cannonId}:{}),...(!canister&&points.length>1?{points}: {})};
 }
-export function captureBattlePresentation(before,execute,canObserve){
+export function captureBattlePresentation(before,execute,canObserve,canObserveExterior=canObserve){
  const frames=[],parent=recorder,presentedShots=new Set(),presentedArtillery=new Set(),shotIds=new Map(),actionStarts=new Map(),actionCrews=new Map();let prior=before,lastSignature=null,shotSequence=0;
  const visibleIn=s=>new Set(s.units.filter(u=>u.side==='player'||canObserve(s,u)).map(u=>u.id));
  const knownIn=s=>new Set(bodyEntries(s).filter(({body:u})=>u.side==='player'||canObserve(s,u)).map(({body,kind})=>bodyKey(kind,body.id)));
@@ -94,7 +132,7 @@ export function captureBattlePresentation(before,execute,canObserve){
   const nearMissIds=Array.isArray(event.nearMissIds)?[...new Set(event.nearMissIds)].filter(id=>typeof id==='string'&&state.units.some(unit=>unit.id===id&&unit.side==='player'&&unit.hp>0&&!unit.unconscious)):[];
   if(!seen&&signature===lastSignature&&!nearMissIds.length)return;
   if((event.type==='prepare'||event.type==='contact')&&!seen)return;
-  const shotVisual=seen?observedShot(state,event.shotVisual,known,canObserve):null;
+  const shotVisual=seen?observedShot(state,event.shotVisual,known,canObserve,canObserveExterior):null;
   if(shotVisual){if(event.type==='projectile'&&shotVisual.discharge!==false||!shotIds.has(event.unitId))shotIds.set(event.unitId,`${event.unitId}:${++shotSequence}`);shotVisual.shotId=shotIds.get(event.unitId);}
   const artilleryVisual=seen?observedArtillery(state,event.artilleryVisual,known,canObserve):null;
   if(event.type==='projectile'&&shotVisual)presentedShots.add(event.unitId);

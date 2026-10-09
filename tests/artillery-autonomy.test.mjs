@@ -89,7 +89,11 @@ test('canister can hit several observed opponents but a bystander anywhere in th
 test('unseen opponents and private enemy supplies do not change a gunner decision',()=>{
  const b=field({type:'swivel',hidden:true}),target=b.units.find(u=>u.id==='target');assert.equal(choose(b,'crew-1',[target]),null);
  const visible=field({type:'swivel'}),changed=structuredClone(visible),t=changed.units.find(u=>u.id==='target');t.ammo=999;t.medkits=999;t.priming=0;t.flints=0;t.rations=0;t.energy=42;assert.deepEqual(choose(changed),choose(visible));
- const behind=field({type:'swivel'});behind.tiles.find(t=>t.x===8&&t.y===3).blocksSight=true;assert.equal(choose(behind),null);
+ const behind=field({type:'swivel'});
+ // A window sill is lower than the standing observer. Use a full-height
+ // opaque wall for this hidden-opponent case, retaining the movement barrier.
+ Object.assign(behind.tiles.find(t=>t.x===8&&t.y===3),{type:'wall',blocked:true,blocksSight:true});
+ assert.equal(canSee(behind,crewOf(behind)[0],behind.units.find(u=>u.id==='target')),false);assert.equal(choose(behind),null);
 });
 
 test('peaceful posts retain only their required crew and depleted guns release them to patrol',()=>{

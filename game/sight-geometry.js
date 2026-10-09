@@ -114,17 +114,29 @@ function requestedSightObstacle(state,target){
  return prop?`prop:${prop.id}`:null;
 }
 
-// Call only when usesElevationGeometry() is true; the caller retains its exact
-// established flat-map sight rules otherwise. No actor roster is inspected here.
+// All maps use the same physical ray. A zero-length corner touch crosses no
+// material, matching projectile geometry and the established flat corner rule.
+// No actor roster is inspected here.
 export function elevationSightClear(state,a,b){
  const start=absoluteBodyHeight(state,a),end=absoluteBodyHeight(state,b);
  if(start===null||end===null)return false;
  const requested=requestedSightObstacle(state,b);
- for(const cell of geometryCells(a,b))for(const volume of obstacleVolumesAt(state,cell)){
-  // Only the requested object's own cover is exempt. Slabs remain solid, even
-  // when the requested object is a floor or occupies the terminal column.
-  if(volume.kind!=='slab'&&volume.id===requested)continue;
-  if(volume.blocksSight&&rayHeightIntersection(start,end,cell,volume.bottom,volume.top))return false;
+ for(const cell of geometryCells(a,b)){
+  if(cell.exit-cell.entry<=epsilon)continue;
+  // Authored opacity can exist without movement or projectile cover (for
+  // example a dense foliage screen). Preserve that sight-only declaration.
+  // Explicit low cover still uses its actual height, including window sills.
+  for(const surface of [groundTileAt(state,cell),...upperColumn(state,cell)]){
+   if(!surface||surface.blocksSight!==true||terrainCoverProfile(surface)||surface.obstacleHeight!==undefined||surface.type==='door'&&surface.open)continue;
+   const base=surface.elevation??0;
+   if(rayHeightIntersection(start,end,cell,base,base+2.5))return false;
+  }
+  for(const volume of obstacleVolumesAt(state,cell)){
+   // Only the requested object's own cover is exempt. Slabs remain solid, even
+   // when the requested object is a floor or occupies the terminal column.
+   if(volume.kind!=='slab'&&volume.id===requested)continue;
+   if(volume.blocksSight&&rayHeightIntersection(start,end,cell,volume.bottom,volume.top))return false;
+  }
  }
  return true;
 }
