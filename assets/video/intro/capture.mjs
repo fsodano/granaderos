@@ -13,11 +13,22 @@ const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const output=resolve(root,'assets/video/intro'),rawDir=resolve(root,'.cache/trailer-capture/raw');
 const proofDir=resolve(output,'source/evidence');
 const manifestPath=resolve(output,'source/capture-manifest.json');
+async function serverIdentity(){
+ const response=await fetch(origin+'/build-info.json',{cache:'no-store'});
+ assert.ok(response.ok,'The recorded game must expose its build identity.');
+ const identity=await response.json();
+ assert.match(identity.revision??'',/^[0-9a-f]{40}$/,'The recorded game must identify its Git revision.');
+ assert.match(identity.source??'',/^[0-9a-f]{64}$/,'The recorded game must identify its actual source bytes.');
+ assert.equal(identity.id,identity.source.slice(0,12));
+ if(process.env.GRANADEROS_EXPECTED_CAPTURE_SOURCE)assert.equal(identity.source,process.env.GRANADEROS_EXPECTED_CAPTURE_SOURCE,'The recording server must match the expected game source.');
+ return identity;
+}
+const build=await serverIdentity();
 await mkdir(rawDir,{recursive:true});await mkdir(proofDir,{recursive:true});
-const manifest={schema:1,date:new Date().toISOString(),commit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),origin,viewport:{width:1600,height:900},browser:{engine:'Chromium',executable:browserExecutable,recording:'Playwright recordVideo, real browser frames, no speed change'},errors:[],clips:[]};
+const manifest={schema:2,date:new Date().toISOString(),commit:build.revision,build,captureScriptRevision:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),captureScriptSha256:createHash('sha256').update(await readFile(fileURLToPath(import.meta.url))).digest('hex'),origin,viewport:{width:1600,height:900},browser:{engine:'Chromium',executable:browserExecutable,recording:'Playwright recordVideo, real browser frames, no speed change'},errors:[],clips:[]};
 if(['combat','battle'].includes(process.env.GRANADEROS_CAPTURE_SECTION)){
  const previous=JSON.parse(await readFile(manifestPath));
- assert.equal(previous.commit,manifest.commit);manifest.clips=previous.clips.filter(c=>process.env.GRANADEROS_CAPTURE_SECTION==='battle'?c.name!=='battle':['recruitment','campaign-map'].includes(c.name));
+ assert.equal(previous.commit,manifest.commit);assert.equal(previous.build?.source,build.source,'Partial capture must retain the same game source.');manifest.clips=previous.clips.filter(c=>process.env.GRANADEROS_CAPTURE_SECTION==='battle'?c.name!=='battle':['recruitment','campaign-map'].includes(c.name));
 }
 const browser=await chromium.launch({headless:true,executablePath:browserExecutable});
 manifest.browser.version=browser.version();
@@ -43,6 +54,7 @@ async function finish(rec){
   row.media=JSON.parse(execFileSync('ffprobe',['-v','error','-show_entries','stream=width,height,r_frame_rate,nb_frames,start_time,duration','-show_entries','format=duration,start_time,size','-of','json',resolve(root,row.path)],{encoding:'utf8'}));
   assert.equal(row.media.streams[0].nb_frames,String(row.duration*25));assert.equal(Number(row.media.streams[0].start_time),0);assert.equal(Number(row.media.format.duration),row.duration);
   row.sha256=createHash('sha256').update(await readFile(resolve(root,row.path))).digest('hex');
+  row.evidenceSha256=Object.fromEntries(await Promise.all(row.evidence.map(async path=>[path,createHash('sha256').update(await readFile(resolve(root,path))).digest('hex')])));
   delete row.wallStart;manifest.clips.push(row);console.log(JSON.stringify({clip:row.name,duration:row.duration,path:row.path,sha256:row.sha256}));
  }
 }
@@ -91,7 +103,7 @@ try{
  await b.getByRole('button',{name:'Fin del turno',exact:true}).click();
  let nextTurnReady=false;
  for(let i=0;i<60;i++){
-  await b.waitForTimeout(500);const resume=b.getByRole('button',{name:'Continuar turno enemigo',exact:true});
+  await b.waitForTimeout(500);const resume=b.getByRole('button',{name:'Continuar turno enemigo',exact:true}).first();
   if(await resume.isVisible()&&await resume.isEnabled())await resume.click();
   if((await b.locator('body').innerText()).includes('Turno 2 · Ejército patriota')&&await b.getByRole('button',{name:'Fin del turno',exact:true}).isEnabled()){nextTurnReady=true;break;}
  }
@@ -133,6 +145,7 @@ try{
  await holdUntil(b,maneuver.wallStart,10);maneuver.evidence.push(await shot(b,'maneuver-after'));
  }
  await finish(combat);
+ assert.deepEqual(await serverIdentity(),build,'The game build must remain unchanged throughout recording.');
  assert.deepEqual(manifest.errors,[],'The live recording must have no runtime or HTTP errors.');
  assert.equal(manifest.clips.length,5,'The source manifest must have all five complete clips.');
  manifest.scope='Fresh isolated contexts. Live UI recorded at normal browser zoom. Clip trimming and H.264 encoding only; no synthetic game frames, crop, playback speed changes, or game state injection. Screenshots document the captured actions.';

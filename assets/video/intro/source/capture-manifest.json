@@ -1,8 +1,16 @@
 {
-  "schema": 1,
-  "date": "2026-10-09T20:03:42.005Z",
-  "commit": "3735cc7023d35a9c378c2c357142b37ed166eb9b",
-  "origin": "http://127.0.0.1:3210",
+  "schema": 2,
+  "date": "2026-10-09T20:19:16.820Z",
+  "commit": "88fb68f6ac45c23feee4ed8e3e712bebcd2316a8",
+  "build": {
+    "version": "0.4.0-dev.1",
+    "id": "c32f9baede2f",
+    "source": "c32f9baede2f715049e30b8df6bfadc7d9ca57cdff60799cb71902052f0b3f8c",
+    "revision": "88fb68f6ac45c23feee4ed8e3e712bebcd2316a8"
+  },
+  "captureScriptRevision": "8fcd11c12dcd8106abfc52a07eaf1cc3022e3e94",
+  "captureScriptSha256": "7af927d1fdef72c027d4dc739664ac0abc2fa0fedcf80442c006a0ec093fa64a",
+  "origin": "http://127.0.0.1:3299",
   "viewport": {
     "width": 1600,
     "height": 900
@@ -33,10 +41,9 @@
         "afterHire": "48 de 48 mercenarios · 1 en tus filas · 0 en viaje",
         "contractButton": "Renovar · 162 pesos"
       },
-      "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
-      "rawTrimStart": 4.497,
-      "rawTrimEnd": 12.497,
-      "sha256": "bb006db2fff20588a49cc8aadecf50b19db7711e90472453632cfba4ca8f282e",
+      "rawVideo": ".cache/trailer-capture/raw/page@bdc086e1a31964ce1b27ead8cc461cc0.webm",
+      "rawTrimStart": 3.7379999999999995,
+      "rawTrimEnd": 11.738,
       "media": {
         "programs": [],
         "stream_groups": [],
@@ -53,8 +60,14 @@
         "format": {
           "start_time": "0.000000",
           "duration": "8.000000",
-          "size": "1150916"
+          "size": "889737"
         }
+      },
+      "sha256": "1edbb93c9578c77e1fd9a815905627f2793ccc720908ac60ca1647cb3e4af6af",
+      "evidenceSha256": {
+        "assets/video/intro/source/evidence/recruitment-before.png": "eb30949474c394f53ee05e2dcf736e076e464f31c9579318c23a895e05599200",
+        "assets/video/intro/source/evidence/recruitment-service-sheet.png": "97b2261fe3e9300695753aab3288c6d801dd32ed5cd986afbd51bb3742c624e6",
+        "assets/video/intro/source/evidence/recruitment-after.png": "c22a2ed0248765a50e5013633f51b1ef26f1b08433286053229c7a772ccb12ee"
       }
     },
     {
@@ -71,13 +84,12 @@
         "assets/video/intro/source/evidence/campaign-map-troops.png"
       ],
       "actionEvidence": {
-        "selectedSector": "Celda 28,29 · Buenos Aires · Fuerte y Retiro · Cuarteles de Retiro · patriota · 1 combatientes propios",
+        "selectedSector": "Celda 28,29 · Buenos Aires · Fuerte y Retiro · Cuarteles de Retiro · patriota · Camino conectado al oeste, sur · 1 combatientes propios",
         "troopsView": "true"
       },
-      "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
-      "rawTrimStart": 14.236999999999998,
-      "rawTrimEnd": 21.237,
-      "sha256": "bbb9eb8b3554227d4290d2efb13a6d3aef990bb038be318c930655763c851d29",
+      "rawVideo": ".cache/trailer-capture/raw/page@bdc086e1a31964ce1b27ead8cc461cc0.webm",
+      "rawTrimStart": 13.437000000000001,
+      "rawTrimEnd": 20.437,
       "media": {
         "programs": [],
         "stream_groups": [],
@@ -94,8 +106,13 @@
         "format": {
           "start_time": "0.000000",
           "duration": "7.000000",
-          "size": "591389"
+          "size": "429706"
         }
+      },
+      "sha256": "6c3fdd445bca2ec7f92311cb292d5dff266ca207a8fb872d75156c2ed9e80227",
+      "evidenceSha256": {
+        "assets/video/intro/source/evidence/campaign-map-cities.png": "763c5b3216f8766eb93a1112d19892aeff3978420196ab889c16fe0b15ddc720",
+        "assets/video/intro/source/evidence/campaign-map-troops.png": "a388b95a125307fd7cbf77906246327ae3432d535b61a346614c9f11a348a67e"
       }
     },
     {
@@ -114,10 +131,9 @@
         "beforeEquipment": "3. Lorenzo Barcala. Salud 85, 25 puntos de acción, energía 100, moral 80. Ve 2 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
         "equipmentText": "GRANADEROS\nSan Lorenzo · 3 de febrero de 1813\nTurno 1 · Ejército patriota\n3 avistados\nMover\nCámara\nBarcala\nBarcala\nEjército patriota · Nivel 4\n←\n3/4\n→\nPostura y órdenes\nAgilidad\n80\nDestreza\n91\nFuerza\n79\nLiderazgo\n78\nSabiduría\n85\nNivel\n4\nPuntería\n84\nPólvora y artillería\n80\nMecánica\n72\nMedicina\n35\nSalud\n85 / 85\nPuntos de acción\n25 / 25\nPostura\nDe pie\nOrientación\nE\nEnergía\n100 / 100\nMoral\n80%\nMás detalles\nVESTIMENTA\nCABEZA\nVacía\nTORSO\nVacía\nPIERNAS\nVacía\nMano principal\nCharleville\n1 carga(s) · 100%\nSegunda mano\n↔ Arma de dos manos\nCargas y accesorios\nCarga para esta arma\nCartuchos de mosquete · carga principal\nCargas de perdigones · daño 26 · alcance 6 · abanico\nVaciá el arma y terminá la recarga antes de cambiar de carga.\nDescargar arma · 3 PA\nDisparo\nCombate cercano\nDar o soltar Charleville\nDar o soltar Bayoneta de Cubo\nBayoneta de encastre sin identificar · suelta · estado 100% · 0.5 kg\nFijar al Brown Bess · 3 PA\nLa bayoneta no corresponde a este fusil.\nPeso\n8.0 / 39.5 kg\n\nBolsillos · 4 grandes / 8 pequeños\n\nClic: uno. Mayús + clic: todos. Botón derecho: detalles.\nGrande\nGrande\nGrande\nGrande\nRaciones\n2\nVendas\n2\nBoleadoras\n1\nAntorchas\n2\nCartuchos de mosquete\n12\nBayoneta de Cubo\n1\nPequeño\nPequeño\nCharleville · detalles\n23,27 · San Lorenzo · 3 de febrero de 1813\nDía 1 · 08:00\nSan Lorenzo · 3 de febrero de 1813\n\nTurno 1 · Ejército patriota\n\nRetirada\nListo"
       },
-      "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
-      "rawTrimStart": 6.501999999999999,
-      "rawTrimEnd": 13.501999999999999,
-      "sha256": "95d3c1ad6a28e61ce532d7938376abab0d845ea6ed46358226de49f5fc53938c",
+      "rawVideo": ".cache/trailer-capture/raw/page@fc9e0609214894614c5483b7046ecd21.webm",
+      "rawTrimStart": 5.629000000000005,
+      "rawTrimEnd": 12.629000000000005,
       "media": {
         "programs": [],
         "stream_groups": [],
@@ -134,8 +150,12 @@
         "format": {
           "start_time": "0.000000",
           "duration": "7.000000",
-          "size": "1460894"
+          "size": "2236266"
         }
+      },
+      "sha256": "92131715bab930691f8c7ff9ef061fe6e2f7ba5766a22b95a4ecd70b5600c8d4",
+      "evidenceSha256": {
+        "assets/video/intro/source/evidence/preparation-equipment.png": "c5dc48d180b2689b9d854fbe6ed3a3073327f0579be6d6be09d680fdad4156d5"
       }
     },
     {
@@ -153,30 +173,29 @@
         "assets/video/intro/source/evidence/battle-after-reload.png"
       ],
       "actionEvidence": {
-        "before": "3. Lorenzo Barcala. Salud 85, 15,75 puntos de acción, energía 81, moral 62. Ve 4 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+        "before": "3. Lorenzo Barcala. Salud 85, 15,75 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
         "renderer": {
           "sectorRenderer": "three",
           "engine": "three.js r184",
           "effects": "0",
-          "fps": "51.2",
-          "drawCalls": "228",
-          "triangles": "528377",
-          "actors": "8",
-          "loadedActors": "8",
-          "activeActors": "6",
+          "fps": "53.1",
+          "drawCalls": "208",
+          "triangles": "479090",
+          "actors": "7",
+          "loadedActors": "7",
+          "activeActors": "5",
           "pendingActors": "0",
           "lod": "1",
-          "geometries": "528",
-          "textures": "112"
+          "geometries": "523",
+          "textures": "111"
         },
         "setup": "In a fresh San Lorenzo skirmish, complete the ordinary first enemy turn with Fin del turno and resume any interruptions through Continuar turno enemigo. Barcala starts the second player turn with 30 PA by retaining five. Select Barcala, choose Run with R and issue a normal movement order from T35 to U44 before the recorded interval. Recenter and pan the native camera. This move clears the convent roof and foliage and leaves enough PA for fire and reload. Cabral fell during the preceding real enemy turn.",
         "afterShot": "3. Lorenzo Barcala. Salud 85, 13 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 0 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
         "afterReload": "3. Lorenzo Barcala. Salud 85, 2,5 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 1 carga(s). 11 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente"
       },
-      "rawVideo": ".cache/trailer-capture/raw/page@bfe716955554178a50d383428f6c60c0.webm",
-      "rawTrimStart": 30.197000000000003,
-      "rawTrimEnd": 42.197,
-      "sha256": "4788c95298afe1a93c15f8d5147f1412eff6da9746bb9c46e820b58ba5da5497",
+      "rawVideo": ".cache/trailer-capture/raw/page@fc9e0609214894614c5483b7046ecd21.webm",
+      "rawTrimStart": 37.146,
+      "rawTrimEnd": 49.146,
       "media": {
         "programs": [],
         "stream_groups": [],
@@ -193,8 +212,14 @@
         "format": {
           "start_time": "0.000000",
           "duration": "12.000000",
-          "size": "3397269"
+          "size": "3166262"
         }
+      },
+      "sha256": "d2594e592b20a5560bf7c3f96e95ba5e2cb6f97139611dc7d92e8a3cdc79581f",
+      "evidenceSha256": {
+        "assets/video/intro/source/evidence/battle-before.png": "a8f2ea57be2c7aff7b43a8ffc0808375203f82dea27deb8b9ef20f69e74ed419",
+        "assets/video/intro/source/evidence/battle-after-shot.png": "3a2dfa7ecf4147ffc10ab844c416390da0dd694975f63104530f07b3d3bef427",
+        "assets/video/intro/source/evidence/battle-after-reload.png": "3a932c7bf72c80ecea734c9bddcaabd33ef31ca2e2714a9a8c06a335b1a6365c"
       }
     },
     {
@@ -213,16 +238,15 @@
         "assets/video/intro/source/evidence/maneuver-after.png"
       ],
       "actionEvidence": {
-        "before": "2. Manuel Dorrego. Salud 84, 25 puntos de acción, energía 100, moral 80. Ve 0 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+        "before": "2. Manuel Dorrego. Salud 84, 30 puntos de acción, energía 100, moral 62. Ve 0 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
         "initialPosition": "standing",
-        "afterMove": "2. Manuel Dorrego. Salud 84, 19 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+        "afterMove": "2. Manuel Dorrego. Salud 84, 24 puntos de acción, energía 96, moral 62. Ve 0 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
         "destination": "AC39, Manuel Dorrego",
-        "afterPosture": "2. Manuel Dorrego. Salud 84, 18,25 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente"
+        "afterPosture": "2. Manuel Dorrego. Salud 84, 23,25 puntos de acción, energía 96, moral 62. Ve 0 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente"
       },
-      "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
-      "rawTrimStart": 26.857,
-      "rawTrimEnd": 36.857,
-      "sha256": "3aba0e3da7c8886e78f8d3cbde11122aa71f7f873b0c151313f7c7635d1716b1",
+      "rawVideo": ".cache/trailer-capture/raw/page@fc9e0609214894614c5483b7046ecd21.webm",
+      "rawTrimStart": 50.353,
+      "rawTrimEnd": 60.353,
       "media": {
         "programs": [],
         "stream_groups": [],
@@ -239,8 +263,14 @@
         "format": {
           "start_time": "0.000000",
           "duration": "10.000000",
-          "size": "3814730"
+          "size": "3647013"
         }
+      },
+      "sha256": "fc038900eed122259b56696a6a14c674cd93480e45418d5222b09fb540380763",
+      "evidenceSha256": {
+        "assets/video/intro/source/evidence/maneuver-before.png": "5e89f37085ee8a6504ad96aa6fe473a0888bf6dfe65cfc37a2b8647cb2adf3de",
+        "assets/video/intro/source/evidence/maneuver-crouched.png": "8fbe13a7a5361dc61599cec081d068bc70726800fb424dbceb637dd0f15e96d4",
+        "assets/video/intro/source/evidence/maneuver-after.png": "d18821d03a797c6023233463fcba1aa1249d9c2bb9466219dddbc6165359c7f8"
       }
     }
   ],
