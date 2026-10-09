@@ -1,0 +1,427 @@
+[
+  {
+    "type": "table",
+    "footprint": {
+      "width": 1,
+      "height": 1
+    },
+    "open": false,
+    "before": {
+      "triangles": 120,
+      "meshes": 2,
+      "materials": [
+        "world:wood",
+        "world:darkwood"
+      ],
+      "y": [
+        0,
+        0.800000011920929
+      ]
+    },
+    "after": {
+      "triangles": 192,
+      "meshes": 2,
+      "materials": [
+        "world:wood",
+        "world:darkwood"
+      ],
+      "y": [
+        0,
+        0.800000011920929
+      ]
+    }
+  },
+  {
+    "type": "table",
+    "footprint": {
+      "width": 2,
+      "height": 1
+    },
+    "open": false,
+    "before": {
+      "triangles": 120,
+      "meshes": 2,
+      "materials": [
+        "world:wood",
+        "world:darkwood"
+      ],
+      "y": [
+        0,
+        0.800000011920929
+      ]
+    },
+    "after": {
+      "triangles": 192,
+      "meshes": 2,
+      "materials": [
+        "world:wood",
+        "world:darkwood"
+      ],
+      "y": [
+        0,
+        0.800000011920929
+      ]
+    }
+  },
+  {
+    "type": "table",
+    "footprint": {
+      "width": 3,
+      "height": 3
+    },
+    "open": false,
+    "before": {
+      "triangles": 120,
+      "meshes": 2,
+      "materials": [
+        "world:wood",
+        "world:darkwood"
+      ],
+      "y": [
+        0,
+        0.800000011920929
+      ]
+    },
+    "after": {
+      "triangles": 216,
+      "meshes": 2,
+      "materials": [
+        "world:wood",
+        "world:darkwood"
+      ],
+      "y": [
+        0,
+        0.800000011920929
+      ]
+    }
+  },
+  {
+    "type": "bench",
+    "footprint": {
+      "width": 1,
+      "height": 1
+    },
+    "open": false,
+    "before": {
+      "triangles": 72,
+      "meshes": 1,
+      "materials": [
+        "world:wood"
+      ],
+      "y": [
+        0,
+        0.44999998807907104
+      ]
+    },
+    "after": {
+      "triangles": 120,
+      "meshes": 1,
+      "materials": [
+        "world:wood"
+      ],
+      "y": [
+        0,
+        0.44999998807907104
+      ]
+    }
+  },
+  {
+    "type": "bench",
+    "footprint": {
+      "width": 2,
+      "height": 1
+    },
+    "open": false,
+    "before": {
+      "triangles": 72,
+      "meshes": 1,
+      "materials": [
+        "world:wood"
+      ],
+      "y": [
+        0,
+        0.44999998807907104
+      ]
+    },
+    "after": {
+      "triangles": 120,
+      "meshes": 1,
+      "materials": [
+        "world:wood"
+      ],
+      "y": [
+        0,
+        0.44999998807907104
+      ]
+    }
+  },
+  {
+    "type": "bench",
+    "footprint": {
+      "width": 3,
+      "height": 3
+    },
+    "open": false,
+    "before": {
+      "triangles": 72,
+      "meshes": 1,
+      "materials": [
+        "world:wood"
+      ],
+      "y": [
+        0,
+        0.44999998807907104
+      ]
+    },
+    "after": {
+      "triangles": 144,
+      "meshes": 1,
+      "materials": [
+        "world:wood"
+      ],
+      "y": [
+        0,
+        0.44999998807907104
+      ]
+    }
+  },
+  {
+    "type": "chest",
+    "footprint": {
+      "width": 1,
+      "height": 1
+    },
+    "open": false,
+    "before": {
+      "triangles": 72,
+      "meshes": 3,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.800000011920929
+      ]
+    },
+    "after": {
+      "triangles": 516,
+      "meshes": 3,
+      "materials": [
+        "world:darkwood",
+        "world:wood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.800000011920929
+      ]
+    }
+  },
+  {
+    "type": "chest",
+    "footprint": {
+      "width": 1,
+      "height": 1
+    },
+    "open": true,
+    "before": {
+      "triangles": 72,
+      "meshes": 3,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.7624344825744629
+      ]
+    },
+    "after": {
+      "triangles": 516,
+      "meshes": 3,
+      "materials": [
+        "world:darkwood",
+        "world:wood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        1.3730194568634033
+      ]
+    }
+  },
+  {
+    "type": "chest",
+    "footprint": {
+      "width": 2,
+      "height": 1
+    },
+    "open": false,
+    "before": {
+      "triangles": 72,
+      "meshes": 3,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.800000011920929
+      ]
+    },
+    "after": {
+      "triangles": 516,
+      "meshes": 3,
+      "materials": [
+        "world:darkwood",
+        "world:wood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.800000011920929
+      ]
+    }
+  },
+  {
+    "type": "chest",
+    "footprint": {
+      "width": 2,
+      "height": 1
+    },
+    "open": true,
+    "before": {
+      "triangles": 72,
+      "meshes": 3,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.7624344825744629
+      ]
+    },
+    "after": {
+      "triangles": 516,
+      "meshes": 3,
+      "materials": [
+        "world:darkwood",
+        "world:wood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        1.3730194568634033
+      ]
+    }
+  },
+  {
+    "type": "chest",
+    "footprint": {
+      "width": 3,
+      "height": 3
+    },
+    "open": false,
+    "before": {
+      "triangles": 72,
+      "meshes": 3,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.800000011920929
+      ]
+    },
+    "after": {
+      "triangles": 528,
+      "meshes": 3,
+      "materials": [
+        "world:darkwood",
+        "world:wood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        0.800000011920929
+      ]
+    }
+  },
+  {
+    "type": "chest",
+    "footprint": {
+      "width": 3,
+      "height": 3
+    },
+    "open": true,
+    "before": {
+      "triangles": 72,
+      "meshes": 3,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:iron"
+      ],
+      "y": [
+        -1.0941895246505737,
+        0.7624344825744629
+      ]
+    },
+    "after": {
+      "triangles": 528,
+      "meshes": 3,
+      "materials": [
+        "world:darkwood",
+        "world:wood",
+        "world:iron"
+      ],
+      "y": [
+        0.004999999888241291,
+        2.594189405441284
+      ]
+    }
+  },
+  {
+    "fixture": "existing seven-prop furniture scene",
+    "before": {
+      "triangles": 3288,
+      "meshes": 6,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:linen",
+        "world:rug",
+        "world:iron",
+        "world:thatch"
+      ],
+      "y": [
+        0,
+        1.212499976158142
+      ]
+    },
+    "after": {
+      "triangles": 3852,
+      "meshes": 6,
+      "materials": [
+        "world:wood",
+        "world:darkwood",
+        "world:linen",
+        "world:rug",
+        "world:iron",
+        "world:thatch"
+      ],
+      "y": [
+        0,
+        1.212499976158142
+      ]
+    }
+  }
+]

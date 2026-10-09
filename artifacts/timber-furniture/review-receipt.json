@@ -1,0 +1,312 @@
+{
+  "piece": 12,
+  "status": "accepted; all final gates, source/runtime proof and docs pass",
+  "beforeOrigin": "http://localhost:3206/graphics-review",
+  "afterOrigin": "http://localhost:3207/graphics-review",
+  "comparison": "same expanded furniture fixture, initial I7 position, paused daylight at 12:01, default camera, 200% then 100% zoom",
+  "live": {
+    "normal": {
+      "drawsBeforeAfter": 113,
+      "trianglesBefore": 65820,
+      "trianglesAfter": 67272,
+      "geometriesBeforeAfter": 108,
+      "texturesBeforeAfter": 43
+    },
+    "close": {
+      "drawsBeforeAfter": 85,
+      "trianglesBefore": 122716,
+      "trianglesAfter": 123724,
+      "geometriesBeforeAfter": 101,
+      "texturesBeforeAfter": 28
+    },
+    "loadedActors": 1,
+    "pendingActors": 0,
+    "route": [
+      "I7",
+      "I8",
+      "I9"
+    ],
+    "ordersComplete": true,
+    "browserErrors": 0
+  },
+  "visualDecision": "raised chest lid and cavity read at both scales; fine board joints and hardware are quiet at normal scale and clearer close up",
+  "geometry": {
+    "tableTrianglesBeforeAfter": [
+      120,
+      192
+    ],
+    "benchTrianglesBeforeAfter": [
+      72,
+      120
+    ],
+    "chestTrianglesBeforeAfter": [
+      72,
+      516
+    ],
+    "sevenPropFixtureBeforeAfter": [
+      3288,
+      3852
+    ],
+    "fixtureBatchesBeforeAfter": [
+      6,
+      6
+    ],
+    "addedTextures": 0
+  },
+  "captures": {
+    "docs/art/tactical-reference-2026-10-08/timber-furniture-after-88.jpg": {
+      "sha256": "ed655c1258841ec727c31738d7c2becd6e371203ec1720f21d16efd7084d242b",
+      "bytes": 99661
+    },
+    "docs/art/tactical-reference-2026-10-08/timber-furniture-before-88.jpg": {
+      "sha256": "a86cc739f3dd30c165089b494ecc2d1fc127b526fb70ef79bc91e2a77f8bef72",
+      "bytes": 99688
+    },
+    "docs/art/tactical-reference-2026-10-08/timber-furniture-movement.jpg": {
+      "sha256": "d176e7b96f71096b7bf3e80a9ee676e3819b02a9008170660d031aa09888ef35",
+      "bytes": 93914
+    },
+    "docs/art/tactical-reference-2026-10-08/timber-furniture-before-44.jpg": {
+      "sha256": "303a8b49604ad73a85ab19974d8b7f1c7cb68b5a24d553d427bc88a92651877d",
+      "bytes": 89536
+    },
+    "docs/art/tactical-reference-2026-10-08/timber-furniture-after-44.jpg": {
+      "sha256": "d844a83e7bace3dba602af8fd6ab1fa2120595c5f0bed9c0660faada30cc75ee",
+      "bytes": 89565
+    }
+  },
+  "gates": {
+    "quick": {
+      "name": "quick",
+      "command": [
+        "npm",
+        "run",
+        "test:quick"
+      ],
+      "startUTC": "2026-10-09T03:39:44.857158+00:00",
+      "finishUTC": "2026-10-09T04:15:33.778837+00:00",
+      "seconds": 2149.115,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": "4",
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false,
+      "reportedFileCount": 896,
+      "reportComplete": true,
+      "summary": {
+        "counts": {
+          "tests": 6823,
+          "failed": 0,
+          "passed": 6823,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 6680,
+          "suites": 0
+        },
+        "duration_ms": 2148860.033541,
+        "success": true
+      },
+      "concurrency": 4,
+      "actualCountsFromFileReports": {
+        "tests": 6823,
+        "passed": 6823,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 6680,
+        "suites": 0
+      },
+      "failedFiles": []
+    },
+    "typecheck": {
+      "name": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "startUTC": "2026-10-09T03:39:44.857160+00:00",
+      "finishUTC": "2026-10-09T03:39:59.970484+00:00",
+      "seconds": 15.113,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false
+    },
+    "build": {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startUTC": "2026-10-09T03:39:44.857160+00:00",
+      "finishUTC": "2026-10-09T03:40:07.729486+00:00",
+      "seconds": 22.872,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false,
+      "verifiedExportFiles": 1377,
+      "verifiedAssetReferences": 1045,
+      "productionSourceIdentity": {
+        "version": "0.4.0-dev.1",
+        "id": "de26db679503",
+        "source": "de26db679503d1da92025deeec69c65d527f06f6480a2cace098fe36d1763c70",
+        "revision": "a7c4c138597b4c65480fd02bbe0e36cbee8c8cc1"
+      },
+      "buildInfoSha256": "d3faa0a490f2cc3c4885caa10e85c712a45130b7c4362d555c88b8fd339213a0"
+    }
+  },
+  "rootSourceEquivalence": {
+    "comparedRoot": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+    "scope": "all tracked and nonignored untracked input files; exclude docs/artifacts and ignored generated caches/outputs only",
+    "expectedInputFiles": 10416,
+    "mismatches": [],
+    "unexpectedInputPaths": [],
+    "expectedGitlinks": {
+      "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+    },
+    "actualGitlinks": {
+      "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+    },
+    "gitlinkPinsExact": true,
+    "gitlinkWorkingTreeErrors": [],
+    "sourceIdentityExact": true,
+    "sourceIdentity": "de26db679503d1da92025deeec69c65d527f06f6480a2cace098fe36d1763c70",
+    "gitRevisionMayDiffer": true,
+    "allNonDocumentInputHashesExact": true,
+    "runtimeAndDependencyProof": {
+      "root": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+      "strictRuntimeAndDependencyCodeExact": true,
+      "identityErrors": [],
+      "treeProofs": {
+        "webNodeModules": {
+          "capturedFileCount": 42461,
+          "actualFileCount": 42461,
+          "expectedManifestSha256": "1b804d74588845a39a9de49ff81024164c61cf456343b400fc49993580e8530f",
+          "actualManifestSha256": "1b804d74588845a39a9de49ff81024164c61cf456343b400fc49993580e8530f",
+          "exact": true,
+          "changedPathCount": 0,
+          "changedPaths": []
+        },
+        "npmDistribution": {
+          "capturedFileCount": 2106,
+          "actualFileCount": 2106,
+          "expectedManifestSha256": "99746e56d6f652fcdb1a3cd446e23a3eb7339d35bc0654ff9816c3f29b10a28f",
+          "actualManifestSha256": "99746e56d6f652fcdb1a3cd446e23a3eb7339d35bc0654ff9816c3f29b10a28f",
+          "exact": true,
+          "changedPathCount": 0,
+          "changedPaths": []
+        },
+        "pythonStdlib": {
+          "capturedFileCount": 1637,
+          "actualFileCount": 1637,
+          "expectedManifestSha256": "5cdb702604c414a16c12c7c651f6ab068e204906b4846320542f9844f5194413",
+          "actualManifestSha256": "5cdb702604c414a16c12c7c651f6ab068e204906b4846320542f9844f5194413",
+          "exact": true,
+          "changedPathCount": 0,
+          "changedPaths": []
+        },
+        "pythonPackage:PIL": {
+          "capturedFileCount": 129,
+          "actualFileCount": 129,
+          "expectedManifestSha256": "07b1fc1ead3e42ac41600335d65c1fe3ab19469953137c739406e39e4adf2c34",
+          "actualManifestSha256": "07b1fc1ead3e42ac41600335d65c1fe3ab19469953137c739406e39e4adf2c34",
+          "exact": true,
+          "changedPathCount": 0,
+          "changedPaths": []
+        },
+        "pythonPackage:numpy": {
+          "capturedFileCount": 910,
+          "actualFileCount": 910,
+          "expectedManifestSha256": "dee9359e8d2dd034cb9e4e2160cad7f196133b1437e6611885f45f6bab3cbc9c",
+          "actualManifestSha256": "dee9359e8d2dd034cb9e4e2160cad7f196133b1437e6611885f45f6bab3cbc9c",
+          "exact": true,
+          "changedPathCount": 0,
+          "changedPaths": []
+        }
+      },
+      "actualRuntimeIdentity": {
+        "node": {
+          "version": "v25.1.0",
+          "execPath": "/Users/fsodano/.nvm/versions/node/v25.1.0/bin/node",
+          "platform": "darwin",
+          "arch": "arm64",
+          "binarySha256": "6341aad90f8f6d2fc9203ea509131b36cbd4529ec83167d3976be11ee7784430"
+        },
+        "npm": {
+          "version": "11.6.2",
+          "cliPath": "/Users/fsodano/.nvm/versions/node/v25.1.0/lib/node_modules/npm/bin/npm-cli.js",
+          "cliSha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7",
+          "packageRoot": "/Users/fsodano/.nvm/versions/node/v25.1.0/lib/node_modules/npm"
+        },
+        "python": {
+          "version": "3.9.6",
+          "executable": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+          "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e",
+          "stdlibRoot": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+          "sharedFramework": {
+            "path": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Python3",
+            "sha256": "26422f0b21cb1e07236384afa4043c7401d39d09358c91df8bf3f5496f14712f"
+          }
+        },
+        "host": {
+          "system": "Darwin",
+          "release": "25.6.0",
+          "machine": "arm64",
+          "macVersion": "26.6.2"
+        },
+        "optionalPythonPackages": {
+          "PIL": {
+            "installed": true,
+            "version": "11.2.1",
+            "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL",
+            "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL/__init__.py",
+            "entrySha256": "43828e12947b4bf5ec8f7d1fbceb2f47de311295f8294b15794c1a54fd5f53cd"
+          },
+          "numpy": {
+            "installed": true,
+            "version": "1.26.4",
+            "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy",
+            "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy/__init__.py",
+            "entrySha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+          },
+          "trimesh": {
+            "installed": false
+          }
+        }
+      },
+      "generatedWebDependencyCachesReportedSeparately": {
+        "actualFileCount": 77,
+        "initialSealFileCount": 77,
+        "excludedFromCodeIdentity": true
+      },
+      "limits": "OS shared libraries and unused globally installed Python packages are outside these captured code inventories. Default Blender binary is separately pinned in other-runtime-pins.json.",
+      "readOnly": true
+    }
+  },
+  "sourceBase": "e0e43eab157e6a4fbe4de8fb4819c90bb757e0ba",
+  "portableManifestSerialization": {
+    "before-inputs.json": {
+      "privateOriginalSha256": "366b7ad343eff4a2dbd7fd880d268593803b05b72bf25484343162745db59f40",
+      "parserValuesExact": true,
+      "compactSerializationOnly": true
+    },
+    "runtime-seal.json": {
+      "privateOriginalSha256": "2aed5619a07dd9c73126e00227a29761eaea7de1f177d511e290f85d49a0b7d1",
+      "parserValuesExact": true,
+      "compactSerializationOnly": true
+    }
+  }
+}

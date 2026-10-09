@@ -21,9 +21,16 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
     const pole=(m:typeof wood,a:readonly number[],b:readonly number[],r:number)=>part.cylinder(m,new Vector3(...a as [number,number,number]),new Vector3(...b as [number,number,number]),r,light);
     const h=prop.obstacleHeight??({table:.8,bench:.45,bed:.55,chest:.8,barrels:1.2,hay:1.3,cart:1.2,shelf:1.5,hearth:.7,washstand:.8,pottery:.45,sacks:.7,'broken-timber':.3,rubble:.35,candle:.3,rug:.012}[prop.type]??.7);
     if(prop.type==='table'||prop.type==='bench'||prop.type==='washstand'){
-      const tw=w*.80,td=d*(prop.type==='bench'?.35:.68),th=.07;box(wood,0,h-th*.5,0,tw,th,td);
+      const tw=w*.80,td=d*(prop.type==='bench'?.35:.68),th=.07,timber=prop.type!=='washstand'&&prop.material!=='stone';
+      if(timber)boards(part,wood,light,tw,td,h-th*.5,th,Math.max(prop.type==='bench'?2:3,Math.min(prop.type==='bench'?4:6,Math.round(td/.20))));
+      else box(wood,0,h-th*.5,0,tw,th,td);
       for(const a of [-1,1])for(const b of [-1,1]){box(wood,a*tw*.40,(h-th)*.5,b*td*.33,.075,h-th,.075);if(prop.type!=='bench')box(dark,a*tw*.40,.25,b*td*.33,.09,.05,.09);}
-      box(wood,0,h-.18,0,tw*.90,.14,td*.7);
+      if(timber){
+        // Narrow rails meet the existing legs, leaving the centre open below
+        // the boards. The seat/table keeps its authored top and usable sides.
+        for(const a of [-1,1])box(wood,a*tw*.40,h-.14,0,.05,.14,td*.66+.075);
+        for(const b of [-1,1])box(wood,0,h-.14,b*td*.33,tw*.80+.075,.14,.05);
+      }else box(wood,0,h-.18,0,tw*.90,.14,td*.7);
       if(prop.type==='washstand'){
         const bowl=lathe([[.12,0],[.16,.025],[.19,.10],[.18,.13],[.16,.12],[.13,.04],[.10,.035]]);part.add(bowl,materials.get('ceramic'),frame.matrix.clone().identity().makeTranslation(0,h+.012,0),light);bowl.dispose();
         box(linen,w*.22,h+.008,0,.18,.015,td*.8);
@@ -33,8 +40,43 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
       box(linen,0,h-.06,0,w*.69,.12,d*.84);box(materials.get('rug'),0,h+.008,d*.10,w*.70,.025,d*.52);
       box(linen,0,h+.045,-d*.29,w*.50,.09,d*.19);box(wood,0,h*.70,-d*.45,w*.77,h*.65,.08);box(wood,0,h*.50,d*.45,w*.76,h*.4,.07);
     }else if(prop.type==='chest'){
-      const cw=w*.68,cd=d*.51;box(wood,0,h*.42,0,cw,h*.79,cd);box(dark,0,.04,0,cw+.035,.07,cd+.035);
-      const lid=new WorldBatch(geometry);lid.box(wood,0,0,-cd*.5,cw,.10,cd,light);const lidGroup=lid.finish('chest-lid');lidGroup.position.set(0,h-.05,cd*.5);if(prop.open)lidGroup.rotation.x=-Math.PI*.42;lidGroup.updateMatrix();for(const mesh of lidGroup.children)if('geometry'in mesh){const item=mesh as import('three').Mesh;part.add(item.geometry,item.material as typeof wood,lidGroup.matrix,light);item.geometry.dispose();}
+      const cw=w*.68,cd=d*.51,timber=prop.material!=='stone',wall=.035;
+      if(timber){
+        // A real cavity stays visible when the lid rises. The rim meets the
+        // old lid underside; the closed chest still ends at exactly h.
+        const bottom=h*.025,top=h-.10,sideTop=top-.036;
+        box(dark,0,bottom+.035,0,cw-wall*2,.07,cd-wall*2);
+        for(const a of [-1,1]){
+          box(wood,a*(cw-wall)*.5,(bottom+sideTop)*.5,0,wall,sideTop-bottom,cd);
+          box(dark,a*(cw-wall)*.5,top-.018,0,wall,.036,cd);
+        }
+        for(const b of [-1,1]){
+          box(wood,0,(bottom+sideTop)*.5,b*(cd-wall)*.5,cw-wall*2,sideTop-bottom,wall);
+          box(dark,0,top-.018,b*(cd-wall)*.5,cw-wall*2,.036,wall);
+        }
+      }else box(wood,0,h*.42,0,cw,h*.79,cd);
+      box(dark,0,.04,0,cw+.035,.07,cd+.035);
+      const lid=new WorldBatch(geometry);
+      if(timber){
+        // Long lid boards are joined by two underside battens. Flush straps
+        // retain the closed height, and all lid fittings follow its hinge.
+        boards(lid,wood,light,cw,cd,.0065,.075,Math.max(3,Math.min(5,Math.round(cd/.18))),-cd*.5);
+        for(const a of [-1,1]){
+          lid.box(dark,a*cw*.31,-.040,-cd*.5,.05,.020,cd,light);
+          lid.box(iron,a*cw*.31,.047,-cd*.5,.034,.006,cd,light);
+          lid.box(iron,a*cw*.31,.047,-.038,.075,.006,.076,light);
+          box(iron,a*cw*.31,h-.105,cd*.5+.008,.075,.11,.016);
+          pole(iron,[a*cw*.31-.047,h-.05,cd*.5],[a*cw*.31+.047,h-.05,cd*.5],.014);
+          // Side handles have open centres rather than solid metal pads.
+          const side=a*(cw*.5+.036),handleY=h*.44;
+          for(const b of [-1,1]){
+            box(iron,side,handleY,b*.062,.014,.066,.014);
+            box(iron,a*(cw*.5+.019),handleY+.030,b*.062,.038,.032,.028);
+          }
+          box(iron,side,handleY-.033,0,.014,.014,.138);
+        }
+      }else lid.box(wood,0,0,-cd*.5,cw,.10,cd,light);
+      const lidGroup=lid.finish('chest-lid');lidGroup.position.set(0,h-.05,cd*.5);if(prop.open)lidGroup.rotation.x=Math.PI*.42;lidGroup.updateMatrix();for(const mesh of lidGroup.children)if('geometry'in mesh){const item=mesh as import('three').Mesh;part.add(item.geometry,item.material as typeof wood,lidGroup.matrix,1);item.geometry.dispose();}
       for(const a of [-1,1])box(iron,a*cw*.31,h*.42,-cd*.51,.034,h*.78,.025);box(iron,0,h*.55,-cd*.53,.07,.11,.02);
     }else if(prop.type==='barrels'){
       const count=Math.max(1,Math.min(4,Math.round(w*d/(T*T)))),r=Math.min(.32,w*.30,d*.30),barrel=lathe([[r*.76,0],[r,.13],[r*1.08,h*.48],[r,h-.13],[r*.76,h]]);
@@ -97,6 +139,12 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
     const built=part.finish(`prop:${prop.id}`);for(const mesh of built.children){const item=mesh as import('three').Mesh;batch.add(item.geometry,item.material as typeof wood,frame.matrix,1);item.geometry.dispose();}
   }
   const group=batch.finish(`props:${id}`);group.userData.kind='props';group.userData.semanticIds=props.map(prop=>`prop:${prop.id}`);return group;
+}
+
+/** Small open joints show the board edges without adding another material. */
+function boards(batch:WorldBatch,material:import('three').MeshStandardMaterial,light:number,w:number,d:number,y:number,thickness:number,count:number,z=0){
+  const gap=Math.min(.008,d*.015),board=(d-gap*(count-1))/count;
+  for(let n=0;n<count;n++)batch.box(material,0,y,z-d*.5+board*.5+n*(board+gap),w,thickness,board,light);
 }
 
 import {Matrix4 as importMatrix} from 'three';

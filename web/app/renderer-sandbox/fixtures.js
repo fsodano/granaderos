@@ -12,13 +12,15 @@ import {PRONE_WORK_SCENARIO,createProneWorkReviewBattle} from './prone-work-fixt
 import {REACH_SCENARIO,createReachReviewBattle} from './reach-fixture.js';
 import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loading-fixture.js';
 import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
+import {FURNISHINGS_DETAIL_SCENARIO,createFurnishingsDetailBattle} from './furnishings-detail-fixture.js';
 
 export const RENDERER_SCENARIOS=Object.freeze([
   VARIED_ROOF_CLIMB_SCENARIO,
   {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
   {id:'architecture',label:'Arquitectura',help:'Nueve edificios a escala de soldado. Selecciona al guardia de cada edificio para centrar la cámara. Abre su puerta y entra para comparar fachada, azotea e interior con las órdenes habituales.'},
   {id:'catalog',label:'Catálogo de edificios',help:'Catorce edificios con su mobiliario y cuatro orientaciones. Exterior: puerta cerrada. Primera sala: el guardia abre la puerta y entra. Interior completo: recorre las salas con las órdenes habituales. Puedes comparar el tejado original, una terraza o una losa de tres metros. La azotea accesible tiene un acceso frente a la puerta. Puedes continuar la exploración.'},
-  {id:'furnishings',label:'Mobiliario',help:'Mesa, banco, cama, baúl, barriles, heno y carreta. Usa la cámara y las órdenes habituales para comprobar la escala y el espacio de paso.'},
+  FURNISHINGS_DETAIL_SCENARIO,
+  {id:'furnishings',label:'Mobiliario exterior',help:'Mesa, banco, cama, baúl, barriles, heno y carreta. Usa la cámara y las órdenes habituales para comprobar la escala y el espacio de paso.'},
   {id:'terrain-detail',label:'Detalle del terreno',help:'Camino, suelo natural, hierba, matorral y piedra. Los cruces del camino coinciden con los límites de los bloques del terreno. Usa la cámara y las órdenes habituales para revisar bordes, elevación y paso.'},
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'equipped-crouch',label:'Agachado con equipo',help:'Dos combatientes con el mismo equipo. Cambia el arma, selecciona cada combatiente y usa Alt + movimiento para desplazarte de costado sin girar. Puedes comparar entrada, avance y parada.'},
@@ -184,6 +186,8 @@ export function createRendererSandboxBattle(id='combat'){
   if(id==='architecture')return architecture();
   if(id.startsWith('architecture:'))return architecture(id.slice('architecture:'.length));
   if(id==='postures')return postures();
+  if(id==='furnishings-detail')return createFurnishingsDetailBattle();
+  if(id==='furnishings-detail:exterior')return createFurnishingsDetailBattle('exterior');
   if(id==='furnishings')return furnishings();
   if(id==='terrain-detail')return terrainDetail();
   if(id==='combat'||id==='night')return combat(id==='night');
