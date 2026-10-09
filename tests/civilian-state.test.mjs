@@ -10,7 +10,7 @@ import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {civilianIncidents,applyCivilianHarm} from '../game/civilian-harm.js';
-import {restForMarch} from './campaign-test-helpers.mjs';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {approachNPC} from './approach-npc.mjs';
 import {missionContacts,sanLorenzoAlly} from '../game/missions.js';
 const A='cell-27-27',B='cell-26-27';
@@ -146,8 +146,8 @@ test('mission contacts share San Martín health and a dead essential speaker cau
  // Established northern-chapter fixture includes the retained earlier ally.
  s.missionAllies.san_lorenzo=createBattle([sanLorenzoAlly(s)],{width:8,height:8,enemies:[],exploration:true}).units[0];
  for(const id of ['buenos_aires','cordoba','mendoza','tucuman','salta'])s.sectors[id].owner='patriot';
- s=order(s,{type:'travel',sector:'mendoza'});s=leave(visit(s));assert.ok(s.sectorStates.mendoza.npcs.some(n=>n.id==='san-martin'));s=restForMarch(s);
- s=order(s,{type:'travel',sector:'tucuman'});for(let i=0;s.squads.find(q=>q.id===s.activeSquadId).journey&&i<12;i++){s=restForMarch(s);s=order(s,{type:'resumeTravel'});s=order(s,{type:'wait',hours:24});}s=restForMarch(s);s=order(s,{type:'visitMission',mission:'yatasto'});let pair={campaign:s,battle:enterSector(s.pendingBattle)};
+ s=completeTestTravel(order(s,{type:'travel',sector:'mendoza'}),{sector:'mendoza'});s=leave(visit(s));assert.ok(s.sectorStates.mendoza.npcs.some(n=>n.id==='san-martin'));
+ s=completeTestTravel(s,{sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});let pair={campaign:s,battle:enterSector(s.pendingBattle)};
  pair=approach(pair,'yatasto-san-martin');pair=act(pair,{type:'melee',targetId:'yatasto-san-martin'});assert.equal(pair.campaign.operativeState[57].hp,pair.battle.npcs.find(n=>n.id==='yatasto-san-martin').hp);
  const hp=pair.campaign.operativeState[57].hp;assert.equal(sanLorenzoAlly(pair.campaign).hp,hp);assert.equal(encountersFor(pair.campaign,'mendoza').find(n=>n.id==='san-martin').hp,hp);
  while(pair.battle.npcs.find(n=>n.id==='yatasto-san-martin').hp>0)pair=act(pair,{type:'melee',targetId:'yatasto-san-martin'});

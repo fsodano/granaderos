@@ -1,0 +1,66 @@
+import bpy,sys,json,math,itertools
+from pathlib import Path
+from mathutils import Vector,Quaternion
+from mathutils.bvhtree import BVHTree
+ROOT=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos')
+OUT=ROOT/'artifacts/character-anatomy-review/punch-wrist-candidate';LIB=OUT/'models'
+sys.path.insert(0,str(OUT/'source/assets/source/characters-3d/authoring'));import reviewed_motion as rm
+manifest=json.loads((LIB/'manifest.json').read_text());results={}
+for preset in ['granadero','woman-scout']:
+ bpy.ops.wm.read_factory_settings(use_empty=True);scene=bpy.context.scene;scene.render.fps=30
+ spec=manifest['appearances'][preset];bank=manifest['animationLibraries'][spec['animationLibrary']]
+ def load(url):
+  before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(LIB/Path(url).name));return set(bpy.data.objects)-before
+ bank_objects=load(bank['url']);objects=load(spec['lods'][0]['url']);rig=next(o for o in objects if o.type=='ARMATURE')
+ for obj in bank_objects:bpy.data.objects.remove(obj,do_unlink=True)
+ rig.animation_data_create()
+ for track in rig.animation_data.nla_tracks:track.mute=True
+ action=bpy.data.actions['stand.punch.unarmed'];rig.animation_data.action=action
+ if action.slots:rig.animation_data.action_slot=action.slots[0]
+ scene.frame_set(12,subframe=.6);bpy.context.view_layer.update()
+ pose={pb.name:pb.matrix.copy()for pb in rig.pose.bones};rig.animation_data_clear()
+ for pb in rig.pose.bones:pb.matrix=pose[pb.name];bpy.context.view_layer.update()
+ skin=max((o for o in objects if o.type=='MESH'and 'pinky_03_r'in o.vertex_groups),key=lambda o:len(o.data.vertices))
+ group={g.index:g.name for g in skin.vertex_groups};weights={v.index:[(g.weight,group[g.group])for g in v.groups]for v in skin.data.vertices}
+ dominant={i:max(ws)[1]for i,ws in weights.items()if ws};native={v.index:rig.matrix_world.inverted()@skin.matrix_world@v.co for v in skin.data.vertices};normals={v.index:(rig.matrix_world.inverted()@skin.matrix_world).to_3x3()@v.normal for v in skin.data.vertices}
+ side='r';long,normal=rm._palm_basis(rig,side);axis=long.cross(normal).normalized();mat={pb.name:pb.matrix@pb.bone.matrix_local.inverted()for pb in rig.pose.bones}
+ def transform(i):return sum((w*(mat[n]@native[i])for w,n in weights[i]),Vector())
+ palm_faces=[tuple(p.vertices)for p in skin.data.polygons if all(dominant.get(i)=='hand_'+side for i in p.vertices)]
+ tree=BVHTree.FromPolygons([transform(v.index)for v in skin.data.vertices],palm_faces)
+ results[preset]={}
+ for finger in ['index','middle','ring','pinky']:
+  names=[f'{finger}_{i:02d}_{side}'for i in [1,2,3]]
+  vertices=[i for i,n in dominant.items()if n in names]
+  pads=[i for i in vertices if dominant[i]==names[-1]and normals[i].dot(normal)>.25]
+  print('VERTS',preset,finger,len(vertices),len(pads),flush=True)
+  def evaluate(angles):
+   abd,a,b,c=map(math.radians,angles)
+   for i,angle in enumerate([a,b,c]):
+    pb=rig.pose.bones[names[i]];base=pb.bone.matrix_local.to_3x3().inverted()
+    pb.rotation_quaternion=(Quaternion(base@normal,abd)if i==0 else Quaternion())@Quaternion(base@axis,angle)
+   bpy.context.view_layer.update()
+   for pb in rig.pose.bones:
+    if pb.name in names:mat[pb.name]=pb.matrix@pb.bone.matrix_local.inverted()
+   penetration=0;near=[]
+   for i in vertices:
+    p=transform(i);q,n,_,d=tree.find_nearest(p)
+    if(p-q).dot(n)<-.0005:penetration=max(penetration,d)
+    if i in pads:near.append(d)
+   # Several pad vertices must approach the palm, with no finger through it.
+   near.sort();contact=sum(near[:min(4,len(near))])/max(1,min(4,len(near)))
+   return 100000*penetration+1000*contact+.002*sum((a-b)**2for a,b in zip(angles,[0,80,94,40])),penetration,contact
+  tested=[]
+  for angles in itertools.product([-15,0,15],[70,80,90],[80,95,110],[20,35,50,65]):tested.append((evaluate(angles),angles))
+  tested.sort();best=list(tested[0][1])
+  for step in [6,3]:
+   for index in range(4):
+    options=[]
+    for shift in [-step,0,step]:
+     trial=best.copy();trial[index]+=shift
+     if not(-24<=trial[0]<=24 and 65<=trial[1]<=100 and 70<=trial[2]<=115 and 15<=trial[3]<=70):continue
+     options.append((evaluate(trial),trial))
+    options.sort();best=options[0][1]
+  metrics=evaluate(best);results[preset][finger]={'anglesDegrees':best,'penetrationMm':metrics[1]*1000,'padGapMm':metrics[2]*1000,'baseline':tested[:3]}
+  print('FIT',preset,finger,results[preset][finger],flush=True)
+ bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(preset+'.fitted-fist.blend')))
+ (OUT/'fist-fit.json').write_text(json.dumps(results,indent=2))

@@ -1,0 +1,29 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE);
+const url=process.env.GRANADEROS_REVIEW_URL,root=process.cwd(),out=resolve(process.env.GRANADEROS_REVIEW_OUTPUT);
+const files=['web/lib/three/actor-runtime.ts','web/lib/three/animation-clock.ts','web/lib/three/action-timing.ts','web/lib/three/locomotion-profile.json','web/lib/three/presentation.ts','web/public/models/characters/manifest.json','web/public/models/characters/male-animations.glb','web/public/models/characters/female-animations.glb',...['friar','woman-shawl'].flatMap(id=>[0,1,2].map(l=>`web/public/models/characters/${id}-lod${l}.glb`))];
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const identity=async()=>({commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),hashes:Object.fromEntries(await Promise.all(files.map(async f=>[f,sha(await readFile(resolve(root,f)))])))});
+await mkdir(out,{recursive:true});const source=await identity(),report={url,source,cases:[],errors:[]};
+const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,args:['--disable-background-timer-throttling','--disable-renderer-backgrounding']});
+try{
+for(const [index,name,id]of [[8,'Mujer con rebozo','woman-shawl']])for(const lod of [0,1,2]){
+ const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[],network=[],pending=[];page.setDefaultTimeout(60000);
+ page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&!m.location().url.endsWith('favicon.ico'))errors.push(m.text())});
+ page.on('response',r=>{const path=new URL(r.url()).pathname;if(r.status()>=400&&!path.endsWith('favicon.ico'))errors.push(`${r.status()} ${path}`);const file='web/public'+path;if(files.includes(file))pending.push((async()=>network.push({file,sha256:sha(await r.body())}))())});
+ const ready=()=>page.waitForFunction(()=>{const c=document.querySelector('[data-sector-renderer="three"]');return c&&Number(c.dataset.actors)>0&&c.dataset.actors===c.dataset.loadedActors&&!document.querySelector('.tactical-three-status')});
+ await page.goto(url,{waitUntil:'domcontentloaded'});await ready();await page.getByRole('button',{name:'Ocho personajes',exact:true}).click();await ready();await page.waitForFunction(()=>document.querySelector('[data-sector-renderer="three"]')?.dataset.actors==='8');
+ if(index>6)await page.getByRole('button',{name:'Combatientes siguientes',exact:true}).click();const card=page.locator(`[aria-label^="${index}. ${name}."]`);assert.equal(await card.count(),1);await card.click({button:'right'});await page.getByRole('button',{name:'Listo',exact:true}).click();await page.locator('.tactical-field').focus();await page.keyboard.press('Escape');await page.keyboard.press('w');await page.waitForTimeout(700);const selectedCard=await card.getAttribute('aria-label');assert.ok(selectedCard.includes('Mano principal: Pistola'),'Use the owned primary pistol through the ordinary weapon control: '+selectedCard);
+ await page.getByRole('button',{name:'Cámara',exact:true}).click();if(lod===2)await page.getByRole('button',{name:'Alejar campo',exact:true}).click();if(lod===0)await page.getByRole('button',{name:'Acercar campo',exact:true}).click();await page.getByRole('button',{name:'Centrar cámara en el combatiente seleccionado',exact:true}).click();await page.getByRole('button',{name:'Cámara',exact:true}).click();await page.waitForFunction(lod=>{const c=document.querySelector('[data-sector-renderer="three"]');return c?.dataset.lod===String(lod)&&c.dataset.pendingActors==='0'},lod);
+ for(const [posture,label]of [['standing',null],['crouched','Agachado'],['prone','Cuerpo a tierra']]){
+  let inventory=null;if(label){await card.click({button:'right'});await page.getByText('Postura y órdenes',{exact:true}).click();await page.getByRole('button',{name:new RegExp(`^Cambiar a ${label}:`)}).click();await page.waitForTimeout(1500);inventory=await page.locator('.ja2-inventory').innerText();assert.ok(inventory.includes(posture==='prone'?'Cuerpo a tierra':'Agachado'));await page.getByRole('button',{name:'Listo',exact:true}).click()}
+  await page.waitForFunction(lod=>{const c=document.querySelector('[data-sector-renderer="three"]');return c?.dataset.lod===String(lod)&&c.dataset.pendingActors==='0'},lod);await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(20,20);await page.screenshot({path:resolve(out,`${id}-lod${lod}-${posture}.png`)});report.cases.push({id,posture,lod:await page.locator('[data-sector-renderer="three"]').getAttribute('data-lod'),inventory,card:await card.getAttribute('aria-label'),actors:await page.locator('[data-sector-renderer="three"]').getAttribute('data-actors')});
+ }
+ await Promise.all(pending);for(const n of network)assert.equal(n.sha256,source.hashes[n.file]);assert.deepEqual(errors,[]);report.cases.at(-1).network=network;console.log('COARSE_CLOTH_UI',id,lod);await page.close();
+}
+report.sourceAfter=await identity();assert.deepEqual(report.sourceAfter,source);
+}catch(e){report.errors.push(String(e));for(const [i,p]of browser.contexts().flatMap(c=>c.pages()).entries()){await p.screenshot({path:resolve(out,'failed-'+i+'.png')});await writeFile(resolve(out,'failed-dom-'+i+'.json'),JSON.stringify({text:await p.locator('body').innerText(),labels:await p.locator('[aria-label]').evaluateAll(n=>n.map(x=>x.getAttribute('aria-label')))},null,2))}throw e}finally{await writeFile(resolve(out,'report.json'),JSON.stringify(report,null,2)+'\n');await browser.close()}

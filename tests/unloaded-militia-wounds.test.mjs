@@ -47,7 +47,11 @@ test('a loaded garrison is damaged only by tactical time and its actual casualty
 });
 
 test('older wounded records without a retained scene lose one soldier without inventing a body position',()=>{
- let {campaign:s,patientId:id}=woundedGarrison();delete s.sectorStates.retiro;s=save(s);const hp=patient(s,id).hp;s=order(s,{type:'wait',hours:hp});assert.equal(patient(s,id),undefined);assert.equal(s.sectorStates.retiro,undefined);assert.deepEqual(s.sectors.retiro.militia,[2,0,0]);s=save(s);const p=visit(s);assert.ok(!p.battle.units.some(u=>Number(u.id)===id));assert.equal(p.campaign.pendingBattle.garrison.length,2);assert.ok(saved(p));
+ let {campaign:s,patientId:id}=woundedGarrison();delete s.sectorStates.retiro;
+ // This older save has neither a retained field nor the later per-resident
+ // position cache. A new cache without its source field is an invalid save.
+ for(const r of Object.values(s.operativeState))if(r.residentSector==='retiro')delete r.residentPosition;
+ s=save(s);const hp=patient(s,id).hp;s=order(s,{type:'wait',hours:hp});assert.equal(patient(s,id),undefined);assert.equal(s.sectorStates.retiro,undefined);assert.deepEqual(s.sectors.retiro.militia,[2,0,0]);s=save(s);const p=visit(s);assert.ok(!p.battle.units.some(u=>Number(u.id)===id));assert.equal(p.campaign.pendingBattle.garrison.length,2);assert.ok(saved(p));
 });
 
 test('a separate mission scene does not freeze wounded town militia that did not deploy',()=>{

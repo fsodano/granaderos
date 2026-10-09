@@ -80,7 +80,7 @@ function markerAt(s,id){
  const siteId=resident&&siteSector(resident)===sectorId?resident:sectorId;
  const marker={id:`service-return-${s.serviceEquipmentReturns.nextId++}`,siteId,sectorId,entryEdge:r.arrival?.entryEdge??'S',entryAnchor:copy(r.arrival?.entryAnchor??{x:10,y:15})};
  const snapshot=snapshotAt(s,siteId),old=snapshot?.units?.find(u=>String(u.id)===String(id)&&u.side==='player'&&u.hp>0&&!u.departure);
- if(old&&r.residentSector===snapshot.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))marker.point=planningPoint(old,Boolean(snapshot.upperSurfaces?.length));
+ if((r.residentPosition||old)&&r.residentSector===snapshot?.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))marker.point=planningPoint(r.residentPosition??old,Boolean(snapshot.upperSurfaces?.length));
  const point=returnPlacement(marker,snapshot);if(point)marker.point=point;
  return marker;
 }

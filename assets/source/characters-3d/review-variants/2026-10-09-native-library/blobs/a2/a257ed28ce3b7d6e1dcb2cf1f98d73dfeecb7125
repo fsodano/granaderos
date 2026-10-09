@@ -1,0 +1,19 @@
+from pathlib import Path
+import json,struct,shutil,hashlib
+r=Path('/tmp/granadero-hand-web-pilot');base=r/'pose-baseline';src=Path('/tmp/granadero-full-review/models')
+if not base.exists():shutil.copytree(src,base)
+roll=json.loads((r/'thumb-roll.json').read_text())
+for row in [x for x in roll['records']if x['amount']in(.25,.5,1)]:
+ out=r/f"pose-{int(row['amount']*100)}";out.mkdir(exist_ok=True)
+ for p in base.iterdir():
+  if p.name in ('male-animations.glb','manifest.json'):continue
+  dest=out/p.name
+  if not dest.exists():dest.symlink_to(p,target_is_directory=p.is_dir())
+ raw=(base/'male-animations.glb').read_bytes();n=struct.unpack_from('<I',raw,12)[0];j=json.loads(raw[20:20+n]);b=raw[28+n:];parts=[b];length=len(b);changed=[]
+ for clip in j['animations']:
+  if clip['name']not in ('stand.idle.unarmed','stand.walk.unarmed','stand.run.unarmed'):continue
+  for ch in clip['channels']:
+   name=j['nodes'][ch['target']['node']]['name']
+   if ch['target']['path']!='rotation'or name not in ('thumb_01_r','thumb_02_r'):continue
+   old=clip['samplers'][ch['sampler']];count=j['accessors'][old['input']]['count'];q=row['thumb01Local'if name=='thumb_01_r'else'thumb02Local'];data=struct.pack('<4f',*q)*count;vi=len(j['bufferViews']);j['bufferViews'].append({'buffer':0,'byteOffset':length,'byteLength':len(data)});parts.append(data);length+=len(data);aid=len(j['accessors']);j['accessors'].append({'bufferView':vi,'componentType':5126,'count':count,'type':'VEC4'});ch['sampler']=len(clip['samplers']);clip['samplers'].append({**old,'output':aid});changed.append([clip['name'],name,'rotation'])
+ j['buffers'][0]['byteLength']=length;js=json.dumps(j,separators=(',',':')).encode();js+=b' '*(-len(js)%4);blob=b''.join(parts);result=struct.pack('<4sII',b'glTF',2,28+len(js)+len(blob))+struct.pack('<I4s',len(js),b'JSON')+js+struct.pack('<I4s',len(blob),b'BIN\0')+blob;(out/'male-animations.glb').write_bytes(result);manifest=json.loads((base/'manifest.json').read_text());manifest['animationLibraries']['male']['sha256']=hashlib.sha256(result).hexdigest();manifest['animationLibraries']['male']['bytes']=len(result);(out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');(out/'pilot.json').write_text(json.dumps({'changedChannels':changed,'removedRollDegrees':-roll['rollDegrees']*row['amount']},indent=2));print(out)

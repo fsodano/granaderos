@@ -86,7 +86,9 @@ test('new state and room factories replace cached doors, breaches, cutaways, and
 
 test('new lighting and projection factories update brightness and geometry without stale nodes',()=>{
  const built=buildBuilding({id:'house',x:2,y:2,width:6,height:5,doors:[{x:4,y:6,open:true}]});
- const state={width:12,height:12,tiles:built.tiles,buildings:[built.building],night:true,lights:[{x:4,y:7,radius:8,intensity:1}]};
+ // The exterior lamp and each floor sample need actual supported terrain.
+ const tiles=Array.from({length:144},(_,i)=>built.tiles.find(t=>t.x===i%12&&t.y===Math.floor(i/12))??{x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0});
+ const state={width:12,height:12,tiles,buildings:[built.building],night:true,lights:[{x:4,y:7,radius:8,intensity:1}]};
  const revealed=new Set(['house:interior']),args=argsFor(state,revealed),first=createBuildingRenderer(args)();
  const floorKey='architecture-floor-house:interior-4-5',initialFloor=first.find(object=>object.key===floorKey);
  for(const changed of [{...state,lights:[{...state.lights[0],extinguished:true}]},{...state,night:false}]){

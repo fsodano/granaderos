@@ -1,0 +1,8 @@
+{
+  "currentBaselineManifestSha256": "d94e9c11e6842ed924638bd8c173bb43814c34234d79055fd4afdff8b86ff69d",
+  "bodies": {
+    "granadero-lod0.glb": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7",
+    "woman-scout-lod0.glb": "54d20755699a380660cfd20a83d0948bab9802b541b54ad2644f727cd5cd7060"
+  },
+  "candidateManifestSha256": "9833a73f614350b4711271ceffb10cc1cbe3dc1facbaeb510074ce10c809ab58"
+}

@@ -1,0 +1,12 @@
+from pathlib import Path
+import subprocess,json
+root=Path(__file__).parent
+j=json.loads((root/'models/manifest.json').read_text());facts=json.loads((root/'meta/granadero-lod0.json').read_text())
+record=j['appearances']['granadero']['lods'][0]
+for k in record:
+ if k in facts:record[k]=facts[k]
+(root/'models/manifest.json').write_text(json.dumps(j,indent=2)+'\n')
+renderer='/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tools/characters-3d/render-review.py'
+for label,clip in [('idle','stand.idle.unarmed'),('rifle','stand.aim.long-gun'),('pistol','stand.aim.short-gun')]:
+ args=['python3',renderer,'--library-dir',str(root/'models'),'--presets','granadero','--clips',clip,'--times','0','--size','700','--samples','16','--output',str(root/'after'/label)]
+ subprocess.run(args,check=True)

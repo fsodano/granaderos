@@ -5,7 +5,7 @@ import {projectileFlight,projectilePath} from '../game/projectile-cover.js';
 import {projectileTrajectoryLength} from '../game/projectile-trajectory.js';
 import {shotLoadFlight,shotLoadForecast,shotLoadChance} from '../game/shot-load.js';
 import {penetratingFirearmDamage} from '../game/combat-balance.js';
-import {createBattle,actBattle,presentedActBattle,weaponFor,actionCosts,firearmVolleyPreview,firearmFlightPreview,firearmShotOptions} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,weaponFor,actionCosts,firearmVolleyPreview,firearmFlightPreview,firearmShotOptions,teamCanSee} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {weaponMetadata} from '../game/weapon-definition.js';
@@ -86,9 +86,39 @@ test('high energy supplies penetration without raising the authored nominal inju
  assert.equal(impact.incomingImpact,180);assert.equal(impact.damageFactor,1);assert.equal(kineticNominalImpact(w,impact),42);
  assert.equal(penetratingFirearmDamage(42,impact,1,w),42);
  const cover=field(energy(20,600),{}, {props:[{id:'wood',type:'chest',x:4,y:3,obstacleHeight:2}]});
- const protectedResult=execute(cover).next;assert.equal(body(protectedResult,'e').hp,body(hi,'e').hp,'surplus energy can pay cover while remaining nominal injury is capped');
+ // Full-height wood conceals the named target. Ordinary coordinate fire tests
+ // its real opaque volume and resistance without granting sight through it.
+ assert.equal(teamCanSee(cover,'player',body(cover,'e')),false);
+ assert.match(actBattle(cover,shot).lastError,/ver ese objetivo/);
+ const throughCover={type:'firePoint',unitId:'p',x:6,y:3,aim:4};
+ const protectedResult=execute(cover,throughCover).next;paidShot(cover,protectedResult,throughCover);
+ assert.equal(body(protectedResult,'e').hp,body(hi,'e').hp,'surplus energy can pay cover while remaining nominal injury is capped');
  const insufficient=field(energy(5,400),{}, {props:[{id:'wood',type:'chest',x:4,y:3,obstacleHeight:2}]});
- assert.equal(execute(insufficient).next.units.find(u=>u.id==='e').hp,100,'the weak launch exhausts its own force in wood');
+ const stopped=execute(insufficient,throughCover).next;paidShot(insufficient,stopped,throughCover);
+ assert.equal(stopped.units.find(u=>u.id==='e').hp,100,'the weak launch exhausts its own force in wood');
+});
+
+test('an opted kinetic ball presents its exact observed opaque-stone reflection with one paid discharge and no private contact proof',()=>{
+ const profile=energy(20,400),scene={seed:8,weather:{rain:0,humidity:0},enemies:[enemy('e',12,4),enemy('reserve',28,12)]};
+ const s=field(profile,{marksmanship:100},scene),stone=s.tiles.find(tile=>tile.x===8&&tile.y===5);
+ Object.assign(stone,{type:'wall',material:'stone',blocked:true,blocksSight:true});
+ assert.equal(teamCanSee(s,'player',stone),true);assert.equal(teamCanSee(s,'player',{x:8,y:5}),false);
+ const action={type:'firePoint',unitId:'p',x:10,y:5,aim:4},forecast=firearmFlightPreview(s,body(s),{x:10,y:5,tacticalLevel:0,stance:'standing'});
+ const bounce=forecast.ricochets[0],contact=forecast.bodyImpacts.find(impact=>impact.victimId==='e');
+ assert.equal(forecast.ricochets.length,1);assert.equal(contact.segmentIndex,1);
+ const result=execute(s,action);paidShot(s,result.next,action);assert.ok(body(result.next,'e').hp<100);
+ const projectiles=result.shown.frames.filter(frame=>frame.type==='projectile'&&frame.shotVisual);
+ assert.deepEqual(projectiles[0].shotVisual.impact,bounce.impact);assert.equal(projectiles[0].shotVisual.material,'stone');
+ assert.deepEqual(projectiles[1].shotVisual.source,bounce.impact);assert.deepEqual(projectiles[1].shotVisual.impact,contact.impact);
+ assert.equal(projectiles.filter(frame=>frame.shotVisual.discharge!==false).length,1);assert.equal(new Set(projectiles.map(frame=>frame.shotVisual.shotId)).size,1);
+ assert.doesNotMatch(JSON.stringify(projectiles.map(frame=>frame.shotVisual)),/SurfaceContact|sourceId|surface:/);
+ const geometry=result=>result.shown.frames.filter(frame=>frame.type==='projectile'&&frame.shotVisual).map(frame=>({source:frame.shotVisual.source,impact:frame.shotVisual.impact,material:frame.shotVisual.material,discharge:frame.shotVisual.discharge,duration:battleFrameDuration(frame),focus:battleFrameFocus(frame)}));
+ for(const x of [4,8]){
+  const hidden=structuredClone(s);hidden.props=[{id:'private-stone',type:'chest',x,y:4,material:'stone',obstacleHeight:2,blocksSight:false,roomId:'unrevealed'}];
+  assert.deepEqual(firearmFlightPreview(hidden,body(hidden),{x:10,y:5,tacticalLevel:0,stance:'standing'}),forecast);
+  const hiddenResult=execute(hidden,action);paidShot(hidden,hiddenResult.next,action);assert.equal(body(hiddenResult.next,'e').hp,100,'private material changes only the real passage and injury');
+  assert.deepEqual(geometry(hiddenResult),geometry(result));assert.doesNotMatch(JSON.stringify(hiddenResult.shown.frames.map(frame=>frame.shotVisual)),/private-stone|SurfaceContact|sourceId|surface:/);
+ }
 });
 
 test('a rounded-zero ball pays a real shot but cannot injure, redirect a bodyguard or earn contact practice',()=>{

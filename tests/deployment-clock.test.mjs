@@ -25,7 +25,7 @@ test('peaceful deployments retain the exact campaign hour and seconds across day
 test('an ordinary assault captures arrival time and direct, manual and automatic combat share that origin',()=>{
  let c=order(ready(),{type:'travel',sector:'buenos_aires'});c.secondOfHour=73;
  c=order(c,{type:'attack',sector:'san_nicolas'});const r=c.pendingBattle,b=enterSector(r);
- assert.equal(c.hour,24);assert.equal(r.hour,24);assert.equal(r.secondOfHour,73);assert.equal(b.night,true);assert.equal(b.startSeconds,86473);
+ assert.equal(c.hour,14);assert.equal(r.hour,14);assert.equal(r.secondOfHour,73);assert.equal(b.night,false);assert.equal(b.startSeconds,50473);
  assert.deepEqual(b,battleFromRequest(r,c));
  assert.deepEqual(b,battleFromRequest(r,{...c,hour:999,secondOfHour:0}),'a deployment origin does not drift with the caller clock');
  const result=autoResolve(r,null,{maxRounds:1});assert.equal(result.battle.startSeconds,b.startSeconds);

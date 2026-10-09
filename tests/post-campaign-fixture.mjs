@@ -1,3 +1,4 @@
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {approachNPC} from './approach-npc.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
@@ -20,7 +21,7 @@ import {repairMaterialPoints} from '../game/repair-materials.js';
 import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
 export const postContent=()=>parseContentPackage(readFileSync(new URL('../web/public/campaigns/la-ruta-de-las-postas.json',import.meta.url),'utf8'));
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
-const summary=s=>({hour:s.hour,second:s.secondOfHour??0,funds:s.resources.treasury,controlled:Object.keys(s.sectors).filter(k=>s.sectors[k].owner==='patriot'),chapters:s.campaignProgress.completed.map(c=>c.chapter),squad:[...s.squad],deaths:Object.keys(s.operativeState).filter(id=>!s.operativeState[id].alive),completed:s.completed,defeated:s.defeated});
+const summary=s=>({hour:s.hour,second:s.secondOfHour??0,funds:s.resources.treasury,controlled:Object.keys(s.sectors).filter(k=>s.sectors[k].owner==='patriot'),chapters:s.campaignProgress.completed.map(c=>c.chapter),squad:[...s.squad],wounds:s.recruited.filter(id=>s.operativeState[id].alive&&(s.operativeState[id].hp<s.operativeState[id].maxHp||s.operativeState[id].bleeding)).map(id=>({id,hp:s.operativeState[id].hp,maxHp:s.operativeState[id].maxHp,bleeding:s.operativeState[id].bleeding})),deaths:Object.keys(s.operativeState).filter(id=>!s.operativeState[id].alive),completed:s.completed,defeated:s.defeated});
 function postAssaultOrder(battle,unit){
  if(unit.medical<80||unit.marksmanship>=60)return hiredAssaultOrder(battle,unit,{reconBudget:16});
  const cost=actionCosts(battle,unit),patients=battle.units.filter(u=>u.side===unit.side&&u.id!==unit.id&&!u.routed&&!u.departure&&!u.surrendered&&sameSurface(unit,u)&&firstAidPlan(unit,u).valid).sort((a,b)=>a.hp-b.hp);
@@ -77,7 +78,6 @@ export function finishPostCampaign({onCheckpoint}={}){
    const arrivals=[];
    for(const id of available){const quote=contractQuote(s,rosterFor(s).find(o=>o.id===id),'week');if(quote.price+400>s.resources.treasury)break;s=order(s,{type:'recruitCivic',id,term:'week',destination:sector});arrivals.push(id);}
    if(arrivals.length)s=order(s,{type:'wait',hours:6});
-   s=order(s,{type:'travel',sector:'cordoba'});
    // Treat actual battle wounds through paid, hourly campaign work. The best
    // surviving doctor is selected from this campaign, not a fixed identity.
    const care={hours:0,dressingsBought:0,dressingsFound:0,dressingsUsed:0,repairPointsSpent:0,repairHours:0,cost:0};
@@ -93,17 +93,23 @@ export function finishPostCampaign({onCheckpoint}={}){
    }
    for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
    assert.ok(rosterFor(s).filter(o=>s.squad.includes(o.id)).every(o=>s.operativeState[o.id].hp===o.maxHp&&!s.operativeState[o.id].bleeding),'all actual survivors must be healthy before departure');assert.equal(care.cost,care.dressingsBought*10);if(!care.hours)assert.equal(care.dressingsBought,0);
+   s=completeTestTravel(s,{sector:'cordoba'});
    while(s.squad.some(id=>s.operativeState[id].condition<100||s.operativeState[id].jammed)){
     assert.ok(care.repairHours<48,'actual weapon repair must finish with finite kits');
     const roster=rosterFor(s).filter(o=>s.squad.includes(o.id)),target=roster.find(o=>s.operativeState[o.id].condition<100||s.operativeState[o.id].jammed),mechanic=roster.filter(o=>o.mechanical>=20&&s.operativeState[o.id].hp>=15&&(s.operativeState[o.id].energy??100)>10&&!s.operativeState[o.id].asleep).sort((a,b)=>b.mechanical-a.mechanical)[0];assert.ok(mechanic,'a living qualified mechanic is required');
     if(!repairMaterialPoints(s.operativeState[mechanic.id]))s=collectPhysicalCacheItems(s,mechanic.id,{kind:'repair-kit'},1).campaign;
-    s=order(s,{type:'assignWork',operativeId:mechanic.id,assignment:'repair',targetId:target.id});const points=repairMaterialPoints(s.operativeState[mechanic.id]);s=advanceCampaignHours(s,1);const spent=points-repairMaterialPoints(s.operativeState[mechanic.id]);assert.ok(spent>0);care.repairPointsSpent+=spent;care.repairHours++;
+    // Finding the finite kit advances real time and can finish earlier work.
+    // Select the next actual damaged weapon instead of assigning stale work.
+    if(s.operativeState[target.id].condition===100&&!s.operativeState[target.id].jammed)continue;
+    // Equipment repair clears a real firearm jam with finite tools, even
+    // when its condition is already 100. Primary repair only restores wear.
+    s=order(s,{type:'assignWork',operativeId:mechanic.id,assignment:'repair',targetId:target.id,repairScope:s.operativeState[target.id].jammed?'equipment':'primary'});const points=repairMaterialPoints(s.operativeState[mechanic.id]);s=advanceCampaignHours(s,1);const spent=points-repairMaterialPoints(s.operativeState[mechanic.id]);assert.ok(spent>0);care.repairPointsSpent+=spent;care.repairHours++;
     s=order(s,{type:'assignCare',id:mechanic.id,assignment:'active'});
    }
    // Keep actual survivors' and replacements' rifles after finite repair.
    // Collect compatible cartridges still present in the real Córdoba cache.
    for(const id of s.squad){const record=s.operativeState[id],op=rosterFor(s).find(o=>o.id===id);const ammoType=weaponAmmoType({...op,...record}),rounds=availableAmmunition(record,op);if(ammoType&&rounds<10){const found=collectPhysicalCacheItems(s,id,{kind:'ammunition',ammoType},10-rounds);s=found.campaign;}}
-   s=order(s,{type:'travel',sector:'tucuman'});
+   s=completeTestTravel(s,{sector:'tucuman'});
    // Finish real sleep at the staging sector before starting another march.
    // A medical assignment or a travel notice can pause the previous wait.
    for(const id of s.squad)if(!s.operativeState[id].asleep&&(s.operativeState[id].fatigue>0||s.operativeState[id].energy<100))s=order(s,{type:'setSleep',operativeId:id,asleep:true});
@@ -117,7 +123,7 @@ export function finishPostCampaign({onCheckpoint}={}){
   }
 
  }
- s=order(s,{type:'travel',sector:'cordoba'});let p=approachPost(s,'ines');const before=p.campaign.resources.treasury;p=choosePost(p,'report','finish');assert.equal(p.campaign.resources.treasury,before+400);assert.equal(p.campaign.completed,false,'ending waits for actual scene departure');
+ s=completeTestTravel(s,{sector:'cordoba'});let p=approachPost(s,'ines');const before=p.campaign.resources.treasury;p=choosePost(p,'report','finish');assert.equal(p.campaign.resources.treasury,before+400);assert.equal(p.campaign.completed,false,'ending waits for actual scene departure');
  s=saved({campaign:leave(saved(p))}).campaign;assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.deepEqual(s.campaignProgress.completed.map(c=>c.chapter),['encargo','ruta','regreso']);assert.equal(s.phase,0);assert.ok(Object.keys(s.operativeState).every(id=>Number(id)>=2000));assert.equal(s.flags.sanLorenzo,false);assert.equal(s.flags.armyFunded,false);assert.equal(s.pendingBattle,null);
  notes.push({stage:'ending',...summary(s)});onCheckpoint?.('ending',s,notes);return {campaign:s,notes};
 }

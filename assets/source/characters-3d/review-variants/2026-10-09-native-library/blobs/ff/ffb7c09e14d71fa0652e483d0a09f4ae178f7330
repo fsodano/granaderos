@@ -1,0 +1,105 @@
+{
+  "status": "accepted-focused-rifle-side-step-integration",
+  "selectedClips": [
+    "stand.strafeLeft.long-gun",
+    "stand.strafeRight.long-gun"
+  ],
+  "sourceRoot": "/tmp/granadero-rifle-sideways-integration/source",
+  "manifest": "/tmp/granadero-rifle-sideways-integration/models/manifest.json",
+  "tests": {
+    "pass": 50,
+    "fail": 0,
+    "command": "CHARACTER_REVIEW_LIBRARY=/tmp/granadero-rifle-sideways-integration/models GRANADEROS_CHARACTER_LIBRARY=/tmp/granadero-rifle-sideways-integration/models node --test tests/characters-sideways-support.test.mjs tests/characters-posture-support.test.mjs tests/characters-reviewed-motion.test.mjs tests/characters-firearm-fitting.test.mjs",
+    "log": "/tmp/granadero-rifle-sideways-integration/tests-final.log",
+    "unchangedSeamLimit": 0.017
+  },
+  "nativeContact120Hz": {
+    "male": {
+      "stand.strafeLeft.long-gun": {
+        "samples": 143,
+        "supportTarget": [
+          0.22,
+          -0.005,
+          0
+        ],
+        "maxPalmGap": 0.0023453660599326116,
+        "maxWristBend": 36.572311571725805,
+        "maxWristTwist": 0.003284814070752873,
+        "maxIndexAbduction": 0.00016906424563790267
+      },
+      "stand.strafeRight.long-gun": {
+        "samples": 155,
+        "supportTarget": [
+          0.22,
+          -0.005,
+          0
+        ],
+        "maxPalmGap": 0.00231811176603338,
+        "maxWristBend": 35.37003227407497,
+        "maxWristTwist": 0.003042383193360365,
+        "maxIndexAbduction": 0.0001339633854517226
+      }
+    },
+    "female": {
+      "stand.strafeLeft.long-gun": {
+        "samples": 143,
+        "supportTarget": [
+          0.22,
+          -0.01,
+          0
+        ],
+        "maxPalmGap": 0.002277936512438959,
+        "maxWristBend": 35.30583723397104,
+        "maxWristTwist": 0.006486281358093038,
+        "maxIndexAbduction": 0.00024236736239423618
+      },
+      "stand.strafeRight.long-gun": {
+        "samples": 155,
+        "supportTarget": [
+          0.22,
+          -0.01,
+          0
+        ],
+        "maxPalmGap": 0.0022564289195046946,
+        "maxWristBend": 33.720900251170555,
+        "maxWristTwist": 0.0055657151469858945,
+        "maxIndexAbduction": 0.0003134766884193912
+      }
+    }
+  },
+  "preservation": {
+    "male": {
+      "changed": [
+        "stand.strafeLeft.long-gun",
+        "stand.strafeRight.long-gun"
+      ],
+      "preservedClips": 332,
+      "nativeRig": "identical",
+      "unselectedMetadata": "identical",
+      "sha256": "1bcd6bccb3abb330df3db0e99b7e35f0e04c83f90466f477ed73d59a7c3aad3f"
+    },
+    "female": {
+      "changed": [
+        "stand.strafeLeft.long-gun",
+        "stand.strafeRight.long-gun"
+      ],
+      "preservedClips": 332,
+      "nativeRig": "identical",
+      "unselectedMetadata": "identical",
+      "sha256": "3ab24bf88da9443631e755c5b2400a79b12d1b5364a614c9d61c9b358ed3d96d"
+    }
+  },
+  "visual": {
+    "accepted": [
+      "accepted-left",
+      "accepted-right"
+    ],
+    "isoFramesReviewed": 24,
+    "views": [
+      "isometric",
+      "hands",
+      "individual-hands"
+    ],
+    "note": "Both anatomies and both directions. Initial review-left/review-right show rejected generic upright carry and are not acceptance evidence."
+  }
+}

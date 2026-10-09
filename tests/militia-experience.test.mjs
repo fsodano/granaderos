@@ -10,6 +10,7 @@ import {recordMilitiaHit,earnedMilitiaRank,validMilitiaExperience} from '../game
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
 import {enterSector} from '../game/world.js';
+import {previousDeploymentScene,retainedMilitaryBodies} from '../game/military-remains.js';
 const step=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const flat=()=>Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0}));
 function ready(){const s=initialCampaign();s.sectors.retiro.militia=[3,0,0];prepareGarrison(s,'retiro');return s;}
@@ -20,7 +21,9 @@ function encounter(s){
  r.enemies=[{id:'raider',name:'Asaltante',x:3,y:2,weapon:1813,hp:30,maxHp:30,morale:100,overwatch:false,patrol:false}].map(u=>initializeUnitAmmunition(u));
  const squad=[...r.squad.map((u,i)=>({...u,x:1,y:5+i})),...r.garrison.map(u=>({...u,x:u.id===20000?1:16,y:u.id===20000?2:10+(u.id-20000)}))];
  let b=createBattle(squad,{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width:20,height:16,tiles:flat(),props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:12-i,y:14})),seed:45});b.units.find(u=>u.side==='enemy').ap=0;
- return {s,b};
+ const previous=previousDeploymentScene(s,r),bodyIds=new Set(retainedMilitaryBodies(previous,[...r.squad,...r.garrison,...r.enemies],r.sector).filter(u=>u.side==='enemy'&&!u.departure).map(u=>u.id));
+ const bodies=bodyIds.size?enterSector(r,previous).units.filter(u=>bodyIds.has(u.id)):[];assert.equal(bodies.length,bodyIds.size);b.units.push(...structuredClone(bodies));
+ return {s,b,bodies};
 }
 function fightAndReturn(s){
  let b;({s,b}=encounter(s));const id=String(s.pendingBattle.garrison[0].id),old=structuredClone(s.pendingBattle.garrison[0]);
@@ -37,6 +40,7 @@ test('real paid kills promote a survivor through two ranks without a new soldier
  // The next encounter still uses the earned soldier and his finite rounds.
  let pair=encounter(s);let b=endTurn(pair.b);assert.equal(b.lastError,null);assert.equal(b.status,'victory');
  s=step(pair.s,{type:'leaveSector',battleId:pair.s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});unit=s.garrisons.retiro.find(u=>u.id===first.id);assert.equal(unit.militiaRank,2);assert.equal(unit.militiaExperience,6);assert.deepEqual(s.sectors.retiro.militia,[2,0,1]);assert.equal(unit.hp,44);assert.equal(unit.maxHp,60);assert.equal(unit.weapon,1800);assert.equal(unit.ammo,4);assert.equal(s.nextMilitiaId,20003);assert.equal(unit.militiaCombatCredit.length,2);assert.notEqual(...unit.militiaCombatCredit.map(e=>e.id));
+ for(const body of pair.bodies){const kept=s.sectorStates.retiro.units.find(u=>u.id===body.id);assert.ok(kept);for(const key of ['hp','maxHp','originalUnitId','weapon','blade','loaded','ammo','condition','inventory','weaponFittings'])assert.deepEqual(kept[key],body[key],`${body.id}: ${key}`);}
  s=restoreCampaign(serializeCampaign(s));s=step(s,{type:'visitSector'});const revisited=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(revisited.units.find(u=>u.id===String(first.id)).militiaRank,2);assert.equal(revisited.units.find(u=>u.id===String(first.id)).hp,44);
 });
 test('first wounds and subsequent kills have bounded credit; allies and helpless targets grant none',()=>{

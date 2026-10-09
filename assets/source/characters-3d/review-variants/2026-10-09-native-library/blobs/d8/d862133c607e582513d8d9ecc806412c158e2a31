@@ -1,0 +1,36 @@
+{
+  "state": "Frozen at root request. No firearm candidate is accepted for integration.",
+  "publicAssetsChanged": false,
+  "runningJobs": false,
+  "focusedCheckpoint": {
+    "library": "/tmp/granadero-native-grip-candidate/models",
+    "frozenSource": "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring",
+    "review": "/tmp/granadero-native-grip-candidate/review/index.html",
+    "measuredEvidence": "/tmp/granadero-native-grip-candidate/physical-audit.json",
+    "scope": "Only stand.aim.long-gun and stand.fire.long-gun were rebuilt for male/female, with paired Granadero/woman-scout LOD0 bodies and the six corrected rifle meshes.",
+    "validation": [
+      "2/2 exported wrist/index anatomy tests pass. Same tests fail old public grip as expected.",
+      "30 actual exported frames at shot, recoil peak and recovery.",
+      "32 measured exported aim/fire samples; no head-stock penetration.",
+      "Actual hand skin checks at shot: no detected wood penetration; trigger gaps 1.77 mm male / 1.03 mm female."
+    ],
+    "limitations": [
+      "This is a mixed private library. Other old rifle clips remain incompatible with the new shared rifle socket; do not publish it as a complete library.",
+      "Right little finger remains 8.8/9.7 mm off the stock; shoulder/collar cloth review remains open.",
+      "Final visual/integration acceptance was not given."
+    ]
+  },
+  "unacceptedSource": [
+    "Rifle-specific _gun_pose refit for crouched/prone/mounted aim, with fitted native head/spine/shoulder and support-hand poses. Source poses only, no exported bank. Crouch/prone male butt contact remains too far from the shoulder in the current source profiles (about17/24 mm); separate fore-aft probes were not applied.",
+    "Loading now has an unexported fore-end hand frame with optional gripOffsets rotationQuaternion keys. It compiles but was not rendered or validated after final source wiring. No six-item/four-posture loading sweep has run.",
+    "Runtime/type support for optional grip quaternion is independently tested by motion_qa_plan; it is frozen and unpublished. Review renderer support compiles, but no exported quaternion-loading clip was rendered.",
+    "New reviewedPose.nativeGrip source hash/support position metadata and adaptive carry-contact test have not been exercised in a complete updated rifle bank.",
+    "Pistol grip remains the previous provisional implementation; this pass did not establish anatomical acceptance."
+  ],
+  "isolationNotes": [
+    "Do not cherry-pick the current motion.py or reviewed_motion.py wholesale: root and posture QA own other changes in the same files.",
+    "Do not ship new rifle sockets without the complete compatible rifle clip family and paired bodies.",
+    "The new rifle wrist/index regression in characters-reviewed-motion.test.mjs deliberately fails unchanged public rifle assets; exclude that new assertion from unrelated checkpoints.",
+    "Current source copies and exact hashes are in this freeze directory. All diagnostic and candidate files remain intact."
+  ]
+}

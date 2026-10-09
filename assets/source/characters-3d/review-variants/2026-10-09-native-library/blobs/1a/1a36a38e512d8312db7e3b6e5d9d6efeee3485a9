@@ -1,0 +1,64 @@
+{
+  "spec": {
+    "name": "prone.gesture.throw",
+    "duration": 1.3,
+    "loop": false,
+    "events": {
+      "release": 0.754
+    },
+    "gesture": "throw",
+    "posture": "prone",
+    "equipment": "any",
+    "clip": "prone.gesture.throw",
+    "markers": {
+      "release": 0.754
+    },
+    "source": {
+      "type": "native-contact-authoring"
+    },
+    "sampleRate": 15,
+    "timingAuthority": "simulation",
+    "rootMotion": "in-place",
+    "freeHands": [
+      "handRight",
+      "handLeft"
+    ],
+    "handProps": [
+      {
+        "hand": "handRight",
+        "categories": [
+          "supply"
+        ],
+        "untilMarker": "release"
+      }
+    ]
+  },
+  "failures": [
+    {
+      "fraction": 0.5512820512820513,
+      "time": 0.71666664037949,
+      "contact": true,
+      "minimum": 0.01627113573335648,
+      "contacts": [
+        {
+          "kind": "hand",
+          "bones": [
+            [
+              "index_03_r",
+              0.9671725034713745
+            ],
+            [
+              "index_02_r",
+              0.0328274704515934
+            ]
+          ],
+          "local": [
+            -0.08966025045682093,
+            0.03495563425091364,
+            0.09253941464138278
+          ]
+        }
+      ]
+    }
+  ]
+}

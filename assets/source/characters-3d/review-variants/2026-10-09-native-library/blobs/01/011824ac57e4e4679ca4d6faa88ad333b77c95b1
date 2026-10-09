@@ -1,0 +1,448 @@
+{
+  "appearanceLODs": 24,
+  "nonAppearanceGLBsPreserved": {
+    "female-animations.glb": "ccd59d1984ac3fa5720714a9c903e069398badde80b07f93ba93683bcc6b08a7",
+    "male-animations.glb": "da31fa81d389b35887585126ae9eb9f3779ecc0f35b78a39d2a523dd0af4fe81",
+    "horse-lod0.glb": "6aaee15ea8437d40473a976844c2173b89bfa939887c7e3f85e19b4ab615171e",
+    "horse-lod1.glb": "fefbd6609e8a2ff461a46c298ef7fe011265565b9b5ce51e000989697d6b7a02",
+    "horse-lod2.glb": "e08b9d4a8787c064160fcc63bdbf7b9810407525fffeedc7a2c7bd0a28c49028",
+    "female-garments.glb": "3f920ae8138572411a8fae63c6a848b839a0facda228a23ded3a251532048deb",
+    "male-garments.glb": "3b4c847fe202acbea1465d6e0fb647a8292f8f93df3671ac1fbb966c5125f3cc",
+    "equipment.glb": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255"
+  },
+  "allNonAppearanceMetadataExact": true,
+  "appearanceProof": [
+    {
+      "file": "granadero-lod0.glb",
+      "before": {
+        "sha256": "ec51b87ad3a7d5165c22f9d967d904755760cffa6528a6d52641abeb7d8531ed",
+        "triangles": 59996,
+        "headTriangles": 12632,
+        "bytes": 3842648
+      },
+      "after": {
+        "sha256": "67e1c263befa83fb714da7dfe686f7878ee93016ca26f081aa38c7a882c3d0bb",
+        "triangles": 87375,
+        "headTriangles": 40011,
+        "bytes": 5306404
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 47364
+    },
+    {
+      "file": "granadero-lod1.glb",
+      "before": {
+        "sha256": "0cf517f5fe225c06fc0ba03ca92710e6782ae02fb40045b2e3707059a3b94743",
+        "triangles": 30983,
+        "headTriangles": 7459,
+        "bytes": 2269748
+      },
+      "after": {
+        "sha256": "0c5e5b49288fa5ceb8d60103a2048ebfe8b0a1a66b9dbddcce8492cf058e0f0a",
+        "triangles": 51202,
+        "headTriangles": 27678,
+        "bytes": 3461228
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 23524
+    },
+    {
+      "file": "granadero-lod2.glb",
+      "before": {
+        "sha256": "35038dc9c59d243eb52bca4e55eca04389a3165e2d76e569eb92238d7a9b35b3",
+        "triangles": 12758,
+        "headTriangles": 2605,
+        "bytes": 930192
+      },
+      "after": {
+        "sha256": "d249976b846f41575e152bcf21e26729aba7dcaa1ad3f5eeeafd857552f5f875",
+        "triangles": 18734,
+        "headTriangles": 8581,
+        "bytes": 1168360
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 10153
+    },
+    {
+      "file": "royalist-lod0.glb",
+      "before": {
+        "sha256": "908d3b2ddd984e6f1d1d1131df07e03295dec477c20419ed91e2caab65310d9a",
+        "triangles": 59639,
+        "headTriangles": 12632,
+        "bytes": 3801656
+      },
+      "after": {
+        "sha256": "1f3396983f8c69ef11cf5871c39456d35290b910a05aa3af36a718ea24b84110",
+        "triangles": 87018,
+        "headTriangles": 40011,
+        "bytes": 5265412
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 47007
+    },
+    {
+      "file": "royalist-lod1.glb",
+      "before": {
+        "sha256": "e730eb1371a2889651ba45a450c7634c2697e7efe7c2f9cd48910a7a582ad047",
+        "triangles": 30912,
+        "headTriangles": 7459,
+        "bytes": 2260300
+      },
+      "after": {
+        "sha256": "ee7997cd11afaaca1e7c83d431ae771a03cf059c2013ca315b8d9214ace6c45b",
+        "triangles": 51131,
+        "headTriangles": 27678,
+        "bytes": 3451780
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 23453
+    },
+    {
+      "file": "royalist-lod2.glb",
+      "before": {
+        "sha256": "f0c60df2651bb88cb8cab5897c6927f2fa3f9ad3362c1736d854cee6bc02c913",
+        "triangles": 12701,
+        "headTriangles": 2605,
+        "bytes": 921340
+      },
+      "after": {
+        "sha256": "f9a8e7561f6d8f4d7cefc532980714a3ec83f38a61b578febb35fff7bb858eab",
+        "triangles": 18677,
+        "headTriangles": 8581,
+        "bytes": 1159508
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 10096
+    },
+    {
+      "file": "worker-lod0.glb",
+      "before": {
+        "sha256": "ef6b0fac4252b7553f0c9017a7e5969d09e1ad070bd71bc2baa691efe95ff73c",
+        "triangles": 48831,
+        "headTriangles": 12960,
+        "bytes": 2329388
+      },
+      "after": {
+        "sha256": "714e4b3f297a7dcd23ca5db639b15e415f0b6f16dd42091915a0ca3b63ee6c4d",
+        "triangles": 76210,
+        "headTriangles": 40339,
+        "bytes": 3793140
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 35871
+    },
+    {
+      "file": "worker-lod1.glb",
+      "before": {
+        "sha256": "a9357b6b19d1614b42fda37e5c8e417a1277373ce45b6679462c36848b2ef9e7",
+        "triangles": 25962,
+        "headTriangles": 7555,
+        "bytes": 1428472
+      },
+      "after": {
+        "sha256": "9deedb94a3292dd906556f16b0b9ac70b6c9c22c3b244614b73d880d9abcb9fa",
+        "triangles": 46181,
+        "headTriangles": 27774,
+        "bytes": 2619960
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 18407
+    },
+    {
+      "file": "worker-lod2.glb",
+      "before": {
+        "sha256": "083a4d857e6f64b9902a6051ca3c53a36b52b2f4644ab1609134f2fa78cf5481",
+        "triangles": 11128,
+        "headTriangles": 2720,
+        "bytes": 589944
+      },
+      "after": {
+        "sha256": "02eee6fd923d6252b93ce4827f57f7ddcde2d4c8949d4220b4ae97e928f2a762",
+        "triangles": 17104,
+        "headTriangles": 8696,
+        "bytes": 828104
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 8408
+    },
+    {
+      "file": "surgeon-lod0.glb",
+      "before": {
+        "sha256": "c5a8c62f819aa8df04474d85029c190c924d496c72046a36d6ce63c19e16614c",
+        "triangles": 35523,
+        "headTriangles": 13468,
+        "bytes": 1944004
+      },
+      "after": {
+        "sha256": "80562b2bedc862bffb2247d9f4c5ebd0409e8572e33792d182267ea219fe1cf8",
+        "triangles": 62902,
+        "headTriangles": 40847,
+        "bytes": 3407760
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 22055
+    },
+    {
+      "file": "surgeon-lod1.glb",
+      "before": {
+        "sha256": "c549bab323865e8bee39b3a543b1d5d5a8c065659f710bf6af47b3dfde04ce52",
+        "triangles": 19612,
+        "headTriangles": 8063,
+        "bytes": 1289276
+      },
+      "after": {
+        "sha256": "04057237417a1d1dc639fcbca3bc13d977876b676b9154f3aa76733b127c3d8d",
+        "triangles": 39831,
+        "headTriangles": 28282,
+        "bytes": 2480760
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 11549
+    },
+    {
+      "file": "surgeon-lod2.glb",
+      "before": {
+        "sha256": "5a15fa35a439eb31b10c87c9d6eee3581c0a9c466de9d5d900ef39a9cfcd72d1",
+        "triangles": 9114,
+        "headTriangles": 3228,
+        "bytes": 601820
+      },
+      "after": {
+        "sha256": "125bf698aa41d4aab4f0219c2d8a51ce5ac967bbdc8bb4555887bb12c6b04177",
+        "triangles": 15090,
+        "headTriangles": 9204,
+        "bytes": 839984
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 5886
+    },
+    {
+      "file": "gaucho-lod0.glb",
+      "before": {
+        "sha256": "88fa8d51109807f570cb94e871fb2b8fa2d173b715d8ae7feaf9dfae2185bc15",
+        "triangles": 34829,
+        "headTriangles": 12960,
+        "bytes": 1769516
+      },
+      "after": {
+        "sha256": "2154e3aa7aeed5d2d3771360cebe972a66451030289eca3bf6eb49f574275212",
+        "triangles": 62208,
+        "headTriangles": 40339,
+        "bytes": 3233272
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 21869
+    },
+    {
+      "file": "gaucho-lod1.glb",
+      "before": {
+        "sha256": "ae2329c4bbde13cb8df1db5ada92fdab6ed51c40dc8b4bef550a64565f15f220",
+        "triangles": 17592,
+        "headTriangles": 7555,
+        "bytes": 1082240
+      },
+      "after": {
+        "sha256": "9ec217287704cb7bc947266c36e4c22c25931beac578e1d44d6d678dccc656d4",
+        "triangles": 37811,
+        "headTriangles": 27774,
+        "bytes": 2273724
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 10037
+    },
+    {
+      "file": "gaucho-lod2.glb",
+      "before": {
+        "sha256": "7afbe1cc16f04fb27fee9557f295e64d76b397924fb0806025e2a852abab25b0",
+        "triangles": 6989,
+        "headTriangles": 2720,
+        "bytes": 415332
+      },
+      "after": {
+        "sha256": "21532e7cc635b888a1998debec73d27d8b1084f607a60786647711b041b96b43",
+        "triangles": 12965,
+        "headTriangles": 8696,
+        "bytes": 653496
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 4269
+    },
+    {
+      "file": "friar-lod0.glb",
+      "before": {
+        "sha256": "6cb1a91475ebb3a0968168af888cd554d4105c2920907e2f0aebc67bbee51808",
+        "triangles": 41961,
+        "headTriangles": 12960,
+        "bytes": 2394108
+      },
+      "after": {
+        "sha256": "e7537d17e994cc1c1e9852035d2dee34780f377457ae1dcdb7d03665cab7053b",
+        "triangles": 69340,
+        "headTriangles": 40339,
+        "bytes": 3857736
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 29001
+    },
+    {
+      "file": "friar-lod1.glb",
+      "before": {
+        "sha256": "5c85d3584407530ff7b0e68956c23c121825a2d38824943d6aa7197a01ea67be",
+        "triangles": 21839,
+        "headTriangles": 7554,
+        "bytes": 1455548
+      },
+      "after": {
+        "sha256": "fa5c38ac5eb470d5eb71f0070e69c8b4f004cacea4ea6caf0b9d53299db3ce6d",
+        "triangles": 42058,
+        "headTriangles": 27773,
+        "bytes": 2646728
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 14285
+    },
+    {
+      "file": "friar-lod2.glb",
+      "before": {
+        "sha256": "f332faa00f90577c5ab419eea431e6fd4a1a861f596a699354bbf9edc9a3336d",
+        "triangles": 8913,
+        "headTriangles": 2721,
+        "bytes": 594980
+      },
+      "after": {
+        "sha256": "76dcc2ac69336efef606ceb0eb1a7d4ece843417e03d58c9e605cf2c0b4289a7",
+        "triangles": 14889,
+        "headTriangles": 8697,
+        "bytes": 833252
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 6192
+    },
+    {
+      "file": "woman-scout-lod0.glb",
+      "before": {
+        "sha256": "afe08d1507cbfb5b80a68fcc93fa177785a7d71f6d15904fdc3cf1684442ec39",
+        "triangles": 36526,
+        "headTriangles": 16202,
+        "bytes": 1855832
+      },
+      "after": {
+        "sha256": "8f6f1ef18ccc51b579c7d769fa211fee3d70f98f855f778984269ea62acaacfe",
+        "triangles": 63649,
+        "headTriangles": 43325,
+        "bytes": 3311264
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 20324
+    },
+    {
+      "file": "woman-scout-lod1.glb",
+      "before": {
+        "sha256": "efff522137cc63b41fe6e2813a1b892ee978ad49abb33ca9fcf018185d50a575",
+        "triangles": 18687,
+        "headTriangles": 9065,
+        "bytes": 1143000
+      },
+      "after": {
+        "sha256": "53e31365f9db98fc9264256b859de5dce4ca36be1b54a19f96ce957857d0d7ba",
+        "triangles": 38771,
+        "headTriangles": 29149,
+        "bytes": 2329836
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 9622
+    },
+    {
+      "file": "woman-scout-lod2.glb",
+      "before": {
+        "sha256": "d6f430b3b89b2927d440529bb0ae5ec69a63051055000783a578bfc9661d3c13",
+        "triangles": 7565,
+        "headTriangles": 3458,
+        "bytes": 448600
+      },
+      "after": {
+        "sha256": "04a347b0a980f687c67901e14c799ce9ae753f0b91f79b318a1e4b65f8e99b97",
+        "triangles": 13519,
+        "headTriangles": 9412,
+        "bytes": 685156
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 4107
+    },
+    {
+      "file": "woman-shawl-lod0.glb",
+      "before": {
+        "sha256": "20777eb2097152ad71fce0ff9de82f6b11f29e3009a1ec9f5bab2ec2717dfe79",
+        "triangles": 59894,
+        "headTriangles": 14689,
+        "bytes": 3022340
+      },
+      "after": {
+        "sha256": "64688ce312ddef06f568aadefc2f875e5e53cba478275da99705a0e1cfc230e3",
+        "triangles": 87017,
+        "headTriangles": 41812,
+        "bytes": 4477520
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 45205
+    },
+    {
+      "file": "woman-shawl-lod1.glb",
+      "before": {
+        "sha256": "5480fc7064d6c779424ec3096721b2a60a8c5fa7d70eb83c6c1fb10f2d601c19",
+        "triangles": 31440,
+        "headTriangles": 8387,
+        "bytes": 1777236
+      },
+      "after": {
+        "sha256": "2dc1be5e20ef75355da5ef79f2ee9163e4dcfcb301bdd81711ee698d504b7fe5",
+        "triangles": 51524,
+        "headTriangles": 28471,
+        "bytes": 2964184
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 23053
+    },
+    {
+      "file": "woman-shawl-lod2.glb",
+      "before": {
+        "sha256": "b8e4c5be6c9a318b5271dd6e1a2cc3c65675349b2bd205cecf162ccab925e2a1",
+        "triangles": 13195,
+        "headTriangles": 3062,
+        "bytes": 728296
+      },
+      "after": {
+        "sha256": "77e84cd9066fd8063f90174efc6fa337f3fc21be27fc40b8a51150be8837dedc",
+        "triangles": 19149,
+        "headTriangles": 9016,
+        "bytes": 964992
+      },
+      "nativeSkeletonExact": true,
+      "allNonHeadTriangleAttributesExact": true,
+      "preservedTriangles": 10133
+    }
+  ]
+}

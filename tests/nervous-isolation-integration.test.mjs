@@ -7,6 +7,7 @@ import {targetPreview} from '../game/ja2-hud.js';
 import {nervousIsolationStatus} from '../game/nervous-isolation.js';
 import {ammoCount} from '../game/ammo-types.js';
 import {enterSector} from '../game/world.js';
+import {travelLegHours} from '../game/squad-travel.js';
 import {nervousActor,nervousSaved,nervousOrder,nervousStep,earnNervousIsolation} from './nervous-isolation-fixture.mjs';
 
 const stamp=campaign=>campaign.hour*3600+(campaign.secondOfHour??0);
@@ -96,8 +97,11 @@ function continueRoute(execution){
  const renewQuote=contractQuote(pair.campaign,rosterFor(pair.campaign).find(unit=>unit.id===130),'day'),cashBeforeRenew=pair.campaign.resources.treasury;
  campaign({type:'renewContract',id:130,term:'day'});
  assert.equal(renewQuote.price,36);assert.equal(pair.campaign.resources.treasury,cashBeforeRenew-renewQuote.price);
+ // Schedule the prepared second observation in daylight. Waiting and marching
+ // both remain real replayed orders; only the latter is the two-hour city road.
+ campaign({type:'wait',hours:12-travelLegHours('retiro','buenos_aires')});
  const marchAt=stamp(pair.campaign);campaign({type:'attack',sector:'buenos_aires'});
- assert.equal(stamp(pair.campaign)-marchAt,12*3600);
+ assert.equal(stamp(pair.campaign)-marchAt,travelLegHours('retiro','buenos_aires')*3600);
  assert.equal(nervousActor(pair.battle,130).hp,30);assert.equal(nervousActor(pair.battle,130).shock,0);
  assert.equal(nervousActor(pair.battle,130).nervousIsolationWarned,undefined,'normal reentry resets the deployment notice with transient shock');
  assert.equal(nervousActor(pair.battle,130).morale,nervousActor(firstBattle,130).abilities.includes('nervous_isolation')?40.7:45.7,'five earned strategic losses remain; the actual first paid renewal adds its ordinary two morale');
@@ -185,7 +189,7 @@ test('paid native fear is earned by hostile wounds and a real miss; finite firin
  assert.equal(current.pair.battle.seed,legacy.pair.battle.seed);assert.equal(current.pair.battle.elapsedSeconds,legacy.pair.battle.elapsedSeconds);
  for(const unit of current.pair.battle.units)assert.deepEqual(mechanical(unit),mechanical(nervousActor(legacy.pair.battle,unit.id)),'authored fear changes only ordinary shock/notice at this real turn');
  const actual=continueRoute(current),control=continueRoute(legacy);
- assert.equal(actual.chance,7);assert.equal(control.chance,17,'the observed loaded-pistol forecast responds to the two real fear shock points');
+ assert.equal(actual.chance,10);assert.equal(control.chance,20,'the observed loaded-pistol forecast responds to the two real fear shock points after the shorter road march');
  assert.equal(actual.afterShot.battle.seed,control.afterShot.battle.seed);
  assert.equal(actual.afterShot.battle.elapsedSeconds,control.afterShot.battle.elapsedSeconds);
  for(const unit of actual.afterShot.battle.units)assert.deepEqual(mechanical(unit),mechanical(nervousActor(control.afterShot.battle,unit.id)),'this natural shot misses in both declared content controls without a gear/RNG grant');

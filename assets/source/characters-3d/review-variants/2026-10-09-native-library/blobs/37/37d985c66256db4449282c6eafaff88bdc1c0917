@@ -1,0 +1,43 @@
+"""Private epaulette contact fitting in the native dressed resting pose."""
+import json
+from pathlib import Path
+import bpy
+from mathutils import Matrix,Vector
+from mathutils.bvhtree import BVHTree
+
+
+def fit_epaulettes(ctx,lod):
+    if ctx['preset']!='granadero' or lod!=0:return
+    from character import neutral_pose
+    rig=ctx['rig'];saved={b.name:b.matrix_basis.copy() for b in rig.pose.bones}
+    neutral_pose(ctx);bpy.context.view_layer.update()
+    evaluated=ctx['coat'].evaluated_get(bpy.context.evaluated_depsgraph_get());coat=evaluated.to_mesh()
+    points=[v.co.copy() for v in coat.vertices];faces=[tuple(p.vertices) for p in coat.polygons]
+    bvh=BVHTree.FromPolygons(points,faces,all_triangles=False)
+    transforms={b.name:b.matrix@b.bone.matrix_local.inverted() for b in rig.pose.bones}
+    rows=[]
+    for side in ('l','r'):
+        pad=next(o for o in ctx['objects'] if o.name=='Crimson_Epaulette_'+side)
+        center=sum((v.co for v in pad.data.vertices),Vector())/len(pad.data.vertices)
+        skin=Matrix(((0,0,0,0),)*4)
+        for group in pad.data.vertices[0].groups:skin+=transforms[pad.vertex_groups[group.group].name]*group.weight
+        needed=0;hits=0
+        for vertex in pad.data.vertices:
+            if vertex.co.z>center.z:continue
+            point=skin@vertex.co
+            hit,normal,index,distance=bvh.ray_cast(Vector((point.x,point.y,1.9)),Vector((0,0,-1)),.7)
+            if hit is not None:
+                needed=max(needed,hit.z+.003-point.z);hits+=1
+        if hits<15 or needed>.04:raise ValueError(('Unbounded shoulder-pad clearance',side,hits,needed))
+        delta=skin.inverted().to_3x3()@Vector((0,0,needed))
+        prefixes=('Crimson_Epaulette_'+side,'Epaulette_Shoulder_Board_'+side,'Epaulette_Metal_Crescent_'+side,'Epaulette_Inner_Braid_'+side,'Epaulette_Button_'+side,'Red_Epaulette_Fringe_'+side)
+        selected=[o for o in ctx['objects'] if o.name.startswith(prefixes)]
+        for obj in selected:
+            for vertex in obj.data.vertices:vertex.co+=delta
+            obj.data.update()
+        rows.append({'side':side,'clearanceShiftMeters':needed,'parts':len(selected),'supportSamples':hits})
+    evaluated.to_mesh_clear()
+    for bone in rig.pose.bones:bone.matrix_basis=saved[bone.name]
+    bpy.context.view_layer.update()
+    Path('/tmp/granadero-epaulette-fit-pilot/fit-v2.json').write_text(json.dumps(rows,indent=2)+'\n')
+    print('EPAULETTE_CLEARANCE',rows,flush=True)

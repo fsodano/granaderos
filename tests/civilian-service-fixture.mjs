@@ -2,13 +2,23 @@ import assert from 'node:assert/strict';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
 import {createBattle,actBattle,endTurn} from '../game/tactical.js';
+import {travelLegHours} from '../game/squad-travel.js';
 import {order,saved,sync,localId,readyLocal,leave,hireLocal,localPackage} from './local-contract-fixture.mjs';
 const ledger=s=>s.civilianState.people[`person-${localId(s)}`];
 
-export function woundedService({medical=18,casualty=false,term='day',careRules,configure=()=>{}}={}){
+export function woundedService({medical=18,casualty=false,term='day',careRules,contactHour,configure=()=>{}}={}){
  const d=localPackage({pay:300});if(careRules!==undefined)d.careRules=careRules;configure(d);d.characters.find(c=>c.id==='person-110').attributes.medical=medical;
  d.characters.find(c=>c.id==='alma-contract').attributes.maxHp=casualty?20:100;
- let p=hireLocal(readyLocal(undefined,d),term),s=order(leave(p),{type:'travel',sector:'retiro'});s=order(s,{type:'attack',sector:'buenos_aires'});
+ let p=hireLocal(readyLocal(undefined,d),term),s=order(leave(p),{type:'travel',sector:'retiro'});
+ if(contactHour!==undefined){
+  // Schedule the actual injury when its test needs a living handoff at expiry
+  // or across midnight. Spend the extra time before the enemy inflicts it.
+  const hours=Math.ceil(contactHour-travelLegHours(s.location,'buenos_aires')-s.hour);
+  assert.ok(Number.isSafeInteger(hours)&&hours>=0,'the contact schedule must follow the actual return march');
+  if(hours)s=order(s,{type:'wait',hours});
+ }
+ s=order(s,{type:'attack',sector:'buenos_aires'});
+ if(contactHour!==undefined)assert.equal(s.hour,contactHour,'the paid approach must reach the scheduled combat hour');
  const id=localId(s),r=s.pendingBattle;
  // Paid deployment with compact barrier geometry to isolate a real enemy shot.
  // This is an injury handoff check, not an accepted capital-victory route.
@@ -23,4 +33,3 @@ export function woundedService({medical=18,casualty=false,term='day',careRules,c
  assert.equal(s.operativeState[id].hp,patient.hp);assert.equal(s.operativeState[id].bleeding,patient.bleeding);assert.equal(ledger(s).inService,true);assert.equal(ledger(s).health.hp,before.hp);
  return saved({campaign:s}).campaign;
 }
-

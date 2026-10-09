@@ -1,0 +1,7 @@
+{
+  "mode": "built-in image_gen",
+  "input": "assets/source/characters-3d/authoring/vendor/makehuman/young_lightskinned_male_diffuse.png",
+  "output": "assets/source/characters-3d/authoring/generated/granadero-skin-colour.png",
+  "generatedSource": "01a10d9d-3ef6-7270-961e-05b2444ecaf7/exec-65c1232f-56e8-461e-a9f0-9b2aa57272bf.png",
+  "status": "Accepted incremental Granadero albedo; broad eyebrow tails and overall appearance remain under review."
+}

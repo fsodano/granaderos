@@ -7,6 +7,7 @@ import {createBattle,actBattle,presentedActBattle,actionCosts,shotChance,teamCan
 import {totalReserveAmmunition} from '../game/ammunition-types.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
+import {travelLegHours} from '../game/squad-travel.js';
 
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const saved=pair=>decodeSave(encodeSave(pair.campaign,pair.battle??null));
@@ -25,6 +26,8 @@ function preparedArena({legacy=false}={}){
  assert.deepEqual(campaign.recruited,[107,116]);
  const quote=contractQuote(campaign,rosterFor(campaign).find(op=>op.id===107),'day'),cash=campaign.resources.treasury;
  campaign=order(campaign,{type:'renewContract',id:107,term:'day'});assert.equal(campaign.resources.treasury,cash-quote.price);
+ // Preserve the authored daylight observation, including its real clock cost.
+ campaign=order(campaign,{type:'wait',hours:18-campaign.hour-travelLegHours('retiro','buenos_aires')});
  campaign=order(campaign,{type:'attack',sector:'buenos_aires'});const request=campaign.pendingBattle,width=48,height=16;
  // Declared initial arena, not an earned opening victory. The real hostile
  // force, two paid hires, health, skills, contracts and finite gear are retained.
@@ -62,7 +65,7 @@ function execute(start){
  pair=issue(pair,{type:'reload',unitId:'107'},history);
  for(let i=0;i<25&&pair.battle.mode==='exploration';i++)pair=issue(pair,{type:'move',unitId:'107',x:actor(pair.battle).x+1,y:0},history);
  assert.equal(pair.battle.mode,'combat');assert.equal(pair.battle.phase,'player');
- pair=issue(pair,{type:'move',unitId:'107',x:21,y:0},history);
+ pair=issue(pair,{type:'move',unitId:'107',x:23,y:0},history);
  const before=structuredClone(pair),shooter=actor(pair.battle),enemy=target(pair.battle),chance=shotChance(pair.battle,shooter,enemy,1);
  assert.ok(teamCanSee(pair.battle,'player',enemy));assert.deepEqual(pair,before,'the public forecast spends no time, random draws or items');
  const action={type:'fire',unitId:'107',targetId:enemy.id,aim:1},cost=actionCosts(pair.battle,shooter,enemy),shotsBefore=rounds(shooter);
@@ -84,7 +87,7 @@ test('paid observed grief lowers an ordinary shot forecast and preserves physica
  const current=preparedArena(),legacy=preparedArena({legacy:true}),currentBefore=structuredClone(current.start),legacyBefore=structuredClone(legacy.start);
  const actual=execute(current.start),control=execute(legacy.start);assert.deepEqual(current.start,currentBefore);assert.deepEqual(legacy.start,legacyBefore);
  assert.equal(actual.deathMorale,61);assert.equal(control.deathMorale,67);assert.deepEqual(actual.grief,[{companionId:116,loss:6}]);assert.equal(control.grief,undefined);
- assert.equal(actual.chance,12);assert.equal(control.chance,13);assert.deepEqual(actual.history,control.history);assert.deepEqual(actual.normalShot,control.normalShot,'grief adds no shot cost, physical effect or random draw');
+ assert.equal(actual.chance,36);assert.equal(control.chance,37);assert.deepEqual(actual.history,control.history);assert.deepEqual(actual.normalShot,control.normalShot,'grief adds no shot cost, physical effect or random draw');
  assert.equal(actual.returned.campaign.operativeState[107].morale,47);assert.equal(control.returned.campaign.operativeState[107].morale,53);assert.equal(actual.pair.battle.units.find(unit=>unit.side==='enemy').hp,100,'the real missed shot does not invent an enemy wound');
  assert.equal(actual.pair.battle.log.filter(line=>line==='Inés Aguirre lamenta la muerte de Petrona Lagos. Moral −6.').length,1);assert.equal(control.pair.battle.log.some(line=>line.includes('lamenta la muerte')),false);
  t.diagnostic(JSON.stringify({scenario:'Declared flat BA arena; actual paid issue and hostile force, not an opening victory',legacyControl:'Only new grief metadata absent before initial official save; original +3 support retained',hirePrices:current.prices,renewal:current.renewal,treasury:actual.returned.campaign.resources.treasury,orders:actual.history.length,tacticalMorale:actual.deathMorale,returnedMorale:actual.returned.campaign.operativeState[107].morale,forecasts:{current:actual.chance,olderPending:control.chance},normalShot:actual.normalShot,actualDeadIds:actual.pair.battle.units.filter(unit=>unit.side==='player'&&unit.hp===0).map(unit=>unit.id)}));

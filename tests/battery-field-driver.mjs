@@ -9,11 +9,15 @@ import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {fight as coordinatedFight} from './opening-driver.mjs';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 const clearOfCivilians=(b,u,t)=>{const dx=t.x-u.x,dy=t.y-u.y,length=dx*dx+dy*dy;return !b.npcs.some(n=>{if(n.hp<=0||!teamCanSee(b,'player',n))return false;const f=((n.x-u.x)*dx+(n.y-u.y)*dy)/length;return f>0&&f<1&&Math.hypot(n.x-u.x-f*dx,n.y-u.y-f*dy)<.8;});};
-export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
+export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false,reserveCharges=0}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
 if(b.artillery.some(g=>g.side==='player'&&(g.loaded||g.ammo>0))){
  const batteryOrder=coastalBatteryController(b,{sharedArtillerySight:true});
  return coordinatedFight(request,previous,{controller:(state,unit)=>{
-  const action=batteryOrder(state,unit);if(!action)return null;
+  // The crew can reserve its last owned charge and continue as infantry.
+  // Keep the emplacement's real geometry in the planning view, but decline
+  // its reserved ammunition. The reducer always receives the original state.
+  const planning=reserveCharges>0?{...state,artillery:state.artillery.map(gun=>gun.side===unit.side&&gun.ammo+Number(gun.loaded)<=reserveCharges?{...gun,ammo:0,loaded:false}:gun)}:state;
+  const action=batteryOrder(planning,unit);if(!action)return null;
   if(holdPosition.includes(unit.id)&&['move','charge','climb','exit'].includes(action.type))return null;
   const target=action.targetId&&state.units.find(row=>row.id===action.targetId);
   if(avoidCivilians&&action.type==='fire'&&target&&!clearOfCivilians(state,unit,target))return null;

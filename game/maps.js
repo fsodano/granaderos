@@ -7,6 +7,7 @@ import {propBlocksAt} from './props.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {tacticalLevel,validateTacticalSpace} from './tactical-space.js';
 import {campaignTerraces} from './campaign-terraces.js';
+import {connectWorldCellApproaches} from './world-cell-approaches.js';
 
 // Authored tactical plans. Buildings are solid footprints, never walkable painted facades.
 // The strategic grid is schematic; these tactical layouts are original gameplay maps,
@@ -52,6 +53,7 @@ export function buildSectorMap(request={}, {restorePrevious=false}={}){
  const {map:core,boundaryRoads}=buildCompactSectorMap(request,restorePrevious);
  if(request.compactLayout===true)return core;
  const map=expandSectorMap(core,boundaryRoads);
+ if(!restorePrevious)connectWorldCellApproaches(map);
  // Neighbourhood lots and their props only exist after expansion. Derive all
  // fresh accesses there; saved maps and explicit authored fixtures keep theirs.
  if(!restorePrevious&&request.upperSurfaces===undefined&&request.climbLinks===undefined)Object.assign(map,campaignTerraces(map));

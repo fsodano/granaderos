@@ -1,0 +1,100 @@
+{
+  "url": "/models/characters/horse-lod1.glb",
+  "bytes": 468064,
+  "sha256": "fefbd6609e8a2ff461a46c298ef7fe011265565b9b5ce51e000989697d6b7a02",
+  "triangles": 10897,
+  "meshes": 19,
+  "drawCalls": 20,
+  "materials": [
+    "Saddle_Leather",
+    "Horse_Coat",
+    "Horse_Mane",
+    "Horse_Eyes"
+  ],
+  "bones": 19,
+  "nodes": [
+    "horse_head",
+    "horse_ear_l",
+    "horse_ear_r",
+    "horse_neck",
+    "horse_front_hoof_l",
+    "horse_front_lower_l",
+    "horse_front_upper_l",
+    "horse_front_hoof_r",
+    "horse_front_lower_r",
+    "horse_front_upper_r",
+    "horse_rear_hoof_l",
+    "horse_rear_lower_l",
+    "horse_rear_upper_l",
+    "horse_rear_hoof_r",
+    "horse_rear_lower_r",
+    "horse_rear_upper_r",
+    "horse_tail_02",
+    "horse_tail_01",
+    "socket_saddle",
+    "horse_body",
+    "Bridle_Cheek",
+    "Bridle_Cheek.001",
+    "Horse_Body",
+    "Horse_Eye",
+    "Horse_Eye.001",
+    "Horse_Mane",
+    "Horse_Tail",
+    "Iron_Stirrup",
+    "Iron_Stirrup.001",
+    "Leather_Noseband",
+    "Leather_Rein",
+    "Leather_Rein.001",
+    "Saddle",
+    "Saddle_Cantle",
+    "Saddle_Cantle.001",
+    "Saddle_Raised_Edge",
+    "Saddle_Raised_Edge.001",
+    "Stirrup_Leather",
+    "Stirrup_Leather.001",
+    "Horse_Rig"
+  ],
+  "kind": "horse",
+  "lod": 1,
+  "clips": [
+    {
+      "name": "HorseIdle",
+      "duration": 2.4,
+      "loop": true,
+      "locomotionSpeed": 0,
+      "strideDistance": 0.0,
+      "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+      "gait": "idle",
+      "nativeBoneCount": 19
+    },
+    {
+      "name": "HorseWalk",
+      "duration": 1.1,
+      "loop": true,
+      "locomotionSpeed": 0.9049,
+      "strideDistance": 0.99539,
+      "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+      "gait": "walk",
+      "nativeBoneCount": 19
+    },
+    {
+      "name": "HorseRun",
+      "duration": 0.7333333333333333,
+      "loop": true,
+      "locomotionSpeed": 2.18319,
+      "strideDistance": 1.601,
+      "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+      "gait": "trot",
+      "nativeBoneCount": 19
+    }
+  ],
+  "saddle": {
+    "node": "socket_saddle",
+    "position": [
+      0,
+      1.55782,
+      -0.019999999552965164
+    ]
+  },
+  "height": 1.51
+}

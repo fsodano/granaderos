@@ -4,6 +4,7 @@ import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,operativeLocation} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {strategicClockInterrupt} from '../game/strategic-clock.js';
+import {cellTravelPlan} from '../game/world-cells.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,JSON.stringify(a)+': '+n.lastError);return n;};
 export function remoteReserve(){let s=order(initialCampaign(),{type:'squad',ids:[3,4]});return order(s,{type:'travel',sector:'buenos_aires'});}
 const form={type:'createSquad',name:'Reserva médica',ids:[10],sector:'retiro'};
@@ -15,7 +16,7 @@ test('an unassigned reserve forms a squad at its actual remote town and pays nor
  assert.deepEqual(n.squads[0],s.squads[0]);assert.equal(operativeLocation(n,3),'buenos_aires');assert.equal(operativeLocation(n,10),'retiro');
  assert.deepEqual(n.resources,s.resources);assert.deepEqual(n.operativeState,s.operativeState);assert.equal(n.hour,s.hour);assert.equal(n.seed,s.seed);
  assert.deepEqual(decodeSave(encodeSave(n)).campaign,n);
- const arrived=order(n,{type:'travel',sector:'buenos_aires'});assert.equal(arrived.hour,n.hour+12);assert.equal(operativeLocation(arrived,10),'buenos_aires');
+ const arrived=order(n,{type:'travel',sector:'buenos_aires'});assert.equal(arrived.hour,n.hour+cellTravelPlan(n,'buenos_aires').hours);assert.equal(operativeLocation(arrived,10),'buenos_aires');
  assert.deepEqual(arrived.squads[0],n.squads[0]);
 });
 test('forming a reserve while another squad marches preserves that squad and its complete saved journey',()=>{
@@ -34,11 +35,11 @@ test('formation rejects mixed locations, unknown sectors, duplicates and travele
  assert.ok(rejected.lastError);assert.deepEqual(physical(rejected),physical(stationary));
 });
 test('a departing squad stays intact until its requested stop takes effect',()=>{
- let s=order(remoteReserve(),{type:'travel',sector:'ensenada',queue:true});s=order(s,{type:'wait',hours:1});s=order(s,{type:'cancelTravel',choice:'stop'});
+ let s=order(remoteReserve(),{type:'travel',sector:'ensenada',queue:true});const stop=s.squads[0].journey.path[1];s=order(s,{type:'advanceStrategicTime',seconds:1800});s=order(s,{type:'cancelTravel',choice:'stop'});
  // Stop-after-stage still holds the marching party until it reaches that stage.
  assert.ok(dispatchCampaign(s,{...form,ids:[3],sector:'buenos_aires'}).lastError);
- s=order(s,{type:'wait',hours:12});const n=order(s,{...form,ids:[3],sector:'ensenada'});
- assert.equal(n.location,'ensenada');assert.deepEqual(n.squad,[3]);assert.deepEqual(n.squads[0].members,[4]);
+ s=order(s,{type:'advanceStrategicTime',seconds:1800});assert.equal(s.location,stop);const n=order(s,{...form,ids:[3],sector:stop});
+ assert.equal(n.location,stop);assert.deepEqual(n.squad,[3]);assert.deepEqual(n.squads[0].members,[4]);
 });
 
 test('capacity replacement retires only its arrival notice and preserves the other squad route',()=>{
@@ -48,7 +49,7 @@ test('capacity replacement retires only its arrival notice and preserves the oth
  issue({type:'travel',sector:'buenos_aires',queue:true});
  issue({type:'selectSquad',id:'squad-1'});issue({type:'travel',sector:'buenos_aires',queue:true});
  const beforeArrival=structuredClone(s);issue({type:'wait',hours:24});
- assert.equal(s.hour,12);assert.equal(s.travelNotice.events.length,2);assert.match(strategicClockInterrupt(beforeArrival,s),/llega a/);
+ assert.equal(s.hour,cellTravelPlan(start,'buenos_aires').hours);assert.equal(s.travelNotice.events.length,2);assert.match(strategicClockInterrupt(beforeArrival,s),/llega a/);
  const arrival=structuredClone(s.travelNotice);
  issue({type:'selectSquad',id:'squad-2'});issue({type:'squad',ids:[3,4,10]});
  for(let i=0;i<6;i++)issue({...form,name:`Reserva ${i}`,sector:'buenos_aires'});

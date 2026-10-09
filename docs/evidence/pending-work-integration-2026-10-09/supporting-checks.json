@@ -1,0 +1,46 @@
+{
+  "typecheck": {
+    "exitCode": 0,
+    "logEmpty": true
+  },
+  "documentation": {
+    "exitCode": 0,
+    "requirements": 275,
+    "originalRows": 50,
+    "parityRows": 87,
+    "evidenceRecords": 138
+  },
+  "baseline": {
+    "exitCode": 0,
+    "checks": 38,
+    "failed": 0
+  },
+  "shardSelftest": {
+    "exitCode": 0,
+    "tests": 5,
+    "passed": 5,
+    "skipped": 0
+  },
+  "shardCoverage": {
+    "files": 927,
+    "groups": [
+      232,
+      232,
+      232,
+      231
+    ],
+    "complete": true
+  },
+  "build": {
+    "exitCode": 0,
+    "staticFiles": 1377,
+    "assetReferences": 1045,
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "2368ae747c42",
+      "source": "2368ae747c42c865ecf389ce44a536dcc7145625516af1ae959e780905ad3052",
+      "revision": "af952d7f81809e5c150b3ae8f6225ed1eb6bb78c"
+    }
+  },
+  "scope": "These checks cover unchanged production inputs. The final complete Node gate is recorded separately."
+}

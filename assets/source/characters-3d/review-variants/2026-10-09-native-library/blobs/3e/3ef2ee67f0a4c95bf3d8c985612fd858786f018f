@@ -1,0 +1,13 @@
+from pathlib import Path
+import sys,json,bpy,math
+A=Path('/tmp/granadero-eye-region-pilot/source/assets/source/characters-3d/authoring');sys.path.insert(0,str(A));import facial_structure,character
+old=facial_structure.shape_face
+def inspect(skin,eye_z,gender):
+ old(skin,eye_z,gender);links={}
+ for poly in skin.data.polygons:
+  for edge in poly.edge_keys:links[tuple(sorted(edge))]=links.get(tuple(sorted(edge)),0)+1
+ boundary={i for edge,n in links.items()if n==1 for i in edge}
+ points=[{'index':v.index,'p':list(v.co),'n':list(v.normal),'boundary':v.index in boundary}for v in skin.data.vertices if .020<v.co.x<.040 and eye_z-.025<v.co.z<eye_z+.02 and v.co.y<-.09]
+ Path('/tmp/granadero-eye-region-pilot/lid-points.json').write_text(json.dumps({'eyeZ':eye_z,'points':points},indent=2));print('LID_POINTS',len(points),flush=True)
+facial_structure.shape_face=inspect
+ctx=character.create_character('granadero')

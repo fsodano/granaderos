@@ -1,0 +1,807 @@
+{
+  "status": "Loading-path gates pass; source frozen for root review. Shared ready-aim right-hand/head contact remains separately owned and is not accepted here.",
+  "source": "/tmp/granadero-rifle-carry-unload/source/assets/source/characters-3d/authoring/rifle_loading.py",
+  "sourceSha256": "f29d0b9a4355d2e8c9282d41d4bdf0d1af33cc7e9a298a2c995ff1c6a031092a",
+  "sourcePatch": "/tmp/granadero-rifle-carry-unload/loading30-source.patch",
+  "sourcePatchSha256": "4db556d2b41890b68744963f19fda8be3a502dcbe68631a1cf1b841070406eec",
+  "scope": {
+    "clipsPerAnatomy": [
+      "crouch.reload.long-gun",
+      "crouch.reload.long-gun.1800",
+      "crouch.reload.long-gun.1801",
+      "crouch.reload.long-gun.1802",
+      "crouch.reload.long-gun.1803",
+      "crouch.reload.long-gun.1804",
+      "crouch.reload.long-gun.1807",
+      "crouch.unload.long-gun",
+      "crouch.unload.long-gun.1800",
+      "crouch.unload.long-gun.1801",
+      "crouch.unload.long-gun.1802",
+      "crouch.unload.long-gun.1803",
+      "crouch.unload.long-gun.1804",
+      "crouch.unload.long-gun.1807",
+      "mounted.reload.long-gun",
+      "mounted.reload.long-gun.1800",
+      "mounted.reload.long-gun.1801",
+      "mounted.reload.long-gun.1802",
+      "mounted.reload.long-gun.1803",
+      "mounted.reload.long-gun.1804",
+      "mounted.reload.long-gun.1807",
+      "mounted.unload.long-gun",
+      "mounted.unload.long-gun.1800",
+      "mounted.unload.long-gun.1801",
+      "mounted.unload.long-gun.1802",
+      "mounted.unload.long-gun.1803",
+      "mounted.unload.long-gun.1804",
+      "mounted.unload.long-gun.1807",
+      "prone.reload.long-gun",
+      "prone.reload.long-gun.1800",
+      "prone.reload.long-gun.1801",
+      "prone.reload.long-gun.1802",
+      "prone.reload.long-gun.1803",
+      "prone.reload.long-gun.1804",
+      "prone.reload.long-gun.1807",
+      "prone.unload.long-gun",
+      "prone.unload.long-gun.1800",
+      "prone.unload.long-gun.1801",
+      "prone.unload.long-gun.1802",
+      "prone.unload.long-gun.1803",
+      "prone.unload.long-gun.1804",
+      "prone.unload.long-gun.1807",
+      "stand.reload.long-gun",
+      "stand.reload.long-gun.1800",
+      "stand.reload.long-gun.1801",
+      "stand.reload.long-gun.1802",
+      "stand.reload.long-gun.1803",
+      "stand.reload.long-gun.1804",
+      "stand.reload.long-gun.1807",
+      "stand.unload.long-gun",
+      "stand.unload.long-gun.1800",
+      "stand.unload.long-gun.1801",
+      "stand.unload.long-gun.1802",
+      "stand.unload.long-gun.1803",
+      "stand.unload.long-gun.1804",
+      "stand.unload.long-gun.1807"
+    ],
+    "channelPath": "rotation",
+    "bones": [
+      "upperarm_l",
+      "lowerarm_l",
+      "hand_l",
+      "upperarm_r",
+      "lowerarm_r",
+      "hand_r"
+    ],
+    "channelsPerAnatomy": 336,
+    "metadataFields": [
+      "gripOffsets"
+    ],
+    "bodyRigGeometryAndAllOtherChannels": "preserved",
+    "durationsAndMarkers": "preserved"
+  },
+  "patchFiles": {
+    "female-grip-offsets.json": "6e4e0d365de07361edbc9f8ab095634d87ab7d7d668353761d37a1f4ace27eb1",
+    "female-loading30.glb": "1ccfc79e7ae48779b610d3f7e8b2946d667811ad56ae4b1b83668067146861ab",
+    "male-grip-offsets.json": "008e6ecc105ccc52b3260ecc81d4d4a63df33f7b493c524dd8ff0b9aa2ef02ea",
+    "male-loading30.glb": "424267ca120c689d222b93102d0ca368696554a3a373374f90fab3ea5e2d6dd2"
+  },
+  "candidateInputs": {
+    "manifest.json": "cd9c3d065728088d7dd573ff517f2583645557b4ff84763ff08d56e1d13319c2",
+    "rifle_loading.py": "f29d0b9a4355d2e8c9282d41d4bdf0d1af33cc7e9a298a2c995ff1c6a031092a",
+    "male-animations.glb": "38752d6ea77149a246df92517e870b91066cc9442809a0e0233f4e8c6b611f5b",
+    "female-animations.glb": "7cf6fcdb1e42dacdb6f1852cd6e71b7258c9cf0dc027b31142facbd0aa2d3223",
+    "granadero-lod0.glb": "957b2cf949eaf263df67d1f987a695f5c216c14f1365a464768eb20d2058515d",
+    "woman-scout-lod0.glb": "fb424c540fbcbc938d744a79c90a9abe86265d497049c11f27219d1ad071a4d9",
+    "equipment.glb": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255"
+  },
+  "currentTargetDryMerge": {
+    "targetManifestBefore": "ab759698ded658b97613c66398a5403234b21b359c4f60e222f4c95b90fa3141",
+    "genders": {
+      "male": {
+        "before": "25e775ba8e5049d5a843d1a4d8762faf63429831367258f663120eef4d6e8277",
+        "after": "e48fbf8e8b9fda4219b59582730453221003dad669e0a3b36e50b99e91b5d598",
+        "selectedClips": 56,
+        "changedArmChannels": 336,
+        "preservedOtherChannels": 52770,
+        "allOtherMetadataPreserved": true,
+        "nativeBootSupportPreserved": true,
+        "allDurationsAndMarkersPreserved": true
+      },
+      "female": {
+        "before": "caa0973b37af92fa64e6d17b285469d7fc4220ddb91ed74fd278ab0b6d2e50b1",
+        "after": "ee8c093b487012b45472565b42a35df8c0b10693d2104a5dec1e4012bf24d932",
+        "selectedClips": 56,
+        "changedArmChannels": 336,
+        "preservedOtherChannels": 52770,
+        "allOtherMetadataPreserved": true,
+        "nativeBootSupportPreserved": true,
+        "allDurationsAndMarkersPreserved": true
+      }
+    },
+    "targetManifestAfter": "7b7a06a4a511498007fca7d1333321fa60ac2f236784eecf1ab4308a13e71768"
+  },
+  "tests": {
+    "privateCandidate": {
+      "pass": 16,
+      "fail": 0,
+      "log": "/tmp/granadero-rifle-carry-unload/candidate30-tests.log"
+    },
+    "currentTargetCopy": {
+      "pass": 16,
+      "fail": 0,
+      "log": "/tmp/granadero-rifle-carry-unload/candidate30-target-tests.log"
+    },
+    "native112": {
+      "sampleHz": 120,
+      "clips": 112,
+      "failures": [],
+      "path": "/tmp/granadero-rifle-carry-unload/candidate30-scan/scan.json"
+    },
+    "bodyFrame": [
+      {
+        "gender": "male",
+        "distance": 0
+      },
+      {
+        "gender": "female",
+        "distance": 0
+      }
+    ],
+    "sourceFingerAndNonArm": [
+      {
+        "gender": "male",
+        "angle": 0.00015685288147264202,
+        "bone": "middle_02_r",
+        "time": 0.7600000301996866,
+        "name": "mounted.reload.long-gun.1800",
+        "perBone": {
+          "pinky_01_l": {
+            "angle": 0.00012287223665771006,
+            "time": 1.8000000715255737,
+            "name": "crouch.reload.long-gun.1807"
+          },
+          "pinky_01_r": {
+            "angle": 0.00012072975218611215,
+            "time": 0.5200000206629435,
+            "name": "stand.reload.long-gun.1801"
+          },
+          "pinky_02_r": {
+            "angle": 0.0001071273311911954,
+            "time": 0.8800000349680582,
+            "name": "prone.reload.long-gun.1804"
+          },
+          "thigh_l": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0,
+            "name": "prone.reload.long-gun"
+          },
+          "ball_l": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0,
+            "name": "mounted.reload.long-gun"
+          },
+          "calf_r": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0,
+            "name": "stand.reload.long-gun"
+          },
+          "index_01_l": {
+            "angle": 0.0001196623996933879,
+            "time": 4.28000017007192,
+            "name": "mounted.reload.long-gun.1801"
+          },
+          "index_02_l": {
+            "angle": 9.06287863707367e-05,
+            "time": 2.2000000874201455,
+            "name": "prone.reload.long-gun.1803"
+          },
+          "index_03_l": {
+            "angle": 0.00010352863599774156,
+            "time": 1.2000000476837158,
+            "name": "prone.reload.long-gun.1807"
+          },
+          "middle_01_l": {
+            "angle": 0.0001373381890241726,
+            "time": 3.520000139872233,
+            "name": "prone.reload.long-gun.1803"
+          },
+          "middle_02_l": {
+            "angle": 0.00013899476915392412,
+            "time": 4.00000015894572,
+            "name": "prone.reload.long-gun.1801"
+          },
+          "middle_03_l": {
+            "angle": 0.00010633509984145505,
+            "time": 2.28000009059906,
+            "name": "mounted.reload.long-gun.1803"
+          },
+          "ring_01_l": {
+            "angle": 0.00010434217795986779,
+            "time": 1.8000000715255737,
+            "name": "crouch.reload.long-gun.1807"
+          },
+          "ring_02_l": {
+            "angle": 0.00011586183387658996,
+            "time": 3.920000155766805,
+            "name": "prone.reload.long-gun.1804"
+          },
+          "ring_03_l": {
+            "angle": 0.00010087544284369558,
+            "time": 2.28000009059906,
+            "name": "prone.reload.long-gun.1802"
+          },
+          "thumb_01_l": {
+            "angle": 0.00010316186218701827,
+            "time": 2.2000000874201455,
+            "name": "prone.reload.long-gun.1804"
+          },
+          "thumb_02_l": {
+            "angle": 5.4481195615968745e-05,
+            "time": 4.160000165303548,
+            "name": "stand.reload.long-gun.1801"
+          },
+          "thumb_03_l": {
+            "angle": 8.311038060485609e-05,
+            "time": 1.2,
+            "name": "prone.unload.long-gun"
+          },
+          "index_01_r": {
+            "angle": 0.00011195834329617967,
+            "time": 0.5600000222524008,
+            "name": "mounted.reload.long-gun.1803"
+          },
+          "index_02_r": {
+            "angle": 7.116601536131274e-05,
+            "time": 4.240000168482463,
+            "name": "prone.reload.long-gun"
+          },
+          "index_03_r": {
+            "angle": 0.00011450756634100665,
+            "time": 1.6800000667572021,
+            "name": "mounted.reload.long-gun.1800"
+          },
+          "middle_02_r": {
+            "angle": 0.00015685288147264202,
+            "time": 0.7600000301996866,
+            "name": "mounted.reload.long-gun.1800"
+          },
+          "middle_03_r": {
+            "angle": 0.00010636251639466078,
+            "time": 1.4800000588099163,
+            "name": "crouch.reload.long-gun.1802"
+          },
+          "pinky_03_r": {
+            "angle": 9.2444408934408e-05,
+            "time": 4.28000017007192,
+            "name": "mounted.reload.long-gun.1804"
+          },
+          "ring_01_r": {
+            "angle": 8.180203084477813e-05,
+            "time": 4.160000165303548,
+            "name": "stand.reload.long-gun.1807"
+          },
+          "ring_02_r": {
+            "angle": 0.00010232469136176939,
+            "time": 1.9600000778834026,
+            "name": "mounted.reload.long-gun.1804"
+          },
+          "ring_03_r": {
+            "angle": 9.371308276584977e-05,
+            "time": 1.7200000683466594,
+            "name": "crouch.reload.long-gun.1803"
+          },
+          "thumb_01_r": {
+            "angle": 7.994531456844801e-05,
+            "time": 1.00000003973643,
+            "name": "mounted.reload.long-gun"
+          },
+          "thumb_02_r": {
+            "angle": 4.527416020825686e-05,
+            "time": 1.6,
+            "name": "prone.unload.long-gun.1804"
+          },
+          "thumb_03_r": {
+            "angle": 4.144101541182979e-05,
+            "time": 0.36666666666666664,
+            "name": "prone.unload.long-gun.1804"
+          },
+          "pinky_02_l": {
+            "angle": 0.0001284184551717591,
+            "time": 1.7200000683466594,
+            "name": "crouch.reload.long-gun.1800"
+          },
+          "pinky_03_l": {
+            "angle": 9.217592712513258e-05,
+            "time": 2.1600000858306885,
+            "name": "prone.reload.long-gun.1804"
+          },
+          "middle_01_r": {
+            "angle": 0.00010662262204228077,
+            "time": 0.5600000222524008,
+            "name": "prone.reload.long-gun.1800"
+          },
+          "neck_01": {
+            "angle": 2.9575586669421963e-06,
+            "time": 1.7833333333333334,
+            "name": "prone.unload.long-gun"
+          },
+          "head": {
+            "angle": 2.4148365394514667e-06,
+            "time": 1.1600000460942586,
+            "name": "crouch.reload.long-gun"
+          },
+          "spine_01": {
+            "angle": 2.9575586669421963e-06,
+            "time": 0.9200000365575155,
+            "name": "stand.reload.long-gun"
+          },
+          "spine_02": {
+            "angle": 2.9575586669421963e-06,
+            "time": 1.3200000524520874,
+            "name": "stand.reload.long-gun"
+          },
+          "spine_03": {
+            "angle": 3.4150945850063755e-06,
+            "time": 1.840000073115031,
+            "name": "stand.reload.long-gun"
+          },
+          "clavicle_l": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "clavicle_r": {
+            "angle": 2.9575586669421963e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "calf_l": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "thigh_r": {
+            "angle": 2.9575586669421963e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "ball_r": {
+            "angle": 1.7075472925031877e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "pelvis": {
+            "angle": 1.7075472925031877e-06,
+            "time": 0,
+            "name": "prone.reload.long-gun"
+          }
+        }
+      },
+      {
+        "gender": "female",
+        "angle": 0.0001729350080946077,
+        "bone": "thumb_01_l",
+        "time": 3.2000001271565752,
+        "name": "crouch.reload.long-gun",
+        "perBone": {
+          "pinky_01_l": {
+            "angle": 0.0001543796519579275,
+            "time": 0.9200000365575155,
+            "name": "prone.reload.long-gun.1800"
+          },
+          "clavicle_r": {
+            "angle": 3.4150945850063755e-06,
+            "time": 0,
+            "name": "stand.reload.long-gun"
+          },
+          "foot_l": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0,
+            "name": "stand.reload.long-gun"
+          },
+          "index_02_l": {
+            "angle": 0.0001385114538057067,
+            "time": 0.6000000238418579,
+            "name": "stand.reload.long-gun"
+          },
+          "index_03_l": {
+            "angle": 7.943307386898936e-05,
+            "time": 2.2000000874201455,
+            "name": "crouch.reload.long-gun.1802"
+          },
+          "middle_01_l": {
+            "angle": 0.00015647134561404247,
+            "time": 0.6800000270207723,
+            "name": "prone.reload.long-gun"
+          },
+          "middle_02_l": {
+            "angle": 0.00011889238697975404,
+            "time": 2.4000000953674316,
+            "name": "mounted.reload.long-gun"
+          },
+          "middle_03_l": {
+            "angle": 5.973975672455723e-05,
+            "time": 2.800000111262004,
+            "name": "stand.reload.long-gun.1807"
+          },
+          "ring_01_l": {
+            "angle": 0.00015012827267016205,
+            "time": 0.6000000238418579,
+            "name": "prone.reload.long-gun"
+          },
+          "ring_02_l": {
+            "angle": 7.66876959761111e-05,
+            "time": 0.6000000238418579,
+            "name": "crouch.reload.long-gun"
+          },
+          "ring_03_l": {
+            "angle": 7.513208087014161e-05,
+            "time": 2.2000000874201455,
+            "name": "prone.reload.long-gun.1803"
+          },
+          "thumb_01_l": {
+            "angle": 0.0001729350080946077,
+            "time": 3.2000001271565752,
+            "name": "crouch.reload.long-gun"
+          },
+          "thumb_03_l": {
+            "angle": 0.00015967165077009844,
+            "time": 1.6000000635782876,
+            "name": "crouch.reload.long-gun.1807"
+          },
+          "index_01_r": {
+            "angle": 0.00012896221958773666,
+            "time": 4.28000017007192,
+            "name": "stand.reload.long-gun.1802"
+          },
+          "index_02_r": {
+            "angle": 0.00010914954306623722,
+            "time": 4.28000017007192,
+            "name": "prone.reload.long-gun"
+          },
+          "middle_01_r": {
+            "angle": 0.00014881154645338576,
+            "time": 1.400000055631002,
+            "name": "crouch.reload.long-gun.1804"
+          },
+          "middle_02_r": {
+            "angle": 0.00011006728522472843,
+            "time": 1.7600000699361165,
+            "name": "stand.reload.long-gun.1802"
+          },
+          "middle_03_r": {
+            "angle": 6.726956189482431e-05,
+            "time": 4.160000165303548,
+            "name": "mounted.reload.long-gun.1807"
+          },
+          "pinky_01_r": {
+            "angle": 0.00013381114580044096,
+            "time": 1.2000000476837158,
+            "name": "stand.reload.long-gun"
+          },
+          "pinky_02_r": {
+            "angle": 7.476249687183361e-05,
+            "time": 4.28000017007192,
+            "name": "mounted.reload.long-gun.1803"
+          },
+          "pinky_03_r": {
+            "angle": 6.384491697133601e-05,
+            "time": 4.200000166893005,
+            "name": "mounted.reload.long-gun.1800"
+          },
+          "ring_01_r": {
+            "angle": 0.00012865663489140366,
+            "time": 1.9200000762939453,
+            "name": "stand.reload.long-gun.1802"
+          },
+          "ring_02_r": {
+            "angle": 9.465728004017051e-05,
+            "time": 1.00000003973643,
+            "name": "crouch.reload.long-gun.1801"
+          },
+          "ring_03_r": {
+            "angle": 8.131941878121352e-05,
+            "time": 4.160000165303548,
+            "name": "mounted.reload.long-gun.1803"
+          },
+          "thumb_01_r": {
+            "angle": 0.0001321998949707409,
+            "time": 1.9600000778834026,
+            "name": "crouch.reload.long-gun"
+          },
+          "thumb_02_r": {
+            "angle": 4.591365742004888e-05,
+            "time": 1.5666666666666667,
+            "name": "prone.unload.long-gun.1801"
+          },
+          "thumb_03_r": {
+            "angle": 0.00012322766764794494,
+            "time": 1.5666666666666667,
+            "name": "prone.unload.long-gun.1802"
+          },
+          "index_01_l": {
+            "angle": 0.0001435254191671156,
+            "time": 0.5200000206629435,
+            "name": "prone.reload.long-gun"
+          },
+          "pinky_02_l": {
+            "angle": 6.975910646639197e-05,
+            "time": 2.800000111262004,
+            "name": "mounted.reload.long-gun.1801"
+          },
+          "pinky_03_l": {
+            "angle": 8.072564143419314e-05,
+            "time": 2.7200001080830893,
+            "name": "prone.reload.long-gun"
+          },
+          "thumb_02_l": {
+            "angle": 7.659258531570645e-05,
+            "time": 1.2666666666666666,
+            "name": "prone.unload.long-gun"
+          },
+          "index_03_r": {
+            "angle": 7.79509833407219e-05,
+            "time": 2.080000082651774,
+            "name": "crouch.reload.long-gun.1803"
+          },
+          "neck_01": {
+            "angle": 2.9575586669421963e-06,
+            "time": 4.480000178019206,
+            "name": "stand.reload.long-gun"
+          },
+          "spine_01": {
+            "angle": 2.4148365394514667e-06,
+            "time": 1.400000055631002,
+            "name": "crouch.reload.long-gun"
+          },
+          "spine_03": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0.8000000317891438,
+            "name": "stand.reload.long-gun"
+          },
+          "spine_02": {
+            "angle": 2.4148365394514667e-06,
+            "time": 1.9600000778834026,
+            "name": "crouch.reload.long-gun"
+          },
+          "head": {
+            "angle": 2.9575586669421963e-06,
+            "time": 0.15,
+            "name": "prone.unload.long-gun"
+          },
+          "pelvis": {
+            "angle": 2.4148365394514667e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "clavicle_l": {
+            "angle": 2.9575586669421963e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "thigh_l": {
+            "angle": 3.4150945850063755e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "calf_l": {
+            "angle": 2.9575586669421963e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "thigh_r": {
+            "angle": 1.7075472925031877e-06,
+            "time": 0,
+            "name": "crouch.reload.long-gun"
+          },
+          "foot_r": {
+            "angle": 1.7075472925031877e-06,
+            "time": 0,
+            "name": "mounted.reload.long-gun"
+          },
+          "ball_r": {
+            "angle": 1.7075472925031877e-06,
+            "time": 0,
+            "name": "mounted.reload.long-gun"
+          }
+        }
+      }
+    ],
+    "gateExitCodes": {
+      "native-scan": 0,
+      "tests": 0,
+      "body-frame": 0,
+      "source-nonarm": 0,
+      "surface-gates": 0,
+      "native-summary": 0
+    }
+  },
+  "nativeMetrics": {
+    "male": {
+      "maxArmAngular": {
+        "name": "prone.reload.long-gun",
+        "bone": "upperarm_l",
+        "value": 873.3583319605688,
+        "degrees": 7.265372894264492,
+        "time": 0.7986135499316237,
+        "previousTime": 0.7902946587865026
+      },
+      "maxElbowOrHandSpeed": {
+        "name": "crouch.reload.long-gun.1800",
+        "bone": "lowerarm_r",
+        "value": 3.8344655730137065,
+        "metres": 0.03189850170161535,
+        "time": 0.06655112916096864,
+        "previousTime": 0.058232238015847565
+      },
+      "maxWristBend": {
+        "name": "stand.unload.long-gun.1802",
+        "side": "r",
+        "degrees": 63.06464082338273,
+        "time": 1.4666666666666666
+      },
+      "sharedReadyHandHeadSampledDepth": {
+        "name": "prone.unload.long-gun",
+        "depth": 0.014062879944447278,
+        "time": 0.008333333333333333,
+        "point": [
+          -0.18343113569995,
+          0.31355617833775185,
+          0.6870256005864023
+        ],
+        "kind": "hand",
+        "side": "r"
+      }
+    },
+    "female": {
+      "maxArmAngular": {
+        "name": "prone.reload.long-gun",
+        "bone": "upperarm_l",
+        "value": 909.5812583739483,
+        "degrees": 7.566707476055129,
+        "time": 0.7487002030608972,
+        "previousTime": 0.7403813119157762
+      },
+      "maxElbowOrHandSpeed": {
+        "name": "prone.unload.long-gun",
+        "bone": "hand_l",
+        "value": 3.5097320884134664,
+        "metres": 0.029247767403445552,
+        "time": 1.8333333333333333,
+        "previousTime": 1.825
+      },
+      "maxWristBend": {
+        "name": "stand.unload.long-gun.1801",
+        "side": "r",
+        "degrees": 60.04472417445053,
+        "time": 1.4666666666666666
+      },
+      "sharedReadyHandHeadSampledDepth": {
+        "name": "prone.reload.long-gun",
+        "depth": 0.01351113332893568,
+        "time": 4.800000190734863,
+        "point": [
+          -0.29858662971313976,
+          0.3222456677869171,
+          0.6709763797175807
+        ],
+        "kind": "hand",
+        "side": "r"
+      }
+    }
+  },
+  "surface": {
+    "sampleHz": 120,
+    "clips": 112,
+    "seconds": 254.12599897384644,
+    "leftHandHeadCrossings": 0,
+    "sleeveHeadCrossings": 0,
+    "collarCrossings": 0,
+    "minimumHandFloor": {
+      "appearance": "granadero",
+      "name": "prone.unload.long-gun.1800",
+      "side": "l",
+      "height": 0.00480080955136037,
+      "time": 1.3583333333333334
+    },
+    "minimumSleeveFloor": {
+      "appearance": "granadero",
+      "name": "prone.reload.long-gun.1802",
+      "side": "l",
+      "height": 0.010963325714325439
+    },
+    "minimumBarrelHead": {
+      "appearance": "granadero",
+      "name": "crouch.reload.long-gun.1800",
+      "duration": 4.800000190734863,
+      "samples": 578,
+      "barrelHead": {
+        "gap": 0.014628315324486094,
+        "time": 0.8651646790925923
+      },
+      "skinStock": {
+        "gap": 0.0003599907832391709,
+        "time": 4.725130170428773
+      },
+      "weaponFloor": {
+        "height": 0.024593138897229305,
+        "time": 2.2128250446022073
+      }
+    },
+    "maximumHeldSkinVertexStockGap": {
+      "appearance": "granadero",
+      "name": "crouch.reload.long-gun.1807",
+      "duration": 4.800000190734863,
+      "samples": 578,
+      "barrelHead": {
+        "gap": 0.0146283560490043,
+        "time": 2.063085003990028
+      },
+      "skinStock": {
+        "gap": 0.003481619513213712,
+        "time": 0.09982669374145296
+      },
+      "weaponFloor": {
+        "height": 0.2870808347914149,
+        "time": 0.6987868561901708
+      }
+    },
+    "minimumWeaponBoundingBoxFloor": {
+      "appearance": "granadero",
+      "name": "crouch.unload.long-gun.1800",
+      "duration": 2,
+      "samples": 241,
+      "barrelHead": {
+        "gap": 0.014628369841929733,
+        "time": 0.5083333333333333
+      },
+      "skinStock": {
+        "gap": 0.0005112458676307789,
+        "time": 0.2833333333333333
+      },
+      "weaponFloor": {
+        "height": 0.02459263082341029,
+        "time": 1.1666666666666667
+      }
+    },
+    "rightHandHeadClips": 56,
+    "rightHandHeadScope": "Only unchanged crouch/prone ready entry/exit; no left-hand contact remains. This separate root-owned head fit has not been integrated.",
+    "limits": [
+      "Actual surface vertices/triangles were sampled at120Hz for Granadero and scout LOD0.",
+      "Skin-vertex-to-stock distance is an upper bound on triangle surface separation; native palm/rod contact tests pass independently.",
+      "Penetration depth is the maximum sampled inside vertex distance; inside uses2-of-3BVH ray parity.",
+      "No general arm-versus-torso clearance guarantee is made by the head/hat/floor gate."
+    ]
+  },
+  "evidence": {
+    "surface": "/tmp/granadero-rifle-carry-unload/candidate30-surface-summary.json",
+    "depth": "/tmp/granadero-rifle-carry-unload/candidate30-depth.json",
+    "selectiveMerge": "/tmp/granadero-rifle-carry-unload/candidate30-selective-merge-proof.json",
+    "pickupFrames": "/tmp/granadero-rifle-carry-unload/candidate30-pickup-review",
+    "biteFrames": "/tmp/granadero-rifle-carry-unload/loading30-review-bite",
+    "rodFrames": "/tmp/granadero-rifle-carry-unload/loading30-review-rod",
+    "returnFrames": "/tmp/granadero-rifle-carry-unload/loading30-review-return"
+  },
+  "sharedSourcesOrPublicAssetsWritten": false,
+  "visualReview": {
+    "bodies": [
+      "granadero",
+      "woman-scout"
+    ],
+    "currentTargetCopy": "loading30-target-proof",
+    "checkedPhases": {
+      "crouch.reload.long-gun.1807": 1.3893,
+      "prone.reload.long-gun.1802": 4.13449,
+      "prone.unload.long-gun.1800": 1.35833
+    },
+    "findings": [
+      "The cartridge hand leaves the cheek before it moves toward the muzzle.",
+      "The prone rod forearm clears the neck and collar at the former worst phase.",
+      "The free returning hand stays above the floor at the measured lowest phase.",
+      "Pickup adjacent frames show a continuous native elbow turn; no branch reversal was found."
+    ],
+    "remaining": "The shared right-hand/head overlap at ready entry and exit remains recorded separately. No head correction was imported.",
+    "unmodifiedAppearanceObservation": "The scout crouch view retains a jagged shirt/trouser edge at the rear-right waist; body pose and geometry were not changed by this arm patch."
+  },
+  "sourcePatchAppliesToCurrentWorkspace": true
+}

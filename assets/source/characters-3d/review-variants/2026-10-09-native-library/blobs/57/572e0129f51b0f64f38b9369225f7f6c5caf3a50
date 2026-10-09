@@ -1,0 +1,115 @@
+--- a/assets/source/characters-3d/authoring/motion.py
++++ b/assets/source/characters-3d/authoring/motion.py
+@@ -204,7 +204,7 @@
+     return {pb.name:(pb.location.copy(),pb.rotation_quaternion.copy()) for pb in rig.pose.bones}
+ 
+ 
+-def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None, native_lance_idle=None, native_prone_idle=None):
++def _write_clip(rig, name, samples, duration, loop=True, grounding=None, times=None, support=None, native_sideways=None, native_lance_idle=None, native_prone_idle=None, native_crouch_idle=None):
+     action=bpy.data.actions.new(name)
+     rig.animation_data_create();rig.animation_data.action=action
+     if loop:
+@@ -246,6 +246,12 @@
+             _apply_sample(rig,sample);fit_static(native_prone_idle)
+             samples[index]=_collect(rig)
+         prone_support={'method':'retained-natural-prone-knee-plane','surface':'complete-native-boot','floor':.002,'sampleRate':FPS}
++    crouch_support=None
++    if native_crouch_idle is not None:
++        # Keep the current native crouch while matching the shared 2 mm
++        # idle, guard and sideways contact plane.
++        from crouch_idle_support import support_clip as support_crouch_idle
++        samples,times,crouch_support=support_crouch_idle(native_crouch_idle,samples,duration,times,FPS)
+     lance_support=None
+     if native_lance_idle is not None:
+         # PR237 fits complete boots after loop closure. Keep the newer common
+@@ -307,6 +313,7 @@
+     strip.frame_end=math.ceil(end_frame-1e-8)
+     track.mute=True
+     result={'name':name,'duration':round(duration,6),'loop':loop,'events':{}}
++    if crouch_support:result['nativeBootSupport']=crouch_support
+     if lance_support:result['nativeBootSupport']=lance_support
+     if support:result['nativeBootSupport']={'method':'native-leg-rotations','surface':'actual-sole-and-weighted-shaft','floor':.006,'sampleRate':FPS}
+     if prone_support:result['nativeBootSupport']=prone_support
+@@ -1232,7 +1239,7 @@
+             samples.append(pose)
+         supported=(gesture in ('transition','pickup','heal','free','walk','run','crawl','strafeLeft','strafeRight') and posture!='mounted') or (posture=='prone' and gesture=='idle' and equipment=='unarmed')
+         native_sideways=(ctx,speed) if (posture=='standing' and equipment in ('unarmed','long-gun','short-gun','blade','knife','lance') or posture=='crouched' and equipment=='unarmed') and gesture in ('strafeLeft','strafeRight') else None
+-        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways,native_lance_idle=ctx if posture=='standing' and equipment=='lance' and gesture=='idle' else None,native_prone_idle=ctx if posture=='prone' and gesture=='idle' else None)
++        meta=_write_clip(rig,spec['name'],samples,duration,spec['loop'],times=times,support=ctx if supported and native_sideways is None else None,native_sideways=native_sideways,native_lance_idle=ctx if posture=='standing' and equipment=='lance' and gesture=='idle' else None,native_prone_idle=ctx if posture=='prone' and gesture=='idle' else None,native_crouch_idle=ctx if posture=='crouched' and gesture=='idle' else None)
+         meta.update(spec);meta.update({'duration':round(duration,6),'events':markers,'markers':markers,'source':source,'sampleRate':SAMPLE_FPS,'timingAuthority':'simulation','rootMotion':'in-place'})
+         if gesture=='reload' and equipment=='long-gun':meta['propCues']=[{'item':'ramrod','socket':'socket_handLeft_tool','start':round(duration*.46,6),'end':round(duration*.86,6),'rotation':[0,0,math.pi/2]}]
+         if equipment=='long-gun' and gesture in ('reload','unload'):
+--- a/assets/source/characters-3d/authoring/crouched_sideways_support.py
++++ b/assets/source/characters-3d/authoring/crouched_sideways_support.py
+@@ -20,7 +20,7 @@
+ def support_clip(ctx,samples,duration,times,name,speed):
+     from motion import _apply_sample,_collect,_head,_set_world_rotation
+     from grounding_motion import _boot_bindings,_boot_lowest,_sole_bindings
+-    rig=ctx['rig'];boots=_boot_bindings(ctx);soles=_sole_bindings(ctx);stored=math.floor(duration*30+.000001)/30
++    rig=ctx['rig'];boots=_boot_bindings(ctx);soles=_sole_bindings(ctx);stored=float(duration)
+     # Recreate the retained 30 Hz parent bake before fitting denser legs.
+     # GLTF uses quaternion SLERP between those stored parent keys.
+     old_samples,old_times=samples,times
+@@ -31,7 +31,8 @@
+             if q.dot(end)<0:end.negate()
+             v=Quaternion(tuple(q[j]*(1-f)+end[j]*f for j in range(4)));v.normalize();out[bone]=(p.lerp(b[bone][0],f),v)
+         return out
+-    times=[i/30 for i in range(round(stored*30)+1)];samples=[old_sample(time)for time in times]
++    if not ctx.get('retained_parent_samples'):
++        times=sorted(set([i/30 for i in range(math.floor(stored*30)+1)]+[stored]));samples=[old_sample(time)for time in times]
+     assert speed>0,'A measured native lateral pace is required'
+     direction=1 if'.strafeLeft.'in name else-1
+     # The captured native lateral sequence contains two foot-to-foot steps.
+@@ -43,6 +44,7 @@
+         first=next(p for p,s,_ in raw if s=='l');switch=next(p for p,s,_ in raw if p>first+.1 and s=='r');second=next(p for p,s,_ in raw if p>switch+.1 and s=='l');end=next(p for p,s,_ in raw if p>second+.1 and s=='r');start=((first)+(second-.5))/2;stop=((switch)+(end-.5))/2;windows={'l':(start,stop),'r':(stop,start+.5)}
+     else:
+         first=next(p for p,s,_ in raw if s=='r');switch=next(p for p,s,_ in raw if p>first+.1 and s=='l');second=next(p for p,s,_ in raw if p>switch+.1 and s=='r');end=next(p for p,s,_ in raw if p>second+.1 and s=='l');start=(first+second-.5)/2;stop=(switch+end-.5)/2;windows={'r':(start,stop),'l':(stop,start+.5)}
++    if name in ctx.get('retained_sideways_support',{}):windows=ctx['retained_sideways_support'][name]['supportWindows']
+     profiles={}
+     for side,(start,stop)in windows.items():
+         midpoint=(start+stop)/2;_apply_sample(rig,sample_at(samples,times,(midpoint%.5)*stored));foot=rig.pose.bones['foot_'+side];q=foot.matrix.to_quaternion();native_up=rig.data.bones['foot_'+side].matrix_local.to_quaternion().inverted()@Vector((0,0,1));normal=q@native_up;q=normal.rotation_difference(Vector((0,0,1)))@q
+@@ -87,7 +89,7 @@
+         rotation=Quaternion(axis,high)@q
+         lift=max(.04,min(.10,max(low[side]for p,s,low in raw if s!=side)-min(low[side]for p,s,low in raw)))
+         profiles[side]={'start':start,'stop':stop,'q':rotation,'center':toe,'contact':contact,'lift':lift,'heelRoll':high,'pole':forward,'contactShift':list(contact_shift)}
+-    keys=sorted(set([time for time in times if time<=stored]+[i/60 for i in range(round(stored*60)+1)]));fitted=[];reports=[]
++    keys=sorted(set([time for time in times if time<=stored]+[i/60 for i in range(math.floor(stored*60)+1)]+[stored]));fitted=[];reports=[]
+     for time in keys:
+         sample=sample_at(samples,times,time);_apply_sample(rig,sample);phase=(min(time,stored)/stored)%1;report={}
+         for side,p in profiles.items():
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/crouch_idle_support.py
+@@ -0,0 +1,33 @@
++"""Settle the static crouched idle onto its shared native 2 mm contact plane.
++
++The older posture base keeps 6 mm of clearance. Side-step and guard support
++uses 2 mm. Change only the native thigh/calf/foot rotations, retaining the
++current knee plane, footprint, foot direction, torso and exact sample times.
++"""
++from mathutils import Vector
++from grounding_motion import _boot_bindings,_boot_lowest,_fit_native_leg
++
++FLOOR=.002
++LEGS={role+'_'+side for side in ('l','r')for role in ('thigh','calf','foot')}
++
++def support_clip(ctx,samples,duration,times=None,fps=30,surface='sole'):
++    from motion import _apply_sample,_collect,_set_world_rotation
++    rig=ctx['rig'];boots=_boot_bindings(ctx);fitted=[];maximum=0
++    for sample in samples:
++        _apply_sample(rig,sample)
++        for side in ('l','r'):
++            foot=rig.pose.bones['foot_'+side];rotation=foot.matrix.to_quaternion().copy()
++            for _ in range(3):
++                correction=FLOOR-_boot_lowest(rig,boots[side]);maximum=max(maximum,abs(correction))
++                assert abs(correction)<.012,'Static crouch settle exceeds its measured clearance range'
++                if abs(correction)<1e-6:break
++                _fit_native_leg(rig,side,foot.head+Vector((0,0,correction)))
++                _set_world_rotation(rig,'foot_'+side,rotation)
++            assert abs(_boot_lowest(rig,boots[side])-FLOOR)<.00001,'Complete static crouch boot must reach its contact plane'
++        pose=_collect(rig)
++        for name,original in sample.items():
++            if name not in LEGS:pose[name]=(original[0].copy(),original[1].copy())
++            else:pose[name]=(original[0].copy(),pose[name][1])
++        fitted.append(pose)
++    keys=list(times)if times is not None else [duration*i/(len(samples)-1)for i in range(len(samples))]
++    return fitted,keys,{'method':'native-static-crouch-settle','surface':'actual-lower-sole-ring','completeBootValidation':True,'floor':FLOOR,'sampleRate':fps,'maximumSettle':round(maximum,6)}

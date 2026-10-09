@@ -1,0 +1,6 @@
+{
+  "decision": "rejected",
+  "published": false,
+  "currentManifest": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+  "reason": "V2 is visibly padded. V3 removes padding but creates an inner elbow pinch and angular outer crease; hidden-body crossing pairs increase. No candidate sleeve geometry is accepted."
+}

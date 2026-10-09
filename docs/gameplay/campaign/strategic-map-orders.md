@@ -4,23 +4,23 @@
 > checkout. Its implementation and test results are not published-main acceptance.
 > See [published progress](../../verification/published-progress.md) for the main branch baseline.
 
-Verified 12 September 2026. This changes the command interface; it does not establish full JA2 parity.
+The original interface verification below is from 12 September 2026. The current controls and road costs were updated on 9 October 2026; see [sector road evidence](../../verification/sector-roads-2026-10-09.md). These checks do not establish full JA2 parity.
 
 ## Reference and controls
 
 The user supplied [Traveling South](https://www.youtube.com/watch?v=D36iuSGsFdk). The opening minute shows the compact roster with location and destination columns, a map route with an ETA, and the clock on the same screen. The full [92-video gameplay playlist](https://www.youtube.com/playlist?list=PLvqxe4XbcSiHQibcWJweNuoDEUKHwlZuW) is reference material for subsequent work. Only the early movement sequence was sampled for this change; the entire playlist has not been reviewed.
 
-1. Select a squad in the left table or select its numbered marker on the map.
-2. Point at a destination to preview a legal path. Click to choose it. The side panel shows the path, travel hours and transport.
+1. Open **Destino** for a person in the left roster. This selects that person's real squad. Map squad markers also select their existing squad.
+2. Point at a destination to preview a legal path. Click to choose it. The route controls show the path, travel hours and transport.
 3. Click the chosen destination again, or select **Confirmar ruta**, to queue that squad's order.
 4. Select **Avanzar** to move time forward. Every marching squad advances, including unselected squads. An enemy approach stops at the boundary for the existing coordinated-assault controls.
-5. Escape, right-click, or **Cancelar trazado** removes an unconfirmed draft. These actions do not cancel an existing journey. **Marchas** retains the existing stop, timed return, resume and assault controls.
+5. Escape, right-click, or **Cancelar trazado** removes an unconfirmed draft. Open the person's **Destino** menu to stop, return, or resume an existing journey. Ready assault controls remain explicit on the map.
 
 Squad markers follow actual progress along the current leg. Returning markers move back over elapsed ground. The table shows each squad's actual location, destination and remaining hours. Soldiers in the selected squad are highlighted in the roster; other contracted soldiers remain available for dossier inspection.
 
-At desktop sizes the clock, roster, map and side panel share a bounded viewport. Roster and detailed orders scroll internally. Personal care and squad organization are side-panel views. Completed-work, contract and encounter alerts remain beside the clock, with bounded scrolling when several alerts are present. Narrow screens stack the panels and retain their controls.
+At desktop sizes the roster and map share a bounded viewport, with the clock below. Sector and personal controls open in closable dialogs. Narrow screens stack the panels and retain their controls.
 
-## Evidence
+## Original interface evidence — 12 September 2026
 
 - `strategic-route.test.mjs`: read-only preview without traversing tactical snapshots; real queued path and ETA; save continuation; independent second-squad orders; pending battles/encounters, assignments, sleep and existing-route rejection; assault-boundary arrival; transport availability and duration.
 - `strategic-route-render.test.mjs`: empty Retiro start; resumed destination and travel controls; separate draft path with no dispatch; squad selection versus dossier selection.
@@ -30,6 +30,6 @@ At desktop sizes the clock, roster, map and side panel share a bounded viewport.
 
 ## Remaining scope
 
-Map clicks currently choose one destination using the existing legal route. Explicit waypoints remain in squad organization. Direct map editing of committed paths, coordinated multi-selection and a richer uncertain-enemy intelligence model remain open. Attack destinations must be adjacent; travel hours and period transports retain current campaign rules.
+Selecting another destination during a draft adds the prior destination as a waypoint. Foot and horse routes choose the fastest open land route using connected road sectors; off-road waypoints permit patrol detours. Adjacent districts of one city cost one hour per step. Direct map editing of committed paths, coordinated multi-selection and a richer uncertain-enemy intelligence model remain open. Attack destinations must be adjacent under the campaign staging rules.
 
-The user also requested climate and terrain differences between regions. Current definitions distinguish urban, wetland, river, scrub, foothill, forest and mountain sectors. These labels and existing weather rules are not evidence of complete environmental parity. Review the supplied playlist by region and verify terrain layout, movement/energy cost, visibility and cover, weather exposure and travel effects against the intended historical provinces. This follow-up remains open; this commit does not change terrain or art.
+Regional definitions distinguish urban, wetland, river, scrub, foothill, forest and mountain sectors. See [regional terrain and weather](regional-conditions.md) for the implementation and its limits. The road update adds fresh land approaches while preserving authored landmark cores and saved terrain. It does not establish complete environmental parity.

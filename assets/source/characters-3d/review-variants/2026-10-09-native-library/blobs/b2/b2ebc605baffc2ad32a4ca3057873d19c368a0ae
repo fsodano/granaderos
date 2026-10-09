@@ -1,0 +1,76 @@
+"""Sparse support-driven wool folds on the reduced Granadero coat only.
+
+Textures, UVs, mesh topology, skin weights, collars and fitted trim stay fixed.
+The rounded folds sit on free panels; fitted support and opening margins are
+excluded before any vertex moves. No noise or evenly spaced ribs are added.
+"""
+import math
+from mathutils import Vector
+from mathutils.kdtree import KDTree
+
+
+def add_panel_relief(ctx):
+    if ctx.get('preset')!='granadero':return
+    coat=ctx['coat'];mesh=coat.data
+    def smooth(t):
+        t=max(0,min(1,t));return t*t*(3-2*t)
+    def ridge(d,width):
+        return math.exp(-(d/width)**2)-.40*math.exp(-((d+width*.95)/(width*.63))**2)
+    # Any fitted clothing detail close to this surface is a fixed support.
+    # Sampling its actual vertices also preserves new collar/strap revisions.
+    fixed=[]
+    for obj in ctx['objects']:
+        if obj is coat or obj.type!='MESH':continue
+        for v in obj.data.vertices:
+            if .99<v.co.z<1.57:fixed.append(v.co.copy())
+    tree=KDTree(len(fixed))
+    for i,p in enumerate(fixed):tree.insert(p,i)
+    tree.balance()
+    allowed=set(range(len(mesh.vertices)))
+    edges={};adj=[set()for _ in mesh.vertices]
+    for face in mesh.polygons:
+        if mesh.materials[face.material_index].name!='Navy_Wool':allowed.difference_update(face.vertices)
+        for a,b in zip(face.vertices,list(face.vertices[1:])+[face.vertices[0]]):
+            edge=tuple(sorted((a,b)));edges[edge]=edges.get(edge,0)+1;adj[a].add(b);adj[b].add(a)
+    protected={v for pair,count in edges.items()if count==1 for v in pair}
+    for _ in range(3):protected|={j for i in list(protected)for j in adj[i]}
+    allowed.difference_update(protected)
+    original=[v.co.copy()for v in mesh.vertices];normals=[v.normal.copy()for v in mesh.vertices]
+    moved=0;peak=0
+    for vertex,p,n in zip(mesh.vertices,original,normals):
+        if vertex.index not in allowed or not 1.095<p.z<1.452:continue
+        _,_,distance=tree.find(p)
+        support=smooth((distance-.023)/.022)
+        height=smooth((p.z-1.095)/.035)*smooth((1.452-p.z)/.035)
+        if not support*height:continue
+        value=0;x=abs(p.x);front=smooth((-p.y-.012)/.070)*smooth((-n.y-.12)/.6)
+        # A small fan runs from each lower armhole toward the coat closure.
+        # Opposite sides carry unequal loads from the diagonal crossbelt.
+        if x<.190 and front:
+            sign=1 if p.x>0 else -1
+            along=(x-.052)/.135;tip=smooth(along/.18)*smooth((1-along)/.28)
+            centre=1.338-.27*(.185-x)+( .008 if sign>0 else 0)
+            value+=(.0048 if sign<0 else .0036)*ridge(p.z-centre,.009)*tip*front
+            lower=1.279+.22*(x-.058)
+            taper=smooth((x-.045)/.04)*smooth((.164-x)/.07)
+            value+=.0035*ridge(p.z-lower,.008)*taper*front
+            # The belt carries two short vertical gathers. Each disappears
+            # into the flat chest, without circling the torso as a band.
+            fall=smooth((p.z-1.100)/.025)*smooth((1.245-p.z)/.085)
+            centre_x=.118+(p.z-1.12)*(.15 if sign>0 else -.10)
+            value+=.0041*ridge(x-centre_x,.0085)*fall*front
+        # Fine unequal compression on the forearm, below the larger elbow
+        # folds already present. Preserve the cuff and armhole anchors.
+        if x>.195:
+            side='l'if p.x>0 else'r';elbow=ctx['heads']['lowerarm_'+side];wrist=ctx['heads']['hand_'+side]
+            axis=(wrist-elbow).normalized();side_axis=axis.cross(Vector((0,-1,0))).normalized();d=p-elbow
+            along=d.dot(axis);across=d.dot(side_axis)
+            envelope=math.exp(-(across/.055)**2)*smooth((along-.055)/.025)*smooth((.19-along)/.035)
+            facing=smooth((-n.y+.15)/.80)
+            value+=.0035*ridge(along-.105+across*.40,.0075)*envelope*facing
+            value+=.0024*ridge(along-.148-across*.22,.0085)*envelope*facing
+        shift=max(-.0016,min(.0048,value*support*height))
+        if abs(shift)>1e-7:vertex.co=p+n*shift;moved+=1;peak=max(peak,abs(shift))
+    mesh.update()
+    assert all(mesh.vertices[i].co==original[i]for i in protected)
+    print('FABRIC_RELIEF',moved,round(peak*1000,4),'mm')

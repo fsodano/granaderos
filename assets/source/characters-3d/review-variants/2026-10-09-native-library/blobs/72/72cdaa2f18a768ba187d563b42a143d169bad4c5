@@ -1,0 +1,2041 @@
+diff --git a/web/lib/three/world-civic-storey-bands.ts b/web/lib/three/world-civic-storey-bands.ts
+new file mode 100644
+--- /dev/null
++++ b/web/lib/three/world-civic-storey-bands.ts
+@@ -0,0 +1,45 @@
++import {Group,Quaternion,Vector3} from 'three';
++import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
++import {BUILDING_OPENINGS} from '../../../game/building-scale.js';
++import {WorldBatch} from './world-geometry';
++import {illuminationAt} from './world-materials';
++import type {WorldGeometry} from './world-geometry';
++import type {WorldMaterials} from './world-materials';
++import type {WorldBuilding,WorldInput} from './world-types';
++
++/** civicUpperStorey() has a two-step warm stone band. Keep its source
++ * planes on the actual supported shell and retain the current eave trim. */
++export function civicStoreyBands(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials){
++  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),V=25.066666666666666,storey=height*profile.groundFloorHeight/profile.wallHeight,light=illuminationAt(input,b),batch=new WorldBatch(geometry);
++  const stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),stoneCap=materials.get('civic-band-stone-coping',{colour:'#c7b795'});
++  // Only the coplanar source cap is biased; its physical altitude stays exact.
++  stoneCap.polygonOffset=true;stoneCap.polygonOffsetFactor=-1;stoneCap.polygonOffsetUnits=-1;
++  const at=(u:number,v:number)=>{const p=frame.at(u,v);return new Vector3(p.x*T,0,p.y*T);};
++  const rect=(u0:number,v0:number,u1:number,v1:number)=>{const a=at(u0,v0),c=at(u1,v1);return {minX:Math.min(a.x,c.x),maxX:Math.max(a.x,c.x),minZ:Math.min(a.z,c.z),maxZ:Math.max(a.z,c.z)};};
++  const walking=(r:ReturnType<typeof rect>,top:number)=>(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+top+.01&&(surface.x+.5)*T>r.minX+1e-6&&(surface.x-.5)*T<r.maxX-1e-6&&(surface.y+.5)*T>r.minZ+1e-6&&(surface.y-.5)*T<r.maxZ-1e-6);
++  const sides=[{length:frame.width,point:(a:number,o:number)=>[a,-o] as const},{length:frame.width,point:(a:number,o:number)=>[a,frame.depth+o] as const},{length:frame.depth,point:(a:number,o:number)=>[-o,a] as const},{length:frame.depth,point:(a:number,o:number)=>[frame.width+o,a] as const}];
++  for(const side of sides)for(const [bottom,top,outward,material,cap]of [[storey-2/V,storey+4/V,.22,stone,undefined],[storey+3/V,storey+5/V,.30,stone,stoneCap]] as const){
++    const ranges:{first:number;last:number}[]=[];
++    for(let along=0;along<=side.length;along++){
++      const [u,v]=side.point(along,0),p=frame.at(u,v),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(!tile)continue;
++      // An edited metric storey can move a band down into an opening. Keep
++      // the complete standing aperture instead of masking its upper portion.
++      if(tile.type!=='wall'&&bottom<Math.min(height-.12,(tile.type==='door'?BUILDING_OPENINGS.doorHeight:BUILDING_OPENINGS.windowTop)/V)+.05)continue;
++      const first=Math.max(0,along-.5),last=Math.min(side.length,along+.5),a=side.point(first,outward),c=side.point(last,-.12),r=rect(a[0],a[1],c[0],c[1]);if(walking(r,top))continue;
++      const previous=ranges[ranges.length-1];if(previous&&Math.abs(previous.last-first)<1e-6)previous.last=last;else ranges.push({first,last});
++    }
++    for(const {first,last}of ranges){
++      const a=side.point(first,outward),c=side.point(last,-.12),r=rect(a[0],a[1],c[0],c[1]);
++      batch.box(material,(r.minX+r.maxX)*.5,base+(bottom+top)*.5,(r.minZ+r.maxZ)*.5,r.maxX-r.minX,top-bottom,r.maxZ-r.minZ,light);
++      if(cap)batch.polygon(cap,[new Vector3(r.minX,base+top,r.minZ),new Vector3(r.minX,base+top,r.maxZ),new Vector3(r.maxX,base+top,r.maxZ),new Vector3(r.maxX,base+top,r.minZ)],light);
++    }
++  }
++  // Retain the released upper trim. A literal source cornice at height+1/V
++  // would emerge through the current pitched eave and needs a separate join.
++  const trim=materials.get('trim'),rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),y=height-.10;
++  const box=(u:number,v:number,w:number,d:number)=>{const p=at(u,v);p.y=base+y;batch.primitive('box',trim,p,[w*T,.15,d*T],rotation,light);};
++  for(const v of [0,frame.depth])box(frame.width*.5,v+(v===0?-.10:.10)/T,frame.width+.20/T,.29/T);
++  for(const u of [0,frame.width])box(u+(u===0?-.10:.10)/T,frame.depth*.5,.29/T,frame.depth);
++  const node=batch.finish(`building-detail:${b.id}:${b.kind==='palace'?'palace':'townhall'}-storey-bands`);
++  return node.children.length?node:new Group();
++}
+diff --git a/web/lib/three/world-palace-facade.ts b/web/lib/three/world-palace-facade.ts
+--- a/web/lib/three/world-palace-facade.ts
++++ b/web/lib/three/world-palace-facade.ts
+@@ -7,6 +7,7 @@
+ import {illuminationAt} from './world-materials';
+ import {buildingArtInset} from './world-building-placement';
+ import {palaceColumns} from './world-palace-columns';
++import {civicStoreyBands} from './world-civic-storey-bands';
+ import type {WorldGeometry} from './world-geometry';
+ import type {WorldMaterials} from './world-materials';
+ import type {WorldBuilding,WorldInput} from './world-types';
+@@ -41,7 +42,8 @@
+     for(const u of [0,frame.width])for(let v=2;v<frame.depth-1;v+=4)if(wallAt(u,v)?.type==='wall')pier(u-.06*(frame.u.x+frame.u.y),v-depthInset,.30);
+   });
+   }
+-  feature('palace-storey-bands',()=>{
++  if(twoStoreys&&wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(civicStoreyBands(b,input,T,height,base,geometry,materials));
++  else feature('palace-storey-bands',()=>{
+     const bands=twoStoreys?[[storey,stone],[height-.10,trim]] as const:[[height-.10,trim]] as const;
+     for(const [y,material]of bands){for(const v of [0,frame.depth])box(frame.width*.5,v+(v===0?-.10:.10)/T,y,frame.width+.20/T,.15,.29/T,material);for(const u of [0,frame.width])box(u+(u===0?-.10:.10)/T,frame.depth*.5,y,.29/T,.15,frame.depth,material);}
+   });
+diff --git a/web/lib/three/world-building-details.ts b/web/lib/three/world-building-details.ts
+--- a/web/lib/three/world-building-details.ts
++++ b/web/lib/three/world-building-details.ts
+@@ -21,6 +21,7 @@
+ import {townhallColumns} from './world-townhall-columns';
+ import {cabildoFacade} from './world-cabildo-facade';
+ import {pulperiaSign} from './world-pulperia-sign';
++import {civicStoreyBands} from './world-civic-storey-bands';
+ import {buildingArtInset} from './world-building-placement';
+ import type {WorldGeometry} from './world-geometry';
+ import type {WorldMaterials} from './world-materials';
+@@ -288,7 +289,8 @@
+       }
+       for(const u of [0,frame.width])for(let v=2;v<frame.depth-1;v+=4)if(wallAt(u,v)?.type==='wall')column(u-.06*(frame.u.x+frame.u.y),v-depthInset,.30,wall);
+     });
+-    feature('townhall-storey-bands',()=>{
++    if(twoStoreys&&wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(civicStoreyBands(b,input,T,height,base,geometry,materials));
++    else feature('townhall-storey-bands',()=>{
+       const bands=twoStoreys?[[storey,stone],[height-.10,trim]] as const:[[height-.10,trim]] as const;
+       for(const [y,material]of bands){
+         for(const v of [0,frame.depth])box(frame.width*.5,v+(v===0?-.10:.10)/T,y,frame.width+.20/T,.15,.29/T,material);
+diff --git a/tests/three-civic-storey-bands.test.mjs b/tests/three-civic-storey-bands.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/tests/three-civic-storey-bands.test.mjs
+@@ -0,0 +1,78 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {register} from 'node:module';
++register('./tactical-render-loader.mjs',import.meta.url);
++const {Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/build/three.module.js');
++const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
++const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
++const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
++const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
++const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
++const {ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
++const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
++const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270],ids=['ayuntamiento','palacio'];
++function fixture(id,rotation,view='exterior',roof='original'){
++ const s=createArchitectureReviewBattle(id,rotation,view,roof),b=s.buildings[0],frame=entranceFrame({...b,walls:s.tiles}),input={terrain:{width:s.width,height:s.height,tiles:s.tiles,buildings:s.buildings,upperSurfaces:s.upperSurfaces},revealedRooms:s.revealedRooms},g=new WorldGeometry(),m=new WorldMaterials({tileMetres:T,assetUrl:p=>p});
++ return {b,frame,input,geometry:g,materials:m,kind:id==='palacio'?'palace':'townhall',build(){const before=JSON.stringify(input),n=buildBuilding(b,input,T,g,m);n.updateMatrixWorld(true);assert.equal(JSON.stringify(input),before,'bands may not modify authored movement, openings or disclosure');return n;},band(n){return n.getObjectByName(`building-detail:${b.id}:${this.kind}-storey-bands`);},point(u,v,y){const p=frame.at(u,v);return new Vector3(p.x*T,y,p.y*T);},dispose(n){disposeWorldNode(n);g.dispose();m.dispose();}};
++}
++function source(f){const parts=[];const visit=(e,label)=>{if(!e)return;if(Array.isArray(e)){e.forEach(n=>visit(n,label));return;}const band=e.props?.['data-storey-band']??label;if(e.type===ArchitectureVolume&&band)parts.push({...e.props,side:band});visit(e.props?.children,band);};for(const o of buildingDetails({...f.b,walls:f.input.terrain.tiles.filter(t=>t.buildingId===f.b.id)},new Set(),(x,y)=>({x:(x-y)*26,y:(x+y)*14})))visit(o.node);assert.equal(parts.length,4,'actual source has two visible facades, each with two stone band stages');return parts;}
++function points(mesh){const p=mesh.geometry.getAttribute('position');return Array.from({length:p.count},(_,i)=>new Vector3(p.getX(i),p.getY(i),p.getZ(i)));}
++function assertSourceCorners(node,part,material){const vertices=points(node.children.find(m=>m.material.name===material&&m.material.color.getHexString()===part.palette.base.slice(1)&&m.material.userData.architectureFinish?.texture.endsWith(`-${part.texture}-v2.png`)));for(const y of [part.bottom/V,part.top/V])for(const p of part.points){const target=new Vector3(p.x*T,y,p.y*T);assert.ok(vertices.some(v=>v.distanceTo(target)<2e-5),`${material}: missing actual source corner ${target.toArray()}`);}}
++function doorCrossings(f,n){for(const tile of f.input.terrain.tiles.filter(t=>t.buildingId===f.b.id&&t.type==='door')){const onY=tile.y===f.b.y||tile.y===f.b.y+f.b.height-1,sign=onY?(tile.y===f.b.y?-1:1):(tile.x===f.b.x?-1:1);for(const off of [-.20,0,.20])for(const y of [1.3,1.8,1.90]){const start=onY?new Vector3(tile.x*T+off,y,(tile.y+sign)*T):new Vector3((tile.x+sign)*T,y,tile.y*T+off),dir=onY?new Vector3(0,0,-sign):new Vector3(-sign,0,0);assert.equal(new Raycaster(start,dir,0,T*1.6).intersectObject(f.band(n),true).length,0,'the source bands may not cover the complete standing doorway');}}}
++function windowApproaches(f,n){for(const tile of f.input.terrain.tiles.filter(t=>t.buildingId===f.b.id&&t.type==='window')){const onX=tile.x===f.b.x||tile.x===f.b.x+f.b.width-1,sign=onX?(tile.x===f.b.x?-1:1):(tile.y===f.b.y?-1:1);for(const off of [-.20,0,.20])for(const y of [1.0,1.3,1.8]){const start=onX?new Vector3((tile.x+sign)*T,y,tile.y*T+off):new Vector3(tile.x*T+off,y,(tile.y+sign)*T),dir=onX?new Vector3(-sign,0,0):new Vector3(0,0,-sign);assert.equal(new Raycaster(start,dir,0,T*1.6).intersectObject(f.band(n),true).length,0,'a band may not conceal the existing window aperture');}}}
++
++test('both civic facades retain the actual source two-step band corners, warm stone recipe and flat coping at four rotations',()=>{
++ for(const id of ids)for(const rotation of rotations)for(const finish of ['adobe','limewash','ochre','stone','brick']){
++  const f=fixture(id,rotation);f.b.wallFinish=finish;const direct=source(f),n=f.build(),band=f.band(n);assert.ok(band);
++  for(const part of direct){const stone=part.texture==='stone',meshName=stone?'world:stone':`world:${finish}`;assertSourceCorners(band,part,meshName);const mesh=band.children.find(m=>m.material.name===meshName&&m.material.color.getHexString()===part.palette.base.slice(1)&&m.material.userData.architectureFinish?.texture.endsWith(`-${part.texture}-v2.png`));assert.equal(mesh.material.color.getHexString(),part.palette.base.slice(1));assert.equal(mesh.material.userData.architectureFinish.textureOpacity,stone?.60:.36);assert.equal(mesh.material.userData.architectureFinish.multiplyOpacity,0);if(part.cap!==false){const cap=band.children.find(m=>m.material.name===`world:civic-band-${stone?'stone':'plaster'}-coping`);assert.equal(cap.material.color.getHexString(),part.palette.trim.slice(1));const p=points(cap);for(const corner of part.points)assert.ok(p.some(point=>point.distanceTo(new Vector3(corner.x*T,part.top/V,corner.y*T))<2e-5));}}
++  f.dispose(n);
++ }
++});
++
++test('stepped faces are exposed at their actual planes, preserve metric masonry UVs and retain ordinary day and night illumination',()=>{
++ for(const id of ids)for(const rotation of rotations)for(const night of [false,true]){
++  const f=fixture(id,rotation);f.input.terrain.night=night;f.input.illumination={[`0:${f.b.x},${f.b.y}`]:.5};const n=f.build(),band=f.band(n),profile=getBuildingProfile(f.b),storey=n.userData.height*profile.groundFloorHeight/profile.wallHeight,out=new Vector3(-f.frame.v.x,0,-f.frame.v.y),u=f.frame.width*.25;
++  for(const [y,v,name]of [[storey,-.22,'world:stone'],[storey+4.5/V,-.30,'world:stone']]){const hit=new Raycaster(f.point(u,-1,y),out.clone().negate(),0,T*2).intersectObject(band,true)[0];assert.equal(hit?.object.material.name,name);const projected=hit.point.clone().sub(f.point(u,0,y)).dot(out);assert.ok(Math.abs(projected+v*T)<2e-5,'the complete source stage must stand in front of the real wall');}
++  for(const mesh of band.children){const p=mesh.geometry.getAttribute('position'),normal=mesh.geometry.getAttribute('normal'),uv=mesh.geometry.getAttribute('uv'),c=mesh.geometry.getAttribute('color');for(let i=0;i<p.count;i++){const expected=night?.27+.73*.5:1;assert.ok(Math.abs(c.getX(i)-expected)<1e-6);if(mesh.material.userData.architectureFinish){const expectedUV=Math.abs(normal.getY(i))>.5?[p.getX(i),p.getZ(i)]:Math.abs(normal.getX(i))>Math.abs(normal.getZ(i))?[p.getZ(i)*(normal.getX(i)>0?-1:1),p.getY(i)]:[p.getX(i)*(normal.getZ(i)>0?1:-1),p.getY(i)];assert.ok(Math.abs(uv.getX(i)-expectedUV[0])<2e-5&&Math.abs(uv.getY(i)-expectedUV[1])<2e-5);}}}
++  f.dispose(n);
++ }
++});
++
++test('actual door and window approaches remain clear at four rotations through original, closed slab, terrace and roof-route states',()=>{
++ for(const id of ids)for(const rotation of rotations)for(const roof of ['original','slab','terrace','roof-route']){
++  const f=fixture(id,rotation,'exterior',roof);for(const t of f.input.terrain.tiles)if(t.type==='door')t.open=true;const n=f.build();assert.ok(f.band(n));doorCrossings(f,n);windowApproaches(f,n);f.dispose(n);
++ }
++});
++
++test('usable upper cells omit only their occupied band parts while blocked supports keep the source profile',()=>{
++ for(const id of ids)for(const rotation of rotations)for(const blocked of [false,true]){
++  const f=fixture(id,rotation),profile=getBuildingProfile(f.b),storey=profile.groundFloorHeight/V,u=Math.floor(f.frame.width*.5)-1,p=f.frame.at(u,0);f.input.terrain.upperSurfaces=[{...p,buildingId:f.b.id,tacticalLevel:1,elevation:storey,blocked,kind:'platform',type:'floor'}];const n=f.build(),band=f.band(n),out=new Vector3(-f.frame.v.x,0,-f.frame.v.y),hits=new Raycaster(f.point(u,-1,storey+4.5/V),out.clone().negate(),0,T*2).intersectObject(band,true);assert.equal(hits.length>0,blocked,'occupied source cap must leave the actual upper route clear');const adjacent=new Raycaster(f.point(u-1,-1,storey+4.5/V),out.clone().negate(),0,T*2).intersectObject(band,true);assert.ok(adjacent.length,'the neighboring supported band remains');f.dispose(n);
++ }
++});
++
++test('edited metric heights protect complete apertures and the band joins the actual storey rather than a template roof',()=>{
++ for(const id of ids)for(const rotation of rotations)for(const height of [4,4.5,6.2]){
++  const f=fixture(id,rotation);for(const t of f.input.terrain.tiles)if(t.type==='door')t.open=true;f.input.terrain.upperSurfaces=f.b.rooms.flatMap(r=>r.cells).map(cell=>({...cell,buildingId:f.b.id,tacticalLevel:1,elevation:height,blocked:true,kind:'roof',type:'floor'}));const n=f.build(),band=f.band(n),profile=getBuildingProfile(f.b),storey=height*profile.groundFloorHeight/profile.wallHeight;assert.ok(band.children.some(mesh=>points(mesh).some(p=>Math.abs(p.y-(storey+5/V))<2e-5)));doorCrossings(f,n);windowApproaches(f,n);f.dispose(n);
++ }
++});
++
++test('short slabs, edited-corner shells and unpainted legacy retain their original strip while ordinary room disclosure keeps the existing low facade',()=>{
++ for(const id of ids)for(const rotation of rotations){
++  for(const roof of ['slab','roof-route']){const f=fixture(id,rotation,'exterior',roof),n=f.build(),band=f.band(n);assert.ok(band);assert.equal(band.children.some(mesh=>mesh.material.name==='world:civic-band-stone-coping'),false,'short roof keeps the existing one-storey strip');f.dispose(n);}
++  for(const type of ['rubble','door','window']){const f=fixture(id,rotation),p=f.frame.at(0,0);f.input.terrain.tiles.find(t=>t.x===p.x&&t.y===p.y).type=type;f.input.terrain.tiles=[f.frame.door,...f.input.terrain.tiles.filter(t=>t!==f.frame.door)];const n=f.build();assert.equal(f.band(n).children.some(mesh=>mesh.material.name==='world:civic-band-stone-coping'),false,'edited corner retains its existing inset/fallback facade');f.dispose(n);}
++  const legacy=fixture(id,rotation);legacy.b.architecture=legacy.b.kind;legacy.b.kind=undefined;legacy.b.wallFinish=undefined;const old=legacy.build();assert.equal(legacy.band(old).children.some(mesh=>mesh.material.name==='world:civic-band-stone-coping'),false);legacy.dispose(old);
++  for(const view of ['partial','interior']){const f=fixture(id,rotation,view),n=f.build(),band=f.band(n);assert.equal(band?.children.some(mesh=>mesh.material.name==='world:civic-band-stone-coping')??false,false,'disclosed ground rooms must not regain a full upper facade');f.dispose(n);}
++ }
++});
++
++
++test('the released upper eave trim keeps its exact altitude, projection and authored material',()=>{
++ for(const id of ids)for(const rotation of rotations){
++  const f=fixture(id,rotation),n=f.build(),band=f.band(n),trim=band.children.find(m=>m.material.name==='world:trim'),p=points(trim),height=n.userData.height;
++  assert.equal(trim.material.color.getHexString(),'e0d2ad');
++  const corners=[];for(const v of [0,f.frame.depth])for(const u of [-.10/T,f.frame.width+.10/T])for(const d of [-.145/T,.145/T])for(const y of [height-.175,height-.025])corners.push(f.point(u,v+(v===0?-.10:.10)/T+d,y));
++  for(const u of [0,f.frame.width])for(const v of [0,f.frame.depth])for(const d of [-.145/T,.145/T])for(const y of [height-.175,height-.025])corners.push(f.point(u+(u===0?-.10:.10)/T+d,v,y));
++  assert.equal(p.length,144,'the four released trim boxes remain complete');for(const c of corners)assert.ok(p.some(v=>v.distanceTo(c)<2e-5));for(const v of p)assert.ok(corners.some(c=>v.distanceTo(c)<2e-5),'the retained eave trim cannot gain an exposed roof cap');
++  f.dispose(n);
++ }
++});
+diff --git a/tests/three-palace-facade.test.mjs b/tests/three-palace-facade.test.mjs
+--- a/tests/three-palace-facade.test.mjs
++++ b/tests/three-palace-facade.test.mjs
+@@ -27,7 +27,7 @@
+  for(const rotation of rotations){
+   const f=fixture(rotation),before=JSON.stringify(f.input),building=f.build(),height=building.userData.height,profile=getBuildingProfile(f.b),storey=height*profile.groundFloorHeight/profile.wallHeight,columns=building.getObjectByName(f.name('entrance-columns')),bands=building.getObjectByName(f.name('palace-storey-bands')),balcony=building.getObjectByName(f.name('palace-balcony'));
+   for(const u of [3,5,7,9])assert.ok(f.ray(columns,u-f.along,-1,1).some(hit=>hit.object.material.name==='world:stone'),`${rotation}: missing formal support ${u}`);
+-  const stoneBand=bands.children.find(child=>child.material.name==='world:stone'),bounds=new Box3().setFromObject(stoneBand);assert.ok(Math.abs(bounds.min.y-(storey-.075))<1e-5);assert.ok(Math.abs(bounds.max.y-(storey+.075))<1e-5);
++  const stoneBand=bands.children.find(child=>child.material.name==='world:stone'),bounds=new Box3().setFromObject(stoneBand);assert.ok(Math.abs(bounds.min.y-(storey-2/25.066666666666666))<1e-5,'the stone body must follow the source storey base');assert.ok(Math.abs(bounds.max.y-(storey+5/25.066666666666666))<1e-5,'the stepped cap must join the source band top');
+   const floorRay=new Raycaster(f.point(f.frame.doorU-f.along+.60,-.25,storey+1),new Vector3(0,-1,0),0,1),slab=floorRay.intersectObject(balcony,true).find(hit=>hit.object.material.name==='world:stone');assert.ok(slab);assert.ok(Math.abs(slab.point.y-(storey+.24))<1e-5,'the balcony floor must follow the real storey band');
+   assert.ok(new Box3().setFromObject(columns).max.y>storey+.04&&new Box3().setFromObject(columns).max.y<storey+.24,'column caps must join the balcony slab');assert.ok(balcony.children.some(child=>child.material.name==='world:timber-edge'),'the balcony retains its current panelled door');
+   assert.equal(JSON.stringify(f.input),before);f.dispose(building);
+diff --git a/docs/art/reviews/civic-storey-bands/README.md b/docs/art/reviews/civic-storey-bands/README.md
+new file mode 100644
+--- /dev/null
++++ b/docs/art/reviews/civic-storey-bands/README.md
+@@ -0,0 +1,25 @@
++# Civic storey bands
++
++The current town hall and palace sprites have a two-part warm stone band between their floors. The native facade had one 15 cm strip with the generic stone texture. This cut restores the two source stages and their local stone recipe. It keeps the existing upper roof trim.
++
++The source is `civicUpperStorey()` in `web/app/TacticalBuildingDetails.tsx`. Its stone body spans `h - 2` to `h + 4` and projects 0.22 tile. The second stage spans `h + 3` to `h + 5` and projects 0.30 tile. At the current scale, their combined height is 27.93 cm. The outer cap extends 12.58 cm farther than the old strip. Both pieces return 0.12 tile into the supported wall. The body uses `#a99a79` under the current 0.60 stone overlay; the flat cap uses `#c7b795`. Saved wall and roof finishes remain selected by the existing code.
++
++The illustration paints the two visible positive-axis facades. The native model keeps the existing four-facade adaptation. Each band follows real intact wall cells and complete door/window heads. Edited corner shells and unpainted legacy geometry retain their existing fallback. A band part that overlaps a real usable upper cell is omitted; blocked upper cells retain it. The two-floor rule still requires an actual height of at least 4 m. Short slabs, room disclosure, balcony heights, roof routes and movement cells keep their prior behavior.
++
++| Building | Before | After | Current sprite |
++|---|---|---|---|
++| Town hall | [Before](townhall-before.png) | [After](townhall-after.png) | [Source](townhall-current-sprite.png) |
++| Palace | [Before](palace-before.png) | [After](palace-after.png) | [Source](palace-current-sprite.png) |
++
++The before and after captures use the same normal catalogue controls, camera and compiled building. The stone step is now clearer at the ordinary camera scale. The wider building review also checked all 14 current sprites and 28 ordinary native exterior views. The supplied playtest reference archive is a detail/readability guide; its modern JA2 buildings do not define this local colonial facade recipe.
++
++Validation:
++
++- 45 focused and affected checks pass in 8.01 s. They cover both buildings, four rotations, five saved wall paints, metric UVs, day/night light, actual standing door/window rays, altered heights, blocked/usable upper cells, edited corners, short slabs and normal room disclosure.
++- TypeScript passes. The old source fails four of the seven new checks; the three opening/fallback/upper-trim checks still pass. The original palace check for a fixed 15 cm strip was updated to the actual source body/cap bounds. Its real balcony support assertion remains.
++- A controlled before/after comparison covers 360 compiled states and 9,472 non-band meshes. Geometry, material recipes, world transforms, opening records and disclosure are byte-identical. The shared record hash is `3f473081caa338cf6908e547c6cad3623c23e76fd529bc433d153e668f28af9b`.
++- 48 ordinary after views pass with no browser, console or network errors: 24 original roof views, 12 closed 3 m slab views and 12 accessible 3 m roof views. All four rotations and exterior/partial/interior states are represented. Original 0°/90° exteriors were reviewed beside the source, along with disclosed interiors and the edited roofs. Each full exterior adds 56 triangles; the retained non-band geometry is exact.
++
++The wider prototype also copied the source upper plaster cornice literally. Its top is one source unit (3.99 cm) above the wall. That cap emerged through the current pitched eave and produced an extra bright line on the far roof edge. The prototype was rejected. The released upper trim remains exactly at `height - 0.175` through `height - 0.025`, with its original projection and pigment. A source-accurate upper cornice needs a separate physical roof-join adaptation. The rejected images and checks are retained in the private review package. This cut does not claim complete building polish.
++
++`source-bounds.json` contains the actual source points, prior measurements, local finish recipe and limits. Base: `5d584532` (PR #265). No source bank or manifest changes are part of this cut.
+diff --git a/docs/art/reviews/civic-storey-bands/source-bounds.json b/docs/art/reviews/civic-storey-bands/source-bounds.json
+new file mode 100644
+--- /dev/null
++++ b/docs/art/reviews/civic-storey-bands/source-bounds.json
+@@ -0,0 +1,1819 @@
++{
++  "base": "5d584532",
++  "source": "web/app/TacticalBuildingDetails.tsx:civicUpperStorey",
++  "metresPerTile": 1.2360585147470482,
++  "sourceUnitsPerMetre": 25.066666666666666,
++  "scope": "The two warm stone pieces at the actual civic storey boundary. The existing upper eave trim remains exact.",
++  "states": [
++    {
++      "id": "ayuntamiento",
++      "rotation": 0,
++      "actualHeight": 4.707446808510638,
++      "storey": 2.632978723404255,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 15,
++              "y": 12.22
++            },
++            {
++              "x": 4,
++              "y": 12.22
++            },
++            {
++              "x": 4,
++              "y": 11.88
++            },
++            {
++              "x": 15,
++              "y": 11.88
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 15,
++              "y": 12.3
++            },
++            {
++              "x": 4,
++              "y": 12.3
++            },
++            {
++              "x": 4,
++              "y": 11.88
++            },
++            {
++              "x": 15,
++              "y": 11.88
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-front",
++          "points": [
++            {
++              "x": 15,
++              "y": 12.21
++            },
++            {
++              "x": 4,
++              "y": 12.21
++            },
++            {
++              "x": 4,
++              "y": 11.88
++            },
++            {
++              "x": 15,
++              "y": 11.88
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 15.22,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 4
++            },
++            {
++              "x": 15.22,
++              "y": 4
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 15.3,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 4
++            },
++            {
++              "x": 15.3,
++              "y": 4
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-left",
++          "points": [
++            {
++              "x": 15.21,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 4
++            },
++            {
++              "x": 15.21,
++              "y": 4
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        },
++        {
++          "label": "townhall-entrance-column-capital-3",
++          "points": [
++            {
++              "x": 12.23,
++              "y": 12.43
++            },
++            {
++              "x": 11.77,
++              "y": 12.43
++            },
++            {
++              "x": 11.77,
++              "y": 11.76
++            },
++            {
++              "x": 12.23,
++              "y": 11.76
++            }
++          ],
++          "bottom": 64,
++          "top": 68.5,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": true
++        },
++        {
++          "label": "townhall-entrance-column-capital-7",
++          "points": [
++            {
++              "x": 8.23,
++              "y": 12.43
++            },
++            {
++              "x": 7.77,
++              "y": 12.43
++            },
++            {
++              "x": 7.77,
++              "y": 11.76
++            },
++            {
++              "x": 8.23,
++              "y": 11.76
++            }
++          ],
++          "bottom": 64,
++          "top": 68.5,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": true
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.557978630065918,
++        "top": 2.7079787254333496,
++        "outerV": -0.19821096039566655,
++        "innerV": 0.036405733226134274,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.553191489361702,
++        "firstTop": 2.7925531914893615,
++        "capBottom": 2.752659574468085,
++        "capTop": 2.832446808510638,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    },
++    {
++      "id": "ayuntamiento",
++      "rotation": 90,
++      "actualHeight": 4.707446808510638,
++      "storey": 2.632978723404255,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 11.879999999999999,
++              "y": 15
++            },
++            {
++              "x": 11.879999999999999,
++              "y": 4
++            },
++            {
++              "x": 12.22,
++              "y": 4
++            },
++            {
++              "x": 12.22,
++              "y": 15
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 11.879999999999999,
++              "y": 15
++            },
++            {
++              "x": 11.879999999999999,
++              "y": 4
++            },
++            {
++              "x": 12.3,
++              "y": 4
++            },
++            {
++              "x": 12.3,
++              "y": 15
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-rear",
++          "points": [
++            {
++              "x": 11.879999999999999,
++              "y": 15
++            },
++            {
++              "x": 11.879999999999999,
++              "y": 4
++            },
++            {
++              "x": 12.21,
++              "y": 4
++            },
++            {
++              "x": 12.21,
++              "y": 15
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 15.22
++            },
++            {
++              "x": 4,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 15.22
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 15.3
++            },
++            {
++              "x": 4,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 15.3
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-left",
++          "points": [
++            {
++              "x": 4,
++              "y": 15.21
++            },
++            {
++              "x": 4,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 15.21
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.557978630065918,
++        "top": 2.7079787254333496,
++        "outerV": -0.19821072164149767,
++        "innerV": 0.0364059719803036,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.553191489361702,
++        "firstTop": 2.7925531914893615,
++        "capBottom": 2.752659574468085,
++        "capTop": 2.832446808510638,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    },
++    {
++      "id": "ayuntamiento",
++      "rotation": 180,
++      "actualHeight": 4.707446808510638,
++      "storey": 2.632978723404255,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 11.879999999999999
++            },
++            {
++              "x": 15,
++              "y": 11.879999999999999
++            },
++            {
++              "x": 15,
++              "y": 12.22
++            },
++            {
++              "x": 4,
++              "y": 12.22
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 11.879999999999999
++            },
++            {
++              "x": 15,
++              "y": 11.879999999999999
++            },
++            {
++              "x": 15,
++              "y": 12.3
++            },
++            {
++              "x": 4,
++              "y": 12.3
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-rear",
++          "points": [
++            {
++              "x": 4,
++              "y": 11.879999999999999
++            },
++            {
++              "x": 15,
++              "y": 11.879999999999999
++            },
++            {
++              "x": 15,
++              "y": 12.21
++            },
++            {
++              "x": 4,
++              "y": 12.21
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 14.88,
++              "y": 4
++            },
++            {
++              "x": 15.22,
++              "y": 4
++            },
++            {
++              "x": 15.22,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 12
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 14.88,
++              "y": 4
++            },
++            {
++              "x": 15.3,
++              "y": 4
++            },
++            {
++              "x": 15.3,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 12
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-right",
++          "points": [
++            {
++              "x": 14.88,
++              "y": 4
++            },
++            {
++              "x": 15.21,
++              "y": 4
++            },
++            {
++              "x": 15.21,
++              "y": 12
++            },
++            {
++              "x": 14.88,
++              "y": 12
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.557978630065918,
++        "top": 2.7079787254333496,
++        "outerV": -0.19821072164149767,
++        "innerV": 0.0364059719803036,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.553191489361702,
++        "firstTop": 2.7925531914893615,
++        "capBottom": 2.752659574468085,
++        "capTop": 2.832446808510638,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    },
++    {
++      "id": "ayuntamiento",
++      "rotation": 270,
++      "actualHeight": 4.707446808510638,
++      "storey": 2.632978723404255,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 12.22,
++              "y": 4
++            },
++            {
++              "x": 12.22,
++              "y": 15
++            },
++            {
++              "x": 11.88,
++              "y": 15
++            },
++            {
++              "x": 11.88,
++              "y": 4
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 12.3,
++              "y": 4
++            },
++            {
++              "x": 12.3,
++              "y": 15
++            },
++            {
++              "x": 11.88,
++              "y": 15
++            },
++            {
++              "x": 11.88,
++              "y": 4
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-front",
++          "points": [
++            {
++              "x": 12.21,
++              "y": 4
++            },
++            {
++              "x": 12.21,
++              "y": 15
++            },
++            {
++              "x": 11.88,
++              "y": 15
++            },
++            {
++              "x": 11.88,
++              "y": 4
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 12,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 15.22
++            },
++            {
++              "x": 4,
++              "y": 15.22
++            },
++            {
++              "x": 4,
++              "y": 14.88
++            }
++          ],
++          "bottom": 64,
++          "top": 70,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 12,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 15.3
++            },
++            {
++              "x": 4,
++              "y": 15.3
++            },
++            {
++              "x": 4,
++              "y": 14.88
++            }
++          ],
++          "bottom": 69,
++          "top": 71,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "townhall-upper-cornice-right",
++          "points": [
++            {
++              "x": 12,
++              "y": 14.88
++            },
++            {
++              "x": 12,
++              "y": 15.21
++            },
++            {
++              "x": 4,
++              "y": 15.21
++            },
++            {
++              "x": 4,
++              "y": 14.88
++            }
++          ],
++          "bottom": 114,
++          "top": 119,
++          "palette": {
++            "base": "#ded8c5",
++            "trim": "#eee6d1",
++            "shadow": "#aaa18a"
++          },
++          "texture": "plaster"
++        },
++        {
++          "label": "townhall-entrance-column-capital-3",
++          "points": [
++            {
++              "x": 12.43,
++              "y": 6.77
++            },
++            {
++              "x": 12.43,
++              "y": 7.23
++            },
++            {
++              "x": 11.76,
++              "y": 7.23
++            },
++            {
++              "x": 11.76,
++              "y": 6.77
++            }
++          ],
++          "bottom": 64,
++          "top": 68.5,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": true
++        },
++        {
++          "label": "townhall-entrance-column-capital-7",
++          "points": [
++            {
++              "x": 12.43,
++              "y": 10.77
++            },
++            {
++              "x": 12.43,
++              "y": 11.23
++            },
++            {
++              "x": 11.76,
++              "y": 11.23
++            },
++            {
++              "x": 11.76,
++              "y": 10.77
++            }
++          ],
++          "bottom": 64,
++          "top": 68.5,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": true
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.557978630065918,
++        "top": 2.7079787254333496,
++        "outerV": -0.19821096039566655,
++        "innerV": 0.036405733226134274,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.553191489361702,
++        "firstTop": 2.7925531914893615,
++        "capBottom": 2.752659574468085,
++        "capTop": 2.832446808510638,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    },
++    {
++      "id": "palacio",
++      "rotation": 0,
++      "actualHeight": 4.946808510638298,
++      "storey": 2.7925531914893615,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 17,
++              "y": 14.22
++            },
++            {
++              "x": 4,
++              "y": 14.22
++            },
++            {
++              "x": 4,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 13.88
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 17,
++              "y": 14.3
++            },
++            {
++              "x": 4,
++              "y": 14.3
++            },
++            {
++              "x": 4,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 13.88
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-front",
++          "points": [
++            {
++              "x": 17,
++              "y": 14.21
++            },
++            {
++              "x": 4,
++              "y": 14.21
++            },
++            {
++              "x": 4,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 13.88
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 17.22,
++              "y": 14
++            },
++            {
++              "x": 16.88,
++              "y": 14
++            },
++            {
++              "x": 16.88,
++              "y": 4
++            },
++            {
++              "x": 17.22,
++              "y": 4
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 17.3,
++              "y": 14
++            },
++            {
++              "x": 16.88,
++              "y": 14
++            },
++            {
++              "x": 16.88,
++              "y": 4
++            },
++            {
++              "x": 17.3,
++              "y": 4
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-left",
++          "points": [
++            {
++              "x": 17.21,
++              "y": 14
++            },
++            {
++              "x": 16.88,
++              "y": 14
++            },
++            {
++              "x": 16.88,
++              "y": 4
++            },
++            {
++              "x": 17.21,
++              "y": 4
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.71755313873291,
++        "top": 2.867553234100342,
++        "outerV": -0.1982112795691755,
++        "innerV": 0.0364061855972615,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.712765957446808,
++        "firstTop": 2.952127659574468,
++        "capBottom": 2.9122340425531914,
++        "capTop": 2.9920212765957444,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    },
++    {
++      "id": "palacio",
++      "rotation": 90,
++      "actualHeight": 4.946808510638298,
++      "storey": 2.7925531914893615,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 13.88,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 4
++            },
++            {
++              "x": 14.22,
++              "y": 4
++            },
++            {
++              "x": 14.22,
++              "y": 17
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 13.88,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 4
++            },
++            {
++              "x": 14.3,
++              "y": 4
++            },
++            {
++              "x": 14.3,
++              "y": 17
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-rear",
++          "points": [
++            {
++              "x": 13.88,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 4
++            },
++            {
++              "x": 14.21,
++              "y": 4
++            },
++            {
++              "x": 14.21,
++              "y": 17
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 17.22
++            },
++            {
++              "x": 4,
++              "y": 16.88
++            },
++            {
++              "x": 14,
++              "y": 16.88
++            },
++            {
++              "x": 14,
++              "y": 17.22
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 17.3
++            },
++            {
++              "x": 4,
++              "y": 16.88
++            },
++            {
++              "x": 14,
++              "y": 16.88
++            },
++            {
++              "x": 14,
++              "y": 17.3
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-left",
++          "points": [
++            {
++              "x": 4,
++              "y": 17.21
++            },
++            {
++              "x": 4,
++              "y": 16.88
++            },
++            {
++              "x": 14,
++              "y": 16.88
++            },
++            {
++              "x": 14,
++              "y": 17.21
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.71755313873291,
++        "top": 2.867553234100342,
++        "outerV": -0.19821072164149767,
++        "innerV": 0.0364059719803036,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.712765957446808,
++        "firstTop": 2.952127659574468,
++        "capBottom": 2.9122340425531914,
++        "capTop": 2.9920212765957444,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    },
++    {
++      "id": "palacio",
++      "rotation": 180,
++      "actualHeight": 4.946808510638298,
++      "storey": 2.7925531914893615,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 14.22
++            },
++            {
++              "x": 4,
++              "y": 14.22
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 4,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 14.3
++            },
++            {
++              "x": 4,
++              "y": 14.3
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-rear",
++          "points": [
++            {
++              "x": 4,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 13.88
++            },
++            {
++              "x": 17,
++              "y": 14.21
++            },
++            {
++              "x": 4,
++              "y": 14.21
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 16.880000000000003,
++              "y": 4
++            },
++            {
++              "x": 17.22,
++              "y": 4
++            },
++            {
++              "x": 17.22,
++              "y": 14
++            },
++            {
++              "x": 16.880000000000003,
++              "y": 14
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 16.880000000000003,
++              "y": 4
++            },
++            {
++              "x": 17.3,
++              "y": 4
++            },
++            {
++              "x": 17.3,
++              "y": 14
++            },
++            {
++              "x": 16.880000000000003,
++              "y": 14
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-right",
++          "points": [
++            {
++              "x": 16.880000000000003,
++              "y": 4
++            },
++            {
++              "x": 17.21,
++              "y": 4
++            },
++            {
++              "x": 17.21,
++              "y": 14
++            },
++            {
++              "x": 16.880000000000003,
++              "y": 14
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.71755313873291,
++        "top": 2.867553234100342,
++        "outerV": -0.19821072164149767,
++        "innerV": 0.0364059719803036,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.712765957446808,
++        "firstTop": 2.952127659574468,
++        "capBottom": 2.9122340425531914,
++        "capTop": 2.9920212765957444,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    },
++    {
++      "id": "palacio",
++      "rotation": 270,
++      "actualHeight": 4.946808510638298,
++      "storey": 2.7925531914893615,
++      "source": [
++        {
++          "points": [
++            {
++              "x": 14.22,
++              "y": 4
++            },
++            {
++              "x": 14.22,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 4
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 14.3,
++              "y": 4
++            },
++            {
++              "x": 14.3,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 4
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-front",
++          "points": [
++            {
++              "x": 14.21,
++              "y": 4
++            },
++            {
++              "x": 14.21,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 17
++            },
++            {
++              "x": 13.88,
++              "y": 4
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        },
++        {
++          "points": [
++            {
++              "x": 14,
++              "y": 16.880000000000003
++            },
++            {
++              "x": 14,
++              "y": 17.22
++            },
++            {
++              "x": 4,
++              "y": 17.22
++            },
++            {
++              "x": 4,
++              "y": 16.880000000000003
++            }
++          ],
++          "bottom": 68,
++          "top": 74,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone",
++          "cap": false
++        },
++        {
++          "points": [
++            {
++              "x": 14,
++              "y": 16.880000000000003
++            },
++            {
++              "x": 14,
++              "y": 17.3
++            },
++            {
++              "x": 4,
++              "y": 17.3
++            },
++            {
++              "x": 4,
++              "y": 16.880000000000003
++            }
++          ],
++          "bottom": 73,
++          "top": 75,
++          "palette": {
++            "base": "#a99a79",
++            "trim": "#c7b795",
++            "shadow": "#776d54"
++          },
++          "texture": "stone"
++        },
++        {
++          "label": "palace-upper-cornice-right",
++          "points": [
++            {
++              "x": 14,
++              "y": 16.880000000000003
++            },
++            {
++              "x": 14,
++              "y": 17.21
++            },
++            {
++              "x": 4,
++              "y": 17.21
++            },
++            {
++              "x": 4,
++              "y": 16.880000000000003
++            }
++          ],
++          "bottom": 120,
++          "top": 125,
++          "palette": {
++            "base": "#c5a36e",
++            "trim": "#e4d3ab",
++            "shadow": "#8f754f"
++          },
++          "texture": "plaster"
++        }
++      ],
++      "nativeFrontCrossSection": {
++        "bottom": 2.71755313873291,
++        "top": 2.867553234100342,
++        "outerV": -0.1982112795691755,
++        "innerV": 0.0364061855972615,
++        "material": {
++          "name": "world:stone",
++          "colour": "ffffff",
++          "recipe": null
++        }
++      },
++      "directExpected": {
++        "bottom": 2.712765957446808,
++        "firstTop": 2.952127659574468,
++        "capBottom": 2.9122340425531914,
++        "capTop": 2.9920212765957444,
++        "firstOuterV": -0.22,
++        "capOuterV": -0.3,
++        "baseColour": "#a99a79",
++        "capColour": "#c7b795",
++        "shadowColour": "#776d54",
++        "textureOpacity": 0.6
++      }
++    }
++  ],
++  "sourceStages": [
++    {
++      "bottomFromStorey": -0.0797872340425532,
++      "topFromStorey": 0.1595744680851064,
++      "outwardTiles": 0.22,
++      "inwardTiles": 0.12,
++      "cap": false
++    },
++    {
++      "bottomFromStorey": 0.1196808510638298,
++      "topFromStorey": 0.19946808510638298,
++      "outwardTiles": 0.3,
++      "inwardTiles": 0.12,
++      "cap": true
++    }
++  ],
++  "warmStone": {
++    "body": "#a99a79",
++    "cap": "#c7b795",
++    "sourceShadow": "#776d54",
++    "textureOpacity": 0.6,
++    "multiplyOpacity": 0,
++    "texture": "/art/architecture-stone-v2.png",
++    "uv": "Unchanged metre wall-face projection; native light and normal response."
++  },
++  "before": {
++    "heightMetres": 0.15,
++    "outwardMetres": 0.245,
++    "colour": "#918a76",
++    "architectureFinish": null
++  },
++  "after": {
++    "heightMetres": 0.2792553191489362,
++    "outerCapMetres": 0.37081755442411446,
++    "bodyCapHeightMetres": 0.0797872340425532,
++    "outwardIncreaseMetres": 0.12581755442411446
++  },
++  "upperEaveTrim": {
++    "preserved": true,
++    "bottomFromWallHeight": -0.175,
++    "topFromWallHeight": -0.025,
++    "outwardMetres": 0.245,
++    "colour": "#e0d2ad"
++  },
++  "rejectedUpperCornice": {
++    "sourceOutwardTiles": 0.21,
++    "sourceBottomFromWallHeight": -0.1595744680851064,
++    "sourceTopFromWallHeight": 0.0398936170212766,
++    "townhallEaveTiles": 0.2,
++    "palaceEaveTiles": 0.24,
++    "reason": "Literal source top emerges through the current pitched roof at its eave. A four-face physical adaptation creates a bright far-edge line absent from the positive-face source illustration. Excluded from this cut; no roof height or finish changes."
++  },
++  "preservation": {
++    "compiledStates": 360,
++    "nonBandMeshes": 9472,
++    "sha256": "3f473081caa338cf6908e547c6cad3623c23e76fd529bc433d153e668f28af9b",
++    "exactNonBandGeometryMaterialsOpeningRecordsAndDisclosure": true
++  },
++  "browser": {
++    "originalViews": 24,
++    "shortSlabViews": 12,
++    "roofRouteViews": 12,
++    "errors": [],
++    "ordinaryControls": true,
++    "sameCameraVisibleTriangleIncrease": 56
++  }
++}

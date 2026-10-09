@@ -1,0 +1,32 @@
+from pathlib import Path
+import json,struct,hashlib
+R=Path('/tmp/granadero-worker-neckline-pilot')
+def read(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];return json.loads(b[20:20+n]),b[28+n:]
+def data(d,b,i):
+ a=d['accessors'][i];out={k:v for k,v in a.items()if k not in ('bufferView','byteOffset')}
+ if 'bufferView'in a:
+  v=d['bufferViews'][a['bufferView']];start=v.get('byteOffset',0);out['raw']=hashlib.sha256(b[start:start+v['byteLength']]).hexdigest();out['offset']=a.get('byteOffset',0)
+ assert 'sparse'not in a
+ return out
+a,x=read(R/'current-base/worker-lod0.glb');b,y=read(R/'composed-models/worker-lod0.glb')
+proof={'nodesExact':a['nodes']==b['nodes'],'skeletonExact':True,'materialsExact':a['materials']==b['materials'],'imagesExact':a['images']==b['images'],'texturesExact':a['textures']==b['textures'],'samplersExact':a['samplers']==b['samplers'],'nonOutfit':[]}
+for sa,sb in zip(a['skins'],b['skins']):
+ proof['skeletonExact']&={k:v for k,v in sa.items()if k!='inverseBindMatrices'}=={k:v for k,v in sb.items()if k!='inverseBindMatrices'} and data(a,x,sa['inverseBindMatrices'])==data(b,y,sb['inverseBindMatrices'])
+for ma,mb in zip(a['meshes'],b['meshes']):
+ assert ma['name']==mb['name']
+ if ma['name']=='Tailored_Coat':continue
+ assert len(ma['primitives'])==len(mb['primitives'])
+ for pa,pb in zip(ma['primitives'],mb['primitives']):
+  exact=pa.keys()==pb.keys()and pa['material']==pb['material']and pa['attributes'].keys()==pb['attributes'].keys()and data(a,x,pa['indices'])==data(b,y,pb['indices'])
+  for k,v in pa['attributes'].items():exact&=data(a,x,v)==data(b,y,pb['attributes'][k])
+  for ta,tb in zip(pa.get('targets',[]),pb.get('targets',[])):
+   exact&=ta.keys()==tb.keys()
+   for k,v in ta.items():exact&=data(a,x,v)==data(b,y,tb[k])
+  proof['nonOutfit'].append({'mesh':ma['name'],'material':a['materials'][pa['material']]['name'],'allAttributesIndicesMorphsExact':exact})
+for im in a['images']:
+ if 'uri'in im:assert (R/'current-base'/im['uri']).read_bytes()==(R/'composed-models'/im['uri']).read_bytes()
+proof['externalTexturesExact']=True
+assert all(v for k,v in proof.items()if isinstance(v,bool));assert all(p['allAttributesIndicesMorphsExact']for p in proof['nonOutfit'])
+proof['bodySHA256']=hashlib.sha256((R/'composed-models/worker-lod0.glb').read_bytes()).hexdigest()
+(R/'current-body-preservation.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof,indent=2))

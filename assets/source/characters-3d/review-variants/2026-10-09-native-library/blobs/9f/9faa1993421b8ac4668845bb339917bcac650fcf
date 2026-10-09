@@ -1,0 +1,56 @@
+from pathlib import Path
+from collections import Counter
+from PIL import Image
+import json,struct,hashlib
+R=Path('/tmp/granadero-hair-naturalism-pilot');base=R/'baseline';candidate=R/'worker-delivery/models-v6'
+exec((R/'prove-preservation.py').read_text().split('report={}')[0])
+def vals(j,b,i):
+ a=j['accessors'][i];n={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];f={5126:'f',5125:'I',5123:'H',5121:'B'}[a['componentType']];return list(struct.iter_unpack('<'+f*n,acc(j,b,i)))
+def proof(path):
+ j,b=read(path);materials=j['materials'];result=Counter();counts={};tiles={};uvs={}
+ def image_hash(material,uv):
+  cache=(material,int(uv[0]*8),int(uv[1]*8))
+  if cache in tiles:return tiles[cache]
+  m=materials[material];images=[];side=None
+  for info in [m['pbrMetallicRoughness']['baseColorTexture'],m['pbrMetallicRoughness']['metallicRoughnessTexture'],m['normalTexture']]:
+   texture=j['textures'][info['index']];im=Image.open(path.parent/j['images'][texture['source']]['uri']).convert('RGBA');side=im.width//256;tx=min(side-1,int(uv[0]*side));ty=min(side-1,int(uv[1]*side));images.append(digest(im.crop((tx*256,ty*256,(tx+1)*256,(ty+1)*256)).tobytes()))
+  key=(side,images);tiles[cache]=key;return key
+ for mesh in j['meshes']:
+  for p in mesh['primitives']:
+   if materials[p['material']]['name']!='Apparel_Atlas':continue
+   attrs={k:vals(j,b,i)for k,i in p['attributes'].items()};pos=attrs['POSITION'];ind=[i[0]for i in vals(j,b,p['indices'])];parent=list(range(len(pos)))
+   def root(i):
+    while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]
+    return i
+   def join(a,b):parent[root(a)]=root(b)
+   seen={}
+   for i,v in enumerate(pos):
+    key=tuple(round(x,7)for x in v)
+    if key in seen:join(i,seen[key])
+    else:seen[key]=i
+   for i in range(0,len(ind),3):join(ind[i],ind[i+1]);join(ind[i],ind[i+2])
+   hair=set()
+   if mesh['name']=='Exposed_Human_Skin':
+    for i,v in enumerate(pos):
+     if v[1]>1.745:hair.add(root(i))
+   counts[mesh['name']]={'hairTriangles':0,'otherTriangles':0}
+   for off in range(0,len(ind),3):
+    tri=ind[off:off+3]
+    if root(tri[0])in hair:counts[mesh['name']]['hairTriangles']+=1;continue
+    counts[mesh['name']]['otherTriangles']+=1;vertices=[]
+    for index in tri:
+     uv=attrs['TEXCOORD_0'][index];side,tile=image_hash(p['material'],uv)
+     data={k:v[index]for k,v in attrs.items()if k not in ('TEXCOORD_0','JOINTS_0','WEIGHTS_0')}
+     data['joints']=sorted((joint,weight)for joint,weight in zip(attrs['JOINTS_0'][index],attrs['WEIGHTS_0'][index])if weight>0)
+     data['atlasTile']=tile
+     key=json.dumps(data,sort_keys=True);uvs.setdefault(key,[]).append(tuple((v*side)%1 for v in uv))
+     vertices.append(key)
+    result[(mesh['name'],min(tuple(vertices[n:]+vertices[:n])for n in range(3)))]+=1
+ return result,counts,uvs
+out={}
+for lod in range(3):
+ a,ac,au=proof(base/f'worker-lod{lod}.glb');b,bc,bu=proof(candidate/f'worker-lod{lod}.glb')
+ maximum=max(abs(x-y)for key in au for av,bv in zip(sorted(au[key]),sorted(bu.get(key,[])))for x,y in zip(av,bv)) if a==b else None
+ out[lod]={'equal':a==b and maximum<1e-6,'maximumLocalUVDelta':maximum,'before':ac,'after':bc,'removedTriangles':sum((a-b).values()),'addedTriangles':sum((b-a).values())};print(lod,out[lod],flush=True)
+(R/'worker-delivery/detail-preservation.json').write_text(json.dumps(out,indent=2))
+assert all(x['equal']for x in out.values())

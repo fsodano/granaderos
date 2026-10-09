@@ -62,7 +62,7 @@ test('explicit close fire uses firearm cost/readiness and only wears the firearm
 });
 
 test('loose, broken and stowed bayonets cannot borrow fixed reach or brace',()=>{
-  const s=battle({activeSlot:'blade'});assert.equal(bladeFor(s.units[0]).reach,1);assert.equal(bladeFor(s.units[0]).damage,24);reject(s,{type:'melee',targetId:'e'});reject(s,{type:'brace'});
+  const s=battle({activeSlot:'blade'});assert.equal(bladeFor(s.units[0]).reach,1);assert.equal(bladeFor(s.units[0]).damage,20.4);reject(s,{type:'melee',targetId:'e'});reject(s,{type:'brace'});
   let fitted=order(battle(),{type:'fitBayonet',item:'blade'});assert.equal(fixedBayonetFor(fitted.units[0]).instanceId,'socket-1');
   fitted=order(fitted,{type:'weapon',slot:'unarmed'});assert.equal(fixedBayonetFor(fitted.units[0]),null);assert.equal(bladeFor(fitted.units[0]).id,0);reject(fitted,{type:'brace'});
   const broken=order(battle(),{type:'fitBayonet',item:'blade'});broken.units[0].weaponFittings.bayonet.condition=0;assert.equal(fixedBayonetFor(broken.units[0]),null);reject(broken,{type:'brace'});assert.equal(removeBayonetPreview(broken,broken.units[0],'blade').valid,true);

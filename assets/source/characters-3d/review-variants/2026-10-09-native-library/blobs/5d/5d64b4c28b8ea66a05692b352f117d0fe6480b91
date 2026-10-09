@@ -1,0 +1,620 @@
+{
+  "url": "/models/characters/equipment.glb",
+  "bytes": 599736,
+  "sha256": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+  "triangles": 14164,
+  "meshes": 59,
+  "drawCalls": 59,
+  "materials": [
+    "Equipment_Blackened_Steel",
+    "Equipment_Aged_Brass",
+    "Equipment_Walnut",
+    "Equipment_Polished_Blade",
+    "Equipment_Grip_Leather",
+    "Cream_Crossbelts"
+  ],
+  "bones": 0,
+  "nodes": [
+    "item_1800_Rifle_Barrel",
+    "item_1800_Rifle_Barrel_Band",
+    "item_1800_Rifle_Walnut_Stock",
+    "muzzle_1800",
+    "item_1800",
+    "item_1801_Rifle_Barrel",
+    "item_1801_Rifle_Barrel_Band",
+    "item_1801_Rifle_Walnut_Stock",
+    "muzzle_1801",
+    "item_1801",
+    "item_1802_Rifle_Barrel",
+    "item_1802_Rifle_Barrel_Band",
+    "item_1802_Rifle_Walnut_Stock",
+    "muzzle_1802",
+    "item_1802",
+    "item_1803_Rifle_Barrel",
+    "item_1803_Rifle_Barrel_Band",
+    "item_1803_Rifle_Walnut_Stock",
+    "muzzle_1803",
+    "item_1803",
+    "item_1804_Rifle_Barrel",
+    "item_1804_Rifle_Barrel_Band",
+    "item_1804_Rifle_Walnut_Stock",
+    "muzzle_1804",
+    "item_1804",
+    "item_1807_Rifle_Barrel",
+    "item_1807_Rifle_Barrel_Band",
+    "item_1807_Rifle_Walnut_Stock",
+    "muzzle_1807",
+    "item_1807",
+    "item_1805_Pistol_Barrel",
+    "item_1805_Pistol_Butt_Cap",
+    "item_1805_Pistol_Stock",
+    "muzzle_1805",
+    "item_1805",
+    "item_1806_Pistol_Barrel",
+    "item_1806_Pistol_Butt_Cap",
+    "item_1806_Pistol_Stock",
+    "muzzle_1806",
+    "item_1806",
+    "item_1808_Pistol_Barrel",
+    "item_1808_Pistol_Butt_Cap",
+    "item_1808_Pistol_Stock",
+    "muzzle_1808",
+    "item_1808",
+    "item_1809_Sabre_Crossguard",
+    "item_1809_Sabre_Curved_Blade",
+    "item_1809_Sabre_Leather_Grip",
+    "item_1809",
+    "item_1810_Sabre_Crossguard",
+    "item_1810_Sabre_Curved_Blade",
+    "item_1810_Sabre_Leather_Grip",
+    "item_1810",
+    "item_1813_Knife_Ferrule",
+    "item_1813_Knife_Single_Edge_Blade",
+    "item_1813_Knife_Wood_Grip",
+    "item_1813",
+    "item_1811_Sabre_Crossguard",
+    "item_1811_Sabre_Curved_Blade",
+    "item_1811_Sabre_Leather_Grip",
+    "item_1811",
+    "Lance_Head",
+    "Lance_Shaft",
+    "item_1812",
+    "Loose_Ramrod",
+    "item_ramrod",
+    "Forged_Crowbar",
+    "item_crowbar",
+    "Key_Bow",
+    "item_key",
+    "Lock_Pick",
+    "item_lockpick",
+    "Pliers_Jaw",
+    "item_pliers",
+    "torch_flame",
+    "Torch_Wood",
+    "Wrapped_Torch",
+    "item_torches",
+    "Bolas_Cord",
+    "item_boleadoras",
+    "Package_Tie",
+    "Wrapped_rations",
+    "item_rations",
+    "Package_Tie.001",
+    "Wrapped_medkits",
+    "item_medkits",
+    "Grenade_Fuse",
+    "Grenade_Iron",
+    "item_grenade",
+    "Package_Tie.002",
+    "Wrapped_ammunition",
+    "item_ammunition",
+    "Package_Tie.003",
+    "Wrapped_item",
+    "item_item"
+  ],
+  "kind": "equipment",
+  "items": {
+    "1800": {
+      "node": "item_1800",
+      "category": "rifle",
+      "grip": "rifle",
+      "socket": "handRight_rifle",
+      "leftSocket": "handLeft_rifle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "back",
+      "muzzle": "muzzle_1800"
+    },
+    "1801": {
+      "node": "item_1801",
+      "category": "rifle",
+      "grip": "rifle",
+      "socket": "handRight_rifle",
+      "leftSocket": "handLeft_rifle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "back",
+      "muzzle": "muzzle_1801"
+    },
+    "1802": {
+      "node": "item_1802",
+      "category": "rifle",
+      "grip": "rifle",
+      "socket": "handRight_rifle",
+      "leftSocket": "handLeft_rifle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "back",
+      "muzzle": "muzzle_1802"
+    },
+    "1803": {
+      "node": "item_1803",
+      "category": "rifle",
+      "grip": "rifle",
+      "socket": "handRight_rifle",
+      "leftSocket": "handLeft_rifle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "back",
+      "muzzle": "muzzle_1803"
+    },
+    "1804": {
+      "node": "item_1804",
+      "category": "rifle",
+      "grip": "rifle",
+      "socket": "handRight_rifle",
+      "leftSocket": "handLeft_rifle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "back",
+      "muzzle": "muzzle_1804"
+    },
+    "1807": {
+      "node": "item_1807",
+      "category": "rifle",
+      "grip": "rifle",
+      "socket": "handRight_rifle",
+      "leftSocket": "handLeft_rifle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "back",
+      "muzzle": "muzzle_1807"
+    },
+    "1805": {
+      "node": "item_1805",
+      "category": "pistol",
+      "grip": "pistol",
+      "socket": "handRight_pistol",
+      "leftSocket": "handLeft_pistol",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipRight",
+      "muzzle": "muzzle_1805"
+    },
+    "1806": {
+      "node": "item_1806",
+      "category": "pistol",
+      "grip": "pistol",
+      "socket": "handRight_pistol",
+      "leftSocket": "handLeft_pistol",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipRight",
+      "muzzle": "muzzle_1806"
+    },
+    "1808": {
+      "node": "item_1808",
+      "category": "pistol",
+      "grip": "pistol",
+      "socket": "handRight_pistol",
+      "leftSocket": "handLeft_pistol",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipRight",
+      "muzzle": "muzzle_1808"
+    },
+    "1809": {
+      "node": "item_1809",
+      "category": "sabre",
+      "grip": "sabre",
+      "socket": "handRight_sabre",
+      "leftSocket": "handLeft_sabre",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "1810": {
+      "node": "item_1810",
+      "category": "sabre",
+      "grip": "sabre",
+      "socket": "handRight_sabre",
+      "leftSocket": "handLeft_sabre",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "1813": {
+      "node": "item_1813",
+      "category": "knife",
+      "grip": "sabre",
+      "socket": "handRight_sabre",
+      "leftSocket": "handLeft_sabre",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "1811": {
+      "node": "item_1811",
+      "category": "knife",
+      "grip": "sabre",
+      "socket": "handRight_sabre",
+      "leftSocket": "handLeft_sabre",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "1812": {
+      "node": "item_1812",
+      "category": "lance",
+      "grip": "sabre",
+      "socket": "handRight_sabre",
+      "leftSocket": "handLeft_sabre",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "ramrod": {
+      "node": "item_ramrod",
+      "category": "tool",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "crowbar": {
+      "node": "item_crowbar",
+      "category": "tool",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "key": {
+      "node": "item_key",
+      "category": "tool",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "lockpick": {
+      "node": "item_lockpick",
+      "category": "tool",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "pliers": {
+      "node": "item_pliers",
+      "category": "tool",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "torches": {
+      "node": "item_torches",
+      "category": "supply",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "boleadoras": {
+      "node": "item_boleadoras",
+      "category": "supply",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "rations": {
+      "node": "item_rations",
+      "category": "supply",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "medkits": {
+      "node": "item_medkits",
+      "category": "supply",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "grenade": {
+      "node": "item_grenade",
+      "category": "supply",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "ammunition": {
+      "node": "item_ammunition",
+      "category": "supply",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    },
+    "item": {
+      "node": "item_item",
+      "category": "supply",
+      "grip": "tool",
+      "socket": "handRight_tool",
+      "leftSocket": "handLeft_tool",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "stowedSocket": "hipLeft"
+    }
+  }
+}

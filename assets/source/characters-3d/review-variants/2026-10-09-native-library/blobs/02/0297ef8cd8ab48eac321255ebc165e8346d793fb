@@ -1,0 +1,14 @@
+{
+  "checkpoint": "717473966a1519062a1090e89dfe1e87b136b033",
+  "manifestSha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+  "finding": "The single-ray classifier flags one outside right-index fingertip in female prone.gesture.throw at 0.7166666404 s. Its nearest head triangle is 33.9508 mm away. Multiple oblique ray classification identifies it as outside. Actual rendered head frames were inspected.",
+  "change": "Share the existing six-direction open-surface classifier between punch and throw checks. No pose, mesh, bank or source-authoring changes. Add an independent analytic-sphere test with an open neck-like boundary.",
+  "validation": {
+    "throwAndPunchTests": 16,
+    "passed": 16,
+    "newAnalyticSurfaceTest": 1,
+    "syntheticInteriorAndExteriorSamples": 128
+  },
+  "limit": "The six-ray vote is a bounded open-surface diagnostic, not proof of a watertight volume or all between-frame triangle crossings.",
+  "discarded": "The proposed outward arm path was never built or published; diagnosis showed it was not warranted."
+}

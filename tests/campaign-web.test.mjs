@@ -1,6 +1,7 @@
 import {withStoredGear} from './commerce-gear-fixture.mjs';
 import {getCityStatus,CITY_LOYALTY_THRESHOLD} from '../game/cities.js';
 import {transportPath} from '../game/logistics.js';
+import {worldCell,worldOwner} from '../game/world-cells.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {attendYatasto} from './mission-helpers.mjs';
 import {marchToFront,restForMarch,meetLocalRecruit,completeTestTravel} from './campaign-test-helpers.mjs';
@@ -53,8 +54,11 @@ test('five-phase campaign cannot unlock San Martín early',()=>{
  s=capture(s,'cordoba');s=capture(s,'tucuman');s=capture(s,'salta');s=order(s,{type:'diplomacy',kind:'northPact'});assert.equal(s.phase,3);assert.equal(recruitmentStatus(s,0,true).available,true);assert.equal(recruitmentStatus(s,57).available,false);
  s=capture(s,'mendoza');s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});assert.equal(s.phase,3);
 });
-test('captured crossroads block traversal while owned towns retain local operations',()=>{
- const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),true);assert.ok(dispatch(s,{type:'travel',sector:'salta'}).lastError);
+test('occupied crossroads reject entry while a rural detour keeps owned towns accessible',()=>{
+ const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),true);
+ const rejected=dispatch(s,{type:'travel',sector:'cordoba',queue:true});assert.ok(rejected.lastError);rejected.lastError=null;assert.deepEqual(rejected,s);
+ const detour=dispatch(s,{type:'travel',sector:'salta',queue:true});assert.equal(detour.lastError,null);const path=detour.squads[0].journey.path;
+ assert.equal(path.at(-1),'salta');assert.ok(path.every(id=>worldCell(id).locality!=='cordoba'&&worldOwner(s,id)!=='royalist'));assert.equal(detour.hour,s.hour);assert.equal(detour.location,s.location);
 });
 test('unguarded and defeated provinces fall while a supported garrison wins with actual local outcomes and permanent militia losses',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:144});assert.equal(s.sectors.jujuy.owner,'royalist');

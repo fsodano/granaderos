@@ -4,6 +4,8 @@ import {ROYALIST_COMMANDS,NORTHERN_AXIS,oppositionFor,campaignEnemyCount} from '
 import {operativeInTransit,operativeLocation,validatePersonalInventory} from './squads.js';
 import {migrateEnemyReserves,validateEnemyReserves} from './enemy-reserves.js';
 import {migrateEnemyIntelligence,validateEnemyIntelligence,clearEnemyReport} from './enemy-intelligence.js';
+import {ROAD_LINKS,worldCell} from './world-cells.js';
+import {travelLegHours} from './squad-travel.js';
 
 // Manual p.44: threatened sectors offer tactical combat, auto-resolve, or a
 // possible withdrawal. Route duration and group strength are period game tuning.
@@ -42,12 +44,25 @@ export function launchEnemyGroup(s,theater,target,{immediate=false}={}){
 const departureSector=group=>group.status==='marching'&&group.routeIndex>0?group.route[group.routeIndex-1]:null;
 function crossingSquads(s,group){
  const from=departureSector(group),to=group.route[group.routeIndex];
- return from?(s.squads??[]).filter(q=>q.members.length&&['moving','ready'].includes(q.journey?.status)&&!q.journey.returning&&q.journey.path[0]===to&&q.journey.path[1]===from):[];
+ if(!from)return [];
+ const link=ROAD_LINKS.find(link=>link.from===to&&link.to===from||link.from===from&&link.to===to);
+ const corridor=link?(link.from===to?link.path:[...link.path].reverse()).map(id=>worldCell(id).id):[];
+ return (s.squads??[]).filter(q=>{
+  const j=q.journey;
+  if(!q.members.length||!['moving','ready'].includes(j?.status)||j.returning||j.path.indexOf(from)<1)return false;
+  if(j.path[0]===to&&j.path[1]===from)return true; // Stored town stages and assaults.
+  const a=corridor.indexOf(worldCell(j.path[0])?.id),b=corridor.indexOf(worldCell(j.path[1])?.id);
+  return a>=0&&b===a+1;
+ });
 }
+const hoursToDeparture=(q,group)=>{
+ const j=q.journey,index=j.path.indexOf(departureSector(group));
+ return Math.max(0,j.legHours-j.elapsed-(j.elapsedSecond??0)/3600)+j.path.slice(2,index+1).reduce((hours,to,i)=>hours+travelLegHours(j.path[i+1],to,j.mode),0);
+};
 export function delayCrossingEnemyGroups(s,{elapsedHour=0,travelLeg=null}={}){
  for(const group of s.enemyGroups){
   const now=s.hour+(s.secondOfHour??0)/3600;
-  const arrivals=crossingSquads(s,group).map(q=>now+Math.max(0,q.journey.legHours-q.journey.elapsed-(q.journey.elapsedSecond??0)/3600-elapsedHour));
+  const arrivals=crossingSquads(s,group).map(q=>now+Math.max(0,hoursToDeparture(q,group)-elapsedHour));
   if(travelLeg&&departureSector(group)===travelLeg.to&&group.route[group.routeIndex]===travelLeg.from)arrivals.push(travelLeg.arrivalAt);
   if(!arrivals.length)continue;
   // One campaign hour replaces JA2's short minute-scale delay. A ready assault

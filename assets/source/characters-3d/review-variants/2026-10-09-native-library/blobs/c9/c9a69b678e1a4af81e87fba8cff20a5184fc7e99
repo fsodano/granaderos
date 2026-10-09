@@ -1,0 +1,54 @@
+[
+  {
+    "appearance": "granadero",
+    "file": "granadero-lod0.glb",
+    "record": {
+      "lod": 0,
+      "url": "/models/characters/granadero-lod0.glb",
+      "triangles": 86901,
+      "bytes": 5357584,
+      "drawCalls": 6,
+      "sha256": "ae600a0416e00b81f1062971586571490959667ffcf31d542dcbd49a1494a9bf"
+    },
+    "existingBodySha256": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550"
+  },
+  {
+    "appearance": "granadero",
+    "file": "granadero-lod1.glb",
+    "record": {
+      "lod": 1,
+      "url": "/models/characters/granadero-lod1.glb",
+      "triangles": 62144,
+      "bytes": 4015228,
+      "drawCalls": 6,
+      "sha256": "e2873161ff1413c5481f9cfcb59354701e0cad21025c30f90339fed81b72e227"
+    },
+    "existingBodySha256": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d"
+  },
+  {
+    "appearance": "royalist",
+    "file": "royalist-lod0.glb",
+    "record": {
+      "lod": 0,
+      "url": "/models/characters/royalist-lod0.glb",
+      "triangles": 87260,
+      "bytes": 5273276,
+      "drawCalls": 6,
+      "sha256": "20d3e6a37cba688bc7344c63290efba61163c15e06f1000e096df7ef2f7a6a22"
+    },
+    "existingBodySha256": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853"
+  },
+  {
+    "appearance": "royalist",
+    "file": "royalist-lod1.glb",
+    "record": {
+      "lod": 1,
+      "url": "/models/characters/royalist-lod1.glb",
+      "triangles": 61875,
+      "bytes": 3914364,
+      "drawCalls": 6,
+      "sha256": "a95c668cc76951ded6fc1f241d08c3d222c163539c3ca5dff7687617c5843dea"
+    },
+    "existingBodySha256": "84cf7f066a202fd495ad5ff915e872f4932e7e4863bd8e3b8af05fae688a22d5"
+  }
+]

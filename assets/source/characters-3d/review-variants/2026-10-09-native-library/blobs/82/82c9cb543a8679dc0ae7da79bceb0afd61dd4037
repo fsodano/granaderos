@@ -1,0 +1,32 @@
+from pathlib import Path
+import json,hashlib,sys,numpy as np
+from waist_glb import read
+r=Path('/tmp/granadero-long-cloth-waist-pilot');base=Path('/tmp/granaderos-six-outfit-review-20261008/models');reports=[]
+def payload(doc,blob,index):
+ a=doc['accessors'][index];out=[]
+ if 'bufferView'in a:
+  v=doc['bufferViews'][a['bufferView']];out.append(bytes(blob[v.get('byteOffset',0):v.get('byteOffset',0)+v['byteLength']]))
+ for item in a.get('sparse',{}).values():
+  if isinstance(item,dict)and'bufferView'in item:
+   v=doc['bufferViews'][item['bufferView']];out.append(bytes(blob[v.get('byteOffset',0):v.get('byteOffset',0)+v['byteLength']]))
+ return out
+for name in ['friar','woman-shawl']:
+ d,b,a=read(base/(name+'-lod0.glb'));D,B,A=read(r/'models'/(name+'-lod0.glb'));proof=json.loads((r/(name+'-proof.json')).read_text());p=d['meshes'][proof['clothMesh']]['primitives'][0];allowed={p['attributes'][s]for s in ['POSITION','NORMAL','JOINTS_0','WEIGHTS_0']};changed=[]
+ for i in range(len(d['accessors'])):
+  if payload(d,b,i)!=payload(D,B,i):changed.append(i)
+ assert set(changed)<=allowed
+ for field in ['nodes','skins','scenes','scene','meshes','materials','images','textures','samplers','extensions','extensionsUsed','extensionsRequired']:
+  assert d.get(field)==D.get(field),field
+ untouched=0
+ for k,i in p['attributes'].items():
+  if i not in allowed:assert np.array_equal(a(i),A(i));continue
+  different=np.any(a(i)!=A(i),axis=1)
+  if k in ['POSITION','JOINTS_0','WEIGHTS_0']:
+   valid={x['vertex']for x in proof['changedVertices']};assert set(np.where(different)[0])<=valid
+  untouched+=int((~different).sum())
+ textures={}
+ for im in d.get('images',[]):
+  if im.get('uri')and not im['uri'].startswith('data:'):
+   uri=im['uri'];x=hashlib.sha256((base/uri).read_bytes()).hexdigest();assert x==hashlib.sha256((r/'models'/uri).read_bytes()).hexdigest();textures[uri]=x
+ reports.append({'preset':name,'status':'exact preservation passed','changedAccessorIds':changed,'allowedAttributes':['POSITION','NORMAL','JOINTS_0','WEIGHTS_0'],'allNonselectedAccessorPayloadsExact':True,'allMorphPayloadsExact':True,'allSceneRigAndMaterialRecordsExact':True,'unchangedRowCountAcrossFourAttributes':untouched,'allExternalTexturesExact':textures,'newTextures':0})
+(r/'preservation.json').write_text(json.dumps(reports,indent=2)+'\n');print('Exact preservation passed for both bodies')

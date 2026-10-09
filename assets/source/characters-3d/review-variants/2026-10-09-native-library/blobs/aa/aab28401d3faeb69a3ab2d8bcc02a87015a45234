@@ -1,0 +1,71 @@
+"""Compose reviewed body-file records into the current complete library.
+
+Never replaces an agent's entire manifest. The source file hash must match
+each reviewed record and the old body must match the declared baseline.
+"""
+from pathlib import Path
+import hashlib
+import json
+import shutil
+import struct
+import sys
+
+base, output, spec_path = map(Path, sys.argv[1:4])
+spec = json.loads(spec_path.read_text())
+assert not output.exists(), 'Use a fresh output directory for each composition'
+shutil.copytree(base, output)
+before = json.loads((base / 'manifest.json').read_text())
+manifest = json.loads(json.dumps(before))
+proof = {'baseManifestSha256': hashlib.sha256((base / 'manifest.json').read_bytes()).hexdigest(), 'bodies': [], 'textures': []}
+changed = set()
+for delivery in spec:
+    source = Path(delivery['directory'])
+    records = json.loads(Path(delivery['records']).read_text())
+    for item in records:
+        preset, name, record = item['appearance'], item['file'], item['record']
+        assert name == f'{preset}-lod{record["lod"]}.glb'
+        assert name not in changed, f'Duplicate mutation of {name}'
+        current = next(r for r in manifest['appearances'][preset]['lods'] if r['lod'] == record['lod'])
+        old = (base / name).read_bytes()
+        assert hashlib.sha256(old).hexdigest() == current['sha256'] == item['existingBodySha256'], name
+        raw = (source / name).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == record['sha256'] and len(raw) == record['bytes'], name
+        assert record['url'] == current['url']
+        document = json.loads(raw[20:20 + struct.unpack_from('<I', raw, 12)[0]])
+        for image in document.get('images', []):
+            uri = image.get('uri')
+            if not uri:
+                continue
+            assert uri.startswith('textures/') and '..' not in uri
+            data = (source / uri).read_bytes()
+            destination = output / uri
+            if destination.exists():
+                assert destination.read_bytes() == data, f'Texture path collision {uri}'
+            else:
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(data)
+                proof['textures'].append({'file': uri, 'sha256': hashlib.sha256(data).hexdigest()})
+        (output / name).write_bytes(raw)
+        current.clear()
+        current.update(record)
+        changed.add(name)
+        proof['bodies'].append({'file': name, 'old': item['existingBodySha256'], 'new': record['sha256']})
+
+# Every manifest value outside the explicit body records remains identical.
+restored = json.loads(json.dumps(manifest))
+for preset, appearance in before['appearances'].items():
+    for old in appearance['lods']:
+        if Path(old['url']).name in changed:
+            current = next(r for r in restored['appearances'][preset]['lods'] if r['lod'] == old['lod'])
+            current.clear()
+            current.update(old)
+assert restored == before
+for path in base.glob('*.glb'):
+    if path.name not in changed:
+        assert (output / path.name).read_bytes() == path.read_bytes(), path.name
+(output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+proof['manifestSha256'] = hashlib.sha256((output / 'manifest.json').read_bytes()).hexdigest()
+proof['otherManifestValuesExact'] = True
+proof['allOtherGlbsByteExact'] = True
+(output.parent / 'composition-proof.json').write_text(json.dumps(proof, indent=2) + '\n')
+print(json.dumps(proof, indent=2))

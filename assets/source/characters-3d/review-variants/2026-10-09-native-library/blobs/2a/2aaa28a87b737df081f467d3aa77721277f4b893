@@ -1,0 +1,97 @@
+{
+  "scope": "Native seated rider and horse fit, mount/dismount continuity, mounted fall/rest/recovery handoff and carried lance clearance",
+  "library": "/tmp/granaderos-rider-fit/lifecycle-validation-library",
+  "manifestSha256": "4d6d4d262ba3edb6a73a09f5b7c8f7be2e37c470f619fea0a0f69bb67b53843d",
+  "sourceDirectory": "/tmp/granaderos-rider-fit/source-delivery/assets/source/characters-3d/authoring",
+  "sourceHashes": {
+    "throwing_motion.py": "884df47b452698a35b7ed5e5d5c145a235d4dc66761d506d347ee171471f18f8",
+    "equipment.py": "5c1932d8e9aaf2db146f4d92a4667c5b5eb8be537aba16f6a55ce905f96a8525",
+    "build.py": "d43601cfb6505721885b847d394c20f8ec1da794387e974a93ba24d8bafd1a73",
+    "optimize.py": "28fd0885d692bb61c31a89fe300f4bd5afb8b63505ca9e1da10ca435abf1e0a1",
+    "climbing_motion.py": "51a19c8327d84609f8eaa31b1c20b0303365c196053cdd60615c427e5c76afdc",
+    "horse.py": "fc867cd141a0c7fe8c6bb30a7f6a8804086806c6295b468a91b1153c2047cac0",
+    "reviewed_motion.py": "0d347fd1d5d8f5a5efb156327348b0c13cf81e6de83120fc29c1dfbf44b5e569",
+    "riding_motion.py": "1641a18f49b6487bbc5d37f6054549638f2a7cd4ecbb2899a3fe6198f079e026",
+    "prepare_skin_maps.py": "2b53f04f74f892aa383fc6d4b936f69c0a5526448029c00077bd481b02ccf721",
+    "gltf_pack.py": "fa5cafa3fd7c587e4795c91300d03eca2b81e3d29c46eef8d66ff814c98fc73d",
+    "garment_detail.py": "cd96a1e03692ce5e699504106a52d108e7184416e0b4d1bd5efc27402a61abd3",
+    "posture_support.py": "0cf073233fe0ea9f1d8824895297155a871cf7a30af8ec7561d28dc8ec2a6913",
+    "cloth_correctives.py": "2fb6be1654de3e77bcca0507146bbe784fd0e264bf52e65c17552f4d3b55f9b3",
+    "equipment_library.py": "cc6b11f9f93649533be3e81287571e6936faffa52e0e8cf34425d4b13920d449",
+    "motion.py": "b1e5d45b138c97d891e739c08ff177ad1ae3a2225357ffd1c0e6c81533e3fdde",
+    "rifle_loading.py": "07e6538ab262ab376767be32ded1accdf06d6e8e68ca20b861eae83652d51b2e",
+    "mounted_motion.py": "06f478bbd88b8da65e4d7946c66dc884b91ce5ad4dca3c5d8d73f324b4ce795c",
+    "character.py": "48f6264b20cb34b5fb09088bd6ef2ac76438a794bce7b870ef1472833d9c23c5",
+    "appearances.py": "cfa2955072db5f87450e758e37299028edc065a0f420e931729f2d9c9354e978",
+    "grounding_motion.py": "caaf250342b1d17400cf7b289edee2ae8a6399e0431215a125537b765d3efeeb",
+    "sockets.py": "b359eebd1df8b154dfa3eaacf8bf5d81f5d24bf95699ec069f5bf6d44d2311f9",
+    "surface_atlas.py": "cefd1a37d1ac096318ddffb67c60781c3dac184f1d602a8b78b17a7c2e4b950e",
+    "anatomy_surface.py": "814eaf22b01c2f3d5c1293f1b78fe3310520431133f7a7330695727bb30e1fdf",
+    "firearm_grips.py": "dbd54916089c14988a52b251be3ff89f1ff692f05370ef3023ca83de55850eeb",
+    "garments.py": "f2d63899ada3249fd060bce6b8c36f2b2fac9afa0ceef1d6fbb011ded25f3925",
+    "equipment_dimensions.py": "74f36fa8c1aa5140c02ee6a360f75a58723ccc476f136089c5a5b244bd9312d2",
+    "pistol_loading.py": "286bcc3c41ba7490513595b51a97d2eeef12d73f20e70d713a6d74bc854728e4",
+    "export_timing.py": "90924e259fb1fa07ba332ab60e3c44163324adb5492eb7c3fc6c8dfa2383d505",
+    "export_motion_increment.py": "665c7da43b6140537b476f48f505e7a18f4c0363b08dcda46c83135247c8516d"
+  },
+  "checks": {
+    "riderMountRuntime": "37/37 passed before the final lance-only change",
+    "heldWeaponClearance": "2/2 passed after final lance change",
+    "strictNativeRig": "24 bodies, 2 banks, 2 garment libraries passed",
+    "locomotionCalibration": "--check passed",
+    "structuralValidator": "PASS after mounted-ground contract update"
+  },
+  "geometry": {
+    "maleSeatRiseM": 0.104188,
+    "femaleSeatRiseM": 0.110952,
+    "nativeSeatGapM": 0.003,
+    "maleKneePlaneDegrees": 56,
+    "femaleKneePlaneDegrees": 76,
+    "stirrupCentreAbsXM": 0.404022,
+    "barrelLegClearanceReserveM": 0.01,
+    "mountMeshDepthAbove1mm": 0,
+    "heldWeaponPenetrationM": 0
+  },
+  "lifecycle": {
+    "visibleHorsePenetrationM": 0,
+    "minimumFloorMaleM": 0.005837558,
+    "minimumFloorFemaleM": 0.005982411,
+    "destination": "prone dead/unconscious or prone idle; recover ends standing",
+    "gameplayRoot": "unchanged",
+    "horseDeparture": "Existing horseVisibility convention ends after near-side leg clearance"
+  },
+  "lanceIncrement": "/tmp/granaderos-rider-fit/lance-increment",
+  "lanceMotion": {
+    "peakRightWristDegreesPerSecond": 147.423,
+    "peakRightWristMetresPerSecond": 0.190255,
+    "sampleHz": 120
+  },
+  "reviews": [
+    {
+      "directory": "/tmp/granaderos-rider-fit/nonfirearm-review",
+      "frames": 210
+    },
+    {
+      "directory": "/tmp/granaderos-rider-fit/lifecycle3-review",
+      "frames": 18
+    },
+    {
+      "directory": "/tmp/granaderos-rider-fit/lifecycle3-fall-review",
+      "frames": 16
+    },
+    {
+      "directory": "/tmp/granaderos-rider-fit/lifecycle-extra-review",
+      "frames": 24
+    },
+    {
+      "directory": "/tmp/granaderos-rider-fit/lance-final-review",
+      "frames": 18
+    },
+    {
+      "directory": "/tmp/granaderos-rider-fit/garment-seat-review",
+      "frames": 18
+    }
+  ],
+  "remainingIntegration": "Root complete paired bank contains current firearm fixes; apply only the 3 accepted mounted lance clips after it finishes, then run full rider tests on that single candidate.",
+  "integrationReview": "No concrete regression found in requested build preflight, lifecycle metadata, runtime seat/cloth merge, or lab grip/default-selection changes."
+}

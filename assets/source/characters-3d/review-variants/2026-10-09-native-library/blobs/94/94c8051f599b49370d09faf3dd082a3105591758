@@ -1,0 +1,17 @@
+from pathlib import Path
+import bpy,json
+B=Path('/tmp/granadero-adult-pigment-pilot/colour-diagnostic');bpy.ops.import_scene.gltf(filepath=str(B/'models/granadero-lod0.glb'))
+m=next(m for m in bpy.data.materials if m.name=='Skin')
+nodes=[]
+for n in m.node_tree.nodes:
+ row={'name':n.name,'label':n.label,'type':n.type}
+ if n.type=='VERTEX_COLOR':row['layer_name']=n.layer_name
+ if n.type=='ATTRIBUTE':row['attribute_name']=n.attribute_name
+ row['links']=[{'socket':i.name,'sourceNode':l.from_node.name,'sourceSocket':l.from_socket.name}for i in n.inputs for l in i.links]
+ nodes.append(row)
+objs=[]
+for o in bpy.context.scene.objects:
+ if o.type=='MESH'and m in list(o.data.materials):
+  attrs=[{'name':c.name,'domain':c.domain,'data_type':c.data_type,'first':list(c.data[0].color)}for c in o.data.color_attributes]
+  objs.append({'name':o.name,'attributes':attrs,'active':o.data.color_attributes.active_color_name,'renderIndex':o.data.color_attributes.render_color_index})
+r={'nodes':nodes,'objects':objs};(B/'imported-material.json').write_text(json.dumps(r,indent=2));print('IMPORTED_MATERIAL',json.dumps(r),flush=True)

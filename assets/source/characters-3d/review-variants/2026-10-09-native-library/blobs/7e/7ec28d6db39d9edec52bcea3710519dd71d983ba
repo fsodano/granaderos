@@ -1,0 +1,553 @@
+{
+  "method": "Actual paired exported body, bank, weapon and socket, Blender glTF import. Eye point uses frozen native MakeHuman joint landmark. Shoulder test uses anterior upper-pectoral triangles, not nearest whole-body point. Distances are geometric diagnostics, not alone anatomical acceptance.",
+  "assets": {
+    "/tmp/granadero-native-grip-candidate/models/male-animations.glb": "b444753eeeeafe4948c526db7960dc26e6238446beeda7a4b221962a3ac3cf25",
+    "/tmp/granadero-native-grip-candidate/models/granadero-lod0.glb": "0abb8395e77d44d0862418211d69e9bb838b875e11927762d1e91d423aa22be5",
+    "/tmp/granadero-native-grip-candidate/models/equipment.glb": "0c19c30c81a80e95acf0aaffb490819d84ae18119b67106b91ff222e7615be52",
+    "/tmp/granadero-native-grip-candidate/models/female-animations.glb": "3d4eb0337406baab1fcc2098c99b62609e21115cd78eca4d508025e6f5dee25e",
+    "/tmp/granadero-native-grip-candidate/models/woman-scout-lod0.glb": "27c45d792d0659227d50dc833dbc3b0297ae115de7a76bc343e1c675fd134120",
+    "/tmp/granadero-native-grip-candidate/models/manifest.json": "4f4dab927bdf4c3673b33365b6ec97cc6b520093d244f0a431200357109d4406"
+  },
+  "samples": [
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0,
+      "eyeGun": [
+        -0.10245229303836823,
+        -0.00019029155373573303,
+        0.08116500079631805
+      ],
+      "sightOffsetMM": 3.1707161649701314,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 21.49294689297676,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.493009626865387,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.91183792177601
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.1,
+      "eyeGun": [
+        -0.10218359529972076,
+        -0.00018143653869628906,
+        0.08116230368614197
+      ],
+      "sightOffsetMM": 3.1675043146764397,
+      "gazeBoreDegrees": 0.8028382042073113,
+      "cheekSignedMinMM": 21.449679508805275,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.589900236576796,
+      "headLocalDegrees": 19.882776296555498,
+      "neckLocalDegrees": 71.87854757976136
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.133,
+      "eyeGun": [
+        -0.10209754854440689,
+        -0.00017825886607170105,
+        0.0811612457036972
+      ],
+      "sightOffsetMM": 3.166267573533864,
+      "gazeBoreDegrees": 0.819721898227054,
+      "cheekSignedMinMM": 21.435696631669998,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.621574983000755,
+      "headLocalDegrees": 19.882776296555498,
+      "neckLocalDegrees": 71.86793346579117
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.2,
+      "eyeGun": [
+        -0.10193797945976257,
+        -0.0001724623143672943,
+        0.08115822821855545
+      ],
+      "sightOffsetMM": 3.162933591875928,
+      "gazeBoreDegrees": 0.8508784464563018,
+      "cheekSignedMinMM": 21.40902727842331,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.678514182567596,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.84837863419742
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.32,
+      "eyeGun": [
+        -0.10171600431203842,
+        -0.0001643933355808258,
+        0.08115476369857788
+      ],
+      "sightOffsetMM": 3.1590440481331714,
+      "gazeBoreDegrees": 0.8945997146331699,
+      "cheekSignedMinMM": 21.372349932789803,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.7590828984975815,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.82126278319247
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.6,
+      "eyeGun": [
+        -0.10161976516246796,
+        -0.00016085803508758545,
+        0.08115282654762268
+      ],
+      "sightOffsetMM": 3.1569273628482173,
+      "gazeBoreDegrees": 0.9134312932268356,
+      "cheekSignedMinMM": 21.356135606765747,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.793044973164797,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.80960365027926
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.8,
+      "eyeGun": [
+        -0.1019381433725357,
+        -0.00017200037837028503,
+        0.0811578556895256
+      ],
+      "sightOffsetMM": 3.162536470127013,
+      "gazeBoreDegrees": 0.8508784464563018,
+      "cheekSignedMinMM": 21.408911794424057,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.678861565887928,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.84837863419742
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 2,
+      "eyeGun": [
+        -0.10245229303836823,
+        -0.00019029155373573303,
+        0.08116500079631805
+      ],
+      "sightOffsetMM": 3.1707161649701314,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 21.49294689297676,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.493009626865387,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.91183792177601
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0,
+      "eyeGun": [
+        -0.10245229303836823,
+        -0.00019029155373573303,
+        0.08116500079631805
+      ],
+      "sightOffsetMM": 3.1707161649701314,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 21.49294689297676,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.493009626865387,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.91183792177601
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.1,
+      "eyeGun": [
+        -0.10245249420404434,
+        -0.00019049271941184998,
+        0.08116547018289566
+      ],
+      "sightOffsetMM": 3.171196764883241,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 21.493198350071907,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.493312306702137,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.91184475196518
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.133,
+      "eyeGun": [
+        -0.09866689890623093,
+        0.006510037928819656,
+        0.07632045447826385
+      ],
+      "sightOffsetMM": 6.7232036391651375,
+      "gazeBoreDegrees": 2.7351637672835922,
+      "cheekSignedMinMM": 19.269591197371483,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.496391724795103,
+      "headLocalDegrees": 19.882776296555498,
+      "neckLocalDegrees": 73.33325492956902
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.2,
+      "eyeGun": [
+        -0.10428393632173538,
+        0.005781371146440506,
+        0.07719352841377258
+      ],
+      "sightOffsetMM": 5.837349607781936,
+      "gazeBoreDegrees": 1.7640290082360792,
+      "cheekSignedMinMM": 20.666752010583878,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 5.312650464475155,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 73.14998046357007
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.32,
+      "eyeGun": [
+        -0.10343706607818604,
+        0.0015758685767650604,
+        0.08013660460710526
+      ],
+      "sightOffsetMM": 2.6548900872626895,
+      "gazeBoreDegrees": 1.017025732863771,
+      "cheekSignedMinMM": 21.601602435112,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.125090643763542,
+      "headLocalDegrees": 19.882776296555498,
+      "neckLocalDegrees": 72.13794450406012
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.6,
+      "eyeGun": [
+        -0.10249404609203339,
+        -0.00017898529767990112,
+        0.08116959035396576
+      ],
+      "sightOffsetMM": 3.1746399430459173,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 21.509932354092598,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.491411942988634,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.90022660018698
+    },
+    {
+      "preset": "granadero",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.8,
+      "eyeGun": [
+        -0.10245229303836823,
+        -0.00019029155373573303,
+        0.08116500079631805
+      ],
+      "sightOffsetMM": 3.1707161649701314,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 21.49294689297676,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 6.493009626865387,
+      "headLocalDegrees": 19.882815570143226,
+      "neckLocalDegrees": 71.91183792177601
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0,
+      "eyeGun": [
+        -0.10502186417579651,
+        0.00264904648065567,
+        0.07755888253450394
+      ],
+      "sightOffsetMM": 2.6855226710872,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 15.30449464917183,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.851133933290839,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 71.15422650884902
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.1,
+      "eyeGun": [
+        -0.10479048639535904,
+        0.0026661530137062073,
+        0.0776127502322197
+      ],
+      "sightOffsetMM": 2.6941295878021885,
+      "gazeBoreDegrees": 0.8028382042073113,
+      "cheekSignedMinMM": 15.322338789701462,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.838623709976673,
+      "headLocalDegrees": 24.75249114645761,
+      "neckLocalDegrees": 71.11006250567573
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.133,
+      "eyeGun": [
+        -0.10471615195274353,
+        0.002671618014574051,
+        0.07762931287288666
+      ],
+      "sightOffsetMM": 2.697211880109919,
+      "gazeBoreDegrees": 0.819721898227054,
+      "cheekSignedMinMM": 15.327343717217445,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.8339510317891836,
+      "headLocalDegrees": 24.752458703059055,
+      "neckLocalDegrees": 71.09597865560715
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.2,
+      "eyeGun": [
+        -0.10457876324653625,
+        0.002682037651538849,
+        0.07766029238700867
+      ],
+      "sightOffsetMM": 2.703465775363689,
+      "gazeBoreDegrees": 0.8508784464563018,
+      "cheekSignedMinMM": 15.337289310991764,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.8247246518731117,
+      "headLocalDegrees": 24.75249114645761,
+      "neckLocalDegrees": 71.06999661600443
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.32,
+      "eyeGun": [
+        -0.10438697785139084,
+        0.0026955939829349518,
+        0.07770314067602158
+      ],
+      "sightOffsetMM": 2.7118909253647603,
+      "gazeBoreDegrees": 0.8945997146331699,
+      "cheekSignedMinMM": 15.350332483649254,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.8127371333539486,
+      "headLocalDegrees": 24.75249114645761,
+      "neckLocalDegrees": 71.0338785756734
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.6,
+      "eyeGun": [
+        -0.10430401563644409,
+        0.0027018673717975616,
+        0.07772140204906464
+      ],
+      "sightOffsetMM": 2.7161929686757107,
+      "gazeBoreDegrees": 0.9134312932268356,
+      "cheekSignedMinMM": 15.356061980128288,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.80760764144361,
+      "headLocalDegrees": 24.752458703059055,
+      "neckLocalDegrees": 71.01838087644664
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 0.8,
+      "eyeGun": [
+        -0.10457899421453476,
+        0.0026820488274097443,
+        0.07766054570674896
+      ],
+      "sightOffsetMM": 2.7034450566629,
+      "gazeBoreDegrees": 0.8508784464563018,
+      "cheekSignedMinMM": 15.337307006120682,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.824273891746998,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 71.06997612543692
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.aim.long-gun",
+      "timeSeconds": 2,
+      "eyeGun": [
+        -0.10502186417579651,
+        0.00264904648065567,
+        0.07755888253450394
+      ],
+      "sightOffsetMM": 2.6855226710872,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 15.30449464917183,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.851133933290839,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 71.15422650884902
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0,
+      "eyeGun": [
+        -0.10502186417579651,
+        0.00264904648065567,
+        0.07755888253450394
+      ],
+      "sightOffsetMM": 2.6855226710872,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 15.30449464917183,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.851133933290839,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 71.15422650884902
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.1,
+      "eyeGun": [
+        -0.10502181202173233,
+        0.0026490874588489532,
+        0.07755893468856812
+      ],
+      "sightOffsetMM": 2.6855544896095735,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 15.30435774475336,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.852114848792553,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 71.15417869752484
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.133,
+      "eyeGun": [
+        -0.10130401700735092,
+        0.009357981383800507,
+        0.07211729884147644
+      ],
+      "sightOffsetMM": 11.053415446580804,
+      "gazeBoreDegrees": 2.7351637672835922,
+      "cheekSignedMinMM": 12.965542264282703,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 3.30232921987772,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 72.55438113775578
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.2,
+      "eyeGun": [
+        -0.10639207810163498,
+        0.00824955478310585,
+        0.07224736362695694
+      ],
+      "sightOffsetMM": 10.0572352004047,
+      "gazeBoreDegrees": 1.7640290082360792,
+      "cheekSignedMinMM": 13.380470685660839,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 3.3563277684152126,
+      "headLocalDegrees": 24.75249114645761,
+      "neckLocalDegrees": 72.50306592652149
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.32,
+      "eyeGun": [
+        -0.10586987435817719,
+        0.00424758717417717,
+        0.07611807435750961
+      ],
+      "sightOffsetMM": 4.645819782927014,
+      "gazeBoreDegrees": 1.017025732863771,
+      "cheekSignedMinMM": 14.963174238801003,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 3.1246840953826904,
+      "headLocalDegrees": 24.75249114645761,
+      "neckLocalDegrees": 71.4104269046162
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.6,
+      "eyeGun": [
+        -0.10506346821784973,
+        0.0026539303362369537,
+        0.0775608941912651
+      ],
+      "sightOffsetMM": 2.69001116594726,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 15.316184610128403,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.85570346750319,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 71.14226684761233
+    },
+    {
+      "preset": "woman-scout",
+      "clip": "stand.fire.long-gun",
+      "timeSeconds": 0.8,
+      "eyeGun": [
+        -0.10502186417579651,
+        0.00264904648065567,
+        0.07755888253450394
+      ],
+      "sightOffsetMM": 2.6855226710872,
+      "gazeBoreDegrees": 0.7499100544726777,
+      "cheekSignedMinMM": 15.30449464917183,
+      "headSkinPenetrationCount": 0,
+      "maxHeadSkinPenetrationMM": 0,
+      "buttFaceShoulderMinMM": 2.851133933290839,
+      "headLocalDegrees": 24.75252358985617,
+      "neckLocalDegrees": 71.15422650884902
+    }
+  ]
+}

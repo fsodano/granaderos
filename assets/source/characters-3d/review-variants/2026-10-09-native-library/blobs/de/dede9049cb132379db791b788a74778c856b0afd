@@ -1,0 +1,28 @@
+from pathlib import Path
+import sys,json,math
+import bpy
+B=Path('/tmp/granadero-shoulder-strap-pilot');sys.path.insert(0,str(B/'source-before'))
+source=(B/'source-before/character.py').read_text()
+source=source.replace("    collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)","    globals()['collar_data']=(collarv,collarf,collarw,count)\n    collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)")
+space={'__file__':str(B/'source-before/character.py'),'__name__':'collar_probe'};exec(compile(source,space['__file__'],'exec'),space)
+ctx=space['create_character']('granadero');coat=ctx['coat'];coords,faces,weights,count=space['collar_data']
+def angles(points):
+ out=[]
+ for p in points:
+  a=math.atan2(p.y+.036,p.x)
+  if out:a=out[-1]+(a-out[-1]+math.pi)%(math.tau)-math.pi
+  out.append(a)
+ return out
+rest=angles(coords[:count]);delta=[b-a for a,b in zip(rest,rest[1:]+[rest[0]+math.tau])]
+result={'count':count,'seamAngleMinDegrees':math.degrees(min(delta)),'seamAngleMaxDegrees':math.degrees(max(delta)),'seamCoords':[list(p)for p in coords[:count]],'seamAngles':rest,'tests':[]}
+for factor,invert in [(1000,False),(1000,True),(1,False),(1,True)]:
+ o=coat.copy();o.data=coat.data.copy();bpy.context.collection.objects.link(o);bpy.context.view_layer.objects.active=o
+ red=[i for i,m in enumerate(o.data.materials)if m.name==ctx['M']['red'].name];ids={i for p in o.data.polygons if p.material_index in red for i in p.vertices};rim=[i for i in ids if o.data.vertices[i].co.z>1.513]
+ vg=o.vertex_groups.new(name='Protect_Collar');vg.add(rim,1,'REPLACE')
+ dec=o.modifiers.new('Test','DECIMATE');dec.ratio=.42;dec.use_collapse_triangulate=True;dec.vertex_group=vg.name;dec.vertex_group_factor=factor;dec.invert_vertex_group=invert
+ while o.modifiers.find(dec.name)>0:bpy.ops.object.modifier_move_up(modifier=dec.name)
+ bpy.ops.object.modifier_apply(modifier=dec.name)
+ top=sum(abs(v.co.z-1.533)<1e-6 for v in o.data.vertices)
+ result['tests'].append({'factor':factor,'invert':invert,'topVertices':top,'coatVertices':len(o.data.vertices),'coatFaces':len(o.data.polygons)})
+ bpy.data.objects.remove(o,do_unlink=True)
+(B/'collar-protection-probe.json').write_text(json.dumps(result,indent=2));print(json.dumps({k:v for k,v in result.items()if k not in ('seamCoords','seamAngles')}))

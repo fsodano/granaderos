@@ -40,7 +40,9 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
     const box=(m:typeof wood,a:number,b:number,c:number,wa:number,h:number,dc:number)=>part.box(m,a,b,c,wa,h,dc,light);
     const pole=(m:typeof wood,a:readonly number[],b:readonly number[],r:number)=>part.cylinder(m,new Vector3(...a as [number,number,number]),new Vector3(...b as [number,number,number]),r,light);
     const h=prop.obstacleHeight??({table:.8,bench:.45,bed:.55,chest:.8,barrels:1.2,hay:1.3,cart:1.2,shelf:1.5,hearth:.7,washstand:.8,pottery:.45,sacks:.7,'broken-timber':.3,rubble:.35,candle:.3,rug:.012}[prop.type]??.7);
-    if(prop.type==='table'||prop.type==='bench'||prop.type==='washstand'){
+    if(prop.destroyed){
+      addStructureDebris(part,materials,{...prop,width:w,depth:d,light});
+    }else if(prop.type==='table'||prop.type==='bench'||prop.type==='washstand'){
       const tw=w*.80,td=d*(prop.type==='bench'?.35:.68),th=.07,timber=prop.type!=='washstand'&&prop.material!=='stone';
       if(timber)boards(part,wood,light,tw,td,h-th*.5,th,Math.max(prop.type==='bench'?2:3,Math.min(prop.type==='bench'?4:6,Math.round(td/.20))));
       else box(wood,0,h-th*.5,0,tw,th,td);
@@ -200,9 +202,43 @@ export function buildProps(id:string,props:readonly WorldProp[],input:WorldInput
       // Unknown authored props retain a modest storage silhouette, never a sprite.
       box(wood,0,h*.5,0,w*.68,h,d*.68);for(const by of [.12,h-.12])box(iron,0,by,-d*.35,w*.69,.035,.025);
     }
-    const built=part.finish(`prop:${prop.id}`);for(const mesh of built.children){const item=mesh as import('three').Mesh;batch.add(item.geometry,item.material as typeof wood,frame.matrix,1);item.geometry.dispose();}
+    const built=part.finish(`prop:${prop.id}`);if(!prop.destroyed)applyStructureWear(built,prop.structureDamage??0,prop.x,prop.y,h);for(const mesh of built.children){const item=mesh as import('three').Mesh;batch.add(item.geometry,item.material as typeof wood,frame.matrix,1);item.geometry.dispose();}
   }
   const group=batch.finish(`props:${id}`);group.userData.kind='props';group.userData.semanticIds=props.map(prop=>`prop:${prop.id}`);return group;
+}
+
+/** Destroyed records retain their footprint and identity, with no intact body. */
+export function addStructureDebris(batch:WorldBatch,materials:WorldMaterials,source:{type:string;material?:string;x:number;y:number;width:number;depth:number;light:number}){
+  const {type,material,x,y,width:w,depth:d,light}=source;
+  const masonry=material==='stone'||['hearth','rubble'].includes(type),cloth=['bed','sacks','rug'].includes(type);
+  const kind=masonry?'stone':type==='pottery'?'ceramic':type==='hay'?'thatch':type==='sacks'||type==='rug'?'linen':'wood';
+  for(let n=0;n<9;n++){
+    const a=seeded(x,y,n+611),b=seeded(y,x,n+947),angle=a*Math.PI*2;
+    const rock=masonry||type==='pottery',sw=Math.min(w*.12,.07+a*.06),sd=Math.min(d*.40,rock?.11+b*.08:.24+b*.28),height=rock?.055+a*.04:.035+a*.025;
+    // Conservative extents include every rotated vertex, on either level.
+    const halfX=rock?Math.hypot(sw,sd):(Math.abs(Math.cos(angle))*sw+Math.abs(Math.sin(angle))*sd)*.5,halfZ=rock?Math.hypot(sw,sd):(Math.abs(Math.sin(angle))*sw+Math.abs(Math.cos(angle))*sd)*.5;
+    const px=(a-.5)*Math.max(0,w-2*halfX)*.84,pz=(b-.5)*Math.max(0,d-2*halfZ)*.84;
+    batch.primitive(rock?'rock':'box',materials.get(kind),[px,rock?height:height*.5,pz],[sw,height,sd],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),light*(.78+.18*b));
+  }
+  if(cloth){
+    batch.primitive('box',materials.get('linen'),[w*.08,.035,-d*.06],[w*.40,.04,d*.35],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),.10),light*.78);
+  }
+  if(['cart','chest','barrels','door'].includes(type))for(let n=0;n<2;n++){
+    const angle=(n?-.4:.5),sw=Math.min(.045,w*.08),sd=Math.min(.23,d*.28);
+    batch.primitive('box',materials.get('iron'),[(n-.5)*w*.30,.025,(.5-n)*d*.20],[sw,.025,sd],new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle),light*.88);
+  }
+}
+
+/** Local wear changes vertex colour only; materials, geometry and light stay shared. */
+export function applyStructureWear(group:Group,damage:number,x:number,y:number,height:number,base=0){
+  const strength=Math.max(0,Math.min(1,damage/100));if(!strength)return;
+  const phase=seeded(x,y,281)*Math.PI*2;
+  group.traverse(node=>{if(!('geometry'in node))return;const mesh=node as import('three').Mesh,position=mesh.geometry.getAttribute('position'),colours=mesh.geometry.getAttribute('color');if(!colours)return;
+    for(let n=0;n<position.count;n++){
+      const patch=.5+.5*Math.sin(position.getX(n)*8+position.getZ(n)*11+phase),upper=Math.min(1,Math.max(0,(position.getY(n)-base)/Math.max(.1,height))),shade=1-strength*(.06+.20*patch+.05*upper);
+      colours.setXYZ(n,colours.getX(n)*shade,colours.getY(n)*shade,colours.getZ(n)*shade);
+    }
+  });
 }
 
 /** Small open joints show the board edges without adding another material. */

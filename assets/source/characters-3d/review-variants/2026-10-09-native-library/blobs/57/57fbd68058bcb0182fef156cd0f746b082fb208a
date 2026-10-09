@@ -1,0 +1,61 @@
+from pathlib import Path
+import base64,hashlib,importlib.util,json,struct,sys
+root=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos')
+sys.path.insert(0,str(root/'tools/characters-3d'))
+def module(name,path):
+ spec=importlib.util.spec_from_file_location(name,path);value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
+merge=module('merge_animation_bank',root/'tools/characters-3d/merge-animation-bank.py')
+rig=module('appearance_rig',root/'tools/characters-3d/build-appearance-increment.py')
+def digest(value):return hashlib.sha256(value).hexdigest()
+def canonical(value):return json.dumps(value,sort_keys=True,separators=(',',':')).encode()
+def content(doc,data,index):
+ accessor=doc['accessors'][index];assert 'sparse' not in accessor
+ descriptor={k:v for k,v in accessor.items() if k not in ('bufferView','byteOffset')}
+ view=doc['bufferViews'][accessor['bufferView']]
+ width={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[accessor['type']]
+ size={5120:1,5121:1,5122:2,5123:2,5125:4,5126:4}[accessor['componentType']]*width
+ start=view.get('byteOffset',0)+accessor.get('byteOffset',0);stride=view.get('byteStride',size)
+ payload=b''.join(data[start+i*stride:start+i*stride+size] for i in range(accessor['count']))
+ return {'descriptor':descriptor,'bytes':digest(payload)}
+def animations(path):
+ doc,data=merge.read_glb(path);records={}
+ for animation in doc['animations']:
+  record={k:v for k,v in animation.items() if k not in ('samplers','channels')}
+  samplers=[{**{k:v for k,v in s.items() if k not in ('input','output')},'input':content(doc,data,s['input']),'output':content(doc,data,s['output'])} for s in animation['samplers']]
+  record['channels']=[{**{k:v for k,v in c.items() if k not in ('sampler','target')},'target':{**c['target'],'node':doc['nodes'][c['target']['node']]['name']},'sampler':samplers[c['sampler']]} for c in animation['channels']]
+  records[animation['name']]=digest(canonical(record))
+ return records
+
+def equipment(path,items):
+ doc,data=merge.read_glb(path);nodes={n['name']:i for i,n in enumerate(doc['nodes'])};records={};roots={}
+ def node(index):
+  value=doc['nodes'][index];record={k:v for k,v in value.items() if k not in ('children','mesh')}
+  record['children']=[node(child) for child in value.get('children',[])]
+  if 'mesh' in value:
+   source=doc['meshes'][value['mesh']];mesh={k:v for k,v in source.items() if k!='primitives'};mesh['primitives']=[]
+   for source in source['primitives']:
+    p={k:v for k,v in source.items() if k not in ('attributes','indices','material')}
+    p['attributes']={k:content(doc,data,v) for k,v in source['attributes'].items()}
+    if 'indices' in source:p['indices']=content(doc,data,source['indices'])
+    if 'material' in source:p['material']=doc['materials'][source['material']]
+    mesh['primitives'].append(p)
+   record['mesh']=mesh
+  return record
+ for item,meta in items.items():
+  source=doc['nodes'][nodes[meta['node']]];roots[item]={k:source.get(k) for k in ('translation','rotation','scale','matrix')}
+  records[item]=digest(canonical(node(nodes[meta['node']])))
+ return records,roots
+
+def snapshot(folder):
+ manifest=json.loads((folder/'manifest.json').read_text());equip,roots=equipment(folder/'equipment.glb',manifest['equipment']['items'])
+ result={'files':{str(p.relative_to(folder)):digest(p.read_bytes()) for p in folder.rglob('*') if p.is_file()},'clips':{},'rigs':{},'equipment':equip,'attachmentRoots':roots}
+ for gender,bank in manifest['animationLibraries'].items():
+  path=folder/Path(bank['url']).name;result['clips'][gender]=animations(path);result['rigs'][gender]=digest(canonical(rig.native_signature(path)))
+  signature=rig.native_signature(path)
+  for appearance in manifest['appearances'].values():
+   if appearance['gender']==gender:
+    for lod in appearance['lods']:assert rig.native_signature(folder/Path(lod['url']).name)==signature,(appearance['id'],lod['lod'],'native hierarchy/inverse bind mismatch')
+  assert rig.native_signature(folder/Path(manifest['garments'][gender]['url']).name)==signature,gender+' garments rig mismatch'
+ return result
+if __name__=='__main__':
+ folder=Path(sys.argv[1]).resolve();out=Path(sys.argv[2]);value=snapshot(folder);out.write_text(json.dumps(value,indent=2)+'\n');print(json.dumps({'saved':str(out),'clips':{k:len(v)for k,v in value['clips'].items()},'strictNativeRig':'PASS'}))

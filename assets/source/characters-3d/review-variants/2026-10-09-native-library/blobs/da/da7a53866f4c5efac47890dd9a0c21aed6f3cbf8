@@ -1,0 +1,15 @@
+from pathlib import Path
+import subprocess,concurrent.futures,json,time
+ROOT=Path('/tmp/granadero-generated-skin-palette-pilot');TASK=ROOT/'all-lod-review'
+s=(ROOT/'render-review-palette.py').read_text();s=s.replace("command=[args.blender,'--background','--factory-startup'", "command=[args.blender,'--background','--threads','4','--factory-startup'")
+renderer=TASK/'render-review-palette.py';renderer.write_text(s)
+jobs=[(variant,lod,skin)for lod in range(3)for skin in ('light','brown','dark')for variant in ('baseline','candidate')]
+def run(job):
+ variant,lod,skin=job;label=f'{variant}-lod{lod}-{skin}';out=TASK/'review'/label;log=TASK/(label+'.log');directory=TASK/('models'if variant=='candidate'else'baseline')
+ command=['python3',str(renderer),'--library-dir',str(directory),'--presets','granadero','--lod',str(lod),'--skin',skin,'--clips','stand.idle.unarmed','--times','0','--size','700','--samples','12','--face-details','--hand-details','--output',str(out)]
+ started=time.monotonic()
+ with log.open('w')as f:r=subprocess.run(command,stdout=f,stderr=subprocess.STDOUT)
+ result={'label':label,'exitCode':r.returncode,'seconds':round(time.monotonic()-started,2),'log':str(log),'output':str(out)};print(json.dumps(result),flush=True);return result
+with concurrent.futures.ThreadPoolExecutor(max_workers=2)as pool:results=list(pool.map(run,jobs))
+(TASK/'render-results.json').write_text(json.dumps(results,indent=2)+'\n')
+raise SystemExit(any(r['exitCode']for r in results))

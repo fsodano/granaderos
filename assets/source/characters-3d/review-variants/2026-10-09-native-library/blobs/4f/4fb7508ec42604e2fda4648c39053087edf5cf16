@@ -1,0 +1,8 @@
+from pathlib import Path
+import subprocess,sys
+root=Path(__file__).parent;stage=sys.argv[1];library=root/('baseline-models' if stage=='before' else 'models')
+renderer='/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tools/characters-3d/render-review.py'
+for label,clip in [('idle','stand.idle.unarmed'),('rifle','stand.aim.long-gun'),('pistol','stand.aim.short-gun')]:
+ args=['python3',renderer,'--library-dir',str(library),'--presets','granadero','--clips',clip,'--times','0','--size','700','--samples','16','--output',str(root/stage/label)]
+ if label=='idle':args+=['--face-details']
+ subprocess.run(args,check=True)

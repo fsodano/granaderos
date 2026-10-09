@@ -1,0 +1,15 @@
+import {register} from 'node:module';
+register('../tests/tactical-render-loader.mjs',import.meta.url);
+const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
+const {ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
+const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
+const T=1.2360585147470482,V=25.066666666666666,palettes=[];
+for(const finish of ['adobe','limewash','ochre','stone','brick']){
+ const battle=createArchitectureReviewBattle('capilla',0,'exterior'),b=battle.buildings[0];b.wallFinish=finish;
+ const frame=entranceFrame({...b,walls:battle.tiles}),parts=[];
+ const visit=node=>{if(!node)return;if(Array.isArray(node)){node.forEach(visit);return;}if(node.type===ArchitectureVolume&&String(node.props.label).startsWith('chapel-corner-')){const p=node.props;parts.push({label:p.label,plan:p.points.map(point=>({u:(point.x-frame.origin.x)*frame.u.x+(point.y-frame.origin.y)*frame.u.y,v:(point.x-frame.origin.x)*frame.v.x+(point.y-frame.origin.y)*frame.v.y})),bottom:p.bottom,top:p.top,palette:p.palette,texture:p.texture,cap:p.cap});}visit(node.props?.children);};
+ for(const object of buildingDetails({...b,walls:battle.tiles.filter(t=>t.buildingId===b.id)},new Set(),(x,y)=>({x:(x-y)*26,y:(x+y)*14})))visit(object.node);
+ palettes.push({finish,sourceWallHeight:getBuildingProfile(b).wallHeight,parts});
+}
+console.log(JSON.stringify({source:'Current buildingDetails()/pier() and ArchitectureVolume()',tileMetres:T,verticalUnitsPerMetre:V,sourceStroke:{faceUnits:.45,capUnits:.5,faceDiameterMetres:.45/V,capDiameterMetres:.5/V},retainedNativeReliefMetres:.34*T-.09,maximumCapitalHullAboveActualHeightMetres:2.5/V+.25/V,palettes},null,2));

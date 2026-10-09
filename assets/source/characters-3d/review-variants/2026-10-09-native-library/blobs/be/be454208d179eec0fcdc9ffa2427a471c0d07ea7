@@ -1,0 +1,72 @@
+import bpy,json,sys
+from pathlib import Path
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+args=sys.argv[sys.argv.index('--')+1:]
+L=Path(args[0]);out=Path(args[1]);m=json.loads((L/'manifest.json').read_text());report={}
+directions=[Vector(v).normalized()for v in [(1,.173,.311),(-1,.237,.131),(.217,1,.413),(.367,-1,.113),(.113,.233,1),(.431,.157,-1)]]
+def volume(coords,faces):
+ ids={i for face in faces for i in face};low=Vector(tuple(min(coords[i][a]for i in ids)for a in range(3)));high=Vector(tuple(max(coords[i][a]for i in ids)for a in range(3)))
+ return BVHTree.FromPolygons(coords,faces),low,high
+
+def check(point,surface):
+ tree,low,high=surface;q,normal,_,gap=tree.find_nearest(point)
+ if any(point[a]<low[a]or point[a]>high[a]for a in range(3)):return False,gap,0,q
+ votes=0
+ for direction in directions:
+  origin=point.copy();hits=0
+  for _ in range(64):
+   hit,normal,index,distance=tree.ray_cast(origin,direction,3)
+   if hit is None:break
+   hits+=1;origin=hit+direction*.00002
+  votes+=hits%2
+ return votes>=4,gap,votes,q
+for preset in ['granadero','woman-scout']:
+ bpy.ops.wm.read_factory_settings(use_empty=True);bpy.context.scene.render.fps=30;a=m['appearances'][preset];b=m['animationLibraries'][a['animationLibrary']]
+ def load(url):
+  before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(L/Path(url).name));return set(bpy.data.objects)-before
+ bank=load(b['url']);body=load(a['lods'][0]['url']);rig=next(o for o in body if o.type=='ARMATURE')
+ for ob in bank:bpy.data.objects.remove(ob,do_unlink=True)
+ rig.animation_data_create()
+ for tr in rig.animation_data.nla_tracks:tr.mute=True
+ action=bpy.data.actions['stand.punch.unarmed'];rig.animation_data.action=action
+ if action.slots:rig.animation_data.action_slot=action.slots[0]
+ skins=[o for o in body if o.type=='MESH'and any(mat and mat.name.startswith('Skin')for mat in o.data.materials)]
+ hats=[o for o in body if o.type=='MESH'and o.name.startswith('Human_headwear')]
+ dominant={};headfaces=[];offset=0
+ for ob in skins:
+  groups={g.index:g.name for g in ob.vertex_groups};weights={v.index:max((g.weight,groups[g.group])for g in v.groups)[1]for v in ob.data.vertices if v.groups}
+  dominant.update({i+offset:n for i,n in weights.items()})
+  headfaces.extend(tuple(i+offset for i in p.vertices)for p in ob.data.polygons if all(weights.get(i)in ['head','neck_01']for i in p.vertices));offset+=len(ob.data.vertices)
+ handids={side:[i for i,n in dominant.items()if n.endswith('_'+side)and n.startswith(('hand_','thumb_','index_','middle_','ring_','pinky_'))]for side in ('l','r')}
+ report[preset]=[]
+ for time in sorted({round(.2+i/60,6)for i in range(31)}|{.183333,.34,.42,.5,.62}):
+  frame=time*30;bpy.context.scene.frame_set(int(frame),subframe=frame-int(frame));deps=bpy.context.evaluated_depsgraph_get();coords=[]
+  for ob in skins:
+   ev=ob.evaluated_get(deps);mesh=ev.to_mesh();coords.extend(ev.matrix_world@v.co for v in mesh.vertices);ev.to_mesh_clear()
+  surfaces={'head':volume(coords,headfaces)}
+  if hats:
+   hc=[];hf=[]
+   for ob in hats:
+    ev=ob.evaluated_get(deps);mesh=ev.to_mesh();offset=len(hc);hc.extend(ev.matrix_world@v.co for v in mesh.vertices);hf.extend(tuple(i+offset for i in p.vertices)for p in mesh.polygons);ev.to_mesh_clear()
+   surfaces['hat']=volume(hc,hf)
+  hands=[]
+  for side in ('l','r'):
+   result={'side':side,'vertices':len(handids[side])}
+   for name,surface in surfaces.items():
+    depth=0;gap=10;inside=0;ambiguous=0;worst=None
+    for i in handids[side]:
+     yes,distance,votes,q=check(coords[i],surface);gap=min(gap,distance)
+     if votes in (2,3):ambiguous+=1
+     if yes:
+      inside+=1
+      if distance>depth:depth=distance;worst={'vertex':i,'bone':dominant[i],'position':list(coords[i]),'nearest':list(q),'votes':votes}
+    result[name]={'depthMm':depth*1000,'gapMm':gap*1000,'insideVertices':inside,'ambiguousVertices':ambiguous,'worst':worst}
+   hands.append(result)
+  report[preset].append({'time':time,'hands':hands})
+ print('AUDITED',preset,flush=True)
+out.write_text(json.dumps(report,indent=2))
+for preset,frames in report.items():
+ for name in ('head','hat'):
+  rows=[(hand[name]['depthMm'],frame['time'],hand['side'],hand[name])for frame in frames for hand in frame['hands']if name in hand]
+  if rows:print(preset,name,max(rows,key=lambda r:r[0]),flush=True)

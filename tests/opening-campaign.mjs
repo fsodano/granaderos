@@ -13,11 +13,14 @@ import {autoBandageBattle} from '../game/auto-bandage.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {ammunitionByType,totalReserveAmmunition} from '../game/ammunition-types.js';
+import {unitAmmunitionByType,fieldAmmunitionByType,totalAmmoCounts} from '../game/physical-ammunition.js';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
+import {travelLegHours} from '../game/squad-travel.js';
 
 const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
 const tacticalOrder=(b,action)=>{const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
+const fieldCartridges=battle=>totalAmmoCounts(fieldAmmunitionByType(battle))+battle.units.reduce((sum,unit)=>sum+totalAmmoCounts(unitAmmunitionByType(unit)),0);
 
 export function runOpeningCampaign({report=()=>{}}={}){
  // This southern-front regression starts after Buenos Aires and Ensenada are secured.
@@ -40,8 +43,8 @@ export function runOpeningCampaign({report=()=>{}}={}){
  assert.equal(c.squad.length,6);c=collectRouteItems(c,107,{item:'medkits'},12).campaign;
  c=supplyRouteAmmunition(c,c.squad,{target:20,report}).campaign;
  order({type:'academy'});order({type:'travel',sector:'buenos_aires'});
- // Sleep through staging until departure at midnight, then make the real
- // twelve-hour approach for a daylight battle. Notices may pause the wait.
+ // Finish actual staging sleep. Schedule departure from the resulting clock
+ // and current assault duration before the daylight battle.
  for(const operativeId of c.squad)order({type:'setSleep',operativeId,asleep:true});
  waitFor(12);
  let dressingBearer=115;
@@ -49,9 +52,9 @@ export function runOpeningCampaign({report=()=>{}}={}){
   if(sector==='san_lorenzo'){
    let doctor=c.recruited.find(id=>c.operativeState[id].alive&&rosterFor(c).find(o=>o.id===id).medical>=70);
    const patients=c.squad.filter(id=>id!==doctor&&c.operativeState[id].hp<c.operativeState[id].maxHp);
-   // A dead doctor stays dead; a critical doctor cannot work. A paid relief
-   // medic uses the finite dressings recovered from the first battlefield.
-   if(!doctor||c.operativeState[doctor].hp<15||c.operativeState[doctor].bleeding){
+   // A dead doctor stays dead. An injured doctor needs another paid medic to
+   // treat him, using the actual dressings retained on the first battlefield.
+   if(!doctor||c.operativeState[doctor].hp<c.operativeState[doctor].maxHp||c.operativeState[doctor].bleeding){
     const originalDoctor=doctor;
     const relief=116;
     order({type:'recruitCivic',id:relief,term:'week'});
@@ -59,14 +62,14 @@ export function runOpeningCampaign({report=()=>{}}={}){
     // relief medic the remaining dressings recovered during immediate aid.
     order({type:'visitSector'});
     let visit=enterSector(c.pendingBattle,c.sectorStates[c.location]);
-    const helper=visit.units.find(u=>u.id===String(relief)),donor=visit.units.find(u=>u.id===String(dressingBearer));
+    const helper=visit.units.find(u=>u.id===String(relief)),donor=visit.units.find(u=>u.id===String(originalDoctor??dressingBearer));
     const place=getReachable(visit,helper).filter(p=>distance(p,donor)<=1.5&&hasLineOfSight(visit,p,donor)).sort((a,b)=>a.cost-b.cost)[0];
     assert.ok(place,'the relief medic can reach the soldier carrying the dressings');
     if(place.cost)visit=tacticalOrder(visit,{type:'move',unitId:helper.id,...spacePoint(place)});
     const quantity=donor.medkits;assert.ok(quantity>=6,'field supplies are sufficient for critical care');
     visit=tacticalOrder(visit,{type:'transfer',unitId:donor.id,targetId:helper.id,item:'medkits',count:quantity});
     order({type:'leaveSector',battleId:c.pendingBattle.id,survivors:visit.units.filter(u=>u.side==='player'),sectorState:visit});
-    assert.equal(c.operativeState[dressingBearer].medkits,0);
+    assert.equal(c.operativeState[Number(donor.id)].medkits,0);
     assert.equal(c.operativeState[relief].medkits,helper.medkits+quantity);
     order({type:'assignCare',operativeId:relief,assignment:'doctor'});
     for(const id of c.squad)if(id!==relief)order({type:'assignCare',operativeId:id,assignment:c.operativeState[id].hp<c.operativeState[id].maxHp?'patient':'rest'});
@@ -74,8 +77,8 @@ export function runOpeningCampaign({report=()=>{}}={}){
     if(originalDoctor){
      assert.ok(c.operativeState[originalDoctor].alive&&c.operativeState[originalDoctor].hp>=15,'paid relief care stabilizes the original doctor');
      assert.equal(c.operativeState[originalDoctor].bleeding,0);
-     order({type:'assignCare',operativeId:relief,assignment:'rest'});
-    }else doctor=relief;
+    }
+    doctor=relief;
    }else{
     for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'rest'});
     waitFor(6);
@@ -114,6 +117,10 @@ export function runOpeningCampaign({report=()=>{}}={}){
 
   }
   c=supplyRouteAmmunition(c,c.squad,{target:6,report}).campaign;
+  if(sector==='san_nicolas'){
+   const departureDelay=(12-travelLegHours(c.location,sector)-c.hour%24+48)%24;
+   if(departureDelay)waitFor(departureDelay);
+  }
   // San Lorenzo is local. Wait through darkness before starting its assault.
   if(sector==='san_lorenzo'&&(c.hour%24<6||c.hour%24>=20))waitFor((30-c.hour%24)%24);
   order({type:'attack',sector});const request=c.pendingBattle;
@@ -126,7 +133,9 @@ export function runOpeningCampaign({report=()=>{}}={}){
   let {battle:b,actions}=engage();
   assert.deepEqual(b,engage().battle,'identical seed and legal orders replay deterministically');
   assert.ok(actions>0);assert.ok(b.turn>1);
-  assert.ok(b.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0)<request.issuedCartridges+(request.missionAllies??[]).reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0),'actual shots consume issued cartridges');
+  // Native scavenging can move enemy cartridges into the surviving squad.
+  // Count every finite owner so that transfer cannot masquerade as new issue.
+  assert.ok(fieldCartridges(b)<fieldCartridges(entry),'actual shots consume finite battlefield cartridges');
   transcript.push({sector,startSeconds:b.startSeconds,status:b.status,turn:b.turn,actions,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ammo:u.ammo,reserve:ammunitionByType(u),loaded:u.loaded,routed:u.routed}))});
   assert.equal(b.status,'victory',JSON.stringify(transcript));
   if(sector==='san_nicolas'){

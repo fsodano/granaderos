@@ -1,0 +1,234 @@
+"""Eight campaign appearances fitted to native male/female human anatomy.
+
+Garment surfaces keep the original skeleton and source-derived body weights.
+The defaults intentionally share a human size; gameplay owns actor body height.
+"""
+import math
+import bpy
+from mathutils import Vector
+
+PRESETS = {
+ 'granadero':dict(gender='male',title='Granadero',coat=(.017,.025,.044),trousers=(.019,.027,.043),headwear='shako'),
+ 'royalist':dict(gender='male',title='Realista',coat=(.62,.57,.45),trousers=(.59,.54,.43),headwear='shako'),
+ 'worker':dict(gender='male',title='Trabajador',coat=(.42,.36,.25),trousers=(.13,.092,.056),headwear=None),
+ 'surgeon':dict(gender='male',title='Cirujano',coat=(.068,.043,.031),trousers=(.051,.039,.033),headwear=None),
+ 'gaucho':dict(gender='male',title='Gaucho',coat=(.16,.098,.047),trousers=(.052,.042,.031),headwear='felt-hat'),
+ 'friar':dict(gender='male',title='Fraile',coat=(.093,.049,.022),trousers=(.093,.049,.022),headwear=None),
+ 'woman-scout':dict(gender='female',title='Exploradora',coat=(.105,.128,.069),trousers=(.30,.26,.18),headwear=None),
+ 'woman-shawl':dict(gender='female',title='Mujer con mantón',coat=(.58,.50,.36),trousers=(.105,.025,.035),headwear=None),
+}
+
+# These are also the replaceable headwear boundary. Keep every trim component
+# with its hat; a civilian or a replacement felt hat must not leave floating
+# cockades, chin scales, visor trim or plumes on the actor.
+HEADWEAR_PREFIXES = (
+ 'Shaped_Shako','Shako_','Curved_Shako','Red_Shako','Red_Side_Cord',
+ 'Red_Tassel','Short_Red_Plume','Tall_Red_Plume','Broad_Yellow_Hat_Band',
+ 'Cockade_','Brass_Visor_Edge','Crest_','Chinstrap_','Felt_Hat',
+)
+
+def apply_appearance(ctx):
+ from garment_detail import civilian_placket,waistcoat,rebozo,fitted_rope_and_hood
+ p=ctx['preset']; spec=PRESETS[p];objects=ctx['objects'];M=ctx['M'];mesh=ctx['mesh'];tube=ctx['tube'];ellipsoid=ctx['ellipsoid'];weight=ctx['source_weight_at'];heads=ctx['heads']
+ def color(key,value):
+  M[key].diffuse_color=(*value,1);M[key].node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(*value,1)
+ color('navy',spec['coat']);color('trousers',spec['trousers'])
+ color('seam',tuple(c*.73 for c in spec['coat']))
+ def remove(prefixes):
+  for o in list(objects):
+   if o.name.startswith(tuple(prefixes)):
+    objects.remove(o);bpy.data.objects.remove(o,do_unlink=True)
+ military=p in ('granadero','royalist')
+ if not military:
+  remove([*HEADWEAR_PREFIXES,'Single_Crossbelt','Crossbelt_Shoulder','Crimson_Epaulette','Red_Epaulette_Fringe','Epaulette_','Fine_Collar_Gold','Cuff_Gold','Crimson_Trouser_Seam','Red_Front_Piping'])
+  color('red',spec['coat']);color('brass',(.18,.12,.057))
+ if p in ('worker','gaucho','friar','woman-scout','woman-shawl'):
+  remove(['Wool_Coat_Tail','Brass_Coat_Button','Belt_Brass_Buckle'])
+ if p in ('worker','friar','woman-shawl'):
+  remove(['White_Waist_Belt'])
+ if p=='royalist':
+  color('red',(.31,.025,.018));color('cream',(.76,.71,.59))
+  color('cord',(.31,.025,.018));color('plume',(.22,.018,.014))
+  color('cockade',(.31,.025,.018))
+  # The Granadero's sun and sky-blue cockade belong to that appearance.
+  # Preserve the existing royalist brass shield identity on this shared shako.
+  remove(['Crest_Sun_','Crest_Central_Relief'])
+ # Native fitted human head remains visible. Hair additions are small head-bound
+ # geometry, not disconnected oversized heads or a substitute body silhouette.
+ if p=='woman-scout':
+  # Three continuous locks form one tapered plait. The broad gathered root
+  # meets the swept-back scalp; separate spherical beads left visible joints.
+  ellipsoid('Braided_Hair_Root',(0,.087,1.637),(.025,.019,.033),M['hair'],'head',24,14)
+  for strand in range(3):
+   pts=[];radii=[]
+   for j in range(113):
+    t=j/112;phase=t*math.tau*6+strand*math.tau/3;taper=1-.58*t
+    pts.append((.0105*taper*math.sin(phase),.098+.038*t+.0045*taper*math.cos(phase),1.644-.272*t))
+    radii.append(.0074*taper)
+   tube('Braided_Hair_Lock',pts,radii,M['hair'],'head',8)
+  tube('Braid_Tie',[(-.007,.135,1.383),(.007,.135,1.383)],[.003,.003],M['red'],'head',8)
+ elif p=='woman-shawl':
+  ellipsoid('Bound_Hair_Root',(0,.084,1.647),(.033,.020,.033),M['hair'],'head',24,14)
+  ellipsoid('Bound_Hair_Bun',(0,.103,1.650),(.037,.025,.032),M['hair'],'head',28,18)
+  pts=[]
+  for j in range(97):
+   t=j/96;a=t*math.tau*2.4;radius=.030*(1-.70*t)
+   pts.append((radius*math.cos(a),.124+.003*t,1.650+radius*.86*math.sin(a)))
+  tube('Bound_Hair_Coil',pts,[.0023]*len(pts),M['hair'],'head',6)
+ elif p=='friar':
+  # Tonsure exposes source skin across the crown.
+  for o in objects:
+   if o.name.startswith('Short_Hair'):
+    for v in o.data.vertices:
+     if v.co.z>1.735:v.co.z-=.012
+ # Civilian shirts show a modest open collar and chest placket.
+ if p in ('worker','woman-scout','woman-shawl'):
+  color('cream',(.64,.56,.40))
+  civilian_placket(ctx)
+ if p=='worker':waistcoat(ctx)
+ if p=='surgeon':
+  color('cream',(.67,.60,.45))
+  ellipsoid('Linen_Cravat',(0,-.106,1.487),(.029,.020,.029),M['cream'],'neck_01',16,8)
+  # Fine spectacles are part of the historical appearance, fitted to face.
+  for side in (-1,1):
+   center=Vector((side*.031,-.131,1.661));pts=[center+Vector((.024*math.cos(j*math.tau/24),0,.018*math.sin(j*math.tau/24))) for j in range(25)]
+   tube('Wire_Spectacles',pts,[.001]*25,M['steel'],'head',5)
+  tube('Spectacles_Bridge',[(-.007,-.132,1.664),(.007,-.132,1.664)],[.001,.001],M['steel'],'head',5)
+ if p=='gaucho':
+  # Poncho shoulder mantle with a neck opening, broad folds and free hem.
+  draped('Gaucho_Poncho',ctx,top=1.48,bottom=.89,shoulder=True,material=M['navy'],width=.36,depth=.22)
+  color('red',(.31,.026,.020));ellipsoid('Neck_Scarf',(0,-.062,1.496),(.071,.071,.025),M['red'],'neck_01',24,10)
+  tube('Scarf_Tails',[(0,-.13,1.48),(.025,-.178,1.35),(.031,-.179,1.30)],[.015,.020,.010],M['red'],{'spine_03':1},8)
+  make_hat(ctx)
+ if p=='friar':
+  draped('Friar_Habit_Skirt',ctx,top=1.07,bottom=.09,shoulder=False,material=M['navy'],width=.205,depth=.143)
+  fitted_rope_and_hood(ctx)
+ if p=='woman-shawl':
+  draped('Long_Skirt',ctx,top=1.06,bottom=.10,shoulder=False,material=M['trousers'],width=.20,depth=.145)
+  rebozo(ctx)
+ # Semantic parts are retained through optimization for optional body equipment.
+ for o in objects:
+  n=o.name
+  o['appearance']=p
+  if n.startswith(HEADWEAR_PREFIXES):part='headwear'
+  elif any(s in n for s in ('Boot','Sole')):part='footwear'
+  elif any(s in n for s in ('Breeches','Trouser_Seam','Long_Skirt')):part='legwear'
+  elif any(s in n for s in ('Skin','Hair','Eyeball','Iris','Pupil','Eyebrow','Spectacles','Braid')):part='skin'
+  else:part='outfit'
+  o['part']=part
+ ctx['appearance']=spec;ctx['material_roles']={'skin':'Skin','cloth':'Apparel_Atlas','hair':'Apparel_Atlas','metal':'Apparel_Atlas'}
+
+def draped(name,ctx,top,bottom,shoulder,material,width,depth):
+ """Radially sampled sewn cloth with a real neck hole and source weight blend."""
+ from garment_detail import edge,joined,waist_attachment
+ vv=[];ff=[];ww=[];uv=[];N=80;R=28
+ for row in range(R):
+  t=row/(R-1);z=top+(bottom-top)*t
+  for j in range(N):
+   a=j*math.tau/N
+   if shoulder:
+    # A poncho rests on the shoulders; it is not a closed sleeve surface.
+    # Match the neck opening to the native collar, then hang the front and
+    # back panels from the trunk with open sides below the upper arm.
+    ease=min(1,t*4.6);ease=ease*ease*(3-2*ease)
+    shoulder_width=min(width,.245)
+    rx=.083+(shoulder_width-.083)*ease+(width-shoulder_width)*t
+    ry=.092+(depth-.092)*ease
+    zz=top+.050+(bottom-top-.050)*t
+    centre_y=-.036+.048*ease
+   else:
+    rx=width*(1+.47*t)
+    # The lower panels follow the knees and calves instead of stretching from
+    # the pelvis. A deep circular knee section becomes a raised tent when the
+    # wearer lies down; use sewn ease around the legs rather than that volume.
+    ry=depth*(1+.18*t)+.028*math.sin(math.pi*t);zz=z
+   # Unequal sewn folds have broad ridges and narrower valleys. The gathering
+   # is strongest at the supported edge, while the hanging folds separate
+   # toward the hem. Avoid a regular ring of identical cylindrical pleats.
+   phase=10*a+.60*math.sin(3*a)+.28*t
+   hanging=math.sin(phase)+.28*math.sin(17*a+1.7+.30*t)
+   gathered=.0028*math.exp(-t*8)*math.sin(23*a+.35)
+   fold=(.002+.010*t)*hanging+gathered
+   q=Vector(((rx+fold)*math.cos(a),(centre_y if shoulder else .012)+(ry+fold)*math.sin(a),zz))
+   if shoulder and t<.30:
+    hit,cp,cn,_=ctx['coat'].ray_cast(Vector((q.x,q.y,1.8)),Vector((0,0,-1)))
+    if hit:q.z=max(q.z,cp.z+.012)
+   if shoulder:
+    # Nearest-arm weights folded the garment into the armpit and tore open
+    # the collar when the arm left the bind pose. A hanging panel follows
+    # the chest and waist; its side opening lets the arm move independently.
+    lower=max(0,min(1,(1.34-zz)/.34));upper=max(0,min(1,(zz-1.18)/.25))
+    w={'spine_03':upper,'pelvis':lower*(1-upper),'spine_02':(1-lower)*(1-upper)}
+    # Side folds ride over the upper arm; the neckline and centre remain
+    # supported by the trunk. This lets a lifted elbow raise the side panel
+    # instead of piercing an immobile sheet across the chest.
+    side=max(0,min(1,(abs(math.cos(a))-.45)/.40))
+    arm=.40*side*min(1,t/.12)*max(0,min(1,(.80-t)/.20))
+    w={key:value*(1-arm) for key,value in w.items()}
+    w['upperarm_'+('l' if math.cos(a)>0 else 'r')]=arm
+   else:
+    leg=min(1,t*2.1);left=.5+.475*math.tanh(2*math.cos(a))
+    calf=max(0,min(1,(t-.43)/.40));calf=calf*calf*(3-2*calf)
+    w={'pelvis':1-leg,'thigh_l':leg*(1-calf)*left,'thigh_r':leg*(1-calf)*(1-left),
+       'calf_l':leg*calf*left,'calf_r':leg*calf*(1-left)}
+    if t<.14:
+     attachment=waist_attachment(ctx,a,top,.004)
+     if attachment:
+      anchor,aw=attachment;blend=(1-t/.14)**2
+      q.x=q.x*(1-blend)+anchor.x*blend;q.y=q.y*(1-blend)+anchor.y*blend
+      w={key:w.get(key,0)*(1-blend)+aw.get(key,0)*blend for key in set(w)|set(aw)}
+   vv.append(q)
+   s=sum(w.values());ww.append({k:v/s for k,v in w.items()})
+ for row in range(R-1):
+  for j in range(N):
+   if shoulder and row/(R-1)>.32 and abs(math.cos((j+.5)*math.tau/N))>.91:continue
+   a=row*N+j;b=row*N+(j+1)%N;ff.append((a,a+N,b+N,b))
+   # The last face reaches U=1, rather than interpolating across the UV seam.
+   uv.append([(j/N,row/(R-1)),(j/N,(row+1)/(R-1)),((j+1)/N,(row+1)/(R-1)),((j+1)/N,row/(R-1))])
+ o=ctx['mesh'](name,vv,ff,material,ww,uv)
+ # Solidify before the armature; thickness remains when mesh is exported.
+ bpy.context.view_layer.objects.active=o
+ mod=o.modifiers.new('Sewn_Cloth_Thickness','SOLIDIFY');mod.thickness=.003
+ while o.modifiers.find(mod.name)>0:bpy.ops.object.modifier_move_up(modifier=mod.name)
+ bpy.ops.object.modifier_apply(modifier=mod.name)
+ # Turned neck, hem and side edges share the same weights as the cloth.
+ # Join them into the garment so inventory replacement also removes its trim.
+ edges={}
+ for face in ff:
+  for a,b in zip(face,face[1:]+face[:1]):
+   key=tuple(sorted((a,b)));edges[key]=edges.get(key,0)+1
+ neighbours={}
+ for (a,b),count in edges.items():
+  if count==1:neighbours.setdefault(a,[]).append(b);neighbours.setdefault(b,[]).append(a)
+ remaining={pair for pair,count in edges.items() if count==1};details=[]
+ trim=material.copy();trim.name=material.name+'_Turned_Wool_Edge'
+ trim.diffuse_color=(*(c*.76 for c in material.diffuse_color[:3]),1)
+ trim.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=trim.diffuse_color
+ while remaining:
+  first=next(iter(remaining));path=[first[0],first[1]];remaining.remove(tuple(sorted(first)))
+  while True:
+   options=[v for v in neighbours[path[-1]] if tuple(sorted((path[-1],v))) in remaining]
+   if not options:break
+   following=options[0];remaining.remove(tuple(sorted((path[-1],following))));path.append(following)
+   if following==path[0]:break
+  details.append(edge(ctx,name+'_Sewn_Edge',[vv[i] for i in path],[ww[i] for i in path],trim,.0015))
+ joined(ctx,o,details)
+ if not shoulder:
+  # This mask survives mesh optimization and joining. It separates the sewn
+  # skirt from trousers and boots when posture corrections are added later.
+  cloth=o.data.attributes.new(name='Long_Cloth',type='FLOAT',domain='POINT')
+  for value in cloth.data:value.value=1
+ return o
+
+def make_hat(ctx):
+ M=ctx['M'];vv=[];ff=[];N=48
+ for z,rx,ry in [(1.71,.092,.106),(1.81,.083,.099),(1.825,.07,.089)]:
+  for j in range(N):a=j*math.tau/N;vv.append((rx*math.cos(a),-.045+ry*math.sin(a),z))
+ for row in range(2):
+  for j in range(N):a=row*N+j;b=row*N+(j+1)%N;ff.append((a,b,b+N,a+N))
+ ff.append(tuple(range(2*N,3*N)));ctx['mesh']('Felt_Hat_Crown',vv,ff,M['trousers'],'head')
+ vv=[];ff=[]
+ for rx,ry in [(.088,.104),(.175,.168)]:
+  for j in range(N):a=j*math.tau/N;vv.append((rx*math.cos(a),-.045+ry*math.sin(a),1.716+.015*math.cos(a)**2))
+ for j in range(N):ff.append((j,(j+1)%N,(j+1)%N+N,j+N))
+ ctx['mesh']('Felt_Hat_Brim',vv,ff,M['trousers'],'head')

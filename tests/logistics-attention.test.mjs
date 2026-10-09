@@ -9,6 +9,7 @@ import {publicLogisticsNotice} from '../game/logistics-attention.js';
 import {enterSector} from '../game/world.js';
 import {actBattle} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
+import {cellTravelPlan} from '../game/world-cells.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const wait=(s,hours)=>order(s,{type:'wait',hours});
 const saved=s=>decodeSave(encodeSave(s)).campaign;
@@ -41,17 +42,17 @@ test('midnight without a port agreement preserves cash while horse time complete
  assert.equal(n.hour,24);assert.equal(n.logisticsNotice.advancedHours,24);assert.equal(n.resources.treasury,cash);assert.equal(n.townIncome.lastPaidDay,1);assert.equal(n.horseState.hour,24);assert.deepEqual(saved(n),n);
 });
 test('blocking travel finishes its duration despite a paid delivery',()=>{
- const s=dueAt(buy(staffed()),1),n=order(s,{type:'travel',sector:'buenos_aires'});
- assert.equal(n.hour,12);assert.equal(n.location,'buenos_aires');assert.equal(n.equipmentShipments.length,0);assert.equal(n.armory[1802],1);assert.equal(n.logisticsNotice,null);assert.deepEqual(saved(n),n);
+ const s=dueAt(buy(staffed()),1),hours=cellTravelPlan(s,'buenos_aires').hours,n=order(s,{type:'travel',sector:'buenos_aires'});
+ assert.equal(n.hour,hours);assert.equal(n.location,'buenos_aires');assert.equal(n.equipmentShipments.length,0);assert.equal(n.armory[1802],1);assert.equal(n.logisticsNotice,null);assert.deepEqual(saved(n),n);
 });
 test('tactical synchronization completes its full minute boundary despite delivery',()=>{
  let s=dueAt(buy(staffed()),1);s.secondOfHour=3599;s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle);const u=b.units.find(u=>u.side==='player');
  b=actBattle(b,{type:'look',unitId:u.id,x:u.x-1,y:u.y});assert.equal(b.lastError,null);const pair=syncBattleTime(s,b);assert.equal(pair.error,null);assert.ok(pair.campaign.hour>=1);assert.equal(pair.campaign.equipmentShipments.length,0);assert.equal(pair.campaign.logisticsNotice,null);assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)).campaign,pair.campaign);
 });
 test('queued travel retains partial progress when delivery stops explicit waiting',()=>{
- let s=dueAt(buy(staffed()),3);s=order(s,{type:'travel',sector:'buenos_aires',queue:true});s=wait(s,24);
+ let s=dueAt(buy(staffed()),3);const destination='cell-27-27',hours=cellTravelPlan(s,destination).hours;assert.ok(hours>3);s=order(s,{type:'travel',sector:destination,queue:true});s=wait(s,24);
  assert.equal(s.hour,3);assert.equal(s.location,'retiro');assert.equal(s.squads[0].journey.elapsed,3);assert.equal(s.logisticsNotice.advancedHours,3);
- s=wait(saved(s),24);assert.equal(s.hour,12);assert.equal(s.location,'buenos_aires');assert.equal(s.logisticsNotice,null);assert.equal(s.equipmentShipments.length,0);
+ s=wait(saved(s),24);assert.equal(s.hour,hours);assert.equal(s.location,destination);assert.equal(s.logisticsNotice,null);assert.equal(s.equipmentShipments.length,0);
 });
 test('public notices are detached and do not expose queue acknowledgement bindings',()=>{
  const s=wait(dueAt(buy(),1),6),view=publicLogisticsNotice(s);assert.deepEqual(view,s.logisticsNotice);view.events[0].quantity=99;assert.equal(s.logisticsNotice.events[0].quantity,1);assert.equal(view.events[0].binding,undefined);

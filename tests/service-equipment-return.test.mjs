@@ -20,6 +20,7 @@ import {applyCivilianHarm} from '../game/civilian-harm.js';
 import {localPackage,readyLocal,hireLocal,localId,localNPC,visit as visitLocal,leave as leaveLocal,sync as syncLocal} from './local-contract-fixture.mjs';
 import {woundedService} from './civilian-service-fixture.mjs';
 import {refreshMilitaryCondition} from '../game/actor-condition.js';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const saved=s=>decodeSave(encodeSave(s)).campaign;
@@ -114,8 +115,11 @@ test('canonical UTF8 cache ceiling uses the bounded fallback without losing equi
 
 test('queued expiry returns only at a real arrival and leaves the individual owned horse at that sector',()=>{
  const mounted=withOwnedMount(rich());let s=mounted.state;const horseId=mounted.id;s=order(s,{type:'horseAction',order:{type:'assign',horseId,operativeId:110}});
- s=order(s,{type:'wait',hours:20});s=order(s,{type:'travel',sector:'buenos_aires',queue:true});s=order(s,{type:'wait',hours:10});s=order(s,{type:'wait',hours:10});assert.equal(s.hour,24);assert.ok(s.contracts[110].departurePending);assert.ok(s.recruited.includes(110));assert.equal(rows(s).length,0);reject(s,{type:'dismiss',id:110});
- s=order(saved(s),{type:'wait',hours:10});assert.equal(s.hour,32);assert.ok(!s.recruited.includes(110));assert.equal(s.operativeState[110].location,'buenos_aires');assert.equal(rows(s).length,0);assert.ok(rows(s,'buenos_aires').length>0);const horse=s.horseState.horses.find(h=>h.id===horseId);assert.equal(horse.location,'buenos_aires');assert.equal(horse.assignedTo,null);assert.equal(horse.returned,false);assert.equal(horse.custody??null,null);assert.ok(!rows(s,'buenos_aires').some(row=>row.stack?.kind==='horse'));assert.deepEqual(saved(s),s);
+ // Depart half an hour before expiry on the actual first one-hour road leg.
+ // The next reached sector, rather than the distant town, receives the return.
+ s=advanceCampaignHours(s,23);s=order(s,{type:'advanceStrategicTime',seconds:1800});s=order(s,{type:'travel',sector:'buenos_aires',queue:true});const arrival=s.squads[0].journey.path[1];assert.equal(s.squads[0].journey.legHours,1);
+ s=order(s,{type:'advanceStrategicTime',seconds:1800});assert.equal(s.hour,24);assert.ok(s.contracts[110].departurePending);assert.ok(s.recruited.includes(110));assert.equal(rows(s).length,0);reject(s,{type:'dismiss',id:110});
+ s=order(saved(s),{type:'advanceStrategicTime',seconds:1800});assert.equal(s.hour,24);assert.equal(s.secondOfHour,1800);assert.ok(!s.recruited.includes(110));assert.equal(s.operativeState[110].location,arrival);assert.equal(rows(s).length,0);assert.ok(rows(s,arrival).length>0);const horse=s.horseState.horses.find(h=>h.id===horseId);assert.equal(horse.location,arrival);assert.equal(horse.assignedTo,null);assert.equal(horse.returned,false);assert.equal(horse.custody??null,null);assert.ok(!rows(s,arrival).some(row=>row.stack?.kind==='horse'));assert.deepEqual(saved(s),s);
 });
 
 test('deferred tactical expiry waits for the accepted report and returns the actual publicly reloaded weapon and spent reserve',()=>{
@@ -126,7 +130,7 @@ test('deferred tactical expiry waits for the accepted report and returns the act
 });
 
 test('a staged expired contract enters a newly friendly target peacefully and returns gear at that actual arrival',()=>{
- let s=order(rich(),{type:'travel',sector:'buenos_aires'});s=order(s,{type:'wait',hours:8});s=order(s,{type:'attack',sector:'san_nicolas',queue:true});
+ let s=order(rich(),{type:'travel',sector:'buenos_aires'});s=advanceCampaignHours(s,20-s.hour);s=order(s,{type:'attack',sector:'san_nicolas',queue:true});
  while(s.squads[0].journey?.status!=='ready')s=order(s,{type:'wait',hours:12});assert.ok(s.contracts[110].departurePending);assert.ok(s.recruited.includes(110));assert.equal(rows(s).length,0);assert.equal(s.operativeState[110].location,'buenos_aires');
  // Prepared world-control change isolates this arrival branch. It is not a
  // campaign-victory claim; staging, expiry and settlement use public orders.

@@ -1,0 +1,22 @@
+from pathlib import Path
+import sys,json,hashlib
+A=Path('/tmp/granadero-eye-region-pilot/source/assets/source/characters-3d/authoring');sys.path.insert(0,str(A))
+import bpy,facial_structure,character
+old=facial_structure.soften_lower_lid
+
+def digest(x):return hashlib.sha256(repr(x).encode()).hexdigest()
+def static(skin):
+ return {'topology':digest([tuple(p.vertices)for p in skin.data.polygons]),'uv':digest([[tuple(d.uv) for d in l.data]for l in skin.data.uv_layers]),'weights':digest([[(g.group,g.weight)for g in v.groups]for v in skin.data.vertices])}
+def audit(skin,eye_z):
+ before=[v.co.copy()for v in skin.data.vertices];normals=[v.normal.copy()for v in skin.data.vertices];a=static(skin)
+ old(skin,eye_z);b=static(skin);assert a==b
+ changed=[{'index':i,'before':list(p),'after':list(skin.data.vertices[i].co),'distanceMm':1000*(skin.data.vertices[i].co-p).length}for i,p in enumerate(before)if (skin.data.vertices[i].co-p).length>0]
+ rim=[i for i,p in enumerate(before) if .014<abs(p.x)<.05 and eye_z-.016<p.z<eye_z+.016 and p.y<-.12 and(normals[i].z>=.70 or normals[i].y>=-.65)]
+ assert all(skin.data.vertices[i].co==before[i]for i in rim)
+ assert all(skin.data.vertices[r['index']].co.x==before[r['index']].x and skin.data.vertices[r['index']].co.z==before[r['index']].z for r in changed)
+ report={'changedVertices':len(changed),'maximumRecessionMm':max(r['distanceMm']for r in changed),'preservedRimAndCavityVertices':len(rim),'realRimAndCavityExact':True,'topologyUvsWeightsExact':True,'hashes':a,'changes':changed}
+ Path('/tmp/granadero-eye-region-pilot/source-proof.json').write_text(json.dumps(report,indent=2));print('SOURCE_PROOF',len(changed),report['maximumRecessionMm'],len(rim),flush=True)
+facial_structure.soften_lower_lid=audit
+ctx=character.create_character('granadero')
+from optimize import optimize_character
+optimize_character(ctx,0)

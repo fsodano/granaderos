@@ -9,6 +9,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {approachNPC} from './approach-npc.mjs';
 import {secureArea} from './secured-area-fixture.mjs';
 import {defaultErrands} from '../game/quest-definitions.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 
 const npcId='local-retiro',questId='retiro-uniformes';
 const actor=b=>b.units.find(u=>u.id==='110'),recipient=b=>b.npcs.find(n=>n.id===npcId);
@@ -179,7 +180,7 @@ test('full receipts do not reward the errand after its required Retiro control h
 
 test('the secured post errand offers and pays its treasury reward through normal dialogue',()=>{
  let campaign=initialCampaign(8);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});secureArea(campaign,['buenos_aires','ensenada','san_nicolas']);
- campaign=order(campaign,{type:'travel',sector:'san_nicolas'});campaign=order(campaign,{type:'visitSector'});let pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);
+ campaign=completeTestTravel(order(campaign,{type:'travel',sector:'san_nicolas'}),{sector:'san_nicolas'});campaign=order(campaign,{type:'visitSector'});let pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null);
  pair.battle=approachNPC(pair.battle,'110','local-san_nicolas');pair=sync(pair.campaign,pair.battle);
  const talkPowder=()=>order(pair.campaign,{type:'talkNPC',npcId:'local-san_nicolas',unitId:110,approach:'quest',sectorState:pair.battle});
  const cash=pair.campaign.resources.treasury;pair.campaign=talkPowder();assert.equal(pair.campaign.quests['posta-polvora'].status,'offered');assert.ok(pair.campaign.lastConversation.options.includes('quest'));assert.equal(pair.campaign.resources.treasury,cash);

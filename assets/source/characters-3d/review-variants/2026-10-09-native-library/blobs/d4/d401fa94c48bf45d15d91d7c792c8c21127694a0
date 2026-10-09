@@ -1,0 +1,20 @@
+import sys,json,math
+from pathlib import Path
+import bpy
+HERE=Path('/tmp/granadero-hand-web-pilot/pose-source');sys.path.insert(0,str(HERE))
+text=(HERE/'character.py').read_text();prefix=text[:text.index('    objects = []')]
+namespace={'__file__':str(HERE/'character.py')};exec(prefix+'    return rig\n',namespace)
+import relaxed_hands
+rows=[]
+for preset in ['granadero']:
+ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+ rig=namespace['create_character'](preset)
+ relaxed_hands.apply_relaxed_hands(rig, right_thumb_untwist=.5)
+ bones={}
+ for b in rig.pose.bones:
+  if any(b.name.startswith(f+'_') for f in ('thumb','index','middle','ring','pinky')):
+   local=b.parent.matrix.inverted()@b.matrix
+   q=local.to_quaternion();bones[b.name]={'q':[q.x,q.y,q.z,q.w],'length':b.bone.length}
+ rows.append({'preset':preset,'bones':bones})
+Path('/tmp/granadero-hand-web-pilot/pose-source-hand.json').write_text(json.dumps(rows))
+print('HAND_SOURCE_READY',flush=True)

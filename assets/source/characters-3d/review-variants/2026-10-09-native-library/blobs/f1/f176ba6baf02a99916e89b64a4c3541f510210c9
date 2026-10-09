@@ -1,0 +1,17 @@
+{
+  "optimizeBaseSha256": "c9896c23124249c452e9e44e66490855cda0a3682f107bba925dca98c15dd110",
+  "proposedOptimizeSha256": "473c7a9a021d31cf6e7011bbe55e5939c31962b45183cbdb3a57274ceb4be5b6",
+  "collarHelperSha256": "9e7d494f013545514f99064e4666d9a259b06d181531de6c7c1bf5abedfe78d8",
+  "sourceScope": [
+    "assets/source/characters-3d/authoring/optimize.py",
+    "assets/source/characters-3d/authoring/collar_rim.py"
+  ],
+  "hookEnabledLODs": [
+    0,
+    1
+  ],
+  "unchangedLOD2": {
+    "granadero": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5",
+    "royalist": "edaa87211e7a96045928bad8ca5d5f2e2e9e4feca6de7ed06c701977ef66b634"
+  }
+}

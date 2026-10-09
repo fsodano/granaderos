@@ -2,13 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {order,saved,visit,sync,leave} from './local-contract-fixture.mjs';
-import {collectRouteItems,repairRouteFirearms} from './finite-route-equipment.mjs';
+import {collectRouteItems,collectRouteMedicalSupplies,repairRouteFirearms} from './finite-route-equipment.mjs';
 import {repairMaterialPoints} from '../game/repair-materials.js';
+import {rosterFor} from '../game/campaign.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {actBattle,getReachable,reprimePlan,reloadCost} from '../game/tactical.js';
 import {sameSurface} from '../game/tactical-space.js';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
+import {cellTravelPlan} from '../game/world-cells.js';
 
 test('finite route discovery uses an actual carrier and restores local care roles without healing or replenishment',()=>{
  let s=initialCampaign();s.operativeState[3].hp-=30;s.operativeState[3].bandaged=30;
@@ -56,13 +60,13 @@ test('finite route wear repair preserves ignition failure for paid reprime and r
  const expected=leave(sync(p)),events=[],ready=finishReloadsBeforeMarch(s,{report:e=>events.push(e)});
  assert.deepEqual(ready,expected,'premarch completion uses exactly the paid reprime and reload orders');assert.deepEqual(s,repaired);assert.equal(ready.resources.treasury,cash);assert.equal(stockAndCarriedAmmo(ready),rounds);assert.equal(ready.operativeState[4].jammed,false);assert.equal(ready.operativeState[4].carriedLoaded,2);assert.equal(Object.values(ready.operativeState).reduce((sum,r)=>sum+repairMaterialPoints(r),0),80);assert.ok(events.some(e=>e.event==='finishedReprime'&&e.id===4));assert.deepEqual(saved({campaign:ready}).campaign,ready);
  // A different declared older checkpoint has one already assigned repair.
- // The sector visit pauses that work. After collection its current worker
- // must use the existing reserve, without a competing second assignment.
+ // Its sufficient existing reserve must finish the gun without a competing
+ // worker discovering and carrying another finite kit unnecessarily.
  let pending=initialCampaign();pending.secondOfHour=3599;pending.operativeState[4].condition=99;pending.operativeState[4].toolkitPoints=1;pending=saved({campaign:pending}).campaign;
  pending=order(pending,{type:'createSquad',ids:[3],name:'Portador',sector:'retiro'});pending=order(pending,{type:'assignWork',operativeId:4,assignment:'repair',targetId:4,repairScope:'primary'});
  const collecting=structuredClone(pending),settled=repairRouteFirearms(pending,[4]);
- assert.deepEqual(pending,collecting);assert.equal(settled.operativeState[4].condition,100);assert.equal(settled.operativeState[4].toolkitPoints,0);assert.equal(repairMaterialPoints(settled.operativeState[10]),100,'the actual assigned worker must debit its existing point, preserving the newly found kit');assert.equal(settled.operativeState[10].assignment,'active');assert.ok(settled.hour>pending.hour);assert.equal(stockAndCarriedAmmo(settled),stockAndCarriedAmmo(pending));assert.deepEqual(saved({campaign:settled}).campaign,settled);
- t.diagnostic(JSON.stringify({scenario:'declared older wear and failed-pan checkpoints',wearWorkHours:s.hour-original.hour,materialDebit:20,remainingPoints:80,reprimePA:pan.pa,reprimeSeconds,reloadPA,ownedRounds:rounds,assignedWorkerAfterCollection:4,existingReserveDebit:1,collectedKitRetained:100}));
+ assert.deepEqual(pending,collecting);assert.equal(settled.operativeState[4].condition,100);assert.equal(settled.operativeState[4].toolkitPoints,0);assert.equal(repairMaterialPoints(settled.operativeState[10]),0,'the stronger worker must not collect a second kit when the assigned worker already has enough material');assert.deepEqual(settled.sectorStates,collecting.sectorStates,'the finite cache remains untouched');assert.equal(settled.operativeState[10].assignment,'active');assert.ok(settled.hour>pending.hour);assert.equal(stockAndCarriedAmmo(settled),stockAndCarriedAmmo(pending));assert.deepEqual(saved({campaign:settled}).campaign,settled);
+ t.diagnostic(JSON.stringify({scenario:'declared older wear and failed-pan checkpoints',wearWorkHours:s.hour-original.hour,materialDebit:20,remainingPoints:80,reprimePA:pan.pa,reprimeSeconds,reloadPA,ownedRounds:rounds,assignedWorkerWithReserve:4,existingReserveDebit:1,additionalKitCollection:0}));
 });
 
 test('a serving reserve doctor makes a real finite medical courier trip and leaves patients at their clinic',async()=>{
@@ -80,7 +84,37 @@ test('a serving reserve doctor makes a real finite medical courier trip and leav
  const before=structuredClone(s),events=[],result=collectRouteMedicalSupplies(s,10,3,{report:e=>events.push(e)});s=result.campaign;
  assert.deepEqual(before.operativeState[3].hp,s.operativeState[3].hp);assert.equal(s.operativeState[3].location,'retiro');assert.equal(s.operativeState[3].assignment,'patient');assert.equal(result.collected,3);assert.equal(s.operativeState[10].medkits,3);assert.equal(s.operativeState[10].location,'retiro');assert.equal(s.operativeState[4].medkits,before.operativeState[4].medkits);
  assert.equal(s.activeSquadId,before.activeSquadId);assert.deepEqual(s.squad,before.squad);assert.ok(s.squads.some(q=>q.members.includes(10)&&q.location==='retiro'),'the reserve courier now belongs to its actual returned one-person squad');
- const receipt=events.find(e=>e.event==='finiteMedicalCourier');assert.equal(receipt.source,'buenos_aires');assert.ok(receipt.elapsedSeconds>=24*3600);assert.equal(s.resources.treasury,before.resources.treasury);
+ const receipt=events.find(e=>e.event==='finiteMedicalCourier');assert.equal(receipt.source,'buenos_aires');assert.ok(receipt.elapsedSeconds>=(cellTravelPlan(before,'buenos_aires').hours+cellTravelPlan({...before,location:'buenos_aires'},'retiro').hours)*3600);assert.equal(s.resources.treasury,before.resources.treasury);
  const chest=s.sectorStates.buenos_aires.props.find(p=>p.id==='buenos_aires:building:chest:10:4');assert.equal(chest.contents.find(item=>item.item==='medkits').count,9);assert.deepEqual(saved({campaign:s}).campaign,s);
  const again=collectRouteMedicalSupplies(s,10,2);s=again.campaign;assert.equal(again.collected,2);assert.equal(s.operativeState[10].medkits,5);assert.equal(s.sectorStates.buenos_aires.props.find(p=>p.id===chest.id).contents.find(item=>item.item==='medkits').count,7,'an already discovered chest remains a finite courier source when no soldier is stationed there');assert.deepEqual(saved({campaign:s}).campaign,s);
+});
+
+test('a paid doctor renews actual service and recovers another finite source after the opening cache is empty',t=>{
+ // Declared older clinic checkpoint. The wound exists before save admission;
+ // every hire, source collection, handover, march and renewal is a real order.
+ let s=initialCampaign();s.operativeState[3].hp-=12;s.operativeState[3].bandaged=12;s=saved({campaign:s}).campaign;
+ s=order(s,{type:'recruitCivic',id:112,term:'day'});
+ s=collectRouteItems(s,112,{item:'medkits'},12).campaign;
+ s=order(s,{type:'assignCare',id:112,assignment:'doctor'});s=order(s,{type:'assignCare',id:3,assignment:'patient'});
+ const donated=s.operativeState[112].medkits;
+ s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:112,direction:'drop',item:'medkits',count:donated});
+ let remaining=donated;
+ while(remaining){
+  const row=sectorInventoryModel(s,'retiro',rosterFor(s),4).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row);
+  const count=Math.min(remaining,row.count);s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:4,direction:'take',sourceKey:row.key,expected:row.expected,count});remaining-=count;
+ }
+ const input=s,before=structuredClone(s),events=[],result=collectRouteMedicalSupplies(s,112,3,{report:event=>events.push(event)});s=result.campaign;
+ assert.deepEqual(before.operativeState[3].hp,s.operativeState[3].hp,'the remote courier cannot heal the patient left in Retiro');
+ assert.equal(s.operativeState[3].location,'retiro');assert.equal(s.operativeState[3].assignment,'patient');
+ assert.equal(before.operativeState[112].medkits,0);assert.equal(result.collected,3);assert.equal(s.operativeState[112].medkits,3);assert.equal(s.operativeState[112].assignment,'doctor');assert.equal(s.operativeState[112].location,'retiro');
+ assert.equal(s.operativeState[4].medkits,before.operativeState[4].medkits,'previous supplies stay with their actual owner');
+ assert.equal(s.activeSquadId,before.activeSquadId);assert.deepEqual(s.squad,before.squad);
+ const emptyCache=s.sectorStates.retiro.props.find(prop=>prop.id==='retiro:armory-cache');assert.equal(emptyCache.contents.some(item=>item.item==='medkits'),false,'the exhausted opening cache remains empty');
+ const source=s.sectorStates.buenos_aires.props.find(prop=>prop.id==='buenos_aires:building:chest:10:4');assert.equal(source.contents.find(item=>item.item==='medkits').count,9,'the actual source loses exactly three dressings');
+ const renewals=events.filter(event=>event.event==='medicalCourierRenewal');assert.ok(renewals.length>0);assert.ok(renewals.every(event=>event.id===112&&event.cost>0));
+ assert.equal(before.resources.treasury-s.resources.treasury,renewals.reduce((sum,event)=>sum+event.cost,0),'the courier pays every real contract extension');
+ assert.ok(contractExpiresSeconds(s.contracts[112])>s.hour*3600+(s.secondOfHour??0));assert.ok(s.recruited.includes(112));
+ const receipt=events.find(event=>event.event==='finiteMedicalCourier');assert.equal(receipt.source,'buenos_aires');assert.equal(receipt.clinic,'retiro');assert.equal(receipt.quantity,3);assert.ok(receipt.elapsedSeconds>=(cellTravelPlan(before,'buenos_aires').hours+cellTravelPlan({...before,location:'buenos_aires'},'retiro').hours)*3600);
+ assert.deepEqual(saved({campaign:s}).campaign,s);assert.deepEqual(input,before,'collection does not mutate its input');
+ t.diagnostic(JSON.stringify({source:receipt.source,quantity:receipt.quantity,elapsedSeconds:receipt.elapsedSeconds,contractRenewalCost:renewals.reduce((sum,event)=>sum+event.cost,0),retainedDonations:donated,sourceRemaining:9}));
 });

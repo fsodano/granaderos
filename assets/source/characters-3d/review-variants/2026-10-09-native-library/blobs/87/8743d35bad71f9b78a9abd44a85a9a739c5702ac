@@ -1,0 +1,42 @@
+{
+  "status": "accepted narrow standing blade wrist repair; final full-library integration remains with root",
+  "source": {
+    "file": "assets/source/characters-3d/authoring/reviewed_motion.py",
+    "sha256": "b68d20ba844a664f361daad0e7ea605e0cb84768feb0b9b4b4f73bcc28552594"
+  },
+  "candidateLibrary": "/tmp/granadero-standing-blade-review/models",
+  "candidateClipCountPerAnatomy": 12,
+  "actualBankSha256": {
+    "male": "562df2aa7a8b2f163fa943e92359d8502091150a3acae37874024688d24ed0e2",
+    "female": "de33c3d5d51c867303d52ca98836afcc59d472b987bcc581e8a123686e6ffc8b"
+  },
+  "tests": {
+    "command": "GRANADEROS_CHARACTER_LIBRARY=/tmp/granadero-standing-blade-review/models node --test tests/characters-blade-wrists.test.mjs",
+    "passed": 6,
+    "failed": 0,
+    "sampleRateHz": 120
+  },
+  "visualReview": {
+    "changedCuts": "/tmp/granadero-standing-blade-review/review-explicit",
+    "unchangedAttacks": "/tmp/granadero-standing-blade-review/review",
+    "evidence": "Two changed cuts have 60 new exact exported frames; other six attacks retain identical payloads from the reviewed first candidate. Isometric and right-hand sheets inspected for all eight attacks on both bodies."
+  },
+  "preserved": [
+    "duration and contact markers",
+    "native bone lengths",
+    "whole-body timing and left arm",
+    "forehand knuckles down / backhand knuckles up",
+    "forward sabre and knife thrusts",
+    "closed finger contact with handle",
+    "all firearm authoring"
+  ],
+  "limits": [
+    "This is a focused 12-clip bank, not the complete production release.",
+    "The descending sabre cut follows a diagonal plane; this repair does not replace its approved torso, foot or free-arm path.",
+    "Close views retain small pre-existing cuff-edge gaps; no clothing source was changed in this repair."
+  ],
+  "replacementAfterRootSnapshot": [
+    "stand.slash.blade",
+    "stand.slash.knife"
+  ]
+}

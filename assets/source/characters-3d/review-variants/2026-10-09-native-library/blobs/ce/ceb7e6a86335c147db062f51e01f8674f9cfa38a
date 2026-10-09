@@ -1,0 +1,11 @@
+{
+  "appearanceLODs": 24,
+  "anatomies": [
+    "male",
+    "female"
+  ],
+  "clipsPerAnatomy": 334,
+  "equipmentItems": 26,
+  "horseLODs": 3,
+  "result": "PASS"
+}

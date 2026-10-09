@@ -3,6 +3,7 @@ import geography from './strategic-geography.json' with {type:'json'};
 import {CAMPAIGN_SECTORS} from './data.js';
 import {CONTENT_CELLS,CONTENT_MAP} from './content-map.js';
 import {mapTilesForSector,project} from './strategic-map.js';
+import {cityForSector} from './cities.js';
 
 const localities=new Map(CAMPAIGN_SECTORS.map(d=>[d.id,d]));
 const districts=new Map(CAMPAIGN_SECTORS.flatMap(d=>mapTilesForSector(d.id).map((t,i)=>[`${t.col},${t.row}`,{locality:d.id,anchor:i===0}])));
@@ -52,29 +53,86 @@ export function cellTravelReason(state,id){
  if(!cell)return 'La celda no existe.';
  if(!cell.land)return 'Esta celda es agua abierta. La escuadra necesita una ruta de transporte por agua.';
  if(worldOwner(state,id)==='royalist')return 'La localidad está ocupada. Liberá su sector principal antes de recorrer sus barrios.';
- const month=(2+Math.floor(Math.floor(state.hour/24)/30))%12+1;
- if(cell.biome==='mountain'&&month>=6&&month<=8)return 'La nieve invernal ha cerrado los pasos.';
+ if(cellWinterClosed(state,id))return 'La nieve invernal ha cerrado los pasos.';
  return null;
+}
+export function cellWinterClosed(state,id){
+ const cell=worldCell(id),month=(2+Math.floor(state.hour/720))%12+1;
+ return Boolean(cell?.biome==='mountain'&&cell.theater==='cuyo'&&!cityForSector(cell.locality)&&month>=6&&month<=8);
 }
 export function adjacentCells(a,b){
  const first=worldCell(a),second=worldCell(b);
  return Boolean(first&&second&&Math.abs(first.col-second.col)+Math.abs(first.row-second.row)===1);
 }
-// Project the existing town road links onto physical map cells.
-export const ROAD_CELLS=new Set();
+// Keep the old diagonal projection only to validate journeys already in saves.
+const legacyRoadCells=new Set();
 for(const town of CAMPAIGN_SECTORS)for(const target of town.neighbors){
  const a=worldCell(town.id),b=worldCell(target);if(!a||!b)continue;
  const steps=Math.max(Math.abs(b.col-a.col),Math.abs(b.row-a.row));
- for(let i=0;i<=steps;i++){const cell=worldCell(`cell-${Math.round(a.col+(b.col-a.col)*i/(steps||1))}-${Math.round(a.row+(b.row-a.row)*i/(steps||1))}`);if(cell?.land)ROAD_CELLS.add(cell.id);}
+ for(let i=0;i<=steps;i++){const cell=worldCell(`cell-${Math.round(a.col+(b.col-a.col)*i/(steps||1))}-${Math.round(a.row+(b.row-a.row)*i/(steps||1))}`);if(cell?.land)legacyRoadCells.add(cell.id);}
+}
+const neighbors=cell=>[[0,-1],[-1,0],[1,0],[0,1]].map(([dx,dy])=>byCell.get(`cell-${cell.col+dx}-${cell.row+dy}`)).filter(c=>c?.land);
+const roadKey=(a,b)=>a<b?`${a}|${b}`:`${b}|${a}`;
+const roadEdges=new Map();
+export const ROAD_CELLS=new Set();
+export const ROAD_SEGMENTS=[];
+const connectRoad=(a,b)=>{
+ const key=roadKey(a.id,b.id);if(roadEdges.has(key))return;
+ roadEdges.set(key,true);ROAD_CELLS.add(a.id);ROAD_CELLS.add(b.id);
+ ROAD_SEGMENTS.push(Object.freeze({from:a.location,to:b.location}));
+};
+// Connect each existing campaign link on land, through shared sector edges.
+// A small distance penalty keeps the schematic road near its atlas corridor.
+function roadPath(a,b){
+ const costs=new Map([[a.id,0]]),parents=new Map(),open=new Set([a.id]);
+ const dx=b.col-a.col,dy=b.row-a.row,length=Math.hypot(dx,dy)||1;
+ while(open.size){
+  let id=null;for(const candidate of open)if(id===null||costs.get(candidate)<costs.get(id))id=candidate;
+  open.delete(id);
+  if(id===b.id){const path=[b];while(parents.has(id)){id=parents.get(id);path.unshift(byCell.get(id));}return path;}
+  for(const next of neighbors(byCell.get(id))){
+   const distance=Math.abs(dx*(next.row-a.row)-dy*(next.col-a.col))/length;
+   const cost=costs.get(id)+1+distance*.08+(next.biome==='mountain'?.15:0);
+   if(cost>=(costs.get(next.id)??Infinity))continue;
+   costs.set(next.id,cost);parents.set(next.id,id);open.add(next.id);
+  }
+ }
+ throw Error(`El camino ${a.location}–${b.location} no tiene conexión terrestre.`);
+}
+export const ROAD_LINKS=Object.freeze(CAMPAIGN_SECTORS.flatMap(town=>town.neighbors.filter(id=>town.id<id).map(target=>{
+ const path=roadPath(worldCell(town.id),worldCell(target));
+ for(let i=1;i<path.length;i++)connectRoad(path[i-1],path[i]);
+ return Object.freeze({from:town.id,to:target,path:Object.freeze(path.map(c=>c.location))});
+})));
+export const sameCityCells=(a,b)=>{
+ const first=worldCell(a),second=worldCell(b),city=cityForSector(first?.locality)?.id;
+ return Boolean(city&&city===cityForSector(second?.locality)?.id);
+};
+// District streets connect adjacent sectors of the same city, including Retiro.
+for(const cell of WORLD_CELLS)if(cell.locality&&cityForSector(cell.locality))for(const next of neighbors(cell))if(sameCityCells(cell.id,next.id))connectRoad(cell,next);
+Object.freeze(ROAD_SEGMENTS);
+export const roadConnects=(a,b)=>{const first=worldCell(a),second=worldCell(b);return Boolean(first&&second&&roadEdges.has(roadKey(first.id,second.id)));};
+export function roadEdgesForCell(id){
+ const cell=worldCell(id);if(!cell)return [];
+ return neighbors(cell).filter(next=>roadConnects(cell.id,next.id)).map(next=>next.col<cell.col?'W':next.col>cell.col?'E':next.row<cell.row?'N':'S');
 }
 export const cellStepHours=(id,mode='march')=>{
- const cell=worldCell(id),base=cell?.biome==='mountain'?TRAVEL_BALANCE.mountainCellHours:ROAD_CELLS.has(cell?.id)?TRAVEL_BALANCE.roadCellHours:TRAVEL_BALANCE.plainCellHours;
+ const cell=worldCell(id),road=ROAD_CELLS.has(cell?.id),base=cell?.biome==='mountain'?(road?TRAVEL_BALANCE.mountainRoadCellHours:TRAVEL_BALANCE.mountainCellHours):road?TRAVEL_BALANCE.roadCellHours:TRAVEL_BALANCE.plainCellHours;
  return mode==='horse'?Math.max(1,Math.floor(base*TRAVEL_BALANCE.horseHours/TRAVEL_BALANCE.roadWalkHours)):base;
 };
+export function cellLegHours(from,to,mode='march'){
+ if(adjacentCells(from,to)&&sameCityCells(from,to))return TRAVEL_BALANCE.cityCellHours;
+ const cell=worldCell(to),road=roadConnects(from,to),base=cell?.biome==='mountain'?(road?TRAVEL_BALANCE.mountainRoadCellHours:TRAVEL_BALANCE.mountainCellHours):road?TRAVEL_BALANCE.roadCellHours:TRAVEL_BALANCE.plainCellHours;
+ return mode==='horse'?Math.max(1,Math.floor(base*TRAVEL_BALANCE.horseHours/TRAVEL_BALANCE.roadWalkHours)):base;
+}
 // Version-1 journeys store the duration chosen when that leg was queued.
 // Preserve only durations produced by the two earlier cost rules.
 export const legacyCellStepHours=(id,mode='march')=>{
- const cell=worldCell(id),base=cell?.biome==='mountain'?4:ROAD_CELLS.has(cell?.id)?1:2;
+ const cell=worldCell(id),base=cell?.biome==='mountain'?4:legacyRoadCells.has(cell?.id)?1:2;
+ return mode==='horse'?Math.max(1,Math.floor(base/2)):base;
+};
+export const previousCellStepHours=(id,mode='march')=>{
+ const cell=worldCell(id),base=cell?.biome==='mountain'?8:legacyRoadCells.has(cell?.id)?2:4;
  return mode==='horse'?Math.max(1,Math.floor(base/2)):base;
 };
 export function cellTravelPlan(state,destination,mode='march'){
@@ -96,7 +154,7 @@ export function cellTravelPlan(state,destination,mode='march'){
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){
    const next=byCell.get(`cell-${cell.col+dx}-${cell.row+dy}`);
    if(!next||cellTravelReason(state,next.id))continue;
-   const cost=costs.get(id)+cellStepHours(next.id,mode);
+   const cost=costs.get(id)+cellLegHours(cell.location,next.location,mode);
    if(cost>=(costs.get(next.id)??Infinity))continue;
    costs.set(next.id,cost);parents.set(next.id,id);open.add(next.id);
   }

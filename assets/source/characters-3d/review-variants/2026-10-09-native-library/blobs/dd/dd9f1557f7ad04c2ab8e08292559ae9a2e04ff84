@@ -1,0 +1,24 @@
+[
+  {
+    "gender": "male",
+    "error": 0.000001302957168661809,
+    "clip": "crouch.strafeLeft.knife",
+    "bone": "ball_r",
+    "sourceHashes": {
+      "motion.py": "fbcd1f684ac35df9437031a15d9995c13b27347caee973f5383295ce433ab244",
+      "posture_support.py": "a0d0079b434200bb80355effd41cc3b36c21598f8efa7d096dbb96f3e64b9191",
+      "export_timing.py": "90924e259fb1fa07ba332ab60e3c44163324adb5492eb7c3fc6c8dfa2383d505"
+    }
+  },
+  {
+    "gender": "female",
+    "error": 6.090185718095571e-7,
+    "clip": "stand.gesture.pickup",
+    "bone": "thumb_03_l",
+    "sourceHashes": {
+      "motion.py": "fbcd1f684ac35df9437031a15d9995c13b27347caee973f5383295ce433ab244",
+      "posture_support.py": "a0d0079b434200bb80355effd41cc3b36c21598f8efa7d096dbb96f3e64b9191",
+      "export_timing.py": "90924e259fb1fa07ba332ab60e3c44163324adb5492eb7c3fc6c8dfa2383d505"
+    }
+  }
+]

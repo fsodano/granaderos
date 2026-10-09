@@ -1,0 +1,34 @@
+from pathlib import Path
+import json, struct, hashlib, copy
+root=Path('/tmp/granadero-hand-web-pilot');old=root/'paired-models';new=root/'retention/models'
+def read(p):
+ raw=p.read_bytes();n=struct.unpack_from('<I',raw,12)[0];return json.loads(raw[20:20+n]),raw[28+n:]
+def normalized(doc,binary):
+ def view(i):
+  v=copy.deepcopy(doc['bufferViews'][i]);off=v.pop('byteOffset',0);v.pop('buffer',None);v['payloadSha256']=hashlib.sha256(binary[off:off+v['byteLength']]).hexdigest();return v
+ def accessor(i):
+  a=copy.deepcopy(doc['accessors'][i])
+  if'bufferView'in a:a['bufferView']=view(a['bufferView'])
+  for value in a.get('sparse',{}).values():
+   if isinstance(value,dict)and'bufferView'in value:value['bufferView']=view(value['bufferView'])
+  return a
+ meshes=[];morphs=[]
+ for m in doc['meshes']:
+  m=copy.deepcopy(m);primitives=[]
+  for p in m['primitives']:
+   if doc['materials'][p['material']]['name']=='Skin':continue
+   p['attributes']={k:accessor(v)for k,v in p['attributes'].items()};p['indices']=accessor(p['indices'])
+   for target in p.get('targets',[]):
+    for k in target:target[k]=accessor(target[k])
+   morphs.extend(p.get('targets',[]));primitives.append(p)
+  m['primitives']=primitives;meshes.append(m)
+ skins=copy.deepcopy(doc['skins'])
+ for skin in skins:
+  skin['inverseBindMatrices']=accessor(skin['inverseBindMatrices'])
+ return {'meshesExceptSkinPrimitive':meshes,'skins':skins,'nodes':doc['nodes'],'scenes':doc['scenes'],'scene':doc.get('scene'),'animations':doc.get('animations'), 'morphTargets':morphs}
+rows=[]
+for preset in ('woman-scout','woman-shawl'):
+ for lod in (1,2):
+  f=f'{preset}-lod{lod}.glb';a,b=normalized(*read(old/f)),normalized(*read(new/f));assert a==b,f
+  rows.append({'file':f,'allNonSkinPrimitiveAccessorPayloadsExact':True,'nativeSkeletonInverseBindAndNodesExact':True,'morphTargetsExact':len(a['morphTargets']),'morphAttributesExact':sorted({k for t in a['morphTargets']for k in t}),'meshTargetNamesAndDefaultWeightsExact':True})
+(root/'retention/untouched-payloads.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(rows,indent=2))

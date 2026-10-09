@@ -1,0 +1,1030 @@
+{
+  "male": [
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 0,
+      "maxLocalStepDegrees": 0,
+      "maxCorrectionFromBaselineDegrees": 10.427017434174592,
+      "peakTime": 0
+    },
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 0.00020490567510038254,
+      "maxLocalStepDegrees": 0.0000017075472925031877,
+      "maxCorrectionFromBaselineDegrees": 17.611024748433895,
+      "peakTime": 0.008333333333333333
+    },
+    {
+      "clip": "crouch.fire.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 141.1922630347771,
+      "maxLocalStepDegrees": 1.1677555842446667,
+      "maxCorrectionFromBaselineDegrees": 12.995008789517676,
+      "peakTime": 0.3225563979686651
+    },
+    {
+      "clip": "crouch.fire.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 104.19692321406023,
+      "maxLocalStepDegrees": 0.8617790828549962,
+      "maxCorrectionFromBaselineDegrees": 20.98292709064964,
+      "peakTime": 0.3225563979686651
+    },
+    {
+      "clip": "crouch.reload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 153.59928903857568,
+      "maxLocalStepDegrees": 1.2777757654799007,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "crouch.reload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 13.418582858618787,
+      "maxLocalStepDegrees": 0.11162773012263734,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "crouch.unload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 243.10886595288753,
+      "maxLocalStepDegrees": 2.025907216274063,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.16666666666666666
+    },
+    {
+      "clip": "crouch.unload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 21.238563582834395,
+      "maxLocalStepDegrees": 0.17698802985695328,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.15
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 0,
+      "maxLocalStepDegrees": 0,
+      "maxCorrectionFromBaselineDegrees": 18.713512706831704,
+      "peakTime": 0
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 0,
+      "maxLocalStepDegrees": 0,
+      "maxCorrectionFromBaselineDegrees": 26.83717945277347,
+      "peakTime": 0
+    },
+    {
+      "clip": "prone.fire.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 156.19828490021743,
+      "maxLocalStepDegrees": 1.2918655422127554,
+      "maxCorrectionFromBaselineDegrees": 24.01304068518085,
+      "peakTime": 0.31428572109767366
+    },
+    {
+      "clip": "prone.fire.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 160.24259330903706,
+      "maxLocalStepDegrees": 1.325314710228736,
+      "maxCorrectionFromBaselineDegrees": 32.898408529480825,
+      "peakTime": 0.3225563979686651
+    },
+    {
+      "clip": "prone.reload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 150.01038634330476,
+      "maxLocalStepDegrees": 1.24792007462751,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "prone.reload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 62.08566818722008,
+      "maxLocalStepDegrees": 0.5164839153215907,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 237.42797390034664,
+      "maxLocalStepDegrees": 1.9785664491695554,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 98.26883837996296,
+      "maxLocalStepDegrees": 0.8189069864996913,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.reload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 153.59928903857568,
+      "maxLocalStepDegrees": 1.2777757654799007,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "crouch.reload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 13.418582858618787,
+      "maxLocalStepDegrees": 0.11162773012263734,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "crouch.unload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 243.10886595288753,
+      "maxLocalStepDegrees": 2.025907216274063,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.16666666666666666
+    },
+    {
+      "clip": "crouch.unload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 21.238563582834395,
+      "maxLocalStepDegrees": 0.17698802985695328,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.15
+    },
+    {
+      "clip": "prone.reload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 150.01038634330476,
+      "maxLocalStepDegrees": 1.24792007462751,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "prone.reload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 62.08566818722008,
+      "maxLocalStepDegrees": 0.5164839153215907,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 237.42797390034664,
+      "maxLocalStepDegrees": 1.9785664491695554,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 98.26883837996296,
+      "maxLocalStepDegrees": 0.8189069864996913,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.reload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 153.59928903857568,
+      "maxLocalStepDegrees": 1.2777757654799007,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "crouch.reload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 13.418582858618787,
+      "maxLocalStepDegrees": 0.11162773012263734,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "crouch.unload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 243.10886595288753,
+      "maxLocalStepDegrees": 2.025907216274063,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.16666666666666666
+    },
+    {
+      "clip": "crouch.unload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 21.238563582834395,
+      "maxLocalStepDegrees": 0.17698802985695328,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.15
+    },
+    {
+      "clip": "prone.reload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 150.01038634330476,
+      "maxLocalStepDegrees": 1.24792007462751,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "prone.reload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 62.08566818722008,
+      "maxLocalStepDegrees": 0.5164839153215907,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 237.42797390034664,
+      "maxLocalStepDegrees": 1.9785664491695554,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 98.26883837996296,
+      "maxLocalStepDegrees": 0.8189069864996913,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.reload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 153.59928903857568,
+      "maxLocalStepDegrees": 1.2777757654799007,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "crouch.reload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 13.418582858618787,
+      "maxLocalStepDegrees": 0.11162773012263734,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "crouch.unload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 243.10886595288753,
+      "maxLocalStepDegrees": 2.025907216274063,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.16666666666666666
+    },
+    {
+      "clip": "crouch.unload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 21.238563582834395,
+      "maxLocalStepDegrees": 0.17698802985695328,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.15
+    },
+    {
+      "clip": "prone.reload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 150.01038634330476,
+      "maxLocalStepDegrees": 1.24792007462751,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "prone.reload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 62.08566818722008,
+      "maxLocalStepDegrees": 0.5164839153215907,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 237.42797390034664,
+      "maxLocalStepDegrees": 1.9785664491695554,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 98.26883837996296,
+      "maxLocalStepDegrees": 0.8189069864996913,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.reload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 153.59928903857568,
+      "maxLocalStepDegrees": 1.2777757654799007,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "crouch.reload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 13.418582858618787,
+      "maxLocalStepDegrees": 0.11162773012263734,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "crouch.unload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 243.10886595288753,
+      "maxLocalStepDegrees": 2.025907216274063,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.16666666666666666
+    },
+    {
+      "clip": "crouch.unload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 21.238563582834395,
+      "maxLocalStepDegrees": 0.17698802985695328,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.15
+    },
+    {
+      "clip": "prone.reload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 150.01038634330476,
+      "maxLocalStepDegrees": 1.24792007462751,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "prone.reload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 62.08566818722008,
+      "maxLocalStepDegrees": 0.5164839153215907,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 237.42797390034664,
+      "maxLocalStepDegrees": 1.9785664491695554,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 98.26883837996296,
+      "maxLocalStepDegrees": 0.8189069864996913,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.reload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 153.59928903857568,
+      "maxLocalStepDegrees": 1.2777757654799007,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "crouch.reload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 13.418582858618787,
+      "maxLocalStepDegrees": 0.11162773012263734,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "crouch.unload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 243.10886595288753,
+      "maxLocalStepDegrees": 2.025907216274063,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.16666666666666666
+    },
+    {
+      "clip": "crouch.unload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 21.238563582834395,
+      "maxLocalStepDegrees": 0.17698802985695328,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.15
+    },
+    {
+      "clip": "prone.reload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 150.01038634330476,
+      "maxLocalStepDegrees": 1.24792007462751,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "prone.reload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 62.08566818722008,
+      "maxLocalStepDegrees": 0.5164839153215907,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 237.42797390034664,
+      "maxLocalStepDegrees": 1.9785664491695554,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 98.26883837996296,
+      "maxLocalStepDegrees": 0.8189069864996913,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.reload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 153.59928903857568,
+      "maxLocalStepDegrees": 1.2777757654799007,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "crouch.reload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 13.418582858618787,
+      "maxLocalStepDegrees": 0.11162773012263734,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "crouch.unload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 243.10886595288753,
+      "maxLocalStepDegrees": 2.025907216274063,
+      "maxCorrectionFromBaselineDegrees": 10.426989342820523,
+      "peakTime": 0.16666666666666666
+    },
+    {
+      "clip": "crouch.unload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 21.238563582834395,
+      "maxLocalStepDegrees": 0.17698802985695328,
+      "maxCorrectionFromBaselineDegrees": 17.61104024743679,
+      "peakTime": 0.15
+    },
+    {
+      "clip": "prone.reload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 150.01038634330476,
+      "maxLocalStepDegrees": 1.24792007462751,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "prone.reload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 62.08566818722008,
+      "maxLocalStepDegrees": 0.5164839153215907,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 237.42797390034664,
+      "maxLocalStepDegrees": 1.9785664491695554,
+      "maxCorrectionFromBaselineDegrees": 18.713503858227476,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 98.26883837996296,
+      "maxLocalStepDegrees": 0.8189069864996913,
+      "maxCorrectionFromBaselineDegrees": 26.837175592954228,
+      "peakTime": 0.15833333333333333
+    }
+  ],
+  "female": [
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 0.000289780384734176,
+      "maxLocalStepDegrees": 0.0000024148365394514667,
+      "maxCorrectionFromBaselineDegrees": 3.7180258460596205,
+      "peakTime": 0.008333333333333333
+    },
+    {
+      "clip": "crouch.aim.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 0,
+      "maxLocalStepDegrees": 0,
+      "maxCorrectionFromBaselineDegrees": 6.432165464614241,
+      "peakTime": 0
+    },
+    {
+      "clip": "crouch.fire.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 131.9543764916081,
+      "maxLocalStepDegrees": 1.0913520096752358,
+      "maxCorrectionFromBaselineDegrees": 5.707331898248852,
+      "peakTime": 0.3308270748396565
+    },
+    {
+      "clip": "crouch.fire.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 92.75894921545465,
+      "maxLocalStepDegrees": 0.7671792958537278,
+      "maxCorrectionFromBaselineDegrees": 9.096289191556927,
+      "peakTime": 0.3225563979686651
+    },
+    {
+      "clip": "crouch.reload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 151.69080166122563,
+      "maxLocalStepDegrees": 1.261899266735888,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "crouch.reload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 35.62687245882011,
+      "maxLocalStepDegrees": 0.2963760738260367,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.2828422989341167
+    },
+    {
+      "clip": "crouch.unload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 240.08817347024248,
+      "maxLocalStepDegrees": 2.0007347789186873,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.unload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 56.38812369606361,
+      "maxLocalStepDegrees": 0.4699010308005301,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.18333333333333332
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 0,
+      "maxLocalStepDegrees": 0,
+      "maxCorrectionFromBaselineDegrees": 12.095377727278663,
+      "peakTime": 0
+    },
+    {
+      "clip": "prone.aim.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 0,
+      "maxLocalStepDegrees": 0,
+      "maxCorrectionFromBaselineDegrees": 15.844949305855545,
+      "peakTime": 0
+    },
+    {
+      "clip": "prone.fire.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 92.07902099679085,
+      "maxLocalStepDegrees": 0.7615558292616906,
+      "maxCorrectionFromBaselineDegrees": 15.798292819835698,
+      "peakTime": 0.3225563979686651
+    },
+    {
+      "clip": "prone.fire.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 105.4234613962848,
+      "maxLocalStepDegrees": 0.8719233838301086,
+      "maxCorrectionFromBaselineDegrees": 19.900446683719434,
+      "peakTime": 0.3225563979686651
+    },
+    {
+      "clip": "prone.reload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 145.18247076590788,
+      "maxLocalStepDegrees": 1.207757170481311,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "prone.reload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 95.24200068721873,
+      "maxLocalStepDegrees": 0.7923078361605198,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 229.7869280167329,
+      "maxLocalStepDegrees": 1.9148910668061074,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 150.7363322810337,
+      "maxLocalStepDegrees": 1.2561361023419475,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.19166666666666668
+    },
+    {
+      "clip": "crouch.reload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 151.69080166122563,
+      "maxLocalStepDegrees": 1.261899266735888,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "crouch.reload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 35.62687245882011,
+      "maxLocalStepDegrees": 0.2963760738260367,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.2828422989341167
+    },
+    {
+      "clip": "crouch.unload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 240.08817347024248,
+      "maxLocalStepDegrees": 2.0007347789186873,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.unload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 56.38812369606361,
+      "maxLocalStepDegrees": 0.4699010308005301,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.18333333333333332
+    },
+    {
+      "clip": "prone.reload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 145.18247076590788,
+      "maxLocalStepDegrees": 1.207757170481311,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "prone.reload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 95.24200068721873,
+      "maxLocalStepDegrees": 0.7923078361605198,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1800",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 229.7869280167329,
+      "maxLocalStepDegrees": 1.9148910668061074,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1800",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 150.7363322810337,
+      "maxLocalStepDegrees": 1.2561361023419475,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.19166666666666668
+    },
+    {
+      "clip": "crouch.reload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 151.69080166122563,
+      "maxLocalStepDegrees": 1.261899266735888,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "crouch.reload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 35.62687245882011,
+      "maxLocalStepDegrees": 0.2963760738260367,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.2828422989341167
+    },
+    {
+      "clip": "crouch.unload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 240.08817347024248,
+      "maxLocalStepDegrees": 2.0007347789186873,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.unload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 56.38812369606361,
+      "maxLocalStepDegrees": 0.4699010308005301,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.18333333333333332
+    },
+    {
+      "clip": "prone.reload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 145.18247076590788,
+      "maxLocalStepDegrees": 1.207757170481311,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "prone.reload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 95.24200068721873,
+      "maxLocalStepDegrees": 0.7923078361605198,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1801",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 229.7869280167329,
+      "maxLocalStepDegrees": 1.9148910668061074,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1801",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 150.7363322810337,
+      "maxLocalStepDegrees": 1.2561361023419475,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.19166666666666668
+    },
+    {
+      "clip": "crouch.reload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 151.69080166122563,
+      "maxLocalStepDegrees": 1.261899266735888,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "crouch.reload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 35.62687245882011,
+      "maxLocalStepDegrees": 0.2963760738260367,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.2828422989341167
+    },
+    {
+      "clip": "crouch.unload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 240.08817347024248,
+      "maxLocalStepDegrees": 2.0007347789186873,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.unload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 56.38812369606361,
+      "maxLocalStepDegrees": 0.4699010308005301,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.18333333333333332
+    },
+    {
+      "clip": "prone.reload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 145.18247076590788,
+      "maxLocalStepDegrees": 1.207757170481311,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "prone.reload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 95.24200068721873,
+      "maxLocalStepDegrees": 0.7923078361605198,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1802",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 229.7869280167329,
+      "maxLocalStepDegrees": 1.9148910668061074,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1802",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 150.7363322810337,
+      "maxLocalStepDegrees": 1.2561361023419475,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.19166666666666668
+    },
+    {
+      "clip": "crouch.reload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 151.69080166122563,
+      "maxLocalStepDegrees": 1.261899266735888,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "crouch.reload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 35.62687245882011,
+      "maxLocalStepDegrees": 0.2963760738260367,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.2828422989341167
+    },
+    {
+      "clip": "crouch.unload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 240.08817347024248,
+      "maxLocalStepDegrees": 2.0007347789186873,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.unload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 56.38812369606361,
+      "maxLocalStepDegrees": 0.4699010308005301,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.18333333333333332
+    },
+    {
+      "clip": "prone.reload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 145.18247076590788,
+      "maxLocalStepDegrees": 1.207757170481311,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "prone.reload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 95.24200068721873,
+      "maxLocalStepDegrees": 0.7923078361605198,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1803",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 229.7869280167329,
+      "maxLocalStepDegrees": 1.9148910668061074,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1803",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 150.7363322810337,
+      "maxLocalStepDegrees": 1.2561361023419475,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.19166666666666668
+    },
+    {
+      "clip": "crouch.reload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 151.69080166122563,
+      "maxLocalStepDegrees": 1.261899266735888,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "crouch.reload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 35.62687245882011,
+      "maxLocalStepDegrees": 0.2963760738260367,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.2828422989341167
+    },
+    {
+      "clip": "crouch.unload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 240.08817347024248,
+      "maxLocalStepDegrees": 2.0007347789186873,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.unload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 56.38812369606361,
+      "maxLocalStepDegrees": 0.4699010308005301,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.18333333333333332
+    },
+    {
+      "clip": "prone.reload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 145.18247076590788,
+      "maxLocalStepDegrees": 1.207757170481311,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "prone.reload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 95.24200068721873,
+      "maxLocalStepDegrees": 0.7923078361605198,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1804",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 229.7869280167329,
+      "maxLocalStepDegrees": 1.9148910668061074,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1804",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 150.7363322810337,
+      "maxLocalStepDegrees": 1.2561361023419475,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.19166666666666668
+    },
+    {
+      "clip": "crouch.reload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 151.69080166122563,
+      "maxLocalStepDegrees": 1.261899266735888,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.2911611900792378
+    },
+    {
+      "clip": "crouch.reload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 35.62687245882011,
+      "maxLocalStepDegrees": 0.2963760738260367,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.2828422989341167
+    },
+    {
+      "clip": "crouch.unload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 240.08817347024248,
+      "maxLocalStepDegrees": 2.0007347789186873,
+      "maxCorrectionFromBaselineDegrees": 3.7179988410618936,
+      "peakTime": 0.15833333333333333
+    },
+    {
+      "clip": "crouch.unload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 56.38812369606361,
+      "maxLocalStepDegrees": 0.4699010308005301,
+      "maxCorrectionFromBaselineDegrees": 6.432165835361377,
+      "peakTime": 0.18333333333333332
+    },
+    {
+      "clip": "prone.reload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 145.18247076590788,
+      "maxLocalStepDegrees": 1.207757170481311,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.3327556458048432
+    },
+    {
+      "clip": "prone.reload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 95.24200068721873,
+      "maxLocalStepDegrees": 0.7923078361605198,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.3244367546597221
+    },
+    {
+      "clip": "prone.unload.long-gun.1807",
+      "bone": "neck_01",
+      "maxLocalSpeedDegreesPerSecond": 229.7869280167329,
+      "maxLocalStepDegrees": 1.9148910668061074,
+      "maxCorrectionFromBaselineDegrees": 12.095371378935305,
+      "peakTime": 0.2
+    },
+    {
+      "clip": "prone.unload.long-gun.1807",
+      "bone": "head",
+      "maxLocalSpeedDegreesPerSecond": 150.7363322810337,
+      "maxLocalStepDegrees": 1.2561361023419475,
+      "maxCorrectionFromBaselineDegrees": 15.84494726302023,
+      "peakTime": 0.19166666666666668
+    }
+  ]
+}

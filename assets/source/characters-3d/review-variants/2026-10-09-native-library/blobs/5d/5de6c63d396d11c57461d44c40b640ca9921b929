@@ -1,0 +1,8 @@
+"""Matched render-only key/fill study. No app or model setting is changed."""
+import importlib.util,json,hashlib
+from pathlib import Path
+source=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tools/characters-3d/render-review.py')
+spec=importlib.util.spec_from_file_location('native_review',source);review=importlib.util.module_from_spec(spec);spec.loader.exec_module(review)
+review.REVIEW_LIGHTING={'world':{'colorLinear':[.20,.22,.20],'strength':.25},'areas':[{'position':[2,-4,6],'power':850,'size':3},{'position':[-3,-1,4],'power':100,'size':4},{'position':[1,4,5],'power':180,'size':4}],'areaShape':'DISK','areaTarget':[0,0,1]}
+args=review.parse_args();review.worker(args)
+p=args.output/'index.json';data=json.loads(p.read_text());data['renderOnlyOverride']={'path':__file__,'sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'purpose':'same original body and material; stronger key:fill ratio only'};p.write_text(json.dumps(data,indent=2)+'\n')

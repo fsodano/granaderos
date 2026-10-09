@@ -1,0 +1,108 @@
+{
+  "status": "accepted targeted repair; frozen private delivery",
+  "scope": "Only military LOD1 reduced coat support ratio changes from .075 to .42, retaining accepted LOD0 support. All other body parts retain normal LOD1 reduction; strap source offset remains7mm.",
+  "cause": "The failed source triangle retained exact matching coat/belt skin weights and6.99mm rest gap, but inverted its posed shoulder normal during compressed reload. The retained LOD0 support avoids this fold.",
+  "assets": [
+    {
+      "preset": "granadero",
+      "lod": 1,
+      "before": {
+        "lod": 1,
+        "url": "/models/characters/granadero-lod1.glb",
+        "triangles": 51220,
+        "bytes": 3463760,
+        "drawCalls": 6,
+        "sha256": "7d7714202388d844d2b9c642261c07e2d9e7bdfb6aa135b4a8963ed9ed2f6078"
+      },
+      "after": {
+        "lod": 1,
+        "url": "/models/characters/granadero-lod1.glb",
+        "triangles": 61784,
+        "bytes": 3923244,
+        "drawCalls": 6,
+        "sha256": "e1b1e00c114533ca43c67a0742c6314254ea5ef5d5db2f536f816960228bab5d"
+      },
+      "addedTriangles": 10564,
+      "addedBytes": 459484
+    },
+    {
+      "preset": "royalist",
+      "lod": 1,
+      "before": {
+        "lod": 1,
+        "url": "/models/characters/royalist-lod1.glb",
+        "triangles": 51149,
+        "bytes": 3454312,
+        "drawCalls": 6,
+        "sha256": "2a30bc640ddc96633578ce06886e27f6b912cee348819e89952d3ccbbb7c5510"
+      },
+      "after": {
+        "lod": 1,
+        "url": "/models/characters/royalist-lod1.glb",
+        "triangles": 61713,
+        "bytes": 3913796,
+        "drawCalls": 6,
+        "sha256": "c4c59b57ddf663c921a8e84dba20e0ae3c3d4825156c8926848fa8d4a5889d3b"
+      },
+      "addedTriangles": 10564,
+      "addedBytes": 459484
+    }
+  ],
+  "allOtherGlbsExact": [
+    "female-animations.glb",
+    "woman-scout-lod1.glb",
+    "friar-lod2.glb",
+    "gaucho-lod1.glb",
+    "worker-lod1.glb",
+    "male-animations.glb",
+    "worker-lod0.glb",
+    "gaucho-lod0.glb",
+    "woman-scout-lod0.glb",
+    "woman-scout-lod2.glb",
+    "friar-lod1.glb",
+    "gaucho-lod2.glb",
+    "worker-lod2.glb",
+    "friar-lod0.glb",
+    "horse-lod0.glb",
+    "horse-lod1.glb",
+    "horse-lod2.glb",
+    "royalist-lod0.glb",
+    "royalist-lod2.glb",
+    "female-garments.glb",
+    "woman-shawl-lod2.glb",
+    "surgeon-lod2.glb",
+    "surgeon-lod0.glb",
+    "woman-shawl-lod0.glb",
+    "woman-shawl-lod1.glb",
+    "surgeon-lod1.glb",
+    "male-garments.glb",
+    "granadero-lod2.glb",
+    "equipment.glb",
+    "granadero-lod0.glb"
+  ],
+  "nativeSkeletonAndSocketTransformsExact": "Enforced by both appearance increment builds.",
+  "coatSupportParity": {
+    "granadero": {
+      "triangles": 1565,
+      "LOD0andLOD1RestPositionsAndNamedWeightsExact": true
+    },
+    "royalist": {
+      "triangles": 1510,
+      "LOD0andLOD1RestPositionsAndNamedWeightsExact": true
+    }
+  },
+  "maximumSampledPenetrationMm": 0,
+  "wearingStrapTrianglesTestedPerLOD1": 544,
+  "gate": {
+    "command": "GRANADEROS_CHARACTER_LIBRARY=/tmp/granadero-crossbelt-lod1-support/models node --test --test-concurrency=2 tests/characters-coat-contact.test.mjs tests/characters-crossbelt-contact.test.mjs",
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "log": "/tmp/granadero-crossbelt-lod1-support/final-15-gates.log"
+  },
+  "measurements": "/tmp/granadero-crossbelt-lod1-support/final-support-measure.log",
+  "review": "/tmp/granadero-crossbelt-lod1-support/after-review/granadero/crouch.reload.long-gun.1800.sample-1.head.png",
+  "sourcePatch": "/tmp/granadero-crossbelt-lod1-support/delivery/source.patch",
+  "integration": "Copy only the two delivered GLBs and apply only the matching LOD1 URL/triangle/byte/draw-call/hash fields from lod1-metadata.json to the current root24-body library. Preserve all other manifest fields and files.",
+  "noSharedOrPublishedChanges": true
+}

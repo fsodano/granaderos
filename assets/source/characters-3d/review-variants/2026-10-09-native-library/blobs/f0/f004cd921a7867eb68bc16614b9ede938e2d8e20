@@ -1,0 +1,261 @@
+{
+  "url": "/models/characters/worker-lod2.glb",
+  "bytes": 1098024,
+  "sha256": "d81dbd696e85bd4077751a20ec49ebb2a33541432f42260f4bf49697e8c855dc",
+  "triangles": 21852,
+  "meshes": 4,
+  "drawCalls": 6,
+  "materials": [
+    "Apparel_Atlas",
+    "Skin",
+    "Short_Hair_Cutout"
+  ],
+  "bones": 53,
+  "nodes": [
+    "index_03_l",
+    "index_02_l",
+    "index_01_l",
+    "middle_03_l",
+    "middle_02_l",
+    "middle_01_l",
+    "pinky_03_l",
+    "pinky_02_l",
+    "pinky_01_l",
+    "ring_03_l",
+    "ring_02_l",
+    "ring_01_l",
+    "thumb_03_l",
+    "thumb_02_l",
+    "thumb_01_l",
+    "socket_handLeft_pistol",
+    "socket_handLeft_rifle",
+    "socket_handLeft_sabre",
+    "socket_handLeft_tool",
+    "hand_l",
+    "lowerarm_l",
+    "upperarm_l",
+    "clavicle_l",
+    "index_03_r",
+    "index_02_r",
+    "index_01_r",
+    "middle_03_r",
+    "middle_02_r",
+    "middle_01_r",
+    "pinky_03_r",
+    "pinky_02_r",
+    "pinky_01_r",
+    "ring_03_r",
+    "ring_02_r",
+    "ring_01_r",
+    "thumb_03_r",
+    "thumb_02_r",
+    "thumb_01_r",
+    "socket_handRight_pistol",
+    "socket_handRight_rifle",
+    "socket_handRight_sabre",
+    "socket_handRight_tool",
+    "hand_r",
+    "lowerarm_r",
+    "upperarm_r",
+    "clavicle_r",
+    "head",
+    "neck_01",
+    "socket_back",
+    "spine_03",
+    "spine_02",
+    "spine_01",
+    "ball_l",
+    "foot_l",
+    "calf_l",
+    "thigh_l",
+    "ball_r",
+    "foot_r",
+    "calf_r",
+    "thigh_r",
+    "socket_hipLeft",
+    "socket_hipRight",
+    "pelvis",
+    "Root",
+    "Human_footwear_LOD2",
+    "Human_legwear_LOD2",
+    "Human_outfit_LOD2",
+    "Human_skin_LOD2",
+    "Granadero_Rig"
+  ],
+  "kind": "appearance",
+  "preset": "worker",
+  "gender": "male",
+  "lod": 2,
+  "height": 1.76,
+  "sockets": {
+    "handRight_rifle": {
+      "node": "socket_handRight_rifle",
+      "bone": "hand_r",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "handRight_pistol": {
+      "node": "socket_handRight_pistol",
+      "bone": "hand_r",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "handRight_sabre": {
+      "node": "socket_handRight_sabre",
+      "bone": "hand_r",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "handRight_tool": {
+      "node": "socket_handRight_tool",
+      "bone": "hand_r",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "handLeft_rifle": {
+      "node": "socket_handLeft_rifle",
+      "bone": "hand_l",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "handLeft_pistol": {
+      "node": "socket_handLeft_pistol",
+      "bone": "hand_l",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1,
+      "mirror": {
+        "socket": "handRight_pistol",
+        "localAxis": "z"
+      }
+    },
+    "handLeft_sabre": {
+      "node": "socket_handLeft_sabre",
+      "bone": "hand_l",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "handLeft_tool": {
+      "node": "socket_handLeft_tool",
+      "bone": "hand_l",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "back": {
+      "node": "socket_back",
+      "bone": "spine_03",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "hipLeft": {
+      "node": "socket_hipLeft",
+      "bone": "pelvis",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    },
+    "hipRight": {
+      "node": "socket_hipRight",
+      "bone": "pelvis",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": 1
+    }
+  }
+}

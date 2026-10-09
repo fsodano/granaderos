@@ -1,0 +1,90 @@
+{
+  "status": "accepted exported maintenance arm correction",
+  "clipsPerAnatomy": 20,
+  "anatomies": [
+    "male",
+    "female"
+  ],
+  "sampleRateHz": 120,
+  "measurements": {
+    "maximumWrist": 16.812997522940368,
+    "maximumTurn": 510.98167834135063,
+    "maximumSpeed": 3.752353936442758,
+    "minimumHand": 0.19685934607483424
+  },
+  "changedScope": "arm and finger rotations only; all other channels, clip durations, markers and metadata retained",
+  "gates": "8/8 maintenance and retained arm/floor gates; combined with task repair10/10 passed on published assets",
+  "source": {
+    "assets/source/characters-3d/authoring/maintenance_pose.py": "16bf84024f2ff447c126d091d08fed625db9038f376353cb4c9e40868875ea13",
+    "assets/source/characters-3d/authoring/motion.py": "dc71df94309f18c14294a290cda8f3432388ea4693fc77b0c1630cdf277b8e91"
+  },
+  "merge": {
+    "male": {
+      "clips": [
+        "crouch.repair.long-gun",
+        "crouch.repair.short-gun",
+        "crouch.reprime.long-gun",
+        "crouch.reprime.short-gun",
+        "crouch.unload.short-gun",
+        "mounted.repair.long-gun",
+        "mounted.repair.short-gun",
+        "mounted.reprime.long-gun",
+        "mounted.reprime.short-gun",
+        "mounted.unload.short-gun",
+        "prone.repair.long-gun",
+        "prone.repair.short-gun",
+        "prone.reprime.long-gun",
+        "prone.reprime.short-gun",
+        "prone.unload.short-gun",
+        "stand.repair.long-gun",
+        "stand.repair.short-gun",
+        "stand.reprime.long-gun",
+        "stand.reprime.short-gun",
+        "stand.unload.short-gun"
+      ],
+      "changedRotationChannels": 714,
+      "preservedChannels": 52386,
+      "beforeSha256": "8f925e4b5204ae655603612466118d7cc0b2bcdf3f3f3b8b5dd66bb627903db7",
+      "sha256": "18775a9848ca3e38eda6d55c1264ef86b56c3fc6fdad9db816264e96578de94e"
+    },
+    "female": {
+      "clips": [
+        "crouch.repair.long-gun",
+        "crouch.repair.short-gun",
+        "crouch.reprime.long-gun",
+        "crouch.reprime.short-gun",
+        "crouch.unload.short-gun",
+        "mounted.repair.long-gun",
+        "mounted.repair.short-gun",
+        "mounted.reprime.long-gun",
+        "mounted.reprime.short-gun",
+        "mounted.unload.short-gun",
+        "prone.repair.long-gun",
+        "prone.repair.short-gun",
+        "prone.reprime.long-gun",
+        "prone.reprime.short-gun",
+        "prone.unload.short-gun",
+        "stand.repair.long-gun",
+        "stand.repair.short-gun",
+        "stand.reprime.long-gun",
+        "stand.reprime.short-gun",
+        "stand.unload.short-gun"
+      ],
+      "changedRotationChannels": 709,
+      "preservedChannels": 52386,
+      "beforeSha256": "5d44c1b67169393148fc43aed21ff7e769a4987324a3df9c9798f4fa68c64cfc",
+      "sha256": "6a61b83aa990be398f62c4a27aee08eee9d6c6337d54184e269ffa2c07b14a1f"
+    }
+  },
+  "views": [
+    "review-crouch",
+    "review-prone",
+    "review-standing-pistol",
+    "review-mounted",
+    "final-prone-pistol"
+  ],
+  "limits": [
+    "Offline inspection uses the acting character and held firearm; no combat target or physical cloth simulation.",
+    "Detailed views predate the final prone pistol unload timing refinement; its full baked motion is covered by the dense speed/wrist/floor gate."
+  ]
+}

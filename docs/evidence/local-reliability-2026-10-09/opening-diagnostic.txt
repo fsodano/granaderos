@@ -1,0 +1,42 @@
+▶ established southern campaign reaches Yatasto through combat, defeat, rescue and paid recovery
+  ✔ real San Lorenzo remains supply a legally present relief doctor after the completed mission (387.693541ms)
+  ✔ survivors recover with finite supplies and paid replacements capture Córdoba (36036.342916ms)
+  ✔ paid recovery reaches Tucumán; an exposed advance preserves actual deaths and captivity (17530.69ms)
+  ✖ reserves recapture the persistent garrison and stabilize the released captives with finite supplies (84867.863ms)
+  ﹣ a real medical courier recovers finite supplies while paid care restores the freed squad (0.464542ms) # The rescue and stabilization must pass first
+  ﹣ two paid squads arrive together and capture Salta with actual losses (0.182958ms) # The courier and paid recovery must pass first
+  ﹣ survivors receive any needed care and complete Yatasto after the paid northern pact (0.084792ms) # The joint Salta assault must pass first
+✖ established southern campaign reaches Yatasto through combat, defeat, rescue and paid recovery (161619.685208ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 3
+ℹ todo 0
+ℹ duration_ms 161962.611083
+
+✖ failing tests:
+
+test at tests/opening-playthrough.test.mjs:102:10
+✖ reserves recapture the persistent garrison and stabilize the released captives with finite supplies (84867.863ms)
+  AssertionError [ERR_ASSERTION]: the actual paid replacement volunteers must fill the relief squad
+
+  5 !== 6
+
+      at prepareRescueSquad (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs:595:12)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/opening-playthrough.test.mjs:104:77)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at TestContext.test (node:internal/test_runner/test:377:20)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/opening-playthrough.test.mjs:102:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 5,
+    expected: 6,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

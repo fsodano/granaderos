@@ -1,6 +1,7 @@
 import {initializeQuestWithdrawals} from './quest-withdrawal.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {expandCellScene} from './cell-scene-storage.js';
+import {surfaceAt} from './tactical-space.js';
 import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
 import {buildSectorMap} from './maps.js';
 import {authoredEnvironment} from './environment-interactions.js';
@@ -25,7 +26,7 @@ const authorizedExits=(s,request)=>sectorExits(request.sector,request.sceneId??n
 export const strategicSector=request=>request.sector==='san_lorenzo'?'san_nicolas':request.sector;
 export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
   const entry=entryFromSector(fromSector,toSector,sceneId);if(!entry)return;
-  for(const id of ids){const r=s.operativeState[id];r.location=toSector==='san_lorenzo'?'san_nicolas':toSector;r.arrival={battleId:`travel-${s.hour}-${fromSector}-${sceneId??toSector}`,fromSector,toSector,sceneId,fromScene:null,...clone(entry)};r.residentSector=null;r.residentScene=null;}
+  for(const id of ids){const r=s.operativeState[id];r.location=toSector==='san_lorenzo'?'san_nicolas':toSector;r.arrival={battleId:`travel-${s.hour}-${fromSector}-${sceneId??toSector}`,fromSector,toSector,sceneId,fromScene:null,...clone(entry)};r.residentSector=null;r.residentScene=null;delete r.residentPosition;}
 }
 
 // Request routes are immutable authority. Later arrivals are queued while a
@@ -63,9 +64,9 @@ export function prepareDeploymentExits(s,request){
   request.casualtyLootSources=[...new Map([...bodies,...request.remains.map(r=>r.unit)].map(u=>[String(u.id),ammunitionSource(u)])).values()];
   for(const u of request.squad){
     const r=s.operativeState[Number(u.id)],arrival=r?.arrival;
-    delete u.entryEdge;delete u.entryAnchor;delete u.entryReason;
+    delete u.entryEdge;delete u.entryAnchor;delete u.entryReason;delete u.residentPosition;
     if(arrival&&r.location===strategicSector(request)){u.entryEdge=arrival.entryEdge;u.entryAnchor=clone(arrival.entryAnchor);u.entryReason='arrival';}
-    else if(r?.residentSector===request.sector&&(r.residentScene??null)===(request.sceneId??null))u.entryReason='resident';
+    else if(r?.residentSector===request.sector&&(r.residentScene??null)===(request.sceneId??null)){u.entryReason='resident';if(r.residentPosition)u.residentPosition=clone(r.residentPosition);}
   }
   return request;
 }
@@ -144,16 +145,21 @@ export function planMountReturn(s,request,snapshot,entries){
 export function migrateDeploymentReturns(s){s.sectorRemains??={};for(const r of Object.values(s.operativeState??{}))r.capturedAmmunition??={loaded:0,ammo:0};return s;}
 const sameEntry=(a,b)=>Boolean(a&&b&&a.entryEdge===b.entryEdge&&a.entryAnchor?.x===b.entryAnchor?.x&&a.entryAnchor?.y===b.entryAnchor?.y);
 const knownExit=id=>{if(typeof id!=='string')return null;const source=id.split(':')[0];return sectorExits(source==='yatasto'?'tucuman':source,source==='yatasto'?'yatasto':null).find(e=>e.id===id);};
-function remainsDimensions(s,exit){
+function remainsGeometry(s,exit){
   const source=exit.id.slice(0,exit.id.indexOf(':'));
   const saved=source==='yatasto'?s.sceneStates?.[source]:s.sectorStates?.[source];
   const request=(s.pendingBattle?.sceneId??s.pendingBattle?.sector)===source?s.pendingBattle:null;
-  const map=saved??request?.resumeSnapshot??request;
+  const map=expandCellScene(saved??request?.resumeSnapshot??request);
   // The body still has source-map coordinates until its destination is entered.
   // Older records without a source map retain the compact-map validation bounds.
   const width=map?.width??20,height=map?.height??16;
   need(Number.isInteger(width)&&width>=4&&width<=128&&Number.isInteger(height)&&height>=4&&height<=128,'Las dimensiones del campo del caído son inválidas.');
-  return {width,height};
+  // A departed body's paths still belong to the source field. Admit them
+  // against its retained physical geometry, including roof access. Older
+  // dimension-only ground records keep their original validation bounds;
+  // they cannot establish support for an upper path without a real scene.
+  if(Array.isArray(map?.tiles))return {width,height,tiles:map.tiles,buildings:map.buildings??[],upperSurfaces:map.upperSurfaces,climbLinks:map.climbLinks};
+  return {width,height,tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}))};
 }
 function validateReturnLedger(snapshot){
   if(snapshot.returnLedger===undefined)return;
@@ -179,6 +185,11 @@ export function validateDeploymentReturnState(s){
     // allowances, or infer that a soldier has already crossed a boundary.
     if(request.exits===undefined&&request.exitRulesVersion===undefined){request.exits=authorizedExits(s,request);request.exitRulesVersion=1;}
     need(request.exitRulesVersion===1&&validateSectorExits(request.sector,request.sceneId??null,request.exits),'Las rutas del despliegue son inválidas.');
+    for(const unit of request.squad??[]){
+      const r=s.operativeState[Number(unit.id)],point=unit.residentPosition,actual=r?.residentPosition,matching=r?.residentSector===request.sector&&(r.residentScene??null)===(request.sceneId??null)&&r.arrival==null;
+      if(matching&&actual!==undefined)need(unit.entryReason==='resident'&&object(point)&&object(actual)&&Object.keys(point).every(k=>['x','y','tacticalLevel'].includes(k))&&(point.tacticalLevel===undefined||integer(point.tacticalLevel,8))&&point.x===actual.x&&point.y===actual.y&&(point.tacticalLevel??0)===(actual.tacticalLevel??0),'La posición del residente desplegado es inválida.');
+      else need(point===undefined,'La posición del residente desplegado es inválida.');
+    }
   }
   for(const field of ['fieldCartridges','storedCartridges'])need(s.pendingBattle?.[field]===undefined||integer(s.pendingBattle[field],1000000000000),'La munición previa del despliegue es inválida.');
   for(const source of [...(s.pendingBattle?.ammunitionSources??[]),...(s.pendingBattle?.garrisonLootSources??[]),...(s.pendingBattle?.casualtyLootSources??[])])need(source.cursorCartridges===undefined||integer(source.cursorCartridges,1000000),'La munición del cursor previo es inválida.');
@@ -191,8 +202,7 @@ export function validateDeploymentReturnState(s){
       const exit=knownExit(r.unit.departure?.exitId);need(exit&&exit.destination===at&&sameEntry(r,exit),'La llegada del caído no corresponde a su salida.');
       const unit=clone(r.unit);delete unit.departure;
       const rawFields=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','rations','torches','boleadoras','activeSlot','weaponFittings','weaponFittingPattern','bladeFittingPattern'];need(rawFields.every(k=>Object.hasOwn(unit,k)&&unit[k]!==undefined),'El equipo del caído está incompleto.');
-      const {width,height}=remainsDimensions(s,exit);
-      validateBattleSnapshot({...(unit.ammunitionVersion===undefined?{}:{ammunitionVersion:unit.ammunitionVersion}),width,height,units:[unit],tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),status:'defeat'});
+      validateBattleSnapshot({...(unit.ammunitionVersion===undefined?{}:{ammunitionVersion:unit.ammunitionVersion}),...remainsGeometry(s,exit),units:[unit],status:'defeat'});
     }
   }
   for(const [id,r] of Object.entries(s.operativeState)){
@@ -208,6 +218,10 @@ export function validateDeploymentReturnState(s){
     }
     if(r.residentSector!=null)need(sector(r.residentSector)||r.residentSector==='san_lorenzo','La residencia táctica es inválida.');
     if(r.residentScene!=null)need(r.residentScene==='yatasto'&&r.residentSector==='tucuman','La residencia de escena es inválida.');
+    if(r.residentPosition!==undefined){
+      const point=r.residentPosition,field=expandCellScene(r.residentScene?s.sceneStates?.[r.residentScene]:s.sectorStates?.[r.residentSector]);
+      need(object(point)&&Object.hasOwn(point,'x')&&Object.hasOwn(point,'y')&&Object.keys(point).every(k=>['x','y','tacticalLevel'].includes(k))&&r.residentSector!=null&&r.arrival==null&&r.location===(r.residentSector==='san_lorenzo'?'san_nicolas':r.residentSector)&&field&&surfaceAt(field,point),'La posición del residente es inválida.');
+    }
   }
   for(const h of s.horseState.horses)if(h.custody!=null)need(object(h.custody)&&['field','captured'].includes(h.custody.kind)&&sector(h.custody.sector)&&h.location===h.custody.sector&&Number.isInteger(h.custody.operativeId)&&s.operativeState[h.custody.operativeId]&&h.assignedTo===null&&!h.returned,'La custodia de la montura es inválida.');
   for(const snapshot of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})])validateReturnLedger(snapshot);

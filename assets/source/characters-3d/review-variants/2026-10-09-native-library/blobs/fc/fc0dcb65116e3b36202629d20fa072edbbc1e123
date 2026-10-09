@@ -1,0 +1,53 @@
+{
+  "baseManifestSha256": "56a48afe8d307181511fc5dd1352bdfe1ecd66f8b5fbffab1790953f4e81486f",
+  "bodies": [
+    {
+      "file": "worker-lod0.glb",
+      "old": "27ec304416220e85c721f327e8d691f6a78e5cdcd433bb95e9e107ea031028a9",
+      "new": "6382ca27feeb99e6ac7c099822bb9cad82cf23acec09397747d75491dfccb861"
+    },
+    {
+      "file": "worker-lod1.glb",
+      "old": "25fcd84ac58ce979f0c947ca071ed9788136eb9e1465605bf048c331f9c9279b",
+      "new": "63ed88232a21273547558213860d92e8f76d52a065821e9ec83ebb0c37677111"
+    },
+    {
+      "file": "worker-lod2.glb",
+      "old": "441a857a008cb64b39ec0046dff75086f8fed847305fb7f6360e44d992b1e37a",
+      "new": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd"
+    }
+  ],
+  "textures": [
+    {
+      "file": "textures/d3947bf8ce7ee3fb076e.png",
+      "sha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603"
+    },
+    {
+      "file": "textures/eb7d7e234e6b60198b7f.png",
+      "sha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b"
+    },
+    {
+      "file": "textures/2184ae3386ac18625140.png",
+      "sha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa"
+    },
+    {
+      "file": "textures/ddbf803c43fc641d3512.png",
+      "sha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381"
+    },
+    {
+      "file": "textures/940c90a65502a117ca0b.png",
+      "sha256": "940c90a65502a117ca0b309670a7eca7522df2d3cd9c24b002c3d81cd31dcbe7"
+    },
+    {
+      "file": "textures/93f40634d5f47b42afdb.png",
+      "sha256": "93f40634d5f47b42afdb76dd3ebf22ce420022219eccaf65e1972ef860632a44"
+    },
+    {
+      "file": "textures/e53e4d4ad46335cf9f8d.png",
+      "sha256": "e53e4d4ad46335cf9f8de5173b245d63ae1afc73367a5266f10bbd3432db18eb"
+    }
+  ],
+  "manifestSha256": "1adf5f1ba3b2abcf3aa3532e56afdbc4a4c3c5f23476663abfc760dafd89a048",
+  "otherManifestValuesExact": true,
+  "allOtherGlbsByteExact": true
+}

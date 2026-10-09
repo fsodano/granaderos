@@ -1,0 +1,57 @@
+"""Private bounded skirt-waist fit on actual exported coat triangles.
+
+No retopology, motion edit, global LOD reduction, material or morph rewrite.
+The source of the fit is the current exported coat, not an idealized body.
+"""
+from pathlib import Path
+import json,struct,hashlib,shutil,numpy as np
+from waist_glb import read,components
+ROOT=Path('/tmp/granadero-long-cloth-waist-pilot');BASE=Path('/tmp/granaderos-six-outfit-review-20261008/models');OUT=ROOT/'models';OUT.mkdir(exist_ok=True)
+
+def fit(name):
+ path=BASE/(name+'-lod0.glb');doc,blob,acc=read(path);mesh_index=2 if name=='friar' else 1
+ cloth=doc['meshes'][mesh_index]['primitives'][0];coat=doc['meshes'][2]['primitives'][0]
+ pos=acc(cloth['attributes']['POSITION']);oldpos=pos.copy();normal=acc(cloth['attributes']['NORMAL']);oldnormal=normal.copy();joints=acc(cloth['attributes']['JOINTS_0']);oldjoints=joints.copy();weights=acc(cloth['attributes']['WEIGHTS_0']);oldweights=weights.copy();tri=acc(cloth['indices']).reshape(-1,3)
+ cp=acc(coat['attributes']['POSITION']).copy();cj=acc(coat['attributes']['JOINTS_0']).copy();cw=acc(coat['attributes']['WEIGHTS_0']).copy();ct=acc(coat['indices']).reshape(-1,3).copy()
+ skirt=next(c for c in components(pos,tri)if len(c)>400 and pos[c,1].min()<.2 and 1.045<pos[c,1].max()<1.085)
+ coatcomponent=next(c for c in components(cp,ct)if len(c)>2500 and cp[c,1].min()>.98)
+ coatset=set(coatcomponent);ct=np.array([f for f in ct if all(int(i)in coatset for i in f)and np.max(np.abs(cp[f,0]))<.27 and cp[f,1].min()<1.12])
+ top=1.07 if name=='friar' else 1.06;chosen=np.array([i for i in skirt if pos[i,1]>top-.08]);v0=cp[ct[:,0]];e1=cp[ct[:,1]]-v0;e2=cp[ct[:,2]]-v0
+ def support(p):
+  y=max(1.006,float(p[1]));centre=np.array([0.,y,-.012]);direction=np.array([p[0],0,p[2]+.012]);direction/=np.linalg.norm(direction);origin=centre+direction*.65;ray=-direction
+  h=np.cross(np.broadcast_to(ray,e2.shape),e2);det=(e1*h).sum(1);inv=np.divide(1.,det,out=np.zeros_like(det),where=np.abs(det)>1e-8);s=origin-v0;u=inv*(s*h).sum(1);q=np.cross(s,e1);v=inv*(q*ray).sum(1);t=inv*(e2*q).sum(1)
+  valid=(np.abs(det)>1e-8)&(u>=-1e-5)&(v>=-1e-5)&(u+v<=1.00001)&(t>=0);candidates=np.where(valid)[0]
+  if not len(candidates):raise ValueError(('no actual coat waist support',name,p.tolist()))
+  index=candidates[np.argmin(t[candidates])];point=origin+ray*t[index];bary=np.array([1-u[index]-v[index],u[index],v[index]]);w={}
+  for vertex,b in zip(ct[index],bary):
+   for j,value in zip(cj[vertex],cw[vertex]):w[int(j)]=w.get(int(j),0)+float(value*b)
+  return point,direction,w
+ contacts=[]
+ for i in chosen:
+  p=oldpos[i].astype(float);point,direction,w=support(p);blend=np.clip((p[1]-(top-.08))/.08,0,1);blend=blend*blend*(3-2*blend)
+  radialnormal=float(np.dot(oldnormal[i],direction));inside=.0015+.003*(1-np.clip(radialnormal,-1,1))/2;target=point-direction*inside;target[1]=p[1]
+  pos[i]=p+(target-p)*blend
+  combined={int(j):float(v)*(1-blend)for j,v in zip(oldjoints[i],oldweights[i])if v>0}
+  for j,v in w.items():combined[j]=combined.get(j,0)+v*blend
+  selected=sorted(combined.items(),key=lambda a:-a[1])[:4];total=sum(v for j,v in selected);joints[i]=0;weights[i]=0
+  for n,(j,v)in enumerate(selected):joints[i,n]=j;weights[i,n]=v/total
+  contacts.append({'vertex':int(i),'blend':float(blend),'restPositionDeltaM':float(np.linalg.norm(pos[i]-oldpos[i]))})
+ # Recompute normals only where a changed vertex affects an incident face.
+ changed=set(int(i)for i in chosen);affected_faces=[f for f in tri if any(int(i)in changed for i in f)];affected=set(int(i)for f in affected_faces for i in f);sums={i:np.zeros(3)for i in affected}
+ for f in tri:
+  if not any(int(i)in affected for i in f):continue
+  a,b,c=pos[f];n=np.cross(b-a,c-a)
+  for i in f:
+   if int(i)in affected:sums[int(i)]+=n
+ for i,n in sums.items():
+  if np.linalg.norm(n)>1e-12:normal[i]=n/np.linalg.norm(n)
+ a=doc['accessors'][cloth['attributes']['POSITION']];a['min']=pos.min(0).tolist();a['max']=pos.max(0).tolist()
+ enc=json.dumps(doc,separators=(',',':')).encode();enc+=b' '*(-len(enc)%4);raw=struct.pack('<III',0x46546c67,2,28+len(enc)+len(blob))+struct.pack('<II',len(enc),0x4e4f534a)+enc+struct.pack('<II',len(blob),0x004e4942)+blob;(OUT/path.name).write_bytes(raw)
+ # Keep every original external material input. No generated texture.
+ for im in doc.get('images',[]):
+  if im.get('uri')and not im['uri'].startswith('data:'):
+   dst=OUT/im['uri'];dst.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(BASE/im['uri'],dst)
+ names=[doc['nodes'][j]['name']for j in doc['skins'][0]['joints']];pelvis=names.index('pelvis');topids=np.array([i for i in chosen if oldpos[i,1]>top-.012]);pure_old=sum(sum(float(w)for j,w in zip(oldjoints[i],oldweights[i])if j==pelvis)>.999for i in topids);pure_new=sum(sum(float(w)for j,w in zip(joints[i],weights[i])if j==pelvis)>.999for i in topids)
+ proof={'preset':name,'baselineSha256':hashlib.sha256(path.read_bytes()).hexdigest(),'candidateSha256':hashlib.sha256(raw).hexdigest(),'clothMesh':mesh_index,'skirtVertices':len(skirt),'changedUpperVertices':len(chosen),'changedNormalVertices':len(affected),'upperHeightRangeM':[float(oldpos[chosen,1].min()),float(oldpos[chosen,1].max())],'maxPositionChangeM':max(v['restPositionDeltaM']for v in contacts),'purePelvisAtTopBefore':int(pure_old),'purePelvisAtTopAfter':int(pure_new),'topVertices':len(topids),'changedVertices':contacts,'unchanged':['all indices','all other positions and joint weights','all materials/textures/UV/vertex colors','all morph accessors including normals','skin/rig/face/hands/boots','hem below upper8cm','Friar rope belt']}
+ (ROOT/(name+'-proof.json')).write_text(json.dumps(proof,indent=2)+'\n');print({k:v for k,v in proof.items()if k!='changedVertices'})
+for name in ['friar','woman-shawl']:fit(name)

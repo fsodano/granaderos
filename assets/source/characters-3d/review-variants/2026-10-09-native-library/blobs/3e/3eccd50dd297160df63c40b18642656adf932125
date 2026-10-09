@@ -1,0 +1,24 @@
+from pathlib import Path
+import json,struct,hashlib
+root=Path('/tmp/granadero-hair-braid01-pilot')
+def load(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];j=json.loads(b[20:20+n]);return j,b[28+n:]
+def access(j,b,i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];sizes={5121:1,5123:2,5125:4,5126:4};width={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];size=sizes[a['componentType']]*width;start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size)
+ return b''.join(b[start+k*stride:start+k*stride+size]for k in range(a['count']))
+a,ab=load(root/'weight-baseline/woman-scout-lod0.glb');b,bb=load(root/'models/woman-scout-lod0.glb');checks=[]
+assert a['skins']==b['skins'];assert a['nodes']==b['nodes']
+for ma,mb in zip(a['meshes'],b['meshes']):
+ assert ma['name']==mb['name']
+ for pa,pb in zip(ma['primitives'],mb['primitives']):
+  name=a['materials'][pa['material']]['name'];assert name==b['materials'][pb['material']]['name'];changed=[]
+  for key in pa['attributes']:
+   same=access(a,ab,pa['attributes'][key])==access(b,bb,pb['attributes'][key])
+   if not same:changed.append(key)
+   if name!='Authored_Braid01_Hair' or key not in ('JOINTS_0','WEIGHTS_0'):assert same,(ma['name'],name,key)
+  assert access(a,ab,pa['indices'])==access(b,bb,pb['indices'])
+  for ta,tb in zip(pa.get('targets',[]),pb.get('targets',[])):
+   for k in ta:assert access(a,ab,ta[k])==access(b,bb,tb[k])
+  checks.append({'mesh':ma['name'],'material':name,'changedAttributes':changed,'indicesAndMorphTargetsIdentical':True})
+record={'beforeSha256':hashlib.sha256((root/'weight-baseline/woman-scout-lod0.glb').read_bytes()).hexdigest(),'afterSha256':hashlib.sha256((root/'models/woman-scout-lod0.glb').read_bytes()).hexdigest(),'nativeNodeHierarchyAndBindIdentical':True,'primitiveChecks':checks}
+(root/'delivery/weight-only-proof.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record,indent=2))

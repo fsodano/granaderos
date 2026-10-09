@@ -72,11 +72,14 @@ test('new characters retain actual combat injuries and experience across return,
   // starts immediately below the next level and practice thresholds.
   s.operativeState[id].xp=95;s.operativeState[id].condition=50;s.operativeState[id].skillPractice={mechanical:39};s.operativeState[id].toolkitPoints=30;
   s=save(s).campaign;
-  secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
+  secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});
+  // Preserve the declared midnight wound-and-withdrawal encounter with a paid wait.
+  s=order(s,{type:'wait',hours:10});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
+  assert.equal(request.hour%24,0);
   // Declared open-field fixture preserves every issued enemy and weapon.
   // Real enemy fire and a paid boundary withdrawal establish wounds and XP.
   const issued=enterSector(request),enemies=issued.units.filter(u=>u.side==='enemy'),width=20,height=20;
-  let b=createBattle(request.squad.map(u=>({...u,x:1,y:19})),{...request,width,height,seed:45,night:false,
+  let b=createBattle(request.squad.map(u=>({...u,x:1,y:19})),{...request,width,height,seed:45,
    tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),
    npcs:request.npcs.map((n,i)=>({...n,x:10+i%3,y:5+Math.floor(i/3)})),
    enemies:enemies.map((u,i)=>{const at={x:i?19:6,y:i?i:19};return {...u,...at,patrolOrigin:at,overwatch:false,patrol:false};})});
@@ -86,6 +89,7 @@ test('new characters retain actual combat injuries and experience across return,
   b=actBattle(b,{type:'move',unitId:String(id),x:1,y:18});assert.equal(b.lastError,null);
   b=endTurn(b);assert.equal(b.lastError,null);
   const wounded=b.units.find(u=>u.id===String(id));assert.ok(wounded.hp>0&&wounded.hp<c.attributes.maxHp,JSON.stringify({hp:wounded.hp,log:b.log}));
+  assert.ok(!wounded.unconscious&&wounded.ap>0,JSON.stringify({hour:s.hour,night:b.night,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ap:u.ap,unconscious:u.unconscious,x:u.x,y:u.y,bleeding:u.bleeding})),log:b.log}));
   const synced=syncBattleTime(s,b);assert.equal(synced.error,null);const pair=secondaryRetreat(synced),hp=pair.battle.units.find(u=>u.id===String(id)).hp;
   s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
   const expectedMax=rosterFor(s).find(o=>o.id===id).maxHp;assert.equal(s.operativeState[id].maxHp,expectedMax);

@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+"""Compose seven prone arm hooks, then fit only three named current clips."""
+from pathlib import Path
+import argparse,hashlib,json,shutil,subprocess,sys
+CUT=Path(__file__).resolve().parents[1]
+FILES=['tools/characters-3d/build-prone-pistol-forearm-support.py','web/lib/three/prone-arm-blend-support.ts','tests/characters-prone-pistol-forearm-support.test.mjs','tests/three-prone-pistol-arm-blend.test.mjs','tests/three-prone-arm-repeat.test.mjs','docs/verification/prone-pistol-forearm-support.md']
+HOOKS=[
+("import {NativeGestureBlendSupport} from './gesture-blend-support';", "import {NativeGestureBlendSupport} from './gesture-blend-support';\nimport {NativeProneArmBlendSupport} from './prone-arm-blend-support';"),
+('  private gestureSupport:NativeGestureBlendSupport;','  private gestureSupport:NativeGestureBlendSupport;\n  private proneArmSupport:NativeProneArmBlendSupport;'),
+("    this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));", "    this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));\n    this.proneArmSupport=new NativeProneArmBlendSupport(this.model,this.root);"),
+('      this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);','      this.gestureSupport.begin(this.clipSpec,clipSpec,this.mixer.time,clip,this.action?.getClip(),this.action?.time??0);\n      this.proneArmSupport.begin(this.clipSpec,clipSpec,this.mixer.time);'),
+('    this.gestureSupport.restore();','    this.proneArmSupport.restore();\n    this.gestureSupport.restore();'),
+('    this.poseCloth(Math.min(delta,.1));','    this.poseCloth(Math.min(delta,.1));\n    this.proneArmSupport.apply(this.mixer.time);'),
+('    this.gestureSupport.dispose();','    this.proneArmSupport.dispose();\n    this.gestureSupport.dispose();')]
+LIBRARY="  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-interaction-support.py')],cwd=ROOT,check=True)"
+POSTPASS=LIBRARY+"\n  # Retain pistol grip/body clocks and support the native free forearm.\n  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-prone-pistol-forearm-support.py')],cwd=ROOT,check=True)"
+def patch(text,old,new):
+ if new in text:return text
+ assert text.count(old)==1,'Integration anchor changed: '+old
+ return text.replace(old,new,1)
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);a=p.parse_args();repo=a.repo.resolve();runtime=repo/'web/lib/three/actor-runtime.ts';library=repo/'tools/characters-3d/build-library.py';r=runtime.read_text();b=library.read_text()
+ for old,new in HOOKS:r=patch(r,old,new)
+ b=patch(b,LIBRARY,POSTPASS)
+ for file in FILES:
+  target=repo/file;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(CUT/file,target)
+ runtime.write_text(r);library.write_text(b)
+ subprocess.run([sys.executable,str(repo/FILES[0]),'--root',str(repo),'--receipt',str(repo/'prone-pistol-builder-receipt.json')],cwd=repo,check=True)
+ print('PRONE_PISTOL_SOURCE_INSTALLED',json.dumps({file:hashlib.sha256((repo/file).read_bytes()).hexdigest()for file in FILES+['web/lib/three/actor-runtime.ts','tools/characters-3d/build-library.py']}))
+if __name__=='__main__':main()

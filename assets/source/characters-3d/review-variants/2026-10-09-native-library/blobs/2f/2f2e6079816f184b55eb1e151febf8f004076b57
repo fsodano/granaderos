@@ -1,0 +1,28 @@
+from pathlib import Path
+import importlib.util,json,hashlib,copy,tempfile,shutil,subprocess
+root=Path.cwd();ev=root/'artifacts/three-standing-native-gesture-source-cut-review';out=root/'web/public/models/characters'
+def mod(name,p):
+ s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+merge=mod('merge',root/'tools/characters-3d/merge-animation-bank.py');pack=mod('pack',root/'assets/source/characters-3d/authoring/gltf_pack.py');support=mod('support',root/'tools/characters-3d/build-gesture-support.py')
+base=ev/'main249';base.mkdir(exist_ok=True)
+manifest=json.loads((out/'manifest.json').read_text());candidate_manifest=json.loads((ev/'candidate/manifest.json').read_text());receipt={}
+shutil.copy2(out/'manifest.json',base/'manifest.json')
+with tempfile.TemporaryDirectory()as scratch:
+ for gender in ('male','female'):
+  path=out/(gender+'-animations.glb');shutil.copy2(path,base/path.name);before=merge.read_glb(path)
+  doc,data=merge.read_glb(ev/'candidate'/path.name);source=support.channels(doc,data);doc['animations']=[a for a in doc['animations']if a['name']in support.NAMES]
+  increment=Path(scratch)/(gender+'.glb');merge.write_glb(increment,doc,data)
+  merge.merge(path,increment,bones=support.LEGS,existing_only=True);raw,_=pack.pack(path,{})
+  after=merge.read_glb(path);proof=support.prove_preserved(before,after);tracks=support.channels(*after)
+  for name in support.NAMES:
+   for leg in support.LEGS:assert tracks[name][(leg,'rotation')]==source[name][(leg,'rotation')]
+  bank=manifest['animationLibraries'][gender];bank['bytes']=len(raw);bank['sha256']=hashlib.sha256(raw).hexdigest()
+  original={c['name']:c for c in candidate_manifest['animationLibraries'][gender]['clips']}
+  for clip in bank['clips']:
+   if clip['name']in support.NAMES:clip['nativeBootSupport']=copy.deepcopy(original[clip['name']]['nativeBootSupport'])
+  receipt[gender]={'proof':proof,'namedCandidateLegsExact':True,'sha256':bank['sha256']}
+ # Canonical Node formatting prevents a semantically unchanged locomotion profile from drifting.
+ text=subprocess.run(['node','-e','let s="";process.stdin.on("data",c=>s+=c);process.stdin.on("end",()=>process.stdout.write(JSON.stringify(JSON.parse(s),null,2)+"\\n"));'],input=json.dumps(manifest),text=True,capture_output=True,check=True).stdout
+ (out/'manifest.json').write_text(text)
+(ev/'current249-preservation.json').write_text(json.dumps(receipt,indent=2)+'\n')
+print(json.dumps(receipt,indent=2))

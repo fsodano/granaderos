@@ -1,0 +1,377 @@
+{
+  "status": "private reviewed candidate; awaiting parent integration review",
+  "scope": "Granadero headwear only, all three LODs",
+  "baselineManifest": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+  "canonicalAtReview": "7375f601d52d703dc3b36c94127d6b4878df72fff477bdec8d1c71103eb43e20",
+  "sourcePatch": "/tmp/granadero-hat-construction-review/hat-source.patch",
+  "sourcePatchSha256": "e657ae01536688362b8236158e5aa2282be3d4a24760ba71ad9625647daef107",
+  "sourceFiles": {
+    "character.py": "454c00684deb83f2e6c5bd8c1cdc7cdfd08e01b6d79955387a0eed041380fef5",
+    "surface_atlas.py": "957ff658124abcd431b5f668215fac5fbc72b147376e0a8369ba79546ba45eb5",
+    "shako_detail.py": "648088d765ebb1dd6951a57658929e3b6491416edc509a59ea2fbc5a1b830130"
+  },
+  "deltaRecords": "/tmp/granadero-hat-construction-review/body-atlas-delta-records.json",
+  "changes": [
+    "Crown keeps its shape with eight explicit cloth UV domains and matte fulled-wool finish.",
+    "Visor is a closed 2 mm leather surface with a narrow flattened brass binding.",
+    "Crest relief depth is reduced to 45 percent; rounded leaf beads become thin stamped sheets.",
+    "Separate lower leather reinforcement uses its own polished finish.",
+    "Original accepted plume geometry and material are retained."
+  ],
+  "visualReview": {
+    "lod0": "Matched isometric head and face show a thinner rim, smoother coated leather and less swollen metal leaves. Crown weave is visible close up; full-body benefit remains modest.",
+    "lod1": "The visor and crown remain continuous; no new detached hat parts are visible in the sampled head/full views.",
+    "lod2": "Silhouette remains readable at full-body size. The magnified crop still has the existing coarse hat trim and shoulder detail.",
+    "rejectedTrials": "Separate plume tufts looked like spikes. Connected nap gave too little benefit. Neither trial is included."
+  },
+  "preservation": {
+    "allThreeLods": [
+      {
+        "beforeManifest": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+        "candidateManifest": "3f9114f5dfe85ce8cb20bd29d74e0cc07da8211f548b70c640332b8043f4e6b7",
+        "beforeBody": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2",
+        "candidateBody": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+        "beforeBytes": 5452964,
+        "candidateBytes": 5345112,
+        "drawCallsBefore": 6,
+        "drawCallsAfter": 6,
+        "nativeRigNodesInverseBindsExact": true,
+        "skinMaterialAndThreeTexturesExact": true,
+        "changedExistingGlbs": [
+          "granadero-lod2.glb",
+          "granadero-lod0.glb",
+          "granadero-lod1.glb"
+        ],
+        "parts": [
+          {
+            "part": "Human_footwear_LOD0",
+            "beforeTriangles": 1853,
+            "afterTriangles": 1853,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_headwear_LOD0",
+            "beforeTriangles": 9632,
+            "afterTriangles": 8916,
+            "allVerticesRigidHead": true
+          },
+          {
+            "part": "Human_legwear_LOD0",
+            "beforeTriangles": 1952,
+            "afterTriangles": 1952,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_outfit_LOD0",
+            "beforeTriangles": 27076,
+            "afterTriangles": 27076,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_skin_LOD0",
+            "beforeTriangles": 46684,
+            "afterTriangles": 46684,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true,
+              "TEXCOORD_1": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          }
+        ]
+      },
+      {
+        "beforeManifest": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+        "candidateManifest": "3f9114f5dfe85ce8cb20bd29d74e0cc07da8211f548b70c640332b8043f4e6b7",
+        "beforeBody": "a50f3d2a0de9368a01b62d9724f906caf8265dfca45c3152cf7ae2693c5a64f9",
+        "candidateBody": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d",
+        "beforeBytes": 3996624,
+        "candidateBytes": 4003508,
+        "drawCallsBefore": 6,
+        "drawCallsAfter": 6,
+        "nativeRigNodesInverseBindsExact": true,
+        "skinMaterialAndThreeTexturesExact": true,
+        "changedExistingGlbs": [
+          "granadero-lod2.glb",
+          "granadero-lod0.glb",
+          "granadero-lod1.glb"
+        ],
+        "parts": [
+          {
+            "part": "Human_footwear_LOD1",
+            "beforeTriangles": 1084,
+            "afterTriangles": 1084,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_headwear_LOD1",
+            "beforeTriangles": 4010,
+            "afterTriangles": 4208,
+            "allVerticesRigidHead": true
+          },
+          {
+            "part": "Human_legwear_LOD1",
+            "beforeTriangles": 739,
+            "afterTriangles": 739,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_outfit_LOD1",
+            "beforeTriangles": 25474,
+            "afterTriangles": 25474,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_skin_LOD1",
+            "beforeTriangles": 30219,
+            "afterTriangles": 30219,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true,
+              "TEXCOORD_1": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          }
+        ]
+      },
+      {
+        "beforeManifest": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+        "candidateManifest": "3f9114f5dfe85ce8cb20bd29d74e0cc07da8211f548b70c640332b8043f4e6b7",
+        "beforeBody": "b373ef830906ebbb2d8861f1ff758f931b8f10b863e713e817a0abbe01cc8b03",
+        "candidateBody": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5",
+        "beforeBytes": 1203904,
+        "candidateBytes": 1203556,
+        "drawCallsBefore": 6,
+        "drawCallsAfter": 6,
+        "nativeRigNodesInverseBindsExact": true,
+        "skinMaterialAndThreeTexturesExact": true,
+        "changedExistingGlbs": [
+          "granadero-lod2.glb",
+          "granadero-lod0.glb",
+          "granadero-lod1.glb"
+        ],
+        "parts": [
+          {
+            "part": "Human_footwear_LOD2",
+            "beforeTriangles": 562,
+            "afterTriangles": 562,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_headwear_LOD2",
+            "beforeTriangles": 2406,
+            "afterTriangles": 2476,
+            "allVerticesRigidHead": true
+          },
+          {
+            "part": "Human_legwear_LOD2",
+            "beforeTriangles": 345,
+            "afterTriangles": 345,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_outfit_LOD2",
+            "beforeTriangles": 5596,
+            "afterTriangles": 5596,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          },
+          {
+            "part": "Human_skin_LOD2",
+            "beforeTriangles": 9755,
+            "afterTriangles": 9755,
+            "exactAttributes": {
+              "POSITION": true,
+              "NORMAL": true,
+              "TEXCOORD_0": true,
+              "COLOR_0": true,
+              "JOINTS_0": true,
+              "WEIGHTS_0": true,
+              "TEXCOORD_1": true
+            },
+            "nativeGeometryIndicesMorphsExact": true
+          }
+        ]
+      }
+    ],
+    "nonHatAtlasPixels": [
+      {
+        "Apparel_Color": {
+          "nonHatTexels": 535810,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        },
+        "Apparel_Normal": {
+          "nonHatTexels": 535810,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        },
+        "Apparel_MetalRough": {
+          "nonHatTexels": 535810,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        }
+      },
+      {
+        "Apparel_Color": {
+          "nonHatTexels": 529737,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        },
+        "Apparel_Normal": {
+          "nonHatTexels": 529737,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        },
+        "Apparel_MetalRough": {
+          "nonHatTexels": 529737,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        }
+      },
+      {
+        "Apparel_Color": {
+          "nonHatTexels": 406079,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        },
+        "Apparel_Normal": {
+          "nonHatTexels": 406079,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        },
+        "Apparel_MetalRough": {
+          "nonHatTexels": 406079,
+          "changedNonHatTexels": 0,
+          "maximumByteDelta": 0
+        }
+      }
+    ],
+    "onlyExistingGLBsChanged": [
+      "granadero-lod0.glb",
+      "granadero-lod1.glb",
+      "granadero-lod2.glb"
+    ],
+    "otherSevenAppearanceRecordsExact": true,
+    "allAnimationBanksEquipmentHorseGarmentsExact": true
+  },
+  "tests": {
+    "command": "GRANADEROS_CHARACTER_LIBRARY=/tmp/granadero-hat-construction-review/models node --test tests/characters-generated-skin.test.mjs tests/characters-skin-surfaces.test.mjs tests/characters-eye-surfaces.test.mjs",
+    "pass": 54,
+    "fail": 0,
+    "skip": 0,
+    "log": "/tmp/granadero-hat-construction-review/surface-tests-selected.log"
+  },
+  "limits": [
+    "This is a small construction/material improvement, not a claim of reference-level realism.",
+    "Fine plume fibre silhouette remains unresolved; the original plume is unchanged.",
+    "Private banks are from the earlier 866d455b baseline. Merge only the listed body/atlas files and three LOD records into current canonical.",
+    "The bounded contact scan covers 24 LOD0 actions at 30 Hz; it is not a proof of all transitions or between-frame clearance."
+  ],
+  "renders": {
+    "before": "/tmp/granadero-hat-construction-review/review-baseline/granadero/stand.idle.unarmed.sample-1.head.png",
+    "after": "/tmp/granadero-hat-construction-review/review-selected/lod0/granadero/stand.idle.unarmed.sample-1.head.png",
+    "face": "/tmp/granadero-hat-construction-review/review-selected/lod0/granadero/stand.idle.unarmed.sample-1.face.png",
+    "isometric": "/tmp/granadero-hat-construction-review/review-selected/lod0/granadero/stand.idle.unarmed.sample-1.png",
+    "lowerLods": "/tmp/granadero-hat-construction-review/review-selected"
+  },
+  "contactComparison": {
+    "report": "/tmp/granadero-hat-construction-review/hat-contact-comparison.json",
+    "script": "/tmp/granadero-hat-construction-review/check-hat-contact.mjs",
+    "clips": 24,
+    "frames": 1750,
+    "sampleHz": 30,
+    "beforeSurfaceCrossingSamples": 1,
+    "afterSurfaceCrossingSamples": 1,
+    "newSurfaceCrossingSamples": 0,
+    "commonContact": "stand.punch.unarmed at 0.5 s, left hand against unchanged low side-tassel fibre. Same exact intersection point before/after; source coordinates [0.116845993,-0.015642502,1.652100120].",
+    "punchVolumeGate": {
+      "pass": 3,
+      "fail": 0,
+      "hatClassifiedHandVertexDepthMetres": 0,
+      "existingHeadHandVertexDepthMetres": 0.0006105128116171739,
+      "log": "/tmp/granadero-hat-construction-review/punch-contact-depth.log"
+    },
+    "scope": "Actual LOD0 triangle surfaces; current canonical male bank/equipment; full selected actions at 30 Hz plus markers. Not continuous collision detection, lower-LOD contact sweep, gameplay target fit, or crossfade proof.",
+    "canonicalManifestBeforeAndAfter": "7375f601d52d703dc3b36c94127d6b4878df72fff477bdec8d1c71103eb43e20"
+  }
+}

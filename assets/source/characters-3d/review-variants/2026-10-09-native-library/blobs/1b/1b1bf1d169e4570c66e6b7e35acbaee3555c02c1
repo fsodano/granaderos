@@ -1,0 +1,30 @@
+{
+  "currentSource": {
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/firearm_grips.py": "1ecc83e9237fae85dc44107ff3006e33e9bc681a314c39febe2191758a733376",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/motion.py": "b714b5c0672f40c85b28dfa2faabecd3ea7c6c870c99f3dc8a2c48fb00dbc0ef",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/reviewed_motion.py": "3003b0f85847b9836554804116da08286de653d904a628636333350c1d933c65",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/rifle_loading.py": "f01e5c6e9f1398aff4c38c7fa31698fd37843e1fb7ca87317771907d1b35e0fa",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/sockets.py": "b359eebd1df8b154dfa3eaacf8bf5d81f5d24bf95699ec069f5bf6d44d2311f9",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/equipment.py": "223549f0c992cad979a6fa3f8f9ba5ca1e161093bfaa02f2a2cff2e199b66ac2",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/equipment_library.py": "2e91c3d68d61952e9481a6afe7b607178290a8739653a71674208f18479d91c1",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tools/characters-3d/render-review.py": "6236eef7508db67c35680b7f978b3e007045e340aed37c60495e463040181fc5",
+    "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/characters-reviewed-motion.test.mjs": "511861778748f4332ea53081fdec7c987a83c6d54d6be6cd42eecf83dce01793"
+  },
+  "pairedStandingFrozenSource": {
+    "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring/firearm_grips.py": "a206d86201cf3e4f4d34920c3bdb093927e5bf821642d0ac8f5349fbbf030e0f",
+    "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring/motion.py": "fbcd1f684ac35df9437031a15d9995c13b27347caee973f5383295ce433ab244",
+    "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring/reviewed_motion.py": "3003b0f85847b9836554804116da08286de653d904a628636333350c1d933c65",
+    "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring/rifle_loading.py": "46b567abd9f2f4ddad26db259787abefa0a99f2c7040a186b92c8dcd56834c97",
+    "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring/sockets.py": "b359eebd1df8b154dfa3eaacf8bf5d81f5d24bf95699ec069f5bf6d44d2311f9",
+    "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring/equipment.py": "223549f0c992cad979a6fa3f8f9ba5ca1e161093bfaa02f2a2cff2e199b66ac2",
+    "/tmp/granadero-native-grip-candidate/source-root/assets/source/characters-3d/authoring/equipment_library.py": "2e91c3d68d61952e9481a6afe7b607178290a8739653a71674208f18479d91c1"
+  },
+  "pairedStandingAssets": {
+    "/tmp/granadero-native-grip-candidate/models/manifest.json": "4f4dab927bdf4c3673b33365b6ec97cc6b520093d244f0a431200357109d4406",
+    "/tmp/granadero-native-grip-candidate/models/granadero-lod0.glb": "0abb8395e77d44d0862418211d69e9bb838b875e11927762d1e91d423aa22be5",
+    "/tmp/granadero-native-grip-candidate/models/woman-scout-lod0.glb": "27c45d792d0659227d50dc833dbc3b0297ae115de7a76bc343e1c675fd134120",
+    "/tmp/granadero-native-grip-candidate/models/male-animations.glb": "b444753eeeeafe4948c526db7960dc26e6238446beeda7a4b221962a3ac3cf25",
+    "/tmp/granadero-native-grip-candidate/models/female-animations.glb": "3d4eb0337406baab1fcc2098c99b62609e21115cd78eca4d508025e6f5dee25e",
+    "/tmp/granadero-native-grip-candidate/models/equipment.glb": "0c19c30c81a80e95acf0aaffb490819d84ae18119b67106b91ff222e7615be52"
+  }
+}

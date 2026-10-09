@@ -1,0 +1,54 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -610,7 +610,10 @@
+                 density=max(0,1-across*across)**.8
+                 density*=math.sin(math.pi*t)**.30
+                 density*=.90+.10*math.sin(j*2.399)
+-                brow_tones.append((1-.65*density,1-.70*density,1-.73*density,1))
++                if gender=='male' and preset=='granadero':
++                    brow_tones.append((1-.83*density,1-.86*density,1-.88*density,1))
++                else:
++                    brow_tones.append((1-.65*density,1-.70*density,1-.73*density,1))
+             if j:
+                 for column in range(columns-1):
+                     a=(j-1)*columns+column;brow_faces.append((a,a+1,a+columns+1,a+columns))
+@@ -778,7 +781,11 @@
+             # Stubble is a mild cool jaw tone; it does not obscure the mouth.
+             shade=1-.14*socket-(.08 if gender=='male' else .020)*jaw-.05*temple
+             hands=hand_tone(p,rig,native_hands)
+-            return (shade*(1-.035*lips)*hands[0],shade*(1-.30*lips-.055*cheek)*hands[1],shade*(1-.32*lips-.085*cheek)*hands[2],1)
++            adult=(1,1,1)
++            if gender=='male' and preset=='granadero':
++                from adult_pigment import facial_tone
++                adult=facial_tone(p,eye_z)
++            return (shade*(1-.035*lips)*hands[0]*adult[0],shade*(1-.30*lips-.055*cheek)*hands[1]*adult[1],shade*(1-.32*lips-.085*cheek)*hands[2]*adult[2],1)
+         if key in ('navy','trousers','red','black'):
+             cloth=.956+.018*math.sin(p.z*15+p.x*7)+.012*math.sin(p.z*29-p.y*19+abs(p.x)*11)
+             if key=='navy':
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/adult_pigment.py
+@@ -0,0 +1,24 @@
++"""Private adult facial pigment trial; no geometry, UV or material changes."""
++import math
++
++def facial_tone(p,eye_z):
++    def g(v,c,w):return math.exp(-((v-c)/w)**2)
++    def smooth(v):
++        t=max(0,min(1,v));return t*t*(3-2*t)
++    if p.z<eye_z-.117 or p.z>eye_z+.030 or abs(p.x)>.095:return(1,1,1)
++    front=smooth((-p.y-.050)/.045)
++    x=abs(p.x);z=p.z
++    chin=.85*g(x,0,.038)*g(z,eye_z-.087,.026)
++    jaw=.90*g(x,.046,.024)*g(z,eye_z-.074,.025)
++    moustache=.95*g(x,0,.022)*g(z,eye_z-.051,.0075)
++    sideburn=.86*g(x,.069,.010)*g(z,eye_z-.022,.035)
++    beard=1-(1-chin)*(1-jaw)*(1-moustache)*(1-sideburn)
++    lips=g(x,0,.029)*g(z,eye_z-.063,.006)
++    beard*=front*(1-.98*lips)
++    # Broad stubble colour survives tactical scale; it is not a noisy pore map.
++    red=1-.52*beard;green=1-.50*beard;blue=1-.46*beard
++    # Darker, less pink lips and small warm flush at the nose and upper cheeks.
++    lip=.10*lips*front
++    warm=(.75*g(x,.045,.022)*g(z,eye_z-.028,.020)+.70*g(x,0,.016)*g(z,eye_z-.037,.013))*front
++    red*=1-lip;green*=(1-lip)*(1-.050*warm);blue*=(1-lip)*(1-.075*warm)
++    return(red,green,blue)

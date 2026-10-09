@@ -1,0 +1,32 @@
+import {writeFileSync,readFileSync} from 'node:fs';
+import {AnimationMixer,LoopOnce,Vector3,Quaternion} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+import {clone} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
+const root='/tmp/granadero-hand-web-pilot';
+process.env.GRANADEROS_CHARACTER_LIBRARY=root+'/pose-baseline'; const before=await import('./runtime/tests/published-actor-fixture.mjs?before');
+process.env.GRANADEROS_CHARACTER_LIBRARY=root+'/pose-50'; const after=await import('./runtime/tests/published-actor-fixture.mjs?after');
+const assets=await Promise.all([before.publishedActor('granadero',0),after.publishedActor('granadero',0)]);
+function setup(asset,name){const model=clone(asset.body.scene),mixer=new AnimationMixer(model),clip=asset.animation.animations.find(c=>c.name===name),bones={};model.traverse(x=>{if(x.isBone)bones[x.name]=x;}); const action=mixer.clipAction(clip).setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();return{model,mixer,clip,bones};}
+const result=[];
+for(const name of ['stand.idle.unarmed','stand.walk.unarmed','stand.run.unarmed']){
+ const pair=assets.map(a=>setup(a,name)),count=Math.ceil(pair[0].clip.duration*120),row={clip:name,duration:pair[0].clip.duration,samples:count+1,maxJointDifferenceM:0,maxDownstreamOrientationDifferenceDeg:0,maxDistalSkinDifferenceM:0};
+ for(let sample=0;sample<=count;sample++){
+  const time=pair[0].clip.duration*sample/count;
+  for(const p of pair){p.mixer.setTime(time);p.model.updateMatrixWorld(true);p.model.traverse(x=>{if(x.isSkinnedMesh)x.skeleton.update();});}
+  for(const bone of ['thumb_01_r','thumb_02_r','thumb_03_r']){
+   const a=pair[0].bones[bone],b=pair[1].bones[bone];row.maxJointDifferenceM=Math.max(row.maxJointDifferenceM,a.getWorldPosition(new Vector3()).distanceTo(b.getWorldPosition(new Vector3())));
+   if(bone!=='thumb_01_r')row.maxDownstreamOrientationDifferenceDeg=Math.max(row.maxDownstreamOrientationDifferenceDeg,a.getWorldQuaternion(new Quaternion()).normalize().angleTo(b.getWorldQuaternion(new Quaternion()).normalize())*180/Math.PI);
+  }
+  const meshes=pair.map(p=>{let result;p.model.traverse(x=>{if(x.isSkinnedMesh&&x.material.name==='Skin')result=x;});return result;});
+  const [a,b]=meshes,g=a.geometry;
+  for(let i=0;i<g.attributes.position.count;i++){
+   let baseWeight=0,distalWeight=0;
+   for(let s=0;s<4;s++){const name=a.skeleton.bones[g.attributes.skinIndex.getComponent(i,s)].name,w=g.attributes.skinWeight.getComponent(i,s);if(name==='thumb_01_r')baseWeight+=w;if(/^thumb_0[23]_r$/.test(name))distalWeight+=w;}
+   if(baseWeight>.00001||distalWeight<.95)continue;
+   const v=new Vector3().fromBufferAttribute(g.attributes.position,i);
+   const pa=a.localToWorld(a.applyBoneTransform(i,v.clone())),pb=b.localToWorld(b.applyBoneTransform(i,v.clone()));
+   row.maxDistalSkinDifferenceM=Math.max(row.maxDistalSkinDifferenceM,pa.distanceTo(pb));
+  }
+ }
+ result.push(row);console.log(row);
+}
+writeFileSync(root+'/pose-preservation-samples.json',JSON.stringify(result,null,2));

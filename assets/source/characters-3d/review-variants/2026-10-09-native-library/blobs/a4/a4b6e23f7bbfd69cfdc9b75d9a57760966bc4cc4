@@ -1,0 +1,231 @@
+"""Independent read-only audit of the serialized woman-shawl palette cut."""
+from pathlib import Path
+from copy import deepcopy
+import argparse
+import hashlib
+import json
+import math
+import struct
+from PIL import Image
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--baseline', type=Path, required=True)
+parser.add_argument('--candidate', type=Path, required=True)
+parser.add_argument('--receipt', type=Path, required=True)
+args = parser.parse_args()
+BASE, CAND, OUT = args.baseline.resolve(), args.candidate.resolve(), args.receipt.resolve()
+REL = Path('web/public/models/characters')
+COLOR = (49, 48, 49, 255)
+NEW_TEX = 'textures/7e88592eeb20ec0f16ff.png'
+OLD_TEX = 'textures/8a4e28b91cfa07b8dbd2.png'
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+def tree(root):
+    return {p.relative_to(root).as_posix(): p.read_bytes()
+            for p in root.rglob('*') if p.is_file()}
+
+def pins(data):
+    return {k: sha(v) for k, v in sorted(data.items())}
+
+def glb(data):
+    magic, version, length = struct.unpack_from('<III', data)
+    assert (magic, version, length) == (0x46546c67, 2, len(data))
+    chunks = []
+    offset = 12
+    while offset < length:
+        size, kind = struct.unpack_from('<II', data, offset)
+        offset += 8
+        chunks.append((kind, data[offset:offset + size]))
+        offset += size
+    assert offset == length and chunks[0][0] == 0x4e4f534a
+    return json.loads(chunks[0][1]), chunks[1:]
+
+def uv_rows(j, chunks, primitive):
+    binaries = [b for kind, b in chunks if kind == 0x004e4942]
+    assert len(binaries) == 1
+    a = j['accessors'][primitive['attributes']['TEXCOORD_0']]
+    assert a['componentType'] == 5126 and a['type'] == 'VEC2'
+    assert not a.get('sparse')
+    v = j['bufferViews'][a['bufferView']]
+    assert v['buffer'] == 0
+    offset = v.get('byteOffset', 0) + a.get('byteOffset', 0)
+    stride = v.get('byteStride', 8)
+    return [struct.unpack_from('<ff', binaries[0], offset + i * stride)
+            for i in range(a['count'])]
+
+before_b = tree(BASE / REL)
+before_c = tree(CAND / REL)
+start = {'baseline': pins(before_b), 'candidate': pins(before_c)}
+profile = 'web/lib/three/locomotion-profile.json'
+profile_b = (BASE / profile).read_bytes()
+profile_c = (CAND / profile).read_bytes()
+assert profile_b == profile_c
+receipt_path = Path(__file__).with_name('build-receipt.json')
+build_receipt_pin = sha(receipt_path.read_bytes())
+
+allowed_changed = {'manifest.json', *(f'woman-shawl-lod{i}.glb' for i in range(3))}
+assert before_b.keys() - before_c.keys() == set()
+assert before_c.keys() - before_b.keys() == {NEW_TEX}
+changed = {k for k in before_b if before_b[k] != before_c[k]}
+assert changed == allowed_changed
+assert before_b[OLD_TEX] == before_c[OLD_TEX]
+
+old_image = Image.open(BASE / REL / OLD_TEX).convert('RGBA')
+new_image = Image.open(CAND / REL / NEW_TEX).convert('RGBA')
+assert old_image.size == new_image.size == (128, 128)
+changed_pixels = []
+for y in range(128):
+    for x in range(128):
+        old, new = old_image.getpixel((x, y)), new_image.getpixel((x, y))
+        used_tile = 32 <= x < 64 and 96 <= y < 128
+        if old != new:
+            assert used_tile, ('pixel outside allowed tile', x, y, old, new)
+            changed_pixels.append((x, y))
+        if used_tile:
+            assert new == COLOR, ('incorrect charcoal tile', x, y, new)
+        else:
+            assert old == new
+assert len(changed_pixels) == 32 * 32
+
+rows = []
+for lod in range(3):
+    name = f'woman-shawl-lod{lod}.glb'
+    old, old_chunks = glb(before_b[name])
+    new, new_chunks = glb(before_c[name])
+    assert old_chunks == new_chunks, ('entire non-JSON chunks differ', name)
+    node_name = f'Human_legwear_LOD{lod}'
+    nodes = [x for x in old['nodes'] if x.get('name') == node_name]
+    assert len(nodes) == 1
+    mesh_index = nodes[0]['mesh']
+    old_mesh = old['meshes'][mesh_index]
+    new_mesh = new['meshes'][mesh_index]
+    assert len(old_mesh['primitives']) == len(new_mesh['primitives']) == 1
+    old_primitive = old_mesh['primitives'][0]
+    new_primitive = new_mesh['primitives'][0]
+    material_index = old_primitive['material']
+    source_material = old['materials'][material_index]
+    added_material = new['materials'][-1]
+    assert new_primitive['material'] == len(old['materials'])
+    assert len(new['materials']) == len(old['materials']) + 1
+    assert len(new['textures']) == len(old['textures']) + 1
+    assert len(new['images']) == len(old['images']) + 1
+    for key in ['materials', 'textures', 'images']:
+        assert new[key][:-1] == old[key], ('old prefix differs', lod, key)
+    assert new['samplers'] == old['samplers']
+    expected_material = deepcopy(source_material)
+    expected_material['name'] = 'Apparel_Atlas_Charcoal_Legwear'
+    expected_material['pbrMetallicRoughness']['baseColorTexture']['index'] = len(old['textures'])
+    assert added_material == expected_material, ('non-color material change', lod)
+    source_texture = old['textures'][source_material['pbrMetallicRoughness']['baseColorTexture']['index']]
+    expected_texture = deepcopy(source_texture)
+    expected_texture['source'] = len(old['images'])
+    assert new['textures'][-1] == expected_texture
+    source_image = old['images'][source_texture['source']]
+    expected_image = deepcopy(source_image)
+    expected_image['name'] = 'Apparel_Color_Charcoal_Legwear'
+    expected_image['uri'] = NEW_TEX
+    assert new['images'][-1] == expected_image
+
+    # Exact whole JSON after allowing only one material pointer and appended records.
+    expected_json = deepcopy(old)
+    expected_json['meshes'][mesh_index]['primitives'][0]['material'] = len(old['materials'])
+    expected_json['materials'].append(expected_material)
+    expected_json['textures'].append(expected_texture)
+    expected_json['images'].append(expected_image)
+    if lod:
+        topology = expected_json['meshes'][mesh_index]['extras']['nativeClothTopology']
+        assert topology['sourceSha256'] == sha(before_b['woman-shawl-lod0.glb'])
+        assert topology['sourceUrl'] == '/models/characters/woman-shawl-lod0.glb'
+        topology['sourceSha256'] = sha(before_c['woman-shawl-lod0.glb'])
+    assert new == expected_json, ('unlisted JSON change', lod)
+
+    uvs = uv_rows(new, new_chunks, new_primitive)
+    for vertex, (u, v) in enumerate(uvs):
+        assert math.isfinite(u) and math.isfinite(v)
+        # glTF image/UV origin is upper-left. Include all bilinear footprint texels.
+        x, y = u * 128 - 0.5, v * 128 - 0.5
+        ix, iy = math.floor(x), math.floor(y)
+        for xx in [ix, ix + 1]:
+            for yy in [iy, iy + 1]:
+                assert 32 <= xx < 64 and 96 <= yy < 128, (lod, vertex, u, v)
+                assert new_image.getpixel((xx, yy)) == COLOR
+    bin_bytes = sum(len(b) for kind, b in new_chunks if kind == 0x004e4942)
+    rows.append({
+        'lod': lod, 'file': name,
+        'beforeSha256': sha(before_b[name]), 'afterSha256': sha(before_c[name]),
+        'beforeBytes': len(before_b[name]), 'afterBytes': len(before_c[name]),
+        'byteGrowth': len(before_c[name]) - len(before_b[name]),
+        'entireBinaryChunkExact': True, 'binaryBytes': bin_bytes,
+        'onlyMaterialPointerChanged': node_name,
+        'previousMaterial': material_index, 'newMaterial': new_primitive['material'],
+        'allOtherJSONExact': True, 'allOldMaterialTextureImageSamplerRecordsExact': True,
+        'coarseTopologyOnlySourceShaUpdated': bool(lod),
+        'allLegwearVerticesOnSolidCharcoalTile': len(uvs),
+        'uvMin': [min(r[k] for r in uvs) for k in range(2)],
+        'uvMax': [max(r[k] for r in uvs) for k in range(2)],
+        'shawlOutfitMaterialUVColorsAndOtherMeshPayloadsExact': True,
+        'sameRigBindAttributesMorphsIndicesAnimations': True,
+    })
+
+old_manifest = json.loads(before_b['manifest.json'])
+new_manifest = json.loads(before_c['manifest.json'])
+expected_manifest = deepcopy(old_manifest)
+manifest_changes = []
+for row in rows:
+    lod = row['lod']
+    old = expected_manifest['appearances']['woman-shawl']['lods'][lod]
+    new = new_manifest['appearances']['woman-shawl']['lods'][lod]
+    assert old['lod'] == new['lod'] == lod
+    assert old['triangles'] == new['triangles'] and old['drawCalls'] == new['drawCalls']
+    old['bytes'] = row['afterBytes']
+    old['sha256'] = row['afterSha256']
+    manifest_changes += [f'appearances.woman-shawl.lods.{lod}.bytes',
+                         f'appearances.woman-shawl.lods.{lod}.sha256']
+    if lod:
+        old['nativeClothTopology']['sourceSha256'] = rows[0]['afterSha256']
+        manifest_changes.append(f'appearances.woman-shawl.lods.{lod}.nativeClothTopology.sourceSha256')
+        assert old['nativeClothTopology']['sourceUrl'] == '/models/characters/woman-shawl-lod0.glb'
+assert expected_manifest == new_manifest, 'unlisted manifest change'
+assert old_manifest['animationLibraries'] == new_manifest['animationLibraries']
+assert old_manifest['equipment'] == new_manifest['equipment']
+banks = {}
+for gender, record in new_manifest['animationLibraries'].items():
+    file = record['url'].rsplit('/', 1)[1]
+    assert before_b[file] == before_c[file]
+    assert sha(before_c[file]) == record['sha256']
+    assert len(before_c[file]) == record['bytes']
+    banks[gender] = {'file': file, 'sha256': record['sha256'], 'bytes': record['bytes'],
+                     'entireBankAndMetadataExact': True}
+
+end = {'baseline': pins(tree(BASE / REL)), 'candidate': pins(tree(CAND / REL))}
+assert start == end, 'source/bank/texture pin changed during independent audit'
+assert (BASE / profile).read_bytes() == profile_b
+assert (CAND / profile).read_bytes() == profile_c
+assert sha(receipt_path.read_bytes()) == build_receipt_pin
+report = {
+    'status': 'PASS', 'baselineRoot': str(BASE), 'candidateRoot': str(CAND),
+    'independentScriptSha256': sha(Path(__file__).read_bytes()),
+    'rows': rows, 'changedExistingModelDirectoryFiles': sorted(changed),
+    'newModelDirectoryFiles': [NEW_TEX],
+    'otherModelFilesByteExact': len(before_b) - len(changed),
+    'originalModelFiles': len(before_b), 'candidateModelFiles': len(before_c),
+    'manifestAllowedDifferences': manifest_changes,
+    'allOtherManifestRecordsExact': True,
+    'banks': banks,
+    'profile': {'path': profile, 'sha256': sha(profile_b), 'bytes': len(profile_b), 'exact': True},
+    'texture': {'oldUri': OLD_TEX, 'oldSha256': sha(before_b[OLD_TEX]),
+                'oldFileBytesExact': True, 'newUri': NEW_TEX,
+                'newSha256': sha(before_c[NEW_TEX]), 'newBytes': len(before_c[NEW_TEX]),
+                'dimensions': [128, 128], 'changedPixels': len(changed_pixels),
+                'changedPixelRectangle': [32, 96, 64, 128], 'newTileRGBA': COLOR,
+                'allOtherPixelsExact': True},
+    'totalGLBByteGrowth': sum(row['byteGrowth'] for row in rows),
+    'totalNewByteGrowthIncludingTexture': sum(row['byteGrowth'] for row in rows) + len(before_c[NEW_TEX]),
+    'pins': start, 'sourcePinsUnchangedAtEnd': True,
+    'builderReceiptSha256Unchanged': build_receipt_pin,
+}
+OUT.write_text(json.dumps(report, indent=2) + '\n')
+print(json.dumps({k: v for k, v in report.items() if k != 'pins'}, indent=2))
+print('receipt', OUT, sha(OUT.read_bytes()))

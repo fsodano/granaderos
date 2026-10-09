@@ -1,0 +1,169 @@
+"""Private connected sleeve, elliptical sections and cloth-specific weights."""
+import math,json
+from pathlib import Path
+import bpy,numpy as np
+from mathutils import Vector,Matrix,Quaternion
+from mathutils.bvhtree import BVHTree
+ROOT=Path('/tmp/granadero-coat-sleeve-pilot');ATTRIBUTE='Pilot_Sleeve_L'
+
+def smooth(a,b,x):
+ u=max(0,min(1,(x-a)/(b-a)));return u*u*(3-2*u)
+
+class Sleeve:
+ def __init__(self,heads):
+  self.sh=heads['upperarm_l'];self.el=heads['lowerarm_l'];self.wr=heads['hand_l']
+  self.upper=(self.el-self.sh).normalized();self.lower=(self.wr-self.el).normalized()
+  self.stations=[(-.27+i*.002,self.centre(-.27+i*.002))for i in range(271)]
+ def centre(self,s):
+  h=.085
+  if s<=-h:return self.el+self.upper*s,self.upper
+  if s>=h:return self.el+self.lower*s,self.lower
+  u=(s+h)/(2*h);a=self.el-self.upper*h;b=self.el;c=self.el+self.lower*h
+  centre=a*(1-u)**2+b*2*u*(1-u)+c*u*u
+  tangent=((b-a)*(1-u)+(c-b)*u).normalized()
+  return centre,tangent
+ def at(self,p):
+  s,(centre,axis)=min(self.stations,key=lambda item:(item[1][0]-p).length_squared)
+  front=Vector((0,-1,0));front=(front-axis*front.dot(axis)).normalized();across=axis.cross(front).normalized();d=p-centre
+  return s,centre,axis,front,across,d.dot(front),d.dot(across)
+
+def prepare_envelope(coat,heads):
+ curve=Sleeve(heads);data=[];edgecount={};old=[v.co.copy()for v in coat.data.vertices]
+ topology=[tuple(p.vertices)for p in coat.data.polygons];uv=[[tuple(v.uv)for v in layer.data]for layer in coat.data.uv_layers]
+ for face in coat.data.polygons:
+  ids=list(face.vertices)
+  for a,b in zip(ids,ids[1:]+ids[:1]):edge=tuple(sorted((a,b)));edgecount[edge]=edgecount.get(edge,0)+1
+ boundary={i for edge,n in edgecount.items()if n==1 for i in edge};attr=coat.data.attributes.new(name=ATTRIBUTE,type='FLOAT',domain='POINT')
+ for v in coat.data.vertices:
+  p=v.co;s,c,axis,front,across,f,a=curve.at(p)
+  weights={coat.vertex_groups[g.group].name:g.weight for g in v.groups};arm=weights.get('upperarm_l',0)+weights.get('lowerarm_l',0)
+  amount=smooth(.72,.96,arm)*smooth(-.17,-.085,s)*(1-smooth(.095,.16,s))
+  amount*=smooth(.145,.20,(p-curve.sh).length)*smooth(.10,.15,(p-curve.wr).length)
+  if v.index in boundary or p.x<.18 or math.hypot(f,a)>.115:amount=0
+  attr.data[v.index].value=amount;data.append((s,c,axis,front,across,f,a,weights,arm))
+ stations=[]
+ for k in range(17):
+  s=-.20+k*.025;samples=[d for d,v in zip(data,coat.data.vertices)if abs(d[0]-s)<.025 and attr.data[v.index].value>.015]
+  if len(samples)<8:continue
+  coords=np.array([[d[5],d[6]]for d in samples]);lo,hi=np.percentile(coords,[5,95],axis=0);centre=(lo+hi)/2;radii=(hi-lo)/2
+  stations.append((s,centre,radii))
+ def interp(s,field,width):
+  weights=[math.exp(-((s-c)/width)**2)for c,_,_ in stations];return sum((row[field]*w for row,w in zip(stations,weights)),np.zeros(2))/sum(weights)
+ records=[];changed_weights=0
+ for v,d in zip(coat.data.vertices,data):
+  amount=attr.data[v.index].value
+  if not amount:continue
+  s,c,axis,front,across,f,a,weights,arm=d
+  centre=interp(s,1,.028);local=interp(s,2,.025);broad=interp(s,2,.07)
+  # Preserve the actual ellipse and its fitted perimeter. A restrained
+  # smoothing of the narrow elbow station removes the skin crease without
+  # adding the same radial allowance everywhere.
+  target=local*.72+broad*.28
+  cap=1.12+.10*math.exp(-(s/.045)**2)
+  ratio=float(np.prod(target)/np.prod(local))
+  if ratio>cap:target*=math.sqrt(cap/ratio)
+  coord=np.array([f,a])-centre
+  angle=math.atan2(coord[1]/max(.001,local[1]),coord[0]/max(.001,local[0]))
+  fit=centre+np.array([math.cos(angle),math.sin(angle)])*target
+  q=c+front*float(fit[0])+across*float(fit[1]);delta=(q-v.co)*(.65*amount)
+  if delta.length>.010:delta=delta.normalized()*.010
+  v.co+=delta
+  # A cloth row follows a longitudinal arm transition. It does not inherit
+  # the large angular change in skin weights around the native elbow ring.
+  desired=smooth(-.09,.095,s);old_lower=weights.get('lowerarm_l',0)/max(1e-9,arm)
+  new_lower=old_lower+(desired-old_lower)*amount
+  for name,value in [('lowerarm_l',arm*new_lower),('upperarm_l',arm*(1-new_lower))]:
+   group=coat.vertex_groups.get(name)or coat.vertex_groups.new(name=name);group.add([v.index],value,'REPLACE')
+  changed_weights+=abs(new_lower-old_lower)>1e-7
+  records.append({'s':s,'moveMm':delta.length*1000,'profileAreaRatio':float(np.prod(target)/np.prod(local))})
+ coat.data.update();assert topology==[tuple(p.vertices)for p in coat.data.polygons];assert uv==[[tuple(v.uv)for v in layer.data]for layer in coat.data.uv_layers]
+ assert all((coat.data.vertices[i].co-old[i]).length==0 for i in boundary)
+ ROOT.joinpath('envelope-proof-v3.json').write_text(json.dumps({'changedVertices':len(records),'changedClothWeightRows':changed_weights,'maxDisplacementMm':max(r['moveMm']for r in records),'maxTargetSectionAreaRatio':max(r['profileAreaRatio']for r in records),'meanTargetSectionAreaRatio':sum(r['profileAreaRatio']for r in records)/len(records),'boundaryVerticesExact':len(boundary),'topologyAndUVExact':True,'sourceBodyAndRigUnchanged':True,'stations':[{'s':s,'centre':c.tolist(),'radii':r.tolist()}for s,c,r in stations]},indent=2))
+
+def fold_mask(coat,index):
+ attr=coat.data.attributes.get(ATTRIBUTE);return attr.data[index].value if attr is not None else 0
+
+def bake_elbow_corrective(ctx):
+ if ctx['preset']!='granadero':return
+ rig=ctx['rig'];outfit=next(o for o in ctx['objects']if o.name.startswith('Human_outfit'));mask=outfit.data.attributes.get(ATTRIBUTE);assert mask
+ selected={v.index for v in outfit.data.vertices if mask.data[v.index].value>1e-5};saved={b.name:b.matrix_basis.copy()for b in rig.pose.bones}
+ for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+ curve=Sleeve(ctx['heads']);upper=curve.upper;lower=curve.lower;bind=upper.angle(lower);normal=upper.cross(lower).normalized();b=rig.pose.bones['lowerarm_l'];b.rotation_mode='QUATERNION';b.rotation_quaternion=Quaternion(b.bone.matrix_local.to_quaternion().inverted()@normal,math.radians(110)-bind);bpy.context.view_layer.update()
+ transforms={b.name:b.matrix@b.bone.matrix_local.inverted()for b in rig.pose.bones}
+ def skin(weights):
+  result=Matrix(((0,0,0,0),)*4);total=0
+  for name,w in weights:
+   if name in transforms:result+=transforms[name]*w;total+=w
+  return result*(1/total)if total else Matrix.Identity(4)
+ source=ctx['source_points'];used=sorted({i for f in ctx['source_faces']for i,_ in f});lookup={i:j for j,i in enumerate(used)}
+ body_points=[skin(ctx['source_assignments'][i].items())@source[i]for i in used]
+ body=BVHTree.FromPolygons(body_points,[[lookup[i]for i,_ in f]for f in ctx['source_faces']])
+ # Include neighbouring fixed rows in the constraint mesh. Their transforms
+ # remain the unchanged native pose; the corrective tapers to those rows.
+ edge_faces={};triangles=[]
+ for poly in outfit.data.polygons:
+  ids=list(poly.vertices)
+  if not any(i in selected for i in ids):continue
+  for j in range(1,len(ids)-1):
+   tri=(ids[0],ids[j],ids[j+1]);triangles.append(tri)
+   for a,b,c in [(tri[0],tri[1],tri[2]),(tri[1],tri[2],tri[0]),(tri[2],tri[0],tri[1])]:edge_faces.setdefault(tuple(sorted((a,b))),[]).append(c)
+ ids={i for tri in triangles for i in tri};matrices={i:skin([(outfit.vertex_groups[g.group].name,g.weight)for g in outfit.data.vertices[i].groups])for i in ids}
+ original={i:matrices[i]@outfit.data.vertices[i].co for i in ids};points={i:p.copy()for i,p in original.items()};mass={i:mask.data[i].value if i in selected else 0 for i in ids}
+ constraints=[(a,b,(outfit.data.vertices[a].co-outfit.data.vertices[b].co).length,.70)for a,b in edge_faces]
+ # Opposite vertices provide a soft bending constraint; edge length controls
+ # stretch. This replaces the former Laplacian smoothing/volume inflation.
+ for edge,opposites in edge_faces.items():
+  if len(opposites)==2:
+   a,b=opposites;constraints.append((a,b,(outfit.data.vertices[a].co-outfit.data.vertices[b].co).length,.032))
+ posed_el=rig.pose.bones['lowerarm_l'].head;posed_sh=rig.pose.bones['upperarm_l'].head;posed_wr=rig.pose.bones['hand_l'].head;inner=((posed_sh-posed_el).normalized()+(posed_wr-posed_el).normalized()).normalized()
+ def inside(p):
+  votes=0
+  for direction in (Vector((.723,.431,.54)).normalized(),Vector((-.413,.81,.39)).normalized(),Vector((.23,-.38,.896)).normalized()):
+   origin=p.copy();count=0
+   for _ in range(20):
+    hit,n,idx,dist=body.ray_cast(origin,direction)
+    if hit is None:break
+    count+=1;origin=hit+direction*1e-5
+   votes+=count%2
+  return votes>=2
+ # Seed two shallow oblique inner tucks. The constraint pass redistributes
+ # available length around them instead of expanding the entire cross-section.
+ for i in selected:
+  rest=outfit.data.vertices[i].co;s,c,axis,front,across,f,a=curve.at(rest)
+  direction=(points[i]-posed_el).normalized();amount=smooth(.05,.65,direction.dot(inner))*mass[i]
+  seed=.0020*math.sin((s+.027+a*.3)*math.pi/.038)*math.exp(-(s/.065)**2)
+  points[i]+=direction*(seed*amount)
+ collision_count=0
+ for iteration in range(100):
+  for a,b,length,stiffness in constraints:
+   delta=points[b]-points[a];distance=delta.length;total=mass[a]+mass[b]
+   if distance<1e-8 or not total:continue
+   correction=delta*((distance-length)/distance)*stiffness
+   points[a]+=correction*(mass[a]/total);points[b]-=correction*(mass[b]/total)
+  if iteration%4==3 or iteration==99:
+   for i in selected:
+    p=points[i];q,n,face,distance=body.find_nearest(p)
+    if q is None:continue
+    # A nearest normal alone is not a valid inside test on a folded surface.
+    # Require multi-ray volume agreement before moving a buried point out.
+    signed=(p-q).dot(n)
+    buried=signed<0 and inside(p)
+    if buried or distance<.0035:
+     goal=q+n*.0035;points[i]=p.lerp(goal,min(1,mass[i]*1.4));collision_count+=1
+  # A weak positional term keeps the smooth outer elbow extended. It cannot
+  # override the length constraints or create a new fixed ring-like ridge.
+  for i in selected:
+   d=(original[i]-posed_el).normalized();outer=1-smooth(-.25,.35,d.dot(inner))
+   points[i]=points[i].lerp(original[i],.007*outer*mass[i])
+ if not outfit.data.shape_keys:outfit.shape_key_add(name='Basis')
+ key=outfit.shape_key_add(name='coat_elbow_l');moves=[]
+ for i in selected:
+  key.data[i].co=matrices[i].inverted_safe()@points[i];moves.append((key.data[i].co-outfit.data.vertices[i].co).length)
+ ratios=[(points[b]-points[a]).length/max(length,1e-8)for a,b,length,stiffness in constraints if stiffness==.70 and length>.001]
+ edge_sum=sum(length for a,b,length,stiffness in constraints if stiffness==.70)
+ posed_edge_sum=sum((points[b]-points[a]).length for a,b,length,stiffness in constraints if stiffness==.70)
+ edge_error=max(abs((points[b]-points[a]).length-length) for a,b,length,stiffness in constraints if stiffness==.70)
+ key.value=0
+ for name,matrix in saved.items():rig.pose.bones[name].matrix_basis=matrix
+ bpy.context.view_layer.update()
+ ROOT.joinpath('corrective-proof-v3.json').write_text(json.dumps({'name':key.name,'selectedVertices':len(selected),'bindAngleDegrees':math.degrees(bind),'authoredAngleDegrees':110,'maxRestMorphDeltaMm':max(moves)*1000,'meanRestMorphDeltaMm':sum(moves)/len(moves)*1000,'edgeLengthRatioPercentiles':np.percentile(ratios,[0,5,50,95,100]).tolist(),'meanEdgeLengthRatioOver1mm':float(np.mean(ratios)),'summedEdgeLengthRatio':posed_edge_sum/edge_sum,'maxAbsoluteEdgeErrorMm':edge_error*1000,'ratioFilter':'edges longer than1mm; all edges still constrained','collisionProjectionCount':collision_count,'iterations':100,'bodyRigUnchanged':True,'driver':'native elbow angle; bind to 110 degrees'},indent=2))

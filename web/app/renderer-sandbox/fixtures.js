@@ -26,6 +26,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'equipped-crouch',label:'Agachado con equipo',help:'Dos combatientes con el mismo equipo. Cambia el arma, selecciona cada combatiente y usa Alt + movimiento para desplazarte de costado sin girar. Puedes comparar entrada, avance y parada.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
+  {id:'blast-damage',label:'Daño por explosión',help:'Lanza las granadas junto a las paredes de madera, adobe y piedra o al mobiliario. Los impactos abren pasos y dejan restos. El cofre conserva su contenido. Reinicia para repetir.'},
   BAYONET_SCENARIO,
   PRONE_WORK_SCENARIO,
   REACH_SCENARIO,
@@ -159,6 +160,15 @@ function furnishings(){
   const types=['table','bench','bed','chest','barrels','hay','cart'],props=types.map((type,index)=>({id:`review-${type}`,type,x:4+index%4*4,y:5+Math.floor(index/4)*5,footprint:type==='bed'?{width:1,height:2}:type==='cart'?{width:2,height:1}:{width:1,height:1},rotation:type==='cart'?90:0,blocksMovement:true}));
   return {...createBattle([soldier('furniture-guard','Mobiliario',10,8,{activeSlot:'unarmed'})],{id:'renderer-furnishings',name:'Mobiliario de época',width:22,height:17,tiles:ground(22,17),props,enemies:[],exploration:true}),deploymentComplete:true};
 }
+function blastDamage(){
+  const width=20,height=18,tiles=ground(width,height);
+  for(const [y,material]of [[4,'wood'],[8,'adobe'],[12,'stone']])Object.assign(tiles[y*width+10],{type:'wall',material,blocked:true,blocksSight:true,cover:40});
+  Object.assign(tiles[9*width+10],{type:'door',doorId:'blast-door',material:'adobe',open:false,locked:true,blocked:true,blocksSight:true,cover:40});
+  Object.assign(tiles[13*width+10],{type:'window',material:'adobe',blocked:true,blocksSight:false,cover:40});
+  const props=[{id:'blast-table',type:'table',x:8,y:6},{id:'blast-chest',type:'chest',x:8,y:10,open:false,locked:true,contents:[{item:'rations',count:2,weight:.5}]},{id:'blast-cart',type:'cart',x:13,y:8,footprint:{width:2,height:1}}];
+  const guard=soldier('blast-guard','Granadas',3,8,{weapon:0,blade:0,loaded:0,ammo:0,activeSlot:'item',activeItem:'inventory:grenade',inventory:{grenade:makeGrenadeStack('arsenal',8)},strength:100,dexterity:100,marksmanship:100});
+  return {...createBattle([guard],{id:'renderer-blast-damage',name:'Daño por explosión',width,height,tiles,props,enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+}
 function performance(count,architecture=false){
   const squad=Array.from({length:count},(_,index)=>({...OPERATIVES[index%OPERATIVES.length],id:`review-${index}`,name:`${families[index%families.length]} ${index+1}`,nickname:families[index%families.length],spriteAppearance:families[index%families.length],skinTone:['light','brown','dark'][Math.floor(index/8)%3],x:4+(index%10)*2,y:6+Math.floor(index/10)*2,weapon:index%4===3?1805:1800,blade:1810,activeSlot:index%4===0?'unarmed':index%4===2?'blade':'primary',offHand:{weapon:1805,count:1,weight:1.3,loaded:1,condition:100,jammed:false},headwear:null,outfit:null,legwear:null}));
   if(architecture){const map=buildSectorMap({sector:'tucuman',compactLayout:false,squad:squad.slice(0,8),enemies:[],exploration:true});return {...createBattle(map.squad,map),deploymentComplete:true};}
@@ -191,6 +201,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id==='furnishings-detail')return createFurnishingsDetailBattle();
   if(id==='furnishings-detail:exterior')return createFurnishingsDetailBattle('exterior');
   if(id==='furnishings')return furnishings();
+  if(id==='blast-damage')return blastDamage();
   if(id==='terrain-detail')return terrainDetail();
   if(id==='combat'||id==='night')return combat(id==='night');
   if(id==='mounted')return mounted();

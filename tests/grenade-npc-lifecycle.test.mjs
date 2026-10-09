@@ -1,3 +1,4 @@
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {withCarriedGrenades,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -21,7 +22,7 @@ function armedVisit(){
  // A Cuyo checkpoint opens the existing supplied corridor. The soldier is
  // hired, travels, carries one declared existing grenade and equips that physical item.
  s.phase=3;for(const id of ['buenos_aires','cordoba','mendoza'])s.sectors[id].owner='patriot';
- s=order(s,{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'travel',sector:'mendoza'});
+ s=order(s,{type:'recruitCivic',id:110,term:'week'});s=completeTestTravel(s,{sector:'mendoza'});
  assertTradeRejected(s,grenadeOffer(s,rosterFor(s).find(o=>o.id===110),isSupplied).action);s=withCarriedGrenades(s,110,1);
  const u=sectorInventoryModel(s,'mendoza',rosterFor(s),110).personal,item='inventory:grenade:arsenal';
  s=order(s,{type:'sectorInventory',sector:'mendoza',operativeId:110,direction:'equip',slot:'mainhand',inventoryKey:item,expected:JSON.stringify(extractItemQuantity(u,item,1).stack)});

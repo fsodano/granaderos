@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,ARTILLERY,artilleryContact,artilleryCrewPlan,artilleryShotTrace,canSee,getReachable} from '../game/tactical.js';
 import {chooseArtilleryAction,holdsArtilleryPost} from '../game/tactical-ai-artillery.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {previousDeploymentScene,retainedMilitaryBodies} from '../game/military-remains.js';
+import {enterSector} from '../game/world.js';
 import {artilleryField as field} from './artillery-autonomy-fixture.mjs';
 const crewOf=b=>b.units.filter(u=>u.id.startsWith('crew-'));
 const position=u=>({x:u.x,y:u.y});
@@ -87,7 +89,11 @@ test('canister can hit several observed opponents but a bystander anywhere in th
 test('unseen opponents and private enemy supplies do not change a gunner decision',()=>{
  const b=field({type:'swivel',hidden:true}),target=b.units.find(u=>u.id==='target');assert.equal(choose(b,'crew-1',[target]),null);
  const visible=field({type:'swivel'}),changed=structuredClone(visible),t=changed.units.find(u=>u.id==='target');t.ammo=999;t.medkits=999;t.priming=0;t.flints=0;t.rations=0;t.energy=42;assert.deepEqual(choose(changed),choose(visible));
- const behind=field({type:'swivel'});behind.tiles.find(t=>t.x===8&&t.y===3).blocksSight=true;assert.equal(choose(behind),null);
+ const behind=field({type:'swivel'});
+ // A window sill is lower than the standing observer. Use a full-height
+ // opaque wall for this hidden-opponent case, retaining the movement barrier.
+ Object.assign(behind.tiles.find(t=>t.x===8&&t.y===3),{type:'wall',blocked:true,blocksSight:true});
+ assert.equal(canSee(behind,crewOf(behind)[0],behind.units.find(u=>u.id==='target')),false);assert.equal(choose(behind),null);
 });
 
 test('peaceful posts retain only their required crew and depleted guns release them to patrol',()=>{
@@ -118,11 +124,14 @@ test('a paid local cohort operates a finite retained gun and full campaign saves
  const width=64,height=48,tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:i%width===gun.x+2?'window':'grass',blocked:i%width===gun.x+2,blocksSight:false,cover:0}));
  r.enemies=createBattle([],{width,height,enemies:[{id:'battery-raider',x:gun.x+5,y:gun.y,weapon:1813,ammo:0,hp:30,maxHp:30,morale:100,patrol:false}]}).units;
  let battle=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:30+i})),...r.garrison.map((u,i)=>({...u,x:i?1+i:gun.x-1,y:i?36:gun.y}))],{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width,height,tiles,props:[],npcs:r.npcs,artillery:[gun],enemies:r.enemies});
+ const previous=previousDeploymentScene(s,r),bodyIds=new Set(retainedMilitaryBodies(previous,[...r.squad,...r.garrison,...r.enemies],r.sector).filter(u=>u.side==='enemy'&&!u.departure).map(u=>u.id));
+ const bodies=enterSector(r,previous).units.filter(u=>bodyIds.has(u.id));assert.equal(bodies.length,bodyIds.size);battle.units.push(...structuredClone(bodies));
  const before=structuredClone(battle);battle=endTurn(battle);assert.equal(battle.lastError,null);assert.equal(battle.status,'victory');assert.ok(battle.log.some(line=>line.includes('dispara una bala rasa')));assert.equal(battle.artillery[0].loaded,false);
  assert.equal(battle.artillery[0].ammo,gun.ammo-(gun.loaded?0:1));assert.equal(Number(battle.artillery[0].loaded)+battle.artillery[0].ammo,Number(gun.loaded)+gun.ammo-1);
  const gunner=battle.units.find(u=>u.id===String(r.garrison[0].id));assert.ok(gunner.militiaExperience>0);for(const u of before.units.filter(u=>u.side==='player'&&!u.militia))assert.equal(battle.units.find(v=>v.id===u.id).hp,u.hp);
  const p=saved(sync({campaign:s,battle})),returned=visit(saved({campaign:leave(p)}).campaign);assert.equal(returned.battle.artillery[0].id,gun.id);assert.equal(returned.battle.artillery[0].loaded,false);assert.equal(returned.battle.artillery[0].ammo,battle.artillery[0].ammo);
  const retained=returned.battle.units.find(u=>u.id===gunner.id);for(const key of ['hp','loaded','ammo','condition','militiaExperience','militiaCombatCredit'])assert.deepEqual(retained[key],gunner[key],key);assert.equal(returned.campaign.armory.swivel??0,0);
+ for(const body of bodies){const savedBody=returned.battle.units.find(u=>u.id===body.id);assert.ok(savedBody,'the native earlier casualty remains after the full save and visit');for(const key of ['originalUnitId','maxHp','weapon','blade','condition','loaded','ammo','inventory','weaponMetadata','bladeMetadata','weaponFittings'])assert.deepEqual(savedBody[key],body[key],`${body.id}: ${key}`);if(body.hp===0)assert.equal(savedBody.hp,0);}
  t.diagnostic(JSON.stringify({trainingCost:treasury-returned.campaign.resources.treasury,treasury:returned.campaign.resources.treasury,hour:returned.campaign.hour,gunId:gun.id,before:{loaded:gun.loaded,reserve:gun.ammo},after:{loaded:battle.artillery[0].loaded,reserve:battle.artillery[0].ammo},gunner:{id:gunner.id,healthBefore:before.units.find(u=>u.id===gunner.id).hp,health:retained.hp,experience:retained.militiaExperience,credit:retained.militiaCombatCredit},outcome:battle.status}));
 });
 

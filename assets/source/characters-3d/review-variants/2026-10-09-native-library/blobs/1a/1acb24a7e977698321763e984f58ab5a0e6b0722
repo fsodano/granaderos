@@ -1,0 +1,13 @@
+import {register} from 'node:module';register('../../tests/tactical-render-loader.mjs',import.meta.url);
+import {mkdir,readFile,writeFile} from 'node:fs/promises';import {resolve} from 'node:path';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
+import {createElement as h} from '../../web/node_modules/react/index.js';import {renderToStaticMarkup} from '../../web/node_modules/react-dom/server.node.js';import sharp from '../../web/node_modules/sharp/lib/index.js';
+import {createArchitectureReviewBattle} from '../../web/app/renderer-sandbox/architecture-fixtures.js';const {default:TacticalScene}=await import('../../web/app/TacticalScene.tsx');
+const output=resolve('artifacts/three-window-sills-current-review/current-sprites');await mkdir(output,{recursive:true});const records=[],pins={};
+for(const name of ['web/app/TacticalArchitectureMaterials.tsx','web/app/TacticalBuilding.tsx','web/app/TacticalScene.tsx','web/app/renderer-sandbox/architecture-fixtures.js']){try{pins[name]=createHash('sha256').update(await readFile(name)).digest('hex');}catch(e){if(e.code!=='ENOENT')throw e;}}
+for(const id of ['casa','capilla','iglesia','pulperia','herreria']){
+ const state=createArchitectureReviewBattle(id,0,'exterior'),width=(state.width+state.height)*26+64,height=65+(state.width+state.height)*14+50,project=(x,y)=>({x:state.height*26+28+(x-y)*26,y:65+(x+y)*14}),units=state.units;
+ let svg=renderToStaticMarkup(h('svg',{xmlns:'http://www.w3.org/2000/svg',width:width*2,height:height*2,viewBox:`0 0 ${width} ${height}`},h('rect',{width,height,fill:'#343b2a'}),h(TacticalScene,{state,players:units.filter(u=>u.side==='player'),units,positions:{},poses:{},directions:{},reachable:[],sight:new Set(),revealed:new Set(state.revealedRooms??[]),project})));
+ const assets={};for(const url of new Set([...svg.matchAll(/href="(\/art\/[^\"]+)"/g)].map(m=>m[1]))){const bytes=await readFile(resolve('web/public','.'+url));assets[url]=createHash('sha256').update(bytes).digest('hex');const png=await sharp(bytes).png().toBuffer();svg=svg.replaceAll(`href="${url}"`,`href="data:image/png;base64,${png.toString('base64')}"`);}
+ await writeFile(resolve(output,id+'.svg'),svg);await sharp(Buffer.from(svg)).png().toFile(resolve(output,id+'.png'));records.push({id,stateSha256:createHash('sha256').update(JSON.stringify(state)).digest('hex'),assets});
+}
+await writeFile(resolve(output,'source-proof.json'),JSON.stringify({head:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),pins,records,scope:'Actual current compiled template and direct TacticalScene SVG; no inferred historic reconstruction.'},null,2)+'\n');console.log('Five current direct sprite renders saved');

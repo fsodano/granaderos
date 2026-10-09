@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
-import {createBattle,weaponFor,hasFirearm,actionCosts,actBattle,equipLootPreview} from '../game/tactical.js';
+import {createBattle,weaponFor,hasFirearm,actionCosts,actBattle,equipLootPreview,canSee} from '../game/tactical.js';
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const {JA2OrdersPanel}=await import('../web/app/JA2OrdersMenu.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
@@ -55,7 +55,10 @@ test('close-combat mode shows thrust cost without a shot percentage until explic
 
 test('figure activation uses its fixed person frame instead of the clipped atlas bounding box',()=>{
   const s=fixture(),u=s.units[0],enemy=s.units[1],orders=[];
-  Object.assign(u,{x:15,y:8});Object.assign(enemy,{x:17,y:8,name:'Marinero'});
+  // This click-frame case uses an open, supported field. Row8 lies outside
+  // this eight-row map and cannot supply a visible person's input target.
+  s.tiles=Array.from({length:24*8},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
+  Object.assign(u,{x:15,y:6,facing:2});Object.assign(enemy,{x:17,y:6,name:'Marinero'});assert.equal(canSee(s,u,enemy),true);
   const descendants=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(child=>descendants(child))];
   for(let facing=0;facing<8;facing++){
     enemy.facing=facing;
@@ -65,7 +68,7 @@ test('figure activation uses its fixed person frame instead of the clipped atlas
     assert.equal(figure.props.role,undefined);assert.equal(figure.props.onClick,undefined);
     assert.equal(button.type,'rect');assert.equal(button.props['data-person-hit-target'],'true');
     assert.equal(button.props.children,undefined,'the click bounds contain no sprite atlas or animated frame');
-    assert.equal(button.props.x,project(17,8).x-14);assert.equal(button.props.y,project(17,8).y-49);
+    assert.equal(button.props.x,project(17,6).x-14);assert.equal(button.props.y,project(17,6).y-49);
     assert.equal(button.props.width,28);assert.equal(button.props.height,49);
     assert.match(button.props['aria-label'],/^Marinero · \d+ salud$/);
     button.props.onClick({clientY:25,currentTarget:{getBoundingClientRect:()=>({top:0,height:50})}});let prevented=false;button.props.onKeyDown({key:'Enter',preventDefault:()=>{prevented=true;}});assert.equal(prevented,true);

@@ -1,0 +1,299 @@
+[
+  {
+    "preset": "granadero",
+    "lod": 1,
+    "name": "stand.idle.unarmed",
+    "duration": 2,
+    "samples": 241,
+    "topology": {
+      "l": {
+        "handTriangles": 1281,
+        "webTriangles": 104,
+        "candidatePairs": 126909
+      },
+      "r": {
+        "handTriangles": 1257,
+        "webTriangles": 110,
+        "candidatePairs": 131273
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.4522455197724149,
+        "maximumShaftBendDeg": 40.63618937008298,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.5636280565822448,
+        "maximumShaftBendDeg": 40.63601349544105,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "granadero",
+    "lod": 1,
+    "name": "stand.walk.unarmed",
+    "duration": 1.0666669607162476,
+    "samples": 130,
+    "topology": {
+      "l": {
+        "handTriangles": 1281,
+        "webTriangles": 104,
+        "candidatePairs": 126909
+      },
+      "r": {
+        "handTriangles": 1257,
+        "webTriangles": 110,
+        "candidatePairs": 131273
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.4513700916428146,
+        "maximumShaftBendDeg": 40.636047818667166,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.5634578834615465,
+        "maximumShaftBendDeg": 40.63599682740233,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "granadero",
+    "lod": 1,
+    "name": "stand.run.unarmed",
+    "duration": 0.7666670083999634,
+    "samples": 94,
+    "topology": {
+      "l": {
+        "handTriangles": 1281,
+        "webTriangles": 104,
+        "candidatePairs": 126909
+      },
+      "r": {
+        "handTriangles": 1257,
+        "webTriangles": 110,
+        "candidatePairs": 131273
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.44950406599345133,
+        "maximumShaftBendDeg": 40.635906717812716,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.5629154847655149,
+        "maximumShaftBendDeg": 40.63623193753091,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "woman-scout",
+    "lod": 1,
+    "name": "stand.idle.unarmed",
+    "duration": 2,
+    "samples": 241,
+    "topology": {
+      "l": {
+        "handTriangles": 3185,
+        "webTriangles": 244,
+        "candidatePairs": 745434
+      },
+      "r": {
+        "handTriangles": 1209,
+        "webTriangles": 102,
+        "candidatePairs": 117242
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.2587401659031301,
+        "maximumShaftBendDeg": 60.3251996078895,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.40663369611568184,
+        "maximumShaftBendDeg": 60.32520976185258,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "woman-scout",
+    "lod": 1,
+    "name": "stand.walk.unarmed",
+    "duration": 1.0666669607162476,
+    "samples": 130,
+    "topology": {
+      "l": {
+        "handTriangles": 3185,
+        "webTriangles": 244,
+        "candidatePairs": 745434
+      },
+      "r": {
+        "handTriangles": 1209,
+        "webTriangles": 102,
+        "candidatePairs": 117242
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.25874040475395993,
+        "maximumShaftBendDeg": 60.32522414903061,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.40663392518891195,
+        "maximumShaftBendDeg": 60.325211151964126,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "woman-scout",
+    "lod": 1,
+    "name": "stand.run.unarmed",
+    "duration": 0.7666670083999634,
+    "samples": 94,
+    "topology": {
+      "l": {
+        "handTriangles": 3185,
+        "webTriangles": 244,
+        "candidatePairs": 745434
+      },
+      "r": {
+        "handTriangles": 1209,
+        "webTriangles": 102,
+        "candidatePairs": 117242
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.2587155371913093,
+        "maximumShaftBendDeg": 60.32492628202848,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.40663747507060605,
+        "maximumShaftBendDeg": 60.32479972177608,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "woman-shawl",
+    "lod": 1,
+    "name": "stand.idle.unarmed",
+    "duration": 2,
+    "samples": 241,
+    "topology": {
+      "l": {
+        "handTriangles": 3185,
+        "webTriangles": 244,
+        "candidatePairs": 745434
+      },
+      "r": {
+        "handTriangles": 1209,
+        "webTriangles": 102,
+        "candidatePairs": 117242
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.2587401659031301,
+        "maximumShaftBendDeg": 60.3251996078895,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.40663369611568184,
+        "maximumShaftBendDeg": 60.32520976185258,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "woman-shawl",
+    "lod": 1,
+    "name": "stand.walk.unarmed",
+    "duration": 1.0666669607162476,
+    "samples": 130,
+    "topology": {
+      "l": {
+        "handTriangles": 3185,
+        "webTriangles": 244,
+        "candidatePairs": 745434
+      },
+      "r": {
+        "handTriangles": 1209,
+        "webTriangles": 102,
+        "candidatePairs": 117242
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.25874040475395993,
+        "maximumShaftBendDeg": 60.32522414903061,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.40663392518891195,
+        "maximumShaftBendDeg": 60.325211151964126,
+        "maximumCrossingPairs": 0
+      }
+    }
+  },
+  {
+    "preset": "woman-shawl",
+    "lod": 1,
+    "name": "stand.run.unarmed",
+    "duration": 0.7666670083999634,
+    "samples": 94,
+    "topology": {
+      "l": {
+        "handTriangles": 3185,
+        "webTriangles": 244,
+        "candidatePairs": 745434
+      },
+      "r": {
+        "handTriangles": 1209,
+        "webTriangles": 102,
+        "candidatePairs": 117242
+      }
+    },
+    "hands": {
+      "l": {
+        "side": "l",
+        "minimumAreaRatio": 0.2587155371913093,
+        "maximumShaftBendDeg": 60.32492628202848,
+        "maximumCrossingPairs": 0
+      },
+      "r": {
+        "side": "r",
+        "minimumAreaRatio": 0.40663747507060605,
+        "maximumShaftBendDeg": 60.32479972177608,
+        "maximumCrossingPairs": 0
+      }
+    }
+  }
+]

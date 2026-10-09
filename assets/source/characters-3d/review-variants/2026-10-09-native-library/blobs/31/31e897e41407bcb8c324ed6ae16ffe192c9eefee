@@ -1,0 +1,16 @@
+{
+  "male": {
+    "beforeSha256": "9d9075877569ff737bc5dfbf41a1d31744f183b6552377e6c6c8cab51532b16c",
+    "sha256": "8f925e4b5204ae655603612466118d7cc0b2bcdf3f3f3b8b5dd66bb627903db7",
+    "changedRotationChannels": 90,
+    "preservedChannels": 53016,
+    "clipMetadataRetained": true
+  },
+  "female": {
+    "beforeSha256": "889a3501619dd21c0a76e41b3cea7a6f42bee853a1e81594375d7c0635947113",
+    "sha256": "5d44c1b67169393148fc43aed21ff7e769a4987324a3df9c9798f4fa68c64cfc",
+    "changedRotationChannels": 90,
+    "preservedChannels": 53016,
+    "clipMetadataRetained": true
+  }
+}

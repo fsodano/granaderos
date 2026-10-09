@@ -49,7 +49,7 @@ test('real paid battle near-miss growth survives full save, retreat, settlement 
  let campaign=order(initialCampaign(8),{type:'recruitCivic',id:110,term:'month'});const baseline=rosterFor(campaign).find(u=>u.id===110).agility;
  // An isolated veteran one learning credit below improvement, with the issued
  // force/gear and a public enemy turn on a walkable arrival boundary.
- Object.assign(campaign.operativeState[110],{skillPractice:{agility:39},practiceSeed:0});campaign=order(campaign,{type:'attack',sector:'buenos_aires'});const request=campaign.pendingBattle,width=64,height=48;
+ Object.assign(campaign.operativeState[110],{skillPractice:{agility:39},practiceSeed:0});campaign=order(campaign,{type:'wait',hours:10});campaign=order(campaign,{type:'attack',sector:'buenos_aires'});const request=campaign.pendingBattle,width=64,height=48;
  let battle=createBattle(request.squad.map(u=>({...u,x:7,y:0,facing:6})),{...request,width,height,seed:3,tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),props:[],npcs:request.npcs,enemies:request.enemies.map((u,i)=>({...u,x:i?50:1,y:i?35+i:0,facing:2,marksmanship:i?u.marksmanship:42,patrol:false,overwatch:false}))});
  for(const unit of battle.units)unit.ap=unit.side==='enemy'&&unit.id===battle.units.find(u=>u.side==='enemy').id?12:0;
  const treasury=campaign.resources.treasury,loaded=battle.units.find(u=>u.side==='enemy').loaded,health=actor(battle,'110').hp;

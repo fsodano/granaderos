@@ -1,0 +1,83 @@
+"""One private braid01 study: native MakeHuman fit, authored locks and UV image."""
+from pathlib import Path
+import json
+import bpy
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+
+VENDOR=Path(__file__).resolve().parent/'vendor/makehuman/hair/braid01'
+
+def add_braid01(ctx):
+    points=ctx['source_points'];fitting=[];scales={};started=False
+    for line in (VENDOR/'braid01.mhclo').read_text().splitlines():
+        f=line.split()
+        if not f or f[0].startswith('#'):continue
+        if f[0] in ('x_scale','y_scale','z_scale'):
+            i,j=map(int,f[1:3]);axis={'x_scale':0,'y_scale':2,'z_scale':1}[f[0]]
+            scales[f[0]]=abs(points[i][axis]-points[j][axis])/float(f[3])
+        elif f[0]=='verts':started=True
+        elif started and len(f)==9:
+            ids=list(map(int,f[:3]));w=list(map(float,f[3:6]));d=list(map(float,f[6:9]));fitting.append((ids,w,d))
+    coords=[];uvs=[];faces=[]
+    for line in (VENDOR/'braid01.obj').read_text().splitlines():
+        f=line.split()
+        if not f:continue
+        if f[0]=='v':coords.append(tuple(map(float,f[1:4])))
+        elif f[0]=='vt':uvs.append(tuple(map(float,f[1:3])))
+        elif f[0]=='f':faces.append([(int(i.split('/')[0])-1,int(i.split('/')[1])-1)for i in f[1:]])
+    assert len(coords)==len(fitting),(len(coords),len(fitting))
+    fitted=[]
+    for ids,weights,delta in fitting:
+        q=sum((points[i]*w for i,w in zip(ids,weights)),Vector())
+        q+=Vector((delta[0]*scales['x_scale'],-delta[2]*scales['z_scale'],delta[1]*scales['y_scale']))
+        fitted.append(q)
+    # The MakeHuman mapping transfers the native female target to the source
+    # hairstyle. The first visual pilot retains its real overlapping volume.
+    for obj in list(ctx['objects']):
+        if obj.name.startswith(('Short_Hair','Braided_Hair','Braid_Tie')):
+            ctx['objects'].remove(obj);bpy.data.objects.remove(obj,do_unlink=True)
+    mat=bpy.data.materials.new('Authored_Braid01_Hair');mat.use_nodes=True;mat.diffuse_color=(1,1,1,1)
+    mat['preserve_authored_hair']=True
+    shader=mat.node_tree.nodes.get('Principled BSDF');shader.inputs['Roughness'].default_value=.82;shader.inputs['Specular IOR Level'].default_value=.23
+    texture=mat.node_tree.nodes.new('ShaderNodeTexImage');texture.image=bpy.data.images.load(str(VENDOR/'braid01_diffuse.png'),check_existing=True);texture.image.pack()
+    mat.node_tree.links.new(texture.outputs['Color'],shader.inputs['Base Color'])
+    # Keep every scalp/temple component attached to the native head. Only
+    # the disconnected hanging plait follows neck and upper-back motion.
+    parents=list(range(len(fitted)))
+    def root(index):
+        while parents[index]!=index:
+            parents[index]=parents[parents[index]];index=parents[index]
+        return index
+    for face in faces:
+        indices=[i for i,uv in face]
+        for index in indices[1:]:parents[root(index)]=root(indices[0])
+    components={}
+    for index in range(len(fitted)):components.setdefault(root(index),[]).append(index)
+    hanging=set()
+    for indices in components.values():
+        if max(fitted[i].z for i in indices)<1.59 and min(fitted[i].y for i in indices)>0:
+            hanging.update(indices)
+    def eased(a,b,value):
+        t=max(0,min(1,(value-a)/(b-a)));return t*t*(3-2*t)
+    weights=[]
+    for index,p in enumerate(fitted):
+        if index not in hanging:weights.append({'head':1});continue
+        neck=eased(1.563,1.485,p.z);back=eased(1.515,1.410,p.z)
+        native=ctx['source_weight_at'](p)
+        native={name:value for name,value in native.items()if name.startswith('spine_')}
+        total=sum(native.values());native={name:value/total for name,value in native.items()}if total else {'spine_03':1}
+        result={name:value*neck*back for name,value in native.items()}
+        result['head']=1-neck;result['neck_01']=neck*(1-back)
+        weights.append({name:value for name,value in result.items()if value>1e-7})
+    obj=ctx['mesh']('Authored_Braid01_Hair',fitted,[[i for i,uv in face]for face in faces],mat,weights,[[uvs[uv]for i,uv in face]for face in faces]);obj['part']='skin';obj['authored_hair']=True
+    # Record actual native scalp proximity before optimization. This does not
+    # claim clothing or motion clearance, which still needs posed review.
+    skin=ctx['skin'];tree=BVHTree.FromPolygons([v.co for v in skin.data.vertices],[list(f.vertices)for f in skin.data.polygons],all_triangles=False)
+    distances=[]
+    for p in fitted:
+        if p.z<1.63:continue
+        q,n,i,d=tree.find_nearest(p)
+        distances.append(d if (p-q).dot(n)>=0 else -d)
+    report={'sourceVertices':len(fitted),'sourceTriangles':sum(len(f)-2 for f in faces),'mappedVertices':len(fitting),'fitScale':scales,'boundsBlender':[list(map(min,zip(*fitted))),list(map(max,zip(*fitted)))],'headRegionSamples':len(distances),'signedDistanceToNativeHead':{'min':min(distances),'max':max(distances),'insideOver1mm':sum(d<-.001 for d in distances),'insideOver3mm':sum(d<-.003 for d in distances)},'weights':'scalp/temple native head; hanging plait smooth native neck/upper-back blend; no rig edits','hangingVertices':len(hanging),'headBoundVertices':len(fitted)-len(hanging),'triangleCountBeforeExport':sum(len(f)-2 for f in faces)}
+    print('BRAID01_FIT',json.dumps(report),flush=True)
+    (VENDOR.parent.parent.parent.parent.parent.parent.parent/'braid01-fit.json').write_text(json.dumps(report,indent=2)+'\n')

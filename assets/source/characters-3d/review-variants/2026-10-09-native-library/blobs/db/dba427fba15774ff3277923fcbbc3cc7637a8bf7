@@ -1,0 +1,38 @@
+import bpy,json
+from pathlib import Path
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+O=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/punch-wrist-candidate');L=O/'models';m=json.loads((L/'manifest.json').read_text());report={}
+for preset in ['granadero','woman-scout']:
+ bpy.ops.wm.read_factory_settings(use_empty=True);bpy.context.scene.render.fps=30;a=m['appearances'][preset];b=m['animationLibraries'][a['animationLibrary']]
+ def load(url):
+  before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(L/Path(url).name));return set(bpy.data.objects)-before
+ bank=load(b['url']);body=load(a['lods'][0]['url']);rig=next(o for o in body if o.type=='ARMATURE')
+ for ob in bank:bpy.data.objects.remove(ob,do_unlink=True)
+ rig.animation_data_create()
+ for tr in rig.animation_data.nla_tracks:tr.mute=True
+ action=bpy.data.actions['stand.punch.unarmed'];rig.animation_data.action=action
+ if action.slots:rig.animation_data.action_slot=action.slots[0]
+ skins=[o for o in body if o.type=='MESH'and any(mat and mat.name.startswith('Skin')for mat in o.data.materials)]
+ dominant={};headfaces=[];offset=0
+ for ob in skins:
+  groups={g.index:g.name for g in ob.vertex_groups};weights={v.index:max((g.weight,groups[g.group])for g in v.groups)[1]for v in ob.data.vertices if v.groups}
+  dominant.update({i+offset:n for i,n in weights.items()})
+  headfaces.extend(tuple(i+offset for i in p.vertices)for p in ob.data.polygons if all(weights.get(i)in ['head','neck_01']for i in p.vertices));offset+=len(ob.data.vertices)
+ print('SURFACES',preset,[(o.name,len(o.data.vertices))for o in skins],'HEAD_FACES',len(headfaces),flush=True)
+ report[preset]=[]
+ for time in [.183333,.34,.42,.5,.62]:
+  frame=time*30;bpy.context.scene.frame_set(int(frame),subframe=frame-int(frame));deps=bpy.context.evaluated_depsgraph_get();coords=[]
+  for ob in skins:
+   ev=ob.evaluated_get(deps);mesh=ev.to_mesh();coords.extend(ev.matrix_world@v.co for v in mesh.vertices);ev.to_mesh_clear()
+  tree=BVHTree.FromPolygons(coords,headfaces)
+  peaks=[]
+  for side in ['l','r']:
+   headinside=0;gap=1;worst=None
+   for i,n in dominant.items():
+    if not(n.endswith('_'+side)and n.startswith(('hand_','thumb_','index_','middle_','ring_','pinky_'))):continue
+    p=coords[i];q,normal,_,d=tree.find_nearest(p);gap=min(gap,d)
+    if(p-q).dot(normal)<-.001 and d>headinside:headinside=d;worst=[i,n,list(p),list(q)]
+   peaks.append({'side':side,'headSignedDepthMm':headinside*1000,'headGapMm':gap*1000,'worst':worst})
+  report[preset].append({'time':time,'hands':peaks})
+(O/'fist-head-contact.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))

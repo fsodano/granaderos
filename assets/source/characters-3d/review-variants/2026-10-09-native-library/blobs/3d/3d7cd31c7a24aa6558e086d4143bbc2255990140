@@ -1,0 +1,77 @@
+"""Exercise the real builder's late source-pin boundary in a private copy.
+
+The source exporter/preparer are test doubles. The focused coarse suite checks
+the real preparer separately. This probe isolates the wrapper after preparation
+and verifies that its real source-pin check runs before its installation call.
+"""
+from pathlib import Path
+import copy
+import hashlib
+import importlib.machinery
+import json
+import runpy
+import shutil
+import subprocess
+import sys
+import tempfile
+
+repo=Path(__file__).resolve().parents[2]
+source=Path('/tmp/granaderos-coarse-garment-surfaces-candidate/final-poncho-library-6')
+sys.path.insert(0,str(repo/'tools/characters-3d'))
+from family_surface_context import _copy_inputs,_pins,_check_pins
+
+digest=lambda raw:hashlib.sha256(raw).hexdigest()
+source_pins=_pins(source)
+workdirs=[]
+with tempfile.TemporaryDirectory(prefix='granaderos-coarse-builder-boundary-') as folder:
+ root=Path(folder)/'root';_copy_inputs(source,root,source_pins)
+ shutil.copy2(repo/'tools/characters-3d/build-library.py',root/'tools/characters-3d/build-library.py')
+ sys.path.insert(0,str(root/'tools/characters-3d'))
+ import library_jobs
+ assets=root/'web/public/models/characters'
+ manifest=json.loads((assets/'manifest.json').read_bytes())
+ name='gaucho-lod1.glb';record=copy.deepcopy(manifest['appearances']['gaucho']['lods'][1]);raw=(assets/name).read_bytes()
+ snapshot=lambda:{str(p.relative_to(assets)):digest(p.read_bytes()) for p in assets.rglob('*') if p.is_file()}
+ before=snapshot();state={'installCalled':False,'sourceMutated':False,'prepared':False}
+ original_run=subprocess.run;original_output=subprocess.check_output
+ original_exec=importlib.machinery.SourceFileLoader.exec_module
+ original_install=library_jobs.install_job_files
+ def exporter(command,*arguments,**keywords):
+  if command[0]!='test-blender':return original_run(command,*arguments,**keywords)
+  out=Path(command[command.index('--output-dir')+1]);metadata=Path(command[command.index('--metadata-dir')+1]);workdirs.append(out.parent)
+  (out/name).write_bytes(raw)
+  staged=dict(record,kind='appearance',preset='gaucho',sockets=manifest['appearances']['gaucho']['sockets'])
+  (metadata/'gaucho-lod1.json').write_text(json.dumps(staged))
+  keywords['stdout'].write('ASSET_READY private source fixture\n')
+  return subprocess.CompletedProcess(command,0)
+ def loader(self,module):
+  original_exec(self,module)
+  if module.__name__!='source_coarse_graft':return
+  def prepared(target,jobs,patch_dir):
+   assert jobs==[('appearance','gaucho',1)]
+   marker=patch_dir/'gaucho-lod1-coarse-patch.json';marker.write_bytes(b'{"privateBoundaryFixture":true}\n');state.update(prepared=True,marker=marker)
+   pin={'sha256':digest(marker.read_bytes()),'bytes':marker.stat().st_size}
+   return {name:copy.deepcopy(record)},{name:raw},{'exactNoOp':True,'sourceInputs':{marker.name:pin}}
+  module.prepare_selected_jobs=prepared
+ def output(command,*arguments,**keywords):
+  result=original_output(command,*arguments,**keywords)
+  if command[:2]==['node','-e'] and 'JSON.stringify(JSON.parse(s),null,2)' in command[2]:
+   assert state['prepared'];state['marker'].write_bytes(state['marker'].read_bytes()+b'\n');state['sourceMutated']=True
+  return result
+ def install(*arguments,**keywords):state['installCalled']=True;raise AssertionError('Installation must not start after source mutation')
+ subprocess.run=exporter;subprocess.check_output=output
+ importlib.machinery.SourceFileLoader.exec_module=loader;library_jobs.install_job_files=install
+ old_argv=sys.argv;sys.argv=[str(root/'tools/characters-3d/build-library.py'),'--only','appearance','--preset','gaucho','--lod','1','--blender','test-blender','--jobs','1']
+ try:
+  try:runpy.run_path(sys.argv[0],run_name='__main__')
+  except AssertionError as error:assert str(error)=='Selected source input changed during validation',str(error)
+  else:raise AssertionError('Builder accepted a changed source input after preparation')
+  assert state['prepared'] and state['sourceMutated'] and not state['installCalled']
+  assert snapshot()==before,'The rejected builder must preserve every released private file'
+  _check_pins(source,source_pins)
+  result={'selected':'gaucho-lod1','realBuilderBoundary':True,'lateSourceMutationRejected':True,'installationNeverStarted':True,'allPrivatePublishedFilesExact':True,'sourceCandidateExact':True,'exportAndPreparationWereTestDoubles':True}
+  destination=repo/'artifacts/character-coarse-garment-surfaces/builder-boundary-proof.json';destination.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+ finally:
+  sys.argv=old_argv;subprocess.run=original_run;subprocess.check_output=original_output
+  importlib.machinery.SourceFileLoader.exec_module=original_exec;library_jobs.install_job_files=original_install
+  for directory in set(workdirs):shutil.rmtree(directory,ignore_errors=True)

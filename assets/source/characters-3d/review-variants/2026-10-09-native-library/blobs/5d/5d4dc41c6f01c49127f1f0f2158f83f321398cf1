@@ -1,0 +1,86 @@
+from pathlib import Path
+import shutil,hashlib,json,subprocess
+r=Path('/tmp/granadero-hand-web-pilot');shared=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring');out=r/'delivery/assets/source/characters-3d/authoring';out.mkdir(parents=True,exist_ok=True)
+original=(shared/'relaxed_hands.py').read_text();s=original.replace('from mathutils import Vector, Matrix','from mathutils import Vector, Matrix, Quaternion').replace('THUMB_PAD_M=.020\nTHUMB_FORWARD_M=-.035','THUMB_REFERENCE_LENGTH_M=.03464791923761368\nTHUMB_PAD_M=.040\nTHUMB_FORWARD_M=-.022\nTHUMB_OUTSIDE_M=.022').replace('def apply_relaxed_hands(rig):','def apply_relaxed_hands(rig, anatomy):')
+a=s.index('        # Rest the thumb outside');b=s.index('    bpy.context.view_layer.update()',a)
+s=s[:a]+'''        _resting_thumb(rig, side, anatomy)
+'''+s[b:]
+helper='''
+
+def _resting_thumb(rig, side, anatomy):
+    """Rest outside the curled index without a folded-back thumb root.
+
+    Orient each shaft relative to its posed parent. A separate world-normal
+    frame for every joint can hide a large axial roll in the connected web.
+    Native offsets and lengths stay unchanged; only rotations are written.
+    """
+    from reviewed_motion import _palm_basis
+    if anatomy not in ('male', 'female'):
+        raise ValueError(f'Unknown relaxed-hand anatomy: {anatomy}')
+    forward, normal = _palm_basis(rig, side)
+    hand = rig.pose.bones['hand_' + side]
+    delta = hand.matrix.to_quaternion() @ hand.bone.matrix_local.to_quaternion().inverted()
+    world_normal, world_forward = delta @ normal, delta @ forward
+    names = [f'thumb_{i:02d}_{side}' for i in (1, 2, 3)]
+    first = rig.pose.bones[names[0]]
+    across = (rig.data.bones['index_01_' + side].head_local
+              - rig.data.bones['pinky_01_' + side].head_local)
+    across -= forward * across.dot(forward)
+    across.normalize()
+    world_across = delta @ across
+    scale = first.bone.length / THUMB_REFERENCE_LENGTH_M
+    target = (rig.pose.bones['index_02_' + side].head
+              + world_normal * (THUMB_PAD_M * scale)
+              + world_forward * (THUMB_FORWARD_M * scale)
+              + world_across * (THUMB_OUTSIDE_M * scale))
+    base = first.head.copy()
+    direction = target - base
+    l1 = first.bone.length
+    d1, d2 = (rig.data.bones[name].length for name in names[1:])
+    # The two native skins have different web/thenar contours. For female hands
+    # keep the clear base solution, then add a small distal-only relaxed bend.
+    phi = math.radians(30 if anatomy == 'male' else 0)
+    l2 = math.sqrt(d1*d1 + d2*d2 + 2*d1*d2*math.cos(phi))
+    distance = min(direction.length, l1+l2-.001)
+    direction.normalize()
+    target = base + direction*distance
+    guide = world_normal*math.cos(math.radians(60)) + world_across*math.sin(math.radians(60))
+    pole = guide - direction*direction.dot(guide)
+    if pole.length < .001:
+        pole = world_forward - direction*direction.dot(world_forward)
+    pole.normalize()
+    along = (l1*l1-l2*l2+distance*distance)/(2*distance)
+    joint = base + direction*along + pole*math.sqrt(max(0, l1*l1-along*along))
+    axis = (joint-base).cross(target-joint).normalized()
+    beta = math.atan2(d2*math.sin(phi), d1+d2*math.cos(phi))
+    second = Quaternion(axis, -beta) @ (target-joint)
+    third = Quaternion(axis, phi-beta) @ (target-joint)
+    if anatomy == 'female':
+        third = Quaternion(axis, math.radians(15)) @ third
+    for name, shaft in zip(names, (joint-base, second, third)):
+        bone = rig.pose.bones[name]
+        parent = bone.parent
+        native_local = (parent.bone.matrix_local.inverted() @ bone.bone.matrix_local).to_quaternion()
+        reference = parent.matrix.to_quaternion() @ native_local
+        current_axis = reference @ Vector((0, 1, 0))
+        rotation = current_axis.rotation_difference(shaft.normalized()) @ reference
+        _set(rig, name, rotation)
+'''
+s+=helper;(out/'relaxed_hands.py').write_text(s)
+s=(shared/'motion.py').read_text();s=s.replace('native_crouch_idle=None):','native_crouch_idle=None, native_anatomy=None):',1).replace('_apply_sample(rig,samples[0]);apply_relaxed_hands(rig)','_apply_sample(rig,samples[0]);apply_relaxed_hands(rig,native_anatomy)')
+s=s.replace('grounding=(boots,ground_heights))','grounding=(boots,ground_heights),native_anatomy=ctx[\'gender\'])',1)
+s=s.replace("spec['loop'],times=times)","spec['loop'],times=times,native_anatomy=ctx['gender'])",1)
+s=s.replace("native_crouch_idle=ctx if posture=='crouched' and gesture=='idle' else None)","native_crouch_idle=ctx if posture=='crouched' and gesture=='idle' else None,native_anatomy=ctx['gender'])",1)
+(out/'motion.py').write_text(s)
+base=r/'delivery-baseline';base.mkdir(exist_ok=True)
+for name in ['motion.py','relaxed_hands.py']:shutil.copy2(shared/name,base/name)
+patch=[]
+for name in ['motion.py','relaxed_hands.py']:
+ result=subprocess.run(['diff','-u','--label','a/assets/source/characters-3d/authoring/'+name,'--label','b/assets/source/characters-3d/authoring/'+name,str(base/name),str(out/name)],capture_output=True,text=True);assert result.returncode in(0,1);patch.append(result.stdout)
+(r/'delivery/source.patch').write_text(''.join(patch))
+# Independent native-rig construction for source equivalence; no geometry export.
+probe=r/'final-source';probe.mkdir(exist_ok=True)
+for p in shared.glob('*.py'):shutil.copy2(p,probe/p.name)
+for name in ['motion.py','relaxed_hands.py']:shutil.copy2(out/name,probe/name)
+if not (probe/'vendor').exists():(probe/'vendor').symlink_to(shared/'vendor',target_is_directory=True)
+print(out)

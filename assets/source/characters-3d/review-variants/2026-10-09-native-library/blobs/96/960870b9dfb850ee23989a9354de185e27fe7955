@@ -1,0 +1,7 @@
+from pathlib import Path
+import shutil
+b=Path('/tmp/granadero-collar-rim-pilot');s=b/'source/assets/source/characters-3d/authoring';old=Path('/tmp/granadero-shoulder-strap-pilot/source-before')
+for a,z in [('source','source-v1'),('models','models-v1')]:
+ if not(b/z).exists():shutil.copytree(b/a,b/z)
+for name in ['character.py','optimize.py']:shutil.copy2(old/name,s/name)
+p=s/'optimize.py';t=p.read_text().replace('  from crossbelts import fit_crossbelts','  from collar_rim import refine_reduced_collar\n  refine_reduced_collar(ctx)\n  from crossbelts import fit_crossbelts',1);p.write_text(t)

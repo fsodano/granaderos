@@ -9,6 +9,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle} from '../game/tactical.js';
 import {autoResolve} from '../game/auto-resolve.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
+import {cellTravelPlan} from '../game/world-cells.js';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const wait=(s,hours)=>order(s,{type:'wait',hours});
 const roundtrip=s=>{const loaded=restoreCampaign(serializeCampaign(s));assert.deepEqual(loaded,s);return loaded;};
@@ -47,12 +48,13 @@ test('a return to a newly occupied origin triggers contact and preserves the act
 test('a remote ordinary route intercepts troops at a controlled destination and stops further stages',()=>{
  let s=front();s=order(s,{type:'createSquad',name:'Enlace',ids:[3]});s=order(s,{type:'selectSquad',id:'squad-1'});s.sectors.salta.owner='patriot';s.sectors.jujuy.owner='patriot';
  // The remote squad receives the route, then another squad is selected.
- s=order(s,{type:'selectSquad',id:'squad-2'});s=order(s,{type:'travel',sector:'jujuy',queue:true});s=order(s,{type:'selectSquad',id:'squad-1'});s=wait(s,24);assert.equal(s.hour,52);assert.equal(s.location,'tucuman');assert.equal(s.pendingEncounter.sector,'salta');assert.equal(s.squads[1].location,'salta');assert.equal(s.squads[1].journey.status,'paused');assert.equal(s.squads[1].journey.reason,'contact');roundtrip(s);
+ const arrival=s.hour+cellTravelPlan(s,'salta').hours;
+ s=order(s,{type:'selectSquad',id:'squad-2'});s=order(s,{type:'travel',sector:'jujuy',queue:true});assert.ok(s.squads[1].journey.path.some(id=>id.startsWith('cell-')));s=order(s,{type:'selectSquad',id:'squad-1'});s=wait(s,24);assert.equal(s.hour,arrival);assert.equal(s.location,'tucuman');assert.equal(s.pendingEncounter.sector,'salta');assert.equal(s.squads[1].location,'salta');assert.equal(s.squads[1].journey.status,'paused');assert.equal(s.squads[1].journey.reason,'contact');roundtrip(s);
  s=order(s,{type:'respondToEncounter',groupId:'enemy-group-1',choice:'tactical'});assert.deepEqual(s.pendingBattle.squad.map(u=>u.id),[3]);assert.equal(s.location,'tucuman');assert.equal(s.pendingBattle.enemies[0].hp,63);roundtrip(s);
 });
 test('direct travel and attack orders cannot bypass a crossing by using the blocking API',()=>{
  let s=order(front(),{type:'attack',sector:'salta'});assert.equal(s.hour,52);assert.deepEqual(s.pendingBattle.occupationGroupIds,['enemy-group-1']);assert.equal(s.pendingBattle.enemies[0].hp,63);roundtrip(s);
- s=front();s.sectors.salta.owner='patriot';s=order(s,{type:'travel',sector:'salta'});assert.equal(s.hour,52);assert.equal(s.pendingEncounter.sector,'salta');assert.equal(s.enemyGroups[0].target,'salta');roundtrip(s);
+ s=front();s.sectors.salta.owner='patriot';const arrival=s.hour+cellTravelPlan(s,'salta').hours;s=order(s,{type:'travel',sector:'salta'});assert.equal(s.hour,arrival);assert.equal(s.pendingEncounter.sector,'salta');assert.equal(s.enemyGroups[0].target,'salta');roundtrip(s);
 });
 test('a crossing is caught when the enemy starts its next leg while the squad is already approaching',()=>{
  let s=initialCampaign();for(const at of ['cordoba','tucuman','salta'])s.sectors[at].owner='patriot';s.location='salta';s.squads[0].location='salta';for(const id of s.squad)s.operativeState[id].location='salta';launchEnemyGroup(s,'north','tucuman');s=wait(s,20);s=order(s,{type:'attack',sector:'jujuy',queue:true});assert.equal(s.enemyGroups[0].nextArrivalAt,24);

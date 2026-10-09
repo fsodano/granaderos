@@ -44,7 +44,9 @@ test('a wounded target favors a reliable torso hit and remains worth firing at',
 
 test('partial penetration loss changes target selection even when nominal impact chance is the same',()=>{
   const s=field({id:'a',x:8,y:2});s.units.push({...structuredClone(s.units[0]),id:'b',y:4});
-  s.props=[{id:'wood',type:'barrels',x:7,y:2,obstacleHeight:3}];
+  // Sight through the authored screen is deliberate; full wood resistance
+  // still reduces impact and must drive the native target choice.
+  s.props=[{id:'wood',type:'barrels',x:7,y:2,obstacleHeight:3,blocksSight:false}];
   const u=actor(s),before=structuredClone(s),action=chooseEnemyAction(s,u);
   assert.equal(shotChance(s,u,s.units[0]),shotChance(s,u,s.units[2]));
   assert.equal(action.type,'fire');assert.equal(action.targetId,'b');assert.deepEqual(s,before);

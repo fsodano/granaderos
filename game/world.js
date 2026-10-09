@@ -102,6 +102,10 @@ export function enterSector(request,previous=null,{placement=false}={}){
    const existing=state.units.find(u=>u.id===record.unitId);
    if(existing){if(existing.hp>0)throw Error('El soldado figura vivo y entre los restos pendientes.');continue;}
    const corpse=clearEncounter(structuredClone(record.unit));delete corpse.departure;delete corpse.griefCompanionIds;
+   // Arrival relocates this clone to another field. The original record and
+   // source scene retain its departure route; those paths are not movements
+   // on the destination terrain.
+   delete corpse.lastMovePath;delete corpse.fleePath;
    const arrival=record.entryEdge?record:corpse.arrival??record.arrival;
    corpse.entryReason='arrival';corpse.entryEdge=arrival?.entryEdge??corpse.entryEdge;corpse.entryAnchor=arrival?.entryAnchor??corpse.entryAnchor;
    queued.push(corpse);state.units.push(corpse);
@@ -154,7 +158,8 @@ export function enterSector(request,previous=null,{placement=false}={}){
      arriving.push(unit);continue;
    }
    if(unit.entryEdge!==undefined||unit.entryAnchor!==undefined)throw Error('La posición de entrada necesita un traslado explícito.');
-   const prior=unit.entryReason==='resident'?previous?.units.find(v=>v.side==='player'&&v.id===unit.id&&sourceRecord(previous,v,request.sector)):null;
+   const prior=unit.entryReason==='resident'?(unit.residentPosition??previous?.units.find(v=>v.side==='player'&&v.id===unit.id&&sourceRecord(previous,v,request.sector))):null;
+   delete unit.residentPosition;
    Object.assign(unit,reserve(prior??unit));
  }
  if(arriving.length){

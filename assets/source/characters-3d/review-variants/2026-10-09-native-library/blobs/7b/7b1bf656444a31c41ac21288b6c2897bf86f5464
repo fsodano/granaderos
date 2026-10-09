@@ -1,0 +1,31 @@
+from pathlib import Path
+import json,struct,numpy as np
+DT={5121:'u1',5123:'<u2',5125:'<u4',5126:'<f4'};W={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}
+def read(path):
+ raw=Path(path).read_bytes();n=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+n]);blob=bytearray(raw[28+n:])
+ def acc(i):
+  a=doc['accessors'][i];v=doc['bufferViews'][a['bufferView']];dt=np.dtype(DT[a['componentType']]);return np.ndarray((a['count'],W[a['type']]),dtype=dt,buffer=blob,offset=v.get('byteOffset',0)+a.get('byteOffset',0),strides=(v.get('byteStride',W[a['type']]*dt.itemsize),dt.itemsize))
+ return doc,blob,acc
+def components(p,tri):
+ parent=list(range(len(p)))
+ def find(a):
+  while parent[a]!=a:parent[a]=parent[parent[a]];a=parent[a]
+  return a
+ def union(a,b):
+  x,y=find(a),find(b)
+  if x!=y:parent[y]=x
+ seen={}
+ for i,v in enumerate(p):
+  k=tuple(np.round(v,6))
+  if k in seen:union(i,seen[k])
+  else:seen[k]=i
+ for a,b,c in tri:union(int(a),int(b));union(int(a),int(c))
+ out={}
+ for i in range(len(p)):out.setdefault(find(i),[]).append(i)
+ return sorted(out.values(),key=len,reverse=True)
+if __name__=='__main__':
+ for name in ['friar','woman-shawl']:
+  d,b,a=read('/tmp/granaderos-six-outfit-review-20261008/models/'+name+'-lod0.glb');print(name)
+  for mi in [1,2]:
+   p=d['meshes'][mi]['primitives'][0];pos=a(p['attributes']['POSITION']);tri=a(p['indices']).reshape(-1,3)
+   for c in components(pos,tri)[:15]:print(mi,len(c),pos[c].min(0).round(4).tolist(),pos[c].max(0).round(4).tolist())

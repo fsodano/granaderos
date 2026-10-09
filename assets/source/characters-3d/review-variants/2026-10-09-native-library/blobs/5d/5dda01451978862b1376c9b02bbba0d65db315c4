@@ -1,0 +1,27 @@
+"""Private Granadero face study using fixed-version native authored targets."""
+import json, math
+from mathutils import Vector
+
+def apply_native_targets(points, scale, folder):
+    original=[p.copy() for p in points]
+    displacements=[Vector() for p in points]
+    for entry in json.loads((folder/'pilot-provenance.json').read_text()):
+        for line in (folder/entry['name']).read_text().splitlines():
+            f=line.split()
+            if len(f)!=4 or not f[0].isdigit():continue
+            i=int(f[0]);x,y,z=map(float,f[1:]);displacements[i]+=Vector((x,-z,y))*scale*entry['weight']
+    def smooth(t):
+        t=max(0,min(1,t));return t*t*(3-2*t)
+    changed=[]
+    for i,(p,d) in enumerate(zip(original,displacements)):
+        # Fixed eye rims and hat/collar boundaries keep their existing fit.
+        mask=smooth((p.z-1.555)/.025)*smooth((1.724-p.z)/.025)*smooth((-.045-p.y)/.030)
+        eye_clear=1
+        for x in (-.030,.030):
+            r=math.sqrt(((p.x-x)/.021)**2+((p.z-1.651)/.014)**2)
+            eye_clear=min(eye_clear,smooth((r-1)/.6))
+        d*=mask*eye_clear
+        if d.length>.006:d*=.006/d.length
+        points[i]+=d
+        if d.length>1e-7:changed.append(d.length)
+    (folder.parents[4]/'facial-displacement.json').write_text(json.dumps({'vertices':len(changed),'maxMetres':max(changed,default=0),'meanMetres':sum(changed)/max(1,len(changed))},indent=2))

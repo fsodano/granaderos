@@ -1,0 +1,54 @@
+{
+  "male": {
+    "stand.strafeLeft.long-gun": {
+      "samples": 143,
+      "supportTarget": [
+        0.22,
+        -0.005,
+        0
+      ],
+      "maxPalmGap": 0.0023453660599326116,
+      "maxWristBend": 36.572311571725805,
+      "maxWristTwist": 0.003284814070752873,
+      "maxIndexAbduction": 0.00016906424563790267
+    },
+    "stand.strafeRight.long-gun": {
+      "samples": 155,
+      "supportTarget": [
+        0.22,
+        -0.005,
+        0
+      ],
+      "maxPalmGap": 0.00231811176603338,
+      "maxWristBend": 35.37003227407497,
+      "maxWristTwist": 0.003042383193360365,
+      "maxIndexAbduction": 0.0001339633854517226
+    }
+  },
+  "female": {
+    "stand.strafeLeft.long-gun": {
+      "samples": 143,
+      "supportTarget": [
+        0.22,
+        -0.01,
+        0
+      ],
+      "maxPalmGap": 0.002277936512438959,
+      "maxWristBend": 35.30583723397104,
+      "maxWristTwist": 0.006486281358093038,
+      "maxIndexAbduction": 0.00024236736239423618
+    },
+    "stand.strafeRight.long-gun": {
+      "samples": 155,
+      "supportTarget": [
+        0.22,
+        -0.01,
+        0
+      ],
+      "maxPalmGap": 0.0022564289195046946,
+      "maxWristBend": 33.720900251170555,
+      "maxWristTwist": 0.0055657151469858945,
+      "maxIndexAbduction": 0.0003134766884193912
+    }
+  }
+}

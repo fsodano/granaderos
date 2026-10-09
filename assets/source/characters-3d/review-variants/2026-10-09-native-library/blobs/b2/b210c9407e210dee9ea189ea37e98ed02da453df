@@ -1,0 +1,27 @@
+from pathlib import Path
+import struct,json,hashlib,math
+r=Path('/tmp/granadero-hand-web-pilot')
+def glb(path):
+ raw=path.read_bytes();n=struct.unpack_from('<I',raw,12)[0];return json.loads(raw[20:20+n]),raw[28+n:],raw
+
+def read(j,b,aid):
+ a=j['accessors'][aid];v=j['bufferViews'][a['bufferView']];sz={5120:1,5121:1,5122:2,5123:2,5125:4,5126:4}[a['componentType']]*{'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',sz)
+ return b''.join(b[start+i*stride:start+i*stride+sz]for i in range(a['count']))
+a,ab,araw=glb(r/'pose-baseline/male-animations.glb');b,bb,braw=glb(r/'pose-50/male-animations.glb');rows=[];unchanged=0
+assert a['nodes']==b['nodes']
+assert len(a['animations'])==len(b['animations'])
+for ca,cb in zip(a['animations'],b['animations']):
+ assert ca['name']==cb['name']
+ assert {k:v for k,v in ca.items()if k not in('samplers','channels')}=={k:v for k,v in cb.items()if k not in('samplers','channels')}
+ for cha,chb in zip(ca['channels'],cb['channels']):
+  assert cha['target']==chb['target'];sa=ca['samplers'][cha['sampler']];sb=cb['samplers'][chb['sampler']];assert read(a,ab,sa['input'])==read(b,bb,sb['input']);assert sa.get('interpolation','LINEAR')==sb.get('interpolation','LINEAR')
+  if read(a,ab,sa['output'])!=read(b,bb,sb['output']):rows.append([ca['name'],a['nodes'][cha['target']['node']]['name'],cha['target']['path']])
+  else:unchanged+=1
+assert rows==json.loads((r/'pose-50/pilot.json').read_text())['changedChannels']
+source=json.loads((r/'pose-source-hand.json').read_text())[0]['bones'];angles=[]
+q=next(x for x in json.loads((r/'thumb-roll.json').read_text())['records']if x['amount']==.5)
+for n,k in [('thumb_01_r','thumb01Local'),('thumb_02_r','thumb02Local')]:
+ x=source[n]['q'];y=q[k];dot=abs(sum(u*v for u,v in zip(x,y)))/math.sqrt(sum(u*u for u in x)*sum(v*v for v in y));angles.append(2*math.acos(min(1,dot))*180/math.pi)
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+proof={'baselineMaleSha256':sha(r/'pose-baseline/male-animations.glb'),'candidateMaleSha256':sha(r/'pose-50/male-animations.glb'),'changedChannels':rows,'unchangedChannels':unchanged,'originalBinaryPrefixExact':bb[:len(ab)]==ab,'nodesExact':True,'clipMetadataExact':True,'inputTimesExact':True,'bodySha256':sha(r/'pose-50/granadero-lod0.glb'),'bodyExact':sha(r/'pose-50/granadero-lod0.glb')==sha(r/'pose-baseline/granadero-lod0.glb'),'femaleBankExact':sha(r/'pose-50/female-animations.glb')==sha(r/'pose-baseline/female-animations.glb'),'privateSourcePoseVsPilotMaxDegrees':max(angles),'sourceProofLimit':'Blender native rig source solve compared to delivered local quaternions; no full source clip re-export.'}
+(r/'pose-preservation.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof,indent=2))

@@ -34,7 +34,8 @@ test('each prone melee profile pays for standing and its real strike in one comb
   const n=order(s,{type:'melee',targetId:'e'}),actor=unit(n);
   assert.equal(actor.stance,'standing',name);assert.equal(actor.movementMode,'walk',name);assert.equal(actor.ap,p.ap-strike-6,name);assert.equal(actor.energy,p.energy,name);assert.ok(unit(n,'e').hp<e.hp,name);assert.equal(n.elapsedSeconds-s.elapsedSeconds,6,name);
   assert.equal(getMeleeAttackResult(s,n,'p'),true,name);assert.equal(getMeleeAttackResult(s,n,'e'),false,name);assert.equal(getMeleeAttackResult(n,n,'p'),false,name);
-  for(const key of ['loaded','ammo','priming','flints','jammed','condition'])assert.equal(actor[key],p[key],`${name}: ${key}`);
+  for(const key of ['loaded','ammo','priming','flints','jammed'])assert.equal(actor[key],p[key],`${name}: ${key}`);
+  assert.equal(actor.condition,p.condition-(name==='sabre'?1:0),`${name}: actual held weapon wear`);
   if(p.weaponFittings?.bayonet){assert.equal(actor.weaponFittings.bayonet.condition,p.weaponFittings.bayonet.condition-1);assert.equal(actor.weaponFittings.bayonet.instanceId,p.weaponFittings.bayonet.instanceId);}
   const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(s)));assert.deepEqual(actBattle(saved,{type:'melee',unitId:'p',targetId:'e'}),n);
  }

@@ -21,7 +21,7 @@ test('dismissal returns the actual military wound and spent supplies before any 
 });
 
 test('the service record remains authoritative while still hired and expiry resumes the civilian wound once',()=>{
- let s=woundedService(),id=localId(s);const end=s.contracts[id].expiresAt;assert.ok(end>s.hour);
+ let s=woundedService({contactHour:20}),id=localId(s);const end=s.contracts[id].expiresAt;assert.ok(end>s.hour);
  for(let n=0;s.hour<end&&n<5;n++)s=order(s,{type:'wait',hours:end-s.hour});assert.ok(!s.recruited.includes(id));assert.equal(ledger(s).inService,undefined);assert.equal(ledger(s).health.hp,s.operativeState[id].hp);assert.ok(ledger(s).health.hp>0);assert.equal(ledger(s).health.bleeding,s.operativeState[id].bleeding);
  const remaining=s.operativeState[id].torches;s=saved({campaign:s}).campaign;s=order(s,{type:'wait',hours:1});assert.equal(ledger(s).health.hp,0);assert.equal(s.operativeState[id].torches,remaining);assert.equal(civilianIncidents(ledger(s).health).filter(e=>e.kind==='death').length,1);assert.ok(saved({campaign:s}));
 });

@@ -1,0 +1,66 @@
+from pathlib import Path
+import json,numpy as np
+from scipy.sparse import lil_matrix
+from scipy.sparse.linalg import factorized
+from scipy.spatial.transform import Rotation
+r=Path('/tmp/granadero-hand-web-pilot');j=json.loads((r/'native-web.json').read_text());part=j['parts'][0];vs=part['vertices'];vertices={v['i']:v for v in vs};m=lambda a:np.array(a).reshape(4,4).T;roll=next(a for a in json.loads((r/'thumb-roll.json').read_text())['records']if a['amount']==.5);old=m(j['bones']['thumb_01_r']['posed']);new=old.copy();new[:3,:3]=m(j['bones']['hand_r']['posed'])[:3,:3]@Rotation.from_quat(roll['thumb01Local']).as_matrix();skin0=old@np.linalg.inv(m(j['bones']['thumb_01_r']['rest']));skin1=new@np.linalg.inv(m(j['bones']['thumb_01_r']['rest']))
+aliases={};groups=[];ids={}
+for v in vs:
+ key=(tuple(round(x,7)for x in v['rest']),tuple(sorted((n,round(w,7))for n,w in v['weights'].items())))
+ if key not in aliases:aliases[key]=len(groups);groups.append([])
+ k=aliases[key];groups[k].append(v['i']);ids[v['i']]=k
+rest=np.array([vertices[g[0]]['rest']for g in groups]);posed=np.array([np.array(vertices[g[0]]['posed'])+(skin1@np.r_[vertices[g[0]]['rest'],1]-skin0@np.r_[vertices[g[0]]['rest'],1])[:3]*vertices[g[0]]['weights'].get('thumb_01_r',0)for g in groups]);neighbours=[set()for g in groups]
+for f in part['faces']:
+ for a,b in zip(f['ids'],f['ids'][1:]+f['ids'][:1]):
+  a,b=ids[a],ids[b]
+  if a!=b:neighbours[a].add(b);neighbours[b].add(a)
+base=m(j['bones']['thumb_01_r']['rest'])[:3,3];initial=set()
+for i,g in enumerate(groups):
+ w=vertices[g[0]]['weights']
+ if w.get('thumb_01_r',0)>.015 and w.get('thumb_02_r',0)<.9 and np.linalg.norm(rest[i]-base)<.065:initial.add(i)
+# Actual posed distal thumb triangles are the collision boundary. Their
+# connected root is excluded; only hand-side web vertices can move.
+shaft_faces=[]
+for f in part['faces']:
+ avg=sum(vertices[i]['weights'].get('thumb_02_r',0)+vertices[i]['weights'].get('thumb_03_r',0) for i in f['ids'])/3
+ if avg>.78:shaft_faces.append([ids[i]for i in f['ids']])
+shaft=np.array([posed[t]for t in shaft_faces]);normals=np.cross(shaft[:,1]-shaft[:,0],shaft[:,2]-shaft[:,0]);normals/=np.linalg.norm(normals,axis=1)[:,None]
+def nearest(point):
+ a,b,c=shaft[:,0],shaft[:,1],shaft[:,2];ab=b-a;ac=c-a;ap=point-a;d=np.sum(ap*normals,axis=1);proj=point-d[:,None]*normals
+ v=proj-a;aa=np.sum(ab*ab,axis=1);bb=np.sum(ac*ac,axis=1);abac=np.sum(ab*ac,axis=1);va=np.sum(v*ab,axis=1);vb=np.sum(v*ac,axis=1);den=aa*bb-abac*abac;u=(bb*va-abac*vb)/den;w=(aa*vb-abac*va)/den;inside=(u>=0)&(w>=0)&(u+w<=1)
+ targets=np.array(proj);dist=np.where(inside,np.sum((point-proj)**2,axis=1),np.inf)
+ for start,end in[(a,b),(b,c),(c,a)]:
+  edge=end-start;t=np.clip(np.sum((point-start)*edge,axis=1)/np.sum(edge*edge,axis=1),0,1);q=start+t[:,None]*edge;ds=np.sum((point-q)**2,axis=1);mask=ds<dist;targets[mask]=q[mask];dist[mask]=ds[mask]
+ i=int(np.argmin(dist));return targets[i],normals[i],float(np.sqrt(dist[i]))
+rows=[]
+for expand in [0,1]:
+ free=set(initial)
+ for _ in range(expand):
+  for i in list(free):
+   for n in neighbours[i]:
+    w=vertices[groups[n][0]]['weights']
+    if w.get('thumb_02_r',0)+w.get('thumb_03_r',0)<.8 and sum(w.get(f+'_02_r',0)+w.get(f+'_03_r',0)for f in('index','middle','ring','pinky'))<.1:free.add(n)
+ free=sorted(free);index={i:k for k,i in enumerate(free)};A=lil_matrix((len(free),len(free)));boundary=np.zeros((len(free),3))
+ for i in free:
+  k=index[i];A[k,k]=len(neighbours[i])
+  for n in neighbours[i]:
+   if n in index:A[k,index[n]]=-1
+   else:boundary[k]+=posed[n]
+ solve=factorized(A.tocsc());x=posed.copy()
+ for step in range(61):
+  rotations=[]
+  for i in range(len(groups)):
+   ng=list(neighbours[i]);S=(x[ng]-x[i]).T@(rest[ng]-rest[i]);u,s,vt=np.linalg.svd(S);d=np.linalg.det(u@vt);rotations.append(u@np.diag([1,1,d])@vt)
+  rhs=boundary.copy()
+  for i in free:
+   for n in neighbours[i]:rhs[index[i]]+=(rotations[i]+rotations[n])@(rest[i]-rest[n])*.5
+  for axis in range(3):x[free,axis]=solve(rhs[:,axis])
+  # The web must remain outside the actual opposing thumb surface.
+  for i in free:
+   weights=vertices[groups[i][0]]['weights']
+   if weights.get('hand_r',0)<.18:continue
+   q,n,d=nearest(x[i])
+   if d<.018 and np.dot(x[i]-q,n)<.0005:x[i]+=n*(.0005-np.dot(x[i]-q,n))
+  if step in(15,40,60):
+   row={'expand':expand,'steps':step+1,'freeVertices':len(free),'maxShiftM':float(np.max(np.linalg.norm(x-posed,axis=1))),'points':[{ 'i':vid,'point':x[i].tolist()}for i,g in enumerate(groups)for vid in g]};rows.append(row);print({k:v for k,v in row.items()if k!='points'})
+(r/'web-arap-collision-grid.json').write_text(json.dumps(rows))

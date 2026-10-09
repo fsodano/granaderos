@@ -1,0 +1,118 @@
+[
+  {
+    "preset": "granadero",
+    "clip": "crouch.fire.long-gun",
+    "sampleHz": 120,
+    "samples": 134,
+    "minGapM": 0.0017330326603715864,
+    "maxNeckSpeedDegreesPerSecond": 141.14342196242518,
+    "maxHeadSpeedDegreesPerSecond": 104.1969478466458,
+    "maxGazeDegrees": 4.613032208051782,
+    "maxEyeErrorM": 0.009697045648433452,
+    "ready": [
+      {
+        "time": 0,
+        "gazeDegrees": 2.467770401385203,
+        "eyeErrorM": 0.0019179587918162896
+      },
+      {
+        "time": 1.100000023841858,
+        "gazeDegrees": 2.4677764916419456,
+        "eyeErrorM": 0.0019178850961129447
+      }
+    ],
+    "worstTime": 0.6037594115823731,
+    "worstHandPoint": [
+      -0.12066215642851785,
+      1.0729362880261428,
+      0.4979954379169027
+    ]
+  },
+  {
+    "preset": "granadero",
+    "clip": "prone.fire.long-gun",
+    "sampleHz": 120,
+    "samples": 134,
+    "minGapM": 0.0014435804779304301,
+    "maxNeckSpeedDegreesPerSecond": 156.17762662270908,
+    "maxHeadSpeedDegreesPerSecond": 160.25003381800778,
+    "maxGazeDegrees": 4.557299407991011,
+    "maxEyeErrorM": 0.00927869069121628,
+    "ready": [
+      {
+        "time": 0,
+        "gazeDegrees": 3.106771791491845,
+        "eyeErrorM": 0.0019799027257806166
+      },
+      {
+        "time": 1.100000023841858,
+        "gazeDegrees": 3.1067727576226774,
+        "eyeErrorM": 0.0019798794901607843
+      }
+    ],
+    "worstTime": 0.0661654149679313,
+    "worstHandPoint": [
+      -0.1718715174639734,
+      0.31253953758800357,
+      0.6713188925550936
+    ]
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "crouch.fire.long-gun",
+    "sampleHz": 120,
+    "samples": 134,
+    "minGapM": 0.0012453991910827077,
+    "maxNeckSpeedDegreesPerSecond": 131.9435401109127,
+    "maxHeadSpeedDegreesPerSecond": 92.75891826172756,
+    "maxGazeDegrees": 3.6990711664935496,
+    "maxEyeErrorM": 0.009305286367732209,
+    "ready": [
+      {
+        "time": 0,
+        "gazeDegrees": 1.185932273818054,
+        "eyeErrorM": 0.001990465812722279
+      },
+      {
+        "time": 1.100000023841858,
+        "gazeDegrees": 1.185932338142356,
+        "eyeErrorM": 0.001990562250960317
+      }
+    ],
+    "worstTime": 0.4466165510335363,
+    "worstHandPoint": [
+      -0.11541695818574527,
+      1.1063397539489057,
+      0.5343844959675951
+    ]
+  },
+  {
+    "preset": "woman-scout",
+    "clip": "prone.fire.long-gun",
+    "sampleHz": 120,
+    "samples": 134,
+    "minGapM": 0.0028889692559447198,
+    "maxNeckSpeedDegreesPerSecond": 92.07908211585739,
+    "maxHeadSpeedDegreesPerSecond": 105.42345094024485,
+    "maxGazeDegrees": 6.239513376091436,
+    "maxEyeErrorM": 0.0030279221237454715,
+    "ready": [
+      {
+        "time": 0,
+        "gazeDegrees": 3.721211360444065,
+        "eyeErrorM": 0.0015712553374541561
+      },
+      {
+        "time": 1.100000023841858,
+        "gazeDegrees": 3.721211360444065,
+        "eyeErrorM": 0.0015712553374541561
+      }
+    ],
+    "worstTime": 0.36390978232362214,
+    "worstHandPoint": [
+      -0.29957220344692587,
+      0.33037968285710473,
+      0.6673022020643433
+    ]
+  }
+]

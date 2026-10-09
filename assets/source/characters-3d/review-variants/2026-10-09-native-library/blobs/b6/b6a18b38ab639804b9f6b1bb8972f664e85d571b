@@ -1,0 +1,30 @@
+--- a/assets/source/characters-3d/authoring/relaxed_hands.py
++++ b/assets/source/characters-3d/authoring/relaxed_hands.py
+@@ -25,7 +25,7 @@
+     bpy.context.view_layer.update()
+ 
+ 
+-def apply_relaxed_hands(rig):
++def apply_relaxed_hands(rig, *, right_thumb_untwist=0.0):
+     """Set directions and their hinge together; never use an ambiguous >180° arc."""
+     from reviewed_motion import _palm_basis
+     for side in ('l','r'):
+@@ -58,4 +58,18 @@
+             local=delta.inverted()@shaft.normalized()
+             turn=(_frame(local,normal)@_frame(rest,normal).inverted()).to_quaternion()
+             _set(rig,name,delta@turn@bone.matrix_local.to_quaternion())
++        if side == 'r' and right_thumb_untwist:
++            # Private one-hand pilot: reduce base axial roll while retaining
++            # the thumb shaft direction and the downstream world frames.
++            first = rig.pose.bones[names[0]]
++            second = rig.pose.bones[names[1]]
++            second_rotation = second.matrix.to_quaternion().copy()
++            old_rotation = first.matrix.to_quaternion().copy()
++            native_rotation = first.bone.matrix_local.to_quaternion()
++            native_axis = (first.bone.tail_local-first.bone.head_local).normalized()
++            current_axis = delta.inverted() @ (old_rotation @ Vector((0,1,0)))
++            minimum = delta @ native_axis.rotation_difference(current_axis) @ native_rotation
++            corrected = old_rotation.slerp(minimum, right_thumb_untwist)
++            _set(rig, names[0], corrected)
++            _set(rig, names[1], second_rotation)
+     bpy.context.view_layer.update()

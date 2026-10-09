@@ -21,7 +21,11 @@ function allyAssembly(){
 }
 
 for(const withField of [true,false])test(`mission ally equipment rejects another physical owner ${withField?'with its field journal':'without a field journal'}`,()=>{
- const s=allyAssembly();if(!withField)delete s.sectorStates.san_lorenzo;
+ const s=allyAssembly();if(!withField){
+  delete s.sectorStates.san_lorenzo;
+  // This compatibility fixture omits the field journal and its position cache.
+  for(const record of Object.values(s.operativeState))if(record.residentSector==='san_lorenzo'&&record.residentScene==null)delete record.residentPosition;
+ }
  assert.doesNotThrow(()=>restoreCampaign(serializeCampaign(s)));
  storeEquipment(s,1800,{fittings:s.missionAllies.san_lorenzo.weaponFittings});
  assert.throws(()=>restoreCampaign(serializeCampaign(s)),/identidad.*duplicada/i);

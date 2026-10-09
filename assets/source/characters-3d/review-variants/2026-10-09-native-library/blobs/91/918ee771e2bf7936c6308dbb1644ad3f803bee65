@@ -1,0 +1,48 @@
+{
+  "directory": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/increment-tool-validation/models",
+  "sourceDirectory": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/integration-candidate/appearance-source/assets/source/characters-3d/authoring",
+  "motion": {
+    "male": {
+      "clips": 334,
+      "unchangedUnselectedClips": 333,
+      "changedClips": [],
+      "allClipPayloadsPreservedByEquipment": true,
+      "nativeSignature": "49c6e9930c0a1d7b679a7d9f400627f5aa9f28d3f81f79c49a7e7a5c1e13f577"
+    },
+    "female": {
+      "clips": 334,
+      "unchangedUnselectedClips": 333,
+      "changedClips": [],
+      "allClipPayloadsPreservedByEquipment": true,
+      "nativeSignature": "784cb8b0a3c0467a29a4f053c49c1b8b2837ea1c7e31ed6ed1b49a084fbd44b5"
+    }
+  },
+  "equipment": {
+    "items": 26,
+    "unchangedUnselectedItems": 25,
+    "changedItems": [],
+    "allAttachmentRootsPreserved": true
+  },
+  "strictNativeRig": "PASS",
+  "locomotionCompilerCheck": "PASS",
+  "structuralVerification": {
+    "appearanceLODs": 24,
+    "anatomies": [
+      "male",
+      "female"
+    ],
+    "clipsPerAnatomy": 334,
+    "equipmentItems": 26,
+    "horseLODs": 3,
+    "result": "PASS"
+  },
+  "changedFilesAfterMotion": [],
+  "changedFilesAfterEquipment": [],
+  "toolHashes": {
+    "build-motion-increment.py": "87521b179858a719afd8e3aae8aecf32d83b0193d0ab74f24210de515b394fdc",
+    "build-equipment-increment.py": "7222c45b5f8fa47807079a82c3d09124c208677858a7404bfa90d54a0f19bfd8",
+    "build-appearance-increment.py": "ef835fc8f46d884cafb015219958a3b4a71c8a09cd4ad98197652ac7c449a7f0",
+    "compile-locomotion-profile.mjs": "a8e1d1c9bb753e23145352571273293f765eb1845594e3227a1edb72fd26b35e",
+    "library_publication.py": "03e9e8b56da8e86a0f56e4aedc2408e4e950b79631def400f9cd67f56c246a18"
+  }
+}

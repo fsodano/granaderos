@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-09",
+  "baseCommit": "3735cc7023d35a9c378c2c357142b37ed166eb9b",
+  "runtime": {
+    "version": "v25.9.0",
+    "executable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "sameExecutableForFullAndBaseline": true
+  },
+  "fullRun": {
+    "filesCompleted": 917,
+    "failedFiles": [
+      "tests/fresh-campaign-recovery.test.mjs",
+      "tests/fresh-coastal-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-ending-route.test.mjs",
+      "tests/fresh-northern-route.test.mjs",
+      "tests/opening-playthrough.test.mjs"
+    ],
+    "counts": {
+      "tests": 6912,
+      "failed": 10,
+      "passed": 6897,
+      "cancelled": 0,
+      "skipped": 5,
+      "todo": 0,
+      "topLevel": 6762,
+      "suites": 0
+    },
+    "durationMs": 1047062.282958,
+    "success": false
+  },
+  "baselineRun": {
+    "scope": "Only the seven files that failed in the full run; unchanged primary commit.",
+    "counts": {
+      "tests": 16,
+      "passed": 1,
+      "failed": 10,
+      "skipped": 5,
+      "cancelled": 0
+    },
+    "trackedSourceFilesModified": false
+  },
+  "comparison": {
+    "matchedUnderlyingAssertions": 9,
+    "newOrChangedAssertions": 0,
+    "missingAssertions": 0,
+    "method": "Compare source test location, full assertion message, actual value, expected value and operator. Ignore runtime duration and absolute checkout prefixes."
+  },
+  "matchedAssertions": [
+    {
+      "sourceLocation": "tests/fresh-campaign-recovery.test.mjs:30:1",
+      "message": "{\"type\":\"travel\",\"sector\":\"san_nicolas\"}: Terminá o cancelá la ruta antes de entrar en un sector.",
+      "actual": "Terminá o cancelá la ruta antes de entrar en un sector.",
+      "expected": null,
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/fresh-coastal-route.test.mjs:10:39",
+      "message": "El equipo asignado ya está en perfecto estado.",
+      "actual": "El equipo asignado ya está en perfecto estado.",
+      "expected": null,
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/fresh-coastal-route.test.mjs:10:39",
+      "message": "created: san_nicolas, turn 21; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":48,\"y\":15,\"hp\":100,\"energy\":100,\"loaded\":0,\"ammo\":7}]",
+      "actual": "defeat",
+      "expected": "victory",
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/fresh-coastal-route.test.mjs:36:1",
+      "message": "local: buenos_aires, turn 3; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":43,\"y\":18,\"hp\":100,\"energy\":91,\"loaded\":0,\"ammo\":12},{\"id\":\"enemy-1\",\"side\":\"enemy\",\"x\":43,\"y\":21,\"hp\":42,\"energy\":66,\"loaded\":1,\"ammo\":10},{\"id\":\"enemy-2\",\"side\":\"enemy\",\"x\":39,\"y\":22,\"hp\":100,\"energy\":87,\"loaded\":1,\"ammo\":12},{\"id\":\"enemy-3\",\"side\":\"enemy\",\"x\":42,\"y\":16,\"hp\":57,\"energy\":64,\"loaded\":1,\"ammo\":11}]",
+      "actual": "defeat",
+      "expected": "victory",
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/fresh-cuyo-route.test.mjs:2:1",
+      "message": "created: san_nicolas, turn 21; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":48,\"y\":15,\"hp\":100,\"energy\":100,\"loaded\":0,\"ammo\":7}]",
+      "actual": "defeat",
+      "expected": "victory",
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/fresh-ending-route.test.mjs:7:1",
+      "message": "created: san_nicolas, turn 21; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":48,\"y\":15,\"hp\":100,\"energy\":100,\"loaded\":0,\"ammo\":7}]",
+      "actual": "defeat",
+      "expected": "victory",
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/fresh-historical-loss.test.mjs:6:1",
+      "message": "created: san_nicolas, turn 21; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":48,\"y\":15,\"hp\":100,\"energy\":100,\"loaded\":0,\"ammo\":7}]",
+      "actual": "defeat",
+      "expected": "victory",
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/fresh-northern-route.test.mjs:5:1",
+      "message": "created: san_nicolas, turn 21; [{\"id\":\"enemy-0\",\"side\":\"enemy\",\"x\":48,\"y\":15,\"hp\":100,\"energy\":100,\"loaded\":0,\"ammo\":7}]",
+      "actual": "defeat",
+      "expected": "victory",
+      "operator": "strictEqual"
+    },
+    {
+      "sourceLocation": "tests/opening-playthrough.test.mjs:40:10",
+      "message": "finite local equipment or carrying room is exhausted: retiro {\"item\":\"medkits\"}",
+      "actual": false,
+      "expected": true,
+      "operator": "=="
+    }
+  ],
+  "openingParent": {
+    "sourceLocation": "tests/opening-playthrough.test.mjs:20:1",
+    "testName": "established southern campaign reaches Yatasto through combat, defeat, rescue and paid recovery",
+    "counts": {
+      "tests": 8,
+      "passed": 1,
+      "failed": 2,
+      "skipped": 5,
+      "cancelled": 0
+    },
+    "failedChildLocation": "tests/opening-playthrough.test.mjs:40:10",
+    "matchesBaseline": true,
+    "note": "One child assertion fails; its parent reports failure. The five dependent subtests skip in both runs."
+  },
+  "conclusion": "All ten reported test failures reproduce on the unchanged baseline. No new or changed failure was detected by the full gate; the full suite is not green."
+}

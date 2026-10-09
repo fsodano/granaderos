@@ -1,0 +1,40 @@
+from pathlib import Path
+import json,struct,hashlib,collections
+B=Path('/tmp/granadero-eye-region-pilot');OLD=Path('/tmp/granadero-face-shape-study/models');NEW=B/'models'
+TYPES={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16};FMT={5121:'B',5123:'H',5125:'I',5126:'f'}
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def read(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];d=json.loads(b[20:20+n]);blob=b[28+n:]
+ def acc(i):
+  a=d['accessors'][i];v=d['bufferViews'][a['bufferView']];f='<'+FMT[a['componentType']]*TYPES[a['type']];o=v.get('byteOffset',0)+a.get('byteOffset',0);st=v.get('byteStride',struct.calcsize(f))
+  return [struct.unpack_from(f,blob,o+j*st)for j in range(a['count'])]
+ return d,acc
+od,oa=read(B/'baseline/granadero-lod0.glb');nd,na=read(NEW/'granadero-lod0.glb')
+assert od['materials']==nd['materials'];assert od.get('textures')==nd.get('textures');assert od.get('images')==nd.get('images')
+rows=[]
+for om,nm in zip(od['meshes'],nd['meshes']):
+ assert om['name']==nm['name']
+ for op,np in zip(om['primitives'],nm['primitives']):
+  mat=od['materials'][op['material']]['name'];assert mat==nd['materials'][np['material']]['name']
+  oldp=oa(op['attributes']['POSITION']);newp=na(np['attributes']['POSITION']);oldc=collections.Counter(oldp);newc=collections.Counter(newp)
+  removed=list((oldc-newc).elements());added=list((newc-oldc).elements());changed=removed+added
+  # glTF coordinates: source x,-y,z -> x,z,-y.
+  bbox=[[min(p[i]for p in changed),max(p[i]for p in changed)]for i in range(3)]if changed else None
+  other={k:oa(v)==na(np['attributes'][k])for k,v in op['attributes'].items()if k not in('POSITION','NORMAL','JOINTS_0','WEIGHTS_0')}
+  rows.append({'mesh':om['name'],'material':mat,'removedUniquePositions':len(removed),'addedUniquePositions':len(added),'changedPositionBoundsGltf':bbox,'unchangedAttributesByIndex':other,'indicesExact':oa(op['indices'])==na(np['indices'])})
+unchanged_files=[]
+for p in OLD.rglob('*'):
+ if not p.is_file():continue
+ rel=p.relative_to(OLD)
+ if rel.parts[0].startswith('.')or rel.name=='manifest.json'or rel.name=='granadero-lod0.glb':continue
+ if(NEW/rel).is_file():
+  assert digest(p)==digest(NEW/rel),str(rel);unchanged_files.append(str(rel))
+a=json.loads((B/'before/index.json').read_text());b=json.loads((B/'after-final/index.json').read_text())
+for key in ('renderSettings','lighting','camera'):
+ assert a[key]==b[key],key
+frames=[f for f in a['frames']if f['preset']=='granadero' and f['clip']=='stand.idle.unarmed']
+for old,new in zip(frames,b['frames']):
+ for key in ('timeSeconds','cameraTarget','cameraScale'):
+  if key in old:assert old[key]==new[key],(key,old[key],new[key])
+report={'materialsAndTextureBindingsExact':True,'allOtherLibraryFilesExact':len(unchanged_files),'otherLibraryFiles':unchanged_files,'sameRenderSettingsLightingAndCamera':True,'renderSettings':b['renderSettings'],'lighting':b['lighting'],'camera':b['camera'],'primitives':rows}
+(B/'detail-proof.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items()if k not in('lighting','camera','otherLibraryFiles')},indent=2))

@@ -488,7 +488,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
       return;
     }
     const environment=environmentTargetAt(s,t);
-    if(environment&&u&&['move','useItem'].includes(mode)&&canSee(s,u,t)){order({type:'useItem',environment:{kind:environment.kind,id:environment.id}});return;}
+    if(environment&&u&&['move','useItem'].includes(mode)&&canSee(s,u,environment)){order({type:'useItem',environment:{kind:environment.kind,id:environment.id}});return;}
     if(mode==='move')order(moveTo(t));
   };
   const aimAtPointer=(event:React.MouseEvent<SVGSVGElement>)=>{

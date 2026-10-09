@@ -1,4 +1,5 @@
 import {fundServiceGuarantee,settleServiceGuarantee,forfeitDeadServiceGuarantees,validateServiceGuarantees,guaranteeDepartureReason,creditPendingGuaranteeRefunds} from './service-guarantees.js';
+import {treasuryIncomeReason,awardVictoryFunds,creditPendingVictoryFunds,validatePendingVictoryFunds} from './treasury-rewards.js';
 import {withdrawQuest,validateQuestWithdrawalReceipts} from './quest-withdrawal.js';
 import {initializeTownIncome,activateTownIncome,validateTownIncome,collectTownIncome,townIncomeSourceForNPC} from './town-income.js';
 import {validateRepairReserve,validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
@@ -27,6 +28,8 @@ import {workshopServiceQuote} from './workshop-service.js';
 import {CARE_ASSIGNMENTS,careAssignmentBusy,assignMedicalCare,advanceMedicalCare,advanceMilitaryWounds,validateMedicalCare,medicalSupplyQuote,MEDICAL_KIT_PRICE,migrateMedicalCare,returnMedicalCare} from './medical-care.js';
 import {enforceHistoricalLoss} from './historical-loss.js';
 import {previousDeploymentScene,withoutPreviousCasualties,retainedMilitaryBodies} from './military-remains.js';
+import {firstAidPlan} from './first-aid.js';
+import {CRITICAL_HEALTH} from './actor-condition.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {foundryFor} from './campaign-foundry.js';
 import {campaignRole,campaignRoleActive,foundryReason} from './campaign-roles.js';
@@ -41,7 +44,7 @@ import {advanceUnloadedCivilians,nextUnloadedCivilianDeath,migrateResidentWounds
 import {synchronizeCampaignPresence,nextCampaignPresenceChange,validateCampaignPresence,acknowledgeSuccessionDeaths} from './campaign-presence.js';
 import {isContractOperative,gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
-import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
+import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,adjacentCells} from './world-cells.js';
 import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {validateForceWeapon} from './content-force-equipment.js';
 import {weaponSaveReplacer,weaponSpecification,validateWeaponCarrier,validateWeaponReferences,setWeaponDefinition,weaponRecord} from './weapon-definition.js';
@@ -154,7 +157,7 @@ function receiveHire(s,arrival,joinSquad=true){
   const id=arrival.operativeId,op=rosterFor(s).find(o=>o.id===id);
   requireThat(!s.operativeState[id]?.serviceEquipmentReturn,'Recogé todo el equipo que dejó esta persona antes de volver a contratarla.');
   s.contracts[id]={...(arrival.guaranteeId?{guaranteeId:arrival.guaranteeId}:{}),kind:arrival.permanent?'patriot':'paid',term:arrival.term,...contractStartedFields(s,arrival.permanent?null:s.secondOfHour??0),expiresAt:arrival.permanent?null:s.hour+arrival.serviceHours,paid:arrival.paid};
-  s.recruited.push(id);issueStartingCartridges(s,op);issueInitialOutfit(s,id);Object.assign(s.operativeState[id],{location:arrival.destination,arrival:null,residentSector:null,residentScene:null});
+  s.recruited.push(id);issueStartingCartridges(s,op);issueInitialOutfit(s,id);Object.assign(s.operativeState[id],{location:arrival.destination,arrival:null,residentSector:null,residentScene:null});delete s.operativeState[id].residentPosition;
   if(joinSquad&&!s.pendingBattle&&s.location===arrival.destination&&s.squad.length<6)s.squad.push(id);
   note(s,`${op.name} llega a ${sector(arrival.destination).name} y comienza su servicio.`);
   receiveCorrespondence(s,{id:`arrival-${id}-${s.hour}`,sender:`Cuartel de ${sector(arrival.destination).name}`,subject:`Llegada de ${op.nickname}`,text:`${op.name} llegó y comenzó su servicio. ${arrival.permanent?'Su servicio es permanente.':`El contrato cubre ${arrival.serviceHours/24} días.`}`});
@@ -315,6 +318,7 @@ function releaseCaptives(s,at){
     const contract=restoredCaptiveContract(r,s.hour,s.secondOfHour??0);
     if(!contract)settleServiceGuarantee(s,r.capturedContract,op);
     Object.assign(r,{asleep:false,captured:false,capturedSector:null,capturedAt:null,capturedAtSecond:null,capturedContract:null,location:at,arrival:null,residentSector:at,residentScene:null,assignment:r.hp<r.maxHp||r.bleeding?'patient':'rest'});
+    delete r.residentPosition;
     if(!contract){r.assignment='active';note(s,`${op.name} queda libre en ${sector(at).name}. Su contrato había terminado y puede volver a contratarse.`);continue;}
     s.contracts[op.id]=contract;s.recruited.push(op.id);if(s.location===at&&s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} vuelve al servicio tras la liberación de ${sector(at).name}. Conserva sus heridas y equipo.`);
   }
@@ -456,7 +460,29 @@ function completeDeploymentReport(s,request,action){
   // Re-entry also retains incapacitated enemies from a cleared sector. Use
   // the same identities as placement, including collisions with a new force.
   const retained=retainedMilitaryBodies(previous,[...request.squad,...(request.garrison??[]),...(request.missionAllies??[]),...source],request.sector).filter(u=>u.side==='enemy'&&!u.departure);
-  requireThat([...enemyIds].every(id=>enemies.some(u=>u.id===id))&&enemies.every(u=>enemyIds.has(u.id)||retained.some(old=>old.id===u.id&&u.hp<=old.hp)),'El estado táctico no incluye a todos los enemigos del despliegue.');
+  // Retained living casualties can receive the same finite critical first aid
+  // as the new garrison. An identity collision never grants a second issue or
+  // revives a dead body. Bound all restored HP by the actual enemy dressing
+  // debit, including care supplied by a different soldier.
+  const enemyIssue=[...new Map([...source,...retained].map(unit=>[String(unit.id),unit])).values()];
+  const healers=enemyIssue.filter(old=>(old.hp??old.health??old.stats?.health??100)>=CRITICAL_HEALTH&&(old.energy??100)>0&&!old.unconscious&&!old.departure&&!old.routed&&!old.surrendered&&
+   (old.medical??old.stats?.medical??30)>0&&(old.medkits??2)>(enemies.find(unit=>unit.id===String(old.id))?.medkits??0));
+  const dressingDebit=healers.reduce((sum,old)=>sum+(old.medkits??2)-(enemies.find(unit=>unit.id===String(old.id))?.medkits??0),0);
+  let criticalDressings=0;
+  const authorizedRetained=unit=>{
+   const old=retained.find(old=>old.id===unit.id);if(!old)return false;
+   if(unit.originalUnitId!==old.originalUnitId||unit.maxHp!==old.maxHp)return false;
+   if(unit.hp<=old.hp)return true;
+   if(!(old.hp>0&&unit.hp<=CRITICAL_HEALTH&&old.hp<CRITICAL_HEALTH))return false;
+   const capacity=Math.max(0,...healers.map(healer=>firstAidPlan({...healer,
+    medical:healer.medical??healer.stats?.medical??30,dexterity:healer.dexterity??healer.stats?.dexterity??75,
+    experienceLevel:healer.experienceLevel??healer.stats?.experienceLevel??Math.min(10,4+Math.floor((healer.xp??0)/100)),medkits:1,
+   },{...old,hp:1,bleeding:0,bandaged:0}).hpGain));
+   if(!capacity)return false;
+   criticalDressings+=Math.ceil((unit.hp-old.hp)/capacity);return true;
+  };
+  requireThat([...enemyIds].every(id=>enemies.some(u=>u.id===id))&&retained.every(old=>{const unit=enemies.find(u=>u.id===old.id);return unit&&authorizedRetained(unit);})&&
+   enemies.every(u=>enemyIds.has(u.id)||retained.some(old=>old.id===u.id))&&(!criticalDressings||criticalDressings<=dressingDebit),'El estado táctico no incluye a todos los enemigos del despliegue.');
   const required=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','rations','torches','boleadoras','activeSlot'];
   if(request.fittingRulesVersion===FITTING_RULES_VERSION){requireThat(raw.fittingRulesVersion===FITTING_RULES_VERSION,'El parte no contiene la versión de accesorios del despliegue.');required.push('weaponFittings','weaponFittingPattern','bladeFittingPattern');}
   for(const id of known){const unit=raw.units.find(u=>u.side==='player'&&String(u.id)===id);requireThat(unit&&required.every(key=>Object.hasOwn(unit,key)&&unit[key]!==undefined),'El equipo y la salud del combatiente están incompletos.');}
@@ -475,12 +501,20 @@ function applyReturnedOperative(s,request,report){
 }
 function commitDeploymentReturn(s,request,snapshot,plan){
   applyTacticalTime(s,request,snapshot.elapsedSeconds??0);snapshot.syncedSeconds=request.syncedSeconds;snapshot.savedHour=s.hour;snapshot.savedSecond=s.secondOfHour;
+  // An older save may still carry another squad's last real position only in
+  // the shared scene. Preserve that point before the new squad replaces it.
+  const priorScene=request.sceneId?s.sceneStates[request.sceneId]:s.sectorStates[request.sector],issued=new Set(plan.entries.map(e=>e.unitId));
+  for(const unit of priorScene?.units??[]){const r=s.operativeState[Number(unit.id)];if(unit.side==='player'&&unit.hp>0&&!unit.departure&&!issued.has(unit.id)&&r?.alive&&r.residentPosition===undefined&&r.residentSector===request.sector&&(r.residentScene??null)===(request.sceneId??null))r.residentPosition={x:unit.x,y:unit.y,...(unit.tacticalLevel===undefined?{}:{tacticalLevel:unit.tacticalLevel})};}
   retainQuestBeneficiaries(s,request,snapshot);acknowledgeCivilians(s,snapshot);acknowledgeNpcGifts(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);
   for(const entry of plan.entries){const id=Number(entry.unitId),unit=snapshot.units.find(u=>u.side==='player'&&u.id===entry.unitId);applyReturnedOperative(s,request,unit);const r=s.operativeState[id];r.location=entry.sector;
     clearCarriedLoading(r);const loading=plan.ammunition.carried[id];if(loading)setCarriedLoading(r,{weapon:unit.weapon,...loading});syncCarriedAmmunition(r,unit.weapon);
     if(['dead','dispersed'].includes(entry.kind)&&r.activeItem==='ammo'){delete r.activeItem;r.activeSlot='unarmed';}
     r.arrival=entry.kind==='departed'?{battleId:request.id,fromSector:request.sector,fromScene:request.sceneId??null,exitId:entry.departure.exitId,entryEdge:entry.departure.entryEdge,entryAnchor:clone(entry.departure.entryAnchor)}:null;
     r.residentSector=entry.kind==='resident'?request.sector:null;r.residentScene=entry.kind==='resident'?(request.sceneId??null):null;
+    // Other local squads replace the scene's issued units when they return.
+    // Keep only this person's actual position; current campaign gear remains
+    // authoritative and is never copied from an absent scene participant.
+    if(entry.kind==='resident')r.residentPosition={x:unit.x,y:unit.y,...(unit.tacticalLevel===undefined?{}:{tacticalLevel:unit.tacticalLevel})};else delete r.residentPosition;
   }
   requireThat(Object.values(plan.ammunition.creditedAmmunition??{}).every(count=>count===0),'El parte intenta crear una reserva global de munición.');
   if(request.exploration)recordCasualtyMorale(s,plan.entries.filter(e=>e.kind==='dead').map(e=>Number(e.unitId)),request.squad.map(u=>Number(u.id)));else recordBattleMorale(s,request,plan.outcome,snapshot);
@@ -495,6 +529,8 @@ function commitDeploymentReturn(s,request,snapshot,plan){
   settleSectorArtillery(snapshot,plan.outcome);
   recordFiniteArsenalRecovery(s,request,snapshot);
   snapshot.returnLedger={battleId:request.id,entries:clone([...plan.entries,...plan.auxiliary]),creditedCartridges:plan.ammunition.creditedCartridges,creditedAmmunition:clone(plan.ammunition.creditedAmmunition)};
+  // A new report cannot invent or erase an earlier accepted unpaid reward.
+  delete snapshot.pendingVictoryFunds;const funds=s.sectorStates[request.sector]?.pendingVictoryFunds;if(!request.sceneId&&funds)snapshot.pendingVictoryFunds=clone(funds);
   if(!request.sceneId)collectSectorCash(s,snapshot);
   const delivered=new Set((request.remains??[]).map(r=>`${r.battleId}:${r.unitId}`));s.sectorRemains[plan.sourceSector]=(s.sectorRemains[plan.sourceSector]??[]).filter(r=>!delivered.has(`${r.battleId}:${r.unitId}`));
   for(const e of [...plan.entries,...plan.auxiliary].filter(e=>e.kind==='dead'&&e.departure)){
@@ -644,7 +680,7 @@ export function dispatchCampaign(previous,action){
   const s=migrateSquads(clone(previous));s.lastError=null;s.militiaTraining??=[];s.missions??={};s.sceneStates??={};s.missionAllies??={};s.quests??={};migrateContracts(s);
   try{
     initializeCampaignSystems(s);
-    forfeitDeadServiceGuarantees(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));
+    forfeitDeadServiceGuarantees(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));validatePendingVictoryFunds(s);
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     validateCampaignServiceObjections(s,rosterFor(s));
     validatePendingCompanionLoss(s,rosterFor(s));
@@ -948,7 +984,7 @@ export function dispatchCampaign(previous,action){
         }
         if(action.approach==='recruit'){
           requireThat(canRecruitEncounter(npc),'Este habitante no es un recluta.');requireThat(!s.recruited.includes(npc.operativeId),'Este combatiente ya se incorporó.');const reason=encounterRequirements(s,npc,actor);requireThat(!reason,reason);
-          const gate=recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);signContract(s,op,action.term);s.recruited.push(op.id);transferCivilian(s,local);Object.assign(s.operativeState[op.id],{location:s.location,arrival:null,residentSector:s.pendingBattle.sector,residentScene:s.pendingBattle.sceneId??null});if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...carriedAmmunition(op,clone(s.operativeState[op.id]))});}const line=s.contentCampaign?speechFor(op,'hired'):'Acepto servir junto a ustedes.';text=`${line?.trim()?line+' ':''}${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
+          const gate=recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);signContract(s,op,action.term);s.recruited.push(op.id);transferCivilian(s,local);Object.assign(s.operativeState[op.id],{location:s.location,arrival:null,residentSector:s.pendingBattle.sector,residentScene:s.pendingBattle.sceneId??null});delete s.operativeState[op.id].residentPosition;if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...carriedAmmunition(op,clone(s.operativeState[op.id]))});}const line=s.contentCampaign?speechFor(op,'hired'):'Acepto servir junto a ustedes.';text=`${line?.trim()?line+' ':''}${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
         }
         s.conversations??={};s.conversations[npc.id]={...s.conversations[npc.id],...(dialogue?{dialogueNode:dialogue.node}:{}),met:true,lastApproach:action.approach,hour:s.hour,secondOfHour:s.secondOfHour??0,text,sector:s.pendingBattle.sector};
         if(townIncomeSourceForNPC(npc.id)&&['friendly','direct'].includes(action.approach)){
@@ -985,21 +1021,6 @@ export function dispatchCampaign(previous,action){
         requireThat(s.squad.length>0,'No hay combatientes en esta escuadra.');
         const destination=locationId(action.sector);requireThat(destination,'El destino no existe.');action={...action,sector:destination};
         if(destination!==s.location)prepareCampaignAmmunition(s,rosterFor(s),s.squad,{supplied:isSupplied(s,s.location),commit:true});
-        if(!sector(s.location)||!sector(destination)){
-          requireThat((action.mode??'march')==='march','Las postas, carretas y flotillas necesitan una ruta entre localidades. Para esta celda, elegí marcha a pie.');
-          const plan=cellTravelPlan(s,destination);requireThat(!plan.reason,plan.reason);requireThat(plan.path.length>1,'La escuadra ya está en esa celda.');
-          for(const next of plan.path.slice(1)){
-            const reason=cellTravelReason(s,next);if(reason){note(s,`La marcha se detiene: ${reason}`);break;}
-            // Consume each leg before changing position. Contract departures
-            // remain at the last reached cell; arriving hires never join en route.
-            for(let hour=0;hour<cellStepHours(next)&&s.squad.length&&!s.defeated;hour++)tick(s,1,{joinArrivals:false,traveling:[...s.squad],mountain:worldCell(next).biome==='mountain',travelLeg:[s.location,next]});
-            if(!s.squad.length||s.defeated){note(s,'La marcha se interrumpe antes de alcanzar la siguiente celda.');break;}
-            const blocked=cellTravelReason(s,next);if(blocked){note(s,`La marcha se detiene: ${blocked}`);break;}
-            recordStrategicArrival(s,s.squad,s.location,next);
-            s.location=next;synchronizeSquad(s);
-          }
-          note(s,`La escuadra queda en ${campaignPlace(s.location).name}.`);break;
-        }
         const q=activeSquad(s);queueSquadTravel(s,q,{...action,intent:'travel'});
         for(let hours=0;hours<240&&q.journey?.status==='moving'&&!s.defeated&&!s.pendingEncounter;hours++)tick(s,1,{joinArrivals:false});
         note(s,`La escuadra queda en ${campaignPlace(s.location).name}.`);break;
@@ -1016,7 +1037,7 @@ export function dispatchCampaign(previous,action){
         else if(kind==='emancipation'){requireThat(!s.flags.emancipation,'El decreto ya fue proclamado.');pay(s,{treasury:150});s.flags.emancipation=true;standing(s,'pardos',30);standing(s,'directory',5);note(s,'El Cabildo proclama la libertad y garantiza la protección de las familias emancipadas.');}
         else if(kind==='commission'){requireThat(s.flags.emancipation,'Primero garantiza la emancipación.');requireThat(!s.flags.commission,'Las comisiones ya fueron otorgadas.');pay(s,{treasury:100});s.flags.commission=true;standing(s,'pardos',20);note(s,'Los batallones de Pardos y Morenos reciben comisiones de oficiales.');}
         else if(kind==='gift'){pay(s,{treasury:80});standing(s,'indigenous',15);note(s,'Una comitiva entrega presentes y renueva los acuerdos de frontera.');}
-        else if(kind==='requisition'){requireThat(sector(s.location),'La contribución se solicita en el sector principal de una localidad.');requireThat(policyStatus(s).requisitionReady,'Las estancias necesitan catorce días para recuperarse.');s.politics??={};s.politics.requisitionAfter=s.hour+336;add(s,{treasury:200});standing(s,'gauchos',-20);standing(s,'directory',-10);s.sectors[s.location].loyalty=Math.max(0,s.sectors[s.location].loyalty-20);note(s,'La requisa abastece al ejército, pero provoca rechazo en la población.');}
+        else if(kind==='requisition'){requireThat(sector(s.location),'La contribución se solicita en el sector principal de una localidad.');requireThat(policyStatus(s).requisitionReady,'Las estancias necesitan catorce días para recuperarse.');const reason=treasuryIncomeReason(s,200);requireThat(!reason,reason);s.politics??={};s.politics.requisitionAfter=s.hour+336;add(s,{treasury:200});standing(s,'gauchos',-20);standing(s,'directory',-10);s.sectors[s.location].loyalty=Math.max(0,s.sectors[s.location].loyalty-20);note(s,'La requisa abastece al ejército, pero provoca rechazo en la población.');}
         else if(kind==='autonomy'){pay(s,{treasury:80});standing(s,'gauchos',15);standing(s,'directory',-3);note(s,'El ejército reconoce las autoridades provinciales.');}
         else throw Error('No existe esa propuesta diplomática.');break;
       }
@@ -1078,7 +1099,7 @@ export function dispatchCampaign(previous,action){
         if(action.outcome==='victory'){
           recordCityLoyalty(s,{sectorId:request.sector==='san_lorenzo'?'san_nicolas':request.sector,kind:'victory',eventId:request.id});if(request.sector==='san_lorenzo')s.flags.sanLorenzo=true;
           else {const region=s.sectors[request.sector];region.owner='patriot';region.damageUntil=0;releaseCaptives(s,request.sector);}
-          if(request.theater==='coast'&&!s.enemyGroups.some(g=>g.theater==='coast'&&['waiting','engaged','stationed'].includes(g.status)))s.blockade=false;if(request.wasRoyalist||request.sector==='san_lorenzo')add(s,{treasury:250});standing(s,'directory',5);standing(s,'gauchos',request.theater==='north'?10:2);note(s,`Victoria en ${request.name}. Se recuperan armas y fondos realistas.`);
+          if(request.theater==='coast'&&!s.enemyGroups.some(g=>g.theater==='coast'&&['waiting','engaged','stationed'].includes(g.status)))s.blockade=false;if(request.wasRoyalist||request.sector==='san_lorenzo')awardVictoryFunds(s,request,battleSnapshot);standing(s,'directory',5);standing(s,'gauchos',request.theater==='north'?10:2);note(s,`Victoria en ${request.name}. Se recuperan armas y fondos realistas.`);
         }else{standing(s,'directory',-5);note(s,`El destacamento se retira de ${request.name}.`);}
         s.sectorStates[request.sector]=clone(compactCellScene(battleSnapshot));
         s.pendingBattle=null;s.squad=s.squad.filter(id=>s.operativeState[id].alive);
@@ -1115,7 +1136,7 @@ export function dispatchCampaign(previous,action){
     if(s.pendingBattle&&s.pendingBattle.id!==previous.pendingBattle?.id)for(const unit of s.pendingBattle.squad){
      const before=carriedAmmunition(rosterFor(previous).find(o=>o.id===unit.id),previous.operativeState[unit.id]);requireThat(!pocketChangeReason(before,unit),`${unit.name}: ${POCKET_FULL}`);
     }
-    forfeitDeadServiceGuarantees(s,rosterFor(s));for(const credit of creditPendingGuaranteeRefunds(s))note(s,`Garantía ${credit.id}: se abonan ${credit.amount} pesos pendientes; quedan ${credit.pendingRefund} pesos por devolver.`);validateServiceGuarantees(s,rosterFor(s));initializeCampaignSystems(s);validateServiceEquipmentReturns(s,rosterFor(s));syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);reconcileLogisticsAttention(s,{isSupplied});refreshEnemyIntelligence(s);return removeIgnitionSupplies(s);
+    forfeitDeadServiceGuarantees(s,rosterFor(s));for(const credit of creditPendingGuaranteeRefunds(s))note(s,`Garantía ${credit.id}: se abonan ${credit.amount} pesos pendientes; quedan ${credit.pendingRefund} pesos por devolver.`);validateServiceGuarantees(s,rosterFor(s));for(const credit of creditPendingVictoryFunds(s))if(previous.pendingVictoryRewards?.some(e=>e.battleId===credit.battleId))note(s,`Fondos de victoria: se abonan ${credit.amount} pesos pendientes; quedan ${credit.pending} pesos por recibir.`);validatePendingVictoryFunds(s);initializeCampaignSystems(s);validateServiceEquipmentReturns(s,rosterFor(s));syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);reconcileLogisticsAttention(s,{isSupplied});refreshEnemyIntelligence(s);return removeIgnitionSupplies(s);
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
 export function serializeCampaign(s){return JSON.stringify(s,cellSceneSaveReplacer(artillerySaveReplacer(s,weaponSaveReplacer(s))));}
@@ -1192,7 +1213,7 @@ export function restoreCampaignValue(s){
     requireThat(integer(s.operativeState[op.id].maxHp,1,op.maxHp),'La salud máxima guardada es inválida.');
     s.operativeState[op.id].maxHp=op.maxHp;
   }
-  validateHireArrivals(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));
+  validateHireArrivals(s,rosterFor(s));validateServiceGuarantees(s,rosterFor(s));validatePendingVictoryFunds(s);
   requireThat(object(s.flags)&&Object.keys(base.flags).every(k=>typeof s.flags[k]==='boolean')&&object(s.routes)&&Object.keys(base.routes).every(k=>typeof s.routes[k]==='boolean'),'Los acuerdos del archivo son inválidos.');
   validateCampaignProgress(s);
   validateMedicalCare(s,rosterFor(s));for(const o of rosterFor(s)){const r=s.operativeState[o.id];if(r.bandaged!==undefined)requireThat(Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=o.maxHp-r.hp,'Las heridas vendadas guardadas son inválidas.');}

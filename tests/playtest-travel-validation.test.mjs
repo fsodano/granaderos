@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,restoreCampaign,serializeCampaign,rosterFor} from '../game/campaign.js';
-import {advanceSquadTravel,supportedTravelLegHours,travelLegHours,nextSquadTravelBoundarySeconds,cancelSquadTravel,squadTravelStatus} from '../game/squad-travel.js';
+import {advanceSquadTravel,supportedTravelLegHours,nextSquadTravelBoundarySeconds,cancelSquadTravel,squadTravelStatus} from '../game/squad-travel.js';
 import {WORLD_CELLS,worldCell,ROAD_CELLS,cellStepHours,legacyCellStepHours} from '../game/world-cells.js';
 import {strategicClockInterrupt} from '../game/strategic-clock.js';
 import {enterSector} from '../game/world.js';
@@ -25,7 +25,7 @@ const travelStep=(s,seconds)=>{
  return advanceSquadTravel(s,rosterFor(s),{note:()=>{},releaseAtArrival:()=>{},stopAtEveryArrival:true,seconds});
 };
 test('fractional travel saves retain real distance and charge movement work only once per full hour',()=>{
- let s=initialCampaign();s.secondOfHour=3570;s=order(s,{type:'travel',sector:'buenos_aires',queue:true});
+ let s=initialCampaign();const destination=field(s);s.secondOfHour=3570;s=order(s,{type:'travel',sector:destination,queue:true});const hours=squadTravelStatus(s.squads[0]).remaining;assert.ok(hours>1,'the rural leg must still be in progress after one full travel hour');
  const start=s.hour*3600+s.secondOfHour,member=s.squad[0],before=s.operativeState[member].fatigue;
  assert.equal(journey(s).startedSecond,3570);travelStep(s,30);
  assert.equal(journey(s).elapsed,0);assert.equal(journey(s).elapsedSecond,30);assert.equal(journey(s).pendingSeconds,30);assert.equal(s.operativeState[member].fatigue,before);
@@ -33,7 +33,7 @@ test('fractional travel saves retain real distance and charge movement work only
  travelStep(s,3570);assert.equal(journey(s).elapsed,1);assert.equal(journey(s).elapsedSecond,undefined);assert.equal(journey(s).pendingSeconds,undefined);assert.ok(s.operativeState[member].fatigue>before);
  assert.equal(squadTravelStatus(s.squads[0]).elapsedSeconds,3600);
  while(journey(s))travelStep(s,nextSquadTravelBoundarySeconds(s));
- assert.equal(s.hour*3600+s.secondOfHour,start+12*3600);assert.equal(s.location,'buenos_aires');assert.equal(s.travelNotice.secondOfHour,3570);
+ assert.equal(s.hour*3600+s.secondOfHour,start+hours*3600);assert.equal(s.location,destination);assert.equal(s.travelNotice.secondOfHour,3570);
  assert.ok(restoreCampaign(serializeCampaign(s)));
 });
 test('canceling a fractionally traveled leg returns through the exact covered distance without teleporting',()=>{
@@ -49,20 +49,20 @@ test('saved travel seconds reject impossible fractions and future booking dates'
  }
 });
 
-test('continuous campaign travel from a fractional departure arrives after all twelve real hours',()=>{
+test('continuous campaign travel from a fractional departure arrives after every planned real hour',()=>{
  for(const start of [3570,23*3600+3570]){
   let s=initialCampaign();for(let seconds=start;seconds>0;seconds-=Math.min(seconds,3600))s=order(s,{type:'advanceStrategicTime',seconds:Math.min(seconds,3600)});
-  s=order(s,{type:'travel',sector:'buenos_aires',queue:true});const due=start+12*3600;
+  s=order(s,{type:'travel',sector:'buenos_aires',queue:true});const due=start+squadTravelStatus(s.squads[0]).remaining*3600;
   for(let step=0;journey(s)&&step<40;step++){
    s=order(s,{type:'advanceStrategicTime',seconds:3600});assert.ok(s.hour*3600+(s.secondOfHour??0)<=due);
-   if(step===2)s=restoreCampaign(serializeCampaign(s));
+   if(step===0)s=restoreCampaign(serializeCampaign(s));
   }
   assert.equal(s.location,'buenos_aires');assert.equal(journey(s),undefined);assert.equal(s.hour*3600+s.secondOfHour,due);
  }
 });
 test('explicit hourly waits retain their whole-hour travel behavior after fractional departure',()=>{
  let s=initialCampaign();s=order(s,{type:'advanceStrategicTime',seconds:3570});s=order(s,{type:'travel',sector:'buenos_aires',queue:true});
- s=order(s,{type:'wait',hours:12});assert.equal(s.location,'buenos_aires');assert.equal(s.hour,12);assert.equal(s.secondOfHour,3570);
+ const hours=squadTravelStatus(s.squads[0]).remaining;s=order(s,{type:'wait',hours:12});assert.equal(s.location,'buenos_aires');assert.equal(s.hour,hours);assert.equal(s.secondOfHour,3570);
 });
 test('splitting one posta travel hour pays for one remount and charges one hour of fatigue',()=>{
  let s=initialCampaign();s.routes.posta=true;s.secondOfHour=3570;s=order(s,{type:'travel',sector:'buenos_aires',mode:'posta',queue:true});
@@ -96,7 +96,7 @@ test('repeated tactical checkpoints inside one minute retain every queued travel
 
 test('saved leg durations accept explicit earlier rules and reject arbitrary speed changes',()=>{
  const s=order(initialCampaign(),{type:'travel',sector:'buenos_aires',queue:true});
- for(const hours of [1,11,13,95]){const invalid=structuredClone(s);journey(invalid).legHours=hours;assert.throws(()=>restoreCampaign(serializeCampaign(invalid)),/duración.*etapa/);}
+ for(const hours of [3,11,13,95]){const invalid=structuredClone(s);journey(invalid).legHours=hours;assert.throws(()=>restoreCampaign(serializeCampaign(invalid)),/duración.*etapa/);}
  const base=initialCampaign(),to=field(base),rural=order(base,{type:'travel',sector:to,queue:true});
  const saved=structuredClone(rural);journey(saved).legHours=legacyCellStepHours(to);
  assert.equal(journey(restoreCampaign(serializeCampaign(saved))).legHours,legacyCellStepHours(to),'an already planned old leg retains its accepted duration');
@@ -116,9 +116,10 @@ test('horses are faster on rural roads, open land and mountains with integral ho
 
 test('continuous arrival attention stops at an intermediate sector without discarding the remaining route',()=>{
  const before=order(initialCampaign(),{type:'travel',sector:'ensenada',queue:true}),s=structuredClone(before),q=s.squads[0];
+ const arrival=q.journey.path[1];
  s.hour=q.journey.legHours;q.journey.elapsed=q.journey.legHours-1;
  const events=advanceSquadTravel(s,rosterFor(s),{note:()=>{},releaseAtArrival:()=>{},stopAtEveryArrival:true});
- assert.equal(events,true);assert.equal(q.location,'buenos_aires');assert.equal(q.journey.status,'moving');assert.equal(q.journey.elapsed,0);assert.equal(q.journey.path.at(-1),'ensenada');
+ assert.equal(events,true);assert.equal(q.location,arrival);assert.equal(q.journey.status,'moving');assert.equal(q.journey.elapsed,0);assert.equal(q.journey.path.at(-1),'ensenada');
  assert.match(strategicClockInterrupt(before,s),/llega a/);assert.ok(restoreCampaign(serializeCampaign(s)));
  const legacy=structuredClone(before);legacy.hour=journey(legacy).legHours;journey(legacy).elapsed=journey(legacy).legHours-1;
  assert.equal(advanceSquadTravel(legacy,rosterFor(legacy),{note:()=>{},releaseAtArrival:()=>{}}),false);assert.equal(legacy.travelNotice,undefined);
@@ -126,9 +127,9 @@ test('continuous arrival attention stops at an intermediate sector without disca
 
 test('the continuous campaign clock stops at the real intermediate arrival and resumes onward',()=>{
  let s=order(initialCampaign(),{type:'travel',sector:'ensenada',queue:true});
- const first=travelLegHours('retiro','buenos_aires');
+ const first=journey(s).legHours,arrival=journey(s).path[1];
  for(let hour=0;hour<first-1;hour++)s=order(s,{type:'advanceStrategicTime',seconds:3600});
  s=order(s,{type:'advanceStrategicTime',seconds:3599});const before=s;s=order(s,{type:'advanceStrategicTime',seconds:3600});
- assert.equal(s.hour,first);assert.equal(s.secondOfHour,0);assert.equal(s.location,'buenos_aires');assert.ok(journey(s));assert.match(strategicClockInterrupt(before,s),/llega/);
- s=order(s,{type:'advanceStrategicTime',seconds:60});assert.equal(s.secondOfHour,60);assert.equal(s.location,'buenos_aires');
+ assert.equal(s.hour,first);assert.equal(s.secondOfHour,0);assert.equal(s.location,arrival);assert.ok(journey(s));assert.match(strategicClockInterrupt(before,s),/llega/);
+ s=order(s,{type:'advanceStrategicTime',seconds:60});assert.equal(s.secondOfHour,60);assert.equal(s.location,arrival);
 });

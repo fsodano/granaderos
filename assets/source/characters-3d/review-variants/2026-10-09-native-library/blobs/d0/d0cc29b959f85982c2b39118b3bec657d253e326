@@ -1,0 +1,95 @@
+{
+  "status": "Frozen private incremental finger-pose improvement, reviewed by root. Not published.",
+  "scope": {
+    "clips": [
+      "stand.idle.unarmed",
+      "stand.walk.unarmed",
+      "stand.run.unarmed"
+    ],
+    "anatomies": [
+      "male",
+      "female"
+    ],
+    "channelsPerAnatomy": 90,
+    "nonselectedChannelsExactPerAnatomy": 53016,
+    "weaponsPunchAndLoading": "Unchanged",
+    "skinGeometryRigWeightsNativePositions": "Unchanged",
+    "inputTimesClocksEventsClipMetadata": "Exact original"
+  },
+  "baselineManifestSha256": "e53b7eeb2411149380208be792b621d9a7da1fb5825557e651f150550ed96455",
+  "candidateManifestSha256": "1e4bee39fc512900ce469f473d0cac4d331e8e9d657a918ec6a34faf0ef49e45",
+  "files": {
+    "source.patch": "f02ed3246ba1d276b7e844efcee42a95a974bb95300004847d934f3cd1039250",
+    "regression.patch": "ff412172d035070e7d868335e465569a0254de3229465d47e6b94c694e3e2cea",
+    "source/assets/source/characters-3d/authoring/relaxed_hands.py": "1a2b235897bb1b0041a6ec11e1746be355d1c326b2f09695c10a77fc927d4af6",
+    "source/assets/source/characters-3d/authoring/motion.py": "3e0b0408d1df6b0834024f86de661eb806b6797d42e8f6b19a396a92be969148",
+    "finger-only-increment/male.glb": "ef249627c5ebd7cfcd6d3178a9ed5be6552719c758442d879e85b87f620334e9",
+    "finger-only-increment/female.glb": "d75ddf50a209387df9e6a7a1939c66084146da18a3d3402e3921b9688eb043f5",
+    "finger-only-increment/allowlist.json": "a8a1bfed62123cb9ae56b7d7f39b76b6867f1a0194fe314d4f11f116d95e5951",
+    "candidate-models/male-animations.glb": "9caf54205c1e4c38e976ba1f46c23b985f6e04d460146c4c220cade4b646b8a0",
+    "candidate-models/female-animations.glb": "5e4d62112e8e6693abb3989cc47c48634d7a9ac50777d5246463e3cebe34d174"
+  },
+  "cause": [
+    "Idle adds large distal curl while keeping proximal joints open. Gait shortest-arc direction targets beyond 180 degrees produce 230-236 degree distal directions.",
+    "Thumb used separate world-space shortest-arc aims. It did not preserve a palm-relative hinge frame and its target did not allow enough space for the skin pads."
+  ],
+  "change": [
+    "Compact proximal knuckle row; less distal hooking and modest, unequal curl per finger.",
+    "Palm-relative thumb frame; thumb rests outside the curled index. Native two-link reach remains bounded.",
+    "Semantic writer changes only the three named unarmed standing clips, so reviewed locomotion used by armed motions stays unchanged."
+  ],
+  "validation": {
+    "candidate": "6 of 6 exported-surface tests pass",
+    "baseline": "0 of 6 pass; all 6 fail at time 0 on actual index/thumb or index/palm crossings",
+    "sampling": "Full clip at >=120 Hz, both hands; actual LOD0 triangles from both native anatomies. Distal two finger segments checked against palm and each other digit. Shared-edge/tangent contact is not a crossing.",
+    "sourceExport": {
+      "male": {
+        "sourceExportSha256": "96378f82bcd6b6911caebe3930477ee174b8d4e2c094132bf88810779fa476a6",
+        "selectedChannels": 90,
+        "maximumRotationErrorDegrees": 0.00030759558057071707,
+        "maximumDurationErrorSeconds": 0,
+        "sourceGeneration": "Final private motion.py _write_clip hook plus relaxed_hands.py; actual Blender glTF exporter; three selected source clips"
+      },
+      "female": {
+        "sourceExportSha256": "74e20ab6a2920d652bfacc426fd8ba808c35cf3b0eb10ea0ab4c058f1afa681b",
+        "selectedChannels": 90,
+        "maximumRotationErrorDegrees": 0.00030203803925003163,
+        "maximumDurationErrorSeconds": 0,
+        "sourceGeneration": "Final private motion.py _write_clip hook plus relaxed_hands.py; actual Blender glTF exporter; three selected source clips"
+      }
+    },
+    "continuity": {
+      "male": {
+        "selectedFingerRotationChannels": 90,
+        "authoredQuaternionKeys": 852,
+        "maxWithinClipFingerLocalStepDegrees": 2.4148365394514667e-06,
+        "maxSelectedClipTransitionFingerLocalStepDegrees": 2.4148365394514667e-06,
+        "allSelectedTimesStrictlyIncreasing": true
+      },
+      "female": {
+        "selectedFingerRotationChannels": 90,
+        "authoredQuaternionKeys": 852,
+        "maxWithinClipFingerLocalStepDegrees": 2.9575586669421963e-06,
+        "maxSelectedClipTransitionFingerLocalStepDegrees": 2.9575586669421963e-06,
+        "allSelectedTimesStrictlyIncreasing": true
+      }
+    },
+    "patchApplyCheck": "Both source and regression patches apply cleanly to current shared source; check only, no changes"
+  },
+  "review": {
+    "sameCameraLightingSkin": "Dark palette, isometric, 768px, 16 samples; idle .5s, walk .35s, run .25s",
+    "images": [
+      "/tmp/granadero-relaxed-hands/comparisons/granadero-hand.jpg",
+      "/tmp/granadero-relaxed-hands/comparisons/granadero-full.jpg",
+      "/tmp/granadero-relaxed-hands/comparisons/woman-scout-hand.jpg",
+      "/tmp/granadero-relaxed-hands/comparisons/woman-scout-full.jpg"
+    ],
+    "finalSourceNumericalEquivalence": "Candidate uses native-rig source-derived constant finger rotations while retaining original input clocks. Full final source export reproduces those rotations within 0.000308 degrees; exact duration match."
+  },
+  "knownLimits": [
+    "Sharp native thumb/index web crease and stiff local finger folds remain visible in close view. This pass changes finger pose only, not skin geometry.",
+    "Triangle-crossing tests cover the distal fingers versus palm and other digits. They do not certify every connected web/root skin fold or soft-tissue compression.",
+    "This is a loose fist suitable for idle and locomotion, not a replacement punch or weapon grip."
+  ],
+  "integration": "Apply source.patch and regression.patch only after review. Merge only finger-only-increment/{male,female}.glb channels listed in finger-only-increment/allowlist.json into the latest canonical banks. Preserve latest bodies, materials, all other tracks and metadata. Do not replace the current library with the older candidate-models body files."
+}

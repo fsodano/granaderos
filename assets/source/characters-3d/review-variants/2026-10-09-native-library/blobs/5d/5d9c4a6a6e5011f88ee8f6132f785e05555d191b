@@ -1,0 +1,76 @@
+"""Military crossbelts sewn to the actual reduced coat of each mesh LOD."""
+import math
+import bpy
+import bmesh
+from mathutils import Vector
+from garment_detail import solidify
+
+
+def sewn_panel(ctx,name,constraints):
+    # All boundary planes already cut the support. Copy whole triangles;
+    # clipping them a second time creates near-zero slivers at roundoff-sized
+    # plane distances, which corrupt the thin strap's shading and tangents.
+    coat=ctx['coat'];vertices=[];weights=[];faces=[];uvs=[];indices={}
+    source_uv=coat.data.uv_layers.active.data
+    for face in coat.data.polygons:
+        if face.area<1e-10 or not all(distance(face.center)>=-1e-6 for distance in constraints):continue
+        polygon=[]
+        for index in face.vertices:
+            if index not in indices:
+                vertex=coat.data.vertices[index];indices[index]=len(vertices)
+                vertices.append(vertex.co+vertex.normal*.007)
+                weights.append({coat.vertex_groups[g.group].name:g.weight for g in vertex.groups})
+            polygon.append(indices[index])
+        faces.append(polygon);uvs.append([tuple(source_uv[i].uv) for i in face.loop_indices])
+    obj=ctx['mesh'](name,vertices,faces,ctx['M']['cream'],weights,uvs)
+    solidify(obj)
+    return obj
+
+
+def fit_crossbelts(ctx):
+    objects=ctx['objects']
+    old=[obj for obj in objects if obj.name.startswith(('Single_Crossbelt','Crossbelt_Shoulder'))]
+    insertion=min(objects.index(obj) for obj in old)
+    for obj in old:
+        objects.remove(obj);bpy.data.objects.remove(obj,do_unlink=True)
+    prior=set(objects)
+    slope=.266/.389;half_width=.043*.5*math.sqrt(1+slope*slope)
+    # Linear skinning of an interpolated position/weight is not identical to
+    # interpolation of the two already-skinned endpoints. Sew the coat along
+    # the same boundary first, so both layers own identical seam vertices.
+    coat=ctx['coat'];bm=bmesh.new();bm.from_mesh(coat.data)
+    area=sum(face.calc_area() for face in bm.faces)
+    boundary=sum(edge.calc_length() for edge in bm.edges if edge.is_boundary)
+    planes=[((0,0,z),(0,0,1)) for z in (1.042,1.431,1.439)]
+    planes += [((x,0,0),(1,0,0)) for x in (.123,.165)]
+    planes += [((0,.010,0),(0,1,0))]
+    planes += [((.144+offset,0,1.435),(1,0,-slope)) for offset in (-half_width,half_width)]
+    for point,normal in planes:
+        bmesh.ops.bisect_plane(bm,geom=[*bm.verts,*bm.edges,*bm.faces],dist=1e-7,
+            plane_co=Vector(point),plane_no=Vector(normal).normalized(),clear_inner=False,clear_outer=False)
+    bmesh.ops.triangulate(bm,faces=list(bm.faces));bm.normal_update()
+    # Seam cuts retain the exact rest surface and its existing open hems.
+    assert abs(sum(face.calc_area() for face in bm.faces)-area)<2e-5
+    assert abs(sum(edge.calc_length() for edge in bm.edges if edge.is_boundary)-boundary)<2e-5
+    bm.to_mesh(coat.data);bm.free();coat.data.update()
+
+    def centre(z):return .144+slope*(z-1.435)
+    for back in (False,True):
+        sewn_panel(ctx,'Single_Crossbelt_Back' if back else 'Single_Crossbelt_Front',[
+            lambda p:p.z-1.042,lambda p:1.439-p.z,
+            lambda p:half_width-(p.x-centre(p.z)),lambda p:half_width+(p.x-centre(p.z)),
+            (lambda p:p.y-.010) if back else (lambda p:.010-p.y),
+        ])
+    # The small overlap stays closed when the shoulder compresses.
+    sewn_panel(ctx,'Crossbelt_Shoulder',[
+        lambda p:p.x-.123,lambda p:.165-p.x,lambda p:p.z-1.431,
+    ])
+    panels=[obj for obj in objects if obj not in prior]
+    for obj in panels:
+        obj['part']='outfit';obj['appearance']=ctx['preset']
+        colours=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+        for vertex,entry in zip(obj.data.vertices,colours.data):
+            p=vertex.co;shade=.962-.035*(.5+.5*math.sin(p.z*19+p.x*13))-.025*math.exp(-((p.z-1.055)/.06)**2)
+            entry.color=(shade,shade*.99,shade*.965,1)
+        objects.remove(obj)
+    objects[insertion:insertion]=panels

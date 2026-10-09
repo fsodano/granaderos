@@ -1,0 +1,163 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -283,8 +283,11 @@
+     coat.data.update();subdiv(coat,1)
+     # Sculpt the final cloth surface so subdivision does not erase the short
+     # elbow folds. This moves cloth only; native skin and bones stay intact.
++    if preset in ('granadero','royalist'):
++        from uniform_folds import compression_relief
+     for vertex in coat.data.vertices:
+-        vertex.co+=vertex.normal*cloth_relief(vertex.co,vertex.normal,heads,'coat')
++        relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
++        vertex.co+=vertex.normal*relief
+     coat.data.update()
+     # Breeches follow native thigh, knee and pelvis topology with cloth ease.
+     trousers=subset('Tailored_Breeches',lambda f:all(.425<points[i].z<1.055 and limb_weight(i,hand_bones|arm_bones)<.05 for i,uv in f),mats['trousers'])
+@@ -480,6 +483,20 @@
+             collarw.append(weights)
+     for row in range(len(collar_levels)-1):
+         for j in range(count):a=row*count+j;b=row*count+(j+1)%count;collarf.append((a,b,b+count,a+count))
++    collar_outer_top=collarv[-count:]
++    collar_outer_weights=collarw[-count:]
++    if preset in ('granadero','royalist'):
++        # Turn the wool facing over at its top. The inner return stays clear
++        # of the neck and shares the fitted native weights with the outer lip.
++        for depth,drop in ((.0026,0),(.0026,.0026)):
++            previous=len(collarv)-count
++            for p,w in zip(collar_outer_top,collar_outer_weights):
++                radial=Vector((p.x,p.y+.036,0)).normalized()
++                collarv.append(p-radial*depth-Vector((0,0,drop)))
++                collarw.append(dict(w))
++            for j in range(count):
++                a=previous+j;b=previous+(j+1)%count
++                collarf.append((a,b,b+count,a+count))
+     collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)
+     # The facing and coat share the same sewn vertices. An overlapping strip
+     # can still open after skinning or independent LOD simplification.
+@@ -490,8 +507,8 @@
+     seam=[v for v in sewn.verts if tuple(round(value,6) for value in v.co) in seam_positions]
+     bmesh.ops.remove_doubles(sewn,verts=seam,dist=.000002)
+     sewn.to_mesh(coat.data);sewn.free();coat.data.update()
+-    collar_top=[p+Vector((0,0,.0007)) for p in collarv[-count:]];collar_top.append(collar_top[0])
+-    top_weights=collarw[-count:]+[collarw[-count]]
++    collar_top=[p+Vector((0,0,.0007)) for p in collar_outer_top];collar_top.append(collar_top[0])
++    top_weights=collar_outer_weights+[collar_outer_weights[0]]
+     tube('Fine_Collar_Gold_Edge',collar_top,[.0015]*len(collar_top),mats['brass'],[w for w in top_weights for _ in range(6)],6)
+     # Cuffs use the source sleeve surface, not separate oversized wrist tubes.
+     from garment_detail import coat_panel
+@@ -503,7 +520,9 @@
+         # through its sleeve when the wrist rotates or the elbow bends.
+         cuff=coat_panel(cuff_context,'Crimson_Cuff_'+suffix,mats['red'],[
+             lambda p,w=wrist,a=axis:(p-w).dot(a)+.073,
+-            lambda p,w=wrist:.15-(p-w).length],clearance=.003)
++            lambda p,w=wrist:.15-(p-w).length],clearance=.003,
++            thickness=.0035 if preset in ('granadero','royalist') else .002,
++            edge_radius=.0018 if preset in ('granadero','royalist') else .0013)
+         # Civilian presets recolour the shared facing material later. Keep
+         # the sewn cuff edge on that same palette instead of a crimson copy.
+         for i,mat in enumerate(cuff.data.materials):
+--- a/assets/source/characters-3d/authoring/garment_detail.py
++++ b/assets/source/characters-3d/authoring/garment_detail.py
+@@ -74,7 +74,7 @@
+  bpy.ops.object.modifier_apply(modifier=modifier.name)
+ 
+ 
+-def coat_panel(ctx,name,material,constraints,clearance=.007):
++def coat_panel(ctx,name,material,constraints,clearance=.007,thickness=.002,edge_radius=.0013):
+  """Cut a sewn boundary through native cloth faces without changing weights.
+ 
+  A projected grid does not follow the same interpolation as the underlying
+@@ -112,7 +112,7 @@
+    indices.append(cache[key])
+   if len(set(indices))<3:continue
+   polygons.append(tuple(indices));uvs.append([tuple(point['uv']) for point in polygon])
+- obj=ctx['mesh'](name,coords,polygons,material,weights,uvs);solidify(obj)
++ obj=ctx['mesh'](name,coords,polygons,material,weights,uvs);solidify(obj,thickness)
+  counts={}
+  for face in polygons:
+   for a,b in zip(face,face[1:]+face[:1]):
+@@ -132,7 +132,7 @@
+    if not options:break
+    following=options[0];remaining.remove(tuple(sorted((path[-1],following))));path.append(following)
+    if following==path[0]:break
+-  details.append(edge(ctx,name+'_Sewn_Edge',[coords[i] for i in path],[weights[i] for i in path],trim_material,.0013))
++  details.append(edge(ctx,name+'_Sewn_Edge',[coords[i] for i in path],[weights[i] for i in path],trim_material,edge_radius))
+  obj=joined(ctx,obj,details)
+  # A close sewn overlay must retain its curved support surface at lower
+  # detail levels. Independent aggressive collapse puts shoulder chords
+--- a/assets/source/characters-3d/authoring/optimize.py
++++ b/assets/source/characters-3d/authoring/optimize.py
+@@ -31,7 +31,7 @@
+  if ctx.get('preset') in ('granadero','royalist') and any(o.name.startswith('Single_Crossbelt') for o in objects):
+   reduced_coat=ctx['coat'];bpy.context.view_layer.objects.active=reduced_coat
+   reduction=reduced_coat.modifiers.new('Crossbelt_Support_LOD','DECIMATE')
+-  reduction.ratio=min(1,max(RATIOS[lod],(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
++  reduction.ratio=min(1,max(.42 if ctx.get('preset') in ('granadero','royalist') and lod==0 else RATIOS[lod],(35 if lod==2 else 100)/max(1,len(reduced_coat.data.polygons))))
+   reduction.use_collapse_triangulate=True
+   while reduced_coat.modifiers.find(reduction.name)>0:bpy.ops.object.modifier_move_up(modifier=reduction.name)
+   if len(reduced_coat.data.polygons)>150:bpy.ops.object.modifier_apply(modifier=reduction.name)
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/uniform_folds.py
+@@ -0,0 +1,62 @@
++"""A small, sewn compression study on the two military uniforms only.
++
++The existing coat topology and skinning stay intact. Unequal folds stop before
++neck and sleeve openings; no change is made to native skin or joint frames.
++"""
++import math
++from mathutils import Vector
++
++
++def compression_relief(point, normal, heads):
++    def bell(value, width):
++        return math.exp(-(value / width) ** 2)
++
++    def fold(value, width):
++        # A rounded ridge with a shallow narrow tuck, rather than a sharp rib.
++        return bell(value - width * .35, width) - .70 * bell(value + width * .72, width * .52)
++
++    side = 'l' if point.x > 0 else 'r'
++    sign = 1 if side == 'l' else -1
++    shoulder = heads['upperarm_' + side]
++    elbow = heads['lowerarm_' + side]
++    wrist = heads['hand_' + side]
++    axis = (wrist - elbow).normalized()
++    across = axis.cross(Vector((0, -1, 0))).normalized()
++    delta = point - elbow
++    along = delta.dot(axis)
++    cross = delta.dot(across)
++    front = max(0, min(1, .58 - normal.y * .48))
++    value = 0
++    if delta.length < .175:
++        # The inside elbow gathers into three unequal, tapered diagonal folds.
++        for centre, slant, width, amplitude in ((-.036, .34, .015, .0100),
++                                               (.011, -.30, .012, .0090),
++                                               (.055, .24, .016, .0060)):
++            curve = along - centre + cross * slant + .12 * cross * cross / .07
++            value += amplitude * fold(curve, width) * bell(cross, .060) * front
++
++    delta = point - wrist
++    along = delta.dot(axis)
++    if -.155 < along < -.074:
++        # Soft cloth collects just above the sewn crimson facing.
++        value += .0065 * fold(along + .103 + delta.dot(across) * .28, .013) * bell(delta.y, .052)
++
++    # Short fans grow from the armhole into the chest, not around the arm.
++    shoulder_z = shoulder.z
++    x = abs(point.x)
++    armhole = bell(x - .155, .072) * bell(point.z - (shoulder_z - .105), .087)
++    forward = max(0, -normal.y)
++    value += .0090 * fold(point.z - (shoulder_z - .102) + (x - .155) * .64, .017) * armhole * forward * max(0,min(1,(x-.10)/.060))
++    value += .0060 * fold(point.z - (shoulder_z - .145) - (x - .140) * .38, .015) * armhole * forward * max(0,min(1,(x-.10)/.060))
++
++    # The waist belt holds the hem. Small diagonal gathers taper into the
++    # smooth chest panel and do not form horizontal bands around the torso.
++    waist = bell(point.z - 1.110, .064) * bell(x - .083, .095) * forward
++    value += .0095 * fold(point.z - 1.096 + (x - .060) * .27, .014) * waist
++    value += .0065 * fold(point.z - 1.140 - (x - .090) * .35, .017) * waist
++    value += .0050 * bell(x - (.101 + (point.z - 1.085) * .15), .010) * bell(point.z - 1.112, .039) * forward
++
++    # Leave sewn neck and wrist boundary loops at their established positions.
++    neck_fade = max(0, min(1, (1.478 - point.z) / .045))
++    wrist_fade = max(0, min(1, (-along - .075) / .025)) if delta.length < .14 else 1
++    return max(-.0050, min(.0100, value * neck_fade * wrist_fade))

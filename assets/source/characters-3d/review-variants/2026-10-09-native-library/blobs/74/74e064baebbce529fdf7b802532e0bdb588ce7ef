@@ -1,0 +1,312 @@
+{
+  "sourceIndex": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos/artifacts/character-anatomy-review/baseline/details/index.json",
+  "sourceIndexSha256": "71e7951a0dbcd935f817e5ad1719c12d54a4666f034abbcc4dfa4a7f28e39a5f",
+  "sourceComplete": true,
+  "toolSha256": "082f9ac6d45c2fc39f6874b8032050407d7ccd089012ca746a89c6c8972d7154",
+  "font": {
+    "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+    "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+  },
+  "sheets": [
+    {
+      "file": "sheets/granadero.overview.png",
+      "sha256": "876ef2209c5c73021fc305da4cd2ee96a60a4b2dc96c9c9428a9c7ba02f28446",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.pose.png",
+          "sha256": "fdb8bb71ef7dad1164a1c8b3e12e7413bfbe67af15f06b749952021a2b0ed014",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/granadero.motion-01.png",
+      "sha256": "c459c18ee94ddd74efe39b7f5ac9d1c30a72680ff246d45e1189ddb468f89d7f",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.pose.png",
+          "sha256": "fdb8bb71ef7dad1164a1c8b3e12e7413bfbe67af15f06b749952021a2b0ed014",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/royalist.overview.png",
+      "sha256": "3051359d96635e25e697c90e0bf892b37954bb004108d93e442adfd006a17925",
+      "frames": [
+        {
+          "file": "royalist/stand.idle.unarmed.pose.png",
+          "sha256": "b917781be94b2e95e9480da3d5c2bb91ce8a2771a9a6007a4a8973e4332be1eb",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/royalist.motion-01.png",
+      "sha256": "81d6224da547dc07d37d39f9d3edf1f8eb1bafa723d43df61a06a857326f6cb5",
+      "frames": [
+        {
+          "file": "royalist/stand.idle.unarmed.pose.png",
+          "sha256": "b917781be94b2e95e9480da3d5c2bb91ce8a2771a9a6007a4a8973e4332be1eb",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/worker.overview.png",
+      "sha256": "f274cd43cca12aa1742b8de4480e8a47401b07a95a74401c6095e2bc31e06cd4",
+      "frames": [
+        {
+          "file": "worker/stand.idle.unarmed.pose.png",
+          "sha256": "f2894907744582a3e578f909463699f55f33f853317887f734df9f960acaf05e",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/worker.motion-01.png",
+      "sha256": "c813a6f0d5e233880a28537e7c0d2a9a98898561c7766e5811f3cd337e74cad7",
+      "frames": [
+        {
+          "file": "worker/stand.idle.unarmed.pose.png",
+          "sha256": "f2894907744582a3e578f909463699f55f33f853317887f734df9f960acaf05e",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/surgeon.overview.png",
+      "sha256": "bd4d221e084ad93a946cad5020067656056a5fed828f5b774ff82146fa6b4b1a",
+      "frames": [
+        {
+          "file": "surgeon/stand.idle.unarmed.pose.png",
+          "sha256": "0aeac5247c462b2841010f9bd26d0991a23ed4ccd39217f997461321fa2ad089",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/surgeon.motion-01.png",
+      "sha256": "74e652349c14cddceeaa43ee9dd26db36f4330bd2e1fcfd48a90c8e778883e34",
+      "frames": [
+        {
+          "file": "surgeon/stand.idle.unarmed.pose.png",
+          "sha256": "0aeac5247c462b2841010f9bd26d0991a23ed4ccd39217f997461321fa2ad089",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/gaucho.overview.png",
+      "sha256": "a27d427996c03a2956b4a183cfd5e82cf442e3310f023142b25278d649136f03",
+      "frames": [
+        {
+          "file": "gaucho/stand.idle.unarmed.pose.png",
+          "sha256": "3d4a940082d9d6228dc0408cb877631185b8d8bb5a295397a9646aaade7b599f",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/gaucho.motion-01.png",
+      "sha256": "64eab4b30260921a7b915130dd74fd051ba04edb8f26362dfb1dd8b6a8259600",
+      "frames": [
+        {
+          "file": "gaucho/stand.idle.unarmed.pose.png",
+          "sha256": "3d4a940082d9d6228dc0408cb877631185b8d8bb5a295397a9646aaade7b599f",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/friar.overview.png",
+      "sha256": "027ed189907e61010adaa99b554c1112964c8eada3db832d33bc2cdd14870fb7",
+      "frames": [
+        {
+          "file": "friar/stand.idle.unarmed.pose.png",
+          "sha256": "35ea88a5f78d2a262d8549ba4e538982408bbd6ddc3b44e3eb065248e3d492fe",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/friar.motion-01.png",
+      "sha256": "365987f94d804f92c5756ee264db77ea75f5a20d241e8968190151d24425c28b",
+      "frames": [
+        {
+          "file": "friar/stand.idle.unarmed.pose.png",
+          "sha256": "35ea88a5f78d2a262d8549ba4e538982408bbd6ddc3b44e3eb065248e3d492fe",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/woman-scout.overview.png",
+      "sha256": "bfafe2df3a57e28a3ad1d0a78ddd6e0b1a03b0ff266be93589855aae44fd718b",
+      "frames": [
+        {
+          "file": "woman-scout/stand.idle.unarmed.pose.png",
+          "sha256": "759eaeeb2567166c178c43c3e6874a41fd10a6d1ef866d2c03581f6f88fe61df",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/woman-scout.motion-01.png",
+      "sha256": "5aef1db1e617c7f757969246371758167cd6ded5c84fbf132f529deb32048b26",
+      "frames": [
+        {
+          "file": "woman-scout/stand.idle.unarmed.pose.png",
+          "sha256": "759eaeeb2567166c178c43c3e6874a41fd10a6d1ef866d2c03581f6f88fe61df",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/woman-shawl.overview.png",
+      "sha256": "bb73554baf6476d1677ca47bdb8b384dc927a85c45ca65ad1aec896c28bb08ef",
+      "frames": [
+        {
+          "file": "woman-shawl/stand.idle.unarmed.pose.png",
+          "sha256": "0cd1321aa589ae3ffb80e1fa2eac424d54da600a777352553e44c4476a504936",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/woman-shawl.motion-01.png",
+      "sha256": "9f41cf1e7c303acc678491a674e6c56cd35da65cd1f960e250a3081a84cb2dda",
+      "frames": [
+        {
+          "file": "woman-shawl/stand.idle.unarmed.pose.png",
+          "sha256": "0cd1321aa589ae3ffb80e1fa2eac424d54da600a777352553e44c4476a504936",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/all.head.png",
+      "sha256": "ebe18ef2ee19db0b11b5a9a31889a67ee194028464fc639584ff3f865b138483",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.pose.head.png",
+          "sha256": "40a341c31bb0eadd1cca01dbba6e63ba03d054b0a5fc01cb5ecae6c93a26ec88",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "royalist/stand.idle.unarmed.pose.head.png",
+          "sha256": "a34be8d04dc331a4977d4c1c29216856b7393f80493751243dadba74a3b2a0a8",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "worker/stand.idle.unarmed.pose.head.png",
+          "sha256": "cc7e14915ae97b9f70a3b984bd31a331fc4cbef168101172c4160b1b0997db1b",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "surgeon/stand.idle.unarmed.pose.head.png",
+          "sha256": "c39a291e6f30f3773565d87cf2df6ccfec24017a58e2da3970cc927ae9db7848",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "gaucho/stand.idle.unarmed.pose.head.png",
+          "sha256": "f4b364c9be33fc1666cc038ee1445750d000c666cf69f9a14ceb7036bdefdf0c",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "friar/stand.idle.unarmed.pose.head.png",
+          "sha256": "112fe9b519b7c48412f9dda2854be2178a2965bdbfeda01158cfba1f58ecfe38",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "woman-scout/stand.idle.unarmed.pose.head.png",
+          "sha256": "81cd3fb89a6764264a1c89b3b01db36ed989801327acfb74c7777fd9a2d1c416",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "woman-shawl/stand.idle.unarmed.pose.head.png",
+          "sha256": "3cbf674d2ec07819842213b9263363f8cc1b278cab5ea77db14adb2bcc856082",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    },
+    {
+      "file": "sheets/all.hands.png",
+      "sha256": "7c123ecf0ea513825941666fc4185583fd847fa79bd3dab01915d87753b13887",
+      "frames": [
+        {
+          "file": "granadero/stand.idle.unarmed.pose.hands.png",
+          "sha256": "b481ddccc8a28bc775285088169cf97a8f5479c847f6efc5f11e784ffdcd1d8f",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "royalist/stand.idle.unarmed.pose.hands.png",
+          "sha256": "0a7296aea5c43f7cb923b9c292e25a9c56dfbc4112dd1d642ab3f8ec26e9c157",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "worker/stand.idle.unarmed.pose.hands.png",
+          "sha256": "4999fd4454de59537ab5b3483d7b722703293ab1ec486c8f034b6ddbf32653f4",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "surgeon/stand.idle.unarmed.pose.hands.png",
+          "sha256": "89d268fa324b9e6294b05a068b3988e5ec34dbedc22b2e365ffb54e0fc92c6bf",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "gaucho/stand.idle.unarmed.pose.hands.png",
+          "sha256": "d1f6b61409e3b9416a587552e2a50da767eeeac79979c7118c887e672a5531db",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "friar/stand.idle.unarmed.pose.hands.png",
+          "sha256": "2757fa98b5f9ebec033327bedc75b418d8f9cf76b85c46a4e18cdcc81408d855",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "woman-scout/stand.idle.unarmed.pose.hands.png",
+          "sha256": "ee18d2870515057526cecb2d060c0466eaa41567468429440ffdbe96d0bfcbe4",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        },
+        {
+          "file": "woman-shawl/stand.idle.unarmed.pose.hands.png",
+          "sha256": "79da58bdd9bc8cfe77068bb5001007d2eb40395ebc3ed30b7ed8cbb03a32dadf",
+          "clip": "stand.idle.unarmed",
+          "timeSeconds": 0.5
+        }
+      ]
+    }
+  ]
+}

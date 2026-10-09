@@ -4,7 +4,7 @@ import {enterSector} from '../game/world.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {order,saved,visit,sync,leave} from './local-contract-fixture.mjs';
 import {freshNorthernRoute} from './fresh-northern-fixture.mjs';
-import {assembleCreatedCuyo,prepareCreatedMendozaAssault} from './created-cuyo-route.mjs';
+import {assembleCreatedCuyo,prepareCreatedMendozaAssault,stabilizeStockMendozaSurvivors} from './created-cuyo-route.mjs';
 import {startFreshFoundry,prepareFreshArmyFunding,completeFreshArmyFunding} from './fresh-cuyo-route.mjs';
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
@@ -18,27 +18,36 @@ const deaths=c=>Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([
 
 // Continue a real new campaign. Preparation pays for the survivors, finite
 // supplies and physical journeys; every battle is replayed and saved in full.
-export function freshCuyoRoute({onCheckpoint,northernCheckpoint}={}){
- const prefix=northernCheckpoint?{campaign:northernCheckpoint,notes:[]}:freshNorthernRoute();
+export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='created',coastalCheckpoint,openingCheckpoint,report=()=>{}}={}){
+ const prefix=northernCheckpoint?{campaign:northernCheckpoint,notes:[]}:freshNorthernRoute({onCheckpoint,report,routeKind,coastalCheckpoint,openingCheckpoint});
  assert.equal(prefix.campaign.phase,3);assert.equal(prefix.campaign.missions.yatasto.completed,true);assert.equal(prefix.campaign.flags.northPact,true);
- let c=assembleCreatedCuyo(prefix.campaign);const notes=[];
+ let c=assembleCreatedCuyo(prefix.campaign,{report});const notes=[];
  const checkpoint=(stage,extra={})=>{
   c=saved({campaign:c}).campaign;
   const record={stage,hour:c.hour,second:c.secondOfHour,funds:c.resources.treasury,phase:c.phase,squad:[...c.squad],deaths:deaths(c),engineerHp:c.operativeState[2].hp,commanderHp:c.operativeState[57].hp,...extra};
-  notes.push(record);onCheckpoint?.(stage,c,notes);
+  notes.push(record);onCheckpoint?.(stage,c,notes);report({event:'cuyoCheckpoint',...record});
  };
  const fight=sector=>{
   assert.ok(c.pendingBattle);assert.equal(c.pendingBattle.sector,sector);
   const initial=enterSector(c.pendingBattle,c.sectorStates[sector]);
-  const result=fightNorthernSector(c,sector,sector==='los_patos'?createdLosPatosBattery():{controller:coastalBatteryController(initial,{sharedArtillerySight:true})});
+  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery():{controller:coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
   c=result.campaign;assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.completed,false);
-  checkpoint(sector,{actions:result.summary.actions,turns:result.summary.turns});
+  checkpoint(sector,{status:result.summary.status,actions:result.summary.actions,turns:result.summary.turns});
  };
  let shortTermSupport=[];
- c=prepareCreatedMendozaAssault(c,{report:event=>{if(event.event==='createdMendozaSupport')shortTermSupport=event.ids;}});fight('mendoza');
+ c=prepareCreatedMendozaAssault(c,{routeKind,report:event=>{if(event.event==='createdMendozaSupport')shortTermSupport=event.ids;report(event);}});fight('mendoza');
  assert.equal(c.operativeState[2].alive,true);assert.equal(c.operativeState[57].alive,true);assert.ok(!c.recruited.includes(57));
  const survivors=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='mendoza');
  assert.ok(survivors.length>0);
+ if(routeKind==='stock'){
+  c=stabilizeStockMendozaSurvivors(c,{report});
+  const local=c.squads.find(q=>q.location==='mendoza'&&q.members.some(id=>survivors.includes(id)&&c.recruited.includes(id)));
+  assert.ok(local,'the actual stabilized local survivors must retain a Mendoza squad');
+  c=order(c,{type:'selectSquad',id:local.id});
+ }else{
+ // Stop critical bleeding before a tactical approach, treat actual adjacent
+ // evacuees, then return that real care party through the normal clock.
+ c=stabilizeStockMendozaSurvivors(c,{report,returnSector:'mendoza'});
  // Keep every actual survivor in a lawful local group. Treat the critical
  // group first, before foundry meetings or travel can advance the clock.
  const beforeFormation=structuredClone(c),groups=[];
@@ -64,6 +73,7 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint}={}){
   c=saved({campaign:c}).campaign;
  }
  c=order(c,{type:'selectSquad',id:groups[0].id});
+ }
  for(const id of survivors)assert.equal(c.operativeState[id].alive,true,'recovery does not discard overflow survivors');
  // End any short specialist service normally before the foundry wait.
  // Every exact carried item remains in Mendoza for collection.
@@ -83,14 +93,15 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint}={}){
   assert.deepEqual(sorted(returned),sorted(kit),'every exact carried stack remains in the local return once');
   c=saved({campaign:c}).campaign;
  }
- c=startFreshFoundry(c);assert.equal(c.flags.foundry,true);assert.ok(c.recruited.includes(2)&&c.recruited.includes(7));
- c=completeFreshArmyFunding(prepareFreshArmyFunding(c));assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
- c=prepareFreshUspallataAssault(c);fight('uspallata');
- c=prepareFreshLosPatosAssault(recoverFreshUspallata(c));fight('los_patos');
+ c=startFreshFoundry(c,{report});assert.equal(c.flags.foundry,true);assert.ok(c.recruited.includes(2)&&c.operativeState[2].alive);
+ for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
+ c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
+ c=prepareFreshUspallataAssault(c,{report});fight('uspallata');
+ c=prepareFreshLosPatosAssault(recoverFreshUspallata(c,{report}),{report});fight('los_patos');
  assert.ok(!c.recruited.includes(57),'the commander joins through the subsequent physical meeting');
- c=completeFreshAndesPreparation(c);
+ c=completeFreshAndesPreparation(c,{report});
  assert.equal(c.phase,4);assert.ok(c.recruited.includes(57));assert.equal(c.contracts[57].expiresAt,null);assert.equal(c.contracts[57].paid,0);assert.ok(c.squad.includes(57));assert.ok(c.operativeState[57].hp>0);
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
  assert.ok(c.squad.every(id=>c.operativeState[id].alive));assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.equal(c.pendingBattle,null);assert.ok(c.resources.treasury>=0);
- checkpoint('commander');return {campaign:c,notes,prefix:prefix.notes};
+ checkpoint('commander');return {campaign:c,notes,prefix:routeKind==='stock'?[...(prefix.prefix??[]),...prefix.notes]:prefix.notes};
 }

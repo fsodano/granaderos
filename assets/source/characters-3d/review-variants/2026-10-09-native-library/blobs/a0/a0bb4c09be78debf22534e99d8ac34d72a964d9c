@@ -1,0 +1,878 @@
+{
+  "baselineManifestSha256": "6c2747997a9a24c8c315b155f08e50aef0e538fdd4487da66c941831261e3bbe",
+  "candidateManifestSha256": "27515f51e402e7a5cd745236c82c6feaca5da10ff207b8adff9c9fb8793cde4d",
+  "banks": {
+    "male": {
+      "baselineSha256": "e48fbf8e8b9fda4219b59582730453221003dad669e0a3b36e50b99e91b5d598",
+      "candidateSha256": "302090b2205efd8c955a9b27216351183532b9027f4d973307a282fb022e5123",
+      "changedChannels": [
+        [
+          "crouch.aim.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.aim.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.fire.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.fire.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.aim.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.aim.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.fire.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.fire.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1807",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1807",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1807",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1807",
+          "head",
+          "rotation"
+        ]
+      ],
+      "preservedChannels": 53042,
+      "nonselectedPayloadsExact": true,
+      "allInputTimesExact": true,
+      "nativeNodeTransformsExact": true,
+      "animationExtrasExact": true
+    },
+    "female": {
+      "baselineSha256": "ee8c093b487012b45472565b42a35df8c0b10693d2104a5dec1e4012bf24d932",
+      "candidateSha256": "e056daa7ab2a4a13a1f7ed545be3a0c028335f6ea337c225d40516d34bd7e198",
+      "changedChannels": [
+        [
+          "crouch.aim.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.aim.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.fire.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.fire.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.aim.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.aim.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.fire.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.fire.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1800",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1800",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1801",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1801",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1802",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1802",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1803",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1803",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1804",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1804",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.reload.long-gun.1807",
+          "head",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "crouch.unload.long-gun.1807",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.reload.long-gun.1807",
+          "head",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1807",
+          "neck_01",
+          "rotation"
+        ],
+        [
+          "prone.unload.long-gun.1807",
+          "head",
+          "rotation"
+        ]
+      ],
+      "preservedChannels": 53042,
+      "nonselectedPayloadsExact": true,
+      "allInputTimesExact": true,
+      "nativeNodeTransformsExact": true,
+      "animationExtrasExact": true
+    }
+  },
+  "manifestUnchangedApartFromBankHashAndBytes": true,
+  "unchangedAssetFiles": {
+    "woman-scout-lod1.glb": "a2782456fa7256858d245f3fe304f66869fd8bf756fdfa81c6b173b301ff9979",
+    "friar-lod2.glb": "c6d1445d800cbd6a7e674a909e4455b8fbee4b7a0adf650289c521630ca0b38c",
+    "gaucho-lod1.glb": "f345d64022a4b5d82c7424e5b34199fa09a7856052791b9a6d0fe0d92b5f3c36",
+    "worker-lod1.glb": "0abf4920035b9893a98e93dc164c598182c761ad972951c51321c7648b70bd7a",
+    "worker-lod0.glb": "17b943a339165188e4c0aacbdc3eda6b5dcdbe6f4cd348489f7256b460648246",
+    "gaucho-lod0.glb": "0cb631f9ca7b43179f3c6c50eabd26657849fae144b798cd4ed63781275f7bb4",
+    "woman-scout-lod0.glb": "fb424c540fbcbc938d744a79c90a9abe86265d497049c11f27219d1ad071a4d9",
+    "woman-scout-lod2.glb": "9068031f747e6e70306ab024d99ee0723f07b5ad0c06fa37a05b4163374cb9db",
+    "friar-lod1.glb": "10d86834e8deee0b3db991e4f70d9af2f2f4ea491bf7232e6f377991c18cc8e6",
+    "gaucho-lod2.glb": "819eb2714e60ebe68c49ac199f68a7bf0e05a3c9ddb06600eb1d33a98219a871",
+    "worker-lod2.glb": "0265825cc705188561048bb6996abb4628d2c2290a7a4a2d4288cd162db0e48b",
+    "mounted-carry-merge-proof.json": "7f62797392087e9bb2d5dd2a6f43288e8df3b92636445ff2f129f2f51adccddf",
+    "friar-lod0.glb": "1ce4b5bb2e5f4f014f8f06fbe5f435e787220e8e033972aa22e8374445bf5686",
+    "face-structure-merge-proof.json": "88b953f2d0c1c7d6086b87f02f969d14958ad8b65fcdcaf4de891c9909664af4",
+    "locomotion-profile.json": "5f6ead9794672ccb06acd92a1d3ef4b69507c7947b02a10edbce16333a0f4a10",
+    "horse-lod0.glb": "6aaee15ea8437d40473a976844c2173b89bfa939887c7e3f85e19b4ab615171e",
+    "pistol-butt-wrist-merge-proof.json": "6f515b9d2cc3525a6cacceb1c8970114b2307927fe11677c27692a9279477f04",
+    "task-wrist-merge-proof.json": "d17d1dfea2119943fa1300f27bee122afbb13563595ac9f9f551993e6ae96e6c",
+    "horse-lod1.glb": "fefbd6609e8a2ff461a46c298ef7fe011265565b9b5ce51e000989697d6b7a02",
+    "horse-lod2.glb": "e08b9d4a8787c064160fcc63bdbf7b9810407525fffeedc7a2c7bd0a28c49028",
+    "royalist-lod0.glb": "507562d72afcf1a6915279087089d837c286120974a587e23c4f4b8176904967",
+    "royalist-lod1.glb": "c4c59b57ddf663c921a8e84dba20e0ae3c3d4825156c8926848fa8d4a5889d3b",
+    "royalist-lod2.glb": "5b0052c211e063f7ba54c6f26b1048d3dffb162d45ea489b7b4704c43010e7ce",
+    "female-garments.glb": "3f920ae8138572411a8fae63c6a848b839a0facda228a23ded3a251532048deb",
+    "woman-shawl-lod2.glb": "3a64f9f5067e2a81a87c15be56bf5d5545fe846c9049a0e76ca7296b077ed164",
+    "surgeon-lod2.glb": "514810c44a8db76c63beb69654772ac17d2f1a02719e939f471bad7cefde2c2f",
+    "surgeon-lod0.glb": "c9c3da005cbe9c260e9f5ee79108b8e57ea299940c6f9dfeb56d9dea38fe7e22",
+    "woman-shawl-lod0.glb": "7217de8afea4595e7abf9e023f07bd3db520a0fd17774359fe6cb80fd829ca80",
+    "woman-shawl-lod1.glb": "f09349b340616e0f07621f317975389752d1f9dc668f869c42f938635321cb83",
+    "surgeon-lod1.glb": "24a97ecefbc8f0c233e8882731a51b92ce171adc69ba028abbafd99841ec9326",
+    "male-garments.glb": "3b4c847fe202acbea1465d6e0fb647a8292f8f93df3671ac1fbb966c5125f3cc",
+    "granadero-lod2.glb": "4393536a48d5deccb08b24b77269fbe3ec561be66b3f370720d92984db533e72",
+    "maintenance-proof.json": "97c23d95b57d0358d265bc5da26d00de64adab2175386bf03627322a45558606",
+    "equipment.glb": "c04384e0dfcf15afdfe065a28db7393d68fa86f2cf319a6658b7a2324daf5255",
+    "granadero-lod0.glb": "957b2cf949eaf263df67d1f987a695f5c216c14f1365a464768eb20d2058515d",
+    "granadero-lod1.glb": "e1b1e00c114533ca43c67a0742c6314254ea5ef5d5db2f536f816960228bab5d",
+    "lance-idle-support-proof.json": "080137b1023675ae22898c6e59399c5f7f0c49e05b83bb5a965d7f4f7566b634",
+    ".build/appearance-surgeon-1.log": "d20018b01381ff6bacc4ff4d6daf9c952059b871c4f7417b3704293ab300e890",
+    ".build/equipment-granadero-0.log": "d0c136343bf9c87c9fd4dd258f6bc49b4791caf5abcbb72859320faf664d9d94",
+    ".build/horse-lod0.json": "2f5a83cf2c8befe302aab86f371423c1412dd995c5ad64512cce26938fac747a",
+    ".build/granadero-lod2.json": "c034e15a7d420d76f855c12fc13cc8e478960cfa08ff2ddabbf67e8c0c5bf7af",
+    ".build/friar-lod1.json": "69cf08631804643d0b03321a521d85989eb5734401a563f4b9894a3ffb53e69c",
+    ".build/worker-lod2.json": "bb19c47d3b737af5e7aa88d98afda796cb13213c41d9cd86877ec877790d0c7f",
+    ".build/appearance-surgeon-0.log": "fefd3f83c7ee999db7079d05a0cf2e6d9778c89c7aca2a2cd254c5b4335cd3c2",
+    ".build/appearance-surgeon-2.log": "529dd7b92e67a59164a0431c77f046d50f96a0a19e044db2ba740c3762cb4513",
+    ".build/appearance-gaucho-0.log": "dced9b4da4bbe5d2255fa04480f5111278b9b4e0653f97a1f2f89c316cd95319",
+    ".build/appearance-woman-scout-1.log": "8735c6b410607de5b06c48c641728725d10ae70821acd714fc82d402828074c6",
+    ".build/appearance-woman-scout-0.log": "630cdbb3b7e83f5c5dbff667aae17fa27ede32e99a41829d408c0f2f62e7546c",
+    ".build/garments-woman-scout-0.log": "904118ac5213e3dcfe81a39dfe29e9b51d97a66c061a62ef46deedaff76da298",
+    ".build/appearance-gaucho-1.log": "18ec31240a794ffa95aa163b678540ccac2ffc5b299ac083ff2be7c40d1072f0",
+    ".build/appearance-woman-scout-2.log": "3bc6be2c87de2d2f13f65b75afed6136c71a5b4d753c8978563f1ced7f24e0a5",
+    ".build/friar-lod0.json": "4eb18fc2d9ff240aed8cfa2767a4c14f43ec7e4167d973e167c6a7c05a2c6bb2",
+    ".build/appearance-gaucho-2.log": "f1e27aa84b294b1e214786dfc38c581f0f85fc24678c8ca078d4178977065e0d",
+    ".build/horse-lod1.json": "82f343c41775a9a97deed7dae82d6de0e8e3e4c66eae9f6a58e08e2d6b620d3f",
+    ".build/appearance-royalist-0.log": "d59ff3107d868e030e7c20d32fea7611b7315b12405ee08bda505973ca833827",
+    ".build/appearance-friar-0.log": "ec7a64bf0f7a1e27ded148f210735565d64626eb54c2bb831fc1c659baf48a14",
+    ".build/woman-shawl-lod1.json": "f1404dc8ca482a965bc506f06b124551f042adf0c75187a33ee2650a685671bc",
+    ".build/appearance-friar-1.log": "9e1151a7b97b4e3c35cf62c7a9a0722cde4485daefcdef721a115f56eef08035",
+    ".build/appearance-royalist-1.log": "9107c3cb9763b0e1cc5a01b2a613b07869adf00ece12ce2bcef9ea1fad4e0a9e",
+    ".build/male-garments.json": "c07b83d0d710c0bef9692616acbea882e8f7f00d0523845d4192033b850cc64c",
+    ".build/woman-scout-lod2.json": "1c54cdae7b0d5d34cb648234329cc3d125a6837e255c91f60042f73997457810",
+    ".build/surgeon-lod1.json": "fb30c2336d9be558fbda7d4ed7f7818beac1f610ed507bb6008ac61283603f37",
+    ".build/animations-woman-scout-0.log": "765928f5b1a0a03146e2f50fb4685bc3e7ca4729f2f7a29c2e6b43937406b0c2",
+    ".build/appearance-friar-2.log": "9df548a67064583506486ecb8e795bb354a0baa1559ebb70273cb0ca4f9b311a",
+    ".build/royalist-lod0.json": "d368329bd4f75a06a9f609d7f56f3803314a085ae358865873bca8ca6c589a0b",
+    ".build/appearance-royalist-2.log": "b9abfa26c640f61311601c4b0c402afc812f08f0098eedc2835e0fbf43e5c2ce",
+    ".build/gaucho-lod0.json": "716d5f7dcc2141b7a0567f0bced15beed911df4b854f428fe8c298cca8d48dca",
+    ".build/royalist-lod1.json": "d668400b192132d1fd35375f3e543b48690e4c84cc8ea4195856b4b15cb83eba",
+    ".build/gaucho-lod1.json": "9fa46f0ba8f4ad912037555ee373e4a67bd8c59312a586e2d4f59ae3970fd227",
+    ".build/surgeon-lod0.json": "e6a9b6f961301b154249b8e3a33e5ec64b4340a85c2088d12a2c09302e808719",
+    ".build/animations-granadero-0.log": "7b0b8f5b57f99277fd0694322009d45c745446ad7693e6650868f515a6d3f612",
+    ".build/female-garments.json": "76dde11bec9071ad382444c797042a3875b33da45d6a3c5a0aaf5209b91c7ee3",
+    ".build/woman-shawl-lod0.json": "89160447a1fca93b82655b5b3110ea65580e036b6d6f7f53a5a05be4fa0a43c0",
+    ".build/appearance-granadero-2.log": "853bc9e037b78f6a5eca38d852067240df13df2ca8bd748c571083bcdda1dce1",
+    ".build/garments-granadero-0.log": "b4aec98fdc423652e70e774105f73122bb84c25f45d4034a0b136dad1164f658",
+    ".build/gaucho-lod2.json": "7e5de14ba36e49a6a2509ed1eaa86a6dfa56370ec2482ad2e62dfa3fbd380a6f",
+    ".build/royalist-lod2.json": "7bce4644da2de064398b5b671c6a6bb6401406087b44b118dd67492854947401",
+    ".build/appearance-granadero-0.log": "8b17793cd783f36be02079474b26be23083c9b89fc97ae17c40b1402382300b7",
+    ".build/woman-scout-lod0.json": "378af15945df464d13f8be74052f678aade406b992584ecb2ada82ba0f704c4c",
+    ".build/appearance-granadero-1.log": "22eb831d8ad3dccfb40ec870b1b2f4e4c979ba3fa423f70fe63461ddd7ce675f",
+    ".build/female-animations.json": "5cfe927bcd87fb159b8dd2a51de34d74188a139d4be872ad62b049e192bd7a1a",
+    ".build/woman-scout-lod1.json": "b79d72744d99811411516d25e03a4f8743d6332b91a102df8bbca6a284fe1df1",
+    ".build/surgeon-lod2.json": "77098555caa1188c29bff1e8fee2ac8d192fe30e4809265470027a14cf62a1a7",
+    ".build/woman-shawl-lod2.json": "5c604ad94f044ec0020e5ada849f4e0f1f198d759535fbe345ecd979d8ee9cc7",
+    ".build/worker-lod0.json": "53c526d52c7caa1575303a3fb9ad957e661440771f791a6e1ccbcec85df8ed16",
+    ".build/appearance-woman-shawl-1.log": "5045c23548f541e3f20bc38114e0f62afa5f9073ea6daf5f3f24d08f6881ef7d",
+    ".build/appearance-woman-shawl-0.log": "955c1689fe8ca35bf6b2194144d37fa980210a3761ec416b33ad2af32fc9f6c0",
+    ".build/horse-granadero-2.log": "00762d52337704088b764b49d766a73fa63e4f21c1f180c48f47056b3f42996a",
+    ".build/granadero-lod0.json": "1327919c73d1bd456daaf8e1761367b850667f72173b9d29f316b1d123f50dff",
+    ".build/horse-lod2.json": "ff517eb7db0473b2591af9e30fa5e5ec1b1e8c8499d76afa6980a27aad2d1260",
+    ".build/appearance-woman-shawl-2.log": "7ffd485cb7d8ed4cb219da9e98c8dfd4435bcbe281fc364c624a9a2713795ef8",
+    ".build/horse-granadero-0.log": "469fcb95a42e876e045d4130dbd57e10747cea24e1f54a54583479e168159a11",
+    ".build/horse-granadero-1.log": "0819555f2ce7afea5ad312c646a6e2cef9747fb274455e0aff1d873f227c7d01",
+    ".build/male-animations.json": "33def2fc4ba1666f0c1372a918580362f3bb188e63f829bdc0278e401ae3701c",
+    ".build/appearance-worker-2.log": "d9a2a7de518bf682abf6bc01e507700b75ac669143fb0c6eb997e497975bf57e",
+    ".build/equipment.json": "e6cbe46c709c4bd4fde02bbc82ddfc4d2526f889113a69206b4a9e72df4bc87b",
+    ".build/granadero-lod1.json": "8a0e9bf12317feab76853f4db0fc36b58cdfb5b7d5fa809fc726997f21958e08",
+    ".build/appearance-worker-0.log": "cd10d2a156901d7c2c020075b8e3dce53a3911a4cf50163d2552c2faa00d42e0",
+    ".build/friar-lod2.json": "c74d316f6893480c52975482963e252b9e7ff4f8a8dd8748eab1de2bfab7d025",
+    ".build/appearance-worker-1.log": "18841cf9eff97ec5e2d7c2996c44aae4da2aff7c613400a99f74dfd8f0c561be",
+    ".build/worker-lod1.json": "fb6916c660fb022af729349558b28448def56d81ac0d60dee26cbd57b77e2b39",
+    "textures/ad3939922a6916be23f6.png": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010",
+    "textures/bf3de109e95ce9a83cb5.png": "bf3de109e95ce9a83cb5f34917785cdd5f09a45e3b6e90398e387ea2d9ed29dd",
+    "textures/9c4d0ad1822c0e3d56d2.png": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+    "textures/9f2116257d14fb045d70.png": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+    "textures/e735cf2c599a1dc3ddf1.png": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369",
+    "textures/57165a7c0ddead1c56bb.png": "57165a7c0ddead1c56bb7a0af53f11069ea1ee1afc4d24017fc70e7a7a7a957b",
+    "textures/e3c6887d5bede0fbc1e4.png": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+    "textures/1e58871ebf70588faa43.png": "1e58871ebf70588faa43febc3742fb8eafdc33e418bd001398e092ac44e3bfc6",
+    "textures/65544cb746352c5a9218.png": "65544cb746352c5a921821c245fececccfe516e178f0864b6db39edc7d8b82ac",
+    "textures/c115e786c16ea09b4835.png": "c115e786c16ea09b48352411a412eefe0483e41d6cc6cdcb0d7575f9dc665c78",
+    "textures/c74cacc1d8d647cf3944.png": "c74cacc1d8d647cf39445415be2afaaaf332145071f7a6f860ecb34fba9ea20d",
+    "textures/bde948d56c47e9a9c68c.png": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+    "textures/459240e5f2a4cda05956.png": "459240e5f2a4cda059560d8dfd17d88a41a9a8be62e5bc46f2d9aa596e05f0fe",
+    "textures/230ddcfcde0deb6c86d4.png": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+    "textures/eca27423f69dde195b1b.png": "eca27423f69dde195b1b21d3f0dbf17fb62baea284e1e79c7ed42fe76dc87a54",
+    "textures/b5c74f7002ab9788ebeb.png": "b5c74f7002ab9788ebeb5b1673e5ecce9b7c57242edbebc01f5c9cc4e8e4c0be",
+    "textures/d918a2eeedcae78e1a40.png": "d918a2eeedcae78e1a4022839995942344cdb85e9fad5539de98321256c1f582",
+    "textures/35352ce8175250721c1f.png": "35352ce8175250721c1fa7f67c65adb94609f1ca7f7ae8f616d67696e487d2e3",
+    "textures/94c58f92a66daac53b99.png": "94c58f92a66daac53b99596d44ee274b3728cd8deb773a0d56f27dc51c8c227f",
+    "textures/f2f7c8420ab2e6bf72af.png": "f2f7c8420ab2e6bf72afeff90a8a3f99af3df31725d997cf18decedc55f96871",
+    "textures/eea84e3f8fd7f7b0b623.png": "eea84e3f8fd7f7b0b623f586cb0d332d09bd3c25941260dc29e3e5eb9b083cbe",
+    "textures/ca4f162e85fafee194c7.png": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+    "textures/1f22d59678b2e9f6f050.png": "1f22d59678b2e9f6f050e3cf39c1fe75e3bf8607730e45d99a00715766dccf2a",
+    "textures/3e56020218d971bd429b.png": "3e56020218d971bd429bc80c33bd0c23551b2ef496d8da4fe95c2cfc9d3fb170",
+    "textures/76c14eb00c4accda7bcb.png": "76c14eb00c4accda7bcb00279edd83110d3e535cd239c20264ef9e0caa4dc95a",
+    "textures/d69cb3f32570c7a401e6.png": "d69cb3f32570c7a401e665e5b0e65ad47e0760a49658ebe71a716723f48925f8",
+    "textures/b6163461b8122d6787f8.png": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+    "textures/2138b79add80457b1518.png": "2138b79add80457b1518e95f6a427d474c40c350e0d7c0f87038d030dd9aa39e",
+    "textures/d93693724cacd6f0c6f1.png": "d93693724cacd6f0c6f11964ce62840313df8ce20e8efb85f94881fcd997a535",
+    "textures/af14c184a0dc9ee2d6d9.png": "af14c184a0dc9ee2d6d9b23975c0fb16409066a389401aa18c33752d943ff2b2",
+    "textures/51865e82ceb9e3a0521e.png": "51865e82ceb9e3a0521ea6702de8428b04379e9aa38a5d795d810969ae0fb91a",
+    "textures/dd0e630ba281b0c9b9df.png": "dd0e630ba281b0c9b9df3ed0d0a301b10af101f69db56cb9adfa4af92652587e",
+    "textures/98f3ec35fdedc87adac0.png": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea",
+    "textures/5b28ef6bb29b5654ff1a.png": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+    "textures/bbd0586932062b8d071e.png": "bbd0586932062b8d071e843fe14c8076d1b36e7674622ef0ae92e7978976b1ab",
+    "textures/b2d5c336cebe03dd3486.png": "b2d5c336cebe03dd34861bd330ab6c6177f041e2153c32e9dbfcc00a7fa0dc52",
+    "textures/3737dbaf296c446cf15e.png": "3737dbaf296c446cf15ee088985a9b893e686d37a24e3188fe7656fb19bf40b0",
+    "textures/cfe00d87638eab122eb8.png": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+    "textures/09fa758893afdf340aac.png": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+    "textures/d7b27825503cfae6883c.png": "d7b27825503cfae6883c86c4cd794df82df7504473c2be77be2292900b768338",
+    "textures/4f51c65706c915611c4a.png": "4f51c65706c915611c4a6ece7b932184475164e4f08791c5554895c41ee98704",
+    "textures/32c4f3619e14232ca1c9.png": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4",
+    "textures/78646c853dddd9af9b1f.png": "78646c853dddd9af9b1f001d5e44d6f83bc2083b004b2b4d20446cb0f9bd83a8",
+    "textures/042e670c62ad34a45c14.png": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+    "textures/1e41138819511133b590.png": "1e41138819511133b590620f7565aeb557f5374f8b515b00aa3e8893769389d1",
+    "textures/14cdbc7eb7ccb5fab02a.png": "14cdbc7eb7ccb5fab02a2266c19fb61489aee2128cd1c0d0b72d251565612818",
+    "textures/046fd5d3a929f8c356eb.png": "046fd5d3a929f8c356eb4165c5d9b98ab666a7e06a26a2cc6e98d2d4e1d8091f",
+    "textures/55f2e13925123daea921.png": "55f2e13925123daea921e254ee30bbd2109adc583faf6ce9e2b1feabb34ae63a",
+    "textures/ba2610729a46f22b3bf6.png": "ba2610729a46f22b3bf6ff67b3cf83f8b3c671a2a55f65acf838b14a84eff8ce",
+    "textures/2f9f8d166c0e39f5ae96.png": "2f9f8d166c0e39f5ae968d155c2210b784d7425a7cb856786a9e76150fc99c27",
+    "textures/a4d52e34a5ed852382b9.png": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+    "textures/3aa47860e751ca02c367.png": "3aa47860e751ca02c367332371ec3f549dde7005e113238ce3b9dab5b1434eaa",
+    "textures/5818150cab42cf0b2325.png": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+    "textures/c90f7d862a8369a74197.png": "c90f7d862a8369a741979d96ea7eef59148ab20cc5d69aee782fea859b447eec",
+    "textures/9cf786dd1636a37659be.png": "9cf786dd1636a37659be83671d24df2d6734b0f7d84b4b2a3d49999774e7f09a",
+    "textures/92342cd3338e93eafcc4.png": "92342cd3338e93eafcc405c37ab5c0bdacd83afa0fb4992cbbf561364bf29b56",
+    "textures/334ccd32387662166eef.png": "334ccd32387662166eef263bbe22ca4f5aaa77b668c9ce9f128ccf50715adae8",
+    "textures/f98f3d1f919d7d128ace.png": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+    "textures/8d4dd037e26a8dfa8bb8.png": "8d4dd037e26a8dfa8bb83fa28f67116e16e698df4921188c3e084da430a45dec",
+    "textures/fb3f00c43eb49cc39916.png": "fb3f00c43eb49cc39916d6a9da07952dce579fd40578fd84ce548be3da6b369a",
+    "textures/4f6735c3c59381167fa8.png": "4f6735c3c59381167fa8ee9ab958e8b98d99ef626610a44eb1f111265c238b94",
+    "textures/c3782e00498e23e6a224.png": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+    "textures/431f49c3e8d9e53ce775.png": "431f49c3e8d9e53ce77579c389f28aac3f7b32521543c5d414114065e452487e",
+    "textures/9d09fa7fff8b744f1b6a.png": "9d09fa7fff8b744f1b6a567c3cd0f77d919467770321baa2efcd9a2ce7335490",
+    "textures/d21b857270566321ef5b.png": "d21b857270566321ef5b20be3c1ab114a4beda36db7c44ce578c8579efdba2a9",
+    "textures/8d399752680e68257da6.png": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+    "textures/5ea2609d02011f56d93c.png": "5ea2609d02011f56d93cdafb508a332ba2baa72ac3fd4779eb87fad393cf4b2d",
+    "textures/6323715e4e2b8cd3db7c.png": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+    "textures/e31e4b28bb224684cf57.png": "e31e4b28bb224684cf571b7b88d6c627361dcd8906d8d7594c66989626e4edbd",
+    "textures/b137d8201f2153a6a06b.png": "b137d8201f2153a6a06b60c357a9c85f88d659371784302f01aa520d4c54ca1d",
+    "textures/bbd181263ad3acfb2683.png": "bbd181263ad3acfb2683af8a8e2e770ebd9ca8db54623724a2a9a50795e4b746",
+    "textures/1825be51dc2238e7f1e6.png": "1825be51dc2238e7f1e6c33fd7de5d39b10af94dddc5cf7e55190d6310cc7c69",
+    "textures/955a635a4735574fe6e3.png": "955a635a4735574fe6e34f1b705a2d698b6fdf384376badd88fbbd3103e64f73",
+    "textures/6dd4cdb2fff9b1b7b2ee.png": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4",
+    "textures/c38af7d990cd685af133.png": "c38af7d990cd685af133e8361d6ce9ffd5cd3f01e60d9b83f9de3e5ccf4b9816",
+    "textures/1475bcc494750a798dc8.png": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+    "textures/491089fb9520714de5b5.png": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+    "textures/08d09cca2620cc6489a4.png": "08d09cca2620cc6489a4a2253e2cba1d960eee02e97910c6cefb7c705c39a6b2",
+    "textures/5a4ac0153c5a28a9f5b7.png": "5a4ac0153c5a28a9f5b766191766d92c3a11bb55cad042efa6f2f6d71136a053",
+    "textures/c733c322f18581371b38.png": "c733c322f18581371b38d28251a2255e4d97c30e3a3f4c04e568f5b458156ee6",
+    "textures/ea43152d1732ed05f4ea.png": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+    "textures/392889f6329752c020dd.png": "392889f6329752c020ddacf276bbf849c8e5b9ba5365641a059ff76a1d614f47",
+    "textures/b84c103bc1a353d1c247.png": "b84c103bc1a353d1c2472f6a57dc961677010ff8ab6decb5113a31c4425a3a9a",
+    "textures/3c51e9562c802c053928.png": "3c51e9562c802c053928c9a35574b86ad3fb824c0ed6d58fb598cdc058b4b413",
+    "textures/24cdfe5f691edec6cd02.png": "24cdfe5f691edec6cd020a51c9f10de56d6368bb9f3ddb86ea9fd43b059b24ae",
+    "textures/756a3307c4231b534a82.png": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+    "textures/e229e1eb9ffd5725d876.png": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7",
+    "textures/ef3859ad43451b22ffd3.png": "ef3859ad43451b22ffd325d20a7732313f73a31737e98668829c1edac3958ae1",
+    "textures/a6e08a37dd3d86917cf4.png": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744",
+    "textures/a966ec3d74fe209f0820.png": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9",
+    "textures/9a880272db0ec3d7c6d8.png": "9a880272db0ec3d7c6d82e1b5a7f15194b4b1f5f11b0d349fdbddc4d60c9cb42",
+    "textures/8d624207fb5fdba71f3a.png": "8d624207fb5fdba71f3ad01c27b53a216b489218ba8420bd97806c824f19a225",
+    "textures/7ba8a99b0e70d6156272.png": "7ba8a99b0e70d615627236bcca1dbf961dff7bbbcaec8dfa5c2f7008bd1c1f22",
+    "textures/e35f74c0f83556345583.png": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+    "textures/7a4750f0f9e8ddae313c.png": "7a4750f0f9e8ddae313ce60881064d20e531db429168ba2c54241269dbe41907",
+    "textures/8fbdf67dd0f7b843cf01.png": "8fbdf67dd0f7b843cf01d3bb27384cb824c3e98c2665e96fd0858f7566b277cc",
+    "textures/0a3058ee15d83941c4f7.png": "0a3058ee15d83941c4f7a9337459cd77c6770214cbba62e3707f7c5b0c07b912",
+    "textures/a2dcc2ef43375162221c.png": "a2dcc2ef43375162221cd1fa46155f336b0580ae4ef473991178fbaa68af46e8",
+    "textures/52074000bb77974b40be.png": "52074000bb77974b40beb56958de376662a076d840367977cf81b0293f22ac91",
+    "textures/003d781f9d401d061309.png": "003d781f9d401d061309aff1916afd4e4c6ccb5cf5f9d814a923a9013196b1bf",
+    "textures/ed07531304d70739a659.png": "ed07531304d70739a6590091d9a5709280dc92865e27ffc12dfe15eccdc64bcf",
+    "textures/42eaa9ac2d22e1a659b7.png": "42eaa9ac2d22e1a659b7c2de72854b782f9d61bf2123b8f77c2339f1c8b75c13",
+    "textures/89a9d994989390a0e185.png": "89a9d994989390a0e1858cdb750bc432af0782e017c302677249a69ca4eef39a",
+    "textures/95def417fd4b40bb96e8.png": "95def417fd4b40bb96e83988bc01054f72f6346e48217e27fec1fed0bde6022e",
+    "textures/465ec17af5d67ed742e5.png": "465ec17af5d67ed742e5d22f1f6c5b8dac0d7a9d292b9e5ad5edf8a5c34a872c",
+    "textures/614541eb0bf63d3a9b6e.png": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150"
+  }
+}

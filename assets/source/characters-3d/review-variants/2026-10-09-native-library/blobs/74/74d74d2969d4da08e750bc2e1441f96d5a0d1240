@@ -1,0 +1,14 @@
+{
+  "male": {
+    "changedProneRotations": 276,
+    "otherChannelsExact": 52830,
+    "allInputTimesExact": true,
+    "rootPelvisWeaponAndUpperBodyExact": true
+  },
+  "female": {
+    "changedProneRotations": 276,
+    "otherChannelsExact": 52830,
+    "allInputTimesExact": true,
+    "rootPelvisWeaponAndUpperBodyExact": true
+  }
+}

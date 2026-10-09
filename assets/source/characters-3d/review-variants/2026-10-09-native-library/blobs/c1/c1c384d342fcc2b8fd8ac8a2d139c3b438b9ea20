@@ -1,0 +1,51 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -640,7 +640,7 @@
+                 radius=brow_random.uniform(.000038,.000068)
+                 tube('Natural_Eyebrow_Hair_'+suffix,[start,(start+end)*.5+Vector((0,-.000055,.000015)),end],[radius,radius*.82,.000012],mats['hair'],'head',4)
+     from anatomy_surface import scalp_patch, fitted_fingernails, hand_frames, hand_tone
+-    hair=scalp_patch(mesh,faces,points,uvs,assignments,mats['hair'],preset in ('granadero','royalist'),gender=='female')
++    hair=scalp_patch(mesh,faces,points,uvs,assignments,mats['hair'],preset in ('granadero','royalist'),gender=='female',preset=preset)
+     subdiv(hair,1)
+     # User photograph: broad woven yellow band, brass plate and red cords.
+     hat_y=-.052;hat_base=1.692;hrings=[(hat_base,.087,.105),(1.725,.092,.108),(1.838,.101,.111),(1.851,.102,.111)]
+--- a/assets/source/characters-3d/authoring/anatomy_surface.py
++++ b/assets/source/characters-3d/authoring/anatomy_surface.py
+@@ -48,7 +48,7 @@
+     return {name:value/total for name,value in weights.items() if value>1e-7}
+ 
+ 
+-def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False, female=False):
++def scalp_patch(mesh, faces, points, uvs, assignments, material, military=False, female=False, preset=None):
+     """Clip crossing faces at the hairline instead of dropping whole polygons."""
+     def boundary(p):
+         if military:
+@@ -67,7 +67,8 @@
+             ear_clearance=.077-abs(p.x)+max(0,p.z-1.670)*.34
+             return min(p.z-hairline-edge,ear_clearance)
+         hairline=1.711-.043*temple*temple
+-        return min(p.z-1.640-edge, max(p.y+.024, p.z-hairline-edge))
++        bound=min(p.z-1.640-edge, max(p.y+.024, p.z-hairline-edge))
++        return min(bound,1.735-p.z) if preset=="friar" else bound
+     coords=[];weights=[];polygons=[];texcoords=[];lookup={}
+     for face in faces:
+         polygon=[(points[i],Vector(uvs[uv]),assignments[i]) for i,uv in face]
+@@ -89,6 +90,7 @@
+             indices.append(lookup[key])
+         polygons.append(indices);texcoords.append([uv for point,uv,w in output])
+     obj=mesh('Short_Hair',coords,polygons,material,weights,texcoords)
++    if preset=='friar':obj['native_tonsure']=True
+     detail=obj.data.attributes.new(name='Hair_Surface',type='FLOAT',domain='POINT')
+     for entry in detail.data:entry.value=1
+     tones=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+--- a/assets/source/characters-3d/authoring/appearances.py
++++ b/assets/source/characters-3d/authoring/appearances.py
+@@ -101,7 +101,7 @@
+  elif p=='friar':
+   # Tonsure exposes source skin across the crown.
+   for o in objects:
+-   if o.name.startswith('Short_Hair'):
++   if o.name.startswith('Short_Hair') and not o.get('native_tonsure'):
+     for v in o.data.vertices:
+      if v.co.z>1.735:v.co.z-=.012
+  # Civilian shirts show a modest open collar and chest placket.

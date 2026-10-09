@@ -1,0 +1,1363 @@
+{
+  "schemaVersion": 1,
+  "capturedAtUnix": 1791579396.335073,
+  "frozenRoot": "f88155f92b1363ae2591d3ecc4fdc26425a19e1b",
+  "rootHeadUnchangedAtEnd": true,
+  "rootClean": true,
+  "rootStatus": [],
+  "mainHead": "8fcabf3655af6468f5120fe59d9caf0dec140fe3",
+  "originMainHead": "8fcabf3655af6468f5120fe59d9caf0dec140fe3",
+  "localBranchCount": 210,
+  "branches": [
+    {
+      "branch": "codex/3d-review-source-integration",
+      "head": "21f8628a1d79f42014e91eb86a1aa71d34b3a5fc",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/accepted-character-faces",
+      "head": "298e7082ef0d0190ff652531e71a0d55ca60c0d9",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/accepted-faces-gameplay-check",
+      "head": "d18db35339be57a5bcba60e90b660c1dab73def1",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/actual-palm-contact-gate",
+      "head": "ec4fac6a9170065ad2a0f33ece3624b8b175171d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/aged-roof-finish",
+      "head": "4975a45a8f4e1fd81c62edcd55c57ada3945dc4c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/ai-local-dressing-recovery",
+      "head": "0a43e89917d43291bb08a69beeeed1d5fd21e316",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/ai-other-hand-backup",
+      "head": "7a1268115e1a3f0f7f53d3454ecfe2ca06a145b4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/ai-owned-packed-gun-handover",
+      "head": "10b5786bc2bdf71d440aab078d2c90b3cdf35391",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/ai-owned-repair-kit",
+      "head": "2aaf74d4893c631fa0c99ee6b929e852bbdf676e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/authored-architecture-finishes",
+      "head": "f7847b82475537eed3c338de55ec759dbb502aa4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/authored-window-shutters",
+      "head": "58cfaacf94a902d3a5be8d66b61fdb2e2d595364",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/barracks-source-supported-gate",
+      "head": "d3cb938fcc28265ef31e0b1bc1bd22e4e748d943",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/bayonet-native-boot-support",
+      "head": "43bcc8ad6c85c847caa062f0640435ed3f8ac923",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/blast-structures",
+      "head": "f88155f92b1363ae2591d3ecc4fdc26425a19e1b",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/broken-firearm-admission",
+      "head": "3760795e7d135d11ccc4de804f3ce1ed0976d6bc",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/broken-leaf-silhouettes",
+      "head": "16088dcc2bcd0678cf9fcc8e21d45d5adcc9cdc0",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/building-exterior-pictures",
+      "head": "c93283155b5c58e5dc4659df0259564e762d3355",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/cabildo-source-arcade-and-clock",
+      "head": "1e4e1b0f83d81d6a88abaac11504508a5d8d2055",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/chapel-source-front-piers",
+      "head": "511eced24de3a4b1dcea96607ed5e89f93de2829",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/chapel-supported-placement",
+      "head": "1c9817178efb503246039b353185b668baff91b6",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-apparel-surfaces",
+      "head": "c675edf0edf2af77b439f5c8cb21b3fead23b577",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-cloth-depth",
+      "head": "10e7f9f51fd4d1d7c9e2cda3623b2e8fd987d2a5",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-cloth-material-roles",
+      "head": "49bf2c406d67fb32239116019e7cfcb8cdf2314e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-clothing-followup",
+      "head": "5f65ef08d51659fe1fa10d4f2a85f586dca78123",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-family-cloth-depth",
+      "head": "89daba6a9f9c8e8e17e853680f34d4bee840ab5a",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-selected-worker-staging",
+      "head": "88955207ac1144ffa160b7326cf4a2f749ca1d84",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-source-build-preservation",
+      "head": "c1fe1d108ecb41eef9b7df48e66952ae3701de77",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/character-voice-lines",
+      "head": "2bd8bb50f1910303433b53a7eaf7e69c979ba682",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/church-nave-source-supports",
+      "head": "ea7800642daaeac84d93d84c6b2fc2dd162484da",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/church-source-front-piers",
+      "head": "f3119cb5302c376744218a3f7cc9b9865490ad6f",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/church-source-stone-base",
+      "head": "cb1cdd1f38e00b75515d7d590ccbf8d8eabf1a5d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/church-supported-shell-placement",
+      "head": "a2906979508d0dc875a89aa7f8578958606515fe",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/civic-cornice-roof-join",
+      "head": "90c9ba6811b6d2b9c48065c3730a54222052cac6",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/civic-storey-source-bands",
+      "head": "9c3a119e9520559afa9c201cc19dba30db2caf4f",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/climb-even-crest-phase",
+      "head": "c4ad986dba338ba67e87e101c304a544ded7b041",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/climb-roof-fingertips",
+      "head": "77683c0cd494926af8a25440331460633c2587b9",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/climb-rung-body-phase",
+      "head": "998653d3af1eadb797328ed5aa1f3403841339ab",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/coarse-garment-surfaces",
+      "head": "8d49c971aedb7fee989a669143ec1b27267b4fba",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/coarse-long-cloth-boot-clearance",
+      "head": "1ee978fd791d84e33418d0dd5ecfaad4b18d7390",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/compact-ap-hit-numbers",
+      "head": "902d764d76e8af703865ec198346fdb306c7989b",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/companion-loss",
+      "head": "d9bf3cc962030fb366129c3d28f3a8e68217fae6",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/companion-loss-recovery",
+      "head": "e2a769be39341db3b2b0f6ab094821af3a0bb564",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/competing-deliveries",
+      "head": "7dcff9766e07e7c4be1b705d3fa890ca01aa6aaf",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/complete-hearth",
+      "head": "839e15f11befd4eaac85ebaf243915761a7ebab4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/complete-room-floors",
+      "head": "4d0f6dae5f1d5cc4668c1b88dc6e98a919be7dfc",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/complete-shelf-vessels",
+      "head": "fc9391ac387f59bc9b16dd9d932a9ae40e81cc95",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/complete-storage-cloth",
+      "head": "91fa939eeeac7ce538857dea15213a0fc32ee5e1",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/complete-washstand",
+      "head": "6061b5cdab9cf5cd46ada08cc44bb28387464309",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/conduct-objections",
+      "head": "fbed71b4b4cbcff3166d6e9a85c3f9c091761f3d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/contact-scene-update-order",
+      "head": "f50fa2af48ff2f4397f696e610c0c2905ebcca03",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/contextual-personality",
+      "head": "ed129b14d666de036a430e5f5d19f4f57413b56f",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/contract-pay-clock",
+      "head": "e38633c5e84baa656c153808d27aeeb9df47b83e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/crowbar-breaching",
+      "head": "154a0be99a2291b1a652866e5a7dedf2f39632f1",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/current-ai-recovery-evidence",
+      "head": "93bb6fc3518fcaeaf1bcba9d50e901f3836ac024",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/current-gameplay-evidence",
+      "head": "9a8eb3fcde5cfb517246257054a07fa4ebaf69c3",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/current-native-long-garment-support",
+      "head": "96c85527ef7b5ca639273e6b5488d22ca3066c26",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/depot-source-stone-piers",
+      "head": "3eb4eaf535e104ea8f28c550bc0d1ce02911717d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/depot-stone-and-loading-details",
+      "head": "b9187745c63141cbc12ef2e334d8fd13109b53a7",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/elevated-specialty-cover",
+      "head": "cc20d4fc21fd78c2b908f15e86b848ae8818030e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/enclosed-fear-verification-map",
+      "head": "5291995c9676147252db50a390374d45b17bc3a3",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/enclosed-room-fear",
+      "head": "5214ebf8e297d36780938888f97195a6c9a5b93c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/equipped-crouch-supported-movement",
+      "head": "043603b54a8730e6afb6307e39de83d4d7a8dc59",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/errand-withdrawal",
+      "head": "ba4e0d59f3311364c3885ce8c6e8993ab3f8e736",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/far-shot-drop",
+      "head": "be29f85354fca37c12505d90cafc408039972ead",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/farmhouse-gallery-exposure",
+      "head": "7027168f43b9b223849deff444758fb22a6ed860",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/farmhouse-shell-placement",
+      "head": "bd9495104d60c973a0bfcfd33dd3d85944189235",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/final-lab-grip-sync",
+      "head": "5f65ef08d51659fe1fa10d4f2a85f586dca78123",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/finite-campaign-editor",
+      "head": "c7d049ec10d90e7d39428d97c550a4042cf13db9",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/finite-gun-maintenance",
+      "head": "95e32da3f89bd8edbac967717f511f4efdb6f011",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/finite-route-care-acceptance",
+      "head": "6cf1e434d297c5d498b585650568b8e1d3c7acfa",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/finite-route-helper-recovery",
+      "head": "0e7eed61f2fe718ba48207538e958eec5b305a0a",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/firearm-air-drag",
+      "head": "d9360e62a607515ee93242d8c5b418ce5890cf14",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/funded-service-guarantee",
+      "head": "82bbbb83b777897726fb4722ef02ec73b76ea3dd",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/gameplay-integration",
+      "head": "059680b2c6b74b958d7f62b094cb4261d33a1854",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/garment-care",
+      "head": "d1e6e2d133522b4e6ce234f4a22b3310f0bddaad",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/granadero-3d-playground",
+      "head": "ee6db76490287be4cde5749b3094a15fd76627e5",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/guarantee-treasury-cap",
+      "head": "b5e5a2681ad00ceb312c6b2a068b6bf26b018b25",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/heal-patient-native-clock",
+      "head": "dfe419502195e94499fdf156e281063e15214d45",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/held-tool-wear-admission",
+      "head": "53d5d6aafeaa1e6e0613ba72e9bce92d69038cf0",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/historical-game-trailer",
+      "head": "90276255857edcf53379cac98393bc5ccfcfe2e9",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/house-front-details",
+      "head": "7dafeeca40dfed94f7dd74fd597601809ae0bb23",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/house-shell-placement",
+      "head": "26bb0cb8c238852a1f6eef518af1c1cd3c3d8d36",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/human-anatomy-checkpoint-20261007",
+      "head": "a5d9f55ec5a63fb29a5244d51d9616c72df95785",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/human-anatomy-review",
+      "head": "7ee1b1a5560e12ee21ede81fc520f910671e4286",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/human-appearance-checkpoint-20261007",
+      "head": "650599c2bdc0bcab028b5fb1fe85841cb8dcbeb9",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/human-character-library",
+      "head": "b69f300abf702f4f3b9f9cba5f1f19499880213b",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/human-final-library-checkpoint-20261007",
+      "head": "a7f408b910b506a30b95a262b54db07c91184b64",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/irregular-terrain-boundaries",
+      "head": "27d2841794c59076887faa6b2431b113b0c7c828",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/kinetic-projectile-impact",
+      "head": "4182f566949d453a41dd9c79a785f1d402ea69c9",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/latest-3d-gameplay-proof",
+      "head": "761f04bee5e734c3ba5350ba67ae3f4a0b9c0f1a",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/local-recruitment-dialogue",
+      "head": "4369a03710dfb343680fdd37736c846e2ef68759",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/long-cloth-boot-clearance",
+      "head": "f131366a871927f9cc6705a11ac180562b84aadd",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/material-depth",
+      "head": "62dce2f251fef786e61e21b6d412d17fe8cb27c3",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-architecture-finishes-source",
+      "head": "8e36f961445242613d81d4c2eb74fb14029c2aae",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-farmhouse-shell-source",
+      "head": "ae521500375c68063cd6899ce9770ac8840a9e11",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-house-front-source",
+      "head": "165a86f6605ca5ed2ee87b6d96cbef8a98681dfc",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-house-placement-source",
+      "head": "637efb622cb27159a63cef7470a854e1e2b76d01",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-pistol-contact-source",
+      "head": "b5e8fa66947209e68306cc1f907d8dc8cbbda8c1",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-posta-exposure-source",
+      "head": "49f21a797d14bae7c631dfb421920f76a5073067",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-prone-arm-source",
+      "head": "ee02bbeeb7e4cfeb2b1b996c25c7594cc46806de",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-stable-frame-source",
+      "head": "36e6ce87b85c19a814e9d5c34803b4c56ca916e8",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-stable-shell-source",
+      "head": "99c2ce96af0aa97513bc4d3e2a501fd25e8a9c69",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-stable-ventilation-source",
+      "head": "17d4a41606ca23c3e6d59958b163f7a7daa05199",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-standing-unarmed-sideways-source",
+      "head": "dc247c98e1be53593347caa080cc6efb6e0733bd",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-thatch-source",
+      "head": "f04281a5d3443dadf64cb147127d013ce722fa7c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-warehouse-volume-source",
+      "head": "5bbf9a18de21fed9c34d7a43f4034732186c9861",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/merged-window-shutters-source",
+      "head": "8b30fd3f37524278bf507c82c20e7aa801e53c34",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/militia-owned-repair-kit",
+      "head": "42fad12bb834dd571753f4d76a08c4d8b615810f",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/morale-renewal",
+      "head": "47e38d0cd154e3ef5c0d6ee422b095821474a47e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/muted-thatch-roof-finish",
+      "head": "8930edbb7169af37209e1abb5ff03a6ae8b5365b",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-climb-and-contact",
+      "head": "93fd1dfbbe60ebdedecea94e6b0843d3c0a2169c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-climb-and-floor-support",
+      "head": "55d9826ea296761e8c51b886c8779b7fda595feb",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-climb-contact",
+      "head": "c5c42e5204734718ad4b695b801bff1797b8d27e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-climb-mount-test-gates",
+      "head": "c340238489dbee5e8aae02c3b3e63452e020149c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-crouch-boot-support",
+      "head": "9ab07c7de77cd7fdbc74c5cfaa0c86adde8d0014",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-prone-boot-support",
+      "head": "ed494bc1e5d9e241f9e94c09a4e9546b0c230f33",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-rifle-guard-support",
+      "head": "12a1b104ce547d3a4e40e7ddb686bafb95263e67",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-standing-lance-idle",
+      "head": "63a2c99fa948b9ac6b244d49b6428593bf3b681f",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/native-support-and-period-details",
+      "head": "14b30df3d1f4a932375dbf9dffe8b0f7a89fe84d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/natural-ground-grass",
+      "head": "10274e5a78dd3c09e98c8a7a6f0fc5ae4f671b50",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/nervous-isolation",
+      "head": "bec444748edb7b4238b3b23446425092c0796d47",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/observed-companion-grief",
+      "head": "c6671e9067e453cd5e9c679e0f631a577d6b749e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/officer-health",
+      "head": "95f9e591ebdf5e570a353707d99462fa8edf0f53",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/paid-melee-facing-continuity",
+      "head": "f095144443e31b02932955346fed9eb635944be3",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/paid-reach-review-scene",
+      "head": "d082e1d4f4c08afe077f2ad8dd9ee45cfd06eb52",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/palace-portico-roof-join",
+      "head": "75b446bad7897d671cb6e8f652ed4b84ba42b0c2",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/palace-source-stone-columns",
+      "head": "9c24ed5bc37b327866558eb290565ac897a2f28d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/parish-source-arched-bars",
+      "head": "54ea442ee2e3f3e45ec0e147d52a634fd1099223",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/pellet-flight",
+      "head": "22c81151c5da141f9ca565e0429b4183148cf1de",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/pending-review-references",
+      "head": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/physical-near-miss-feedback",
+      "head": "239525fc7febada2d279641ec8bb4d1b436094d0",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/physical-shot-loads",
+      "head": "b9bab8f2c0f2454b465a9a85971e76b6d4cee395",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/planted-standing-reach-blends",
+      "head": "2a750a238028ed330be0fd3a7441c0a0730c6533",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/playtest-feedback",
+      "head": "7603c47e5ad19c6c5cf3664005886d13598e1896",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/porch-supported-placement",
+      "head": "23d6e9993378e62d7cdf26a562708e3718c24989",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/posta-corner-exposure",
+      "head": "419a40a731c9dd0e315c546cc3be5f6156e649db",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/posta-source-stone-piers",
+      "head": "392a87cd8aea026837c66c25753f5b5ce960b949",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/posta-supported-corner-piers",
+      "head": "81baa6aca5146468f1696c6c69e3aef9a2e9c38d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/preferred-companions",
+      "head": "2258dbba991a25ebf3db359c90589fa446d0a724",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-arm-support",
+      "head": "4b07286b4b3f7afb14eeeba1302b6709a02807d4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-firearm-work-native-support",
+      "head": "c09bf0ec95ad19afa825534fbd637db443d869dd",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-healing-arm-floor",
+      "head": "1ee978fd791d84e33418d0dd5ecfaad4b18d7390",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-interaction-native-support",
+      "head": "64cdeb6edc17c03ec46bf72746e9299a70620f24",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-patient-contact",
+      "head": "9c3a119e9520559afa9c201cc19dba30db2caf4f",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-patient-contact-se",
+      "head": "a43bb4ac7c6fb3bf07b952ebdc2b7acc8e416185",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-pistol-arm-floor",
+      "head": "c0e32e35bd434d4820b7393b5daaa996cba04f8e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-rifle-native-boot-support",
+      "head": "c353b10d2cd17e44c0d1306f7dbd1a8870903c62",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/prone-rifle-sleeve-floor",
+      "head": "549bcfa7527a492ce1b0ebb4d2fc80133773263d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/published-ai-rescue-evidence",
+      "head": "ebd9b02c9f70029dbef87d0d9726211999f5efc4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/pulperia-porch-plaque",
+      "head": "7b67737bbcd163247ed8200350d12de89bcaecda",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/range-material-penetration",
+      "head": "be2077f2b83e4174cdafd49e23af59bcf0aa7bf4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/reachable-tall-climb-hands",
+      "head": "b256ea57a4293dc1c76a7f10b78656837afd0167",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/rectangular-source-window-bars",
+      "head": "662ec45923c265e93db9713a36ecb0c8f5e3160d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/repair-guarantee-ledger",
+      "head": "5ee13b13cc89edceaaa3e7ec635fa90756113b89",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/rider-seat-transition",
+      "head": "26ebb7744258a1c8ea1c82e704a7b259ac4d88e4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/rifle-fit-scalar-sampling",
+      "head": "06876b7a8bc476ade48863f636e5949d725cdcc8",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/rifle-worker-readiness",
+      "head": "1b6605d4b027ef2443b362b763d07b8799cb7fd5",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/roadside-discovery",
+      "head": "8fd49033323c7145d668c8779a4a7bca2a3fc7df",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/sabre-native-wrist-support",
+      "head": "e3a3e391afb21da86aa9c7c82541be25633b49bb",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/serviceable-cartridge-sharing",
+      "head": "d925244342bbd9953df4194825c058ce9b3da04e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/serviceable-firearm-scavenging",
+      "head": "3f404b8f1161e5589f4ae241d46bad8fe5692af5",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/shot-load-specialty",
+      "head": "de5738d300b2bf69d8d980cf72baa4a7404bdc72",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/smithy-source-brick-chimney",
+      "head": "058610f10154e78bd057130df6b4afefb005257d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/soft-bedding",
+      "head": "7ce17fb55042ce1df71ad1d9396e7c1ba321382e",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/source-chapel-pier-edges",
+      "head": "5d5845327a657b23c076e4b04ffa8d3b1807454c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/source-door-cross-bands",
+      "head": "bc70b656bd73acda4f4f883c1dd125f9710c70e9",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/source-window-frame-paint",
+      "head": "6008e76b040ad295dc098455bae2c4df8ef56e79",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/source-window-sills",
+      "head": "93effa8484514eed276c413fcf3cf1e4e516b088",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/source-work-porch-frames",
+      "head": "080b774cbce7191bef68d20095e72480b2a9efbb",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/sparse-soil-fragments",
+      "head": "b1b0e4ce2d9a8bfc9f84285dafc4257310e90d13",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/squad-travel-notice",
+      "head": "91dc69c4157ef32dfb8e35b04170a39d4ae33190",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/stable-gable-ventilation",
+      "head": "da42da23c01515f65464208545f835978178d553",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/stable-shell-placement",
+      "head": "8229184a7e74a91eedc089f0fca687da96c0f711",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/stable-timber-frame",
+      "head": "807e43d98be4028c0f665aeb48f9b1ad0e44e649",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/standing-blade-wrist-fit",
+      "head": "212650d1a9253ff0bf3ceb7e8779c0e8ab8ee676",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/standing-equipment-sideways-support",
+      "head": "c055b9228a8fbd9041e91b71a919b6a071c90d43",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/standing-free-arm-rest",
+      "head": "c0a3f8b6a1b5ede671a6dbad03e1f673b6534728",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/standing-gesture-step-return",
+      "head": "88f34d624a18edf834b2e561e8bec23e1d53b91c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/standing-native-gesture-support",
+      "head": "43bcc8ad6c85c847caa062f0640435ed3f8ac923",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/standing-rifle-sideways-support",
+      "head": "3f1e4d8e1833651ca06f6ed087fa01a4c5ae6019",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/standing-unarmed-sideways-support",
+      "head": "b6a780e67871088ec07e68bee1ea585c716e4cee",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/stock-campaign-acceptance",
+      "head": "44b7fcadac127acbd58474729f79a9f87567ea4b",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/stone-ricochet",
+      "head": "08d6d48c37785662c6e1031c2bff45398981652a",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/strategic-isolation",
+      "head": "9cbbdaf7e0a4c21344c551e0b5d83a57a94f2d59",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/supported-pistol-butt-contact",
+      "head": "053097718365c5df836fc5ba563f872f2fb6436c",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/supported-rifle-whole-boot",
+      "head": "3a2486d939b6a1f983ac93a23bdea73e5ad4e150",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/supported-sideways-start-stop",
+      "head": "dc26fa5d534014ad896eb497a05d8c853489d7c4",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/tactical-graphics-phone-gallery",
+      "head": "5269fb4dc734f22f3e0a14c2d3612a6bd6be15ac",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/thin-dry-weeds",
+      "head": "bf052dab8c6e0b34df041440933adc9d1af37e36",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-action-cloth-polish",
+      "head": "e8eaee09fa16fccb9c4c5296ac0091f741d80373",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-contact-and-finishes",
+      "head": "30582e2c32734358a1547de06efc65ba75f5a5e7",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-contacts-period-surfaces",
+      "head": "25e57a3c590907063c66d2c11f2db9d1914d80c6",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-gameplay-polish",
+      "head": "d4a9894f8a757d2648b6cfd0c7eebb7aff06d192",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-ladder-and-civic",
+      "head": "049d2f23d6e009ac6cdd4121fd3268f3c9ec9101",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-ladder-and-palace",
+      "head": "71ea5259ff5f8e06c8aadbb4d55eed42384a3447",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-mounted-actions-facades",
+      "head": "f6239fa762de70b7fc1bb20f8baa74200b50a0f5",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-movement-buildings",
+      "head": "0749bf572edf563abb2c6dea18a3f3088c3c3e78",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/three-supported-contact",
+      "head": "13cb93a18050cab9737c2493207c3c3d332fc9b1",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/timber-furniture-construction",
+      "head": "73dae202eeba3c6585fe4e2c202120f351517787",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/townhall-source-stone-columns",
+      "head": "abcf1ef4b8e94c91d661e2160878543ac912b6e8",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/uneven-terrain-rocks",
+      "head": "ee48fc5a8b33af1d617bda0c9f319dec2b76d770",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/video-gameplay-integration",
+      "head": "1245a0f8e70fdb07c8575add61f7e970825dd0d8",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/video-range-penetration-checkpoint",
+      "head": "e874969ebabb2deaff6c7395138d04b69fcf2a49",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/warehouse-masonry-buttresses",
+      "head": "98a8a4e32b7b5643cd79af9e2c1e787fa188e4e0",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/warehouse-supported-shell-placement",
+      "head": "9fa1bbd0f38404281032ead6c126b0478056c5f8",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/warehouse-volume-finishes",
+      "head": "2123bd7357b31adf957fdcfeb3f7b4fa6de29ce3",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/woman-shawl-rust-hem",
+      "head": "a2c4af7365bd7ef72b818754a18dbc029198569d",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/woman-shawl-skirt-colour",
+      "head": "9c3a119e9520559afa9c201cc19dba30db2caf4f",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "codex/wounded-combat-cycle",
+      "head": "823702d5be1caac7528fb09faa4328332da352da",
+      "ancestorOfFrozenRoot": true
+    },
+    {
+      "branch": "main",
+      "head": "8fcabf3655af6468f5120fe59d9caf0dec140fe3",
+      "ancestorOfFrozenRoot": true
+    }
+  ],
+  "branchHeadsOutsideRootAncestry": [],
+  "worktreeCount": 19,
+  "completedWorktreeCount": 18,
+  "worktrees": [
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos",
+      "head": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+      "branch": "codex/pending-review-references",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos",
+      "head": "5f65ef08d51659fe1fa10d4f2a85f586dca78123",
+      "branch": "codex/character-clothing-followup",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {
+        "??": 1
+      },
+      "classification": "completed worktree",
+      "statusEntries": [
+        {
+          "status": "??",
+          "path": "playgrounds/granadero-3d/node_modules",
+          "classification": "untracked dependency symlink excluded",
+          "target": "/Users/fsodano/fibradev/games/granaderos/playgrounds/granadero-3d/node_modules"
+        }
+      ],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/bdf24601-e74d-47d0-af2a-de965e16a649/granaderos",
+      "head": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+      "branch": "detached",
+      "locked": "initializing",
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {
+        "D ": 11783,
+        "??": 11476
+      },
+      "classification": "incomplete app checkout; no index written; not authored dirty work",
+      "indexExists": false,
+      "indexLockExists": true,
+      "indexEntries": 0,
+      "wholeHeadDeletionCount": 11783,
+      "copiedUntrackedCount": 11476,
+      "copiedPathsOutsideHead": [],
+      "knownPartialTexture": {
+        "path": "web/public/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+        "currentBytes": 0
+      },
+      "priorCompleteCopiedBlobAudit": {
+        "matched": 11475,
+        "copied": 11476,
+        "mismatch": "e3c6887d5bede0fbc1e4.png was zero bytes; expected Git blob b6fe02f419af426103f84fb8bcad2850ea8062fd",
+        "receipt": "/tmp/granaderos-all-pending-integration-readonly-audit.json"
+      },
+      "ownership": "Not created or requested by reviewer; left intact."
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+      "head": "f88155f92b1363ae2591d3ecc4fdc26425a19e1b",
+      "branch": "codex/blast-structures",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/compact-ap-hit-numbers/granaderos",
+      "head": "902d764d76e8af703865ec198346fdb306c7989b",
+      "branch": "codex/compact-ap-hit-numbers",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "head": "90276255857edcf53379cac98393bc5ccfcfe2e9",
+      "branch": "codex/historical-game-trailer",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/human-character-library/granaderos",
+      "head": "7ee1b1a5560e12ee21ede81fc520f910671e4286",
+      "branch": "codex/human-anatomy-review",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {
+        "??": 1
+      },
+      "classification": "completed worktree",
+      "statusEntries": [
+        {
+          "status": "??",
+          "path": "playgrounds/granadero-3d/node_modules",
+          "classification": "untracked dependency symlink excluded",
+          "target": "/Users/fsodano/fibradev/games/granaderos/playgrounds/granadero-3d/node_modules"
+        }
+      ],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/rider-seat-transition/granaderos",
+      "head": "26ebb7744258a1c8ea1c82e704a7b259ac4d88e4",
+      "branch": "codex/rider-seat-transition",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/roadside-discovery/granaderos",
+      "head": "8fd49033323c7145d668c8779a4a7bca2a3fc7df",
+      "branch": "codex/roadside-discovery",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/shot-load-specialty/granaderos",
+      "head": "de5738d300b2bf69d8d980cf72baa4a7404bdc72",
+      "branch": "codex/shot-load-specialty",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/squad-travel-notice/granaderos",
+      "head": "91dc69c4157ef32dfb8e35b04170a39d4ae33190",
+      "branch": "codex/squad-travel-notice",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "head": "44b7fcadac127acbd58474729f79a9f87567ea4b",
+      "branch": "codex/stock-campaign-acceptance",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/stone-ricochet/granaderos",
+      "head": "08d6d48c37785662c6e1031c2bff45398981652a",
+      "branch": "codex/stone-ricochet",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/strategic-isolation/granaderos",
+      "head": "9cbbdaf7e0a4c21344c551e0b5d83a57a94f2d59",
+      "branch": "codex/strategic-isolation",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+      "head": "c93283155b5c58e5dc4659df0259564e762d3355",
+      "branch": "codex/building-exterior-pictures",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/three-gameplay-polish/granaderos",
+      "head": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+      "branch": "detached",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+      "head": "c71dce8566173bea7b8485868990aa5dee7ef5e5",
+      "branch": "detached",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/video-gameplay-integration/granaderos",
+      "head": "1245a0f8e70fdb07c8575add61f7e970825dd0d8",
+      "branch": "codex/video-gameplay-integration",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/wounded-combat-cycle/granaderos",
+      "head": "823702d5be1caac7528fb09faa4328332da352da",
+      "branch": "codex/wounded-combat-cycle",
+      "locked": null,
+      "headAncestorOfFrozenRoot": true,
+      "statusExit": 0,
+      "statusError": "",
+      "statusCounts": {},
+      "classification": "completed worktree",
+      "statusEntries": [],
+      "authoredUncommittedCandidates": []
+    }
+  ],
+  "authoredUncommittedCandidates": [],
+  "anyAuthoredSourceUncommittedOrOutsideRootAncestry": false,
+  "priorIgnoredSourceCoverage": {
+    "archiveBlobs": 1788,
+    "logicalBytes": 1408613954,
+    "pathAliases": 18724,
+    "examinedWorktreeCodePatchModelPaths": 963,
+    "newUniqueIgnoredAuthoredBlobsPreserved": 109,
+    "manifest": "assets/source/characters-3d/review-variants/2026-10-09-native-library/manifest.json",
+    "worktreeSourceLedger": "assets/source/characters-3d/review-variants/2026-10-09-native-library/worktree-source-overlaps.json"
+  },
+  "readOnlyMethod": "GIT_OPTIONAL_LOCKS=0; no checkout, fetch, source edit, branch update, or repository write by reviewer."
+}

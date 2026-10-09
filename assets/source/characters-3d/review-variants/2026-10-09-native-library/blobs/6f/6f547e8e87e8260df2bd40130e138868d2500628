@@ -1,0 +1,24 @@
+import struct,json,hashlib,sys
+from pathlib import Path
+R=Path('/tmp/granadero-hair-naturalism-pilot')
+def read(path):
+ b=path.read_bytes();n=struct.unpack_from('<I',b,12)[0];j=json.loads(b[20:20+n]);return j,b[28+n:]
+def acc(j,b,i):
+ a=j['accessors'][i];v=j['bufferViews'][a['bufferView']];size={5120:1,5121:1,5122:2,5123:2,5125:4,5126:4}[a['componentType']]*{'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size);return b''.join(b[start+k*stride:start+k*stride+size]for k in range(a['count']))
+def digest(data):return hashlib.sha256(data).hexdigest()
+def joint_digest(j,b,p):
+ raw=acc(j,b,p['attributes']['JOINTS_0']);weights=struct.unpack('<'+'f'*(len(acc(j,b,p['attributes']['WEIGHTS_0']))//4),acc(j,b,p['attributes']['WEIGHTS_0']));size=len(raw)//len(weights);fmt='B' if size==1 else 'H';values=struct.unpack('<'+fmt*len(weights),raw);return digest(json.dumps([sorted((value,weight)for value,weight in zip(values[i:i+4],weights[i:i+4])if weight>0)for i in range(0,len(values),4)]).encode())
+def info(path):
+ j,b=read(path);out={'sha256':digest(path.read_bytes()),'triangles':sum(j['accessors'][p['indices']]['count']//3 for m in j['meshes']for p in m['primitives']),'draws':sum(len(m['primitives'])for m in j['meshes'])}
+ out['skin']=[{**{k:digest(acc(j,b,i))for k,i in p['attributes'].items()},'indices':digest(acc(j,b,p['indices']))}for m in j['meshes']for p in m['primitives']if j['materials'][p['material']]['name']=='Skin']
+ out['rig']=[{'inverseBind':digest(acc(j,b,s['inverseBindMatrices'])),'joints':[{k:v for k,v in j['nodes'][i].items()if k in ('name','translation','rotation','scale')}for i in s['joints']]}for s in j['skins']]
+ out['unchanged_meshes']={m['name']:[{**{k:digest(acc(j,b,i))for k,i in p['attributes'].items()if k not in ('TEXCOORD_0','JOINTS_0')},'JOINTS_0_effective':joint_digest(j,b,p),'indices':digest(acc(j,b,p['indices']))}for p in m['primitives']]for m in j['meshes']if m['name']!='Exposed_Human_Skin'}
+ return out
+
+report={}
+for lod in range(3):
+ before=info(R/'baseline'/f'worker-lod{lod}.glb');after=info(R/'worker-delivery/models-v6'/f'worker-lod{lod}.glb');checks={key:before[key]==after[key]for key in ('skin','rig','unchanged_meshes')}
+ report[str(lod)]={'before':before,'after':after,'preserved':checks}
+ print(lod,checks)
+(R/'worker-delivery/preservation.json').write_text(json.dumps(report,indent=2))
+assert all(all(r['preserved'].values())for r in report.values()),'Preservation failed'

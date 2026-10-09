@@ -1,5 +1,6 @@
 import {townIncomeSources,dailyTownIncome} from './town-income.js';
 import {CAMPAIGN_SECTORS} from './data.js';
+import {treasuryIncomeReason} from './treasury-rewards.js';
 
 // Town trade and local contributions funded the independence armies.
 // Amounts are game balance values, not reconstructed historical revenue.
@@ -21,6 +22,9 @@ export function collectSectorCash(state,snapshot){
  const carriers=snapshot.units.filter(u=>u.side==='player'&&u.hp>0&&(!snapshot.returnLedger||snapshot.returnLedger.entries.some(e=>e.unitId===String(u.id)&&['resident','departed'].includes(e.kind))));
  const held=carriers.reduce((sum,u)=>sum+Object.entries(u.inventory??{}).reduce((n,[id,item])=>n+(cashKey(id)?item.count:0),0),0);
  if(held!==amount||!snapshot.groundItems?.some(g=>g.id===key&&g.type==='money'&&g.count===0))return;
+ if(treasuryIncomeReason(state,amount)){
+  state.log.unshift({hour:state.hour,text:`La tesorería está llena. Los ${amount} pesos encontrados siguen en los bolsillos de sus portadores.`});state.log=state.log.slice(0,80);return;
+ }
  state.resources.treasury+=amount;state.foundMoney.push(sectorId);
  const ids=new Set(carriers.map(u=>String(u.id)));
  const records=[...carriers,...Object.entries(state.operativeState).filter(([id])=>ids.has(id)).map(([,unit])=>unit),...(state.sectorStates?.[sectorId]?.units??[]).filter(u=>ids.has(String(u.id)))];

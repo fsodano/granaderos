@@ -1,0 +1,135 @@
+--- a/assets/source/characters-3d/authoring/optimize.py
++++ b/assets/source/characters-3d/authoring/optimize.py
+@@ -74,12 +74,15 @@
+  for obj in objects:
+   if obj.type!='MESH':continue
+   bpy.context.view_layer.objects.active=obj
++  if ctx['preset']=='worker' and obj.name=='Worker_Waistcoat':
++   from worker_waistcoat import rebuild_worker_waistcoat
++   rebuild_worker_waistcoat(ctx,obj)
+   # Decimation is placed before the armature to preserve rest-space geometry.
+   detail=obj.name.startswith(('Red_Epaulette_Fringe','Red_Shako_Cord','Red_Side_Cord','Red_Tassel','Crest_','Cockade_','Epaulette_','Chinstrap_'))
+   minimum=(18 if lod==2 else 36 if lod==1 else 50) if detail else (35 if lod==2 else 100)
+   dec=obj.modifiers.new('Real_Mesh_LOD_'+str(lod),'DECIMATE');dec.ratio=min(1,max(RATIOS[lod],minimum/max(1,len(obj.data.polygons))));dec.use_collapse_triangulate=True
+   while obj.modifiers.find(dec.name)>0:bpy.ops.object.modifier_move_up(modifier=dec.name)
+-  if len(obj.data.polygons)>(60 if detail else 150) and not any(n in obj.name for n in ('Crossbelt','Waist_Belt','Trouser_Seam')):bpy.ops.object.modifier_apply(modifier=dec.name)
++  if len(obj.data.polygons)>(60 if detail else 150) and not any(n in obj.name for n in ('Crossbelt','Waist_Belt','Trouser_Seam','Worker_Waistcoat')):bpy.ops.object.modifier_apply(modifier=dec.name)
+   else:obj.modifiers.remove(dec)
+   # At most four normalized bone influences, preserving the strongest native
+   # weights. The exporter therefore has one four-influence joint attribute.
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/worker_waistcoat.py
+@@ -0,0 +1,113 @@
++"""Private Worker waistcoat: cut an actual continuous band from reduced shirt.
++
++The shirt remains untouched. Triangle intersections carry its native weights;
++only the waistcoat opening/armholes/hem and their 1.4 mm turned edges change.
++"""
++import math
++import bpy,bmesh
++from mathutils import Vector
++
++def rebuild_worker_waistcoat(ctx,obj):
++    coat=ctx['coat'];coat.data.calc_loop_triangles()
++    names=[g.name for g in coat.vertex_groups]
++    # Preserve the sampled seam/shoulder rows. Relax only the front panel's
++    # anatomical chest loops: flattening their original nipple fan had folded
++    # triangles back through the garment before any action was applied.
++    points=[v.co.copy()for v in coat.data.vertices];neighbours=[set()for p in points]
++    source_weights=[{names[g.group]:g.weight for g in v.groups}for v in coat.data.vertices]
++    for edge in coat.data.edges:
++        a,b=edge.vertices;neighbours[a].add(b);neighbours[b].add(a)
++    influence=[]
++    for p in points:
++        mask=max(0,min(1,(p.z-1.17)/.035,(1.405-p.z)/.035,(.165-abs(p.x))/.035,(-p.y-.070)/.035))
++        front=max(0,min(1,(.01-p.y)/.10));opening=1.470*(1-front)+(1.285+1.85*abs(p.x))*front-p.z
++        mask*=max(0,min(1,(opening-.018)/.032));influence.append(mask)
++    original=[p.copy()for p in points]
++    for iteration in range(12):
++        after=[p.copy()for p in points]
++        for i,p in enumerate(points):
++            if influence[i]<=0 or not neighbours[i]:continue
++            average=sum((points[j]for j in neighbours[i]),Vector())/len(neighbours[i])
++            q=p.lerp(average,.55*influence[i]);q.y=min(q.y,original[i].y+.001)
++            after[i]=q
++        points=after
++    for iteration in range(3):
++        after=[dict(w)for w in source_weights]
++        for i,w in enumerate(source_weights):
++            if influence[i]<=0 or not neighbours[i]:continue
++            keys=set(w)|set(k for j in neighbours[i]for k in source_weights[j]);amount=.35*influence[i]
++            after[i]={k:w.get(k,0)*(1-amount)+sum(source_weights[j].get(k,0)for j in neighbours[i])/len(neighbours[i])*amount for k in keys}
++        source_weights=after
++    envelope=bpy.data.meshes.new('Worker_Front_Envelope');envelope.from_pydata(points,[],[tuple(f.vertices)for f in coat.data.polygons]);envelope.update()
++    envelope_normals=[v.normal.copy()for v in envelope.vertices]
++    print('WORKER_FRONT_ENVELOPE_MAX',max((a-b).length for a,b in zip(points,original)),flush=True)
++    def vertex(index):return(points[index],envelope_normals[index],source_weights[index])
++    def mix(a,b,t):
++        keys=set(a[2])|set(b[2])
++        return(a[0].lerp(b[0],t),a[1].lerp(b[1],t).normalized(),{k:a[2].get(k,0)*(1-t)+b[2].get(k,0)*t for k in keys})
++    def clip(poly,f):
++        result=[]
++        for a,b in zip(poly,poly[1:]+poly[:1]):
++            x,y=f(a[0]),f(b[0]);inside=x>=-1e-9
++            if inside:result.append(a)
++            if inside!=(y>=-1e-9):result.append(mix(a,b,x/(x-y)))
++        return result
++    def neck(p):
++        front=max(0,min(1,(.01-p.y)/.10))
++        limit=1.470*(1-front)+(1.285+1.85*abs(p.x))*front
++        return limit-p.z
++    constraints=[lambda p:p.z-1.010,lambda p:1.495-p.z,
++                 lambda p:.187-.32*max(0,p.z-1.275)-abs(p.x),neck]
++    coords=[];normals=[];weights=[];faces=[];cache={}
++    def put(v):
++        p,n,w=v;position=p+n*.003
++        key=tuple(round(c,8)for c in p)
++        if key not in cache:
++            cache[key]=len(coords);coords.append(position);normals.append(n);weights.append(w)
++        return cache[key]
++    for triangle in coat.data.loop_triangles:
++        poly=[vertex(i)for i in triangle.vertices]
++        for side in (-1,1):
++            piece=clip(poly,lambda p:side*p.x)
++            for constraint in constraints:
++                if len(piece)<3:break
++                piece=clip(piece,constraint)
++            if len(piece)<3:continue
++            ids=[put(v)for v in piece]
++            for i in range(1,len(ids)-1):
++                tri=(ids[0],ids[i],ids[i+1])
++                if len(set(tri))==3 and (coords[tri[1]]-coords[tri[0]]).cross(coords[tri[2]]-coords[tri[0]]).length>1e-10:faces.append(tri)
++    edges={}
++    for f in faces:
++        for a,b in zip(f,f[1:]+f[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
++    rim={}
++    for edge,values in edges.items():
++        if len(values)!=1:continue
++        a,b=values[0]
++        for i in (a,b):
++            if i not in rim:
++                rim[i]=len(coords);coords.append(coords[i]-normals[i]*.0014);normals.append(normals[i]);weights.append(dict(weights[i]))
++        faces.append((b,a,rim[a],rim[b]))
++    mesh=bpy.data.meshes.new('Worker_Waistcoat_Continuous');mesh.from_pydata(coords,[],faces);mesh.update();old=obj.data;obj.data=mesh
++    mesh.materials.append(ctx['M']['trousers'])
++    obj.vertex_groups.clear();groups={name:obj.vertex_groups.new(name=name)for name in sorted(set(k for w in weights for k in w))}
++    for i,w in enumerate(weights):
++        for name,amount in w.items():
++            if amount>1e-7:groups[name].add([i],amount,'REPLACE')
++    for f in mesh.polygons:f.use_smooth=len(f.vertices)==3
++    colour=mesh.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
++    for v,c in zip(mesh.vertices,colour.data):
++        p=v.co;shade=.96+.02*math.sin(p.z*19+p.x*13)+.015*math.sin(p.z*37-p.y*17);c.color=(shade,shade,shade,1)
++    mesh.color_attributes.active_color_index=0;mesh.color_attributes.render_color_index=0
++    if old.users==0:bpy.data.meshes.remove(old)
++    bpy.data.meshes.remove(envelope)
++    # The torso is clothed by the vest here. Keep the shirt at all visible
++    # openings and a 12 mm seam overlap, but remove its occluded interior.
++    # A duplicate independently interpolated cloth layer produces crossings
++    # through the bent native chest even with matching rest normals/weights.
++    bm=bmesh.new();bm.from_mesh(coat.data)
++    hidden=[f for f in bm.faces if all(all(test(v.co)>.012 for test in constraints)for v in f.verts)]
++    hidden_count=len(hidden);bmesh.ops.delete(bm,geom=hidden,context='FACES_ONLY')
++    bm.to_mesh(coat.data);bm.free();coat.data.update()
++    print('WORKER_HIDDEN_SHIRT_REMOVED',hidden_count,flush=True)
++    print('WORKER_CONTINUOUS_WAISTCOAT',len(coords),len(faces),'boundary',len(rim),flush=True)

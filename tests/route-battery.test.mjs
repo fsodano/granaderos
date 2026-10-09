@@ -15,7 +15,10 @@ function controlled(){const s=initialCampaign();s.sectors.cordoba.owner='patriot
 test('route preparation discovers and forwards three real finite bronze guns with canonical saved custody',()=>{
  // A real paid reserve remains at Retiro while the existing crew carries the
  // guns. Its day term expires during transport unless explicitly retained.
- let start=order(controlled(),{type:'advanceStrategicTime',seconds:17});
+ const checkpoint=controlled();
+ // Opposing reserves are exhausted in this finite-custody transport checkpoint.
+ checkpoint.enemyReserves.remaining={north:0,coast:0,interior:0};
+ let start=order(checkpoint,{type:'advanceStrategicTime',seconds:17});
  const hire=contractQuote(start,rosterFor(start).find(op=>op.id===119),'day'),hireCash=start.resources.treasury;
  start=order(start,{type:'recruitCivic',id:119,term:'day',destination:'retiro'});assert.equal(start.resources.treasury,hireCash-hire.price);
  start=order(start,{type:'wait',hours:6});start=order(start,{type:'squad',ids:[3,4,10]});
@@ -26,7 +29,8 @@ test('route preparation discovers and forwards three real finite bronze guns wit
  assert.deepEqual(new Set(result.selections),new Set(['depot:arsenal:buenos_aires:1','depot:arsenal:cordoba:1','depot:arsenal:cordoba:2']));
  assert.ok(events.some(event=>event.event==='routeArsenalRecovered'&&event.sector==='buenos_aires'));assert.ok(events.some(event=>event.event==='routeArsenalRecovered'&&event.sector==='cordoba'));
  assert.equal(events.filter(event=>event.event==='routeBatteryShipment').length,1);assert.equal(events.filter(event=>event.event==='routeBatteryStored').length,2);
- const renewals=events.filter(event=>event.event==='routeBatteryRenewal');assert.equal(renewals.length,2);assert.ok(renewals.every(event=>event.id===119&&event.price===hire.price));
+ const renewals=events.filter(event=>event.event==='routeBatteryRenewal');const requiredRenewals=Math.max(0,Math.floor((s.hour*3600+(s.secondOfHour??0)+2*3600-contractExpiresSeconds(before.contracts[119]))/86400)+1);
+ assert.equal(renewals.length,requiredRenewals);assert.ok(renewals.length>0);assert.ok(renewals.every(event=>event.id===119&&event.price===hire.price));
  for(const gun of s.artilleryDepots.cordoba){assert.equal(gun.loaded,true);assert.equal(gun.ammo,6);}assert.ok(s.hour>0);assert.equal(s.resources.treasury,before.resources.treasury-180-renewals.reduce((sum,event)=>sum+event.price,0));
  assert.ok(s.recruited.includes(119));assert.equal(s.operativeState[119].location,'retiro');assert.equal(s.contracts[119].expiresSecond,17);assert.equal(contractExpiresSeconds(s.contracts[119]),contractExpiresSeconds(before.contracts[119])+renewals.length*86400);
  for(const key of ['hp','maxHp','bleeding','condition','ammo','carriedLoaded','medkits','inventory','outfit','headwear','legwear'])assert.deepEqual(s.operativeState[119][key],before.operativeState[119][key],`paid retention preserves remote ${key}`);

@@ -1,0 +1,24 @@
+from pathlib import Path
+import sys,json,math,bpy
+B=Path('/tmp/granadero-collar-rim-pilot');kind=sys.argv[-1];source=Path('/tmp/granadero-shoulder-strap-pilot/source-before') if kind=='before' else B/'source/assets/source/characters-3d/authoring';sys.path.insert(0,str(source))
+t=(source/'character.py').read_text().replace("    collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)","    globals()['collar_record']=(collarv,collarf,collarw,count)\n    collar=mesh('Crimson_Collar',collarv,collarf,mats['red'],collarw)")
+s={'__file__':str(source/'character.py'),'__name__':'collar_proof'};exec(compile(t,s['__file__'],'exec'),s);ctx=s['create_character']('granadero');coat=ctx['coat'];p,f,w,count=s['collar_record']
+seam={tuple(round(v,6)for v in a)for a in p[:count]};edge_faces={}
+for poly in coat.data.polygons:
+ ids=list(poly.vertices)
+ for a,b in zip(ids,ids[1:]+ids[:1]):edge_faces.setdefault(tuple(sorted((a,b))),[]).append(poly.material_index)
+sewn=[]
+for(a,b),faces in edge_faces.items():
+ if all(tuple(round(v,6)for v in coat.data.vertices[i].co)in seam for i in(a,b)):
+  sewn.append({'ids':[a,b],'faceCount':len(faces),'materials':[coat.data.materials[i].name for i in faces]})
+def rim(points):
+ rows={}
+ for p in points:
+  if abs(p.z-1.533)>1e-6 or math.hypot(p.x,p.y+.036)>.13:continue
+  a=round(math.atan2(p.y+.036,p.x),6);radius=math.hypot(p.x,p.y+.036)
+  if a not in rows or radius>rows[a][0]:rows[a]=(radius,list(p))
+ aa=sorted(rows);gaps=[(aa[(i+1)%len(aa)]-a)%math.tau for i,a in enumerate(aa)]
+ return {'directions':len(aa),'maxAngularGapDegrees':math.degrees(max(gaps)),'points':[rows[a][1]for a in aa]}
+result={'sourceBasePoints':[list(a)for a in p[:count]],'sourceBaseWeights':w[:count],'sourceSharedSeamEdges':sewn,'sourceRim':rim(p)}
+bpy.ops.wm.read_factory_settings(use_empty=True);bpy.ops.import_scene.gltf(filepath=str(B/('before-models'if kind=='before'else'models')/'granadero-lod0.glb'),bone_heuristic='TEMPERANCE',guess_original_bind_pose=False,import_pack_images=False)
+o=next(o for o in bpy.data.objects if o.name.startswith('Human_outfit'));result['actualExportRim']=rim([o.matrix_world@v.co for v in o.data.vertices]);(B/('collar-proof-'+kind+'.json')).write_text(json.dumps(result,indent=2));print('COLLAR_PROOF',kind,len(sewn),len([e for e in sewn if e['faceCount']!=2]),result['sourceRim']['maxAngularGapDegrees'],result['actualExportRim']['maxAngularGapDegrees'])

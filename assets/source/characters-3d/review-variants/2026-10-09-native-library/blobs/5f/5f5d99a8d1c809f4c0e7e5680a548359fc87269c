@@ -1,0 +1,29 @@
+// Private source-derived pose-corrective study. Keep the native rest mesh and
+// native weights. Restore dual-quaternion volume only at the mixed thumb web.
+import{readFileSync,writeFileSync,mkdirSync,copyFileSync}from'node:fs';
+import{Matrix4,Vector3,Quaternion,Triangle}from'/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+const path='/tmp/granadero-hand-web-pilot',native=JSON.parse(readFileSync(path+'/native-web.json'));
+const transforms=Object.fromEntries(Object.entries(native.bones).map(([name,b])=>{const t=new Matrix4().fromArray(b.posed).multiply(new Matrix4().fromArray(b.rest).invert()),p=new Vector3(),q=new Quaternion(),s=new Vector3();t.decompose(p,q,s);const d=new Quaternion(p.x,p.y,p.z,0).multiply(q);return[name,{q,d:d.toArray().map(v=>v*.5)}];}));
+function dq(weights,rest){const entries=Object.entries(weights),reference=transforms[entries[0][0]].q,a=[0,0,0,0],b=[0,0,0,0];for(const[name,weight]of entries){const t=transforms[name],sign=reference.dot(t.q)<0?-1:1;for(let k=0;k<4;k++){a[k]+=t.q.toArray()[k]*weight*sign;b[k]+=t.d[k]*weight*sign;}}const norm=Math.hypot(...a);for(let k=0;k<4;k++){a[k]/=norm;b[k]/=norm;}const q=new Quaternion().fromArray(a),translation=new Quaternion().fromArray(b).multiply(q.clone().conjugate());return{point:rest.clone().applyQuaternion(q).add(new Vector3(translation.x,translation.y,translation.z).multiplyScalar(2)),q};}
+function smooth(a,b,x){const u=Math.max(0,Math.min(1,(x-a)/(b-a)));return u*u*(3-2*u);}
+const thumbBase=new Vector3().setFromMatrixPosition(new Matrix4().fromArray(native.bones.thumb_01_r.rest));const part=native.parts[0],vertices=new Map(part.vertices.map(v=>[v.i,v])),result=[],out=new Map();
+for(const v of part.vertices){const w=v.weights,rest=new Vector3().fromArray(v.rest),posed=new Vector3().fromArray(v.posed),target=dq(w,rest);const amount=smooth(.035,.18,w.thumb_01_r??0)*smooth(.035,.22,w.hand_r??0)*(1-smooth(.18,.38,w.thumb_02_r??0))*(1-smooth(.035,.055,rest.distanceTo(thumbBase)));
+ const corrected=posed.clone().lerp(target.point,amount),matrix=new Matrix4().fromArray(v.skinMatrix),delta=corrected.clone().applyMatrix4(matrix.clone().invert()).sub(rest);out.set(v.i,corrected);
+ if(amount>1e-7&&delta.length()>1e-8)result.push({i:v.i,amount,delta:delta.toArray(),worldDelta:corrected.distanceTo(posed),restDelta:delta.length()});
+}
+// Fair the connected web after volume restoration. The original patch boundary,
+// thumb shaft, finger tips and non-web palm remain fixed.
+// UV seams duplicate vertices. Fair the native surface as welded geometry,
+// then give every duplicate the same target; keep its UV and weights intact.
+const aliases=new Map(),canonical=new Map(),groups=new Map();
+for(const v of part.vertices){const key=v.rest.map(x=>x.toFixed(6)).join(',');if(!aliases.has(key))aliases.set(key,v.i);const id=aliases.get(key);canonical.set(v.i,id);if(!groups.has(id))groups.set(id,[]);groups.get(id).push(v.i);}
+const neighbours=new Map([...groups.keys()].map(i=>[i,new Set()]));
+for(const f of part.faces)for(let k=0;k<3;k++){const a=canonical.get(f.ids[k]),b=canonical.get(f.ids[(k+1)%3]);if(a!==b){neighbours.get(a).add(b);neighbours.get(b).add(a);}}
+const byId=new Map();for(const v of result){const id=canonical.get(v.i);if(!byId.has(id))byId.set(id,v);}
+for(let step=0;step<10;step++){
+ const previous=new Map([...groups].map(([i,ids])=>[i,out.get(ids[0]).clone()]));
+ for(const [i,data]of byId){const adjacent=neighbours.get(i);if(!adjacent.size)continue;const mean=new Vector3();for(const n of adjacent)mean.add(previous.get(n));mean.divideScalar(adjacent.size);const point=previous.get(i).clone().lerp(mean,.38*data.amount);for(const duplicate of groups.get(i))out.set(duplicate,point.clone());}
+}
+for(const value of result){const v=vertices.get(value.i),rest=new Vector3().fromArray(v.rest),posed=new Vector3().fromArray(v.posed),corrected=out.get(value.i),delta=corrected.clone().applyMatrix4(new Matrix4().fromArray(v.skinMatrix).invert()).sub(rest);value.delta=delta.toArray();value.worldDelta=corrected.distanceTo(posed);value.restDelta=delta.length();}
+const faceMetrics=part.faces.filter(f=>f.web).map(f=>{const old=f.ids.map(i=>new Vector3().fromArray(vertices.get(i).posed)),now=f.ids.map(i=>out.get(i)),rest=f.ids.map(i=>new Vector3().fromArray(vertices.get(i).rest));return{face:f.i,oldAreaRatio:new Triangle(...old).getArea()/new Triangle(...rest).getArea(),newAreaRatio:new Triangle(...now).getArea()/new Triangle(...rest).getArea()};});
+writeFileSync(path+'/web-delta.json',JSON.stringify({result,faceMetrics,maximumPosedDelta:Math.max(...result.map(v=>v.worldDelta)),maximumRestDelta:Math.max(...result.map(v=>v.restDelta))},null,2));console.log(result.length,'vertices',Math.max(...result.map(v=>v.worldDelta)),'posed',Math.max(...result.map(v=>v.restDelta)),'rest');console.log(faceMetrics.sort((a,b)=>a.oldAreaRatio-b.oldAreaRatio).slice(0,12));

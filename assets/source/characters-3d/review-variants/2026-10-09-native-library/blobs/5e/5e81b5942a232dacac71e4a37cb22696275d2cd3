@@ -1,0 +1,26 @@
+[
+  {
+    "preset": "woman-scout",
+    "lod": 1,
+    "existingLod0LeftHandAttributesExact": true,
+    "triangles": 3231
+  },
+  {
+    "preset": "woman-scout",
+    "lod": 2,
+    "existingLod0LeftHandAttributesExact": true,
+    "triangles": 3231
+  },
+  {
+    "preset": "woman-shawl",
+    "lod": 1,
+    "existingLod0LeftHandAttributesExact": true,
+    "triangles": 3231
+  },
+  {
+    "preset": "woman-shawl",
+    "lod": 2,
+    "existingLod0LeftHandAttributesExact": true,
+    "triangles": 3231
+  }
+]

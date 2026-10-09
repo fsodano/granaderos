@@ -1,0 +1,162 @@
+{
+  "allEqual": true,
+  "files": [
+    {
+      "path": "assets/engine/cabral-dialogue.sti",
+      "sha256": "ff6506c681d43ff8b0f79f92ce1eae874788b024d33b03edcd1a6b5bfdd30eca"
+    },
+    {
+      "path": "assets/engine/cabral-recruitment.sti",
+      "sha256": "915c75ab0ff76669a75061e7aebe941fb61bc00a76e97207e92ae387a30b1288"
+    },
+    {
+      "path": "assets/engine/cabral-tactical.sti",
+      "sha256": "d4df964f84044142a3d4a68b5e05f5e37d4cd0afd74fdc9ac6cfe9d12d28f479"
+    },
+    {
+      "path": "assets/engine/san-lorenzo-menu.sti",
+      "sha256": "1465b97ca3d233429900ca995d1b0e00213c5e1dd11446d9e909decb6ed15c9b"
+    },
+    {
+      "path": "assets/manifest.json",
+      "sha256": "89d78f843c14a6ffa73ccb041a6e3dfc3057c030b30e155fb3fe1cf0da89d64d"
+    },
+    {
+      "path": "assets/source/juan-bautista-cabral-v1.png",
+      "sha256": "645b85b5e9fabe22ad6a4e532007e2fb8b09c24f4910b2adac909d0197940b63"
+    },
+    {
+      "path": "assets/source/san-lorenzo-menu-v2.png",
+      "sha256": "317a9d0bde81aeda5b28ce1c29108f239ad842b3a2dda4e5de98b57a5f7e6f47"
+    },
+    {
+      "path": "mod/Data-Granaderos/Faces/03.sti",
+      "sha256": "d4df964f84044142a3d4a68b5e05f5e37d4cd0afd74fdc9ac6cfe9d12d28f479"
+    },
+    {
+      "path": "mod/Data-Granaderos/Faces/BIGFACES/03.sti",
+      "sha256": "915c75ab0ff76669a75061e7aebe941fb61bc00a76e97207e92ae387a30b1288"
+    },
+    {
+      "path": "mod/Data-Granaderos/Faces/b03.sti",
+      "sha256": "ff6506c681d43ff8b0f79f92ce1eae874788b024d33b03edcd1a6b5bfdd30eca"
+    },
+    {
+      "path": "mod/Data-Granaderos/Loadscreens/MainMenuBackground.sti",
+      "sha256": "1465b97ca3d233429900ca995d1b0e00213c5e1dd11446d9e909decb6ed15c9b"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/AIMAvailability.xml",
+      "sha256": "346982e615d631a6e3e4653cd8a2e23a2523bb22b3f35d1f71f5583a494c106e"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/EnemyGunChoices.xml",
+      "sha256": "ecf6ff542d5b213844679878dd73782eed1f1dce7cd9cc375708875c5af6896e"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/EnemyItemChoices.xml",
+      "sha256": "0bf9a48dfe83a661a9d585eb3edbd7fdfa8668758d49a1614bcf07cc1820b2f7"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/GunChoices_Enemy_Admin.xml",
+      "sha256": "ecf6ff542d5b213844679878dd73782eed1f1dce7cd9cc375708875c5af6896e"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/GunChoices_Enemy_Elite.xml",
+      "sha256": "6a425d56c6ebe8e03e0c87e73664fd847e6c4ccd410a03c5a90949cf193cf35c"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/GunChoices_Enemy_Regular.xml",
+      "sha256": "ecf6ff542d5b213844679878dd73782eed1f1dce7cd9cc375708875c5af6896e"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/GunChoices_Militia_Elite.xml",
+      "sha256": "ecf6ff542d5b213844679878dd73782eed1f1dce7cd9cc375708875c5af6896e"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/GunChoices_Militia_Green.xml",
+      "sha256": "ecf6ff542d5b213844679878dd73782eed1f1dce7cd9cc375708875c5af6896e"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/GunChoices_Militia_Regular.xml",
+      "sha256": "ecf6ff542d5b213844679878dd73782eed1f1dce7cd9cc375708875c5af6896e"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/ItemChoices_Enemy_Admin.xml",
+      "sha256": "0bf9a48dfe83a661a9d585eb3edbd7fdfa8668758d49a1614bcf07cc1820b2f7"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/ItemChoices_Enemy_Elite.xml",
+      "sha256": "0bf9a48dfe83a661a9d585eb3edbd7fdfa8668758d49a1614bcf07cc1820b2f7"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/ItemChoices_Enemy_Regular.xml",
+      "sha256": "0bf9a48dfe83a661a9d585eb3edbd7fdfa8668758d49a1614bcf07cc1820b2f7"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/ItemChoices_Militia_Elite.xml",
+      "sha256": "0bf9a48dfe83a661a9d585eb3edbd7fdfa8668758d49a1614bcf07cc1820b2f7"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/ItemChoices_Militia_Green.xml",
+      "sha256": "0bf9a48dfe83a661a9d585eb3edbd7fdfa8668758d49a1614bcf07cc1820b2f7"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/ItemChoices_Militia_Regular.xml",
+      "sha256": "0bf9a48dfe83a661a9d585eb3edbd7fdfa8668758d49a1614bcf07cc1820b2f7"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Inventory/MercStartingGear.xml",
+      "sha256": "13adb1fe143918dd8de076d892e729cc2cbec762be393914ceec6d0d71ce44f5"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Items/AmmoStrings.xml",
+      "sha256": "e29f45cf79db381a0281558d4156c84634e0814f9a6d721cc9269384a64ba446"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Items/Explosives.xml",
+      "sha256": "e9097097e6dbde0263616a5a7fc37e4ab60708618e8ab410c522ed0b55b28dc9"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Items/Items.xml",
+      "sha256": "29161d4cf2fbd968086a2c5b53e581b88bf727ceba6d19ffc4203ed90b96fa97"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Items/Magazines.xml",
+      "sha256": "d3a258d630f25c1eebe71ec488bdd9c20fbcbad040aac9e48adf0220ae814f06"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Items/Weapons.xml",
+      "sha256": "140d7b9a852eebc0fe23fb3d424d3026c5f01ef4674016746b1c127ad6435783"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/Layout/LayoutMainMenu.xml",
+      "sha256": "e98c0f4b8ef00fcf43d71d9566a8bdd9ccc362e1036ed4d34c78b3e5fe711b8d"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/MercAvailability.xml",
+      "sha256": "cb7914b340587d8f431b3d71c848d7052f013d8af767dfa8575d08eecdf4fc92"
+    },
+    {
+      "path": "mod/Data-Granaderos/TableData/MercProfiles.xml",
+      "sha256": "ac8860126a344825ec87386652f702e24a2aed004b328dd0af6b727499ad0e0d"
+    },
+    {
+      "path": "tests/test_campaign.py",
+      "sha256": "3282baabceaaac6e44846dff9282d37f4ef57bded6f6f0de852fcb097bfe0bcc"
+    },
+    {
+      "path": "tests/test_sti.py",
+      "sha256": "184f7dba644f2fbd6c9c5cb570d706603edc6dcedc0c455da803aaf2d9f458a8"
+    },
+    {
+      "path": "tools/generate_campaign.py",
+      "sha256": "de02bf7fb59f2f59c1b47e54f7cd39dc0bc380e0b5a9a1278b8472f488017fbe"
+    },
+    {
+      "path": "tools/sti.py",
+      "sha256": "d202d7d883e2937f2769d053340ac4c1f83b461a11628d0a82d957961ad0291d"
+    }
+  ],
+  "engineSource": "primary checkout, clean pinned submodule ddb691318eb3dd0cdc6eab42139739b6d498c645"
+}

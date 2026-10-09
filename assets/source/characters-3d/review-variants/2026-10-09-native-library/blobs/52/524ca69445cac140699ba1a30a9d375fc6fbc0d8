@@ -1,0 +1,48 @@
+"""Scout-only surface-fitted hairline and temple locks; no face displacement."""
+import math
+import random
+from mathutils import Vector
+from anatomy_surface import surface_weights
+
+def add_scout_locks(ctx,scalp):
+    skin=ctx['skin'];rng=random.Random(30721);locks=[]
+    # Sparse soft tips interrupt the cap boundary. They are visible small
+    # bundles, not a dense set of subpixel hairs.
+    for x in(-.064,-.053,-.043,-.030,-.018,-.007,.007,.020,.034,.049,.063):
+        temple=max(0,min(1,(abs(x)-.035)/.046))
+        z=1.712-.034*temple*temple+.003*math.exp(-((x-.036)/.019)**2)-.0032*math.exp(-((x+.012)/.015)**2)
+        locks.append((x,z+rng.uniform(.004,.008),x+rng.uniform(-.005,.005),z-rng.uniform(.0008,.0025),rng.uniform(.0003,.0006),rng.uniform(-.0015,.0015)))
+    for sign in(-1,1):
+        # Roots begin inside the swept cap; only the small final ends lie on
+        # the temple skin. These are connected wisps, never pasted patches.
+        locks.append((sign*.061,1.719,sign*.071,1.679,.0010,sign*.004))
+        locks.append((sign*.074,1.718,sign*.078,1.673,.00065,sign*.002))
+    count=0
+    for number,(x0,z0,x1,z1,width,bend)in enumerate(locks):
+        coords=[];weights=[];polys=[];uv=[];tones=[];rows=11;columns=5
+        for row in range(rows):
+            t=row/(rows-1);x=x0*(1-t)+x1*t+bend*math.sin(math.pi*t);z=z0*(1-t)+z1*t
+            taper=(.78+.22*math.sin(math.pi*t))*(1-t)**.70+.016
+            for col in range(columns):
+                across=col/(columns-1)*2-1;probe=Vector((x+across*width*taper,-1,z))
+                hit,p,n,face=skin.ray_cast(probe,Vector((0,1,0)))
+                if not hit:break
+                skinpoint=p.copy();skinface=face
+                hair_hit,hp,hn,_=scalp.ray_cast(probe,Vector((0,1,0)))
+                if hair_hit and hp.y<p.y and(hp-p).length<.012:p,n=hp,hn
+                # Thin lenticular section, tapered flush at the end and edges.
+                rise=.00007+width*.30*max(0,1-across*across)*(1-t)**.55
+                coords.append(p+n*rise);weights.append(surface_weights(skin,skinpoint,skinface));uv.append((col/(columns-1),t))
+                variation=.72+.12*math.sin(number*2.17)+.14*max(0,1-across*across)
+                tones.append((variation,variation*.94,variation*.85,1))
+            else:continue
+            break
+        if len(coords)!=rows*columns:continue
+        for row in range(rows-1):
+            for col in range(columns-1):
+                i=row*columns+col;polys.append((i,i+1,i+columns+1,i+columns))
+        obj=ctx['mesh']('Scout_Hairline_Lock_'+str(number),coords,polys,scalp.data.materials[0],weights,[[uv[i]for i in f]for f in polys])
+        colors=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+        for entry,tone in zip(colors.data,tones):entry.color=tone
+        obj.data.color_attributes.active_color_index=0;obj.data.color_attributes.render_color_index=0;count+=1
+    print('SCOUT_HAIR_LOCKS',count,'sourceTriangles',count*80,flush=True)

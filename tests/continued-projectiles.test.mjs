@@ -85,7 +85,9 @@ test('a missed selected soldier excludes only that soldier and can strike a dist
 
 test('a known downstream bystander is warned and hidden same-ID bodies cannot affect previews or visible effects',()=>{
  const s=field();body(s);const before=structuredClone(s),risk=firearmBystanderRisk(s,s.units[0],s.units[1]);assert.equal(risk.scatter[0].id,'friend');assert.equal(risk.direct[0].id,'friend');assert.deepEqual(s,before);
- const hidden=field({}, {npcs:[{id:'e',name:'Secreto',x:9,y:3,hp:100}]});Object.assign(hidden.tiles.find(t=>t.x===8&&t.y===3),{type:'wall',material:'wood',blocked:true,blocksSight:true,obstacleHeight:.8});
+ // The civilian is behind a full-height wooden screen; the selected soldier
+ // remains in front. A low sill cannot conceal a standing person's head.
+ const hidden=field({}, {npcs:[{id:'e',name:'Secreto',x:9,y:3,hp:100}]});Object.assign(hidden.tiles.find(t=>t.x===8&&t.y===3),{type:'wall',material:'wood',blocked:true,blocksSight:true,obstacleHeight:2});
  const empty=structuredClone(hidden);empty.npcs=[];assert.equal(teamCanSee(hidden,'player',hidden.units[1]),true);assert.equal(teamCanSee(hidden,'player',hidden.npcs[0]),false);
  assert.equal(shotChance(hidden,hidden.units[0],hidden.units[1]),shotChance(empty,empty.units[0],empty.units[1]));assert.deepEqual(firearmFlightPreview(hidden,hidden.units[0],hidden.units[1]),firearmFlightPreview(empty,empty.units[0],empty.units[1]));
  assert.deepEqual(firearmBystanderRisk(hidden,hidden.units[0],hidden.units[1]),firearmBystanderRisk(empty,empty.units[0],empty.units[1]));

@@ -1,0 +1,102 @@
+{
+  "sourceFiles": [
+    {
+      "path": "assets/source/characters-3d/authoring/character.py",
+      "beforeSha256": "46a1e7d261a9c31b57a3cc970a853ef1446385a311ac1f535dc74d6396a9d56d",
+      "afterSha256": "bd923581a224393ed15b8e8573b632bd1677b5136a367e35a98e61efc912c09d",
+      "bytes": 55514,
+      "binary": false
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/build.py",
+      "beforeSha256": "f37af2da7ac938ecc4575c6a43c8dc625a9502fe35327d8f161c7234026968ae",
+      "afterSha256": "482a4dc8f4f90b88bcdc0707b7434b5f0baf1c7e06152172f0ec932f1102a080",
+      "bytes": 6012,
+      "binary": false
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated_skin.py",
+      "beforeSha256": null,
+      "afterSha256": "6a848cb58a5a09e7adf2503c127fae51e91823f22a84721c134cacc4070d0e9b",
+      "bytes": 4365,
+      "binary": false
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin.json",
+      "beforeSha256": null,
+      "afterSha256": "1605f6877e7ec890c8aaccdb0d073bee0df09a0e2f27b22a00b3c6399707b37a",
+      "bytes": 799,
+      "binary": false
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin-prompt.txt",
+      "beforeSha256": null,
+      "afterSha256": "485a240a59e2e0e604d974a4f6b4c37363d23b7186b4029b2296b1e40acba041",
+      "bytes": 1468,
+      "binary": false
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin-generation.json",
+      "beforeSha256": null,
+      "afterSha256": "41d8985eb161a11465fc5e97c7fa1d9c3968f6615699d7457398a63441c7996b",
+      "bytes": 564,
+      "binary": false
+    },
+    {
+      "path": "assets/source/characters-3d/authoring/generated/granadero-skin-colour.png",
+      "beforeSha256": null,
+      "afterSha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+      "bytes": 2032518,
+      "binary": true
+    },
+    {
+      "path": "game/skin-palette.js",
+      "beforeSha256": null,
+      "afterSha256": "6e86cbfcdbd6b104374c600b29dd8ad77b5c5a9bd7766d18bd0117cabf184363",
+      "bytes": 654,
+      "binary": false
+    },
+    {
+      "path": "web/lib/three/actor-runtime.ts",
+      "beforeSha256": "dbd9c6c0fe7dc5a776f418940a0598f71e216d2a7e4413df151a6376c551c20e",
+      "afterSha256": "0ecc202741a7a663ca3135d29a8ecbf7bc9dcf23afa6e353be63458cf7989205",
+      "bytes": 32318,
+      "binary": false
+    },
+    {
+      "path": "playgrounds/granadero-3d/src/main.js",
+      "beforeSha256": "5005c444a78ed24031664d32ed99e1d6b49ec033ece315f828fb0a23d2f8f94b",
+      "afterSha256": "04a50f1bf54ce4d4abf4ba71604068992da6bb66ed30faaa3bea57979d60d3f3",
+      "bytes": 25671,
+      "binary": false
+    },
+    {
+      "path": "tests/characters-skin-surfaces.test.mjs",
+      "beforeSha256": "c82d44d6b4616e82a0de3a1af4182db6eda3e7f3e16c1e14a20df677c0133e8c",
+      "afterSha256": "a22aad2811db11f82efdffac2256493c8196303a6a29872f9bc7e16b1d5db170",
+      "bytes": 6801,
+      "binary": false
+    },
+    {
+      "path": "tests/characters-generated-skin.test.mjs",
+      "beforeSha256": null,
+      "afterSha256": "e38c0877cf675a571556c9572900eb9e032015ea5160d5e485b43eb1c8947e18",
+      "bytes": 4892,
+      "binary": false
+    },
+    {
+      "path": "tests/three-actor-runtime.test.mjs",
+      "beforeSha256": "677461187ec4acb4dbf689d293c393fac9a6942ecee8c693f74301b97d619e3f",
+      "afterSha256": "b916a0c9e54408a1c4073df27550aabd4d6f53442a5c5e40d9ea95855ba85dca",
+      "bytes": 54753,
+      "binary": false
+    }
+  ],
+  "assetFiles": [
+    "granadero-lod0.glb",
+    "granadero-lod1.glb",
+    "granadero-lod2.glb",
+    "textures/040b6c27fc46ce2da454.png"
+  ],
+  "manifestScope": "Only the three appearances.granadero.lods records: url,triangles,bytes,drawCalls,sha256. Preserve current banks and every other metadata record."
+}

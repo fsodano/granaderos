@@ -1,0 +1,31 @@
+# V3 — slimmer sleeve and cloth weight rows
+
+Private study only. **Do not integrate this version.** It is slimmer than V2, but the bend still has visible construction defects.
+
+Open `compare-v3-iso.png`, `compare-v3-coat.png` and `compare-v3-sleeve.png`. They show the accepted body at left and V3 at right, for the same four times: idle 0.5 s, pistol aim 0 s, rifle loading 1.92 s, and forehand contact 0.36 s.
+
+## Changes
+
+- Continuous centreline and separate elliptical section axes replace V2's single-radius expansion.
+- Rest shape moves by at most 3.43 mm. Interior cloth weights transition by longitudinal sleeve rows; 779 source vertices have changed upper/lower-arm weights. The sewn boundaries remain fixed.
+- One elbow corrective uses rest-edge stretch constraints and weak bending constraints. Collision projection requires multi-ray body-volume agreement instead of a single nearest-normal sign.
+- Native body, skeleton and motion stay exact. Existing connected coat topology and source UVs stay unchanged. The regular coat reduction is rebuilt, so the final coat accessors/tessellation change.
+
+## Actual result
+
+Idle is slim and continuous. Pistol aim develops a sharp inner pinch and a long crease on the outer elbow. The outer surface is not smoothly stretched as intended. Loading is connected but the visible gain is small. The cut has an angular elbow transition.
+
+The padded volume is removed. Actual exported ellipse-span area proxies relative to baseline are −6.0% above the elbow, −24.5% at the elbow, −13.0% below it, and +5.4% near the forearm end. These are local proxies, not whole garment volume. The elbow now compresses too much instead of inflating.
+
+At the 110-degree bake, summed constrained-edge length changes by +2.29%, but the 95th percentile of local edge ratios is 1.211 and the largest absolute edge error is 8.98 mm. The constraint system has not produced a sound local cloth form. These limits remain visible; small global area/stretch figures do not override them.
+
+## Checks and preservation
+
+- Two existing Granadero coat/crossbelt tests pass without changed limits.
+- Exact local triangle-edge intersection tests show **zero sleeve intersections with actual rendered skin or visible weapons** in both arms at all four checked moments. No new skin opening is visible.
+- Full native-body proxy intersections remain. The left triangle-pair counts before→V3 are idle 29→43, pistol 175→198, loading 13→61, cut 110→273. Counts do not measure penetration depth. The model is not accepted as body-clear.
+- Native joint node transforms and inverse-bind matrices are exact. Decoded exposed-skin, head/eye, hat, boots and breeches attributes are exact. Other GLBs, textures and all animation curves are exact. Only private `granadero-lod0.glb` and its manifest record differ.
+- Triangles: 86,481→86,615. GLB: 5,345,112→5,419,912 bytes. No new material or draw call.
+- `coat_elbow_l` remains a private-render target. Current game and lab do not drive it. The required rule uses final posed elbow angle after animation/contact fitting; no shared driver was added.
+
+`receipt-v3.json` contains hashes, source/export measurements, crossing examples and render paths. `private-source-v3.patch` records the complete experiment. No shared source or assets were changed.

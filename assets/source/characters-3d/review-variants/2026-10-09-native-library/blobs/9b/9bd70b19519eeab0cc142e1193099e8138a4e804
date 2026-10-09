@@ -1,0 +1,11 @@
+exec(open('/tmp/granadero-worker-neckline-pilot/compare-coat.py').read().split("print('nodesEqual'")[0])
+from collections import defaultdict
+from PIL import Image
+for d,root in [(a,R/'baseline-models'),(b,Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters'))]:
+ print([Image.open(root/i['uri']).size for i in d['images'][:3]])
+def arr(d,b,i):
+ a=d['accessors'][i];v=d['bufferViews'][a['bufferView']];off=v.get('byteOffset',0)+a.get('byteOffset',0);return [struct.unpack_from('<ff',b,off+j*8)for j in range(a['count'])]
+groups=defaultdict(set)
+for old,new in zip(arr(a,x,p['attributes']['TEXCOORD_0']),arr(b,y,q['attributes']['TEXCOORD_0'])):
+ groups[tuple(int(v*4)for v in old)].add(tuple(round(v-u,7)for u,v in zip(old,new)))
+print(dict(groups))

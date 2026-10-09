@@ -6,6 +6,9 @@ import {actBattle,getReachable} from '../game/tactical.js';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {needsCollapseRecovery} from '../game/fatigue.js';
 import {tooTiredToMarch} from '../game/march-fatigue.js';
+import {previewStrategicRoute} from '../game/strategic-route.js';
+import {travelLegHours} from '../game/squad-travel.js';
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {fight} from './battery-field-driver.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
 import {contentFixtureCache} from './content-fixture-cache.mjs';
@@ -16,17 +19,26 @@ export function issuedBattery(content){
  let s=initialCampaign(8,d);for(const id of [110,114,136,141,120,131])s=order(s,{type:'recruitCivic',id,term:'week'});
  // Declared finite isolated battery stock, issued once by ordinary deployment.
  const money=s.resources.treasury;s=withStoredGear(s,'swivel');assert.equal(s.resources.treasury,money);
- // Wait through the first night before departure; the ordinary travel clock
- // then starts this real assault in daylight.
- s=order(s,{type:'wait',hours:6});s=order(s,{type:'travel',sector:'buenos_aires'});
+ // This declared artillery scenario engages at 08:00. Use the current real
+ // capital approach, staging and assault durations to choose its departure.
+ const capital=previewStrategicRoute(s,s.activeSquadId,'buenos_aires');assert.equal(capital.valid,true);
+ const stagingHours=2,departureWait=(8-capital.hours-stagingHours-travelLegHours('buenos_aires','san_nicolas')-s.hour%24+48)%24;
+ if(departureWait)s=advanceCampaignHours(s,departureWait);
+ s=completeTestTravel(s,{sector:'buenos_aires'});
  // Stage for two hours after the march. Recovery, light, casualties and the
  // victory below all follow ordinary orders; no combat result is fabricated.
- s=order(s,{type:'wait',hours:2});return order(s,{type:'attack',sector:'san_nicolas'});
+ s=advanceCampaignHours(s,stagingHours);s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.hour%24,8);return s;
 }
-export const wonBattery=contentFixtureCache(content=>{
- const s=issuedBattery(content),result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},null,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(result.battle.status,'victory');assert.ok(result.actions>0);
+const victoryWithReserve=reserveCharges=>contentFixtureCache(content=>{
+ const s=issuedBattery(content),result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},null,{scoutCostWeight:.01,avoidCivilians:true,reserveCharges});assert.equal(result.battle.status,'victory');assert.ok(result.actions>0);
+ assert.ok(result.battle.artillery[0].ammo+Number(result.battle.artillery[0].loaded)>=reserveCharges,'the declared tactic must retain its actual reserved charge');
  const p=saved(sync({campaign:s,battle:result.battle}));return saved({campaign:order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;
 });
+const reservedVictory=victoryWithReserve(1),fullConsumptionVictory=victoryWithReserve(0);
+export function wonBattery(content,{reserveCharges=1}={}){
+ assert.ok(reserveCharges===0||reserveCharges===1,'declare either one retained charge or unrestricted firing');
+ return (reserveCharges?reservedVictory:fullConsumptionVictory)(content);
+}
 export function fireStationed(p){
  const gun=p.battle.artillery[0];let approach;
  for(const u of p.battle.units.filter(u=>u.side==='player'&&!u.militia&&u.hp>=15&&!u.unconscious&&!u.routed)){

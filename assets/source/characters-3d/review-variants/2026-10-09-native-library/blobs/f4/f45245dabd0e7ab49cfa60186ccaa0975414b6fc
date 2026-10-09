@@ -1,0 +1,18 @@
+from pathlib import Path
+import shutil,json,hashlib
+REPO=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');TASK=Path('/tmp/granadero-generated-skin-palette-pilot/all-lod-review');ROOT=TASK/'source';AUTHOR=ROOT/'assets/source/characters-3d/authoring'
+shutil.copytree(REPO/'assets/source/characters-3d/authoring',AUTHOR,ignore=shutil.ignore_patterns('__pycache__','.build'))
+for folder in ['game','web/lib/three']:
+ shutil.copytree(REPO/folder,ROOT/folder)
+(ROOT/'web/node_modules').symlink_to(REPO/'web/node_modules',target_is_directory=True)
+(ROOT/'tests').mkdir()
+for n in ['character-bank-fixture.mjs','tactical-render-loader.mjs','characters-skin-surfaces.test.mjs','characters-eye-surfaces.test.mjs','three-actor-runtime.test.mjs']:
+ shutil.copy2(REPO/'tests'/n,ROOT/'tests'/n)
+(ROOT/'package.json').write_bytes((REPO/'package.json').read_bytes())
+textures=AUTHOR/'generated';textures.mkdir();src=REPO/'artifacts/character-anatomy-review/skin-texture-pilot'
+for a,b in [('generated-skin-v1.png','granadero-skin-colour.png'),('prompt-v1.txt','granadero-skin-prompt.txt'),('generation.json','granadero-skin-generation.json')]:shutil.copy2(src/a,textures/b)
+(ROOT/'playgrounds/granadero-3d/src').mkdir(parents=True)
+shutil.copy2(REPO/'playgrounds/granadero-3d/src/main.js',ROOT/'playgrounds/granadero-3d/src/main.js')
+metadata={'generated':True,'scope':'Granadero only; unchanged generated PNG bytes','sha256':hashlib.sha256((textures/'granadero-skin-colour.png').read_bytes()).hexdigest(),'prompt':'granadero-skin-prompt.txt','generation':'granadero-skin-generation.json','originalInput':'vendor/makehuman/young_lightskinned_male_diffuse.png','referenceLinearRgb':[.846873231509858,.4232676699860717,.2788942634768104],'referenceSampling':'Median linear-sRGB value at 228 original cheek UV samples; see private compensation.json','albedoUV':'UV1 has bounded lip-width and outer-brow registration; UV0 normal/roughness retained','neutralEyebrowBed':'Granadero source uses neutral COLOR_0 for its two fitted eyebrow beds; geometric brow hairs retained','rasterEdits':False}
+(textures/'granadero-skin.json').write_text(json.dumps(metadata,indent=2)+'\n')
+print(ROOT)

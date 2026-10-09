@@ -1,0 +1,24 @@
+--- /Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring/firearm_grips.py	2026-10-07 20:37:01
++++ /tmp/granadero-rifle-head-clearance/source/assets/source/characters-3d/authoring/firearm_grips.py	2026-10-08 02:29:27
+@@ -130,6 +130,8 @@
+                         'torsoPitch': -3.5738276,
+                         'supportX': 0.18,
+                         'supportRoll': -0.0}}}
++
++RIFLE_HEAD_CLEARANCE = {'male': {'crouched': {'neck_01': (0.9958630177525912, -0.053764533318282404, 0.04762735136323307, -0.05565842462640118), 'head': (0.9882136502840225, 0.06199427266716482, -0.08690137396260064, 0.10972074895938763)}, 'prone': {'neck_01': (0.9800599534424104, -0.18842985309994187, -0.05276673067230225, -0.03453042503867744), 'head': (0.9743657575754712, 0.196764914515433, -0.02302090416531509, 0.10660664543790932)}}, 'female': {'crouched': {'neck_01': (0.9994736800529526, -0.024264225766026815, 0.017322762226648063, -0.012787968494736034), 'head': (0.9984250578322421, 0.02990458309745659, -0.023618190570667722, 0.04117403158082656)}, 'prone': {'neck_01': (0.9964648055170402, -0.08301862191554878, -0.010685635755015892, 0.007184495086058065), 'head': (0.9916308574888963, 0.11578933181989845, -0.03728991284060794, 0.04324968800901814)}}}
+ 
+ # Fore-end circumference increases toward the breech. The support hand uses
+ # a separate bounded curl when a low firing posture moves its grip rearward.
+@@ -444,6 +446,12 @@
+     head=Quaternion(forward,math.radians(head_roll))@Quaternion(side,math.radians(.75))@turn
+     set_rotation(rig,'neck_01',neck@rig.data.bones['neck_01'].matrix_local.to_quaternion())
+     set_rotation(rig,'head',head@rig.data.bones['head'].matrix_local.to_quaternion())
++    # Native local rotations fitted against the actual hand and face skin.
++    # Gun, shoulder pocket, arms, and sight target retain their authored poses.
++    for name, quaternion in RIFLE_HEAD_CLEARANCE.get(ctx.get('gender'), {}).get(posture, {}).items():
++        bone=rig.pose.bones[name]
++        bone.rotation_quaternion=bone.rotation_quaternion@Quaternion(quaternion)
++    bpy.context.view_layer.update()
+     chest=rig.pose.bones['spine_03'];delta=chest.matrix.to_quaternion()@chest.bone.matrix_local.to_quaternion().inverted()
+     pocket=rig.pose.bones['upperarm_r'].head+delta@Vector((.055+(profile['pocketAcross'] if profile else 0),-.070,.050+(profile['pocketHeight'] if profile else 0)))
+     gun_rotation=rotation@Quaternion(Vector((1,0,0)),math.radians(profile['cant'] if profile else -20))

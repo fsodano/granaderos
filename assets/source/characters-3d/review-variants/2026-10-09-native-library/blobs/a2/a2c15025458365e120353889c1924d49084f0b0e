@@ -1,0 +1,29 @@
+{
+  "baseManifestSha256": "bb8fe5a0b13496cdf49d9b8787ed9af9179aa99a52b4148f77c78e26ab06c1a8",
+  "bodies": [
+    {
+      "file": "granadero-lod0.glb",
+      "old": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+      "new": "ae600a0416e00b81f1062971586571490959667ffcf31d542dcbd49a1494a9bf"
+    },
+    {
+      "file": "granadero-lod1.glb",
+      "old": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d",
+      "new": "e2873161ff1413c5481f9cfcb59354701e0cad21025c30f90339fed81b72e227"
+    },
+    {
+      "file": "royalist-lod0.glb",
+      "old": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853",
+      "new": "20d3e6a37cba688bc7344c63290efba61163c15e06f1000e096df7ef2f7a6a22"
+    },
+    {
+      "file": "royalist-lod1.glb",
+      "old": "84cf7f066a202fd495ad5ff915e872f4932e7e4863bd8e3b8af05fae688a22d5",
+      "new": "a95c668cc76951ded6fc1f241d08c3d222c163539c3ca5dff7687617c5843dea"
+    }
+  ],
+  "textures": [],
+  "manifestSha256": "a4bc0aeff528656bc38132366e0a8c7350140df88f0fe73de067aaa3bad4af32",
+  "otherManifestValuesExact": true,
+  "allOtherGlbsByteExact": true
+}

@@ -1,0 +1,13 @@
+✔ the partition covers every matching fixture file exactly once (83.58075ms)
+✔ missing, extra, fractional and out-of-range arguments fail instead of silently selecting tests (552.871333ms)
+✔ a matching non-file target fails coverage verification (81.068083ms)
+✔ a selected failing test propagates failure while another complete group succeeds (368.921166ms)
+✔ shards use an explicit worker count and report every file in the selected group (259.861958ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1437.785583

@@ -117,7 +117,8 @@ test('each configured travel duration and published weekly or monthly term is re
 test('an arrival at the departure point does not join a squad already marching elsewhere',()=>{
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});s=order(s,hire);
- secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});
+ // The rural waypoint keeps the real march active when the six-hour hire arrives.
+ secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires',waypoints:['cell-23-29']});
  assert.equal(s.location,'buenos_aires');assert.equal(s.operativeState[110].location,'retiro');assert.equal(s.squad.includes(110),false);
  assert.equal(s.contracts[110].started,6);assert.equal(saved(s).operativeState[110].location,'retiro');
 });

@@ -1,0 +1,17 @@
+# Private coat material study
+
+A visible but unfinished material direction. Do not publish directly.
+
+The navy coat alone uses a stronger existing weave normal, roughness 0.94, and a masked rough coloured sheen. The existing albedo is unchanged. Leather, brass and skin map pixels remain exact. All mesh binary data, native bones, UVs, weights, indices and morphs are byte-identical.
+
+The coat gains a softer fibre highlight. The close crop also shows a coarse ribbed pattern and stretched mapping on the side chest. It is more visible than the rejected ease trial, but it is not yet a natural finished wool material.
+
+See `compare-iso.png`, `compare-coat.png` and `receipt.json`. `material-pilot-source.patch` is scoped by Granadero preset and Navy_Wool material name, so it can be combined with a changed hat atlas layout. It contains no fixed tile coordinate. Do not copy this older private manifest or its banks over canonical data.
+
+The bundled Three loader parses the actual exported extension as MeshPhysicalMaterial. This is a CPU loader check, not a live WebGL performance claim. The added sheen atlas is 56,004 compressed bytes and about 21.3 MiB of RGBA8 GPU storage with mipmaps; no extra triangles or draw calls are added.
+
+## Final grouped refinement: rejected
+
+`compare-v2-iso.png` and `compare-v2-coat.png` show the final bounded trial. It uses much less sheen, finer and shallower weave relief, and no new noise. The dark navy is retained and the broad ribs disappear. The coat still looks smooth; the isometric benefit is too small to justify the added material cost. No further variant is running.
+
+The exact binary mesh buffer remains unchanged. All non-wool normal/roughness pixels remain exact; the sheen mask is black outside Navy_Wool. Actual bundled Three loader checks pass. `receipt-v2.json` is the final rejection record. `rejected-v2-source.patch` is diagnostic evidence only. Do not publish either pilot body or copy either private manifest/bank.

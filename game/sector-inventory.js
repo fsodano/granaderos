@@ -84,7 +84,7 @@ function actorAt(s,sectorId,op){
  const r=s.operativeState[op.id],snapshot=inventorySite(s,sectorId).snapshot;
  const old=snapshot?.units.find(u=>u.id===String(op.id)&&!u.departure&&u.hp>0);
  const unit=carriedActor(s,op);
- if(old&&r.residentSector===snapshot.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))return {...unit,...planningPoint(old,Boolean(snapshot.upperSurfaces?.length))};
+ if((r.residentPosition||old)&&r.residentSector===snapshot?.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))return {...unit,...planningPoint(r.residentPosition??old,Boolean(snapshot.upperSurfaces?.length))};
  const edge=r.arrival?.entryEdge??'S';
  const candidates=(snapshot?.tiles??[]).filter(t=>boundaryMatches(snapshot,t,edge)&&!t.blocked&&!propBlocksAt(snapshot,t.x,t.y));
  const anchor=r.arrival?.entryAnchor??{x:.5,y:.5};

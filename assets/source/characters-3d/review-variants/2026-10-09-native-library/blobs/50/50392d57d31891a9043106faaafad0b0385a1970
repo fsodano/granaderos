@@ -1,0 +1,27 @@
+{
+  "run": {
+    "files": 789,
+    "tests": 5488,
+    "passed": 5457,
+    "failed": 26,
+    "skipped": 5
+  },
+  "generatedAssetFailuresPendingFinalRetry": {
+    "characters-boot-support": 2,
+    "characters-climbing-support": 4,
+    "characters-rifle-loading": 6
+  },
+  "baselineFailures": {
+    "campaign": 10,
+    "currentMainClimbAndMountedPresentation": 4
+  },
+  "currentMainBaseline": "26bb0cb8",
+  "currentMainProof": "current-main-baseline.log",
+  "priorCampaignBaseline": "31a76ad798b5c6393f5ba7921bd93dc7216c10be",
+  "priorCampaignProof": [
+    "/tmp/compact-ap-baseline-coastal.log",
+    "/tmp/compact-ap-baseline-route.log",
+    "/tmp/compact-ap-baseline-recovery.log",
+    "/tmp/compact-ap-baseline-opening.log"
+  ]
+}

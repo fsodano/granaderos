@@ -1,0 +1,19 @@
+from pathlib import Path
+import struct,json,hashlib
+B=Path('/tmp/granadero-adult-pigment-pilot');old=Path('/tmp/granadero-eye-region-pilot/models/granadero-lod0.glb');new=B/'models/granadero-lod0.glb'
+TYPES={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16};FMTS={5121:'B',5123:'H',5125:'I',5126:'f'}
+def read(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];d=json.loads(b[20:20+n]);binary=b[28+n:]
+ def acc(i):
+  a=d['accessors'][i];v=d['bufferViews'][a['bufferView']];f='<'+FMTS[a['componentType']]*TYPES[a['type']];step=v.get('byteStride',struct.calcsize(f));offset=v.get('byteOffset',0)+a.get('byteOffset',0);return[struct.unpack_from(f,binary,offset+j*step)for j in range(a['count'])]
+ return d,acc,hashlib.sha256(b).hexdigest()
+a,aa,ah=read(old);b,bb,bh=read(new);assert a['materials']==b['materials'];assert a['nodes']==b['nodes'];assert a.get('images')==b.get('images');assert a.get('textures')==b.get('textures');rows=[]
+for om,nm in zip(a['meshes'],b['meshes']):
+ for op,np in zip(om['primitives'],nm['primitives']):
+  assert aa(op['indices'])==bb(np['indices']),(om['name'],'indices')
+  for key,idx in op['attributes'].items():
+   if key=='COLOR_0':continue
+   assert aa(idx)==bb(np['attributes'][key]),(om['name'],key)
+  oc=aa(op['attributes']['COLOR_0']);nc=bb(np['attributes']['COLOR_0']);ids=[i for i,(x,y)in enumerate(zip(oc,nc))if x!=y];points=aa(op['attributes']['POSITION']);box=[[min(points[j][k]for j in ids),max(points[j][k]for j in ids)]for k in range(3)]if ids else None
+  rows.append({'mesh':om['name'],'material':a['materials'][op['material']]['name'],'changedPigmentVertices':len(ids),'bounds':box})
+r={'beforeSha256':ah,'afterSha256':bh,'geometryNormalsUvsWeightsJointsExact':True,'indicesExact':True,'materialTextureBindingsAndSceneNodesExact':True,'primitives':rows};(B/'pigment-proof.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r,indent=2))

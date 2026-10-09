@@ -1,0 +1,31 @@
+{
+  "candidateSha256": "a15c8a823636e2578342ce9b0780fc63446d38f22d8da2b5e0d6b30229dd5c36",
+  "baselineSha256": "d829ebc984f38ecb5925a72343af38de19150dc343e1b718d8846afb705a0abd",
+  "geometryNormalsUV0WeightsRigMorphsExact": true,
+  "allOtherMaterialsExact": true,
+  "normalRoughnessTextureAndUVExact": true,
+  "neutralBrowBedVertices": 672,
+  "neutralBrowBounds": [
+    [
+      -0.050716597586870193,
+      0.050716694444417953
+    ],
+    [
+      1.6626092195510864,
+      1.669110894203186
+    ],
+    [
+      0.14242413640022278,
+      0.15735585987567902
+    ]
+  ],
+  "newUV1SkinPrimitives": 1,
+  "albedoPNGExactSha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+  "rasterEdits": false,
+  "skinReference": [
+    0.846873231509858,
+    0.4232676699860717,
+    0.2788942634768104
+  ],
+  "triangleAndDrawCountUnchanged": true
+}

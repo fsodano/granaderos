@@ -191,7 +191,8 @@ export function cellOccupant(units, point) {
 export function isMovementGround(state, unit, point) {
   if (!point) return false;
   const occupied = state.units.some(target => target.hp > 0 && !target.fled && !target.departure && sameCell(target, point) && (target.side === 'player' || state.units.some(observer => observer.side === 'player' && canSee(state, observer, target))));
-  return !occupied && !(unit && canSee(state, unit, point) && environmentTargetAt(state, point));
+  const environment=environmentTargetAt(state,point);
+  return !occupied && !(unit && environment && canSee(state, unit, environment));
 }
 export function isGroupGround(state, unit, point) { return groupSelectionMode(state) && isMovementGround(state, unit, point); }
 
@@ -403,7 +404,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name: target?.name || `${tacticalGridLabel(point.x,point.y)}`, actionLabel: label, attackLabel: label, pa: preview.cost, chance: preview.chance, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.cost)), reason: preview.reason, valid: preview.allowed};
   }
   const environment = !target && ['move', 'useItem'].includes(mode) ? environmentTargetAt(state, point) : null;
-  if (environment && canSee(state, unit, point) && (environment.kind!=='container'||environmentContainerVisible(state,unit,environment))) {
+  if (environment && canSee(state, unit, environment) && (environment.kind!=='container'||environmentContainerVisible(state,unit,environment))) {
     const summary = environmentTargetSummary(unit, environment), preview = environmentUsePreview(state, unit, environment);
     const coverNote=[preview.movePa?`Desplazamiento: ${formatAP(preview.movePa)} PA · uso: ${formatAP(preview.actionPa)} PA. El contacto puede detener la acción.`:null,environment.kind==='wall'&&preview.toolWear>0?`Desgaste de la barreta: hasta ${preview.toolWear} puntos. Abre un paso permanente.`:null].filter(Boolean).join(' ');
     return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:coverNote||undefined, reason: preview.reason, valid: preview.valid};
@@ -760,8 +761,9 @@ export function groundLootPiles(state,actors){
 export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   const found = new Map();
   if (unit) for (const point of state.tiles) {
-    if (distance(unit, point) > 1.5 || !canSee(state, unit, point)) continue;
+    if (distance(unit, point) > 1.5) continue;
     const raw = environmentTargetAt(state, point);
+    if(!raw||!canSee(state,unit,raw))continue;
     if(raw?.kind==='container'&&!environmentContainerVisible(state,unit,raw))continue;
     if (raw && (raw.kind !== 'wall' || tacticalLevel(raw) === 0 && sameSurface(unit, raw))) found.set(`${raw.kind}:${raw.id}`, raw);
   }
@@ -853,8 +855,8 @@ export function orderDescriptors(state, unit, ctx = {}) {
     stealth: Boolean(u.mounted) && !u.stealthMode,
     useItem: u.activeSlot==='item'?true:itemPreview ? !itemPreview.valid : u.activeSlot === 'supply' ? !(u[u.activeSupply] > 0) || (u.activeSupply === 'rations' || ctx.target) && !supplyPreview.allowed : u.activeSlot === 'tool' ? !heldTool(u) : u.activeSlot === 'medical' ? !medicalPreview.allowed : attack?.type === 'fire' && (!(u.loaded > 0) || Boolean(u.jammed)),
     fire: !firearm || !(u.loaded > 0) || Boolean(u.jammed),
-    melee: localMelee?!localMelee.valid:['medical','tool','supply','item'].includes(u.activeSlot),
-    charge: blade.id<=0||['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
+    melee: localMelee?!localMelee.valid:blade.usable===false||['medical','tool','supply','item'].includes(u.activeSlot),
+    charge: blade.usable===false||blade.id<=0||['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
     heal: !medicalPreview.allowed,
     loot: false,
     reload: !firearm || !loading?.pa || !loading.available || Boolean(u.jammed),

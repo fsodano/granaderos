@@ -1,3 +1,4 @@
+import {approachTestRemains} from './approach-test-remains.mjs';
 import {withStoredGear,withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -56,6 +57,7 @@ test('a corpse at the full-size sector boundary keeps its exact equipment throug
  assert.equal(body.hp,0);assert.equal(body.y,0);
  for(const key of ['weapon','blade','condition','loaded','ammo','inventory','weaponFittings','medkits'])assert.deepEqual(body[key],expected[key]);
  const rounds=body.ammo;
+ battle=approachTestRemains(battle,'4','3');
  battle=act(battle,{type:'loot',unitId:'4',targetId:'3',item:'inventory:ammo:musket_75',count:rounds});
  assert.equal(battle.units.find(u=>u.id==='3').ammo,0);
  campaign=order(campaign,report(campaign,battle));
@@ -77,6 +79,9 @@ test('corpse validation uses source or requested dimensions and still rejects co
  ]){const bad=structuredClone(campaign);edit(bad);assert.throws(()=>validateDeploymentReturnState(bad));}
  const requested=structuredClone(campaign);
  delete requested.sectorStates.retiro;
+ // The legacy dimensions-only fixture predates saved resident positions.
+ // Remove the linked cache with its deliberately omitted source scene.
+ for(const record of Object.values(requested.operativeState))if(record.residentSector==='retiro'&&record.residentScene==null)delete record.residentPosition;
  requested.pendingBattle={sector:'retiro',width:64,height:48};
  assert.doesNotThrow(()=>validateDeploymentReturnState(requested));
  requested.pendingBattle.width=20;

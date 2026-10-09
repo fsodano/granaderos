@@ -8,7 +8,7 @@ import {order,saved,visit,leave} from './local-contract-fixture.mjs';
 import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {actBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
-import {issuedBattery,wonBattery,exhaustStationed} from './stationed-artillery-fixture.mjs';
+import {issuedBattery,wonBattery,fireStationed,exhaustStationed} from './stationed-artillery-fixture.mjs';
 import {emptyBattery} from './artillery-supply-fixture.mjs';
 const gun=s=>s.sectorStates.san_nicolas.artillery[0],buy=s=>({type:'resupplyArtillery',sector:'san_nicolas',artilleryId:gun(s).id});
 const quote=s=>artillerySupplyQuote(s,'san_nicolas',gun(s).id,isSupplied(s,s.location));
@@ -28,7 +28,12 @@ test('repeated old refill callbacks cannot create reserves, take money or change
  const s=emptyBattery();for(let i=0;i<6;i++)assertTradeRejected(s,buy(s));assert.equal(gun(s).ammo,0);assert.equal(saved({campaign:s}).campaign.sectorStates.san_nicolas.artillery[0].ammo,0);
 });
 test('a lower authored supply cap preserves the initial bundle and quotes only the actual reserve left after real consumption without refilling',()=>{
- const d=defaultContentPackage();d.artillerySupply={...DEFAULT_ARTILLERY_SUPPLY,reserveLimit:2};const issued=issuedBattery(d);assert.equal(issued.pendingBattle.artillery[0].ammo,6);assert.equal(saved({campaign:issued,battle:enterSector(issued.pendingBattle)}).campaign.pendingBattle.artillery[0].ammo,6);let s=wonBattery(d);assert.equal(gun(s).ammo,1);assert.equal(quote(s).available,true);assert.equal(saved({campaign:s}).campaign.sectorStates.san_nicolas.artillery[0].ammo,1);
+ const d=defaultContentPackage();d.artillerySupply={...DEFAULT_ARTILLERY_SUPPLY,reserveLimit:2};const issued=issuedBattery(d);assert.equal(issued.pendingBattle.artillery[0].ammo,6);assert.equal(saved({campaign:issued,battle:enterSector(issued.pendingBattle)}).campaign.pendingBattle.artillery[0].ammo,6);let s=wonBattery(d);
+ const retained=structuredClone(gun(s));assert.ok(retained.ammo+Number(retained.loaded)<7,'the actual victory spends finite issued charges');assert.equal(quote(s).available,retained.ammo<2);assert.deepEqual(gun(saved({campaign:s}).campaign),retained);
+ // The real victory need not fire a fixed number of rounds. If it leaves a
+ // reserve above the authored cap, spend those charges through ordinary fire.
+ if(retained.ammo>=2){let p=visit(s);while(p.battle.artillery[0].ammo>=2)p=fireStationed(p);s=leave(p);}
+ assert.ok(gun(s).ammo>0&&gun(s).ammo<2);assert.equal(quote(s).available,true);assert.equal(gun(saved({campaign:s}).campaign).ammo,gun(s).ammo);
  s=leave(exhaustStationed(visit(s)));assert.equal(gun(s).ammo,0);assert.equal(gun(s).loaded,false);assert.equal(quote(s).available,true);assertTradeRejected(s,buy(s));assert.equal(gun(s).ammo,0);assert.equal(quote(s).available,true);
 });
 test('authored, zero-price and disabled legacy quotes cannot refill actual fired campaign pieces',()=>{

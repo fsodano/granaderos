@@ -1,0 +1,14 @@
+{
+  "male": {
+    "oldSha256": "302090b2205efd8c955a9b27216351183532b9027f4d973307a282fb022e5123",
+    "newSha256": "9caf54205c1e4c38e976ba1f46c23b985f6e04d460146c4c220cade4b646b8a0",
+    "changedFingerChannels": 90,
+    "otherChannelsExact": 53016
+  },
+  "female": {
+    "oldSha256": "e056daa7ab2a4a13a1f7ed545be3a0c028335f6ea337c225d40516d34bd7e198",
+    "newSha256": "5e4d62112e8e6693abb3989cc47c48634d7a9ac50777d5246463e3cebe34d174",
+    "changedFingerChannels": 90,
+    "otherChannelsExact": 53016
+  }
+}

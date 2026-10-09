@@ -1,0 +1,259 @@
+{
+  "bodies": [
+    {
+      "asset": "granadero-lod0.glb",
+      "beforeSha256": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+      "afterSha256": "ae600a0416e00b81f1062971586571490959667ffcf31d542dcbd49a1494a9bf",
+      "nativeNodesAndBindMatricesExact": true,
+      "materialDefinitionsAndImagesExact": true,
+      "parts": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "coatTriangleCount": 11354,
+          "coatPositionsWeightsUVColoursExact": true,
+          "morphTargets": {
+            "maxComponentDifference": {
+              "POSITION": 0,
+              "NORMAL": 1.1920928955078125e-07
+            },
+            "changedTriangleCornersAcrossTargets": {
+              "POSITION": 0,
+              "NORMAL": 204
+            },
+            "changedTriangles": 62,
+            "measuredTolerance": 1e-06
+          },
+          "coatShadingNormals": {
+            "exact": false,
+            "changedTriangleCorners": 234,
+            "maxComponentDifference": 0.9297560453414917
+          },
+          "collarGeometryChanged": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        }
+      ],
+      "beforeTriangles": 86481,
+      "afterTriangles": 86901,
+      "beforeBytes": 5345112,
+      "afterBytes": 5357584
+    },
+    {
+      "asset": "granadero-lod1.glb",
+      "beforeSha256": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d",
+      "afterSha256": "e2873161ff1413c5481f9cfcb59354701e0cad21025c30f90339fed81b72e227",
+      "nativeNodesAndBindMatricesExact": true,
+      "materialDefinitionsAndImagesExact": true,
+      "parts": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "coatTriangleCount": 11354,
+          "coatPositionsWeightsUVColoursExact": true,
+          "morphTargets": {
+            "maxComponentDifference": {
+              "POSITION": 0,
+              "NORMAL": 1.4901161193847656e-07
+            },
+            "changedTriangleCornersAcrossTargets": {
+              "POSITION": 0,
+              "NORMAL": 198
+            },
+            "changedTriangles": 61,
+            "measuredTolerance": 1e-06
+          },
+          "coatShadingNormals": {
+            "exact": false,
+            "changedTriangleCorners": 234,
+            "maxComponentDifference": 0.9325817227363586
+          },
+          "collarGeometryChanged": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        }
+      ],
+      "beforeTriangles": 61724,
+      "afterTriangles": 62144,
+      "beforeBytes": 4003508,
+      "afterBytes": 4015228
+    },
+    {
+      "asset": "royalist-lod0.glb",
+      "beforeSha256": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853",
+      "afterSha256": "20d3e6a37cba688bc7344c63290efba61163c15e06f1000e096df7ef2f7a6a22",
+      "nativeNodesAndBindMatricesExact": true,
+      "materialDefinitionsAndImagesExact": true,
+      "parts": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "coatTriangleCount": 11191,
+          "coatPositionsWeightsUVColoursExact": true,
+          "morphTargets": {
+            "maxComponentDifference": {
+              "POSITION": 0,
+              "NORMAL": 1.1920928955078125e-07
+            },
+            "changedTriangleCornersAcrossTargets": {
+              "POSITION": 0,
+              "NORMAL": 204
+            },
+            "changedTriangles": 62,
+            "measuredTolerance": 1e-06
+          },
+          "coatShadingNormals": {
+            "exact": false,
+            "changedTriangleCorners": 234,
+            "maxComponentDifference": 0.9297560453414917
+          },
+          "collarGeometryChanged": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        }
+      ],
+      "beforeTriangles": 86840,
+      "afterTriangles": 87260,
+      "beforeBytes": 5260804,
+      "afterBytes": 5273276
+    },
+    {
+      "asset": "royalist-lod1.glb",
+      "beforeSha256": "84cf7f066a202fd495ad5ff915e872f4932e7e4863bd8e3b8af05fae688a22d5",
+      "afterSha256": "a95c668cc76951ded6fc1f241d08c3d222c163539c3ca5dff7687617c5843dea",
+      "nativeNodesAndBindMatricesExact": true,
+      "materialDefinitionsAndImagesExact": true,
+      "parts": [
+        {
+          "mesh": "Fitted_Boot_l",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Shaped_Shako",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Breeches",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Tailored_Coat",
+          "coatTriangleCount": 11191,
+          "coatPositionsWeightsUVColoursExact": true,
+          "morphTargets": {
+            "maxComponentDifference": {
+              "POSITION": 0,
+              "NORMAL": 1.4901161193847656e-07
+            },
+            "changedTriangleCornersAcrossTargets": {
+              "POSITION": 0,
+              "NORMAL": 198
+            },
+            "changedTriangles": 61,
+            "measuredTolerance": 1e-06
+          },
+          "coatShadingNormals": {
+            "exact": false,
+            "changedTriangleCorners": 234,
+            "maxComponentDifference": 0.9325817227363586
+          },
+          "collarGeometryChanged": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        },
+        {
+          "mesh": "Exposed_Human_Skin",
+          "allAccessorsAndMorphsExact": true
+        }
+      ],
+      "beforeTriangles": 61455,
+      "afterTriangles": 61875,
+      "beforeBytes": 3902644,
+      "afterBytes": 3914364
+    }
+  ],
+  "allOtherGLBsExact": {
+    "female-animations.glb": true,
+    "woman-scout-lod1.glb": true,
+    "friar-lod2.glb": true,
+    "gaucho-lod1.glb": true,
+    "worker-lod1.glb": true,
+    "male-animations.glb": true,
+    "worker-lod0.glb": true,
+    "gaucho-lod0.glb": true,
+    "woman-scout-lod0.glb": true,
+    "woman-scout-lod2.glb": true,
+    "friar-lod1.glb": true,
+    "gaucho-lod2.glb": true,
+    "worker-lod2.glb": true,
+    "friar-lod0.glb": true,
+    "horse-lod0.glb": true,
+    "horse-lod1.glb": true,
+    "horse-lod2.glb": true,
+    "royalist-lod2.glb": true,
+    "female-garments.glb": true,
+    "woman-shawl-lod2.glb": true,
+    "surgeon-lod2.glb": true,
+    "surgeon-lod0.glb": true,
+    "woman-shawl-lod0.glb": true,
+    "woman-shawl-lod1.glb": true,
+    "surgeon-lod1.glb": true,
+    "male-garments.glb": true,
+    "granadero-lod2.glb": true,
+    "equipment.glb": true
+  },
+  "allExistingTexturePNGsExact": {}
+}

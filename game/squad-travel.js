@@ -1,7 +1,7 @@
 import {TRAVEL_BALANCE} from './travel-balance.js';
 import {entryFromSector} from './tactical-exits.js';
 import {CAMPAIGN_SECTORS} from './data.js';
-import {validWorldLocation,campaignPlace,adjacentCells,cellStepHours,legacyCellStepHours,cellTravelPlan,worldOwner,worldCell} from './world-cells.js';
+import {validWorldLocation,campaignPlace,adjacentCells,cellLegHours,legacyCellStepHours,previousCellStepHours,cellTravelPlan,cellWinterClosed,worldOwner,worldCell,sameCityCells,ROAD_LINKS} from './world-cells.js';
 import {tooTiredToMarch,advanceMarchFatigue} from './march-fatigue.js';
 import {mountForOperative} from './horses.js';
 import {recordStrategicArrival} from './deployment-return.js';
@@ -20,18 +20,25 @@ export function nextSquadTravelBoundarySeconds(s){
 }
 export const TRAVEL_REASONS={exhausted:'La escuadra necesita descansar.',assignment:'Hay combatientes durmiendo o con otra asignación.',blocked:'La ruta está ocupada.',winter:'La nieve cerró el paso.',transport:'El transporte no está disponible.',remounts:'Faltan pesos para la siguiente etapa de postas.',contact:'Hay un encuentro en este sector.',empty:'La escuadra no tiene combatientes.',unavailable:'Hay combatientes que no pueden marchar.',assault:'En el límite del sector. Puede atacar o esperar a otras escuadras.'};
 export const assaultNeighbor=(from,to)=>Boolean(sector(to)&&(sector(from)?.neighbors.includes(to)||validWorldLocation(from)&&adjacentCells(from,to)));
-export const travelLegHours=(from,to,mode='march')=>adjacentCells(from,to)?cellStepHours(to,mode):Math.ceil(({march:TRAVEL_BALANCE.roadWalkHours,horse:TRAVEL_BALANCE.horseHours,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?TRAVEL_BALANCE.mountainFactor:1));
+export const travelLegHours=(from,to,mode='march')=>{
+ if(adjacentCells(from,to))return cellLegHours(from,to,mode);
+ if(sameCityCells(from,to)){
+  const link=ROAD_LINKS.find(link=>link.from===from&&link.to===to||link.from===to&&link.to===from);
+  if(link)return (link.path.length-1)*TRAVEL_BALANCE.cityCellHours;
+ }
+ return Math.ceil(({march:TRAVEL_BALANCE.roadWalkHours,horse:TRAVEL_BALANCE.horseHours,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?TRAVEL_BALANCE.mountainFactor:1));
+};
 export function supportedTravelLegHours(from,to,mode='march'){
  const hours=new Set([travelLegHours(from,to,mode)]);
- if(adjacentCells(from,to))hours.add(legacyCellStepHours(to,mode));
+ if(adjacentCells(from,to)){hours.add(legacyCellStepHours(to,mode));hours.add(previousCellStepHours(to,mode));}
  if(!sector(from)&&adjacentCells(from,to)){
   if(mode==='march')hours.add(worldCell(to)?.biome==='mountain'?4:2);
- }else if(mode!=='horse')hours.add(Math.ceil(({march:12,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?1.5:1)));
+ }else hours.add(Math.ceil(({march:12,horse:6,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?1.5:1)));
  return [...hours];
 }
 export const squadHasHorses=(s,q)=>Boolean(q?.members.length&&q.members.every(id=>mountForOperative(s.horseState,id)?.canMount));
 function pathTo(s,from,to,mode){
- if(!sector(from)||!sector(to))return cellTravelPlan({...s,location:from},to,mode).path;
+ if(['march','horse'].includes(mode)||!sector(from)||!sector(to))return cellTravelPlan({location:from,hour:s.hour,sectors:s.sectors},to,mode).path;
  const queue=[[from]],seen=new Set([from]);
  while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of sector(last).neighbors)if(!seen.has(id)&&s.sectors[id].owner==='patriot'){seen.add(id);queue.push([...path,id]);}}
  return null;
@@ -44,8 +51,7 @@ function legIssue(s,q){
  if(q.members.some(id=>s.operativeState[id].asleep||s.operativeState[id].assignment!=='active'||s.militiaTraining?.some(t=>t.trainerId===id)))return 'assignment';
  if(s.enemyGroups?.some(g=>g.target===from&&['waiting','engaged','stationed'].includes(g.status)))return 'contact';
  if(s.pendingBattle?.sector===to||j.intent!=='attack'&&(worldOwner(s,to)==='royalist'||s.enemyGroups?.some(g=>g.target===to&&g.status==='stationed')))return 'blocked';
- const month=(2+Math.floor(s.hour/720))%12+1;
- if([from,to].some(id=>['uspallata','los_patos'].includes(id))&&month>=6&&month<=8)return 'winter';
+ if([from,to].some(id=>cellWinterClosed(s,id)))return 'winter';
  if(j.mode==='horse'&&!squadHasHorses(s,q))return 'transport';
  if(!['march','horse'].includes(j.mode)&&!s.routes[j.mode]||j.mode==='flotilla'&&s.blockade)return 'transport';
  if(j.mode==='posta'&&s.resources.treasury<10)return 'remounts';
@@ -92,8 +98,9 @@ export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=
   const covered=progressSeconds(j);
   if(!j.returning&&covered===0){const reason=legIssue(s,q);if(reason){j.status='paused';j.reason=reason;announce(q,TRAVEL_REASONS[reason]);continue;}if(j.mode==='posta')s.resources.treasury-=10;}
   const blocked=j.intent!=='attack'&&(worldOwner(s,j.path[1])==='royalist'||s.enemyGroups?.some(g=>g.target===j.path[1]&&g.status==='stationed'));
+  const winter=j.path.slice(0,2).some(id=>cellWinterClosed(s,id));
   // A changed front never moves soldiers instantly back to the departure sector.
-  if(!j.returning&&covered>0&&(blocked||s.pendingBattle?.sector===j.path[1])){j.returning=true;j.reason='blocked';announce(q,'el destino quedó cerrado; regresa por la etapa recorrida.');}
+  if(!j.returning&&covered>0&&(blocked||winter||s.pendingBattle?.sector===j.path[1])){j.returning=true;j.reason=winter?'winter':'blocked';announce(q,winter?'la nieve cerró el paso; regresa por la etapa recorrida.':'el destino quedó cerrado; regresa por la etapa recorrida.');}
   const traveled=Math.min(seconds,j.returning?covered:j.legHours*3600-covered),work=(j.pendingSeconds??0)+traveled,hours=Math.floor(work/3600);
   if(work%3600)j.pendingSeconds=work%3600;else delete j.pendingSeconds;
   for(let hour=0;hour<hours;hour++){

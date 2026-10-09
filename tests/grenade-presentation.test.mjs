@@ -1,3 +1,4 @@
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {formatAP} from '../game/action-points.js';
 import {assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
@@ -115,7 +116,8 @@ test('observed grenade explosions use the existing synthesized blast and muted o
 });
 function supplyState(){
  let state=initialCampaign(8);state.phase=3;for(const id of ['buenos_aires','cordoba','mendoza'])state.sectors[id].owner='patriot';
- for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'travel',sector:'mendoza'}]){state=dispatchCampaign(state,action);assert.equal(state.lastError,null);}
+ state=dispatchCampaign(state,{type:'recruitCivic',id:110,term:'week'});assert.equal(state.lastError,null);
+ state=completeTestTravel(state,{sector:'mendoza'});
  return state;
 }
 test('an old arsenal component action cannot issue grenades through the campaign reducer',()=>{

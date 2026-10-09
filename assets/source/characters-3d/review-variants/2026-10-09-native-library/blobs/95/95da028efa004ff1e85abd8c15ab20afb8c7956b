@@ -1,0 +1,17 @@
+from pathlib import Path
+import sys,json,hashlib
+B=Path('/tmp/granadero-adult-plane-pilot');A=B/'source/assets/source/characters-3d/authoring';sys.path.insert(0,str(A))
+import bpy,facial_structure,character
+old=facial_structure.define_adult_planes
+
+def digest(x):return hashlib.sha256(repr(x).encode()).hexdigest()
+def static(skin):return {'topology':digest([tuple(p.vertices)for p in skin.data.polygons]),'uv':digest([[tuple(d.uv)for d in l.data]for l in skin.data.uv_layers]),'weights':digest([[(g.group,g.weight)for g in v.groups]for v in skin.data.vertices])}
+def audit(skin,eye_z):
+ before=[v.co.copy()for v in skin.data.vertices];a=static(skin);old(skin,eye_z);assert a==static(skin)
+ changes=[{'index':i,'before':list(p),'after':list(skin.data.vertices[i].co),'distanceMm':1000*(skin.data.vertices[i].co-p).length}for i,p in enumerate(before)if (skin.data.vertices[i].co-p).length>1e-8]
+ protected={'eye': [i for i,p in enumerate(before)if abs(p.x)<=.049 and eye_z-.016<=p.z<=eye_z+.018], 'mouth':[i for i,p in enumerate(before)if abs(p.x)<=.032 and eye_z-.072<=p.z<=eye_z-.051], 'neck':[i for i,p in enumerate(before)if p.z<=eye_z-.092]}
+ for key,ids in protected.items():assert all((skin.data.vertices[i].co-before[i]).length<1e-8 for i in ids),key
+ report={'changedVertices':len(changes),'maximumAdditionalDisplacementMm':max(c['distanceMm']for c in changes),'protectedExact':{k:len(v)for k,v in protected.items()},'topologyUvsWeightsExact':True,'hashes':a,'changes':changes}
+ (B/'source-proof.json').write_text(json.dumps(report,indent=2)+'\n');print('SOURCE_PROOF',len(changes),report['maximumAdditionalDisplacementMm'],flush=True)
+facial_structure.define_adult_planes=audit
+ctx=character.create_character('granadero');skin=ctx['skin'];native=ctx['native_skin_points'];delta=max((v.co-p).length for v,p in zip(skin.data.vertices,native));p=B/'source-proof.json';d=json.loads(p.read_text());d['maximumTotalFacialDisplacementFromNativeMm']=delta*1000;p.write_text(json.dumps(d,indent=2)+'\n');print('TOTAL_FACE_MM',delta*1000,flush=True)

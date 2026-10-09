@@ -1,0 +1,768 @@
+{
+  "schema": 1,
+  "source": "af952d7f81809e5c150b3ae8f6225ed1eb6bb78c",
+  "checkedAt": "2026-10-09T20:48:24.214Z",
+  "method": "Compare runtime baseline values against the supplied specification tables; inspect a new campaign and funded elite quotes. This is not historical research or a campaign playthrough.",
+  "checks": [
+    {
+      "id": "roster-count",
+      "passed": true,
+      "expected": 13,
+      "actual": 13
+    },
+    {
+      "id": "roster-0",
+      "passed": true,
+      "expected": [
+        82,
+        90,
+        85,
+        78,
+        95,
+        88,
+        81,
+        35,
+        40,
+        30
+      ],
+      "actual": [
+        82,
+        90,
+        85,
+        78,
+        95,
+        88,
+        81,
+        35,
+        40,
+        30
+      ]
+    },
+    {
+      "id": "roster-1",
+      "passed": true,
+      "expected": [
+        88,
+        89,
+        86,
+        80,
+        91,
+        82,
+        77,
+        20,
+        45,
+        52
+      ],
+      "actual": [
+        88,
+        89,
+        86,
+        80,
+        91,
+        82,
+        77,
+        20,
+        45,
+        52
+      ]
+    },
+    {
+      "id": "roster-2",
+      "passed": true,
+      "expected": [
+        76,
+        65,
+        94,
+        84,
+        72,
+        96,
+        50,
+        99,
+        90,
+        45
+      ],
+      "actual": [
+        76,
+        65,
+        94,
+        84,
+        72,
+        96,
+        50,
+        99,
+        90,
+        45
+      ]
+    },
+    {
+      "id": "roster-3",
+      "passed": true,
+      "expected": [
+        96,
+        84,
+        80,
+        92,
+        60,
+        70,
+        68,
+        40,
+        25,
+        35
+      ],
+      "actual": [
+        96,
+        84,
+        80,
+        92,
+        60,
+        70,
+        68,
+        40,
+        25,
+        35
+      ]
+    },
+    {
+      "id": "roster-4",
+      "passed": true,
+      "expected": [
+        84,
+        92,
+        88,
+        74,
+        80,
+        78,
+        89,
+        30,
+        35,
+        20
+      ],
+      "actual": [
+        84,
+        92,
+        88,
+        74,
+        80,
+        78,
+        89,
+        30,
+        35,
+        20
+      ]
+    },
+    {
+      "id": "roster-5",
+      "passed": true,
+      "expected": [
+        85,
+        72,
+        80,
+        86,
+        92,
+        90,
+        75,
+        78,
+        85,
+        40
+      ],
+      "actual": [
+        85,
+        72,
+        80,
+        86,
+        92,
+        90,
+        75,
+        78,
+        85,
+        40
+      ]
+    },
+    {
+      "id": "roster-6",
+      "passed": true,
+      "expected": [
+        86,
+        85,
+        87,
+        85,
+        76,
+        84,
+        78,
+        60,
+        75,
+        30
+      ],
+      "actual": [
+        86,
+        85,
+        87,
+        85,
+        76,
+        84,
+        78,
+        60,
+        75,
+        30
+      ]
+    },
+    {
+      "id": "roster-7",
+      "passed": true,
+      "expected": [
+        85,
+        80,
+        91,
+        79,
+        78,
+        85,
+        84,
+        72,
+        80,
+        35
+      ],
+      "actual": [
+        85,
+        80,
+        91,
+        79,
+        78,
+        85,
+        84,
+        72,
+        80,
+        35
+      ]
+    },
+    {
+      "id": "roster-8",
+      "passed": true,
+      "expected": [
+        70,
+        88,
+        86,
+        55,
+        89,
+        94,
+        65,
+        45,
+        20,
+        65
+      ],
+      "actual": [
+        70,
+        88,
+        86,
+        55,
+        89,
+        94,
+        65,
+        45,
+        20,
+        65
+      ]
+    },
+    {
+      "id": "roster-9",
+      "passed": true,
+      "expected": [
+        92,
+        87,
+        76,
+        94,
+        86,
+        68,
+        55,
+        30,
+        20,
+        25
+      ],
+      "actual": [
+        92,
+        87,
+        76,
+        94,
+        86,
+        68,
+        55,
+        30,
+        20,
+        25
+      ]
+    },
+    {
+      "id": "roster-10",
+      "passed": true,
+      "expected": [
+        72,
+        70,
+        89,
+        62,
+        65,
+        95,
+        60,
+        68,
+        65,
+        98
+      ],
+      "actual": [
+        72,
+        70,
+        89,
+        62,
+        65,
+        95,
+        60,
+        68,
+        65,
+        98
+      ]
+    },
+    {
+      "id": "roster-11",
+      "passed": true,
+      "expected": [
+        78,
+        82,
+        88,
+        72,
+        82,
+        92,
+        91,
+        65,
+        70,
+        30
+      ],
+      "actual": [
+        78,
+        82,
+        88,
+        72,
+        82,
+        92,
+        91,
+        65,
+        70,
+        30
+      ]
+    },
+    {
+      "id": "roster-57",
+      "passed": true,
+      "expected": [
+        88,
+        88,
+        90,
+        84,
+        99,
+        98,
+        92,
+        65,
+        60,
+        50
+      ],
+      "actual": [
+        88,
+        88,
+        90,
+        84,
+        99,
+        98,
+        92,
+        65,
+        60,
+        50
+      ]
+    },
+    {
+      "id": "firearm-count",
+      "passed": true,
+      "expected": 9,
+      "actual": 9
+    },
+    {
+      "id": "firearm-1800",
+      "passed": true,
+      "expected": [
+        1,
+        58,
+        12,
+        6,
+        45,
+        18
+      ],
+      "actual": [
+        1,
+        58,
+        12,
+        6,
+        45,
+        18
+      ]
+    },
+    {
+      "id": "firearm-1801",
+      "passed": true,
+      "expected": [
+        1,
+        52,
+        11,
+        5,
+        42,
+        22
+      ],
+      "actual": [
+        1,
+        52,
+        11,
+        5,
+        42,
+        22
+      ]
+    },
+    {
+      "id": "firearm-1802",
+      "passed": true,
+      "expected": [
+        1,
+        64,
+        16,
+        10,
+        70,
+        45
+      ],
+      "actual": [
+        1,
+        64,
+        16,
+        10,
+        70,
+        45
+      ]
+    },
+    {
+      "id": "firearm-1803",
+      "passed": true,
+      "expected": [
+        1,
+        44,
+        9,
+        4,
+        38,
+        12
+      ],
+      "actual": [
+        1,
+        44,
+        9,
+        4,
+        38,
+        12
+      ]
+    },
+    {
+      "id": "firearm-1804",
+      "passed": true,
+      "expected": [
+        1,
+        48,
+        10,
+        4,
+        35,
+        10
+      ],
+      "actual": [
+        1,
+        48,
+        10,
+        4,
+        35,
+        10
+      ]
+    },
+    {
+      "id": "firearm-1805",
+      "passed": true,
+      "expected": [
+        1,
+        42,
+        7,
+        3,
+        32,
+        8
+      ],
+      "actual": [
+        1,
+        42,
+        7,
+        3,
+        32,
+        8
+      ]
+    },
+    {
+      "id": "firearm-1806",
+      "passed": true,
+      "expected": [
+        1,
+        38,
+        6,
+        2,
+        28,
+        12
+      ],
+      "actual": [
+        1,
+        38,
+        6,
+        2,
+        28,
+        12
+      ]
+    },
+    {
+      "id": "firearm-1807",
+      "passed": true,
+      "expected": [
+        1,
+        75,
+        12,
+        5,
+        40,
+        6
+      ],
+      "actual": [
+        1,
+        75,
+        12,
+        5,
+        40,
+        6
+      ]
+    },
+    {
+      "id": "firearm-1808",
+      "passed": true,
+      "expected": [
+        2,
+        40,
+        8,
+        3,
+        55,
+        9
+      ],
+      "actual": [
+        2,
+        40,
+        8,
+        3,
+        55,
+        9
+      ]
+    },
+    {
+      "id": "blade-count",
+      "passed": true,
+      "expected": 5,
+      "actual": 5
+    },
+    {
+      "id": "blade-1809",
+      "passed": true,
+      "expected": [
+        12,
+        46
+      ],
+      "actual": [
+        12,
+        46
+      ]
+    },
+    {
+      "id": "blade-1810",
+      "passed": true,
+      "expected": [
+        14,
+        42
+      ],
+      "actual": [
+        14,
+        42
+      ]
+    },
+    {
+      "id": "blade-1811",
+      "passed": true,
+      "expected": [
+        16,
+        50
+      ],
+      "actual": [
+        16,
+        50
+      ]
+    },
+    {
+      "id": "loose-bayonet",
+      "passed": true,
+      "expected": [
+        16,
+        24,
+        1
+      ],
+      "actual": [
+        16,
+        24,
+        1
+      ]
+    },
+    {
+      "id": "default-authored-loose-bayonet",
+      "passed": true,
+      "expected": [
+        16,
+        24,
+        1
+      ],
+      "actual": [
+        16,
+        24,
+        1
+      ]
+    },
+    {
+      "id": "blade-1812",
+      "passed": true,
+      "expected": [
+        18,
+        56
+      ],
+      "actual": [
+        18,
+        56
+      ]
+    },
+    {
+      "id": "blade-1813",
+      "passed": true,
+      "expected": [
+        8,
+        32
+      ],
+      "actual": [
+        8,
+        32
+      ]
+    },
+    {
+      "id": "artillery-count",
+      "passed": true,
+      "expected": 3,
+      "actual": 3
+    },
+    {
+      "id": "artillery-bronze4",
+      "passed": true,
+      "expected": [
+        2,
+        30,
+        60,
+        4,
+        80
+      ],
+      "actual": [
+        2,
+        30,
+        60,
+        4,
+        80
+      ]
+    },
+    {
+      "id": "artillery-field8",
+      "passed": true,
+      "expected": [
+        3,
+        40,
+        75,
+        6,
+        110
+      ],
+      "actual": [
+        3,
+        40,
+        75,
+        6,
+        110
+      ]
+    },
+    {
+      "id": "artillery-swivel",
+      "passed": true,
+      "expected": [
+        1,
+        20,
+        35,
+        3,
+        35
+      ],
+      "actual": [
+        1,
+        20,
+        35,
+        3,
+        35
+      ]
+    },
+    {
+      "id": "named-sector-count",
+      "passed": true,
+      "expected": 13,
+      "actual": 13
+    },
+    {
+      "id": "theater-count",
+      "passed": true,
+      "expected": 4,
+      "actual": 4
+    }
+  ],
+  "adaptations": [
+    {
+      "id": "blade-1811",
+      "reason": "The source describes the fixed bayonet. The later model also has a loose 24-damage, one-tile item. Its healthy fixed profile must retain 16 AP and 50 damage."
+    }
+  ],
+  "passed": 38,
+  "failed": 0,
+  "opening": {
+    "economyVersion": 2,
+    "resourceKeys": [
+      "treasury"
+    ],
+    "treasury": 3200,
+    "controlled": [
+      "retiro"
+    ],
+    "recruited": [],
+    "location": "retiro"
+  },
+  "eliteTerms": {
+    "day": {
+      "available": true,
+      "reason": null,
+      "price": 9600
+    },
+    "week": {
+      "available": true,
+      "reason": null,
+      "price": 67200
+    },
+    "month": {
+      "available": true,
+      "reason": null,
+      "price": 288000
+    }
+  },
+  "storyEditorModules": true
+}

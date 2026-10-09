@@ -1,0 +1,31 @@
+{
+  "commit": "9fe599d8ee025dbb82dc5ebb2852b0693f24e3aa",
+  "ownedPaths": [
+    "tests/fresh-coastal-fixture.mjs",
+    "tests/local-opening-care-fixture.mjs",
+    "tests/fresh-coastal-route.test.mjs",
+    "tests/paid-casualty-fixture.mjs"
+  ],
+  "createdFocused": {
+    "tests": 2,
+    "passed": 2,
+    "skipped": 0,
+    "seconds": 51.29,
+    "log": "/tmp/granaderos-fresh-coastal-created-final3.log"
+  },
+  "careCustodyRepairConsumers": {
+    "tests": 16,
+    "passed": 16,
+    "skipped": 0,
+    "seconds": 32.15,
+    "log": "/tmp/granaderos-coastal-custody-consumers-final2.log"
+  },
+  "nativeCorpseCustody": {
+    "tests": 1,
+    "passed": 1,
+    "skipped": 0,
+    "seconds": 16.6
+  },
+  "wholeRunLimit": "The earlier whole coastal run passed hired, local and corpse cases. It failed only the created new-test care premise; the subsequent created focused run resolved that premise. The final full gate uses the frozen committed files.",
+  "finiteTransactions": "Paid auxiliary physician112; actual six-hour arrival; carried/known finite dressings; actual BA depot journey and return; actual retained toolkit owner and separately witnessed paid120 corpse pickup. No corpse, death, outcome, stock or treasury was fabricated."
+}

@@ -1,0 +1,8 @@
+{
+  "head": "b0de3e459f45a2f43a8fed1eeeecb63cab38c804",
+  "manifestSha256": "b51efb390707b48b003b70e5d6d5d8eae3d6b4bf8abb6368dcccac0d35767f23",
+  "sourceFileCount": 1335,
+  "scope": "Committed contact classifier correction and review notes. No model or motion change. Agents work only on private candidates.",
+  "exitCode": 1,
+  "changedInputs": []
+}

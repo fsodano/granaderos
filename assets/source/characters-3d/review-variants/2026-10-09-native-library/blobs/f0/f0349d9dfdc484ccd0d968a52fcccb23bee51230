@@ -1,0 +1,98 @@
+{
+  "files": [
+    {
+      "file": "granadero-lod0.glb",
+      "sha256": "7976c43a44ae7ccacd01f35548a61fbb9b6c71a7325d385f0b998d3a1a23eab7",
+      "nativeNodeAndBindSame": true,
+      "allNonOutfitAccessorPayloadsIdenticalToOutwardBody": true,
+      "beforeTriangles": 87453,
+      "afterTriangles": 87197,
+      "changes": [
+        {
+          "mesh": "Tailored_Coat",
+          "material": "Apparel_Atlas",
+          "attributes": [
+            "POSITION",
+            "NORMAL",
+            "TEXCOORD_0",
+            "COLOR_0",
+            "JOINTS_0",
+            "WEIGHTS_0"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "granadero-lod1.glb",
+      "sha256": "b183069f9447523e04b2eeeb610559b1ae4127351cc87b494cc65dbfaf6e7759",
+      "nativeNodeAndBindSame": true,
+      "allNonOutfitAccessorPayloadsIdenticalToOutwardBody": true,
+      "beforeTriangles": 61782,
+      "afterTriangles": 61526,
+      "changes": [
+        {
+          "mesh": "Tailored_Coat",
+          "material": "Apparel_Atlas",
+          "attributes": [
+            "POSITION",
+            "NORMAL",
+            "TEXCOORD_0",
+            "COLOR_0",
+            "JOINTS_0",
+            "WEIGHTS_0"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "royalist-lod0.glb",
+      "sha256": "cea8d41124825ec6670dd34d40d3631152b0c656dec3e3daf39dd7766482a853",
+      "nativeNodeAndBindSame": true,
+      "allNonOutfitAccessorPayloadsIdenticalToOutwardBody": true,
+      "beforeTriangles": 87096,
+      "afterTriangles": 86840,
+      "changes": [
+        {
+          "mesh": "Tailored_Coat",
+          "material": "Apparel_Atlas",
+          "attributes": [
+            "POSITION",
+            "NORMAL",
+            "TEXCOORD_0",
+            "COLOR_0",
+            "JOINTS_0",
+            "WEIGHTS_0"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "royalist-lod1.glb",
+      "sha256": "84cf7f066a202fd495ad5ff915e872f4932e7e4863bd8e3b8af05fae688a22d5",
+      "nativeNodeAndBindSame": true,
+      "allNonOutfitAccessorPayloadsIdenticalToOutwardBody": true,
+      "beforeTriangles": 61711,
+      "afterTriangles": 61455,
+      "changes": [
+        {
+          "mesh": "Tailored_Coat",
+          "material": "Apparel_Atlas",
+          "attributes": [
+            "POSITION",
+            "NORMAL",
+            "TEXCOORD_0",
+            "COLOR_0",
+            "JOINTS_0",
+            "WEIGHTS_0"
+          ]
+        }
+      ]
+    }
+  ],
+  "untouchedFiles": {
+    "granadero-lod2.glb": true,
+    "royalist-lod2.glb": true,
+    "male-animations.glb": true,
+    "female-animations.glb": true
+  }
+}

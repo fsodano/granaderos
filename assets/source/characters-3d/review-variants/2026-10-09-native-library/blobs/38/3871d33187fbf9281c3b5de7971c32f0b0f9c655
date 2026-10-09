@@ -1,0 +1,27 @@
+import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
+import {writeFileSync} from 'node:fs';
+import {Vector3,Quaternion} from '../web/node_modules/three/build/three.module.js';
+const {ActorRuntime}=await import('../web/lib/three/actor-runtime.ts');
+const {publishedActor}=await import('./published-actor-fixture.mjs');
+const reports=[];
+const routes=[['rifle','idle','long-gun','1800'],['pistol','aim','short-gun','1805'],['sabre','idle','blade','1809'],['knife','idle','blade','1813'],['punch','strike','unarmed',null]];
+for(const appearance of ['granadero','woman-scout'])for(const [route,action,equipment,item]of routes){
+ const asset=await publishedActor(appearance,0),v={key:'unit:thumb-review',id:'thumb-review',kind:'unit',appearance,skin:'light',side:'player',tacticalLevel:0,position:[0,0,0],yaw:0,posture:'standing',mounted:false,action:'idle',idleAction:'idle',equipment:'unarmed',items:[],garments:{headwear:null,outfit:null,legwear:null},selected:false,bodyHeights:{head:1.6,torso:1.2,legs:.5,muzzle:1.3}},runtime=new ActorRuntime(asset,v);
+ runtime.tick(.1,0);runtime.tick(.1,100);
+ const nodes=['l','r'].flatMap(side=>[1,2,3].map(n=>runtime.model.getObjectByName(`thumb_0${n}_${side}`))),frames=[];
+ const sample=(phase,t)=>{runtime.root.updateMatrixWorld(true);frames.push({phase,t,bones:nodes.map(b=>({name:b.name,position:b.getWorldPosition(new Vector3()).toArray(),q:b.quaternion.toArray()}))});};
+ sample('rest',0);
+ const next={...v,action,idleAction:action==='strike'?'idle':action,equipment,items:item?[{id:item,reference:'primary',socket:'handRight'}]:[],...(action==='strike'?{cue:{id:'thumb-punch',action:'strike',startedAt:200,durationMs:1000}}:{})};
+ runtime.update(next,200);runtime.tick(0,200);sample('enter',0);
+ for(let i=1;i<=36;i++){runtime.tick(1/120,200+i*1000/120);sample('enter',i/120);}
+ runtime.update(v,600);runtime.tick(0,600);sample('exit',0);
+ for(let i=1;i<=36;i++){runtime.tick(1/120,600+i*1000/120);sample('exit',i/120);}
+ let maxQ=0,maxPosition=0;const zero=[];let peak;
+ for(let i=1;i<frames.length;i++)for(let b=0;b<nodes.length;b++){
+  const a=frames[i-1].bones[b],c=frames[i].bones[b],q=new Quaternion(...a.q).normalize().angleTo(new Quaternion(...c.q).normalize())*180/Math.PI,d=new Vector3(...a.position).distanceTo(new Vector3(...c.position));
+  if(frames[i].t===0)zero.push({phase:frames[i].phase,bone:c.name,deg:q,metres:d});
+  else if(q>maxQ){maxQ=q;peak={phase:frames[i].phase,t:frames[i].t,bone:c.name};}maxPosition=Math.max(maxPosition,d);
+ }
+ reports.push({appearance,route,maximumJointDegreesPer120HzFrame:maxQ,peak,maximumJointPositionStepM:maxPosition,zeroDelta:zero});runtime.dispose();
+}
+writeFileSync(process.env.THUMB_TRANSITION_REPORT,JSON.stringify(reports,null,2));console.log(reports.map(r=>({appearance:r.appearance,route:r.route,maxQ:r.maximumJointDegreesPer120HzFrame,maxM:r.maximumJointPositionStepM,zeroQ:Math.max(...r.zeroDelta.map(z=>z.deg)),zeroM:Math.max(...r.zeroDelta.map(z=>z.metres))})));

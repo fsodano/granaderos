@@ -1,0 +1,84 @@
+{
+  "scope": "Granadero only: replace three LOD records and listed asset files; do not copy the private manifest or animation banks",
+  "baselineManifest": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+  "canonicalAtReceipt": "7375f601d52d703dc3b36c94127d6b4878df72fff477bdec8d1c71103eb43e20",
+  "appearance": "granadero",
+  "lods": [
+    {
+      "lod": 0,
+      "url": "/models/characters/granadero-lod0.glb",
+      "triangles": 86481,
+      "bytes": 5345112,
+      "drawCalls": 6,
+      "sha256": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550"
+    },
+    {
+      "lod": 1,
+      "url": "/models/characters/granadero-lod1.glb",
+      "triangles": 61724,
+      "bytes": 4003508,
+      "drawCalls": 6,
+      "sha256": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d"
+    },
+    {
+      "lod": 2,
+      "url": "/models/characters/granadero-lod2.glb",
+      "triangles": 18734,
+      "bytes": 1203556,
+      "drawCalls": 6,
+      "sha256": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5"
+    }
+  ],
+  "files": [
+    {
+      "path": "granadero-lod0.glb",
+      "sha256": "9abd79099e863f8f2581b1f34118255375da98d496a3ff33c3d12413d6796550",
+      "bytes": 5345112,
+      "beforeSha256": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2"
+    },
+    {
+      "path": "granadero-lod1.glb",
+      "sha256": "58bb52b8be77895293084b0299d090fe178d90543e24f30fbe33a0fb6c02e07d",
+      "bytes": 4003508,
+      "beforeSha256": "a50f3d2a0de9368a01b62d9724f906caf8265dfca45c3152cf7ae2693c5a64f9"
+    },
+    {
+      "path": "granadero-lod2.glb",
+      "sha256": "f2e8c6d8676e52bb852d1590db1340e75916358297345f3f4f946cc8d5c2d4c5",
+      "bytes": 1203556,
+      "beforeSha256": "b373ef830906ebbb2d8861f1ff758f931b8f10b863e713e817a0abbe01cc8b03"
+    },
+    {
+      "path": "textures/18bd9589742c675e9df5.png",
+      "sha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5",
+      "bytes": 700912
+    },
+    {
+      "path": "textures/3ba0430ec0e2e7158fa7.png",
+      "sha256": "3ba0430ec0e2e7158fa7c82e3cac15e1bd42a8dfbf6bcc9994f800efaa4ee9cb",
+      "bytes": 599678
+    },
+    {
+      "path": "textures/3bb81102c0b19c0f3604.png",
+      "sha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78",
+      "bytes": 650237
+    },
+    {
+      "path": "textures/ac9a975213b8d91f675a.png",
+      "sha256": "ac9a975213b8d91f675a42d12df74b8f57101775e337c9d3aaf619907b69e8da",
+      "bytes": 630030
+    },
+    {
+      "path": "textures/c74d1bdaf5f3ed21a420.png",
+      "sha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835",
+      "bytes": 991210
+    },
+    {
+      "path": "textures/db0dd096ce52f78a260d.png",
+      "sha256": "db0dd096ce52f78a260d6d545733e52a07e9abfc85b44e39bc1061a132f1cdfe",
+      "bytes": 964855
+    }
+  ],
+  "preservedOtherAppearanceRecords": true,
+  "preservedAllNonAppearanceManifestFieldsExceptBuildProvenance": true
+}

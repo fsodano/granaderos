@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-09",
+  "sourceCommit": "cfbdf4fc3a1bcabb779871e5e4edca7fb4162c01",
+  "productionSourceBefore": "8476681dc25a",
+  "productionSourceAfter": "8476681dc25a",
+  "node": "25.9.0",
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "tests/low-morale-renewal.test.mjs",
+    "tests/morale-renewal-integration.test.mjs",
+    "tests/service-relationships.test.mjs",
+    "tests/service-objections.test.mjs",
+    "tests/service-objections-context.test.mjs",
+    "tests/equipment-repair.test.mjs",
+    "tests/equipment-repair-render.test.mjs",
+    "tests/outfit-equipment.test.mjs"
+  ],
+  "testFiles": [
+    "tests/low-morale-renewal.test.mjs",
+    "tests/morale-renewal-integration.test.mjs",
+    "tests/service-relationships.test.mjs",
+    "tests/service-objections.test.mjs",
+    "tests/service-objections-context.test.mjs",
+    "tests/equipment-repair.test.mjs",
+    "tests/equipment-repair-render.test.mjs",
+    "tests/outfit-equipment.test.mjs"
+  ],
+  "total": 61,
+  "passed": 61,
+  "failed": 0,
+  "skipped": 0,
+  "durationMs": 32555.374,
+  "output": "docs/evidence/rule-reconciliation-2026-10-09/tests.txt",
+  "outputSha256": "b8cdf373d9044bf972b20d096f451086a9f2cbc77be569bedf7b5a8c0a285359",
+  "scope": "Bounded morale-renewal, conduct, relationship and carried-equipment repair checks. No full campaign, full parity, release, browser or performance acceptance."
+}

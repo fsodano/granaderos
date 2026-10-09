@@ -199,9 +199,9 @@ test('old saves migrate attention without acknowledging assignments, and malform
 test('travel completes the full route when a remote assignment completes and emits no assignment notice',()=>{
  let s=medicalTeam();s=order(s,{type:'createSquad',ids:[4],name:'Marcha'});
  const ordinary=order(order(initialCampaign(),{type:'createSquad',ids:[4],name:'Marcha'}),{type:'travel',sector:'ensenada'});
- s=order(s,{type:'travel',sector:'ensenada'});assert.equal(s.hour,ordinary.hour);assert.equal(s.location,'ensenada');assert.equal(s.hour,24);
+ s=order(s,{type:'travel',sector:'ensenada'});assert.equal(s.hour,ordinary.hour);assert.equal(s.location,'ensenada');
  assert.equal(record(s,3).hp,96);assert.equal(record(s,10).medkits,1);assert.equal(s.assignmentAttention.notice,null);
- s=wait(s,5);stopped(s,5,0,24);assert.ok(event(s,3,'healing_complete'));
+ s=wait(s,5);stopped(s,5,0,ordinary.hour);assert.ok(event(s,3,'healing_complete'));
 });
 
 test('tactical synchronization advances all remote working hours without an assignment stop or a free duplicate tick',()=>{

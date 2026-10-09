@@ -1,0 +1,27 @@
+from pathlib import Path
+import json,hashlib,difflib
+from PIL import Image,ImageDraw
+b=Path('/tmp/granadero-coat-sleeve-pilot');plans=json.loads((b/'plans.json').read_text())
+for view in ['iso','coat','sleeve']:
+ canvas=Image.new('RGB',(1400,4*748),(245,245,242));draw=ImageDraw.Draw(canvas)
+ for row,(clip,time) in enumerate(plans):
+  for col,kind in enumerate(['before','after-v3']):
+   suffix=''if view=='iso'else'.'+view;path=b/kind/clip/'granadero'/(clip+'.sample-1'+suffix+'.png')
+   canvas.paste(Image.open(path).convert('RGB'),(700*col,748*row+48));draw.text((700*col+16,748*row+8),('Current accepted'if col==0 else'V3: elliptical sleeve + cloth rows')+' | '+clip+' | '+str(time)+'s',fill=(20,20,20))
+ canvas.save(b/('compare-v3-'+view+'.png'))
+source=b/'source-v3/assets/source/characters-3d/authoring';patch=[]
+for name in ['character.py','build.py','native_sleeve_pilot.py']:
+ p=b/'source-before'/name;old=p.read_text().splitlines(True)if p.exists()else[];new=(source/name).read_text().splitlines(True);path='assets/source/characters-3d/authoring/'+name;patch.extend(difflib.unified_diff(old,new,fromfile='a/'+path if old else'/dev/null',tofile='b/'+path))
+(b/'private-source-v3.patch').write_text(''.join(patch))
+frames=[]
+for clip,time in plans:
+ a=json.loads((b/'before'/clip/'index.json').read_text());c=json.loads((b/'after-v3'/clip/'index.json').read_text());old=a['frames'][0];new=c['frames'][0];assert old['jointsBlenderZUp']==new['jointsBlenderZUp']
+ frames.append({'clip':clip,'timeSeconds':time,'jointWorldPositionsExact':True,'elbow':new['elbowCorrectives']['l'],'before':old['sleeveClearanceDiagnostic'],'after':new['sleeveClearanceDiagnostic'],'files':[str(b/'after-v3'/clip/f['file'])for f in c['frames']]})
+ assert all(new['sleeveClearanceDiagnostic'][side]['actualSkinEquipmentCrossingPairs']==0 for side in ('l','r'))
+changes=[]
+for p in (b/'before-models').rglob('*'):
+ if not p.is_file():continue
+ q=b/'models-v3'/p.relative_to(b/'before-models')
+ if not q.exists()or hashlib.sha256(q.read_bytes()).digest()!=hashlib.sha256(p.read_bytes()).digest():changes.append(str(p.relative_to(b/'before-models')))
+r={'status':'PRIVATE; not ready for integration; visual compression and hidden-body crossing defects remain','baselineManifestSha256':hashlib.sha256((b/'before-models/manifest.json').read_bytes()).hexdigest(),'body':json.loads((b/'preservation-models-v3.json').read_text()),'changedLibraryFiles':changes,'envelope':json.loads((b/'envelope-proof-v3.json').read_text()),'corrective':json.loads((b/'corrective-proof-v3.json').read_text()),'exportedSectionComparison':json.loads((b/'section-diagnosis-v3.json').read_text()),'frames':frames,'existingGates':{'pass':2,'fail':0,'log':str(b/'contact-gates-v3.log')},'visualFindings':['Idle sleeve is slimmer and has no new seam or cuff gap.','Pistol aim has a sharp inner pinch and an excessive longitudinal crease on the outer elbow/forearm. It does not meet the smooth stretched outer-elbow goal.','Loading remains connected but offers only a small visible improvement.','Forehand cut has an angular elbow transition.'], 'limits':['Four moments, one body/LOD only; no full-cycle clearance claim.','Exact segment/triangle crossings are against a full native body proxy, mostly omitted under the production clothes. More local crossings remain in V3; no claim of complete body clearance.','Current production/lab code does not drive coat_elbow_l. The private actual-export renderer drives it from final native joint angle.','Rest-edge constraints reduce global stretch but do not converge to small local error everywhere: read recorded95th-percentile ratio and maximum absolute error.'], 'sourceSha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in [source/'character.py',source/'build.py',source/'native_sleeve_pilot.py']},'renderHelperSha256':hashlib.sha256((b/'render-review.py').read_bytes()).hexdigest()}
+(b/'receipt-v3.json').write_text(json.dumps(r,indent=2)+'\n');print(r['status']);print(r['body']['bodySha256'])

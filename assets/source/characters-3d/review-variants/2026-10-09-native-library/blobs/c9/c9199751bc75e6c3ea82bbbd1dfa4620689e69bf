@@ -1,0 +1,31 @@
+import {register} from 'node:module';register('file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/tactical-render-loader.mjs',import.meta.url);
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve,sep} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import sharp from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/sharp/lib/index.js';
+import {AnimationMixer,LoopOnce,Ray,Triangle,Vector3,Box3} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+import {clone} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/examples/jsm/utils/SkeletonUtils.js';
+import {publishedActor} from 'file:///Users/fsodano/.codex/worktrees/human-character-library/granaderos/tests/published-actor-fixture.mjs';
+const preset=process.env.COLLAR_PRESET||'granadero',lod=Number(process.env.COLLAR_LOD||0);
+const directory=pathToFileURL(resolve(process.env.GRANADEROS_CHARACTER_LIBRARY)+sep),asset=await publishedActor(preset,lod),model=clone(asset.body.scene),outfit=model.getObjectByName('Human_outfit_LOD'+lod);
+let skin;model.traverse(o=>{if(o.isSkinnedMesh&&o.material.name==='Skin')skin=o});
+const bytes=readFileSync(new URL(preset+'-lod'+lod+'.glb',directory)),doc=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12))),mat=doc.materials.find(m=>m.name.startsWith('Apparel_Atlas')),uri=doc.images[doc.textures[mat.pbrMetallicRoughness.baseColorTexture.index].source].uri,{data,info}=await sharp(new URL(uri,directory).pathname).raw().toBuffer({resolveWithObject:true});
+function selected(mesh,cloth){
+ const a=mesh.geometry.attributes,ids=mesh.geometry.index,out=[];
+ for(let k=0;k<ids.count;k+=3){const ii=[ids.getX(k),ids.getX(k+1),ids.getX(k+2)],pp=ii.map(i=>new Vector3().fromBufferAttribute(a.position,i));
+  if(!pp.every(p=>p.y>1.485&&p.y<1.570&&Math.abs(p.x)<.14&&Math.abs(p.z)<.15))continue;
+  if(cloth){const i=ii[0],x=Math.min(info.width-1,Math.max(0,Math.floor(a.uv.getX(i)*info.width))),y=Math.min(info.height-1,Math.max(0,Math.floor(a.uv.getY(i)*info.height))),n=(y*info.width+x)*info.channels;if(!(data[n]>data[n+1]*1.7&&data[n+1]<90))continue;}
+  out.push(ii);
+ }return out;
+}
+const faces={skin:selected(skin,false),collar:selected(outfit,true)},mixer=new AnimationMixer(model),frames=[];
+function edgeHit(a,b){for(const[p,q]of[[a.a,a.b],[a.b,a.c],[a.c,a.a]]){const d=q.clone().sub(p),length=d.length();if(length<1e-8)continue;const hit=new Ray(p.clone(),d.divideScalar(length)).intersectTriangle(b.a,b.b,b.c,false,new Vector3());if(hit){const t=hit.distanceTo(p);if(t>1e-7&&t<length-1e-7)return hit.toArray();}}return null;}
+function posed(mesh,faces){mesh.skeleton.update();return faces.map(ids=>{const pp=ids.map(i=>mesh.getVertexPosition(i,new Vector3()).applyMatrix4(mesh.matrixWorld));return {ids,triangle:new Triangle(...pp),box:new Box3().setFromPoints(pp)}});}
+for(const[name,time]of[['stand.idle.unarmed',.5],['stand.aim.short-gun',0],['stand.aim.long-gun',0],['stand.reload.long-gun.1800',1.92]]){
+ mixer.stopAllAction();const clip=asset.animation.animations.find(c=>c.name===name),action=mixer.clipAction(clip);action.setLoop(LoopOnce,1);action.clampWhenFinished=true;action.play();mixer.setTime(time);model.updateMatrixWorld(true);
+ const ss=posed(skin,faces.skin),cc=posed(outfit,faces.collar),hits=[];
+ for(const c of cc)for(const s of ss){if(!c.box.intersectsBox(s.box))continue;const hit=edgeHit(c.triangle,s.triangle)||edgeHit(s.triangle,c.triangle);if(hit)hits.push({skin:s.ids,collar:c.ids,point:hit,restY:c.ids.map(i=>outfit.geometry.attributes.position.getY(i))});}
+ frames.push({name,time,triangleCrossings:hits.length,hits});
+}
+const result={method:'Actual skinned triangle edge intersections; no open-surface sign classification',faces:{skin:faces.skin.length,collar:faces.collar.length},frames};console.log(JSON.stringify(result));
+if(process.argv[2])writeFileSync(process.argv[2],JSON.stringify(result,null,2));

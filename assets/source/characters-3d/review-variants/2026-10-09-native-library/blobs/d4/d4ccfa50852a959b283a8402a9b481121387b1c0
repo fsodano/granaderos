@@ -1,0 +1,21 @@
+from pathlib import Path
+import re,json
+r=Path('/tmp/granadero-collar-skin-checkpoint');previous=Path('/tmp/granadero-hair-hand-checkpoint')
+def parse(path):
+ s=path.read_text();counts={k:int(re.search(r'^ℹ '+k+r' (\d+)\s*$',s,re.M).group(1)) for k in ['tests','pass','fail','cancelled','skipped','todo']}
+ tail=s.split('✖ failing tests:',1)[1] if '✖ failing tests:'in s else ''
+ entries=[]
+ for match in re.finditer(r'^test at (.+)\n✖ (.+) \([\d.]+ms\)\n([\s\S]*?)(?=\n\ntest at |\nSlowest test files:|\Z)',tail,re.M):
+  location,name,error=match.groups();entries.append({'location':location,'name':name,'error':error.strip()})
+ assert len(entries)==counts['fail'],(path,len(entries),counts)
+ return s,counts,entries
+old,oldcounts,oldfail=parse(previous/'quick.log');s,counts,fail=parse(r/'quick.log')
+prior=json.loads((previous/'failure-comparison.json').read_text());assert sorted(x['name']for x in oldfail)==sorted(x['name']for x in prior['repeatedFailures']+prior['newFailures'])
+a={x['name']:x for x in oldfail};b={x['name']:x for x in fail}
+def payload(error):return '\n'.join(line.rstrip()for line in error.splitlines()if not re.match(r'^\s+at ',line))
+repeated=[{**b[name],'assertionPayloadMatchesPrevious':payload(b[name]['error'])==payload(a[name]['error'])}for name in b if name in a]
+changed=[entry for entry in repeated if not entry['assertionPayloadMatchesPrevious']]
+run=json.loads((r/'run.json').read_text());assert 'exitCode'in run,'Run not finished'
+report={**run,'counts':counts,'previousCounts':oldcounts,'selectedFiles':int(re.search(r'^QUICK suite: (\d+)/',s,re.M).group(1)),'completed':re.search(r'^Completed .+$',s,re.M).group(0),'newFailures':[b[n]for n in b if n not in a],'resolvedFailures':[a[n]for n in a if n not in b],'repeatedFailures':repeated,'changedRepeatedAssertionPayloads':changed,'repeatedAssertionPayloadsMatchPreviousExactly':not changed,'comparisonLimit':'The previous run is a prior candidate checkpoint, not a verified origin/main baseline.'}
+(r/'failure-comparison.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps({key:report[key]for key in ['counts','previousCounts','exitCode','selectedFiles','completed','changedInputs','repeatedAssertionPayloadsMatchPreviousExactly']},indent=2));print('NEW',len(report['newFailures']),'RESOLVED',len(report['resolvedFailures']),'REPEATED',len(repeated))

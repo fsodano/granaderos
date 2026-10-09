@@ -1,3 +1,4 @@
+import {completeTestTravel} from './campaign-test-helpers.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
@@ -8,7 +9,7 @@ export const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastErro
 export function completedConferenceStock(){
  let s=initialCampaign(45);s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;
  for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';
- s=order(s,{type:'travel',sector:'tucuman'});
+ s=completeTestTravel(s,{sector:'tucuman'});
  for(const action of [{type:'visitSector'},{type:'visitMission',mission:'yatasto'}]){
   s=order(s,action);let b=enterSector(s.pendingBattle);
   b=actBattle(b,{type:'drop',unitId:'4',item:'medkits',count:1});assert.equal(b.lastError,null);

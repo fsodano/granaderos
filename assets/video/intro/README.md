@@ -10,7 +10,7 @@ Tráiler histórico de 56 segundos con 44 segundos de grabación real del juego,
 - [Consultar la grabación y las acciones](source/capture-manifest.json).
 - [Consultar la ilustración, su instrucción de generación y sus referencias](source/artwork-source.json).
 
-Los cinco clips de `source/` son grabaciones en movimiento de la interfaz normal del juego. Se tomaron en un navegador y un origen local separados para conservar las partidas del usuario. El manifiesto de captura registra la fecha, la revisión exacta, el navegador, las acciones y los intervalos seleccionados. El montaje conserva la velocidad de las acciones. La franja de títulos se agrega fuera de la imagen del juego; la grabación se reduce de forma proporcional para conservar la interfaz completa.
+Los cinco clips de `source/` son grabaciones en movimiento de la interfaz normal del juego. Se tomaron en un navegador y un origen local separados para conservar las partidas del usuario. El manifiesto de captura registra la fecha, la revisión del juego servido y la huella de sus fuentes, el navegador, las acciones y los intervalos seleccionados. La revisión del programa de captura se registra por separado. El montaje conserva la velocidad de las acciones. La franja de títulos se agrega fuera de la imagen del juego; la grabación se reduce de forma proporcional para conservar la interfaz completa.
 
 La apertura y el cierre usan una **ilustración creada con IA**, no una fotografía histórica ni una captura del juego. Las personas, los edificios y el equipo son interpretaciones artísticas. La referencia del [Museo Municipal Retorno a la Patria](https://tunuyan.gov.ar/vivitunuyan/parque-tematico-sanmartiniano/museo-municipal-retorno-a-la-patria/uniforme/) guía la casaca recta, los botones, el penacho verde y las botas del uniforme temprano. La creación del regimiento en 1812 está documentada por el [Ministerio de Defensa](https://www.argentina.gob.ar/noticias/taiana-encabezo-el-acto-por-el-210deg-aniversario-de-la-creacion-del-regimiento-de). El combate del 3 de febrero de 1813 está documentado por el [Ejército Argentino](https://www.argentina.gob.ar/noticias/205o-aniversario-del-combate-de-san-lorenzo).
 
@@ -45,6 +45,8 @@ node assets/video/intro/capture.mjs
 ```
 
 En Linux, asigná también la ruta de Chrome o Chromium a `CHROMIUM_EXECUTABLE`. Si el puerto indicado está ocupado, elegí otro puerto libre y actualizá `GRANADEROS_CAPTURE_ORIGIN`.
+
+El servidor debe publicar `build-info.json`. Para exigir una fuente concreta, asigná su huella SHA-256 a `GRANADEROS_EXPECTED_CAPTURE_SOURCE`. Si cambiás las fuentes con el servidor abierto, reinicialo antes de grabar para actualizar esa identidad. El programa comprueba que la identidad servida siga igual al terminar y el renderizador verifica las huellas de los clips y las capturas de pantalla.
 
 En macOS se usan Georgia y Arial. En Linux se usan DejaVu Serif y DejaVu Sans. Para elegir otras fuentes, asigná sus rutas a `INTRO_SERIF` e `INTRO_SANS`. Un cambio de fuente puede modificar el aspecto del video.
 

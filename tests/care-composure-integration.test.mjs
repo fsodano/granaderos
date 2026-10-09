@@ -9,6 +9,7 @@ import {ammoCount} from '../game/ammo-types.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
+import {travelLegHours} from '../game/squad-travel.js';
 
 const actor=(battle,id)=>battle.units.find(unit=>unit.id===String(id));
 const saved=pair=>decodeSave(encodeSave(pair.campaign,pair.battle??null));
@@ -37,6 +38,8 @@ function paidArena({oldPinned=false}={}){
  assert.ok([130,110].every(id=>!campaign.recruited.includes(id)),'both real paid arrivals are still pending');
  campaign=order(campaign,{type:'wait',hours:6});
  assert.ok([130,110].every(id=>campaign.recruited.includes(id)));
+ // Keep this declared clinical contact in daylight through an actual paid wait.
+ campaign=order(campaign,{type:'wait',hours:18-campaign.hour-travelLegHours('retiro','buenos_aires')});
  campaign=order(campaign,{type:'attack',sector:'buenos_aires'});
  const request=campaign.pendingBattle,width=48,height=16;
  // Prepared hostile care arena, not an earned opening victory. Geometry,
@@ -182,7 +185,7 @@ test('paid Cejas steadies after real hostile wounds and finite external care, wi
  assert.ok(actor(current.pair.battle,130).abilities.includes('care_composure'));
  assert.equal(actor(legacy.pair.battle,130).abilities,undefined);
  const actual=treatAndWithdraw(current.pair),control=treatAndWithdraw(legacy.pair);
- assert.equal(actual.careReceipt.chance,2);assert.equal(control.careReceipt.chance,1,'the actual care shock change affects the observed aiming forecast');
+ assert.equal(actual.careReceipt.chance,5);assert.equal(control.careReceipt.chance,1,'the actual care shock change affects the observed aiming forecast after the shorter road march');
  assert.deepEqual(actual.careReceipt.practice,control.careReceipt.practice);assert.equal(actual.careReceipt.practiceSeed,control.careReceipt.practiceSeed);
  assert.equal(actual.pair.battle.seed,control.pair.battle.seed);assert.equal(actual.pair.battle.elapsedSeconds,control.pair.battle.elapsedSeconds);
  for(const unit of actual.pair.battle.units)assert.deepEqual(equipment(unit),equipment(actor(control.pair.battle,unit.id)),'authored composure does not create HP, ammunition, kit, training or equipment');

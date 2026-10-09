@@ -48,7 +48,8 @@ test('paid native observed conduct objection survives replay and serves its full
  assert.deepEqual(death,{sequence:2,kind:'death',attackerId:'100',side:'player',militia:false,intentional:true,hpBefore:4,hpAfter:0});
  assert.deepEqual(complaints(pair.battle),['Inés Aguirre: No acepto la muerte de Administrador del puerto. Cumpliré el plazo pagado, pero no aceptaré otro contrato.']);
  assert.equal(pair.battle.seed,42);assert.equal(pair.battle.elapsedSeconds,29);assert.equal(pair.battle.status,'retreat');
- for(const unit of issued){const actual=pair.battle.units.find(actor=>actor.id===unit.id);assert.equal(actual.hp,unit.hp);assert.equal(actual.bleeding,0);assert.equal(rounds(actual),rounds(unit));assert.equal(actual.condition,unit.condition);assert.equal(actual.bladeCondition,unit.bladeCondition);assert.deepEqual(actual.inventory,unit.inventory);}
+ assert.equal(result.checkpoints.length,4,'four actual blade contacts complete the conduct event');
+ for(const unit of issued){const actual=pair.battle.units.find(actor=>actor.id===unit.id);assert.equal(actual.hp,unit.hp);assert.equal(actual.bleeding,0);assert.equal(rounds(actual),rounds(unit));assert.equal(actual.condition,unit.condition);assert.equal(actual.bladeCondition,unit.bladeCondition-(unit.id==='100'?4:0),'only the attacking blade wears during its four contacts');assert.deepEqual(actual.inventory,unit.inventory);}
  assert.equal(pair.campaign.operativeState[107].serviceObjection,undefined,'the issued receipt is returned through the real settlement');
  assert.deepEqual(pair.campaign.pendingBattle.squad.find(unit=>unit.id===107).serviceObjection,objection);
  assert.equal(letters(pair.campaign).length,0);reject(pair.campaign,{type:'renewContract',id:107,term:'day'});

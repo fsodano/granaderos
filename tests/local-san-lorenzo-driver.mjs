@@ -6,6 +6,7 @@ import {actBattle,teamCanSee,meleePreview,getReachable,shotChance,actionCosts,st
 import {spacePoint} from '../game/tactical-space.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
+import {firstAidPlan} from '../game/first-aid.js';
 const live=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function localSanLorenzoOrder(b,u){
@@ -14,7 +15,7 @@ export function localSanLorenzoOrder(b,u){
  const infantry=b.units.filter(t=>t.side==='player'&&live(t)&&!t.missionAlly&&t.hp>=15);
  const supported=!infantry.length||infantry.some(t=>distance(t,u)<8);
  function* candidates(){
-  if(u.medkits&&u.bleeding&&u.hp<u.maxHp-10)yield u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'};
+  if(u.bleeding&&firstAidPlan(u,u).valid)yield u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'};
   else if(u.activeSlot==='medical')yield {type:'weapon',slot:'primary'};
   if(u.knockedDown)yield {type:'stance',stance:'standing'};
   if(u.missionAlly){

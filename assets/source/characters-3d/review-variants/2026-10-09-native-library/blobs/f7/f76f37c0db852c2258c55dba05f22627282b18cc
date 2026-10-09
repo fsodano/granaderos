@@ -1,0 +1,35 @@
+{
+  "manifestSha256": "866d455b3621fd1a73d42fe873a82ae17ee6140a0112629704fa758994247268",
+  "granaderoLod0Sha256": "43ed469eb9ea1cf2bf07bf01317921350fc6eb15e9b5d2caccbe7bf02b1fa1e2",
+  "scope": "Three Granadero LODs with generated colour texture, source30 loading, fitted rifle heads, outward eye/detail surfaces and seam repairs",
+  "affectedTests": "122/122 pass",
+  "textureOnlyGeometryPreserved": true,
+  "otherSevenAppearancesPreserved": true,
+  "remaining": "Broad eyebrow tails, hooked idle fingers, existing low-LOD hand faceting; independent coat prototype rejected. Not reference-level completion.",
+  "typecheck": "PASS",
+  "productionBuild": "PASS;1309files1039assetreferences",
+  "libraryVerification": "PASS",
+  "labTests": "28/28 pass",
+  "browser": {
+    "url": "http://localhost:3147/",
+    "bodyLabel": "43ed469e",
+    "skinColoursVisuallyChecked": [
+      "Blanco",
+      "Moreno",
+      "Negro"
+    ],
+    "isometric": true,
+    "pixelated": false,
+    "speed": 1,
+    "screenshots": [
+      "live-light.png",
+      "live-brown.png",
+      "live-dark.png"
+    ],
+    "warningsAndErrors": [],
+    "temporaryViewport": [
+      1280,
+      900
+    ]
+  }
+}

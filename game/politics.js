@@ -1,3 +1,4 @@
+import {treasuryIncomeReason} from './treasury-rewards.js';
 // Campaign policy values are game balance, not reconstructed historical tariffs.
 export function tradeQuote(state,basePrice){
  const reputation=state.reputation.foreign;
@@ -19,6 +20,7 @@ export function applyPolicy(s,kind){
  }else if(kind==='frontierRequisition'){
   if(!['mendoza','uspallata','los_patos'].includes(s.location)||s.sectors[s.location].owner!=='patriot')throw Error('La requisa de frontera requiere presencia en un sector propio de Cuyo.');
   if(!policyStatus(s).requisitionReady)throw Error('Las estancias todavía no han recuperado sus existencias.');
+  const reason=treasuryIncomeReason(s,160);if(reason)throw Error(reason);
   s.politics.requisitionAfter=s.hour+336;s.resources.treasury+=160;standing(s,'indigenous',-35);standing(s,'gauchos',-15);
   s.sectors[s.location].loyalty=Math.max(0,s.sectors[s.location].loyalty-15);
   if(s.flags.parliament){s.flags.parliament=false;note(s,'La requisa rompe el parlamento. Habrá que renovar el acuerdo de los pasos.');}
