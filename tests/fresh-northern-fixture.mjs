@@ -128,22 +128,41 @@ export function meetNorthernRearPort(start,operativeId,{report=()=>{}}={}){
  const rear=s.squads.find(squad=>squad.location==='buenos_aires'&&squad.members.includes(operativeId)&&!squad.journey);
  s=order(s,rear?{type:'selectSquad',id:rear.id}:{type:'createSquad',ids:[operativeId],name:'Administración de retaguardia',sector:'buenos_aires'});s=order(s,{type:'assignCare',operativeId,assignment:'active'});
  let p=visit(s);const unitId=String(operativeId),actions=[],actor=()=>p.battle.units.find(unit=>unit.id===unitId),observed=()=>playerKnownBattle(p.battle).npcs.find(npc=>npc.id===source.representative.npcId),act=action=>{p=tactical(p,action);actions.push(action);};
+ const scan=()=>{for(const [dx,dy]of [[5,0],[0,5],[-5,0],[0,-5]]){const target={x:Math.max(0,Math.min(p.battle.width-1,actor().x+dx)),y:Math.max(0,Math.min(p.battle.height-1,actor().y+dy)),tacticalLevel:actor().tacticalLevel??0};if(lookPreview(p.battle,actor(),target).valid)act({type:'look',unitId,...target});if(observed())break;}};
+ const reachable=()=>{const known=playerKnownBattle(p.battle),view={...p.battle,npcs:p.battle.npcs.filter(npc=>known.npcs.some(row=>row.id===npc.id))};return getReachable(view,actor()).filter(point=>(point.tacticalLevel??0)===0);};
  const goals=[[.5,.5],[.25,.25],[.75,.25],[.75,.75],[.25,.75],[.5,.5]].map(([x,y])=>({x:Math.floor(p.battle.width*x),y:Math.floor(p.battle.height*y),tacticalLevel:0}));
  for(const goal of goals){
   for(let step=0;step<24&&!observed();step++){
    assert.ok(actor().energy>=15,'the actual physician needs energy for the public port sweep');
-   for(const [dx,dy]of [[5,0],[0,5],[-5,0],[0,-5]]){const target={x:Math.max(0,Math.min(p.battle.width-1,actor().x+dx)),y:Math.max(0,Math.min(p.battle.height-1,actor().y+dy)),tacticalLevel:actor().tacticalLevel??0};if(lookPreview(p.battle,actor(),target).valid)act({type:'look',unitId,...target});if(observed())break;}
+   scan();
    if(observed())break;
-   const known=playerKnownBattle(p.battle),view={...p.battle,npcs:p.battle.npcs.filter(npc=>known.npcs.some(row=>row.id===npc.id))},distance=point=>Math.hypot(point.x-goal.x,point.y-goal.y);if(distance(actor())<=2)break;
-   const spot=getReachable(view,actor()).filter(point=>point.cost>0&&distance(point)<distance(actor())&&(point.tacticalLevel??0)===0).sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];if(!spot)break;
+   const distance=point=>Math.hypot(point.x-goal.x,point.y-goal.y);if(distance(actor())<=2)break;
+   const spot=reachable().filter(point=>point.cost>0&&distance(point)<distance(actor())).sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];if(!spot)break;
    const prior=spacePoint(actor());act({type:'move',unitId,...spacePoint(spot)});assert.ok(!sameCell(actor(),prior));
   }
   if(observed())break;
  }
+ // The centre and quarter points miss edge neighbourhoods at night. Inspect
+ // every public map edge with gaps no larger than the native six-cell sight
+ // range. Goals depend only on map dimensions, never an unseen NPC position.
+ const inset=Math.min(2,Math.floor((Math.min(p.battle.width,p.battle.height)-1)/2)),axis=(start,end)=>{const values=[];for(let n=start;n<=end;n+=6)values.push(n);if(values.at(-1)!==end)values.push(end);return values;},xs=axis(inset,p.battle.width-1-inset),ys=axis(inset,p.battle.height-1-inset);
+ const perimeter=[...xs.map(x=>({x,y:ys[0]})),...ys.slice(1).map(y=>({x:xs.at(-1),y})),...xs.slice(0,-1).reverse().map(x=>({x,y:ys.at(-1)})),...ys.slice(1,-1).reverse().map(y=>({x:xs[0],y}))];
+ for(const goal of perimeter){
+  if(observed())break;
+  for(let step=0;step<p.battle.width*p.battle.height&&!observed();step++){
+   assert.ok(actor().energy>=15,'the actual physician needs energy for the public perimeter sweep');scan();if(observed())break;
+   const distance=point=>Math.hypot(point.x-goal.x,point.y-goal.y),spot=reachable().sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];if(!spot?.path.length)break;
+   const prior=spacePoint(actor());act({type:'move',unitId,...spacePoint(spot.path[0])});assert.ok(!sameCell(actor(),prior));
+  }
+ }
  assert.ok(observed(),'a public map sweep must reveal the actual representative');const firstObserved={hour:p.campaign.hour,second:p.campaign.secondOfHour,npc:structuredClone(observed())};
+ let remembered=structuredClone(observed());
  for(let step=0;step<120;step++){
-  const npc=observed();assert.ok(npc,'do not route toward a hidden representative');if(Math.abs(actor().x-npc.x)+Math.abs(actor().y-npc.y)<=1)break;
-  const known=playerKnownBattle(p.battle),view={...p.battle,npcs:p.battle.npcs.filter(npc=>known.npcs.some(row=>row.id===npc.id))},spot=getReachable(view,actor()).filter(point=>Math.abs(point.x-npc.x)+Math.abs(point.y-npc.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot?.path.length,'the observed representative needs a public reachable approach');act({type:'move',unitId,...spacePoint(spot.path[0])});
+  scan();const npc=observed();if(npc){remembered=structuredClone(npc);if(Math.abs(actor().x-npc.x)+Math.abs(actor().y-npc.y)<=1)break;}
+  // A wall can occlude a previously visible window resident on the way to
+  // the open door. Follow only the last public point, then reacquire them.
+  const spot=reachable().filter(point=>Math.abs(point.x-remembered.x)+Math.abs(point.y-remembered.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot?.path.length,'the last observed representative needs a public reachable approach');act({type:'move',unitId,...spacePoint(spot.path[0])});
+  const seen=observed();if(seen)remembered=structuredClone(seen);
  }
  assert.ok(observed());assert.ok(Math.abs(actor().x-observed().x)+Math.abs(actor().y-observed().y)<=1);assert.equal(p.campaign.pendingEncounter,null);
  s=order(p.campaign,{type:'talkNPC',npcId:observed().id,unitId:operativeId,approach:'direct',sectorState:p.battle});assert.equal(s.lastConversation.outcome,'incomeActivated');s=leave(saved({campaign:s,battle:p.battle}));

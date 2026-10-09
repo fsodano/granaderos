@@ -16,6 +16,7 @@ import {recoverRecapturedRoad} from './recovery-road-care.mjs';
 import {canReassignOperative,operativeLocation} from '../game/squads.js';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
+import {artilleryProfile} from '../game/artillery-definitions.js';
 
 const localMembers=(c,preferred,limit=6)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
 
@@ -118,7 +119,8 @@ export function prepareRestoredSalta(start){
  };
  const field=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='tucuman');
  for(let i=0;i<field.length;i+=6){order({type:'createSquad',ids:field.slice(i,i+6),sector:'tucuman',name:'Columna de Salta'});for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});let p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));c=supplyRouteAmmunition(c,c.squad,{target:12}).campaign;c=finishReloadsBeforeMarch(c);}
- const piece=c.artilleryDepots.tucuman.find(g=>g.type==='swivel');assert.ok(piece);order({type:'configureArtillery',types:[depotSelection(piece)]});
+ const piece=c.artilleryDepots.tucuman.filter(g=>g.side==='player'&&(g.loaded||g.ammo>0)&&artilleryProfile(c,g).crew<=field.length).sort((a,b)=>Number(b.type==='swivel')-Number(a.type==='swivel')||b.ammo+Number(b.loaded)-a.ammo-Number(a.loaded)||a.id.localeCompare(b.id))[0];
+ assert.ok(piece,'the final column needs an actual local loaded or supplied gun with enough living crew');order({type:'configureArtillery',types:[depotSelection(piece)]});
  c=prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
  return c;
 }
