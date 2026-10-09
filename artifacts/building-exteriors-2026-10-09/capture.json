@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-09",
+  "mainBeforePictures": "1e55dca74d894d7048ae2210ccc9b986d45a1bff",
+  "source": "755475a0cd6e40c218f25b35802d00eabca94a35e75ccb176b086cc7f4c2f953",
+  "browser": "CUA in-app browser",
+  "url": "http://localhost:3204/renderer-sandbox",
+  "scenario": "catalog",
+  "view": "exterior",
+  "roof": "original",
+  "rotation": 0,
+  "tacticalZoom": 100,
+  "reviewCaptureViewport": {
+    "width": 1280,
+    "height": 1100
+  },
+  "viewportReason": "Default 720px viewport clips full buildings even at minimum 100% game zoom; complete exterior capture required taller framing. Override reset and temporary tab closed after capture.",
+  "camera": "Normal camera pan buttons only; no state injection. Camera offsets differ by building.",
+  "images": {
+    "docs/art/exteriors-2026-10-09/townhall.jpg": {
+      "bytes": 71067,
+      "sha256": "9857d6f284caade01ff56a66ff304e1b72c7695fe27184fb9c0b02918606fc00",
+      "dimensions": [
+        834,
+        612
+      ],
+      "template": "ayuntamiento",
+      "label": "Ayuntamiento / town hall"
+    },
+    "docs/art/exteriors-2026-10-09/church.jpg": {
+      "bytes": 66278,
+      "sha256": "30c335dfc2f4905551c4986c79851a9e0cb2c858fb2854dd191ec8454110ec84",
+      "dimensions": [
+        834,
+        612
+      ],
+      "template": "iglesia",
+      "label": "Iglesia parroquial / church"
+    },
+    "docs/art/exteriors-2026-10-09/pulperia.jpg": {
+      "bytes": 57916,
+      "sha256": "fa375913bc7af35fb9b9a58eb4687412e6aff943c1e2681e4520326ee799d826",
+      "dimensions": [
+        834,
+        612
+      ],
+      "template": "pulperia",
+      "label": "Pulper\u00eda"
+    },
+    "docs/art/exteriors-2026-10-09/cabildo.jpg": {
+      "bytes": 66286,
+      "sha256": "7f31309767c984e4e529bd4c5c02ccaf9721d6cede398fab00296aaf02a2026e",
+      "dimensions": [
+        834,
+        612
+      ],
+      "template": "cabildo",
+      "label": "Cabildo de villa"
+    },
+    "docs/art/exteriors-2026-10-09/palace.jpg": {
+      "bytes": 85425,
+      "sha256": "c42d9e314ffda436ca1a80258e277ab1e5969094ed61702a393b0adb839f02fa",
+      "dimensions": [
+        1066,
+        611
+      ],
+      "template": "palacio",
+      "label": "Palacio del gobernador"
+    },
+    "docs/art/exteriors-2026-10-09/estancia.jpg": {
+      "bytes": 68490,
+      "sha256": "8990fc14a64ef75d02fc954800cd89f39513fe4937092fe425c0c8a3d7427c80",
+      "dimensions": [
+        898,
+        611
+      ],
+      "template": "estancia",
+      "label": "Casa de estancia"
+    }
+  },
+  "visualInspection": "All six full buildings, roofs and scale soldiers inspected in screenshots. Captures are clipped to scene and its identifying header.",
+  "browserErrors": [],
+  "lastSceneActors": {
+    "active": 1,
+    "loaded": 1,
+    "pending": 0
+  },
+  "gameplayRendererAssetsChanged": false,
+  "newTestsOrBuildsRun": false
+}
