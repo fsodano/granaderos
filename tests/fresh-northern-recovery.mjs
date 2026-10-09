@@ -60,13 +60,11 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  }
  // Set up paid care at every actual patient location before any field visit
  // advances time for a distant, critically wounded survivor.
- // The recovering force keeps a healthy escort on its actual supply road.
+ // Keep the healthy local guard while the doctor and actual patients evacuate.
  const escort=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&operativeLocation(c,op.id)==='tucuman'&&!patients.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&op.medical<80).sort((a,b)=>b.marksmanship-a.marksmanship).slice(0,6).map(op=>op.id);
- let escortSquad;
  if(escort.length){
-  order({type:'createSquad',name:'Escolta del hospital',ids:escort,sector:'tucuman'});
+  order({type:'createSquad',name:'Guardia de Tucumán',ids:escort,sector:'tucuman'});
   for(const operativeId of escort)order({type:'assignCare',operativeId,assignment:'active'});
-  escortSquad=c.activeSquadId;
  }
  const stabilizationDoctors=[];
  for(const at of new Set(patients.map(id=>c.operativeState[id].location))){
@@ -87,7 +85,6 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
   if(at==='tucuman'&&localPatients.some(id=>c.operativeState[id].bleeding)){order({type:'wait',hours:1});for(const id of localPatients)assert.ok(c.operativeState[id].alive);}
   if(c.operativeState[medic.id].medkits<3&&at==='tucuman'){c=collectRouteItems(c,medic.id,{item:'medkits'},12).campaign;order({type:'assignCare',operativeId:medic.id,assignment:'doctor'});}
  }
- if(escortSquad){const selected=c.activeSquadId;order({type:'selectSquad',id:escortSquad});order({type:'travel',sector:'cordoba',queue:true});order({type:'selectSquad',id:selected});}
  for(let h=0;h<24&&patients.some(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0);h++){
   for(const id of stabilizationDoctors)if(!c.operativeState[id].medkits&&!c.operativeState[id].asleep&&patients.some(patient=>c.operativeState[patient].location===c.operativeState[id].location&&(c.operativeState[patient].hp<15||c.operativeState[patient].bleeding)))c=collectRouteItems(c,id,{item:'medkits'},1).campaign;
   order({type:'wait',hours:1});
@@ -167,11 +164,29 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  const party=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&operativeLocation(c,id)===sector&&!escort.includes(id);});
  assert.ok(party.length>0&&party.length<=6);
  order({type:'squad',ids:party});
+ const resolveReturnContact=()=>{
+  while(c.pendingEncounter){
+   const returning=c.activeSquadId,encounter=c.pendingEncounter;
+   const defenders=c.squads.find(q=>q.location===encounter.sector&&q.members.some(id=>c.operativeState[id].alive&&!c.operativeState[id].captured));
+   assert.ok(defenders,'the threatened sector needs its actual local guard');
+   order({type:'selectSquad',id:defenders.id});order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
+   const defense=fightNorthernSector(c,encounter.sector,{controller:northernHospitalCoverOrder,report});c=defense.campaign;
+   report({event:'northernReturnDefended',groupId:encounter.groupId,...defense.summary});
+   order({type:'selectSquad',id:returning});
+  }
+ };
+ const journey=()=>c.squads.find(q=>q.id===c.activeSquadId)?.journey;
  for(let leg=0;leg<6&&c.location!=='buenos_aires';leg++){
+  resolveReturnContact();
+  // A remote defense stops the clock without cancelling this physical route.
+  for(let h=0;h<240&&journey()?.status==='moving';h++){order({type:'wait',hours:1});resolveReturnContact();}
+  assert.notEqual(journey()?.status,'moving','the real return leg must finish or stop for rest');
+  if(c.location==='buenos_aires')break;
+  if(journey())assert.equal(journey().status,'paused','the medical return must remain a normal travel route');
   for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
-  for(let h=0;h<48&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+  for(let h=0;h<48&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++){order({type:'wait',hours:1});resolveReturnContact();}
   for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
-  order({type:'travel',sector:'buenos_aires'});assert.equal(c.pendingEncounter,null);
+  order(journey()?{type:'resumeTravel'}:{type:'travel',sector:'buenos_aires'});resolveReturnContact();
  }
  assert.equal(c.location,'buenos_aires');
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});

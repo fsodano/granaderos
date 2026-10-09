@@ -691,6 +691,19 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  if(localBattery){assert.equal(batteryRecord.id,localBattery.record.id);assert.deepEqual(batteryRecord,storedArtilleryRecord(localBattery.record));report({event:'rescueLocalBattery',sector:'cordoba',source:localBattery.source,record:structuredClone(batteryRecord),cost:artilleryCash-campaign.resources.treasury});}
  order({type:'configureArtillery',types:battery.selections});staging.artillery={record:structuredClone(batteryRecord),type:batteryRecord.type,cost:artilleryCash-campaign.resources.treasury,selections:battery.selections,source:localBattery?`local-${localBattery.source}`:'finite-arsenal'};renew();
  for(const operativeId of deploying)order({type:'assignCare',operativeId,assignment:'active'});
+ // Recheck the actual carried weapons after clinic care and replacements.
+ // A physician may still hold a pistol with an owned musket in a pocket.
+ // Equip that physical long gun before asking for its matching cartridges.
+ for(const operativeId of deploying){
+  const carried=()=>sectorInventoryModel(campaign,'cordoba',rosterFor(campaign),operativeId),primary=carried().personal;
+  if(!primary.weaponDropped&&weaponFor({...primary,activeSlot:'primary'}).range>=12)continue;
+  const gun=carried().carried.find(row=>row.equip?.some(option=>option.slot==='primary'&&option.valid)&&weaponFor({...JSON.parse(row.expected),activeSlot:'primary'}).capacity>0&&weaponFor({...JSON.parse(row.expected),activeSlot:'primary'}).range>=12&&JSON.parse(row.expected).condition>=10);
+  if(!gun)continue;
+  const cash=campaign.resources.treasury,time=campaign.hour*3600+(campaign.secondOfHour??0),oldWeapon=primary.weapon;
+  order({type:'sectorInventory',sector:'cordoba',operativeId,direction:'equip',inventoryKey:gun.inventoryKey,expected:gun.expected,slot:'primary'});
+  assert.equal(campaign.resources.treasury,cash);assert.equal(campaign.hour*3600+(campaign.secondOfHour??0),time);
+  report({event:'rescueOwnedLongGun',operativeId,oldWeapon,weapon:carried().personal.weapon,inventoryKey:gun.inventoryKey,range:weaponFor({...carried().personal,activeSlot:'primary'}).range});
+ }
  const ammunitionBefore=structuredClone(campaign),ammunitionCash=campaign.resources.treasury,supplied=supplyRouteAmmunition(campaign,deploying,{target:10,report});campaign=supplied.campaign;
  assert.equal(campaign.resources.treasury,ammunitionCash,'the rescue uses finite existing cartridges');
  const physicalDebits=new Map();

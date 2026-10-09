@@ -582,15 +582,40 @@ for(let leg=0;leg<4&&c.location!=='cordoba'&&!c.pendingEncounter;leg++){
  return c;
 }
 
-export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,onCheckpoint=()=>{}}={}){
- let c=decodeSave(encodeSave(start)).campaign;
-onCheckpoint('tucuman-preparation-input',c);
+export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,recovery='doctor',onCheckpoint=()=>{}}={}){
+ assert.ok(['doctor','rest'].includes(recovery),'Tucumán recovery uses real doctor work or ordinary rest');
+ const recoveryDefenseIds=[];let recoveryDefenseBudget=null;
+ return prepare(start);
+ function prepare(initial){
+ let c=decodeSave(encodeSave(initial)).campaign;
+ onCheckpoint('tucuman-preparation-input',c);
+ if(recoveryDefenseBudget===null)recoveryDefenseBudget=c.enemyGroups.filter(g=>!['defeated','withdrawn'].includes(g.status)).length+Math.floor(Object.values(c.enemyReserves.remaining).reduce((sum,n)=>sum+n,0)/3);
 const order=a=>{
  // Regrouping also consumes paid time. Keep the doctor and remote survivors
  // employed before each wait, rather than discovering an expired hire later.
  if(a.type==='wait')for(const id of c.recruited){const contract=c.contracts[id];if(c.operativeState[id].alive&&!c.operativeState[id].captured&&contract?.expiresAt!==null&&contract?.expiresAt<=c.hour+a.hours){const renewed=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(renewed.lastError,null,renewed.lastError);c=renewed;}}
  c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
 };
+const defendRecovery=(rest=null)=>{
+ const encounter=structuredClone(c.pendingEncounter),group=c.enemyGroups.find(g=>g.id===encounter?.groupId);
+ assert.ok(group&&group.status==='waiting'&&group.target===encounter.sector,'recovery must respond to the actual waiting enemy group');
+ assert.ok(!recoveryDefenseIds.includes(group.id),'a recovery defense cannot resolve the same enemy group twice');
+ assert.ok(recoveryDefenseIds.length<recoveryDefenseBudget,'recovery defenses must fit the actual issued groups and finite remaining reserves');
+ for(const id of recoveryDefenseIds)assert.ok(c.encounterHistory.some(entry=>entry.groupId===id&&entry.outcome==='victory'),'each earlier recovery defense needs its accepted campaign result');
+ const groupId=group.id,sector=encounter.sector,dead=Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>id);
+ report({event:'tucumanRecoveryInterrupted',groupId,sector,hour:c.hour,second:c.secondOfHour??0,rest,campaign:structuredClone(c)});
+ order({type:'respondToEncounter',groupId,choice:'tactical'});
+ const defense=fightNorthernSector(c,sector,{controller:cautiousCombatOrder,report});c=defense.campaign;
+ assert.equal(c.enemyGroups.find(g=>g.id===groupId).status,'defeated');assert.ok(c.encounterHistory.some(entry=>entry.groupId===groupId&&entry.outcome==='victory'));
+ for(const id of dead)assert.equal(c.operativeState[id].alive,false,'a real defense cannot restore an earlier casualty');
+ recoveryDefenseIds.push(groupId);
+ report({event:'tucumanRecoveryDefense',groupId,sector,summary:defense.summary,recoveryDefenseIds:[...recoveryDefenseIds],campaign:structuredClone(c)});
+ // The battle has changed actual wounds, survivors, locations and equipment.
+ // Reuse urgent care and formation from that accepted campaign, with a new
+ // wound-based rest bound instead of retaining the earlier clinical plan.
+ return prepare(c);
+};
+if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
 // Stop bleeding before any rest or long march. A low-health survivor must not
 // silently die while other squads wait for their energy to recover.
 const wounded=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&(r.bleeding>0||r.hp<15);});
@@ -695,11 +720,39 @@ for(const id of fieldIds){const model=()=>sectorInventoryModel(c,'cordoba',roste
  order({type:'assignCare',operativeId:id,assignment:'rest'});
 }
 c=sellSurplusEquipment(c,'cordoba',fieldIds,1000,{report});
-// Finish wound care in Córdoba before sending the force north. Use an actual
-// healthy medic and finite local dressings through ordinary hourly work.
+// Finish wound care in Córdoba before sending the force north. The stock route
+// can rest stable wounds after real urgent care; the funded route keeps its
+// existing doctor/patient work and finite dressing costs.
 const medic=rosterFor(c).filter(op=>fieldIds.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&op.medical>=20).sort((a,b)=>Number(c.operativeState[b.id].hp===c.operativeState[b.id].maxHp)-Number(c.operativeState[a.id].hp===c.operativeState[a.id].maxHp)||b.medical-a.medical)[0];
 const patients=fieldIds.filter(id=>id!==medic?.id&&c.operativeState[id].hp<c.operativeState[id].maxHp);
-if(patients.length){
+if(recovery==='rest'){
+ if(c.pendingEncounter)return defendRecovery();
+ const fortBefore=c.sectors.cordoba.fort,fortCash=c.resources.treasury;
+ while(c.sectors.cordoba.fort<3)order({type:'fortify',sector:'cordoba'});
+ if(c.sectors.cordoba.fort>fortBefore)report({event:'tucumanRecoveryFortified',sector:'cordoba',before:fortBefore,after:c.sectors.cordoba.fort,cost:fortCash-c.resources.treasury,hour:c.hour,second:c.secondOfHour??0});
+ const restingWounded=fieldIds.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp),restHealingHours=careRules(c).restHealingHours;
+ const priorDeaths=Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>id),started={hour:c.hour,second:c.secondOfHour??0};
+ const ownership=fieldIds.map(id=>{const r=c.operativeState[id];return {id,medkits:r.medkits,inventory:structuredClone(r.inventory),ammo:r.ammo,carriedLoaded:r.carriedLoaded,condition:r.condition,jammed:r.jammed};});
+ const stable=()=>{for(const id of fieldIds){const r=c.operativeState[id];assert.ok(r.alive&&!r.captured&&r.hp>=15,'ordinary rest needs each actual conscious uncaptured survivor');assert.equal(r.bleeding,0,'real urgent care must stop bleeding before stable recovery');}};
+ const restBoundHours=Math.max(0,...restingWounded.map(id=>(c.operativeState[id].maxHp-c.operativeState[id].hp)*restHealingHours))+72;
+ let restHours=0;stable();
+ for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'rest'});
+ while(restingWounded.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp)){
+  if(c.pendingEncounter)return defendRecovery({started,restHours,restBoundHours});
+  assert.ok(restHours<restBoundHours,'stable recovery must fit the actual wound deficit and ordinary sleep bound');stable();
+  const before=fieldIds.map(id=>({id,hp:c.operativeState[id].hp,maxHp:c.operativeState[id].maxHp,recoveryHours:c.operativeState[id].recoveryHours})),time=c.hour*3600+(c.secondOfHour??0),until=c.hour+1;
+  // Request time again after a real assignment or sleep notice. Each accepted
+  // wait still renews the actual serving contracts through the normal order.
+  for(let attempt=0;c.hour<until&&attempt<240;attempt++){if(c.pendingEncounter)return defendRecovery({started,restHours,restBoundHours});assert.equal(c.pendingBattle,null);order({type:'wait',hours:1});}
+  assert.equal(c.hour*3600+(c.secondOfHour??0),time+3600,'one recovery hour must actually elapse');restHours++;stable();
+  for(const r of before){const current=c.operativeState[r.id];assert.ok(current.hp>=r.hp&&current.hp<=Math.min(r.maxHp,r.hp+1),'rest must earn health through ordinary hourly recovery');if(r.hp<r.maxHp)assert.ok(current.hp>r.hp||current.recoveryHours>r.recoveryHours,'each actual rest hour must advance wound recovery');}
+  if(c.pendingEncounter)return defendRecovery({started,restHours,restBoundHours});
+ }
+ for(const id of fieldIds)assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp,'ordinary rest must fully recover every actual field survivor');
+ for(const before of ownership){const r=c.operativeState[before.id];for(const key of ['medkits','ammo','carriedLoaded','condition','jammed'])assert.deepEqual(r[key],before[key],`rest preserves ${key} for ${before.id}`);assert.deepEqual(r.inventory,before.inventory,'ordinary rest cannot add or replace owned equipment');}
+ for(const id of priorDeaths)assert.equal(c.operativeState[id].alive,false,'rest cannot restore an actual fallen soldier');
+ report({event:'tucumanRestRecovery',started,finished:{hour:c.hour,second:c.secondOfHour??0},restHours,restBoundHours,treasury:c.resources.treasury,patients:restingWounded.map(id=>({id,hp:c.operativeState[id].hp,maxHp:c.operativeState[id].maxHp,bleeding:c.operativeState[id].bleeding,expiresAt:c.contracts[id]?.expiresAt}))});
+}else if(patients.length){
  assert.ok(medic,'wounded troops need a surviving doctor');
  for(let h=0;h<96&&patients.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);h++){
   assert.equal(c.pendingEncounter,null);
@@ -734,10 +787,12 @@ if(patients.length){
  for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'rest'});
 }
 for(let i=0;i<24&&fieldIds.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);i++){
+ if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
  assert.equal(c.pendingEncounter,null);
  for(const id of fieldIds){const contract=c.contracts[id];assert.ok(contract,'resting survivors retain their paid contracts');if(contract.expiresAt!==null&&contract.expiresAt<=c.hour+1)order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}
  order({type:'wait',hours:1});
 }
+if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
 for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
 for(const id of fieldIds){while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<c.hour+30){const contract=c.contracts[id];order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}}
 // A physically recovered support gun can cover the infantry approach.
@@ -764,6 +819,7 @@ if(artillerySupport){
 // Stage the actual squads through the ordinary clock before the coordinated march.
 // Enemy movement and contract costs continue during this wait.
 order({type:'wait',hours:4});
+if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
 c=supplyRouteAmmunition(c,fieldIds,{report}).campaign;
 for(const id of assaultSquads){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});order({type:'attack',sector:'tucuman',queue:true});}for(let i=0;i<24&&!assaultSquads.every(id=>c.squads.find(s=>s.id===id)?.journey?.status==='ready');i++)order({type:'wait',hours:1});
 // The musketeers wait for daylight instead of crossing the citadel approaches
@@ -775,4 +831,5 @@ order({type:'beginAssault',sector:'tucuman'});
  assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
  onCheckpoint('tucuman-ready',c);
  return c;
+ }
 }

@@ -1,5 +1,12 @@
 # Fresh northern continuation through Yatasto
 
+**Current status — 4 October 2026:** The completion figures and methods below
+describe the dated September source. The current ordinary 3,200-peso route has
+separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
+Finite field aid, stable rest and the Córdoba continuation pass; current
+Yatasto and ending acceptance remain under test. Separate 32,000-peso funded
+fixtures do not establish ordinary-start acceptance.
+
 The published mixed-force route now continues from untouched Retiro startup to
 saved phase 3 at Yatasto. It uses the [accepted coastal opening](fresh-coastal-opening.md),
 then wins the actual Córdoba, Tucumán and Salta maps, pays for supplies and

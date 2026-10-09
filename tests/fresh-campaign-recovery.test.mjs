@@ -175,7 +175,8 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  assert.equal(defended.campaign.completed,false);
  const mendozaPreparation=[],mendozaReady=prepareFreshMendozaAssault(defended.campaign,{report:event=>mendozaPreparation.push(event)});
  const reserveBattery=mendozaPreparation.find(event=>event.event==='mendozaReserveBattery');assert.ok(reserveBattery);
- assert.ok(reserveBattery.cost>0,'the reserve pays for its actual artillery');
+ assert.equal(reserveBattery.cost,0,'the reserve recovers existing finite arsenal guns instead of buying new pieces');
+ assert.ok(ownedArtilleryCount(mendozaReady)>=1,'the issued battery remains actual owned artillery');
  assert.ok(reserveBattery.field.length>0&&reserveBattery.support.length>0);
  for(const id of [...reserveBattery.field,...reserveBattery.support])assert.ok(defended.campaign.recruited.includes(id),'Mendoza uses the actual surviving reserves');
  assert.ok(mendozaReady.pendingBattle.squad.every(unit=>mendozaReady.operativeState[unit.id].alive));
@@ -198,14 +199,16 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  const foundryEvents=[],foundry=startFreshFoundry(supportReleased,{report:event=>foundryEvents.push(event)});
  for(const receipt of foundryEvents.filter(event=>event.event==='foundrySpecialistReleased')){
   assert.ok(receipt.price>0&&receipt.hour>=mendoza.campaign.hour);
-  assert.deepEqual(receipt.founders,[2,7]);
+  assert.ok(receipt.founders.includes(2),'the actual required engineer remains in service');
   for(const id of receipt.founders)assert.ok(foundry.recruited.includes(id)&&foundry.operativeState[id].alive);
   assert.ok(foundry.recruited.includes(receipt.leader)&&foundry.contracts[receipt.leader].expiresAt===null);
   assert.equal(foundry.recruited.includes(receipt.id),false);
   assert.equal(foundry.operativeState[receipt.id].alive,true);
  }
  assert.equal(foundry.flags.foundry,true);assert.equal(foundry.flags.emancipation,true);
- assert.ok(foundry.recruited.includes(2)&&foundry.recruited.includes(7));
+ assert.ok(foundry.recruited.includes(2)&&foundry.operativeState[2].alive);
+ if(supportReleased.operativeState[7].alive&&!supportReleased.operativeState[7].captured)assert.ok(foundry.recruited.includes(7),'a living available Barcala still joins through his real meeting');
+ for(const [id,record]of Object.entries(supportReleased.operativeState))if(!record.alive)assert.equal(foundry.operativeState[id].alive,false,'foundry organization preserves every actual earlier death');
  assert.equal(foundry.phase,3);assert.equal(foundry.completed,false);
  const initialArmy=prepareFreshArmyFunding(foundry);
  const army=completeFreshArmyFunding(initialArmy);
