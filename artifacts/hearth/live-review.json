@@ -1,0 +1,73 @@
+{
+  "renderer": "Root verified actual CUA/browser Battlefield",
+  "acceptanceOwner": "root",
+  "accepted": true,
+  "photographCopyUTC": "2026-10-09T04:53:42.111431+00:00",
+  "beforeSource": "6d2c831742b358edcec58e70468c2d271a10cd17b1580c6c9a9288ffbf78ed77",
+  "afterSource": "4c643a22f19ac4e7ad602de842705de8610f16ba0ef9ad268b0a6b2cbd032d65",
+  "matchedView": {
+    "soldierSizesPx": [
+      44,
+      88
+    ],
+    "cellUI": "I13",
+    "rawCell": {
+      "x": 12,
+      "y": 8,
+      "tacticalLevel": 0
+    },
+    "camera": "default",
+    "clock": "paused12:03",
+    "standing": "Both guard standing after ordinary resume/pause"
+  },
+  "ordinaryRoutes": {
+    "before": "H7 -> I7 additional bed steps, then H12 -> H17 -> I13",
+    "after": "I7 -> H12 -> H17 -> I13"
+  },
+  "visualFindings": "Opening faces the room; pot visible at 44/88; handle quiet at 44.",
+  "browserErrorsBefore": [],
+  "browserErrorsAfter": [],
+  "costLimits": "Before close counter retains 109 geometries/43 textures from earlier LOD2; after close has 102 geometries/28 textures. Different retained LOD histories cannot support a geometry/memory reduction claim. Snapshot FPS is not a sustained performance test.",
+  "files": [
+    {
+      "path": "artifacts/hearth/hearth-before-44px.jpg",
+      "sha256": "5f2b2b45317004b5b242c54509802696a37a7dd7350bd44caa6a030a2231f68f",
+      "bytes": 96911,
+      "rootOriginal": "/tmp/granaderos-graphics-review/15-corrected-before-44.jpg"
+    },
+    {
+      "path": "artifacts/hearth/hearth-before-88px.jpg",
+      "sha256": "aaf39dec0757da1c74c992a003172a185b766c25600b1cc9ba0e6011bbcdcec8",
+      "bytes": 113140,
+      "rootOriginal": "/tmp/granaderos-graphics-review/15-corrected-before-88.jpg"
+    },
+    {
+      "path": "artifacts/hearth/hearth-after-44px.jpg",
+      "sha256": "4270bd893d5e82e578b25a739c243f15c1414cc17387ad08017de28995d4654c",
+      "bytes": 97044,
+      "rootOriginal": "/tmp/granaderos-graphics-review/15-corrected-after-44.jpg"
+    },
+    {
+      "path": "artifacts/hearth/hearth-after-88px.jpg",
+      "sha256": "d9420f588c04f04253515a7d857c5f7abb73ed3e83a6ed4a1b396e3c65900aac",
+      "bytes": 113250,
+      "rootOriginal": "/tmp/granaderos-graphics-review/15-corrected-after-88.jpg"
+    },
+    {
+      "path": "artifacts/hearth/hearth-before-metrics.json",
+      "sha256": "6ab32e178283b962810bfacd91119407134e960e2c721a0c63caa170b3cb2c7e",
+      "bytes": 811,
+      "rootOriginal": "/tmp/granaderos-graphics-review/15-corrected-before-metrics.json"
+    },
+    {
+      "path": "artifacts/hearth/hearth-after-metrics.json",
+      "sha256": "93b14d46fb0ae2ee030f88708f762c0cab4d2a3fb2d13f770084c6e79f007e05",
+      "bytes": 811,
+      "rootOriginal": "/tmp/granaderos-graphics-review/15-corrected-after-metrics.json"
+    }
+  ],
+  "agentUsedBrowser": false,
+  "rootWritten": false,
+  "finalGateStatus": "PASS",
+  "implementationPatchSha256": "618eb6aae64d0bd9255b25d3a4cb20bef6cadf817e6314185c99ae751ffe6a67"
+}

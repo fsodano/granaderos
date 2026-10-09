@@ -65,6 +65,8 @@ export class WorldGeometry {
     else if(kind==='washstand-pitcher')geometry=washstandPitcherGeometry();
     else if(kind==='washstand-handle')geometry=washstandHandleGeometry();
     else if(kind==='washstand-towel')geometry=washstandTowelGeometry();
+    else if(kind==='hearth-pot')geometry=lathe([[0,0],[.082,0],[.105,.017],[.132,.070],[.140,.134],[.142,.153],[.139,.160],[.127,.160],[.125,.147],[.127,.130],[.119,.074],[.090,.022],[0,.022]]);
+    else if(kind==='hearth-bail')geometry=new TorusGeometry(1,.04,4,12,Math.PI);
     else throw Error(`Unknown world primitive ${kind}`);
     this.cache.set(kind,geometry);return geometry;
   }

@@ -3,7 +3,7 @@
 [Art records](README.md) · [Reference plan](../plans/tactical-reference-graphics.md)
 
 The bed now has a rounded mattress and pillow, broad blanket folds and one
-hanging edge. The matched house views show a softer outline beside the guard.
+hanging edge. The paired house views show a softer outline beside the guard.
 The hem is clearer close up. Fine folds remain quiet at normal tactical scale.
 
 | View | Before | After |
@@ -11,9 +11,11 @@ The hem is clearer close up. Fine folds remain quiet at normal tactical scale.
 | Normal scale, nominal 44-pixel actor | [Before](tactical-reference-2026-10-08/soft-bedding-before-44.jpg) | [After](tactical-reference-2026-10-08/soft-bedding-after-44.jpg) |
 | 2x scale, nominal 88-pixel actor | [Before](tactical-reference-2026-10-08/soft-bedding-before-88.jpg) | [After](tactical-reference-2026-10-08/soft-bedding-after-88.jpg) |
 
-Both scenes use the expanded house, initial guard position I7, the default
-camera and paused daylight at 12:02. The before scene is the accepted timber
-candidate. The after copy is byte exact to the fixed private bedding candidate.
+Both scenes use the expanded house, initial guard position I7 and the default
+camera. The before views are paused at 12:02; the after views are paused at 12:01.
+They do not establish an exact clock or animation phase match. The before scene
+is the accepted timber candidate. The after copy is byte exact to the fixed
+private bedding candidate.
 The browser reports no errors. Character assets and equipment remain exact.
 An ordinary I7→H7 order completes with the guard
 [beside the mattress](tactical-reference-2026-10-08/soft-bedding-movement.jpg).
@@ -58,9 +60,10 @@ retained without repeat. The build verifies 1,377 output files and 1,045 asset
 references. Node v25.1.0, npm 11.6.2 and Python 3.9.6 are pinned.
 
 The [input seal](../../artifacts/soft-bedding/input-seal.json) proves unchanged
-paths and bytes for all 10,418 non-document source, test, runtime and asset inputs,
-42,461 installed dependency files, the engine gitlink and its initialization state,
-runtime files and production output. The build source is
+paths and bytes for all 10,417 regular non-document source, test, runtime and asset
+files plus one engine gitlink: 10,418 input entries. It also verifies the engine
+initialization state, 42,461 installed dependency files, runtime files and
+production output. The build source is
 `88ad57daef746bcdb71fd596f4512079bbc09dbd8c07ca8c7e69e45afa33c094`.
 The [read-only comparison helper](../../artifacts/soft-bedding/verify-final-equivalence.py)
 supports an optional strict dependency and runtime check. The

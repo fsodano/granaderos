@@ -6,7 +6,7 @@ import {buildLoot} from './world-items';
 import {animateWorldNode,buildClimbLinks,buildLight,buildSmoke} from './world-lights';
 import {WorldMaterials,illuminationAt,worldKey} from './world-materials';
 import {activeClimbLinks,buildClimbCovers,climbOpenings,type ClimbOpening} from './world-climb-openings';
-import {buildProps} from './world-props';
+import {buildProps,visualPropRotation} from './world-props';
 import {buildTerrainChunk,buildUpperSurfaces,chunkKey,terrainChunks} from './world-terrain';
 import {buildVegetationChunk,softenedFoliage} from './world-vegetation';
 import type {SectorWorld,WorldInput,WorldNode,WorldOptions,WorldPoint,WorldTile} from './world-types';
@@ -64,7 +64,7 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
     if(independent.length)retain('independent-walls',signature([independent,lit(independent)]),()=>buildIndependentWalls(next,T,geometry,materials));
     const propChunks=new Map<string,NonNullable<WorldInput['terrain']['props']>[number][]>();
     for(const prop of next.terrain.props??[]){const key=`${prop.tacticalLevel??0}:${chunkKey(prop)}`,list=propChunks.get(key)??[];list.push(prop);propChunks.set(key,list);}
-    for(const [id,props]of propChunks)retain(`props:${id}`,signature([props,lit(props)]),()=>buildProps(id,props,next,T,geometry,materials));
+    for(const [id,props]of propChunks)retain(`props:${id}`,signature([props,props.map(prop=>visualPropRotation(prop,next)),lit(props)]),()=>buildProps(id,props,next,T,geometry,materials));
     if(next.terrain.climbLinks?.length){
       const elevation=(point:WorldPoint)=>point.elevation??(point.tacticalLevel?next.terrain.upperSurfaces:next.terrain.tiles)?.find(surface=>worldKey(surface)===worldKey(point))?.elevation??0;
       retain('climb-links',signature([next.terrain.climbLinks,next.terrain.climbLinks.map(link=>[elevation(link.from),elevation(link.to)]),lit(next.terrain.climbLinks.map(link=>link.from))]),()=>buildClimbLinks(next,T,geometry,materials));

@@ -1,0 +1,137 @@
+{
+  "comparedRoot": "/private/tmp/granaderos-piece15-corrected-final-candidate",
+  "scope": "all tracked and nonignored untracked input files; exclude docs/artifacts and ignored generated caches/outputs only",
+  "expectedInputFiles": 10420,
+  "mismatches": [],
+  "unexpectedInputPaths": [],
+  "expectedGitlinks": {
+    "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+  },
+  "actualGitlinks": {
+    "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+  },
+  "gitlinkPinsExact": true,
+  "gitlinkWorkingTreeErrors": [],
+  "sourceIdentityExact": true,
+  "sourceIdentity": "4c643a22f19ac4e7ad602de842705de8610f16ba0ef9ad268b0a6b2cbd032d65",
+  "gitRevisionMayDiffer": false,
+  "allNonDocumentInputHashesExact": true,
+  "runtimeAndDependencyProof": {
+    "root": "/private/tmp/granaderos-piece15-corrected-final-candidate",
+    "strictRuntimeAndDependencyCodeExact": true,
+    "identityErrors": [],
+    "usedNodeLinkageErrors": [],
+    "usedNodeLinkageFileCount": 25,
+    "genericTestPython": {
+      "version": "3.9.6",
+      "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e",
+      "PIL": "11.2.1",
+      "numpy": "1.26.4"
+    },
+    "genericTestPythonExactToOrchestrator": true,
+    "treeProofs": {
+      "webNodeModules": {
+        "capturedFileCount": 42461,
+        "actualFileCount": 42461,
+        "expectedManifestSha256": "1b804d74588845a39a9de49ff81024164c61cf456343b400fc49993580e8530f",
+        "actualManifestSha256": "1b804d74588845a39a9de49ff81024164c61cf456343b400fc49993580e8530f",
+        "exact": true,
+        "changedPathCount": 0,
+        "changedPaths": []
+      },
+      "npmDistribution": {
+        "capturedFileCount": 1766,
+        "actualFileCount": 1766,
+        "expectedManifestSha256": "b3a658707aff9d3b4450d613b7ed3d3a06668ac0957d532137b2acdd23b92a04",
+        "actualManifestSha256": "b3a658707aff9d3b4450d613b7ed3d3a06668ac0957d532137b2acdd23b92a04",
+        "exact": true,
+        "changedPathCount": 0,
+        "changedPaths": []
+      },
+      "pythonStdlib": {
+        "capturedFileCount": 1637,
+        "actualFileCount": 1637,
+        "expectedManifestSha256": "5cdb702604c414a16c12c7c651f6ab068e204906b4846320542f9844f5194413",
+        "actualManifestSha256": "5cdb702604c414a16c12c7c651f6ab068e204906b4846320542f9844f5194413",
+        "exact": true,
+        "changedPathCount": 0,
+        "changedPaths": []
+      },
+      "pythonPackage:PIL": {
+        "capturedFileCount": 129,
+        "actualFileCount": 129,
+        "expectedManifestSha256": "07b1fc1ead3e42ac41600335d65c1fe3ab19469953137c739406e39e4adf2c34",
+        "actualManifestSha256": "07b1fc1ead3e42ac41600335d65c1fe3ab19469953137c739406e39e4adf2c34",
+        "exact": true,
+        "changedPathCount": 0,
+        "changedPaths": []
+      },
+      "pythonPackage:numpy": {
+        "capturedFileCount": 910,
+        "actualFileCount": 910,
+        "expectedManifestSha256": "dee9359e8d2dd034cb9e4e2160cad7f196133b1437e6611885f45f6bab3cbc9c",
+        "actualManifestSha256": "dee9359e8d2dd034cb9e4e2160cad7f196133b1437e6611885f45f6bab3cbc9c",
+        "exact": true,
+        "changedPathCount": 0,
+        "changedPaths": []
+      }
+    },
+    "actualRuntimeIdentity": {
+      "node": {
+        "version": "v25.9.0",
+        "execPath": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "platform": "darwin",
+        "arch": "arm64",
+        "binarySha256": "32e234a5b6bec67d72a016f2baadf7fadf3afd328470b395b73af473fdee0d85"
+      },
+      "npm": {
+        "version": "11.12.1",
+        "cliPath": "/opt/homebrew/lib/node_modules/npm/bin/npm-cli.js",
+        "cliSha256": "8e5f6f3429f8cdbe693cdc29904e9d5a7b127a494bd15c804bd54c7403bfcbe7",
+        "packageRoot": "/opt/homebrew/lib/node_modules/npm"
+      },
+      "python": {
+        "version": "3.9.6",
+        "executable": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3.9",
+        "binarySha256": "bdea59019a38eb6600cc9e71e984a97fedadc406448431281e7657030f54987e",
+        "stdlibRoot": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+        "sharedFramework": {
+          "path": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Python3",
+          "sha256": "26422f0b21cb1e07236384afa4043c7401d39d09358c91df8bf3f5496f14712f"
+        }
+      },
+      "host": {
+        "system": "Darwin",
+        "release": "25.6.0",
+        "machine": "arm64",
+        "macVersion": "26.6.2"
+      },
+      "optionalPythonPackages": {
+        "PIL": {
+          "installed": true,
+          "version": "11.2.1",
+          "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL",
+          "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/PIL/__init__.py",
+          "entrySha256": "43828e12947b4bf5ec8f7d1fbceb2f47de311295f8294b15794c1a54fd5f53cd"
+        },
+        "numpy": {
+          "installed": true,
+          "version": "1.26.4",
+          "packageRoot": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy",
+          "entryFile": "/Users/fsodano/Library/Python/3.9/lib/python/site-packages/numpy/__init__.py",
+          "entrySha256": "22cd1535fa14d74ef6f457cca149ffdc80875f460be313b8f895273f78bc402e"
+        },
+        "trimesh": {
+          "installed": false
+        }
+      }
+    },
+    "generatedWebDependencyCachesReportedSeparately": {
+      "actualFileCount": 0,
+      "initialSealFileCount": 0,
+      "excludedFromCodeIdentity": true
+    },
+    "limits": "OS shared libraries and unused globally installed Python packages are outside these captured code inventories. Default Blender binary is separately pinned in other-runtime-pins.json. Exact used Node linkage and default Blender binary pins are checked from linked-runtime-pins.json. Generic test Python matches the orchestrator; no unused Python runtime is inventoried.",
+    "readOnly": true
+  }
+}

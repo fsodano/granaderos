@@ -1,0 +1,21 @@
+{
+  "candidate": "/tmp/granaderos-piece15-corrected-final-candidate",
+  "allRepositoryInputFiles": 11331,
+  "allRepositoryInputsExactBeforeAfter": true,
+  "inputDelta": [],
+  "trackedDiffCheck": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "stagedDiffCheck": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gitWorkingTreeStatus": "",
+  "strictSourceRuntimeDependencySelfEquivalenceExit": 0,
+  "implementationEditsForGates": false,
+  "rootWritten": false,
+  "sharedBrowserUsed": false
+}

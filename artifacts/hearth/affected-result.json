@@ -1,0 +1,39 @@
+{
+  "name": "affected",
+  "command": [
+    "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "--test",
+    "--test-concurrency=4",
+    "tests/three-hearth-orientation.test.mjs",
+    "tests/three-hearth-cookware.test.mjs",
+    "tests/three-sector-world.test.mjs",
+    "tests/renderer-furnishings-detail-fixture.test.mjs",
+    "tests/three-timber-furniture.test.mjs",
+    "tests/three-soft-bedding.test.mjs",
+    "tests/three-washstand-details.test.mjs",
+    "tests/three-presentation.test.mjs"
+  ],
+  "cwd": "/tmp/granaderos-piece15-corrected-final-candidate",
+  "startUTC": "2026-10-09T04:30:02.785647+00:00",
+  "finishUTC": "2026-10-09T04:30:08.941993+00:00",
+  "seconds": 6.156,
+  "exitCode": 0,
+  "environment": {
+    "GRANADEROS_TEST_CONCURRENCY": null,
+    "GRANADEROS_BASE_PATH": null,
+    "NODE_ENV": null,
+    "NODE_OPTIONS": null,
+    "CI": null
+  },
+  "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "implementationEditsForGate": false,
+  "actualCounts": {
+    "tests": 70,
+    "pass": 70,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "fileCount": 8
+}
