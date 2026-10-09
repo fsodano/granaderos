@@ -1,0 +1,434 @@
+[
+  {
+    "family": "granadero",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 44,
+    "baselineTotal": 27,
+    "maximumExtraPairs": 17
+  },
+  {
+    "family": "granadero",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "granadero",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "granadero",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "granadero",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "royalist",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 44,
+    "baselineTotal": 27,
+    "maximumExtraPairs": 17
+  },
+  {
+    "family": "royalist",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "royalist",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "royalist",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "royalist",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "gaucho",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 44,
+    "baselineTotal": 27,
+    "maximumExtraPairs": 17
+  },
+  {
+    "family": "gaucho",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "gaucho",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "gaucho",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "gaucho",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "worker",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 44,
+    "baselineTotal": 27,
+    "maximumExtraPairs": 17
+  },
+  {
+    "family": "worker",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "worker",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "worker",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "worker",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "surgeon",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 44,
+    "baselineTotal": 27,
+    "maximumExtraPairs": 17
+  },
+  {
+    "family": "surgeon",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "surgeon",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "surgeon",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "surgeon",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "friar",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 44,
+    "baselineTotal": 27,
+    "maximumExtraPairs": 17
+  },
+  {
+    "family": "friar",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "friar",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "friar",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 183,
+    "baselineTotal": 1069,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "friar",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [
+      110
+    ],
+    "candidateTotal": 37,
+    "baselineTotal": 292,
+    "maximumExtraPairs": 10
+  },
+  {
+    "family": "woman-scout",
+    "item": "1805",
+    "action": "aim",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 41,
+    "baselineTotal": 504,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-scout",
+    "item": "1805",
+    "action": "fire",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 86,
+    "baselineTotal": 560,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-scout",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 703,
+    "baselineTotal": 608,
+    "maximumExtraPairs": 37
+  },
+  {
+    "family": "woman-scout",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 277,
+    "baselineTotal": 1183,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-scout",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 670,
+    "baselineTotal": 1126,
+    "maximumExtraPairs": 3
+  },
+  {
+    "family": "woman-scout",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 277,
+    "baselineTotal": 1183,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-scout",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 670,
+    "baselineTotal": 1126,
+    "maximumExtraPairs": 3
+  },
+  {
+    "family": "woman-shawl",
+    "item": "1805",
+    "action": "aim",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 60,
+    "baselineTotal": 712,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-shawl",
+    "item": "1805",
+    "action": "fire",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 220,
+    "baselineTotal": 1063,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-shawl",
+    "item": "1805",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 1220,
+    "baselineTotal": 962,
+    "maximumExtraPairs": 93
+  },
+  {
+    "family": "woman-shawl",
+    "item": "1809",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 522,
+    "baselineTotal": 3405,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-shawl",
+    "item": "1809",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 1109,
+    "baselineTotal": 2353,
+    "maximumExtraPairs": 4
+  },
+  {
+    "family": "woman-shawl",
+    "item": "1813",
+    "action": "brace",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 522,
+    "baselineTotal": 3405,
+    "maximumExtraPairs": 0
+  },
+  {
+    "family": "woman-shawl",
+    "item": "1813",
+    "action": "stance:standing:crouched",
+    "newCrossingTimesMs": [],
+    "candidateTotal": 1109,
+    "baselineTotal": 2353,
+    "maximumExtraPairs": 4
+  }
+]

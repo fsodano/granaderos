@@ -153,6 +153,25 @@ The donor is applied once to fresh banks; a repeated application is rejected.
 The other standing cuts and hilt strike retain their released channels and
 still need separate physical and visual review.
 
+The three standing pistol, sabre and knife idles use the native unarmed left
+upper-arm and hand rotations. `authoring/standing_free_arm_rest.py` appends a
+small chest-forward forearm correction (male 4 degrees; female 12 degrees).
+`tools/characters-3d/build-standing-free-arm-rest.py` keeps the complete old bank
+as an exact binary prefix and retains all input clocks and other channels. Its
+compact receipt reconstructs the complete previous bank and manifest record.
+The normal library build runs this pass after native motion authoring. A repeat
+verifies the result without writes. The explicit historical bank context also
+verifies the completed prone-pistol and standing blade-wrist donors without
+running their writing installers. Historical graphics fixtures use the verified
+bank predecessor; runtime fixtures continue to load the published banks.
+
+The review checks all eight families at both tactical LODs, real secondary
+pistol seating, and the production 0.12-second idle transitions. Small hand and
+legwear triangle contacts can occur during the existing crouch transition;
+matched 44/88-pixel review is needed to assess visible breakthrough. This is
+not a proof of zero garment intersections in every pose.
+
+
 Reviewed clips retain the accepted 1.25 playback-rate reference. Gameplay cue
 timing remains authoritative; clip markers cannot issue attacks, spend AP or
 ammunition, apply damage, or move an actor. The other clips retain the existing

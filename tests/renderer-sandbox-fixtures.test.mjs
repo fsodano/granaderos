@@ -89,7 +89,7 @@ test('posture review exercises real travel for both prone anatomy banks',()=>{
 });
 
 test('all-family cloth review uses valid postures and ordinary travel with base attire',()=>{
-  for(const stance of ['standing','crouched','prone'])for(const gear of ['family','unarmed','rifle'])for(const facing of [3,5,7]){
+  for(const stance of ['standing','crouched','prone'])for(const gear of ['family','unarmed','rifle','pistol','sabre','knife','paired-pistols'])for(const facing of [3,5,7]){
     const id=`characters:${stance}:${gear}:${facing}`,battle=createRendererSandboxBattle(id);
     assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))));
     assert.equal(new Set(battle.units.map(unit=>unit.spriteAppearance)).size,8);
@@ -98,8 +98,11 @@ test('all-family cloth review uses valid postures and ordinary travel with base 
       for(const slot of ['headwear','outfit','legwear'])assert.equal(unit[slot],null,'base family attire is visible');
       if(gear==='unarmed')assert.equal(unit.activeSlot,'unarmed');
       if(gear==='rifle'){assert.equal(unit.weapon,1800);assert.equal(unit.activeSlot,'primary');}
+      if(['pistol','sabre','knife','paired-pistols'].includes(gear)){assert.equal(unit.weapon,{pistol:1805,sabre:1810,knife:1813,'paired-pistols':1805}[gear]);assert.equal(unit.activeSlot,'primary');}
+      if(gear==='paired-pistols'){assert.equal(unit.offHand.weapon,1806);assert.equal(unit.offHand.loaded,1);}
       const next=order(battle,{type:'move',unitId:unit.id,x:unit.x+1,y:unit.y});
       assert.equal(actor(next,unit.id).x,unit.x+1);assert.equal(actor(next,unit.id).stance,stance);
+      assert.equal(actor(next,unit.id).loaded,unit.loaded);assert.equal(actor(next,unit.id).ammo,unit.ammo);if(gear==='paired-pistols')assert.deepEqual(actor(next,unit.id).offHand,unit.offHand);
     }
   }
   for(const id of ['characters:unknown','characters:standing:unknown','characters:standing:family:2'])assert.throws(()=>createRendererSandboxBattle(id));

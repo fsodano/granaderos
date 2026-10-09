@@ -1,0 +1,21 @@
+{
+  "stage": "after-final-settled",
+  "gear": "paired-pistols",
+  "size": 44,
+  "metrics": {
+    "data-active-actors": "8",
+    "data-actors": "8",
+    "data-draw-calls": "128",
+    "data-effects": "0",
+    "data-engine": "three.js r184",
+    "data-fps": "120.0",
+    "data-geometries": "127",
+    "data-loaded-actors": "8",
+    "data-lod": "2",
+    "data-pending-actors": "0",
+    "data-sector-renderer": "three",
+    "data-textures": "252",
+    "data-triangles": "157875"
+  },
+  "errors": []
+}

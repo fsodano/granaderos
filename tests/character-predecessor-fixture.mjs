@@ -16,7 +16,7 @@ function view(stage){
 from pathlib import Path
 import json,sys
 root=Path.cwd();sys.path.insert(0,str(root/'tools/characters-3d'))
-from coarse_garment_context import create_historical_snapshot
+from standing_arm_context import create_historical_snapshot
 print(json.dumps(create_historical_snapshot(root,Path(sys.argv[1]),stage=sys.argv[2],link_assets=True)))
 `,join(folder,'root'),stage],{cwd:new URL('..',import.meta.url),encoding:'utf8',maxBuffer:1024*1024}));
  const publicRoot=pathToFileURL(join(receipt.root,'web/public')+'/'),assets=new URL('models/characters/',publicRoot);

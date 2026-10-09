@@ -1,0 +1,87 @@
+{
+  "finalManifestSha256": "dae5b37b99c0893bc65059011c450d2d8ade3978049ea937fad42ba629bca84e",
+  "earlierCapturesAreFinalByteCaptures": false,
+  "sourceCases": [
+    {
+      "kind": "crossfade",
+      "stage": "before",
+      "size": 44,
+      "sourceManifestSha256": "d46ce27774e014b76d91dd956b1a3466325f34b1b3aa5ea59f4bbed17725d49c",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "diagnosticPosePayloadMatchesFinalRuntimeFloat32": true
+    },
+    {
+      "kind": "crossfade",
+      "stage": "before",
+      "size": 88,
+      "sourceManifestSha256": "d46ce27774e014b76d91dd956b1a3466325f34b1b3aa5ea59f4bbed17725d49c",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "diagnosticPosePayloadMatchesFinalRuntimeFloat32": true
+    },
+    {
+      "kind": "crossfade",
+      "stage": "after",
+      "size": 44,
+      "sourceManifestSha256": "f55906dc0dbfba1fb2482231a611bdcdfb6f525a332e40d75861e857ef0f1204",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "diagnosticPosePayloadMatchesFinalRuntimeFloat32": true
+    },
+    {
+      "kind": "crossfade",
+      "stage": "after",
+      "size": 88,
+      "sourceManifestSha256": "f55906dc0dbfba1fb2482231a611bdcdfb6f525a332e40d75861e857ef0f1204",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "diagnosticPosePayloadMatchesFinalRuntimeFloat32": true
+    },
+    {
+      "kind": "offhand",
+      "stage": "before",
+      "size": 44,
+      "sourceManifestSha256": "06a096d687652e5f41bc5399d7b7a7af333c46a6f362469a46058501d7ed4fa8",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "bankRenderGraphAndCompleteBinaryExact": true
+    },
+    {
+      "kind": "offhand",
+      "stage": "before",
+      "size": 88,
+      "sourceManifestSha256": "06a096d687652e5f41bc5399d7b7a7af333c46a6f362469a46058501d7ed4fa8",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "bankRenderGraphAndCompleteBinaryExact": true
+    },
+    {
+      "kind": "offhand",
+      "stage": "after",
+      "size": 44,
+      "sourceManifestSha256": "e20a3349542e223afcd79559dcd06db1b5be691936a25fd3f390bc115054168a",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "bankRenderGraphAndCompleteBinaryExact": true
+    },
+    {
+      "kind": "offhand",
+      "stage": "after",
+      "size": 88,
+      "sourceManifestSha256": "e20a3349542e223afcd79559dcd06db1b5be691936a25fd3f390bc115054168a",
+      "finalManifestBytesEqual": false,
+      "usedBodyEquipmentTexturesExact": true,
+      "bankRenderGraphAndCompleteBinaryExact": true
+    }
+  ],
+  "productionCrossfadePoseMaximumDelta": 0,
+  "offhandRuntimeMatrixMaximumDelta": 0,
+  "diagnosticFloat32RoundingMaximumDelta": 5.960463944632011e-08,
+  "finalPairedIndex": {
+    "pairs": 288,
+    "frames": 576,
+    "allCandidateIndicesUseExactFinalManifestAndUsedAssets": true
+  },
+  "method": "Earlier offhand receipt-only sources reconstructed by exact SHA; crossfade diagnostic banks are Float32 static snapshots of final production runtime poses. Earlier captures are equivalent evidence, not final-byte renders. Final paired index candidates are exact final-byte renders."
+}

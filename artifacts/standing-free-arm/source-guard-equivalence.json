@@ -1,0 +1,46 @@
+{
+  "method": "complete-render-json-and-binary-equivalence",
+  "banks": {
+    "male": {
+      "completeBinaryExact": true,
+      "completeBinarySha256": "d6902c3698ac632becad87e0709011fed4c07c075884e1efe57cbd0fd3ec5861",
+      "renderJSONExact": true,
+      "animations": 334,
+      "accessors": 17349,
+      "bufferViews": 17349,
+      "predecessorSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "sameExactPredecessor": true,
+      "receiptOnlyChange": "installer source sha256",
+      "beforeSha256": "016ca5b422031ddd206981222c672b466551a4e47b9a9947cb82f64ce9abbc23",
+      "afterSha256": "6ff9500f182aedf58b0509386c34f2a244f17a3b7ff86af49fcf2a3f8ea4bcee",
+      "beforeBytes": 12571600,
+      "afterBytes": 12571600
+    },
+    "female": {
+      "completeBinaryExact": true,
+      "completeBinarySha256": "83b591dd9933c0961a70c80d55989f51009c9b8f2170e028c9d579938849ee8e",
+      "renderJSONExact": true,
+      "animations": 334,
+      "accessors": 17142,
+      "bufferViews": 17142,
+      "predecessorSha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e",
+      "sameExactPredecessor": true,
+      "receiptOnlyChange": "installer source sha256",
+      "beforeSha256": "a60555c3c8befbce014a1493a604dc3d7558855c4efbbfe276d52f99392172a7",
+      "afterSha256": "2d10a8b324b65fde3e6fed63186026247da5db5e03d0608df3581738597c2026",
+      "beforeBytes": 12182184,
+      "afterBytes": 12182184
+    }
+  },
+  "allUnownedManifestJSONExact": true,
+  "allUnownedCharacterAssetsExact": 226,
+  "rootCandidateAndCharacterAssetsUnchanged": true,
+  "recipeSourcePins": {
+    "assets/source/characters-3d/authoring/standing_free_arm_rest.py": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364",
+    "tools/characters-3d/build-standing-free-arm-rest.py": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+    "tools/characters-3d/standing_arm_context.py": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d"
+  },
+  "geometryOrRotationPayloadBytesChanged": 0,
+  "drawOrTriangleCostChange": 0,
+  "noNewVisualReviewRequiredForReceiptOnlyChange": true
+}

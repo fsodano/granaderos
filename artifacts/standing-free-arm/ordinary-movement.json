@@ -1,0 +1,15 @@
+{
+  "data-active-actors": "8",
+  "data-actors": "8",
+  "data-draw-calls": "130",
+  "data-effects": "0",
+  "data-engine": "three.js r184",
+  "data-fps": "120.0",
+  "data-geometries": "75",
+  "data-loaded-actors": "8",
+  "data-lod": "1",
+  "data-pending-actors": "0",
+  "data-sector-renderer": "three",
+  "data-textures": "130",
+  "data-triangles": "390037"
+}

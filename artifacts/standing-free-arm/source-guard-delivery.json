@@ -1,0 +1,77 @@
+{
+  "privateRoot": "/private/tmp/granaderos-standing-free-arm-source-guard",
+  "privateBase": "601afae265526eaa0f9c19db4809ccb5ddcc3ae5",
+  "privateCommit": "90cf8792871932590bddcb52cf5dd610a48efd1d",
+  "patch": "/tmp/granaderos-standing-free-arm-source-guard.patch",
+  "patchSha256": "32002ebe30d8fc8338cae1734466a5c6e1018befa746cdd4a237001f47b9b6d8",
+  "changedFiles": {
+    "tools/characters-3d/build-standing-free-arm-rest.py": {
+      "beforeSha256": "12a2510952ecdd57d7ebd96471beae9497cfdee81a2eb26b8df50e0f58b6c6af",
+      "afterSha256": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+      "afterBytes": 7813
+    },
+    "tests/characters-standing-free-arm-rest.test.mjs": {
+      "beforeSha256": "fbce3091ae8b7175cdc39995fd693abc89cdde17e7f7e8cff73ca34dcec6f9f3",
+      "afterSha256": "ecefb7d2e1de4b8230a7db3fc54870f2790daf8803035df3bb983a49782963b0",
+      "afterBytes": 16246
+    },
+    "web/public/models/characters/male-animations.glb": {
+      "beforeSha256": "016ca5b422031ddd206981222c672b466551a4e47b9a9947cb82f64ce9abbc23",
+      "afterSha256": "6ff9500f182aedf58b0509386c34f2a244f17a3b7ff86af49fcf2a3f8ea4bcee",
+      "afterBytes": 12571600
+    },
+    "web/public/models/characters/female-animations.glb": {
+      "beforeSha256": "a60555c3c8befbce014a1493a604dc3d7558855c4efbbfe276d52f99392172a7",
+      "afterSha256": "2d10a8b324b65fde3e6fed63186026247da5db5e03d0608df3581738597c2026",
+      "afterBytes": 12182184
+    },
+    "web/public/models/characters/manifest.json": {
+      "beforeSha256": "dae5b37b99c0893bc65059011c450d2d8ade3978049ea937fad42ba629bca84e",
+      "afterSha256": "4a58362a49131254a25c7be33b5de285c065166f5dcd0f0af8994b1506caa244",
+      "afterBytes": 1290472
+    }
+  },
+  "artifacts": {
+    "/tmp/granaderos-standing-free-arm-source-guard.patch": {
+      "sha256": "32002ebe30d8fc8338cae1734466a5c6e1018befa746cdd4a237001f47b9b6d8",
+      "bytes": 12001
+    },
+    "/tmp/granaderos-standing-free-arm-source-guard-input-pins.json": {
+      "sha256": "68cfaa569ee551a1c12d2bc03b6ec8f0e64f1e2051e2439bef9c6240d8dd2603",
+      "bytes": 33124
+    },
+    "/tmp/granaderos-standing-free-arm-source-guard-receipt.json": {
+      "sha256": "acd5fabffa56c8707b580a1897fa67f400f17050e47eb8a794a75a53fd2f9a19",
+      "bytes": 909
+    },
+    "/tmp/granaderos-standing-free-arm-source-guard-equivalence.json": {
+      "sha256": "9715953232ecd8d22ad5cb22e57e2073fa61d45eeb4d98187c7a332aef89e997",
+      "bytes": 2138
+    }
+  },
+  "validation": {
+    "affectedTests": {
+      "command": "node --test tests/characters-standing-free-arm-rest.test.mjs tests/renderer-sandbox-fixtures.test.mjs",
+      "passed": 20,
+      "failed": 0,
+      "durationMs": 103503.777917
+    },
+    "sourceDriftCases": [
+      "first preparation",
+      "final preflight"
+    ],
+    "bothBanksPreparedPerCase": 2,
+    "publishedWritesPerDriftCase": 0,
+    "typecheck": true,
+    "diffCheck": true,
+    "rootApplyCheck": true,
+    "rootFilesUnchanged": true
+  },
+  "renderCostChange": {
+    "geometryBytes": 0,
+    "rotationPayloadBytes": 0,
+    "triangles": 0,
+    "drawCalls": 0
+  },
+  "visualLimit": "The guard and receipt update are render equivalent. Existing pose and garment contact limits remain as documented in the original piece6 candidate."
+}
