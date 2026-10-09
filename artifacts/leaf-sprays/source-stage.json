@@ -1,0 +1,47 @@
+{
+  "piece": 11,
+  "stage": "piece11-leaf-sprays",
+  "integrationBase": "c21ab8cebdc56838510223388deac5dad0e81b8c",
+  "stageBeforeCommit": "e3973819bf7d439bca7b411414a65443a2555cd9",
+  "stageAfterCommit": "84b7b4ff9829adf187688a9803430bed4f0e3351",
+  "originalPatch": "/tmp/granaderos-leaf-sprays-private.patch",
+  "originalPatchSha256": "035dd26137284cc3a2852b3864b876ec99bc51bbcca33bc221e82d4c2cefd99c",
+  "adaptedPatch": "/tmp/granaderos-future-pieces-integration-evidence/piece11-leaf-sprays.patch",
+  "adaptedPatchSha256": "035dd26137284cc3a2852b3864b876ec99bc51bbcca33bc221e82d4c2cefd99c",
+  "sourceHashes": {
+    "tests/three-leaf-sprays.test.mjs": {
+      "beforeSha256": null,
+      "afterSha256": "e843e5682d001a3aa70406354d0e5306fda3ebccfb3a4c67a7ecb3351de53135",
+      "afterGitBlob": "c954dc65645449e2939f9ee6bd6118bdb06dee49"
+    },
+    "web/lib/three/world-geometry.ts": {
+      "beforeSha256": "73d1f95fc3004fd90297792113a5dcbac51dc85b8b829f9f613bf6b2af1826c4",
+      "afterSha256": "bc6f3d010e2816df9f0ea54747866bc5a5e72f03745d8dcd0859381838b59e9b",
+      "afterGitBlob": "b310e587cad9f6145e7e16ea9f6770d27ec63909"
+    },
+    "web/lib/three/world-leaf-sprays.ts": {
+      "beforeSha256": null,
+      "afterSha256": "c07fe5fa5a7efe99a5ab4fae95f4f247cd433fb0ec72638b861e4e4d67a8c6cf",
+      "afterGitBlob": "06d38a92f0db987beeb8276ed4c34135f4ad7f66"
+    },
+    "web/lib/three/world-vegetation.ts": {
+      "beforeSha256": "61a5c54e192dd03e42c20c96b4bf98dd96940fc4cb5175c8284cca049664fc45",
+      "afterSha256": "5af24be1a2d5270ef2fdab834eb7b2884729808bb29b857104bcdbc3bbc737d1",
+      "afterGitBlob": "477417320a71eaa13a7b52e17bbfa7b3819a66e7"
+    }
+  },
+  "adjustment": "No integration adjustment.",
+  "deltaProof": {
+    "label": "piece11-leaf-sprays",
+    "deltaBodiesExact": true,
+    "files": [
+      "tests/three-leaf-sprays.test.mjs",
+      "web/lib/three/world-geometry.ts",
+      "web/lib/three/world-leaf-sprays.ts",
+      "web/lib/three/world-vegetation.ts"
+    ],
+    "addedLines": 100,
+    "removedLines": 4
+  },
+  "sourceHashScope": "Exact cumulative output at this stage; shared files gain later independent additions."
+}

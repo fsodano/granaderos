@@ -1,0 +1,88 @@
+{
+  "quick": {
+    "command": [
+      "npm",
+      "run",
+      "test:quick"
+    ],
+    "startedAt": "2026-10-09T02:54:28.189213+00:00",
+    "finishedAt": "2026-10-09T03:35:38.932244+00:00",
+    "wallSeconds": 2470.703,
+    "exitCode": 0,
+    "log": "/tmp/granaderos-piece11-final-gate-evidence/quick.log",
+    "logSha256": "9cd4bdf33499cca915dc9a6290cc4e2f4d99e3b51c1b7ce1aa947563df25ce6c",
+    "logBytes": 1351314,
+    "summary": {
+      "counts": {
+        "tests": 6811,
+        "failed": 0,
+        "passed": 6811,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 6668,
+        "suites": 0
+      },
+      "duration_ms": 2470320.62975,
+      "success": true
+    },
+    "selectedFiles": 894,
+    "completedFiles": 894,
+    "concurrency": 4,
+    "cpus": 12,
+    "runnerReportSha256": "75d9fc5e4107935d6f34906f4decd8452ae7ed893d1f14e5d6b309330ec90258",
+    "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+    "inputFilesUnchanged": true
+  },
+  "typecheck": {
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "startedAt": "2026-10-09T03:35:43.091546+00:00",
+    "finishedAt": "2026-10-09T03:35:53.462744+00:00",
+    "wallSeconds": 10.371,
+    "exitCode": 0,
+    "log": "/tmp/granaderos-piece11-final-gate-evidence/typecheck.log",
+    "logSha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "logBytes": 117,
+    "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+    "inputFilesUnchanged": true
+  },
+  "production-build": {
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "startedAt": "2026-10-09T03:35:56.889258+00:00",
+    "finishedAt": "2026-10-09T03:36:14.400173+00:00",
+    "wallSeconds": 17.511,
+    "exitCode": 0,
+    "log": "/tmp/granaderos-piece11-final-gate-evidence/production-build.log",
+    "logSha256": "955827207459f34a303c022c0ff1328d65117b1bbdb3d239bbf5dadd250b4867",
+    "logBytes": 1881,
+    "buildIdentity": {
+      "version": "0.4.0-dev.1",
+      "id": "1be6fd7e6d96",
+      "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+      "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+    },
+    "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+    "inputFilesUnchanged": true
+  },
+  "diff-check": {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "84b7b4ff9829adf187688a9803430bed4f0e3351",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "wallSeconds": 0.465,
+    "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "workingTreeClean": true
+  }
+}

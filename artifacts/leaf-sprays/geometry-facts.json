@@ -1,0 +1,97 @@
+{
+  "piece": 11,
+  "title": "Broken leaf silhouettes",
+  "privateCheckout": "/tmp/granaderos-terrain-edge-private",
+  "commit": "ad5ba9b8b95067879c5ef250266e67d507c3a95e",
+  "dependsOnPrivatePiece10": "a7ebabd3d4aa1cd6399ed4f98852f9ec8783b08e",
+  "patch": "/tmp/granaderos-leaf-sprays-private.patch",
+  "patchSha256": "035dd26137284cc3a2852b3864b876ec99bc51bbcca33bc221e82d4c2cefd99c",
+  "allowlist": [
+    "web/lib/three/world-leaf-sprays.ts",
+    "web/lib/three/world-geometry.ts",
+    "web/lib/three/world-vegetation.ts",
+    "tests/three-leaf-sprays.test.mjs"
+  ],
+  "files": {
+    "web/lib/three/world-leaf-sprays.ts": {
+      "sha256": "c07fe5fa5a7efe99a5ab4fae95f4f247cd433fb0ec72638b861e4e4d67a8c6cf",
+      "bytes": 2617
+    },
+    "web/lib/three/world-geometry.ts": {
+      "sha256": "bc6f3d010e2816df9f0ea54747866bc5a5e72f03745d8dcd0859381838b59e9b",
+      "bytes": 9292
+    },
+    "web/lib/three/world-vegetation.ts": {
+      "sha256": "5af24be1a2d5270ef2fdab834eb7b2884729808bb29b857104bcdbc3bbc737d1",
+      "bytes": 4725
+    },
+    "tests/three-leaf-sprays.test.mjs": {
+      "sha256": "e843e5682d001a3aa70406354d0e5306fda3ebccfb3a4c67a7ecb3351de53135",
+      "bytes": 7856
+    }
+  },
+  "scope": "Replace closed crown lobes with open folded leaf diamonds, retaining all old hull support corners. Useful trunks, root flares, branches and forks stay exact. No simulation, actor or visibility logic is added.",
+  "recipe": "Each leaf tip is one old hull support corner. Root=0.28*tip; the folded sides blend 0.45*tip+0.38*an adjacent old corner. All leaf corners stay inside the old convex crown envelope. The unchanged original seeded lobe transforms preserve the exact tree/shrub bounds and poplar proportions.",
+  "preservation": [
+    "Every original crown hull plane is retained, proven independently from source and output corner sets.",
+    "Native tree/shrub bounds and complete trunk/fork position, normal and colour streams remain exact in paired inputs.",
+    "Leaf/poplar/trunk material keys, roughness 0.94, opaque/faded opacity 1/0.42, depthWrite and shadow policy remain unchanged.",
+    "Building cells remain excluded. Removed or unadmitted cells are not rendered. Same-level nearby actor points retain the existing canopy fade.",
+    "Presentation time and simulation RNG cannot reroll the canopy. Unchanged chunks reuse their geometry; faded geometry releases and rebuilds under existing cache/disposal rules."
+  ],
+  "cost": {
+    "perCrownTrianglesBefore": 80,
+    "perCrownTrianglesAfter": [
+      64,
+      70,
+      70
+    ],
+    "perTreeTrianglesBefore": 2112,
+    "perTreeTrianglesAfter": 1968,
+    "perScrubTrianglesBefore": 320,
+    "perScrubTrianglesAfter": 268,
+    "extraMaterialBatches": 0,
+    "newPrimitiveCacheBytes": 22032,
+    "retainedCrownCacheBytes": 31680,
+    "totalCanopyPrimitiveCacheBytes": 53712,
+    "treeMergedBufferBytesBefore": 278784,
+    "treeMergedBufferBytesAfter": 259776,
+    "note": "Three cached leaf primitives. Old crown inputs remain cached, so the one-time primitive cache grows by 22,032 bytes while merged tree buffers shrink. This is typed-array storage, not a GPU allocation or timing benchmark."
+  },
+  "projection": {
+    "method": "Exact projected DoubleSide native foliage triangle union at pixel centres; trunk excluded. No lighting, shadows, texture, alpha accumulation or browser claims. Fixed25/50 pixels per metre and6m review canvas.",
+    "gapRatioAt44": [
+      0.2209695603156708,
+      0.33448993754337264
+    ],
+    "gapRatioAt88": [
+      0.22338322507766167,
+      0.32709998491931835
+    ],
+    "afterCoverageRatioAt44": [
+      0.6655100624566274,
+      0.7790304396843292
+    ]
+  },
+  "checks": {
+    "affected": "49/49 passed",
+    "typecheck": "passed",
+    "diffCheck": "passed",
+    "reversePatchApplyCheck": "passed",
+    "privateRenders": 40,
+    "liveBrowser": "pending root review",
+    "quickBuild": "root owned; not run here"
+  },
+  "artifacts": {
+    "probe": "/tmp/granaderos-leaf-sprays-private/probe.json",
+    "front": "/tmp/granaderos-leaf-sprays-private/paired-front.png",
+    "rear": "/tmp/granaderos-leaf-sprays-private/paired-rear.png",
+    "frames": "/tmp/granaderos-leaf-sprays-private/frames.json",
+    "gapMeasurements": "/tmp/granaderos-leaf-sprays-private/projected-gaps.json"
+  },
+  "limits": [
+    "The wider final recipe is readable in the private 44/88 pairs. The earlier narrow trial was rejected as nearly bare; it is not part of the patch.",
+    "Offline fixed-light Cycles 20 samples use the exact native geometry, pigment palette and vertex shades. Browser lighting, alpha accumulation, camera movement, fog and final visual acceptance remain untested.",
+    "Root worktree/docs/public assets, shared browser and PRs were not changed."
+  ]
+}

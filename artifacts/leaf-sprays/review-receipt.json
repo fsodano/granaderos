@@ -1,0 +1,234 @@
+{
+  "piece": 11,
+  "status": "accepted; all final gates, full root input/dependency proof and docs pass",
+  "live": {
+    "normal": {
+      "drawsBeforeAfter": 68,
+      "trianglesBefore": 122776,
+      "trianglesAfter": 115456,
+      "geometriesBeforeAfter": 69,
+      "texturesBeforeAfter": 40,
+      "fpsAfter": 120.0
+    },
+    "close": {
+      "drawsBeforeAfter": 62,
+      "trianglesBefore": 178132,
+      "trianglesAfter": 171540,
+      "geometriesBeforeAfter": 62,
+      "texturesBeforeAfter": 25,
+      "fpsAfter": 120.0
+    },
+    "loadedActors": 1,
+    "pendingActors": 0,
+    "route": [
+      "I9",
+      "J10",
+      "K11",
+      "M11",
+      "O11"
+    ],
+    "movementCompleted": true,
+    "canopyFadeAtK11RestoredAtO11": true,
+    "browserErrors": 0
+  },
+  "geometry": {
+    "treeTrianglesBefore": 2112,
+    "treeTrianglesAfter": 1968,
+    "scrubTrianglesBefore": 320,
+    "scrubTrianglesAfter": 268,
+    "newCachedTypedArrayBytes": 22032,
+    "addedMaterialBatches": 0,
+    "addedTextures": 0
+  },
+  "captures": {
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-before-canopy-movement.jpg": {
+      "sha256": "4bb18ed046ca4023734449498107918440ddfa30192df075fc29de28af63301d",
+      "bytes": 95633
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-after-44.jpg": {
+      "sha256": "696c4343c7365047933be53ecf1c5f0f2ef7c7d1d2358ecd72b59d0e9ae1b9e8",
+      "bytes": 101223
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-before-88.jpg": {
+      "sha256": "eced517d95964e879ce5b540929c91941d50caf49752fbc29347b9a57984974b",
+      "bytes": 114911
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-movement.jpg": {
+      "sha256": "0455cfb4a316e128e0613db923fad7692de190574c1becfcabab557fedd70e49",
+      "bytes": 101384
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-native-front.png": {
+      "sha256": "97e9f77acb4c39a5a3292e70619b2571e827b17b9bfcebb1739924d75b2f5815",
+      "bytes": 960002
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-before-44.jpg": {
+      "sha256": "b4c5b60c25c9634f475af7635d86e743ab558cab6bef92a97207b9710846facf",
+      "bytes": 95674
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-after-88.jpg": {
+      "sha256": "edecba15047ed87e061a1cabe564e05d75a09c0643811b8b8195a4f4b22770ea",
+      "bytes": 133589
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-native-rear.png": {
+      "sha256": "4c0f851c72c8730a6887b9517c16c21810d0e030ebd5de65f71e938c7cd255f0",
+      "bytes": 842746
+    },
+    "docs/art/tactical-reference-2026-10-08/leaf-sprays-canopy-movement.jpg": {
+      "sha256": "82e821cf911f98fe5d9222a1314b95d83f00727ec4255f86ec816b76833a14b5",
+      "bytes": 101036
+    }
+  },
+  "gates": {
+    "quick": {
+      "command": [
+        "npm",
+        "run",
+        "test:quick"
+      ],
+      "startedAt": "2026-10-09T02:54:28.189213+00:00",
+      "finishedAt": "2026-10-09T03:35:38.932244+00:00",
+      "wallSeconds": 2470.703,
+      "exitCode": 0,
+      "log": "/tmp/granaderos-piece11-final-gate-evidence/quick.log",
+      "logSha256": "9cd4bdf33499cca915dc9a6290cc4e2f4d99e3b51c1b7ce1aa947563df25ce6c",
+      "logBytes": 1351314,
+      "summary": {
+        "counts": {
+          "tests": 6811,
+          "failed": 0,
+          "passed": 6811,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 6668,
+          "suites": 0
+        },
+        "duration_ms": 2470320.62975,
+        "success": true
+      },
+      "selectedFiles": 894,
+      "completedFiles": 894,
+      "concurrency": 4,
+      "cpus": 12,
+      "runnerReportSha256": "75d9fc5e4107935d6f34906f4decd8452ae7ed893d1f14e5d6b309330ec90258",
+      "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+      "inputFilesUnchanged": true
+    },
+    "typecheck": {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "startedAt": "2026-10-09T03:35:43.091546+00:00",
+      "finishedAt": "2026-10-09T03:35:53.462744+00:00",
+      "wallSeconds": 10.371,
+      "exitCode": 0,
+      "log": "/tmp/granaderos-piece11-final-gate-evidence/typecheck.log",
+      "logSha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+      "logBytes": 117,
+      "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+      "inputFilesUnchanged": true
+    },
+    "production-build": {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-09T03:35:56.889258+00:00",
+      "finishedAt": "2026-10-09T03:36:14.400173+00:00",
+      "wallSeconds": 17.511,
+      "exitCode": 0,
+      "log": "/tmp/granaderos-piece11-final-gate-evidence/production-build.log",
+      "logSha256": "955827207459f34a303c022c0ff1328d65117b1bbdb3d239bbf5dadd250b4867",
+      "logBytes": 1881,
+      "buildIdentity": {
+        "version": "0.4.0-dev.1",
+        "id": "1be6fd7e6d96",
+        "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+        "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+      },
+      "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+      "inputFilesUnchanged": true
+    },
+    "diff-check": {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "84b7b4ff9829adf187688a9803430bed4f0e3351",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "wallSeconds": 0.465,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "workingTreeClean": true
+    }
+  },
+  "rootSourceEquivalence": {
+    "root": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+    "expectedOrderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+    "actualOrderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+    "expectedFiles": 10413,
+    "actualFiles": 10413,
+    "missing": [],
+    "extra": [],
+    "changed": [],
+    "exactRuntimeTestAssetAndConfigurationInputs": true,
+    "expectedEngine": {
+      "path": "engine",
+      "mode": "160000",
+      "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+      "indexStage": 0,
+      "initialized": false,
+      "head": null,
+      "dirtyPorcelain": null,
+      "uninitializedDirectoryContents": [],
+      "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+    },
+    "actualEngine": {
+      "path": "engine",
+      "mode": "160000",
+      "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+      "indexStage": 0,
+      "initialized": false,
+      "head": null,
+      "dirtyPorcelain": null,
+      "uninitializedDirectoryContents": [],
+      "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+    },
+    "engineGitlinkInitializationAndDirtyStateExact": true,
+    "expectedInitialSourceIdentity": {
+      "version": "0.4.0-dev.1",
+      "id": "1be6fd7e6d96",
+      "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+      "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+    },
+    "actualSourceIdentity": {
+      "version": "0.4.0-dev.1",
+      "id": "1be6fd7e6d96",
+      "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+      "revision": "cf5805c49641e1b7fc1c91b35ad744e05677ff24"
+    },
+    "sourceAndVersionExact": true,
+    "expectedProductionIdentity": {
+      "version": "0.4.0-dev.1",
+      "id": "1be6fd7e6d96",
+      "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+      "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+    },
+    "productionGateSealed": true,
+    "currentSourceAndVersionEqualSealedProduction": true,
+    "dependenciesExact": true,
+    "expectedDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+    "actualDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f"
+  },
+  "sourceBase": "cf5805c49641e1b7fc1c91b35ad744e05677ff24",
+  "portableInputManifest": {
+    "privateOriginalSha256": "1e48c978b1195f7c5e357b7f922d0772151daef3fdcb26636ff5cc52e0089d49",
+    "extractedField": "orderedIntegrationInputs",
+    "exactExtractedRows": true,
+    "compactSerializationOnly": true
+  }
+}

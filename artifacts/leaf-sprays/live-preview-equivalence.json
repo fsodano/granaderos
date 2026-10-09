@@ -1,0 +1,37 @@
+{
+  "preview": "/tmp/granaderos-piece11-live-preview",
+  "intendedPort": 3205,
+  "commit": "219f6866f16bb97f5fbe1b282eade56f9174ca73",
+  "tree": "6c09d977b56d7060a110b56d500c2d9cd6759695",
+  "copyWallSeconds": 53.21,
+  "copiedAt": "2026-10-09T03:25:27.930327+00:00",
+  "sourceBeforeAndAfterExact": true,
+  "completeProjectFiles": 11324,
+  "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+  "orderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+  "comparison": {
+    "root": "/private/tmp/granaderos-piece11-live-preview",
+    "expectedOrderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+    "actualOrderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+    "expectedFiles": 10413,
+    "actualFiles": 10413,
+    "missing": [],
+    "extra": [],
+    "changed": [],
+    "exactRuntimeTestAssetAndConfigurationInputs": true,
+    "dependenciesExact": true,
+    "expectedDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+    "actualDependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f"
+  },
+  "buildIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "1be6fd7e6d96",
+    "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+    "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+  },
+  "dependenciesPhysicallyCopied": true,
+  "externalDependencyLinks": 0,
+  "gateCandidateWrites": 0,
+  "rootWrites": 0,
+  "serverLaunched": false
+}

@@ -1,0 +1,350 @@
+{
+  "sealedAt": "2026-10-09T03:37:37.192734+00:00",
+  "candidate": "/tmp/granaderos-piece11-final-gate-candidate",
+  "preview": "/tmp/granaderos-piece11-live-preview",
+  "commit": "219f6866f16bb97f5fbe1b282eade56f9174ca73",
+  "tree": "6c09d977b56d7060a110b56d500c2d9cd6759695",
+  "composition": {
+    "stage11Base": "84b7b4ff9829adf187688a9803430bed4f0e3351",
+    "stage11Tree": "6903fe5278a91ca42c55178f541feaaf05b03d85",
+    "integrationCheckout": "/tmp/granaderos-future-pieces-integration",
+    "overlayFiles": [
+      "assets/source/characters-3d/README.md",
+      "assets/source/characters-3d/authoring/standing_free_arm_rest.py",
+      "tools/characters-3d/build-standing-free-arm-rest.py",
+      "tools/characters-3d/standing_arm_context.py",
+      "tools/characters-3d/build-library.py",
+      "tests/character-predecessor-fixture.mjs",
+      "tests/standing-bank-predecessor-fixture.mjs",
+      "tests/characters-coarse-garment-surfaces.test.mjs",
+      "tests/characters-standing-free-arm-rest.test.mjs",
+      "tests/renderer-sandbox-fixtures.test.mjs",
+      "web/app/graphics-review/page.tsx",
+      "web/app/renderer-sandbox/fixtures.js",
+      "web/public/models/characters/female-animations.glb",
+      "web/public/models/characters/male-animations.glb",
+      "web/public/models/characters/manifest.json"
+    ],
+    "fixturePatch": "/tmp/granaderos-terrain-detail-fixture-review/terrain-detail-fixture-extension.patch",
+    "fixturePatchSha256": "07b33f7c6750d48e558e445744b2f6b83d970e75a6e601ae77913e9970c20a8f",
+    "fixturePatchAppliedExact": true,
+    "rootWrites": 0,
+    "privateCandidate": "/tmp/granaderos-piece11-final-gate-candidate",
+    "privateCommit": "219f6866f16bb97f5fbe1b282eade56f9174ca73",
+    "privateTree": "6c09d977b56d7060a110b56d500c2d9cd6759695",
+    "compositionChangedFiles": [
+      "assets/source/characters-3d/README.md",
+      "tests/character-predecessor-fixture.mjs",
+      "tests/characters-coarse-garment-surfaces.test.mjs",
+      "tests/renderer-sandbox-fixtures.test.mjs",
+      "tools/characters-3d/build-library.py",
+      "web/app/graphics-review/page.tsx",
+      "web/app/renderer-sandbox/fixtures.js",
+      "web/public/models/characters/female-animations.glb",
+      "web/public/models/characters/male-animations.glb",
+      "web/public/models/characters/manifest.json",
+      "assets/source/characters-3d/authoring/standing_free_arm_rest.py",
+      "tests/characters-standing-free-arm-rest.test.mjs",
+      "tests/renderer-terrain-detail-extension.test.mjs",
+      "tests/standing-bank-predecessor-fixture.mjs",
+      "tools/characters-3d/build-standing-free-arm-rest.py",
+      "tools/characters-3d/standing_arm_context.py"
+    ],
+    "dependenciesIndependent": true
+  },
+  "gates": {
+    "quick": {
+      "command": [
+        "npm",
+        "run",
+        "test:quick"
+      ],
+      "startedAt": "2026-10-09T02:54:28.189213+00:00",
+      "finishedAt": "2026-10-09T03:35:38.932244+00:00",
+      "wallSeconds": 2470.703,
+      "exitCode": 0,
+      "log": "/tmp/granaderos-piece11-final-gate-evidence/quick.log",
+      "logSha256": "9cd4bdf33499cca915dc9a6290cc4e2f4d99e3b51c1b7ce1aa947563df25ce6c",
+      "logBytes": 1351314,
+      "summary": {
+        "counts": {
+          "tests": 6811,
+          "failed": 0,
+          "passed": 6811,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 6668,
+          "suites": 0
+        },
+        "duration_ms": 2470320.62975,
+        "success": true
+      },
+      "selectedFiles": 894,
+      "completedFiles": 894,
+      "concurrency": 4,
+      "cpus": 12,
+      "runnerReportSha256": "75d9fc5e4107935d6f34906f4decd8452ae7ed893d1f14e5d6b309330ec90258",
+      "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+      "inputFilesUnchanged": true
+    },
+    "typecheck": {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "startedAt": "2026-10-09T03:35:43.091546+00:00",
+      "finishedAt": "2026-10-09T03:35:53.462744+00:00",
+      "wallSeconds": 10.371,
+      "exitCode": 0,
+      "log": "/tmp/granaderos-piece11-final-gate-evidence/typecheck.log",
+      "logSha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+      "logBytes": 117,
+      "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+      "inputFilesUnchanged": true
+    },
+    "production-build": {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-09T03:35:56.889258+00:00",
+      "finishedAt": "2026-10-09T03:36:14.400173+00:00",
+      "wallSeconds": 17.511,
+      "exitCode": 0,
+      "log": "/tmp/granaderos-piece11-final-gate-evidence/production-build.log",
+      "logSha256": "955827207459f34a303c022c0ff1328d65117b1bbdb3d239bbf5dadd250b4867",
+      "logBytes": 1881,
+      "buildIdentity": {
+        "version": "0.4.0-dev.1",
+        "id": "1be6fd7e6d96",
+        "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+        "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+      },
+      "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+      "inputFilesUnchanged": true
+    },
+    "diff-check": {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "84b7b4ff9829adf187688a9803430bed4f0e3351",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "wallSeconds": 0.465,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "workingTreeClean": true
+    }
+  },
+  "projectInputFileCount": 11324,
+  "orderedIntegrationInputFileCount": 10413,
+  "completeProjectInputSha256": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+  "orderedIntegrationInputSha256": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+  "inputGroups": {
+    "configurationOrOther": {
+      "files": 107,
+      "sha256": "e7be86a6cc2f3c7acff89a01c261975c2cf0384b888f1b95190708747f11399e"
+    },
+    "docsOrArtifacts": {
+      "files": 911,
+      "sha256": "9aa6cecf8aee6b30851888cc8946ac9a20112357fcbb290db912bd11f7fa63b3"
+    },
+    "sourceAssets": {
+      "files": 7039,
+      "sha256": "874941a85bc9d8d5ef6ed6a8d1eee9c233b03c52858b926d41d55d3f579570f1"
+    },
+    "runtime": {
+      "files": 703,
+      "sha256": "10a41f534d88a7a5ee9401e4a5e03c8a7cc296ea36d79a31d8331f633117cbac"
+    },
+    "tests": {
+      "files": 1087,
+      "sha256": "acea53fa027b3a467bc89d6773dd340e6290e4bf00046f6bbdf5194ff56e073e"
+    },
+    "tools": {
+      "files": 150,
+      "sha256": "b667c3e4d8b80eff7bc12d7d60d1c8e0935d220f45fa710b6d6a21088ff038ec"
+    },
+    "publicAssets": {
+      "files": 1327,
+      "sha256": "eccdc340fb1733e90e3d8906b7c67664ad7c9f46bf8dc6fba4550bbcc662f2ca"
+    }
+  },
+  "dependencies": {
+    "source": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos/web/node_modules",
+    "private": "/tmp/granaderos-piece11-final-gate-candidate/web/node_modules",
+    "fileCount": 42417,
+    "linkCount": 44,
+    "sourceSha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+    "privateSha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+    "copyExact": true,
+    "privateDirectoryEntry": true,
+    "externalDependencyLinks": 0
+  },
+  "engine": {
+    "path": "engine",
+    "mode": "160000",
+    "gitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+    "indexStage": 0,
+    "initialized": false,
+    "head": null,
+    "dirtyPorcelain": null,
+    "uninitializedDirectoryContents": [],
+    "submoduleStatus": "-ddb691318eb3dd0cdc6eab42139739b6d498c645 engine"
+  },
+  "productionIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "1be6fd7e6d96",
+    "source": "1be6fd7e6d96ddaf98a9bc078dd0f2b1342c374eac8e8549294be63f0129e836",
+    "revision": "219f6866f16bb97f5fbe1b282eade56f9174ca73"
+  },
+  "productionExport": {
+    "files": 1377,
+    "verifiedAssetReferences": 1045,
+    "outputSha256": "72b9b7d55d7e7457b223b9af463614e69d84604d1223a49049758a088897ba5d"
+  },
+  "sourceAndVersionMatchSealedProduction": true,
+  "candidateAndLivePreviewEquivalent": true,
+  "preservation": {
+    "completeProjectInputsBefore": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+    "completeProjectInputsAfter": "aba02ae4d2a60fffaeb69a8712d669e07039294e6fbbd9726375559c8c86f279",
+    "orderedIntegrationInputsBefore": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+    "orderedIntegrationInputsAfter": "b3d94a983fc3ff045a98e6204c160bf44b859ff5613715e68d304d8013e1db2a",
+    "completeProjectFilesUnchanged": true,
+    "dependenciesUnchanged": true,
+    "dependencySha256": "5820a7e3c9e831a57c46013db4299bc680cbd81e39ec6edb374abe11d16d337f",
+    "frozenOverlayStillExact": true,
+    "acceptedChipContrastExact": true,
+    "rootWrites": 0,
+    "implementationEditsDuringGates": 0,
+    "passedGatesRepeated": 0
+  },
+  "futureRootEquivalenceHelper": "/tmp/granaderos-piece11-final-gate-evidence/verify-equivalence.py",
+  "scopeLimits": [
+    "Live acceptance and images belong to root; root reported acceptance separately.",
+    "The uninitialized engine state is pinned; this is not an initialized engine build.",
+    "No GPU performance or sustained FPS claim is made by these gates."
+  ],
+  "evidenceFiles": {
+    "README.md": {
+      "sha256": "39223cbb381aba025b48ccd9304bf2d46f4ab7ac42c792206568901510b0a0fa",
+      "bytes": 4021
+    },
+    "build-identity-before.json": {
+      "sha256": "7051919c607c0ac94b939d8bf7f7567cc74a7f80748083527ecd2b6e75db9036",
+      "bytes": 193
+    },
+    "candidate-equivalence-final.json": {
+      "sha256": "876bb76e1a65031a2262e8333a2315b1461aaaeb399ac14e94edeafbe0aa48af",
+      "bytes": 2514
+    },
+    "composition.json": {
+      "sha256": "1f620bd786f70f4c49af5d3036cdebefd2e6fcb738539da4d7ed2e427fee68ea",
+      "bytes": 2346
+    },
+    "dependency-copy-equivalence.json": {
+      "sha256": "9abadd16a6a60ebc698a561becdfdbb33e5e34909e76714892c3afd65803611b",
+      "bytes": 484
+    },
+    "dependency-inputs-after.json": {
+      "sha256": "52f9f701800546d9c2f28074ee05f40a462fc75c4756e3b216d7fa0076059c68",
+      "bytes": 6835191
+    },
+    "dependency-inputs-before.json": {
+      "sha256": "52f9f701800546d9c2f28074ee05f40a462fc75c4756e3b216d7fa0076059c68",
+      "bytes": 6835191
+    },
+    "diff-check.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "engine-input-pin.json": {
+      "sha256": "7702fd316cee5923902aaa519ca98618aa0e1aa78f1b7f3fc2f1c2b48f63bc28",
+      "bytes": 603
+    },
+    "gate-results.json": {
+      "sha256": "b10573e1b79d4bcaa828f09f57ec8edb656651aa5faa39634ebc1a84fde756d9",
+      "bytes": 2699
+    },
+    "git-status.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "input-preservation.json": {
+      "sha256": "dccfc8098042005905e95704c3c88704029d70d7bb5495353df07d3d0c2bcd05",
+      "bytes": 733
+    },
+    "inputs-after.json": {
+      "sha256": "1e48c978b1195f7c5e357b7f922d0772151daef3fdcb26636ff5cc52e0089d49",
+      "bytes": 3824908
+    },
+    "inputs-before.json": {
+      "sha256": "1e48c978b1195f7c5e357b7f922d0772151daef3fdcb26636ff5cc52e0089d49",
+      "bytes": 3824908
+    },
+    "live-preview-equivalence-final.json": {
+      "sha256": "1a07d080046ea7ed05f4bf6e9eae30bbb62ad477ce55e44ab76d60ae6f1b9544",
+      "bytes": 2217
+    },
+    "live-preview-equivalence.json": {
+      "sha256": "17ccf15d57c84bed79c0278d493a577a6cb0d82a35f81abb8c27b8b39249a70b",
+      "bytes": 1611
+    },
+    "overlay-before-after.json": {
+      "sha256": "4733dfa8e4a44dc3da541f75c8c50bb4609fb2c6b184883fbfacaa1c4d549fd9",
+      "bytes": 2773
+    },
+    "overlay-files.txt": {
+      "sha256": "56360c48f0e0812a98e1e19dd5b17c3694f9b5deba6705f2362bd4979d6dda9a",
+      "bytes": 672
+    },
+    "overlay-pins.json": {
+      "sha256": "8336c467520aea88a376384c62844554028f3c4aceea7de436ac56a99f366b1c",
+      "bytes": 1770
+    },
+    "production-build-info.json": {
+      "sha256": "7051919c607c0ac94b939d8bf7f7567cc74a7f80748083527ecd2b6e75db9036",
+      "bytes": 193
+    },
+    "production-build.log": {
+      "sha256": "955827207459f34a303c022c0ff1328d65117b1bbdb3d239bbf5dadd250b4867",
+      "bytes": 1881
+    },
+    "production-output-hashes.json": {
+      "sha256": "e5fb7cf0cc5af571ca70b438c596d9d777447c3f267953f699bd8d8d70f91cba",
+      "bytes": 219670
+    },
+    "quick-runner-report.json": {
+      "sha256": "75d9fc5e4107935d6f34906f4decd8452ae7ed893d1f14e5d6b309330ec90258",
+      "bytes": 366197
+    },
+    "quick.log": {
+      "sha256": "9cd4bdf33499cca915dc9a6290cc4e2f4d99e3b51c1b7ce1aa947563df25ce6c",
+      "bytes": 1351314
+    },
+    "run-gates.py": {
+      "sha256": "7edd8c786aaae0facd25d7cc17752d06a84bffe17250a92aca3a1cad225c97aa",
+      "bytes": 8938
+    },
+    "runtime.json": {
+      "sha256": "af3ca9b7a7e34b8d0fe086255b0e99c9b94538c95768b08c10b5657ac222f5d9",
+      "bytes": 1938
+    },
+    "terrain-detail-fixture-extension.patch": {
+      "sha256": "07b33f7c6750d48e558e445744b2f6b83d970e75a6e601ae77913e9970c20a8f",
+      "bytes": 7377
+    },
+    "typecheck.log": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+      "bytes": 117
+    },
+    "verify-equivalence.py": {
+      "sha256": "d196f32bf30d955a7e968c92b46171e7d293bc54f0972494044c1e32cd9369cd",
+      "bytes": 5402
+    }
+  }
+}
