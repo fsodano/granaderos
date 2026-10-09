@@ -1,0 +1,35 @@
+# Frozen woman-shawl palette cut
+
+This is a separate 11-file palette cut. Root owns Git and publication. No shared files were changed by this agent. The original coarse cut is immutable.
+
+Apply into a current isolated tree:
+
+    python3 /tmp/granaderos-woman-shawl-palette-cut/apply-cut.py /ABS/CURRENT/TREE --receipt /tmp/palette-applied-receipt.json
+
+Stage only `allowlist.json` paths after applying. Do not copy the stored complete manifest into another tree. The installer patches three body hashes/byte counts and two coarse donor hash fields in the current manifest. All current animation libraries, support metadata, profile/clock sources and other model files are protected. The stored manifest is only a reference (it now includes the current prone-heal banks).
+
+Source changes are four exact hunks: three in appearances.py and the one woman-shawl identity row in REVIEW.md. New source files are appearance_palette.py, the bounded palette builder, the actual material/atlas test and the concise review. The installer preserves all other current source text.
+
+Current proof uses committed prone-heal source 7c54c622557849551ed7e87622ddcf9534c0580c. Main1ee978fd791d84e33418d0dd5ecfaad4b18d7390 differs only in two verification docs. The installer preserves male49f5d77abe97ae560f46060f93d3fdd31661eda97e47dfdf029216ade2beeb27 and female509a9c2c1ab0cb2a7d38c8f50cb7809cfa9f6c4cc946c69652b6918fdeb1ac10, including both complete nativeProneHealArmSupport records. See current-installer-receipt.json/current-heal-support-preservation.json.
+
+Focused post-apply check (35 tests on the current prone-heal source):
+
+    node --test tests/three-woman-shawl-palette.test.mjs tests/characters-long-garments.test.mjs tests/three-long-cloth-boot-clearance.test.mjs tests/three-coarse-long-cloth-boot-clearance.test.mjs tests/three-prone-heal-arm-support.test.mjs
+    python3 tools/characters-3d/verify-library.py
+    node tools/characters-3d/compile-locomotion-profile.mjs --check
+    npm run typecheck
+
+Rebuilds (both unchanged on repetition, including all four coarse bodies):
+
+    python3 tools/characters-3d/build-woman-shawl-palette.py --receipt /tmp/palette-repeat.json
+    python3 tools/characters-3d/build-reviewed-long-cloth-lods.py --receipt /tmp/coarse-repeat.json
+
+Independent proof can be rerun against an exact baseline model/profile copy and the integrated current tree:
+
+    python3 /tmp/granaderos-woman-shawl-palette-cut/independent-preservation-check.py --baseline /tmp/granaderos-woman-shawl-current-baseline --candidate /ABS/CURRENT/TREE --receipt /tmp/integrated-palette-proof.json
+
+The supplied baseline contains current prone-heal model files/manifest and profile before the palette correction. The checker verifies entire GLB BIN chunks, the complete allowed JSON boundary, all old atlas pixels/material prefixes and all other99 model files, current full animation metadata and profile. It checks every used UV's complete bilinear neighborhood and exactly1024 changed color pixels. No hidden gameplay or pose data is used.
+
+Normal UI: normal-ui/report.json and 18 raw screenshots. Baseline/candidate × LOD0/1/2 × standing/crouched/prone; normal roster, owned pistol, posture controls and camera. Model network/source pins stable, errors empty. These captures predate the prone-heal-only arm increment, which preserves all captured idle/posture source tracks. Root independently captured current-main baseline9 views and will repeat the9 candidate views after integration. The helper normal-ui.mjs is local review support; it takes GRANADEROS_REVIEW_URL/OUTPUT/BASELINE/BASIS, PLAYWRIGHT_MODULE and CHROMIUM_EXECUTABLE.
+
+Growth: three GLBs+1288bytes, one new128×128 color PNG+380bytes, total1668bytes. Geometry, UVs, morphs, normals, vertex pigment, rig and old atlas files are byte-exact. Triangle counts/draw submissions do not change; one extra color texture is required. This accepts a source-reference pigment role correction. It does not claim new user color approval, pixel parity, full cloth clearance or final visual polish. Rust hem, shawl drape/fringe and satchel/strap details remain separate source geometry work.

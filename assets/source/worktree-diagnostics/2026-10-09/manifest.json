@@ -1,0 +1,1659 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Preserve historical inactive worktree QA scripts, patches and notes as recoverable bytes.",
+  "runtimeEnabled": false,
+  "automaticExecution": false,
+  "archiveDate": "2026-10-09",
+  "originMainBase": "b8b14e2d544cec16535edbb26624ef80ac502720",
+  "backupDirectory": "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z",
+  "originalFileCount": 97,
+  "originalBytes": 1571973,
+  "uniqueBlobCount": 96,
+  "uniqueBlobBytes": 1449668,
+  "blobs": [
+    {
+      "gitBlob": "023e260c5ca4706ca7f856fea51e60c43f2e9a70",
+      "sha256": "0e222cb68812582e95cbcc96a683620c91597eafe1fd3f3aff873709246a4a7c",
+      "bytes": 1983,
+      "archivePath": "blobs/02/023e260c5ca4706ca7f856fea51e60c43f2e9a70.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "03139a5e3b65dd5ff6242e400f47fc2bb0beedfa",
+      "sha256": "d2ffadaa0b91e7485703901e5062a5ca5c454d1fbc7686a6b8f3cfa03ed64782",
+      "bytes": 9318,
+      "archivePath": "blobs/03/03139a5e3b65dd5ff6242e400f47fc2bb0beedfa.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "0637819eda4b0851c11c21e35ac15a38fb982a12",
+      "sha256": "f4100d95f5e765c4fd8613132f5e70834fa28838fadb369b14e976ef71478322",
+      "bytes": 2574,
+      "archivePath": "blobs/06/0637819eda4b0851c11c21e35ac15a38fb982a12.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "0836139ad0d7c1d0a505c93362b487e5bbaa2f67",
+      "sha256": "29fcd65d92c7e6b50f8ff55cb3733a9f988ceb253bcd7f5d04434ac51158b06b",
+      "bytes": 7151,
+      "archivePath": "blobs/08/0836139ad0d7c1d0a505c93362b487e5bbaa2f67.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "08e30e064631f8eb338fe0ca9b23ddfe3142f2d4",
+      "sha256": "4388e3d2a9ccc7b9682a5e0a707f3eecb7dc10d2dd908b737e5ed7c4299f43f0",
+      "bytes": 1126,
+      "archivePath": "blobs/08/08e30e064631f8eb338fe0ca9b23ddfe3142f2d4.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "0da4f3f7e47c2ca278abc872f6b408e175081a2d",
+      "sha256": "8399b212979d55e592aaf207f12b511d66a1c7aa52866fb46baafaabd0d626fb",
+      "bytes": 4308,
+      "archivePath": "blobs/0d/0da4f3f7e47c2ca278abc872f6b408e175081a2d.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "0e4120a390e40e135182c999c990f909a5e36525",
+      "sha256": "b5b35fa4d33356485aca51151309d129c3361bd29c0d41a7461d6dd8b7aee593",
+      "bytes": 13345,
+      "archivePath": "blobs/0e/0e4120a390e40e135182c999c990f909a5e36525.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "0f364aaad04896b900c9ddf211d77ce26e35247c",
+      "sha256": "f4980c7d8dca14886f9f30993355b4784f723454125d2bc71d9fd8fe4b31e31d",
+      "bytes": 2771,
+      "archivePath": "blobs/0f/0f364aaad04896b900c9ddf211d77ce26e35247c.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "100bcef231f373c750f1013a5fa21d6a2b712b30",
+      "sha256": "1e23ef128002f15e6a1f6473ffd9f2ba220403d2fa9774256535ddc4e98c8b5c",
+      "bytes": 1981,
+      "archivePath": "blobs/10/100bcef231f373c750f1013a5fa21d6a2b712b30.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "11baf1430e5224dc2aeaaa1bfe17a0624271bf18",
+      "sha256": "55c77fdb1580bebfff39596acb1638ea04de87b602f3dea2da4fd94131841af7",
+      "bytes": 1621,
+      "archivePath": "blobs/11/11baf1430e5224dc2aeaaa1bfe17a0624271bf18.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "12085e950ec5be4435778b3e62b16ad8853d07e6",
+      "sha256": "9c0fc2e33f2675cc755a74b38f8f8b50e083c15ca35fd6bff44267bc5fd3836b",
+      "bytes": 23882,
+      "archivePath": "blobs/12/12085e950ec5be4435778b3e62b16ad8853d07e6.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "127d23fc22309f881dba6415c60a5eca9859e8d6",
+      "sha256": "728d7e1c5974554cb039397a7288201149ca513c25c16221f74b35997af398c5",
+      "bytes": 1523,
+      "archivePath": "blobs/12/127d23fc22309f881dba6415c60a5eca9859e8d6.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "149322b1dc353f3118f7d0ea32a693d6906325be",
+      "sha256": "fac3d0c4b61f78e4ce546c483b00754f53a9db334ec139949c7309eccb8b7574",
+      "bytes": 1361,
+      "archivePath": "blobs/14/149322b1dc353f3118f7d0ea32a693d6906325be.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1514cbcbd1dd3eda4ea3b0774995371da02ec2fc",
+      "sha256": "2df9b0ec84f9865a88fa3f7c42d05d55cc83194503d688cb1ae5af092021aa40",
+      "bytes": 19953,
+      "archivePath": "blobs/15/1514cbcbd1dd3eda4ea3b0774995371da02ec2fc.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "177c1ed13c33f54108d9886f6bc1201b1a141313",
+      "sha256": "0242da63c5646e13b778a00073a4033fe716137c5efe14ec42d78daae1fb627e",
+      "bytes": 6498,
+      "archivePath": "blobs/17/177c1ed13c33f54108d9886f6bc1201b1a141313.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1a214f10e83e54f72972cc5c27c452ac37059ee9",
+      "sha256": "f0aa38ebc3707170cf317d51a618ee49d8335abbe864a1ddbdd7f39aadc457f4",
+      "bytes": 6041,
+      "archivePath": "blobs/1a/1a214f10e83e54f72972cc5c27c452ac37059ee9.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1adc2a3992f7ed658d6a34a7fc3a180212460871",
+      "sha256": "41764e995718ea0bbafcf236366af0dda6b3d45f42574505d3892a9b5dc7caf2",
+      "bytes": 1141,
+      "archivePath": "blobs/1a/1adc2a3992f7ed658d6a34a7fc3a180212460871.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1b2c0a12cb346fca5ba7e74afd5fd000b569df29",
+      "sha256": "4dc6fd9fd7f3dd43a67cabeb74cf71f59de9df3ef31e36de405295c303e3ee6b",
+      "bytes": 17586,
+      "archivePath": "blobs/1b/1b2c0a12cb346fca5ba7e74afd5fd000b569df29.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "1c5ab94871a3f05105043505e357cad9059b0f33",
+      "sha256": "3574ee41beb92e2db7f6e1e9b99b38c3ae0b4576a221090dde30fe0b411e6e55",
+      "bytes": 6963,
+      "archivePath": "blobs/1c/1c5ab94871a3f05105043505e357cad9059b0f33.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "217ca0403f9f4245b709f109c9a248958eb0f2cd",
+      "sha256": "ad63afc9c23342f1bc3a9279828613640cc261dd5af3f988568f0e1767c34191",
+      "bytes": 9560,
+      "archivePath": "blobs/21/217ca0403f9f4245b709f109c9a248958eb0f2cd.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2357dcef98bfcea5600cd6893878d67f645c8143",
+      "sha256": "02133b47a4b6232dca763b5b085110c5ae403b9f066cf732b2751d8b2f2f73bb",
+      "bytes": 6043,
+      "archivePath": "blobs/23/2357dcef98bfcea5600cd6893878d67f645c8143.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "272b4d1dd89a01225668af402e735742ef3aa1fb",
+      "sha256": "f89b8417f26e84ea02f706390c00926961c88e175b2cb8cb6308af7cdd3124ba",
+      "bytes": 4968,
+      "archivePath": "blobs/27/272b4d1dd89a01225668af402e735742ef3aa1fb.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2db4097405fade14c46875bfe3b4c60a59012043",
+      "sha256": "c81b64b32b4abff59c3af59635e280d2b839f362b81c8b27c3cff73a15b9a7c3",
+      "bytes": 2610,
+      "archivePath": "blobs/2d/2db4097405fade14c46875bfe3b4c60a59012043.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "2e274d171ffd33056af551dca8521f03960c04e9",
+      "sha256": "0307c01055bbc91d85988c57bde082478db9bffb7d1a092dfef56c391047cec4",
+      "bytes": 729,
+      "archivePath": "blobs/2e/2e274d171ffd33056af551dca8521f03960c04e9.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "30316f9d2a8248faf766282fa27da1bcf124415a",
+      "sha256": "ea5dfe47410efe7f7d6e77e358f76e35975b5a94c6144e31683786022b2648a4",
+      "bytes": 5356,
+      "archivePath": "blobs/30/30316f9d2a8248faf766282fa27da1bcf124415a.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "306ca23cc51dea9ed406c531b5a6f4a66273ab09",
+      "sha256": "85dd2025e82d89fb71b5f37dab615f8fba66bf2f79ae5f4b3f32764e44cbfe12",
+      "bytes": 122305,
+      "archivePath": "blobs/30/306ca23cc51dea9ed406c531b5a6f4a66273ab09.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "320c49162178c87f50b8f8ef7ae2de4fa1eb000c",
+      "sha256": "8a6639d586de89d8f2bb06571d5035220586d2503ee785c1e16feccd46822c17",
+      "bytes": 10716,
+      "archivePath": "blobs/32/320c49162178c87f50b8f8ef7ae2de4fa1eb000c.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "3249a00c57d60d8900764fc93f45da55a1df2796",
+      "sha256": "3012535bcdf0cf24e18ba6ac8f9797a2948de78659cd9d73fe00bb0fa14777df",
+      "bytes": 1111,
+      "archivePath": "blobs/32/3249a00c57d60d8900764fc93f45da55a1df2796.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "341a745702cfb9b9d152ed5143cf95bd2c18b619",
+      "sha256": "fd4740b9a590fcc3c28d2a628bb01991c8dbc76f2b14c9b18d7a24930973e39d",
+      "bytes": 11972,
+      "archivePath": "blobs/34/341a745702cfb9b9d152ed5143cf95bd2c18b619.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "36aebac27cbba28afe1076e28c1c342488065e04",
+      "sha256": "9a03cb8784927bf3849413967c9a7e2a84fb976bf1291a9e6a0ddae119367d99",
+      "bytes": 5294,
+      "archivePath": "blobs/36/36aebac27cbba28afe1076e28c1c342488065e04.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "3aaf9597a9ca7de2995af82df505567a55d19c82",
+      "sha256": "8a855aca1c1f2fa165e9b0a895686a19f3427427fdf04ac01731e6bab9c12099",
+      "bytes": 2650,
+      "archivePath": "blobs/3a/3aaf9597a9ca7de2995af82df505567a55d19c82.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "3ae99af5cb74be4b176d57542ffa5b1ceb616e45",
+      "sha256": "cceb7a4513c7689fe49fac6969bdb7171a9842b3c01a9323882bf8e721264219",
+      "bytes": 22542,
+      "archivePath": "blobs/3a/3ae99af5cb74be4b176d57542ffa5b1ceb616e45.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "3ebd5ef6f13e2eb4c870285415a84b0da751f6bf",
+      "sha256": "bca74ebfee1143ad1cd376894a90df1e828cfa4f3406e101cf9e3df8ab53bbd1",
+      "bytes": 10184,
+      "archivePath": "blobs/3e/3ebd5ef6f13e2eb4c870285415a84b0da751f6bf.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "42d9bce1b4063354532837f52e0c8a3b316e6d90",
+      "sha256": "83bf5ed8c2632857149d45d4de18848616ff3a6492ce24870b8c770918fff3ba",
+      "bytes": 5321,
+      "archivePath": "blobs/42/42d9bce1b4063354532837f52e0c8a3b316e6d90.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "4492be53c93a893c7a6e789bccb15029d8a8907e",
+      "sha256": "b4a2711fdcc59668f708fc6dc8167b8b1a48fd5852bb282cb048e46600e0da30",
+      "bytes": 5118,
+      "archivePath": "blobs/44/4492be53c93a893c7a6e789bccb15029d8a8907e.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "44dc226de77f34b3c6dcef1aa867bf5ea3fa3972",
+      "sha256": "0dbf6162c2c1f8fd14116c8e29a8255cdf984451b2e36417beaad732a2b71ccd",
+      "bytes": 132922,
+      "archivePath": "blobs/44/44dc226de77f34b3c6dcef1aa867bf5ea3fa3972.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "45b2fa41e0023ceb1bd07a92d04b399f25d9e27f",
+      "sha256": "8bd932b58d2361e06871abed587303afeb99e445401482063c1b6d335bfbb559",
+      "bytes": 11321,
+      "archivePath": "blobs/45/45b2fa41e0023ceb1bd07a92d04b399f25d9e27f.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "4720b6494196462eba405d58add667b3543da0ce",
+      "sha256": "2a63d3dd55c3ddf7b37fffb931dfcaffdf477eac343ab7d293f25fe791f66376",
+      "bytes": 1456,
+      "archivePath": "blobs/47/4720b6494196462eba405d58add667b3543da0ce.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "4a02c76ecd711b21966c77a41ed87d50974367f4",
+      "sha256": "b09f7a98bb01fd7dfc6cc306ce4889235c122cde5a876d09aa250b786475eafe",
+      "bytes": 2274,
+      "archivePath": "blobs/4a/4a02c76ecd711b21966c77a41ed87d50974367f4.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "4c6736c69ba643cf2bd287b074ee19c491ecf3b2",
+      "sha256": "4c13ca89af4cec0e9715d88b52b30b96c76126d6c9663751e243123e5d688c26",
+      "bytes": 3393,
+      "archivePath": "blobs/4c/4c6736c69ba643cf2bd287b074ee19c491ecf3b2.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "51ea2a33d6fd07c940bdead3c0d041d18626fbe9",
+      "sha256": "b45efa3fbeb9966a4774e4c728ee50c4665414195f2cdee90a1bb4eb1ecf6bb5",
+      "bytes": 22107,
+      "archivePath": "blobs/51/51ea2a33d6fd07c940bdead3c0d041d18626fbe9.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "523fcc85b5f60761b757159e5b10142cfbb7eec7",
+      "sha256": "b6597c905a9aecf6e007861d78bc926ec10e2126b2cf4c61501ee1b78ad31790",
+      "bytes": 17980,
+      "archivePath": "blobs/52/523fcc85b5f60761b757159e5b10142cfbb7eec7.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "555fd792d0990458974125fcb890bf909676e8f2",
+      "sha256": "6f27ed6cd72f65af9c338f90d92533a41825a049aa0a9e1264c237ecf8b3741b",
+      "bytes": 1614,
+      "archivePath": "blobs/55/555fd792d0990458974125fcb890bf909676e8f2.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "560f4c1eb15b6c495f9102cd89543db429e31786",
+      "sha256": "dd6d6705af3b00df14476504cf5c4d24296dafc151c2c4321fcbe261e71bd91e",
+      "bytes": 14964,
+      "archivePath": "blobs/56/560f4c1eb15b6c495f9102cd89543db429e31786.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "58aa24e250efe799780c2c8609085ff1e2c64c3b",
+      "sha256": "15f6c720baee7ac6bed73db3b9d5d48e4d6905aa297778fa9e0eec18a2ced7cf",
+      "bytes": 2426,
+      "archivePath": "blobs/58/58aa24e250efe799780c2c8609085ff1e2c64c3b.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "5bf4e9306d102434b5bea80cd75cfca604f07e01",
+      "sha256": "99ac1358c29397a2682079a493bd22013176aca923fcb20a1154f13a7c4e3419",
+      "bytes": 18034,
+      "archivePath": "blobs/5b/5bf4e9306d102434b5bea80cd75cfca604f07e01.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "6017741d1ac4f00e0117f15d4fa4e191fdc5dfe6",
+      "sha256": "e139c6e4a6e1689664d3de287fc44f7eedc4ef6bbe96033dc540a9a1dcc7e6a4",
+      "bytes": 6874,
+      "archivePath": "blobs/60/6017741d1ac4f00e0117f15d4fa4e191fdc5dfe6.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "602c1a6313928088ada4780b5877032d08e5c256",
+      "sha256": "3fb39b841969b0cc685e6e99d467f5bfae85364af2ec523ed60f7e94241900de",
+      "bytes": 19048,
+      "archivePath": "blobs/60/602c1a6313928088ada4780b5877032d08e5c256.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "60ee83a7d673d178b69cdc00ae7e3640a53aeb49",
+      "sha256": "f3f1233fb29d7f9e014b21690137d46b49b7c0896c6c257343a9ec6bd14a4c54",
+      "bytes": 8173,
+      "archivePath": "blobs/60/60ee83a7d673d178b69cdc00ae7e3640a53aeb49.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "639fe30799a477fb94edef3681d3cae06d0a557d",
+      "sha256": "95036dd962222757684e28401c4500707c928e7167f890dd61e6d14b718d1b77",
+      "bytes": 12447,
+      "archivePath": "blobs/63/639fe30799a477fb94edef3681d3cae06d0a557d.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "64aa5c21d1886bc59ea5c38f1420facee960047e",
+      "sha256": "649b638c12dbb99b8e81fd3cdc8f1580f1ff9ce15b368af686f5247e26050a77",
+      "bytes": 9656,
+      "archivePath": "blobs/64/64aa5c21d1886bc59ea5c38f1420facee960047e.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "69d1b5ff5876494e52e2fe27b2dc9a0c9704c6ad",
+      "sha256": "c2b49c48319e869da112e6ec44fab3a186eddb3aecd8b413db3dd5be548dddd3",
+      "bytes": 9800,
+      "archivePath": "blobs/69/69d1b5ff5876494e52e2fe27b2dc9a0c9704c6ad.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "6abca3b229fa7301997b7428a1f3d9f4b9708f0f",
+      "sha256": "583391da0f502b7e42b5542d4d3f4d6b122ae02d2509c635df87ae24ff638915",
+      "bytes": 1087,
+      "archivePath": "blobs/6a/6abca3b229fa7301997b7428a1f3d9f4b9708f0f.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "7588eb4e1af81313840e5a437658cd13a9bab35c",
+      "sha256": "684cb20f4ee5caa67b188fded2373df797bc0f5a7bd6d237e7f931f0c1eb5fe4",
+      "bytes": 5252,
+      "archivePath": "blobs/75/7588eb4e1af81313840e5a437658cd13a9bab35c.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "7c208b502c6f72ea21a65a27693b7565ff1b50e4",
+      "sha256": "02c5e4ee8ec5b34412d443ea09d86011ffc85712c2dcb94e176584792edffd19",
+      "bytes": 2269,
+      "archivePath": "blobs/7c/7c208b502c6f72ea21a65a27693b7565ff1b50e4.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "7ca3d1600fb4da7aac9436004f5e5f7c7d6b6a2f",
+      "sha256": "51cbf19f0565c4e551e31637e8523b62aa71e83011af2182530db61a8eee1d8d",
+      "bytes": 22882,
+      "archivePath": "blobs/7c/7ca3d1600fb4da7aac9436004f5e5f7c7d6b6a2f.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "7f14a8330ab1a39e5c955986551791b4f2905637",
+      "sha256": "92a1ad68c0b2a8f912b00ee3bdc8f0145a06c8a8835cabdcf982878299d6cb97",
+      "bytes": 18373,
+      "archivePath": "blobs/7f/7f14a8330ab1a39e5c955986551791b4f2905637.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "825ea488c1d2e271e4c74bdeef5e7ccf7c8bab20",
+      "sha256": "bdd62dac34d0165630af8de5960fc67c0cb7585a32d43235f02c55406f1a111b",
+      "bytes": 1222,
+      "archivePath": "blobs/82/825ea488c1d2e271e4c74bdeef5e7ccf7c8bab20.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "82e0a497a45ad6fd7f9a2358b815539997d4bf54",
+      "sha256": "2e447c85e29dca38aa7f7ee35b318603f587208a861fef159a78bf79791907d4",
+      "bytes": 179603,
+      "archivePath": "blobs/82/82e0a497a45ad6fd7f9a2358b815539997d4bf54.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "8ab90c1ddf12dbe87c849fb2b847b7eaedfa336b",
+      "sha256": "4fa5bac9cb216285c18af11c0fb70913d46ab40ff2790cafeadf702b69ab4890",
+      "bytes": 12578,
+      "archivePath": "blobs/8a/8ab90c1ddf12dbe87c849fb2b847b7eaedfa336b.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "8f48740bf5895fa8ce6d3266d58d63d5dacf9cfa",
+      "sha256": "58e1df488c17df2e3f0f1c0e2e159eb8e11c4989bc4c40e459351a81fd0d711c",
+      "bytes": 1088,
+      "archivePath": "blobs/8f/8f48740bf5895fa8ce6d3266d58d63d5dacf9cfa.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "8fc0861f51ddfc37ccb2408cf7ed9cc04cd06443",
+      "sha256": "a5c914409af3195a3397e339850c95b2e44ec1524f2440bfbb78d8f708ebe2f6",
+      "bytes": 5288,
+      "archivePath": "blobs/8f/8fc0861f51ddfc37ccb2408cf7ed9cc04cd06443.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "900d85bc5fd7df6897715f3fe80b5e0da096f940",
+      "sha256": "64c973dd1a45e082b89ea0ef291308c8548d8a6ac20b9bfdce61d9d8bd4ebcaf",
+      "bytes": 2082,
+      "archivePath": "blobs/90/900d85bc5fd7df6897715f3fe80b5e0da096f940.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9316f9da7c3e0c3e8455fdba99a18bebf15f1da4",
+      "sha256": "a66219b9695ddfdf1edacb825d9217383ec370791da20c1e2aed67125a45f0fd",
+      "bytes": 4313,
+      "archivePath": "blobs/93/9316f9da7c3e0c3e8455fdba99a18bebf15f1da4.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "94240d1f07c86975df8935f0f5511b14d47f4387",
+      "sha256": "4b733b887f09fec1f6e206ab00f8cd3d373d7747f6464027c98e9409d223106a",
+      "bytes": 121898,
+      "archivePath": "blobs/94/94240d1f07c86975df8935f0f5511b14d47f4387.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "98a425aa31772783a039fa53f7ef45ed94d5923c",
+      "sha256": "633f4fe6a0e8705a456b23e8cce94a0a683a0817b0e688b297e4ffd03bb89f58",
+      "bytes": 15998,
+      "archivePath": "blobs/98/98a425aa31772783a039fa53f7ef45ed94d5923c.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9db13ad14129279ba6c8f21e0fca1db41050d407",
+      "sha256": "1a3e2a6b75ab2975cecea13e3a274ad5b91ad0be19fdc7a045f28e4ed6c1c312",
+      "bytes": 11531,
+      "archivePath": "blobs/9d/9db13ad14129279ba6c8f21e0fca1db41050d407.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9e15ae7897050e0a5e2d55b721f299eee741c3e6",
+      "sha256": "8456c6e008cbe8193d68c0fae0a61a55a9ef2390859cd309baa11f40daab021a",
+      "bytes": 4665,
+      "archivePath": "blobs/9e/9e15ae7897050e0a5e2d55b721f299eee741c3e6.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "9e5c5401d2753f86667f6d7abc0beab5510664bc",
+      "sha256": "9f3b9a2f200f6655915624fe72a2c5852fac82564e7ca965b1a83b26e9ad6ccd",
+      "bytes": 6788,
+      "archivePath": "blobs/9e/9e5c5401d2753f86667f6d7abc0beab5510664bc.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "a4bc097d18d2fd7a5d743a12465c47ed98f194d5",
+      "sha256": "0c9dd02f589016ebd04c6e46cbc4e1205f570cca86eeccaaf16fccaee0bfb97b",
+      "bytes": 54116,
+      "archivePath": "blobs/a4/a4bc097d18d2fd7a5d743a12465c47ed98f194d5.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ad2bd20bbdb2a2e5ae752f7a47ecb42d7a9b428d",
+      "sha256": "2fa1f37081a2f367435640de2487c1a275ca47344c82e244a8e7790bacfd695b",
+      "bytes": 25982,
+      "archivePath": "blobs/ad/ad2bd20bbdb2a2e5ae752f7a47ecb42d7a9b428d.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "b4a422dde99d74ab31569eaab87fdc2c427584fc",
+      "sha256": "4dbac357a8e5f8377ffdaf9bb3d53b6ac6796751a1695af4076cf64575007b2e",
+      "bytes": 9660,
+      "archivePath": "blobs/b4/b4a422dde99d74ab31569eaab87fdc2c427584fc.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "b809347ab66b7812a7d9bcda227c187104f238c5",
+      "sha256": "f1cfff53aae01531762072e0fe63c835f15998cf3967dd5ca5080e50c022936f",
+      "bytes": 10538,
+      "archivePath": "blobs/b8/b809347ab66b7812a7d9bcda227c187104f238c5.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "bb498f3e73309e912bd4589c872819852f4d9631",
+      "sha256": "2eb86fa125dc629e5dcf9f20b9c586561c840dd11896c24aeccb05a5a0ad21df",
+      "bytes": 1088,
+      "archivePath": "blobs/bb/bb498f3e73309e912bd4589c872819852f4d9631.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c105701c59f3e3e44b08297644e5eb6f47bcdd2e",
+      "sha256": "57bf1b86c10c14eec8be630882a06fb5e98092914d9cc9ff9f1b6685622fd525",
+      "bytes": 1764,
+      "archivePath": "blobs/c1/c105701c59f3e3e44b08297644e5eb6f47bcdd2e.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c261e90b3804f28ce810b71c179f0b1b0ebead4d",
+      "sha256": "fedd89a1feb2088ba9c1c32b6ab62ca09390edf43746e4df60e3fbecbcac2bc9",
+      "bytes": 16744,
+      "archivePath": "blobs/c2/c261e90b3804f28ce810b71c179f0b1b0ebead4d.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c27ab65b3f66660304e374f21bfe87b32b9340d1",
+      "sha256": "2df6c8b08d319c2fa13f19c3edd015de297ec4d229f066c1abecadf771ebdd0b",
+      "bytes": 5294,
+      "archivePath": "blobs/c2/c27ab65b3f66660304e374f21bfe87b32b9340d1.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c6b2d1b7dcc16f6390d0c1b04a178f2407f255c4",
+      "sha256": "0d54e9abb4c1e73d899b0b1d75d5f38cbaed29dc2bae7aae85149b4ded68dbac",
+      "bytes": 8522,
+      "archivePath": "blobs/c6/c6b2d1b7dcc16f6390d0c1b04a178f2407f255c4.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c7da14bcd6c5aa72f34e4d75f382d8c41f6b6a6d",
+      "sha256": "52b4f28c8007aa607a1fee6e957f8955456a4f89601635de129ce225052a8834",
+      "bytes": 21398,
+      "archivePath": "blobs/c7/c7da14bcd6c5aa72f34e4d75f382d8c41f6b6a6d.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "c9f3ad35f96f8a553292c61efa5ccac0e6b29f9f",
+      "sha256": "0ed474075aa5581d3ad33b493620852f8fc7f1872c1d3d54c8ef24c8b2e9e3f0",
+      "bytes": 1140,
+      "archivePath": "blobs/c9/c9f3ad35f96f8a553292c61efa5ccac0e6b29f9f.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "cc67a8a29dbd58f5f60d20dd8c31e6cf3ee6fec9",
+      "sha256": "db5f20dd6ea0fa7c29e5318fec77fddb4134924a3474e11c8dcd99adb713ea9b",
+      "bytes": 11108,
+      "archivePath": "blobs/cc/cc67a8a29dbd58f5f60d20dd8c31e6cf3ee6fec9.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "cd001f51f0eee2877ba22dd40aaeb157a11fd80f",
+      "sha256": "c596ed5edd7009f626e238618171f61039529babb1fb61d8bec084747a488516",
+      "bytes": 125355,
+      "archivePath": "blobs/cd/cd001f51f0eee2877ba22dd40aaeb157a11fd80f.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "cdd58255e939b4dbaa2c16d8d8b3f8710cc911f6",
+      "sha256": "e923e32aedd61ccb3fb9d40d78c9812f03b1d95355f104b896a7f6138a672e26",
+      "bytes": 8640,
+      "archivePath": "blobs/cd/cdd58255e939b4dbaa2c16d8d8b3f8710cc911f6.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d11a4b5be286f670593ac3701d4912db8e4d6f76",
+      "sha256": "31010a5922305b67e69ac963446fba80bf55df3ca8131847cfce27c645414aad",
+      "bytes": 21716,
+      "archivePath": "blobs/d1/d11a4b5be286f670593ac3701d4912db8e4d6f76.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d6bd897f7d231503a7821d38db782a221a7b3c99",
+      "sha256": "1469910ac34dcb71fc3fa70c8a17e8ad839042b995b3b298b7c90273b873696e",
+      "bytes": 2459,
+      "archivePath": "blobs/d6/d6bd897f7d231503a7821d38db782a221a7b3c99.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "d7f9fbbc7574ca48bdc781fcf5b76a5f1a8ab5da",
+      "sha256": "f2487f26471165aff49235f0933626341530e95e167a6e4b57f63266d8556686",
+      "bytes": 1417,
+      "archivePath": "blobs/d7/d7f9fbbc7574ca48bdc781fcf5b76a5f1a8ab5da.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ddd9802a22a1d6766fae7d3ab2b383747512b767",
+      "sha256": "5f5332ab5c1fe1e5f761578d933fb84e678b2850ad14d6ad553409ff2a80495d",
+      "bytes": 1417,
+      "archivePath": "blobs/dd/ddd9802a22a1d6766fae7d3ab2b383747512b767.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "e032332396eecd4f8537d1917699145ed2cde3e4",
+      "sha256": "7cc32fe9f0be5f58bf0e2f7b2fe9740e709b450c5ea1acda968904cb590fae37",
+      "bytes": 3407,
+      "archivePath": "blobs/e0/e032332396eecd4f8537d1917699145ed2cde3e4.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "e0fcb0526794e7b326064fba5cf104e55bbee3cc",
+      "sha256": "3fee5611b38e0f0b9ab52719a40a0ca34dba87226af2924fa2456327af10c741",
+      "bytes": 8062,
+      "archivePath": "blobs/e0/e0fcb0526794e7b326064fba5cf104e55bbee3cc.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "e679738776d221d368705f30e3a07dab5e87daf1",
+      "sha256": "dbabdb43093061c6dc194e94c3f9a253630e9d2092b9e31347e7c8abe69ad7c4",
+      "bytes": 20135,
+      "archivePath": "blobs/e6/e679738776d221d368705f30e3a07dab5e87daf1.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "eae305126eb65aaab5a619e4f4351505806e1756",
+      "sha256": "7447997a0dd4b20b0c5b1ce7da13ce08d77d79a385c7af68a7eb54bad55a2092",
+      "bytes": 2889,
+      "archivePath": "blobs/ea/eae305126eb65aaab5a619e4f4351505806e1756.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ec58ce6b8bfa77e8be53c1d60f2341874251f309",
+      "sha256": "880f8a3a2e8052d807e77b660b0e16bd945860f0569d14243d8c164fa448fbdd",
+      "bytes": 1642,
+      "archivePath": "blobs/ec/ec58ce6b8bfa77e8be53c1d60f2341874251f309.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "f309539e18659b8d2aac802bd5d2c69cac0f4ff8",
+      "sha256": "0ff810f94a78c12290f97bff9395e8a21d34b83a7c56e9ca499dd8438ed208ed",
+      "bytes": 4149,
+      "archivePath": "blobs/f3/f309539e18659b8d2aac802bd5d2c69cac0f4ff8.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "f574eca7b6fcb4dab68b4c7a97e1c487fa8cbbdc",
+      "sha256": "86c1648216d06601aaa58f3e618193c594674c7f71e82df46c9e71d4531d0ad6",
+      "bytes": 1150,
+      "archivePath": "blobs/f5/f574eca7b6fcb4dab68b4c7a97e1c487fa8cbbdc.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "f9b714061fbcaa8b5c6d1f192761b11257d7dc70",
+      "sha256": "de67b15f1745314a3b3edd7c0cfe13d8d4b2854dc0c65b81f4f1efb7e718cf9d",
+      "bytes": 5788,
+      "archivePath": "blobs/f9/f9b714061fbcaa8b5c6d1f192761b11257d7dc70.blob",
+      "runtimeEnabled": false
+    },
+    {
+      "gitBlob": "ff7efaf6f222171874f364e5c3b207724314c283",
+      "sha256": "1df6f7d0d57d3d19dd58a109f791d2d1b397a81a229b03501d2a2c2aee0026ef",
+      "bytes": 5077,
+      "archivePath": "blobs/ff/ff7efaf6f222171874f364e5c3b207724314c283.blob",
+      "runtimeEnabled": false
+    }
+  ],
+  "files": [
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos",
+      "originalPath": "artifacts/clothing-review-2026-10-08/outfit-review.md",
+      "backupPath": "source/accepted-character-faces/artifacts/clothing-review-2026-10-08/outfit-review.md",
+      "gitBlob": "f9b714061fbcaa8b5c6d1f192761b11257d7dc70",
+      "sha256": "de67b15f1745314a3b3edd7c0cfe13d8d4b2854dc0c65b81f4f1efb7e718cf9d",
+      "bytes": 5788,
+      "archivePath": "blobs/f9/f9b714061fbcaa8b5c6d1f192761b11257d7dc70.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos",
+      "originalPath": "artifacts/clothing-review-2026-10-08/shoulder-pad-review.md",
+      "backupPath": "source/accepted-character-faces/artifacts/clothing-review-2026-10-08/shoulder-pad-review.md",
+      "gitBlob": "e032332396eecd4f8537d1917699145ed2cde3e4",
+      "sha256": "7cc32fe9f0be5f58bf0e2f7b2fe9740e709b450c5ea1acda968904cb590fae37",
+      "bytes": 3407,
+      "archivePath": "blobs/e0/e032332396eecd4f8537d1917699145ed2cde3e4.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos",
+      "originalPath": "artifacts/motion-comparison-2026-10-08/independent-bounded-report.md",
+      "backupPath": "source/accepted-character-faces/artifacts/motion-comparison-2026-10-08/independent-bounded-report.md",
+      "gitBlob": "177c1ed13c33f54108d9886f6bc1201b1a141313",
+      "sha256": "0242da63c5646e13b778a00073a4033fe716137c5efe14ec42d78daae1fb627e",
+      "bytes": 6498,
+      "archivePath": "blobs/17/177c1ed13c33f54108d9886f6bc1201b1a141313.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos",
+      "originalPath": "artifacts/motion-comparison-2026-10-08/runtime-followup.md",
+      "backupPath": "source/accepted-character-faces/artifacts/motion-comparison-2026-10-08/runtime-followup.md",
+      "gitBlob": "7c208b502c6f72ea21a65a27693b7565ff1b50e4",
+      "sha256": "02c5e4ee8ec5b34412d443ea09d86011ffc85712c2dcb94e176584792edffd19",
+      "bytes": 2269,
+      "archivePath": "blobs/7c/7c208b502c6f72ea21a65a27693b7565ff1b50e4.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-capture/normalize.mjs",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-capture/normalize.mjs",
+      "gitBlob": "ec58ce6b8bfa77e8be53c1d60f2341874251f309",
+      "sha256": "880f8a3a2e8052d807e77b660b0e16bd945860f0569d14243d8c164fa448fbdd",
+      "bytes": 1642,
+      "archivePath": "blobs/ec/ec58ce6b8bfa77e8be53c1d60f2341874251f309.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-capture/probe-battle.mjs",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-capture/probe-battle.mjs",
+      "gitBlob": "11baf1430e5224dc2aeaaa1bfe17a0624271bf18",
+      "sha256": "55c77fdb1580bebfff39596acb1638ea04de87b602f3dea2da4fd94131841af7",
+      "bytes": 1621,
+      "archivePath": "blobs/11/11baf1430e5224dc2aeaaa1bfe17a0624271bf18.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-capture/probe-battle2.mjs",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-capture/probe-battle2.mjs",
+      "gitBlob": "2db4097405fade14c46875bfe3b4c60a59012043",
+      "sha256": "c81b64b32b4abff59c3af59635e280d2b839f362b81c8b27c3cff73a15b9a7c3",
+      "bytes": 2610,
+      "archivePath": "blobs/2d/2db4097405fade14c46875bfe3b4c60a59012043.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-capture/probe-turn.mjs",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-capture/probe-turn.mjs",
+      "gitBlob": "127d23fc22309f881dba6415c60a5eca9859e8d6",
+      "sha256": "728d7e1c5974554cb039397a7288201149ca513c25c16221f74b35997af398c5",
+      "bytes": 1523,
+      "archivePath": "blobs/12/127d23fc22309f881dba6415c60a5eca9859e8d6.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-capture/probe.mjs",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-capture/probe.mjs",
+      "gitBlob": "f574eca7b6fcb4dab68b4c7a97e1c487fa8cbbdc",
+      "sha256": "86c1648216d06601aaa58f3e618193c594674c7f71e82df46c9e71d4531d0ad6",
+      "bytes": 1150,
+      "archivePath": "blobs/f5/f574eca7b6fcb4dab68b4c7a97e1c487fa8cbbdc.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-pr-body.md",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-pr-body.md",
+      "gitBlob": "825ea488c1d2e271e4c74bdeef5e7ccf7c8bab20",
+      "sha256": "bdd62dac34d0165630af8de5960fc67c0cb7585a32d43235f02c55406f1a111b",
+      "bytes": 1222,
+      "archivePath": "blobs/82/825ea488c1d2e271e4c74bdeef5e7ccf7c8bab20.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-preview/serve.py",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-preview/serve.py",
+      "gitBlob": "58aa24e250efe799780c2c8609085ff1e2c64c3b",
+      "sha256": "15f6c720baee7ac6bed73db3b9d5d48e4d6905aa297778fa9e0eec18a2ced7cf",
+      "bytes": 2426,
+      "archivePath": "blobs/58/58aa24e250efe799780c2c8609085ff1e2c64c3b.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/roadside-discovery/granaderos",
+      "originalPath": ".cache/roadside-freeze.mjs",
+      "backupPath": "source/roadside-discovery/.cache/roadside-freeze.mjs",
+      "gitBlob": "bb498f3e73309e912bd4589c872819852f4d9631",
+      "sha256": "2eb86fa125dc629e5dcf9f20b9c586561c840dd11896c24aeccb05a5a0ad21df",
+      "bytes": 1088,
+      "archivePath": "blobs/bb/bb498f3e73309e912bd4589c872819852f4d9631.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/roadside-discovery/granaderos",
+      "originalPath": ".cache/roadside-pr-body.md",
+      "backupPath": "source/roadside-discovery/.cache/roadside-pr-body.md",
+      "gitBlob": "4720b6494196462eba405d58add667b3543da0ce",
+      "sha256": "2a63d3dd55c3ddf7b37fffb931dfcaffdf477eac343ab7d293f25fe791f66376",
+      "bytes": 1456,
+      "archivePath": "blobs/47/4720b6494196462eba405d58add667b3543da0ce.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/shot-load-specialty/granaderos",
+      "originalPath": ".cache/scatter-freeze.mjs",
+      "backupPath": "source/shot-load-specialty/.cache/scatter-freeze.mjs",
+      "gitBlob": "6abca3b229fa7301997b7428a1f3d9f4b9708f0f",
+      "sha256": "583391da0f502b7e42b5542d4d3f4d6b122ae02d2509c635df87ae24ff638915",
+      "bytes": 1087,
+      "archivePath": "blobs/6a/6abca3b229fa7301997b7428a1f3d9f4b9708f0f.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/squad-travel-notice/granaderos",
+      "originalPath": ".cache/squad-travel-notice-stock-proof.mjs",
+      "backupPath": "source/squad-travel-notice/.cache/squad-travel-notice-stock-proof.mjs",
+      "gitBlob": "30316f9d2a8248faf766282fa27da1bcf124415a",
+      "sha256": "ea5dfe47410efe7f7d6e77e358f76e35975b5a94c6144e31683786022b2648a4",
+      "bytes": 5356,
+      "archivePath": "blobs/30/30316f9d2a8248faf766282fa27da1bcf124415a.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/cautious-cuyo-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/cautious-cuyo-probe.mjs",
+      "gitBlob": "c27ab65b3f66660304e374f21bfe87b32b9340d1",
+      "sha256": "2df6c8b08d319c2fa13f19c3edd015de297ec4d229f066c1abecadf771ebdd0b",
+      "bytes": 5294,
+      "archivePath": "blobs/c2/c27ab65b3f66660304e374f21bfe87b32b9340d1.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/cautious-yatasto-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/cautious-yatasto-probe.mjs",
+      "gitBlob": "0637819eda4b0851c11c21e35ac15a38fb982a12",
+      "sha256": "f4100d95f5e765c4fd8613132f5e70834fa28838fadb369b14e976ef71478322",
+      "bytes": 2574,
+      "archivePath": "blobs/06/0637819eda4b0851c11c21e35ac15a38fb982a12.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/created-los-patos-dynamic-deployment.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/created-los-patos-dynamic-deployment.mjs",
+      "gitBlob": "9e5c5401d2753f86667f6d7abc0beab5510664bc",
+      "sha256": "9f3b9a2f200f6655915624fe72a2c5852fac82564e7ca965b1a83b26e9ad6ccd",
+      "bytes": 6788,
+      "archivePath": "blobs/9e/9e5c5401d2753f86667f6d7abc0beab5510664bc.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/freeze-stock.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/freeze-stock.mjs",
+      "gitBlob": "08e30e064631f8eb338fe0ca9b23ddfe3142f2d4",
+      "sha256": "4388e3d2a9ccc7b9682a5e0a707f3eecb7dc10d2dd908b737e5ed7c4299f43f0",
+      "bytes": 1126,
+      "archivePath": "blobs/08/08e30e064631f8eb338fe0ca9b23ddfe3142f2d4.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/fresh-campaign-route-diagnostic.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/fresh-campaign-route-diagnostic.mjs",
+      "gitBlob": "a4bc097d18d2fd7a5d743a12465c47ed98f194d5",
+      "sha256": "0c9dd02f589016ebd04c6e46cbc4e1205f570cca86eeccaaf16fccaee0bfb97b",
+      "bytes": 54116,
+      "archivePath": "blobs/a4/a4bc097d18d2fd7a5d743a12465c47ed98f194d5.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/mountain-aid-reporting.test.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/mountain-aid-reporting.test.mjs",
+      "gitBlob": "60ee83a7d673d178b69cdc00ae7e3640a53aeb49",
+      "sha256": "f3f1233fb29d7f9e014b21690137d46b49b7c0896c6c257343a9ec6bd14a4c54",
+      "bytes": 8173,
+      "archivePath": "blobs/60/60ee83a7d673d178b69cdc00ae7e3640a53aeb49.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-before-range-f61dc704/all-tracked.patch",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-before-range-f61dc704/all-tracked.patch",
+      "gitBlob": "82e0a497a45ad6fd7f9a2358b815539997d4bf54",
+      "sha256": "2e447c85e29dca38aa7f7ee35b318603f587208a861fef159a78bf79791907d4",
+      "bytes": 179603,
+      "archivePath": "blobs/82/82e0a497a45ad6fd7f9a2358b815539997d4bf54.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-before-range-f61dc704/private-video.md",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-before-range-f61dc704/private-video.md",
+      "gitBlob": "cd001f51f0eee2877ba22dd40aaeb157a11fd80f",
+      "sha256": "c596ed5edd7009f626e238618171f61039529babb1fb61d8bec084747a488516",
+      "bytes": 125355,
+      "archivePath": "blobs/cd/cd001f51f0eee2877ba22dd40aaeb157a11fd80f.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-before-range-f61dc704/private-video.patch",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-before-range-f61dc704/private-video.patch",
+      "gitBlob": "d7f9fbbc7574ca48bdc781fcf5b76a5f1a8ab5da",
+      "sha256": "f2487f26471165aff49235f0933626341530e95e167a6e4b57f63266d8556686",
+      "bytes": 1417,
+      "archivePath": "blobs/d7/d7f9fbbc7574ca48bdc781fcf5b76a5f1a8ab5da.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-before-range-f61dc704/untracked/docs/verification/stock-campaign-route-2026-10-04.md",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-before-range-f61dc704/untracked/docs/verification/stock-campaign-route-2026-10-04.md",
+      "gitBlob": "ad2bd20bbdb2a2e5ae752f7a47ecb42d7a9b428d",
+      "sha256": "2fa1f37081a2f367435640de2487c1a275ca47344c82e244a8e7790bacfd695b",
+      "bytes": 25982,
+      "archivePath": "blobs/ad/ad2bd20bbdb2a2e5ae752f7a47ecb42d7a9b428d.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-controlled-recovery-continuation.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-controlled-recovery-continuation.mjs",
+      "gitBlob": "5bf4e9306d102434b5bea80cd75cfca604f07e01",
+      "sha256": "99ac1358c29397a2682079a493bd22013176aca923fcb20a1154f13a7c4e3419",
+      "bytes": 18034,
+      "archivePath": "blobs/5b/5bf4e9306d102434b5bea80cd75cfca604f07e01.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-controlled-recovery-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-controlled-recovery-proof.mjs",
+      "gitBlob": "1b2c0a12cb346fca5ba7e74afd5fd000b569df29",
+      "sha256": "4dc6fd9fd7f3dd43a67cabeb74cf71f59de9df3ef31e36de405295c303e3ee6b",
+      "bytes": 17586,
+      "archivePath": "blobs/1b/1b2c0a12cb346fca5ba7e74afd5fd000b569df29.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-current-main-replay.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-current-main-replay.mjs",
+      "gitBlob": "0da4f3f7e47c2ca278abc872f6b408e175081a2d",
+      "sha256": "8399b212979d55e592aaf207f12b511d66a1c7aa52866fb46baafaabd0d626fb",
+      "bytes": 4308,
+      "archivePath": "blobs/0d/0da4f3f7e47c2ca278abc872f6b408e175081a2d.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ending-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ending-probe.mjs",
+      "gitBlob": "3249a00c57d60d8900764fc93f45da55a1df2796",
+      "sha256": "3012535bcdf0cf24e18ba6ac8f9797a2948de78659cd9d73fe00bb0fa14777df",
+      "bytes": 1111,
+      "archivePath": "blobs/32/3249a00c57d60d8900764fc93f45da55a1df2796.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-daylight-approach-final-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-daylight-approach-final-audit.mjs",
+      "gitBlob": "639fe30799a477fb94edef3681d3cae06d0a557d",
+      "sha256": "95036dd962222757684e28401c4500707c928e7167f890dd61e6d14b718d1b77",
+      "bytes": 12447,
+      "archivePath": "blobs/63/639fe30799a477fb94edef3681d3cae06d0a557d.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-daylight-approach-ownership-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-daylight-approach-ownership-audit.mjs",
+      "gitBlob": "9db13ad14129279ba6c8f21e0fca1db41050d407",
+      "sha256": "1a3e2a6b75ab2975cecea13e3a274ad5b91ad0be19fdc7a045f28e4ed6c1c312",
+      "bytes": 11531,
+      "archivePath": "blobs/9d/9db13ad14129279ba6c8f21e0fca1db41050d407.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-daylight-approach-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-daylight-approach-proof.mjs",
+      "gitBlob": "7ca3d1600fb4da7aac9436004f5e5f7c7d6b6a2f",
+      "sha256": "51cbf19f0565c4e551e31637e8523b62aa71e83011af2182530db61a8eee1d8d",
+      "bytes": 22882,
+      "archivePath": "blobs/7c/7ca3d1600fb4da7aac9436004f5e5f7c7d6b6a2f.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-daylight-approach-terminal-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-daylight-approach-terminal-audit.mjs",
+      "gitBlob": "b809347ab66b7812a7d9bcda227c187104f238c5",
+      "sha256": "f1cfff53aae01531762072e0fe63c835f15998cf3967dd5ca5080e50c022936f",
+      "bytes": 10538,
+      "archivePath": "blobs/b8/b809347ab66b7812a7d9bcda227c187104f238c5.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-friendly-supply-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-friendly-supply-proof.mjs",
+      "gitBlob": "c7da14bcd6c5aa72f34e4d75f382d8c41f6b6a6d",
+      "sha256": "52b4f28c8007aa607a1fee6e957f8955456a4f89601635de129ce225052a8834",
+      "bytes": 21398,
+      "archivePath": "blobs/c7/c7da14bcd6c5aa72f34e4d75f382d8c41f6b6a6d.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-friendly-supply-terminal-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-friendly-supply-terminal-audit.mjs",
+      "gitBlob": "cdd58255e939b4dbaa2c16d8d8b3f8710cc911f6",
+      "sha256": "e923e32aedd61ccb3fb9d40d78c9812f03b1d95355f104b896a7f6138a672e26",
+      "bytes": 8640,
+      "archivePath": "blobs/cd/cdd58255e939b4dbaa2c16d8d8b3f8710cc911f6.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-native-assault-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-native-assault-proof.mjs",
+      "gitBlob": "3ae99af5cb74be4b176d57542ffa5b1ceb616e45",
+      "sha256": "cceb7a4513c7689fe49fac6969bdb7171a9842b3c01a9323882bf8e721264219",
+      "bytes": 22542,
+      "archivePath": "blobs/3a/3ae99af5cb74be4b176d57542ffa5b1ceb616e45.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-native-assault-settlement-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-native-assault-settlement-audit.mjs",
+      "gitBlob": "c6b2d1b7dcc16f6390d0c1b04a178f2407f255c4",
+      "sha256": "0d54e9abb4c1e73d899b0b1d75d5f38cbaed29dc2bae7aae85149b4ded68dbac",
+      "bytes": 8522,
+      "archivePath": "blobs/c6/c6b2d1b7dcc16f6390d0c1b04a178f2407f255c4.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-preparation-continuation-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-preparation-continuation-proof.mjs",
+      "gitBlob": "e679738776d221d368705f30e3a07dab5e87daf1",
+      "sha256": "dbabdb43093061c6dc194e94c3f9a253630e9d2092b9e31347e7c8abe69ad7c4",
+      "bytes": 20135,
+      "archivePath": "blobs/e6/e679738776d221d368705f30e3a07dab5e87daf1.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-preparation-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-preparation-proof.mjs",
+      "gitBlob": "7f14a8330ab1a39e5c955986551791b4f2905637",
+      "sha256": "92a1ad68c0b2a8f912b00ee3bdc8f0145a06c8a8835cabdcf982878299d6cb97",
+      "bytes": 18373,
+      "archivePath": "blobs/7f/7f14a8330ab1a39e5c955986551791b4f2905637.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-preparation-ready-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-preparation-ready-proof.mjs",
+      "gitBlob": "1514cbcbd1dd3eda4ea3b0774995371da02ec2fc",
+      "sha256": "2df9b0ec84f9865a88fa3f7c42d05d55cc83194503d688cb1ae5af092021aa40",
+      "bytes": 19953,
+      "archivePath": "blobs/15/1514cbcbd1dd3eda4ea3b0774995371da02ec2fc.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-preparation-terminal-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-preparation-terminal-audit.mjs",
+      "gitBlob": "e0fcb0526794e7b326064fba5cf104e55bbee3cc",
+      "sha256": "3fee5611b38e0f0b9ab52719a40a0ca34dba87226af2924fa2456327af10c741",
+      "bytes": 8062,
+      "archivePath": "blobs/e0/e0fcb0526794e7b326064fba5cf104e55bbee3cc.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-ensenada-readiness-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-ensenada-readiness-audit.mjs",
+      "gitBlob": "3ebd5ef6f13e2eb4c870285415a84b0da751f6bf",
+      "sha256": "bca74ebfee1143ad1cd376894a90df1e828cfa4f3406e101cf9e3df8ab53bbd1",
+      "bytes": 10184,
+      "archivePath": "blobs/3e/3ebd5ef6f13e2eb4c870285415a84b0da751f6bf.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-foundry-accepted-care-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-foundry-accepted-care-probe.mjs",
+      "gitBlob": "8fc0861f51ddfc37ccb2408cf7ed9cc04cd06443",
+      "sha256": "a5c914409af3195a3397e339850c95b2e44ec1524f2440bfbb78d8f708ebe2f6",
+      "bytes": 5288,
+      "archivePath": "blobs/8f/8fc0861f51ddfc37ccb2408cf7ed9cc04cd06443.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-foundry-helper-care-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-foundry-helper-care-probe.mjs",
+      "gitBlob": "42d9bce1b4063354532837f52e0c8a3b316e6d90",
+      "sha256": "83bf5ed8c2632857149d45d4de18848616ff3a6492ce24870b8c770918fff3ba",
+      "bytes": 5321,
+      "archivePath": "blobs/42/42d9bce1b4063354532837f52e0c8a3b316e6d90.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-isolation-main217-readonly-continuation.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-isolation-main217-readonly-continuation.mjs",
+      "gitBlob": "45b2fa41e0023ceb1bd07a92d04b399f25d9e27f",
+      "sha256": "8bd932b58d2361e06871abed587303afeb99e445401482063c1b6d335bfbb559",
+      "bytes": 11321,
+      "archivePath": "blobs/45/45b2fa41e0023ceb1bd07a92d04b399f25d9e27f.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-isolation-main217-readonly-final-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-isolation-main217-readonly-final-audit.mjs",
+      "gitBlob": "2357dcef98bfcea5600cd6893878d67f645c8143",
+      "sha256": "02133b47a4b6232dca763b5b085110c5ae403b9f066cf732b2751d8b2f2f73bb",
+      "bytes": 6043,
+      "archivePath": "blobs/23/2357dcef98bfcea5600cd6893878d67f645c8143.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-isolation-main217-readonly.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-isolation-main217-readonly.mjs",
+      "gitBlob": "217ca0403f9f4245b709f109c9a248958eb0f2cd",
+      "sha256": "ad63afc9c23342f1bc3a9279828613640cc261dd5af3f988568f0e1767c34191",
+      "bytes": 9560,
+      "archivePath": "blobs/21/217ca0403f9f4245b709f109c9a248958eb0f2cd.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-local-care-diagnostic.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-local-care-diagnostic.mjs",
+      "gitBlob": "69d1b5ff5876494e52e2fe27b2dc9a0c9704c6ad",
+      "sha256": "c2b49c48319e869da112e6ec44fab3a186eddb3aecd8b413db3dd5be548dddd3",
+      "bytes": 9800,
+      "archivePath": "blobs/69/69d1b5ff5876494e52e2fe27b2dc9a0c9704c6ad.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-main-update-sources/ja2-own.md",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-main-update-sources/ja2-own.md",
+      "gitBlob": "94240d1f07c86975df8935f0f5511b14d47f4387",
+      "sha256": "4b733b887f09fec1f6e206ab00f8cd3d373d7747f6464027c98e9409d223106a",
+      "bytes": 121898,
+      "archivePath": "blobs/94/94240d1f07c86975df8935f0f5511b14d47f4387.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mendoza-ammo-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mendoza-ammo-probe.mjs",
+      "gitBlob": "eae305126eb65aaab5a619e4f4351505806e1756",
+      "sha256": "7447997a0dd4b20b0c5b1ce7da13ce08d77d79a385c7af68a7eb54bad55a2092",
+      "bytes": 2889,
+      "archivePath": "blobs/ea/eae305126eb65aaab5a619e4f4351505806e1756.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mendoza-battle-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mendoza-battle-probe.mjs",
+      "gitBlob": "36aebac27cbba28afe1076e28c1c342488065e04",
+      "sha256": "9a03cb8784927bf3849413967c9a7e2a84fb976bf1291a9e6a0ddae119367d99",
+      "bytes": 5294,
+      "archivePath": "blobs/36/36aebac27cbba28afe1076e28c1c342488065e04.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mendoza-care-helper.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mendoza-care-helper.mjs",
+      "gitBlob": "7588eb4e1af81313840e5a437658cd13a9bab35c",
+      "sha256": "684cb20f4ee5caa67b188fded2373df797bc0f5a7bd6d237e7f931f0c1eb5fe4",
+      "bytes": 5252,
+      "archivePath": "blobs/75/7588eb4e1af81313840e5a437658cd13a9bab35c.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mendoza-care-interruption.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mendoza-care-interruption.mjs",
+      "gitBlob": "1c5ab94871a3f05105043505e357cad9059b0f33",
+      "sha256": "3574ee41beb92e2db7f6e1e9b99b38c3ae0b4576a221090dde30fe0b411e6e55",
+      "bytes": 6963,
+      "archivePath": "blobs/1c/1c5ab94871a3f05105043505e357cad9059b0f33.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mendoza-care-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mendoza-care-probe.mjs",
+      "gitBlob": "03139a5e3b65dd5ff6242e400f47fc2bb0beedfa",
+      "sha256": "d2ffadaa0b91e7485703901e5062a5ca5c454d1fbc7686a6b8f3cfa03ed64782",
+      "bytes": 9318,
+      "archivePath": "blobs/03/03139a5e3b65dd5ff6242e400f47fc2bb0beedfa.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mendoza-care-strategic-finish.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mendoza-care-strategic-finish.mjs",
+      "gitBlob": "64aa5c21d1886bc59ea5c38f1420facee960047e",
+      "sha256": "649b638c12dbb99b8e81fd3cdc8f1580f1ff9ce15b368af686f5247e26050a77",
+      "bytes": 9656,
+      "archivePath": "blobs/64/64aa5c21d1886bc59ea5c38f1420facee960047e.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mendoza-care-strategic-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mendoza-care-strategic-probe.mjs",
+      "gitBlob": "320c49162178c87f50b8f8ef7ae2de4fa1eb000c",
+      "sha256": "8a6639d586de89d8f2bb06571d5035220586d2503ee785c1e16feccd46822c17",
+      "bytes": 10716,
+      "archivePath": "blobs/32/320c49162178c87f50b8f8ef7ae2de4fa1eb000c.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-mountain-preparation-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-mountain-preparation-probe.mjs",
+      "gitBlob": "4492be53c93a893c7a6e789bccb15029d8a8907e",
+      "sha256": "b4a2711fdcc59668f708fc6dc8167b8b1a48fd5852bb282cb048e46600e0da30",
+      "bytes": 5118,
+      "archivePath": "blobs/44/4492be53c93a893c7a6e789bccb15029d8a8907e.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-northern-current-continuation.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-northern-current-continuation.mjs",
+      "gitBlob": "3aaf9597a9ca7de2995af82df505567a55d19c82",
+      "sha256": "8a855aca1c1f2fa165e9b0a895686a19f3427427fdf04ac01731e6bab9c12099",
+      "bytes": 2650,
+      "archivePath": "blobs/3a/3aaf9597a9ca7de2995af82df505567a55d19c82.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-northern-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-northern-probe.mjs",
+      "gitBlob": "1adc2a3992f7ed658d6a34a7fc3a180212460871",
+      "sha256": "41764e995718ea0bbafcf236366af0dda6b3d45f42574505d3892a9b5dc7caf2",
+      "bytes": 1141,
+      "archivePath": "blobs/1a/1adc2a3992f7ed658d6a34a7fc3a180212460871.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-private-video-before-5291995c.md",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-private-video-before-5291995c.md",
+      "gitBlob": "306ca23cc51dea9ed406c531b5a6f4a66273ab09",
+      "sha256": "85dd2025e82d89fb71b5f37dab615f8fba66bf2f79ae5f4b3f32764e44cbfe12",
+      "bytes": 122305,
+      "archivePath": "blobs/30/306ca23cc51dea9ed406c531b5a6f4a66273ab09.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-private-video-before-5291995c.patch",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-private-video-before-5291995c.patch",
+      "gitBlob": "ddd9802a22a1d6766fae7d3ab2b383747512b767",
+      "sha256": "5f5332ab5c1fe1e5f761578d933fb84e678b2850ad14d6ad553409ff2a80495d",
+      "bytes": 1417,
+      "archivePath": "blobs/dd/ddd9802a22a1d6766fae7d3ab2b383747512b767.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-public-projects-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-public-projects-proof.mjs",
+      "gitBlob": "b4a422dde99d74ab31569eaab87fdc2c427584fc",
+      "sha256": "4dbac357a8e5f8377ffdaf9bb3d53b6ac6796751a1695af4076cf64575007b2e",
+      "bytes": 9660,
+      "archivePath": "blobs/b4/b4a422dde99d74ab31569eaab87fdc2c427584fc.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-public-projects-readonly-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-public-projects-readonly-audit.mjs",
+      "gitBlob": "ff7efaf6f222171874f364e5c3b207724314c283",
+      "sha256": "1df6f7d0d57d3d19dd58a109f791d2d1b397a81a229b03501d2a2c2aee0026ef",
+      "bytes": 5077,
+      "archivePath": "blobs/ff/ff7efaf6f222171874f364e5c3b207724314c283.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-recovery-defense-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-recovery-defense-probe.mjs",
+      "gitBlob": "149322b1dc353f3118f7d0ea32a693d6906325be",
+      "sha256": "fac3d0c4b61f78e4ce546c483b00754f53a9db334ec139949c7309eccb8b7574",
+      "bytes": 1361,
+      "archivePath": "blobs/14/149322b1dc353f3118f7d0ea32a693d6906325be.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-relief-current-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-relief-current-probe.mjs",
+      "gitBlob": "023e260c5ca4706ca7f856fea51e60c43f2e9a70",
+      "sha256": "0e222cb68812582e95cbcc96a683620c91597eafe1fd3f3aff873709246a4a7c",
+      "bytes": 1983,
+      "archivePath": "blobs/02/023e260c5ca4706ca7f856fea51e60c43f2e9a70.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-room-fear-main-update-recovery.patch",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-room-fear-main-update-recovery.patch",
+      "gitBlob": "44dc226de77f34b3c6dcef1aa867bf5ea3fa3972",
+      "sha256": "0dbf6162c2c1f8fd14116c8e29a8255cdf984451b2e36417beaad732a2b71ccd",
+      "bytes": 132922,
+      "archivePath": "blobs/44/44dc226de77f34b3c6dcef1aa867bf5ea3fa3972.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-room-fear-main-update-sources/docs/verification/ja2-video-review-2026-10-03.md",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-room-fear-main-update-sources/docs/verification/ja2-video-review-2026-10-03.md",
+      "gitBlob": "306ca23cc51dea9ed406c531b5a6f4a66273ab09",
+      "sha256": "85dd2025e82d89fb71b5f37dab615f8fba66bf2f79ae5f4b3f32764e44cbfe12",
+      "bytes": 122305,
+      "archivePath": "blobs/30/306ca23cc51dea9ed406c531b5a6f4a66273ab09.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-room-fear-main-update-sources/docs/verification/stock-campaign-route-2026-10-04.md",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-room-fear-main-update-sources/docs/verification/stock-campaign-route-2026-10-04.md",
+      "gitBlob": "523fcc85b5f60761b757159e5b10142cfbb7eec7",
+      "sha256": "b6597c905a9aecf6e007861d78bc926ec10e2126b2cf4c61501ee1b78ad31790",
+      "bytes": 17980,
+      "archivePath": "blobs/52/523fcc85b5f60761b757159e5b10142cfbb7eec7.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-room-fear-main-update-sources/tests/fresh-cuyo-route.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-room-fear-main-update-sources/tests/fresh-cuyo-route.mjs",
+      "gitBlob": "d11a4b5be286f670593ac3701d4912db8e4d6f76",
+      "sha256": "31010a5922305b67e69ac963446fba80bf55df3ca8131847cfce27c645414aad",
+      "bytes": 21716,
+      "archivePath": "blobs/d1/d11a4b5be286f670593ac3701d4912db8e4d6f76.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-ammunition-audit.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-ammunition-audit.mjs",
+      "gitBlob": "d6bd897f7d231503a7821d38db782a221a7b3c99",
+      "sha256": "1469910ac34dcb71fc3fa70c8a17e8ad839042b995b3b298b7c90273b873696e",
+      "bytes": 2459,
+      "archivePath": "blobs/d6/d6bd897f7d231503a7821d38db782a221a7b3c99.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-cautious-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-cautious-probe.mjs",
+      "gitBlob": "555fd792d0990458974125fcb890bf909676e8f2",
+      "sha256": "6f27ed6cd72f65af9c338f90d92533a41825a049aa0a9e1264c237ecf8b3741b",
+      "bytes": 1614,
+      "archivePath": "blobs/55/555fd792d0990458974125fcb890bf909676e8f2.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-custody-verification.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-custody-verification.mjs",
+      "gitBlob": "8ab90c1ddf12dbe87c849fb2b847b7eaedfa336b",
+      "sha256": "4fa5bac9cb216285c18af11c0fb70913d46ab40ff2790cafeadf702b69ab4890",
+      "bytes": 12578,
+      "archivePath": "blobs/8a/8ab90c1ddf12dbe87c849fb2b847b7eaedfa336b.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-final-preparation-receipt.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-final-preparation-receipt.mjs",
+      "gitBlob": "9e15ae7897050e0a5e2d55b721f299eee741c3e6",
+      "sha256": "8456c6e008cbe8193d68c0fae0a61a55a9ef2390859cd309baa11f40daab021a",
+      "bytes": 4665,
+      "archivePath": "blobs/9e/9e15ae7897050e0a5e2d55b721f299eee741c3e6.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-preparation-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-preparation-proof.mjs",
+      "gitBlob": "51ea2a33d6fd07c940bdead3c0d041d18626fbe9",
+      "sha256": "b45efa3fbeb9966a4774e4c728ee50c4665414195f2cdee90a1bb4eb1ecf6bb5",
+      "bytes": 22107,
+      "archivePath": "blobs/51/51ea2a33d6fd07c940bdead3c0d041d18626fbe9.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-preparation-reassignment-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-preparation-reassignment-proof.mjs",
+      "gitBlob": "12085e950ec5be4435778b3e62b16ad8853d07e6",
+      "sha256": "9c0fc2e33f2675cc755a74b38f8f8b50e083c15ca35fd6bff44267bc5fd3836b",
+      "bytes": 23882,
+      "archivePath": "blobs/12/12085e950ec5be4435778b3e62b16ad8853d07e6.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-recapture-battle-continuation-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-recapture-battle-continuation-proof.mjs",
+      "gitBlob": "c261e90b3804f28ce810b71c179f0b1b0ebead4d",
+      "sha256": "fedd89a1feb2088ba9c1c32b6ab62ca09390edf43746e4df60e3fbecbcac2bc9",
+      "bytes": 16744,
+      "archivePath": "blobs/c2/c261e90b3804f28ce810b71c179f0b1b0ebead4d.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-salta-recapture-battle-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-salta-recapture-battle-proof.mjs",
+      "gitBlob": "560f4c1eb15b6c495f9102cd89543db429e31786",
+      "sha256": "dd6d6705af3b00df14476504cf5c4d24296dafc151c2c4321fcbe261e71bd91e",
+      "bytes": 14964,
+      "archivePath": "blobs/56/560f4c1eb15b6c495f9102cd89543db429e31786.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-squad-notice-main-replay.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-squad-notice-main-replay.mjs",
+      "gitBlob": "9316f9da7c3e0c3e8455fdba99a18bebf15f1da4",
+      "sha256": "a66219b9695ddfdf1edacb825d9217383ec370791da20c1e2aed67125a45f0fd",
+      "bytes": 4313,
+      "archivePath": "blobs/93/9316f9da7c3e0c3e8455fdba99a18bebf15f1da4.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-squad-notice-ten-replay.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-squad-notice-ten-replay.mjs",
+      "gitBlob": "1a214f10e83e54f72972cc5c27c452ac37059ee9",
+      "sha256": "f0aa38ebc3707170cf317d51a618ee49d8335abbe864a1ddbdd7f39aadc457f4",
+      "bytes": 6041,
+      "archivePath": "blobs/1a/1a214f10e83e54f72972cc5c27c452ac37059ee9.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-tucuman-aid-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-tucuman-aid-proof.mjs",
+      "gitBlob": "cc67a8a29dbd58f5f60d20dd8c31e6cf3ee6fec9",
+      "sha256": "db5f20dd6ea0fa7c29e5318fec77fddb4134924a3474e11c8dcd99adb713ea9b",
+      "bytes": 11108,
+      "archivePath": "blobs/cc/cc67a8a29dbd58f5f60d20dd8c31e6cf3ee6fec9.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-tucuman-current-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-tucuman-current-probe.mjs",
+      "gitBlob": "c9f3ad35f96f8a553292c61efa5ccac0e6b29f9f",
+      "sha256": "0ed474075aa5581d3ad33b493620852f8fc7f1872c1d3d54c8ef24c8b2e9e3f0",
+      "bytes": 1140,
+      "archivePath": "blobs/c9/c9f3ad35f96f8a553292c61efa5ccac0e6b29f9f.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/stock-tucuman-recapture-proof.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/stock-tucuman-recapture-proof.mjs",
+      "gitBlob": "98a425aa31772783a039fa53f7ef45ed94d5923c",
+      "sha256": "633f4fe6a0e8705a456b23e8cce94a0a683a0817b0e688b297e4ffd03bb89f58",
+      "bytes": 15998,
+      "archivePath": "blobs/98/98a425aa31772783a039fa53f7ef45ed94d5923c.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stock-campaign-acceptance/granaderos",
+      "originalPath": ".cache/tucuman-recovery-probe.mjs",
+      "backupPath": "source/stock-campaign-acceptance/.cache/tucuman-recovery-probe.mjs",
+      "gitBlob": "2e274d171ffd33056af551dca8521f03960c04e9",
+      "sha256": "0307c01055bbc91d85988c57bde082478db9bffb7d1a092dfef56c391047cec4",
+      "bytes": 729,
+      "archivePath": "blobs/2e/2e274d171ffd33056af551dca8521f03960c04e9.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/stone-ricochet/granaderos",
+      "originalPath": ".cache/ricochet-freeze.mjs",
+      "backupPath": "source/stone-ricochet/.cache/ricochet-freeze.mjs",
+      "gitBlob": "8f48740bf5895fa8ce6d3266d58d63d5dacf9cfa",
+      "sha256": "58e1df488c17df2e3f0f1c0e2e159eb8e11c4989bc4c40e459351a81fd0d711c",
+      "bytes": 1088,
+      "archivePath": "blobs/8f/8f48740bf5895fa8ce6d3266d58d63d5dacf9cfa.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+      "originalPath": "artifacts/character-apparel-surfaces/piece4-diagnosis.md",
+      "backupPath": "source/tactical-graphics-reference/artifacts/character-apparel-surfaces/piece4-diagnosis.md",
+      "gitBlob": "6017741d1ac4f00e0117f15d4fa4e191fdc5dfe6",
+      "sha256": "e139c6e4a6e1689664d3de287fc44f7eedc4ef6bbe96033dc540a9a1dcc7e6a4",
+      "bytes": 6874,
+      "archivePath": "blobs/60/6017741d1ac4f00e0117f15d4fa4e191fdc5dfe6.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+      "originalPath": "artifacts/character-apparel-surfaces/piece4-route.md",
+      "backupPath": "source/tactical-graphics-reference/artifacts/character-apparel-surfaces/piece4-route.md",
+      "gitBlob": "272b4d1dd89a01225668af402e735742ef3aa1fb",
+      "sha256": "f89b8417f26e84ea02f706390c00926961c88e175b2cb8cb6308af7cdd3124ba",
+      "bytes": 4968,
+      "archivePath": "blobs/27/272b4d1dd89a01225668af402e735742ef3aa1fb.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+      "originalPath": "artifacts/three-coarse-long-cloth-current-review/frozen-source/README.md",
+      "backupPath": "source/three-pr187-validation/artifacts/three-coarse-long-cloth-current-review/frozen-source/README.md",
+      "gitBlob": "4c6736c69ba643cf2bd287b074ee19c491ecf3b2",
+      "sha256": "4c13ca89af4cec0e9715d88b52b30b96c76126d6c9663751e243123e5d688c26",
+      "bytes": 3393,
+      "archivePath": "blobs/4c/4c6736c69ba643cf2bd287b074ee19c491ecf3b2.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+      "originalPath": "artifacts/three-gesture-step-return-current-review/clock-addendum-readme.md",
+      "backupPath": "source/three-pr187-validation/artifacts/three-gesture-step-return-current-review/clock-addendum-readme.md",
+      "gitBlob": "4a02c76ecd711b21966c77a41ed87d50974367f4",
+      "sha256": "b09f7a98bb01fd7dfc6cc306ce4889235c122cde5a876d09aa250b786475eafe",
+      "bytes": 2274,
+      "archivePath": "blobs/4a/4a02c76ecd711b21966c77a41ed87d50974367f4.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+      "originalPath": "artifacts/three-rifle-worker-current-review/paired-final-ui/review.md",
+      "backupPath": "source/three-pr187-validation/artifacts/three-rifle-worker-current-review/paired-final-ui/review.md",
+      "gitBlob": "0f364aaad04896b900c9ddf211d77ce26e35247c",
+      "sha256": "f4980c7d8dca14886f9f30993355b4784f723454125d2bc71d9fd8fe4b31e31d",
+      "bytes": 2771,
+      "archivePath": "blobs/0f/0f364aaad04896b900c9ddf211d77ce26e35247c.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+      "originalPath": "artifacts/three-woman-shawl-palette-current-review/frozen-source/README.md",
+      "backupPath": "source/three-pr187-validation/artifacts/three-woman-shawl-palette-current-review/frozen-source/README.md",
+      "gitBlob": "f309539e18659b8d2aac802bd5d2c69cac0f4ff8",
+      "sha256": "0ff810f94a78c12290f97bff9395e8a21d34b83a7c56e9ca499dd8438ed208ed",
+      "bytes": 4149,
+      "archivePath": "blobs/f3/f309539e18659b8d2aac802bd5d2c69cac0f4ff8.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/wounded-combat-cycle/granaderos",
+      "originalPath": ".cache/native-wounded-approach-continuation.mjs",
+      "backupPath": "source/wounded-combat-cycle/.cache/native-wounded-approach-continuation.mjs",
+      "gitBlob": "0e4120a390e40e135182c999c990f909a5e36525",
+      "sha256": "b5b35fa4d33356485aca51151309d129c3361bd29c0d41a7461d6dd8b7aee593",
+      "bytes": 13345,
+      "archivePath": "blobs/0e/0e4120a390e40e135182c999c990f909a5e36525.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/wounded-combat-cycle/granaderos",
+      "originalPath": ".cache/native-wounded-approach.mjs",
+      "backupPath": "source/wounded-combat-cycle/.cache/native-wounded-approach.mjs",
+      "gitBlob": "341a745702cfb9b9d152ed5143cf95bd2c18b619",
+      "sha256": "fd4740b9a590fcc3c28d2a628bb01991c8dbc76f2b14c9b18d7a24930973e39d",
+      "bytes": 11972,
+      "archivePath": "blobs/34/341a745702cfb9b9d152ed5143cf95bd2c18b619.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/wounded-combat-cycle/granaderos",
+      "originalPath": ".cache/native-wounded-recovery-assault.mjs",
+      "backupPath": "source/wounded-combat-cycle/.cache/native-wounded-recovery-assault.mjs",
+      "gitBlob": "602c1a6313928088ada4780b5877032d08e5c256",
+      "sha256": "3fb39b841969b0cc685e6e99d467f5bfae85364af2ec523ed60f7e94241900de",
+      "bytes": 19048,
+      "archivePath": "blobs/60/602c1a6313928088ada4780b5877032d08e5c256.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/wounded-combat-cycle/granaderos",
+      "originalPath": ".cache/native-wounded-recovery-preparation.mjs",
+      "backupPath": "source/wounded-combat-cycle/.cache/native-wounded-recovery-preparation.mjs",
+      "gitBlob": "0836139ad0d7c1d0a505c93362b487e5bbaa2f67",
+      "sha256": "29fcd65d92c7e6b50f8ff55cb3733a9f988ceb253bcd7f5d04434ac51158b06b",
+      "bytes": 7151,
+      "archivePath": "blobs/08/0836139ad0d7c1d0a505c93362b487e5bbaa2f67.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/wounded-combat-cycle/granaderos",
+      "originalPath": ".cache/wounded-inputs.mjs",
+      "backupPath": "source/wounded-combat-cycle/.cache/wounded-inputs.mjs",
+      "gitBlob": "c105701c59f3e3e44b08297644e5eb6f47bcdd2e",
+      "sha256": "57bf1b86c10c14eec8be630882a06fb5e98092914d9cc9ff9f1b6685622fd525",
+      "bytes": 1764,
+      "archivePath": "blobs/c1/c105701c59f3e3e44b08297644e5eb6f47bcdd2e.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/historical-game-trailer/granaderos",
+      "originalPath": ".cache/trailer-preview/index.html",
+      "backupPath": "source/historical-game-trailer/.cache/trailer-preview/index.html",
+      "gitBlob": "100bcef231f373c750f1013a5fa21d6a2b712b30",
+      "sha256": "1e23ef128002f15e6a1f6473ffd9f2ba220403d2fa9774256535ddc4e98c8b5c",
+      "bytes": 1981,
+      "archivePath": "blobs/10/100bcef231f373c750f1013a5fa21d6a2b712b30.blob",
+      "status": "historical-inactive-source-not-enabled"
+    },
+    {
+      "originalWorktree": "/Users/fsodano/.codex/worktrees/three-pr187-validation/granaderos",
+      "originalPath": "artifacts/three-woman-shawl-palette-current-review/frozen-source/source-hunks.json",
+      "backupPath": "source/three-pr187-validation/artifacts/three-woman-shawl-palette-current-review/frozen-source/source-hunks.json",
+      "gitBlob": "900d85bc5fd7df6897715f3fe80b5e0da096f940",
+      "sha256": "64c973dd1a45e082b89ea0ef291308c8548d8a6ac20b9bfdce61d9d8bd4ebcaf",
+      "bytes": 2082,
+      "archivePath": "blobs/90/900d85bc5fd7df6897715f3fe80b5e0da096f940.blob",
+      "status": "historical-inactive-source-not-enabled"
+    }
+  ]
+}

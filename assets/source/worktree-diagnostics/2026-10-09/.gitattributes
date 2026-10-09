@@ -1,0 +1,2 @@
+# Preserve recovery bytes without line-ending conversion or textual patch display.
+blobs/**/*.blob -diff -text

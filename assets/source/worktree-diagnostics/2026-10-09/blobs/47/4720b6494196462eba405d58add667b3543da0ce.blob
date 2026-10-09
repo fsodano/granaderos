@@ -1,0 +1,12 @@
+Travel to cell 24,27 can now lead to one optional chest containing an identified used crowbar and linen shirt. Soldiers must discover, approach, open and loot it through ordinary paid actions. New campaigns pin its finite contents; old omitted packages stay disabled, and saves, another squad and return visits cannot refill it. The equipment and conditions are fictional game content for the 1810–1820 setting.
+
+Container pickup also binds the selected stack. A changed quantity, condition, identity or shifted index requires reselection. The inventory and hover use the same interior-discovery rule as paid pickup, so a chest inside an undiscovered room exposes no contents, token or approach route.
+
+Validation:
+
+- Actual paid two-hire travel, discovery, pickup, separate shirt conversion, second-squad empty visit, real rest/return and complete official saved replay.
+- Focused content/save/context and mounted inventory checks; independent review.
+- Complete short suite: 4,764/4,764 pass, zero failed/cancelled/skipped, all 680 selected files complete. Eight established extended files were not repeated.
+- Typecheck, production export 06311759d7ea, documentation/baseline audits, shard checks and whitespace check pass.
+
+Prepared save fixtures now carry the matching optional content context; their original health, equipment, outcomes, geometry and assertions remain unchanged. Broader travel encounters and full campaign acceptance remain open.

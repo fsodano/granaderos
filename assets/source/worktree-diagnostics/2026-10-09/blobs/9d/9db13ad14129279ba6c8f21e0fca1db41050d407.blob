@@ -1,0 +1,106 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {canonicalContent} from '../game/content-identity.js';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {rosterFor,operativeLocation} from '../game/campaign.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {unitAmmunitionByType,stackAmmunitionByType,addAmmoCounts} from '../game/physical-ammunition.js';
+import {ammoCount} from '../game/ammo-types.js';
+import {extractItemQuantity,handRecord,itemQuantity,SUPPLY_ITEMS} from '../game/tactical-inventory.js';
+import {wornBodyItems} from '../game/outfits.js';
+import {WEAPONS} from '../game/tactical.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
+
+const d='/tmp/granaderos-stock-ending/',p=d+'stock-ensenada-daylight-approach';
+const input=d+'stock-ensenada-friendly-supply-accepted.save.json',output=p+'-accepted.save.json';
+const sha=t=>createHash('sha256').update(t).digest('hex');
+const inputText=fs.readFileSync(input),outputText=fs.readFileSync(output);
+const a=decodeSave(inputText.toString()),b=decodeSave(outputText.toString());
+const receipt=JSON.parse(fs.readFileSync(p+'-receipt.json','utf8'));
+assert.equal(sha(inputText),'2f0f72a66b10e83d4ca1b91bdcd4868cd89038a1abe30f75a4e4b3bab7ee0e4d');
+assert.equal(sha(outputText),'63b7922f55e3a380335a0e71b7a2c2394cb2cc71ca5c759f6f7da68b9506357c');
+assert.deepEqual(decodeSave(encodeSave(b.campaign,b.battle)),b);
+assert.equal(b.battle,null);assert.equal(b.campaign.pendingBattle,null);assert.equal(b.campaign.pendingEncounter,null);
+const force=[0,3,4,10,117,146],clock=s=>s.hour*3600+s.secondOfHour;
+const serving=a.campaign.recruited.filter(id=>a.campaign.operativeState[id].alive&&!a.campaign.operativeState[id].captured);
+const dead=Object.keys(a.campaign.operativeState).map(Number).filter(id=>!a.campaign.operativeState[id].alive);
+
+function custody(s){
+ const roster=rosterFor(s),ammunition={},guns=[],allCarried=[];let dressings=0,ownedGuns=0,knownGuns=0;
+ for(const id of serving){
+  const u=carriedAmmunition(roster.find(o=>o.id===id),s.operativeState[id]);
+  addAmmoCounts(ammunition,unitAmmunitionByType(u));dressings+=s.operativeState[id].medkits;
+  const items=[...Object.keys(SUPPLY_ITEMS).filter(key=>key!=='ammo'||u.ammunitionVersion!==2),...(!u.weaponDropped&&u.weapon?['primary']:[]),...(u.blade?['blade']:[]),...(u.offHand?['offhand']:[]),...wornBodyItems(u),...(u.equipmentCursor?['cursor']:[]),...Object.keys(u.inventory??{}).map(key=>`inventory:${key}`)];
+  const stacks=items.filter(item=>itemQuantity(u,item)>0).map(item=>extractItemQuantity(u,item,itemQuantity(u,item)).stack);
+  allCarried.push({id,stacks:stacks.map(canonicalContent).sort()});
+  for(const stack of stacks)if(WEAPONS[stack.weapon]?.capacity>0){
+   ownedGuns+=stack.count;const normalized=structuredClone(stack);delete normalized.item;guns.push(canonicalContent(normalized));
+  }
+ }
+ const knownSources=[];
+ for(const sector of ['cordoba','buenos_aires'])for(const row of sectorInventoryModel(s,sector,roster,0).entries){
+  const stack=JSON.parse(row.expected);knownSources.push({sector,key:row.key,expected:row.expected,count:row.count});
+  addAmmoCounts(ammunition,stackAmmunitionByType(stack));if(stack.item==='medkits')dressings+=stack.count;
+  if(WEAPONS[stack.weapon]?.capacity>0){knownGuns+=stack.count;const normalized=structuredClone(stack);delete normalized.item;guns.push(canonicalContent(normalized));}
+ }
+ return {ammunition,dressings,ownedGuns,knownGuns,totalGuns:ownedGuns+knownGuns,guns:guns.sort(),allCarried,knownSources};
+}
+const before=custody(a.campaign),after=custody(b.campaign);
+assert.deepEqual(before,after,'All current owned and already known source custody is exact.');
+assert.deepEqual(after.ammunition,{musket_75:167,pistol_69:74,rifle_62:48,shot_16:23});
+assert.equal(after.dressings,14);assert.equal(after.totalGuns,48);
+for(const sector of ['cordoba','buenos_aires'])assert.deepEqual(a.campaign.sectorStates[sector],b.campaign.sectorStates[sector]);
+for(const id of dead)assert.deepEqual(a.campaign.operativeState[id],b.campaign.operativeState[id]);
+assert.equal(dead.length,40);assert.deepEqual(a.campaign.operativeState[105],b.campaign.operativeState[105]);
+assert.deepEqual(a.campaign.contracts,b.campaign.contracts);assert.equal(a.campaign.seed,b.campaign.seed);
+for(const key of ['phase','flags','completed','defeated','artilleryDepot','equipmentShipments','loadouts','townIncome'])assert.deepEqual(a.campaign[key],b.campaign[key]);
+assert.equal(b.campaign.phase,3);assert.equal(b.campaign.completed,false);
+const roster=rosterFor(b.campaign);
+const field=force.map(id=>{
+ const op=roster.find(o=>o.id===id),r=b.campaign.operativeState[id];
+ const u=carriedAmmunition(op,r),oldU=carriedAmmunition(rosterFor(a.campaign).find(o=>o.id===id),a.campaign.operativeState[id]);
+ assert.deepEqual(handRecord({...u,id:String(id)},'primary'),handRecord({...oldU,id:String(id)},'primary'));
+ assert.equal(u.loaded+ammoCount(u),12);assert.equal(operativeLocation(b.campaign,id),'buenos_aires');
+ assert.equal(r.hp,a.campaign.operativeState[id].hp);assert.equal(r.bleeding,0);assert.equal(r.assignment,'active');
+ return {id,name:op.name,hp:r.hp,maxHp:r.maxHp,bleeding:r.bleeding,bandaged:r.bandaged,energy:r.energy,fatigue:r.fatigue,morale:r.morale,weapon:u.weapon,condition:u.condition,loaded:u.loaded,loose:ammoCount(u),typedAmmunition:unitAmmunitionByType(u),dressings:r.medkits,assignment:r.assignment,activeSlot:r.activeSlot};
+});
+assert.equal(field.reduce((sum,r)=>sum+r.loaded+r.loose,0),72);
+assert.equal(field.reduce((sum,r)=>sum+r.dressings,0),11);
+const terms=serving.map(id=>{
+ const e=contractExpiresSeconds(b.campaign.contracts[id]);assert.ok(e===null||e>clock(b.campaign));
+ if(!force.includes(id))assert.equal(operativeLocation(b.campaign,id),operativeLocation(a.campaign,id));
+ return {id,location:operativeLocation(b.campaign,id),expiresSecond:e,remainingSeconds:e===null?null:e-clock(b.campaign)};
+});
+assert.equal(serving.length,12);
+const ready=b.campaign.squads.find(q=>q.id==='squad-44');
+assert.deepEqual(ready.members,force);assert.equal(ready.location,'buenos_aires');
+assert.deepEqual(ready.journey,{version:1,path:['buenos_aires','ensenada'],mode:'posta',startedAt:1586,legHours:4,elapsed:4,status:'ready',returning:false,reason:'assault',intent:'attack'});
+assert.ok(b.campaign.squads.filter(q=>q.id!=='squad-44').every(q=>!q.journey));
+assert.equal(b.campaign.location,'buenos_aires');assert.equal(b.campaign.sectors.ensenada.owner,'royalist');
+assert.deepEqual(b.campaign.travelNotice,{hour:1590,events:[{squadId:'squad-44',name:'Contactos de retaguardia',sector:'buenos_aires',text:'alcanza el límite de Ensenada de Barragán. Puede atacar o esperar a otras escuadras.'}]});
+assert.equal(b.campaign.assignmentAttention.notice,null);assert.equal(b.campaign.contractAttention.notice,null);assert.equal(b.campaign.logisticsNotice,null);
+const history=JSON.parse(fs.readFileSync(p+'-history.json','utf8'));
+assert.deepEqual(history,[{kind:'campaign',action:{type:'advanceStrategicTime',seconds:281}},{kind:'campaign',action:{type:'attack',sector:'ensenada',mode:'posta',queue:true}},...Array.from({length:4},()=>({kind:'campaign',action:{type:'advanceStrategicTime',seconds:3600}}))]);
+assert.equal(receipt.error,null);assert.equal(receipt.orders,6);assert.equal(receipt.totalRecordedOrders,217);
+assert.equal(receipt.fullReplay.exact,true);assert.equal(receipt.fullReplay.officialEveryAction,true);assert.equal(receipt.fullReplay.priorTacticalOrdinaryPresentedEqual,true);
+assert.deepEqual(receipt.events[0].detail.acknowledgesExistingArrivalNotice,a.campaign.travelNotice);
+const alignment=decodeSave(fs.readFileSync(p+'-actual-alignment.save.json','utf8')).campaign;
+assert.equal(alignment.travelNotice,null);assert.equal(alignment.hour,1586);assert.equal(alignment.secondOfHour,0);
+const money=receipt.events.map(e=>({index:e.index,action:e.action.type,hour:e.after.hour,second:e.after.secondOfHour,before:e.before.cash,after:e.after.cash,delta:e.after.cash-e.before.cash}));
+assert.deepEqual(money.map(e=>e.delta),[0,0,-10,0,0,0]);
+assert.equal(b.campaign.resources.treasury,97960);assert.equal(clock(b.campaign)-clock(a.campaign),14681);
+assert.equal(b.campaign.hour,1590);assert.equal(b.campaign.secondOfHour,0);
+const source=await buildIdentity(process.cwd());assert.deepEqual(source,receipt.source);
+const files=[...new Set(execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--','tests'],{encoding:'utf8'}).split('\0').filter(Boolean))].sort(),h=createHash('sha256');
+for(const path of files){h.update(path);h.update('\0');h.update(fs.readFileSync(path));h.update('\0');}
+assert.equal(files.length,883);assert.equal(h.digest('hex'),receipt.tests.digest);
+assert.equal(execFileSync('git',['status','--porcelain'],{encoding:'utf8'}),receipt.statusBefore);
+assert.equal(sha(fs.readFileSync(input)),sha(inputText));
+const health=serving.map(id=>({id,before:{hp:a.campaign.operativeState[id].hp,energy:a.campaign.operativeState[id].energy,fatigue:a.campaign.operativeState[id].fatigue,morale:a.campaign.operativeState[id].morale,bandaged:a.campaign.operativeState[id].bandaged},after:{hp:b.campaign.operativeState[id].hp,energy:b.campaign.operativeState[id].energy,fatigue:b.campaign.operativeState[id].fatigue,morale:b.campaign.operativeState[id].morale,bandaged:b.campaign.operativeState[id].bandaged}}));
+const audit={readOnly:true,ownershipAuthority:'Each living personal record reconstructed by carriedAmmunition, then actual stack extraction independent of sectorInventoryModel candidate availability. Public known Córdoba/BA sources use their observed rows. No living saved-scene mirrors or unobserved enemies are counted.',earlierAuditPreserved:{script:'.cache/stock-ensenada-daylight-approach-terminal-audit.mjs',log:'/tmp/granaderos-stock-ensenada-daylight-approach-terminal-audit.log',reason:'sectorInventoryModel excludes operativeInTransit from candidates. Its carried rows are a safe-map availability view, not ownership authority for the queued squad.'},input,inputHash:sha(inputText),output,outputHash:sha(outputText),source,tests:receipt.tests,fullReplay:receipt.fullReplay,newOrders:6,before,after,field,fieldCompatibleRounds:72,fieldDressings:11,terms,health,money,actualTimeSeconds:14681,alignmentSeconds:281,approachSeconds:14400,originalArrivalNotice:a.campaign.travelNotice,readyNotice:b.campaign.travelNotice,readyJourney:ready,dead,captive105Exact:true,originalContractsExact:true,gunsLoadProfilesExact:true,phase3Retained:true,seedExact:true,knownScenesExact:true,limits:'One queued public approach, stopped at the Ensenada boundary. No assault confirmation/start, hostile tactical admission/strength query, new gear, care/renewal/hire/shop/shipping or full-ending claim.'};
+const path=p+'-ownership-audit.receipt.json';assert.equal(fs.existsSync(path),false);fs.writeFileSync(path,JSON.stringify(audit,null,2)+'\n');
+console.log(JSON.stringify({path,hash:sha(fs.readFileSync(path)),before:{ammunition:before.ammunition,dressings:before.dressings,guns:before.totalGuns},after:{ammunition:after.ammunition,dressings:after.dressings,guns:after.totalGuns},field,terms,health,money,readyJourney:ready,readyNotice:b.campaign.travelNotice,fullReplay:receipt.fullReplay},null,2));

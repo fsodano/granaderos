@@ -1,0 +1,17 @@
+# Changed-hand step clock addendum
+
+Frozen physical helper and eight-path source package are unchanged. This test-only addendum covers granadero and woman-scout, LODs 0/1/2, complete weighted footwear, a real left-pistol aim to 300 ms paid heal preparation/result and native right-pistol idle return.
+
+The normal accessibility clock pauses idle playback: one case resumes before the 480 ms step endpoint, another holds through the endpoint then resumes. The native idle playback pace is retained; zero is the actual held rate. Each frame preserves Root, pelvis, upper transforms, native leg lengths, saved world placement, orientation, mixer time and action clocks. Completed rest performs no weighted footwear scan.
+
+Run from the repository root after the frozen physical step helper is integrated:
+
+```sh
+node --test tests/three-gesture-step-clock.test.mjs
+```
+
+Requirements: current published male/female animation banks (supported native standing heal/pickup/free), published granadero and woman-scout LOD0/1/2 geometry, ordinary published-actor-fixture and tactical-render-loader. No private bank, state or pose injection is needed. 6/6 tests pass in 4.04 s against frozen helper 02724726747181baeb1529f8928c0c986d2a5135704495da87d203643df4d905 and runtime 5d37ce7c463b5992322670890a398e5944192205b00a5b13b76a169302785d87. Parent repeats against the current composed runtime and published banks.
+
+Metrics (metres internally) are retained in docs/art/reviews/standing-gestures/gesture-step-clock-metrics.json. Test min-floor bound is 1.8 mm, endpoint velocity 1 mm/s (4.17 micrometres per 240 Hz frame); these bound full weighted boot surfaces, not ankle proxies. The retained compressed full-boot velocity envelope is 8 m/s; this addendum does not claim whole-scene performance or visual perfection.
+
+Public-route limit: the normal selected fire cursor selects the right guard. Left-hand pistol aim is admitted by offhand firing preparation. Battlefield blocks new orders while that presentation is busy. Existing paired/four-bore scenes can legally reload/fire left and drop/collect an owned item, but the left aim has returned before collection. The immediate mirrored aim-to-gesture input is focused physical coverage, not currently reachable ordinary HUD coverage.

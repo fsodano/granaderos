@@ -1,0 +1,32 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {expandCellScene} from '../game/cell-scene-storage.js';
+import {enterSector} from '../game/world.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
+import {prepareFreshArmyFunding,completeFreshArmyFunding} from '../tests/fresh-cuyo-route.mjs';
+import {prepareFreshUspallataAssault} from '../tests/fresh-mountain-route.mjs';
+const directory='/tmp/granaderos-stock-ending',source=`${directory}/stock-foundry-helper-care-accepted.save.json`;
+const identity=await buildIdentity(process.cwd()),start=decodeSave(fs.readFileSync(source,'utf8')).campaign,original=structuredClone(start);
+const canonical=c=>{const n=structuredClone(c);for(const key of ['sectorStates','sceneStates'])for(const id of Object.keys(n[key]??{}))n[key][id]=expandCellScene(n[key][id]);return n;};
+const priorDeaths=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+const intended=start.recruited.filter(id=>start.operativeState[id].alive&&!start.operativeState[id].captured);
+const summarize=c=>({hour:c.hour,second:c.secondOfHour??0,treasury:c.resources.treasury,phase:c.phase,flags:{foundry:c.flags.foundry,armyFunded:c.flags.armyFunded,parliament:c.flags.parliament},pendingEncounter:c.pendingEncounter,pendingBattle:c.pendingBattle?{sector:c.pendingBattle.sector,ids:c.pendingBattle.squad.map(u=>u.id)}:null,serving:c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured).map(id=>({id,hp:c.operativeState[id].hp,maxHp:c.operativeState[id].maxHp,bleeding:c.operativeState[id].bleeding,medkits:c.operativeState[id].medkits,energy:c.operativeState[id].energy,morale:c.operativeState[id].morale,location:c.operativeState[id].location,expiresAt:c.contracts[id]?.expiresAt,expiresSecond:c.contracts[id]?.expiresSecond??0})),dead:priorDeaths.filter(id=>!c.operativeState[id].alive)});
+let last=start,stage='before',events=[];
+const save=(campaign,label)=>{const battle=campaign.pendingBattle?enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.pendingBattle.sector]):null,encoded=encodeSave(campaign,battle),restored=decodeSave(encoded);assert.deepEqual(canonical(restored.campaign),canonical(campaign));assert.deepEqual(restored.battle,battle);fs.writeFileSync(`${directory}/stock-mountain-${label}.save.json`,encoded);};
+const report=e=>{if(e.campaign)last=e.campaign;const {campaign,...event}=e;events.push(event);if(e.event==='freshRouteRenewal'||e.event==='freshRouteStopped'||e.event==='mountainServingLeader'||e.event==='mountainPaidColumn'||e.event==='mountainClinicalRoles')console.log('EVENT',JSON.stringify(event));};
+const run=(onReport=()=>{})=>{let c=structuredClone(start);for(const [label,fn]of [['foundry-care',prepareFreshArmyFunding],['army-funded',completeFreshArmyFunding],['uspallata-prepared',prepareFreshUspallataAssault]]){stage=label;c=fn(c,{report:onReport});if(onReport===report){last=c;save(c,label);console.log('CHECKPOINT',JSON.stringify({stage:label,...summarize(c)}));}}return c;};
+console.log('SOURCE',JSON.stringify({source,identity,...summarize(start)}));save(start,'before');
+let error=null,accepted=null;
+try{accepted=run(report);}catch(e){error=e.stack;console.log('STOP',JSON.stringify({stage,error:e.message,...summarize(last)}));save(last,'stopped');}
+const actual=structuredClone(last),firstStage=stage,firstError=error;
+let replayLast=start,replayError=null;
+try{const c=run(e=>{if(e.campaign)replayLast=e.campaign;});replayLast=c;}catch(e){replayError=e.stack;}
+assert.deepEqual(canonical(replayLast),canonical(actual),'full ordinary function replay has the exact accepted/stopped state');assert.equal(Boolean(replayError),Boolean(firstError));assert.deepEqual(start,original,'immutable input unchanged');
+for(const id of priorDeaths)assert.equal(actual.operativeState[id].alive,false);
+for(const id of intended){assert.ok(actual.recruited.includes(id));assert.ok(actual.operativeState[id].alive&&!actual.operativeState[id].captured);const expiry=contractExpiresSeconds(actual.contracts[id]);assert.ok(expiry===null||expiry>actual.hour*3600+(actual.secondOfHour??0));}
+assert.equal((await buildIdentity(process.cwd())).source,identity.source);
+const note={source,identity,stage:firstStage,error:firstError,officialSave:true,functionReplay:true,priorDeaths,intended,start:summarize(start),result:summarize(actual),renewals:events.filter(e=>e.event==='freshRouteRenewal'||e.event==='routeBatteryRenewal'||e.event==='routeIncomeRenewal'),events};
+fs.writeFileSync(`${directory}/stock-mountain-preparation.note.json`,JSON.stringify(note,null,2));fs.writeFileSync(`${directory}/stock-mountain-preparation-history.json`,JSON.stringify(events,null,2));console.log('DONE',JSON.stringify({accepted:!!accepted,stage:firstStage,error:firstError?.split('\n')[0],orders:events.filter(e=>e.event==='freshRouteOrder').length,renewalCost:note.renewals.reduce((sum,e)=>sum+(e.price??0),0),...summarize(actual)}));
+if(error)process.exitCode=1;

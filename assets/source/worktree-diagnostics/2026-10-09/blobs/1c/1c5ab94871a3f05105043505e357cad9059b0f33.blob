@@ -1,0 +1,94 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {dispatchCampaign} from '../game/campaign.js';
+import {launchEnemyGroup} from '../game/enemy-groups.js';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {expandCellScene} from '../game/cell-scene-storage.js';
+import {stabilizeStockMendozaSurvivors} from '../tests/created-cuyo-route.mjs';
+
+const directory='/tmp/granaderos-stock-ending';
+const input=`${directory}/stock-mendoza-settled.save.json`;
+const originalBytes=fs.readFileSync(input),inputHash=createHash('sha256').update(originalBytes).digest('hex');
+const earned=decodeSave(originalBytes.toString()).campaign;
+let fixture=structuredClone(earned);
+// DECLARED initial interruption fixture, not an earned stock raid. Only the
+// canonical finite reserve issue and its pre-admission arrival timing differ.
+const reservesBefore=fixture.enemyReserves.remaining.interior;
+const group=launchEnemyGroup(fixture,'interior','mendoza');
+assert.ok(group);assert.equal(group.status,'marching');
+assert.equal(fixture.enemyReserves.remaining.interior,reservesBefore-group.initialStrength);
+assert.equal(fixture.hour,1426);assert.equal(fixture.secondOfHour,1861);
+group.nextArrivalAt=1427;group.arrivalAt=1427;
+const protectedState=campaign=>{
+ const result=structuredClone(campaign);
+ for(const key of ['enemyGroups','enemyReserves','nextEnemyGroupId'])delete result[key];
+ return result;
+};
+assert.deepEqual(protectedState(fixture),protectedState(earned),'initial declaration preserves all player clinical, gear, cash, contract and RNG fields');
+const canonical=campaign=>{
+ const result=structuredClone(campaign);
+ for(const key of ['sectorStates','sceneStates'])if(result[key])result[key]=Object.fromEntries(Object.entries(result[key]).map(([id,scene])=>[id,expandCellScene(scene)]));
+ return result;
+};
+const save=pair=>{
+ const result=decodeSave(encodeSave(pair.campaign,pair.battle));
+ assert.deepEqual(canonical(result.campaign),canonical(pair.campaign));
+ assert.deepEqual(result.battle,pair.battle);return result;
+};
+// First official admission adds canonical empty fitting metadata to the newly
+// issued enemy records. It does not change any player or finite resource field.
+fixture=decodeSave(encodeSave(fixture)).campaign;
+assert.deepEqual(protectedState(fixture),protectedState(earned));
+const start=save({campaign:fixture,battle:null}),initial=structuredClone(start);
+const history=[];let stopped=null;
+assert.throws(()=>stabilizeStockMendozaSurvivors(start.campaign,{report:note=>{
+ if(note.event==='stockMendozaCareOrder')history.push({kind:note.kind,action:structuredClone(note.action)});
+ if(note.event==='stockMendozaCareStopped')stopped=structuredClone(note);
+}}),/an actual strategic encounter interrupts finite survivor care/);
+assert.ok(stopped);assert.deepEqual(start,initial,'the declared initial admission remains immutable');
+assert.equal(stopped.orders,5);assert.equal(history.length,5);
+assert.deepEqual(history.at(-1),{kind:'campaign',action:{type:'wait',hours:1}});
+assert.equal(stopped.battle,null);
+assert.deepEqual(stopped.campaign.pendingEncounter,{groupId:group.id,sector:'mendoza',arrivedAt:1427});
+assert.equal(stopped.campaign.enemyGroups.find(g=>g.id===group.id).status,'waiting');
+assert.equal(stopped.campaign.hour,1427);assert.equal(stopped.campaign.secondOfHour,1861);
+assert.equal(stopped.campaign.resources.treasury,earned.resources.treasury);
+assert.deepEqual(stopped.campaign.contracts,earned.contracts);
+assert.equal(stopped.campaign.seed,earned.seed);
+const actualHourlyDressings=[146,139].reduce((n,id)=>n+initial.campaign.operativeState[id].medkits-stopped.campaign.operativeState[id].medkits,0);
+assert.equal(actualHourlyDressings,2);
+assert.equal(stopped.hourlyDressings,actualHourlyDressings,'stopped accounting includes the accepted medical hour');
+for(const id of [129,122]){
+ assert.equal(stopped.campaign.operativeState[id].bleeding,0);
+ assert.equal(stopped.campaign.operativeState[id].hp,initial.campaign.operativeState[id].hp);
+}
+for(const id of initial.campaign.recruited){
+ const before=initial.campaign.operativeState[id],after=stopped.campaign.operativeState[id];
+ for(const key of ['inventory','condition','rations','torches','boleadoras','weaponFittings','bladeMetadata','weaponMetadata','headwear','outfit','legwear','ammo','carriedAmmo','carriedLoaded','jammed'])assert.deepEqual(after[key],before[key],`${id}/${key} custody`);
+}
+for(const [id,record]of Object.entries(initial.campaign.operativeState))if(!record.alive)assert.equal(stopped.campaign.operativeState[id].alive,false);
+let replay=structuredClone(initial);
+for(const event of history){
+ assert.equal(event.kind,'campaign');
+ const campaign=dispatchCampaign(replay.campaign,event.action);
+ assert.equal(campaign.lastError,null,campaign.lastError);
+ replay=save({campaign,battle:null});
+}
+const final=save({campaign:stopped.campaign,battle:stopped.battle});
+assert.deepEqual(canonical(replay.campaign),canonical(final.campaign),'complete saved accepted-order replay reaches the actual stopped campaign');
+assert.deepEqual(replay.battle,final.battle);
+assert.equal(createHash('sha256').update(fs.readFileSync(input)).digest('hex'),inputHash,'earned immutable settlement file is untouched');
+const note={scenario:'Declared initial one-hour finite enemy arrival fixture. Not an earned raid, conquest, or full stock campaign result.',input,inputHash,
+ initialDeclaration:{groupId:group.id,initialStrength:group.initialStrength,reservesBefore,reservesAfter:fixture.enemyReserves.remaining.interior,nextArrivalAt:1427,arrivalAt:1427},
+ inputPlayersClinicalGearCashContractsRNGUnchanged:true,initialOfficialAdmission:true,acceptedOrders:history.length,lastAcceptedOrder:history.at(-1),
+ clockBefore:[earned.hour,earned.secondOfHour],clockAfter:[final.campaign.hour,final.campaign.secondOfHour],
+ cashBefore:earned.resources.treasury,cashAfter:final.campaign.resources.treasury,actualHourlyDressings,
+ reportedHourlyDressings:stopped.hourlyDressings,pendingEncounter:final.campaign.pendingEncounter,
+ patients:[129,122,127,144,9].map(id=>({id,before:{hp:initial.campaign.operativeState[id].hp,bleeding:initial.campaign.operativeState[id].bleeding},after:{hp:final.campaign.operativeState[id].hp,bleeding:final.campaign.operativeState[id].bleeding}})),
+ completeCanonicalSavedOrderReplay:true,stoppedPairOfficialSaveEqual:true,reason:stopped.reason};
+fs.writeFileSync(`${directory}/declared-mendoza-care-interruption-start.save.json`,encodeSave(initial.campaign,initial.battle));
+fs.writeFileSync(`${directory}/declared-mendoza-care-interruption-stopped.save.json`,encodeSave(final.campaign,final.battle));
+fs.writeFileSync(`${directory}/declared-mendoza-care-interruption-history.json`,JSON.stringify(history,null,2));
+fs.writeFileSync(`${directory}/declared-mendoza-care-interruption.note.json`,JSON.stringify(note,null,2));
+console.log(JSON.stringify(note,null,2));

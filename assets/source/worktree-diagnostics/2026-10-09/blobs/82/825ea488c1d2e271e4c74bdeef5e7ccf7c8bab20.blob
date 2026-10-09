@@ -1,0 +1,12 @@
+The current introduction is a 45-second slideshow. Replace it with a 56-second historical trailer that includes 44 seconds of recorded gameplay at the original action speed. It shows recruitment, the campaign map, equipment, a visible rifle shot and reload, and tactical movement. The opening uses a new painting based on early Granaderos uniform references.
+
+The README now shows a 10-second animated preview and links to the full MP4. Keep the selected recordings, historical references, image-generation prompt, Spanish captions, source hashes, and capture/render scripts in the repository. The score is original synthesized music. The prior still-image sources are removed.
+
+Validation:
+
+- Quick suite: 6,869 tests passed across all 904 selected files; no failures or skips.
+- Typecheck, production build, documentation audit and diff checks passed with clean dependencies.
+- Browser playback and seeking passed. MP4: 56 seconds, 1,680 frames, H.264/AAC, 1280×720, 30 fps, faststart, 6.79 MiB. Animated preview: 10 seconds, 3.08 MiB.
+- All source and delivery hashes, captions, README links, and complete MP4/GIF decoding passed.
+
+GitHub Actions workflows remain manual. No Actions build was started for this change.

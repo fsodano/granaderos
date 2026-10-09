@@ -1,0 +1,63 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {unitAmmunitionByType,stackAmmunitionByType,addAmmoCounts} from '../game/physical-ammunition.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
+
+const dir='/tmp/granaderos-stock-ending/',prefix=dir+'stock-ensenada-native-assault',root=process.cwd();
+const sha=value=>createHash('sha256').update(value).digest('hex');
+const inputPath=dir+'stock-ensenada-daylight-approach-accepted.save.json';
+const failedReceiptPath=prefix+'-stopped.receipt.json',settledPath=prefix+'-stopped.save.json';
+const inputRaw=fs.readFileSync(inputPath),settledRaw=fs.readFileSync(settledPath),failedRaw=fs.readFileSync(failedReceiptPath);
+const input=decodeSave(inputRaw.toString()),settled=decodeSave(settledRaw.toString()),raw=JSON.parse(failedRaw),terminal=decodeSave(fs.readFileSync(prefix+'-terminal.save.json','utf8'));
+const force=['0','3','4','10','117','146'],died=[0,3,4,10,146];
+assert.equal(sha(inputRaw),'63b7922f55e3a380335a0e71b7a2c2394cb2cc71ca5c759f6f7da68b9506357c');
+assert.equal(sha(settledRaw),'a51be4b8bb02ce8f0b7fa91801a881fcb9f365d8a91bb3ff799b341a4209e58c');
+assert.equal(raw.stage,'actual-native-settlement');assert.ok(raw.error.includes("'117'"));assert.equal(raw.saveError,null);
+assert.deepEqual(raw.replay,{prior:217,newOrders:97,total:314,exact:true,officialEveryAction:true,ordinaryPresentedEqual:true});
+assert.deepEqual(decodeSave(encodeSave(settled.campaign,settled.battle)),settled);assert.equal(settled.battle,null);
+assert.equal(terminal.battle.status,'defeat');assert.equal(terminal.battle.turn,10);assert.equal(terminal.battle.elapsedSeconds,488);
+assert.equal(settled.campaign.hour,1590);assert.equal(settled.campaign.secondOfHour,488);assert.equal(settled.campaign.resources.treasury,97960);
+assert.equal(settled.campaign.phase,3);assert.equal(settled.campaign.defeated,false);assert.equal(settled.campaign.completed,false);
+assert.equal(settled.campaign.sectors.ensenada.owner,'royalist');assert.equal(settled.campaign.pendingBattle,null);assert.equal(settled.campaign.pendingEncounter,null);
+for(const id of raw.priorDeaths)assert.deepEqual(settled.campaign.operativeState[id],input.campaign.operativeState[id]);
+assert.equal(raw.priorDeaths.length,40);assert.deepEqual(settled.campaign.operativeState[105],input.campaign.operativeState[105]);
+for(const id of died){assert.equal(settled.campaign.operativeState[id].alive,false);assert.equal(settled.campaign.operativeState[id].hp,0);}
+assert.equal(Object.values(settled.campaign.operativeState).filter(r=>!r.alive).length,45);
+const captured=settled.campaign.operativeState[117];assert.equal(captured.alive,true);assert.equal(captured.captured,true);assert.equal(captured.capturedSector,'ensenada');
+assert.equal(captured.capturedAt,1590);assert.equal(captured.capturedAtSecond,488);assert.equal(captured.hp,8);assert.equal(captured.bleeding,3);
+assert.deepEqual(captured.capturedContract,input.campaign.contracts[117]);
+const expectedContracts=structuredClone(input.campaign.contracts);delete expectedContracts[117];assert.deepEqual(settled.campaign.contracts,expectedContracts);
+assert.equal(settled.campaign.recruited.includes(117),false);assert.deepEqual(captured.capturedAmmunition,{loaded:0,ammo:8});
+const scene=settled.campaign.sectorStates.ensenada,owned=scene.units.filter(u=>force.includes(u.id)),drops=scene.droppedWeapons.filter(g=>force.includes(g.unitId)&&!g.taken);
+for(const id of force)assert.deepEqual(scene.units.find(u=>u.id===id),terminal.battle.units.find(u=>u.id===id));
+assert.deepEqual(drops,terminal.battle.droppedWeapons.filter(g=>force.includes(g.unitId)&&!g.taken));
+const ammo={};for(const u of owned)addAmmoCounts(ammo,unitAmmunitionByType(u));for(const g of drops)addAmmoCounts(ammo,stackAmmunitionByType(g));
+assert.deepEqual(ammo,{musket_75:30,pistol_69:31});assert.deepEqual(raw.initialOwnAmmo,{musket_75:36,pistol_69:36});assert.deepEqual(raw.spent,{musket_75:6,pistol_69:5});
+assert.equal(owned.reduce((sum,u)=>sum+u.medkits,0),9);assert.equal(raw.initialOwnDressings,11);assert.equal(raw.dressingsConsumed,2);
+assert.equal(owned.filter(u=>!u.weaponDropped).length+drops.length,6);
+const aims=fs.readFileSync(prefix+'-observed-aim.jsonl','utf8').trim().split('\n').map(JSON.parse);
+assert.equal(aims.length,12);assert.ok(aims.every(r=>r.lineOfFire===true&&r.observers.length>0));
+const allHistory=JSON.parse(fs.readFileSync(prefix+'-history.json'));assert.equal(allHistory.length,97);assert.deepEqual(allHistory.at(-1),{kind:'battleResult'});
+assert.ok(allHistory.every(r=>!['containerLoot','inventoryMap','pickupEquipment','placeEquipment','drop','fireCannon','reloadCannon','moveCannon'].includes(r.action?.type)));
+const source=await buildIdentity(root);assert.deepEqual(source,raw.source);
+const paths=[...new Set(execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--','tests'],{encoding:'utf8'}).split('\0').filter(Boolean))].sort();
+const h=createHash('sha256');for(const p of paths){h.update(p);h.update('\0');h.update(fs.readFileSync(p));h.update('\0');}
+const tests={count:paths.length,digest:h.digest('hex')};assert.deepEqual(tests,raw.tests);assert.equal(execFileSync('git',['status','--porcelain'],{encoding:'utf8'}),raw.statusBefore);
+assert.equal(sha(fs.readFileSync(inputPath)),sha(inputRaw));assert.equal(sha(fs.readFileSync(settledPath)),sha(settledRaw));assert.equal(sha(fs.readFileSync(failedReceiptPath)),sha(failedRaw));
+const serving=settled.campaign.recruited.filter(id=>settled.campaign.operativeState[id].alive&&!settled.campaign.operativeState[id].captured);
+assert.deepEqual(serving,[127,144,9,116,128,145]);
+const clock=1590*3600+488;
+const output={kind:'read-only-native-assault-settlement-audit',newGameplayOrders:0,inputPath,inputHash:sha(inputRaw),actualSettledPath:settledPath,actualSettledHash:sha(settledRaw),rawFailedReceipt:failedReceiptPath,rawFailedReceiptHash:sha(failedRaw),source,tests,
+ correctedGuard:'Only actual captured operative117 leaves active contracts; his exact prior term is retained in capturedContract. All other contracts remain exact. No expiry, new hire, renewal, debit, grant or gameplay continuation is accepted by this audit.',
+ outcome:'defeat',turns:10,elapsedSeconds:488,priorOrders:217,newOrders:97,totalOrders:314,replay:raw.replay,actions:raw.actions,endTurnCalls:raw.endTurns,frames:raw.frames,
+ newDead:died,totalDead:45,oldCaptive105Unchanged:true,newCaptive117:{hp:8,bleeding:3,sector:'ensenada',capturedAt:1590,capturedAtSecond:488,capturedContract:captured.capturedContract,capturedAmmunition:captured.capturedAmmunition,carriedDressings:captured.medkits},
+ survivingServing:serving,paidTermRemaindersSeconds:Object.fromEntries(serving.map(id=>[id,contractExpiresSeconds(settled.campaign.contracts[id])===null?null:contractExpiresSeconds(settled.campaign.contracts[id])-clock])),
+ issuedAmmoBefore:raw.initialOwnAmmo,issuedAmmoAfter:ammo,spent:raw.spent,dressingsBefore:11,dressingsAfter:9,dressingsConsumed:2,ownedGuns:6,gunCustody:{corpseOwned:owned.filter(u=>!u.weaponDropped).map(u=>({unitId:u.id,weapon:u.weapon,loaded:u.loaded,condition:u.condition})),dropped:drops.map(g=>({unitId:g.unitId,weapon:g.weapon,loaded:g.loaded,condition:g.condition,x:g.x,y:g.y}))},
+ cashBefore:input.campaign.resources.treasury,cashAfter:97960,cashDebit:0,phase:3,ensenadaOwner:'royalist',campaignCompleted:false,campaignDefeated:false,sourceAndTestsUnchanged:true,rawInputsAndFailurePreserved:true,
+ limits:'One actual native defeat. No new supply/loot, second battle, further strategic time or recovery. The controller uses observed-only planning but this result is not a proof of optimal tactics or unavoidable campaign loss. The original proof closed1 on an over-strict final contracts guard; the accepted game result and full314-order replay were already preserved.'};
+const outputPath=prefix+'-settlement-contract-audit.receipt.json';assert.equal(fs.existsSync(outputPath),false);fs.writeFileSync(outputPath,JSON.stringify(output,null,2)+'\n');
+console.log(JSON.stringify({event:'nativeAssaultReadOnlyAuditPassed',outputPath,outputHash:sha(fs.readFileSync(outputPath)),actualSettledHash:sha(settledRaw),outcome:'defeat',totalOrders:314,newDead:died,captive117:{hp:8,bleeding:3},ammo,dressings:9,source:source.source,tests}));

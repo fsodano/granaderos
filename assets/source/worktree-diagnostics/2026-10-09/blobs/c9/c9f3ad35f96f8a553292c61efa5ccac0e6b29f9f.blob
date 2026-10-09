@@ -1,0 +1,18 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {prepareFreshTucumanAssault} from '../tests/fresh-campaign-route.mjs';
+const directory='/tmp/granaderos-stock-ending';
+const start=decodeSave(readFileSync(`${directory}/recovery-defense.save.json`,'utf8')).campaign;
+const report=record=>{
+ const {campaign,...note}=record;
+ if(campaign){
+  const name=`current-${record.event}-${record.groupId??campaign.hour}`.replace(/[^a-zA-Z0-9_-]/g,'_');
+  writeFileSync(`${directory}/${name}.save.json`,encodeSave(campaign));
+ }
+ console.log(JSON.stringify(note));
+};
+const prepared=prepareFreshTucumanAssault(start,{recovery:'rest',report});
+const battle=enterSector(prepared.pendingBattle,prepared.sectorStates.tucuman);
+writeFileSync(`${directory}/tucuman-current-prepared.save.json`,encodeSave(prepared,battle));
+console.log(JSON.stringify({prepared:true,hour:prepared.hour,second:prepared.secondOfHour,treasury:prepared.resources.treasury,dead:Object.entries(prepared.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id))}));

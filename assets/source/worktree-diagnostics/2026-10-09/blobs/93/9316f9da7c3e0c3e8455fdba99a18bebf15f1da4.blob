@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign} from '../game/campaign.js';
+import {enterSector} from '../game/world.js';
+import {syncBattleTime} from '../game/time.js';
+import {actBattle,endTurn,presentedActBattle,presentedEndTurn} from '../game/tactical.js';
+const directory='/tmp/granaderos-stock-ending/';
+const origin=directory+'stock-tucuman-aid-accepted.save.json';
+const terminal=directory+'stock-salta-recapture-battle-continuation-settled.save.json';
+const historyPath=directory+'stock-salta-recapture-battle-continuation-history.json';
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+const inputs=Object.fromEntries([origin,terminal,historyPath].map(file=>[file,sha(fs.readFileSync(file))]));
+assert.equal(inputs[terminal],'e8898c6bd62eb60c4962481d69ed3e2efd4a191df8a11ed30fb203c01651d451');
+const source=await buildIdentity(process.cwd());
+assert.equal(source.source,'7c9b603b2c65c3cd3c62a0ae97cb3a7885627380ffbdfb9eb5c1db18b23df07e');
+const paths=[...new Set(execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--','tests'],{encoding:'utf8'}).split('\0').filter(Boolean))].sort();
+const testDigest=()=>{const hash=createHash('sha256');for(const file of paths){hash.update(file);hash.update('\0');hash.update(fs.readFileSync(file));hash.update('\0');}return hash.digest('hex');};
+const tests=testDigest();assert.equal(paths.length,883);assert.equal(tests,'003daf7b2d8a5d4ab59beb534efd19a0042577ca4d85c3cd30b55dddf59b2b46');
+const history=JSON.parse(fs.readFileSync(historyPath,'utf8'));assert.equal(history.length,374);
+let pair=decodeSave(fs.readFileSync(origin,'utf8')),frames=0;
+for(const [index,step] of history.entries()){
+ if(step.kind==='campaign'){
+  const campaign=dispatchCampaign(pair.campaign,step.action);assert.equal(campaign.lastError,null);
+  pair={campaign,battle:campaign.pendingBattle?enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.pendingBattle.sector]):null};
+ }else if(step.kind==='tactical'){
+  const before=pair.battle,untouched=structuredClone(before);
+  const battle=step.action.type==='endTurn'?endTurn(before):actBattle(before,step.action);assert.equal(battle.lastError,null);
+  const shown=step.action.type==='endTurn'?presentedEndTurn(before):presentedActBattle(before,step.action);
+  assert.deepEqual(shown.state,battle);assert.deepEqual(before,untouched);frames+=shown.frames.length;
+  const synced=syncBattleTime(pair.campaign,battle);assert.equal(synced.error,null);pair={campaign:synced.campaign,battle:synced.battle};
+ }else if(step.kind==='leave'||step.kind==='battleResult'){
+  const action={type:step.kind==='leave'?'leaveSector':'battleResult',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(unit=>unit.side==='player')};
+  if(step.kind==='battleResult')action.outcome=pair.battle.status;
+  const campaign=dispatchCampaign(pair.campaign,action);assert.equal(campaign.lastError,null);pair={campaign,battle:null};
+ }else throw Error('Unknown recorded order.');
+ assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)),pair);
+ if((index+1)%100===0)console.log(JSON.stringify({event:'recordedCompatibilityReplay',through:index+1,total:history.length}));
+}
+assert.deepEqual(pair,decodeSave(fs.readFileSync(terminal,'utf8')));
+for(const [file,hash] of Object.entries(inputs))assert.equal(sha(fs.readFileSync(file)),hash);
+assert.deepEqual(await buildIdentity(process.cwd()),source);assert.equal(testDigest(),tests);
+const receipt={readOnly:true,newGameplayOrders:0,recordedOrdersReplayed:history.length,ordinaryPresented:true,officialSaveEachStep:true,exactTerminalEquality:true,source,testPaths:paths.length,testsSha256:tests,inputs,frames,clock:{hour:pair.campaign.hour,second:pair.campaign.secondOfHour},cash:pair.campaign.resources.treasury};
+const output=directory+'stock-salta-squad-notice-main-compatibility.receipt.json';assert.equal(fs.existsSync(output),false);
+fs.writeFileSync(output,JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({receipt:output,...receipt}));

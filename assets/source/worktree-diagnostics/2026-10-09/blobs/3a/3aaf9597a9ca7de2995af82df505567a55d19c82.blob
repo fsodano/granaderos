@@ -1,0 +1,28 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {prepareFreshTucumanAssault} from '../tests/fresh-campaign-route.mjs';
+import {fightNorthernSector} from '../tests/northern-route.mjs';
+import {tucumanCombatOrder} from '../tests/tucuman-driver.mjs';
+import {assignedMountainBatteryController} from '../tests/mountain-battery-driver.mjs';
+import {prepareNorthernOfficerRelief,completeHiredNorthernMission} from '../tests/fresh-northern-command.mjs';
+const directory='/tmp/granaderos-stock-ending';
+const start=decodeSave(readFileSync(`${directory}/cordoba-defense.save.json`,'utf8')).campaign;
+const report=record=>{
+ const {campaign,...note}=record;
+ if(campaign){const name=`continuation-${record.event}-${record.groupId??campaign.hour}`.replace(/[^a-zA-Z0-9_-]/g,'_');writeFileSync(`${directory}/${name}.save.json`,encodeSave(campaign));}
+ console.log(JSON.stringify(note));
+};
+const checkpoint=(name,campaign,note)=>{const battle=campaign.pendingBattle?enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.pendingBattle.sector]):null;const encoded=encodeSave(campaign,battle);decodeSave(encoded);writeFileSync(`${directory}/${name}.save.json`,encoded);writeFileSync(`${directory}/${name}.note.json`,JSON.stringify(note,null,2));console.log(JSON.stringify({checkpoint:name,hour:campaign.hour,second:campaign.secondOfHour,treasury:campaign.resources.treasury}));};
+const prepared=prepareFreshTucumanAssault(start,{recovery:'rest',report});
+checkpoint('current-tucuman-prepared',prepared,{});
+const tucuman=fightNorthernSector(prepared,'tucuman',{controller:tucumanCombatOrder,report});
+checkpoint('current-tucuman',tucuman.campaign,tucuman.summary);
+const relief=prepareNorthernOfficerRelief(tucuman.campaign,{report});
+const initial=enterSector({...relief.pendingBattle,hour:relief.hour,secondOfHour:relief.secondOfHour??0},relief.sectorStates.salta);
+const crewScene={...initial,units:initial.units.filter(unit=>unit.side!=='player'||unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.surrendered&&!unit.departure&&!unit.fled&&!unit.asleep&&!unit.knockedDown&&!unit.entangled&&(unit.energy??100)>0)};
+const salta=fightNorthernSector(relief,'salta',{controller:assignedMountainBatteryController(crewScene),report});
+checkpoint('current-salta',salta.campaign,salta.summary);
+const ending=completeHiredNorthernMission(salta.campaign);
+checkpoint('current-yatasto',ending,{phase:ending.phase,flags:ending.flags});
+console.log(JSON.stringify({done:true,hour:ending.hour,treasury:ending.resources.treasury,phase:ending.phase}));

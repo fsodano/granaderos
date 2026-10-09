@@ -1,0 +1,116 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
+import {buildIdentity} from '../tools/build-identity.mjs';import {encodeSave,decodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor,operativeLocation} from '../game/campaign.js';import {enterSector} from '../game/world.js';import {syncBattleTime} from '../game/time.js';
+import {actBattle,endTurn,presentedActBattle,presentedEndTurn,createBattle,interruptAvailable,canSee,teamCanSee,hasLineOfSight,getReachable,actionCosts,medicalUsePreview,lookPreview} from '../game/tactical.js';
+import {playerKnownBattle} from '../game/player-known-state.js';import {sectorDeploymentModel} from '../game/sector-deployment.js';import {cautiousCombatOrder} from '../tests/cautious-driver.mjs';
+import {criticalFirstAidNeeded} from '../game/first-aid.js';import {fieldCapable} from '../game/actor-condition.js';import {isUnconscious} from '../game/tactical-condition.js';
+import {spaceKey,sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';import {unitAmmunitionByType,stackAmmunitionByType,addAmmoCounts} from '../game/physical-ammunition.js';import {contractExpiresSeconds} from '../game/contracts.js';
+import {addIssuedGriefParticipant} from '../game/companion-grief.js';import {addIssuedConductObserver} from '../game/service-objections.js';import {applyQuestWithdrawalOrders} from '../game/quest-withdrawal.js';import {applyQuestEscortOrders} from '../game/quest-escort.js';import {projectDialogueMovements} from '../game/dialogue-movement.js';
+
+const dir='/tmp/granaderos-stock-ending/',prefix=dir+'stock-ensenada-native-assault',input=dir+'stock-ensenada-daylight-approach-accepted.save.json',root=process.cwd(),sha=x=>createHash('sha256').update(x).digest('hex');
+assert.equal(fs.existsSync(prefix+'-before.save.json'),false,'A native assault must not restart an existing prefix.');
+const inputText=fs.readFileSync(input),inputHash=sha(inputText);assert.equal(inputHash,'63b7922f55e3a380335a0e71b7a2c2394cb2cc71ca5c759f6f7da68b9506357c');
+const initial=decodeSave(inputText.toString()),source=await buildIdentity(root);assert.equal(source.source,'46b940fd767143624d3d9e07fe6d467975900986384f03741bf9d8a4c8cb3f97');assert.equal(source.revision,'37febe6ba06897acc284e87cf7fe6f608662e819');
+const paths=[...new Set(execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--','tests'],{encoding:'utf8'}).split('\0').filter(Boolean))].sort();
+function testDigest(){const h=createHash('sha256');for(const p of paths){h.update(p);h.update('\0');h.update(fs.readFileSync(p));h.update('\0');}return {count:paths.length,digest:h.digest('hex')};}
+const tests=testDigest();assert.deepEqual(tests,{count:885,digest:'083c7d152babc7d913e6d2aae95e8109b8efbb1d0de76fc3a126d935acb9ed2f'});const statusBefore=execFileSync('git',['status','--porcelain'],{encoding:'utf8'});
+const priorFiles=['stock-controlled-recovery-ten-orders-history.json','stock-controlled-recovery-continuation-history.json','stock-public-projects-history.json','stock-ensenada-preparation-history.json','stock-ensenada-preparation-continuation-history.json','stock-ensenada-preparation-ready-history.json','stock-ensenada-friendly-supply-history.json','stock-ensenada-daylight-approach-history.json'];
+const priorSources=priorFiles.map(p=>({path:dir+p,text:fs.readFileSync(dir+p)}));const prior=priorSources.flatMap(p=>JSON.parse(p.text));assert.equal(prior.length,217);
+let pair=structuredClone(initial),history=[],events=[],attempted=null,rejected=null,stage='native-admission',frames=0,actions=0,endTurns=0,settled=false,replayVerified=false,checkpointReason=null;
+const force=[0,3,4,10,117,146],issued=new Set(force.map(String)),serving=initial.campaign.recruited.filter(id=>initial.campaign.operativeState[id].alive&&!initial.campaign.operativeState[id].captured),dead=Object.keys(initial.campaign.operativeState).map(Number).filter(id=>!initial.campaign.operativeState[id].alive),clock=s=>s.hour*3600+(s.secondOfHour??0);
+assert.equal(serving.length,12);assert.equal(dead.length,40);assert.deepEqual(initial.campaign.squad,force);assert.equal(initial.campaign.resources.treasury,97960);
+const knownTiles=new Map(),knownProps=new Map(),knownSurfaces=new Map(),knownLinks=new Map();let lastPublic=null,initialAmmo=null,initialDressings=null,usedDressings=0,spent={};
+const forbidden=new Set(['loot','containerLoot','pickupEquipment','placeEquipment','inventoryMap','drop','repair','cannon','fireCannon','reloadCannon','moveCannon']);
+function players(b=pair.battle){return b?.units.filter(u=>issued.has(u.id)).map(u=>({id:u.id,name:u.name,x:u.x,y:u.y,tacticalLevel:u.tacticalLevel??0,hp:u.hp,maxHp:u.maxHp,bleeding:u.bleeding??0,bandaged:u.bandaged??0,ap:u.ap,energy:u.energy,fatigue:u.fatigue,morale:u.morale,shock:u.shock,medical:u.medical,medkits:u.medkits,weapon:u.weapon,condition:u.condition,loaded:u.loaded,ammo:u.ammo,weaponDropped:!!u.weaponDropped,activeSlot:u.activeSlot,stance:u.stance,routed:!!u.routed,fled:!!u.fled,unconscious:!!u.unconscious,surrendered:!!u.surrendered,departure:u.departure??null}))??[];}
+function ownedAmmo(b){const total={};for(const u of b.units)if(issued.has(u.id))addAmmoCounts(total,unitAmmunitionByType(u));for(const g of b.droppedWeapons??[])if(issued.has(g.unitId)&&!g.taken)addAmmoCounts(total,stackAmmunitionByType(g));return total;}
+const dressings=b=>b.units.filter(u=>issued.has(u.id)).reduce((n,u)=>n+(u.medkits??0),0);
+function summary(){return {hour:pair.campaign.hour,second:pair.campaign.secondOfHour,cash:pair.campaign.resources.treasury,location:pair.campaign.location,status:pair.battle?.status??null,turn:pair.battle?.turn??null,phase:pair.battle?.phase??null,seconds:pair.battle?.elapsedSeconds??null,players:players(),dead:Object.keys(pair.campaign.operativeState).map(Number).filter(id=>!pair.campaign.operativeState[id].alive),captive105:pair.campaign.operativeState[105].captured};}
+function official(p=pair){const text=encodeSave(p.campaign,p.battle);assert.deepEqual(decodeSave(text),p);return text;}
+function save(name){const text=official();fs.writeFileSync(prefix+'-'+name+'.save.json',text);fs.writeFileSync(prefix+'-latest.save.json',text);fs.writeFileSync(prefix+'-history.json',JSON.stringify(history,null,2)+'\n');fs.writeFileSync(prefix+'-events.json',JSON.stringify(events,null,2)+'\n');return sha(text);}
+function guards(){for(const id of dead)assert.deepEqual(pair.campaign.operativeState[id],initial.campaign.operativeState[id]);assert.deepEqual(pair.campaign.operativeState[105],initial.campaign.operativeState[105]);assert.equal(pair.campaign.pendingEncounter,null,'Unexpected strategic encounter.');for(const id of serving){const r=pair.campaign.operativeState[id];if(!r.alive||r.captured)continue;assert.ok(pair.campaign.recruited.includes(id),'Unexpected service departure.');const e=contractExpiresSeconds(pair.campaign.contracts[id]);assert.ok(e===null||e>clock(pair.campaign)+180,'Paid service must cover the next action.');}assert.deepEqual(pair.campaign.contracts,initial.campaign.contracts);}
+async function unchanged(){assert.equal(sha(fs.readFileSync(input)),inputHash);for(const p of priorSources)assert.equal(sha(fs.readFileSync(p.path)),sha(p.text));assert.deepEqual(await buildIdentity(root),source);assert.deepEqual(testDigest(),tests);assert.equal(execFileSync('git',['status','--porcelain'],{encoding:'utf8'}),statusBefore);}
+
+function perform(p,step,validatePresentation=false){
+ if(step.kind==='campaign'){const next=dispatchCampaign(p.campaign,step.action);if(next.lastError){rejected={step,error:next.lastError};throw Error(next.lastError);}return {campaign:next,battle:next.pendingBattle?enterSector(next.pendingBattle,next.sectorStates[next.pendingBattle.sector],{placement:step.placement===true}):null};}
+ if(step.kind==='tactical'){const before=structuredClone(p.battle),next=step.action.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,step.action);if(next.lastError){rejected={step,error:next.lastError};throw Error(next.lastError);}if(validatePresentation){const shown=step.action.type==='endTurn'?presentedEndTurn(p.battle):presentedActBattle(p.battle,step.action);assert.deepEqual(shown.state,next);assert.deepEqual(p.battle,before);}const sync=syncBattleTime(p.campaign,next);if(sync.error)throw Error(sync.error);return {campaign:sync.campaign,battle:sync.battle};}
+ if(step.kind==='talk'){const npc=p.battle.npcs.find(n=>n.id===step.action.npcId),next=dispatchCampaign(p.campaign,{...step.action,sectorState:p.battle});assert.equal(next.lastError,null);assert.equal(next.lastConversation.outcome,'recruited');let updated=structuredClone(applyQuestWithdrawalOrders(next,projectDialogueMovements(next,applyQuestEscortOrders(next,p.battle))));updated.npcs=updated.npcs.filter(n=>n.id!==npc.id);const id=next.lastConversation.operativeId,issuedUnit=next.pendingBattle.squad.find(o=>o.id===id);if(!updated.units.some(u=>Number(u.id)===id)){const unit=createBattle([issuedUnit],{width:p.battle.width,height:p.battle.height,enemies:[],exploration:true}).units.find(u=>u.side==='player'),joined={...unit,x:npc.x,y:npc.y};updated.units.push(joined);addIssuedGriefParticipant(updated,joined);addIssuedConductObserver(updated,joined);}return {campaign:next,battle:updated};}
+ if(step.kind==='leave'){const next=dispatchCampaign(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(next.lastError,null);return {campaign:next,battle:null};}
+ if(step.kind==='battleResult'){const next=dispatchCampaign(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:p.battle.status,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(next.lastError,null);return {campaign:next,battle:null};}
+ throw Error('Unknown recorded order.');
+}
+function raw(action,placement=false){guards();save('pre-action');attempted={kind:'campaign',action,placement};const before=summary();pair=perform(pair,attempted);history.push(structuredClone(attempted));events.push({index:217+history.length,stage,action,before,after:summary()});save('order-'+String(history.length).padStart(4,'0'));guards();attempted=null;console.log(JSON.stringify({event:'nativeCampaignOrder',index:217+history.length,action,hour:pair.campaign.hour,second:pair.campaign.secondOfHour,cash:pair.campaign.resources.treasury}));}
+
+function planning(){
+ const b=pair.battle,publicState=playerKnownBattle(b);lastPublic=publicState;
+ for(const t of publicState.tiles)knownTiles.set(spaceKey(t),structuredClone(t));for(const p of publicState.props??[])knownProps.set(p.id,structuredClone(p));for(const p of publicState.upperSurfaces??[])knownSurfaces.set(spaceKey(p),structuredClone(p));for(const l of publicState.climbLinks??[])knownLinks.set(l.id,structuredClone(l));
+ const tiles=[];for(let y=0;y<b.height;y++)for(let x=0;x<b.width;x++)tiles.push(knownTiles.get(spaceKey({x,y}))??{x,y,type:'wall',blocked:true,cover:0,elevation:0});
+ const own=b.units.filter(u=>u.side==='player'),opponents=publicState.units.filter(u=>u.side!=='player');
+ return {width:b.width,height:b.height,sectorId:b.sectorId,sectorName:b.sectorName,status:b.status,mode:b.mode,phase:b.phase,turn:b.turn,night:b.night,weather:publicState.weather,units:[...own,...opponents],npcs:publicState.npcs,tiles,props:[...knownProps.values()],upperSurfaces:[...knownSurfaces.values()],climbLinks:[...knownLinks.values()],buildings:[],revealedRooms:[...new Set([...knownTiles.values()].map(t=>t.roomId).filter(Boolean))],smoke:publicState.smoke??[],lights:publicState.lights??[],artillery:[],groundItems:[],droppedWeapons:[],exits:publicState.exits,reactionStack:b.reactionStack?.length?[{}]:[],interrupt:publicState.interrupt};
+}
+function careOrder(view,u){
+ if(!(u.medical>0&&u.medkits>0)||u.entangled)return null;
+ const patients=view.units.filter(v=>v.side===u.side&&v.hp>0&&!v.departure&&!v.fled&&!v.routed&&!v.surrendered&&(v.bleeding>0||criticalFirstAidNeeded(v))).sort((a,b)=>Number(b.id===u.id)-Number(a.id===u.id)||a.hp/Math.max(1,a.bleeding)-b.hp/Math.max(1,b.bleeding)||a.hp-b.hp||String(a.id).localeCompare(String(b.id)));
+ const costs=actionCosts(view,u),prepare=u.activeSlot==='medical'?0:costs.weapon;
+ for(const p of patients)if(sameSurface(u,p)&&Math.hypot(u.x-p.x,u.y-p.y)<=1.5&&hasLineOfSight(view,u,p)){
+  const preview=medicalUsePreview(view,{...u,activeSlot:'medical'},p);if(!preview.allowed||u.ap<preview.cost+prepare)continue;
+  return prepare?{type:'weapon',unitId:u.id,slot:'medical'}:{type:'useItem',unitId:u.id,targetId:p.id};
+ }
+ if(u.knockedDown||view.phase==='interrupt'||view.reactionStack?.length||!patients.length)return null;
+ const budget=Math.min(24,u.ap-prepare-costs.heal);if(budget<=0)return null;
+ const routes=getReachable(view,u).filter(p=>p.cost>0&&p.cost<=budget&&p.path.length<=3);
+ for(const p of patients.filter(p=>sameSurface(u,p)&&Math.hypot(u.x-p.x,u.y-p.y)<=6)){
+  const cells=routes.filter(c=>Math.hypot(c.x-p.x,c.y-p.y)<=1.5&&hasLineOfSight(view,c,p));cells.sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x);
+  if(cells.length)return {type:'move',unitId:u.id,...spacePoint(cells[0])};
+ }
+ return null;
+}
+function choose(u){const view=planning(),actor=view.units.find(v=>v.id===u.id);let action=careOrder(view,actor)??cautiousCombatOrder(view,actor);if(action&&forbidden.has(action.type))action=null;if(action?.type==='move'){const path=getReachable(view,actor).find(p=>sameCell(p,action));if(!path||!path.path.every(p=>knownTiles.has(spaceKey(p))||knownSurfaces.has(spaceKey(p))))action=null;}
+ if(!action&&pair.battle.mode==='exploration'&&!actor.knockedDown&&!actor.entangled){const point={x:Math.floor(view.width*.65),y:Math.floor(view.height*.5),tacticalLevel:actor.tacticalLevel??0},preview=lookPreview(view,actor,point);if(preview.valid)action={type:'look',unitId:actor.id,...point};}
+ return action;
+}
+function accept(action){
+ guards();save('pre-action');assert.ok(!forbidden.has(action.type));attempted={kind:'tactical',action:structuredClone(action)};
+ const before=pair.battle,frozen=structuredClone(before),oldAmmo=ownedAmmo(before),oldKits=dressings(before),beforeSummary=summary(),oldClock=clock(pair.campaign);
+ if(['fire','melee','charge','throwKnife'].includes(action.type)){
+  const actor=before.units.find(u=>u.id===String(action.unitId)),publicTarget=lastPublic?.units.find(u=>u.id===action.targetId&&u.side!=='player');assert.ok(publicTarget,'The target must be in the current public observation.');
+  const target=before.units.find(u=>u.id===action.targetId),observers=before.units.filter(u=>u.side==='player'&&fieldCapable(u)&&!isUnconscious(u)&&!u.asleep&&!u.routed&&canSee(before,u,target));
+  assert.ok(teamCanSee(before,'player',target)&&observers.length>0&&hasLineOfSight(before,actor,target));
+  fs.appendFileSync(prefix+'-observed-aim.jsonl',JSON.stringify({index:217+history.length+1,action,observers:observers.map(o=>o.id),lineOfFire:true})+'\n');
+ }
+ const next=action.type==='endTurn'?endTurn(before):actBattle(before,action);if(next.lastError){rejected={action,error:next.lastError};throw Error(next.lastError);}
+ history.push(structuredClone(attempted));actions+=action.type!=='endTurn';endTurns+=action.type==='endTurn';
+ const sync=syncBattleTime(pair.campaign,next);if(sync.error){fs.writeFileSync(prefix+'-accepted-unsynced-diagnostic.json',JSON.stringify({campaign:pair.campaign,battle:next},null,2));throw Error(sync.error);}pair={campaign:sync.campaign,battle:sync.battle};
+ const newAmmo=ownedAmmo(pair.battle),newKits=dressings(pair.battle),e={index:217+history.length,stage,action,paidSeconds:clock(pair.campaign)-oldClock,before:beforeSummary,after:summary(),ammoBefore:oldAmmo,ammoAfter:newAmmo,dressingsBefore:oldKits,dressingsAfter:newKits};events.push(e);save('order-'+String(history.length).padStart(4,'0'));fs.appendFileSync(prefix+'-accepted.jsonl',JSON.stringify(e)+'\n');
+ const shown=action.type==='endTurn'?presentedEndTurn(before):presentedActBattle(before,action);assert.deepEqual(shown.state,next);assert.deepEqual(before,frozen);frames+=shown.frames.length;
+ for(const f of new Set([...Object.keys(oldAmmo),...Object.keys(newAmmo)])){assert.ok((newAmmo[f]??0)<=(oldAmmo[f]??0),'Own issued ammunition cannot increase.');spent[f]=(spent[f]??0)+(oldAmmo[f]??0)-(newAmmo[f]??0);}
+ assert.ok(newKits<=oldKits);usedDressings+=oldKits-newKits;guards();attempted=null;
+ if(action.type==='endTurn'||actions%20===0||pair.battle.status!=='active')console.log(JSON.stringify({event:'nativeBattleProgress',orders:history.length,actions,endTurns,...summary(),visibleContacts:lastPublic?.units.filter(u=>u.side!=='player').map(u=>({id:u.id,name:u.name,hp:u.hp}))??[]}));
+}
+async function replay(){let p=decodeSave(fs.readFileSync(dir+'stock-salta-recapture-battle-continuation-settled.save.json','utf8'));for(const step of prior){p=perform(p,step,true);official(p);}assert.deepEqual(p,initial);for(const step of history){p=perform(p,step,true);official(p);}assert.deepEqual(p,pair);replayVerified=true;return {prior:217,newOrders:history.length,total:217+history.length,exact:true,officialEveryAction:true,ordinaryPresentedEqual:true};}
+function receipt(error,replay,outputHash,saveError=null){return {input,inputHash,source,tests,statusBefore,stage,error,saveError,attempted,rejected,actions,endTurns,frames,settled,checkpointReason,priorOrders:217,newOrders:history.length,totalOrders:217+history.length,history,events,summary:summary(),priorDeaths:dead,initialOwnAmmo:initialAmmo,finalOwnAmmo:pair.battle?ownedAmmo(pair.battle):events.at(-1)?.ammoAfter,spent,initialOwnDressings:initialDressings,dressingsConsumed:usedDressings,replay,outputHash,limits:'One native Ensenada assault; max40 player turns. Decisions use public observed/memorized terrain, current own state and observed contacts; unknown movement cells closed only in the separate planning view. No loot/new supplies, private hostile strength/coordinates, cannon order, state grant/reset, source edit or second battle.'};}
+
+try{
+ guards();save('before');raw({type:'beginAssault',sector:'ensenada'},true);assert.ok(pair.battle?.deployment);assert.deepEqual(pair.campaign.pendingBattle.squad.map(u=>Number(u.id)),force);
+ stage='public-native-placement';const model=sectorDeploymentModel(pair.battle);assert.equal(model.units.length,6);const edge=model.units[0].edge;assert.ok(model.units.every(u=>u.edge===edge));const cells=model.entryCells[edge];assert.ok(cells.length>=6);const cell=cells[Math.floor(cells.length/2)];
+ accept({type:'placeDeployment',unitIds:['0','10','3','4','146','117'],x:cell.x,y:cell.y});accept({type:'confirmDeployment'});save('native-initial');
+ initialAmmo=ownedAmmo(pair.battle);initialDressings=dressings(pair.battle);assert.equal(Object.values(initialAmmo).reduce((n,v)=>n+v,0),72);assert.equal(initialDressings,11);spent=Object.fromEntries(Object.keys(initialAmmo).map(f=>[f,0]));
+ console.log(JSON.stringify({event:'nativeEnsenadaAdmitted',inputHash,source,tests,players:players(),knownTerrainCells:playerKnownBattle(pair.battle).tiles.length,ammo:initialAmmo,dressings:initialDressings}));
+ stage='one-continuous-public-battle';let quietWindows=0;
+ for(let window=0;window<320&&pair.battle.status==='active'&&pair.battle.turn<=40;window++){
+  const ids=pair.battle.units.filter(u=>issued.has(u.id)).sort((a,b)=>b.medical-a.medical||b.marksmanship-a.marksmanship||String(a.id).localeCompare(String(b.id))).map(u=>u.id);let windowActions=0;
+  for(let attempt=0;attempt<16&&pair.battle.status==='active';attempt++){let acted=false;for(const id of ids){if(pair.battle.status!=='active')break;const u=pair.battle.units.find(v=>v.id===id);if(!interruptAvailable(pair.battle,u)||u.ap<3)continue;const action=choose(u);if(!action)continue;accept(action);acted=true;windowActions++;}if(!acted)break;}
+  if(pair.battle.status!=='active')break;
+  const own=pair.battle.units.filter(u=>issued.has(u.id)&&u.hp>0&&!u.departure&&!u.fled),acute=own.filter(u=>criticalFirstAidNeeded(u)||(u.bleeding??0)>0),doctors=own.filter(u=>fieldCapable(u)&&!isUnconscious(u)&&!u.routed&&u.medical>0&&u.medkits>0);
+  if(acute.length&&!doctors.length){checkpointReason='Living acute casualties have no capable supplied field caregiver; stop before another turn.';break;}
+  if(!windowActions)quietWindows++;else quietWindows=0;if(quietWindows>=4&&pair.battle.mode==='exploration'){checkpointReason='Four public reconnaissance windows produced no affordable known route/contact; no blind advance.';break;}
+  accept({type:'endTurn'});if(window%10===0)await unchanged();
+ }
+ save('terminal');if(pair.battle.status==='active')checkpointReason??='Forty-turn/320-window bound reached; actual active checkpoint retained.';
+ const actualBattle=structuredClone(pair.battle),outcome=actualBattle.status;
+ if(['victory','defeat','retreat'].includes(outcome)){
+  stage='actual-native-settlement';attempted={kind:'battleResult'};const before=summary();pair=perform(pair,attempted);history.push({kind:'battleResult'});events.push({index:217+history.length,stage,action:{type:'battleResult',outcome},before,after:summary()});settled=true;save('settled');guards();attempted=null;
+ }
+ stage='exact-full-history-replay';const replayResult=await replay();await unchanged();const outputHash=save(settled?'accepted-settled':'accepted-checkpoint');
+ fs.writeFileSync(prefix+'-receipt.json',JSON.stringify({...receipt(null,replayResult,outputHash),outcome,terminalPlayers:players(actualBattle),terminalOwnAmmo:ownedAmmo(actualBattle),terminalOwnDressings:dressings(actualBattle),inputUnchanged:true},null,2)+'\n');
+ console.log(JSON.stringify({event:'nativeEnsenadaProofAccepted',outcome,settled,checkpointReason,outputHash,replay:replayResult,spent,dressingsConsumed:usedDressings,terminalPlayers:players(actualBattle),summary:summary()}));
+}catch(error){let outputHash=null,saveError=null,replayResult=null;try{outputHash=save('stopped');}catch(e){saveError=e.stack;fs.writeFileSync(prefix+'-unadmitted-diagnostic.json',JSON.stringify(pair,null,2)+'\n');}try{replayResult=await replay();}catch(e){replayResult={error:e.stack};}await unchanged();fs.writeFileSync(prefix+'-stopped.receipt.json',JSON.stringify(receipt(error.stack,replayResult,outputHash,saveError),null,2)+'\n');console.error(error.stack);console.log(JSON.stringify({event:'nativeEnsenadaProofStopped',outputHash,stage,newOrders:history.length,replay:replayResult,summary:summary()}));process.exitCode=1;}

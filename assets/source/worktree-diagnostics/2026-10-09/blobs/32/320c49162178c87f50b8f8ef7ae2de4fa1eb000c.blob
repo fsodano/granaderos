@@ -1,0 +1,63 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
+import {syncBattleTime} from '../game/time.js';
+import {actBattle,presentedActBattle,itemUsePreview,exitPreview,getReachable,transferPreview} from '../game/tactical.js';
+import {contractExpiresSeconds,contractQuote} from '../game/contracts.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {boundaryMatches} from '../game/tactical-exits.js';
+import {spacePoint,sameSurface} from '../game/tactical-space.js';
+const directory='/tmp/granaderos-stock-ending',source=`${directory}/stock-mendoza-settled.save.json`,original=decodeSave(fs.readFileSync(source,'utf8')).campaign,unchanged=structuredClone(original),identity=await buildIdentity(process.cwd());
+const dead=Object.entries(original.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id)),serving=original.recruited.filter(id=>original.operativeState[id].alive&&!original.operativeState[id].captured),history=[],notes=[];
+let p={campaign:structuredClone(original),battle:null};
+const now=c=>c.hour*3600+(c.secondOfHour??0);
+function invariant(pair){for(const id of dead)assert.equal(pair.campaign.operativeState[id].alive,false,`prior death ${id}`);for(const id of serving){const r=pair.campaign.operativeState[id],contract=pair.campaign.contracts[id],expiry=contractExpiresSeconds(contract);assert.ok(pair.campaign.recruited.includes(id)&&r.alive&&!r.captured,`serving survivor ${id} must remain alive/free`);assert.ok(contract&&(expiry===null||expiry>now(pair.campaign)),`real contract ${id} must remain active`);}assert.equal(pair.campaign.pendingEncounter,null,'an actual encounter interrupts finite care');}
+function restored(pair){const raw=encodeSave(pair.campaign,pair.battle),r=decodeSave(raw);assert.deepEqual(r.campaign,pair.campaign);assert.deepEqual(r.battle,pair.battle);return r;}
+function apply(pair,event,check=true){let n;
+ if(event.kind==='campaign'){const c=dispatchCampaign(pair.campaign,event.action);assert.equal(c.lastError,null,JSON.stringify(event.action)+': '+c.lastError);n={campaign:c,battle:event.action.type==='visitSector'?enterSector(c.pendingBattle,c.sectorStates[c.location]):pair.battle};}
+ else if(event.kind==='enter')n={campaign:pair.campaign,battle:enterSector(pair.campaign.pendingBattle,pair.campaign.sectorStates[pair.campaign.location])};
+ else if(event.kind==='tactical'){const before=structuredClone(pair.battle),b=actBattle(pair.battle,event.action);assert.equal(b.lastError,null,JSON.stringify(event.action)+': '+b.lastError);assert.deepEqual(presentedActBattle(pair.battle,event.action).state,b);assert.deepEqual(pair.battle,before);const sync=syncBattleTime(pair.campaign,b);assert.equal(sync.error,null,sync.error);n={campaign:sync.campaign,battle:sync.battle};}
+ else if(event.kind==='leave'){const c=dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.equal(c.lastError,null,c.lastError);n={campaign:c,battle:null};}
+ else throw Error('unknown event');
+ invariant(n);return check?restored(n):n;
+}
+function issue(event){const before=[p.campaign.hour,p.campaign.secondOfHour],prior=p;p=apply(p,event);history.push(event);console.log('ORDER',JSON.stringify({n:history.length,event,clockBefore:before,clockAfter:[p.campaign.hour,p.campaign.secondOfHour],patients:[127,144,9,122,129].map(id=>({id,hp:p.campaign.operativeState[id].hp,bleeding:p.campaign.operativeState[id].bleeding,location:p.campaign.operativeState[id].location,medkits:p.campaign.operativeState[id].medkits}))}));return prior;}
+const order=action=>issue({kind:'campaign',action}),tactical=action=>issue({kind:'tactical',action}),unit=id=>p.battle.units.find(u=>u.id===String(id));
+function checkpoint(stage){p=restored(p);const path=`${directory}/stock-mendoza-care-strategic-${stage}.save.json`;fs.writeFileSync(path,encodeSave(p.campaign,p.battle));const note={stage,path,hour:p.campaign.hour,second:p.campaign.secondOfHour,treasury:p.campaign.resources.treasury,history:history.length,patients:[127,144,9,122,129].map(id=>({id,hp:p.campaign.operativeState[id].hp,bleeding:p.campaign.operativeState[id].bleeding,location:p.campaign.operativeState[id].location,medkits:p.campaign.operativeState[id].medkits}))};notes.push(note);console.log('CHECKPOINT',JSON.stringify(note));}
+function renew(horizonHours=1){const until=now(p.campaign)+horizonHours*3600;for(const id of serving){let expiry=contractExpiresSeconds(p.campaign.contracts[id]);while(expiry!==null&&expiry<=until){const op=rosterFor(p.campaign).find(o=>o.id===id),contract=p.campaign.contracts[id],quote=contractQuote(p.campaign,op,'day'),cash=p.campaign.resources.treasury;assert.ok(quote.available&&cash>=quote.price);order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});assert.equal(p.campaign.resources.treasury,cash-quote.price);assert.equal(contractExpiresSeconds(p.campaign.contracts[id]),expiry+86400);expiry=contractExpiresSeconds(p.campaign.contracts[id]);}}}
+function enter(){order({type:'visitSector'});}
+function treat(doctorId,patientId){const u=unit(doctorId);if(u.activeSlot!=='medical')tactical({type:'weapon',unitId:u.id,slot:'medical'});const preview=itemUsePreview(p.battle,unit(doctorId),unit(patientId));console.log('CLINICAL_PLAN',JSON.stringify({doctorId,patientId,preview}));assert.ok(preview?.valid,preview?.reason);const before={kit:unit(doctorId).medkits,hp:unit(patientId).hp,bleed:unit(patientId).bleeding};tactical({type:'useItem',unitId:String(doctorId),targetId:String(patientId)});assert.equal(unit(doctorId).medkits,before.kit-1);assert.ok(unit(patientId).hp>before.hp||unit(patientId).bleeding<before.bleed);assert.ok(unit(patientId).hp>=15);assert.equal(unit(patientId).bleeding,0);}
+console.log('SOURCE',JSON.stringify(identity));checkpoint('before');
+try{
+ // One authorized care hour: existing doctor work runs before strategic bleed.
+ const remote=[127,144,9].map(id=>({id,hp:p.campaign.operativeState[id].hp,bleeding:p.campaign.operativeState[id].bleeding}));
+ for(const operativeId of [146,107])order({type:'assignCare',operativeId,assignment:'doctor'});
+ for(const operativeId of [122,129])order({type:'assignCare',operativeId,assignment:'patient'});
+ renew(1);order({type:'wait',hours:1});assert.equal(p.campaign.hour,original.hour+1);
+ for(const id of [122,129]){assert.equal(p.campaign.operativeState[id].hp,original.operativeState[id].hp);assert.equal(p.campaign.operativeState[id].bleeding,0);}
+ for(const {id,hp}of remote)assert.equal(p.campaign.operativeState[id].hp,hp-1,'actual remote wound loss matches the admitted25percent rule');
+ assert.equal(p.campaign.operativeState[146].medkits,1);assert.equal(p.campaign.operativeState[107].medkits,0);
+ checkpoint('hourly-stabilization');
+ for(const operativeId of [146,107,122,129])order({type:'assignCare',operativeId,assignment:'active'});
+ const supply=sectorInventoryModel(p.campaign,'mendoza',rosterFor(p.campaign),146).entries.find(row=>row.reachable&&row.key===JSON.stringify(['body','136','medkits']));assert.ok(supply,'only the publicly known reachable finite dressing source may be used');assert.equal(supply.count,6);
+ order({type:'sectorInventory',sector:'mendoza',operativeId:146,direction:'take',sourceKey:supply.key,expected:supply.expected,count:4});
+ const remainder=sectorInventoryModel(p.campaign,'mendoza',rosterFor(p.campaign),146).entries.find(row=>row.key===supply.key);assert.equal(remainder.count,2);assert.equal(p.campaign.operativeState[146].medkits,5);
+ console.log('FINITE_SOURCE',JSON.stringify({actor:146,sourceKey:supply.key,before:supply.count,taken:4,remaining:remainder.count,carried:5}));
+ order({type:'createSquad',name:'Auxilio estabilizado',sector:'mendoza',ids:[146,122,129]});enter();
+ treat(146,129);treat(146,122);assert.equal(p.campaign.hour,original.hour+1);assert.equal(unit(146).medkits,3);checkpoint('local-critical');
+ const exit=p.battle.exits.find(e=>e.destination==='cell-6-24');assert.ok(exit,'the actual Mendoza map authorizes the adjacent neutral exit');
+ const actor=unit(146),spot=getReachable(p.battle,actor).filter(cell=>boundaryMatches(p.battle,cell,exit.edge)&&sameSurface(cell,actor)).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot,'the supplied doctor has a real reachable departure edge');
+ if(!boundaryMatches(p.battle,actor,exit.edge))tactical({type:'move',unitId:actor.id,...spacePoint(spot)});
+ const outbound=exitPreview(p.battle,{unitIds:['146'],exitId:exit.id});assert.ok(outbound.available,outbound.reason);tactical({type:'exit',unitIds:['146'],exitId:exit.id});issue({kind:'leave'});assert.equal(p.campaign.operativeState[146].location,'cell-6-24');checkpoint('supplied-medic-arrival');
+ // A physical adjacent exit carries the actual doctor and his3 dressings.
+ renew();order({type:'createSquad',name:'Socorro junto a la ruta',sector:'cell-6-24',ids:[146,127,144,9]});enter();checkpoint('rural-entry');
+ console.log('RURAL_ENTRY',JSON.stringify({units:p.battle.units.filter(u=>u.side==='player').map(u=>({id:u.id,x:u.x,y:u.y,hp:u.hp,bleeding:u.bleeding,energy:u.energy,routed:u.routed,medkits:u.medkits})),exits:p.battle.exits}));
+ for(const id of [144,127,9])treat(146,id);
+ assert.equal(unit(146).medkits,0);checkpoint('rural-bandaged');issue({kind:'leave'});checkpoint('accepted');
+ for(const id of [122,129,127,144,9]){assert.ok(p.campaign.operativeState[id].hp>=15);assert.equal(p.campaign.operativeState[id].bleeding,0);}
+ fs.writeFileSync(`${directory}/stock-mendoza-care-strategic-history.json`,JSON.stringify(history,null,2));fs.writeFileSync(`${directory}/stock-mendoza-care-strategic-notes.json`,JSON.stringify(notes,null,2));
+ let replay={campaign:structuredClone(original),battle:null};for(const event of history)replay=apply(replay,event);assert.deepEqual(replay,p);assert.deepEqual(original,unchanged);assert.equal((await buildIdentity(process.cwd())).source,identity.source);console.log('STAGE_DONE',JSON.stringify({events:history.length,clock:[p.campaign.hour,p.campaign.secondOfHour],cash:p.campaign.resources.treasury,identity}));
+}catch(error){checkpoint('stopped');fs.writeFileSync(`${directory}/stock-mendoza-care-strategic-history.json`,JSON.stringify(history,null,2));fs.writeFileSync(`${directory}/stock-mendoza-care-strategic-failure.json`,JSON.stringify({error:error.stack,history,notes},null,2));console.error('FAILURE',error.stack);process.exitCode=1;}

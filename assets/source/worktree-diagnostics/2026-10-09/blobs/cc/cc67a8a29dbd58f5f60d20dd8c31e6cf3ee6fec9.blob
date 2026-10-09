@@ -1,0 +1,92 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {dispatchCampaign,rosterFor,operativeLocation} from '../game/campaign.js';
+import {contractExpiresSeconds,contractQuote} from '../game/contracts.js';
+import {enterSector} from '../game/world.js';
+import {syncBattleTime} from '../game/time.js';
+import {actBattle,presentedActBattle} from '../game/tactical.js';
+import {autoBandageBattle,autoBandageStatus} from '../game/auto-bandage.js';
+
+const root=fileURLToPath(new URL('..',import.meta.url));
+const input='/tmp/granaderos-stock-ending/stock-tucuman-recapture-settled.save.json';
+const prefix='/tmp/granaderos-stock-ending/stock-tucuman-aid';
+const sha=value=>createHash('sha256').update(value).digest('hex');
+const inputText=fs.readFileSync(input,'utf8'),inputHash=sha(inputText),initial=decodeSave(inputText).campaign;
+const source=await buildIdentity(root),files=[];
+function collect(dir){for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory())collect(file);else if(entry.isFile())files.push(path.relative(root,file));}}
+collect(path.join(root,'tests'));files.sort();
+const testHash=()=>{const h=createHash('sha256');for(const file of files){h.update(file);h.update('\0');h.update(fs.readFileSync(path.join(root,file)));h.update('\0');}return h.digest('hex');};
+const testsDigest=testHash();
+assert.equal(source.source,'f28f0f90bd896c8dcb5e3f8f291df4a07092c340b3ea64c3ab5d1742519e6a2a');
+assert.equal(files.length,880);assert.equal(testsDigest,'c23d5fff9445c90b91fb2f285cb3bf29a0b916e432ab7a438b6b5f4e623b2f99');
+assert.equal(fs.existsSync(prefix+'-accepted.save.json'),false,'An accepted aid result is immutable.');
+const serving=initial.recruited.filter(id=>initial.operativeState[id]?.alive&&!initial.operativeState[id]?.captured);
+const dead=Object.keys(initial.operativeState).map(Number).filter(id=>!initial.operativeState[id].alive);
+const patients=serving.filter(id=>initial.operativeState[id].bleeding>0);
+assert.deepEqual(new Set(patients),new Set([116,117]));assert.equal(serving.length,21);assert.equal(dead.length,29);
+const clock=c=>c.hour*3600+(c.secondOfHour??0);
+let pair={campaign:structuredClone(initial),battle:null},history=[],events=[],frames=0,renewalCost=0;
+const actor=id=>pair.battle?.units.find(u=>u.side==='player'&&u.id===String(id));
+const summary=()=>({hour:pair.campaign.hour,second:pair.campaign.secondOfHour??0,cash:pair.campaign.resources.treasury,location:pair.campaign.location,pendingBattle:pair.campaign.pendingBattle?.id??null,pendingEncounter:pair.campaign.pendingEncounter,patients:patients.map(id=>{const r=actor(id)??pair.campaign.operativeState[id];return {id,hp:r.hp,maxHp:r.maxHp,bleeding:r.bleeding,medkits:r.medkits,location:operativeLocation(pair.campaign,id)};})});
+function save(stage){
+ const text=encodeSave(pair.campaign,pair.battle),decoded=decodeSave(text);assert.deepEqual(decoded,pair);
+ fs.writeFileSync(prefix+'-'+stage+'.save.json',text);fs.writeFileSync(prefix+'-latest.save.json',text);
+ fs.writeFileSync(prefix+'-history.json',JSON.stringify(history,null,2));
+ console.log(JSON.stringify({event:'checkpoint',stage,...summary()}));
+}
+function safe(){
+ assert.equal(pair.campaign.pendingEncounter,null,'An actual encounter stops this finite care proof.');
+ for(const id of dead)assert.equal(pair.campaign.operativeState[id].alive,false);
+ for(const id of serving){const r=pair.campaign.operativeState[id],u=actor(id);assert.ok(r.alive&&!r.captured&&pair.campaign.recruited.includes(id),`Serving ${id} must remain.`);if(u)assert.ok(u.hp>0&&!u.captured,`Actual casualty ${id} stops this care proof.`);const expiry=contractExpiresSeconds(pair.campaign.contracts[id]);assert.ok(expiry===null||expiry>clock(pair.campaign),`Actual term ${id} has expired.`);}
+}
+function raw(action){
+ assert.equal(pair.battle,null);const before=summary(),next=dispatchCampaign(pair.campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
+ pair={campaign:next,battle:next.pendingBattle?enterSector(next.pendingBattle,next.sectorStates[next.pendingBattle.sector]):null};
+ history.push({kind:'campaign',action:structuredClone(action)});events.push({event:'acceptedCampaign',action:structuredClone(action),before,after:summary()});save('active');safe();
+}
+function renew(seconds=600){
+ assert.equal(pair.battle,null);safe();for(const id of serving){let expiry=contractExpiresSeconds(pair.campaign.contracts[id]);while(expiry!==null&&expiry<=clock(pair.campaign)+seconds){const contract=pair.campaign.contracts[id],q=contractQuote(pair.campaign,rosterFor(pair.campaign).find(op=>op.id===id),'day'),cash=pair.campaign.resources.treasury;assert.ok(q.available&&cash>=q.price);raw({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});assert.equal(pair.campaign.resources.treasury,cash-q.price);assert.equal(contractExpiresSeconds(pair.campaign.contracts[id]),expiry+86400);renewalCost+=q.price;expiry=contractExpiresSeconds(pair.campaign.contracts[id]);}}
+}
+function campaign(action){renew();raw(action);}
+function tactical(action){
+ safe();for(const id of serving){const expiry=contractExpiresSeconds(pair.campaign.contracts[id]);assert.ok(expiry===null||expiry>clock(pair.campaign)+120,'Actual care needs a new quiet renewal.');}
+ const before=summary(),sourceBattle=structuredClone(pair.battle),next=actBattle(pair.battle,action),shown=presentedActBattle(pair.battle,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);assert.deepEqual(shown.state,next);assert.deepEqual(pair.battle,sourceBattle);frames+=shown.frames.length;
+ const synced=syncBattleTime(pair.campaign,next);assert.equal(synced.error,null,synced.error);pair={campaign:synced.campaign,battle:synced.battle};
+ history.push({kind:'tactical',action:structuredClone(action)});events.push({event:'acceptedTactical',action:structuredClone(action),before,after:summary()});save('active');safe();
+}
+function leave(){
+ const before=summary(),action={type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')},next=dispatchCampaign(pair.campaign,action);assert.equal(next.lastError,null,next.lastError);pair={campaign:next,battle:null};history.push({kind:'leave'});events.push({event:'acceptedLeave',before,after:summary()});save('active');safe();
+}
+try{
+ safe();save('before');const local=serving.filter(id=>operativeLocation(pair.campaign,id)==='cordoba');assert.deepEqual(new Set(local),new Set([0,116,117]));
+ const squad=pair.campaign.squads.find(q=>q.location==='cordoba'&&!q.journey&&q.members.includes(0));assert.ok(squad);
+ campaign({type:'selectSquad',id:squad.id});campaign({type:'squad',ids:local,returnToService:true});campaign({type:'visitSector'});
+ assert.equal(pair.battle.mode,'exploration');assert.equal(pair.battle.status,'active');const issue=structuredClone(pair),status=autoBandageStatus(pair.battle);assert.ok(status.available,status.reason);
+ const plannedFrom=structuredClone(pair.battle),aid=autoBandageBattle(pair.battle);assert.deepEqual(pair.battle,plannedFrom,'The existing finite aid planner does not mutate its input.');
+ const supplied=local.reduce((n,id)=>n+actor(id).medkits,0);assert.equal(supplied,4);
+ for(const action of aid.steps){if(patients.every(id=>actor(id).bleeding===0))break;tactical(action);}
+ assert.ok(patients.every(id=>actor(id).hp>=15&&actor(id).bleeding===0),'The real aid prefix did not stabilize both patients.');
+ const used=supplied-local.reduce((n,id)=>n+actor(id).medkits,0);assert.ok(used>0&&used<=supplied);assert.equal(used,history.filter(e=>e.kind==='tactical'&&e.action.type==='useItem').length);
+ const treated=structuredClone(pair);save('stabilized');leave();
+ for(const id of patients){assert.equal(pair.campaign.operativeState[id].bleeding,0);assert.ok(pair.campaign.operativeState[id].hp>=15);}
+ for(const id of serving){const old=initial.operativeState[id],now=pair.campaign.operativeState[id];for(const key of ['condition','weaponInstanceId','weaponMetadata','carriedLoaded','ammo','ammunitionVersion','weaponDropped','headwear','outfit','legwear'])assert.deepEqual(now[key],old[key],`Aid preserves ${id}.${key}`);if(!patients.includes(id)){assert.equal(now.hp,old.hp);assert.equal(now.bleeding,old.bleeding);assert.equal(now.medkits,old.medkits);}}
+ assert.equal(pair.campaign.resources.treasury,initial.resources.treasury-renewalCost);assert.equal(pair.campaign.hour,initial.hour,'This care prefix must not use an hourly wait.');
+ let replay={campaign:decodeSave(inputText).campaign,battle:null};
+ for(const step of history){
+  if(step.kind==='campaign'){const c=dispatchCampaign(replay.campaign,step.action);assert.equal(c.lastError,null);replay={campaign:c,battle:c.pendingBattle?enterSector(c.pendingBattle,c.sectorStates[c.pendingBattle.sector]):null};}
+  else if(step.kind==='tactical'){const b=actBattle(replay.battle,step.action);assert.equal(b.lastError,null);const synced=syncBattleTime(replay.campaign,b);assert.equal(synced.error,null);replay={campaign:synced.campaign,battle:synced.battle};}
+  else{assert.deepEqual(replay,treated);const c=dispatchCampaign(replay.campaign,{type:'leaveSector',battleId:replay.campaign.pendingBattle.id,sectorState:replay.battle,survivors:replay.battle.units.filter(u=>u.side==='player')});assert.equal(c.lastError,null);replay={campaign:c,battle:null};}
+  assert.deepEqual(decodeSave(encodeSave(replay.campaign,replay.battle)),replay);
+ }
+ assert.deepEqual(replay,pair);assert.equal(sha(fs.readFileSync(input,'utf8')),inputHash);assert.deepEqual(await buildIdentity(root),source);assert.equal(testHash(),testsDigest);save('accepted');
+ fs.writeFileSync(prefix+'-receipt.json',JSON.stringify({source,inputHash,testsDigest,testFileCount:files.length,history,events,issueStatus:status,unusedPlannerStop:aid.stoppedReason,dressingsUsed:used,renewalCost,frames,seconds:clock(pair.campaign)-clock(initial),before:{hour:initial.hour,second:initial.secondOfHour,cash:initial.resources.treasury,patients:patients.map(id=>({id,hp:initial.operativeState[id].hp,bleeding:initial.operativeState[id].bleeding,medkits:initial.operativeState[id].medkits}))},after:summary(),dead,serving,ordinaryPresentedEqual:true,savedReplayEqual:true},null,2));
+ console.log(JSON.stringify({event:'aidAccepted',orders:history.length,dressingsUsed:used,renewalCost,seconds:clock(pair.campaign)-clock(initial),...summary()}));
+}catch(error){
+ try{save('stopped');}catch(savedError){console.error('Could not admit the stopped pair: '+savedError.message);}
+ fs.writeFileSync(prefix+'-stopped.receipt.json',JSON.stringify({source,inputHash,testsDigest,testFileCount:files.length,error:error.stack,history,events,summary:summary()},null,2));console.error(error.stack);process.exitCode=1;
+}

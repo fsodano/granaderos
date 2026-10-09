@@ -1,0 +1,106 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {buildIdentity} from '../tools/build-identity.mjs';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {dispatchCampaign} from '../game/campaign.js';
+import {enterSector} from '../game/world.js';
+import {actBattle,presentedActBattle,createBattle} from '../game/tactical.js';
+import {syncBattleTime} from '../game/time.js';
+import {addIssuedGriefParticipant} from '../game/companion-grief.js';
+import {addIssuedConductObserver} from '../game/service-objections.js';
+import {applyQuestWithdrawalOrders} from '../game/quest-withdrawal.js';
+import {applyQuestEscortOrders} from '../game/quest-escort.js';
+import {projectDialogueMovements} from '../game/dialogue-movement.js';
+
+const root=process.cwd(),dir='/tmp/granaderos-stock-ending/',prefix=dir+'stock-isolation-main217-readonly';
+const sha=x=>createHash('sha256').update(x).digest('hex');
+const initialPath=dir+'stock-salta-recapture-battle-continuation-settled.save.json';
+const targetPath=dir+'stock-ensenada-daylight-approach-accepted.save.json';
+const initialText=fs.readFileSync(initialPath),targetText=fs.readFileSync(targetPath);
+assert.equal(sha(initialText),'e8898c6bd62eb60c4962481d69ed3e2efd4a191df8a11ed30fb203c01651d451');
+assert.equal(sha(targetText),'63b7922f55e3a380335a0e71b7a2c2394cb2cc71ca5c759f6f7da68b9506357c');
+assert.equal(fs.existsSync(prefix+'-before.save.json'),false,'Do not overwrite any prior proof.');
+const source=await buildIdentity(root);
+assert.equal(source.revision,'37febe6ba06897acc284e87cf7fe6f608662e819');
+assert.equal(source.source,'46b940fd767143624d3d9e07fe6d467975900986384f03741bf9d8a4c8cb3f97');
+const paths=[...new Set(execFileSync('git',['ls-files','--cached','--others','--exclude-standard','-z','--','tests'],{encoding:'utf8'}).split('\0').filter(Boolean))].sort();
+function testDigest(){const h=createHash('sha256');for(const path of paths){h.update(path);h.update('\0');h.update(fs.readFileSync(path));h.update('\0');}return {count:paths.length,digest:h.digest('hex')};}
+const tests=testDigest();
+assert.deepEqual(tests,{count:885,digest:'083c7d152babc7d913e6d2aae95e8109b8efbb1d0de76fc3a126d935acb9ed2f'});
+assert.deepEqual(JSON.parse(fs.readFileSync('.cache/stock-input-freeze.json','utf8')),{source:source.source,tests});
+const statusBefore=execFileSync('git',['status','--porcelain'],{encoding:'utf8'});
+const segments=[
+ ['stock-controlled-recovery-ten-orders-history.json',10,'squad-travel-notice-hotfix.save.json'],
+ ['stock-controlled-recovery-continuation-history.json',163,'stock-controlled-recovery-continuation-accepted.save.json'],
+ ['stock-public-projects-history.json',3,'stock-public-projects-accepted.save.json'],
+ ['stock-ensenada-preparation-history.json',11,'stock-ensenada-preparation-stopped.save.json'],
+ ['stock-ensenada-preparation-continuation-history.json',14,'stock-ensenada-preparation-continuation-stopped.save.json'],
+ ['stock-ensenada-preparation-ready-history.json',1,'stock-ensenada-preparation-ready-accepted.save.json'],
+ ['stock-ensenada-friendly-supply-history.json',9,'stock-ensenada-friendly-supply-accepted.save.json'],
+ ['stock-ensenada-daylight-approach-history.json',6,'stock-ensenada-daylight-approach-accepted.save.json'],
+].map(([historyPath,count,checkpoint])=>{const text=fs.readFileSync(dir+historyPath),steps=JSON.parse(text);assert.equal(steps.length,count);return {historyPath,count,checkpoint,historyHash:sha(text),checkpointHash:sha(fs.readFileSync(dir+checkpoint)),steps};});
+assert.equal(segments.reduce((sum,s)=>sum+s.count,0),217);
+let pair=decodeSave(initialText.toString()),target=decodeSave(targetText.toString()),lastOfficial=structuredClone(pair),completed=0,currentStep=null,attemptedPair=null,tacticalComparisons=0,joinComparisons=0;
+const events=[],checkpointResults=[];
+const official=p=>{const text=encodeSave(p.campaign,p.battle);assert.deepEqual(decodeSave(text),p);return text;};
+fs.writeFileSync(prefix+'-before.save.json',official(pair));
+function perform(p,step){
+ if(step.kind==='campaign'){
+  const next=dispatchCampaign(p.campaign,step.action);assert.equal(next.lastError,null,next.lastError);
+  return {campaign:next,battle:next.pendingBattle?enterSector(next.pendingBattle,next.sectorStates[next.pendingBattle.sector]):null};
+ }
+ if(step.kind==='tactical'){
+  const before=structuredClone(p.battle),actual=actBattle(p.battle,step.action),presented=presentedActBattle(p.battle,step.action);
+  assert.deepEqual(p.battle,before);assert.equal(actual.lastError,null,actual.lastError);assert.deepEqual(presented.state,actual);tacticalComparisons++;
+  const synced=syncBattleTime(p.campaign,actual);assert.equal(synced.error,null,synced.error);return {campaign:synced.campaign,battle:synced.battle};
+ }
+ if(step.kind==='talk'){
+  const npc=p.battle.npcs.find(n=>n.id===step.action.npcId);
+  const next=dispatchCampaign(p.campaign,{...step.action,sectorState:p.battle});assert.equal(next.lastError,null,next.lastError);
+  assert.equal(next.lastConversation.outcome,'recruited');
+  let updated=structuredClone(applyQuestWithdrawalOrders(next,projectDialogueMovements(next,applyQuestEscortOrders(next,p.battle))));
+  updated.npcs=updated.npcs.filter(n=>n.id!==npc.id);
+  const id=next.lastConversation.operativeId,issued=next.pendingBattle.squad.find(o=>o.id===id);assert.ok(issued&&npc);
+  if(!updated.units.some(u=>Number(u.id)===id)){
+   const unit=createBattle([issued],{width:p.battle.width,height:p.battle.height,enemies:[],exploration:true}).units.find(u=>u.side==='player');
+   const joined={...unit,x:npc.x,y:npc.y};updated.units.push(joined);addIssuedGriefParticipant(updated,joined);addIssuedConductObserver(updated,joined);
+  }
+  joinComparisons++;return {campaign:next,battle:updated};
+ }
+ if(step.kind==='leave'){
+  const next=dispatchCampaign(p.campaign,{type:'leaveSector',battleId:p.campaign.pendingBattle.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});
+  assert.equal(next.lastError,null,next.lastError);return {campaign:next,battle:null};
+ }
+ throw Error('Unknown recorded order.');
+}
+async function unchanged(){
+ assert.equal(sha(fs.readFileSync(initialPath)),sha(initialText));assert.equal(sha(fs.readFileSync(targetPath)),sha(targetText));
+ for(const s of segments){assert.equal(sha(fs.readFileSync(dir+s.historyPath)),s.historyHash);assert.equal(sha(fs.readFileSync(dir+s.checkpoint)),s.checkpointHash);}
+ assert.deepEqual(await buildIdentity(root),source);assert.deepEqual(testDigest(),tests);assert.equal(execFileSync('git',['status','--porcelain'],{encoding:'utf8'}),statusBefore);
+}
+function receipt(error,outputHash,admissionError=null){return {readOnlyCompatibilityReplay:true,newGameplayOrders:0,initialPath,initialHash:sha(initialText),targetPath,targetHash:sha(targetText),source,tests,statusBefore,completedOrders:completed,totalRecordedOrders:217,tacticalOrdinaryPresentedComparisons:tacticalComparisons,canonicalJoinComparisons:joinComparisons,officialEveryAction:true,checkpointResults,events,error,currentStep,admissionError,outputHash,inputHistoryCheckpointsUnchanged:true,limits:'Recorded217 history only. No new action, assault confirmation/start, hostile strength/coordinate inspection, supply/health/seed/state assignment, tracked edit or build.'};}
+try{
+ for(const segment of segments){
+  for(const step of segment.steps){
+   currentStep=structuredClone(step);attemptedPair=perform(pair,step);
+   const text=official(attemptedPair);pair=attemptedPair;lastOfficial=structuredClone(pair);attemptedPair=null;completed++;
+   const e={index:completed,history:segment.historyPath,kind:step.kind,action:step.action.type,hour:pair.campaign.hour,second:pair.campaign.secondOfHour,cash:pair.campaign.resources.treasury,saveHash:sha(text)};
+   events.push(e);fs.appendFileSync(prefix+'-accepted.jsonl',JSON.stringify(e)+'\n');
+   if(completed%25===0)console.log(JSON.stringify({event:'readOnlyReplayProgress',completed,total:217}));
+  }
+  const checkpoint=decodeSave(fs.readFileSync(dir+segment.checkpoint,'utf8'));assert.deepEqual(pair,checkpoint);
+  checkpointResults.push({afterOrder:completed,checkpoint:segment.checkpoint,hash:segment.checkpointHash,exact:true});
+  fs.writeFileSync(prefix+'-last-checkpoint.save.json',official(pair));
+ }
+ currentStep=null;assert.equal(completed,217);assert.deepEqual(pair,target);await unchanged();
+ const text=official(pair),outputHash=sha(text);assert.equal(outputHash,sha(targetText));
+ fs.writeFileSync(prefix+'-accepted.save.json',text);fs.writeFileSync(prefix+'-receipt.json',JSON.stringify(receipt(null,outputHash),null,2)+'\n');
+ console.log(JSON.stringify({event:'readOnlyMain217Accepted',completed,tacticalComparisons,joinComparisons,outputHash,source,tests,checkpointResults,hour:pair.campaign.hour,second:pair.campaign.secondOfHour,cash:pair.campaign.resources.treasury}));
+}catch(error){
+ let outputHash=null,admissionError=null;try{const text=official(lastOfficial);outputHash=sha(text);fs.writeFileSync(prefix+'-stopped.save.json',text);}catch(e){admissionError=e.stack;}
+ if(attemptedPair)fs.writeFileSync(prefix+'-unadmitted-diagnostic.json',JSON.stringify(attemptedPair,null,2)+'\n');
+ await unchanged();fs.writeFileSync(prefix+'-stopped.receipt.json',JSON.stringify(receipt(error.stack,outputHash,admissionError),null,2)+'\n');
+ console.error(error.stack);console.log(JSON.stringify({event:'readOnlyMain217Stopped',completed,currentStep,outputHash,admissionError}));process.exitCode=1;
+}

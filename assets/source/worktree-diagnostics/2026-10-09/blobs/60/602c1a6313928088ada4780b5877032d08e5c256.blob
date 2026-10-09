@@ -1,0 +1,134 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {defaultContentPackage} from '../game/content-package.js';
+import {prepareCampaignBattle} from '../game/battle-handoff.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+import {syncBattleTime} from '../game/time.js';
+import {actBattle,presentedActBattle,endTurn,presentedEndTurn,getReachable,hasLineOfSight,actionCosts,reloadPlan,itemUsePreview,interruptAvailable,lookPreview,firearmShotOptions,reprimePlan,weaponFor,medicalUsePreview} from '../game/tactical.js';
+import {playerKnownBattle} from '../game/player-known-state.js';
+import {sectorDeploymentModel} from '../game/sector-deployment.js';
+import {firearmLoadingProgress} from '../game/ja2-hud.js';
+
+const prefix='/tmp/granaderos-wounded-native-recovery-assault',inputPath='/tmp/granaderos-wounded-native-recovery-preparation-accepted.save.json';
+const hash=value=>createHash('sha256').update(value).digest('hex');
+const rawInput=readFileSync(inputPath,'utf8'),inputSHA=hash(rawInput),input=decodeSave(rawInput);
+const frozenFiles=['game/tactical.js','game/tactical-condition.js','game/weapon-reload.js','game/tactical-ai.js','game/maps.js','game/maps/buenos_aires.json','game/campaign.js','game/content-package.js','game/recruitment.js','game/character-profile.js','game/ja2-hud.js'];
+const digests=()=>Object.fromEntries(frozenFiles.map(path=>[path,hash(readFileSync(new URL('../'+path,import.meta.url)))]));
+const frozen=digests(),original=decodeSave(encodeSave(initialCampaign(8,defaultContentPackage()))),originalCopy=structuredClone(original);
+const history=JSON.parse(readFileSync('/tmp/granaderos-wounded-native-recovery-preparation-history.json','utf8')),startOrders=history.length,records=[];
+let pair=structuredClone(input),publicCells=null,stage='approach',woundedId=null,proof={shot:null,cover:null,partial:null,complete:null},seenPositions=new Map(),pass=0;
+const party=['1000','100','102','130','136','141'],advanceOrder=['136','141','1000','102','100','130'];
+const own=(battle=pair.battle)=>battle?.units.filter(u=>party.includes(u.id)).map(u=>Object.fromEntries(['id','x','y','hp','maxHp','ap','energy','fatigue','bleeding','bandaged','shock','morale','stance','activeSlot','loaded','ammo','condition','medkits','reloadProgress','weaponReady','overwatch','routed','unconscious','departure'].filter(k=>u[k]!==undefined).map(k=>[k,u[k]])))??[];
+const capable=u=>u&&u.hp>0&&!u.unconscious&&!u.routed&&!u.departure&&!u.surrendered&&u.energy>0;
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function save(label){const value=encodeSave(pair.campaign,pair.battle??null);assert.deepEqual(decodeSave(value),pair);const path=prefix+'-'+label+'.save.json';writeFileSync(path,value);return {path,sha:hash(value)};}
+function snapshot(){const pub=pair.battle?playerKnownBattle(pair.battle):null;return {hour:pair.campaign.hour,second:pair.campaign.secondOfHour??0,cash:pair.campaign.resources.treasury,turn:pair.battle?.turn,phase:pair.battle?.phase,mode:pair.battle?.mode,status:pair.battle?.status,own:own(),observed:pub?.units.filter(u=>u.side==='enemy'),contacts:pub?.contacts,proof};}
+function record(event,before,shown=null){
+ const pub=pair.battle?playerKnownBattle(pair.battle):null,visible=new Set(pub?.units.map(u=>u.id));
+ for(const u of pub?.units.filter(u=>u.side==='enemy'&&u.hp>0)??[])seenPositions.set(u.id,{id:u.id,x:u.x,y:u.y,hp:u.hp,stance:u.stance});
+ const changed=own().filter(u=>{const v=before.battle?.units.find(v=>v.id===u.id);return v&&(u.hp<v.hp||(u.bleeding??0)!==(v.bleeding??0)||u.loaded!==v.loaded||u.ammo!==v.ammo||u.reloadProgress!==v.reloadProgress);});
+ const frames=shown?.frames.filter(f=>f.impacts?.some(i=>party.includes(i.unitId))||party.includes(f.unitId)&&f.shotVisual).map(f=>({type:f.type,unitId:visible.has(f.unitId)?f.unitId:null,impacts:f.impacts?.filter(i=>party.includes(i.unitId)),shotVisual:f.shotVisual??null}));
+ const row={number:history.length,event,save:save(String(history.length).padStart(3,'0')),...snapshot(),changed,newLog:pair.battle?.log.slice(before.battle?.log.length??0),frames};
+ records.push(row);writeFileSync(prefix+'-history.json',JSON.stringify(history));writeFileSync(prefix+'-records.json',JSON.stringify(records));writeFileSync(prefix+'-control.json',JSON.stringify({stage,woundedId,proof,pass,seenPositions:[...seenPositions]},null,2));
+ console.log(JSON.stringify({number:row.number,event,hour:row.hour,second:row.second,turn:row.turn,phase:row.phase,mode:row.mode,status:row.status,own:row.own,observed:row.observed,changed:row.changed,newLog:row.newLog,saveSHA:row.save.sha}));
+ assert.deepEqual(digests(),frozen);assert.equal(hash(readFileSync(inputPath)),inputSHA);
+ assert.equal(pair.campaign.operativeState[107].alive,false);assert.equal(pair.campaign.operativeState[110].alive,false);
+ if(pair.campaign.pendingEncounter)throw Error('Unexpected actual strategic encounter');
+ return row;
+}
+function campaign(action){const before=pair,copy=structuredClone(pair),next=dispatchCampaign(pair.campaign,action);assert.deepEqual(pair,copy);
+ if(next.lastError){writeFileSync(prefix+'-rejected.raw.json',JSON.stringify({action,result:next}));throw Error(next.lastError);}
+ if(action.type==='attack'){const p=prepareCampaignBattle(next,{placement:true});if(p.error){writeFileSync(prefix+'-unadmitted.raw.json',JSON.stringify({action,campaign:next,result:p}));throw Error(p.error);}pair=decodeSave(encodeSave(p.campaign,p.battle));history.push({kind:'attackHandoff',action,options:{placement:true}});}
+ else{pair=decodeSave(encodeSave(next));history.push({kind:'campaign',action});}return record({kind:'campaign',action:action.type==='battleResult'?{type:action.type,battleId:action.battleId,outcome:action.outcome}:action},before);}
+function tactical(action){const before=pair,copy=structuredClone(pair),ending=action.type==='endTurn',b=ending?endTurn(pair.battle):actBattle(pair.battle,action),shown=ending?presentedEndTurn(pair.battle):presentedActBattle(pair.battle,action);assert.deepEqual(pair,copy);assert.deepEqual(shown.state,b);
+ if(b.lastError){writeFileSync(prefix+'-rejected.raw.json',JSON.stringify({action,battle:b}));throw Error(b.lastError);}
+ const p=syncBattleTime(pair.campaign,b);if(p.error){writeFileSync(prefix+'-unadmitted.raw.json',JSON.stringify({action,result:p}));throw Error(p.error);}pair=decodeSave(encodeSave(p.campaign,p.battle));history.push({kind:'tactical',action});return record({kind:'tactical',action},before,shown);}
+function view(){const pub=playerKnownBattle(pair.battle),ids=new Set(pub.units.map(u=>u.id)),props=new Set(pub.props.map(p=>p.id));return {...pair.battle,units:pair.battle.units.filter(u=>u.side==='player'||ids.has(u.id)).map(u=>u.side==='player'?u:pub.units.find(v=>v.id===u.id)),npcs:pub.npcs,props:pair.battle.props.filter(p=>props.has(p.id)),tiles:pair.battle.tiles.filter(t=>publicCells.has(`${t.x},${t.y}`))};}
+function current(id){return pair.battle.units.find(u=>u.id===id);}
+function available(){return party.map(current).filter(u=>capable(u)&&interruptAvailable(pair.battle,u));}
+function targets(){return playerKnownBattle(pair.battle).units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure);}
+function bestShot(u,minimumChance=12){const s=view(),costs=actionCosts(s,u),limit=Math.min(4,Math.floor((u.ap-costs.fire)/Math.max(1,costs.aim)));if(!u.loaded||u.jammed||u.activeSlot!=='primary'||limit<0)return null;
+ let best=null;for(const target of targets()){if(!hasLineOfSight(s,u,target))continue;for(const o of firearmShotOptions(s,u,target,limit)){
+  const cost=actionCosts(s,u,target).fire+o.aim*actionCosts(s,u,target).aim;if(cost>u.ap||o.chance<minimumChance||o.interveningFriendly||o.shots?.some(v=>v.interveningFriendly))continue;
+  const damage=o.expectedDamage??weaponFor(u).damage*o.damageFactor*o.chance/100,score=Math.min(target.hp,damage)-cost*.08;
+  if(!best||score>best.score)best={target,aim:o.aim,hitLocation:o.hitLocation,chance:o.chance,cost,score,forecast:o};
+ }}return best;}
+function cover(u,reference=targets()){const s=view();if(!reference.length)return null;const here=reference.filter(e=>hasLineOfSight(s,e,u)).length;
+ const walls=publicCells;return getReachable(s,u).filter(p=>p.cost>0&&p.cost<=u.ap&&p.path.length<=3&&p.cost<=32).map(p=>{
+  const blocked=reference.filter(e=>!hasLineOfSight(s,e,{...u,...p})).length,adjacent=s.tiles.some(t=>t.blocked&&t.cover>0&&Math.abs(t.x-p.x)<=1&&Math.abs(t.y-p.y)<=1&&walls.has(`${t.x},${t.y}`));return {...p,blocked,adjacent,open:reference.length-blocked};
+ }).filter(p=>p.adjacent&&p.blocked>0&&(p.open<here||here===0)).sort((a,b)=>a.open-b.open||a.cost-b.cost||dist(a,u)-dist(b,u)||a.y-b.y||a.x-b.x)[0]??null;}
+function moveTo(u,p){return tactical({type:'move',unitId:u.id,x:p.x,y:p.y,tacticalLevel:p.tacticalLevel??0});}
+function ready(u){if(u.activeSlot!=='primary'){if(u.ap<4&&pair.battle.mode!=='exploration')return false;tactical({type:'weapon',unitId:u.id,slot:'primary'});return true;}if(!u.loaded||u.jammed)return false;
+ const point={x:u.x,y:Math.min(pair.battle.height-1,u.y+1)},p=lookPreview(pair.battle,u,point);if(p.valid){tactical({type:'look',unitId:u.id,...point});return true;}
+ if(!u.overwatch&&(pair.battle.mode==='exploration'||u.ap>=actionCosts(pair.battle,u).fire)){tactical({type:'overwatch',unitId:u.id});return true;}return false;}
+function aid(){const patients=party.map(current).filter(u=>u.hp>0&&!u.departure&&(u.bleeding>0||u.hp<15)).sort((a,b)=>(a.hp/Math.max(1,a.bleeding))-(b.hp/Math.max(1,b.bleeding))||a.hp-b.hp);
+ for(const patient of patients){const doctors=available().filter(u=>u.medkits>0&&u.medical>0).sort((a,b)=>b.medical-a.medical||dist(a,patient)-dist(b,patient));
+  for(const doc of doctors){const cost=actionCosts(pair.battle,doc).heal,canPay=pair.battle.mode==='exploration'||doc.ap>=cost+(doc.activeSlot==='medical'?0:4);if(!canPay)continue;
+   const virtual={...doc,activeSlot:'medical',ap:pair.battle.mode==='exploration'?doc.ap:doc.ap-(doc.activeSlot==='medical'?0:4)},p=itemUsePreview(view(),virtual,patient);if(!p?.valid)continue;
+   if(doc.activeSlot!=='medical'){tactical({type:'weapon',unitId:doc.id,slot:'medical'});return true;}
+   tactical({type:'useItem',unitId:doc.id,targetId:patient.id});return true;
+  }
+ }return false;}
+function reloadOrPrime(u){if(u.activeSlot!=='primary')return false;if(u.jammed){const p=reprimePlan(u,pair.battle);if(p.available&&(pair.battle.mode==='exploration'||u.ap>=p.pa)){tactical({type:'reprime',unitId:u.id});return true;}return false;}
+ const p=reloadPlan(u,pair.battle);if(u.loaded>=weaponFor(u).capacity||!p.available||!p.pa)return false;
+ tactical({type:'reload',unitId:u.id});const after=current(u.id);if(woundedId===u.id&&proof.shot&&proof.cover){
+  if(!after.loaded&&after.reloadProgress>0&&!proof.partial){proof.partial={order:history.length,turn:pair.battle.turn,plan:p,loading:firearmLoadingProgress(after,'primary'),own:structuredClone(after)};console.log(JSON.stringify({stage:'actual-wounded-partial-loading',id:u.id,proof:proof.partial,save:save('partial')}));}
+  else if(after.loaded&&proof.partial&&!proof.complete){proof.complete={order:history.length,turn:pair.battle.turn,plan:p,own:structuredClone(after)};console.log(JSON.stringify({stage:'actual-wounded-loading-complete',id:u.id,proof:proof.complete,save:save('completed-loading')}));}
+ }return true;}
+function woundedCycle(){if(!woundedId){const wounded=available().filter(u=>u.hp>=15&&u.hp<u.maxHp&&u.activeSlot!=='medical').sort((a,b)=>b.marksmanship-a.marksmanship||b.hp-a.hp)[0];if(wounded){woundedId=wounded.id;console.log(JSON.stringify({stage:'actual-capable-wound',order:history.length,id:woundedId,own:own(),save:save('wounded')}));}}
+ if(!woundedId)return false;const u=current(woundedId);if(!capable(u)||!interruptAvailable(pair.battle,u))return false;
+ if(!proof.shot){if(u.activeSlot!=='primary'){if(u.ap>=4){tactical({type:'weapon',unitId:u.id,slot:'primary'});return true;}return false;}if(!u.loaded||u.jammed)return false;const shot=bestShot(u);if(!shot)return false;
+  const source=structuredClone(shot.target),before=structuredClone(u),row=tactical({type:'fire',unitId:u.id,targetId:source.id,aim:shot.aim,hitLocation:shot.hitLocation});
+  if(current(u.id).loaded<before.loaded&&!current(u.id).jammed){proof.shot={order:history.length,turn:pair.battle.turn,source,forecast:{chance:shot.chance,cost:shot.cost,aim:shot.aim,hitLocation:shot.hitLocation},before,after:structuredClone(current(u.id)),save:row.save};console.log(JSON.stringify({stage:'actual-wounded-aimed-fire',proof:proof.shot}));}return true;
+ }
+ if(!proof.cover){const p=cover(u,[proof.shot.source,...targets().filter(t=>t.id!==proof.shot.source.id)]);if(p){const before=structuredClone(u),row=moveTo(u,p);proof.cover={order:history.length,turn:pair.battle.turn,from:{x:before.x,y:before.y},to:{x:current(u.id).x,y:current(u.id).y},cost:p.cost,path:p.path,blockedFromObservedShotTarget:!hasLineOfSight(view(),proof.shot.source,current(u.id)),save:row.save};console.log(JSON.stringify({stage:'actual-wounded-hard-cover',proof:proof.cover}));return true;}return false;}
+ return reloadOrPrime(u);
+}
+function advance(){const s=view(),members=available();if(!members.length)return false;
+ const destination={x:34,y:22};const front=party.map(current).filter(capable).sort((a,b)=>b.y-a.y)[0],formationTarget=front.y<14?{x:34,y:14}:front.y<20?{x:34,y:20}:destination;
+ for(const id of advanceOrder){const u=members.find(v=>v.id===id);if(!u||u.y>=formationTarget.y&&Math.abs(u.x-formationTarget.x)<=1)continue;
+  const points=getReachable(s,u).filter(p=>p.cost>0&&p.cost<=24&&p.path.length<=2&&dist(p,formationTarget)<dist(u,formationTarget));
+  const friends=party.map(current).filter(v=>capable(v)&&v.id!==id),lag=Math.min(...friends.map(v=>v.y));
+  const allowed=points.filter(p=>p.y<=lag+4||u.y<lag);
+  allowed.sort((a,b)=>dist(a,formationTarget)-dist(b,formationTarget)||a.cost-b.cost||a.y-b.y||a.x-b.x);
+  if(allowed[0]){moveTo(u,allowed[0]);return true;}
+ }return false;}
+function general(){
+ const living=available();for(const u of living){if(u.knockedDown&&u.ap>=3){tactical({type:'stance',unitId:u.id,stance:'crouched'});return true;}}
+ const shots=living.map(u=>({u,shot:bestShot(u)})).filter(x=>x.shot).sort((a,b)=>b.shot.score-a.shot.score);
+ if(shots[0]){const {u,shot}=shots[0];tactical({type:'fire',unitId:u.id,targetId:shot.target.id,aim:shot.aim,hitLocation:shot.hitLocation});return true;}
+ const known=targets();for(const u of living){if(known.length&&(!u.loaded||u.bleeding||u.hp<u.maxHp*.6)){const p=cover(u,known);if(p){moveTo(u,p);return true;}}}
+ for(const u of living){if(u.activeSlot==='medical'){if(u.ap>=4||pair.battle.mode==='exploration'){tactical({type:'weapon',unitId:u.id,slot:'primary'});return true;}continue;}if(reloadOrPrime(u))return true;}
+ for(const u of living)if(ready(u))return true;
+ if(pair.battle.mode==='exploration'||!known.length)return advance();
+ return false;
+}
+async function replay(){let r=decodeSave(encodeSave(original.campaign));for(const event of history){
+ if(event.kind==='campaign'||event.kind==='attackHandoff'){const c=dispatchCampaign(r.campaign,event.action);assert.equal(c.lastError,null,c.lastError);if(event.kind==='attackHandoff'){const p=prepareCampaignBattle(c,event.options);assert.equal(p.error,null,p.error);r=decodeSave(encodeSave(p.campaign,p.battle));}else r=decodeSave(encodeSave(c));}
+ else if(event.kind==='handoff'){const p=prepareCampaignBattle(r.campaign,event.options);assert.equal(p.error,null,p.error);r=decodeSave(encodeSave(p.campaign,p.battle));}
+ else{const ending=event.action.type==='endTurn',b=ending?endTurn(r.battle):actBattle(r.battle,event.action),shown=ending?presentedEndTurn(r.battle):presentedActBattle(r.battle,event.action);assert.deepEqual(shown.state,b);assert.equal(b.lastError,null,b.lastError);const p=syncBattleTime(r.campaign,b);assert.equal(p.error,null,p.error);r=decodeSave(encodeSave(p.campaign,p.battle));}}
+ assert.deepEqual(r,pair);assert.deepEqual(original,originalCopy);assert.deepEqual(input,decodeSave(rawInput));assert.deepEqual(digests(),frozen);}
+try{
+ assert.equal(inputSHA,'f988e3bbeaedb0cc7419ae254b2b7eae30f4c00356cbeb625c1c146aa6c32ff7');assert.equal(startOrders,40);console.log(JSON.stringify({stage:'initial',inputPath,inputSHA,frozen,startOrders,scope:'One ordinary second native BA assault after retained first defeat. Public planning only; no geometry, AP, health or resource boundary.'}));
+ await replay();campaign({type:'attack',sector:'buenos_aires'});
+ const model=sectorDeploymentModel(pair.battle);publicCells=new Set(model.cells.map(t=>`${t.x},${t.y}`));
+ const north=model.entryCells.N;for(let i=0;i<advanceOrder.length;i++){const id=advanceOrder[i],desired=34+(i%3)-1,cell=north.slice().sort((a,b)=>Math.abs(a.x-desired)-Math.abs(b.x-desired)||a.y-b.y)[0];tactical({type:'placeDeployment',unitIds:[id],...cell});}
+ tactical({type:'confirmDeployment'});stage='fighting';
+ for(pass=0;pass<400;pass++){
+  if(pair.battle.status!=='active'){stage='terminal';break;}
+  if(proof.complete){stage='actual-wounded-loop-completed';break;}
+  if(pair.battle.turn>26)throw Error('Normal native fight reached bounded26-turn checkpoint');
+  if(!party.map(current).some(capable))throw Error('No capable actual survivor');
+  if(!available().length){tactical({type:'endTurn'});continue;}
+  if(aid())continue;
+  if(woundedCycle())continue;
+  if(general())continue;
+  tactical({type:'endTurn'});
+ }
+ if(pass>=400)throw Error('Normal native fight reached bounded400-action checkpoint');
+ const battlePair=save(stage==='terminal'?'terminal':'accepted-active');
+ if(stage==='terminal'){const outcome=pair.battle.status;campaign({type:'battleResult',battleId:pair.campaign.pendingBattle.id,outcome,survivors:pair.battle.units.filter(u=>u.side==='player'),sectorState:pair.battle});}
+ await replay();const accepted=save('accepted');writeFileSync(prefix+'-receipt.json',JSON.stringify({stage,startOrders,acceptedOrders:history.length,newOrders:history.length-startOrders,inputPath,inputSHA,frozen,proof,battlePair,accepted,actual: snapshot(),exactReplay:true,ordinaryPresented:true,inputUnchanged:true},null,2));console.log(JSON.stringify({stage:'closed',result:stage,acceptedOrders:history.length,newOrders:history.length-startOrders,proof,battlePair,accepted,actual:snapshot(),exactReplay:true,ordinaryPresented:true,inputUnchanged:true}));
+}catch(error){const stopped=save('stopped');writeFileSync(prefix+'-stop.json',JSON.stringify({reason:error.message,inputPath,inputSHA,frozen,history,records,stage,woundedId,proof,pass,stopped,actual:snapshot()},null,2));console.log(JSON.stringify({stage:'stopped',reason:error.message,acceptedOrders:history.length,stopped,actual:snapshot()}));await replay();console.log(JSON.stringify({stage:'stopped-replay',exact:true,ordinaryPresented:true,inputUnchanged:true,frozenUnchanged:true}));process.exitCode=1;}
