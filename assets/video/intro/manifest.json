@@ -1,107 +1,772 @@
 {
-  "title": "Granaderos — Presentación",
+  "title": "Granaderos — La independencia se conquista",
   "language": "es-AR",
-  "duration_seconds": 45,
+  "duration_seconds": 56,
   "resolution": [
     1280,
     720
   ],
   "fps": 30,
-  "captured_revision": "b987d63140019b550f05dad2e5cbfdd37accef79",
-  "capture_date": "2026-10-03",
-  "capture_origin": "http://localhost:3141",
-  "visuals": "Capturas reales del juego y del editor; ilustración existente de San Lorenzo.",
-  "audio": "Música original sintetizada por score.py; sin muestras ni grabaciones externas.",
+  "rendered_at_utc": "2026-10-09T20:09:56+00:00",
+  "capture_date": "2026-10-09T20:03:42.005Z",
+  "captured_revision": "3735cc7023d35a9c378c2c357142b37ed166eb9b",
+  "capture_origin": "http://127.0.0.1:3210",
+  "visuals": {
+    "opening_and_closing": "AI-generated historical illustration; an artistic interpretation, not archival footage or gameplay.",
+    "middle_chapters": "Real-time recordings of the actual game UI and ordinary game actions. No reconstructed gameplay.",
+    "editing": "Full 16:9 recordings fitted beneath a title strip. Original action timing. No moving crops, UI zooms or simulated effects.",
+    "artwork_source": {
+      "path": "assets/video/intro/source/historical-opening.png",
+      "created_date": "2026-10-09",
+      "tool": "OpenAI imagegen built-in tool",
+      "kind": "AI-generated historical illustration; not gameplay or an archival photograph",
+      "setting": "Artistic interpretation of Granaderos preparing at a Buenos Aires barracks in 1812",
+      "prompt": "Create a masterful historical oil-painted illustration for the opening of GRANADEROS, a serious Argentine independence strategy game trailer. Wide 16:9 landscape composition, ideally 1920x1080. Buenos Aires barracks muster at first light, year 1812: three young adult cavalry recruits in the LEFT half of the image, stern and human, seen waist to full body in three quarter side view, quietly checking leather equipment beside one saddled brown horse. Accurate EARLY mounted Granaderos uniform, as interpreted from municipal museum documentation: plain straight dark blue military coats, a single row of nine small white/silver buttons, restrained red collar/cuff piping, NO modern broad red 18-button ceremonial bib; dark tall shakos with subtle GREEN plumes and GREEN cord (not modern red plumes), raw natural leather shoulder straps, dark blue riding trousers and tall black leather boots. One flintlock carbine held muzzle up; sabre remains sheathed. Modest whitewashed barrack arches in the background, dusty courtyard, worn leather, weight and texture. The RIGHT half is quiet atmospheric warm dark umber/navy space with soft barrack wall shadow and light mist, reserved for clear trailer typography which will be added separately. Do not put any letters, words, flags, banners, logos, map, border, or watermark in the image. Style: cinematic Argentine nineteenth-century history painting, expert natural anatomy and convincing horse anatomy, sober heroic mood, expressive loose oil brushwork, aged canvas texture, dramatic low sunlight in ochre and muted pale blue, charcoal/navy shadows, restrained vermilion accents, finely controlled silhouettes, sophisticated museum painting rather than toy-like videogame concept art. Not photographic footage, not glossy fantasy, no modern guns, no modern uniforms, no exaggerated muscles, no cartoon figures. Historical artistic interpretation, quiet anticipation before the campaign; no battle spectacle, no violence.",
+      "references": [
+        {
+          "title": "Museo Municipal Retorno a la Patria: Uniforme",
+          "url": "https://tunuyan.gov.ar/vivitunuyan/parque-tematico-sanmartiniano/museo-municipal-retorno-a-la-patria/uniforme/",
+          "use": "Early coat, buttons, green plume and cords, leather straps, blue trousers, tall boots"
+        },
+        {
+          "title": "Ministerio de Defensa: 210 aniversario de la creación del Regimiento",
+          "url": "https://www.argentina.gob.ar/noticias/taiana-encabezo-el-acto-por-el-210deg-aniversario-de-la-creacion-del-regimiento-de",
+          "use": "Regiment creation in 1812"
+        },
+        {
+          "title": "Ejército Argentino: 205 aniversario del combate de San Lorenzo",
+          "url": "https://www.argentina.gob.ar/noticias/205o-aniversario-del-combate-de-san-lorenzo",
+          "use": "Combat date: 3 February 1813"
+        }
+      ],
+      "limitations": "The generated scene, faces, buildings and equipment are artistic interpretations, not a documented reconstruction."
+    },
+    "artwork_prompt_sha256": "3c298a91c98e29de1f4c85ed795ae88e5321ddc8e9890f2899156aa65eeb77bf",
+    "capture_manifest": {
+      "schema": 1,
+      "date": "2026-10-09T20:03:42.005Z",
+      "commit": "3735cc7023d35a9c378c2c357142b37ed166eb9b",
+      "origin": "http://127.0.0.1:3210",
+      "viewport": {
+        "width": 1600,
+        "height": 900
+      },
+      "browser": {
+        "engine": "Chromium",
+        "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "recording": "Playwright recordVideo, real browser frames, no speed change",
+        "version": "154.0.8037.98"
+      },
+      "errors": [],
+      "clips": [
+        {
+          "name": "recruitment",
+          "path": "assets/video/intro/source/recruitment.mp4",
+          "duration": 8,
+          "actions": [
+            "Browse the live contract catalogue.",
+            "Open Alistair Kerr's service sheet, then close it with Escape.",
+            "Hire Alistair Kerr for one day through the ordinary contract button."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/recruitment-before.png",
+            "assets/video/intro/source/evidence/recruitment-service-sheet.png",
+            "assets/video/intro/source/evidence/recruitment-after.png"
+          ],
+          "actionEvidence": {
+            "afterHire": "48 de 48 mercenarios · 1 en tus filas · 0 en viaje",
+            "contractButton": "Renovar · 162 pesos"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
+          "rawTrimStart": 4.497,
+          "rawTrimEnd": 12.497,
+          "sha256": "bb006db2fff20588a49cc8aadecf50b19db7711e90472453632cfba4ca8f282e",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "8.000000",
+                "nb_frames": "200"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "8.000000",
+              "size": "1150916"
+            }
+          }
+        },
+        {
+          "name": "campaign-map",
+          "path": "assets/video/intro/source/campaign-map.mp4",
+          "duration": 7,
+          "actions": [
+            "Show the live campaign atlas after hiring one combatant.",
+            "Switch from the cities layer to the troops layer.",
+            "Select the Buenos Aires / Retiro sector and inspect its ordinary sector panel."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/campaign-map-cities.png",
+            "assets/video/intro/source/evidence/campaign-map-troops.png"
+          ],
+          "actionEvidence": {
+            "selectedSector": "Celda 28,29 · Buenos Aires · Fuerte y Retiro · Cuarteles de Retiro · patriota · 1 combatientes propios",
+            "troopsView": "true"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
+          "rawTrimStart": 14.236999999999998,
+          "rawTrimEnd": 21.237,
+          "sha256": "bbb9eb8b3554227d4290d2efb13a6d3aef990bb038be318c930655763c851d29",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "7.000000",
+                "nb_frames": "175"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "7.000000",
+              "size": "591389"
+            }
+          }
+        },
+        {
+          "name": "preparation",
+          "path": "assets/video/intro/source/preparation.mp4",
+          "duration": 7,
+          "actions": [
+            "Open the selected rifleman's live equipment panel.",
+            "Inspect the Charleville and its charges/accessories.",
+            "Close the equipment panel through Listo."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/preparation-equipment.png"
+          ],
+          "actionEvidence": {
+            "beforeEquipment": "3. Lorenzo Barcala. Salud 85, 25 puntos de acción, energía 100, moral 80. Ve 2 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+            "equipmentText": "GRANADEROS\nSan Lorenzo · 3 de febrero de 1813\nTurno 1 · Ejército patriota\n3 avistados\nMover\nCámara\nBarcala\nBarcala\nEjército patriota · Nivel 4\n←\n3/4\n→\nPostura y órdenes\nAgilidad\n80\nDestreza\n91\nFuerza\n79\nLiderazgo\n78\nSabiduría\n85\nNivel\n4\nPuntería\n84\nPólvora y artillería\n80\nMecánica\n72\nMedicina\n35\nSalud\n85 / 85\nPuntos de acción\n25 / 25\nPostura\nDe pie\nOrientación\nE\nEnergía\n100 / 100\nMoral\n80%\nMás detalles\nVESTIMENTA\nCABEZA\nVacía\nTORSO\nVacía\nPIERNAS\nVacía\nMano principal\nCharleville\n1 carga(s) · 100%\nSegunda mano\n↔ Arma de dos manos\nCargas y accesorios\nCarga para esta arma\nCartuchos de mosquete · carga principal\nCargas de perdigones · daño 26 · alcance 6 · abanico\nVaciá el arma y terminá la recarga antes de cambiar de carga.\nDescargar arma · 3 PA\nDisparo\nCombate cercano\nDar o soltar Charleville\nDar o soltar Bayoneta de Cubo\nBayoneta de encastre sin identificar · suelta · estado 100% · 0.5 kg\nFijar al Brown Bess · 3 PA\nLa bayoneta no corresponde a este fusil.\nPeso\n8.0 / 39.5 kg\n\nBolsillos · 4 grandes / 8 pequeños\n\nClic: uno. Mayús + clic: todos. Botón derecho: detalles.\nGrande\nGrande\nGrande\nGrande\nRaciones\n2\nVendas\n2\nBoleadoras\n1\nAntorchas\n2\nCartuchos de mosquete\n12\nBayoneta de Cubo\n1\nPequeño\nPequeño\nCharleville · detalles\n23,27 · San Lorenzo · 3 de febrero de 1813\nDía 1 · 08:00\nSan Lorenzo · 3 de febrero de 1813\n\nTurno 1 · Ejército patriota\n\nRetirada\nListo"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
+          "rawTrimStart": 6.501999999999999,
+          "rawTrimEnd": 13.501999999999999,
+          "sha256": "95d3c1ad6a28e61ce532d7938376abab0d845ea6ed46358226de49f5fc53938c",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "7.000000",
+                "nb_frames": "175"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "7.000000",
+              "size": "1460894"
+            }
+          }
+        },
+        {
+          "name": "battle",
+          "path": "assets/video/intro/source/battle.mp4",
+          "duration": 12,
+          "actions": [
+            "Select the ordinary firearm targeting mode with F.",
+            "Target Soldado realista 1 and fire the Charleville with Enter.",
+            "Reload with the ordinary Alt+R shortcut and consume one reserve cartridge."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/battle-before.png",
+            "assets/video/intro/source/evidence/battle-after-shot.png",
+            "assets/video/intro/source/evidence/battle-after-reload.png"
+          ],
+          "actionEvidence": {
+            "before": "3. Lorenzo Barcala. Salud 85, 15,75 puntos de acción, energía 81, moral 62. Ve 4 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+            "renderer": {
+              "sectorRenderer": "three",
+              "engine": "three.js r184",
+              "effects": "0",
+              "fps": "51.2",
+              "drawCalls": "228",
+              "triangles": "528377",
+              "actors": "8",
+              "loadedActors": "8",
+              "activeActors": "6",
+              "pendingActors": "0",
+              "lod": "1",
+              "geometries": "528",
+              "textures": "112"
+            },
+            "setup": "In a fresh San Lorenzo skirmish, complete the ordinary first enemy turn with Fin del turno and resume any interruptions through Continuar turno enemigo. Barcala starts the second player turn with 30 PA by retaining five. Select Barcala, choose Run with R and issue a normal movement order from T35 to U44 before the recorded interval. Recenter and pan the native camera. This move clears the convent roof and foliage and leaves enough PA for fire and reload. Cabral fell during the preceding real enemy turn.",
+            "afterShot": "3. Lorenzo Barcala. Salud 85, 13 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 0 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+            "afterReload": "3. Lorenzo Barcala. Salud 85, 2,5 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 1 carga(s). 11 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@bfe716955554178a50d383428f6c60c0.webm",
+          "rawTrimStart": 30.197000000000003,
+          "rawTrimEnd": 42.197,
+          "sha256": "4788c95298afe1a93c15f8d5147f1412eff6da9746bb9c46e820b58ba5da5497",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "12.000000",
+                "nb_frames": "300"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "12.000000",
+              "size": "3397269"
+            }
+          }
+        },
+        {
+          "name": "maneuver",
+          "path": "assets/video/intro/source/maneuver.mp4",
+          "duration": 10,
+          "actions": [
+            "Select Manuel Dorrego.",
+            "Issue a normal ground movement order to AC39.",
+            "Lower the selected combatant to a crouched posture.",
+            "Use the native camera wheel to survey the sector."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/maneuver-before.png",
+            "assets/video/intro/source/evidence/maneuver-crouched.png",
+            "assets/video/intro/source/evidence/maneuver-after.png"
+          ],
+          "actionEvidence": {
+            "before": "2. Manuel Dorrego. Salud 84, 25 puntos de acción, energía 100, moral 80. Ve 0 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+            "initialPosition": "standing",
+            "afterMove": "2. Manuel Dorrego. Salud 84, 19 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+            "destination": "AC39, Manuel Dorrego",
+            "afterPosture": "2. Manuel Dorrego. Salud 84, 18,25 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
+          "rawTrimStart": 26.857,
+          "rawTrimEnd": 36.857,
+          "sha256": "3aba0e3da7c8886e78f8d3cbde11122aa71f7f873b0c151313f7c7635d1716b1",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "10.000000",
+                "nb_frames": "250"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "10.000000",
+              "size": "3814730"
+            }
+          }
+        }
+      ],
+      "scope": "Fresh isolated contexts. Live UI recorded at normal browser zoom. Clip trimming and H.264 encoding only; no synthetic game frames, crop, playback speed changes, or game state injection. Screenshots document the captured actions."
+    },
+    "verified_clips": [
+      {
+        "path": "assets/video/intro/source/recruitment.mp4",
+        "sha256": "bb006db2fff20588a49cc8aadecf50b19db7711e90472453632cfba4ca8f282e",
+        "recording": {
+          "name": "recruitment",
+          "path": "assets/video/intro/source/recruitment.mp4",
+          "duration": 8,
+          "actions": [
+            "Browse the live contract catalogue.",
+            "Open Alistair Kerr's service sheet, then close it with Escape.",
+            "Hire Alistair Kerr for one day through the ordinary contract button."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/recruitment-before.png",
+            "assets/video/intro/source/evidence/recruitment-service-sheet.png",
+            "assets/video/intro/source/evidence/recruitment-after.png"
+          ],
+          "actionEvidence": {
+            "afterHire": "48 de 48 mercenarios · 1 en tus filas · 0 en viaje",
+            "contractButton": "Renovar · 162 pesos"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
+          "rawTrimStart": 4.497,
+          "rawTrimEnd": 12.497,
+          "sha256": "bb006db2fff20588a49cc8aadecf50b19db7711e90472453632cfba4ca8f282e",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "8.000000",
+                "nb_frames": "200"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "8.000000",
+              "size": "1150916"
+            }
+          }
+        },
+        "width": 1600,
+        "height": 900,
+        "native_frame_rate": "25/1",
+        "native_frames": 200,
+        "duration_seconds": 8.0
+      },
+      {
+        "path": "assets/video/intro/source/campaign-map.mp4",
+        "sha256": "bbb9eb8b3554227d4290d2efb13a6d3aef990bb038be318c930655763c851d29",
+        "recording": {
+          "name": "campaign-map",
+          "path": "assets/video/intro/source/campaign-map.mp4",
+          "duration": 7,
+          "actions": [
+            "Show the live campaign atlas after hiring one combatant.",
+            "Switch from the cities layer to the troops layer.",
+            "Select the Buenos Aires / Retiro sector and inspect its ordinary sector panel."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/campaign-map-cities.png",
+            "assets/video/intro/source/evidence/campaign-map-troops.png"
+          ],
+          "actionEvidence": {
+            "selectedSector": "Celda 28,29 · Buenos Aires · Fuerte y Retiro · Cuarteles de Retiro · patriota · 1 combatientes propios",
+            "troopsView": "true"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@6984b5fde571fa310f89c3356956761f.webm",
+          "rawTrimStart": 14.236999999999998,
+          "rawTrimEnd": 21.237,
+          "sha256": "bbb9eb8b3554227d4290d2efb13a6d3aef990bb038be318c930655763c851d29",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "7.000000",
+                "nb_frames": "175"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "7.000000",
+              "size": "591389"
+            }
+          }
+        },
+        "width": 1600,
+        "height": 900,
+        "native_frame_rate": "25/1",
+        "native_frames": 175,
+        "duration_seconds": 7.0
+      },
+      {
+        "path": "assets/video/intro/source/preparation.mp4",
+        "sha256": "95d3c1ad6a28e61ce532d7938376abab0d845ea6ed46358226de49f5fc53938c",
+        "recording": {
+          "name": "preparation",
+          "path": "assets/video/intro/source/preparation.mp4",
+          "duration": 7,
+          "actions": [
+            "Open the selected rifleman's live equipment panel.",
+            "Inspect the Charleville and its charges/accessories.",
+            "Close the equipment panel through Listo."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/preparation-equipment.png"
+          ],
+          "actionEvidence": {
+            "beforeEquipment": "3. Lorenzo Barcala. Salud 85, 25 puntos de acción, energía 100, moral 80. Ve 2 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+            "equipmentText": "GRANADEROS\nSan Lorenzo · 3 de febrero de 1813\nTurno 1 · Ejército patriota\n3 avistados\nMover\nCámara\nBarcala\nBarcala\nEjército patriota · Nivel 4\n←\n3/4\n→\nPostura y órdenes\nAgilidad\n80\nDestreza\n91\nFuerza\n79\nLiderazgo\n78\nSabiduría\n85\nNivel\n4\nPuntería\n84\nPólvora y artillería\n80\nMecánica\n72\nMedicina\n35\nSalud\n85 / 85\nPuntos de acción\n25 / 25\nPostura\nDe pie\nOrientación\nE\nEnergía\n100 / 100\nMoral\n80%\nMás detalles\nVESTIMENTA\nCABEZA\nVacía\nTORSO\nVacía\nPIERNAS\nVacía\nMano principal\nCharleville\n1 carga(s) · 100%\nSegunda mano\n↔ Arma de dos manos\nCargas y accesorios\nCarga para esta arma\nCartuchos de mosquete · carga principal\nCargas de perdigones · daño 26 · alcance 6 · abanico\nVaciá el arma y terminá la recarga antes de cambiar de carga.\nDescargar arma · 3 PA\nDisparo\nCombate cercano\nDar o soltar Charleville\nDar o soltar Bayoneta de Cubo\nBayoneta de encastre sin identificar · suelta · estado 100% · 0.5 kg\nFijar al Brown Bess · 3 PA\nLa bayoneta no corresponde a este fusil.\nPeso\n8.0 / 39.5 kg\n\nBolsillos · 4 grandes / 8 pequeños\n\nClic: uno. Mayús + clic: todos. Botón derecho: detalles.\nGrande\nGrande\nGrande\nGrande\nRaciones\n2\nVendas\n2\nBoleadoras\n1\nAntorchas\n2\nCartuchos de mosquete\n12\nBayoneta de Cubo\n1\nPequeño\nPequeño\nCharleville · detalles\n23,27 · San Lorenzo · 3 de febrero de 1813\nDía 1 · 08:00\nSan Lorenzo · 3 de febrero de 1813\n\nTurno 1 · Ejército patriota\n\nRetirada\nListo"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
+          "rawTrimStart": 6.501999999999999,
+          "rawTrimEnd": 13.501999999999999,
+          "sha256": "95d3c1ad6a28e61ce532d7938376abab0d845ea6ed46358226de49f5fc53938c",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "7.000000",
+                "nb_frames": "175"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "7.000000",
+              "size": "1460894"
+            }
+          }
+        },
+        "width": 1600,
+        "height": 900,
+        "native_frame_rate": "25/1",
+        "native_frames": 175,
+        "duration_seconds": 7.0
+      },
+      {
+        "path": "assets/video/intro/source/battle.mp4",
+        "sha256": "4788c95298afe1a93c15f8d5147f1412eff6da9746bb9c46e820b58ba5da5497",
+        "recording": {
+          "name": "battle",
+          "path": "assets/video/intro/source/battle.mp4",
+          "duration": 12,
+          "actions": [
+            "Select the ordinary firearm targeting mode with F.",
+            "Target Soldado realista 1 and fire the Charleville with Enter.",
+            "Reload with the ordinary Alt+R shortcut and consume one reserve cartridge."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/battle-before.png",
+            "assets/video/intro/source/evidence/battle-after-shot.png",
+            "assets/video/intro/source/evidence/battle-after-reload.png"
+          ],
+          "actionEvidence": {
+            "before": "3. Lorenzo Barcala. Salud 85, 15,75 puntos de acción, energía 81, moral 62. Ve 4 enemigos. Mano principal: Charleville. 1 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 100%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+            "renderer": {
+              "sectorRenderer": "three",
+              "engine": "three.js r184",
+              "effects": "0",
+              "fps": "51.2",
+              "drawCalls": "228",
+              "triangles": "528377",
+              "actors": "8",
+              "loadedActors": "8",
+              "activeActors": "6",
+              "pendingActors": "0",
+              "lod": "1",
+              "geometries": "528",
+              "textures": "112"
+            },
+            "setup": "In a fresh San Lorenzo skirmish, complete the ordinary first enemy turn with Fin del turno and resume any interruptions through Continuar turno enemigo. Barcala starts the second player turn with 30 PA by retaining five. Select Barcala, choose Run with R and issue a normal movement order from T35 to U44 before the recorded interval. Recenter and pan the native camera. This move clears the convent roof and foliage and leaves enough PA for fire and reload. Cabral fell during the preceding real enemy turn.",
+            "afterShot": "3. Lorenzo Barcala. Salud 85, 13 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 0 carga(s). 12 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente",
+            "afterReload": "3. Lorenzo Barcala. Salud 85, 2,5 puntos de acción, energía 81, moral 62. Ve 3 enemigos. Mano principal: Charleville. 1 carga(s). 11 de reserva · Cartuchos de mosquete. Disparo activo. Estado 99%. Segunda mano: ocupada por el arma de dos manos. Botón derecho: equipo del combatiente"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@bfe716955554178a50d383428f6c60c0.webm",
+          "rawTrimStart": 30.197000000000003,
+          "rawTrimEnd": 42.197,
+          "sha256": "4788c95298afe1a93c15f8d5147f1412eff6da9746bb9c46e820b58ba5da5497",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "12.000000",
+                "nb_frames": "300"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "12.000000",
+              "size": "3397269"
+            }
+          }
+        },
+        "width": 1600,
+        "height": 900,
+        "native_frame_rate": "25/1",
+        "native_frames": 300,
+        "duration_seconds": 12.0
+      },
+      {
+        "path": "assets/video/intro/source/maneuver.mp4",
+        "sha256": "3aba0e3da7c8886e78f8d3cbde11122aa71f7f873b0c151313f7c7635d1716b1",
+        "recording": {
+          "name": "maneuver",
+          "path": "assets/video/intro/source/maneuver.mp4",
+          "duration": 10,
+          "actions": [
+            "Select Manuel Dorrego.",
+            "Issue a normal ground movement order to AC39.",
+            "Lower the selected combatant to a crouched posture.",
+            "Use the native camera wheel to survey the sector."
+          ],
+          "evidence": [
+            "assets/video/intro/source/evidence/maneuver-before.png",
+            "assets/video/intro/source/evidence/maneuver-crouched.png",
+            "assets/video/intro/source/evidence/maneuver-after.png"
+          ],
+          "actionEvidence": {
+            "before": "2. Manuel Dorrego. Salud 84, 25 puntos de acción, energía 100, moral 80. Ve 0 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+            "initialPosition": "standing",
+            "afterMove": "2. Manuel Dorrego. Salud 84, 19 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente",
+            "destination": "AC39, Manuel Dorrego",
+            "afterPosture": "2. Manuel Dorrego. Salud 84, 18,25 puntos de acción, energía 96, moral 80. Ve 1 enemigos. Mano principal: Pistola Doble Cañón. 2 carga(s). 12 de reserva · Cartuchos de pistola. Disparo activo. Estado 100%. Segunda mano: Facón Gaucho con Poncho. Estado 100%. Botón derecho: equipo del combatiente"
+          },
+          "rawVideo": ".cache/trailer-capture/raw/page@8acccca65f4ba5f6e2f1566bdfeb6097.webm",
+          "rawTrimStart": 26.857,
+          "rawTrimEnd": 36.857,
+          "sha256": "3aba0e3da7c8886e78f8d3cbde11122aa71f7f873b0c151313f7c7635d1716b1",
+          "media": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "width": 1600,
+                "height": 900,
+                "r_frame_rate": "25/1",
+                "start_time": "0.000000",
+                "duration": "10.000000",
+                "nb_frames": "250"
+              }
+            ],
+            "format": {
+              "start_time": "0.000000",
+              "duration": "10.000000",
+              "size": "3814730"
+            }
+          }
+        },
+        "width": 1600,
+        "height": 900,
+        "native_frame_rate": "25/1",
+        "native_frames": 250,
+        "duration_seconds": 10.0
+      }
+    ]
+  },
+  "audio": {
+    "path": ".cache/intro-video/score.wav",
+    "duration_seconds": 56.0,
+    "sample_rate": 44100,
+    "channels": 2,
+    "format": "PCM16",
+    "peak_dbfs": -3.5,
+    "rms_dbfs": -17.702,
+    "provenance": "Original deterministic synthesis; no external samples or music",
+    "arrangement": "Original low strings, plucked strings, woodwind phrase and muted marching drum",
+    "story_sections_seconds": {
+      "historical_opening": [
+        0,
+        7
+      ],
+      "campaign": [
+        7,
+        29
+      ],
+      "combat": [
+        29,
+        51
+      ],
+      "closing_title": [
+        51,
+        56
+      ]
+    },
+    "sha256": "9a73f67f99881375736d9adba493d283fad9013ebdcaf1d1e1d6ea83beb62dd2"
+  },
   "fonts": {
     "serif": "Georgia.ttf",
-    "sans": "Arial.ttf"
+    "sans": "Arial.ttf",
+    "license_note": "Operating-system fonts used for rasterized titles; font files are not redistributed."
   },
   "inputs": [
     {
-      "path": "web/public/art/san-lorenzo.webp",
-      "sha256": "e833d05f860805622243fd2d21e6dcfb7d752c97a5e869ba5dfda38e0e256e5d"
+      "path": "assets/video/intro/source/historical-opening.png",
+      "sha256": "88083437777cfa8736fcf72fbd4fef30869bc7560e019a8bb730cb658f2949a4"
     },
     {
-      "path": "assets/video/intro/source/recruitment.jpg",
-      "sha256": "651aad84a590488070c70e360b9303b813264ee225fb35c46c499ecb3e46d079"
+      "path": "assets/video/intro/source/artwork-source.json",
+      "sha256": "80aa6c975f97b12731d42c9f392b22199696723f053c9583d832b92b1bcad070"
     },
     {
-      "path": "assets/video/intro/source/profile.jpg",
-      "sha256": "d9cd92fd3a1082e9d07060f1a21107dde9eb6fda827ebd853a2b069ede86cf8c"
+      "path": "assets/video/intro/source/capture-manifest.json",
+      "sha256": "1fc8191fd291ba23aa73d5249eddc93cae920f7ba3a3bcd38b9af51965b4dd4a"
     },
     {
-      "path": "assets/video/intro/source/map.jpg",
-      "sha256": "0cd4a1df13506e973800b6842d8805ef07350776406d3a5a9f49abdc40a5cd8a"
+      "path": "assets/video/intro/source/recruitment.mp4",
+      "sha256": "bb006db2fff20588a49cc8aadecf50b19db7711e90472453632cfba4ca8f282e"
     },
     {
-      "path": "assets/video/intro/source/battle.jpg",
-      "sha256": "3c7d8e01446f365f6cb4db0a0c3a6b75c5e186e9633949c0c3882532d4307313"
+      "path": "assets/video/intro/source/campaign-map.mp4",
+      "sha256": "bbb9eb8b3554227d4290d2efb13a6d3aef990bb038be318c930655763c851d29"
     },
     {
-      "path": "assets/video/intro/source/equipment.jpg",
-      "sha256": "496a34e3c570a0085c0473a49f4ca1393cfed3fc9cff196c3b2e2e9afb88e30a"
+      "path": "assets/video/intro/source/preparation.mp4",
+      "sha256": "95d3c1ad6a28e61ce532d7938376abab0d845ea6ed46358226de49f5fc53938c"
     },
     {
-      "path": "assets/video/intro/source/errands.jpg",
-      "sha256": "dad5700af15cfbea071edf610da2bb48c8942613e9c3003a1180b5a278c7832c"
+      "path": "assets/video/intro/source/battle.mp4",
+      "sha256": "4788c95298afe1a93c15f8d5147f1412eff6da9746bb9c46e820b58ba5da5497"
+    },
+    {
+      "path": "assets/video/intro/source/maneuver.mp4",
+      "sha256": "3aba0e3da7c8886e78f8d3cbde11122aa71f7f873b0c151313f7c7635d1716b1"
+    },
+    {
+      "path": "assets/video/intro/capture.mjs",
+      "sha256": "4ab614c9161645ba701a71e14f192099cd12835d18fdf01da403fcfb5c2e2e3d"
+    },
+    {
+      "path": "assets/video/intro/render.py",
+      "sha256": "70cdaa5f792b18cb109d80cd7c2283dea0f049bfd3649a984ea9532b5b615ce5"
+    },
+    {
+      "path": "assets/video/intro/score.py",
+      "sha256": "3380a2268b81bf7aa62b2be8916424b4037c1c17b5873e48e1d84636755cd8da"
     }
   ],
   "scenes": [
     {
       "start": 0,
-      "end": 6,
+      "end": 7,
+      "key": "opening",
       "capture": null,
+      "eyebrow": "BUENOS AIRES · 1812",
       "title": "GRANADEROS",
-      "caption": "Estrategia y combate por turnos\nen la independencia argentina."
+      "caption": "La independencia se conquista."
     },
     {
-      "start": 6,
-      "end": 11,
-      "capture": "recruitment.jpg",
-      "title": "Formá tu tropa",
-      "caption": "Reclutá combatientes y elegí sus contratos."
+      "start": 7,
+      "end": 15,
+      "key": "recruitment",
+      "capture": "recruitment.mp4",
+      "eyebrow": "01 · LA TROPA",
+      "title": "Formá tu escuadra.",
+      "caption": "Reclutá combatientes y conocé a tu gente."
     },
     {
-      "start": 11,
-      "end": 16,
-      "capture": "profile.jpg",
-      "title": "Conocé a cada combatiente",
-      "caption": "Atributos, especialidades y equipo propio."
-    },
-    {
-      "start": 16,
+      "start": 15,
       "end": 22,
-      "capture": "map.jpg",
-      "title": "Sostené la campaña",
-      "caption": "Organizá escuadras y decidí tu próximo destino."
+      "key": "campaign-map",
+      "capture": "campaign-map.mp4",
+      "eyebrow": "02 · LA CAMPAÑA",
+      "title": "Elegí tu camino.",
+      "caption": "Organizá tus fuerzas en el mapa de campaña."
     },
     {
       "start": 22,
       "end": 29,
-      "capture": "battle.jpg",
-      "title": "Cada decisión cuenta",
-      "caption": "Dirigí a cada soldado en combates por turnos."
+      "key": "preparation",
+      "capture": "preparation.mp4",
+      "eyebrow": "03 · EL EQUIPO",
+      "title": "Prepará cada salida.",
+      "caption": "Revisá armas y munición."
     },
     {
       "start": 29,
-      "end": 35,
-      "capture": "equipment.jpg",
-      "title": "Prepará tu equipo",
-      "caption": "Administrá armas, suministros y munición."
+      "end": 41,
+      "key": "battle",
+      "capture": "battle.mp4",
+      "eyebrow": "04 · SAN LORENZO · 3 DE FEBRERO DE 1813",
+      "title": "Cada orden cuenta.",
+      "caption": "Dirigí a cada soldado en combate por turnos."
     },
     {
-      "start": 35,
-      "end": 40,
-      "capture": "errands.jpg",
-      "title": "Creá nuevas historias",
-      "caption": "Editá personajes, reglas y encargos."
+      "start": 41,
+      "end": 51,
+      "key": "maneuver",
+      "capture": "maneuver.mp4",
+      "eyebrow": "05 · EL COMBATE",
+      "title": "Sostené el combate.",
+      "caption": "Administrá tus acciones y tu munición."
     },
     {
-      "start": 40,
-      "end": 45,
+      "start": 51,
+      "end": 56,
+      "key": "outro",
       "capture": null,
-      "title": "La campaña te espera.",
-      "caption": "Jugá en tu navegador\nfsodano.github.io/granaderos"
+      "eyebrow": "",
+      "title": "GRANADEROS",
+      "caption": "La independencia se conquista.\nJugá en tu navegador\nfsodano.github.io/granaderos/\nVersión en desarrollo."
     }
-  ]
+  ],
+  "output": {
+    "path": "assets/video/intro/granaderos-intro.mp4",
+    "sha256": "abdcf4fcf451abc32ca88577011d8ce02adfd8af4fc2e51d64c824da50fbb13c",
+    "bytes": 7116158,
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "pixel_format": "yuv420p",
+    "frames": 1680,
+    "duration_seconds": 56.0,
+    "faststart": true
+  },
+  "poster": {
+    "path": "assets/video/intro/poster.jpg",
+    "sha256": "123c38d510bda82aedb391644323bab18cf3471aa00b193cc45b49d7c2f49ece"
+  },
+  "captions": {
+    "path": "assets/video/intro/captions.es.srt",
+    "sha256": "d59867429c3292d4d5505af3b8a4d9b0cd5abe3754d8ae18c444a7380fa99e67"
+  },
+  "readme_preview": {
+    "path": "assets/video/intro/preview.gif",
+    "sha256": "f89293155bbe99b5e7066c6e3c050100eeba8c9159b4ea1fb13bfcb2121834e8",
+    "bytes": 3225399,
+    "kind": "Silent animated excerpt taken from the final trailer; not the full video.",
+    "duration_seconds": 10.0,
+    "resolution": [
+      640,
+      360
+    ],
+    "fps": 6,
+    "colors": 96,
+    "loop": "continuous",
+    "playback_speed": "original",
+    "source_video_sha256": "abdcf4fcf451abc32ca88577011d8ce02adfd8af4fc2e51d64c824da50fbb13c",
+    "excerpts": [
+      {
+        "start": 2,
+        "end": 4,
+        "kind": "historical illustration"
+      },
+      {
+        "start": 30,
+        "end": 33,
+        "kind": "recorded game combat"
+      },
+      {
+        "start": 43,
+        "end": 46,
+        "kind": "recorded game maneuver"
+      },
+      {
+        "start": 52,
+        "end": 54,
+        "kind": "closing title"
+      }
+    ]
+  }
 }

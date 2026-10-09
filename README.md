@@ -2,9 +2,9 @@
 
 **Formá un ejército. Mantenelo abastecido. Conducilo a la batalla.**
 
-https://github.com/user-attachments/assets/a40025a0-ea01-4085-bcb4-ee8519b1f45e
+[![Vista previa del tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
 
-**Presentación · 45 segundos · Textos en español y música original.** [Leer los textos](assets/video/intro/captions.es.srt) · [Descargar el video](assets/video/intro/granaderos-intro.mp4) · [Fuentes del video](assets/video/intro/README.md)
+**Presentación histórica · 56 segundos · Grabación real del juego, ilustración original, textos en español y música original.** La vista previa animada muestra fragmentos del tráiler. [Descargar el video completo](assets/video/intro/granaderos-intro.mp4?raw=true) · [Leer los textos](assets/video/intro/captions.es.srt) · [Fuentes del video](assets/video/intro/README.md)
 
 Granaderos es un juego de estrategia y combate táctico por turnos para navegador, ambientado en la Guerra de la Independencia argentina. Reclutá combatientes, administrá fondos y alianzas, y dirigí a cada soldado en el campo de batalla. El juego toma como referencia **Jagged Alliance 2 v1.13** y adapta sus sistemas a las armas y condiciones de la época.
 

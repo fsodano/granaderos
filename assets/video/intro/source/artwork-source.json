@@ -1,0 +1,26 @@
+{
+  "path": "assets/video/intro/source/historical-opening.png",
+  "created_date": "2026-10-09",
+  "tool": "OpenAI imagegen built-in tool",
+  "kind": "AI-generated historical illustration; not gameplay or an archival photograph",
+  "setting": "Artistic interpretation of Granaderos preparing at a Buenos Aires barracks in 1812",
+  "prompt": "Create a masterful historical oil-painted illustration for the opening of GRANADEROS, a serious Argentine independence strategy game trailer. Wide 16:9 landscape composition, ideally 1920x1080. Buenos Aires barracks muster at first light, year 1812: three young adult cavalry recruits in the LEFT half of the image, stern and human, seen waist to full body in three quarter side view, quietly checking leather equipment beside one saddled brown horse. Accurate EARLY mounted Granaderos uniform, as interpreted from municipal museum documentation: plain straight dark blue military coats, a single row of nine small white/silver buttons, restrained red collar/cuff piping, NO modern broad red 18-button ceremonial bib; dark tall shakos with subtle GREEN plumes and GREEN cord (not modern red plumes), raw natural leather shoulder straps, dark blue riding trousers and tall black leather boots. One flintlock carbine held muzzle up; sabre remains sheathed. Modest whitewashed barrack arches in the background, dusty courtyard, worn leather, weight and texture. The RIGHT half is quiet atmospheric warm dark umber/navy space with soft barrack wall shadow and light mist, reserved for clear trailer typography which will be added separately. Do not put any letters, words, flags, banners, logos, map, border, or watermark in the image. Style: cinematic Argentine nineteenth-century history painting, expert natural anatomy and convincing horse anatomy, sober heroic mood, expressive loose oil brushwork, aged canvas texture, dramatic low sunlight in ochre and muted pale blue, charcoal/navy shadows, restrained vermilion accents, finely controlled silhouettes, sophisticated museum painting rather than toy-like videogame concept art. Not photographic footage, not glossy fantasy, no modern guns, no modern uniforms, no exaggerated muscles, no cartoon figures. Historical artistic interpretation, quiet anticipation before the campaign; no battle spectacle, no violence.",
+  "references": [
+    {
+      "title": "Museo Municipal Retorno a la Patria: Uniforme",
+      "url": "https://tunuyan.gov.ar/vivitunuyan/parque-tematico-sanmartiniano/museo-municipal-retorno-a-la-patria/uniforme/",
+      "use": "Early coat, buttons, green plume and cords, leather straps, blue trousers, tall boots"
+    },
+    {
+      "title": "Ministerio de Defensa: 210 aniversario de la creación del Regimiento",
+      "url": "https://www.argentina.gob.ar/noticias/taiana-encabezo-el-acto-por-el-210deg-aniversario-de-la-creacion-del-regimiento-de",
+      "use": "Regiment creation in 1812"
+    },
+    {
+      "title": "Ejército Argentino: 205 aniversario del combate de San Lorenzo",
+      "url": "https://www.argentina.gob.ar/noticias/205o-aniversario-del-combate-de-san-lorenzo",
+      "use": "Combat date: 3 February 1813"
+    }
+  ],
+  "limitations": "The generated scene, faces, buildings and equipment are artistic interpretations, not a documented reconstruction."
+}
