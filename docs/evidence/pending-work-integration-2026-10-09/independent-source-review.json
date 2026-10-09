@@ -1,0 +1,115 @@
+{
+  "capturedAtUnix": 1791579177.6580548,
+  "supplementCommit": "7ee1b1a5560e12ee21ede81fc520f910671e4286",
+  "previousSupplementCommit": "1a1fcef891249f371c34ad9d340b522aef862fe6",
+  "archiveVerification": {
+    "blobs": 1788,
+    "logicalBytes": 1408613954,
+    "aliases": 18724,
+    "runtimeSourceChanged": false,
+    "recoveryProof": "Two primary-worktree Blender/GLB files restored to /tmp/granaderos-primary-human-source-recovery without code execution."
+  },
+  "localRefAudit": {
+    "atIntegration": "af952d7f81809e5c150b3ae8f6225ed1eb6bb78c",
+    "refs": 210,
+    "nonAncestors": [],
+    "note": "All 210 earlier local refs were ancestors before the final reviewer-only archive supplement; root will cherry-pick the supplement and retain its ancestry."
+  },
+  "worktreeAudit": {
+    "total": 19,
+    "completed": 18,
+    "authoredDirtyOutsideActiveRoot": [],
+    "excludedUntrackedDependencyLinks": [
+      "accepted-character-faces/playgrounds/granadero-3d/node_modules",
+      "human-character-library/playgrounds/granadero-3d/node_modules"
+    ],
+    "activeRootDirtyPaths": [
+      "tests/created-cuyo-route.mjs",
+      "tests/fresh-coastal-fixture.mjs",
+      "tests/fresh-coastal-route.test.mjs",
+      "tests/local-opening-care-fixture.mjs",
+      "tests/paid-casualty-fixture.mjs",
+      "docs/evidence/pending-work-integration-2026-10-09/already-integrated-3d-branches.json"
+    ]
+  },
+  "lockedCheckout": {
+    "path": "/Users/fsodano/.codex/worktrees/bdf24601-e74d-47d0-af2a-de965e16a649/granaderos",
+    "head": "ad40ac7f1040f4975fd244dfdf0932c0e4b350a1",
+    "lockedReason": "initializing",
+    "indexExists": false,
+    "indexLockExists": true,
+    "indexEntries": 0,
+    "wholeHeadDeletionCount": 11783,
+    "untrackedCount": 11476,
+    "untrackedOutsideHead": [],
+    "contentMismatches": [
+      {
+        "path": "web/public/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+        "actualBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "headBlob": "b6fe02f419af426103f84fb8bcad2850ea8062fd"
+      }
+    ],
+    "allCopiedFilesMatchHead": false,
+    "classification": "incomplete app checkout; not authored dirty work",
+    "ownership": "Not created or requested by this reviewer; left intact."
+  },
+  "ignoredAuthoredCoverage": {
+    "examinedCodePatchModelPaths": 963,
+    "alreadyReachablePaths": 845,
+    "newPathAliases": 118,
+    "newUniqueBlobs": 109,
+    "newBytes": 17201539,
+    "pilotHtmlCssAlreadyReachable": 3,
+    "excluded": "Dependencies, cache/build outputs, repeated render images and generated contact-sheet pages. Original ignored files remain intact.",
+    "preservedLedger": "assets/source/characters-3d/review-variants/2026-10-09-native-library/worktree-source-overlaps.json",
+    "exactInventoryReceipts": [
+      "/tmp/granaderos-all-pending-integration-readonly-audit.json",
+      "/tmp/granaderos-ignored-authored-source-preservation-audit.json",
+      "/tmp/granaderos-ignored-extra-format-inventory.json"
+    ]
+  },
+  "coreReview": {
+    "head": "af952d7f81809e5c150b3ae8f6225ed1eb6bb78c",
+    "base": "8fcabf3655af6468f5120fe59d9caf0dec140fe3",
+    "method": "Read-only changed-code and adjacent save/custody path review. No tactical strategy reruns and no repository mutations.",
+    "sourceFiles": [
+      "game/structure-blast.js",
+      "game/tactical.js",
+      "game/validate-battle.js",
+      "game/sight-geometry.js",
+      "game/tactical-ai.js",
+      "game/campaign.js",
+      "game/deployment-return.js",
+      "game/world.js",
+      "game/squad-travel.js",
+      "game/enemy-groups.js",
+      "game/world-cells.js",
+      "game/world-cell-map.js",
+      "game/world-cell-approaches.js",
+      "game/travel-balance.js",
+      "game/treasury-rewards.js",
+      "game/economy.js",
+      "game/politics.js"
+    ],
+    "areas": [
+      "blast damage persistence and opened finite containers",
+      "unified height-aware sight, smoke and AI admission",
+      "physical road routes, costs, crossings, closure and stored old journey durations",
+      "resident tactical positions and departed upper-level remains save validation",
+      "treasury cap, exact pending victory witnesses and rejected-command behavior"
+    ],
+    "concreteRegressionFindings": [],
+    "coveredExistingTests": [
+      "tests/structure-blast.test.mjs",
+      "tests/campaign-structure-blast.test.mjs",
+      "tests/flat-height-sight.test.mjs",
+      "tests/elevation-sight-targets.test.mjs",
+      "tests/sector-roads.test.mjs",
+      "tests/resident-position-lifecycle.test.mjs",
+      "tests/departed-remains-dimensions.test.mjs",
+      "tests/treasury-income-cap.test.mjs"
+    ],
+    "newTestsRunByReviewer": false,
+    "validationLimit": "This review does not convert the full frozen 6957 pass / 10 fail / 3 skip result into a green gate or a bug-free claim. Remaining native route/controller losses are retained as failures."
+  }
+}

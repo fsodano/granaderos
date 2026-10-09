@@ -1,0 +1,309 @@
+{
+  "scope": "Older local branches whose complete base-to-tip patch matches a main squash commit. Later runtime fixes must be retained.",
+  "branches": [
+    {
+      "branch": "codex/chapel-source-front-piers",
+      "squash": "ec232db97b15fc067bc85bc49151e0e1bbf4c527",
+      "squashSubject": "Add source-sized chapel front piers and warm stone feet (#228)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-chapel-piers.test.mjs",
+        "web/lib/three/world-building-details.ts",
+        "web/lib/three/world-chapel-piers.ts"
+      ]
+    },
+    {
+      "branch": "codex/chapel-supported-placement",
+      "squash": "b60735ba5f18dfc2e92d94d40f241c2bb427c077",
+      "squashSubject": "Centre supported chapel architecture on its physical cells (#227)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-details.test.mjs",
+        "tests/three-building-placement.test.mjs",
+        "tests/three-chapel-placement.test.mjs",
+        "web/lib/three/world-building-placement.ts"
+      ]
+    },
+    {
+      "branch": "codex/church-supported-shell-placement",
+      "squash": "5ef0da0e53193ed3922cb5aa31e80a342cc443dc",
+      "squashSubject": "Align supported parish walls, roof and physical openings (#224)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-placement.test.mjs",
+        "tests/three-church-placement.test.mjs",
+        "web/lib/three/world-building-placement.ts"
+      ]
+    },
+    {
+      "branch": "codex/contact-scene-update-order",
+      "squash": "83b69a063ed82ec5b7b61e78506e7faee3dd7c7b",
+      "squashSubject": "Fix current native target evaluation before contact (#221)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-scene-contact-order.test.mjs",
+        "web/app/TacticalThreeScene.tsx",
+        "web/lib/three/scene-actors.ts"
+      ]
+    },
+    {
+      "branch": "codex/farmhouse-gallery-exposure",
+      "squash": "ceee741552dfdf8c412496231e4742cb4b00430a",
+      "squashSubject": "Expose source-sized farmhouse gallery posts and joined roof (#222)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-farmhouse-gallery.test.mjs",
+        "web/lib/three/world-building-details.ts",
+        "web/lib/three/world-farmhouse-gallery.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-architecture-finishes-source",
+      "squash": "f7847b82475537eed3c338de55ec759dbb502aa4",
+      "squashSubject": "Match native architecture to authored wall paints (#211)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-architecture-finish.test.mjs",
+        "web/lib/three/world-architecture-finish.ts",
+        "web/lib/three/world-building-details.ts",
+        "web/lib/three/world-buildings.ts",
+        "web/lib/three/world-materials.ts",
+        "web/lib/three/world-palace-facade.ts",
+        "web/lib/three/world-posta-piers.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-farmhouse-shell-source",
+      "squash": "bd9495104d60c973a0bfcfd33dd3d85944189235",
+      "squashSubject": "Align supported farmhouse shells, doors and floor returns (#220)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-details.test.mjs",
+        "tests/three-building-placement.test.mjs",
+        "tests/three-farmhouse-placement.test.mjs",
+        "web/lib/three/world-building-placement.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-house-front-source",
+      "squash": "7dafeeca40dfed94f7dd74fd597601809ae0bb23",
+      "squashSubject": "Add supported house piers and shallow timber entrance hood (#215)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-house-facade.test.mjs",
+        "web/lib/three/world-building-details.ts",
+        "web/lib/three/world-house-facade.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-house-placement-source",
+      "squash": "26bb0cb8c238852a1f6eef518af1c1cd3c3d8d36",
+      "squashSubject": "Align supported house walls, roof and floor returns (#214)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-placement.test.mjs",
+        "tests/three-house-placement.test.mjs",
+        "web/lib/three/world-building-placement.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-pistol-contact-source",
+      "squash": "053097718365c5df836fc5ba563f872f2fb6436c",
+      "squashSubject": "Support paid primary pistol-butt contact and floor support (#208)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-melee-sole-cache.test.mjs",
+        "tests/three-pistol-butt-contact-fit.test.mjs",
+        "web/lib/three/actor-runtime.ts",
+        "web/lib/three/melee-contact-fit.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-posta-exposure-source",
+      "squash": "419a40a731c9dd0e315c546cc3be5f6156e649db",
+      "squashSubject": "Expose the posta corner capitals under its roof (#207)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-placement.test.mjs",
+        "tests/three-posta-piers.test.mjs",
+        "web/lib/three/world-building-details.ts",
+        "web/lib/three/world-building-placement.ts",
+        "web/lib/three/world-posta-piers.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-prone-arm-source",
+      "squash": "4b07286b4b3f7afb14eeeba1302b6709a02807d4",
+      "squashSubject": "Ground native unarmed prone arms and planted crawl pulls (#209)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "assets/source/characters-3d/REVIEW.md",
+        "assets/source/characters-3d/authoring/motion.py",
+        "assets/source/characters-3d/authoring/prone_arm_support.py",
+        "tests/characters-prone-arm-support.test.mjs",
+        "tests/characters-reviewed-motion.test.mjs",
+        "tools/characters-3d/compile-locomotion-profile.mjs",
+        "web/lib/three/locomotion-profile.json",
+        "web/public/models/characters/female-animations.glb",
+        "web/public/models/characters/male-animations.glb",
+        "web/public/models/characters/manifest.json"
+      ]
+    },
+    {
+      "branch": "codex/merged-stable-frame-source",
+      "squash": "807e43d98be4028c0f665aeb48f9b1ad0e44e649",
+      "squashSubject": "Expose the stable source posts, ties and timber header (#218)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-details.test.mjs",
+        "tests/three-stable-frame.test.mjs",
+        "web/lib/three/world-building-details.ts",
+        "web/lib/three/world-stable-frame.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-stable-shell-source",
+      "squash": "8229184a7e74a91eedc089f0fca687da96c0f711",
+      "squashSubject": "Align supported stable walls, roof and ventilation (#217)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-placement.test.mjs",
+        "tests/three-building-windows.test.mjs",
+        "tests/three-stable-placement.test.mjs",
+        "tests/three-stable-ventilation.test.mjs",
+        "web/lib/three/world-building-placement.ts",
+        "web/lib/three/world-stable-ventilation.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-stable-ventilation-source",
+      "squash": "da42da23c01515f65464208545f835978178d553",
+      "squashSubject": "Fit stable gable ventilation to the authored roof (#210)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-stable-ventilation.test.mjs",
+        "web/lib/three/world-building-details.ts",
+        "web/lib/three/world-stable-ventilation.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-standing-unarmed-sideways-source",
+      "squash": "b6a780e67871088ec07e68bee1ea585c716e4cee",
+      "squashSubject": "Keep standing unarmed side steps on native boot support (#216)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "assets/source/characters-3d/REVIEW.md",
+        "assets/source/characters-3d/authoring/motion.py",
+        "assets/source/characters-3d/authoring/sideways_support.py",
+        "tests/characters-sideways-support.test.mjs",
+        "tests/unit-motion-clock.test.mjs",
+        "web/public/models/characters/female-animations.glb",
+        "web/public/models/characters/male-animations.glb",
+        "web/public/models/characters/manifest.json"
+      ]
+    },
+    {
+      "branch": "codex/merged-thatch-source",
+      "squash": "8930edbb7169af37209e1abb5ff03a6ae8b5365b",
+      "squashSubject": "Retain the current sprite muted thatch roof finish (#206)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "web/lib/three/world-materials.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-warehouse-volume-source",
+      "squash": "2123bd7357b31adf957fdcfeb3f7b4fa6de29ce3",
+      "squashSubject": "Retain separate warehouse support stone paints (#212)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-warehouse-buttresses.test.mjs",
+        "web/lib/three/world-warehouse-buttresses.ts"
+      ]
+    },
+    {
+      "branch": "codex/merged-window-shutters-source",
+      "squash": "58cfaacf94a902d3a5be8d66b61fdb2e2d595364",
+      "squashSubject": "Expose authored green shutters in actual window openings (#213)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-building-windows.test.mjs",
+        "web/lib/three/world-building-windows.ts"
+      ]
+    },
+    {
+      "branch": "codex/paid-melee-facing-continuity",
+      "squash": "f9fd6f233dd71f83ddaf32046fe7bcdd686a3624",
+      "squashSubject": "Keep supported sabre motion through diagonal facing turns (#226)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-melee-facing-contact-fit.test.mjs",
+        "tests/three-melee-facing-presentation.test.mjs",
+        "tools/verify-three-melee-facing.mjs",
+        "web/lib/three/actor-runtime.ts",
+        "web/lib/three/melee-contact-fit.ts",
+        "web/lib/three/presentation.ts"
+      ]
+    },
+    {
+      "branch": "codex/sabre-native-wrist-support",
+      "squash": "7d0faf3878044cfd87e3a59584e2242731ae3f33",
+      "squashSubject": "Keep native sabre wrist reach and boot transfers valid throughout strikes (#219)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "tests/three-melee-contact-fit.test.mjs",
+        "web/lib/three/actor-runtime.ts",
+        "web/lib/three/melee-contact-fit.ts"
+      ]
+    },
+    {
+      "branch": "codex/standing-equipment-sideways-support",
+      "squash": "4f7a994c4ac9deaa462fe03c8a8d93ed67c2a39a",
+      "squashSubject": "Support remaining standing equipment side-step loops (#225)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "assets/source/characters-3d/authoring/motion.py",
+        "tests/characters-sideways-support.test.mjs",
+        "web/public/models/characters/female-animations.glb",
+        "web/public/models/characters/male-animations.glb",
+        "web/public/models/characters/manifest.json"
+      ]
+    },
+    {
+      "branch": "codex/standing-rifle-sideways-support",
+      "squash": "3ef1020dcfa637fc527e9fa7d234ccea92ca330f",
+      "squashSubject": "Keep native boot support in standing rifle side steps (#223)",
+      "exactPatchId": true,
+      "nonDocsPatchId": true,
+      "corePaths": [
+        "assets/source/characters-3d/authoring/motion.py",
+        "tests/characters-sideways-support.test.mjs",
+        "web/public/models/characters/female-animations.glb",
+        "web/public/models/characters/male-animations.glb",
+        "web/public/models/characters/manifest.json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "paths": [
+    "tests/created-cuyo-route.mjs",
+    "tests/fresh-cuyo-fixture.mjs"
+  ],
+  "hashes": {
+    "tests/created-cuyo-route.mjs": "3ae849dfc07e8d791ceef475eb859db02251c05cf0ca8a3cd47f11dde35a7243",
+    "tests/fresh-cuyo-fixture.mjs": "f27d35bf55fd3e7ebc58a1df94f635cfed1c0d80ef937dc146e4c56fa51b26c3"
+  },
+  "ammunitionSourceDebits": {
+    "musket": 29,
+    "rifle": 7,
+    "total": 36
+  },
+  "mendoza": {
+    "status": "victory",
+    "turns": 15,
+    "orders": 278,
+    "seconds": 139,
+    "newDeaths": [
+      8,
+      140,
+      116,
+      130
+    ],
+    "controller": "coastalBatteryController(initial,{sharedArtillerySight:true})"
+  },
+  "care": {
+    "event": "stockMendozaCareAccepted",
+    "hourlyDressings": 1,
+    "tacticalDressings": 4,
+    "clinicalPA": 80,
+    "renewalCost": 0,
+    "priorDeaths": [
+      1,
+      3,
+      8,
+      9,
+      104,
+      108,
+      110,
+      113,
+      115,
+      116,
+      117,
+      120,
+      121,
+      124,
+      126,
+      129,
+      130,
+      131,
+      133,
+      136,
+      140,
+      141,
+      146,
+      1000
+    ],
+    "return": {
+      "event": "mendozaCarePartyReturned",
+      "sector": "mendoza",
+      "party": [
+        139,
+        127,
+        11
+      ],
+      "elapsedSeconds": 7200,
+      "cashDelta": 0
+    },
+    "final": {
+      "hour": 566,
+      "second": 190,
+      "treasury": 110233
+    }
+  },
+  "laterFailure": {
+    "log": "/tmp/granaderos-created-cuyo-after-mendoza-probe.log",
+    "hour": 592,
+    "second": 419,
+    "error": "No actual reachable finite dressings remain for 139 at mendoza.",
+    "stack": "prepareFreshArmyFunding tests/fresh-cuyo-route.mjs:279 -> supplyRouteDressings tests/route-dressings.mjs:21",
+    "latestOfficialCheckpoint": {
+      "hour": 592,
+      "second": 419,
+      "treasury": 116266,
+      "serving": [
+        119,
+        127,
+        103,
+        111,
+        123,
+        114,
+        137,
+        134,
+        125,
+        144,
+        101,
+        11,
+        0,
+        100,
+        102,
+        107,
+        122,
+        139,
+        2,
+        7
+      ],
+      "deaths": [
+        1,
+        3,
+        8,
+        9,
+        104,
+        108,
+        110,
+        113,
+        115,
+        116,
+        117,
+        120,
+        121,
+        124,
+        126,
+        129,
+        130,
+        131,
+        133,
+        136,
+        140,
+        141,
+        146,
+        1000
+      ]
+    }
+  },
+  "checks": {
+    "tests": 19,
+    "pass": 19,
+    "fail": 0,
+    "skip": 0,
+    "seconds": 16.157,
+    "log": "/tmp/granaderos-cuyo-final-focused-checks.log"
+  },
+  "acceptance": "bounded Mendoza readiness/victory/urgent care/return only; full Cuyo/foundry/Andes/ending not passed",
+  "commit": "5742567c",
+  "frozen": true
+}

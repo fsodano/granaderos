@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-09",
+  "candidateRevision": "a228bd2c5741b2077d07d36b88a9a5af2fdee2d7",
+  "python": {
+    "command": "python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "checkout": "primary checkout with clean pinned engine",
+    "tests": 15,
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 1.176,
+    "candidateInputEquivalence": "python-input-equivalence.json"
+  },
+  "cpp": {
+    "command": "c++ -std=c++17 -Wall -Wextra -Werror -pedantic tests/black_powder_test.cpp -o /tmp/granaderos-pending-integration-black-powder",
+    "compilationExitCode": 0,
+    "executionExitCode": 0,
+    "result": "Black-powder rules: all assertions passed"
+  },
+  "reviewArchive": {
+    "command": "python3 verify.py",
+    "verifiedBlobs": 1788,
+    "logicalBytes": 1408613954,
+    "externalPaths": 18724,
+    "runtimeAssetsChanged": false,
+    "exitCode": 0
+  }
+}
