@@ -30,7 +30,9 @@ test('gift ownership validates quantities, recipients and duplicate identities a
  for(const mutate of [n=>{npc(n).questGifts[0].count=2;},n=>{npc(n).questGifts.push(outfit('two'),outfit('three'));},n=>{npc(n).id='other';},n=>{n.units[0].inventory.copy=outfit('gift');}]){const n=structuredClone(b);mutate(n);assert.throws(()=>validateBattleSnapshot(n));}
 });
 test('approach preview and contextual use spend real movement before handing over the garment',()=>{
- let b=field();npc(b).x=6;b.units[0].facing=2;const plan=npcGiftPreview(b,b.units[0],npc(b));assert.equal(plan.valid,true);assert.ok(plan.path.length);const n=give(b);assert.equal(n.lastError,null);assert.ok(n.units[0].x>2);assert.equal(npc(n).questGifts.length,1);assert.ok(n.elapsedSeconds>b.elapsedSeconds);
+ // Keep the recipient on supported, open ground rather than inside the
+ // generated boundary wall at x=6,y=2.
+ let b=field();npc(b).x=5;b.units[0].facing=2;const plan=npcGiftPreview(b,b.units[0],npc(b));assert.equal(plan.valid,true);assert.ok(plan.path.length);const n=give(b);assert.equal(n.lastError,null);assert.ok(n.units[0].x>2);assert.equal(npc(n).questGifts.length,1);assert.ok(n.elapsedSeconds>b.elapsedSeconds);
 });
 test('legacy omitted-definition ponchos retain their automatic reward and exact custody across saves and visits',()=>{
  const old=initialCampaign(8);delete old.errandDefinitions;
