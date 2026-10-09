@@ -19,6 +19,7 @@ systems and their recorded scope.
 - [Uneven terrain rocks](rock-forms-review-2026-10-08.md) *(workspace)*
 - [Broken leaf silhouettes](leaf-sprays-review-2026-10-08.md) *(workspace)*
 - [Timber furniture construction](timber-furniture-review-2026-10-08.md) *(workspace)*
+- [Soft bedding](soft-bedding-review-2026-10-08.md) *(workspace)*
 - [Colonial buildings, 1810–1820](buildings.md)
 - [Illustrated character sprites](character-sprites.md)
 - [Custom-character portraits](custom-character-portraits.md)

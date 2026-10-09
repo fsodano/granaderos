@@ -1,0 +1,31 @@
+{
+  "gateCandidate": "/tmp/granaderos-piece13-clearance-correction.rsodae8u",
+  "liveCandidate": "/tmp/granaderos-piece13-corrected-live-review.i_flhw09",
+  "commit": "2206a4188d81b39a42eccc71c54c04c06b0467f3",
+  "sourceFiles": 11329,
+  "runtimeTestAssetFiles": 10418,
+  "dependencyFiles": 42461,
+  "privateDependencyDirectory": "/tmp/granaderos-piece13-corrected-live-review.i_flhw09/web/node_modules",
+  "dependenciesAreIndependentCopy": true,
+  "sourceBytesExact": true,
+  "dependencyBytesExact": true,
+  "productionOutputFiles": 1377,
+  "productionOutputBytesExact": true,
+  "computedIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "88ad57daef74",
+    "source": "88ad57daef746bcdb71fd596f4512079bbc09dbd8c07ca8c7e69e45afa33c094",
+    "revision": "2206a4188d81b39a42eccc71c54c04c06b0467f3"
+  },
+  "builtIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "88ad57daef74",
+    "source": "88ad57daef746bcdb71fd596f4512079bbc09dbd8c07ca8c7e69e45afa33c094",
+    "revision": "2206a4188d81b39a42eccc71c54c04c06b0467f3"
+  },
+  "gateCandidateWritten": false,
+  "gatesRepeated": false,
+  "port": 3208,
+  "url": "http://localhost:3208/graphics-review",
+  "seconds": 33.203
+}

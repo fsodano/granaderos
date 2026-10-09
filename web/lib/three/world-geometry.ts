@@ -1,5 +1,6 @@
 import {BoxGeometry,BufferAttribute,BufferGeometry,ConeGeometry,CylinderGeometry,Group,IcosahedronGeometry,LatheGeometry,Matrix4,Mesh,MeshStandardMaterial,Quaternion,Shape,ShapeGeometry,TorusGeometry,Vector2,Vector3} from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 import {rockForm} from './world-rock-forms';
 import {leafSpray} from './world-leaf-sprays';
 
@@ -57,10 +58,37 @@ export class WorldGeometry {
     else if(kind.startsWith('leaf-spray-')){const variant=Number(kind.slice('leaf-spray-'.length));geometry=leafSpray(this.get(`crown-${variant}`),variant);}
     else if(kind.startsWith('rock-form-'))geometry=rockForm(Number(kind.slice('rock-form-'.length)));
     else if(kind==='torus')geometry=new TorusGeometry(1,.09,6,16);
+    else if(kind==='bed-mattress')geometry=new RoundedBoxGeometry(1,1,1,1,.12);
+    else if(kind==='bed-pillow')geometry=new RoundedBoxGeometry(1,1,1,1,.28);
+    else if(kind==='bed-blanket')geometry=bedBlanketGeometry();
     else throw Error(`Unknown world primitive ${kind}`);
     this.cache.set(kind,geometry);return geometry;
   }
   dispose(){for(const geometry of this.cache.values())geometry.dispose();this.cache.clear();}
+}
+/** A thin folded sheet and one loose side edge, shared by every bed. X/Z are
+ * unit dimensions; Y stays in metres because furniture height does not stretch. */
+function bedBlanketGeometry(){
+  const columns=[-.5,-.40,-.18,.12,.34,.5],rows=[-.5,-.37,-.19,-.03,.15,.32,.5],folds=[.005,.030,.003,.025,0,.033,.005];
+  const positions:number[]=[],uv:number[]=[],indices:number[]=[];
+  for(let row=0;row<rows.length;row++){
+    const z=rows[row],fold=folds[row];
+    for(const x of columns){
+      // A thin sheet clears the whole mattress top, including each rounded
+      // edge triangle. Positive folds and all hanging hem vertices stay exact.
+      const edge=Math.max(0,(Math.abs(x)-.40)/.10),y=Math.max(.002,fold*(.82+.18*Math.cos(x*5+z*2))-.016*edge*edge);
+      positions.push(x,y,z);uv.push(x+.5,z+.5);
+    }
+    // The edge bends out before falling. Its loose hem stays inside the frame
+    // width and above the frame platform, including on shorter authored beds.
+    for(const [x,y]of [[.526,-.055+fold*.20],[.510,-.130+fold*.08],[.500,-.190+.012*Math.sin(row*2.3)]]){positions.push(x,y,z);uv.push(x+.5,z+.5);}
+  }
+  const stride=columns.length+3;
+  for(let row=0;row<rows.length-1;row++)for(let column=0;column<stride-1;column++){
+    const a=row*stride+column,b=a+1,c=a+stride,d=c+1;indices.push(a,c,b,b,c,d);
+  }
+  const geometry=new BufferGeometry().setAttribute('position',new BufferAttribute(new Float32Array(positions),3)).setAttribute('uv',new BufferAttribute(new Float32Array(uv),2)).setIndex(indices);
+  geometry.computeVertexNormals();return geometry;
 }
 export class WorldBatch {
   private parts=new Map<MeshStandardMaterial,BufferGeometry[]>();
