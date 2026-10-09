@@ -1,0 +1,23 @@
+from pathlib import Path
+import sys,json,math
+import bpy
+from mathutils import Vector
+B=Path('/tmp/granadero-shoulder-strap-pilot');sys.path.insert(0,str(B/'source-before'))
+from character import create_character
+ctx=create_character('granadero');coat=ctx['coat']
+
+def measure(obj):
+ pts=[obj.matrix_world@v.co for v in obj.data.vertices if abs((obj.matrix_world@v.co).z-1.533)<1e-6 and (Vector(((obj.matrix_world@v.co).x,(obj.matrix_world@v.co).y+.036,0))).length<.13]
+ rows={}
+ for p in pts:
+  a=round(math.atan2(p.x,-(p.y+.036)),6);radius=math.hypot(p.x,p.y+.036)
+  if a not in rows or radius>rows[a][0]:rows[a]=(radius,list(p))
+ angles=sorted(rows);gaps=[(angles[(i+1)%len(angles)]-a)%(2*math.pi)for i,a in enumerate(angles)]
+ return {'vertexCountAtLipHeight':len(pts),'distinctOuterAngles':len(rows),'largestAngularGapDegrees':math.degrees(max(gaps)),'meanAngularGapDegrees':math.degrees(sum(gaps)/len(gaps)),'outerPoints':[rows[a][1]for a in angles]}
+results={'sourceBeforeReduction':measure(coat)}
+bpy.context.view_layer.objects.active=coat;dec=coat.modifiers.new('Exact_Current_Coat_LOD0','DECIMATE');dec.ratio=.42;dec.use_collapse_triangulate=True
+while coat.modifiers.find(dec.name)>0:bpy.ops.object.modifier_move_up(modifier=dec.name)
+bpy.ops.object.modifier_apply(modifier=dec.name);results['afterSameReduction']=measure(coat)
+bpy.ops.wm.read_factory_settings(use_empty=True);bpy.ops.import_scene.gltf(filepath=str(B/'before-models/granadero-lod0.glb'),bone_heuristic='TEMPERANCE',guess_original_bind_pose=False,import_pack_images=False)
+o=next(o for o in bpy.data.objects if o.name.startswith('Human_outfit'));results['actualCurrentExport']=measure(o)
+(B/'collar-measurements.json').write_text(json.dumps(results,indent=2));print('COLLAR_MEASURED',json.dumps({k:{a:v for a,v in row.items()if a!='outerPoints'}for k,row in results.items()}))

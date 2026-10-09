@@ -1,0 +1,38 @@
+from pathlib import Path
+import struct,json,hashlib,collections,importlib.util,sys
+ROOT=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');BASE=Path('/tmp/granadero-hand-web-pilot/retention');OLD=Path('/tmp/granadero-hand-web-pilot/paired-models');NEW=BASE/'models';sys.path.insert(0,str(ROOT/'tools/characters-3d'))
+spec=importlib.util.spec_from_file_location('appearance_increment',ROOT/'tools/characters-3d/build-appearance-increment.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+TYPES={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16};FORMATS={5121:'B',5123:'H',5125:'I',5126:'f'}
+def facts(path):
+ raw=path.read_bytes();size=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+size]);blob=raw[28+size:]
+ def access(i):
+  a=doc['accessors'][i];width=TYPES[a['type']];fmt='<'+FORMATS[a['componentType']]*width
+  if 'bufferView' in a:
+   v=doc['bufferViews'][a['bufferView']];step=v.get('byteStride',struct.calcsize(fmt));off=v.get('byteOffset',0)+a.get('byteOffset',0)
+   values=[struct.unpack_from(fmt,blob,off+n*step)for n in range(a['count'])]
+  else:values=[tuple(0 for _ in range(width))for _ in range(a['count'])]
+  if 'sparse' in a:
+   sparse=a['sparse'];inds=sparse['indices'];view=doc['bufferViews'][inds['bufferView']];iformat='<'+FORMATS[inds['componentType']];ioff=view.get('byteOffset',0)+inds.get('byteOffset',0)
+   sv=sparse['values'];vview=doc['bufferViews'][sv['bufferView']];voff=vview.get('byteOffset',0)+sv.get('byteOffset',0)
+   for n in range(sparse['count']):
+    index=struct.unpack_from(iformat,blob,ioff+n*struct.calcsize(iformat))[0];values[index]=struct.unpack_from(fmt,blob,voff+n*struct.calcsize(fmt))
+  return values
+ fixed=collections.Counter();head=0;total=0
+ for mesh_index,mesh in enumerate(doc['meshes']):
+  node=next(n for n in doc['nodes'] if n.get('mesh')==mesh_index);part=node.get('name',mesh['name']);joint_names=[doc['nodes'][j]['name'] for j in doc['skins'][node.get('skin',0)]['joints']]
+  for p in mesh['primitives']:
+   attrs={k:access(v)for k,v in p['attributes'].items()};attrs.update({f'MORPH{n}:{k}':access(v) for n,target in enumerate(p.get('targets',[])) for k,v in target.items()});idx=[i[0]for i in access(p['indices'])];total+=len(idx)//3;mat=doc['materials'][p['material']]['name']
+   if 'JOINTS_0'in attrs:
+    # Equal influences can change slot order during export. Compare the exact
+    # named bone-to-weight mapping, not numeric slots or tie-break order.
+    attrs['DEFORM']=[tuple(sorted((joint_names[j],w)for j,w in zip(joints,weights)if w!=0))for joints,weights in zip(attrs.pop('JOINTS_0'),attrs.pop('WEIGHTS_0'))]
+   for k in range(0,len(idx),3):
+    ids=idx[k:k+3]
+    if part.startswith('Human_outfit') and any(attrs['POSITION'][i][1]>1.43 and abs(attrs['POSITION'][i][0])<.16 for i in ids):head+=1;continue
+    corners=[tuple((name,attrs[name][i])for name in sorted(attrs)if name!='NORMAL')for i in ids];corners=min(tuple(corners[j:]+corners[:j])for j in range(3));fixed[(part,mat,corners)]+=1
+ return fixed,dict(sha256=hashlib.sha256(raw).hexdigest(),triangles=total,necklineTriangles=head,bytes=len(raw),drawCalls=sum(len(m['primitives'])for m in doc['meshes']))
+
+BASE=Path('/tmp/granadero-worker-neckline-pilot');a=BASE/'baseline-models/worker-lod0.glb';b=BASE/'models/worker-lod0.glb'
+x,old=facts(a);y,new=facts(b)
+report=dict(before=old,after=new,nonNeckTriangleAttributesExact=x==y,commonTriangles=sum((x&y).values()),beforeOnly=sum((x-y).values()),afterOnly=sum((y-x).values()),nativeSkeletonExact=module.native_signature(a)==module.native_signature(b))
+(BASE/'preservation-no-normals.json').write_text(json.dumps(report,indent=2)+'\n');print(report)

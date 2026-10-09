@@ -1,0 +1,32 @@
+from pathlib import Path
+import json,struct,hashlib,difflib
+root=Path(__file__).parent;author=root/'source/assets/source/characters-3d/authoring';base=Path('/tmp/granadero-face-shape-study/models')
+def read(path):
+ raw=path.read_bytes();n=int.from_bytes(raw[12:16],'little');return json.loads(raw[20:20+n]),raw[28+n:]
+def data(doc,binary,index):
+ a=doc['accessors'][index];v=doc['bufferViews'][a['bufferView']];width={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16}[a['type']];size={5121:1,5123:2,5125:4,5126:4}[a['componentType']]*width;start=v.get('byteOffset',0)+a.get('byteOffset',0);stride=v.get('byteStride',size)
+ return b''.join(binary[start+i*stride:start+i*stride+size]for i in range(a['count']))
+a,ab=read(base/'granadero-lod0.glb');b,bb=read(root/'models/granadero-lod0.glb');proof={}
+for name in ('Exposed_Human_Skin','Fitted_Boot_l','Shaped_Shako'):
+ am=next(m for m in a['meshes']if m['name']==name);bm=next(m for m in b['meshes']if m['name']==name);equal=len(am['primitives'])==len(bm['primitives'])
+ for ap,bp in zip(am['primitives'],bm['primitives']):
+  equal&=ap['attributes'].keys()==bp['attributes'].keys()
+  for attr in ap['attributes']:equal&=data(a,ab,ap['attributes'][attr])==data(b,bb,bp['attributes'][attr])
+  equal&=data(a,ab,ap['indices'])==data(b,bb,bp['indices'])
+ proof[name+'AllAttributesExact']=bool(equal)
+def transforms(doc):return {n['name']:{k:v for k,v in n.items()if k in ('translation','rotation','scale','matrix')}for n in doc['nodes']if n.get('name')}
+def parents(doc):return {doc['nodes'][i]['name']:n['name']for n in doc['nodes']for i in n.get('children',[])}
+proof['nodeTransformsExact']=transforms(a)==transforms(b);proof['nodeHierarchyExact']=parents(a)==parents(b)
+proof['inverseBindMatricesExact']=len(a['skins'])==len(b['skins']) and all(data(a,ab,sa['inverseBindMatrices'])==data(b,bb,sb['inverseBindMatrices'])for sa,sb in zip(a['skins'],b['skins']))
+proof['jointOrderExact']=all([a['nodes'][i]['name']for i in sa['joints']]==[b['nodes'][i]['name']for i in sb['joints']]for sa,sb in zip(a['skins'],b['skins']))
+assert all(proof.values());(root/'preservation.json').write_text(json.dumps(proof,indent=2)+'\n')
+patch=''
+for name in ('character.py','uniform_folds.py'):
+ relative='assets/source/characters-3d/authoring/'+name
+ patch+=''.join(difflib.unified_diff((root/'original'/name).read_text().splitlines(True),(author/name).read_text().splitlines(True),fromfile='a/'+relative,tofile='b/'+relative))
+(root/'pilot-source.patch').write_text(patch)
+before=json.loads(Path('/tmp/granadero-face-material-pilot/before/index.json').read_text());after=json.loads((root/'after-final/index.json').read_text())
+for key in ('camera','lighting','floor','renderSettings'):assert before[key]==after[key]
+for f,g in zip(before['frames'],after['frames']):assert f['jointsBlenderZUp']==g['jointsBlenderZUp'] and f['timeSeconds']==g['timeSeconds'] and f['cameraTarget']==g['cameraTarget'] and f['cameraScale']==g['cameraScale']
+receipt={'status':'private pilot; do not promote as a solution to overall visual quality','visualFinding':'The final smoothing visibly removes the narrow slash-like neck valleys at close range. Broader waist/elbow/knee gathers remain subtle at full-body scale, so the requested overall game-scale improvement is not met.','scope':'Granadero LOD0 only; other seven appearances and LODs are copied unchanged for validation. No public/shared files changed.','changes':['Eight bounded relaxation passes below the sewn neckline; maximum cloth vertex travel 8 mm and exact fixed boundary loops','Unequal broad shallow compression folds at elbow/cuff, above belt and knee/thigh; no periodic rings, native skin/proportions untouched'],'preservation':proof,'validation':{'militaryClothGates':{'pass':15,'fail':0,'files':['tests/characters-coat-contact.test.mjs','tests/characters-crossbelt-contact.test.mjs'],'log':'cloth-gates-final.log'},'sameCameraLightingPose':True,'build':'build-final.log'},'baselineSha256':hashlib.sha256((base/'granadero-lod0.glb').read_bytes()).hexdigest(),'candidateSha256':hashlib.sha256((root/'models/granadero-lod0.glb').read_bytes()).hexdigest(),'triangles':{'before':87375,'after':87624},'sourcePatch':'pilot-source.patch','renderSheets':['compare-face.png','compare-isometric.png'],'nextDecision':'Keep the broader fold study private. The neck-only cleanup can be considered separately; it does not solve the generic face or hard attachment look.'}
+(root/'review.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))

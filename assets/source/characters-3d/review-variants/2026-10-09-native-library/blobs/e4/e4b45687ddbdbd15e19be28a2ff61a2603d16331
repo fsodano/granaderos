@@ -1,0 +1,12 @@
+exec(open('/tmp/granadero-worker-neckline-pilot/check-preservation.py').read())
+def identity(triangle):
+ part,mat,corners=triangle;return part,mat,tuple(sorted(dict(c)['POSITION']for c in corners))
+xm={identity(k):k for k in x-y};ym={identity(k):k for k in y-x};rows=[]
+for key,a in xm.items():
+ b=ym.get(key)
+ if b is None:rows.append(dict(kind='changed-triangle',key=str(key)));continue
+ before={dict(c)['POSITION']:dict(c)for c in a[2]};after={dict(c)['POSITION']:dict(c)for c in b[2]}
+ changed={k for p,attrs in before.items()for k,v in attrs.items()if v!=after[p][k]}
+ rows.append(dict(fields=sorted(changed),positions=list(before)))
+Path('/tmp/granadero-worker-neckline-pilot/seam-attribute-changes.json').write_text(json.dumps(rows,indent=2)+'\n')
+print(collections.Counter(tuple(r.get('fields',[]))for r in rows));print('nonpaired',len(xm.keys()-ym.keys()))

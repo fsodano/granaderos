@@ -1,0 +1,30 @@
+"""Private native thumb study: hinge-safe orientation, no skin corrective."""
+import math
+import bpy
+from mathutils import Vector,Quaternion
+from relaxed_hands import _set
+
+def apply_thumb(rig,forward_offset,pad,base_roll=0,side='r',outside=0,pole_angle=0):
+ from reviewed_motion import _palm_basis
+ forward,normal=_palm_basis(rig,side);hand=rig.pose.bones['hand_'+side]
+ delta=hand.matrix.to_quaternion()@hand.bone.matrix_local.to_quaternion().inverted()
+ world_normal=delta@normal;world_forward=delta@forward
+ names=[f'thumb_{i:02d}_{side}'for i in(1,2,3)]
+ first=rig.pose.bones[names[0]];index=rig.pose.bones['index_02_'+side]
+ across=(rig.data.bones['index_01_'+side].head_local-rig.data.bones['pinky_01_'+side].head_local)
+ across-=forward*across.dot(forward);across.normalize()
+ target=index.head+world_normal*pad+world_forward*forward_offset+(delta@across)*outside
+ base=first.head.copy();direction=target-base
+ l1=first.bone.length;l2=sum(rig.data.bones[n].length for n in names[1:]);distance=min(direction.length,l1+l2-.001);direction.normalize();target=base+direction*distance
+ guide=world_normal*math.cos(math.radians(pole_angle))+(delta@across)*math.sin(math.radians(pole_angle))
+ pole=guide-direction*direction.dot(guide)
+ if pole.length<.001:pole=world_forward-direction*direction.dot(world_forward)
+ pole.normalize();along=(l1*l1-l2*l2+distance*distance)/(2*distance)
+ joint=base+direction*along+pole*math.sqrt(max(0,l1*l1-along*along))
+ for i,(name,shaft)in enumerate(zip(names,(joint-base,target-joint,target-joint))):
+  bone=rig.pose.bones[name];parent=bone.parent
+  native_local=(parent.bone.matrix_local.inverted()@bone.bone.matrix_local).to_quaternion()
+  reference=parent.matrix.to_quaternion()@native_local
+  current_axis=reference@Vector((0,1,0));rotation=current_axis.rotation_difference(shaft.normalized())@reference
+  if i==0:rotation=rotation@Quaternion(Vector((0,1,0)),math.radians(base_roll*(-1 if side=='l' else 1)))
+  _set(rig,name,rotation)

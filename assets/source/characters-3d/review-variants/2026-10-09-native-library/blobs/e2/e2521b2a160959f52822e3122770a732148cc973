@@ -1,0 +1,12 @@
+import bpy,json
+from mathutils import Vector
+s=bpy.context.scene;c=s.camera;dg=bpy.context.evaluated_depsgraph_get();q=c.matrix_world.to_quaternion();right=q@Vector((1,0,0));up=q@Vector((0,1,0));direction=q@Vector((0,0,-1));result=[]
+for x,y in [(316,460),(316,450),(316,472),(329,463),(307,465),(420,545),(418,520),(408,500)]:
+ origin=c.location+right*((x/800-.5)*.48)+up*((.5-y/800)*.48);hits=[]
+ for n in range(6):
+  ok,p,normal,face,obj,mat=s.ray_cast(dg,origin,direction)
+  if not ok:break
+  if p.z<1:break
+  hits.append(dict(name=obj.name,point=list(p),face=face,normal=list(normal)));origin=p+direction*.0001
+ result.append(dict(pixel=[x,y],hits=hits))
+open('/tmp/granadero-worker-neckline-pilot/rays.json','w').write(json.dumps(result,indent=2))

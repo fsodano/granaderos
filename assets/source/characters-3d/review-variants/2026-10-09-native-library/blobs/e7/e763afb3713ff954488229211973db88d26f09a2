@@ -1,0 +1,24 @@
+"""Private adult facial pigment trial; no geometry, UV or material changes."""
+import math
+
+def facial_tone(p,eye_z):
+    def g(v,c,w):return math.exp(-((v-c)/w)**2)
+    def smooth(v):
+        t=max(0,min(1,v));return t*t*(3-2*t)
+    if p.z<eye_z-.117 or p.z>eye_z+.030 or abs(p.x)>.095:return(1,1,1)
+    front=smooth((-p.y-.050)/.045)
+    x=abs(p.x);z=p.z
+    chin=.85*g(x,0,.038)*g(z,eye_z-.087,.026)
+    jaw=.90*g(x,.046,.024)*g(z,eye_z-.074,.025)
+    moustache=.95*g(x,0,.022)*g(z,eye_z-.051,.0075)
+    sideburn=.86*g(x,.069,.010)*g(z,eye_z-.022,.035)
+    beard=1-(1-chin)*(1-jaw)*(1-moustache)*(1-sideburn)
+    lips=g(x,0,.029)*g(z,eye_z-.063,.006)
+    beard*=front*(1-.98*lips)
+    # Broad stubble colour survives tactical scale; it is not a noisy pore map.
+    red=1-.52*beard;green=1-.50*beard;blue=1-.46*beard
+    # Darker, less pink lips and small warm flush at the nose and upper cheeks.
+    lip=.10*lips*front
+    warm=(.75*g(x,.045,.022)*g(z,eye_z-.028,.020)+.70*g(x,0,.016)*g(z,eye_z-.037,.013))*front
+    red*=1-lip;green*=(1-lip)*(1-.050*warm);blue*=(1-lip)*(1-.075*warm)
+    return(red,green,blue)

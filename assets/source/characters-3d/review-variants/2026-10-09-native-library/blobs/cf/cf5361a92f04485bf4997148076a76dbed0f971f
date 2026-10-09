@@ -1,0 +1,19 @@
+from pathlib import Path
+import struct,json,statistics,math
+B=Path('/tmp/granadero-adult-pigment-pilot');D=B/'colour-diagnostic'
+TYPES={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16};FMTS={5121:'B',5123:'H',5125:'I',5126:'f'}
+def read(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];d=json.loads(b[20:20+n]);binary=b[28+n:]
+ def acc(i):
+  a=d['accessors'][i];v=d['bufferViews'][a['bufferView']];f='<'+FMTS[a['componentType']]*TYPES[a['type']];step=v.get('byteStride',struct.calcsize(f));offset=v.get('byteOffset',0)+a.get('byteOffset',0);return[struct.unpack_from(f,binary,offset+j*step)for j in range(a['count'])]
+ return d,acc
+od,oa=read(Path('/tmp/granadero-eye-region-pilot/models/granadero-lod0.glb'));nd,na=read(B/'models/granadero-lod0.glb')
+def prim(d):return next(p for m in d['meshes']for p in m['primitives']if d['materials'][p['material']]['name']=='Skin')
+op=prim(od);np=prim(nd);pos=oa(op['attributes']['POSITION']);norm=oa(op['attributes']['NORMAL']);before=oa(op['attributes']['COLOR_0']);after=na(np['attributes']['COLOR_0']);rows={}
+def summarise(values):return {'minimum':min(values),'median':statistics.median(values),'maximum':max(values)}
+regions={'chin-front':lambda x,z,y:abs(x)<.025 and 1.547<z<1.575 and y>.13,'upper-lip-front':lambda x,z,y:abs(x)<.023 and 1.592<z<1.608 and y>.145,'near-jaw':lambda x,z,y:.025<x<.060 and 1.557<z<1.584 and y>.105}
+for name,select in regions.items():
+ ids=[i for i,p in enumerate(pos)if select(*p)and norm[i][2]>.3 and sum(a*b for a,b in zip(norm[i],(.61,.51,.61)))>.15]
+ assert ids,name
+ rows[name]={'count':len(ids),'selection':'Rest-space exterior front skin, forward normal > 0.3 and isometric-facing normal. Not an image-pixel brightness measurement.','oldColourLinearRGB':[summarise([before[i][k]for i in ids])for k in range(3)],'newColourLinearRGB':[summarise([after[i][k]for i in ids])for k in range(3)],'remainingLinearFractionRGB':[summarise([after[i][k]/before[i][k]for i in ids])for k in range(3)],'approxRemainingSrgbFractionRGB':[summarise([(after[i][k]/before[i][k])**(1/2.2)for i in ids])for k in range(3)]}
+report={'regions':rows,'conclusion':'The visible front masks are active. Linear pigment attenuation is compressed by display transfer and AgX; these values are not direct rendered-pixel attenuation.','diagnostic':str(D/'review-magenta/granadero/stand.idle.unarmed.sample-1.face.png')};(D/'visible-pigment-measurements.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

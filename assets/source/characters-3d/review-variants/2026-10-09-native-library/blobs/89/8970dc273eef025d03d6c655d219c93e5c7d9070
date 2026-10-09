@@ -1,0 +1,11 @@
+--- a/assets/source/characters-3d/authoring/authored_hair.py
++++ b/assets/source/characters-3d/authoring/authored_hair.py
+@@ -62,7 +62,7 @@
+     weights=[]
+     for index,p in enumerate(fitted):
+         if index not in hanging:weights.append({'head':1});continue
+-        neck=eased(1.563,1.485,p.z);back=eased(1.515,1.410,p.z)
++        neck=eased(1.563,1.460,p.z);back=eased(1.563,1.380,p.z)
+         native=ctx['source_weight_at'](p)
+         native={name:value for name,value in native.items()if name.startswith('spine_')}
+         total=sum(native.values());native={name:value/total for name,value in native.items()}if total else {'spine_03':1}

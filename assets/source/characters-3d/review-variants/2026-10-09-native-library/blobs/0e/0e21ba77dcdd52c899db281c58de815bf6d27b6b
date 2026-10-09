@@ -1,0 +1,115 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -290,9 +290,13 @@
+     if preset in ('granadero','royalist'):
+         from uniform_folds import compression_relief, relax_neck_gathers
+         relax_neck_gathers(coat)
+-    for vertex in coat.data.vertices:
+-        relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
+-        vertex.co+=vertex.normal*relief
++    if preset=='granadero':
++        from coat_construction import settle_coat
++        settle_coat(coat,points,faces,heads)
++    else:
++        for vertex in coat.data.vertices:
++            relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
++            vertex.co+=vertex.normal*relief
+     coat.data.update()
+     # Breeches follow native thigh, knee and pelvis topology with cloth ease.
+     trousers=subset('Tailored_Breeches',lambda f:all(.425<points[i].z<1.055 and limb_weight(i,hand_bones|arm_bones)<.05 for i,uv in f),mats['trousers'])
+--- /dev/null
++++ b/assets/source/characters-3d/authoring/coat_construction.py
+@@ -0,0 +1,93 @@
++"""Private cloth-construction trial, constrained to existing native coat mesh.
++
++The body is a fixed collision surface. Sewn openings, waist, button closure,
++shoulder seams and the tensioned crossbelt keep their fitted rest positions.
++Only the cloth between those constraints settles; skin and weights are intact.
++"""
++import json
++from pathlib import Path
++import bpy
++from mathutils import Vector
++
++
++def settle_coat(coat, points, faces, heads):
++    scene=bpy.context.scene
++    original=[v.co.copy() for v in coat.data.vertices]
++    weights=[tuple((g.group,g.weight) for g in v.groups) for v in coat.data.vertices]
++    edges={}
++    for f in coat.data.polygons:
++        ids=list(f.vertices)
++        for a,b in zip(ids,ids[1:]+ids[:1]):
++            pair=tuple(sorted((a,b)));edges[pair]=edges.get(pair,0)+1
++    boundary={i for edge,count in edges.items() if count==1 for i in edge}
++    pins=coat.vertex_groups.new(name='Study_Sewn_Constraints')
++    pin_weights=[];kinds={}
++    slope=.266/.389
++    for v in coat.data.vertices:
++        p=v.co;value=0;kind='free_panel'
++        if v.index in boundary or p.z>1.487:
++            value=1;kind='opening'
++        # Closure and belt act as sewn supports, with soft adjacent falloff.
++        if abs(p.x)<.014 and p.y<-.07:
++            value=max(value,1);kind='centre_closure'
++        if 1.026<p.z<1.078:
++            value=max(value,1);kind='waist'
++        # The strap must hold its original path, not follow a new cloth bulge.
++        c=.144+slope*(p.z-1.435)
++        d=abs(p.x-c)/(1+slope*slope)**.5
++        if 1.040<p.z<1.442 and d<.030:
++            value=1;kind='crossbelt'
++        # Shoulder line, above upper arm: y at the seam apex, not full sleeve.
++        side='l' if p.x>0 else 'r'
++        sh=heads['upperarm_'+side];el=heads['lowerarm_'+side];wr=heads['hand_'+side]
++        arm=(el-sh).normalized();rel=p-sh
++        along=rel.dot(arm);radial=rel-arm*along
++        if abs(along)<.027 and radial.z>.020:
++            value=1;kind='shoulder_seam'
++        # Fixed cuff; progressively less influence above it supplies sleeve ease.
++        forearm=(wr-el).normalized();wrel=p-wr;wd=wrel.dot(forearm)
++        if wrel.length<.15 and wd>-.076:
++            value=1;kind='cuff'
++        # Narrow side seam supports the rear/side panel, with front panels free.
++        if 1.09<p.z<1.37 and abs(p.x)>.155 and abs(p.y-.010)<.014:
++            value=max(value,.75);kind='side_seam'
++        if value:pins.add([v.index],value,'REPLACE')
++        pin_weights.append(value);kinds[kind]=kinds.get(kind,0)+1
++    # A private collider uses the native body, not the coat itself.
++    ids=sorted({i for face in faces for i,_uv in face});index={old:i for i,old in enumerate(ids)}
++    data=bpy.data.meshes.new('Study_Native_Body_Collision')
++    data.from_pydata([points[i] for i in ids],[],[[index[i] for i,_uv in face] for face in faces]);data.update()
++    body=bpy.data.objects.new('Study_Native_Body_Collision',data);bpy.context.collection.objects.link(body)
++    body.modifiers.new('Body_Collision','COLLISION')
++    body.collision.thickness_outer=.004;body.collision.thickness_inner=.002
++    body.collision.damping=.5;body.collision.cloth_friction=10
++    collection=bpy.data.collections.new('Study_Colliders');scene.collection.children.link(collection);collection.objects.link(body)
++    armatures=[(m,m.show_viewport,m.show_render) for m in coat.modifiers if m.type=='ARMATURE']
++    for m,_,_ in armatures:m.show_viewport=False;m.show_render=False
++    bpy.ops.object.select_all(action='DESELECT');coat.select_set(True);bpy.context.view_layer.objects.active=coat
++    mod=coat.modifiers.new('Study_Wool_Settle','CLOTH')
++    s=mod.settings;s.quality=8;s.mass=.22;s.air_damping=6;s.time_scale=.5
++    s.tension_stiffness=28;s.compression_stiffness=5;s.shear_stiffness=12;s.bending_stiffness=.22
++    s.tension_damping=12;s.compression_damping=12;s.shear_damping=10;s.bending_damping=1
++    s.vertex_group_mass=pins.name;s.pin_stiffness=1
++    c=mod.collision_settings;c.use_collision=True;c.collection=collection;c.distance_min=.003
++    c.collision_quality=4;c.use_self_collision=True;c.self_distance_min=.004;c.self_friction=8
++    mod.point_cache.frame_start=1;mod.point_cache.frame_end=56
++    for frame in range(1,57):
++        scene.frame_set(frame);bpy.context.view_layer.update()
++        if frame%10==0:print('CLOTH_SETTLE_FRAME',frame,flush=True)
++    evaluated=coat.evaluated_get(bpy.context.evaluated_depsgraph_get());mesh=evaluated.to_mesh()
++    settled=[v.co.copy() for v in mesh.vertices];evaluated.to_mesh_clear()
++    assert len(settled)==len(original)
++    coat.modifiers.remove(mod)
++    # Pinning is a solver constraint; restore exact coordinates at hard anchors.
++    for i,v in enumerate(coat.data.vertices):v.co=original[i] if pin_weights[i]>=.999 else settled[i]
++    coat.vertex_groups.remove(pins)
++    for m,viewport,render in armatures:m.show_viewport=viewport;m.show_render=render
++    bpy.data.objects.remove(body,do_unlink=True);bpy.data.meshes.remove(data);bpy.data.collections.remove(collection)
++    scene.frame_set(0);coat.data.update()
++    assert weights==[tuple((g.group,g.weight) for g in v.groups) for v in coat.data.vertices]
++    movement=[(v.co-original[i]).length for i,v in enumerate(coat.data.vertices)]
++    report={'method':'native body collision and sewn constraints, gravity cloth settle','vertices':len(original),'frames':56,'pinCounts':kinds,'maxDisplacementM':max(movement),'meanDisplacementM':sum(movement)/len(movement),'fixedConstraintDisplacementM':max([movement[i] for i,w in enumerate(pin_weights) if w>=.999],default=0),'nativeWeightsUnchanged':True}
++    Path('/tmp/granadero-garment-construction-pilot/settle.json').write_text(json.dumps(report,indent=2)+'\n')
++    print('CLOTH_SETTLE_RESULT',json.dumps(report),flush=True)

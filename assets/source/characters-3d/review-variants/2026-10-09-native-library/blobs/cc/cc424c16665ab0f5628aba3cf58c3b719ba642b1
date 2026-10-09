@@ -1,0 +1,11 @@
+from pathlib import Path
+import json,numpy as np,shutil
+from scipy.spatial.transform import Rotation
+r=Path('/tmp/granadero-hand-web-pilot');j=json.loads((r/'native-web.json').read_text());m=lambda a:np.array(a).reshape(4,4).T;roll=next(a for a in json.loads((r/'thumb-roll.json').read_text())['records']if a['amount']==.5);old=m(j['bones']['thumb_01_r']['posed']);new=old.copy();new[:3,:3]=m(j['bones']['hand_r']['posed'])[:3,:3]@Rotation.from_quat(roll['thumb01Local']).as_matrix();diff=(new-old)@np.linalg.inv(m(j['bones']['thumb_01_r']['rest']));points={v['i']:np.array(v['point'])for v in next(a for a in json.loads((r/'web-arap-grid.json').read_text())if a['expand']==0 and a['steps']==41)['points']};rows=[]
+for v in j['parts'][0]['vertices']:
+ mat=m(v['skinMatrix'])+diff*v['weights'].get('thumb_01_r',0);rest=np.r_[v['rest'],1];posed=(mat@rest)[:3];v['skinMatrix']=mat.T.reshape(-1).tolist();v['posed']=posed.tolist();d=(np.linalg.inv(mat)@np.r_[points[v['i']],1])[:3]-rest[:3]
+ if np.linalg.norm(d)>1e-7:rows.append({'i':v['i'],'delta':d.tolist(),'worldDelta':float(np.linalg.norm(points[v['i']]-posed)),'restDelta':float(np.linalg.norm(d))})
+(r/'native-web-untwisted.json').write_text(json.dumps(j));(r/'web-arap-delta.json').write_text(json.dumps({'result':rows}));out=r/'arap-models'
+if not out.exists():shutil.copytree(r/'pose-50',out,symlinks=False)
+s=(r/'make-pilot.py').read_text().replace("base=Path('/tmp/granadero-full-review/models');out=r/'models'","base=r/'pose-50';out=r/'arap-models'").replace("r/'web-delta.json'","r/'web-arap-delta.json'").replace("r/'native-web.json'","r/'native-web-untwisted.json'").replace("r/'pilot-build.json'","r/'arap-pilot-build.json'")
+(r/'make-arap-pilot.py').write_text(s)

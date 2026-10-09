@@ -1,0 +1,31 @@
+from pathlib import Path
+import bpy,json,math,numpy as np
+from mathutils import Vector
+B=Path('/tmp/granadero-coat-sleeve-pilot')
+
+def nearest(p,sh,el,wr):
+ out=[]
+ for a,b,offset in [(sh,el,-(el-sh).length),(el,wr,0)]:
+  axis=(b-a).normalized();s=max(0,min((b-a).length,(p-a).dot(axis)));centre=a+axis*s
+  out.append(((p-centre).length,offset+s,centre,axis))
+ return min(out,key=lambda a:a[0])
+records=[]
+for kind in ['before-models','models']:
+ bpy.ops.wm.read_factory_settings(use_empty=True)
+ bpy.ops.import_scene.gltf(filepath=str(B/kind/'granadero-lod0.glb'),bone_heuristic='TEMPERANCE',guess_original_bind_pose=False,import_pack_images=False)
+ rig=next(o for o in bpy.data.objects if o.type=='ARMATURE');coat=next(o for o in bpy.data.objects if o.name.startswith('Human_outfit'))
+ heads={n:rig.matrix_world@rig.data.bones[n].head_local for n in ('upperarm_l','lowerarm_l','hand_l')};sh,el,wr=(heads[n]for n in ('upperarm_l','lowerarm_l','hand_l'));selected=[]
+ for v in coat.data.vertices:
+  w={coat.vertex_groups[g.group].name:g.weight for g in v.groups};arm=w.get('upperarm_l',0)+w.get('lowerarm_l',0)
+  p=coat.matrix_world@v.co;radius,s,centre,axis=nearest(p,sh,el,wr)
+  if arm<.75 or radius>.12 or p.x<.18:continue
+  # Stable front/back axis, projected across the arm, plus transverse axis.
+  front=Vector((0,-1,0));front=(front-axis*front.dot(axis)).normalized();across=axis.cross(front).normalized();rad=p-centre
+  selected.append((s,rad.dot(front),rad.dot(across),radius,w.get('lowerarm_l',0)/arm))
+ sections=[]
+ for s in [-.12,-.06,0,.06,.12]:
+  a=np.array([p[1:]for p in selected if abs(p[0]-s)<.018]);assert len(a)>4
+  q=np.percentile(a[:,:2],[5,95],axis=0);radii=(q[1]-q[0])/2
+  sections.append({'sFromElbowMm':s*1000,'vertexSamples':len(a),'frontBackSemiSpanMm':float(radii[0]*1000),'transverseSemiSpanMm':float(radii[1]*1000),'ellipseAreaMm2':float(math.pi*radii[0]*radii[1]*1e6),'radialP50Mm':float(np.median(a[:,2])*1000),'radialP90Mm':float(np.percentile(a[:,2],90)*1000),'lowerArmWeightMinMax':[float(a[:,3].min()),float(a[:,3].max())],'lowerArmWeightStd':float(a[:,3].std())})
+ records.append({'kind':kind,'heads':{k:list(v)for k,v in heads.items()},'sections':sections})
+(B/'section-diagnosis.json').write_text(json.dumps(records,indent=2));print('SECTIONS_DONE')

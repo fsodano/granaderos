@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {dirname,resolve} from 'node:path';
+import sharp from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/sharp/lib/index.js';
+import {DataTexture,RGBAFormat,UnsignedByteType,MeshPhysicalMaterial} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/build/three.module.js';
+import {GLTFLoader} from '/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+const directory='/tmp/granadero-coat-material-pilot/models',path=resolve(directory,'granadero-lod0.glb');
+const loader=new GLTFLoader();
+// Decode actual PNG pixels for a Node material check. Normal renderer texture
+// assignment, colour-space selection and extension handling remain unchanged.
+loader.register(parser=>({name:'PRIVATE_PNG_DECODE',async loadTexture(index){
+ const spec=parser.json.textures[index],image=parser.json.images[spec.source];
+ const {data,info}=await sharp(resolve(directory,image.uri)).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+ const texture=new DataTexture(new Uint8Array(data),info.width,info.height,RGBAFormat,UnsignedByteType);
+ texture.flipY=false;texture.name=image.name;texture.needsUpdate=true;
+ return texture;
+}}));
+const bytes=readFileSync(path),gltf=await loader.parseAsync(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),directory+'/');
+let cloth=null;gltf.scene.traverse(o=>{if(!o.isMesh)return;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m.name==='Apparel_Atlas')cloth=m;});
+assert.ok(cloth instanceof MeshPhysicalMaterial);
+assert.equal(cloth.sheen,1);assert.ok(Math.abs(cloth.sheenRoughness-.82)<1e-6);
+assert.equal(cloth.sheenColorMap.name,'Apparel_Sheen');assert.equal(cloth.normalMap.name,'Apparel_Normal');assert.equal(cloth.roughnessMap.name,'Apparel_MetalRough');
+const report={passed:true,materialClass:cloth.type,sheen:cloth.sheen,sheenRoughness:cloth.sheenRoughness,sheenColorSpace:cloth.sheenColorMap.colorSpace,normalColorSpace:cloth.normalMap.colorSpace,roughnessColorSpace:cloth.roughnessMap.colorSpace,normalScale:cloth.normalScale.toArray(),sheenPixels:[cloth.sheenColorMap.image.width,cloth.sheenColorMap.image.height],note:'Actual bundled loader and PNG content; CPU material check only, no WebGL performance claim'};
+writeFileSync('/tmp/granadero-coat-material-pilot/loader-proof.json',JSON.stringify(report,null,2)+'\n');console.log(report);

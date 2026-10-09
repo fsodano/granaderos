@@ -1,0 +1,170 @@
+--- a/web/lib/three/melee-contact-fit.ts
++++ b/web/lib/three/melee-contact-fit.ts
+@@ -26,7 +26,8 @@
+  private limbs=new Map<string,Limb>();private body:Object3D;
+  private soles=new Map<string,Sole>();
+  private soleVertices=new WeakMap<Sole,Map<number,{bone:Object3D;point:Vector3;weight:number}[]>>();
+- private soleScratch=new Vector3();
++ private soleScratch=new Vector3();private soleMinimumPoint=new Vector3();
++ private soleMinimum(sole:Sole){let minimum=Infinity;for(const index of sole.vertices)minimum=Math.min(minimum,this.solePoint(sole,index,this.soleMinimumPoint).y);return minimum;}
+  // Native attached footwear shares its bone world transform. Cache the
+  // immutable inverse-bind coordinates, keeping each current bone rotation.
+  // Morph or detached footwear keeps Three's full vertex deformation.
+@@ -50,7 +51,7 @@
+  private plan?:Plan;
+  private attemptedKey='';private attemptedTarget?:Object3D;
+  private nativePose:{node:Object3D;position:Vector3;quaternion:Quaternion}[]=[];
+- private pathPrevious?:Vector3[];private nativePath:NativePathSample[]=[];private pathPrioritized=false;
++ private rejectedSolePath=false;private pathPrevious?:Vector3[];private nativePath:NativePathSample[]=[];private pathPrioritized=false;
+  private walkingStep=0;private walkingFootSpeed=0;private pathFeet?:{time:number;points:Vector3[]};
+  private soleCenters(){return [...this.previewFit!.soles.values()].map(sole=>{const center=new Vector3();for(const index of sole.outline)center.add(this.previewFit!.solePoint(sole,index,new Vector3()));return center.divideScalar(sole.outline.length);});}
+  private measureWalkingGait(){
+@@ -214,7 +215,12 @@
+    const retained={...previousPlan,key,hand:correction.clone().applyQuaternion(rootRotation.clone().invert()),body:previousPlan.body.clone(),step:previousPlan.step.clone(),rearStep:previousPlan.rearStep.clone(),turn,yaw};
+    if(this.pathAllowed(retained,clip,support,action)){this.plan=retained;this.bodyAdvance=Math.hypot(retained.body.x,retained.body.z);return;}
+   }
+-  let accepted=false,acceptedPlan:Plan|undefined;
++  let accepted=false,acceptedPlan:Plan|undefined;const rejectedSoles=new Set<string>();
++  // Keep the original correction return first. Some native cuts need that
++  // contact offset to release sooner as their unchanged wrist sweeps back.
++  // Every candidate keeps the same complete reach, sole and gait-speed gates.
++  const handReturns=spec.name.startsWith('stand.slash.blade')?[.75,.7,.65,.6,.55,.5,.45].map(fraction=>clip.duration*fraction).filter(time=>time>contact!):[undefined];
++  for(const handRecovery of handReturns){
+   for(let advance=0;advance<=(spec.name.startsWith('stand.slash.blade')?this.walkingStep:.8)+.0001;advance+=.01){
+    for(let drop=0;drop<=.3801;drop+=.01){
+     body.copy(forward).multiplyScalar(advance);body.y=-drop;rearStep.set(0,0,0);
+@@ -236,13 +242,17 @@
+      step.copy(forward).multiplyScalar(advance*fraction);
+      const leg=this.limbs.get('foot_r')!,hip=hips.get('r')!.clone().add(body),foot=feet.get('r')!.clone().add(step);
+      if(hip.distanceTo(foot)>leg.first+leg.second-.008)continue;
+-     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration,pistol:spec.name==='stand.butt.short-gun',sabre:spec.name.startsWith('stand.slash.blade'),handRecovery:spec.name.startsWith('stand.slash.blade')?clip.duration*.75:undefined,turn,yaw};
++     const local=(value:Vector3)=>value.clone().applyQuaternion(rootRotation.clone().invert()),plan={key,cueId:cue.id,target,hand:local(correction),body:local(body),step:local(step),rearStep:local(rearStep),contact:contact!,duration:clip.duration,pistol:spec.name==='stand.butt.short-gun',sabre:spec.name.startsWith('stand.slash.blade'),handRecovery,turn,yaw};
++     // Foot motion is independent of the right-hand correction return.
++     const soleKey=`${advance}:${drop}:${fraction}`;
++     if(rejectedSoles.has(soleKey)||!this.stepsAllowed(plan))continue;
++     // Cache the native path at the admitted contact heading. A rejected
++     // whole-path turn sample may have left the preview at an earlier yaw.
+      if(plan.turn)this.sampleRoot.rotation.set(0,plan.turn.toYaw,0);
++     if(plan.sabre&&!this.nativePath.length)this.cacheNativePath(clip,action);
+      if(plan.sabre&&this.nativePath.length&&!this.wristPathReachable(plan))continue;
+      if(!this.pathAllowed(plan,clip,support,action)){
+-      // The common first fit avoids a redundant native pose pass. Build the
+-      // wrist cache only after an actual full-path arm rejection needs it.
+-      if(plan.sabre&&!this.nativePath.length&&this.previewFit!.handReachError>=1e-7){if(plan.turn)this.sampleRoot.rotation.set(0,plan.turn.toYaw,0);this.cacheNativePath(clip,action);}
++      if(this.rejectedSolePath)rejectedSoles.add(soleKey);
+       continue;
+      }
+      accepted=true;acceptedPlan=plan;break;
+@@ -250,6 +260,8 @@
+     if(accepted)break;
+    }
+    if(accepted)break;
++  }
++  if(accepted)break;
+   }
+   if(!accepted){this.rejectedFits++;return;}
+   this.plan=acceptedPlan;this.bodyAdvance=Math.hypot(body.x,body.z);
+@@ -308,7 +320,7 @@
+   this.nativePath=[];this.pathPrioritized=false;const count=Math.ceil(clip.duration*240);
+   for(let index=0;index<=count;index++){
+    const time=Math.min(clip.duration,index/240);this.previewFit!.restore();action.time=time;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);
+-   this.nativePath.push({time,shoulder:this.sample!.getObjectByName('upperarm_r')!.getWorldPosition(new Vector3()),hand:this.sample!.getObjectByName('hand_r')!.getWorldPosition(new Vector3()),hips:['l','r'].map(side=>this.sample!.getObjectByName(`thigh_${side}`)!.getWorldPosition(new Vector3())),feet:['l','r'].map(side=>this.sample!.getObjectByName(`foot_${side}`)!.getWorldPosition(new Vector3())),soleMin:['l','r'].map(side=>{const sole=this.previewFit!.soles.get(side)!;return Math.min(...sole.vertices.map(vertex=>this.previewFit!.solePoint(sole,vertex,new Vector3()).y));})});
++   this.nativePath.push({time,shoulder:this.sample!.getObjectByName('upperarm_r')!.getWorldPosition(new Vector3()),hand:this.sample!.getObjectByName('hand_r')!.getWorldPosition(new Vector3()),hips:['l','r'].map(side=>this.sample!.getObjectByName(`thigh_${side}`)!.getWorldPosition(new Vector3())),feet:['l','r'].map(side=>this.sample!.getObjectByName(`foot_${side}`)!.getWorldPosition(new Vector3())),soleMin:['l','r'].map(side=>{const sole=this.previewFit!.soles.get(side)!;return this.previewFit!.soleMinimum(sole);})});
+   }
+  }
+  private wristPathReachable(plan:Plan){
+@@ -335,23 +347,26 @@
+    if(dx*dx+dy*dy+dz*dz>reachSquared)return false;
+   }return true;
+  }
++ private stepsAllowed(plan:Plan){
++  // Check the unchanged native step and speed limits before sampling any
++  // wrist or whole-body path. They do not depend on the hand return time.
++  if(plan.sabre){
++   if(!this.walkingStep||!this.walkingFootSpeed||plan.step.length()>this.walkingStep||plan.rearStep.length()>this.walkingStep||1.5*(plan.step.length()+plan.rearStep.length())/(plan.contact*.9-plan.duration*.1)>this.walkingFootSpeed)return false;
++  }return true;
++ }
+  private pathAllowed(plan:Plan,clip:AnimationClip,support:ContactSupport,action:AnimationAction){
++  this.rejectedSolePath=false;
+   // A held weapon keeps its wrist socket even when the arm solver clamps.
+   // Require the complete pistol and sabre wrist paths to be reachable,
+   // beyond their contact and grip alone.
+-  if(plan.sabre){
+-   // One lunge cannot exceed a same-foot half walking stride. Its serial
+-   // boot transfers must also fit the actual exported walking sole speed.
+-   // Missing native gait data retains the exact finite source strike.
+-   if(!this.walkingStep||!this.walkingFootSpeed||plan.step.length()>this.walkingStep||plan.rearStep.length()>this.walkingStep||1.5*(plan.step.length()+plan.rearStep.length())/(plan.contact*.9-plan.duration*.1)>this.walkingFootSpeed)return false;
+-  }
++  if(!this.stepsAllowed(plan))return false;
+   const sample=(time:number)=>{
+    if(plan.turn)this.sampleRoot.rotation.set(0,plan.turn.fromYaw+angle(plan.turn.toYaw-plan.turn.fromYaw)*smooth(time/plan.turn.until),0);
+    this.previewFit!.restore();action.time=time;action.timeScale=0;this.sampleMixer!.update(0);this.sampleRoot.updateMatrixWorld(true);this.previewFit!.pose(plan,time);
+    if(plan.sabre){
+-    const minimum=Math.min(...[...this.previewFit!.soles.values()].flatMap(sole=>sole.vertices.map(index=>this.previewFit!.solePoint(sole,index,new Vector3()).y)))-this.sampleRoot.position.y;
+-    if(minimum<-.001||minimum>.008)return false;
+-    const points=this.soleCenters(),before=this.pathFeet;if(before&&time>before.time)for(let side=0;side<points.length;side++){const delta=points[side].clone().sub(before.points[side]);if(delta.length()/(time-before.time)>this.walkingFootSpeed+1e-6)return false;}this.pathFeet={time,points};}
++    const minimum=Math.min(...[...this.previewFit!.soles.values()].map(sole=>this.previewFit!.soleMinimum(sole)))-this.sampleRoot.position.y;
++    if(minimum<-.001||minimum>.008){this.rejectedSolePath=true;return false;}
++    const points=this.soleCenters(),before=this.pathFeet;if(before&&time>before.time)for(let side=0;side<points.length;side++){const delta=points[side].clone().sub(before.points[side]);if(delta.length()/(time-before.time)>this.walkingFootSpeed+1e-6){this.rejectedSolePath=true;return false;}}this.pathFeet={time,points};}
+    return this.floorAllowed(support)&&this.previewFit!.footReachError<.001&&(!(plan.pistol||plan.sabre)||this.previewFit!.handReachError<1e-7);
+   };
+   // Reject an obstructed contact footprint before checking its whole path.
+@@ -397,7 +412,7 @@
+     // rear stays planted, then gather. The added ground baseline returns
+     // continuously to the native guard over the final10% recovery.
+     // A support handoff or recovery cannot toggle a raised source foot.
+-    const sole=this.soles.get(side)!;const minimum=Math.min(...sole.vertices.map(index=>this.solePoint(sole,index,new Vector3()).y));target.y+=(this.position(this.root,new Vector3()).y+sole.floor-minimum)*groundWeight;
++    const sole=this.soles.get(side)!;const minimum=this.soleMinimum(sole);target.y+=(this.position(this.root,new Vector3()).y+sole.floor-minimum)*groundWeight;
+    }footTargets.set(side,target);
+   }
+   // Keep the exact held contact. The added hand correction then returns
+@@ -407,7 +422,7 @@
+   const lead=footTargets.get('r')!,rear=footTargets.get('l')!;if(plan.turn)rear.sub(this.position(this.root,new Vector3())).applyAxisAngle(up,turnRear).add(this.position(this.root,new Vector3()));lead.add(plan.step.clone().applyQuaternion(rootRotation).multiplyScalar(leadWeight));rear.add(plan.rearStep.clone().applyQuaternion(rootRotation).multiplyScalar(rearWeight));
+   rear.y+=rearArc*Math.min(.035,(plan.rearStep.length()+(plan.turn?.footDistance??0))*.1);lead.y+=leadArc*Math.min(.045,plan.step.length()*.1);
+   const support=plan.rearStep.length()>.005&&rearArc>0?'r':'l',sole=this.soles.get(support);
+-  if(sole&&!plan.sabre){const minimum=Math.min(...sole.vertices.map(index=>this.solePoint(sole,index,new Vector3()).y)),floor=this.position(this.root,new Vector3()).y+sole.floor;footTargets.get(support)!.y+=floor-minimum;}
++  if(sole&&!plan.sabre){const minimum=this.soleMinimum(sole),floor=this.position(this.root,new Vector3()).y+sole.floor;footTargets.get(support)!.y+=floor-minimum;}
+   // Flex the knees by the amount the measured leg reach needs at this
+   // sample, including the two recovery steps. Clamping the foot target
+   // would pull a planted sole upward or make it skate along the floor.
+--- a/tests/three-melee-facing-contact-fit.test.mjs
++++ b/tests/three-melee-facing-contact-fit.test.mjs
+@@ -10,6 +10,7 @@
+ const {createRendererSandboxBattle}=await import('../web/app/renderer-sandbox/fixtures.js');
+ const {presentedActBattle,actBattle}=await import('../game/tactical.js');
+ const {battleFrameDuration}=await import('../game/battle-playback.js');
++const {TILE_METRES}=await import('../web/lib/three/projection.ts');
+ const {Vector3,Triangle}=await import('../web/node_modules/three/build/three.module.js');
+ const {capsuleSurfaceGap}=await import('./skinned-surface-contact-fixture.mjs');
+ 
+@@ -21,11 +22,15 @@
+ function strikeGap(runtime,target){
+  runtime.root.updateMatrixWorld(true);const item=runtime.model.getObjectByName('primary:1810'),hilt=runtime.action.getClip().name.endsWith('.hilt'),faces=[];item.traverse(mesh=>{if(mesh.isMesh&&mesh.visible&&(hilt?/Leather_Grip|Crossguard|Pommel/:/Curved_Blade/).test(mesh.name))faces.push(...meshFaces(mesh));});assert.ok(faces.length);const surface=bodyFaces(target);let minimum=Infinity;for(const face of faces)for(let i=0;i<3;i++){if(face[i].distanceToSquared(face[(i+1)%3])<1e-12)continue;minimum=Math.min(minimum,capsuleSurfaceGap(face[i],face[(i+1)%3],0,surface));if(minimum<=1e-8)return 0;}return minimum;
+ }
+-async function combat(posture='standing',appearance){
++async function combat(posture='standing',appearance,contactOffset=0){
+  const state=createRendererSandboxBattle('combat'),order={type:'melee',unitId:'sabre',targetId:'target-sabre'};
+  if(appearance)state.units.find(u=>u.id==='sabre').spriteAppearance=appearance;state.units.find(u=>u.id==='target-sabre').stance=posture;state.units.find(u=>u.id==='target-sabre').y++;
+  const result=presentedActBattle(state,order),durationMs=result.frames.map(battleFrameDuration),actionDurationMs=durationMs.reduce((a,b)=>a+b,0),entries=new Map(),trace=[],reads=[],revealed=new Set();let latest=[],currentNow=-200;
+- const show=(state,frame,now)=>presentActors(state,admittedActors(state,state.units.filter(u=>u.side==='player'),revealed),{},revealed,{selected:'sabre',mode:'melee',frame,now});latest=show(state,undefined,-200);assert.equal(latest.length,13);assert.equal(latest.findIndex(v=>v.id==='sabre'),2);assert.equal(latest.findIndex(v=>v.id==='target-sabre'),9);
++ const show=(state,frame,now)=>{
++  const actor=state.units.find(u=>u.id==='sabre'),target=state.units.find(u=>u.id==='target-sabre'),direction=new Vector3(target.x-actor.x,0,target.y-actor.y).normalize();
++  const positions=contactOffset?{'unit:target-sabre':{x:target.x-direction.x*contactOffset/TILE_METRES,y:target.y-direction.z*contactOffset/TILE_METRES,moving:false}}:{};
++  return presentActors(state,admittedActors(state,state.units.filter(u=>u.side==='player'),revealed),positions,revealed,{selected:'sabre',mode:'melee',frame,now});
++ };latest=show(state,undefined,-200);assert.equal(latest.length,13);assert.equal(latest.findIndex(v=>v.id==='sabre'),2);assert.equal(latest.findIndex(v=>v.id==='target-sabre'),9);
+  for(const visual of latest){const asset=await publishedActor(visual.appearance,0),runtime=new ActorRuntime(asset,visual,undefined,target=>{const entry=entries.get(target.key),model=resolveContactTargetModel(target,latest,entry);reads.push({now:currentNow,target:target.key,accepted:Boolean(model),targetTicked:trace.some(event=>event[0]==='tick'&&event[1]===target.key)});return model;});const nativeTick=runtime.tick.bind(runtime),nativeUpdate=runtime.update.bind(runtime);runtime.tick=(...args)=>{trace.push(['tick',runtime.visual.key]);return nativeTick(...args);};runtime.update=(...args)=>{trace.push(['update',args[0].key]);return nativeUpdate(...args);};entries.set(visual.key,{runtime,visual,pending:false,error:false});}
+  const run=(now,{refresh=true,active=()=>true,ambientPaused=false,reducedMotion=false}={})=>{if(refresh)latest=latest.map(visual=>({...visual}));const delta=(now-currentNow)/1000;currentNow=now;trace.length=0;const errors=[],activeActors=advanceSceneActors({visuals:latest,entry:key=>entries.get(key),active,delta,now,ambientPaused,reducedMotion,report:error=>errors.push(error)});assert.deepEqual(errors,[]);const ticks=trace.filter(event=>event[0]==='tick').map(event=>event[1]);assert.equal(new Set(ticks).size,ticks.length,'Each visible actor advances exactly once');assert.equal(ticks.length,activeActors);for(const visual of latest)assert.equal(entries.get(visual.key).visual,visual,'Every current identity is rebound before target resolution');return {ticks,activeActors};};
+  run(-100);run(0);
+@@ -35,7 +40,11 @@
+ 
+ test('a paid zero-advance forehand turns during preparation and remains finite through its complete native recovery',async()=>{
+  for(const posture of ['standing','crouched']){
+-  const f=await combat(posture),before=JSON.stringify(f.result.state),expected=actBattle(f.state,f.order);let startedAt=0;
++  // The revised native forehand needs a 4 cm advance against the old cell
++  // centre fixture. A 6 cm in-cell presentation offset makes the actual
++  // standing surface reachable with no step, preserving the zero-distance
++  // transfer regression without changing the paid cells or easing its gates.
++  const f=await combat(posture,undefined,posture==='standing'?.06:0),before=JSON.stringify(f.result.state),expected=actBattle(f.state,f.order);let startedAt=0;
+   for(let index=0;index<f.result.frames.length;index++){
+    const shownFrame=frame(f,index,startedAt),state={...shownFrame.state,presentationVisibleIds:shownFrame.state.visibleIds};f.latest=f.show(state,shownFrame,startedAt);
+    const duration=f.durationMs[index],times=duration?Array.from({length:Math.ceil(duration/(1000/60))+1},(_,i)=>Math.min(duration-.001,i*1000/60)):[0];if(shownFrame.type==='impact')times.push((.9-f.attacker.clipSpec.markers.contact)/(f.attacker.action.getClip().duration-f.attacker.clipSpec.markers.contact)*duration);times.sort((a,b)=>a-b);

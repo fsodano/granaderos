@@ -1,0 +1,79 @@
+"""Optional short Granadero stubble fitted to the final native LOD surface.
+
+Separate tapered hairs; no beard shell, facial displacement or new material.
+"""
+import math
+import random
+from bisect import bisect_left
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+from anatomy_surface import surface_weights
+
+STUBBLE_PRESETS={'granadero'}
+
+def add_short_stubble(ctx,skin,lod):
+    if ctx.get('preset') not in STUBBLE_PRESETS or lod!=0:return None
+    rng=random.Random(148901);eye_z=ctx['facial_eye_z']
+    def g(v,c,w):return math.exp(-((v-c)/w)**2)
+    def density(p,n):
+        x=abs(p.x);z=p.z
+        if not (.0<=x<.086 and eye_z-.108<z<eye_z+.009 and p.y<-.056 and n.y<-.18):return 0
+        # Keep roots and their tips outside the real lip opening and vermilion.
+        if x<.034 and eye_z-.077<z<eye_z-.054:return 0
+        chin=.90*g(x,0,.036)*g(z,eye_z-.088,.023)
+        jaw=.95*g(x,.048,.025)*g(z,eye_z-.076,.022)
+        moustache=.88*g(x,0,.023)*g(z,eye_z-.0475,.0065)
+        sideburn=.85*g(x,.072,.011)*g(z,eye_z-.021,.034)
+        d=1-(1-chin)*(1-jaw)*(1-moustache)*(1-sideburn)
+        # Unequal density follows broad skin regions, without a regular grid.
+        d*=.83+.13*math.sin(p.x*87+p.z*53)+.04*math.sin(p.z*181-p.x*119)
+        return max(0,min(1,(d-.15)/.85))
+    triangles=[];cumulative=[];total=0
+    for face in skin.data.polygons:
+        ids=list(face.vertices)
+        for j in range(1,len(ids)-1):
+            vs=[skin.data.vertices[i] for i in (ids[0],ids[j],ids[j+1])]
+            p=sum((v.co for v in vs),Vector())/3;n=sum((v.normal for v in vs),Vector()).normalized()
+            if density(p,n)<.01:continue
+            area=(vs[1].co-vs[0].co).cross(vs[2].co-vs[0].co).length/2
+            total+=area;triangles.append((face.index,vs));cumulative.append(total)
+    straps=[]
+    for obj in ctx['objects']:
+        if obj.type=='MESH'and obj.name.startswith('Shako_Chinstrap'):
+            straps.append(BVHTree.FromPolygons([obj.matrix_world@v.co for v in obj.data.vertices],[list(p.vertices)for p in obj.data.polygons],all_triangles=False))
+    coords=[];polys=[];weights=[];uvs=[];tones=[];roots=[];cells={};lengths=[];gaps=[];min_spacing=.00055
+    for attempt in range(60000):
+        if len(roots)>=2700:break
+        fi,vs=triangles[bisect_left(cumulative,rng.random()*total)]
+        a=math.sqrt(rng.random());b=rng.random();blend=(1-a,a*(1-b),a*b)
+        p=sum((v.co*w for v,w in zip(vs,blend)),Vector());n=sum((v.normal*w for v,w in zip(vs,blend)),Vector()).normalized()
+        if rng.random()>density(p,n):continue
+        cell=tuple(math.floor(c/min_spacing)for c in p)
+        if any((p-q).length<min_spacing for dx in(-1,0,1)for dy in(-1,0,1)for dz in(-1,0,1)for q in cells.get((cell[0]+dx,cell[1]+dy,cell[2]+dz),[])):continue
+        down=Vector((.10 if p.x>0 else -.10,0,-1));tangent=down-n*down.dot(n)
+        if tangent.length<.01:continue
+        tangent.normalize();side=n.cross(tangent).normalized();tangent=(tangent+side*rng.uniform(-.60,.60)).normalized()
+        direction=(tangent*rng.uniform(.65,.92)+n*rng.uniform(.35,.65)).normalized()
+        length=rng.uniform(.0004,.0010);tip=p+n*.000030+direction*length
+        # Root clearance is measured against the finished LOD chinstrap.
+        clearance=min((tree.find_nearest(q)[3] for tree in straps for q in(p,tip)),default=1)
+        if clearance<.0016:continue
+        radius=rng.uniform(.000025,.000045);root=p+n*.000018
+        across=direction.cross(n)
+        if across.length<.01:across=side
+        across.normalize();second=direction.cross(across).normalized();start=len(coords)
+        w=surface_weights(skin,p,fi)
+        for j in range(3):
+            angle=math.tau*j/3;coords.append(root+radius*(across*math.cos(angle)+second*math.sin(angle)));weights.append(w)
+        coords.append(tip);weights.append(w)
+        for j in range(3):polys.append((start+j,start+(j+1)%3,start+3));uvs.append(((.25,.25),(.75,.25),(.50,.75)))
+        polys.append((start+2,start+1,start));uvs.append(((.25,.25),(.75,.25),(.50,.75)))
+        shade=rng.uniform(.53,1.10);tone=(shade,min(1,shade*.94),min(1,shade*.86),1);tones.extend([tone]*4)
+        roots.append(p);lengths.append(length);gaps.append(clearance);cells.setdefault(cell,[]).append(p)
+    obj=ctx['mesh']('Natural_Short_Stubble',coords,polys,ctx['M']['hair'],weights,uvs)
+    obj['retain_stubble']=True
+    colour=obj.data.color_attributes.new(name='Human_Surface_Tone',type='FLOAT_COLOR',domain='POINT')
+    for entry,tone in zip(colour.data,tones):entry.color=tone
+    obj.data.color_attributes.active_color_index=0;obj.data.color_attributes.render_color_index=0
+    print('STUBBLE_STUDY',{'hairs':len(roots),'triangles':len(polys),'lengthMm':(1000*min(lengths),1000*max(lengths)),'minimumChinstrapClearanceMm':min(gaps)*1000},flush=True)
+    return obj

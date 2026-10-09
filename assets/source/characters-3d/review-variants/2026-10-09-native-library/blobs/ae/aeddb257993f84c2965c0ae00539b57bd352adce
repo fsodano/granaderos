@@ -1,0 +1,19 @@
+from pathlib import Path
+import json,sys,hashlib
+BASE=Path('/tmp/granadero-outward-detail-pilot')
+exec((BASE/'ellipsoid-only-proof/prove-outward-details.py').read_text().split("report={'before':")[0],globals())
+results=[]
+for lod in range(3):
+ name=f'granadero-lod{lod}.glb';a,ad,ah=read(BEFORE/name);b,bd,bh=read(AFTER/name)
+ pairs=[]
+ for am,bm in zip(a['meshes'],b['meshes']):
+  for ap,bp in zip(am['primitives'],bm['primitives']):
+   attrs={n:payload(a,ad,i)==payload(b,bd,bp['attributes'][n]) for n,i in ap['attributes'].items()}
+   material=a['materials'][ap['material']]['name']
+   targeteq=len(ap.get('targets',[]))==len(bp.get('targets',[])) and all({n:payload(a,ad,i)for n,i in at.items()}=={n:payload(b,bd,i)for n,i in bt.items()}for at,bt in zip(ap.get('targets',[]),bp.get('targets',[])))
+   pairs.append({'mesh':am['name'],'material':material,'attributes':attrs,'indicesEqual':payload(a,ad,ap['indices'])==payload(b,bd,bp['indices']),'morphTargetsEqual':targeteq})
+ results.append({'lod':lod,'beforeSha256':ah,'afterSha256':bh,'beforeTriangles':sum(a['accessors'][p['indices']]['count']//3 for m in a['meshes']for p in m['primitives']),'afterTriangles':sum(b['accessors'][p['indices']]['count']//3 for m in b['meshes']for p in m['primitives']),'nativeSignatureEqual':rig.native_signature(BEFORE/name)==rig.native_signature(AFTER/name),'nodesEqual':a['nodes']==b['nodes'],'materialsEqual':a['materials']==b['materials'],'imagesEqual':a['images']==b['images'],'textureBytesEqual':all((BEFORE/i['uri']).read_bytes()==(AFTER/i['uri']).read_bytes()for i in a['images']),'primitives':pairs})
+(BASE/'three-lod-preservation.json').write_text(json.dumps(results,indent=2)+'\n')
+for r in results:
+ print(json.dumps({k:v for k,v in r.items()if k!='primitives'}))
+ print('Skin unchanged:',all(all(x['attributes'].values())and x['indicesEqual']and x['morphTargetsEqual'] for x in r['primitives']if x['material']=='Skin'))

@@ -1,0 +1,139 @@
+"""Private left sleeve construction trial. Native topology and skin stay fixed."""
+import math, json, hashlib
+from pathlib import Path
+import bpy
+from mathutils import Vector, Matrix, Quaternion
+from mathutils.bvhtree import BVHTree
+ROOT=Path('/tmp/granadero-coat-sleeve-pilot')
+ATTRIBUTE='Pilot_Sleeve_L'
+
+
+def smooth(a,b,x):
+    u=max(0,min(1,(x-a)/(b-a)));return u*u*(3-2*u)
+
+
+def location(point,heads):
+    shoulder=heads['upperarm_l'];elbow=heads['lowerarm_l'];wrist=heads['hand_l']
+    upper=(elbow-shoulder).normalized();lower=(wrist-elbow).normalized()
+    candidates=[]
+    for a,b,offset in ((shoulder,elbow,-(elbow-shoulder).length),(elbow,wrist,0)):
+        axis=(b-a).normalized();along=max(0,min((b-a).length,(point-a).dot(axis)))
+        centre=a+axis*along;candidates.append(((point-centre).length,offset+along,centre,axis))
+    return min(candidates,key=lambda a:a[0])
+
+
+def prepare_envelope(coat,heads):
+    before=[[float(c) for c in v.co] for v in coat.data.vertices]
+    def signature():
+        return {'polygons':[list(p.vertices) for p in coat.data.polygons],
+                'weights':[[(coat.vertex_groups[g.group].name,g.weight) for g in v.groups] for v in coat.data.vertices],
+                'uv':[[list(v.uv) for v in layer.data] for layer in coat.data.uv_layers]}
+    signatures=signature();mask=coat.data.attributes.new(name=ATTRIBUTE,type='FLOAT',domain='POINT')
+    edges={}
+    for p in coat.data.polygons:
+        ids=list(p.vertices)
+        for a,b in zip(ids,ids[1:]+ids[:1]):edge=tuple(sorted((a,b)));edges[edge]=edges.get(edge,0)+1
+    boundary={i for edge,n in edges.items() if n==1 for i in edge}
+    data=[]
+    for v in coat.data.vertices:
+        p=v.co.copy();radius,s,centre,axis=location(p,heads)
+        weight=sum(g.weight for g in v.groups if coat.vertex_groups[g.group].name in ('upperarm_l','lowerarm_l'))
+        amount=smooth(.72,.96,weight)*smooth(-.19,-.105,s)*(1-smooth(.095,.165,s))
+        amount*=smooth(.148,.215,(p-heads['upperarm_l']).length)*smooth(.095,.145,(p-heads['hand_l']).length)
+        if v.index in boundary or radius>.115 or p.x<.18:amount=0
+        mask.data[v.index].value=amount
+        data.append((s,centre,axis,radius))
+    # Replace small radial muscle variations with a softly tapered envelope.
+    # Longitudinal stations share broad circumference estimates, not a new
+    # independently cut sleeve panel. The native UV loops and weights stay.
+    stations=[]
+    for k in range(17):
+        s=-.20+k*.025;sample=sorted(radius for (along,centre,axis,radius),v in zip(data,coat.data.vertices)
+            if abs(along-s)<.032 and mask.data[v.index].value>.025)
+        if sample:stations.append((s,sample[int((len(sample)-1)*.70)]))
+    def envelope(s):
+        weighted=[(radius,math.exp(-((s-c)/.046)**2)) for c,radius in stations]
+        return sum(r*w for r,w in weighted)/max(1e-8,sum(w for r,w in weighted))
+    moved=[]
+    for v,(s,centre,axis,radius) in zip(coat.data.vertices,data):
+        amount=mask.data[v.index].value
+        if not amount:continue
+        radial=(v.co-centre).normalized()
+        # A broad 8-12 mm allowance. Upper/lower transitions are long enough
+        # to retain the exact shoulder and cuff geometry without new seams.
+        target=max(radius,envelope(s)+.0095)
+        delta=min(.015,target-radius)*amount
+        v.co+=radial*delta;moved.append(delta)
+    coat.data.update();assert signature()==signatures
+    assert all(tuple(coat.data.vertices[i].co)==tuple(before[i]) for i in boundary)
+    ROOT.joinpath('envelope-proof.json').write_text(json.dumps({'vertices':len(before),'changed':len(moved),'maxDisplacementMm':max(moved)*1000,'stations':stations,'boundariesUnchanged':len(boundary),'sourceTopologyUVWeightsUnchanged':True},indent=2))
+    return mask
+
+
+def fold_mask(coat,index):
+    attr=coat.data.attributes.get(ATTRIBUTE)
+    return attr.data[index].value if attr is not None else 0
+
+
+def bake_elbow_corrective(ctx):
+    if ctx['preset']!='granadero':return
+    rig=ctx['rig'];outfit=next(o for o in ctx['objects'] if o.name.startswith('Human_outfit'))
+    mask=outfit.data.attributes.get(ATTRIBUTE);assert mask is not None
+    selected=[v.index for v in outfit.data.vertices if mask.data[v.index].value>1e-5]
+    saved={b.name:b.matrix_basis.copy() for b in rig.pose.bones}
+    for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+    heads=ctx['heads'];shoulder=heads['upperarm_l'];elbow=heads['lowerarm_l'];wrist=heads['hand_l']
+    upper=(elbow-shoulder).normalized();lower=(wrist-elbow).normalized();bind=upper.angle(lower)
+    normal=upper.cross(lower).normalized();b=rig.pose.bones['lowerarm_l']
+    b.rotation_mode='QUATERNION';b.rotation_quaternion=Quaternion(b.bone.matrix_local.to_quaternion().inverted()@normal,math.radians(110)-bind)
+    bpy.context.view_layer.update()
+    transforms={bone.name:bone.matrix@bone.bone.matrix_local.inverted() for bone in rig.pose.bones}
+    def skin(weights):
+        result=Matrix(((0,0,0,0),)*4);total=0
+        for name,weight in weights:
+            if name in transforms:result+=transforms[name]*weight;total+=weight
+        return result*(1/total) if total else Matrix.Identity(4)
+    points=ctx['source_points'];used=sorted({i for f in ctx['source_faces'] for i,_ in f});lookup={i:j for j,i in enumerate(used)}
+    body_points=[skin(ctx['source_assignments'][i].items())@points[i] for i in used]
+    body=BVHTree.FromPolygons(body_points,[[lookup[i] for i,_ in f] for f in ctx['source_faces']])
+    matrices={i:skin([(outfit.vertex_groups[g.group].name,g.weight) for g in outfit.data.vertices[i].groups]) for i in selected}
+    original={i:matrices[i]@outfit.data.vertices[i].co for i in selected};target={i:p.copy() for i,p in original.items()}
+    # The compressed side points toward the inside of the native elbow bend.
+    posed_sh=rig.pose.bones['upperarm_l'].head;posed_el=rig.pose.bones['lowerarm_l'].head;posed_wr=rig.pose.bones['hand_l'].head
+    inner=((posed_sh-posed_el).normalized()+(posed_wr-posed_el).normalized()).normalized()
+    adjacency={i:set() for i in selected};chosen=set(selected)
+    for poly in outfit.data.polygons:
+        ids=list(poly.vertices)
+        for a,b in zip(ids,ids[1:]+ids[:1]):
+            if a in chosen and b in chosen:adjacency[a].add(b);adjacency[b].add(a)
+    for iteration in range(10):
+        prior={i:p.copy() for i,p in target.items()}
+        for i in selected:
+            if not adjacency[i]:continue
+            mean=sum((prior[j] for j in adjacency[i]),Vector())/len(adjacency[i])
+            amount=mask.data[i].value
+            p=prior[i].lerp(mean,.22*amount)
+            nearest,n,face,distance=body.find_nearest(p)
+            if nearest is None:continue
+            rest=outfit.data.vertices[i].co;_,s,centre,axis=location(rest,heads)
+            direction=(p-posed_el).normalized();inside=smooth(-.15,.55,direction.dot(inner))
+            # Unequal rounded folds are carried by the bent sleeve only.
+            # Troughs retain a real cloth/body gap; the back of the elbow gets
+            # a broader, quiet surface instead of three permanent muscle ribs.
+            fold=.0065*math.exp(-((s+.026)/.023)**2)+.0045*math.exp(-((s-.036)/.019)**2)
+            clearance=.010+inside*fold
+            signed=(p-nearest).dot(n)
+            if signed<clearance:p+=n*(clearance-signed)*amount
+            target[i]=p
+    if not outfit.data.shape_keys:outfit.shape_key_add(name='Basis')
+    key=outfit.shape_key_add(name='coat_elbow_l');changes=[]
+    for i in selected:
+        delta=matrices[i].inverted_safe()@target[i]-outfit.data.vertices[i].co
+        # The arm boundary is locked by zero mask, and the nearby rows taper
+        # the correction to the unchanged shoulder/cuff material.
+        key.data[i].co=outfit.data.vertices[i].co+delta
+        changes.append(delta.length)
+    key.value=0
+    for name,matrix in saved.items():rig.pose.bones[name].matrix_basis=matrix
+    bpy.context.view_layer.update()
+    ROOT.joinpath('corrective-proof.json').write_text(json.dumps({'name':key.name,'selectedVertices':len(selected),'bindAngleDegrees':math.degrees(bind),'authoredAngleDegrees':110,'maxRestMorphDeltaMm':max(changes)*1000,'nativeSkeletonWeightsUnchanged':True,'driver':'clamp((native elbow angle - bind angle) / (110deg - bind angle), 0, 1)','boundaryMaskAttribute':ATTRIBUTE},indent=2))

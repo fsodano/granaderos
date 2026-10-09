@@ -1,0 +1,62 @@
+"""Put only the source-built shirt primitive into the current Worker body.
+
+The current body is authoritative for skin/hair, materials, rig, and all other
+surfaces. Migrate the old apparel tile coordinates by matching the unchanged
+source coat; verify that every sampled tile has identical pixels.
+"""
+from pathlib import Path
+import copy,hashlib,json,struct,sys,shutil
+from PIL import Image
+R=Path('/tmp/granadero-worker-neckline-pilot');ROOT=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos')
+BASE=R/'current-base';OUT=R/'composed-models';GEN=R/'models';sys.path.insert(0,str(R/'source'));from gltf_pack import pack
+if not BASE.exists():shutil.copytree(ROOT/'web/public/models/characters',BASE)
+if not OUT.exists():shutil.copytree(BASE,OUT)
+def read(p):
+ raw=p.read_bytes();n=struct.unpack_from('<I',raw,12)[0];return json.loads(raw[20:20+n]),bytearray(raw[28+n:])
+def write(p,d,b):
+ b.extend(b'\0'*(-len(b)%4));d['buffers']=[{'byteLength':len(b)}];j=json.dumps(d,separators=(',',':')).encode();j+=b' '*(-len(j)%4)
+ p.write_bytes(struct.pack('<III',0x46546c67,2,28+len(j)+len(b))+struct.pack('<II',len(j),0x4e4f534a)+j+struct.pack('<II',len(b),0x004e4942)+b)
+def primitive(d):
+ found=[(i,m)for i,m in enumerate(d['meshes'])if m['name']=='Tailored_Coat'];assert len(found)==1;mi,m=found[0];assert len(m['primitives'])==1;return mi,m['primitives'][0]
+def payload(d,b,i):
+ a=d['accessors'][i];v=d['bufferViews'][a['bufferView']];return bytes(b[v.get('byteOffset',0):v.get('byteOffset',0)+v['byteLength']])
+def uv(d,b,i):
+ a=d['accessors'][i];v=d['bufferViews'][a['bufferView']];off=v.get('byteOffset',0)+a.get('byteOffset',0);assert not v.get('byteStride') and a['type']=='VEC2'and a['componentType']==5126
+ return [struct.unpack_from('<ff',b,off+8*j)for j in range(a['count'])]
+old,blob=read(BASE/'worker-lod0.glb');native,nblob=read(R/'baseline-models/worker-lod0.glb');new,extra=read(GEN/'worker-lod0.glb')
+assert old['nodes']==new['nodes']==native['nodes'];assert old['skins'][0]['joints']==new['skins'][0]['joints']
+mi,target=primitive(old);_,prior=primitive(native);_,source=primitive(new)
+assert not source.get('targets')and not target.get('targets')
+for key in prior['attributes']:
+ if key!='TEXCOORD_0':assert payload(native,nblob,prior['attributes'][key])==payload(old,blob,target['attributes'][key]),key
+assert payload(native,nblob,prior['indices'])==payload(old,blob,target['indices'])
+mapping={}
+for a,b in zip(uv(native,nblob,prior['attributes']['TEXCOORD_0']),uv(old,blob,target['attributes']['TEXCOORD_0'])):
+ key=tuple(int(v*4)for v in a);delta=tuple(round(v-u,7)for u,v in zip(a,b))
+ if key in mapping:assert mapping[key]==delta
+ mapping[key]=delta
+for i in range(3):
+ a=Image.open(R/'baseline-models'/native['images'][i]['uri']);b=Image.open(BASE/old['images'][i]['uri']);assert a.size==b.size==(1024,1024)
+ for (x,y),(dx,dy)in mapping.items():
+  nx=x+round(dx*4);ny=y+round(dy*4)
+  assert a.crop((x*256,y*256,(x+1)*256,(y+1)*256)).tobytes()==b.crop((nx*256,ny*256,(nx+1)*256,(ny+1)*256)).tobytes(),(i,x,y,nx,ny)
+views={};accessors={}
+def add_view(i):
+ if i in views:return views[i]
+ v=copy.deepcopy(new['bufferViews'][i]);start=v.get('byteOffset',0);data=extra[start:start+v['byteLength']];blob.extend(b'\0'*(-len(blob)%4));v['byteOffset']=len(blob);v['buffer']=0;blob.extend(data);old['bufferViews'].append(v);views[i]=len(old['bufferViews'])-1;return views[i]
+def add_accessor(i):
+ if i in accessors:return accessors[i]
+ a=copy.deepcopy(new['accessors'][i])
+ if 'bufferView'in a:a['bufferView']=add_view(a['bufferView'])
+ for entry in a.get('sparse',{}).values():
+  if isinstance(entry,dict)and'bufferView'in entry:entry['bufferView']=add_view(entry['bufferView'])
+ old['accessors'].append(a);accessors[i]=len(old['accessors'])-1;return accessors[i]
+p=copy.deepcopy(source);p['attributes']={k:add_accessor(a)for k,a in p['attributes'].items()};p['indices']=add_accessor(p['indices']);p['material']=target['material']
+a=old['accessors'][p['attributes']['TEXCOORD_0']];v=old['bufferViews'][a['bufferView']];off=v.get('byteOffset',0)+a.get('byteOffset',0)
+for j,point in enumerate(uv(new,extra,source['attributes']['TEXCOORD_0'])):
+ delta=mapping[tuple(int(v*4)for v in point)];struct.pack_into('<ff',blob,off+j*8,*(v+d for v,d in zip(point,delta)))
+old['meshes'][mi]['primitives'][0]=p;path=OUT/'worker-lod0.glb';write(path,old,blob);raw,final=pack(path,{})
+record=dict(lod=0,url='/models/characters/worker-lod0.glb',triangles=sum(final['accessors'][p['indices']]['count']//3 for m in final['meshes']for p in m['primitives']),bytes=len(raw),drawCalls=sum(len(m['primitives'])for m in final['meshes']),sha256=hashlib.sha256(raw).hexdigest())
+manifest=json.loads((OUT/'manifest.json').read_text());manifest['appearances']['worker']['lods'][0]=record;(OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+proof=dict(record=record,baseSha256=hashlib.sha256((BASE/'worker-lod0.glb').read_bytes()).hexdigest(),generatedSha256=hashlib.sha256((GEN/'worker-lod0.glb').read_bytes()).hexdigest(),nativeNodesExact=True,existingCoatExceptAtlasUVExact=True,apparelTilePixelsExact=True,atlasRemap=[dict(tile=k,delta=v)for k,v in mapping.items()],scope='Only Tailored_Coat primitive replaced; current materials, images, skin, hair, all other surfaces and rig retained')
+(R/'composition.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof,indent=2))

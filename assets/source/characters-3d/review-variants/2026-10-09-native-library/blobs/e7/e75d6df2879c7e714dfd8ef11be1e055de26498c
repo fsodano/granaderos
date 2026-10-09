@@ -1,0 +1,50 @@
+--- a/assets/source/characters-3d/authoring/character.py
++++ b/assets/source/characters-3d/authoring/character.py
+@@ -288,7 +288,8 @@
+     # Sculpt the final cloth surface so subdivision does not erase the short
+     # elbow folds. This moves cloth only; native skin and bones stay intact.
+     if preset in ('granadero','royalist'):
+-        from uniform_folds import compression_relief
++        from uniform_folds import compression_relief, relax_neck_gathers
++        relax_neck_gathers(coat)
+     for vertex in coat.data.vertices:
+         relief=compression_relief(vertex.co,vertex.normal,heads) if preset in ('granadero','royalist') else cloth_relief(vertex.co,vertex.normal,heads,'coat')
+         vertex.co+=vertex.normal*relief
+--- a/assets/source/characters-3d/authoring/uniform_folds.py
++++ b/assets/source/characters-3d/authoring/uniform_folds.py
+@@ -60,3 +60,35 @@
+     neck_fade = max(0, min(1, (1.478 - point.z) / .045))
+     wrist_fade = max(0, min(1, (-along - .075) / .025)) if delta.length < .14 else 1
+     return max(-.0050, min(.0100, value * neck_fade * wrist_fade))
++
++
++def relax_neck_gathers(coat):
++    """Spread narrow native neck valleys into the upper cloth, not its seam."""
++    neighbours=[[] for _ in coat.data.vertices];edges={}
++    for face in coat.data.polygons:
++        ids=list(face.vertices)
++        for a,b in zip(ids,ids[1:]+ids[:1]):
++            key=tuple(sorted((a,b)));edges[key]=edges.get(key,0)+1
++    boundary=set()
++    for (a,b),count in edges.items():
++        neighbours[a].append(b);neighbours[b].append(a)
++        if count==1:boundary.update((a,b))
++    original=[v.co.copy() for v in coat.data.vertices]
++    amounts=[]
++    for i,p in enumerate(original):
++        if i in boundary or p.z>=1.525 or p.z<=1.365 or abs(p.x)>=.175 or p.y>=-.025:
++            amounts.append(0);continue
++        zfade=min(1,(1.528-p.z)/.015,(p.z-1.365)/.035)
++        xfade=min(1,(.175-abs(p.x))/.035)
++        amounts.append(.48*max(0,zfade)*max(0,xfade))
++    for _ in range(8):
++        prior=[v.co.copy() for v in coat.data.vertices]
++        for i,(vertex,amount) in enumerate(zip(coat.data.vertices,amounts)):
++            if not amount or not neighbours[i]:continue
++            mean=sum((prior[j] for j in neighbours[i]),Vector())/len(neighbours[i])
++            delta=prior[i].lerp(mean,amount)-original[i]
++            if delta.length>.008:delta=delta.normalized()*.008
++            vertex.co=original[i]+delta
++    assert all((coat.data.vertices[i].co-original[i]).length==0 for i in boundary)
++    coat.data.update()
++

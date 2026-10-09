@@ -1,0 +1,12 @@
+import json,struct,hashlib
+from pathlib import Path
+R=Path('/tmp/granadero-worker-neckline-pilot')
+def read(p):
+ b=p.read_bytes();n=struct.unpack_from('<I',b,12)[0];return json.loads(b[20:20+n]),b[28+n:]
+def payload(d,b,i):
+ a=d['accessors'][i];v=d['bufferViews'][a['bufferView']];return b[v.get('byteOffset',0):v.get('byteOffset',0)+v['byteLength']]
+a,x=read(R/'baseline-models/worker-lod0.glb');b,y=read(Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/web/public/models/characters/worker-lod0.glb'))
+p=next(m for m in a['meshes']if m['name']=='Tailored_Coat')['primitives'][0];q=next(m for m in b['meshes']if m['name']=='Tailored_Coat')['primitives'][0]
+print('nodesEqual',a['nodes']==b['nodes'])
+print({k:payload(a,x,v)==payload(b,y,q['attributes'][k])for k,v in p['attributes'].items()})
+print('indicesEqual',payload(a,x,p['indices'])==payload(b,y,q['indices']))

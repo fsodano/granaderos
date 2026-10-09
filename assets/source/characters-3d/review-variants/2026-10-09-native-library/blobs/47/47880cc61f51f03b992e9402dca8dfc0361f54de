@@ -1,0 +1,28 @@
+"""Regular upper collar rows with an unchanged sewn native base."""
+import math
+from mathutils import Vector
+
+def collar_directions(vertices):
+    points=[(v.co.x,v.co.y+.036,i) for i,v in enumerate(vertices)]
+    # The native sewn edge has small inward detours at its rear. Follow its
+    # outer angular order without copying those detours into the visible rim.
+    ordered=sorted(points)
+    def cross(o,a,b):return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])
+    halves=[]
+    for sequence in (ordered,list(reversed(ordered))):
+        h=[]
+        for p in sequence:
+            while len(h)>=2 and cross(h[-2],h[-1],p)<=0:h.pop()
+            h.append(p)
+        halves.extend(h[:-1])
+    ids=sorted({p[2] for p in halves});count=len(vertices);angles=[None]*count
+    for k,a in enumerate(ids):
+        b=ids[(k+1)%len(ids)];end=b if b>a else b+count
+        start=math.atan2(points[a][1],points[a][0]);stop=math.atan2(points[b][1],points[b][0])
+        delta=(stop-start)%math.tau
+        if delta>math.pi:raise ValueError('The sewn collar must retain its native outer winding')
+        for j in range(a,end):angles[j%count]=start+delta*(j-a)/(end-a)
+    for i in range(1,count):
+        while angles[i]<angles[i-1]:angles[i]+=math.tau
+    step=math.tau/count;phase=sum(a-i*step for i,a in enumerate(angles))/count
+    return [[Vector((math.cos(a*(1-f)+(phase+i*step)*f),math.sin(a*(1-f)+(phase+i*step)*f),0)) for i,a in enumerate(angles)] for f in (.15,.60,1.)]

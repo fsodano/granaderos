@@ -1,0 +1,23 @@
+from pathlib import Path
+import sys,json,bpy
+sys.path.insert(0,'/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos/assets/source/characters-3d/authoring')
+from character import create_character
+ctx=create_character('granadero');rows=[]
+def facts(o):
+ coords={v.index:tuple(round(x,7) for x in v.co) for v in o.data.vertices};edges={}
+ for p in o.data.polygons:
+  ids=list(p.vertices)
+  for a,b in zip(ids,ids[1:]+ids[:1]):
+   a,b=coords[a],coords[b]
+   if a==b:continue
+   key=tuple(sorted((a,b)));edges[key]=edges.get(key,0)+1
+ bounds=[e for e,n in edges.items() if n==1]
+ return {'vertices':len(o.data.vertices),'faces':len(o.data.polygons),'boundaryEdges':len(bounds),'boundaryPoints':bounds}
+for o in ctx['objects']:
+ if not o.name.startswith('Crimson_Epaulette_'):continue
+ before=facts(o);bpy.context.view_layer.objects.active=o;dec=o.modifiers.new('Test','DECIMATE');dec.ratio=max(.22,100/len(o.data.polygons));dec.use_collapse_triangulate=True
+ while o.modifiers.find(dec.name)>0:bpy.ops.object.modifier_move_up(modifier=dec.name)
+ bpy.ops.object.modifier_apply(modifier=dec.name)
+ rows.append({'name':o.name,'before':before,'after':facts(o)})
+Path('/tmp/granadero-epaulette-fit-pilot/cap-topology.json').write_text(json.dumps(rows,indent=2))
+print('CAP_TOPOLOGY_READY',[(r['name'],r['before']['boundaryEdges'],r['after']['boundaryEdges']) for r in rows])

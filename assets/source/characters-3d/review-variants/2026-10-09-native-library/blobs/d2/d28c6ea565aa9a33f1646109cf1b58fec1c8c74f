@@ -1,0 +1,28 @@
+import sys,json,math
+from pathlib import Path
+import bpy
+from mathutils import Quaternion,Vector
+root=Path('/tmp/granadero-hand-web-pilot');here=root/'final-source';sys.path.insert(0,str(here))
+s=(here/'character.py').read_text();ns={'__file__':str(here/'character.py')};exec(s[:s.index('    objects = []')]+'    return rig\n',ns)
+import relaxed_hands
+expected=json.loads((root/'natural-paired-source.json').read_text());rows=[]
+for preset,gender in [('granadero','male'),('woman-scout','female')]:
+ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+ rig=ns['create_character'](preset);original={b.name:(tuple(b.location),tuple(b.scale))for b in rig.pose.bones};profiles=[]
+ for turned in [False,True]:
+  if turned:
+   for side in ['l','r']:
+    b=rig.pose.bones['hand_'+side];q=b.matrix.to_quaternion()@Quaternion(Vector((.2,.7,.4)).normalized(),.61);relaxed_hands._set(rig,b.name,q)
+  relaxed_hands.apply_relaxed_hands(rig,gender)
+  values={}
+  for b in rig.pose.bones:
+   if any(b.name.startswith(f+'_')for f in ['thumb','index','middle','ring','pinky']):
+    q=(b.parent.matrix.inverted()@b.matrix).to_quaternion();values[b.name]=[q.x,q.y,q.z,q.w]
+  profiles.append(values)
+ expected_row=next(x for x in expected if x['preset']==preset)
+ def error(a,b):return min(max(abs(x-y)for x,y in zip(a,b)),max(abs(x+y)for x,y in zip(a,b)))
+ max_expected=max(error(profiles[0][n],q)for n,q in expected_row['bones'].items());max_turned=max(error(profiles[0][n],profiles[1][n])for n in profiles[0])
+ assert max_expected<.00001,(preset,max_expected)
+ assert max_turned<.00001,(preset,max_turned)
+ row={'preset':preset,'gender':gender,'maximumQuaternionComponentDifferenceFromCandidate':max_expected,'maximumLocalFingerDifferenceWithRotatedHands':max_turned,'bones':profiles[0]};rows.append(row);print('SOURCE_PROOF',preset,max_expected,max_turned,flush=True)
+(root/'delivery/source-equivalence.json').write_text(json.dumps(rows,indent=2))

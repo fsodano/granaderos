@@ -1,0 +1,9 @@
+import subprocess,sys
+from pathlib import Path
+p=Path(__file__).parent;lod=int(sys.argv[1]);poses=[('idle','stand.idle.unarmed','.36'),('run','stand.run.unarmed','.14'),('backhand','stand.slash.blade.backhand','.54')]
+for label,library in [('before','baseline-models'),('after','models')]:
+ for name,clip,time in poses:
+  out=p/f'final-review/lod{lod}/{label}-{name}'
+  cmd=['python3',str(p/'render.py'),'--library-dir',str(p/library),'--presets','worker','--clips',clip,'--times',time,'--lod',str(lod),'--skin','light','--torso-only','--size','720','--samples','24','--output',str(out)]
+  with open(p/f'final-lod{lod}-{label}-{name}.log','w')as f:subprocess.run(cmd,stdout=f,stderr=subprocess.STDOUT,check=True)
+  print(lod,label,name,'complete',flush=True)

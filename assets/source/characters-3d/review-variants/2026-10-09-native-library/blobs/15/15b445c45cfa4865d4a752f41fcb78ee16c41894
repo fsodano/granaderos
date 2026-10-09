@@ -1,0 +1,176 @@
+"""Deterministic, restrained PBR surface tiles for the shared apparel atlas.
+
+Large folds and seams belong to the fitted mesh. These tiles supply only fibre,
+grain and finish variation, so downsampling keeps the authored uniform colours.
+Blender ships NumPy; no external texture service or generated image is used.
+"""
+import math
+import numpy as np
+
+TILE_SIZE = 256
+TILE_GUTTER = 8
+
+
+def surface_kind(name, metallic):
+    name = name.lower()
+    if metallic > .35:
+        return 'metal'
+    if any(word in name for word in ('pupil', 'iris', 'eye_white', 'nail')):
+        return 'smooth'
+    if 'hair' in name:
+        return 'hair'
+    if 'buff_leather' in name:
+        return 'buff_leather'
+    if 'polished_leather' in name:
+        return 'polished_leather'
+    if any(word in name for word in ('leather', 'boot', 'sole')):
+        return 'leather'
+    if any(word in name for word in ('wood', 'walnut')):
+        return 'wood'
+    if any(word in name for word in ('felt', 'plume', 'fibre')):
+        return 'felt'
+    if any(word in name for word in ('cord', 'braid', 'rope')):
+        return 'braid'
+    if any(word in name for word in ('wool', 'trousers', 'facings', 'linen', 'cloth', 'crossbelt', 'shirt', 'cotton')):
+        return 'cloth'
+    return 'smooth'
+
+
+def _grain(x, y, salt=0):
+    # Integer arithmetic gives identical surfaces across processes and platforms.
+    a = (x.astype(np.uint32) * np.uint32(374761393)
+         + y.astype(np.uint32) * np.uint32(668265263)
+         + np.uint32(salt * 982451653 & 0xffffffff))
+    a = (a ^ (a >> 13)) * np.uint32(1274126177)
+    a ^= a >> 16
+    return (a & np.uint32(65535)).astype(np.float32) / 65535 - .5
+
+
+def surface_tile(name, colour, roughness, metallic, size=TILE_SIZE):
+    """Return colour (sRGB), packed rough/metal, and tangent normal float tiles."""
+    n = size - 2 * TILE_GUTTER
+    y, x = np.mgrid[:n, :n].astype(np.float32)
+    u, v = x / n, y / n
+    grain = _grain(x, y)
+    broad = (.6 * np.sin(math.tau * (u * 3 + v * 2))
+             + .4 * np.cos(math.tau * (u * 7 - v * 5)))
+    kind = surface_kind(name, metallic)
+    shade = np.ones((n, n), dtype=np.float32)
+    rough = np.full((n, n), roughness, dtype=np.float32)
+    height = np.zeros((n, n), dtype=np.float32)
+    # The fabric has three scales: crossing threads, a small yarn bundle,
+    # and quiet panel-scale dye variation. Neither random scratches nor
+    # baked lighting is used. The coarser yarn structure survives mip filters.
+    yarn_u = u * 64 + .12 * np.sin(math.tau * v * 3)
+    yarn_v = v * 64 + .09 * np.sin(math.tau * u * 4)
+    warp = np.cos(math.tau * yarn_u)
+    weft = np.cos(math.tau * yarn_v)
+    crossing = np.cos(math.tau * (yarn_u - yarn_v) / 4)
+    twill = .5 * (warp * (.5 + .5 * crossing) + weft * (.5 - .5 * crossing))
+    bundles = (.55 * np.sin(math.tau * (u * 13 + v * 3))
+               + .45 * np.sin(math.tau * (u * 5 - v * 11)))
+    if kind == 'cloth':
+        linen = any(word in name.lower() for word in ('linen', 'shirt', 'cotton'))
+        weave = warp * weft if linen else twill
+        luminance=sum(c*w for c,w in zip(colour[:3],(.2126,.7152,.0722)))
+        relief_scale=1-.60*min(1,luminance/.24)
+        shade += .028 * relief_scale * weave + .007 * bundles + .008 * grain + .006 * broad
+        rough = np.maximum(rough, .82) + .035 * weave + .015 * bundles
+        height = .11 * relief_scale * weave + .016 * bundles + .014 * grain
+    elif kind == 'braid':
+        # Broad hat braid has ribs; cord geometry supplies its own twist.
+        rib = np.cos(math.tau * u * 68)
+        strand = np.cos(math.tau * (u * 24 + v * 16))
+        weave = .70 * rib + .30 * strand
+        shade += .060 * weave + .012 * bundles
+        rough += .055 * weave
+        height = .28 * weave
+    elif kind == 'felt':
+        plume = any(word in name.lower() for word in ('plume', 'fibre'))
+        nap = .55 * _grain(x // 2, y // 2, 8) + .45 * grain
+        # Shako felt is fulled woven wool, not smooth rubber. A faint twill
+        # remains below its dense nap, as in the supplied original hat.
+        weave = 0 if plume else twill
+        shade += .065 * nap + .045 * weave + .012 * bundles
+        rough = np.maximum(rough, .90) + .030 * nap
+        height = .28 * nap + .28 * weave
+    elif kind in ('leather', 'polished_leather', 'buff_leather'):
+        # Smooth cellular grain with interlocking, rounded cells; no black
+        # scratch map. Wear is a broad change in finish, not white paint.
+        cell_x = np.sin(math.tau * (u * 31 + .20 * np.sin(math.tau * v * 9)))
+        cell_y = np.sin(math.tau * (v * 34 + .18 * np.sin(math.tau * u * 11)))
+        grain_cells = np.tanh((cell_x * cell_y + .12) * 3)
+        polish = .5 + .5 * np.sin(math.tau * (u * 2 + .15 * np.sin(math.tau * v)))
+        buff = kind == 'buff_leather'; gloss = kind == 'polished_leather'
+        shade += (.018 if buff else .035) * grain_cells + .013 * bundles + .010 * grain
+        rough = np.full_like(rough, .69 if buff else .31 if gloss else .54)
+        rough += (.025 if buff else .065) * grain_cells + .070 * (1 - polish)
+        height = (.09 if buff else .18 if gloss else .26) * grain_cells + .018 * grain
+    elif kind == 'metal':
+        # Soft tooling and polish marks vary the highlight, preserving the
+        # actual relief mesh and its warm brass colour. Recesses stay duller.
+        lines = np.sin(math.tau * v * 55 + .5 * np.sin(math.tau * u * 2))
+        polish = .5 + .5 * np.sin(math.tau * (u * 2 - v))
+        recessed = 'recess' in name.lower()
+        brass = 'brass' in name.lower()
+        rough = np.full_like(rough, .43 if recessed else .25 if brass else .28)
+        rough += .040 * lines + .055 * polish + .010 * grain
+        shade += .010 * lines + .017 * broad
+        height = .015 * lines
+    elif kind == 'hair' and 'scout_swept' in name.lower():
+        # Unequal swept locks share one fitted scalp. Dense fine fibres vary
+        # in spacing and bend, while broad pigment avoids regular raised ribs.
+        warp = u + .014*np.sin(math.tau*v*1.4 + u*5) + .009*v*v
+        phase = 61*warp + .43*np.sin(math.tau*warp*7) + .21*np.sin(math.tau*warp*17)
+        fibres = .65*np.cos(math.tau*phase) + .35*np.cos(math.tau*(phase*1.73+.2*v))
+        locks = np.zeros_like(u)
+        for center,width,strength in ((.07,.055,-.11),(.20,.04,.065),(.32,.06,-.08),(.45,.035,.06),(.59,.08,-.11),(.74,.047,.05),(.90,.065,-.085)):
+            curve=center+.014*np.sin(math.tau*v*.7+center*4)
+            locks += strength*np.exp(-((u-curve)/width)**2)
+        shade += locks + .065*fibres + .022*broad
+        rough = np.full_like(rough,.66) + .035*fibres + .06*locks
+        height = .08*fibres
+    elif kind == 'hair':
+        strands = (.60 * np.cos(math.tau * u * 32 + .6 * np.sin(math.tau * v * 2))
+                   + .20 * np.cos(math.tau * u * 77 + .35 * np.sin(math.tau * v))
+                   + .20 * _grain(x, y // 12, 4))
+        # Directional bundles catch a soft highlight; uniformly matte hair
+        # suppresses its strands and makes a fitted scalp look like clay.
+        shade += .13 * strands + .025 * broad
+        rough = np.full_like(rough,.62) + .060 * strands + .025 * broad
+        height = .23 * strands
+    elif kind == 'wood':
+        fibres = np.sin(math.tau * (u * 12 + .10 * np.sin(math.tau * v)))
+        shade += .036 * fibres + .025 * grain
+        rough += .030 * fibres
+        height = .015 * fibres
+    linear = np.clip(np.asarray(colour[:3])[None, None, :] * shade[:, :, None], 0, 1)
+    srgb = np.where(linear <= .0031308, linear * 12.92, 1.055 * linear ** (1 / 2.4) - .055)
+    colour_pixels = np.concatenate((srgb, np.ones((n, n, 1))), axis=2)
+    packed = np.ones((n, n, 4), dtype=np.float32)
+    packed[:, :, 1] = np.clip(rough, .06, 1)
+    packed[:, :, 2] = metallic
+    # Central derivatives keep the micro-normal direction consistent with UVs.
+    nx = -(np.roll(height, -1, axis=1) - np.roll(height, 1, axis=1)) * .5
+    ny = -(np.roll(height, -1, axis=0) - np.roll(height, 1, axis=0)) * .5
+    normal = np.stack((nx, ny, np.ones_like(nx)), axis=2)
+    normal /= np.linalg.norm(normal, axis=2)[:, :, None]
+    normal_pixels = np.concatenate((normal * .5 + .5, np.ones((n, n, 1))), axis=2)
+    # Replicate edge texels into a real gutter. This prevents material colours
+    # leaking across tiles at the normal near/mid review distances.
+    def padded(pixels):
+        return np.pad(pixels, ((TILE_GUTTER, TILE_GUTTER), (TILE_GUTTER, TILE_GUTTER), (0, 0)), mode='edge').astype(np.float32)
+    return {'Color': padded(colour_pixels), 'MetalRough': padded(packed), 'Normal': padded(normal_pixels)}
+
+
+def atlas_pixels(sources, side, tile=TILE_SIZE):
+    size = side * tile
+    result = {channel: np.ones((size, size, 4), dtype=np.float32) for channel in ('Color', 'MetalRough', 'Normal')}
+    result['Normal'][:, :, :3] = (.5, .5, 1)
+    for index, material in enumerate(sources):
+        shader = material.node_tree.nodes.get('Principled BSDF')
+        tiles = surface_tile(material.name, material.diffuse_color, shader.inputs['Roughness'].default_value, shader.inputs['Metallic'].default_value, tile)
+        x, y = index % side * tile, index // side * tile
+        for channel, pixels in tiles.items():
+            result[channel][y:y + tile, x:x + tile] = pixels
+    return result

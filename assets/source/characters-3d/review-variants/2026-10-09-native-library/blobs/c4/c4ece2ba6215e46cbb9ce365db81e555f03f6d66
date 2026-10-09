@@ -1,0 +1,5227 @@
+{
+  "version": 1,
+  "units": "metres",
+  "up": "+Y",
+  "forward": "+Z",
+  "bodyHeight": 1.76,
+  "bones": {
+    "root": "Root",
+    "hips": "pelvis",
+    "spine": "spine_02",
+    "chest": "spine_03",
+    "neck": "neck_01",
+    "head": "head",
+    "handRight": "hand_r",
+    "handLeft": "hand_l",
+    "footRight": "foot_r",
+    "footLeft": "foot_l"
+  },
+  "skinTones": {
+    "light": "#d5a07d",
+    "brown": "#9d6844",
+    "dark": "#623c29"
+  },
+  "appearances": {
+    "granadero": {
+      "id": "granadero",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/granadero-lod0.glb",
+          "triangles": 42670,
+          "bytes": 1964996,
+          "drawCalls": 6,
+          "sha256": "9041e7e5ecd249b0065cf012271d60552f418d1bb2809be6ccb973496c7e97e3"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/granadero-lod1.glb",
+          "triangles": 23113,
+          "bytes": 1137720,
+          "drawCalls": 6,
+          "sha256": "b589b8558e13d693cccbbc28621ca96221cc9bc6ee58028751075b2fcf5c0188"
+        },
+        {
+          "lod": 2,
+          "url": "/models/characters/granadero-lod2.glb",
+          "triangles": 9806,
+          "bytes": 529988,
+          "drawCalls": 6,
+          "sha256": "de18c59d01ed02830e42cdc65a1b3b03a4f895746e800ba53c46eef8aa8a2f9f"
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "royalist": {
+      "id": "royalist",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/royalist-lod0.glb",
+          "triangles": 42313,
+          "bytes": 1940516,
+          "drawCalls": 6,
+          "sha256": "d23f8262eb38def87d7b21586d3faf308505323b5091a8c7150acd82a7334b01"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/royalist-lod1.glb",
+          "triangles": 23042,
+          "bytes": 1134352,
+          "drawCalls": 6,
+          "sha256": "9199b37b27872bd9348f34c9f6bd051d45089aa3727ae76cd23347d30129df31"
+        },
+        {
+          "lod": 2,
+          "url": "/models/characters/royalist-lod2.glb",
+          "triangles": 9749,
+          "bytes": 527152,
+          "drawCalls": 6,
+          "sha256": "294698350af08dc29e0b505fcc3f432a7634adda3ead34019a6e7ab5e4b99f34"
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "worker": {
+      "id": "worker",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/worker-lod0.glb",
+          "triangles": 27146,
+          "bytes": 1238932,
+          "drawCalls": 5,
+          "sha256": "1682d2cbd20cca840fc088d58983fa37496db3cb56084babd6cdd7c7d179540a"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/worker-lod1.glb",
+          "triangles": 12009,
+          "bytes": 606240,
+          "drawCalls": 5,
+          "sha256": "a83c44ad08118860c59ea02a330b617ad0d8ddfa2a4ed70fabe695a04bd10a7f"
+        },
+        {
+          "lod": 2,
+          "url": "/models/characters/worker-lod2.glb",
+          "triangles": 4458,
+          "bytes": 272600,
+          "drawCalls": 5,
+          "sha256": "52e16641b2ed73a47536faf899772678e30451b10d8d2704b171d8f631d9e517"
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "surgeon": {
+      "id": "surgeon",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/surgeon-lod0.glb",
+          "triangles": 28152,
+          "bytes": 1283760,
+          "drawCalls": 5,
+          "sha256": "7f40d2b114f1da469abb2dc0dfe13d1feb5212a98abdc90604b2f21e540d7fb7"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/surgeon-lod1.glb",
+          "triangles": 14398,
+          "bytes": 705700,
+          "drawCalls": 5,
+          "sha256": "78f121de0540449c2fad102c31a346b41e3afb13c94ac28bd24c3e0660324d0e"
+        },
+        {
+          "lod": 2,
+          "url": "/models/characters/surgeon-lod2.glb",
+          "triangles": 6961,
+          "bytes": 378312,
+          "drawCalls": 5,
+          "sha256": "ac5ed22dfc4e5c4558a801df20cf7f87a6347f6f5cca0376214394ea04d0e5cd"
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "gaucho": {
+      "id": "gaucho",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/gaucho-lod0.glb",
+          "triangles": 26664,
+          "bytes": 1225728,
+          "drawCalls": 6,
+          "sha256": "7179603e7221ef55ea754590b1b4a81d521a8167ae1b033244042ad968f6c687"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/gaucho-lod1.glb",
+          "triangles": 12106,
+          "bytes": 617120,
+          "drawCalls": 6,
+          "sha256": "69b3e5d633a9578338f5ae2c2270b1470096b1a031c55814bbc93d100baddf78"
+        },
+        {
+          "lod": 2,
+          "url": "/models/characters/gaucho-lod2.glb",
+          "triangles": 4618,
+          "bytes": 287756,
+          "drawCalls": 6,
+          "sha256": "185ee45e4b006e9168650a02b3ceeac0e3a654dfcbeb3094dbbf543e03b7a083"
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "friar": {
+      "id": "friar",
+      "gender": "male",
+      "height": 1.76,
+      "animationLibrary": "male",
+      "lods": [
+        {
+          "url": "/models/characters/friar-lod0.glb",
+          "bytes": 2150524,
+          "sha256": "f5e1c9aac8a39a094b0dacf6a71c218fb96d2877630b3fa90f76bded597bba24",
+          "triangles": 38083,
+          "meshes": 4,
+          "drawCalls": 5,
+          "materials": [
+            "Apparel_Atlas",
+            "Skin"
+          ],
+          "bones": 53,
+          "nodes": [
+            "index_03_l",
+            "index_02_l",
+            "index_01_l",
+            "middle_03_l",
+            "middle_02_l",
+            "middle_01_l",
+            "pinky_03_l",
+            "pinky_02_l",
+            "pinky_01_l",
+            "ring_03_l",
+            "ring_02_l",
+            "ring_01_l",
+            "thumb_03_l",
+            "thumb_02_l",
+            "thumb_01_l",
+            "socket_handLeft_pistol",
+            "socket_handLeft_rifle",
+            "socket_handLeft_sabre",
+            "socket_handLeft_tool",
+            "hand_l",
+            "lowerarm_l",
+            "upperarm_l",
+            "clavicle_l",
+            "index_03_r",
+            "index_02_r",
+            "index_01_r",
+            "middle_03_r",
+            "middle_02_r",
+            "middle_01_r",
+            "pinky_03_r",
+            "pinky_02_r",
+            "pinky_01_r",
+            "ring_03_r",
+            "ring_02_r",
+            "ring_01_r",
+            "thumb_03_r",
+            "thumb_02_r",
+            "thumb_01_r",
+            "socket_handRight_pistol",
+            "socket_handRight_rifle",
+            "socket_handRight_sabre",
+            "socket_handRight_tool",
+            "hand_r",
+            "lowerarm_r",
+            "upperarm_r",
+            "clavicle_r",
+            "head",
+            "neck_01",
+            "socket_back",
+            "spine_03",
+            "spine_02",
+            "spine_01",
+            "ball_l",
+            "foot_l",
+            "calf_l",
+            "thigh_l",
+            "ball_r",
+            "foot_r",
+            "calf_r",
+            "thigh_r",
+            "socket_hipLeft",
+            "socket_hipRight",
+            "pelvis",
+            "Root",
+            "Human_footwear_LOD0",
+            "Human_legwear_LOD0",
+            "Human_outfit_LOD0",
+            "Human_skin_LOD0",
+            "Granadero_Rig"
+          ],
+          "kind": "appearance",
+          "preset": "friar",
+          "gender": "male",
+          "lod": 0,
+          "height": 1.76,
+          "sockets": {
+            "handRight_rifle": {
+              "node": "socket_handRight_rifle",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_pistol": {
+              "node": "socket_handRight_pistol",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_sabre": {
+              "node": "socket_handRight_sabre",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_tool": {
+              "node": "socket_handRight_tool",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_rifle": {
+              "node": "socket_handLeft_rifle",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_pistol": {
+              "node": "socket_handLeft_pistol",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1,
+              "mirror": {
+                "socket": "handRight_pistol",
+                "localAxis": "z"
+              }
+            },
+            "handLeft_sabre": {
+              "node": "socket_handLeft_sabre",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_tool": {
+              "node": "socket_handLeft_tool",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "back": {
+              "node": "socket_back",
+              "bone": "spine_03",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipLeft": {
+              "node": "socket_hipLeft",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipRight": {
+              "node": "socket_hipRight",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            }
+          }
+        },
+        {
+          "url": "/models/characters/friar-lod1.glb",
+          "bytes": 1197432,
+          "sha256": "f24ab5baefd5272b080df315ec1e94cf7f49ae77907e56c2f7cafff37506493d",
+          "triangles": 18325,
+          "meshes": 4,
+          "drawCalls": 5,
+          "materials": [
+            "Apparel_Atlas",
+            "Skin"
+          ],
+          "bones": 53,
+          "nodes": [
+            "index_03_l",
+            "index_02_l",
+            "index_01_l",
+            "middle_03_l",
+            "middle_02_l",
+            "middle_01_l",
+            "pinky_03_l",
+            "pinky_02_l",
+            "pinky_01_l",
+            "ring_03_l",
+            "ring_02_l",
+            "ring_01_l",
+            "thumb_03_l",
+            "thumb_02_l",
+            "thumb_01_l",
+            "socket_handLeft_pistol",
+            "socket_handLeft_rifle",
+            "socket_handLeft_sabre",
+            "socket_handLeft_tool",
+            "hand_l",
+            "lowerarm_l",
+            "upperarm_l",
+            "clavicle_l",
+            "index_03_r",
+            "index_02_r",
+            "index_01_r",
+            "middle_03_r",
+            "middle_02_r",
+            "middle_01_r",
+            "pinky_03_r",
+            "pinky_02_r",
+            "pinky_01_r",
+            "ring_03_r",
+            "ring_02_r",
+            "ring_01_r",
+            "thumb_03_r",
+            "thumb_02_r",
+            "thumb_01_r",
+            "socket_handRight_pistol",
+            "socket_handRight_rifle",
+            "socket_handRight_sabre",
+            "socket_handRight_tool",
+            "hand_r",
+            "lowerarm_r",
+            "upperarm_r",
+            "clavicle_r",
+            "head",
+            "neck_01",
+            "socket_back",
+            "spine_03",
+            "spine_02",
+            "spine_01",
+            "ball_l",
+            "foot_l",
+            "calf_l",
+            "thigh_l",
+            "ball_r",
+            "foot_r",
+            "calf_r",
+            "thigh_r",
+            "socket_hipLeft",
+            "socket_hipRight",
+            "pelvis",
+            "Root",
+            "Human_footwear_LOD1",
+            "Human_legwear_LOD1",
+            "Human_outfit_LOD1",
+            "Human_skin_LOD1",
+            "Granadero_Rig"
+          ],
+          "kind": "appearance",
+          "preset": "friar",
+          "gender": "male",
+          "lod": 1,
+          "height": 1.76,
+          "sockets": {
+            "handRight_rifle": {
+              "node": "socket_handRight_rifle",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_pistol": {
+              "node": "socket_handRight_pistol",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_sabre": {
+              "node": "socket_handRight_sabre",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_tool": {
+              "node": "socket_handRight_tool",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_rifle": {
+              "node": "socket_handLeft_rifle",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_pistol": {
+              "node": "socket_handLeft_pistol",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1,
+              "mirror": {
+                "socket": "handRight_pistol",
+                "localAxis": "z"
+              }
+            },
+            "handLeft_sabre": {
+              "node": "socket_handLeft_sabre",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_tool": {
+              "node": "socket_handLeft_tool",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "back": {
+              "node": "socket_back",
+              "bone": "spine_03",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipLeft": {
+              "node": "socket_hipLeft",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipRight": {
+              "node": "socket_hipRight",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            }
+          }
+        },
+        {
+          "url": "/models/characters/friar-lod2.glb",
+          "bytes": 548380,
+          "sha256": "24df6496f92562f5cb4e218f37c2b696f328d2d09fb162a030708f79bc7898f8",
+          "triangles": 7497,
+          "meshes": 4,
+          "drawCalls": 5,
+          "materials": [
+            "Apparel_Atlas",
+            "Skin"
+          ],
+          "bones": 53,
+          "nodes": [
+            "index_03_l",
+            "index_02_l",
+            "index_01_l",
+            "middle_03_l",
+            "middle_02_l",
+            "middle_01_l",
+            "pinky_03_l",
+            "pinky_02_l",
+            "pinky_01_l",
+            "ring_03_l",
+            "ring_02_l",
+            "ring_01_l",
+            "thumb_03_l",
+            "thumb_02_l",
+            "thumb_01_l",
+            "socket_handLeft_pistol",
+            "socket_handLeft_rifle",
+            "socket_handLeft_sabre",
+            "socket_handLeft_tool",
+            "hand_l",
+            "lowerarm_l",
+            "upperarm_l",
+            "clavicle_l",
+            "index_03_r",
+            "index_02_r",
+            "index_01_r",
+            "middle_03_r",
+            "middle_02_r",
+            "middle_01_r",
+            "pinky_03_r",
+            "pinky_02_r",
+            "pinky_01_r",
+            "ring_03_r",
+            "ring_02_r",
+            "ring_01_r",
+            "thumb_03_r",
+            "thumb_02_r",
+            "thumb_01_r",
+            "socket_handRight_pistol",
+            "socket_handRight_rifle",
+            "socket_handRight_sabre",
+            "socket_handRight_tool",
+            "hand_r",
+            "lowerarm_r",
+            "upperarm_r",
+            "clavicle_r",
+            "head",
+            "neck_01",
+            "socket_back",
+            "spine_03",
+            "spine_02",
+            "spine_01",
+            "ball_l",
+            "foot_l",
+            "calf_l",
+            "thigh_l",
+            "ball_r",
+            "foot_r",
+            "calf_r",
+            "thigh_r",
+            "socket_hipLeft",
+            "socket_hipRight",
+            "pelvis",
+            "Root",
+            "Human_footwear_LOD2",
+            "Human_legwear_LOD2",
+            "Human_outfit_LOD2",
+            "Human_skin_LOD2",
+            "Granadero_Rig"
+          ],
+          "kind": "appearance",
+          "preset": "friar",
+          "gender": "male",
+          "lod": 2,
+          "height": 1.76,
+          "sockets": {
+            "handRight_rifle": {
+              "node": "socket_handRight_rifle",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_pistol": {
+              "node": "socket_handRight_pistol",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_sabre": {
+              "node": "socket_handRight_sabre",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_tool": {
+              "node": "socket_handRight_tool",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_rifle": {
+              "node": "socket_handLeft_rifle",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_pistol": {
+              "node": "socket_handLeft_pistol",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1,
+              "mirror": {
+                "socket": "handRight_pistol",
+                "localAxis": "z"
+              }
+            },
+            "handLeft_sabre": {
+              "node": "socket_handLeft_sabre",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_tool": {
+              "node": "socket_handLeft_tool",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "back": {
+              "node": "socket_back",
+              "bone": "spine_03",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipLeft": {
+              "node": "socket_hipLeft",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipRight": {
+              "node": "socket_hipRight",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            }
+          }
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "woman-scout": {
+      "id": "woman-scout",
+      "gender": "female",
+      "height": 1.76,
+      "animationLibrary": "female",
+      "lods": [
+        {
+          "lod": 0,
+          "url": "/models/characters/woman-scout-lod0.glb",
+          "triangles": 27911,
+          "bytes": 1286968,
+          "drawCalls": 5,
+          "sha256": "8d7c0d817c45681a0a1ebf5068b985ad8d1de580a221d93af3ccba1640f5fa39"
+        },
+        {
+          "lod": 1,
+          "url": "/models/characters/woman-scout-lod1.glb",
+          "triangles": 14071,
+          "bytes": 701492,
+          "drawCalls": 5,
+          "sha256": "358863428ae5d24a19f4d080dd56c7982b568041a5530bacc59e48153ca78cda"
+        },
+        {
+          "lod": 2,
+          "url": "/models/characters/woman-scout-lod2.glb",
+          "triangles": 7060,
+          "bytes": 389524,
+          "drawCalls": 5,
+          "sha256": "06dee5978656e70919c86a3650e914c6f713afb00cf502c954a426740678aa93"
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    },
+    "woman-shawl": {
+      "id": "woman-shawl",
+      "gender": "female",
+      "height": 1.76,
+      "animationLibrary": "female",
+      "lods": [
+        {
+          "url": "/models/characters/woman-shawl-lod0.glb",
+          "bytes": 2796628,
+          "sha256": "1ed42442bfad90f1c272be28b3880345a493450713e23664908140ab2d630011",
+          "triangles": 55144,
+          "meshes": 4,
+          "drawCalls": 5,
+          "materials": [
+            "Apparel_Atlas",
+            "Skin"
+          ],
+          "bones": 53,
+          "nodes": [
+            "index_03_l",
+            "index_02_l",
+            "index_01_l",
+            "middle_03_l",
+            "middle_02_l",
+            "middle_01_l",
+            "pinky_03_l",
+            "pinky_02_l",
+            "pinky_01_l",
+            "ring_03_l",
+            "ring_02_l",
+            "ring_01_l",
+            "thumb_03_l",
+            "thumb_02_l",
+            "thumb_01_l",
+            "socket_handLeft_pistol",
+            "socket_handLeft_rifle",
+            "socket_handLeft_sabre",
+            "socket_handLeft_tool",
+            "hand_l",
+            "lowerarm_l",
+            "upperarm_l",
+            "clavicle_l",
+            "index_03_r",
+            "index_02_r",
+            "index_01_r",
+            "middle_03_r",
+            "middle_02_r",
+            "middle_01_r",
+            "pinky_03_r",
+            "pinky_02_r",
+            "pinky_01_r",
+            "ring_03_r",
+            "ring_02_r",
+            "ring_01_r",
+            "thumb_03_r",
+            "thumb_02_r",
+            "thumb_01_r",
+            "socket_handRight_pistol",
+            "socket_handRight_rifle",
+            "socket_handRight_sabre",
+            "socket_handRight_tool",
+            "hand_r",
+            "lowerarm_r",
+            "upperarm_r",
+            "clavicle_r",
+            "head",
+            "neck_01",
+            "socket_back",
+            "spine_03",
+            "spine_02",
+            "spine_01",
+            "ball_l",
+            "foot_l",
+            "calf_l",
+            "thigh_l",
+            "ball_r",
+            "foot_r",
+            "calf_r",
+            "thigh_r",
+            "socket_hipLeft",
+            "socket_hipRight",
+            "pelvis",
+            "Root",
+            "Human_footwear_LOD0",
+            "Human_legwear_LOD0",
+            "Human_outfit_LOD0",
+            "Human_skin_LOD0",
+            "Granadero_Rig"
+          ],
+          "kind": "appearance",
+          "preset": "woman-shawl",
+          "gender": "female",
+          "lod": 0,
+          "height": 1.76,
+          "sockets": {
+            "handRight_rifle": {
+              "node": "socket_handRight_rifle",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_pistol": {
+              "node": "socket_handRight_pistol",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_sabre": {
+              "node": "socket_handRight_sabre",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_tool": {
+              "node": "socket_handRight_tool",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_rifle": {
+              "node": "socket_handLeft_rifle",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_pistol": {
+              "node": "socket_handLeft_pistol",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1,
+              "mirror": {
+                "socket": "handRight_pistol",
+                "localAxis": "z"
+              }
+            },
+            "handLeft_sabre": {
+              "node": "socket_handLeft_sabre",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_tool": {
+              "node": "socket_handLeft_tool",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "back": {
+              "node": "socket_back",
+              "bone": "spine_03",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipLeft": {
+              "node": "socket_hipLeft",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipRight": {
+              "node": "socket_hipRight",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            }
+          }
+        },
+        {
+          "url": "/models/characters/woman-shawl-lod1.glb",
+          "bytes": 1556716,
+          "sha256": "9172ff001c34aa193250f750217d120d2316e9ff77763d599d927017bf91eaa2",
+          "triangles": 27800,
+          "meshes": 4,
+          "drawCalls": 5,
+          "materials": [
+            "Apparel_Atlas",
+            "Skin"
+          ],
+          "bones": 53,
+          "nodes": [
+            "index_03_l",
+            "index_02_l",
+            "index_01_l",
+            "middle_03_l",
+            "middle_02_l",
+            "middle_01_l",
+            "pinky_03_l",
+            "pinky_02_l",
+            "pinky_01_l",
+            "ring_03_l",
+            "ring_02_l",
+            "ring_01_l",
+            "thumb_03_l",
+            "thumb_02_l",
+            "thumb_01_l",
+            "socket_handLeft_pistol",
+            "socket_handLeft_rifle",
+            "socket_handLeft_sabre",
+            "socket_handLeft_tool",
+            "hand_l",
+            "lowerarm_l",
+            "upperarm_l",
+            "clavicle_l",
+            "index_03_r",
+            "index_02_r",
+            "index_01_r",
+            "middle_03_r",
+            "middle_02_r",
+            "middle_01_r",
+            "pinky_03_r",
+            "pinky_02_r",
+            "pinky_01_r",
+            "ring_03_r",
+            "ring_02_r",
+            "ring_01_r",
+            "thumb_03_r",
+            "thumb_02_r",
+            "thumb_01_r",
+            "socket_handRight_pistol",
+            "socket_handRight_rifle",
+            "socket_handRight_sabre",
+            "socket_handRight_tool",
+            "hand_r",
+            "lowerarm_r",
+            "upperarm_r",
+            "clavicle_r",
+            "head",
+            "neck_01",
+            "socket_back",
+            "spine_03",
+            "spine_02",
+            "spine_01",
+            "ball_l",
+            "foot_l",
+            "calf_l",
+            "thigh_l",
+            "ball_r",
+            "foot_r",
+            "calf_r",
+            "thigh_r",
+            "socket_hipLeft",
+            "socket_hipRight",
+            "pelvis",
+            "Root",
+            "Human_footwear_LOD1",
+            "Human_legwear_LOD1",
+            "Human_outfit_LOD1",
+            "Human_skin_LOD1",
+            "Granadero_Rig"
+          ],
+          "kind": "appearance",
+          "preset": "woman-shawl",
+          "gender": "female",
+          "lod": 1,
+          "height": 1.76,
+          "sockets": {
+            "handRight_rifle": {
+              "node": "socket_handRight_rifle",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_pistol": {
+              "node": "socket_handRight_pistol",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_sabre": {
+              "node": "socket_handRight_sabre",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_tool": {
+              "node": "socket_handRight_tool",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_rifle": {
+              "node": "socket_handLeft_rifle",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_pistol": {
+              "node": "socket_handLeft_pistol",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1,
+              "mirror": {
+                "socket": "handRight_pistol",
+                "localAxis": "z"
+              }
+            },
+            "handLeft_sabre": {
+              "node": "socket_handLeft_sabre",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_tool": {
+              "node": "socket_handLeft_tool",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "back": {
+              "node": "socket_back",
+              "bone": "spine_03",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipLeft": {
+              "node": "socket_hipLeft",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipRight": {
+              "node": "socket_hipRight",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            }
+          }
+        },
+        {
+          "url": "/models/characters/woman-shawl-lod2.glb",
+          "bytes": 706172,
+          "sha256": "b36614f13c03bd9d801cd0ffb89a7af716d57ae4c970a1e0ba767877fd972845",
+          "triangles": 11683,
+          "meshes": 4,
+          "drawCalls": 5,
+          "materials": [
+            "Apparel_Atlas",
+            "Skin"
+          ],
+          "bones": 53,
+          "nodes": [
+            "index_03_l",
+            "index_02_l",
+            "index_01_l",
+            "middle_03_l",
+            "middle_02_l",
+            "middle_01_l",
+            "pinky_03_l",
+            "pinky_02_l",
+            "pinky_01_l",
+            "ring_03_l",
+            "ring_02_l",
+            "ring_01_l",
+            "thumb_03_l",
+            "thumb_02_l",
+            "thumb_01_l",
+            "socket_handLeft_pistol",
+            "socket_handLeft_rifle",
+            "socket_handLeft_sabre",
+            "socket_handLeft_tool",
+            "hand_l",
+            "lowerarm_l",
+            "upperarm_l",
+            "clavicle_l",
+            "index_03_r",
+            "index_02_r",
+            "index_01_r",
+            "middle_03_r",
+            "middle_02_r",
+            "middle_01_r",
+            "pinky_03_r",
+            "pinky_02_r",
+            "pinky_01_r",
+            "ring_03_r",
+            "ring_02_r",
+            "ring_01_r",
+            "thumb_03_r",
+            "thumb_02_r",
+            "thumb_01_r",
+            "socket_handRight_pistol",
+            "socket_handRight_rifle",
+            "socket_handRight_sabre",
+            "socket_handRight_tool",
+            "hand_r",
+            "lowerarm_r",
+            "upperarm_r",
+            "clavicle_r",
+            "head",
+            "neck_01",
+            "socket_back",
+            "spine_03",
+            "spine_02",
+            "spine_01",
+            "ball_l",
+            "foot_l",
+            "calf_l",
+            "thigh_l",
+            "ball_r",
+            "foot_r",
+            "calf_r",
+            "thigh_r",
+            "socket_hipLeft",
+            "socket_hipRight",
+            "pelvis",
+            "Root",
+            "Human_footwear_LOD2",
+            "Human_legwear_LOD2",
+            "Human_outfit_LOD2",
+            "Human_skin_LOD2",
+            "Granadero_Rig"
+          ],
+          "kind": "appearance",
+          "preset": "woman-shawl",
+          "gender": "female",
+          "lod": 2,
+          "height": 1.76,
+          "sockets": {
+            "handRight_rifle": {
+              "node": "socket_handRight_rifle",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_pistol": {
+              "node": "socket_handRight_pistol",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_sabre": {
+              "node": "socket_handRight_sabre",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handRight_tool": {
+              "node": "socket_handRight_tool",
+              "bone": "hand_r",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_rifle": {
+              "node": "socket_handLeft_rifle",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_pistol": {
+              "node": "socket_handLeft_pistol",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1,
+              "mirror": {
+                "socket": "handRight_pistol",
+                "localAxis": "z"
+              }
+            },
+            "handLeft_sabre": {
+              "node": "socket_handLeft_sabre",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "handLeft_tool": {
+              "node": "socket_handLeft_tool",
+              "bone": "hand_l",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "back": {
+              "node": "socket_back",
+              "bone": "spine_03",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipLeft": {
+              "node": "socket_hipLeft",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            },
+            "hipRight": {
+              "node": "socket_hipRight",
+              "bone": "pelvis",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "rotation": [
+                0,
+                0,
+                0
+              ],
+              "scale": 1
+            }
+          }
+        }
+      ],
+      "materials": {
+        "skin": "Skin",
+        "apparel": "Apparel_Atlas"
+      },
+      "parts": {
+        "skin": "Human_skin_LOD{lod}",
+        "outfit": "Human_outfit_LOD{lod}",
+        "legwear": "Human_legwear_LOD{lod}",
+        "footwear": "Human_footwear_LOD{lod}",
+        "headwear": "Human_headwear_LOD{lod}"
+      },
+      "sockets": {
+        "handRight_rifle": {
+          "node": "socket_handRight_rifle",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_pistol": {
+          "node": "socket_handRight_pistol",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_sabre": {
+          "node": "socket_handRight_sabre",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handRight_tool": {
+          "node": "socket_handRight_tool",
+          "bone": "hand_r",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_rifle": {
+          "node": "socket_handLeft_rifle",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_pistol": {
+          "node": "socket_handLeft_pistol",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1,
+          "mirror": {
+            "socket": "handRight_pistol",
+            "localAxis": "z"
+          }
+        },
+        "handLeft_sabre": {
+          "node": "socket_handLeft_sabre",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "handLeft_tool": {
+          "node": "socket_handLeft_tool",
+          "bone": "hand_l",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "back": {
+          "node": "socket_back",
+          "bone": "spine_03",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipLeft": {
+          "node": "socket_hipLeft",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        },
+        "hipRight": {
+          "node": "socket_hipRight",
+          "bone": "pelvis",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": 1
+        }
+      },
+      "lodPixelThresholds": [
+        160,
+        65,
+        0
+      ],
+      "baseAttire": {
+        "headwear": "appearance",
+        "outfit": "appearance",
+        "legwear": "appearance"
+      },
+      "nullWornItem": "keepBaseAttire"
+    }
+  },
+  "animationLibraries": {
+    "male": {
+      "url": "/models/characters/male-animations.glb",
+      "bytes": 1355608,
+      "sha256": "e2756fe4ab607fafec77b783b8b9c3ab8664c1aaa3493de1d56255141c0d1321",
+      "clips": [
+        {
+          "name": "crouch.walk.unarmed",
+          "duration": 1.533327,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "136_09.bvh",
+            "startFrame": 430,
+            "endFrame": 614,
+            "description": "crouching, walking forward",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8403
+        },
+        {
+          "name": "crouch.strafeRight.unarmed",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.8492,
+          "locomotionAxis": "right"
+        },
+        {
+          "name": "prone.idle.unarmed",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "prone",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "prone.crawl.unarmed",
+          "duration": 1.966659,
+          "loop": true,
+          "events": {},
+          "gesture": "crawl",
+          "posture": "prone",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_03.bvh",
+            "startFrame": 450,
+            "endFrame": 686,
+            "description": "crawling; adapted to forearm/belly contact",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.260825,
+          "nativeStrideSpeed": 0.260825,
+          "authoredStrideSpeed": 0.260825,
+          "strideDistance": 0.512954,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 17,
+            "sampledFrom": "exported-glb"
+          }
+        },
+        {
+          "name": "stand.gesture.heal",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "heal",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "stand.gesture.heal",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.gesture.pickup",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "pickup",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "stand.gesture.pickup",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.gesture.free",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "free",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "stand.gesture.free",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.stand.crouch",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "transition.stand.crouch",
+          "fromPosture": "standing",
+          "toPosture": "crouched",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.crouch.stand",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "crouched",
+          "equipment": "any",
+          "clip": "transition.crouch.stand",
+          "fromPosture": "crouched",
+          "toPosture": "standing",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.stand.prone",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "transition.stand.prone",
+          "fromPosture": "standing",
+          "toPosture": "prone",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.prone.stand",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "transition.prone.stand",
+          "fromPosture": "prone",
+          "toPosture": "standing",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.crouch.prone",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "crouched",
+          "equipment": "any",
+          "clip": "transition.crouch.prone",
+          "fromPosture": "crouched",
+          "toPosture": "prone",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.prone.crouch",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "transition.prone.crouch",
+          "fromPosture": "prone",
+          "toPosture": "crouched",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.die",
+          "duration": 1.283328,
+          "loop": false,
+          "events": {
+            "ground": 0.872663176
+          },
+          "gesture": "die",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.die",
+          "markers": {
+            "ground": 0.872663176
+          },
+          "source": {
+            "database": "CMU",
+            "file": "90_18.bvh",
+            "startFrame": 58,
+            "endFrame": 212,
+            "description": "rug pull, falling backwards",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.dead",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "dead",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.dead",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.unconscious",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "unconscious",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.unconscious",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.recover",
+          "duration": 3.38332,
+          "loop": false,
+          "events": {
+            "standing": 3.21415381
+          },
+          "gesture": "recover",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.recover",
+          "markers": {
+            "standing": 3.21415381
+          },
+          "source": {
+            "database": "CMU",
+            "file": "140_01.bvh",
+            "startFrame": 130,
+            "endFrame": 536,
+            "description": "getting up from face down",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.crouch.recover",
+          "duration": 3.38332,
+          "loop": false,
+          "events": {
+            "standing": 3.21415381
+          },
+          "gesture": "recover",
+          "posture": "crouched",
+          "equipment": "any",
+          "clip": "life.crouch.recover",
+          "markers": {
+            "standing": 3.21415381
+          },
+          "source": {
+            "database": "CMU",
+            "file": "140_01.bvh",
+            "startFrame": 130,
+            "endFrame": 536,
+            "description": "getting up from face down",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.prone.die",
+          "duration": 1.283328,
+          "loop": false,
+          "events": {
+            "ground": 0.872663176
+          },
+          "gesture": "die",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "life.prone.die",
+          "markers": {
+            "ground": 0.872663176
+          },
+          "source": {
+            "database": "CMU",
+            "file": "90_18.bvh",
+            "startFrame": 58,
+            "endFrame": 212,
+            "description": "rug pull, falling backwards",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.prone.dead",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "dead",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "life.prone.dead",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.prone.recover",
+          "duration": 3.38332,
+          "loop": false,
+          "events": {
+            "standing": 3.21415381
+          },
+          "gesture": "recover",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "life.prone.recover",
+          "markers": {
+            "standing": 3.21415381
+          },
+          "source": {
+            "database": "CMU",
+            "file": "140_01.bvh",
+            "startFrame": 130,
+            "endFrame": 536,
+            "description": "getting up from face down",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.run.lance",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 1.007
+        },
+        {
+          "name": "crouch.strafeLeft.knife",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7564,
+          "locomotionAxis": "left"
+        }
+      ],
+      "locomotionSpeed": {
+        "idle": 0.05,
+        "walk": 1.4052,
+        "run": 1.007,
+        "crouch": 0.8403,
+        "strafeRightStanding": 1.1113,
+        "strafeLeftStanding": 1.1159,
+        "strafeRightCrouched": 0.8492,
+        "strafeLeftCrouched": 0.7564,
+        "crawl": 0.195142,
+        "climbUp": 0.4062,
+        "climbDown": 0.4455,
+        "recover": 0.3467,
+        "fall": 0.0725
+      },
+      "anchorCoordinates": {
+        "space": "model-local",
+        "units": "metres",
+        "up": "+Y",
+        "forward": "+Z"
+      }
+    },
+    "female": {
+      "url": "/models/characters/female-animations.glb",
+      "bytes": 1350544,
+      "sha256": "bae7160c5deb29ab54bfae36aa450609bfbfa99128cc1b10496ea197a35f7892",
+      "clips": [
+        {
+          "name": "crouch.walk.unarmed",
+          "duration": 1.533327,
+          "loop": true,
+          "events": {},
+          "gesture": "walk",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "136_09.bvh",
+            "startFrame": 430,
+            "endFrame": 614,
+            "description": "crouching, walking forward",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.7993
+        },
+        {
+          "name": "crouch.strafeRight.unarmed",
+          "duration": 1.399994,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeRight",
+          "posture": "crouched",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 172,
+            "endFrame": 340,
+            "description": "sideways sneak, right",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9318,
+          "locomotionAxis": "right"
+        },
+        {
+          "name": "prone.idle.unarmed",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "idle",
+          "posture": "prone",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "prone.crawl.unarmed",
+          "duration": 1.966659,
+          "loop": true,
+          "events": {},
+          "gesture": "crawl",
+          "posture": "prone",
+          "equipment": "unarmed",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "111_03.bvh",
+            "startFrame": 450,
+            "endFrame": 686,
+            "description": "crawling; adapted to forearm/belly contact",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.262094,
+          "nativeStrideSpeed": 0.262094,
+          "authoredStrideSpeed": 0.262094,
+          "strideDistance": 0.51545,
+          "strideMeasurement": {
+            "method": "median rearward forearm contact velocity",
+            "bones": [
+              "lowerarm_l",
+              "lowerarm_r"
+            ],
+            "maximumContactHeight": 0.09,
+            "sampleCount": 13,
+            "sampledFrom": "exported-glb"
+          }
+        },
+        {
+          "name": "stand.gesture.heal",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "heal",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "stand.gesture.heal",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.gesture.pickup",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "pickup",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "stand.gesture.pickup",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.gesture.free",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "free",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "stand.gesture.free",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.stand.crouch",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "transition.stand.crouch",
+          "fromPosture": "standing",
+          "toPosture": "crouched",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.crouch.stand",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "crouched",
+          "equipment": "any",
+          "clip": "transition.crouch.stand",
+          "fromPosture": "crouched",
+          "toPosture": "standing",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.stand.prone",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "transition.stand.prone",
+          "fromPosture": "standing",
+          "toPosture": "prone",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.prone.stand",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "transition.prone.stand",
+          "fromPosture": "prone",
+          "toPosture": "standing",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.crouch.prone",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "crouched",
+          "equipment": "any",
+          "clip": "transition.crouch.prone",
+          "fromPosture": "crouched",
+          "toPosture": "prone",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "transition.prone.crouch",
+          "duration": 1.4,
+          "loop": false,
+          "events": {},
+          "gesture": "transition",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "transition.prone.crouch",
+          "fromPosture": "prone",
+          "toPosture": "crouched",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.die",
+          "duration": 1.283328,
+          "loop": false,
+          "events": {
+            "ground": 0.872663176
+          },
+          "gesture": "die",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.die",
+          "markers": {
+            "ground": 0.872663176
+          },
+          "source": {
+            "database": "CMU",
+            "file": "90_18.bvh",
+            "startFrame": 58,
+            "endFrame": 212,
+            "description": "rug pull, falling backwards",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.dead",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "dead",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.dead",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.unconscious",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "unconscious",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.unconscious",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.stand.recover",
+          "duration": 3.38332,
+          "loop": false,
+          "events": {
+            "standing": 3.21415381
+          },
+          "gesture": "recover",
+          "posture": "standing",
+          "equipment": "any",
+          "clip": "life.stand.recover",
+          "markers": {
+            "standing": 3.21415381
+          },
+          "source": {
+            "database": "CMU",
+            "file": "140_01.bvh",
+            "startFrame": 130,
+            "endFrame": 536,
+            "description": "getting up from face down",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.crouch.recover",
+          "duration": 3.38332,
+          "loop": false,
+          "events": {
+            "standing": 3.21415381
+          },
+          "gesture": "recover",
+          "posture": "crouched",
+          "equipment": "any",
+          "clip": "life.crouch.recover",
+          "markers": {
+            "standing": 3.21415381
+          },
+          "source": {
+            "database": "CMU",
+            "file": "140_01.bvh",
+            "startFrame": 130,
+            "endFrame": 536,
+            "description": "getting up from face down",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.prone.die",
+          "duration": 1.283328,
+          "loop": false,
+          "events": {
+            "ground": 0.872663176
+          },
+          "gesture": "die",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "life.prone.die",
+          "markers": {
+            "ground": 0.872663176
+          },
+          "source": {
+            "database": "CMU",
+            "file": "90_18.bvh",
+            "startFrame": 58,
+            "endFrame": 212,
+            "description": "rug pull, falling backwards",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.prone.dead",
+          "duration": 2,
+          "loop": true,
+          "events": {},
+          "gesture": "dead",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "life.prone.dead",
+          "markers": {},
+          "source": {
+            "type": "native-contact-authoring"
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "life.prone.recover",
+          "duration": 3.38332,
+          "loop": false,
+          "events": {
+            "standing": 3.21415381
+          },
+          "gesture": "recover",
+          "posture": "prone",
+          "equipment": "any",
+          "clip": "life.prone.recover",
+          "markers": {
+            "standing": 3.21415381
+          },
+          "source": {
+            "database": "CMU",
+            "file": "140_01.bvh",
+            "startFrame": 130,
+            "endFrame": 536,
+            "description": "getting up from face down",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place"
+        },
+        {
+          "name": "stand.run.lance",
+          "duration": 0.75833,
+          "loop": true,
+          "events": {},
+          "gesture": "run",
+          "posture": "standing",
+          "equipment": "lance",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "02_03.bvh",
+            "startFrame": 40,
+            "endFrame": 131,
+            "description": "run/jog",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9754
+        },
+        {
+          "name": "crouch.strafeLeft.knife",
+          "duration": 1.61666,
+          "loop": true,
+          "events": {},
+          "gesture": "strafeLeft",
+          "posture": "crouched",
+          "equipment": "knife",
+          "markers": {},
+          "source": {
+            "database": "CMU",
+            "file": "139_14.bvh",
+            "startFrame": 620,
+            "endFrame": 814,
+            "description": "sideways sneak, left",
+            "sampleRate": 120
+          },
+          "sampleRate": 15,
+          "timingAuthority": "simulation",
+          "rootMotion": "in-place",
+          "locomotionSpeed": 0.9402,
+          "locomotionAxis": "left"
+        }
+      ],
+      "locomotionSpeed": {
+        "idle": 0.05,
+        "walk": 1.3273,
+        "run": 0.9754,
+        "crouch": 0.7993,
+        "strafeRightStanding": 1.0316,
+        "strafeLeftStanding": 1.0544,
+        "strafeRightCrouched": 0.9318,
+        "strafeLeftCrouched": 0.9402,
+        "crawl": 0.194203,
+        "climbUp": 0.3498,
+        "climbDown": 0.4242,
+        "recover": 0.3301,
+        "fall": 0.0747
+      },
+      "anchorCoordinates": {
+        "space": "model-local",
+        "units": "metres",
+        "up": "+Y",
+        "forward": "+Z"
+      }
+    }
+  },
+  "equipment": {
+    "url": "/models/characters/equipment.glb",
+    "items": {
+      "1800": {
+        "node": "item_1800",
+        "category": "rifle",
+        "grip": "rifle",
+        "socket": "handRight_rifle",
+        "leftSocket": "handLeft_rifle",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "back",
+        "muzzle": "muzzle_1800",
+        "clipOverrides": {
+          "stand.reload.long-gun": "stand.reload.long-gun.1800",
+          "stand.unload.long-gun": "stand.unload.long-gun.1800",
+          "crouch.reload.long-gun": "crouch.reload.long-gun.1800",
+          "crouch.unload.long-gun": "crouch.unload.long-gun.1800",
+          "prone.reload.long-gun": "prone.reload.long-gun.1800",
+          "prone.unload.long-gun": "prone.unload.long-gun.1800",
+          "mounted.reload.long-gun": "mounted.reload.long-gun.1800",
+          "mounted.unload.long-gun": "mounted.unload.long-gun.1800"
+        }
+      },
+      "1801": {
+        "node": "item_1801",
+        "category": "rifle",
+        "grip": "rifle",
+        "socket": "handRight_rifle",
+        "leftSocket": "handLeft_rifle",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "back",
+        "muzzle": "muzzle_1801",
+        "clipOverrides": {
+          "stand.reload.long-gun": "stand.reload.long-gun.1801",
+          "stand.unload.long-gun": "stand.unload.long-gun.1801",
+          "crouch.reload.long-gun": "crouch.reload.long-gun.1801",
+          "crouch.unload.long-gun": "crouch.unload.long-gun.1801",
+          "prone.reload.long-gun": "prone.reload.long-gun.1801",
+          "prone.unload.long-gun": "prone.unload.long-gun.1801",
+          "mounted.reload.long-gun": "mounted.reload.long-gun.1801",
+          "mounted.unload.long-gun": "mounted.unload.long-gun.1801"
+        }
+      },
+      "1802": {
+        "node": "item_1802",
+        "category": "rifle",
+        "grip": "rifle",
+        "socket": "handRight_rifle",
+        "leftSocket": "handLeft_rifle",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "back",
+        "muzzle": "muzzle_1802",
+        "clipOverrides": {
+          "stand.reload.long-gun": "stand.reload.long-gun.1802",
+          "stand.unload.long-gun": "stand.unload.long-gun.1802",
+          "crouch.reload.long-gun": "crouch.reload.long-gun.1802",
+          "crouch.unload.long-gun": "crouch.unload.long-gun.1802",
+          "prone.reload.long-gun": "prone.reload.long-gun.1802",
+          "prone.unload.long-gun": "prone.unload.long-gun.1802",
+          "mounted.reload.long-gun": "mounted.reload.long-gun.1802",
+          "mounted.unload.long-gun": "mounted.unload.long-gun.1802"
+        }
+      },
+      "1803": {
+        "node": "item_1803",
+        "category": "rifle",
+        "grip": "rifle",
+        "socket": "handRight_rifle",
+        "leftSocket": "handLeft_rifle",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "back",
+        "muzzle": "muzzle_1803",
+        "clipOverrides": {
+          "stand.reload.long-gun": "stand.reload.long-gun.1803",
+          "stand.unload.long-gun": "stand.unload.long-gun.1803",
+          "crouch.reload.long-gun": "crouch.reload.long-gun.1803",
+          "crouch.unload.long-gun": "crouch.unload.long-gun.1803",
+          "prone.reload.long-gun": "prone.reload.long-gun.1803",
+          "prone.unload.long-gun": "prone.unload.long-gun.1803",
+          "mounted.reload.long-gun": "mounted.reload.long-gun.1803",
+          "mounted.unload.long-gun": "mounted.unload.long-gun.1803"
+        }
+      },
+      "1804": {
+        "node": "item_1804",
+        "category": "rifle",
+        "grip": "rifle",
+        "socket": "handRight_rifle",
+        "leftSocket": "handLeft_rifle",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "back",
+        "muzzle": "muzzle_1804",
+        "clipOverrides": {
+          "stand.reload.long-gun": "stand.reload.long-gun.1804",
+          "stand.unload.long-gun": "stand.unload.long-gun.1804",
+          "crouch.reload.long-gun": "crouch.reload.long-gun.1804",
+          "crouch.unload.long-gun": "crouch.unload.long-gun.1804",
+          "prone.reload.long-gun": "prone.reload.long-gun.1804",
+          "prone.unload.long-gun": "prone.unload.long-gun.1804",
+          "mounted.reload.long-gun": "mounted.reload.long-gun.1804",
+          "mounted.unload.long-gun": "mounted.unload.long-gun.1804"
+        }
+      },
+      "1805": {
+        "node": "item_1805",
+        "category": "pistol",
+        "grip": "pistol",
+        "socket": "handRight_pistol",
+        "leftSocket": "handLeft_pistol",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipRight",
+        "muzzle": "muzzle_1805",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1805",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1805",
+          "prone.reload.short-gun": "prone.reload.short-gun.1805",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1805"
+        }
+      },
+      "1806": {
+        "node": "item_1806",
+        "category": "pistol",
+        "grip": "pistol",
+        "socket": "handRight_pistol",
+        "leftSocket": "handLeft_pistol",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipRight",
+        "muzzle": "muzzle_1806",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1806",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1806",
+          "prone.reload.short-gun": "prone.reload.short-gun.1806",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1806"
+        }
+      },
+      "1807": {
+        "node": "item_1807",
+        "category": "rifle",
+        "grip": "rifle",
+        "socket": "handRight_rifle",
+        "leftSocket": "handLeft_rifle",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "back",
+        "muzzle": "muzzle_1807",
+        "clipOverrides": {
+          "stand.reload.long-gun": "stand.reload.long-gun.1807",
+          "stand.unload.long-gun": "stand.unload.long-gun.1807",
+          "crouch.reload.long-gun": "crouch.reload.long-gun.1807",
+          "crouch.unload.long-gun": "crouch.unload.long-gun.1807",
+          "prone.reload.long-gun": "prone.reload.long-gun.1807",
+          "prone.unload.long-gun": "prone.unload.long-gun.1807",
+          "mounted.reload.long-gun": "mounted.reload.long-gun.1807",
+          "mounted.unload.long-gun": "mounted.unload.long-gun.1807"
+        }
+      },
+      "1808": {
+        "node": "item_1808",
+        "category": "pistol",
+        "grip": "pistol",
+        "socket": "handRight_pistol",
+        "leftSocket": "handLeft_pistol",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipRight",
+        "muzzle": "muzzle_1808",
+        "clipOverrides": {
+          "stand.reload.short-gun": "stand.reload.short-gun.1808",
+          "crouch.reload.short-gun": "crouch.reload.short-gun.1808",
+          "prone.reload.short-gun": "prone.reload.short-gun.1808",
+          "mounted.reload.short-gun": "mounted.reload.short-gun.1808"
+        }
+      },
+      "1809": {
+        "node": "item_1809",
+        "category": "sabre",
+        "grip": "sabre",
+        "socket": "handRight_sabre",
+        "leftSocket": "handLeft_sabre",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "1810": {
+        "node": "item_1810",
+        "category": "sabre",
+        "grip": "sabre",
+        "socket": "handRight_sabre",
+        "leftSocket": "handLeft_sabre",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "1811": {
+        "node": "item_1811",
+        "category": "knife",
+        "grip": "sabre",
+        "socket": "handRight_sabre",
+        "leftSocket": "handLeft_sabre",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "1812": {
+        "node": "item_1812",
+        "category": "lance",
+        "grip": "sabre",
+        "socket": "handRight_sabre",
+        "leftSocket": "handLeft_sabre",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft",
+        "clipOverrides": {
+          "stand.idle.blade": "stand.idle.lance",
+          "stand.walk.blade": "stand.walk.lance",
+          "stand.run.blade": "stand.run.lance",
+          "stand.strafeLeft.blade": "stand.strafeLeft.lance",
+          "stand.strafeRight.blade": "stand.strafeRight.lance",
+          "stand.slash.blade": "stand.thrust.lance",
+          "stand.brace.blade": "stand.brace.lance",
+          "crouch.idle.blade": "crouch.idle.lance",
+          "crouch.walk.blade": "crouch.walk.lance",
+          "crouch.strafeLeft.blade": "crouch.strafeLeft.lance",
+          "crouch.strafeRight.blade": "crouch.strafeRight.lance",
+          "crouch.slash.blade": "crouch.thrust.lance",
+          "crouch.brace.blade": "crouch.brace.lance",
+          "prone.idle.blade": "prone.idle.lance",
+          "prone.crawl.blade": "prone.crawl.lance",
+          "mounted.idle.blade": "mounted.idle.lance",
+          "mounted.walk.blade": "mounted.walk.lance",
+          "mounted.run.blade": "mounted.run.lance",
+          "mounted.slash.blade": "mounted.thrust.lance",
+          "mounted.brace.blade": "mounted.brace.lance"
+        }
+      },
+      "1813": {
+        "node": "item_1813",
+        "category": "knife",
+        "grip": "sabre",
+        "socket": "handRight_sabre",
+        "leftSocket": "handLeft_sabre",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft",
+        "clipOverrides": {
+          "stand.idle.blade": "stand.idle.knife",
+          "stand.walk.blade": "stand.walk.knife",
+          "stand.run.blade": "stand.run.knife",
+          "stand.strafeLeft.blade": "stand.strafeLeft.knife",
+          "stand.strafeRight.blade": "stand.strafeRight.knife",
+          "stand.slash.blade": "stand.slash.knife",
+          "stand.brace.blade": "stand.brace.knife",
+          "crouch.idle.blade": "crouch.idle.knife",
+          "crouch.walk.blade": "crouch.walk.knife",
+          "crouch.strafeLeft.blade": "crouch.strafeLeft.knife",
+          "crouch.strafeRight.blade": "crouch.strafeRight.knife",
+          "crouch.slash.blade": "crouch.slash.knife",
+          "crouch.brace.blade": "crouch.brace.knife",
+          "prone.idle.blade": "prone.idle.knife",
+          "prone.crawl.blade": "prone.crawl.knife",
+          "mounted.idle.blade": "mounted.idle.knife",
+          "mounted.walk.blade": "mounted.walk.knife",
+          "mounted.run.blade": "mounted.run.knife",
+          "mounted.slash.blade": "mounted.slash.knife",
+          "mounted.brace.blade": "mounted.brace.knife"
+        }
+      },
+      "ramrod": {
+        "node": "item_ramrod",
+        "category": "tool",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "crowbar": {
+        "node": "item_crowbar",
+        "category": "tool",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "key": {
+        "node": "item_key",
+        "category": "tool",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "lockpick": {
+        "node": "item_lockpick",
+        "category": "tool",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "pliers": {
+        "node": "item_pliers",
+        "category": "tool",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "torches": {
+        "node": "item_torches",
+        "category": "supply",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "boleadoras": {
+        "node": "item_boleadoras",
+        "category": "supply",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "rations": {
+        "node": "item_rations",
+        "category": "supply",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "medkits": {
+        "node": "item_medkits",
+        "category": "supply",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "grenade": {
+        "node": "item_grenade",
+        "category": "supply",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "ammunition": {
+        "node": "item_ammunition",
+        "category": "supply",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      },
+      "item": {
+        "node": "item_item",
+        "category": "supply",
+        "grip": "tool",
+        "socket": "handRight_tool",
+        "leftSocket": "handLeft_tool",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": 1,
+        "stowedSocket": "hipLeft"
+      }
+    },
+    "bytes": 605248,
+    "sha256": "c5b5b8f45358de5261324ec6d2af8f8503b49cfcc8b12dae88d5996ebb6c195e",
+    "aliases": {
+      "medical": "medkits",
+      "medkit": "medkits",
+      "torch": "torches",
+      "bolas": "boleadoras",
+      "ration": "rations",
+      "ammo": "ammunition",
+      "inventory:key": "key",
+      "inventory:lockpick": "lockpick",
+      "inventory:crowbar": "crowbar",
+      "inventory:pliers": "pliers"
+    },
+    "fittings": {
+      "india_socket": {
+        "node": "item_1811",
+        "hostWeapon": 1800,
+        "position": [
+          1.045,
+          0.055,
+          0.018
+        ],
+        "rotation": [
+          0,
+          0,
+          -1.5707963267948966
+        ],
+        "scale": 1
+      }
+    }
+  },
+  "garments": {
+    "male": {
+      "url": "/models/characters/male-garments.glb",
+      "items": {
+        "poncho": {
+          "node": "garment_poncho",
+          "slot": "outfit",
+          "hideAppearanceParts": []
+        },
+        "linen_shirt": {
+          "node": "garment_linen_shirt",
+          "slot": "outfit",
+          "hideAppearanceParts": [
+            "outfit"
+          ]
+        },
+        "trousers": {
+          "node": "garment_trousers",
+          "slot": "legwear",
+          "hideAppearanceParts": [
+            "legwear"
+          ]
+        },
+        "hat": {
+          "node": "garment_hat",
+          "slot": "headwear",
+          "hideAppearanceParts": [
+            "headwear"
+          ]
+        }
+      }
+    },
+    "female": {
+      "url": "/models/characters/female-garments.glb",
+      "items": {
+        "poncho": {
+          "node": "garment_poncho",
+          "slot": "outfit",
+          "hideAppearanceParts": []
+        },
+        "linen_shirt": {
+          "node": "garment_linen_shirt",
+          "slot": "outfit",
+          "hideAppearanceParts": [
+            "outfit"
+          ]
+        },
+        "trousers": {
+          "node": "garment_trousers",
+          "slot": "legwear",
+          "hideAppearanceParts": [
+            "legwear"
+          ]
+        },
+        "hat": {
+          "node": "garment_hat",
+          "slot": "headwear",
+          "hideAppearanceParts": [
+            "headwear"
+          ]
+        }
+      }
+    }
+  },
+  "horse": {
+    "height": 1.51,
+    "saddle": {
+      "node": "socket_saddle",
+      "position": [
+        0,
+        1.55782,
+        -0.019999999552965164
+      ]
+    },
+    "lods": [
+      {
+        "lod": 0,
+        "url": "/models/characters/horse-lod0.glb",
+        "triangles": 17322,
+        "bytes": 676556,
+        "sha256": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04"
+      },
+      {
+        "lod": 1,
+        "url": "/models/characters/horse-lod1.glb",
+        "triangles": 10577,
+        "bytes": 460360,
+        "sha256": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1"
+      },
+      {
+        "lod": 2,
+        "url": "/models/characters/horse-lod2.glb",
+        "triangles": 6081,
+        "bytes": 310032,
+        "sha256": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993"
+      }
+    ],
+    "clips": [
+      {
+        "name": "HorseIdle",
+        "duration": 2.4,
+        "loop": true,
+        "locomotionSpeed": 0,
+        "strideDistance": 0,
+        "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+        "gait": "idle",
+        "nativeBoneCount": 19
+      },
+      {
+        "name": "HorseWalk",
+        "duration": 1.1,
+        "loop": true,
+        "locomotionSpeed": 0.87949,
+        "strideDistance": 0.96744,
+        "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+        "gait": "walk",
+        "nativeBoneCount": 19
+      },
+      {
+        "name": "HorseRun",
+        "duration": 0.7333333333333333,
+        "loop": true,
+        "locomotionSpeed": 2.22906,
+        "strideDistance": 1.63464,
+        "strideMeasurement": "median rearward sole velocity below 4.5 cm",
+        "gait": "trot",
+        "nativeBoneCount": 19
+      }
+    ],
+    "actions": {
+      "idle": "HorseIdle",
+      "walk": "HorseWalk",
+      "run": "HorseRun"
+    },
+    "riderSeatLocal": "clip.seatAnchor"
+  },
+  "provenance": "assets/source/characters-3d/README.md",
+  "animationMirroring": {
+    "axis": "x",
+    "bones": {
+      "Root": "Root",
+      "pelvis": "pelvis",
+      "spine_01": "spine_01",
+      "spine_02": "spine_02",
+      "spine_03": "spine_03",
+      "clavicle_l": "clavicle_r",
+      "upperarm_l": "upperarm_r",
+      "lowerarm_l": "lowerarm_r",
+      "hand_l": "hand_r",
+      "index_01_l": "index_01_r",
+      "index_02_l": "index_02_r",
+      "index_03_l": "index_03_r",
+      "middle_01_l": "middle_01_r",
+      "middle_02_l": "middle_02_r",
+      "middle_03_l": "middle_03_r",
+      "pinky_01_l": "pinky_01_r",
+      "pinky_02_l": "pinky_02_r",
+      "pinky_03_l": "pinky_03_r",
+      "ring_01_l": "ring_01_r",
+      "ring_02_l": "ring_02_r",
+      "ring_03_l": "ring_03_r",
+      "thumb_01_l": "thumb_01_r",
+      "thumb_02_l": "thumb_02_r",
+      "thumb_03_l": "thumb_03_r",
+      "clavicle_r": "clavicle_l",
+      "upperarm_r": "upperarm_l",
+      "lowerarm_r": "lowerarm_l",
+      "hand_r": "hand_l",
+      "index_01_r": "index_01_l",
+      "index_02_r": "index_02_l",
+      "index_03_r": "index_03_l",
+      "middle_01_r": "middle_01_l",
+      "middle_02_r": "middle_02_l",
+      "middle_03_r": "middle_03_l",
+      "pinky_01_r": "pinky_01_l",
+      "pinky_02_r": "pinky_02_l",
+      "pinky_03_r": "pinky_03_l",
+      "ring_01_r": "ring_01_l",
+      "ring_02_r": "ring_02_l",
+      "ring_03_r": "ring_03_l",
+      "thumb_01_r": "thumb_01_l",
+      "thumb_02_r": "thumb_02_l",
+      "thumb_03_r": "thumb_03_l",
+      "neck_01": "neck_01",
+      "head": "head",
+      "thigh_l": "thigh_r",
+      "calf_l": "calf_r",
+      "foot_l": "foot_r",
+      "ball_l": "ball_r",
+      "thigh_r": "thigh_l",
+      "calf_r": "calf_l",
+      "foot_r": "foot_l",
+      "ball_r": "ball_l"
+    }
+  },
+  "complete": true
+}

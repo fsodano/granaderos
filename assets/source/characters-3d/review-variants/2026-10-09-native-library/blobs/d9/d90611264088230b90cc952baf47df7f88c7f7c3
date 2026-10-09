@@ -1,0 +1,60 @@
+{
+  "originalMain": "facf789099606b6f336c3a84c0be8dac91c3fccb",
+  "baselineLog": "/tmp/granadero-contact-pr226-baseline/baseline-gates.log",
+  "candidateModels": "/tmp/granadero-full-review/models",
+  "offsetSweepMetres": [
+    {
+      "offset": 0,
+      "advance": [
+        0.04000000000000001,
+        0.04
+      ],
+      "contactGap": 0.00412779908253628
+    },
+    {
+      "offset": 0.02,
+      "advance": [
+        0.02
+      ],
+      "contactGap": 0.003317269832019707
+    },
+    {
+      "offset": 0.04,
+      "advance": [
+        0.01
+      ],
+      "contactGap": 0
+    },
+    {
+      "offset": 0.06,
+      "advance": [
+        0
+      ],
+      "contactGap": 0
+    },
+    {
+      "offset": 0.08,
+      "advance": [
+        0
+      ],
+      "contactGap": 0
+    },
+    {
+      "offset": 0.1,
+      "advance": [
+        0
+      ],
+      "contactGap": 0
+    }
+  ],
+  "selectedOffsetMetres": 0.06,
+  "assertionsPreserved": [
+    "bodyAdvance === 0",
+    "held blade surface gap <= .004 m",
+    "finite native transforms through all phases including zero-distance return",
+    "native hand reach < 1e-7",
+    "current target resolution and tick ordering",
+    "same paid result and saved cells"
+  ],
+  "otherCasesOffsetMetres": 0
+}

@@ -1,0 +1,21 @@
+from pathlib import Path
+from PIL import Image,ImageDraw
+import json,hashlib,numpy as np
+root=Path(__file__).parent;base=Path('/tmp/granadero-face-shape-study/models')
+metrics={}
+for view,suffix in [('face','.face'),('isometric','')]:
+ imgs=[Image.open(root/f'{stage}/granadero/stand.idle.unarmed.sample-1{suffix}.png').convert('RGB')for stage in ('before','after')]
+ out=Image.new('RGB',(1400,732),'#202622');d=ImageDraw.Draw(out)
+ for i,img in enumerate(imgs):out.paste(img,(i*700,32));d.text((i*700+16,9),['Baseline','Rejected material pilot'][i],fill='white')
+ out.save(root/f'compare-{view}.png')
+ a,b=map(lambda im:np.asarray(im).astype(float),imgs);diff=np.abs(a-b);metrics[view]={'meanAbsoluteChannelChangeOutOf255':float(diff.mean()),'maxChannelChange':float(diff.max()),'changedPixels':int(np.any(diff>0,axis=2).sum())}
+raw=(base/'granadero-lod0.glb').read_bytes();doc=json.loads(raw[20:20+int.from_bytes(raw[12:16],'little')]);mask=np.asarray(Image.open(root/'head-mask.png'))>0
+outside={}
+for img in doc['images']:
+ if not img['name'].startswith('skin'):continue
+ a=np.asarray(Image.open(base/img['uri']).convert('RGB'));b=np.asarray(Image.open(root/(img['name']+'-pilot.png')))
+ outside[img['name']]=int(np.sum(np.any(a!=b,axis=-1)&~mask));assert outside[img['name']]==0
+before=json.loads((root/'before/index.json').read_text());after=json.loads((root/'after/index.json').read_text())
+for key in ('camera','lighting','floor','renderSettings'):assert before[key]==after[key]
+receipt={'status':'rejected for publication','reason':'Close-up cavity definition is modest; the full-body isometric result does not visibly improve the generic/toy face. Stronger microdetail alone is insufficient.','scope':'One Granadero LOD0 private material pilot. No shared source or public assets changed.','changes':['Photo-derived head normal slopes increased 3.25 times; spatial roughness centred on 0.58','12 mm native head self-occlusion bake blended into colour in linear space, at 42 percent maximum strength'],'preservation':json.loads((root/'preservation.json').read_text()),'outsideHeadChangedPixels':outside,'sameCameraLightingAndRenderSettings':True,'pixelDifference':metrics,'nextRecommendedStudy':['Eye and upper/lower lid shape and value structure at the same isometric game size','Visible military hair edge and short lock variation: current military scalp is a uniform 1.5 mm shell, unlike the female/other hair relief branch'],'notRecommended':'No production patch or extra texture dependency for this rejected result. Existing clean source photo colour remains the basis.'}
+(root/'review.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))

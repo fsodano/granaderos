@@ -40,12 +40,20 @@ branches would overwrite later changes; only their ancestry needs integration.
 ## Human library and private studies
 
 The [review-source archive](../../assets/source/characters-3d/review-variants/2026-10-09-native-library/README.md)
-contains all 1,199 unique source/art/test/receipt blobs from the four human
-checkpoint histories and selected private studies. Its manifest records exact
+contains all 1,679 unique source/art/test/receipt blobs from the four human
+checkpoint histories, selected private studies, and available temporary authored
+source/art referenced by their receipts. Its manifest records exact
 hashes, source branches/commits, all original paths and review status. Duplicate
 private paths resolve to one blob. Existing main-history bytes are referenced
 by their exact Git identity. Dependencies, caches and repeated rendered evidence
 are excluded; the original local review directory is retained.
+
+The external supplement records 17,761 available source/art paths and adds 480
+unique blobs. It includes the formerly temporary rejected-stubble, coat-material
+and other pilot source patches. No literal referenced source path was unavailable.
+Where the temporary study did not record a Git branch, the manifest states that
+limit and retains the exact original path and receipt reference. It does not
+invent source ancestry.
 
 The archive contains competing and rejected studies as labelled variants.
 Their source remains editable and recoverable. They are not used by runtime

@@ -1,0 +1,19 @@
+from pathlib import Path
+import json,struct,shutil,hashlib
+r=Path('/tmp/granadero-hand-web-pilot');base=r/'pose-baseline';out=r/'paired-models';out.mkdir(exist_ok=True);manifest=json.loads((base/'manifest.json').read_text());profiles=json.loads((r/'natural-paired-source.json').read_text());receipts={}
+for p in base.iterdir():
+ if p.name in('male-animations.glb','female-animations.glb','manifest.json'):continue
+ dest=out/p.name
+ if dest.exists():continue
+ if p.suffix=='.glb':shutil.copy2(p,dest)
+ else:dest.symlink_to(p,target_is_directory=p.is_dir())
+for gender,preset in [('male','granadero'),('female','woman-scout')]:
+ row=next(p for p in profiles if p['preset']==preset);name=f'{gender}-animations.glb';raw=(base/name).read_bytes();n=struct.unpack_from('<I',raw,12)[0];j=json.loads(raw[20:20+n]);b=raw[28+n:];parts=[b];length=len(b);changed=[]
+ for clip in j['animations']:
+  if clip['name']not in('stand.idle.unarmed','stand.walk.unarmed','stand.run.unarmed'):continue
+  for ch in clip['channels']:
+   bone=j['nodes'][ch['target']['node']]['name']
+   if ch['target']['path']!='rotation'or bone not in row['bones']:continue
+   old=clip['samplers'][ch['sampler']];count=j['accessors'][old['input']]['count'];data=struct.pack('<4f',*row['bones'][bone])*count;vi=len(j['bufferViews']);j['bufferViews'].append({'buffer':0,'byteOffset':length,'byteLength':len(data)});parts.append(data);length+=len(data);aid=len(j['accessors']);j['accessors'].append({'bufferView':vi,'componentType':5126,'count':count,'type':'VEC4'});ch['sampler']=len(clip['samplers']);clip['samplers'].append({**old,'output':aid});changed.append([clip['name'],bone,'rotation'])
+ j['buffers'][0]['byteLength']=length;js=json.dumps(j,separators=(',',':')).encode();js+=b' '*(-len(js)%4);blob=b''.join(parts);result=struct.pack('<4sII',b'glTF',2,28+len(js)+len(blob))+struct.pack('<I4s',len(js),b'JSON')+js+struct.pack('<I4s',len(blob),b'BIN\0')+blob;(out/name).write_bytes(result);manifest['animationLibraries'][gender]['sha256']=hashlib.sha256(result).hexdigest();manifest['animationLibraries'][gender]['bytes']=len(result);receipts[gender]={'changedChannels':changed,'source':row}
+(out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');(out/'pilot.json').write_text(json.dumps(receipts,indent=2));print(out)

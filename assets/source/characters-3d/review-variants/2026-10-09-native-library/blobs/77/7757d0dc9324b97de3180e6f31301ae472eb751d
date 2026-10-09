@@ -1,0 +1,45 @@
+from pathlib import Path
+import shutil,subprocess,json,hashlib
+r=Path('/tmp/granadero-hand-web-pilot/retention');r.mkdir(exist_ok=True);shared=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos/assets/source/characters-3d/authoring');source=r/'source';shutil.copytree(shared,source,ignore=shutil.ignore_patterns('__pycache__','.build'),dirs_exist_ok=True)
+shutil.copytree(Path('/tmp/granadero-hand-web-pilot/paired-models'),r/'models',symlinks=False,dirs_exist_ok=True)
+p=source/'optimize.py';before=p.read_text();(r/'optimize-before.py').write_text(before)
+helper='''
+def _left_hand_component_vertices(obj):
+ """Select only the disconnected native left-hand/forearm island."""
+ adjacency=[[] for _ in obj.data.vertices]
+ for edge in obj.data.edges:
+  a,b=edge.vertices;adjacency[a].append(b);adjacency[b].append(a)
+ groups={group.index for group in obj.vertex_groups
+         if group.name in ('hand_l','lowerarm_l')
+         or (group.name.endswith('_l') and group.name.startswith(('thumb_','index_','middle_','ring_','pinky_')))}
+ seen=set();selected=set()
+ for vertex in obj.data.vertices:
+  if vertex.index in seen:continue
+  stack=[vertex.index];seen.add(vertex.index);component=[];weight=0
+  while stack:
+   index=stack.pop();component.append(index)
+   weight+=sum(group.weight for group in obj.data.vertices[index].groups if group.group in groups)
+   for neighbor in adjacency[index]:
+    if neighbor not in seen:seen.add(neighbor);stack.append(neighbor)
+  if weight>.5*len(component):selected.update(component)
+ return selected
+
+def _preserve_female_left_hand(ctx,objects,lod):
+ if ctx['gender']!='female' or lod==0:return
+ for skin in list(objects):
+  if not skin.name.startswith('Exposed_Human_Skin'):continue
+  selected=_left_hand_component_vertices(skin)
+  if not selected or len(selected)==len(skin.data.vertices):
+   raise ValueError('Expected a disconnected native left hand')
+  # Keep the complete original skin during BOTH reductions. Removing islands
+  # beforehand would redistribute the decimator budget to unrelated surfaces.
+  hand=skin.copy();hand.data=skin.data.copy();hand.name='Exposed_Human_Left_Hand'
+  bpy.context.collection.objects.link(hand);objects.append(hand)
+  hand['retain_left_hand_skin']=True
+  skin['replace_reduced_left_hand']=True
+
+'''
+s=before.replace('def optimize_character(ctx,lod=0):',helper+'def optimize_character(ctx,lod=0):').replace('\n _preserve_head_skin(ctx,objects)\n','\n _preserve_head_skin(ctx,objects)\n _preserve_female_left_hand(ctx,objects,lod)\n',1).replace("  if obj.get('retain_head_skin'):ratio=HEAD_SKIN_RATIOS[lod]","  if obj.get('retain_head_skin'):ratio=HEAD_SKIN_RATIOS[lod]\n  if obj.get('retain_left_hand_skin'):ratio=RATIOS[0]")
+s=s.replace('  # At most four normalized bone influences, preserving the strongest native',"  if obj.get('retain_left_hand_skin'):\n   _keep_vertices(obj,_left_hand_component_vertices(obj))\n  elif obj.get('replace_reduced_left_hand'):\n   left_vertices=_left_hand_component_vertices(obj)\n   _keep_vertices(obj,set(range(len(obj.data.vertices)))-left_vertices)\n  # At most four normalized bone influences, preserving the strongest native",1)
+p.write_text(s);v=subprocess.run(['diff','-u','--label','a/assets/source/characters-3d/authoring/optimize.py','--label','b/assets/source/characters-3d/authoring/optimize.py',str(r/'optimize-before.py'),str(p)],capture_output=True,text=True);assert v.returncode==1;(r/'source.patch').write_text(v.stdout)
+(r/'source-hashes.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in source.glob('*.py')},indent=2));print(source)

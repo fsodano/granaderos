@@ -1,0 +1,32 @@
+from pathlib import Path
+import struct,json,hashlib,collections,importlib.util,sys
+ROOT=Path('/Users/fsodano/.codex/worktrees/human-character-library/granaderos');BASE=Path('/tmp/granadero-face-shape-study');OLD=Path('/tmp/granadero-full-review/models');NEW=BASE/'models';sys.path.insert(0,str(ROOT/'tools/characters-3d'))
+spec=importlib.util.spec_from_file_location('appearance_increment',ROOT/'tools/characters-3d/build-appearance-increment.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+TYPES={'SCALAR':1,'VEC2':2,'VEC3':3,'VEC4':4,'MAT4':16};FORMATS={5121:'B',5123:'H',5125:'I',5126:'f'}
+def facts(path):
+ raw=path.read_bytes();size=struct.unpack_from('<I',raw,12)[0];doc=json.loads(raw[20:20+size]);blob=raw[28+size:]
+ def access(i):
+  a=doc['accessors'][i];v=doc['bufferViews'][a['bufferView']];fmt='<'+FORMATS[a['componentType']]*TYPES[a['type']];step=v.get('byteStride',struct.calcsize(fmt));off=v.get('byteOffset',0)+a.get('byteOffset',0)
+  return [struct.unpack_from(fmt,blob,off+n*step)for n in range(a['count'])]
+ fixed=collections.Counter();head=0;total=0
+ for mesh_index,mesh in enumerate(doc['meshes']):
+  node=next(n for n in doc['nodes'] if n.get('mesh')==mesh_index);part=node.get('name',mesh['name']);joint_names=[doc['nodes'][j]['name'] for j in doc['skins'][node.get('skin',0)]['joints']]
+  for p in mesh['primitives']:
+   attrs={k:access(v)for k,v in p['attributes'].items()};idx=[i[0]for i in access(p['indices'])];total+=len(idx)//3;mat=doc['materials'][p['material']]['name']
+   if 'JOINTS_0'in attrs:
+    # Equal influences can change slot order during export. Compare the exact
+    # named bone-to-weight mapping, not numeric slots or tie-break order.
+    attrs['DEFORM']=[tuple(sorted((joint_names[j],w)for j,w in zip(joints,weights)if w!=0))for joints,weights in zip(attrs.pop('JOINTS_0'),attrs.pop('WEIGHTS_0'))]
+   for k in range(0,len(idx),3):
+    ids=idx[k:k+3]
+    if part.startswith('Human_skin_')and all(attrs['POSITION'][i][1]>1.4 for i in ids):head+=1;continue
+    corners=[tuple((name,attrs[name][i])for name in sorted(attrs))for i in ids];corners=min(tuple(corners[j:]+corners[:j])for j in range(3));fixed[(part,mat,corners)]+=1
+ return fixed,dict(sha256=hashlib.sha256(raw).hexdigest(),triangles=total,headTriangles=head,bytes=len(raw))
+
+a=Path('/tmp/granadero-eye-region-pilot/models/granadero-lod0.glb');b=Path('/tmp/granadero-adult-plane-pilot/models/granadero-lod0.glb')
+x,old=facts(a);y,new=facts(b)
+assert x==y,('Non-head triangle positions/normals/UVs/weights/pigment changed',len(x-y),len(y-x))
+assert module.native_signature(a)==module.native_signature(b),'Native skeleton changed'
+report=dict(before=old,after=new,nativeSkeletonExact=True,allNonHeadTriangleAttributesExact=True,preservedTriangles=sum(x.values()))
+Path('/tmp/granadero-adult-plane-pilot/export-proof.json').write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(report,indent=2))

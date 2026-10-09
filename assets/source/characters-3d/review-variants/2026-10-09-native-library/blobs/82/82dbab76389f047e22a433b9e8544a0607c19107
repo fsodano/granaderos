@@ -1,0 +1,39 @@
+from pathlib import Path
+import sys,json,hashlib
+import numpy as np
+root=Path('/Users/fsodano/.codex/worktrees/accepted-character-faces/granaderos')
+sys.path.insert(0,str(root/'assets/source/characters-3d/authoring'))
+from accepted_faces import load
+base=Path('/tmp/granadero-epaulette-fit-pilot');report=[]
+for preset in ('granadero','royalist'):
+ for lod in range(3):
+  name=f'{preset}-lod{lod}.glb';old=root/'web/public/models/characters'/name;new=base/'models-v3'/name
+  if not new.exists():continue
+  a,ar,ab=load(old);b,br,bb=load(new)
+  assert a['nodes']==b['nodes'],name+' nodes'
+  assert a['materials']==b['materials'],name+' materials'
+  assert len(a['skins'])==len(b['skins'])==1
+  for key in ('joints','skeleton'):assert a['skins'][0].get(key)==b['skins'][0].get(key),name+' rig'
+  assert np.array_equal(ar(a['skins'][0]['inverseBindMatrices']),br(b['skins'][0]['inverseBindMatrices'])),name+' inverse bind'
+  for ai,bi in zip(a.get('images',[]),b.get('images',[])):
+   if 'bufferView' not in ai:
+    assert ai==bi,name+' image URI'
+    continue
+   av=a['bufferViews'][ai['bufferView']];bv=b['bufferViews'][bi['bufferView']]
+   assert ab[av.get('byteOffset',0):av.get('byteOffset',0)+av['byteLength']]==bb[bv.get('byteOffset',0):bv.get('byteOffset',0)+bv['byteLength']],name+' image'
+  fixed=[]
+  for am,bm in zip(a['meshes'],b['meshes']):
+   assert am['name']==bm['name'],name+' mesh name'
+   if am['name']=='Tailored_Coat':continue
+   assert len(am['primitives'])==len(bm['primitives'])
+   for ap,bp in zip(am['primitives'],bm['primitives']):
+    assert ap['attributes'].keys()==bp['attributes'].keys()
+    for semantic in ap['attributes']:assert np.array_equal(ar(ap['attributes'][semantic]),br(bp['attributes'][semantic])),name+' '+am['name']+' '+semantic
+    assert np.array_equal(ar(ap['indices']),br(bp['indices'])),name+' indices'
+    assert ap.get('material')==bp.get('material')
+    for at,bt in zip(ap.get('targets',[]),bp.get('targets',[])):
+     for semantic in at:assert np.array_equal(ar(at[semantic]),br(bt[semantic])),name+' morph'
+   fixed.append(am['name'])
+  report.append({'file':name,'beforeSha256':hashlib.sha256(old.read_bytes()).hexdigest(),'afterSha256':hashlib.sha256(new.read_bytes()).hexdigest(),'exactMeshes':fixed,'rigExact':True,'materialsAndTexturesExact':True})
+(base/'preservation-v3.json').write_text(json.dumps(report,indent=2)+'\n')
+print('PRESERVATION_OK',len(report))

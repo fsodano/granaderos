@@ -1,0 +1,59 @@
+--- a/assets/source/characters-3d/authoring/facial_structure.py
++++ b/assets/source/characters-3d/authoring/facial_structure.py
+@@ -79,3 +79,44 @@
+         nearest=closest_point_on_tri(point,*coords)
+         candidates.append(((nearest-point).length_squared,barycentric_transform(nearest,*coords,*tex)))
+     return min(candidates,key=lambda candidate:candidate[0])[1].xy
++
++
++def worker_identity(skin, eye_z):
++    """A bounded worker-only lower-face identity on the reduced native head.
++
++    Eye and mouth rims, nostrils, ears, neck and scalp are protected. This is
++    not a head scale: the broad jaw and cheek planes use continuous falloffs.
++    UVs, vertex order, native weights and all fitted facial details stay fixed.
++    """
++    def smooth(value):
++        t=max(0.0,min(1.0,value));return t*t*(3-2*t)
++    def g(value,centre,width):
++        return math.exp(-((value-centre)/width)**2)
++    samples=[(v,v.co.copy(),v.normal.copy()) for v in skin.data.vertices]
++    for vertex,p,n in samples:
++        x=abs(p.x);below=eye_z-p.z
++        if p.y>=-.075 or x>=.079 or not -.005<below<.111:
++            continue
++        # Explicit zero regions protect the thin fitted native openings.
++        if ((x-.031)/.024)**2+(below/.019)**2<1.0:
++            continue
++        if x<.034 and .041<below<.080:
++            continue
++        if x<.025 and .027<below<.044:
++            continue
++        face=smooth((-.075-p.y)/.030)
++        margin=smooth((.079-x)/.012)*smooth((.111-below)/.012)
++        lower=smooth((below-.062)/.018)*smooth((.111-below)/.012)
++        jaw=lower*g(x,.049,.029)*face*margin
++        # A wider angle of the jaw, without widening mouth/ear attachments.
++        vertex.co.x+=(1 if p.x>=0 else -1)*.0018*jaw
++        # Slightly leaner mid-cheek; preserve the cheekbone ridge above it.
++        cheek=g(x,.050,.018)*g(below,.045,.014)*face*margin
++        vertex.co.y+=.0009*cheek
++        # Small nasal-bridge plane above the protected nostril region.
++        bridge=g(p.x,0,.010)*g(below,.010,.010)*face
++        bridge*=smooth((.027-below)/.008)
++        vertex.co.y-=.00065*bridge
++        # Unequal cheek soft tissue, smaller than the main plane change.
++        vertex.co.y+=.00022*g(p.x,.049,.019)*g(below,.048,.020)*face*margin
++    skin.data.update()
+--- a/assets/source/characters-3d/authoring/optimize.py
++++ b/assets/source/characters-3d/authoring/optimize.py
+@@ -190,6 +190,9 @@
+    # decimation would reallocate the edge budget elsewhere on the face.
+    from facial_structure import soften_lower_lid
+    soften_lower_lid(obj,ctx['facial_eye_z'])
++   if ctx.get('preset')=='worker':
++    from facial_structure import worker_identity
++    worker_identity(obj,ctx['facial_eye_z'])
+   if obj.get('replace_reduced_head'):
+    head_vertices=_head_component_vertices(obj)
+    _keep_vertices(obj,set(range(len(obj.data.vertices)))-head_vertices)

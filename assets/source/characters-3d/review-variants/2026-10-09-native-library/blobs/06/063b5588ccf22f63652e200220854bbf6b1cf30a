@@ -1,0 +1,46 @@
+from pathlib import Path
+import sys,json,hashlib,collections,numpy as np
+root=Path('/tmp/granadero-main-collar-seam-pilot')
+sys.path.insert(0,str(root/'source/assets/source/characters-3d/authoring'))
+from accepted_faces import load,native_signature
+
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+preset=sys.argv[1]if len(sys.argv)>1 else 'granadero';lod=int(sys.argv[2])if len(sys.argv)>2 else 0;name=f'{preset}-lod{lod}.glb'
+a,ar,ab=load(root/'before'/name);b,br,bb=load(root/'models'/name)
+assert native_signature(a,ar)==native_signature(b,br)
+assert a['materials']==b['materials']
+assert a['images']==b['images']
+for im in a['images']:assert sha(root/'before'/im['uri'])==sha(root/'models'/im['uri'])
+proof={'baseline':sha(root/'before'/name),'candidate':sha(root/'models'/name),'nativeRigExact':True,'materialDefinitionsExact':True,'textureBytesExact':True,'meshes':[]}
+
+def primitives(d):return {(m['name'],d['materials'][p['material']]['name']):p for m in d['meshes']for p in m['primitives']}
+aa=primitives(a);ba=primitives(b);assert aa.keys()==ba.keys()
+for key,pa in aa.items():
+ pb=ba[key];counts=[len(ar(pa['indices']))//3,len(br(pb['indices']))//3]
+ fields=set(pa['attributes'])|set(pb['attributes']);assert fields==set(pa['attributes'])==set(pb['attributes'])
+ if key[0]!='Tailored_Coat':
+  exact=all(np.array_equal(ar(pa['attributes'][f]),br(pb['attributes'][f]))for f in fields)and np.array_equal(ar(pa['indices']),br(pb['indices']))
+  assert exact,key
+  assert len(pa.get('targets',[]))==len(pb.get('targets',[]))
+  for ta,tb in zip(pa.get('targets',[]),pb.get('targets',[])):
+   assert ta.keys()==tb.keys() and all(np.array_equal(ar(ta[k]),br(tb[k]))for k in ta)
+  proof['meshes'].append({'mesh':key,'triangles':counts,'allAttributesIndicesMorphsExact':True});continue
+ def tris(p,read,normal=False):
+  data={k:read(v)for k,v in p['attributes'].items()if normal or k!='NORMAL'};out=collections.Counter();n=0
+  for tri in read(p['indices']).reshape(-1,3):
+   xyz=data['POSITION'][tri]
+   zone=(xyz[:,1]>1.475)&(xyz[:,1]<1.56)&(abs(xyz[:,0])<.13)&(abs(xyz[:,2])<.16)
+   if np.any(zone):continue
+   rows=[b''.join(data[k][i].tobytes()for k in sorted(data))for i in tri];row=min(tuple(rows),tuple(rows[1:]+rows[:1]),tuple(rows[2:]+rows[:2]));out[row]+=1;n+=1
+  return out,n
+ at,n=tris(pa,ar);bt,m=tris(pb,br);assert at==bt,('Non-seam coat attribute/index differences',n,m,sum((at-bt).values()),sum((bt-at).values()))
+ ant,_=tris(pa,ar,True);bnt,_=tris(pb,br,True)
+ proof['meshes'].append({'mesh':key,'triangles':counts,'outsideCollarSeamTriangles':n,'outsideCollarSeamGeometryUVWeightColorExact':True,'outsideCollarSeamNormalsExact':ant==bnt,'normalChangedTriangles':sum((ant-bnt).values())})
+proof['triangles']={'before':sum(len(ar(p['indices']))//3 for p in aa.values()),'after':sum(len(br(p['indices']))//3 for p in ba.values())}
+proof['draws']={'before':len(aa),'after':len(ba)}
+proof['bytes']={'before':(root/'before'/name).stat().st_size,'after':(root/'models'/name).stat().st_size}
+for path in (root/'before').glob('*.glb'):
+ if any(path.name==f'{p}-lod{l}.glb'for p in ('granadero','royalist')for l in range(3)):continue
+ assert sha(path)==sha(root/'models'/path.name),path.name
+proof['allOtherLibraryGLBsExact']=True
+(root/f'delta-{preset}-lod{lod}.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof,indent=2))

@@ -1,0 +1,39 @@
+# Native left-sleeve study — REJECTED, private only
+
+Root reviewed V2 and rejected the inflated, smooth sleeve. Keep the evidence; do not publish this body or its source patch.
+
+The sleeve uses the current Granadero coat topology. Its collar, shoulder yoke, strap support, cuff, native body, rig and animation library remain fixed. The unchanged current generated skin and hat are included in every before/after frame.
+
+The pilot replaces the left sleeve's fixed elbow ridges with a broader cloth envelope. It adds two shallow oblique folds on the inner elbow through one angle-driven corrective. The outer elbow stays smooth. The maximum rest-envelope displacement is 15 mm. The two fold displacements at the authored bend are −1.88 to +3.61 mm.
+
+## Visible result
+
+The hard elbow notch is removed. The extra cloth volume is useful, particularly in pistol aim and rifle loading. It is still quite round. The two inner folds are subtle at the 700-pixel whole-body view. This is a local construction improvement, not proof that the whole uniform now reads as realistic woven cloth.
+
+- `compare-iso.png`: accepted current body at left, private final trial at right.
+- `compare-coat.png`: same four poses in a closer isometric crop.
+- `compare-sleeve.png`: same four poses around the left elbow.
+- `before/`: current actual GLB captures.
+- `after/`: first rounded trial, before the added inner folds.
+- `after-v2/`: final private trial with the inner folds.
+
+The four times are idle at 0.5 s, pistol aim at 0 s, rifle load at 1.92 s, and forehand cut contact at 0.36 s. Camera, lighting, pose, texture and colour factors match across comparisons. See each capture's `index.json` for full hashes and render settings.
+
+## Geometry and checks
+
+- The native node transforms and inverse-bind matrices are exact. Exposed skin, head/eyes, hat, breeches and boots retain their decoded attributes. All other GLBs and all texture PNGs are unchanged.
+- The coat source retains its topology, UVs and native weights. Re-running its existing reduction changes the coat's exported tessellation and corresponding attributes; this is recorded, not hidden as byte parity.
+- The model increases from 86,481 to 86,535 triangles, and from 5,345,112 to 5,422,352 bytes. Draw calls stay at six.
+- Both existing Granadero LOD0 coat/crossbelt tests pass without threshold changes.
+- Exact finite edge/triangle tests find no crossing between either local elbow sleeve patch and the actual rendered skin or visible equipment in the four checked frames. Visual review finds no new skin opening.
+- A full native-body proxy still crosses the hidden sleeve. It is mostly omitted from the production body under the clothes. The left local crossing-pair counts before→after are: idle 29→48, pistol 175→60, loading 13→9, forehand 110→76. These are real local triangle crossings, not solely a signed nearest-normal result. Pair counts do not measure depth or severity. This remains unresolved; the sleeve is not approved as a complete garment.
+
+`receipt.json` holds the complete evidence. `private-source-proposal.patch` contains the narrow source hooks and helper. No shared files were changed.
+
+## Runtime support and limit
+
+The GLB contains `coat_elbow_l`; the ordinary glTF loader supports its morph target. Current game runtime drives only posture cloth (`cloth_prone`, `cloth_crouched`, `cloth_supine`). The current lab and production review tool also have no elbow-cloth driver. Thus dropping this GLB into the game alone would show the new rest envelope but would not apply the bend correction.
+
+This private renderer applies the corrective after the final native pose: `clamp((actual elbow angle − native bind angle) / (110° − native bind angle), 0, 1)`. The four left target weights are 0, 0.83079, 0.38026 and 0.14437. A production/lab integration, if later approved, must apply the same rule after animation mixing and contact fitting. It must use the final native upper-arm, lower-arm and hand positions, so crossfades and reverse seeking remain deterministic. No runtime or lab integration is included in this pilot.
+
+Only four requested moments and one body LOD were tested. Do not generalize this result to other characters, deep bends or all clips.

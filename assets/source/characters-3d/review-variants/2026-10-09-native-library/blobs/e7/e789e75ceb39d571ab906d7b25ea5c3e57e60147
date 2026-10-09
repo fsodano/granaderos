@@ -1,0 +1,25 @@
+import sys,json,math
+from pathlib import Path
+import bpy
+HERE=Path('/tmp/granadero-hand-web-pilot/pose-source');sys.path.insert(0,str(HERE));sys.path.insert(0,str(HERE.parent))
+text=(HERE/'character.py').read_text();namespace={'__file__':str(HERE/'character.py')};exec(text[:text.index('    objects = []')]+'    return rig\n',namespace)
+import relaxed_hands,relaxed_thumb
+rows=[]
+for preset in ['woman-scout']:
+ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
+ rig=namespace['create_character'](preset)
+ for tip in [5,10,15]:
+  flex=0
+  pole=60;outside=.022;roll=0;forward=-.022
+  relaxed_hands.apply_relaxed_hands(rig)
+  for side in ['r','l']:
+   scale=rig.data.bones['thumb_01_'+side].length/.03464791923761368
+   relaxed_thumb.apply_thumb(rig,forward*scale,.040*scale,roll,side=side,outside=outside*scale,pole_angle=pole,ip_flex=flex,tip_flex=tip)
+  bones={};bends={}
+  for side in ['r','l']:
+   for number in(1,2,3):
+    name=f'thumb_{number:02d}_{side}';b=rig.pose.bones[name];q=(b.parent.matrix.inverted()@b.matrix).to_quaternion();bones[name]=[q.x,q.y,q.z,q.w]
+   a,b,c=[rig.pose.bones[f'thumb_{i:02d}_{side}'].head.copy()for i in(1,2,3)]
+   bends[side]=math.degrees((b-a).angle(c-b))
+  rows.append({'preset':preset,'pole':pole,'outside':outside,'roll':roll,'forward':forward,'flex':flex,'tip':tip,'candidateBend':bends,'bones':bones})
+Path('/tmp/granadero-hand-web-pilot/natural-paired-source.json').write_text(json.dumps(rows));print('PAIR_POLE_GRID',len(rows))

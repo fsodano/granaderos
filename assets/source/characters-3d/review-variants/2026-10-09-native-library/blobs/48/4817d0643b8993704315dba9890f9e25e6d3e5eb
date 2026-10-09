@@ -1,0 +1,83 @@
+--- a/assets/source/characters-3d/authoring/surface_atlas.py
++++ b/assets/source/characters-3d/authoring/surface_atlas.py
+@@ -46,7 +46,7 @@
+     return (a & np.uint32(65535)).astype(np.float32) / 65535 - .5
+ 
+ 
+-def surface_tile(name, colour, roughness, metallic, size=TILE_SIZE):
++def surface_tile(name, colour, roughness, metallic, size=TILE_SIZE, wool_sheen=False):
+     """Return colour (sRGB), packed rough/metal, and tangent normal float tiles."""
+     n = size - 2 * TILE_GUTTER
+     y, x = np.mgrid[:n, :n].astype(np.float32)
+@@ -131,6 +131,18 @@
+         shade += .036 * fibres + .025 * grain
+         rough += .030 * fibres
+         height = .015 * fibres
++    # One private navy-wool material trial. Keep the same yarn placement and
++    # albedo; only its existing micro-normal and fibre finish are strengthened.
++    if wool_sheen and name == 'Navy_Wool':
++        # Fine crossing yarns stay below a two-texel pitch. Their shallow
++        # relief avoids a ribbed silhouette under the fibre lobe.
++        fine_u=u*96+.10*np.sin(math.tau*v*3)
++        fine_v=v*96+.08*np.sin(math.tau*u*4)
++        fine_cross=np.cos(math.tau*(fine_u-fine_v)/4)
++        fine_weave=.5*(np.cos(math.tau*fine_u)*(.5+.5*fine_cross)
++                      +np.cos(math.tau*fine_v)*(.5-.5*fine_cross))
++        rough = np.full_like(rough, .94) + .008 * fine_weave
++        height = .040 * fine_weave
+     linear = np.clip(np.asarray(colour[:3])[None, None, :] * shade[:, :, None], 0, 1)
+     srgb = np.where(linear <= .0031308, linear * 12.92, 1.055 * linear ** (1 / 2.4) - .055)
+     colour_pixels = np.concatenate((srgb, np.ones((n, n, 1))), axis=2)
+@@ -150,13 +162,23 @@
+     return {'Color': padded(colour_pixels), 'MetalRough': padded(packed), 'Normal': padded(normal_pixels)}
+ 
+ 
+-def atlas_pixels(sources, side, tile=TILE_SIZE):
++def atlas_pixels(sources, side, tile=TILE_SIZE, wool_sheen=False):
+     size = side * tile
+     result = {channel: np.ones((size, size, 4), dtype=np.float32) for channel in ('Color', 'MetalRough', 'Normal')}
+     result['Normal'][:, :, :3] = (.5, .5, 1)
++    if wool_sheen:
++        result['Sheen'] = np.zeros((size,size,4),dtype=np.float32)
++        result['Sheen'][:,:,3] = 1
+     for index, material in enumerate(sources):
+         shader = material.node_tree.nodes.get('Principled BSDF')
+-        tiles = surface_tile(material.name, material.diffuse_color, shader.inputs['Roughness'].default_value, shader.inputs['Metallic'].default_value, tile)
++        tiles = surface_tile(material.name, material.diffuse_color, shader.inputs['Roughness'].default_value, shader.inputs['Metallic'].default_value, tile, wool_sheen=wool_sheen)
++        if wool_sheen and material.name == 'Navy_Wool':
++            # A broad rough fibre lobe. Other tiles remain exactly black.
++            linear=np.asarray((.012,.015,.021),dtype=np.float32)
++            srgb=1.055*linear**(1/2.4)-.055
++            pixels=np.ones((tile,tile,4),dtype=np.float32)
++            pixels[:,:,:3]=srgb
++            tiles['Sheen']=pixels
+         x, y = index % side * tile, index // side * tile
+         for channel, pixels in tiles.items():
+             result[channel][y:y + tile, x:x + tile] = pixels
+--- a/assets/source/characters-3d/authoring/optimize.py
++++ b/assets/source/characters-3d/authoring/optimize.py
+@@ -113,10 +113,10 @@
+  # New cloth, braid, plume and relief materials exceed the old sixteen tiles.
+  # Size the shared palette from its actual sources, with power-of-two images.
+  side=2**max(2,math.ceil(math.log2(max(1,len(sources)))/2));tile=TILE_SIZE;size=side*tile
+- surfaces=atlas_pixels(sources,side,tile)
+- for channel in ('Color','MetalRough','Normal'):
++ surfaces=atlas_pixels(sources,side,tile,wool_sheen=ctx.get('preset')=='granadero')
++ for channel in surfaces:
+   im=bpy.data.images.new('Apparel_'+channel,width=size,height=size)
+-  if channel!='Color':im.colorspace_settings.name='Non-Color'
++  if channel not in ('Color','Sheen'):im.colorspace_settings.name='Non-Color'
+   im.pixels.foreach_set(surfaces[channel].ravel());im.update();im.pack()
+   tex=atlas.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;tex.interpolation='Linear'
+   if channel=='Color':
+@@ -125,6 +125,10 @@
+    atlas.node_tree.links.new(tex.outputs['Color'],multiply.inputs[6]);atlas.node_tree.links.new(pigment.outputs['Color'],multiply.inputs[7]);atlas.node_tree.links.new(multiply.outputs[2],p.inputs['Base Color'])
+   elif channel=='MetalRough':
+    sep=atlas.node_tree.nodes.new('ShaderNodeSeparateColor');atlas.node_tree.links.new(tex.outputs['Color'],sep.inputs[0]);atlas.node_tree.links.new(sep.outputs['Green'],p.inputs['Roughness']);atlas.node_tree.links.new(sep.outputs['Blue'],p.inputs['Metallic'])
++  elif channel=='Sheen':
++   p.inputs['Sheen Weight'].default_value=1
++   p.inputs['Sheen Roughness'].default_value=.90
++   atlas.node_tree.links.new(tex.outputs['Color'],p.inputs['Sheen Tint'])
+   else:
+    n=atlas.node_tree.nodes.new('ShaderNodeNormalMap');atlas.node_tree.links.new(tex.outputs['Color'],n.inputs['Color']);atlas.node_tree.links.new(n.outputs['Normal'],p.inputs['Normal'])
+  for obj in objects:
