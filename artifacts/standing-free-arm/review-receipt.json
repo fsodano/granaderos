@@ -1,0 +1,312 @@
+{
+  "piece": 6,
+  "method": "standing-native-free-arm-rest",
+  "finalManifestSha256": "4a58362a49131254a25c7be33b5de285c065166f5dcd0f0af8994b1506caa244",
+  "sourceGuardRenderEquivalent": true,
+  "captures": "Fresh final bytes for after-final views; earlier native sheets and other live views have render-equivalent bank bytes, with explicit proofs. Browser idle phase is not synchronized.",
+  "focusedTests": {
+    "pass": 32,
+    "fail": 0
+  },
+  "typecheck": true,
+  "build": {
+    "pass": true,
+    "staticFiles": 1377,
+    "assetReferences": 1045
+  },
+  "quick": {
+    "pass": 6796,
+    "fail": 0,
+    "files": 890,
+    "completedFiles": 890,
+    "cancelled": 0,
+    "skipped": 0,
+    "durationMs": 1141597.670792
+  },
+  "browserErrors": 0,
+  "sourceGuardDriftCases": {
+    "firstPreparationWrites": 0,
+    "finalPreflightWrites": 0
+  },
+  "cost": {
+    "newRotationBytes": 5856,
+    "totalBankGrowthBytes": 14896,
+    "meshVerticesAdded": 0,
+    "trianglesAdded": 0,
+    "drawPartsAdded": 0
+  },
+  "files": {
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-44.jpg": {
+      "sha256": "17ac36192944496b9389455452368bcdc31c5b11b974a0900a6917c2e5e6bd6f",
+      "bytes": 96901
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-front-88.jpg": {
+      "sha256": "925837730f9e553c7873c8e2c802324ad84e4eff2d2f5a0d9e121d76d60d9545",
+      "bytes": 145062
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-paired-pistols-front-44.jpg": {
+      "sha256": "eee6b591853e11f5e85b28e692b7653b50897386da2cca7759090e4bb3e13f61",
+      "bytes": 97584
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-final-paired-pistols-front-88.jpg": {
+      "sha256": "f00558262cbeaf89e4814d7443b1dd7fdf880b0f35aed3b61f49daf07dd4ac81",
+      "bytes": 145828
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-front-44.jpg": {
+      "sha256": "17ac36192944496b9389455452368bcdc31c5b11b974a0900a6917c2e5e6bd6f",
+      "bytes": 96901
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-front-88.jpg": {
+      "sha256": "e8b42d3f636fd10fcda9497c575d871eef9b92cf39275ef6fd1e04c5e81b68ad",
+      "bytes": 145041
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-knife-front-44.jpg": {
+      "sha256": "110d4d8b44a42a5c4e4540ab439577d23af85870ebe10c58a21b3f7830e1f7d2",
+      "bytes": 97294
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-knife-front-88.jpg": {
+      "sha256": "5ae9b0e6730f8c919eabd63684fe695e0acdef07147867e1e7e8464adc78d854",
+      "bytes": 145663
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-knife-rear-44.jpg": {
+      "sha256": "69024b8d5cc902a8c859549bc83cde4d69cd27aecab9dbcc7f20b840705ae82c",
+      "bytes": 97432
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-knife-rear-88.jpg": {
+      "sha256": "95450468ceda1087048b96bc8d59043e24dbe963dcec29002a9ba507f5a89c36",
+      "bytes": 145717
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-knife-side-44.jpg": {
+      "sha256": "cc44b7fb0af2b0a30d7468a6ce12a97fc92462c1857b7bb503132725778d3ee7",
+      "bytes": 97248
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-knife-side-88.jpg": {
+      "sha256": "67ed723325b40dfad600da5ae02ff94aad5ac7349d640eb93e2c7faff58ad8aa",
+      "bytes": 146003
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-paired-pistols-front-44.jpg": {
+      "sha256": "eee6b591853e11f5e85b28e692b7653b50897386da2cca7759090e4bb3e13f61",
+      "bytes": 97584
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-paired-pistols-front-88.jpg": {
+      "sha256": "d7b0c0a8ac6e0d7e3f2986df9a496d8aefb81e5d1a56b9fdd225d6843b175e21",
+      "bytes": 145872
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-paired-pistols-rear-44.jpg": {
+      "sha256": "2d495669e8a4bac0af16b250d5eb14f25307314d1dcfcf4f369db89988b916e0",
+      "bytes": 97669
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-paired-pistols-rear-88.jpg": {
+      "sha256": "345deda70ca2a6da81d9f7971c5c907ac8736bdbf028fbee63b11f4962ece845",
+      "bytes": 145884
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-paired-pistols-side-44.jpg": {
+      "sha256": "6a840d456d3ad5cf6ab86601ee355863d01929c75f0f4536d01822ddfabc3558",
+      "bytes": 98051
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-paired-pistols-side-88.jpg": {
+      "sha256": "21be2611d20a5077391178e0a05bf1b1614a66bb936da45c18f51dbed7447fc7",
+      "bytes": 147062
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-pistol-front-44.jpg": {
+      "sha256": "f115d5df1ef9f027ad7012feb9b0bc8d34fec1e92c10fbf47f93485b8a91f454",
+      "bytes": 97022
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-pistol-front-88.jpg": {
+      "sha256": "9fb5a658326c1c0ae476c64857027a68ae4bc1a7397a07dfe616c64b1f056a58",
+      "bytes": 145177
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-pistol-rear-44.jpg": {
+      "sha256": "6e9650b0eaf2a8af308bd9656bc3e38eb82b7d1e896883ee852cf48c533d7b3b",
+      "bytes": 97155
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-pistol-rear-88.jpg": {
+      "sha256": "aa0dd6dd01399c4900b8912f559a992e972c141c469647b4c85c1dd0c73299f6",
+      "bytes": 145337
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-pistol-side-44.jpg": {
+      "sha256": "c6b9331864953721645933585b009b83ebeafb5d24ebf2f4074b268fd2c55721",
+      "bytes": 97449
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-pistol-side-88.jpg": {
+      "sha256": "41a6f009d2fc103048af5293f69cffa0b5826c030e17804e19ec3cba50317981",
+      "bytes": 146390
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-rear-44.jpg": {
+      "sha256": "0fc3bf0e2510d5efc0254693ea42d4a7098ef3015e3060c646efaae1cd72d160",
+      "bytes": 96969
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-rear-88.jpg": {
+      "sha256": "ef49d39e1d10f4bf9efb5bfc3a66702d4475cf82f65717ae4e762639360427e9",
+      "bytes": 145015
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-sabre-front-44.jpg": {
+      "sha256": "a18c4f1f8073cfb25fd7b90f4516d109c1b9e6aee46b614adbc6f4e266c1b4e4",
+      "bytes": 97219
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-sabre-front-88.jpg": {
+      "sha256": "afc5b23ff87f10f643d1e2f4f23a5383ee77f76179a79ae69aea93c922840de0",
+      "bytes": 145636
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-sabre-rear-44.jpg": {
+      "sha256": "09fb34a1a125a4e4b46074481adcb6f21dad3fc11b8ae76bc5da7ed6a3c99aba",
+      "bytes": 97383
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-sabre-rear-88.jpg": {
+      "sha256": "d3b6617f342c7e34c652280ef19f1c858c23bd5e482c06cab480fc3f5d7b6cad",
+      "bytes": 145788
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-sabre-side-44.jpg": {
+      "sha256": "517cb25fd34c6c2c1710c41166ea9a667bbc654e6da3f7a2c6e37d91617df6ea",
+      "bytes": 97233
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-sabre-side-88.jpg": {
+      "sha256": "472df9a98ea031b918dc8fb802f174cb642569281f35daef61a4ddd0eea434ff",
+      "bytes": 146182
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-side-44.jpg": {
+      "sha256": "488d4462a406d7930e4f7500601386e694ee7dc8f91ff58681c3f7cd8140c79a",
+      "bytes": 97090
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-after-side-88.jpg": {
+      "sha256": "e982074e2b963d07d06f51aa01940373b3e0db8726c3ec3c8323569c7d790311",
+      "bytes": 145821
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-front-44.jpg": {
+      "sha256": "243d2af5d9e7a884487fb3d78d8d17d280fd20bd7339d45168f255f6ad09ae0f",
+      "bytes": 96942
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-front-88.jpg": {
+      "sha256": "b49e29f2976d08cb4f1158463a975194b135eadba2308eb641de4633d5f61898",
+      "bytes": 145189
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-knife-front-44.jpg": {
+      "sha256": "fbc0b1a2863f9ff9aeaae87f44dceb728f855e1ce4e7a5d020f2dd6baedbed97",
+      "bytes": 97424
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-knife-front-88.jpg": {
+      "sha256": "fd21193102631107a1f7d0891180ed71d244043d9f7192284782cc0972409599",
+      "bytes": 146073
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-paired-pistols-front-44.jpg": {
+      "sha256": "30248d9349e026eac78b65c76e733883d00f6a426fd154b9b432323e63436bbf",
+      "bytes": 97697
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-paired-pistols-front-88.jpg": {
+      "sha256": "d1600120d160a17925934f8009306df9beb8ac2a8d1f7feb429ca8ea2d7bb546",
+      "bytes": 146181
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-pistol-front-44.jpg": {
+      "sha256": "e85b519781f2235672e118f5c7381033c733c07d178146e5c0149dc3af42fc6a",
+      "bytes": 97168
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-pistol-front-88.jpg": {
+      "sha256": "78e2ffaf2d8be5e9b02bec4bcfeca9df7c8c923e8e1b74e440506beab732199f",
+      "bytes": 145587
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-rear-44.jpg": {
+      "sha256": "c5abc20a4930d476a36d28708dc9d1f70a9124aed7b512488ef88e497efe53c4",
+      "bytes": 96999
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-rear-88.jpg": {
+      "sha256": "4e2397d18f088446df11ee91a350cd1ac783beae6a55dacaae70385be1f1198a",
+      "bytes": 145172
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-sabre-front-44.jpg": {
+      "sha256": "e512ecb1b3f74069ea16a1f4a1b30201b3e5ccb635666f88cf8e1f59238feabd",
+      "bytes": 97366
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-sabre-front-88.jpg": {
+      "sha256": "0bda1c675ad3217782ceff18775ffdf732c7466f00a5af2897427467f84ae61c",
+      "bytes": 146060
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-side-44.jpg": {
+      "sha256": "91adf1686ae579eee9ccf5bb289b043f26a63d32351f243f95b2413d3a6b4b31",
+      "bytes": 97038
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-before-side-88.jpg": {
+      "sha256": "a1fc70bc6ffbadb91abdc82e42fcef976c63da3bba0c0d8a460788e601532417",
+      "bytes": 145683
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-1.png": {
+      "sha256": "ec466bd4e29bcf95ae3fe58110cc25693f1143100f0580c15e9ac668b201ecfb",
+      "bytes": 320843
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-2.png": {
+      "sha256": "05e78b18cc78aa45eb4cdb257536ce4f8e5d3748802e270512e973b6df5c3519",
+      "bytes": 321118
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-44-phase-3.png": {
+      "sha256": "f173fbe6f7414b118440851d8869d1a937fdf8817c550ba69bfe6bcad755b94f",
+      "bytes": 319933
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-1.png": {
+      "sha256": "5ef9ea00e2f325f62b08bf568f4a0b6ef4659856b965e30705a87ff68e2cca85",
+      "bytes": 942806
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-2.png": {
+      "sha256": "f905c42dfc68332eba30f5da9d29d2860ec36bf5b55287fd79cc188181f0670f",
+      "bytes": 944939
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod1-88-phase-3.png": {
+      "sha256": "090b3ef658653b744ee13034b55cf0fcfe6c791c7edd46e3765698045d37fd59",
+      "bytes": 948195
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-1.png": {
+      "sha256": "9f33f1eb4c7cb207e16506f20ec2688c5881010687e861897db6049a24c07e1c",
+      "bytes": 322527
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-2.png": {
+      "sha256": "ff1e136fa3895f38144ad087408bd19bc0c8c59f6f58f929a118172d1018936d",
+      "bytes": 322566
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-44-phase-3.png": {
+      "sha256": "3ddd1cb66c76039c72b74acd41547cbf4d96a1bf440f2ba16d97daa1e26f3650",
+      "bytes": 321143
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-1.png": {
+      "sha256": "03377d261132dd187a7e38b86b678885902dae2a59555f9b24b83c10266bc704",
+      "bytes": 943141
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-2.png": {
+      "sha256": "f8b7e9467022476c2e9a3a2cf9fc07f982549d51c673d74d3c4defe55cfb2036",
+      "bytes": 946960
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-final-paired-lod2-88-phase-3.png": {
+      "sha256": "e8189c2d7a36d3f0f9bf6ea30a10e12ca48a2de51ab1c5a6602c6e006662d310",
+      "bytes": 947503
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-crouch.jpg": {
+      "sha256": "e66329ffb06704ebc82a137f60825546b787dbce87c3f42d9f83488cba918df4",
+      "bytes": 145707
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-movement.jpg": {
+      "sha256": "740f899f727cfd01d5e5d08980e40334de2767b9e095bd597f1a7a159bd8dd5d",
+      "bytes": 146953
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-ordinary-prone.jpg": {
+      "sha256": "ced2822f33d6972d394f7c7aaa10591f736c661b316a755ac586bcc3eb158144",
+      "bytes": 146386
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-root-contact-paired-44.png": {
+      "sha256": "20e35903e7ebd7a772751c9999c964c53c685b0c84aa4b3406005dc7a9cd2547",
+      "bytes": 44159
+    },
+    "docs/art/tactical-reference-2026-10-08/relaxed-arm-root-contact-paired-88.png": {
+      "sha256": "99d355e16c16e3dd37bd407755f070408bef581eae7bd63a53a1ddf6bcd060dd",
+      "bytes": 136553
+    }
+  },
+  "nativeLibrary": {
+    "result": "PASS",
+    "appearanceLODs": 24,
+    "clipsPerAnatomy": 334,
+    "equipmentItems": 26,
+    "horseLODs": 3
+  },
+  "docs": {
+    "audit": true,
+    "relativeLinks": 127,
+    "missing": 0
+  }
+}

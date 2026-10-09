@@ -11317,8 +11317,8 @@
   "animationLibraries": {
     "male": {
       "url": "/models/characters/male-animations.glb",
-      "bytes": 12564152,
-      "sha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "bytes": 12571600,
+      "sha256": "6ff9500f182aedf58b0509386c34f2a244f17a3b7ff86af49fcf2a3f8ea4bcee",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -26128,12 +26128,141 @@
         "units": "metres",
         "up": "+Y",
         "forward": "+Z"
+      },
+      "standingFreeArmRest": {
+        "recipe": {
+          "method": "native-relaxed-arm-with-bounded-chest-forward-forearm",
+          "sourceSha256": {
+            "assets/source/characters-3d/authoring/standing_free_arm_rest.py": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364",
+            "tools/characters-3d/build-standing-free-arm-rest.py": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+            "tools/characters-3d/standing_arm_context.py": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d"
+          },
+          "donor": "stand.idle.unarmed",
+          "targets": [
+            "stand.idle.short-gun",
+            "stand.idle.blade",
+            "stand.idle.knife"
+          ],
+          "rotationBones": [
+            "upperarm_l",
+            "lowerarm_l",
+            "hand_l"
+          ],
+          "outwardForearmDegrees": {
+            "male": 4,
+            "female": 12
+          },
+          "retainInputClocksAndOtherChannels": true
+        },
+        "anatomy": "male",
+        "beforeSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+        "beforeBytes": 12564152,
+        "originalJSONSha256": "15553568227bc234b00eb10b4845efce73a32c65012a678dc600087a263a35a7",
+        "originalBinarySha256": "1f71260b75ea2c6ad645d6096ef144bbf8490733eaf999e751f5b976da299d8a",
+        "originalBinaryBytes": 4875088,
+        "originalBufferByteLength": 4875088,
+        "originalAccessorCount": 17346,
+        "originalBufferViewCount": 17346,
+        "originalRecordJSONSha256": "ddb7fb051b147971e0a761bcc4258d694310b69dfe3fdd3ec52ce64ca7d69fb8",
+        "originalHadExtras": false,
+        "patches": [
+          {
+            "name": "stand.idle.short-gun",
+            "originalSamplerCount": 159,
+            "channels": [
+              {
+                "channel": 19,
+                "bone": "upperarm_l",
+                "originalSampler": 19,
+                "sampler": 159,
+                "originalCurveSha256": "db5f953b04631f008ebc2646bf19f628b547a7c30817b4112543088c0f56f9e9",
+                "donorCurveSha256": "9392a37d5a57c8b6bcf14767334b9e77bc47033e8c6bda38f7a1c0b1a7b506a6"
+              },
+              {
+                "channel": 22,
+                "bone": "lowerarm_l",
+                "originalSampler": 22,
+                "sampler": 160,
+                "originalCurveSha256": "21a1e3a3de3ad6d33ef988e6714abfe9befe3570ca16e927e9129a9b249cca04",
+                "donorCurveSha256": "f401c6229a74fee42e872e647a5b6ca7723fe3f68e38ce41a692b618b121b532"
+              },
+              {
+                "channel": 25,
+                "bone": "hand_l",
+                "originalSampler": 25,
+                "sampler": 161,
+                "originalCurveSha256": "3abb8b425c881c61043b4e29b0bd9545c3ef32d41f051c36949533aa3e278a2b",
+                "donorCurveSha256": "3a457805b3a191fded2159f08f1c03fbe317bfe57dfdd69b7f22e48cf00318f3"
+              }
+            ]
+          },
+          {
+            "name": "stand.idle.blade",
+            "originalSamplerCount": 159,
+            "channels": [
+              {
+                "channel": 19,
+                "bone": "upperarm_l",
+                "originalSampler": 19,
+                "sampler": 159,
+                "originalCurveSha256": "063e1363b4d3adc16e1bef43f41907cd91103ff4c315995dc301367e7d4186be",
+                "donorCurveSha256": "9392a37d5a57c8b6bcf14767334b9e77bc47033e8c6bda38f7a1c0b1a7b506a6"
+              },
+              {
+                "channel": 22,
+                "bone": "lowerarm_l",
+                "originalSampler": 22,
+                "sampler": 160,
+                "originalCurveSha256": "f79e29f34e62617a7c8c6f653ed5169f797537e14898bc8ff4008f0ba406ffa4",
+                "donorCurveSha256": "f401c6229a74fee42e872e647a5b6ca7723fe3f68e38ce41a692b618b121b532"
+              },
+              {
+                "channel": 25,
+                "bone": "hand_l",
+                "originalSampler": 25,
+                "sampler": 161,
+                "originalCurveSha256": "932d50e9d2b6cee684dcbb817ae8cb201c9612e6732d3116b18c66d7acd62754",
+                "donorCurveSha256": "3a457805b3a191fded2159f08f1c03fbe317bfe57dfdd69b7f22e48cf00318f3"
+              }
+            ]
+          },
+          {
+            "name": "stand.idle.knife",
+            "originalSamplerCount": 159,
+            "channels": [
+              {
+                "channel": 19,
+                "bone": "upperarm_l",
+                "originalSampler": 19,
+                "sampler": 159,
+                "originalCurveSha256": "397462393e89b159e5be878a9f57e46cf2200e897939f1c9ce9a9738890a3980",
+                "donorCurveSha256": "9392a37d5a57c8b6bcf14767334b9e77bc47033e8c6bda38f7a1c0b1a7b506a6"
+              },
+              {
+                "channel": 22,
+                "bone": "lowerarm_l",
+                "originalSampler": 22,
+                "sampler": 160,
+                "originalCurveSha256": "50e135408fbe4fd5f17d2d8f3ea9e10f27bc2169a90643e543021d8770e6b266",
+                "donorCurveSha256": "f401c6229a74fee42e872e647a5b6ca7723fe3f68e38ce41a692b618b121b532"
+              },
+              {
+                "channel": 25,
+                "bone": "hand_l",
+                "originalSampler": 25,
+                "sampler": 161,
+                "originalCurveSha256": "5d96a29bc58c28af150aa2a73003c8cc2eb0aa496908174345046afac66adbb5",
+                "donorCurveSha256": "3a457805b3a191fded2159f08f1c03fbe317bfe57dfdd69b7f22e48cf00318f3"
+              }
+            ]
+          }
+        ]
       }
     },
     "female": {
       "url": "/models/characters/female-animations.glb",
-      "bytes": 12174736,
-      "sha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e",
+      "bytes": 12182184,
+      "sha256": "2d10a8b324b65fde3e6fed63186026247da5db5e03d0608df3581738597c2026",
       "clips": [
         {
           "name": "stand.idle.unarmed",
@@ -40866,6 +40995,135 @@
         "units": "metres",
         "up": "+Y",
         "forward": "+Z"
+      },
+      "standingFreeArmRest": {
+        "recipe": {
+          "method": "native-relaxed-arm-with-bounded-chest-forward-forearm",
+          "sourceSha256": {
+            "assets/source/characters-3d/authoring/standing_free_arm_rest.py": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364",
+            "tools/characters-3d/build-standing-free-arm-rest.py": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+            "tools/characters-3d/standing_arm_context.py": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d"
+          },
+          "donor": "stand.idle.unarmed",
+          "targets": [
+            "stand.idle.short-gun",
+            "stand.idle.blade",
+            "stand.idle.knife"
+          ],
+          "rotationBones": [
+            "upperarm_l",
+            "lowerarm_l",
+            "hand_l"
+          ],
+          "outwardForearmDegrees": {
+            "male": 4,
+            "female": 12
+          },
+          "retainInputClocksAndOtherChannels": true
+        },
+        "anatomy": "female",
+        "beforeSha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e",
+        "beforeBytes": 12174736,
+        "originalJSONSha256": "6da5c120f34aeafd42b54138edd1110d4d46418dde9763cbd10c380e9fdfbcba",
+        "originalBinarySha256": "81c99757661141e57eda225c82ac08b15e8c1242f0c92cfe4742c05c45f054e4",
+        "originalBinaryBytes": 4513072,
+        "originalBufferByteLength": 4513072,
+        "originalAccessorCount": 17139,
+        "originalBufferViewCount": 17139,
+        "originalRecordJSONSha256": "5121aa251dfc6c4810092f13e96cd9fad6db2038a49836540e9ccdbd2a38a5c6",
+        "originalHadExtras": false,
+        "patches": [
+          {
+            "name": "stand.idle.short-gun",
+            "originalSamplerCount": 159,
+            "channels": [
+              {
+                "channel": 19,
+                "bone": "upperarm_l",
+                "originalSampler": 19,
+                "sampler": 159,
+                "originalCurveSha256": "d4311f18b20b4bac4aa0ed97bd919d1a24b2aa7dc40dbe908a36a8f237f549da",
+                "donorCurveSha256": "26f2b9c07aab1e38b0af08350deacce3300da4ee3a256463ca1b8aa7b0f97255"
+              },
+              {
+                "channel": 22,
+                "bone": "lowerarm_l",
+                "originalSampler": 22,
+                "sampler": 160,
+                "originalCurveSha256": "b18bab00a1026a3d527b8ce14a013b06397d8ff1c0f09157d55af2105fe53300",
+                "donorCurveSha256": "4a9a94df0a0fc1a8a845221f276f3f6508df11b24bf973614212a7bb9773b6bd"
+              },
+              {
+                "channel": 25,
+                "bone": "hand_l",
+                "originalSampler": 25,
+                "sampler": 161,
+                "originalCurveSha256": "c3f0d402c2b5a90d1230ec3fc7729f634fce06aa9fb050dcfe290edce99e72ed",
+                "donorCurveSha256": "123bf31d1ab1b1861905ce35edd9266c6ccc8a2e2c0cd031cf8381266dbd9218"
+              }
+            ]
+          },
+          {
+            "name": "stand.idle.blade",
+            "originalSamplerCount": 159,
+            "channels": [
+              {
+                "channel": 19,
+                "bone": "upperarm_l",
+                "originalSampler": 19,
+                "sampler": 159,
+                "originalCurveSha256": "1a7deae071d82ba987fc69b74a63ad25299b108f46cc55f26668422fc1f93811",
+                "donorCurveSha256": "26f2b9c07aab1e38b0af08350deacce3300da4ee3a256463ca1b8aa7b0f97255"
+              },
+              {
+                "channel": 22,
+                "bone": "lowerarm_l",
+                "originalSampler": 22,
+                "sampler": 160,
+                "originalCurveSha256": "3138aca1be01df5dc1c921351118350d673ffbdc6025578ca58ab81a377f6cc6",
+                "donorCurveSha256": "4a9a94df0a0fc1a8a845221f276f3f6508df11b24bf973614212a7bb9773b6bd"
+              },
+              {
+                "channel": 25,
+                "bone": "hand_l",
+                "originalSampler": 25,
+                "sampler": 161,
+                "originalCurveSha256": "764f5d8d29b71c382c0997530ce08e8d0ce6296aa8977f1e25975698833a66f1",
+                "donorCurveSha256": "123bf31d1ab1b1861905ce35edd9266c6ccc8a2e2c0cd031cf8381266dbd9218"
+              }
+            ]
+          },
+          {
+            "name": "stand.idle.knife",
+            "originalSamplerCount": 159,
+            "channels": [
+              {
+                "channel": 19,
+                "bone": "upperarm_l",
+                "originalSampler": 19,
+                "sampler": 159,
+                "originalCurveSha256": "6c95efc553bc549964a8f76117a9dbe1346d4c5d719b2b6284cd283a7f95825c",
+                "donorCurveSha256": "26f2b9c07aab1e38b0af08350deacce3300da4ee3a256463ca1b8aa7b0f97255"
+              },
+              {
+                "channel": 22,
+                "bone": "lowerarm_l",
+                "originalSampler": 22,
+                "sampler": 160,
+                "originalCurveSha256": "e23697fdeb56c7396915cc77a675db0c0335ca4b1e72f60ec6abe87b35853d14",
+                "donorCurveSha256": "4a9a94df0a0fc1a8a845221f276f3f6508df11b24bf973614212a7bb9773b6bd"
+              },
+              {
+                "channel": 25,
+                "bone": "hand_l",
+                "originalSampler": 25,
+                "sampler": 161,
+                "originalCurveSha256": "e1557e327439dbb1598af269735b4e6f4be47d042ced7591eb947db682b7dfc0",
+                "donorCurveSha256": "123bf31d1ab1b1861905ce35edd9266c6ccc8a2e2c0cd031cf8381266dbd9218"
+              }
+            ]
+          }
+        ]
       }
     }
   },

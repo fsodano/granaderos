@@ -1,0 +1,1850 @@
+{
+  "baseCommit": "c21ab8cebdc56838510223388deac5dad0e81b8c",
+  "characterFileCount": 229,
+  "changedAssets": [
+    "web/public/models/characters/female-animations.glb",
+    "web/public/models/characters/male-animations.glb",
+    "web/public/models/characters/manifest.json"
+  ],
+  "unownedExactCount": 226,
+  "sourcePins": {
+    "assets/source/characters-3d/authoring/standing_free_arm_rest.py": "e78f1054ee2f8ef0b8fe4e6d734fdc743ec09755db49fc17a96a6ca8ce4c0364",
+    "tools/characters-3d/build-standing-free-arm-rest.py": "746c905563f74993bac40fb8c293b30cbd21d7c02c06092d17f6cbde53fe32e7",
+    "tools/characters-3d/standing_arm_context.py": "7513b422aab2b95ce9a4eb60bb1a2ab4e0d6388157dfe462a120e3fc727c9b2d",
+    "tests/characters-standing-free-arm-rest.test.mjs": "ecefb7d2e1de4b8230a7db3fc54870f2790daf8803035df3bb983a49782963b0"
+  },
+  "assets": [
+    {
+      "path": "web/public/models/characters/equipment.glb",
+      "beforeSha256": "bce32b84d42b92b7d14ffdb6a08b3b0fef54f277de5b87cbdddd02d4692dfab3",
+      "afterSha256": "bce32b84d42b92b7d14ffdb6a08b3b0fef54f277de5b87cbdddd02d4692dfab3",
+      "beforeBytes": 605108,
+      "afterBytes": 605108,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/female-animations.glb",
+      "beforeSha256": "0d437c4296ce6e7657626f0a18815eddf1b3cdf75479933ddd8a5fada017542e",
+      "afterSha256": "2d10a8b324b65fde3e6fed63186026247da5db5e03d0608df3581738597c2026",
+      "beforeBytes": 12174736,
+      "afterBytes": 12182184,
+      "exact": false
+    },
+    {
+      "path": "web/public/models/characters/female-garments.glb",
+      "beforeSha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af",
+      "afterSha256": "e197024f2a2a9a2d18241206eef4e409189ceab1ba4f7fd97a8eb0d96784c5af",
+      "beforeBytes": 192616,
+      "afterBytes": 192616,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/friar-lod0.glb",
+      "beforeSha256": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149",
+      "afterSha256": "33f54d2ded96937fed5eb560b28a2ceeb8cecf6a29bdd5e01ac58c4af7230149",
+      "beforeBytes": 3906368,
+      "afterBytes": 3906368,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/friar-lod1.glb",
+      "beforeSha256": "4d7a54382c80a83a0dd62f3f4a4001a89c1e8668cb35cce9e83eadc19563f8b7",
+      "afterSha256": "4d7a54382c80a83a0dd62f3f4a4001a89c1e8668cb35cce9e83eadc19563f8b7",
+      "beforeBytes": 2846140,
+      "afterBytes": 2846140,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/friar-lod2.glb",
+      "beforeSha256": "4822ccbbace3d7563de1ec73f233af3c12cfa13ccc8ff84874d8ec79b3c20fad",
+      "afterSha256": "4822ccbbace3d7563de1ec73f233af3c12cfa13ccc8ff84874d8ec79b3c20fad",
+      "beforeBytes": 1145424,
+      "afterBytes": 1145424,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/gaucho-lod0.glb",
+      "beforeSha256": "b13d7ea28b1871ee38791142f2753fd50050aa6460d95e2bb2ecb5abc864326f",
+      "afterSha256": "b13d7ea28b1871ee38791142f2753fd50050aa6460d95e2bb2ecb5abc864326f",
+      "beforeBytes": 3862804,
+      "afterBytes": 3862804,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/gaucho-lod1.glb",
+      "beforeSha256": "0a9a602951d512a1f45a835034877faf34cd9454c85a1662a812c4bc9aa5c078",
+      "afterSha256": "0a9a602951d512a1f45a835034877faf34cd9454c85a1662a812c4bc9aa5c078",
+      "beforeBytes": 2919072,
+      "afterBytes": 2919072,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/gaucho-lod2.glb",
+      "beforeSha256": "3ef674f253f22c4887b97328a47732e9ca9ce6365a661939f19f97e1a3c83c2c",
+      "afterSha256": "3ef674f253f22c4887b97328a47732e9ca9ce6365a661939f19f97e1a3c83c2c",
+      "beforeBytes": 906628,
+      "afterBytes": 906628,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/granadero-lod0.glb",
+      "beforeSha256": "9994d5c75f0a8e95fc6568b7247e24b8edee4c7a3fc1c54613ff33ee2e16db53",
+      "afterSha256": "9994d5c75f0a8e95fc6568b7247e24b8edee4c7a3fc1c54613ff33ee2e16db53",
+      "beforeBytes": 4889116,
+      "afterBytes": 4889116,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/granadero-lod1.glb",
+      "beforeSha256": "8d3bc3ccdb5e8a49cd030c4312792cb438b8761c6e3a8a5b062c74930adbe3de",
+      "afterSha256": "8d3bc3ccdb5e8a49cd030c4312792cb438b8761c6e3a8a5b062c74930adbe3de",
+      "beforeBytes": 3327704,
+      "afterBytes": 3327704,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/granadero-lod2.glb",
+      "beforeSha256": "2cb5f9de7901cce4a262e6fdf47c4a6d4529f9092125e4675c552978cd957f80",
+      "afterSha256": "2cb5f9de7901cce4a262e6fdf47c4a6d4529f9092125e4675c552978cd957f80",
+      "beforeBytes": 1106032,
+      "afterBytes": 1106032,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/horse-lod0.glb",
+      "beforeSha256": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+      "afterSha256": "b83f48c9dd231ca5d4fd7c44115be540e2aa8459c94aef89e65ca849ade9bc04",
+      "beforeBytes": 676556,
+      "afterBytes": 676556,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/horse-lod1.glb",
+      "beforeSha256": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1",
+      "afterSha256": "edaa79079ae8dc5109ec30f43dccc1a66a667c75456ac5d59e18a89fe3f9aec1",
+      "beforeBytes": 460360,
+      "afterBytes": 460360,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/horse-lod2.glb",
+      "beforeSha256": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993",
+      "afterSha256": "6b232850ead3ebc220087c23c3405cc85991d03dfc7b130ee80493b6a7502993",
+      "beforeBytes": 310032,
+      "afterBytes": 310032,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/male-animations.glb",
+      "beforeSha256": "48a5966d73058d2fef5eb77837d229377178106a349b903983c0bb38ad914d87",
+      "afterSha256": "6ff9500f182aedf58b0509386c34f2a244f17a3b7ff86af49fcf2a3f8ea4bcee",
+      "beforeBytes": 12564152,
+      "afterBytes": 12571600,
+      "exact": false
+    },
+    {
+      "path": "web/public/models/characters/male-garments.glb",
+      "beforeSha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07",
+      "afterSha256": "f2c8a94230284344705166b83e229194a2d38003c821fc1b7484c91573c4ea07",
+      "beforeBytes": 188200,
+      "afterBytes": 188200,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/manifest.json",
+      "beforeSha256": "06a096d687652e5f41bc5399d7b7a7af333c46a6f362469a46058501d7ed4fa8",
+      "afterSha256": "4a58362a49131254a25c7be33b5de285c065166f5dcd0f0af8994b1506caa244",
+      "beforeBytes": 1279272,
+      "afterBytes": 1290472,
+      "exact": false
+    },
+    {
+      "path": "web/public/models/characters/royalist-lod0.glb",
+      "beforeSha256": "50d1b0a49abacdbaaae4408bcef4d2485ac163ab53367c5a3a2944e7d024f4e4",
+      "afterSha256": "50d1b0a49abacdbaaae4408bcef4d2485ac163ab53367c5a3a2944e7d024f4e4",
+      "beforeBytes": 4745680,
+      "afterBytes": 4745680,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/royalist-lod1.glb",
+      "beforeSha256": "040f4571a15240dcd2c7f6f113053b78586ef62814709580901bfeef80dd3cb1",
+      "afterSha256": "040f4571a15240dcd2c7f6f113053b78586ef62814709580901bfeef80dd3cb1",
+      "beforeBytes": 3253908,
+      "afterBytes": 3253908,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/royalist-lod2.glb",
+      "beforeSha256": "675afe8ef043bcf4cac1258698695b2e0435084029c8c35e6d4fd65bc969faca",
+      "afterSha256": "675afe8ef043bcf4cac1258698695b2e0435084029c8c35e6d4fd65bc969faca",
+      "beforeBytes": 1073372,
+      "afterBytes": 1073372,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/surgeon-lod0.glb",
+      "beforeSha256": "037651376b702524146691573a7ff4a6aad1d15947840864c520d9ad3c3af79d",
+      "afterSha256": "037651376b702524146691573a7ff4a6aad1d15947840864c520d9ad3c3af79d",
+      "beforeBytes": 3974496,
+      "afterBytes": 3974496,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/surgeon-lod1.glb",
+      "beforeSha256": "3e5ce213fce265eb0ed398ac965fb9737f0a7a749b9560ddc1378bb60c5ae644",
+      "afterSha256": "3e5ce213fce265eb0ed398ac965fb9737f0a7a749b9560ddc1378bb60c5ae644",
+      "beforeBytes": 2756256,
+      "afterBytes": 2756256,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/surgeon-lod2.glb",
+      "beforeSha256": "ac9120412e970dcd7db19ba8866aa2fd95e7131419428afb4e2d7fcbf49b24a7",
+      "afterSha256": "ac9120412e970dcd7db19ba8866aa2fd95e7131419428afb4e2d7fcbf49b24a7",
+      "beforeBytes": 924012,
+      "afterBytes": 924012,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/01f30a1649e149138639.png",
+      "beforeSha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+      "afterSha256": "01f30a1649e1491386392bb1585cec9a67d337f6e5a19a1599d17898790341e8",
+      "beforeBytes": 817,
+      "afterBytes": 817,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/02fc23efbfd8542db951.png",
+      "beforeSha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+      "afterSha256": "02fc23efbfd8542db9518c8793db2b0b3ecb320896a7697607992b22c6568389",
+      "beforeBytes": 850,
+      "afterBytes": 850,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/040aa7bd60f397241c0c.png",
+      "beforeSha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+      "afterSha256": "040aa7bd60f397241c0c5dd19c01e5d2660fc82c6d78e911b62e1efef5cbde33",
+      "beforeBytes": 1763,
+      "afterBytes": 1763,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/040b6c27fc46ce2da454.png",
+      "beforeSha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+      "afterSha256": "040b6c27fc46ce2da45430b075721781c0200c75729387d7937f45ab30399f1d",
+      "beforeBytes": 2032518,
+      "afterBytes": 2032518,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/042e670c62ad34a45c14.png",
+      "beforeSha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+      "afterSha256": "042e670c62ad34a45c14805e59243071dfb97a422f6fe579e3b6549539b5d591",
+      "beforeBytes": 1027044,
+      "afterBytes": 1027044,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/0453829285e9d226a4f2.png",
+      "beforeSha256": "0453829285e9d226a4f21f2c3bba96775426e06c293aa6e62806dba876207e05",
+      "afterSha256": "0453829285e9d226a4f21f2c3bba96775426e06c293aa6e62806dba876207e05",
+      "beforeBytes": 1624,
+      "afterBytes": 1624,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/05fec3a4c6149b6ea6e2.png",
+      "beforeSha256": "05fec3a4c6149b6ea6e22f2a3d81ef0e2002211f089d9d5e5722bee04b87d9e2",
+      "afterSha256": "05fec3a4c6149b6ea6e22f2a3d81ef0e2002211f089d9d5e5722bee04b87d9e2",
+      "beforeBytes": 794,
+      "afterBytes": 794,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/0620e2e93cecf73291dd.png",
+      "beforeSha256": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+      "afterSha256": "0620e2e93cecf73291ddcd06c6eff1fe268af67ece4d484c21c279a1501b4814",
+      "beforeBytes": 233,
+      "afterBytes": 233,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/084050fdd3bb4cd39eeb.png",
+      "beforeSha256": "084050fdd3bb4cd39eebc32e067c017a182e0ca7966537df0bd3e0bd5a5bb239",
+      "afterSha256": "084050fdd3bb4cd39eebc32e067c017a182e0ca7966537df0bd3e0bd5a5bb239",
+      "beforeBytes": 983,
+      "afterBytes": 983,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/09edeca97bbf63512088.png",
+      "beforeSha256": "09edeca97bbf635120882bf0f079560f2da1d017f48770acb70e51e72eff7707",
+      "afterSha256": "09edeca97bbf635120882bf0f079560f2da1d017f48770acb70e51e72eff7707",
+      "beforeBytes": 853,
+      "afterBytes": 853,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/09fa758893afdf340aac.png",
+      "beforeSha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+      "afterSha256": "09fa758893afdf340aacb8102101cbcab335a4dfdfab5a6bac8a9a9a9b55200f",
+      "beforeBytes": 699852,
+      "afterBytes": 699852,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/0bdaf745653e4e53fddf.png",
+      "beforeSha256": "0bdaf745653e4e53fddfb09523d9ed4ffceb8efb33fd8cb220157617290c9a5d",
+      "afterSha256": "0bdaf745653e4e53fddfb09523d9ed4ffceb8efb33fd8cb220157617290c9a5d",
+      "beforeBytes": 624,
+      "afterBytes": 624,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/0c2590e18b3ddbd6fba9.png",
+      "beforeSha256": "0c2590e18b3ddbd6fba95c7836367be876695b21ac74b9009febe9d672ab5a85",
+      "afterSha256": "0c2590e18b3ddbd6fba95c7836367be876695b21ac74b9009febe9d672ab5a85",
+      "beforeBytes": 807,
+      "afterBytes": 807,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/0e8f9ee2451d7ab3080f.png",
+      "beforeSha256": "0e8f9ee2451d7ab3080f186ca60a0089f60da036450c409526de83876a80d1f0",
+      "afterSha256": "0e8f9ee2451d7ab3080f186ca60a0089f60da036450c409526de83876a80d1f0",
+      "beforeBytes": 842,
+      "afterBytes": 842,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/1475bcc494750a798dc8.png",
+      "beforeSha256": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+      "afterSha256": "1475bcc494750a798dc86f5fe0205673495f20d90fe979deffb6f5715c13f2e1",
+      "beforeBytes": 245104,
+      "afterBytes": 245104,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/14c044c8d8f2e139821a.png",
+      "beforeSha256": "14c044c8d8f2e139821aef331e84b715642e77012daeb5fb5c37e6cee7987f22",
+      "afterSha256": "14c044c8d8f2e139821aef331e84b715642e77012daeb5fb5c37e6cee7987f22",
+      "beforeBytes": 782,
+      "afterBytes": 782,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/16102780bee7c42bd18b.png",
+      "beforeSha256": "16102780bee7c42bd18beb4c86887f9b322d039154f4ffe741394479a82f6854",
+      "afterSha256": "16102780bee7c42bd18beb4c86887f9b322d039154f4ffe741394479a82f6854",
+      "beforeBytes": 706,
+      "afterBytes": 706,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/18bd9589742c675e9df5.png",
+      "beforeSha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5",
+      "afterSha256": "18bd9589742c675e9df5351ef3986b07bd2439b0385e0c9e0005e1d040b5daa5",
+      "beforeBytes": 700912,
+      "afterBytes": 700912,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/190fcfc8745e6197a795.png",
+      "beforeSha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+      "afterSha256": "190fcfc8745e6197a7954c6b921f4cf3a890d9ac78db560a67dcdbc8359de180",
+      "beforeBytes": 777,
+      "afterBytes": 777,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/1b6188df5f9a698957f1.png",
+      "beforeSha256": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+      "afterSha256": "1b6188df5f9a698957f1728ce3cbf8760c736178b4f43d1535b29d57ecbc6f83",
+      "beforeBytes": 764,
+      "afterBytes": 764,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/207de4b157da92e11066.png",
+      "beforeSha256": "207de4b157da92e11066f7e31eaea04320c540c6236be4e2af6c92d717f8d0d0",
+      "afterSha256": "207de4b157da92e11066f7e31eaea04320c540c6236be4e2af6c92d717f8d0d0",
+      "beforeBytes": 1112,
+      "afterBytes": 1112,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/2184ae3386ac18625140.png",
+      "beforeSha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa",
+      "afterSha256": "2184ae3386ac1862514018ac4c75241f3fa8dc37354989af05685231c88e6dfa",
+      "beforeBytes": 395710,
+      "afterBytes": 395710,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/21e95830acf9042b1292.png",
+      "beforeSha256": "21e95830acf9042b1292b23d5554fba8bce2a84a4eb85124f26516202f956034",
+      "afterSha256": "21e95830acf9042b1292b23d5554fba8bce2a84a4eb85124f26516202f956034",
+      "beforeBytes": 736,
+      "afterBytes": 736,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/222b2fd5222b6638ecda.png",
+      "beforeSha256": "222b2fd5222b6638ecda965145397b879f1ede5d295c7b2b82ee1d57d4586f74",
+      "afterSha256": "222b2fd5222b6638ecda965145397b879f1ede5d295c7b2b82ee1d57d4586f74",
+      "beforeBytes": 836,
+      "afterBytes": 836,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/230ddcfcde0deb6c86d4.png",
+      "beforeSha256": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+      "afterSha256": "230ddcfcde0deb6c86d4ca56a83a467971a1ad793ab5496c959ae018ff2a13cd",
+      "beforeBytes": 580261,
+      "afterBytes": 580261,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/252d3926f49491a0a8ed.png",
+      "beforeSha256": "252d3926f49491a0a8ed2fbd8f1f238e1b597285dd592c3bacd7fe579ec532fd",
+      "afterSha256": "252d3926f49491a0a8ed2fbd8f1f238e1b597285dd592c3bacd7fe579ec532fd",
+      "beforeBytes": 641,
+      "afterBytes": 641,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/25a1460efcd285bb6bf0.png",
+      "beforeSha256": "25a1460efcd285bb6bf017972f377d26d1995e4cb637dec9d3986698ced60152",
+      "afterSha256": "25a1460efcd285bb6bf017972f377d26d1995e4cb637dec9d3986698ced60152",
+      "beforeBytes": 1160,
+      "afterBytes": 1160,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/29ca92e7514cecb00d0b.png",
+      "beforeSha256": "29ca92e7514cecb00d0bd3d663506f434d6926c29316464a4acc4f2fc24bd33d",
+      "afterSha256": "29ca92e7514cecb00d0bd3d663506f434d6926c29316464a4acc4f2fc24bd33d",
+      "beforeBytes": 1001,
+      "afterBytes": 1001,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/2b37ee7756a9b82dfffb.png",
+      "beforeSha256": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+      "afterSha256": "2b37ee7756a9b82dfffb3745cf51692fae1ed75ec14ea0e66b6111d59f5c89ec",
+      "beforeBytes": 783,
+      "afterBytes": 783,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/2cf49ca4ca8ca013e49f.png",
+      "beforeSha256": "2cf49ca4ca8ca013e49f9eeb9a362c5d29479d8f876dd53ee91871ec89d8535f",
+      "afterSha256": "2cf49ca4ca8ca013e49f9eeb9a362c5d29479d8f876dd53ee91871ec89d8535f",
+      "beforeBytes": 1014,
+      "afterBytes": 1014,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/2e15a426be9ee20c39a7.png",
+      "beforeSha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+      "afterSha256": "2e15a426be9ee20c39a7015b3dd3885dec56b34e8f48917671d3259bdb3ba357",
+      "beforeBytes": 262822,
+      "afterBytes": 262822,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/2f6d7926b8cc43ca1ffc.png",
+      "beforeSha256": "2f6d7926b8cc43ca1ffcef7d9dca67f30de773307bf89e97b138a19a8d7a289b",
+      "afterSha256": "2f6d7926b8cc43ca1ffcef7d9dca67f30de773307bf89e97b138a19a8d7a289b",
+      "beforeBytes": 1113,
+      "afterBytes": 1113,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/32c4f3619e14232ca1c9.png",
+      "beforeSha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4",
+      "afterSha256": "32c4f3619e14232ca1c97317f4d575838beae7f7814762585d296b7a25e86ac4",
+      "beforeBytes": 336391,
+      "afterBytes": 336391,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/35352ce8175250721c1f.png",
+      "beforeSha256": "35352ce8175250721c1fa7f67c65adb94609f1ca7f7ae8f616d67696e487d2e3",
+      "afterSha256": "35352ce8175250721c1fa7f67c65adb94609f1ca7f7ae8f616d67696e487d2e3",
+      "beforeBytes": 1013016,
+      "afterBytes": 1013016,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3691556479aefad5c194.png",
+      "beforeSha256": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+      "afterSha256": "3691556479aefad5c194fd94e1f2146edb2f79449d63216d68235c6a7a2aae74",
+      "beforeBytes": 336,
+      "afterBytes": 336,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/36f03519aa9b1970bda4.png",
+      "beforeSha256": "36f03519aa9b1970bda458421a19ab7bc1d72524d77135ea6d177d79898eb20d",
+      "afterSha256": "36f03519aa9b1970bda458421a19ab7bc1d72524d77135ea6d177d79898eb20d",
+      "beforeBytes": 847,
+      "afterBytes": 847,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/37b9de5f69fd7608034c.png",
+      "beforeSha256": "37b9de5f69fd7608034ccaee8ed5e0a2da280a989247aac671de73b1e56638c1",
+      "afterSha256": "37b9de5f69fd7608034ccaee8ed5e0a2da280a989247aac671de73b1e56638c1",
+      "beforeBytes": 735,
+      "afterBytes": 735,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/392889f6329752c020dd.png",
+      "beforeSha256": "392889f6329752c020ddacf276bbf849c8e5b9ba5365641a059ff76a1d614f47",
+      "afterSha256": "392889f6329752c020ddacf276bbf849c8e5b9ba5365641a059ff76a1d614f47",
+      "beforeBytes": 327886,
+      "afterBytes": 327886,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3a317df510b9935d80c4.png",
+      "beforeSha256": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+      "afterSha256": "3a317df510b9935d80c4659aa3b257bd138510ffac45aadab18506de529caa6c",
+      "beforeBytes": 795,
+      "afterBytes": 795,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3ba0430ec0e2e7158fa7.png",
+      "beforeSha256": "3ba0430ec0e2e7158fa7c82e3cac15e1bd42a8dfbf6bcc9994f800efaa4ee9cb",
+      "afterSha256": "3ba0430ec0e2e7158fa7c82e3cac15e1bd42a8dfbf6bcc9994f800efaa4ee9cb",
+      "beforeBytes": 599678,
+      "afterBytes": 599678,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3bb81102c0b19c0f3604.png",
+      "beforeSha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78",
+      "afterSha256": "3bb81102c0b19c0f3604135d0bf048426b2d100d00221c934aaf0261a4876f78",
+      "beforeBytes": 650237,
+      "afterBytes": 650237,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3de7eb1b4021955c5884.png",
+      "beforeSha256": "3de7eb1b4021955c588495a0cbb8106fdfdbfb244bc88df3342f6dd6a3318469",
+      "afterSha256": "3de7eb1b4021955c588495a0cbb8106fdfdbfb244bc88df3342f6dd6a3318469",
+      "beforeBytes": 710,
+      "afterBytes": 710,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3eb83c94f81ccb3015ed.png",
+      "beforeSha256": "3eb83c94f81ccb3015ed5de908ed459c04aa65dae00b4d699f50c3cf5d30353a",
+      "afterSha256": "3eb83c94f81ccb3015ed5de908ed459c04aa65dae00b4d699f50c3cf5d30353a",
+      "beforeBytes": 624,
+      "afterBytes": 624,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3f2ba7b080982af7d9ee.png",
+      "beforeSha256": "3f2ba7b080982af7d9ee3c2ecc225149d95b8b6c5a4949915427062d595c06c5",
+      "afterSha256": "3f2ba7b080982af7d9ee3c2ecc225149d95b8b6c5a4949915427062d595c06c5",
+      "beforeBytes": 341,
+      "afterBytes": 341,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/3f82d47782058f31deba.png",
+      "beforeSha256": "3f82d47782058f31debaa791ee91898e9205735831b15b77f75e1d13d9d172d5",
+      "afterSha256": "3f82d47782058f31debaa791ee91898e9205735831b15b77f75e1d13d9d172d5",
+      "beforeBytes": 346,
+      "afterBytes": 346,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/409b7f25641a2c1cf7e2.png",
+      "beforeSha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+      "afterSha256": "409b7f25641a2c1cf7e2497521c2022152e41c3cad3e224a29384d18681ad207",
+      "beforeBytes": 1590,
+      "afterBytes": 1590,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/431f49c3e8d9e53ce775.png",
+      "beforeSha256": "431f49c3e8d9e53ce77579c389f28aac3f7b32521543c5d414114065e452487e",
+      "afterSha256": "431f49c3e8d9e53ce77579c389f28aac3f7b32521543c5d414114065e452487e",
+      "beforeBytes": 340840,
+      "afterBytes": 340840,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/465ec17af5d67ed742e5.png",
+      "beforeSha256": "465ec17af5d67ed742e5d22f1f6c5b8dac0d7a9d292b9e5ad5edf8a5c34a872c",
+      "afterSha256": "465ec17af5d67ed742e5d22f1f6c5b8dac0d7a9d292b9e5ad5edf8a5c34a872c",
+      "beforeBytes": 642779,
+      "afterBytes": 642779,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/491089fb9520714de5b5.png",
+      "beforeSha256": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+      "afterSha256": "491089fb9520714de5b5c1e6ccf9b3c5830ce3c201b97bb562af912a4662d91a",
+      "beforeBytes": 440157,
+      "afterBytes": 440157,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/4b36fb5abe80124daabc.png",
+      "beforeSha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+      "afterSha256": "4b36fb5abe80124daabce546e8ba9f220ed6467a69c301dd3baaeb43852e8aa5",
+      "beforeBytes": 772,
+      "afterBytes": 772,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/4b76848f0034bd614ce5.png",
+      "beforeSha256": "4b76848f0034bd614ce511b05a6e430f85e5468dd1ff065c393f2523e7ad91c9",
+      "afterSha256": "4b76848f0034bd614ce511b05a6e430f85e5468dd1ff065c393f2523e7ad91c9",
+      "beforeBytes": 688,
+      "afterBytes": 688,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/4c4475e9444839cf1982.png",
+      "beforeSha256": "4c4475e9444839cf1982cfb2bdec28eaf720b9152abe3b229c69c20592329386",
+      "afterSha256": "4c4475e9444839cf1982cfb2bdec28eaf720b9152abe3b229c69c20592329386",
+      "beforeBytes": 818,
+      "afterBytes": 818,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/4e1847cec0a0819e2d8b.png",
+      "beforeSha256": "4e1847cec0a0819e2d8b43f42f5bcf3ec3456e0cf15a42c8cb41291c35bf5d76",
+      "afterSha256": "4e1847cec0a0819e2d8b43f42f5bcf3ec3456e0cf15a42c8cb41291c35bf5d76",
+      "beforeBytes": 753,
+      "afterBytes": 753,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/4e49a6468ea885a3f342.png",
+      "beforeSha256": "4e49a6468ea885a3f34272c59358043ec4a97429e0ca0af5dbfeea0cf61e3c7a",
+      "afterSha256": "4e49a6468ea885a3f34272c59358043ec4a97429e0ca0af5dbfeea0cf61e3c7a",
+      "beforeBytes": 837,
+      "afterBytes": 837,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/52302e9c0a5b6205d982.png",
+      "beforeSha256": "52302e9c0a5b6205d982aa73da8c20882acf3c5b4638693b8c52b4e27947880d",
+      "afterSha256": "52302e9c0a5b6205d982aa73da8c20882acf3c5b4638693b8c52b4e27947880d",
+      "beforeBytes": 1654,
+      "afterBytes": 1654,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/52f5ef9335469abc8de3.png",
+      "beforeSha256": "52f5ef9335469abc8de3d0a0d8a0c454c75cddd141e4dc8d310251c3a4397f94",
+      "afterSha256": "52f5ef9335469abc8de3d0a0d8a0c454c75cddd141e4dc8d310251c3a4397f94",
+      "beforeBytes": 621,
+      "afterBytes": 621,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/531a12fea7813218250b.png",
+      "beforeSha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab",
+      "afterSha256": "531a12fea7813218250b3e25413c9fd0e7456d66733a9affda8b7fdd383ae4ab",
+      "beforeBytes": 708,
+      "afterBytes": 708,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/54e54591830dd0833605.png",
+      "beforeSha256": "54e54591830dd0833605c12dc7191e4911f54df1fa7d4d5060de849b4c178bcc",
+      "afterSha256": "54e54591830dd0833605c12dc7191e4911f54df1fa7d4d5060de849b4c178bcc",
+      "beforeBytes": 1425,
+      "afterBytes": 1425,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/55aaf791e83ec37fa219.png",
+      "beforeSha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+      "afterSha256": "55aaf791e83ec37fa219953f3eb685a5375b2f35e1c93991a15f1c637b764dbe",
+      "beforeBytes": 850,
+      "afterBytes": 850,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/55e296edc51c20d99a47.png",
+      "beforeSha256": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+      "afterSha256": "55e296edc51c20d99a4758abe005c1d98e463c01967303ce835d01bc3b54069f",
+      "beforeBytes": 829,
+      "afterBytes": 829,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/55f2e13925123daea921.png",
+      "beforeSha256": "55f2e13925123daea921e254ee30bbd2109adc583faf6ce9e2b1feabb34ae63a",
+      "afterSha256": "55f2e13925123daea921e254ee30bbd2109adc583faf6ce9e2b1feabb34ae63a",
+      "beforeBytes": 397200,
+      "afterBytes": 397200,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/5818150cab42cf0b2325.png",
+      "beforeSha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+      "afterSha256": "5818150cab42cf0b2325319cea8b42894eade25d731d364162276b634f55e069",
+      "beforeBytes": 4738747,
+      "afterBytes": 4738747,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/585896ee836fdcc77ac9.png",
+      "beforeSha256": "585896ee836fdcc77ac94d7b87c6c2ac2b1c872810f85fc48f5b93178d3e08ac",
+      "afterSha256": "585896ee836fdcc77ac94d7b87c6c2ac2b1c872810f85fc48f5b93178d3e08ac",
+      "beforeBytes": 780,
+      "afterBytes": 780,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/5b28ef6bb29b5654ff1a.png",
+      "beforeSha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+      "afterSha256": "5b28ef6bb29b5654ff1aececf1922ff6faddd616029fe879ff828d6996269292",
+      "beforeBytes": 2968764,
+      "afterBytes": 2968764,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/5e63547ca25d3a7cd3a2.png",
+      "beforeSha256": "5e63547ca25d3a7cd3a25c0a96afcdc370582eafef0e1f03410b9caed5a33142",
+      "afterSha256": "5e63547ca25d3a7cd3a25c0a96afcdc370582eafef0e1f03410b9caed5a33142",
+      "beforeBytes": 829,
+      "afterBytes": 829,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/5fbafa4e4224acc6b55d.png",
+      "beforeSha256": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+      "afterSha256": "5fbafa4e4224acc6b55d9a76c820ed415f5d45e368ad9e07ad5253657a888626",
+      "beforeBytes": 760,
+      "afterBytes": 760,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/5fd47e864c3235fa586e.png",
+      "beforeSha256": "5fd47e864c3235fa586eea83e79c96965cd2ff05d1fcc45f4022455293898cb0",
+      "afterSha256": "5fd47e864c3235fa586eea83e79c96965cd2ff05d1fcc45f4022455293898cb0",
+      "beforeBytes": 822,
+      "afterBytes": 822,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/614541eb0bf63d3a9b6e.png",
+      "beforeSha256": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150",
+      "afterSha256": "614541eb0bf63d3a9b6e6aba79764059d7a07cfdd6541df24f289ece8beb7150",
+      "beforeBytes": 531019,
+      "afterBytes": 531019,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/61cd16599facd99f5d0d.png",
+      "beforeSha256": "61cd16599facd99f5d0d037f37c0b057d88cdea8ce88e047216fa9db975b8e29",
+      "afterSha256": "61cd16599facd99f5d0d037f37c0b057d88cdea8ce88e047216fa9db975b8e29",
+      "beforeBytes": 777,
+      "afterBytes": 777,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/6323715e4e2b8cd3db7c.png",
+      "beforeSha256": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+      "afterSha256": "6323715e4e2b8cd3db7c6d5d7125ea8910887cb4ace99a3f998083c5e01d2420",
+      "beforeBytes": 294240,
+      "afterBytes": 294240,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/64de69653765586b8286.png",
+      "beforeSha256": "64de69653765586b8286d89fa2943c6272381e090051487c31478b8e37f36ad9",
+      "afterSha256": "64de69653765586b8286d89fa2943c6272381e090051487c31478b8e37f36ad9",
+      "beforeBytes": 697,
+      "afterBytes": 697,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/655e00fa1785da657da4.png",
+      "beforeSha256": "655e00fa1785da657da4cc2cf75b4f0b397729a965855d9ee25c276b1564726f",
+      "afterSha256": "655e00fa1785da657da4cc2cf75b4f0b397729a965855d9ee25c276b1564726f",
+      "beforeBytes": 810,
+      "afterBytes": 810,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/67fcab1ed73da3fc5cff.png",
+      "beforeSha256": "67fcab1ed73da3fc5cffc0233a501a6d426f5133a995705342a1325d2485e7b9",
+      "afterSha256": "67fcab1ed73da3fc5cffc0233a501a6d426f5133a995705342a1325d2485e7b9",
+      "beforeBytes": 1123,
+      "afterBytes": 1123,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/68d3a0387085d5741427.png",
+      "beforeSha256": "68d3a0387085d57414276d7ca9309794c93436912c6283b508b05d82e80bc7f2",
+      "afterSha256": "68d3a0387085d57414276d7ca9309794c93436912c6283b508b05d82e80bc7f2",
+      "beforeBytes": 1013,
+      "afterBytes": 1013,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/6b9e6e7cf8e4e61f4eec.png",
+      "beforeSha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25",
+      "afterSha256": "6b9e6e7cf8e4e61f4eeca4c37b1a44185157489b9dfa152f06742cca0e05bd25",
+      "beforeBytes": 684,
+      "afterBytes": 684,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/6dd4cdb2fff9b1b7b2ee.png",
+      "beforeSha256": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4",
+      "afterSha256": "6dd4cdb2fff9b1b7b2eef82dadd716cf6ecce8bed5f6217e562510545f25c8a4",
+      "beforeBytes": 249396,
+      "afterBytes": 249396,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/7263ce1336ebfc68e520.png",
+      "beforeSha256": "7263ce1336ebfc68e520934573f70796e9f0a6de3daba197b76348fb831b2ae9",
+      "afterSha256": "7263ce1336ebfc68e520934573f70796e9f0a6de3daba197b76348fb831b2ae9",
+      "beforeBytes": 1011,
+      "afterBytes": 1011,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/72fcd3fee9a0c97e77fe.png",
+      "beforeSha256": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+      "afterSha256": "72fcd3fee9a0c97e77feda0ba5f4444a3356a6b8f80aa1313cc609dbfb180e8e",
+      "beforeBytes": 828,
+      "afterBytes": 828,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/756a3307c4231b534a82.png",
+      "beforeSha256": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+      "afterSha256": "756a3307c4231b534a82393738368dc32063e38b3bd366e10142fd6ac6ef2a7c",
+      "beforeBytes": 350399,
+      "afterBytes": 350399,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/76c6ed4f73557a4a0a53.png",
+      "beforeSha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+      "afterSha256": "76c6ed4f73557a4a0a53d707abccd289a0cbe8d7a9c2a822753f6848ba41ae0f",
+      "beforeBytes": 1812,
+      "afterBytes": 1812,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/78841d61265e79a3f9e6.png",
+      "beforeSha256": "78841d61265e79a3f9e65662327ce5bf56367e743136c1830ac3f08757393684",
+      "afterSha256": "78841d61265e79a3f9e65662327ce5bf56367e743136c1830ac3f08757393684",
+      "beforeBytes": 1024,
+      "afterBytes": 1024,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/79b3320dd2f22a4941bf.png",
+      "beforeSha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+      "afterSha256": "79b3320dd2f22a4941bf0243b0ebc0b7bc19cf512770d7627922d1fd67aeb9c3",
+      "beforeBytes": 818,
+      "afterBytes": 818,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/79b468f44254a4b58d1f.png",
+      "beforeSha256": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+      "afterSha256": "79b468f44254a4b58d1fb54f597c0e3fab79ae8732637caed793639d5eaf26d5",
+      "beforeBytes": 778,
+      "afterBytes": 778,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/7a7b91b2771d1f9233f9.png",
+      "beforeSha256": "7a7b91b2771d1f9233f99effd24a88d2b0cad798342913df8d1db4af868b9d20",
+      "afterSha256": "7a7b91b2771d1f9233f99effd24a88d2b0cad798342913df8d1db4af868b9d20",
+      "beforeBytes": 1575,
+      "afterBytes": 1575,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/7ba8a99b0e70d6156272.png",
+      "beforeSha256": "7ba8a99b0e70d615627236bcca1dbf961dff7bbbcaec8dfa5c2f7008bd1c1f22",
+      "afterSha256": "7ba8a99b0e70d615627236bcca1dbf961dff7bbbcaec8dfa5c2f7008bd1c1f22",
+      "beforeBytes": 627797,
+      "afterBytes": 627797,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/7e88592eeb20ec0f16ff.png",
+      "beforeSha256": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+      "afterSha256": "7e88592eeb20ec0f16fff1567f6419d1ef7e953388b4eda301ce7ccb477a9551",
+      "beforeBytes": 380,
+      "afterBytes": 380,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/7ee566c19de5720564bb.png",
+      "beforeSha256": "7ee566c19de5720564bbafd908abfc8869b6bfa1052348e05de1a6665fb00686",
+      "afterSha256": "7ee566c19de5720564bbafd908abfc8869b6bfa1052348e05de1a6665fb00686",
+      "beforeBytes": 635,
+      "afterBytes": 635,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/8248a88fb7b4ad97da08.png",
+      "beforeSha256": "8248a88fb7b4ad97da087d92d6d037d7a790750157e32f76509039ee1dd49e8e",
+      "afterSha256": "8248a88fb7b4ad97da087d92d6d037d7a790750157e32f76509039ee1dd49e8e",
+      "beforeBytes": 738,
+      "afterBytes": 738,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/827a561e802667d6a5ee.png",
+      "beforeSha256": "827a561e802667d6a5eec636bb9ac7d98079eb869d22c1a235947c3dc7f9b908",
+      "afterSha256": "827a561e802667d6a5eec636bb9ac7d98079eb869d22c1a235947c3dc7f9b908",
+      "beforeBytes": 999,
+      "afterBytes": 999,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/836a76435d2a7ee1dd7e.png",
+      "beforeSha256": "836a76435d2a7ee1dd7e7408d0252226096b5edb7a93a80f30e44c90523b6e9f",
+      "afterSha256": "836a76435d2a7ee1dd7e7408d0252226096b5edb7a93a80f30e44c90523b6e9f",
+      "beforeBytes": 767,
+      "afterBytes": 767,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/84a46d0d39e312f5300c.png",
+      "beforeSha256": "84a46d0d39e312f5300c4bfebc73415b5b4d330b2db8227fd0b79515211bae95",
+      "afterSha256": "84a46d0d39e312f5300c4bfebc73415b5b4d330b2db8227fd0b79515211bae95",
+      "beforeBytes": 653,
+      "afterBytes": 653,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/84fcfbc60fab351843b9.png",
+      "beforeSha256": "84fcfbc60fab351843b9915fce04eda3d1156fcd9d6b28840fd45cadc3123854",
+      "afterSha256": "84fcfbc60fab351843b9915fce04eda3d1156fcd9d6b28840fd45cadc3123854",
+      "beforeBytes": 764,
+      "afterBytes": 764,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/851812def6824e843620.png",
+      "beforeSha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14",
+      "afterSha256": "851812def6824e8436202da61466ea219f705c42ea2352d5d2a095be711d6c14",
+      "beforeBytes": 690,
+      "afterBytes": 690,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/89135b727219523ff9ab.png",
+      "beforeSha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a",
+      "afterSha256": "89135b727219523ff9ab057e2481e4022fdd64fe463bfa1480ffbf1876a6475a",
+      "beforeBytes": 690,
+      "afterBytes": 690,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/89a9d994989390a0e185.png",
+      "beforeSha256": "89a9d994989390a0e1858cdb750bc432af0782e017c302677249a69ca4eef39a",
+      "afterSha256": "89a9d994989390a0e1858cdb750bc432af0782e017c302677249a69ca4eef39a",
+      "beforeBytes": 218362,
+      "afterBytes": 218362,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/8a4e28b91cfa07b8dbd2.png",
+      "beforeSha256": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+      "afterSha256": "8a4e28b91cfa07b8dbd2f22cc7739ed5f79ed0f02f2ebb5d167c165cb06ad6e6",
+      "beforeBytes": 847,
+      "afterBytes": 847,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/8c172dc9580b54c81b2b.png",
+      "beforeSha256": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+      "afterSha256": "8c172dc9580b54c81b2b8836c2505fb9a523d11c8e7440cc39765bc8fb1e227f",
+      "beforeBytes": 763,
+      "afterBytes": 763,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/8cbf285a07c9ac6f5db6.png",
+      "beforeSha256": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+      "afterSha256": "8cbf285a07c9ac6f5db6312b0f652cec8da66e8c5a093007684ee4912236e6a5",
+      "beforeBytes": 919,
+      "afterBytes": 919,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/8d399752680e68257da6.png",
+      "beforeSha256": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+      "afterSha256": "8d399752680e68257da624280d502a4fb71ec0f1524059c122cdaed10d8d2893",
+      "beforeBytes": 463631,
+      "afterBytes": 463631,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/8d624207fb5fdba71f3a.png",
+      "beforeSha256": "8d624207fb5fdba71f3ad01c27b53a216b489218ba8420bd97806c824f19a225",
+      "afterSha256": "8d624207fb5fdba71f3ad01c27b53a216b489218ba8420bd97806c824f19a225",
+      "beforeBytes": 506687,
+      "afterBytes": 506687,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/8e496f48d570157aee11.png",
+      "beforeSha256": "8e496f48d570157aee113cc4766628a3c68f38b401ef9859bf8a6a87aa466210",
+      "afterSha256": "8e496f48d570157aee113cc4766628a3c68f38b401ef9859bf8a6a87aa466210",
+      "beforeBytes": 1008,
+      "afterBytes": 1008,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9277bf6b7f4b71b54f3b.png",
+      "beforeSha256": "9277bf6b7f4b71b54f3b8e4c8698ade268e6de58f1a07402c62ef70db2751ebe",
+      "afterSha256": "9277bf6b7f4b71b54f3b8e4c8698ade268e6de58f1a07402c62ef70db2751ebe",
+      "beforeBytes": 322,
+      "afterBytes": 322,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/92f5ecf960db9837f174.png",
+      "beforeSha256": "92f5ecf960db9837f174f2e110637c6c42e3987bb8be2c2a3bc6443b797319a8",
+      "afterSha256": "92f5ecf960db9837f174f2e110637c6c42e3987bb8be2c2a3bc6443b797319a8",
+      "beforeBytes": 795,
+      "afterBytes": 795,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/93f40634d5f47b42afdb.png",
+      "beforeSha256": "93f40634d5f47b42afdb76dd3ebf22ce420022219eccaf65e1972ef860632a44",
+      "afterSha256": "93f40634d5f47b42afdb76dd3ebf22ce420022219eccaf65e1972ef860632a44",
+      "beforeBytes": 314984,
+      "afterBytes": 314984,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/940c90a65502a117ca0b.png",
+      "beforeSha256": "940c90a65502a117ca0b309670a7eca7522df2d3cd9c24b002c3d81cd31dcbe7",
+      "afterSha256": "940c90a65502a117ca0b309670a7eca7522df2d3cd9c24b002c3d81cd31dcbe7",
+      "beforeBytes": 441809,
+      "afterBytes": 441809,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/94c58f92a66daac53b99.png",
+      "beforeSha256": "94c58f92a66daac53b99596d44ee274b3728cd8deb773a0d56f27dc51c8c227f",
+      "afterSha256": "94c58f92a66daac53b99596d44ee274b3728cd8deb773a0d56f27dc51c8c227f",
+      "beforeBytes": 257274,
+      "afterBytes": 257274,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/953140ef3e0c23084c23.png",
+      "beforeSha256": "953140ef3e0c23084c23ebae1a2576db1bc501aced0da876e1d127fb69839a51",
+      "afterSha256": "953140ef3e0c23084c23ebae1a2576db1bc501aced0da876e1d127fb69839a51",
+      "beforeBytes": 647,
+      "afterBytes": 647,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/95673a70dda3ae07ba70.png",
+      "beforeSha256": "95673a70dda3ae07ba7077694469c628b2c8c8bda526424b86f40aa881d6b90b",
+      "afterSha256": "95673a70dda3ae07ba7077694469c628b2c8c8bda526424b86f40aa881d6b90b",
+      "beforeBytes": 819,
+      "afterBytes": 819,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/97626d11207a2f3ae59c.png",
+      "beforeSha256": "97626d11207a2f3ae59cef68784f361a88f5d66f8491c1ada8c0b0eb032efe81",
+      "afterSha256": "97626d11207a2f3ae59cef68784f361a88f5d66f8491c1ada8c0b0eb032efe81",
+      "beforeBytes": 658,
+      "afterBytes": 658,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/97d80db5ab63221dcdb8.png",
+      "beforeSha256": "97d80db5ab63221dcdb88938aac5913c890491ed93a7c7ff0f329665411ad416",
+      "afterSha256": "97d80db5ab63221dcdb88938aac5913c890491ed93a7c7ff0f329665411ad416",
+      "beforeBytes": 1071,
+      "afterBytes": 1071,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9825f1192c3daf90d409.png",
+      "beforeSha256": "9825f1192c3daf90d409e250755799e3d984ce7f0327edc95ab8133ff12dbe4e",
+      "afterSha256": "9825f1192c3daf90d409e250755799e3d984ce7f0327edc95ab8133ff12dbe4e",
+      "beforeBytes": 728,
+      "afterBytes": 728,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/98f3ec35fdedc87adac0.png",
+      "beforeSha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea",
+      "afterSha256": "98f3ec35fdedc87adac04d643040d7532aac5d07e656e12f517acdf6e1c3a9ea",
+      "beforeBytes": 296023,
+      "afterBytes": 296023,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9c4d0ad1822c0e3d56d2.png",
+      "beforeSha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+      "afterSha256": "9c4d0ad1822c0e3d56d2e6bf792d4d282bf60da205a48d2e868354f51ebcf0c4",
+      "beforeBytes": 247072,
+      "afterBytes": 247072,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9eb4471a87cb45e57d1a.png",
+      "beforeSha256": "9eb4471a87cb45e57d1ae4510e634eda9a1cdac0c33a6ac9f6a95691fae8ea68",
+      "afterSha256": "9eb4471a87cb45e57d1ae4510e634eda9a1cdac0c33a6ac9f6a95691fae8ea68",
+      "beforeBytes": 652,
+      "afterBytes": 652,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9ee14da28eecf04abb47.png",
+      "beforeSha256": "9ee14da28eecf04abb478cf4970a08598db7e84e3300e90cecbcea7b8d0ebedb",
+      "afterSha256": "9ee14da28eecf04abb478cf4970a08598db7e84e3300e90cecbcea7b8d0ebedb",
+      "beforeBytes": 822,
+      "afterBytes": 822,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9f2116257d14fb045d70.png",
+      "beforeSha256": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+      "afterSha256": "9f2116257d14fb045d7056108484a5c882180f9355ae5e6723929b59f899b783",
+      "beforeBytes": 346814,
+      "afterBytes": 346814,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9fc3804e84dc648f6ba2.png",
+      "beforeSha256": "9fc3804e84dc648f6ba213a811d4c209a18f36ac3a9a24c4aa4403f1d57d3b7c",
+      "afterSha256": "9fc3804e84dc648f6ba213a811d4c209a18f36ac3a9a24c4aa4403f1d57d3b7c",
+      "beforeBytes": 1034,
+      "afterBytes": 1034,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/9fc805252cb605d3ce55.png",
+      "beforeSha256": "9fc805252cb605d3ce55864a5cbe3b40809771e35ff8983c8d492d3041c6089f",
+      "afterSha256": "9fc805252cb605d3ce55864a5cbe3b40809771e35ff8983c8d492d3041c6089f",
+      "beforeBytes": 683,
+      "afterBytes": 683,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/a09657df1b18fe6f6d14.png",
+      "beforeSha256": "a09657df1b18fe6f6d14ff3d20f6cf5c2a0a2b1526c5814756b590d6e25b537a",
+      "afterSha256": "a09657df1b18fe6f6d14ff3d20f6cf5c2a0a2b1526c5814756b590d6e25b537a",
+      "beforeBytes": 1032,
+      "afterBytes": 1032,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/a27b9aff9f8c8edf1136.png",
+      "beforeSha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+      "afterSha256": "a27b9aff9f8c8edf1136144e3450fcf61faad1b74eae0deb6b512c0c1d2b55de",
+      "beforeBytes": 767,
+      "afterBytes": 767,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/a40b54336c3f565a38bb.png",
+      "beforeSha256": "a40b54336c3f565a38bbfe1b3a61447e28f1c4f437bf5c1e67c7e5b047a9fd10",
+      "afterSha256": "a40b54336c3f565a38bbfe1b3a61447e28f1c4f437bf5c1e67c7e5b047a9fd10",
+      "beforeBytes": 625,
+      "afterBytes": 625,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/a4d52e34a5ed852382b9.png",
+      "beforeSha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+      "afterSha256": "a4d52e34a5ed852382b9ec0a589732f2d30be8f5776ae751ce003503d1fffee4",
+      "beforeBytes": 708116,
+      "afterBytes": 708116,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/a536d20596728975d3d5.png",
+      "beforeSha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+      "afterSha256": "a536d20596728975d3d5364979a12235b13fdda1c55a71beb924308f5d21ddae",
+      "beforeBytes": 902,
+      "afterBytes": 902,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/a6e08a37dd3d86917cf4.png",
+      "beforeSha256": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744",
+      "afterSha256": "a6e08a37dd3d86917cf45a233d0afefd307393f14f6c5bea1f0355420f741744",
+      "beforeBytes": 385069,
+      "afterBytes": 385069,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/a966ec3d74fe209f0820.png",
+      "beforeSha256": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9",
+      "afterSha256": "a966ec3d74fe209f082077c6267e0a7b8025235aa0d1ebd45078867a8e745de9",
+      "beforeBytes": 366238,
+      "afterBytes": 366238,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/aab44917bbd644c0c8f0.png",
+      "beforeSha256": "aab44917bbd644c0c8f0b1d9da89f01c35099ff1735d5ae8f642e34526a760bc",
+      "afterSha256": "aab44917bbd644c0c8f0b1d9da89f01c35099ff1735d5ae8f642e34526a760bc",
+      "beforeBytes": 753,
+      "afterBytes": 753,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ac9a975213b8d91f675a.png",
+      "beforeSha256": "ac9a975213b8d91f675a42d12df74b8f57101775e337c9d3aaf619907b69e8da",
+      "afterSha256": "ac9a975213b8d91f675a42d12df74b8f57101775e337c9d3aaf619907b69e8da",
+      "beforeBytes": 630030,
+      "afterBytes": 630030,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ad3939922a6916be23f6.png",
+      "beforeSha256": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010",
+      "afterSha256": "ad3939922a6916be23f68ff22420c69da3db72632294b43c9d64ec9c7edc7010",
+      "beforeBytes": 394314,
+      "afterBytes": 394314,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ad4f1a90b4624a19fc15.png",
+      "beforeSha256": "ad4f1a90b4624a19fc157ddc8479106e4a320e7198a5f61c8c7d2081bc751d74",
+      "afterSha256": "ad4f1a90b4624a19fc157ddc8479106e4a320e7198a5f61c8c7d2081bc751d74",
+      "beforeBytes": 765,
+      "afterBytes": 765,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/af73a7186075e3b44859.png",
+      "beforeSha256": "af73a7186075e3b44859362ff6f8940cf7e0439e040ff583c71a5d194385e43c",
+      "afterSha256": "af73a7186075e3b44859362ff6f8940cf7e0439e040ff583c71a5d194385e43c",
+      "beforeBytes": 317,
+      "afterBytes": 317,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/b1024d7c1943be94a366.png",
+      "beforeSha256": "b1024d7c1943be94a366fa1fdb203c81d018f9552d47d6f2b2a1217200d81b49",
+      "afterSha256": "b1024d7c1943be94a366fa1fdb203c81d018f9552d47d6f2b2a1217200d81b49",
+      "beforeBytes": 808,
+      "afterBytes": 808,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/b14cf99a684846cb69e9.png",
+      "beforeSha256": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+      "afterSha256": "b14cf99a684846cb69e9be4ab93a58d973d3bfce54c0ec9a47ca0545229d2cc1",
+      "beforeBytes": 727,
+      "afterBytes": 727,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/b377c35c64fa14f7d1c4.png",
+      "beforeSha256": "b377c35c64fa14f7d1c41d53fceb5488b812bfa6f2b04b3d071ce17bf3436852",
+      "afterSha256": "b377c35c64fa14f7d1c41d53fceb5488b812bfa6f2b04b3d071ce17bf3436852",
+      "beforeBytes": 771,
+      "afterBytes": 771,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/b6163461b8122d6787f8.png",
+      "beforeSha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+      "afterSha256": "b6163461b8122d6787f8f771e1a9f362c5663bef6136d74c2ec7301ddb58ed91",
+      "beforeBytes": 292169,
+      "afterBytes": 292169,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/b853d116e906ea504175.png",
+      "beforeSha256": "b853d116e906ea504175d1aa88c4cb61433926bcb401065803308ce558ce5b24",
+      "afterSha256": "b853d116e906ea504175d1aa88c4cb61433926bcb401065803308ce558ce5b24",
+      "beforeBytes": 322,
+      "afterBytes": 322,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/bde948d56c47e9a9c68c.png",
+      "beforeSha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+      "afterSha256": "bde948d56c47e9a9c68c4dd65d0d1443c2aad8fa1e621da0af516918dbfa0cf2",
+      "beforeBytes": 1835626,
+      "afterBytes": 1835626,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/be5e92a6789f3e62d039.png",
+      "beforeSha256": "be5e92a6789f3e62d03941a71d318bdb3b213c2c3879d81592c9a857082e6ded",
+      "afterSha256": "be5e92a6789f3e62d03941a71d318bdb3b213c2c3879d81592c9a857082e6ded",
+      "beforeBytes": 1002,
+      "afterBytes": 1002,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/be8f9d8dc78785bed8ff.png",
+      "beforeSha256": "be8f9d8dc78785bed8ff7b7f7dfe9e15c1e2a18b278a2798152d2064d9d182cc",
+      "afterSha256": "be8f9d8dc78785bed8ff7b7f7dfe9e15c1e2a18b278a2798152d2064d9d182cc",
+      "beforeBytes": 1003,
+      "afterBytes": 1003,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/bf154685e393a585d17b.png",
+      "beforeSha256": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+      "afterSha256": "bf154685e393a585d17b3c3caff2e092d862b8047b6c99361d3a99b6eb800bfd",
+      "beforeBytes": 795,
+      "afterBytes": 795,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c24dfe98d1920c6cea67.png",
+      "beforeSha256": "c24dfe98d1920c6cea677ac6be24c8c21e191cdca08fc92ff08a4314fecd4b83",
+      "afterSha256": "c24dfe98d1920c6cea677ac6be24c8c21e191cdca08fc92ff08a4314fecd4b83",
+      "beforeBytes": 1603,
+      "afterBytes": 1603,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c2e31d1ddd86e7509c38.png",
+      "beforeSha256": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+      "afterSha256": "c2e31d1ddd86e7509c381bcf15b4dcf0a116d1d2607a27e981b2b1c61ab42a0f",
+      "beforeBytes": 764,
+      "afterBytes": 764,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c314f9a903442ecaa6a4.png",
+      "beforeSha256": "c314f9a903442ecaa6a41bb22680b1a68c574ec5cfdee4666041b11f7ee7cfb9",
+      "afterSha256": "c314f9a903442ecaa6a41bb22680b1a68c574ec5cfdee4666041b11f7ee7cfb9",
+      "beforeBytes": 794,
+      "afterBytes": 794,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c3782e00498e23e6a224.png",
+      "beforeSha256": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+      "afterSha256": "c3782e00498e23e6a224559d3df18d6d41db391d3e7b15861787bb2eef5f85e1",
+      "beforeBytes": 448722,
+      "afterBytes": 448722,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c4ad653360cce21ee393.png",
+      "beforeSha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+      "afterSha256": "c4ad653360cce21ee3933b84279b682381beeb75d21e4f88906076fdd7165456",
+      "beforeBytes": 848,
+      "afterBytes": 848,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c74d1bdaf5f3ed21a420.png",
+      "beforeSha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835",
+      "afterSha256": "c74d1bdaf5f3ed21a4204ee3096ac83025a7d086aa133eadd21fe80f64809835",
+      "beforeBytes": 991210,
+      "afterBytes": 991210,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c797c24de7449f28452e.png",
+      "beforeSha256": "c797c24de7449f28452eca47c08200b6b53c557c3f0c96469c819dd77df8fc96",
+      "afterSha256": "c797c24de7449f28452eca47c08200b6b53c557c3f0c96469c819dd77df8fc96",
+      "beforeBytes": 849,
+      "afterBytes": 849,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c87059b901355578ac69.png",
+      "beforeSha256": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+      "afterSha256": "c87059b901355578ac6969804d1893732e807e8e4825a3787733567b93a763aa",
+      "beforeBytes": 790,
+      "afterBytes": 790,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c940013af80473abdc84.png",
+      "beforeSha256": "c940013af80473abdc846d2c46502ab0241d781d634816feba8b6b04a6f21eb3",
+      "afterSha256": "c940013af80473abdc846d2c46502ab0241d781d634816feba8b6b04a6f21eb3",
+      "beforeBytes": 1174,
+      "afterBytes": 1174,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/c967dd067e94b4a98e78.png",
+      "beforeSha256": "c967dd067e94b4a98e7830ba063e3824eed32091823901545f02fcee5c5df307",
+      "afterSha256": "c967dd067e94b4a98e7830ba063e3824eed32091823901545f02fcee5c5df307",
+      "beforeBytes": 1415,
+      "afterBytes": 1415,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ca4f162e85fafee194c7.png",
+      "beforeSha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "afterSha256": "ca4f162e85fafee194c7770be2c5fc59b3b55c1679c7923d652d6d998825661c",
+      "beforeBytes": 2670688,
+      "afterBytes": 2670688,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ca8dfdb29da067ef8ac1.png",
+      "beforeSha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+      "afterSha256": "ca8dfdb29da067ef8ac15565cbd7779aef4188f41b2afc539af517a2680fbbe2",
+      "beforeBytes": 780,
+      "afterBytes": 780,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ccffb1f0a795c6f085cd.png",
+      "beforeSha256": "ccffb1f0a795c6f085cd8d77e8e90f79fb680c8ffd377cf95f217a0fa1ea422a",
+      "afterSha256": "ccffb1f0a795c6f085cd8d77e8e90f79fb680c8ffd377cf95f217a0fa1ea422a",
+      "beforeBytes": 969,
+      "afterBytes": 969,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/cde52c5fc44edc14b3d6.png",
+      "beforeSha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+      "afterSha256": "cde52c5fc44edc14b3d661cff6a5a62068916c4af703298e0e31431b5eaf51a9",
+      "beforeBytes": 1810,
+      "afterBytes": 1810,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/cfd7669292fe4d474a99.png",
+      "beforeSha256": "cfd7669292fe4d474a99f20907f43f9664f9110eba8a0ff263f35eb25723dc3c",
+      "afterSha256": "cfd7669292fe4d474a99f20907f43f9664f9110eba8a0ff263f35eb25723dc3c",
+      "beforeBytes": 1621,
+      "afterBytes": 1621,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/cfe00d87638eab122eb8.png",
+      "beforeSha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "afterSha256": "cfe00d87638eab122eb8cf15c194a30cae5e6396d8c22d965fb9b6aa305b13b8",
+      "beforeBytes": 4211626,
+      "afterBytes": 4211626,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/cfef86f82ac5d996af20.png",
+      "beforeSha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+      "afterSha256": "cfef86f82ac5d996af200cedf4b76ca9d633459188d697a9d8cfdf17d08e7e18",
+      "beforeBytes": 692,
+      "afterBytes": 692,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/d119453aaca0a086a3ff.png",
+      "beforeSha256": "d119453aaca0a086a3ff52033e281bdf80cc39f31e6f079c36fac01d50300448",
+      "afterSha256": "d119453aaca0a086a3ff52033e281bdf80cc39f31e6f079c36fac01d50300448",
+      "beforeBytes": 764,
+      "afterBytes": 764,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/d3947bf8ce7ee3fb076e.png",
+      "beforeSha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603",
+      "afterSha256": "d3947bf8ce7ee3fb076eefbe4beb50c415e6889a32b536838a1bb6019bf54603",
+      "beforeBytes": 522293,
+      "afterBytes": 522293,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/d5777d4390c20b3f9fa1.png",
+      "beforeSha256": "d5777d4390c20b3f9fa1bb51d61a1e7743b724d24a85fc91739563ad4eeeff28",
+      "afterSha256": "d5777d4390c20b3f9fa1bb51d61a1e7743b724d24a85fc91739563ad4eeeff28",
+      "beforeBytes": 1015,
+      "afterBytes": 1015,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/d59a76abdc3a396d8e68.png",
+      "beforeSha256": "d59a76abdc3a396d8e683b73826c2f51d8debd90a52e8562c0afb80c54ff95eb",
+      "afterSha256": "d59a76abdc3a396d8e683b73826c2f51d8debd90a52e8562c0afb80c54ff95eb",
+      "beforeBytes": 359,
+      "afterBytes": 359,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/d93693724cacd6f0c6f1.png",
+      "beforeSha256": "d93693724cacd6f0c6f11964ce62840313df8ce20e8efb85f94881fcd997a535",
+      "afterSha256": "d93693724cacd6f0c6f11964ce62840313df8ce20e8efb85f94881fcd997a535",
+      "beforeBytes": 304712,
+      "afterBytes": 304712,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/dad05b97473c1bda2943.png",
+      "beforeSha256": "dad05b97473c1bda2943f318db3e730665f8a841f2d7d6176b2f8a013e002e1b",
+      "afterSha256": "dad05b97473c1bda2943f318db3e730665f8a841f2d7d6176b2f8a013e002e1b",
+      "beforeBytes": 336,
+      "afterBytes": 336,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/db0dd096ce52f78a260d.png",
+      "beforeSha256": "db0dd096ce52f78a260d6d545733e52a07e9abfc85b44e39bc1061a132f1cdfe",
+      "afterSha256": "db0dd096ce52f78a260d6d545733e52a07e9abfc85b44e39bc1061a132f1cdfe",
+      "beforeBytes": 964855,
+      "afterBytes": 964855,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/dbb6d5d6eecf88027af2.png",
+      "beforeSha256": "dbb6d5d6eecf88027af2eb2d6948af114a6d4de7454c0f4c4ff04192eca25924",
+      "afterSha256": "dbb6d5d6eecf88027af2eb2d6948af114a6d4de7454c0f4c4ff04192eca25924",
+      "beforeBytes": 793,
+      "afterBytes": 793,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/dd3a76bd9c6e07bd0844.png",
+      "beforeSha256": "dd3a76bd9c6e07bd084414f2096fb1afd463a88002f609a9f962cb6c2fbba855",
+      "afterSha256": "dd3a76bd9c6e07bd084414f2096fb1afd463a88002f609a9f962cb6c2fbba855",
+      "beforeBytes": 728,
+      "afterBytes": 728,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ddbf803c43fc641d3512.png",
+      "beforeSha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+      "afterSha256": "ddbf803c43fc641d35129edf6e8b9531d2f74d88781d88d0c4fb61ef78be9381",
+      "beforeBytes": 2485369,
+      "afterBytes": 2485369,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e08841d0cb25bd6850f4.png",
+      "beforeSha256": "e08841d0cb25bd6850f40607c942a68e91f33b6fcc3ffe9668f82d1b90df5e08",
+      "afterSha256": "e08841d0cb25bd6850f40607c942a68e91f33b6fcc3ffe9668f82d1b90df5e08",
+      "beforeBytes": 714,
+      "afterBytes": 714,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e1a7e63228556d4147d6.png",
+      "beforeSha256": "e1a7e63228556d4147d6d89438f407de7554ec436cdd055e6789366707ae32b1",
+      "afterSha256": "e1a7e63228556d4147d6d89438f407de7554ec436cdd055e6789366707ae32b1",
+      "beforeBytes": 338,
+      "afterBytes": 338,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e229e1eb9ffd5725d876.png",
+      "beforeSha256": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7",
+      "afterSha256": "e229e1eb9ffd5725d8767e8ddecc9544694780c03afeb468ce610c9370e3c1a7",
+      "beforeBytes": 304837,
+      "afterBytes": 304837,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e27ecf52d074632eb95e.png",
+      "beforeSha256": "e27ecf52d074632eb95ebbd073caaaf7ceb0842b9cd236c780e85607baf32361",
+      "afterSha256": "e27ecf52d074632eb95ebbd073caaaf7ceb0842b9cd236c780e85607baf32361",
+      "beforeBytes": 1100,
+      "afterBytes": 1100,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e31e4b28bb224684cf57.png",
+      "beforeSha256": "e31e4b28bb224684cf571b7b88d6c627361dcd8906d8d7594c66989626e4edbd",
+      "afterSha256": "e31e4b28bb224684cf571b7b88d6c627361dcd8906d8d7594c66989626e4edbd",
+      "beforeBytes": 259675,
+      "afterBytes": 259675,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e35c2780ff9208044a69.png",
+      "beforeSha256": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+      "afterSha256": "e35c2780ff9208044a6905df53ae7dcd74a781e2b6e0e043fc4ef0b1a2c34422",
+      "beforeBytes": 832,
+      "afterBytes": 832,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e35f74c0f83556345583.png",
+      "beforeSha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+      "afterSha256": "e35f74c0f8355634558348073fa69517f15cdee745fe589b12e61b769654642b",
+      "beforeBytes": 1829644,
+      "afterBytes": 1829644,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e3c6887d5bede0fbc1e4.png",
+      "beforeSha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+      "afterSha256": "e3c6887d5bede0fbc1e43a05bfa7a16714982e21ee6c7a161481fee88f06f517",
+      "beforeBytes": 1006001,
+      "afterBytes": 1006001,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e53e4d4ad46335cf9f8d.png",
+      "beforeSha256": "e53e4d4ad46335cf9f8de5173b245d63ae1afc73367a5266f10bbd3432db18eb",
+      "afterSha256": "e53e4d4ad46335cf9f8de5173b245d63ae1afc73367a5266f10bbd3432db18eb",
+      "beforeBytes": 360836,
+      "afterBytes": 360836,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e637a590a6cb398f89dc.png",
+      "beforeSha256": "e637a590a6cb398f89dc956848406be630d33c0012a3729bc515a0d8b1f1dc3e",
+      "afterSha256": "e637a590a6cb398f89dc956848406be630d33c0012a3729bc515a0d8b1f1dc3e",
+      "beforeBytes": 743,
+      "afterBytes": 743,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e71abac8456e72da6092.png",
+      "beforeSha256": "e71abac8456e72da60922b47d2c4a67cf49ae81e2935e079f64b85df396b873f",
+      "afterSha256": "e71abac8456e72da60922b47d2c4a67cf49ae81e2935e079f64b85df396b873f",
+      "beforeBytes": 649,
+      "afterBytes": 649,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e735cf2c599a1dc3ddf1.png",
+      "beforeSha256": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369",
+      "afterSha256": "e735cf2c599a1dc3ddf13b4dbf3a1d1bc9da8d38154dc1052eaba46a66f5b369",
+      "beforeBytes": 372042,
+      "afterBytes": 372042,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/e80f68933ff3fbf30557.png",
+      "beforeSha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+      "afterSha256": "e80f68933ff3fbf305574a55d2512ea143835de52314e7f62ecab38ec409a8c4",
+      "beforeBytes": 893,
+      "afterBytes": 893,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ea43152d1732ed05f4ea.png",
+      "beforeSha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+      "afterSha256": "ea43152d1732ed05f4eaf431f74b02b89a1041440790c14af00fa70f1e49606f",
+      "beforeBytes": 568322,
+      "afterBytes": 568322,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/eb7d7e234e6b60198b7f.png",
+      "beforeSha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b",
+      "afterSha256": "eb7d7e234e6b60198b7f6b1da0cb1533ef15a96251c57535105d43e69f8fd10b",
+      "beforeBytes": 331284,
+      "afterBytes": 331284,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ec6104babab48fadf35b.png",
+      "beforeSha256": "ec6104babab48fadf35b19b20571477341e465c63d1e9e45d764e798b57bc034",
+      "afterSha256": "ec6104babab48fadf35b19b20571477341e465c63d1e9e45d764e798b57bc034",
+      "beforeBytes": 845,
+      "afterBytes": 845,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ed46dda08d7935c7fa0f.png",
+      "beforeSha256": "ed46dda08d7935c7fa0f660e82ec29261b4307b3a202643c89bbf1545e0eccec",
+      "afterSha256": "ed46dda08d7935c7fa0f660e82ec29261b4307b3a202643c89bbf1545e0eccec",
+      "beforeBytes": 979,
+      "afterBytes": 979,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ede54015ca90cc29311f.png",
+      "beforeSha256": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+      "afterSha256": "ede54015ca90cc29311fc135ce09564f9fd977e40111655eb32a0ec3664d51f0",
+      "beforeBytes": 846,
+      "afterBytes": 846,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ee02fe2be23cc7b571e5.png",
+      "beforeSha256": "ee02fe2be23cc7b571e5bef2c18dd6f9e44b6fb8e1f1c43ddffeac6766363b1a",
+      "afterSha256": "ee02fe2be23cc7b571e5bef2c18dd6f9e44b6fb8e1f1c43ddffeac6766363b1a",
+      "beforeBytes": 1023,
+      "afterBytes": 1023,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ef9d99ded16d9fbc7e29.png",
+      "beforeSha256": "ef9d99ded16d9fbc7e29f55bca35545d70c479afeb771f13e1be9297e6488e98",
+      "afterSha256": "ef9d99ded16d9fbc7e29f55bca35545d70c479afeb771f13e1be9297e6488e98",
+      "beforeBytes": 347,
+      "afterBytes": 347,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/f1d9c1150e9ee0415b23.png",
+      "beforeSha256": "f1d9c1150e9ee0415b236457423e9a338d59631ab7ad1c295e06950723e4498d",
+      "afterSha256": "f1d9c1150e9ee0415b236457423e9a338d59631ab7ad1c295e06950723e4498d",
+      "beforeBytes": 849,
+      "afterBytes": 849,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/f2f7c8420ab2e6bf72af.png",
+      "beforeSha256": "f2f7c8420ab2e6bf72afeff90a8a3f99af3df31725d997cf18decedc55f96871",
+      "afterSha256": "f2f7c8420ab2e6bf72afeff90a8a3f99af3df31725d997cf18decedc55f96871",
+      "beforeBytes": 377338,
+      "afterBytes": 377338,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/f63de566801fcea8ef97.png",
+      "beforeSha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+      "afterSha256": "f63de566801fcea8ef973271a3cd46ac87cf285e766ecfa2d0c6f64670ff3af2",
+      "beforeBytes": 781,
+      "afterBytes": 781,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/f77574e15506128045f5.png",
+      "beforeSha256": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+      "afterSha256": "f77574e15506128045f5f9f299f14c0827c7338cbcb9e7be4bb802f8ac729115",
+      "beforeBytes": 826,
+      "afterBytes": 826,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/f98f3d1f919d7d128ace.png",
+      "beforeSha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+      "afterSha256": "f98f3d1f919d7d128aceffeaed54f56d1c01149ad0d7530e33a7bf36e3420e0c",
+      "beforeBytes": 443931,
+      "afterBytes": 443931,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/fb2dcefd820fb5650cb7.png",
+      "beforeSha256": "fb2dcefd820fb5650cb7e373dea2f9d95df297a45fc7de6eb87913434273c012",
+      "afterSha256": "fb2dcefd820fb5650cb7e373dea2f9d95df297a45fc7de6eb87913434273c012",
+      "beforeBytes": 712,
+      "afterBytes": 712,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/fbca7ec4156fc62f2d8a.png",
+      "beforeSha256": "fbca7ec4156fc62f2d8afd396ccb2472ee4b3883722b003e9e3983bb4d62f796",
+      "afterSha256": "fbca7ec4156fc62f2d8afd396ccb2472ee4b3883722b003e9e3983bb4d62f796",
+      "beforeBytes": 1590,
+      "afterBytes": 1590,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/fcb9567a8dd36d8ee771.png",
+      "beforeSha256": "fcb9567a8dd36d8ee77129257504ef2c2acb478d5c365e316bba7e6876f7b468",
+      "afterSha256": "fcb9567a8dd36d8ee77129257504ef2c2acb478d5c365e316bba7e6876f7b468",
+      "beforeBytes": 741,
+      "afterBytes": 741,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/fda208aa6522c10908fc.png",
+      "beforeSha256": "fda208aa6522c10908fc4b0d0e72f6f93c1f0328d4b53e00a0ba0725f44a1465",
+      "afterSha256": "fda208aa6522c10908fc4b0d0e72f6f93c1f0328d4b53e00a0ba0725f44a1465",
+      "beforeBytes": 342,
+      "afterBytes": 342,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/textures/ffd58295d122c45a1753.png",
+      "beforeSha256": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221",
+      "afterSha256": "ffd58295d122c45a1753a1a5c9530bbc4be2513e96c27beb2431842a5cdad221",
+      "beforeBytes": 702,
+      "afterBytes": 702,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/woman-scout-lod0.glb",
+      "beforeSha256": "c5c968c486739e2688c29690ced7d14adf221f12e7a4353f9ba2097f27b1b08c",
+      "afterSha256": "c5c968c486739e2688c29690ced7d14adf221f12e7a4353f9ba2097f27b1b08c",
+      "beforeBytes": 4075880,
+      "afterBytes": 4075880,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/woman-scout-lod1.glb",
+      "beforeSha256": "d92dd6bf421d012a232f3ae5710d25bfa1cccb91a963bdd5ef09b0144a948786",
+      "afterSha256": "d92dd6bf421d012a232f3ae5710d25bfa1cccb91a963bdd5ef09b0144a948786",
+      "beforeBytes": 2768776,
+      "afterBytes": 2768776,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/woman-scout-lod2.glb",
+      "beforeSha256": "3285e760a225430cce305801b55e486ee27fcc9f3e6a1442652bd794d5d667c9",
+      "afterSha256": "3285e760a225430cce305801b55e486ee27fcc9f3e6a1442652bd794d5d667c9",
+      "beforeBytes": 920312,
+      "afterBytes": 920312,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/woman-shawl-lod0.glb",
+      "beforeSha256": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8",
+      "afterSha256": "6f7b67cd53476195a37d5f28cf31206a2e5893de6cdd8157c624bcb3fdee40d8",
+      "beforeBytes": 4092824,
+      "afterBytes": 4092824,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/woman-shawl-lod1.glb",
+      "beforeSha256": "17ca88ce466fc8b1c30bfc359011cbd861e23c3886743282f58a11dd9b3c0283",
+      "afterSha256": "17ca88ce466fc8b1c30bfc359011cbd861e23c3886743282f58a11dd9b3c0283",
+      "beforeBytes": 2839036,
+      "afterBytes": 2839036,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/woman-shawl-lod2.glb",
+      "beforeSha256": "b52abcf86421958313f5bba80dca6616c74b7a00a3404a3456461e678351f3a4",
+      "afterSha256": "b52abcf86421958313f5bba80dca6616c74b7a00a3404a3456461e678351f3a4",
+      "beforeBytes": 1008928,
+      "afterBytes": 1008928,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/worker-lod0.glb",
+      "beforeSha256": "38660c3fadb002f3c278c5367fd3771579c6251454dc63a6426ba120d33d47dc",
+      "afterSha256": "38660c3fadb002f3c278c5367fd3771579c6251454dc63a6426ba120d33d47dc",
+      "beforeBytes": 4288924,
+      "afterBytes": 4288924,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/worker-lod1.glb",
+      "beforeSha256": "44963dfba39d963a9f88ef982b9a1391d1bc78411d15eab96a2911ca2c04b973",
+      "afterSha256": "44963dfba39d963a9f88ef982b9a1391d1bc78411d15eab96a2911ca2c04b973",
+      "beforeBytes": 2964812,
+      "afterBytes": 2964812,
+      "exact": true
+    },
+    {
+      "path": "web/public/models/characters/worker-lod2.glb",
+      "beforeSha256": "f70226e178dd00aaafd590513bb0f0d0b3158d379370a9cec779252f586723c6",
+      "afterSha256": "f70226e178dd00aaafd590513bb0f0d0b3158d379370a9cec779252f586723c6",
+      "beforeBytes": 1087492,
+      "afterBytes": 1087492,
+      "exact": true
+    }
+  ]
+}

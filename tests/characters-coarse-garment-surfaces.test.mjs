@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {standingBankPredecessorView} from './standing-bank-predecessor-fixture.mjs';
 import assert from 'node:assert/strict';
 import {triangleNormal,decodedGlb,primitiveFor,triangleIndices,canonicalTriangles} from './coarse-garment-geometry-fixture.mjs';
 import {readFileSync,mkdtempSync,rmSync,readdirSync} from 'node:fs';
@@ -82,8 +83,9 @@ test('current complete library keeps every unowned body, protected texture, bank
  const view=nativeView();assert.deepEqual(view.verified.rows.map(row=>`${row.preset}-lod${row.lod}`).sort(),[...ownedNames].sort(),'The delivered candidate contains the complete approved two-job correction set');const manifest=JSON.parse(readFileSync(new URL('manifest.json',assets)));
  for(const[name,pin]of Object.entries(baseline.bodies))if(!ownedNames.has(name)){assert.equal(hash(readFileSync(new URL(name+'.glb',assets))),pin,name);const[preset,lod]=name.split('-lod');assert.equal(jsonHash(manifest.appearances[preset].lods.find(row=>row.lod===Number(lod))),baseline.recordJSONSha256[name]);}
  for(const[uri,pin]of Object.entries(baseline.textures))assert.equal(hash(readFileSync(new URL(uri,assets))),pin,'All released palette/MR/normal maps remain exact');
- for(const[name,pin]of Object.entries(baseline.otherGLBs))assert.equal(hash(readFileSync(new URL(name,assets))),pin,name);
- assert.equal(jsonHash(manifest.equipment),baseline.equipment.recordJSONSha256);for(const[gender,bank]of Object.entries(manifest.animationLibraries))assert.equal(jsonHash(bank),baseline.banks[gender].recordJSONSha256);
+ const oldBanks=standingBankPredecessorView(root);assert.equal(oldBanks.receipt.standingBanksRestoredExact,true);
+ for(const[name,pin]of Object.entries(baseline.otherGLBs))assert.equal(hash(readFileSync(new URL(name,name.endsWith('-animations.glb')?oldBanks.assets:assets))),pin,name);
+ assert.equal(jsonHash(manifest.equipment),baseline.equipment.recordJSONSha256);for(const[gender,bank]of Object.entries(oldBanks.manifest.animationLibraries))assert.equal(jsonHash(bank),baseline.banks[gender].recordJSONSha256);
  assert.equal(jsonHash(manifest.horse),baseline.horse.recordJSONSha256);
  const referenced=new Set();for(const appearance of Object.values(manifest.appearances))for(const record of appearance.lods){const body=decodedGlb(new URL(record.url.replace('/models/characters/',''),assets));for(const image of body.json.images??[])if(image.uri)referenced.add(image.uri);}
  for(const name of readdirSync(new URL('textures/',assets)))if(!baseline.textures['textures/'+name])assert.ok(referenced.has('textures/'+name)&&/^[a-f0-9]{20}\.png$/.test(name),'New maps are referenced content-addressed assets');

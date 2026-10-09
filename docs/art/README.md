@@ -12,6 +12,7 @@ systems and their recorded scope.
 - [Character cloth, leather and metal surfaces](character-apparel-surfaces-review-2026-10-08.md) *(workspace)*
 - [Coarse poncho surface directions](character-poncho-normals-review-2026-10-08.md) *(workspace)*
 - [Coarse outer garment fit trial](character-outer-garment-fit-review-2026-10-08.md) *(workspace)*
+- [Relaxed free arm at standing rest](character-standing-free-arm-review-2026-10-08.md) *(workspace)*
 - [Irregular soil and grass edges](terrain-boundaries-review-2026-10-08.md) *(workspace)*
 - [Sparse soil fragments](soil-fragments-review-2026-10-08.md) *(workspace)*
 - [Colonial buildings, 1810–1820](buildings.md)

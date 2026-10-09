@@ -1,0 +1,37 @@
+{
+  "method": "standing-native-free-arm-rest",
+  "banks": {
+    "male": {
+      "targets": [
+        "stand.idle.short-gun",
+        "stand.idle.blade",
+        "stand.idle.knife"
+      ],
+      "changedRotationBindings": 9,
+      "originalBinaryPrefixExact": true,
+      "appendedRotationBytes": 2928,
+      "oldBankAndRecordRestorationExact": true,
+      "otherChannelsExact": true
+    },
+    "female": {
+      "targets": [
+        "stand.idle.short-gun",
+        "stand.idle.blade",
+        "stand.idle.knife"
+      ],
+      "changedRotationBindings": 9,
+      "originalBinaryPrefixExact": true,
+      "appendedRotationBytes": 2928,
+      "oldBankAndRecordRestorationExact": true,
+      "otherChannelsExact": true
+    }
+  },
+  "changedFiles": [
+    "female-animations.glb",
+    "male-animations.glb",
+    "manifest.json"
+  ],
+  "exactNoOp": false,
+  "geometryBytesAdded": 0,
+  "rotationBytesAdded": 5856
+}

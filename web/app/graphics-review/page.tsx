@@ -30,7 +30,7 @@ export default function GraphicsReview(){
       <a href={sitePath('/renderer-sandbox')}>Más escenas</a>
       {scene==='characters'&&<>
         <label>Postura <select aria-label="Postura de los personajes" value={stance} onChange={event=>{setStance(event.target.value);reset(scene,event.target.value);}}><option value="standing">De pie</option><option value="crouched">Agachados</option><option value="prone">Cuerpo a tierra</option></select></label>
-        <label>Equipo <select aria-label="Equipo de los personajes" value={gear} onChange={event=>{setGear(event.target.value);reset(scene,stance,event.target.value);}}><option value="family">Por familia</option><option value="unarmed">Sin arma</option><option value="rifle">Fusil</option></select></label>
+        <label>Equipo <select aria-label="Equipo de los personajes" value={gear} onChange={event=>{setGear(event.target.value);reset(scene,stance,event.target.value);}}><option value="family">Por familia</option><option value="unarmed">Sin arma</option><option value="rifle">Fusil</option><option value="pistol">Pistola</option><option value="sabre">Sable</option><option value="knife">Cuchillo</option><option value="paired-pistols">Dos pistolas</option></select></label>
         <label>Vista <select aria-label="Vista de los personajes" value={facing} onChange={event=>{setFacing(event.target.value);reset(scene,stance,gear,event.target.value);}}><option value="3">Frente</option><option value="5">Perfil</option><option value="7">Espalda</option></select></label>
       </>}
     </nav>

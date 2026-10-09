@@ -86,7 +86,8 @@ function mounted(){
   return {...createBattle(squad,{...courtyard(),id:'renderer-mounted',name:'Montura y azotea',seed:45,enemies:[],exploration:true}),deploymentComplete:true};
 }
 function characters(stance='standing',gear='family',facing=3){
-  if(!['standing','crouched','prone'].includes(stance)||!['family','unarmed','rifle'].includes(gear)||![3,5,7].includes(facing))throw Error('Unknown character review option');
+  if(!['standing','crouched','prone'].includes(stance)||!['family','unarmed','rifle','pistol','sabre','knife','paired-pistols'].includes(gear)||![3,5,7].includes(facing))throw Error('Unknown character review option');
+  const weaponByGear={pistol:1805,sabre:1810,knife:1813,'paired-pistols':1805};
   const names=['Granadero','Realista','Trabajador','Cirujano','Gaucho','Fraile','Exploradora','Mujer con rebozo'];
   const squad=families.map((family,index)=>soldier(`character-${family}`,names[index],4+(index%4)*2,4+Math.floor(index/4)*3,{
     spriteAppearance:family,skinTone:['light','brown','dark'][index%3],facing,stance,movementMode:stance==='crouched'?'crouch':stance==='prone'?'prone':'walk',
@@ -94,6 +95,8 @@ function characters(stance='standing',gear='family',facing=3){
     loaded:index===4||index===6?0:1,ammo:index===4||index===6?0:12,
     blade:1810,activeSlot:index===2||index===3||index===5||index===7?'unarmed':index===0?'blade':'primary',
     ...(gear==='unarmed'?{activeSlot:'unarmed'}:gear==='rifle'?{weapon:1800,loaded:1,ammo:12,activeSlot:'primary'}:{}),
+    ...(Object.hasOwn(weaponByGear,gear)?{weapon:weaponByGear[gear],weaponInstanceId:`character-${family}-${gear}`,blade:0,loaded:gear==='pistol'||gear==='paired-pistols'?1:0,ammo:gear==='pistol'||gear==='paired-pistols'?12:0,activeSlot:'primary'}:{}),
+    ...(gear==='paired-pistols'?{offHand:{weapon:1806,count:1,weight:1.3,loaded:1,condition:100,jammed:false}}:{}),
   }));
   return {...createBattle(squad,{id:'renderer-characters',name:'Ocho personajes',width:20,height:16,tiles:ground(20,16),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }

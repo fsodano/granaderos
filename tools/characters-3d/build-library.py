@@ -166,3 +166,8 @@ if manifest['complete']:
  # Strict correction lineage and final donor checks remain explicit after the
  # complete native and frozen colour replay. Library rig checks are separate.
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-coarse-garment-surfaces.py'),'--verify-only'],cwd=ROOT,check=True)
+
+ # Apply the three independent standing rest bindings after native bank
+ # authoring and all body layers. Completed banks verify without writes.
+ if all({'stand.idle.unarmed','stand.idle.short-gun','stand.idle.blade','stand.idle.knife'}.issubset({clip['name'] for clip in bank.get('clips',[])}) for bank in manifest['animationLibraries'].values()):
+  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-standing-free-arm-rest.py')],cwd=ROOT,check=True)
