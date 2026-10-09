@@ -73,6 +73,15 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.equal(prepared.recovery.boughtDressings,prepared.events.filter(event=>event.action.type==='purchaseMedicalSupplies').reduce((sum,event)=>sum+event.action.quantity,0));
   assert.ok(prepared.recovery.patients.length?prepared.recovery.usedDressings>0:prepared.recovery.usedDressings===0,'care consumes supplies only when the battle left surviving patients');
   for(const id of prepared.recovery.replacements){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id]);}
+  // The faster road schedule can bring the depot raid during clinic care,
+  // before the exposed patrol leaves. Verify it in its actual phase.
+  for(const defense of prepared.recovery.clinicDefenses){
+   assert.equal(defense.sector,'cordoba');assert.equal(defense.status,'victory');assert.ok(defense.actions>0&&defense.elapsedSeconds>0);
+   assert.equal(prepared.campaign.enemyGroups.find(group=>group.id===defense.groupId).status,'defeated');
+   assert.ok(prepared.campaign.encounterHistory.some(event=>event.groupId===defense.groupId&&event.outcome==='victory'));
+   for(const unit of defense.units.filter(unit=>unit.side==='player'&&unit.hp<=0))assert.equal(prepared.campaign.operativeState[unit.id].alive,false,'actual clinic defense casualties stay dead');
+   evidence.battles.push(defense);
+  }
   const result=fightNorthernSector(prepared.campaign,'tucuman',{expectedOutcome:'defeat',controller:advanceOnCitadelOrder}),returned=result.campaign;
   assert.equal(result.summary.startSeconds/3600%24>=20,true,'the exposed patrol reaches the citadel at night');
   assertBattleClock(result);evidence.battles.push(result.summary);evidence.medical.push({stage:'cordoba',...prepared.recovery});
@@ -96,7 +105,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.deepEqual(tucumanLoss,before);assert.ok(prepared.staging.startHour>=tucumanLoss.hour+12);
   if(prepared.staging.corridor.loss){assert.equal(prepared.staging.corridor.loss.status,'defeat');assert.equal(prepared.staging.corridor.recapture.status,'victory');assert.ok(prepared.staging.corridor.recapture.actions>0);assert.equal(prepared.campaign.sectors.buenos_aires.owner,'patriot');assert.equal(prepared.campaign.enemyGroups.find(group=>group.id===prepared.staging.corridor.loss.groupId).status,'defeated');assert.ok(prepared.campaign.encounterHistory.some(event=>event.groupId===prepared.staging.corridor.loss.groupId&&event.outcome==='defeat'));}
   assert.equal(prepared.campaign.hour,prepared.staging.departureHour+12,'the rescue still makes its complete second march after resting and defending the depot');
-  assert.ok(prepared.staging.defenses.length>0||prepared.staging.corridor.loss,'the actual incoming raid receives a real tactical response');
+  assert.ok(prepared.staging.defenses.length>0||prepared.staging.corridor.loss||evidence.battles.some(battle=>battle.groupId&&battle.sector==='cordoba'&&battle.status==='victory'),'the actual incoming raid receives a real tactical response in its arrival phase');
   assert.equal(prepared.campaign.pendingEncounter,null);
   assert.ok(!prepared.campaign.enemyGroups.some(group=>group.target==='cordoba'&&['marching','waiting'].includes(group.status)),'the rescue does not leave an unresolved depot raid behind');
   for(const defense of prepared.staging.defenses){
@@ -115,7 +124,10 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.ok(prepared.campaign.pendingBattle.squad.some(unit=>Number(unit.id)===id));
   for(const defense of prepared.staging.defenses)for(const unit of defense.units.filter(unit=>unit.side==='player'&&unit.hp<=0))assert.equal(prepared.campaign.operativeState[unit.id].alive,false,'actual defense casualties stay dead');
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp,'paid care restores the living relief before its next assault');
-  assert.ok(prepared.staging.recovery.usedDressings>0);assert.ok(prepared.staging.replacements.length>0);assert.ok(prepared.staging.artillery.cost>=0);const piece=prepared.campaign.pendingBattle.artillery.find(gun=>gun.id===prepared.staging.artillery.record.id);assert.ok(piece,'the actual recovered gun enters the rescue');assert.equal(piece.type,prepared.staging.artillery.record.type);assert.equal(piece.loaded,prepared.staging.artillery.record.loaded);assert.equal(piece.ammo,prepared.staging.artillery.record.ammo);
+  assert.ok(prepared.staging.recovery.patients.length?prepared.staging.recovery.usedDressings>0:prepared.staging.recovery.usedDressings===0,'only actual staging wounds consume dressings');
+  assert.equal(prepared.staging.replacements.length,(prepared.staging.losses??[]).length,'each actual staging loss receives one paid replacement');
+  for(const replacement of prepared.staging.replacements){assert.ok(replacement.cost>0);assert.ok(prepared.hiringLedger.some(receipt=>receipt.id===replacement.id&&receipt.paid===replacement.cost));}
+  assert.ok(prepared.staging.artillery.cost>=0);const piece=prepared.campaign.pendingBattle.artillery.find(gun=>gun.id===prepared.staging.artillery.record.id);assert.ok(piece,'the actual recovered gun enters the rescue');assert.equal(piece.type,prepared.staging.artillery.record.type);assert.equal(piece.loaded,prepared.staging.artillery.record.loaded);assert.equal(piece.ammo,prepared.staging.artillery.record.ammo);
   const result=fightNorthernSector(prepared.campaign,'tucuman',{controller:stableCrewController()}),returned=result.campaign;
   assertBattleClock(result);preserveDeaths(tucumanLoss,returned);evidence.battles.push(result.summary,...prepared.staging.defenses);evidence.corridor=prepared.staging.corridor;evidence.medical.push({stage:'rescuePreparation',purchases:prepared.medicalPurchases});evidence.rescues.push({sector:'tucuman',ids:prepared.captives.map(p=>p.id)});
   assert.equal(returned.hour,prepared.campaign.hour);

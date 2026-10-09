@@ -1,0 +1,1 @@
+Black-powder rules: all assertions passed

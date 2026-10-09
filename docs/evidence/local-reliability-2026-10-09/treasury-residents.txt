@@ -1,0 +1,20 @@
+✔ strict saved resident points require their real source terrain and cannot alter a deployment request (4128.878458ms)
+✔ a ground resident request rejects a null physical level instead of failing later at entry (231.435417ms)
+✔ a real city departure clears only the departing squad points and the other squad retains its roof placement (2934.863291ms)
+✔ paid local squads reach distinct authored roof cells and retain finite gear and saved resident positions (3746.874958ms)
+✔ local and frontier requisitions reject overflow before taking their cooldown or political effects (119.233875ms)
+✔ native cash pickup and saved return keep the exact carried pesos until a paid source revisit can credit them once (801.972ms)
+✔ verified victory at the cap finishes and saves its full unpaid entitlement; restore and replay cannot pay (455.348042ms)
+✔ victory pays exact headroom and normal rewards allocate no pending ledger (741.277333ms)
+✔ actual automatic service refund keeps priority over a later native victory reward (2733.931917ms)
+✔ restoration rejects duplicate, future, unrelated and malformed unpaid victory receipts without changing input (345.116916ms)
+✔ unpaid victory keeps its source witness through an ordinary saved revisit (264.660333ms)
+✔ a rural native victory keeps its exact unpaid funds through saved revisit and real later sector loss (549.079709ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7505.711708

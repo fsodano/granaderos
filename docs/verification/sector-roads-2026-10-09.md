@@ -40,7 +40,17 @@ The longer native hospital route exposed a separate return-validation error: a d
 
 The visible strategic map was checked in Chrome. The roads remain visible through district fills, and the map explains the one-hour city cost and waypoint detours. The [local map picture](../evidence/sector-roads-2026-10-09/map-roads.jpg) is available without a remote image request.
 
-Final documentation and whitespace checks passed. Test partition checks include all 922 current files exactly once. A separate read-only review found no material road-planning, map-control, city-cost, or saved-journey issue. The final production source identity remains `8476681dc25a` after the fixture-only commits.
+Documentation and whitespace checks passed for that follow-up. Its test partition included all 922 then-current files exactly once. A separate read-only review found no material road-planning, map-control, city-cost, or saved-journey issue. Its production source identity remained `8476681dc25a` after the fixture-only commits.
+
+## Later local reliability checks
+
+The later local source `c32f9baede2f` retains the roads and adds corrections found by the broader audit. Incoming money preserves finite source custody at the treasury cap, and native unpaid victory funds retain strict saved source evidence. Resident positions persist when a different squad visits the same sector. Sight uses the same physical heights on flat and elevated maps, and ordinary wall clicks use the visible face. Observed stone reflections retain their exact public path without letting concealed adjacent objects alter that path. Loose blades use the pinned engine's usable condition threshold and impact scale; their deterministic contact wear remains a declared Granaderos rule. Empty-hand weapon pickup is unchanged.
+
+On that source, seven road and map files passed all 61 tests in 11.97 seconds. Eight projectile and sight files passed all 75 tests in 2.51 seconds. Treasury, resident-position and roof-defense files passed all 12 tests in 7.51 seconds. None skipped. Type checking and the production export passed, with 1,377 static files and 1,045 asset references. Partition checks assign all 927 current files once, and the five shard self-tests pass. The C++ specification and fifteen unchanged Python checks also pass; the Python checks used the primary checkout's existing pinned engine data because the isolated worktree has no engine data.
+
+The complete current southern-opening diagnostic passed its first three subtests: finite San Lorenzo supplies, paid Córdoba recovery and victory, and the real Tucumán defeat with permanent deaths and captivity. Rescue staging then failed when its actual replacement force had five people rather than six. Three later subtests skipped. The aggregate is three passes and two failures, including the parent failure, in 161.96 seconds. This is not a completed campaign route. Earlier saved suffix victories cannot establish this new starting cohort's complete route.
+
+The [retained local checks and output](../evidence/local-reliability-2026-10-09/checks.json) distinguish these exact-source focused passes from the opening failure and the earlier mixed-input quick diagnostic. Long campaign fixture work remains open. No unchanged full 927-file pass or published result is claimed.
 
 ## Limits
 
