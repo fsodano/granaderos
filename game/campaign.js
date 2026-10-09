@@ -27,6 +27,8 @@ import {workshopServiceQuote} from './workshop-service.js';
 import {CARE_ASSIGNMENTS,careAssignmentBusy,assignMedicalCare,advanceMedicalCare,advanceMilitaryWounds,validateMedicalCare,medicalSupplyQuote,MEDICAL_KIT_PRICE,migrateMedicalCare,returnMedicalCare} from './medical-care.js';
 import {enforceHistoricalLoss} from './historical-loss.js';
 import {previousDeploymentScene,withoutPreviousCasualties,retainedMilitaryBodies} from './military-remains.js';
+import {firstAidPlan} from './first-aid.js';
+import {CRITICAL_HEALTH} from './actor-condition.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {foundryFor} from './campaign-foundry.js';
 import {campaignRole,campaignRoleActive,foundryReason} from './campaign-roles.js';
@@ -456,7 +458,29 @@ function completeDeploymentReport(s,request,action){
   // Re-entry also retains incapacitated enemies from a cleared sector. Use
   // the same identities as placement, including collisions with a new force.
   const retained=retainedMilitaryBodies(previous,[...request.squad,...(request.garrison??[]),...(request.missionAllies??[]),...source],request.sector).filter(u=>u.side==='enemy'&&!u.departure);
-  requireThat([...enemyIds].every(id=>enemies.some(u=>u.id===id))&&enemies.every(u=>enemyIds.has(u.id)||retained.some(old=>old.id===u.id&&u.hp<=old.hp)),'El estado táctico no incluye a todos los enemigos del despliegue.');
+  // Retained living casualties can receive the same finite critical first aid
+  // as the new garrison. An identity collision never grants a second issue or
+  // revives a dead body. Bound all restored HP by the actual enemy dressing
+  // debit, including care supplied by a different soldier.
+  const enemyIssue=[...new Map([...source,...retained].map(unit=>[String(unit.id),unit])).values()];
+  const healers=enemyIssue.filter(old=>(old.hp??old.health??old.stats?.health??100)>=CRITICAL_HEALTH&&(old.energy??100)>0&&!old.unconscious&&!old.departure&&!old.routed&&!old.surrendered&&
+   (old.medical??old.stats?.medical??30)>0&&(old.medkits??2)>(enemies.find(unit=>unit.id===String(old.id))?.medkits??0));
+  const dressingDebit=healers.reduce((sum,old)=>sum+(old.medkits??2)-(enemies.find(unit=>unit.id===String(old.id))?.medkits??0),0);
+  let criticalDressings=0;
+  const authorizedRetained=unit=>{
+   const old=retained.find(old=>old.id===unit.id);if(!old)return false;
+   if(unit.originalUnitId!==old.originalUnitId||unit.maxHp!==old.maxHp)return false;
+   if(unit.hp<=old.hp)return true;
+   if(!(old.hp>0&&unit.hp<=CRITICAL_HEALTH&&old.hp<CRITICAL_HEALTH))return false;
+   const capacity=Math.max(0,...healers.map(healer=>firstAidPlan({...healer,
+    medical:healer.medical??healer.stats?.medical??30,dexterity:healer.dexterity??healer.stats?.dexterity??75,
+    experienceLevel:healer.experienceLevel??healer.stats?.experienceLevel??Math.min(10,4+Math.floor((healer.xp??0)/100)),medkits:1,
+   },{...old,hp:1,bleeding:0,bandaged:0}).hpGain));
+   if(!capacity)return false;
+   criticalDressings+=Math.ceil((unit.hp-old.hp)/capacity);return true;
+  };
+  requireThat([...enemyIds].every(id=>enemies.some(u=>u.id===id))&&retained.every(old=>{const unit=enemies.find(u=>u.id===old.id);return unit&&authorizedRetained(unit);})&&
+   enemies.every(u=>enemyIds.has(u.id)||retained.some(old=>old.id===u.id))&&(!criticalDressings||criticalDressings<=dressingDebit),'El estado táctico no incluye a todos los enemigos del despliegue.');
   const required=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','rations','torches','boleadoras','activeSlot'];
   if(request.fittingRulesVersion===FITTING_RULES_VERSION){requireThat(raw.fittingRulesVersion===FITTING_RULES_VERSION,'El parte no contiene la versión de accesorios del despliegue.');required.push('weaponFittings','weaponFittingPattern','bladeFittingPattern');}
   for(const id of known){const unit=raw.units.find(u=>u.side==='player'&&String(u.id)===id);requireThat(unit&&required.every(key=>Object.hasOwn(unit,key)&&unit[key]!==undefined),'El equipo y la salud del combatiente están incompletos.');}
