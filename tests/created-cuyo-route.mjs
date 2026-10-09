@@ -206,7 +206,7 @@ function stockPreparation(start,report){
 // full-health reset: hourly doctors stop critical local bleeding before a long
 // approach, then a supplied doctor treats each actual local/nearby patient.
 // Only discovered reachable supplies and the map's existing exits are used.
-export function stabilizeStockMendozaSurvivors(start,{report=()=>{}}={}){
+export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector}={}){
  const original=structuredClone(start),serving=living(start),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  let pair={campaign:decodeSave(encodeSave(start)).campaign,battle:null},orders=0,hourlyDressings=0,tacticalDressings=0,clinicalPA=0,renewalCost=0;
  const c=()=>pair.campaign,record=id=>c().operativeState[id],acute=r=>r.hp>0&&(r.hp<15||r.bleeding>0);
@@ -371,6 +371,18 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{}}={}){
   }
  }
  for(const id of serving){assert.ok(record(id).hp>=15&&!record(id).bleeding,`actual survivor ${id} remains clinically unstable`);}
+ // A caller can return the actual doctor and adjacent evacuated patients
+ // after stabilization. The normal journey retains every wound and item.
+ if(returnSector&&c().location!==returnSector){
+  assert.equal(pair.battle,null);const squadId=c().activeSquadId,party=[...c().squad],before=structuredClone(c());
+  order({type:'travel',sector:returnSector,queue:true,mode:'march'});
+  for(let hour=0;hour<48&&c().squads.find(squad=>squad.id===squadId).journey;hour++){
+   const journey=c().squads.find(squad=>squad.id===squadId).journey;assert.equal(journey.status,'moving','the real stabilized party must resolve a stopped journey before returning');order({type:'wait',hours:1});
+  }
+  assert.equal(c().location,returnSector);assert.equal(c().squads.find(squad=>squad.id===squadId).journey,undefined);
+  for(const id of party){assert.equal(operativeLocation(c(),id),returnSector);for(const key of ['hp','bleeding','weaponInstanceId','condition','medkits','inventory'])assert.deepEqual(record(id)[key],before.operativeState[id][key],`actual care return preserves ${id} ${key}`);}
+  report({event:'mendozaCarePartyReturned',sector:returnSector,party,elapsedSeconds:clock(c())-clock(before),cashDelta:c().resources.treasury-before.resources.treasury});checkpoint('care-party-returned');
+ }
  assert.deepEqual(start,original,'finite care does not modify its original checkpoint');checkpoint('accepted');
  report({event:'stockMendozaCareAccepted',orders,hourlyDressings,tacticalDressings,clinicalPA,renewalCost,priorDeaths:dead,campaign:structuredClone(c())});return c();
  }catch(error){
@@ -540,7 +552,10 @@ for(let h=0;h<24&&field.some(id=>!c.recruited.includes(id));h++)order({type:'wai
 order({type:'configureArtillery',types:[]});
 report({event:'createdMendozaAmmunition',field:[...field],selections:[...battery.selections],campaign:structuredClone(c)});
 if(stock)return finishStockMendozaAssault(c,field,battery.selections,{report});
-for(let offset=0;offset<field.length;offset+=6){order({type:'createSquad',name:'Columna de Cuyo',ids:field.slice(offset,offset+6),sector:'cordoba'});for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});let p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));c=supplyRouteAmmunition(c,c.squad,{target:12}).campaign;c=finishReloadsBeforeMarch(c);}
+// Keep the serving force's serviceable guns and share actual off-family
+// rounds before a real controlled-source courier covers the measured deficit.
+// The common finite allocator still requires twelve compatible rounds each.
+c=prepareStockMendozaAmmunition(c,field,{report});
 for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
 for(let h=0;h<48&&(c.hour%24!==6||field.some(id=>c.operativeState[id].fatigue||c.operativeState[id].energy<100||c.operativeState[id].asleep));h++)order({type:'wait',hours:1});
 for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});

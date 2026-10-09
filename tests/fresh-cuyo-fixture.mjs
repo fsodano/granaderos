@@ -45,6 +45,9 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
   assert.ok(local,'the actual stabilized local survivors must retain a Mendoza squad');
   c=order(c,{type:'selectSquad',id:local.id});
  }else{
+ // Stop critical bleeding before a tactical approach, treat actual adjacent
+ // evacuees, then return that real care party through the normal clock.
+ c=stabilizeStockMendozaSurvivors(c,{report,returnSector:'mendoza'});
  // Keep every actual survivor in a lawful local group. Treat the critical
  // group first, before foundry meetings or travel can advance the clock.
  const beforeFormation=structuredClone(c),groups=[];
