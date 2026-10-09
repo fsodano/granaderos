@@ -49,9 +49,9 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
     vegetationBase=new Map([...chunks].map(([id,tiles])=>{const vegetation=tiles.filter(tile=>['forest','scrub'].includes(tile.type)&&!tile.buildingId);return [id,signature([vegetation,lit(vegetation)])];}));
     openings=climbOpenings(next,T);
     upperAlways=shownUpperSurfaces({...next,admittedActorPoints:[]});const always=new Set(upperAlways);upperSupported=(next.terrain.upperSurfaces??[]).filter(surface=>!always.has(surface));upperBase=signature([next.terrain.upperSurfaces,openings,lit(next.terrain.upperSurfaces??[]),[...effectiveRooms(next)].sort(),next.cursorLevel]);
-    const heights=new Map(next.terrain.tiles.map(tile=>[worldKey(tile),tile.elevation??0]));
+    const groundEdges=new Map(next.terrain.tiles.map(tile=>[worldKey(tile),[tile.elevation??0,tile.type,tile.material,tile.buildingId,tile.roomId,tile.blocked]]));
     for(const [id,tiles]of chunks){
-      const edges=tiles.flatMap(tile=>[[tile.x-1,tile.y],[tile.x+1,tile.y],[tile.x,tile.y-1],[tile.x,tile.y+1]].map(([x,y])=>heights.get(`0:${x},${y}`)));
+      const edges=tiles.flatMap(tile=>[[tile.x-1,tile.y],[tile.x+1,tile.y],[tile.x,tile.y-1],[tile.x,tile.y+1]].map(([x,y])=>groundEdges.get(`0:${x},${y}`)));
       retain(`terrain:${id}`,signature([tiles,edges,next.terrain.sceneId??next.terrain.sectorId,lit(tiles)]),()=>buildTerrainChunk(id,tiles,next,T,geometry,materials));
     }
     updateCutaways();

@@ -9,7 +9,7 @@ const scenes=[
   {id:'characters',name:'Personajes'},
   {id:'postures',name:'Posturas'},
   {id:'combat',name:'Armas'},
-  {id:'tucuman',name:'Terreno'},
+  {id:'terrain-detail',name:'Terreno'},
   {id:'furnishings',name:'Mobiliario'},
 ] as const;
 

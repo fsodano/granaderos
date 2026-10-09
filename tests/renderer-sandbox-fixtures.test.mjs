@@ -51,6 +51,18 @@ test('combat starts with visible targets and real usable rifle, pistol, sabre, g
   assert.equal(actor(reloaded,'rifle').loaded,1);assert.ok(actor(reloaded,'rifle').ammo<actor(fired,'rifle').ammo);
 });
 
+test('terrain detail covers a chunk crossing and real travel across the soil/grass boundary',()=>{
+  const battle=createRendererSandboxBattle('terrain-detail'),at=(x,y)=>battle.tiles.find(tile=>tile.x===x&&tile.y===y);
+  assert.equal(at(7,6).type,'road');assert.equal(at(8,6).type,'road');
+  assert.equal(at(6,6).type,'grass');assert.equal(at(9,6).type,'grass');
+  assert.equal(at(3,10).material,'stone');assert.equal(at(15,11).material,'cobble');
+  assert.equal(at(15,4).type,'mud');assert.equal(at(4,14).type,'scrub');
+  assert.equal(at(15,14).type,'forest');assert.equal(at(6,2).elevation,.35);
+  const tiles=structuredClone(battle.tiles),next=order(battle,{type:'move',unitId:'terrain-guard',x:9,y:9});
+  assert.equal(actor(next,'terrain-guard').x,9);assert.equal(actor(next,'terrain-guard').y,9);
+  assert.deepEqual(next.tiles,tiles,'ordinary travel retains the authored terrain');
+});
+
 test('architecture has all nine building identities, two facade directions, and usable doors',()=>{
   const battle=createRendererSandboxBattle('architecture');
   assert.deepEqual(battle.buildings.map(building=>building.architecture),Object.keys(BUILDING_TYPES));

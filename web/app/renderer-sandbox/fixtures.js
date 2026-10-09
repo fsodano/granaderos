@@ -19,6 +19,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'architecture',label:'Arquitectura',help:'Nueve edificios a escala de soldado. Selecciona al guardia de cada edificio para centrar la cámara. Abre su puerta y entra para comparar fachada, azotea e interior con las órdenes habituales.'},
   {id:'catalog',label:'Catálogo de edificios',help:'Catorce edificios con su mobiliario y cuatro orientaciones. Exterior: puerta cerrada. Primera sala: el guardia abre la puerta y entra. Interior completo: recorre las salas con las órdenes habituales. Puedes comparar el tejado original, una terraza o una losa de tres metros. La azotea accesible tiene un acceso frente a la puerta. Puedes continuar la exploración.'},
   {id:'furnishings',label:'Mobiliario',help:'Mesa, banco, cama, baúl, barriles, heno y carreta. Usa la cámara y las órdenes habituales para comprobar la escala y el espacio de paso.'},
+  {id:'terrain-detail',label:'Detalle del terreno',help:'Camino, suelo natural, hierba, matorral y piedra. Los cruces del camino coinciden con los límites de los bloques del terreno. Usa la cámara y las órdenes habituales para revisar bordes, elevación y paso.'},
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'equipped-crouch',label:'Agachado con equipo',help:'Dos combatientes con el mismo equipo. Cambia el arma, selecciona cada combatiente y usa Alt + movimiento para desplazarte de costado sin girar. Puedes comparar entrada, avance y parada.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
@@ -130,6 +131,19 @@ function equippedCrouch(equipment='long-gun'){
   }));
   return {...createBattle(squad,{id:`renderer-equipped-crouch-${equipment}`,name:'Agachado con equipo',width:20,height:20,tiles:ground(20,20),enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
+function terrainDetail(){
+  const width=20,height=18,tiles=Array.from({length:width*height},(_,index)=>{
+    const x=index%width,y=Math.floor(index/width),tile={x,y,type:'grass',cover:0,blocked:false,elevation:y<3?.35:0};
+    if(x===7||x===8||y===7||y===8)tile.type='road';
+    else if(x>=1&&x<=4&&y>=9&&y<=12){tile.type='stone';tile.material='stone';}
+    else if(x>=13&&x<=16&&y>=3&&y<=5)tile.type='mud';
+    else if(x>=14&&x<=16&&y>=10&&y<=12){tile.type='stone';tile.material='cobble';}
+    else if(y>=13){tile.type=x>=14?'forest':'scrub';tile.cover=15;}
+    return tile;
+  });
+  const guard=soldier('terrain-guard','Terreno',8,8,{activeSlot:'unarmed',weapon:0,blade:0,loaded:0,ammo:0});
+  return {...createBattle([guard],{id:'renderer-terrain-detail',name:'Bordes y detalle del terreno',width,height,tiles,enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+}
 function furnishings(){
   const types=['table','bench','bed','chest','barrels','hay','cart'],props=types.map((type,index)=>({id:`review-${type}`,type,x:4+index%4*4,y:5+Math.floor(index/4)*5,footprint:type==='bed'?{width:1,height:2}:type==='cart'?{width:2,height:1}:{width:1,height:1},rotation:type==='cart'?90:0,blocksMovement:true}));
   return {...createBattle([soldier('furniture-guard','Mobiliario',10,8,{activeSlot:'unarmed'})],{id:'renderer-furnishings',name:'Mobiliario de época',width:22,height:17,tiles:ground(22,17),props,enemies:[],exploration:true}),deploymentComplete:true};
@@ -164,6 +178,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id.startsWith('architecture:'))return architecture(id.slice('architecture:'.length));
   if(id==='postures')return postures();
   if(id==='furnishings')return furnishings();
+  if(id==='terrain-detail')return terrainDetail();
   if(id==='combat'||id==='night')return combat(id==='night');
   if(id==='mounted')return mounted();
   if(id==='climb-hatches')return createClimbHatchBattle();
