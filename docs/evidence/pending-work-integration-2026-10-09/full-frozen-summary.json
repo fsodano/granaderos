@@ -1,0 +1,46 @@
+{
+  "command": "node tools/test-runner.mjs --concurrency 8",
+  "exitCode": 1,
+  "revision": "f88155f92b1363ae2591d3ecc4fdc26425a19e1b",
+  "node": "v25.9.0",
+  "concurrency": 8,
+  "selectedFiles": 927,
+  "excludedFiles": 0,
+  "completedFiles": 927,
+  "summary": {
+    "counts": {
+      "tests": 6971,
+      "failed": 7,
+      "passed": 6961,
+      "cancelled": 0,
+      "skipped": 3,
+      "todo": 0,
+      "topLevel": 6820,
+      "suites": 0
+    },
+    "duration_ms": 1156314.034875,
+    "success": false
+  },
+  "inputDigest": "39af954938e6f790dba817ba0ba0571ff34aca5a50243e35eacbaf90e2f0b2cc",
+  "inputEntries": 13641,
+  "inputDigestMatchesBeforeAfter": true,
+  "allEntriesMatchBeforeAfter": true,
+  "production": {
+    "version": "0.4.0-dev.1",
+    "id": "2368ae747c42",
+    "source": "2368ae747c42c865ecf389ce44a536dcc7145625516af1ae959e780905ad3052",
+    "revision": "f88155f92b1363ae2591d3ecc4fdc26425a19e1b"
+  },
+  "submodules": [
+    "160000 ddb691318eb3dd0cdc6eab42139739b6d498c645 0\tengine"
+  ],
+  "failedFiles": [
+    "tests/fresh-campaign-recovery.test.mjs",
+    "tests/fresh-ending-route.test.mjs",
+    "tests/opening-playthrough.test.mjs",
+    "tests/fresh-northern-route.test.mjs",
+    "tests/fresh-historical-loss.test.mjs",
+    "tests/fresh-cuyo-route.test.mjs"
+  ],
+  "scope": "Complete unchanged frozen snapshot. Any later narrow test-helper correction is recorded separately and does not replace these measured counts."
+}

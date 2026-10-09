@@ -28,6 +28,28 @@ from completed authored worktrees.
 
 ## Gameplay and campaign checks
 
+The final complete frozen run at `f88155f9` covered all 927 files, with zero
+exclusions: 6,971 tests, 6,961 passed, seven failed and three skipped. Runtime
+identity was `2368ae747c42`; all 13,641 source entries matched before and after
+execution. The [full report](../evidence/pending-work-integration-2026-10-09/full-frozen-report.json)
+and [exact failed checks](../evidence/pending-work-integration-2026-10-09/full-frozen-failures.txt)
+are retained. This remains a failed complete gate.
+
+Three failed files stop at one care-helper order assertion: all six actual
+actors remain, but doctor112 and actor115 return in the opposite squad order.
+Commit `19380a32` corrects that helper through the ordinary squad action. A
+strict cohort check and full-state comparison allow only the formation arrays
+to change. The exact failing native prefix then passes at `fieldRecovered`,
+before Cordoba combat. All 17 affected care/custody checks pass without skips.
+Production source is unchanged. This separate correction does not replace or
+increase the measured full-run pass count.
+
+The other recorded campaign gaps are an invalid direct return journey to
+Cordoba after real counterattacks, a 29-turn opening rescue retreat at Tucuman,
+and a nine-turn stock-route retreat at Tucuman. These tests retain the actual
+rejected command or native outcome. They do not establish a production defect
+on their own.
+
 The earlier complete frozen gate covered all 927 test files. It recorded 6,970
 tests: 6,957 passed, 10 failed and 3 skipped. Its input digest matched before and
 after execution. That result remains recorded in the
@@ -45,7 +67,7 @@ care and the paid return now pass with all 19 living survivors and all 24 record
 deaths retained. Five real dressings are consumed. The later army-funding
 preparation still fails because reachable dressings are exhausted. These results
 do not prove a successful full campaign. The final frozen gate is recorded in
-the delivery receipts below when complete.
+the delivery receipts below.
 
 Python contracts passed all 15 tests without skips in the primary checkout with
 the clean pinned engine submodule. All 39 relevant candidate Python, table and
@@ -57,5 +79,5 @@ verification. These checks have limited scope and do not replace the Node gate.
 
 The [integration evidence directory](../evidence/pending-work-integration-2026-10-09/)
 retains exact branch equivalence, source inventory and validation receipts. The
-final PR describes any remaining failed checks. Merge status must be verified
-against remote main after the requested merge.
+final PR describes any remaining failed checks. The final PR includes the frozen result and this narrow follow-up correction.
+Merge status is verified against remote main after the requested merge.

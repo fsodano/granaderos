@@ -1,0 +1,127 @@
+{
+  "commit": "19380a325b743856e97e24cc0fd1ec1651698650",
+  "file": "tests/local-opening-care-fixture.mjs",
+  "node": "v25.9.0",
+  "nodeExecutable": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "production": {
+    "version": "0.4.0-dev.1",
+    "id": "2368ae747c42",
+    "source": "2368ae747c42c865ecf389ce44a536dcc7145625516af1ae959e780905ad3052",
+    "revision": "19380a325b743856e97e24cc0fd1ec1651698650"
+  },
+  "productionSourceUnchangedFromFrozenGate": true,
+  "transaction": {
+    "action": {
+      "type": "squad",
+      "ids": [
+        1000,
+        3,
+        141,
+        120,
+        112,
+        115
+      ]
+    },
+    "before": [
+      1000,
+      3,
+      141,
+      120,
+      115,
+      112
+    ],
+    "after": [
+      1000,
+      3,
+      141,
+      120,
+      112,
+      115
+    ],
+    "sameActualCohort": true,
+    "proof": "Both native helper and external capture assert full campaign equality, allowing only campaign.squad and active squad.members order to change.",
+    "unchanged": [
+      "clock",
+      "cash",
+      "health",
+      "deaths",
+      "contracts",
+      "supplies",
+      "equipment",
+      "all other campaign records"
+    ]
+  },
+  "actualCare": {
+    "hours": 11,
+    "restHours": 0,
+    "stockWaitHours": 0,
+    "contractCost": 0,
+    "dressingsBought": 0,
+    "dressingCost": 0,
+    "weaponCost": 0,
+    "workshopCost": 0,
+    "dressingsFound": 8,
+    "donatedDressings": 2,
+    "weaponsFound": 0,
+    "repairPointsSpent": 9,
+    "repairHours": 4,
+    "initialDressings": 3,
+    "remainingDressings": 0
+  },
+  "actualDressingDebit": 11,
+  "actualRepairPointDebit": 9,
+  "boundedEndpoint": {
+    "event": "fieldRecovered",
+    "location": "san_nicolas",
+    "hour": 139,
+    "second": 1214,
+    "cash": 28718,
+    "squad": [
+      1000,
+      3,
+      141,
+      120,
+      112,
+      115
+    ],
+    "bound": "Normal created coastal prefix and first northern recovery only; stopped before Córdoba combat, support hiring and later campaign preparation."
+  },
+  "nativePrefix": {
+    "result": "PASS",
+    "script": "/tmp/granaderos-coastal-order-native-prefix.mjs",
+    "log": "/tmp/granaderos-coastal-order-native-prefix.log",
+    "capture": "/tmp/granaderos-coastal-order-native-prefix.json",
+    "officialSave": "/tmp/granaderos-coastal-order-native-prefix.save.json"
+  },
+  "checks": [
+    {
+      "command": "node --test --test-reporter=spec tests/local-opening-care-fixture.test.mjs tests/military-remains.test.mjs tests/contract-casualty-presence.test.mjs tests/physical-repair-kit.test.mjs",
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 32116.422875,
+      "log": "/tmp/granaderos-coastal-order-custody-final.log"
+    },
+    {
+      "command": "node --test --test-reporter=spec --test-name-pattern='a witnessed paid casualty transfers' tests/fresh-coastal-route.test.mjs",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 16272.316833,
+      "log": "/tmp/granaderos-coastal-order-native-custody.log"
+    },
+    {
+      "command": "node --check tests/local-opening-care-fixture.mjs",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --cached --check",
+      "result": "PASS"
+    }
+  ],
+  "limits": "The completed frozen full-gate counts remain historical. This receipt proves the exact shared failing recovery prefix and affected care/custody controls; it does not claim a later full northern or campaign gate was rerun."
+}

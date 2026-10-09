@@ -1,0 +1,160 @@
+{
+  "frozenHead": "f88155f92b1363ae2591d3ecc4fdc26425a19e1b",
+  "fullGate": {
+    "filesSelected": 927,
+    "filesExcluded": 0,
+    "tests": 6971,
+    "pass": 6961,
+    "fail": 7,
+    "skipped": 3,
+    "duration_ms": 1156314.034875,
+    "failedFiles": [
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "seconds": 70.77
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "seconds": 70.96
+      },
+      {
+        "file": "tests/fresh-northern-route.test.mjs",
+        "seconds": 71.06
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "seconds": 235.15
+      },
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "seconds": 242.34
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "seconds": 875.12
+      }
+    ],
+    "log": "/tmp/granaderos-pending-final-full.log",
+    "sha256": "6b2933241ade23c4a716efd1d4f7860f9379041ddb4fb78b177f9af3b8f104af"
+  },
+  "sharedCreatedPrefix": {
+    "classification": "fixture squad-order drift; no member/clinical/stock/victory failure reported at this stopping point",
+    "files": [
+      "tests/fresh-northern-route.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs"
+    ],
+    "actual": [
+      1000,
+      3,
+      141,
+      120,
+      115,
+      112
+    ],
+    "expected": [
+      1000,
+      3,
+      141,
+      120,
+      112,
+      115
+    ],
+    "location": "tests/local-opening-care-fixture.mjs:142 -> tests/fresh-northern-fixture.mjs:171",
+    "status": "blast_engine owns normal squad-action restoration and focused verification",
+    "supersedes": "The preliminary paid-arrival-before-stabilization suspicion is not the cause of these exact three full-gate failures."
+  },
+  "remaining": [
+    {
+      "file": "tests/fresh-campaign-recovery.test.mjs",
+      "classification": "route caller rejected by native land-cell travel admission; no production defect established",
+      "action": {
+        "type": "travel",
+        "sector": "cordoba"
+      },
+      "error": "Cada escala debe ser una celda terrestre accesible.",
+      "location": "tests/fresh-northern-recovery.mjs:221 -> tests/fresh-campaign-recovery.test.mjs:147",
+      "seconds": 874.837444375
+    },
+    {
+      "file": "tests/opening-playthrough.test.mjs",
+      "classification": "strict native rescue victory requirement unmet",
+      "sector": "tucuman",
+      "status": "retreat",
+      "turns": 29,
+      "orders": 273,
+      "elapsedSeconds": 3801,
+      "startSeconds": 678681,
+      "livingPlayers": [
+        {
+          "id": 108,
+          "hp": 8
+        },
+        {
+          "id": 138,
+          "hp": 7
+        }
+      ],
+      "deadPlayers": [
+        112,
+        122,
+        140,
+        133,
+        100,
+        101,
+        127,
+        103,
+        144,
+        102,
+        121
+      ],
+      "location": "tests/northern-route.mjs:285 -> tests/opening-playthrough.test.mjs:133",
+      "dependentCasesSkipped": 3
+    },
+    {
+      "file": "tests/fresh-ending-route.test.mjs",
+      "classification": "strict native stock northern victory requirement unmet; ending not reached",
+      "sector": "tucuman",
+      "status": "retreat",
+      "turns": 9,
+      "orders": 55,
+      "elapsedSeconds": 68,
+      "startSeconds": 1153632,
+      "livingPlayers": [
+        {
+          "id": 134,
+          "hp": 36,
+          "routed": true
+        },
+        {
+          "id": 125,
+          "hp": 27,
+          "routed": true
+        },
+        {
+          "id": 133,
+          "hp": 25,
+          "routed": true
+        }
+      ],
+      "deadPlayers": [
+        104,
+        140
+      ],
+      "location": "tests/northern-route.mjs:285 -> tests/fresh-northern-fixture.mjs:335"
+    }
+  ],
+  "officerDeathPremise": {
+    "file": "tests/fresh-northern-route.test.mjs:13",
+    "classification": "fixed casualty premise remains to be reviewed against a complete current native route; it did not cause any current shared early failure",
+    "production": "Native survival after valid care is allowed; current error shows1000 retained in both actual/expected serving cohorts."
+  },
+  "otherBoundedLimit": {
+    "receipt": "/tmp/granaderos-cuyo-final-patch-receipt.json",
+    "accepted": "Mendoza native victory and finite urgent care/real return",
+    "remaining": "Later foundry care at592:419 has no reachable finite dressings for139; not reached by the full created gate after its earlier order assertion."
+  },
+  "noAdditionalRouteRuns": true,
+  "noSourceEdits": true,
+  "fullCampaignAcceptance": false
+}
