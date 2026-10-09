@@ -1,0 +1,19 @@
+{
+  "comparedRoot": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+  "scope": "all tracked and nonignored untracked input files; exclude docs/artifacts and ignored generated caches/outputs only",
+  "expectedInputFiles": 10411,
+  "mismatches": [],
+  "unexpectedInputPaths": [],
+  "expectedGitlinks": {
+    "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+  },
+  "actualGitlinks": {
+    "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+  },
+  "gitlinkPinsExact": true,
+  "gitlinkWorkingTreeErrors": [],
+  "sourceIdentityExact": true,
+  "sourceIdentity": "6ed8a6fbe6798118a965969ee6bc702232a656da901d3d42ea12ed4919962386",
+  "gitRevisionMayDiffer": true,
+  "allNonDocumentInputHashesExact": true
+}

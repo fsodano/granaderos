@@ -1,5 +1,6 @@
 import {BoxGeometry,BufferAttribute,BufferGeometry,ConeGeometry,CylinderGeometry,Group,IcosahedronGeometry,LatheGeometry,Matrix4,Mesh,MeshStandardMaterial,Quaternion,Shape,ShapeGeometry,TorusGeometry,Vector2,Vector3} from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {rockForm} from './world-rock-forms';
 
 export type PolygonUV=(point:Vector3)=>readonly [number,number];
 /** Roof courses run along the low eave, with their spacing measured on the
@@ -52,6 +53,7 @@ export class WorldGeometry {
       geometry.setAttribute('color',new BufferAttribute(colours,3));
     }
     else if(kind==='rock')geometry=new IcosahedronGeometry(1,0);
+    else if(kind.startsWith('rock-form-'))geometry=rockForm(Number(kind.slice('rock-form-'.length)));
     else if(kind==='torus')geometry=new TorusGeometry(1,.09,6,16);
     else throw Error(`Unknown world primitive ${kind}`);
     this.cache.set(kind,geometry);return geometry;

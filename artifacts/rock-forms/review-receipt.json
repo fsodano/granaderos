@@ -1,0 +1,184 @@
+{
+  "piece": 10,
+  "status": "accepted; full final gates and root input proof pass",
+  "live": {
+    "normal": {
+      "draws": 68,
+      "triangles": 122776,
+      "geometries": 69,
+      "textures": 40,
+      "fps": 120.0
+    },
+    "close": {
+      "draws": 62,
+      "triangles": 178132,
+      "geometries": 62,
+      "textures": 25,
+      "fps": 120.0
+    },
+    "beforeAfterDrawsTrianglesGeometriesTexturesExact": true,
+    "loadedActors": 1,
+    "pendingActors": 0,
+    "route": [
+      "I9",
+      "J10",
+      "K11",
+      "M11",
+      "O11"
+    ],
+    "movementCompleted": true,
+    "browserErrors": 0
+  },
+  "nativeCost": {
+    "trianglesPerRockBeforeAfter": 20,
+    "trianglesPerTwoRockCellBeforeAfter": 40,
+    "cellAttributeBytesBeforeAfter": 5280,
+    "additionalCachedTypedArrayBytes": 5760,
+    "addedBatches": 0,
+    "addedTextures": 0,
+    "addedShaderWork": 0
+  },
+  "captures": {
+    "docs/art/tactical-reference-2026-10-08/rock-forms-before-44.jpg": {
+      "sha256": "b35d2a191dc6ecbd08a43570fd048a6e664a92ebbe37e0a385755b6e840aec19",
+      "bytes": 95594
+    },
+    "docs/art/tactical-reference-2026-10-08/rock-forms-native-pairs.png": {
+      "sha256": "943f40e919ef374b22827705a2550741c8492b5f250909caacacf0488e760cf5",
+      "bytes": 642042
+    },
+    "docs/art/tactical-reference-2026-10-08/rock-forms-after-44.jpg": {
+      "sha256": "b4c5b60c25c9634f475af7635d86e743ab558cab6bef92a97207b9710846facf",
+      "bytes": 95674
+    },
+    "docs/art/tactical-reference-2026-10-08/rock-forms-canopy-movement.jpg": {
+      "sha256": "4bb18ed046ca4023734449498107918440ddfa30192df075fc29de28af63301d",
+      "bytes": 95633
+    },
+    "docs/art/tactical-reference-2026-10-08/rock-forms-after-88.jpg": {
+      "sha256": "eced517d95964e879ce5b540929c91941d50caf49752fbc29347b9a57984974b",
+      "bytes": 114911
+    },
+    "docs/art/tactical-reference-2026-10-08/rock-forms-before-88.jpg": {
+      "sha256": "502f3b1513b181c2f5c42c2c5f09e8f29808d74d13b715357a9e98317b68f946",
+      "bytes": 114902
+    },
+    "docs/art/tactical-reference-2026-10-08/rock-forms-movement.jpg": {
+      "sha256": "23ea4f4310efb0ba601a615f97fbe9ced6d543230868d63cb4ff3d2cd026e637",
+      "bytes": 95862
+    }
+  },
+  "gates": {
+    "quick": {
+      "name": "quick",
+      "command": [
+        "npm",
+        "run",
+        "test:quick"
+      ],
+      "startUTC": "2026-10-09T02:50:50.823858+00:00",
+      "finishUTC": "2026-10-09T03:32:07.748488+00:00",
+      "seconds": 2476.886,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": "4",
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false,
+      "reportedFileCount": 893,
+      "reportComplete": true,
+      "summary": {
+        "counts": {
+          "tests": 6808,
+          "failed": 0,
+          "passed": 6808,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 6665,
+          "suites": 0
+        },
+        "duration_ms": 2476613.019875,
+        "success": true
+      },
+      "concurrency": 4,
+      "actualCountsFromFileReports": {
+        "tests": 6808,
+        "passed": 6808,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 6665,
+        "suites": 0
+      },
+      "failedFiles": []
+    },
+    "typecheck": {
+      "name": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "startUTC": "2026-10-09T02:50:50.822303+00:00",
+      "finishUTC": "2026-10-09T02:51:02.139581+00:00",
+      "seconds": 11.317,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false
+    },
+    "build": {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startUTC": "2026-10-09T02:50:50.822864+00:00",
+      "finishUTC": "2026-10-09T02:51:09.366516+00:00",
+      "seconds": 18.543,
+      "exitCode": 0,
+      "environment": {
+        "GRANADEROS_TEST_CONCURRENCY": null,
+        "GRANADEROS_BASE_PATH": null,
+        "NODE_ENV": null
+      },
+      "implementationEditsForGate": false,
+      "verifiedExportFiles": 1377,
+      "verifiedAssetReferences": 1045,
+      "productionSourceIdentity": {
+        "version": "0.4.0-dev.1",
+        "id": "6ed8a6fbe679",
+        "source": "6ed8a6fbe6798118a965969ee6bc702232a656da901d3d42ea12ed4919962386",
+        "revision": "e3973819bf7d439bca7b411414a65443a2555cd9"
+      },
+      "buildInfoSha256": "ea3f5ebac23bfc2fa400b901f9ea6da3b9360c7edb8285b1baebce9726fc7034"
+    }
+  },
+  "rootSourceEquivalence": {
+    "comparedRoot": "/Users/fsodano/.codex/worktrees/tactical-graphics-reference/granaderos",
+    "scope": "all tracked and nonignored untracked input files; exclude docs/artifacts and ignored generated caches/outputs only",
+    "expectedInputFiles": 10411,
+    "mismatches": [],
+    "unexpectedInputPaths": [],
+    "expectedGitlinks": {
+      "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+    },
+    "actualGitlinks": {
+      "engine": "ddb691318eb3dd0cdc6eab42139739b6d498c645"
+    },
+    "gitlinkPinsExact": true,
+    "gitlinkWorkingTreeErrors": [],
+    "sourceIdentityExact": true,
+    "sourceIdentity": "6ed8a6fbe6798118a965969ee6bc702232a656da901d3d42ea12ed4919962386",
+    "gitRevisionMayDiffer": true,
+    "allNonDocumentInputHashesExact": true
+  },
+  "sourceBase": "3d4f33ab197d7aecc36e6bf701e67604e9deeb51"
+}

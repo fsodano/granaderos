@@ -1,0 +1,17 @@
+{
+  "allRepositoryInputsExactBeforeAfter": true,
+  "runtimeTestAssetInputManifestExact": true,
+  "allRepositoryInputFiles": 11322,
+  "runtimeTestAssetInputFiles": 6514,
+  "inputDelta": [],
+  "trackedDiffCheck": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "untrackedWhitespaceErrors": [],
+  "sourceIdentityAndAllNonDocumentSelfEquivalenceExit": 0,
+  "implementationEditsForGates": false,
+  "rootWritten": false,
+  "browserOrPRAction": false
+}

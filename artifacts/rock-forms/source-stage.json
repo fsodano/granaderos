@@ -1,0 +1,47 @@
+{
+  "piece": 10,
+  "stage": "piece10-rock-forms",
+  "integrationBase": "c21ab8cebdc56838510223388deac5dad0e81b8c",
+  "stageBeforeCommit": "4a9b690826e7a6212589c12a1614e6ef2c8b4bc1",
+  "stageAfterCommit": "e3973819bf7d439bca7b411414a65443a2555cd9",
+  "originalPatch": "/tmp/granaderos-rock-forms-private.patch",
+  "originalPatchSha256": "227928ef04f468d02e67ac28dd70582957831170a9c965bdceeac3bf8fefb337",
+  "adaptedPatch": "/tmp/granaderos-future-pieces-integration-evidence/piece10-rock-forms.patch",
+  "adaptedPatchSha256": "227928ef04f468d02e67ac28dd70582957831170a9c965bdceeac3bf8fefb337",
+  "sourceHashes": {
+    "tests/three-rock-forms.test.mjs": {
+      "beforeSha256": null,
+      "afterSha256": "6f03c6592ac865579e98d8079181d8cc1a539b25abed75b235cbd2c933560c28",
+      "afterGitBlob": "f5e3d005d0ef5e7dee436bfcedb486b532a8a638"
+    },
+    "web/lib/three/world-geometry.ts": {
+      "beforeSha256": "e2ceaef97d5132944be0424dc0c20ccf32b9eaef16720b3eadb80a35419109bb",
+      "afterSha256": "73d1f95fc3004fd90297792113a5dcbac51dc85b8b829f9f613bf6b2af1826c4",
+      "afterGitBlob": "3a1294fb23e31e12db1d76005ee14e8178add5c1"
+    },
+    "web/lib/three/world-rock-forms.ts": {
+      "beforeSha256": null,
+      "afterSha256": "bc333235be3c4ee8e387500fd2543c34de160e1908e1e978131bbe5a72483ed1",
+      "afterGitBlob": "7e8e9a779ef42669f020a9d26c9954178b943e30"
+    },
+    "web/lib/three/world-terrain.ts": {
+      "beforeSha256": "d45d1cbad126a67c64ac7a0fcdffdd4f6e86cc493dbe91bfe5ee2b962bc79019",
+      "afterSha256": "0bf0bd1eab038adadd3a1fdabb4b857d355059e8726c93102442acff7ea04236",
+      "afterGitBlob": "402de327f0fbe90d4ff3d08bd9e90ee2dce94403"
+    }
+  },
+  "adjustment": "No integration adjustment.",
+  "deltaProof": {
+    "label": "piece10-rock-forms",
+    "deltaBodiesExact": true,
+    "files": [
+      "tests/three-rock-forms.test.mjs",
+      "web/lib/three/world-geometry.ts",
+      "web/lib/three/world-rock-forms.ts",
+      "web/lib/three/world-terrain.ts"
+    ],
+    "addedLines": 86,
+    "removedLines": 2
+  },
+  "sourceHashScope": "Exact cumulative output at this stage; shared files gain later independent additions."
+}

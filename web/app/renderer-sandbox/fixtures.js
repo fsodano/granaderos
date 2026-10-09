@@ -144,6 +144,10 @@ function terrainDetail(){
     else if(y>=13){tile.type=x>=14?'forest':'scrub';tile.cover=15;}
     return tile;
   });
+  // Keep the existing roads and unblocked stone samples. These cells use the
+  // normal coordinate seeds and terrain rules for rock and canopy review.
+  for(const [x,y]of [[3,5],[11,5],[17,9]])Object.assign(tiles.find(tile=>tile.x===x&&tile.y===y),{type:'stone',material:'stone',cover:40,blocked:true});
+  for(const [x,y]of [[10,9],[11,11],[12,9]])Object.assign(tiles.find(tile=>tile.x===x&&tile.y===y),{type:'forest',cover:15});
   const guard=soldier('terrain-guard','Terreno',8,8,{activeSlot:'unarmed',weapon:0,blade:0,loaded:0,ammo:0});
   return {...createBattle([guard],{id:'renderer-terrain-detail',name:'Bordes y detalle del terreno',width,height,tiles,enemies:[],exploration:true,seed:45}),deploymentComplete:true};
 }
