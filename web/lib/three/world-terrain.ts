@@ -3,6 +3,7 @@ import {terrainMaterial} from '../../../game/regional-terrain.js';
 import {WorldBatch,cellTop,seeded} from './world-geometry';
 import {illuminationAt,worldKey} from './world-materials';
 import {climbOpenings,surfaceRectangles} from './world-climb-openings';
+import {soilGrassTop} from './world-terrain-boundaries';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldInput,WorldTile} from './world-types';
@@ -16,7 +17,7 @@ export function buildTerrainChunk(id:string,tiles:readonly WorldTile[],input:Wor
     const x=tile.x*T,z=tile.y*T,height=tile.elevation??0,light=illuminationAt(input,tile);
     const kind=tile.type==='rubble'?'dirt':terrainMaterial(tile,input.terrain.sceneId??input.terrain.sectorId);
     const material=tile.type==='water'?materials.get('water'):materials.terrain(kind);
-    cellTop(batch,material,x-T*.5,z-T*.5,x+T*.5,z+T*.5,height,light);
+    if(!soilGrassTop(batch,tile,all,input.terrain.sceneId??input.terrain.sectorId,T,materials,light))cellTop(batch,material,x-T*.5,z-T*.5,x+T*.5,z+T*.5,height,light);
     // Exact authored cell heights remain flat. Vertical skirts join unequal
     // neighbours without changing the grid or inventing slope movement.
     for(const [dx,dy]of [[-1,0],[1,0],[0,-1],[0,1]]){
