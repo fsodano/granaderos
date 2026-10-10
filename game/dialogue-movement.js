@@ -1,6 +1,7 @@
 import {contentCellIds} from './content-map.js';
 import {characterForOperative,isWorldCharacter} from './content-character-ids.js';
 import {npcRoutes} from './npc-ai.js';
+import {wallMovementBlocked} from './wall-geometry.js';
 const need=(ok)=>{if(!ok)throw Error('La orden de movimiento del diálogo es inválida.');};
 const exact=(v,keys)=>v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
@@ -15,7 +16,7 @@ export function movementQuote(s,battle,effect,speaker){
  if(!actor||!host||actor===host&&effect.destination!=='routine'||actor.hp<=0||actor.unconscious||actor.departure||actor.surrendered||actor.mission||host.hp<=0)return fail(`${name} debe estar consciente y disponible en este sector.`);
  if((s.dialogueMovements?.length??0)>=1000)return fail('Se alcanzó el límite de movimientos de esta campaña.');
  if(effect.destination==='routine')return actor.scriptedMove?{reason:null,label:`${name} retoma su rutina · una sola vez`,target:null,revision:actor.presenceRevision,character:effect.character,sector:battle.sectorId}:fail(`${name} no tiene un encuentro pendiente.`);
- const routes=npcRoutes(battle,actor,{stopWhen:(p,t)=>Math.abs(p.x-host.x)+Math.abs(p.y-host.y)===1&&t?.type!=='door'}),target=[...routes.records.values()].filter(p=>Math.abs(p.x-host.x)+Math.abs(p.y-host.y)===1&&routes.tiles.get(`${p.x},${p.y}`)?.type!=='door').sort((a,b)=>a.path.length-b.path.length||a.y-b.y||a.x-b.x)[0];
+ const routes=npcRoutes(battle,actor,{stopWhen:(p,t)=>Math.abs(p.x-host.x)+Math.abs(p.y-host.y)===1&&t?.type!=='door'&&!wallMovementBlocked(battle,p,host)}),target=[...routes.records.values()].filter(p=>Math.abs(p.x-host.x)+Math.abs(p.y-host.y)===1&&routes.tiles.get(`${p.x},${p.y}`)?.type!=='door'&&!wallMovementBlocked(battle,p,host)).sort((a,b)=>a.path.length-b.path.length||a.y-b.y||a.x-b.x)[0];
  if(!target)return fail(`No hay un camino libre para que ${name} llegue al encuentro.`);
  return {reason:null,label:`Llamar a ${name} a este lugar · una sola vez`,target:{x:target.x,y:target.y},revision:actor.presenceRevision,character:effect.character,sector:battle.sectorId};
 }
