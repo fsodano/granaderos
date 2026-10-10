@@ -70,9 +70,9 @@ for(const sector of MAP_IDS)test(`${sector}: every authored house roof has a leg
   const below={x:interior.x,y:interior.y,hp:100,stance:'standing'},above={...below,tacticalLevel:1};
   assert.equal(hasLineOfSight(state,below,above),false,building.id+' ceiling blocks upward sight');
   assert.equal(hasLineOfSight(state,above,below),false,building.id+' ceiling blocks downward sight');
-  const wall=state.tiles.find(tile=>tile.buildingId===building.id&&tile.type==='wall'&&tile.x===building.x&&tile.y>building.y&&tile.y<building.y+building.height-1&&surfaceAt(state,{x:tile.x-1,y:tile.y})&&!surfaceAt(state,{x:tile.x-1,y:tile.y}).blocked&&surfaceAt(state,{x:tile.x+1,y:tile.y})?.type==='floor');
+  const wall=state.wallEdges.find(edge=>edge.buildingId===building.id&&edge.type==='wall'&&edge.axis==='y'&&edge.x===building.x&&edge.y>building.y&&edge.y<building.y+building.height-1&&surfaceAt(state,{x:edge.x-1,y:edge.y})&&!surfaceAt(state,{x:edge.x-1,y:edge.y}).blocked&&surfaceAt(state,{x:edge.x,y:edge.y})?.type==='floor');
   assert.ok(wall,building.id+' retains a testable ground wall');
-  assert.equal(hasLineOfSight(state,{x:wall.x-1,y:wall.y,hp:100},{x:wall.x+1,y:wall.y,hp:100}),false,building.id+' wall still separates the room from the street');
+  assert.equal(hasLineOfSight(state,{x:wall.x-1,y:wall.y,hp:100},{x:wall.x,y:wall.y,hp:100}),false,building.id+' wall still separates the room from the street');
  }
  if(sector==='jujuy')assert.deepEqual(state.climbLinks.filter(link=>link.id.startsWith('jujuy:building:')).map(link=>link.id),['jujuy:building:climb:west'],'the northern cliff must not become an access');
  assert.deepEqual(state,before,'topology queries must not mutate the battle');
@@ -113,12 +113,12 @@ test('reentry preserves old decorative roofs and saved custom supports instead o
   const input={...request('buenos_aires'),upperSurfaces:custom?[{id:'kept:platform',x:17,y:8,tacticalLevel:1,elevation:2.5,type:'floor',kind:'platform',blocked:false,cover:17}]:[],climbLinks:[]};
   const previous=enterSector(input);
   if(!custom){delete previous.upperSurfaces;delete previous.climbLinks;}
-  const door=previous.tiles.find(tile=>tile.type==='door');Object.assign(door,{open:true,blocked:false,blocksSight:false});
+  const door=previous.wallEdges.find(edge=>edge.type==='door');Object.assign(door,{open:true,blocked:false,blocksSight:false});
   const before=structuredClone(previous),returning={...request('buenos_aires'),upperSurfaces:[],climbLinks:[],squad:previous.units.filter(unit=>unit.side==='player').map(unit=>({...unit,entryReason:'resident'}))};
   const returned=enterSector(returning,previous),again=enterSector(returning,returned);
   for(const state of [returned,again]){
    assert.deepEqual(state.upperSurfaces,before.upperSurfaces);assert.deepEqual(state.climbLinks,before.climbLinks);
-   assert.deepEqual(state.tiles,before.tiles);assert.deepEqual(state.buildings,before.buildings);assert.deepEqual(state.props,before.props);
+   assert.deepEqual(state.tiles,before.tiles);assert.deepEqual(state.wallEdges,before.wallEdges);assert.deepEqual(state.buildings,before.buildings);assert.deepEqual(state.props,before.props);
    assert.ok(sameCell(state.units[0],before.units[0]));validateTacticalSpace(state);
   }
   assert.deepEqual(previous,before,'the stored old/custom map remains immutable');

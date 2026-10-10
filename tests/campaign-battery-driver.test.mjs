@@ -39,7 +39,8 @@ test('an assigned helper joins its distant cannon instead of scouting ahead alon
 
 test('an assigned helper walks around a blocked corner before operating the gun',()=>{
  const battle=createBattle([{id:'2',x:6,y:3},{id:'147',x:4,y:2}],{
-  width:24,height:12,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:i%24===4&&Math.floor(i/24)===3?'wall':'grass',blocked:i%24===4&&Math.floor(i/24)===3})),
+  width:24,height:12,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false})),
+  wallEdges:[{x:4,y:3,axis:'x'},{x:4,y:4,axis:'x'},{x:4,y:3,axis:'y'},{x:5,y:3,axis:'y'}].map((edge,i)=>({...edge,id:`corner:${i}`,type:'wall',blocked:true,blocksSight:true,cover:100})),
   exploration:true,enemies:[],artillery:[{id:'corner-gun',type:'bronze4',side:'player',x:5,y:3,loaded:true,ammo:6}],
  });
  const helper=battle.units.find(u=>u.id==='147'),gun=battle.artillery[0];

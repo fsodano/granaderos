@@ -40,6 +40,17 @@ test('edge clipping uses physical thickness once and never grants the flat muzzl
  assert.equal(volumes.length,2);assert.ok(volumes.every(({cell,volume})=>volumeRayCell(a,b,cell,volume)));
 });
 
+test('horizontal segments and their joined corners block actual crossings while paths beside them remain clear',()=>{
+ const horizontal=wall({id:'north',x:2,y:2,axis:'x'}),vertical=wall({id:'west',x:2,y:2,axis:'y'}),s=field([horizontal,vertical]);
+ for(const [a,b] of [[actor('a',2,1),actor('b',2,2)],[actor('a',1,1),actor('b',3,3)]]){
+  assert.equal(elevationSightClear(s,a,b),false);assert.equal(elevationSightClear(s,b,a),false);
+  assert.equal(knifeFlight(s,a,b).blocked,true);assert.equal(knifeFlight(s,b,a).blocked,true);
+ }
+ assert.equal(elevationSightClear(s,actor('a',2,2),actor('b',3,3)),true,'an inside corner floor can see farther into its room');
+ assert.equal(elevationSightClear(s,actor('a',1,2),actor('b',1,0)),true,'a ray beyond the finite segment endpoint is clear');
+ assert.equal(elevationSightClear(s,actor('a',1,1),actor('b',3,1)),true,'a parallel ray stays on the same side');
+});
+
 test('knives, grenades and ordinary item tosses hit an edge and keep recovery on the near floor',()=>{
  const edge=wall({obstacleHeight:6}),s=field([edge]),a=actor('a',1),b=actor('b',3);s.units=[a,b];
  const knife=knifeFlight(s,a,b),grenade=grenadeFlight(s,a,b),item=itemFlight(s,a,b);

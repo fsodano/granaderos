@@ -33,7 +33,7 @@ export function buildBuildingObjects(args:Args):SceneObject[]{
 // Camera changes reuse retained nodes; discarded viewport objects are evicted.
 export function createBuildingRenderer({state:s,revealed:knownRooms,project,light,cursorLevel=0}:Omit<Args,'viewport'>){
  const edgeMode=s.wallEdges!==undefined,artInset=edgeMode?0:wallInset;
- const buildings=(s.buildings??[]).map((b:any)=>b.kind==='estancia'?{...b,kind:'farmhouse'}:b.kind==='mansion'?{...b,kind:'palace'}:b),byId=new Map<any,any>(),doorsByBuilding=new Map<any,any[]>();
+ const buildings=(s.buildings??[]).map((source:any)=>{const b=edgeMode?{...source,walls:s.wallEdges.filter((edge:any)=>edge.buildingId===source.id)}:source;return b.kind==='estancia'?{...b,kind:'farmhouse'}:b.kind==='mansion'?{...b,kind:'palace'}:b;}),byId=new Map<any,any>(),doorsByBuilding=new Map<any,any[]>();
  const roofSurfaces=new Map<string,any[]>();
  for(const surface of s.upperSurfaces??[])if(surface.kind==='roof'&&surface.buildingId){
   const surfaces=roofSurfaces.get(surface.buildingId)??[];surfaces.push(surface);roofSurfaces.set(surface.buildingId,surfaces);
