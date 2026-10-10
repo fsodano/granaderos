@@ -29,6 +29,10 @@ the new format. Compatibility with earlier campaign saves is outside scope.
 - Rendering checks cover all 14 building types in four rotations, door apertures,
   runtime damage and cache changes, facade partition junctions, raised controls,
   and exact edge IDs for mouse and keyboard input.
+- The final presentation check passed 53 tests. SVG, Three, and the minimap
+  retain the authored wall shape until an active player observer sees a door or
+  breach change. Unseen damage cannot change an actor silhouette. This check
+  includes cache refreshes, inactive observers, and raised edges.
 - The browser review opened a door by its edge control and moved the soldier
   through that edge. The editor review placed a 5 by 5 building and a south-edge
   door, then verified schema version 2, its x axis, its stable IDs, and the absence
@@ -37,11 +41,14 @@ the new format. Compatibility with earlier campaign saves is outside scope.
 ## Local build checks
 
 - Production build and type check passed. Static export verification checked
-  1,377 files and 1,045 asset references. Build identity: `bc59a1ee65da`.
+  1,377 files and 1,045 asset references. Build identity: `f1079b1eba64`.
 - Documentation and baseline audits passed. Test partition self-tests passed
-  5/5, and coverage verification included all 962 files exactly once.
-- Production source was held at `74944df9` during the final full suite and
-  browser review. Later checkpoints update test drivers and their assertions.
+  5/5, and final partition verification included all 965 files exactly once.
+- The complete full gate began with production source `74944df9`. The final
+  presentation fix is `662f42a4`; its 53 affected tests, type check, production
+  build, and browser door-crossing review passed separately. Campaign driver
+  updates were checked against earned checkpoints with finite supplies, actual
+  costs and casualties, official save round trips, and exact order replay.
 
 ## Main branch comparison
 
@@ -56,4 +63,32 @@ belong to four files:
 | `fresh-cuyo-route.test.mjs` | Ángela Cejas refused renewal with morale below 30. |
 | `opening-playthrough.test.mjs` | Operative 130 lacked six finite musket rounds at Córdoba; its parent case also failed. |
 
-Full-suite results for this branch are recorded below after the final run.
+## Complete branch gate
+
+The complete branch run executed all 962 files: 956 passed and six failed.
+It reported 7,113 tests: 7,104 passed, seven failed, and two skipped. The extra
+failed case is the parent of the opening campaign subtest. The full suite is
+not green. Its first failure in each affected file was:
+
+| File | First failure in the complete branch run |
+| --- | --- |
+| `fresh-campaign-recovery.test.mjs` | The old Tucumán combat policy lost a hospital patient. |
+| `fresh-ending-route.test.mjs` | The native campaign required a real rifle for operative 130. |
+| `fresh-northern-route.test.mjs` | Urgent wounded northern veterans needed care before the physician approach. |
+| `fresh-cuyo-route.test.mjs` | The same urgent northern care check failed. |
+| `fresh-historical-loss.test.mjs` | The same urgent northern care check failed. |
+| `opening-playthrough.test.mjs` | A rescued clinic patient died during its real raid. |
+
+The follow-on recovery check passed Tucumán and hospital care with the public
+clear-shot policy, then reached the same inaccessible Córdoba travel error as
+main. Native readiness now proves a real rear rifle exchange, 12 paid recruits,
+finite ammunition and physician stock, actual Tucumán victory, and exact saved
+replay. Urgent northern care now uses only dressings found in the actual battle.
+The earned Salta battery proof spends all seven real charges, retains six actual
+losses, and completes Yatasto with saved replay. These focused results do not
+claim that the entire ending, Cuyo, or historical-loss routes passed.
+
+The clinic follow-on diagnostic used two paid recruits, three paid forts, real
+contract renewals, and finite equipment. It won the raid with exact replay but
+still lost patient 129 and physician 122. The original patient assertions remain
+intact. This is a remaining branch campaign limit, not a confirmed main failure.
