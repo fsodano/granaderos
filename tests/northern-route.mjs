@@ -542,10 +542,19 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  assert.equal(fieldIds.length,6,'six actual living soldiers make the rescue field squad');
  assert.ok(supportIds.includes(112)&&supportIds.includes(122)&&supportIds.length<=6);
  assert.ok(hiringCost>0);assert.equal(hiringCost,hired.reduce((sum,id)=>sum+campaign.contracts[id].paid,0));
- const medicalPurchases=[],medicalCollections=[],medicalHandovers=[];
+ const medicalPurchases=[],medicalCollections=[],medicalHandovers=[],medicalReturns=[];
  const rescueDoctors=[112,122],medicalIds=[...new Set([...fieldIds,...supportIds])];
  const medicalModel=id=>sectorInventoryModel(campaign,'cordoba',rosterFor(campaign),id);
  const need=()=>rescueDoctors.reduce((sum,id)=>sum+Math.max(0,12-campaign.operativeState[id].medkits),0);
+ // The surviving reserve can retain more than the rescue's twelve dressings.
+ // Leave its actual surplus in the local depot before taking finite stock.
+ for(const operativeId of rescueDoctors){
+  const carried=campaign.operativeState[operativeId].medkits,quantity=carried-12;if(quantity<=0)continue;
+  const stock=()=>medicalModel(operativeId).entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0),before=stock(),cash=campaign.resources.treasury;
+  const action={type:'sectorInventory',sector:'cordoba',operativeId,direction:'drop',item:'medkits',count:quantity};order(action);
+  assert.equal(campaign.operativeState[operativeId].medkits,carried-quantity);assert.equal(stock(),before+quantity,'the depot retains every returned rescue dressing');assert.equal(campaign.resources.treasury,cash);
+  medicalReturns.push({action,operativeId,quantity,carriedBefore:carried,carriedAfter:campaign.operativeState[operativeId].medkits,stockBefore:before,stockAfter:stock(),treasuryBefore:cash,treasuryAfter:campaign.resources.treasury});
+ }
  const gather=operativeId=>{
   while(campaign.operativeState[operativeId].medkits<12){
    const source=medicalModel(operativeId).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');if(!source)break;
@@ -572,7 +581,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
   }
  }
  for(const id of rescueDoctors)assert.equal(campaign.operativeState[id].medkits,12,'each rescue physician carries the unchanged finite target');
- report({event:'rescueMedicalPrepared',hour:campaign.hour,secondOfHour:campaign.secondOfHour??0,medicalPurchases,medicalCollections,medicalHandovers,dressings:rescueDoctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0),cash:campaign.resources.treasury});
+ report({event:'rescueMedicalPrepared',hour:campaign.hour,secondOfHour:campaign.secondOfHour??0,medicalPurchases,medicalCollections,medicalHandovers,medicalReturns,dressings:rescueDoctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0),cash:campaign.resources.treasury});
  const model=id=>sectorInventoryModel(campaign,'cordoba',rosterFor(campaign),id);
  for(const id of [...fieldIds,...supportIds]){
   if(![1800,1801,1802].includes(rosterFor(campaign).find(op=>op.id===id).weapon)){
@@ -732,7 +741,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  }
  assert.equal(campaign.pendingEncounter,null);assert.ok(deploying.every(id=>campaign.operativeState[id].energy===100),'the rescue departs after actual rest');
  for(const operativeId of campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
- report({event:'rescueStaged',hour:campaign.hour,secondOfHour:campaign.secondOfHour??0,fieldIds,supportIds,hiringLedger,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,staging});
+ report({event:'rescueStaged',hour:campaign.hour,secondOfHour:campaign.secondOfHour??0,fieldIds,supportIds,hiringLedger,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,medicalReturns,staging});
  // Use the already recovered local bronze gun before sending paid soldiers
  // on another supply journey. Its physical custody, load and shots stay exact.
  const localBattery=campaign.sectors.cordoba.owner==='patriot'?[...(campaign.artilleryDepots.cordoba??[]).map(record=>({source:'depot',record})),...(campaign.sectorStates.cordoba?.artillery??[]).map(record=>({source:'field',record}))].filter(({record})=>record.side==='player'&&record.type==='bronze4').sort((a,b)=>Number(b.source==='depot')-Number(a.source==='depot')||b.record.ammo+Number(b.record.loaded)-a.record.ammo-Number(a.record.loaded)||a.record.id.localeCompare(b.record.id))[0]:null;
@@ -777,7 +786,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'beginAssault',sector:'tucuman'});
  for(const captive of captives){captive.custodyCare=assertCustodyCare(custodyStart,campaign,captive.id);captive.beforeCare=captive.record;captive.record=structuredClone(campaign.operativeState[captive.id]);}
  const battle=enterSector(campaign.pendingBattle,campaign.sectorStates.tucuman);assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
- report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,ammunitionTransactions:supplied.transactions,fieldIds,supportIds,staging});return {campaign,events,captives,hired:hired.filter(id=>campaign.operativeState[id].alive),hiringLedger,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,ammunitionTransactions:supplied.transactions,fieldIds,supportIds,supportHires,staging};
+ report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,medicalReturns,ammunitionTransactions:supplied.transactions,fieldIds,supportIds,staging});return {campaign,events,captives,hired:hired.filter(id=>campaign.operativeState[id].alive),hiringLedger,hiringCost,medicalPurchases,medicalCollections,medicalHandovers,medicalReturns,ammunitionTransactions:supplied.transactions,fieldIds,supportIds,supportHires,staging};
 }
 
 export function stabilizeRescued(start,{patients,report=()=>{}}={}){

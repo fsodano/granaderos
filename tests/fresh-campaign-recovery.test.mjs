@@ -20,6 +20,7 @@ import {stagedBatteryController} from './staged-battery-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {fight as fightWithCover} from './cuyo-route-driver.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {stanceCost} from '../game/tactical.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
 import {fightNorthernSector,northernCombatOrder,prepareNorthernSquad} from './northern-route.mjs';
@@ -46,7 +47,14 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  assert.deepEqual(Object.keys(recovered.campaign.sectors).filter(id=>recovered.campaign.sectors[id].owner==='patriot').sort(),['buenos_aires','retiro']);
  assert.equal(recovered.campaign.completed,false);
  const deployed=prepareFreshNorthernAssault(recovered);
- const result=fightNorthernSector(deployed,'san_nicolas',{controller:northernCombatOrder});
+ // Keep the clinic physician at her issued reserve position while the field
+ // earns the town. Lowering her posture still spends the ordinary action cost.
+ const retainedPhysicianOrder=(battle,unit)=>{
+  const action=northernCombatOrder(battle,unit),field=battle.units.some(other=>other.id!=='107'&&other.side==='player'&&other.hp>=15&&!other.unconscious&&!other.routed&&!other.departure&&!other.surrendered);
+  if(unit.id==='107'&&field&&['move','charge','climb','exit'].includes(action?.type))return unit.stance!=='prone'&&unit.ap>=stanceCost(unit,'prone')?{type:'stance',unitId:unit.id,stance:'prone'}:null;
+  return action;
+ };
+ const result=fightNorthernSector(deployed,'san_nicolas',{controller:retainedPhysicianOrder});
  assert.equal(result.campaign.sectors.san_nicolas.owner,'patriot');
  for(const id of opening.casualties)assert.equal(result.campaign.operativeState[id].alive,false);
  assert.equal(result.campaign.completed,false);

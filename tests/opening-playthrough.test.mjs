@@ -126,6 +126,11 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.deepEqual(prepared.staging.renewals.map(r=>r.id),prepared.events.filter(e=>e.action.type==='renewContract').map(e=>e.action.id));
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.ok(prepared.campaign.contracts[id].expiresAt===null||prepared.campaign.contracts[id].expiresAt>prepared.campaign.hour,'each deployed contract must still cover the actual arrival');
   assert.ok(prepared.hiringCost>0);assert.equal(prepared.hiringCost,prepared.hiringLedger.reduce((sum,receipt)=>sum+receipt.paid,0),'every real hire stays in the expense ledger, including fallen volunteers');
+  for(const receipt of prepared.medicalReturns){
+   assert.deepEqual(receipt.action,{type:'sectorInventory',sector:'cordoba',operativeId:receipt.operativeId,direction:'drop',item:'medkits',count:receipt.quantity});
+   assert.equal(receipt.carriedAfter,12);assert.equal(receipt.carriedBefore-receipt.carriedAfter,receipt.quantity);assert.equal(receipt.stockAfter-receipt.stockBefore,receipt.quantity);assert.equal(receipt.treasuryAfter,receipt.treasuryBefore);
+   assert.ok(prepared.events.some(event=>JSON.stringify(event.action)===JSON.stringify(receipt.action)),'the actual excess-dressing return remains in the public order receipt');
+  }
   for(const id of prepared.hired){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id]);}
   assert.equal(prepared.fieldIds.length,6);assert.equal(prepared.supportIds.length,6);
   assert.ok(prepared.supportHires.length>0);
