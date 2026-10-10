@@ -22,8 +22,11 @@ export function woundedService({medical=18,casualty=false,term='day',careRules,c
  const id=localId(s),r=s.pendingBattle;
  // Paid deployment with compact barrier geometry to isolate a real enemy shot.
  // This is an injury handoff check, not an accepted capital-victory route.
- const tiles=Array.from({length:96},(_,i)=>{const x=i%12,y=Math.floor(i/12),wall=x===0&&y===1||x===1&&y===0;return {x,y,type:wall?'wall':'grass',blocked:wall,blocksSight:wall,cover:0};});
- Object.assign(r,{width:12,height:8,seed:45,tiles,enemies:[initializeUnitAmmunition({id:'guard',x:7,y:1,weapon:1805,ammo:0,marksmanship:100,fatigue:90})]});
+ const tiles=Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,blocksSight:false,cover:0}));
+ // Shield the doctor's cell on its two inward edges. The exposed local
+ // remains in the enemy's actual firing lane at (1,1).
+ const wallEdges=[{id:'doctor-south',x:0,y:1,axis:'x'},{id:'doctor-east',x:1,y:0,axis:'y'}].map(edge=>({...edge,type:'wall',material:'stone',blocked:true,blocksSight:true,cover:0}));
+ Object.assign(r,{width:12,height:8,seed:45,tiles,wallEdges,enemies:[initializeUnitAmmunition({id:'guard',x:7,y:1,weapon:1805,ammo:0,marksmanship:100,fatigue:90})]});
  let battle=createBattle(r.squad.map(u=>({...u,x:u.id===id?1:0,y:u.id===id?1:0})),r);
  battle=actBattle(battle,{type:'weapon',unitId:id,slot:'supply',supplyKey:'torches'});assert.equal(battle.lastError,null);
  const before=battle.units.find(u=>Number(u.id)===id);
