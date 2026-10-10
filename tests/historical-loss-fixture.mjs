@@ -7,16 +7,21 @@ import {approachNPC} from './approach-npc.mjs';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 import {freshNorthernRoute} from './fresh-northern-fixture.mjs';
 import {fight} from './opening-driver.mjs';
-import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {mendozaBatteryController} from './fresh-cuyo-fixture.mjs';
 import {assembleCreatedCuyo,prepareCreatedMendozaAssault} from './created-cuyo-route.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 
-export function freshMendozaLoss(){
- let s=prepareCreatedMendozaAssault(assembleCreatedCuyo(freshNorthernRoute().campaign));
+export function freshMendozaLoss({northernCheckpoint,onCheckpoint,report=()=>{}}={}){
+ const northern=northernCheckpoint??freshNorthernRoute({onCheckpoint,report}).campaign;
+ assert.equal(northern.phase,3);assert.equal(northern.missions.yatasto.completed,true);assert.equal(northern.flags.northPact,true);
+ let s=prepareCreatedMendozaAssault(assembleCreatedCuyo(northern,{report}),{report});
  assert.equal(s.operativeState[2].alive,true);
  const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
- const controller=coastalBatteryController(enterSector(request,s.sectorStates.mendoza),{sharedArtillerySight:true});
- const {battle,orders,actions}=fight(request,s.sectorStates.mendoza,{controller});assert.equal(battle.status,'victory');assert.ok(battle.npcs.find(n=>n.operativeId===2).hp>0);
+ const controller=mendozaBatteryController(enterSector(request,s.sectorStates.mendoza));
+ onCheckpoint?.('historical-mendoza-ready',s);
+ const result=fight(request,s.sectorStates.mendoza,{controller}),{battle,orders,actions}=result;
+ if(battle.status!=='victory')recordRouteBattleFailure({campaign:s,request,previous:s.sectorStates.mendoza,result,expectedOutcome:'victory',controller,executeBattle:fight,failureStage:'historical-mendoza-victory'});
+ assert.equal(battle.status,'victory');assert.ok(battle.npcs.find(n=>n.operativeId===2).hp>0);
  let p={campaign:s,battle:enterSector(request,s.sectorStates.mendoza)},deathCheckpoint;
  const execute=a=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null);p=sync({campaign:p.campaign,battle});};
  const requirePreInjury=()=>{
@@ -30,21 +35,22 @@ export function freshMendozaLoss(){
   assert.ok(commander?.hp>0,'the commander must survive before the intentional engineer injury');assert.ok(engineer?.hp>0);
  };
  for(let i=0;i<orders.length;i++){execute(orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
- assert.deepEqual(p.battle.units,battle.units);assert.deepEqual(p.battle.npcs,battle.npcs);assert.equal(p.battle.seed,battle.seed);requirePreInjury();execute({type:'explore'});
+ assert.deepEqual(p.battle.units,battle.units);assert.deepEqual(p.battle.npcs,battle.npcs);assert.deepEqual(p.battle.artillery,battle.artillery);assert.deepEqual(p.battle.wallEdges,battle.wallEdges);assert.equal(p.battle.seed,battle.seed);requirePreInjury();
+ const combatCheckpoint=saved(p);onCheckpoint?.('historical-mendoza-victory',combatCheckpoint.campaign,combatCheckpoint.battle);execute({type:'explore'});
  // A won battlefield cannot conceal a subsequent confirmed essential death.
  // Use actual movement and fatal orders, without inserting a prepared casualty.
- const engineer=()=>p.battle.npcs.find(n=>n.operativeId===2);
+ const engineer=()=>p.battle.npcs.find(n=>n.operativeId===2),injuryOrders=[];
  const actor=p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.unconscious&&!u.routed).sort((a,b)=>b.hp-a.hp)[0];assert.ok(actor);
  if(actor.stance!=='standing')execute({type:'stance',unitId:actor.id,stance:'standing'});
  if(p.battle.units.find(u=>u.id===actor.id).activeSlot!=='blade')execute({type:'weapon',unitId:actor.id,slot:'blade'});
  for(let i=0;i<20&&engineer().hp>0;i++){
   p=sync({campaign:p.campaign,battle:approachNPC(p.battle,actor.id,engineer().id)});
   if(i===0)requirePreInjury();
-  execute({type:'melee',unitId:actor.id,targetId:engineer().id,targetKind:'npc'});
+  const action={type:'melee',unitId:actor.id,targetId:engineer().id,targetKind:'npc'};execute(action);injuryOrders.push(action);
  }
  assert.equal(engineer().hp,0);deathCheckpoint=saved(p);assert.ok(deathCheckpoint.campaign.defeated);
  s=saved({campaign:order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;
- return {campaign:s,deathCheckpoint,actions,turns:battle.turn};
+ return {campaign:s,combatCheckpoint,deathCheckpoint,injuryOrders,actions,turns:battle.turn};
 }
 
 // Authored starting control and a compact engagement isolate the role/death
