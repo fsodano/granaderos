@@ -58,6 +58,28 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
   const source=JSON.parse(row.expected);order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});
   event({event:'stockReadinessFiniteTake',id,sourceKey:row.key,count,source,hour:c.hour,secondOfHour:c.secondOfHour??0});
  };
+ const equipTaken=(id,source)=>{
+  const weapon=inventory(id).carried.find(item=>item.inventoryKey&&item.expected&&Object.entries(source).filter(([key])=>key!=='item').every(([key,value])=>JSON.stringify(JSON.parse(item.expected)[key])===JSON.stringify(value)));
+  assert.ok(weapon,'The actual recovered weapon must remain packed before equipping.');
+  order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'equip',inventoryKey:weapon.inventoryKey,expected:weapon.expected,slot:'primary'});
+ };
+ const dropPrimary=id=>{
+  const model=inventory(id),held=model.carried.find(item=>item.item==='primary');assert.ok(held?.store?.expected);
+  const source=JSON.parse(held.store.expected),known=new Set(model.entries.map(row=>row.key));
+  order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'drop',item:'primary',count:1});
+  const row=inventory(id).entries.find(row=>!known.has(row.key)&&row.reachable&&row.expected===JSON.stringify(source));
+  assert.ok(row,'The dropped service weapon must remain a reachable finite item.');return row;
+ };
+ const exchangeRearRifle=id=>{
+  const outgoing=dropPrimary(id),pistol=JSON.parse(outgoing.expected);
+  const donor=rear.map(id=>({id,model:inventory(id)})).filter(row=>row.model.personal?.weapon===1800&&!row.model.personal.weaponDropped&&row.model.personal.condition>=10)
+   .sort((a,b)=>b.model.personal.condition-a.model.personal.condition||a.model.personal.marksmanship-b.model.personal.marksmanship||a.id-b.id)[0];
+  assert.ok(donor,'The resting rear must hold an actual service rifle for the field exchange.');
+  const rifle=dropPrimary(donor.id),held=inventory(donor.id).entries.find(row=>row.key===outgoing.key);assert.ok(held?.reachable);
+  take(donor.id,held,1);equipTaken(donor.id,pistol);
+  event({event:'stockReadinessRearWeaponExchange',rearId:donor.id,fieldId:id,rifle:JSON.parse(rifle.expected),rearWeapon:pistol});
+  return inventory(id).entries.find(row=>row.key===rifle.key&&row.reachable);
+ };
  const tactical=action=>{
   b=actBattle(b,action);assert.equal(b.lastError,null,JSON.stringify(action)+': '+b.lastError);
   const pair=syncBattleTime(c,b);assert.equal(pair.error,null,pair.error);c=pair.campaign;b=pair.battle;
@@ -94,13 +116,22 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
  const ranked=rosterFor(c).filter(op=>paid.includes(op.id)).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id),columns=[ranked.slice(0,6).map(op=>op.id),ranked.slice(6).map(op=>op.id)],groups=[];
  for(const ids of columns){order({type:'createSquad',ids,sector:'cordoba',name:'Relevo pagado del Norte'});groups.push(c.activeSquadId);for(const id of ids)order({type:'assignCare',operativeId:id,assignment:'active'});}checkpoint('stock-readiness-arrived');
  for(const id of paid){
-  const row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).weapon===1800&&JSON.parse(row.expected).condition>=10);
+  const row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).weapon===1800&&JSON.parse(row.expected).condition>=10)??exchangeRearRifle(id);
   assert.ok(row,'A real known reachable Córdoba long gun must equip '+id);take(id,row,1);
   const packed=inventory(id).carried.find(item=>item.expected&&JSON.parse(item.expected).weapon===1800);assert.ok(packed);
   order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'equip',inventoryKey:packed.inventoryKey,expected:packed.expected,slot:'primary'});
  }
  for(const id of paid){
-  const op=rosterFor(c).find(op=>op.id===id),load=()=>carriedAmmunition(op,c.operativeState[id]),family=ammoTypeFor({...load(),activeSlot:'primary'});assert.equal(family,'ammoMusket');
+  const load=()=>carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]);
+  const previous=ammoTypeFor({...load(),activeSlot:'primary'});
+  if(previous!=='ammoMusket'){
+   const before=ammoCount(load(),previous)+load().loaded;
+   if(load().loaded)order({type:'unloadAmmunition',operativeId:id});
+   order({type:'selectAmmunitionLoad',operativeId:id,family:'ammoMusket'});
+   assert.equal(ammoCount(load(),previous),before,'Changing the recovered load preserves every actual old cartridge.');
+   event({event:'stockReadinessLoadChanged',id,from:previous,to:'ammoMusket',retainedCartridges:before});
+  }
+  const family=ammoTypeFor({...load(),activeSlot:'primary'});assert.equal(family,'ammoMusket');
   while(load().loaded+ammoCount(load(),family)<12){
    const missing=12-load().loaded-ammoCount(load(),family),row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).kind==='ammunition'&&JSON.parse(row.expected).ammoType===AMMUNITION_FAMILIES[family].type);
    assert.ok(row,'Actual reachable matching finite cartridges are required for '+id);take(id,row,Math.min(missing,row.count));

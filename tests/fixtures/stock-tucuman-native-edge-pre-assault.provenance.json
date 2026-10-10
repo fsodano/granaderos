@@ -1,0 +1,18 @@
+{
+  "sha256": "2801e6c2678009155229b086549b438db7649eb2ccad2166352b9e0a0b55e08f",
+  "rawSha256": "5d72412fda218a9e2458bc97900cfb0b67cbffd28848c15a1ad3a593bb73914b",
+  "source": "Earned Retiro-only 3200-peso ending route; actual coastal and Cordoba victories, paid care and real Cordoba defense.",
+  "sourceCapture": "/tmp/wall-content-ending-native-capture/strategic-preparation/94129-1-prepareStockTucumanReadiness-preparation-input-JDMG6T/",
+  "sourceSnapshot": "74944df9",
+  "helper": "prepareStockTucumanReadiness",
+  "stage": "preparation-input",
+  "inputClock": [
+    300,
+    1217
+  ],
+  "startingTreasury": 3200,
+  "additionalActions": 0,
+  "additionalHealthChanges": 0,
+  "additionalItems": 0,
+  "officialSaveRoundTripExact": true
+}
