@@ -4,6 +4,7 @@ import {finiteSectorCache} from './finite-sector-caches.js';
 import {hasCharacterAbility} from './character-abilities.js';
 import {makeOutfit} from './outfits.js';
 import {destroyStructure} from './structure-blast.js';
+import {wallEdgeId,wallEdgeBlocksMovement} from './wall-geometry.js';
 import {roadsideDiscoveryForMap,ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID,ROADSIDE_SHIRT_ID} from './roadside-discoveries.js';
 
 // Classic JA2 manual, printed pp. 25–27: held tools, keys, lock picks,
@@ -35,7 +36,7 @@ function number(value, low, high, message) {
 function rollValue(value) {number(value, 0, 1, 'La tirada de interacción no es válida.'); return value;}
 const trapKnown = (unit, target) => Boolean(target.trap?.discoveredBy?.includes(unit.side ?? 'player'));
 const isArmed = target => Boolean(target.trap && target.trap.armed !== false);
-export const breachableWall = target => Boolean(target?.type === 'wall' && target.blocked === true &&
+export const breachableWall = target => Boolean(target?.type === 'wall' && (target.axis?wallEdgeBlocksMovement(target):target.blocked === true) &&
   ['adobe', 'wood'].includes(target.material) && (target.tacticalLevel ?? 0) === 0 && !['floor', 'roof'].includes(target.kind));
 
 export function validateEnvironment(target) {
@@ -167,7 +168,7 @@ export function resolveEnvironmentInteraction(unit, target, {verb, roll} = {}) {
   if (REQUIRED[verb]) wornTool(result.unit, tool.wear);
   if (verb === 'breach') {
     Object.assign(next, {blocked: false, blocksSight: false, type: 'rubble', cover: 15});
-    if (next.structureDamage !== undefined) destroyStructure(next);
+    if (next.structureDamage !== undefined || next.axis) destroyStructure(next,next.axis?'edge':'surface');
     delete next.obstacleHeight; delete next.projectileResistance;
     return {...result, success: true, outcome: 'wall-breached', message: 'Abre una brecha con la barreta.', noiseKind: 'melee'};
   }
@@ -209,7 +210,7 @@ export function visibleContainerContents(target) {
   return target.open ? structuredClone(target.contents ?? []) : [];
 }
 export function environmentTargetSummary(unit, target) {
-  if (breachableWall(target)) return {id: target.id ?? `wall:${target.x}:${target.y}`, type: 'wall', label: target.material === 'wood' ? 'Barricada de madera' : 'Pared de adobe', material: target.material, broken: false};
+  if (breachableWall(target)) return {id: target.axis?wallEdgeId(target):target.id ?? `wall:${target.x}:${target.y}`, type: 'wall', label: target.material === 'wood' ? 'Barricada de madera' : 'Pared de adobe', material: target.material, broken: false};
   validateEnvironment(target);
   const summary = {id: target.id ?? target.doorId, type: target.type, label: target.type === 'door' ? 'Puerta' : 'Cofre', open: Boolean(target.open), locked: Boolean(target.locked), broken: Boolean(target.broken)};
   for (const key of ['structureDamage','destroyed']) if (target[key] !== undefined) summary[key] = target[key];
@@ -243,7 +244,7 @@ export function authoredEnvironment(sector, map) {
   if (sector === 'yatasto') {
     const id = 'yatasto:building:chest:11:8';
     if (hasChest(id)) containers.push({id, type: 'chest', open: false, locked: false, contents: [tool('lockpick'), tool('crowbar'), tool('pliers'), tool('key', 'yatasto-store')]});
-    const door = (map.tiles ?? []).find(tile => tile.doorId === 'yatasto:door-right');
+    const door = [...(map.wallEdges??[]),...(map.tiles ?? [])].find(tile => tile.doorId === 'yatasto:door-right');
     if (door) doors.push({id: door.doorId, type: 'door', open: false, locked: true, keyId: 'yatasto-store', lockDifficulty: 25, lockIntegrity: 100});
   }
   if (sector === 'mendoza') {

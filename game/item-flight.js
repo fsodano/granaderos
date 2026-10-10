@@ -1,5 +1,5 @@
 import {surfaceAt,surfaceHeight,spacePoint,tacticalLevel} from './tactical-space.js';
-import {absoluteBodyHeight,geometryCells,obstacleVolumesAt} from './sight-geometry.js';
+import {absoluteBodyHeight,geometryCells,obstacleVolumesAt,volumeRayCell} from './sight-geometry.js';
 import {propSize} from './props.js';
 
 const epsilon=1e-9,propIndexes=new WeakMap();
@@ -65,7 +65,7 @@ export function itemFlight(state,source,destination){
   const coefficients={a:-4*arc,b:end-start+4*arc,c:start};
   const height=t=>(coefficients.a*t+coefficients.b)*t+coefficients.c;
   const point=t=>({x:source.x+(destination.x-source.x)*t,y:source.y+(destination.y-source.y)*t,height:height(t),fraction:t,...(t===0?{tacticalLevel:tacticalLevel(source)}:t===1?{tacticalLevel:tacticalLevel(destination)}:{})});
-  const geometryState={width:state.width,height:state.height,tiles:state.tiles,upperSurfaces:state.upperSurfaces};
+  const geometryState={width:state.width,height:state.height,tiles:state.tiles,upperSurfaces:state.upperSurfaces,wallEdges:state.wallEdges};
   let stop=null;
   for(const cell of geometryCells(source,destination)){
    if(stop!==null&&cell.entry>stop+epsilon)break;
@@ -80,7 +80,8 @@ export function itemFlight(state,source,destination){
    }
    for(const volume of volumes){
     if(!Number.isFinite(volume.top)||volume.bottom!==-Infinity&&!Number.isFinite(volume.bottom)||volume.top<volume.bottom)return invalid();
-    const hit=heightIntersection(height,coefficients,cell,volume.bottom,volume.top);
+    const crossed=volumeRayCell(source,destination,cell,volume);if(!crossed)continue;
+    const hit=heightIntersection(height,coefficients,crossed,volume.bottom,volume.top);
     if(hit!==null&&(stop===null||hit<stop))stop=hit;
    }
   }

@@ -1,6 +1,6 @@
 import {spacePoint,surfaceAt,surfaceHeight,tacticalLevel} from './tactical-space.js';
 import {propBlocksAt} from './props.js';
-import {absoluteBodyHeight,geometryCells,obstacleVolumesAt,rayHeightIntersection} from './sight-geometry.js';
+import {absoluteBodyHeight,geometryCells,obstacleVolumesAt,rayHeightIntersection,volumeRayCell} from './sight-geometry.js';
 
 // Abstract game geometry: a single lob ends at the first obstruction. Classic
 // JA2 also simulates subsequent bounces; this helper does not model those.
@@ -66,7 +66,8 @@ export function grenadeFlight(state,attacker,target){
   // The ground surface is solid below its elevation, including raised terrain.
   if(ground)volumes.push({id:`ground:${cell.x},${cell.y}`,kind:'ground',tacticalLevel:0,bottom:-1000,top:ground.elevation??0});
   for(const volume of volumes){
-   const fraction=arcIntersection(start,end,rise,cell,volume.bottom,volume.top);
+   const crossed=volumeRayCell(attacker,target,cell,volume);if(!crossed)continue;
+   const fraction=arcIntersection(start,end,rise,crossed,volume.bottom,volume.top);
    if(fraction===null)continue;
    const intendedFloor=(volume.kind==='ground'&&tacticalLevel(target)===0)||(volume.kind==='slab'&&volume.tacticalLevel===tacticalLevel(target));
    if(fraction>=1-epsilon&&intendedFloor&&cell.x===target.x&&cell.y===target.y)continue;
@@ -103,7 +104,7 @@ export function grenadeBlastExposure(state,origin,target,radius){
   const blocked=volumes.some(({cell,volumes:column})=>{
    const ground=surfaceAt(state,cell);
    if(ground&&rayHeightIntersection(start,end,cell,-1000,ground.elevation??0)!==null)return true;
-   return column.some(volume=>rayHeightIntersection(start,end,cell,volume.bottom,volume.top)!==null);
+   return column.some(volume=>{const crossed=volumeRayCell(origin,target,cell,volume);return crossed&&rayHeightIntersection(start,end,crossed,volume.bottom,volume.top)!==null;});
   });
   if(!blocked)clear++;
  }

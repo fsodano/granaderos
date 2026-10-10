@@ -3,7 +3,7 @@ import {COMBAT_BALANCE} from './combat-balance.js';
 import {projectileLaunchImpact,projectileDamageFactor,hasProjectileEnergy} from './projectile-energy.js';
 import {projectileAirRetention,hasProjectileAirDrag} from './projectile-air-drag.js';
 import {materialRangeResistanceFactor} from './material-range-penetration.js';
-import {absoluteBodyHeight,relativeBodyHeight as height,usesElevationGeometry,groundTileAt,geometryCells,rayHeightIntersection,obstacleVolumesAt} from './sight-geometry.js';
+import {absoluteBodyHeight,relativeBodyHeight as height,usesElevationGeometry,groundTileAt,geometryCells,rayHeightIntersection,obstacleVolumesAt,volumeRayCell} from './sight-geometry.js';
 import {projectileTrajectory,projectileTrajectoryPoint,projectileTrajectorySlope,projectileTrajectoryIntervals,projectileTrajectoryLength,projectileTrajectoryAdvance,projectileTrajectorySamples} from './projectile-trajectory.js';
 
 const continuedBall=weapon=>Number.isFinite(weapon.range)&&weapon.range>0&&weapon.loadPattern!=='cone'&&!(weapon.id===1807&&!weapon.loadPattern);
@@ -106,8 +106,9 @@ function materialEvents(state,source,destination,elevated,stopFraction,trajector
   for(const volume of obstacleVolumesAt(state,cell)){
    // Preserve the established flat muzzle-cell cover rule. Floor slabs and
    // ground still stop a shot in the origin cell.
-   if(origin&&!elevated&&volume.kind!=='slab')continue;
-   const hits=projectileTrajectoryIntervals(trajectory,cell,volume.bottom,volume.top,stopFraction);
+   if(origin&&!elevated&&!['slab','edge'].includes(volume.kind))continue;
+   const crossed=volumeRayCell(source,destination,cell,volume);if(!crossed)continue;
+   const hits=projectileTrajectoryIntervals(trajectory,crossed,volume.bottom,volume.top,stopFraction);
    for(const hit of hits){
     if(volume.solid){events.push({fraction:hit.entry,priority:1,key:volume.id,type:'solid',cell,volume});continue;}
     // A corner or height-boundary touch crosses no material. It cannot spend
@@ -151,7 +152,8 @@ function stoneEntryFace(state,trajectory,span){
  }
  if(faces.length!==1)return null;
  const normal=faces[0],outside={x:Math.floor(point.x+normal.x*.25+.5),y:Math.floor(point.y+normal.y*.25+.5)};
- if(obstacleVolumesAt(state,outside).some(other=>other.stoneFace&&point.height>other.bottom+1e-10&&point.height<other.top-1e-10))return null;
+ if(obstacleVolumesAt(state,outside).some(other=>other.id!==volume.id&&other.stoneFace&&point.height>other.bottom+1e-10&&point.height<other.top-1e-10&&
+  (!other.bounds||point.x+normal.x*.0001>=other.bounds.minX&&point.x+normal.x*.0001<=other.bounds.maxX&&point.y+normal.y*.0001>=other.bounds.minY&&point.y+normal.y*.0001<=other.bounds.maxY)))return null;
  const distance=trajectory.horizontalDistance,slope=projectileTrajectorySlope(trajectory,entry),dot=Math.abs((normal.x*dx+normal.y*dy)/distance)/Math.hypot(1,slope);
  return dot>0&&dot<=COMBAT_BALANCE.firearmRicochetMaximumNormalDot?{normal,impact:point}:null;
 }

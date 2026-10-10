@@ -203,7 +203,7 @@ test('invalid tool metadata is rejected at the shared item persistence boundary'
 test('authored caches reuse existing map IDs and give tools before any required lock', () => {
   const map = buildSectorMap({sector: 'yatasto'}), before = structuredClone(map), authored = authoredEnvironment('yatasto', map);
   assert.equal(authored.containers.length, 1); assert.equal(authored.containers[0].locked, false); assert.equal(authored.containers[0].trap, undefined);
-  assert.equal(map.tiles.find(tile => tile.doorId === 'yatasto:door-left').open, true);
+  assert.equal(map.wallEdges.find(edge => edge.doorId === 'yatasto:door-left').open, true);
   assert.equal(authored.doors.length, 1); assert.equal(authored.doors[0].id, 'yatasto:door-right');
   assert.ok(map.props.some(prop => prop.id === authored.containers[0].id));
   let unit = soldier();
@@ -239,6 +239,7 @@ for (const compactLayout of [false, true]) test(`Mendoza supply cache binds one 
   Object.assign(cache, {open: true, locked: false, contents: [{...cache.contents[0],count:2}]});
   Object.assign(cache.trap, {armed: false, discoveredBy: ['player']});
   const saved = structuredClone(first), returned = enterSector(request, first);
-  assert.deepEqual(returned.props.find(prop => prop.id === cache.id), saved.props.find(prop => prop.id === cache.id));
+  const persisted=prop=>Object.fromEntries(Object.entries(prop).filter(([key])=>key!=='knownToPlayer'));
+  assert.deepEqual(persisted(returned.props.find(prop => prop.id === cache.id)), persisted(saved.props.find(prop => prop.id === cache.id)));
   assert.deepEqual(first, saved);
 });

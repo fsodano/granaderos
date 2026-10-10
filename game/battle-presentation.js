@@ -4,6 +4,7 @@ import {projectileTrajectoryPoint} from './projectile-trajectory.js';
 import {markFirearmNearMissPresented} from './firearm-near-miss-feedback.js';
 import {surfaceAt,tacticalLevel} from './tactical-space.js';
 import {obstacleVolumesAt} from './sight-geometry.js';
+import {wallEdgeId,wallEdgeCells} from './wall-geometry.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 let recorder=null,recordingShotHand=null;
 export function withBattleShotHand(hand,execute){const previous=recordingShotHand;recordingShotHand=hand==='offhand'?'offhand':'primary';try{return execute();}finally{recordingShotHand=previous;}}
@@ -28,9 +29,11 @@ function visibleSignature(state,visible){return JSON.stringify(bodyEntries(state
 function observedStoneContact(state,point,contact,canObserve,canObserveExterior){
  if(!contact||!point||!contact.point||tacticalLevel(point)!==tacticalLevel(contact.point)||!['x','y','height'].every(key=>Number.isFinite(point[key])&&Number.isFinite(contact.point[key])&&Math.abs(point[key]-contact.point[key])<1e-8))return false;
  const match=typeof contact.sourceId==='string'&&/^surface:(\d+):(\d+),(\d+)$/.exec(contact.sourceId);
- if(!match)return false;
- const cell={tacticalLevel:Number(match[1]),x:Number(match[2]),y:Number(match[3])},surface=surfaceAt(state,cell);
- const volume=surface&&obstacleVolumesAt(state,cell).find(volume=>volume.id===contact.sourceId&&volume.kind==='cover'&&volume.stoneFace);
+ const edge=typeof contact.sourceId==='string'&&contact.sourceId.startsWith('edge:')?
+  (state.wallEdges??[]).find(edge=>`edge:${wallEdgeId(edge)}`===contact.sourceId):null;
+ if(!match&&!edge)return false;
+ const cell=edge?wallEdgeCells(edge)[0]:{tacticalLevel:Number(match[1]),x:Number(match[2]),y:Number(match[3])},surface=edge??surfaceAt(state,cell);
+ const volume=surface&&obstacleVolumesAt(state,cell).find(volume=>volume.id===contact.sourceId&&['cover','edge'].includes(volume.kind)&&volume.stoneFace);
  if(!volume||tacticalLevel(point)!==cell.tacticalLevel||point.height<=volume.bottom+1e-8||point.height>=volume.top-1e-8)return false;
  const normal=contact.normal,bounds=volume.bounds;
  if(!normal||normal.height!==0)return false;
@@ -43,7 +46,13 @@ function observedStoneContact(state,point,contact,canObserve,canObserveExterior)
  // Private neighbouring material still affects physics, but cannot veto a
  // visible exterior contact in the public presentation.
  if(obstacleVolumesAt(state,outside).some(other=>{
-  if(!other.stoneFace||point.height<=other.bottom+1e-8||point.height>=other.top-1e-8)return false;
+  if(other.id===volume.id||!other.stoneFace||point.height<=other.bottom+1e-8||point.height>=other.top-1e-8)return false;
+  if(other.kind==='edge'){
+   const bounds=other.bounds,x=point.x+normal.x*.0001,y=point.y+normal.y*.0001;
+   if(x<bounds.minX||x>bounds.maxX||y<bounds.minY||y>bounds.maxY)return false;
+   const neighbour=(state.wallEdges??[]).find(edge=>`edge:${wallEdgeId(edge)}`===other.id);
+   return neighbour&&canObserveExterior(state,neighbour);
+  }
   if(other.kind==='cover'){
    const neighbour=surfaceAt(state,{...outside,tacticalLevel:other.tacticalLevel});
    return neighbour&&canObserveExterior(state,neighbour);

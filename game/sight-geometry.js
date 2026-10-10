@@ -1,17 +1,22 @@
 import {DEFAULT_SLAB_THICKNESS,surfaceAt,surfaceHeight,tacticalLevel} from './tactical-space.js';
+import {WALL_THICKNESS,wallEdgeId,wallEdgeCells,wallEdgeCenter,wallEdgeBlocksMovement} from './wall-geometry.js';
 
 // Abstract Granaderos dimensions and resistance, not real ballistic measures.
 const resistance={wood:24,adobe:80,stone:120,hay:3};
 const furniture={table:{height:.8,material:'wood'},bench:{height:.45,material:'wood'},bed:{height:.55,material:'wood'},chest:{height:.8,material:'wood'},barrels:{height:1.2,material:'wood'},hay:{height:1.3,material:'hay'}};
 const heights={standing:{muzzle:1.4,head:1.6,torso:1.1,legs:.45},crouched:{muzzle:.9,head:1,torso:.7,legs:.3},prone:{muzzle:.25,head:.3,torso:.2,legs:.15},mounted:{muzzle:2,head:2.2,torso:1.8,legs:1.1}};
-const epsilon=1e-10,columnIndexes=new WeakMap();
+const epsilon=1e-10,columnIndexes=new WeakMap(),edgeIndexes=new WeakMap();
 const columnKey=point=>`${point.x},${point.y}`;
 const containingCell=point=>({x:Math.floor(point.x+.5),y:Math.floor(point.y+.5),tacticalLevel:tacticalLevel(point)});
 
 export const relativeBodyHeight=(unit,part)=>heights[unit.unconscious||unit.knockedDown?'prone':unit.mounted?'mounted':unit.stance??'standing']?.[part]??heights.standing[part];
 export const usesElevationGeometry=(state,a,b)=>Boolean(state.upperSurfaces?.length||tacticalLevel(a)!==0||tacticalLevel(b)!==0);
+export function wallEdgeBaseHeight(state,edge){
+ return edge.elevation??wallEdgeCells(edge).map(cell=>surfaceHeight(state,cell)).find(Number.isFinite)??null;
+}
 export function absoluteBodyHeight(state,unit,part='head'){
- const base=surfaceHeight(state,containingCell(unit));
+ const edge=unit.axis&&(state.wallEdges??[]).find(edge=>wallEdgeId(edge)===(unit.wallEdgeId??unit.id??unit.edgeId)&&edge.axis===unit.axis);
+ const base=edge?wallEdgeBaseHeight(state,edge):surfaceHeight(state,containingCell(unit));
  return base===null?null:base+relativeBodyHeight(unit,part);
 }
 export const groundTileAt=(state,point)=>surfaceAt(state,{x:point.x,y:point.y});
@@ -64,6 +69,35 @@ export function rayHeightIntersection(muzzle,destination,cell,bottom,top,stopFra
  return exit>=entry-epsilon?{entry,exit}:null;
 }
 
+// A wall occupies a thin face at a cell boundary. Clip the horizontal ray to
+// that face before testing height; its incident cells remain usable floors.
+// Other cover keeps its existing cell-wide geometry and corner conventions.
+export function volumeRayCell(source,destination,cell,volume){
+ if(volume.kind!=='edge'||!volume.bounds)return cell;
+ let entry=cell.entry,exit=cell.exit;
+ for(const [axis,min,max] of [['x','minX','maxX'],['y','minY','maxY']]){
+  const start=source[axis],delta=destination[axis]-start;
+  if(Math.abs(delta)<epsilon){if(start<volume.bounds[min]-epsilon||start>volume.bounds[max]+epsilon)return null;continue;}
+  const first=(volume.bounds[min]-start)/delta,last=(volume.bounds[max]-start)/delta;
+  entry=Math.max(entry,Math.min(first,last));exit=Math.min(exit,Math.max(first,last));
+  if(exit<entry-epsilon)return null;
+ }
+ return {...cell,entry,exit};
+}
+
+function edgesInColumn(state,point){
+ const edges=state.wallEdges;if(!edges?.length)return [];
+ let index=edgeIndexes.get(edges);
+ if(!index||index.length!==edges.length){
+  const columns=new Map();
+  for(const edge of edges)for(const cell of wallEdgeCells(edge)){
+   const key=columnKey(cell),column=columns.get(key)??[];column.push(edge);columns.set(key,column);
+  }
+  index={length:edges.length,columns};edgeIndexes.set(edges,index);
+ }
+ return index.columns.get(columnKey(point))??[];
+}
+
 function upperColumn(state,point){
  const surfaces=state.upperSurfaces;if(!surfaces?.length)return [];
  let index=columnIndexes.get(surfaces);
@@ -93,6 +127,16 @@ export function obstacleVolumesAt(state,point){
   const profile=propCoverProfile(prop),base=surfaceHeight(state,prop);if(!profile||base===null)continue;
   volumes.push({id:`prop:${prop.id}`,kind:'prop',tacticalLevel:tacticalLevel(prop),bottom:base,top:base+profile.height,...profile,blocksSight:prop.blocksSight!==false,stoneFace:prop.material==='stone'&&prop.type!=='hay',bounds:{minX:prop.x-.5,maxX:prop.x+size.width-.5,minY:prop.y-.5,maxY:prop.y+size.height-.5}});
  }
+ for(const edge of edgesInColumn(state,point)){
+  if(edge.destroyed)continue;
+  const profile=terrainCoverProfile({...edge,blocked:wallEdgeBlocksMovement(edge)});if(!profile)continue;
+  const base=wallEdgeBaseHeight(state,edge);if(base===null)continue;
+  const horizontal=edge.axis==='x',half=WALL_THICKNESS/2,bounds=horizontal?
+   {minX:edge.x-.5,maxX:edge.x+.5,minY:edge.y-.5-half,maxY:edge.y-.5+half}:
+   {minX:edge.x-.5-half,maxX:edge.x-.5+half,minY:edge.y-.5,maxY:edge.y+.5};
+  volumes.push({id:`edge:${wallEdgeId(edge)}`,kind:'edge',edgeId:wallEdgeId(edge),tacticalLevel:tacticalLevel(edge),bottom:base,top:base+profile.height,...profile,
+   blocksSight:edge.type==='window'||Boolean(edge.blocksSight??wallEdgeBlocksMovement(edge)),stoneFace:edge.material==='stone'&&wallEdgeBlocksMovement(edge)&&edge.type==='wall',bounds});
+ }
  return volumes;
 }
 
@@ -100,6 +144,14 @@ function requestedSightObstacle(state,target){
  // A selected object can expose its near face. Coordinates alone, or an actor
  // occupying the same cell, cannot grant sight through that object's volume.
  if(typeof target.type!=='string'||target.hp!==undefined||target.side!==undefined)return null;
+ if(target.axis==='x'||target.axis==='y'){
+  const edge=(state.wallEdges??[]).find(edge=>{
+   if(wallEdgeId(edge)!==(target.wallEdgeId??target.id??target.edgeId)||edge.axis!==target.axis||edge.type!==target.type)return false;
+   const center=wallEdgeCenter(edge);
+   return target.x===edge.x&&target.y===edge.y||target.x===center.x&&target.y===center.y;
+  });
+  return edge?`edge:${wallEdgeId(edge)}`:null;
+ }
  const cell=containingCell(target),surface=surfaceAt(state,cell);
  if(surface?.type===target.type){
   if(target.doorId!==undefined&&target.doorId!==surface.doorId)return null;
@@ -114,10 +166,20 @@ function requestedSightObstacle(state,target){
  return prop?`prop:${prop.id}`:null;
 }
 
+function sightPoint(state,point){
+ if(!point.axis||point.hp!==undefined||point.side!==undefined)return point;
+ const edge=(state.wallEdges??[]).find(edge=>wallEdgeId(edge)===(point.wallEdgeId??point.id??point.edgeId)&&edge.axis===point.axis&&edge.type===point.type);
+ if(!edge)return point;
+ const center=wallEdgeCenter(edge);
+ if(!(point.x===edge.x&&point.y===edge.y||point.x===center.x&&point.y===center.y))return point;
+ return {...point,...center,wallEdgeId:wallEdgeId(edge)};
+}
+
 // All maps use the same physical ray. A zero-length corner touch crosses no
 // material, matching projectile geometry and the established flat corner rule.
 // No actor roster is inspected here.
 export function elevationSightClear(state,a,b){
+ a=sightPoint(state,a);b=sightPoint(state,b);
  const start=absoluteBodyHeight(state,a),end=absoluteBodyHeight(state,b);
  if(start===null||end===null)return false;
  const requested=requestedSightObstacle(state,b);
@@ -135,7 +197,8 @@ export function elevationSightClear(state,a,b){
    // Only the requested object's own cover is exempt. Slabs remain solid, even
    // when the requested object is a floor or occupies the terminal column.
    if(volume.kind!=='slab'&&volume.id===requested)continue;
-   if(volume.blocksSight&&rayHeightIntersection(start,end,cell,volume.bottom,volume.top))return false;
+   const crossed=volumeRayCell(a,b,cell,volume);
+   if(crossed&&crossed.exit-crossed.entry>epsilon&&volume.blocksSight&&rayHeightIntersection(start,end,crossed,volume.bottom,volume.top))return false;
   }
  }
  return true;
