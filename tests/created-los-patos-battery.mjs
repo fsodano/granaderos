@@ -3,14 +3,14 @@ import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deplo
 import {actBattle} from '../game/tactical.js';
 import {recoveryBronzeContactController} from './recovery-paid-battery-driver.mjs';
 
-// This paid column has eight real arrivals and two bronze guns. Place its
+// This paid column has eight real arrivals and two owned guns. Place its
 // support close to the battery, using only owned positions and legal entry
 // cells. The existing contact policy keeps a usable crew crouched together.
-export function createdLosPatosBattery({report=()=>{}}={}){
+export function createdLosPatosBattery({gunTypes=['bronze4','bronze4'],report=()=>{}}={}){
  function deploy(start){
   let battle=start;const model=sectorDeploymentModel(start);assert.ok(model);
   const guns=start.artillery.filter(g=>g.side==='player'&&!g.stationed);
-  assert.equal(guns.length,2);assert.ok(guns.every(g=>g.type==='bronze4'));
+  assert.equal(guns.length,2);assert.deepEqual(guns.map(g=>g.type),gunTypes);
   assert.equal(model.units.length,8);
   const issued=model.units.map(row=>start.units.find(u=>u.id===row.id));
   const capable=u=>u?.side==='player'&&u.hp>=15&&(u.energy??100)>0&&!u.bleeding&&!u.unconscious&&!u.asleep&&!u.knockedDown&&!u.entangled&&!u.routed&&!u.departure&&!u.fled&&!u.surrendered&&!u.captured&&!u.bound&&!u.detained;

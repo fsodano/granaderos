@@ -9,9 +9,9 @@ import {createdLosPatosBattery} from '../tests/created-los-patos-battery.mjs';
 // earned mountain deployment, or a proof of campaign encode/decode admission.
 // All roles, stocks, gear, geometry and seed are fixed before first admission.
 const grid=(width,height)=>Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'stone',blocked:false,cover:0}));
-function initial(ids,medical,kits){
+function initial(ids,medical,kits,gunTypes=['bronze4','bronze4']){
  const squad=ids.map((id,i)=>({id:String(id),name:`Issued ${id}`,x:23,y:2+i,hp:80,maxHp:80,energy:85,morale:80,medical:medical[i],medkits:kits[i],weapon:1801,condition:90,loaded:1,ammo:9,entryReason:'arrival',entryEdge:'E',entryAnchor:{x:19,y:8}}));
- const b=createBattle(squad,{id:'declared-los-patos-deployment',width:24,height:24,tiles:grid(24,24),seed:42,exploration:true,deferContact:true,enemies:[{id:'enemy',name:'Declared enemy',x:1,y:20,weapon:1805,loaded:1,ammo:3,patrol:false,overwatch:false}],artillery:[{id:'finite-bronze-a',type:'bronze4',side:'player',x:22,y:10,loaded:true,ammo:6},{id:'finite-bronze-b',type:'bronze4',side:'player',x:22,y:11,loaded:true,ammo:6}]});
+ const b=createBattle(squad,{id:'declared-los-patos-deployment',width:24,height:24,tiles:grid(24,24),seed:42,exploration:true,deferContact:true,enemies:[{id:'enemy',name:'Declared enemy',x:1,y:20,weapon:1805,loaded:1,ammo:3,patrol:false,overwatch:false}],artillery:[{id:'finite-bronze-a',type:gunTypes[0],side:'player',x:22,y:10,loaded:true,ammo:6},{id:'finite-bronze-b',type:gunTypes[1],side:'player',x:22,y:11,loaded:true,ammo:6}]});
  assert.equal(beginSectorDeployment(b,{squad}),true);
  return validateBattleSnapshot(JSON.parse(JSON.stringify(b)));
 }
@@ -20,10 +20,11 @@ const cases=[
  {name:'declared-original-role-cohort',ids:[11,7,124,138,102,133,116,122],medical:[30,35,26,26,20,20,70,85],kits:[0,10,0,2,0,0,0,0],donor:'7',doctors:['116','122'],transferred:10},
  {name:'declared-different-live-cohort-with-existing-doctor-stocks',ids:[126,112,140,103,104,111,130,135],medical:[20,94,30,30,30,30,86,93],kits:[0,7,0,0,0,0,2,1],donor:'112',doctors:['130','135'],transferred:7},
  {name:'declared-existing-overfloor-doctor-stock',ids:[201,202,203,204,205,206,207,208],medical:[20,20,70,85,20,20,20,20],kits:[2,0,6,3,0,0,0,0],donor:'201',doctors:['203','204'],transferred:2},
+ {name:'declared-finite-field-and-swivel-with-the-same-eight-arrivals',ids:[201,202,203,204,205,206,207,208],medical:[20,20,70,85,20,20,20,20],kits:[2,0,6,3,0,0,0,0],donor:'201',doctors:['203','204'],transferred:2,gunTypes:['field8','swivel']},
 ];
 for(const scenario of cases)test(scenario.name,t=>{
- const start=initial(scenario.ids,scenario.medical,scenario.kits),before=structuredClone(start),events=[];
- const helper=createdLosPatosBattery({report:event=>events.push(event)});
+ const start=initial(scenario.ids,scenario.medical,scenario.kits,scenario.gunTypes),before=structuredClone(start),events=[];
+ const helper=createdLosPatosBattery({...(scenario.gunTypes?{gunTypes:scenario.gunTypes}:{}),report:event=>events.push(event)});
  const result=helper.deploy(start);assert.deepEqual(start,before);
  const roles=events.find(e=>e.event==='createdLosPatosDressingRoles');
  assert.equal(roles.donorId,scenario.donor);assert.deepEqual(roles.doctorIds,scenario.doctors);assert.equal(roles.transferred,scenario.transferred);
