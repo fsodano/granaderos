@@ -1753,9 +1753,10 @@ export function lootSearchPreview(s,u,point){
   if(!route)return result('No hay una ruta para acercarse al equipo.');
   return result(s.mode!=='exploration'&&u.ap<route.cost?'PA insuficientes para acercarse al equipo.':null,route);
 }
+const wallEdgeReferenceMatches=(edge,ref)=>['x','y','axis','tacticalLevel'].every(key=>ref[key]===undefined||(key==='tacticalLevel'?tacticalLevel(edge):edge[key])===ref[key])&&(ref.wallEdgeId===undefined||ref.wallEdgeId===wallEdgeId(edge));
 function environmentObject(s,ref){
   const edge=(s.wallEdges??[]).find(edge=>(ref?.kind==='door'&&edge.type==='door'&&(edge.doorId??wallEdgeId(edge))===ref.id)||(ref?.kind==='wall'&&wallEdgeId(edge)===ref.id));
-  if(edge)return ['x','y','axis','tacticalLevel'].every(key=>ref[key]===undefined||(key==='tacticalLevel'?tacticalLevel(edge):edge[key])===ref[key])?edge:null;
+  if(edge)return wallEdgeReferenceMatches(edge,ref)?edge:null;
   if(ref?.kind==='door')return s.tiles.find(t=>t.type==='door'&&(t.doorId??`door:${t.x}:${t.y}`)===ref.id);
   if(ref?.kind==='container')return s.props.find(p=>p.type==='chest'&&p.id===ref.id);
   if(ref?.kind==='wall'&&(ref.tacticalLevel??0)===0)return s.tiles.find(t=>(t.tacticalLevel??0)===0&&`wall:${t.x}:${t.y}`===ref.id&&(ref.x===undefined||ref.x===t.x)&&(ref.y===undefined||ref.y===t.y));
@@ -1764,7 +1765,7 @@ function environmentObject(s,ref){
 export function environmentTargetAt(s,point){
   if(point?.wallEdgeId||point?.axis){
     const edge=(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===(point.wallEdgeId??point.id));
-    if(!edge)return null;
+    if(!edge||!wallEdgeReferenceMatches(edge,point))return null;
     const kind=edge.type==='door'?'door':breachableWall(edge)?'wall':null;
     return kind?{...edge,kind,id:kind==='door'?(edge.doorId??wallEdgeId(edge)):wallEdgeId(edge),wallEdgeId:wallEdgeId(edge)}:null;
   }
@@ -1798,7 +1799,7 @@ export function environmentPreview(s,u,ref,verb){
   let reason=unseenContainer?'El cofre debe estar a la vista del soldado.':unseenWall?'La pared debe estar a la vista del soldado.':environmentReachReason(s,u,target)??profile.reason;
   if(!reason&&verb==='close'&&target.type==='door'&&!target.axis&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
   if(!reason&&s.mode!=='exploration'&&u.ap<profile.pa)reason=`Faltan ${formatAP(profile.pa)} PA para manejar el objeto.`;
-  return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,verb}};
+  return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,...Object.fromEntries(['wallEdgeId','x','y','axis','tacticalLevel'].filter(key=>ref?.[key]!==undefined).map(key=>[key,ref[key]])),verb}};
 }
 export function environmentUsePreview(s,u,ref,verb){
   const local=environmentPreview(s,u,ref,verb),target=environmentObject(s,ref);
@@ -2327,7 +2328,7 @@ for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
 else if(a.type==='door'||a.type==='environment'||a.type==='breach'){
-  const ref=a.type==='door'?{kind:'door',id:a.doorId??environmentTargetAt(s,a)?.id}:a.type==='breach'?(environmentTargetAt(s,a)??{kind:'wall',id:`wall:${a.x}:${a.y}`,x:a.x,y:a.y,tacticalLevel:a.tacticalLevel??0}):a;
+  const ref=a.type==='door'?{...a,kind:'door',id:a.doorId??environmentTargetAt(s,a)?.id}:a.type==='breach'?(environmentTargetAt(s,a)??(a.wallEdgeId||a.axis?null:{kind:'wall',id:`wall:${a.x}:${a.y}`,x:a.x,y:a.y,tacticalLevel:a.tacticalLevel??0})):a;
   const object=environmentObject(s,ref);
   const verb=a.type==='breach'?'breach':a.type==='door'?(typeof a.open==='boolean'?(a.open?'open':'close'):object?.open?'close':'open'):a.verb;
   const preview=environmentPreview(s,u,ref,verb);if(!preview.valid)return fail(preview.reason);

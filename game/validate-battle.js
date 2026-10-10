@@ -1,4 +1,4 @@
-import {wallEdgeKey,WALL_GEOMETRY_VERSION} from './wall-geometry.js';
+import {wallEdgeKey,wallEdgeCells,WALL_GEOMETRY_VERSION} from './wall-geometry.js';
 import {validateQuestWithdrawals} from './quest-withdrawal.js';
 import {validateCivilianWeapons} from './civilian-weapons.js';
 import {validateFiniteArsenalScene} from './finite-artillery-arsenals.js';
@@ -19,7 +19,7 @@ import {migrateBattleAmmunition} from './campaign-ammunition.js';
 import {civilianIncidents,validateCivilianWounds} from './civilian-harm.js';
 import {validateSectorDeployment} from './sector-deployment.js';
 import {NOISE_KINDS} from './tactical-awareness.js';
-import {validateTacticalSpace,MAX_TACTICAL_LEVEL} from './tactical-space.js';
+import {validateTacticalSpace,MAX_TACTICAL_LEVEL,surfaceAt,surfaceHeight} from './tactical-space.js';
 import {validateRegionalWeather} from './regional-weather.js';
 import {validateQuestDefinitions} from './quest-definitions.js';
 import {validateRoadsideDiscoveries} from './roadside-discoveries.js';
@@ -60,7 +60,7 @@ need(Array.isArray(s.tiles)&&s.tiles.length===s.width*s.height,'casillas');const
 for(const t of s.tiles){validateCoverMetadata(t);validateStructureDamage(t);need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');seen.add(`${t.x},${t.y}`);need(['wall','grass','road','water','stone','mud','forest','scrub','floor','door','window','rubble','cliff'].includes(t.type)&&typeof t.blocked==='boolean'&&number(t.cover,0,100),'terreno');for(const key of ['blocksSight','open','locked'])if(t[key]!==undefined)need(typeof t[key]==='boolean','puertas');for(const key of ['buildingId','roomId','doorId'])if(t[key]!=null)need(text(t[key]),'habitaciones');}
 if(s.wallGeometryVersion!==undefined)need(s.wallGeometryVersion===WALL_GEOMETRY_VERSION,'versión de paredes');
 s.wallEdges??=[];
-need(Array.isArray(s.wallEdges)&&s.wallEdges.length<=2*s.width*s.height+s.width+s.height,'paredes');
+need(Array.isArray(s.wallEdges)&&s.wallEdges.length<=(2*s.width*s.height+s.width+s.height)*(MAX_TACTICAL_LEVEL+1),'paredes');
 const wallKeys=new Set(),wallIds=new Set(),doorIds=new Set();
 for(const edge of s.wallEdges){
  need(object(edge)&&text(edge.id)&&edge.id.length>0&&!wallIds.has(edge.id)&&["x","y"].includes(edge.axis)&&
@@ -69,6 +69,9 @@ for(const edge of s.wallEdges){
    (edge.tacticalLevel===undefined||integer(edge.tacticalLevel,0,MAX_TACTICAL_LEVEL))&&!wallKeys.has(wallEdgeKey(edge))&&
    ['wall','door','window','rubble'].includes(edge.type),'bordes de paredes');
  wallKeys.add(wallEdgeKey(edge));wallIds.add(edge.id);validateCoverMetadata(edge);validateStructureDamage(edge);
+ const supports=wallEdgeCells(edge).filter(cell=>surfaceAt(s,cell));
+ need(supports.length>0,'apoyos de paredes');
+ if(edge.elevation!==undefined)need(number(edge.elevation,0,100)&&supports.some(cell=>surfaceHeight(s,cell)===edge.elevation),'altura de paredes');
  for(const field of ['blocked','blocksSight','open','locked'])if(edge[field]!==undefined)need(typeof edge[field]==='boolean','estado de paredes');
  if(edge.cover!==undefined)need(number(edge.cover,0,100),'cobertura de paredes');
  if(edge.buildingId!==undefined)need(text(edge.buildingId),'edificio de la pared');

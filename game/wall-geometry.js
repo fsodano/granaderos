@@ -141,9 +141,14 @@ export function migrateWallGeometry(state) {
     const horizontal = source.has(`${tile.x-1},${tile.y}`) || source.has(`${tile.x+1},${tile.y}`);
     const vertical = source.has(`${tile.x},${tile.y-1}`) || source.has(`${tile.x},${tile.y+1}`);
     const axes = [...(horizontal || !vertical ? ['x'] : []), ...(vertical ? ['y'] : [])];
-    for (const axis of axes) {
+    for (const [index,axis] of axes.entries()) {
       const edge = {...tile,axis,x:tile.x+(axis==='y'?1:0),y:tile.y+(axis==='x'?1:0)};
-      edge.id = wallEdgeId(edge); edges.push(edge);
+      edge.id = tile.id && axes.length>1 ? `${tile.id}:${axis}` : wallEdgeId(edge);
+      if(index&&['door','window'].includes(edge.type)){
+        edge.type='wall';edge.blocked=true;edge.blocksSight=true;edge.cover=40;
+        for(const key of ['doorId','open','locked','broken','jammed','trap','contents'])delete edge[key];
+      }
+      edges.push(edge);
     }
     Object.assign(tile,{type:'grass',blocked:false,blocksSight:false,cover:0});
     for (const key of ['doorId','open','locked','broken','trap','contents','structureDamage','destroyed','obstacleHeight','projectileResistance']) delete tile[key];
