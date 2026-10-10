@@ -3,6 +3,7 @@ import {wallEdgeControlObjects} from './TacticalWallEdgeControls';
 import {sitePath} from '../lib/site-path.js';
 import {artilleryProfile} from '../../game/artillery-definitions.js';
 import {createSceneTerrainCache} from '../../game/scene-terrain.js';
+import {sceneWallEdges} from '../../game/scene-wall-edges.js';
 import {pointInViewport} from '../../game/tactical-viewport.js';
 import {terrainMaterial} from '../../game/regional-terrain.js';
 import {aimedBodyPart,targetHitFrame} from '../../game/aim-cursor.js';
@@ -39,7 +40,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
  const filterPrefix=useId().replace(/:/g,''),enemyGlow=`enemy-glow-${filterPrefix}`,knownGhost=`actor-ghost-${filterPrefix}`;
  const terrainCache=useRef<ReturnType<typeof createSceneTerrainCache>|null>(null);
  if(!terrainCache.current)terrainCache.current=createSceneTerrainCache();
- const terrain=useMemo(()=>terrainCache.current!(s),[s]);
+ const terrain=useMemo(()=>terrainCache.current!({...s,wallEdges:sceneWallEdges(s,players)}),[s,players]);
  const roomKey=JSON.stringify([...revealed].sort());
  const stableRooms=useMemo(()=>new Set<string>(JSON.parse(roomKey)),[roomKey]);
  const handlers=useRef({onTile,onHover});handlers.current={onTile,onHover};
@@ -205,7 +206,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
   {terrainVisible&&hover&&!hover.wallEdgeId&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
   {groundOverlay}
   {orderedObjects.map(o=><g key={o.key}>{o.node}</g>)}
-  {[...visiblePeople,...visibleCivilians].filter(v=>!(visiblePeople.includes(v)&&v.side==='player'&&positions[v.id]?.moving)&&foregroundOccludesActor(s,{...v,...positions[v.id]},project,revealed)).map(v=>{const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false},at={...v,...moving},p=projectSurface(s,project,at),npc=visibleCivilians.includes(v),highlighted=!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered;return <g key={`ghost-${v.id}`} data-known-actor-silhouette={v.id} data-enemy-highlight={highlighted||undefined} filter={highlighted?`url(#${enemyGlow})`:undefined} pointerEvents="none"><g filter={`url(#${knownGhost})`} opacity=".7"><SpriteFigure unit={v} position={p} motion={{...moving,direction:moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:moving.direction}} pose={poses[v.id]??'idle'} appearance={npc?'civilian':'soldier'}/></g></g>;})}
+  {[...visiblePeople,...visibleCivilians].filter(v=>!(visiblePeople.includes(v)&&v.side==='player'&&positions[v.id]?.moving)&&foregroundOccludesActor(terrain,{...v,...positions[v.id]},project,revealed)).map(v=>{const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false},at={...v,...moving},p=projectSurface(s,project,at),npc=visibleCivilians.includes(v),highlighted=!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered;return <g key={`ghost-${v.id}`} data-known-actor-silhouette={v.id} data-enemy-highlight={highlighted||undefined} filter={highlighted?`url(#${enemyGlow})`:undefined} pointerEvents="none"><g filter={`url(#${knownGhost})`} opacity=".7"><SpriteFigure unit={v} position={p} motion={{...moving,direction:moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:moving.direction}} pose={poses[v.id]??'idle'} appearance={npc?'civilian':'soldier'}/></g></g>;})}
   {(()=>{
    const occurrences=new Map<string,number>();
    return (s.smoke??[]).map((v:any)=>{
