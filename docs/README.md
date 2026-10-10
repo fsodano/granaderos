@@ -1,7 +1,8 @@
 # Granaderos documentation
 
-Granaderos is a browser strategy and tactical game in active development. Start
-with the [project README](../README.md) for the game overview and local setup.
+Granaderos is a browser strategy and tactical game in active development. Read
+the [version 0.1 status](verification/version-0.1.md) for the current scope and
+known limits. Start with the [project README](../README.md) for the game overview and local setup.
 Player-facing text is Spanish. Code and documentation are English.
 
 ## Start here
@@ -10,17 +11,23 @@ Player-facing text is Spanish. Code and documentation are English.
 | --- | --- |
 | Install, run, build or test the browser game | [Development setup](development/getting-started.md) |
 | Read the current game design | [Game design](specification/game-design.md) |
-| Review formal cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
-| Check published features and remaining work | [Published progress ledger](verification/published-progress.md) |
+| Check version 0.1 scope and remaining work | [Version 0.1 status](verification/version-0.1.md) |
+| Find requirement history and feature evidence | [Published progress ledger](verification/published-progress.md) |
+| Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
-| Edit campaign content | [Story editor](development/story-editor.md) |
-| Play or modify the independent example | [La ruta de las postas](development/example-post-campaign.md) |
+| Use the experimental content editor | [Story editor](development/story-editor.md) |
+| Inspect or modify the experimental example | [La ruta de las postas](development/example-post-campaign.md) |
+| Review future campaign creation and sharing | [Campaign authoring plan](plans/campaign-authoring.md) |
 | Build tactical sectors | [Sector editor](development/sector-editor.md) |
 | Find controls and game-system notes | [Gameplay index](gameplay/README.md) |
 | Find art sources and visual decisions | [Art guide](art/README.md) and [decision records](adr/README.md) |
-| Review unpublished gameplay integration | [Development-workspace acceptance](verification/gameplay-completion.md) |
+| Review historical workspace acceptance | [Development-workspace acceptance](verification/gameplay-completion.md) |
 
-The [dated alpha service-equipment record](verification/alpha-service-equipment-return-2026-10-01.md) describes bounded complete local acceptance included in the current alpha PR; it does not assert CI or merge. PR139 remains the dated publication snapshot.
+The [alpha service-equipment record](verification/alpha-service-equipment-return-2026-10-01.md)
+and [PR #139 consolidation](verification/latest-build-consolidation.md) retain
+their 1 October source, checks and delivery limits. They do not describe the
+current version's complete acceptance. Full community campaign creation and
+sharing are [future work](plans/campaign-authoring.md).
 
 ## Documentation map
 
@@ -42,7 +49,8 @@ The [changelog](CHANGELOG.md) records release checkpoints.
 
 ## Current design and tracking
 
-[Game design](specification/game-design.md) is the current product contract.
+[Version 0.1 status](verification/version-0.1.md) records the current release
+scope. [Game design](specification/game-design.md) records the product design.
 [Published progress](verification/published-progress.md) is generated from
 [the requirement register](verification/requirements.json). It separates published
 work, local-only code, failed acceptance, missing behavior and unverified claims.
@@ -57,21 +65,26 @@ the current design and register. Preserve all original and parity requirements.
 
 ## Which document governs status?
 
-1. The [published progress ledger](verification/published-progress.md) is the
-   primary status record for GitHub `main`. Its approved economy and contract
-   changes take precedence over older requirements and workspace prototypes.
+1. The [version 0.1 status](verification/version-0.1.md) records the version's
+   scope, current source evidence and known limits. A version tag does not prove
+   game completion or publish a new GitHub Pages deployment.
 2. Published feature guides describe bounded behavior. Use the progress ledger
-   and each record's date and limits when assessing completion.
+   and each record's source, date and limits when assessing completion. The
+   generated ledger includes historical acceptance and can lag later changes.
 3. Notes marked **development-workspace record** describe the separate advanced
-   gameplay checkout. The [workspace acceptance record](verification/gameplay-completion.md)
-   and [JA2 parity audit](verification/ja2-parity-audit.md) preserve its results
-   and requirements. They do not establish that those features are on `main`.
+   gameplay checkout at their recorded date. Later work can be merged. The
+   [workspace acceptance record](verification/gameplay-completion.md) preserves
+   its dated results. The [JA2 parity audit](verification/ja2-parity-audit.md)
+   combines dated assessments and named published feature receipts; it does
+   not establish full current parity.
 4. [Specifications](specification/README.md), [plans](plans/README.md) and
    [archived records](archive/README.md) preserve requirements and history.
    They do not replace accepted scope changes or current verification.
 
-Full game and story-editor completion remain open. Publishing a development
-record does not publish its implementation.
+Full game completion remains open. The existing editors support bounded,
+experimental workflows. A complete campaign creator platform and community
+sharing remain future work. Publishing a development record does not prove
+its implementation or acceptance on a later source.
 
 ## Keep the documentation usable
 

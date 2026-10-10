@@ -1,7 +1,23 @@
 # Changelog
 
 > **Release history.** Entries describe their recorded checkpoints. Read
-> [published progress](verification/published-progress.md) for current scope.
+> [version 0.1](verification/version-0.1.md) for current scope. Earlier development
+> numbers are internal checkpoints; their features and results are dated history.
+
+## 0.1 — 10 October 2026
+
+Git tag: `0.1`. Package/build version: `0.1.0`. Playable development checkpoint.
+
+- Records the current Spanish browser game, persistent campaign systems, finite
+  equipment, Three.js actors, shared wall edges and visible firearm projectiles.
+- Corrects the README and current guides, indexes and requirement summaries.
+- Makes equipment commerce deferral and remaining campaign acceptance limits explicit.
+- Records complete author and community campaign creation/sharing as future work.
+  Existing experimental editors and the example remain available.
+- Synchronizes version metadata. This checkpoint changes no gameplay rules.
+
+See [the checkpoint record](verification/version-0.1.md) for validation, save
+compatibility and open work. The source tag does not deploy GitHub Pages.
 
 ## 0.4.0-dev.1
 

@@ -1,17 +1,23 @@
 # Gameplay documentation
 
+Current scope: [version 0.1](../verification/version-0.1.md). Equipment commerce is disabled;
+older purchase, supplier and refill notes describe earlier rules. Use actual
+recruitment allocations and physical sector objects for finite supplies.
+See [commerce deferral](../verification/finite-campaign-editor-2026-10-05.md).
+
 [Documentation index](../README.md)
 
-These notes cover published systems and separate development-workspace work.
-Read [published progress](../verification/published-progress.md) for accepted
-features on `main`. Notes marked *workspace* describe unpublished integration;
-the [workspace acceptance record](../verification/gameplay-completion.md) and
-[parity audit](../verification/ja2-parity-audit.md) record that separate scope.
+These notes combine feature guides and dated workspace records. Read
+[version 0.1](../verification/version-0.1.md) for current scope.
+The [requirement ledger](../verification/published-progress.md) and
+[parity audit](../verification/ja2-parity-audit.md) retain row evidence and
+comparison requirements. A historical *workspace* label does not establish the
+current merge state; use the named source, date and acceptance limits.
 
 ## Start with your task
 
 1. **Understand the rules:** read the [JA2 gameplay adaptation](ja2-gameplay.md)
-   for the development workspace's combat, equipment, and campaign model.
+   for the documented combat, equipment and campaign rules; check each note's date.
 2. **Start or direct a campaign:** use the campaign notes for recruitment entry,
    travel, sector entry, orders, time, and local defenses.
 3. **Control a soldier:** use the tactical notes for keyboard controls, movement,

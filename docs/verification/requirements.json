@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-10-09",
+  "updated": "2026-10-10",
   "baseline": "64ddf5156e0192e628d972f3700c010675c472b7",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
@@ -799,6 +799,41 @@
       "id": "E-BLAST-STRUCTURES-2026-10-09",
       "path": "docs/verification/blast-structures-2026-10-09.md",
       "description": "Local blast-structures record against JA2 1.13 ddb691318eb3dd0cdc6eab42139739b6d498c645: finite grenade damage to walls, doors, windows and props, retained finite chest contents, cleared obstruction, persistence and observed rendering. The dated full suite retains ten existing failures. No published-main acceptance, full explosives parity, same-blast pressure propagation, roof/floor collapse or chain reaction is claimed."
+    },
+    {
+      "id": "E-VERSION-01-SCOPE",
+      "path": "docs/verification/version-0.1.md",
+      "description": "Declared version 0.1 scope and its separately recorded exact-source validation. Wider original design and JA2 rows are preserved; future community campaign creation/sharing is not a completion condition for this checkpoint."
+    },
+    {
+      "id": "E-FUTURE-CAMPAIGN-PLATFORM",
+      "path": "docs/plans/campaign-authoring.md",
+      "description": "Future campaign creation and sharing plan. This is a scope/design record, not implementation, portability or community acceptance."
+    },
+    {
+      "id": "E-KINETIC-IMPACT-2026-10-05",
+      "path": "docs/verification/kinetic-projectile-impact-2026-10-05.md",
+      "description": "Dated bounded kinetic-energy impact, finite-fire authoring, custody and replay record. Mass and initial velocity set impact energy; spatial SI calibration, tissue/fragment physics and a fresh stock ending are not accepted."
+    },
+    {
+      "id": "E-FIREARM-AIR-DRAG-2026-10-05",
+      "path": "docs/verification/firearm-air-drag-2026-10-05.md",
+      "description": "Dated bounded free-flight energy-retention profile, separate material/body/reflection losses, content controls and saved finite-fire comparisons. This is game tuning, not a calibrated aerodynamic solver or a current full campaign gate."
+    },
+    {
+      "id": "E-WALL-EDGES-2026-10-10",
+      "path": "docs/verification/wall-edges.md",
+      "description": "Current shared edge implementation covers movement, doors/windows, sight, projectiles, blast, editor and rendering. Named source checks and campaign failures retain their exact revisions. Compatibility with older campaign saves and a full current ending are not accepted by this record."
+    },
+    {
+      "id": "E-FINITE-EDITOR-2026-10-05",
+      "path": "docs/verification/finite-campaign-editor-2026-10-05.md",
+      "description": "Current commerce policy disables shop, ammunition purchase, import and artillery trade orders and removes their editor forms. Legacy pinned fields are preserved. Shop implementation is deferred; this record is not a fresh ending acceptance."
+    },
+    {
+      "id": "E-LOCAL-ERRAND-CONTROLS",
+      "path": "docs/development/story-editor.md",
+      "description": "Current Encargos locales controls author physical supply/clothing deliveries, escorts, rewards and dependencies. Dialogue quests remain a separate collection. Source/control presence corrects absence claims without accepting all STORY-03 or general automatic story effects."
     }
   ],
   "queue": [
@@ -806,41 +841,34 @@
       "order": 1,
       "ids": [
         "QA-01",
+        "QA-02",
         "REL-02",
         "UX-01",
         "UX-02"
       ],
-      "action": "Preserve the accepted scripted stock victory, defeat, recovery and rescue routes and bounded finite service-equipment return. After this single alpha PR passes matching-head CI and merges, stop implementation for the requested user alpha session. Record discrepancies across starts, seeds, strategy, equipment and saves; do not infer full JA2, balance, art/audio or loaded performance from automated tests."
+      "action": "Validate and document the declared version 0.1 checkpoint on its exact source. Preserve finite equipment, permanent casualties, normal controls and save/replay boundaries. Record current failures and limits separately from historical route receipts; do not infer full JA2 parity, general balance or sustained performance from a passing bounded check."
     },
     {
       "order": 2,
       "ids": [
-        "STORY-02"
+        "REL-01",
+        "UX-01",
+        "UX-02"
       ],
-      "action": "Retain ordinary service-equipment return as one bounded delivery. Broader civilian armour, arbitrary belongings, custody and explicit role/stock transfer remain open. Resume further implementation only when the user requests it after their alpha issue session."
+      "action": "Use player feedback to prioritize remaining presentation, controls and performance work within the declared checkpoint. Broader release-scale art/audio, manual play and force/seed acceptance remain open requirements."
     },
     {
       "order": 3,
       "ids": [
+        "STORY-02",
         "STORY-03",
         "STORY-04",
         "STORY-05",
         "STORY-06",
+        "STORY-07",
         "STORY-08"
       ],
-      "action": "Extend conditional dialogue and shared quest states with item/objective and historical role effects; extend local meetings with markers and arrival sequences, and deliver rules, equipment/merchants and portable content one feature at a time."
-    },
-    {
-      "order": 4,
-      "ids": [
-        "STORY-07",
-        "QA-01",
-        "QA-02",
-        "REL-01",
-        "REL-02",
-        "UX-02"
-      ],
-      "action": "Close remaining parity and presentation gaps. Finish both the stock and independently authored campaigns and the release audit."
+      "action": "Future campaign platform: broaden campaign composition, roles, story sequences, equipment authoring, portable assets and community creation/sharing. Existing dialogue, local physical errands, escorts, chapters and JSON import/export remain supported. These wider authoring requirements do not block version 0.1; shops remain deferred."
     }
   ],
   "requirements": [
@@ -850,12 +878,13 @@
       "requirement": "Author finite workshop funds and general/local artillery buying and repurchase prices",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Published by PR #110 after successful exact-head CI. Pinned workshop cash, permission and general/local percentages drive finite actual trades.",
+      "published": "Historical bounded delivery retained; its commerce controls and orders are disabled under the current finite-equipment policy. Shops are deferred. Recorded scope: Published by PR #110 after successful exact-head CI. Pinned workshop cash, permission and general/local percentages drive finite actual trades.",
       "local": "Six simulations and two mounted editor/production-armory checks pass; overlap 19/19 plus editor. Complete regression 1123/1123, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Edit cash, permissions and rates; add, relocate and remove local overrides with undo/reset/validation and pinned launch; apply actual displayed fees, preserve shop balances and exact guns across saves, allow zero rates, reject unaffordable/disabled offers and stop authored subsidies at finite funds.",
       "evidence": [
-        "E-ARTILLERY-TRADING-RULES"
+        "E-ARTILLERY-TRADING-RULES",
+        "E-FINITE-EDITOR-2026-10-05"
       ],
       "parents": [
         "TAC-08",
@@ -868,7 +897,10 @@
         "tests/artillery-trading-render.test.mjs",
         "tests/story-editor.test.mjs"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/110"
+      "pr": "https://github.com/fsodano/granaderos/pull/110",
+      "historicalAssessment": {
+        "published": "Published by PR #110 after successful exact-head CI. Pinned workshop cash, permission and general/local percentages drive finite actual trades."
+      }
     },
     {
       "id": "DEPOTARTILLERY-01",
@@ -902,12 +934,13 @@
       "requirement": "Sell and repurchase exact local artillery with finite workshop funds, saved custody and unchanged ammunition",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Published by PR #108 after successful exact-head CI. Local field/depot/unissued gun sales and repurchases conserve physical identity, load and both finite balances.",
+      "published": "Historical bounded delivery retained; its commerce controls and orders are disabled under the current finite-equipment policy. Shops are deferred. Recorded scope: Published by PR #108 after successful exact-head CI. Local field/depot/unissued gun sales and repurchases conserve physical identity, load and both finite balances.",
       "local": "Six simulations and two mounted production-game checks pass; overlap 40/40 and complete regression 1111/1111, zero failures/skips, with types, export and 36 reference checks.",
       "remaining": "",
       "acceptance": "Trade actual purchased and fired guns through valid configured workshops, retain load and declared partial work through full saves and real redeployment, issue stock identity once, reject repeats, stale stock, unavailable access/crew/funds, capacity overflow and duplicate ownership, and show matching prices/reasons in the armory.",
       "evidence": [
-        "E-ARTILLERY-TRADING"
+        "E-ARTILLERY-TRADING",
+        "E-FINITE-EDITOR-2026-10-05"
       ],
       "parents": [
         "TAC-08",
@@ -920,7 +953,10 @@
         "tests/artillery-transport.test.mjs",
         "tests/stationed-artillery.test.mjs"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/108"
+      "pr": "https://github.com/fsodano/granaderos/pull/108",
+      "historicalAssessment": {
+        "published": "Published by PR #108 after successful exact-head CI. Local field/depot/unissued gun sales and repurchases conserve physical identity, load and both finite balances."
+      }
     },
     {
       "id": "ARTILLERYTRANSPORTRULES-01",
@@ -1036,12 +1072,13 @@
       "requirement": "Configure and buy finite reserve ammunition for an exact local artillery emplacement without changing its retained work",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Published by PR #102 after successful exact-head CI. One paid reserve round preserves the exact gun, load and unfinished work; permission, model prices and purchase cap are pinned by the story editor.",
+      "published": "Historical bounded delivery retained; its commerce controls and orders are disabled under the current finite-equipment policy. Shops are deferred. Recorded scope: Published by PR #102 after successful exact-head CI. One paid reserve round preserves the exact gun, load and unfinished work; permission, model prices and purchase cap are pinned by the story editor.",
       "local": "Seven simulations, two mounted armory cases and one mounted editor case pass. Full regression passes 1054/1054, zero failures/skips, with types, export and all 36 reference comparisons. Actual paid depletion and replenishment are distinguished from prepared eligibility and model-price boundaries.",
       "remaining": "",
       "acceptance": "Exhaust a purchased gun through real shots, buy one reserve through the displayed quote, preserve complete saves and load through the real crew; enforce pinned prices, free/disabled supply, caps, control, connection, personnel and funds atomically, while the editor supports undo, reset, validation and saved launch.",
       "evidence": [
-        "E-ARTILLERY-SUPPLY"
+        "E-ARTILLERY-SUPPLY",
+        "E-FINITE-EDITOR-2026-10-05"
       ],
       "parents": [
         "TAC-08",
@@ -1055,7 +1092,10 @@
         "tests/story-editor.test.mjs",
         "tests/artillery-crew-loading.test.mjs"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/102"
+      "pr": "https://github.com/fsodano/granaderos/pull/102",
+      "historicalAssessment": {
+        "published": "Published by PR #102 after successful exact-head CI. One paid reserve round preserves the exact gun, load and unfinished work; permission, model prices and purchase cap are pinned by the story editor."
+      }
     },
     {
       "id": "CREWLOAD-01",
@@ -1486,12 +1526,13 @@
       "requirement": "Author a pinned cartridge unit price for paid issue and finite returns",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "PR #85 added an optional pinned cartridge price with a one-peso default. AMMOCUSTODY-01 retains that price for actual finite purchases, replacing automatic return credit with owned cartridges.",
+      "published": "Historical bounded delivery retained; its commerce controls and orders are disabled under the current finite-equipment policy. Shops are deferred. Recorded scope: PR #85 added an optional pinned cartridge price with a one-peso default. AMMOCUSTODY-01 retains that price for actual finite purchases, replacing automatic return credit with owned cartridges.",
       "local": "Five simulations and two mounted cases cover strict optional content, legacy identity, real paid entry, a real discharge and saved retreat, duplicate report rejection, zero and unaffordable prices, overflow refusal, editor undo and actual campaign controls. Complete regression passes 911/911, zero failures/skips; types, production export and all 36 baseline comparisons also pass.",
       "remaining": "",
       "acceptance": "Author and pin a unit price, pay for actual purchased cartridges, discharge a cartridge and retain the unspent physical quantity after save. Reject changed pinned prices, invented ammunition and repeated settlement.",
       "evidence": [
-        "E-CARTRIDGE-PRICE"
+        "E-CARTRIDGE-PRICE",
+        "E-FINITE-EDITOR-2026-10-05"
       ],
       "parents": [
         "ECO-01",
@@ -1503,7 +1544,10 @@
         "tests/campaign-rules-ui.test.mjs",
         "tests/story-editor.test.mjs"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/85"
+      "pr": "https://github.com/fsodano/granaderos/pull/85",
+      "historicalAssessment": {
+        "published": "PR #85 added an optional pinned cartridge price with a one-peso default. AMMOCUSTODY-01 retains that price for actual finite purchases, replacing automatic return credit with owned cartridges."
+      }
     },
     {
       "id": "WEAPONREADY-01",
@@ -1877,12 +1921,13 @@
       "requirement": "Require actual local presence for paid workshop replenishment and repair",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility. Merged through PR #70 after exact-head CI.",
+      "published": "Historical bounded delivery retained; its commerce controls and orders are disabled under the current finite-equipment policy. Shops are deferred. Recorded scope: The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility. Merged through PR #70 after exact-head CI.",
       "local": "A formerly accepted remote request fails in the new regression. Actual paid hires and travel, local service, return, once-only charges, saves and deployment are covered, together with mounted armory controls. Prepared wear is declared.",
       "remaining": "",
       "acceptance": "Separate two serving people by real travel; reject distant service without changing state; return and pay through normal controls; retain the actual supplies and condition in saves and deployment.",
       "evidence": [
-        "E-LOCAL-WORKSHOP"
+        "E-LOCAL-WORKSHOP",
+        "E-FINITE-EDITOR-2026-10-05"
       ],
       "parents": [
         "JA2-S02",
@@ -1893,7 +1938,10 @@
         "tests/workshop-service.test.mjs",
         "tests/workshop-service-render.test.mjs"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/70"
+      "pr": "https://github.com/fsodano/granaderos/pull/70",
+      "historicalAssessment": {
+        "published": "The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility. Merged through PR #70 after exact-head CI."
+      }
     },
     {
       "id": "CARE-01",
@@ -2223,12 +2271,13 @@
       "requirement": "Author the import port and saved delivery window for imported firearm orders",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Four existing river ports or disabled orders and 1–720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons.",
+      "published": "Historical bounded delivery retained; its commerce controls and orders are disabled under the current finite-equipment policy. Shops are deferred. Recorded scope: Four existing river ports or disabled orders and 1–720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons.",
       "local": "Uses the published general armory and original imported families; physical port depots and cargo transport remain separate.",
       "remaining": "",
       "acceptance": "Validate ports, limits and older defaults; author with undo/restoration and launch a delivered order; pay once, save and retain the sampled deadline; hold occupied/blocked and same-hour-raid deliveries; deliver once and equip a variant; reject invalid or altered content; keep local purchases and existing carried imports when new orders are disabled.",
       "evidence": [
-        "E-IMPORT-RULES"
+        "E-IMPORT-RULES",
+        "E-FINITE-EDITOR-2026-10-05"
       ],
       "parents": [
         "STORY-05",
@@ -2241,7 +2290,10 @@
         "tests/hiring-arrivals.test.mjs",
         "tests/story-editor.test.mjs"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/52"
+      "pr": "https://github.com/fsodano/granaderos/pull/52",
+      "historicalAssessment": {
+        "published": "Four existing river ports or disabled orders and 1–720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons."
+      }
     },
     {
       "id": "CHAPTERS-01",
@@ -3869,7 +3921,7 @@
       "priority": "P0",
       "published": "The consolidated PR #139 suite accepts an uncached fresh mixed historical campaign through all 13 friendly localities, no blockade or active enemy group, a living commander and one terminal victory. Saved 48-hour continuation preserves two independently quoted income payments, actual paid-service expiry and 59 permanent deaths. Fresh historical loss, advanced paid recovery, physical rescue and the independent authored post campaign also pass.",
       "local": "The separate corrected alpha at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 passes 4,251/4,251, zero fail/skip/cancelled/TODO, across 600 files and 9324 unchanged source inputs. Actual collection or finite paid resupply rearms empty rehires. Complete ending/recovery retain permanent losses, physical custody, treasury, ammunition, replay and saves. These scripted checks do not replace extensive user alpha, wider balance, JA2, art/audio or sustained loaded-performance acceptance.",
-      "remaining": "Record extensive player alpha testing on the merged release and broaden force/seed and authored composition acceptance. Full JA2 parity, release visual/audio review and sustained loaded performance remain separate.",
+      "remaining": "Record current player playthroughs and remaining force/seed/balance cases against version 0.1. Historical complete routes keep their named sources. Broader full JA2 parity, visual/audio and sustained performance acceptance remain separate; future community campaign composition is not a checkpoint completion condition.",
       "acceptance": "Recorded playthrough covering phases, victory and defeat",
       "evidence": [
         "E-PUBLISHED",
@@ -3882,8 +3934,12 @@
         "E-PARALLEL-VERIFICATION",
         "E-CONSOLIDATION-FINAL-LOCAL",
         "E-CONSOLIDATION-PR139",
-        "E-ALPHA-SERVICE-RETURN-LOCAL"
-      ]
+        "E-ALPHA-SERVICE-RETURN-LOCAL",
+        "E-VERSION-01-SCOPE"
+      ],
+      "historicalAssessment": {
+        "remaining": "Record extensive player alpha testing on the merged release and broaden force/seed and authored composition acceptance. Full JA2 parity, release visual/audio review and sustained loaded performance remain separate."
+      }
     },
     {
       "id": "QA-02",
@@ -3893,12 +3949,16 @@
       "priority": "P1",
       "published": "Repeatable static build, semver and passing published CI.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Consolidated artifact, all requirements accepted and recorded release playthrough.",
+      "remaining": "Record the consolidated version 0.1 artifact, exact-source validation, installation information and release limits. Acceptance of all wider original/parity/future campaign-platform requirements is not a version 0.1 condition.",
       "acceptance": "Reproducible package, installation docs, semver, PR and tested release",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
-      ]
+        "E-CONFLICTS",
+        "E-VERSION-01-SCOPE"
+      ],
+      "historicalAssessment": {
+        "remaining": "Consolidated artifact, all requirements accepted and recorded release playthrough."
+      }
     },
     {
       "id": "STORY-01",
@@ -3928,7 +3988,7 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. This bounded PR advances previously recorded civilian wounds outside the loaded sector, retaining partial intervals, actual death times and one set of consequences. Exact-head CI remains required before merge. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. The recorded bounded wound delivery advances previously recorded civilian wounds outside the loaded sector, retaining partial intervals, actual death times and one set of consequences. The named receipts retain their original source and validation limits. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity.",
       "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate. UNSEENWOUND-01 tracks initial physical wounds from actual world appearance, including successor and daily-placement clock boundaries.",
       "remaining": "Extend starting allocations into complete editable belongings, civilian armour and loose-ammunition looting, custody and explicit role/stock transfer. Strategic civilian care and off-screen breath/fatigue recovery remain separate work. CIVILIANRETURN-01 and UNSEENWOUND-01 cover bounded service departure and initial world-wound continuity.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
@@ -3947,7 +4007,10 @@
         "E-UNLOADED-CIVILIAN",
         "E-UNSEEN-RESIDENT-WOUNDS",
         "E-CIVILIAN-WEAPONS"
-      ]
+      ],
+      "historicalAssessment": {
+        "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. This bounded PR advances previously recorded civilian wounds outside the loaded sector, retaining partial intervals, actual death times and one set of consequences. Exact-head CI remains required before merge. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity."
+      }
     },
     {
       "id": "STORY-03",
@@ -3955,9 +4018,9 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods.",
+      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. Current local-errand authoring also supports finite physical supply/clothing deliveries, escorts, rewards, dependencies and alternative recipients; errands are separate from dialogue quests.",
       "local": "Authored resident quest transitions are accepted in the bounded published scope. Advanced historical role and objective systems are not imported.",
-      "remaining": "Add item/escort/objective and other gameplay effects, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
+      "remaining": "Future campaign platform scope; not a version 0.1 completion condition. Extend general dialogue gameplay effects and historical role bindings, automatic story effects and their receipts. Physical delivery and escort errands already exist; they do not provide an unrestricted story runner.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
         "E-CONFLICTS",
@@ -3972,8 +4035,15 @@
         "E-MEETING-ARRIVAL",
         "E-MEETING-RELEASE",
         "E-PROJECT-CONDITIONS",
-        "E-SUPPLY-CONDITIONS"
-      ]
+        "E-SUPPLY-CONDITIONS",
+        "E-VERSION-01-SCOPE",
+        "E-FUTURE-CAMPAIGN-PLATFORM",
+        "E-LOCAL-ERRAND-CONTROLS"
+      ],
+      "historicalAssessment": {
+        "remaining": "Add item/escort/objective and other gameplay effects, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
+        "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods."
+      }
     },
     {
       "id": "STORY-04",
@@ -3982,15 +4052,22 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Dialogue choices call another authored resident through real paths and usable doors to a pinned meeting square beside the speaker. Arrival holds position; danger and blockers pause movement. Commands survive saves and same-sector re-entry; a daily relocation ends the old local order. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects.",
-      "local": "Real civilian pathfinding and escorts exist locally; not a general story sequence.",
-      "remaining": "Add authored map markers, automatic arrival effects, multi-actor sequences, automatic non-dialogue triggers and historical role actors. Verify a composed story scene through normal controls.",
+      "local": "Current source includes civilian pathfinding and local physical escorts. They do not establish a general story sequence or promote this broader row.",
+      "remaining": "Future campaign platform scope; not a version 0.1 completion condition. Add authored map markers, automatic arrival effects, multi-actor sequences, automatic non-dialogue triggers and historical role actors. Verify a composed story scene through normal controls.",
       "acceptance": "Interaction sends a resident through a door to a marker; blocked path cannot finish; save, combat and reentry resume correctly.",
       "evidence": [
         "E-CONFLICTS",
         "E-DIALOGUE-MOVEMENTS",
         "E-MEETING-ARRIVAL",
-        "E-MEETING-RELEASE"
-      ]
+        "E-MEETING-RELEASE",
+        "E-VERSION-01-SCOPE",
+        "E-FUTURE-CAMPAIGN-PLATFORM",
+        "E-LOCAL-ERRAND-CONTROLS"
+      ],
+      "historicalAssessment": {
+        "remaining": "Add authored map markers, automatic arrival effects, multi-actor sequences, automatic non-dialogue triggers and historical role actors. Verify a composed story scene through normal controls.",
+        "local": "Real civilian pathfinding and escorts exist locally; not a general story sequence."
+      }
     },
     {
       "id": "STORY-05",
@@ -3998,9 +4075,9 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #93 publishes optional militia promotion thresholds and attribute gains, pinned per campaign and used by actual combat and paid regular instruction.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #93 publishes optional militia promotion thresholds and attribute gains, pinned per campaign and used by actual combat and paid regular instruction. Current policy supersedes the historical purchase/import/trade descriptions: those orders are disabled, their commerce editor forms are removed, and legacy pinned fields remain preserved.",
       "local": "Larger systems still embed many rules and historical identity gates. Authored militia progression thresholds and gains are tracked by MILITIARULES-01; this local delivery does not close the remaining rules.",
-      "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
+      "remaining": "Future campaign platform scope; not a version 0.1 completion condition. Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
       "evidence": [
         "E-PUBLISHED",
@@ -4019,8 +4096,15 @@
         "E-CARE-RULES",
         "E-SUPPLY-CONDITIONS",
         "E-CARTRIDGE-PRICE",
-        "E-MILITIA-RULES"
-      ]
+        "E-MILITIA-RULES",
+        "E-FINITE-EDITOR-2026-10-05",
+        "E-FUTURE-CAMPAIGN-PLATFORM",
+        "E-VERSION-01-SCOPE"
+      ],
+      "historicalAssessment": {
+        "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #93 publishes optional militia promotion thresholds and attribute gains, pinned per campaign and used by actual combat and paid regular instruction.",
+        "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules."
+      }
     },
     {
       "id": "STORY-06",
@@ -4028,9 +4112,9 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity. Current policy supersedes the historical purchase/import/trade descriptions: those orders are disabled, their commerce editor forms are removed, and legacy pinned fields remain preserved.",
       "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. AMMOFAMILIES-01 records completed local four-family custody and save migration. Publishing that advanced adapter and its authored local family overrides remains open; AMMOLOADS-01 publishes alternative loads in the main runtime. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
-      "remaining": "Author new ammunition families, fittings and non-ammunition merchant stock, prices, buyback and replenishment; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets and ammunition supplier rules alone do not close equipment authoring.",
+      "remaining": "Future campaign platform scope; not a version 0.1 completion condition. Broaden new item/ammunition/fitting definitions, pocket/stack authoring, civilian belongings and portable physical custody. Merchant stock, prices, buyback and replenishment remain deferred with shops; recorded commerce deliveries are historical.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
@@ -4056,8 +4140,15 @@
         "E-AMMO-CUSTODY",
         "E-AMMO-MARKETS",
         "E-AMMO-LOADS",
-        "E-CIVILIAN-WEAPONS"
-      ]
+        "E-CIVILIAN-WEAPONS",
+        "E-FINITE-EDITOR-2026-10-05",
+        "E-FUTURE-CAMPAIGN-PLATFORM",
+        "E-VERSION-01-SCOPE"
+      ],
+      "historicalAssessment": {
+        "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices. CIVILIANWEAPONS-01 adds finite recovery of configured civilian primary and secondary weapons with saved service continuity.",
+        "remaining": "Author new ammunition families, fittings and non-ammunition merchant stock, prices, buyback and replenishment; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets and ammunition supplier rules alone do not close equipment authoring."
+      }
     },
     {
       "id": "STORY-07",
@@ -4065,9 +4156,9 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. The independent post campaign now completes its entire authored three-chapter route with real paid service, combat, losses, conversations and ending; its timed failure and editor load/edit/launch are also accepted.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. The independent post campaign now completes its entire authored three-chapter route with real paid service, combat, losses, conversations and ending; its timed failure and editor load/edit/launch are also accepted. Current policy supersedes the historical purchase/import/trade descriptions: those orders are disabled, their commerce editor forms are removed, and legacy pinned fields remain preserved.",
       "local": "One complete compact second scenario is accepted with seed 8. Broader authoring still reuses the stock world and opposition; no universal balance claim.",
-      "remaining": "Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; broaden campaign composition beyond the stock world.",
+      "remaining": "Future campaign platform scope; not a version 0.1 completion condition. Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; broaden campaign composition beyond the stock world.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
       "evidence": [
         "E-CONFLICTS",
@@ -4079,8 +4170,15 @@
         "E-CAMPAIGN-ROLES",
         "E-FOUNDRY-PROJECT",
         "E-PROJECT-CONDITIONS",
-        "E-POST-CAMPAIGN"
-      ]
+        "E-POST-CAMPAIGN",
+        "E-FINITE-EDITOR-2026-10-05",
+        "E-FUTURE-CAMPAIGN-PLATFORM",
+        "E-VERSION-01-SCOPE"
+      ],
+      "historicalAssessment": {
+        "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. The independent post campaign now completes its entire authored three-chapter route with real paid service, combat, losses, conversations and ending; its timed failure and editor load/edit/launch are also accepted.",
+        "remaining": "Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; broaden campaign composition beyond the stock world."
+      }
     },
     {
       "id": "STORY-08",
@@ -4090,13 +4188,18 @@
       "priority": "P1",
       "published": "Pinned sheet/weapon data and versioned content saves. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. The bundled post package round-trips through ordinary import/export and launched content remains pinned; its images come from the installed game.",
       "local": "Full narrative/rule/asset portability is unaccepted.",
-      "remaining": "Package all supported content/assets and validate references and migrations.",
+      "remaining": "Future campaign platform scope; not a version 0.1 completion condition. Package all supported content/assets and validate references and migrations.",
       "acceptance": "Export, import in a clean profile, play and reload; later draft edits cannot change the running campaign.",
       "evidence": [
         "E-PUBLISHED",
         "E-CARTRIDGE-SAVE",
-        "E-POST-CAMPAIGN"
-      ]
+        "E-POST-CAMPAIGN",
+        "E-VERSION-01-SCOPE",
+        "E-FUTURE-CAMPAIGN-PLATFORM"
+      ],
+      "historicalAssessment": {
+        "remaining": "Package all supported content/assets and validate references and migrations."
+      }
     },
     {
       "id": "INTEGRATION-01",
@@ -4430,9 +4533,9 @@
       "requirement": "Cover stops projectiles; concealment affects detection without necessarily stopping a shot. G13.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "published": "Current source contains firearm cover/concealment, material-depth loss, optional mass/initial-velocity impact energy, bounded free-flight air-energy loss, shared wall edge geometry and grenade damage to structures. Named records accept bounded subsets only; full parity acceptance remains partial.",
+      "local": "Dated implementation and focused records remain source-specific. Current code presence does not replace normal-control, save or broader release acceptance.",
+      "remaining": "Retain normal-control and saved continuation acceptance across the current geometry. Broader slopes, firearm damage to furniture, other reflected surfaces, firearm fragmentation, calibrated spatial/flight physics and complete parity remain open.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4441,10 +4544,19 @@
         "E-FIREARM-BODY-PASSAGE",
         "E-FIREARM-MATERIAL-DEPTH",
         "E-GLANCING-STONE-REFLECTION",
-        "E-BLAST-STRUCTURES-2026-10-09"
+        "E-BLAST-STRUCTURES-2026-10-09",
+        "E-KINETIC-IMPACT-2026-10-05",
+        "E-FIREARM-AIR-DRAG-2026-10-05",
+        "E-WALL-EDGES-2026-10-10"
       ],
       "sourceRow": "JA2-C04",
-      "sourceNotes": "Location fire now uses the existing F cursor, shared costs, fixed-height projectile geometry, seeded scatter and friendly-body interception. Fifteen tests and live keyboard/save checks cover it; see [location fire](location-fire.md). Named-target single bullets now check intervening bodies and seeded miss collisions. Fifteen focused tests and live interception/miss/save checks cover the change; see [named-target shots](directed-projectiles.md). Knowledge-limited warnings and enemy shot options avoid inspecting hidden bodies. Optional authored terraces now use physical height for sight and firearms, with slab occlusion and separate stacked actors; 36 single-storey house terraces are active on fresh campaign maps. See [elevation record](tactical-elevation.md). Single-ball paths now continue beyond the resolved aim cell through ordered physical contacts, with conditional body passage and reduced force. Material loss accumulates over crossed ray depth. Single balls and physical pellets use physical drop and one bounded glancing reflection from an explicit vertical stone face, with half the current force and no renewed range or drop allowance. Native finite-fire and saved-replay tests cover continuation, body passage, material depth and stone reflection; see [body penetration](../gameplay/tactical/body-penetration.md) and [stone ricochet](../gameplay/tactical/stone-ricochet.md). Grenade blasts already damage or destroy actual walls, doors, windows and furniture while retaining prop identity and finite contents; see [blast structures](blast-structures-2026-10-09.md). Arbitrary terrain slopes, furniture destruction from firearm impacts, other reflected surfaces, firearm fragmentation and a supported projectile mass/velocity model remain absent. Heights, range/drop, body passage, reflection and resistance per reference depth are Granaderos tuning. Artillery keeps separate rules. AI shot ranking now values partial damage loss; incoming exposure remains a torso-chance estimate."
+      "sourceNotes": "Location fire now uses the existing F cursor, shared costs, fixed-height projectile geometry, seeded scatter and friendly-body interception. Fifteen tests and live keyboard/save checks cover it; see [location fire](location-fire.md). Named-target single bullets now check intervening bodies and seeded miss collisions. Fifteen focused tests and live interception/miss/save checks cover the change; see [named-target shots](directed-projectiles.md). Knowledge-limited warnings and enemy shot options avoid inspecting hidden bodies. Optional authored terraces now use physical height for sight and firearms, with slab occlusion and separate stacked actors; 36 single-storey house terraces are active on fresh campaign maps. See [elevation record](tactical-elevation.md). Single-ball paths now continue beyond the resolved aim cell through ordered physical contacts, with conditional body passage and reduced force. Material loss accumulates over crossed ray depth. Single balls and physical pellets use physical drop and one bounded glancing reflection from an explicit vertical stone face, with half the current force and no renewed range or drop allowance. Native finite-fire and saved-replay tests cover continuation, body passage, material depth and stone reflection; see [body penetration](../gameplay/tactical/body-penetration.md) and [stone ricochet](../gameplay/tactical/stone-ricochet.md). Grenade blasts already damage or destroy actual walls, doors, windows and furniture while retaining prop identity and finite contents; see [blast structures](blast-structures-2026-10-09.md). Optional projectileEnergy profiles now use mass and initial velocity for impact energy; optional projectileAirDrag profiles apply bounded free-flight energy loss. Shared wall edges drive movement, sight, projectile and blast geometry. The kinetic, air-drag and wall records retain their exact source limits. Arbitrary terrain slopes, furniture destruction from firearm impacts, other reflected surfaces, firearm fragmentation and calibrated spatial/flight physics remain open. Heights, range/drop, body passage, reflection and resistance per reference depth are Granaderos tuning. Artillery keeps separate rules. AI shot ranking now values partial damage loss; incoming exposure remains a torso-chance estimate.",
+      "historicalAssessment": {
+        "published": "Published related core exists; full parity acceptance is not established.",
+        "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
+        "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+        "sourceNotes": "Location fire now uses the existing F cursor, shared costs, fixed-height projectile geometry, seeded scatter and friendly-body interception. Fifteen tests and live keyboard/save checks cover it; see [location fire](location-fire.md). Named-target single bullets now check intervening bodies and seeded miss collisions. Fifteen focused tests and live interception/miss/save checks cover the change; see [named-target shots](directed-projectiles.md). Knowledge-limited warnings and enemy shot options avoid inspecting hidden bodies. Optional authored terraces now use physical height for sight and firearms, with slab occlusion and separate stacked actors; 36 single-storey house terraces are active on fresh campaign maps. See [elevation record](tactical-elevation.md). Single-ball paths now continue beyond the resolved aim cell through ordered physical contacts, with conditional body passage and reduced force. Material loss accumulates over crossed ray depth. Single balls and physical pellets use physical drop and one bounded glancing reflection from an explicit vertical stone face, with half the current force and no renewed range or drop allowance. Native finite-fire and saved-replay tests cover continuation, body passage, material depth and stone reflection; see [body penetration](../gameplay/tactical/body-penetration.md) and [stone ricochet](../gameplay/tactical/stone-ricochet.md). Grenade blasts already damage or destroy actual walls, doors, windows and furniture while retaining prop identity and finite contents; see [blast structures](blast-structures-2026-10-09.md). Arbitrary terrain slopes, furniture destruction from firearm impacts, other reflected surfaces, firearm fragmentation and a supported projectile mass/velocity model remain absent. Heights, range/drop, body passage, reflection and resistance per reference depth are Granaderos tuning. Artillery keeps separate rules. AI shot ranking now values partial damage loss; incoming exposure remains a torso-chance estimate."
+      }
     },
     {
       "id": "JA2-C05",
@@ -4550,16 +4662,22 @@
       "status": "LOCAL_ONLY",
       "priority": "P1",
       "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
+      "local": "Current source includes finite grenade scatter, obstruction and persistent material-dependent structure damage. The dated blast and wall records describe bounded checks; this legacy LOCAL_ONLY status is not promoted by source presence.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-BLAST-STRUCTURES-2026-10-09",
+        "E-WALL-EDGES-2026-10-10"
       ],
       "sourceRow": "JA2-C10",
-      "sourceNotes": "Subsequent bounces, destructible-window blast propagation, delayed malfunction fuses, placed charges and encounter balance remain incomplete. Mendoza supply is authored fiction, not an attested Montevideo transfer."
+      "sourceNotes": "Persistent material-dependent blast damage to walls, doors, windows and props is implemented, including shared wall edges. Subsequent bounces, same-blast pressure propagation through a newly destroyed window/wall, delayed malfunction fuses, placed charges, roof/floor collapse, chain reactions and encounter balance remain incomplete. Mendoza supply is authored fiction, not an attested Montevideo transfer.",
+      "historicalAssessment": {
+        "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
+        "sourceNotes": "Subsequent bounces, destructible-window blast propagation, delayed malfunction fuses, placed charges and encounter balance remain incomplete. Mendoza supply is authored fiction, not an attested Montevideo transfer."
+      }
     },
     {
       "id": "JA2-C11",
@@ -5177,17 +5295,24 @@
       "requirement": "Environmental demolition leaves persistent passages and debris. G54-56,64.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
+      "published": "Current source retains material-dependent grenade damage to walls, doors, windows and props, exact finite contents, cleared obstruction and saved reentry. Shared wall edges also receive blast damage. These bounded implementations do not close complete environmental demolition parity.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "remaining": "Verify the full row through current normal controls and saves. Same-blast pressure propagation through a newly destroyed barrier, roof/floor collapse, chain reactions and broader fragment/material acceptance remain open.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-BLAST-STRUCTURES-2026-10-09",
+        "E-WALL-EDGES-2026-10-10"
       ],
       "sourceRow": "JA2-E05",
-      "sourceNotes": "Apply material resistance and dangerous blast/fragment effects through shared damage and visibility rules."
+      "sourceNotes": "Material-dependent structure damage and persistent breaches are implemented in game/structure-blast.js and shared edge geometry. The dated blast/wall records retain their source-specific checks and failures. Same-blast pressure propagation, roof/floor collapse, chain reactions and broader fragment/material acceptance remain separate.",
+      "historicalAssessment": {
+        "published": "Published related core exists; full parity acceptance is not established.",
+        "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+        "sourceNotes": "Apply material resistance and dangerous blast/fragment effects through shared damage and visibility rules."
+      }
     },
     {
       "id": "JA2-A01",
@@ -5514,17 +5639,24 @@
       "requirement": "Shops have meaningful stock, prices, purchase/sale, repairs, and delivery constraints. G57-58,69-70.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
+      "published": "Historical merchant stock, trade and delivery implementations retain their dated receipts. Current campaigns disable commerce under the approved finite-equipment policy; shops are deferred.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "remaining": "Deferred shop scope, not a version 0.1 completion condition. If shop work resumes, accept actual finite stock, prices, trade, replenishment and saved custody on the selected source.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-FINITE-EDITOR-2026-10-05",
+        "E-VERSION-01-SCOPE"
       ],
       "sourceRow": "JA2-S02",
-      "sourceNotes": "Stored, undeployed and locally emplaced artillery can now be sold and repurchased through supplied workshops. Exact ammunition/loading, crew handover, finite funds and duplicate ownership are checked; see [artillery trading](artillery-trade.md). Local equipment exchanges now settle one net payment across exact used weapons, local catalog purchases and artillery, with stale-offer receipts and final capacity checks; see [merchant exchange](merchant-exchange.md). [Workshop buying preferences](merchant-preferences.md) now give Caroya cavalry rates and a damaged-handheld refusal, El Plumerillo artillery rates and Retiro general rates. Direct sales and exchanges share those rules. The basic visible new-purchase/sale/used-purchase/save route passed in a separate browser campaign; worn/fitted metadata remains automated-test evidence. Stock, local buying fractions, refresh, and fund values are Granaderos tuning. Live direct-sale/refusal, travel to a second buyer, exchange and save checks pass; fitted/loaded metadata and full capacity boundaries remain automated-test evidence. Individual merchant relationships and background resale are not modeled."
+      "sourceNotes": "Current policy disables equipment/ammunition purchases, imports and artillery trade. Legacy saved fields and prior owned property remain preserved; prior merchant checks are historical acceptance for their recorded sources. Individual merchant relationships and background resale remain deferred.",
+      "historicalAssessment": {
+        "published": "Published related core exists; full parity acceptance is not established.",
+        "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+        "sourceNotes": "Stored, undeployed and locally emplaced artillery can now be sold and repurchased through supplied workshops. Exact ammunition/loading, crew handover, finite funds and duplicate ownership are checked; see [artillery trading](artillery-trade.md). Local equipment exchanges now settle one net payment across exact used weapons, local catalog purchases and artillery, with stale-offer receipts and final capacity checks; see [merchant exchange](merchant-exchange.md). [Workshop buying preferences](merchant-preferences.md) now give Caroya cavalry rates and a damaged-handheld refusal, El Plumerillo artillery rates and Retiro general rates. Direct sales and exchanges share those rules. The basic visible new-purchase/sale/used-purchase/save route passed in a separate browser campaign; worn/fitted metadata remains automated-test evidence. Stock, local buying fractions, refresh, and fund values are Granaderos tuning. Live direct-sale/refusal, travel to a second buyer, exchange and save checks pass; fitted/loaded metadata and full capacity boundaries remain automated-test evidence. Individual merchant relationships and background resale are not modeled."
+      }
     },
     {
       "id": "JA2-S03",
@@ -6734,12 +6866,13 @@
       "requirement": "Configure ammunition suppliers globally and by town through the story editor",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "This delivery adds optional pinned supplier profiles with initial stock, caps, replenishment quantities and supplied-hour intervals, per-family prices, enablement and automatic-purchase controls. Final-head checks gate merge. PR #136 merged as 7ea5fccea8e2b41274a6ed1ab16119d481fd5a19 after all five final-head checks passed (run 36643395677, 1312 gameplay tests).",
+      "published": "Historical bounded delivery retained; its commerce controls and orders are disabled under the current finite-equipment policy. Shops are deferred. Recorded scope: This delivery adds optional pinned supplier profiles with initial stock, caps, replenishment quantities and supplied-hour intervals, per-family prices, enablement and automatic-purchase controls. Final-head checks gate merge. PR #136 merged as 7ea5fccea8e2b41274a6ed1ab16119d481fd5a19 after all five final-head checks passed (run 36643395677, 1312 gameplay tests).",
       "local": "Five runtime tests and a mounted full-editor launch test pass; old packages keep their identities. The advanced local physical-inventory adapter remains separate. The full implementation run passes 1312/1312 without failures or skips. Final save-guard and layout changes pass 16 core and one mounted editor check; types, export and 36 reference checks pass. Browser editing and reload retain the town profile.",
       "remaining": "",
       "acceptance": "Author and validate global and independent town profiles; launch, purchase, deploy and replenish finite ammunition at configured prices. Preserve stock, clocks and pinned rules through saves. Empty suppliers replenish; disabled or disconnected suppliers do not.",
       "evidence": [
-        "E-AMMO-MARKETS"
+        "E-AMMO-MARKETS",
+        "E-FINITE-EDITOR-2026-10-05"
       ],
       "parents": [
         "STORY-06",
@@ -6751,7 +6884,10 @@
         "tests/ammunition-market-rules.test.mjs",
         "tests/story-editor.test.mjs"
       ],
-      "pr": "https://github.com/fsodano/granaderos/pull/136"
+      "pr": "https://github.com/fsodano/granaderos/pull/136",
+      "historicalAssessment": {
+        "published": "This delivery adds optional pinned supplier profiles with initial stock, caps, replenishment quantities and supplied-hour intervals, per-family prices, enablement and automatic-purchase controls. Final-head checks gate merge. PR #136 merged as 7ea5fccea8e2b41274a6ed1ab16119d481fd5a19 after all five final-head checks passed (run 36643395677, 1312 gameplay tests)."
+      }
     },
     {
       "id": "AMMOLOADS-01",
@@ -6811,12 +6947,13 @@
       "requirement": "Return ordinary service-end equipment once at its physical location and rearm later service from real stock",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "Included in this alpha PR; accepted locally at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 through the complete unchanged-source suite and exact-source browser checks. This dated record asserts no alpha CI result or merge. PR139 remains the latest recorded publication snapshot.",
+      "published": "The bounded service-equipment return has recorded local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 through the complete unchanged-source suite and exact-source browser checks. Its alpha receipt is a dated pre-publication snapshot. PR139 is the source of the retained published check row, not the latest main publication. Current source and version 0.1 validation are recorded separately.",
       "local": "4,251/4,251, 600 files and 9324 unchanged inputs. Dismissal and expiry return actual weapons, charges, pockets, outfit, finite consumables and repair points to one local source. Collection consumes existing stock; rehire creates no allocation. Loaded-sector deferral, real transit arrival, bounded full-map fallback, old-save checks and legal complete routes preserve conservation.",
       "remaining": "",
       "acceptance": "Use actual paid dismissal and expiry, save/load and collect exact returned gear once. Reject stale or forged transfers and duplicate ownership; rehire with empty slots and collect existing compatible weapons or buy finite stock. Preserve current wounds, loaded/loose ammunition, outfit and spent supplies. Retain capture/death custody and independent horse rules. Accept actual legal campaign victory/recovery and mounted save/control checks.",
       "evidence": [
-        "E-ALPHA-SERVICE-RETURN-LOCAL"
+        "E-ALPHA-SERVICE-RETURN-LOCAL",
+        "E-VERSION-01-SCOPE"
       ],
       "parents": [
         "LOCAL-01",
@@ -6832,7 +6969,10 @@
         "tests/contracts-web.test.mjs",
         "tests/fresh-ending-route.test.mjs",
         "tests/fresh-campaign-recovery.test.mjs"
-      ]
+      ],
+      "historicalAssessment": {
+        "published": "Included in this alpha PR; accepted locally at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702 through the complete unchanged-source suite and exact-source browser checks. This dated record asserts no alpha CI result or merge. PR139 remains the latest recorded publication snapshot."
+      }
     }
   ],
   "latestPublishedCheck": {
@@ -6867,6 +7007,11 @@
     "frozenInputs": 9324,
     "sourceNote": "Complete local execution at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta reconstructs its frozen manifest byte for byte over immutable PR139 evidence. Browser QA at 2035fa7702858123b454141ca0c9d26b00fb10fe has identical game/tools/UI build source; only the exact reviewed test-only preparation and expectation changes differ. Final pre-push documentation/evidence is audited separately; no later full rerun, alpha CI or merge is asserted. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed."
   },
-  "sourceRelationship": "R03 now includes the bounded guarantee-cap correction on exact source 64ddf5156e0192e628d972f3700c010675c472b7, following accepted main304. Its 190 root financial/save/render checks and named independent receipts close only the guarantee-specific overflow; no fresh full campaign, broad AI, balance or art acceptance is claimed. All prior sources and historical check rows remain exact: T07 and R03 now include named published enemy repair PR301, funded guarantee PR302 and trusted militia repair PR303, retained on main ecfa67d885b38cfe59dc7a94688ba7b0038bd2eb. These are bounded finite-order and contract receipts. This documentation-only update reruns no campaign, browser or broad gameplay suite. All earlier checks remain exact and source-specific: T07 now includes named published PR297/298/299 receipts retained on main 239141793994803ba4c40eddc2ee77f80baa570a. Their bounded cartridge/recovery/care changes pass a combined 404-check root gate; this documentation-only update reruns no gameplay, browser or long campaign. Earlier reconciliations and historical checks keep their exact sources: The selected T07 and W08 rows are reconciled against named published records retained on main 916049df7346a5b655564fafdea37c93be76045c. PR294 and PR295 add bounded paid firearm admission and owned packed-gun handover; FIX-03/PR139 supersede the old failed cleared-field rescue. This documentation-only reconciliation runs no long campaign or broad suite. The earlier T07/V09/W10 reconciliation and historical checks remain source-specific: The selected T07, V09 and W10 rows are reconciled against named published records retained on main c2cee4b421d9e6b9ff6ca3db3d5496051253646b. This documentation-only reconciliation runs no long campaign or broad suite. The check table retains its original exact-source results. The following pre-push alpha source relationship is historical: The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
-  "snapshotSummary": "These totals are dated results, not a fresh run on the October baseline. W10 now points to the accepted WIN-01, POST-01, FIX-01 through FIX-04 and REL-02 route records; their bounded scope and remaining manual/balance limits are unchanged. The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open. W08 now points to the accepted FIX-03/PR139 cleared-field rescue while retaining stealth, self-escape, carrying and narrative gaps. T07 adds the bounded published PR294/PR295 records and stays partial. Later PR297/298 close broken-only cartridge demand and broken-source firearm admission; PR299 adds immediate local ground-dressing care. These bounded records do not close T07, general medical/AI parity or release-scale acceptance. Later owned finite enemy/militia repairs extend T07 without closing broader equipment policy. R03 moves from missing to partial only for the funded guarantee; unused-salary death compensation and complete insurance acceptance remain open. The guarantee-specific cap defect is now corrected through full manual preflight and durable ordered automatic credits. Salary compensation and complete R03 parity remain open."
+  "sourceRelationship": "This register preserves the wider original design and JA2 requirements. Version 0.1 has a separate declared scope and validation receipt. Community campaign creation and sharing are future work, not completion conditions for this checkpoint. The baseline and check table below preserve recorded sources; they are not the current main revision or a fresh version 0.1 gate. Historical source relationships remain in requirements.json.",
+  "snapshotSummary": "The check table retains exact historical totals: PR139 published verification, September original/prototype/presence snapshots, and the separate October alpha local run. The latestPublishedCheck and latestLocalCheck keys are retained for compatibility and do not mean the latest main validation. Later ballistic, wall, blast, contract and route records retain their own sources and limits. No current full-suite, browser, campaign ending or deployment result is inferred from these totals; version-0.1.md records the current checkpoint separately.",
+  "reviewedSource": "80423887bbd74046043c0811061c517c31f94fef",
+  "checkpointScope": "docs/verification/version-0.1.md",
+  "futureCampaignScope": "docs/plans/campaign-authoring.md",
+  "historicalSourceRelationship": "R03 now includes the bounded guarantee-cap correction on exact source 64ddf5156e0192e628d972f3700c010675c472b7, following accepted main304. Its 190 root financial/save/render checks and named independent receipts close only the guarantee-specific overflow; no fresh full campaign, broad AI, balance or art acceptance is claimed. All prior sources and historical check rows remain exact: T07 and R03 now include named published enemy repair PR301, funded guarantee PR302 and trusted militia repair PR303, retained on main ecfa67d885b38cfe59dc7a94688ba7b0038bd2eb. These are bounded finite-order and contract receipts. This documentation-only update reruns no campaign, browser or broad gameplay suite. All earlier checks remain exact and source-specific: T07 now includes named published PR297/298/299 receipts retained on main 239141793994803ba4c40eddc2ee77f80baa570a. Their bounded cartridge/recovery/care changes pass a combined 404-check root gate; this documentation-only update reruns no gameplay, browser or long campaign. Earlier reconciliations and historical checks keep their exact sources: The selected T07 and W08 rows are reconciled against named published records retained on main 916049df7346a5b655564fafdea37c93be76045c. PR294 and PR295 add bounded paid firearm admission and owned packed-gun handover; FIX-03/PR139 supersede the old failed cleared-field rescue. This documentation-only reconciliation runs no long campaign or broad suite. The earlier T07/V09/W10 reconciliation and historical checks remain source-specific: The selected T07, V09 and W10 rows are reconciled against named published records retained on main c2cee4b421d9e6b9ff6ca3db3d5496051253646b. This documentation-only reconciliation runs no long campaign or broad suite. The check table retains its original exact-source results. The following pre-push alpha source relationship is historical: The dated published baseline and published-check row preserve PR #139 at 7ac3c9d612cc5d46c846617e0686ef5b6b450184. This alpha PR includes the later finite service-equipment return with separate complete local acceptance at 67f6c7b5195d0cf946bf8c4c3134a84cabcf3702. The compact delta identifies its unchanged executing inputs. No alpha CI result or merge is asserted in this pre-push record; actual publication is recorded in the PR body and final delivery report. Original/prototype/presence snapshots remain historical. The final pre-push workflow changes only the test-job timeout from 90 to 120 minutes after the complete run. All 9,323 other frozen inputs, including every game, test and tool source, remain byte-identical; the workflow and final documentation are checked separately. No later complete local run is claimed.",
+  "historicalSnapshotSummary": "These totals are dated results, not a fresh run on the October baseline. W10 now points to the accepted WIN-01, POST-01, FIX-01 through FIX-04 and REL-02 route records; their bounded scope and remaining manual/balance limits are unchanged. The 2026-09-27 audit snapshots and PR139 local/published 4214/4214 results remain unchanged dated evidence. The corrected alpha candidate passes 4,251/4,251 across 600 files with no failures, skips, cancellations or TODOs. It accepts the bounded return policy and preserves scripted routes. Extensive player alpha, wider force/seed balance, full JA2 parity, art/audio and sustained loaded 60 FPS remain open. W08 now points to the accepted FIX-03/PR139 cleared-field rescue while retaining stealth, self-escape, carrying and narrative gaps. T07 adds the bounded published PR294/PR295 records and stays partial. Later PR297/298 close broken-only cartridge demand and broken-source firearm admission; PR299 adds immediate local ground-dressing care. These bounded records do not close T07, general medical/AI parity or release-scale acceptance. Later owned finite enemy/militia repairs extend T07 without closing broader equipment policy. R03 moves from missing to partial only for the funded guarantee; unused-salary death compensation and complete insurance acceptance remain open. The guarantee-specific cap defect is now corrected through full manual preflight and durable ordered automatic credits. Salary compensation and complete R03 parity remain open."
 }

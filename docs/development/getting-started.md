@@ -4,6 +4,9 @@
 
 The browser implementation in `game/` and `web/` is the primary game. Its interface is Spanish. Code and documentation are English.
 
+Read the [version 0.1 status](../verification/version-0.1.md) for current scope
+and known limits. This development version is not complete game acceptance.
+
 ## Requirements
 
 - Git, to clone the repository.
@@ -31,9 +34,20 @@ Run subsequent commands from the repository root. Dependencies are installed in 
 
 Choose **Nueva campaña** to begin at the Retiro desk. Retiro is the only controlled sector. Hire combatants or create a free character. The first person in service advances the opening chapter without an extra academy payment; wait for a pending hire to arrive. **Combate de San Lorenzo** starts a separate battle.
 
-The published economy uses pesos for hiring, equipment and campaign preparations. It has no strategic material stocks, production chains, resource convoys or horse care. Saves from the earlier economy are rejected; start a new campaign.
+The current economy uses pesos for hiring and campaign preparations. Equipment
+commerce is disabled: equipment comes with its owner or is found in a sector.
+Earlier supplier, price, import and artillery-trading records describe dated
+features; they do not enable purchases in version 0.1. The game has no strategic
+material stocks, resource production chains or horse care. Physical equipment
+transport remains available. Saves from the earlier economy are rejected;
+start a new campaign.
 
-The title screen opens the [story editor](story-editor.md) at `/story` and the [sector editor](sector-editor.md) at `/editor`. The story editor can start a separate campaign with validated character, firearm and ability definitions. Branching dialogue, quests and complete campaign authoring remain open work.
+The title screen opens the [story editor](story-editor.md) at `/story` and the
+[sector editor](sector-editor.md) at `/editor`. These are experimental tools.
+The story editor supports validated characters, weapons, abilities, dialogue
+choices, quests and bounded campaign definitions, including a separate example.
+A complete creator platform and community campaign sharing are
+[future work](../plans/campaign-authoring.md).
 
 ## Save behavior
 
@@ -43,14 +57,19 @@ Browser storage belongs to the current browser profile and site origin. A differ
 
 The save implementation is in [`game/save.js`](../../game/save.js). [`useCampaignAutosave.ts`](../../web/lib/useCampaignAutosave.ts) saves campaign and battle changes and reports storage errors through the game notice.
 
+Version 0.1 uses the shared wall-edge map format. Compatibility with campaign
+saves made before that format is not guaranteed. Keep exported backups and use
+a new campaign for version 0.1 checks. See the
+[wall verification record](../verification/wall-edges.md).
+
 ## Checks
 
 The root [`package.json`](../../package.json) defines these commands:
 
 | Command | Purpose |
 | --- | --- |
-| `npm run test:quick` | Run routine rule, save, interface and asset checks. Exclude the eight listed campaign playthrough and artwork repack files. |
-| `npm run test:extended` | Run the eight campaign playthrough and artwork repack files. |
+| `npm run test:quick` | Run all discovered test files except the extended files listed in the suite configuration. |
+| `npm run test:extended` | Run the campaign, native replay and artwork files listed in the extended suite configuration. |
 | `npm test` | Run every `tests/*.test.mjs` file with automatic worker selection and a timing report. |
 | `npm run typecheck` | Check the web TypeScript project without emitting files. |
 | `npm run build` | Build and verify the static browser export, then stage it in root `dist/`. |
@@ -64,7 +83,15 @@ node --test tests/save-web.test.mjs
 
 The first command checks campaign and economy rules. The second checks save behavior. Run `npm run test:quick` for routine development checks after the focused tests pass. Report failures, skipped cases and the exact scope checked.
 
-The quick command uses a fixed list of eight exclusions in [`tools/test-suite-config.mjs`](../../tools/test-suite-config.mjs). These tests play long campaign routes or repack all authored illustrated sprites. Their assertions remain in the full suite. The quick command retains the small engineer and commander death checks, synthetic sprite packing checks, and other asset checks. New test files enter the quick suite by default. Timings change execution order; they do not remove files from a suite.
+The quick and extended partition is defined in
+[`tools/test-suite-config.mjs`](../../tools/test-suite-config.mjs) and checked by
+[`tools/test-suites.mjs`](../../tools/test-suites.mjs). Extended files cover long
+campaign routes, earned native replay checks and full illustrated sprite
+repacking. Their assertions remain in the full suite. Small engineer and
+commander death checks, synthetic sprite packing checks and other asset checks
+remain in quick. New test files enter quick by default. Timings change execution
+order; they do not remove files from a suite. Use the runner's list commands
+below for the current file counts.
 
 Use the extended checks when changing their campaign routes, test drivers, authored sprite sources or sprite packer. Run the full suite for shared combat, campaign progression, save format or content rule changes, and before a release. A short result does not establish that the complete campaign passes.
 
@@ -99,7 +126,20 @@ Run the build in a private candidate folder if a preview serves this checkout's 
 
 After the required local checks pass on the final candidate, push the completed batch once. Keep required GitHub checks enabled and wait for them before merging. If the candidate changes after verification, repeat the affected checks. Repeat the complete gate if a release candidate or shared gameplay behavior changes. Do not claim a complete campaign or smooth rendering from build and unit-test results alone.
 
-The [published progress ledger](../verification/published-progress.md) records delivered scope and remaining acceptance work on `main`. The [development-workspace acceptance record](../verification/gameplay-completion.md) and [JA2 parity audit](../verification/ja2-parity-audit.md) describe a separate integration checkout. Their results do not establish that the published checkout has those features or passes those checks.
+The [version 0.1 status](../verification/version-0.1.md) records the version's
+scope and known acceptance limits. The
+[published progress ledger](../verification/published-progress.md) contains
+feature evidence and historical checkpoints. The
+[workspace acceptance record](../verification/gameplay-completion.md) describes
+its dated checkout. The [JA2 parity audit](../verification/ja2-parity-audit.md)
+also includes named published receipts. Each result applies to its recorded
+source; these records do not prove a complete pass on a later checkout.
+
+For a documentation-only change, run the documentation audit and whitespace
+check. For a playable development checkpoint, record the exact checks and
+known failures in its status page. A version tag identifies that snapshot;
+it does not establish a passed release gate or waive the checks above for
+complete release acceptance.
 
 Documentation link checks and `git diff --check` verify documentation structure and formatting. They do not establish game health, browser behavior or a successful campaign. Automated scenarios also do not replace a complete gameplay acceptance run.
 
@@ -117,7 +157,9 @@ Build success establishes that the export and its checked assets were produced. 
 
 ### GitHub Pages
 
-The published game is at [fsodano.github.io/granaderos](https://fsodano.github.io/granaderos/). GitHub Pages serves the verified static export; the game needs no application server.
+The hosted game is at [fsodano.github.io/granaderos](https://fsodano.github.io/granaderos/).
+GitHub Pages serves the export from its last deployment; it can differ from
+current `main` or a version tag. The game needs no application server.
 
 The [web workflow](../../.github/workflows/web.yml) builds with `GRANADEROS_BASE_PATH=/granaderos`. It checks browser types, deployment paths, browser workers and the static export before publishing `dist/`. Publication runs only when a maintainer starts the workflow manually on the latest `main` revision. Pushes, pull requests and tags do not start a run.
 
@@ -148,4 +190,8 @@ Serve this export at `/granaderos/` for browser review. Root-path exports use `n
 
 Earlier native conversion work remains in `engine/`, `native/`, `patches/` and `mod/`. Its Windows toolchain, packaging and original JA2 data requirements are described in the [native build reference](../reference/native-build.md). Those instructions apply to that separate implementation.
 
-The game, story editor and sector editor show the same source build ID. `/build-info.json` exposes its source digest. See [the consolidation record](../verification/latest-build-consolidation.md) before selecting a preview server; a running preview can still contain an earlier build.
+The game, story editor and sector editor show the same source build ID.
+`/build-info.json` exposes its source digest. Compare that identity with the
+source under review before selecting a preview server. A running preview or
+hosted deployment can still contain an earlier build. See
+[version 0.1 status](../verification/version-0.1.md) for the version's evidence.

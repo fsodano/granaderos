@@ -19,6 +19,8 @@ need(data.schema===1,'Unsupported requirement schema');
 need(/^\d{4}-\d{2}-\d{2}$/.test(data.updated),'Invalid update date');
 need(/^[0-9a-f]{40}$/.test(data.baseline),'Baseline must identify an exact commit');
 file(data.audit,'Audit');file(data.design,'Design');
+for(const key of ['checkpointScope','futureCampaignScope'])if(data[key]!==undefined)file(data[key],key);
+if(data.reviewedSource!==undefined)need(/^[0-9a-f]{40}$/.test(data.reviewedSource),'Reviewed source must identify an exact commit');
 const evidence=new Map();
 for(const e of data.evidence??[]){
  need(!evidence.has(e.id),`Duplicate evidence ${e.id}`);evidence.set(e.id,e);
@@ -81,11 +83,12 @@ const checkLabel=name=>data.latestLocalCheck&&['original','prototype','presence'
 const out=[
  '# Granaderos implementation and verification ledger','',
  '<!-- Generated from requirements.json by npm run docs:progress. Edit the register, not this view. -->','',
- `Updated ${data.updated}. **The complete game and story editor are not accepted.**`,'',
+ `Updated ${data.updated}. **${data.checkpointScope?'This wider register is not the version 0.1 completion checklist.':'The complete game and story editor are not accepted.'}**`,'',
+ ...(data.checkpointScope?[`Read [version 0.1 scope and validation](${link(data.checkpointScope)}) for this checkpoint. [Community campaign creation and sharing](${link(data.futureCampaignScope)}) are future work. Broader unaccepted rows remain visible without becoming checkpoint release conditions.`,'']:[]),
  `Read [the design](${link(data.design)}) for the target and [the formal audit](${link(data.audit)}) for evidence and limits.`,
- `The published baseline assessed here is \`${data.baseline}\`. Later PRs must update this register.`,
+ `The published baseline assessed here is \`${data.baseline}\`. ${data.reviewedSource?`It is a recorded baseline; this documentation reconciliation reviewed source \`${data.reviewedSource}\`. Current checkpoint checks are recorded separately.`:'Later PRs must update this register.'}`,
  data.sourceRelationship??'The larger local sources and the editor prototype are separate from published main.','',
- '## Verified results and current failures','',
+ data.checkpointScope?'## Recorded check results':'## Verified results and current failures','',
  '| Source | Passing / total | Failed | Skipped | Types / build |',
  '|---|---:|---:|---:|---|',
  ...Object.entries(checks).map(([name,c])=>`| ${checkLabel(name)} | ${c.passed} / ${c.total} | ${c.failed} | ${c.skipped} | ${c.types} / ${c.build} |`),'',
@@ -102,10 +105,11 @@ const out=[
  'Rows overlap in scope. Neither these counts nor test totals are a completion percentage.','',
  'Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.','',
  '## Scope changes that override the original specification','',
- '[Current design decisions](../specification/game-design.md#decisions-that-override-earlier-documents) preserve the pesos-only economy, all elite contract terms, hire-only candidates and the approved opening. Old material-production and horse-care requirements do not override those decisions.','',
- '## Delivery order','',
+ '[Current design decisions](../specification/game-design.md#decisions-that-override-earlier-documents) preserve the pesos-only economy, all elite contract terms, hire-only candidates and the approved opening. Old material-production and horse-care requirements do not override those decisions.',
+ ...(data.checkpointScope?['The current finite-equipment policy disables commerce and defers shops. Historical commerce receipts and status labels remain recorded; they do not describe enabled purchases in version 0.1.','']:['']),
+ data.checkpointScope?'## Checkpoint work and future scope':'## Delivery order','',
  ...data.queue.map(q=>`${q.order}. **${q.ids.join(', ')}** — ${q.action}`),'',
- 'Finish one bounded feature, its controls and persistence, update evidence, pass relevant checks and exact-head CI, then merge. Preserve the unpublished sources and approved pesos/contract policies.',''
+ data.checkpointScope?'Keep checkpoint validation separate from the future platform plan. Preserve recorded sources, wider requirements and approved pesos/contract policies.':'Finish one bounded feature, its controls and persistence, update evidence, pass relevant checks and exact-head CI, then merge. Preserve the unpublished sources and approved pesos/contract policies.',''
 ];
 for(const group of new Set(data.requirements.map(r=>r.group))){
  out.push(`## ${group}`,'','| ID | Requirement | Status | Published scope | Remaining work / acceptance |','|---|---|---|---|---|');

@@ -1,5 +1,12 @@
 # La ruta de las postas
 
+Este ejemplo pertenece a las herramientas experimentales de la versión 0.1.
+Se conserva para jugar, editar y probar un paquete acotado. No demuestra una
+plataforma completa de creación y distribución de campañas. Esa capacidad queda
+para [trabajo futuro](../plans/campaign-authoring.md). Consultá el
+[estado de la versión](../verification/version-0.1.md) y la fecha del recorrido
+verificado antes de usarlo como evidencia de aceptación.
+
 Una campaña de ejemplo para jugar y modificar desde el editor. Tiene diez
 contratables, tres enlaces locales, tres capítulos y un final propio. Comienza
 en Córdoba con 6.000 pesos. Reutiliza el mapa, las armas, las imágenes y la
@@ -28,8 +35,9 @@ siete días para terminar. Inés, Mateo y Elena deben seguir con vida.
 Liberá Tucumán y conversá con Mateo para preparar y confirmar la reapertura de
 la posta. Recibís 200 pesos. Antes de seguir, atendé a los heridos y revisá la
 escuadra: las bajas no vuelven. Podés contratar reemplazos hacia el destino
-controlado, esperar su llegada y regresar al taller de Córdoba para reponer
-suministros. Fortificar las localidades ayuda a conservar la ruta.
+controlado y esperar su llegada. Los suministros deben provenir de los objetos
+reales de los sectores y de lo que lleva cada persona. No hay reposición por
+compra en el taller. Fortificar las localidades ayuda a conservar la ruta.
 
 Liberá Salta y buscá a Elena. Su confirmación entrega otros 200 pesos. Volvé a
 Córdoba y hablá con Inés. La entrega de ambas respuestas paga 400 pesos; el final
@@ -40,6 +48,7 @@ la derrota. La campaña permite continuar después de una victoria.
 
 El [registro de verificación](../verification/independent-post-campaign.md)
 identifica la versión, el recorrido, las bajas y los límites. Se verificó una
-estrategia con la semilla 8. Esto no garantiza la victoria con cualquier escuadra
+estrategia con la semilla 8 en la fuente allí registrada. Ese resultado no es
+una nueva verificación de la versión 0.1. Tampoco garantiza la victoria con cualquier escuadra
 o sorteo. Los sistemas avanzados y la edición de facciones, comandantes enemigos,
 geografía y otros eventos siguen en el [seguimiento general](../verification/published-progress.md).

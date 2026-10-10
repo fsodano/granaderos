@@ -1,5 +1,11 @@
 # Editor de historia: fichas jugables
 
+En la versión 0.1, este editor es una herramienta experimental con funciones
+acotadas. Permite editar paquetes existentes e iniciar campañas de prueba.
+La plataforma completa para crear y compartir campañas de la comunidad queda
+para [trabajo futuro](../plans/campaign-authoring.md). Consultá el
+[estado de la versión](../verification/version-0.1.md) para conocer sus límites.
+
 El editor de historia se abre en `/story`, desde el menú del juego o desde el constructor de sectores. El constructor existente permanece en `/editor` con sus mapas, edificios y pruebas.
 
 El ejemplo **La ruta de las postas** se puede cargar, editar y descargar desde el editor. Su [guía](example-post-campaign.md) explica el recorrido y cómo recuperar el borrador anterior.
@@ -96,7 +102,7 @@ En **Reglas**, elegí la localidad, el nombre de la fundición, el nombre del ej
 
 La localidad debe estar bajo tu control y el responsable de fundición debe estar incorporado, vivo, libre y en servicio. Organizar el proyecto cobra una vez y aplica la mejora local de lealtad en esa localidad. Financiar el ejército cobra el segundo costo una vez. Las definiciones y los pasos cumplidos quedan guardados con la campaña.
 
-Una fundición organizada ofrece reparación y abastecimiento en su localidad mientras esté bajo tu control y comunicada con el cuartel. Los talleres que ya existían siguen disponibles. Una ocupación o un corte de suministro bloquean esos servicios; no borran la preparación pagada. Podés deshacer cambios, restaurar los valores originales y probarlos en una campaña nueva.
+La fundición conserva los costos, el control y los pasos del proyecto; no habilita compras, reposición ni reparación por pedido comercial. Las asignaciones de reparación usan herramientas físicas finitas. Una ocupación no borra la preparación pagada. Podés deshacer cambios, restaurar los valores originales y probarlos en una campaña nueva.
 
 Esta opción no mueve edificios tácticos ni cambia los nombres del mapa. La campaña histórica todavía requiere controlar y fortificar Mendoza y los pasos de Cuyo, disponer de tres cañones propios y acordar el paso con los pehuenches. Sus textos de preparación muestran el proyecto y precio elegidos. Para otra historia, usá capítulos propios. Podés usar la organización y la financiación como condiciones de capítulos o diálogos. La edición de otros servicios sigue pendiente.
 
@@ -205,9 +211,9 @@ El boletín muestra las llegadas pendientes, el destino y el tiempo restante. Ca
 
 ## Armas de fuego aplicadas a la campaña
 
-Cada arma puede tener su propio nombre, imagen, daño, alcance, costes de disparo, puntería y recarga, capacidad, peso y precio. Se pueden crear variantes de una misma familia y asignarlas a los personajes. La imagen puede ser un archivo PNG, JPEG o WebP de hasta 250 KB. El campo de prueba y la campaña usan la misma definición.
+Cada arma puede tener su propio nombre, imagen, daño, alcance, costes de disparo, puntería y recarga, capacidad, peso y precio. El precio es un dato conservado; no habilita compras. Se pueden crear variantes de una misma familia y asignarlas a los personajes. La imagen puede ser un archivo PNG, JPEG o WebP de hasta 250 KB. El campo de prueba y la campaña usan la misma definición.
 
-Las variantes aparecen por separado en la armería. Cada ejemplar conserva su identidad, desgaste y atasco al equiparlo o devolverlo. Las familias importadas usan el puerto y los plazos configurados en **Reglas**, con demoras por bloqueo u ocupación. El inventario, las armas recuperadas y el equipo abandonado muestran el nombre y la imagen propios. Disparar, recargar, recuperar un arma, cambiarla y volver al mapa conservan su definición.
+Las variantes aparecen por separado en la armería. Cada ejemplar conserva su identidad, desgaste y atasco al equiparlo o devolverlo. Las reglas anteriores de importación se conservan en paquetes importados, pero no permiten pedidos nuevos. El inventario, las armas recuperadas y el equipo abandonado muestran el nombre y la imagen propios. Disparar, recargar, recuperar un arma, cambiarla y volver al mapa conservan su definición.
 
 Los **PA para levantar el arma** están incluidos en los **PA de disparo**. Por ejemplo, con 20 PA de disparo y 7 PA para levantarla, el primer disparo cuesta 20 y el siguiente 13 mientras el tirador conserve la posición. La puntería se suma por separado. Moverse, recargar, cambiar de postura o de arma, o quedar incapacitado vuelve a bajar el arma. Los fallos de chispa conservan la carga y la posición; volver a cebar exige prepararla de nuevo. Un valor de cero mantiene el mismo costo en cada disparo. Las armas actuales conservan cero. El control de disparo muestra la preparación y descarga en combate, y los segundos reales durante la exploración. Véase la [verificación](../verification/authored-weapon-readiness.md).
 
@@ -215,7 +221,7 @@ Las partidas nuevas del editor guardan estas definiciones por referencia al paqu
 
 La cantidad de cartuchos configurada en **Reglas** se entrega una sola vez al incorporarse, con un valor original de diez. Entrar o salir conserva la munición propia; no compra cargas ni devuelve dinero. Los cartuchos de un arma guardada en la mochila siguen en esa arma. El comercio está desactivado; el equipo adicional requiere objetos físicos compatibles.
 
-Los accesorios y los tipos de munición siguen pendientes de edición. Los tres modelos de artillería se editan en Armas → Artillería. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
+Las armas de fuego permiten elegir la familia principal de munición y editar cargas alternativas. Cada alternativa define su familia, daño, alcance y patrón de disparo. La edición completa de accesorios sigue pendiente. Los tres modelos de artillería se editan en Armas → Artillería. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
 
 ## Armas blancas aplicadas a la campaña
 
@@ -389,7 +395,8 @@ Estas áreas, límites y accesos todavía no son campos editables.
 En **Escritorio → Tesorería → Comprar armas y revisar equipo**, la batería muestra
 las piezas que saldrán en el próximo ataque. Elegí hasta tres y usá
 **Preparar batería**. Si dejás todos los espacios en **Sin pieza**, esa elección
-se conserva al guardar y aunque compres otro cañón. Podés elegir piezas de nuevo
+se conserva al guardar y aunque consigas otro cañón. El menú conserva su nombre
+anterior, pero el comercio de equipo está desactivado. Podés elegir piezas de nuevo
 más adelante. La pantalla impide preparar más unidades de un modelo que las
 existentes. Elegir no cobra dinero ni adelanta el reloj.
 [Verificación y alcance pendiente](../verification/explicit-artillery-selection.md).
@@ -469,9 +476,16 @@ Esta opción activa habitantes nuevos. Los mandos históricos conservan sus pape
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos bloquea el inicio si se conserva el avance histórico. Las opciones de historia no compatibles también impiden iniciar.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y papeles de misión. Sus habilidades de combate, la asignación de fundición y marcha, y los nombres, ubicación y costos de la fundición ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos sobre objetos y funciones de campaña, los objetivos sobre objetos y escoltas, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y papeles de misión. Sus habilidades de combate, la asignación de fundición y marcha, y los nombres, ubicación y costos de la fundición ya son configurables. Los **Encargos locales** admiten entregas físicas y escoltas con sus condiciones actuales. Quedan pendientes la extracción de mandos, las transferencias de funciones a sucesores, efectos más amplios sobre objetos y funciones de campaña, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
-## Validación
+## Verificación de entregas anteriores
+
+Las descripciones siguientes reúnen pruebas y entregas de distintos momentos.
+Los registros enlazados conservan su fuente, fecha y límites. Las referencias
+a compras, importaciones o reposición describen reglas anteriores; no habilitan
+esas operaciones en la versión 0.1. Esta lista no afirma una nueva ejecución de
+todos esos casos. El [estado de la versión](../verification/version-0.1.md)
+registra las comprobaciones actuales y sus resultados.
 
 `tests/story-editor.test.mjs` monta el formulario, recupera y modifica un borrador, usa deshacer y rehacer, inicia una campaña, contrata al personaje, lo despliega y guarda sus datos. También comprueba las imágenes de armas, la recuperación de datos inválidos y el bloqueo de opciones no aplicadas.
 
@@ -583,7 +597,7 @@ Las piezas sin munición liberan a la dotación para otras acciones.
 El disparo exige un objetivo visible. La dotación evita trayectorias que alcancen
 aliados o civiles visibles. Una amenaza muy cercana tiene prioridad. Las escuadras
 contratadas conservan el control manual; no prestan sus PA a las milicias.
-Guardar conserva los recursos reales. El traslado estratégico sigue pendiente. [Verificación](../verification/autonomous-artillery-crews.md).
+Guardar conserva los recursos reales. Los traslados estratégicos de piezas propias usan los controles de armería y depósito descritos abajo; no forman parte de las órdenes tácticas de una dotación automática. [Verificación](../verification/autonomous-artillery-crews.md).
 
 
 ## Editar modelos de artillería
@@ -593,6 +607,8 @@ nombre, imagen, precio, dotación, PA por acción, alcance, daño, penetración 
 escala de metralla. También podés definir si se entrega cargado y cuántas
 municiones lleva en su reserva inicial. Las recargas de más de un turno
 conservan el trabajo de toda la dotación.
+
+El precio conserva el dato de la definición; no permite comprar piezas.
 
 La imagen y el nombre aparecen en la armería y en el campo. **Cambiar imagen de
 artillería** admite PNG, JPEG o WebP de hasta 250 KB. Podés restaurar la imagen,
@@ -663,8 +679,8 @@ El editor no muestra los fondos, porcentajes ni precios locales del antiguo come
 inconsciente. Conserva el nombre, la imagen y los valores que configuraste en el
 editor. La pieza pasa al inventario y deja un espacio vacío en el cuerpo. Podés
 equiparla en cualquiera de las dos manos; el arma que reemplazás queda guardada.
-Guardar, salir y volver al sector conserva ese cambio. Una compra posterior
-puede equipar otra pieza. Esto aún no incluye las armas y armaduras de habitantes
+Guardar, salir y volver al sector conserva ese cambio. Otro ejemplar físico
+puede reemplazar esa pieza sin crear equipo nuevo. Esto aún no incluye las armas y armaduras de habitantes
 civiles. La [verificación](../verification/secondary-weapon-recovery.md) registra
 los casos de recuperación, regreso y guardado.
 
@@ -713,8 +729,9 @@ En **Equipo y órdenes**, elegí la mano y usá **Dejar arma en uso**. Cuesta 4 
 o un segundo en exploración. La pieza queda en la celda y la mano queda vacía.
 Podés recogerla y equiparla con los controles habituales. Su imagen, desgaste,
 carga y recarga incompleta se conservan, incluso al guardar y volver. Los
-cartuchos sueltos mantienen la regla de devolución a tesorería al retirarse;
-la carga dentro del arma en el suelo sigue en esa pieza. [Verificación](../verification/drop-held-weapons.md).
+cartuchos sueltos conservan su cantidad y dueño al regresar a campaña; no se
+convierten en pesos. La carga dentro del arma en el suelo sigue en esa pieza.
+[Verificación](../verification/drop-held-weapons.md).
 
 
 ### Entregar el arma en uso

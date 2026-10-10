@@ -2,11 +2,16 @@
 
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
-These notes cover published systems and separate development-workspace work.
-Read [published progress](../../verification/published-progress.md) for accepted
-features on `main`. Notes marked *workspace* describe unpublished integration;
-the [workspace acceptance record](../../verification/gameplay-completion.md) and
-[parity audit](../../verification/ja2-parity-audit.md) record that separate scope.
+Current geometry and presentation: [shared wall edges](../../verification/wall-edges.md)
+and [visible firearm projectiles](../../verification/visible-firearm-projectiles-2026-10-10.md).
+Their dated checks retain the scope stated in each record.
+
+These notes combine feature guides and dated workspace records. Read
+[version 0.1](../../verification/version-0.1.md) for current scope.
+The [requirement ledger](../../verification/published-progress.md) and
+[parity audit](../../verification/ja2-parity-audit.md) retain row evidence and
+comparison requirements. A historical *workspace* label does not establish the
+current merge state; use the named source, date and acceptance limits.
 
 ## Action-point display
 

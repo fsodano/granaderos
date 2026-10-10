@@ -2,6 +2,8 @@
 
 **Formá un ejército. Mantenelo abastecido. Conducilo a la batalla.**
 
+**Versión 0.1 · Juego para navegador en desarrollo.** Consultá el [estado de esta versión](docs/verification/version-0.1.md) para conocer su alcance y las verificaciones pendientes.
+
 [![Vista previa del tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
 
 **Presentación histórica · 56 segundos · Grabación real del juego, ilustración original, textos en español y música original.** La vista previa animada muestra fragmentos del tráiler. [Descargar el video completo](assets/video/intro/granaderos-intro.mp4?raw=true) · [Leer los textos](assets/video/intro/captions.es.srt) · [Fuentes del video](assets/video/intro/README.md)
@@ -10,15 +12,19 @@ Granaderos es un juego de estrategia y combate táctico por turnos para navegado
 
 La interfaz del juego y este README están en **español**. El código y la mayor parte de la documentación están en inglés.
 
-**Se puede jugar y sigue en desarrollo.** El juego y el editor de historia todavía no están completos. Consultá el [registro de avances publicados](docs/verification/published-progress.md) para conocer las funciones entregadas, las pruebas realizadas y las validaciones pendientes. El [registro histórico de validación del entorno de desarrollo](docs/verification/gameplay-completion.md) conserva pruebas y limitaciones de etapas anteriores. Sus resultados corresponden a las fechas y versiones indicadas.
+La versión 0.1 permite jugar la campaña y los combates. Todavía falta verificar una campaña completa en esta versión, el equilibrio entre distintas fuerzas y estrategias, el rendimiento en equipos registrados y la presentación gráfica, sonora e histórica para una versión final. Las pruebas de rutas anteriores conservan su fecha y alcance; no certifican estos puntos en el código actual.
+
+La creación y publicación de campañas propias es trabajo futuro. Ya hay editores parciales y un ejemplo editable. El [plan de campañas propias](docs/plans/campaign-authoring.md) describe lo que falta para completar ese proceso.
 
 [Jugar en el navegador](https://fsodano.github.io/granaderos/) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Cómo se juega](#cómo-se-juega) · [Desarrollo](#desarrollo) · [Documentación](docs/README.md)
 
 ## Jugar en el navegador
 
-Abrí [Granaderos en GitHub Pages](https://fsodano.github.io/granaderos/). No requiere instalación. Elegí **Nueva campaña** para iniciar una campaña o **Combate de San Lorenzo** para jugar una batalla independiente.
+Abrí [Granaderos en GitHub Pages](https://fsodano.github.io/granaderos/). No requiere instalación. Elegí **Nueva campaña** para iniciar una campaña o **Combate de San Lorenzo** para jugar una batalla independiente. La etiqueta `0.1` identifica el código guardado en el repositorio. La versión disponible en GitHub Pages depende de su despliegue y puede ser distinta.
 
 El juego guarda el progreso en el navegador. Usá **Guardar** para exportar una partida y **Importar partida** para cargarla. GitHub Pages y localhost usan espacios de almacenamiento separados. Para trasladar una campaña entre ambos, exportá la partida e importala en el otro sitio.
+
+Para probar la versión 0.1, iniciá una campaña nueva. No se garantiza que funcionen las partidas anteriores al formato de paredes compartidas entre casillas. Las partidas con la economía anterior tampoco se convierten.
 
 ## Ejecutar en tu equipo
 
@@ -27,6 +33,7 @@ Instalá **Node.js 22.13.0 o posterior** y npm. Después, ejecutá:
 ```sh
 git clone https://github.com/fsodano/granaderos.git
 cd granaderos
+git checkout 0.1
 npm ci --prefix web
 npm run dev
 ```
@@ -37,7 +44,7 @@ Elegí **Nueva campaña** para comenzar en el despacho del Retiro. Retiro es el 
 
 El juego guarda el progreso de la campaña en el navegador. Usá **Guardar** para exportar una partida a un archivo y **Importar partida** para cargarla.
 
-La pantalla de inicio también permite abrir el [editor de historia](docs/development/story-editor.md) en `/story` y el [editor de sectores](docs/development/sector-editor.md) en `/editor`.
+La pantalla de inicio también permite abrir el [editor de historia](docs/development/story-editor.md) en `/story` y el [editor de sectores](docs/development/sector-editor.md) en `/editor`. Podés probar sus herramientas actuales y el ejemplo **La ruta de las postas**. El proceso completo para crear, compartir e instalar campañas propias queda para una versión futura.
 
 El juego para navegador usa JavaScript y React. No requiere el submódulo del motor ni una instalación original de JA2.
 
@@ -48,11 +55,11 @@ La campaña conecta las decisiones estratégicas con los combates tácticos. Las
 | En el mapa de campaña | En el campo de batalla |
 | --- | --- |
 | Contratá combatientes, formá escuadras y pagá contratos. | Explorá sectores y entrá en combate por turnos al encontrar enemigos. |
-| Asegurá rutas, comprá equipo y financiá el ejército. | Administrá puntos de acción, munición, recargas y el estado de las armas. |
+| Asegurá rutas, recuperá equipo y financiá el ejército. | Administrá puntos de acción, munición, recargas y el estado de las armas. |
 | Entrená milicias, repará equipo y atendé a los heridos. | Usá el terreno, las líneas de visión, el humo y la postura. |
 | Negociá alianzas y defendé los sectores capturados. | Combatí con armas de fuego, armas blancas, caballería y artillería con dotación. |
 
-La campaña usa pesos como único recurso estratégico. Los ingresos de las poblaciones, las misiones pagadas y el dinero recuperado financian el reclutamiento, el equipo y los preparativos. No hay reservas de materiales, cadenas de producción, convoyes de recursos ni cuidado de caballos. Iniciá una campaña nueva después de la actualización económica: las partidas con la economía anterior no se convierten.
+La campaña usa pesos como único recurso estratégico. Los ingresos de las poblaciones, las misiones pagadas y el dinero recuperado permiten pagar contratos, viajes y preparativos. El comercio de equipo está desactivado. Las armas y los suministros se obtienen con los combatientes reclutados o se encuentran físicamente en los sectores. La munición y las vendas son finitas: el dinero no permite comprar su reposición en esta versión.
 
 Podés seleccionar, visitar y explorar las casillas terrestres y los distritos urbanos. Cada uno conserva su propia escena. Las casillas de aguas abiertas no permiten el desplazamiento terrestre.
 
@@ -85,9 +92,9 @@ npm run typecheck    # Validación de TypeScript
 npm run build        # Compilación y validación de la exportación estática en dist/
 ```
 
-La [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo elegir pruebas específicas, rápidas o completas. Ejecutá todas las pruebas antes de una publicación o de un cambio en las reglas de juego compartidas.
+La [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo elegir pruebas específicas, rápidas o completas, y cómo registrar el alcance de una versión de desarrollo. Ejecutá todas las pruebas antes de cambiar las reglas de juego compartidas o de declarar completa la validación de una campaña.
 
-Consultá primero el [registro de avances publicados](docs/verification/published-progress.md) para conocer el alcance probado y el trabajo pendiente. El [índice de verificación](docs/verification/README.md) también conserva registros históricos del entorno de desarrollo. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
+Consultá primero el [estado de la versión 0.1](docs/verification/version-0.1.md) para conocer el alcance probado y el trabajo pendiente. El [registro de avances publicados](docs/verification/published-progress.md) y el [índice de verificación](docs/verification/README.md) conservan pruebas de entregas anteriores. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
 
 | Ruta | Contenido |
 | --- | --- |
@@ -101,6 +108,6 @@ Consultá primero el [registro de avances publicados](docs/verification/publishe
 
 La [guía de desarrollo](docs/development/getting-started.md) detalla la instalación, los archivos generados y las comprobaciones. La versión para navegador es el juego principal. La conversión nativa anterior tiene requisitos de compilación y ejecución separados.
 
-Para contribuir, identificá los criterios de aceptación pertinentes en el [registro de avances publicados](docs/verification/published-progress.md) y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
+Para contribuir, revisá el [estado de la versión 0.1](docs/verification/version-0.1.md), los criterios de aceptación y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
 
-[VERSION](VERSION) registra la versión de desarrollo. Para publicar la versión 1.0.0, la especificación suministrada debe superar su auditoría de finalización.
+[VERSION](VERSION) registra la versión del código. La etiqueta `0.1` conserva este punto de desarrollo. La versión final requiere cerrar sus criterios de aceptación y superar la auditoría de finalización.

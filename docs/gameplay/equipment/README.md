@@ -1,12 +1,18 @@
 # Equipment
 
+Current scope: [version 0.1](../../verification/version-0.1.md). Equipment commerce is disabled;
+older purchase, supplier and refill notes describe earlier rules. Use actual
+recruitment allocations and physical sector objects for finite supplies.
+See [commerce deferral](../../verification/finite-campaign-editor-2026-10-05.md).
+
 [Gameplay index](../README.md) · [Documentation index](../../README.md)
 
-These notes cover published systems and separate development-workspace work.
-Read [published progress](../../verification/published-progress.md) for accepted
-features on `main`. Notes marked *workspace* describe unpublished integration;
-the [workspace acceptance record](../../verification/gameplay-completion.md) and
-[parity audit](../../verification/ja2-parity-audit.md) record that separate scope.
+These notes combine feature guides and dated workspace records. Read
+[version 0.1](../../verification/version-0.1.md) for current scope.
+The [requirement ledger](../../verification/published-progress.md) and
+[parity audit](../../verification/ja2-parity-audit.md) retain row evidence and
+comparison requirements. A historical *workspace* label does not establish the
+current merge state; use the named source, date and acceptance limits.
 
 ## Hands, pockets, and clothing
 

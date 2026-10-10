@@ -1,6 +1,11 @@
 # Verification evidence
 
-[Documentation index](../README.md) · [Verification records](../verification/README.md)
+[Documentation index](../README.md)
+
+[Version 0.1](../verification/version-0.1.md) is the current summary. Every
+record below belongs to its named source and date. References to an open PR or
+pending publication describe that record's creation time, not current Git state.
+Preserve the original measurements and failed outcomes. · [Verification records](../verification/README.md)
 
 This folder holds route snapshots and measured performance results. Filenames
 and report fields identify their checkpoints. The files preserve the recorded
@@ -9,7 +14,7 @@ results; they are not refreshed by a documentation update.
 Read the linked verification note for the setup, scope and limitations before
 using a result. Published acceptance is recorded in [published progress](../verification/published-progress.md).
 
-## Alpha local acceptance
+## Historical alpha local acceptance
 
 - [Complete alpha local receipt](alpha-service-equipment-local-2026-10-01.json): final gates, actual full TAP totals and log hashes, shared build, copied browser/UI source relationship.
 - [Compact executing-source delta](alpha-source-inputs-delta-2026-10-01.json): exact reconstruction over the immutable PR139 manifest.

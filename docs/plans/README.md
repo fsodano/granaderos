@@ -4,8 +4,12 @@
 
 These documents record proposals, implementation steps and delivered editor scope.
 Some steps have later implementation notes. A plan is not evidence that its
-requirements are complete. Check [published progress](../verification/published-progress.md)
-and the [parity audit](../verification/ja2-parity-audit.md) before selecting work.
+requirements are complete. Check the [version 0.1 status](../verification/version-0.1.md),
+[feature evidence](../verification/README.md) and each record's source and date
+before selecting work.
+
+- [Campaign creation and community sharing](campaign-authoring.md) — future work;
+  the existing editors and example provide bounded experimental tools.
 
 - [Required equipment implementation plan](EQUIPMENT-IMPLEMENTATION-PLAN.md)
 - [Removable bayonet fitting plan — I06](bayonet-fitting-plan.md) *(workspace)*

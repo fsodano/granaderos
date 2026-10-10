@@ -2,21 +2,47 @@
 
 [Documentation index](../README.md)
 
-Read the [published progress ledger](published-progress.md) first. It records
-accepted features on GitHub `main`, approved scope changes and open work.
+Read the [version 0.1 status](version-0.1.md) first. It records the current
+development checkpoint, checks and known limits. A tag does not establish
+complete game acceptance or publish a new GitHub Pages deployment.
 
-## Current alpha local acceptance
+The [published progress ledger](published-progress.md) and
+[requirement register](requirements.json) preserve feature evidence and design
+history. Some rows describe earlier sources. Use the source, date and limits
+of each check when assessing the current version.
 
-- [Finite service-equipment return](alpha-service-equipment-return-2026-10-01.md) — complete local candidate and browser/save proof included in this alpha PR; no alpha CI or merge asserted.
+## Current version and recent evidence
 
-## Working integration
+- [Version 0.1 scope and remaining work](version-0.1.md).
+- [Shared wall edges](wall-edges.md) — current map format, bounded checks and
+  later campaign limits; earlier campaign saves are not guaranteed compatible.
+- [Visible firearm projectiles, 10 October](visible-firearm-projectiles-2026-10-10.md).
+- [Campaign controller checks, 10 October](../evidence/campaign-controller-safety-2026-10-10/verification.md)
+  — dated complete run and its failed campaign gate; later checks stay separate.
+- [Pending work integration, 9 October](pending-work-integration-2026-10-09.md)
+  — merged source inventory and dated validation limits.
+- [Connected sector roads, 9 October](sector-roads-2026-10-09.md).
+- [Accepted 3D graphics delivery, 9 October](tactical-reference-delivery-2026-10-09.md).
+- [Integrated 3D gameplay check, 8 October](latest-3d-gameplay-2026-10-08.md).
+- [Future campaign creation and sharing](../plans/campaign-authoring.md)
+  — the existing editors and example remain bounded experimental tools.
 
-- [Latest build consolidation](latest-build-consolidation.md) — local merge status and remaining release checks.
+## Historical consolidation and alpha records
+
+- [Latest build consolidation](latest-build-consolidation.md) — PR #139
+  publication and local alpha evidence from 1 October; the title is historical.
+- [Finite service-equipment return](alpha-service-equipment-return-2026-10-01.md)
+  — the dated candidate and its browser/save checks.
 - [Retiro walking and retained scenery](retained-scenery-movement-2026-09-29.md) — historical local checks.
 - [Local enemy presentation](local-enemy-playback-2026-09-29.md) — historical local checks.
 - [Local walking continuity](local-walking-continuity-2026-09-29.md) — historical local checks.
 
-## Published baseline
+## Feature verification records
+
+These records establish their stated source and scope. They include accepted
+features and historical checks. For example, older supplier and artillery
+commerce records do not enable commerce in version 0.1. A passing feature
+record does not prove complete acceptance of a later version.
 
 - [Persistent campaign ammunition](strategic-ammunition-custody.md).
 
@@ -146,16 +172,17 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
-The records below come from the separate development checkout unless stated
-otherwise. Their test counts and implemented behavior are not acceptance of the
-published game. [Workspace gameplay acceptance](gameplay-completion.md) records
-that checkout's latest known failures. The [parity audit](ja2-parity-audit.md)
-retains its detailed requirements; approved published scope changes still apply.
+The records below retain their original checkout and date. Some implementations
+were merged later. Their test counts are not a fresh check of current `main`.
+[Workspace gameplay acceptance](gameplay-completion.md) records its dated
+failures. The [parity audit](ja2-parity-audit.md) combines the original assessment
+with named published receipts; full current parity remains open.
 
-## Development-workspace acceptance and recent records
+## Dated workspace assessments and parity requirements
 
 - [Gameplay completion work](gameplay-completion.md) *(workspace)*
-- [Classic JA2 gameplay parity audit](ja2-parity-audit.md) *(workspace)*
+- [Classic JA2 gameplay parity audit](ja2-parity-audit.md) — dated assessment and
+  named published receipts.
 - [Gameplay follow-up — 27 September 2026](gameplay-follow-up-2026-09-27.md) *(workspace)*
 - [Campaign start, movement and performance — 27 September 2026](gameplay-and-campaign-performance-2026-09-27.md) *(workspace)*
 - [Current worktree regression audit — 2026-09-26](current-worktree-regressions-2026-09-26.md) *(workspace)*
