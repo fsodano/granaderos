@@ -1,5 +1,6 @@
 import {wallMovementBlocked} from './wall-geometry.js';
 import {propBlocksAt} from './props.js';
+import {boundaryPassable,inwardFromBoundary} from './tactical-exits.js';
 // Existing schematic city road approaches, expressed on the compact 20x16 map.
 const entries={
  'retiro:buenos_aires':{edge:'N',x:9,y:0},
@@ -22,7 +23,10 @@ export function militiaArrivalTerrain(state,unit){
   for(let i=0;i<queue.length;i++)for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const next=byKey.get(`${queue[i].x+dx},${queue[i].y+dy}`);if(next&&!seen.has(key(next))&&!wallMovementBlocked(state,queue[i],next)){seen.add(key(next));component.add(key(next));queue.push(next);}}
   if(component.size>largest.size)largest=component;
  }
- const boundary=open.filter(t=>largest.has(key(t))&&(edge==='N'?t.y===0:edge==='S'?t.y===state.height-1:edge==='E'?t.x===state.width-1:t.x===0)&&largest.has(`${t.x+(edge==='W'?1:edge==='E'?-1:0)},${t.y+(edge==='N'?1:edge==='S'?-1:0)}`));
+ const boundary=open.filter(t=>{
+  const inward=inwardFromBoundary(t,edge);
+  return largest.has(key(t))&&boundaryPassable(state,t,edge)&&largest.has(key(inward))&&!wallMovementBlocked(state,t,inward);
+ });
  // A full cohort can exceed the edge width. Enter at the closest legal edge
  // cell, then occupy its exterior approach in walking order. An obstructed
  // edge still has no interior or water fallback.
