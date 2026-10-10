@@ -103,6 +103,26 @@ export function northernOfficerSaltaOrder(battle,unit,artilleryId){
 // mobile battery policy so a living assistant stays with the finite gun.
 export const northernOfficerSaltaController=initial=>coastalBatteryController(initial,{sharedArtillerySight:true});
 
+// Keep the finite field medic in a supporting posture with dressings ready.
+// The mobile crew and infantry retain their ordinary paid orders.
+export function stockNorthernSaltaController(initial){
+ const battery=coastalBatteryController(initial,{sharedArtillerySight:true});
+ const medic=initial.units.filter(unit=>unit.side==='player'&&unit.hp>=15&&unit.medkits>0&&unit.medical>0).sort((a,b)=>b.medical-a.medical)[0]?.id;
+ return (battle,unit)=>{
+  if(unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure&&unit.bleeding>0&&unit.medical>0&&unit.medkits>0){
+   const costs=actionCosts(battle,unit,unit);
+   if(unit.activeSlot==='medical'&&unit.ap>=costs.heal)return {type:'useItem',unitId:unit.id,targetId:unit.id};
+   if(unit.activeSlot!=='medical'&&unit.ap>=costs.weapon+costs.heal)return {type:'weapon',unitId:unit.id,slot:'medical'};
+  }
+  const normal=battery(battle,unit);
+  if(battle.mode==='combat'&&unit.id===medic&&!unit.knockedDown&&!unit.entangled){
+   if(normal?.type==='stance'&&normal.stance==='standing')return unit.activeSlot!=='medical'&&unit.medkits>0&&unit.ap>=actionCosts(battle,unit).weapon?{type:'weapon',unitId:unit.id,slot:'medical'}:null;
+   if(unit.activeSlot==='medical'&&normal?.type==='weapon'&&normal.slot==='primary')return null;
+  }
+  return normal;
+ };
+}
+
 // Stabilize the surviving local patient before any rifle/cache walk.
 // A paid arrival cannot undo a death that already happened during its journey.
 export function stabilizeNorthernRelief(start,{report=()=>{}}={}){
@@ -389,7 +409,7 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
  // Bind the real two-person battery to capable issued bodies. The controller
  // uses this list only to choose roles; every order resolves on the full field.
  const crewScene={...saltaInitial,units:saltaInitial.units.filter(unit=>unit.side!=='player'||unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.surrendered&&!unit.departure&&!unit.fled&&!unit.asleep&&!unit.knockedDown&&!unit.entangled&&(unit.energy??100)>0)};
- const salta=fightNorthernSector(reliefCampaign,'salta',{controller:routeKind==='stock'?cautiousCombatOrder:assignedMountainBatteryController(crewScene),report});
+ const salta=fightNorthernSector(reliefCampaign,'salta',{controller:routeKind==='stock'?stockNorthernSaltaController(saltaInitial):assignedMountainBatteryController(crewScene),report});
  s=salta.campaign;notes.push({...salta.summary,deaths:deadIds(s)});onCheckpoint?.('salta',s,notes);
  s=completeHiredNorthernMission(s,{report,routeKind});
  assert.equal(s.flags.northPact,true);assert.equal(s.flags.partisanSupply,true);assert.ok(isSupplied(s,'salta'));assert.equal(s.pendingBattle,null);
