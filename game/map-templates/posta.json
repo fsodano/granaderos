@@ -15,8 +15,32 @@
         "id": "posta:interior",
         "cells": [
           {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
             "x": 1,
             "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 0
           },
           {
             "x": 2,
@@ -25,6 +49,14 @@
           {
             "x": 1,
             "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 0
           },
           {
             "x": 3,
@@ -39,6 +71,14 @@
             "y": 3
           },
           {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
             "x": 4,
             "y": 1
           },
@@ -51,6 +91,14 @@
             "y": 3
           },
           {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
             "x": 4,
             "y": 2
           },
@@ -59,8 +107,32 @@
             "y": 3
           },
           {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
             "x": 4,
             "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 4
           }
         ]
       }
@@ -75,7 +147,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:0:0"
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:0:0"
       },
       {
         "x": 1,
@@ -86,7 +173,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:1:0"
       },
       {
         "x": 2,
@@ -97,7 +186,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:2:0"
       },
       {
         "x": 3,
@@ -108,7 +199,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:3:0"
       },
       {
         "x": 4,
@@ -119,7 +212,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:4:0"
       },
       {
         "x": 5,
@@ -130,7 +225,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:5:0"
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:6:0"
       },
       {
         "x": 0,
@@ -141,10 +251,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:0:1"
       },
       {
-        "x": 5,
+        "x": 6,
         "y": 1,
         "type": "wall",
         "blocked": true,
@@ -152,10 +264,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:6:1"
       },
       {
-        "x": 5,
+        "x": 6,
         "y": 2,
         "type": "window",
         "blocked": true,
@@ -163,7 +277,9 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:6:2"
       },
       {
         "x": 0,
@@ -174,10 +290,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:0:3"
       },
       {
-        "x": 5,
+        "x": 6,
         "y": 3,
         "type": "wall",
         "blocked": true,
@@ -185,7 +303,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:6:3"
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:0:5"
       },
       {
         "x": 0,
@@ -196,33 +329,39 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:0:4"
       },
       {
         "x": 1,
-        "y": 4,
+        "y": 5,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:1:5"
       },
       {
         "x": 2,
-        "y": 4,
+        "y": 5,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:2:5"
       },
       {
         "x": 3,
-        "y": 4,
+        "y": 5,
         "type": "door",
         "blocked": true,
         "blocksSight": true,
@@ -232,21 +371,38 @@
         "roomId": null,
         "doorId": "posta:door:3:4",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "id": "posta:wall:x:3:5"
       },
       {
         "x": 4,
-        "y": 4,
+        "y": 5,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:4:5"
       },
       {
         "x": 5,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null,
+        "axis": "x",
+        "id": "posta:wall:x:5:5"
+      },
+      {
+        "x": 6,
         "y": 4,
         "type": "wall",
         "blocked": true,
@@ -254,12 +410,17 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "posta",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "posta:wall:y:6:4"
       },
       {
         "x": 0,
         "y": 2,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "posta",
+        "id": "posta:wall:y:0:2"
       }
     ],
     "kind": "posta",

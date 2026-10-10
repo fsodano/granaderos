@@ -24,15 +24,14 @@ const house = () =>
   execute(blankMap(), [
     { type: "addBuilding", building: { id: "house", x: 3, y: 3, width: 6, height: 6 } },
   ]);
-test("the consolidated sector plans preserve approved terrain, room membership, props and lighting", () => {
+test("the migrated sector plans preserve edge geometry, floor membership, props and lighting", () => {
   const expected = JSON.parse(
     readFileSync(new URL("./fixtures/map-migration-hashes.json", import.meta.url)),
   );
   for (const [id, d] of Object.entries(MAP_LIBRARY)) {
     assert.deepEqual(validateMap(d).errors, []);
     const m = compileMap(d);
-    // Revision 2 is the reviewed building plan; Retiro revision 3 adds its finite armory chest.
-    // Normalise derived room ordering without changing room membership.
+    // Pin the authored edge plan, floor membership and contents.
     const data = {
       tiles: m.tiles
         .map((t) => Object.fromEntries(Object.entries(t).sort()))
@@ -46,6 +45,7 @@ test("the consolidated sector plans preserve approved terrain, room membership, 
           })),
         }),
       ),
+      wallEdges: m.wallEdges.map(w=>Object.fromEntries(Object.entries(w).sort())).sort((a,b)=>a.id.localeCompare(b.id)),
       props: m.props,
       lights: m.lights,
       decor: m.decor,
@@ -95,19 +95,20 @@ test("partitions recompute rooms and door openings reconnect routes", () => {
   let d = house();
   d = execute(
     d,
-    Array.from({ length: 4 }, (_, i) => ({
+    Array.from({ length: 6 }, (_, i) => ({
       type: "setWall",
       buildingId: "house",
       x: 5,
-      y: 4 + i,
+      y: 3 + i,
+      axis: "y",
       wallType: "wall",
     })),
   );
   assert.equal(compileMap(d).buildings[0].rooms.length, 2);
-  d = execute(d, [{ type: "setWall", buildingId: "house", x: 5, y: 5, wallType: "door" }]);
+  d = execute(d, [{ type: "setWall", buildingId: "house", x: 5, y: 5, axis:"y", wallType: "door" }]);
   assert.equal(d.buildings[0].rooms.length, 2);
   d = execute(d, [{ type: "setDoor", id: "house:door:5:5", open: true }]);
-  assert.equal(compileMap(d).tiles.find((t) => t.x === 5 && t.y === 5).blocked, false);
+  assert.equal(compileMap(d).wallEdges.find((t) => t.x === 5 && t.y === 5 && t.axis==="y").blocked, false);
 });
 test("templates and duplicated buildings remap object and container IDs", () => {
   let d = execute(house(), [

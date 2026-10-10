@@ -17,7 +17,7 @@ test('the editable map catalogue provides the current building plans and full ca
    assert.equal(placed.width,building.width);assert.equal(placed.height,building.height);
    assert.equal(placed.architecture,building.architecture);
    for(const wall of building.walls){
-    const actual=map.tiles.find(t=>t.x===wall.x+placed.x-building.x&&t.y===wall.y+placed.y-building.y);
+    const actual=map.wallEdges.find(t=>t.x===wall.x+placed.x-building.x&&t.y===wall.y+placed.y-building.y&&t.axis===wall.axis);
     assert.equal(actual.type,wall.type);assert.equal(actual.doorId,wall.doorId);
    }
   }

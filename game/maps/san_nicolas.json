@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "san_nicolas",
   "revision": 3,
   "width": 20,
@@ -2266,35 +2266,55 @@
           "id": "san_nicolas:building:interior",
           "cells": [
             {
+              "x": 5,
+              "y": 10
+            },
+            {
+              "x": 6,
+              "y": 10
+            },
+            {
+              "x": 5,
+              "y": 11
+            },
+            {
+              "x": 7,
+              "y": 10
+            },
+            {
               "x": 6,
               "y": 11
+            },
+            {
+              "x": 5,
+              "y": 12
+            },
+            {
+              "x": 8,
+              "y": 10
             },
             {
               "x": 7,
               "y": 11
             },
             {
-              "x": 8,
-              "y": 11
-            },
-            {
-              "x": 9,
-              "y": 11
-            },
-            {
               "x": 6,
               "y": 12
             },
             {
-              "x": 7,
-              "y": 12
-            },
-            {
-              "x": 8,
-              "y": 12
+              "x": 5,
+              "y": 13
             },
             {
               "x": 9,
+              "y": 10
+            },
+            {
+              "x": 8,
+              "y": 11
+            },
+            {
+              "x": 7,
               "y": 12
             },
             {
@@ -2302,16 +2322,68 @@
               "y": 13
             },
             {
+              "x": 5,
+              "y": 14
+            },
+            {
+              "x": 10,
+              "y": 10
+            },
+            {
+              "x": 9,
+              "y": 11
+            },
+            {
+              "x": 8,
+              "y": 12
+            },
+            {
               "x": 7,
               "y": 13
+            },
+            {
+              "x": 6,
+              "y": 14
+            },
+            {
+              "x": 10,
+              "y": 11
+            },
+            {
+              "x": 9,
+              "y": 12
             },
             {
               "x": 8,
               "y": 13
             },
             {
+              "x": 7,
+              "y": 14
+            },
+            {
+              "x": 10,
+              "y": 12
+            },
+            {
               "x": 9,
               "y": 13
+            },
+            {
+              "x": 8,
+              "y": 14
+            },
+            {
+              "x": 10,
+              "y": 13
+            },
+            {
+              "x": 9,
+              "y": 14
+            },
+            {
+              "x": 10,
+              "y": 14
             }
           ]
         }
@@ -2327,7 +2399,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:5:10"
+        },
+        {
+          "x": 5,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:5:10"
         },
         {
           "x": 6,
@@ -2338,7 +2425,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:6:10"
         },
         {
           "x": 7,
@@ -2349,7 +2438,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:7:10"
         },
         {
           "x": 8,
@@ -2360,7 +2451,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:8:10"
         },
         {
           "x": 9,
@@ -2371,7 +2464,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:9:10"
         },
         {
           "x": 10,
@@ -2382,7 +2477,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:10:10"
+        },
+        {
+          "x": 11,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:11:10"
         },
         {
           "x": 5,
@@ -2393,10 +2503,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:5:11"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 11,
           "type": "wall",
           "blocked": true,
@@ -2404,7 +2516,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:11:11"
         },
         {
           "x": 5,
@@ -2415,10 +2529,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:5:12"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 12,
           "type": "wall",
           "blocked": true,
@@ -2426,7 +2542,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:11:12"
         },
         {
           "x": 5,
@@ -2437,10 +2555,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:5:13"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2448,7 +2568,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:11:13"
+        },
+        {
+          "x": 5,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:5:15"
         },
         {
           "x": 5,
@@ -2459,33 +2594,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:5:14"
         },
         {
           "x": 6,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:6:15"
         },
         {
           "x": 7,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:7:15"
         },
         {
           "x": 8,
-          "y": 14,
+          "y": 15,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2495,11 +2636,13 @@
           "roomId": null,
           "doorId": "san_nicolas:door-left",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:8:15"
         },
         {
           "x": 9,
-          "y": 14,
+          "y": 15,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2509,10 +2652,25 @@
           "roomId": null,
           "doorId": "san_nicolas:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:9:15"
         },
         {
           "x": 10,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:building:wall:x:10:15"
+        },
+        {
+          "x": 11,
           "y": 14,
           "type": "wall",
           "blocked": true,
@@ -2520,7 +2678,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:building:wall:y:11:14"
         }
       ]
     },
@@ -2539,43 +2699,55 @@
           "id": "san_nicolas:house-0:interior",
           "cells": [
             {
+              "x": 4,
+              "y": 0
+            },
+            {
+              "x": 5,
+              "y": 0
+            },
+            {
+              "x": 4,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 0
+            },
+            {
               "x": 5,
               "y": 1
+            },
+            {
+              "x": 4,
+              "y": 2
+            },
+            {
+              "x": 7,
+              "y": 0
             },
             {
               "x": 6,
               "y": 1
             },
             {
-              "x": 7,
-              "y": 1
-            },
-            {
-              "x": 8,
-              "y": 1
-            },
-            {
-              "x": 9,
-              "y": 1
-            },
-            {
               "x": 5,
               "y": 2
             },
             {
-              "x": 6,
-              "y": 2
-            },
-            {
-              "x": 7,
-              "y": 2
+              "x": 4,
+              "y": 3
             },
             {
               "x": 8,
-              "y": 2
+              "y": 0
             },
             {
-              "x": 9,
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 6,
               "y": 2
             },
             {
@@ -2583,20 +2755,88 @@
               "y": 3
             },
             {
+              "x": 4,
+              "y": 4
+            },
+            {
+              "x": 9,
+              "y": 0
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
               "x": 6,
               "y": 3
+            },
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 0
+            },
+            {
+              "x": 9,
+              "y": 1
+            },
+            {
+              "x": 8,
+              "y": 2
             },
             {
               "x": 7,
               "y": 3
             },
             {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 1
+            },
+            {
+              "x": 9,
+              "y": 2
+            },
+            {
               "x": 8,
               "y": 3
             },
             {
+              "x": 7,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 2
+            },
+            {
               "x": 9,
               "y": 3
+            },
+            {
+              "x": 8,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 3
+            },
+            {
+              "x": 9,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 4
             }
           ]
         }
@@ -2613,7 +2853,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:4:0"
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:4:0"
         },
         {
           "x": 5,
@@ -2624,7 +2879,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:5:0"
         },
         {
           "x": 6,
@@ -2635,7 +2892,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:6:0"
         },
         {
           "x": 7,
@@ -2646,7 +2905,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:7:0"
         },
         {
           "x": 8,
@@ -2657,7 +2918,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:8:0"
         },
         {
           "x": 9,
@@ -2668,7 +2931,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:9:0"
         },
         {
           "x": 10,
@@ -2679,7 +2944,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:10:0"
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:11:0"
         },
         {
           "x": 4,
@@ -2690,10 +2970,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:4:1"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 1,
           "type": "wall",
           "blocked": true,
@@ -2701,7 +2983,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:11:1"
         },
         {
           "x": 4,
@@ -2712,10 +2996,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:4:2"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2723,7 +3009,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:11:2"
         },
         {
           "x": 4,
@@ -2734,10 +3022,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:4:3"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2745,7 +3035,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:11:3"
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:4:5"
         },
         {
           "x": 4,
@@ -2756,33 +3061,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:4:4"
         },
         {
           "x": 5,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:5:5"
         },
         {
           "x": 6,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:6:5"
         },
         {
           "x": 7,
-          "y": 4,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2792,32 +3103,51 @@
           "roomId": null,
           "doorId": "san_nicolas:house-0:door:7:4",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:7:5"
         },
         {
           "x": 8,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:8:5"
         },
         {
           "x": 9,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:9:5"
         },
         {
           "x": 10,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_nicolas:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "san_nicolas:house-0:wall:x:10:5"
+        },
+        {
+          "x": 11,
           "y": 4,
           "type": "wall",
           "blocked": true,
@@ -2825,22 +3155,24 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_nicolas:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_nicolas:house-0:wall:y:11:4"
         }
       ]
     }
   ],
   "props": [
     {
-      "id": "san_nicolas:building:table:6:11",
-      "type": "table",
+      "id": "san_nicolas:building:bed:6:13",
+      "type": "bed",
       "x": 6,
-      "y": 11,
+      "y": 12,
       "buildingId": "san_nicolas:building",
       "roomId": "san_nicolas:building:interior",
       "footprint": {
         "width": 1,
-        "height": 1
+        "height": 2
       },
       "blocksMovement": true
     },
@@ -2858,19 +3190,6 @@
       "blocksMovement": true
     },
     {
-      "id": "san_nicolas:building:bed:6:13",
-      "type": "bed",
-      "x": 6,
-      "y": 12,
-      "buildingId": "san_nicolas:building",
-      "roomId": "san_nicolas:building:interior",
-      "footprint": {
-        "width": 1,
-        "height": 2
-      },
-      "blocksMovement": true
-    },
-    {
       "id": "san_nicolas:building:chest:9:13",
       "type": "chest",
       "x": 9,
@@ -2884,25 +3203,12 @@
       "blocksMovement": true
     },
     {
-      "id": "san_nicolas:house-0:table:5:1",
+      "id": "san_nicolas:building:table:6:11",
       "type": "table",
-      "x": 5,
-      "y": 1,
-      "buildingId": "san_nicolas:house-0",
-      "roomId": "san_nicolas:house-0:interior",
-      "footprint": {
-        "width": 1,
-        "height": 1
-      },
-      "blocksMovement": true
-    },
-    {
-      "id": "san_nicolas:house-0:bench:9:1",
-      "type": "bench",
-      "x": 9,
-      "y": 1,
-      "buildingId": "san_nicolas:house-0",
-      "roomId": "san_nicolas:house-0:interior",
+      "x": 6,
+      "y": 11,
+      "buildingId": "san_nicolas:building",
+      "roomId": "san_nicolas:building:interior",
       "footprint": {
         "width": 1,
         "height": 1
@@ -2923,10 +3229,10 @@
       "blocksMovement": true
     },
     {
-      "id": "san_nicolas:house-0:chest:9:3",
-      "type": "chest",
+      "id": "san_nicolas:house-0:bench:9:1",
+      "type": "bench",
       "x": 9,
-      "y": 3,
+      "y": 1,
       "buildingId": "san_nicolas:house-0",
       "roomId": "san_nicolas:house-0:interior",
       "footprint": {
@@ -2942,6 +3248,32 @@
       "y": 6,
       "footprint": {
         "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:house-0:chest:9:3",
+      "type": "chest",
+      "x": 9,
+      "y": 3,
+      "buildingId": "san_nicolas:house-0",
+      "roomId": "san_nicolas:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "san_nicolas:house-0:table:5:1",
+      "type": "table",
+      "x": 5,
+      "y": 1,
+      "buildingId": "san_nicolas:house-0",
+      "roomId": "san_nicolas:house-0:interior",
+      "footprint": {
+        "width": 1,
         "height": 1
       },
       "blocksMovement": true

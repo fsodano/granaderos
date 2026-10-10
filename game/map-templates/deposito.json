@@ -13,10 +13,35 @@
     "rooms": [
       {
         "id": "deposito:mercaderias",
+        "name": "Sala de mercaderías",
         "cells": [
           {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
             "x": 1,
             "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 0
           },
           {
             "x": 2,
@@ -25,6 +50,14 @@
           {
             "x": 1,
             "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 0
           },
           {
             "x": 3,
@@ -37,6 +70,14 @@
           {
             "x": 1,
             "y": 3
+          },
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 0
           },
           {
             "x": 4,
@@ -53,6 +94,14 @@
           {
             "x": 1,
             "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 0
           },
           {
             "x": 5,
@@ -73,6 +122,14 @@
           {
             "x": 1,
             "y": 5
+          },
+          {
+            "x": 0,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 0
           },
           {
             "x": 6,
@@ -97,6 +154,14 @@
           {
             "x": 1,
             "y": 6
+          },
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 8,
+            "y": 0
           },
           {
             "x": 7,
@@ -125,6 +190,14 @@
           {
             "x": 1,
             "y": 7
+          },
+          {
+            "x": 0,
+            "y": 8
+          },
+          {
+            "x": 9,
+            "y": 0
           },
           {
             "x": 8,
@@ -159,6 +232,14 @@
             "y": 8
           },
           {
+            "x": 0,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
             "x": 8,
             "y": 2
           },
@@ -187,6 +268,14 @@
             "y": 8
           },
           {
+            "x": 1,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
             "x": 8,
             "y": 3
           },
@@ -211,6 +300,14 @@
             "y": 8
           },
           {
+            "x": 2,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 3
+          },
+          {
             "x": 8,
             "y": 4
           },
@@ -231,6 +328,14 @@
             "y": 8
           },
           {
+            "x": 3,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 4
+          },
+          {
             "x": 8,
             "y": 5
           },
@@ -247,6 +352,14 @@
             "y": 8
           },
           {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 5
+          },
+          {
             "x": 8,
             "y": 6
           },
@@ -259,6 +372,14 @@
             "y": 8
           },
           {
+            "x": 5,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 6
+          },
+          {
             "x": 8,
             "y": 7
           },
@@ -267,18 +388,54 @@
             "y": 8
           },
           {
+            "x": 6,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 7
+          },
+          {
             "x": 8,
             "y": 8
+          },
+          {
+            "x": 7,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 9
           }
-        ],
-        "name": "Sala de mercaderías"
+        ]
       },
       {
         "id": "deposito:contaduria",
+        "name": "Contaduría",
         "cells": [
           {
             "x": 10,
+            "y": 0
+          },
+          {
+            "x": 11,
+            "y": 0
+          },
+          {
+            "x": 10,
             "y": 1
+          },
+          {
+            "x": 12,
+            "y": 0
           },
           {
             "x": 11,
@@ -289,6 +446,10 @@
             "y": 2
           },
           {
+            "x": 12,
+            "y": 1
+          },
+          {
             "x": 11,
             "y": 2
           },
@@ -297,14 +458,34 @@
             "y": 3
           },
           {
+            "x": 12,
+            "y": 2
+          },
+          {
             "x": 11,
             "y": 3
+          },
+          {
+            "x": 10,
+            "y": 4
+          },
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 12,
+            "y": 4
           }
-        ],
-        "name": "Contaduría"
+        ]
       },
       {
         "id": "deposito:deposito-seguro",
+        "name": "Depósito seguro",
         "cells": [
           {
             "x": 10,
@@ -319,6 +500,10 @@
             "y": 6
           },
           {
+            "x": 12,
+            "y": 5
+          },
+          {
             "x": 11,
             "y": 6
           },
@@ -327,6 +512,10 @@
             "y": 7
           },
           {
+            "x": 12,
+            "y": 6
+          },
+          {
             "x": 11,
             "y": 7
           },
@@ -335,11 +524,30 @@
             "y": 8
           },
           {
+            "x": 12,
+            "y": 7
+          },
+          {
             "x": 11,
             "y": 8
+          },
+          {
+            "x": 10,
+            "y": 9
+          },
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 12,
+            "y": 9
           }
-        ],
-        "name": "Depósito seguro"
+        ]
       }
     ],
     "kind": "depot",
@@ -357,7 +565,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:0:0"
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:0:0"
       },
       {
         "x": 1,
@@ -368,7 +591,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:1:0"
       },
       {
         "x": 2,
@@ -379,7 +604,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:2:0"
       },
       {
         "x": 4,
@@ -390,7 +617,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:4:0"
       },
       {
         "x": 5,
@@ -401,7 +630,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:5:0"
       },
       {
         "x": 7,
@@ -412,7 +643,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:7:0"
       },
       {
         "x": 8,
@@ -423,7 +656,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:8:0"
       },
       {
         "x": 9,
@@ -434,7 +669,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:9:0"
+      },
+      {
+        "x": 10,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:10:0"
       },
       {
         "x": 11,
@@ -445,7 +695,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:11:0"
       },
       {
         "x": 12,
@@ -456,7 +708,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:12:0"
+      },
+      {
+        "x": 13,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:0"
       },
       {
         "x": 0,
@@ -467,10 +734,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:0:1"
       },
       {
-        "x": 12,
+        "x": 13,
         "y": 1,
         "type": "wall",
         "blocked": true,
@@ -478,7 +747,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:1"
       },
       {
         "x": 0,
@@ -489,10 +760,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:0:3"
       },
       {
-        "x": 12,
+        "x": 13,
         "y": 3,
         "type": "wall",
         "blocked": true,
@@ -500,7 +773,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:3"
       },
       {
         "x": 0,
@@ -511,10 +786,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:0:4"
       },
       {
-        "x": 12,
+        "x": 13,
         "y": 4,
         "type": "wall",
         "blocked": true,
@@ -522,7 +799,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:4"
       },
       {
         "x": 12,
@@ -533,7 +812,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:12:5"
+      },
+      {
+        "x": 13,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:5"
       },
       {
         "x": 0,
@@ -544,10 +838,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:0:6"
       },
       {
-        "x": 12,
+        "x": 13,
         "y": 7,
         "type": "wall",
         "blocked": true,
@@ -555,7 +851,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:7"
       },
       {
         "x": 0,
@@ -566,10 +864,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:0:8"
       },
       {
-        "x": 12,
+        "x": 13,
         "y": 8,
         "type": "wall",
         "blocked": true,
@@ -577,7 +877,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:8"
+      },
+      {
+        "x": 0,
+        "y": 10,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:0:10"
       },
       {
         "x": 0,
@@ -588,73 +903,87 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:0:9"
       },
       {
         "x": 1,
-        "y": 9,
+        "y": 10,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:1:10"
       },
       {
         "x": 2,
-        "y": 9,
+        "y": 10,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:2:10"
       },
       {
         "x": 3,
-        "y": 9,
+        "y": 10,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:3:10"
       },
       {
         "x": 5,
-        "y": 9,
+        "y": 10,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:5:10"
       },
       {
         "x": 7,
-        "y": 9,
+        "y": 10,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:7:10"
       },
       {
         "x": 9,
-        "y": 9,
+        "y": 10,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:9:10"
       },
       {
         "x": 10,
@@ -665,21 +994,51 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:10:9"
+      },
+      {
+        "x": 10,
+        "y": 10,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:10:10"
       },
       {
         "x": 11,
-        "y": 9,
+        "y": 10,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:11:10"
       },
       {
         "x": 12,
+        "y": 10,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null,
+        "axis": "x",
+        "id": "deposito:wall:x:12:10"
+      },
+      {
+        "x": 13,
         "y": 9,
         "type": "wall",
         "blocked": true,
@@ -687,124 +1046,197 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "deposito",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "deposito:wall:y:13:9"
       },
       {
-        "x": 9,
+        "x": 10,
         "y": 1,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:1"
       },
       {
-        "x": 9,
+        "x": 10,
         "y": 3,
-        "type": "wall"
-      },
-      {
-        "x": 9,
-        "y": 4,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:3"
       },
       {
         "x": 9,
         "y": 5,
-        "type": "wall"
-      },
-      {
-        "x": 9,
-        "y": 7,
-        "type": "wall"
-      },
-      {
-        "x": 9,
-        "y": 8,
-        "type": "wall"
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:9:5"
       },
       {
         "x": 10,
         "y": 4,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:4"
+      },
+      {
+        "x": 10,
+        "y": 5,
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:5"
+      },
+      {
+        "x": 10,
+        "y": 7,
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:7"
+      },
+      {
+        "x": 10,
+        "y": 8,
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:8"
+      },
+      {
+        "x": 10,
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:10:5"
       },
       {
         "x": 11,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:11:5"
       },
       {
         "x": 6,
-        "y": 9,
-        "type": "wall"
+        "y": 10,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:6:10"
       },
       {
         "x": 4,
-        "y": 9,
+        "y": 10,
         "type": "door",
         "doorId": "deposito:door:4:9",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:4:10"
       },
       {
         "x": 8,
-        "y": 9,
+        "y": 10,
         "type": "door",
         "doorId": "deposito:door:8:9",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:8:10"
       },
       {
-        "x": 9,
+        "x": 10,
         "y": 2,
         "type": "door",
         "doorId": "deposito:door:9:2",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:2"
       },
       {
-        "x": 9,
+        "x": 10,
         "y": 6,
         "type": "door",
         "doorId": "deposito:door:9:6",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:10:6"
       },
       {
         "x": 0,
         "y": 2,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:0:2"
       },
       {
         "x": 0,
         "y": 5,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:0:5"
       },
       {
         "x": 0,
         "y": 7,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:0:7"
       },
       {
-        "x": 12,
+        "x": 13,
         "y": 2,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:13:2"
       },
       {
-        "x": 12,
+        "x": 13,
         "y": 6,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "deposito",
+        "id": "deposito:wall:y:13:6"
       },
       {
         "x": 3,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:3:0"
       },
       {
         "x": 6,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:6:0"
       },
       {
         "x": 10,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "deposito",
+        "id": "deposito:wall:x:10:0"
       }
     ]
   },

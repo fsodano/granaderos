@@ -15,8 +15,32 @@
         "id": "pulperia:interior",
         "cells": [
           {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
             "x": 1,
             "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 0
           },
           {
             "x": 2,
@@ -25,6 +49,14 @@
           {
             "x": 1,
             "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 0
           },
           {
             "x": 3,
@@ -37,6 +69,14 @@
           {
             "x": 1,
             "y": 3
+          },
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 0
           },
           {
             "x": 4,
@@ -53,6 +93,14 @@
           {
             "x": 1,
             "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 0
           },
           {
             "x": 5,
@@ -75,6 +123,14 @@
             "y": 5
           },
           {
+            "x": 0,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
             "x": 6,
             "y": 1
           },
@@ -95,6 +151,14 @@
             "y": 5
           },
           {
+            "x": 1,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
             "x": 6,
             "y": 2
           },
@@ -111,6 +175,14 @@
             "y": 5
           },
           {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 2
+          },
+          {
             "x": 6,
             "y": 3
           },
@@ -123,6 +195,14 @@
             "y": 5
           },
           {
+            "x": 3,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
             "x": 6,
             "y": 4
           },
@@ -131,8 +211,32 @@
             "y": 5
           },
           {
+            "x": 4,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
             "x": 6,
             "y": 5
+          },
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 6
           }
         ]
       }
@@ -147,7 +251,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:0:0"
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "pulperia",
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:0:0"
       },
       {
         "x": 1,
@@ -158,7 +277,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:1:0"
       },
       {
         "x": 2,
@@ -169,7 +290,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:2:0"
       },
       {
         "x": 3,
@@ -180,7 +303,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:3:0"
       },
       {
         "x": 4,
@@ -191,7 +316,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:4:0"
       },
       {
         "x": 5,
@@ -202,7 +329,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:5:0"
       },
       {
         "x": 6,
@@ -213,7 +342,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:6:0"
       },
       {
         "x": 7,
@@ -224,7 +355,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:7:0"
+      },
+      {
+        "x": 8,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "pulperia",
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:8:0"
       },
       {
         "x": 0,
@@ -235,10 +381,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:0:1"
       },
       {
-        "x": 7,
+        "x": 8,
         "y": 1,
         "type": "wall",
         "blocked": true,
@@ -246,7 +394,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:8:1"
       },
       {
         "x": 0,
@@ -257,10 +407,12 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:0:2"
       },
       {
-        "x": 7,
+        "x": 8,
         "y": 2,
         "type": "window",
         "blocked": true,
@@ -268,7 +420,9 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:8:2"
       },
       {
         "x": 0,
@@ -279,10 +433,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:0:3"
       },
       {
-        "x": 7,
+        "x": 8,
         "y": 3,
         "type": "wall",
         "blocked": true,
@@ -290,7 +446,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:8:3"
       },
       {
         "x": 0,
@@ -301,10 +459,12 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:0:4"
       },
       {
-        "x": 7,
+        "x": 8,
         "y": 4,
         "type": "window",
         "blocked": true,
@@ -312,7 +472,9 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:8:4"
       },
       {
         "x": 0,
@@ -323,10 +485,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:0:5"
       },
       {
-        "x": 7,
+        "x": 8,
         "y": 5,
         "type": "wall",
         "blocked": true,
@@ -334,7 +498,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:8:5"
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "pulperia",
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:0:7"
       },
       {
         "x": 0,
@@ -345,33 +524,39 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:0:6"
       },
       {
         "x": 2,
-        "y": 6,
+        "y": 7,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:2:7"
       },
       {
         "x": 3,
-        "y": 6,
+        "y": 7,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:3:7"
       },
       {
         "x": 4,
-        "y": 6,
+        "y": 7,
         "type": "door",
         "blocked": true,
         "blocksSight": true,
@@ -381,21 +566,38 @@
         "roomId": null,
         "doorId": "pulperia:door:4:6",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "id": "pulperia:wall:x:4:7"
       },
       {
         "x": 5,
-        "y": 6,
+        "y": 7,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:5:7"
       },
       {
         "x": 7,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "pulperia",
+        "roomId": null,
+        "axis": "x",
+        "id": "pulperia:wall:x:7:7"
+      },
+      {
+        "x": 8,
         "y": 6,
         "type": "wall",
         "blocked": true,
@@ -403,17 +605,25 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "pulperia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "pulperia:wall:y:8:6"
       },
       {
         "x": 1,
-        "y": 6,
-        "type": "window"
+        "y": 7,
+        "type": "window",
+        "axis": "x",
+        "buildingId": "pulperia",
+        "id": "pulperia:wall:x:1:7"
       },
       {
         "x": 6,
-        "y": 6,
-        "type": "window"
+        "y": 7,
+        "type": "window",
+        "axis": "x",
+        "buildingId": "pulperia",
+        "id": "pulperia:wall:x:6:7"
       }
     ],
     "kind": "pulperia",

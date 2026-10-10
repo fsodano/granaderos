@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "tucuman",
   "revision": 3,
   "width": 20,
@@ -2266,35 +2266,55 @@
           "id": "tucuman:building:interior",
           "cells": [
             {
+              "x": 10,
+              "y": 4
+            },
+            {
+              "x": 11,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 5
+            },
+            {
+              "x": 12,
+              "y": 4
+            },
+            {
               "x": 11,
               "y": 5
+            },
+            {
+              "x": 10,
+              "y": 6
+            },
+            {
+              "x": 13,
+              "y": 4
             },
             {
               "x": 12,
               "y": 5
             },
             {
-              "x": 13,
-              "y": 5
-            },
-            {
-              "x": 14,
-              "y": 5
-            },
-            {
               "x": 11,
               "y": 6
             },
             {
-              "x": 12,
-              "y": 6
-            },
-            {
-              "x": 13,
-              "y": 6
+              "x": 10,
+              "y": 7
             },
             {
               "x": 14,
+              "y": 4
+            },
+            {
+              "x": 13,
+              "y": 5
+            },
+            {
+              "x": 12,
               "y": 6
             },
             {
@@ -2302,16 +2322,68 @@
               "y": 7
             },
             {
+              "x": 10,
+              "y": 8
+            },
+            {
+              "x": 15,
+              "y": 4
+            },
+            {
+              "x": 14,
+              "y": 5
+            },
+            {
+              "x": 13,
+              "y": 6
+            },
+            {
               "x": 12,
               "y": 7
+            },
+            {
+              "x": 11,
+              "y": 8
+            },
+            {
+              "x": 15,
+              "y": 5
+            },
+            {
+              "x": 14,
+              "y": 6
             },
             {
               "x": 13,
               "y": 7
             },
             {
+              "x": 12,
+              "y": 8
+            },
+            {
+              "x": 15,
+              "y": 6
+            },
+            {
               "x": 14,
               "y": 7
+            },
+            {
+              "x": 13,
+              "y": 8
+            },
+            {
+              "x": 15,
+              "y": 7
+            },
+            {
+              "x": 14,
+              "y": 8
+            },
+            {
+              "x": 15,
+              "y": 8
             }
           ]
         }
@@ -2327,7 +2399,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:10:4"
+        },
+        {
+          "x": 10,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:10:4"
         },
         {
           "x": 11,
@@ -2338,7 +2425,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:11:4"
         },
         {
           "x": 12,
@@ -2349,7 +2438,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:12:4"
         },
         {
           "x": 13,
@@ -2360,7 +2451,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:13:4"
         },
         {
           "x": 14,
@@ -2371,7 +2464,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:14:4"
         },
         {
           "x": 15,
@@ -2382,7 +2477,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:15:4"
+        },
+        {
+          "x": 16,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:16:4"
         },
         {
           "x": 10,
@@ -2393,10 +2503,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:10:5"
         },
         {
-          "x": 15,
+          "x": 16,
           "y": 5,
           "type": "wall",
           "blocked": true,
@@ -2404,7 +2516,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:16:5"
         },
         {
           "x": 10,
@@ -2415,10 +2529,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:10:6"
         },
         {
-          "x": 15,
+          "x": 16,
           "y": 6,
           "type": "wall",
           "blocked": true,
@@ -2426,7 +2542,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:16:6"
         },
         {
           "x": 10,
@@ -2437,10 +2555,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:10:7"
         },
         {
-          "x": 15,
+          "x": 16,
           "y": 7,
           "type": "wall",
           "blocked": true,
@@ -2448,7 +2568,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:16:7"
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:10:9"
         },
         {
           "x": 10,
@@ -2459,33 +2594,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:10:8"
         },
         {
           "x": 11,
-          "y": 8,
+          "y": 9,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:11:9"
         },
         {
           "x": 12,
-          "y": 8,
+          "y": 9,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:12:9"
         },
         {
           "x": 13,
-          "y": 8,
+          "y": 9,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2495,11 +2636,13 @@
           "roomId": null,
           "doorId": "tucuman:door-left",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:13:9"
         },
         {
           "x": 14,
-          "y": 8,
+          "y": 9,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2509,10 +2652,25 @@
           "roomId": null,
           "doorId": "tucuman:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:14:9"
         },
         {
           "x": 15,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "tucuman:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "tucuman:building:wall:x:15:9"
+        },
+        {
+          "x": 16,
           "y": 8,
           "type": "wall",
           "blocked": true,
@@ -2520,22 +2678,24 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "tucuman:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "tucuman:building:wall:y:16:8"
         }
       ]
     }
   ],
   "props": [
     {
-      "id": "tucuman:building:table:11:5",
-      "type": "table",
+      "id": "tucuman:building:bed:11:7",
+      "type": "bed",
       "x": 11,
-      "y": 5,
+      "y": 6,
       "buildingId": "tucuman:building",
       "roomId": "tucuman:building:interior",
       "footprint": {
         "width": 1,
-        "height": 1
+        "height": 2
       },
       "blocksMovement": true
     },
@@ -2553,23 +2713,23 @@
       "blocksMovement": true
     },
     {
-      "id": "tucuman:building:bed:11:7",
-      "type": "bed",
-      "x": 11,
+      "id": "tucuman:building:chest:14:7",
+      "type": "chest",
+      "x": 14,
       "y": 6,
       "buildingId": "tucuman:building",
       "roomId": "tucuman:building:interior",
       "footprint": {
         "width": 1,
-        "height": 2
+        "height": 1
       },
       "blocksMovement": true
     },
     {
-      "id": "tucuman:building:chest:14:7",
-      "type": "chest",
-      "x": 14,
-      "y": 6,
+      "id": "tucuman:building:table:11:5",
+      "type": "table",
+      "x": 11,
+      "y": 5,
       "buildingId": "tucuman:building",
       "roomId": "tucuman:building:interior",
       "footprint": {

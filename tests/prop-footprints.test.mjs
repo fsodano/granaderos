@@ -32,12 +32,12 @@ test('charges and artillery crew movement cannot pass through furniture',()=>{
  assert.match(actBattle(diagonal,{type:'charge',unitId:1,targetId:'enemy'}).lastError,/esquina/);
 });
 test('placement rejects blocked doors, disconnected aisles and overlapping or out-of-room footprints',()=>{
- const built=buildBuilding({id:'house',x:1,y:1,width:6,height:6,doors:[{x:3,y:6}]}),s={tiles:built.tiles,buildings:[built.building],props:[]};
+ const built=buildBuilding({id:'house',x:1,y:1,width:6,height:6,doors:[{x:3,y:6}]}),s={tiles:built.tiles,wallEdges:built.wallEdges,buildings:[built.building],props:[]};
  const prop={...bed,roomId:'house:interior',x:2,y:2};
  assert.equal(propPlacementError(s,prop),null);
- assert.match(propPlacementError(s,{...prop,x:3,y:4}),/door/);
- assert.match(propPlacementError(s,{...prop,x:1}),/obstacle/);
- assert.match(propPlacementError(s,{...prop,x:4,footprint:{width:1,height:4}}),/walking space/);
+ assert.match(propPlacementError(s,{...prop,x:3,y:5}),/door/);
+ assert.match(propPlacementError(s,{...prop,x:0}),/obstacle/);
+ assert.match(propPlacementError(s,{...prop,x:4,footprint:{width:1,height:6}}),/obstacle/);
  assert.match(propPlacementError({...s,props:[prop]},{...prop,id:'another'}),/overlaps/);
 });
 test('all authored rooms preserve door access and connected walking space; spawns avoid props',()=>{

@@ -1,6 +1,7 @@
+import {wallEdgeKey} from './wall-geometry.js';
 import { LAYERS, ground, cellKey, FURNITURE, TERRAIN } from "./map-catalog.js";
 import { compileBuilding } from "./compile-map.js";
-import { validateMap } from "./map-schema.js";
+import { validateMap, migrateMapDocument } from "./map-schema.js";
 import { BUILDING_TYPES } from "./building-types.js";
 import { buildBuilding } from "./buildings.js";
 export function makeBuilding({
@@ -51,8 +52,20 @@ export function makeBuilding({
         ([, value]) => value !== undefined,
       ),
     ),
-    walls: tiles.filter((t) => t.type !== "floor"),
+    walls: building.walls,
   };
+}
+function commandEdge(building,command) {
+  const {x,y,axis} = command;
+  if(axis!==undefined)return {x,y,axis};
+  const existing = building.walls.filter(w=>w.x===x&&w.y===y);
+  if(existing.length===1)return {x,y,axis:existing[0].axis};
+  if(y===building.y+building.height-1)return {x,y:y+1,axis:"x"};
+  if(y===building.y)return {x,y,axis:"x"};
+  if(x===building.x)return {x,y,axis:"y"};
+  if(x===building.x+building.width-1)return {x:x+1,y,axis:"y"};
+  const horizontal=building.walls.some(w=>w.axis==="x"&&w.y===y&&Math.abs(w.x-x)===1);
+  return {x,y,axis:horizontal?"x":"y"};
 }
 function entity(doc, id) {
   for (const layer of LAYERS) {
@@ -103,7 +116,9 @@ function transform(doc, id, { x, y, rotate = false }) {
     }
   }
   if (layer === "buildings") {
-    e.walls = e.walls.map((w) => ({ ...w, ...point(w) }));
+    e.walls = e.walls.map((w) => rotate
+      ? {...w, x:old.x+old.height-(w.y-old.y)-(w.axis==="y"?1:0), y:old.y+w.x-old.x, axis:w.axis==="x"?"y":"x"}
+      : {...w,...point(w)});
     e.rooms = e.rooms.map((r) => ({ ...r, cells: r.cells.map(point) }));
     if (rotate) [e.width, e.height] = [e.height, e.width];
     else {
@@ -158,7 +173,7 @@ export function applyMapCommands(
       errors: ["La revisión cambió. Recarga antes de aplicar estos cambios."],
       warnings: [],
     };
-  const doc = structuredClone(original);
+  const doc = migrateMapDocument(original);
   try {
     if (!Array.isArray(commands) || commands.length > 10000)
       throw Error("Lote de comandos no válido.");
@@ -247,49 +262,40 @@ export function applyMapCommands(
         if (c.locked !== undefined) door.locked = c.locked;
       } else if (c.type === "setOpeningStyle") {
         const { object: b } = entity(doc, c.buildingId);
-        const opening = b.walls?.find(
-          (w) => w.x === c.x && w.y === c.y && ["door", "window"].includes(w.type),
-        );
+        const at = commandEdge(b,c);
+        const opening = b.walls?.find(w => wallEdgeKey(w) === wallEdgeKey(at) && ["door", "window"].includes(w.type));
         if (!opening) throw Error("Selecciona una puerta o ventana.");
         if (c.style === null) delete opening.style;
         else opening.style = c.style;
       } else if (c.type === "setWall") {
-        const b = entity(doc, c.buildingId).object;
-        if (!b.walls || c.x < b.x || c.x >= b.x + b.width || c.y < b.y || c.y >= b.y + b.height)
-          throw Error("La pared debe estar dentro del edificio.");
-        if (
-          ["door", "window"].includes(c.wallType) &&
-          !b.walls.some((w) => w.x === c.x && w.y === c.y)
-        )
+        const b = entity(doc, c.buildingId).object, at = commandEdge(b,c);
+        if (!b.walls || !["x","y"].includes(at.axis) || at.x < b.x || at.x > b.x+b.width || at.y < b.y || at.y > b.y+b.height || (at.axis==="x" && at.x>=b.x+b.width) || (at.axis==="y" && at.y>=b.y+b.height))
+          throw Error("La pared debe estar en un borde del edificio.");
+        const previous = b.walls.find(w=>wallEdgeKey(w)===wallEdgeKey(at));
+        if (["door", "window"].includes(c.wallType) && !previous)
           throw Error("Las aberturas deben ocupar una pared.");
-        b.walls = b.walls.filter((w) => w.x !== c.x || w.y !== c.y);
+        b.walls = b.walls.filter(w=>wallEdgeKey(w)!==wallEdgeKey(at));
         if (c.wallType !== "floor")
           b.walls.push({
-            x: c.x,
-            y: c.y,
+            id: previous?.id ?? `${b.id}:wall:${at.axis}:${at.x}:${at.y}`,
+            ...at,
             type: c.wallType,
             ...(c.style ? { style: c.style } : {}),
             ...(c.wallType === "door"
-              ? { doorId: c.doorId ?? `${b.id}:door:${c.x}:${c.y}`, open: false, locked: false }
+              ? { doorId: c.doorId ?? previous?.doorId ?? `${b.id}:door:${c.x}:${c.y}`, open: false, locked: false }
               : {}),
           });
       } else if (c.type === "resizeBuilding") {
         const { object: b } = entity(doc, c.id),
           fresh = makeBuilding({ ...b, width: c.width, height: c.height });
-        // Keep interior partitions that still fit; preserve surviving perimeter openings.
         for (const w of b.walls) {
-          const edge =
-            w.x === b.x || w.x === b.x + b.width - 1 || w.y === b.y || w.y === b.y + b.height - 1;
-          const target = fresh.walls.find((v) => v.x === w.x && v.y === w.y);
-          if (edge && target && w.type !== "wall") Object.assign(target, w);
-          else if (
-            !edge &&
-            w.x > b.x &&
-            w.x < b.x + c.width - 1 &&
-            w.y > b.y &&
-            w.y < b.y + c.height - 1
-          )
-            fresh.walls.push(w);
+          const perimeter = w.axis==="x" ? w.y===b.y || w.y===b.y+b.height : w.x===b.x || w.x===b.x+b.width;
+          const at = {...w};
+          if (w.axis==="x" && w.y===b.y+b.height) at.y=b.y+c.height;
+          if (w.axis==="y" && w.x===b.x+b.width) at.x=b.x+c.width;
+          const target = fresh.walls.find(v=>wallEdgeKey(v)===wallEdgeKey(at));
+          if (perimeter && target && w.type!=="wall") Object.assign(target,at);
+          else if (!perimeter && at.x>=b.x && at.x<b.x+c.width && at.y>=b.y && at.y<b.y+c.height) fresh.walls.push(at);
         }
         Object.assign(b, fresh, { rooms: b.rooms });
       } else if (c.type === "duplicateObject") {
@@ -300,6 +306,7 @@ export function applyMapCommands(
         if (layer === "buildings") {
           copy.walls = copy.walls.map((w) => ({
             ...w,
+            id: `${copy.id}:${w.id}`,
             ...(w.doorId ? { doorId: `${copy.id}:${w.doorId}` } : {}),
           }));
           copy.rooms = copy.rooms.map((r) => ({ ...r, id: `${copy.id}:${r.id}` }));
@@ -342,12 +349,15 @@ export function applyMapCommands(
       } else if (c.type === "stampTemplate") {
         const template = structuredClone(c.template);
         if (template.version !== 1) throw Error("Versión de plantilla no válida.");
-        const root = template.building,
+        const shape = template.building;
+        if (!shape || ![shape.x,shape.y,shape.width,shape.height].every(Number.isInteger) || shape.width<3 || shape.height<3 || shape.width>64 || shape.height>64 || !Array.isArray(shape.walls) || !Array.isArray(shape.rooms)) throw Error("Dimensiones de plantilla no válidas.");
+        const root = compileBuilding(shape).building,
           dx = c.x - root.x,
           dy = c.y - root.y,
           b = { ...root, id: c.id, x: c.x, y: c.y };
         b.walls = root.walls.map((w) => ({
           ...w,
+          id: `${c.id}:${w.id}`,
           x: w.x + dx,
           y: w.y + dy,
           ...(w.doorId ? { doorId: `${c.id}:${w.doorId}` } : {}),

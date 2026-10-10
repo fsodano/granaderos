@@ -1,12 +1,13 @@
+import {normalizeBuildingWalls,wallEdgesBetween,wallMovementBlocked} from './wall-geometry.js';
 import { cellKey, neighbours, FEATURES } from "./map-catalog.js";
 import { propBlocksAt } from "./props.js";
 // Recompute rooms from structural cells; preserve existing IDs by maximum overlap.
 export function compileBuilding(source) {
-  const b = structuredClone(source),
-    walls = new Map(b.walls.map((t) => [cellKey(t), t])),
-    cells = [];
+  const b = structuredClone(source);
+  b.walls = normalizeBuildingWalls(b);
+  const cells = [];
   for (let y = b.y; y < b.y + b.height; y++)
-    for (let x = b.x; x < b.x + b.width; x++) if (!walls.has(`${x},${y}`)) cells.push({ x, y });
+    for (let x = b.x; x < b.x + b.width; x++) cells.push({ x, y });
   const remaining = new Map(cells.map((c) => [cellKey(c), c])),
     rooms = [],
     used = new Set();
@@ -16,7 +17,7 @@ export function compileBuilding(source) {
     remaining.delete(cellKey(first));
     for (let i = 0; i < connected.length; i++)
       for (const next of neighbours(connected[i]))
-        if (remaining.has(cellKey(next))) {
+        if (remaining.has(cellKey(next)) && !wallEdgesBetween({wallEdges:b.walls},connected[i],next).length) {
           connected.push(next);
           remaining.delete(cellKey(next));
         }
@@ -46,17 +47,15 @@ export function compileBuilding(source) {
     buildingId: b.id,
     roomId: rooms.find((r) => r.cells.some((t) => cellKey(t) === cellKey(c))).id,
   }));
-  for (const w of b.walls)
-    tiles.push({
-      ...w,
-      buildingId: b.id,
-      material: b.material,
-      roomId: null,
-      blocked: w.type !== "door" || !w.open,
-      blocksSight: w.type === "wall" || (w.type === "door" && !w.open),
-      cover: w.type === "wall" ? 40 : w.type === "window" ? 25 : 0,
-    });
-  return { building: b, tiles };
+  const wallEdges = b.walls.map((w) => ({
+    ...w,
+    buildingId: b.id,
+    material: b.material,
+    blocked: w.type !== "door" || !w.open,
+    blocksSight: w.type === "wall" || (w.type === "door" && !w.open),
+    cover: w.type === "wall" ? 40 : w.type === "window" ? 25 : 0,
+  }));
+  return { building: b, tiles, wallEdges };
 }
 export function compileMap(doc) {
   const terrain = new Map(doc.terrain.map((t) => [cellKey(t), structuredClone(t)]));
@@ -69,9 +68,10 @@ export function compileMap(doc) {
       cover: kind.cover,
     });
   }
-  const buildings = [];
+  const buildings = [], wallEdges = [];
   for (const source of doc.buildings) {
-    const { building, tiles } = compileBuilding(source);
+    const { building, tiles, wallEdges: edges } = compileBuilding(source);
+    wallEdges.push(...edges);
     buildings.push(building);
     for (const t of tiles) terrain.set(cellKey(t), t);
   }
@@ -94,6 +94,8 @@ export function compileMap(doc) {
     height: doc.height,
     tiles: [...terrain.values()].sort((a, b) => a.y - b.y || a.x - b.x),
     buildings,
+    wallEdges,
+    wallGeometryVersion: 2,
     props,
     lights: structuredClone(doc.lights),
     groundItems: doc.items.map((i) => ({ ...i })),
@@ -121,7 +123,7 @@ export function reachableMap(map, start, { openDoors = true } = {}) {
     queue = [start];
   for (let i = 0; i < queue.length; i++)
     for (const n of neighbours(queue[i]))
-      if (passable.has(cellKey(n)) && !seen.has(cellKey(n))) {
+      if (passable.has(cellKey(n)) && !seen.has(cellKey(n)) && !wallMovementBlocked(map,queue[i],n,{openDoors})) {
         seen.add(cellKey(n));
         queue.push(n);
       }

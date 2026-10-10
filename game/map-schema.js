@@ -1,3 +1,4 @@
+import {wallEdgeKey,wallEdgeCells} from './wall-geometry.js';
 import {BUILDING_TYPES} from './building-types.js';
 import { WALL_FINISHES, ROOF_FINISHES, DOOR_STYLES, WINDOW_STYLES } from "./building-appearance.js";
 import {
@@ -11,9 +12,9 @@ import {
   ground,
   neighbours,
 } from "./map-catalog.js";
-import { compileMap, reachableMap } from "./compile-map.js";
+import { compileBuilding, compileMap, reachableMap } from "./compile-map.js";
 import { propCells, propPlacementError, propBlocksAt } from "./props.js";
-export const MAP_SCHEMA_VERSION = 1;
+export const MAP_SCHEMA_VERSION = 2;
 const placementMessages = {
   "Invalid furniture footprint.": "Dimensiones de mobiliario no válidas.",
   "Duplicate furniture ID.": "El mueble ya existe.",
@@ -44,7 +45,7 @@ export function blankMap({
   )
     throw Error("Dimensiones no válidas.");
   return {
-    schemaVersion: 1,
+    schemaVersion: MAP_SCHEMA_VERSION,
     id,
     revision: 0,
     width,
@@ -78,7 +79,7 @@ export function validateMap(input, { playable = false } = {}) {
       need = (ok, message) => {
         if (!ok) throw Error(message);
       };
-    need(d.schemaVersion === 1, "Versión de mapa no compatible.");
+    need([1, MAP_SCHEMA_VERSION].includes(d.schemaVersion), "Versión de mapa no compatible.");
     need(
       str(d.id) && Number.isSafeInteger(d.revision) && d.revision >= 0,
       "Identidad o revisión no válida.",
@@ -136,7 +137,10 @@ export function validateMap(input, { playable = false } = {}) {
         roads.add(cellKey(entry));
       }
     }
-    const ids = new Set();
+    const edgeCoord = (p) => obj(p) && Number.isInteger(p.x) && Number.isInteger(p.y) &&
+      ((p.axis === "x" && p.x >= 0 && p.x < d.width && p.y >= 0 && p.y <= d.height) ||
+       (p.axis === "y" && p.x >= 0 && p.x <= d.width && p.y >= 0 && p.y < d.height));
+    const ids = new Set(), globalWallKeys = new Set();
     for (const layer of LAYERS) {
       need(Array.isArray(d[layer]) && d[layer].length <= 2000, `Capa no válida: ${layer}`);
       for (const e of d[layer]) {
@@ -180,27 +184,35 @@ export function validateMap(input, { playable = false } = {}) {
         }
       const wallKeys = new Set();
       for (const w of b.walls) {
+        const edge = w.axis !== undefined;
         need(
-          coord(w) &&
-            w.x >= b.x &&
-            w.x < b.x + b.width &&
-            w.y >= b.y &&
-            w.y < b.y + b.height &&
-            !wallKeys.has(cellKey(w)) &&
+          (edge ? edgeCoord(w) &&
+            w.x >= b.x && w.x <= b.x + b.width &&
+            w.y >= b.y && w.y <= b.y + b.height &&
+            (w.axis !== "x" || w.x < b.x + b.width) &&
+            (w.axis !== "y" || w.y < b.y + b.height)
+            : d.schemaVersion === 1 && coord(w) &&
+              w.x >= b.x && w.x < b.x + b.width &&
+              w.y >= b.y && w.y < b.y + b.height) &&
+            !wallKeys.has(edge ? wallEdgeKey(w) : cellKey(w)) &&
             ["wall", "door", "window"].includes(w.type),
           "Pared o abertura no válida.",
         );
+        if (edge) {
+          need(str(w.id) && !ids.has(w.id) && !globalWallKeys.has(wallEdgeKey(w)), "Borde de pared o ID duplicado.");
+          ids.add(w.id); globalWallKeys.add(wallEdgeKey(w));
+        }
         need(
           w.style === undefined ||
             (w.type === "door" && Object.hasOwn(DOOR_STYLES, w.style)) ||
             (w.type === "window" && Object.hasOwn(WINDOW_STYLES, w.style)),
           "Estilo de abertura no válido.",
         );
-        wallKeys.add(cellKey(w));
+        wallKeys.add(edge ? wallEdgeKey(w) : cellKey(w));
         if (w.type === "door")
           need(
             str(w.doorId) &&
-              !ids.has(w.doorId) &&
+              (!ids.has(w.doorId) || w.doorId === w.id) &&
               typeof w.open === "boolean" &&
               typeof w.locked === "boolean",
             "Puerta no válida.",
@@ -307,7 +319,7 @@ export function validateMap(input, { playable = false } = {}) {
         const doors = b.walls.filter(
           (w) =>
             w.type === "door" &&
-            room.cells.some((c) => neighbours(c).some((n) => cellKey(n) === cellKey(w))),
+            room.cells.some((c) => wallEdgeCells(w).some((n) => cellKey(n) === cellKey(c))),
         );
         if (!doors.length)
           warnings.push(
@@ -333,13 +345,21 @@ export function parseMap(text) {
   const doc = JSON.parse(text);
   const result = validateMap(doc);
   if (!result.valid) throw Error(result.errors.join("\n"));
-  return doc;
+  return migrateMapDocument(doc);
 }
 export function serializeMap(doc) {
   const result = validateMap(doc);
   if (!result.valid) throw Error(result.errors.join("\n"));
-  const copy = structuredClone(doc);
+  const copy = migrateMapDocument(doc);
   for (const layer of LAYERS) copy[layer].sort((a, b) => a.id.localeCompare(b.id));
   copy.terrain.sort((a, b) => a.y - b.y || a.x - b.x);
   return JSON.stringify(copy, null, 2) + "\n";
+}
+
+// Import old authored plans once. Runtime compilation always uses edge geometry.
+export function migrateMapDocument(document) {
+  const copy = structuredClone(document);
+  copy.schemaVersion = MAP_SCHEMA_VERSION;
+  copy.buildings = copy.buildings.map((building) => compileBuilding(building).building);
+  return copy;
 }

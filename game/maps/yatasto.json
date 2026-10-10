@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "yatasto",
   "revision": 2,
   "width": 20,
@@ -2266,51 +2266,55 @@
           "id": "yatasto:building:interior",
           "cells": [
             {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 5,
+              "y": 5
+            },
+            {
+              "x": 7,
+              "y": 4
+            },
+            {
               "x": 6,
               "y": 5
+            },
+            {
+              "x": 5,
+              "y": 6
+            },
+            {
+              "x": 8,
+              "y": 4
             },
             {
               "x": 7,
               "y": 5
             },
             {
-              "x": 8,
-              "y": 5
-            },
-            {
-              "x": 9,
-              "y": 5
-            },
-            {
-              "x": 10,
-              "y": 5
-            },
-            {
-              "x": 11,
-              "y": 5
-            },
-            {
               "x": 6,
               "y": 6
             },
             {
-              "x": 7,
-              "y": 6
-            },
-            {
-              "x": 8,
-              "y": 6
+              "x": 5,
+              "y": 7
             },
             {
               "x": 9,
-              "y": 6
+              "y": 4
             },
             {
-              "x": 10,
-              "y": 6
+              "x": 8,
+              "y": 5
             },
             {
-              "x": 11,
+              "x": 7,
               "y": 6
             },
             {
@@ -2318,23 +2322,23 @@
               "y": 7
             },
             {
-              "x": 7,
-              "y": 7
-            },
-            {
-              "x": 8,
-              "y": 7
-            },
-            {
-              "x": 9,
-              "y": 7
+              "x": 5,
+              "y": 8
             },
             {
               "x": 10,
-              "y": 7
+              "y": 4
             },
             {
-              "x": 11,
+              "x": 9,
+              "y": 5
+            },
+            {
+              "x": 8,
+              "y": 6
+            },
+            {
+              "x": 7,
               "y": 7
             },
             {
@@ -2342,24 +2346,116 @@
               "y": 8
             },
             {
+              "x": 5,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 4
+            },
+            {
+              "x": 10,
+              "y": 5
+            },
+            {
+              "x": 9,
+              "y": 6
+            },
+            {
+              "x": 8,
+              "y": 7
+            },
+            {
               "x": 7,
               "y": 8
+            },
+            {
+              "x": 6,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 4
+            },
+            {
+              "x": 11,
+              "y": 5
+            },
+            {
+              "x": 10,
+              "y": 6
+            },
+            {
+              "x": 9,
+              "y": 7
             },
             {
               "x": 8,
               "y": 8
             },
             {
+              "x": 7,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 5
+            },
+            {
+              "x": 11,
+              "y": 6
+            },
+            {
+              "x": 10,
+              "y": 7
+            },
+            {
               "x": 9,
               "y": 8
+            },
+            {
+              "x": 8,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 6
+            },
+            {
+              "x": 11,
+              "y": 7
             },
             {
               "x": 10,
               "y": 8
             },
             {
+              "x": 9,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 7
+            },
+            {
               "x": 11,
               "y": 8
+            },
+            {
+              "x": 10,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 8
+            },
+            {
+              "x": 11,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 9
             }
           ]
         }
@@ -2375,7 +2471,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:5:4"
+        },
+        {
+          "x": 5,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "yatasto:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:5:4"
         },
         {
           "x": 6,
@@ -2386,7 +2497,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:6:4"
         },
         {
           "x": 7,
@@ -2397,7 +2510,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:7:4"
         },
         {
           "x": 8,
@@ -2408,7 +2523,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:8:4"
         },
         {
           "x": 9,
@@ -2419,7 +2536,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:9:4"
         },
         {
           "x": 10,
@@ -2430,7 +2549,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:10:4"
         },
         {
           "x": 11,
@@ -2441,7 +2562,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:11:4"
         },
         {
           "x": 12,
@@ -2452,7 +2575,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:12:4"
+        },
+        {
+          "x": 13,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "yatasto:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:13:4"
         },
         {
           "x": 5,
@@ -2463,10 +2601,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:5:5"
         },
         {
-          "x": 12,
+          "x": 13,
           "y": 5,
           "type": "wall",
           "blocked": true,
@@ -2474,7 +2614,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:13:5"
         },
         {
           "x": 5,
@@ -2485,10 +2627,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:5:6"
         },
         {
-          "x": 12,
+          "x": 13,
           "y": 6,
           "type": "wall",
           "blocked": true,
@@ -2496,7 +2640,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:13:6"
         },
         {
           "x": 5,
@@ -2507,10 +2653,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:5:7"
         },
         {
-          "x": 12,
+          "x": 13,
           "y": 7,
           "type": "wall",
           "blocked": true,
@@ -2518,7 +2666,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:13:7"
         },
         {
           "x": 5,
@@ -2529,10 +2679,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:5:8"
         },
         {
-          "x": 12,
+          "x": 13,
           "y": 8,
           "type": "wall",
           "blocked": true,
@@ -2540,7 +2692,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:13:8"
+        },
+        {
+          "x": 5,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "yatasto:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:5:10"
         },
         {
           "x": 5,
@@ -2551,44 +2718,52 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:5:9"
         },
         {
           "x": 6,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:6:10"
         },
         {
           "x": 7,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:7:10"
         },
         {
           "x": 8,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:8:10"
         },
         {
           "x": 9,
-          "y": 9,
+          "y": 10,
           "type": "door",
           "blocked": false,
           "blocksSight": false,
@@ -2598,11 +2773,13 @@
           "roomId": null,
           "doorId": "yatasto:door-left",
           "open": true,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:9:10"
         },
         {
           "x": 10,
-          "y": 9,
+          "y": 10,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2612,21 +2789,38 @@
           "roomId": null,
           "doorId": "yatasto:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:10:10"
         },
         {
           "x": 11,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:11:10"
         },
         {
           "x": 12,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "yatasto:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "yatasto:building:wall:x:12:10"
+        },
+        {
+          "x": 13,
           "y": 9,
           "type": "wall",
           "blocked": true,
@@ -2634,22 +2828,24 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "yatasto:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "yatasto:building:wall:y:13:9"
         }
       ]
     }
   ],
   "props": [
     {
-      "id": "yatasto:building:table:6:5",
-      "type": "table",
+      "id": "yatasto:building:bed:6:8",
+      "type": "bed",
       "x": 6,
-      "y": 5,
+      "y": 7,
       "buildingId": "yatasto:building",
       "roomId": "yatasto:building:interior",
       "footprint": {
         "width": 1,
-        "height": 1
+        "height": 2
       },
       "blocksMovement": true
     },
@@ -2667,23 +2863,23 @@
       "blocksMovement": true
     },
     {
-      "id": "yatasto:building:bed:6:8",
-      "type": "bed",
-      "x": 6,
-      "y": 7,
-      "buildingId": "yatasto:building",
-      "roomId": "yatasto:building:interior",
-      "footprint": {
-        "width": 1,
-        "height": 2
-      },
-      "blocksMovement": true
-    },
-    {
       "id": "yatasto:building:chest:11:8",
       "type": "chest",
       "x": 11,
       "y": 8,
+      "buildingId": "yatasto:building",
+      "roomId": "yatasto:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "yatasto:building:table:6:5",
+      "type": "table",
+      "x": 6,
+      "y": 5,
       "buildingId": "yatasto:building",
       "roomId": "yatasto:building:interior",
       "footprint": {

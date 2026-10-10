@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "salta",
   "revision": 3,
   "width": 20,
@@ -2266,35 +2266,55 @@
           "id": "salta:building:interior",
           "cells": [
             {
+              "x": 12,
+              "y": 10
+            },
+            {
+              "x": 13,
+              "y": 10
+            },
+            {
+              "x": 12,
+              "y": 11
+            },
+            {
+              "x": 14,
+              "y": 10
+            },
+            {
               "x": 13,
               "y": 11
+            },
+            {
+              "x": 12,
+              "y": 12
+            },
+            {
+              "x": 15,
+              "y": 10
             },
             {
               "x": 14,
               "y": 11
             },
             {
-              "x": 15,
-              "y": 11
-            },
-            {
-              "x": 16,
-              "y": 11
-            },
-            {
               "x": 13,
               "y": 12
             },
             {
-              "x": 14,
-              "y": 12
-            },
-            {
-              "x": 15,
-              "y": 12
+              "x": 12,
+              "y": 13
             },
             {
               "x": 16,
+              "y": 10
+            },
+            {
+              "x": 15,
+              "y": 11
+            },
+            {
+              "x": 14,
               "y": 12
             },
             {
@@ -2302,16 +2322,68 @@
               "y": 13
             },
             {
+              "x": 12,
+              "y": 14
+            },
+            {
+              "x": 17,
+              "y": 10
+            },
+            {
+              "x": 16,
+              "y": 11
+            },
+            {
+              "x": 15,
+              "y": 12
+            },
+            {
               "x": 14,
               "y": 13
+            },
+            {
+              "x": 13,
+              "y": 14
+            },
+            {
+              "x": 17,
+              "y": 11
+            },
+            {
+              "x": 16,
+              "y": 12
             },
             {
               "x": 15,
               "y": 13
             },
             {
+              "x": 14,
+              "y": 14
+            },
+            {
+              "x": 17,
+              "y": 12
+            },
+            {
               "x": 16,
               "y": 13
+            },
+            {
+              "x": 15,
+              "y": 14
+            },
+            {
+              "x": 17,
+              "y": 13
+            },
+            {
+              "x": 16,
+              "y": 14
+            },
+            {
+              "x": 17,
+              "y": 14
             }
           ]
         }
@@ -2327,7 +2399,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:12:10"
+        },
+        {
+          "x": 12,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:12:10"
         },
         {
           "x": 13,
@@ -2338,7 +2425,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:13:10"
         },
         {
           "x": 14,
@@ -2349,7 +2438,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:14:10"
         },
         {
           "x": 15,
@@ -2360,7 +2451,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:15:10"
         },
         {
           "x": 16,
@@ -2371,7 +2464,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:16:10"
         },
         {
           "x": 17,
@@ -2382,7 +2477,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:17:10"
+        },
+        {
+          "x": 18,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:18:10"
         },
         {
           "x": 12,
@@ -2393,10 +2503,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:12:11"
         },
         {
-          "x": 17,
+          "x": 18,
           "y": 11,
           "type": "wall",
           "blocked": true,
@@ -2404,7 +2516,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:18:11"
         },
         {
           "x": 12,
@@ -2415,10 +2529,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:12:12"
         },
         {
-          "x": 17,
+          "x": 18,
           "y": 12,
           "type": "wall",
           "blocked": true,
@@ -2426,7 +2542,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:18:12"
         },
         {
           "x": 12,
@@ -2437,10 +2555,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:12:13"
         },
         {
-          "x": 17,
+          "x": 18,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2448,7 +2568,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:18:13"
+        },
+        {
+          "x": 12,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:12:15"
         },
         {
           "x": 12,
@@ -2459,33 +2594,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:12:14"
         },
         {
           "x": 13,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:13:15"
         },
         {
           "x": 14,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:14:15"
         },
         {
           "x": 15,
-          "y": 14,
+          "y": 15,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2495,11 +2636,13 @@
           "roomId": null,
           "doorId": "salta:door-left",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "salta:building:wall:x:15:15"
         },
         {
           "x": 16,
-          "y": 14,
+          "y": 15,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2509,10 +2652,25 @@
           "roomId": null,
           "doorId": "salta:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "salta:building:wall:x:16:15"
         },
         {
           "x": 17,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:building:wall:x:17:15"
+        },
+        {
+          "x": 18,
           "y": 14,
           "type": "wall",
           "blocked": true,
@@ -2520,7 +2678,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:building:wall:y:18:14"
         }
       ]
     },
@@ -2539,43 +2699,55 @@
           "id": "salta:house-0:interior",
           "cells": [
             {
+              "x": 11,
+              "y": 0
+            },
+            {
+              "x": 12,
+              "y": 0
+            },
+            {
+              "x": 11,
+              "y": 1
+            },
+            {
+              "x": 13,
+              "y": 0
+            },
+            {
               "x": 12,
               "y": 1
+            },
+            {
+              "x": 11,
+              "y": 2
+            },
+            {
+              "x": 14,
+              "y": 0
             },
             {
               "x": 13,
               "y": 1
             },
             {
-              "x": 14,
-              "y": 1
-            },
-            {
-              "x": 15,
-              "y": 1
-            },
-            {
-              "x": 16,
-              "y": 1
-            },
-            {
               "x": 12,
               "y": 2
             },
             {
-              "x": 13,
-              "y": 2
-            },
-            {
-              "x": 14,
-              "y": 2
+              "x": 11,
+              "y": 3
             },
             {
               "x": 15,
-              "y": 2
+              "y": 0
             },
             {
-              "x": 16,
+              "x": 14,
+              "y": 1
+            },
+            {
+              "x": 13,
               "y": 2
             },
             {
@@ -2583,20 +2755,88 @@
               "y": 3
             },
             {
+              "x": 11,
+              "y": 4
+            },
+            {
+              "x": 16,
+              "y": 0
+            },
+            {
+              "x": 15,
+              "y": 1
+            },
+            {
+              "x": 14,
+              "y": 2
+            },
+            {
               "x": 13,
               "y": 3
+            },
+            {
+              "x": 12,
+              "y": 4
+            },
+            {
+              "x": 17,
+              "y": 0
+            },
+            {
+              "x": 16,
+              "y": 1
+            },
+            {
+              "x": 15,
+              "y": 2
             },
             {
               "x": 14,
               "y": 3
             },
             {
+              "x": 13,
+              "y": 4
+            },
+            {
+              "x": 17,
+              "y": 1
+            },
+            {
+              "x": 16,
+              "y": 2
+            },
+            {
               "x": 15,
               "y": 3
             },
             {
+              "x": 14,
+              "y": 4
+            },
+            {
+              "x": 17,
+              "y": 2
+            },
+            {
               "x": 16,
               "y": 3
+            },
+            {
+              "x": 15,
+              "y": 4
+            },
+            {
+              "x": 17,
+              "y": 3
+            },
+            {
+              "x": 16,
+              "y": 4
+            },
+            {
+              "x": 17,
+              "y": 4
             }
           ]
         }
@@ -2613,7 +2853,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:11:0"
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:11:0"
         },
         {
           "x": 12,
@@ -2624,7 +2879,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:12:0"
         },
         {
           "x": 13,
@@ -2635,7 +2892,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:13:0"
         },
         {
           "x": 14,
@@ -2646,7 +2905,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:14:0"
         },
         {
           "x": 15,
@@ -2657,7 +2918,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:15:0"
         },
         {
           "x": 16,
@@ -2668,7 +2931,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:16:0"
         },
         {
           "x": 17,
@@ -2679,7 +2944,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:17:0"
+        },
+        {
+          "x": 18,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:18:0"
         },
         {
           "x": 11,
@@ -2690,10 +2970,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:11:1"
         },
         {
-          "x": 17,
+          "x": 18,
           "y": 1,
           "type": "wall",
           "blocked": true,
@@ -2701,7 +2983,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:18:1"
         },
         {
           "x": 11,
@@ -2712,10 +2996,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:11:2"
         },
         {
-          "x": 17,
+          "x": 18,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2723,7 +3009,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:18:2"
         },
         {
           "x": 11,
@@ -2734,10 +3022,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:11:3"
         },
         {
-          "x": 17,
+          "x": 18,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2745,7 +3035,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:18:3"
+        },
+        {
+          "x": 11,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:11:5"
         },
         {
           "x": 11,
@@ -2756,33 +3061,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:11:4"
         },
         {
           "x": 12,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:12:5"
         },
         {
           "x": 13,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:13:5"
         },
         {
           "x": 14,
-          "y": 4,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2792,32 +3103,51 @@
           "roomId": null,
           "doorId": "salta:house-0:door:14:4",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:14:5"
         },
         {
           "x": 15,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:15:5"
         },
         {
           "x": 16,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:16:5"
         },
         {
           "x": 17,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "salta:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "salta:house-0:wall:x:17:5"
+        },
+        {
+          "x": 18,
           "y": 4,
           "type": "wall",
           "blocked": true,
@@ -2825,22 +3155,24 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "salta:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "salta:house-0:wall:y:18:4"
         }
       ]
     }
   ],
   "props": [
     {
-      "id": "salta:building:table:13:11",
-      "type": "table",
+      "id": "salta:building:bed:13:13",
+      "type": "bed",
       "x": 13,
-      "y": 11,
+      "y": 12,
       "buildingId": "salta:building",
       "roomId": "salta:building:interior",
       "footprint": {
         "width": 1,
-        "height": 1
+        "height": 2
       },
       "blocksMovement": true
     },
@@ -2858,19 +3190,6 @@
       "blocksMovement": true
     },
     {
-      "id": "salta:building:bed:13:13",
-      "type": "bed",
-      "x": 13,
-      "y": 12,
-      "buildingId": "salta:building",
-      "roomId": "salta:building:interior",
-      "footprint": {
-        "width": 1,
-        "height": 2
-      },
-      "blocksMovement": true
-    },
-    {
       "id": "salta:building:chest:16:13",
       "type": "chest",
       "x": 16,
@@ -2884,25 +3203,12 @@
       "blocksMovement": true
     },
     {
-      "id": "salta:house-0:table:12:1",
+      "id": "salta:building:table:13:11",
       "type": "table",
-      "x": 12,
-      "y": 1,
-      "buildingId": "salta:house-0",
-      "roomId": "salta:house-0:interior",
-      "footprint": {
-        "width": 1,
-        "height": 1
-      },
-      "blocksMovement": true
-    },
-    {
-      "id": "salta:house-0:bench:16:1",
-      "type": "bench",
-      "x": 16,
-      "y": 1,
-      "buildingId": "salta:house-0",
-      "roomId": "salta:house-0:interior",
+      "x": 13,
+      "y": 11,
+      "buildingId": "salta:building",
+      "roomId": "salta:building:interior",
       "footprint": {
         "width": 1,
         "height": 1
@@ -2923,10 +3229,10 @@
       "blocksMovement": true
     },
     {
-      "id": "salta:house-0:chest:16:3",
-      "type": "chest",
+      "id": "salta:house-0:bench:16:1",
+      "type": "bench",
       "x": 16,
-      "y": 3,
+      "y": 1,
       "buildingId": "salta:house-0",
       "roomId": "salta:house-0:interior",
       "footprint": {
@@ -2942,6 +3248,32 @@
       "y": 6,
       "footprint": {
         "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:house-0:chest:16:3",
+      "type": "chest",
+      "x": 16,
+      "y": 3,
+      "buildingId": "salta:house-0",
+      "roomId": "salta:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "salta:house-0:table:12:1",
+      "type": "table",
+      "x": 12,
+      "y": 1,
+      "buildingId": "salta:house-0",
+      "roomId": "salta:house-0:interior",
+      "footprint": {
+        "width": 1,
         "height": 1
       },
       "blocksMovement": true

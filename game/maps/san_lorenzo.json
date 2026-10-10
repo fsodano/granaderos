@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "san_lorenzo",
   "revision": 2,
   "width": 20,
@@ -2266,19 +2266,35 @@
           "id": "san_lorenzo:building:interior",
           "cells": [
             {
+              "x": 3,
+              "y": 4
+            },
+            {
               "x": 4,
+              "y": 4
+            },
+            {
+              "x": 3,
               "y": 5
             },
             {
               "x": 5,
+              "y": 4
+            },
+            {
+              "x": 4,
               "y": 5
+            },
+            {
+              "x": 3,
+              "y": 6
             },
             {
               "x": 6,
-              "y": 5
+              "y": 4
             },
             {
-              "x": 7,
+              "x": 5,
               "y": 5
             },
             {
@@ -2286,15 +2302,19 @@
               "y": 6
             },
             {
-              "x": 5,
-              "y": 6
-            },
-            {
-              "x": 6,
-              "y": 6
+              "x": 3,
+              "y": 7
             },
             {
               "x": 7,
+              "y": 4
+            },
+            {
+              "x": 6,
+              "y": 5
+            },
+            {
+              "x": 5,
               "y": 6
             },
             {
@@ -2302,15 +2322,23 @@
               "y": 7
             },
             {
-              "x": 5,
-              "y": 7
+              "x": 3,
+              "y": 8
             },
             {
-              "x": 6,
-              "y": 7
+              "x": 8,
+              "y": 4
             },
             {
               "x": 7,
+              "y": 5
+            },
+            {
+              "x": 6,
+              "y": 6
+            },
+            {
+              "x": 5,
               "y": 7
             },
             {
@@ -2318,15 +2346,23 @@
               "y": 8
             },
             {
-              "x": 5,
-              "y": 8
+              "x": 3,
+              "y": 9
             },
             {
-              "x": 6,
-              "y": 8
+              "x": 8,
+              "y": 5
             },
             {
               "x": 7,
+              "y": 6
+            },
+            {
+              "x": 6,
+              "y": 7
+            },
+            {
+              "x": 5,
               "y": 8
             },
             {
@@ -2334,16 +2370,68 @@
               "y": 9
             },
             {
+              "x": 3,
+              "y": 10
+            },
+            {
+              "x": 8,
+              "y": 6
+            },
+            {
+              "x": 7,
+              "y": 7
+            },
+            {
+              "x": 6,
+              "y": 8
+            },
+            {
               "x": 5,
               "y": 9
+            },
+            {
+              "x": 4,
+              "y": 10
+            },
+            {
+              "x": 8,
+              "y": 7
+            },
+            {
+              "x": 7,
+              "y": 8
             },
             {
               "x": 6,
               "y": 9
             },
             {
+              "x": 5,
+              "y": 10
+            },
+            {
+              "x": 8,
+              "y": 8
+            },
+            {
               "x": 7,
               "y": 9
+            },
+            {
+              "x": 6,
+              "y": 10
+            },
+            {
+              "x": 8,
+              "y": 9
+            },
+            {
+              "x": 7,
+              "y": 10
+            },
+            {
+              "x": 8,
+              "y": 10
             }
           ]
         }
@@ -2359,7 +2447,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:3:4"
+        },
+        {
+          "x": 3,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:3:4"
         },
         {
           "x": 4,
@@ -2370,7 +2473,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:4:4"
         },
         {
           "x": 5,
@@ -2381,7 +2486,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:5:4"
         },
         {
           "x": 6,
@@ -2392,7 +2499,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:6:4"
         },
         {
           "x": 7,
@@ -2403,7 +2512,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:7:4"
         },
         {
           "x": 8,
@@ -2414,7 +2525,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:8:4"
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:9:4"
         },
         {
           "x": 3,
@@ -2425,10 +2551,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:3:5"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 5,
           "type": "wall",
           "blocked": true,
@@ -2436,7 +2564,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:9:5"
         },
         {
           "x": 3,
@@ -2447,10 +2577,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:3:6"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 6,
           "type": "wall",
           "blocked": true,
@@ -2458,7 +2590,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:9:6"
         },
         {
           "x": 3,
@@ -2469,10 +2603,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:3:7"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 7,
           "type": "wall",
           "blocked": true,
@@ -2480,7 +2616,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:9:7"
         },
         {
           "x": 3,
@@ -2491,10 +2629,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:3:8"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 8,
           "type": "wall",
           "blocked": true,
@@ -2502,7 +2642,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:9:8"
         },
         {
           "x": 3,
@@ -2513,10 +2655,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:3:9"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 9,
           "type": "wall",
           "blocked": true,
@@ -2524,7 +2668,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:9:9"
+        },
+        {
+          "x": 3,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:3:11"
         },
         {
           "x": 3,
@@ -2535,33 +2694,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:3:10"
         },
         {
           "x": 4,
-          "y": 10,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:4:11"
         },
         {
           "x": 5,
-          "y": 10,
+          "y": 11,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:5:11"
         },
         {
           "x": 6,
-          "y": 10,
+          "y": 11,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2571,11 +2736,13 @@
           "roomId": null,
           "doorId": "san_lorenzo:door-left",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:6:11"
         },
         {
           "x": 7,
-          "y": 10,
+          "y": 11,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2585,10 +2752,25 @@
           "roomId": null,
           "doorId": "san_lorenzo:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:7:11"
         },
         {
           "x": 8,
+          "y": 11,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "san_lorenzo:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "san_lorenzo:building:wall:x:8:11"
+        },
+        {
+          "x": 9,
           "y": 10,
           "type": "wall",
           "blocked": true,
@@ -2596,22 +2778,24 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "san_lorenzo:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "san_lorenzo:building:wall:y:9:10"
         }
       ]
     }
   ],
   "props": [
     {
-      "id": "san_lorenzo:building:table:4:5",
-      "type": "table",
+      "id": "san_lorenzo:building:bed:4:9",
+      "type": "bed",
       "x": 4,
-      "y": 5,
+      "y": 8,
       "buildingId": "san_lorenzo:building",
       "roomId": "san_lorenzo:building:interior",
       "footprint": {
         "width": 1,
-        "height": 1
+        "height": 2
       },
       "blocksMovement": true
     },
@@ -2629,23 +2813,23 @@
       "blocksMovement": true
     },
     {
-      "id": "san_lorenzo:building:bed:4:9",
-      "type": "bed",
-      "x": 4,
+      "id": "san_lorenzo:building:chest:7:9",
+      "type": "chest",
+      "x": 7,
       "y": 8,
       "buildingId": "san_lorenzo:building",
       "roomId": "san_lorenzo:building:interior",
       "footprint": {
         "width": 1,
-        "height": 2
+        "height": 1
       },
       "blocksMovement": true
     },
     {
-      "id": "san_lorenzo:building:chest:7:9",
-      "type": "chest",
-      "x": 7,
-      "y": 8,
+      "id": "san_lorenzo:building:table:4:5",
+      "type": "table",
+      "x": 4,
+      "y": 5,
       "buildingId": "san_lorenzo:building",
       "roomId": "san_lorenzo:building:interior",
       "footprint": {

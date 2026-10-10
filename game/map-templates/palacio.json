@@ -13,10 +13,35 @@
     "rooms": [
       {
         "id": "palacio:dormitorio",
+        "name": "Cámara del gobernador",
         "cells": [
           {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
             "x": 1,
             "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 0
           },
           {
             "x": 2,
@@ -25,6 +50,14 @@
           {
             "x": 1,
             "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 0
           },
           {
             "x": 3,
@@ -39,6 +72,14 @@
             "y": 3
           },
           {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
             "x": 4,
             "y": 1
           },
@@ -51,6 +92,14 @@
             "y": 3
           },
           {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
             "x": 4,
             "y": 2
           },
@@ -59,18 +108,54 @@
             "y": 3
           },
           {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
             "x": 4,
             "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 4
           }
-        ],
-        "name": "Cámara del gobernador"
+        ]
       },
       {
         "id": "palacio:despacho",
+        "name": "Despacho privado",
         "cells": [
           {
             "x": 6,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 6,
             "y": 1
+          },
+          {
+            "x": 8,
+            "y": 0
           },
           {
             "x": 7,
@@ -81,6 +166,10 @@
             "y": 2
           },
           {
+            "x": 9,
+            "y": 0
+          },
+          {
             "x": 8,
             "y": 1
           },
@@ -93,6 +182,10 @@
             "y": 3
           },
           {
+            "x": 9,
+            "y": 1
+          },
+          {
             "x": 8,
             "y": 2
           },
@@ -101,18 +194,54 @@
             "y": 3
           },
           {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
             "x": 8,
             "y": 3
+          },
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 3
+          },
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 4
           }
-        ],
-        "name": "Despacho privado"
+        ]
       },
       {
         "id": "palacio:huespedes",
+        "name": "Cámara de huéspedes",
         "cells": [
           {
             "x": 10,
+            "y": 0
+          },
+          {
+            "x": 11,
+            "y": 0
+          },
+          {
+            "x": 10,
             "y": 1
+          },
+          {
+            "x": 12,
+            "y": 0
           },
           {
             "x": 11,
@@ -123,6 +252,10 @@
             "y": 2
           },
           {
+            "x": 13,
+            "y": 0
+          },
+          {
             "x": 12,
             "y": 1
           },
@@ -135,6 +268,10 @@
             "y": 3
           },
           {
+            "x": 13,
+            "y": 1
+          },
+          {
             "x": 12,
             "y": 2
           },
@@ -143,18 +280,50 @@
             "y": 3
           },
           {
+            "x": 10,
+            "y": 4
+          },
+          {
+            "x": 13,
+            "y": 2
+          },
+          {
             "x": 12,
             "y": 3
+          },
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 4
+          },
+          {
+            "x": 13,
+            "y": 4
           }
-        ],
-        "name": "Cámara de huéspedes"
+        ]
       },
       {
         "id": "palacio:recepcion",
+        "name": "Salón de recepción",
         "cells": [
           {
+            "x": 0,
+            "y": 5
+          },
+          {
             "x": 1,
             "y": 5
+          },
+          {
+            "x": 0,
+            "y": 6
           },
           {
             "x": 2,
@@ -163,6 +332,10 @@
           {
             "x": 1,
             "y": 6
+          },
+          {
+            "x": 0,
+            "y": 7
           },
           {
             "x": 3,
@@ -175,6 +348,10 @@
           {
             "x": 1,
             "y": 7
+          },
+          {
+            "x": 0,
+            "y": 8
           },
           {
             "x": 4,
@@ -191,6 +368,10 @@
           {
             "x": 1,
             "y": 8
+          },
+          {
+            "x": 0,
+            "y": 9
           },
           {
             "x": 5,
@@ -213,6 +394,10 @@
             "y": 9
           },
           {
+            "x": 0,
+            "y": 10
+          },
+          {
             "x": 6,
             "y": 5
           },
@@ -233,6 +418,10 @@
             "y": 9
           },
           {
+            "x": 1,
+            "y": 10
+          },
+          {
             "x": 7,
             "y": 5
           },
@@ -253,6 +442,10 @@
             "y": 9
           },
           {
+            "x": 2,
+            "y": 10
+          },
+          {
             "x": 8,
             "y": 5
           },
@@ -273,6 +466,10 @@
             "y": 9
           },
           {
+            "x": 3,
+            "y": 10
+          },
+          {
             "x": 9,
             "y": 5
           },
@@ -293,6 +490,10 @@
             "y": 9
           },
           {
+            "x": 4,
+            "y": 10
+          },
+          {
             "x": 10,
             "y": 5
           },
@@ -313,6 +514,10 @@
             "y": 9
           },
           {
+            "x": 5,
+            "y": 10
+          },
+          {
             "x": 11,
             "y": 5
           },
@@ -333,6 +538,10 @@
             "y": 9
           },
           {
+            "x": 6,
+            "y": 10
+          },
+          {
             "x": 12,
             "y": 5
           },
@@ -353,6 +562,14 @@
             "y": 9
           },
           {
+            "x": 7,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 5
+          },
+          {
             "x": 12,
             "y": 6
           },
@@ -369,6 +586,14 @@
             "y": 9
           },
           {
+            "x": 8,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 6
+          },
+          {
             "x": 12,
             "y": 7
           },
@@ -381,6 +606,14 @@
             "y": 9
           },
           {
+            "x": 9,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 7
+          },
+          {
             "x": 12,
             "y": 8
           },
@@ -389,11 +622,34 @@
             "y": 9
           },
           {
+            "x": 10,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 8
+          },
+          {
             "x": 12,
             "y": 9
+          },
+          {
+            "x": 11,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 9
+          },
+          {
+            "x": 12,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 10
           }
-        ],
-        "name": "Salón de recepción"
+        ]
       }
     ],
     "kind": "palace",
@@ -411,7 +667,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:0:0"
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:0"
       },
       {
         "x": 1,
@@ -422,7 +693,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:1:0"
       },
       {
         "x": 3,
@@ -433,7 +706,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:3:0"
       },
       {
         "x": 4,
@@ -444,7 +719,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:4:0"
       },
       {
         "x": 5,
@@ -455,7 +732,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:5:0"
       },
       {
         "x": 6,
@@ -466,7 +745,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:6:0"
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:6:0"
       },
       {
         "x": 8,
@@ -477,7 +771,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:8:0"
       },
       {
         "x": 9,
@@ -488,7 +784,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:9:0"
       },
       {
         "x": 10,
@@ -499,7 +797,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:10:0"
+      },
+      {
+        "x": 10,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:10:0"
       },
       {
         "x": 12,
@@ -510,7 +823,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:12:0"
       },
       {
         "x": 13,
@@ -521,7 +836,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:13:0"
+      },
+      {
+        "x": 14,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:0"
       },
       {
         "x": 0,
@@ -532,10 +862,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:1"
       },
       {
-        "x": 13,
+        "x": 14,
         "y": 1,
         "type": "wall",
         "blocked": true,
@@ -543,7 +875,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:1"
       },
       {
         "x": 0,
@@ -554,10 +888,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:3"
       },
       {
-        "x": 13,
+        "x": 14,
         "y": 3,
         "type": "wall",
         "blocked": true,
@@ -565,7 +901,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:3"
       },
       {
         "x": 0,
@@ -576,10 +914,25 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:4"
       },
       {
-        "x": 13,
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:0:5"
+      },
+      {
+        "x": 14,
         "y": 4,
         "type": "wall",
         "blocked": true,
@@ -587,18 +940,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
-      },
-      {
-        "x": 0,
-        "y": 5,
-        "type": "wall",
-        "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
-        "material": "adobe",
-        "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:4"
       },
       {
         "x": 13,
@@ -609,7 +953,35 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:13:5"
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:5"
+      },
+      {
+        "x": 14,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:5"
       },
       {
         "x": 0,
@@ -620,10 +992,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:7"
       },
       {
-        "x": 13,
+        "x": 14,
         "y": 7,
         "type": "wall",
         "blocked": true,
@@ -631,7 +1005,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:7"
       },
       {
         "x": 0,
@@ -642,10 +1018,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:9"
       },
       {
-        "x": 13,
+        "x": 14,
         "y": 9,
         "type": "wall",
         "blocked": true,
@@ -653,7 +1031,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:9"
+      },
+      {
+        "x": 0,
+        "y": 11,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:0:11"
       },
       {
         "x": 0,
@@ -664,66 +1057,78 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:0:10"
       },
       {
         "x": 1,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:1:11"
       },
       {
         "x": 3,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:3:11"
       },
       {
         "x": 4,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:4:11"
       },
       {
         "x": 5,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:5:11"
       },
       {
         "x": 6,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:6:11"
       },
       {
         "x": 7,
-        "y": 10,
+        "y": 11,
         "type": "door",
         "blocked": true,
         "blocksSight": true,
@@ -733,54 +1138,77 @@
         "roomId": null,
         "doorId": "palacio:door:7:10",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "id": "palacio:wall:x:7:11"
       },
       {
         "x": 8,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:8:11"
       },
       {
         "x": 9,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:9:11"
       },
       {
         "x": 10,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:10:11"
       },
       {
         "x": 12,
-        "y": 10,
+        "y": 11,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:12:11"
       },
       {
         "x": 13,
+        "y": 11,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "palacio",
+        "roomId": null,
+        "axis": "x",
+        "id": "palacio:wall:x:13:11"
+      },
+      {
+        "x": 14,
         "y": 10,
         "type": "wall",
         "blocked": true,
@@ -788,161 +1216,266 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "palacio",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "palacio:wall:y:14:10"
       },
       {
         "x": 1,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:1:5"
       },
       {
         "x": 2,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:2:5"
       },
       {
         "x": 4,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:4:5"
       },
       {
         "x": 5,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:5:5"
       },
       {
         "x": 6,
         "y": 4,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:6:4"
+      },
+      {
+        "x": 6,
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:6:5"
       },
       {
         "x": 8,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:8:5"
       },
       {
         "x": 9,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:9:5"
       },
       {
         "x": 10,
         "y": 4,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:10:4"
+      },
+      {
+        "x": 10,
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:10:5"
       },
       {
         "x": 12,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:12:5"
       },
       {
-        "x": 5,
+        "x": 6,
         "y": 1,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:6:1"
       },
       {
-        "x": 5,
+        "x": 6,
         "y": 2,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:6:2"
       },
       {
-        "x": 5,
+        "x": 6,
         "y": 3,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:6:3"
       },
       {
-        "x": 9,
+        "x": 10,
         "y": 1,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:10:1"
       },
       {
-        "x": 9,
+        "x": 10,
         "y": 2,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:10:2"
       },
       {
-        "x": 9,
+        "x": 10,
         "y": 3,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:10:3"
       },
       {
         "x": 3,
-        "y": 4,
+        "y": 5,
         "type": "door",
         "doorId": "palacio:door:3:4",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:3:5"
       },
       {
         "x": 7,
-        "y": 4,
+        "y": 5,
         "type": "door",
         "doorId": "palacio:door:7:4",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:7:5"
       },
       {
         "x": 11,
-        "y": 4,
+        "y": 5,
         "type": "door",
         "doorId": "palacio:door:11:4",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:11:5"
       },
       {
         "x": 2,
-        "y": 10,
-        "type": "window"
+        "y": 11,
+        "type": "window",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:2:11"
       },
       {
         "x": 11,
-        "y": 10,
-        "type": "window"
+        "y": 11,
+        "type": "window",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:11:11"
       },
       {
         "x": 0,
         "y": 2,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:0:2"
       },
       {
         "x": 0,
         "y": 6,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:0:6"
       },
       {
         "x": 0,
         "y": 8,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:0:8"
       },
       {
-        "x": 13,
+        "x": 14,
         "y": 2,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:14:2"
       },
       {
-        "x": 13,
+        "x": 14,
         "y": 6,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:14:6"
       },
       {
-        "x": 13,
+        "x": 14,
         "y": 8,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "palacio",
+        "id": "palacio:wall:y:14:8"
       },
       {
         "x": 2,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:2:0"
       },
       {
         "x": 7,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:7:0"
       },
       {
         "x": 11,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "palacio",
+        "id": "palacio:wall:x:11:0"
       }
     ]
   },

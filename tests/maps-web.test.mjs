@@ -1,3 +1,4 @@
+import {wallMovementBlocked} from '../game/wall-geometry.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildSectorMap as buildMap,MAP_IDS} from '../game/maps.js';
@@ -8,7 +9,7 @@ const key=t=>`${t.x},${t.y}`;
 function path(map,a,b,forbidden=new Set()){
  const queue=[[a]],seen=new Set([key(a)]);
  while(queue.length){const p=queue.shift(),last=p.at(-1);if(last.x===b.x&&last.y===b.y)return p;
- for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=last.x+dx,y=last.y+dy,t=map.tiles[y*map.width+x];if(x>=0&&x<map.width&&y>=0&&y<map.height&&t&&!t.blocked&&!seen.has(key(t))&&!forbidden.has(key(t))){seen.add(key(t));queue.push([...p,t]);}}}return null;
+ for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=last.x+dx,y=last.y+dy,t=map.tiles[y*map.width+x];if(x>=0&&x<map.width&&y>=0&&y<map.height&&t&&!t.blocked&&!wallMovementBlocked(map,last,t)&&!seen.has(key(t))&&!forbidden.has(key(t))){seen.add(key(t));queue.push([...p,t]);}}}return null;
 }
 test('all fifteen authored maps have unique deterministic layouts',()=>{
  assert.equal(MAP_IDS.length,15);const signatures=new Set();for(const sector of MAP_IDS){const req={sector,squad:OPERATIVES.slice(0,6),difficulty:4,cannons:3};const a=buildSectorMap(req),b=buildSectorMap(req);assert.deepEqual(a,b);assert.equal(a.tiles.length,320);assert.equal(new Set(a.tiles.map(key)).size,320);signatures.add(JSON.stringify(a.tiles));}assert.equal(signatures.size,15);
@@ -20,9 +21,9 @@ test('maximum normal deployments and artillery are collision-free, unblocked and
 test('San Lorenzo convent has an enterable interior, windows and independent double doors',()=>{
  const map=buildSectorMap({sector:'san_lorenzo',squad:OPERATIVES.slice(0,6)}),d=map.decor[0];assert.equal(d.type,'convent');assert.equal(d.asset,'/art/convent.png');
  const interior=map.tiles.filter(t=>t.buildingId==='san_lorenzo:building');assert.equal(interior.length,d.width*d.height);
- const floor=interior.filter(t=>t.type==='floor');assert.equal(floor.length,(d.width-2)*(d.height-2));assert.ok(floor.every(t=>!t.blocked));
- const doors=interior.filter(t=>t.type==='door');assert.equal(doors.length,2);assert.notEqual(doors[0].doorId,doors[1].doorId);assert.equal(doors[0].y,doors[1].y);assert.equal(Math.abs(doors[0].x-doors[1].x),1);
- assert.ok(interior.some(t=>t.type==='window'&&t.blocked&&!t.blocksSight));
+ const floor=interior.filter(t=>t.type==='floor');assert.equal(floor.length,d.width*d.height);assert.ok(floor.every(t=>!t.blocked));
+ const doors=map.wallEdges.filter(t=>t.buildingId==='san_lorenzo:building'&&t.type==='door');assert.equal(doors.length,2);assert.notEqual(doors[0].doorId,doors[1].doorId);assert.equal(doors[0].y,doors[1].y);assert.equal(Math.abs(doors[0].x-doors[1].x),1);
+ assert.ok(map.wallEdges.some(t=>t.buildingId==='san_lorenzo:building'&&t.type==='window'&&t.blocked&&!t.blocksSight));
 });
 test('San Lorenzo has two independent charge avenues around the convent',()=>{
  const map=buildSectorMap({sector:'san_lorenzo'});const north=path(map,{x:2,y:2},{x:15,y:2}),south=path(map,{x:2,y:13},{x:15,y:13});assert.ok(north);assert.ok(south);assert.ok(north.every(p=>p.y<5));assert.ok(south.every(p=>p.y>=11));const blockedNorth=new Set(north.map(key));assert.ok(path(map,{x:2,y:13},{x:15,y:13},blockedNorth));
