@@ -50,6 +50,11 @@ the new format. Compatibility with earlier campaign saves is outside scope.
   seconds. Its partition contained 967 files with 13 extended files excluded.
   Later checkpoint tests are checked separately and require a final partition
   count; the quick result does not include tests added after its discovery.
+- The final partition includes all 971 files exactly once: 957 quick and 14
+  extended. Its six self-tests pass. The extra extended entry is the new bounded
+  earned Salta guard/raid/detour check. Final mountain component checks pass
+  11/11, including the unchanged four deployment cases and the added explicit
+  field-gun/swivel case with ordinary, presented, and saved order replay.
 - The complete full gate began with production source `74944df9`. The final
   presentation fix is `662f42a4`; its 53 affected tests, type check, production
   build, and browser door-crossing review passed separately. Campaign driver
@@ -190,6 +195,12 @@ Uspallata battle, the existing recruit treasury assertion then differs by 53
 pesos because the retained-order helper renews clinic physician 116 on that
 action. The mountain attack and later Cuyo stages remain unverified.
 
+The final combined procurement/readiness regression passes 1/1. Its reserve
+step records 157 public orders, 3,980 pesos of renewals, ten pesos of posta
+tolls, and five normal 8,000-peso midnight payments. Exact midpoint saved
+replay reproduces the same readiness state. The physical clinic, patient wounds,
+supplies, gun custody, and all prior deaths remain unchanged by that step.
+
 The later opening preparation hires an actually available paid rear guard,
 recovers one exact local firearm, and wins its real support-battery raid with
 saved replay. Actual survivors 144 and 130 still bleed. The immediate care
@@ -197,3 +208,10 @@ attempt finds no dressings in inspected bodies, local clinic/shop stock, or
 usable carried linen. Its unproven care helper was removed. The original care,
 deployment, victory, permanent-loss, and Yatasto assertions remain enforced.
 The whole opening route remains unverified.
+
+The bounded coastal detour uses the public route planner and ordinary march
+orders. With actual participant renewals, 24 hourly waits cost 897 pesos and
+end at `cell-26-27` with a real exhaustion pause. Exact midpoint saved replay
+matches. Survivor 144 has 28 HP with bleeding one; survivor 130 has four HP
+with bleeding two. This verifies admission and progress, not arrival, cannon
+delivery, medical recovery, or completion of Salta and Yatasto.
