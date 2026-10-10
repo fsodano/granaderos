@@ -209,7 +209,9 @@ usable carried linen. Its unproven care helper was removed. The original care,
 deployment, victory, permanent-loss, and Yatasto assertions remain enforced.
 The whole opening route remains unverified.
 
-The bounded coastal detour uses the public route planner and ordinary march
+The final bounded guard/raid/detour file passes 2/2 in 148 seconds. It preserves
+the actual raid deaths and wounds. The bounded coastal detour uses the public
+route planner and ordinary march
 orders. With actual participant renewals, 24 hourly waits cost 897 pesos and
 end at `cell-26-27` with a real exhaustion pause. Exact midpoint saved replay
 matches. Survivor 144 has 28 HP with bleeding one; survivor 130 has four HP
