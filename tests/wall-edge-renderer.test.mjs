@@ -5,6 +5,8 @@ import {renderToStaticMarkup as markup} from '../web/node_modules/react-dom/serv
 import {buildBuilding as makeBuilding} from '../game/buildings.js';
 import {createSceneTerrainCache} from '../game/scene-terrain.js';
 import {wallEdgeCenter,wallEdgeCells} from '../game/wall-geometry.js';
+import {createBattle,canSee} from '../game/tactical.js';
+import {playerKnownBattle} from '../game/player-known-state.js';
 import {createVariedRoofClimbBattle} from '../web/app/renderer-sandbox/varied-roof-climb-fixture.js';
 import {wallEdgeEndpoints} from '../game/wall-geometry.js';
 import {entranceFrame} from '../game/building-profile.js';
@@ -19,11 +21,36 @@ const {createSectorWorld}=await import('../web/lib/three/sector-world.ts');
 const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
 const {worldWallRecords,buildingWallAtPoint}=await import('../web/lib/three/world-wall-records.ts');
 const {wallEdgeControlObjects}=await import('../web/app/TacticalWallEdgeControls.tsx');
+const {default:TacticalMinimap}=await import('../web/app/TacticalMinimap.tsx');
 const T=1.2360585147470482,project=(x,y)=>({x:(x-y)*26,y:(x+y)*14});
 function render(battle,cursorLevel=0){const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),input={terrain:battle,revealedRooms:battle.revealedRooms,cursorLevel},building=buildBuilding(battle.buildings[0],input,T,geometry,materials);building.updateMatrixWorld(true);return {building,dispose(){disposeWorldNode(building);geometry.dispose();materials.dispose();}};}
 function simple(){const built=makeBuilding({id:'edge-house',x:2,y:2,width:4,height:4,doors:[{x:3,y:6,axis:'x',id:'edge-door'}]});return {...built,width:10,height:10,buildings:[built.building],revealedRooms:[],props:[],lights:[],units:[],npcs:[],artillery:[],smoke:[]};}
 function controlPath(edge,height,elevation=0){const [start,end]=wallEdgeEndpoints(edge),a=project(start.x,start.y),b=project(end.x,end.y);a.y-=elevation*ELEVATION_PIXELS_PER_METRE;b.y-=elevation*ELEVATION_PIXELS_PER_METRE;return `M${a.x},${a.y}L${b.x},${b.y}L${b.x},${b.y-height}L${a.x},${a.y-height}Z`;}
 function hasFabricPlane(building,height){let found=false;building.traverse(object=>{if(object instanceof Mesh){const positions=object.geometry.getAttribute('position');for(let n=0;n<positions.count;n++)if(Math.abs(positions.getY(n)-height)<1e-5)found=true;}});return found;}
+function privateShell(){
+ const built=makeBuilding({id:'closed-shell',x:3,y:3,width:5,height:5,doors:[]}),tiles=Array.from({length:100},(_,n)=>({x:n%10,y:Math.floor(n/10),type:'grass',blocked:false,cover:0})),byCell=new Map(built.tiles.map(tile=>[`${tile.x},${tile.y}`,tile]));
+ const edges=[...built.wallEdges,{id:'private-door-edge',doorId:'private-door',buildingId:'closed-shell',x:5,y:5,axis:'y',type:'door',open:false,locked:false,blocked:true,blocksSight:true,cover:0},{id:'private-wall-edge',buildingId:'closed-shell',x:6,y:5,axis:'y',type:'wall',blocked:true,blocksSight:true,cover:25}];
+ return createBattle([{id:'observer',x:0,y:5}],{width:10,height:10,exploration:true,enemies:[],tiles:tiles.map(tile=>byCell.get(`${tile.x},${tile.y}`)??tile),buildings:[built.building],wallEdges:edges});
+}
+function minimapEdges(state,selected='observer'){
+ return markup(h(TacticalMinimap,{state,units:[],selected,project,width:600,height:600,camera:{x:0,y:0,width:200,height:200},onCenter(){}})).match(/<path[^>]*data-minimap-wall-edge[^>]*>/g)??[];
+}
+
+test('minimap keeps unseen openings and breaches at their public static geometry',()=>{
+ const state=privateShell(),before=JSON.stringify(state),closed=minimapEdges(state),known=playerKnownBattle(state),changed=structuredClone(state),door=changed.wallEdges.find(edge=>edge.id==='private-door-edge'),wall=changed.wallEdges.find(edge=>edge.id==='private-wall-edge');
+ assert.equal(canSee(state,state.units[0],state.wallEdges.find(edge=>edge.id===door.id)),false);assert.equal(canSee(state,state.units[0],state.wallEdges.find(edge=>edge.id===wall.id)),false);
+ Object.assign(door,{open:true,broken:true,structureDamage:65,blocked:false,blocksSight:false});Object.assign(wall,{type:'rubble',destroyed:true,structureDamage:100,blocked:false,blocksSight:false});
+ assert.equal(canSee(changed,changed.units[0],door),false);assert.equal(canSee(changed,changed.units[0],wall),false);assert.deepEqual(playerKnownBattle(changed),known);assert.deepEqual(minimapEdges(changed),closed,'unseen live changes must not reach minimap colors or remove public wall lines');assert.equal(JSON.stringify(state),before);
+});
+
+test('minimap discloses observed edge changes and restricts edges to the selected level',()=>{
+ const state=privateShell(),door=state.wallEdges.find(edge=>edge.id==='private-door-edge'),wall=state.wallEdges.find(edge=>edge.id==='private-wall-edge');state.units[0].x=4;state.units[0].y=5;
+ assert.equal(canSee(state,state.units[0],door),true);const closed=minimapEdges(state).find(path=>path.includes(door.id));assert.ok(closed.includes('stroke="#786344"'));
+ Object.assign(door,{open:true,blocked:false,blocksSight:false});Object.assign(wall,{type:'rubble',destroyed:true,structureDamage:100,blocked:false,blocksSight:false});assert.equal(canSee(state,state.units[0],wall),true);
+ const open=minimapEdges(state);assert.ok(open.find(path=>path.includes(door.id)).includes('stroke="#bfac76"'));assert.ok(!open.some(path=>path.includes(wall.id)));
+ const upper={id:'upper-private-edge',x:8,y:8,axis:'x',tacticalLevel:1,type:'wall',blocked:true,blocksSight:true};state.wallEdges.push(upper);assert.ok(!minimapEdges(state).some(path=>path.includes(upper.id)));
+ state.units.push({...state.units[0],id:'upper-observer',tacticalLevel:1});const upperPaths=minimapEdges(state,'upper-observer');assert.equal(upperPaths.length,1);assert.ok(upperPaths[0].includes(upper.id));
+});
 
 test('wall fabric is one thin edge; both neighboring cell centres stay clear',()=>{
  const battle=simple(),before=JSON.stringify(battle),r=render(battle),fabric=r.building.getObjectByName('building-fabric:edge-house');
