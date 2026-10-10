@@ -173,3 +173,27 @@ replay. The subsequent original stock Mendoza preparation admits 14 actual
 living soldiers at hour 490, second 1435. One original gun still has seven
 charges; the other remains spent. This proves preparation, not battle victory
 or completion of the ending route.
+
+The earned Cuyo artillery procurement regression passed 1/1. Two actual paid
+columns win Ensenada in 13 turns and 410 orders with complete saved replay.
+Eight additional real casualties remain dead. The surviving crew opens the
+one-time arsenal through public orders and sends its original field gun and
+swivel cannon to Mendoza by 54-hour carts. Each has seven finite charges; none
+of the three original spent bronze cannons gains ammunition or changes custody.
+The original foundry squad returns at hour 976, second 1721. This verifies the
+side operation and finite supply, not a mountain victory or the whole Cuyo route.
+
+The later native mountain preparation moves actual healthy serving reserves
+127 and 144 from Córdoba to Mendoza, then uses ordinary paid rest. Both reach
+readiness at hour 1094. Six real replacements become eligible. Before the
+Uspallata battle, the existing recruit treasury assertion then differs by 53
+pesos because the retained-order helper renews clinic physician 116 on that
+action. The mountain attack and later Cuyo stages remain unverified.
+
+The later opening preparation hires an actually available paid rear guard,
+recovers one exact local firearm, and wins its real support-battery raid with
+saved replay. Actual survivors 144 and 130 still bleed. The immediate care
+attempt finds no dressings in inspected bodies, local clinic/shop stock, or
+usable carried linen. Its unproven care helper was removed. The original care,
+deployment, victory, permanent-loss, and Yatasto assertions remain enforced.
+The whole opening route remains unverified.
