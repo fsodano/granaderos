@@ -94,16 +94,22 @@ function secureCreatedCuyoRearBattery(start,{report=()=>{}}={}){
 // Actual transport, finite carried care and defense after fresh Yatasto.
 export function assembleCreatedCuyo(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
- const order=a=>{
-  if(c.pendingEncounter?.sector==='salta'&&a.type!=='respondToEncounter'){
+ const withdrawRear=()=>{
+  if(c.pendingEncounter?.sector==='salta'){
    const selected=c.activeSquadId,groupId=c.pendingEncounter.groupId;
    c=dispatchCampaign(c,{type:'respondToEncounter',groupId,choice:'retreat',destination:'tucuman'});assert.equal(c.lastError,null,c.lastError);
    c=dispatchCampaign(c,{type:'selectSquad',id:selected});assert.equal(c.lastError,null,c.lastError);
    report({event:'cuyoRearWithdrawal',groupId,hour:c.hour,destination:'tucuman'});
   }
+ };
+ const order=a=>{
+  if(a.type!=='respondToEncounter')withdrawRear();
   const elapsed=a.type==='wait'?a.hours:a.type==='travel'?48:0;
   if(elapsed)for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<=c.hour+elapsed){const contract=c.contracts[id],next=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(next.lastError,null,next.lastError);c=next;}
   c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
+  // A blocking travel order can encounter the rear raid during its own
+  // elapsed hours. Resolve that actual interruption before route assertions.
+  if(a.type!=='respondToEncounter')withdrawRear();
  };
 const pastSurvivors=new Set((c.sectorStates.salta?.units??[]).filter(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure).map(unit=>Number(unit.id)));
 const requiredLeadership=Math.max(...encounterDefinitions(c).filter(npc=>['guemes','macacha'].includes(npc.id)).map(npc=>npc.requiredLeadership));

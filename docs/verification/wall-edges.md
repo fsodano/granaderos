@@ -73,15 +73,16 @@ not green. Its first failure in each affected file was:
 | File | First failure in the complete branch run |
 | --- | --- |
 | `fresh-campaign-recovery.test.mjs` | The old Tucumán combat policy lost a hospital patient. |
-| `fresh-ending-route.test.mjs` | The native campaign required a real rifle for operative 130. |
+| `fresh-ending-route.test.mjs` | The native campaign required a real long gun for operative 130. |
 | `fresh-northern-route.test.mjs` | Urgent wounded northern veterans needed care before the physician approach. |
 | `fresh-cuyo-route.test.mjs` | The same urgent northern care check failed. |
 | `fresh-historical-loss.test.mjs` | The same urgent northern care check failed. |
 | `opening-playthrough.test.mjs` | A rescued clinic patient died during its real raid. |
 
-The follow-on recovery check passed Tucumán and hospital care with the public
-clear-shot policy, then reached the same inaccessible Córdoba travel error as
-main. Native readiness now proves a real rear rifle exchange, 12 paid recruits,
+The follow-on recovery check passed Tucumán victory and pre-evacuation
+stabilization with the public clear-shot policy, then reached the same
+inaccessible Córdoba travel error as main, before the hospital setup. Native
+readiness now proves a real rear musket exchange, 12 paid recruits,
 finite ammunition and physician stock, actual Tucumán victory, and exact saved
 replay. Urgent northern care now uses only dressings found in the actual battle.
 The earned Salta battery proof spends all seven real charges, retains six actual
