@@ -60,7 +60,7 @@ export function wallMovementBlocked(state, a, b, options = {}) {
 // damage and door fields remain on the corresponding edge records.
 export function normalizeBuildingWalls(building) {
   const walls = building.walls ?? [];
-  if (walls.every(w => w.axis === 'x' || w.axis === 'y')) return walls.map(w => ({...w, id: wallEdgeId(w)}));
+  if (walls.every(w => w.axis === 'x' || w.axis === 'y')) return walls.map(w => ({...w,buildingId:building.id,material:w.material??building.material??'adobe',id:wallEdgeId(w)}));
   const source = new Map(walls.map(w => [cellKey(w), w])), result = new Map();
   const x0 = building.x, y0 = building.y, x1 = x0 + building.width - 1, y1 = y0 + building.height - 1;
   const internal = (x, y) => x > x0 && x < x1 && y > y0 && y < y1 && source.has(`${x},${y}`);
@@ -124,8 +124,11 @@ export function migrateWallGeometry(state) {
     const live = new Map(current.map(t => [cellKey(t), t]));
     const walls = building.walls?.length ? building.walls.map(w => ({...w, ...live.get(cellKey(w))})) : current;
     const converted = normalizeBuildingWalls({...building, walls});
-    building.walls = converted; building.rooms = buildingEdgeRooms(building, converted); edges.push(...converted);
-    const rooms = new Map(building.rooms.flatMap(room => room.cells.map(cell => [cellKey(cell), room.id])));
+    const native=walls.every(w=>w.axis==='x'||w.axis==='y');
+    building.walls=converted;
+    if(!native)building.rooms=[...buildingEdgeRooms({...building,rooms:(building.rooms??[]).filter(room=>(room.tacticalLevel??level(room.cells?.[0]))===0)},converted),...(building.rooms??[]).filter(room=>(room.tacticalLevel??level(room.cells?.[0]))>0)];
+    edges.push(...converted);
+    const rooms = new Map(building.rooms.flatMap(room => room.cells.filter(cell=>(cell.tacticalLevel??room.tacticalLevel??0)===0).map(cell => [cellKey(cell), room.id])));
     for (const tile of state.tiles ?? []) if (rooms.has(cellKey(tile))) {
       assigned.add(cellKey(tile));
       Object.assign(tile, {type:'floor',blocked:false,blocksSight:false,cover:0,material:building.material ?? tile.material ?? 'adobe',buildingId:building.id,roomId:rooms.get(cellKey(tile))});

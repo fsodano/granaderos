@@ -23,7 +23,7 @@ test('residents enter and leave their home through a closed door without crossin
     const before={x:n.x,y:n.y};advanceNpc(s,n);
     for(const p of n.lastMovePath){assert.equal(Math.abs(p.x-before.x)+Math.abs(p.y-before.y),1);Object.assign(before,p);assert.equal(s.tiles.find(t=>t.x===p.x&&t.y===p.y).blocked,false);}
   }
-  assert.deepEqual([n.x,n.y],[7,4]);assert.equal(s.tiles.find(t=>t.x===7&&t.y===6).open,true);
+  assert.deepEqual([n.x,n.y],[7,4]);assert.equal(s.wallEdges.find(t=>t.doorId==='house:door:7:6').open,true);
   n.ai=ai({x:8,y:9},'roaming');
   for(let i=0;i<12&&n.ai.destination;i++)advanceNpc(s,n);
   assert.deepEqual([n.x,n.y],[8,9]);assert.doesNotThrow(()=>validateBattleSnapshot(s));
@@ -42,7 +42,7 @@ test('routines visit home, work, outdoor spaces and the bar and survive JSON sav
 });
 
 test('locked doors, furniture and occupants block routes; civilians never overlap',()=>{
-  const s=field();s.tiles.find(t=>t.type==='door'&&t.buildingId==='house').locked=true;
+  const s=field();s.wallEdges.find(t=>t.type==='door'&&t.buildingId==='house').locked=true;
   s.props=[{id:'bed',type:'bed',x:9,y:8,footprint:{width:1,height:2},blocksMovement:true}];
   s.npcs.push({id:'b',name:'Vecino',x:10,y:9});
   const routes=npcRoutes(s,s.npcs[0]);assert.equal(routes.records.has('7,4'),false);assert.equal(routes.records.has('9,9'),false);assert.equal(routes.records.has('10,9'),false);
@@ -136,18 +136,18 @@ test('a patrol that discovers the player interrupts resting at its first contact
 
 test('NPCs do not bypass a trapped door or reveal its trap to the player',()=>{
   const s=field(),n=s.npcs[0];n.x=7;n.y=7;n.ai=ai({x:7,y:4});
-  const door=s.tiles.find(t=>t.type==='door'&&t.buildingId==='house');door.trap={type:'injury',difficulty:20,armed:true,discoveredBy:[],damage:18};
+  const door=s.wallEdges.find(t=>t.type==='door'&&t.buildingId==='house');door.trap={type:'injury',difficulty:20,armed:true,discoveredBy:[],damage:18};
   advanceNpc(s,n);assert.equal(door.open,false);assert.equal(door.trap.armed,false);assert.deepEqual(door.trap.discoveredBy,[]);assert.equal(n.hp,82);assert.equal(n.y,7);
 });
 
 test('dialogue movement crosses usable doors step by step and keeps its meeting destination',()=>{
  const s=field(),n=s.npcs[0];n.scriptedMove={order:0,target:{x:7,y:4}};
  const initial={x:n.x,y:n.y};for(let i=0;i<20;i++){const before={x:n.x,y:n.y};advanceNpc(s,n);for(const step of n.lastMovePath){assert.equal(Math.abs(step.x-before.x)+Math.abs(step.y-before.y),1);assert.equal(s.tiles.find(t=>t.x===step.x&&t.y===step.y).blocked,false);Object.assign(before,step);}}
- assert.notDeepEqual(initial,{x:n.x,y:n.y});assert.deepEqual({x:n.x,y:n.y},n.scriptedMove.target);assert.equal(s.tiles.find(t=>t.x===7&&t.y===6).open,true);assert.equal(n.ai.activity,'meeting');assert.doesNotThrow(()=>validateBattleSnapshot(s));
+ assert.notDeepEqual(initial,{x:n.x,y:n.y});assert.deepEqual({x:n.x,y:n.y},n.scriptedMove.target);assert.equal(s.wallEdges.find(t=>t.doorId==='house:door:7:6').open,true);assert.equal(n.ai.activity,'meeting');assert.doesNotThrow(()=>validateBattleSnapshot(s));
 });
 
 test('a blocked dialogue route waits, resumes when reopened and takes shelter before returning',()=>{
- const s=field(),n=s.npcs[0],door=s.tiles.find(t=>t.type==='door'&&t.buildingId==='house');n.scriptedMove={order:0,target:{x:7,y:4}};door.locked=true;
+ const s=field(),n=s.npcs[0],door=s.wallEdges.find(t=>t.type==='door'&&t.buildingId==='house');n.scriptedMove={order:0,target:{x:7,y:4}};door.locked=true;
  const before={x:n.x,y:n.y};advanceNpc(s,n);assert.deepEqual({x:n.x,y:n.y},before);assert.deepEqual(n.ai.destination,n.scriptedMove.target);
  door.locked=false;hearNpcNoise(s,{x:6,y:9},'fire',10);advanceNpc(s,n);assert.ok(['fleeing','hiding'].includes(n.ai.activity));assert.deepEqual(n.scriptedMove.target,{x:7,y:4});
  s.elapsedSeconds=80;for(let i=0;i<20;i++)advanceNpc(s,n);assert.deepEqual({x:n.x,y:n.y},n.scriptedMove.target);assert.equal(n.ai.activity,'meeting');
@@ -156,6 +156,6 @@ test('a blocked dialogue route waits, resumes when reopened and takes shelter be
 test('dialogue movement stops for incapacity, occupants and an alarmed door without losing its order',()=>{
  const s=field(),n=s.npcs[0],target={x:7,y:4};n.scriptedMove={order:0,target};n.unconscious=true;const before={x:n.x,y:n.y};advanceNpc(s,n);assert.deepEqual({x:n.x,y:n.y},before);n.unconscious=false;
  s.npcs.push({id:'guest',name:'Otra persona',x:7,y:4,hp:100});for(let i=0;i<10;i++)advanceNpc(s,n);assert.notDeepEqual({x:n.x,y:n.y},target);
- s.npcs.pop();const door=s.tiles.find(t=>t.type==='door'&&t.buildingId==='house');door.trap={type:'alarm',armed:true,difficulty:20,discoveredBy:[]};for(let i=0;i<10&&door.trap.armed;i++)advanceNpc(s,n);
+ s.npcs.pop();const door=s.wallEdges.find(t=>t.type==='door'&&t.buildingId==='house');door.trap={type:'alarm',armed:true,difficulty:20,discoveredBy:[]};for(let i=0;i<10&&door.trap.armed;i++)advanceNpc(s,n);
  assert.equal(door.trap.armed,false);assert.notEqual(door.open,true);assert.equal(n.ai.destination,undefined);assert.equal(n.ai.activity,'hiding');assert.deepEqual(n.scriptedMove.target,target);assert.doesNotThrow(()=>validateBattleSnapshot(s));s.elapsedSeconds=100;for(let i=0;i<20;i++)advanceNpc(s,n);assert.deepEqual({x:n.x,y:n.y},target);
 });

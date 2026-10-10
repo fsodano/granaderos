@@ -1,3 +1,4 @@
+import {wallMovementBlocked} from './wall-geometry.js';
 import {worldCell,roadEdgesForCell} from './world-cells.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {propCells} from './props.js';
@@ -19,7 +20,7 @@ export function connectWorldCellApproaches(map){
  for(const start of map.tiles.filter(passable)){
   if(seen.has(key(start)))continue;
   const component=new Set([key(start)]),queue=[start];seen.add(key(start));
-  for(let i=0;i<queue.length;i++)for(const next of neighbors(queue[i]))if(passable(next)&&!seen.has(key(next))){seen.add(key(next));component.add(key(next));queue.push(next);}
+  for(let i=0;i<queue.length;i++)for(const next of neighbors(queue[i]))if(passable(next)&&!seen.has(key(next))&&!wallMovementBlocked(map,queue[i],next)){seen.add(key(next));component.add(key(next));queue.push(next);}
   if(component.size>exterior.size)exterior=component;
  }
  const roads=new Set(map.tiles.filter(t=>t.type==='road'&&exterior.has(key(t))).map(key)),roadEdges=roadEdgesForCell(cell.location);
@@ -34,7 +35,7 @@ export function connectWorldCellApproaches(map){
   for(let i=0;i<queue.length;i++){
    const current=queue[i];if(target.has(key(current))){end=current;break;}
    for(const next of neighbors(current)){
-    if(visited.has(key(next))||next.buildingId||props.has(key(next))||next.blocked&&inside(next))continue;
+    if(wallMovementBlocked(map,current,next)||visited.has(key(next))||next.buildingId||props.has(key(next))||next.blocked&&inside(next))continue;
     visited.add(key(next));parents.set(key(next),current);queue.push(next);
    }
   }

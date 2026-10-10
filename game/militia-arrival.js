@@ -1,3 +1,4 @@
+import {wallMovementBlocked} from './wall-geometry.js';
 import {propBlocksAt} from './props.js';
 // Existing schematic city road approaches, expressed on the compact 20x16 map.
 const entries={
@@ -18,7 +19,7 @@ export function militiaArrivalTerrain(state,unit){
  const key=p=>`${p.x},${p.y}`,open=state.tiles.filter(t=>!t.blocked&&!t.buildingId&&t.type!=='water'&&!propBlocksAt(state,t.x,t.y)),byKey=new Map(open.map(t=>[key(t),t])),seen=new Set();let largest=new Set();
  for(const start of open){
   if(seen.has(key(start)))continue;const queue=[start],component=new Set([key(start)]);seen.add(key(start));
-  for(let i=0;i<queue.length;i++)for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const next=byKey.get(`${queue[i].x+dx},${queue[i].y+dy}`);if(next&&!seen.has(key(next))){seen.add(key(next));component.add(key(next));queue.push(next);}}
+  for(let i=0;i<queue.length;i++)for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const next=byKey.get(`${queue[i].x+dx},${queue[i].y+dy}`);if(next&&!seen.has(key(next))&&!wallMovementBlocked(state,queue[i],next)){seen.add(key(next));component.add(key(next));queue.push(next);}}
   if(component.size>largest.size)largest=component;
  }
  const boundary=open.filter(t=>largest.has(key(t))&&(edge==='N'?t.y===0:edge==='S'?t.y===state.height-1:edge==='E'?t.x===state.width-1:t.x===0)&&largest.has(`${t.x+(edge==='W'?1:edge==='E'?-1:0)},${t.y+(edge==='N'?1:edge==='S'?-1:0)}`));
@@ -29,7 +30,7 @@ export function militiaArrivalTerrain(state,unit){
  const cells=boundary.length?[boundary[0]]:[],reached=new Set(cells.map(key));
  for(let i=0;i<cells.length;i++)for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){
   const next=byKey.get(`${cells[i].x+dx},${cells[i].y+dy}`);
-  if(next&&largest.has(key(next))&&!reached.has(key(next))){reached.add(key(next));cells.push(next);}
+  if(next&&largest.has(key(next))&&!reached.has(key(next))&&!wallMovementBlocked(state,cells[i],next)){reached.add(key(next));cells.push(next);}
  }
  return {anchor,cells};
 }

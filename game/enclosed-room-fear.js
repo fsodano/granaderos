@@ -1,3 +1,4 @@
+import {wallEdgesBetween,wallEdgeBlocksMovement} from './wall-geometry.js';
 import {CRITICAL_HEALTH} from './actor-condition.js';
 import {DEFAULT_TERRACE_ELEVATION} from './buildings.js';
 import {roomAt} from './tactical-visibility.js';
@@ -30,6 +31,16 @@ export function occupiedEnclosedRoom(state,unit){
   const point={x:cell.x,y:cell.y,tacticalLevel:level},support=surfaceAt(state,point);
   if(!support||support.type!=='floor'||support.blocked||support.buildingId!==building.id||
      (support.elevation??0)!==height||level>0&&support.kind!=='platform')return false;
+  if(state.wallEdges?.some(edge=>tacticalLevel(edge)===level)){
+   for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){
+    const adjacent={x:cell.x+dx,y:cell.y+dy,tacticalLevel:level};
+    if(keys.has(`${adjacent.x},${adjacent.y}`))continue;
+    const edge=wallEdgesBetween(state,point,adjacent).find(edge=>!edge.destroyed&&edge.buildingId===building.id);
+    if(!edge||edge.type==='wall'&&(!wallEdgeBlocksMovement(edge)||(edge.obstacleHeight??2.5)<fullWallHeight)||!['wall','door','window'].includes(edge.type))return false;
+    wallHeight=Math.min(wallHeight,edge.obstacleHeight??2.5);if(edge.obstacleHeight!==undefined)defaultGroundWalls=false;
+   }
+   continue;
+  }
   for(const [dx,dy]of [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]]){
    if(keys.has(`${cell.x+dx},${cell.y+dy}`))continue;
    footprint.add(`${cell.x+dx},${cell.y+dy}`);

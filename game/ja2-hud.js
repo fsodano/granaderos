@@ -1,3 +1,4 @@
+import {wallEdgeId,wallEdgeCenter} from './wall-geometry.js';
 import {formatAP} from './action-points.js';
 import {firearmServiceable,BROKEN_FIREARM_REASON} from './firearm-serviceability.js';
 import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
@@ -189,6 +190,7 @@ export function cellOccupant(units, point) {
 }
 
 export function isMovementGround(state, unit, point) {
+  if(point?.wallEdgeId)return false;
   if (!point) return false;
   const occupied = state.units.some(target => target.hp > 0 && !target.fled && !target.departure && sameCell(target, point) && (target.side === 'player' || state.units.some(observer => observer.side === 'player' && canSee(state, observer, target))));
   const environment=environmentTargetAt(state,point);
@@ -248,6 +250,7 @@ export function heardNoiseModel(state, unit) {
 
 export function visibleHover(state, point) {
   if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return null;
+  if(point.wallEdgeId){const edge=(state.wallEdges??[]).find(edge=>wallEdgeId(edge)===point.wallEdgeId);return edge&&state.units.some(unit=>unit.side==='player'&&canSee(state,unit,edge))?{...edge,wallEdgeId:wallEdgeId(edge)}:null;}
   if (point.anonymous) return {x: point.x, y: point.y, ...(point.tacticalLevel===undefined?{}:{tacticalLevel:point.tacticalLevel}), anonymous: true};
   const unit = point.id && point.targetKind!=='npc' ? state.units.find(unit => unit.id === point.id) : null;
   const npc = !unit && point.id ? (state.npcs || []).find(npc => npc.id === point.id) : null;
@@ -360,6 +363,12 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
   if (!point) return null;
+  if(point.wallEdgeId){
+    const environment=environmentTargetAt(state,point);
+    if(!environment||!canSee(state,unit,environment))return null;
+    const preview=environmentUsePreview(state,unit,environment),summary=environmentTargetSummary(unit,environment);
+    return {name:summary.label,actionLabel:preview.label,pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,attackType:'environment',coverNote:preview.movePa?`Desplazamiento: ${formatAP(preview.movePa)} PA · uso: ${formatAP(preview.actionPa)} PA.`:undefined};
+  }
   if(ctx.itemIntent==='moveOnly'&&['move','useItem','loot'].includes(mode)&&isMovementGround(state,unit,point))return movementTargetPreview(state,unit,point,ctx);
   const civilianAid=civilianMedicalInputAction(state,unit,point,mode);
   if(civilianAid){
@@ -760,8 +769,8 @@ export function groundLootPiles(state,actors){
 
 export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   const found = new Map();
-  if (unit) for (const point of state.tiles) {
-    if (distance(unit, point) > 1.5) continue;
+  if (unit) for (const point of [...(state.wallEdges??[]).map(edge=>({...edge,wallEdgeId:wallEdgeId(edge)})),...state.tiles]) {
+    if (distance(unit, point.axis?wallEdgeCenter(point):point) > 1.5) continue;
     const raw = environmentTargetAt(state, point);
     if(!raw||!canSee(state,unit,raw))continue;
     if(raw?.kind==='container'&&!environmentContainerVisible(state,unit,raw))continue;
@@ -769,7 +778,7 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   }
   const targets = [...found].map(([key, raw]) => {
     const summary = environmentTargetSummary(unit, raw);
-    if (raw.kind === 'wall') return {key, kind: raw.kind, id: raw.id, x: raw.x, y: raw.y, tacticalLevel: 0, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, material: summary.material};
+    if (raw.kind === 'wall') return {key, kind: raw.kind, id: raw.id, x: raw.x, y: raw.y,...(raw.axis?{axis:raw.axis,wallEdgeId:wallEdgeId(raw)}:{}),tacticalLevel: 0, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, material: summary.material};
     const arsenal=FINITE_ARTILLERY_ARSENALS[state.sectorId],arsenalAvailable=arsenal?.chest===raw.id&&(state.finiteArtilleryArsenal||raw.artilleryRecovered);
     return {key, kind: raw.kind, id: raw.id, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, open: summary.open, locked: summary.locked, broken: summary.broken, trapKnown: Boolean(summary.trap), trapArmed: summary.trap?.armed,...(arsenalAvailable?{arsenalHint:raw.artilleryRecovered?'Las piezas recuperadas quedan emplazadas. Usá Artillería en la carta para guardarlas o trasladarlas.':`Abrí este cofre para recuperar ${arsenal.pieces.length} piezas del arsenal con munición finita.`}:{})};
   });

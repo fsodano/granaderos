@@ -1,3 +1,4 @@
+import {wallMovementBlocked} from './wall-geometry.js';
 // Physical levels are independent of a recruit's earned `level`.
 export const MAX_TACTICAL_LEVEL=8;
 export const DEFAULT_SLAB_THICKNESS=.2;
@@ -29,7 +30,7 @@ export function surfacesAtLevel(state,level=0){
 }
 // Geometry only. Occupants, furniture, AP and body condition belong to callers.
 export function canWalkBetween(state,from,to){
- if(!sameSurface(from,to))return false;
+ if(!sameSurface(from,to)||wallMovementBlocked(state,from,to))return false;
  const dx=Math.abs(to.x-from.x),dy=Math.abs(to.y-from.y),start=surfaceAt(state,from),end=surfaceAt(state,to);
  if(Math.max(dx,dy)!==1||!start||!end||start.blocked||end.blocked||surfaceHeight(state,from)!==surfaceHeight(state,to))return false;
  if(dx&&dy)for(const point of [{...spacePoint(from),x:to.x},{...spacePoint(from),y:to.y}]){
