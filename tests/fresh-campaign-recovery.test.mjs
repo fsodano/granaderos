@@ -138,7 +138,7 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  }
  for(const unit of tucumanReady.pendingBattle.squad){assert.equal(unit.hp,unit.maxHp);assert.equal(unit.bleeding,0);assert.ok(unit.loaded>0,'finish reloading before the march');assert.ok(unit.ammo>0,'carry compatible reserve ammunition');}
  for(const [id,record]of Object.entries(beforeTucuman.operativeState))if(!record.alive)assert.equal(tucumanReady.operativeState[id].alive,false);
- const tucuman=fightNorthernSector(tucumanReady,'tucuman',{controller:coastalBatteryController(enterSector(tucumanReady.pendingBattle,tucumanReady.sectorStates.tucuman),{sharedArtillerySight:true})});
+ const tucuman=fightNorthernSector(tucumanReady,'tucuman',{controller:northernClearShotOrder});
  assert.equal(tucuman.campaign.sectors.tucuman.owner,'patriot');
  assert.ok(tucuman.campaign.resources.treasury>=0);
  assert.equal(tucuman.campaign.completed,false);
