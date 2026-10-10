@@ -106,7 +106,7 @@ test('existing owned aid, getting up and freeing entanglement retain their earli
  const supplied=field({medkits:1});assert.equal(chooseEnemyAction(supplied,doctor(supplied)).type,'weapon');assert.equal(chooseEnemyAction(supplied,doctor(supplied)).slot,'medical');
  const knocked=field({knockedDown:true});assert.equal(chooseEnemyAction(knocked,doctor(knocked)).type,'stance');
  const bound=field({entangled:true});assert.equal(chooseEnemyAction(bound,doctor(bound)).type,'free');
- const noNeed=field({marksmanship:100}, {hp:100,bleeding:0,y:4});Object.assign(noNeed.units[0],{x:15,y:3,loaded:0});noNeed.tiles.forEach(t=>Object.assign(t,{type:'grass',blocked:false,blocksSight:false}));assert.equal(chooseEnemyAction(noNeed,doctor(noNeed)).type,'fire');
+ const noNeed=field({marksmanship:100}, {hp:100,bleeding:0,y:4});Object.assign(noNeed.units[0],{x:15,y:3,loaded:0});noNeed.tiles.forEach(t=>Object.assign(t,{type:'grass',blocked:false,blocksSight:false}));noNeed.wallEdges=[];assert.equal(chooseEnemyAction(noNeed,doctor(noNeed)).type,'fire');
 });
 
 test('only autonomous control acts on the recovery choice; the public boundary still rejects enemy pickup commands',()=>{
@@ -115,7 +115,7 @@ test('only autonomous control acts on the recovery choice; the public boundary s
 });
 
 test('real care inside an enemy reaction survives a saved nested interruption without a second pickup or refreshed AP',()=>{
- const s=field({x:6,ap:51,weapon:1805,overwatch:true,experienceLevel:5,marksmanship:100},{x:6,y:4},{groundItems:[bundle({x:6})]});s.tiles.forEach(t=>Object.assign(t,{type:'grass',blocked:false,blocksSight:false}));Object.assign(s.units[0],{x:12,y:3,facing:6,ap:24,agility:30,experienceLevel:1,loaded:0});s.units.push({...structuredClone(s.units[0]),id:'observer',x:12,y:5,facing:2,ap:20,loaded:1,agility:100,experienceLevel:10});
+ const s=field({x:6,ap:51,weapon:1805,overwatch:true,experienceLevel:5,marksmanship:100},{x:6,y:4},{groundItems:[bundle({x:6})]});s.tiles.forEach(t=>Object.assign(t,{type:'grass',blocked:false,blocksSight:false}));s.wallEdges=[];Object.assign(s.units[0],{x:12,y:3,facing:6,ap:24,agility:30,experienceLevel:1,loaded:0});s.units.push({...structuredClone(s.units[0]),id:'observer',x:12,y:5,facing:2,ap:20,loaded:1,agility:100,experienceLevel:10});
  const old=handRecord(doctor(s),'primary'),paused=actBattle(s,{type:'move',unitId:'p',x:11,y:3});assert.equal(paused.lastError,null);assert.equal(paused.phase,'interrupt');assert.equal(paused.interrupt.returnTo,'reaction');assert.ok(paused.interrupt.unitIds.includes('observer'));assert.equal(paused.groundItems[0].count,0);assert.equal(doctor(paused).medkits,0);assert.equal(patient(paused).hp,15);assert.equal(patient(paused).bleeding,0);assert.equal(doctor(paused).loaded,old.loaded-1);
  const n=endTurn(restored(paused));assert.deepEqual(n,endTurn(paused));assert.equal(n.phase,'player');assert.equal(n.turn,1);assert.equal(n.elapsedSeconds,6);assert.equal(n.groundItems[0].count,0);assert.equal(doctor(n).medkits,0);assert.equal(doctor(n).loaded,doctor(paused).loaded);assert.equal(doctor(n).ap,doctor(paused).ap);assert.equal(patient(n).hp,15);assert.equal(patient(n).bleeding,0);assert.doesNotThrow(()=>restored(n));
 });

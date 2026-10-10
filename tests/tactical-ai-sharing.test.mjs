@@ -74,7 +74,7 @@ test('ties are stable and a received supply removes the demand instead of bounci
 });
 test('a saved movement interruption resumes the handover without spending or duplicating supplies twice',()=>{
  const s=field({x:11,ap:20,loaded:0,ammo:2,medical:0,agility:30,experienceLevel:1},{x:14,loaded:0,ammo:0});
- s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});Object.assign(s.units[0],{x:7,y:3,facing:2,ap:20,agility:100,experienceLevel:10});
+ s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});s.wallEdges=[];Object.assign(s.units[0],{x:7,y:3,facing:2,ap:20,agility:100,experienceLevel:10});
  const paused=endTurn(s);assert.equal(paused.phase,'interrupt');assert.equal(donor(paused).x,12);assert.equal(donor(paused).ammo,2);assert.equal(receiver(paused).ammo,0);
  const n=endTurn(restored(paused));assert.deepEqual(n,endTurn(paused));assert.equal(donor(n).x,13);assert.equal(donor(n).ap,0);assert.equal(donor(n).ammo,1);assert.equal(receiver(n).ammo,1);assert.equal(n.elapsedSeconds,6);assert.doesNotThrow(()=>restored(n));
 });
@@ -91,7 +91,7 @@ test('autonomous militia can supply a hired ally while hired soldiers retain man
  assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
 test('an observed close opponent prevents a supply run through melee reach',()=>{
- const s=field({x:11,ap:20},{x:14});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});
+ const s=field({x:11,ap:20},{x:14});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});s.wallEdges=[];
  Object.assign(s.units[0],{x:13,y:4,weapon:1813,loaded:0});setTestAmmunition(s.units[0],0);
  assert.equal(choice(s)?.type,'move');assert.equal(choice(s,[s.units[0]]),null);
 });
@@ -101,7 +101,7 @@ test('two donors see the updated demand and cannot overfill an exhausted ally',(
  assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
 test('a useful shot keeps priority over supplying an adjacent ally',()=>{
- const s=field({ap:40,marksmanship:100});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});
+ const s=field({ap:40,marksmanship:100});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});s.wallEdges=[];
  Object.assign(s.units[0],{x:15,y:3,loaded:0});setTestAmmunition(s.units[0],0);receiver(s).y=4;
  assert.equal(chooseEnemyAction({...s,phase:'enemy'},donor(s)).type,'fire');
 });
@@ -127,7 +127,7 @@ test('a supplied medic treats an adjacent unconscious patient without taking the
  assert.equal(p.hp,15);assert.equal(p.bleeding,0);assert.equal(p.unconscious,false);assert.equal(p.ap,0);assert.equal(p.ammo,7);assert.equal(p.weaponInstanceId,'patient-gun');assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
 test('a real enemy reaction can spend its remaining four AP on an adjacent supply handover',()=>{
- const s=field({facing:6,experienceLevel:10,agility:100});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});
+ const s=field({facing:6,experienceLevel:10,agility:100});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});s.wallEdges=[];
  Object.assign(s.units[0],{x:7,y:3,facing:2,ap:20,experienceLevel:1,agility:30});
  const action={type:'move',unitId:'p',x:8,y:3},n=actBattle(s,action);assert.equal(n.lastError,null);assert.equal(n.turn,1);assert.equal(donor(n).ammo,2);assert.equal(donor(n).ap,0);assert.equal(receiver(n).ammo,1);
  assert.deepEqual(n,actBattle(restored(s),action));assert.doesNotThrow(()=>restored(n));
