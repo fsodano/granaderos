@@ -173,5 +173,35 @@ Passive captures are ready for Los Patos preparation boundaries, actual shared
 contact/null controller decisions, and coastal field-care/hire-wait transitions.
 They retain accepted replay/postcombat orders with explicit trace scope limits.
 These diagnostics issue no extra orders, change no decisions and normalize no
-saved state. Current original route acceptance, the final full gate, commit, PR
-and merge remain pending.
+saved state. Current original route acceptance, the final full gate, PR and merge remain
+pending. The tested 70-path checkpoint is committed as `0b53d3fb`; new grounded
+corrections require their own validation.
+
+
+## Restored opening and remaining observed failures
+
+The [retained focused receipt](retained52-gate-receipt.json) closes once with
+52 passing tests across 12 files, without failures or skips. The
+[restored-opening original gate](restored-opening-original-gate-receipt.json)
+closes once with 16 reported tests: five passed, six failed and five skipped.
+Both retain all original assertions, use source snapshot `c7a3e4fca512b42d80b0ee3e5bd26daad0967822b60713f50a39411e66d224bd`, and record zero source drift.
+
+The [complete two-gate archive](granaderos-restored-opening-gates-20261010.tar.gz)
+and [member manifest](granaderos-restored-opening-gates-20261010.manifest.json)
+retain all 506 original files and both generated archive metadata members.
+The [report](granaderos-restored-opening-gates-20261010.report.md) states capture
+limits and failed outcomes. The actual hired San Lorenzo battle won; commander
+57 then died during a paid postcombat medic approach while at 1 HP and bleeding
+2. The campaign was already defeated before settlement. A scoped correction
+must provide finite field care before that terminal state; settlement must
+retain the real death.
+
+The funded recovery route progressed through the actual Tucumán victory and
+then refused travel to Córdoba. The created Cuyo route progressed past Mendoza
+care and then refused a renewal with personal morale below 30. Stock ending
+progressed through its Tucumán recovery defense and then required actual local
+physician dressings. Opening Córdoba still retreated, leaving five dependent
+stages skipped. These are observed barriers, not completed campaign routes.
+Current strategic preparation inputs require separate passive capture before
+selecting a correction. The original Los Patos preparation boundary was not
+reached by this gate.

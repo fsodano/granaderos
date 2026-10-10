@@ -142,8 +142,33 @@
       "path": "first-affected-original-gate-receipt.json",
       "bytes": 1405,
       "sha256": "adf4c7f4380c83e88e956032ba63ae65a920c5afb2e6fb893f9e11e36cc3a2b5"
+    },
+    {
+      "path": "granaderos-restored-opening-gates-20261010.tar.gz",
+      "bytes": 29091608,
+      "sha256": "3fe264952e7231376236185dca99d3c070d7a28e142273c25e3766bc11856eb8"
+    },
+    {
+      "path": "granaderos-restored-opening-gates-20261010.manifest.json",
+      "bytes": 241584,
+      "sha256": "4830d86157126a805d494bb10a0d9beec85230ef2ace4f7c3d6cc06f9d801dea"
+    },
+    {
+      "path": "granaderos-restored-opening-gates-20261010.report.md",
+      "bytes": 5205,
+      "sha256": "848331f13649a31b70474439b2d64ca1d50871116a156cdb33e1e3cb95da6f9c"
+    },
+    {
+      "path": "retained52-gate-receipt.json",
+      "bytes": 1734,
+      "sha256": "2f498a65f0b3e2569db73e90ad308b4448c70b8e593c9a0d510cdfe8fd502b66"
+    },
+    {
+      "path": "restored-opening-original-gate-receipt.json",
+      "bytes": 1816,
+      "sha256": "c9371b861e86a409ff2f8c2598d3961c649a6d70741468205c66ba460d9fa307"
     }
   ],
-  "scope": "Closed original observations, complete failed full950 gate, three closed original diagnostics, earned finite-care/ammunition controls, coastal bounded controls and rejected broad opening-posture candidate. Original route acceptance and final full gameplay validation remain incomplete.",
-  "updatedAt": "2026-10-10T09:25:17.395184+00:00"
+  "scope": "Closed original observations and gates, finite earned care/ammunition controls, rejected broad opening posture, retained52 passing controls, and the failed restored-opening five-file gate. Original route acceptance and final full gameplay validation remain incomplete.",
+  "updatedAt": "2026-10-10T09:46:18.319978+00:00"
 }
