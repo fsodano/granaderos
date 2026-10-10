@@ -4,12 +4,15 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
 import {actBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {prepareRescueClinicGuards,rescueMedicalRouteOptions,restRescuePatients,resolveRescueClinicEncounter} from './rescue-clinic-readiness.mjs';
 import {northernClinicDefenseOrder} from './northern-route.mjs';
+import {recoverRescueForce} from './rescue-recovery.mjs';
 
 const provenance=JSON.parse(readFileSync(new URL('./fixtures/opening-clinic-earned-exhaustion.provenance.json',import.meta.url),'utf8'));
 const sha=value=>createHash('sha256').update(value).digest('hex');
@@ -92,4 +95,37 @@ test('retained native defeat tape settles exact losses and still fails the stric
  assert.deepEqual(Object.entries(settled.operativeState).filter(([id,record])=>before.operativeState[id].alive&&!record.alive).map(([id])=>Number(id)),[103,108,112,121,122,126,129,130]);
  assert.equal(settled.operativeState[102].captured,true);assert.equal(settled.operativeState[102].hp,8);assert.equal(settled.operativeState[102].bleeding,5);
  for(const[id,record]of Object.entries(before.operativeState))if(!record.alive)assert.equal(settled.operativeState[id].alive,false);
+});
+
+test('earned native clinic searches finite visible remains and restores every actual released patient before the real raid',()=>{
+ const metadata=JSON.parse(readFileSync(new URL('./fixtures/opening-clinic-native-edge-stabilized.provenance.json',import.meta.url),'utf8'));
+ const compressed=readFileSync(new URL('./fixtures/opening-clinic-native-edge-stabilized.save.json.gz',import.meta.url)),raw=gunzipSync(compressed);
+ assert.equal(sha(compressed),metadata.gzipSha256);assert.equal(sha(raw),metadata.rawSha256);
+ const start=decodeSave(raw.toString()).campaign,before=structuredClone(start),nativePatients=metadata.patients;
+ assert.deepEqual([start.hour,start.secondOfHour],metadata.inputClock);assert.equal(start.sectors.tucuman.owner,'patriot');
+ assert.ok(start.sectorStates.tucuman.wallEdges.length>0);assert.ok(nativePatients.every(id=>start.operativeState[id].alive&&!start.operativeState[id].captured&&start.operativeState[id].hp<start.operativeState[id].maxHp));
+ let beforeSearch=null,afterSearch=null;
+ const result=recoverRescueForce(start,{patients:nativePatients,onCheckpoint:(name,campaign,evidence)=>{
+  if(name==='local-medical-cache-122'&&evidence.count===0&&beforeSearch===null)beforeSearch=structuredClone(campaign);
+  if(name==='visible-medical-remains')afterSearch=structuredClone(campaign);
+ }}),{campaign,recovery}=result;
+ assert.deepEqual(start,before);assert.ok(beforeSearch&&afterSearch);
+ assert.equal(sectorInventoryModel(beforeSearch,'tucuman',rosterFor(beforeSearch),122).entries.filter(row=>JSON.parse(row.expected).item==='medkits').length,0,'known stock can be empty before ordinary body inspection');
+ const search=recovery.medicalRemains;assert.equal(search.operativeId,recovery.courier);assert.equal(search.sector,'tucuman');assert.equal(search.collected,7);
+ assert.equal(search.receipts.reduce((sum,row)=>sum+row.count,0),search.collected);
+ assert.equal(search.actions.filter(action=>action.type==='loot'&&action.item==='medkits').reduce((sum,action)=>sum+action.count,0),search.collected);
+ for(const row of search.receipts){assert.ok(row.count>0);assert.equal(row.before-row.after,row.count);assert.ok(row.after>=0);}
+ assert.equal(afterSearch.operativeState[recovery.courier].medkits-beforeSearch.operativeState[recovery.courier].medkits,7);
+ for(const id of nativePatients)assert.equal(afterSearch.operativeState[id].hp,beforeSearch.operativeState[id].hp,'inspection cannot grant patient health');
+ assert.ok(search.elapsedSeconds>0);assert.equal(afterSearch.resources.treasury,beforeSearch.resources.treasury);
+ assert.equal(recovery.boughtDressings,0);assert.equal(recovery.cost,0);assert.equal(recovery.donatedDressings,9,'retain the two starting reserve dressings plus seven inspected body dressings');
+ assert.deepEqual(recovery.doctors,[122,116]);assert.deepEqual(recovery.hiredDoctors,[116]);assert.equal(recovery.hiringCost,campaign.contracts[116].paid);
+ assert.equal(recovery.guardPreparation.cost,0);assert.equal(recovery.restRecovery.boundHours,6);assert.equal(recovery.restRecovery.defenses.length,0);
+ const raid=campaign.enemyGroups.find(group=>group.id==='enemy-group-3');assert.equal(raid.status,'marching');assert.equal(raid.arrivalAt,288);assert.ok(campaign.hour<raid.arrivalAt,'earned care finishes before the unchanged raid clock');
+ const now=campaign.hour*3600+(campaign.secondOfHour??0);
+ for(const id of nativePatients){const record=campaign.operativeState[id];assert.ok(record.alive&&campaign.recruited.includes(id));assert.equal(record.captured,false);assert.equal(record.hp,record.maxHp);assert.equal(record.bleeding,0);assert.equal(record.energy,100);assert.equal(record.location,'tucuman');assert.ok(contractExpiresSeconds(campaign.contracts[id])>now);}
+ for(const id of recovery.doctors){assert.ok(campaign.operativeState[id].alive);assert.ok(campaign.contracts[id].paid>0);assert.ok(contractExpiresSeconds(campaign.contracts[id])>now);}
+ for(const[id,record]of Object.entries(start.operativeState))if(!record.alive){assert.equal(campaign.operativeState[id].alive,false);assert.equal(campaign.operativeState[id].deathMinute,record.deathMinute);}
+ assert.equal(campaign.pendingEncounter,null);assert.equal(campaign.pendingBattle,null);assert.equal(campaign.sectors.tucuman.owner,'patriot');
+ assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
 });

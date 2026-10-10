@@ -191,6 +191,13 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   for(const id of result.recovery.doctors)assert.ok(result.campaign.contracts[id].paid>0,'surviving or replacement doctors work on real paid contracts');
   for(const id of result.recovery.hiredDoctors){assert.ok(!before.recruited.includes(id));assert.equal(before.operativeState[id].alive,true);assert.equal(result.campaign.operativeState[id].location,'tucuman');assert.ok(result.recovery.doctors.includes(id));assert.ok(rosterFor(result.campaign).find(op=>op.id===id).medical>=70);}
   assert.ok(result.recovery.recoveredDressings>=0);assert.ok(result.recovery.donatedDressings>=0);preserveDeaths(rescued,result.campaign);
+  if(result.recovery.medicalRemains){
+   const search=result.recovery.medicalRemains;assert.equal(search.operativeId,result.recovery.courier);assert.equal(search.sector,'tucuman');
+   assert.equal(search.receipts.reduce((sum,row)=>sum+row.count,0),search.collected);
+   for(const row of search.receipts){assert.ok(row.count>0);assert.equal(row.before-row.after,row.count);assert.ok(row.after>=0);}
+   assert.equal(search.actions.filter(action=>action.type==='loot'&&action.item==='medkits').reduce((sum,action)=>sum+action.count,0),search.collected,'every recovered dressing must come from an admitted hand-loot order');
+   assert.ok(result.recovery.recoveredDressings>=search.collected);assert.ok(search.elapsedSeconds>0);
+  }
   for(const id of captiveIds)assert.equal(result.campaign.operativeState[id].energy,100);
   const coast=result.campaign.enemyGroups.filter(group=>group.theater==='coast');assert.ok(coast.length>0,'the actual coastal threat remains in the campaign');
   assert.equal(result.campaign.blockade,coast.some(group=>group.status==='stationed'));
