@@ -1,0 +1,150 @@
+{
+  "archive": "/tmp/granaderos-northern-medical-observation-20261010T043614480954Z-portable.tar.gz",
+  "bytes": 1467091,
+  "sha256": "8945da3404ecb2d7f59e2612c51abadf2edf466f11f8d075a83ce4c382101aed",
+  "manifest": "/tmp/granaderos-northern-medical-observation-20261010T043614480954Z/portable-archive-manifest.json",
+  "manifestSha256": "894726646c67910b3c349bdfde58341293aff1001a9a0310f1a6d148687559b2",
+  "entries": 23,
+  "payloadCount": 22,
+  "hashChecks": [
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/closure-source-checks.json",
+      "bytes": 379809,
+      "sha256": "df347c09a446f5b1abee6477a9cd501e2de08b402e541d767a74e3973b37b4a5",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/entry-metadata.json",
+      "bytes": 1320,
+      "sha256": "bb1f48980b8994f57cbf61f1803c19b8353cfbcee89a0e71af6e19bcc9a243e9",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/entry-source-checks.json",
+      "bytes": 387366,
+      "sha256": "90501f41614c53757bccdcc73f5de4ad3896aaa8257805fd957e8a7c6ea96d1f",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/full942-before-source-hashes.json",
+      "bytes": 1862648,
+      "sha256": "732725d7989c30f04cc44138919406fb5f7b3b58dd2ce76f888dec2869e097b5",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/import-provenance/84450-imports.json",
+      "bytes": 108030,
+      "sha256": "e2a130a6ff0068e21547544c3f08a0dec4389972151f13f3c26797e7548a39ee",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/medical-conflict-observation-summary.json",
+      "bytes": 12006,
+      "sha256": "fad9762b89ded8e592d87c3bfaae66364e5570eec31b527e1acfeb4e3a10fbaa",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/northern-medical-state-observer.mjs",
+      "bytes": 5655,
+      "sha256": "fbe94292a6b64f7a23239a66cc36a0c6e66c8beaa0d781351c55d698c4bd4d54",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-1-northern-prepare-input-xHyiGJ/native-state.json",
+      "bytes": 3441389,
+      "sha256": "8a9073baa56639c63e2362c3be4e1307f9386a409874f7aa3388e9eb69dfbb7f",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-1-northern-prepare-input-xHyiGJ/receipt.json",
+      "bytes": 727,
+      "sha256": "f35a1491859e1fcce9c86fcfe2b9413c1f9a9b7c3eba082e69ab56c5dc0899e6",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-2-northern-staged-patients-WC85cU/native-state.json",
+      "bytes": 3443083,
+      "sha256": "898ad77f9f346678a1cdcd6a656beadae09fd6cf2ce7e500839c10458fe992f2",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-2-northern-staged-patients-WC85cU/receipt.json",
+      "bytes": 729,
+      "sha256": "f74f97cabfac3aaead778a190fbea6e3b0c677b836a96c8001a158b648cfd725",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-3-northern-assigned-roles-MdB4l4/native-state.json",
+      "bytes": 3445259,
+      "sha256": "678b2365de5bd65bdf582339e6f4b71186c26cfb6a35ffbf29b24061f1156451",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-3-northern-assigned-roles-MdB4l4/receipt.json",
+      "bytes": 728,
+      "sha256": "181e11a94454d3e1ea58b66280cca5bb265ee7a3f993fad3531f1e5f8359cb6c",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-4-northern-pre-full-health-assertion-ecscIP/native-state.json",
+      "bytes": 3465429,
+      "sha256": "83d90045aa31083948619f44e6b9678b77ff5b63d55f4b5e86e07dcc54fd626f",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-4-northern-pre-full-health-assertion-ecscIP/receipt.json",
+      "bytes": 739,
+      "sha256": "66f1676c71312a0fe9f98de4575e5f86270a76f8c6d72254dcd101100daf93b3",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/pid.json",
+      "bytes": 312,
+      "sha256": "9682c8c2f68eca49e49216fbdcce94dfb3f6ae4f0e2289868248eb3430f5da16",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/reviewed-medical-preparation-proposal.md",
+      "bytes": 10012,
+      "sha256": "9b656e2a4867f0aa70fb02a3ebacfc831a59ae1e2ac640a343e66a327e77b683",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/reviewed-medical-preparation-readonly-receipt.json",
+      "bytes": 15618,
+      "sha256": "11bd80626449713b283f5bf0f502123fa122e5f179a96cfbf4480e61b5d543a9",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/reviewed-northern-medical-state-observer.mjs",
+      "bytes": 4243,
+      "sha256": "179d110d39badeee017325f1f0c0f214a3b16733dc48d994d805b32c19156b9a",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/run-once.py",
+      "bytes": 5572,
+      "sha256": "d9c3025d3c93bff875721adf61b5994a6ee4d257212e4458a80f4b24fc31bb6b",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/run.log",
+      "bytes": 1599,
+      "sha256": "14870db0fff231df5f63322c74137175f7ac3c3ebe9040c1c9ca69ba678ea40d",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/terminal-receipt.json",
+      "bytes": 280574,
+      "sha256": "0e41d97f2a8282d0ed1d904cd32b51b449fabafe72f71e1846d88361d54a83cc",
+      "equal": true
+    },
+    {
+      "path": "granaderos-northern-medical-observation-20261010T043614480954Z/portable-archive-manifest.json",
+      "bytes": 4349,
+      "sha256": "894726646c67910b3c349bdfde58341293aff1001a9a0310f1a6d148687559b2",
+      "equal": true
+    }
+  ],
+  "verified": true
+}

@@ -1,0 +1,155 @@
+{
+  "scope": "Exact117-order replay for existing corrected-policy artillery choices; no alternatives or controller decisions",
+  "combatGunMoves": [],
+  "combatGunOrders": [
+    {
+      "index": 70,
+      "turn": 2,
+      "mode": "combat",
+      "phase": "interrupt",
+      "action": {
+        "type": "artilleryPivot",
+        "unitId": "10",
+        "artilleryId": "arsenal:cordoba:1",
+        "x": 34,
+        "y": 21
+      },
+      "actor": {
+        "id": "10",
+        "x": 35,
+        "y": 15,
+        "hp": 72,
+        "ap": 105,
+        "stance": "standing",
+        "energy": 95
+      },
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": true,
+        "ammo": 1,
+        "facing": -1.0303768265243125,
+        "x": 34,
+        "y": 14
+      },
+      "crew": {
+        "crew": [
+          "10",
+          "0"
+        ],
+        "reason": null
+      },
+      "knownEnemies": [
+        {
+          "id": "enemy-0",
+          "x": 34,
+          "y": 21,
+          "level": 0,
+          "hp": 100
+        }
+      ]
+    },
+    {
+      "index": 71,
+      "turn": 2,
+      "mode": "combat",
+      "phase": "interrupt",
+      "action": {
+        "type": "artillery",
+        "unitId": "0",
+        "artilleryId": "arsenal:cordoba:1",
+        "x": 34,
+        "y": 21,
+        "mode": "solid"
+      },
+      "actor": {
+        "id": "0",
+        "x": 33,
+        "y": 13,
+        "hp": 82,
+        "ap": 82,
+        "stance": "crouched",
+        "energy": 93
+      },
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": true,
+        "ammo": 1,
+        "facing": 1.5707963267948966,
+        "x": 34,
+        "y": 14
+      },
+      "crew": {
+        "crew": [
+          "0",
+          "10"
+        ],
+        "reason": null
+      },
+      "knownEnemies": [
+        {
+          "id": "enemy-0",
+          "x": 34,
+          "y": 21,
+          "level": 0,
+          "hp": 100
+        }
+      ]
+    },
+    {
+      "index": 72,
+      "turn": 2,
+      "mode": "combat",
+      "phase": "interrupt",
+      "action": {
+        "type": "artilleryReload",
+        "unitId": "10",
+        "artilleryId": "arsenal:cordoba:1"
+      },
+      "actor": {
+        "id": "10",
+        "x": 35,
+        "y": 15,
+        "hp": 72,
+        "ap": 65,
+        "stance": "standing",
+        "energy": 95
+      },
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 1,
+        "facing": 1.5707963267948966,
+        "x": 34,
+        "y": 14
+      },
+      "crew": {
+        "crew": [
+          "10",
+          "0"
+        ],
+        "reason": null
+      },
+      "knownEnemies": [
+        {
+          "id": "enemy-0",
+          "x": 34,
+          "y": 21,
+          "level": 0,
+          "hp": 15
+        }
+      ]
+    }
+  ],
+  "nativeTerminal": {
+    "status": "defeat",
+    "turn": 4,
+    "elapsedSeconds": 320
+  },
+  "allArtilleryOrderCount": 16
+}

@@ -1,0 +1,1024 @@
+{
+  "scope": "Read-only controller decisions and cloned native admission previews. No newly selected order was applied to the retained battle.",
+  "runtime": "v25.9.0",
+  "inputs": {
+    "initialSave": "d12de6567cbfb5d9755041cfcd813fc07fefb39a09ce16ac551f1239fee3533c",
+    "nativeResult": "edab1fd3edf469eba3292e18316ed42cbe1cd46911da2058b46e635bb5c307f0"
+  },
+  "recordedOrderCount": 83,
+  "recordedActions": 3,
+  "recordedOrderTypes": {
+    "move": 3,
+    "endTurn": 80
+  },
+  "states": {
+    "initial": {
+      "status": "active",
+      "mode": "exploration",
+      "phase": "player",
+      "turn": 1,
+      "elapsedSeconds": 0,
+      "artillery": [
+        {
+          "id": "arsenal:cordoba:2",
+          "type": "bronze4",
+          "side": "player",
+          "x": 34,
+          "y": 1,
+          "loaded": true,
+          "ammo": 6
+        },
+        {
+          "id": "arsenal:buenos_aires:1",
+          "type": "bronze4",
+          "side": "player",
+          "x": 33,
+          "y": 1,
+          "loaded": true,
+          "ammo": 6
+        }
+      ],
+      "players": [
+        {
+          "id": "104",
+          "x": 34,
+          "y": 0,
+          "hp": 72,
+          "energy": 96,
+          "ap": 95,
+          "morale": 39,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "140",
+          "x": 33,
+          "y": 0,
+          "hp": 67,
+          "energy": 96,
+          "ap": 97,
+          "morale": 39,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "134",
+          "x": 35,
+          "y": 0,
+          "hp": 70,
+          "energy": 96,
+          "ap": 98,
+          "morale": 36,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "125",
+          "x": 32,
+          "y": 0,
+          "hp": 87,
+          "energy": 96,
+          "ap": 95,
+          "morale": 36,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "133",
+          "x": 36,
+          "y": 0,
+          "hp": 89,
+          "energy": 96,
+          "ap": 86,
+          "morale": 53,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 12
+        },
+        {
+          "id": "100",
+          "x": 31,
+          "y": 0,
+          "hp": 72,
+          "energy": 96,
+          "ap": 93,
+          "morale": 13,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "116",
+          "x": 37,
+          "y": 0,
+          "hp": 77,
+          "energy": 96,
+          "ap": 97,
+          "morale": 8,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "122",
+          "x": 30,
+          "y": 0,
+          "hp": 67,
+          "energy": 96,
+          "ap": 96,
+          "morale": 16,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "9",
+          "x": 38,
+          "y": 0,
+          "hp": 92,
+          "energy": 96,
+          "ap": 97,
+          "morale": 15,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "11",
+          "x": 29,
+          "y": 0,
+          "hp": 78,
+          "energy": 96,
+          "ap": 97,
+          "morale": 55.55,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "1",
+          "x": 39,
+          "y": 0,
+          "hp": 88,
+          "energy": 96,
+          "ap": 97,
+          "morale": 8,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "0",
+          "x": 28,
+          "y": 0,
+          "hp": 82,
+          "energy": 96,
+          "ap": 97,
+          "morale": 82,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "8",
+          "x": 40,
+          "y": 0,
+          "hp": 70,
+          "energy": 96,
+          "ap": 97,
+          "morale": 80,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "130",
+          "x": 27,
+          "y": 0,
+          "hp": 67,
+          "energy": 96,
+          "ap": 86,
+          "morale": 80,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "142",
+          "x": 41,
+          "y": 0,
+          "hp": 79,
+          "energy": 96,
+          "ap": 96,
+          "morale": 82,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        }
+      ],
+      "decisions": [
+        {
+          "id": "104",
+          "ap": 95,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "140",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "134",
+          "ap": 98,
+          "stagedOrder": {
+            "type": "artilleryMove",
+            "unitId": "134",
+            "artilleryId": "arsenal:cordoba:2",
+            "x": 34,
+            "y": 2
+          },
+          "stagedAdmission": {
+            "lastError": null,
+            "elapsedSeconds": 2
+          },
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "134",
+            "x": 34,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "125",
+          "ap": 95,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "133",
+          "ap": 86,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "133",
+            "x": 37,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "100",
+          "ap": 93,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "100",
+            "x": 37,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "116",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "116",
+            "x": 37,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "122",
+          "ap": 96,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "122",
+            "x": 37,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "9",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "9",
+            "x": 38,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "11",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "11",
+            "x": 37,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "1",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "1",
+            "x": 38,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "0",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "0",
+            "x": 37,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "8",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "8",
+            "x": 38,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "130",
+          "ap": 86,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "130",
+            "x": 37,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        },
+        {
+          "id": "142",
+          "ap": 96,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": {
+            "type": "move",
+            "unitId": "142",
+            "x": 38,
+            "y": 1,
+            "tacticalLevel": 0
+          }
+        }
+      ],
+      "crew": [
+        {
+          "id": "104",
+          "reachable": 2362,
+          "normalOrder": {
+            "type": "move",
+            "unitId": "104",
+            "x": 34,
+            "y": 5,
+            "tacticalLevel": 0
+          },
+          "observedEnemies": [],
+          "guns": [
+            {
+              "id": "arsenal:cordoba:2",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "104",
+                  "140"
+                ],
+                "reason": null
+              }
+            },
+            {
+              "id": "arsenal:buenos_aires:1",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "104",
+                  "140"
+                ],
+                "reason": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "140",
+          "reachable": 2362,
+          "normalOrder": {
+            "type": "move",
+            "unitId": "140",
+            "x": 33,
+            "y": 5,
+            "tacticalLevel": 0
+          },
+          "observedEnemies": [],
+          "guns": [
+            {
+              "id": "arsenal:cordoba:2",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "140",
+                  "104"
+                ],
+                "reason": null
+              }
+            },
+            {
+              "id": "arsenal:buenos_aires:1",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "140",
+                  "104"
+                ],
+                "reason": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "134",
+          "reachable": 2362,
+          "normalOrder": {
+            "type": "move",
+            "unitId": "134",
+            "x": 35,
+            "y": 5,
+            "tacticalLevel": 0
+          },
+          "observedEnemies": [],
+          "guns": [
+            {
+              "id": "arsenal:cordoba:2",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "134",
+                  "104"
+                ],
+                "reason": null
+              }
+            },
+            {
+              "id": "arsenal:buenos_aires:1",
+              "contact": false,
+              "moveCost": 20,
+              "plan": {
+                "crew": [],
+                "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "terminal": {
+      "status": "active",
+      "mode": "exploration",
+      "phase": "player",
+      "turn": 81,
+      "elapsedSeconds": 48042,
+      "artillery": [
+        {
+          "id": "arsenal:cordoba:2",
+          "type": "bronze4",
+          "side": "player",
+          "x": 34,
+          "y": 1,
+          "loaded": true,
+          "ammo": 6
+        },
+        {
+          "id": "arsenal:buenos_aires:1",
+          "type": "bronze4",
+          "side": "player",
+          "x": 33,
+          "y": 1,
+          "loaded": true,
+          "ammo": 6
+        }
+      ],
+      "players": [
+        {
+          "id": "104",
+          "x": 34,
+          "y": 0,
+          "hp": 72,
+          "energy": 100,
+          "ap": 95,
+          "morale": 39,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "140",
+          "x": 33,
+          "y": 0,
+          "hp": 67,
+          "energy": 100,
+          "ap": 97,
+          "morale": 39,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "134",
+          "x": 34,
+          "y": 1,
+          "tacticalLevel": 0,
+          "hp": 70,
+          "energy": 100,
+          "ap": 98,
+          "morale": 36,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "125",
+          "x": 32,
+          "y": 0,
+          "hp": 87,
+          "energy": 100,
+          "ap": 95,
+          "morale": 36,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "133",
+          "x": 36,
+          "y": 0,
+          "hp": 89,
+          "energy": 100,
+          "ap": 86,
+          "morale": 53,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 12
+        },
+        {
+          "id": "100",
+          "x": 31,
+          "y": 0,
+          "hp": 72,
+          "energy": 100,
+          "ap": 93,
+          "morale": 13,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "116",
+          "x": 37,
+          "y": 0,
+          "hp": 77,
+          "energy": 100,
+          "ap": 97,
+          "morale": 8,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "122",
+          "x": 30,
+          "y": 0,
+          "hp": 67,
+          "energy": 100,
+          "ap": 96,
+          "morale": 16,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "9",
+          "x": 38,
+          "y": 0,
+          "hp": 92,
+          "energy": 100,
+          "ap": 97,
+          "morale": 15,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "11",
+          "x": 37,
+          "y": 1,
+          "tacticalLevel": 0,
+          "hp": 78,
+          "energy": 100,
+          "ap": 97,
+          "morale": 55.55,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "1",
+          "x": 39,
+          "y": 0,
+          "hp": 88,
+          "energy": 100,
+          "ap": 97,
+          "morale": 8,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "0",
+          "x": 28,
+          "y": 0,
+          "hp": 82,
+          "energy": 100,
+          "ap": 97,
+          "morale": 82,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "8",
+          "x": 40,
+          "y": 0,
+          "hp": 70,
+          "energy": 100,
+          "ap": 97,
+          "morale": 80,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "130",
+          "x": 27,
+          "y": 0,
+          "hp": 67,
+          "energy": 100,
+          "ap": 86,
+          "morale": 80,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        },
+        {
+          "id": "142",
+          "x": 38,
+          "y": 1,
+          "tacticalLevel": 0,
+          "hp": 79,
+          "energy": 100,
+          "ap": 96,
+          "morale": 82,
+          "stance": "standing",
+          "routed": false,
+          "unconscious": false,
+          "loaded": 1,
+          "ammo": 11
+        }
+      ],
+      "decisions": [
+        {
+          "id": "104",
+          "ap": 95,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "140",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "134",
+          "ap": 98,
+          "stagedOrder": {
+            "type": "artilleryMove",
+            "unitId": "134",
+            "artilleryId": "arsenal:cordoba:2",
+            "x": 34,
+            "y": 2
+          },
+          "stagedAdmission": {
+            "lastError": null,
+            "elapsedSeconds": 2
+          },
+          "coastalOrder": null
+        },
+        {
+          "id": "125",
+          "ap": 95,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "133",
+          "ap": 86,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "100",
+          "ap": 93,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "116",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "122",
+          "ap": 96,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "9",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "11",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "1",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "0",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "8",
+          "ap": 97,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "130",
+          "ap": 86,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        },
+        {
+          "id": "142",
+          "ap": 96,
+          "stagedOrder": null,
+          "stagedAdmission": null,
+          "coastalOrder": null
+        }
+      ],
+      "crew": [
+        {
+          "id": "104",
+          "reachable": 3,
+          "normalOrder": null,
+          "observedEnemies": [],
+          "guns": [
+            {
+              "id": "arsenal:cordoba:2",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "104",
+                  "140"
+                ],
+                "reason": null
+              }
+            },
+            {
+              "id": "arsenal:buenos_aires:1",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "104",
+                  "140"
+                ],
+                "reason": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "140",
+          "reachable": 2423,
+          "normalOrder": {
+            "type": "move",
+            "unitId": "140",
+            "x": 30,
+            "y": 1,
+            "tacticalLevel": 0
+          },
+          "observedEnemies": [],
+          "guns": [
+            {
+              "id": "arsenal:cordoba:2",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "140",
+                  "104"
+                ],
+                "reason": null
+              }
+            },
+            {
+              "id": "arsenal:buenos_aires:1",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "140",
+                  "104"
+                ],
+                "reason": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "134",
+          "reachable": 2425,
+          "normalOrder": {
+            "type": "move",
+            "unitId": "134",
+            "x": 34,
+            "y": 5,
+            "tacticalLevel": 0
+          },
+          "observedEnemies": [],
+          "guns": [
+            {
+              "id": "arsenal:cordoba:2",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "134",
+                  "104"
+                ],
+                "reason": null
+              }
+            },
+            {
+              "id": "arsenal:buenos_aires:1",
+              "contact": true,
+              "moveCost": 20,
+              "plan": {
+                "crew": [
+                  "134",
+                  "104"
+                ],
+                "reason": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "input": "/tmp/granaderos-created-relief-corrected-stopped.save.json",
+  "from": [
+    427,
+    2043
+  ],
+  "to": [
+    447,
+    2043
+  ],
+  "orders": 49,
+  "treasuryBefore": 87259,
+  "treasuryAfter": 93793,
+  "costs": [
+    {
+      "action": {
+        "type": "transportArtillery",
+        "sector": "cordoba",
+        "artilleryId": "arsenal:cordoba:2",
+        "to": "tucuman",
+        "mode": "carts",
+        "source": "field"
+      },
+      "cost": 0
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 112,
+        "term": "day",
+        "expectedExpiresAt": 433,
+        "expectedExpiresSecond": 1161
+      },
+      "cost": 165
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 119,
+        "term": "day",
+        "expectedExpiresAt": 433,
+        "expectedExpiresSecond": 1214
+      },
+      "cost": 33
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 104,
+        "term": "day",
+        "expectedExpiresAt": 433,
+        "expectedExpiresSecond": 1214
+      },
+      "cost": 62
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 140,
+        "term": "day",
+        "expectedExpiresAt": 433,
+        "expectedExpiresSecond": 1214
+      },
+      "cost": 106
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 120,
+        "term": "day",
+        "expectedExpiresAt": 438,
+        "expectedExpiresSecond": 110
+      },
+      "cost": 125
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 146,
+        "term": "day",
+        "expectedExpiresAt": 439,
+        "expectedExpiresSecond": 1272
+      },
+      "cost": 138
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 124,
+        "term": "day",
+        "expectedExpiresAt": 443,
+        "expectedExpiresSecond": 339
+      },
+      "cost": 172
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 134,
+        "term": "day",
+        "expectedExpiresAt": 443,
+        "expectedExpiresSecond": 339
+      },
+      "cost": 86
+    },
+    {
+      "action": {
+        "type": "renewContract",
+        "id": 144,
+        "term": "day",
+        "expectedExpiresAt": 443,
+        "expectedExpiresSecond": 339
+      },
+      "cost": 139
+    }
+  ],
+  "totalRenewals": 1026,
+  "transfers": [
+    {
+      "action": {
+        "type": "sectorInventory",
+        "sector": "cordoba",
+        "operativeId": 124,
+        "direction": "take",
+        "sourceKey": "[\"body\",\"enemy-5\",\"medkits\"]",
+        "expected": "{\"item\":\"medkits\",\"count\":1,\"weight\":0.2}",
+        "count": 1
+      },
+      "sourceBefore": 1,
+      "sourceAfter": 0
+    },
+    {
+      "action": {
+        "type": "sectorInventory",
+        "sector": "cordoba",
+        "operativeId": 124,
+        "direction": "take",
+        "sourceKey": "[\"body\",\"enemy-6\",\"medkits\"]",
+        "expected": "{\"item\":\"medkits\",\"count\":2,\"weight\":0.2}",
+        "count": 2
+      },
+      "sourceBefore": 2,
+      "sourceAfter": 0
+    },
+    {
+      "action": {
+        "type": "sectorInventory",
+        "sector": "tucuman",
+        "operativeId": 146,
+        "direction": "take",
+        "sourceKey": "ground:sector-item-1",
+        "expected": "{\"item\":\"medkits\",\"count\":2,\"weight\":0.2}",
+        "count": 2
+      },
+      "sourceBefore": 2,
+      "sourceAfter": 0
+    }
+  ],
+  "gun": [
+    {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    }
+  ],
+  "carried": [
+    {
+      "id": 124,
+      "medkits": 1
+    },
+    {
+      "id": 146,
+      "medkits": 0
+    }
+  ],
+  "patients": [
+    {
+      "id": 112,
+      "hp": 66,
+      "maxHp": 66,
+      "bleeding": 0
+    },
+    {
+      "id": 134,
+      "hp": 70,
+      "maxHp": 70,
+      "bleeding": 0
+    },
+    {
+      "id": 104,
+      "hp": 72,
+      "maxHp": 72,
+      "bleeding": 0
+    },
+    {
+      "id": 144,
+      "hp": 81,
+      "maxHp": 81,
+      "bleeding": 0
+    }
+  ],
+  "exactFinalCampaign": true,
+  "officialMidpoint": true,
+  "allPriorDeathsRetained": true,
+  "ephemeralErrorClearedOnlyByOfficialDecode": "Hay combatientes en atención o descanso. Devolvelos al servicio o dejalos en otra escuadra antes de marchar."
+}

@@ -1,0 +1,22 @@
+✔ the earned post-Uspallata input exposes the original finite rifle shortage without changing history (1497.884708ms)
+✔ known finite long guns retain the twelve-round target and exact saved inventory order replay (6415.550292ms)
+ℹ {"inputRawSHA256":"b87999f32e72d36ea0d93d02dc87b9b92d1f73ca44f48b77bcb71b0bb1ecbfaa","nativeOrders":15,"finitePool":{"guns":49,"rounds":{"ammoMusket":193,"ammoRifle":33,"ammoPistol":70,"ammoShot":81}},"replacements":[{"event":"mountainFiniteArmament","operativeId":128,"oldWeapon":1802,"weapon":1800,"sourceKey":"drop:0","inventoryKey":"weapon:1800"},{"event":"mountainFiniteArmament","operativeId":105,"oldWeapon":1802,"weapon":1800,"sourceKey":"drop:1","inventoryKey":"weapon:1800"}],"officialMidpointReplay":true,"scope":"earned finite preparation; no Los Patos battle or victory claim"}
+✔ ordinary reloads finish the compatible Los Patos weapons with paid time and all prior deaths held (2745.073667ms)
+✔ the shared mountain aid seam reports finite successful orders and admits their exact saved clock before ordinary departure (1098.998625ms)
+ℹ {"fixture":"paid native day hires, declared initial clinical wounds/flat arena before official admission; no campaign victory claim","prices":[{"id":130,"price":36},{"id":100,"price":36}],"treasury":3128,"acceptedOrders":4,"seconds":14,"doctorKits":[2,0],"patientHp":[12,15],"departure":"ordinary leave","savedReplayEqual":true}
+✔ a real paid self-treatment followed by a blocked patient reports the stopped pair and every accepted order before refusing departure (637.440917ms)
+ℹ {"fixture":"same paid native force; declared wall before initial official admission blocks access to the critical patient","prices":[{"id":130,"price":36},{"id":100,"price":36}],"treasury":3128,"acceptedOrders":2,"seconds":3,"doctorKits":[2,1],"untreated":[{"id":"100","name":"Sosa","reason":"No hay un camino abierto hasta los heridos pendientes."}],"stoppedReason":"No hay un camino abierto hasta los heridos pendientes.","pendingBattle":"visit-retiro-6-42","savedReplayEqual":true}
+✔ route supply takes only finite owned cartridges for the selected alternative load (202.24025ms)
+✔ route supply discovers the actual chest and conserves its finite selected load through deterministic saves (1563.711875ms)
+✔ route supply cannot give a remote soldier cartridges or invent exhausted cache ammunition (773.093667ms)
+✔ route recovery keeps a present primary and does not discover or consume a cache unnecessarily (149.326625ms)
+✔ a dropped firearm returns through public pickup and equip with its complete finite record (760.887833ms)
+✔ an explicit primary replacement takes one actual cache gun and preserves the previous gun (934.544584ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17677.983834

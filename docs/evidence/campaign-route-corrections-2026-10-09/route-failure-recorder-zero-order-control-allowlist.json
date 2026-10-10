@@ -1,0 +1,76 @@
+{
+  "scope": "Inactive opt-in failure-recorder artifact controls using the existing original C\u00f3rdoba terminal result. Disabled writer created0paths; two enabled snapshots use exclusive directories and preserve inputs/prior capture. No native order, turn, controller, deployment or settlement. Original control compared raw to synced clock metadata incorrectly and exited1; one read-only closure checks both retained captures/hashes and official synced pairs exactly, exit0. No additional recorder execution. Inputs are retained arguments after execution; true initial/deployed battle is not captured.",
+  "files": [
+    {
+      "path": "63140-1-cordoba-84-18026106-H0N2ma/native-input.json",
+      "sha256": "2363be7e8c5eaf8503eaf80fdd64d68d0e4e33fcfbf674d22e1464675431c250",
+      "bytes": 2631371
+    },
+    {
+      "path": "63140-1-cordoba-84-18026106-H0N2ma/native-result.json",
+      "sha256": "440b1c7d78bfdb27519720a2be96e645de8d256c2e47f6f5792a0a0cae0d2cd0",
+      "bytes": 821078
+    },
+    {
+      "path": "63140-1-cordoba-84-18026106-H0N2ma/receipt.json",
+      "sha256": "2b46999c9c6ed32dc78b8a936c5387d01e15e0c598d75d66d8422385bdb0c2a3",
+      "bytes": 1201
+    },
+    {
+      "path": "63140-1-cordoba-84-18026106-H0N2ma/terminal.save.json",
+      "sha256": "a3e05e5eef120af349b628f8f41103821cc34ccbc6e603df76848d17f60de8e0",
+      "bytes": 692340
+    },
+    {
+      "path": "63140-2-cordoba-84-18026106-pX6AO9/native-input.json",
+      "sha256": "2363be7e8c5eaf8503eaf80fdd64d68d0e4e33fcfbf674d22e1464675431c250",
+      "bytes": 2631371
+    },
+    {
+      "path": "63140-2-cordoba-84-18026106-pX6AO9/native-result.json",
+      "sha256": "440b1c7d78bfdb27519720a2be96e645de8d256c2e47f6f5792a0a0cae0d2cd0",
+      "bytes": 821078
+    },
+    {
+      "path": "63140-2-cordoba-84-18026106-pX6AO9/receipt.json",
+      "sha256": "a7a9b52a39313e818e8f20046d0ef663a175a696a8ddf24d0a7ffb4b165214b1",
+      "bytes": 1201
+    },
+    {
+      "path": "63140-2-cordoba-84-18026106-pX6AO9/terminal.save.json",
+      "sha256": "9115e789be1c36bed1b84a2964addda71ae73291797e87c084afe2292892b8bc",
+      "bytes": 692340
+    },
+    {
+      "path": "control-receipt.json",
+      "sha256": "3fa72c10d269217e09d2cb68d0e4b6d9497ed06acdcb27e0c19da186a845da32",
+      "bytes": 1526
+    },
+    {
+      "path": "control-scripts/granaderos-route-failure-recorder-control-20261010.log",
+      "sha256": "caa1a74eae77a15d99d1a75e98e2f656611b22e53d32d9f37d9182f14be07189",
+      "bytes": 557482
+    },
+    {
+      "path": "control-scripts/granaderos-route-failure-recorder-control-20261010.mjs",
+      "sha256": "314cb03cca2f0a94124794f027e684370f03aaa98bc5ae1ea33bed57e99a2a21",
+      "bytes": 3418
+    },
+    {
+      "path": "control-scripts/granaderos-route-failure-recorder-control-closure-20261010.log",
+      "sha256": "fddd4c17d686c4c22e2e1beb53eaaaf27a36a009916ef530efb9273fd9d80537",
+      "bytes": 1284
+    },
+    {
+      "path": "control-scripts/granaderos-route-failure-recorder-control-closure-20261010.mjs",
+      "sha256": "077c6f3b5c43ecb28b89065621b46bbc021e03f50247184324cff85ac4cb3953",
+      "bytes": 3185
+    },
+    {
+      "path": "source/route-failure-evidence.mjs",
+      "sha256": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f",
+      "bytes": 2914
+    }
+  ],
+  "count": 14
+}

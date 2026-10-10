@@ -1,0 +1,222 @@
+{
+  "date": "2026-10-09",
+  "baseCommit": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+  "scope": "One fixed single-gun infantry-screen correction on the exact accepted native rescue input. This establishes tactical victory, not successful captive rescue or a complete opening campaign.",
+  "input": {
+    "path": "/tmp/granaderos-opening-owned-longguns-prepared.json",
+    "sha256": "ae06b0d9a682b63984a823cb0ff994d64826a05e35ddfa0f33a576ff8e89362b",
+    "format": "Official encodeSave/decodeSave campaign envelope",
+    "unchanged": true
+  },
+  "cause": {
+    "baseline": "Nineteen exclusive gun moves advanced two doctors into contact while all ten noncrew infantry remained at their arrival positions, 13.15 to 18.38 cells from the gun.",
+    "candidate": "A single operational gun uses the existing coastal screen controller from its first snapshot. Multiple operational guns retain staged arrival movement. Contact, fire and care decisions are unchanged.",
+    "firstContact": {
+      "baseline": {
+        "gun": [
+          41,
+          34
+        ],
+        "elapsedSeconds": 638,
+        "infantryMoved": 0
+      },
+      "candidate": {
+        "gun": [
+          41,
+          37
+        ],
+        "elapsedSeconds": 1308,
+        "infantryMoved": 8,
+        "remainingInfantryAtArrival": 2,
+        "movedInfantryDistance": "3 to 4 cells"
+      }
+    }
+  },
+  "baseline": {
+    "status": "retreat",
+    "turn": 29,
+    "actions": 273,
+    "orders": 316,
+    "startSeconds": 678681,
+    "elapsedSeconds": 3801
+  },
+  "candidate": {
+    "status": "victory",
+    "turn": 7,
+    "actions": 263,
+    "orders": 285,
+    "startSeconds": 678681,
+    "elapsedSeconds": 1344
+  },
+  "candidateFiniteGun": {
+    "id": "arsenal:cordoba:1",
+    "type": "bronze4",
+    "side": "player",
+    "loaded": false,
+    "ammo": 2,
+    "x": 41,
+    "y": 37,
+    "facing": -1.2924966677897853,
+    "reloadProgress": 0.4251304696908872
+  },
+  "candidateNewFallenOperatives": [
+    144
+  ],
+  "priorCorpseRetained": [
+    121
+  ],
+  "remainingRescueFailure": {
+    "description": "All three living captives at the accepted prefix die from ordinary bleeding during the approach. Actual settlement retains these deaths. No health or bleeding values were edited.",
+    "captivesAtInput": [
+      {
+        "id": 126,
+        "hp": 3,
+        "bleeding": 4
+      },
+      {
+        "id": 129,
+        "hp": 2,
+        "bleeding": 6
+      },
+      {
+        "id": 130,
+        "hp": 6,
+        "bleeding": 5
+      }
+    ],
+    "captivesAtSettlement": [
+      {
+        "id": 126,
+        "hp": 0,
+        "alive": false
+      },
+      {
+        "id": 129,
+        "hp": 0,
+        "alive": false
+      },
+      {
+        "id": 130,
+        "hp": 0,
+        "alive": false
+      }
+    ],
+    "recordedFirstOrder": {
+      "action": {
+        "type": "move",
+        "unitId": "138",
+        "x": 31,
+        "y": 45,
+        "tacticalLevel": 0
+      },
+      "elapsedSeconds": 13,
+      "allThreeCaptivesDied": true
+    }
+  },
+  "nativeReplays": {
+    "baseline": {
+      "orders": 316,
+      "midpointIndex": 158,
+      "exactFinalBattle": true,
+      "exactFinalCampaign": true,
+      "campaignReference": "Same accepted input and recorded orders, per-action synchronization without midpoint save",
+      "inputUnchanged": true,
+      "priorDeathsRetained": true,
+      "settledOutcome": "retreat",
+      "owner": "royalist",
+      "pendingBattle": null,
+      "finishedAt": "2026-10-09T22:34:52.387Z"
+    },
+    "candidate": {
+      "orders": 285,
+      "midpointIndex": 142,
+      "exactFinalBattle": true,
+      "exactFinalCampaign": true,
+      "campaignReference": "Same accepted input and recorded orders, per-action synchronization without midpoint save",
+      "inputUnchanged": true,
+      "priorDeathsRetained": true,
+      "settledOutcome": "victory",
+      "owner": "patriot",
+      "pendingBattle": null,
+      "finishedAt": "2026-10-09T22:37:48.307Z"
+    },
+    "campaignComparison": "Per-action synchronization versus per-action synchronization; a single terminal sync timestamps civilian events differently."
+  },
+  "sourceComparison": {
+    "sourceHashMethod": "Baseline runtime imported bytes; candidate source files hashed after its one execution and checked against the launch diff. Candidate observer loader was passed with --import instead of --loader, so it did not record runtime bytes. No controller rerun.",
+    "imported": 296,
+    "gameSourceUnchanged": true,
+    "changes": [
+      {
+        "path": "tests/staged-battery-driver.mjs",
+        "before": "02e46722fafc258d6e8516554aaceacf313da72a71f714714460a1d0fc848e66",
+        "after": "98ae38a3f11423ea6914a211560639fa7573a15247d6cddb48b1d9c421d97cfd"
+      }
+    ]
+  },
+  "regression": {
+    "test": "tests/staged-battery-driver.test.mjs:70",
+    "before": "One failure: no infantry move while the single gun can advance.",
+    "after": "All four staged-battery tests passed, including crowded multiple guns, current crew selection, usable stance and the new native first-contact/finite-ammo/replay check."
+  },
+  "observationalArtifacts": "/tmp/granaderos-opening-rescue-audit-2849279c",
+  "fullOpeningValidation": {
+    "codeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+    "command": "node --experimental-loader <external observational loader> --test tests/opening-playthrough.test.mjs",
+    "originalFileUnchanged": true,
+    "filters": false,
+    "actualCampaignExecutionCount": 1,
+    "elapsedSeconds": 233.232,
+    "passedSubtests": 3,
+    "failedSubtests": 1,
+    "dependentSubtestsSkipped": 3,
+    "parentTestFailed": true,
+    "failure": {
+      "line": 137,
+      "actual": 0,
+      "expected": 3,
+      "cause": "Released captive126 died from ordinary bleeding before native victory; all three captured survivors died in the same way."
+    },
+    "exactAcceptedRescueCampaignRecreated": true,
+    "nativeRescueVictory": {
+      "turns": 7,
+      "actions": 263,
+      "elapsedSeconds": 1344
+    },
+    "settlement": {
+      "owner": "patriot",
+      "pendingBattle": null,
+      "defeated": false,
+      "hour": 188,
+      "second": 3225,
+      "prisoners": [
+        {
+          "id": 126,
+          "hp": 0,
+          "alive": false,
+          "captured": false
+        },
+        {
+          "id": 129,
+          "hp": 0,
+          "alive": false,
+          "captured": false
+        },
+        {
+          "id": 130,
+          "hp": 0,
+          "alive": false,
+          "captured": false
+        }
+      ]
+    },
+    "sourceImports": 307,
+    "sourceDrift": [],
+    "sourceMethod": {
+      "files": 16,
+      "method": "Loaded original bytes and end bytes match frozen commit blobs; initial filesystem hash sweep included only .js/.mjs."
+    },
+    "checkpointArtifacts": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening/",
+    "failedObserverLaunch": "A prior loader compile failure occurred before any test/campaign action; fixed external duplicate wrapping, then one complete actual execution."
+  }
+}

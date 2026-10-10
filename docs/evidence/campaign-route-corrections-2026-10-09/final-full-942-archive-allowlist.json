@@ -1,0 +1,121 @@
+{
+  "scope": "Exact frozen terminal full942 payloads and native failure captures. Includes real failures, not success acceptance. No native execution or repository edits.",
+  "runDirectory": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z",
+  "payloads": [
+    {
+      "path": "after-source-hashes.json",
+      "bytes": 1862648,
+      "sha256": "d2c81ce3fb461a0a916d6f62e4086ad797298b04c74bd582ad32fa9652570ef4"
+    },
+    {
+      "path": "before-source-hashes.json",
+      "bytes": 1862648,
+      "sha256": "732725d7989c30f04cc44138919406fb5f7b3b58dd2ce76f888dec2869e097b5"
+    },
+    {
+      "path": "final-receipt.json",
+      "bytes": 3212,
+      "sha256": "1e13815459717afa91357dcd250dbc8ef20d696718a97dff2d69cc483a64aa19"
+    },
+    {
+      "path": "full-report.json",
+      "bytes": 384635,
+      "sha256": "17230c5b16d1ea3d18ccc2fa073052b12efffc04c05ed483b0ed3a94799c7ebf"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 568,
+      "sha256": "4dccfbce608e5f16ab2acc9302232d1ed1fcaf8a72c23e15be52f3f005105079"
+    },
+    {
+      "path": "native-failures/67154-1-salta-423-3074369515-h2HnIc/native-input.json",
+      "bytes": 5831176,
+      "sha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c"
+    },
+    {
+      "path": "native-failures/67154-1-salta-423-3074369515-h2HnIc/native-result.json",
+      "bytes": 876105,
+      "sha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33"
+    },
+    {
+      "path": "native-failures/67154-1-salta-423-3074369515-h2HnIc/receipt.json",
+      "bytes": 1272,
+      "sha256": "3fd8d9768ebadd851f2fc1974981e100ae71bb694b4a0a6246de14a141362a51"
+    },
+    {
+      "path": "native-failures/67154-1-salta-423-3074369515-h2HnIc/terminal.save.json",
+      "bytes": 1354369,
+      "sha256": "f112753496969cf5e090bc2d9d0c4c8c1ca0295920e437554d3adcc374a6802c"
+    },
+    {
+      "path": "native-failures/67155-1-salta-423-3074369515-TAvzpM/native-input.json",
+      "bytes": 5831176,
+      "sha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c"
+    },
+    {
+      "path": "native-failures/67155-1-salta-423-3074369515-TAvzpM/native-result.json",
+      "bytes": 876105,
+      "sha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33"
+    },
+    {
+      "path": "native-failures/67155-1-salta-423-3074369515-TAvzpM/receipt.json",
+      "bytes": 1277,
+      "sha256": "26a52f70e043e7617deca32089131e7fe25f78da5ea16d1745a6969849d10cce"
+    },
+    {
+      "path": "native-failures/67155-1-salta-423-3074369515-TAvzpM/terminal.save.json",
+      "bytes": 1354369,
+      "sha256": "5fea07fccc73c2dab13218e875ef60ce0143d4b6dfa8611da2126b6c90a054ec"
+    },
+    {
+      "path": "native-failures/67156-1-salta-423-3074369515-gVWN8S/native-input.json",
+      "bytes": 5831176,
+      "sha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c"
+    },
+    {
+      "path": "native-failures/67156-1-salta-423-3074369515-gVWN8S/native-result.json",
+      "bytes": 876105,
+      "sha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33"
+    },
+    {
+      "path": "native-failures/67156-1-salta-423-3074369515-gVWN8S/receipt.json",
+      "bytes": 1276,
+      "sha256": "154dfa3bbd5b5b95b923a1196f5e1f6bd17a82d6366632614e603ce0594e0aac"
+    },
+    {
+      "path": "native-failures/67156-1-salta-423-3074369515-gVWN8S/terminal.save.json",
+      "bytes": 1354369,
+      "sha256": "5b856da50d5b446420c5960eebdaefde7ab7a88eb8950206d38199c9b6819121"
+    },
+    {
+      "path": "native-failures/81073-1-cordoba-84-18026106-zrmBHD/native-input.json",
+      "bytes": 2631371,
+      "sha256": "2363be7e8c5eaf8503eaf80fdd64d68d0e4e33fcfbf674d22e1464675431c250"
+    },
+    {
+      "path": "native-failures/81073-1-cordoba-84-18026106-zrmBHD/native-result.json",
+      "bytes": 824590,
+      "sha256": "4267e6a4e88be61ddd6f5f7a340801a36bdedda89c27373b00b53811fbef0297"
+    },
+    {
+      "path": "native-failures/81073-1-cordoba-84-18026106-zrmBHD/receipt.json",
+      "bytes": 1284,
+      "sha256": "a0ce5eb16d7b03513cf59f47a9e388832e6741f658b69ae576036af628e98d1e"
+    },
+    {
+      "path": "native-failures/81073-1-cordoba-84-18026106-zrmBHD/terminal.save.json",
+      "bytes": 692459,
+      "sha256": "2c41855e13b210ed7ad89c890338a2c65e6eee106fa1a1d73c40cd925b981b06"
+    },
+    {
+      "path": "pid.json",
+      "bytes": 30,
+      "sha256": "7619f7e645daa19796c7e15ca2de617890d659ebd8c46ea6dd6a0a01f737f2c3"
+    },
+    {
+      "path": "run.log",
+      "bytes": 1410781,
+      "sha256": "06feb42ad70e3be71df6140e90120c4fdcdbd163f7f56125edf3e7382724c3bf"
+    }
+  ]
+}

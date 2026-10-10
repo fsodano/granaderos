@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 1,
+  "closedUtc": "2026-10-10T02:53:34.210272+00:00",
+  "status": "pass",
+  "head": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "allowlist": {
+    "tests/fresh-mountain-route.mjs": {
+      "sha256": "196b699d6e55efebbf477508eba5e3502149016d2a7b9315dbb81ee5cbc1c315",
+      "bytes": 38264
+    },
+    "tests/fresh-mountain-ammunition.test.mjs": {
+      "sha256": "bb10a19edd93c8d9fbf42b3f0767ffba2c4d221e78984c726ed26392b242e990",
+      "bytes": 7675
+    },
+    "tests/fixtures/los-patos-earned-ammunition-shortage.save.json.gz": {
+      "sha256": "bda0f9b6962d553340201c5ea181393029c45fe9661529fe67e3d736d3ca2bf4",
+      "bytes": 174730
+    },
+    "tests/fixtures/los-patos-earned-ammunition-replay.json.gz": {
+      "sha256": "86fa97edd1521916c57b027bd133b78919af6bfbe7d6e84933ab89c319abb3f3",
+      "bytes": 357589
+    },
+    "tests/fixtures/los-patos-earned-ammunition-shortage.provenance.json": {
+      "sha256": "cfb575f379b9fb0b8eeb28686a2471f1ce51d06bca57353546565cd0f28e6883",
+      "bytes": 93467
+    }
+  },
+  "change": "Only Los Patos preparation may preserve an exhausted rifle in its owner pockets and natively take/equip a known reachable admitted finite long gun whose actual matching stocks meet the unchanged12round target. Sequential allocation retains original finite shortage refusal. Earlier known-medical-courier mountain hunk preserved.",
+  "focusedControls": {
+    "files": [
+      "tests/fresh-mountain-ammunition.test.mjs",
+      "tests/route-ammunition.test.mjs",
+      "tests/route-owned-equipment.test.mjs",
+      "tests/fresh-mountain-first-aid.test.mjs"
+    ],
+    "tests": 11,
+    "pass": 11,
+    "fail": 0,
+    "skip": 0,
+    "durationMs": 17677.983834,
+    "actualImportedSourceCount": 290,
+    "workers": [
+      {
+        "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/focused-controls/imports.38689.json",
+        "pid": 38689,
+        "exitCode": 0,
+        "loadedCount": 286,
+        "drift": [],
+        "sha256": "732ec2c4223686ee824fd3f7d8d6fadfe893abad787089a691432e45b1b506d3",
+        "bytes": 58739
+      },
+      {
+        "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/focused-controls/imports.38713.json",
+        "pid": 38713,
+        "exitCode": 0,
+        "loadedCount": 286,
+        "drift": [],
+        "sha256": "8e91f6ba97d82a5acb6dee0ba19edf17995add816c38b7d9f8acc803ff20e54b",
+        "bytes": 58738
+      },
+      {
+        "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/focused-controls/imports.38714.json",
+        "pid": 38714,
+        "exitCode": 0,
+        "loadedCount": 274,
+        "drift": [],
+        "sha256": "d8c32781e4387f650acc4563c371be8cf09b8c66058f6163e6439fe870f08e89",
+        "bytes": 56223
+      },
+      {
+        "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/focused-controls/imports.38715.json",
+        "pid": 38715,
+        "exitCode": 0,
+        "loadedCount": 273,
+        "drift": [],
+        "sha256": "4df75f5c3747bae2df7dccf9376c1702a64d93be3151f45e76bf9f808ed3b732",
+        "bytes": 56021
+      }
+    ],
+    "drift": [],
+    "startEndSourcesEqual": true
+  },
+  "candidateProof": {
+    "status": "pass",
+    "inputSHA256": "b87999f32e72d36ea0d93d02dc87b9b92d1f73ca44f48b77bcb71b0bb1ecbfaa",
+    "inputHour": [
+      1040,
+      2369
+    ],
+    "orders": 15,
+    "exactOfficialMidpointReplay": true,
+    "inputUnchanged": true,
+    "poolBefore": {
+      "guns": 49,
+      "rounds": {
+        "ammoMusket": 193,
+        "ammoRifle": 33,
+        "ammoPistol": 70,
+        "ammoShot": 81
+      }
+    },
+    "poolAfter": {
+      "guns": 49,
+      "rounds": {
+        "ammoMusket": 193,
+        "ammoRifle": 33,
+        "ammoPistol": 70,
+        "ammoShot": 81
+      }
+    },
+    "knownLooseBefore": {
+      "rifle_62": 4,
+      "shot_16": 29,
+      "pistol_69": 45,
+      "musket_75": 75
+    },
+    "knownLooseAfter": {
+      "rifle_62": 1,
+      "shot_16": 26,
+      "pistol_69": 45,
+      "musket_75": 29
+    },
+    "replacements": [
+      {
+        "event": "mountainFiniteArmament",
+        "operativeId": 128,
+        "oldWeapon": 1802,
+        "weapon": 1800,
+        "sourceKey": "drop:0",
+        "inventoryKey": "weapon:1800"
+      },
+      {
+        "event": "mountainFiniteArmament",
+        "operativeId": 105,
+        "oldWeapon": 1802,
+        "weapon": 1800,
+        "sourceKey": "drop:1",
+        "inventoryKey": "weapon:1800"
+      }
+    ],
+    "issued": [
+      {
+        "id": 11,
+        "weapon": 1802,
+        "family": "ammoRifle",
+        "loaded": 0,
+        "reserve": 12,
+        "owned": 12
+      },
+      {
+        "id": 112,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 8,
+        "weapon": 1801,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 1,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 0,
+        "reserve": 12,
+        "owned": 12
+      },
+      {
+        "id": 2,
+        "weapon": 1801,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 9,
+        "weapon": 1800,
+        "family": "ammoShot",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 128,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 105,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 0,
+        "reserve": 12,
+        "owned": 12
+      }
+    ],
+    "reloaded": [
+      {
+        "id": 11,
+        "weapon": 1802,
+        "family": "ammoRifle",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 112,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 8,
+        "weapon": 1801,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 1,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 2,
+        "weapon": 1801,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 9,
+        "weapon": 1800,
+        "family": "ammoShot",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 128,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      },
+      {
+        "id": 105,
+        "weapon": 1800,
+        "family": "ammoMusket",
+        "loaded": 1,
+        "reserve": 11,
+        "owned": 12
+      }
+    ],
+    "reloadEvents": [
+      {
+        "event": "reloadDeployment",
+        "ammunitionCost": 0
+      },
+      {
+        "event": "finishedReload",
+        "id": 11,
+        "paidPAEquivalent": 56,
+        "loaded": 1,
+        "ammo": 11
+      },
+      {
+        "event": "finishedReload",
+        "id": 1,
+        "paidPAEquivalent": 45,
+        "loaded": 1,
+        "ammo": 11
+      },
+      {
+        "event": "reloadDeployment",
+        "ammunitionCost": 0
+      },
+      {
+        "event": "finishedReload",
+        "id": 105,
+        "paidPAEquivalent": 45,
+        "loaded": 1,
+        "ammo": 11
+      }
+    ],
+    "reloadSeconds": 11,
+    "treasury": [
+      213094,
+      213094
+    ],
+    "trueDeadBefore": [
+      "0",
+      "3",
+      "102",
+      "103",
+      "108",
+      "110",
+      "111",
+      "113",
+      "114",
+      "115",
+      "116",
+      "117",
+      "121",
+      "122",
+      "125",
+      "127",
+      "129",
+      "130",
+      "131",
+      "133",
+      "136",
+      "137",
+      "139",
+      "141",
+      "144",
+      "146",
+      "147",
+      "1000"
+    ],
+    "scope": "Native finite preparation and saved order replay only; no Los Patos victory claim."
+  },
+  "exactAcceptedInput": {
+    "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/los-patos-pre-ammunition.save.json",
+    "sha256": "b87999f32e72d36ea0d93d02dc87b9b92d1f73ca44f48b77bcb71b0bb1ecbfaa",
+    "bytes": 1667809
+  },
+  "artifacts": {
+    "candidate/receipt.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/candidate/receipt.json",
+      "sha256": "fff0e7a514aa41471a066ff7a2ad7abff0b4b4c6051e20040da9f19288218610",
+      "bytes": 4464
+    },
+    "candidate/orders.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/candidate/orders.json",
+      "sha256": "596ffe98156160c77c17d21c5146ad18cb6ac7a54b1003d5e96c0ff87f386bc7",
+      "bytes": 6772
+    },
+    "candidate/official-midpoint.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/candidate/official-midpoint.save.json",
+      "sha256": "092d2b745a346b58dfe57d7870bd5097dff6935fd6854c8b4d3c51ca1946d9d8",
+      "bytes": 1667815
+    },
+    "candidate/official-final.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/candidate/official-final.save.json",
+      "sha256": "8862a04d4975b977bff4a38d29331f2d144fd47f2098054edacfee6c1e886fee",
+      "bytes": 1668193
+    },
+    "candidate/ordinary-reloaded.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/candidate/ordinary-reloaded.save.json",
+      "sha256": "4da2c8cd40423b2688162c5b2e0718fe5fe69bfddab136c5412f832ec9e164cc",
+      "bytes": 1653243
+    },
+    "candidate/imports.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/candidate/imports.json",
+      "sha256": "88034fc52c62fe779f0292b6dd9faa7ce212aea34c66dd3fccbd61beec66177f",
+      "bytes": 58518
+    },
+    "accepted-courier-observer-repair/los-patos-pre-ammunition.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/los-patos-pre-ammunition.save.json",
+      "sha256": "b87999f32e72d36ea0d93d02dc87b9b92d1f73ca44f48b77bcb71b0bb1ecbfaa",
+      "bytes": 1667809
+    },
+    "accepted-courier-observer-repair/uspallata-orders.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/uspallata-orders.json",
+      "sha256": "196bc4fba7eefc6e6ae5b0ae6a03c46a443f7d77409bdd59bc2abd504db22373",
+      "bytes": 16587
+    },
+    "accepted-courier-observer-repair/uspallata-official-midpoint.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/uspallata-official-midpoint.save.json",
+      "sha256": "f3f1eab87d4a39859110f79c2e2e87008437bbda41a77e6d678f2d661112ea02",
+      "bytes": 1734338
+    },
+    "accepted-courier-observer-repair/uspallata-official-replay-final.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/uspallata-official-replay-final.save.json",
+      "sha256": "c26707d6aec5b70027444739ecfd487c3d9f9b09edbddcd0c34b544cdb64876b",
+      "bytes": 1738112
+    },
+    "accepted-courier-observer-repair/terminal.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/terminal.json",
+      "sha256": "b8568aceecb117bfc6a02fd3cc2990c8b1ccadbd188f88d69d477fd911986d9f",
+      "bytes": 1065
+    },
+    "accepted-courier-observer-repair/imports.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/imports.json",
+      "sha256": "cef66e8e01dbae4116bd0c04f7cdb3fede81ba615c16484c83fa99029a5dcfd5",
+      "bytes": 62493
+    },
+    "focused-controls/run.log": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/focused-controls/run.log",
+      "sha256": "5fe82cdf9175a1da746d0376268eea45998c23013fff42ffc92053a535a1ff6d",
+      "bytes": 2849
+    },
+    "focused-controls/start.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/focused-controls/start.json",
+      "sha256": "212b8033fc052027db950300ccf150b799382ae96ff563e527641a4d88ef3e72",
+      "bytes": 1760
+    },
+    "focused-controls/loader.mjs": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/focused-controls/loader.mjs",
+      "sha256": "998c67c6ed378cfff45d40c9c1bb816eea6ef6392d5b559c6d04e18d2193bde1",
+      "bytes": 868
+    }
+  },
+  "sourceScope": {
+    "currentFreshCuyo": {
+      "sha256": "ceba839d3064d468891e86d718eac3faf3b8a94c0fe6d55c9883cd5a25143bcf",
+      "bytes": 35962
+    },
+    "candidateActualImportCount": 285,
+    "candidateDrift": [],
+    "baselineActualImportCount": 304,
+    "baselineDrift": []
+  },
+  "portability": "Both gzipped input/replay fixtures and provenance are repository-relative at runtime; historical /tmp paths are provenance only. Regression verifies raw/gzip hashes and native official save/replay without external dependencies.",
+  "limit": "Earned continuation of the retained1028courier checkpoint reproduced128two-round rifle shortage, while uncaptured full935 reportedthree-round shortage. Corrected finite preparation/reload is proved, not the full935 exact endpoint or a Los Patos battle/victory. No new Los Patos controller execution or full Cuyo route was run.",
+  "preservedFailures": [
+    "earlier710input finite dressing refusal",
+    "pending campaign capture observer error before battle",
+    "original earned128two-round rifle shortage"
+  ],
+  "sourceReleased": true,
+  "noStageCommitPush": true
+}

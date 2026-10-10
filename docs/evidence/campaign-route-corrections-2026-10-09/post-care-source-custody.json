@@ -1,0 +1,1566 @@
+{
+  "checkedAt": "2026-10-10T05:17:21.363235+00:00",
+  "scope": "Read-only exact prior305allowlist plus coastal6paths; all existing accepted bytes and each declared coast byte verified. No source/index modification.",
+  "paths": 311,
+  "priorAllowlistPaths": 305,
+  "coastalNewOrChangedPaths": 6,
+  "unexpected": [],
+  "productionGameWebEngineDelta": [],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 504,
+      "sha256": "9dd6c1aca9b8f78fe5e9bb59ae575b0c86666e50d95fabeb55ff172fc5439783"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/all-five-stash-audit.json.gz",
+      "bytes": 37294,
+      "sha256": "aa2fc0d8a0dc8e8bf97b78af1f6732096748e4143958f908adad21f1c9537a2c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/all-five-stash-root-verification.json",
+      "bytes": 3359,
+      "sha256": "64545b24665dd7bb6f06c53d02c7e8f92e61c8fb6ac6a335436d28dea00b87b5"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/campaign-route-profile-check.log",
+      "bytes": 1215,
+      "sha256": "ce7c162be35faebba971ae9eb512483b53de1793dfe19e0cc6207a4fec5e50b9"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/clinic-knockdown-overlay-receipt.json",
+      "bytes": 10087,
+      "sha256": "041427b9f9bb5be1918585a90ff07eafa755aab53ee0552fcf18c28cad867a69"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/complete-created-three-validation.json",
+      "bytes": 19274,
+      "sha256": "cdaf815f6989cb1fa4721db207eccd9de04e5d96071bbcd5131b753d2802f5ea"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cordoba-exact-canonical-analysis.json",
+      "bytes": 29971,
+      "sha256": "de0d312be4dc64ddecba8628fbbeaba9e10031f659e276b456fbead361e3096f"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cordoba-exact-canonical-replay-allowlist.json",
+      "bytes": 8363,
+      "sha256": "c9838e58548d1f5c7cd9f5cfd2f5c419894486ebe438191dfffcae38d4ec3833"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cordoba-exact-canonical-replay-closure.json",
+      "bytes": 8759,
+      "sha256": "af81c5b6425c05fb4d540563b7e4442bbb2ded07b7f32fd9ebce85571f4a7e0a"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cordoba-exact-canonical-replay.tar.gz",
+      "bytes": 2079497,
+      "sha256": "e380b598c65f40fa9fa7ab62aa8ae9f12b9c5d7b03e14c3344442555a2ab3521"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-baseline.log",
+      "bytes": 10602,
+      "sha256": "151f2e8aaf0d70fcaeba50f47cb4c0c2b7bde56ba4d79c33944a3aec77e1b83b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-build-info.json",
+      "bytes": 193,
+      "sha256": "dab41fafae40527ed92ed6cc3b954d83756b578b2c9449813aa12695a62872bd"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-docs.log",
+      "bytes": 191,
+      "sha256": "b69f907a4f1cdf7a76596fb9835f68a17b2d6d0bbca5082973d3b3582def7120"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-extended-profile.json",
+      "bytes": 128549,
+      "sha256": "0c5494ca70358e62067635e23adc4d97b6eb4935ff9743edbb701a18bead4ac6"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-profile-controls.log",
+      "bytes": 1212,
+      "sha256": "104e8848981de64164eb6f5ab7984cc2cafb3252730569c04c278b2b8e034280"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-quick-profile.json",
+      "bytes": 42991,
+      "sha256": "e95b1f73d73724bee9712501fc6f539a9a1b975347e4f4a1d1cf5e2dd676516d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-shards.json",
+      "bytes": 45349,
+      "sha256": "3aff2360c72adb7d265e7cf2b4ee1c1f3096f0a9ffb000de8be1fd1891d2a133"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-typecheck.log",
+      "bytes": 117,
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-artillery-full-route.log",
+      "bytes": 1709,
+      "sha256": "88db66d60e1ae250c6b6e23ae8bc38de4a9ceb25fcf702073b3d33a10c53f7be"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-complete-shipment-imports.json.gz",
+      "bytes": 22242,
+      "sha256": "035c39e6492af637e5aece7f6ef150d57b8b54d61fe20286efd8558e59f075aa"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-complete-shipment-mountain-supply-failure.json",
+      "bytes": 5840,
+      "sha256": "1f1a65a3d71460ab02de2bb2881646f5438c44705ce98141e76a19122494e1af"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-complete-shipment-native-calls.ndjson.gz",
+      "bytes": 2885248,
+      "sha256": "b73b7a78465ce3e92744741cc82a471909a124076de532a2f8b0be5c86c593a9"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-complete-shipment-pre-mendoza.save.json.gz",
+      "bytes": 142932,
+      "sha256": "d5b84692768b8fa0f8894afba32f559f4714b9132295eb43aa7e52f756ae7dd1"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-complete-shipment-terminal.save.json.gz",
+      "bytes": 170716,
+      "sha256": "709de922c96082b73e169039f954499cc0fb16a4fc488dd688b110ae007098a6"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-cuyo-complete-funding-care-import-evidence.json.gz",
+      "bytes": 22996,
+      "sha256": "908a068bf82c40be593ed085b3417fae16ab59008a17b61c1fabcc5051b4593d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-cuyo-funding-clinician-rest-replay.json",
+      "bytes": 21251,
+      "sha256": "ec46e2a8ff44088332e48183d4908ba274b979846eba88c833cd005697780b62"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-cuyo-funding-courier-replay.json",
+      "bytes": 8375,
+      "sha256": "9249d0fe3871433ee8d779d9ac297b6eb93ba903f4a1765e4d6b3f7848c2733e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-cuyo-funding-native-care.json",
+      "bytes": 1776,
+      "sha256": "54c2f2c4daf678b9d3fd5139ccee5ee8016b27b3aff38062d64f29ae9fbbeacf"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-cuyo-salta-gun-shipment-quote.json",
+      "bytes": 1820,
+      "sha256": "eb67af7bdca6373518057b764c9dffcd58689860f596fd31c713a9b97b8a8402"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-cuyo-third-gun-shortage.json",
+      "bytes": 3088,
+      "sha256": "b9d043c68b0ebfefb698c8569a7193c4036b0605f40c7a5b1f8c45631a61a312"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-mendoza-admission-care-replay.json",
+      "bytes": 66392,
+      "sha256": "1153296b7d157f848510998f70113786b95b3e0c601c89dcaf94f6df5c3b5594"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-mendoza-finite-gun-selection.json",
+      "bytes": 1366,
+      "sha256": "8a64fa6cf604d34339d363fbec9f16e61f23f88acf747266ba149c77bea34235"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-relief-cargo-replay-validation.json",
+      "bytes": 4299,
+      "sha256": "e7a26d6db4679a65bd96f7f405d0e89881aace91c031e0c645a6b0536ae9cfb3"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-relief-final-manifest.json",
+      "bytes": 12092,
+      "sha256": "2b62a5468c9d658c9274101dd4395f5555c794080fa4c6671ea0e7bfb28a51d9"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-relief-yatasto-native-action-tape.json.gz",
+      "bytes": 194842,
+      "sha256": "33641ae00594d277a05d7146ea9b2b11158b245d9300d2d8f38feffe7a00955c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-relief-yatasto-replay-validation.json",
+      "bytes": 4933,
+      "sha256": "ece1ce71c81daac56f143fb68aec642fdafa23a5e59bcea8237cc9a14fc3be4b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-routes-after-port.log",
+      "bytes": 10198,
+      "sha256": "c31a2f73f6ea2ddd975f188a5cd847184a66216cb6fec1ce5258559b61820139"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-salta-gun-shipment.json",
+      "bytes": 1247,
+      "sha256": "1ac5dca5f4512444a9344571447106efbe3c840971ed18c8e5962429bcf63982"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-tucuman-causal-review.json",
+      "bytes": 11675,
+      "sha256": "f2796e28c9fb31ad71aa337f2b93c25af1bdd56085ffe7ae9bf49bcf2eb8c84e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-build.log",
+      "bytes": 1821,
+      "sha256": "efd63733060e6a1dc0d25d94dd1ce0b26fe81640f3cf72aa61d4eea7b7d5dd64"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-full-935.after-source-hashes.json.gz",
+      "bytes": 659168,
+      "sha256": "48ecab838559d1583ed39c28c6e5c855b81a7c105a393167b1e88465321259ab"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-full-935.before-source-hashes.json.gz",
+      "bytes": 659168,
+      "sha256": "48ecab838559d1583ed39c28c6e5c855b81a7c105a393167b1e88465321259ab"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-full-935.log.gz",
+      "bytes": 264644,
+      "sha256": "9463007e5beed573e71ee50454c623343db35034d582de199934ea0d5ccbbd0c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-full-935.metadata.json",
+      "bytes": 450,
+      "sha256": "5e19d8899a8660c3d0b2e8705dc8157f4f542afa7d484c9dd626313cea8595af"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-full-935.receipt.json",
+      "bytes": 2039,
+      "sha256": "0b08569de3a6724df649da2a689f20055f7acd61647d1d69823b183b5c7aee93"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-full-935.report.json.gz",
+      "bytes": 31587,
+      "sha256": "51590fc58131b5a321f26badcf5bf4ea41d548c5110d9837dd70d1283ab29d22"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-static-review.json",
+      "bytes": 8248,
+      "sha256": "8385b0e4f504e71073e907119089e59e6d4142e92046223f9aa96560a8dbc933"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-test-profile.log",
+      "bytes": 1211,
+      "sha256": "4140e46d5145f1dc68006396b9f70f4dee811dd9727f04355b0de63c347b7583"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-funding-care-finite-shortage.json",
+      "bytes": 8497,
+      "sha256": "b76821afe9bf63db360e6053cd1ff8cf3bc9737910ea32c0c08361c4dbda2be8"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-known-view-cover-civilian-applied-receipt.json",
+      "bytes": 910,
+      "sha256": "2badf43a59dec29cc0c2f2f161d59ef370e8ca49c210b0f8baadc17863b4fa92"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-known-view-cover-civilian-proposal-allowlist.json",
+      "bytes": 2345,
+      "sha256": "c037f7a182706271a1f6cc5f22174ec4f0048d948c780c83a412a08087a82e13"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-known-view-cover-civilian-proposal.tar.gz",
+      "bytes": 49153,
+      "sha256": "80db0f71126cdbd4eceae5dc9595a899dfa6f60d124837f0e3f7e3514cb61f4a"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-opt-in-known-friendly-proposal-allowlist.json",
+      "bytes": 2074,
+      "sha256": "8068090a2f2f5a973f41deeaccdd8543a5e07a5f1ee1ed81a7a8bd79276eafe4"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-opt-in-known-friendly-proposal.tar.gz",
+      "bytes": 42879,
+      "sha256": "9c2b200a6b2dbcca0d5b77a393e4e5eeb5e9b0b22df4bae6ca4c11985dfb3ef6"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-opt-in-safety-applied-receipt.json",
+      "bytes": 618,
+      "sha256": "43c11c52be038c4973dfe4519570052c611adcfb628a781a5b8ff046626e359d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-paid-relief-controls.log",
+      "bytes": 1594,
+      "sha256": "d9b8bfaf389d9a4ddf4e319bd03bacbf5f4e9d0b5ab5271cc3d49925a8e14afa"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-paid-relief-focused.log",
+      "bytes": 260,
+      "sha256": "aa9ebae34390407e9371528d757df8c5abd78ea13d5a3b79b2d9d45d3e8bcda8"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-paid-relief-validation.json",
+      "bytes": 4967,
+      "sha256": "871fba16f7942426544f7ebfa51656b6be611ee1a895243d7ed90618aff02ef9"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/explicit-ignored-evidence-logs-staged.json",
+      "bytes": 9957,
+      "sha256": "863ac10be48e08a467f5d9b22801d0e63f3ccbd61bb5518574bc9dcbb98395c1"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-corrected-affected-controls-receipt.json",
+      "bytes": 1272,
+      "sha256": "e3fc543b9e80d8acaf77a350361054d1e7b247f4014db4dc720fc4beca8df188"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-corrected-affected-controls.log.gz",
+      "bytes": 4395,
+      "sha256": "996a9acc9680265d7ff775a45cd6bc2e3500c30e45233a2bcca2abde045bd5a9"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-after-source-hashes.json.gz",
+      "bytes": 665599,
+      "sha256": "d29f44d0038e48293c956d1e780e5cec4d99253bf39d9ff35fb140236f9d4f24"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-archive-allowlist.json",
+      "bytes": 4624,
+      "sha256": "c9dc9f2ee819b798db2b217320d097fc2406c99e5bd69a4ba95de9baf754f780"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-before-source-hashes.json.gz",
+      "bytes": 665594,
+      "sha256": "1b42510a9e839ba911515d715df73533d8c32cad4ee8b9b8b7b4381542d54bd9"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-full-report.json.gz",
+      "bytes": 32250,
+      "sha256": "b75b518786a4b65840d642f1b3e27ec12a748605a95a1424538fc0dd95b1b712"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-metadata.json",
+      "bytes": 568,
+      "sha256": "4dccfbce608e5f16ab2acc9302232d1ed1fcaf8a72c23e15be52f3f005105079"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-preservation-receipt.json",
+      "bytes": 657,
+      "sha256": "d3f18d22689369bcaab9f6e692d87dc135fbdc0708e8a71befd0a1d8f94a845d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-receipt.json",
+      "bytes": 3212,
+      "sha256": "1e13815459717afa91357dcd250dbc8ef20d696718a97dff2d69cc483a64aa19"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942-terminal-native-evidence.tar.gz",
+      "bytes": 3095562,
+      "sha256": "47ed5be0eabe4fe6337a3a48717691b548343559f6fe53b2d472b6b1b49d1985"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-full-942.log.gz",
+      "bytes": 270148,
+      "sha256": "cda0ae6ffb0d516c1fff0910ff832fc74e665bcfe98c17017a4bddfe5b27e742"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-profile-controls.log",
+      "bytes": 1206,
+      "sha256": "c9c3bf10786d99bdeea7bbbfc67319b014a2ae7cc4d134b53b0cf44e7958fdbe"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/full940-after-source-hashes.json.gz",
+      "bytes": 661858,
+      "sha256": "b18515feda9592bcc4f4791d4a84bb2dfe46391f415290dbc9f2fd72a0ec1e1b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/full940-before-source-hashes.json.gz",
+      "bytes": 661858,
+      "sha256": "b18515feda9592bcc4f4791d4a84bb2dfe46391f415290dbc9f2fd72a0ec1e1b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/full940-final-receipt.json",
+      "bytes": 2686,
+      "sha256": "d4c2dcf895b01bc79fc138678c5494a8dfd178031ea43593a80c4f08ba4408ec"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/full940-metadata.json",
+      "bytes": 450,
+      "sha256": "d7af0a5fd09d33c00b5c7c53e64d92d7fffa364da4da65e51933f3c7366b2163"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/full940-report.json",
+      "bytes": 383788,
+      "sha256": "038c4fc7a394d6693eccd7f12ca5631d4104b4111a0cbb724e0907b1186ef193"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/full940-run.log.gz",
+      "bytes": 268133,
+      "sha256": "414ddead3a2d98ed81baf1cb3d54bf0cc2bc13d505dca310726cc4603a68bbb9"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/full942-salta-runner-readonly.json",
+      "bytes": 42305,
+      "sha256": "f92c5908b6a9f482d0cb7e41bc6a1b4169f00fb338399e511d93fa6c2e64560d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/historical-cached-full-report.json.gz",
+      "bytes": 31632,
+      "sha256": "c51d14961a53daa28ced431105504ed58b81ca7366c9baae6e49254315a5309e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/ignored-evidence-log-integration-audit.json",
+      "bytes": 12234,
+      "sha256": "a5a9452f491f14b2aa65fbfa841d382105d86d35418eae88455bb2c77fc4d659"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/los-patos-ammunition-final-receipt.json",
+      "bytes": 13542,
+      "sha256": "53c649fd335562bb7999582aff421fc03b352a49edb4db1538d60ea8bee77709"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/los-patos-ammunition-focused-controls.log",
+      "bytes": 2849,
+      "sha256": "5fe82cdf9175a1da746d0376268eea45998c23013fff42ffc92053a535a1ff6d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/los-patos-empty-gun-earned-suffix.receipt.json",
+      "bytes": 15619,
+      "sha256": "d1205f0819bf79c8bebf76d2ab39dc5a2d8178fcff2705f072f2906f9c149f7c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mendoza-controller-handoff.json",
+      "bytes": 2370,
+      "sha256": "861ba80eb10c1348d0fa7cd8d66b007177dbc22825ce0d586a60397b3fe04d06"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-four-dressing-source-audit.json",
+      "bytes": 52316,
+      "sha256": "d908f1973b88169f5b16b823cf696ff14d47cbdd7b2dcce69cf3176aa3880692"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-final.json",
+      "bytes": 3436,
+      "sha256": "4442084b8ae8d44af3887b835bd2850f10f839d8bb1ed9c25cc64bbd185551c3"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-final.save.json.gz",
+      "bytes": 170875,
+      "sha256": "16bf81746bb37b77d97167e4969415d61aede39a4eefffbc62db5d852accebdc"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-integrated-imports.json.gz",
+      "bytes": 15283,
+      "sha256": "5b2741316e59c99310569dfbd858c5b89c52deb46a41accd34cfee6d1e402e8c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-integrated-replay.json",
+      "bytes": 874,
+      "sha256": "5ef50849955b114531e5c0d4eb2601dde3c8e86d6c08442477265298373674e2"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-midpoint.save.json.gz",
+      "bytes": 170829,
+      "sha256": "6c2f92386032a32d7ae4803bd2ed7c7bd213f7303a548d57072c8e51192f5428"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-native-imports.json.gz",
+      "bytes": 14752,
+      "sha256": "69a8fa61e16d8e95345a28990707c28e251f156b4aef4690bbdb77ca5eba0de0"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-native.json",
+      "bytes": 3174,
+      "sha256": "ec47abc2bc61bcdb5cb6a64eec03743b82ba7cb21658f9b6cd59708df6f27782"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-known-supply-courier-orders.jsonl.gz",
+      "bytes": 441,
+      "sha256": "af1aeb719ab4bfa5bb768924eb9a3e8b537572718b2148abe60a8dd3637461b2"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-returned-kit-actual-repository-controls.log.gz",
+      "bytes": 240,
+      "sha256": "300908990395988795f8873b228be81e8860752d633c89917831aa58c2596c71"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-returned-kit-controls.tar.gz",
+      "bytes": 764412,
+      "sha256": "ad870e20ef6f6497a6c6455d7df3da4d8367267cfe6b3010d1dfaa348c203f9c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/mountain-returned-kit-validation-receipt.json",
+      "bytes": 4096,
+      "sha256": "3aac62b2e4f064cf417ac210487cef4b251cd9f7d96079a5c8a6cda60979120b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/northern-care-actual-repository-controls.log.gz",
+      "bytes": 519,
+      "sha256": "20b2b5101868e4de769c6d0f7806b31b2c8d0fb1fd80337feff36b82fc35779c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/northern-doctor-rotation-archive-verification.json",
+      "bytes": 4857,
+      "sha256": "b0661461cce1517aacc04540956c4d9fd9b4aaeb8b593dba6c90032949c1fa6b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/northern-doctor-rotation-controls.tar.gz",
+      "bytes": 700890,
+      "sha256": "d23fb79e66f116065178a4c7f4878713753ee1a028be051e68650fdad0f7a888"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/northern-medical-role-conflict-archive-verification.json",
+      "bytes": 6565,
+      "sha256": "377978fc326912b6f9e214f0a5f7b0007e74cd0da79f8b7f8a32448b74c26c6e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/northern-medical-role-conflict-observation.tar.gz",
+      "bytes": 1467091,
+      "sha256": "8945da3404ecb2d7f59e2612c51abadf2edf466f11f8d075a83ce4c382101aed"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-clinic-final-integration.json",
+      "bytes": 2398,
+      "sha256": "828bb2dbe9a2df212e8667a355637442cae2ba10bd98605cda510f6e282af6b1"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-clinic-guard-native-orders.jsonl.gz",
+      "bytes": 397732,
+      "sha256": "5522a104c2da802b694439dcc870724706da91fcfb7b28fb2f0e79730c6bcf67"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-clinic-guard-preparation.json",
+      "bytes": 9434,
+      "sha256": "f8d5c2e292888cb72dbd9e09209f47b85749486d28dee905cbca5a4fb95a13dc"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-current-unsafe-fire-observer-archive-allowlist.json",
+      "bytes": 7661,
+      "sha256": "33a6a82ef9dfa5d4cff28926369de1998ed20c7f23fbeb8f2283e06c4294267a"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-current-unsafe-fire-observer.tar.gz",
+      "bytes": 1574750,
+      "sha256": "d23af8b04dd408ea7ee08304552f7e3e0b35635b176f851621502b5d5ce27cfd"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-finite-care-validation.json",
+      "bytes": 1931,
+      "sha256": "ee2ae8c8d5187346326519c5286f47a451b034dc93e3306e1a41d97fed67171c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-held-roof-native-decision-review.json",
+      "bytes": 40016,
+      "sha256": "a101b28aa29ed27cacae1a92cdf51e5cf1f15fa5cf63a8c80ee2def333c22fed"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-medical-courier-native-defense-defeat.json",
+      "bytes": 7117,
+      "sha256": "3dee64783fdc8c419aed86762ec86d84ef27e6050c6882bbbd14a5387cfe1a3d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-medical-ready-full-validation.json",
+      "bytes": 2625,
+      "sha256": "fcc57151e3ffabf48ebd0335c66654682a36f0041538efd07efc70e8c7f48015"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-medical-ready-full.log",
+      "bytes": 17699,
+      "sha256": "eaa171df2ee25e127ac64737944ace6f6c11a059d89eb4145b3c3b26330d2ae3"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-rear-doctor-assertion-controls.json",
+      "bytes": 1250,
+      "sha256": "61bd48aa0e9b55c3c4e75623cedbabc28eb503eaa2ee3da04464780add9dd716"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-roof-guards-native-defeat.json",
+      "bytes": 21340,
+      "sha256": "3c9abaf84274bb10a16afc95b56a6a6a7eb95ca3f4291cd795e90429b91f999a"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-roof-guards-native-defense-orders.jsonl.gz",
+      "bytes": 66915,
+      "sha256": "85004d7d9982216a6d2c33f5132fbd4093d90fec56967346cc0c66e196ced992"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/port-corrected-helper.log",
+      "bytes": 241,
+      "sha256": "9ac842e9568497aa31e5a78adced6f7b3cbb4a9229e43941444f6f1c3c2d44d5"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/port-original-helper.log",
+      "bytes": 1759,
+      "sha256": "b3b5a83c491ef42695ae5983c6d59db199f09a0a60a663d38388f5c7954c113e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/post-fallback-docs.log.gz",
+      "bytes": 163,
+      "sha256": "b5d3b40bbd5546d70fe4023be255925d7862339d24fa19a84bbd4ceaff558cf0"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/post-fallback-profile-controls.log.gz",
+      "bytes": 645,
+      "sha256": "58b2a4f7156deabd222c4d061a3dc7ea31a4ef59774f171efdb4b1736efcb519"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/post-fallback-shards.json",
+      "bytes": 45398,
+      "sha256": "a52394d7c218b0a3e9e2dfe6cd228d4d6d020edb41dc256d1b3bda4cf9249f16"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/post-full942-baseline.log.gz",
+      "bytes": 1433,
+      "sha256": "b4928091f83f7a7300ab6c2fd3bfc1a862277705aa5a93b1b0486764a135f70c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/post-full942-docs.log.gz",
+      "bytes": 124,
+      "sha256": "43fdac8c69ab64fb850ed6d581e3078f5292c044d2dfb7214cd1d808c2496245"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/pre-full942-baseline.log.gz",
+      "bytes": 1433,
+      "sha256": "92126fc34f44fd0e8fc186c5abeeec1ea0d58e4d14c9a6e88ad055c4a7d6a309"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/pre-full942-docs.log.gz",
+      "bytes": 124,
+      "sha256": "43fdac8c69ab64fb850ed6d581e3078f5292c044d2dfb7214cd1d808c2496245"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/pre-full942-profile-controls.log.gz",
+      "bytes": 845,
+      "sha256": "cdfcf3061fa8b1bcbbd63f5b62874e04d87b9de53aa5638311f4d7bf3cd002a7"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/pre-full942-shard-selftest.log.gz",
+      "bytes": 361,
+      "sha256": "51009b210f4a799f71363f758772b440fdb45e7ddac0f54a043e5be8e3a1be5d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/pre-full942-shards.json",
+      "bytes": 45446,
+      "sha256": "271d8b8452970a5bcf28d786405d661f68b856bfd20fa08824fa80886fdc3c74"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/pre-terminal-full263-staged-index-audit.json",
+      "bytes": 106998,
+      "sha256": "bd7a474a2d96b810f9c78366ed71cd1ddb40e54b6ab3cec54fe869ae9b0152ad"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/preserve-full942-terminal.py",
+      "bytes": 5259,
+      "sha256": "4fca5801b8789173973d0ca94208d38a89c2c32661218ae615f6b1334684b58c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/python-current-equivalence.json",
+      "bytes": 10452,
+      "sha256": "e3a4c101a973e25a3e866887f2305b58e766293615e20347322b792b3d2a8e8f"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/python-current.log",
+      "bytes": 1135,
+      "sha256": "62b6f5ed16274f7afdc69cd90ffd6f04bdd18dd96dc923b5a6e35212e5dfa747"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-corrected-helper.log",
+      "bytes": 264,
+      "sha256": "a35de410af9b273994ecf99f8013523ea9b9af7a0702e1b03e88f800b02cef80"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-current-full-route.log",
+      "bytes": 17501,
+      "sha256": "59a186fb77aee4d027086f91cfa008da9cc7aa45a8a3338146aff9547fe0850d"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-current-full-validation.json",
+      "bytes": 10247,
+      "sha256": "e75e627610179a40aee9269e5d59d17114ad7c304b64795a735e66d13f9bdbac"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-helper-validation.json",
+      "bytes": 8489,
+      "sha256": "71274f0be26d758bf64687db6eb09fdac7a300fdb7cc5147bec5103556e92629"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-affordable-regular-native-defeat.json",
+      "bytes": 8693,
+      "sha256": "b4e9d8d07f8605dc796536420d313a4ad8d24d70d8af4f79bba11940266f50fe"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-finite-controls.json",
+      "bytes": 1561,
+      "sha256": "ab6f8a50e446e1d440119900cff0e51f279b89f215aefd7253af8bdc5c49cf51"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-actual-controls.log",
+      "bytes": 878,
+      "sha256": "f0a501f13294d445ba4704d042b80fc389c4c07a62ce96882789f4520d2af69e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-native.midpoint.save.json.gz",
+      "bytes": 153677,
+      "sha256": "3e4c98c0ea9c0073b29fa334c12ec4b0fb747a0d8cc9069f3c957391b05da61b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-native.receipt.json",
+      "bytes": 1815,
+      "sha256": "0a161c6f29a91b7af1469db22c6df0a1798e0549c3963454966062d1e79bb622"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-native.runtime-receipt.json",
+      "bytes": 69588,
+      "sha256": "9c974aeb0d703898a5a03f66f4a83a24a898ac357b2b70c4e9c727ef7821d4bd"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-native.settled.save.json.gz",
+      "bytes": 150856,
+      "sha256": "16855c39f5dcb7242773a5fbf21f31487cd839ac324ea3f667166c8ea487cddd"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-native.trace.json.gz",
+      "bytes": 63420,
+      "sha256": "38b837bdf1d62ca5b4493109597fb4ef38e1e40caf2753712bad23312e55c668"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-predeclared-policy.json",
+      "bytes": 845,
+      "sha256": "eaaa2b4a9f02ec4831fae6723f7c2834feafd71a1886ff77c2b09ec7080483ee"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-native-defeat.json",
+      "bytes": 6332,
+      "sha256": "9ca128efcd80cc8bd2fc70607d36991d349aae5c8498fe69a7f32c1121334661"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-policy-review.json",
+      "bytes": 23372,
+      "sha256": "06e864954f5f3d45b5b0ab8fae8fae02b5cc945d0411ecb0522edc3ed421f1fe"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-recorded-replay.json",
+      "bytes": 2186,
+      "sha256": "d690e62e76e7bc013838a77dcec4f839dff8965bcfcf736d70a734067d232d65"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-safe-fire-artillery-custody-audit.json",
+      "bytes": 3056,
+      "sha256": "0b8cb11c1ac2daac4f0dc1c4d47cdc46bfb2e040251404aea802c0f4212dd671"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-safe-fire-native.midpoint.save.json.gz",
+      "bytes": 152661,
+      "sha256": "61fce3f153b383fce52441365789cb0590697a268e556d159ca7a3425655eb07"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-safe-fire-native.receipt.json",
+      "bytes": 1857,
+      "sha256": "8814b6a3637de18dca236e1478c920c0aaec803736ad213ca1d97a2a2d1c8e9b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-safe-fire-native.runtime-receipt.json",
+      "bytes": 69588,
+      "sha256": "3a887032d11c304f1bbe37127782e2489669aadd360967c94680b7949fb6da52"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-safe-fire-native.settled.save.json.gz",
+      "bytes": 150428,
+      "sha256": "97cb25e35ac72e56449348ce23001e00ee0e060bf60df21a3cb25d49add4b021"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-safe-fire-native.trace.json.gz",
+      "bytes": 62500,
+      "sha256": "50142b09a7166aba208e85e7169eb319f7dc819a1da3a2fbc3529a75af0d142c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-native-mendoza-full-validation.json",
+      "bytes": 7618,
+      "sha256": "24fe46e8f33d0fbf90c0eaaf110dc3f5be89431f27d0b227f0c057288cc76f59"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-original-helper.log",
+      "bytes": 2147,
+      "sha256": "4d9f9451bb98b9d0ea73fc8be63e1dae621b25a992f0a3aee985de5909e6944e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/reviewed-safe-fallback-baseline.log.gz",
+      "bytes": 883,
+      "sha256": "37238e16e49837edd4059a363951f381d03af7efeec32f93b2e6d88fc6f1cefb"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/reviewed-safe-fallback-controls.log.gz",
+      "bytes": 2126,
+      "sha256": "731a436c374ff2fa8fe292767891dc6a56c6612ac5b2dcf9342f5e2e3b117f46"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/reviewed-safe-fallback-external-receipt.json",
+      "bytes": 12707,
+      "sha256": "53d16ed0368735f3f25126b69a82b14ecee67376c10c2f7108352a2bfc477b96"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/reviewed-safe-fallback-unapplied.patch",
+      "bytes": 11791,
+      "sha256": "bce0764a77f17b03e5945844b1af4fefdf7994f5ba4c4b59b900d2534390fd70"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/reviewed-safe-posture-proposal-allowlist.json",
+      "bytes": 2738,
+      "sha256": "3a93743158d9f0a0dc71fc585753e510e29cbe360e832d6f6667ac9392fed0a0"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/reviewed-safe-posture-proposal.tar.gz",
+      "bytes": 119968,
+      "sha256": "c4d7035e73339da66808eeab11365294120df6406465b0a452c74befd3feeff0"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/route-failure-recorder-zero-order-control-allowlist.json",
+      "bytes": 3306,
+      "sha256": "90e0c1e4e43eca3d699ae184654bed0389df3d95d3bae34347d03d729bd75f6c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/route-failure-recorder-zero-order-control.tar.gz",
+      "bytes": 461681,
+      "sha256": "73dc910cacf5408bbad276beced5511853ce7ca315a9c443dbd00eba86bdeb15"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/route-failure-recorder-zero-order-receipt.json",
+      "bytes": 1526,
+      "sha256": "3fa72c10d269217e09d2cb68d0e4b6d9497ed06acdcb27e0c19da186a845da32"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/safe-fallback-actual-affected-controls.log.gz",
+      "bytes": 2748,
+      "sha256": "fce49af59c38b387367fba282458c3f6f64b2e24092fbb3ae4fe154637c9363e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/safe-fallback-applied-current-receipt.json",
+      "bytes": 1174,
+      "sha256": "a74c57654112ba7a4c9d76e309af2ff69e8e0df5523c22943d2fa73a43c22fb3"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/safe-fire-clinic-actual-controls.log",
+      "bytes": 3190,
+      "sha256": "6a82bc94a1357daa90dc1d84159b50dba818771e892bba4f00c135ce683f37df"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/safe-posture-actual-affected-controls.log.gz",
+      "bytes": 3742,
+      "sha256": "60bc49e20fbf84352b8d717cb728e78b5f937ad669ca731e0b442b269d2937d1"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/safe-posture-applied-current-receipt.json",
+      "bytes": 1614,
+      "sha256": "5d1cda9be6edd1efeccbc071d2729f527cce476cef552033398e0adfcdba1a92"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/salta-initial-bounded-control-static-review.json",
+      "bytes": 5219,
+      "sha256": "8463b5ccd5342ec4c4a96d239f12a2b3e2c32cadc5c34c714266812a0d8ec4ef"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/salta-spent-gun-bounded-final-receipt.json",
+      "bytes": 8890,
+      "sha256": "0e4ad637767743bcab5cecc13e113df384a25b65d5728f47c7b69b642ad573df"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/salta-spent-gun-bounded-proof.tar.gz",
+      "bytes": 2110190,
+      "sha256": "6745a5f8b2f107fd852799fd772df6ae43dd540062d19745dfb863d3db1ca513"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/spent-gun-actual-repository-controls.log.gz",
+      "bytes": 227,
+      "sha256": "6a8b00ace3c4a393d5dc7f85438298072646302447562b75d30aec96989ad315"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-complete-native-speaker-rural-travel-failure.json",
+      "bytes": 106808,
+      "sha256": "eaa3baaefdec097951ea515c81afbb4ba32597d09b467b7557b467030cbe6c3f"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-complete-shipment-import-checks.json.gz",
+      "bytes": 20242,
+      "sha256": "c2fa2c75d4959595c64d3fdf622e52411d5d9692ad0a9185dae5563fbc83ef6e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-complete-shipment-stalemate.log.gz",
+      "bytes": 14595,
+      "sha256": "a28c9507d15c9b008e035c40c3e0ba63b306b6c1fcc4c29822539420995b0ebf"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-current-full-validation.json",
+      "bytes": 106808,
+      "sha256": "9e4cc014eb574eb2fb30468cc55a36d72864a3c4854ad5cffa7ce5eda7e1a937"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-cuyo-native-speaker-proposal.json",
+      "bytes": 364,
+      "sha256": "b3db2b362b7605f9132a25480f59b946657d80d9b144bb5a67c6297b8096b57f"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-cuyo-native-speaker-validation.json",
+      "bytes": 87673,
+      "sha256": "ba52b5150525fdf91d294a2030958fb4aa99b3e2827f25cf9c2d1c0cdb15696b"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-cuyo-reinforcement-native-travel.json",
+      "bytes": 2493,
+      "sha256": "a604f6d2733f65e78fad18c021c2a82b0364d23107f192580dc08a8f31961cfe"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-earlier-entry-preparation.json",
+      "bytes": 404,
+      "sha256": "821b31141d99ba1ca7fbc6e05f4d248a202968c7713f8da826b06d4ee30789f7"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-earlier-entry-preparation.log",
+      "bytes": 299,
+      "sha256": "685ae64ee0089cc8b78fcaa494916c6d513906a46485daeeddbfabda422c139c"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-ending-headwear-archive-receipt.json",
+      "bytes": 1243,
+      "sha256": "9d7e0e9bd087d23f495718e597b29d3b19970910bd1243ff47456e2feb0eb474"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-ending-headwear-observation.tar.gz",
+      "bytes": 1436383,
+      "sha256": "befd23f3e7cff71c0884cfe099fb524426bf78bdc0048d6c7e45f4cc0ad77742"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-first-assault-validation.json",
+      "bytes": 34640,
+      "sha256": "b97e75197b1ad99c6c107473ee5e157db4f2c80ff58724e44471b2af8d9fd4ff"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-foundry-final-receipt.json",
+      "bytes": 7901,
+      "sha256": "2e66d162766859268a58d1e19d2de91c35abff07683e7a1e93815dfa4f5c7564"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-foundry-focused-controls.log",
+      "bytes": 1849,
+      "sha256": "4a2e561854df43c418e192a794d60f66d09ffcab4195ebed75a49e9f2dbdeec2"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-integrated-departure-preparation.log",
+      "bytes": 461,
+      "sha256": "330311064c87172a511ee7576571091fa209a001cc46f2fa14c543601537b2d6"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-mendoza-controller-audit.json",
+      "bytes": 23239,
+      "sha256": "a1c9ffce25119eb269269c65d862ef4dc44daf1f1621f90db2664a2b941fe946"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-mendoza-native-initial-pair.save.json.gz",
+      "bytes": 189315,
+      "sha256": "b5acef6fef5bb46ad2f156dd480d5f10ba9287402d1d8deb5c411487339b7a54"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-mendoza-native-stalemate-result.json.gz",
+      "bytes": 43820,
+      "sha256": "6df66ca8f300e381c6b6248e725d16491580b597f586f6d31a000598f3772531"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-mendoza-stalemate-final-active.save.json.gz",
+      "bytes": 189849,
+      "sha256": "a8f16f879be90d296cdb1abd982000d30ae804312c9ba3366d99b243edd5a8b7"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-mendoza-stalemate-midpoint.save.json.gz",
+      "bytes": 189791,
+      "sha256": "3353c20bd71ebaf4f1dabd73c02d7c3e8d6943067f9db42547b025637af652ad"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-mendoza-stalemate-original-orders.json.gz",
+      "bytes": 118,
+      "sha256": "8e2b724b8762a26d187ad70fa1d6c6c0f988c4a1a549eaed4ab5a9223c23f99e"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-mendoza-stalemate-saved-replay.json",
+      "bytes": 1137,
+      "sha256": "36f5d15a8ab3b5361f7492e55a6b6baffb90101ffaf5ede740939f77e0559d47"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-native-envoy-stage-proposal.json",
+      "bytes": 335,
+      "sha256": "40982ee7f3de54302b6d81d7e857f9c507e3c3d209c3e414faafd97c6077c409"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-native-envoy-stage-validation.json",
+      "bytes": 832,
+      "sha256": "619a0acadd38a4663177529c491923ec62b51c1f9fcb114eb27af83e5ea06629"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-native-envoy-stage.log",
+      "bytes": 429,
+      "sha256": "334966e3cee867194eab9171d7b595eb15ca72f135df81a8dc89addfbd5fd710"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-observer-admission-failure.log",
+      "bytes": 2515,
+      "sha256": "d9a39020de4780beac0869d9ee36cd5dd896a1b6984d877e2075922b779487ff"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-observer-admission-validation.json",
+      "bytes": 98351,
+      "sha256": "d30dbfe67c5db5c6f062ad14bd1249b11bb1777dcaf23ec06135973846da7683"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-physical-envoy-full-validation.json",
+      "bytes": 106808,
+      "sha256": "c5a575e30d4dc6fc5364d003dbc60695ac79968a5a459c860c271168a6da0fde"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-salta-gun-shipment.json",
+      "bytes": 1105,
+      "sha256": "19ce42b6ebfeb3cc75dfc9fc36bcc9d7cdad92d7a881e8dc27309cd8b7906bef"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-shipped-gun-assembly-and-replay.json",
+      "bytes": 1878,
+      "sha256": "a756992a1c8e14d4d0a6d01aa84ca154e71f6df415d08b6e9cba8054bba2ad81"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-shipped-gun-committed-tape.jsonl.gz",
+      "bytes": 542905,
+      "sha256": "e45a27bab7b1237c121940b5124402c1648419b2673e3c1f9de4dfcbba5a7ae8"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-shipped-gun-import-evidence.json.gz",
+      "bytes": 16777,
+      "sha256": "d82106bee334a023bf43fda70284e16c5049d9b4a44478f1d0d46e9d35a1fe90"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-shipped-gun-original-native-calls.ndjson.gz",
+      "bytes": 325195,
+      "sha256": "e091e8d2537351ded99c1e7f7d107e380c4f8c7505127b40458821830d2470d5"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/uspallata-compatible-ammunition-actual-controls.log.gz",
+      "bytes": 917,
+      "sha256": "52ff657e782ace6d14d90ba5a73cf0f506a9d5e3bed25c96cf84f5c463d93cec"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/uspallata-compatible-ammunition-applied-receipt.json",
+      "bytes": 1202,
+      "sha256": "667b93bdd05b74ca78c377c88f8f39394469884876670bcc62a211977de50056"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/uspallata-compatible-ammunition-proposal-allowlist.json",
+      "bytes": 2424,
+      "sha256": "a7cd21ebc55d354b7c7cb0937a764f24c4b92fba2b86489fdd9811003fe6d9a0"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/uspallata-compatible-ammunition-proposal.tar.gz",
+      "bytes": 54901,
+      "sha256": "304b6ca4ce9832d52fad43d276f89486584920db336fd82621ce26e8dd2ffb8a"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+      "bytes": 93428,
+      "sha256": "41c0deb725d367badf21d39a3e352ef2a39de2971d59e1f6829234d5a8c43be4"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/verification.md",
+      "bytes": 11611,
+      "sha256": "97bad443b13ea029cfdaae5c7c5b9eae56ba270d7a91b129f2546b3eb6cc2ada"
+    },
+    {
+      "path": "docs/evidence/campaign-route-corrections-2026-10-09/worktree-cleanup-closure.json",
+      "bytes": 3382,
+      "sha256": "95486ab702ae9400bb0cca603c5b260c661380dbad5ff6e923bec556e5e15ab9"
+    },
+    {
+      "path": "docs/evidence/clinic-defense-policy-experiment-2026-10-10/README.md",
+      "bytes": 1394,
+      "sha256": "6529eb82ed189325a8ae4097e4b7016a957a856135c9e2e99f6aedbd02304b2c"
+    },
+    {
+      "path": "docs/evidence/clinic-defense-policy-experiment-2026-10-10/archive-verification.json",
+      "bytes": 448,
+      "sha256": "31e88351f66aa858595e11400ba350fd1e4cedbd40fef0424ce35b80909f73b6"
+    },
+    {
+      "path": "docs/evidence/clinic-defense-policy-experiment-2026-10-10/clinic-defense-failed-experiment.tar.gz",
+      "bytes": 1777784,
+      "sha256": "49e54263c7dff728fa3035f0722023e1fd797b85e8310dc90cb2dce10386f2a7"
+    },
+    {
+      "path": "docs/evidence/clinic-defense-policy-experiment-2026-10-10/experiment-archive-allowlist.json",
+      "bytes": 15325,
+      "sha256": "439ddec4be341ec94ede5653ff6005d7c22bb67ced80b0ccf6edfccad5b66043"
+    },
+    {
+      "path": "docs/evidence/clinic-defense-policy-experiment-2026-10-10/terminal-receipt.json",
+      "bytes": 14226,
+      "sha256": "c65a4ac55ee823c73b03499fa0268a9ac2d6281d576f1b7326ca1f5096a7753c"
+    },
+    {
+      "path": "docs/evidence/opening-patrol-medical-readiness-2026-10-09/evidence.json",
+      "bytes": 17861,
+      "sha256": "ec5c094d7b60fbdb4e935ce52bf67c9507a8b52fa6b30ebe15972f8c3de29474"
+    },
+    {
+      "path": "docs/evidence/opening-rescue-finite-care-2026-10-09/clinic-readiness.json",
+      "bytes": 7917,
+      "sha256": "9f9f37eae3ffae91c9b30c642c37f771c223cb381c99f7298ec44335acc3e368"
+    },
+    {
+      "path": "docs/evidence/opening-rescue-finite-care-2026-10-09/evidence.json",
+      "bytes": 13050,
+      "sha256": "1394741124206c25e7df2414d77b5b8533a815d60e748925e7c699c352b8e19f"
+    },
+    {
+      "path": "docs/evidence/opening-single-gun-screen-2026-10-09/evidence.json",
+      "bytes": 7005,
+      "sha256": "06099ad2c7e4f0243d6d05f771d1f864a649859ad922131c37736f6f04cada31"
+    },
+    {
+      "path": "docs/verification/ja2-parity-audit.md",
+      "bytes": 120453,
+      "sha256": "5c84af9b056385c7a1b2e0d7496811b8448d0bb714590c7296bcb8f458a4f1c5"
+    },
+    {
+      "path": "docs/verification/published-progress.md",
+      "bytes": 236544,
+      "sha256": "0b1cc2c0a6db29187fd27827d9ae0e292f6e7e21f7926e45d66eb5a1fb80e8d0"
+    },
+    {
+      "path": "docs/verification/requirements.json",
+      "bytes": 494433,
+      "sha256": "f4cf9b1a2244226ec00a9e2018dd73e511bb504045cf49875da2a0190f3bc0e6"
+    },
+    {
+      "path": "tests/coastal-medical-readiness.mjs",
+      "bytes": 5697,
+      "sha256": "7e0caaac725fe9bcb395390bc10f06027facaa229f6e7c9b93ce91acd2794a77"
+    },
+    {
+      "path": "tests/coastal-medical-readiness.test.mjs",
+      "bytes": 4132,
+      "sha256": "afc7cd47df0cc6680f0320db09fe01c9c26a45ac2fbec908fe480f741df98b12"
+    },
+    {
+      "path": "tests/created-cuyo-route.mjs",
+      "bytes": 56826,
+      "sha256": "41457efce36243a88b372e43be30b34bc2309395cdd48e16d84f390ea0c0e8f0"
+    },
+    {
+      "path": "tests/cuyo-route-driver.mjs",
+      "bytes": 8380,
+      "sha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618"
+    },
+    {
+      "path": "tests/fixtures/coastal-earned-ba-stable-005.json.gz",
+      "bytes": 55984,
+      "sha256": "222e2bce42f4603903e43b9c70d3a6be1e55bebfae914459a85950e19b429816"
+    },
+    {
+      "path": "tests/fixtures/coastal-earned-san-nicolas-empty-008.json.gz",
+      "bytes": 104621,
+      "sha256": "11cfc6ebfe3a2096c64a2a90af6ff4691c069966e51a7eaf2a0ef8c2e101ac4d"
+    },
+    {
+      "path": "tests/fixtures/coastal-medical-readiness.provenance.json",
+      "bytes": 3067,
+      "sha256": "e99f08dade64f4f4e44f9296d337878e4398f5c195ca0f217ec8668ed6238be8"
+    },
+    {
+      "path": "tests/fixtures/cuyo-northern-real-losses.provenance.json",
+      "bytes": 2004,
+      "sha256": "c98d035761d4ccb8604e83bb180011d00bd11879e6061e0df6ab05cbc8088c9b"
+    },
+    {
+      "path": "tests/fixtures/cuyo-northern-real-losses.save.json.gz",
+      "bytes": 139430,
+      "sha256": "545389294cc086b9d7068c86b105bdbff5f5329d371ebe379acbfbf143910141"
+    },
+    {
+      "path": "tests/fixtures/los-patos-earned-ammunition-replay.json.gz",
+      "bytes": 357589,
+      "sha256": "86fa97edd1521916c57b027bd133b78919af6bfbe7d6e84933ab89c319abb3f3"
+    },
+    {
+      "path": "tests/fixtures/los-patos-earned-ammunition-shortage.provenance.json",
+      "bytes": 93467,
+      "sha256": "cfb575f379b9fb0b8eeb28686a2471f1ce51d06bca57353546565cd0f28e6883"
+    },
+    {
+      "path": "tests/fixtures/los-patos-earned-ammunition-shortage.save.json.gz",
+      "bytes": 174730,
+      "sha256": "bda0f9b6962d553340201c5ea181393029c45fe9661529fe67e3d736d3ca2bf4"
+    },
+    {
+      "path": "tests/fixtures/mountain-returned-kit-earned-630.campaign.json.gz",
+      "bytes": 344718,
+      "sha256": "bf3ab25ea6b47410a55226d62e2fefb459139bb338eda5ea83e4ba1f8f25f89f"
+    },
+    {
+      "path": "tests/fixtures/mountain-returned-kit-earned-630.provenance.json",
+      "bytes": 2347,
+      "sha256": "ad455fe5b4eb139cffef0f46d6d1deb91317043a730a79576518aaf4b1cabbc9"
+    },
+    {
+      "path": "tests/fixtures/northern-care-earned-staging.json.gz",
+      "bytes": 121872,
+      "sha256": "d97ca4c8d9b079001da3c6946523f7db7dc7d4e652899686869791c38573eb07"
+    },
+    {
+      "path": "tests/fixtures/northern-care-earned-staging.provenance.json",
+      "bytes": 2015,
+      "sha256": "ef1608207da6ed7c8d6c32a9b80159a7958709777e084fc8ba9fde1a318e0f4d"
+    },
+    {
+      "path": "tests/fixtures/northern-known-friendly-fire.provenance.json",
+      "bytes": 2536,
+      "sha256": "6d03d2208a5c4f6e0274e04c1dd3c1e2a932593d3b8b59813662321111050ed2"
+    },
+    {
+      "path": "tests/fixtures/northern-known-friendly-fire.save.json.gz",
+      "bytes": 153727,
+      "sha256": "176d1335f3f3c1af5fdcdaf36bc3893ceefb13fd4b7680e2fb59aa01e3f5a557"
+    },
+    {
+      "path": "tests/fixtures/northern-known-friendly-posture.provenance.json",
+      "bytes": 1155,
+      "sha256": "b1ff08af6213d10a1f72e6c30cd5c88991716649ea61f2f63ed7eeae55cefd26"
+    },
+    {
+      "path": "tests/fixtures/northern-known-friendly-posture.save.json.gz",
+      "bytes": 69464,
+      "sha256": "3beae75882acb4e5ac52772c5fa9cb470013f177194465ec96f84fd9fb71fdea"
+    },
+    {
+      "path": "tests/fixtures/northern-officer-spent-gun-canonical-prefix.orders.json.gz",
+      "bytes": 1567,
+      "sha256": "5610b3341fedd6238871931f6ae0f4e893cf4d4d96705c0b415323e4804e630e"
+    },
+    {
+      "path": "tests/fixtures/northern-officer-spent-gun-earned-prefix.provenance.json",
+      "bytes": 3816,
+      "sha256": "72fa720037b9498b3eeb86bd1241490a988d458d6d5c925d8b22fa42406345ab"
+    },
+    {
+      "path": "tests/fixtures/northern-officer-spent-gun-earned-prefix.save.json.gz",
+      "bytes": 148696,
+      "sha256": "d3f3965d99835f6b39b3a0ccf80dbc11bd17aba4ba765ada91a37c55e2022aea"
+    },
+    {
+      "path": "tests/fixtures/northern-rear-port-native-campaign.json.gz",
+      "bytes": 154258,
+      "sha256": "028daadd939c4957e622c5d4a4da3d3bfeac719b0aca02dc905920e4491b43e3"
+    },
+    {
+      "path": "tests/fixtures/northern-rear-port-native-campaign.provenance.json",
+      "bytes": 998,
+      "sha256": "3cde5cefb78c3919202b030faf1155061b71cd5608b271ac8fe2f99bbf74fa7a"
+    },
+    {
+      "path": "tests/fixtures/northern-reunite-lost-cordoba.provenance.json",
+      "bytes": 1422,
+      "sha256": "60373b577cbb8a68d71417da50ab0af39f5f3c4e15e95426e494e71f5ed0e80c"
+    },
+    {
+      "path": "tests/fixtures/northern-reunite-lost-cordoba.save.json.gz",
+      "bytes": 112146,
+      "sha256": "f340be9522544ce77be1751341460760d3767faea90e5eea156de246efb4257a"
+    },
+    {
+      "path": "tests/fixtures/opening-clinic-earned-exhaustion.provenance.json",
+      "bytes": 3707,
+      "sha256": "96e112affb06ac56753416b1854e705721d054dd792e192d995bf2452c503a83"
+    },
+    {
+      "path": "tests/fixtures/opening-clinic-earned-exhaustion.save.json.gz",
+      "bytes": 87773,
+      "sha256": "9d619c84ed0aa0be7ddda957256584101ea2b75cbeee67b79eee0c9ad94caefa"
+    },
+    {
+      "path": "tests/fixtures/opening-clinic-earned-raid.save.json.gz",
+      "bytes": 88973,
+      "sha256": "6d7411372b7723ff2f7f45f3f8b792656863d450e7244bd2d7008d60cc36c031"
+    },
+    {
+      "path": "tests/fixtures/opening-clinic-preparation-rest-replay.json.gz",
+      "bytes": 489456,
+      "sha256": "513cdabc22ae67c172abcc32799343651d367105369ff8b7dee44c64bdc810e8"
+    },
+    {
+      "path": "tests/fixtures/opening-clinic-retained-defeat.json.gz",
+      "bytes": 34759,
+      "sha256": "c829ce669f89d9dce0dac21de8f39e3019d52ad1d1192f4295b591a6ed65bf47"
+    },
+    {
+      "path": "tests/fixtures/opening-patrol-earned-cordoba.provenance.json",
+      "bytes": 1049,
+      "sha256": "5dbc7c2b198a79dcbedbbc320fc1de4507d614e20483e1011f80f50a592ecd36"
+    },
+    {
+      "path": "tests/fixtures/opening-patrol-earned-cordoba.save.json.gz",
+      "bytes": 65592,
+      "sha256": "37c286417b0700e15a8e55bd0078bd2aecc02144771a0e2cf4c8d785c6dbd3dd"
+    },
+    {
+      "path": "tests/fixtures/opening-rescue-native-victory.provenance.json",
+      "bytes": 1285,
+      "sha256": "3eb2e7342872350ad1e3ecbeccac5ae1d48890ffe38431188a53ccb5757f041b"
+    },
+    {
+      "path": "tests/fixtures/opening-rescue-native-victory.save.json.gz",
+      "bytes": 94603,
+      "sha256": "47edf431e7366fd2d558a5de0a1a8e7573d2255167dcfc2f5faca5223f8d458a"
+    },
+    {
+      "path": "tests/fixtures/recovery-mendoza-earned-ready.save.json.gz",
+      "bytes": 151174,
+      "sha256": "dd6d06d6ea6b62b6e083fab08fcaa58cdb67d266b733ce38be6b44e8d262fabc"
+    },
+    {
+      "path": "tests/fixtures/recovery-mendoza-forward-screen-replay.json.gz",
+      "bytes": 182947,
+      "sha256": "fefd86a6c40a8d79ece814c82aa6acdaacf9dfbbdf1241caa3760d1e7cf024af"
+    },
+    {
+      "path": "tests/fixtures/recovery-mendoza-forward-screen.provenance.json",
+      "bytes": 3954,
+      "sha256": "3c70a37f824fb1f1532f8220c712afd30a7fc57069056910547d15c1997ccaaf"
+    },
+    {
+      "path": "tests/fixtures/stock-foundry-earned-custody.provenance.json",
+      "bytes": 2451,
+      "sha256": "9603bad04951150463079c79633ce3d610584eff783167fb29addbd2a18c74e3"
+    },
+    {
+      "path": "tests/fixtures/stock-foundry-earned-pre-course.save.json.gz",
+      "bytes": 181076,
+      "sha256": "71dea16f2ce83b920ee3e801686094056b303baa62978f3e53daca21be8c33f1"
+    },
+    {
+      "path": "tests/fixtures/stock-foundry-native-funding-actions.json.gz",
+      "bytes": 708,
+      "sha256": "100a76a15c56327cf58dc5369af7eabb61d46758c2d07e82f0414b1362bc5161"
+    },
+    {
+      "path": "tests/fixtures/stock-foundry-native-occupied-source.save.json.gz",
+      "bytes": 181333,
+      "sha256": "f100a5b485695a918d7c0045cd8eff9d7768d806e019b04c9432a622e2d54300"
+    },
+    {
+      "path": "tests/fixtures/stock-tucuman-pre-assault.provenance.json",
+      "bytes": 32117,
+      "sha256": "35e907bc0bc5e4907471a7984b7a19df5aa1fe2c88eeac717f576038a11651f0"
+    },
+    {
+      "path": "tests/fixtures/stock-tucuman-pre-assault.save.json.gz",
+      "bytes": 118730,
+      "sha256": "e5ef4fd5e2b8b634185986438ebe53ff0c216f41b01ab0bd7c2c5626a3ed2b8e"
+    },
+    {
+      "path": "tests/fresh-campaign-route.mjs",
+      "bytes": 74283,
+      "sha256": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e"
+    },
+    {
+      "path": "tests/fresh-coastal-fixture.mjs",
+      "bytes": 21239,
+      "sha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6"
+    },
+    {
+      "path": "tests/fresh-cuyo-fixture.mjs",
+      "bytes": 9590,
+      "sha256": "4444c83013ba3b8aba605a0f0f8959ad799977ef851f35f7b0d677f4cf3857fa"
+    },
+    {
+      "path": "tests/fresh-cuyo-relief.test.mjs",
+      "bytes": 12170,
+      "sha256": "7ae94afc9a0231b46765b1d54b2cd818908045b2a11e70f5f71b8a0b0fe117fa"
+    },
+    {
+      "path": "tests/fresh-cuyo-route.mjs",
+      "bytes": 35962,
+      "sha256": "ceba839d3064d468891e86d718eac3faf3b8a94c0fe6d55c9883cd5a25143bcf"
+    },
+    {
+      "path": "tests/fresh-ending-route.test.mjs",
+      "bytes": 10111,
+      "sha256": "b15592c43228e5c7c62124258ca6cb9c9e956c5b02fdc4b698a8f771426e60f4"
+    },
+    {
+      "path": "tests/fresh-foundry-custody.test.mjs",
+      "bytes": 6150,
+      "sha256": "d48ec10f33dc1dea5e14de1739c07f3c30f123e00a47c4d6d6f99c189845d1ca"
+    },
+    {
+      "path": "tests/fresh-mountain-ammunition.test.mjs",
+      "bytes": 11235,
+      "sha256": "7299a8d5811ea6d9465ade28fd43b547b990db360d7d75c56a4987d45d862df4"
+    },
+    {
+      "path": "tests/fresh-mountain-route.mjs",
+      "bytes": 38605,
+      "sha256": "fb178aaca41029260c222410af934380f8e55ac3737864964595e5a7a3af2b90"
+    },
+    {
+      "path": "tests/fresh-northern-command.mjs",
+      "bytes": 42960,
+      "sha256": "0a787dc97b899398091f08b54ffedf38d64aa683ea51094af84f7fb17acdb9cb"
+    },
+    {
+      "path": "tests/fresh-northern-fixture.mjs",
+      "bytes": 42479,
+      "sha256": "1a7d2e2ebf82a7bd8d2a41e119d04b40e1f560eb101a0c5906c0f668efd5d424"
+    },
+    {
+      "path": "tests/fresh-northern-recovery-recapture.test.mjs",
+      "bytes": 6339,
+      "sha256": "86507ecc714bdf99c1108fe3c9d79f3863886ee3f433ded033dda8462ddafde0"
+    },
+    {
+      "path": "tests/fresh-northern-recovery.mjs",
+      "bytes": 32392,
+      "sha256": "d29b72ff330801d7fee9bf92b6b58cc04785c500975c1a9356baa07f613d647b"
+    },
+    {
+      "path": "tests/mountain-returned-kit.test.mjs",
+      "bytes": 5718,
+      "sha256": "6e571cbbf48315266a16457cb08b2cd48eb3815809878571374dd564ebb6c6e6"
+    },
+    {
+      "path": "tests/northern-care-roles.mjs",
+      "bytes": 3667,
+      "sha256": "e7d0e82d3e1ea8d9fba787b4d9198bb3a546bdec7e0f232617332839f45b6399"
+    },
+    {
+      "path": "tests/northern-care-roles.test.mjs",
+      "bytes": 11455,
+      "sha256": "1bd172964deeca62542730c3c4a0fe74f7bb1a3788691fe6d016d8980d5d5ae5"
+    },
+    {
+      "path": "tests/northern-clinic-knockdown-recovery.test.mjs",
+      "bytes": 6414,
+      "sha256": "caf117827a953e6221170f7175293ee6cff872a2e1b0e3f2a72b381e021723b9"
+    },
+    {
+      "path": "tests/northern-firearm-safety.test.mjs",
+      "bytes": 4654,
+      "sha256": "6b2711e7202a3e8c66974f4b2e056ae303c60e8b59852fa6536b59a3bd71aa8e"
+    },
+    {
+      "path": "tests/northern-officer-spent-gun.test.mjs",
+      "bytes": 4752,
+      "sha256": "e2dd7f5eb947029c270ddf3f4763db660a560c74db289760adafc91246548e96"
+    },
+    {
+      "path": "tests/northern-rear-port-meeting.test.mjs",
+      "bytes": 4042,
+      "sha256": "74b2e2fdbe37c4746137e586807b2bdd4661098ca8e7b5ab8cd7481977d6cc8e"
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "bytes": 84808,
+      "sha256": "6ee951a219a3c9379caced2e2831350ac47f2fe3ea37c9100d62c8c44e7ef6f9"
+    },
+    {
+      "path": "tests/northern-safe-fallback.test.mjs",
+      "bytes": 8702,
+      "sha256": "a105e8ac245dd7a320959460ccb551b73d58bdf7beccf00700aa8a0596e99011"
+    },
+    {
+      "path": "tests/northern-safe-posture.test.mjs",
+      "bytes": 9028,
+      "sha256": "b0b08601c2c0dd2feb6ce0f42404d02ff5c0b9b1c59b4015a232d27acd2adc3d"
+    },
+    {
+      "path": "tests/opening-patrol-medical-readiness.mjs",
+      "bytes": 5406,
+      "sha256": "614f938e5999f40f0a5cfeb1a1757fd6bfb4faae4e4e6d7b63285a689fc14442"
+    },
+    {
+      "path": "tests/opening-patrol-medical-readiness.test.mjs",
+      "bytes": 7846,
+      "sha256": "58f4c8970dcef1bec22fb608a9465f9e93a9009272f8f63045dc0b356f8fe00e"
+    },
+    {
+      "path": "tests/opening-playthrough.test.mjs",
+      "bytes": 30015,
+      "sha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7"
+    },
+    {
+      "path": "tests/opening-rescue-stabilization.test.mjs",
+      "bytes": 5522,
+      "sha256": "d6a77f9e776060db426d461dfc413147c3a0bbf58b4b4a34ba54788d9d9ee3c1"
+    },
+    {
+      "path": "tests/recovery-mendoza-driver.mjs",
+      "bytes": 2572,
+      "sha256": "015c583009ccd91433b7bc50b964b0087aebf277d4684d84ae72024618835acd"
+    },
+    {
+      "path": "tests/recovery-mendoza-driver.test.mjs",
+      "bytes": 5031,
+      "sha256": "305330e53772a7351d452fab117b4f93a7b18cded34ae6dd123c42892194f0ff"
+    },
+    {
+      "path": "tests/recovery-mendoza-forward-screen.test.mjs",
+      "bytes": 4382,
+      "sha256": "4d2b054585f7056b60d693a6a63deb25be699fef07698b440e67ac82f165252b"
+    },
+    {
+      "path": "tests/recovery-road-route.mjs",
+      "bytes": 10919,
+      "sha256": "8803da661e70552f99194792dbdf8a1c67f27d468dd7d156373c64de37c9b848"
+    },
+    {
+      "path": "tests/rescue-clinic-readiness.mjs",
+      "bytes": 14116,
+      "sha256": "ff26adebcbb18748ccdea48c6dafdc9a654437aee14e0b9b6fd0b7ef5042e214"
+    },
+    {
+      "path": "tests/rescue-clinic-readiness.test.mjs",
+      "bytes": 9949,
+      "sha256": "9593ba74b5d467406eaa1f18e4623e493f498ef3d4a1849baf5d3283a9add001"
+    },
+    {
+      "path": "tests/rescue-recovery.mjs",
+      "bytes": 17404,
+      "sha256": "9abdb770bb9bc34b60ec90488a7859d9eb1ba07d67620c69bc30168cd56e9ece"
+    },
+    {
+      "path": "tests/route-failure-evidence.mjs",
+      "bytes": 2914,
+      "sha256": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f"
+    },
+    {
+      "path": "tests/route-known-medical-courier.mjs",
+      "bytes": 7733,
+      "sha256": "6ad96f01cfdee4bbb64fae50a4c921a2e22c58322d7babee820d3e8134b18cb5"
+    },
+    {
+      "path": "tests/staged-battery-driver.mjs",
+      "bytes": 2202,
+      "sha256": "98ae38a3f11423ea6914a211560639fa7573a15247d6cddb48b1d9c421d97cfd"
+    },
+    {
+      "path": "tests/staged-battery-driver.test.mjs",
+      "bytes": 9411,
+      "sha256": "de5d934f6f8bb848cc34591ee4148d2cb50246dca62d30415bb937ce01a6ae11"
+    },
+    {
+      "path": "tests/stock-tucuman-readiness.mjs",
+      "bytes": 12382,
+      "sha256": "83f5002c7a9b216e7eb88466fb03f6ba279d748c7fa9dad6ecbb90eb1bb522b4"
+    },
+    {
+      "path": "tests/stock-tucuman-readiness.test.mjs",
+      "bytes": 9138,
+      "sha256": "bbd020f91b5c7d4471c6909ad032a40eb9516933521fd2aef89d01a66d666a2f"
+    },
+    {
+      "path": "tests/tucuman-driver.mjs",
+      "bytes": 1070,
+      "sha256": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463"
+    },
+    {
+      "path": "tools/test-suite-config.mjs",
+      "bytes": 1920,
+      "sha256": "27c1478c98a52c210e0906bf441fb5f5ec74400105587f29558efd2b47754e4a"
+    }
+  ]
+}

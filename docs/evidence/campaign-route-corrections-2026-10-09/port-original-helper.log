@@ -1,0 +1,32 @@
+(node:51833) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/tmp/granaderos-rear-port-prepatch-loader.mjs", pathToFileURL("./")); register("/tmp/granaderos-rear-port-prepatch-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ the native night port meeting finds the edge resident and follows public memory around the window wall (2932.067875ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3252.1105
+
+✖ failing tests:
+
+test at tests/northern-rear-port-meeting.test.mjs:10:1
+✖ the native night port meeting finds the edge resident and follows public memory around the window wall (2932.067875ms)
+  AssertionError [ERR_ASSERTION]: a public map sweep must reveal the actual representative
+      at meetNorthernRearPort (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:143:9)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-rear-port-meeting.test.mjs:15:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

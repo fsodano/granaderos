@@ -1,0 +1,38 @@
+{
+  "scope": "Zero-order artifact exercise plus one read-only closure on its two retained captures. No additional recorder call, native order, turn, battle or settlement.",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "nodeVersion": "v25.9.0",
+  "initialArtifactExercise": {
+    "exitCode": 1,
+    "disabledWrites": 0,
+    "enabledCaptures": 2,
+    "inputUnchangedAssertionPassedBeforeFailure": true,
+    "priorCaptureUnchangedAssertionPassed": true,
+    "failure": "The control incorrectly compared the saved/synced battle directly to the raw terminal. Only savedHour/savedSecond/syncedSeconds differ as required by native clock sync."
+  },
+  "readOnlyClosure": {
+    "exitCode": 0,
+    "retainedCaptures": [
+      {
+        "directory": "63140-1-cordoba-84-18026106-H0N2ma",
+        "receiptSha256": "2b46999c9c6ed32dc78b8a936c5387d01e15e0c598d75d66d8422385bdb0c2a3",
+        "payloads": 3,
+        "officialPairExact": true,
+        "rawInputAndResultExact": true
+      },
+      {
+        "directory": "63140-2-cordoba-84-18026106-pX6AO9",
+        "receiptSha256": "a7a9b52a39313e818e8f20046d0ef663a175a696a8ddf24d0a7ffb4b165214b1",
+        "payloads": 3,
+        "officialPairExact": true,
+        "rawInputAndResultExact": true
+      }
+    ],
+    "allPayloadHashesExact": true,
+    "rawInputAndResultExact": true,
+    "officialSyncedPairsExact": true,
+    "additionalRecorderCalls": 0,
+    "additionalOrders": 0
+  },
+  "helperSha256": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f"
+}

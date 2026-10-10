@@ -1,0 +1,59 @@
+{
+  "scope": "Read-only actual created-record selection from genuine accepted meeting/shipment; not a full Mendoza preparation or battle proof. New arriving empty C2 is excluded from two-piece readiness, keeping original actual BA1 supplied + C1 empty.",
+  "input": "/tmp/granaderos-cuyo-rear-gun-created-one-accepted.save.json",
+  "clock": [
+    427,
+    3157
+  ],
+  "selected": [
+    {
+      "sector": "buenos_aires",
+      "id": "arsenal:buenos_aires:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6,
+      "x": 32,
+      "y": 19
+    },
+    {
+      "sector": "tucuman",
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "x": 34,
+      "y": 45,
+      "facing": -0.9097531579442097
+    }
+  ],
+  "excludeIds": [
+    "arsenal:cordoba:2"
+  ],
+  "incoming": [
+    {
+      "id": "arsenal:cordoba:2",
+      "from": "salta",
+      "to": "cordoba",
+      "mode": "carts",
+      "path": [
+        "salta",
+        "tucuman",
+        "cordoba"
+      ],
+      "departedAt": 427,
+      "dueAt": 463,
+      "gun": {
+        "id": "arsenal:cordoba:2",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": -1.0768549578753155
+      }
+    }
+  ],
+  "inputUnchanged": true,
+  "nativeGameActions": 0
+}

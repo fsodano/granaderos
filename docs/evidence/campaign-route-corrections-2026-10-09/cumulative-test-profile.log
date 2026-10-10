@@ -1,0 +1,19 @@
+✔ quick and extended form a complete disjoint partition and new files enter quick (2.778ms)
+✔ profile arguments default to exhaustive full and leave concurrency validation in the shared runner (0.228292ms)
+✔ profiles execute every selected case, disclose omissions and propagate extended and full failures (604.536917ms)
+✔ list mode proves full partition without execution and stale configuration fails closed (399.23775ms)
+✔ quick and extended reject inherited assertion filters just as full does (526.643416ms)
+✔ a profile without cached timings starts measured slow files first using the full report (284.910458ms)
+✔ the partition covers every matching fixture file exactly once (91.615875ms)
+✔ missing, extra, fractional and out-of-range arguments fail instead of silently selecting tests (657.734375ms)
+✔ a matching non-file target fails coverage verification (90.876625ms)
+✔ a selected failing test propagates failure while another complete group succeeds (428.078417ms)
+✔ shards use an explicit worker count and report every file in the selected group (289.164ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1937.505958

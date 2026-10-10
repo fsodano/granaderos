@@ -1,0 +1,54 @@
+{
+  "scope": "Genuine official paired native Mendoza state immediately before zero-based recorded order116. Derived only by the first116orders of the retained121-order tape, then ordinary clock sync/save. No new controller, action alternative, prefix, health/stock/contract grant or settlement.",
+  "fixture": "northern-known-friendly-fire.save.json.gz",
+  "sha256": "52dfc00b67faede1d0244ed26626bec213aa9fe211ae9c2bdd993d75cd7e2e48",
+  "gzipSha256": "176d1335f3f3c1af5fdcdaf36bc3893ceefb13fd4b7680e2fb59aa01e3f5a557",
+  "sourceInitialSha256": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+  "sourceTraceSha256": "c5ceec96fde8c1ae24540f8943ebdfbc1da6d0e42840274e3f159505656e1791",
+  "sourceInitialFile": "native-ready.save.json",
+  "sourceTraceFile": "native-trace.json",
+  "recordedOrderCount": 121,
+  "replayedPrefixOrders": 116,
+  "nextRecordedAction": {
+    "type": "fire",
+    "unitId": "142",
+    "targetId": "enemy-3",
+    "aim": 0,
+    "hitLocation": "torso"
+  },
+  "nextPublicForecast": {
+    "hitLocation": "torso",
+    "aim": 0,
+    "chance": 41,
+    "damageFactor": 0.640625,
+    "conditional": true,
+    "reachChance": 0.44,
+    "interveningFriendly": true
+  },
+  "clock": [
+    417,
+    425
+  ],
+  "battle": {
+    "status": "active",
+    "turn": 4,
+    "phase": "interrupt",
+    "elapsedSeconds": 320,
+    "syncedSeconds": 320
+  },
+  "originalEarnedInputSha256": "7e781ef34c96f1a98bb0a7ed9e9b78dea0e7492c2962d9b3b3fa155967202b53",
+  "nativeInputCodeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "baseBuildIdentity": "9d03e36370d6",
+  "identityLimit": "Base/revalidated identity; game code unchanged. This is not the current cumulative build identity.",
+  "sourceHashes": {
+    "game/tactical.js": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+    "game/projectile-cover.js": "eea790ea6b8906584a089afa645096b8143beca098a12df3ac0006a58c269d74",
+    "game/save.js": "244e322bb6ae76f133d804c5021c9b9c782e8dfd76718fbfe1a9341485e45d66",
+    "game/time.js": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+    "tests/recovery-mendoza-driver.mjs": "4b97ea48c699ed87718c644748798e4297b9de3ca72e5fa107917570571428a2",
+    "tests/mountain-battery-driver.mjs": "ca3b9cf70cc7df4b43aadfaabb08867ceb3faf950581dec5204bc86a40c2bb4c",
+    "tests/northern-route.mjs": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+    "tests/tucuman-driver.mjs": "1daefc44f8e884d18a58f232d993de0f11d10866687b47a2d2ff579382e9d659"
+  },
+  "victoryUnproved": true
+}

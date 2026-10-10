@@ -1,0 +1,18 @@
+{
+  "scope": "Passive capture of an already returned defeated campaign after an actual raw victory. Existing strict assertion, resources, controllers and outcomes remain unchanged.",
+  "appliedUtc": "2026-10-10T06:17:56.950729+00:00",
+  "nativeCallsExecutedDuringApplication": 0,
+  "syntaxChecksPassed": 2,
+  "files": [
+    {
+      "path": "tests/northern-route.mjs",
+      "bytes": 85026,
+      "sha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8"
+    },
+    {
+      "path": "tests/route-failure-evidence.mjs",
+      "bytes": 3274,
+      "sha256": "6af33f0e0fa35f73220a25c9a2030e7a9281b8a1621c6e2df3176f457da1db10"
+    }
+  ]
+}

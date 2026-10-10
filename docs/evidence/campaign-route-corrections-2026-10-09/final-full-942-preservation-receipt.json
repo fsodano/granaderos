@@ -1,0 +1,17 @@
+{
+  "run": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z",
+  "exitCode": 1,
+  "complete": true,
+  "selectedFiles": 942,
+  "sourceDrift": [],
+  "nativeCaptureDirectories": 4,
+  "payloadFiles": 23,
+  "archive": "/tmp/granaderos-full942-terminal-preserved-20261010T042902551110Z/full942-terminal-native-evidence.tar.gz",
+  "archiveBytes": 3095562,
+  "archiveSha256": "47ed5be0eabe4fe6337a3a48717691b548343559f6fe53b2d472b6b1b49d1985",
+  "allowlistSha256": "c9dc9f2ee819b798db2b217320d097fc2406c99e5bd69a4ba95de9baf754f780",
+  "allRegularMembers": true,
+  "allExactPayloadBytes": true,
+  "repositoryEdits": 0,
+  "nativeOrdersExecuted": 0
+}

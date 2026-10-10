@@ -1,0 +1,596 @@
+{
+  "date": "2026-10-09",
+  "scope": "One fixed prospective medical-stock correction before the original exposed patrol, on the earned native C\u00f3rdoba106:1639 checkpoint. This proves real capture and finite custody care; it does not establish complete opening-campaign rescue/continuation.",
+  "input": {
+    "source": "One complete original tests/opening-playthrough.test.mjs on frozen7448e2da; external observational checkpoint after prepareTucumanSquad, before the original exposed patrol.",
+    "sourceCodeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+    "sourcePath": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening/011-prepareTucumanSquad-result.save.json",
+    "sourceRun": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening/summary.json",
+    "rawSha256": "17ffbb4b93bbb84d69c6b86e8e681418c4075b4c646e22bef287fb7823f07830",
+    "rawBytes": 650150,
+    "compressedSha256": "37c286417b0700e15a8e55bd0078bd2aecc02144771a0e2cf4c8d785c6dbd3dd",
+    "format": "granaderos",
+    "hour": 106,
+    "second": 1639,
+    "treasury": 13520,
+    "stateEdits": false,
+    "prospectivePolicy": "Two actual carried linen dressings for each of the four current patrol members, using public finite local stock then real qualified rear-doctor surplus while retaining two pieces per donor. No controller, clock, health, death, seed or detention-rule changes."
+  },
+  "quantityPolicy": {
+    "perPatrolMember": 2,
+    "doctorMinimumRetained": 2
+  },
+  "preparation": {
+    "cost": 0,
+    "elapsedSeconds": 0,
+    "donations": [],
+    "takes": [
+      {
+        "operativeId": 121,
+        "sourceKey": "container:cordoba:building:chest:17:1:5",
+        "expected": "{\"item\":\"medkits\",\"count\":8,\"weight\":0.2}",
+        "count": 2,
+        "sourceBefore": 8,
+        "sourceAfter": 6,
+        "medicalPoolBefore": 8,
+        "medicalPoolAfter": 6,
+        "carriedBefore": 0,
+        "carriedAfter": 2
+      },
+      {
+        "operativeId": 126,
+        "sourceKey": "container:cordoba:building:chest:17:1:5",
+        "expected": "{\"item\":\"medkits\",\"count\":6,\"weight\":0.2}",
+        "count": 2,
+        "sourceBefore": 6,
+        "sourceAfter": 4,
+        "medicalPoolBefore": 6,
+        "medicalPoolAfter": 4,
+        "carriedBefore": 0,
+        "carriedAfter": 2
+      },
+      {
+        "operativeId": 129,
+        "sourceKey": "container:cordoba:building:chest:17:1:5",
+        "expected": "{\"item\":\"medkits\",\"count\":4,\"weight\":0.2}",
+        "count": 2,
+        "sourceBefore": 4,
+        "sourceAfter": 2,
+        "medicalPoolBefore": 4,
+        "medicalPoolAfter": 2,
+        "carriedBefore": 0,
+        "carriedAfter": 2
+      },
+      {
+        "operativeId": 130,
+        "sourceKey": "container:cordoba:building:chest:17:1:5",
+        "expected": "{\"item\":\"medkits\",\"count\":2,\"weight\":0.2}",
+        "count": 2,
+        "sourceBefore": 2,
+        "sourceAfter": 0,
+        "medicalPoolBefore": 2,
+        "medicalPoolAfter": 0,
+        "carriedBefore": 0,
+        "carriedAfter": 2
+      }
+    ]
+  },
+  "actualNativePatrol": {
+    "status": "defeat",
+    "turns": 2,
+    "actions": 34,
+    "orders": 37,
+    "elapsedSeconds": 163,
+    "controllerExecutions": 1,
+    "actualPatrolDeaths": [],
+    "actualCaptured": [
+      121,
+      126,
+      129,
+      130
+    ]
+  },
+  "finiteHistory": {
+    "acquiredFromPublicChest": 8,
+    "combatStrokes": 3,
+    "actualConfiscatedDressings": 5,
+    "actualGuardDressingsConsumed": 5,
+    "remainingCapturedDressings": 0
+  },
+  "actualCustodyHealth": [
+    {
+      "stage": "accepted-defeat",
+      "hour": 118,
+      "second": 1802,
+      "captives": [
+        {
+          "id": 121,
+          "hp": 6,
+          "bleeding": 1,
+          "medkits": 1,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 126,
+          "hp": 9,
+          "bleeding": 0,
+          "medkits": 2,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 129,
+          "hp": 2,
+          "bleeding": 4,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 130,
+          "hp": 11,
+          "bleeding": 4,
+          "medkits": 2,
+          "alive": true,
+          "captured": true
+        }
+      ]
+    },
+    {
+      "stage": "custody-hour-1",
+      "hour": 119,
+      "second": 1802,
+      "captives": [
+        {
+          "id": 121,
+          "hp": 12,
+          "bleeding": 0,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 126,
+          "hp": 15,
+          "bleeding": 0,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 129,
+          "hp": 8,
+          "bleeding": 0,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 130,
+          "hp": 15,
+          "bleeding": 0,
+          "medkits": 1,
+          "alive": true,
+          "captured": true
+        }
+      ]
+    },
+    {
+      "stage": "custody-hour-2",
+      "hour": 120,
+      "second": 1802,
+      "captives": [
+        {
+          "id": 121,
+          "hp": 12,
+          "bleeding": 0,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 126,
+          "hp": 15,
+          "bleeding": 0,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 129,
+          "hp": 14,
+          "bleeding": 0,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        },
+        {
+          "id": 130,
+          "hp": 15,
+          "bleeding": 0,
+          "medkits": 0,
+          "alive": true,
+          "captured": true
+        }
+      ]
+    }
+  ],
+  "careReceipts": [
+    {
+      "id": 121,
+      "strokes": [
+        {
+          "hour": 119,
+          "guardId": "enemy-1",
+          "sourceId": 126,
+          "dressings": 1,
+          "hpBefore": 6,
+          "hpAfter": 12,
+          "bleedingBefore": 1,
+          "bleedingAfter": 0
+        }
+      ]
+    },
+    {
+      "id": 126,
+      "strokes": [
+        {
+          "hour": 119,
+          "guardId": "enemy-11",
+          "sourceId": 130,
+          "dressings": 1,
+          "hpBefore": 9,
+          "hpAfter": 15,
+          "bleedingBefore": 0,
+          "bleedingAfter": 0
+        }
+      ]
+    },
+    {
+      "id": 129,
+      "strokes": [
+        {
+          "hour": 119,
+          "guardId": "enemy-0",
+          "sourceId": 121,
+          "dressings": 1,
+          "hpBefore": 2,
+          "hpAfter": 8,
+          "bleedingBefore": 4,
+          "bleedingAfter": 0
+        },
+        {
+          "hour": 120,
+          "guardId": "enemy-0",
+          "sourceId": 130,
+          "dressings": 1,
+          "hpBefore": 8,
+          "hpAfter": 14,
+          "bleedingBefore": 0,
+          "bleedingAfter": 0
+        }
+      ]
+    },
+    {
+      "id": 130,
+      "strokes": [
+        {
+          "hour": 119,
+          "guardId": "enemy-10",
+          "sourceId": 126,
+          "dressings": 1,
+          "hpBefore": 11,
+          "hpAfter": 15,
+          "bleedingBefore": 4,
+          "bleedingAfter": 0
+        }
+      ]
+    }
+  ],
+  "firstAidSaved121": true,
+  "priorDeaths": {
+    "atEarnedCordobaInput": 16,
+    "atActualDeployment": 17,
+    "ordinaryMarchDeath": 111,
+    "allPreserved": true,
+    "ids": [
+      "107",
+      "110",
+      "111",
+      "114",
+      "115",
+      "116",
+      "117",
+      "119",
+      "120",
+      "123",
+      "124",
+      "125",
+      "131",
+      "134",
+      "136",
+      "137",
+      "1000"
+    ]
+  },
+  "nativeProof": {
+    "midpointSaved": true,
+    "exactFinalBattle": true,
+    "exactCareReplay": true,
+    "inputUnchanged": true,
+    "priorDeathsRetained": true
+  },
+  "regression": {
+    "test": "tests/opening-patrol-medical-readiness.test.mjs",
+    "nativeExecution": "One actual original poor-patrol controller execution. Its initial regression reached real defeat/exact replay then stopped at an extra new-death requirement. First aid created four actual captives and no new patrol deaths. That original failing log is retained.",
+    "scopeCorrection": "As authorized, require complete loss of the serving patrol into four actual captures, all prior/native deaths retained, finite8\u21925\u21920 stocks and actual care. Do not choose or force a new casualty.",
+    "validation": "Corrected source test passed on the same recorded native result through an external adapter that compares the exact deployment request and previous sector, then replays every native order and real capture/care. No fresh controller execution or outcome variant.",
+    "result": {
+      "pass": 1,
+      "fail": 0,
+      "elapsedSeconds": 6.544
+    },
+    "retainedDiagnosticFailures": [
+      "Pre-combat receipt assumed depleted container index could not be reused by the repair kit; corrected to check medical-pool debit and original stack depletion.",
+      "Proof incorrectly counted seventeen deaths at earned C input instead of actual deployment; sixteen existed before the real march and111 died during that march. Actual deployment has seventeen."
+    ]
+  },
+  "sourceProof": {
+    "sourceImports": 292,
+    "drift": [],
+    "method": "Original runtime imported bytes compared with launch filesystem hashes and end filesystem hashes. External checkpoint callback replacement only."
+  },
+  "review": "Independent read-only review found no finite source or fabricated state defect.",
+  "artifacts": "/tmp/granaderos-opening-patrol-medical-readiness-fixed",
+  "sharedIntegration": {
+    "files": [
+      "tests/northern-route.mjs",
+      "tests/opening-playthrough.test.mjs"
+    ],
+    "policy": "Fixed two-dressing stock preparation follows ordinary paid C recovery and precedes the original march/advanceOnCitadelOrder. Original defeat, complete field loss, genuine capture, all prior/actual deaths and frozen release-contract checks are retained.",
+    "sourceSha256": {
+      "tests/northern-route.mjs": "c6f7cd3e0c5538a009d056b68c205a4b6c2cc190d701f5a085193a5937fefb67",
+      "tests/opening-playthrough.test.mjs": "a94b72d7b25e4f55a7ff888d8f32df921bd1b442bfa0beab8dc30a1b77136972",
+      "tests/opening-patrol-medical-readiness.mjs": "614f938e5999f40f0a5cfeb1a1757fd6bfb4faae4e4e6d7b63285a689fc14442"
+    },
+    "completeOriginalFile": {
+      "command": "node --experimental-loader /tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/loader.mjs --test tests/opening-playthrough.test.mjs",
+      "exitCode": 1,
+      "elapsedSeconds": 238.62911400000002,
+      "nodeCountsIncludingParent": {
+        "tests": 8,
+        "pass": 3,
+        "fail": 2,
+        "skipped": 3
+      },
+      "subtests": {
+        "pass": 3,
+        "fail": 1,
+        "skip": 3
+      },
+      "terminalFailure": "stabilizeRescued: actual surviving doctors provide aid (no carried dressings on the admitted physician)",
+      "battles": [
+        {
+          "sector": "cordoba",
+          "status": "victory",
+          "turns": 13,
+          "actions": 176,
+          "startSeconds": 303070,
+          "elapsedSeconds": 93
+        },
+        {
+          "sector": "tucuman",
+          "status": "defeat",
+          "turns": 2,
+          "actions": 34,
+          "startSeconds": 426439,
+          "elapsedSeconds": 163
+        },
+        {
+          "sector": "cordoba",
+          "status": "victory",
+          "turns": 10,
+          "actions": 177,
+          "startSeconds": 541804,
+          "elapsedSeconds": 63
+        },
+        {
+          "sector": "tucuman",
+          "status": "victory",
+          "turns": 8,
+          "actions": 289,
+          "startSeconds": 678681,
+          "elapsedSeconds": 1350
+        }
+      ],
+      "scope": "One complete original opening file, no filters, no restarts on elapsed observations. Patrol readiness and genuine native four-captive loss/care/release passed; finite post-rescue physician supply assumption is next failure.",
+      "sourceProof": {
+        "originalImportedSources": 308,
+        "runtimeRecords": 615,
+        "inconsistentDuplicateHashes": [],
+        "drift": [],
+        "method": "Original runtime bytes from --experimental-loader before observer wrappers compared with complete prelaunch filesystem hashes and terminal filesystem hashes. All imported JSON files were present in the launch table."
+      },
+      "lastInput": {
+        "index": 26,
+        "stage": "input",
+        "name": "stabilizeRescued",
+        "wallTime": "2026-10-09T23:07:14.588Z",
+        "save": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/026-stabilizeRescued-input.save.json",
+        "sha256": "0b22e32f69671b232fa32c47f96de6653be0e579058d16ff52b9ce59802621da",
+        "hour": 188,
+        "second": 3231,
+        "treasury": 3774,
+        "location": "tucuman",
+        "pendingBattle": null,
+        "captured": [],
+        "deaths": [
+          "104",
+          "107",
+          "110",
+          "111",
+          "113",
+          "114",
+          "115",
+          "116",
+          "117",
+          "119",
+          "120",
+          "123",
+          "124",
+          "125",
+          "127",
+          "131",
+          "134",
+          "136",
+          "137",
+          "139",
+          "141",
+          "144",
+          "146",
+          "1000"
+        ]
+      }
+    },
+    "artifactDirectory": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready",
+    "nextFailureDiagnostics": {
+      "survivingLocalPhysician": {
+        "id": 122,
+        "medical": 85,
+        "hp": 67,
+        "maxHp": 67,
+        "bleeding": 0,
+        "medkits": 0,
+        "energy": 66,
+        "assignment": "active"
+      },
+      "publicReachableDressings": 9,
+      "nativeInventorySources": [
+        {
+          "sourceKey": "[\"body\",\"enemy-2\",\"medkits\"]",
+          "count": 1
+        },
+        {
+          "sourceKey": "[\"body\",\"enemy-6\",\"medkits\"]",
+          "count": 2
+        },
+        {
+          "sourceKey": "[\"body\",\"enemy-7\",\"medkits\"]",
+          "count": 2
+        },
+        {
+          "sourceKey": "[\"body\",\"enemy-9\",\"medkits\"]",
+          "count": 2
+        },
+        {
+          "sourceKey": "[\"body\",\"enemy-12\",\"medkits\"]",
+          "count": 2
+        }
+      ],
+      "ordersAfterFailure": 0,
+      "proposedCorrection": "Recover finite actor-local dressing stock for an actual nonpatient physician before assigning care; no production state or rules changed."
+    },
+    "finiteRescueCareProof": "docs/evidence/opening-rescue-finite-care-2026-10-09/evidence.json",
+    "nextCompleteOriginalFile": {
+      "command": "node --experimental-loader /tmp/granaderos-opening-rescue-audit-2849279c/full-opening-finite-care/loader.mjs --test tests/opening-playthrough.test.mjs",
+      "exitCode": 1,
+      "elapsedSeconds": 246.50621429199998,
+      "nodeCountsIncludingParent": {
+        "tests": 8,
+        "pass": 4,
+        "fail": 2,
+        "skipped": 2
+      },
+      "subtests": {
+        "pass": 4,
+        "fail": 1,
+        "skip": 2
+      },
+      "terminalFailure": "recoverRescueForce: two living qualified physicians are available on paid contracts",
+      "battles": [
+        {
+          "sector": "cordoba",
+          "status": "victory",
+          "turns": 13,
+          "actions": 176,
+          "startSeconds": 303070,
+          "elapsedSeconds": 93
+        },
+        {
+          "sector": "tucuman",
+          "status": "defeat",
+          "turns": 2,
+          "actions": 34,
+          "startSeconds": 426439,
+          "elapsedSeconds": 163
+        },
+        {
+          "sector": "cordoba",
+          "status": "victory",
+          "turns": 10,
+          "actions": 177,
+          "startSeconds": 541804,
+          "elapsedSeconds": 63
+        },
+        {
+          "sector": "tucuman",
+          "status": "victory",
+          "turns": 8,
+          "actions": 289,
+          "startSeconds": 678681,
+          "elapsedSeconds": 1350
+        }
+      ],
+      "sourceProof": {
+        "originalImportedSources": 308,
+        "runtimeRecords": 613,
+        "inconsistentDuplicateHashes": [],
+        "drift": [],
+        "method": "Original imported runtime bytes before external checkpoint wrappers compared with full prelaunch and terminal filesystem hashes. All imported JSON sources included."
+      },
+      "lastNativeInput": {
+        "index": 28,
+        "stage": "input",
+        "name": "recoverRescueForce",
+        "wallTime": "2026-10-09T23:29:37.392Z",
+        "save": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-finite-care/028-recoverRescueForce-input.save.json",
+        "sha256": "2b0eea429d88e26f55538673048c6d503fdc7a220eb0163017cac1cc8e79cd45",
+        "hour": 192,
+        "second": 3268,
+        "treasury": 3774,
+        "location": "tucuman",
+        "pendingBattle": null,
+        "captured": [],
+        "deaths": [
+          "104",
+          "107",
+          "110",
+          "111",
+          "113",
+          "114",
+          "115",
+          "116",
+          "117",
+          "119",
+          "120",
+          "123",
+          "124",
+          "125",
+          "127",
+          "131",
+          "134",
+          "136",
+          "137",
+          "139",
+          "141",
+          "144",
+          "146",
+          "1000"
+        ]
+      },
+      "scope": "One complete original opening file, no filters or elapsed restarts. Genuine patrol loss/four captures, native rescue victory/release/contract assertions and finite-six-piece four-captive stabilization passed. Courier staffing failure prevented Salta/Yatasto."
+    },
+    "nextCompleteOriginalArtifactDirectory": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-finite-care"
+  }
+}

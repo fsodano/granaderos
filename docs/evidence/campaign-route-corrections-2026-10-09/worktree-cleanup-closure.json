@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "checkedUtc": "2026-10-10T02:14:00.976644+00:00",
+  "scope": "Read-only registration and receipt/count closure; no backup data rehash, no file/process/worktree mutation. This file is the sole write.",
+  "backupRoot": "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z",
+  "worktrees": [
+    {
+      "worktree": "/Users/fsodano/fibradev/games/granaderos",
+      "HEAD": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+      "branch": "refs/heads/main"
+    },
+    {
+      "worktree": "/Users/fsodano/.codex/worktrees/375527a8-77af-41d0-8476-5363e6f804a9/granaderos",
+      "HEAD": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+      "detached": true
+    },
+    {
+      "worktree": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+      "HEAD": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+      "branch": "refs/heads/codex/campaign-port-discovery"
+    }
+  ],
+  "mapReviewTask": {
+    "id": "01a122e8-1370-7ba2-a359-95d0f03df9e6",
+    "title": "Show me a map with players from the game so I can check dimensions",
+    "statusAtCheck": "idle",
+    "cwd": "/Users/fsodano/.codex/worktrees/375527a8-77af-41d0-8476-5363e6f804a9/granaderos",
+    "evidence": "mcp__codex_app__list_threads current response"
+  },
+  "checks": {
+    "exactExpectedThreeRegistered": true,
+    "primaryMainRetained": true,
+    "activeRepairBranchRetained": true,
+    "mapTaskCheckoutRetained": true,
+    "allRegisteredPathsExist": true,
+    "original17RemovedRowsConfirmed": true,
+    "noneOfOriginal17StillRegistered": true,
+    "original16PhysicalCheckoutsAbsent": true,
+    "interruptedCheckoutGone": true,
+    "all46OrphanShellSourcesGone": true,
+    "orphanReceiptPreservedRegisteredWorktrees": true,
+    "previewAliasPreserved": true,
+    "97SourceManifestEntriesExist": true,
+    "custodyBeforeAfterReceiptsEqual": true
+  },
+  "counts": {
+    "originalRegisteredWorktreesRemoved": 17,
+    "currentRegisteredWorktrees": 3,
+    "historicalCompletionRemaining": 2,
+    "orphanFolderShellsMoved": 46,
+    "interruptedAppCheckoutFilesRecorded": 8328,
+    "sourceFilesInManifest": 97
+  },
+  "receipts": [
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/completion-receipt.json",
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/removal-receipt.json",
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/preview-cache-receipt.json",
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/orphan-folder-shells-20261009T225631Z/receipt.json",
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/interrupted-730de4da/receipt.json",
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/source-manifest.json",
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/custody-full-before.json",
+    "/Users/fsodano/fibradev/games/granaderos-worktree-backups/cleanup-20261009T215633Z/custody-full-after.json"
+  ],
+  "conclusion": "No obsolete registered worktree remains. Primary, active repair, and separate map-review worktrees are retained. The historical remaining-count2 precedes the current map-review checkout; it is not a current-count3 discrepancy. The preview alias is a non-Git cache link."
+}

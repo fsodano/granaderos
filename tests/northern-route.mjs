@@ -1,5 +1,7 @@
+import {northernFieldSurvivors} from './northern-field-survivors.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {assertCustodyCare} from './custody-care-evidence.mjs';
+import {prepareOpeningPatrolMedicalReadiness} from './opening-patrol-medical-readiness.mjs';
 import assert from 'node:assert/strict';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
@@ -7,17 +9,20 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
+import {autoBandageBattle} from '../game/auto-bandage.js';
 import {fight,combatOrder} from './opening-driver.mjs';
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {enterSector} from '../game/world.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
-import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight,firearmShotOptions,weaponFor} from '../game/tactical.js';
+import {actBattle,getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight,firearmShotOptions,weaponFor,interruptAvailable} from '../game/tactical.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
+import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
 import {doctorRate} from '../game/medical-care.js';
+import {assignNorthernCareRoles} from './northern-care-roles.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {contractQuote} from '../game/contracts.js';
@@ -28,6 +33,7 @@ import {prepareRouteSupportBattery} from './route-support-battery.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {storedArtilleryRecord} from '../game/artillery-transport.js';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
+import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 
 // Both paid squads approach together in short bounds. Use authored roof
 // geometry and current shot previews, while retaining real casualties,
@@ -50,6 +56,7 @@ export function northernCombatOrder(battle,unit){
   const cost=actionCosts(battle,unit,target);if(unit.ap<cost.fire)continue;
   const maxAim=Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim));
   for(const option of firearmShotOptions(battle,unit,target,maxAim)){
+   if(option.interveningFriendly||option.shots?.some(shot=>shot.interveningFriendly))continue;
    if(option.chance<25)continue;
    const damage=weaponFor(unit).damage,effect=shotLocationEffects(option.hitLocation,damage*option.damageFactor,target);
    const value=Math.min(target.hp,effect.damage)+(target.hp-effect.damage<15?0:effect.breathLoss*.15+(effect.knockedDown?10:0));
@@ -57,7 +64,40 @@ export function northernCombatOrder(battle,unit){
    shots.push({score,action:{type:'fire',unitId:unit.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation}});
   }
  }
- return shots.sort((a,b)=>b.score-a.score)[0]?.action??action;
+ const ranked=shots.sort((a,b)=>b.score-a.score)[0]?.action;
+ if(ranked)return ranked;
+ if(action?.type==='fire'){
+  const target=battle.units.find(target=>target.id===action.targetId);
+  const preview=target&&firearmShotOptions(battle,unit,target,action.aim??0).find(option=>option.aim===(action.aim??0)&&option.hitLocation===(action.hitLocation??'torso'));
+  if(preview?.interveningFriendly||preview?.shots?.some(shot=>shot.interveningFriendly)){
+   // A blocked shot can still admit an ordinary paid posture or cover move.
+   // Let the native chooser use only the squad's currently known occupants.
+   const view={...battle,units:battle.units.filter(other=>other.side===unit.side||teamCanSee(battle,unit.side,other)),npcs:(battle.npcs??[]).filter(other=>teamCanSee(battle,unit.side,other))};
+   const alternative=chooseEnemyAction(view,unit);
+   if(!alternative&&!unit.mounted&&interruptAvailable(view,unit)){
+    // Match the northern useful-shot threshold after paying to lower the gun
+    // and change posture. Keep an affordable native alternative first.
+    const postures=['crouched','standing','prone'].filter(stance=>stance!==unit.stance).sort((a,b)=>stanceCost(unit,a)-stanceCost(unit,b));
+    for(const stance of postures){
+     const cost=stanceCost(unit,stance);if(cost<=0||cost>=unit.ap)continue;
+     const position={...unit,stance,movementMode:stance==='prone'?'prone':stance==='crouched'?'crouch':'walk',momentum:0,weaponReady:false,ap:unit.ap-cost};
+     const posed={...view,units:view.units.map(other=>other.id===unit.id?position:other)};
+     const useful=targets.some(target=>{
+      if(!teamCanSee(posed,unit.side,target)||!hasLineOfSight(posed,position,target))return false;
+      const costs=actionCosts(posed,position,target);if(position.ap<costs.fire)return false;
+      const aim=Math.min(4,Math.floor((position.ap-costs.fire)/costs.aim));
+      return firearmShotOptions(posed,position,target,aim).some(option=>option.chance>=25&&option.damageFactor>0&&!option.interveningFriendly&&!option.shots?.some(shot=>shot.interveningFriendly));
+     });
+     if(useful)return {type:'stance',unitId:unit.id,stance};
+    }
+   }
+   if(alternative?.type!=='fire')return alternative;
+   const other=view.units.find(target=>target.id===alternative.targetId);
+   const forecast=other&&firearmShotOptions(view,unit,other,alternative.aim??0).find(option=>option.aim===(alternative.aim??0)&&option.hitLocation===(alternative.hitLocation??'torso'));
+   return forecast&&!forecast.interveningFriendly&&!forecast.shots?.some(shot=>shot.interveningFriendly)?alternative:null;
+  }
+ }
+ return action;
 }
 
 // The paid clinic guards already reached roof cover before the patrol left.
@@ -65,6 +105,8 @@ export function northernCombatOrder(battle,unit){
 // ground-level defenders keep the ordinary infantry policy.
 export function northernClinicDefenseOrder(battle,unit){
  const action=northernCombatOrder(battle,unit);
+ // A knocked-down guard must pay the native standing recovery before holding roof cover.
+ if(unit.knockedDown&&action?.type==='stance'&&action.stance==='standing')return action;
  if((unit.tacticalLevel??0)>0&&(action?.type==='move'||action?.type==='charge'||action?.type==='stance'&&action.stance==='standing')){
   const contact=battle.units.some(target=>target.side==='enemy'&&target.hp>=15&&!target.departure&&!target.unconscious&&!target.routed&&!target.surrendered&&teamCanSee(battle,unit.side,target));
   if(battle.turn<20||contact)return null;
@@ -178,8 +220,6 @@ export function prepareNorthernSquad(start,{report=()=>{},ammunitionTarget=10}={
    }
   }
  };
- for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
- for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
  for(let i=0;patients.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp)&&i<60;i++){
   assert.equal(campaign.pendingEncounter,null,'resolve a real encounter before continuing care');
   retainCareContracts(2);
@@ -202,8 +242,8 @@ export function prepareNorthernSquad(start,{report=()=>{},ammunitionTarget=10}={
    assert.equal(campaign.pendingEncounter,null);assert.equal(campaign.pendingBattle,null);
    assert.equal(campaign.operativeState[courier].location,'san_nicolas','the actual supply courier must return to the clinic');
    assert.equal(campaign.squads.find(q=>q.members.includes(courier))?.journey,undefined,'the supply route must finish before medical work resumes');
-   order({type:'assignCare',operativeId:courier,assignment:'doctor'});
   }
+  campaign=assignNorthernCareRoles(campaign,doctors,patients,action=>{order(action);return campaign;});
   order({type:'wait',hours:1});
  }
  report({event:'northernCareCheckpoint',hour:campaign.hour,treasury:campaign.resources.treasury,medicalTrips,careRenewals,doctors:doctors.map(id=>({id,medkits:campaign.operativeState[id].medkits,assignment:campaign.operativeState[id].assignment})),patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,maxHp:campaign.operativeState[id].maxHp,assignment:campaign.operativeState[id].assignment}))});
@@ -214,8 +254,9 @@ export function prepareNorthernSquad(start,{report=()=>{},ammunitionTarget=10}={
  // Rest and stage for a daylight arrival without editing health or clocks.
  const departure=campaign.hour+6+(24-(campaign.hour+6)%24)%24;
  for(let i=0;campaign.hour<departure&&i<80;i++){retainCareContracts(24);order({type:'wait',hours:1});}assert.equal(campaign.hour,departure);
- const available=id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured&&campaign.operativeState[id].location==='san_nicolas';
- const survivors=[...new Set([1000,114,123,...campaign.recruited])].filter(id=>!doctors.includes(id)&&available(id));
+ // Patients and doctors already received ordinary rest orders above. An
+ // excluded recovering patient keeps that native rest assignment.
+ const survivors=northernFieldSurvivors(campaign,doctors,'san_nicolas');
  const replacements=[];
  for(const id of [120,134,136,117,119,127]){
   if(survivors.length+replacements.length>=6)break;
@@ -282,6 +323,7 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  const summary={sector,preparationSeconds,startSeconds:result.battle.startSeconds,elapsedSeconds:result.battle.elapsedSeconds,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
  report({event:'battleFinished',...summary});
  assert.ok(['victory','defeat','retreat'].includes(expectedOutcome));
+ if(result.battle.status!==expectedOutcome)recordRouteBattleFailure({campaign,request,previous:campaign.sectorStates[sector],result,expectedOutcome,controller,deploy,executeBattle});
  assert.equal(result.battle.status,expectedOutcome,JSON.stringify(summary));
  const replay=executeBattle(request,campaign.sectorStates[sector],{controller,deploy});assert.deepEqual(replay.battle,result.battle);
  const pair=syncBattleTime(campaign,result.battle);assert.equal(pair.error,null);
@@ -290,7 +332,10 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  assert.equal(returned.lastError,null,returned.lastError);
  // A cleared battlefield cannot certify a continuing campaign when its
  // commander has died and settlement has made the campaign terminal.
- if(expectedOutcome==='victory')assert.equal(returned.defeated,false,'a route victory must leave the campaign playable');
+ if(expectedOutcome==='victory'){
+  if(returned.defeated)recordRouteBattleFailure({campaign,request,previous:campaign.sectorStates[sector],result,expectedOutcome,controller,deploy,executeBattle,returnedCampaign:returned,failureStage:'campaign-after-victory'});
+  assert.equal(returned.defeated,false,'a route victory must leave the campaign playable');
+ }
  const navalLoss=expectedOutcome==='defeat'&&request.defenseGroupId&&campaign.enemyGroups.find(group=>group.id===request.defenseGroupId)?.theater==='coast';
  if(request.missionId==='san_lorenzo'){assert.equal(returned.flags.sanLorenzo,expectedOutcome==='victory');if(expectedOutcome==='victory')assert.equal(returned.defeated,false);}
  else assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':expectedOutcome==='retreat'||navalLoss?campaign.sectors[sector].owner:'royalist');
@@ -427,10 +472,12 @@ export function prepareTucumanSquad(start,{report=()=>{}}={}){
  earliestDeparture=campaign.hour;nightDeparture=earliestDeparture+(22-(earliestDeparture+12)%24+24)%24;
  for(let attempt=0;campaign.hour<nightDeparture&&attempt<48;attempt++)order({type:'wait',hours:nightDeparture-campaign.hour});
  assert.equal(campaign.hour,nightDeparture,'the exposed patrol completes its real staging wait');
+ const patrolMedical=prepareOpeningPatrolMedicalReadiness(campaign,{report});campaign=patrolMedical.campaign;
+ for(const action of patrolMedical.receipt.orders)events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0,cost:0});
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(campaign.squad,fieldIds);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  const hiringLedger=events.filter(event=>event.action.type==='recruitCivic').map(event=>({id:event.action.id,term:event.action.term,hour:event.hour,cost:event.cost,alive:campaign.operativeState[event.action.id].alive})),fortificationCost=events.filter(event=>event.action.type==='fortify').reduce((sum,event)=>sum+event.cost,0);
- const recovery={startHour,endHour:campaign.hour,doctor,patients,replacements:fieldIds,fieldIds,usedDressings,boughtDressings,donatedDressings,foundDressings:found.collected+laterFoundDressings,clinicGuards,clinicDefenses,hiringLedger,fortificationCost,initialFort,clinicArmament,clinicAmmunition:clinicAmmo.transactions};report({event:'cordobaRecovery',...recovery,cash:campaign.resources.treasury});return {campaign,events,recovery};
+ const recovery={startHour,endHour:campaign.hour,doctor,patients,replacements:fieldIds,fieldIds,usedDressings,boughtDressings,donatedDressings,foundDressings:found.collected+laterFoundDressings,clinicGuards,clinicDefenses,hiringLedger,fortificationCost,initialFort,clinicArmament,clinicAmmunition:clinicAmmo.transactions,patrolMedicalReadiness:patrolMedical.receipt};report({event:'cordobaRecovery',...recovery,cash:campaign.resources.treasury});return {campaign,events,recovery};
 }
 
 export function prepareRescueSquad(start,{report=()=>{}}={}){
@@ -731,25 +778,71 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
 }
 
 export function stabilizeRescued(start,{patients,report=()=>{}}={}){
- let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
- const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
+ let campaign=decodeSave(encodeSave(start)).campaign,battle=null;const events=[],orders=[],medicalCollections=[];
+ const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});orders.push({scope:'campaign',action});};
  assert.ok(patients?.length,'stabilize the actual released prisoners');
- const doctors=rosterFor(campaign).filter(op=>{const r=campaign.operativeState[op.id];return campaign.recruited.includes(op.id)&&!patients.includes(op.id)&&r.alive&&!r.captured&&r.location==='tucuman'&&r.hp>=15&&op.medical>=20&&r.medkits>0;}).sort((a,b)=>b.medical-a.medical).map(op=>op.id);
- assert.ok(doctors.length,'actual surviving doctors provide aid');
  assert.equal(campaign.sectors.tucuman.owner,'patriot');assert.equal(campaign.pendingEncounter,null);
  for(const id of patients){assert.equal(campaign.operativeState[id].captured,false);assert.ok(campaign.recruited.includes(id));}
+ const local=()=>rosterFor(campaign).filter(op=>{const r=campaign.operativeState[op.id];return campaign.recruited.includes(op.id)&&r.alive&&!r.captured&&r.location==='tucuman';});
+ const physician=local().filter(op=>{const r=campaign.operativeState[op.id];return !patients.includes(op.id)&&op.medical>=20&&r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10;}).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
+ assert.ok(physician,'an actual stable local physician must provide aid');
+ const urgent=local().filter(op=>!patients.includes(op.id)&&op.id!==physician.id&&(campaign.operativeState[op.id].bleeding||campaign.operativeState[op.id].hp<15)).map(op=>op.id);
+ // Reserve one actual clinic stroke for each released prisoner. Other local
+ // rescuers receive finite first aid before the clinic advances an hour.
+ const dressingTarget=patients.length+urgent.reduce((sum,id)=>sum+Math.max(Number(campaign.operativeState[id].bleeding>0),15-campaign.operativeState[id].hp),0);
+ while(campaign.operativeState[physician.id].medkits<dressingTarget){
+  const model=sectorInventoryModel(campaign,'tucuman',rosterFor(campaign),physician.id),row=model.entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+  assert.ok(row,'known finite local dressings must cover the released patients and urgent rescuers');
+  const count=Math.min(row.count,dressingTarget-campaign.operativeState[physician.id].medkits),carriedBefore=campaign.operativeState[physician.id].medkits,cash=campaign.resources.treasury,seconds=campaign.hour*3600+(campaign.secondOfHour??0);
+  const medicalPoolBefore=model.entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
+  order({type:'sectorInventory',sector:'tucuman',operativeId:physician.id,direction:'take',sourceKey:row.key,expected:row.expected,count});
+  const after=sectorInventoryModel(campaign,'tucuman',rosterFor(campaign),physician.id),medicalPoolAfter=after.entries.filter(row=>JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
+  assert.equal(medicalPoolAfter,medicalPoolBefore-count);assert.equal(campaign.operativeState[physician.id].medkits,carriedBefore+count);
+  assert.equal(campaign.resources.treasury,cash);assert.equal(campaign.hour*3600+(campaign.secondOfHour??0),seconds);
+  medicalCollections.push({action:orders.at(-1).action,sourceBefore:row.count,sourceAfter:row.count-count,medicalPoolBefore,medicalPoolAfter,carriedBefore,carriedAfter:campaign.operativeState[physician.id].medkits});
+ }
+ const emergencyAid={patients:urgent,steps:[],elapsedSeconds:0,usedDressings:0,officialMidpoint:false};
+ if(urgent.length){
+  const ids=[physician.id,...urgent];assert.ok(ids.length<=6,'the actual urgent aid party fits one ordinary squad');
+  const selected=campaign.activeSquadId,groups=campaign.squads.map(q=>({id:q.id,members:[...q.members]})),roles=ids.map(id=>({id,assignment:campaign.operativeState[id].assignment})),beforeAid=structuredClone(campaign);
+  order({type:'squad',ids});for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
+  order({type:'visitSector'});battle=enterSector({...campaign.pendingBattle,hour:campaign.hour,secondOfHour:campaign.secondOfHour??0},campaign.sectorStates.tucuman);
+  const aid=autoBandageBattle(battle);assert.ok(aid.steps.length);assert.deepEqual(aid.untreated,[],'native aid must stabilize the actual urgent party');
+  const sync=()=>{const paid=syncBattleTime(campaign,battle);assert.equal(paid.error,null);campaign=paid.campaign;battle=paid.battle;};
+  for(let i=0;i<aid.steps.length;i++){
+   battle=actBattle(battle,aid.steps[i]);assert.equal(battle.lastError,null);sync();orders.push({scope:'tactical',action:aid.steps[i]});
+   if(i===Math.floor(aid.steps.length/2)){({campaign,battle}=decodeSave(encodeSave(campaign,battle)));emergencyAid.officialMidpoint=true;}
+  }
+  emergencyAid.steps=aid.steps;emergencyAid.elapsedSeconds=aid.elapsedSeconds;
+  sync();order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')});battle=null;
+  for(const group of groups.filter(q=>q.members.some(id=>ids.includes(id)))){order({type:'selectSquad',id:group.id});order({type:'squad',ids:group.members});}
+  for(const role of roles)order({type:'assignCare',operativeId:role.id,assignment:role.assignment});order({type:'selectSquad',id:selected});
+  for(const group of groups)assert.deepEqual(campaign.squads.find(q=>q.id===group.id).members,group.members);
+  for(const id of urgent){assert.equal(campaign.operativeState[id].alive,true);assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
+  emergencyAid.usedDressings=beforeAid.operativeState[physician.id].medkits-campaign.operativeState[physician.id].medkits;
+ }
+ const doctors=rosterFor(campaign).filter(op=>{const r=campaign.operativeState[op.id];return campaign.recruited.includes(op.id)&&!patients.includes(op.id)&&r.alive&&!r.captured&&r.location==='tucuman'&&r.hp>=15&&op.medical>=20&&r.medkits>0;}).sort((a,b)=>b.medical-a.medical).map(op=>op.id);
+ assert.ok(doctors.length,'actual surviving doctors provide aid');
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
- const before=structuredClone(campaign),hour=campaign.hour;
+ const before=structuredClone(campaign),hour=campaign.hour,clinicStartSeconds=campaign.hour*3600+(campaign.secondOfHour??0);
  // Each surviving doctor treats a limited number of patients per hour.
  // Keep actual care running until every released captive receives it.
  const treated=id=>{const r=campaign.operativeState[id],prior=before.operativeState[id];return !r.bleeding&&(prior.bleeding?r.hp>=prior.hp:r.hp>prior.hp);};
- for(let elapsed=0;elapsed<=patients.length&&!patients.every(treated);elapsed++)order({type:'wait',hours:1});
+ for(let elapsed=0;elapsed<=patients.length&&!patients.every(treated);elapsed++){
+  const intendedSeconds=campaign.hour*3600+(campaign.secondOfHour??0)+3600;
+  for(let requests=0;requests<8&&campaign.hour*3600+(campaign.secondOfHour??0)<intendedSeconds;requests++){
+   for(const operativeId of patients.filter(treated))if(campaign.operativeState[operativeId].assignment==='patient')order({type:'assignCare',operativeId,assignment:'rest'});
+   order({type:'wait',hours:1});assert.equal(campaign.pendingEncounter,null,'the clinic cannot bypass an actual arrival');
+  }
+  assert.equal(campaign.hour*3600+(campaign.secondOfHour??0),intendedSeconds,'bounded ordinary wait requests must complete the intended care hour');
+ }
  assert.ok(campaign.hour>hour&&campaign.hour<=hour+patients.length+1);
+ const clinicElapsedSeconds=campaign.hour*3600+(campaign.secondOfHour??0)-clinicStartSeconds;assert.ok(clinicElapsedSeconds>=3600&&clinicElapsedSeconds<=(patients.length+1)*3600);
  const usedDressings=doctors.reduce((sum,id)=>sum+before.operativeState[id].medkits-campaign.operativeState[id].medkits,0);assert.ok(usedDressings>0);
  for(const id of patients){assert.equal(campaign.operativeState[id].alive,true);assert.equal(campaign.operativeState[id].bleeding,0);if(before.operativeState[id].bleeding)assert.equal(campaign.operativeState[id].hp,before.operativeState[id].hp);else assert.ok(campaign.operativeState[id].hp>before.operativeState[id].hp);}
  for(const [id,r] of Object.entries(before.operativeState))if(!r.alive)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  report({event:'rescuedStable',hour:campaign.hour,usedDressings,patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,bleeding:campaign.operativeState[id].bleeding}))});
- return {campaign,events,patients,doctors,usedDressings};
+ return {campaign,events,orders,patients,doctors,usedDressings,medicalCollections,emergencyAid,dressingTarget,clinicElapsedSeconds};
 }

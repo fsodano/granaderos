@@ -1,0 +1,46 @@
+{
+  "scope": "Complete original Cuyo failed after native Mendoza, stabilization, foundry; one actual finite courier from accepted540 then one clinical continuation from accepted693. No native fight or journey repeated.",
+  "completeOriginal": {
+    "test": "tests/fresh-cuyo-route.test.mjs",
+    "log": "/tmp/granaderos-complete-cuyo-admission-care-current.log",
+    "result": "1fail0skip",
+    "durationMs": 507400.600875,
+    "imports": 327,
+    "hashDrift": [],
+    "failure": "prepareFreshArmyFunding: no actual reachable finite dressings remain for112Mendoza"
+  },
+  "input540": "/tmp/granaderos-complete-cuyo-admission-care-current.75463.terminal.save.json",
+  "courierReceipt": "/tmp/granaderos-cuyo-funding-finite-courier-once-recorded-replay-receipt.json",
+  "accepted693": "/tmp/granaderos-cuyo-funding-finite-courier-once-recorded-replay-final.save.json",
+  "continuationReceipt": "/tmp/granaderos-cuyo-funding-clinician-rest-continuation-receipt.json",
+  "accepted710": "/tmp/granaderos-cuyo-funding-clinician-rest-continuation-accepted.save.json",
+  "totalOrders": 155,
+  "finiteSourceDebit": 7,
+  "totalRenewalCost": 6271,
+  "from": [
+    540,
+    1899
+  ],
+  "to": [
+    710,
+    1899
+  ],
+  "all16FullHp": true,
+  "survivors": 16,
+  "deathCount": 27,
+  "remainingDoctorDressings": 1,
+  "sourceFile": "tests/fresh-cuyo-route.mjs",
+  "sourceSha256": "323205c4cbeea2c546818b2ce4504abcc4f47cc8ab03daf83607543840b5a20f",
+  "imports": 280,
+  "hashDrift": [],
+  "exactSavedReplay": {
+    "everyObservedNativeAction": true,
+    "officialMidpoint": true,
+    "exactExpandedGeometry": true,
+    "exactCompleteOfficialFinalPair": true,
+    "inputUnchanged": true,
+    "all16ServingRetained": true,
+    "all27DeathsRetained": true,
+    "noRepeatedContinuation": true
+  }
+}

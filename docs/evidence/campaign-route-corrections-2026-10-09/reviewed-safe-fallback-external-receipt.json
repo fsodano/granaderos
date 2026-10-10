@@ -1,0 +1,431 @@
+{
+  "scope": "Bounded external northern unsafe-fire fallback controls. No campaign combat, turn loop, victory claim or repo copy.",
+  "executionOrder": [
+    "initial overlay run retained in bounded-native-controls.log",
+    "same new tests on unchanged-current baseline retained in unchanged-current-baseline.log",
+    "reviewed overlay controls retained in reviewed-overlay-controls.log"
+  ],
+  "baseline": {
+    "command": [
+      "node",
+      "--test",
+      "tests/northern-safe-fallback.test.mjs"
+    ],
+    "cwd": "/tmp/granaderos-northern-safe-fallback-review-20261010/baseline",
+    "durationSeconds": 0.7028839588165283,
+    "exitCode": 1,
+    "logSha256": "b9ee4856cdb888d156f97fdf34e0d3d6f4a6744f4555fc02ef6e83239ee4354b",
+    "testSha256": "a105e8ac245dd7a320959460ccb551b73d58bdf7beccf00700aa8a0596e99011",
+    "sourceHashes": {
+      "tests/northern-route.mjs": "a4c7bcc447d33fa643b2a45cabbaccba30fc3bb290aaff8b6e1f7f22fd24202f",
+      "tests/tucuman-driver.mjs": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463",
+      "game/tactical.js": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "game/tactical-ai.js": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4"
+    },
+    "campaignActions": 0,
+    "scope": "Same new tests against exact frozen current source. Expected missing-action failures occur before every tactical action call.",
+    "rootInputCount": 301,
+    "sourceDrift": []
+  },
+  "reviewedOverlay": {
+    "command": [
+      "node",
+      "--test",
+      "tests/northern-safe-fallback.test.mjs",
+      "tests/northern-firearm-safety.test.mjs",
+      "tests/northern-clinic-knockdown-recovery.test.mjs"
+    ],
+    "cwd": "/tmp/granaderos-northern-safe-fallback-review-20261010/overlay",
+    "exitCode": 0,
+    "durationSeconds": 1.1187679767608643,
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "nativeCalls": {
+      "acceptedPaidLaneMove": 1,
+      "laneMoveExactReplay": 1,
+      "acceptedPaidRoofStanding": 1,
+      "roofStandingExactReplay": 1,
+      "explicitAtomicRefusal": 1,
+      "fire": 0,
+      "endTurn": 0,
+      "campaignAction": 0
+    },
+    "logSha256": "d99a1e2eabda83b6c2bd9cdbf82ba9e199cbcf1a032a1f2a61d1c3168d4d48c8"
+  },
+  "sourcePatch": {
+    "path": "/tmp/granaderos-northern-safe-fallback-review-20261010/northern-safe-fallback-source.patch",
+    "sha256": "c28da6cecc0e2a58757dc05c8ae64b697c1909cbe8905db573de2870365cd31a"
+  },
+  "expectationPatch": {
+    "path": "/tmp/granaderos-northern-safe-fallback-review-20261010/northern-safe-fallback-existing-test.patch",
+    "sha256": "2f0e273822fac6afb19607a632e2da58eb2be444c994b07d8d9e6a8498f645a0"
+  },
+  "installPatch": {
+    "path": "/tmp/granaderos-northern-safe-fallback-review-20261010/northern-safe-fallback-install.patch",
+    "sha256": "bce0764a77f17b03e5945844b1af4fefdf7994f5ba4c4b59b900d2534390fd70",
+    "bytes": 11791
+  },
+  "portableTest": {
+    "path": "/tmp/granaderos-northern-safe-fallback-review-20261010/northern-safe-fallback.test.mjs",
+    "sha256": "a105e8ac245dd7a320959460ccb551b73d58bdf7beccf00700aa8a0596e99011",
+    "bytes": 8702
+  },
+  "rootInputCount": 301,
+  "sourceDrift": [],
+  "repositoryWrites": false,
+  "gameCodeMutations": false,
+  "sourceHashesBefore": {
+    "game/save.js": "244e322bb6ae76f133d804c5021c9b9c782e8dfd76718fbfe1a9341485e45d66",
+    "game/tactical-ai.js": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4",
+    "game/tactical.js": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+    "game/time.js": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+    "tests/northern-route.mjs": "a4c7bcc447d33fa643b2a45cabbaccba30fc3bb290aaff8b6e1f7f22fd24202f",
+    "tests/tucuman-driver.mjs": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463"
+  },
+  "externalOverrideHashes": {
+    "tests/northern-route.mjs": "d2df5898830cb6ffa1c393300a21cfbbc6989312393c8b79dab241b9c2e4feef",
+    "tests/northern-firearm-safety.test.mjs": "6b2711e7202a3e8c66974f4b2e056ae303c60e8b59852fa6536b59a3bd71aa8e",
+    "tests/northern-safe-fallback.test.mjs": "a105e8ac245dd7a320959460ccb551b73d58bdf7beccf00700aa8a0596e99011"
+  },
+  "diagnostics": [
+    {
+      "case": "paid-roof-knockdown-recovery",
+      "scope": "declared initial knockdown/AP arena; validated JSON round-trip only",
+      "apBefore": 12,
+      "apAfter": 0,
+      "paidAP": 12,
+      "elapsedBefore": 0,
+      "elapsedAfter": 6,
+      "cellBefore": {
+        "x": 2,
+        "y": 2,
+        "tacticalLevel": 1
+      },
+      "cellAfter": {
+        "x": 2,
+        "y": 2,
+        "tacticalLevel": 1
+      },
+      "finiteBefore": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "finiteAfter": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "knockedDownBefore": true,
+      "knockedDownAfter": false,
+      "inputUnchanged": true,
+      "jsonRoundTripExact": true
+    },
+    {
+      "case": "one-AP-short-native-refusal",
+      "apBefore": 11,
+      "apAfter": 11,
+      "requiredAP": 12,
+      "elapsedBefore": 0,
+      "elapsedAfter": 0,
+      "finiteBefore": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "finiteAfter": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "knockedDownAfter": true,
+      "lastError": "Cambiar de postura requiere 3 PA.",
+      "atomicRefusal": true
+    },
+    {
+      "case": "ordinary-roof-hold-unchanged",
+      "knockedDown": false,
+      "turn": 1,
+      "nativeAction": {
+        "type": "stance",
+        "unitId": "guard",
+        "stance": "standing"
+      },
+      "clinicAction": null,
+      "inputUnchanged": true
+    },
+    {
+      "case": "retained-Mendoza-pure-selection",
+      "scope": "official paired input; zero actions executed; no outcome claim",
+      "fixtureSha256": "52dfc00b67faede1d0244ed26626bec213aa9fe211ae9c2bdd993d75cd7e2e48",
+      "original": {
+        "type": "fire",
+        "unitId": "142",
+        "targetId": "enemy-3",
+        "aim": 1
+      },
+      "originalForecast": {
+        "hitLocation": "torso",
+        "aim": 1,
+        "chance": 42,
+        "damageFactor": 0.640625,
+        "conditional": true,
+        "reachChance": 0.44,
+        "interveningFriendly": true
+      },
+      "selected": {
+        "type": "move",
+        "unitId": "142",
+        "x": 35,
+        "y": 11,
+        "tacticalLevel": 0
+      },
+      "quotedAP": 39,
+      "availableAP": 107,
+      "path": [
+        {
+          "x": 34,
+          "y": 10,
+          "tacticalLevel": 0,
+          "kind": "move"
+        },
+        {
+          "x": 35,
+          "y": 11,
+          "tacticalLevel": 0,
+          "kind": "move"
+        }
+      ],
+      "inputUnchanged": true
+    },
+    {
+      "case": "paid-native-lane-move",
+      "scope": "declared tactical input; one move plus exact replay; no turn loop or campaign result",
+      "action": {
+        "type": "move",
+        "unitId": "shooter",
+        "x": 3,
+        "y": 2
+      },
+      "path": [
+        {
+          "x": 3,
+          "y": 2
+        }
+      ],
+      "apBefore": 100,
+      "apAfter": 77,
+      "paidAP": 23,
+      "elapsedBefore": 0,
+      "elapsedAfter": 6,
+      "energyBefore": 100,
+      "energyAfter": 98,
+      "finiteBefore": {
+        "hp": 100,
+        "maxHp": 100,
+        "bandaged": 0,
+        "bleeding": 0,
+        "weapon": 1802,
+        "loaded": 1,
+        "ammo": 2,
+        "medkits": 2,
+        "condition": 100,
+        "inventory": {
+          "ammo:rifle_62": {
+            "kind": "ammunition",
+            "ammoType": "rifle_62",
+            "count": 2,
+            "weight": 0.04,
+            "name": "Munici\u00f3n de fusil"
+          }
+        }
+      },
+      "finiteAfter": {
+        "hp": 100,
+        "maxHp": 100,
+        "bandaged": 0,
+        "bleeding": 0,
+        "weapon": 1802,
+        "loaded": 1,
+        "ammo": 2,
+        "medkits": 2,
+        "condition": 100,
+        "inventory": {
+          "ammo:rifle_62": {
+            "kind": "ammunition",
+            "ammoType": "rifle_62",
+            "count": 2,
+            "weight": 0.04,
+            "name": "Munici\u00f3n de fusil"
+          }
+        }
+      },
+      "inputUnchanged": true,
+      "jsonRoundTripExact": true
+    },
+    {
+      "case": "private-occupant-invariance",
+      "scope": "declared hidden-input perturbation; zero actions executed",
+      "privateOpponentBefore": {
+        "id": "private-opponent",
+        "x": 20,
+        "y": 10,
+        "hp": 100,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 2
+      },
+      "privateOpponentAfter": {
+        "id": "private-opponent",
+        "x": 20,
+        "y": 11,
+        "hp": 61,
+        "weapon": 1813,
+        "loaded": 0,
+        "ammo": 7,
+        "patrol": false,
+        "overwatch": false,
+        "name": "Realista",
+        "side": "enemy",
+        "facing": 6,
+        "stealthMode": false,
+        "maxHp": 100,
+        "ap": 100,
+        "morale": 80,
+        "marksmanship": 70,
+        "agility": 75,
+        "strength": 75,
+        "medical": 80,
+        "mechanical": 0,
+        "stealth": 0,
+        "condition": 100,
+        "stance": "standing",
+        "mounted": false,
+        "horse": false,
+        "jammed": false,
+        "bleeding": 0,
+        "bandaged": 0,
+        "shock": 0,
+        "experienceLevel": 4,
+        "dexterity": 75,
+        "wisdom": 50,
+        "carriedAP": 0,
+        "routed": false,
+        "medkits": 1,
+        "momentum": 0,
+        "lastDirection": null,
+        "weaponMode": "fire",
+        "activeSlot": "primary",
+        "fatigue": 0,
+        "rations": 2,
+        "energy": 100,
+        "unconscious": false,
+        "movementMode": "walk",
+        "inventory": {
+          "ammo:musket_75": {
+            "kind": "ammunition",
+            "ammoType": "musket_75",
+            "count": 2,
+            "weight": 0.04,
+            "name": "Cartuchos de mosquete"
+          }
+        },
+        "boleadoras": 1,
+        "torches": 2,
+        "strengthTraining": 0,
+        "interceptTurn": 0,
+        "parryTurn": 0,
+        "counterTurn": 0,
+        "braceTurn": 0,
+        "braced": false,
+        "knockedDown": false,
+        "reactionTurn": 0,
+        "reactionSpent": 0,
+        "ammunitionVersion": 2,
+        "headwear": null,
+        "outfit": null,
+        "legwear": null,
+        "weaponFittings": {},
+        "weaponFittingPattern": null,
+        "bladeFittingPattern": null,
+        "maxAP": 100
+      },
+      "privateNpcBefore": {
+        "id": "private-npc",
+        "name": "Habitante no observado",
+        "x": 21,
+        "y": 10,
+        "hp": 100,
+        "civilianHealthVersion": 1,
+        "maxHp": 100,
+        "energy": 100,
+        "unconscious": false
+      },
+      "privateNpcAfter": {
+        "id": "private-npc",
+        "name": "Otro dato privado",
+        "x": 21,
+        "y": 11,
+        "hp": 40,
+        "civilianHealthVersion": 1,
+        "maxHp": 100,
+        "energy": 100,
+        "unconscious": false
+      },
+      "action": {
+        "type": "move",
+        "unitId": "shooter",
+        "x": 3,
+        "y": 2
+      },
+      "publicInputExact": true,
+      "inputUnchanged": true
+    }
+  ],
+  "limits": [
+    "Genuine retained official paired Mendoza fixture is pure selection only; zero actions executed there.",
+    "Paid action and exact replay are declared tactical controls with validated JSON round-trip, not official campaign save acceptance or victory.",
+    "The real C\u00f3rdoba/northern/full940 outcomes remain unproved by this bounded correction.",
+    "The original clinic roof movement veto is unchanged; broader clinic/crew strategy remains separate."
+  ],
+  "installPatchCheck": {
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "/tmp/granaderos-northern-safe-fallback-review-20261010/northern-safe-fallback-install.patch"
+    ],
+    "cwd": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+    "exitCode": 0,
+    "scope": "Read-only check only; no apply"
+  }
+}

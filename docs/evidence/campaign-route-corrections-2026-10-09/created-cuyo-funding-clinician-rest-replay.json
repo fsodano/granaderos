@@ -1,0 +1,1100 @@
+{
+  "input": "/tmp/granaderos-cuyo-funding-finite-courier-once-recorded-replay-final.save.json",
+  "inputSha256": "74c537398ba8a53250fdca7cbfee296ba9c9e541acbc345d5940bc6aab723158",
+  "before": {
+    "clock": [
+      693,
+      1899
+    ],
+    "treasury": 152814,
+    "pendingEncounter": null,
+    "pendingBattle": null,
+    "people": [
+      {
+        "id": 120,
+        "hp": 81,
+        "maxHp": 81,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 112,
+        "hp": 68,
+        "maxHp": 68,
+        "bleeding": 0,
+        "medkits": 6,
+        "assignment": "doctor",
+        "energy": 19,
+        "fatigue": 80,
+        "location": "mendoza"
+      },
+      {
+        "id": 119,
+        "hp": 80,
+        "maxHp": 80,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 104,
+        "hp": 74,
+        "maxHp": 74,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 140,
+        "hp": 69,
+        "maxHp": 69,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 124,
+        "hp": 87,
+        "maxHp": 87,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 134,
+        "hp": 70,
+        "maxHp": 70,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 9,
+        "hp": 92,
+        "maxHp": 92,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 11,
+        "hp": 78,
+        "maxHp": 78,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 1,
+        "hp": 88,
+        "maxHp": 88,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 126,
+        "hp": 65,
+        "maxHp": 65,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "patient",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 101,
+        "hp": 72,
+        "maxHp": 72,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 8,
+        "hp": 70,
+        "maxHp": 70,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 100,
+        "hp": 40,
+        "maxHp": 70,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 2,
+        "hp": 76,
+        "maxHp": 76,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 7,
+        "hp": 85,
+        "maxHp": 85,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      }
+    ],
+    "dead": [
+      0,
+      3,
+      102,
+      103,
+      108,
+      110,
+      111,
+      113,
+      114,
+      115,
+      116,
+      117,
+      121,
+      122,
+      125,
+      127,
+      129,
+      130,
+      131,
+      133,
+      136,
+      137,
+      139,
+      141,
+      144,
+      146,
+      1000
+    ]
+  },
+  "after": {
+    "clock": [
+      710,
+      1899
+    ],
+    "treasury": 159889,
+    "pendingEncounter": null,
+    "pendingBattle": null,
+    "people": [
+      {
+        "id": 120,
+        "hp": 81,
+        "maxHp": 81,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 112,
+        "hp": 68,
+        "maxHp": 68,
+        "bleeding": 0,
+        "medkits": 1,
+        "assignment": "rest",
+        "energy": 85,
+        "fatigue": 10,
+        "location": "mendoza"
+      },
+      {
+        "id": 119,
+        "hp": 80,
+        "maxHp": 80,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 104,
+        "hp": 74,
+        "maxHp": 74,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 140,
+        "hp": 69,
+        "maxHp": 69,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 124,
+        "hp": 87,
+        "maxHp": 87,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 134,
+        "hp": 70,
+        "maxHp": 70,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 9,
+        "hp": 92,
+        "maxHp": 92,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "active",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 11,
+        "hp": 78,
+        "maxHp": 78,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "active",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 1,
+        "hp": 88,
+        "maxHp": 88,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "active",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 126,
+        "hp": 65,
+        "maxHp": 65,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 101,
+        "hp": 72,
+        "maxHp": 72,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 8,
+        "hp": 70,
+        "maxHp": 70,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "active",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 100,
+        "hp": 70,
+        "maxHp": 70,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "rest",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 2,
+        "hp": 76,
+        "maxHp": 76,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "active",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      },
+      {
+        "id": 7,
+        "hp": 85,
+        "maxHp": 85,
+        "bleeding": 0,
+        "medkits": 0,
+        "assignment": "active",
+        "energy": 100,
+        "fatigue": 0,
+        "location": "mendoza"
+      }
+    ],
+    "dead": [
+      0,
+      3,
+      102,
+      103,
+      108,
+      110,
+      111,
+      113,
+      114,
+      115,
+      116,
+      117,
+      121,
+      122,
+      125,
+      127,
+      129,
+      130,
+      131,
+      133,
+      136,
+      137,
+      139,
+      141,
+      144,
+      146,
+      1000
+    ]
+  },
+  "failure": null,
+  "orders": 53,
+  "transfers": [],
+  "finiteDressingDebit": 0,
+  "renewals": [
+    {
+      "id": 112,
+      "cost": 180,
+      "clock": [
+        696,
+        1899
+      ]
+    },
+    {
+      "id": 119,
+      "cost": 36,
+      "clock": [
+        696,
+        1899
+      ]
+    },
+    {
+      "id": 104,
+      "cost": 68,
+      "clock": [
+        696,
+        1899
+      ]
+    },
+    {
+      "id": 140,
+      "cost": 116,
+      "clock": [
+        696,
+        1899
+      ]
+    },
+    {
+      "id": 120,
+      "cost": 135,
+      "clock": [
+        701,
+        1899
+      ]
+    },
+    {
+      "id": 100,
+      "cost": 36,
+      "clock": [
+        704,
+        1899
+      ]
+    },
+    {
+      "id": 124,
+      "cost": 172,
+      "clock": [
+        706,
+        1899
+      ]
+    },
+    {
+      "id": 134,
+      "cost": 86,
+      "clock": [
+        706,
+        1899
+      ]
+    },
+    {
+      "id": 126,
+      "cost": 47,
+      "clock": [
+        707,
+        1899
+      ]
+    },
+    {
+      "id": 101,
+      "cost": 49,
+      "clock": [
+        707,
+        1899
+      ]
+    }
+  ],
+  "renewalCost": 925,
+  "events": [
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 112,
+        "assignment": "rest"
+      },
+      "hour": 693,
+      "second": 1899,
+      "treasury": 152814
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 694,
+      "second": 1899,
+      "treasury": 152814
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 695,
+      "second": 1899,
+      "treasury": 152814
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 696,
+      "second": 1899,
+      "treasury": 160814
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 112,
+        "term": "day",
+        "expectedExpiresAt": 697,
+        "expectedExpiresSecond": 1161
+      },
+      "id": 112,
+      "price": 180,
+      "hour": 696,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 119,
+        "term": "day",
+        "expectedExpiresAt": 697,
+        "expectedExpiresSecond": 1214
+      },
+      "id": 119,
+      "price": 36,
+      "hour": 696,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 104,
+        "term": "day",
+        "expectedExpiresAt": 697,
+        "expectedExpiresSecond": 1214
+      },
+      "id": 104,
+      "price": 68,
+      "hour": 696,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 140,
+        "term": "day",
+        "expectedExpiresAt": 697,
+        "expectedExpiresSecond": 1214
+      },
+      "id": 140,
+      "price": 116,
+      "hour": 696,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 697,
+      "second": 1899,
+      "treasury": 160414
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 698,
+      "second": 1899,
+      "treasury": 160414
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 699,
+      "second": 1899,
+      "treasury": 160414
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 700,
+      "second": 1899,
+      "treasury": 160414
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 701,
+      "second": 1899,
+      "treasury": 160414
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 120,
+        "term": "day",
+        "expectedExpiresAt": 702,
+        "expectedExpiresSecond": 110
+      },
+      "id": 120,
+      "price": 135,
+      "hour": 701,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 702,
+      "second": 1899,
+      "treasury": 160279
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 703,
+      "second": 1899,
+      "treasury": 160279
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 704,
+      "second": 1899,
+      "treasury": 160279
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 100,
+        "term": "day",
+        "expectedExpiresAt": 705,
+        "expectedExpiresSecond": 1462
+      },
+      "id": 100,
+      "price": 36,
+      "hour": 704,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 705,
+      "second": 1899,
+      "treasury": 160243
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 112,
+        "assignment": "doctor"
+      },
+      "hour": 705,
+      "second": 1899,
+      "treasury": 160243
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 100,
+        "assignment": "patient"
+      },
+      "hour": 705,
+      "second": 1899,
+      "treasury": 160243
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 706,
+      "second": 1899,
+      "treasury": 160243
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 124,
+        "term": "day",
+        "expectedExpiresAt": 707,
+        "expectedExpiresSecond": 339
+      },
+      "id": 124,
+      "price": 172,
+      "hour": 706,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 134,
+        "term": "day",
+        "expectedExpiresAt": 707,
+        "expectedExpiresSecond": 339
+      },
+      "id": 134,
+      "price": 86,
+      "hour": 706,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 707,
+      "second": 1899,
+      "treasury": 159985
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 126,
+        "term": "day",
+        "expectedExpiresAt": 707,
+        "expectedExpiresSecond": 2255
+      },
+      "id": 126,
+      "price": 47,
+      "hour": 707,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteRenewal",
+      "action": {
+        "type": "renewContract",
+        "id": 101,
+        "term": "day",
+        "expectedExpiresAt": 707,
+        "expectedExpiresSecond": 2255
+      },
+      "id": 101,
+      "price": 49,
+      "hour": 707,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 708,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 709,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "wait",
+        "hours": 1
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 120,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 112,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 119,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 104,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 140,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 124,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 134,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 9,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 11,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 1,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 126,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 101,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 8,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 100,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 2,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "freshRouteOrder",
+      "action": {
+        "type": "assignCare",
+        "operativeId": 7,
+        "assignment": "rest"
+      },
+      "hour": 710,
+      "second": 1899,
+      "treasury": 159889
+    },
+    {
+      "event": "routeBatteryStored",
+      "sector": "mendoza",
+      "id": "arsenal:cordoba:1",
+      "record": {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": -0.9097531579442097
+      },
+      "hour": 710
+    },
+    {
+      "event": "routeBatteryPrepared",
+      "destination": "mendoza",
+      "selections": [
+        "depot:arsenal:buenos_aires:1",
+        "depot:arsenal:cordoba:1"
+      ],
+      "records": [
+        {
+          "id": "arsenal:buenos_aires:1",
+          "type": "bronze4",
+          "side": "player",
+          "loaded": true,
+          "ammo": 0,
+          "facing": 1.3258176636680326
+        },
+        {
+          "id": "arsenal:cordoba:1",
+          "type": "bronze4",
+          "side": "player",
+          "loaded": false,
+          "ammo": 0,
+          "facing": -0.9097531579442097
+        }
+      ],
+      "hour": 710,
+      "second": 1899
+    },
+    {
+      "event": "freshRouteCheckpoint",
+      "stage": "foundry-battery"
+    }
+  ],
+  "replay": {
+    "everyObservedNativeAction": true,
+    "officialMidpoint": true,
+    "exactExpandedGeometry": true,
+    "exactCompleteOfficialFinalPair": true,
+    "inputUnchanged": true,
+    "all16ServingRetained": true,
+    "all27DeathsRetained": true,
+    "noRepeatedContinuation": true
+  }
+}

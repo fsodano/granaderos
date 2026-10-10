@@ -1,0 +1,114 @@
+{
+  "sourceDirectory": "/tmp/granaderos-campaign-post-care-full-2026-10-10T053856639Z",
+  "fullSelection": 947,
+  "terminalExitCode": 1,
+  "sourceDrift": [],
+  "counts": {
+    "tests": 7024,
+    "failed": 7,
+    "passed": 7012,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0,
+    "topLevel": 6873,
+    "suites": 0
+  },
+  "inputCaptureLimit": "Failed native battle inputs are retained arguments after execution/reporting. No independent pre-execution/deployed/before-shot claim.",
+  "files": [
+    {
+      "path": "after-source-hashes.json",
+      "bytes": 1873475,
+      "sha256": "2d26104cd657966f4cf60b3a29d6d671e10366f38995c14d73b73b07344e8147"
+    },
+    {
+      "path": "before-source-hashes.json",
+      "bytes": 1873475,
+      "sha256": "2d26104cd657966f4cf60b3a29d6d671e10366f38995c14d73b73b07344e8147"
+    },
+    {
+      "path": "final-receipt.json",
+      "bytes": 3107,
+      "sha256": "1cbbc256cf52d055f79058f9e165ab1b98228bdd93107f7bd1efb13b1ccb25cc"
+    },
+    {
+      "path": "full-report.json",
+      "bytes": 386685,
+      "sha256": "045186a5c2ac2bdbc5d2c9b48ba8c88c5f7d28130cd09bc08d1afb426522f7e3"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 37505,
+      "sha256": "776caf7e43768fcf894f7921356961581514df765e74004e5f46837b055a495c"
+    },
+    {
+      "path": "native-failures/8571-1-defense-enemy-group-1-150-B92vop/native-input.json",
+      "bytes": 5378947,
+      "sha256": "2d85ec7a76e0f2870bffa38cbbcd83a5c1dfb5257588f18f26f0b88be7aa5c0d"
+    },
+    {
+      "path": "native-failures/8571-1-defense-enemy-group-1-150-B92vop/native-result.json",
+      "bytes": 890820,
+      "sha256": "2a7742d45a56307ebb61255681b6b709e924b5acf1097b58d4ccedf486cfcc91"
+    },
+    {
+      "path": "native-failures/8571-1-defense-enemy-group-1-150-B92vop/receipt.json",
+      "bytes": 1279,
+      "sha256": "e5ff3dddea318ca90122ff451625a922a968e839dfaf7f841fbc874089300ce5"
+    },
+    {
+      "path": "native-failures/8571-1-defense-enemy-group-1-150-B92vop/terminal.save.json",
+      "bytes": 1126542,
+      "sha256": "8ece3efae74252a3ccf5ebc1b420a2cb3dba0490448404923eb242c7aaff9d5b"
+    },
+    {
+      "path": "native-failures/9491-1-cordoba-84-18026106-SxjKOH/native-input.json",
+      "bytes": 2631132,
+      "sha256": "80003047ee597852b84879d577b593de236e77e554de9d082facf4aacd59df30"
+    },
+    {
+      "path": "native-failures/9491-1-cordoba-84-18026106-SxjKOH/native-result.json",
+      "bytes": 817757,
+      "sha256": "5ce890283d46467024ba93b9f570b7d75a7ff297cd9ab8f99e97b98fadd258e2"
+    },
+    {
+      "path": "native-failures/9491-1-cordoba-84-18026106-SxjKOH/receipt.json",
+      "bytes": 1279,
+      "sha256": "1ba041a92ad044dcff066ab45720cd644c5ad122b75f0e87cf3dfe9e1afb9805"
+    },
+    {
+      "path": "native-failures/9491-1-cordoba-84-18026106-SxjKOH/terminal.save.json",
+      "bytes": 690922,
+      "sha256": "c007359404ccbea9b4916edc739e9f9a2c98bf0d7572e413922af27c0d98cf69"
+    },
+    {
+      "path": "native-failures/95799-1-los_patos-654-4162937008-hOCowN/native-input.json",
+      "bytes": 9291949,
+      "sha256": "a3fa1ae6476d5f43541797bb54069417df1e14a992f7d3bafe720aff3385a89a"
+    },
+    {
+      "path": "native-failures/95799-1-los_patos-654-4162937008-hOCowN/native-result.json",
+      "bytes": 538297,
+      "sha256": "43a2231fba97830cda40a7e6e125cd122b0e04478b5a7c2dda8eda93a74cbcf6"
+    },
+    {
+      "path": "native-failures/95799-1-los_patos-654-4162937008-hOCowN/receipt.json",
+      "bytes": 1272,
+      "sha256": "04a04cb128a3a5251a6c5504fb65c356d95f352daaf645e82d3e6ca508195ce2"
+    },
+    {
+      "path": "native-failures/95799-1-los_patos-654-4162937008-hOCowN/terminal.save.json",
+      "bytes": 1874507,
+      "sha256": "6a72b35ec375762e5ca7d6ead309811263a926105dc9525fc09ac0135530ebc1"
+    },
+    {
+      "path": "pid.json",
+      "bytes": 30,
+      "sha256": "5505b5e187b795f2cf7fc7e52c6ebd5df8c956cdaff8bbcbffee4903f7e86abf"
+    },
+    {
+      "path": "run.log",
+      "bytes": 1411278,
+      "sha256": "7031f95c9f739d6d094fcea0b48c9cbd6a160ce707ee6ffaebf411fa34ca918e"
+    }
+  ]
+}

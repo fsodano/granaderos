@@ -582,8 +582,9 @@ for(let leg=0;leg<4&&c.location!=='cordoba'&&!c.pendingEncounter;leg++){
  return c;
 }
 
-export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,recovery='doctor',onCheckpoint=()=>{}}={}){
+export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport=false,recovery='doctor',prepareDeparture=null,onCheckpoint=()=>{}}={}){
  assert.ok(['doctor','rest'].includes(recovery),'Tucumán recovery uses real doctor work or ordinary rest');
+ assert.ok(prepareDeparture===null||typeof prepareDeparture==='function','departure preparation must use an explicit native route helper');
  const recoveryDefenseIds=[];let recoveryDefenseBudget=null;
  return prepare(start);
  function prepare(initial){
@@ -795,6 +796,17 @@ for(let i=0;i<24&&fieldIds.some(id=>c.operativeState[id].energy<100||c.operative
 if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
 for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
 for(const id of fieldIds){while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<c.hour+30){const contract=c.contracts[id];order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});}}
+// A paid replacement column can leave only after the existing recovery and
+// actual counterattacks finish. Its own native helper forms and supplies it.
+if(prepareDeparture){
+ const recovered=structuredClone(c),prepared=prepareDeparture(c);
+ assert.deepEqual(c,recovered,'departure preparation preserves its actual recovered input');
+ assert.equal(prepared.pendingBattle?.sector,'tucuman');assert.equal(prepared.pendingEncounter,null);
+ for(const [id,record]of Object.entries(recovered.operativeState))if(!record.alive)assert.equal(prepared.operativeState[id].alive,false,'paid departure cannot restore an earlier casualty');
+ const battle=enterSector(prepared.pendingBattle,prepared.sectorStates.tucuman);
+ assert.deepEqual(decodeSave(encodeSave(prepared,battle)),{campaign:prepared,battle});
+ onCheckpoint('tucuman-ready',prepared);return prepared;
+}
 // A physically recovered support gun can cover the infantry approach.
 if(artillerySupport){
  const previous=c.activeSquadId,required=artilleryProfile(c,{type:'bronze4'}).crew;

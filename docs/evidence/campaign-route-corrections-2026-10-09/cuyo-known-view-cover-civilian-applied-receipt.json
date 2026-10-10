@@ -1,0 +1,24 @@
+{
+  "appliedUtc": "2026-10-10T04:03:48.526293+00:00",
+  "scope": "Existing opt-in civilian-line target gate in generic ranking; native current-known occupant view only for reachable planning; cover from each actual tactical surface. Existing shot-friendly guard, all score weights/ties, fallback and native execution preserved.",
+  "patchSha256": "cdc059191a56590fb5ae671c05f600c3a73ae988b192b34454c222a9da12c2b2",
+  "sourceSha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+  "externalReceiptSha256": "05bf09e8a1f053f59bf0e578e5e1f63c11c436b32fd4e842c786e580c3bb9bdf",
+  "actualExternalImports": 265,
+  "sourceDrift": [],
+  "orders": 0,
+  "MendozaKnownReachableCountBeforeAfter": [
+    55,
+    55
+  ],
+  "olderCordobaRoofCover": [
+    0,
+    0
+  ],
+  "sameRoofCellsLegacyGroundCover": [
+    40,
+    40
+  ],
+  "full940NativeCareCauseProved": false,
+  "candidateFullGate": "pending"
+}

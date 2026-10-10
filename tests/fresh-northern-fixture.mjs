@@ -4,6 +4,8 @@ import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
+import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {prepareStockTucumanReadiness} from './stock-tucuman-readiness.mjs';
 import {mountainBatteryOrder,assignedMountainBatteryController} from './mountain-battery-driver.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -87,10 +89,11 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
  return saved({campaign:s}).campaign;
 }
 
-// Both real crew members lower their profile before advancing the gun.
-// Crouching remains eligible for ordinary paid artillery work.
+// Both real crew members lower their profile while the gun has finite charges.
+// A spent piece leaves posture decisions to the ordinary infantry policy.
 export function northernOfficerSaltaOrder(battle,unit,artilleryId){
- if(['9','11'].includes(unit.id)&&unit.stance==='standing'&&!unit.knockedDown&&!unit.entangled&&unit.ap>=stanceCost(unit,'crouched'))return {type:'stance',unitId:unit.id,stance:'crouched'};
+ const chargedGun=battle.artillery.some(gun=>gun.id===artilleryId&&gun.side===unit.side&&(gun.loaded||gun.ammo>0));
+ if(chargedGun&&['9','11'].includes(unit.id)&&unit.stance==='standing'&&!unit.knockedDown&&!unit.entangled&&unit.ap>=stanceCost(unit,'crouched'))return {type:'stance',unitId:unit.id,stance:'crouched'};
  return mountainBatteryOrder(battle,unit,{leaderId:'9',helperId:'11',artilleryId,keepCrewTogether:true,screenDistance:3});
 }
 
@@ -255,8 +258,8 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  }
  const readyDefense=prepareHiredNorthernDefense(s);onCheckpoint?.('cordoba-defense-ready',readyDefense,notes);
  const defense=fightNorthernSector(readyDefense,'cordoba',{controller:cautiousCombatOrder});onCheckpoint?.('cordoba-defense',defense.campaign,notes);
- const readyTucuman=prepareFreshTucumanAssault(defense.campaign);onCheckpoint?.('tucuman-ready',readyTucuman,notes);
- const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:tucumanCombatOrder});
+ const readyTucuman=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true});onCheckpoint?.('tucuman-ready',readyTucuman,notes);
+ const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:coastalBatteryController(enterSector(readyTucuman.pendingBattle,readyTucuman.sectorStates.tucuman),{sharedArtillerySight:true})});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const readySalta=prepareNorthernOfficerRelief(s,{report}),gun=readySalta.pendingBattle.artillery.find(piece=>piece.side==='player');assert.ok(gun,'the northern crew must deploy the actually recovered and transported gun');onCheckpoint?.('salta-ready',readySalta,notes);
  const salta=fightNorthernSector(readySalta,'salta',{controller:(battle,unit)=>northernOfficerSaltaOrder(battle,unit,gun.id)});
@@ -346,12 +349,20 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
   if(event.event==='tucumanRecoveryDefense'){
    const record={...event.summary,stage:'recovery-defense',groupId:event.groupId,deaths:deadIds(event.campaign)};
    notes.push(record);onCheckpoint?.('tucuman-recovery-defense',event.campaign,notes);
+  }else if(event.event==='tucumanRecoveryInterrupted'&&event.rest){
+   notes.push({event:event.event,stage:'recovery-rest-interruption',groupId:event.groupId,sector:event.sector,hour:event.hour,second:event.second,rest:structuredClone(event.rest)});
   }else if(['tucumanRecoveryFortified','tucumanRestRecovery'].includes(event.event)){
    notes.push({...event,stage:event.event});
   }
   report(event);
  };
- const tucuman=fightNorthernSector(prepareFreshTucumanAssault(defense.campaign,{report:recoveryReport,recovery:routeKind==='stock'?'rest':'doctor'}),'tucuman',{controller:tucumanCombatOrder,report});
+ const ready=prepareFreshTucumanAssault(defense.campaign,{report:recoveryReport,recovery:routeKind==='stock'?'rest':'doctor',prepareDeparture:routeKind==='stock'?recovered=>{
+  const prepared=prepareStockTucumanReadiness(recovered,{report}),receipt=prepared.receipt;
+  notes.push({stage:'stock-tucuman-readiness',hour:prepared.campaign.hour,second:prepared.campaign.secondOfHour,paid:receipt.paid,rear:receipt.rear,hireCost:receipt.paidHireCost,renewalCost:receipt.renewalCost,gun:receipt.gun});
+  return prepared.campaign;
+ }:null});
+ const controller=routeKind==='stock'?coastalBatteryController(enterSector(ready.pendingBattle,ready.sectorStates.tucuman),{sharedArtillerySight:true}):tucumanCombatOrder;
+ const tucuman=fightNorthernSector(ready,'tucuman',{controller,report});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const reliefCampaign=prepareNorthernOfficerRelief(s,{report,routeKind}),saltaInitial=enterSector({...reliefCampaign.pendingBattle,hour:reliefCampaign.hour,secondOfHour:reliefCampaign.secondOfHour??0},reliefCampaign.sectorStates.salta);
  // Bind the real two-person battery to capable issued bodies. The controller

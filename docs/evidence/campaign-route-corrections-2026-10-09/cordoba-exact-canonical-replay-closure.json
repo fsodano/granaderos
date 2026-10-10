@@ -1,0 +1,162 @@
+{
+  "process": {
+    "session": 51755,
+    "pid": 60351,
+    "exitCode": 1,
+    "nativeReplayCompleted": true,
+    "nativeOrdersApplied": 162,
+    "alternativeOrdersApplied": 0,
+    "allCanonicalBeforeAfterHashesExact": true,
+    "terminalDeepEqual": true,
+    "terminalStatus": "retreat",
+    "terminalNativeSha256": "b1825d024178ca53d84b8802c4b9676fd508717ab166b9e13cde406ab5f9f259"
+  },
+  "exitObserverError": {
+    "message": "ENOENT repo/undefined after successful native replay; [...rows] yielded Map entry tuples instead of row values",
+    "retainedRunLog": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/run.log",
+    "fullActualReplayImportManifestRetained": false,
+    "limitation": "The in-memory replay import list was lost at process exit. This post-run check cannot reconstruct which unpinned files loaded or prove a complete before/after replay source-drift audit. No second replay was run."
+  },
+  "pinnedSourceClosure": [
+    {
+      "path": "tests/tucuman-driver.mjs",
+      "runtimeSourcePath": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/original-tucuman-driver.mjs",
+      "runtimeSha256AssertedByLoadHook": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463",
+      "runtimeBytes": 1070,
+      "postRunRuntimeSha256": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463",
+      "currentCandidatePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/tucuman-driver.mjs",
+      "postRunCandidateSha256": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463",
+      "candidateIsRuntimeOverlay": true
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "runtimeSourcePath": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/original-opening-driver.mjs",
+      "runtimeSha256AssertedByLoadHook": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "runtimeBytes": 5622,
+      "postRunRuntimeSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "currentCandidatePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/opening-driver.mjs",
+      "postRunCandidateSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "candidateIsRuntimeOverlay": true
+    },
+    {
+      "path": "tests/hired-assault-driver.mjs",
+      "runtimeSourcePath": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/original-hired-assault-driver.mjs",
+      "runtimeSha256AssertedByLoadHook": "528147ca4316d6bf088057068ef43872a92683d0439edb08aa83a7e3eba628be",
+      "runtimeBytes": 457,
+      "postRunRuntimeSha256": "528147ca4316d6bf088057068ef43872a92683d0439edb08aa83a7e3eba628be",
+      "currentCandidatePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/hired-assault-driver.mjs",
+      "postRunCandidateSha256": "528147ca4316d6bf088057068ef43872a92683d0439edb08aa83a7e3eba628be",
+      "candidateIsRuntimeOverlay": true
+    },
+    {
+      "path": "game/tactical.js",
+      "runtimeSourcePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/tactical.js",
+      "runtimeSha256AssertedByLoadHook": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "runtimeBytes": 271222,
+      "postRunRuntimeSha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "currentCandidatePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/tactical.js",
+      "postRunCandidateSha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "candidateIsRuntimeOverlay": false
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "runtimeSourcePath": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/original-northern-route.mjs",
+      "runtimeSha256AssertedByLoadHook": "a4c7bcc447d33fa643b2a45cabbaccba30fc3bb290aaff8b6e1f7f22fd24202f",
+      "runtimeBytes": 82437,
+      "postRunRuntimeSha256": "a4c7bcc447d33fa643b2a45cabbaccba30fc3bb290aaff8b6e1f7f22fd24202f",
+      "currentCandidatePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs",
+      "postRunCandidateSha256": "d2df5898830cb6ffa1c393300a21cfbbc6989312393c8b79dab241b9c2e4feef",
+      "candidateIsRuntimeOverlay": true
+    }
+  ],
+  "previousOriginalObserverDependencyInventoryCheck": {
+    "scope": "Current disk versus the completed original opening observer source inventory; not the exact replay actual-import list. Engine inventory stayed unchanged. Original north is retained as an explicit overlay while current north is the root candidate.",
+    "filesCompared": 311,
+    "engineFilesCompared": 273,
+    "engineDrift": [],
+    "changedCurrentDiskPaths": [
+      {
+        "path": "tests/northern-route.mjs",
+        "originalObserverSha256": "a4c7bcc447d33fa643b2a45cabbaccba30fc3bb290aaff8b6e1f7f22fd24202f",
+        "currentSha256": "d2df5898830cb6ffa1c393300a21cfbbc6989312393c8b79dab241b9c2e4feef",
+        "matchesOriginalObserver": false
+      }
+    ]
+  },
+  "readOnlyPostureDetailProcess": {
+    "session": 99506,
+    "exitCode": 0,
+    "actualImports": 269,
+    "loadedDrift": [],
+    "candidateDiskDrift": [],
+    "nativeOrdersApplied": 0,
+    "alternativesApplied": 0,
+    "manifestPath": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/pure-imports.json"
+  },
+  "originalObserverClosureUnchanged": {
+    "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/final-receipt.json",
+    "sha256": "5544fd95fb05e16d56b54d5ea27535683f08b21dc62b85e04ef3a58bac47eae2"
+  },
+  "inputUnchanged": {
+    "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/cordoba-before-first-controller.native.json",
+    "sha256": "7c16e8459342f8ee96d8a38b740fa7d24e936103a4fdbff432ceed8a0081af1d"
+  },
+  "sourceFilesModified": false,
+  "evidence": {
+    "loader.mjs": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/loader.mjs",
+      "sha256": "067d9a62edeb1454c5808a632e61b8da42f51349838285c33f5fa1615289e595",
+      "bytes": 2110
+    },
+    "replay-and-inspect.mjs": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/replay-and-inspect.mjs",
+      "sha256": "0055ffb7ae2f3f2f89f1906773efc88d8f53e310362c00c888f309e0861366d7",
+      "bytes": 10424
+    },
+    "start.json": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/start.json",
+      "sha256": "9e158d67fd790f94168ff981e2ed9411dc3dbc77ab0922b31c6d6ce635861008",
+      "bytes": 548
+    },
+    "receipt.json": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/receipt.json",
+      "sha256": "ca6016df9015797c8f66b37a4cbf31519ef7962895097da1f005f987e0beb3a3",
+      "bytes": 694
+    },
+    "inspection.json": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/inspection.json",
+      "sha256": "9652b1bea2c66c8d43167c33b8f60b7d4b1f6589c2172eef06b90c6449343b58",
+      "bytes": 78252
+    },
+    "terminal.native.json": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/terminal.native.json",
+      "sha256": "7ec7666ba7acc85a3ab0db6069c28e22da2dd97717ed4f6ea6e49896e270138f",
+      "bytes": 732247
+    },
+    "run.log": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/run.log",
+      "sha256": "9177142e4d457f3e855181b39dee302bd4df6518e1d52c8e7c622288a85798d3",
+      "bytes": 2937
+    },
+    "posture-detail.mjs": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/posture-detail.mjs",
+      "sha256": "b3c42d353914bf39deeba410ccb4a9d03570432c8212816acfaa47f84d9f4a0b",
+      "bytes": 4341
+    },
+    "posture-detail.json": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/posture-detail.json",
+      "sha256": "57a775d65fe02a0a1559cc1c4d58fcccf1d4a2881f06e473204188ead0312684",
+      "bytes": 146819
+    },
+    "pure-loader.mjs": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/pure-loader.mjs",
+      "sha256": "19422a05de27c6d7b60b609ab2399f1da25e5f0f7035ddb5f2d95edb6c08a80a",
+      "bytes": 2124
+    },
+    "pure-imports.json": {
+      "path": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/pure-imports.json",
+      "sha256": "2aaecc8d9ed2901ff19faef3f4a6ae213eb67d46cc628914da9f45cbb73d028f",
+      "bytes": 142786
+    }
+  }
+}

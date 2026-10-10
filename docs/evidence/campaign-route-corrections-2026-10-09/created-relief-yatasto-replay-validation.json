@@ -1,0 +1,271 @@
+{
+  "input": "/tmp/granaderos-created-relief-salta-one-attempt-accepted-victory.save.json",
+  "inputSha256": "dc7da445e9a0a42f1e3363528783179a18ee86066c59bfb4679fde03349d7e4a",
+  "finalSave": "/tmp/granaderos-created-relief-yatasto-final.save.json",
+  "from": [
+    458,
+    131
+  ],
+  "to": [
+    462,
+    237
+  ],
+  "elapsedSeconds": 14506,
+  "cashBefore": 100632,
+  "cashAfter": 100322,
+  "phase": 3,
+  "yatasto": true,
+  "northPact": true,
+  "defeated": false,
+  "pendingBattle": null,
+  "pendingEncounter": null,
+  "envoy": {
+    "alive": true,
+    "hp": 45,
+    "bleeding": 0,
+    "location": "tucuman"
+  },
+  "dead": [
+    3,
+    103,
+    110,
+    111,
+    113,
+    114,
+    115,
+    125,
+    127,
+    131,
+    133,
+    136,
+    137,
+    141,
+    146,
+    1000
+  ],
+  "tacticalOrders": [
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 1
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 2
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 3
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 4
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 5
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 6
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 7
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 8
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 9
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 10
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 11
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 12
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 13
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 14
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 15
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 16
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 17
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 18
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 19
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 20
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 21
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 22
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 23
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 24
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 25
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 35,
+      "y": 26
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 34,
+      "y": 26
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 33,
+      "y": 26
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 32,
+      "y": 26
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 31,
+      "y": 26
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 31,
+      "y": 25
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 31,
+      "y": 24
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 30,
+      "y": 23
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 31,
+      "y": 23
+    }
+  ],
+  "commandSha256": "3c04cef85621df44a2cddde1b89c8f19740bcc9f1ad2e3a038cf804659feddb7",
+  "unchangedCommandFromSaltaSourceManifest": true,
+  "replay": {
+    "everyAction": true,
+    "officialMidpointAtSynchronizedBoundary": true,
+    "exactFinalCampaign": true,
+    "officialFinal": true,
+    "allPriorDeathsRetained": true
+  },
+  "observerLimit": "Original external replay tried to save midway through unsynchronized aid and the validator correctly rejected the pair. Actual helper had already completed and written a valid final save. This replay reads the durable native actions and saves at the next genuine synchronized boundary; it does not repeat the continuation.",
+  "nativeActionTape": {
+    "path": "created-relief-yatasto-native-action-tape.json.gz",
+    "rawSha256": "3cb146d8c5bc4288cfdbaecc2743339c5af4b2aec1e3bd350ec5ccdfdf531c10",
+    "compressedSha256": "33641ae00594d277a05d7146ea9b2b11158b245d9300d2d8f38feffe7a00955c",
+    "rawBytes": 5583442,
+    "compressedBytes": 194842,
+    "nativeEntries": 52,
+    "scope": "Lossless compressed original receipt, including every native campaign action and its actual accepted tactical return. Compact receipt fields and exact replay checks remain here."
+  }
+}

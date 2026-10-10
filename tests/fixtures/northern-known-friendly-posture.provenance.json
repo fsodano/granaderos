@@ -1,0 +1,32 @@
+{
+  "scope": "Exact first known-friendly-blocked official C\u00f3rdoba pair from earned original input and native clock/save on clones. No alternate order, resource grant or outcome rewrite.",
+  "source": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/cordoba-first-blocked-fire.save.json",
+  "sourceReceipt": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/cordoba-first-blocked-fire.pair-receipt.json",
+  "sha256": "abb25f0dc09af9ab99e7c80c2a7a96711eb127eec3b0586a2cd97df60c1409ec",
+  "gzipSha256": "3beae75882acb4e5ac52772c5fa9cb470013f177194465ec96f84fd9fb71fdea",
+  "actorId": "113",
+  "originalDecisionIndex": 162,
+  "originalAction": {
+    "type": "fire",
+    "unitId": "113",
+    "targetId": "enemy-5",
+    "aim": 0
+  },
+  "nativeOriginalSourceCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "battle": {
+    "battleId": "cordoba-84-18026106",
+    "sector": "cordoba",
+    "turn": 3,
+    "phase": "player",
+    "status": "active",
+    "startSeconds": 303070,
+    "elapsedSeconds": 33
+  },
+  "clock": [
+    84,
+    703
+  ],
+  "proposedStance": "crouched",
+  "proposedInternalAPCost": 3,
+  "outcomeUnproved": true
+}

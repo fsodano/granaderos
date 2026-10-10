@@ -1,0 +1,10 @@
+{
+  "checkedUtc": "2026-10-10T03:04:19.847289+00:00",
+  "scope": "FAILED EXTERNAL EXPERIMENT. Code is archived evidence only; its controller and hook are absent from active tests.",
+  "payloadFiles": 79,
+  "archiveFileEntriesIncludingManifest": 80,
+  "allArchiveAndExternalFileHashesMatch": true,
+  "archiveBytes": 1777784,
+  "archiveSha256": "49e54263c7dff728fa3035f0722023e1fd797b85e8310dc90cb2dce10386f2a7",
+  "allSharedImportsReleased": true
+}

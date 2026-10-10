@@ -1,0 +1,97 @@
+{
+  "scope": "One declared forward flank-screen helper trial from genuine retained earned recovery readiness; not a fresh full-route proof",
+  "inputPath": "/tmp/granaderos-recovery-mendoza-regular-native-audit/native-ready.save.json",
+  "inputSha256": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+  "expectedStatus": "victory",
+  "actualStatus": "victory",
+  "turns": 7,
+  "actions": 189,
+  "orders": 205,
+  "elapsedSeconds": 825,
+  "knownFriendlyOrders": [],
+  "midpoint": {
+    "orderIndex": 102,
+    "clock": [
+      417,
+      912
+    ],
+    "elapsedSeconds": 807
+  },
+  "exactRecordedReplay": true,
+  "officialMidpointSave": true,
+  "exactSettlement": true,
+  "priorDeaths": 37,
+  "actualNewDeaths": [
+    130,
+    10
+  ],
+  "players": [
+    {
+      "id": "0",
+      "hp": 82,
+      "bleeding": 0,
+      "routed": false
+    },
+    {
+      "id": "8",
+      "hp": 70,
+      "bleeding": 0,
+      "routed": false
+    },
+    {
+      "id": "100",
+      "hp": 70,
+      "bleeding": 0,
+      "routed": false
+    },
+    {
+      "id": "142",
+      "hp": 79,
+      "bleeding": 0,
+      "routed": false
+    },
+    {
+      "id": "130",
+      "hp": 0,
+      "bleeding": 0,
+      "routed": false
+    },
+    {
+      "id": "102",
+      "hp": 19,
+      "bleeding": 0,
+      "routed": false
+    },
+    {
+      "id": "11",
+      "hp": 78,
+      "bleeding": 0,
+      "routed": false
+    },
+    {
+      "id": "10",
+      "hp": 0,
+      "bleeding": 0,
+      "routed": true
+    }
+  ],
+  "gun": [
+    {
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "facing": 0.8760580505981934,
+      "x": 35,
+      "y": 14
+    }
+  ],
+  "clock": [
+    417,
+    930
+  ],
+  "mendozaOwner": "patriot",
+  "treasury": 120668,
+  "durationMs": 27200
+}

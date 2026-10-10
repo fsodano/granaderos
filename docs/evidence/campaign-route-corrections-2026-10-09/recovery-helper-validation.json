@@ -1,0 +1,236 @@
+{
+  "scope": "Test helpers and earned native regression only; no production rule, combat controller, seed, owner, equipment grant or health patch",
+  "node": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "nodeVersion": "v25.9.0",
+  "workspace": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "baseCommit": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+  "candidateFiles": [
+    {
+      "path": "tests/fresh-northern-recovery.mjs",
+      "sha256": "d29b72ff330801d7fee9bf92b6b58cc04785c500975c1a9356baa07f613d647b"
+    },
+    {
+      "path": "tests/recovery-road-route.mjs",
+      "sha256": "8803da661e70552f99194792dbdf8a1c67f27d468dd7d156373c64de37c9b848"
+    },
+    {
+      "path": "tests/fresh-northern-recovery-recapture.test.mjs",
+      "sha256": "86507ecc714bdf99c1108fe3c9d79f3863886ee3f433ded033dda8462ddafde0"
+    },
+    {
+      "path": "tests/fixtures/northern-reunite-lost-cordoba.save.json.gz",
+      "sha256": "f340be9522544ce77be1751341460760d3767faea90e5eea156de246efb4257a"
+    },
+    {
+      "path": "tests/fixtures/northern-reunite-lost-cordoba.provenance.json",
+      "sha256": "60373b577cbb8a68d71417da50ab0af39f5f3c4e15e95426e494e71f5ed0e80c"
+    }
+  ],
+  "earnedInput": {
+    "path": "tests/fixtures/northern-reunite-lost-cordoba.save.json.gz",
+    "uncompressedOfficialSaveSha256": "39c22ddc5236034221025a0f263936b5a63e0d1a3b4ffe96b7d0ba3fc4fc0978",
+    "provenancePath": "tests/fixtures/northern-reunite-lost-cordoba.provenance.json",
+    "nativePrefixCommit": "b8b14e2d",
+    "nativePrefixSource": "2368ae747c42c865ecf389ce44a536dcc7145625516af1ae959e780905ad3052",
+    "revalidatedSource": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+    "sourceDifference": "The only production change is detention-care guard exhaustion refresh; this prefix has no detention records or capture sequence, so that path was not crossed.",
+    "captureCommand": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec /tmp/granaderos-reunite-exact-capture.test.mjs",
+    "clock": {
+      "hour": 306,
+      "secondOfHour": 2959
+    },
+    "actualOccupation": {
+      "groupId": "enemy-group-3",
+      "sector": "cordoba",
+      "hour": 294
+    },
+    "rejectedReturn": {
+      "hour": 316,
+      "secondOfHour": 2959,
+      "squad": [
+        10,
+        4,
+        121,
+        112,
+        1000
+      ],
+      "treasury": 97698,
+      "error": "Cada escala debe ser una celda terrestre accesible."
+    }
+  },
+  "validation": [
+    {
+      "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/fresh-northern-recovery-recapture.test.mjs",
+      "selectedFiles": [
+        "tests/fresh-northern-recovery-recapture.test.mjs"
+      ],
+      "log": "/tmp/granaderos-reunite-corrected-focused-final.log",
+      "exitCode": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationSeconds": 155.49694699999998,
+      "logSha256": "a35de410af9b273994ecf99f8013523ea9b9af7a0702e1b03e88f800b02cef80"
+    },
+    {
+      "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/route-battery.test.mjs tests/route-ammunition.test.mjs tests/recovery-road-finite-care.test.mjs",
+      "selectedFiles": [
+        "tests/route-battery.test.mjs",
+        "tests/route-ammunition.test.mjs",
+        "tests/recovery-road-finite-care.test.mjs"
+      ],
+      "log": "/tmp/granaderos-reunite-finite-controls-final.log",
+      "exitCode": 0,
+      "tests": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "durationSeconds": 15.963115208,
+      "logSha256": "14891c5c427026c1a48375511c19c2e6191ef44565e2f3a4cff76c20db50943e"
+    },
+    {
+      "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/campaign-reload-work.test.mjs tests/partial-firearm-reloads.test.mjs",
+      "selectedFiles": [
+        "tests/campaign-reload-work.test.mjs",
+        "tests/partial-firearm-reloads.test.mjs"
+      ],
+      "log": "/tmp/granaderos-reunite-reload-controls.log",
+      "exitCode": 0,
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "durationSeconds": 1.462370916,
+      "logSha256": "0440e37b53ff7eb485bcf06e251547fc390aedf13264207bd8a279c1cd32d1ab"
+    }
+  ],
+  "nativeSequence": {
+    "oneExistingController": "coastalBatteryController(initial,{sharedArtillerySight:true})",
+    "outcome": "victory",
+    "turns": 38,
+    "ordinaryBattleActions": 296,
+    "exactRecordedOrders": 350,
+    "elapsedSeconds": 16461,
+    "officialMidpointPairedSave": true,
+    "exactRecordedReplay": true,
+    "nativeSettlement": true,
+    "actualNewDeaths": [
+      112,
+      123,
+      119,
+      103
+    ],
+    "existingGlobalDeadStatesPreserved": 28,
+    "globalDeadStatesAfter": 32,
+    "finiteCartridgeDebit": 20,
+    "cartridgeSources": {
+      "observedBuenosAiresEnemy0Body": 10,
+      "actualBuenosAiresChest": 10
+    },
+    "doctor": 10,
+    "doctorMedicalSkill": 98,
+    "patient": 1000,
+    "healthBefore": 23,
+    "healthAfter": 78,
+    "careHours": 10,
+    "finiteDressingsSpent": 10,
+    "carriedDressingsSpent": 2,
+    "corpseDressingsSpent": 8,
+    "corpseSources": [
+      "112",
+      "122",
+      "126",
+      "129",
+      "enemy-0",
+      "enemy-1"
+    ],
+    "initialCannon": {
+      "id": "arsenal:buenos_aires:1",
+      "type": "bronze4",
+      "actualCrewRequirement": 2,
+      "loaded": true,
+      "reserve": 6,
+      "shipment": "buenos_aires to san_nicolas"
+    },
+    "exhaustedCannonRetained": {
+      "id": "arsenal:buenos_aires:1",
+      "at": "cordoba",
+      "loaded": false,
+      "reserve": 0
+    },
+    "capturedCannonDelivered": {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "at": "tucuman",
+      "loaded": true,
+      "reserve": 6
+    },
+    "observedExternalSequenceEndpoint": {
+      "hour": 381,
+      "second": 1840,
+      "location": "tucuman",
+      "cash": 113052,
+      "squad": [
+        9,
+        11,
+        10,
+        4,
+        121,
+        1
+      ],
+      "cordobaOwner": "patriot",
+      "encounter": null
+    },
+    "futureEnemyGroup4": {
+      "target": "tucuman",
+      "status": "marching",
+      "arrivalAt": 408,
+      "retainedUnresolved": true
+    },
+    "actualSaltaPreparation": {
+      "selectedCannonId": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "loaded": true,
+      "reserve": 6,
+      "enteredNativeScene": true,
+      "officialFullPairedSave": true,
+      "noSaltaCombatRun": true
+    }
+  },
+  "ordinaryPreparationRefusal": {
+    "error": "Seleccioná hasta tres piezas de artillería.",
+    "cause": "External script selected SN depot gun while Tcl squad was active",
+    "continuation": "Resumed exact blocked official save, selected SN field before configureArtillery; no preparation reset"
+  },
+  "correctedTestConstruction": {
+    "historicalLog": "/tmp/granaderos-reunite-corrected-focused.log",
+    "cause": "The first new final assertion encoded a pending Salta request without its tactical scene",
+    "fix": "Encode and decode the actual enterSector campaign/battle pair",
+    "noControllerOrPreparationVariant": true
+  },
+  "checks": {
+    "gitDiffCheck": "PASS",
+    "candidateFilesChangedAfterFocusedLaunch": false,
+    "committed": false,
+    "staged": false
+  },
+  "limits": [
+    "No complete original fresh-campaign-recovery file result is claimed; the root holds that run until shared tactical drivers are stable",
+    "The Córdoba-patriot path retains the existing restoration helper and was not rerun by this new lost-C regression",
+    "The earned input came from the historical b8 native prefix; current9d validation and this exact helper call are distinct receipts",
+    "Future enemy-group-4 is preserved, not declared defeated; only the actual Córdoba occupation was recaptured"
+  ],
+  "externalProofReceipt": "/tmp/granaderos-reunite-lawful-recapture-final-receipt.json",
+  "baseBuildIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "9d03e36370d6",
+    "source": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+    "revision": "2849279c5064e658a5106dc1f62c06ecab49e7f4"
+  },
+  "candidateBuildIdentity": {
+    "status": "pending",
+    "gameCodeUnchanged": true,
+    "note": "The base/revalidated production identity is 9d03. Current candidate build identity will differ because tools/test-suite-config.mjs is included in build identity and has changed. The validated candidate file hashes are unchanged."
+  }
+}

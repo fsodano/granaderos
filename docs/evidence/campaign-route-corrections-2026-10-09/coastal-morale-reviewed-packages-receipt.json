@@ -1,0 +1,90 @@
+{
+  "verified": true,
+  "nativeCallsAdded": 0,
+  "packages": {
+    "granaderos-coastal-readiness-reviewed-proposal-20261010.tar.gz": {
+      "bytes": 165007,
+      "sha256": "37fa8036e8c88e45187395eb6491e7d93ebba923d3393d27f3a06a5dd2cadf41",
+      "members": {
+        "coastal-medical-reserve.patch": {
+          "bytes": 17209,
+          "sha256": "c5eb33c8d07bc8b80d901c6da072397ebc56a11b5be5fa71095f34f69cdc5e82"
+        },
+        "native-control-commands.json": {
+          "bytes": 2239,
+          "sha256": "8e8faf8104db4441859fac721b9e119dcda0dc20198e0dd9c328835af81f30a8"
+        },
+        "proposal-receipt.json": {
+          "bytes": 4309,
+          "sha256": "ebdca186321eb2e73a9f9d4019090a081ac6bad6f60218ded3e59c6bece42df8"
+        },
+        "static-verification-receipt.json": {
+          "bytes": 3381,
+          "sha256": "b26248a6dc80dbbbbe5eb8fee10575ecfc7f02d0a9e5bad729fe99d0e9d9b974"
+        },
+        "tests/coastal-medical-readiness.mjs": {
+          "bytes": 5697,
+          "sha256": "7e0caaac725fe9bcb395390bc10f06027facaa229f6e7c9b93ce91acd2794a77"
+        },
+        "tests/coastal-medical-readiness.test.mjs": {
+          "bytes": 4132,
+          "sha256": "afc7cd47df0cc6680f0320db09fe01c9c26a45ac2fbec908fe480f741df98b12"
+        },
+        "tests/fixtures/coastal-earned-ba-stable-005.json.gz": {
+          "bytes": 55984,
+          "sha256": "222e2bce42f4603903e43b9c70d3a6be1e55bebfae914459a85950e19b429816"
+        },
+        "tests/fixtures/coastal-earned-san-nicolas-empty-008.json.gz": {
+          "bytes": 104621,
+          "sha256": "11cfc6ebfe3a2096c64a2a90af6ff4691c069966e51a7eaf2a0ef8c2e101ac4d"
+        },
+        "tests/fixtures/coastal-medical-readiness.provenance.json": {
+          "bytes": 3067,
+          "sha256": "e99f08dade64f4f4e44f9296d337878e4398f5c195ca0f217ec8668ed6238be8"
+        },
+        "tests/fresh-coastal-fixture.mjs": {
+          "bytes": 21239,
+          "sha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6"
+        }
+      }
+    },
+    "granaderos-northern-morale-selection-reviewed-proposal-20261010.tar.gz": {
+      "bytes": 24911,
+      "sha256": "7710b919a3c98e93129baae0cda71bbb41f78a6288defcd837bb11571bea57a9",
+      "members": {
+        "northern-morale-selection.patch": {
+          "bytes": 11943,
+          "sha256": "f121c74eae8d2854e2c672a80fb732a18257fd25be5498f3ad2a2602a224a252"
+        },
+        "pure-control.log": {
+          "bytes": 319,
+          "sha256": "16a1188bdc2ce43632cbb32431a12576b7f1fcc22982e5a986fc3e349d2f8f10"
+        },
+        "tests/fixtures/northern-field-survivors-earned-cordoba-84.json": {
+          "bytes": 4331,
+          "sha256": "01cb7f6ab50df6a04d059ba35170c3908f03628936885af394cfe6e95275b59d"
+        },
+        "tests/fixtures/northern-field-survivors-earned-cordoba-84.provenance.json": {
+          "bytes": 2705,
+          "sha256": "c8c0e6f23e2a8f8796ea8b7b2bc27f4bab8c74246f5b61efd3593d799ada287e"
+        },
+        "tests/northern-field-survivors.mjs": {
+          "bytes": 487,
+          "sha256": "c87ee9076cf5caed353064ef024b453b1728151750dafb76e85c64cedbe04010"
+        },
+        "tests/northern-field-survivors.test.mjs": {
+          "bytes": 2431,
+          "sha256": "958c6abb6585daba9475f481ddcb0ccdf91d04986f1ebf378a9cef45c9b8e4ef"
+        },
+        "tests/northern-route.mjs": {
+          "bytes": 84792,
+          "sha256": "7c35845c6ef57bd58d4f6586449651dedf3429bd5c8c891b5fddad396d70f1b0"
+        },
+        "validation-receipt.json": {
+          "bytes": 4024,
+          "sha256": "a164ec3c270ecd7cdf6c83a4c40c48fe78a381662c97022a236edfbfa4793544"
+        }
+      }
+    }
+  }
+}

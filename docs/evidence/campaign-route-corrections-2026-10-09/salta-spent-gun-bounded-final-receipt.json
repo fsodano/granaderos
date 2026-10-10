@@ -1,0 +1,255 @@
+{
+  "complete": true,
+  "session": 26519,
+  "pid": 83984,
+  "exitCode": 0,
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "nodeVersion": "v25.9.0",
+  "scope": "One exact canonical native prefix0..333 from the genuine retained full942 Salta input, then pure original/proposed selectors at one fixed standing-Paz/spent-gun checkpoint and at most one ordinary proposed native action. No full fight/controller/seed/prefix alternatives or victory claim.",
+  "repositorySourceEdits": false,
+  "sourceDrift": [],
+  "externalDrift": [],
+  "undeclaredOriginalRuntimeDifferences": [],
+  "actualModuleLoads": 319,
+  "declaredCandidateTransforms": [
+    {
+      "url": "file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs?salta-candidate=1",
+      "path": "tests/fresh-northern-fixture.mjs",
+      "absolutePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs",
+      "external": false,
+      "originalSha256": "e08a19be02293dffe9fbd7f6664e21333dd0538b694bdc4f8d3cf06b7ccfb535",
+      "runtimeSha256": "1a7d2e2ebf82a7bd8d2a41e119d04b40e1f560eb101a0c5906c0f668efd5d424",
+      "declaredCandidateTransform": true,
+      "bytes": 42479,
+      "finalSha256": "e08a19be02293dffe9fbd7f6664e21333dd0538b694bdc4f8d3cf06b7ccfb535"
+    }
+  ],
+  "canonicalOrdersApplied": 334,
+  "canonicalEndTurnCount": 30,
+  "canonicalActBattleCount": 304,
+  "proposedOrdersApplied": 1,
+  "topLevelNativeEntryPointCounts": {
+    "enterSector": 1,
+    "actBattle": 305,
+    "endTurn": 30,
+    "syncBattleTime": 2,
+    "encodeSave": 2,
+    "decodeSave": 2
+  },
+  "pureSelectorCalls": {
+    "originalWrapper": 1,
+    "candidateWrapper": 2,
+    "unchangedMountainDelegate": 1
+  },
+  "checkpoint": {
+    "zeroBasedNextOrder": 334,
+    "actor": {
+      "id": "11",
+      "stance": "standing",
+      "hp": 78,
+      "ap": 66,
+      "loaded": 1,
+      "ammo": 7,
+      "activeSlot": "primary"
+    },
+    "gun": {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "x": 38,
+      "y": 36,
+      "facing": -1.1071487177940904
+    },
+    "rawBattleSha256": "5080c6947017305414a96d7652098d344275f7778370cf2d08bc17e992ea1d5c",
+    "officialSaveRawSha256": "7ec9f30b3294d4bbc398f68b8e05b0b821b9562c4adc7d82dc8fae4e72e6a94f"
+  },
+  "selectors": {
+    "original": {
+      "type": "stance",
+      "unitId": "11",
+      "stance": "crouched"
+    },
+    "candidate": {
+      "type": "move",
+      "unitId": "11",
+      "x": 41,
+      "y": 36,
+      "tacticalLevel": 0
+    },
+    "unchangedDelegate": {
+      "type": "move",
+      "unitId": "11",
+      "x": 41,
+      "y": 36,
+      "tacticalLevel": 0
+    },
+    "inputsUnchanged": true,
+    "selectorsEvaluatedWithoutApplying": true
+  },
+  "paidNativeControl": {
+    "action": {
+      "type": "move",
+      "unitId": "11",
+      "x": 41,
+      "y": 36,
+      "tacticalLevel": 0
+    },
+    "apBefore": 66,
+    "apAfter": 30,
+    "energyBefore": 96,
+    "energyAfter": 91,
+    "hpBefore": 78,
+    "hpAfter": 78,
+    "elapsedBefore": 153,
+    "elapsedAfter": 153,
+    "gunUnchanged": true,
+    "firearmLoadedBefore": 1,
+    "firearmLoadedAfter": 1,
+    "firearmReserveBefore": 7,
+    "firearmReserveAfter": 7,
+    "accepted": true
+  },
+  "nextPureDecisionUnapplied": {
+    "type": "move",
+    "unitId": "11",
+    "x": 42,
+    "y": 35,
+    "tacticalLevel": 0
+  },
+  "nativeTerminal": "active",
+  "originalInputAndResultRetainedUnchanged": true,
+  "initialIndependentlyPreCaptured": false,
+  "canonicalTerminalReplay": false,
+  "winningChangeUnproved": true,
+  "recommendation": {
+    "sourcePatch": "salta-exhausted-gun-posture.patch",
+    "allowedProductionScope": "Guard only the redundant crew crouch by availability of a loaded or reserve charge in the assigned friendly gun; keep the existing lower policy and all outcomes/seed/readiness/assertions unchanged.",
+    "regressionFixture": "Use the portable derived raw checkpoint, official paired save, original 334-order tape, source/raw hashes and provenance. The pure selector comparison used raw tactical checkpoint; the native action used its official synced pair. Do not claim raw and synced campaign clocks are identical.",
+    "focusedControl": "At this exact earned standing-Paz checkpoint, require exhausted assigned gun and original forced crouch, unchanged delegate/proposed move equivalence, native accepted move with actual AP/energy debit and retained ammunition/HP. Do not require a new victory. Also retain existing charged-gun crew/artillery controls.",
+    "fullCampaignLimit": "The preserved full942 Salta retreat remains genuine. This bounded proof removes one demonstrated exhausted-gun posture conflict; it neither replays terminal battle nor proves campaign victory."
+  },
+  "files": [
+    {
+      "path": "bounded-script-preparation.json",
+      "sha256": "662a6432e0f6f46ef07d762ad8a877ef43f89a201c16b5653ae99cd582fa0931",
+      "bytes": 1579
+    },
+    {
+      "path": "bounded-control-loader.mjs",
+      "sha256": "ae08176013402bb38f69c50787f7a857a18d51e4ea5dbac6bab82f0f910525ab",
+      "bytes": 5916
+    },
+    {
+      "path": "bounded-native-control.mjs",
+      "sha256": "cf487c180378e78f082b67b6f00c883d3cb5dc8ab6288dd5a22fbc5dc355cdd6",
+      "bytes": 10413
+    },
+    {
+      "path": "native-input.json.gz",
+      "sha256": "8c46229d4a7ac4ebfdf796b72a4cc8f5947598ca832c8038eeb9b7f3c2423bd6",
+      "bytes": 236050
+    },
+    {
+      "path": "native-result.json.gz",
+      "sha256": "aac5162b646ff3c7c3c6b8a2bc2182497b7e0cfb725ce68cb6f668e0055f7be4",
+      "bytes": 37132
+    },
+    {
+      "path": "fresh-northern-fixture.baseline.mjs",
+      "sha256": "e08a19be02293dffe9fbd7f6664e21333dd0538b694bdc4f8d3cf06b7ccfb535",
+      "bytes": 42332
+    },
+    {
+      "path": "fresh-northern-fixture.candidate.mjs",
+      "sha256": "1a7d2e2ebf82a7bd8d2a41e119d04b40e1f560eb101a0c5906c0f668efd5d424",
+      "bytes": 42479
+    },
+    {
+      "path": "salta-exhausted-gun-posture.patch",
+      "sha256": "b6d00d5829744df4123a3850aa3fb7456e449e4373cb6131929e48053a5abcdd",
+      "bytes": 1146
+    },
+    {
+      "path": "bounded-derived-initial.native.json",
+      "sha256": "2e9edcaafd452b1eb0db9d084d5f3d0f77cc96862bd74edca5bfea6f8ae41237",
+      "bytes": 6541911
+    },
+    {
+      "path": "bounded-prefix334.native.json",
+      "sha256": "b983cfad04791177f9df05502651407e86236a4b82e2a60cb5dbab56a408faac",
+      "bytes": 6569543
+    },
+    {
+      "path": "bounded-prefix334.save.json.gz",
+      "sha256": "d3f3965d99835f6b39b3a0ccf80dbc11bd17aba4ba765ada91a37c55e2022aea",
+      "bytes": 148696
+    },
+    {
+      "path": "bounded-prefix334.provenance.json",
+      "sha256": "cc0438682d43ff0af388e322775d753196beda7a58799720579ed95f17eb1929",
+      "bytes": 1246
+    },
+    {
+      "path": "bounded-canonical-prefix-trace.json",
+      "sha256": "756d669356c000f57ef7771205672fb1d9769bd3a973dfc686346eb667bf1fdb",
+      "bytes": 129952
+    },
+    {
+      "path": "bounded-selectors.json",
+      "sha256": "1eab85eb0f8c1d2e12a51fb4cd1415630e71ed36dac6189d003d85739b31e6ed",
+      "bytes": 393
+    },
+    {
+      "path": "bounded-one-action-final.native.json",
+      "sha256": "a3eb4bb16ab1dae11996fa1d66b598e1fd041f75c6a0e9be3851ba6ec1f0f642",
+      "bytes": 6570568
+    },
+    {
+      "path": "bounded-one-action-final.save.json.gz",
+      "sha256": "45902e73cabad5ade93a05205869cbd90da790df4a0eed640c4ac541d17b32a7",
+      "bytes": 148738
+    },
+    {
+      "path": "bounded-control-receipt.json",
+      "sha256": "cad0cf62afe0ae937192f002bc0779538d35d00921aebfaa3a078451c5598401",
+      "bytes": 15319
+    },
+    {
+      "path": "bounded-runtime-imports.jsonl",
+      "sha256": "ff8e0a481252376e3c1bcb069a210da47e2ad10bb52e6d27851c3f625716313e",
+      "bytes": 150303
+    },
+    {
+      "path": "bounded-runtime-closure.json",
+      "sha256": "4de33aa2510400650da2f34d51fcc233f2aa8abe5e1f52f587345bc166f24d06",
+      "bytes": 205218
+    },
+    {
+      "path": "bounded-external-binding.json",
+      "sha256": "32d60df30abfbb8054d7806ea354bc9567d0eed26786214d06ad1074cf59f51e",
+      "bytes": 1712
+    },
+    {
+      "path": "bounded-run.lock",
+      "sha256": "16dd9c844a92d0259d4e1a93df82d94cd745a4bf0cdc57af8ff92a3d6749ea68",
+      "bytes": 195
+    },
+    {
+      "path": "bounded-control.log",
+      "sha256": "7b60de7024d3e5176f3d40394679f782a58bb18e2044cd3c7f4b99cec7744fde",
+      "bytes": 614
+    },
+    {
+      "path": "granaderos-salta-bounded-control-static-review-20261010T043050095645Z.json",
+      "sha256": "8463b5ccd5342ec4c4a96d239f12a2b3e2c32cadc5c34c714266812a0d8ec4ef",
+      "bytes": 5219
+    },
+    {
+      "path": "granaderos-salta-bounded-control-static-closure-20261010T043238419877Z.json",
+      "sha256": "836a63950195fe00a7da6061409656f8b6630111b792802b2c422ab8f68c3adc",
+      "bytes": 2457
+    }
+  ]
+}

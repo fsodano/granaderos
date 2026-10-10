@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 1,
+  "closedUtc": "2026-10-10T03:02:01.649791+00:00",
+  "status": "actual-retreat-strict-route-victory-failure",
+  "sourceHead": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "scope": "Exactly one current native Los Patos suffix from retained earned pre-preparation input1040:2369, not uncaptured full935 checkpoint. Original prepareFreshLosPatosAssault + createdLosPatosBattery + fightNorthernSector; completeFreshAndesPreparation was not reached because real strict victory assertion failed.",
+  "acceptedInput": {
+    "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/accepted-courier-observer-repair/los-patos-preparation-input.save.json",
+    "sha256": "bae8859fa59e644d5aad8d09896396b472768b6e2b5bb1544f62171f24280be2",
+    "bytes": 1667824,
+    "state": {
+      "hour": 1040,
+      "secondOfHour": 2369,
+      "location": "mendoza",
+      "treasury": 213094,
+      "phase": 3,
+      "defeated": false,
+      "completed": false,
+      "pendingEncounter": null,
+      "pendingBattle": null
+    }
+  },
+  "terminal": {
+    "status": "fail",
+    "stage": "los-patos",
+    "actual": "retreat",
+    "expected": "victory",
+    "hour": 1062,
+    "secondOfHour": 2532,
+    "location": "los_patos",
+    "treasury": 185791,
+    "phase": 3,
+    "defeated": false,
+    "completed": false,
+    "pendingEncounter": null,
+    "pendingBattle": null,
+    "inputUnchanged": true,
+    "realBattleStatus": "retreat",
+    "turns": 6,
+    "battleOrders": 108,
+    "deploymentOrders": 10,
+    "exactOfficialReplay": true,
+    "battleSettlementApplied": true,
+    "scope": "One fixed native earned suffix; failure and actual settlement retained. No alternative tactical execution."
+  },
+  "actualPlayerState": [
+    {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 78,
+      "bleeding": 0,
+      "bandaged": 0,
+      "location": "los_patos",
+      "assignment": "active",
+      "medkits": 0,
+      "weaponDropped": null,
+      "id": 11
+    },
+    {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 70,
+      "bleeding": 0,
+      "bandaged": 0,
+      "location": "los_patos",
+      "assignment": "active",
+      "medkits": 15,
+      "weaponDropped": false,
+      "id": 112
+    },
+    {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 70,
+      "bleeding": 0,
+      "bandaged": 55,
+      "location": "los_patos",
+      "assignment": "active",
+      "medkits": 5,
+      "weaponDropped": false,
+      "id": 8
+    },
+    {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 88,
+      "bleeding": 0,
+      "bandaged": 0,
+      "location": "los_patos",
+      "assignment": "active",
+      "medkits": 3,
+      "weaponDropped": true,
+      "id": 1
+    },
+    {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 76,
+      "bleeding": 0,
+      "bandaged": 0,
+      "location": "los_patos",
+      "assignment": "active",
+      "medkits": 0,
+      "weaponDropped": false,
+      "id": 2
+    },
+    {
+      "alive": true,
+      "captured": false,
+      "hp": 35,
+      "maxHp": 92,
+      "bleeding": 4,
+      "bandaged": 0,
+      "location": "cell-4-24",
+      "assignment": "active",
+      "medkits": 0,
+      "weaponDropped": true,
+      "id": 9
+    },
+    {
+      "alive": true,
+      "captured": true,
+      "hp": 13,
+      "maxHp": 79,
+      "bleeding": 5,
+      "bandaged": 0,
+      "location": "los_patos",
+      "assignment": "active",
+      "medkits": 0,
+      "weaponDropped": true,
+      "id": 128
+    },
+    {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 70,
+      "bleeding": 0,
+      "bandaged": 0,
+      "location": "los_patos",
+      "assignment": "active",
+      "medkits": 0,
+      "weaponDropped": false,
+      "id": 105
+    }
+  ],
+  "newDeaths": [
+    "1",
+    "2",
+    "8",
+    "11",
+    "105",
+    "112"
+  ],
+  "priorDeathsRetained": [
+    "0",
+    "3",
+    "102",
+    "103",
+    "108",
+    "110",
+    "111",
+    "113",
+    "114",
+    "115",
+    "116",
+    "117",
+    "121",
+    "122",
+    "125",
+    "127",
+    "129",
+    "130",
+    "131",
+    "133",
+    "136",
+    "137",
+    "139",
+    "141",
+    "144",
+    "146",
+    "147",
+    "1000"
+  ],
+  "orders": {
+    "deploymentAndTransfers": 10,
+    "battle": 108,
+    "totalReplay": 118,
+    "playerActions": 89,
+    "nativeApiRows": 255,
+    "apiCounts": {
+      "dispatchCampaign": 126,
+      "enterSector": 4,
+      "actBattle": 94,
+      "syncBattleTime": 3,
+      "sectorDeploymentAction": 9,
+      "endTurn": 19
+    },
+    "acceptedCampaignRows": 126,
+    "noRejectedNativeActions": true,
+    "exactOfficialMidpointFullPairReplay": true,
+    "controllerExecutions": 1,
+    "nativeSettlementApplied": true
+  },
+  "equipmentFinding": {
+    "initialArtillery": [
+      {
+        "id": "arsenal:buenos_aires:1",
+        "type": "bronze4",
+        "side": "player",
+        "ammo": 0,
+        "loaded": false,
+        "x": 62,
+        "y": 23
+      },
+      {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "ammo": 0,
+        "loaded": false,
+        "x": 62,
+        "y": 22
+      }
+    ],
+    "artilleryOrders": 0,
+    "proof": "The specific retained old-prefix checkpoint owns only three exhausted bronze guns; prepareRouteBattery selects two existing0ammo/unloaded guns, and original created battery controller legally issues no artillery shot. Eight actual stable capable infantry each carry a loaded primary plus11compatible rounds at deployment.",
+    "sourceEvidence": [
+      "tests/route-battery.mjs:16-17 (type/custody selection without positive charge gate)",
+      "tests/fresh-mountain-route.mjs:340 (unchanged two-bronze selection)",
+      "tests/created-los-patos-battery.mjs:12-17 (two bronze/stable eight admission)",
+      "tests/recovery-paid-battery-driver.mjs:31,48 (only loaded or positive-ammo cannon enters crew policy)"
+    ],
+    "limit": "The retained funding/courier precursor predates the foundry-custody timing correction now in fresh-cuyo-route408. This actual retreat is an earned old-prefix limitation, not proof that a complete current prefix with the preserved foundry battery also retreats. No ammunition/health/outcome grant, controller variant, second battle, or repo correction was attempted."
+  },
+  "sourceProof": {
+    "actualOriginalImportedSourceCount": 309,
+    "drift": [],
+    "originalRuntimeHashesRecordedSeparately": true,
+    "observationOnlyWrappedFiles": {
+      "game/world.js": {
+        "sourceSHA256": "a77579fb707e43ddfd0d773c9c49c7df0fb0c022c0475209ec3b7a9367912ee6",
+        "sourceBytes": 18707,
+        "runtimeSHA256": "f0d4f15522070dd419c3104975beec9ea8a2c25d467081550952e944c10387e7",
+        "runtimeBytes": 19159,
+        "observationOnlyWrappers": [
+          "enterSector"
+        ]
+      },
+      "game/tactical.js": {
+        "sourceSHA256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+        "sourceBytes": 271222,
+        "runtimeSHA256": "c6211941853e2a8f00dc0c65e432ec8598c2d25bcb187b3a1fee9dab710a0fd5",
+        "runtimeBytes": 272102,
+        "observationOnlyWrappers": [
+          "actBattle",
+          "endTurn"
+        ]
+      },
+      "game/sector-deployment.js": {
+        "sourceSHA256": "bacc02e0d49da388f10336aeb42a9781cffc7e0a2932a5bb4cda136cc79aff5b",
+        "sourceBytes": 8146,
+        "runtimeSHA256": "fc78c9322557c1e39ec4fb986cde5ef7b2d93a670f968b098fb82bc046874e79",
+        "runtimeBytes": 8642,
+        "observationOnlyWrappers": [
+          "sectorDeploymentAction"
+        ]
+      },
+      "game/time.js": {
+        "sourceSHA256": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+        "sourceBytes": 5569,
+        "runtimeSHA256": "c3a75c357d26ca5a7a5359c5cd0216f52c00f94804cdfa139cebf443365bc733",
+        "runtimeBytes": 6033,
+        "observationOnlyWrappers": [
+          "syncBattleTime"
+        ]
+      },
+      "game/campaign.js": {
+        "sourceSHA256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+        "sourceBytes": 161790,
+        "runtimeSHA256": "fbe59144f8113c1d4d68c591a09aa63ed9310a4418bcf7c7ad9c723b26dfe503",
+        "runtimeBytes": 162262,
+        "observationOnlyWrappers": [
+          "dispatchCampaign"
+        ]
+      }
+    },
+    "launchSourceHashes": {
+      "tests/fresh-mountain-route.mjs": {
+        "sha256": "196b699d6e55efebbf477508eba5e3502149016d2a7b9315dbb81ee5cbc1c315",
+        "bytes": 38264
+      },
+      "tests/fresh-cuyo-route.mjs": {
+        "sha256": "ceba839d3064d468891e86d718eac3faf3b8a94c0fe6d55c9883cd5a25143bcf",
+        "bytes": 35962
+      },
+      "tests/fresh-cuyo-fixture.mjs": {
+        "sha256": "4444c83013ba3b8aba605a0f0f8959ad799977ef851f35f7b0d677f4cf3857fa",
+        "bytes": 9590
+      },
+      "tests/created-los-patos-battery.mjs": {
+        "sha256": "54067ef1da211593b55d4c36eb4f134f88f1423c7c651331f8f00f9baa8bdc83",
+        "bytes": 4385
+      },
+      "tests/recovery-paid-battery-driver.mjs": {
+        "sha256": "6051303cbab44920a27ec70a4884cd2788d7186af68144c6269e381e77686d7c",
+        "bytes": 30951
+      },
+      "tests/northern-route.mjs": {
+        "sha256": "a4c7bcc447d33fa643b2a45cabbaccba30fc3bb290aaff8b6e1f7f22fd24202f",
+        "bytes": 82437
+      },
+      "tests/tucuman-driver.mjs": {
+        "sha256": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463",
+        "bytes": 1070
+      },
+      "tests/opening-driver.mjs": {
+        "sha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+        "bytes": 5622
+      },
+      "game/campaign.js": {
+        "sha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+        "bytes": 161790
+      },
+      "game/tactical.js": {
+        "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+        "bytes": 271222
+      },
+      "game/sector-deployment.js": {
+        "sha256": "bacc02e0d49da388f10336aeb42a9781cffc7e0a2932a5bb4cda136cc79aff5b",
+        "bytes": 8146
+      },
+      "game/time.js": {
+        "sha256": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+        "bytes": 5569
+      },
+      "game/world.js": {
+        "sha256": "a77579fb707e43ddfd0d773c9c49c7df0fb0c022c0475209ec3b7a9367912ee6",
+        "bytes": 18707
+      }
+    },
+    "startEndAllImportedOriginalBytesEqual": true
+  },
+  "artifacts": {
+    "start.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/start.json",
+      "sha256": "893282fadff0ad7e541636e3d2e738f116a129ba3cde764daae21f9149edf918",
+      "bytes": 1132
+    },
+    "launch-source.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/launch-source.json",
+      "sha256": "59ac44e76067701712eb09500d93ca5f98dc8033f68040200aa9c40554bf3066",
+      "bytes": 2430
+    },
+    "continuation.mjs": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/continuation.mjs",
+      "sha256": "3c8a8c48275b6dc21953b04474ec96a5ccc5a45dcd3b66df3913a560e17b0dfa",
+      "bytes": 11843
+    },
+    "loader.mjs": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/loader.mjs",
+      "sha256": "fb3e930a03ae2cf1f3264fbb5814c5adbb78b1e123cad840088ee14ceb919dff",
+      "bytes": 2135
+    },
+    "imports.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/imports.json",
+      "sha256": "6b1284a931987c57f8bd8b16493eb95bdc9621e9c70f45f0b8d113d16ce4b26e",
+      "bytes": 115787
+    },
+    "run.log": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/run.log",
+      "sha256": "aa998477cf1f9c5b10c090bf718fc2002ed70c905c1e23ddcce9242181208727",
+      "bytes": 8327
+    },
+    "native-api-tape.ndjson": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/native-api-tape.ndjson",
+      "sha256": "63939c313d620d7b902ab199538e33581a19e6df1c8b91c9811478279bba1fbc",
+      "bytes": 1486267
+    },
+    "campaign-orders.ndjson": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/campaign-orders.ndjson",
+      "sha256": "5ae5afa40cace4a08eac4009c33bf68f36a9c05bc65fcccae14b9a3347e8c0ff",
+      "bytes": 1429580
+    },
+    "events.ndjson": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/events.ndjson",
+      "sha256": "cd227730d8e95e8b6f05dbe02b7f390458377bd53317c3a7955cb9457f784247",
+      "bytes": 36809
+    },
+    "checkpoints.ndjson": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/checkpoints.ndjson",
+      "sha256": "cf0f6faa0fee37e82eb901552f3a7c82ebfa6fa9560cc8ee6ef37e69601a6883",
+      "bytes": 3196
+    },
+    "los-patos-prepared.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-prepared.save.json",
+      "sha256": "1ab9c998e0eb55ecbbf009f75af35afd81dd2e8e61dba8ad4599b82fe225fb22",
+      "bytes": 1757525
+    },
+    "los-patos-initial.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-initial.save.json",
+      "sha256": "26c6dc572810d63f92b040ed6ce260d257103f2b79b82370b2bbe8e6aded7cb1",
+      "bytes": 1757525
+    },
+    "los-patos-after-deployment.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-after-deployment.save.json",
+      "sha256": "436f3ea378c7a56aa4c87628f2e91109c726731082e6707c9f6df99f77bc0601",
+      "bytes": 1756967
+    },
+    "los-patos-deployment-orders.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-deployment-orders.json",
+      "sha256": "fe6d0ae0509d45def329a34779286bde320c00973c856b600916d0cf789ea68f",
+      "bytes": 961
+    },
+    "los-patos-orders.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-orders.json",
+      "sha256": "e8fc1a44ed334f1edffa577dbb8313061e8d85f9b75115131ae02f478683539d",
+      "bytes": 7970
+    },
+    "los-patos-result.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-result.save.json",
+      "sha256": "fa6f9ca3383adf18d14728c4292e83c059e2895399a7f47849628472e8858768",
+      "bytes": 1767785
+    },
+    "los-patos-official-midpoint.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-official-midpoint.save.json",
+      "sha256": "53b72b03978b9366282819db41d47124f57f640333398fab261aa6719e4eccee",
+      "bytes": 1765527
+    },
+    "los-patos-official-replay-final.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/los-patos-official-replay-final.save.json",
+      "sha256": "4fc1cec0c917e883325f104dfa3107156fd11e85fb9b72b0ffbc2ed95eff7b91",
+      "bytes": 1767785
+    },
+    "actual-failed-battle-settled.save.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/actual-failed-battle-settled.save.json",
+      "sha256": "3dd21da143ea508f00bfcc79782b52656f846b510695e2773f1bde2fd18b50a8",
+      "bytes": 1728269
+    },
+    "terminal.json": {
+      "path": "/tmp/granaderos-los-patos-finite-ammo-20261009/los-patos-current-suffix/terminal.json",
+      "sha256": "8da246737e41f8f91ed6f64c4721ffdc85cbe1832a846eb38000daa0d8f2d3d6",
+      "bytes": 5898
+    }
+  },
+  "sourcesReleased": true,
+  "repositoryEdits": false
+}

@@ -8,6 +8,7 @@ import {assembleCreatedCuyo,prepareCreatedMendozaAssault,stabilizeStockMendozaSu
 import {startFreshFoundry,prepareFreshArmyFunding,completeFreshArmyFunding} from './fresh-cuyo-route.mjs';
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {stagedBatteryController} from './staged-battery-driver.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
@@ -15,6 +16,11 @@ import {extractItemQuantity} from '../game/tactical-inventory.js';
 import {createdLosPatosBattery} from './created-los-patos-battery.mjs';
 
 const deaths=c=>Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+
+export function mendozaBatteryController(initial){
+ const supplied=initial.artillery.filter(gun=>gun.side==='player'&&(gun.loaded||gun.ammo>0));
+ return supplied.length>1?stagedBatteryController():coastalBatteryController(initial,{sharedArtillerySight:true});
+}
 
 // Continue a real new campaign. Preparation pays for the survivors, finite
 // supplies and physical journeys; every battle is replayed and saved in full.
@@ -30,7 +36,7 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  const fight=sector=>{
   assert.ok(c.pendingBattle);assert.equal(c.pendingBattle.sector,sector);
   const initial=enterSector(c.pendingBattle,c.sectorStates[sector]);
-  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery():{controller:coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
+  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery():{controller:sector==='mendoza'?mendozaBatteryController(initial):coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
   c=result.campaign;assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.completed,false);
   checkpoint(sector,{status:result.summary.status,actions:result.summary.actions,turns:result.summary.turns});
  };

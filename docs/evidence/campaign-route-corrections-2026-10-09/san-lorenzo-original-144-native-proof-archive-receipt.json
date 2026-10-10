@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-10T06:14:09.104692+00:00",
+  "archive": "/tmp/granaderos-san-lorenzo-original-144-native-proof-20261010-a6y9eanz.tar.gz",
+  "archiveBytes": 1145562,
+  "archiveSha256": "32a63d1aeb8e11b1eeb9817e766561ad8ff436c685b63d06d568295745e57c38",
+  "memberManifest": "/tmp/granaderos-san-lorenzo-original-144-replay-20261010-a6y9eanz/member-manifest.json",
+  "memberManifestSha256": "6c410cd0c84722826b8d49797f3064f5496b944720dd079aa27c338d3217a26f",
+  "relativeRegularMembersVerified": 32,
+  "allMemberSizesAndHashesPass": true,
+  "members": [
+    {
+      "member": "current-production-source-hashes.json",
+      "bytes": 32547,
+      "sha256": "d428e2febba8ed398cfa4fe1cd1a2e12f197bc0144b4ef7b85a6ec089c345e14"
+    },
+    {
+      "member": "exact-original-replay.mjs",
+      "bytes": 9630,
+      "sha256": "107d58c27cd1afa6f4c0e04d6e8b2213cee2a63a901633a4f199dd1d120efebd"
+    },
+    {
+      "member": "inputs/058-before-original-battle.json.gz",
+      "bytes": 118365,
+      "sha256": "336031a103ea99ce3375a070fbcb5e92a46ec58225a4b0c355695217aed03871"
+    },
+    {
+      "member": "inputs/059-before-original-victory-assertion.json.gz",
+      "bytes": 140985,
+      "sha256": "8e4687e6f54e06d750819eb0fdb3baa6bfbb18c0cce9b2b63f1a5582314f6d7b"
+    },
+    {
+      "member": "inputs/artifact-manifest.json",
+      "bytes": 3366,
+      "sha256": "3148c9296bcf1ba603836df92a8aa6e2b13cd4231dc4080e9cfd57dfb2058160"
+    },
+    {
+      "member": "inputs/full947-final-receipt.json",
+      "bytes": 3107,
+      "sha256": "1cbbc256cf52d055f79058f9e165ab1b98228bdd93107f7bd1efb13b1ccb25cc"
+    },
+    {
+      "member": "inputs/native-original-144-orders.json",
+      "bytes": 7297,
+      "sha256": "791a2a1dc2bceafb3a3b89c4ebb118c5ab037ed83e690e4857315e591c453dbb"
+    },
+    {
+      "member": "inputs/native-original-request.json",
+      "bytes": 40792,
+      "sha256": "6ee7ff651ec1eeac0499453cac6e9386de5ea534b61eab30027c70c46cdcfc92"
+    },
+    {
+      "member": "inputs/native-original-terminal-battle.json",
+      "bytes": 278761,
+      "sha256": "e5ce358a31c77602b6df76f6747a25e03408dc76da2d2d8883a8782096b97b78"
+    },
+    {
+      "member": "inputs/native-pending-campaign.json",
+      "bytes": 1415204,
+      "sha256": "247af2b6beac40ac0c8b4acfd5d35f5d3275a243f7896d9351523092baed9acb"
+    },
+    {
+      "member": "inputs/native-previous-sector-evidence.json",
+      "bytes": 312,
+      "sha256": "25aad7cc0a10255a4867764e8e828817737d5f64a317593e9dc9e2519b359859"
+    },
+    {
+      "member": "inputs/original-import-closure.json",
+      "bytes": 187005,
+      "sha256": "cd75854ba05f731e6b2a06031c1efe0fc040857e8d086ce99d1c4ed36f296023"
+    },
+    {
+      "member": "launch.lock",
+      "bytes": 113,
+      "sha256": "9bb6d0c87150a66212f156b906bdb13cfc5a37a5c2ab025143f9b79493ef2f94"
+    },
+    {
+      "member": "original-production-source-hashes.json",
+      "bytes": 25889,
+      "sha256": "a0e649599228d46817c150039a92e1a85b0dabb87e7a7006a2c69731c55cc7a5"
+    },
+    {
+      "member": "preparation.json",
+      "bytes": 3495,
+      "sha256": "e8ef24eef396d5cf3e5eb6cdcda19b0b0255a0a3bab38d6214a8b3f1d8b5d579"
+    },
+    {
+      "member": "result/accepted-original-orders.jsonl",
+      "bytes": 29990,
+      "sha256": "ddd71201fa40fc31fbba643af1512fabbde24d9013ed63e61043d80f0b0c1561"
+    },
+    {
+      "member": "result/after-original-index113-pair.json",
+      "bytes": 3616847,
+      "sha256": "725f9ae3f7175d0cf7febd7a329585b1376238ee09b40cbef15f67d38bc3d687"
+    },
+    {
+      "member": "result/before-original-index113.save.json",
+      "bytes": 738375,
+      "sha256": "8580ac660945d79a6329a8831662819eebd33fe493ddd600d7f3f3ebb89d4b61"
+    },
+    {
+      "member": "result/derived-initial-raw-battle.json",
+      "bytes": 479589,
+      "sha256": "7347c3f0500520c30405adbb379fcbe1ba2d234f5ecaa5814b232f2a2d08c3e3"
+    },
+    {
+      "member": "result/entry.json",
+      "bytes": 448,
+      "sha256": "ccb32f1afc6b4ee0d29c042ed96d5ad48591208f93e512481b56ee1350082d6d"
+    },
+    {
+      "member": "result/entry.save.json",
+      "bytes": 729806,
+      "sha256": "d960ae4e87ba07522061dc578c7a61e82584753a91aaef4127a7aff666b1fa08"
+    },
+    {
+      "member": "result/imports.jsonl",
+      "bytes": 88799,
+      "sha256": "66b535d68ee214989efad5261c416f9ebfd77551fcbdb3e849818db5dd46ae8a"
+    },
+    {
+      "member": "result/midpoint.save.json",
+      "bytes": 736827,
+      "sha256": "b7f70f3cae8fe0287f7a3d4d64b26250340e01e5ddd8c17fdff4d8d5ccd8f806"
+    },
+    {
+      "member": "result/native-replay-receipt.json",
+      "bytes": 3010,
+      "sha256": "5c961665882dae41e88fdad21192785aadac280257981a8c7948d2b4560c01d5"
+    },
+    {
+      "member": "result/original-index113-public-forecast.json",
+      "bytes": 2603,
+      "sha256": "78c6fcc34910514b78d0b026c2d321454a453c4a367715184aa5551ade1fa832"
+    },
+    {
+      "member": "result/source-closure.json",
+      "bytes": 128248,
+      "sha256": "7fe81748d2996e40377bb117a78416defaee5774565be7233099388794c21ee1"
+    },
+    {
+      "member": "result/terminal-artifact-summary.json",
+      "bytes": 5233,
+      "sha256": "265d4f9bbc04e7f1d5fdfc02b26672716eafaf1e4fc371fb3fdc549c854fda83"
+    },
+    {
+      "member": "result/terminal-native-pair.json",
+      "bytes": 3617760,
+      "sha256": "af30745ba73650b6dff05cde8b128b6e2b6cbe2b345312a58bb7b0b87c51364e"
+    },
+    {
+      "member": "result/terminal.save.json",
+      "bytes": 738733,
+      "sha256": "b36e556367d24fc71b22e9f1e9c9e32755110a0caaea3d0645cf6fcef2bb4594"
+    },
+    {
+      "member": "run.log",
+      "bytes": 767,
+      "sha256": "6c6ac8c393c92739d9fb308d5f4b6d3980c3b5a28b5be9190bd490c187268c78"
+    },
+    {
+      "member": "source-loader.mjs",
+      "bytes": 4307,
+      "sha256": "e1380fb2628d7abd587e2a6ec12799e5a7768796f2d4742d5cd9a9611dfb2a75"
+    },
+    {
+      "member": "member-manifest.json",
+      "bytes": 5677,
+      "sha256": "6c410cd0c84722826b8d49797f3064f5496b944720dd079aa27c338d3217a26f"
+    }
+  ],
+  "nativeReplayReceipt": {
+    "path": "/tmp/granaderos-san-lorenzo-original-144-replay-20261010-a6y9eanz/result/native-replay-receipt.json",
+    "sha256": "5c961665882dae41e88fdad21192785aadac280257981a8c7948d2b4560c01d5"
+  },
+  "sourceClosure": {
+    "path": "/tmp/granaderos-san-lorenzo-original-144-replay-20261010-a6y9eanz/result/source-closure.json",
+    "sha256": "7fe81748d2996e40377bb117a78416defaee5774565be7233099388794c21ee1"
+  },
+  "terminalArtifactSummary": {
+    "path": "/tmp/granaderos-san-lorenzo-original-144-replay-20261010-a6y9eanz/result/terminal-artifact-summary.json",
+    "sha256": "265d4f9bbc04e7f1d5fdfc02b26672716eafaf1e4fc371fb3fdc549c854fda83"
+  },
+  "originalPreparedBindingsPreserved": true,
+  "originalHistoryUntouched": true,
+  "newNativeCallsDuringPackaging": 0
+}

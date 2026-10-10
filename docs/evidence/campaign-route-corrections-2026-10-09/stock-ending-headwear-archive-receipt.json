@@ -1,0 +1,19 @@
+{
+  "scope": "Portable unchanged stock ending observation and external proposed correction. Includes both observer-only admission failures, which preceded repository imports. No new controller-selected battle, model/order/save calls by observer, or applied source patch.",
+  "archive": "/tmp/granaderos-stock-ending-headwear-evidence-20261010T045343384059Z/stock-ending-headwear-observation.tar.gz",
+  "archiveSha256": "befd23f3e7cff71c0884cfe099fb524426bf78bdc0048d6c7e45f4cc0ad77742",
+  "archiveBytes": 1436383,
+  "payloadFiles": 27,
+  "payloadBytes": 11343032,
+  "archiveManifestSha256": "7562a423016ff88ae2c29dfa975847bf9149269dc35f34403d835d6f0129607f",
+  "reopenedEveryEntry": true,
+  "safeRegularRelativeEntriesOnly": true,
+  "allFilesByteHashVerified": true,
+  "rawCampaignSha256": "cf9f86000e6481ee6ca47c7fb906eef6e55fa3cb2d0fbe82501be84d107be1ed",
+  "runtimeClosureSha256": "ee635f54af66edb07bd8f250369ca3e9ae3a21208699672f8afc03dbcff195aa",
+  "terminalReceiptSha256": "b85973dd2358d5e086db73ed3b102a159648b8e5cf9c5dd5b4f46d295bc7dd15",
+  "proposalReceiptSha256": "d85cc47554d886ba5a81f2e4b4b13c40b6d2ed8c399e343ac79a5c18e611b064",
+  "noControlExecution": true,
+  "noRepositoryOrIndexWrite": true,
+  "fullEndingPassUnproved": true
+}

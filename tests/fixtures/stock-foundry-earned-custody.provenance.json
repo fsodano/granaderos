@@ -1,0 +1,64 @@
+{
+  "inputSha256": "291fb3f6ab38abaa5363ee44e5ea0856a4e3753d7a32f664de14ceb7e9cdaa0e",
+  "occupiedInputSha256": "bbcd2a212c00a3ba0a70cf4a3844afc2566a7e1589992e744ba8bfa386f64538",
+  "actionsSha256": "b0154a7b28feb2165cfa6e50d56a2550ab2a21fec7dc2bd6d1c442e013acb3ef",
+  "scope": "Earned stock post-native-Mendoza foundry checkpoint; preparation/custody regression only, not a whole route victory claim. No /tmp files are required at test runtime.",
+  "nativePrefix": {
+    "initialOfficialPairSha256": "edfd65633891fef93ffc02e909e068f34dacb97ae4ab00c942688ecf412cade5",
+    "battleTraceSha256": "f9bec37050396aea99405d6f9c59c1ad01365a333bc3c6098aab4e327073afde",
+    "result": "victory",
+    "settledClock": [
+      466,
+      2308
+    ],
+    "preparedClock": [
+      482,
+      2550
+    ],
+    "policy": "Existing stagedBatteryController; one native decision run followed by exact recorded-order replay with an official midpoint.",
+    "initialOriginalArtifact": "/tmp/granaderos-stock-ending-native-shipment-full-20261009/0702-prepareCreatedMendozaAssault-report-stockMendozaAssaultPrepared.save.json",
+    "capture": "/tmp/granaderos-stock-foundry-custody-pm_i0buc",
+    "distinction": "Historical earned pending pair reused on current source; it is not the unretained all935 post-Mendoza checkpoint."
+  },
+  "oldFailure": {
+    "clock": [
+      528,
+      2550
+    ],
+    "message": "No remaining controlled physical arsenal can supply bronze4.",
+    "owned": 2,
+    "occupation": "enemy-group-4 took Tucuman at528 while the course preceded gun recovery."
+  },
+  "correction": {
+    "helperSha256": "ceba839d3064d468891e86d718eac3faf3b8a94c0fe6d55c9883cd5a25143bcf",
+    "shipment": {
+      "id": "arsenal:cordoba:1",
+      "from": "tucuman",
+      "to": "mendoza",
+      "departedAt": 490,
+      "dueAt": 526,
+      "cost": 0,
+      "loaded": false,
+      "ammo": 0
+    },
+    "fundedClock": [
+      572,
+      2550
+    ],
+    "treasury": 138128,
+    "owned": 3,
+    "actions": 124,
+    "officialMidpointAndFinalReplay": true,
+    "newBattle": false
+  },
+  "fixtureFiles": {
+    "stock-foundry-earned-pre-course.save.json.gz": {
+      "compressedSha256": "71dea16f2ce83b920ee3e801686094056b303baa62978f3e53daca21be8c33f1",
+      "rawBytes": 1712772
+    },
+    "stock-foundry-native-occupied-source.save.json.gz": {
+      "compressedSha256": "f100a5b485695a918d7c0045cd8eff9d7768d806e019b04c9432a622e2d54300",
+      "rawBytes": 1713181
+    }
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-09",
+  "scope": "Finite actual guard preparation at the original medical exhaustion271:3393, public route admission and ordinary stable-patient rest; unchanged fixed clinic controller with exact retained-defeat replay. The complete opening and full-health recovery remain unresolved.",
+  "codeCommitBeforeIntegration": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "sourceSha256AfterFocusedValidation": {
+    "tests/rescue-recovery.mjs": "9abdb770bb9bc34b60ec90488a7859d9eb1ba07d67620c69bc30168cd56e9ece",
+    "tests/rescue-clinic-readiness.mjs": "ff26adebcbb18748ccdea48c6dafdc9a654437aee14e0b9b6fd0b7ef5042e214",
+    "tests/rescue-clinic-readiness.test.mjs": "9593ba74b5d467406eaa1f18e4623e493f498ef3d4a1849baf5d3283a9add001",
+    "tests/opening-playthrough.test.mjs": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+    "tests/northern-route.mjs": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+    "tests/opening-driver.mjs": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3"
+  },
+  "integration": {
+    "preparationCallsite": "Final refill after the actual six C pieces and twelve TC cache pieces have been consumed; ordinary cache discovery and fresh actor-local gather preserve the native empty-cache clock.",
+    "guardPolicy": "All actual stable, awake serving local TC guards other than the actual courier. Real local squad admission, current reachable finite long guns for dropped/short primaries, selected matching ammunition to14 and ordinary roof movement/reload. No hires, fortification or grants.",
+    "routePolicy": "Current public strategic preview must admit a remote route. Previously witnessed empty C stock is excluded only while its public medical count remains0. Remaining valid finite sources must be collected through ordinary admission; a rejected route cannot be bypassed.",
+    "restPolicy": "Known local and carried medical supplies must be0 and every actual patient alive, free, serving, stable andHP>=15. Bound is maximum actual patient HP deficit times native restHealingHours; repeated0-clock notices are bounded. Contracts are renewed by the actual next-wait horizon. Any real encounter interrupts rest.",
+    "outcomePolicy": "Native respondToEncounter, unchanged northernClinicDefenseOrder, exact admitted-order replay with official midpoint/full saves and native settlement. Report and preserve defeat before enforcing the strict existing victory/full-health requirement.",
+    "physicianAssertion": "Count distinct originally qualified local physicians plus witnessed qualified serving rear physician arrivals. Keep genuine paid service, one-piece source debit, actual aid/quoted march/native time, two distinct qualified doctors and hired-cost checks."
+  },
+  "nativeCosts": {
+    "guns": 2,
+    "cartridges": 25,
+    "elapsedSeconds": 644,
+    "cashCost": 0
+  },
+  "nativeRest": {
+    "elapsedHours": 16,
+    "salaryCost": 278,
+    "derivedBoundHours": 108
+  },
+  "actualOutcome": {
+    "orders": 184,
+    "actions": 141,
+    "turns": 21,
+    "elapsedSeconds": 313,
+    "newDead": [
+      103,
+      108,
+      112,
+      121,
+      122,
+      126,
+      129,
+      130
+    ],
+    "captive": {
+      "id": 102,
+      "hp": 8,
+      "bleeding": 5
+    }
+  },
+  "terminalSettlement": {
+    "status": "defeat",
+    "hour": 288,
+    "second": 750,
+    "treasury": 2940,
+    "owner": "royalist",
+    "pendingEncounter": null,
+    "pendingBattle": null,
+    "priorDeathsRetained": true,
+    "fullHealthRecovery": false
+  },
+  "localFixtureProvenance": "tests/fixtures/opening-clinic-earned-exhaustion.provenance.json",
+  "localReplayTapes": [
+    "tests/fixtures/opening-clinic-preparation-rest-replay.json.gz",
+    "tests/fixtures/opening-clinic-retained-defeat.json.gz"
+  ],
+  "temporaryDependencies": false,
+  "focusedValidation": [
+    {
+      "command": "node --test tests/rescue-clinic-readiness.test.mjs",
+      "pass": 5,
+      "fail": 0,
+      "skip": 0,
+      "elapsedSeconds": 25.292225625,
+      "log": "/tmp/granaderos-rescue-clinic-readiness-with-local-tape.log",
+      "scope": "Exact earned input preparation; public route options; native rest stopped at the same raid without combat; all99 preparation and25 rest native rows replayed with official midpoints; retained184 clinic orders replayed and genuine settlement/strict-victory rejection checked. No new clinic controller execution."
+    },
+    {
+      "command": "node --test tests/route-ammunition.test.mjs tests/route-owned-equipment.test.mjs tests/route-roof-defenders.test.mjs tests/strategic-rest.test.mjs tests/finite-care-cache.test.mjs tests/opening-patrol-medical-readiness.test.mjs tests/opening-rescue-stabilization.test.mjs",
+      "pass": 18,
+      "fail": 0,
+      "skip": 0,
+      "elapsedSeconds": 9.385918333,
+      "log": "/tmp/granaderos-rescue-clinic-existing-controls.log",
+      "scope": "Affected existing finite equipment/cache/ammunition/roof/rest and finite capture/rescue care controls. No complete opening or clinic battle."
+    },
+    {
+      "check": "node --check on the two owned helpers, new test and opening file; git diff --check on modified tracked files",
+      "status": "passed"
+    },
+    {
+      "check": "Blast engine independent read-only admission/custody/care review",
+      "status": "no concrete defect found"
+    },
+    {
+      "check": "Rear-physician assertion external controls before the unchanged patch was applied once",
+      "positive": 1,
+      "negative": 10,
+      "status": "passed",
+      "receiptSha256": "61bd48aa0e9b55c3c4e75623cedbabc28eb503eaa2ee3da04464780add9dd716"
+    }
+  ],
+  "nativeSourceProof": {
+    "preIntegrationReceipt": "/tmp/granaderos-opening-clinic-readiness-fixed/final-native-receipt-with-patch-plan.json",
+    "receiptSha256": "3c9abaf84274bb10a16afc95b56a6a6a7eb95ca3f4291cd795e90429b91f999a",
+    "actualImportedSourceCounts": {
+      "preparation": 274,
+      "rest": 272,
+      "defense": 292
+    },
+    "drift": [],
+    "scope": "The original external native execution used actual imported-byte observers and preserved all native tapes. Current focused tests bind the integrated helper to those exact native state hashes and repository tapes. Current source hashes are post-run filesystem hashes; no actual-import observer was attached to these focused runs. Root final frozen full-suite observer will bind current imported bytes."
+  },
+  "retainedPriorFailure": {
+    "receipt": "/tmp/granaderos-opening-medical-courier-forecast-once/final-native-receipt.json",
+    "sha256": "3dee64783fdc8c419aed86762ec86d84ef27e6050c6882bbbd14a5387cfe1a3d",
+    "status": "genuine155-order medical-courier raid defeat; exact native midpoint replay/settlement retained"
+  },
+  "controllerReview": "All184 orders were native-admitted. The fixed rifle/roof strategy holds position under contact and does not order the retained artillery. These are policy limits; no production or invalid-order defect was demonstrated. Controller remains unchanged.",
+  "remainingLimit": "The same prepared rest path suffered a genuine clinic defeat: all four freed patients died. This correction is finite preparation/rest proof, not victory. Strict original opening victory/full-HP assertions remain. No new full opening or clinic battle was launched after integration.",
+  "pathAllowlist": [
+    "tests/rescue-recovery.mjs",
+    "tests/rescue-clinic-readiness.mjs",
+    "tests/rescue-clinic-readiness.test.mjs",
+    "tests/opening-playthrough.test.mjs",
+    "tests/fixtures/opening-clinic-earned-exhaustion.provenance.json",
+    "tests/fixtures/opening-clinic-earned-exhaustion.save.json.gz",
+    "tests/fixtures/opening-clinic-earned-raid.save.json.gz",
+    "tests/fixtures/opening-clinic-retained-defeat.json.gz",
+    "tests/fixtures/opening-clinic-preparation-rest-replay.json.gz",
+    "docs/evidence/opening-rescue-finite-care-2026-10-09/clinic-readiness.json"
+  ]
+}

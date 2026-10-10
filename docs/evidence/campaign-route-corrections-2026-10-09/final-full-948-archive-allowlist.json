@@ -1,0 +1,202 @@
+{
+  "sourceDirectory": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z",
+  "fullSelection": 948,
+  "terminalExitCode": 1,
+  "sourceDrift": [],
+  "counts": {
+    "tests": 7032,
+    "failed": 6,
+    "passed": 7021,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0,
+    "topLevel": 6881,
+    "suites": 0
+  },
+  "administrativeSupplements": [
+    {
+      "role": "executed-full948-wrapper",
+      "archiveMember": "administrative-evidence/reviewed-full948-wrapper.mjs",
+      "bytes": 4539,
+      "sha256": "0cbb97321eeb798b88bd36bc581da4f3baf9e408131dc95839a54af513942cd4"
+    },
+    {
+      "role": "initial-index-proof",
+      "archiveMember": "administrative-evidence/initial365-independent-index-proof.json",
+      "bytes": 231746,
+      "sha256": "35328769f765a52228655b099dcd40c7f20d7adf6309520df12436f86aac4e1b"
+    },
+    {
+      "role": "index-stat-refresh-exception",
+      "archiveMember": "administrative-evidence/index-stat-refresh-exception.json",
+      "bytes": 3016,
+      "sha256": "67b49128e3549b8133a0f631fef54ea2e0e4d14febc393d8d74edc10cd6f92ee"
+    },
+    {
+      "role": "mendoza-readonly-settlement-review",
+      "archiveMember": "administrative-evidence/mendoza-settlement-readonly.json",
+      "bytes": 10180,
+      "sha256": "be4b91118c746b5bfa70b28fdbd7586458891277dd551c3379233d2b593c58f3"
+    },
+    {
+      "role": "terminal-index-content-closure",
+      "archiveMember": "administrative-evidence/terminal365-semantic-index-working-closure.json",
+      "bytes": 4296,
+      "sha256": "309e01dfe3ca1b69dc1f4991e7c660c76cff45da904a7d9d40e39618ad584004"
+    }
+  ],
+  "indexByteIdentityThroughRunClaimed": false,
+  "inputCaptureLimit": "Native inputs are retained arguments after execution/reporting. No independent pre-execution/deployed/before-shot witness is claimed.",
+  "stateLabels": {
+    "native-result.json": "Raw actual battle and orders",
+    "terminal.save.json": "Cloned input campaign synchronized with raw terminal battle, before explicit route battleResult. Native sync can already acknowledge civilian death/historical defeat.",
+    "returned-campaign.json": "Actual already-completed route battleResult campaign supplied by caller. Recorder settlementExecuted:false means no additional recorder settlement."
+  },
+  "files": [
+    {
+      "path": "administrative-evidence/index-stat-refresh-exception.json",
+      "bytes": 3016,
+      "sha256": "67b49128e3549b8133a0f631fef54ea2e0e4d14febc393d8d74edc10cd6f92ee"
+    },
+    {
+      "path": "administrative-evidence/initial365-independent-index-proof.json",
+      "bytes": 231746,
+      "sha256": "35328769f765a52228655b099dcd40c7f20d7adf6309520df12436f86aac4e1b"
+    },
+    {
+      "path": "administrative-evidence/mendoza-settlement-readonly.json",
+      "bytes": 10180,
+      "sha256": "be4b91118c746b5bfa70b28fdbd7586458891277dd551c3379233d2b593c58f3"
+    },
+    {
+      "path": "administrative-evidence/reviewed-full948-wrapper.mjs",
+      "bytes": 4539,
+      "sha256": "0cbb97321eeb798b88bd36bc581da4f3baf9e408131dc95839a54af513942cd4"
+    },
+    {
+      "path": "administrative-evidence/terminal365-semantic-index-working-closure.json",
+      "bytes": 4296,
+      "sha256": "309e01dfe3ca1b69dc1f4991e7c660c76cff45da904a7d9d40e39618ad584004"
+    },
+    {
+      "path": "after-source-hashes.json",
+      "bytes": 1877898,
+      "sha256": "7fdb33d9d4ccf29fdc81ff7a2cdee9f9e745f7c623db1514f817cf4627c1259d"
+    },
+    {
+      "path": "before-source-hashes.json",
+      "bytes": 1877898,
+      "sha256": "7fdb33d9d4ccf29fdc81ff7a2cdee9f9e745f7c623db1514f817cf4627c1259d"
+    },
+    {
+      "path": "final-receipt.json",
+      "bytes": 2854,
+      "sha256": "4ed7ac4c4072f5240b830fe6048402bd6311cb35c9ff4f86a35ab82ea6b096f0"
+    },
+    {
+      "path": "full-report.json",
+      "bytes": 387123,
+      "sha256": "6987c933d262c3744e62e7b4dd793590edc17ca850717675e2c48e8dd8a1c82d"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 37554,
+      "sha256": "8a57247a3f6d753cd40b3e46bcc121b284993ebb26073da7f4dfa1d9dbc7a473"
+    },
+    {
+      "path": "native-failures/17923-1-los_patos-654-4162937008-OiTd85/native-input.json",
+      "bytes": 9291949,
+      "sha256": "a3fa1ae6476d5f43541797bb54069417df1e14a992f7d3bafe720aff3385a89a"
+    },
+    {
+      "path": "native-failures/17923-1-los_patos-654-4162937008-OiTd85/native-result.json",
+      "bytes": 538297,
+      "sha256": "43a2231fba97830cda40a7e6e125cd122b0e04478b5a7c2dda8eda93a74cbcf6"
+    },
+    {
+      "path": "native-failures/17923-1-los_patos-654-4162937008-OiTd85/receipt.json",
+      "bytes": 1352,
+      "sha256": "8718186fa0f518f2ae3acfa00aba9b4d3be6cc00abb64c2360d6cc2dcf771820"
+    },
+    {
+      "path": "native-failures/17923-1-los_patos-654-4162937008-OiTd85/terminal.save.json",
+      "bytes": 1874507,
+      "sha256": "92815950852d5968d9f4f613b46afd481a0bf7754b45ea3660016e0234e1ccf2"
+    },
+    {
+      "path": "native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/native-input.json",
+      "bytes": 7629339,
+      "sha256": "bcc33db01bb18ed9384e2f7e2d09396f1cd107167b3de296a2eaf4f3acbce525"
+    },
+    {
+      "path": "native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/native-result.json",
+      "bytes": 1067595,
+      "sha256": "451b6f1f065646672993c19e6d1a9954b6465a48f23693ea9b6dec91d9cb3350"
+    },
+    {
+      "path": "native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/receipt.json",
+      "bytes": 1510,
+      "sha256": "3797468c7d5ed2642fd6e4cc6dbabd757ae3d5fb5fb71125543d19b6a333c07d"
+    },
+    {
+      "path": "native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/returned-campaign.json",
+      "bytes": 7759704,
+      "sha256": "83c03d3c927e7a79228c24a1b271917b43f17edf82a6a247dadd6d22a174085e"
+    },
+    {
+      "path": "native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/terminal.save.json",
+      "bytes": 1740082,
+      "sha256": "56ddde414a621cb24a2f7172333ff6e0535b44f14604d9e92d9b308252b7026e"
+    },
+    {
+      "path": "native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/native-input.json",
+      "bytes": 5378947,
+      "sha256": "2d85ec7a76e0f2870bffa38cbbcd83a5c1dfb5257588f18f26f0b88be7aa5c0d"
+    },
+    {
+      "path": "native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/native-result.json",
+      "bytes": 890820,
+      "sha256": "2a7742d45a56307ebb61255681b6b709e924b5acf1097b58d4ccedf486cfcc91"
+    },
+    {
+      "path": "native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/receipt.json",
+      "bytes": 1360,
+      "sha256": "a9e4e1b5803b2473f4f175344f79e508afd5612142246876a64052c716fdb8a6"
+    },
+    {
+      "path": "native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/terminal.save.json",
+      "bytes": 1126542,
+      "sha256": "f0afbb17ab44e287784529c719c5e0d5c183d4dc357607cf14047805bdba24c8"
+    },
+    {
+      "path": "native-failures/30548-1-cordoba-84-18026106-zOQEVl/native-input.json",
+      "bytes": 2631132,
+      "sha256": "80003047ee597852b84879d577b593de236e77e554de9d082facf4aacd59df30"
+    },
+    {
+      "path": "native-failures/30548-1-cordoba-84-18026106-zOQEVl/native-result.json",
+      "bytes": 817757,
+      "sha256": "5ce890283d46467024ba93b9f570b7d75a7ff297cd9ab8f99e97b98fadd258e2"
+    },
+    {
+      "path": "native-failures/30548-1-cordoba-84-18026106-zOQEVl/receipt.json",
+      "bytes": 1360,
+      "sha256": "3c7c647311743ec649177789ea46024542f24cc94e97d271838b3ce0462355f3"
+    },
+    {
+      "path": "native-failures/30548-1-cordoba-84-18026106-zOQEVl/terminal.save.json",
+      "bytes": 690922,
+      "sha256": "50707f8175bdfc9a10e882987223c2930bbe4d0b5169fae128fa363417819ec1"
+    },
+    {
+      "path": "pid.json",
+      "bytes": 30,
+      "sha256": "348351cf9b1a8c7bcd7d2bfa6a542f6b6a4ac8fd2372982ba0266a05bae61bc5"
+    },
+    {
+      "path": "run.log",
+      "bytes": 1410931,
+      "sha256": "c396eec6356f1a7ab47f01e4f599bb3dc3e8e8364457436a3a6f6c5b84408cc9"
+    }
+  ]
+}

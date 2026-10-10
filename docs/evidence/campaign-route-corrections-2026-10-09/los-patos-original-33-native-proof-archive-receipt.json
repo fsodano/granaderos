@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "archive": "/tmp/granaderos-los-patos-original-33-native-proof-20261010-24c60rp5.tar.gz",
+  "bytes": 4786776,
+  "sha256": "496d35a1e4dd17638f38b8d29d43f72d039a6d9cd82336b9337a4753d5f89273",
+  "relativeRegularMembers": 51,
+  "allMembersVerified": true,
+  "sourceDirectory": "/tmp/granaderos-los-patos-original-33-observer-20261010-24c60rp5",
+  "memberManifestSha256": "58c1e532e10d470223259130ad3255b37a1b14b82bc429de9a9edb39bd443e3a",
+  "terminalSummarySha256": "1d0ae5f77484c85b57b5468846bcb1b2c8bd6055a671283d017ab504ac693aba",
+  "correctedStaticReportSha256": "251716b75679921dfa8551bfa70dba9b0e9c892ed9982982d05df051a168570d",
+  "originalReceiptSha256": "490d7eb0f2783a63a53245aa6e2b6be433756be788c64ea00bc2d75dbb5bdd8f",
+  "originalClosureSha256": "caa70d742fb7ecf3a497e3f84bda1bda83db295821afe1da5ad8efae1d9c9773",
+  "nativeCallsDuringPackaging": 0,
+  "originalInputsAndEvidencePreserved": true
+}

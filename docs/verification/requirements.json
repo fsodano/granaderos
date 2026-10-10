@@ -774,6 +774,31 @@
       "id": "E-CURRENT-RULE-RECONCILIATION",
       "path": "docs/verification/current-rule-reconciliation-2026-10-09.md",
       "description": "Local commit cfbdf4fc, source 8476681dc25a, passed all 61 tests in eight contract, conduct, relationship, garment and repair files, with no skips. This corrects stale missing-rule claims while preserving broader statuses, historical receipts and remaining campaign failures."
+    },
+    {
+      "id": "E-3D-GAMEPLAY-2026-10-08",
+      "path": "docs/verification/latest-3d-gameplay-2026-10-08.md",
+      "description": "Dated local browser check of main 5f65ef08d51659fe1fa10d4f2a85f586dca78123, build e4176a47c77b: male/female creation, posture, finite firearm/reload and save continuation; eight body families at three LODs and served asset/source hashes. This is not live deployment proof or acceptance of every motion, complete clothing clearance, portrait likeness, sustained frame performance or later changed bytes."
+    },
+    {
+      "id": "E-FIREARM-BODY-PASSAGE",
+      "path": "docs/gameplay/tactical/body-penetration.md",
+      "description": "Development-workspace record of continued single-ball contacts, conditional body passage and spent force, with actual finite firearm orders, typed identities, known-only forecasts and saved replay. Force, chance and drop values are Granaderos tuning; no published-main acceptance or complete JA2 parity is claimed."
+    },
+    {
+      "id": "E-FIREARM-MATERIAL-DEPTH",
+      "path": "docs/verification/range-material-penetration-2026-10-04.md",
+      "description": "Dated source 413c4b2f70412613f5cf26f39146d20764c9a9c228c5b0c69592fef3caf514b4: crossed material depth, range-dependent force loss, exact exhaustion, overlaps and saved finite-fire/return controls. Paid encounter arenas are explicitly authored; this does not establish a fresh conquest, full historical campaign, measured projectile velocity or live deployment."
+    },
+    {
+      "id": "E-GLANCING-STONE-REFLECTION",
+      "path": "docs/gameplay/tactical/stone-ricochet.md",
+      "description": "Development record of one glancing reflection from an explicit vertical stone face for balls and pellets, retaining half current force and the original range/drop allowance. Observed presentation and ordinary/saved execution keep finite discharge and private-geometry boundaries. Threshold and retention are game tuning; fragmentation, other surfaces and exact classic or historical numerical parity remain open."
+    },
+    {
+      "id": "E-BLAST-STRUCTURES-2026-10-09",
+      "path": "docs/verification/blast-structures-2026-10-09.md",
+      "description": "Local blast-structures record against JA2 1.13 ddb691318eb3dd0cdc6eab42139739b6d498c645: finite grenade damage to walls, doors, windows and props, retained finite chest contents, cleared obstruction, persistence and observed rendering. The dated full suite retains ten existing failures. No published-main acceptance, full explosives parity, same-blast pressure propagation, roof/floor collapse or chain reaction is claimed."
     }
   ],
   "queue": [
@@ -3794,15 +3819,16 @@
       "requirement": "Uniforms, infantry and cavalry animations",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Illustrated sprite families and tactical animation runtime.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Full stance/action/direction/equipment target and visual review; 144 active sequences is not the 216 target. Walking still has four authored poses at five FPS; the continuity fix does not add intermediate artwork.",
+      "published": "The checked main-source integration mounts native Three.js actors with the existing HTML/SVG HUD and input controls. The legacy illustrated sprite renderer remains a separate presentation path. The dated local browser record does not certify a live deployment.",
+      "local": "The current character manifest contains eight appearances with three LODs each and 334 clip specifications in each male and female animation library. Native asset loading and action contracts are covered by the actor tests. The 2026-10-08 local gameplay record checks main 5f65ef08d51659fe1fa10d4f2a85f586dca78123 and build e4176a47c77b through normal controls and saves; it does not verify every later source or asset change.",
+      "remaining": "Complete visual review of posture, action, direction and equipment coverage, clothing clearance and silhouettes remains open. The earlier 144/216 sequence counts and four-pose, five-FPS walk describe the legacy sprite work, not current native 3D coverage. The recorded gameplay check does not establish every motion, portrait likeness or sustained frame performance.",
       "acceptance": "Complete stance/action/direction frame sets rendered in tactical engine",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-RETIRO-WALK-LOCAL",
-        "E-WALKING-FRAME-CONTINUITY"
+        "E-WALKING-FRAME-CONTINUITY",
+        "E-3D-GAMEPLAY-2026-10-08"
       ]
     },
     {
@@ -4411,10 +4437,14 @@
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-FIREARM-BODY-PASSAGE",
+        "E-FIREARM-MATERIAL-DEPTH",
+        "E-GLANCING-STONE-REFLECTION",
+        "E-BLAST-STRUCTURES-2026-10-09"
       ],
       "sourceRow": "JA2-C04",
-      "sourceNotes": "Location fire now uses the existing F cursor, shared costs, fixed-height projectile geometry, seeded scatter and friendly-body interception. Fifteen tests and live keyboard/save checks cover it; see [location fire](location-fire.md). Named-target single bullets now check intervening bodies and seeded miss collisions. Fifteen focused tests and live interception/miss/save checks cover the change; see [named-target shots](directed-projectiles.md). Knowledge-limited warnings and enemy shot options avoid inspecting hidden bodies. Optional authored terraces now use physical height for sight and firearms, with slab occlusion and separate stacked actors; 36 single-storey house terraces are active on fresh campaign maps. See [elevation record](tactical-elevation.md). Arbitrary terrain slopes, destructible furniture, continuation beyond the aimed endpoint, body penetration, ricochet and material thickness remain absent. Heights/resistance are game tuning. Artillery keeps separate rules. AI shot ranking now values partial damage loss; incoming exposure remains a torso-chance estimate."
+      "sourceNotes": "Location fire now uses the existing F cursor, shared costs, fixed-height projectile geometry, seeded scatter and friendly-body interception. Fifteen tests and live keyboard/save checks cover it; see [location fire](location-fire.md). Named-target single bullets now check intervening bodies and seeded miss collisions. Fifteen focused tests and live interception/miss/save checks cover the change; see [named-target shots](directed-projectiles.md). Knowledge-limited warnings and enemy shot options avoid inspecting hidden bodies. Optional authored terraces now use physical height for sight and firearms, with slab occlusion and separate stacked actors; 36 single-storey house terraces are active on fresh campaign maps. See [elevation record](tactical-elevation.md). Single-ball paths now continue beyond the resolved aim cell through ordered physical contacts, with conditional body passage and reduced force. Material loss accumulates over crossed ray depth. Single balls and physical pellets use physical drop and one bounded glancing reflection from an explicit vertical stone face, with half the current force and no renewed range or drop allowance. Native finite-fire and saved-replay tests cover continuation, body passage, material depth and stone reflection; see [body penetration](../gameplay/tactical/body-penetration.md) and [stone ricochet](../gameplay/tactical/stone-ricochet.md). Grenade blasts already damage or destroy actual walls, doors, windows and furniture while retaining prop identity and finite contents; see [blast structures](blast-structures-2026-10-09.md). Arbitrary terrain slopes, furniture destruction from firearm impacts, other reflected surfaces, firearm fragmentation and a supported projectile mass/velocity model remain absent. Heights, range/drop, body passage, reflection and resistance per reference depth are Granaderos tuning. Artillery keeps separate rules. AI shot ranking now values partial damage loss; incoming exposure remains a torso-chance estimate."
     },
     {
       "id": "JA2-C05",

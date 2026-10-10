@@ -1,0 +1,79 @@
+{
+  "scope": "Immutable native exhaustion271:3393, native fixed-preparation/rest raid288:437 and retained184-order defeat. No created scenario, grants, alternate controller or seed search.",
+  "codeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "nativeReceipt": {
+    "path": "/tmp/granaderos-opening-clinic-readiness-fixed/final-native-receipt-with-patch-plan.json",
+    "sha256": "3c9abaf84274bb10a16afc95b56a6a6a7eb95ca3f4291cd795e90429b91f999a"
+  },
+  "fixtures": {
+    "opening-clinic-earned-exhaustion.save.json.gz": {
+      "source": "/tmp/granaderos-opening-clinic-readiness-fixed/initial.save.json",
+      "rawSha256": "580cd2ec5c888c146ed289a343fb4b4f0e06bc7fcd2f8c58866e053c4f76b232",
+      "gzipSha256": "9d619c84ed0aa0be7ddda957256584101ea2b75cbeee67b79eee0c9ad94caefa"
+    },
+    "opening-clinic-earned-raid.save.json.gz": {
+      "source": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/initial.save.json",
+      "rawSha256": "c4ad915e569c3c5b9ee765f31cee0c0e494224f65760697eb4d8a71ab51edc87",
+      "gzipSha256": "6d7411372b7723ff2f7f45f3f8b792656863d450e7244bd2d7008d60cc36c031"
+    },
+    "opening-clinic-retained-defeat.json.gz": {
+      "source": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/battle-result.json",
+      "rawSha256": "f5ce165ad21d352a50036fc6c388d42df8527ea4c0031820478c6c519e3e9d1b",
+      "gzipSha256": "c829ce669f89d9dce0dac21de8f39e3019d52ad1d1192f4295b591a6ed65bf47"
+    },
+    "opening-clinic-preparation-rest-replay.json.gz": {
+      "source": "Original native-events.jsonl, native-canonical-replay-results.json and native-replay-receipt.json from the accepted preparation and rest stages",
+      "rawSha256": "ab0c43b8080954a12465aa1dc157e9c1237c154b046df7b5685dbe369e97c2ee",
+      "gzipSha256": "513cdabc22ae67c172abcc32799343651d367105369ff8b7dee44c64bdc810e8",
+      "rawBytes": 15946802,
+      "gzipBytes": 489456
+    }
+  },
+  "expected": {
+    "preparationResultCanonicalSha256": "96b3deeb182496a9e87da3941e7eb9c70cb30187014fe331503037a9e33aa9c8",
+    "restRaidCanonicalSha256": "89253b37b9f984606268351ae8b553d0cc39753093149a94cae130ea68a6c2bb",
+    "settledDefeatCanonicalSha256": "7fabf6bc593baf98055aea594cff78b966e381901f69b3cff741bb9696fcd0b3",
+    "nativeRequestCanonicalSha256": "f5438983a1b71012cafcb299ddbb14670d26b9a564c926af0ee11ac553204c7b",
+    "nativeSnapshotCanonicalSha256": "0a0c7f7e174feaf1c90da898247602f3a3c8c80290f4b68a71c4d5e77f658939"
+  },
+  "strictOutcome": "The one fixed clinic defense truly lost. Focused replay must preserve defeat and the full-route victory assertion must still reject it.",
+  "originalInputPrefix": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-finite-care/028-recoverRescueForce-input.save.json",
+  "originalInputPrefixSha256": "2b0eea429d88e26f55538673048c6d503fdc7a220eb0163017cac1cc8e79cd45",
+  "observedPreparationCosts": {
+    "guns": 2,
+    "cartridges": 25,
+    "elapsedSeconds": 644,
+    "cashCost": 0
+  },
+  "observedRest": {
+    "elapsedHours": 16,
+    "salaryCost": 278,
+    "derivedBoundHours": 108
+  },
+  "observedDefeat": {
+    "orders": 184,
+    "actions": 141,
+    "turns": 21,
+    "elapsedSeconds": 313,
+    "newDead": [
+      103,
+      108,
+      112,
+      121,
+      122,
+      126,
+      129,
+      130
+    ],
+    "captive": {
+      "id": 102,
+      "hp": 8,
+      "bleeding": 5
+    }
+  },
+  "localReplayEvidence": {
+    "preparationAndRest": "opening-clinic-preparation-rest-replay.json.gz",
+    "clinicBattle": "opening-clinic-retained-defeat.json.gz",
+    "dependency": "All regression inputs and original replay tapes are stored in this repository. Temporary artifact paths are provenance references only."
+  }
+}

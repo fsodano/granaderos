@@ -1,0 +1,19 @@
+{
+  "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/fresh-cuyo-relief.test.mjs tests/recovery-mendoza-driver.test.mjs tests/campaign-battery-driver.test.mjs tests/route-battery.test.mjs tests/route-ammunition.test.mjs",
+  "tests": 26,
+  "passed": 26,
+  "failed": 0,
+  "skipped": 0,
+  "durationMs": 16670.177708,
+  "log": "/tmp/granaderos-recovery-mendoza-prospective-focused.log",
+  "logSha256": "1e218f4eb2d9c2266fb5695f2ba02cc3cada7576d38077d9e8d7d5105211aa7e",
+  "files": {
+    "tests/fresh-cuyo-route.mjs": "2ed9596f30e53f1783671d713e7431449f0796ed84ead6047ca8b67d990d4129",
+    "tests/fresh-cuyo-relief.test.mjs": "1a62770fa696686d7a474730e38dc0ecf923a0eafcd374cf12055877642c4a5e",
+    "tests/recovery-mendoza-driver.mjs": "4b97ea48c699ed87718c644748798e4297b9de3ca72e5fa107917570571428a2",
+    "tests/recovery-mendoza-driver.test.mjs": "397feb3833affcd4d66ad3c0fbd6fea5bef0af10272e3499e3237c9c2e6d1b27",
+    "tests/fixtures/cuyo-northern-real-losses.save.json.gz": "545389294cc086b9d7068c86b105bdbff5f5329d371ebe379acbfbf143910141",
+    "tests/fixtures/cuyo-northern-real-losses.provenance.json": "c98d035761d4ccb8604e83bb180011d00bd11879e6061e0df6ab05cbc8088c9b"
+  },
+  "scope": "Preparation, finite shipment identity/ammunition/source conservation, actual quote/due hour, all prior deaths, paid living field/rear relief, exact ordinary campaign-order replay, declared unit-level crew movement/replay. The separate native battle is still running; no victory or complete campaign pass claimed by this receipt."
+}

@@ -1,0 +1,1053 @@
+{
+  "scope": "Read-only exact retained C\u00f3rdoba tape and pure public-input forecasts. No alternative order applied. No outcome claim.",
+  "canonicalReplay": {
+    "orders": 162,
+    "allBeforeAfterHashesExact": true,
+    "terminalDeepEqual": true,
+    "terminal": "retreat",
+    "tenBlockedStateHashesExact": true,
+    "nativeInputAndResultChecks": 260,
+    "receipt": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/receipt.json",
+    "sourceClosure": "/tmp/granaderos-opening-current-safe-fire-observer-20261010/exact-canonical-replay/closure-repair.json",
+    "sourceClosureLimit": "Full actual replay import list was not retained because exit serialization failed. Pinned selector/engine bytes were asserted on load and verified after; separate pure detail actual imports 269 had zero drift."
+  },
+  "actor": {
+    "id": "113",
+    "x": 61,
+    "y": 20,
+    "level": 0,
+    "weapon": 1804,
+    "weaponName": "Escopeta Criolla",
+    "loaded": 1,
+    "reserve": 8,
+    "hp": 80,
+    "ap": {
+      "firstSixStates": 73,
+      "lastFourStates": 108
+    }
+  },
+  "findings": {
+    "currentSafeShotOptions": 0,
+    "currentSafeBelow25Chance": 0,
+    "nativeAISelections": null,
+    "hiredAssaultSelections": null,
+    "paidCrouchCostInternalAP": 3,
+    "paidStandCostInternalAP": 6,
+    "usefulSafeTeamTargetAllTen": "enemy-9",
+    "personalSightUnchanged": true,
+    "personalTargets": "enemy-5 in9 states; none after order83",
+    "postureFireRequiredAim": 0,
+    "postureFireShotCostInternalAP": 10,
+    "totalCrouchThenFireInternalAP": 13,
+    "totalStandThenFireInternalAP": 16,
+    "additionalAimIncrementInternalAP": 4,
+    "allActorsUnmountedAndNotKnockedDown": true,
+    "interruptAvailableAllTen": true,
+    "stanceThenFireAdmissionNotExecuted": true,
+    "reactionCaveat": "Native stance execution can trigger reaction fire. The paid posture must be followed by a fresh decision and current visibility/AP/shot forecast, not a reserved assumed fire order."
+  },
+  "perState": [
+    {
+      "afterOrder": 75,
+      "ap": 73,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 70,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 15,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 60,
+            "expectedDamage": 7.407149999999998,
+            "damageFactor": 0.2076526857983812,
+            "effectiveness": 15.431562499999997,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 44,
+            "expectedDamage": 5.857499999999999,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 12.203124999999998,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 67,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 20,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 8.040749999999997,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 16.751562499999995,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 44,
+            "expectedDamage": 5.857499999999999,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 12.203124999999998,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 79,
+      "ap": 73,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 70,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 15,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 56,
+            "expectedDamage": 5.934524999999999,
+            "damageFactor": 0.16765099614142845,
+            "effectiveness": 12.363593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 44,
+            "expectedDamage": 5.857499999999999,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 12.203124999999998,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 67,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 20,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 6.568124999999999,
+            "damageFactor": 0.1712288447387785,
+            "effectiveness": 13.683593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 44,
+            "expectedDamage": 5.857499999999999,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 12.203124999999998,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 81,
+      "ap": 73,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9",
+        "enemy-10"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 70,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 15,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 56,
+            "expectedDamage": 5.934524999999999,
+            "damageFactor": 0.16765099614142845,
+            "effectiveness": 12.363593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 44,
+            "expectedDamage": 5.857499999999999,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 12.203124999999998,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 67,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 20,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 6.568124999999999,
+            "damageFactor": 0.1712288447387785,
+            "effectiveness": 13.683593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 44,
+            "expectedDamage": 5.857499999999999,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 12.203124999999998,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 82,
+      "ap": 73,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9",
+        "enemy-10"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 70,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 56,
+            "expectedDamage": 5.934524999999999,
+            "damageFactor": 0.16765099614142845,
+            "effectiveness": 12.363593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 67,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 6.568124999999999,
+            "damageFactor": 0.1712288447387785,
+            "effectiveness": 13.683593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 83,
+      "ap": 73,
+      "personalBefore": [],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9",
+        "enemy-10"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 70,
+          "personalAfter": [],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 56,
+            "expectedDamage": 5.934524999999999,
+            "damageFactor": 0.16765099614142845,
+            "effectiveness": 12.363593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 67,
+          "personalAfter": [],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 6.568124999999999,
+            "damageFactor": 0.1712288447387785,
+            "effectiveness": 13.683593749999998,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 86,
+      "ap": 73,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-1",
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9",
+        "enemy-10"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 70,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-1",
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 60,
+            "expectedDamage": 7.407149999999998,
+            "damageFactor": 0.2076526857983812,
+            "effectiveness": 15.431562499999997,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 67,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-1",
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9",
+            "enemy-10"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 8.040749999999997,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 16.751562499999995,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 87,
+      "ap": 108,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 105,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 60,
+            "expectedDamage": 7.407149999999998,
+            "damageFactor": 0.2076526857983812,
+            "effectiveness": 15.431562499999997,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 102,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 8.040749999999997,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 16.751562499999995,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 89,
+      "ap": 108,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 105,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 60,
+            "expectedDamage": 7.407149999999998,
+            "damageFactor": 0.2076526857983812,
+            "effectiveness": 15.431562499999997,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 102,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 5,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 8.040749999999997,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 16.751562499999995,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": null,
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 90,
+      "ap": 108,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 105,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 10,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 60,
+            "expectedDamage": 7.407149999999998,
+            "damageFactor": 0.2076526857983812,
+            "effectiveness": 15.431562499999997,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 48,
+            "expectedDamage": 5.849615384615383,
+            "damageFactor": 0.21296296296296302,
+            "effectiveness": 12.186698717948715,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 102,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 10,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 8.040749999999997,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 16.751562499999995,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 48,
+            "expectedDamage": 6.389999999999998,
+            "damageFactor": 0.22222222222222227,
+            "effectiveness": 13.312499999999995,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        }
+      ]
+    },
+    {
+      "afterOrder": 91,
+      "ap": 108,
+      "personalBefore": [
+        "enemy-5"
+      ],
+      "teamBefore": [
+        "enemy-4",
+        "enemy-5",
+        "enemy-6",
+        "enemy-9"
+      ],
+      "postures": [
+        {
+          "stance": "crouched",
+          "posturePA": 3,
+          "remainingPA": 105,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 15,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 60,
+            "expectedDamage": 7.407149999999998,
+            "damageFactor": 0.2076526857983812,
+            "effectiveness": 15.431562499999997,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 13,
+            "chance": 48,
+            "expectedDamage": 5.849615384615383,
+            "damageFactor": 0.21296296296296302,
+            "effectiveness": 12.186698717948715,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        },
+        {
+          "stance": "standing",
+          "posturePA": 6,
+          "remainingPA": 102,
+          "personalAfter": [
+            "enemy-5"
+          ],
+          "teamAfter": [
+            "enemy-4",
+            "enemy-5",
+            "enemy-6",
+            "enemy-9"
+          ],
+          "safeShotCount": 20,
+          "bestTeam": {
+            "target": "enemy-9",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 60,
+            "expectedDamage": 8.040749999999997,
+            "damageFactor": 0.22222222222222224,
+            "effectiveness": 16.751562499999995,
+            "personal": false,
+            "team": true,
+            "originalPersonal": false
+          },
+          "bestPersonal": {
+            "target": "enemy-5",
+            "hp": 100,
+            "hitLocation": "head",
+            "aim": 0,
+            "shotPA": 10,
+            "aimIncrementPA": 4,
+            "totalWithPosturePA": 16,
+            "chance": 48,
+            "expectedDamage": 6.389999999999998,
+            "damageFactor": 0.22222222222222227,
+            "effectiveness": 13.312499999999995,
+            "personal": true,
+            "team": true,
+            "originalPersonal": true
+          },
+          "safePersonalAtNative25": 0
+        }
+      ]
+    }
+  ],
+  "codeEvidence": [
+    {
+      "path": "game/tactical-ai.js",
+      "lines": "310,99-112,446-449",
+      "reason": "Native AI starts with personal targets; firingPosture keeps personal sight and requires normalized effectiveness>=25, not chance>=25."
+    },
+    {
+      "path": "game/tactical-ai.js",
+      "lines": "67-90",
+      "reason": "Shot load effectiveness is100*min(targetHP,expectedDamage)/min(targetHP,weaponDamage); actor weaponDamage48. Best team posture effectiveness16.75, best personal13.31, so no native25 posture qualifies."
+    },
+    {
+      "path": "original-northern-route.mjs",
+      "lines": "47-68",
+      "reason": "The original route uses currently team-visible targets and chance>=25, but unsafe original fire ends in null. Root native fallback remains null in these ten inputs by the stricter native personal/effectiveness policy."
+    },
+    {
+      "path": "game/tactical-condition.js",
+      "lines": "31-34",
+      "reason": "Prone to crouched costs3; prone to standing costs6 unless knocked down."
+    },
+    {
+      "path": "game/tactical.js",
+      "lines": "2005,2511-2520",
+      "reason": "Alive actor, correct side/current interrupt window, no mounted/knocked-down guard and sufficient native AP permit paid stance. Stance changes movement mode, lowers weapon and calls reactionFire."
+    },
+    {
+      "path": "game/tactical.js",
+      "lines": "2171,597-614",
+      "reason": "Fire admits current team sight, loaded firearm and LOS with native fire+aim cost; shot forecasts are fresh native geometry reads."
+    }
+  ],
+  "boundedCorrectionOpportunity": "At the existing unsafe-shot branch only, when no native alternative exists, consider an ordinary paid posture on the current actor using current team-known bodies/NPCs and the route existing >=25 chance positive-damage safe-ray policy. Require enough AP for posture plus an actual affordable native shot; return only the posture and re-evaluate after native execution. Do not change the native AI global threshold or force a subsequent shot/outcome. This provides a legal planning opportunity; it does not prove victory."
+}

@@ -1,0 +1,180 @@
+{
+  "status": "genuine earned medical-courier raid defeat retained; full-HP recovery not achieved",
+  "original028InputSha256": "2b0eea429d88e26f55538673048c6d503fdc7a220eb0163017cac1cc8e79cd45",
+  "frozenSources": {
+    "tests/rescue-recovery.mjs": "0652b0c1df5c2885fab038ec0746891c4a7643057e1215f39846a43d773e88c1",
+    "tests/opening-playthrough.test.mjs": "a94b72d7b25e4f55a7ff888d8f32df921bd1b442bfa0beab8dc30a1b77136972",
+    "tests/northern-route.mjs": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+    "tests/opening-driver.mjs": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3"
+  },
+  "nativeEvidence": {
+    "physicianSelfAidPieces": 1,
+    "physicianSelfAidSeconds": 3,
+    "physicianTravelSeconds": 72000,
+    "courierLegSeconds": [
+      72000,
+      72000
+    ],
+    "physicianRenewalBeforeEachCourierLegTotal": 556,
+    "courierReturnRestHours": 10,
+    "initialLocalClinicPieces": 3,
+    "CCollectedDeliveredClinicPieces": 6,
+    "TCCachePieces": 12,
+    "TCCacheDiscoverySeconds": 122,
+    "TCCacheCareHours": 6,
+    "patientsAt271": [
+      63,
+      53,
+      68,
+      56
+    ],
+    "actualRemainingHPDeficit": 56,
+    "finiteCourierAcceptedOrders": 44,
+    "finiteCourierPaidRenewalCost": 3112,
+    "sourceTarget": "buenos_aires",
+    "newPickupBeforeRaid": 0
+  },
+  "defeat": {
+    "status": "defeat",
+    "hour": 289,
+    "second": 94,
+    "treasury": 106,
+    "orders": 155,
+    "playerActions": 104,
+    "turn": 31,
+    "elapsedSeconds": 301,
+    "midpoint": 77,
+    "exactNativeReplay": true,
+    "exactSettledCampaign": true,
+    "newDead": [
+      103,
+      108,
+      121,
+      122,
+      126,
+      129,
+      130
+    ],
+    "captured": [
+      {
+        "id": 112,
+        "hp": 9,
+        "bleeding": 1
+      }
+    ],
+    "owner": "royalist",
+    "pendingEncounter": null,
+    "courier": {
+      "id": "squad-10",
+      "name": "Correo sanitario",
+      "members": [
+        102
+      ],
+      "location": "cell-14-18",
+      "journey": {
+        "version": 1,
+        "path": [
+          "cell-14-18",
+          "cell-14-19",
+          "cordoba",
+          "cell-14-21",
+          "cell-15-21",
+          "cell-16-21",
+          "cell-16-22",
+          "cell-17-22",
+          "cell-17-23",
+          "cell-18-23",
+          "cell-19-23",
+          "cell-19-24",
+          "cell-20-24",
+          "cell-20-25",
+          "cell-21-25",
+          "cell-22-25",
+          "san_nicolas",
+          "cell-23-26",
+          "cell-23-27",
+          "cell-24-27",
+          "cell-24-28",
+          "buenos_aires"
+        ],
+        "mode": "march",
+        "startedAt": 271,
+        "startedSecond": 3393,
+        "legHours": 2,
+        "elapsed": 1,
+        "status": "moving",
+        "returning": false,
+        "reason": null,
+        "pendingSeconds": 301,
+        "elapsedSecond": 301
+      }
+    },
+    "campaignSha256": "b762e63fd645002d892dcee3d27b56149ab78b991305c8865556f2eeb7d8fbd0"
+  },
+  "replayReceipts": [
+    "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/native-replay-receipt.json",
+    "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/return-suffix/native-replay-receipt.json",
+    "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/return-suffix/local-cache/native-replay-receipt.json",
+    "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/return-suffix/local-cache/finite-courier/native-replay-receipt.json"
+  ],
+  "sourceAudits": [
+    {
+      "directory": "/tmp/granaderos-opening-medical-courier-forecast-once",
+      "imports": 274,
+      "currentDrift": [
+        {
+          "url": "file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/rescue-recovery.mjs",
+          "originalSha256": "8d453c62470b8d26d91bc52f93c7b78fb2f39b17e043952277aaf26166f441a9",
+          "currentSha256": "0652b0c1df5c2885fab038ec0746891c4a7643057e1215f39846a43d773e88c1"
+        }
+      ],
+      "scope": "Earlier owned rescue-recovery changes are causal source corrections, not changes during a live run; own pre-correction source snapshots and immediate terminal scans are retained."
+    },
+    {
+      "directory": "/tmp/granaderos-opening-medical-courier-forecast-once/continuation",
+      "imports": 274,
+      "currentDrift": [
+        {
+          "url": "file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/rescue-recovery.mjs",
+          "originalSha256": "a5b6e2646d7ff918aeac8bc901c51b04f7171609d5117baeb32eb088684a2257",
+          "currentSha256": "0652b0c1df5c2885fab038ec0746891c4a7643057e1215f39846a43d773e88c1"
+        }
+      ],
+      "scope": "Earlier owned rescue-recovery changes are causal source corrections, not changes during a live run; own pre-correction source snapshots and immediate terminal scans are retained."
+    },
+    {
+      "directory": "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/return-suffix",
+      "imports": 273,
+      "currentDrift": [],
+      "scope": "Earlier owned rescue-recovery changes are causal source corrections, not changes during a live run; own pre-correction source snapshots and immediate terminal scans are retained."
+    },
+    {
+      "directory": "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/return-suffix/local-cache",
+      "imports": 273,
+      "currentDrift": [],
+      "scope": "Earlier owned rescue-recovery changes are causal source corrections, not changes during a live run; own pre-correction source snapshots and immediate terminal scans are retained."
+    },
+    {
+      "directory": "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/return-suffix/local-cache/finite-courier",
+      "imports": 273,
+      "currentDrift": [],
+      "scope": "Earlier owned rescue-recovery changes are causal source corrections, not changes during a live run; own pre-correction source snapshots and immediate terminal scans are retained."
+    },
+    {
+      "directory": "/tmp/granaderos-opening-medical-courier-forecast-once/continuation/return-suffix/local-cache/finite-courier/tucuman-defense/native-response",
+      "imports": 292,
+      "currentDrift": [],
+      "scope": "Earlier owned rescue-recovery changes are causal source corrections, not changes during a live run; own pre-correction source snapshots and immediate terminal scans are retained."
+    }
+  ],
+  "retainedFailures": [
+    "old literal12-hour assertion after actual20-hour courier; both physicians genuinely expired",
+    "unnecessary all-roster renewal before physician march tried unaffordable138; no successful debit or repeated aid",
+    "courier delivery blocked by actual sleep at252; ordinary10-hour rest retained",
+    "local known stock exhausted265; public TC cache then genuinely discovered",
+    "local finite stock exhausted271 after12 real cache strokes",
+    "new actual TC raid288 during finite-source journey",
+    "prebattle assignCare blocked by native encounter gate before gear/ammo/cash/time changes",
+    "defense replay adapter omitted midpoint native sync; fixed same155-order tape, no new controller"
+  ]
+}

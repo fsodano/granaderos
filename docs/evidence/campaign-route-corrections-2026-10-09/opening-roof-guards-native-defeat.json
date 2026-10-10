@@ -1,0 +1,765 @@
+{
+  "scope": "One causal native guard-readiness preparation from the preserved271 input, exact preparation replay, one ordinary bounded stable-rest path and one fixed clinic defense. No grants, hires, new force, alternate battle, controller, seed or outcome search. No source edits during the shared freeze.",
+  "codeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "acceptedInput": {
+    "path": "/tmp/granaderos-opening-clinic-readiness-fixed/initial.save.json",
+    "sha256": "580cd2ec5c888c146ed289a343fb4b4f0e06bc7fcd2f8c58866e053c4f76b232",
+    "hour": 271,
+    "second": 3393
+  },
+  "candidateSource": {
+    "path": "/tmp/granaderos-opening-clinic-readiness-fixed/candidate.mjs",
+    "sha256": "b1e2828a779a716e56f8dff47768ea954379989bc1e7ef6f4f36423a616f1c75"
+  },
+  "preparation": {
+    "inputSha256": "580cd2ec5c888c146ed289a343fb4b4f0e06bc7fcd2f8c58866e053c4f76b232",
+    "candidateSha256": "b1e2828a779a716e56f8dff47768ea954379989bc1e7ef6f4f36423a616f1c75",
+    "inputUnchanged": true,
+    "prepared": {
+      "event": "rescueClinicPrepared",
+      "sector": "tucuman",
+      "ids": [
+        112,
+        122,
+        103,
+        108,
+        121,
+        126,
+        129,
+        130
+      ],
+      "courier": 102,
+      "ungrouped": [
+        129,
+        130
+      ],
+      "armament": [
+        {
+          "id": 112,
+          "oldWeapon": 1800,
+          "weapon": 1800,
+          "sourceKey": "ground:service-return-2-0",
+          "sourceExpected": "{\"item\":\"weapon\",\"count\":1,\"weight\":4,\"weapon\":1800,\"loaded\":1,\"condition\":97,\"jammed\":false}",
+          "loaded": 1
+        },
+        {
+          "id": 103,
+          "oldWeapon": 1804,
+          "weapon": 1800,
+          "sourceKey": "ground:service-return-3-0",
+          "sourceExpected": "{\"item\":\"weapon\",\"ammunitionChoice\":\"ammoShot\",\"count\":1,\"weight\":4,\"weapon\":1800,\"loaded\":1,\"condition\":95,\"jammed\":false}",
+          "loaded": 1
+        }
+      ],
+      "ammunitionTransactions": [
+        {
+          "action": {
+            "type": "sectorInventory",
+            "sector": "tucuman",
+            "operativeId": 112,
+            "direction": "take",
+            "sourceKey": "ground:service-return-2-6",
+            "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"musket_75\",\"name\":\"Cartuchos de mosquete\",\"count\":9,\"weight\":0.04,\"item\":\"inventory:ammo:musket_75\"}",
+            "count": 4
+          },
+          "sector": "tucuman",
+          "hour": 271,
+          "secondOfHour": 3393,
+          "cost": 0,
+          "quantity": 4,
+          "family": "ammoMusket",
+          "sourceKind": "ground"
+        },
+        {
+          "action": {
+            "type": "sectorInventory",
+            "sector": "tucuman",
+            "operativeId": 122,
+            "direction": "take",
+            "sourceKey": "ground:service-return-2-6",
+            "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"musket_75\",\"name\":\"Cartuchos de mosquete\",\"count\":5,\"weight\":0.04,\"item\":\"inventory:ammo:musket_75\"}",
+            "count": 5
+          },
+          "sector": "tucuman",
+          "hour": 271,
+          "secondOfHour": 3393,
+          "cost": 0,
+          "quantity": 5,
+          "family": "ammoMusket",
+          "sourceKind": "ground"
+        },
+        {
+          "action": {
+            "type": "sectorInventory",
+            "sector": "tucuman",
+            "operativeId": 103,
+            "direction": "take",
+            "sourceKey": "ground:service-return-3-5",
+            "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"shot_16\",\"count\":7,\"weight\":0.04,\"name\":\"Cargas de perdigones\",\"item\":\"inventory:ammo:shot_16\"}",
+            "count": 7
+          },
+          "sector": "tucuman",
+          "hour": 271,
+          "secondOfHour": 3393,
+          "cost": 0,
+          "quantity": 7,
+          "family": "ammoShot",
+          "sourceKind": "ground"
+        },
+        {
+          "action": {
+            "type": "sectorInventory",
+            "sector": "tucuman",
+            "operativeId": 103,
+            "direction": "take",
+            "sourceKey": "container:tucuman:building:chest:14:7:4",
+            "expected": "{\"item\":\"inventory:ammo:shot_16\",\"kind\":\"ammunition\",\"ammoType\":\"shot_16\",\"name\":\"Cargas de perdigones\",\"count\":20,\"weight\":0.04}",
+            "count": 4
+          },
+          "sector": "tucuman",
+          "hour": 271,
+          "secondOfHour": 3393,
+          "cost": 0,
+          "quantity": 4,
+          "family": "ammoShot",
+          "sourceKind": "container"
+        },
+        {
+          "action": {
+            "type": "sectorInventory",
+            "sector": "tucuman",
+            "operativeId": 108,
+            "direction": "take",
+            "sourceKey": "[\"body\",\"127\",\"inventory:ammo:musket_75\"]",
+            "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"musket_75\",\"count\":7,\"weight\":0.04,\"name\":\"Cartuchos de mosquete\",\"item\":\"inventory:ammo:musket_75\"}",
+            "count": 5
+          },
+          "sector": "tucuman",
+          "hour": 271,
+          "secondOfHour": 3393,
+          "cost": 0,
+          "quantity": 5,
+          "family": "ammoMusket",
+          "sourceKind": "body"
+        }
+      ],
+      "roofEvidence": {
+        "event": "routeRoofDefenders",
+        "sector": "tucuman",
+        "ids": [
+          112,
+          122,
+          103,
+          108,
+          121,
+          126,
+          129,
+          130
+        ],
+        "positions": [
+          {
+            "id": 122,
+            "x": 32,
+            "y": 23,
+            "tacticalLevel": 1
+          },
+          {
+            "id": 103,
+            "x": 33,
+            "y": 23,
+            "tacticalLevel": 1
+          },
+          {
+            "id": 108,
+            "x": 32,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "id": 121,
+            "x": 34,
+            "y": 23,
+            "tacticalLevel": 1
+          },
+          {
+            "id": 126,
+            "x": 34,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "id": 112,
+            "x": 32,
+            "y": 21,
+            "tacticalLevel": 1
+          },
+          {
+            "id": 129,
+            "x": 33,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "id": 130,
+            "x": 35,
+            "y": 23,
+            "tacticalLevel": 1
+          }
+        ],
+        "actions": [
+          {
+            "type": "movement",
+            "unitId": "122",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "122",
+            "x": 32,
+            "y": 23,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "122",
+            "stance": "crouched"
+          },
+          {
+            "type": "movement",
+            "unitId": "103",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "103",
+            "x": 33,
+            "y": 23,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "103",
+            "stance": "crouched"
+          },
+          {
+            "type": "movement",
+            "unitId": "108",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "108",
+            "x": 32,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "108",
+            "stance": "crouched"
+          },
+          {
+            "type": "movement",
+            "unitId": "121",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "121",
+            "x": 34,
+            "y": 23,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "121",
+            "stance": "crouched"
+          },
+          {
+            "type": "movement",
+            "unitId": "126",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "126",
+            "x": 34,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "126",
+            "stance": "crouched"
+          },
+          {
+            "type": "movement",
+            "unitId": "112",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "112",
+            "x": 32,
+            "y": 21,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "112",
+            "stance": "crouched"
+          },
+          {
+            "type": "movement",
+            "unitId": "129",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "129",
+            "x": 33,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "move",
+            "unitId": "129",
+            "x": 33,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "move",
+            "unitId": "129",
+            "x": 33,
+            "y": 22,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "129",
+            "stance": "crouched"
+          },
+          {
+            "type": "movement",
+            "unitId": "130",
+            "movement": "walk"
+          },
+          {
+            "type": "move",
+            "unitId": "130",
+            "x": 35,
+            "y": 23,
+            "tacticalLevel": 1
+          },
+          {
+            "type": "stance",
+            "unitId": "130",
+            "stance": "crouched"
+          }
+        ],
+        "elapsedSeconds": 644
+      },
+      "elapsedSeconds": 644,
+      "cost": 0
+    },
+    "hour": 272,
+    "second": 437,
+    "cash": 3218,
+    "actualImportedOriginalSources": 274,
+    "sourceDrift": [],
+    "nativeReplay": {
+      "status": "passed",
+      "scope": "The fixed admitted native tape first matched every original raw result hash without extra saves. This second replay uses an actual official midpoint reload, compares canonical object keys, preserves array order and compares the exact final decoded campaign.",
+      "rows": 99,
+      "counts": {
+        "campaign": 51,
+        "tactical": 27,
+        "enter": 5,
+        "sync": 5,
+        "skippedPlanning": 0,
+        "save": 6
+      },
+      "midpoint": 43,
+      "savedMidpoint": true,
+      "finalSha256": "366498a2939677b229ffd7e76047dfe1a44181a9f7df3753841de678e6596104",
+      "hour": 272,
+      "second": 437
+    },
+    "resultSaveSha256": "6d0b8ea12f211ecff140faee0d1cdd54fc66cb549bb36adca4b0541640b490ff"
+  },
+  "rest": {
+    "native": {
+      "status": "actual-encounter",
+      "inputSha256": "6d0b8ea12f211ecff140faee0d1cdd54fc66cb549bb36adca4b0541640b490ff",
+      "inputUnchanged": true,
+      "requests": 16,
+      "boundHours": 108,
+      "elapsedSeconds": 57600,
+      "cost": 278,
+      "cash": 2940,
+      "hour": 288,
+      "second": 437,
+      "pendingEncounter": {
+        "groupId": "enemy-group-3",
+        "sector": "tucuman",
+        "arrivedAt": 288
+      },
+      "patients": [
+        {
+          "id": 121,
+          "hp": 65,
+          "bleeding": 0
+        },
+        {
+          "id": 126,
+          "hp": 55,
+          "bleeding": 0
+        },
+        {
+          "id": 129,
+          "hp": 70,
+          "bleeding": 0
+        },
+        {
+          "id": 130,
+          "hp": 58,
+          "bleeding": 0
+        }
+      ],
+      "quotes": [
+        {
+          "sector": "retiro",
+          "knownMedical": 0,
+          "quote": {
+            "valid": false,
+            "reason": "Prepar\u00e1 el ataque desde un sector vecino, sin escalas.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "sector": "buenos_aires",
+          "knownMedical": 0,
+          "quote": {
+            "valid": false,
+            "reason": "Prepar\u00e1 el ataque desde un sector vecino, sin escalas.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "sector": "ensenada",
+          "knownMedical": 0,
+          "quote": {
+            "valid": false,
+            "reason": "Prepar\u00e1 el ataque desde un sector vecino, sin escalas.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "sector": "cordoba",
+          "knownMedical": 0,
+          "quote": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "tucuman",
+              "cell-13-11",
+              "cell-13-12",
+              "cell-13-13",
+              "cell-13-14",
+              "cell-13-15",
+              "cell-13-16",
+              "cell-13-17",
+              "cell-13-18",
+              "cell-14-18",
+              "cell-14-19",
+              "cordoba"
+            ],
+            "hours": 20,
+            "action": {
+              "type": "travel",
+              "sector": "cordoba",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        }
+      ]
+    },
+    "replay": {
+      "status": "passed",
+      "scope": "The fixed admitted native tape first matched every original raw result hash without extra saves. This second replay uses an actual official midpoint reload, compares canonical object keys, preserves array order and compares the exact final decoded campaign.",
+      "rows": 25,
+      "counts": {
+        "campaign": 24,
+        "tactical": 0,
+        "enter": 0,
+        "sync": 0,
+        "skippedPlanning": 0,
+        "save": 1
+      },
+      "midpoint": 12,
+      "savedMidpoint": true,
+      "finalSha256": "60da838d875fc89c66a19c54c10adb454c5540653b1551b5a712c7bf451c8f84",
+      "hour": 288,
+      "second": 437
+    },
+    "sourceAudit": {
+      "actualImports": 272,
+      "drift": []
+    }
+  },
+  "defense": {
+    "native": {
+      "status": "defeat",
+      "hour": 288,
+      "second": 750,
+      "treasury": 2940,
+      "orders": 184,
+      "playerActions": 141,
+      "turn": 21,
+      "elapsedSeconds": 313,
+      "midpoint": 92,
+      "exactNativeReplay": true,
+      "exactSettledCampaign": true,
+      "newDead": [
+        103,
+        108,
+        112,
+        121,
+        122,
+        126,
+        129,
+        130
+      ],
+      "captured": [
+        {
+          "id": 102,
+          "hp": 8,
+          "bleeding": 5
+        }
+      ],
+      "owner": "royalist",
+      "pendingEncounter": null,
+      "campaignSha256": "216b0f0f35e0fbfb57dbd927024d2de5940c121960919cec14ca295efc595b08"
+    },
+    "sourceAudit": {
+      "actualImports": 292,
+      "drift": []
+    },
+    "respondents": [
+      {
+        "id": "112",
+        "hp": 25,
+        "maxHp": 66,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 32,
+        "y": 21,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "122",
+        "hp": 67,
+        "maxHp": 67,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 32,
+        "y": 23,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "103",
+        "hp": 65,
+        "maxHp": 72,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 33,
+        "y": 23,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "108",
+        "hp": 82,
+        "maxHp": 82,
+        "weapon": 1803,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 32,
+        "y": 22,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "102",
+        "hp": 70,
+        "maxHp": 70,
+        "weapon": 1804,
+        "loaded": 1,
+        "ammo": 4,
+        "x": 36,
+        "y": 23,
+        "tacticalLevel": 0,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "121",
+        "hp": 65,
+        "maxHp": 80,
+        "weapon": 1801,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 34,
+        "y": 23,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "126",
+        "hp": 55,
+        "maxHp": 63,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 34,
+        "y": 22,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "129",
+        "hp": 70,
+        "maxHp": 86,
+        "weapon": 1803,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 33,
+        "y": 22,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "130",
+        "hp": 58,
+        "maxHp": 67,
+        "weapon": 1801,
+        "loaded": 1,
+        "ammo": 13,
+        "x": 35,
+        "y": 23,
+        "tacticalLevel": 1,
+        "stance": "standing",
+        "energy": 100
+      },
+      {
+        "id": "127",
+        "hp": 0,
+        "maxHp": 71,
+        "weapon": 1800,
+        "loaded": 0,
+        "ammo": 2,
+        "x": 44,
+        "y": 32,
+        "tacticalLevel": 0,
+        "stance": "prone",
+        "energy": 65
+      },
+      {
+        "id": "144",
+        "hp": 0,
+        "maxHp": 79,
+        "weapon": 1805,
+        "loaded": 1,
+        "ammo": 9,
+        "x": 43,
+        "y": 32,
+        "tacticalLevel": 0,
+        "stance": "standing",
+        "energy": 31
+      }
+    ],
+    "resultSave": {
+      "path": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/result.save.json",
+      "sha256": "b231935f3cb0eee0cdbbb6b28b71abe40f8ecad2c958f274c70147bb08db5061"
+    },
+    "fixedBattleTape": {
+      "path": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/battle-result.json",
+      "sha256": "f5ce165ad21d352a50036fc6c388d42df8527ea4c0031820478c6c519e3e9d1b"
+    },
+    "officialPairs": {
+      "official-initial-pair.save.json": {
+        "path": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/official-initial-pair.save.json",
+        "sha256": "a7d243af03456d8d210b7304062a629aac9ba9a3d20108099dde6f0a70e74a60"
+      },
+      "official-midpoint-pair.save.json": {
+        "path": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/official-midpoint-pair.save.json",
+        "sha256": "7d17fe86f95e664109c1d34180bd89d5f06534b25ca013521ad70d143f65f891"
+      },
+      "official-final-pair.save.json": {
+        "path": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/official-final-pair.save.json",
+        "sha256": "5b441a442d7ceae6a75e380ffd093bc6b6ce3bd7501f83562d12b0182a1a2b2a"
+      }
+    }
+  },
+  "priorActualDefeat": {
+    "receipt": "/tmp/granaderos-opening-medical-courier-forecast-once/final-native-receipt.json",
+    "sha256": "3dee64783fdc8c419aed86762ec86d84ef27e6050c6882bbbd14a5387cfe1a3d",
+    "unchangedAndPreserved": true
+  },
+  "frozenRepositorySources": {
+    "tests/northern-route.mjs": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+    "tests/rescue-recovery.mjs": "0652b0c1df5c2885fab038ec0746891c4a7643057e1215f39846a43d773e88c1",
+    "tests/opening-playthrough.test.mjs": "a94b72d7b25e4f55a7ff888d8f32df921bd1b442bfa0beab8dc30a1b77136972",
+    "tests/opening-driver.mjs": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3"
+  },
+  "limitations": [
+    "Finite guard preparation and native rest healing are proved, but the actual defense still lost.",
+    "The strict full-HP recovery gate did not pass.",
+    "The correction remains external; it is not integrated in the repository.",
+    "No new complete original opening file has been launched.",
+    "Earlier expired-contract, exhausted-supply, invalid-source and actual-defeat traces remain intact."
+  ],
+  "readOnlyControllerReview": {
+    "midpoint": "/tmp/granaderos-opening-clinic-readiness-fixed/rest-fallback/defense/read-only-midpoint-decisions.json",
+    "inputUnchanged": true,
+    "sha256": "a101b28aa29ed27cacae1a92cdf51e5cf1f15fa5cf63a8c80ee2def333c22fed",
+    "allIssuedOrdersAdmitted": true,
+    "invalidAmmunitionOrLOSOrderFound": false,
+    "unusedNativeArtillery": {
+      "id": "arsenal:cordoba:1",
+      "loaded": true,
+      "reserveRounds": 2
+    },
+    "boundedPolicyLimit": "Roof wrapper suppresses affordable current on-roof repositioning/standing as well as descent while contact exists. No resulting victory is claimed."
+  },
+  "integrationProposal": {
+    "path": "/tmp/granaderos-opening-clinic-readiness-fixed/integration-proposal.txt",
+    "sha256": "8c77732546eb1b8967ede46a2444737ae9f61fbb67ccdf0c208ca5a99dfb29f5",
+    "sourceEditsMade": false
+  },
+  "integrationProposalFinal": {
+    "path": "/tmp/granaderos-opening-clinic-readiness-fixed/integration-proposal-final.txt",
+    "sha256": "3fd4a76b2bb27519d451f3f11b5711da5be02151862133d82851afcc35fb6f2d",
+    "sourceEditsMade": false
+  }
+}

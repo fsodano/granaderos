@@ -1,0 +1,354 @@
+{
+  "date": "2026-10-09",
+  "scope": "Finite post-release medical recovery and distinct-captive stabilization on one exact accepted native rescue-victory input. This short proof does not establish complete original opening/Yatasto success.",
+  "input": {
+    "source": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/026-stabilizeRescued-input.save.json",
+    "sourceRun": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/summary.json",
+    "sourceCodeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+    "sourceRuntimeHashes": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/source-comparison.json",
+    "sourceScope": "One complete original opening file with fixed2-dressing patrol preparation and previously verified single-gun coordination. The original poor patrol controller produced genuine defeat/four captures; actual confiscated5 pieces funded five guard strokes; rescue then reached native victory. Unedited official save at stabilization input before any subsequent care orders.",
+    "rawSha256": "0b22e32f69671b232fa32c47f96de6653be0e579058d16ff52b9ce59802621da",
+    "rawBytes": 946885,
+    "compressedSha256": "47edf431e7366fd2d558a5de0a1a8e7573d2255167dcfc2f5faca5223f8d458a",
+    "hour": 188,
+    "second": 3231,
+    "patients": [
+      121,
+      126,
+      129,
+      130
+    ],
+    "nativeRescue": {
+      "status": "victory",
+      "turns": 8,
+      "actions": 289,
+      "elapsedSeconds": 1350,
+      "actualNewDeaths": [
+        127,
+        144
+      ]
+    },
+    "stateEdits": false
+  },
+  "causalDefects": [
+    {
+      "helper": "tests/northern-route.mjs:stabilizeRescued",
+      "trigger": "Living local physician122 had0 carried dressings after the real rescue, although9 pieces remained in reachable known corpse inventories.",
+      "correction": "Use current actor-local native take actions with source expectations, counts and exact source/medical-pool/carried debits. Fixed target6 for this accepted input; no supplies granted."
+    },
+    {
+      "helper": "tests/northern-route.mjs:stabilizeRescued",
+      "trigger": "The first finite-care trial left treated captives assigned patient. Native triage chose121 twice,129 once and130 once;126 never received a stroke before the four clinic pieces ran out.",
+      "engineMechanism": "game/medical-care.js:advanceMedicalCare chooses lowest HP fraction, one patient per doctor per actual hour. Hourly care supports patients below15 HP.",
+      "correction": "Move each actually treated captive to ordinary rest before the next actual hour. Bound repeated ordinary wait requests to handle0-clock notices; retain1..5 actual care hours and actual health/death checks."
+    }
+  ],
+  "nativeProof": {
+    "nativeVerification": {
+      "scope": "One corrected six-piece care execution from exact original026 victory; no battle/controller. Native care passed. The first added regression stopped at an overly broad post-clinic group assertion, because actual day contracts expired during the four clinic hours.",
+      "sourceImports": 293,
+      "drift": []
+    },
+    "recordedRegression": {
+      "scope": "Corrected assertion uses this same native result and replays every original ordinary order with an official midpoint; no second care/controller execution. Ordered group/field restoration is checked immediately before clinic time; subsequent departures must have real expired contracts.",
+      "pass": 1,
+      "fail": 0,
+      "elapsedSeconds": 2.915727584
+    },
+    "finiteHistory": {
+      "recovered": 6,
+      "rescuerAid": 2,
+      "clinicalCare": 4,
+      "remainingKnownLocal": 3,
+      "doctorCarriedFinal": 0
+    },
+    "emergencyAid": {
+      "patients": [
+        103,
+        138
+      ],
+      "elapsedSeconds": 37,
+      "officialMidpoint": true
+    },
+    "clinicElapsedSeconds": 14400,
+    "nativeOrders": 35,
+    "patients": [
+      {
+        "id": 121,
+        "hp": 18,
+        "bleeding": 0,
+        "alive": true
+      },
+      {
+        "id": 126,
+        "hp": 21,
+        "bleeding": 0,
+        "alive": true
+      },
+      {
+        "id": 129,
+        "hp": 20,
+        "bleeding": 0,
+        "alive": true
+      },
+      {
+        "id": 130,
+        "hp": 21,
+        "bleeding": 0,
+        "alive": true
+      }
+    ],
+    "exactEveryOrderReplay": true,
+    "officialReplayMidpoint": true,
+    "inputUnchanged": true,
+    "retainedFailures": [
+      "overlong temporary squad-name rejection before care/time; admitted zero-time takes replayed",
+      "six-piece trial under original repeating triage exhausted four clinic pieces before126 had a stroke; exact failed-clinic prefix retained",
+      "new test final-group assertion omitted real paid day-contract departures; corrected boundary and expiry checks"
+    ]
+  },
+  "sourceSha256": {
+    "tests/northern-route.mjs": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+    "tests/opening-rescue-stabilization.test.mjs": "d6a77f9e776060db426d461dfc413147c3a0bbf58b4b4a34ba54788d9d9ee3c1"
+  },
+  "artifactDirectory": "/tmp/granaderos-opening-rescue-finite-care-candidate",
+  "retainedPartialTrialDirectory": "/tmp/granaderos-opening-rescue-finite-care-fixed",
+  "completeOpeningValidation": {
+    "command": "node --experimental-loader /tmp/granaderos-opening-rescue-audit-2849279c/full-opening-finite-care/loader.mjs --test tests/opening-playthrough.test.mjs",
+    "exitCode": 1,
+    "elapsedSeconds": 246.50621429199998,
+    "nodeCountsIncludingParent": {
+      "tests": 8,
+      "pass": 4,
+      "fail": 2,
+      "skipped": 2
+    },
+    "subtests": {
+      "pass": 4,
+      "fail": 1,
+      "skip": 2
+    },
+    "terminalFailure": "recoverRescueForce: two living qualified physicians are available on paid contracts",
+    "battles": [
+      {
+        "sector": "cordoba",
+        "status": "victory",
+        "turns": 13,
+        "actions": 176,
+        "startSeconds": 303070,
+        "elapsedSeconds": 93
+      },
+      {
+        "sector": "tucuman",
+        "status": "defeat",
+        "turns": 2,
+        "actions": 34,
+        "startSeconds": 426439,
+        "elapsedSeconds": 163
+      },
+      {
+        "sector": "cordoba",
+        "status": "victory",
+        "turns": 10,
+        "actions": 177,
+        "startSeconds": 541804,
+        "elapsedSeconds": 63
+      },
+      {
+        "sector": "tucuman",
+        "status": "victory",
+        "turns": 8,
+        "actions": 289,
+        "startSeconds": 678681,
+        "elapsedSeconds": 1350
+      }
+    ],
+    "sourceProof": {
+      "originalImportedSources": 308,
+      "runtimeRecords": 613,
+      "inconsistentDuplicateHashes": [],
+      "drift": [],
+      "method": "Original imported runtime bytes before external checkpoint wrappers compared with full prelaunch and terminal filesystem hashes. All imported JSON sources included."
+    },
+    "lastNativeInput": {
+      "index": 28,
+      "stage": "input",
+      "name": "recoverRescueForce",
+      "wallTime": "2026-10-09T23:29:37.392Z",
+      "save": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-finite-care/028-recoverRescueForce-input.save.json",
+      "sha256": "2b0eea429d88e26f55538673048c6d503fdc7a220eb0163017cac1cc8e79cd45",
+      "hour": 192,
+      "second": 3268,
+      "treasury": 3774,
+      "location": "tucuman",
+      "pendingBattle": null,
+      "captured": [],
+      "deaths": [
+        "104",
+        "107",
+        "110",
+        "111",
+        "113",
+        "114",
+        "115",
+        "116",
+        "117",
+        "119",
+        "120",
+        "123",
+        "124",
+        "125",
+        "127",
+        "131",
+        "134",
+        "136",
+        "137",
+        "139",
+        "141",
+        "144",
+        "146",
+        "1000"
+      ]
+    },
+    "scope": "One complete original opening file, no filters or elapsed restarts. Genuine patrol loss/four captures, native rescue victory/release/contract assertions and finite-six-piece four-captive stabilization passed. Courier staffing failure prevented Salta/Yatasto."
+  },
+  "limitations": "The failed pre-clinic adapter used an overlong squad name; its admitted zero-time inventory prefix was replayed and preserved. The repeated-triage native trial failed; it was retained rather than represented as a passing bounded continuation. The final short regression assertion was corrected for genuine paid day-contract departures and validated through the same recorded native result/all-order replay, without a second care/controller execution.",
+  "completeOpeningArtifacts": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-finite-care",
+  "nextActualFailure": {
+    "input": "028-recoverRescueForce-input.save.json",
+    "physicianAvailability": "physician-availability.json",
+    "publicRemoteReadiness": "remote-physician-public-readiness.json",
+    "localQualified": 122,
+    "servingRemoteQualified": 112,
+    "remoteState": {
+      "sector": "cordoba",
+      "hp": 18,
+      "bleeding": 3,
+      "medkits": 0
+    },
+    "onlyAvailableCivicQualified": {
+      "id": 135,
+      "weeklyPrice": 49140
+    },
+    "treasury": 3774,
+    "ordersAfterFailure": 0,
+    "candidate": "Stabilize the actual serving wounded C\u00f3rdoba physician from finite public sources before long clock advancement, then bring him through a real march. Shared source remains frozen; no physician/health/resources granted."
+  },
+  "medicalCourierNativeContinuation": {
+    "status": "genuine earned medical-courier raid defeat retained; full-HP recovery not achieved",
+    "externalReceipt": "/tmp/granaderos-opening-medical-courier-forecast-once/final-native-receipt.json",
+    "receiptSha256": "3dee64783fdc8c419aed86762ec86d84ef27e6050c6882bbbd14a5387cfe1a3d",
+    "sourceFreeze": {
+      "tests/rescue-recovery.mjs": "0652b0c1df5c2885fab038ec0746891c4a7643057e1215f39846a43d773e88c1",
+      "tests/opening-playthrough.test.mjs": "a94b72d7b25e4f55a7ff888d8f32df921bd1b442bfa0beab8dc30a1b77136972",
+      "tests/northern-route.mjs": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+      "tests/opening-driver.mjs": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3"
+    },
+    "inputSha256": "2b0eea429d88e26f55538673048c6d503fdc7a220eb0163017cac1cc8e79cd45",
+    "nativeEvidence": {
+      "physicianSelfAidPieces": 1,
+      "physicianSelfAidSeconds": 3,
+      "physicianTravelSeconds": 72000,
+      "courierLegSeconds": [
+        72000,
+        72000
+      ],
+      "physicianRenewalBeforeEachCourierLegTotal": 556,
+      "courierReturnRestHours": 10,
+      "initialLocalClinicPieces": 3,
+      "CCollectedDeliveredClinicPieces": 6,
+      "TCCachePieces": 12,
+      "TCCacheDiscoverySeconds": 122,
+      "TCCacheCareHours": 6,
+      "patientsAt271": [
+        63,
+        53,
+        68,
+        56
+      ],
+      "actualRemainingHPDeficit": 56,
+      "finiteCourierAcceptedOrders": 44,
+      "finiteCourierPaidRenewalCost": 3112,
+      "sourceTarget": "buenos_aires",
+      "newPickupBeforeRaid": 0
+    },
+    "defeat": {
+      "status": "defeat",
+      "hour": 289,
+      "second": 94,
+      "treasury": 106,
+      "orders": 155,
+      "playerActions": 104,
+      "turn": 31,
+      "elapsedSeconds": 301,
+      "midpoint": 77,
+      "exactNativeReplay": true,
+      "exactSettledCampaign": true,
+      "newDead": [
+        103,
+        108,
+        121,
+        122,
+        126,
+        129,
+        130
+      ],
+      "captured": [
+        {
+          "id": 112,
+          "hp": 9,
+          "bleeding": 1
+        }
+      ],
+      "owner": "royalist",
+      "pendingEncounter": null,
+      "courier": {
+        "id": "squad-10",
+        "name": "Correo sanitario",
+        "members": [
+          102
+        ],
+        "location": "cell-14-18",
+        "journey": {
+          "version": 1,
+          "path": [
+            "cell-14-18",
+            "cell-14-19",
+            "cordoba",
+            "cell-14-21",
+            "cell-15-21",
+            "cell-16-21",
+            "cell-16-22",
+            "cell-17-22",
+            "cell-17-23",
+            "cell-18-23",
+            "cell-19-23",
+            "cell-19-24",
+            "cell-20-24",
+            "cell-20-25",
+            "cell-21-25",
+            "cell-22-25",
+            "san_nicolas",
+            "cell-23-26",
+            "cell-23-27",
+            "cell-24-27",
+            "cell-24-28",
+            "buenos_aires"
+          ],
+          "mode": "march",
+          "startedAt": 271,
+          "startedSecond": 3393,
+          "legHours": 2,
+          "elapsed": 1,
+          "status": "moving",
+          "returning": false,
+          "reason": null,
+          "pendingSeconds": 301,
+          "elapsedSecond": 301
+        }
+      },
+      "campaignSha256": "b762e63fd645002d892dcee3d27b56149ab78b991305c8865556f2eeb7d8fbd0"
+    },
+    "note": "This distinct saved-state continuation proves ordinary finite costs and exact action/save replay. It does not claim a complete original opening pass or full-HP recovery. The true defeat remains; no combat variants were run."
+  }
+}

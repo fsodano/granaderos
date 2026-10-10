@@ -1,0 +1,21 @@
+✔ a hire booked one second before an hour still travels for the complete authored hour (138.872625ms)
+✔ redirecting at a fractional hour restarts the full journey and preserves the paid receipt (149.515125ms)
+✔ legacy whole-hour receipts retain their due time and price through save and redirection (158.561375ms)
+✔ saved fractional receipts validate seconds, complete departure/due pairs and timestamp order (42.707167ms)
+✔ a blocked overdue arrival does not freeze the next clock step and remains pending (28.201ms)
+✔ continuous campaign time admits the hire at its exact deadline and grants the complete paid service (579.387916ms)
+✔ an explicit wait from a fractional start admits a whole-hour hire at its deadline without adding time (224.980042ms)
+✔ route supply takes only finite owned cartridges for the selected alternative load (202.259083ms)
+✔ route supply discovers the actual chest and conserves its finite selected load through deterministic saves (1586.52725ms)
+✔ route supply cannot give a remote soldier cartridges or invent exhausted cache ammunition (780.712958ms)
+✔ route preparation discovers and forwards three real finite bronze guns with canonical saved custody (8837.350917ms)
+✔ a route cannot recover unknown, occupied or exhausted artillery sources or mutate its input on failure (469.346167ms)
+✔ mixed route batteries use five distinct finite pieces and cannot borrow reserved guns or invent extra swivels (6088.933583ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15603.12225

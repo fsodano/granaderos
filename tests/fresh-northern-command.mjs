@@ -1,3 +1,4 @@
+import {encounterDefinitions} from '../game/encounters.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -83,14 +84,36 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
    const wounded=localPatients(sector);
    if(!wounded.length){order({type:'assignCare',operativeId:id,assignment:'rest'});for(const patient of patients.filter(other=>at(other)===sector))order({type:'assignCare',operativeId:patient,assignment:'rest'});continue;}
    if(!c.operativeState[id].medkits)takeKnown(id,1);
-   if(c.operativeState[id].medkits)order({type:'assignCare',operativeId:id,assignment:'doctor'});
-   for(const patient of wounded)order({type:'assignCare',operativeId:patient,assignment:'patient'});
+   const supplied=c.operativeState[id].medkits>0;
+   order({type:'assignCare',operativeId:id,assignment:supplied?'doctor':'rest'});
+   for(const patient of wounded.filter(patient=>patient!==id))order({type:'assignCare',operativeId:patient,assignment:supplied||c.operativeState[patient].bleeding||c.operativeState[patient].hp<15?'patient':'rest'});
   }
  };
+ // Stabilize these actual local casualties before the rear doctor's paid
+ // arrival or a long equipment walk. Each stroke spends recovered linen.
+ for(const sector of [...new Set(patients.map(at))]){
+  for(let attempt=0;attempt<patients.length;attempt++){
+   const urgent=localPatients(sector).filter(id=>c.operativeState[id].bleeding||c.operativeState[id].hp<15);if(!urgent.length)break;
+   const medic=rosterFor(c).filter(op=>live().includes(op.id)&&at(op.id)===sector&&op.medical>0&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10).sort((a,b)=>Number(Boolean(c.operativeState[a.id].bleeding))-Number(Boolean(c.operativeState[b.id].bleeding))||b.medical-a.medical||a.id-b.id)[0];
+   assert.ok(medic,'an actual conscious local medic must stabilize the urgent casualty');
+   const ids=[...new Set([medic.id,...urgent])].slice(0,6),need=ids.filter(id=>urgent.includes(id)).reduce((sum,id)=>sum+Number(c.operativeState[id].bleeding>0)+Math.ceil(Math.max(0,15-c.operativeState[id].hp)/7),0);
+   if(c.operativeState[medic.id].medkits<need)takeKnown(medic.id,need-c.operativeState[medic.id].medkits);
+   order({type:'createSquad',ids,name:'Socorro provincial urgente',sector});for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
+   const initial=visit(c),aid=autoBandageBattle(initial.battle);let paid=initial;
+   for(let step=0;step<aid.steps.length;step++){
+    const battle=actBattle(paid.battle,aid.steps[step]);assert.equal(battle.lastError,null);paid=sync({campaign:paid.campaign,battle});
+    if(step===Math.floor(aid.steps.length/2))paid=decodeSave(encodeSave(paid.campaign,paid.battle));
+   }
+   assert.deepEqual(paid.battle,sync({campaign:initial.campaign,battle:aid.battle}).battle);
+   c=leave(paid);for(const id of ids.filter(id=>urgent.includes(id))){assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);}
+   report({event:'provincialEmergencyAid',sector,doctor:medic.id,steps:aid.steps,elapsedSeconds:aid.elapsedSeconds,officialMidpoint:true,patients:ids.filter(id=>urgent.includes(id)).map(id=>({id,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding}))});
+   onCheckpoint(`northern-officer-emergency-${sector}`,c);
+  }
+ }
  for(const id of live())order({type:'assignCare',operativeId:id,assignment:patients.includes(id)?'patient':'rest'});
  const booked=[];
  for(const sector of [...new Set(patients.map(at))]){
-  const local=rosterFor(c).filter(op=>live().includes(op.id)&&at(op.id)===sector&&op.medical>=70&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>b.medical-a.medical)[0];
+  const local=rosterFor(c).filter(op=>live().includes(op.id)&&at(op.id)===sector&&op.medical>=70&&!patients.includes(op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10).sort((a,b)=>Number(c.operativeState[b.id].medkits>0)-Number(c.operativeState[a.id].medkits>0)||b.medical-a.medical||a.id-b.id)[0];
   if(local){doctors.set(sector,local.id);takeKnown(local.id,8);continue;}
   const recruit=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(row=>row.operativeId===op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&op.medical>=70&&contractQuote(c,op,'week').available&&contractQuote(c,op,'week').price<=routeHiringCeiling(c,200)).sort((a,b)=>Number(b.id===139)-Number(a.id===139)||b.medical-a.medical||a.id-b.id)[0];
   assert.ok(recruit,'a real available paid doctor must reach the rear casualty');
@@ -138,22 +161,34 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
  order({type:'transport',mode:'posta'});order({type:'createSquad',ids:[courier],name:'Enlace provincial',sector:'tucuman'});order({type:'assignCare',operativeId:courier,assignment:'active'});travel('cordoba');
  c=meetRecruits(c,['quiroga','paz'],courier);
  order({type:'createSquad',ids:[9,11,courier],name:'Batería provincial',sector:'cordoba'});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
- // Finish care before its doctor joins the column. The officers guard the
- // actual conquered source while the paid clinic heals the remaining veteran.
- for(let hour=0;hour<48&&patients.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);hour++){assert.equal(c.pendingEncounter,null);maintainClinics();order({type:'wait',hours:1});}
- maintainClinics();for(const id of patients){assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp,'finite provincial care and real rest must restore the actual injured support');assert.equal(c.operativeState[id].bleeding,0);}
+ // Finish this doctor's actual local care before departure. The same battery
+ // column can carry finite rear linen to the remaining northern patients.
+ for(let hour=0;hour<48&&localPatients('cordoba').length;hour++){assert.equal(c.pendingEncounter,null);maintainClinics();order({type:'wait',hours:1});}
+ maintainClinics();assert.deepEqual(localPatients('cordoba'),[],'the rear doctor must finish actual local care before departure');
  const rearDoctors=[...doctors.values()].filter(id=>at(id)==='cordoba');
  for(const id of rearDoctors){
   for(let hour=0;hour<48&&(c.operativeState[id].energy<100||c.operativeState[id].fatigue||c.operativeState[id].asleep);hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
   order({type:'assignToSquad',operativeId:id,squadId:c.activeSquadId});order({type:'assignCare',operativeId:id,assignment:'active'});
  }
+ const northernDoctor=doctors.get('tucuman');assert.ok(northernDoctor);
+ const northernNeed=()=>localPatients('tucuman').reduce((sum,id)=>sum+Math.ceil((c.operativeState[id].maxHp-c.operativeState[id].hp)/doctorRate(rosterFor(c).find(op=>op.id===northernDoctor),c)),0);
+ const knownNorthern=sectorInventoryModel(c,'tucuman',rosterFor(c),northernDoctor).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
+ const delivery=Math.max(0,northernNeed()-c.operativeState[northernDoctor].medkits-knownNorthern);
+ if(delivery)c=supplyRouteDressings(c,courier,delivery,{report});
+ report({event:'provincialDressingDeliveryPacked',courier,doctor:northernDoctor,requested:delivery,carried:c.operativeState[courier].medkits,hour:c.hour,second:c.secondOfHour??0});
  onCheckpoint('northern-officer-battery-input',c);
  const prepared=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=retreatNorthernRear(prepared.campaign,{report});order({type:'configureArtillery',types:prepared.selections});
  onCheckpoint('northern-officer-battery-ready',c);
+ const clinicTarget=Math.min(northernNeed(),c.operativeState[northernDoctor].medkits+c.operativeState[courier].medkits);
+ if(clinicTarget>c.operativeState[northernDoctor].medkits)c=supplyRouteDressings(c,northernDoctor,clinicTarget,{report});
+ for(let hour=0;hour<48&&patients.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);hour++){assert.equal(c.pendingEncounter,null);maintainClinics();order({type:'wait',hours:1});}
+ maintainClinics();for(const id of patients){assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp,'finite provincial care and real rest must restore the actual injured support');assert.equal(c.operativeState[id].bleeding,0);}
+ onCheckpoint('northern-officer-care-complete',c);
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
  order({type:'diplomacy',kind:'partisanSupply'});c=meetRecruits(c,['azurduy'],courier);
  const physicians=[1,...rosterFor(c).filter(op=>op.id!==1&&live().includes(op.id)&&op.medical>=20&&at(op.id)==='tucuman'&&c.operativeState[op.id].morale>=30&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>b.medical-a.medical).map(op=>op.id)].slice(0,2);
  assert.equal(physicians.length,2,'the column needs two actual living local doctors');
- for(const id of physicians)if(c.operativeState[id].medkits<2)c=collectRouteItems(c,id,{item:'medkits'},2-c.operativeState[id].medkits).campaign;
+ for(const id of physicians)if(c.operativeState[id].medkits<2)c=supplyRouteDressings(c,id,2,{report});
  const fitLocal=()=>live().filter(id=>at(id)==='tucuman'&&c.operativeState[id].hp===c.operativeState[id].maxHp&&!c.operativeState[id].bleeding&&c.operativeState[id].morale>=30);
  const vacancies=Math.max(0,8-fitLocal().length),replacements=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&contractQuote(c,op,'week').available&&contractQuote(c,op,'week').price<=routeHiringCeiling(c,200)).sort((a,b)=>b.marksmanship-a.marksmanship||b.strength-a.strength||a.id-b.id).slice(0,vacancies);
  assert.equal(replacements.length,vacancies,'real available recruits must fill the existing eight-person support requirement');
@@ -225,8 +260,10 @@ const order=a=>{if(a.type==='assignCare'&&c.operativeState[a.operativeId].assign
 const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:true,mode:'posta'});for(let h=0;h<36&&c.squads.find(q=>q.id===id).journey;h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}assert.equal(c.location,at);};
 
  for(const id of live())order({type:'assignCare',operativeId:id,assignment:'rest'});
- const courier=rosterFor(c).filter(op=>live().includes(op.id)&&op.leadership>=60&&c.operativeState[op.id].location==='tucuman'&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>Number(b.id===114)-Number(a.id===114)||c.operativeState[b.id].energy-c.operativeState[a.id].energy||b.leadership-a.leadership)[0]?.id;
+ const initialLeadership=Math.max(...encounterDefinitions(c).filter(n=>['quiroga','paz'].includes(n.id)).map(n=>n.requiredLeadership));
+ const courier=rosterFor(c).filter(op=>live().includes(op.id)&&op.leadership>=initialLeadership&&c.operativeState[op.id].location==='tucuman'&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>Number(b.id===114)-Number(a.id===114)||c.operativeState[b.id].energy-c.operativeState[a.id].energy||b.leadership-a.leadership)[0]?.id;
  assert.ok(courier,'the envoy must be a living local leader, preserving every actual fallen soldier');
+ report({event:'northernReliefCourier',id:courier,leadership:rosterFor(c).find(op=>op.id===courier).leadership,requiredLeadership:initialLeadership,campaign:structuredClone(c)});
  for(let h=0;h<72&&(c.operativeState[courier].fatigue||c.operativeState[courier].energy<100||c.operativeState[courier].asleep);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  assert.equal(c.operativeState[courier].asleep,false);assert.equal(c.operativeState[courier].energy,100);
  order({type:'transport',mode:'posta'});
@@ -248,7 +285,16 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  // Córdoba's existing bronze piece and its real two-person provincial crew.
  const battery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=battery.campaign;
  order({type:'configureArtillery',types:battery.selections});
- order({type:'diplomacy',kind:'partisanSupply'});c=meetRecruits(c,['azurduy'],courier);
+ order({type:'diplomacy',kind:'partisanSupply'});
+ // The Córdoba envoy meets the actual fifty-point officer contacts. A
+ // genuinely recruited local officer then meets Azurduy's higher gate.
+ const officerLeadership=encounterDefinitions(c).find(n=>n.id==='azurduy').requiredLeadership;
+ const officerEnvoy=rosterFor(c).filter(op=>live().includes(op.id)&&op.leadership>=officerLeadership&&c.operativeState[op.id].location==='tucuman'&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>b.leadership-a.leadership||a.id-b.id)[0]?.id;
+ assert.ok(officerEnvoy,'a real local officer must meet the later native leadership gate');
+ if(!c.squad.includes(officerEnvoy))order({type:'assignToSquad',operativeId:officerEnvoy,squadId:c.activeSquadId});
+ order({type:'assignCare',operativeId:officerEnvoy,assignment:'active'});
+ report({event:'northernReliefOfficerEnvoy',id:officerEnvoy,leadership:rosterFor(c).find(op=>op.id===officerEnvoy).leadership,requiredLeadership:officerLeadership,campaign:structuredClone(c)});
+ c=meetRecruits(c,['azurduy'],officerEnvoy);
  order({type:'sectorInventory',sector:'tucuman',operativeId:courier,direction:'drop',item:'medkits',count:20});
  const model=id=>sectorInventoryModel(c,'tucuman',rosterFor(c),id);
  const physicians=[1,...rosterFor(c).filter(op=>op.id!==1&&live().includes(op.id)&&op.medical>=20&&c.operativeState[op.id].location==='tucuman'&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding).sort((a,b)=>b.medical-a.medical).map(op=>op.id)].slice(0,2);

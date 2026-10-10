@@ -1,0 +1,237 @@
+{
+  "checkedUtc": "2026-10-10T03:20:56.912914+00:00",
+  "scope": "Read-only external185-path integration allowlist, manifest and archive review. No repository/index mutations, tests, builds or gameplay. This receipt is the sole write.",
+  "base": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+  "head": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "allowlist": {
+    "path": "/tmp/granaderos-campaign-integration-allowlist-current.json",
+    "count": 185,
+    "sha256": "9f5d395739c0c74469ba74bdd3e93b8f11a8759f6054d77c0b22ba9d582ccc6d",
+    "allPresentAndHashMatching": true,
+    "matchesCurrentTrackedNewDiff": true,
+    "productionChanges": []
+  },
+  "finding": {
+    "kind": "Declared manifest-relative evidence omitted from integration",
+    "ignoredLogCount": 27,
+    "bytes": 84552,
+    "files": [
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/port-original-helper.log",
+        "bytes": 1759,
+        "sha256": "b3b5a83c491ef42695ae5983c6d59db199f09a0a60a663d38388f5c7954c113e",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/port-corrected-helper.log",
+        "bytes": 241,
+        "sha256": "9ac842e9568497aa31e5a78adced6f7b3cbb4a9229e43941444f6f1c3c2d44d5",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-original-helper.log",
+        "bytes": 2147,
+        "sha256": "4d9f9451bb98b9d0ea73fc8be63e1dae621b25a992f0a3aee985de5909e6944e",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-corrected-helper.log",
+        "bytes": 264,
+        "sha256": "a35de410af9b273994ecf99f8013523ea9b9af7a0702e1b03e88f800b02cef80",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-routes-after-port.log",
+        "bytes": 10198,
+        "sha256": "c31a2f73f6ea2ddd975f188a5cd847184a66216cb6fec1ce5258559b61820139",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/created-artillery-full-route.log",
+        "bytes": 1709,
+        "sha256": "88db66d60e1ae250c6b6e23ae8bc38de4a9ceb25fcf702073b3d33a10c53f7be",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-current-full-route.log",
+        "bytes": 17501,
+        "sha256": "59a186fb77aee4d027086f91cfa008da9cc7aa45a8a3338146aff9547fe0850d",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-earlier-entry-preparation.log",
+        "bytes": 299,
+        "sha256": "685ae64ee0089cc8b78fcaa494916c6d513906a46485daeeddbfabda422c139c",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/campaign-route-profile-check.log",
+        "bytes": 1215,
+        "sha256": "ce7c162be35faebba971ae9eb512483b53de1793dfe19e0cc6207a4fec5e50b9",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-paid-relief-focused.log",
+        "bytes": 260,
+        "sha256": "aa9ebae34390407e9371528d757df8c5abd78ea13d5a3b79b2d9d45d3e8bcda8",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/cuyo-paid-relief-controls.log",
+        "bytes": 1594,
+        "sha256": "d9b8bfaf389d9a4ddf4e319bd03bacbf5f4e9d0b5ab5271cc3d49925a8e14afa",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/opening-medical-ready-full.log",
+        "bytes": 17699,
+        "sha256": "eaa171df2ee25e127ac64737944ace6f6c11a059d89eb4145b3c3b26330d2ae3",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-integrated-departure-preparation.log",
+        "bytes": 461,
+        "sha256": "330311064c87172a511ee7576571091fa209a001cc46f2fa14c543601537b2d6",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-observer-admission-failure.log",
+        "bytes": 2515,
+        "sha256": "d9a39020de4780beac0869d9ee36cd5dd896a1b6984d877e2075922b779487ff",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-build.log",
+        "bytes": 1821,
+        "sha256": "efd63733060e6a1dc0d25d94dd1ce0b26fe81640f3cf72aa61d4eea7b7d5dd64",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/cumulative-test-profile.log",
+        "bytes": 1211,
+        "sha256": "4140e46d5145f1dc68006396b9f70f4dee811dd9727f04355b0de63c347b7583",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/python-current.log",
+        "bytes": 1135,
+        "sha256": "62b6f5ed16274f7afdc69cd90ffd6f04bdd18dd96dc923b5a6e35212e5dfa747",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-native-envoy-stage.log",
+        "bytes": 429,
+        "sha256": "334966e3cee867194eab9171d7b595eb15ca72f135df81a8dc89addfbd5fd710",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/final-profile-controls.log",
+        "bytes": 1206,
+        "sha256": "c9c3bf10786d99bdeea7bbbfc67319b014a2ae7cc4d134b53b0cf44e7958fdbe",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/safe-fire-clinic-actual-controls.log",
+        "bytes": 3190,
+        "sha256": "6a82bc94a1357daa90dc1d84159b50dba818771e892bba4f00c135ce683f37df",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/stock-foundry-focused-controls.log",
+        "bytes": 1849,
+        "sha256": "4a2e561854df43c418e192a794d60f66d09ffcab4195ebed75a49e9f2dbdeec2",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/los-patos-ammunition-focused-controls.log",
+        "bytes": 2849,
+        "sha256": "5fe82cdf9175a1da746d0376268eea45998c23013fff42ffc92053a535a1ff6d",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/recovery-mendoza-forward-screen-actual-controls.log",
+        "bytes": 878,
+        "sha256": "f0a501f13294d445ba4704d042b80fc389c4c07a62ce96882789f4520d2af69e",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-docs.log",
+        "bytes": 191,
+        "sha256": "b69f907a4f1cdf7a76596fb9835f68a17b2d6d0bbca5082973d3b3582def7120",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-baseline.log",
+        "bytes": 10602,
+        "sha256": "151f2e8aaf0d70fcaeba50f47cb4c0c2b7bde56ba4d79c33944a3aec77e1b83b",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-typecheck.log",
+        "bytes": 117,
+        "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      },
+      {
+        "path": "docs/evidence/campaign-route-corrections-2026-10-09/corrected-current-profile-controls.log",
+        "bytes": 1212,
+        "sha256": "104e8848981de64164eb6f5ab7984cc2cafb3252730569c04c278b2b8e034280",
+        "manifest": "docs/evidence/campaign-route-corrections-2026-10-09/validation-progress.json",
+        "reason": ".gitignore:9:*.log"
+      }
+    ],
+    "otherIgnoredEvidenceBeyondLogs": [],
+    "allIgnoredEvidenceIsExactlyDeclaredLogs": true
+  },
+  "archive": {
+    "path": "docs/evidence/clinic-defense-policy-experiment-2026-10-10/clinic-defense-failed-experiment.tar.gz",
+    "entries": 80,
+    "declaredPayload": 79,
+    "unsafeEntries": [],
+    "payloadHashDrift": [],
+    "credentialOrDependencyNamedEntries": [],
+    "portability": "Archive member names and manifest relativePath values are portable. Original absolute root paths are provenance only. The archive is explicitly failed, inactive evidence and omits its external copied dependency graph by design."
+  },
+  "portableTests": {
+    "checkedChangedNewModules": 35,
+    "absoluteTmpOrUsersMentions": [],
+    "provenance": "Absolute /tmp/ and /Users/ fields in JSON receipts identify historical captures; test runtime uses repo-relative gzip fixtures. They are not portable executable reproduction commands."
+  },
+  "full940Overlap": {
+    "all185PathsCapturedBeforeRun": true,
+    "allowlistFrozenHashDrift": [],
+    "fullRun": "Still pending; no terminal acceptance claimed."
+  },
+  "limits": [
+    "Known global friendly-fire helper regression remains unresolved.",
+    "The current full940 gate is still pending.",
+    "Do not force-add or modify evidence during the frozen run; root can add the exact verified27 logs after terminal.",
+    "No additional missing authored source file, unsafe archive entry or unexpected production path found in this allowlist scope."
+  ]
+}

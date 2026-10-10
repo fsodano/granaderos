@@ -1,0 +1,32 @@
+{
+  "appliedAt": "2026-10-10T05:25:02.166685+00:00",
+  "patchSha256": "f121c74eae8d2854e2c672a80fb732a18257fd25be5498f3ad2a2602a224a252",
+  "verifiedCandidateFiles": {
+    "tests/northern-route.mjs": {
+      "bytes": 84792,
+      "sha256": "7c35845c6ef57bd58d4f6586449651dedf3429bd5c8c891b5fddad396d70f1b0"
+    },
+    "tests/northern-field-survivors.mjs": {
+      "bytes": 487,
+      "sha256": "c87ee9076cf5caed353064ef024b453b1728151750dafb76e85c64cedbe04010"
+    },
+    "tests/northern-field-survivors.test.mjs": {
+      "bytes": 2431,
+      "sha256": "958c6abb6585daba9475f481ddcb0ccdf91d04986f1ebf378a9cef45c9b8e4ef"
+    },
+    "tests/fixtures/northern-field-survivors-earned-cordoba-84.json": {
+      "bytes": 4331,
+      "sha256": "01cb7f6ab50df6a04d059ba35170c3908f03628936885af394cfe6e95275b59d"
+    },
+    "tests/fixtures/northern-field-survivors-earned-cordoba-84.provenance.json": {
+      "bytes": 2705,
+      "sha256": "c8c0e6f23e2a8f8796ea8b7b2bc27f4bab8c74246f5b61efd3593d799ada287e"
+    }
+  },
+  "pureControlsExternal": {
+    "pass": 2,
+    "fail": 0,
+    "skip": 0
+  },
+  "nativeReplacementAndBattleUnproved": true
+}

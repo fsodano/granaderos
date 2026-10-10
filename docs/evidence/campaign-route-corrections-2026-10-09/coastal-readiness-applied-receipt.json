@@ -1,0 +1,34 @@
+{
+  "appliedAt": "2026-10-10T05:12:14.841080+00:00",
+  "patchSha256": "c5eb33c8d07bc8b80d901c6da072397ebc56a11b5be5fa71095f34f69cdc5e82",
+  "verifiedCandidateFiles": {
+    "tests/coastal-medical-readiness.mjs": {
+      "sha256": "7e0caaac725fe9bcb395390bc10f06027facaa229f6e7c9b93ce91acd2794a77",
+      "bytes": 5697
+    },
+    "tests/coastal-medical-readiness.test.mjs": {
+      "sha256": "afc7cd47df0cc6680f0320db09fe01c9c26a45ac2fbec908fe480f741df98b12",
+      "bytes": 4132
+    },
+    "tests/fixtures/coastal-earned-ba-stable-005.json.gz": {
+      "sha256": "222e2bce42f4603903e43b9c70d3a6be1e55bebfae914459a85950e19b429816",
+      "bytes": 55984
+    },
+    "tests/fixtures/coastal-earned-san-nicolas-empty-008.json.gz": {
+      "sha256": "11cfc6ebfe3a2096c64a2a90af6ff4691c069966e51a7eaf2a0ef8c2e101ac4d",
+      "bytes": 104621
+    },
+    "tests/fixtures/coastal-medical-readiness.provenance.json": {
+      "sha256": "e99f08dade64f4f4e44f9296d337878e4398f5c195ca0f217ec8668ed6238be8",
+      "bytes": 3067
+    },
+    "tests/fresh-coastal-fixture.mjs": {
+      "sha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6",
+      "bytes": 21239
+    }
+  },
+  "originalRouteTestUnchanged": true,
+  "originalRouteTestSha256": "8d3305f0fea5670bd72a9bdd2741e3d45df7dcab4407231172d8ee9f93558273",
+  "nativeTestsNotYetRun": true,
+  "preflightNote": "An initial root receipt assertion used an incorrect manually transcribed full test hash. No test ran. Exact original full942 snapshot now verifies the unchanged route test."
+}

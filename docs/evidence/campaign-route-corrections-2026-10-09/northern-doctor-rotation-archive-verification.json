@@ -1,0 +1,144 @@
+{
+  "archive": "/tmp/granaderos-northern-doctor-rotation-20261010T044837476078Z-with-provenance-portable.tar.gz",
+  "bytes": 700890,
+  "sha256": "d23fb79e66f116065178a4c7f4878713753ee1a028be051e68650fdad0f7a888",
+  "entries": 27,
+  "allPayloadHashesVerified": true,
+  "payloads": [
+    {
+      "path": "README-with-provenance.md",
+      "bytes": 1662,
+      "sha256": "b7bf6b1b18e649c1ee18269bf5f2ae5362558740369927352a780c1ba1657e40"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1473,
+      "sha256": "1ba967ab490ff5f6514d5f7c2b81e784b83631634cdf534f92bcbd795d51e53b"
+    },
+    {
+      "path": "bounded-native-care-summary.json",
+      "bytes": 3549,
+      "sha256": "f653b6ab7c26be6671e3c55fe7b42a14b1ec2b1d1bc125e47bae3f4bf5f70885"
+    },
+    {
+      "path": "executed-relative-control.test.mjs",
+      "bytes": 10689,
+      "sha256": "e4bb78e21e3d49dbed1d7d988561a03f6b8ebe6bf1f7e0320f410fa5ba8a138e"
+    },
+    {
+      "path": "imported-source-provenance-86707.json",
+      "bytes": 39546,
+      "sha256": "5e5f8f4f9c1769d7923bcaf59f33413b1b7057fd87664a96ebd915c73c972f1c"
+    },
+    {
+      "path": "initial-archive-manifest.json",
+      "bytes": 3577,
+      "sha256": "e1125145ea6eff38505ebcf88a424f53d54a3850a97ddc5f8f5248cbe754ba36"
+    },
+    {
+      "path": "install-review-with-provenance.json",
+      "bytes": 2226,
+      "sha256": "87ffa0579b449eacc10dc6ac01edf01cb20046edf63bb0eb6dddc9b323e6d414"
+    },
+    {
+      "path": "live-native-control.json",
+      "bytes": 530,
+      "sha256": "c3d01ee2e8a01f74d148fbe6541f7cdbf3c07934c33fbaed44f889306024228f"
+    },
+    {
+      "path": "native-control-run.log",
+      "bytes": 919,
+      "sha256": "ce771434e186bee54fd37cc33f8dd08d8e1593845266c5b7fe38431b44973c10"
+    },
+    {
+      "path": "native-control/doctor-recovered.save.json",
+      "bytes": 649191,
+      "sha256": "074afeb1ac1d1027a8e318ce1fd6c8c0d7b728825fb0fd599c642c4a45dd3933"
+    },
+    {
+      "path": "native-control/earned-initial-native.json",
+      "bytes": 1537438,
+      "sha256": "25b018c4d58fbfb405a94974b1549be9a1d1e5aaa09e15dafff2a440b70efb67"
+    },
+    {
+      "path": "native-control/final.save.json",
+      "bytes": 649258,
+      "sha256": "7692bf44b0b1c52f0326aeace88d08269dbb0693b2f5ce2a685737e782180d01"
+    },
+    {
+      "path": "native-control/first-paid-hour.save.json",
+      "bytes": 648411,
+      "sha256": "c03e6a00a1ae14a313c6190ddb6fe85d642e3a156409df254f4f85025ed12454"
+    },
+    {
+      "path": "native-control/initial.save.json",
+      "bytes": 648312,
+      "sha256": "844e3b15bb46d38364b0cfee2482197127bd3b1336acfdf4cbac4f0e8ba9e5f4"
+    },
+    {
+      "path": "native-control/native-care-tape.json",
+      "bytes": 82234,
+      "sha256": "f27bc369ab84374bd8212caaf1643b5796ed5882a69d6d5c263f765208fef3e5"
+    },
+    {
+      "path": "native-control/native-control-receipt.json",
+      "bytes": 9474,
+      "sha256": "ece968ca8617cfd625311c8ad98935c1258ed6ee6969dd6bb00a0fd11ed1e305"
+    },
+    {
+      "path": "northern-doctor-rotation.patch",
+      "bytes": 5795,
+      "sha256": "5333716b919e948bf643bea83b7d55122c7d1c433fbb5c0156d85dd98e58afe2"
+    },
+    {
+      "path": "overlay/tests/fixtures/northern-care-earned-staging.json.gz",
+      "bytes": 121872,
+      "sha256": "d97ca4c8d9b079001da3c6946523f7db7dc7d4e652899686869791c38573eb07"
+    },
+    {
+      "path": "overlay/tests/fixtures/northern-care-earned-staging.provenance.json",
+      "bytes": 2015,
+      "sha256": "ef1608207da6ed7c8d6c32a9b80159a7958709777e084fc8ba9fde1a318e0f4d"
+    },
+    {
+      "path": "overlay/tests/northern-care-roles.mjs",
+      "bytes": 3667,
+      "sha256": "e7d0e82d3e1ea8d9fba787b4d9198bb3a546bdec7e0f232617332839f45b6399"
+    },
+    {
+      "path": "overlay/tests/northern-care-roles.test.mjs",
+      "bytes": 11455,
+      "sha256": "1bd172964deeca62542730c3c4a0fe74f7bb1a3788691fe6d016d8980d5d5ae5"
+    },
+    {
+      "path": "overlay/tests/northern-route.mjs",
+      "bytes": 84808,
+      "sha256": "6ee951a219a3c9379caced2e2831350ac47f2fe3ea37c9100d62c8c44e7ef6f9"
+    },
+    {
+      "path": "patch-review.json",
+      "bytes": 1775,
+      "sha256": "1a01c389cd44438c0a87beb5932ed3a3d0e1fa9b59b89b7d045d16c2e1348bd2"
+    },
+    {
+      "path": "portable-archive-manifest.json",
+      "bytes": 4443,
+      "sha256": "ed16d0f5ddfc176c9c871ff11a42621dd88b2b6f9b6cd58d5d08dd7a79f3dfe0"
+    },
+    {
+      "path": "run-native-control.py",
+      "bytes": 3473,
+      "sha256": "3d4b0943bcf4d4af7c0f8a46a87c1c50e84b9386b1e939f7ce553452f9d47350"
+    },
+    {
+      "path": "source-provenance-loader.mjs",
+      "bytes": 930,
+      "sha256": "2cfa2e66a050fe5727117ac15b7151ed70dde7a5430668a8420c8b7115c48298"
+    },
+    {
+      "path": "terminal-native-control-receipt.json",
+      "bytes": 885239,
+      "sha256": "54e3deba0044df459fb98baa81e3548bed46ab360fab81d8e10ceec10cc1eef1"
+    }
+  ]
+}

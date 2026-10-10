@@ -1,0 +1,87 @@
+✖ a funded campaign prepares Cuyo with real battles, living roles, finite arsenal recovery, funding and physical late recruitment (249173.227625ms)
+✖ a funded Mendoza victory cannot conceal the subsequent death of its required engineer (249245.483417ms)
+✖ a funded Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay (250151.019667ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 250395.000292
+
+✖ failing tests:
+
+test at tests/fresh-cuyo-route.test.mjs:2:1
+✖ a funded campaign prepares Cuyo with real battles, living roles, finite arsenal recovery, funding and physical late recruitment (249173.227625ms)
+  AssertionError [ERR_ASSERTION]: {"sector":"tucuman","preparationSeconds":0,"startSeconds":1330201,"elapsedSeconds":78,"status":"retreat","turns":12,"actions":152,"units":[{"id":"120","side":"player","hp":54,"ammo":11,"loaded":0,"routed":true},{"id":"112","side":"player","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"119","side":"player","hp":20,"ammo":12,"loaded":0,"routed":true},{"id":"104","side":"player","hp":35,"ammo":11,"loaded":0,"routed":true},{"id":"140","side":"player","hp":57,"ammo":12,"loaded":0,"routed":true},{"id":"146","side":"player","hp":11,"ammo":12,"loaded":0,"routed":true},{"id":"123","side":"player","hp":0,"ammo":6,"loaded":0,"routed":true},{"id":"137","side":"player","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"124","side":"player","hp":0,"ammo":10,"loaded":1,"routed":false},{"id":"134","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"125","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"144","side":"player","hp":0,"ammo":11,"loaded":0,"routed":true},{"id":"133","side":"player","hp":0,"ammo":9,"loaded":0,"routed":false},{"id":"enemy-0","side":"enemy","hp":35,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-1","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-2","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-3","side":"enemy","hp":95,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-4","side":"enemy","hp":100,"ammo":8,"loaded":1,"routed":false},{"id":"enemy-5","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-6","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"enemy-7","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-8","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-9","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":false},{"id":"enemy-10","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false}]}
+  + actual - expected
+  
+  + 'retreat'
+  - 'victory'
+  
+      at fightNorthernSector (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs:285:9)
+      at freshCreatedNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:259:16)
+      at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:274:77)
+      at freshCuyoRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-cuyo-fixture.mjs:22:73)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-cuyo-route.test.mjs:3:27)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'retreat',
+    expected: 'victory',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/fresh-historical-loss.test.mjs:6:1
+✖ a funded Mendoza victory cannot conceal the subsequent death of its required engineer (249245.483417ms)
+  AssertionError [ERR_ASSERTION]: {"sector":"tucuman","preparationSeconds":0,"startSeconds":1330201,"elapsedSeconds":78,"status":"retreat","turns":12,"actions":152,"units":[{"id":"120","side":"player","hp":54,"ammo":11,"loaded":0,"routed":true},{"id":"112","side":"player","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"119","side":"player","hp":20,"ammo":12,"loaded":0,"routed":true},{"id":"104","side":"player","hp":35,"ammo":11,"loaded":0,"routed":true},{"id":"140","side":"player","hp":57,"ammo":12,"loaded":0,"routed":true},{"id":"146","side":"player","hp":11,"ammo":12,"loaded":0,"routed":true},{"id":"123","side":"player","hp":0,"ammo":6,"loaded":0,"routed":true},{"id":"137","side":"player","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"124","side":"player","hp":0,"ammo":10,"loaded":1,"routed":false},{"id":"134","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"125","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"144","side":"player","hp":0,"ammo":11,"loaded":0,"routed":true},{"id":"133","side":"player","hp":0,"ammo":9,"loaded":0,"routed":false},{"id":"enemy-0","side":"enemy","hp":35,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-1","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-2","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-3","side":"enemy","hp":95,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-4","side":"enemy","hp":100,"ammo":8,"loaded":1,"routed":false},{"id":"enemy-5","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-6","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"enemy-7","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-8","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-9","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":false},{"id":"enemy-10","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false}]}
+  + actual - expected
+  
+  + 'retreat'
+  - 'victory'
+  
+      at fightNorthernSector (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs:285:9)
+      at freshCreatedNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:259:16)
+      at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:274:77)
+      at freshMendozaLoss (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/historical-loss-fixture.mjs:14:57)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-historical-loss.test.mjs:7:39)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'retreat',
+    expected: 'victory',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/fresh-northern-route.test.mjs:8:1
+✖ a funded Retiro force reaches Yatasto through paid replacements and actual northern victories with saved replay (250151.019667ms)
+  AssertionError [ERR_ASSERTION]: {"sector":"tucuman","preparationSeconds":0,"startSeconds":1330201,"elapsedSeconds":78,"status":"retreat","turns":12,"actions":152,"units":[{"id":"120","side":"player","hp":54,"ammo":11,"loaded":0,"routed":true},{"id":"112","side":"player","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"119","side":"player","hp":20,"ammo":12,"loaded":0,"routed":true},{"id":"104","side":"player","hp":35,"ammo":11,"loaded":0,"routed":true},{"id":"140","side":"player","hp":57,"ammo":12,"loaded":0,"routed":true},{"id":"146","side":"player","hp":11,"ammo":12,"loaded":0,"routed":true},{"id":"123","side":"player","hp":0,"ammo":6,"loaded":0,"routed":true},{"id":"137","side":"player","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"124","side":"player","hp":0,"ammo":10,"loaded":1,"routed":false},{"id":"134","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"125","side":"player","hp":0,"ammo":9,"loaded":0,"routed":true},{"id":"144","side":"player","hp":0,"ammo":11,"loaded":0,"routed":true},{"id":"133","side":"player","hp":0,"ammo":9,"loaded":0,"routed":false},{"id":"enemy-0","side":"enemy","hp":35,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-1","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-2","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-3","side":"enemy","hp":95,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-4","side":"enemy","hp":100,"ammo":8,"loaded":1,"routed":false},{"id":"enemy-5","side":"enemy","hp":0,"ammo":12,"loaded":1,"routed":false},{"id":"enemy-6","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":true},{"id":"enemy-7","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-8","side":"enemy","hp":0,"ammo":11,"loaded":1,"routed":false},{"id":"enemy-9","side":"enemy","hp":0,"ammo":12,"loaded":0,"routed":false},{"id":"enemy-10","side":"enemy","hp":100,"ammo":12,"loaded":1,"routed":false}]}
+  + actual - expected
+  
+  + 'retreat'
+  - 'victory'
+  
+      at fightNorthernSector (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs:285:9)
+      at freshCreatedNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:259:16)
+      at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-fixture.mjs:274:77)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-route.test.mjs:10:25)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'retreat',
+    expected: 'victory',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

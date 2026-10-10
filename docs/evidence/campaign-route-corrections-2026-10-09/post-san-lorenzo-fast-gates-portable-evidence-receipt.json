@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-10T06:30:12.998924+00:00",
+  "archive": "/tmp/granaderos-post-san-lorenzo-fast-gates-portable-evidence-20261010.tar.gz",
+  "archiveBytes": 1403175,
+  "archiveSha256": "0d9f192d60299efcbd86414f89635ef3f437e7749025da30f9e3cac9267c42a9",
+  "relativeRegularMembers": 15,
+  "payloadMembers": 14,
+  "allMemberSizesAndHashesVerified": true,
+  "members": [
+    {
+      "path": "after-source-hashes.json",
+      "bytes": 1933209,
+      "sha256": "c4fa78d85c1541cc1cbe034d92f953ada0003280ec4d414b8986b678315df89e"
+    },
+    {
+      "path": "baseline.json",
+      "bytes": 10528,
+      "sha256": "b41cb1e1726edd84faed057a81c86de35e82773b9842d7c5001cfe97e45e087b"
+    },
+    {
+      "path": "before-receipt.json",
+      "bytes": 535,
+      "sha256": "105c049ea8589f51def8e81f292e85530cd1a333930f25d6c7c714f0e7892fc8"
+    },
+    {
+      "path": "before-source-hashes.json",
+      "bytes": 1933209,
+      "sha256": "c4fa78d85c1541cc1cbe034d92f953ada0003280ec4d414b8986b678315df89e"
+    },
+    {
+      "path": "docs.log",
+      "bytes": 125,
+      "sha256": "9b31186b003b1bb595024b4b119d8e6fbdf3ca63d37118354b58ebdbfbdc3ed0"
+    },
+    {
+      "path": "extended-profile.json",
+      "bytes": 129667,
+      "sha256": "f5ad290f107c71c2163f8b6af8d8df52f303ff6553f39753c53e56e2234a70b3"
+    },
+    {
+      "path": "final-receipt.json",
+      "bytes": 5282,
+      "sha256": "c865bb4161b149c48430f65c6ef99a49be1df67892e2e7dba7a9d1a2468b3601"
+    },
+    {
+      "path": "full-profile.json",
+      "bytes": 41771,
+      "sha256": "1dea0888a40a979d2bf0eedf54e3e95391cfaf72818bbe18e4408410e2c7cbcf"
+    },
+    {
+      "path": "member-manifest.json",
+      "bytes": 2910,
+      "sha256": "f8c3e373c1b2cb9c263732efa2639dc735336a103ccbf71e252ab963b7fbdb58"
+    },
+    {
+      "path": "profile-shard-controls.log",
+      "bytes": 2112,
+      "sha256": "a443b09d42ee170a9f54eec29616b9dfedd3158e391eb9d7c0d085e21c463e27"
+    },
+    {
+      "path": "quick-profile.json",
+      "bytes": 43357,
+      "sha256": "0b1f1e102bc74dad671e1716fac3f3300ec6c80ff4428457bfb0a9c928d6de9a"
+    },
+    {
+      "path": "refreshed-explicit-allowlist359.json",
+      "bytes": 83609,
+      "sha256": "630fe121f98f69365040a3b61fb56938abf8a8bca2fa6635d159a8c29d500d5f"
+    },
+    {
+      "path": "refreshed359-readonly-receipt.json",
+      "bytes": 3350,
+      "sha256": "daf2a52c06c0eb4df6dbf431b77d7489a5efc11f2bbc49c3303642cc81240cb1"
+    },
+    {
+      "path": "shard-coverage.json",
+      "bytes": 45747,
+      "sha256": "5b64277c49ad44273ed3663a1a7343daad6bf17cad571709929c70554258e807"
+    },
+    {
+      "path": "typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "originalInputFilesPreserved": true,
+  "sourceRepositoryOrIndexWrites": false,
+  "gitMutations": 0,
+  "newTestsExecuted": 0,
+  "newGameModuleImports": 0,
+  "newNativeGameplayOrReplayCalls": 0,
+  "historicalWorkingAllowlistOnly": true,
+  "exactStagedByteAuditPending": true,
+  "suggestedJsonFields": {
+    "currentFastGates": {
+      "archive": "post-san-lorenzo-fast-gates-portable-evidence.tar.gz",
+      "receipt": "post-san-lorenzo-fast-gates-portable-evidence-receipt.json",
+      "gateReceiptMember": "final-receipt.json",
+      "completedUtc": "2026-10-10T06:26:27.394931+00:00",
+      "docsPassed": true,
+      "baselinePassed": 38,
+      "typecheckExitCode": 0,
+      "profileShardControlsPassed": 20,
+      "fullDiscovery": 948,
+      "quickDiscovery": 935,
+      "extendedDiscovery": 13,
+      "shardGroupCounts": [
+        237,
+        237,
+        237,
+        237
+      ],
+      "sourceFiles": 14085,
+      "sourceDrift": [],
+      "indexUnchangedDuringFastGates": true,
+      "buildRerun": false,
+      "fullSuiteRun": false,
+      "scope": "Fast gates on recorded source only; historical build reused separately."
+    },
+    "currentIndexAuditPending": {
+      "pending": true,
+      "workingAllowlistMember": "refreshed-explicit-allowlist359.json",
+      "recordedPaths": 359,
+      "recordedWorkingBytes": 51002411,
+      "stagedByteAuditProved": false,
+      "rootMustRefreshAndStageAfterSourceHoldClosure": true
+    }
+  },
+  "limits": [
+    "The refreshed359 allowlist records working bytes at its recorded time. Exact current staged-byte/index audit is pending.",
+    "Existing historical build was reused separately, not rerun by these fast gates.",
+    "Complete current full948 was not executed; historical full947 remains failed evidence before safety/instrumentation.",
+    "Packaging executes no tests, gameplay, replay or Git mutation and does not change any original input."
+  ]
+}

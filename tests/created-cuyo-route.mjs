@@ -1,5 +1,8 @@
+import {encounterDefinitions} from '../game/encounters.js';
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
+import {ownedArtilleryCount} from '../game/campaign-artillery.js';
+import {artilleryTransportPath,artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -12,6 +15,7 @@ import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
 import {addAmmoCounts,unitAmmunitionByType,fieldAmmunitionByType} from '../game/physical-ammunition.js';
 import {weaponSpecification} from '../game/weapon-definition.js';
 import {operativeLocation} from '../game/squads.js';
+import {previewStrategicRoute} from '../game/strategic-route.js';
 import {applyItemQuantity} from '../game/tactical-inventory.js';
 import {firstAidPlan} from '../game/first-aid.js';
 import {careAssignmentReason} from '../game/medical-care.js';
@@ -62,6 +66,30 @@ for(const id of assembled)if(c.operativeState[id].alive)assert.equal(c.operative
 return c;
 }
 
+// Preserve a real rear gun before the provincial force leaves its city.
+// The foundry needs three owned pieces, including exhausted ones; its work
+// does not replace a cannon later left behind in occupied territory.
+function secureCreatedCuyoRearBattery(start,{report=()=>{}}={}){
+ let c=start;
+ if(c.location!=='salta'||c.sectors.salta.owner!=='patriot')return c;
+ const local=(c.sectorStates.salta?.artillery??[]).filter(gun=>gun.side==='player');
+ let secured=ownedArtilleryCount(c)-local.length;
+ for(const gun of local.filter(gun=>gun.type==='bronze4'&&gun.id.startsWith('arsenal:')).sort((a,b)=>a.id.localeCompare(b.id))){
+  if(secured>=3)break;
+  const quote=artilleryTransportQuote(c,'salta',gun.id,'cordoba','carts','field');
+  if(!quote.available){report({event:'cuyoRearGunUnavailable',id:gun.id,reason:quote.reason,hour:c.hour});continue;}
+  const record=storedArtilleryRecord(gun),cash=c.resources.treasury,clock=c.hour*3600+(c.secondOfHour??0);
+  c=dispatchCampaign(c,{type:'transportArtillery',sector:'salta',artilleryId:gun.id,to:'cordoba',mode:'carts',source:'field'});
+  assert.equal(c.lastError,null,c.lastError);assert.equal(c.resources.treasury,cash-quote.cost);
+  assert.equal(c.hour*3600+(c.secondOfHour??0),clock);
+  const transfer=c.artilleryTransfers.find(transfer=>transfer.id===gun.id);
+  assert.deepEqual(transfer.gun,record);assert.deepEqual(transfer.path,quote.path);assert.equal(transfer.dueAt,c.hour+quote.hours);
+  assert.ok(!c.sectorStates.salta.artillery.some(piece=>piece.id===gun.id));secured++;
+  report({event:'cuyoRearGunShipment',id:gun.id,from:'salta',to:'cordoba',crew:quote.crew,cost:quote.cost,dueAt:transfer.dueAt,record:structuredClone(record),transfer:structuredClone(transfer),campaign:structuredClone(c)});
+ }
+ return c;
+}
+
 // Actual transport, finite carried care and defense after fresh Yatasto.
 export function assembleCreatedCuyo(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
@@ -77,7 +105,8 @@ export function assembleCreatedCuyo(start,{report=()=>{}}={}){
   c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
  };
 const pastSurvivors=new Set((c.sectorStates.salta?.units??[]).filter(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure).map(unit=>Number(unit.id)));
-const clock=c.hour*3600+(c.secondOfHour??0),speaker=rosterFor(c).filter(op=>pastSurvivors.has(op.id)&&c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10&&(contractExpiresSeconds(c.contracts[op.id])===null||contractExpiresSeconds(c.contracts[op.id])>clock)).sort((a,b)=>Number(c.operativeState[b.id].location==='salta')-Number(c.operativeState[a.id].location==='salta')||b.leadership-a.leadership||a.id-b.id)[0];
+const requiredLeadership=Math.max(...encounterDefinitions(c).filter(npc=>['guemes','macacha'].includes(npc.id)).map(npc=>npc.requiredLeadership));
+const clock=c.hour*3600+(c.secondOfHour??0),speaker=rosterFor(c).filter(op=>pastSurvivors.has(op.id)&&op.leadership>=requiredLeadership&&c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10&&(contractExpiresSeconds(c.contracts[op.id])===null||contractExpiresSeconds(c.contracts[op.id])>clock)).sort((a,b)=>Number(c.operativeState[b.id].location==='salta')-Number(c.operativeState[a.id].location==='salta')||b.leadership-a.leadership||a.id-b.id)[0];
 assert.ok(speaker,'the provincial meeting needs an actual fit serving survivor of Salta');
 const origin=c.operativeState[speaker.id].location,initialCash=c.resources.treasury,initialSeconds=clock;
 order({type:'createSquad',sector:origin,ids:[speaker.id],name:'Enlace de Salta'});
@@ -93,6 +122,7 @@ if(origin!=='salta'){
 report({event:'actualCuyoSpeakerArrival',id:speaker.id,origin,sector:c.location,hour:c.hour,second:c.secondOfHour,elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-initialSeconds,cashDelta:c.resources.treasury-initialCash,contract:structuredClone(c.contracts[speaker.id]),record:structuredClone(c.operativeState[speaker.id]),campaign:structuredClone(c)});
 c=meetRecruits(c,['guemes','macacha'],speaker.id);
 report({event:'actualCuyoMeetingComplete',speaker:speaker.id,hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury,squad:c.squad,campaign:structuredClone(c)});
+c=secureCreatedCuyoRearBattery(c,{report});
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
 for(let i=0;i<24&&c.squad.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
@@ -114,7 +144,11 @@ for(const sector of new Set(elsewhere.map(id=>c.operativeState[id].location))){
     if(count)order({type:'sectorInventory',sector,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});
    }
   }
-  reinforcementSquads.push(c.activeSquadId);order({type:'travel',sector:'cordoba',queue:true,mode:'posta'});
+  const posta=previewStrategicRoute(c,c.activeSquadId,'cordoba','posta');
+  const route=posta.valid?posta:previewStrategicRoute(c,c.activeSquadId,'cordoba','march');
+  assert.equal(route.valid,true,route.reason);
+  reinforcementSquads.push(c.activeSquadId);order(route.action);
+  report({event:'cuyoReinforcementRoute',origin:sector,members,mode:route.action.mode,path:route.path,hours:route.hours});
  }
 }
 for(let h=0;h<48&&reinforcementSquads.some(id=>c.squads.find(q=>q.id===id)?.journey);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
@@ -274,15 +308,27 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
   emit('leave',{},before);safe();
  };
  const stable=id=>{const r=record(id);return r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10&&!r.unconscious&&!r.routed&&!r.surrendered;};
- const doctors=sector=>rosterFor(c()).filter(op=>serving.includes(op.id)&&operativeLocation(c(),op.id)===sector&&stable(op.id)&&op.medical>0&&(record(op.id).medkits??0)>0)
+ const doctors=(sector,requireDressings=true)=>rosterFor(c()).filter(op=>serving.includes(op.id)&&operativeLocation(c(),op.id)===sector&&stable(op.id)&&op.medical>0&&(!requireDressings||(record(op.id).medkits??0)>0))
   .sort((a,b)=>b.medical-a.medical||(record(b.id).medkits??0)-(record(a.id).medkits??0)||record(b.id).energy-record(a.id).energy||a.id-b.id);
+ const supplyDoctor=(sector,doctor)=>{
+  if(record(doctor.id).medkits>0)return;
+  renew();
+  const model=sectorInventoryModel(c(),sector,rosterFor(c()),doctor.id),row=model.entries.find(entry=>entry.reachable&&JSON.parse(entry.expected).item==='medkits');
+  assert.equal(model.reason,null);assert.ok(row,'a real stable local doctor must recover a known finite dressing before care admission');
+  const before={count:row.count,carried:record(doctor.id).medkits,seconds:clock(c()),cash:c().resources.treasury,pool:model.entries.filter(entry=>JSON.parse(entry.expected).item==='medkits').reduce((sum,entry)=>sum+entry.count,0)};
+  order({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});
+  const after=sectorInventoryModel(c(),sector,rosterFor(c()),doctor.id).entries.filter(entry=>JSON.parse(entry.expected).item==='medkits').reduce((sum,entry)=>sum+entry.count,0);
+  assert.equal(after,before.pool-1);assert.equal(record(doctor.id).medkits,before.carried+1);assert.equal(clock(c()),before.seconds);assert.equal(c().resources.treasury,before.cash);
+  report({event:'stockMendozaCareAdmissionSupply',doctorId:doctor.id,sector,sourceKey:row.key,sourceBefore:before.count,sourceAfter:before.count-1,carriedBefore:before.carried,carriedAfter:record(doctor.id).medkits,poolBefore:before.pool,poolAfter:after});
+ };
  const form=(sector,ids)=>{
   assert.ok(ids.length<=6);order({type:'createSquad',name:'Auxilio de supervivientes',sector,ids,returnToService:true});order({type:'visitSector'});
   assert.equal(pair.battle.mode,'exploration','local survivor care must remain actual peaceful reconnaissance');
  };
  const prepareMedic=(sector,ids)=>{
-  const doctor=doctors(sector).find(op=>!sectorInventoryModel(c(),sector,rosterFor(c()),op.id).reason);
+  const doctor=doctors(sector,false).find(op=>!sectorInventoryModel(c(),sector,rosterFor(c()),op.id).reason);
   assert.ok(doctor,`no actual stable doctor can reach known supplies at ${sector}`);
+  supplyDoctor(sector,doctor);
   // Issue the real actor once so capacity uses the same XP/dexterity/skill as
   // first aid. This admission forecasts work; it gives no treatment or supply.
   form(sector,[doctor.id,...ids.slice(0,5)]);const actual=structuredClone(unit(doctor.id));leaveCare();
@@ -335,7 +381,11 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
  // remote patients must survive that hour's exact admitted wound loss.
  const criticalBleeders=patients('mendoza').filter(id=>record(id).hp<15&&record(id).bleeding>0);
  if(criticalBleeders.length){
-  const selected=doctors('mendoza').filter(op=>!careAssignmentReason(c(),op,'doctor')).slice(0,criticalBleeders.length);
+  const selected=[];
+  for(const op of doctors('mendoza',false)){
+   if(selected.length===criticalBleeders.length)break;
+   supplyDoctor('mendoza',op);if(!careAssignmentReason(c(),op,'doctor'))selected.push(op);
+  }
   assert.equal(selected.length,criticalBleeders.length,'critical local patients require enough actual supplied hourly doctors');
   for(const id of serving.filter(id=>!criticalBleeders.includes(id)&&record(id).bleeding>0))assert.ok(record(id).hp>Math.ceil(record(id).bleeding*strategicBleedingPercent(c())/100),`untreated ${id} cannot safely wait for a care hour`);
   for(const id of serving.filter(id=>operativeLocation(c(),id)==='mendoza'&&['doctor','patient'].includes(record(id).assignment)))order({type:'assignCare',operativeId:id,assignment:'active'});
@@ -518,6 +568,16 @@ export function finishStockMendozaAssault(start,fieldIds,selections,{report=()=>
  report({event:'stockMendozaAssaultPrepared',field,selections,hour:c.hour,secondOfHour:c.secondOfHour??0,treasury:c.resources.treasury,campaign:structuredClone(c)});return c;
 }
 
+// Prefer the two existing reachable guns with the most remaining shots.
+// Extra exhausted rear property must not displace a supplied distant gun.
+function createdMendozaBatteryExclusions(c){
+ const rows=[...Object.entries(c.artilleryDepots??{}).flatMap(([sector,guns])=>guns.map(gun=>({sector,gun}))),...Object.entries(c.sectorStates??{}).flatMap(([sector,scene])=>(scene.artillery??[]).map(gun=>({sector,gun})))];
+ const available=rows.filter(({sector,gun})=>gun.side==='player'&&gun.type==='bronze4'&&c.sectors[sector]?.owner==='patriot'&&(sector==='cordoba'||artilleryTransportPath(c,sector,'cordoba','carts'))).sort((a,b)=>b.gun.ammo+Number(b.gun.loaded)-a.gun.ammo-Number(a.gun.loaded)||Number(b.sector==='cordoba')-Number(a.sector==='cordoba')||a.gun.id.localeCompare(b.gun.id)).slice(0,2);
+ if(available.length<2)return [];
+ const selected=new Set(available.map(row=>row.gun.id));
+ return [...rows.map(row=>row.gun),...(c.artilleryTransfers??[]).map(transfer=>transfer.gun)].filter(gun=>gun.type==='bronze4'&&!selected.has(gun.id)).map(gun=>gun.id);
+}
+
 // Reuse the living hospital survivors and pay available reinforcements. All
 // guns and cartridges come from finite recovered equipment and conquered arsenals.
 export function prepareCreatedMendozaAssault(start,{report=()=>{},routeKind='created'}={}){
@@ -541,7 +601,7 @@ const order=a=>{
 const recruits=rosterFor(c).filter(o=>{const r=c.operativeState[o.id],q=contractQuote(c,o,'day');return o.id>=100&&o.id<1000&&!field.includes(o.id)&&r.alive&&r.hp===r.maxHp&&r.morale>=50&&q.available&&q.price<=routeHiringCeiling(c,30);}).map(o=>o.id);
 for(const id of recruits){order({type:'recruitCivic',id,term:'week',destination:'cordoba'});field.push(id);}
 if(stock){stock.replace(c);stock.renew();c=stock.campaign;}
-const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'cordoba',report,...(stock?{keepServing:living(c)}:{})});c=battery.campaign;
+const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'cordoba',excludeIds:createdMendozaBatteryExclusions(c),report,...(stock?{keepServing:living(c)}:{})});c=battery.campaign;
 // Elite service competes with the finite army budget. Prefer an affordable
 // marksman when available; the existing paid force must otherwise fight with
 // its recovered rifles and the two actual arsenal guns.

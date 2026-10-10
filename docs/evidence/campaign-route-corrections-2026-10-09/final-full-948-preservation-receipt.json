@@ -1,0 +1,92 @@
+{
+  "preservedAt": "2026-10-10T07:13:09.113143+00:00",
+  "archive": "final-full-948-terminal-native-evidence.tar.gz",
+  "bytes": 3724760,
+  "sha256": "10ee64e2d6a6c5a05c16bfaa15c1f0de7dfb34aaff2b25f10454412e8b8c0fcc",
+  "regularRelativeMembers": 30,
+  "payloadMembers": 29,
+  "sourceDirectory": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z",
+  "terminalCounts": {
+    "tests": 7032,
+    "failed": 6,
+    "passed": 7021,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0,
+    "topLevel": 6881,
+    "suites": 0
+  },
+  "completeFiles": 948,
+  "sourceFiles": 14091,
+  "sourceDrift": [],
+  "allMemberBytesAndShaVerified": true,
+  "nativeArtifactReceiptsVerified": 4,
+  "nativeCaptures": [
+    {
+      "directory": "17923-1-los_patos-654-4162937008-OiTd85",
+      "actualOutcome": "retreat",
+      "failureStage": "battle-outcome",
+      "officialTerminalPair": true,
+      "returnedCampaignProvided": false
+    },
+    {
+      "directory": "17926-1-mendoza-514-2591988814-9a6Ddj",
+      "actualOutcome": "victory",
+      "failureStage": "campaign-after-victory",
+      "officialTerminalPair": true,
+      "returnedCampaignProvided": true
+    },
+    {
+      "directory": "17927-1-defense-enemy-group-1-150-SpEhkU",
+      "actualOutcome": "defeat",
+      "failureStage": "battle-outcome",
+      "officialTerminalPair": true,
+      "returnedCampaignProvided": false
+    },
+    {
+      "directory": "30548-1-cordoba-84-18026106-zOQEVl",
+      "actualOutcome": "retreat",
+      "failureStage": "battle-outcome",
+      "officialTerminalPair": true,
+      "returnedCampaignProvided": false
+    }
+  ],
+  "administrativeSupplements": [
+    {
+      "role": "executed-full948-wrapper",
+      "archiveMember": "administrative-evidence/reviewed-full948-wrapper.mjs",
+      "bytes": 4539,
+      "sha256": "0cbb97321eeb798b88bd36bc581da4f3baf9e408131dc95839a54af513942cd4"
+    },
+    {
+      "role": "initial-index-proof",
+      "archiveMember": "administrative-evidence/initial365-independent-index-proof.json",
+      "bytes": 231746,
+      "sha256": "35328769f765a52228655b099dcd40c7f20d7adf6309520df12436f86aac4e1b"
+    },
+    {
+      "role": "index-stat-refresh-exception",
+      "archiveMember": "administrative-evidence/index-stat-refresh-exception.json",
+      "bytes": 3016,
+      "sha256": "67b49128e3549b8133a0f631fef54ea2e0e4d14febc393d8d74edc10cd6f92ee"
+    },
+    {
+      "role": "mendoza-readonly-settlement-review",
+      "archiveMember": "administrative-evidence/mendoza-settlement-readonly.json",
+      "bytes": 10180,
+      "sha256": "be4b91118c746b5bfa70b28fdbd7586458891277dd551c3379233d2b593c58f3"
+    },
+    {
+      "role": "terminal-index-content-closure",
+      "archiveMember": "administrative-evidence/terminal365-semantic-index-working-closure.json",
+      "bytes": 4296,
+      "sha256": "309e01dfe3ca1b69dc1f4991e7c660c76cff45da904a7d9d40e39618ad584004"
+    }
+  ],
+  "indexByteIdentityThroughRunClaimed": false,
+  "existingArtifactRecordsRetained": 257,
+  "existingEvidenceBytesUnchanged": true,
+  "additionalGameCalls": 0,
+  "repositoryWrites": false,
+  "status": "Preserved failed full948 evidence; not a green gate."
+}

@@ -1,0 +1,3734 @@
+{
+  "suite": "extended",
+  "totalFiles": 940,
+  "selectedFiles": [
+    "tests/fresh-campaign-recovery.test.mjs",
+    "tests/fresh-coastal-route.test.mjs",
+    "tests/fresh-cuyo-route.test.mjs",
+    "tests/fresh-ending-route.test.mjs",
+    "tests/fresh-historical-loss.test.mjs",
+    "tests/fresh-northern-recovery-recapture.test.mjs",
+    "tests/fresh-northern-route.test.mjs",
+    "tests/illustrated-sprite-repack.test.mjs",
+    "tests/northern-rear-port-meeting.test.mjs",
+    "tests/opening-patrol-medical-readiness.test.mjs",
+    "tests/opening-playthrough.test.mjs",
+    "tests/rescue-clinic-readiness.test.mjs",
+    "tests/stock-tucuman-readiness.test.mjs"
+  ],
+  "excludedFiles": [
+    {
+      "file": "tests/actor-action-contract.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/actor-animation-clock.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/actor-unit-motion-distance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/adjacent-cartridge-transfer-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/adjacent-cartridge-transfer.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/adjacent-supply-transfer-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/adjacent-supply-transfer.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/adjacent-weapon-transfer-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/adjacent-weapon-transfer.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/aim-cursor-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/aim-cursor.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/alternate-firearm-loads-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/alternate-firearm-loads.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ambient-patrol-recovery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ammunition-families.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ammunition-family-migration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ammunition-market-rules.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ammunition-types.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ammunition-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/architecture-catalog.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/architecture-review-fixtures.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/armory-item-metadata.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/army-funding-route.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-arrival.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-autonomy-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-autonomy.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-battlefield-playback.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-crew-loading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-crew-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-depot-transport-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-depot-transport.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-profiles-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-profiles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-reload-progress.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-reload-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-sale-sources.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-selection-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-selection.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-supply-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-supply.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-trade-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-trade.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-trading-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-trading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-transport-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery-transport.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/artillery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/assault-travel-parity.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/assignment-attention-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/assignment-attention.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/assignment-wait.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/assignments.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/attribute-training-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/attribute-training-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/attribute-training.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/audit-docs.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-ammunition-family.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-artillery-trading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-artillery-transport.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-care-rules.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-cartridge-price.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-cartridge-save.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-firearm-melee.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-militia-patrol.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-militia-progression-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-militia-progression.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-opening-initiative.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-residents.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-weapon-readiness.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/authored-weapon-sale.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/auto-bandage.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/auto-resolve.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/automatic-exploration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/awareness-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battery-deployment-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battle-executor-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battle-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battle-opening.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battle-preview-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battle-report.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battle-worker.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/battlefield-movement-input.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/body-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/body-penetration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/browser-worker-export.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/build-identity.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/building-cache.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/building-materials.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/building-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/building-tower-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/building-types.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/buildings.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-ammunition-admission.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-ammunition-custody.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-ammunition-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-attachment-slots.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-autosave-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-autosave.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-battery-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-building-catalog.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-care.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-carried-equip-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-carried-equip.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-cast-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-cast.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-civilian-first-aid.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-civilian-harm.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-content.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-critical-first-aid.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-cursor-ammunition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-detention.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-equipment-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-escort.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-gift-defense.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-grenade-supply.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-ground-ammunition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-gun-loads.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-headquarters-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-headquarters.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-intro.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-knife-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-main-hand.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-map-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-opposition-progression.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-outfit-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-pockets-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-presence.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-rebuild.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-reload-work.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-resume.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-roles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-roof-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-roof-lighting.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-rules-ui.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-rules.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-selected-gifts.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-story-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-story.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-structure-blast.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-terrace-topology.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-typed-ammunition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/campaign-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/care-composure-context.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/care-composure-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/care-composure.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/care-module-loading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/character-condition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/character-profile.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/character-supplies.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-apparel-surfaces.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-bayonet-native-blend.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-bayonet-native-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-blade-thrust-wrists.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-boot-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-climb-crest-appearance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-climb-crest-continuity.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-climb-phase-continuity.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-climb-roof-fingers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-climbing-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-cloth-depth.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-cloth-material-roles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-coarse-garment-surfaces.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-crouched-guard-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-crouched-sideways-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-equipped-crouched-sideways-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-eye-surfaces.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-family-cloth-depth.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-firearm-fitting.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-firearm-reference.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-generated-skin.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-lance-idle-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-library-job-staging.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-library-pipeline.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-long-garments.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-long-gun-guard-blend.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-long-gun-guard-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-mounting.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-pistol-loading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-prone-arm-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-prone-interaction-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-prone-pistol-forearm-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-prone-rifle-arm-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-prone-rifle-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-prone-work-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-reviewed-faces.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-reviewed-motion.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-riding-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-rifle-loading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-seat-transition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-sideways-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-skin-surfaces.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-standing-free-arm-rest.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-standing-gesture-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-tall-climbing-contact.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/characters-throwing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/cities.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-breath-recovery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-combat.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-first-aid-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-first-aid.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-harm.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-health-initialization.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-interaction.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-loot-picker.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-loss-log.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-service-return.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-sound-timing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-state.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-supplies.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-weapons-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/civilian-weapons.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/climb-crest-contact-plan.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/climb-playback-timing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/cold-steel.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/combat-animation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/command-reserve-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/commerce-closed.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/compact-action-points.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/compact-ap-hit-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/companion-grief-feedback-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/companion-grief-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/companion-grief.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/companion-loss-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/companion-loss.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/competing-deliveries-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/conduct-objections-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/contact-flow.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-abilities.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-blades-ui.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-blades.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-character-ids.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-contract-rules-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-contract-rules.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-dialogue.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-errands-editor.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-errands.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-fixture-cache.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-force-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-quests.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-roster.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-system.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/content-weapons.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/continued-projectiles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/contract-attention-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/contract-attention.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/contract-casualty-presence.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/contract-seconds.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/contracts-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/coordinated-assault-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/coordinated-assault.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/crawl-playback-timing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/created-coastal-opening.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/created-los-patos-deployment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/critical-first-aid.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/critical-military-condition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/crowbar-breaching-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/crowbar-breaching.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/custom-portrait-appearance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/custom-portrait-assets.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/custom-portraits.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/custom-progression.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/custom-traits.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/death-successors.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/default-finite-loot.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/defense-world.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/departed-remains-dimensions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/departed-roof-remains.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/deployment-clock.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/detention-care.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/detention-health.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/detention.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/diagonal-movement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/dialogue-conditions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/dialogue-movements.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/dialogue-payments.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/dialogue-replay.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/directed-projectiles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/drop-held-weapons-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/drop-held-weapons.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/drop-personal-supplies-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/drop-personal-supplies.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/drop-recovered-weapons-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/drop-recovered-weapons.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/dropped-cartridges-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/dropped-cartridges.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/economy-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/editor-main-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-admission.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-automatic-movement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-interactions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-interface.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-known-state.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-movement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-planning.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-projectiles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-scene-disclosure.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-sector-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/elevation-sight-targets.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/empty-gun-reload.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/empty-hand-melee-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/empty-hand-melee.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enclosed-room-fear-acceptance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enclosed-room-fear.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/encounters-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ending-speech.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-groups.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-intelligence.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-motion-gait.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-playback-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-playback-mounted.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-reserves.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-turn-budgets.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/enemy-turn-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/environment-approach-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/environment-approach.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/environment-interactions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/environment-transactions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equip-loot.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-ammunition-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-ammunition-held-supplies.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-ammunition-loading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-attachment-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-attachment-slots.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-click-components.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-cursor-core.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-cursor-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-cursor-tactical.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-imports.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-interaction.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-pointer-events.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-quantity-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-repair-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-repair.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-stack-reading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-unload-control.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-unload.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/equipment-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/exploration-step-time.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/exploration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/far-shot-drop-consumers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/far-shot-drop-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/far-shot-drop.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fatigue-capacity.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fatigue-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/field-dressings-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/field-dressings.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/finite-artillery-arsenals.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/finite-battery-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/finite-care-cache.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/finite-field-maintenance-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/finite-route-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/firearm-bystander-risk.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/firearm-bystander-warning-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/firearm-near-miss-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/firearm-near-miss-practice.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/firearm-penetration-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/firearm-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/firearm-serviceability.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/first-aid-plan.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/first-aid-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fitting-item-metadata.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fitting-save-validation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fitting-transactions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fittings-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/flat-height-sight.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/force-blades.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/foundry-project.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fractional-contract-admission.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fresh-capital-recovery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fresh-cuyo-relief.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fresh-foundry-custody.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fresh-mountain-ammunition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fresh-mountain-first-aid.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/fresh-route-orders.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/garment-care-actions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/garment-care-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/garment-repair-assignment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/garment-wear.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/garrison-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenade-ai.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenade-flight.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenade-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenade-npc-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenade-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenade-public-state.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenade-throw.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/grenades-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/group-movement-step.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/group-movement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/heavy-contact-crew-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/held-firearm-buttstock-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/held-firearm-buttstock.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/held-item-admission.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/held-offhand.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/held-supplies.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/held-weapon-transfer-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/held-weapon-transfer.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/hiring-arrival-seconds.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/hiring-arrivals.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/historical-loss-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/historical-loss.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/horse-natural-rest.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/hostile-entry.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/hotkeys.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ignition-kit-save.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ignition-kit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/illustrated-sprite-assets.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/illustrated-sprite-packing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/illustrated-sprite-runtime.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/implicit-ignition-game.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/import-supply-rules.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-artillery-custody.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-authored-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-building-editor.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-campaign-state.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-care-rules.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-clock-sync.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-clothing-supply.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-equipment-storage.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-map-plans.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-npc-routes.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-props-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-scene-editor.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-strategic-screens.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/integrated-tactical-content.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/interactive-interrupts.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/interrupt-chains.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/invader-arrival.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/invader-search.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-equip-save.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-map-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-map-transactions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-navigation-scope.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-pockets-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-pockets.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-relay.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/inventory-transactions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/item-approach.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/item-flight.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/item-inspection.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ja2-controls-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ja2-gameplay.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/ja2-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/kinetic-projectile-acceptance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/kinetic-projectile-impact.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/knife-flight.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/large-sectors.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/latest-preview.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/lazy-orders-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/lighting.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/loaded-visibility.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/local-contracts.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/local-opening-care-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/local-san-lorenzo.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/logistics-attention-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/logistics-attention.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/logistics-interruptions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/look-readiness.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/loose-blade-condition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/loot-approach-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/loot-approach.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/loot-batch.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/low-morale-renewal.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/main-campaign-enhancements.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/main-hand-objects.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/map-cli.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/map-editor.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/maps-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/march-fatigue.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/material-depth-projectiles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/medical-care-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/medical-care.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/medical-learning.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/meeting-arrivals-ui.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/meeting-arrivals.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/meeting-release-ui.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/meeting-release.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/melee-point.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/melee-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mercenary-portraits.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mercenary-roster.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/merchant-buyback-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/merchant-buyback.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/merchant-exchange-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/merchant-exchange.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/merchant-preferences-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/merchant-preferences.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/merchants.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/military-body-supply-validation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/military-remains.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-autonomy-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-autonomy.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-combat-progression-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-combat-progression.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-controls-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-course-choice.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-distribution-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-distribution.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-experience.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-exploration-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-exploration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-medical-care.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-medical-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-owned-firearm-maintenance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-training-identities-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-training-identities.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/militia-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mission-ally-fitting-ownership.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mission-assault-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mission-assault.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mission-sector-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/missions-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mixed-terrain-codecs.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/morale-renewal-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/morale.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/motion-input.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/motion-render-reuse.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/mount-playback-timing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/movement-controller.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/movement-intent.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/movement-knowledge.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/movement-route-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/movement-step.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/narrative-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/native-action-playback-timing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/native-throw-playback.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/nervous-isolation-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/nervous-isolation-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/nervous-isolation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/new-start-stress.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/night-enforcement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/no-strategic-supply-work.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/northern-clinic-knockdown-recovery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/northern-firearm-safety.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/npc-ai.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/npc-dialogue-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/npc-dialogue.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/npc-escort.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/npc-gift-feedback.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/npc-gifts.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/occupied-ground-collection-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/opening-driver-control.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/opening-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/opening-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/opening-rescue-stabilization.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/operative-abilities.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/operative-profiles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/optional-combat-speech.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/outfit-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/outfit-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/owned-artillery-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-loading-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-pistol-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-pistol-fire.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-pistols-ai.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-pistols-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-pistols-ui.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-reload-ai.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-reload-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-reload-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-reload.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-reprime-ui.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/paired-reprime.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/partial-firearm-reloads.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/partial-ground-supply-pickup-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/partial-ground-supply-pickup.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/partial-reload-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/pellet-flight-consumers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/pellet-flight-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/pellet-flight.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/penetrating-firearm-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/physical-near-miss-feedback.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/physical-near-miss-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/physical-near-miss-mounted.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/physical-repair-kit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/pistol-face-clearance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/player-known-state.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/player-known-structure-damage.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/playtest-scene-readability.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/playtest-strategy.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/playtest-tactical-feedback.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/playtest-travel-validation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/pocket-partitions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/pocket-quantity-transactions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/point-fire.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/politics-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/portrait-catalog.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/post-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/post-victory-mission.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/preferred-companion-morale.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prisoner-actions-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prisoner-custody-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prisoner-custody.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prisoner-release.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prisoner-rescue-route.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/project-conditions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/project-path-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/projectile-cover.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prone-melee-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prone-melee-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/prop-footprints.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/published-ammunition-physical-migration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/quest-beneficiaries.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/quest-deadlines.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/quest-journal.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/quest-survival.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/quests-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/raster-png-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/reaction-audit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/reattack-ammunition-budget.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/recovery-mendoza-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/recovery-mendoza-forward-screen.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/recovery-road-finite-care.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/recruitment-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/regional-terrain-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/regional-terrain.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/regional-weather.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/reload-progress.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/remote-squad-formation-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/remote-squad-formation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-bayonet-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-equipped-crouch-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-furnishings-detail-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-partial-loading.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-prone-work-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-reach-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-sandbox-fixtures.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-terrain-detail-extension.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/renderer-upper-office-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/resident-position-lifecycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/retiro-expansion.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/retiro-resume.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/retiro-start-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/retiro-start.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/returned-service-kit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/roadside-discovery-content.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/roadside-discovery-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/room-dressing-semantics.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/room-visibility-index.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/roster-combat-status.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/roster-hands-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/roster-hands.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-ammunition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-battery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-crossings.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-dressings.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-income-banking.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-owned-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-queue.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-roof-defenders.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-town-income.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/route-visible-medical-remains.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/running-energy.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/save-size.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/save-terrain.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/save-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/scene-terrain.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/secondary-loot-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/secondary-loot.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-deployment-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-deployment-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-deployment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-income-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-income.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-inventory-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-roads.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sector-search-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/selected-npc-gifts.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-equipment-return.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-guarantee-treasury-cap-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-guarantee-treasury-cap.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-guarantees-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-guarantees.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-objections-context.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-objections.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-relationships-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-relationships.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/service-return-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/shared-personal-pockets.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/shared-pockets-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/shot-load-projectiles.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/shot-load-specialty.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/shot-range.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/shot-turning.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/site-path.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/skill-campaign-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/skill-training.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sleep-collapse.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sleep-needs.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sleep-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sleep.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sprite-animation-clock.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sprite-appearances.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sprite-consistency.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sprite-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sprite-skin.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/sprite-states.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/squad-travel-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/squad-travel.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/squads-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/stage-static-deployment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/staged-battery-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/starting-cartridges.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/starting-territory-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/starting-territory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/static-export-path.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/static-scene-content.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/stationed-artillery-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/stationed-artillery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/stock-port-opening.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/stone-ricochet-consumers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/stone-ricochet-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/stone-ricochet.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/story-editor.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/story-health-conditions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/story-supply-conditions.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-controls-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-equipment-controls-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-isolation-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-isolation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-map-presence.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-map.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-military-wounds.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-militia-care-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-militia-care.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-panel-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-personnel-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-rest.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-road-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-route-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-route.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/strategic-victory-clock.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/structure-blast-sandbox.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/structure-blast.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/supply-quest-gifts.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/surface-contact.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/surplus-equipment-route.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-artillery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-care.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-equipment.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-ground-dressing-recovery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-investigation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-other-hand-backup.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-owned-repair-kit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-packed-gun-handover.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-posture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-scavenging.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-serviceable-scavenging.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-serviceable-sharing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-sharing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai-targeting.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ai.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-ammunition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-assets-build.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-awareness.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-camera-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-compact-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-exit-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-exit-orders.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-exits.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-firearm-maintenance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-journal.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-light-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-map-toolbar.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-space-reentry.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-space.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tactical-wheel-pan.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/targeted-combat.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/targeted-fire.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/team-artillery-driver.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/test-runner.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/test-suites.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-actor-occlusion.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-actor-runtime.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-architecture-finish.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-authored-flat-roofs.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-barracks-gate.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-blade-thrust-paid-cycle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-building-details.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-building-door-source-bands.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-building-doors.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-building-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-building-supports.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-building-surfaces.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-building-windows.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-cabildo-source-facade.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-chapel-pier-edges.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-chapel-piers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-chapel-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-church-front-piers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-church-nave-edges.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-church-nave.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-church-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-church-tower-foot.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-civic-cornice.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-civic-storey-bands.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-climb-openings.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-clip-mirroring.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-coarse-long-cloth-boot-clearance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-combat-effects.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-contact-target-model.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-depot-facade.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-depot-source-piers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-dry-weeds.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-effect-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-equipped-crouched-sideways-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-farmhouse-gallery.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-farmhouse-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-gait-transition-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-gesture-blend-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-gesture-planted-contact.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-gesture-step-clock.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-heal-patient-worker-ready.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-healing-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-hearth-cookware.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-hearth-orientation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-house-facade.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-house-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-leaf-sprays.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-long-cloth-boot-clearance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-masonry-uv.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-melee-contact-fit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-melee-facing-contact-fit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-melee-facing-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-melee-sole-cache.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-melee-target.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-palace-facade.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-palace-portico-join.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-palace-portico.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-palace-source-columns.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-parish-window-bars.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-pistol-butt-contact-fit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-porch-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-posta-piers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-posta-source-piers.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-presentation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-projection.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-prone-arm-repeat.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-prone-heal-arm-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-prone-interaction-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-prone-pistol-arm-blend.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-prone-rifle-arm-paid-blend.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-prone-work-support.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-prop-footprints.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-pulperia-sign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-rectangular-window-bars.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-rifle-boot-skinning.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-rifle-butt-contact-fit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-rifle-butt-whole-path.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-rifle-paid-facing-contact-fit.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-rifle-worker-ready.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-rock-forms.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-roof-uv.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-room-floors.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-scene-contact-order.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-sector-world.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-shelf-vessels.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-smithy-source-chimney.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-soft-bedding.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-soil-fragments.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-stable-frame.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-stable-placement.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-stable-ventilation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-storage-cloth.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-structure-damage.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-terrain-boundaries.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-timber-furniture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-townhall-crown.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-townhall-source-columns.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-warehouse-buttresses.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-washstand-details.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-window-sills.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-woman-shawl-hem.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-woman-shawl-palette.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-work-porches.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/three-world-vegetation.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/throwing-knife-hud.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/throwing-knife-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/thrown-knife-integration.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/thrown-knife.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/time-bridge.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/time-fast-sync.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/tiny-firearm-chance-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/torch-motion-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/town-income-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/town-income.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/transient-notice.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/treasury-income-cap.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/treatment-speech.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/two-hands-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/two-hands.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/typed-ammunition-ai.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/typed-ammunition-inventory.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/typed-ammunition-ui.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/typed-ammunition.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/unarmed-combat.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/unit-motion-clock.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/unloaded-civilian-bleeding.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/unloaded-militia-wounds-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/unloaded-militia-wounds.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/unseen-resident-wounds.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/validate-battle.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/varied-roof-climb-fixture.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/visit-report.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/walking-endurance.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/weapon-fittings.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/weapon-mode-input.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/weapon-mode-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/weapon-mode.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/weapon-readiness-controls.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/weapon-readiness.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/weapon-stealing.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/webmcp-campaign.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/workshop-service-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/workshop-service.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/world-cells-render.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/world-cells.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/world-exits.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    },
+    {
+      "file": "tests/world-web.test.mjs",
+      "reason": "Routine regression file included in the quick suite."
+    }
+  ],
+  "partitionCounts": {
+    "full": 940,
+    "quick": 927,
+    "extended": 13
+  }
+}

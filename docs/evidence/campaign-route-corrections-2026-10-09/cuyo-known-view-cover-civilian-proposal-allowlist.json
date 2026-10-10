@@ -1,0 +1,66 @@
+{
+  "scope": "Inactive reviewed mechanical corrections: existing opt-in civilian target gate, native known-occupant path planning and actual tactical-level cover. All score weights/ties/fallback unchanged.265 imports zero drift and zero orders; older C\u00f3rdoba roof/ground witness is not the unretained full940 care input. Root applied the reviewed patch; no native win claim.",
+  "files": [
+    {
+      "path": "cuyo-native-known-view-cover-civilian.patch",
+      "sha256": "cdc059191a56590fb5ae671c05f600c3a73ae988b192b34454c222a9da12c2b2",
+      "bytes": 3593
+    },
+    {
+      "path": "cuyo-route-driver.baseline.mjs",
+      "sha256": "f51b7ce0812f1dddc8dd8aa97fbc57bed1d5e6a00f943d1fa8e2e1e0349023c9",
+      "bytes": 8193
+    },
+    {
+      "path": "cuyo-route-driver.candidate.mjs",
+      "sha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+      "bytes": 8380
+    },
+    {
+      "path": "final-receipt.json",
+      "sha256": "05bf09e8a1f053f59bf0e578e5e1f63c11c436b32fd4e842c786e580c3bb9bdf",
+      "bytes": 7528
+    },
+    {
+      "path": "known-occupancy-reachable.json",
+      "sha256": "103b322340401e10d95579ebe535fd30bd060d3707b2250f47bb9967bc75bc91",
+      "bytes": 61648
+    },
+    {
+      "path": "readonly-controls-receipt.json",
+      "sha256": "de5ae651187559eeab24431ffb9d30817543caccc937271d901e8cde82c4904c",
+      "bytes": 7971
+    },
+    {
+      "path": "readonly-controls.log",
+      "sha256": "f996279985b6cd81e41ca64823cf0e11abb6505337565d031af63ff5e0665020",
+      "bytes": 1155
+    },
+    {
+      "path": "readonly-controls.mjs",
+      "sha256": "90bae813b55e1c90a8cf336f4fb57af1cdbb333554290a3703208da8120000aa",
+      "bytes": 9235
+    },
+    {
+      "path": "runtime-import-closure.json",
+      "sha256": "379ed92a96f9f41c4eb75721444f1fa144f396f41f468f754b8b329a0c9089f9",
+      "bytes": 91953
+    },
+    {
+      "path": "runtime-imports.jsonl",
+      "sha256": "00e5773686e73fc781bfccc2f83551945d9881a4b5dd8368be977f1718aedb02",
+      "bytes": 57092
+    },
+    {
+      "path": "runtime-loader.mjs",
+      "sha256": "7acb7c9eddf19a8a46eeb1ecd085b368380230516e38f86c369e8ac84e6c8c3f",
+      "bytes": 1319
+    },
+    {
+      "path": "source-proof.json",
+      "sha256": "305c8fdb22df1593158805840685c24dbfe17b92e76fb1cb7bb1267145bd1028",
+      "bytes": 2069
+    }
+  ],
+  "count": 12
+}

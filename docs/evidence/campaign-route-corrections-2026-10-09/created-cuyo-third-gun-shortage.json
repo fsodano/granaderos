@@ -1,0 +1,146 @@
+{
+  "path": "/tmp/granaderos-complete-cuyo-funding-care-current.84371.terminal.save.json",
+  "hour": 759,
+  "second": 1903,
+  "location": "mendoza",
+  "ownedCount": 2,
+  "rows": [
+    {
+      "sector": "mendoza",
+      "source": "depot",
+      "owner": "patriot",
+      "id": "arsenal:buenos_aires:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 0,
+      "facing": 1.3258176636680326
+    },
+    {
+      "sector": "mendoza",
+      "source": "depot",
+      "owner": "patriot",
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "facing": -0.9097531579442097
+    },
+    {
+      "sector": "salta",
+      "source": "field",
+      "owner": "royalist",
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "x": 35,
+      "y": 42,
+      "facing": -1.0768549578753155
+    }
+  ],
+  "armory": {},
+  "recoveries": {
+    "buenos_aires": {
+      "battleId": "visit-buenos_aires-23-1027220423",
+      "hour": 23,
+      "second": 622
+    },
+    "cordoba": {
+      "battleId": "visit-cordoba-163-4140339132",
+      "hour": 163,
+      "second": 1590
+    }
+  },
+  "transfers": [],
+  "arsenals": [
+    {
+      "sector": "buenos_aires",
+      "owner": "patriot",
+      "recovered": {
+        "battleId": "visit-buenos_aires-23-1027220423",
+        "hour": 23,
+        "second": 622
+      },
+      "pieces": [
+        {
+          "id": "arsenal:buenos_aires:1",
+          "type": "bronze4",
+          "side": "player",
+          "loaded": true,
+          "ammo": 6
+        }
+      ],
+      "transportPath": [
+        "buenos_aires",
+        "cordoba",
+        "mendoza"
+      ]
+    },
+    {
+      "sector": "cordoba",
+      "owner": "patriot",
+      "recovered": {
+        "battleId": "visit-cordoba-163-4140339132",
+        "hour": 163,
+        "second": 1590
+      },
+      "pieces": [
+        {
+          "id": "arsenal:cordoba:1",
+          "type": "bronze4",
+          "side": "player",
+          "loaded": true,
+          "ammo": 6
+        },
+        {
+          "id": "arsenal:cordoba:2",
+          "type": "bronze4",
+          "side": "player",
+          "loaded": true,
+          "ammo": 6
+        }
+      ],
+      "transportPath": [
+        "cordoba",
+        "mendoza"
+      ]
+    },
+    {
+      "sector": "ensenada",
+      "owner": "royalist",
+      "pieces": [
+        {
+          "id": "arsenal:ensenada:1",
+          "type": "field8",
+          "side": "player",
+          "loaded": true,
+          "ammo": 6
+        },
+        {
+          "id": "arsenal:ensenada:2",
+          "type": "swivel",
+          "side": "player",
+          "loaded": true,
+          "ammo": 6
+        }
+      ],
+      "transportPath": [
+        "ensenada",
+        "buenos_aires",
+        "cordoba",
+        "mendoza"
+      ]
+    }
+  ],
+  "sectorOwners": {
+    "mendoza": "patriot",
+    "cordoba": "patriot",
+    "tucuman": "royalist",
+    "salta": "royalist",
+    "ensenada": "royalist",
+    "buenos_aires": "patriot"
+  }
+}

@@ -1,0 +1,26 @@
+✔ a knocked-down roof clinic guard admits the exact native recovery and pays its full AP cost (19.011667ms)
+ℹ {"case":"paid-roof-knockdown-recovery","scope":"declared initial knockdown/AP arena; validated JSON round-trip only","apBefore":12,"apAfter":0,"paidAP":12,"elapsedBefore":0,"elapsedAfter":6,"cellBefore":{"x":2,"y":2,"tacticalLevel":1},"cellAfter":{"x":2,"y":2,"tacticalLevel":1},"finiteBefore":{"hp":75,"maxHp":100,"bandaged":25,"bleeding":0,"energy":80,"weapon":1800,"loaded":1,"ammo":4,"medkits":0,"condition":100},"finiteAfter":{"hp":75,"maxHp":100,"bandaged":25,"bleeding":0,"energy":80,"weapon":1800,"loaded":1,"ammo":4,"medkits":0,"condition":100},"knockedDownBefore":true,"knockedDownAfter":false,"inputUnchanged":true,"jsonRoundTripExact":true}
+✔ one AP short still refuses recovery and an explicit native order spends nothing (2.449584ms)
+ℹ {"case":"one-AP-short-native-refusal","apBefore":11,"apAfter":11,"requiredAP":12,"elapsedBefore":0,"elapsedAfter":0,"finiteBefore":{"hp":75,"maxHp":100,"bandaged":25,"bleeding":0,"energy":80,"weapon":1800,"loaded":1,"ammo":4,"medkits":0,"condition":100},"finiteAfter":{"hp":75,"maxHp":100,"bandaged":25,"bleeding":0,"energy":80,"weapon":1800,"loaded":1,"ammo":4,"medkits":0,"condition":100},"knockedDownAfter":true,"lastError":"Cambiar de postura requiere 3 PA.","atomicRefusal":true}
+✔ an ordinary prone roof guard still holds through an early quiet turn (2.390375ms)
+ℹ {"case":"ordinary-roof-hold-unchanged","knockedDown":false,"turn":1,"nativeAction":{"type":"stance","unitId":"guard","stance":"standing"},"clinicAction":null,"inputUnchanged":true}
+✔ the genuine retained Mendoza pre-shot state cannot reintroduce its known friendly-ray shot through the normal or low-chance fallback (343.8105ms)
+✔ ranked northern shots select an existing clear-lane alternative instead of the known friendly ray (5.492833ms)
+✔ an unsafe original fire fallback cannot bypass either northern selection or the existing Tucuman fallback (3.891917ms)
+✔ Mendoza retains the original capable commander and helper instead of replacing them with a closer infantryman (17.381583ms)
+✔ a real missing commander role is replaced by living local crew while a declared dead body remains unchanged (6.271917ms)
+✔ Mendoza assignment excludes incapacitated or non-ground crew without changing their bodies (1.087875ms)
+✔ the earned Mendoza preparation with permanent Salta losses selects only its actual living crew (8141.917875ms)
+✔ earned clinic guards use finite guns and matching rounds and reach actual roofs without adding force (5683.994875ms)
+✔ public route preview rejects blocked coast sources and preserves witnessed empty C stock (59.279292ms)
+✔ native rest derives its bound from actual wounds and stops at the same genuine raid without combat (1003.033083ms)
+✔ repository preparation and rest tapes replay every native order with official midpoint saves (9326.580459ms)
+✔ retained native defeat tape settles exact losses and still fails the strict clinic victory requirement (8401.034125ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24961.870834

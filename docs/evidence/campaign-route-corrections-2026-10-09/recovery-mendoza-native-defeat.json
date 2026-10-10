@@ -1,0 +1,151 @@
+{
+  "scope": "One authorized native Mendoza execution from the earned395 input and exact101-order saved replay. Read-only policy inspection followed. No second combat policy execution, source edits, new stocks, seed changes or outcome relabeling.",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "native": {
+    "readyClock": [
+      417,
+      105
+    ],
+    "status": "retreat",
+    "expectedStatus": "victory",
+    "turns": 6,
+    "ordinaryActions": 88,
+    "recordedOrders": 101,
+    "elapsedSeconds": 245,
+    "acceptedSettlementClock": [
+      417,
+      350
+    ],
+    "newActualDeaths": [
+      0,
+      8,
+      100,
+      130,
+      10
+    ],
+    "remainingPlayers": [
+      {
+        "id": 142,
+        "hp": 11,
+        "bleeding": 4,
+        "routed": true
+      },
+      {
+        "id": 11,
+        "hp": 21,
+        "bleeding": 4,
+        "routed": true
+      }
+    ],
+    "initialForce": [
+      0,
+      8,
+      100,
+      142,
+      130,
+      11,
+      10
+    ],
+    "initialHealth": "All seven at their own maximum HP and96 energy; all primary guns loaded1 with11 matching reserve cartridges.",
+    "initialMoraleRisk": {
+      "10": 1,
+      "11": 33
+    },
+    "cannon": {
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "initialLoaded": true,
+      "initialReserve": 1,
+      "finalLoaded": false,
+      "finalReserve": 0
+    },
+    "mendozaOwnerAfterSettlement": "royalist",
+    "campaignDefeated": false
+  },
+  "saveReplay": {
+    "ordinaryClockSynchronizationBeforeMidpoint": true,
+    "midpointOrderIndex": 50,
+    "midpointClock": [
+      417,
+      326
+    ],
+    "exactFullPairedState": true,
+    "exactNativeSettlement": true,
+    "acceptedOfficialFullSave": true,
+    "all37PriorDeathsPreserved": true,
+    "harnessCorrection": "The first wrapper attempted midpoint save before syncing native tactical time. Its rejection remains in run.log. The corrected proof applies only the same101 recorded orders."
+  },
+  "controllerReview": {
+    "recordedCheckpointIndexes": [
+      42,
+      65,
+      71,
+      74,
+      80,
+      84
+    ],
+    "reviewedDriverAndGameSourceMatchesNativeHash": true,
+    "reviewCallsLeaveRecordedStateUnchanged": true,
+    "firstShotCrew": [
+      0,
+      8
+    ],
+    "secondShotCrew": [
+      0,
+      10
+    ],
+    "replacementReason": "Actor8 actually died before turn3; the actual0/10 native ground-crew plan was valid and fired the second shot.",
+    "lastShotOrderIndex": 74,
+    "artilleryOrdersAfterLastShot": 0,
+    "emptyCannonSuppressesOrdinaryInfantry": false,
+    "evidence": "At checkpoints74,80,84 with more than one capable actor, every recoveryMendozaOrder equals tucumanCombatOrder. The recorded tail contains ordinary firearm, movement and stance orders.",
+    "conclusion": "No actionable empty-gun hold or dynamic crew-selection defect was established. This native seven-person/two-shot assault is a genuine strategic defeat. The evidence does not establish absence of all possible gameplay defects."
+  },
+  "focusedControls": {
+    "files": 5,
+    "casesPassed": 26,
+    "casesFailed": 0,
+    "skipped": 0,
+    "durationSeconds": 16.670177708,
+    "scope": "Finite preparation, custody and declared crew controls; no complete recovery-route victory claim."
+  },
+  "nativeImportScan": {
+    "actualImports": 301,
+    "sourceDrift": []
+  },
+  "sharedSourceFreeze": "Released after terminal scan; campaign agent may now fix its independent funding-care block. No further Cuyo source edits from this agent.",
+  "artifacts": {
+    "nativeLog": "/tmp/granaderos-recovery-mendoza-native-audit/run.log",
+    "readyOfficialSave": "/tmp/granaderos-recovery-mendoza-native-audit/native-ready.save.json",
+    "trace": "/tmp/granaderos-recovery-mendoza-native-audit/native-trace.json",
+    "recordedReplayScript": "/tmp/granaderos-recovery-mendoza-native-audit/replay-recorded.mjs",
+    "recordedReplayLog": "/tmp/granaderos-recovery-mendoza-native-audit/recorded-replay.log",
+    "recordedReplayReceipt": "/tmp/granaderos-recovery-mendoza-native-audit/recorded-replay-receipt.json",
+    "acceptedTerminalSave": "/tmp/granaderos-recovery-mendoza-native-audit/native-settled.save.json",
+    "readOnlyPolicyReview": "/tmp/granaderos-recovery-mendoza-native-audit/recorded-policy-review.json",
+    "sourceScan": "/tmp/granaderos-recovery-mendoza-native-audit/final-source-scan.json",
+    "focusedGate": "/tmp/granaderos-recovery-mendoza-prospective-focused.log",
+    "focusedGateReceipt": "/tmp/granaderos-recovery-mendoza-native-audit/focused-controls-receipt.json"
+  },
+  "artifactHashes": {
+    "nativeLog": "173fe4c2ee59d0c1f6f1ae09ac90916961fceb9bd36a977a15d58040c9f1c7a8",
+    "readyOfficialSave": "c4a4e24cbc1574af2193b44f78c7251cf296c6a5b60453605c48716b6bcb67e3",
+    "trace": "054f317a77f3a3d11c152248b565db687a5b5ecc81d5bdc1aa5a6f166682cd03",
+    "recordedReplayScript": "08eec70b41fc943e97869baca291555bbd86b90d5e607b28c8b8263454eff3dd",
+    "recordedReplayLog": "d690e62e76e7bc013838a77dcec4f839dff8965bcfcf736d70a734067d232d65",
+    "recordedReplayReceipt": "d690e62e76e7bc013838a77dcec4f839dff8965bcfcf736d70a734067d232d65",
+    "acceptedTerminalSave": "652350e295a667034a8ca18101e5be2279edcd9e1cdf505ae533f5a1da9a86fc",
+    "readOnlyPolicyReview": "06e864954f5f3d45b5b0ab8fae8fae02b5cc945d0411ecb0522edc3ed421f1fe",
+    "sourceScan": "6977d4129ed57ad1b08ed3e388f999252263d368e0cacaf30a7d61f27d82d8f4",
+    "focusedGate": "1e218f4eb2d9c2266fb5695f2ba02cc3cada7576d38077d9e8d7d5105211aa7e",
+    "focusedGateReceipt": "ab6f8a50e446e1d440119900cff0e51f279b89f215aefd7253af8bdc5c49cf51"
+  },
+  "nativeCandidateFileHashes": {
+    "tests/fresh-cuyo-route.mjs": "2ed9596f30e53f1783671d713e7431449f0796ed84ead6047ca8b67d990d4129",
+    "tests/fresh-cuyo-relief.test.mjs": "1a62770fa696686d7a474730e38dc0ecf923a0eafcd374cf12055877642c4a5e",
+    "tests/recovery-mendoza-driver.mjs": "4b97ea48c699ed87718c644748798e4297b9de3ca72e5fa107917570571428a2",
+    "tests/recovery-mendoza-driver.test.mjs": "397feb3833affcd4d66ad3c0fbd6fea5bef0af10272e3499e3237c9c2e6d1b27",
+    "tests/fixtures/cuyo-northern-real-losses.save.json.gz": "545389294cc086b9d7068c86b105bdbff5f5329d371ebe379acbfbf143910141",
+    "tests/fixtures/cuyo-northern-real-losses.provenance.json": "c98d035761d4ccb8604e83bb180011d00bd11879e6061e0df6ab05cbc8088c9b"
+  }
+}

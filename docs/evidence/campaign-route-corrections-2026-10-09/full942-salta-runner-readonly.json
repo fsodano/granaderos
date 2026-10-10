@@ -1,0 +1,1299 @@
+{
+  "schema": "granaderos-readonly-native-failure-audit-v1",
+  "createdUtc": "2026-10-10T04:18:40.507460+00:00",
+  "runDirectory": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z",
+  "repository": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "scope": {
+    "filesystemReadsOnly": true,
+    "simulationOrdersExecuted": 0,
+    "battleReplaysExecuted": 0,
+    "campaignsExecuted": 0,
+    "testsRun": 0,
+    "controllerSelectorsExecuted": 0,
+    "sourceOrIndexEdits": 0,
+    "onlyWrite": "/tmp/granaderos-full942-salta-runner-readonly-20261010T041840507460Z.json",
+    "nativeRuntimeSourceInspectedSeparately": true
+  },
+  "beforeSourceSnapshot": {
+    "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/before-source-hashes.json",
+    "sha256": "732725d7989c30f04cc44138919406fb5f7b3b58dd2ce76f888dec2869e097b5"
+  },
+  "sourceChecks": [
+    {
+      "path": "tests/fresh-campaign-recovery.test.mjs",
+      "beforeSha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "readSha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "equal": true
+    },
+    {
+      "path": "tests/fresh-campaign-route.mjs",
+      "beforeSha256": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e",
+      "readSha256": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e",
+      "equal": true
+    },
+    {
+      "path": "tests/route-failure-evidence.mjs",
+      "beforeSha256": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f",
+      "readSha256": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f",
+      "equal": true
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "beforeSha256": "ce34ec82c0caf30aa905ef3d06363d6de80f766c773727266c8a91c82eefd3ec",
+      "readSha256": "ce34ec82c0caf30aa905ef3d06363d6de80f766c773727266c8a91c82eefd3ec",
+      "equal": true
+    },
+    {
+      "path": "tests/cuyo-route-driver.mjs",
+      "beforeSha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+      "readSha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+      "equal": true
+    },
+    {
+      "path": "tests/rescue-clinic-readiness.mjs",
+      "beforeSha256": "ff26adebcbb18748ccdea48c6dafdc9a654437aee14e0b9b6fd0b7ef5042e214",
+      "readSha256": "ff26adebcbb18748ccdea48c6dafdc9a654437aee14e0b9b6fd0b7ef5042e214",
+      "equal": true
+    },
+    {
+      "path": "game/world.js",
+      "beforeSha256": "a77579fb707e43ddfd0d773c9c49c7df0fb0c022c0475209ec3b7a9367912ee6",
+      "readSha256": "a77579fb707e43ddfd0d773c9c49c7df0fb0c022c0475209ec3b7a9367912ee6",
+      "equal": true
+    },
+    {
+      "path": "game/maps.js",
+      "beforeSha256": "09d2c3ed7818dbc93782c94d5f93129e299a121aa2223e5f287dd7de54d32e88",
+      "readSha256": "09d2c3ed7818dbc93782c94d5f93129e299a121aa2223e5f287dd7de54d32e88",
+      "equal": true
+    },
+    {
+      "path": "game/time.js",
+      "beforeSha256": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+      "readSha256": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+      "equal": true
+    },
+    {
+      "path": "game/cell-scene-storage.js",
+      "beforeSha256": "2592d032e06064e2df04c5497425371096293353f75310de5cffc95f551e38df",
+      "readSha256": "2592d032e06064e2df04c5497425371096293353f75310de5cffc95f551e38df",
+      "equal": true
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "beforeSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "readSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "equal": true
+    },
+    {
+      "path": "tools/test-runner.mjs",
+      "beforeSha256": "4dd432c6159c20a33f2f2bbcce39fabc4e60595b9aba40ede6b4c3a3c0293aa5",
+      "readSha256": "4dd432c6159c20a33f2f2bbcce39fabc4e60595b9aba40ede6b4c3a3c0293aa5",
+      "equal": true
+    },
+    {
+      "path": "tools/test-runner-lib.mjs",
+      "beforeSha256": "c5b254c2fbb1efb5a6235314591d9bef194ec172613819894e7be61981edf3fd",
+      "readSha256": "c5b254c2fbb1efb5a6235314591d9bef194ec172613819894e7be61981edf3fd",
+      "equal": true
+    },
+    {
+      "path": "tools/test-suites.mjs",
+      "beforeSha256": "965cda1c9e539e63dac281b6101a943d88da0acb57bfbfdcd0ab2ee16f40b262",
+      "readSha256": "965cda1c9e539e63dac281b6101a943d88da0acb57bfbfdcd0ab2ee16f40b262",
+      "equal": true
+    },
+    {
+      "path": "tests/coastal-command-driver.mjs",
+      "beforeSha256": "72b8ffff87f9b4072f2988f737c53d0157436cfec4f9bdc75d4389ca11c3ed74",
+      "readSha256": "72b8ffff87f9b4072f2988f737c53d0157436cfec4f9bdc75d4389ca11c3ed74",
+      "equal": true
+    },
+    {
+      "path": "tests/fresh-northern-recovery.mjs",
+      "beforeSha256": "d29b72ff330801d7fee9bf92b6b58cc04785c500975c1a9356baa07f613d647b",
+      "readSha256": "d29b72ff330801d7fee9bf92b6b58cc04785c500975c1a9356baa07f613d647b",
+      "equal": true
+    },
+    {
+      "path": "tests/stable-crew-driver.mjs",
+      "beforeSha256": "376ffab8056599f0c87ff75347e09d68620d18f463bf7239d191b2aec27b8bb9",
+      "readSha256": "376ffab8056599f0c87ff75347e09d68620d18f463bf7239d191b2aec27b8bb9",
+      "equal": true
+    },
+    {
+      "path": "tests/mountain-battery-driver.mjs",
+      "beforeSha256": "ca3b9cf70cc7df4b43aadfaabb08867ceb3faf950581dec5204bc86a40c2bb4c",
+      "readSha256": "ca3b9cf70cc7df4b43aadfaabb08867ceb3faf950581dec5204bc86a40c2bb4c",
+      "equal": true
+    }
+  ],
+  "sourceDrift": [],
+  "captures": [
+    {
+      "capturePath": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67154-1-salta-423-3074369515-h2HnIc",
+      "receiptPath": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67154-1-salta-423-3074369515-h2HnIc/receipt.json",
+      "receiptSha256": "3fd8d9768ebadd851f2fc1974981e100ae71bb694b4a0a6246de14a141362a51",
+      "receipt": {
+        "testFile": "fresh-cuyo-route.test.mjs",
+        "pid": 67154,
+        "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "nodeVersion": "v25.9.0",
+        "sourceSnapshot": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/before-source-hashes.json",
+        "battleId": "salta-423-3074369515",
+        "sector": "salta",
+        "expectedOutcome": "victory",
+        "actualOutcome": "retreat",
+        "inputCapturePhase": "retained arguments after execution and reporting",
+        "preExecutionInputIndependentlyCaptured": false,
+        "previousExists": false,
+        "ordersAvailable": true,
+        "orders": 447,
+        "controller": "controller",
+        "deploy": null,
+        "executeBattle": "fight",
+        "trueInitialBattleCaptured": false,
+        "officialTerminalPair": true,
+        "additionalOrders": 0,
+        "settlementExecuted": false,
+        "artifacts": [
+          {
+            "path": "native-input.json",
+            "bytes": 5831176,
+            "sha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c"
+          },
+          {
+            "path": "native-result.json",
+            "bytes": 876105,
+            "sha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33"
+          },
+          {
+            "path": "terminal.save.json",
+            "bytes": 1354369,
+            "sha256": "f112753496969cf5e090bc2d9d0c4c8c1ca0295920e437554d3adcc374a6802c"
+          }
+        ]
+      },
+      "artifactVerification": [
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67154-1-salta-423-3074369515-h2HnIc/native-input.json",
+          "declaredBytes": 5831176,
+          "actualBytes": 5831176,
+          "declaredSha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c",
+          "actualSha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c",
+          "sizeMatches": true,
+          "hashMatches": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67154-1-salta-423-3074369515-h2HnIc/native-result.json",
+          "declaredBytes": 876105,
+          "actualBytes": 876105,
+          "declaredSha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33",
+          "actualSha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33",
+          "sizeMatches": true,
+          "hashMatches": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67154-1-salta-423-3074369515-h2HnIc/terminal.save.json",
+          "declaredBytes": 1354369,
+          "actualBytes": 1354369,
+          "declaredSha256": "f112753496969cf5e090bc2d9d0c4c8c1ca0295920e437554d3adcc374a6802c",
+          "actualSha256": "f112753496969cf5e090bc2d9d0c4c8c1ca0295920e437554d3adcc374a6802c",
+          "sizeMatches": true,
+          "hashMatches": true
+        }
+      ]
+    },
+    {
+      "capturePath": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67155-1-salta-423-3074369515-TAvzpM",
+      "receiptPath": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67155-1-salta-423-3074369515-TAvzpM/receipt.json",
+      "receiptSha256": "26a52f70e043e7617deca32089131e7fe25f78da5ea16d1745a6969849d10cce",
+      "receipt": {
+        "testFile": "fresh-historical-loss.test.mjs",
+        "pid": 67155,
+        "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "nodeVersion": "v25.9.0",
+        "sourceSnapshot": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/before-source-hashes.json",
+        "battleId": "salta-423-3074369515",
+        "sector": "salta",
+        "expectedOutcome": "victory",
+        "actualOutcome": "retreat",
+        "inputCapturePhase": "retained arguments after execution and reporting",
+        "preExecutionInputIndependentlyCaptured": false,
+        "previousExists": false,
+        "ordersAvailable": true,
+        "orders": 447,
+        "controller": "controller",
+        "deploy": null,
+        "executeBattle": "fight",
+        "trueInitialBattleCaptured": false,
+        "officialTerminalPair": true,
+        "additionalOrders": 0,
+        "settlementExecuted": false,
+        "artifacts": [
+          {
+            "path": "native-input.json",
+            "bytes": 5831176,
+            "sha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c"
+          },
+          {
+            "path": "native-result.json",
+            "bytes": 876105,
+            "sha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33"
+          },
+          {
+            "path": "terminal.save.json",
+            "bytes": 1354369,
+            "sha256": "5fea07fccc73c2dab13218e875ef60ce0143d4b6dfa8611da2126b6c90a054ec"
+          }
+        ]
+      },
+      "artifactVerification": [
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67155-1-salta-423-3074369515-TAvzpM/native-input.json",
+          "declaredBytes": 5831176,
+          "actualBytes": 5831176,
+          "declaredSha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c",
+          "actualSha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c",
+          "sizeMatches": true,
+          "hashMatches": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67155-1-salta-423-3074369515-TAvzpM/native-result.json",
+          "declaredBytes": 876105,
+          "actualBytes": 876105,
+          "declaredSha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33",
+          "actualSha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33",
+          "sizeMatches": true,
+          "hashMatches": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67155-1-salta-423-3074369515-TAvzpM/terminal.save.json",
+          "declaredBytes": 1354369,
+          "actualBytes": 1354369,
+          "declaredSha256": "5fea07fccc73c2dab13218e875ef60ce0143d4b6dfa8611da2126b6c90a054ec",
+          "actualSha256": "5fea07fccc73c2dab13218e875ef60ce0143d4b6dfa8611da2126b6c90a054ec",
+          "sizeMatches": true,
+          "hashMatches": true
+        }
+      ]
+    },
+    {
+      "capturePath": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67156-1-salta-423-3074369515-gVWN8S",
+      "receiptPath": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67156-1-salta-423-3074369515-gVWN8S/receipt.json",
+      "receiptSha256": "154dfa3bbd5b5b95b923a1196f5e1f6bd17a82d6366632614e603ce0594e0aac",
+      "receipt": {
+        "testFile": "fresh-northern-route.test.mjs",
+        "pid": 67156,
+        "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "nodeVersion": "v25.9.0",
+        "sourceSnapshot": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/before-source-hashes.json",
+        "battleId": "salta-423-3074369515",
+        "sector": "salta",
+        "expectedOutcome": "victory",
+        "actualOutcome": "retreat",
+        "inputCapturePhase": "retained arguments after execution and reporting",
+        "preExecutionInputIndependentlyCaptured": false,
+        "previousExists": false,
+        "ordersAvailable": true,
+        "orders": 447,
+        "controller": "controller",
+        "deploy": null,
+        "executeBattle": "fight",
+        "trueInitialBattleCaptured": false,
+        "officialTerminalPair": true,
+        "additionalOrders": 0,
+        "settlementExecuted": false,
+        "artifacts": [
+          {
+            "path": "native-input.json",
+            "bytes": 5831176,
+            "sha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c"
+          },
+          {
+            "path": "native-result.json",
+            "bytes": 876105,
+            "sha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33"
+          },
+          {
+            "path": "terminal.save.json",
+            "bytes": 1354369,
+            "sha256": "5b856da50d5b446420c5960eebdaefde7ab7a88eb8950206d38199c9b6819121"
+          }
+        ]
+      },
+      "artifactVerification": [
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67156-1-salta-423-3074369515-gVWN8S/native-input.json",
+          "declaredBytes": 5831176,
+          "actualBytes": 5831176,
+          "declaredSha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c",
+          "actualSha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c",
+          "sizeMatches": true,
+          "hashMatches": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67156-1-salta-423-3074369515-gVWN8S/native-result.json",
+          "declaredBytes": 876105,
+          "actualBytes": 876105,
+          "declaredSha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33",
+          "actualSha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33",
+          "sizeMatches": true,
+          "hashMatches": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/67156-1-salta-423-3074369515-gVWN8S/terminal.save.json",
+          "declaredBytes": 1354369,
+          "actualBytes": 1354369,
+          "declaredSha256": "5b856da50d5b446420c5960eebdaefde7ab7a88eb8950206d38199c9b6819121",
+          "actualSha256": "5b856da50d5b446420c5960eebdaefde7ab7a88eb8950206d38199c9b6819121",
+          "sizeMatches": true,
+          "hashMatches": true
+        }
+      ]
+    }
+  ],
+  "captureIdentity": {
+    "allThreeRawInputsExactlyEqual": true,
+    "allThreeRawResultsExactlyEqual": true,
+    "terminalSaveBytesDiffer": true,
+    "note": "Raw input and result bytes match across the three witnesses. Terminal save hash differences do not establish gameplay differences; this audit does not decode or replay those saves."
+  },
+  "genuineNativeInput": {
+    "capturePhase": "retained arguments after execution and reporting",
+    "preExecutionInputIndependentlyCaptured": false,
+    "trueInitialBattleCaptured": false,
+    "previousSectorStateCaptured": false,
+    "campaign": {
+      "hour": 423,
+      "secondOfHour": 2753,
+      "location": "salta",
+      "activeSquadId": "squad-18",
+      "squad": [
+        117,
+        101
+      ],
+      "resources": {
+        "treasury": 85726
+      },
+      "pendingEncounter": null,
+      "defeated": false,
+      "completed": false
+    },
+    "request": {
+      "id": "salta-423-3074369515",
+      "sector": "salta",
+      "hour": 423,
+      "secondOfHour": 2753,
+      "seed": 2591988814,
+      "difficulty": 3,
+      "garrison": [],
+      "artillery": [
+        {
+          "id": "arsenal:cordoba:2",
+          "type": "bronze4",
+          "side": "player",
+          "loaded": true,
+          "ammo": 6
+        }
+      ]
+    },
+    "admittedSquad": [
+      {
+        "id": 9,
+        "name": "Facundo Quiroga",
+        "hp": 92,
+        "maxHp": 92,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 9,
+        "condition": 99,
+        "energy": 96,
+        "medkits": 0,
+        "medical": 25,
+        "marksmanship": 55,
+        "activeSlot": "primary",
+        "morale": 81
+      },
+      {
+        "id": 11,
+        "name": "José María Paz",
+        "hp": 78,
+        "maxHp": 78,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1802,
+        "loaded": 1,
+        "ammo": 9,
+        "condition": 100,
+        "energy": 96,
+        "medkits": 2,
+        "medical": 30,
+        "marksmanship": 91,
+        "activeSlot": "primary",
+        "morale": 81
+      },
+      {
+        "id": 1,
+        "name": "Juana Azurduy",
+        "hp": 88,
+        "maxHp": 88,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 9,
+        "condition": 97,
+        "energy": 96,
+        "medkits": 2,
+        "medical": 52,
+        "marksmanship": 77,
+        "activeSlot": "primary",
+        "morale": 80
+      },
+      {
+        "id": 146,
+        "name": "Auguste Bellanger",
+        "hp": 72,
+        "maxHp": 72,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 11,
+        "condition": 98,
+        "energy": 96,
+        "medkits": 2,
+        "medical": 91,
+        "marksmanship": 41,
+        "activeSlot": "medical",
+        "morale": 41
+      },
+      {
+        "id": 139,
+        "name": "Bridget O’Connell",
+        "hp": 73,
+        "maxHp": 73,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1801,
+        "loaded": 1,
+        "ammo": 9,
+        "condition": 100,
+        "energy": 96,
+        "medkits": 0,
+        "medical": 89,
+        "marksmanship": 44,
+        "activeSlot": "primary",
+        "morale": 81
+      },
+      {
+        "id": 126,
+        "name": "Teresa Godoy",
+        "hp": 63,
+        "maxHp": 63,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1801,
+        "loaded": 1,
+        "ammo": 9,
+        "condition": 100,
+        "energy": 96,
+        "medkits": 2,
+        "medical": 32,
+        "marksmanship": 49,
+        "activeSlot": "primary",
+        "morale": 80
+      },
+      {
+        "id": 117,
+        "name": "Jacinto Ojeda",
+        "hp": 88,
+        "maxHp": 88,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 9,
+        "condition": 100,
+        "energy": 96,
+        "medkits": 2,
+        "medical": 20,
+        "marksmanship": 48,
+        "activeSlot": "primary",
+        "morale": 80
+      },
+      {
+        "id": 101,
+        "name": "Tomasa Ríos",
+        "hp": 70,
+        "maxHp": 70,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 9,
+        "condition": 99,
+        "energy": 96,
+        "medkits": 2,
+        "medical": 20,
+        "marksmanship": 48,
+        "activeSlot": "primary",
+        "morale": 80
+      }
+    ],
+    "note": "The native request contains eight admitted actors. campaign.squad [117,101] is the selected strategic squad and must not be used as the complete tactical admission roster. No deployed initial positions are claimed."
+  },
+  "nativeTerminal": {
+    "battle": {
+      "battleId": "salta-423-3074369515",
+      "sectorId": "salta",
+      "status": "retreat",
+      "turn": 17,
+      "phase": "player",
+      "startSeconds": 1525553,
+      "elapsedSeconds": 189,
+      "seed": 2621124925,
+      "lastError": null,
+      "mode": "combat",
+      "artillery": [
+        {
+          "id": "arsenal:cordoba:2",
+          "type": "bronze4",
+          "side": "player",
+          "loaded": false,
+          "ammo": 0,
+          "x": 38,
+          "y": 36,
+          "facing": -1.1071487177940904
+        }
+      ]
+    },
+    "playerActors": [
+      {
+        "id": "9",
+        "name": "Facundo Quiroga",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 92,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "condition": 94,
+        "energy": 59,
+        "medkits": 0,
+        "medical": 25,
+        "marksmanship": 55,
+        "activeSlot": "blade",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 43,
+        "y": 32,
+        "ap": 0,
+        "morale": 11.25
+      },
+      {
+        "id": "11",
+        "name": "José María Paz",
+        "side": "player",
+        "hp": 25,
+        "maxHp": 78,
+        "bleeding": 4,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": true,
+        "fled": true,
+        "departure": {
+          "exitId": "salta:cell-12-8",
+          "edge": "S",
+          "destination": "cell-12-8",
+          "x": 42,
+          "y": 47,
+          "elapsedSeconds": 189,
+          "mountId": null
+        },
+        "weapon": 1802,
+        "loaded": 0,
+        "ammo": 6,
+        "condition": 97,
+        "energy": 83,
+        "medkits": 2,
+        "medical": 30,
+        "marksmanship": 91,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 42,
+        "y": 47,
+        "ap": 9,
+        "morale": 4.949999999999999
+      },
+      {
+        "id": "1",
+        "name": "Juana Azurduy",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 88,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": false,
+        "weapon": 1800,
+        "loaded": 0,
+        "ammo": 6,
+        "condition": 93,
+        "energy": 49,
+        "medkits": 2,
+        "medical": 52,
+        "marksmanship": 77,
+        "activeSlot": "primary",
+        "stance": "crouched",
+        "tacticalLevel": 0,
+        "x": 45,
+        "y": 33,
+        "ap": 0,
+        "morale": 0
+      },
+      {
+        "id": "146",
+        "name": "Auguste Bellanger",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 72,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": true,
+        "fled": false,
+        "weapon": 1800,
+        "loaded": 0,
+        "ammo": 9,
+        "condition": 96,
+        "energy": 96,
+        "medkits": 2,
+        "medical": 91,
+        "marksmanship": 41,
+        "activeSlot": "blade",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 42,
+        "y": 37,
+        "ap": 0,
+        "morale": 0
+      },
+      {
+        "id": "139",
+        "name": "Bridget O’Connell",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 73,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": false,
+        "weapon": 1801,
+        "loaded": 0,
+        "ammo": 6,
+        "condition": 97,
+        "energy": 72,
+        "medkits": 0,
+        "medical": 89,
+        "marksmanship": 44,
+        "activeSlot": "primary",
+        "stance": "prone",
+        "tacticalLevel": 0,
+        "x": 43,
+        "y": 31,
+        "ap": 0,
+        "morale": 27.50000000000001
+      },
+      {
+        "id": "126",
+        "name": "Teresa Godoy",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 63,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": false,
+        "weapon": 1804,
+        "loaded": 0,
+        "ammo": 6,
+        "condition": 96,
+        "energy": 57,
+        "medkits": 0,
+        "medical": 32,
+        "marksmanship": 49,
+        "activeSlot": "primary",
+        "stance": "prone",
+        "tacticalLevel": 0,
+        "x": 43,
+        "y": 27,
+        "ap": 0,
+        "morale": 35.45000000000001
+      },
+      {
+        "id": "117",
+        "name": "Jacinto Ojeda",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 88,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 8,
+        "condition": 99,
+        "energy": 68,
+        "medkits": 1,
+        "medical": 20,
+        "marksmanship": 48,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 40,
+        "y": 35,
+        "ap": 0,
+        "morale": 35.95
+      },
+      {
+        "id": "101",
+        "name": "Tomasa Ríos",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 70,
+        "bleeding": 0,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": false,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 2,
+        "condition": 92,
+        "energy": 96,
+        "medkits": 0,
+        "medical": 20,
+        "marksmanship": 48,
+        "activeSlot": "primary",
+        "stance": "prone",
+        "tacticalLevel": 0,
+        "x": 42,
+        "y": 31,
+        "ap": 0,
+        "morale": 16.55
+      }
+    ],
+    "playerHpZeroIds": [
+      "9",
+      "1",
+      "146",
+      "139",
+      "126",
+      "117",
+      "101"
+    ],
+    "playerLivingActors": [
+      {
+        "id": "11",
+        "name": "José María Paz",
+        "side": "player",
+        "hp": 25,
+        "maxHp": 78,
+        "bleeding": 4,
+        "alive": true,
+        "captured": false,
+        "unconscious": false,
+        "routed": true,
+        "fled": true,
+        "departure": {
+          "exitId": "salta:cell-12-8",
+          "edge": "S",
+          "destination": "cell-12-8",
+          "x": 42,
+          "y": 47,
+          "elapsedSeconds": 189,
+          "mountId": null
+        },
+        "weapon": 1802,
+        "loaded": 0,
+        "ammo": 6,
+        "condition": 97,
+        "energy": 83,
+        "medkits": 2,
+        "medical": 30,
+        "marksmanship": 91,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 42,
+        "y": 47,
+        "ap": 9,
+        "morale": 4.949999999999999
+      }
+    ],
+    "enemyCount": 13,
+    "enemyHpZeroCount": 12,
+    "enemyLivingActors": [
+      {
+        "id": "enemy-2",
+        "name": "Fusilero de Pezuela 1",
+        "side": "enemy",
+        "hp": 100,
+        "maxHp": 100,
+        "bleeding": 0,
+        "unconscious": false,
+        "routed": false,
+        "weapon": 1800,
+        "loaded": 0,
+        "ammo": 9,
+        "condition": 96,
+        "energy": 100,
+        "medkits": 2,
+        "medical": 30,
+        "marksmanship": 68,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 44,
+        "y": 34,
+        "ap": 3,
+        "morale": 0
+      }
+    ],
+    "expectedOutcome": "victory",
+    "campaignSettlementExecuted": false,
+    "additionalOrdersExecutedByRecorder": 0,
+    "lossInterpretation": "Seven native tactical actors have HP0. Paz has HP25, bleeding4, routed/fled with a native departure to cell-12-8. This terminal witness is unsettled: tactical alive:true values inherited from admission are not evidence of survival or revival, and the pre-settlement campaign operative records are not the accepted final casualty ledger. No losses were altered."
+  },
+  "finiteResources": {
+    "initialGun": [
+      {
+        "id": "arsenal:cordoba:2",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": true,
+        "ammo": 6
+      }
+    ],
+    "initialGunTotalCharges": 7,
+    "terminalGuns": [
+      {
+        "id": "arsenal:cordoba:2",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "x": 38,
+        "y": 36,
+        "facing": -1.1071487177940904
+      }
+    ],
+    "recordedArtilleryFireOrders": 7,
+    "recordedArtilleryReloadOrders": 9,
+    "note": "One loaded plus six reserve gun charges were admitted. Seven artillery fire orders are retained; terminal gun is unloaded with zero reserves. Reload order count includes native paid reload steps and is not a charge count. Infantry reserve ammunition remains in several terminal records; this was not a total infantry ammunition exhaustion."
+  },
+  "exactOrderTape": {
+    "orders": 447,
+    "acceptedPlayerActions": 402,
+    "endTurnOrders": 45,
+    "countsByType": {
+      "stance": 149,
+      "move": 106,
+      "weapon": 18,
+      "artilleryMove": 16,
+      "fire": 38,
+      "reload": 27,
+      "endTurn": 45,
+      "artillery": 7,
+      "artilleryReload": 9,
+      "look": 14,
+      "reprime": 5,
+      "useItem": 5,
+      "transfer": 1,
+      "equipLoot": 1,
+      "melee": 6
+    },
+    "stanceOrders": 149,
+    "last25Orders": [
+      {
+        "type": "endTurn"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "standing"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "crouched"
+      },
+      {
+        "type": "endTurn"
+      },
+      {
+        "type": "fire",
+        "unitId": "11",
+        "targetId": "enemy-2",
+        "aim": 4,
+        "hitLocation": "torso"
+      },
+      {
+        "type": "reprime",
+        "unitId": "11"
+      },
+      {
+        "type": "stance",
+        "unitId": "11",
+        "stance": "prone"
+      },
+      {
+        "type": "fire",
+        "unitId": "11",
+        "targetId": "enemy-2",
+        "aim": 2,
+        "hitLocation": "torso"
+      },
+      {
+        "type": "endTurn"
+      },
+      {
+        "type": "endTurn"
+      },
+      {
+        "type": "endTurn"
+      }
+    ],
+    "standingCrouchedAlternationSegments": [
+      {
+        "firstOrderOneBased": 325,
+        "lastOrderOneBased": 331,
+        "length": 7,
+        "unitId": "11",
+        "stances": [
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched"
+        ]
+      },
+      {
+        "firstOrderOneBased": 334,
+        "lastOrderOneBased": 349,
+        "length": 16,
+        "unitId": "11",
+        "stances": [
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched"
+        ]
+      },
+      {
+        "firstOrderOneBased": 391,
+        "lastOrderOneBased": 392,
+        "length": 2,
+        "unitId": "9",
+        "stances": [
+          "standing",
+          "crouched"
+        ]
+      },
+      {
+        "firstOrderOneBased": 394,
+        "lastOrderOneBased": 395,
+        "length": 2,
+        "unitId": "9",
+        "stances": [
+          "standing",
+          "crouched"
+        ]
+      },
+      {
+        "firstOrderOneBased": 397,
+        "lastOrderOneBased": 398,
+        "length": 2,
+        "unitId": "9",
+        "stances": [
+          "standing",
+          "crouched"
+        ]
+      },
+      {
+        "firstOrderOneBased": 400,
+        "lastOrderOneBased": 401,
+        "length": 2,
+        "unitId": "9",
+        "stances": [
+          "standing",
+          "crouched"
+        ]
+      },
+      {
+        "firstOrderOneBased": 424,
+        "lastOrderOneBased": 439,
+        "length": 16,
+        "unitId": "11",
+        "stances": [
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched",
+          "standing",
+          "crouched"
+        ]
+      }
+    ],
+    "finalPazAlternation": {
+      "firstOrderOneBased": 424,
+      "lastOrderOneBased": 439,
+      "length": 16,
+      "unitId": "11",
+      "stances": [
+        "standing",
+        "crouched",
+        "standing",
+        "crouched",
+        "standing",
+        "crouched",
+        "standing",
+        "crouched",
+        "standing",
+        "crouched",
+        "standing",
+        "crouched",
+        "standing",
+        "crouched",
+        "standing",
+        "crouched"
+      ]
+    },
+    "last20BattleLogMessages": [
+      "Turno 16: ¡órdenes, comandante!",
+      "José María Paz: fallo de chispa. La carga se conserva; cebar cuesta 3,75 PA.",
+      "José María Paz vuelve a cebar la cazoleta.",
+      "José María Paz se tiende cuerpo a tierra.",
+      "José María Paz: fallo de chispa. La carga se conserva; cebar cuesta 3,75 PA.",
+      "Fusilero de Pezuela 1 recarga (11,25 PA).",
+      "¡Interrupción! José María Paz pueden actuar con sus PA restantes.",
+      "Fusilero de Pezuela 1 avanza.",
+      "Continúa el turno enemigo.",
+      "Fusilero de Pezuela 1 avanza.",
+      "Fusilero de Pezuela 1 hiere a José María Paz: 49 de daño.",
+      "José María Paz pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.",
+      "Turno 16: actúan los civiles.",
+      "José María Paz pierde 4 de salud por hemorragia.",
+      "Tomasa Ríos pierde 1 de salud por hemorragia.",
+      "Turno 17: ¡órdenes, comandante!",
+      "José María Paz se pone de pie.",
+      "José María Paz avanza 7 casillas (14 PA).",
+      "José María Paz sale del sector por el borde sur.",
+      "La última fuerza capaz salió del sector."
+    ],
+    "interpretation": "149 stance orders and the final Paz standing/crouched alternating segment are observed accepted orders. The repeated posture choices identify policy oscillation for later code-grounded inspection. No alternative policy was executed, and no victory correction is proven."
+  },
+  "runnerReporting": {
+    "repositoryImplementation": "tools/test-runner-lib.mjs:105-128",
+    "timingReport": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/.cache/test-times/full.json",
+    "timingReportReadSha256": "0d76d11fa23a5d2714ec4ff25d507d74e69e64ddd9e74e3e34d156849a9ad9ba",
+    "completeAtRead": false,
+    "scheduledFirst10": [
+      "tests/characters-library-pipeline.test.mjs",
+      "tests/fresh-ending-route.test.mjs",
+      "tests/characters-coarse-garment-surfaces.test.mjs",
+      "tests/fresh-campaign-recovery.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs",
+      "tests/fresh-northern-route.test.mjs",
+      "tests/characters-apparel-surfaces.test.mjs",
+      "tests/characters-climb-crest-continuity.test.mjs",
+      "tests/illustrated-sprite-repack.test.mjs"
+    ],
+    "recordedFailedFiles": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "duration_ms": 597385.272375,
+        "success": false
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "duration_ms": 327371.018917,
+        "success": false
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "duration_ms": 325350.360708,
+        "success": false
+      },
+      {
+        "file": "tests/fresh-northern-route.test.mjs",
+        "duration_ms": 325047.254458,
+        "success": false
+      },
+      {
+        "file": "tests/fresh-coastal-route.test.mjs",
+        "duration_ms": 158473.221667,
+        "success": false
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "duration_ms": 90447.035417,
+        "success": false
+      }
+    ],
+    "assertionTextWrittenIntoTimingReport": false,
+    "nodeEmbeddedSources": [
+      {
+        "module": "internal/test_runner/runner",
+        "sha256": "066d9d73b142649360f099a339a9e693124f52ce7c88c0fd14a926345fbccb9c",
+        "lines": "233-236,300-321",
+        "finding": "FileTest keeps parsed events in #reportBuffer until isClearToSend(); drain/report releases them."
+      },
+      {
+        "module": "internal/test_runner/test",
+        "sha256": "47c719c732c14170d0914e78bc59d19ccd278f93616c27fe155a638e740d4935",
+        "lines": "853-879,1398-1418",
+        "finding": "Ready child results report in child-number order. Missing earlier child returns without reporting later results."
+      }
+    ],
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "nodeVersion": "v25.9.0",
+    "runtimeInspectionLimit": "Embedded Node source was read in a separate inspector process. No live runner process was attached or modified. Embedded sources are runtime-owned and are not repository before-source-snapshot entries.",
+    "assertionOutputLocation": "Existing runner process memory until its ordered spec stream can report; then process stdout captured in the existing run.log. The repository timing report stores duration/success/counts, not per-test assertion objects.",
+    "nextEvidenceStep": "Let the existing run progress through earlier scheduled reporting positions, then read run.log for the original recovery assertion. Do not replay or execute a new campaign to infer that assertion."
+  },
+  "recoveryEvidence": {
+    "currentFileFailureLine": [
+      "FILE FAIL tests/fresh-campaign-recovery.test.mjs 90.45s"
+    ],
+    "matchingNativeCapturePaths": [],
+    "originalAssertionAvailable": false,
+    "limit": "No recovery native capture is present among the current three payloads. The current log does not expose its assertion or stack. This audit makes no claim about its cohort, sector, outcome, gun inventory, casualties, or whether the failure is an implementation defect versus combat difficulty."
+  },
+  "currentRunLog": {
+    "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/run.log",
+    "sha256AtRead": "0ced4e255e309af6cfe4c1200a444fca50d99e71ba93b7175170d7a05756c075",
+    "textAtRead": "FULL suite: 942/942 files selected; 0 excluded.\nRunning all 942 selected test files with 8 worker processes (12 available CPUs). No test-name filters.\nPer-file timing report: /Users/fsodano/.codex/worktrees/blast-structures/granaderos/.cache/test-times/full.json\nFILE FAIL tests/fresh-campaign-recovery.test.mjs 90.45s\nFILE PASS tests/characters-apparel-surfaces.test.mjs 264.39s\nFILE FAIL tests/fresh-northern-route.test.mjs 325.05s\nFILE FAIL tests/fresh-historical-loss.test.mjs 325.35s\nFILE FAIL tests/fresh-cuyo-route.test.mjs 327.37s\nFILE PASS tests/characters-climb-crest-continuity.test.mjs 255.42s\nFILE PASS tests/characters-family-cloth-depth.test.mjs 127.17s\nFILE PASS tests/three-gesture-planted-contact.test.mjs 152.19s\nFILE PASS tests/illustrated-sprite-repack.test.mjs 215.33s\nFILE FAIL tests/fresh-coastal-route.test.mjs 158.47s\nFILE PASS tests/fresh-northern-recovery-recapture.test.mjs 170.58s\nFILE PASS tests/characters-coarse-garment-surfaces.test.mjs 522.34s\nFILE PASS tests/characters-cloth-depth.test.mjs 98.98s\nFILE PASS tests/artillery-supply.test.mjs 95.15s\nFILE PASS tests/unloaded-militia-wounds.test.mjs 102.29s\nFILE PASS tests/characters-standing-free-arm-rest.test.mjs 110.81s\nFILE PASS tests/characters-climb-roof-fingers.test.mjs 95.95s\nFILE FAIL tests/fresh-ending-route.test.mjs 597.39s\nFILE PASS tests/preferred-companion-morale.test.mjs 92.95s\n"
+  },
+  "noOutcomeInference": "The Salta retreat is established by genuine current full942 native-result payloads. The unavailable recovery assertion is not inferred from earlier defeat tapes. Finite resources, native losses and strict victory requirements are unchanged."
+}

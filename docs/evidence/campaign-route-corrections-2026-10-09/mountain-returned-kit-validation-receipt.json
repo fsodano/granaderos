@@ -1,0 +1,67 @@
+{
+  "scope": "Approved external overlay only; two bounded native returned-kit controls, no original route/prefix/battle/controller run. No repository/index edit. Current source identity bound, not historical full942 requirement.",
+  "command": "GRANADEROS_KIT_CONTROL_PREP_SHA=f1f66a629d9951a296a51fb1d45be170c3090f82a09e9f655aaff5f86d30bfd6 /opt/homebrew/Cellar/node/25.9.0_2/bin/node --import /tmp/granaderos-returned-kit-controls-20261010T045531330340Z/control-loader.mjs --test --test-reporter=spec /tmp/granaderos-returned-kit-controls-20261010T045531330340Z/tests/mountain-returned-kit.test.mjs",
+  "cwd": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "session": 1702,
+  "terminalExit": 0,
+  "testCounts": {
+    "tests": 2,
+    "pass": 2,
+    "fail": 0,
+    "skip": 0,
+    "seconds": 3.247702375
+  },
+  "actualImports": 286,
+  "sourceDrift": [],
+  "externalDrift": [],
+  "undeclaredTransforms": [],
+  "soleTransform": {
+    "path": "tests/fresh-mountain-route.mjs",
+    "originalSha256": "f5d7b8a96b302bb9a9950446e3c90957b94b35f32520d0b91ff644646b3490ea",
+    "runtimeSha256": "fb178aaca41029260c222410af934380f8e55ac3737864964595e5a7a3af2b90"
+  },
+  "currentSourceSnapshotSha256": "51d13915f024e91ef16dc852fb3c8d26e3013ab088465ab9f34c97c77dfe1c08",
+  "preparationSha256": "f1f66a629d9951a296a51fb1d45be170c3090f82a09e9f655aaff5f86d30bfd6",
+  "runtimeClosureSha256": "cc2b49e0bae030e2d5f90766a161038766232e5d8170472f2500721243499c9a",
+  "logSha256": "11f4e5f1fc823ea6f8cc2373080f6340dd7c79922d258ab5123e7d40d91e3569",
+  "assertedNativeFacts": [
+    "Exact genuine630:2766 capture validates and roundtrips through official campaign save.",
+    "All eight original kit IDs retain exactly the earned complete campaign with no action, item, health, casualty, money or term change.",
+    "Permanent encounter1/2/9 null clothing slots stay null; paid116/128 kit stays real.",
+    "Paid116 real hat moves through native drop/take/equip, one source count1 to0, exact metadata, no quantity/HP/death/contract/clock/treasury/cannon changes.",
+    "Exactly the same three native orders replay from an official midpoint to the identical accepted campaign."
+  ],
+  "copyPaths": [
+    {
+      "from": "/tmp/granaderos-stock-ending-headwear-observation-20261010T043953487213Z/returned-kit-external-proposal/fresh-mountain-returned-kit.patch",
+      "to": "fresh-mountain-returned-kit.patch",
+      "sha256": "3b09386119017a57fefe1dc9c9367f0191c5371b7559d4e801be406c6279ef1d",
+      "bytes": 2207
+    },
+    {
+      "from": "/tmp/granaderos-stock-ending-headwear-observation-20261010T043953487213Z/returned-kit-external-proposal/tests/mountain-returned-kit.test.mjs",
+      "to": "tests/mountain-returned-kit.test.mjs",
+      "sha256": "6e571cbbf48315266a16457cb08b2cd48eb3815809878571374dd564ebb6c6e6",
+      "bytes": 5718
+    },
+    {
+      "from": "/tmp/granaderos-stock-ending-headwear-observation-20261010T043953487213Z/returned-kit-external-proposal/tests/fixtures/mountain-returned-kit-earned-630.campaign.json.gz",
+      "to": "tests/fixtures/mountain-returned-kit-earned-630.campaign.json.gz",
+      "sha256": "bf3ab25ea6b47410a55226d62e2fefb459139bb338eda5ea83e4ba1f8f25f89f",
+      "bytes": 344718
+    },
+    {
+      "from": "/tmp/granaderos-stock-ending-headwear-observation-20261010T043953487213Z/returned-kit-external-proposal/tests/fixtures/mountain-returned-kit-earned-630.provenance.json",
+      "to": "tests/fixtures/mountain-returned-kit-earned-630.provenance.json",
+      "sha256": "ad455fe5b4eb139cffef0f46d6d1deb91317043a730a79576518aaf4b1cabbc9",
+      "bytes": 2347
+    }
+  ],
+  "originalObservationArchive": {
+    "path": "/tmp/granaderos-stock-ending-headwear-evidence-20261010T045343384059Z/stock-ending-headwear-observation.tar.gz",
+    "sha256": "befd23f3e7cff71c0884cfe099fb524426bf78bdc0048d6c7e45f4cc0ad77742",
+    "note": "Immutable historical observation archive includes the earlier unexecuted test proposal; corrected guard-parse test and passing controls are in this supplement."
+  },
+  "fullEndingPassUnproved": true,
+  "productionUnchanged": true
+}

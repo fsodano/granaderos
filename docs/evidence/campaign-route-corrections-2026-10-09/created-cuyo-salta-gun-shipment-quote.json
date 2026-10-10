@@ -1,0 +1,87 @@
+{
+  "checkpoint": "/tmp/granaderos-complete-cuyo-funding-care-current.84371.35-battleResult-victory.save.json",
+  "clock": [
+    423,
+    2936
+  ],
+  "location": "salta",
+  "squad": [
+    101
+  ],
+  "squadRecords": [
+    {
+      "id": 101,
+      "name": "Tomasa Ríos",
+      "hp": 14,
+      "energy": 96,
+      "assignment": "active",
+      "alive": true,
+      "location": "salta",
+      "asleep": false
+    }
+  ],
+  "gun": {
+    "id": "arsenal:cordoba:2",
+    "type": "bronze4",
+    "side": "player",
+    "loaded": false,
+    "ammo": 0,
+    "x": 35,
+    "y": 42,
+    "facing": -1.0768549578753155
+  },
+  "routes": {
+    "posta": true,
+    "flotilla": false,
+    "carts": true,
+    "mules": false
+  },
+  "storage": {
+    "available": false,
+    "reason": "Se necesitan 2 combatientes disponibles de la escuadra para guardar esta pieza.",
+    "sector": "salta",
+    "from": "salta",
+    "gun": {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "x": 35,
+      "y": 42,
+      "facing": -1.0768549578753155
+    },
+    "crew": 2
+  },
+  "transportCordoba": {
+    "available": false,
+    "reason": "Se necesitan 2 combatientes disponibles de la escuadra para cargar esta pieza.",
+    "from": "salta",
+    "to": "cordoba",
+    "mode": "carts",
+    "path": [
+      "salta",
+      "tucuman",
+      "cordoba"
+    ],
+    "cost": 0,
+    "hours": 36,
+    "crew": 2,
+    "weight": 500,
+    "capacity": 1000
+  },
+  "transportMendoza": {
+    "available": false,
+    "reason": "Se necesitan 2 combatientes disponibles de la escuadra para cargar esta pieza.",
+    "from": "salta",
+    "to": "mendoza",
+    "mode": "carts",
+    "path": null,
+    "cost": 0,
+    "hours": 0,
+    "crew": 2,
+    "weight": 500,
+    "capacity": 1000
+  },
+  "northernGroups": []
+}
