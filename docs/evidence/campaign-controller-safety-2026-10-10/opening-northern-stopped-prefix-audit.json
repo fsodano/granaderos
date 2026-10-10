@@ -1,0 +1,453 @@
+{
+  "observedAtUtc": "2026-10-10T10:22:39.896134+00:00",
+  "run": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z",
+  "terminalReceiptAvailable": true,
+  "metadataSha256": "d989e6dfef39dd35566b990c564d451c82a8d83ab8496fd30196e0f1f016b7cd",
+  "buildIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "c132c162f024",
+    "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5"
+  },
+  "sourceSnapshotSha256": "eadcf6e1279480a7c61696eb70b7c8f43b817d9964ca6b917925ac0e04e4efa7",
+  "openingActualNullCaptures": [
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-1-san_nicolas-controller-decision-t6hlHP",
+      "receiptSha256": "703d22c958bde70725894a9df7e7cf59c80e6339a9daa6922644ca972134e32f",
+      "rawBytes": 759628,
+      "rawSha256": "a2a2599e12421a95f7f0dab3034824a1d4f292678b4d7d99a30666c41cfab551",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 1,
+      "phase": "player",
+      "id": "1000",
+      "x": 43,
+      "y": 47,
+      "hp": 78,
+      "bleeding": 0,
+      "stance": "standing",
+      "ap": 20,
+      "loaded": 1,
+      "ammo": 19,
+      "automatic": null,
+      "contacts": [
+        "enemy-8"
+      ],
+      "lastKnownEnemy": null,
+      "lastHeardNoise": null,
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 1,
+      "cap": 8
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-2-san_nicolas-controller-decision-nGFefb",
+      "receiptSha256": "e7256727563d55515aa15e524923fbdea4f7c2c18d787dcc4b5abdb46fdec7af",
+      "rawBytes": 768450,
+      "rawSha256": "a4a91507bd44d137a44d8ca81ab23315f6533e9385e3389415e92ca0931c0d92",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 2,
+      "phase": "player",
+      "id": "123",
+      "x": 42,
+      "y": 44,
+      "hp": 83,
+      "bleeding": 0,
+      "stance": "standing",
+      "ap": 20,
+      "loaded": 1,
+      "ammo": 18,
+      "automatic": null,
+      "contacts": [
+        "enemy-6",
+        "enemy-8"
+      ],
+      "lastKnownEnemy": {
+        "x": 48,
+        "y": 36,
+        "tacticalLevel": 0,
+        "turn": 2
+      },
+      "lastHeardNoise": null,
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 2,
+      "cap": 8
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-3-san_nicolas-controller-decision-WJFRBt",
+      "receiptSha256": "82bd645c338d67fc6944b0e758fc2fa7f6617e55a6273f53bba749c6e6d21760",
+      "rawBytes": 768787,
+      "rawSha256": "a9b593e3761cf6bea007fc93fdba45ee5096ac93c8d11e3d6ca8cc0bead1d041",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 2,
+      "phase": "player",
+      "id": "115",
+      "x": 41,
+      "y": 44,
+      "hp": 70,
+      "bleeding": 0,
+      "stance": "standing",
+      "ap": 56,
+      "loaded": 0,
+      "ammo": 19,
+      "automatic": null,
+      "contacts": [
+        "enemy-6",
+        "enemy-8"
+      ],
+      "lastKnownEnemy": {
+        "x": 48,
+        "y": 36,
+        "tacticalLevel": 0,
+        "turn": 2
+      },
+      "lastHeardNoise": null,
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 3,
+      "cap": 8
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-4-san_nicolas-controller-decision-4YRjdf",
+      "receiptSha256": "a39655298753163d8137460e7b46dfd82ea3b29da699327175e9c0d1fd445841",
+      "rawBytes": 768643,
+      "rawSha256": "2ae802bdc2e226ba49432df9157ce79b88b6f16ece396dfa683afe045ad3d5e7",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 2,
+      "phase": "player",
+      "id": "110",
+      "x": 42,
+      "y": 45,
+      "hp": 85,
+      "bleeding": 0,
+      "stance": "prone",
+      "ap": 89,
+      "loaded": 1,
+      "ammo": 19,
+      "automatic": null,
+      "contacts": [
+        "enemy-6",
+        "enemy-8"
+      ],
+      "lastKnownEnemy": {
+        "x": 48,
+        "y": 36,
+        "tacticalLevel": 0,
+        "turn": 1
+      },
+      "lastHeardNoise": null,
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 4,
+      "cap": 8
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-5-san_nicolas-controller-decision-OrraLs",
+      "receiptSha256": "b05a65059b8231add16d4056a7a3f659eff48ba297ad842b234869c33e13672f",
+      "rawBytes": 769005,
+      "rawSha256": "bf3938ce514aa6368e1339328e46a14bbf533e1cc0afecb584a466a9c3970194",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 2,
+      "phase": "player",
+      "id": "107",
+      "x": 41,
+      "y": 45,
+      "hp": 72,
+      "bleeding": 0,
+      "stance": "prone",
+      "ap": 90,
+      "loaded": 1,
+      "ammo": 19,
+      "automatic": null,
+      "contacts": [
+        "enemy-6",
+        "enemy-8"
+      ],
+      "lastKnownEnemy": {
+        "x": 48,
+        "y": 36,
+        "tacticalLevel": 0,
+        "turn": 1
+      },
+      "lastHeardNoise": null,
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 5,
+      "cap": 8
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-6-san_nicolas-controller-decision-6RS88b",
+      "receiptSha256": "5ea160a37e641f96427a76a8001708cc6f62034858b42c7524ea68f390001c22",
+      "rawBytes": 767098,
+      "rawSha256": "62a8ff40b8a8b7287bf007389478fcf0bc47c412f458be788b7256ce61bdecd9",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 2,
+      "phase": "player",
+      "id": "114",
+      "x": 45,
+      "y": 42,
+      "hp": 81,
+      "bleeding": 0,
+      "stance": "prone",
+      "ap": 14,
+      "loaded": 0,
+      "ammo": 19,
+      "automatic": null,
+      "contacts": [
+        "enemy-6"
+      ],
+      "lastKnownEnemy": {
+        "x": 47,
+        "y": 29,
+        "tacticalLevel": 0,
+        "turn": 2
+      },
+      "lastHeardNoise": null,
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 6,
+      "cap": 8
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-7-san_nicolas-controller-decision-sHMfqU",
+      "receiptSha256": "f45ee01d037242210bd729a6c1763e607e428712325177116478897d34ea55d8",
+      "rawBytes": 766082,
+      "rawSha256": "e8ed93079979513fc55bea9d3913bb875bd9e53f915b754dd3ce945e6045ba1c",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 2,
+      "phase": "player",
+      "id": "1000",
+      "x": 43,
+      "y": 47,
+      "hp": 78,
+      "bleeding": 0,
+      "stance": "prone",
+      "ap": 34,
+      "loaded": 1,
+      "ammo": 19,
+      "automatic": null,
+      "contacts": [
+        "enemy-6"
+      ],
+      "lastKnownEnemy": {
+        "x": 48,
+        "y": 36,
+        "tacticalLevel": 0,
+        "turn": 2
+      },
+      "lastHeardNoise": null,
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 7,
+      "cap": 8
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-8-san_nicolas-controller-decision-sehIPt",
+      "receiptSha256": "8d381762668ec39ed7d900344c11555cfb0c554132b32a9689ee49cf550c2154",
+      "rawBytes": 770261,
+      "rawSha256": "54acb450b61c885a5318d84e8e4c0a3a2d0cf4e1a7c958ff86073e45d8a9b1fc",
+      "sector": "san_nicolas",
+      "battleId": "san_nicolas-36-8",
+      "startSeconds": 129610,
+      "turn": 2,
+      "phase": "interrupt",
+      "id": "115",
+      "x": 41,
+      "y": 44,
+      "hp": 70,
+      "bleeding": 0,
+      "stance": "standing",
+      "ap": 56,
+      "loaded": 0,
+      "ammo": 19,
+      "automatic": null,
+      "contacts": [
+        "enemy-6"
+      ],
+      "lastKnownEnemy": {
+        "x": 48,
+        "y": 37,
+        "tacticalLevel": 0,
+        "turn": 2
+      },
+      "lastHeardNoise": {
+        "x": 47,
+        "y": 37,
+        "turn": 2,
+        "kind": "fire",
+        "uncertainty": 3
+      },
+      "patrolOrigin": null,
+      "missionAlly": null,
+      "captureAttempt": 8,
+      "cap": 8
+    }
+  ],
+  "strategicCaptureBoundaries": [],
+  "openingCordobaCaptureAvailable": false,
+  "northernDoctorActualBoundaryAvailable": false,
+  "sourceFacts": [
+    "recoverFreshNorthernDoctor evacuates actual stabilized patients to fixed hospital destination cordoba at tests/fresh-northern-recovery.mjs:127-137.",
+    "queueSquadTravel at game/squad-travel.js:66 requires travel destination and waypoints to have nonroyalist ownership before route planning.",
+    "recoverRecapturedRoad at tests/recovery-road-care.mjs:14 is finite local care after recapture; it has no attack or battle-result ownership-changing orders.",
+    "The existing reuniteFreshNorthernSquad lostCordoba branch performs actual assault and settlement before calling recoverRecapturedRoad."
+  ],
+  "doctorRecommendation": "No doctor road-care correction is justified from this run. It never reaches the relevant helper. Source review establishes that royalist destinations are invalid for ordinary travel and that recoverRecapturedRoad supplies finite local care only in controlled sectors after recapture; it does not liberate a road. An independent actual helper input/native travel-refusal boundary is still required.",
+  "evidenceLimits": [
+    "This run is terminal: nine tests, five passed and four failed, without source drift or skipped tests.",
+    "No opening Cordoba or northern doctor boundary exists in this run because earlier strict assertions fail.",
+    "The null recorder caps each sector/deployment/start-clock scope at eight distinct actor/turn states and is not a complete accepted order tape.",
+    "No native selectors, previews, orders, synchronization, settlement, alternative controllers or reruns were invoked for this analysis."
+  ],
+  "additionalNativeCalls": 0,
+  "sourceEdits": 0,
+  "openingRecordedAdmissionReasons": [
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-1-san_nicolas-controller-decision-t6hlHP",
+      "id": "1000",
+      "turn": 1,
+      "blockingFields": [
+        "not already prone"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-2-san_nicolas-controller-decision-nGFefb",
+      "id": "123",
+      "turn": 2,
+      "blockingFields": [
+        "not already prone",
+        "existing personal contact memory"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-3-san_nicolas-controller-decision-WJFRBt",
+      "id": "115",
+      "turn": 2,
+      "blockingFields": [
+        "not already prone",
+        "no loaded primary round",
+        "existing personal contact memory"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-4-san_nicolas-controller-decision-4YRjdf",
+      "id": "110",
+      "turn": 2,
+      "blockingFields": [
+        "existing personal contact memory"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-5-san_nicolas-controller-decision-OrraLs",
+      "id": "107",
+      "turn": 2,
+      "blockingFields": [
+        "existing personal contact memory"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-6-san_nicolas-controller-decision-6RS88b",
+      "id": "114",
+      "turn": 2,
+      "blockingFields": [
+        "no loaded primary round",
+        "existing personal contact memory"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-7-san_nicolas-controller-decision-sHMfqU",
+      "id": "1000",
+      "turn": 2,
+      "blockingFields": [
+        "existing personal contact memory"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/89511-8-san_nicolas-controller-decision-sehIPt",
+      "id": "115",
+      "turn": 2,
+      "blockingFields": [
+        "not already prone",
+        "no loaded primary round",
+        "existing personal contact memory"
+      ]
+    }
+  ],
+  "openingRecordedAdmissionConclusion": "The eight currently captured opening San Nicolas states each fail at least one existing narrow shared-sighting admission gate. Loaded prone states already contain personal contact memory; the new fallback correctly leaves them to the unchanged native policy. This is a field-only audit, not a new native chooser invocation.",
+  "nativeCareSafety": "game/medical-care.js:23 requires patriot ownership at the actual operative location for patient, doctor, and rest care; recoverRecapturedRoad cannot bypass unsafe royalist control.",
+  "terminal": {
+    "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/final-receipt.json",
+    "sha256": "72ca1e59267f48b3063307418b3f68121a5788e67f33bc8a38261ce8b75d32c0",
+    "exitCode": 1,
+    "signal": null,
+    "complete": true,
+    "sourceDrift": [],
+    "sourceFiles": 14186,
+    "counts": {
+      "tests": 9,
+      "suites": 0,
+      "pass": 5,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "finished": "2026-10-10T10:20:48.903Z",
+    "sourceSnapshotSha256": "eadcf6e1279480a7c61696eb70b7c8f43b817d9964ca6b917925ac0e04e4efa7",
+    "sourceSnapshotsByteEqual": true
+  },
+  "openingResult": {
+    "file": "tests/opening-playthrough.test.mjs",
+    "failure": "San Nicolas native defeat before Cordoba",
+    "sector": "san_nicolas",
+    "turn": 18,
+    "actions": 142,
+    "survivingActor110Hp": 14,
+    "openingCordobaActualBoundaryAvailable": false,
+    "causalLimit": "The passive null capture records only eight distinct states. It does not record the complete accepted investigation/order tape. It cannot establish which earlier admitted action caused the terminal outcome."
+  },
+  "northernDoctorResult": {
+    "helper": "recoverFreshNorthernDoctor",
+    "actualPreparationInputAvailable": false,
+    "actualTravelRefusalAvailable": false,
+    "earlierFailure": {
+      "file": "tests/fresh-campaign-recovery.test.mjs",
+      "line": 101,
+      "helper": "prepareFreshCordobaDefense",
+      "source": "tests/fresh-campaign-route.mjs:482",
+      "message": "a real recovered gun must be available"
+    },
+    "doctorCallSource": "tests/fresh-campaign-recovery.test.mjs:137",
+    "actualDoctorOwnershipAvailable": false,
+    "actualDoctorRoadValidityAvailable": false
+  },
+  "otherTerminalFailures": [
+    {
+      "file": "tests/fresh-cuyo-route.test.mjs",
+      "helper": "prepareCreatedNorthernOfficerRelief",
+      "source": "tests/fresh-northern-command.mjs:98",
+      "message": "an actual conscious local medic must stabilize the urgent casualty"
+    },
+    {
+      "file": "tests/fresh-ending-route.test.mjs",
+      "helper": "collectRouteItems",
+      "source": "tests/finite-route-equipment.mjs:55",
+      "message": "finite local equipment or carrying room is exhausted: san_nicolas {\"item\":\"medkits\"}"
+    }
+  ],
+  "indexChanges": 0
+}

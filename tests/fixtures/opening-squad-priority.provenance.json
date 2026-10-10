@@ -1,0 +1,192 @@
+{
+  "kind": "earned-stock-san-nicolas-ordinary-squad-priority-input",
+  "captureScope": "Actual independently captured route entry, then one exact replay of the common 13 recorded native orders. Raw output is immediately before order 14. No controller decision or selector was requested by this control. Existing native AI effects inside the accepted reducers are retained.",
+  "candidate": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos",
+  "candidateHead": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+  "originalGate": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z",
+  "currentGate": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z",
+  "currentGateSourceSnapshotSha256": "eadcf6e1279480a7c61696eb70b7c8f43b817d9964ca6b917925ac0e04e4efa7",
+  "nativeSource": {
+    "scope": "Every game/ file; native imports only. Controller test files are not imported or executed.",
+    "before": {
+      "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/native-source-before.json",
+      "bytes": 32547,
+      "sha256": "bedeb77651637673b741d869cec640e3b74b67c52b7142a4253f534f5988caf7"
+    },
+    "after": {
+      "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/native-source-after.json",
+      "bytes": 32547,
+      "sha256": "bedeb77651637673b741d869cec640e3b74b67c52b7142a4253f534f5988caf7"
+    },
+    "drift": 0
+  },
+  "inputs": [
+    {
+      "name": "before-battle-execution.json",
+      "path": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78260-1-stock-san_nicolas-san_nicolas-60-1027220423-caQpZS/before-battle-execution.json",
+      "bytes": 2212691,
+      "sha256": "7fb5d2f322a75d1956e5ecfba4b7761a798df2b62a8ce184b3356c17f4195ab4"
+    },
+    {
+      "name": "before-battle-execution.json",
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89510-1-stock-san_nicolas-san_nicolas-60-1027220423-smgghd/before-battle-execution.json",
+      "bytes": 2212691,
+      "sha256": "7fb5d2f322a75d1956e5ecfba4b7761a798df2b62a8ce184b3356c17f4195ab4"
+    },
+    {
+      "name": "replay-initial-pair.json",
+      "path": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78260-1-stock-san_nicolas-san_nicolas-60-1027220423-caQpZS/replay-initial-pair.json",
+      "bytes": 2921123,
+      "sha256": "8802a07969db33ee1eae19f2304942e669cfb1923114b43bcd93431a8e4a4a92"
+    },
+    {
+      "name": "replay-initial-pair.json",
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89510-1-stock-san_nicolas-san_nicolas-60-1027220423-smgghd/replay-initial-pair.json",
+      "bytes": 2921123,
+      "sha256": "8802a07969db33ee1eae19f2304942e669cfb1923114b43bcd93431a8e4a4a92"
+    },
+    {
+      "name": "native-combat-result.json",
+      "path": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78260-1-stock-san_nicolas-san_nicolas-60-1027220423-caQpZS/native-combat-result.json",
+      "bytes": 794311,
+      "sha256": "ebe3844ab08c46d83f559fc45ee85283ce25ac7492dfdb64ee6a92a519584b4e"
+    },
+    {
+      "name": "native-combat-result.json",
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89510-1-stock-san_nicolas-san_nicolas-60-1027220423-smgghd/native-combat-result.json",
+      "bytes": 794865,
+      "sha256": "8f605280868e1a3de034813f6d3619c6448041eec5bf17b10c90695c61ed8c68"
+    },
+    {
+      "name": "accepted-local-tactical-orders.json",
+      "path": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78260-1-stock-san_nicolas-san_nicolas-60-1027220423-caQpZS/accepted-local-tactical-orders.json",
+      "bytes": 54396,
+      "sha256": "10dfcf888228c4e2f6f74c2afb64090136480dfa68d4b3bf2f076b971d9dd683"
+    },
+    {
+      "name": "accepted-local-tactical-orders.json",
+      "path": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89510-1-stock-san_nicolas-san_nicolas-60-1027220423-smgghd/accepted-local-tactical-orders.json",
+      "bytes": 51205,
+      "sha256": "68383b742b77d69bff16f68dc6524f999859dc3d8ae408ad34cdf21803133c09"
+    }
+  ],
+  "acceptedOrders": 13,
+  "commonOrdersByteEquivalent": true,
+  "recordedClocksMatchedBothTapesForAll13": true,
+  "directControllerInvocations": 0,
+  "directSelectorInvocations": 0,
+  "campaignSettlementInvocations": 0,
+  "officialSave": {
+    "encodeInvocations": 1,
+    "decodeInvocations": 1,
+    "structuralPairEqual": true,
+    "artifact": {
+      "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/official-pre-order-14-save.json.gz",
+      "bytes": 73747,
+      "sha256": "d1ecb9b3096893466f97a8633627b3e8614fc165b65f1a984eb6f0040e16853b",
+      "decodedBytes": 660618,
+      "decodedSha256": "10843b2bc8219b036df935d2931e03f5512ee78a0219f92c1397c063f931d07c"
+    }
+  },
+  "initial": {
+    "seed": 18026106,
+    "clock": {
+      "turn": 1,
+      "phase": "player",
+      "status": "active",
+      "elapsedSeconds": 0,
+      "hour": 60,
+      "secondOfHour": 689
+    }
+  },
+  "final": {
+    "seed": 2591988814,
+    "campaignSeed": 18026106,
+    "clock": {
+      "turn": 1,
+      "phase": "player",
+      "status": "active",
+      "elapsedSeconds": 109,
+      "hour": 60,
+      "secondOfHour": 798
+    },
+    "treasury": 14554
+  },
+  "recordedUnexecutedNextOrders": {
+    "original": {
+      "type": "fire",
+      "unitId": "123",
+      "targetId": "enemy-4",
+      "aim": 2,
+      "hitLocation": "torso"
+    },
+    "current": {
+      "type": "move",
+      "unitId": "1000",
+      "x": 43,
+      "y": 41,
+      "tacticalLevel": 0
+    },
+    "executed": false
+  },
+  "finiteStockDeltas": [
+    {
+      "unitId": "115",
+      "deltas": {
+        "condition": {
+          "before": 100,
+          "after": 99
+        },
+        "loaded": {
+          "before": 1,
+          "after": 0
+        }
+      }
+    }
+  ],
+  "retainedInvariants": {
+    "allActorHpAndBleedingUnchanged": true,
+    "campaignTreasuryContractsSquadOperativeStateHiringArrivalsUnchanged": true,
+    "groundItemsDroppedWeaponsArtilleryUnchanged": true,
+    "primaryReserveSpareLoadsInventoriesMedkitsRationsTorchesBoleadorasUnchangedExceptOneNativeLoadedRound": true,
+    "weaponConditionChangedOnlyByNativeFire100To99": true,
+    "noNewStockNoTimeRollbackNoDeathsChanged": true
+  },
+  "fixture": {
+    "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/actual-pre-order-14-battle.json.gz",
+    "bytes": 28107,
+    "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b",
+    "decodedBytes": 700326,
+    "decodedSha256": "ea4b4d70f4b06c563efdd2bb848e6d259367c3655b5f308e7c97278da2360e1f"
+  },
+  "rawPair": {
+    "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/actual-pre-order-14-pair.json",
+    "bytes": 2927302,
+    "sha256": "7b6ae8b1f9a9318799d109893372091499e28e8cd6a313cb7f30b17b6aaf1385"
+  },
+  "orders": {
+    "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/common-native-orders.json",
+    "bytes": 1158,
+    "sha256": "813fe83ee3b82ce9b86d5278eb9a0da62ea0cc8b5c33aeb37552253598792e14"
+  },
+  "wrapper": {
+    "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/exact-common13-prefix.mjs",
+    "bytes": 11076,
+    "sha256": "952cff621c1c0e02c8be7b547a4fc484ae50c218d1fd05492c1a96e00cc2e60a"
+  },
+  "terminalReceipt": {
+    "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/final-receipt.json",
+    "bytes": 25094,
+    "sha256": "a8c93e292c23cab329e9b904bf6b1285f31b5239893596b15ee73e2e76384672"
+  },
+  "execution": {
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "nodeVersion": "v25.9.0",
+    "pid": 92580,
+    "session": 35472,
+    "invocations": 1,
+    "exitCode": 0,
+    "complete": true,
+    "stoppedBeforeOrder14": true
+  }
+}

@@ -1,0 +1,285 @@
+{
+  "kind": "read-only-opening-squad-coordination-source-and-control-review",
+  "observedAt": "2026-10-10T10:44:52.587492+00:00",
+  "reportedAt": "2026-10-10T10:45:28.436023+00:00",
+  "candidate": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos",
+  "candidateHead": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+  "main": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "originalCheckpoint": "0b53d3fb35c67e6188926e71a221caf5ba1ed0f0",
+  "currentProductionCheckpoint": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+  "result": {
+    "blockingSourceFindings": [],
+    "sourceReviewComplete": true,
+    "coordinatorControlsSourceReviewed": true,
+    "focusedTestsStatus": "pending; this audit did not execute tests",
+    "originalFiveGateStatus": "pending for this revised coordination source",
+    "sourceFreezeClaimed": true,
+    "readSnapshotDrift": [],
+    "sourceFreezeScope": "Care-owned four paths only, matched by current and originally observed hashes.",
+    "reviewStatus": "final source-only review; no blocking finding; controls and route acceptance pending actual root gate"
+  },
+  "sourceFiles": [
+    {
+      "path": "tests/opening-driver.mjs",
+      "bytes": 8254,
+      "sha256": "3a808100454045b1acf59e16acd14506ff6ad3e7502aeacabe415638d6718e3f"
+    },
+    {
+      "path": "tests/opening-campaign.mjs",
+      "bytes": 12593,
+      "sha256": "0a7388911fb597cc8a3311344928f8929579c3d576e97fc850afdee3b8006a04"
+    },
+    {
+      "path": "tests/opening-body-region-driver.mjs",
+      "bytes": 1641,
+      "sha256": "a5094fcc931659b6cae36de46826acf43efb7e0eb6c8507529b4d39fe8e2ef49"
+    },
+    {
+      "path": "tests/opening-shared-sighting-investigation.test.mjs",
+      "bytes": 12418,
+      "sha256": "fed35be577ac911bb2065c0246387fefa700b9a134579d1acddb2dc05903e538"
+    },
+    {
+      "path": "tests/fixtures/opening-cordoba-shared-sighting.json.gz",
+      "bytes": 33220,
+      "sha256": "31198d1594dc728cf295109eba78863e0895c3a3f1f7339106c0ad44ed6b736f"
+    },
+    {
+      "path": "tests/fixtures/opening-cordoba-shared-sighting.provenance.json",
+      "bytes": 4540,
+      "sha256": "a63d70bad28fc8ded45451095a2f639006381236ddc546bdf1d12e77ce41fb79"
+    },
+    {
+      "path": "tests/fixtures/opening-squad-priority.json.gz",
+      "bytes": 28107,
+      "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b"
+    },
+    {
+      "path": "tests/fixtures/opening-squad-priority.provenance.json",
+      "bytes": 8457,
+      "sha256": "4b61ffc9ad3c6bf62fcca2340927d94d0d5a4994e8c84b888e84c53332fd4d42"
+    },
+    {
+      "path": "tests/route-controller-decision-evidence.mjs",
+      "bytes": 3097,
+      "sha256": "20a3695167eaed2d661b3f0aafbd578b506a7427e2be932ae0a04eae23f6ec66"
+    },
+    {
+      "path": "tests/local-san-lorenzo-driver.mjs",
+      "bytes": 10454,
+      "sha256": "aa4fc318605b117fb9349113d91dc00c2dcd1f2f0d114612c35a6c0f4c24ea15"
+    },
+    {
+      "path": "game/tactical-ai.js",
+      "bytes": 32759,
+      "sha256": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27"
+    },
+    {
+      "path": "game/tactical.js",
+      "bytes": 271222,
+      "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3"
+    },
+    {
+      "path": "game/first-aid.js",
+      "bytes": 3574,
+      "sha256": "4972b738286f2671ee4aaad3653aa0829b1004fad620f4bde75d0e24263171e5"
+    },
+    {
+      "path": "tests/opening-driver-control.test.mjs",
+      "bytes": 675,
+      "sha256": "a01658434c26509725b0c4da27effddf589af348e7ea24377b97a78e64d96fbc",
+      "byteExactMain": true
+    }
+  ],
+  "functionComparisons": {
+    "ordinaryCombatOrder": {
+      "byteExactCheckpoint": true,
+      "functionBytes": 3857,
+      "functionSha256": "5b65eb375f2453e33c6f22af273ddd8d6409e0208549f35554e1ec95f801687a",
+      "passiveRemovalScope": "Remove only existing passive recording call and restore its otherwise unchanged visible-contact hold from the braced observer wrapper to main one-line form.",
+      "minusPassiveObserverAndWrapperByteExactMain": true,
+      "mainFunctionBytes": 3757,
+      "mainFunctionSha256": "a942c321449ffa913875af034d77e33055bdbf7f6eecd1d226d84a902c7cc52c"
+    },
+    "nativeTacticalAiFile": {
+      "byteExactAa1": true,
+      "sha256": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27"
+    },
+    "nativeSharedSightingHelper": {
+      "bytes": 1027,
+      "sha256": "9e3b73e182639714ba2e353fecb42dbcc99fd723012f264af0545bf692145c3f",
+      "unchangedFromAa1": true
+    },
+    "chooseEnemyActionTail": {
+      "bytes": 10778,
+      "sha256": "253e4172cfa15791e70b367ab77563fb23a7ba31999f5d0e0d183d8bb28848f9",
+      "byteExactMain": true,
+      "byteExactCheckpoint": true
+    },
+    "bodyRegionControllerFile": {
+      "byteExactMain": true
+    },
+    "openingCampaignCaller": {
+      "onlyImportAndSharedFallbackOptionDifferFromMain": true,
+      "allAssertionsAndPriorReserveBranchPreserved": true
+    }
+  },
+  "originalFiveAgainstMain": [
+    {
+      "path": "tests/fresh-campaign-recovery.test.mjs",
+      "bytes": 39706,
+      "sha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "mainBytes": 39706,
+      "mainSha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/fresh-cuyo-route.test.mjs",
+      "bytes": 982,
+      "sha256": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+      "mainBytes": 982,
+      "mainSha256": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/fresh-coastal-route.test.mjs",
+      "bytes": 14938,
+      "sha256": "8d3305f0fea5670bd72a9bdd2741e3d45df7dcab4407231172d8ee9f93558273",
+      "mainBytes": 14938,
+      "mainSha256": "8d3305f0fea5670bd72a9bdd2741e3d45df7dcab4407231172d8ee9f93558273",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/opening-playthrough.test.mjs",
+      "bytes": 30015,
+      "sha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "mainBytes": 30015,
+      "mainSha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/fresh-ending-route.test.mjs",
+      "bytes": 10111,
+      "sha256": "b15592c43228e5c7c62124258ca6cb9c9e956c5b02fdc4b698a8f771426e60f4",
+      "mainBytes": 10111,
+      "mainSha256": "b15592c43228e5c7c62124258ca6cb9c9e956c5b02fdc4b698a8f771426e60f4",
+      "byteExactMain": true
+    }
+  ],
+  "callerReview": {
+    "outerTest": "tests/opening-playthrough.test.mjs:22 calls runOpeningCampaign(); it does not compose the ordinary controller.",
+    "composition": "tests/opening-campaign.mjs:132 supplies openingBodyRegionOrder and the explicit sharedFallback callback to opening-driver fight on the existing branch.",
+    "customPolicy": "openingBodyRegionOrder retains combatOrder choices and adds paid posture/body-region fire choices; it has no separate reserve ID or movement hold list.",
+    "safeOptIn": "sharedFallback:sharedSightingInvestigationOrder runs at the coordinator zero-action whole-pass boundary. It is not composed with each individual ordinary null.",
+    "reservePreservation": "The existing San Lorenzo cautiousFight branch with holdPosition:['57'] is unchanged and does not receive this callback.",
+    "otherCustomControllers": "Custom supplied controllers default to no shared fallback. A caller that opts in must filter its own reserves and holds in its callback.",
+    "helperEligibility": "The helper requires current native control and AP. It rejects mission allies, mounted or incapacitated actors, actors below15HP or with bleeding, unready/unsupplied firearms, remembered-contact actors, disabled patrols, and artillery-post holders. It requires a current squad-visible same-surface target and no personal-sight native action."
+  },
+  "schedulerReview": {
+    "ordinaryPriority": "Original squad marksmanship order, one ordinary action per eligible actor per pass, and existing 16-pass limit are preserved.",
+    "admission": "Fallback is considered only after a completed pass accepts no ordinary action. Reaching 16 passes alone does not authorize fallback.",
+    "phaseAndAP": "Current interruptAvailable and AP are re-read before each ordinary/fallback proposal. Final execution uses actBattle and must return lastError null.",
+    "oneActionCap": "First accepted fallback action exits the loop and returns. This also caps a native look action. fight then performs its existing native endTurn/interrupt progression.",
+    "finiteMedicalPriorities": "Original combatOrder care, reload, defensive posture and fire source is unchanged. Native chooseEnemyAction must return null before shared investigation. No free healing, supplies, AP refresh, time reset or death suppression is introduced.",
+    "nativeMovementBounds": "Unchanged native shared helper uses public perceived occupants, same surface, real reachable routes and attack AP reserve. Movement is bounded to 24 AP and 3 steps ordinarily, or 16 AP and 1 step in interrupt/reaction with retained cover constraints; reducer effects and interruptions remain authoritative."
+  },
+  "controlReview": {
+    "testNames": [
+      "the actual post-prone Cordoba witness retains the original native and ordinary personal-sight null",
+      "the actual shared sighting admits one finite native investigation move while the soldier stays prone",
+      "a custom whole-squad hold keeps the actual earned battle unchanged without implicit shared investigation",
+      "an explicit shared callback gets one paid bound after the whole squad holds, then yields native control",
+      "the actual stock common13 boundary schedules the available ordinary shot before shared investigation"
+    ],
+    "fixtureByteChecks": [
+      {
+        "name": "opening-cordoba-shared-sighting",
+        "compressedHashAndBytesMatchProvenance": true,
+        "decodedHashAndBytesMatchProvenance": true,
+        "decodedBytes": 786956,
+        "decodedSha256": "6f0b96dccd46b38a8e3225ceb1aee27db4995d9a6e7a8458de159dfd448249b4"
+      },
+      {
+        "name": "opening-squad-priority",
+        "compressedHashAndBytesMatchProvenance": true,
+        "decodedHashAndBytesMatchProvenance": true,
+        "decodedBytes": 700326,
+        "decodedSha256": "ea4b4d70f4b06c563efdd2bb848e6d259367c3655b5f308e7c97278da2360e1f"
+      }
+    ],
+    "coverage": [
+      {
+        "case": "actual Cordoba native and ordinary null",
+        "evidence": "Recorded earned raw state; both ordinary/native return null; input immutability."
+      },
+      {
+        "case": "actual Cordoba optional investigation",
+        "evidence": "One finite prone native move; actual AP, energy, attack reserve, equipment, round clock and casualty preservation."
+      },
+      {
+        "case": "custom whole-squad hold",
+        "evidence": "Every eligible actor is consulted; no implicit shared callback, accepted orders or state changes."
+      },
+      {
+        "case": "explicit one-bound scheduling",
+        "evidence": "All 12 ordinary decisions precede fallback; exactly one accepted move; AP78 to62 and energy76 to73; second valid proposal remains unexecuted."
+      },
+      {
+        "case": "actual stock common13 ordinary priority",
+        "evidence": "Exact earned pre-order14 state; recorded competing shared move is available; original fire by123 executes first in one bounded default window."
+      }
+    ],
+    "limits": [
+      "Controls were read, not executed, by this audit.",
+      "New controls do not separately trigger a native interrupt, exhaust 16 ordinary passes, or exercise medical scheduling. Those paths were source-reviewed against unchanged native eligibility and ordinary priorities.",
+      "Focused success and full route acceptance must be recorded separately; they are not established by this source review."
+    ]
+  },
+  "execution": {
+    "nativeOrdersByThisAudit": 0,
+    "controllerOrSelectorInvocationsByThisAudit": 0,
+    "campaignRoutesByThisAudit": 0,
+    "testRunsByThisAudit": 0,
+    "candidateSourceWritesByThisAudit": 0,
+    "indexWritesByThisAudit": 0,
+    "externalReportWrites": 2,
+    "priorReadOnlyComparisonAdmission": "Initial comparison removed the passive call without its braced hold wrapper and differed in syntax layout only. The final comparison removes the complete passive observer wrapper and verifies exact original main bytes."
+  },
+  "sourceHandoff": {
+    "path": "/tmp/granaderos-opening-coordination-source-freeze-20261010.json",
+    "bytes": 4220,
+    "sha256": "0287146b2141b855c193d4f4919420ea6576274f37d37b542d271a2f4e10c149",
+    "date": "2026-10-10T10:43:27.143Z",
+    "ownedPaths": [
+      {
+        "path": "tests/opening-driver.mjs",
+        "bytes": 8254,
+        "sha256": "3a808100454045b1acf59e16acd14506ff6ad3e7502aeacabe415638d6718e3f",
+        "currentMatchesHandoff": true,
+        "observedSourceMatchesHandoff": true
+      },
+      {
+        "path": "tests/opening-shared-sighting-investigation.test.mjs",
+        "bytes": 12418,
+        "sha256": "fed35be577ac911bb2065c0246387fefa700b9a134579d1acddb2dc05903e538",
+        "currentMatchesHandoff": true,
+        "observedSourceMatchesHandoff": true
+      },
+      {
+        "path": "tests/fixtures/opening-squad-priority.json.gz",
+        "bytes": 28107,
+        "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b",
+        "currentMatchesHandoff": true,
+        "observedSourceMatchesHandoff": true
+      },
+      {
+        "path": "tests/fixtures/opening-squad-priority.provenance.json",
+        "bytes": 8457,
+        "sha256": "4b61ffc9ad3c6bf62fcca2340927d94d0d5a4994e8c84b888e84c53332fd4d42",
+        "currentMatchesHandoff": true,
+        "observedSourceMatchesHandoff": true
+      }
+    ],
+    "scope": "Care-owned source paths are frozen and match this independent read observation. This is not an assertion that every unrelated candidate path is globally frozen."
+  }
+}

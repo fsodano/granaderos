@@ -50,14 +50,6 @@ export function combatOrder(b,u){
  if(automatic&&automatic.type!=='charge')return automatic;
  if(u.missionAlly&&players.length>1)return null; // Infantry scouts first; a lone commander must still act.
  if(visible.length){
-  // Keep the paid defensive posture. A stable, loaded infantry scout can
-  // investigate the current squad sighting when personal sight yields no order.
-  if(automatic===null&&target&&u.side==='player'&&!u.missionAlly&&!u.mounted&&u.stance==='prone'&&u.hp>=15&&!(u.bleeding>0)&&
-    (u.activeSlot??'primary')==='primary'&&!u.weaponDropped&&hasFirearm(u)&&firearmServiceable(u)&&u.loaded>0&&!u.jammed&&
-    !known&&!u.patrolOrigin&&u.patrol!==false&&!holdsArtilleryPost(b,u)&&sameSurface(u,target)&&!visible.some(contact=>canSee(b,u,contact))){
-   const investigation=choosePlayerSharedSightingInvestigation(b,u,target);
-   if(investigation)return investigation;
-  }
   recordRouteControllerDecisionEvidence({battle:b,unit:u,sharedContacts:visible,automatic});
   return null;
  }
@@ -69,24 +61,57 @@ export function combatOrder(b,u){
  moves.sort((a,c)=>distance(a,destination)-distance(c,destination)||a.cost-c.cost);
  return moves[0]?{type:'move',unitId:u.id,...spacePoint(moves[0])}:null;
 }
-export function fight(request,sectorState,{controller=combatOrder,deploy}={}){let b=enterSector(request,sectorState,{placement:Boolean(deploy)}),actions=0;
+// Optional policy for a current public squad sighting. The caller first gives
+// ordinary fire, care and reload orders their turn; a custom hold stays a hold.
+export function sharedSightingInvestigationOrder(b,u){
+ if(!interruptAvailable(b,u)||u.ap<3||u.knockedDown||u.entangled||u.side!=='player'||u.missionAlly||u.mounted||u.stance!=='prone'||u.hp<15||u.bleeding>0||
+   (u.activeSlot??'primary')!=='primary'||u.weaponDropped||!hasFirearm(u)||!firearmServiceable(u)||!(u.loaded>0)||u.jammed||
+   u.lastKnownEnemy||u.lastHeardNoise||u.patrolOrigin||u.patrol===false||holdsArtilleryPost(b,u))return null;
+ const players=b.units.filter(v=>v.side===u.side&&alive(v)&&v.hp>=15);
+ const visible=b.units.filter(v=>v.side!==u.side&&alive(v)&&players.some(p=>canSee(b,p,v)));
+ if(visible.some(contact=>canSee(b,u,contact)))return null;
+ const target=visible.filter(t=>hasLineOfSight(b,u,t)).sort((a,c)=>shotChance(b,u,c,4)-shotChance(b,u,a,4))[0];
+ if(!target||!sameSurface(u,target)||chooseEnemyAction(b,u)!==null)return null;
+ return choosePlayerSharedSightingInvestigation(b,u,target);
+}
+
+export function openingControlWindow(start,{controller,sharedFallback}={}){
+ let b=start;const orders=[];let sharedInvestigation=null;
+ const ordinary=controller===undefined?combatOrder:controller;
+ // Custom controllers opt in with their own fallback callback, including
+ // their reserve and hold rules. A custom null alone never authorizes movement.
+ const fallback=sharedFallback===undefined?(controller===undefined?sharedSightingInvestigationOrder:null):sharedFallback;
+ const ids=b.units.filter(u=>u.side==='player'&&!u.militia).sort((a,c)=>c.marksmanship-a.marksmanship).map(u=>u.id);
+ // Coordinate the squad one order at a time. Spending one scout's whole
+ // turn before the others advance separates him from fire and medical aid.
+ for(let attempt=0;attempt<16&&b.status==='active';attempt++){
+  let acted=false;
+  for(const id of ids){
+   if(b.status!=='active')break;
+   const u=b.units.find(u=>u.id===id);if(!interruptAvailable(b,u)||u.ap<3)continue;
+   const action=ordinary(b,u);if(!action)continue;
+   const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);acted=true;
+  }
+  if(!acted){
+   // A complete squad pass admitted no ordinary work. Spend at most one
+   // shared bound, then return for native round or interrupt processing.
+   if(fallback&&b.status==='active')for(const id of ids){
+    const u=b.units.find(u=>u.id===id);if(!interruptAvailable(b,u)||u.ap<3)continue;
+    const action=fallback(b,u);if(!action)continue;
+    const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);sharedInvestigation=action;break;
+   }
+   break;
+  }
+ }
+ return {battle:b,actions:orders.length,orders,sharedInvestigation};
+}
+
+export function fight(request,sectorState,{controller,sharedFallback,deploy}={}){let b=enterSector(request,sectorState,{placement:Boolean(deploy)}),actions=0;
  if(deploy)b=deploy(b);
  const orders=[];
  // Enemy movement can yield several control windows within the same round.
  for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
-  const ids=b.units.filter(u=>u.side==='player'&&!u.militia).sort((a,c)=>c.marksmanship-a.marksmanship).map(u=>u.id);
-  // Coordinate the squad one order at a time. Spending one scout's whole
-  // turn before the others advance separates him from fire and medical aid.
-  for(let attempt=0;attempt<16&&b.status==='active';attempt++){
-   let acted=false;
-   for(const id of ids){
-    if(b.status!=='active')break;
-    const u=b.units.find(u=>u.id===id);if(!interruptAvailable(b,u)||u.ap<3)continue;
-    const action=controller(b,u);if(!action)continue;
-    const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action));b=next;orders.push(action);actions++;acted=true;
-   }
-   if(!acted)break;
-  }
+  const result=openingControlWindow(b,{controller,sharedFallback});b=result.battle;orders.push(...result.orders);actions+=result.actions;
   if(b.status==='active'){b=endTurn(b);orders.push({type:'endTurn'});}
  }
  return {battle:b,actions,orders};

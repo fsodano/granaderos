@@ -1,0 +1,252 @@
+{
+  "kind": "read-only-coordinator-control-policy-correction-review-supplement",
+  "observedAt": "2026-10-10T10:48:01.722469+00:00",
+  "candidate": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos",
+  "priorReview": {
+    "path": "/tmp/granaderos-opening-coordination-readonly-review-20261010.json",
+    "bytes": 14023,
+    "sha256": "940af85731b93433790919f5a1a2aa4e88540f8479fd5f75258671cbded8a4a1",
+    "preservedUnchanged": true,
+    "clarification": "The first source-only review did not detect that this exact earned tape used the custom hired policy. The first focused gate exposed the default-policy aim mismatch. This supplement records the corrected controller identity without changing the recorded expected shot."
+  },
+  "initialFocusedGate": {
+    "path": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104418883Z",
+    "receipt": {
+      "bytes": 2098,
+      "sha256": "c0a18ffa8decd5710a6867093571739d3fdf50ea2c8aafeb66dec9e9341b741d"
+    },
+    "beforeSourceSnapshotSha256": "ef12b59d15f66ae9a24689d21a3b98bb3d3600cab5a3eca1ab013cd763142473",
+    "exitCode": 1,
+    "counts": {
+      "tests": 92,
+      "suites": 0,
+      "pass": 91,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sourceDrift": [],
+    "failure": "New stock common13 control ran default combatOrder: actual fire123 toenemy4 torso aim3, recorded hired/cautious policy expected the same shot aim2. Original action assertion is retained."
+  },
+  "correctionHandoff": {
+    "path": "/tmp/granaderos-opening-coordination-control-policy-correction-20261010.json",
+    "bytes": 1712,
+    "sha256": "cdd895bbf2cabc1d7f8255b49099cfdf152c12d192dd7dddd301de014f7f93b4",
+    "sourceFrozen": true,
+    "ownedPaths": [
+      {
+        "path": "tests/opening-driver.mjs",
+        "bytes": 8254,
+        "sha256": "3a808100454045b1acf59e16acd14506ff6ad3e7502aeacabe415638d6718e3f",
+        "matchesHandoff": true
+      },
+      {
+        "path": "tests/opening-shared-sighting-investigation.test.mjs",
+        "bytes": 12559,
+        "sha256": "28535773cd1ac77c22d1dc1a62bab0c5fcbda2aa5c6cb6f0018e6f74090d5750",
+        "matchesHandoff": true
+      },
+      {
+        "path": "tests/fixtures/opening-squad-priority.json.gz",
+        "bytes": 28107,
+        "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b",
+        "matchesHandoff": true
+      },
+      {
+        "path": "tests/fixtures/opening-squad-priority.provenance.json",
+        "bytes": 8457,
+        "sha256": "4b61ffc9ad3c6bf62fcca2340927d94d0d5a4994e8c84b888e84c53332fd4d42",
+        "matchesHandoff": true
+      }
+    ]
+  },
+  "exactCorrectionScope": {
+    "onlyChangedReviewedSourcePath": "tests/opening-shared-sighting-investigation.test.mjs",
+    "previousBytes": 12418,
+    "previousSha256": "fed35be577ac911bb2065c0246387fefa700b9a134579d1acddb2dc05903e538",
+    "currentBytes": 12559,
+    "currentSha256": "28535773cd1ac77c22d1dc1a62bab0c5fcbda2aa5c6cb6f0018e6f74090d5750",
+    "reversedOnlyImportAndCallByteIdentityMatchesInitialGate": true,
+    "delta": "--- initial focused source\n+++ corrected refrozen source\n@@ -8,6 +8,7 @@\n import {sameCell,surfaceAt} from '../game/tactical-space.js';\n import {chooseEnemyAction} from '../game/tactical-ai.js';\n import {combatOrder,sharedSightingInvestigationOrder,openingControlWindow} from './opening-driver.mjs';\n+import {hiredAssaultOrder} from './hired-assault-driver.mjs';\n \n const digest=value=>createHash('sha256').update(value).digest('hex');\n const provenance=JSON.parse(readFileSync(new URL('./fixtures/opening-cordoba-shared-sighting.provenance.json',import.meta.url),'utf8'));\n@@ -146,7 +147,7 @@\n  try{\n   unexecutedSharedProposal=sharedSightingInvestigationOrder(battle,scout);\n   assert.deepEqual(unexecutedSharedProposal,priorityProvenance.recordedUnexecutedNextOrders.current,'the competing paid shared move exists in the actual earned state');\n-  result=openingControlWindow(battle);\n+  result=openingControlWindow(battle,{controller:hiredAssaultOrder,sharedFallback:sharedSightingInvestigationOrder});\n   const first=result.orders[0];\n   assert.deepEqual({...first,hitLocation:first?.hitLocation??'torso'},priorityProvenance.recordedUnexecutedNextOrders.original,\n    'the real loaded ordinary shot wins before the shared move');\n",
+    "unchangedReviewedSourceFiles": [
+      {
+        "path": "tests/opening-driver.mjs",
+        "sha256": "3a808100454045b1acf59e16acd14506ff6ad3e7502aeacabe415638d6718e3f",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/opening-campaign.mjs",
+        "sha256": "0a7388911fb597cc8a3311344928f8929579c3d576e97fc850afdee3b8006a04",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/opening-body-region-driver.mjs",
+        "sha256": "a5094fcc931659b6cae36de46826acf43efb7e0eb6c8507529b4d39fe8e2ef49",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/fixtures/opening-cordoba-shared-sighting.json.gz",
+        "sha256": "31198d1594dc728cf295109eba78863e0895c3a3f1f7339106c0ad44ed6b736f",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/fixtures/opening-cordoba-shared-sighting.provenance.json",
+        "sha256": "a63d70bad28fc8ded45451095a2f639006381236ddc546bdf1d12e77ce41fb79",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/fixtures/opening-squad-priority.json.gz",
+        "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/fixtures/opening-squad-priority.provenance.json",
+        "sha256": "4b61ffc9ad3c6bf62fcca2340927d94d0d5a4994e8c84b888e84c53332fd4d42",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/route-controller-decision-evidence.mjs",
+        "sha256": "20a3695167eaed2d661b3f0aafbd578b506a7427e2be932ae0a04eae23f6ec66",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/local-san-lorenzo-driver.mjs",
+        "sha256": "aa4fc318605b117fb9349113d91dc00c2dcd1f2f0d114612c35a6c0f4c24ea15",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "game/tactical-ai.js",
+        "sha256": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "game/tactical.js",
+        "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "game/first-aid.js",
+        "sha256": "4972b738286f2671ee4aaad3653aa0829b1004fad620f4bde75d0e24263171e5",
+        "byteIdentityUnchangedFromPriorReview": true
+      },
+      {
+        "path": "tests/opening-driver-control.test.mjs",
+        "sha256": "a01658434c26509725b0c4da27effddf589af348e7ea24377b97a78e64d96fbc",
+        "byteIdentityUnchangedFromPriorReview": true
+      }
+    ]
+  },
+  "controllerProvenanceReview": {
+    "recordedRoute": "fresh-coastal-fixture stockCoastalFight calls hiredAssaultOrder, which delegates to cautiousCombatOrder; its extra hold filters mission-ally move/charge/climb/exit only.",
+    "fixturePlayerCount": 6,
+    "fixturePlayerIds": [
+      "1000",
+      "123",
+      "115",
+      "114",
+      "131",
+      "120"
+    ],
+    "fixtureMissionAllyIds": [],
+    "wrapperEquivalenceScope": "No mission ally exists in this exact earned fixture, so its existing extra reserve filter is inactive. Direct hiredAssaultOrder correctly represents the recorded ordinary policy for this scoped control. This is not a claim that every future custom controller may omit its hold filtering.",
+    "policySourceIdentity": [
+      {
+        "path": "tests/hired-assault-driver.mjs",
+        "bytes": 457,
+        "sha256": "528147ca4316d6bf088057068ef43872a92683d0439edb08aa83a7e3eba628be",
+        "byteExactAa1": true
+      },
+      {
+        "path": "tests/cautious-driver.mjs",
+        "bytes": 2730,
+        "sha256": "809b6ad33642861f52f580676e0146d90aa32986341d8ae4e0fb4d881772f278",
+        "byteExactAa1": true
+      },
+      {
+        "path": "tests/fresh-coastal-fixture.mjs",
+        "bytes": 23100,
+        "sha256": "19716300f040d511d4fcfb6b0286b0af4be6af1380e660d39681602abe4e4f55",
+        "byteExactAa1": true
+      }
+    ],
+    "newCall": "openingControlWindow(battle,{controller:hiredAssaultOrder,sharedFallback:sharedSightingInvestigationOrder})",
+    "recordedAim2DeepAssertionRetained": true,
+    "originalSharedMoveAssertionRetained": true,
+    "wholePassAndOneActionSchedulingUnchanged": true
+  },
+  "originalFiveAgainstMain": [
+    {
+      "path": "tests/fresh-campaign-recovery.test.mjs",
+      "sha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/fresh-cuyo-route.test.mjs",
+      "sha256": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/fresh-coastal-route.test.mjs",
+      "sha256": "8d3305f0fea5670bd72a9bdd2741e3d45df7dcab4407231172d8ee9f93558273",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/opening-playthrough.test.mjs",
+      "sha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "byteExactMain": true
+    },
+    {
+      "path": "tests/fresh-ending-route.test.mjs",
+      "sha256": "b15592c43228e5c7c62124258ca6cb9c9e956c5b02fdc4b698a8f771426e60f4",
+      "byteExactMain": true
+    }
+  ],
+  "reviewResult": {
+    "blockingSourceFindings": [],
+    "sourceReviewComplete": true,
+    "correctedFocusedGate": "Actual closed root gate:92pass,0fail,0skip,0source drift. Receipt linked separately above.",
+    "fullRouteAcceptance": "Pending and separate.",
+    "limits": [
+      "New controls still do not separately trigger a native interrupt, exhaust all16ordinary passes, or schedule medical aid.",
+      "The corrected control is on the exact stock earned raw state with its actual custom policy, not a default opening-campaign battle acceptance claim."
+    ]
+  },
+  "execution": {
+    "nativeOrdersByThisAudit": 0,
+    "controllerOrSelectorInvocationsByThisAudit": 0,
+    "testsByThisAudit": 0,
+    "campaignRoutesByThisAudit": 0,
+    "candidateSourceWritesByThisAudit": 0,
+    "indexWritesByThisAudit": 0,
+    "repositoryDocsWritesByThisAudit": 0,
+    "externalSupplementWrites": 2
+  },
+  "correctedFocusedGate": {
+    "path": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z",
+    "receipt": {
+      "path": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/final-receipt.json",
+      "bytes": 2097,
+      "sha256": "3f2262a8d90fb0a782ad61c391da8a8631d6328a92a22700c3fc5d36b03548cd"
+    },
+    "exitCode": 0,
+    "counts": {
+      "tests": 92,
+      "suites": 0,
+      "pass": 92,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sourceDrift": [],
+    "beforeSourceSnapshot": {
+      "path": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/before-source-hashes.json",
+      "bytes": 1896228,
+      "sha256": "dc7e16f59b83e2d90bf8d52ed181cedbd85caa4b82c62e7b94e24fc4f3ba153a"
+    },
+    "reviewedFourPathHashesMatchActualGatePin": true,
+    "scope": "Actual closed root19-file focused gate; this read-only audit linked and checked its receipt and reviewed source pins without re-running any controls. This is not full route acceptance."
+  },
+  "finalizedAt": "2026-10-10T10:48:26.684115+00:00"
+}

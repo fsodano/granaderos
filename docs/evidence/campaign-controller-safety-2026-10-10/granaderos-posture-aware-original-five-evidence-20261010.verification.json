@@ -1,0 +1,61 @@
+{
+  "archive": "/tmp/granaderos-posture-aware-original-five-evidence-20261010.tar.gz",
+  "archiveBytes": 23254185,
+  "archiveSha256": "ff55e8a41375c946a4fd50ad1dfb5d8a1dfe16e11292572a0092026fe4f10398",
+  "memberCount": 370,
+  "originalRegularFileCount": 365,
+  "everyMemberRawByteEqual": true,
+  "everyMemberHashAndSizeMatched": true,
+  "completeOriginalInventoryUnchanged": true,
+  "originalFilesAndLiveReportUnchangedAfterPacking": true,
+  "sourceMapsByteEqual": true,
+  "sourceDrift": [],
+  "terminalProcessObservationBefore": {
+    "observedUTC": "2026-10-10T10:28:55.886162+00:00",
+    "pids": [
+      89482,
+      89506,
+      89507,
+      89508,
+      89509,
+      89510,
+      89511
+    ],
+    "command": [
+      "ps",
+      "-p",
+      "89482,89506,89507,89508,89509,89510,89511",
+      "-o",
+      "pid=,ppid=,stat=,command="
+    ],
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "",
+    "allRecordedPIDsGone": true
+  },
+  "terminalProcessObservationAfter": {
+    "observedUTC": "2026-10-10T10:28:59.604867+00:00",
+    "pids": [
+      89482,
+      89506,
+      89507,
+      89508,
+      89509,
+      89510,
+      89511
+    ],
+    "command": [
+      "ps",
+      "-p",
+      "89482,89506,89507,89508,89509,89510,89511",
+      "-o",
+      "pid=,ppid=,stat=,command="
+    ],
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "",
+    "allRecordedPIDsGone": true
+  },
+  "nativeCallsDuringPacking": 0,
+  "candidateEditsDuringPacking": 0
+}

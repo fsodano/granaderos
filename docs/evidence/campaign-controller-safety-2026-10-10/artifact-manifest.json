@@ -287,8 +287,143 @@
       "path": "granaderos-posture-aware88-controls-20261010.report.md",
       "bytes": 2841,
       "sha256": "c9e262828ec782b3efdbfae6285e63f4f540442472b42232fb2aee77a86959b3"
+    },
+    {
+      "path": "opening-ordinary-source-audit.json",
+      "bytes": 10571,
+      "sha256": "630b11700639d97364407c95d321ea5ee963c643f2b63fd4d953e9dc2331e2d6"
+    },
+    {
+      "path": "posture-aware-original-five-gate-receipt.json",
+      "bytes": 1405,
+      "sha256": "72ca1e59267f48b3063307418b3f68121a5788e67f33bc8a38261ce8b75d32c0"
+    },
+    {
+      "path": "granaderos-posture-aware-original-five-evidence-20261010.verification.json",
+      "bytes": 1447,
+      "sha256": "fe51e665f2c125f87eab3852d3fb29154bd38e3ba58bcb138903c10c1bce1854"
+    },
+    {
+      "path": "opening-northern-stopped-prefix-audit.json",
+      "bytes": 15723,
+      "sha256": "0998ba33758819ed3b38cd06bb6d55af3da7065de9ff1c8f5340fa3d2572dee9"
+    },
+    {
+      "path": "opening-sann-three-earned-proposals.json",
+      "bytes": 26912,
+      "sha256": "92dae178ccd1015660a992d1ee0918c1ee0e7dc4abfe12dc241baaca9d07eb02"
+    },
+    {
+      "path": "granaderos-posture-aware-original-five-evidence-20261010.manifest.json",
+      "bytes": 204473,
+      "sha256": "5b1c98cffdfbfbeedd441644e62a1d8ac28e58bd56ee2dfbde3937257bb76e2c"
+    },
+    {
+      "path": "granaderos-posture-aware-original-five-evidence-20261010.report.json",
+      "bytes": 4400,
+      "sha256": "a91db520d074e9905483a2f3f3a0c7210085f517531988a5f6286a21e43c8f62"
+    },
+    {
+      "path": "changed-coastal-prefix-audit.json",
+      "bytes": 27002,
+      "sha256": "45c2d5c67fcbf68087faf6777fa34fabdb2fdb101068b48e48db7a1368f79994"
+    },
+    {
+      "path": "granaderos-posture-aware-original-five-evidence-20261010.report.md",
+      "bytes": 3843,
+      "sha256": "51efb5425aa41a3a3cbe56e86ea164854d1b935fa05837e3eebf224516f4d218"
+    },
+    {
+      "path": "granaderos-posture-aware-original-five-evidence-20261010.tar.gz",
+      "bytes": 23254185,
+      "sha256": "ff55e8a41375c946a4fd50ad1dfb5d8a1dfe16e11292572a0092026fe4f10398"
+    },
+    {
+      "path": "granaderos-stock-sann-common13-control-evidence-20261010.tar.gz",
+      "bytes": 1523093,
+      "sha256": "4ce476578a01fb9eb6eacc83d5fb17ae9f90f77837534467239bdd318bc19bc3"
+    },
+    {
+      "path": "granaderos-stock-sann-common13-control-evidence-20261010.report.json",
+      "bytes": 1220,
+      "sha256": "805db2871e10f905609811d765662dd33e5c150e2a83fccdd1b482c2979e8925"
+    },
+    {
+      "path": "granaderos-stock-sann-common13-control-evidence-20261010.manifest.json",
+      "bytes": 8372,
+      "sha256": "d6b25abf38516e45c5bf694f4646cfeaeee23951d439c55403971bbfc78beb01"
+    },
+    {
+      "path": "granaderos-coordination-initial-policy-control-evidence-20261010.tar.gz",
+      "bytes": 1905591,
+      "sha256": "3111151770ed98bd17207d9359c1046ced0922c51896cb6e2fb0a6bb331a568b"
+    },
+    {
+      "path": "granaderos-coordination-initial-policy-control-evidence-20261010.manifest.json",
+      "bytes": 8622,
+      "sha256": "4f14ce2a43a100dbaff024fd66b3703023832892afa1859562bb3024e347f4d2"
+    },
+    {
+      "path": "granaderos-coordination-initial-policy-control-evidence-20261010.report.json",
+      "bytes": 2667,
+      "sha256": "139910a3d1498e7e0c1f1730a56284733be5cdd6ae00107e3f37b021d163927c"
+    },
+    {
+      "path": "granaderos-coordination-initial-policy-control-evidence-20261010.report.md",
+      "bytes": 453,
+      "sha256": "e4fe6a241e6036b71108e0f308c10c5400d75ec0aec4fd5006c0a658a2303ec3"
+    },
+    {
+      "path": "opening-coordination-readonly-review.json",
+      "bytes": 14023,
+      "sha256": "940af85731b93433790919f5a1a2aa4e88540f8479fd5f75258671cbded8a4a1"
+    },
+    {
+      "path": "opening-coordination-initial-source-freeze.json",
+      "bytes": 4220,
+      "sha256": "0287146b2141b855c193d4f4919420ea6576274f37d37b542d271a2f4e10c149"
+    },
+    {
+      "path": "opening-coordination-initial-focused-gate-receipt.json",
+      "bytes": 2098,
+      "sha256": "c0a18ffa8decd5710a6867093571739d3fdf50ea2c8aafeb66dec9e9341b741d"
+    },
+    {
+      "path": "granaderos-coordination-controls-evidence-20261010.tar.gz",
+      "bytes": 1869204,
+      "sha256": "b82cf912180e37d1cb8edf54d982c060f2e0a4227a08af11acad1ba75a266554"
+    },
+    {
+      "path": "granaderos-coordination-controls-evidence-20261010.manifest.json",
+      "bytes": 7790,
+      "sha256": "727a1cec122c78ab6d1622be0ae43645ae530fb57c3c4d453a490c27c56378d2"
+    },
+    {
+      "path": "granaderos-coordination-controls-evidence-20261010.report.json",
+      "bytes": 2630,
+      "sha256": "37f9c4e61631ab4d7c8d5dda1e3fc4bc259092a2435bf6a37f25eb857dd76cea"
+    },
+    {
+      "path": "granaderos-coordination-controls-evidence-20261010.report.md",
+      "bytes": 417,
+      "sha256": "b79af7fc9d2d74638107a90fcd71e7d3cd5066fcdf3fa94e2361cceb7080f16d"
+    },
+    {
+      "path": "opening-coordination-control-policy-correction.json",
+      "bytes": 1712,
+      "sha256": "cdd895bbf2cabc1d7f8255b49099cfdf152c12d192dd7dddd301de014f7f93b4"
+    },
+    {
+      "path": "opening-coordination-focused-gate-receipt.json",
+      "bytes": 2097,
+      "sha256": "3f2262a8d90fb0a782ad61c391da8a8631d6328a92a22700c3fc5d36b03548cd"
+    },
+    {
+      "path": "opening-coordination-control-policy-readonly-supplement.json",
+      "bytes": 11731,
+      "sha256": "65fdfeda844f11ed3687b1388850ca0888f909767f1fa50f95feda2d105c7b59"
     }
   ],
-  "scope": "Retained exact original failures, source-bound focused controls, canonical build, passive strategic diagnostics and one unchanged main baseline. Original route acceptance and final full gameplay validation remain incomplete.",
-  "updatedAt": "2026-10-10T10:09:07.186983+00:00"
+  "scope": "Retained closed original gates, complete native evidence, bounded controls and source audits. Latest coordination controls92pass0fail0skip. Previous original five5pass4fail0skip; renewed original route acceptance and final full suite remain pending.",
+  "updatedAt": "2026-10-10T10:49:19.205933+00:00"
 }

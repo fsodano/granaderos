@@ -304,3 +304,70 @@ The [posture-aware archive](granaderos-posture-aware88-controls-20261010.tar.gz)
 retains all nine original files from that corrected 88-control gate and its
 report. All ten members passed independent byte and hash verification.
 The earlier pre-correction controls remain preserved separately.
+
+
+## Closed posture-aware original routes
+
+The [original-five receipt](posture-aware-original-five-gate-receipt.json)
+records five passing coastal tests and four failures, with zero skips or
+source drift. The [complete archive](granaderos-posture-aware-original-five-evidence-20261010.tar.gz)
+retains all 365 original files plus reports, process proof and member
+inventory: all 370 members passed independent byte and hash verification.
+The canonical source is `c132c162f024` at revision `aa1cfe57`. All original
+five test files, default seeds and assertions remain unchanged.
+
+Hired coastal now passes its original assertions. The native accepted tape
+matches the older failed input and first 131 actions, then the medic approaches
+instead of reloading. The commander reaches returned and saved settlement
+alive at 11 HP, bleeding zero, with campaign defeated false. Soldier 113 dies
+and that loss remains real. The commander remains unconscious; route
+acceptance does not establish full commander recovery or later victories.
+
+The four remaining failures now occur before the earlier strategic boundaries:
+funded recovery requires a recovered gun; created northern officer relief
+lacks a conscious local medic; stock northern preparation cannot collect its
+finite San Nicolás dressings; established opening loses its first San Nicolás
+battle. No actual funding, stock-readiness or northern doctor helper entry was
+reached. Donor, morale and road corrections cannot be inferred from this run.
+
+The [source audit](opening-ordinary-source-audit.json) verifies that rejected
+posture code is absent and the original paid prone behavior remains byte
+equivalent. The [coastal prefix audit](changed-coastal-prefix-audit.json)
+identifies a changed stock move before a teammate's shot on equal initial
+input. The [earned proposal audit](opening-sann-three-earned-proposals.json)
+shows three new approach proposals on actual old-null San Nicolás states,
+including the medic. Those pure evaluations issue no native orders and do
+not prove defeat causality. Shared-investigation scheduling needs correction
+and another original acceptance gate.
+
+The [common-prefix archive](granaderos-stock-sann-common13-control-evidence-20261010.tar.gz)
+retains the sole replay of the 13 shared native orders before that changed
+stock move. Both raw entries and recorded clocks match; one official save
+restores the earned pair exactly. No selector, settlement or later battle was
+run. All 43 original members passed independent byte and hash verification.
+The fixture for ordinary-shot priority comes from this earned state. The
+coordination correction restores the original per-unit controller and admits
+one optional shared bound after a complete squad pass accepts no ordinary
+action. Custom holds require explicit opt-in; the San Lorenzo commander
+reserve remains unchanged. Original routes remain pending on this correction.
+
+The [source review](opening-coordination-readonly-review.json) verifies ordinary
+controller equivalence, unchanged native chooser and original test files. The
+[initial focused receipt](opening-coordination-initial-focused-gate-receipt.json)
+records 91 passes and one new-control failure, with zero skips or source drift.
+The stock priority control used the default opening firing policy while its
+recorded shot came from the hired route's existing cautious policy. The new
+control now uses that actual hired policy; its exact recorded shot assertion
+remains intact. The [complete initial archive](granaderos-coordination-initial-policy-control-evidence-20261010.tar.gz)
+preserves all 22 original files, including the failure and all five control
+captures. All 24 members passed independent byte and hash verification.
+
+After that [policy correction](opening-coordination-control-policy-correction.json),
+the [focused receipt](opening-coordination-focused-gate-receipt.json) records
+92/92 passing controls across 19 files, with zero skips or source drift. The
+[complete archive](granaderos-coordination-controls-evidence-20261010.tar.gz)
+retains every one of the 20 original files and all five raw opening controls.
+All 22 members passed independent byte and hash verification. The stock control
+retains the original hired shot's exact target, aim and body region; one-bound
+and custom-hold controls retain native AP, energy, wounds and supplies. This
+focused gate does not establish original route acceptance or full recovery.
