@@ -107,7 +107,7 @@ test("partitions recompute rooms and door openings reconnect routes", () => {
   assert.equal(compileMap(d).buildings[0].rooms.length, 2);
   d = execute(d, [{ type: "setWall", buildingId: "house", x: 5, y: 5, axis:"y", wallType: "door" }]);
   assert.equal(d.buildings[0].rooms.length, 2);
-  d = execute(d, [{ type: "setDoor", id: "house:door:5:5", open: true }]);
+  d = execute(d, [{ type: "setDoor", id: "house:door:y:5:5", open: true }]);
   assert.equal(compileMap(d).wallEdges.find((t) => t.x === 5 && t.y === 5 && t.axis==="y").blocked, false);
 });
 test("templates and duplicated buildings remap object and container IDs", () => {

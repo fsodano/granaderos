@@ -17,7 +17,7 @@ export function buildBuilding({id,x,y,width,height,name=id,doors=[],windows=[],m
     const edge=item.axis?item:item.y===y+height-1?{...item,y:y+height,axis:'x'}:item.y===y?{...item,axis:'x'}:item.x===x?{...item,axis:'y'}:item.x===x+width-1?{...item,x:x+width,axis:'y'}:null;
     const target=edge&&walls.find(w=>w.x===edge.x&&w.y===edge.y&&w.axis===edge.axis);
     if(!target||target.type!=='wall')throw Error('Doors and windows must occupy distinct perimeter edges.');
-    Object.assign(target,{type,blocked:type==='window'||!item.open,blocksSight:type==='wall'||type==='door'&&!item.open,cover:type==='window'?25:0,...(item.style?{style:item.style}:{}),...(type==='door'?{doorId:item.doorId||item.id||`${id}:door:${item.x}:${item.y}`,open:Boolean(item.open),locked:Boolean(item.locked)}:{})});
+    Object.assign(target,{type,blocked:type==='window'||!item.open,blocksSight:type==='wall'||type==='door'&&!item.open,cover:type==='window'?25:0,...(item.style?{style:item.style}:{}),...(type==='door'?{doorId:item.doorId||item.id||(item.axis?`${id}:door:${item.axis}:${item.x}:${item.y}`:`${id}:door:${item.x}:${item.y}`),open:Boolean(item.open),locked:Boolean(item.locked)}:{})});
   }
   for(const door of doors)opening(door,'door');for(const window of windows)opening(window,'window');
   const building={id,name,x,y,width,height,roof,material,architecture,walls,rooms:[{id:roomId,cells}]};

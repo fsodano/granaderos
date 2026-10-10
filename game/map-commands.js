@@ -282,7 +282,7 @@ export function applyMapCommands(
             type: c.wallType,
             ...(c.style ? { style: c.style } : {}),
             ...(c.wallType === "door"
-              ? { doorId: c.doorId ?? previous?.doorId ?? `${b.id}:door:${c.x}:${c.y}`, open: false, locked: false }
+              ? { doorId: c.doorId ?? previous?.doorId ?? `${b.id}:door:${at.axis}:${at.x}:${at.y}`, open: false, locked: false }
               : {}),
           });
       } else if (c.type === "resizeBuilding") {

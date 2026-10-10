@@ -7,6 +7,7 @@ import {wallEdgeCells,wallMovementBlocked} from '../game/wall-geometry.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
 import {destroyStructure} from '../game/structure-blast.js';
+import {buildBuilding} from '../game/buildings.js';
 const edit=(doc,commands)=>{const result=applyMapCommands(doc,commands);assert.deepEqual(result.errors,[]);return result.document;};
 const house=()=>edit(blankMap({width:12,height:12}),[{type:'addBuilding',building:{id:'house',x:2,y:2,width:5,height:4}}]);
 
@@ -31,6 +32,10 @@ test('opening edits distinguish the two edges at a corner and keep stable IDs th
  doc=edit(doc,[{type:'moveObject',id:'house',x:5,y:4}]);
  assert.deepEqual(doc.buildings[0].walls.map(w=>w.id).sort(),ids);
  assert.equal(doc.buildings[0].walls.find(w=>w.doorId==='north').style,'arched');
+ let doors=edit(house(),['x','y'].map(axis=>({type:'setWall',buildingId:'house',x:2,y:2,axis,wallType:'door'})));
+ const leaves=doors.buildings[0].walls.filter(w=>w.x===2&&w.y===2);assert.equal(new Set(leaves.map(w=>w.doorId)).size,2);
+ doors=edit(doors,[{type:'setDoor',id:leaves[0].doorId,open:true}]);assert.deepEqual(leaves.map(w=>doors.buildings[0].walls.find(e=>e.id===w.id).open),[true,false]);
+ const built=buildBuilding({id:'generated',x:2,y:2,width:5,height:4,doors:['x','y'].map(axis=>({x:2,y:2,axis}))});assert.equal(new Set(built.wallEdges.filter(w=>w.type==='door').map(w=>w.doorId)).size,2);
 });
 
 test('room identities stay stable when an internal edge door opens and furniture keeps both approaches clear',()=>{
