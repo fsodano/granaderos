@@ -13,10 +13,10 @@ test('re-entering a sector retains breaches and dropped gear without duplicating
   assert.ok(destination,'the generated deployment has an accessible adjacent position with sight of the dropped item');
   first=actBattle(first,{type:'move',unitId:resident.id,x:destination.x,y:destination.y});assert.equal(first.lastError,null);
   assert.equal(canSee(first,first.units[0],gear),true);
-  const wall=first.tiles.find(t=>t.type==='wall');Object.assign(wall,{blocked:false,blocksSight:false,type:'stone',cover:0});
+  const wall=first.wallEdges.find(t=>t.type==='wall');Object.assign(wall,{blocked:false,blocksSight:false,type:'rubble',cover:0});
   const saved=structuredClone(first);
   const returned=enterSector({...request,squad:first.units.map(u=>({...u,entryReason:'resident'}))},first);
-  assert.deepEqual(returned.tiles.find(t=>t.x===wall.x&&t.y===wall.y),wall);
+  assert.deepEqual(returned.wallEdges.find(t=>t.id===wall.id),wall);assert.deepEqual(returned.wallEdges,saved.wallEdges);assert.deepEqual(returned.tiles,saved.tiles);
   assert.deepEqual(returned.groundItems,saved.groundItems);assert.equal(returned.groundItems.length,saved.groundItems.length);
   assert.equal(returned.units.length,2);assert.equal(new Set(returned.units.map(u=>u.id)).size,2);
   assert.deepEqual(returned.units.map(({id,x,y,ammo})=>({id,x,y,ammo})),saved.units.map(({id,x,y,ammo})=>({id,x,y,ammo})));

@@ -53,10 +53,11 @@ test('tagged ground rooms cannot hide a roof, while separate upper rooms remain 
 test('real doors and breaches change disclosure on fresh snapshots after the room index is warmed',()=>{
  const ground=Array.from({length:240},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0}));
  const built=placeBuilding(ground,{id:'house',x:4,y:2,width:6,height:6,doors:[{id:'door',x:6,y:2}]});
- for(const action of [{type:'door',doorId:'door'},{type:'breach',x:5,y:2}]){
-  const x=action.x??6,state=createBattle([{id:'p',x,y:1,...(action.type==='breach'?{activeSlot:'tool',activeTool:'inventory:bar',inventory:{bar:{count:1,weight:2.5,itemType:'tool',toolKey:'crowbar',condition:100}}}:{})}],{width:20,height:12,tiles:built.tiles,buildings:[built.building],exploration:true,enemies:[]}),inside={x,y:3};
+ const breach=built.wallEdges.find(edge=>edge.x===5&&edge.y===2&&edge.axis==='x');
+ for(const action of [{type:'door',doorId:'door'},{type:'breach',wallEdgeId:breach.id}]){
+  const x=action.type==='breach'?5:6,state=createBattle([{id:'p',x,y:1,...(action.type==='breach'?{activeSlot:'tool',activeTool:'inventory:bar',inventory:{bar:{count:1,weight:2.5,itemType:'tool',toolKey:'crowbar',condition:100}}}:{})}],{width:20,height:12,tiles:built.tiles,wallEdges:built.wallEdges,buildings:[built.building],exploration:true,enemies:[]}),inside={x,y:3},edge=state.wallEdges.find(edge=>action.type==='breach'?edge.id===breach.id:edge.doorId==='door');
   assert.equal(roomAt(state,inside).id,'house:interior');assert.equal(isInteriorVisible(state,inside,new Set(visibleRooms(state))),false);
-  const next=actBattle(state,{unitId:'p',...action});assert.equal(next.lastError,null);assert.equal(next.tiles.find(t=>t.x===x&&t.y===2).blocked,false);
+  const next=actBattle(state,{unitId:'p',...action});assert.equal(next.lastError,null);assert.equal(next.wallEdges.find(t=>t.id===edge.id).blocked,false);assert.deepEqual(next.tiles,state.tiles);
   if(action.type==='breach')assert.equal(next.units[0].inventory.bar.condition,97);
   assert.equal(isInteriorVisible(next,inside,new Set(visibleRooms(next))),true);assert.equal(isInteriorVisible(state,inside,new Set(visibleRooms(state))),false);
  }
