@@ -46,7 +46,8 @@ the new format. Compatibility with earlier campaign saves is outside scope.
 - Production build and type check passed. Static export verification checked
   1,377 files and 1,045 asset references. Build identity: `be9a567f1fdc`.
 - Documentation and baseline audits passed. Test partition self-tests passed
-  5/5, and final partition verification included all 965 files exactly once.
+  5/5. The first final partition check included all 965 files exactly once;
+  the added campaign checkpoint tests require an updated count below.
 - The complete full gate began with production source `74944df9`. The final
   presentation fix is `662f42a4`; its 53 affected tests, type check, production
   build, and browser door-crossing review passed separately. Campaign driver
@@ -93,23 +94,36 @@ finite ammunition and physician stock, actual Tucumán victory, and exact saved
 replay. Urgent northern care now uses only dressings found in the actual battle.
 The earned Salta battery proof spends all seven real charges, retains six actual
 losses, and completes Yatasto with saved replay. These focused results do not
-claim that the entire ending, Cuyo, or historical-loss routes passed.
+claim that the entire ending or Cuyo routes passed.
 
-The clinic follow-on diagnostic used two paid recruits, three paid forts, real
-contract renewals, and finite equipment. It won the raid with exact replay but
-still lost patient 129 and physician 122. The original patient assertions remain
-intact. This is a remaining branch campaign limit, not a confirmed main failure.
+The first clinic diagnostic won the raid but lost a patient. A later public
+search found seven finite dressings on four inspected bodies. With the two
+existing reserve dressings, real paid care restored all four released patients
+before the unchanged raid clock. The original medical assertions passed 2/2;
+the six-case clinic gate passed 6/6. No patient health, supply, raid clock, or
+victory was assigned. The whole opening run passed its first five stages, then
+reached a distinct Salta rear-guard shortlist failure.
 
-The Cuyo follow-on handled the actual rear Salta raid with the existing
-withdrawal order, then won Mendoza with exact replay and settlement. Army
-funding still refused the third cannon: `arsenal:cordoba:2` remains in a delayed
-transfer on the occupied Salta route. The piece was retained, but had not reached
-a controlled physical source. No cannon was added to bypass that requirement.
+The Cuyo continuation won Mendoza with exact replay and settlement. It then
+recaptured Salta through actual combat to free the delayed `arsenal:cordoba:2`
+convoy. Five additional actual casualties remain dead. The unloaded cannon
+reached Córdoba with its original identity and no added rounds. Actual contract
+renewals, return travel, and 60 militia training completed the army funding
+requirements. The earned convoy and funding regression passed 1/1.
 
-The stock northern follow-on passed actual Tucumán victory, paid officer relief,
-and Salta victory with saved replay. Its next finite first-aid approach still
-lost patient 146 before treatment; routed survivor 107 also needs physical relief
-at `cell-12-8`. Stock Yatasto and the full ending were not verified.
+The stock northern continuation passed Salta with a public support order for
+the actual physician, finite local first aid, and physical relief of routed
+survivor 107 at `cell-12-8`. Its earned regression passed 1/1 with full and
+midpoint saved replay. Stock Yatasto completed at hour 378, second 2572. A later
+physician visit replaced the scene cache, so the provincial meeting now also
+uses actual surviving resident records. The original health, leadership,
+service, and contract gates remain in place. The full ending is not verified.
+
+The historical-loss route now uses the same admitted Mendoza battery policy as
+the Cuyo route. It wins actual Mendoza with eight finite charges, then performs
+the two real melee actions required to kill engineer 2. The foundry refusal,
+loss flags, previous deaths, saves, and settlement pass. The complete fresh
+historical-loss file passed 1/1 in a separate run.
 
 ## Campaign recheck
 
