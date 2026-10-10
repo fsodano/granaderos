@@ -299,3 +299,8 @@ that the earned crouched medic's destination was already valid. After this
 planning correction, the [new focused receipt](posture-aware88-focused-gate-receipt.json)
 records another 88/88 pass with zero skips and source drift. The production
 digest remains `c132c162f024`; the changed code is in the route controller.
+
+The [posture-aware archive](granaderos-posture-aware88-controls-20261010.tar.gz)
+retains all nine original files from that corrected 88-control gate and its
+report. All ten members passed independent byte and hash verification.
+The earlier pre-correction controls remain preserved separately.

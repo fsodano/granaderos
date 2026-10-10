@@ -272,6 +272,21 @@
       "path": "critical-ally-rescue-final-review.json",
       "bytes": 1568,
       "sha256": "6bf73ff01f03f0df8228875cf8ccc1e361988d1ef5d98dae6599bcbb0b7bd3f6"
+    },
+    {
+      "path": "granaderos-posture-aware88-controls-20261010.tar.gz",
+      "bytes": 1408212,
+      "sha256": "9b3715f5d8a54b5a98bf21cf41897dd8dcd6068738346c438265312a93536ef4"
+    },
+    {
+      "path": "granaderos-posture-aware88-controls-20261010.manifest.json",
+      "bytes": 6251,
+      "sha256": "9db5d05dcb2f057b705f6aab50396991dea9d26b0196f2974a8014c21e1255ba"
+    },
+    {
+      "path": "granaderos-posture-aware88-controls-20261010.report.md",
+      "bytes": 2841,
+      "sha256": "c9e262828ec782b3efdbfae6285e63f4f540442472b42232fb2aee77a86959b3"
     }
   ],
   "scope": "Retained exact original failures, source-bound focused controls, canonical build, passive strategic diagnostics and one unchanged main baseline. Original route acceptance and final full gameplay validation remain incomplete.",
