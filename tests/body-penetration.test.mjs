@@ -37,6 +37,27 @@ test('a real bodyguard redirects the first injury and is not injured again by th
  assert.deepEqual(shown.state,n);assert.deepEqual(shown.frames.flatMap(frame=>frame.impacts).map(hit=>[hit.unitId,hit.damage]),[['guard',49]]);assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),action),n);
 });
 
+test('bodyguards require a clear physical edge crossing while preserving one paid shot and same-cell protection',()=>{
+ const horizontal={id:'guard-edge',x:7,y:4,axis:'x',type:'wall',material:'stone',blocked:true,blocksSight:true,cover:40};
+ const cases=[
+  {name:'clear',guard:{x:7,y:4},edges:[],intercepts:true},
+  {name:'same cell',guard:{x:7,y:3},edges:[],intercepts:true},
+  {name:'open door',guard:{x:7,y:4},edges:[{...horizontal,type:'door',doorId:'guard-door',open:true,locked:false,blocked:false,blocksSight:false}],intercepts:true},
+  {name:'closed door',guard:{x:7,y:4},edges:[{...horizontal,type:'door',doorId:'guard-door',open:false,locked:false}],intercepts:false},
+  {name:'closed wall',guard:{x:8,y:3},edges:[{...horizontal,x:8,y:3,axis:'y',projectileResistance:1000}],intercepts:false},
+  {name:'window',guard:{x:7,y:4},edges:[{...horizontal,type:'window',blocksSight:false}],intercepts:false},
+  ...[{x:8,y:3,axis:'y'},{x:7,y:4,axis:'x'},{x:8,y:4,axis:'x'},{x:8,y:4,axis:'y'}].map(edge=>({name:`diagonal ${edge.axis}:${edge.x}:${edge.y}`,guard:{x:8,y:4},edges:[{...horizontal,...edge,type:'window',blocksSight:false}],intercepts:false})),
+ ];
+ for(const item of cases){
+  const s=field(11,{wallEdges:item.edges,enemies:[{id:'e',x:7,y:3,leadership:95,morale:100,patrol:false,overwatch:false},{id:'guard',...item.guard,abilities:['bodyguard'],morale:100,patrol:false,overwatch:false}]}),before=structuredClone(s),n=actBattle(s,action),shown=presentedActBattle(s,action);
+  assert.equal(n.lastError,null,item.name);assert.equal(body(n,'e').hp,item.intercepts?100:51,item.name);assert.equal(body(n,'guard').hp,item.intercepts?51:100,item.name);
+  assert.equal(body(n,'guard').ap,item.intercepts?92:100,item.name);assert.equal(body(n,'guard').interceptTurn,item.intercepts?1:0,item.name);
+  assert.equal(body(n,'p').ap,69);assert.equal(body(n,'p').loaded,0);assert.deepEqual(body(n,'p').ammunition,body(s,'p').ammunition);assert.equal(body(n,'p').condition,99);assert.equal(body(n,'p').energy,body(s,'p').energy);assert.equal(n.elapsedSeconds,6);assert.equal(n.smoke.length,1);
+  assert.deepEqual(shown.state,n);assert.deepEqual(s,before);assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),action),n);
+  assert.deepEqual(shown.frames.flatMap(frame=>frame.impacts).map(hit=>[hit.unitId,hit.damage]),[[item.intercepts?'guard':'e',49]],item.name);
+ }
+});
+
 test('a guard already struck by this ball cannot intercept its later commander hit',()=>{
  const s=field(11,{enemies:[{id:'guard',x:7,y:3,abilities:['bodyguard'],morale:100,patrol:false,overwatch:false},{id:'commander',x:8,y:3,leadership:95,morale:100,patrol:false,overwatch:false}]}),a={...action,targetId:'guard'};
  Object.assign(body(s,'p'),{marksmanship:80,skillPractice:{marksmanship:0},practiceSeed:0});const before=structuredClone(s),expectedLearning=structuredClone(body(s,'p'));

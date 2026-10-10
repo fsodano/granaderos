@@ -1010,7 +1010,7 @@ function interceptCharge(s,mover,target){const blade=fixedBayonetProfile(target)
 function damage(s,target,amount,source,projectile=false,hitLocation='torso',extraBreath=0,report=true,excludedBodyguards=null){
   if(isCivilianBody(s,target))return physicalImpact(s,target,amount,source,{projectile,hitLocation,extraBreath,report,intentional:true});
   if(projectile&&(hasCharacterAbility(target,'protected_commander')||(target.leadership||0)>=90)){
-    const guard=s.units.find(v=>!excludedBodyguards?.has(`unit:${v.id}`)&&hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&contactDistance(v,target)<=1.5);
+    const guard=s.units.find(v=>!excludedBodyguards?.has(`unit:${v.id}`)&&hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&contactDistance(v,target)<=1.5&&hasLineOfSight(s,v,target)&&(sameCell(v,target)||Number.isFinite(movementStepCost(s,v,v,target))));
     if(guard){guard.ap-=8;guard.interceptTurn=s.turn;if(report)sayObserved(s,[guard,target],`${guard.name} se interpone para proteger a ${target.name}.`);target=guard;}
   }
   const grief=captureObservedCompanionGrief(s,target);
