@@ -270,7 +270,7 @@ export function artilleryShotTrace(s,u,gun,point,mode='solid'){
    const dx=point.x-gun.x,dy=point.y-gun.y,progress=((p.x-gun.x)*dx+(p.y-gun.y)*dy)/(dx*dx+dy*dy);
    while(barrierIndex<barriers.length&&barriers[barrierIndex].fraction<=progress+1e-10){
     const barrier=barriers[barrierIndex++],edge=(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===barrier.edgeId),stone=edge.material==='stone',resistance=stone?3:1;
-    const contact={x:gun.x+dx*barrier.fraction,y:gun.y+dy*barrier.fraction,tacticalLevel:tacticalLevel(edge)};
+    const contact={x:gun.x+dx*barrier.fraction,y:gun.y+dy*barrier.fraction,height:sourceHeight+(endHeight-sourceHeight)*barrier.fraction,tacticalLevel:tacticalLevel(edge)};
     if(penetration<resistance){events.push({type:'stop',edgeId:barrier.edgeId,...contact});stopped=true;break;}
     penetration-=resistance;events.push({type:'breach',edgeId:barrier.edgeId,...contact,stone});
    }
@@ -2299,13 +2299,15 @@ const trace=artilleryShotTrace(s,u,gun,point,a.mode);
 // observed bodies/terrain with the existing grid rules and consumes no RNG.
 // Hidden force loss or a private stop cannot supply the display endpoint.
 const displayState={...s,units:s.units.filter(v=>playerObservedBody(s,v)),npcs:(s.npcs??[]).filter(v=>playerObservedBody(s,v)),wallEdges:(s.wallEdges??[]).filter(edge=>teamCanSee(s,'player',edge)),tiles:s.tiles.map(t=>playerObservedBody(s,t)?t:{...t,blocked:false})};
-const displayTrace=artilleryShotTrace(displayState,u,gun,point,a.mode),displayEnd=displayTrace.cells.at(-1);
+const displayTrace=artilleryShotTrace(displayState,u,gun,point,a.mode),displayStop=displayTrace.events.find(event=>event.type==='stop'&&event.edgeId),displayEnd=displayStop??displayTrace.cells.at(-1);
 // The grid trace has no metric trajectory height. Display height is explicit
 // ground-relative artwork, not a new collision or ballistics calculation.
 const displayPoint=p=>({...positionOf(p),tacticalLevel:tacticalLevel(p),height:(surfaceHeight(s,p)??0)+.65});
-const artilleryVisual={source:displayPoint(gun),destination:displayPoint(point),...(displayEnd?{displayEnd:displayPoint(displayEnd)}:{}),cannonId:gun.id,canister:a.mode==='canister',discharge:true,impacts:[]};
+const displayContact=displayStop?{edgeId:displayStop.edgeId,point:{...positionOf(displayStop),tacticalLevel:tacticalLevel(displayStop),height:displayStop.height}}:null;
+const artilleryVisual={source:displayPoint(gun),destination:displayPoint(point),...(displayEnd?{displayEnd:displayContact?.point??displayPoint(displayEnd)}:{}),...(displayContact?{displaySurfaceContact:displayContact}:{}),cannonId:gun.id,canister:a.mode==='canister',discharge:true,impacts:[]};
 const terminal=displayEnd&&displayState.tiles.find(t=>t.x===displayEnd.x&&t.y===displayEnd.y);
-if(displayTrace.events.some(event=>event.type==='stop')||terminal?.blocked&&['water','cliff'].includes(terminal.type))artilleryVisual.impacts.push({...displayPoint(displayEnd),outcome:'cover',material:terminal?.material??(terminal?.type==='cliff'?'stone':terminal?.type)});
+if(displayContact){const edge=displayState.wallEdges.find(edge=>wallEdgeId(edge)===displayStop.edgeId);artilleryVisual.impacts.push({...displayContact.point,outcome:'cover',material:edge.material??'adobe',surfaceContact:displayContact});}
+else if(displayTrace.events.some(event=>event.type==='stop')||terminal?.blocked&&['water','cliff'].includes(terminal.type))artilleryVisual.impacts.push({...displayPoint(displayEnd),outcome:'cover',material:terminal?.material??(terminal?.type==='cliff'?'stone':terminal?.type)});
 recordBattleFrame(s,{type:'projectile',unitId:u.id,action:'artillery',artilleryVisual});
 for(const event of trace.events){
  if(event.type==='impact'){
@@ -2313,7 +2315,7 @@ for(const event of trace.events){
   if(victim.hp<hp)artilleryVisual.impacts.push({...contact,outcome:'hit',victimId:victim.id,victimKind:event.victimKind??'unit'});
   if(event.victimKind!=='npc'&&a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
  }else if(event.type==='breach'){
-  const ground=event.edgeId?(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===event.edgeId):tile(s,event.x,event.y),contact=event.edgeId?{...event,height:(ground.elevation??0)+.65}:displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');if(event.edgeId||ground.structureDamage!==undefined)destroyStructure(ground,event.edgeId?'edge':'surface');else{ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;}
+  const ground=event.edgeId?(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===event.edgeId):tile(s,event.x,event.y),contact=event.edgeId?event:displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');if(event.edgeId||ground.structureDamage!==undefined)destroyStructure(ground,event.edgeId?'edge':'surface');else{ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;}
   artilleryVisual.impacts.push({...contact,outcome:'cover',material});
   say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
  }else say(s,'La bala se detiene contra la fortificación.');
