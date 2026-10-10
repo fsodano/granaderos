@@ -1,0 +1,211 @@
+{
+  "kind": "complete-closed-coordinated-original-five-portable-evidence",
+  "assembledAt": "2026-10-10T11:09:14.881947+00:00",
+  "originalRun": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z",
+  "identity": {
+    "version": "0.4.0-dev.1",
+    "id": "c132c162f024",
+    "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "revision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e"
+  },
+  "sourceSnapshotSha256": "5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+  "actualOutcome": {
+    "receiptSha256": "0263cedb93496b75b0abae1e2f22ffbb6b7f0a925087047d40afba24dbdc2683",
+    "exitCode": 1,
+    "counts": {
+      "tests": 16,
+      "suites": 0,
+      "pass": 7,
+      "fail": 5,
+      "cancelled": 0,
+      "skipped": 4,
+      "todo": 0
+    },
+    "sourceDrift": [],
+    "invocations": 1,
+    "seedChanges": 0,
+    "originalAffectedTestsUnchanged": true,
+    "fourDistinctRouteBarriers": [
+      {
+        "testFile": "tests/fresh-campaign-recovery.test.mjs",
+        "type": "native northern-doctor travel refusal",
+        "error": "Cada escala debe ser una celda terrestre accesible.",
+        "location": "tests/fresh-northern-recovery.mjs:136"
+      },
+      {
+        "testFile": "tests/fresh-cuyo-route.test.mjs",
+        "type": "native morale/contract renewal refusal during army funding",
+        "error": "\u00c1ngela Cejas no renueva con moral personal menor que 30. Recuperar esa moral a 30 o m\u00e1s elimina este rechazo. Conserva todo el plazo pagado.",
+        "location": "tests/fresh-cuyo-route.mjs:422"
+      },
+      {
+        "testFile": "tests/fresh-ending-route.test.mjs",
+        "type": "finite local physician dressing assertion",
+        "error": "Actual finite local physician dressings are required.",
+        "location": "tests/stock-tucuman-readiness.mjs:111"
+      },
+      {
+        "testFile": "tests/opening-playthrough.test.mjs",
+        "type": "finite matching ammunition refusal before exposed Tucum\u00e1n departure",
+        "error": "Finite ammunition shortage for 130 at cordoba: 6 ammoMusket rounds are missing.",
+        "location": "tests/northern-route.mjs:441"
+      }
+    ],
+    "fiveReportedFailures": "Four actual route barriers plus the parent opening test failing because its child preparation test failed. Four later opening checks skipped for their retained dependency reasons.",
+    "coastalAssertions": "All coastal assertions, including nested finite toolkit repair, passed.",
+    "openingProgress": "Original opening southern victories and determinism checks completed; its first two northern checks (finite relief supplies and C\u00f3rdoba victory) passed, then ammunition preparation refused. No complete historical route or Yatasto success is claimed."
+  },
+  "portableScope": {
+    "originalRegularFiles": 520,
+    "originalRawBytes": 593006241,
+    "originalDirectoriesComplete": true,
+    "symlinksOrSpecialFiles": 0,
+    "omissions": [],
+    "observationFiles": [
+      {
+        "member": "observations/granaderos-opening-current-coordination-live-observation-20261010.json",
+        "sourcePath": "/tmp/granaderos-opening-current-coordination-live-observation-20261010.json",
+        "originalBytes": 31502,
+        "sha256": "d88ce146d1fc22b2b49db222f0506791e4a58157f79ae94eed9d3cf66d0da649"
+      },
+      {
+        "member": "observations/granaderos-opening-current-coordination-terminal-observation-20261010.json",
+        "sourcePath": "/tmp/granaderos-opening-current-coordination-terminal-observation-20261010.json",
+        "originalBytes": 7498,
+        "sha256": "888c4f68d12c19f9c814bf7b5c22ca48e4a0174633c3df8de31d0522c8faacec"
+      },
+      {
+        "member": "observations/granaderos-current-v3-stock-readiness-boundary-report-20261010.json",
+        "sourcePath": "/tmp/granaderos-current-v3-stock-readiness-boundary-report-20261010.json",
+        "originalBytes": 37358,
+        "sha256": "9bbea055bd4119fbdd91160d6f3972c78f720ffb5ab5c40f27dd9d736322c0d5"
+      },
+      {
+        "member": "observations/granaderos-current-cuyo-urgent-medic-observation-20261010.json",
+        "sourcePath": "/tmp/granaderos-current-cuyo-urgent-medic-observation-20261010.json",
+        "originalBytes": 10302,
+        "sha256": "d5c9561f9e52925b6f841a9d76fe556921e68a20a00cc819496c159efa64a986"
+      },
+      {
+        "member": "observations/granaderos-current-v3-final-strategic-validation-limits-20261010.json",
+        "sourcePath": "/tmp/granaderos-current-v3-final-strategic-validation-limits-20261010.json",
+        "originalBytes": 55133,
+        "sha256": "ce92d22d82fac7b5a779d9055fa2d1abd1f0835c5fc8b2dc6b9a807e1183aa6a"
+      },
+      {
+        "member": "observations/granaderos-final-pr-scope-review-20261010.json",
+        "sourcePath": "/tmp/granaderos-final-pr-scope-review-20261010.json",
+        "originalBytes": 41949,
+        "sha256": "be7a73cfa9a29065650b71810c199a2ea465b115c4afe8a8db9798f3188c8bf0"
+      },
+      {
+        "member": "observations/granaderos-final-pr-scope-review-20261010.md",
+        "sourcePath": "/tmp/granaderos-final-pr-scope-review-20261010.md",
+        "originalBytes": 1817,
+        "sha256": "90b5d1903a1695ff6f6c98463b818ff2da201458e889c1c286d6b6340719d7b3"
+      },
+      {
+        "member": "observations/granaderos-current-v3-funding-travel-closure-20261010.json",
+        "sourcePath": "/tmp/granaderos-current-v3-funding-travel-closure-20261010.json",
+        "originalBytes": 7646,
+        "sha256": "7d25e8b41169e0351b41f533ac98e18f9ff7acb38fffaa45c781a4ee9d212e4f"
+      }
+    ],
+    "strategicHelperReceiptScopes": [
+      {
+        "path": "native-failures/strategic-preparation/94800-1-recoverFreshNorthernDoctor-preparation-input-Ca27BC/receipt.json",
+        "pid": 94800,
+        "testFile": "fresh-campaign-recovery.test.mjs",
+        "stage": "preparation-input",
+        "helper": "recoverFreshNorthernDoctor"
+      },
+      {
+        "path": "native-failures/strategic-preparation/94800-2-recoverFreshNorthernDoctor-campaign-action-refusal-1ttzOq/receipt.json",
+        "pid": 94800,
+        "testFile": "fresh-campaign-recovery.test.mjs",
+        "stage": "campaign-action-refusal",
+        "helper": "recoverFreshNorthernDoctor"
+      },
+      {
+        "path": "native-failures/strategic-preparation/94800-3-recoverFreshNorthernDoctor-preparation-failure-DCxSyR/receipt.json",
+        "pid": 94800,
+        "testFile": "fresh-campaign-recovery.test.mjs",
+        "stage": "preparation-failure",
+        "helper": "recoverFreshNorthernDoctor"
+      },
+      {
+        "path": "native-failures/strategic-preparation/94802-1-completeFreshArmyFunding-preparation-input-PcNZWx/receipt.json",
+        "pid": 94802,
+        "testFile": "fresh-cuyo-route.test.mjs",
+        "stage": "preparation-input",
+        "helper": "completeFreshArmyFunding"
+      },
+      {
+        "path": "native-failures/strategic-preparation/94802-2-completeFreshArmyFunding-campaign-action-refusal-lERgIa/receipt.json",
+        "pid": 94802,
+        "testFile": "fresh-cuyo-route.test.mjs",
+        "stage": "campaign-action-refusal",
+        "helper": "completeFreshArmyFunding"
+      },
+      {
+        "path": "native-failures/strategic-preparation/94802-3-completeFreshArmyFunding-preparation-failure-e1EFZa/receipt.json",
+        "pid": 94802,
+        "testFile": "fresh-cuyo-route.test.mjs",
+        "stage": "preparation-failure",
+        "helper": "completeFreshArmyFunding"
+      },
+      {
+        "path": "native-failures/strategic-preparation/94803-1-prepareStockTucumanReadiness-preparation-input-IUVlgZ/receipt.json",
+        "pid": 94803,
+        "testFile": "fresh-ending-route.test.mjs",
+        "stage": "preparation-input",
+        "helper": "prepareStockTucumanReadiness"
+      },
+      {
+        "path": "native-failures/strategic-preparation/94803-2-prepareStockTucumanReadiness-preparation-failure-IOhNIE/receipt.json",
+        "pid": 94803,
+        "testFile": "fresh-ending-route.test.mjs",
+        "stage": "preparation-failure",
+        "helper": "prepareStockTucumanReadiness"
+      }
+    ],
+    "allOriginalRawHelperEntriesRefusalsCheckpointsIncluded": true
+  },
+  "limitations": [
+    "Earlier live and stock/urgent-medic observations retain their original bytes and pending-at-time flags; the original final receipt and this report state the closed outcome.",
+    "Complete original run custody does not imply a complete native order tape for every battle or helper.",
+    "Original opening recorder captured capped ordinary-null decisions, not executed shared fallback admission. No actual original opening callback use count or causal victory claim is invented.",
+    "Native final southern opening battle state, turn/action totals and full accepted opening tape were not emitted; existing strict assertions and later test progress establish their bounded success.",
+    "Actual helper entry/failure records are included as recorded; none is relabeled as a completed helper or a hypothetical successful preparation.",
+    "This archive excludes the currently live full955 gate and does not claim that gate passed."
+  ],
+  "terminalProcesses": {
+    "observedAt": "2026-10-10T11:09:14.881232+00:00",
+    "pids": [
+      94775,
+      94799,
+      94800,
+      94801,
+      94802,
+      94803,
+      94804
+    ],
+    "psExitCode": 1,
+    "stdout": "",
+    "stderr": "",
+    "allGone": true,
+    "stoppedByAssembly": false
+  },
+  "execution": {
+    "testsByAssembly": 0,
+    "nativeCallsByAssembly": 0,
+    "replaysByAssembly": 0,
+    "alternativeControllersByAssembly": 0,
+    "candidateSourceWritesByAssembly": 0,
+    "indexWritesByAssembly": 0,
+    "repositoryDocsWritesByAssembly": 0,
+    "processesStoppedByAssembly": 0,
+    "originalFilesModified": 0
+  },
+  "manifestRule": "External manifest covers every regular tar member including the internal manifest. The internal manifest lists all other members and excludes itself to avoid a self-referential hash. Every member is compared byte-for-byte with its source after packing; the entire original inventory is checked again."
+}

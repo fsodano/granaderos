@@ -1,0 +1,1542 @@
+{
+  "observedAt": "2026-10-10T11:05:48.673174+00:00",
+  "scope": "Closed current original-five validation limits. Read-only facts from actual independent helper entry, pre-dispatch refusal input, returned rejected state and private helper failure. No fixes, native commands, route helpers, selectors, replays or tests were run.",
+  "gate": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z",
+  "gateReceipt": {
+    "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/final-receipt.json",
+    "bytes": 1816,
+    "sha256": "0263cedb93496b75b0abae1e2f22ffbb6b7f0a925087047d40afba24dbdc2683"
+  },
+  "gateSourceSnapshot": {
+    "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/before-source-hashes.json",
+    "bytes": 1897482,
+    "sha256": "5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48"
+  },
+  "gateSummary": {
+    "complete": true,
+    "exitCode": 1,
+    "sourceDrift": [],
+    "sourceFiles": 14215,
+    "counts": {
+      "tests": 16,
+      "suites": 0,
+      "pass": 7,
+      "fail": 5,
+      "cancelled": 0,
+      "skipped": 4,
+      "todo": 0
+    },
+    "originalAffectedTestsUnchanged": true
+  },
+  "sourceBindings": [
+    {
+      "path": "tests/fresh-northern-recovery.mjs",
+      "sha256": "941d2841ceb51fe9f40f5689b0d4b4176c849846bcf5a0a9400d26117d5fb6f2",
+      "matchesFrozenClosedGateSource": true
+    },
+    {
+      "path": "tests/fresh-cuyo-route.mjs",
+      "sha256": "f20de73bb5aef5b86a5a3e54a613922cd6ca77b1e7beda2b60f23ed2546350ee",
+      "matchesFrozenClosedGateSource": true
+    },
+    {
+      "path": "tests/route-strategic-failure-evidence.mjs",
+      "sha256": "706bc83b388e3328ffe261180b955b5bbee916520ef085f9ac84f37f5a6d1f42",
+      "matchesFrozenClosedGateSource": true
+    },
+    {
+      "path": "game/squad-travel.js",
+      "sha256": "c841f26e0ef02fe5491f14f5d7137d51a8af40b274cddb714ef74a3c56212f59",
+      "matchesFrozenClosedGateSource": true
+    },
+    {
+      "path": "game/morale.js",
+      "sha256": "6ba46e211b28d06b73c545c1a2af5714bcbecdec652e93240bc768926e49180d",
+      "matchesFrozenClosedGateSource": true
+    },
+    {
+      "path": "game/morale-renewal.js",
+      "sha256": "cb406eee1038b84f76b194a66d51df382c3014effc8cf7a7038559989bfa7fcf",
+      "matchesFrozenClosedGateSource": true
+    },
+    {
+      "path": "game/contracts.js",
+      "sha256": "0257a0ec97dedc4f0546d8edd03356323c52400a29615272b2b2e3c09a3a7ff8",
+      "matchesFrozenClosedGateSource": true
+    }
+  ],
+  "captureArtifacts": [
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-1-recoverFreshNorthernDoctor-preparation-input-Ca27BC/campaign.json",
+      "bytes": 5043774,
+      "sha256": "78360b4f7212019db6765aa5b59412542d5de8cdaad573f4ea7a7f0443b9d983"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-1-recoverFreshNorthernDoctor-preparation-input-Ca27BC/receipt.json",
+      "bytes": 1189,
+      "sha256": "bc62ab089548534ee925943be9089c191d7bef3b79dfc31b8a597240eed2ebc1"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-2-recoverFreshNorthernDoctor-campaign-action-refusal-1ttzOq/action.json",
+      "bytes": 46,
+      "sha256": "fb0134fb8913106b2ff7cce10488fc92a2463039b52ccabfe73b28c85badeb20"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-2-recoverFreshNorthernDoctor-campaign-action-refusal-1ttzOq/campaign.json",
+      "bytes": 4964989,
+      "sha256": "da307f966ff0e43b32f82a96ad3b3eed7f8a776e317a52cef736fbd32ef87239"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-2-recoverFreshNorthernDoctor-campaign-action-refusal-1ttzOq/error.json",
+      "bytes": 71,
+      "sha256": "3084d3183ff09d2ab7888221145e18aaaef53fd86629859cd4c5733704c01270"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-2-recoverFreshNorthernDoctor-campaign-action-refusal-1ttzOq/receipt.json",
+      "bytes": 1873,
+      "sha256": "610877aa8c85db3f8e6e2e6f1bb6b8ebb914f46f224caa06757d3bf48e6e2b74"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-2-recoverFreshNorthernDoctor-campaign-action-refusal-1ttzOq/returned-campaign.json",
+      "bytes": 4965038,
+      "sha256": "fc12cd4dbd45eb2ae5cfa46ccaff56e2e687cab86e39984c6db353b63672d022"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-3-recoverFreshNorthernDoctor-preparation-failure-DCxSyR/campaign.json",
+      "bytes": 4965038,
+      "sha256": "fc12cd4dbd45eb2ae5cfa46ccaff56e2e687cab86e39984c6db353b63672d022"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-3-recoverFreshNorthernDoctor-preparation-failure-DCxSyR/error.json",
+      "bytes": 1160,
+      "sha256": "a1e14c8b9c2eeb2a9f29164efdabc89e2fb9848d6c125a3bc1f87df2f8a118ac"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-3-recoverFreshNorthernDoctor-preparation-failure-DCxSyR/receipt.json",
+      "bytes": 1497,
+      "sha256": "c60e0a280cc1fb8e55a0d6d817c0a1449f766247757d40193afa1dd8650ef464"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-1-completeFreshArmyFunding-preparation-input-PcNZWx/campaign.json",
+      "bytes": 7603509,
+      "sha256": "8789a8946226d88183c3f810ba0b1e10941b6cad1b4d71c14e973b33287dd5a1"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-1-completeFreshArmyFunding-preparation-input-PcNZWx/receipt.json",
+      "bytes": 1180,
+      "sha256": "db60bfd7e02b96f80f9f905ed44fd4f0e39d658121e505ba285b56ca2a9f4864"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-2-completeFreshArmyFunding-campaign-action-refusal-lERgIa/action.json",
+      "bytes": 121,
+      "sha256": "7544c80e8cc21d5edf3376fa3b3e436d3006fbdcb9c8ac1f0d14fc50cae8e627"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-2-completeFreshArmyFunding-campaign-action-refusal-lERgIa/campaign.json",
+      "bytes": 7623843,
+      "sha256": "a54e5f916de62bcf03952a18bc4fbee94bcec544b2f64b1dc3bafdd8e6d5d612"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-2-completeFreshArmyFunding-campaign-action-refusal-lERgIa/error.json",
+      "bytes": 162,
+      "sha256": "95d924cc44b4008d73c316a0b4cc24a02c2e270fa53260ecd54eb2c8b800ad49"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-2-completeFreshArmyFunding-campaign-action-refusal-lERgIa/receipt.json",
+      "bytes": 1864,
+      "sha256": "8890f25963653f64ab00e256c36dcde343fba6eba8ef36317d378fd36804a0b2"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-2-completeFreshArmyFunding-campaign-action-refusal-lERgIa/returned-campaign.json",
+      "bytes": 7623983,
+      "sha256": "d2a9f0fccaaf5d338ca7da85e3178c9a549d2457ea180c698de2c29223ae1793"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-3-completeFreshArmyFunding-preparation-failure-e1EFZa/campaign.json",
+      "bytes": 7623843,
+      "sha256": "a54e5f916de62bcf03952a18bc4fbee94bcec544b2f64b1dc3bafdd8e6d5d612"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-3-completeFreshArmyFunding-preparation-failure-e1EFZa/error.json",
+      "bytes": 1405,
+      "sha256": "a4aac7f5fb3fa95d687e1c98d11786501215393708a3ee92c324ca7f2edceb7b"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-3-completeFreshArmyFunding-preparation-failure-e1EFZa/receipt.json",
+      "bytes": 1486,
+      "sha256": "6e820e5c8917ad1dc7516103fd6a79cbed82ac500e3449c6793ec2b91b7b5909"
+    }
+  ],
+  "captureReceipts": {
+    "northernEntry": {
+      "testFile": "fresh-campaign-recovery.test.mjs",
+      "pid": 94800,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "nodeVersion": "v25.9.0",
+      "sourceSnapshot": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/before-source-hashes.json",
+      "buildRevision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e+working-5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+      "helper": "recoverFreshNorthernDoctor",
+      "stage": "preparation-input",
+      "inputCapture": null,
+      "rawCampaignIndependentlyCloned": true,
+      "prePreparationInputIndependentlyCaptured": true,
+      "preDispatchInputIndependentlyCloned": false,
+      "capturePhase": "raw helper argument before its save round trip or native orders",
+      "scope": "Passive boundary only. Context contains current caller values and any existing partial helper records; no full campaign tape is claimed.",
+      "additionalOrders": 0,
+      "additionalSynchronization": 0,
+      "saveNormalizationPerformed": false,
+      "settlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "campaign.json",
+          "bytes": 5043774,
+          "sha256": "78360b4f7212019db6765aa5b59412542d5de8cdaad573f4ea7a7f0443b9d983"
+        }
+      ]
+    },
+    "northernRefusal": {
+      "testFile": "fresh-campaign-recovery.test.mjs",
+      "pid": 94800,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "nodeVersion": "v25.9.0",
+      "sourceSnapshot": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/before-source-hashes.json",
+      "buildRevision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e+working-5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+      "helper": "recoverFreshNorthernDoctor",
+      "stage": "campaign-action-refusal",
+      "inputCapture": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-1-recoverFreshNorthernDoctor-preparation-input-Ca27BC",
+      "rawCampaignIndependentlyCloned": true,
+      "prePreparationInputIndependentlyCaptured": false,
+      "preDispatchInputIndependentlyCloned": true,
+      "capturePhase": "actual existing action input and returned rejected state; rejection is not adopted unless the original helper already assigned it",
+      "scope": "Passive boundary only. Context contains current caller values and any existing partial helper records; no full campaign tape is claimed.",
+      "additionalOrders": 0,
+      "additionalSynchronization": 0,
+      "saveNormalizationPerformed": false,
+      "settlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "campaign.json",
+          "bytes": 4964989,
+          "sha256": "da307f966ff0e43b32f82a96ad3b3eed7f8a776e317a52cef736fbd32ef87239"
+        },
+        {
+          "path": "action.json",
+          "bytes": 46,
+          "sha256": "fb0134fb8913106b2ff7cce10488fc92a2463039b52ccabfe73b28c85badeb20"
+        },
+        {
+          "path": "returned-campaign.json",
+          "bytes": 4965038,
+          "sha256": "fc12cd4dbd45eb2ae5cfa46ccaff56e2e687cab86e39984c6db353b63672d022"
+        },
+        {
+          "path": "error.json",
+          "bytes": 71,
+          "sha256": "3084d3183ff09d2ab7888221145e18aaaef53fd86629859cd4c5733704c01270"
+        }
+      ]
+    },
+    "northernFailure": {
+      "testFile": "fresh-campaign-recovery.test.mjs",
+      "pid": 94800,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "nodeVersion": "v25.9.0",
+      "sourceSnapshot": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/before-source-hashes.json",
+      "buildRevision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e+working-5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+      "helper": "recoverFreshNorthernDoctor",
+      "stage": "preparation-failure",
+      "inputCapture": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94800-1-recoverFreshNorthernDoctor-preparation-input-Ca27BC",
+      "rawCampaignIndependentlyCloned": true,
+      "prePreparationInputIndependentlyCaptured": false,
+      "preDispatchInputIndependentlyCloned": false,
+      "capturePhase": "actual private helper state at its original thrown failure",
+      "scope": "Passive boundary only. Context contains current caller values and any existing partial helper records; no full campaign tape is claimed.",
+      "additionalOrders": 0,
+      "additionalSynchronization": 0,
+      "saveNormalizationPerformed": false,
+      "settlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "campaign.json",
+          "bytes": 4965038,
+          "sha256": "fc12cd4dbd45eb2ae5cfa46ccaff56e2e687cab86e39984c6db353b63672d022"
+        },
+        {
+          "path": "error.json",
+          "bytes": 1160,
+          "sha256": "a1e14c8b9c2eeb2a9f29164efdabc89e2fb9848d6c125a3bc1f87df2f8a118ac"
+        }
+      ]
+    },
+    "fundingEntry": {
+      "testFile": "fresh-cuyo-route.test.mjs",
+      "pid": 94802,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "nodeVersion": "v25.9.0",
+      "sourceSnapshot": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/before-source-hashes.json",
+      "buildRevision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e+working-5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+      "helper": "completeFreshArmyFunding",
+      "stage": "preparation-input",
+      "inputCapture": null,
+      "rawCampaignIndependentlyCloned": true,
+      "prePreparationInputIndependentlyCaptured": true,
+      "preDispatchInputIndependentlyCloned": false,
+      "capturePhase": "raw helper argument before its save round trip or native orders",
+      "scope": "Passive boundary only. Context contains current caller values and any existing partial helper records; no full campaign tape is claimed.",
+      "additionalOrders": 0,
+      "additionalSynchronization": 0,
+      "saveNormalizationPerformed": false,
+      "settlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "campaign.json",
+          "bytes": 7603509,
+          "sha256": "8789a8946226d88183c3f810ba0b1e10941b6cad1b4d71c14e973b33287dd5a1"
+        }
+      ]
+    },
+    "fundingRefusal": {
+      "testFile": "fresh-cuyo-route.test.mjs",
+      "pid": 94802,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "nodeVersion": "v25.9.0",
+      "sourceSnapshot": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/before-source-hashes.json",
+      "buildRevision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e+working-5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+      "helper": "completeFreshArmyFunding",
+      "stage": "campaign-action-refusal",
+      "inputCapture": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-1-completeFreshArmyFunding-preparation-input-PcNZWx",
+      "rawCampaignIndependentlyCloned": true,
+      "prePreparationInputIndependentlyCaptured": false,
+      "preDispatchInputIndependentlyCloned": true,
+      "capturePhase": "actual existing action input and returned rejected state; rejection is not adopted unless the original helper already assigned it",
+      "scope": "Passive boundary only. Context contains current caller values and any existing partial helper records; no full campaign tape is claimed.",
+      "additionalOrders": 0,
+      "additionalSynchronization": 0,
+      "saveNormalizationPerformed": false,
+      "settlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "campaign.json",
+          "bytes": 7623843,
+          "sha256": "a54e5f916de62bcf03952a18bc4fbee94bcec544b2f64b1dc3bafdd8e6d5d612"
+        },
+        {
+          "path": "action.json",
+          "bytes": 121,
+          "sha256": "7544c80e8cc21d5edf3376fa3b3e436d3006fbdcb9c8ac1f0d14fc50cae8e627"
+        },
+        {
+          "path": "returned-campaign.json",
+          "bytes": 7623983,
+          "sha256": "d2a9f0fccaaf5d338ca7da85e3178c9a549d2457ea180c698de2c29223ae1793"
+        },
+        {
+          "path": "error.json",
+          "bytes": 162,
+          "sha256": "95d924cc44b4008d73c316a0b4cc24a02c2e270fa53260ecd54eb2c8b800ad49"
+        }
+      ]
+    },
+    "fundingFailure": {
+      "testFile": "fresh-cuyo-route.test.mjs",
+      "pid": 94802,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "nodeVersion": "v25.9.0",
+      "sourceSnapshot": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/before-source-hashes.json",
+      "buildRevision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e+working-5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+      "helper": "completeFreshArmyFunding",
+      "stage": "preparation-failure",
+      "inputCapture": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94802-1-completeFreshArmyFunding-preparation-input-PcNZWx",
+      "rawCampaignIndependentlyCloned": true,
+      "prePreparationInputIndependentlyCaptured": false,
+      "preDispatchInputIndependentlyCloned": false,
+      "capturePhase": "actual private helper state at its original thrown failure",
+      "scope": "Passive boundary only. Context contains current caller values and any existing partial helper records; no full campaign tape is claimed.",
+      "additionalOrders": 0,
+      "additionalSynchronization": 0,
+      "saveNormalizationPerformed": false,
+      "settlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "campaign.json",
+          "bytes": 7623843,
+          "sha256": "a54e5f916de62bcf03952a18bc4fbee94bcec544b2f64b1dc3bafdd8e6d5d612"
+        },
+        {
+          "path": "error.json",
+          "bytes": 1405,
+          "sha256": "a4aac7f5fb3fa95d687e1c98d11786501215393708a3ee92c324ca7f2edceb7b"
+        }
+      ]
+    }
+  },
+  "northernDoctorRecovery": {
+    "entry": {
+      "clock": {
+        "hour": 302,
+        "secondOfHour": 2421
+      },
+      "treasury": 92040,
+      "location": "tucuman",
+      "activeSquadId": "squad-10",
+      "activeSquad": {
+        "id": "squad-10",
+        "name": "Apoyo de Tucum\u00e1n",
+        "members": [
+          139
+        ],
+        "location": "tucuman"
+      },
+      "squad": [
+        139
+      ],
+      "owners": {
+        "cordoba": "royalist",
+        "tucuman": "patriot",
+        "mendoza": "royalist",
+        "buenos_aires": "patriot"
+      },
+      "pendingBattle": null,
+      "pendingEncounter": null,
+      "defeated": false,
+      "routes": {
+        "posta": false,
+        "flotilla": false,
+        "carts": false,
+        "mules": false
+      },
+      "retainedJourneys": []
+    },
+    "entryActors": [
+      {
+        "id": 139,
+        "recruited": true,
+        "rawState": {
+          "alive": true,
+          "hp": 73,
+          "maxHp": 73,
+          "bleeding": 0,
+          "captured": false,
+          "location": "tucuman",
+          "assignment": "active",
+          "medkits": 0,
+          "morale": 88,
+          "moraleRestHours": 0,
+          "lastMoralePayAt": 286,
+          "lastMoralePaySecond": 2340,
+          "energy": 76,
+          "fatigue": 24,
+          "asleep": false,
+          "residentSector": "tucuman",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 43,
+            "y": 40,
+            "tacticalLevel": 0
+          }
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 286,
+          "startedSecond": 2340,
+          "expiresSecond": 2164,
+          "expiresAt": 324,
+          "paid": 114
+        },
+        "embeddedDefinition": null,
+        "definitionScope": "No embedded contentCampaign definition is retained in this raw campaign. No roster/selector was evaluated."
+      },
+      {
+        "id": 141,
+        "recruited": true,
+        "rawState": {
+          "alive": true,
+          "hp": 4,
+          "maxHp": 86,
+          "bleeding": 4,
+          "captured": false,
+          "location": "tucuman",
+          "assignment": "active",
+          "medkits": 0,
+          "morale": 31.300000000000004,
+          "moraleRestHours": 0,
+          "lastMoralePayAt": 282,
+          "lastMoralePaySecond": 2340,
+          "energy": 76,
+          "fatigue": 24,
+          "asleep": false,
+          "residentSector": "tucuman",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 36,
+            "y": 42,
+            "tacticalLevel": 0
+          }
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 286,
+          "startedSecond": 2340,
+          "expiresSecond": 649,
+          "expiresAt": 331,
+          "paid": 80
+        },
+        "embeddedDefinition": null,
+        "definitionScope": "No embedded contentCampaign definition is retained in this raw campaign. No roster/selector was evaluated."
+      },
+      {
+        "id": 112,
+        "recruited": true,
+        "rawState": {
+          "alive": true,
+          "hp": 66,
+          "maxHp": 66,
+          "bleeding": 0,
+          "captured": false,
+          "location": "tucuman",
+          "assignment": "active",
+          "medkits": 12,
+          "morale": 15,
+          "moraleRestHours": 0,
+          "lastMoralePayAt": 269,
+          "lastMoralePaySecond": 2340,
+          "energy": 76,
+          "fatigue": 24,
+          "asleep": false,
+          "residentSector": "tucuman",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 33,
+            "y": 38,
+            "tacticalLevel": 0
+          }
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 286,
+          "startedSecond": 2340,
+          "expiresSecond": 1097,
+          "expiresAt": 318,
+          "paid": 165
+        },
+        "embeddedDefinition": null,
+        "definitionScope": "No embedded contentCampaign definition is retained in this raw campaign. No roster/selector was evaluated."
+      }
+    ],
+    "actualRefusedAction": {
+      "type": "travel",
+      "sector": "cordoba"
+    },
+    "preDispatchInput": {
+      "clock": {
+        "hour": 310,
+        "secondOfHour": 2421
+      },
+      "treasury": 89604,
+      "location": "tucuman",
+      "activeSquadId": "squad-14",
+      "activeSquad": {
+        "id": "squad-14",
+        "name": "Evacuaci\u00f3n de heridos",
+        "members": [
+          141,
+          112
+        ],
+        "location": "tucuman"
+      },
+      "squad": [
+        141,
+        112
+      ],
+      "owners": {
+        "cordoba": "royalist",
+        "tucuman": "patriot",
+        "mendoza": "royalist",
+        "buenos_aires": "patriot"
+      },
+      "pendingBattle": null,
+      "pendingEncounter": null,
+      "defeated": false,
+      "routes": {
+        "posta": false,
+        "flotilla": false,
+        "carts": false,
+        "mules": false
+      },
+      "retainedJourneys": []
+    },
+    "refusalActors": [
+      {
+        "id": 139,
+        "recruited": true,
+        "rawState": {
+          "alive": true,
+          "hp": 73,
+          "maxHp": 73,
+          "bleeding": 0,
+          "captured": false,
+          "location": "tucuman",
+          "assignment": "active",
+          "medkits": 0,
+          "morale": 90,
+          "moraleRestHours": 0,
+          "lastMoralePayAt": 310,
+          "lastMoralePaySecond": 2421,
+          "energy": 84,
+          "fatigue": 16,
+          "asleep": false,
+          "residentSector": "tucuman",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 43,
+            "y": 40,
+            "tacticalLevel": 0
+          }
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 310,
+          "startedSecond": 2421,
+          "expiresSecond": 2164,
+          "expiresAt": 372,
+          "paid": 114
+        },
+        "embeddedDefinition": null,
+        "definitionScope": "No embedded contentCampaign definition is retained in this raw campaign. No roster/selector was evaluated."
+      },
+      {
+        "id": 141,
+        "recruited": true,
+        "rawState": {
+          "alive": true,
+          "hp": 16,
+          "maxHp": 86,
+          "bleeding": 0,
+          "captured": false,
+          "location": "tucuman",
+          "assignment": "active",
+          "medkits": 0,
+          "morale": 33.300000000000004,
+          "moraleRestHours": 5,
+          "lastMoralePayAt": 310,
+          "lastMoralePaySecond": 2421,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "residentSector": "tucuman",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 36,
+            "y": 42,
+            "tacticalLevel": 0
+          }
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 310,
+          "startedSecond": 2421,
+          "expiresSecond": 649,
+          "expiresAt": 379,
+          "paid": 80
+        },
+        "embeddedDefinition": null,
+        "definitionScope": "No embedded contentCampaign definition is retained in this raw campaign. No roster/selector was evaluated."
+      },
+      {
+        "id": 112,
+        "recruited": true,
+        "rawState": {
+          "alive": true,
+          "hp": 66,
+          "maxHp": 66,
+          "bleeding": 0,
+          "captured": false,
+          "location": "tucuman",
+          "assignment": "active",
+          "medkits": 10,
+          "morale": 17,
+          "moraleRestHours": 5,
+          "lastMoralePayAt": 310,
+          "lastMoralePaySecond": 2421,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "residentSector": "tucuman",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 33,
+            "y": 38,
+            "tacticalLevel": 0
+          }
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 310,
+          "startedSecond": 2421,
+          "expiresSecond": 1097,
+          "expiresAt": 366,
+          "paid": 165
+        },
+        "embeddedDefinition": null,
+        "definitionScope": "No embedded contentCampaign definition is retained in this raw campaign. No roster/selector was evaluated."
+      }
+    ],
+    "returnedError": "Cada escala debe ser una celda terrestre accesible.",
+    "privateFailureAdoptedRejectedState": true,
+    "facts": {
+      "destinationOwnerAtEntry": "royalist",
+      "destinationOwnerAtRefusal": "royalist",
+      "stationedEnemyAtDestination": [
+        {
+          "id": "enemy-group-2",
+          "theater": "interior",
+          "command": "partisans",
+          "origin": "partidas_del_interior",
+          "target": "cordoba",
+          "route": [
+            "cordoba"
+          ],
+          "routeIndex": 1,
+          "launchedAt": 288,
+          "nextArrivalAt": 294,
+          "arrivalAt": 294,
+          "seed": 2598315365,
+          "initialStrength": 11,
+          "units": [
+            {
+              "id": "enemy-group-2-0",
+              "name": "Oficial de los cuadros de Talavera 1",
+              "weapon": 1805,
+              "blade": 1809,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 75,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:pistol_69": {
+                  "kind": "ammunition",
+                  "ammoType": "pistol_69",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de pistola"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-1",
+              "name": "Partidario del Cabildo realista 1",
+              "weapon": 1800,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-2",
+              "name": "Miliciano leal a la Corona 1",
+              "weapon": 1800,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-3",
+              "name": "Oficial de los cuadros de Talavera 2",
+              "weapon": 1801,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-4",
+              "name": "Partidario del Cabildo realista 2",
+              "weapon": 1800,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-5",
+              "name": "Miliciano leal a la Corona 2",
+              "weapon": 1800,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-6",
+              "name": "Oficial de los cuadros de Talavera 3",
+              "weapon": 1801,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-7",
+              "name": "Partidario del Cabildo realista 3",
+              "weapon": 1800,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-8",
+              "name": "Miliciano leal a la Corona 3",
+              "weapon": 1800,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-9",
+              "name": "Oficial de los cuadros de Talavera 4",
+              "weapon": 1801,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            },
+            {
+              "id": "enemy-group-2-10",
+              "name": "Partidario del Cabildo realista 4",
+              "weapon": 1800,
+              "blade": 1811,
+              "marksmanship": 55,
+              "morale": 65,
+              "leadership": 40,
+              "loaded": 1,
+              "ammo": 5,
+              "hp": 100,
+              "maxHp": 100,
+              "energy": 100,
+              "agility": 65,
+              "dexterity": 65,
+              "wisdom": 50,
+              "strength": 70,
+              "medical": 15,
+              "mechanical": 15,
+              "experienceLevel": 4,
+              "condition": 85,
+              "bladeCondition": 100,
+              "rations": 0,
+              "medkits": 0,
+              "boleadoras": 0,
+              "torches": 0,
+              "fatigue": 0,
+              "bleeding": 0,
+              "bandaged": 0,
+              "jammed": false,
+              "inventory": {
+                "ammo:musket_75": {
+                  "kind": "ammunition",
+                  "ammoType": "musket_75",
+                  "count": 5,
+                  "weight": 0.04,
+                  "name": "Cartuchos de mosquete"
+                }
+              },
+              "ammunitionVersion": 2,
+              "weaponFittings": {},
+              "weaponFittingPattern": null,
+              "bladeFittingPattern": null
+            }
+          ],
+          "status": "stationed",
+          "resolvedAt": 294
+        }
+      ],
+      "elapsedPreparationSeconds": 28800,
+      "treasuryNetChangeDuringExistingPreparation": -2436,
+      "travelRefusalTreasuryChange": 0,
+      "travelRefusalClockChange": 0,
+      "travelRefusalOnlyChangedKey": "lastError",
+      "noNewJourneyCreated": true,
+      "actor141HpBefore": 4,
+      "actor141HpAfterPreparation": 16,
+      "actor141BleedingBefore": 4,
+      "actor141BleedingAfterPreparation": 0,
+      "actor112DressingsBefore": 12,
+      "actor112DressingsAfterPreparation": 10
+    },
+    "sourcePointers": [
+      "tests/fresh-northern-recovery.mjs:136",
+      "tests/fresh-northern-recovery.mjs:48",
+      "game/squad-travel.js:66"
+    ],
+    "interpretation": "The existing evacuation command requests ordinary travel from Tucum\u00e1n to C\u00f3rdoba. The captured destination is held by royalists and has a stationed enemy group. The native destination-owner guard rejects before pathTo can construct a journey. This is an ownership refusal, not evidence of an invalid road map.",
+    "evidenceLimits": [
+      "No accepted evacuation path or travel cost quote was retained; the command was rejected before a journey was created.",
+      "The raw boundary retains native contracts and their actual paid values, but no complete campaign action tape for the preceding preparation. Its net treasury change is not labeled a full cost breakdown.",
+      "No alternative route, attack, medical action or controller was evaluated."
+    ]
+  },
+  "armyFunding": {
+    "entry": {
+      "clock": {
+        "hour": 566,
+        "secondOfHour": 1604
+      },
+      "treasury": 109759,
+      "location": "mendoza",
+      "activeSquadId": "squad-39",
+      "activeSquad": {
+        "id": "squad-39",
+        "name": "Socorro de Mendoza",
+        "members": [
+          0,
+          1,
+          9,
+          11,
+          2,
+          7
+        ],
+        "location": "mendoza"
+      },
+      "squad": [
+        0,
+        1,
+        9,
+        11,
+        2,
+        7
+      ],
+      "owners": {
+        "cordoba": "patriot",
+        "tucuman": "patriot",
+        "mendoza": "patriot",
+        "buenos_aires": "patriot"
+      },
+      "pendingBattle": null,
+      "pendingEncounter": null,
+      "defeated": false,
+      "routes": {
+        "posta": true,
+        "flotilla": false,
+        "carts": true,
+        "mules": false
+      },
+      "retainedJourneys": []
+    },
+    "entryActor130": {
+      "id": 130,
+      "recruited": true,
+      "rawState": {
+        "alive": true,
+        "hp": 67,
+        "maxHp": 67,
+        "bleeding": 0,
+        "captured": false,
+        "location": "mendoza",
+        "assignment": "rest",
+        "medkits": 2,
+        "morale": 0,
+        "moraleRestHours": 0,
+        "lastMoralePayAt": null,
+        "lastMoralePaySecond": null,
+        "energy": 100,
+        "fatigue": 0,
+        "asleep": false,
+        "residentSector": "mendoza",
+        "residentScene": null,
+        "residentPosition": {
+          "x": 39,
+          "y": 26,
+          "tacticalLevel": 0
+        }
+      },
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 459,
+        "startedSecond": 1369,
+        "expiresSecond": 1369,
+        "expiresAt": 627,
+        "paid": 252
+      },
+      "embeddedDefinition": {
+        "id": "person-130",
+        "name": "\u00c1ngela Cejas",
+        "nickname": "Cejas",
+        "role": "Auxiliar de hospital",
+        "biography": "Personaje ficticio. Lavaba vendas y asist\u00eda a los practicantes del hospital. Se incorpora con poca experiencia de combate para sostener a su padre enfermo.",
+        "portrait": "/art/portrait-130.webp",
+        "abilities": [
+          "care_composure",
+          "nervous_isolation",
+          "low_morale_refusal"
+        ],
+        "personality": "Compasiva y ansiosa. La rutina de atender a otros le devuelve la calma.",
+        "speech": {
+          "hired": "Puedo ayudar con los vendajes.",
+          "contact": "Busquen un muro, por favor.",
+          "cleared": "D\u00e9jenme revisar esas vendas.",
+          "wounded": "Esta sangre es m\u00eda.",
+          "exhausted": "Necesito calmar las manos.",
+          "death": "Cuiden de mi padre\u2026",
+          "ending": "Con la paga podr\u00e9 llevarlo a casa.",
+          "near": "\u00a1Cerca, muy cerca! No me dejen sola.",
+          "interrupt": "Un momento. Reun\u00e1monos antes de seguir."
+        },
+        "spriteAppearance": "woman-shawl",
+        "monthlyPay": 180,
+        "arrivalHours": 6,
+        "recruitmentSource": "contract",
+        "service": "contract",
+        "progression": "experience",
+        "traits": [
+          "field_rescuer"
+        ],
+        "ridingSkill": 20,
+        "weapon": "firearm-1805",
+        "blade": "blade-1813",
+        "attributes": {
+          "maxHp": 67,
+          "agility": 64,
+          "dexterity": 68,
+          "strength": 55,
+          "leadership": 35,
+          "wisdom": 73,
+          "marksmanship": 30,
+          "mechanical": 19,
+          "explosives": 8,
+          "medical": 65
+        }
+      },
+      "definitionScope": "An embedded package definition is retained."
+    },
+    "actualRefusedAction": {
+      "type": "renewContract",
+      "id": 130,
+      "term": "day",
+      "expectedExpiresAt": 627,
+      "expectedExpiresSecond": 1369
+    },
+    "preDispatchInput": {
+      "clock": {
+        "hour": 626,
+        "secondOfHour": 1604
+      },
+      "treasury": 130989,
+      "location": "cordoba",
+      "activeSquadId": "squad-39",
+      "activeSquad": {
+        "id": "squad-39",
+        "name": "Socorro de Mendoza",
+        "members": [
+          0,
+          1,
+          9,
+          11,
+          2,
+          7
+        ],
+        "location": "cordoba"
+      },
+      "squad": [
+        0,
+        1,
+        9,
+        11,
+        2,
+        7
+      ],
+      "owners": {
+        "cordoba": "patriot",
+        "tucuman": "patriot",
+        "mendoza": "patriot",
+        "buenos_aires": "patriot"
+      },
+      "pendingBattle": null,
+      "pendingEncounter": null,
+      "defeated": false,
+      "routes": {
+        "posta": true,
+        "flotilla": false,
+        "carts": true,
+        "mules": false
+      },
+      "retainedJourneys": []
+    },
+    "refusalActor130": {
+      "id": 130,
+      "recruited": true,
+      "rawState": {
+        "alive": true,
+        "hp": 67,
+        "maxHp": 67,
+        "bleeding": 0,
+        "captured": false,
+        "location": "mendoza",
+        "assignment": "rest",
+        "medkits": 2,
+        "morale": 10,
+        "moraleRestHours": 0,
+        "lastMoralePayAt": null,
+        "lastMoralePaySecond": null,
+        "energy": 100,
+        "fatigue": 0,
+        "asleep": false,
+        "residentSector": "mendoza",
+        "residentScene": null,
+        "residentPosition": {
+          "x": 39,
+          "y": 26,
+          "tacticalLevel": 0
+        }
+      },
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 459,
+        "startedSecond": 1369,
+        "expiresSecond": 1369,
+        "expiresAt": 627,
+        "paid": 252
+      },
+      "embeddedDefinition": {
+        "id": "person-130",
+        "name": "\u00c1ngela Cejas",
+        "nickname": "Cejas",
+        "role": "Auxiliar de hospital",
+        "biography": "Personaje ficticio. Lavaba vendas y asist\u00eda a los practicantes del hospital. Se incorpora con poca experiencia de combate para sostener a su padre enfermo.",
+        "portrait": "/art/portrait-130.webp",
+        "abilities": [
+          "care_composure",
+          "nervous_isolation",
+          "low_morale_refusal"
+        ],
+        "personality": "Compasiva y ansiosa. La rutina de atender a otros le devuelve la calma.",
+        "speech": {
+          "hired": "Puedo ayudar con los vendajes.",
+          "contact": "Busquen un muro, por favor.",
+          "cleared": "D\u00e9jenme revisar esas vendas.",
+          "wounded": "Esta sangre es m\u00eda.",
+          "exhausted": "Necesito calmar las manos.",
+          "death": "Cuiden de mi padre\u2026",
+          "ending": "Con la paga podr\u00e9 llevarlo a casa.",
+          "near": "\u00a1Cerca, muy cerca! No me dejen sola.",
+          "interrupt": "Un momento. Reun\u00e1monos antes de seguir."
+        },
+        "spriteAppearance": "woman-shawl",
+        "monthlyPay": 180,
+        "arrivalHours": 6,
+        "recruitmentSource": "contract",
+        "service": "contract",
+        "progression": "experience",
+        "traits": [
+          "field_rescuer"
+        ],
+        "ridingSkill": 20,
+        "weapon": "firearm-1805",
+        "blade": "blade-1813",
+        "attributes": {
+          "maxHp": 67,
+          "agility": 64,
+          "dexterity": 68,
+          "strength": 55,
+          "leadership": 35,
+          "wisdom": 73,
+          "marksmanship": 30,
+          "mechanical": 19,
+          "explosives": 8,
+          "medical": 65
+        }
+      },
+      "definitionScope": "An embedded package definition is retained."
+    },
+    "returnedError": "\u00c1ngela Cejas no renueva con moral personal menor que 30. Recuperar esa moral a 30 o m\u00e1s elimina este rechazo. Conserva todo el plazo pagado.",
+    "privateFailureRetainedOriginalPreDispatchState": true,
+    "facts": {
+      "elapsedPreparationSeconds": 216000,
+      "treasuryNetChangeDuringExistingPreparation": 21230,
+      "renewalRefusalTreasuryChange": 0,
+      "renewalRefusalClockChange": 0,
+      "renewalRefusalOnlyChangedKey": "lastError",
+      "contract130UnchangedByRefusal": true,
+      "contract130UnchangedSinceHelperEntry": true,
+      "paidTermRemainingSeconds": 3365,
+      "personalMoraleAtEntry": 0,
+      "personalMoraleAtRefusal": 10,
+      "nativeRefusalThreshold": 30,
+      "moraleRestCreditAtEntry": 0,
+      "moraleRestCreditAtRefusal": 0,
+      "lastMoralePayAtEntry": null,
+      "lastMoralePayAtRefusal": null,
+      "actor130StayedRestingAtMendoza": true,
+      "originalPaidTermValue": 252
+    },
+    "sourcePointers": [
+      "tests/fresh-cuyo-route.mjs:49",
+      "tests/fresh-cuyo-route.mjs:422",
+      "game/morale-renewal.js:10",
+      "game/morale.js:99"
+    ],
+    "interpretation": "The helper retains every serving actor. A native renewal for actor130 is required before the next route hour. Her actual personal morale is10 and the authored low-morale renewal guard requires30. The successful native time before this refusal raised morale from0 to10 during60 hours while she remained at rest in Mendoza. Cash130989 is present; the rejection preserves the current paid term and takes no payment.",
+    "evidenceLimits": [
+      "The refused quote price was not separately captured; the retained existing contract paid252 for its original week. No new price is invented.",
+      "Rest alone at the observed/native one morale per six hours would require120 further hours from morale10 and zero rest credit, while the current paid term has3365 seconds remaining. No alternative morale action or finite recovery strategy was evaluated.",
+      "No full helper campaign action tape or accepted funding command was captured. The funding result and later Los Patos preparation remain unvalidated."
+    ]
+  },
+  "stockReadinessExistingReport": {
+    "path": "/tmp/granaderos-current-v3-stock-readiness-boundary-report-20261010.json",
+    "bytes": 37358,
+    "sha256": "9bbea055bd4119fbdd91160d6f3972c78f720ffb5ab5c40f27dd9d736322c0d5"
+  },
+  "stockReportUnmodified": true,
+  "deliveryLimits": "This original-five gate is complete with known failures. The separate full955 run is still owned by root and is not summarized as completed here. User requested finalize this PR, merge, then stop. No broader correction work was started."
+}

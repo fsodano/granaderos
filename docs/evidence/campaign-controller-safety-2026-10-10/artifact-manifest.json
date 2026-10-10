@@ -422,8 +422,93 @@
       "path": "opening-coordination-control-policy-readonly-supplement.json",
       "bytes": 11731,
       "sha256": "65fdfeda844f11ed3687b1388850ca0888f909767f1fa50f95feda2d105c7b59"
+    },
+    {
+      "path": "granaderos-coordinated-original-five-evidence-20261010.tar.gz",
+      "bytes": 30360690,
+      "sha256": "9148f1c9e5b017f8ae8b2950167bd556eaa4aa9f1fd7ee295f4243308358b2e5"
+    },
+    {
+      "path": "granaderos-coordinated-original-five-evidence-20261010.manifest.json",
+      "bytes": 251691,
+      "sha256": "5d27e01f7103463093e5505427c27f41a1976192793047b32ff20b7729461b91"
+    },
+    {
+      "path": "granaderos-coordinated-original-five-evidence-20261010.report.json",
+      "bytes": 10101,
+      "sha256": "076b00970bd76d1f06a4aab9c6b29d1e96c0b321bb44e2f14c274e340e1a0958"
+    },
+    {
+      "path": "granaderos-coordinated-original-five-evidence-20261010.verification.json",
+      "bytes": 253419,
+      "sha256": "76bdca31f2de70127e7c6e8508f1b6c8bd1150623da157e899a112b219f6e049"
+    },
+    {
+      "path": "granaderos-final-full955-evidence-20261010.tar.gz",
+      "bytes": 49945062,
+      "sha256": "da3b9f2d18490ca87997c3487e58b21174bba9356cbeb92c9432d9b214cde1bd"
+    },
+    {
+      "path": "granaderos-final-full955-evidence-20261010.manifest.json",
+      "bytes": 626670,
+      "sha256": "d5293a72ca4a1614abb529493c06f0c06f8495021e08e099692b3365aeabb671"
+    },
+    {
+      "path": "granaderos-final-full955-evidence-20261010.report.json",
+      "bytes": 2439,
+      "sha256": "0a65c05965969b3b92fc560e556308d33196d8eccbd2a78725214a80a1fd9590"
+    },
+    {
+      "path": "granaderos-final-full955-evidence-20261010.report.md",
+      "bytes": 839,
+      "sha256": "0b29d5a708540e573e413863bd8a5f7a29adcbea857991c1e63b7e350202a8a3"
+    },
+    {
+      "path": "coordinated-original-five-gate-receipt.json",
+      "bytes": 1816,
+      "sha256": "0263cedb93496b75b0abae1e2f22ffbb6b7f0a925087047d40afba24dbdc2683"
+    },
+    {
+      "path": "coordinated-original-five-root-verification.json",
+      "bytes": 291,
+      "sha256": "f979a093da93e5dadc7c29ac6fe263c5b8e9634bb90b1ebdbab5fec7de23ffff"
+    },
+    {
+      "path": "final-pr-scope-review.json",
+      "bytes": 41949,
+      "sha256": "be7a73cfa9a29065650b71810c199a2ea465b115c4afe8a8db9798f3188c8bf0"
+    },
+    {
+      "path": "final-pr-scope-review.md",
+      "bytes": 1817,
+      "sha256": "90b5d1903a1695ff6f6c98463b818ff2da201458e889c1c286d6b6340719d7b3"
+    },
+    {
+      "path": "final-strategic-validation-limits.json",
+      "bytes": 55133,
+      "sha256": "ce92d22d82fac7b5a779d9055fa2d1abd1f0835c5fc8b2dc6b9a807e1183aa6a"
+    },
+    {
+      "path": "final-stock-readiness-boundary-report.json",
+      "bytes": 37358,
+      "sha256": "9bbea055bd4119fbdd91160d6f3972c78f720ffb5ab5c40f27dd9d736322c0d5"
+    },
+    {
+      "path": "final-full955-gate-receipt.json",
+      "bytes": 27869,
+      "sha256": "046e6584ae041156475cb14a294383a82c4757332a7fcb25c45cbdf76fb67ffd"
+    },
+    {
+      "path": "final-full955-root-verification.json",
+      "bytes": 932,
+      "sha256": "f7dd85f9629171e0661ef6022dfa771bc1154f53e7af7e3cc5fca18f41ea1fda"
+    },
+    {
+      "path": "final-full955-root-archive-verification.json",
+      "bytes": 326,
+      "sha256": "afa8cfe16304723af22f9efd5a822d2f37feb57a4da14a47eb48276a3cece9cd"
     }
   ],
-  "scope": "Retained closed original gates, complete native evidence, bounded controls and source audits. Latest coordination controls92pass0fail0skip. Previous original five5pass4fail0skip; renewed original route acceptance and final full suite remain pending.",
-  "updatedAt": "2026-10-10T10:49:19.205933+00:00"
+  "scope": "Final closed local validation: full955 completed,7054tests7045pass5fail4skip; four known original campaign route file families remain incomplete. Latest focused92/92 pass and original-five7pass5fail4skip. Complete failed and passing raw evidence retained; merge concludes the user-defined PR scope.",
+  "updatedAt": "2026-10-10T11:23:52.700508+00:00"
 }

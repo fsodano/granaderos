@@ -1,9 +1,14 @@
 # Campaign controller safety, 10 October 2026
 
-This batch corrects acceptance controllers and failure diagnostics. The production
-source identity remains `683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387`.
+This batch corrects acceptance controllers and failure diagnostics. The final
+production source identity is `c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026`.
 Existing gameplay costs, finite ammunition, wounds, deaths and victory requirements
 remain the authority.
+
+Final validation is closed: 92 focused controls pass. The full Node suite completed
+all 955 files: 7,045 tests pass, five fail and four skip. Four campaign route file
+families remain incomplete. The [final results](#final-closed-validation-and-delivery-scope)
+supersede the pending statuses in the historical observations below.
 
 ## Original Mendoza evidence
 
@@ -371,3 +376,64 @@ All 22 members passed independent byte and hash verification. The stock control
 retains the original hired shot's exact target, aim and body region; one-bound
 and custom-hold controls retain native AP, energy, wounds and supplies. This
 focused gate does not establish original route acceptance or full recovery.
+
+## Final closed validation and delivery scope
+
+The [corrected original-five receipt](coordinated-original-five-gate-receipt.json)
+records 16 tests: seven pass, five fail and four skip. All original test files,
+default seeds and assertions match main. The [complete original-five archive](granaderos-coordinated-original-five-evidence-20261010.tar.gz)
+retains all 520 original files and eight unchanged observation, scope and closure
+reports. Its 533 members passed independent byte and hash comparison with their
+sources. All coastal assertions pass, and the opening route's paid recovery and
+Córdoba victory check passes. The later opening ammunition check fails and its
+dependent checks skip.
+
+The [final full-suite receipt](final-full955-gate-receipt.json) records one complete
+Node run at committed revision `7f0ce1ee83c98914148f24ced70b7f3c59b01a3e`:
+7,054 tests, 7,045 pass, five fail, four skip and zero cancellations. All 955 files
+were selected, scheduled and completed, with no filters or exclusions. All 14,215
+source pins matched before, after and during root's independent terminal check.
+The exact HEAD, clean status, canonical production identity and engine pin stayed
+unchanged. The parent, runner and candidate test workers stopped.
+
+The [complete full-suite archive](granaderos-final-full955-evidence-20261010.tar.gz)
+contains all 1,272 original regular run files, including raw and parsed reports,
+executed wrapper, source maps, log, failure captures and recovery checkpoints.
+All 1,275 members passed separate byte and hash comparison with their original
+sources. The [member manifest](granaderos-final-full955-evidence-20261010.manifest.json),
+[packaging report](granaderos-final-full955-evidence-20261010.report.json) and
+[root archive check](final-full955-root-archive-verification.json) retain the
+verification. A complete receipt records a failed gate; it is not a passing gate.
+
+The full run fails only these four original campaign route file families:
+
+- `fresh-campaign-recovery`: travel to royalist-held Córdoba is refused.
+- `fresh-cuyo-route`: Ángela's renewal is refused at morale 10, below the native
+  threshold of 30.
+- `fresh-ending-route`: finite physician dressings are insufficient at stock
+  Tucumán readiness.
+- `opening-playthrough`: soldier 130 lacks six matching ammunition rounds at
+  Córdoba. The child and its parent count as two failed tests.
+
+The [actual strategic limits](final-strategic-validation-limits.json) and
+[stock dressing boundary](final-stock-readiness-boundary-report.json) retain
+the closed original-five observations. No refused travel or renewal charged
+money or bypassed a native constraint. These stopping points differ from main;
+the stock route stops earlier than main's Los Patos failure. This PR does not
+establish original route acceptance, a complete campaign or bug-free gameplay.
+
+The [final scope review](final-pr-scope-review.md) finds one production change:
+a 14-line optional shared-sighting export used by the opening test controller.
+Existing gameplay callers, enemy AI, simulation, visibility, saves, economy,
+UI and build source are unchanged. The hired coastal commander survives returned
+and saved settlement at 11 HP with zero bleeding, but remains unconscious.
+Actual soldier deaths remain recorded.
+
+Focused controls pass 92/92. Typecheck and the production build passed for the
+unchanged canonical source above, including 1,377 static exports and 1,045 asset
+references. The engine submodule remains uninitialized at its recorded gitlink;
+native C++ checks were not run. Final evidence changes are documentation only.
+
+The user-defined delivery scope is to finish and merge PR #330, synchronize main,
+preserve needed ignored files, archive its merged worktree, and stop. The known
+route failures are retained as limits of this completed PR.
