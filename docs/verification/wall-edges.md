@@ -147,3 +147,29 @@ The remaining failures were:
 Only the recovery error was confirmed at the same stage on unchanged main.
 The other failures remain branch limits. The full suite was not run again after
 the isolated militia correction; its four affected files passed 43/43 instead.
+
+## Later bounded campaign checks
+
+The complete quick run on final production `f12c2d0f` passed 7,101/7,101 tests
+across 954/954 selected files. Its 13 extended files were excluded by the
+declared partition. This run includes the final wall, visibility, boundary,
+editor, and rendering code. Checkpoint tests added after discovery were run
+separately. The earlier complete full run and its failures remain recorded above.
+
+The stock rear-defense regression passed 1/1. It admits the actual hour 438
+Córdoba raid while the battery crew is in Tucumán. The defense wins in seven
+turns and 209 paid actions, retains five deaths, then consumes two existing
+dressings to stabilize survivor 108. Full and midpoint saved battle replay
+match. The original two cannon records arrive at Córdoba at hour 457 without
+added ammunition. Treasury checks include real renewals, transport, posta
+tolls, and ordinary midnight income.
+
+The stock service-relief regression passed 1/1. Operative 130 has morale zero
+and refuses the required renewal. Ordinary dismissal returns all nine exact
+stacks at Córdoba. A current available replacement receives a paid week term
+for 46,200 pesos, arrives after six real hours, and takes the returned loaded
+musket and 11 compatible rounds. All 11 public orders match midpoint saved
+replay. The subsequent original stock Mendoza preparation admits 14 actual
+living soldiers at hour 490, second 1435. One original gun still has seven
+charges; the other remains spent. This proves preparation, not battle victory
+or completion of the ending route.
