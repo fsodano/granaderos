@@ -522,16 +522,18 @@
     {
       "x": 13,
       "y": 3,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 14,
       "y": 3,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 15,
@@ -662,16 +664,18 @@
     {
       "x": 13,
       "y": 4,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 14,
       "y": 4,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 15,
@@ -3455,6 +3459,80 @@
     {
       "x": 0,
       "y": 8
+    }
+  ],
+  "wallEdges": [
+    {
+      "x": 13,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:13:4"
+    },
+    {
+      "x": 13,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:13:5"
+    },
+    {
+      "x": 14,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:14:4"
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:14:5"
+    },
+    {
+      "x": 14,
+      "y": 3,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:14:3"
+    },
+    {
+      "x": 14,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:14:4"
+    },
+    {
+      "x": 15,
+      "y": 3,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:15:3"
+    },
+    {
+      "x": 15,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:15:4"
     }
   ]
 }

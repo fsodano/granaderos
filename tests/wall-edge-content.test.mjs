@@ -46,6 +46,9 @@ test('room identities stay stable when an internal edge door opens and furniture
 test('schema rejects invalid axes, duplicate edges and edges outside the map before playtest',()=>{
  for(const mutate of [d=>d.buildings[0].walls[0].axis='z',d=>d.buildings[0].walls[0].x=-1,d=>d.buildings[0].walls[0].y=13,d=>d.buildings[0].walls.push({...d.buildings[0].walls[0],id:'duplicate'})]){const doc=house();mutate(doc);assert.equal(validateMap(doc).valid,false);}
  assert.equal(parseMap(serializeMap(house())).schemaVersion,2);
+ const free=blankMap({width:8,height:8});free.wallEdges=[{id:'barricade',x:4,y:3,axis:'y',type:'wall',blocked:true,blocksSight:true,cover:100}];
+ const map=compileMap(parseMap(serializeMap(free)));assert.equal(map.tiles.find(t=>t.x===4&&t.y===3).type,'grass');assert.equal(wallMovementBlocked(map,{x:3,y:3},{x:4,y:3}),true);
+ const contained=house();contained.wallEdges=[{...free.wallEdges[0],x:3,y:3}];assert.equal(validateMap(contained).valid,false);assert.throws(()=>serializeMap(contained));
 });
 
 test('v1 import moves perimeter structures to edges and keeps door and room identity',()=>{
@@ -69,4 +72,15 @@ test('edge door state and wall destruction persist in validated snapshots and se
  assert.equal(entered.wallEdges.find(w=>w.id===wall.id).destroyed,true);
  assert.equal(entered.wallEdges.find(w=>w.doorId===door.doorId).open,true);
  for(const mutate of [s=>s.wallEdges[0].axis='z',s=>s.wallEdges[0].x=-1,s=>s.wallEdges.push({...s.wallEdges[0],id:'duplicate'})]){const invalid=structuredClone(loaded);mutate(invalid);assert.throws(()=>validateBattleSnapshot(invalid));}
+});
+
+test('authoring route checks include initially locked doors without opening the runtime leaf',()=>{
+ const doc=house(),door=doc.buildings[0].walls.find(w=>w.type==='door');door.locked=true;
+ const map=compileMap(doc),[outside,inside]=wallEdgeCells(map.wallEdges.find(w=>w.doorId===door.doorId));
+ assert.ok(reachableMap(map,{x:0,y:0}).has(`${inside.x},${inside.y}`));
+ assert.equal(wallMovementBlocked(map,outside,inside),true);
+ assert.equal(map.wallEdges.find(w=>w.doorId===door.doorId).open,false);
+ const invalid=house();invalid.terrain[0]={...invalid.terrain[0],type:'wall',blocked:true};
+ assert.equal(validateMap(invalid).valid,false);assert.throws(()=>serializeMap(invalid));
+ invalid.schemaVersion=1;const converted=parseMap(serializeMap(invalid));assert.equal(converted.terrain[0].type,'grass');assert.equal(converted.wallEdges.length,1);assert.equal(converted.wallEdges[0].type,'wall');
 });

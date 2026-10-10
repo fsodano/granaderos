@@ -1,4 +1,4 @@
-import {wallEdgeKey,wallEdgeCells} from './wall-geometry.js';
+import {wallEdgeKey,wallEdgeCells,migrateWallGeometry} from './wall-geometry.js';
 import {BUILDING_TYPES} from './building-types.js';
 import { WALL_FINISHES, ROOF_FINISHES, DOOR_STYLES, WINDOW_STYLES } from "./building-appearance.js";
 import {
@@ -51,6 +51,7 @@ export function blankMap({
     width,
     height,
     metadata: { title },
+    wallEdges: [],
     terrain: Array.from({ length: width * height }, (_, i) =>
       ground(i % width, Math.floor(i / width)),
     ),
@@ -115,7 +116,7 @@ export function validateMap(input, { playable = false } = {}) {
           Number.isFinite(t.cover) &&
           t.cover >= 0 &&
           t.cover <= 100 &&
-          [...Object.keys(TERRAIN), "wall", "floor", "rubble", "cliff", "door", "window"].includes(
+          [...Object.keys(TERRAIN), "floor", "rubble", "cliff", ...(d.schemaVersion===1?["wall","door","window"]:[])].includes(
             t.type,
           ),
         "Terreno no válido o duplicado.",
@@ -141,6 +142,18 @@ export function validateMap(input, { playable = false } = {}) {
       ((p.axis === "x" && p.x >= 0 && p.x < d.width && p.y >= 0 && p.y <= d.height) ||
        (p.axis === "y" && p.x >= 0 && p.x <= d.width && p.y >= 0 && p.y < d.height));
     const ids = new Set(), globalWallKeys = new Set();
+    if(d.wallEdges!==undefined){
+      need(Array.isArray(d.wallEdges)&&d.wallEdges.length<=2*d.width*d.height+d.width+d.height,"Bordes de pared no válidos.");
+      for(const wall of d.wallEdges){
+        need(edgeCoord(wall)&&str(wall.id)&&!ids.has(wall.id)&&!globalWallKeys.has(wallEdgeKey(wall))&&["wall","door","window"].includes(wall.type)&&wall.buildingId==null,"Pared exterior no válida o duplicada.");
+        ids.add(wall.id);globalWallKeys.add(wallEdgeKey(wall));
+        if(wall.type==="door"){
+          need(str(wall.doorId)&&(!ids.has(wall.doorId)||wall.doorId===wall.id)&&typeof wall.open==="boolean"&&typeof wall.locked==="boolean","Puerta exterior no válida.");
+          ids.add(wall.doorId);
+        }
+      }
+    }
+
     for (const layer of LAYERS) {
       need(Array.isArray(d[layer]) && d[layer].length <= 2000, `Capa no válida: ${layer}`);
       for (const e of d[layer]) {
@@ -182,6 +195,7 @@ export function validateMap(input, { playable = false } = {}) {
           need(!occupied.has(`${x},${y}`), "Los edificios se superponen.");
           occupied.add(`${x},${y}`);
         }
+      need(!(d.wallEdges??[]).some(edge=>wallEdgeCells(edge).every(c=>c.x>=b.x&&c.x<b.x+b.width&&c.y>=b.y&&c.y<b.y+b.height)), "Las paredes interiores deben estar en el edificio.");
       const wallKeys = new Set();
       for (const w of b.walls) {
         const edge = w.axis !== undefined;
@@ -353,13 +367,20 @@ export function serializeMap(doc) {
   const copy = migrateMapDocument(doc);
   for (const layer of LAYERS) copy[layer].sort((a, b) => a.id.localeCompare(b.id));
   copy.terrain.sort((a, b) => a.y - b.y || a.x - b.x);
+  copy.wallEdges.sort((a,b)=>a.id.localeCompare(b.id));
   return JSON.stringify(copy, null, 2) + "\n";
 }
 
 // Import old authored plans once. Runtime compilation always uses edge geometry.
 export function migrateMapDocument(document) {
   const copy = structuredClone(document);
+  const standalone=copy.terrain.filter(t=>["wall","door","window"].includes(t.type));
+  const converted=migrateWallGeometry({width:copy.width,height:copy.height,tiles:standalone,buildings:[]});
   copy.schemaVersion = MAP_SCHEMA_VERSION;
   copy.buildings = copy.buildings.map((building) => compileBuilding(building).building);
+  const owned = new Set(copy.buildings.flatMap(b=>b.walls.map(wallEdgeKey)));
+  // Legacy terrain under a footprint was hidden by the old building layer.
+  // Preserve that precedence only for converted cells, never authored edges.
+  copy.wallEdges=[...(copy.wallEdges??[]),...converted.wallEdges.filter(edge=>!owned.has(wallEdgeKey(edge)) && !copy.buildings.some(b=>wallEdgeCells(edge).every(c=>c.x>=b.x&&c.x<b.x+b.width&&c.y>=b.y&&c.y<b.y+b.height)))];
   return copy;
 }

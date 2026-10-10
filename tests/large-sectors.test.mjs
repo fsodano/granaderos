@@ -1,3 +1,5 @@
+import {reachableMap} from '../game/compile-map.js';
+import {wallEdgeCells} from '../game/wall-geometry.js';
 import {worldCell,roadConnects} from '../game/world-cells.js';
 import {tacticalGridLabel} from '../game/tactical-grid.js';
 import {initialCampaign} from '../game/campaign.js';
@@ -17,13 +19,7 @@ import {propCells,propBlocksAt} from '../game/props.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 const key=p=>`${p.x},${p.y}`;
 const towns=CAMPAIGN_SECTORS.filter(s=>!['uspallata','los_patos','humahuaca'].includes(s.id));
-function reachable(map,start,doors=false){
- const props=new Set(map.props.filter(p=>p.blocksMovement!==false).flatMap(propCells).map(key));
- const available=new Set(map.tiles.filter(t=>(!t.blocked||doors&&t.type==='door')&&!props.has(key(t))).map(key));
- const seen=new Set([key(start)]),queue=[start];
- for(let i=0;i<queue.length;i++)for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const p={x:queue[i].x+dx,y:queue[i].y+dy},k=key(p);if(available.has(k)&&!seen.has(k)){seen.add(k);queue.push(p);}}
- return seen;
-}
+function reachable(map,start,doors=false){return reachableMap(map,start,{openDoors:doors});}
 test('all new sectors contain 3072 unique squares and town sectors contain twenty enterable buildings',()=>{
  for(const sector of MAP_IDS){
   const map=buildSectorMap({sector,squad:OPERATIVES.slice(0,6),difficulty:4,cannons:3});
@@ -32,8 +28,8 @@ test('all new sectors contain 3072 unique squares and town sectors contain twent
   if(towns.some(t=>t.id===sector)){assert.equal(map.buildings.length,20,sector);assert.equal(map.buildings.filter(b=>b.purpose==='bar').length,1,`${sector}: civilian meeting place`);}
   const seen=reachable(map,map.squad[0],true);
   for(const b of map.buildings){
-   assert.ok(b.walls.length>0);assert.ok(b.walls.every(w=>w.buildingId===b.id),`${sector}: ${b.id} must not retain another building's walls`);
-   assert.ok(map.tiles.some(t=>t.buildingId===b.id&&t.type==='door'&&seen.has(key(t))),`${sector}: ${b.id} needs an accessible entrance`);
+   assert.ok(b.walls.length>0);assert.ok(b.walls.every(w=>map.wallEdges.some(edge=>edge.id===w.id&&edge.buildingId===b.id)),`${sector}: ${b.id} must not retain another building's walls`);
+   assert.ok(map.wallEdges.some(t=>t.buildingId===b.id&&t.type==='door'&&wallEdgeCells(t).every(c=>seen.has(key(c)))),`${sector}: ${b.id} needs an accessible entrance`);
    assert.ok(b.rooms.every(r=>r.cells.some(t=>seen.has(key(t)))),`${sector}: ${b.id} needs accessible floor`);
   }
   const units=[...map.squad,...map.enemies,...map.artillery];assert.equal(new Set(units.map(key)).size,units.length,sector);
@@ -70,7 +66,7 @@ test('current authored landmarks retain their complete plans when the surroundin
   assert.deepEqual([old.width,old.height],plan);
   assert.deepEqual([current.width,current.height],plan);
   assert.equal(current.rooms[0].cells.length,old.rooms[0].cells.length);
-  assert.deepEqual(expanded.tiles.filter(t=>t.buildingId===current.id&&t.type==='door').map(t=>t.doorId),compact.tiles.filter(t=>t.buildingId===old.id&&t.type==='door').map(t=>t.doorId));
+  assert.deepEqual(expanded.wallEdges.filter(t=>t.buildingId===current.id&&t.type==='door').map(t=>t.doorId),compact.wallEdges.filter(t=>t.buildingId===old.id&&t.type==='door').map(t=>t.doorId));
  }
 });
 test('all campaign routes arrive at the new physical edges with a legal inward step',()=>{

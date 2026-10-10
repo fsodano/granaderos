@@ -1,4 +1,4 @@
-import {normalizeBuildingWalls,wallEdgesBetween,wallMovementBlocked} from './wall-geometry.js';
+import {normalizeBuildingWalls,migrateWallGeometry,wallEdgeKey,wallEdgeCells,wallEdgesBetween,wallMovementBlocked} from './wall-geometry.js';
 import { cellKey, neighbours, FEATURES } from "./map-catalog.js";
 import { propBlocksAt } from "./props.js";
 // Recompute rooms from structural cells; preserve existing IDs by maximum overlap.
@@ -68,12 +68,19 @@ export function compileMap(doc) {
       cover: kind.cover,
     });
   }
-  const buildings = [], wallEdges = [];
+  const buildings = [], wallEdges = structuredClone(doc.wallEdges??[]);
   for (const source of doc.buildings) {
     const { building, tiles, wallEdges: edges } = compileBuilding(source);
     wallEdges.push(...edges);
     buildings.push(building);
     for (const t of tiles) terrain.set(cellKey(t), t);
+  }
+  const standalone = [...terrain.values()].filter(t=>["wall","door","window"].includes(t.type) && !t.buildingId);
+  if(standalone.length){
+    const converted=migrateWallGeometry({width:doc.width,height:doc.height,tiles:standalone,buildings:[]});
+    const owned = new Set(buildings.flatMap(b=>b.walls.map(wallEdgeKey)));
+    wallEdges.push(...converted.wallEdges.filter(edge=>!owned.has(wallEdgeKey(edge)) && !buildings.some(b=>wallEdgeCells(edge).every(c=>c.x>=b.x&&c.x<b.x+b.width&&c.y>=b.y&&c.y<b.y+b.height))));
+    for(const tile of converted.tiles)terrain.set(cellKey(tile),tile);
   }
   const props = doc.props.map((p) => {
     const room = buildings
@@ -111,6 +118,8 @@ export function compileMap(doc) {
   };
 }
 export function reachableMap(map, start, { openDoors = true } = {}) {
+  // Authoring checks potential access, including doors that begin locked.
+  const geometry = openDoors ? {wallEdges:(map.wallEdges??[]).map(edge=>edge.type==="door"?{...edge,open:true}:edge)} : map;
   const passable = new Map(
     map.tiles
       .filter(
@@ -123,7 +132,7 @@ export function reachableMap(map, start, { openDoors = true } = {}) {
     queue = [start];
   for (let i = 0; i < queue.length; i++)
     for (const n of neighbours(queue[i]))
-      if (passable.has(cellKey(n)) && !seen.has(cellKey(n)) && !wallMovementBlocked(map,queue[i],n,{openDoors})) {
+      if (passable.has(cellKey(n)) && !seen.has(cellKey(n)) && !wallMovementBlocked(geometry,queue[i],n)) {
         seen.add(cellKey(n));
         queue.push(n);
       }
