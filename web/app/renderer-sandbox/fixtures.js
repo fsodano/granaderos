@@ -14,6 +14,7 @@ import {REACH_SCENARIO,createReachReviewBattle} from './reach-fixture.js';
 import {PARTIAL_LOADING_SCENARIO,createPartialLoadingBattle} from './partial-loading-fixture.js';
 import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBattle} from './paired-loading-fixture.js';
 import {FURNISHINGS_DETAIL_SCENARIO,createFurnishingsDetailBattle} from './furnishings-detail-fixture.js';
+import {PROJECTILE_SCENARIO,createProjectileReviewBattle} from './projectile-fixture.js';
 
 export const RENDERER_SCENARIOS=Object.freeze([
   {id:'wall-edges',label:'Paredes entre casillas',help:'Cada pared ocupa el borde compartido de dos casillas. Los dos granaderos junto al tabique ocupan sus casillas completas. Abre la puerta del tabique y camina al otro lado. La casa muestra el suelo hasta sus paredes.'},
@@ -27,6 +28,7 @@ export const RENDERER_SCENARIOS=Object.freeze([
   {id:'postures',label:'Posturas',help:'Marcha, carrera, movimiento agachado y arrastre. Cada personaje tiene un tramo libre hacia el este. Usa las órdenes habituales para comparar apoyo, avance y recuperación.'},
   {id:'equipped-crouch',label:'Agachado con equipo',help:'Dos combatientes con el mismo equipo. Cambia el arma, selecciona cada combatiente y usa Alt + movimiento para desplazarte de costado sin girar. Puedes comparar entrada, avance y parada.'},
   {id:'combat',label:'Combate',help:'Fusil, pistola, sable, granada y cuchillo: cada especialista tiene un blanco enfrente. Los dos artilleros están junto al cañón. Usa las órdenes habituales; reinicia para repetir.'},
+  PROJECTILE_SCENARIO,
   {id:'blast-damage',label:'Daño por explosión',help:'Lanza las granadas junto a las paredes de madera, adobe y piedra o al mobiliario. Los impactos abren pasos y dejan restos. El cofre conserva su contenido. Reinicia para repetir.'},
   BAYONET_SCENARIO,
   PRONE_WORK_SCENARIO,
@@ -186,6 +188,7 @@ function performance(count,architecture=false){
 }
 /** Fresh real battle state. Scene selection never issues private renderer poses. */
 export function createRendererSandboxBattle(id='combat'){
+  if(id==='projectiles'||id.startsWith('projectiles:'))return createProjectileReviewBattle(id.split(':')[1]??'hit');
   if(id.startsWith('varied-roof-climbs'))return createVariedRoofClimbBattle(id.split(':')[1]);
   if(id==='prone-work')return createProneWorkReviewBattle();
   if(id.startsWith('prone-work:'))return createProneWorkReviewBattle(id.slice('prone-work:'.length));

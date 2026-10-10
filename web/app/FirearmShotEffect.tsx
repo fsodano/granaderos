@@ -3,14 +3,16 @@ import {projectSurface} from '../lib/tactical-elevation';
 import {useEffect,useState} from 'react';
 
 type Point={x:number;y:number;height:number;tacticalLevel?:number};
-export type ShotVisual={source:Point;impact:Point;visible:boolean;outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean;discharge?:boolean};
+export type ShotVisual={source:Point;impact:Point;points?:readonly Point[];visible:boolean;outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean;discharge?:boolean};
 // Draw only the admitted, resolved ray. This component neither looks up a
 // victim nor reads the complete roster to reconstruct a hidden shot.
 export default function FirearmShotEffect({state,visual,stage,project}:{state:any;visual:ShotVisual;stage:'projectile'|'impact';project:(x:number,y:number)=>{x:number;y:number}}){
  const [reduced,setReduced]=useState(()=>typeof window!=='undefined'&&Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches));
  useEffect(()=>{const query=window.matchMedia?.('(prefers-reduced-motion: reduce)');if(!query)return;const change=()=>setReduced(query.matches);change();query.addEventListener?.('change',change);return()=>query.removeEventListener?.('change',change);},[]);
  if(!visual?.visible||![visual.source,visual.impact].every(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)))return null;
+ if(visual.points!==undefined&&(!Array.isArray(visual.points)||visual.points.length<2||visual.points.length>256||!visual.points.every(point=>point&&[point.x,point.y,point.height].every(Number.isFinite))))return null;
  const from=projectSurface(state,project,{...visual.source,renderedHeight:visual.source.height}),to=projectSurface(state,project,{...visual.impact,renderedHeight:visual.impact.height});
+ const path=(visual.points??[visual.source,visual.impact]).map(point=>projectSurface(state,project,{...point,renderedHeight:point.height})).map((point,index)=>`${index?'L':'M'}${point.x},${point.y}`).join(' ');
  const duration=`${firearmFlightDuration(visual)/1000}s`,angle=Math.atan2(to.y-from.y,to.x-from.x)*180/Math.PI;
  if(reduced)return <g data-firearm-reduced-motion={stage} pointerEvents="none" aria-hidden="true">
   {stage==='projectile'?<>{visual.discharge!==false&&<circle cx={from.x} cy={from.y} r="2" fill="#c8ac75"/>}<ellipse cx={to.x} cy={to.y} rx="1.8" ry=".8" fill="#b8b6a6"/></>:visual.outcome&&visual.outcome!=='pellets'?<circle cx={to.x} cy={to.y} r="2.5" fill={visual.outcome==='hit'?'#794d40':'#a89576'}/>:null}
@@ -21,7 +23,7 @@ export default function FirearmShotEffect({state,visual,stage,project}:{state:an
    <animate attributeName="opacity" values="1;0" dur="0.09s" fill="freeze"/>
   </g>}
   {!visual.spread&&<g opacity=".85">
-   <animateMotion path={`M${from.x},${from.y} L${to.x},${to.y}`} dur={duration} rotate="auto" fill="freeze"/>
+   <animateMotion path={path} dur={duration} rotate="auto" fill="freeze"/>
    <ellipse rx="1.8" ry=".8" fill="#b8b6a6" stroke="#3a3c32" strokeWidth=".6"/>
    <animate attributeName="opacity" values=".85;.85;0" keyTimes="0;.9;1" dur={duration} fill="freeze"/>
   </g>}

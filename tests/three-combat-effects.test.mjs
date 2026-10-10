@@ -13,6 +13,40 @@ function frozen(value){if(value&&typeof value==='object'){Object.freeze(value);f
 function near(actual,expected){assert.ok(Math.abs(actual-expected)<1e-6,`${actual} != ${expected}`);}
 function roles(root,role){const objects=[];root.traverse(object=>{if(object.userData.role===role)objects.push(object);});return objects;}
 
+test('firearm follows admitted curved samples and stays visible until arrival',()=>{
+ const event=frozen({...shot({points:[point(2,3,4.1,0),point(4,3,6,.5),point(7,3,4.6,1)]}),durationSeconds:.5}),before=JSON.stringify(event),{effects,root}=setup([event]),body=root.getObjectByName('projectile'),bullet=root.getObjectByName('bullet-body');
+ assert.equal(bullet.material.isMeshBasicMaterial,true);assert.equal(bullet.material.depthTest,true);assert.equal(bullet.material.toneMapped,false);assert.ok(bullet.scale.x>.028&&bullet.scale.x<=.06);
+ effects.tick(.25,10.25);near(body.position.x,4*T);near(body.position.y,6);
+ effects.tick(.245,10.495);assert.equal(body.visible,true);assert.equal(bullet.material.opacity,1);assert.ok(body.position.x>6.9*T);
+ effects.tick(.005,10.5);assert.equal(root.children.length,0);assert.equal(JSON.stringify(event),before);effects.dispose();
+});
+
+test('bare firearm miss fades at the endpoint without dust or fragments',()=>{
+ const {effects,root}=setup([shot({outcome:'miss'},'impact')]),marker=root.getObjectByName('miss-end');
+ assert.ok(marker);assert.equal(roles(root,'impact').length,0);assert.equal(root.getObjectByName('impact-dust'),undefined);assert.equal(root.getObjectByName('impact-chip:0'),undefined);
+ near(marker.position.x,7*T);near(marker.position.y,4.6);assert.equal(marker.material.depthTest,true);
+ effects.tick(.09,10.09);assert.ok(marker.material.opacity>0&&marker.material.opacity<.7);effects.tick(.1,10.19);assert.equal(marker.visible,false);
+ effects.update({events:[shot({outcome:'miss'},'impact')],timeSeconds:10,reducedMotion:true});assert.equal(marker.visible,false);assert.equal(root.getObjectByName('reduced-motion-marker').visible,true);effects.dispose();
+});
+
+test('actual body, cover and grenade contacts retain their impact feedback',()=>{
+ for(const outcome of ['hit','cover']){const {effects,root}=setup([shot({outcome,material:'stone'},'impact')]);assert.ok(roles(root,'impact').length>0);assert.equal(root.getObjectByName('miss-end'),undefined);assert.equal(Boolean(root.getObjectByName('impact-dust')),outcome==='cover');if(outcome==='cover'){const contact=root.getObjectByName('impact-contact');assert.ok(contact.visible);near(contact.position.x,7*T);near(contact.position.y,4.6);assert.equal(contact.material.depthTest,false);effects.tick(.2,10.2);assert.equal(contact.visible,false);}effects.dispose();}
+ const {effects,root}=setup([grenade({detonated:false,contacts:[point(4,3,5,.5)]})],10.3);assert.ok(roles(root,'impact').length>0,'actual grenade contacts still create dust');effects.dispose();
+});
+
+test('invalid firearm paths cannot fall back to an invented straight ray',()=>{
+ const source=shot().visual.source,end=shot().visual.impact,paths=[[],[source],null,[source,point(4,3,NaN),end],Array.from({length:257},()=>source),[point(1,3,4.1),end],[source,point(8,3,4.6)]];
+ const {effects,root}=setup(paths.map((points,index)=>({...shot({points}),id:`invalid:${index}`})));assert.equal(root.children.length,0);assert.equal(effects.inspect().rejected,paths.length);effects.dispose();
+});
+
+test('separate shots and continuation events keep their own path and timing',()=>{
+ const primary={...shot({shotHand:'primary',shotId:'p:1'}),id:'primary',durationSeconds:.5},offhand={...shot({source:point(3,4,1.4),impact:point(8,4,1.2),shotHand:'offhand',shotId:'p:2'}),id:'offhand',startedAtSeconds:10.1,durationSeconds:.5},continuation={...shot({source:point(7,3,4.6),impact:point(9,3,4.4),discharge:false,shotId:'p:1'}),id:'continuation',startedAtSeconds:10.2,durationSeconds:.5};
+ const {effects,root}=setup([primary,offhand,continuation],10.25),a=root.getObjectByName('effect:primary'),b=root.getObjectByName('effect:offhand'),c=root.getObjectByName('effect:continuation');
+ near(a.getObjectByName('projectile').position.x,4.5*T);near(b.getObjectByName('projectile').position.x,4.5*T);near(b.getObjectByName('projectile').position.z,4*T);near(c.getObjectByName('projectile').position.x,7.2*T);
+ assert.equal(roles(c,'muzzle-flash').length,0);assert.equal(roles(c,'smoke').length,0);assert.equal(effects.inspect().events.length,3);
+ effects.tick(.3,10.55);assert.equal(root.getObjectByName('effect:primary'),undefined);assert.ok(root.getObjectByName('effect:offhand'));assert.ok(root.getObjectByName('effect:continuation'));effects.dispose();
+});
+
 test('grenade uses supplied flight samples, heights and metric blast radius without mutation',()=>{
  const event=frozen(grenade()),before=JSON.stringify(event),{effects,root}=setup([event]);
  const body=root.getObjectByName('projectile');near(body.position.y,1.4);near(body.position.x,2*T);

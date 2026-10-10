@@ -8,7 +8,7 @@ export type EffectLanding={x:number;y:number;elevation:number;tacticalLevel?:num
 export type EffectImpact=EffectPoint&{outcome?:'hit'|'cover'|'miss'|null;material?:string};
 export type GrenadeEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;landing:EffectLanding;points:readonly EffectPoint[];radius:number;detonated:boolean;contacts?:readonly EffectPoint[]};
 export type KnifeEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;weapon?:number;landing?:EffectLanding};
-export type FirearmEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean;discharge?:boolean;shotHand?:'primary'|'offhand';shotId?:string|number};
+export type FirearmEffectVisual={visible:boolean;source:EffectPoint;impact:EffectPoint;points?:readonly EffectPoint[];outcome:'hit'|'cover'|'miss'|'pellets'|null;material?:string;spread?:boolean;discharge?:boolean;shotHand?:'primary'|'offhand';shotId?:string|number};
 export type ArtilleryEffectVisual={visible:boolean;source:EffectPoint;impact?:EffectPoint;points?:readonly EffectPoint[];impacts?:readonly EffectImpact[];canister?:boolean;discharge?:boolean;cannonId?:string};
 type TimedEvent={id:string;startedAtSeconds:number;durationSeconds?:number;dischargeAnchor?:EffectPoint;actorKey?:string;cannonId?:string};
 export type CombatEffectEvent=TimedEvent&(
@@ -25,6 +25,7 @@ const clamp=(value:number)=>Math.max(0,Math.min(1,value));
 const finitePoint=(point:any):point is EffectPoint=>Boolean(point)&&[point.x,point.y,point.height].every(Number.isFinite);
 const finiteLanding=(point:any):point is EffectLanding=>Boolean(point)&&[point.x,point.y,point.elevation].every(Number.isFinite);
 const validPoints=(points:any,min=0)=>Array.isArray(points)&&points.length>=min&&points.length<=256&&points.every(finitePoint);
+const samePoint=(a:EffectPoint,b:EffectPoint)=>a.x===b.x&&a.y===b.y&&a.height===b.height;
 function validEvent(event:any):event is CombatEffectEvent{
   if(!event||typeof event.id!=='string'||!event.id||!Number.isFinite(event.startedAtSeconds)||event.startedAtSeconds<0||!event.visual?.visible)return false;
   if(event.durationSeconds!==undefined&&(!Number.isFinite(event.durationSeconds)||event.durationSeconds<.02||event.durationSeconds>60))return false;
@@ -32,7 +33,7 @@ function validEvent(event:any):event is CombatEffectEvent{
   const v=event.visual;if(!finitePoint(v.source))return false;
   if(event.kind==='grenade')return finitePoint(v.impact)&&finiteLanding(v.landing)&&validPoints(v.points,2)&&Number.isFinite(v.radius)&&v.radius>=0&&v.radius<=20&&typeof v.detonated==='boolean'&&(v.contacts===undefined||validPoints(v.contacts));
   if(event.kind==='knife')return finitePoint(v.impact);
-  if(event.kind==='firearm')return finitePoint(v.impact)&&['projectile','impact'].includes(event.stage)&&[null,'hit','cover','miss','pellets'].includes(v.outcome);
+  if(event.kind==='firearm')return finitePoint(v.impact)&&(v.points===undefined||validPoints(v.points,2)&&samePoint(v.points[0],v.source)&&samePoint(v.points.at(-1),v.impact))&&['projectile','impact'].includes(event.stage)&&[null,'hit','cover','miss','pellets'].includes(v.outcome);
   if(event.kind==='artillery')return ['projectile','impact','effect',undefined].includes(event.stage)&&(v.impact===undefined||finitePoint(v.impact))&&(v.points===undefined||validPoints(v.points,2))&&(v.impacts===undefined||(validPoints(v.impacts)&&v.impacts.length<=64));
   return false;
 }
@@ -71,8 +72,14 @@ export function createCombatEffects(scene:Scene,options:CombatEffectsOptions){
       add(flash,(elapsed,quiet)=>{flash.visible=elapsed>=0&&elapsed<(quiet?.14:.09);opacity(flash,quiet?.4:1-elapsed/.09);});
       smoke(point,.03,large?6:3,large?.3:.13,'#a3a092',large?.9:.6);
     }
-    function impact(point:EffectImpact,start:number,large=false){
+    function impact(point:EffectImpact,start:number,large=false,readable=false){
       if(!point.outcome)return;const origin=at(point),colour=colourFor(point),life=large?.8:.6;
+      if(readable&&point.outcome==='cover'){
+        // Force can expire inside an opaque observed solid. A brief contact
+        // cue at the admitted point keeps that real strike readable there.
+        const contact=mesh('impact-contact','metal',colour,true);contact.userData.role='impact';contact.position.copy(origin);contact.scale.setScalar(large?.09:.055);contact.material.depthTest=false;
+        add(contact,(elapsed,quiet)=>{const age=elapsed-start;contact.visible=age>=0&&age<.18;opacity(contact,(quiet?.4:.85)*(1-clamp(age/.18)));});
+      }
       if(point.outcome!=='hit'){const cloud=mesh('impact-dust','smoke',colour);cloud.userData.role='impact';add(cloud,(elapsed,quiet)=>{const age=elapsed-start,p=clamp(age/life);cloud.visible=age>=0&&age<life;cloud.position.copy(origin).add(new Vector3(0,p*.18,0));cloud.scale.setScalar((large?.18:.065)+p*(large?.45:.16));opacity(cloud,(quiet?.25:.42)*(1-p));});}
       for(let n=0;n<(point.outcome==='miss'?2:large?12:4);n++){const chip=mesh(`impact-chip:${n}`,point.material==='wood'?'box':'metal',colour),angle=rnd()*Math.PI*2,speed=(.12+rnd()*.4)*(large?2:1),up=.3+rnd()*.5,origin=at(point),size=point.outcome==='hit'?.024:.016+rnd()*.014;chip.userData.role='impact';chip.rotation.set(rnd()*3,rnd()*3,rnd()*3);chip.scale.set(size,size*(point.material==='wood'?3:1),size);add(chip,(elapsed,quiet)=>{const age=elapsed-start,p=clamp(age/life);chip.visible=age>=0&&age<life&&!quiet;chip.position.copy(origin).add(new Vector3(Math.cos(angle)*speed*p,up*p-.75*p*p,Math.sin(angle)*speed*p));opacity(chip,.8*(1-p));});}
     }
@@ -80,8 +87,12 @@ export function createCombatEffects(scene:Scene,options:CombatEffectsOptions){
       const sample=pathSampler(points,T),body=new Group();body.name='projectile';body.userData.role='projectile';group.add(body);
       if(kind==='knife'){
         const blade=mesh('knife-blade','cone','#c2c7c1'),handle=mesh('knife-handle','cylinder','#62492f');group.remove(blade,handle);body.add(blade,handle);blade.rotation.z=-Math.PI/2;blade.scale.set(.032,.24,.012);blade.position.x=.08;handle.rotation.z=Math.PI/2;handle.scale.set(.019,.105,.019);handle.position.x=-.085;
-      }else{const ball=mesh(`${kind}-body`,'metal',kind==='grenade'?'#30362a':'#969789');group.remove(ball);body.add(ball);ball.scale.setScalar(kind==='grenade'?.073:kind==='ball'?.09:.028);if(kind==='grenade'){const fuse=mesh('grenade-fuse','cylinder','#b7a477');group.remove(fuse);body.add(fuse);fuse.position.y=.075;fuse.scale.set(.012,.05,.012);}}
-      const current=new Vector3(),ahead=new Vector3();add(body,(elapsed,quiet)=>{const p=clamp(elapsed/duration);body.visible=elapsed>=0&&elapsed<duration&&!quiet;sample(p,current);body.position.copy(current);if(kind==='knife'){sample(Math.min(1,p+.001),ahead);const direction=ahead.sub(current);if(direction.lengthSq())body.quaternion.setFromUnitVectors(new Vector3(1,0,0),direction.normalize());}body.traverse(object=>{if(object instanceof Mesh)opacity(object,p>.9?(1-p)*10:1);});});
+      }else{
+        if(kind==='bullet'){const rim=mesh('bullet-rim','metal','#38392e',true);group.remove(rim);body.add(rim);rim.scale.setScalar(.052);}
+        const ball=mesh(`${kind}-body`,'metal',kind==='grenade'?'#30362a':kind==='bullet'?'#d2c5a4':'#969789',kind==='bullet');group.remove(ball);body.add(ball);ball.scale.setScalar(kind==='grenade'?.073:kind==='ball'?.09:.038);if(kind==='bullet'){ball.renderOrder=1;ball.material.toneMapped=false;}
+        if(kind==='grenade'){const fuse=mesh('grenade-fuse','cylinder','#b7a477');group.remove(fuse);body.add(fuse);fuse.position.y=.075;fuse.scale.set(.012,.05,.012);}
+      }
+      const current=new Vector3(),ahead=new Vector3();add(body,(elapsed,quiet)=>{const p=clamp(elapsed/duration);body.visible=elapsed>=0&&elapsed<duration&&!quiet;sample(p,current);body.position.copy(current);if(kind==='knife'){sample(Math.min(1,p+.001),ahead);const direction=ahead.sub(current);if(direction.lengthSq())body.quaternion.setFromUnitVectors(new Vector3(1,0,0),direction.normalize());}body.traverse(object=>{if(object instanceof Mesh)opacity(object,kind==='bullet'?1:p>.9?(1-p)*10:1);});});
       return body;
     }
     function quietMarker(point:EffectPoint,start:number,end:number,colour:string){const marker=mesh('reduced-motion-marker','metal',colour,true);marker.userData.role='reduced-motion-marker';marker.position.copy(at(point));marker.scale.setScalar(.055);add(marker,(elapsed,quiet)=>{marker.visible=quiet&&elapsed>=start&&elapsed<end;opacity(marker,.65);});}
@@ -95,8 +106,13 @@ export function createCombatEffects(scene:Scene,options:CombatEffectsOptions){
     }else if(event.kind==='knife'){
       flight([event.visual.source,event.visual.impact],Math.min(.35,entry.duration*.65),'knife');quietMarker(event.visual.impact,0,entry.duration,'#c2c7c1');
     }else if(event.kind==='firearm'){
-      const v=event.visual;if(event.stage==='projectile'){if(v.discharge!==false)discharge(event.dischargeAnchor??v.source,v.impact);if(!v.spread)flight([v.source,v.impact],entry.duration,'bullet');quietMarker(v.impact,0,entry.duration,'#b8b6a6');}
-      else if(v.outcome&&v.outcome!=='pellets'){impact({...v.impact,outcome:v.outcome,material:v.material},0);quietMarker(v.impact,0,entry.duration,colourFor({...v.impact,outcome:v.outcome,material:v.material}));}
+      const v=event.visual;if(event.stage==='projectile'){if(v.discharge!==false)discharge(event.dischargeAnchor??v.source,v.impact);if(!v.spread)flight(v.points??[v.source,v.impact],entry.duration,'bullet');quietMarker(v.impact,0,entry.duration,'#b8b6a6');}
+      else if(v.outcome==='miss'){
+        // A range endpoint is not a surface contact. Fade the bead without
+        // inventing dust, fragments, blood or a reaction at the aimed body.
+        const bead=mesh('miss-end','metal','#d2c5a4',true);bead.userData.role='miss';bead.position.copy(at(v.impact));bead.scale.setScalar(.038);
+        add(bead,(elapsed,quiet)=>{bead.visible=!quiet&&elapsed>=0&&elapsed<.18;opacity(bead,.7*(1-elapsed/.18));});quietMarker(v.impact,0,entry.duration,'#b8b6a6');
+      }else if(v.outcome&&v.outcome!=='pellets'){impact({...v.impact,outcome:v.outcome,material:v.material},0,false,true);quietMarker(v.impact,0,entry.duration,colourFor({...v.impact,outcome:v.outcome,material:v.material}));}
     }else{
       const v=event.visual,stage=event.stage??'effect',travel=Math.min(.55,entry.duration*.55),end=v.impact??v.points?.at(-1),contacts=v.impacts??[];
       if(stage!=='impact'){if(v.discharge!==false)discharge(event.dischargeAnchor??v.source,end,true);if(!v.canister&&end)flight(v.points??[v.source,end],stage==='projectile'?entry.duration:travel,'ball');}

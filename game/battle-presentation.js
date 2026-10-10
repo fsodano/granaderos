@@ -92,18 +92,22 @@ function observedShot(state,raw,known,canObserve,canObserveExterior){
    const fraction=index/steps;points.push({x:raw.source.x+(end.x-raw.source.x)*fraction,y:raw.source.y+(end.y-raw.source.y)*fraction,height:raw.source.height+(end.height-raw.source.height)*fraction,tacticalLevel:fraction===1?end.tacticalLevel:raw.source.tacticalLevel});
   }
  }
- let last=raw.source,complete=true;
+ let last=raw.source,complete=true;const admitted=[raw.source];
  for(const point of points){
   // Only an exact known side-face endpoint can use its surface's visibility.
   // Every intermediate sample remains an ordinary point; no opaque cell is
   // made transparent, and the private contact proof is omitted below.
   const contact=point===points.at(-1)&&end===raw.impact?raw.impactSurfaceContact:null;
   if(!canObserve(state,{...point,x:Math.round(point.x),y:Math.round(point.y)})&&!observedStoneContact(state,point,contact,canObserve,canObserveExterior)){complete=false;break;}
-  last=point;
+  last=point;admitted.push(point);
  }
  if(last===raw.source)return null;
  const outcome=!complete?null:hiddenVictim?(raw.pointShot||raw.aimHit?null:'miss'):raw.pointShot&&raw.outcome==='miss'?null:raw.outcome;
- return {source:snapshot(raw.source),impact:last,visible:true,outcome,spread:Boolean(raw.spread),shotHand:raw.shotHand==='offhand'?'offhand':'primary',...(raw.discharge===false?{discharge:false}:{}),...(outcome==='cover'&&raw.material?{material:raw.material}:{})};
+ // Publish only admitted coordinates. The renderer follows the resolved curve
+ // without receiving its physical model, contact proofs or hidden endpoints.
+ const clean=point=>({x:point.x,y:point.y,height:point.height,...(point.tacticalLevel===undefined?{}:{tacticalLevel:point.tacticalLevel})});
+ const publicPoints=admitted.length<=256?admitted:Array.from({length:256},(_,index)=>admitted[Math.round(index*(admitted.length-1)/255)]);
+ return {source:snapshot(raw.source),impact:last,points:publicPoints.map(clean),visible:true,outcome,spread:Boolean(raw.spread),shotHand:raw.shotHand==='offhand'?'offhand':'primary',...(raw.discharge===false?{discharge:false}:{}),...(outcome==='cover'&&raw.material?{material:raw.material}:{})};
 }
 function observedArtilleryEdgeContact(state,point,contact,raw,canObserveExterior){
  if(!contact?.point||typeof contact.edgeId!=='string'||!['x','y','height'].every(key=>Number.isFinite(point?.[key])&&Math.abs(point[key]-contact.point[key])<1e-8)||tacticalLevel(point)!==tacticalLevel(contact.point))return false;
