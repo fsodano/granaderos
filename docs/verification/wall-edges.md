@@ -46,8 +46,10 @@ the new format. Compatibility with earlier campaign saves is outside scope.
 - Production build and type check passed. Static export verification checked
   1,377 files and 1,045 asset references. Build identity: `be9a567f1fdc`.
 - Documentation and baseline audits passed. Test partition self-tests passed
-  5/5. The first final partition check included all 965 files exactly once;
-  the added campaign checkpoint tests require an updated count below.
+  6/6. The latest quick run passed all 7,101 tests across 954 files in 1,219
+  seconds. Its partition contained 967 files with 13 extended files excluded.
+  Later checkpoint tests are checked separately and require a final partition
+  count; the quick result does not include tests added after its discovery.
 - The complete full gate began with production source `74944df9`. The final
   presentation fix is `662f42a4`; its 53 affected tests, type check, production
   build, and browser door-crossing review passed separately. Campaign driver
