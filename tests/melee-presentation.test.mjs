@@ -84,11 +84,13 @@ test('a real counterstrike is paid and shown only after the initial wound, witho
 });
 
 test('prone stance preparation interrupted by real reaction fire cannot show a canceled strike',()=>{
- const tiles=floor();Object.assign(tiles[3*24+3],{type:'wall',blocked:true,obstacleHeight:.8});
+ const tiles=floor(),wallEdges=[{id:'reaction-low-wall',x:3,y:3,axis:'y',type:'wall',blocked:true,blocksSight:true,obstacleHeight:.8}];
  const s=field({weapon:1800,weaponMode:'melee',weaponFittings:socket(),loaded:1,ammo:7,stance:'prone',movementMode:'prone',agility:0,wisdom:0,experienceLevel:1},
   {x:4,weapon:1805,loaded:1,activeSlot:'primary',ammo:0,marksmanship:100,agility:100,wisdom:100,experienceLevel:10,overwatch:true,ap:100},
-  {tiles,upperSurfaces:[{id:'roof-sight',x:20,y:3,tacticalLevel:1,type:'floor',kind:'roof',elevation:3,blocked:false,cover:0}]});
+  {tiles,wallEdges,upperSurfaces:[{id:'roof-sight',x:20,y:3,tacticalLevel:1,type:'floor',kind:'roof',elevation:3,blocked:false,cover:0}]});
  s.units.push({...structuredClone(unit(s)),id:'spotter',x:4,y:2,stance:'standing',movementMode:'walk',weapon:0,weaponFittings:undefined,activeSlot:'unarmed',loaded:0,ap:0});
+ assert.equal(teamCanSee(s,'enemy',unit(s)),false);
+ const standing=structuredClone(s);unit(standing).stance='standing';assert.equal(teamCanSee(standing,'enemy',unit(standing)),true);
  unit(s,'e').ap=actionCosts(s,unit(s,'e'),unit(s)).fire;
  const r=present(s);assert.ok(unit(r.state).hp<unit(s).hp);assert.equal(unit(r.state).ap,unit(s).ap-6);assert.equal(unit(r.state,'e').hp,100);
  assert.equal(r.frames.some(f=>f.type==='contact'&&f.unitId==='p'),false);assert.equal(r.frames.some(f=>f.contactComplete&&f.unitId==='p'),false);

@@ -13,7 +13,8 @@ export function surfaceRenderOffset(state:any, point:Point):SurfaceRenderOffset 
   const building=surface?.kind==='roof'&&surface.buildingId&&(state.buildings??[]).find((b:any)=>b.id===surface.buildingId);
   // Calibrate only authored building roofs to their existing detailed plane.
   // Independent platforms keep the metric projection without a facade inset.
-  return building?{x:.4,y:.4,height:buildingStyle(building).height+BUILDING_VERTICAL_SCALE-(surface.elevation??0)*ELEVATION_PIXELS_PER_METRE}:{x:0,y:0,height:0};
+  const inset=state.wallEdges!==undefined?0:.4;
+  return building?{x:inset,y:inset,height:buildingStyle(building).height+BUILDING_VERTICAL_SCALE-(surface.elevation??0)*ELEVATION_PIXELS_PER_METRE}:{x:0,y:0,height:0};
 }
 export function surfaceMotionPoint(state:any, point:Point, fallbackState=state) {
   const source=surfaceHeight(state,point)===null?fallbackState:state;

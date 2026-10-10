@@ -56,7 +56,7 @@ test('the squad strip uses an edited weapon image and its selected ammunition fa
 
 test('personal enemy counts follow each observer sight and AP remains explicit at zero',()=>{
  const battle=createBattle([{id:'watcher',name:'Vigía',x:2,y:2,facing:2},{id:'away',name:'Retaguardia',x:2,y:6,facing:6}],{width:10,height:10,enemies:[{id:'one',x:5,y:2},{id:'two',x:6,y:2}]});
- battle.tiles.forEach(t=>{t.type='grass';t.blocked=false;t.cover=0;});battle.units[0].ap=19;battle.units[1].ap=0;
+ battle.tiles.forEach(t=>{t.type='grass';t.blocked=false;t.cover=0;});battle.wallEdges=[];battle.units[0].ap=19;battle.units[1].ap=0;
  const players=battle.units.filter(u=>u.side==='player'),cells=rosterCells(players,'watcher',battle);
  assert.equal(cells[0].visibleEnemyCount,2);assert.equal(cells[1].visibleEnemyCount,0);
  for(const cell of cells.filter(c=>c.unit))assert.equal(cell.visibleEnemyCount,battle.units.filter(e=>e.side==='enemy'&&e.hp>0&&canSee(battle,cell.unit,e)).length);

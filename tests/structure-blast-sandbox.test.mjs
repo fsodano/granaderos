@@ -8,12 +8,14 @@ test('blast review uses real finite grenade orders and valid durable geometry',(
  const initial=createRendererSandboxBattle('blast-damage');
  assert.ok(validateBattleSnapshot(structuredClone(initial)));
  assert.equal(initial.units[0].inventory.grenade.count,8);
- for(const [y,expected]of [[4,100],[8,48],[12,20]]){
+ for(const [y,material,expected]of [[4,'wood',100],[8,'adobe',38],[12,'stone',14]]){
+  const edge=initial.wallEdges.find(edge=>edge.type==='wall'&&edge.material===material);
+  assert.ok(edge);
   const next=actBattle(initial,{type:'throwGrenade',unitId:'blast-guard',x:9,y});
   assert.equal(next.lastError,null);assert.equal(next.units[0].inventory.grenade.count,7);
-  assert.equal(next.tiles[y*next.width+10].structureDamage,expected);
+  assert.equal(next.wallEdges.find(wall=>wall.id===edge.id).structureDamage,expected);
   assert.ok(validateBattleSnapshot(structuredClone(next)));
-  assert.equal(initial.tiles[y*initial.width+10].structureDamage,undefined);
+  assert.equal(edge.structureDamage,undefined);
  }
  const next=actBattle(initial,{type:'throwGrenade',unitId:'blast-guard',x:7,y:10});
  assert.equal(next.lastError,null);assert.equal(next.props.find(p=>p.id==='blast-chest').destroyed,true);

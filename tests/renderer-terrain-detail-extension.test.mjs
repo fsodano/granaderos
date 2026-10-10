@@ -16,13 +16,15 @@ const oldFixtureSHA='c666648620fc95d19c4996e154d7081c87b9f45018e6f71be15db05d6f5
 function normalWorld(battle){const players=battle.units.filter(unit=>unit.side==='player'),revealed=new Set(visibleRooms(battle)),entries=admittedActors(battle,players,revealed);return presentWorld(battle,createSceneTerrainCache()(battle),players,revealed,entries,0);}
 function move(battle,x,y){const before=structuredClone(battle),next=actBattle(battle,{type:'move',unitId:'terrain-guard',x,y});assert.equal(next.lastError,null);assert.deepEqual(battle,before);assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(next))));const guard=next.units.find(unit=>unit.id==='terrain-guard');assert.equal(guard.x,x);assert.equal(guard.y,y);return next;}
 
-test('six explicit terrain cells add valid seeded rocks and mature trees while exactly preserving the old snapshot',()=>{
+test('six explicit terrain cells add valid seeded rocks and mature trees while preserving old actor and terrain data',()=>{
  const battle=createRendererSandboxBattle('terrain-detail'),restored=structuredClone(battle);assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))));
  assert.equal(battle.units.length,1);assert.equal(battle.units[0].id,'terrain-guard');assert.deepEqual([battle.units[0].x,battle.units[0].y],[8,8]);assert.equal(battle.seed,45);assert.equal(battle.width,20);assert.equal(battle.height,18);
  assert.equal(new Set(rocks.map(([x,y])=>seeded(x,y))).size,3);
  for(const [x,y]of rocks){const tile=battle.tiles.find(tile=>tile.x===x&&tile.y===y);assert.deepEqual(tile,{x,y,type:'stone',cover:40,blocked:true,elevation:0,material:'stone'});}
  for(const [x,y]of trees){const tile=battle.tiles.find(tile=>tile.x===x&&tile.y===y);assert.deepEqual(tile,{x,y,type:'forest',cover:15,blocked:false,elevation:0});assert.ok(seeded(x,y)>.2,'the existing renderer must choose a mature tree, not scrub');}
  for(const [x,y]of [...rocks,...trees]){const tile=restored.tiles.find(tile=>tile.x===x&&tile.y===y);tile.type='grass';tile.cover=0;tile.blocked=false;delete tile.material;}
+ assert.deepEqual(restored.wallEdges,[]);assert.equal(restored.wallGeometryVersion,2);
+ delete restored.wallEdges;delete restored.wallGeometryVersion;
  assert.equal(sha(restored),oldFixtureSHA,'only six terrain records may change; all actor, visibility and simulation fields stay exact');assert.equal(sha(restored.tiles),oldTilesSHA);
  const edited=new Set([...rocks,...trees].map(([x,y])=>`${x},${y}`));for(const tile of battle.tiles)if(!edited.has(`${tile.x},${tile.y}`))assert.deepEqual(tile,restored.tiles.find(old=>old.x===tile.x&&old.y===tile.y));
  const roads=battle.tiles.filter(tile=>tile.x===7||tile.x===8||tile.y===7||tile.y===8);assert.ok(roads.every(tile=>tile.type==='road'&&!tile.blocked));

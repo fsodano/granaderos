@@ -30,11 +30,13 @@ function renderedRoofPlane(state){
  const object=buildBuildingObjects({state,revealed:new Set(),cursorLevel:1,project,light:()=>1}).find(o=>o.key==='architecture-roof-terrace:interior');
  const element=nodes(object.node).find(node=>node.type===BuildingRoof),roof=componentTree(BuildingRoof,element.props);
  const flat=nodes(roof).find(node=>node.props?.['data-roof-form']==='flat');
- const mesh=nodes(flat).find(node=>node.type==='g'&&node.props?.transform?.startsWith('matrix('));
- const matrix=mesh.props.transform.slice(7,-1).split(/\s+/).map(Number);
- const [a,b,c,d,e,f]=matrix,projectVertex=(x,y)=>({x:a*x+c*y+e,y:b*x+d*y+f});
- const vertices=mesh.props.children[0].props.points.split(' ').map(point=>point.split(',').map(Number));
- return {point:(x,y)=>projectVertex(x*32,y*32),vertices:vertices.map(([x,y])=>({cell:{x:x/32,y:y/32,tacticalLevel:1},screen:projectVertex(x,y)}))};
+ const meshes=nodes(flat).filter(node=>node.type==='g'&&node.props?.transform?.startsWith('matrix('));
+ const transform=mesh=>{const [a,b,c,d,e,f]=mesh.props.transform.slice(7,-1).split(/\s+/).map(Number);return (x,y)=>({x:a*x+c*y+e,y:b*x+d*y+f});};
+ const projectVertex=transform(meshes[0]),vertices=[...new Map(meshes.flatMap(mesh=>{
+  const projected=transform(mesh);
+  return mesh.props.children[0].props.points.split(' ').map(point=>{const [x,y]=point.split(',').map(Number);return {cell:{x:x/32,y:y/32,tacticalLevel:1},screen:projected(x,y)};});
+ }).map(vertex=>[`${vertex.cell.x},${vertex.cell.y}`,vertex])).values()];
+ return {point:(x,y)=>projectVertex(x*32,y*32),vertices};
 }
 function fixture(){
  const built=buildBuilding({id:'terrace',x:2,y:2,width:5,height:5,doors:[{x:3,y:6,open:true}]}),ground=Array.from({length:100},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,blocksSight:false,cover:0}));
@@ -66,11 +68,17 @@ test('ground and roof hit frames share map columns but retain distinct physical 
  assert.equal(visibleHover(state,state.units[2]).id,'up');
 });
 
-test('roof mesh vertices, actor feet, hit frames and tile targets use the same existing art plane',()=>{
+test('roof boundaries contain every floor cell and actors, hit frames and tile targets share the art plane',()=>{
  for(const architecture of ['house','mansion','warehouse']){
   const state=fixture();Object.assign(state.buildings[0],{architecture,roof:'terrace'});
   const plane=renderedRoofPlane(state);
-  for(const vertex of plane.vertices){const p=projectSurface(state,project,vertex.cell);close(p.x,vertex.screen.x);close(p.y,vertex.screen.y);}
+  const building=state.buildings[0];
+  assert.deepEqual(plane.vertices.map(vertex=>[vertex.cell.x,vertex.cell.y]),[
+   [building.x-.5,building.y-.5],[building.x+building.width-.5,building.y-.5],
+   [building.x+building.width-.5,building.y+building.height-.5],[building.x-.5,building.y+building.height-.5],
+  ]);
+  for(const vertex of plane.vertices){const expected=plane.point(vertex.cell.x,vertex.cell.y);close(vertex.screen.x,expected.x);close(vertex.screen.y,expected.y);}
+  for(const surface of state.upperSurfaces){const p=projectSurface(state,project,surface),expected=plane.point(surface.x,surface.y);close(p.x,expected.x);close(p.y,expected.y);}
   for(const cell of [{x:2,y:3},{x:3,y:3},{x:6,y:5}]){
    Object.assign(state.units[2],cell);const expected=plane.point(cell.x,cell.y),surface=state.upperSurfaces.find(t=>t.x===cell.x&&t.y===cell.y);
    const tree=componentTree(Scene,sceneProps(state,{cursorLevel:1,hover:surface})),actor=nodes(tree).find(node=>node.props?.['data-unit-id']==='up');

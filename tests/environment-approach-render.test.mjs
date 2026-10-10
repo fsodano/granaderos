@@ -69,9 +69,9 @@ test('the mounted wall panel uses the real paid crowbar action and disables abse
   const host=dom.window.document.getElementById('root'),root=createRoot(host);
   t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
   const tiles=Array.from({length:56},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',blocked:false,cover:0}));
-  Object.assign(tiles.find(tile=>tile.x===2&&tile.y===3),{type:'wall',material:'adobe',blocked:true,blocksSight:true});
+  const wall={id:'crowbar-wall',x:2,y:3,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true};
   const state=createBattle([{id:'p',x:1,y:3,facing:2,activeSlot:'tool',activeTool:'inventory:bar',inventory:{bar:{kind:'tool',toolKey:'crowbar',count:1,condition:72,weight:2.5}}}],
-    {width:8,height:7,tiles,enemies:[{id:'guard',x:7,y:6,patrol:false,overwatch:false}]});
+    {width:8,height:7,tiles,wallEdges:[wall],enemies:[{id:'guard',x:7,y:6,patrol:false,overwatch:false}]});
   let result=null,calls=0;
   const draw=async battle=>{
     const model=nearbyEnvironmentModel(battle,battle.units[0]);
@@ -89,7 +89,7 @@ test('the mounted wall panel uses the real paid crowbar action and disables abse
   await act(async()=>button.click());assert.equal(calls,1);assert.equal(result.lastError,null);
   assert.equal(result.units[0].ap,state.units[0].ap-model.preview.pa);
   assert.equal(result.units[0].inventory.bar.condition,state.units[0].inventory.bar.condition-model.preview.toolWear);
-  assert.equal(result.tiles.find(tile=>tile.x===2&&tile.y===3).blocked,false);
+  assert.equal(result.wallEdges.find(edge=>edge.id===wall.id).blocked,false);
   for(const inventory of [{},{bar:{...state.units[0].inventory.bar,condition:0}}]){
     const unavailable=structuredClone(state);unavailable.units[0].inventory=inventory;
     const {model,button}=await draw(unavailable);assert.equal(model.preview.valid,false);assert.equal(button.disabled,true);

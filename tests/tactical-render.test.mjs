@@ -120,7 +120,7 @@ test('scene selects civilians and sorts NPCs at their animated ground position',
  const markup=render(h('svg',null,node));assert.match(markup,/data-sprite="surgeon-walk"/);assert.match(markup,/data-unit-id="civilian"/);assert.ok(markup.indexOf('data-unit-id="civilian"')<markup.indexOf('data-unit-id="2"'),'animated ground position sets draw order');assert.match(markup,/data-person-hit-target="true"/);
 });
 test('radar hides unknown room floors and unseen enemy dots',()=>{
- const s=createBattle([{id:1,x:0,y:0}],{width:8,height:8,night:true,enemies:[{id:'enemy',x:7,y:7}],buildings:state.buildings});
+ const s=createBattle([{id:1,x:0,y:0}],{width:8,height:8,night:true,enemies:[{id:'enemy',x:7,y:7}],wallEdges:[{id:'room-wall',x:4,y:2,axis:'y',type:'wall',blocked:true,blocksSight:true}],buildings:state.buildings});
  s.tiles.find(t=>t.x===4&&t.y===2).roomId='b';
  const markup=render(h(TacticalMinimap,{state:s,units:s.units,selected:'1',project,width:500,height:300,camera:{x:50,y:40,width:200,height:100},onCenter:()=>{}}));
  assert.ok(!markup.includes('#d7755a'));assert.match(markup,/#685037/);assert.match(markup,/x="50" y="40" width="200" height="100"/);

@@ -10,8 +10,8 @@ const {sameStaticSceneContent,sameStaticSceneProps}=await import('../web/lib/sta
 const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
 
 const project=(x,y)=>({x:(x-y)*26,y:(x+y)*14});
-const first=buildBuilding({id:'first',x:2,y:2,width:6,height:5,doors:[{x:4,y:6}]}),second=buildBuilding({id:'second',x:12,y:2,width:6,height:5});
-const state={tiles:[...first.tiles,...second.tiles],buildings:[first.building,second.building]};
+const first=buildBuilding({id:'first',x:2,y:2,width:6,height:5,doors:[{id:'first-door',x:4,y:7,axis:'x'}]}),second=buildBuilding({id:'second',x:12,y:2,width:6,height:5});
+const state={tiles:[...first.tiles,...second.tiles],wallEdges:[...first.wallEdges,...second.wallEdges],buildings:[first.building,second.building]};
 const objects=(state,rooms=[],brightness=.6)=>buildBuildingObjects({state,project,revealed:new Set(rooms),light:()=>brightness});
 
 test('revealing one room retains other architecture and updates every changed wall, roof and floor',()=>{
@@ -29,8 +29,8 @@ test('revealing one room retains other architecture and updates every changed wa
 });
 
 test('door states, light, textures, order and component props invalidate retained scenery',()=>{
- const before=objects(state),opened=structuredClone(state);opened.tiles.find(t=>t.type==='door').open=true;
- const key='architecture-4-6-x';
+ const before=objects(state),opened=structuredClone(state);opened.wallEdges.find(t=>t.type==='door').open=true;
+ const door=state.wallEdges.find(t=>t.type==='door'),key=`architecture-${door.id}-${door.axis}`;
  assert.equal(sameStaticSceneContent(before.find(o=>o.key===key).node,objects(opened).find(o=>o.key===key).node),false);
  assert.equal(sameStaticSceneContent(before.find(o=>o.key===key).node,objects(state,[],.9).find(o=>o.key===key).node),false);
  assert.equal(sameStaticSceneContent(h('image',{href:'one.png'}),h('image',{href:'two.png'})),false);
