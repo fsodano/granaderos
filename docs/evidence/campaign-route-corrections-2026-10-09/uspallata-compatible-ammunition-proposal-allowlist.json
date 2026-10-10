@@ -1,0 +1,71 @@
+{
+  "scope": "Inactive external proposal and declared native controls, including retained invalid negative-control premise and preflight error. Root applied the reviewed same8-ID target12 caller reuse and absence control; complete current Uspallata remains unverified.",
+  "files": [
+    {
+      "path": "ammunition-absence-control.patch",
+      "sha256": "0cad326c6a2695bdafcb8793631b7252730683f1a00fcf31be91573c3146fb69",
+      "bytes": 4505
+    },
+    {
+      "path": "combined.patch",
+      "sha256": "35c03d530afbd0e5b0b58d92ba2eeebb507b9bea933002afd1f499efb5c8948b",
+      "bytes": 5485
+    },
+    {
+      "path": "controls-invalid-two-gun-absence-premise.log",
+      "sha256": "5e424b1518b8e5c116d14f3c87f923aa5a8242a87ae8d0dc8f3626d3b0e9c3de",
+      "bytes": 2242
+    },
+    {
+      "path": "controls-preflight-syntax-failure.log",
+      "sha256": "84f482751cbdbf34ef876e5165b30f418e1955fd273433156fc77566f20bf999",
+      "bytes": 1474
+    },
+    {
+      "path": "controls.log",
+      "sha256": "4db626c94b6238dbf51a3bf30f3dfeadad020bccf8dd4e6ba1893456421d4250",
+      "bytes": 1452
+    },
+    {
+      "path": "fresh-mountain-ammunition.candidate.test.mjs",
+      "sha256": "7299a8d5811ea6d9465ade28fd43b547b990db360d7d75c56a4987d45d862df4",
+      "bytes": 11235
+    },
+    {
+      "path": "fresh-mountain-route.candidate.mjs",
+      "sha256": "f5d7b8a96b302bb9a9950446e3c90957b94b35f32520d0b91ff644646b3490ea",
+      "bytes": 38263
+    },
+    {
+      "path": "overlay-loader.mjs",
+      "sha256": "3c6370c537cec108e5ccd5698f3887a04bb5545600a588bc40d3ec9516527a4a",
+      "bytes": 1455
+    },
+    {
+      "path": "overlay-runtime-60255.json",
+      "sha256": "2c36250f373253d72eeb321a2af9ad895b72f6735d405db960640b73d16c09ac",
+      "bytes": 524
+    },
+    {
+      "path": "overlay-runtime-60292.json",
+      "sha256": "9ab7a5e165672e5443ca3f1a402c9e61f63054bb88a4cd52ec66fd17c62d993e",
+      "bytes": 99996
+    },
+    {
+      "path": "overlay-runtime-60717.json",
+      "sha256": "73e6bdd6760951ff1d8d4801a851c340cb6d92ba9ea6edbf20f564a6ef648f14",
+      "bytes": 99996
+    },
+    {
+      "path": "proposal.json",
+      "sha256": "52bcbb9ac6a0438c61aff0bf235cc09b82ca29c1f3007ea7a57a0bce78a2fd7b",
+      "bytes": 7418
+    },
+    {
+      "path": "uspallata-compatible-ammunition.patch",
+      "sha256": "489f28d6f91231ebe6b9e3683dd38bab9461335a51919efbc96f9fb45edcba3a",
+      "bytes": 980
+    }
+  ],
+  "count": 13
+}

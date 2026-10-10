@@ -1,0 +1,76 @@
+{
+  "scope": "Inactive external reviewed paid-posture proposal and bounded native controls. Earned C\u00f3rdoba and Mendoza selectors execute zero orders; declared stance pays3AP/6s with finite supplies retained. AP12 did not reach the unsafe-fire branch and remains a read-only limit. Reviewed patch is applied to candidate; no native C\u00f3rdoba victory claimed.",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "eac28df99e59754d83a9f7d05107394fa517eace1c44cfa299b096447155a9a9",
+      "bytes": 1836
+    },
+    {
+      "path": "declared-ap12-budget-branch-preview.json",
+      "sha256": "3e85e57ccf76ba47fd1eba4ed676ff195bc961371efaa73e188e359d1b35c886",
+      "bytes": 1007
+    },
+    {
+      "path": "northern-known-friendly-posture.provenance.json",
+      "sha256": "b1ff08af6213d10a1f72e6c30cd5c88991716649ea61f2f63ed7eeae55cefd26",
+      "bytes": 1155
+    },
+    {
+      "path": "northern-known-friendly-posture.save.json.gz",
+      "sha256": "3beae75882acb4e5ac52772c5fa9cb470013f177194465ec96f84fd9fb71fdea",
+      "bytes": 69464
+    },
+    {
+      "path": "northern-safe-posture-source.patch",
+      "sha256": "55ef0a8fe70eef75bc2007c0d79a9267e05743b3e85d60678ae4f0c52ed8d16a",
+      "bytes": 2732
+    },
+    {
+      "path": "northern-safe-posture-terminal-receipt.json",
+      "sha256": "fa5280ef659f684fea6f735d68417f0e9a950bb89c1054abd238e736fd5fe7c9",
+      "bytes": 31663
+    },
+    {
+      "path": "northern-safe-posture-text-install.patch",
+      "sha256": "bac9690935b7b6004fbd3d9bd1e18522378648910499bfb24d54c94c4f38b912",
+      "bytes": 13214
+    },
+    {
+      "path": "northern-safe-posture.test.mjs",
+      "sha256": "b0b08601c2c0dd2feb6ce0f42404d02ff5c0b9b1c59b4015a232d27acd2adc3d",
+      "bytes": 9028
+    },
+    {
+      "path": "proposal.json",
+      "sha256": "f94778f7a28d3dac6a7627999367ecfe3774903118d86e2387315b2b704f02fc",
+      "bytes": 1887
+    },
+    {
+      "path": "reviewed-overlay-controls.log",
+      "sha256": "7dc9518acd90f9e36fd590bfc8e194782102995fbf0a16999471759d085dc494",
+      "bytes": 16187
+    },
+    {
+      "path": "root-inputs-after.json",
+      "sha256": "07ec80217b4fe020f7a77f90274326b5ce74b8f212f762d051fdef258c164d30",
+      "bytes": 41844
+    },
+    {
+      "path": "root-inputs-before.json",
+      "sha256": "3ceb6e4d7ca48ef217fdc18956fad8b3725ae58af3a941cd463747aa3b7eef94",
+      "bytes": 48252
+    },
+    {
+      "path": "unchanged-current-baseline-result.json",
+      "sha256": "a579281d12760c3768732172370316cfee06bada85e3f0e1e852ed5d696d5d01",
+      "bytes": 720
+    },
+    {
+      "path": "unchanged-current-baseline.log",
+      "sha256": "e4fa60e4ac5df8f69feae92e9e48531de263ea05a71dcb9fca96a98809a52fb5",
+      "bytes": 3213
+    }
+  ],
+  "count": 14
+}

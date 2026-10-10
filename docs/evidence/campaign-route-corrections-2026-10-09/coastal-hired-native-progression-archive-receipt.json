@@ -1,0 +1,352 @@
+{
+  "archive": "/tmp/granaderos-coastal-hired-revision4-native-proof-20261010.tar.gz",
+  "archiveSha256": "d5464c9171372d79725b5284f26867ed956d799ae864269ad32af767a85e6bba",
+  "archiveBytes": 8709746,
+  "regularFilesVerified": 85,
+  "allMemberHashesVerified": true,
+  "terminalReceiptSha256": "4811440026f9985c7e2fd150d7595c0f399c6bc1f71426df46bfdf2ac4c2b0af",
+  "finalReceiptSha256": "dd3bf8991e17198fc0672b4bc423a3323baf5d3cb6000f71bc8803e5a9f518e5",
+  "scope": "Portable retained evidence for one unchanged hired coastal case; no new native replay or settlement. All archived paths are relative regular files.",
+  "members": {
+    "current-source-hashes.json": {
+      "sha256": "8c3709aac2ee9afdcda568f99b26f802c94ec5d005d067164743e684d572c285",
+      "bytes": 396760
+    },
+    "final-receipt.json": {
+      "sha256": "dd3bf8991e17198fc0672b4bc423a3323baf5d3cb6000f71bc8803e5a9f518e5",
+      "bytes": 2235620
+    },
+    "game--campaign.js.observation.patch": {
+      "sha256": "cdd04a4b33b21874c1be5470dbe19907494e627f7dae48d04781d5ac414a6ac5",
+      "bytes": 5149
+    },
+    "game--campaign.js.original": {
+      "sha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+      "bytes": 161790
+    },
+    "game--campaign.js.runtime": {
+      "sha256": "3020a383ab7b2c9f255b57a704441426424c9c2b2fa6cc535b3ed7562a6cfe07",
+      "bytes": 162343
+    },
+    "launch.lock": {
+      "sha256": "c354e54c60bbd0216b06367a3b024e387e63b19462a5c2f4becd84bea3c88422",
+      "bytes": 114
+    },
+    "observer-capture.mjs": {
+      "sha256": "ca347b026a2dab034a7009a246f227b14370a53cc01d4b5cb286914a6c5ad4b0",
+      "bytes": 3863
+    },
+    "observer-loader.mjs": {
+      "sha256": "914c18d5da9d89b0eb36802da37fd33bc02ac0be6e39512b6c14f5b4bf4fb2d5",
+      "bytes": 5399
+    },
+    "preflight-receipt.json": {
+      "sha256": "a4dba74bd4279c10ddded5fab2f412f1d20493969b417e70207392a6f6cb364e",
+      "bytes": 1196
+    },
+    "preparation.json": {
+      "sha256": "6c48d0da597d690c19f3b86d50e0262b3994d8a4201763bb0c7b1454a461f06d",
+      "bytes": 5525
+    },
+    "prepare-bindings.py": {
+      "sha256": "4d28dc9ec2f94a39c0b68205d2e2c6ac3e62f400ebcc276383cd8984ae2b7a53",
+      "bytes": 9423
+    },
+    "process-94712/001-before-original-departure.json.gz": {
+      "sha256": "42649aaa7a1460f16cd20915cf1ce2f27b9324df63e82563aa3bf831f4017548",
+      "bytes": 27521
+    },
+    "process-94712/002-before-original-battle.json.gz": {
+      "sha256": "d1b23fc02f917ba3c5219856ff4900a33fdbd92c98b9b60d7934006ffd7709b4",
+      "bytes": 39028
+    },
+    "process-94712/003-before-original-victory-assertion.json.gz": {
+      "sha256": "593ac8ec9905cadc8e7dfe473f93f65b1ce1955fce49fbf21df10066766ddcec",
+      "bytes": 68049
+    },
+    "process-94712/004-before-existing-canonical-replay.json.gz": {
+      "sha256": "e8b133b706364c5c6bce4e7dcd4e344f331262f70bd6ce5a3ad19450b06e521c",
+      "bytes": 60699
+    },
+    "process-94712/005-before-all-existing-post-victory-aid.json.gz": {
+      "sha256": "75382fea0710b44d17093aa27424280b110c66748256e4ba7a1f41e7e3f9df02",
+      "bytes": 62131
+    },
+    "process-94712/006-before-native-hired-auto-aid.json.gz": {
+      "sha256": "75382fea0710b44d17093aa27424280b110c66748256e4ba7a1f41e7e3f9df02",
+      "bytes": 62131
+    },
+    "process-94712/007-existing-native-auto-aid-result.json.gz": {
+      "sha256": "bc4ec25da211213a1196d3dd5f84702f161fb213c7a9e6b299bed5443083a87f",
+      "bytes": 92148
+    },
+    "process-94712/008-after-native-aid-paid-replay.json.gz": {
+      "sha256": "bc4ec25da211213a1196d3dd5f84702f161fb213c7a9e6b299bed5443083a87f",
+      "bytes": 92148
+    },
+    "process-94712/009-after-all-existing-post-victory-aid.json.gz": {
+      "sha256": "75382fea0710b44d17093aa27424280b110c66748256e4ba7a1f41e7e3f9df02",
+      "bytes": 62131
+    },
+    "process-94712/010-native-command-rejection.json.gz": {
+      "sha256": "bbd661c178e967a69bbc758c53e5ae7037d738c89529270b36a84aab10c6c592",
+      "bytes": 150954
+    },
+    "process-94712/011-before-original-clinic-stability-assertion.json.gz": {
+      "sha256": "2451defe25dee19dfbb186a4908d65b9f514edf288ecfca14981ca099b608ee2",
+      "bytes": 58774
+    },
+    "process-94712/012-native-finite-medical-transfer.json.gz": {
+      "sha256": "1bdab350b33ce4634381a0fd8fd5d3d3f0db64df6ed566e7034724c3f369bee0",
+      "bytes": 114649
+    },
+    "process-94712/013-native-finite-medical-transfer.json.gz": {
+      "sha256": "2991effd9a9b6e61793432f9949936593c23fa203914c791e91b4f10af4c0511",
+      "bytes": 114787
+    },
+    "process-94712/014-native-finite-medical-transfer.json.gz": {
+      "sha256": "971f44268470566235708b9c5baeef441a99dc4b6282dd531c3db31b25d00f8a",
+      "bytes": 114609
+    },
+    "process-94712/015-native-finite-medical-transfer.json.gz": {
+      "sha256": "6b1b667afba9bc8076d347a4068005e7e23bfd5cca5d4097419fcdf56fd11dcb",
+      "bytes": 114675
+    },
+    "process-94712/016-native-finite-medical-transfer.json.gz": {
+      "sha256": "cbc06cad22b05acf6b4113cfca9a285f85fcf83f6152ae08049c1119fc813e0d",
+      "bytes": 114145
+    },
+    "process-94712/017-native-finite-medical-transfer.json.gz": {
+      "sha256": "c1f16c0995580540b1260ff276fe6922e36a2f73a46ccfb4e432c63c7622c42c",
+      "bytes": 114174
+    },
+    "process-94712/018-native-finite-medical-transfer.json.gz": {
+      "sha256": "82e44e44ba7984482b1b0fbd4fbaca0e0e8d643f1daa1f2338ded968892079ae",
+      "bytes": 114011
+    },
+    "process-94712/019-native-finite-medical-transfer.json.gz": {
+      "sha256": "c6dcda762c1450dc6986a2d476a585dc870db46fe97381c6a4ee715e74774858",
+      "bytes": 114098
+    },
+    "process-94712/020-native-finite-medical-transfer.json.gz": {
+      "sha256": "2383f03ef22447406144074bbbaf43629ca39709ffa8e011522946f47d8db919",
+      "bytes": 113909
+    },
+    "process-94712/021-native-finite-medical-transfer.json.gz": {
+      "sha256": "8c18f72142a0ca9585a25f6c292ccf142467496e89eb27a492b1d5c5ddf02ecb",
+      "bytes": 113989
+    },
+    "process-94712/022-native-finite-medical-transfer.json.gz": {
+      "sha256": "ccb142bd318565e269761be553847532d107ec71c2c6704ff3c5f6240326f885",
+      "bytes": 113943
+    },
+    "process-94712/023-native-finite-medical-transfer.json.gz": {
+      "sha256": "a26fbd309e88ac07f7a60b45de45bda26b0691961f5e47b61d061b2063180159",
+      "bytes": 114031
+    },
+    "process-94712/024-native-finite-medical-transfer.json.gz": {
+      "sha256": "1c34272a4120dcafbad761827413a92e0486c3f1801501438d90ae016375098c",
+      "bytes": 113948
+    },
+    "process-94712/025-native-finite-medical-transfer.json.gz": {
+      "sha256": "ac69c09349025330800440d2ca53ad17b0ea6c6367c6cb4b0b1ea7bad918f9a5",
+      "bytes": 114032
+    },
+    "process-94712/026-native-finite-medical-transfer.json.gz": {
+      "sha256": "2a47ffbd8c2551bc03c74a757256be835cebad03575b6521b092bcff0a41110e",
+      "bytes": 113998
+    },
+    "process-94712/027-native-finite-medical-transfer.json.gz": {
+      "sha256": "a22bf583a032ec9a5e1411f9f34a5d1f0413ee97ea87eb7e5f6e749bd672b5e6",
+      "bytes": 114078
+    },
+    "process-94712/028-native-finite-medical-transfer.json.gz": {
+      "sha256": "af100f90ca3ca233035b2d4918396946459ea60e80ea95a9a52de18c8f19aa23",
+      "bytes": 114060
+    },
+    "process-94712/029-native-finite-medical-transfer.json.gz": {
+      "sha256": "b29ab378df662725a15a0d655228c66fc7adc5dfa0345c0f696b71f031a23880",
+      "bytes": 114062
+    },
+    "process-94712/030-native-finite-medical-transfer.json.gz": {
+      "sha256": "69dd8346bd0b432434de06088cd47a666f9bd73265c423107ae83916504dfaf9",
+      "bytes": 114053
+    },
+    "process-94712/031-native-finite-medical-transfer.json.gz": {
+      "sha256": "d5383d50a7d7b2f63b2a21745599ae35afdecc2b097380085b21f160c35618f9",
+      "bytes": 114025
+    },
+    "process-94712/032-native-finite-medical-transfer.json.gz": {
+      "sha256": "02367a06a34aaa2196802688d4314662562f6e098b6ddd9be72bf2e6ce755ec6",
+      "bytes": 114197
+    },
+    "process-94712/033-native-finite-medical-transfer.json.gz": {
+      "sha256": "1492f4a51b5d53dcf0ed92816165f5a6f40efe8fe5af555202c5530b9d5057a2",
+      "bytes": 114074
+    },
+    "process-94712/034-native-finite-medical-transfer.json.gz": {
+      "sha256": "2aeb44b411fb5c21aded06be87a7dd0d6c7cc1f9ae0ed805f3d206b6222bbab0",
+      "bytes": 156878
+    },
+    "process-94712/035-before-existing-field-readiness.json.gz": {
+      "sha256": "65ed4a7be833a3ff585630ec5ed61b1edfc67b238fca5478024ad9f0b88b1d7e",
+      "bytes": 78538
+    },
+    "process-94712/036-readiness-before-existing-native-collector.json.gz": {
+      "sha256": "fe9164d5f6eeeb05c8496e6093c114847650da0fdea332eefd4a2e0b4d1a8447",
+      "bytes": 78572
+    },
+    "process-94712/037-native-finite-medical-transfer.json.gz": {
+      "sha256": "f7fb1a515d045604866a2e1e36ea725744c10f2e5d5aee7eedca89879d1b0665",
+      "bytes": 157078
+    },
+    "process-94712/038-readiness-after-existing-native-collector.json.gz": {
+      "sha256": "b97d06e426ff818aa4a5219c485bda9f81c183a45c591cd34fd0d048c198df8c",
+      "bytes": 157050
+    },
+    "process-94712/039-native-finite-medical-transfer.json.gz": {
+      "sha256": "949b808ef2fb6db269e988bab0bf2efa40bca6ec112599eab7ced5cf893f7cc7",
+      "bytes": 157061
+    },
+    "process-94712/040-native-finite-medical-transfer.json.gz": {
+      "sha256": "0122fc679566811a0fd9be2f47d0c992262ba548d168dc88b4d69cc43250f6e8",
+      "bytes": 157109
+    },
+    "process-94712/041-before-existing-readiness-return-save.json.gz": {
+      "sha256": "b0405b33592a3ba6785a8eb790026931d89f5f29842b47cec42178f1bbd0e0bb",
+      "bytes": 78625
+    },
+    "process-94712/042-after-existing-field-readiness.json.gz": {
+      "sha256": "3fc62463fdc67ecbddf3d00d8081e9ad08f5c0e93387a9d6c39d9df6b06e55c0",
+      "bytes": 157107
+    },
+    "process-94712/043-before-original-departure.json.gz": {
+      "sha256": "dff23dabf51497878c3bbab72eeedf82ad04315a56236918d42ab2591bb85458",
+      "bytes": 78789
+    },
+    "process-94712/044-before-original-battle.json.gz": {
+      "sha256": "738a3f87dab140ac37e936365e1592b4c7efd332c25d235ff701550b95661995",
+      "bytes": 89501
+    },
+    "process-94712/045-before-original-victory-assertion.json.gz": {
+      "sha256": "9db299e9a2bd337faf8c153d6416e47f95c562a516edaa30c27266bd914af13c",
+      "bytes": 116952
+    },
+    "process-94712/046-before-existing-canonical-replay.json.gz": {
+      "sha256": "455d873ceec839f4cf572d8d5f747dd343db2aebb3784285e30a211e4dcecfbe",
+      "bytes": 110289
+    },
+    "process-94712/047-before-all-existing-post-victory-aid.json.gz": {
+      "sha256": "f435e51efb797f9900de9bd7de3d5ec6626991bc47132a7a7a024a57259ceebe",
+      "bytes": 109878
+    },
+    "process-94712/048-before-native-hired-auto-aid.json.gz": {
+      "sha256": "f435e51efb797f9900de9bd7de3d5ec6626991bc47132a7a7a024a57259ceebe",
+      "bytes": 109878
+    },
+    "process-94712/049-existing-native-auto-aid-result.json.gz": {
+      "sha256": "60c1214ea89c526729436b6977d22874592ac61fe28db4b50213952f56264f78",
+      "bytes": 137647
+    },
+    "process-94712/050-after-native-aid-paid-replay.json.gz": {
+      "sha256": "a1ce11c91a221ba4dae3cd0d48f4363623d5f828c904482193de2044d4848e7b",
+      "bytes": 137667
+    },
+    "process-94712/051-after-all-existing-post-victory-aid.json.gz": {
+      "sha256": "66f484d0fbad73a035e2a6f4ea8ab43f9aca37b026f8ff19dbda04d59fbcc0ad",
+      "bytes": 109895
+    },
+    "process-94712/052-native-command-rejection.json.gz": {
+      "sha256": "a2ce54dd24e4beed80fad1d4ee03704d6059ded9ea9c2c3783cbdb4441a01caa",
+      "bytes": 244739
+    },
+    "process-94712/053-native-command-rejection.json.gz": {
+      "sha256": "049baa93c270e7dbae09209c66fec242551e62cf9a4827e3e75d7bccd6b25075",
+      "bytes": 211685
+    },
+    "process-94712/054-before-original-clinic-stability-assertion.json.gz": {
+      "sha256": "c4c9665c9eb4b1c7f87185c34665d13ed0654f05c9d7f2ef5b2131719e313f09",
+      "bytes": 106685
+    },
+    "process-94712/055-before-existing-field-readiness.json.gz": {
+      "sha256": "5d607119c591b1428ff7e10ac6ae66b7e92ecd9096c382baba9fe77a669f7eb4",
+      "bytes": 106283
+    },
+    "process-94712/056-after-existing-field-readiness.json.gz": {
+      "sha256": "1121560ad434c5df5d3ffb73a6c344f599eda468fda5e07fa8e6c5c9c5e2eb36",
+      "bytes": 211646
+    },
+    "process-94712/057-before-original-departure.json.gz": {
+      "sha256": "95150a29029abd4e2071d84c1a343a10b1c3b4da78ce7575720ae3d5312aefcf",
+      "bytes": 106512
+    },
+    "process-94712/058-before-original-battle.json.gz": {
+      "sha256": "336031a103ea99ce3375a070fbcb5e92a46ec58225a4b0c355695217aed03871",
+      "bytes": 118365
+    },
+    "process-94712/059-before-original-victory-assertion.json.gz": {
+      "sha256": "8e4687e6f54e06d750819eb0fdb3baa6bfbb18c0cce9b2b63f1a5582314f6d7b",
+      "bytes": 140985
+    },
+    "process-94712/canonical-tactical-orders.jsonl": {
+      "sha256": "5ca01659f432a6d6b429ec6c76bd66ddcdd5d9be2a9a9b3f5abfbbe17fffa0ee",
+      "bytes": 122970
+    },
+    "process-94712/captures.jsonl": {
+      "sha256": "34c71310bdf0229424c3e2090cac2cdce473b30e039d192a6487e6baf8ca81c3",
+      "bytes": 19785
+    },
+    "process-94712/closure.json": {
+      "sha256": "cd75854ba05f731e6b2a06031c1efe0fc040857e8d086ce99d1c4ed36f296023",
+      "bytes": 187005
+    },
+    "process-94712/entry.json": {
+      "sha256": "40933c1fd51b5ee9f01d96abeca2e47d46cd077233124a4573bafdd73191069f",
+      "bytes": 4529
+    },
+    "process-94712/imports.jsonl": {
+      "sha256": "c709b602aa50507bfabcf2c987760ec253998931b155b354a7c05531701b8c95",
+      "bytes": 137264
+    },
+    "process-94712/native-campaign-calls.jsonl": {
+      "sha256": "f4724f6cf53baacaccbcda43d918de18d9b7af1e33bff163dc05c1d65d83bf65",
+      "bytes": 15635301
+    },
+    "process-94712/top-level-native-campaign-orders.jsonl": {
+      "sha256": "f4724f6cf53baacaccbcda43d918de18d9b7af1e33bff163dc05c1d65d83bf65",
+      "bytes": 15635301
+    },
+    "run.log": {
+      "sha256": "662a7bc2f3a5e95fa3f94c0e80967990bac926831019d2c7fc1078aa24dfd6ab",
+      "bytes": 1323
+    },
+    "terminal-receipt.json": {
+      "sha256": "4811440026f9985c7e2fd150d7595c0f399c6bc1f71426df46bfdf2ac4c2b0af",
+      "bytes": 27305
+    },
+    "tests--coastal-medical-readiness.mjs.observation.patch": {
+      "sha256": "c2a601924814730f1ab8945a0f1424cc500bd10f42b2f074bada8bd7986f30da",
+      "bytes": 2371
+    },
+    "tests--coastal-medical-readiness.mjs.original": {
+      "sha256": "7e0caaac725fe9bcb395390bc10f06027facaa229f6e7c9b93ce91acd2794a77",
+      "bytes": 5697
+    },
+    "tests--coastal-medical-readiness.mjs.runtime": {
+      "sha256": "b2a7c207ad4d921aab599c2a2eddf970354ca1239f956567ccdc7b3f042d1ac7",
+      "bytes": 6160
+    },
+    "tests--fresh-coastal-fixture.mjs.observation.patch": {
+      "sha256": "8da1778304a00a9b43be6a0a984baa93e49f2448cb08d0362a6dd88af18ce6c0",
+      "bytes": 9578
+    },
+    "tests--fresh-coastal-fixture.mjs.original": {
+      "sha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6",
+      "bytes": 21239
+    },
+    "tests--fresh-coastal-fixture.mjs.runtime": {
+      "sha256": "bda79800e8c9c68480c57aa42242d9845c9e3de0cd0f94e3a04771ad4c3193b3",
+      "bytes": 22709
+    }
+  }
+}

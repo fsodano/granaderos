@@ -1,0 +1,1030 @@
+{
+  "complete": true,
+  "nativeRunCount": 1,
+  "originalCase": "funded hired force wins the coastal opening with real losses, paid replacements and saved replay",
+  "entrypoint": "tests/fresh-coastal-route.test.mjs",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "session": 54498,
+  "pid": 94712,
+  "terminalExitCode": 1,
+  "caseDurationMs": 64841.415334,
+  "fileDurationMs": 65092.383208,
+  "preparationSha256": "6c48d0da597d690c19f3b86d50e0262b3994d8a4201763bb0c7b1454a461f06d",
+  "preflightSha256": "a4dba74bd4279c10ddded5fab2f412f1d20493969b417e70207392a6f6cb364e",
+  "sourceClosure": {
+    "path": "process-94712/closure.json",
+    "sha256": "cd75854ba05f731e6b2a06031c1efe0fc040857e8d086ce99d1c4ed36f296023",
+    "actualModuleLoads": 291,
+    "sourceDrift": [],
+    "externalDrift": [],
+    "undeclaredRuntimeDifferences": [],
+    "declaredTransforms": [
+      {
+        "url": "file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/campaign.js",
+        "path": "game/campaign.js",
+        "absolutePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/campaign.js",
+        "external": false,
+        "originalSha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+        "runtimeSha256": "3020a383ab7b2c9f255b57a704441426424c9c2b2fa6cc535b3ed7562a6cfe07",
+        "declaredObservationTransform": true,
+        "bytes": 162343,
+        "finalSha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4"
+      },
+      {
+        "url": "file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-coastal-fixture.mjs",
+        "path": "tests/fresh-coastal-fixture.mjs",
+        "absolutePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-coastal-fixture.mjs",
+        "external": false,
+        "originalSha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6",
+        "runtimeSha256": "bda79800e8c9c68480c57aa42242d9845c9e3de0cd0f94e3a04771ad4c3193b3",
+        "declaredObservationTransform": true,
+        "bytes": 22709,
+        "finalSha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6"
+      },
+      {
+        "url": "file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/coastal-medical-readiness.mjs",
+        "path": "tests/coastal-medical-readiness.mjs",
+        "absolutePath": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/coastal-medical-readiness.mjs",
+        "external": false,
+        "originalSha256": "7e0caaac725fe9bcb395390bc10f06027facaa229f6e7c9b93ce91acd2794a77",
+        "runtimeSha256": "b2a7c207ad4d921aab599c2a2eddf970354ca1239f956567ccdc7b3f042d1ac7",
+        "declaredObservationTransform": true,
+        "bytes": 6160,
+        "finalSha256": "7e0caaac725fe9bcb395390bc10f06027facaa229f6e7c9b93ce91acd2794a77"
+      }
+    ]
+  },
+  "requiredCandidateSourcesAtEntryAndExit": {
+    "tests/fresh-coastal-fixture.mjs": {
+      "sha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6",
+      "bytes": 21239
+    },
+    "tests/coastal-medical-readiness.mjs": {
+      "sha256": "7e0caaac725fe9bcb395390bc10f06027facaa229f6e7c9b93ce91acd2794a77",
+      "bytes": 5697
+    },
+    "tests/coastal-medical-readiness.test.mjs": {
+      "sha256": "afc7cd47df0cc6680f0320db09fe01c9c26a45ac2fbec908fe480f741df98b12",
+      "bytes": 4132
+    },
+    "tests/fixtures/coastal-medical-readiness.provenance.json": {
+      "sha256": "e99f08dade64f4f4e44f9296d337878e4398f5c195ca0f217ec8668ed6238be8",
+      "bytes": 3067
+    },
+    "tests/fixtures/coastal-earned-ba-stable-005.json.gz": {
+      "sha256": "222e2bce42f4603903e43b9c70d3a6be1e55bebfae914459a85950e19b429816",
+      "bytes": 55984
+    },
+    "tests/fixtures/coastal-earned-san-nicolas-empty-008.json.gz": {
+      "sha256": "11cfc6ebfe3a2096c64a2a90af6ff4691c069966e51a7eaf2a0ef8c2e101ac4d",
+      "bytes": 104621
+    },
+    "tests/fresh-coastal-route.test.mjs": {
+      "sha256": "8d3305f0fea5670bd72a9bdd2741e3d45df7dcab4407231172d8ee9f93558273",
+      "bytes": 14938
+    }
+  },
+  "diagnosticInputsUnchanged": true,
+  "additionalNativeCalls": 0,
+  "nativeCampaignCalls": 657,
+  "nativeTopLevelCampaignCalls": 657,
+  "nativeTopLevelAcceptedCalls": 654,
+  "existingCanonicalTacticalOrders": 244,
+  "canonicalTacticalOrderErrors": [],
+  "captureCount": 59,
+  "battles": [
+    {
+      "sector": "buenos_aires",
+      "capture": {
+        "event": 3,
+        "name": "before-original-victory-assertion",
+        "path": "003-before-original-victory-assertion.json.gz",
+        "rawSha256": "687b862bc8dcfe7b3aab0a7bd40969d0eacc3d947c74c1b3ba87cc22e65f66aa",
+        "gzipSha256": "593ac8ec9905cadc8e7dfe473f93f65b1ce1955fce49fbf21df10066766ddcec",
+        "rawBytes": 694566,
+        "gzipBytes": 68049,
+        "diagnosticInputsUnchanged": true
+      },
+      "status": "victory",
+      "turn": 4,
+      "actions": 119,
+      "orders": 129,
+      "orderKinds": {
+        "move": 59,
+        "stance": 9,
+        "fire": 11,
+        "reprime": 1,
+        "endTurn": 10,
+        "look": 11,
+        "weapon": 16,
+        "useItem": 4,
+        "reload": 8
+      },
+      "recordedOrdersSha256": "da754ac758f8ceb3ecc713b5097f1083f7144adb9a57d88cceceed5bc74b748e",
+      "battleLastError": null,
+      "campaignClockBeforeCanonicalReplay": [
+        8,
+        0
+      ],
+      "actors": [
+        {
+          "id": "110",
+          "name": "Baltasar Acosta",
+          "side": "player",
+          "hp": 85,
+          "maxHp": 85,
+          "bleeding": 0,
+          "medkits": 2,
+          "medical": 18,
+          "morale": 90,
+          "energy": 96,
+          "loaded": 0,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 43,
+          "y": 17,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "114",
+          "name": "Eusebio Ledesma",
+          "side": "player",
+          "hp": 44,
+          "maxHp": 81,
+          "bleeding": 0,
+          "medkits": 1,
+          "medical": 28,
+          "morale": 74.7,
+          "energy": 92,
+          "loaded": 1,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 44,
+          "y": 17,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "136",
+          "name": "Lorenzo Silva",
+          "side": "player",
+          "hp": 43,
+          "maxHp": 90,
+          "bleeding": 0,
+          "medkits": 2,
+          "medical": 31,
+          "morale": 62.2,
+          "energy": 96,
+          "loaded": 1,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 43,
+          "y": 16,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "141",
+          "name": "Joaquim Ferreira",
+          "side": "player",
+          "hp": 23,
+          "maxHp": 84,
+          "bleeding": 0,
+          "medkits": 1,
+          "medical": 30,
+          "morale": 64.35,
+          "energy": 95,
+          "loaded": 1,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 45,
+          "y": 15,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "120",
+          "name": "Mercedes Quiroga",
+          "side": "player",
+          "hp": 73,
+          "maxHp": 73,
+          "bleeding": 0,
+          "medkits": 2,
+          "medical": 48,
+          "morale": 80,
+          "energy": 96,
+          "loaded": 1,
+          "ammo": 7,
+          "weaponId": null,
+          "x": 44,
+          "y": 18,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "131",
+          "name": "Vicente Arce",
+          "side": "player",
+          "hp": 27,
+          "maxHp": 82,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 25,
+          "morale": 53.05,
+          "energy": 96,
+          "loaded": 0,
+          "ammo": 7,
+          "weaponId": null,
+          "x": 42,
+          "y": 17,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        }
+      ]
+    },
+    {
+      "sector": "san_nicolas",
+      "capture": {
+        "event": 45,
+        "name": "before-original-victory-assertion",
+        "path": "045-before-original-victory-assertion.json.gz",
+        "rawSha256": "feacd71baa7ae6a58656cb1a4776b3a82a2562c487ee57bac1561f989896765f",
+        "gzipSha256": "9db299e9a2bd337faf8c153d6416e47f95c562a516edaa30c27266bd914af13c",
+        "rawBytes": 1454470,
+        "gzipBytes": 116952,
+        "diagnosticInputsUnchanged": true
+      },
+      "status": "victory",
+      "turn": 7,
+      "actions": 103,
+      "orders": 111,
+      "orderKinds": {
+        "move": 40,
+        "stance": 6,
+        "fire": 23,
+        "reload": 27,
+        "endTurn": 8,
+        "reprime": 3,
+        "look": 4
+      },
+      "recordedOrdersSha256": "9c2f4183b347312459a271cae39c287f8af59d1b955d1616b1d93bdaa68f623a",
+      "battleLastError": null,
+      "campaignClockBeforeCanonicalReplay": [
+        84,
+        602
+      ],
+      "actors": [
+        {
+          "id": "110",
+          "name": "Baltasar Acosta",
+          "side": "player",
+          "hp": 85,
+          "maxHp": 85,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 18,
+          "morale": 99,
+          "energy": 76,
+          "loaded": 1,
+          "ammo": 5,
+          "weaponId": null,
+          "x": 42,
+          "y": 36,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "114",
+          "name": "Eusebio Ledesma",
+          "side": "player",
+          "hp": 81,
+          "maxHp": 81,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 28,
+          "morale": 87.7,
+          "energy": 73,
+          "loaded": 1,
+          "ammo": 5,
+          "weaponId": null,
+          "x": 50,
+          "y": 34,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "136",
+          "name": "Lorenzo Silva",
+          "side": "player",
+          "hp": 90,
+          "maxHp": 90,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 31,
+          "morale": 79.2,
+          "energy": 69,
+          "loaded": 0,
+          "ammo": 5,
+          "weaponId": null,
+          "x": 48,
+          "y": 34,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "141",
+          "name": "Joaquim Ferreira",
+          "side": "player",
+          "hp": 9,
+          "maxHp": 84,
+          "bleeding": 4,
+          "medkits": 0,
+          "medical": 30,
+          "morale": 56.599999999999994,
+          "energy": 76,
+          "loaded": 0,
+          "ammo": 9,
+          "weaponId": null,
+          "x": 41,
+          "y": 36,
+          "tacticalLevel": 0,
+          "unconscious": true,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "120",
+          "name": "Mercedes Quiroga",
+          "side": "player",
+          "hp": 73,
+          "maxHp": 73,
+          "bleeding": 0,
+          "medkits": 2,
+          "medical": 48,
+          "morale": 89,
+          "energy": 69,
+          "loaded": 1,
+          "ammo": 4,
+          "weaponId": null,
+          "x": 49,
+          "y": 34,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "131",
+          "name": "Vicente Arce",
+          "side": "player",
+          "hp": 82,
+          "maxHp": 82,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 25,
+          "morale": 70.05,
+          "energy": 76,
+          "loaded": 1,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 42,
+          "y": 37,
+          "tacticalLevel": 0,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        }
+      ]
+    },
+    {
+      "sector": "san_lorenzo",
+      "capture": {
+        "event": 59,
+        "name": "before-original-victory-assertion",
+        "path": "059-before-original-victory-assertion.json.gz",
+        "rawSha256": "5799d3f7180fbb9e4303e2775121e7ff0a9b3a89e9efb3d9dd61185a7ef15963",
+        "gzipSha256": "8e4687e6f54e06d750819eb0fdb3baa6bfbb18c0cce9b2b63f1a5582314f6d7b",
+        "rawBytes": 1742146,
+        "gzipBytes": 140985,
+        "diagnosticInputsUnchanged": true
+      },
+      "status": "defeat",
+      "turn": 10,
+      "actions": 126,
+      "orders": 144,
+      "orderKinds": {
+        "move": 54,
+        "weapon": 7,
+        "stance": 10,
+        "fire": 14,
+        "reload": 13,
+        "endTurn": 18,
+        "reprime": 3,
+        "look": 4,
+        "transfer": 1,
+        "heal": 3,
+        "melee": 16,
+        "charge": 1
+      },
+      "recordedOrdersSha256": "55bd608fd9a1fa7b78e82f93cd962626bbd114723b506e52108738d2761d48c2",
+      "battleLastError": null,
+      "campaignClockBeforeCanonicalReplay": [
+        123,
+        808
+      ],
+      "actors": [
+        {
+          "id": "110",
+          "name": "Baltasar Acosta",
+          "side": "player",
+          "hp": 4,
+          "maxHp": 87,
+          "bleeding": 1,
+          "medkits": 0,
+          "medical": 18,
+          "morale": 43.5,
+          "energy": 64,
+          "loaded": 1,
+          "ammo": 9,
+          "weaponId": null,
+          "x": 45,
+          "y": 33,
+          "tacticalLevel": null,
+          "unconscious": true,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "114",
+          "name": "Eusebio Ledesma",
+          "side": "player",
+          "hp": 0,
+          "maxHp": 83,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 28,
+          "morale": 43.6,
+          "energy": 21.04,
+          "loaded": 1,
+          "ammo": 9,
+          "weaponId": null,
+          "x": 48,
+          "y": 31,
+          "tacticalLevel": null,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "136",
+          "name": "Lorenzo Silva",
+          "side": "player",
+          "hp": 0,
+          "maxHp": 92,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 31,
+          "morale": 0,
+          "energy": 40,
+          "loaded": 0,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 45,
+          "y": 32,
+          "tacticalLevel": null,
+          "unconscious": false,
+          "routed": true,
+          "missionAlly": null
+        },
+        {
+          "id": "120",
+          "name": "Mercedes Quiroga",
+          "side": "player",
+          "hp": 5,
+          "maxHp": 75,
+          "bleeding": 2,
+          "medkits": 1,
+          "medical": 48,
+          "morale": 20,
+          "energy": 64,
+          "loaded": 0,
+          "ammo": 5,
+          "weaponId": null,
+          "x": 46,
+          "y": 33,
+          "tacticalLevel": null,
+          "unconscious": true,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "131",
+          "name": "Vicente Arce",
+          "side": "player",
+          "hp": 0,
+          "maxHp": 84,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 25,
+          "morale": 19.2,
+          "energy": 44,
+          "loaded": 1,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 47,
+          "y": 32,
+          "tacticalLevel": null,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "137",
+          "name": "Louis Desforges",
+          "side": "player",
+          "hp": 0,
+          "maxHp": 85,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 28,
+          "morale": 8.000000000000007,
+          "energy": 43,
+          "loaded": 1,
+          "ammo": 8,
+          "weaponId": null,
+          "x": 46,
+          "y": 32,
+          "tacticalLevel": null,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": null
+        },
+        {
+          "id": "57",
+          "name": "José de San Martín · Comandante aliado",
+          "side": "player",
+          "hp": 0,
+          "maxHp": 88,
+          "bleeding": 0,
+          "medkits": 0,
+          "medical": 50,
+          "morale": 0,
+          "energy": 48,
+          "loaded": 0,
+          "ammo": 0,
+          "weaponId": null,
+          "x": 43,
+          "y": 26,
+          "tacticalLevel": null,
+          "unconscious": false,
+          "routed": false,
+          "missionAlly": true
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "beforeClock": [
+      68,
+      593
+    ],
+    "afterClock": [
+      72,
+      593
+    ],
+    "treasuryBefore": 27210,
+    "treasuryAfter": 27210,
+    "receipt": {
+      "medicId": 120,
+      "target": 2,
+      "initialDressings": 0,
+      "collected": 2,
+      "courierId": 112,
+      "elapsedSeconds": 14400
+    },
+    "courierOriginalDressings": 1,
+    "courierReturnedDressings": 1,
+    "collectorQuantity": 2,
+    "transfers": [
+      {
+        "event": 37,
+        "action": {
+          "type": "sectorInventory",
+          "sector": "retiro",
+          "operativeId": 112,
+          "direction": "take",
+          "sourceKey": "container:retiro:armory-cache:7",
+          "expected": "{\"item\":\"medkits\",\"count\":7,\"weight\":0.2}",
+          "count": 2
+        },
+        "clockBefore": [
+          70,
+          593
+        ],
+        "clockAfter": [
+          70,
+          593
+        ],
+        "treasuryBefore": 27210,
+        "treasuryAfter": 27210,
+        "actorDressingsBefore": 1,
+        "actorDressingsAfter": 3
+      },
+      {
+        "event": 39,
+        "action": {
+          "type": "sectorInventory",
+          "sector": "buenos_aires",
+          "operativeId": 112,
+          "direction": "drop",
+          "item": "medkits",
+          "count": 2
+        },
+        "clockBefore": [
+          72,
+          593
+        ],
+        "clockAfter": [
+          72,
+          593
+        ],
+        "treasuryBefore": 27210,
+        "treasuryAfter": 27210,
+        "actorDressingsBefore": 3,
+        "actorDressingsAfter": 1
+      },
+      {
+        "event": 40,
+        "action": {
+          "type": "sectorInventory",
+          "sector": "buenos_aires",
+          "operativeId": 120,
+          "direction": "take",
+          "sourceKey": "ground:sector-item-9",
+          "expected": "{\"item\":\"medkits\",\"count\":2,\"weight\":0.2}",
+          "count": 2
+        },
+        "clockBefore": [
+          72,
+          593
+        ],
+        "clockAfter": [
+          72,
+          593
+        ],
+        "treasuryBefore": 27210,
+        "treasuryAfter": 27210,
+        "actorDressingsBefore": 0,
+        "actorDressingsAfter": 2
+      }
+    ]
+  },
+  "sanNicolasActualAid": {
+    "captureEvent": 50,
+    "clock": [
+      84,
+      754
+    ],
+    "steps": [
+      {
+        "type": "weapon",
+        "unitId": "120",
+        "slot": "medical"
+      },
+      {
+        "type": "move",
+        "unitId": "120",
+        "x": 42,
+        "y": 35,
+        "tacticalLevel": 0
+      }
+    ],
+    "treatedIds": [],
+    "untreated": [
+      {
+        "id": "141",
+        "name": "Ferreira",
+        "reason": "Murió antes de recibir las vendas."
+      }
+    ],
+    "stoppedReason": null,
+    "paidReplayExactNativeAidResult": true,
+    "actualPostAidActors": [
+      {
+        "id": "110",
+        "name": "Baltasar Acosta",
+        "side": "player",
+        "hp": 85,
+        "maxHp": 85,
+        "bleeding": 0,
+        "medkits": 0,
+        "medical": 18,
+        "morale": 99,
+        "energy": 76,
+        "loaded": 1,
+        "ammo": 5,
+        "weaponId": null,
+        "x": 42,
+        "y": 36,
+        "tacticalLevel": 0,
+        "unconscious": false,
+        "routed": false,
+        "missionAlly": null
+      },
+      {
+        "id": "114",
+        "name": "Eusebio Ledesma",
+        "side": "player",
+        "hp": 81,
+        "maxHp": 81,
+        "bleeding": 0,
+        "medkits": 0,
+        "medical": 28,
+        "morale": 87.7,
+        "energy": 73,
+        "loaded": 1,
+        "ammo": 5,
+        "weaponId": null,
+        "x": 50,
+        "y": 34,
+        "tacticalLevel": 0,
+        "unconscious": false,
+        "routed": false,
+        "missionAlly": null
+      },
+      {
+        "id": "136",
+        "name": "Lorenzo Silva",
+        "side": "player",
+        "hp": 90,
+        "maxHp": 90,
+        "bleeding": 0,
+        "medkits": 0,
+        "medical": 31,
+        "morale": 79.2,
+        "energy": 69,
+        "loaded": 0,
+        "ammo": 5,
+        "weaponId": null,
+        "x": 48,
+        "y": 34,
+        "tacticalLevel": 0,
+        "unconscious": false,
+        "routed": false,
+        "missionAlly": null
+      },
+      {
+        "id": "141",
+        "name": "Joaquim Ferreira",
+        "side": "player",
+        "hp": 0,
+        "maxHp": 84,
+        "bleeding": 0,
+        "medkits": 0,
+        "medical": 30,
+        "morale": 56.599999999999994,
+        "energy": 76,
+        "loaded": 0,
+        "ammo": 9,
+        "weaponId": null,
+        "x": 41,
+        "y": 36,
+        "tacticalLevel": 0,
+        "unconscious": false,
+        "routed": false,
+        "missionAlly": null
+      },
+      {
+        "id": "120",
+        "name": "Mercedes Quiroga",
+        "side": "player",
+        "hp": 73,
+        "maxHp": 73,
+        "bleeding": 0,
+        "medkits": 2,
+        "medical": 48,
+        "morale": 89,
+        "energy": 67.609,
+        "loaded": 1,
+        "ammo": 4,
+        "weaponId": null,
+        "x": 42,
+        "y": 35,
+        "tacticalLevel": 0,
+        "unconscious": false,
+        "routed": false,
+        "missionAlly": null
+      },
+      {
+        "id": "131",
+        "name": "Vicente Arce",
+        "side": "player",
+        "hp": 82,
+        "maxHp": 82,
+        "bleeding": 0,
+        "medkits": 0,
+        "medical": 25,
+        "morale": 70.05,
+        "energy": 76,
+        "loaded": 1,
+        "ammo": 8,
+        "weaponId": null,
+        "x": 42,
+        "y": 37,
+        "tacticalLevel": 0,
+        "unconscious": false,
+        "routed": false,
+        "missionAlly": null
+      }
+    ],
+    "death141RetainedBeforeNextBattle": true
+  },
+  "honestAssertion": {
+    "actual": "defeat",
+    "expected": "victory",
+    "sector": "san_lorenzo",
+    "turn": 10,
+    "source": "tests/fresh-coastal-fixture.mjs",
+    "originalAppliedLine": 111,
+    "passiveRuntimeLine": 113,
+    "testSourceLine": 15
+  },
+  "limits": [
+    "Original clinic stability assertion passed for surviving actual patients; native aid did not save141.",
+    "Last San Lorenzo defeat is a retained recordedFight result and full144-order tape. Original victory assertion prevented its canonical paired replay, official midpoint or native settlement. No new replay/save/settlement was executed by the observer.",
+    "The existing Buenos Aires and San Nicolas victories completed their original paid canonical order replay, original midpoint save and settlement paths. The observer added no gameplay call.",
+    "Only the original hired case ran. Created/local/stock cases and complete hired route victory remain unproved.",
+    "Two-piece readiness corrected finite predeparture stock. It gives no survival or winning outcome guarantee."
+  ],
+  "nativeTopLevelRejectedValidationCalls": [
+    {
+      "index": 18,
+      "type": "battleResult",
+      "battleId": "buenos_aires-8-8",
+      "id": null,
+      "lastError": "No hay batalla de conquista pendiente."
+    },
+    {
+      "index": 560,
+      "type": "battleResult",
+      "battleId": "san_nicolas-84-1027220423",
+      "id": null,
+      "lastError": "No hay batalla de conquista pendiente."
+    },
+    {
+      "index": 561,
+      "type": "recruitCivic",
+      "battleId": null,
+      "id": 141,
+      "lastError": "Ya se encuentra en tus filas."
+    }
+  ],
+  "lastBattlePreparedInput": {
+    "captureEvent": 58,
+    "rawCaptureSha256": "8f8efde3a7edd269a72018af822c52bb99508f3c62a216f8b46fb21a146cb6cd",
+    "clock": [
+      123,
+      808
+    ],
+    "paidField": [
+      {
+        "id": 110,
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 6,
+          "expiresAt": 174,
+          "paid": 420
+        },
+        "alive": true,
+        "hp": 87,
+        "bleeding": 0,
+        "medkits": 0,
+        "energy": 64,
+        "fatigue": 36,
+        "asleep": false,
+        "assignment": "active"
+      },
+      {
+        "id": 114,
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 6,
+          "expiresAt": 174,
+          "paid": 924
+        },
+        "alive": true,
+        "hp": 83,
+        "bleeding": 0,
+        "medkits": 0,
+        "energy": 64,
+        "fatigue": 36,
+        "asleep": false,
+        "assignment": "active"
+      },
+      {
+        "id": 136,
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 6,
+          "expiresAt": 174,
+          "paid": 588
+        },
+        "alive": true,
+        "hp": 92,
+        "bleeding": 0,
+        "medkits": 0,
+        "energy": 64,
+        "fatigue": 36,
+        "asleep": false,
+        "assignment": "active"
+      },
+      {
+        "id": 120,
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 6,
+          "expiresAt": 174,
+          "paid": 672
+        },
+        "alive": true,
+        "hp": 75,
+        "bleeding": 0,
+        "medkits": 2,
+        "energy": 64,
+        "fatigue": 36,
+        "asleep": false,
+        "assignment": "active"
+      },
+      {
+        "id": 131,
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 6,
+          "expiresAt": 174,
+          "paid": 882
+        },
+        "alive": true,
+        "hp": 84,
+        "bleeding": 0,
+        "medkits": 0,
+        "energy": 64,
+        "fatigue": 36,
+        "asleep": false,
+        "assignment": "active"
+      },
+      {
+        "id": 137,
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 90,
+          "startedSecond": 754,
+          "expiresSecond": 754,
+          "expiresAt": 258,
+          "paid": 1344
+        },
+        "alive": true,
+        "hp": 85,
+        "bleeding": 0,
+        "medkits": 2,
+        "energy": 64,
+        "fatigue": 36,
+        "asleep": false,
+        "assignment": "active"
+      }
+    ],
+    "requestId": "san_lorenzo-123-18026106",
+    "requestSeed": 1276464017,
+    "previousSnapshotProvided": false,
+    "requestSquadCount": 6
+  },
+  "fullFinalReceipt": {
+    "path": "final-receipt.json",
+    "sha256": "dd3bf8991e17198fc0672b4bc423a3323baf5d3cb6000f71bc8803e5a9f518e5",
+    "bytes": 2235620
+  }
+}

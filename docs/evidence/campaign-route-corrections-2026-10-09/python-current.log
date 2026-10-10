@@ -1,0 +1,20 @@
+test_ammunition_links_and_capacities (test_campaign.CampaignTests) ... ok
+test_generated_files_are_current (test_campaign.CampaignTests) ... ok
+test_historical_gear_references (test_campaign.CampaignTests) ... ok
+test_modern_store_inventory_disabled (test_campaign.CampaignTests) ... ok
+test_preserves_baseline_tables (test_campaign.CampaignTests) ... ok
+test_profile_stats_and_recruitment (test_campaign.CampaignTests) ... ok
+test_smoke_is_nonlethal (test_campaign.CampaignTests) ... ok
+test_etrle_transparent_runs_split_at_127 (test_sti.STCITest) ... ok
+test_independent_upstream_multiframe_portrait (test_sti.STCITest) ... ok
+test_independent_upstream_rgb_fixture_header (test_sti.STCITest) ... ok
+test_installed_assets_match_recorded_source_and_output (test_sti.STCITest) ... ok
+test_reject_bad_input_dimensions (test_sti.STCITest) ... ok
+test_reject_truncated_and_oversized_runs (test_sti.STCITest) ... ok
+test_rgb_primary_colors_golden_bytes (test_sti.STCITest) ... ok
+test_shipped_assets_are_decodable (test_sti.STCITest) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 1.210s
+
+OK

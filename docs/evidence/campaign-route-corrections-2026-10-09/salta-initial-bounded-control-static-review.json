@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "checkedUtc": "2026-10-10T04:30:50.095645+00:00",
+  "scope": "Static read-only text/hash/retained JSON review. No script execution, game import, simulation, order, deployment, test, repo or index change. This reviews the initial prepared versions identified by hashes below; external corrections are pending.",
+  "files": {
+    "bounded-native-control.mjs": {
+      "bytes": 9764,
+      "sha256": "b9696c3b25c7e1920a7ec3a1092b77d7c94061aa166bf51852bd6e34a012d336"
+    },
+    "bounded-control-loader.mjs": {
+      "bytes": 2139,
+      "sha256": "ed3b5388167bf6c4967c7181fe3968c82df03e37c9faa95127d5fbc6bbeb5914"
+    },
+    "bounded-script-preparation.json": {
+      "bytes": 1035,
+      "sha256": "62a1606ce2c0393d145aa2963db6154608ef9fc1ab39a6745411f09ad34f9131"
+    },
+    "verification-plan.json": {
+      "bytes": 3456,
+      "sha256": "81df42b8d7f40715af0712ba41bc3794ecce4d2a12ac5e3066892b27adf860db"
+    },
+    "fresh-northern-fixture.candidate.mjs": {
+      "bytes": 42479,
+      "sha256": "1a7d2e2ebf82a7bd8d2a41e119d04b40e1f560eb101a0c5906c0f668efd5d424"
+    },
+    "fresh-northern-fixture.baseline.mjs": {
+      "bytes": 42332,
+      "sha256": "e08a19be02293dffe9fbd7f6664e21333dd0538b694bdc4f8d3cf06b7ccfb535"
+    },
+    "native-input.json.gz": {
+      "bytes": 236050,
+      "sha256": "8c46229d4a7ac4ebfdf796b72a4cc8f5947598ca832c8038eeb9b7f3c2423bd6"
+    },
+    "native-result.json.gz": {
+      "bytes": 37132,
+      "sha256": "aac5162b646ff3c7c3c6b8a2bc2182497b7e0cfb725ce68cb6f668e0055f7be4"
+    }
+  },
+  "sourceEvidence": [
+    {
+      "path": "tests/northern-route.mjs",
+      "lines": "315-325",
+      "finding": "Original fight receives request and optional saved source scene. Captured input contains no previous and campaign has no Salta saved scene."
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "lines": "58-59",
+      "finding": "Original constructor uses placement Boolean(deploy); Salta caller has no deploy, so default placement=false matches the proposed native derivation."
+    },
+    {
+      "path": "tests/fresh-northern-fixture.mjs",
+      "lines": "94-96,264",
+      "finding": "Baseline wrapper forces crew crouch then delegates; actual Salta caller uses that wrapper with the selected canonical gun."
+    },
+    {
+      "path": "game/time.js",
+      "lines": "47-66",
+      "finding": "Raw battle and clock-synced saved pair differ in syncedSeconds and saved clock fields. Script preserves raw state and syncs clones before the official checkpoint."
+    }
+  ],
+  "positiveChecks": {
+    "inputRawHashBound": true,
+    "resultRawHashBound": true,
+    "exact334RetainedOrdersOnly": true,
+    "nativeRejectStopsPrefix": true,
+    "noDeploymentControllerFightOrSeedSearch": true,
+    "selectorCallsPureClonesOnly": true,
+    "maxProposedOrdinaryOrders": 1,
+    "crouchOrNullProposalStopsWithZeroActions": true,
+    "rawAndSyncedPairSeparated": true,
+    "initialIndependentlyCapturedClaimed": false,
+    "fullTerminalReplayClaimed": false,
+    "victoryClaimed": false
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "severity": "must-fix-before-execution",
+      "path": "bounded-control-loader.mjs",
+      "lines": "5-7",
+      "problem": "External control/loader modules are excluded from actual-load inventory; candidate is checked only at load, not exit. Preparation hashes are not verified by the control before imports. Undeclared runtime transforms are listed only at exit rather than rejected before the proposed native action.",
+      "correction": "Verify all prepared external inputs before imports; bind actual external main/loader/candidate runtime and final bytes; reject undeclared transformed source at load. Preserve fixed334 prefix and max1 proposed action."
+    },
+    {
+      "id": "R2",
+      "severity": "receipt-clarity",
+      "path": "bounded-native-control.mjs",
+      "lines": "37,42,46",
+      "problem": "Final receipt retains selectors.unapplied=true after an accepted proposed action increments proposedOrdersApplied to1.",
+      "correction": "Rename to selectorsEvaluatedWithoutApplying or set distinct final application status."
+    },
+    {
+      "id": "R3",
+      "severity": "first-launch-safeguard",
+      "path": "bounded-native-control.mjs and bounded-control-loader.mjs",
+      "lines": "5,19,31-46; loader6",
+      "problem": "Fixed control outputs can be overwritten and the load JSONL appends, so an accidental second launch can obscure initial proof or combine inventories. No previous control output is present now.",
+      "correction": "Refuse pre-existing bounded runtime/output files or use a unique invocation subdirectory, preserving all earlier evidence."
+    }
+  ],
+  "limits": [
+    "No native action or preview has been executed by this review. Actual prefix334 equality to an independently recorded intermediate is unavailable; all334 admissions and the derived constructor must remain labelled as a source-grounded reconstruction.",
+    "Useful one-action selection and successful save/clock roundtrip remain unproved until the authorized bounded execution.",
+    "The original strict Salta victory remains unproved. This review does not approve a full fight or outcome search."
+  ]
+}

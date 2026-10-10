@@ -1,0 +1,23 @@
+{
+  "appliedUtc": "2026-10-10T03:42:28.305824+00:00",
+  "scope": "Uspallata caller uses the existing physically conserved compatible-longgun supply policy; same8 IDs and12-round target. Native refusal control derives from earned LosPatos input, not current unretained Uspallata116 input.",
+  "patchSha256": "35c03d530afbd0e5b0b58d92ba2eeebb507b9bea933002afd1f499efb5c8948b",
+  "files": {
+    "tests/fresh-mountain-route.mjs": "f5d7b8a96b302bb9a9950446e3c90957b94b35f32520d0b91ff644646b3490ea",
+    "tests/fresh-mountain-ammunition.test.mjs": "7299a8d5811ea6d9465ade28fd43b547b990db360d7d75c56a4987d45d862df4"
+  },
+  "candidateControls": {
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 16419.842458,
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "session": 47236,
+    "exitCode": 0,
+    "logSha256": "2ba0c9e9005feb4d0ac199ea59a7fc10cf21bf45112ac9eae89d6c1726b761c5",
+    "scope": "Actual current candidate bounded finite inventory/reload/refusal controls. Native LosPatos-derived input; no current Uspallata prefix or victory claim."
+  },
+  "fullUspallataPrefixOrVictoryVerified": false,
+  "verifiedUtc": "2026-10-10T03:47:46.522147+00:00"
+}

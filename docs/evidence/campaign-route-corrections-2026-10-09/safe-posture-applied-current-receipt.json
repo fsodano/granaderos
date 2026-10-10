@@ -1,0 +1,27 @@
+{
+  "appliedUtc": "2026-10-10T03:52:15.353156+00:00",
+  "scope": "Existing native movement first. Only known unsafe original fire with null native alternative admits the cheapest paid posture leaving a useful affordable safe shot under the existing northern policy. No clinic roof-policy change.",
+  "patchSha256": "bac9690935b7b6004fbd3d9bd1e18522378648910499bfb24d54c94c4f38b912",
+  "externalReceiptSha256": "fa5280ef659f684fea6f735d68417f0e9a950bb89c1054abd238e736fd5fe7c9",
+  "files": {
+    "tests/northern-route.mjs": "29c4030043598aeedb1840782ad68bf4ae5aad924dc3929a9e6917ef80862c20",
+    "tests/northern-safe-posture.test.mjs": "b0b08601c2c0dd2feb6ce0f42404d02ff5c0b9b1c59b4015a232d27acd2adc3d",
+    "tests/fixtures/northern-known-friendly-posture.provenance.json": "b1ff08af6213d10a1f72e6c30cd5c88991716649ea61f2f63ed7eeae55cefd26",
+    "tests/fixtures/northern-known-friendly-posture.save.json.gz": "3beae75882acb4e5ac52772c5fa9cb470013f177194465ec96f84fd9fb71fdea"
+  },
+  "candidateControls": {
+    "tests": 22,
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 27994.99025,
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "session": 60130,
+    "exitCode": 0,
+    "logSha256": "2d1774aa94974e29ab6be55c5d91dcfbd6fa0aa4a51c07df473cbd845eb7704d",
+    "Mendoza205OrderVictoryAndOfficialReplayUnchanged": true,
+    "scope": "Actual candidate after reviewed paid-posture application; precedes later passive mismatch-recorder and generic Cuyo safety/spatial corrections."
+  },
+  "earnedNativeOutcomeVerified": false,
+  "verifiedUtc": "2026-10-10T04:02:07.673261+00:00"
+}

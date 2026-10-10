@@ -1,0 +1,43 @@
+{
+  "allowlist": [
+    "tests/rescue-recovery.mjs",
+    "tests/rescue-clinic-readiness.mjs",
+    "tests/rescue-clinic-readiness.test.mjs",
+    "tests/opening-playthrough.test.mjs",
+    "tests/fixtures/opening-clinic-earned-exhaustion.provenance.json",
+    "tests/fixtures/opening-clinic-earned-exhaustion.save.json.gz",
+    "tests/fixtures/opening-clinic-earned-raid.save.json.gz",
+    "tests/fixtures/opening-clinic-retained-defeat.json.gz",
+    "tests/fixtures/opening-clinic-preparation-rest-replay.json.gz",
+    "docs/evidence/opening-rescue-finite-care-2026-10-09/clinic-readiness.json"
+  ],
+  "sha256": {
+    "tests/rescue-recovery.mjs": "9abdb770bb9bc34b60ec90488a7859d9eb1ba07d67620c69bc30168cd56e9ece",
+    "tests/rescue-clinic-readiness.mjs": "ff26adebcbb18748ccdea48c6dafdc9a654437aee14e0b9b6fd0b7ef5042e214",
+    "tests/rescue-clinic-readiness.test.mjs": "9593ba74b5d467406eaa1f18e4623e493f498ef3d4a1849baf5d3283a9add001",
+    "tests/opening-playthrough.test.mjs": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+    "tests/fixtures/opening-clinic-earned-exhaustion.provenance.json": "96e112affb06ac56753416b1854e705721d054dd792e192d995bf2452c503a83",
+    "tests/fixtures/opening-clinic-earned-exhaustion.save.json.gz": "9d619c84ed0aa0be7ddda957256584101ea2b75cbeee67b79eee0c9ad94caefa",
+    "tests/fixtures/opening-clinic-earned-raid.save.json.gz": "6d7411372b7723ff2f7f45f3f8b792656863d450e7244bd2d7008d60cc36c031",
+    "tests/fixtures/opening-clinic-retained-defeat.json.gz": "c829ce669f89d9dce0dac21de8f39e3019d52ad1d1192f4295b591a6ed65bf47",
+    "tests/fixtures/opening-clinic-preparation-rest-replay.json.gz": "513cdabc22ae67c172abcc32799343651d367105369ff8b7dee44c64bdc810e8",
+    "docs/evidence/opening-rescue-finite-care-2026-10-09/clinic-readiness.json": "9f9f37eae3ffae91c9b30c642c37f771c223cb381c99f7298ec44335acc3e368"
+  },
+  "unchangedControllerSha256": {
+    "tests/northern-route.mjs": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+    "tests/opening-driver.mjs": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3"
+  },
+  "focused": {
+    "new": {
+      "pass": 5,
+      "fail": 0,
+      "seconds": 25.292225625
+    },
+    "existing": {
+      "pass": 18,
+      "fail": 0,
+      "seconds": 9.385918333
+    }
+  },
+  "scope": "No full opening or new clinic battle; retained native defeat remains strict failure."
+}

@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "completedUtc": "2026-10-10T06:14:08.761349+00:00",
+  "output": "/tmp/granaderos-san-lorenzo-original-144-replay-20261010-a6y9eanz",
+  "process": {
+    "sessionId": 20958,
+    "pid": 14307,
+    "ppid": 1733,
+    "terminalExitCode": 0,
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node"
+  },
+  "preparationSha256": "e8ef24eef396d5cf3e5eb6cdcda19b0b0255a0a3bab38d6214a8b3f1d8b5d579",
+  "nativeApiCalls": {
+    "enterSector": 1,
+    "syncBattleTime": 145,
+    "encodeSave": 4,
+    "decodeSave": 4,
+    "actBattle": 126,
+    "endTurn": 18,
+    "firearmShotOptions": 1,
+    "pairedPistol": 1,
+    "firearmFlightPreview": 1
+  },
+  "nativeDirectApiCallsTotal": 301,
+  "acceptedOriginalOrders": 144,
+  "controllerSelectorCalls": 0,
+  "alternativeOrders": 0,
+  "settlementCalls": 0,
+  "actualProductionImports": 265,
+  "externalImports": 1,
+  "productionMatchesOriginalImports": true,
+  "sourceDrift": [],
+  "externalDrift": [],
+  "undeclaredRuntimeDifferences": [],
+  "officialPairSaveRoundTrips": [
+    {
+      "name": "entry",
+      "exactPairedValueEquality": true,
+      "bytes": 729806,
+      "sha256": "d960ae4e87ba07522061dc578c7a61e82584753a91aaef4127a7aff666b1fa08",
+      "hour": 123,
+      "second": 808,
+      "elapsedSeconds": 0,
+      "syncedSeconds": 0
+    },
+    {
+      "name": "midpoint",
+      "exactPairedValueEquality": true,
+      "bytes": 736827,
+      "sha256": "b7f70f3cae8fe0287f7a3d4d64b26250340e01e5ddd8c17fdff4d8d5ccd8f806",
+      "hour": 123,
+      "second": 1188,
+      "elapsedSeconds": 380,
+      "syncedSeconds": 380
+    },
+    {
+      "name": "before-original-index113",
+      "exactPairedValueEquality": true,
+      "bytes": 738375,
+      "sha256": "8580ac660945d79a6329a8831662819eebd33fe493ddd600d7f3f3ebb89d4b61",
+      "hour": 123,
+      "second": 1206,
+      "elapsedSeconds": 398,
+      "syncedSeconds": 398
+    },
+    {
+      "name": "terminal",
+      "exactPairedValueEquality": true,
+      "bytes": 738733,
+      "sha256": "b36e556367d24fc71b22e9f1e9c9e32755110a0caaea3d0645cf6fcef2bb4594",
+      "hour": 123,
+      "second": 1236,
+      "elapsedSeconds": 428,
+      "syncedSeconds": 428
+    }
+  ],
+  "terminalComparison": {
+    "allNonBridgeBattleFieldsEqual": true,
+    "unitsSeedElapsedStatusEqual": true,
+    "officialClockBookkeeping": {
+      "syncedSeconds": {
+        "actual": 428,
+        "recorded": 0
+      },
+      "savedHour": {
+        "actual": 123
+      },
+      "savedSecond": {
+        "actual": 1236
+      }
+    },
+    "status": "defeat",
+    "turn": 10,
+    "seed": 2532192153,
+    "elapsedSeconds": 428,
+    "canonicalClock": [
+      123,
+      1236
+    ],
+    "noSettlement": true
+  },
+  "shot113": {
+    "action": {
+      "type": "fire",
+      "targetId": "enemy-0",
+      "aim": 4,
+      "hitLocation": "torso",
+      "unitId": "120"
+    },
+    "beforeClock": [
+      123,
+      1206
+    ],
+    "knownFriendlyRisk": false,
+    "knownCivilianRisk": false,
+    "actualFiringHands": [
+      "primary"
+    ],
+    "chance": 36,
+    "actor": {
+      "id": "120",
+      "x": 46,
+      "y": 34,
+      "tacticalLevel": 0,
+      "stance": "crouched",
+      "ap": 70,
+      "hp": 39,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 7
+    },
+    "target": {
+      "id": "enemy-0",
+      "x": 46,
+      "y": 32,
+      "tacticalLevel": 0,
+      "stance": "standing",
+      "hp": 100
+    },
+    "recordedNativeEffect": {
+      "victim": {
+        "id": "136",
+        "name": "Lorenzo Silva",
+        "position": [
+          45,
+          32,
+          0
+        ],
+        "hp": [
+          17,
+          0
+        ]
+      },
+      "shooter": {
+        "id": "120",
+        "ap": [
+          70,
+          34
+        ],
+        "loaded": [
+          1,
+          0
+        ],
+        "reserve": [
+          7,
+          7
+        ],
+        "condition": [
+          98,
+          97
+        ]
+      },
+      "nativeLog": [
+        "Mercedes Quiroga hiere a Lorenzo Silva (cabeza): 89 de daño.",
+        "Lorenzo Silva cayó en combate.",
+        "Mercedes Quiroga dispara sin acertar al punto elegido (36%)."
+      ]
+    },
+    "nominalVsActual": "The public intended ray reports onlyenemy-0 at x46,y32. The actual off-aim miss killed136 at x45,y32. Source directedFireImpact routes an accuracy miss through scatteredShotDestination; this is a scatter hit, not a demonstrated intended-ray obstruction. No candidate safety selection or alternate action was run."
+  },
+  "limits": [
+    "The original initial/before113 battle pair was not independently retained. These states derive from the bound original earned request plus exact recorded orders.",
+    "The terminal official pair includes real paid tactical time but is not settled; no victory or casualty-prevention claim.",
+    "Native API counts are direct external export invocations. Engine-internal dispatch, AI and projectile calls are part of those canonical native operations.",
+    "Current safety helper is absent from replay imports. This exact replay preserves original orders and native defeat, and does not test a corrected-controller outcome.",
+    "No independent original before-shot scene existed; the forecast is derived through the exact bound recorded prefix."
+  ]
+}

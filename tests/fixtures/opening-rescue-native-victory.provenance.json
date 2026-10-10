@@ -1,0 +1,29 @@
+{
+  "source": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/026-stabilizeRescued-input.save.json",
+  "sourceRun": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/summary.json",
+  "sourceCodeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "sourceRuntimeHashes": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/source-comparison.json",
+  "sourceScope": "One complete original opening file with fixed2-dressing patrol preparation and previously verified single-gun coordination. The original poor patrol controller produced genuine defeat/four captures; actual confiscated5 pieces funded five guard strokes; rescue then reached native victory. Unedited official save at stabilization input before any subsequent care orders.",
+  "rawSha256": "0b22e32f69671b232fa32c47f96de6653be0e579058d16ff52b9ce59802621da",
+  "rawBytes": 946885,
+  "compressedSha256": "47edf431e7366fd2d558a5de0a1a8e7573d2255167dcfc2f5faca5223f8d458a",
+  "hour": 188,
+  "second": 3231,
+  "patients": [
+    121,
+    126,
+    129,
+    130
+  ],
+  "nativeRescue": {
+    "status": "victory",
+    "turns": 8,
+    "actions": 289,
+    "elapsedSeconds": 1350,
+    "actualNewDeaths": [
+      127,
+      144
+    ]
+  },
+  "stateEdits": false
+}

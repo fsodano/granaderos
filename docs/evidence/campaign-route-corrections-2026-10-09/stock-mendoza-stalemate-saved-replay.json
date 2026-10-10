@@ -1,0 +1,32 @@
+{
+  "scope": "Only the original 83 recorded orders were replayed. No controller, newly selected order, settlement or victory.",
+  "runtime": "v25.9.0",
+  "originalInitialSave": "d12de6567cbfb5d9755041cfcd813fc07fefb39a09ce16ac551f1239fee3533c",
+  "originalRawResult": "edab1fd3edf469eba3292e18316ed42cbe1cd46911da2058b46e635bb5c307f0",
+  "orders": 83,
+  "actions": 3,
+  "rawReplayExact": true,
+  "officialMidpointReplayExact": true,
+  "midpoint": {
+    "orders": 41,
+    "hour": 472,
+    "second": 2204,
+    "turn": 39,
+    "elapsedSeconds": 22842
+  },
+  "final": {
+    "hour": 479,
+    "second": 2204,
+    "turn": 81,
+    "elapsedSeconds": 48042,
+    "status": "active",
+    "pendingBattle": "mendoza-466-2591988814",
+    "owner": "royalist"
+  },
+  "files": {
+    "initial.save.json": "d12de6567cbfb5d9755041cfcd813fc07fefb39a09ce16ac551f1239fee3533c",
+    "orders.json": "4b2e18d71450cb0505f59209d83013167f50ebbb6c7e11b0ee2f3cd2593847de",
+    "midpoint.save.json": "d7c4ba45c03611a8da18809d59e9bb5b4e9ea197e78d5c6111e63d05643672f3",
+    "final-active.save.json": "e1504021df6121dc47928a49668b437a517c2aaf92a1074afaa584d0826da9cd"
+  }
+}

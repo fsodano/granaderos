@@ -1,0 +1,192 @@
+{
+  "scope": "Test-helper finite gun custody and native funding only. No production edit and no complete ending-route pass claimed. No stage, commit or push.",
+  "node": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "head": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "files": {
+    "tests/fresh-cuyo-route.mjs": "ceba839d3064d468891e86d718eac3faf3b8a94c0fe6d55c9883cd5a25143bcf",
+    "tests/fresh-foundry-custody.test.mjs": "d48ec10f33dc1dea5e14de1739c07f3c30f123e00a47c4d6d6f99c189845d1ca",
+    "tests/fixtures/stock-foundry-earned-pre-course.save.json.gz": "71dea16f2ce83b920ee3e801686094056b303baa62978f3e53daca21be8c33f1",
+    "tests/fixtures/stock-foundry-native-occupied-source.save.json.gz": "f100a5b485695a918d7c0045cd8eff9d7768d806e019b04c9432a622e2d54300",
+    "tests/fixtures/stock-foundry-native-funding-actions.json.gz": "100a76a15c56327cf58dc5369af7eabb61d46758c2d07e82f0414b1362bc5161",
+    "tests/fixtures/stock-foundry-earned-custody.provenance.json": "9603bad04951150463079c79633ce3d610584eff783167fb29addbd2a18c74e3"
+  },
+  "provenance": {
+    "initialOfficialPairSha256": "edfd65633891fef93ffc02e909e068f34dacb97ae4ab00c942688ecf412cade5",
+    "battleTraceSha256": "f9bec37050396aea99405d6f9c59c1ad01365a333bc3c6098aab4e327073afde",
+    "result": "victory",
+    "settledClock": [
+      466,
+      2308
+    ],
+    "preparedClock": [
+      482,
+      2550
+    ],
+    "policy": "Existing stagedBatteryController; one native decision run followed by exact recorded-order replay with an official midpoint.",
+    "initialOriginalArtifact": "/tmp/granaderos-stock-ending-native-shipment-full-20261009/0702-prepareCreatedMendozaAssault-report-stockMendozaAssaultPrepared.save.json",
+    "capture": "/tmp/granaderos-stock-foundry-custody-pm_i0buc",
+    "distinction": "Historical earned pending pair reused on current source; it is not the unretained all935 post-Mendoza checkpoint."
+  },
+  "originalAll935Failure": {
+    "source": "/tmp/granaderos-campaign-cumulative-final-full-20261009/run.log",
+    "case": "tests/fresh-ending-route.test.mjs",
+    "message": "No remaining controlled physical arsenal can supply bronze4.",
+    "notExactInput": "The full935 post-Mendoza campaign was not saved. The portable control is derived from the documented earlier earned official pending466 pair, with one current staged native victory and exact tape replay."
+  },
+  "confirmedPreFixCause": {
+    "clock": [
+      528,
+      2550
+    ],
+    "message": "No remaining controlled physical arsenal can supply bronze4.",
+    "owned": 2,
+    "occupation": "enemy-group-4 took Tucuman at528 while the course preceded gun recovery."
+  },
+  "correction": {
+    "inputSha256": "291fb3f6ab38abaa5363ee44e5ea0856a4e3753d7a32f664de14ceb7e9cdaa0e",
+    "inputClock": [
+      482,
+      2550
+    ],
+    "shipment": {
+      "event": "routeBatteryShipment",
+      "id": "arsenal:cordoba:1",
+      "from": "tucuman",
+      "to": "mendoza",
+      "cost": 0,
+      "dueAt": 526,
+      "record": {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": -0.4636476090008061
+      },
+      "hour": 490
+    },
+    "fundedClock": [
+      572,
+      2550
+    ],
+    "treasury": 138128,
+    "owned": 3,
+    "guns": [
+      {
+        "id": "arsenal:buenos_aires:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": true,
+        "ammo": 4,
+        "facing": 1.1902899496825317
+      },
+      {
+        "id": "arsenal:cordoba:2",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": 1.0714496051147666
+      },
+      {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": -0.4636476090008061
+      }
+    ],
+    "nativeRearOutcome": "Tucuman is occupied at528 while undefended; no respondToEncounter action occurred. The correction preserves this occupation, rather than selecting a defense result.",
+    "deaths": [
+      101,
+      102,
+      103,
+      104,
+      107,
+      108,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      117,
+      119,
+      120,
+      121,
+      123,
+      124,
+      125,
+      126,
+      127,
+      129,
+      131,
+      136,
+      137,
+      139,
+      141,
+      144,
+      146,
+      1000
+    ],
+    "deathCount": 30,
+    "newDeaths": 0,
+    "priorHealthAndEquipment": "Focused regression compares all operative HP/maxHP/alive/captured/bleeding, medical/ammunition/condition/inventory, weapon identity/drop, clothing and full loadouts. Optional carriedLoaded absence canonicalizes to0 only."
+  },
+  "nativeOrders": {
+    "count": 124,
+    "refusals": 0,
+    "chainGaps": 0,
+    "newBattleActions": 0,
+    "exactSavedReplay": true,
+    "replayLog": "/tmp/granaderos-stock-foundry-custody-pm_i0buc/corrected-pre-course/replay.log",
+    "officialMidpoint": "/tmp/granaderos-stock-foundry-custody-pm_i0buc/corrected-pre-course/replay-midpoint.save.json",
+    "officialFinal": "/tmp/granaderos-stock-foundry-custody-pm_i0buc/corrected-pre-course/replay-final.save.json"
+  },
+  "runtimeImports": {
+    "preFixNative": {
+      "count": 306,
+      "mountainImported": false,
+      "currentHashDrift": [
+        {
+          "path": "tests/fresh-cuyo-route.mjs",
+          "loaded": "8b43b6cbcd5a1463fa07595625c27954f6b875a897527e669ecd3403560c45e3",
+          "current": "ceba839d3064d468891e86d718eac3faf3b8a94c0fe6d55c9883cd5a25143bcf"
+        }
+      ],
+      "manifest": "/tmp/granaderos-stock-foundry-custody-pm_i0buc/runtime-hashes.ndjson",
+      "manifestSha256": "16d2b366e58d405c2697546e635eeb5e4e7eac74ea91471aca0c15c8f42894bf",
+      "observer": "Original module bytes are hashed before read-only capture wrappers. This is not an uninstrumented byte-identity claim."
+    },
+    "correctedFunding": {
+      "count": 280,
+      "mountainImported": false,
+      "currentHashDrift": [],
+      "manifest": "/tmp/granaderos-stock-foundry-custody-pm_i0buc/corrected-pre-course/runtime-hashes.ndjson",
+      "manifestSha256": "50ad1bf9bd81b5cc97669d80c58f7b5044f7cba79a93a58854062574b776bb9f",
+      "observer": "Original module bytes are hashed before read-only capture wrappers. This is not an uninstrumented byte-identity claim."
+    }
+  },
+  "commands": {
+    "nativeReproduction": "cd /tmp/granaderos-stock-foundry-custody-pm_i0buc && /opt/homebrew/Cellar/node/25.9.0_2/bin/node --import ./loader.mjs run.mjs > run.log 2>&1",
+    "correctedFunding": "cd /tmp/granaderos-stock-foundry-custody-pm_i0buc/corrected-pre-course && /opt/homebrew/Cellar/node/25.9.0_2/bin/node --import ./loader.mjs run.mjs > run.log 2>&1",
+    "savedReplay": "cd /tmp/granaderos-stock-foundry-custody-pm_i0buc/corrected-pre-course && /opt/homebrew/Cellar/node/25.9.0_2/bin/node replay.mjs > replay.log 2>&1",
+    "focused": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/fresh-foundry-custody.test.mjs tests/route-battery.test.mjs tests/finite-artillery-arsenals.test.mjs tests/fresh-route-orders.test.mjs > /tmp/granaderos-stock-foundry-custody-focused.log 2>&1"
+  },
+  "focused": {
+    "log": "/tmp/granaderos-stock-foundry-custody-focused.log",
+    "sha256": "4a2e561854df43c418e192a794d60f66d09ffcab4195ebed75a49e9f2dbdeec2",
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "skip": 0,
+    "durationMs": 19599.163
+  },
+  "limits": [
+    "The known all935 failures remain the original gate outcome until a new unchanged complete gate is run.",
+    "The new test uses portable committed gzip fixtures; its runtime does not read /tmp.",
+    "The late already-occupied source fixture still rejects replacement fabrication with owned2, preserving the >=3 requirement.",
+    "No new firearm, cartridge, gun, medical stock, health, treasury or battle outcome was granted."
+  ]
+}

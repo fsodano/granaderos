@@ -1,0 +1,471 @@
+{
+  "recordedAt": "2026-10-10T03:01:52.702001+00:00",
+  "status": "FAILED EXTERNAL EXPERIMENT. Keep hook and controller out of active tests.",
+  "scope": "Two declared native executions: first retained runner mistake included courier in guard preparation; second approved corrected eight-guard preparation matched independent complete decoded pair before actual battle. A raw savedAt-sensitive observer check stopped with zero executions between them. No seed search, doctrine changes between combat executions, input/health/resource grants, forced outcomes or assertion relaxation.",
+  "nativeNineGuardWitness": {
+    "executions": 1,
+    "guardIds": [
+      112,
+      122,
+      103,
+      108,
+      102,
+      121,
+      126,
+      129,
+      130
+    ],
+    "groundCrewIds": [
+      108,
+      102
+    ],
+    "battle": {
+      "status": "retreat",
+      "turns": 13,
+      "actions": 43,
+      "elapsedSeconds": 449,
+      "seed": 2989225925
+    },
+    "settlement": {
+      "status": "retreat",
+      "groupId": "enemy-group-3",
+      "exactNativeReplay": true,
+      "midpoint": 34,
+      "hour": 288,
+      "second": 1064,
+      "owner": "royalist",
+      "deaths": [
+        103,
+        112,
+        121,
+        122,
+        126,
+        129,
+        130
+      ],
+      "captives": [
+        102
+      ]
+    },
+    "strictVictory": false,
+    "fullHealth": false,
+    "initialUnchanged": true,
+    "previousDeathsRemain": true,
+    "failure": "the real clinic defense must win before full-health recovery can continue\n+ actual - expected\n\n+ 'retreat'\n- 'victory'\n"
+  },
+  "zeroExecutionTimestampObserver": {
+    "executions": 0,
+    "guardIds": [
+      112,
+      122,
+      103,
+      108,
+      121,
+      126,
+      129,
+      130
+    ],
+    "groundCrewIds": [
+      108,
+      103
+    ],
+    "battle": {
+      "status": null,
+      "turns": null,
+      "actions": null,
+      "elapsedSeconds": null,
+      "seed": null
+    },
+    "settlement": null,
+    "strictVictory": false,
+    "fullHealth": false,
+    "initialUnchanged": true,
+    "previousDeathsRemain": null,
+    "failure": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '1733ae6d7be0d1cc1e480dcb4e02b5e88f3c7871c7b466b8ef412b5696222a85'\n- '4c86d505a79d2305a16075a24b0dd6b951bd11203b9b635a40427bad0f19d66b'\n"
+  },
+  "nativeIntendedEightGuardPreparationWitness": {
+    "executions": 1,
+    "guardIds": [
+      112,
+      122,
+      103,
+      108,
+      121,
+      126,
+      129,
+      130
+    ],
+    "groundCrewIds": [
+      108,
+      103
+    ],
+    "battle": {
+      "status": "retreat",
+      "turns": 46,
+      "actions": 111,
+      "elapsedSeconds": 21068,
+      "seed": 370937573
+    },
+    "settlement": {
+      "status": "retreat",
+      "groupId": "enemy-group-3",
+      "exactNativeReplay": true,
+      "midpoint": 86,
+      "hour": 294,
+      "second": 58,
+      "owner": "royalist",
+      "deaths": [
+        102,
+        112,
+        121,
+        122,
+        126,
+        129,
+        130
+      ],
+      "captives": [
+        103,
+        108
+      ]
+    },
+    "strictVictory": false,
+    "fullHealth": false,
+    "initialUnchanged": true,
+    "previousDeathsRemain": true,
+    "failure": "the real clinic defense must win before full-health recovery can continue\n+ actual - expected\n\n+ 'retreat'\n- 'victory'\n"
+  },
+  "intendedPreCombatCompletePairEquality": true,
+  "originalRequestSeed": 2240774039,
+  "readinessAndSafety": {
+    "opening": [
+      {
+        "id": "112",
+        "hp": 25,
+        "maxHp": 66,
+        "weapon": 1800,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 97,
+        "energy": 100,
+        "medical": 94,
+        "medkits": 0,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 1,
+        "x": 32,
+        "y": 21,
+        "ap": 85
+      },
+      {
+        "id": "122",
+        "hp": 67,
+        "maxHp": 67,
+        "weapon": 1800,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 98,
+        "energy": 100,
+        "medical": 85,
+        "medkits": 0,
+        "activeSlot": "medical",
+        "stance": "standing",
+        "tacticalLevel": 1,
+        "x": 32,
+        "y": 23,
+        "ap": 99
+      },
+      {
+        "id": "103",
+        "hp": 65,
+        "maxHp": 72,
+        "weapon": 1800,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 92,
+        "energy": 100,
+        "medical": 20,
+        "medkits": 0,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 40,
+        "y": 37,
+        "ap": 94
+      },
+      {
+        "id": "108",
+        "hp": 82,
+        "maxHp": 82,
+        "weapon": 1803,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 99,
+        "energy": 100,
+        "medical": 24,
+        "medkits": 0,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 40,
+        "y": 36,
+        "ap": 96
+      },
+      {
+        "id": "102",
+        "hp": 70,
+        "maxHp": 70,
+        "weapon": 1804,
+        "loaded": 1,
+        "reserves": 4,
+        "compatibleReserves": 4,
+        "condition": 95,
+        "energy": 100,
+        "medical": 20,
+        "medkits": 0,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 0,
+        "x": 36,
+        "y": 23,
+        "ap": 91
+      },
+      {
+        "id": "121",
+        "hp": 65,
+        "maxHp": 80,
+        "weapon": 1801,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 96,
+        "energy": 100,
+        "medical": 26,
+        "medkits": 0,
+        "activeSlot": "medical",
+        "stance": "standing",
+        "tacticalLevel": 1,
+        "x": 34,
+        "y": 23,
+        "ap": 88
+      },
+      {
+        "id": "126",
+        "hp": 55,
+        "maxHp": 63,
+        "weapon": 1800,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 97,
+        "energy": 100,
+        "medical": 32,
+        "medkits": 0,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 1,
+        "x": 34,
+        "y": 22,
+        "ap": 92
+      },
+      {
+        "id": "129",
+        "hp": 70,
+        "maxHp": 86,
+        "weapon": 1803,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 100,
+        "energy": 100,
+        "medical": 26,
+        "medkits": 0,
+        "activeSlot": "medical",
+        "stance": "standing",
+        "tacticalLevel": 1,
+        "x": 33,
+        "y": 22,
+        "ap": 88
+      },
+      {
+        "id": "130",
+        "hp": 58,
+        "maxHp": 67,
+        "weapon": 1801,
+        "loaded": 1,
+        "reserves": 13,
+        "compatibleReserves": 13,
+        "condition": 97,
+        "energy": 100,
+        "medical": 65,
+        "medkits": 0,
+        "activeSlot": "primary",
+        "stance": "standing",
+        "tacticalLevel": 1,
+        "x": 35,
+        "y": 23,
+        "ap": 87
+      }
+    ],
+    "knownFireOrders": 10,
+    "allKnownFireOrdersSafe": true,
+    "finiteShots": 1,
+    "finiteReloads": 1,
+    "exactTerminalPair": true
+  },
+  "preTrialRootInputsChecked": 306,
+  "preTrialRootSourceDrift": [],
+  "frozenImportedOverlayFilesChecked": 314,
+  "frozenImportedOverlaySourceDrift": [],
+  "rootInputsChangedAfterExplicitRelease": [],
+  "rootReleaseNote": "Parent reported its separately proved Mendoza correction after trial. These post-release root hashes are not imported by this experiment; all native imports are external overlay copies. No root edit was made by this agent.",
+  "sourceSnapshot": {
+    "path": "eight-guard-pair-trial-source-snapshot.json",
+    "sha256": "bdcf08e8a91a37f0b00462b27dd52dabc5d0d5fdb4953030d3fd3ba037fc44fa"
+  },
+  "artifacts": {
+    "trial-artifacts/actual-defense-evidence.json": {
+      "sha256": "2b5a1629ed9fb4ff624a994b164b9fcb0aebb614c9e92e716b80248ee9b8fcc6",
+      "bytes": 8814
+    },
+    "trial-artifacts/actual-earned-raid.save.json.gz": {
+      "sha256": "c960bc082dcedf52c471c57dc52f5e5d3bea6f896397b080ce540c0dd63afa59",
+      "bytes": 91870
+    },
+    "trial-artifacts/actual-ground-prepared.save.json.gz": {
+      "sha256": "488824fa040dea8435823ff85a36fbfd3f47094132b3064302e1d4084270b9ff",
+      "bytes": 91272
+    },
+    "trial-artifacts/actual-native-battle-result.json.gz": {
+      "sha256": "b551ba7acd9d9d30fc916adaeb4d8b96a4f0de04bedc92b9393e69c35e77ca9c",
+      "bytes": 32436
+    },
+    "trial-artifacts/actual-native-defense-tape.json": {
+      "sha256": "c32e366674dbeca5e700ddd33849ed2f56e0506db0d045538bde067f737c70c0",
+      "bytes": 4554
+    },
+    "trial-artifacts/actual-native-request.json": {
+      "sha256": "19549b396de6770ac48de9abebe9b43372e59666b384f5b2129ba346a1017a6e",
+      "bytes": 59296
+    },
+    "trial-artifacts/actual-native-snapshot.json": {
+      "sha256": "469835788af3e1845b29158448fdfd792d16d0cb8ea6ee8deb208184a4f9c65a",
+      "bytes": 684378
+    },
+    "trial-artifacts/actual-official-initial-pair-proof.json": {
+      "sha256": "04bd76d0ee63b01aa05398020f97d63f1a0323109699a2d75f2606c84b36ed41",
+      "bytes": 413
+    },
+    "trial-artifacts/actual-official-initial-pair.save.json.gz": {
+      "sha256": "4b29bc418617cc59e6908dc5d65e1ba7892d97f2edb8a83f1fdf2e46a825deb5",
+      "bytes": 114918
+    },
+    "trial-artifacts/actual-official-midpoint-proof.json": {
+      "sha256": "4aeacc0a334d8483856d9feb3c843f9cab4e5a07fa9862d00e932eae7d48e8e5",
+      "bytes": 361
+    },
+    "trial-artifacts/actual-official-midpoint.save.json.gz": {
+      "sha256": "0f0feb7c0f4e64aae7b9499ec4f01aed26a41398532d9669169bb4121dd14c4b",
+      "bytes": 116674
+    },
+    "trial-artifacts/actual-settled.save.json.gz": {
+      "sha256": "d918237f44d20b3c8a7647d6f50c05d1e22ea3c10b75b1f4ad188c22f924ff47",
+      "bytes": 98309
+    },
+    "trial-artifacts/existing-finite-preparation.json": {
+      "sha256": "52c68ce5e8aa1147d868588625509f99d06557544c58f95607266640ff505e42",
+      "bytes": 8718
+    },
+    "trial-artifacts/ground-crew-preparation.json": {
+      "sha256": "53ae7fb85120311976b718d76ff498f5189ee8c42a0dc6d0121911650ad6fd08",
+      "bytes": 929932
+    },
+    "trial-artifacts/trial-receipt.json": {
+      "sha256": "8f854a6284cc617b702f1516017297a293121e6248a5d2b4e84112758f066da4",
+      "bytes": 16594
+    },
+    "eight-guard-trial-artifacts/actual-ground-prepared.save.json.gz": {
+      "sha256": "66b9830019308285e129e495814f0e5fc97d4083e233c0ae213d60085a3b2c6e",
+      "bytes": 91437
+    },
+    "eight-guard-trial-artifacts/existing-finite-preparation.json": {
+      "sha256": "ba745a75ee9fd610cbc684b3b41226711af712463f444212913c91aa0158d952",
+      "bytes": 7669
+    },
+    "eight-guard-trial-artifacts/ground-crew-preparation.json": {
+      "sha256": "6e03cf1ae80bc7c23b76638a88e083d715347aeda500f076183f9b53e05ddeb9",
+      "bytes": 930119
+    },
+    "eight-guard-trial-artifacts/trial-receipt.json": {
+      "sha256": "3dccc245b9a823c7e15d58d88bbcd72d8b7416d54d2b4cec59c3bdcbad1473d6",
+      "bytes": 2873
+    },
+    "eight-guard-pair-trial-artifacts/actual-defense-evidence.json": {
+      "sha256": "f3e0bba179702bc5e10de2621e953d028fa77ea5ad765a82e7aee9480e323265",
+      "bytes": 16632
+    },
+    "eight-guard-pair-trial-artifacts/actual-earned-raid.save.json.gz": {
+      "sha256": "fdb5fa9257770fdd3e6dcc743cbebe8744556b47bf316b560b52c040c497a7c4",
+      "bytes": 91935
+    },
+    "eight-guard-pair-trial-artifacts/actual-ground-prepared.save.json.gz": {
+      "sha256": "e1e62ef822e903751f3abaf53bfd04e78c8f7a28e4c9b084bf2f8abebe3185a6",
+      "bytes": 91438
+    },
+    "eight-guard-pair-trial-artifacts/actual-native-battle-result.json.gz": {
+      "sha256": "853533bc975ccb95f273f6f3a450428cbbb68bff429d55426e7d2420ab39b481",
+      "bytes": 33102
+    },
+    "eight-guard-pair-trial-artifacts/actual-native-defense-tape.json": {
+      "sha256": "aa6a5c5e04c63890c4fc452fef98dd19fdd863cb3cfea7ebb2ba4a86512a3485",
+      "bytes": 11401
+    },
+    "eight-guard-pair-trial-artifacts/actual-native-request.json": {
+      "sha256": "2297e70489e3965d24a99375204848c5e73d3018adfa416ad9af1f5e23709049",
+      "bytes": 59043
+    },
+    "eight-guard-pair-trial-artifacts/actual-native-snapshot.json": {
+      "sha256": "86d35aa30ecf50f39d5d8d6be0e384edad6adf46a6e8d99a0576a67dff076d35",
+      "bytes": 684354
+    },
+    "eight-guard-pair-trial-artifacts/actual-official-initial-pair-proof.json": {
+      "sha256": "ce2ec86b90ef206ec04edbf6dfd013d4b4b134ba0035bdad6a17099daee70ade",
+      "bytes": 413
+    },
+    "eight-guard-pair-trial-artifacts/actual-official-initial-pair.save.json.gz": {
+      "sha256": "5211390f7dbee8464264d387f953ac2dea43c2d1cffc7edc3c38dc7918d6984f",
+      "bytes": 114985
+    },
+    "eight-guard-pair-trial-artifacts/actual-official-midpoint-proof.json": {
+      "sha256": "9008e1f304fe48127315d0e7c1286d773e6926ed6e33a32dc805efc4e41c8af7",
+      "bytes": 362
+    },
+    "eight-guard-pair-trial-artifacts/actual-official-midpoint.save.json.gz": {
+      "sha256": "384a9aba5edc7c27de502efb03744753fe8092ff1af0f928381e213fc26706cb",
+      "bytes": 117099
+    },
+    "eight-guard-pair-trial-artifacts/actual-settled.save.json.gz": {
+      "sha256": "95ab4f944351fbe8a1b4e8a04ed6e05c39d5fb41b5ada7d964202b8b7068cff7",
+      "bytes": 99712
+    },
+    "eight-guard-pair-trial-artifacts/existing-finite-preparation.json": {
+      "sha256": "ba745a75ee9fd610cbc684b3b41226711af712463f444212913c91aa0158d952",
+      "bytes": 7669
+    },
+    "eight-guard-pair-trial-artifacts/ground-crew-preparation.json": {
+      "sha256": "6e03cf1ae80bc7c23b76638a88e083d715347aeda500f076183f9b53e05ddeb9",
+      "bytes": 930119
+    },
+    "eight-guard-pair-trial-artifacts/opening-readiness-and-known-safe-fire.json": {
+      "sha256": "df89b3279e5cac129c7fd4edd8010792df426dd34b2b33b6d4296ea32d80e9fc",
+      "bytes": 13753
+    },
+    "eight-guard-pair-trial-artifacts/trial-receipt.json": {
+      "sha256": "f993f2a982554c554c7f6555618b7f2e5d6b2f52ec796dba93d62a98033ccc86",
+      "bytes": 16839
+    }
+  }
+}

@@ -1,0 +1,2049 @@
+{
+  "file": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.terminal.save.json",
+  "inputSha256": "fee5275a33fab311ba36d87544893e2a1a0e285425ed18087b3627d871ca5f14",
+  "clock": [
+    1020,
+    1903
+  ],
+  "target": 15,
+  "physician": 112,
+  "carried": 11,
+  "shortage": 4,
+  "sectors": [
+    {
+      "sector": "buenos_aires",
+      "owner": "patriot",
+      "locals": [],
+      "sites": [
+        {
+          "id": "buenos_aires",
+          "reason": "Elegí un combatiente consciente, despierto y presente en el sector.",
+          "knownMedicalRows": [
+            {
+              "key": "container:buenos_aires:building:chest:10:4:5",
+              "label": "Vendas",
+              "count": 3,
+              "x": 32,
+              "y": 20,
+              "reachable": false,
+              "reason": "Elegí un combatiente consciente, despierto y presente en el sector.",
+              "kind": "container",
+              "expected": "{\"item\":\"medkits\",\"count\":3,\"weight\":0.2}"
+            }
+          ],
+          "knownPool": 3,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 3,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "buenos_aires",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "retiro",
+      "owner": "patriot",
+      "locals": [],
+      "sites": [
+        {
+          "id": "retiro",
+          "reason": "Elegí un combatiente consciente, despierto y presente en el sector.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 40,
+        "marketStatus": {
+          "sector": "retiro",
+          "available": true,
+          "reason": null,
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 1200
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "ensenada",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "ensenada",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": {
+          "authoredMedical": 12,
+          "status": "Unvisited; unavailable as known stock."
+        }
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "ensenada",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "san_nicolas",
+      "owner": "patriot",
+      "locals": [],
+      "sites": [
+        {
+          "id": "san_nicolas",
+          "reason": "Elegí un combatiente consciente, despierto y presente en el sector.",
+          "knownMedicalRows": [
+            {
+              "key": "[\"body\",\"enemy-5\",\"medkits\"]",
+              "label": "Vendas",
+              "count": 2,
+              "x": 49,
+              "y": 27,
+              "tacticalLevel": 0,
+              "reachable": false,
+              "reason": "Elegí un combatiente consciente, despierto y presente en el sector.",
+              "kind": "body",
+              "expected": "{\"item\":\"medkits\",\"count\":2,\"weight\":0.2}"
+            }
+          ],
+          "knownPool": 2,
+          "reachablePool": 0
+        },
+        {
+          "id": "san_lorenzo",
+          "reason": "Elegí un combatiente consciente, despierto y presente en el sector.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 2,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 1,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "san_nicolas",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "santa_fe",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "santa_fe",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": {
+          "authoredMedical": 12,
+          "status": "Unvisited; unavailable as known stock."
+        }
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "santa_fe",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "cordoba",
+      "owner": "patriot",
+      "locals": [
+        7
+      ],
+      "sites": [
+        {
+          "id": "cordoba",
+          "reason": null,
+          "knownMedicalRows": [
+            {
+              "key": "container:cordoba:building:chest:17:1:5",
+              "label": "Vendas",
+              "count": 4,
+              "x": 39,
+              "y": 17,
+              "reachable": true,
+              "reason": null,
+              "kind": "container",
+              "expected": "{\"item\":\"medkits\",\"count\":4,\"weight\":0.2}"
+            }
+          ],
+          "knownPool": 4,
+          "reachablePool": 4
+        }
+      ],
+      "knownMedicalPool": 4,
+      "reachableMedicalPool": 4,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 40,
+        "marketStatus": {
+          "sector": "cordoba",
+          "available": true,
+          "reason": null,
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 1200
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "mendoza",
+      "owner": "patriot",
+      "locals": [
+        120,
+        112,
+        119,
+        104,
+        140,
+        124,
+        134,
+        9,
+        11,
+        1,
+        126,
+        101,
+        8,
+        100,
+        2,
+        123,
+        128,
+        105,
+        106,
+        145,
+        147
+      ],
+      "sites": [
+        {
+          "id": "mendoza",
+          "reason": null,
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 8,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 40,
+        "marketStatus": {
+          "sector": "mendoza",
+          "available": true,
+          "reason": null,
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 1200
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "uspallata",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "uspallata",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "uspallata",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "los_patos",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "los_patos",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "los_patos",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "tucuman",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "tucuman",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        },
+        {
+          "id": "yatasto",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 1,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "tucuman",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "salta",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "salta",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 12,
+        "existingUndiscoveredBodyDressings": 2,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "salta",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "jujuy",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "jujuy",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": {
+          "authoredMedical": 12,
+          "status": "Unvisited; unavailable as known stock."
+        }
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "jujuy",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    },
+    {
+      "sector": "humahuaca",
+      "owner": "royalist",
+      "locals": [],
+      "sites": [
+        {
+          "id": "humahuaca",
+          "reason": "El sector debe estar bajo control patriota y sin ocupación enemiga.",
+          "knownMedicalRows": [],
+          "knownPool": 0,
+          "reachablePool": 0
+        }
+      ],
+      "knownMedicalPool": 0,
+      "reachableMedicalPool": 0,
+      "hiddenAggregateOnly": {
+        "existingUndiscoveredChestDressings": 0,
+        "existingUndiscoveredBodyDressings": 0,
+        "unvisitedFiniteCache": null
+      },
+      "merchant": {
+        "stock": 0,
+        "marketStatus": {
+          "sector": "humahuaca",
+          "available": false,
+          "reason": "Debes llegar a una maestranza abastecida.",
+          "stock": 0,
+          "restockIn": 24,
+          "cash": 0
+        },
+        "globalPurchaseAdmission": "purchaseMedicalSupplies is rejected by game/campaign.js:689-690; merchant stock/legacy quote is not an executable purchase."
+      }
+    }
+  ],
+  "routes": [
+    {
+      "id": "squad-39",
+      "location": "mendoza",
+      "members": [
+        124,
+        104
+      ],
+      "routes": [
+        {
+          "destination": "buenos_aires",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "retiro",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "san_nicolas",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "cordoba",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "squad-40",
+      "location": "cordoba",
+      "members": [
+        7
+      ],
+      "routes": [
+        {
+          "destination": "buenos_aires",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "buenos_aires"
+            ],
+            "hours": 4,
+            "action": {
+              "type": "travel",
+              "sector": "buenos_aires",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "cell-14-21",
+              "cell-15-21",
+              "cell-16-21",
+              "cell-16-22",
+              "cell-17-22",
+              "cell-17-23",
+              "cell-18-23",
+              "cell-19-23",
+              "cell-19-24",
+              "cell-20-24",
+              "cell-20-25",
+              "cell-21-25",
+              "cell-22-25",
+              "san_nicolas",
+              "cell-23-26",
+              "cell-23-27",
+              "cell-24-27",
+              "cell-24-28",
+              "buenos_aires"
+            ],
+            "hours": 34,
+            "action": {
+              "type": "travel",
+              "sector": "buenos_aires",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        },
+        {
+          "destination": "retiro",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "buenos_aires",
+              "retiro"
+            ],
+            "hours": 6,
+            "action": {
+              "type": "travel",
+              "sector": "retiro",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "cell-14-21",
+              "cell-15-21",
+              "cell-16-21",
+              "cell-16-22",
+              "cell-17-22",
+              "cell-17-23",
+              "cell-18-23",
+              "cell-19-23",
+              "cell-19-24",
+              "cell-20-24",
+              "cell-20-25",
+              "cell-21-25",
+              "cell-22-25",
+              "san_nicolas",
+              "cell-23-26",
+              "cell-23-27",
+              "cell-24-27",
+              "cell-24-28",
+              "buenos_aires",
+              "cell-26-28",
+              "retiro"
+            ],
+            "hours": 36,
+            "action": {
+              "type": "travel",
+              "sector": "retiro",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        },
+        {
+          "destination": "san_nicolas",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "san_nicolas"
+            ],
+            "hours": 4,
+            "action": {
+              "type": "travel",
+              "sector": "san_nicolas",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "cell-14-21",
+              "cell-15-21",
+              "cell-16-21",
+              "cell-16-22",
+              "cell-17-22",
+              "cell-17-23",
+              "cell-18-23",
+              "cell-19-23",
+              "cell-19-24",
+              "cell-20-24",
+              "cell-20-25",
+              "cell-21-25",
+              "cell-22-25",
+              "san_nicolas"
+            ],
+            "hours": 25,
+            "action": {
+              "type": "travel",
+              "sector": "san_nicolas",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        },
+        {
+          "destination": "mendoza",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "mendoza"
+            ],
+            "hours": 4,
+            "action": {
+              "type": "travel",
+              "sector": "mendoza",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "cordoba",
+              "cell-13-20",
+              "cell-13-21",
+              "cell-12-21",
+              "cell-12-22",
+              "cell-11-22",
+              "cell-10-22",
+              "cell-10-23",
+              "cell-9-23",
+              "cell-8-23",
+              "cell-8-24",
+              "cell-7-24",
+              "cell-7-25",
+              "mendoza"
+            ],
+            "hours": 25,
+            "action": {
+              "type": "travel",
+              "sector": "mendoza",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "squad-41",
+      "location": "mendoza",
+      "members": [
+        126,
+        101,
+        100
+      ],
+      "routes": [
+        {
+          "destination": "buenos_aires",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "retiro",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "san_nicolas",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "cordoba",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "squad-44",
+      "location": "mendoza",
+      "members": [
+        2,
+        9,
+        11,
+        8
+      ],
+      "routes": [
+        {
+          "destination": "buenos_aires",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "retiro",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "san_nicolas",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "cordoba",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "squad-45",
+      "location": "mendoza",
+      "members": [
+        1,
+        112,
+        128,
+        105,
+        106,
+        123
+      ],
+      "routes": [
+        {
+          "destination": "buenos_aires",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "retiro",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "san_nicolas",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        },
+        {
+          "destination": "cordoba",
+          "posta": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          },
+          "march": {
+            "valid": false,
+            "reason": "Hay combatientes durmiendo o con otra asignación.",
+            "path": [],
+            "hours": 0,
+            "action": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "squad-46",
+      "location": "mendoza",
+      "members": [
+        145,
+        147
+      ],
+      "routes": [
+        {
+          "destination": "buenos_aires",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cordoba",
+              "buenos_aires"
+            ],
+            "hours": 8,
+            "action": {
+              "type": "travel",
+              "sector": "buenos_aires",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cell-7-25",
+              "cell-7-24",
+              "cell-8-24",
+              "cell-8-23",
+              "cell-9-23",
+              "cell-10-23",
+              "cell-10-22",
+              "cell-11-22",
+              "cell-12-22",
+              "cell-12-21",
+              "cell-13-21",
+              "cell-14-21",
+              "cell-15-21",
+              "cell-16-21",
+              "cell-16-22",
+              "cell-17-22",
+              "cell-17-23",
+              "cell-18-23",
+              "cell-19-23",
+              "cell-19-24",
+              "cell-20-24",
+              "cell-20-25",
+              "cell-21-25",
+              "cell-22-25",
+              "san_nicolas",
+              "cell-23-26",
+              "cell-23-27",
+              "cell-24-27",
+              "cell-24-28",
+              "buenos_aires"
+            ],
+            "hours": 58,
+            "action": {
+              "type": "travel",
+              "sector": "buenos_aires",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        },
+        {
+          "destination": "retiro",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cordoba",
+              "buenos_aires",
+              "retiro"
+            ],
+            "hours": 10,
+            "action": {
+              "type": "travel",
+              "sector": "retiro",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cell-7-25",
+              "cell-7-24",
+              "cell-8-24",
+              "cell-8-23",
+              "cell-9-23",
+              "cell-10-23",
+              "cell-10-22",
+              "cell-11-22",
+              "cell-12-22",
+              "cell-12-21",
+              "cell-13-21",
+              "cell-14-21",
+              "cell-15-21",
+              "cell-16-21",
+              "cell-16-22",
+              "cell-17-22",
+              "cell-17-23",
+              "cell-18-23",
+              "cell-19-23",
+              "cell-19-24",
+              "cell-20-24",
+              "cell-20-25",
+              "cell-21-25",
+              "cell-22-25",
+              "san_nicolas",
+              "cell-23-26",
+              "cell-23-27",
+              "cell-24-27",
+              "cell-24-28",
+              "buenos_aires",
+              "cell-26-28",
+              "retiro"
+            ],
+            "hours": 60,
+            "action": {
+              "type": "travel",
+              "sector": "retiro",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        },
+        {
+          "destination": "san_nicolas",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cordoba",
+              "san_nicolas"
+            ],
+            "hours": 8,
+            "action": {
+              "type": "travel",
+              "sector": "san_nicolas",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cell-7-25",
+              "cell-7-24",
+              "cell-8-24",
+              "cell-8-23",
+              "cell-9-23",
+              "cell-10-23",
+              "cell-10-22",
+              "cell-11-22",
+              "cell-12-22",
+              "cell-12-21",
+              "cell-13-21",
+              "cell-14-21",
+              "cell-15-21",
+              "cell-16-21",
+              "cell-16-22",
+              "cell-17-22",
+              "cell-17-23",
+              "cell-18-23",
+              "cell-19-23",
+              "cell-19-24",
+              "cell-20-24",
+              "cell-20-25",
+              "cell-21-25",
+              "cell-22-25",
+              "san_nicolas"
+            ],
+            "hours": 49,
+            "action": {
+              "type": "travel",
+              "sector": "san_nicolas",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        },
+        {
+          "destination": "cordoba",
+          "posta": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cordoba"
+            ],
+            "hours": 4,
+            "action": {
+              "type": "travel",
+              "sector": "cordoba",
+              "mode": "posta",
+              "queue": true
+            }
+          },
+          "march": {
+            "valid": true,
+            "reason": null,
+            "path": [
+              "mendoza",
+              "cell-7-25",
+              "cell-7-24",
+              "cell-8-24",
+              "cell-8-23",
+              "cell-9-23",
+              "cell-10-23",
+              "cell-10-22",
+              "cell-11-22",
+              "cell-12-22",
+              "cell-12-21",
+              "cell-13-21",
+              "cell-13-20",
+              "cordoba"
+            ],
+            "hours": 25,
+            "action": {
+              "type": "travel",
+              "sector": "cordoba",
+              "mode": "march",
+              "queue": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "living": [
+    {
+      "id": 120,
+      "name": "Mercedes Quiroga",
+      "location": "mendoza",
+      "hp": 81,
+      "maxHp": 81,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 76,
+      "medical": 48,
+      "marksmanship": 70,
+      "expiry": 3736910,
+      "hoursLeft": 17.501944444444444,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 135,
+        "heldGuarantee": 0,
+        "expiresAt": 1062,
+        "expiresSecond": 110,
+        "available": true,
+        "reason": null,
+        "topTier": true,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 135,
+        "daily": 135
+      }
+    },
+    {
+      "id": 112,
+      "name": "Gaspar Villalba",
+      "location": "mendoza",
+      "hp": 68,
+      "maxHp": 68,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 11,
+      "strength": 53,
+      "medical": 94,
+      "marksmanship": 42,
+      "squadId": "squad-45",
+      "expiry": 3719961,
+      "hoursLeft": 12.793888888888889,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 180,
+        "heldGuarantee": 0,
+        "expiresAt": 1057,
+        "expiresSecond": 1161,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 180,
+        "daily": 180
+      }
+    },
+    {
+      "id": 119,
+      "name": "Benjamín Duarte",
+      "location": "mendoza",
+      "hp": 80,
+      "maxHp": 80,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 85,
+      "medical": 15,
+      "marksmanship": 40,
+      "expiry": 3720014,
+      "hoursLeft": 12.80861111111111,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 36,
+        "heldGuarantee": 0,
+        "expiresAt": 1057,
+        "expiresSecond": 1214,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 36,
+        "daily": 36
+      }
+    },
+    {
+      "id": 104,
+      "name": "Patrick Doyle",
+      "location": "mendoza",
+      "hp": 74,
+      "maxHp": 74,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 84,
+      "medical": 35,
+      "marksmanship": 54,
+      "squadId": "squad-39",
+      "expiry": 3720014,
+      "hoursLeft": 12.80861111111111,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 68,
+        "heldGuarantee": 0,
+        "expiresAt": 1057,
+        "expiresSecond": 1214,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 68,
+        "daily": 68
+      }
+    },
+    {
+      "id": 140,
+      "name": "Matteo Ricci",
+      "location": "mendoza",
+      "hp": 69,
+      "maxHp": 69,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 60,
+      "medical": 19,
+      "marksmanship": 57,
+      "expiry": 3720014,
+      "hoursLeft": 12.80861111111111,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 116,
+        "heldGuarantee": 0,
+        "expiresAt": 1057,
+        "expiresSecond": 1214,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 116,
+        "daily": 116
+      }
+    },
+    {
+      "id": 124,
+      "name": "Thomas Ashford",
+      "location": "mendoza",
+      "hp": 87,
+      "maxHp": 87,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 85,
+      "medical": 26,
+      "marksmanship": 73,
+      "squadId": "squad-39",
+      "expiry": 3755139,
+      "hoursLeft": 22.565555555555555,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 172,
+        "heldGuarantee": 0,
+        "expiresAt": 1067,
+        "expiresSecond": 339,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 172,
+        "daily": 172
+      }
+    },
+    {
+      "id": 134,
+      "name": "Mariano Véliz",
+      "location": "mendoza",
+      "hp": 70,
+      "maxHp": 70,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 60,
+      "medical": 29,
+      "marksmanship": 68,
+      "expiry": 3755139,
+      "hoursLeft": 22.565555555555555,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 86,
+        "heldGuarantee": 0,
+        "expiresAt": 1067,
+        "expiresSecond": 339,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 86,
+        "daily": 86
+      }
+    },
+    {
+      "id": 9,
+      "name": "Facundo Quiroga",
+      "location": "mendoza",
+      "hp": 92,
+      "maxHp": 92,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 94,
+      "medical": 25,
+      "marksmanship": 55,
+      "squadId": "squad-44",
+      "expiry": null,
+      "hoursLeft": null,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 0,
+        "heldGuarantee": 0,
+        "expiresAt": null,
+        "expiresSecond": null,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": true,
+        "term": "day",
+        "hours": null,
+        "price": 0,
+        "daily": 0
+      }
+    },
+    {
+      "id": 11,
+      "name": "José María Paz",
+      "location": "mendoza",
+      "hp": 78,
+      "maxHp": 78,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 72,
+      "medical": 30,
+      "marksmanship": 91,
+      "squadId": "squad-44",
+      "expiry": null,
+      "hoursLeft": null,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 0,
+        "heldGuarantee": 0,
+        "expiresAt": null,
+        "expiresSecond": null,
+        "available": true,
+        "reason": null,
+        "topTier": true,
+        "permanent": true,
+        "term": "day",
+        "hours": null,
+        "price": 0,
+        "daily": 0
+      }
+    },
+    {
+      "id": 1,
+      "name": "Juana Azurduy",
+      "location": "mendoza",
+      "hp": 88,
+      "maxHp": 88,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 80,
+      "medical": 52,
+      "marksmanship": 77,
+      "squadId": "squad-45",
+      "expiry": null,
+      "hoursLeft": null,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 0,
+        "heldGuarantee": 0,
+        "expiresAt": null,
+        "expiresSecond": null,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": true,
+        "term": "day",
+        "hours": null,
+        "price": 0,
+        "daily": 0
+      }
+    },
+    {
+      "id": 126,
+      "name": "Teresa Godoy",
+      "location": "mendoza",
+      "hp": 65,
+      "maxHp": 65,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 55,
+      "medical": 32,
+      "marksmanship": 49,
+      "squadId": "squad-41",
+      "expiry": 3757055,
+      "hoursLeft": 23.09777777777778,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 47,
+        "heldGuarantee": 0,
+        "expiresAt": 1067,
+        "expiresSecond": 2255,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 47,
+        "daily": 47
+      }
+    },
+    {
+      "id": 101,
+      "name": "Tomasa Ríos",
+      "location": "mendoza",
+      "hp": 72,
+      "maxHp": 72,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 67,
+      "medical": 20,
+      "marksmanship": 48,
+      "squadId": "squad-41",
+      "expiry": 3757055,
+      "hoursLeft": 23.09777777777778,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 49,
+        "heldGuarantee": 0,
+        "expiresAt": 1067,
+        "expiresSecond": 2255,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 49,
+        "daily": 49
+      }
+    },
+    {
+      "id": 8,
+      "name": "Macacha Güemes",
+      "location": "mendoza",
+      "hp": 70,
+      "maxHp": 70,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 55,
+      "medical": 65,
+      "marksmanship": 65,
+      "squadId": "squad-44",
+      "expiry": null,
+      "hoursLeft": null,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 0,
+        "heldGuarantee": 0,
+        "expiresAt": null,
+        "expiresSecond": null,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": true,
+        "term": "day",
+        "hours": null,
+        "price": 0,
+        "daily": 0
+      }
+    },
+    {
+      "id": 100,
+      "name": "Rafael Sosa",
+      "location": "mendoza",
+      "hp": 70,
+      "maxHp": 70,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 78,
+      "medical": 20,
+      "marksmanship": 43,
+      "squadId": "squad-41",
+      "expiry": 3749066,
+      "hoursLeft": 20.878611111111113,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 36,
+        "heldGuarantee": 0,
+        "expiresAt": 1065,
+        "expiresSecond": 1466,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 36,
+        "daily": 36
+      }
+    },
+    {
+      "id": 2,
+      "name": "Fray Luis Beltrán",
+      "location": "mendoza",
+      "hp": 76,
+      "maxHp": 76,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 84,
+      "medical": 45,
+      "marksmanship": 50,
+      "squadId": "squad-44",
+      "expiry": null,
+      "hoursLeft": null,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 0,
+        "heldGuarantee": 0,
+        "expiresAt": null,
+        "expiresSecond": null,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": true,
+        "term": "day",
+        "hours": null,
+        "price": 0,
+        "daily": 0
+      }
+    },
+    {
+      "id": 7,
+      "name": "Lorenzo Barcala",
+      "location": "cordoba",
+      "hp": 85,
+      "maxHp": 85,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "active",
+      "medkits": 0,
+      "strength": 79,
+      "medical": 35,
+      "marksmanship": 84,
+      "squadId": "squad-40",
+      "expiry": null,
+      "hoursLeft": null,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 0,
+        "heldGuarantee": 0,
+        "expiresAt": null,
+        "expiresSecond": null,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": true,
+        "term": "day",
+        "hours": null,
+        "price": 0,
+        "daily": 0
+      }
+    },
+    {
+      "id": 123,
+      "name": "Santiago Soria",
+      "location": "mendoza",
+      "hp": 85,
+      "maxHp": 85,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "rest",
+      "medkits": 0,
+      "strength": 78,
+      "medical": 31,
+      "marksmanship": 88,
+      "squadId": "squad-45",
+      "expiry": 3699103,
+      "hoursLeft": 7,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 159,
+        "heldGuarantee": 0,
+        "expiresAt": 1051,
+        "expiresSecond": 1903,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 159,
+        "daily": 159
+      }
+    },
+    {
+      "id": 128,
+      "name": "William Blackwood",
+      "location": "mendoza",
+      "hp": 79,
+      "maxHp": 79,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "active",
+      "medkits": 0,
+      "strength": 69,
+      "medical": 22,
+      "marksmanship": 94,
+      "squadId": "squad-45",
+      "expiry": 3760303,
+      "hoursLeft": 24,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 8940,
+        "heldGuarantee": 0,
+        "expiresAt": 1068,
+        "expiresSecond": 1903,
+        "available": true,
+        "reason": null,
+        "topTier": true,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 8940,
+        "daily": 8940
+      }
+    },
+    {
+      "id": 105,
+      "name": "Lucien Arnaud",
+      "location": "mendoza",
+      "hp": 70,
+      "maxHp": 70,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "active",
+      "medkits": 0,
+      "strength": 65,
+      "medical": 20,
+      "marksmanship": 92,
+      "squadId": "squad-45",
+      "expiry": 3760303,
+      "hoursLeft": 24,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 9600,
+        "heldGuarantee": 0,
+        "expiresAt": 1068,
+        "expiresSecond": 1903,
+        "available": true,
+        "reason": null,
+        "topTier": true,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 9600,
+        "daily": 9600
+      }
+    },
+    {
+      "id": 106,
+      "name": "Manuel Leiva",
+      "location": "mendoza",
+      "hp": 70,
+      "maxHp": 70,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "active",
+      "medkits": 0,
+      "strength": 83,
+      "medical": 20,
+      "marksmanship": 90,
+      "squadId": "squad-45",
+      "expiry": 3760303,
+      "hoursLeft": 24,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 8280,
+        "heldGuarantee": 0,
+        "expiresAt": 1068,
+        "expiresSecond": 1903,
+        "available": true,
+        "reason": null,
+        "topTier": true,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 8280,
+        "daily": 8280
+      }
+    },
+    {
+      "id": 145,
+      "name": "Domingo Farías",
+      "location": "mendoza",
+      "hp": 88,
+      "maxHp": 88,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "active",
+      "medkits": 0,
+      "strength": 87,
+      "medical": 33,
+      "marksmanship": 87,
+      "squadId": "squad-46",
+      "expiry": 3760303,
+      "hoursLeft": 24,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 7380,
+        "heldGuarantee": 0,
+        "expiresAt": 1068,
+        "expiresSecond": 1903,
+        "available": true,
+        "reason": null,
+        "topTier": true,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 7380,
+        "daily": 7380
+      }
+    },
+    {
+      "id": 147,
+      "name": "Andrés Montiel",
+      "location": "mendoza",
+      "hp": 78,
+      "maxHp": 78,
+      "bleeding": 0,
+      "energy": 100,
+      "fatigue": 0,
+      "asleep": false,
+      "assignment": "active",
+      "medkits": 0,
+      "strength": 71,
+      "medical": 47,
+      "marksmanship": 83,
+      "squadId": "squad-46",
+      "expiry": 3760303,
+      "hoursLeft": 24,
+      "renewalQuote": {
+        "guarantee": 0,
+        "total": 6840,
+        "heldGuarantee": 0,
+        "expiresAt": 1068,
+        "expiresSecond": 1903,
+        "available": true,
+        "reason": null,
+        "topTier": true,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 6840,
+        "daily": 6840
+      }
+    }
+  ],
+  "nativeMerchantQuoteForFour": {
+    "cost": 40,
+    "reason": "",
+    "available": true
+  },
+  "globalPurchaseAdmission": "Always rejected at dispatchCampaign tradeOrders gate.",
+  "inputUnchanged": true,
+  "nativeActionsIssued": 0
+}

@@ -1,0 +1,1063 @@
+{
+  "scope": "Read-only decisions on six states from the exact recorded native101-order tape; no issued orders or new battle.",
+  "source": {
+    "tests/recovery-mendoza-driver.mjs": {
+      "nativeHash": "4b97ea48c699ed87718c644748798e4297b9de3ca72e5fa107917570571428a2",
+      "currentHash": "4b97ea48c699ed87718c644748798e4297b9de3ca72e5fa107917570571428a2"
+    },
+    "tests/mountain-battery-driver.mjs": {
+      "nativeHash": "ca3b9cf70cc7df4b43aadfaabb08867ceb3faf950581dec5204bc86a40c2bb4c",
+      "currentHash": "ca3b9cf70cc7df4b43aadfaabb08867ceb3faf950581dec5204bc86a40c2bb4c"
+    },
+    "tests/tucuman-driver.mjs": {
+      "nativeHash": "1daefc44f8e884d18a58f232d993de0f11d10866687b47a2d2ff579382e9d659",
+      "currentHash": "1daefc44f8e884d18a58f232d993de0f11d10866687b47a2d2ff579382e9d659"
+    },
+    "tests/northern-route.mjs": {
+      "nativeHash": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3",
+      "currentHash": "5e458a7c387ce880c44cbb59667a1d3532468b07900b831b475a81483b4b7bf3"
+    },
+    "tests/team-artillery-driver.mjs": {
+      "nativeHash": "b5802e8c42c961fc88a77885ee2eec9b4fa2f47ebe1d1c151ec87a98361c073d",
+      "currentHash": "b5802e8c42c961fc88a77885ee2eec9b4fa2f47ebe1d1c151ec87a98361c073d"
+    },
+    "game/tactical.js": {
+      "nativeHash": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "currentHash": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3"
+    }
+  },
+  "details": [
+    {
+      "orderIndex": 42,
+      "turn": 1,
+      "phase": "player",
+      "elapsedSeconds": 215,
+      "workingGun": true,
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "loaded": true,
+        "ammo": 1,
+        "point": [
+          34,
+          14
+        ]
+      },
+      "capable": [
+        "0",
+        "8",
+        "100",
+        "142",
+        "11",
+        "10"
+      ],
+      "actors": [
+        {
+          "id": "0",
+          "hp": 82,
+          "ap": 97,
+          "energy": 96,
+          "morale": 62,
+          "stance": "standing",
+          "point": [
+            34,
+            13
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [
+              "0",
+              "8"
+            ],
+            "reason": null
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 62,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "artilleryPivot",
+            "unitId": "0",
+            "artilleryId": "arsenal:cordoba:1",
+            "x": 36,
+            "y": 26
+          },
+          "normal": null,
+          "sameAsNormal": false
+        },
+        {
+          "id": "8",
+          "hp": 70,
+          "ap": 78,
+          "energy": 94,
+          "morale": 62,
+          "stance": "crouched",
+          "point": [
+            33,
+            15
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [
+              "8",
+              "0"
+            ],
+            "reason": null
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 64,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "artilleryPivot",
+            "unitId": "8",
+            "artilleryId": "arsenal:cordoba:1",
+            "x": 36,
+            "y": 26
+          },
+          "normal": {
+            "type": "stance",
+            "unitId": "8",
+            "stance": "prone"
+          },
+          "sameAsNormal": false
+        },
+        {
+          "id": "100",
+          "hp": 70,
+          "ap": 88,
+          "energy": 95.04,
+          "morale": 62,
+          "stance": "standing",
+          "point": [
+            32,
+            12
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 65,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "stance",
+            "unitId": "100",
+            "stance": "crouched"
+          },
+          "normal": {
+            "type": "stance",
+            "unitId": "100",
+            "stance": "crouched"
+          },
+          "sameAsNormal": true
+        },
+        {
+          "id": "142",
+          "hp": 79,
+          "ap": 96,
+          "energy": 95.93,
+          "morale": 62,
+          "stance": "standing",
+          "point": [
+            31,
+            1
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 63,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "11",
+          "hp": 78,
+          "ap": 97,
+          "energy": 96,
+          "morale": 15,
+          "stance": "standing",
+          "point": [
+            31,
+            0
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 58,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "10",
+          "hp": 72,
+          "ap": 93,
+          "energy": 95.06,
+          "morale": 0,
+          "stance": "standing",
+          "point": [
+            34,
+            11
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 59,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        }
+      ]
+    },
+    {
+      "orderIndex": 65,
+      "turn": 2,
+      "phase": "player",
+      "elapsedSeconds": 221,
+      "workingGun": true,
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "loaded": false,
+        "ammo": 1,
+        "point": [
+          34,
+          14
+        ]
+      },
+      "capable": [
+        "0",
+        "8",
+        "142",
+        "11",
+        "10"
+      ],
+      "actors": [
+        {
+          "id": "0",
+          "hp": 82,
+          "ap": 8,
+          "energy": 96,
+          "morale": 44,
+          "stance": "crouched",
+          "point": [
+            34,
+            13
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [
+              "0",
+              "8"
+            ],
+            "reason": null
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 62,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "artilleryReload",
+            "unitId": "0",
+            "artilleryId": "arsenal:cordoba:1"
+          },
+          "normal": {
+            "type": "artilleryReload",
+            "unitId": "0",
+            "artilleryId": "arsenal:cordoba:1"
+          },
+          "sameAsNormal": true
+        },
+        {
+          "id": "8",
+          "hp": 52,
+          "ap": 10,
+          "energy": 87,
+          "morale": 35.9,
+          "stance": "crouched",
+          "point": [
+            33,
+            15
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [
+              "8",
+              "0"
+            ],
+            "reason": null
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 64,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "move",
+            "unitId": "8",
+            "x": 33,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "normal": {
+            "type": "move",
+            "unitId": "8",
+            "x": 33,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "sameAsNormal": true
+        },
+        {
+          "id": "142",
+          "hp": 79,
+          "ap": 116,
+          "energy": 96,
+          "morale": 44,
+          "stance": "standing",
+          "point": [
+            31,
+            1
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 63,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "11",
+          "hp": 78,
+          "ap": 117,
+          "energy": 96,
+          "morale": 0,
+          "stance": "standing",
+          "point": [
+            31,
+            0
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 58,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "10",
+          "hp": 72,
+          "ap": 76,
+          "energy": 91,
+          "morale": 0,
+          "stance": "crouched",
+          "point": [
+            33,
+            13
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "8"
+          },
+          "gunPlan": {
+            "crew": [
+              "10",
+              "0"
+            ],
+            "reason": null
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 59,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "artilleryReload",
+            "unitId": "10",
+            "artilleryId": "arsenal:cordoba:1"
+          },
+          "normal": {
+            "type": "fire",
+            "unitId": "10",
+            "targetId": "enemy-10",
+            "aim": 4,
+            "hitLocation": "torso"
+          },
+          "sameAsNormal": false
+        }
+      ]
+    },
+    {
+      "orderIndex": 71,
+      "turn": 3,
+      "phase": "interrupt",
+      "elapsedSeconds": 227,
+      "workingGun": true,
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "loaded": false,
+        "ammo": 1,
+        "point": [
+          34,
+          14
+        ]
+      },
+      "capable": [
+        "0",
+        "142",
+        "11",
+        "10"
+      ],
+      "actors": [
+        {
+          "id": "0",
+          "hp": 82,
+          "ap": 97,
+          "energy": 96,
+          "morale": 26,
+          "stance": "crouched",
+          "point": [
+            34,
+            13
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": {
+            "crew": [
+              "0",
+              "10"
+            ],
+            "reason": null
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 62,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "artilleryReload",
+            "unitId": "0",
+            "artilleryId": "arsenal:cordoba:1"
+          },
+          "normal": {
+            "type": "reprime",
+            "unitId": "0"
+          },
+          "sameAsNormal": false
+        },
+        {
+          "id": "142",
+          "hp": 79,
+          "ap": 116,
+          "energy": 96,
+          "morale": 26,
+          "stance": "standing",
+          "point": [
+            31,
+            1
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 63,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "11",
+          "hp": 78,
+          "ap": 117,
+          "energy": 96,
+          "morale": 0,
+          "stance": "standing",
+          "point": [
+            31,
+            0
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": {
+            "crew": [],
+            "reason": "La pieza necesita 2 artilleros de pie o agachados, próximos y disponibles con 0 PA cada uno."
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 58,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "10",
+          "hp": 72,
+          "ap": 105,
+          "energy": 96,
+          "morale": 0,
+          "stance": "crouched",
+          "point": [
+            33,
+            13
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": {
+            "crew": [
+              "10",
+              "0"
+            ],
+            "reason": null
+          },
+          "costs": {
+            "crew": 2,
+            "fire": 30,
+            "reload": 59,
+            "move": 20,
+            "pivot": 10
+          },
+          "recovery": {
+            "type": "artilleryReload",
+            "unitId": "10",
+            "artilleryId": "arsenal:cordoba:1"
+          },
+          "normal": {
+            "type": "reload",
+            "unitId": "10"
+          },
+          "sameAsNormal": false
+        }
+      ]
+    },
+    {
+      "orderIndex": 74,
+      "turn": 3,
+      "phase": "interrupt",
+      "elapsedSeconds": 227,
+      "workingGun": false,
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "loaded": false,
+        "ammo": 0,
+        "point": [
+          34,
+          14
+        ]
+      },
+      "capable": [
+        "0",
+        "142",
+        "11",
+        "10"
+      ],
+      "actors": [
+        {
+          "id": "0",
+          "hp": 82,
+          "ap": 41,
+          "energy": 96,
+          "morale": 26,
+          "stance": "crouched",
+          "point": [
+            34,
+            13
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": {
+            "type": "reprime",
+            "unitId": "0"
+          },
+          "normal": {
+            "type": "reprime",
+            "unitId": "0"
+          },
+          "sameAsNormal": true
+        },
+        {
+          "id": "142",
+          "hp": 79,
+          "ap": 116,
+          "energy": 96,
+          "morale": 26,
+          "stance": "standing",
+          "point": [
+            31,
+            1
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "11",
+          "hp": 78,
+          "ap": 117,
+          "energy": 96,
+          "morale": 0,
+          "stance": "standing",
+          "point": [
+            31,
+            0
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        },
+        {
+          "id": "10",
+          "hp": 72,
+          "ap": 49,
+          "energy": 96,
+          "morale": 0,
+          "stance": "crouched",
+          "point": [
+            33,
+            13
+          ],
+          "crew": {
+            "leaderId": "0",
+            "helperId": "10"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": {
+            "type": "reload",
+            "unitId": "10"
+          },
+          "normal": {
+            "type": "reload",
+            "unitId": "10"
+          },
+          "sameAsNormal": true
+        }
+      ]
+    },
+    {
+      "orderIndex": 80,
+      "turn": 3,
+      "phase": "player",
+      "elapsedSeconds": 227,
+      "workingGun": false,
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "loaded": false,
+        "ammo": 0,
+        "point": [
+          34,
+          14
+        ]
+      },
+      "capable": [
+        "142",
+        "11"
+      ],
+      "actors": [
+        {
+          "id": "142",
+          "hp": 79,
+          "ap": 116,
+          "energy": 96,
+          "morale": 0,
+          "stance": "standing",
+          "point": [
+            31,
+            1
+          ],
+          "crew": {
+            "leaderId": "11",
+            "helperId": "142"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": {
+            "type": "move",
+            "unitId": "142",
+            "x": 33,
+            "y": 4,
+            "tacticalLevel": 0
+          },
+          "normal": {
+            "type": "move",
+            "unitId": "142",
+            "x": 33,
+            "y": 4,
+            "tacticalLevel": 0
+          },
+          "sameAsNormal": true
+        },
+        {
+          "id": "11",
+          "hp": 78,
+          "ap": 117,
+          "energy": 96,
+          "morale": 0,
+          "stance": "standing",
+          "point": [
+            31,
+            0
+          ],
+          "crew": {
+            "leaderId": "11",
+            "helperId": "142"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": {
+            "type": "move",
+            "unitId": "11",
+            "x": 34,
+            "y": 3,
+            "tacticalLevel": 0
+          },
+          "normal": {
+            "type": "move",
+            "unitId": "11",
+            "x": 34,
+            "y": 3,
+            "tacticalLevel": 0
+          },
+          "sameAsNormal": true
+        }
+      ]
+    },
+    {
+      "orderIndex": 84,
+      "turn": 4,
+      "phase": "interrupt",
+      "elapsedSeconds": 233,
+      "workingGun": false,
+      "gun": {
+        "id": "arsenal:cordoba:1",
+        "loaded": false,
+        "ammo": 0,
+        "point": [
+          34,
+          14
+        ]
+      },
+      "capable": [
+        "142",
+        "11"
+      ],
+      "actors": [
+        {
+          "id": "142",
+          "hp": 79,
+          "ap": 116,
+          "energy": 96,
+          "morale": 0,
+          "stance": "crouched",
+          "point": [
+            33,
+            4
+          ],
+          "crew": {
+            "leaderId": "11",
+            "helperId": "142"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": {
+            "type": "reload",
+            "unitId": "142"
+          },
+          "normal": {
+            "type": "reload",
+            "unitId": "142"
+          },
+          "sameAsNormal": true
+        },
+        {
+          "id": "11",
+          "hp": 78,
+          "ap": 117,
+          "energy": 96,
+          "morale": 0,
+          "stance": "standing",
+          "point": [
+            31,
+            0
+          ],
+          "crew": {
+            "leaderId": "11",
+            "helperId": "142"
+          },
+          "gunPlan": null,
+          "costs": null,
+          "recovery": null,
+          "normal": null,
+          "sameAsNormal": true
+        }
+      ]
+    }
+  ],
+  "lastShotOrderIndex": 74,
+  "postShotOrders": [
+    {
+      "type": "reload",
+      "unitId": "10"
+    },
+    {
+      "type": "reprime",
+      "unitId": "0"
+    },
+    {
+      "type": "fire",
+      "unitId": "10",
+      "targetId": "enemy-10",
+      "aim": 4,
+      "hitLocation": "torso"
+    },
+    {
+      "type": "stance",
+      "unitId": "0",
+      "stance": "standing"
+    },
+    {
+      "type": "stance",
+      "unitId": "10",
+      "stance": "standing"
+    },
+    {
+      "type": "endTurn"
+    },
+    {
+      "type": "move",
+      "unitId": "142",
+      "x": 33,
+      "y": 4,
+      "tacticalLevel": 0
+    },
+    {
+      "type": "stance",
+      "unitId": "142",
+      "stance": "crouched"
+    },
+    {
+      "type": "fire",
+      "unitId": "142",
+      "targetId": "enemy-8",
+      "aim": 3,
+      "hitLocation": "torso"
+    },
+    {
+      "type": "endTurn"
+    },
+    {
+      "type": "reload",
+      "unitId": "142"
+    },
+    {
+      "type": "fire",
+      "unitId": "142",
+      "targetId": "enemy-6",
+      "aim": 4,
+      "hitLocation": "torso"
+    },
+    {
+      "type": "endTurn"
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 31,
+      "y": 1,
+      "tacticalLevel": 0
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 32,
+      "y": 1,
+      "tacticalLevel": 0
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 33,
+      "y": 1,
+      "tacticalLevel": 0
+    },
+    {
+      "type": "fire",
+      "unitId": "11",
+      "targetId": "enemy-8",
+      "aim": 2,
+      "hitLocation": "torso"
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 33,
+      "y": 2,
+      "tacticalLevel": 0
+    },
+    {
+      "type": "endTurn"
+    },
+    {
+      "type": "endTurn"
+    },
+    {
+      "type": "reload",
+      "unitId": "11"
+    },
+    {
+      "type": "stance",
+      "unitId": "11",
+      "stance": "prone"
+    },
+    {
+      "type": "move",
+      "unitId": "11",
+      "x": 33,
+      "y": 3,
+      "tacticalLevel": 0
+    },
+    {
+      "type": "fire",
+      "unitId": "11",
+      "targetId": "enemy-6",
+      "aim": 0,
+      "hitLocation": "torso"
+    },
+    {
+      "type": "endTurn"
+    },
+    {
+      "type": "endTurn"
+    }
+  ],
+  "postShotArtilleryOrders": 0,
+  "emptyGunSuppressesNormalInfantry": false,
+  "stateUnchanged": true
+}

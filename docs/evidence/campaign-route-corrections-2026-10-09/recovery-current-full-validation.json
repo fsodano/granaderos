@@ -1,0 +1,350 @@
+{
+  "scope": "One complete original recovery test on frozen imported sources; subsequent native later route remains untested after its first real failed assertion.",
+  "startCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "startBuildIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "267963e2ada7",
+    "source": "267963e2ada762db3f7feb5cf4468c301dd377a0842ab2bdcd3ab5a2939e5dec",
+    "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+  },
+  "baseBuildIdentity": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+  "gameCodeUnchanged": true,
+  "node": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "nodeVersion": "v25.9.0",
+  "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --import /tmp/granaderos-recovery-current-full-audit/preload.mjs --test --test-reporter=spec tests/fresh-campaign-recovery.test.mjs",
+  "observationalPreload": {
+    "path": "/tmp/granaderos-recovery-current-full-audit/preload.mjs",
+    "sha256": "787de4b1145f93a02c4f30414fda39f06d14b1a193f94c6ac1ddc8f8d2612c29",
+    "purpose": "Records source hashes, native battle data and helper report checkpoints only; preserves original orders, state and assertions."
+  },
+  "terminal": {
+    "exitCode": 1,
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "skipped": 0,
+    "durationMs": 968399.051875,
+    "log": "/tmp/granaderos-recovery-current-full-audit/run.log",
+    "logSha256": "59a186fb77aee4d027086f91cfa008da9cc7aa45a8a3338146aff9547fe0850d",
+    "assertion": {
+      "file": "tests/fresh-cuyo-route.mjs",
+      "line": 126,
+      "callerFile": "tests/fresh-campaign-recovery.test.mjs",
+      "callerLine": 164,
+      "message": "keep five actual soldiers and a slot for the paid marksman",
+      "actual": 4,
+      "expected": 5
+    }
+  },
+  "runtime": {
+    "manifest": "/tmp/granaderos-recovery-current-full-audit/runtime-hashes.jsonl",
+    "sha256": "fe5155527bace00553aff42b4c01fe8a3e61414b7397fb5094cac18f4be5f4c1",
+    "uniqueRepositoryImports": 331,
+    "sourceDrift": [],
+    "createdFixtureImported": false
+  },
+  "oldFailureInput": {
+    "currentOfficialSave": "/tmp/granaderos-recovery-current-full-audit/002-reuniteFreshNorthernSquadInput.save.json",
+    "currentSaveSha256": "ded9efc24ec99e1b984b5c4161405596c66c8237c0418ba101a8187025ec5ac4",
+    "priorOfficialSave": "/tmp/granaderos-reunite-exact-input.save.json",
+    "priorSaveSha256": "39c22ddc5236034221025a0f263936b5a63e0d1a3b4ffe96b7d0ba3fc4fc0978",
+    "decodedCampaignDeepEqual": true,
+    "clock": [
+      306,
+      2959
+    ],
+    "location": "buenos_aires",
+    "squad": [
+      121,
+      112,
+      1000,
+      10,
+      4
+    ],
+    "treasury": 90524,
+    "cordobaOwner": "royalist"
+  },
+  "nativeResults": [
+    {
+      "path": "/tmp/granaderos-recovery-current-full-audit/native-001-san_nicolas.json",
+      "sha256": "97c5b7b04a3ec7f54ea89452e77b4a82fb3b5b9ddf475ea7711ce07d81964c34",
+      "sector": "san_nicolas",
+      "status": "victory",
+      "turns": 7,
+      "actions": 291,
+      "elapsedSeconds": 234,
+      "startSeconds": 281675,
+      "nativeDeaths": [
+        "131"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-recovery-current-full-audit/native-002-san_lorenzo.json",
+      "sha256": "e0bebb1fd06bc3ea48c0d5bef1f00e48c2b46a185ed586a72fe830b5e68f448a",
+      "sector": "san_lorenzo",
+      "status": "victory",
+      "turns": 6,
+      "actions": 152,
+      "elapsedSeconds": 36,
+      "startSeconds": 289333,
+      "nativeDeaths": [
+        "120",
+        "111",
+        "140",
+        "124"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-recovery-current-full-audit/native-003-cordoba.json",
+      "sha256": "722afe2a51b443b0263ced2794579d95eb9845aacd37a01227afda2d48f0c3b3",
+      "sector": "cordoba",
+      "status": "victory",
+      "turns": 7,
+      "actions": 184,
+      "elapsedSeconds": 202,
+      "startSeconds": 476578,
+      "nativeDeaths": [
+        "116",
+        "122",
+        "126",
+        "129"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-recovery-current-full-audit/native-004-cordoba.json",
+      "sha256": "1f6cca4d72a253939e895c36b1dd1a675986a68162d8ce1a0de2107b91d3fd9d",
+      "sector": "cordoba",
+      "status": "victory",
+      "turns": 38,
+      "actions": 2257,
+      "elapsedSeconds": 29292,
+      "startSeconds": 541953,
+      "nativeDeaths": [
+        "117",
+        "133",
+        "144",
+        "146",
+        "136",
+        "134",
+        "101",
+        "108",
+        "116",
+        "122",
+        "126",
+        "129"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-recovery-current-full-audit/native-005-tucuman.json",
+      "sha256": "86b2b7daf8a8be9c317bf1874485cc953880d41eca587c49b9c63bde67b3201b",
+      "sector": "tucuman",
+      "status": "victory",
+      "turns": 6,
+      "actions": 210,
+      "elapsedSeconds": 103,
+      "startSeconds": 819780,
+      "nativeDeaths": [
+        "127"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-recovery-current-full-audit/native-006-tucuman.json",
+      "sha256": "12c8014a4d31417cb82e8f8a4e0cb16bebd64206139fb9d5c11525e4d27b8370",
+      "sector": "tucuman",
+      "status": "victory",
+      "turns": 50,
+      "actions": 420,
+      "elapsedSeconds": 9779,
+      "startSeconds": 1039910,
+      "nativeDeaths": [
+        "115",
+        "107",
+        "113",
+        "141",
+        "104",
+        "125",
+        "139",
+        "127"
+      ]
+    },
+    {
+      "path": "/tmp/granaderos-recovery-current-full-audit/native-007-salta.json",
+      "sha256": "1d0ac016451d1002a05617a6144f06eb87ed686e2a715c180e87c89037131064",
+      "sector": "salta",
+      "status": "victory",
+      "turns": 13,
+      "actions": 197,
+      "elapsedSeconds": 1126,
+      "startSeconds": 1388229,
+      "nativeDeaths": [
+        "121",
+        "1000",
+        "4",
+        "9",
+        "1"
+      ]
+    }
+  ],
+  "checkpoints": [
+    {
+      "event": "recoverFreshNorthernDoctorInput",
+      "hour": 227,
+      "second": 2683,
+      "location": "tucuman",
+      "squad": [
+        139
+      ],
+      "cordobaOwner": "patriot",
+      "save": "/tmp/granaderos-recovery-current-full-audit/001-recoverFreshNorthernDoctorInput.save.json",
+      "sha256": "162d550b69f62486f707f608b4e2b30e4f2e620fed8eb23bb986a435101206e3"
+    },
+    {
+      "event": "reuniteFreshNorthernSquadInput",
+      "hour": 306,
+      "second": 2959,
+      "location": "buenos_aires",
+      "squad": [
+        121,
+        112,
+        1000,
+        10,
+        4
+      ],
+      "cordobaOwner": "royalist",
+      "save": "/tmp/granaderos-recovery-current-full-audit/002-reuniteFreshNorthernSquadInput.save.json",
+      "sha256": "ded9efc24ec99e1b984b5c4161405596c66c8237c0418ba101a8187025ec5ac4"
+    },
+    {
+      "event": "northernReturnRested",
+      "hour": 316,
+      "second": 2959,
+      "location": "buenos_aires",
+      "squad": [
+        10,
+        4,
+        121,
+        112,
+        1000
+      ],
+      "cordobaOwner": "royalist",
+      "save": "/tmp/granaderos-recovery-current-full-audit/003-northernReturnRested.save.json",
+      "sha256": "a643052dbc7cf8336f0be02d095df083083c827b30e25b045a2d05427da990a0"
+    },
+    {
+      "event": "northernReturnRecaptureReady",
+      "hour": 348,
+      "second": 2965,
+      "location": "cordoba",
+      "squad": [
+        123,
+        119,
+        103
+      ],
+      "cordobaOwner": "royalist",
+      "save": "/tmp/granaderos-recovery-current-full-audit/004-northernReturnRecaptureReady.save.json",
+      "sha256": "3b347fe80f3b29fb6005f265a4fdf4f1287d55972609de31f24814dcf1f4687b"
+    },
+    {
+      "event": "northernReturnRecaptured",
+      "hour": 353,
+      "second": 1426,
+      "location": "cordoba",
+      "squad": [
+        10,
+        4,
+        121,
+        1000
+      ],
+      "cordobaOwner": "patriot",
+      "save": "/tmp/granaderos-recovery-current-full-audit/005-northernReturnRecaptured.save.json",
+      "sha256": "a77bf10776e4997b33e48c4733aa30b5c8df7a74475451ce24f86a8cc3190e9d"
+    },
+    {
+      "event": "northernRoadRecovered",
+      "hour": 363,
+      "second": 1637,
+      "location": "cordoba",
+      "squad": [
+        10,
+        4,
+        121,
+        1000,
+        9,
+        11
+      ],
+      "cordobaOwner": "patriot",
+      "save": "/tmp/granaderos-recovery-current-full-audit/006-northernRoadRecovered.save.json",
+      "sha256": "714190106d675a34ddfb387d1675c9add00362345ba75ed0d586e96dd85127df"
+    },
+    {
+      "event": "northernReturnReunited",
+      "hour": 381,
+      "second": 1840,
+      "location": "tucuman",
+      "squad": [
+        9,
+        11,
+        10,
+        4,
+        121,
+        1
+      ],
+      "cordobaOwner": "patriot",
+      "save": "/tmp/granaderos-recovery-current-full-audit/007-northernReturnReunited.save.json",
+      "sha256": "1db31dc844ca1a8371511743f9b052639d74dfd5a279962acf4ddc7231c23f8b"
+    },
+    {
+      "event": "finishFreshNorthernCampaignInput",
+      "hour": 385,
+      "second": 3355,
+      "location": "salta",
+      "squad": [
+        10,
+        11
+      ],
+      "cordobaOwner": "patriot",
+      "save": "/tmp/granaderos-recovery-current-full-audit/008-finishFreshNorthernCampaignInput.save.json",
+      "sha256": "8d23c38525ec358a19beaa7c348da1e7f325797232b8c13ed1fd29a710757983"
+    }
+  ],
+  "reunionEndpoint": {
+    "clock": [
+      381,
+      1840
+    ],
+    "location": "tucuman",
+    "squad": [
+      9,
+      11,
+      10,
+      4,
+      121,
+      1
+    ],
+    "treasury": 113052,
+    "deadCount": 32,
+    "futureGroup4": {
+      "id": "enemy-group-4",
+      "status": "marching",
+      "target": "tucuman",
+      "route": [
+        "humahuaca",
+        "jujuy",
+        "salta",
+        "tucuman"
+      ],
+      "launchedAt": 360,
+      "nextArrivalAt": 384,
+      "arrivalAt": 408,
+      "initialStrength": 13,
+      "unitCount": 13,
+      "reserveRounds": 65,
+      "loadedRounds": 13
+    }
+  },
+  "limits": [
+    "The complete original case passed the corrected old failure path, accepted native Salta victory and the original Yatasto assertions. It did not pass the later Cuyo minimum-cohort assertion.",
+    "No full campaign or full suite pass is claimed.",
+    "No source edit, restart, alternate controller, extra combat attempt, owner grant, seed change or casualty patch was made during this run."
+  ]
+}

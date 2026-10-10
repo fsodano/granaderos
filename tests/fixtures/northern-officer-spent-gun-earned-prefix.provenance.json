@@ -1,0 +1,73 @@
+{
+  "scope": "Genuine fixed exact334-order prefix from full942 retained447-order Salta tape. No alternative order, controller-generated prefix, deploy or state grant. Raw tactical state and official clock-synced pair are separate.",
+  "sourceInputSha256": "30b6c7539b81f2643fb331160b48e9af669136f308536eb03c3489d8038dd12c",
+  "sourceResultSha256": "d9a459cd43997729eaf24caab61b0012cf1e545b23b90efc1778ea0652386f33",
+  "derivedInitialSha256": "2e9edcaafd452b1eb0db9d084d5f3d0f77cc96862bd74edca5bfea6f8ae41237",
+  "canonicalPrefixOrders": 334,
+  "nextOriginalZeroBasedOrder": 334,
+  "rawBattleSha256": "5080c6947017305414a96d7652098d344275f7778370cf2d08bc17e992ea1d5c",
+  "officialSaveRawSha256": "7ec9f30b3294d4bbc398f68b8e05b0b821b9562c4adc7d82dc8fae4e72e6a94f",
+  "officialSaveGzipSha256": "d3f3965d99835f6b39b3a0ccf80dbc11bd17aba4ba765ada91a37c55e2022aea",
+  "sourceSnapshot": "full942 before-source-hashes.json; exact imported identities are in the portable bounded evidence archive",
+  "baselineHelperSha256": "e08a19be02293dffe9fbd7f6664e21333dd0538b694bdc4f8d3cf06b7ccfb535",
+  "candidateHelperSha256": "1a7d2e2ebf82a7bd8d2a41e119d04b40e1f560eb101a0c5906c0f668efd5d424",
+  "fullTerminalReplayUnproved": true,
+  "initialIndependentlyPreCaptured": false,
+  "fixture": "northern-officer-spent-gun-earned-prefix.save.json.gz",
+  "fixtureGzipSha256": "d3f3965d99835f6b39b3a0ccf80dbc11bd17aba4ba765ada91a37c55e2022aea",
+  "fixtureGzipBytes": 148696,
+  "canonicalPrefixTape": "northern-officer-spent-gun-canonical-prefix.orders.json.gz",
+  "canonicalPrefixTapeGzipSha256": "5610b3341fedd6238871931f6ae0f4e893cf4d4d96705c0b415323e4804e630e",
+  "canonicalPrefixTapeRawSha256": "6b0296147009d97271c0cf05a92bb08bba5b20746757ef651de5aec7fe087d6a",
+  "canonicalPrefixTapeOrders": 334,
+  "earnedInput": "The full942 three created routes retained the same Salta423:2753 prepared campaign and447-order retreat tape. This fixture is derived once by native enterSector(request,undefined,{placement:false}) and exact orders0..333, then native syncBattleTime plus encodeSave/decodeSave. No deploy, controller-generated prefix, state grant, new battle or seed selection.",
+  "rawVersusOfficialScope": "The completed bounded run compared pure selectors on the raw tactical checkpoint and accepted the specific proposed native move on the official synced pair. This proposed persistent test uses the official pair for both controls and has not yet been executed. It must not treat raw and synced campaign clocks as identical.",
+  "fixedActor": "11",
+  "fixedGun": "arsenal:cordoba:2",
+  "expectedBefore": {
+    "position": [
+      42,
+      40,
+      0
+    ],
+    "stance": "standing",
+    "hp": 78,
+    "ap": 66,
+    "energy": 96,
+    "firearmLoaded": 1,
+    "firearmReserve": 7,
+    "gunLoaded": false,
+    "gunReserve": 0,
+    "elapsedSeconds": 153,
+    "phase": "interrupt",
+    "turn": 11
+  },
+  "nativeMoveWitness": {
+    "action": {
+      "type": "move",
+      "unitId": "11",
+      "x": 41,
+      "y": 36,
+      "tacticalLevel": 0
+    },
+    "positionAfter": [
+      41,
+      36,
+      0
+    ],
+    "apAfter": 30,
+    "energyAfter": 91,
+    "hpAfter": 78,
+    "stanceAfter": "standing",
+    "elapsedSecondsAfter": 153,
+    "gunAndFirearmChargesUnchanged": true,
+    "nativeLastError": null
+  },
+  "priorLossRetained": true,
+  "completeBattleVictoryUnproved": true,
+  "proposedSourceGuardSha256": "1a7d2e2ebf82a7bd8d2a41e119d04b40e1f560eb101a0c5906c0f668efd5d424",
+  "completedBoundedReceiptSha256": "cad0cf62afe0ae937192f002bc0779538d35d00921aebfaa3a078451c5598401",
+  "completedRuntimeClosureSha256": "4de33aa2510400650da2f34d51fcc233f2aa8abe5e1f52f587345bc166f24d06",
+  "portableEvidenceReceiptSha256": "0e4ad637767743bcab5cecc13e113df384a25b65d5728f47c7b69b642ad573df",
+  "completePrefixReplayInPersistentTests": false
+}

@@ -1,0 +1,38 @@
+(node:54801) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/tmp/granaderos-recovery-original-helper-control.mjs", pathToFileURL("./")); register("/tmp/granaderos-recovery-original-helper-control.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ the earned lost-Córdoba return uses finite joined recapture, recorded saved replay, casualty care and physical cannon custody (1529.470292ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1895.576791
+
+✖ failing tests:
+
+test at tests/fresh-northern-recovery-recapture.test.mjs:12:1
+✖ the earned lost-Córdoba return uses finite joined recapture, recorded saved replay, casualty care and physical cannon custody (1529.470292ms)
+  AssertionError [ERR_ASSERTION]: {"type":"travel","sector":"cordoba"}Cada escala debe ser una celda terrestre accesible.
+  + actual - expected
+  
+  + 'Cada escala debe ser una celda terrestre accesible.'
+  - null
+  
+      at order (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-recovery.mjs:206:34)
+      at reuniteFreshNorthernSquad (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-recovery.mjs:221:2)
+      at TestContext.<anonymous> (file:///Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-northern-recovery-recapture.test.mjs:21:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Cada escala debe ser una celda terrestre accesible.',
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

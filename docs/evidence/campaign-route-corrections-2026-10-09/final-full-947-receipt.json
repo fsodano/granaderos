@@ -1,0 +1,134 @@
+{
+  "started": "2026-10-10T05:39:01.356Z",
+  "finished": "2026-10-10T06:00:33.962Z",
+  "exitCode": 1,
+  "signal": null,
+  "identity": {
+    "version": "0.4.0-dev.1",
+    "id": "683a2829961b",
+    "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+    "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+  },
+  "sourceFiles": 14064,
+  "sourceDrift": [],
+  "reportFresh": true,
+  "previousReportSha256": "17230c5b16d1ea3d18ccc2fa073052b12efffc04c05ed483b0ed3a94799c7ebf",
+  "reportSha256": "045186a5c2ac2bdbc5d2c9b48ba8c88c5f7d28130cd09bc08d1afb426522f7e3",
+  "selectionComplete": true,
+  "complete": true,
+  "selectedFiles": 947,
+  "totalFiles": 947,
+  "excludedFiles": [],
+  "concurrency": 8,
+  "nativeFailureDirectories": [
+    "8571-1-defense-enemy-group-1-150-B92vop",
+    "9491-1-cordoba-84-18026106-SxjKOH",
+    "95799-1-los_patos-654-4162937008-hOCowN"
+  ],
+  "summary": {
+    "counts": {
+      "tests": 7024,
+      "failed": 7,
+      "passed": 7012,
+      "cancelled": 0,
+      "skipped": 5,
+      "todo": 0,
+      "topLevel": 6873,
+      "suites": 0
+    },
+    "duration_ms": 1288134.037875,
+    "success": false
+  },
+  "failedFiles": [
+    {
+      "file": "tests/fresh-ending-route.test.mjs",
+      "duration_ms": 600068.086625,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-historical-loss.test.mjs",
+      "duration_ms": 496287.046084,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-cuyo-route.test.mjs",
+      "duration_ms": 491116.493042,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-campaign-recovery.test.mjs",
+      "duration_ms": 462922.267541,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      },
+      "success": false
+    },
+    {
+      "file": "tests/fresh-coastal-route.test.mjs",
+      "duration_ms": 166864.593083,
+      "success": false,
+      "counts": {
+        "tests": 5,
+        "failed": 1,
+        "passed": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 4,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/opening-playthrough.test.mjs",
+      "duration_ms": 71225.761542,
+      "success": false,
+      "counts": {
+        "tests": 8,
+        "failed": 2,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 5,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    }
+  ]
+}

@@ -1,12 +1,18 @@
 import {bankRouteIncome} from './route-income-banking.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
+import {supplyKnownRouteDressings} from './route-known-medical-courier.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import assert from 'node:assert/strict';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
+import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
+import {applyItemQuantity,handRecord} from '../game/tactical-inventory.js';
+import {planEquipLoot} from '../game/tactical.js';
 import {contractQuote} from '../game/contracts.js';
 import {createFreshRouteOrders} from './fresh-cuyo-route.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
@@ -17,6 +23,49 @@ import {BLADES} from '../game/tactical.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 
 const capableMountainActor=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.asleep&&!r.unconscious&&!r.routed&&!r.surrendered&&r.energy>10;};
+
+// A spent rifle cannot use surviving musket cartridges. Keep its actual gun
+// and rounds in the owner's pockets, and equip a known finite long gun only
+// when that gun's compatible local stock meets the same readiness target.
+export function supplyFreshMountainAmmunition(start,ids,{target=12,report=()=>{}}={}){
+ assert.ok(Number.isSafeInteger(target)&&target>=0&&target<=1_000_000,'Use a finite integer ammunition target.');
+ let c=structuredClone(start);
+ const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,c.lastError);report({event:'mountainArmamentOrder',action,hour:c.hour,secondOfHour:c.secondOfHour??0});};
+ for(const id of ids){
+  const model=()=>sectorInventoryModel(c,c.location,rosterFor(c),id);
+  const carried=()=>carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]);
+  const knownRounds=family=>family?(c.ammunitionStores[c.location]?.[family]??0)+model().entries.filter(row=>row.reachable&&JSON.parse(row.expected).kind==='ammunition'&&JSON.parse(row.expected).ammoType===AMMUNITION_FAMILIES[family].type).reduce((sum,row)=>sum+row.count,0):0;
+  const stocked=unit=>{const family=ammoTypeFor({...unit,activeSlot:'primary'});return family&&unit.loaded+ammoCount(unit,family)+knownRounds(family)>=target;};
+  const unit=carried();
+  if(ammoTypeFor(unit)&&!unit.weaponDropped&&!stocked(unit)){
+   const before=model(),keys=new Set(Object.keys(before.personal.inventory??{}));
+   const usable=stack=>[1800,1801,1803].includes(stack.weapon)&&stack.condition>0;
+   let choice=before.carried.filter(row=>row.inventoryKey&&row.expected&&usable(JSON.parse(row.expected))&&row.equip?.some(option=>option.slot==='primary'&&option.valid)).map(row=>({row,planned:planEquipLoot(before.personal,row.inventoryKey,'primary')})).find(candidate=>stocked(candidate.planned));
+   if(!choice)for(const row of before.entries.filter(row=>row.reachable&&usable(JSON.parse(row.expected)))){
+    try{
+     const packed=applyItemQuantity(before.personal,{...JSON.parse(row.expected),count:1}),inventoryKey=Object.keys(packed.inventory).find(key=>!keys.has(key));
+     if(!inventoryKey)continue;
+     const planned=planEquipLoot(packed,inventoryKey,'primary');
+     if(stocked(planned)){choice={source:row,inventoryKey,planned};break;}
+    }catch{continue;}
+   }
+   if(choice){
+    const oldGun=handRecord(before.personal,'primary');
+    if(choice.source)order({type:'sectorInventory',sector:c.location,operativeId:id,direction:'take',sourceKey:choice.source.key,expected:choice.source.expected,count:1});
+    const gun=choice.row??model().carried.find(row=>row.inventoryKey===choice.inventoryKey);
+    assert.ok(gun?.equip.some(option=>option.slot==='primary'&&option.valid),'the actual finite replacement must remain admitted');
+    order({type:'sectorInventory',sector:c.location,operativeId:id,direction:'equip',inventoryKey:gun.inventoryKey,expected:gun.expected,slot:'primary'});
+    assert.deepEqual(handRecord(model().personal,'primary'),handRecord(choice.planned,'primary'),'replacement keeps the actual finite firearm metadata');
+    assert.ok(Object.values(c.operativeState[id].inventory).some(item=>Object.entries(oldGun).every(([key,value])=>JSON.stringify(item[key])===JSON.stringify(value))),'the previous firearm and its load remain carried');
+    report({event:'mountainFiniteArmament',operativeId:id,oldWeapon:oldGun.weapon,weapon:carried().weapon,sourceKey:choice.source?.key??null,inventoryKey:gun.inventoryKey});
+   }
+  }
+  // Allocate each actor in order so several rifles cannot claim the same last
+  // loose rounds. The original finite helper retains its shortage refusal.
+  c=supplyRouteAmmunition(c,[id],{target,report}).campaign;
+ }
+ return c;
+}
 
 // Preserve the real partial care report before checking completion or leaving.
 // A stopped approach can already have paid time, wounds and finite dressings.
@@ -95,13 +144,16 @@ function restorePaidMountainVeterans(start,{report=()=>{}}={}){
  return c;
 }
 
-function collectReturnedMountainKit(start,ids,{report=()=>{}}={}){
+export function collectReturnedMountainKit(start,ids,{report=()=>{}}={}){
  let c=start;const originalRoster=rosterFor(c);
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
  const order=retained.order;
  for(const operativeId of ids)for(const slot of ['headwear','outfit','legwear','blade']){
   const operative=rosterFor(c).find(op=>op.id===operativeId);
   const worn=slot==='blade'?operative.blade:c.operativeState[operativeId][slot];
+  // Local permanent recruits retain deliberate native empty clothing slots.
+  // Paid returned kits, broken worn garments and blades still need real stock.
+  if(slot!=='blade'&&worn===null&&operative.recruitmentSource==='encounter'&&c.contracts[operativeId]?.kind==='patriot'&&c.contracts[operativeId].expiresAt===null)continue;
   if(slot==='blade'?worn>0:worn?.condition>0)continue;
   const blade=originalRoster.find(op=>op.id===operativeId)?.blade;
   const matches=record=>slot==='blade'?!!BLADES[record.weapon]&&(!blade||record.weapon===blade):record.kind==='outfit'&&record.outfit===({headwear:'hat',outfit:'poncho',legwear:'trousers'})[slot];
@@ -164,9 +216,9 @@ for(const operativeId of rearm)c=recoverRoutePrimary(c,operativeId,{preferredWea
 order({type:'squad',ids:[leader.id,physician.id,...recruits.slice(0,4)]});const main=c.activeSquadId;
 order({type:'createSquad',name:'Apoyo de la cordillera',ids:recruits.slice(4),sector:'mendoza'});const support=c.activeSquadId;
 // Redistribute actual remaining field dressings and known local cartridges.
-c=supplyRouteDressings(c,physician.id,15,{report});
+c=supplyKnownRouteDressings(c,physician.id,15,{report});
 // Finish real reloads before attaching the recovered reserve battery.
-c=supplyRouteAmmunition(c,[leader.id,physician.id,...recruits],{target:12,report}).campaign;
+c=supplyFreshMountainAmmunition(c,[leader.id,physician.id,...recruits],{target:12,report});
 order({type:'configureArtillery',types:[]});
 for(const id of [main,support]){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
 order({type:'selectSquad',id:main});const battery=prepareRouteBattery(c,Array.from({length:guns},()=> 'bronze4'),{destination:'mendoza',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
@@ -274,8 +326,8 @@ export function prepareFreshLosPatosAssault(start,{report=()=>{}}={}){
 for(let h=0;h<24&&hiringIds.some(id=>!c.recruited.includes(id));h++)order({type:'wait',hours:1});
 assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must arrive before receiving equipment');
  for(const operativeId of rearm)c=recoverRoutePrimary(c,operativeId,{preferredWeapon:1801,replace:true,report});
- // Rehiring does not issue the returned kit again. Collect only missing
- // recruit slots from actual carried equipment or reachable local sources.
+ // Rehiring does not issue the returned kit again. Recover missing paid kit
+ // from real stock while keeping permanent encounter recruits' empty slots.
  c=collectReturnedMountainKit(c,hiringIds,{report});
  order({type:'squad',ids:field.slice(0,6)});const main=c.activeSquadId;
  order({type:'createSquad',name:'Apoyo de Los Patos',ids:field.slice(6),sector:'mendoza'});const support=c.activeSquadId;
@@ -284,7 +336,7 @@ assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must 
  const deficits=doctors.map(op=>({id:op.id,medical:op.medical,carried:c.operativeState[op.id].medkits,needed:Math.max(0,5-c.operativeState[op.id].medkits)}));
  c=supplyRouteDressings(c,donor,deficits.reduce((sum,row)=>sum+row.needed,0),{reserves:Object.fromEntries(doctors.map(op=>[op.id,c.operativeState[op.id].medkits])),report});
  report({event:'mountainClinicalRoles',sector:'los_patos',commanderId:commander.id,donorId:donor,donorKits:c.operativeState[donor].medkits,doctors:deficits,field:[...field],campaign:c});
- c=supplyRouteAmmunition(c,field,{target:12}).campaign;
+ c=supplyFreshMountainAmmunition(c,field,{target:12,report});
  order({type:'configureArtillery',types:[]});
  for(const id of [main,support]){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
  for(const id of [main,support]){order({type:'selectSquad',id});order({type:'travel',sector:'uspallata',mode:'posta'});}

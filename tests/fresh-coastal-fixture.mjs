@@ -7,6 +7,7 @@ import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import {approachNPC} from './approach-npc.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
+import {prepareCoastalFieldAid} from './coastal-medical-readiness.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -136,9 +137,18 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
    assert.deepEqual(p.battle.units,aid.battle.units);
    assert.ok(p.battle.units.filter(u=>u.missionAlly&&u.hp>0).every(u=>u.bleeding===0),'The surviving commander must receive finite field aid before strategic time resumes.');
   }
-  for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){
-   const current=p.battle.units.find(u=>u.id===actor.id);if(firstAidPlan(current,current).valid){if(current.activeSlot!=='medical')p=tactical(p,{type:'weapon',unitId:actor.id,slot:'medical'});p=tactical(p,{type:'heal',unitId:actor.id});}
+  if(kind==='hired'){
+   // Complete native paid aid for the observed hired-route clinic admission.
+   // This includes unconscious survivors and partial stabilization strokes.
+   const fieldAid=autoBandageBattle(p.battle);for(const action of fieldAid.steps)p=tactical(p,action);
+   assert.deepEqual(p.battle.units,fieldAid.battle.units);assert.equal(p.battle.seed,fieldAid.battle.seed);assert.equal(p.battle.elapsedSeconds,fieldAid.battle.elapsedSeconds);
+   report({event:'coastalFieldAid',sector,treated:fieldAid.treatedIds,untreated:fieldAid.untreated,stoppedReason:fieldAid.stoppedReason,steps:fieldAid.steps});
+  }else{
+   for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){
+    const current=p.battle.units.find(u=>u.id===actor.id);if(firstAidPlan(current,current).valid){if(current.activeSlot!=='medical')p=tactical(p,{type:'weapon',unitId:actor.id,slot:'medical'});p=tactical(p,{type:'heal',unitId:actor.id});}
+   }
   }
+  for(const u of p.battle.units.filter(u=>u.side==='player'&&!u.missionAlly&&u.hp===0))dead.add(Number(u.id));
   p=saved(p);const resultReport={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
   s=saved({campaign:order(p.campaign,resultReport)}).campaign;assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,resultReport).lastError);
   for(const id of dead){assert.equal(s.operativeState[id].alive,false);assert.equal(s.operativeState[id].hp,0);assert.ok(!s.squad.includes(id));assert.ok(dispatchCampaign(s,{type:'recruitCivic',id,term:'week'}).lastError);}
@@ -185,7 +195,8 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBattleFin
    const depot=visit(s),rearmed=equipOpeningRifles(depot.battle,s.squad);
    s=leave(sync({campaign:depot.campaign,battle:rearmed.battle}));
    const recovery=prepareLocalOpening(s,{buyWeapons:false,caregiverIds:auxiliary===undefined?[]:[auxiliary]});s=recovery.campaign;
-   notes.push({stage:'paid-clinic-recovery',clinic,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,field,caregiverIds:auxiliary===undefined?[]:[auxiliary],hires,arrivals:structuredClone(arrivals),hireCost:quotes.reduce((sum,quote)=>sum+quote.total,0),...recovery.care});
+   const fieldAid=kind==='hired'?prepareCoastalFieldAid(s,{caregiverIds:auxiliary===undefined?[]:[auxiliary],report}):null;if(fieldAid)s=fieldAid.campaign;
+   notes.push({stage:'paid-clinic-recovery',clinic,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,field,caregiverIds:auxiliary===undefined?[]:[auxiliary],hires,arrivals:structuredClone(arrivals),hireCost:quotes.reduce((sum,quote)=>sum+quote.total,0),...recovery.care,...(fieldAid?{fieldAid:fieldAid.readiness}:{})});
    onCheckpoint?.('paid-clinic-recovery',s,notes);
   }
  }

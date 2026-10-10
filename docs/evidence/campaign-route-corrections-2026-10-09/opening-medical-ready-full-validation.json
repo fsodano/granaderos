@@ -1,0 +1,99 @@
+{
+  "command": "node --experimental-loader /tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/loader.mjs --test tests/opening-playthrough.test.mjs",
+  "exitCode": 1,
+  "elapsedSeconds": 238.62911400000002,
+  "nodeCountsIncludingParent": {
+    "tests": 8,
+    "pass": 3,
+    "fail": 2,
+    "skipped": 3
+  },
+  "subtests": {
+    "pass": 3,
+    "fail": 1,
+    "skip": 3
+  },
+  "terminalFailure": "stabilizeRescued: actual surviving doctors provide aid (no carried dressings on the admitted physician)",
+  "battles": [
+    {
+      "sector": "cordoba",
+      "status": "victory",
+      "turns": 13,
+      "actions": 176,
+      "startSeconds": 303070,
+      "elapsedSeconds": 93
+    },
+    {
+      "sector": "tucuman",
+      "status": "defeat",
+      "turns": 2,
+      "actions": 34,
+      "startSeconds": 426439,
+      "elapsedSeconds": 163
+    },
+    {
+      "sector": "cordoba",
+      "status": "victory",
+      "turns": 10,
+      "actions": 177,
+      "startSeconds": 541804,
+      "elapsedSeconds": 63
+    },
+    {
+      "sector": "tucuman",
+      "status": "victory",
+      "turns": 8,
+      "actions": 289,
+      "startSeconds": 678681,
+      "elapsedSeconds": 1350
+    }
+  ],
+  "scope": "One complete original opening file, no filters, no restarts on elapsed observations. Patrol readiness and genuine native four-captive loss/care/release passed; finite post-rescue physician supply assumption is next failure.",
+  "sourceProof": {
+    "originalImportedSources": 308,
+    "runtimeRecords": 615,
+    "inconsistentDuplicateHashes": [],
+    "drift": [],
+    "method": "Original runtime bytes from --experimental-loader before observer wrappers compared with complete prelaunch filesystem hashes and terminal filesystem hashes. All imported JSON files were present in the launch table."
+  },
+  "lastInput": {
+    "index": 26,
+    "stage": "input",
+    "name": "stabilizeRescued",
+    "wallTime": "2026-10-09T23:07:14.588Z",
+    "save": "/tmp/granaderos-opening-rescue-audit-2849279c/full-opening-medical-ready/026-stabilizeRescued-input.save.json",
+    "sha256": "0b22e32f69671b232fa32c47f96de6653be0e579058d16ff52b9ce59802621da",
+    "hour": 188,
+    "second": 3231,
+    "treasury": 3774,
+    "location": "tucuman",
+    "pendingBattle": null,
+    "captured": [],
+    "deaths": [
+      "104",
+      "107",
+      "110",
+      "111",
+      "113",
+      "114",
+      "115",
+      "116",
+      "117",
+      "119",
+      "120",
+      "123",
+      "124",
+      "125",
+      "127",
+      "131",
+      "134",
+      "136",
+      "137",
+      "139",
+      "141",
+      "144",
+      "146",
+      "1000"
+    ]
+  }
+}

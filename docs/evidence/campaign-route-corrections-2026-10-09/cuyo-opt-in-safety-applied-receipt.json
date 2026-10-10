@@ -1,0 +1,10 @@
+{
+  "appliedUtc": "2026-10-10T03:55:39.346036+00:00",
+  "scope": "Generic Cuyo ranked shots honor existing avoidCivilians=true known-body preview warnings, including paired hands. Default-false scores/ties and automatic fallback are unchanged.",
+  "patchSha256": "c96083295f570dd5cd9381dff54b53a8cd1138a3778b9a07893bfa592d167eab",
+  "sourceSha256": "f51b7ce0812f1dddc8dd8aa97fbc57bed1d5e6a00f943d1fa8e2e1e0349023c9",
+  "genuineReadOnlyForecastReceiptSha256": "17a8da4e3b52ad8afc287598593112deb2d9b0511dd1ebfa0c745f61c2a69d06",
+  "nativeOrders": 0,
+  "full940CareCauseProved": false,
+  "candidateFullGate": "pending"
+}

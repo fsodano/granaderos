@@ -1,0 +1,64 @@
+{
+  "nativeVerification": {
+    "scope": "One corrected six-piece care execution from exact original026 victory; no battle/controller. Native care passed. The first added regression stopped at an overly broad post-clinic group assertion, because actual day contracts expired during the four clinic hours.",
+    "sourceImports": 293,
+    "drift": []
+  },
+  "recordedRegression": {
+    "scope": "Corrected assertion uses this same native result and replays every original ordinary order with an official midpoint; no second care/controller execution. Ordered group/field restoration is checked immediately before clinic time; subsequent departures must have real expired contracts.",
+    "pass": 1,
+    "fail": 0,
+    "elapsedSeconds": 2.915727584
+  },
+  "finiteHistory": {
+    "recovered": 6,
+    "rescuerAid": 2,
+    "clinicalCare": 4,
+    "remainingKnownLocal": 3,
+    "doctorCarriedFinal": 0
+  },
+  "emergencyAid": {
+    "patients": [
+      103,
+      138
+    ],
+    "elapsedSeconds": 37,
+    "officialMidpoint": true
+  },
+  "clinicElapsedSeconds": 14400,
+  "nativeOrders": 35,
+  "patients": [
+    {
+      "id": 121,
+      "hp": 18,
+      "bleeding": 0,
+      "alive": true
+    },
+    {
+      "id": 126,
+      "hp": 21,
+      "bleeding": 0,
+      "alive": true
+    },
+    {
+      "id": 129,
+      "hp": 20,
+      "bleeding": 0,
+      "alive": true
+    },
+    {
+      "id": 130,
+      "hp": 21,
+      "bleeding": 0,
+      "alive": true
+    }
+  ],
+  "exactEveryOrderReplay": true,
+  "officialReplayMidpoint": true,
+  "inputUnchanged": true,
+  "retainedFailures": [
+    "overlong temporary squad-name rejection before care/time; admitted zero-time takes replayed",
+    "six-piece trial under original repeating triage exhausted four clinic pieces before126 had a stroke; exact failed-clinic prefix retained",
+    "new test final-group assertion omitted real paid day-contract departures; corrected boundary and expiry checks"
+  ]
+}

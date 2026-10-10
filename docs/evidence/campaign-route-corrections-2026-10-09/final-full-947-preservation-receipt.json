@@ -1,0 +1,27 @@
+{
+  "preservedAt": "2026-10-10T06:02:30.046677+00:00",
+  "archive": "/tmp/granaderos-full947-terminal-native-evidence-20261010.tar.gz",
+  "bytes": 2808124,
+  "sha256": "16cc3d3886e81a03fd37f8e2294ebd545b4d24c7b0b522ae531bed91e407a91f",
+  "regularRelativeMembers": 20,
+  "payloadMembers": 19,
+  "sourceDirectory": "/tmp/granaderos-campaign-post-care-full-2026-10-10T053856639Z",
+  "terminalCounts": {
+    "tests": 7024,
+    "failed": 7,
+    "passed": 7012,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0,
+    "topLevel": 6873,
+    "suites": 0
+  },
+  "completeFiles": 947,
+  "sourceFiles": 14064,
+  "sourceDrift": [],
+  "allMemberBytesAndShaVerified": true,
+  "nativeArtifactReceiptsVerified": 3,
+  "additionalGameCalls": 0,
+  "repositoryWrites": false,
+  "status": "Preserved failed full947 evidence; not a green gate."
+}

@@ -1,0 +1,119 @@
+{
+  "at": "2026-10-10T02:00:48.468Z",
+  "audit": "/tmp/granaderos-all-five-stash-readonly-audit.json",
+  "sha256": "1302ba061e3a033b9e241f2545b95e98a3da51b0044d09d6cd80c41130f142f8",
+  "aggregate": {
+    "stashes": 5,
+    "pathOccurrences": 103,
+    "uniquePaths": 86,
+    "trackedOccurrences": 90,
+    "untrackedOccurrences": 13,
+    "verified_superseding_correction": 30,
+    "exact_current_main": 34,
+    "exact_historical_merged_blob": 39,
+    "missingAuthoredPaths": 0,
+    "distinctIndexOnlyAuthoredBlobs": 0,
+    "exactHistoricalArchivedOriginalModelBlobs": 2
+  },
+  "receipts": [
+    {
+      "name": "inventory",
+      "valid": true,
+      "path": "/tmp/granaderos-five-stash-inventory.json",
+      "sha256": "cca932efd21e7b12cacccaf9b27c338fccec5cf936154ba9404f0a3138204a35",
+      "bytes": 180777
+    },
+    {
+      "name": "stockWithdrawal",
+      "valid": true,
+      "path": "/tmp/granaderos-stock-withdrawal-stash-audit.json",
+      "sha256": "97d1cb135b634bfea0a4f1bf24a5b6402cd7a300ba554eec01116c9f8a60b5e0",
+      "bytes": 123071
+    },
+    {
+      "name": "kinetic",
+      "valid": true,
+      "path": "/tmp/granaderos-kinetic-stash-readonly-audit.json",
+      "sha256": "25f0a0d8548b55debb598efe13ad3ab111e4db4f4faa4af8eb07eb7228c03053",
+      "bytes": 40782
+    },
+    {
+      "name": "granadero",
+      "valid": true,
+      "path": "/tmp/granaderos-granadero-stash-audit/receipt.json",
+      "sha256": "4c91a54e67a1d48f024175ea38f34b6ab869f3738e1f6e9fa20aa2ed3fdb83a3",
+      "bytes": 37422
+    }
+  ],
+  "refs": [
+    {
+      "ref": "stash@{0}",
+      "expected": "4dc4d0e334cc5ca4ed7e65cec80c9b793377155d",
+      "current": "4dc4d0e334cc5ca4ed7e65cec80c9b793377155d"
+    },
+    {
+      "ref": "stash@{1}",
+      "expected": "49dc1bc993d453a2bf0cde13c6a5ff4a9c8e6f83",
+      "current": "49dc1bc993d453a2bf0cde13c6a5ff4a9c8e6f83"
+    },
+    {
+      "ref": "stash@{2}",
+      "expected": "5ccd3831e9337280f2254b21b23fd911c60e81b6",
+      "current": "5ccd3831e9337280f2254b21b23fd911c60e81b6"
+    },
+    {
+      "ref": "stash@{3}",
+      "expected": "c79c75ba80ef256b486e37c58dacfc1a62217f4a",
+      "current": "c79c75ba80ef256b486e37c58dacfc1a62217f4a"
+    },
+    {
+      "ref": "stash@{4}",
+      "expected": "7bef30394ed2c227f4e45c18df6f995639a50c22",
+      "current": "7bef30394ed2c227f4e45c18df6f995639a50c22"
+    }
+  ],
+  "anchors": [
+    {
+      "commit": "ba4e0d59f3311364c3885ce8c6e8993ab3f8e736",
+      "ancestor": true
+    },
+    {
+      "commit": "44b7fcadac127acbd58474729f79a9f87567ea4b",
+      "ancestor": true
+    },
+    {
+      "commit": "ba11dc97b4d69086cb69a3351d52173ff57fed79",
+      "ancestor": true
+    },
+    {
+      "commit": "5acde476a5732fff02b2f134d39ed4e8e3052624",
+      "ancestor": true
+    },
+    {
+      "commit": "5742567cbc14f9a2a946899bed468dd468d0ada3",
+      "ancestor": true
+    },
+    {
+      "commit": "4182f566949d453a41dd9c79a785f1d402ea69c9",
+      "ancestor": true
+    },
+    {
+      "commit": "0e510328402630e04c31f98acc314e7fdd654f3c",
+      "ancestor": true
+    },
+    {
+      "commit": "b69f300abf702f4f3b9f9cba5f1f19499880213b",
+      "ancestor": true
+    },
+    {
+      "commit": "bdb56ee5da75f3b853873db485a35e78670e53ac",
+      "ancestor": true
+    },
+    {
+      "commit": "1e29c19894b58e7a6382c5c7165e012394bbd2c0",
+      "ancestor": true
+    }
+  ],
+  "errors": [],
+  "success": true
+}

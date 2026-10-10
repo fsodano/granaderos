@@ -1,0 +1,72 @@
+{
+  "input": "/tmp/granaderos-cuyo-rear-gun-stock-one-accepted.save.json",
+  "inputSha256": "c1484cf0f646eb4d1ed1b4af90b29ca4993a6d50467db75e4325f90efffc5a1a",
+  "scope": "Same accepted stock provincial meeting/shipment continues through unchanged ordinary assembly tail, then two actual finite gun preparation. No battle, reset or generated stock.",
+  "start": [
+    355,
+    3225
+  ],
+  "assembly": [
+    414,
+    949
+  ],
+  "prepared": [
+    436,
+    949
+  ],
+  "assemblySurvivors": 13,
+  "selected": [
+    "depot:arsenal:cordoba:2",
+    "depot:arsenal:buenos_aires:1"
+  ],
+  "records": [
+    {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    },
+    {
+      "id": "arsenal:buenos_aires:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    }
+  ],
+  "allGunRecords": [
+    {
+      "sector": "cordoba",
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    },
+    {
+      "sector": "cordoba",
+      "id": "arsenal:buenos_aires:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    }
+  ],
+  "deaths": 28,
+  "observedNativeCalls": 383,
+  "ignoredSuccessfulInventoryAdmissionProbes": 15,
+  "probePolicy": "Only consecutive identical successful finite take calls can be an ignored immutable admission probe; applying the first result would change its expected source stack and make the second reject. Replay retains one actual committed transfer, preserves full original observation tape and exact saved final.",
+  "tapeActions": 368,
+  "campaignActions": 307,
+  "tacticalActions": 46,
+  "officialMidpoint": true,
+  "exactFullCampaignReplay": true,
+  "inputUnchanged": true,
+  "treasury": [
+    89812,
+    112597,
+    120138
+  ],
+  "renewalCost": 439
+}

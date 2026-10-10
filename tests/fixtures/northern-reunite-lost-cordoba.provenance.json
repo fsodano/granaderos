@@ -1,0 +1,40 @@
+{
+  "purpose": "Unmodified official earned input to reuniteFreshNorthernSquad, captured from the real fresh-campaign-recovery test before its rejected return order. No owner, health, inventory, contract, position, seed or outcome was changed.",
+  "sha256": "39c22ddc5236034221025a0f263936b5a63e0d1a3b4ffe96b7d0ba3fc4fc0978",
+  "nativePrefixCommit": "b8b14e2d",
+  "nativePrefixSource": "2368ae747c42c865ecf389ce44a536dcc7145625516af1ae959e780905ad3052",
+  "revalidatedCommit": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+  "revalidatedSource": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+  "sourceDifference": "The only production change is detention-care guard exhaustion refresh; this prefix has no detention records or capture sequence, so that path was not crossed.",
+  "captureCommand": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec /tmp/granaderos-reunite-exact-capture.test.mjs",
+  "clock": {
+    "hour": 306,
+    "secondOfHour": 2959
+  },
+  "sector": "buenos_aires",
+  "squad": [
+    121,
+    112,
+    1000,
+    10,
+    4
+  ],
+  "actualOccupation": {
+    "groupId": "enemy-group-3",
+    "sector": "cordoba",
+    "hour": 294
+  },
+  "rejectedReturn": {
+    "hour": 316,
+    "secondOfHour": 2959,
+    "squad": [
+      10,
+      4,
+      121,
+      112,
+      1000
+    ],
+    "treasury": 97698,
+    "error": "Cada escala debe ser una celda terrestre accesible."
+  }
+}

@@ -2,14 +2,34 @@
 // This is one reproducible strategy, not the game AI or a balance guarantee.
 import {fight as recordedFight} from './opening-driver.mjs';
 import {automaticOrder} from '../game/autonomous-orders.js';
-import {actBattle,teamCanSee,meleePreview,getReachable,shotChance,actionCosts,stanceCost,hasFirearm,firearmShotOptions,weaponFor,reloadPlan} from '../game/tactical.js';
+import {actBattle,teamCanSee,meleePreview,getReachable,shotChance,actionCosts,stanceCost,hasFirearm,firearmShotOptions,firearmFlightPreview,weaponFor,reloadPlan} from '../game/tactical.js';
 import {spacePoint} from '../game/tactical-space.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
+import {pairedPistol,secondaryPistolView} from '../game/paired-fire.js';
 const live=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-export function localSanLorenzoOrder(b,u){
+const friendlyRay=shot=>Boolean(shot?.interveningFriendly||shot?.shots?.some(hand=>hand.interveningFriendly));
+const civilianRay=(b,u,target,hitLocation)=>{
+ const second=pairedPistol(u),views=[u,...(second?[secondaryPistolView(u,second)]:[])];
+ return views.some(view=>{
+  // The public preview contains known bodies only, at their actual heights.
+  // It does not reveal hidden civilians or predict a seeded off-aim miss.
+  const flight=firearmFlightPreview(b,view,target,hitLocation);
+  return flight.victimKind==='npc'||Boolean(flight.bodyImpacts?.some(impact=>impact.victimKind==='npc'));
+ });
+};
+// The final candidate boundary also checks the unchanged automatic fallback.
+// This predicate adds no chance threshold and applies no order to the input.
+export function localSanLorenzoFireSafe(b,u,action,{avoidCivilians=false}={}){
+ if(action?.type!=='fire')return true;
+ const target=b.units.find(other=>other.id===action.targetId);if(!target)return false;
+ const aim=action.aim??0,hitLocation=action.hitLocation??'torso';
+ const shot=firearmShotOptions(b,u,target,aim).find(option=>option.aim===aim&&option.hitLocation===hitLocation);
+ return Boolean(shot)&&!friendlyRay(shot)&&(!avoidCivilians||!civilianRay(b,u,target,hitLocation));
+}
+export function localSanLorenzoOrder(b,u,{avoidCivilians=false}={}){
  const visible=b.units.filter(t=>t.side==='enemy'&&live(t)&&teamCanSee(b,'player',t));
  const perceived={...b,units:b.units.filter(t=>t.side===u.side||visible.some(v=>v.id===t.id)),npcs:(b.npcs??[]).filter(t=>teamCanSee(b,'player',t))};
  const infantry=b.units.filter(t=>t.side==='player'&&live(t)&&!t.missionAlly&&t.hp>=15);
@@ -44,6 +64,7 @@ export function localSanLorenzoOrder(b,u){
     const cost=actionCosts(b,u,t);if(u.ap<cost.fire)continue;
     for(const shot of firearmShotOptions(b,u,t,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim)))){
      if(shot.chance<25)continue;
+     if(friendlyRay(shot)||avoidCivilians&&civilianRay(b,u,t,shot.hitLocation))continue;
      const effect=shotLocationEffects(shot.hitLocation,weaponFor(u).damage*shot.damageFactor,t);
      const score=shot.chance*(Math.min(t.hp,effect.damage)+(t.hp-effect.damage<15?15:0))-(cost.fire+shot.aim*cost.aim)*.2;
      shots.push({t,...shot,score});
@@ -64,8 +85,10 @@ export function localSanLorenzoOrder(b,u){
   const automatic=automaticOrder(b,u);if(automatic)yield automatic;
  }
  for(const candidate of candidates()){
-  const action={...candidate,unitId:u.id};if(!actBattle(b,action).lastError)return action;
+  const action={...candidate,unitId:u.id};
+  if(!localSanLorenzoFireSafe(b,u,action,{avoidCivilians}))continue;
+  if(!actBattle(b,action).lastError)return action;
  }
  return null;
 }
-export function fight(request,previous=null){return recordedFight(request,previous,{controller:localSanLorenzoOrder});}
+export function fight(request,previous=null,{avoidCivilians=false}={}){return recordedFight(request,previous,{controller:(b,u)=>localSanLorenzoOrder(b,u,{avoidCivilians})});}

@@ -1,0 +1,82 @@
+{
+  "originalFullResult": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/final-manifest.json",
+  "originalImportFooter": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.imports.json",
+  "acceptedOriginalEndpoint": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.terminal.save.json",
+  "readOnlySourceAudit": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/finite-dressing-readonly-audit.json",
+  "nativeCourierReceipt": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/barcala-courier-one-receipt.json",
+  "nativeCourierOfficialFinal": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/barcala-courier-one-accepted.save.json",
+  "nativeCourierOfficialMidpoint": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/barcala-courier-one-official-midpoint.save.json",
+  "nativeCourierOrders": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/barcala-courier-one-actions.jsonl",
+  "nativeCourierImportFooter": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/barcala-courier-one.91565.imports.json",
+  "integratedRecordedReplayReceipt": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/barcala-courier-one-integrated-replay-receipt.json",
+  "integratedReplayImportFooter": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/courier-integrated-recorded-replay.92209.imports.json",
+  "native": {
+    "from": [
+      1020,
+      1903
+    ],
+    "to": [
+      1028,
+      1903
+    ],
+    "elapsedSeconds": 28800,
+    "orders": 16,
+    "sourceDebit": [
+      4,
+      0
+    ],
+    "recipient": [
+      11,
+      15
+    ],
+    "travelCost": 20,
+    "renewalCost": 159,
+    "totalNativeSpending": 179,
+    "treasury": [
+      205784,
+      205605
+    ],
+    "servingAlive": 22,
+    "deathsHeld": 27,
+    "inputUnchanged": true,
+    "officialMidpoint": true,
+    "exactFullCampaignReplay": true,
+    "orderedSquadsRestored": true,
+    "loadoutsUnchanged": true,
+    "hpAndBleedingUnchanged": true
+  },
+  "changedPaths": [
+    "tests/route-known-medical-courier.mjs",
+    "tests/fresh-mountain-route.mjs"
+  ],
+  "finalHelperHashes": {
+    "tests/route-known-medical-courier.mjs": "6ad96f01cfdee4bbb64fae50a4c921a2e22c58322d7babee820d3e8134b18cb5",
+    "tests/fresh-mountain-route.mjs": "e28f0aae458de8c32f03ad021b824de49ce0357518e376a2fa9a0d882fda8499"
+  },
+  "focused": {
+    "supplyAndInventory": {
+      "files": [
+        "tests/finite-route-equipment.test.mjs",
+        "tests/sector-inventory.test.mjs"
+      ],
+      "tests": 29,
+      "pass": 29,
+      "fail": 0,
+      "skip": 0,
+      "durationMs": 5557.800375,
+      "log": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/finite-known-courier-focused.log"
+    },
+    "localDressings": {
+      "files": [
+        "tests/route-dressings.test.mjs"
+      ],
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skip": 0,
+      "durationMs": 1006.494458,
+      "log": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/route-dressings-focused.log"
+    }
+  },
+  "validationLimit": "Complete original Cuyo is still1fail before Uspallata. The correction is proved only as one finite courier suffix and integrated replay of those same16orders. No new mountain battle/fullprefix, production edits, stock grants or relaxed15reserve. The initial external audit guard failure issued0native orders and is retained separately."
+}

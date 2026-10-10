@@ -1,0 +1,8 @@
+{
+  "declaredUtc": "2026-10-10T02:51:07.798275+00:00",
+  "input": "/tmp/granaderos-recovery-mendoza-regular-native-audit/native-ready.save.json",
+  "inputSha256": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+  "policy": "One existing mountainBatteryOrder option flankScreen:true; all other current recovery controller choices unchanged. Infantry take actual reachable forward flank cells outside the gun ray instead of rear-only exploration positions.",
+  "reason": "Retained117-order defeat had no combat gun moves; ground crew faced contact with rear-only infantry placement. Existing helper already defines a finite forward flank screen.",
+  "limits": "No seed change, repetition sweep, grants, casualty restoration or forced status. Outcome assertion remains victory. External only until native proof and controls."
+}

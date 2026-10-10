@@ -1,0 +1,162 @@
+{
+  "recordedAt": "2026-10-10T00:46:45.858844+00:00",
+  "scope": "Complete original test; no filters, skips, cached start, controller replacement, early exit, or source edits.",
+  "test": "tests/fresh-cuyo-route.test.mjs",
+  "headAtStart": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "sessionId": 77868,
+  "runnerPid": 89620,
+  "testPid": 89622,
+  "exitCode": 1,
+  "tests": {
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "skip": 0,
+    "testDurationMs": 547076.791292,
+    "runnerDurationMs": 547663.362292
+  },
+  "artifacts": {
+    "log": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.log",
+    "start": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/start.json",
+    "actualImportFooter": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.imports.json",
+    "terminalOfficialSave": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.terminal.save.json",
+    "nativeActions": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.actions.ndjson",
+    "mendozaPreparationEntryOfficialSave": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.1-pre-created-mendoza-input.save.json",
+    "mendozaNativeRequest": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.36-beginAssault.state.json",
+    "dressingShortageReadOnly": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/uspallata-dressing-shortage-readonly.json"
+  },
+  "originalByteActualImports": 328,
+  "actualImportedHashDrift": [],
+  "observationErrors": [],
+  "campaignActions": 2767,
+  "tacticalActions": 6895,
+  "initialHelperHashes": {
+    "tests/created-cuyo-route.mjs": "41457efce36243a88b372e43be30b34bc2309395cdd48e16d84f390ea0c0e8f0",
+    "tests/fresh-cuyo-route.mjs": "8b43b6cbcd5a1463fa07595625c27954f6b875a897527e669ecd3403560c45e3",
+    "tests/fresh-cuyo-fixture.mjs": "f27d35bf55fd3e7ebc58a1df94f635cfed1c0d80ef937dc146e4c56fa51b26c3",
+    "tests/fresh-cuyo-route.test.mjs": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+    "tests/fresh-northern-command.mjs": "0a787dc97b899398091f08b54ffedf38d64aa683ea51094af84f7fb17acdb9cb",
+    "tests/fresh-northern-fixture.mjs": "e08a19be02293dffe9fbd7f6664e21333dd0538b694bdc4f8d3cf06b7ccfb535",
+    "tests/fresh-campaign-route.mjs": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e",
+    "tests/route-battery.mjs": "4f551536f96f22568370c0281ba1865919e38d047b98208c8887e88689158f2d"
+  },
+  "finalHelperHashes": {
+    "tests/created-cuyo-route.mjs": "41457efce36243a88b372e43be30b34bc2309395cdd48e16d84f390ea0c0e8f0",
+    "tests/fresh-cuyo-route.mjs": "8b43b6cbcd5a1463fa07595625c27954f6b875a897527e669ecd3403560c45e3",
+    "tests/fresh-cuyo-fixture.mjs": "f27d35bf55fd3e7ebc58a1df94f635cfed1c0d80ef937dc146e4c56fa51b26c3",
+    "tests/fresh-cuyo-route.test.mjs": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+    "tests/fresh-northern-command.mjs": "0a787dc97b899398091f08b54ffedf38d64aa683ea51094af84f7fb17acdb9cb",
+    "tests/fresh-northern-fixture.mjs": "e08a19be02293dffe9fbd7f6664e21333dd0538b694bdc4f8d3cf06b7ccfb535",
+    "tests/fresh-campaign-route.mjs": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e",
+    "tests/route-battery.mjs": "4f551536f96f22568370c0281ba1865919e38d047b98208c8887e88689158f2d"
+  },
+  "terminal": {
+    "clock": [
+      1020,
+      1903
+    ],
+    "location": "mendoza",
+    "treasury": 205784,
+    "phase": 3,
+    "defeated": false,
+    "completed": false,
+    "armyFunded": true,
+    "foundry": true,
+    "pendingBattle": null,
+    "pendingEncounter": null,
+    "dead": [
+      0,
+      3,
+      102,
+      103,
+      108,
+      110,
+      111,
+      113,
+      114,
+      115,
+      116,
+      117,
+      121,
+      122,
+      125,
+      127,
+      129,
+      130,
+      131,
+      133,
+      136,
+      137,
+      139,
+      141,
+      144,
+      146,
+      1000
+    ],
+    "servingAlive": 22
+  },
+  "actualGunPreparation": {
+    "entryClock": [
+      459,
+      1466
+    ],
+    "nativeAssaultArtillery": [
+      {
+        "id": "arsenal:buenos_aires:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": true,
+        "ammo": 6
+      },
+      {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": -0.9097531579442097
+      }
+    ],
+    "finalGuns": [
+      {
+        "id": "arsenal:buenos_aires:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": true,
+        "ammo": 0,
+        "facing": 1.3258176636680326
+      },
+      {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": -0.9097531579442097
+      },
+      {
+        "id": "arsenal:cordoba:2",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": -1.0768549578753155
+      }
+    ],
+    "finalTransfers": []
+  },
+  "failure": {
+    "message": "No actual reachable finite dressings remain for 112 at mendoza.",
+    "source": "tests/fresh-mountain-route.mjs:167",
+    "helper": "tests/route-dressings.mjs:21",
+    "target": 15,
+    "carried": 11,
+    "shortage": 4,
+    "recipientReason": null,
+    "knownMedicalPool": 0,
+    "reachableMedicalPool": 0,
+    "allOtherLocalServingCarriersEmpty": true,
+    "inputUnchanged": true
+  },
+  "validationLimit": "The original test passed native prefix, Mendoza, care, foundry and finite three-gun funding. It stopped before Uspallata assault; Andes/phase4 requirements remain unaccepted. Earlier true defeats and custody failure receipts are preserved. No source changes or new native attempt were made during this run."
+}

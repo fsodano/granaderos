@@ -1,0 +1,166 @@
+{
+  "scope": "Unmodified official earned recovery Mendoza readiness and one native forward flank-screen battle. Segment proof, not a complete recovery campaign pass.",
+  "sourceInput": "/tmp/granaderos-recovery-mendoza-regular-native-audit/native-ready.save.json",
+  "inputSha256": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+  "nativePreparation": "Existing prepareFreshCuyoDefense and prepareFreshMendozaAssault from the committed earned real-losses fixture; ordinary paid rearm, supplies, reloads, rest and queued daylight assault.",
+  "startingClock": [
+    417,
+    105
+  ],
+  "priorDeadIds": [
+    1,
+    4,
+    9,
+    101,
+    103,
+    104,
+    107,
+    108,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    129,
+    131,
+    133,
+    134,
+    136,
+    137,
+    139,
+    140,
+    141,
+    144,
+    146,
+    1000
+  ],
+  "policy": "Existing flankScreen:true option only; infantry moves through engine-admitted forward flank cells outside the gun ray. Current crew assignment, seed, orders, health and finite stocks unchanged.",
+  "nativeResult": {
+    "scope": "One declared forward flank-screen helper trial from genuine retained earned recovery readiness; not a fresh full-route proof",
+    "inputPath": "/tmp/granaderos-recovery-mendoza-regular-native-audit/native-ready.save.json",
+    "inputSha256": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+    "expectedStatus": "victory",
+    "actualStatus": "victory",
+    "turns": 7,
+    "actions": 189,
+    "orders": 205,
+    "elapsedSeconds": 825,
+    "knownFriendlyOrders": [],
+    "midpoint": {
+      "orderIndex": 102,
+      "clock": [
+        417,
+        912
+      ],
+      "elapsedSeconds": 807
+    },
+    "exactRecordedReplay": true,
+    "officialMidpointSave": true,
+    "exactSettlement": true,
+    "priorDeaths": 37,
+    "actualNewDeaths": [
+      130,
+      10
+    ],
+    "players": [
+      {
+        "id": "0",
+        "hp": 82,
+        "bleeding": 0,
+        "routed": false
+      },
+      {
+        "id": "8",
+        "hp": 70,
+        "bleeding": 0,
+        "routed": false
+      },
+      {
+        "id": "100",
+        "hp": 70,
+        "bleeding": 0,
+        "routed": false
+      },
+      {
+        "id": "142",
+        "hp": 79,
+        "bleeding": 0,
+        "routed": false
+      },
+      {
+        "id": "130",
+        "hp": 0,
+        "bleeding": 0,
+        "routed": false
+      },
+      {
+        "id": "102",
+        "hp": 19,
+        "bleeding": 0,
+        "routed": false
+      },
+      {
+        "id": "11",
+        "hp": 78,
+        "bleeding": 0,
+        "routed": false
+      },
+      {
+        "id": "10",
+        "hp": 0,
+        "bleeding": 0,
+        "routed": true
+      }
+    ],
+    "gun": [
+      {
+        "id": "arsenal:cordoba:1",
+        "type": "bronze4",
+        "side": "player",
+        "loaded": false,
+        "ammo": 0,
+        "facing": 0.8760580505981934,
+        "x": 35,
+        "y": 14
+      }
+    ],
+    "clock": [
+      417,
+      930
+    ],
+    "mendozaOwner": "patriot",
+    "treasury": 120668,
+    "durationMs": 27200
+  },
+  "sourceObservation": {
+    "actualImports": 296,
+    "sourceDrift": [],
+    "receiptSha256": "9c974aeb0d703898a5a03f66f4a83a24a898ac357b2b70c4e9c727ef7821d4bd"
+  },
+  "files": {
+    "recovery-mendoza-earned-ready.save.json.gz": {
+      "rawSha256": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+      "gzipSha256": "dd6d06d6ea6b62b6e083fab08fcaa58cdb67d266b733ce38be6b44e8d262fabc",
+      "rawBytes": 1614073,
+      "gzipBytes": 151174
+    },
+    "recovery-mendoza-forward-screen-replay.json.gz": {
+      "rawSha256": "9b47b9ddc4f3584723d298b67fcc8f96a2f9854daa2a4f29a5e6f8ac2772fe01",
+      "gzipSha256": "fefd86a6c40a8d79ece814c82aa6acdaacf9dfbbdf1241caa3760d1e7cf024af",
+      "rawBytes": 2281657,
+      "gzipBytes": 182947
+    }
+  }
+}

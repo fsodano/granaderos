@@ -7,6 +7,7 @@ import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
 import {contractExpiresSeconds} from '../game/contracts.js';
+import {adjacentCells,cellLegHours} from '../game/world-cells.js';
 import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {recoverRescueForce} from './rescue-recovery.mjs';
 import {prepareSaltaAssault,completeNorthernMission} from './salta-route.mjs';
@@ -73,6 +74,11 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.equal(prepared.recovery.boughtDressings,prepared.events.filter(event=>event.action.type==='purchaseMedicalSupplies').reduce((sum,event)=>sum+event.action.quantity,0));
   assert.ok(prepared.recovery.patients.length?prepared.recovery.usedDressings>0:prepared.recovery.usedDressings===0,'care consumes supplies only when the battle left surviving patients');
   for(const id of prepared.recovery.replacements){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id]);}
+  const patrolMedical=prepared.recovery.patrolMedicalReadiness;assert.deepEqual(patrolMedical.field,prepared.campaign.squad);
+  assert.equal(patrolMedical.cost,0);assert.equal(patrolMedical.elapsedSeconds,0);assert.equal(patrolMedical.policy.perPatrolMember,2);
+  assert.equal(patrolMedical.totalTaken,patrolMedical.takes.reduce((sum,row)=>sum+row.count,0));
+  for(const row of patrolMedical.takes){assert.equal(row.sourceAfter,row.sourceBefore-row.count);assert.equal(row.medicalPoolAfter,row.medicalPoolBefore-row.count);assert.equal(row.carriedAfter,row.carriedBefore+row.count);}
+  for(const id of prepared.campaign.squad)assert.ok(prepared.campaign.operativeState[id].medkits>=2,'the exposed patrol carries finite first-aid stock before its original march');
   // The faster road schedule can bring the depot raid during clinic care,
   // before the exposed patrol leaves. Verify it in its actual phase.
   for(const defense of prepared.recovery.clinicDefenses){
@@ -86,8 +92,11 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.equal(result.summary.startSeconds/3600%24>=20,true,'the exposed patrol reaches the citadel at night');
   assertBattleClock(result);evidence.battles.push(result.summary);evidence.medical.push({stage:'cordoba',...prepared.recovery});
   assert.equal(returned.hour,prepared.campaign.hour+12);preserveDeaths(cordoba,returned);
-  const field=result.summary.units.filter(unit=>unit.side==='player'),dead=field.filter(unit=>unit.hp<=0);
-  captiveIds=field.filter(unit=>unit.hp>0).map(unit=>Number(unit.id));evidence.captures.push({sector:'tucuman',ids:captiveIds});assert.ok(dead.length>0);assert.ok(captiveIds.length>0);
+  const field=result.summary.units.filter(unit=>unit.side==='player'&&prepared.recovery.fieldIds.includes(Number(unit.id))),dead=field.filter(unit=>unit.hp<=0);
+  assert.equal(field.length,prepared.recovery.fieldIds.length,'the native outcome accounts for every actual deployed patrol member');preserveDeaths(prepared.campaign,returned);
+  captiveIds=field.filter(unit=>unit.hp>0).map(unit=>Number(unit.id));evidence.captures.push({sector:'tucuman',ids:captiveIds});assert.ok(captiveIds.length>0);
+  assert.equal(dead.length+captiveIds.length,prepared.recovery.fieldIds.length,'every actual patrol member is dead or captured after the genuine defeat');
+  for(const id of prepared.recovery.fieldIds){assert.ok(!returned.recruited.includes(id));assert.ok(!returned.squads.some(squad=>squad.members.includes(id)));}
   for(const unit of dead)assert.equal(returned.operativeState[unit.id].alive,false);
   for(const id of captiveIds){
    const record=returned.operativeState[id];assert.equal(record.alive,true);assert.equal(record.captured,true);assert.equal(record.capturedSector,'tucuman');
@@ -150,7 +159,30 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.deepEqual(rescued,before);assert.equal(result.recovery.endHour,result.campaign.hour);assert.ok(result.recovery.endHour>=rescued.hour+24+6,'the courier makes both real marches and the squad rests');
   assert.equal(result.recovery.boughtDressings,0);assert.ok(result.recovery.foundDressings>0&&result.recovery.foundDressings<=13);assert.equal(result.recovery.unitPrice,0);assert.equal(result.recovery.cost,result.recovery.boughtDressings*result.recovery.unitPrice);
   const availableDoctors=rosterFor(before).filter(op=>{const r=before.operativeState[op.id];return before.recruited.includes(op.id)&&r.alive&&!r.captured&&r.location==='tucuman'&&r.hp>=15&&!captiveIds.includes(op.id)&&op.medical>=70;});
-  assert.equal(result.recovery.hiredDoctors.length,Math.max(0,2-availableDoctors.length));assert.equal(result.recovery.hiringCost,result.recovery.hiredDoctors.reduce((sum,id)=>sum+result.campaign.contracts[id].paid,0));
+  const availableDoctorIds=new Set(availableDoctors.map(op=>op.id)),rearIds=new Set();
+  for(const receipt of result.recovery.rearPhysicians){
+   const op=rosterFor(before).find(op=>op.id===receipt.id),record=before.operativeState[receipt.id];
+   assert.ok(op&&op.medical>=70&&before.recruited.includes(receipt.id)&&record.alive&&!record.captured&&!captiveIds.includes(receipt.id),'rear relief must come from a genuinely serving qualified physician');
+   assert.equal(record.location,'cordoba');assert.ok(record.hp>=15&&!record.asleep&&record.energy>10);assert.ok(before.contracts[receipt.id].paid>0);
+   assert.ok(!rearIds.has(receipt.id)&&!availableDoctorIds.has(receipt.id),'count each actual physician once');rearIds.add(receipt.id);
+   assert.equal(receipt.sourceSector,'cordoba');assert.equal(receipt.arrivalSector,'tucuman');
+   const {marchQuote}=receipt;assert.equal(marchQuote.valid,true);assert.equal(marchQuote.reason,null);assert.ok(marchQuote.hours>0);
+   assert.equal(marchQuote.path[0],receipt.sourceSector);assert.equal(marchQuote.path.at(-1),receipt.arrivalSector);
+   assert.ok(marchQuote.path.slice(1).every((point,index)=>adjacentCells(marchQuote.path[index],point)));
+   assert.equal(marchQuote.path.slice(1).reduce((hours,point,index)=>hours+cellLegHours(marchQuote.path[index],point,'march'),0),marchQuote.hours);
+   assert.deepEqual(marchQuote.action,{type:'travel',sector:'tucuman',mode:'march',queue:true});
+   assert.ok(receipt.orders.some(row=>row.scope==='campaign'&&JSON.stringify(row.action)===JSON.stringify(marchQuote.action)),'the quoted march must appear in the actual order receipt');
+   assert.deepEqual(receipt.orders.filter(row=>row.scope==='tactical').map(row=>row.action),receipt.aidSteps);
+   assert.ok(Number.isSafeInteger(receipt.aidElapsedSeconds)&&receipt.aidElapsedSeconds>=0);
+   if(record.bleeding)assert.ok(receipt.aidElapsedSeconds>0&&receipt.aidSteps.some(action=>action.type==='useItem'&&action.unitId===String(receipt.id)&&action.targetId===String(receipt.id)),'the injured rear physician must perform ordinary self aid');
+   if(receipt.sourceTake){const take=receipt.sourceTake;assert.equal(take.action.type,'sectorInventory');assert.equal(take.action.direction,'take');assert.equal(take.action.sector,receipt.sourceSector);assert.equal(take.action.operativeId,receipt.id);assert.equal(JSON.parse(take.action.expected).item,'medkits');assert.equal(take.action.count,1);assert.equal(take.medicalPoolAfter,take.medicalPoolBefore-1);assert.equal(take.carriedAfter,take.carriedBefore+1);assert.ok(receipt.orders.some(row=>row.scope==='campaign'&&JSON.stringify(row.action)===JSON.stringify(take.action)));}
+   assert.equal(receipt.marchElapsedSeconds,marchQuote.hours*3600);assert.equal(receipt.elapsedSeconds,receipt.aidElapsedSeconds+receipt.marchElapsedSeconds);
+   const arrived=result.campaign.operativeState[receipt.id];assert.ok(result.campaign.recruited.includes(receipt.id)&&arrived.alive&&!arrived.captured);assert.equal(arrived.location,'tucuman');assert.ok(arrived.hp>=15);assert.equal(arrived.bleeding,0);assert.ok(result.recovery.doctors.includes(receipt.id));
+   availableDoctorIds.add(receipt.id);
+  }
+  assert.equal(result.recovery.hiredDoctors.length,Math.max(0,2-availableDoctorIds.size));assert.equal(result.recovery.hiringCost,result.recovery.hiredDoctors.reduce((sum,id)=>sum+result.campaign.contracts[id].paid,0));
+  assert.equal(new Set(result.recovery.doctors).size,2,'two distinct actual qualified physicians provide the recovery');
+  for(const id of result.recovery.doctors)assert.ok(rosterFor(result.campaign).find(op=>op.id===id).medical>=70);
   for(const id of result.recovery.doctors)assert.ok(result.campaign.contracts[id].paid>0,'surviving or replacement doctors work on real paid contracts');
   for(const id of result.recovery.hiredDoctors){assert.ok(!before.recruited.includes(id));assert.equal(before.operativeState[id].alive,true);assert.equal(result.campaign.operativeState[id].location,'tucuman');assert.ok(result.recovery.doctors.includes(id));assert.ok(rosterFor(result.campaign).find(op=>op.id===id).medical>=70);}
   assert.ok(result.recovery.recoveredDressings>=0);assert.ok(result.recovery.donatedDressings>=0);preserveDeaths(rescued,result.campaign);

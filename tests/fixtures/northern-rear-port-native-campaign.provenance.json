@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "origin": "Unmodified native freshNorthernRoute created campaign immediately before the failed rear-port meeting",
+  "sourceMainRevision": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+  "productionSource": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+  "sourceBytes": 2090685,
+  "sourceSha256": "b8805cf275339221ee48411b25115029372b5ee0c9d79f0a8cf7d63ae423e074",
+  "fixtureSha256": "028daadd939c4957e622c5d4a4da3d3bfeac719b0aca02dc905920e4491b43e3",
+  "hour": 172,
+  "secondOfHour": 1590,
+  "activeSquadId": "squad-1",
+  "operativeId": 146,
+  "treasury": 21296,
+  "priorDeadOperatives": [
+    3,
+    103,
+    110,
+    111,
+    127,
+    136,
+    141,
+    1000
+  ],
+  "preparation": "Original fresh-created route controllers and campaign actions. Observational loader captured the input without changing route decisions or simulation state.",
+  "scope": "Focused native meeting regression; upstream prefix diagnosis is not full campaign acceptance."
+}

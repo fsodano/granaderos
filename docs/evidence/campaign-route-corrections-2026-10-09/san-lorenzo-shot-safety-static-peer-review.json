@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "reviewedUtc": "2026-10-10T06:01:37.573753+00:00",
+  "proposalRoot": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw",
+  "candidateRoot": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "reviewType": "Independent static source/file review only",
+  "patchSha256": "cd695ce758bc584c88f045a05b35055517994dd868a77ffd1eacdec29074e786",
+  "blockingFindings": [],
+  "geometryCasesExecuted": false,
+  "gameModulesImported": 0,
+  "testsExecuted": 0,
+  "gameplayCalls": 0,
+  "replayExecutions": 0,
+  "repositoryWrites": 0,
+  "gitMutations": 0,
+  "hashChecks": [
+    {
+      "kind": "proposal",
+      "path": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw/proposed/tests/local-san-lorenzo-driver.mjs",
+      "bytes": 7038,
+      "sha256": "c65478b3c058c8b795cb0bb9061d4b94fac3da0cc3a3033f12fe7e7b71d2eba4",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "proposal",
+      "path": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw/proposed/tests/local-san-lorenzo-safety.test.mjs",
+      "bytes": 8214,
+      "sha256": "02395af5dba4729fdbc942210255f6993fe3a3b2158d54cc2da5247d31639b55",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "proposal",
+      "path": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw/original/tests/local-san-lorenzo-driver.mjs",
+      "bytes": 5458,
+      "sha256": "296a57e2ffbc9c4fea4cd21a8aea677523bffe57625385abe29624a310b097c6",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "proposal",
+      "path": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw/san-lorenzo-shot-safety.patch",
+      "bytes": 12700,
+      "sha256": "cd695ce758bc584c88f045a05b35055517994dd868a77ffd1eacdec29074e786",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "proposal",
+      "path": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw/README.md",
+      "bytes": 1875,
+      "sha256": "5bf89f6ceeef190cf43ad833a33735aaf63d069c035a2eaa87c0cb0716eb4699",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "proposal",
+      "path": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw/original-113-prefix-observation-plan.json",
+      "bytes": 1895,
+      "sha256": "caa4be205d400c2c764587c8711e57ba7cee298826647b2de08a740116a45d50",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "proposal",
+      "path": "/tmp/granaderos-san-lorenzo-shot-safety-proposal-20261010-tsyzjjnw/proposal-receipt.json",
+      "bytes": 6130,
+      "sha256": "b46ffc22764fc9fa09d2dc77c61d5dac23a6f5ee5a391f1c848e9fd5ec908d1b",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/local-san-lorenzo-driver.mjs",
+      "bytes": 5458,
+      "sha256": "296a57e2ffbc9c4fea4cd21a8aea677523bffe57625385abe29624a310b097c6",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-coastal-fixture.mjs",
+      "bytes": 21239,
+      "sha256": "8323db9352be2f08c92a9cf4e26d2b284f71eb52531a823b00f0f6245f888fd6",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/opening-driver.mjs",
+      "bytes": 5622,
+      "sha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/tactical.js",
+      "bytes": 271222,
+      "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/tactical-ai.js",
+      "bytes": 31581,
+      "sha256": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/paired-fire.js",
+      "bytes": 1625,
+      "sha256": "e039fbcdb1a49a7d83dbc29376156ec19d133b94ba05fb045d9b1c6da4281615",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/projectile-cover.js",
+      "bytes": 26514,
+      "sha256": "eea790ea6b8906584a089afa645096b8143beca098a12df3ac0006a58c269d74",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/shot-load.js",
+      "bytes": 6465,
+      "sha256": "4746cf0ab5848a481a25af34a4472ac485ccf637d8d05dec085a77ce7d8ba964",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/autonomous-orders.js",
+      "bytes": 2178,
+      "sha256": "45070fa416c870306ffc580151ff4e5842af2f06a24543e30a508c44992a1b17",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/paired-pistols-ai.test.mjs",
+      "bytes": 5450,
+      "sha256": "57cc98a3ddec36639717318dc9a5b4bc83dd6db4dbb77fe51ab4817af440a8d5",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/body-penetration.test.mjs",
+      "bytes": 15245,
+      "sha256": "944ceb850d2891abb5650fbc86c4d1cb441218f511a98b3e84c4855df4737cf3",
+      "matchesDeclared": true
+    },
+    {
+      "kind": "bound_source",
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/civilian-combat.test.mjs",
+      "bytes": 18875,
+      "sha256": "2fcbe8669382e0b0a0673af0c995ddeaa65b7fb04b68fc3447b23d7cb3d56f4d",
+      "matchesDeclared": true
+    }
+  ],
+  "patchReconstruction": [
+    {
+      "path": "tests/local-san-lorenzo-driver.mjs",
+      "patchReconstructsDeclaredProposedBytes": true,
+      "sha256": "c65478b3c058c8b795cb0bb9061d4b94fac3da0cc3a3033f12fe7e7b71d2eba4"
+    },
+    {
+      "path": "tests/local-san-lorenzo-safety.test.mjs",
+      "patchReconstructsDeclaredProposedBytes": true,
+      "sha256": "02395af5dba4729fdbc942210255f6993fe3a3b2158d54cc2da5247d31639b55"
+    }
+  ],
+  "scopeEvidence": [
+    {
+      "path": "proposed/tests/local-san-lorenzo-driver.mjs",
+      "lines": "13-30,65-73,87-94",
+      "fact": "Public friendly/per-hand flags always reject fire; civilian admission is gated by avoidCivilians. Original25threshold and score/tie loop remain. Final fire acceptance covers all candidates, including unchanged automatic fallback; only avoidCivilians is forwarded."
+    },
+    {
+      "path": "game/tactical.js",
+      "lines": "548-614,643-667",
+      "fact": "Preview filters known player-side civilian visibility/rooms, tags typed bodies, uses canonical physical height; options enumerate primary and actual paired offhand."
+    },
+    {
+      "path": "game/paired-fire.js",
+      "lines": "4-24",
+      "fact": "Actual held loaded serviceable unjammed pistol is required. Secondary view copies real owned ammunitionChoice and gun fields."
+    },
+    {
+      "path": "game/projectile-cover.js",
+      "lines": "15-18,233-267",
+      "fact": "Typed collections distinguish equal IDs; actual surface/body heights govern collision; previews assume potential body passage without drawing RNG."
+    },
+    {
+      "path": "game/shot-load.js",
+      "lines": "12-29,59-73",
+      "fact": "Public direct cone bodyImpacts is separate from forecast scatter entries. Proposal does not enumerate every off-aim scatter risk."
+    },
+    {
+      "path": "tests/fresh-coastal-fixture.mjs",
+      "lines": "109-110",
+      "fact": "Original caller already sends avoidCivilians:true. Existing battle and strict victory assertion is outside patch."
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "lines": "58-77",
+      "fact": "Original fight loop budgets/native order assertion/results remain untouched."
+    }
+  ],
+  "caseReviews": [
+    {
+      "line": 45,
+      "case": "known friendly body",
+      "staticBasis": "Baker nominal continued ray crosses standing body at5,3 before target8,3. Typed friendly flags include passage. Chance>=25 remains an asserted unexecuted precondition."
+    },
+    {
+      "line": 51,
+      "case": "actual paired offhand friendly cone",
+      "staticBasis": "1805+held loaded1808 is eligible under pairedPistol. offhand ammoShot is a supported alternate cone; .25 lateral spread reaches6,4. Native options carry hand flags. Exact chance/risk assertion remains unexecuted."
+    },
+    {
+      "line": 60,
+      "case": "typed civilian with matching unit ID",
+      "staticBasis": "Civilian identification uses collection reference and victimKind, not ID alone. NPC and target may share ID. False keeps civilian admission; true rejects direct typed impacts."
+    },
+    {
+      "line": 72,
+      "case": "actual paired offhand civilian cone",
+      "staticBasis": "Secondary view copies actual offhand ammunitionChoice, retains actor position/side, and clears further offhand. Primary ball ray is separate from declared offhand cone. Exact forecast preconditions remain unexecuted."
+    },
+    {
+      "line": 81,
+      "case": "final fire boundary",
+      "staticBasis": "Final boundary is in front of every candidate legality probe, including original automaticOrder result. Test only supplies a fallback-shaped fire; it does not exercise an observed automatic selection or a low-chance fire."
+    },
+    {
+      "line": 91,
+      "case": "unrevealed civilian",
+      "staticBasis": "knownCivilianBodies requires player team visibility AND isInteriorVisible; unknown room tag is hidden. No private NPC read is added by new safety code."
+    },
+    {
+      "line": 100,
+      "case": "dead/departed/roof civilian",
+      "staticBasis": "NPC physical/known body filters exclude hp0/departure. Roof uses tacticalLevel1/elevation3 with actual upper surface; source ray checks actual body vertical interval. Earned level is not used as floor."
+    },
+    {
+      "line": 117,
+      "case": "clear input unchanged",
+      "staticBasis": "Only new filters and final predicate are added; original score/chance/ties/priority unchanged. ActBattle legality probes clone original input. Actual selected equality remains unexecuted."
+    }
+  ],
+  "remainingLimits": [
+    "Eight declared geometry preconditions, input equality assertions, and outcome selection remain unexecuted.",
+    "No before113 original SanL shot state is independently retained; current safety omission is not proof that this recorded casualty or defeat is preventable.",
+    "The proposed final-boundary case is not an automatic-selection witness; wrapper forwarding has static proof but no direct execution control.",
+    "Safe nominal known rays cannot guarantee safety for off-aim misses or hidden civilians. Repeated per-aim/per-hand previews have no measured runtime cost.",
+    "This patch changes subsequent native orders by excluding unsafe shots; it preserves source state/seed/assertions and gives no victory or survival proof."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-10T05:56:55.268102+00:00",
+  "archive": "/tmp/granaderos-retained-safety-readonly-reviews-20261010.tar.gz",
+  "bytes": 146300,
+  "sha256": "3a6ca95f8ba4f561f00fdda04bc7cea29c3a6fdce557dd282ea3edd9d0c46363",
+  "regularRelativeMembers": 9,
+  "memberBytesAndShaVerified": true,
+  "sourceOrIndexChanged": false,
+  "nativeCalls": 0,
+  "proposalPackageVerified": true,
+  "boundSourceInputsVerified": 12,
+  "proposalPatchApplied": false,
+  "full947Hold": "active; no repository edits permitted until terminal closure"
+}

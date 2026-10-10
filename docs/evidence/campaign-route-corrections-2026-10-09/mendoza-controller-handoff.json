@@ -1,0 +1,60 @@
+{
+  "scope": "Mendoza caller handoff to the existing staged battery controller for more than one supplied player gun. No production source or other route preparation changes.",
+  "candidateFiles": {
+    "tests/fresh-cuyo-fixture.mjs": "4444c83013ba3b8aba605a0f0f8959ad799977ef851f35f7b0d677f4cf3857fa",
+    "tests/staged-battery-driver.test.mjs": "de5d934f6f8bb848cc34591ee4148d2cb50246dca62d30415bb937ce01a6ae11"
+  },
+  "unchangedDriver": {
+    "tests/staged-battery-driver.mjs": "98ae38a3f11423ea6914a211560639fa7573a15247d6cddb48b1d9c421d97cfd"
+  },
+  "genuineNativeInputs": {
+    "initialSave": "d12de6567cbfb5d9755041cfcd813fc07fefb39a09ce16ac551f1239fee3533c",
+    "nativeResult": "edab1fd3edf469eba3292e18316ed42cbe1cd46911da2058b46e635bb5c307f0"
+  },
+  "oldStalemate": {
+    "orders": 83,
+    "actions": 3,
+    "terminalTurn": 81,
+    "terminalElapsedSeconds": 48042,
+    "status": "active",
+    "initialSaveTurn": 1,
+    "terminalCoastalOrders": 0
+  },
+  "admissionProof": {
+    "id": "134",
+    "ap": 98,
+    "stagedOrder": {
+      "type": "artilleryMove",
+      "unitId": "134",
+      "artilleryId": "arsenal:cordoba:2",
+      "x": 34,
+      "y": 2
+    },
+    "stagedAdmission": {
+      "lastError": null,
+      "elapsedSeconds": 2
+    },
+    "coastalOrder": null
+  },
+  "targetedGate": {
+    "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/staged-battery-driver.test.mjs tests/campaign-battery-driver.test.mjs",
+    "tests": 21,
+    "pass": 21,
+    "fail": 0,
+    "skip": 0,
+    "durationMs": 947.424208,
+    "log": "/tmp/granaderos-mendoza-controller-boundary.log",
+    "logSha256": "47b2941c5bd5fab3117174d4c36b33dda1e7591b7354364a4e0e0350ceec276c",
+    "syntaxAndDiffCheck": true
+  },
+  "controls": [
+    "One supplied player gun retains exact coastal decisions",
+    "Empty second player gun does not select staging",
+    "Loaded enemy second gun does not select staging",
+    "Two crowded supplied guns select one admitted actual crew move",
+    "Both canonical guns and finite shots preserved",
+    "Living body positions remain unique",
+    "Exact deterministic action replay"
+  ],
+  "limits": "Targeted controller admission/replay coverage only. No new complete campaign or standalone battle was run. Original victory assertions remain strict. The final full suite must validate the original stock route."
+}

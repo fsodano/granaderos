@@ -1,0 +1,545 @@
+{
+  "schemaVersion": 1,
+  "kind": "read-only final full948 failure classification",
+  "createdAtUtc": "2026-10-10T07:12:26.140320+00:00",
+  "runDirectory": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z",
+  "repository": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "scope": {
+    "repositoryWrites": 0,
+    "indexWrites": 0,
+    "gitMutations": 0,
+    "nativeCalls": 0,
+    "testsExecuted": 0,
+    "replays": 0,
+    "controllerTrials": 0
+  },
+  "authoritativeGate": {
+    "receipt": {
+      "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/final-receipt.json",
+      "bytes": 2854,
+      "sha256": "4ed7ac4c4072f5240b830fe6048402bd6311cb35c9ff4f86a35ab82ea6b096f0"
+    },
+    "report": {
+      "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/full-report.json",
+      "bytes": 387123,
+      "sha256": "6987c933d262c3744e62e7b4dd793590edc17ca850717675e2c48e8dd8a1c82d"
+    },
+    "log": {
+      "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/run.log",
+      "bytes": 1410931,
+      "sha256": "c396eec6356f1a7ab47f01e4f599bb3dc3e8e8364457436a3a6f6c5b84408cc9"
+    },
+    "beforeSources": {
+      "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/before-source-hashes.json",
+      "bytes": 1877898,
+      "sha256": "7fdb33d9d4ccf29fdc81ff7a2cdee9f9e745f7c623db1514f817cf4627c1259d"
+    },
+    "complete": true,
+    "exitCode": 1,
+    "selectedFiles": 948,
+    "totalFiles": 948,
+    "sourceFiles": 14091,
+    "sourceDrift": [],
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "683a2829961b",
+      "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+      "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+    },
+    "counts": {
+      "tests": 7032,
+      "failed": 6,
+      "passed": 7021,
+      "cancelled": 0,
+      "skipped": 5,
+      "todo": 0,
+      "topLevel": 6881,
+      "suites": 0
+    },
+    "failedFileCount": 5,
+    "reportedFailureCount": 6,
+    "underlyingFailureSiteCount": 5,
+    "nativePackCount": 4,
+    "duplicateCountExplanation": "Opening contributes two reported failures for one child assertion plus its failed parent. Five dependent opening subtests skip."
+  },
+  "currentFailureClassifications": [
+    {
+      "file": "tests/fresh-ending-route.test.mjs",
+      "reportedFailures": 1,
+      "classification": "required-victory assertion failed on native combat retreat",
+      "actualNativeOutcome": "retreat",
+      "battleId": "los_patos-654-4162937008",
+      "strictAssertion": "fightNorthernSector requires victory; actual retreat",
+      "sourceEvidence": [
+        "tests/northern-route.mjs:316-327",
+        "tests/fresh-cuyo-fixture.mjs:106",
+        "tests/fresh-ending-fixture.mjs:29"
+      ],
+      "retainedFacts": "Turn 8, 111 actor actions, 129 orders, elapsed 90 seconds; six of eight player units have zero HP and two are routed. Earlier stock-route victories and Uspallata were reached.",
+      "boundedGaps": [
+        "No independent original initial deployed or pre-decision scene in this pack.",
+        "No invalid native action or outcome-preventing controller correction established by this read-only audit.",
+        "The retained old posture hypothesis is superseded by the exact 33-order observation: standing was reconnaissance after a null native chooser; no useful safe shot was proved to be undone."
+      ]
+    },
+    {
+      "file": "tests/fresh-cuyo-route.test.mjs",
+      "reportedFailures": 1,
+      "classification": "native battlefield victory followed by mandatory commander death and strategic defeat",
+      "actualNativeOutcome": "victory",
+      "battleId": "mendoza-514-2591988814",
+      "strictAssertion": "after genuine settlement, returned.defeated must be false; actual true",
+      "sourceEvidence": [
+        "tests/northern-route.mjs:328-337",
+        "game/campaign-civilians.js:92-109"
+      ],
+      "retainedFacts": "Turn 14, 586 actor actions, 636 orders, elapsed 139 seconds. Unrecruited NPC San Martín (operative57) is dead; Beltrán (operative2) is alive at 76 HP. Returned campaign has pendingBattle null, Mendoza patriot, Retiro patriot, foundry false, defeated true. Native log explicitly names San Martín death as terminal and records Mendoza victory.",
+      "reason": "José de San Martín ha muerto. La campaña no puede continuar sin este mando.",
+      "recorderSettlementClarification": "settlementExecuted:false describes the recorder adding no settlement. The route had already dispatched battleResult before supplying returned-campaign.json. The official terminal pair can already be defeated through tactical clock/civilian synchronization.",
+      "boundedGaps": [
+        "No independent before-shot witness is retained. Native corpse incidents label player attackers and intentional:false, but this does not establish intended-ray obstruction versus scatter.",
+        "Preventability, a winning tactical correction, and any relation to the separate historical-loss fixture timing remain unproved."
+      ]
+    },
+    {
+      "file": "tests/fresh-historical-loss.test.mjs",
+      "reportedFailures": 1,
+      "classification": "historical engineer-loss fixture no longer isolates commander survival",
+      "actualNativeOutcome": "victory asserted earlier inside freshMendozaLoss; no separate retained native pack",
+      "strictAssertion": "assert.ok(s.operativeState[57].hp > 0) is false",
+      "sourceEvidence": [
+        "tests/fresh-historical-loss.test.mjs:6-9",
+        "tests/historical-loss-fixture.mjs:13-34"
+      ],
+      "retainedFacts": "The fixture reached and passed battlefield victory, living engineer after combat, later actual engineer death, saved strategic defeat, settled patriot Mendoza, foundry false, and rejected foundry/wait orders. The final commander-survival assertion failed. The following engineer-reason log assertion was not reached.",
+      "boundedGaps": [
+        "No current independent prebattle, postbattle/pre-engineer-kill, or returned fixture state was emitted.",
+        "Exact first mandatory death and the timing/cause of operative57 loss within this distinct fixture remain unproved.",
+        "This is an isolation witness failure, not evidence that the essential death rule is wrong; no weaker witness or invented survival is proposed."
+      ]
+    },
+    {
+      "file": "tests/fresh-campaign-recovery.test.mjs",
+      "reportedFailures": 1,
+      "classification": "required care-defense victory assertion failed on native combat defeat",
+      "actualNativeOutcome": "defeat",
+      "battleId": "defense-enemy-group-1-150",
+      "strictAssertion": "fightNorthernSector requires victory; actual defeat",
+      "sourceEvidence": [
+        "tests/northern-route.mjs:316-327",
+        "tests/fresh-campaign-route.mjs:367-373",
+        "tests/fresh-campaign-recovery.test.mjs:101"
+      ],
+      "retainedFacts": "Later Córdoba care defense: turn 12, 181 actor actions, 203 orders, elapsed 80 seconds. The request contains 12 current respondents; terminal sector retains 18 player bodies at zero HP, including prior sector bodies. This is distinct from the successful dedicated northern recovery-recapture file.",
+      "boundedGaps": [
+        "The 18 terminal zero-HP bodies cannot be labelled 18 new deaths without accounting for prior sector state.",
+        "No independently captured initial/pre-decision scene or exact order-admission replay in this read-only audit.",
+        "No invalid native action or outcome-preventing controller correction established; native combat loss remains real."
+      ]
+    },
+    {
+      "file": "tests/opening-playthrough.test.mjs",
+      "reportedFailures": 2,
+      "underlyingFailureSites": 1,
+      "classification": "one native Córdoba retreat fails both child and parent; five dependent subtests skip",
+      "actualNativeOutcome": "retreat",
+      "battleId": "cordoba-84-18026106",
+      "strictAssertion": "survivors recover with finite supplies and paid replacements capture Córdoba requires victory; actual retreat",
+      "sourceEvidence": [
+        "tests/northern-route.mjs:316-327",
+        "tests/opening-playthrough.test.mjs:41-65"
+      ],
+      "retainedFacts": "Turn 8, 137 actor actions, 164 orders, elapsed 63 seconds; seven of twelve players have zero HP. Earlier relief-doctor subtest passed. Failed child propagates to its parent; five later captivity/rescue/courier/Salta/Yatasto subtests are skipped.",
+      "boundedGaps": [
+        "This file does not currently validate its skipped Tucumán capture, rescue, courier, Salta or Yatasto stages.",
+        "No independent initial/pre-decision scene or invalid-order proof from this capture.",
+        "Two reported test failures do not mean two independent gameplay defects."
+      ]
+    }
+  ],
+  "currentPassedRouteFiles": [
+    {
+      "file": "tests/fresh-coastal-route.test.mjs",
+      "duration_ms": 182418.362291,
+      "success": true,
+      "counts": {
+        "tests": 5,
+        "failed": 0,
+        "passed": 5,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 4,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-northern-route.test.mjs",
+      "duration_ms": 343981.870333,
+      "success": true,
+      "counts": {
+        "tests": 1,
+        "failed": 0,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-northern-recovery-recapture.test.mjs",
+      "duration_ms": 169869.660791,
+      "success": true,
+      "counts": {
+        "tests": 1,
+        "failed": 0,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    }
+  ],
+  "currentPassedRouteLimits": "These complete files passed all their current assertions; this does not turn the failed complete gate into a pass or prove all campaign routes, combat balance or bug-free gameplay.",
+  "nativePackSummaries": [
+    {
+      "directory": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17923-1-los_patos-654-4162937008-OiTd85",
+      "receipt": {
+        "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17923-1-los_patos-654-4162937008-OiTd85/receipt.json",
+        "bytes": 1352,
+        "sha256": "8718186fa0f518f2ae3acfa00aba9b4d3be6cc00abb64c2360d6cc2dcf771820"
+      },
+      "testFile": "fresh-ending-route.test.mjs",
+      "battleId": "los_patos-654-4162937008",
+      "sector": "los_patos",
+      "expectedOutcome": "victory",
+      "actualOutcome": "retreat",
+      "failureStage": "battle-outcome",
+      "actorActions": 111,
+      "totalOrders": 129,
+      "turn": 8,
+      "elapsedSeconds": 90,
+      "terminalLastError": null,
+      "previousExists": false,
+      "returnedCampaignProvided": false,
+      "inputCapturePhase": "retained arguments after execution and reporting",
+      "trueInitialBattleCaptured": false,
+      "additionalRecorderOrders": 0,
+      "recorderSettlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17923-1-los_patos-654-4162937008-OiTd85/native-input.json",
+          "bytes": 9291949,
+          "sha256": "a3fa1ae6476d5f43541797bb54069417df1e14a992f7d3bafe720aff3385a89a",
+          "relativePath": "native-input.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17923-1-los_patos-654-4162937008-OiTd85/native-result.json",
+          "bytes": 538297,
+          "sha256": "43a2231fba97830cda40a7e6e125cd122b0e04478b5a7c2dda8eda93a74cbcf6",
+          "relativePath": "native-result.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17923-1-los_patos-654-4162937008-OiTd85/terminal.save.json",
+          "bytes": 1874507,
+          "sha256": "92815950852d5968d9f4f613b46afd481a0bf7754b45ea3660016e0234e1ccf2",
+          "relativePath": "terminal.save.json",
+          "matchesPackReceipt": true
+        }
+      ]
+    },
+    {
+      "directory": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17926-1-mendoza-514-2591988814-9a6Ddj",
+      "receipt": {
+        "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/receipt.json",
+        "bytes": 1510,
+        "sha256": "3797468c7d5ed2642fd6e4cc6dbabd757ae3d5fb5fb71125543d19b6a333c07d"
+      },
+      "testFile": "fresh-cuyo-route.test.mjs",
+      "battleId": "mendoza-514-2591988814",
+      "sector": "mendoza",
+      "expectedOutcome": "victory",
+      "actualOutcome": "victory",
+      "failureStage": "campaign-after-victory",
+      "actorActions": 586,
+      "totalOrders": 636,
+      "turn": 14,
+      "elapsedSeconds": 139,
+      "terminalLastError": null,
+      "previousExists": false,
+      "returnedCampaignProvided": true,
+      "inputCapturePhase": "retained arguments after execution and reporting",
+      "trueInitialBattleCaptured": false,
+      "additionalRecorderOrders": 0,
+      "recorderSettlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/native-input.json",
+          "bytes": 7629339,
+          "sha256": "bcc33db01bb18ed9384e2f7e2d09396f1cd107167b3de296a2eaf4f3acbce525",
+          "relativePath": "native-input.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/native-result.json",
+          "bytes": 1067595,
+          "sha256": "451b6f1f065646672993c19e6d1a9954b6465a48f23693ea9b6dec91d9cb3350",
+          "relativePath": "native-result.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/returned-campaign.json",
+          "bytes": 7759704,
+          "sha256": "83c03d3c927e7a79228c24a1b271917b43f17edf82a6a247dadd6d22a174085e",
+          "relativePath": "returned-campaign.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17926-1-mendoza-514-2591988814-9a6Ddj/terminal.save.json",
+          "bytes": 1740082,
+          "sha256": "56ddde414a621cb24a2f7172333ff6e0535b44f14604d9e92d9b308252b7026e",
+          "relativePath": "terminal.save.json",
+          "matchesPackReceipt": true
+        }
+      ]
+    },
+    {
+      "directory": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17927-1-defense-enemy-group-1-150-SpEhkU",
+      "receipt": {
+        "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/receipt.json",
+        "bytes": 1360,
+        "sha256": "a9e4e1b5803b2473f4f175344f79e508afd5612142246876a64052c716fdb8a6"
+      },
+      "testFile": "fresh-campaign-recovery.test.mjs",
+      "battleId": "defense-enemy-group-1-150",
+      "sector": "cordoba",
+      "expectedOutcome": "victory",
+      "actualOutcome": "defeat",
+      "failureStage": "battle-outcome",
+      "actorActions": 181,
+      "totalOrders": 203,
+      "turn": 12,
+      "elapsedSeconds": 80,
+      "terminalLastError": null,
+      "previousExists": true,
+      "returnedCampaignProvided": false,
+      "inputCapturePhase": "retained arguments after execution and reporting",
+      "trueInitialBattleCaptured": false,
+      "additionalRecorderOrders": 0,
+      "recorderSettlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/native-input.json",
+          "bytes": 5378947,
+          "sha256": "2d85ec7a76e0f2870bffa38cbbcd83a5c1dfb5257588f18f26f0b88be7aa5c0d",
+          "relativePath": "native-input.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/native-result.json",
+          "bytes": 890820,
+          "sha256": "2a7742d45a56307ebb61255681b6b709e924b5acf1097b58d4ccedf486cfcc91",
+          "relativePath": "native-result.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/17927-1-defense-enemy-group-1-150-SpEhkU/terminal.save.json",
+          "bytes": 1126542,
+          "sha256": "f0afbb17ab44e287784529c719c5e0d5c183d4dc357607cf14047805bdba24c8",
+          "relativePath": "terminal.save.json",
+          "matchesPackReceipt": true
+        }
+      ]
+    },
+    {
+      "directory": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/30548-1-cordoba-84-18026106-zOQEVl",
+      "receipt": {
+        "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/30548-1-cordoba-84-18026106-zOQEVl/receipt.json",
+        "bytes": 1360,
+        "sha256": "3c7c647311743ec649177789ea46024542f24cc94e97d271838b3ce0462355f3"
+      },
+      "testFile": "opening-playthrough.test.mjs",
+      "battleId": "cordoba-84-18026106",
+      "sector": "cordoba",
+      "expectedOutcome": "victory",
+      "actualOutcome": "retreat",
+      "failureStage": "battle-outcome",
+      "actorActions": 137,
+      "totalOrders": 164,
+      "turn": 8,
+      "elapsedSeconds": 63,
+      "terminalLastError": null,
+      "previousExists": false,
+      "returnedCampaignProvided": false,
+      "inputCapturePhase": "retained arguments after execution and reporting",
+      "trueInitialBattleCaptured": false,
+      "additionalRecorderOrders": 0,
+      "recorderSettlementExecuted": false,
+      "artifacts": [
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/30548-1-cordoba-84-18026106-zOQEVl/native-input.json",
+          "bytes": 2631132,
+          "sha256": "80003047ee597852b84879d577b593de236e77e554de9d082facf4aacd59df30",
+          "relativePath": "native-input.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/30548-1-cordoba-84-18026106-zOQEVl/native-result.json",
+          "bytes": 817757,
+          "sha256": "5ce890283d46467024ba93b9f570b7d75a7ff297cd9ab8f99e97b98fadd258e2",
+          "relativePath": "native-result.json",
+          "matchesPackReceipt": true
+        },
+        {
+          "path": "/tmp/granaderos-campaign-post-san-lorenzo-full-2026-10-10T064452281Z/native-failures/30548-1-cordoba-84-18026106-zOQEVl/terminal.save.json",
+          "bytes": 690922,
+          "sha256": "50707f8175bdfc9a10e882987223c2930bbe4d0b5169fae128fa363417819ec1",
+          "relativePath": "terminal.save.json",
+          "matchesPackReceipt": true
+        }
+      ]
+    }
+  ],
+  "sourceProof": [
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/northern-route.mjs",
+      "bytes": 85026,
+      "sha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8",
+      "relativePath": "tests/northern-route.mjs",
+      "full948BeforeSha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-cuyo-fixture.mjs",
+      "bytes": 9590,
+      "sha256": "4444c83013ba3b8aba605a0f0f8959ad799977ef851f35f7b0d677f4cf3857fa",
+      "relativePath": "tests/fresh-cuyo-fixture.mjs",
+      "full948BeforeSha256": "4444c83013ba3b8aba605a0f0f8959ad799977ef851f35f7b0d677f4cf3857fa",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-ending-fixture.mjs",
+      "bytes": 2601,
+      "sha256": "64fc44978ace2d1f201e7e27680640dffbfeb713547da1193951276864e93f03",
+      "relativePath": "tests/fresh-ending-fixture.mjs",
+      "full948BeforeSha256": "64fc44978ace2d1f201e7e27680640dffbfeb713547da1193951276864e93f03",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-ending-route.test.mjs",
+      "bytes": 10111,
+      "sha256": "b15592c43228e5c7c62124258ca6cb9c9e956c5b02fdc4b698a8f771426e60f4",
+      "relativePath": "tests/fresh-ending-route.test.mjs",
+      "full948BeforeSha256": "b15592c43228e5c7c62124258ca6cb9c9e956c5b02fdc4b698a8f771426e60f4",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-cuyo-route.test.mjs",
+      "bytes": 982,
+      "sha256": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+      "relativePath": "tests/fresh-cuyo-route.test.mjs",
+      "full948BeforeSha256": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-campaign-route.mjs",
+      "bytes": 74283,
+      "sha256": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e",
+      "relativePath": "tests/fresh-campaign-route.mjs",
+      "full948BeforeSha256": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-campaign-recovery.test.mjs",
+      "bytes": 39706,
+      "sha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "relativePath": "tests/fresh-campaign-recovery.test.mjs",
+      "full948BeforeSha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/historical-loss-fixture.mjs",
+      "bytes": 5095,
+      "sha256": "5f9d5ae49fa513a6166d7114fadcfac2f91c1c16a37557ef92ebd7f05fea4f9c",
+      "relativePath": "tests/historical-loss-fixture.mjs",
+      "full948BeforeSha256": "5f9d5ae49fa513a6166d7114fadcfac2f91c1c16a37557ef92ebd7f05fea4f9c",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/fresh-historical-loss.test.mjs",
+      "bytes": 1024,
+      "sha256": "69d61cf5e8432277702a8ef251bb1ca454e554736aadd1a95bd5ffe01625ff53",
+      "relativePath": "tests/fresh-historical-loss.test.mjs",
+      "full948BeforeSha256": "69d61cf5e8432277702a8ef251bb1ca454e554736aadd1a95bd5ffe01625ff53",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/tests/opening-playthrough.test.mjs",
+      "bytes": 30015,
+      "sha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "relativePath": "tests/opening-playthrough.test.mjs",
+      "full948BeforeSha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/campaign-civilians.js",
+      "bytes": 22610,
+      "sha256": "b1a34d7ec3de77526a903d5e159895033eacc15ac3f1bdf54d34952115e2c1fc",
+      "relativePath": "game/campaign-civilians.js",
+      "full948BeforeSha256": "b1a34d7ec3de77526a903d5e159895033eacc15ac3f1bdf54d34952115e2c1fc",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/time.js",
+      "bytes": 5569,
+      "sha256": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+      "relativePath": "game/time.js",
+      "full948BeforeSha256": "54d7c1d441ef6e123a4c1eac5738270d8697849997f4cd82141729f4f240e402",
+      "matchesFull948Before": true
+    },
+    {
+      "path": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos/game/campaign.js",
+      "bytes": 161790,
+      "sha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+      "relativePath": "game/campaign.js",
+      "full948BeforeSha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+      "matchesFull948Before": true
+    }
+  ],
+  "sourceDriftDuringReadOnlyAudit": [],
+  "mendozaAttributionReport": {
+    "path": "/tmp/granaderos-full948-mendoza-settlement-readonly-20261010-t0hy_rl4/receipt.json",
+    "bytes": 10180,
+    "sha256": "be4b91118c746b5bfa70b28fdbd7586458891277dd551c3379233d2b593c58f3"
+  },
+  "historicalFull947": {
+    "preservedAsHistorical": true,
+    "receipt": {
+      "path": "/tmp/granaderos-campaign-post-care-full-2026-10-10T053856639Z/final-receipt.json",
+      "bytes": 3107,
+      "sha256": "1cbbc256cf52d055f79058f9e165ab1b98228bdd93107f7bd1efb13b1ccb25cc"
+    },
+    "selectedFiles": 947,
+    "sourceFiles": 14064,
+    "counts": {
+      "tests": 7024,
+      "failed": 7,
+      "passed": 7012,
+      "cancelled": 0,
+      "skipped": 5,
+      "todo": 0,
+      "topLevel": 6873,
+      "suites": 0
+    },
+    "failedFileCount": 6,
+    "sourceDrift": [],
+    "note": "Historical full947 remains 7 reported failures across 6 files, including one coastal failure. Current full948 complete coastal file is 5/5 pass; do not rewrite full947 as current."
+  },
+  "proposedConciseDocsText": "Current full948 completed all 948 files with zero drift across 14,091 source files: 7,032 tests, 7,021 pass, 6 fail and 5 skip. Five files failed; opening counts one Córdoba child failure and its parent separately. Complete coastal passed 5/5, and northern and recovery-recapture each passed 1/1. Remaining failures are the stock Los Patos retreat, Córdoba care-defense defeat, opening Córdoba retreat, Mendoza battlefield victory with San Martín death and strategic defeat, and a separate historical engineer-loss fixture whose commander-survival witness fails. Mendoza terminal reason is known; prevention and the separate fixture death timing remain unproved. The gate is not green."
+}

@@ -1,0 +1,5 @@
+
+> granaderos@0.4.0-dev.1 audit:docs
+> node tools/audit-docs.mjs
+
+Documentation audit passed: 275 requirements, 50 original rows, 87 parity rows, 143 evidence records; progress view matches.

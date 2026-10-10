@@ -11,7 +11,7 @@
 import {automaticOrder} from '../game/autonomous-orders.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee,interruptAvailable,firearmShotOptions,stanceCost} from '../game/tactical.js';
-import {spacePoint,spaceKey,sameSurface} from '../game/tactical-space.js';
+import {spacePoint,spaceKey,sameSurface,surfaceAt} from '../game/tactical-space.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
 import {fight as recordedFight} from './opening-driver.mjs';
@@ -58,9 +58,11 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
      // a torso shot while the head is exposed. Previewed bodies also protect
      // known civilians and teammates without reading hidden occupants.
      for(const t of visible){
+      if(avoidCivilians&&!clearOfCivilians(b,u,t))continue;
       const cost=actionCosts(b,u,t);if(u.ap<cost.fire)continue;
       for(const shot of firearmShotOptions(b,u,t,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim)))){
        if(shot.chance<25)continue;
+       if(avoidCivilians&&(shot.interveningFriendly||shot.shots?.some(hand=>hand.interveningFriendly)))continue;
        const effect=shotLocationEffects(shot.hitLocation,weaponFor(u).damage*shot.damageFactor,t);
        const score=shot.chance*(Math.min(t.hp,effect.damage)+(t.hp-effect.damage<15?15:0))-(cost.fire+shot.aim*cost.aim)*.2;
        shots.push({t,...shot,score});
@@ -73,9 +75,10 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
     if(!hold&&!visible.length&&!known.length&&b.turn>=20){const search=sectorSearchOrder(b,u);if(search)yield search;}
     const goal=visible.length?visible:known.length?known:[{x:b.width-3,y:Math.round(b.height/2)}];
     const currentDistance=Math.min(...goal.map(t=>dist(u,t)));
-    const moves=(hold?[]:getReachable(b,u)).filter(p=>p.cost>0&&p.cost<=Math.min(32,Math.max(0,u.ap-30))&&!visited.has(spaceKey(p)));
-    const scored=moves.map(p=>{const actor={...u,...spacePoint(p)},distance=Math.min(...goal.map(t=>dist(p,t))),cover=b.tiles.find(t=>t.x===p.x&&t.y===p.y)?.cover??0,chance=visible.length?Math.max(...visible.map(t=>Math.max(shotChance(b,actor,t,2),shotChance(b,actor,t,2,'head')))):0;return {p,distance,score:visible.length?chance*.7+cover*.7-Math.max(0,5-distance)*12-p.cost*.2:-distance-p.cost*scoutCostWeight};}).filter(x=>visible.length?x.distance>=3||!hasFirearm(u):x.distance<currentDistance).sort((a,b)=>b.score-a.score);
-    const currentScore=visible.length?Math.max(...visible.map(t=>Math.max(shotChance(b,u,t,2),shotChance(b,u,t,2,'head'))))*.7+(b.tiles.find(t=>t.x===u.x&&t.y===u.y)?.cover??0)*.7-Math.max(0,5-currentDistance)*12:-currentDistance;
+    const view={...b,units:b.units.filter(other=>other.side===u.side||teamCanSee(b,u.side,other)),npcs:(b.npcs??[]).filter(other=>teamCanSee(b,u.side,other))};
+    const moves=(hold?[]:getReachable(view,u)).filter(p=>p.cost>0&&p.cost<=Math.min(32,Math.max(0,u.ap-30))&&!visited.has(spaceKey(p)));
+    const scored=moves.map(p=>{const actor={...u,...spacePoint(p)},distance=Math.min(...goal.map(t=>dist(p,t))),cover=surfaceAt(b,p)?.cover??0,chance=visible.length?Math.max(...visible.map(t=>Math.max(shotChance(b,actor,t,2),shotChance(b,actor,t,2,'head')))):0;return {p,distance,score:visible.length?chance*.7+cover*.7-Math.max(0,5-distance)*12-p.cost*.2:-distance-p.cost*scoutCostWeight};}).filter(x=>visible.length?x.distance>=3||!hasFirearm(u):x.distance<currentDistance).sort((a,b)=>b.score-a.score);
+    const currentScore=visible.length?Math.max(...visible.map(t=>Math.max(shotChance(b,u,t,2),shotChance(b,u,t,2,'head'))))*.7+(surfaceAt(b,u)?.cover??0)*.7-Math.max(0,5-currentDistance)*12:-currentDistance;
     if(scored[0]&&scored[0].score>currentScore+2)yield ({type:'move',...spacePoint(scored[0].p)});
     if(hasFirearm(u)&&!u.loaded&&u.ammo)yield ({type:'reload'});
    }

@@ -1,0 +1,61 @@
+{
+  "scope": "Inactive first one-line known-friendly-ray flag correction and exact zero-order Mendoza forecast. This warning covers friendly units; this archive alone does not establish complete civilian safety or the unretained full940 care defeat cause.",
+  "files": [
+    {
+      "path": "audit-final.json",
+      "sha256": "148af0c556e4294c34ebf4d69037dc27877e4d6a04255e75d7b9d962bc170b7f",
+      "bytes": 23431
+    },
+    {
+      "path": "cuyo-opt-in-known-friendly-ray.patch",
+      "sha256": "c96083295f570dd5cd9381dff54b53a8cd1138a3778b9a07893bfa592d167eab",
+      "bytes": 669
+    },
+    {
+      "path": "cuyo-route-driver.baseline.mjs",
+      "sha256": "2746b2be837b1341d8101935100e0eb3346352ffe494255d6ab93fcb0aeabe28",
+      "bytes": 8080
+    },
+    {
+      "path": "cuyo-route-driver.candidate.mjs",
+      "sha256": "f51b7ce0812f1dddc8dd8aa97fbc57bed1d5e6a00f943d1fa8e2e1e0349023c9",
+      "bytes": 8193
+    },
+    {
+      "path": "failure-recorder-static-review.json",
+      "sha256": "da6f0f11f43a7fce131d15d134dfc5be00645a4d5d0d818dd10f89b8d4ed4c03",
+      "bytes": 4315
+    },
+    {
+      "path": "forecast-loader.mjs",
+      "sha256": "638e68b4955b2384ebc58a9bafeaa9e8e4d7317e2fccfd89a86a534257bb2cef",
+      "bytes": 1130
+    },
+    {
+      "path": "native-forecast-import-closure.json",
+      "sha256": "3187d809ba8b2e657e1cfa7db7aaac0c6b19e1d85a758e155f93aab2f6b4cdf0",
+      "bytes": 67246
+    },
+    {
+      "path": "native-forecast-imports.jsonl",
+      "sha256": "0b33ec9bb92063feaee587447c4898a1ad74d050674469bb5638910bdf718be0",
+      "bytes": 34567
+    },
+    {
+      "path": "native-forecast-receipt.json",
+      "sha256": "17a8da4e3b52ad8afc287598593112deb2d9b0511dd1ebfa0c745f61c2a69d06",
+      "bytes": 1858
+    },
+    {
+      "path": "native-forecast.log",
+      "sha256": "523c71b1613e9b29c955c9da3fefa018188945a02d5ea92ccab268f68dbb4139",
+      "bytes": 448
+    },
+    {
+      "path": "native-forecast.mjs",
+      "sha256": "99c442f14b9c95d176790a2a047eb446b1ddfa5129a341747e92abc3d97b8003",
+      "bytes": 3085
+    }
+  ],
+  "count": 11
+}

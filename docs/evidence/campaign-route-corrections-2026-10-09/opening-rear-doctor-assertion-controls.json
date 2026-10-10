@@ -1,0 +1,36 @@
+{
+  "scope": "Assertion-only external patch. One derived receipt from retained actual aid/march/arrival states; no native orders, battle, campaign continuation or full clinical result executed.",
+  "sourceSha256": "a94b72d7b25e4f55a7ff888d8f32df921bd1b442bfa0beab8dc30a1b77136972",
+  "candidateSha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+  "patchSha256": "a090285562f45f0c348773a758e1d6ea6c59d09f82827bdd1a8795d4d2c70aaf",
+  "originalLocalDoctorIds": [
+    122
+  ],
+  "witnessedRearPhysicianIds": [
+    112
+  ],
+  "expectedNewHires": 0,
+  "actualAidElapsedSeconds": 3,
+  "actualMarchHours": 20,
+  "arrivalClock": [
+    212,
+    3271
+  ],
+  "nativeDressingDebit": 1,
+  "positiveControls": 1,
+  "negativeControls": 10,
+  "rejected": [
+    "duplicate rear physician",
+    "unqualified original physician",
+    "incorrect source",
+    "incorrect arrival",
+    "shortened march",
+    "unpaid aid time",
+    "forged dressing debit",
+    "missing quoted order",
+    "unnecessary paid hire",
+    "duplicate final doctors"
+  ],
+  "repoEdited": false,
+  "limits": "This verifies receipt admission and hire count only. The full original opening route remains unresolved; no victory or full-HP clinical completion is claimed."
+}

@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-10T06:35:18.369784+00:00",
+  "status": "Supersedes the earlier unexecuted safe-standing conflict hypothesis for this exact actor8 prefix",
+  "historicalHypothesis": {
+    "sourceReport": "/tmp/granaderos-los-patos-posture-static-audit-20261010-pzolf3ih/source-report.json",
+    "sourceReportSha256": "bd0893dfa1256ecd77358e947b3d1ccc0041bd97ff0afe8afb55377c2aed020b",
+    "planSha256": "5330016710ed6f6286d09bb9ed92416a96d3a50b0f81c995a3e513924e615e9b",
+    "proposalApplied": false
+  },
+  "proof": {
+    "receiptSha256": "490d7eb0f2783a63a53245aa6e2b6be433756be788c64ea00bc2d75dbb5bdd8f",
+    "closureSha256": "caa70d742fb7ecf3a497e3f84bda1bda83db295821afe1da5ad8efae1d9c9773",
+    "nativeCallAttemptCount": 1,
+    "acceptedSourceDerivedDeployment": 11,
+    "acceptedOriginalPrefixOrders": 33,
+    "originalActor8SelectorsEqualTape": 5,
+    "officialSavePairEqualities": 6,
+    "allInputsAndSourcesUnchanged": true,
+    "noEndTurnAlternateControllerActionSettlement": true,
+    "sourceBindings": {
+      "tests/northern-route.mjs": {
+        "originalSha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8",
+        "runtimeSha256": "23f2910750f91377590e544631e9c60521588397a0bd84a4f0204c77da1ea1fa",
+        "runtimePath": "runtime/tests-northern-route.mjs",
+        "mode": "Passive local import/export wrappers and branch records only. No added model/native/order calls."
+      },
+      "tests/opening-driver.mjs": {
+        "originalSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+        "runtimeSha256": "5e6f962815a0478c13a96b979c06ec20bf8250693c9902f2ba24d45cdd341487",
+        "runtimePath": "runtime/tests-opening-driver.mjs",
+        "mode": "Passive local import/export wrappers and branch records only. No added model/native/order calls."
+      },
+      "tests/created-los-patos-battery.mjs": {
+        "originalSha256": "54067ef1da211593b55d4c36eb4f134f88f1423c7c651331f8f00f9baa8bdc83",
+        "runtimeSha256": "037b301482966a888acb58e035f7c88e849210a1d561e27777c649d5634fe754",
+        "runtimePath": "runtime/tests-created-los-patos-battery.mjs",
+        "mode": "Original deployment native calls once, with passive admission/input/output records."
+      },
+      "game/tactical-ai.js": {
+        "originalSha256": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4",
+        "runtimeSha256": "b4af92f3aba0bdbfc3b28296bed3c205faaf4586ebeacb561035fdc1e41acbcf",
+        "runtimePath": "runtime/game-tactical-ai.js",
+        "mode": "Passive original forecast call and original bestShot/firingPosture branch records; zero extra native calls."
+      }
+    }
+  },
+  "observations": [
+    {
+      "index": 4,
+      "stance": "standing",
+      "ap": 63,
+      "selected": {
+        "type": "stance",
+        "unitId": "8",
+        "stance": "crouched"
+      },
+      "teamVisibleFromOriginalCalls": [
+        "enemy-13"
+      ],
+      "forecastsFromOriginalCalls": [],
+      "originalNativeChoice": [],
+      "branches": [
+        "tests/opening-driver.mjs:combatOrder:return",
+        "north:forcedStandingToCrouch",
+        "tests/northern-route.mjs:northernCombatOrder:return"
+      ]
+    },
+    {
+      "index": 12,
+      "stance": "crouched",
+      "ap": 60,
+      "selected": {
+        "type": "stance",
+        "unitId": "8",
+        "stance": "prone"
+      },
+      "teamVisibleFromOriginalCalls": [
+        "enemy-13"
+      ],
+      "forecastsFromOriginalCalls": [
+        {
+          "targetId": "enemy-13",
+          "highestChance": 4,
+          "allFlagFriendly": true,
+          "targetAlive": true
+        }
+      ],
+      "originalNativeChoice": [],
+      "branches": [
+        "tests/opening-driver.mjs:combatOrder:return",
+        "north:ranking",
+        "north:finalLegacyReturn",
+        "tests/northern-route.mjs:northernCombatOrder:return"
+      ]
+    },
+    {
+      "index": 20,
+      "stance": "prone",
+      "ap": 57,
+      "selected": {
+        "type": "stance",
+        "unitId": "8",
+        "stance": "standing"
+      },
+      "teamVisibleFromOriginalCalls": [],
+      "forecastsFromOriginalCalls": [],
+      "originalNativeChoice": [
+        null
+      ],
+      "branches": [
+        "tests/opening-driver.mjs:combatOrder:return",
+        "tests/northern-route.mjs:northernCombatOrder:return"
+      ]
+    },
+    {
+      "index": 27,
+      "stance": "standing",
+      "ap": 51,
+      "selected": {
+        "type": "stance",
+        "unitId": "8",
+        "stance": "crouched"
+      },
+      "teamVisibleFromOriginalCalls": [
+        "enemy-14"
+      ],
+      "forecastsFromOriginalCalls": [],
+      "originalNativeChoice": [],
+      "branches": [
+        "tests/opening-driver.mjs:combatOrder:return",
+        "north:forcedStandingToCrouch",
+        "tests/northern-route.mjs:northernCombatOrder:return"
+      ]
+    },
+    {
+      "index": 32,
+      "stance": "crouched",
+      "ap": 48,
+      "selected": {
+        "type": "stance",
+        "unitId": "8",
+        "stance": "prone"
+      },
+      "teamVisibleFromOriginalCalls": [
+        "enemy-14"
+      ],
+      "forecastsFromOriginalCalls": [
+        {
+          "targetId": "enemy-14",
+          "highestChance": 1,
+          "allFlagFriendly": false,
+          "targetAlive": true
+        }
+      ],
+      "originalNativeChoice": [],
+      "branches": [
+        "tests/opening-driver.mjs:combatOrder:return",
+        "north:ranking",
+        "north:finalLegacyReturn",
+        "tests/northern-route.mjs:northernCombatOrder:return"
+      ]
+    }
+  ],
+  "interpretation": [
+    "Index4/27 indeed use north forced-standing-to-crouch. Index12/32 rank zero safe useful shots and return original prone.",
+    "Index20 native chooseEnemyAction returns null. Opening reconnaissance tail then returns standing. Native firingPosture and north paid-safe-shot fallback never ran.",
+    "Enemy13 was killed by original teammates before20. Original team-visible contacts are empty at20; enemy14 is visible at27/32. The target/contact context changed.",
+    "Five native stances consume18AP (63 to45); actor8 has no shot or move, HP70/loaded1/ammo11 remain unchanged. These are accepted paid native decisions.",
+    "No target justified a useful standing shot at20, so the same-target27 diagnostic correctly did not run. No safe-standing-shot witness exists in this observation."
+  ],
+  "decision": "Do not apply the hypothesized stance deferral on this evidence. A static conditional collision can still exist, but this actual prefix does not demonstrate a useful shot being undone or a corrective benefit.",
+  "limits": [
+    "Source-derived original deployment; independent original deployed/before-decision capture absent.",
+    "No remaining96 orders/full battle/terminal equality/recovery/settlement or winning-correction proof.",
+    "Raw original full947 retreat is preserved. No ammunition/medicine/health/identity grant.",
+    "Do not treat legacy level1 as elevation. Tactical level defaults to0 in these captured actors."
+  ],
+  "nativeCallsAfterObservation": 0
+}

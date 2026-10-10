@@ -1,0 +1,226 @@
+{
+  "scope": "Terminal unchanged opening observation only; alternatives never applied. Frozen original inputs and real Cordoba retreat are retained. No exact-only follow-up replay is included here. Observer runtime source changes are explicit metadata and inactive archive contents.",
+  "capturedUtc": "2026-10-10T03:35:43.517796+00:00",
+  "files": [
+    {
+      "path": "battle-api-calls-59537.ndjson",
+      "bytes": 670574,
+      "sha256": "dc6b9cc53360b47260f13a8b5503cd821dac72c1a38943192c3b7a7926b86d76"
+    },
+    {
+      "path": "campaign-orders-59537.ndjson",
+      "bytes": 5435902,
+      "sha256": "414e3a853bde82ed15095e21fdd57d45e88126b4338eb388194dc08fc490cf89"
+    },
+    {
+      "path": "check-transform.mjs",
+      "bytes": 2170,
+      "sha256": "c99058d92fd4024c4079540af239a8511e6350dcc998c7a9eb1a370127f0747d"
+    },
+    {
+      "path": "controller-decisions-59537.ndjson",
+      "bytes": 198183,
+      "sha256": "ed18984128a2bbf51baeeec4838dccf455616bd60d3b2dadade8674c2f0cb13c"
+    },
+    {
+      "path": "cordoba-before-first-controller.native.json",
+      "bytes": 3339838,
+      "sha256": "7c16e8459342f8ee96d8a38b740fa7d24e936103a4fdbff432ceed8a0081af1d"
+    },
+    {
+      "path": "cordoba-before-first-controller.pair-receipt.json",
+      "bytes": 934,
+      "sha256": "73e0e1b8d2d01ce3c9c3631a65eeaaeea2edd36851c052468f2fcc065c91e46f"
+    },
+    {
+      "path": "cordoba-before-first-controller.save.json",
+      "bytes": 676152,
+      "sha256": "bd91a054121445c64c9ef5c3b5c3b3b931a321cd803576e97762f7f1e5b64ee1"
+    },
+    {
+      "path": "cordoba-blocked-decisions-59537.ndjson",
+      "bytes": 12470,
+      "sha256": "18b0d9c206d1c968b35aed6f5e7dbb17b585b023eeb79a93e6cae40c6397403b"
+    },
+    {
+      "path": "cordoba-canonical-api-chain.json",
+      "bytes": 51906,
+      "sha256": "6681435a052e763f4f84389b763d6eb50a07a4ec15d76801af6fcad49cd3cfad"
+    },
+    {
+      "path": "cordoba-fight-3-native-orders.json",
+      "bytes": 12544,
+      "sha256": "d34bdc294d15dfbf5004e828051db022a90de0998f755d04fe5e8c52e4ec411d"
+    },
+    {
+      "path": "cordoba-fight-3-request-previous.native.json",
+      "bytes": 68642,
+      "sha256": "57230ff339a3ac5516af58023e8e14cd50e9f82a761e143242361b559a56509a"
+    },
+    {
+      "path": "cordoba-fight-3-terminal.native.json",
+      "bytes": 732247,
+      "sha256": "7ec7666ba7acc85a3ab0db6069c28e22da2dd97717ed4f6ea6e49896e270138f"
+    },
+    {
+      "path": "cordoba-first-blocked-fire.native.json",
+      "bytes": 3358529,
+      "sha256": "24bfc9b34cddc736681caa14fb8569e93d5906db6dc5f3755bd7362cfdc9d5d8"
+    },
+    {
+      "path": "cordoba-first-blocked-fire.pair-receipt.json",
+      "bytes": 930,
+      "sha256": "7fd8aafdabc18f22ea5c93b00c1bd3baef624abc83317f155c64add42ef95ceb"
+    },
+    {
+      "path": "cordoba-first-blocked-fire.save.json",
+      "bytes": 686613,
+      "sha256": "abb25f0dc09af9ab99e7c80c2a7a96711eb127eec3b0586a2cd97df60c1409ec"
+    },
+    {
+      "path": "cordoba-route-1-accepted-campaign.native.json",
+      "bytes": 2356967,
+      "sha256": "ee7e59e5fbac2724d5967ef408de334b7997f4e2582eeece5c0187d6a87db0db"
+    },
+    {
+      "path": "cordoba-terminal.native.json",
+      "bytes": 3369639,
+      "sha256": "d00380c928a79244927412889aa06ad9cbf66fe049bc46c50d1f51a28cbe6da2"
+    },
+    {
+      "path": "cordoba-terminal.pair-receipt.json",
+      "bytes": 932,
+      "sha256": "8f2aafcfd832a3a133b2d515f8e669c91f9736dae2bcb44f8b7b3fb8da920990"
+    },
+    {
+      "path": "cordoba-terminal.save.json",
+      "bytes": 692340,
+      "sha256": "c3c4670269961686c690e37cfac3f6ac1032d1f7eb0ba4327832856c1daa0938"
+    },
+    {
+      "path": "fight-1-native-orders.json",
+      "bytes": 21155,
+      "sha256": "1d910e669305dbcbab9b940ef2f0eaaada096cc4a4d8ef1bc7e574e628129abb"
+    },
+    {
+      "path": "fight-1-terminal.native.json",
+      "bytes": 706347,
+      "sha256": "c77ab6b472441ae153c58a2a3b9107583c971fe86fc8f71ff8001412685c4fdf"
+    },
+    {
+      "path": "fight-2-native-orders.json",
+      "bytes": 21155,
+      "sha256": "1d910e669305dbcbab9b940ef2f0eaaada096cc4a4d8ef1bc7e574e628129abb"
+    },
+    {
+      "path": "fight-2-terminal.native.json",
+      "bytes": 706347,
+      "sha256": "c77ab6b472441ae153c58a2a3b9107583c971fe86fc8f71ff8001412685c4fdf"
+    },
+    {
+      "path": "final-receipt.json",
+      "bytes": 14504,
+      "sha256": "5544fd95fb05e16d56b54d5ea27535683f08b21dc62b85e04ef3a58bac47eae2"
+    },
+    {
+      "path": "launch.json",
+      "bytes": 2190,
+      "sha256": "e218869061d29343100c5f30016018f46c8be7d7268733727c5a6e2e5647c496"
+    },
+    {
+      "path": "native-errors-59537.ndjson",
+      "bytes": 3374,
+      "sha256": "dfdeeceb316ff06162781a72b5d145a77247d8945dbbc42ad87689dfe2a1ce6b"
+    },
+    {
+      "path": "native-fight-results-59537.ndjson",
+      "bytes": 1047,
+      "sha256": "b8ae04785d1490e4d121da7974128a584995d2f4e2c59b2a9a12cea6e33bc662"
+    },
+    {
+      "path": "observer-final-receipt-59537.json",
+      "bytes": 886,
+      "sha256": "b2b65aa7d0ef049d160976cead3f83f26d961aab015d369f5ea3aa280eea8cc2"
+    },
+    {
+      "path": "observer-start-59537.json",
+      "bytes": 639,
+      "sha256": "40115338a4997c8ee0dc7f076e1ae6c69e0ef1a8cef4d76d682d8e2a5bb59790"
+    },
+    {
+      "path": "preload.mjs",
+      "bytes": 14383,
+      "sha256": "6993d1b497e3a2be755c57d686e3b2418edb4db627fa3de8e8f9cf6b61507206"
+    },
+    {
+      "path": "proposal-receipt.json",
+      "bytes": 2123,
+      "sha256": "d4b1c0a364a583fa2d04859293db22ea5a13a5297858089c5daa980a7c7b91e6"
+    },
+    {
+      "path": "proposal.md",
+      "bytes": 7152,
+      "sha256": "71b2b10e3e070e3999bdbadc64f8a82ff7bf626795a2a11d6e06054f21d2d9c6"
+    },
+    {
+      "path": "run.log",
+      "bytes": 4542,
+      "sha256": "6b8a306d91046621d1a7818c23f15c1b91e97212df20c520b99aa1e6c6f756de"
+    },
+    {
+      "path": "runtime-59537-game__campaign.js",
+      "bytes": 162042,
+      "sha256": "6bc279cdcb58ae26a54f1e523e1be7cb1a6c225afb25fb175ad729bb815d31ed"
+    },
+    {
+      "path": "runtime-59537-game__tactical.js",
+      "bytes": 271683,
+      "sha256": "bbd5a8cb895c1a6c08f42466ee22982902ca61a045cf545c9710b84ee3262ad9"
+    },
+    {
+      "path": "runtime-59537-tests__northern-route.mjs",
+      "bytes": 83051,
+      "sha256": "06b5f23ebe475f8d4d194cd93f2dfaeb1fba1276bbfe00222d53afed7160cfcc"
+    },
+    {
+      "path": "runtime-59537-tests__opening-driver.mjs",
+      "bytes": 6121,
+      "sha256": "2dd6843782e089957caeb1de3dfd5b65e07898b9c7f52e2370bbf5a19ddecc5f"
+    },
+    {
+      "path": "source-final-receipt-59537.json",
+      "bytes": 134729,
+      "sha256": "01c5b1430518094d9206eeea0c8c56c2679a6592a04cc9aba9cff11cb9e0eea3"
+    },
+    {
+      "path": "source-original-runtime-59537.jsonl",
+      "bytes": 83848,
+      "sha256": "b52d1bb3fb37b4db1d3bdf8d32c02e814b10a0910efe77753eaf657389641f04"
+    },
+    {
+      "path": "syntax-game__campaign.js",
+      "bytes": 162042,
+      "sha256": "6bc279cdcb58ae26a54f1e523e1be7cb1a6c225afb25fb175ad729bb815d31ed"
+    },
+    {
+      "path": "syntax-game__tactical.js",
+      "bytes": 271683,
+      "sha256": "bbd5a8cb895c1a6c08f42466ee22982902ca61a045cf545c9710b84ee3262ad9"
+    },
+    {
+      "path": "syntax-receipt.json",
+      "bytes": 1345,
+      "sha256": "7091c3241b4e3741083f112e0722a1e70ae63106ff59811c4edf4953484bfc3c"
+    },
+    {
+      "path": "syntax-tests__northern-route.mjs",
+      "bytes": 83051,
+      "sha256": "06b5f23ebe475f8d4d194cd93f2dfaeb1fba1276bbfe00222d53afed7160cfcc"
+    },
+    {
+      "path": "syntax-tests__opening-driver.mjs",
+      "bytes": 6121,
+      "sha256": "2dd6843782e089957caeb1de3dfd5b65e07898b9c7f52e2370bbf5a19ddecc5f"
+    }
+  ]
+}

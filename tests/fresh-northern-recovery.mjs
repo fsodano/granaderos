@@ -1,6 +1,6 @@
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
-import {restoreNorthernRoad,prepareRestoredSalta} from './recovery-road-route.mjs';
-import {operativeLocation} from '../game/squads.js';
+import {restoreNorthernRoad,returnNorthernOfficers,prepareRestoredSalta} from './recovery-road-route.mjs';
+import {operativeLocation,operativeInTransit} from '../game/squads.js';
 import {contractQuote} from '../game/contracts.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
@@ -15,11 +15,16 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
-import {createBattle,teamCanSee,hasLineOfSight,firearmShotOptions,actionCosts} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,teamCanSee,hasLineOfSight,firearmShotOptions,actionCosts} from '../game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {careRules} from '../game/campaign-care-rules.js';
 import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
+import {prepareRouteBattery} from './route-battery.mjs';
+import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {fight as fightOpeningBattle} from './opening-driver.mjs';
+import {artilleryProfile} from '../game/artillery-definitions.js';
+import {recoverRecapturedRoad} from './recovery-road-care.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -196,14 +201,44 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  return c;
 }
 
+// Use one native controller run, then replay only its issued orders. The official
+// midpoint save must preserve the full campaign/battle pair before settlement.
+function settleNorthernReturnRecapture(start,report){
+ const request=start.pendingBattle,previous=start.sectorStates.cordoba;
+ assert.equal(request.sector,'cordoba');
+ const result=fightOpeningBattle(request,previous,{controller:coastalBatteryController(enterSector(request,previous),{sharedArtillerySight:true})});
+ const summary={sector:'cordoba',preparationSeconds:0,startSeconds:result.battle.startSeconds,elapsedSeconds:result.battle.elapsedSeconds,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
+ report({event:'battleFinished',...summary});assert.equal(result.battle.status,'victory',JSON.stringify(summary));
+ const replay=withSave=>{
+  let pair={campaign:structuredClone(start),battle:enterSector(request,previous)};
+  for(let index=0;index<result.orders.length;index++){
+   const action=result.orders[index],battle=action.type==='endTurn'?endTurn(pair.battle):actBattle(pair.battle,action);assert.equal(battle.lastError,null,JSON.stringify(action)+battle.lastError);
+   const synced=syncBattleTime(pair.campaign,battle);assert.equal(synced.error,null,synced.error);pair={campaign:synced.campaign,battle:synced.battle};
+   if(withSave&&index===Math.floor(result.orders.length/2))pair=decodeSave(encodeSave(pair.campaign,pair.battle));
+  }
+  return pair;
+ };
+ const played=replay(false),restored=replay(true);assert.deepEqual(restored,played);
+ assert.deepEqual(played.battle.units,result.battle.units);assert.equal(played.battle.seed,result.battle.seed);assert.equal(played.battle.elapsedSeconds,result.battle.elapsedSeconds);assert.equal(played.battle.status,result.battle.status);
+ const c=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player')});
+ assert.equal(c.lastError,null,c.lastError);assert.equal(c.defeated,false);assert.equal(c.sectors.cordoba.owner,'patriot');assert.equal(c.pendingBattle,null);
+ for(const unit of result.battle.units.filter(u=>u.side==='player'&&u.hp<=0&&!u.militia&&!u.missionAlly))assert.equal(c.operativeState[Number(unit.id)].alive,false);
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ report({event:'northernReturnRecaptured',...summary,orders:result.orders.length,exactSavedReplay:true,campaign:structuredClone(c)});
+ return c;
+}
+
 export function reuniteFreshNorthernSquad(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
+ const lostCordoba=c.sectors.cordoba.owner==='royalist';
+ const retainFor=hours=>{
+  for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<=c.hour+hours){const contract=c.contracts[id],next=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(next.lastError,null,next.lastError);c=next;}
+ };
  const order=a=>{
   const elapsed=a.type==='wait'?a.hours:a.type==='travel'?48:0;
-  if(elapsed)for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured)){
-   while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<=c.hour+elapsed){const contract=c.contracts[id],next=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(next.lastError,null,next.lastError);c=next;}
-  }
+  if(elapsed)retainFor(elapsed);
   c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
+  if(lostCordoba)assert.equal(c.pendingEncounter,null,'the real recapture preparation must stop for an unrelated encounter');
   while(elapsed&&c.pendingEncounter){
    const returning=c.activeSquadId,encounter=c.pendingEncounter;
    const defenders=c.squads.find(q=>q.location===encounter.sector&&q.members.some(id=>c.operativeState[id].alive));assert.ok(defenders,'the threatened sector needs its actual garrison');
@@ -214,6 +249,50 @@ export function reuniteFreshNorthernSquad(start,{report=()=>{}}={}){
  };
 const field=[...new Set([10,4,...c.squad])].filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id]?.captured);
 order({type:'squad',ids:field});
+if(lostCordoba){
+ const occupations=c.enemyGroups.filter(group=>group.target==='cordoba'&&group.status==='stationed').map(group=>group.id);
+ assert.ok(occupations.length,'the return must identify the actual occupying force');
+ const guard=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)==='tucuman';});assert.ok(guard.length,'the joined recapture needs its actual northern guard');
+ for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let h=0;h<30&&field.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++)order({type:'wait',hours:1});
+ for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
+ retainFor(48);report({event:'northernReturnRested',campaign:structuredClone(c)});
+ c=supplyRouteAmmunition(c,field,{target:10,report}).campaign;c=finishReloadsBeforeMarch(c,{report});
+ const pool=[...Object.entries(c.artilleryDepots??{}).flatMap(([at,guns])=>guns.map(gun=>({at,source:'depot',gun}))),...Object.entries(c.sectorStates).flatMap(([at,scene])=>(scene.artillery??[]).map(gun=>({at,source:'field',gun})))].filter(row=>c.sectors[row.at]?.owner==='patriot'&&row.gun.side==='player');
+ const piece=pool.filter(row=>(row.gun.loaded||row.gun.ammo>0)&&artilleryProfile(c,row.gun).crew<=field.length).sort((a,b)=>Number(b.at===c.location)-Number(a.at===c.location)||Number(b.source==='depot')-Number(a.source==='depot')||b.gun.ammo+Number(b.gun.loaded)-a.gun.ammo-Number(a.gun.loaded)||a.gun.id.localeCompare(b.gun.id))[0];
+ assert.ok(piece,'the recapture needs an actual controlled cannon and enough living crew');
+ const battery=prepareRouteBattery(c,[piece.gun.type],{destination:'san_nicolas',excludeIds:pool.filter(row=>row.gun.id!==piece.gun.id).map(row=>row.gun.id),keepServing:guard,report});c=battery.campaign;
+ assert.equal(c.location,'san_nicolas');assert.deepEqual(c.squad,field);
+ const southern=c.activeSquadId;
+ for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let h=0;h<48&&field.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++)order({type:'wait',hours:1});
+ for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
+ c=finishReloadsBeforeMarch(c,{report});const northern=[];
+ for(let offset=0;offset<guard.length;offset+=6){
+  order({type:'selectSquad',id:c.squads.find(q=>q.members.includes(guard[offset])).id});
+  order({type:'createSquad',ids:guard.slice(offset,offset+6),sector:'tucuman',name:'Guardia del camino'});northern.push(c.activeSquadId);
+  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+  c=finishReloadsBeforeMarch(c,{report});
+ }
+ // A depot choice belongs to its physical origin, even when another squad is
+ // currently selected. Both real approaches join the same assault afterward.
+ order({type:'selectSquad',id:southern});order({type:'configureArtillery',types:battery.selections});retainFor(36);
+ const groups=[southern,...northern];for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true});}
+ for(let h=0;h<36&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
+ assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'both actual recapture approaches must finish');order({type:'beginAssault',sector:'cordoba'});
+ assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),[...field,...guard].sort((a,b)=>a-b));
+ report({event:'northernReturnRecaptureReady',campaign:structuredClone(c),occupations});c=settleNorthernReturnRecapture(c,report);
+ for(const id of occupations)assert.equal(c.enemyGroups.find(group=>group.id===id).status,'defeated','the actual road occupation must be defeated, not skipped');
+ const actor=c.squad.includes(4)?4:rosterFor(c).filter(op=>c.squad.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep).sort((a,b)=>b.leadership-a.leadership)[0]?.id;assert.ok(actor!==undefined);
+ c=meetRecruits(c,['quiroga','paz'],actor);
+ const recovered=recoverRecapturedRoad(c);c=recovered.campaign;report({event:'northernRoadRecovered',hour:c.hour,treasury:c.resources.treasury,careEvents:recovered.events,campaign:structuredClone(c)});
+ if(!c.routes.posta)order({type:'transport',mode:'posta'});
+ c=returnNorthernOfficers(c);
+ // Future marching incursions remain real campaign state. This branch only
+ // replaces the occupation that already blocked the original return route.
+ assert.equal(c.pendingEncounter,null);for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);report({event:'northernReturnReunited',campaign:structuredClone(c)});return c;
+}
 for(let leg=0;leg<6&&c.location!=='cordoba';leg++){
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let i=0;i<30&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});

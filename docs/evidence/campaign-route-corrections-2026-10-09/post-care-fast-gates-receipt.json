@@ -1,0 +1,66 @@
+{
+  "checkedAt": "2026-10-10T05:14:16.704367+00:00",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "scope": "Current coastal revision4 and earlier three repairs. Profiles, shard coverage, docs/baseline/typecheck all exit0; these are not a full gameplay suite.",
+  "fullFiles": 946,
+  "quickFiles": 933,
+  "extendedFiles": 13,
+  "coastalBoundedControls": {
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "skip": 0
+  },
+  "files": [
+    {
+      "path": "/tmp/granaderos-post-care-profile-controls-20261010.log",
+      "bytes": 1209,
+      "sha256": "49199ef34b0f0cc969666e480de7b0a6974c9356c9a27045836f14aaed354499",
+      "exitCode": 0
+    },
+    {
+      "path": "/tmp/granaderos-post-care-shard-coverage-20261010.json",
+      "bytes": 45645,
+      "sha256": "7443b4585acb0575d5e8a63b3825c3ff3a57928ab4d5e044c330e30bac36b829",
+      "exitCode": 0
+    },
+    {
+      "path": "/tmp/granaderos-post-care-quick-profile-20261010.json",
+      "bytes": 43263,
+      "sha256": "042d1a16681b9aca86dee8f6cad51fb8e089b4d4dba13a574f37995ff047708b",
+      "exitCode": 0
+    },
+    {
+      "path": "/tmp/granaderos-post-care-extended-profile-20261010.json",
+      "bytes": 129385,
+      "sha256": "7017db25cce274279802f619feaae6bcd4f94ae51c44593d2cc4fe54e52c27c3",
+      "exitCode": 0
+    },
+    {
+      "path": "/tmp/granaderos-post-care-docs-20261010.log",
+      "bytes": 125,
+      "sha256": "9b31186b003b1bb595024b4b119d8e6fbdf3ca63d37118354b58ebdbfbdc3ed0",
+      "exitCode": 0
+    },
+    {
+      "path": "/tmp/granaderos-post-care-baseline-20261010.log",
+      "bytes": 10528,
+      "sha256": "3484e22b7d61927c61bd3b88ff638e4245c1b53cc16e5d5035e0fb7beb5ed440",
+      "exitCode": 0
+    },
+    {
+      "path": "/tmp/granaderos-post-care-typecheck-20261010.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0
+    },
+    {
+      "path": "/tmp/granaderos-coastal-readiness-actual-repository-controls-20261010.log",
+      "bytes": 469,
+      "sha256": "53d921e348e683fbc2c42bb719798a7dfc486690ebad1294baa32adf5b7a97f5",
+      "exitCode": 0
+    }
+  ],
+  "productionBuildSource": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+  "fullGatePending": true
+}

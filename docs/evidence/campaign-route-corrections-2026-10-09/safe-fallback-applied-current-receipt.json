@@ -1,0 +1,24 @@
+{
+  "appliedUtc": "2026-10-10T03:32:35.755598+00:00",
+  "scope": "Apply reviewed bounded native fallback after unchanged full940 and unchanged opening observer terminal receipts. No game/engine production change.",
+  "patchSha256": "bce0764a77f17b03e5945844b1af4fefdf7994f5ba4c4b59b900d2534390fd70",
+  "paths": {
+    "tests/northern-route.mjs": "d2df5898830cb6ffa1c393300a21cfbbc6989312393c8b79dab241b9c2e4feef",
+    "tests/northern-firearm-safety.test.mjs": "6b2711e7202a3e8c66974f4b2e056ae303c60e8b59852fa6536b59a3bd71aa8e",
+    "tests/northern-safe-fallback.test.mjs": "a105e8ac245dd7a320959460ccb551b73d58bdf7beccf00700aa8a0596e99011"
+  },
+  "full940SourceDrift": [],
+  "actualCandidateControls": {
+    "tests": 19,
+    "passed": 19,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 28010.933667,
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "session": 68152,
+    "exitCode": 0,
+    "logSha256": "7dc2e472ee2c5e91792c275b92f4e4236d72c06a9cb874664f1f349b3790ded8",
+    "MendozaHistorical205OrderVictoryAndOfficialReplayUnchanged": true
+  },
+  "CordobaVictory": "unproved; all10 observed original blocked-state native AI alternatives were null"
+}

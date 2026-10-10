@@ -1,0 +1,226 @@
+{
+  "kind": "Exact minimal selection field extraction; not a campaign or pre-selection save",
+  "sourceClock": {
+    "hour": 84,
+    "secondOfHour": 670
+  },
+  "actualRequestSector": "cordoba",
+  "recruited": [
+    1000,
+    110,
+    114,
+    115,
+    123,
+    107,
+    116,
+    131,
+    112,
+    122,
+    120,
+    134,
+    136,
+    117,
+    119,
+    137,
+    113,
+    124,
+    141,
+    111,
+    125
+  ],
+  "operativeState": {
+    "1000": {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 78,
+      "morale": 24.449999999999996,
+      "assignment": "active",
+      "location": "san_nicolas"
+    },
+    "114": {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 81,
+      "morale": 56.250000000000014,
+      "assignment": "active",
+      "location": "san_nicolas"
+    },
+    "123": {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 83,
+      "morale": 0,
+      "assignment": "active",
+      "location": "san_nicolas"
+    },
+    "110": {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 85,
+      "morale": 0,
+      "assignment": "active",
+      "location": "san_nicolas"
+    },
+    "115": {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 70,
+      "morale": 49.849999999999994,
+      "assignment": "active",
+      "location": "san_nicolas"
+    },
+    "107": {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 72,
+      "morale": 0,
+      "assignment": "active",
+      "location": "san_nicolas"
+    },
+    "116": {
+      "alive": true,
+      "captured": false,
+      "hp": 75,
+      "maxHp": 75,
+      "morale": 2,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "131": {
+      "alive": false,
+      "captured": false,
+      "hp": 0,
+      "maxHp": 82,
+      "morale": 5.3999999999999915,
+      "assignment": "active",
+      "location": "san_nicolas"
+    },
+    "112": {
+      "alive": true,
+      "captured": false,
+      "hp": 64,
+      "maxHp": 64,
+      "morale": 80,
+      "assignment": "rest",
+      "location": "san_nicolas"
+    },
+    "122": {
+      "alive": true,
+      "captured": false,
+      "hp": 65,
+      "maxHp": 65,
+      "morale": 80,
+      "assignment": "rest",
+      "location": "san_nicolas"
+    },
+    "120": {
+      "alive": true,
+      "captured": false,
+      "hp": 73,
+      "maxHp": 73,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "134": {
+      "alive": true,
+      "captured": false,
+      "hp": 68,
+      "maxHp": 68,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "136": {
+      "alive": true,
+      "captured": false,
+      "hp": 90,
+      "maxHp": 90,
+      "morale": 90,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "117": {
+      "alive": true,
+      "captured": false,
+      "hp": 88,
+      "maxHp": 88,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "119": {
+      "alive": true,
+      "captured": false,
+      "hp": 76,
+      "maxHp": 76,
+      "morale": 90,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "137": {
+      "alive": true,
+      "captured": false,
+      "hp": 85,
+      "maxHp": 85,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "113": {
+      "alive": true,
+      "captured": false,
+      "hp": 80,
+      "maxHp": 80,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "124": {
+      "alive": true,
+      "captured": false,
+      "hp": 85,
+      "maxHp": 85,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "141": {
+      "alive": true,
+      "captured": false,
+      "hp": 84,
+      "maxHp": 84,
+      "morale": 90,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "111": {
+      "alive": true,
+      "captured": false,
+      "hp": 77,
+      "maxHp": 77,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "125": {
+      "alive": true,
+      "captured": false,
+      "hp": 85,
+      "maxHp": 85,
+      "morale": 80,
+      "assignment": "active",
+      "location": "cordoba"
+    }
+  },
+  "recordedDoctorIds": [
+    112,
+    122
+  ]
+}

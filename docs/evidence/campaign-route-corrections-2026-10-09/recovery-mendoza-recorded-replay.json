@@ -1,0 +1,127 @@
+{
+  "scope": "Exact101recorded orders only; no controller calls, policy branches or native rerun. Midpoint uses ordinary syncBattleTime before official save; original harness error preserved separately.",
+  "nativeStatus": "retreat",
+  "expectedStatus": "victory",
+  "turns": 6,
+  "actions": 88,
+  "orders": 101,
+  "elapsedSeconds": 245,
+  "midpoint": {
+    "orderIndex": 50,
+    "elapsedSeconds": 221,
+    "clock": [
+      417,
+      326
+    ]
+  },
+  "exactPairedReplay": true,
+  "exactSettledReplay": true,
+  "acceptedFullSave": true,
+  "readyClock": [
+    417,
+    105
+  ],
+  "endpoint": [
+    417,
+    350
+  ],
+  "priorDeadIds": [
+    1,
+    4,
+    9,
+    101,
+    103,
+    104,
+    107,
+    108,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    129,
+    131,
+    133,
+    134,
+    136,
+    137,
+    139,
+    140,
+    141,
+    144,
+    146,
+    1000
+  ],
+  "newDeadIds": [
+    0,
+    8,
+    100,
+    130,
+    10
+  ],
+  "livingPlayers": [
+    {
+      "id": "142",
+      "hp": 11,
+      "bleeding": 4,
+      "routed": true,
+      "departure": {
+        "exitId": "mendoza:cell-6-24",
+        "edge": "N",
+        "destination": "cell-6-24",
+        "x": 34,
+        "y": 0,
+        "elapsedSeconds": 239,
+        "mountId": null
+      }
+    },
+    {
+      "id": "11",
+      "hp": 21,
+      "bleeding": 4,
+      "routed": true,
+      "departure": {
+        "exitId": "mendoza:cell-6-24",
+        "edge": "N",
+        "destination": "cell-6-24",
+        "x": 33,
+        "y": 0,
+        "elapsedSeconds": 245,
+        "mountId": null
+      }
+    }
+  ],
+  "originalGun": {
+    "id": "arsenal:cordoba:1",
+    "type": "bronze4",
+    "side": "player",
+    "loaded": true,
+    "ammo": 1,
+    "facing": -1.0303768265243125
+  },
+  "finalGun": {
+    "id": "arsenal:cordoba:1",
+    "type": "bronze4",
+    "side": "player",
+    "loaded": false,
+    "ammo": 0,
+    "facing": 0.19739555984988078
+  },
+  "treasury": 120698,
+  "campaignDefeated": false,
+  "mendozaOwner": "royalist",
+  "durationMs": 5265,
+  "traceSha256": "054f317a77f3a3d11c152248b565db687a5b5ecc81d5bdc1aa5a6f166682cd03"
+}

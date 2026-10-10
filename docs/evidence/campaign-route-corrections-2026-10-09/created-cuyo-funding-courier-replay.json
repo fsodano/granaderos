@@ -1,0 +1,596 @@
+{
+  "input": "/tmp/granaderos-complete-cuyo-admission-care-current.75463.terminal.save.json",
+  "inputSha256": "3526e8e1d2f86e68a746dc692cbc6bb590477c34f67f581cc3253188676eafa9",
+  "from": [
+    540,
+    1899
+  ],
+  "to": [
+    693,
+    1899
+  ],
+  "elapsedSeconds": 550800,
+  "attemptedOrders": 103,
+  "acceptedOrders": 102,
+  "rejections": [
+    {
+      "action": {
+        "type": "assignCare",
+        "operativeId": 112,
+        "assignment": "doctor"
+      },
+      "error": "Está durmiendo; retomará su tarea al despertar."
+    }
+  ],
+  "transfers": [
+    {
+      "sector": "retiro",
+      "id": 112,
+      "sourceKey": "container:retiro:armory-cache:7",
+      "count": 7,
+      "before": 7,
+      "after": 0
+    }
+  ],
+  "finiteDressingDebit": 7,
+  "renewals": [
+    {
+      "id": 120,
+      "cost": 135,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 120,
+      "cost": 135,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 120,
+      "cost": 135,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 120,
+      "cost": 135,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 120,
+      "cost": 135,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 120,
+      "cost": 135,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 112,
+      "cost": 180,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 112,
+      "cost": 180,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 112,
+      "cost": 180,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 112,
+      "cost": 180,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 112,
+      "cost": 180,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 112,
+      "cost": 180,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 119,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 119,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 119,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 119,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 119,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 119,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 104,
+      "cost": 68,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 104,
+      "cost": 68,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 104,
+      "cost": 68,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 104,
+      "cost": 68,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 104,
+      "cost": 68,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 104,
+      "cost": 68,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 140,
+      "cost": 116,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 140,
+      "cost": 116,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 140,
+      "cost": 116,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 140,
+      "cost": 116,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 140,
+      "cost": 116,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 140,
+      "cost": 116,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 124,
+      "cost": 172,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 124,
+      "cost": 172,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 124,
+      "cost": 172,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 124,
+      "cost": 172,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 124,
+      "cost": 172,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 124,
+      "cost": 172,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 134,
+      "cost": 86,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 134,
+      "cost": 86,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 134,
+      "cost": 86,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 134,
+      "cost": 86,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 134,
+      "cost": 86,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 134,
+      "cost": 86,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 126,
+      "cost": 47,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 126,
+      "cost": 47,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 126,
+      "cost": 47,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 126,
+      "cost": 47,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 126,
+      "cost": 47,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 101,
+      "cost": 49,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 101,
+      "cost": 49,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 101,
+      "cost": 49,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 101,
+      "cost": 49,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 101,
+      "cost": 49,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 100,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 100,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    },
+    {
+      "id": 100,
+      "cost": 36,
+      "clock": [
+        548,
+        1899
+      ]
+    }
+  ],
+  "renewalCost": 5346,
+  "treasury": [
+    110160,
+    152814
+  ],
+  "waits": [
+    {
+      "hours": 1,
+      "elapsedSeconds": 0
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    },
+    {
+      "hours": 24,
+      "elapsedSeconds": 86400
+    },
+    {
+      "hours": 24,
+      "elapsedSeconds": 61200
+    },
+    {
+      "hours": 12,
+      "elapsedSeconds": 43200
+    },
+    {
+      "hours": 24,
+      "elapsedSeconds": 68400
+    },
+    {
+      "hours": 24,
+      "elapsedSeconds": 75600
+    },
+    {
+      "hours": 12,
+      "elapsedSeconds": 43200
+    },
+    {
+      "hours": 24,
+      "elapsedSeconds": 86400
+    },
+    {
+      "hours": 24,
+      "elapsedSeconds": 54000
+    },
+    {
+      "hours": 1,
+      "elapsedSeconds": 3600
+    }
+  ],
+  "doctor": {
+    "id": 112,
+    "medkits": 6,
+    "hp": 68,
+    "energy": 19,
+    "fatigue": 80,
+    "asleep": true
+  },
+  "patients": [
+    {
+      "id": 126,
+      "hp": [
+        39,
+        65
+      ],
+      "bleeding": 0
+    },
+    {
+      "id": 100,
+      "hp": [
+        15,
+        40
+      ],
+      "bleeding": 0
+    }
+  ],
+  "actualImportedHashDrift": [],
+  "imports": 280,
+  "replay": {
+    "everyAcceptedNativeAction": true,
+    "atomicRejectedDoctorAssignment": true,
+    "officialMidpoint": true,
+    "exactExpandedGeometry": true,
+    "exactCompleteOfficialFinalPair": true,
+    "all16ServingRetained": true,
+    "all27DeathsRetained": true,
+    "noRepeatedNativeContinuation": true
+  },
+  "adapterCorrection": "The depleted chest index now names another item. Replay checks remaining medical stack identity and complete finite medical-pool debit, and retains the unchanged accepted state after the atomic rejected doctor assignment."
+}

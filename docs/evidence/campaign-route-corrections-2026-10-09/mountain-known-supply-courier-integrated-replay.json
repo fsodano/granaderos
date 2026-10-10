@@ -1,0 +1,26 @@
+{
+  "scope": "Integrated dynamic helper replay of exactly the previously accepted16native courier orders. No additional prospective suffix, battle, care or prefix.",
+  "input": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.terminal.save.json",
+  "inputSha256": "fee5275a33fab311ba36d87544893e2a1a0e285425ed18087b3627d871ca5f14",
+  "orders": 16,
+  "from": [
+    1020,
+    1903
+  ],
+  "to": [
+    1028,
+    1903
+  ],
+  "target": 15,
+  "recipientDressings": 15,
+  "treasury": 205605,
+  "deaths": 27,
+  "serving": 22,
+  "inputUnchanged": true,
+  "exactFullCampaignReplay": true,
+  "officialMidpoint": true,
+  "hashes": {
+    "tests/route-known-medical-courier.mjs": "6ad96f01cfdee4bbb64fae50a4c921a2e22c58322d7babee820d3e8134b18cb5",
+    "tests/fresh-mountain-route.mjs": "e28f0aae458de8c32f03ad021b824de49ce0357518e376a2fa9a0d882fda8499"
+  }
+}

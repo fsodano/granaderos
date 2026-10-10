@@ -1,0 +1,251 @@
+{
+  "scope": "One exact162-order original C\u00f3rdoba replay with10 unchanged checkpoints and terminal retreat equality. No alternate order. Native replay succeeded; exit manifest bookkeeping failed and the actual replay import inventory is unavailable. Separate pure269-import posture analysis passed with zero orders. Original observer archive remains immutable. All source scripts are inactive evidence.",
+  "files": [
+    {
+      "path": "analysis-receipt.json",
+      "sha256": "de0d312be4dc64ddecba8628fbbeaba9e10031f659e276b456fbead361e3096f",
+      "bytes": 29971
+    },
+    {
+      "path": "blocked-after-075-inspection.json",
+      "sha256": "6ab495b937aac24a33fb1d065b1f87e17a785d78689e6eef7e2955146053fb44",
+      "bytes": 6606
+    },
+    {
+      "path": "blocked-after-075.native.json",
+      "sha256": "24bfc9b34cddc736681caa14fb8569e93d5906db6dc5f3755bd7362cfdc9d5d8",
+      "bytes": 3358529
+    },
+    {
+      "path": "blocked-after-075.save.json",
+      "sha256": "f58847f2d46e276a70526498b8d8d64e733cbb52917fa88600dd9ba8a75862b7",
+      "bytes": 686613
+    },
+    {
+      "path": "blocked-after-079-inspection.json",
+      "sha256": "06c50e25d19387628071cab2a360f4baad4f75eb49974613c505cfdaea6718d9",
+      "bytes": 6606
+    },
+    {
+      "path": "blocked-after-079.native.json",
+      "sha256": "3c51f82d9eadc9515275e72ce4066079b6d39b6b5b7c5f69030d082b940a3612",
+      "bytes": 3358491
+    },
+    {
+      "path": "blocked-after-079.save.json",
+      "sha256": "a59724fc37259c9907b1eb7cab8e4053a3b008046122d70d86b187e11193799f",
+      "bytes": 686585
+    },
+    {
+      "path": "blocked-after-081-inspection.json",
+      "sha256": "644fa03b66e3992e9ddb742667a1099c29999e5480d75b4a8c2f0394361b1ad1",
+      "bytes": 7183
+    },
+    {
+      "path": "blocked-after-081.native.json",
+      "sha256": "6d5663cc856ebfdc5e34254eb7b4435577b1ff1f70f998ff2ac33f45960c19a4",
+      "bytes": 3358733
+    },
+    {
+      "path": "blocked-after-081.save.json",
+      "sha256": "c8cbe7fa6a0c109ad9b2f76af9c548277a25cb309bfedaecf64ed70ce051c4b5",
+      "bytes": 686671
+    },
+    {
+      "path": "blocked-after-082-inspection.json",
+      "sha256": "2566a93886538be1601ae5eded52d6aee152625c723fed4060daf3ede6689b96",
+      "bytes": 7179
+    },
+    {
+      "path": "blocked-after-082.native.json",
+      "sha256": "8fd34ac36045f9f134db8e623a1d650140f104dace3be7078f35df787b6a0a29",
+      "bytes": 3358719
+    },
+    {
+      "path": "blocked-after-082.save.json",
+      "sha256": "72c57f6825c9636febc81bc082cfd1599a9dde5d804c446dc8101786c96efc0f",
+      "bytes": 686657
+    },
+    {
+      "path": "blocked-after-083-inspection.json",
+      "sha256": "7f279d5d01765e5f9704ff87fe3035aa47394f7ece337068879505c2e18f6ad5",
+      "bytes": 7037
+    },
+    {
+      "path": "blocked-after-083.native.json",
+      "sha256": "c2889e7681a87f9c440461af5d71c6f456c9f7c31955d870484e2561f1e47b59",
+      "bytes": 3359439
+    },
+    {
+      "path": "blocked-after-083.save.json",
+      "sha256": "4cab52ac38d4c1abf9a665e21ad269c3df344752b675c726703e7b09286e0678",
+      "bytes": 687088
+    },
+    {
+      "path": "blocked-after-086-inspection.json",
+      "sha256": "944f448163e5b3d75a4c7aa3e68c6e7547bcdf5c7aefdbec9db338d6615e77fe",
+      "bytes": 8049
+    },
+    {
+      "path": "blocked-after-086.native.json",
+      "sha256": "dcfb7b0f449454a0b5a288d55bace8d99cec4a96c926388e90641dd2c83bad06",
+      "bytes": 3361075
+    },
+    {
+      "path": "blocked-after-086.save.json",
+      "sha256": "b5137ddada6d223c7faff7eed8878706a6f720e8a1e478468e0171c2ca6410d0",
+      "bytes": 688314
+    },
+    {
+      "path": "blocked-after-087-inspection.json",
+      "sha256": "d631a31577ad0330201e1f61bc493b2af75aea82005cbc13e57089c00bc9803c",
+      "bytes": 7465
+    },
+    {
+      "path": "blocked-after-087.native.json",
+      "sha256": "38eaee42b41212278246b02a7da36503b43847151e83d936fdc850e31e2a11e0",
+      "bytes": 3360220
+    },
+    {
+      "path": "blocked-after-087.save.json",
+      "sha256": "1b2104e3741def1422c63e74decc14c3e5fbb67860ff19767d6b4506a5a12b15",
+      "bytes": 687845
+    },
+    {
+      "path": "blocked-after-089-inspection.json",
+      "sha256": "f7c7f569afd3c7b6565356395e8e15f48ee731119e55bf2f7f762eb50867b8ba",
+      "bytes": 6891
+    },
+    {
+      "path": "blocked-after-089.native.json",
+      "sha256": "69d514bdcda164453c654ff309f1ddd6e8a805c5a3e497a7044aa309b68882cb",
+      "bytes": 3360497
+    },
+    {
+      "path": "blocked-after-089.save.json",
+      "sha256": "18045a2ab07dc0f54de5766c62ac5ea0cac21564723587f675a19e8aac6bdc9a",
+      "bytes": 687947
+    },
+    {
+      "path": "blocked-after-090-inspection.json",
+      "sha256": "5733c74488f034b5ccb05519261373692f4a5f716877d9bda5ca77b9b0efcd52",
+      "bytes": 6895
+    },
+    {
+      "path": "blocked-after-090.native.json",
+      "sha256": "251d03e5a99938793ee9be15218611f3149607959c34870f72e1b6f5e5617586",
+      "bytes": 3360490
+    },
+    {
+      "path": "blocked-after-090.save.json",
+      "sha256": "f6fc3aee8f8cb9b29e3795f8bdab4fa44126291cc46b8d540fae75bea0adcd8c",
+      "bytes": 687940
+    },
+    {
+      "path": "blocked-after-091-inspection.json",
+      "sha256": "fea5541105fe5ea4a5dc053eac774f7d3f23819c4e82fa1625beaddc739f0f8d",
+      "bytes": 6898
+    },
+    {
+      "path": "blocked-after-091.native.json",
+      "sha256": "3c102c985f39f129280289ddd9dcca8e7d1b0a5b95310f046b9c158953fd4adc",
+      "bytes": 3360458
+    },
+    {
+      "path": "blocked-after-091.save.json",
+      "sha256": "39a1427fc13a7e8fd735c729f4179ee50d9b9b6d136bf413ee674420ef89eda7",
+      "bytes": 687886
+    },
+    {
+      "path": "closure-repair.json",
+      "sha256": "af81c5b6425c05fb4d540563b7e4442bbb2ded07b7f32fd9ebce85571f4a7e0a",
+      "bytes": 8759
+    },
+    {
+      "path": "inspection.json",
+      "sha256": "9652b1bea2c66c8d43167c33b8f60b7d4b1f6589c2172eef06b90c6449343b58",
+      "bytes": 78252
+    },
+    {
+      "path": "loader.mjs",
+      "sha256": "067d9a62edeb1454c5808a632e61b8da42f51349838285c33f5fa1615289e595",
+      "bytes": 2110
+    },
+    {
+      "path": "original-hired-assault-driver.mjs",
+      "sha256": "528147ca4316d6bf088057068ef43872a92683d0439edb08aa83a7e3eba628be",
+      "bytes": 457
+    },
+    {
+      "path": "original-northern-route.mjs",
+      "sha256": "a4c7bcc447d33fa643b2a45cabbaccba30fc3bb290aaff8b6e1f7f22fd24202f",
+      "bytes": 82437
+    },
+    {
+      "path": "original-opening-driver.mjs",
+      "sha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "bytes": 5622
+    },
+    {
+      "path": "original-tucuman-driver.mjs",
+      "sha256": "32dfb004150b4f817f60741644f3821c469dad1dabffac28eb435dda40bea463",
+      "bytes": 1070
+    },
+    {
+      "path": "pinned-selectors.json",
+      "sha256": "b6dfc5584e8c0f667c4f8dcbecdcc434fefd1f81709f7451020ce51d5d57f20e",
+      "bytes": 817
+    },
+    {
+      "path": "posture-detail.json",
+      "sha256": "57a775d65fe02a0a1559cc1c4d58fcccf1d4a2881f06e473204188ead0312684",
+      "bytes": 146819
+    },
+    {
+      "path": "posture-detail.log",
+      "sha256": "b89aab18e505307dbf0b74f0ac2c01ad1121b33dff9e06c8b9b3de340cdb9f18",
+      "bytes": 26392
+    },
+    {
+      "path": "posture-detail.mjs",
+      "sha256": "b3c42d353914bf39deeba410ccb4a9d03570432c8212816acfaa47f84d9f4a0b",
+      "bytes": 4341
+    },
+    {
+      "path": "pure-imports.json",
+      "sha256": "2aaecc8d9ed2901ff19faef3f4a6ae213eb67d46cc628914da9f45cbb73d028f",
+      "bytes": 142786
+    },
+    {
+      "path": "pure-loader.mjs",
+      "sha256": "19422a05de27c6d7b60b609ab2399f1da25e5f0f7035ddb5f2d95edb6c08a80a",
+      "bytes": 2124
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "ca6016df9015797c8f66b37a4cbf31519ef7962895097da1f005f987e0beb3a3",
+      "bytes": 694
+    },
+    {
+      "path": "replay-and-inspect.mjs",
+      "sha256": "0055ffb7ae2f3f2f89f1906773efc88d8f53e310362c00c888f309e0861366d7",
+      "bytes": 10424
+    },
+    {
+      "path": "run.log",
+      "sha256": "9177142e4d457f3e855181b39dee302bd4df6518e1d52c8e7c622288a85798d3",
+      "bytes": 2937
+    },
+    {
+      "path": "start.json",
+      "sha256": "9e158d67fd790f94168ff981e2ed9411dc3dbc77ab0922b31c6d6ce635861008",
+      "bytes": 548
+    },
+    {
+      "path": "terminal.native.json",
+      "sha256": "7ec7666ba7acc85a3ab0db6069c28e22da2dd97717ed4f6ea6e49896e270138f",
+      "bytes": 732247
+    }
+  ],
+  "count": 49
+}

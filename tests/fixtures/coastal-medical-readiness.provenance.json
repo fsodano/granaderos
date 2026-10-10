@@ -1,0 +1,45 @@
+{
+  "kind": "One unchanged hired coastal case passive native capture, not an altered route proof",
+  "case": "funded hired force wins the coastal opening with real losses, paid replacements and saved replay",
+  "observerFinalReceiptSha256": "743a00ec1c5488335f7b431796a4b0772f119162b202618970f6afb4372c6ca5",
+  "fixtures": {
+    "coastal-earned-ba-stable-005": {
+      "path": "coastal-earned-ba-stable-005.json.gz",
+      "gzipSha256": "222e2bce42f4603903e43b9c70d3a6be1e55bebfae914459a85950e19b429816",
+      "rawSha256": "e66279930aca4c32f45e57be482ba70d55ac5d330a2664c5d5a7b451ff52a7cd",
+      "sourceCapture": "005-before-unchanged-clinic-admission.json.gz",
+      "sourceRawSha256": "0b43425c94fefaea3ddef4097d13e45a97871ca3ae7a2158be9771b04c5b9393",
+      "sourceGzipSha256": "2451defe25dee19dfbb186a4908d65b9f514edf288ecfca14981ca099b608ee2",
+      "selector": "campaign",
+      "fieldsOrHealthChanged": false
+    },
+    "coastal-earned-san-nicolas-empty-008": {
+      "path": "coastal-earned-san-nicolas-empty-008.json.gz",
+      "gzipSha256": "11cfc6ebfe3a2096c64a2a90af6ff4691c069966e51a7eaf2a0ef8c2e101ac4d",
+      "rawSha256": "6602ad6ba36e9c4a9ea2baf6c639abbb298a957e22008e61feec707b47667635",
+      "sourceCapture": "008-before-existing-one-stroke-aid.json.gz",
+      "sourceRawSha256": "9207a228dd6d70f961946db40dbaddef52dbf2bc23361d3cc6ef9b00a9541947",
+      "sourceGzipSha256": "a3516ba3827935cbbecc6ee392eb8fe0360b42064f2295b53eca62562fa87c2b",
+      "selector": "pair",
+      "fieldsOrHealthChanged": false
+    }
+  },
+  "limits": [
+    "The BA005 fixture is before original clinic wait; all patients are stable but still wounded. It is used only for existing carried reserve and a native two-piece drop/take control.",
+    "The SanNicolas008 pair is genuine safe post-victory state with zero carried dressings and a9HP unconscious bleeding actor141. It proves empty native aid stops; it does not prove survival.",
+    "No exact post-clinic/predeparture state was captured. The006 input is already pending SanNicolas assault and is not converted into a false clinic fixture.",
+    "The proposed paid courier, additional finite stock, altered complete route and post-victory successful aid have not been executed.",
+    "No simulation, controller, save, dispatch or model call was performed to author these extracted fixtures. All raw native values are retained."
+  ],
+  "tacticalSpaceAuthority": "game/tactical-space.js:1-5: tacticalLevel is the physical level; earned legacy level is independent.",
+  "capturedActorTacticalLevels": {
+    "110": 0,
+    "114": 0,
+    "136": 0,
+    "141": 0,
+    "120": 0,
+    "131": 0
+  },
+  "interpretationCorrection": "Earlier external drafts read legacy level1 as a roof. The true captured tacticalLevel is0 for all six actors. Both raw fixture gzip files remain byte-identical.",
+  "proposedScope": "Observed hired-route helper only. Created/local/stock self-aid and the native finite-care toolkit assertions remain unchanged. Complete altered hired route and broader first-aid policy parity are not proved."
+}

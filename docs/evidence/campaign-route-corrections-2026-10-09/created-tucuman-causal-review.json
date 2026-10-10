@@ -1,0 +1,457 @@
+{
+  "scope": "Read-only review of existing created-route native recording; no new battle, replay or repository edit",
+  "baseCommit": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+  "baseBuildIdentity": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+  "gameCodeUnchanged": true,
+  "inputs": [
+    {
+      "path": "/tmp/granaderos-created-tucuman-current-audit/native-trace.json",
+      "sha256": "c7952324ec62611d1ed2e0c0490c5422704c0e3c05c325afddf07d5594d1064a"
+    },
+    {
+      "path": "/tmp/granaderos-created-tucuman-current-audit/checkpoint-tucuman-ready.save.json",
+      "sha256": "21d288d01d10b45858dfadec1057204ec62b946a9f068dcbacb1af6c11f58935"
+    },
+    {
+      "path": "/tmp/granaderos-created-tucuman-current-audit/checkpoint-cordoba-defense.save.json",
+      "sha256": "e9d175d185c6650b32096d44d9a5a7b7f370eeb54c0236a86b368cf7732c7b2f"
+    }
+  ],
+  "sources": [
+    {
+      "path": "tests/fresh-northern-fixture.mjs",
+      "sha256": "ea528bcb88836b54647d4d4103570006771c2505414842c7bdbf9d2fdefbd71a"
+    },
+    {
+      "path": "tests/fresh-campaign-route.mjs",
+      "sha256": "9df2e096e7ec4b83793e1af1dc6e3e81865103a8291eb09441065a1f0c1212e2"
+    },
+    {
+      "path": "tests/tucuman-driver.mjs",
+      "sha256": "1daefc44f8e884d18a58f232d993de0f11d10866687b47a2d2ff579382e9d659"
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "sha256": "4cec1ac933f43c88d4859f360872677e5bfb2e369e3a1bdc2d52a7aa973a2867"
+    },
+    {
+      "path": "game/morale.js",
+      "sha256": "6ba46e211b28d06b73c545c1a2af5714bcbecdec652e93240bc768926e49180d"
+    }
+  ],
+  "native": {
+    "startSeconds": 1330201,
+    "hour": 369,
+    "secondOfHour": 1801,
+    "status": "retreat",
+    "turn": 12,
+    "actions": 152,
+    "orders": 179,
+    "elapsedSeconds": 78,
+    "lastError": null,
+    "night": false,
+    "actualDeaths": [
+      "112",
+      "123",
+      "137",
+      "124",
+      "134",
+      "125",
+      "144",
+      "133"
+    ],
+    "aliveEnemies": [
+      {
+        "id": "enemy-0",
+        "hp": 35
+      },
+      {
+        "id": "enemy-1",
+        "hp": 100
+      },
+      {
+        "id": "enemy-2",
+        "hp": 100
+      },
+      {
+        "id": "enemy-3",
+        "hp": 95
+      },
+      {
+        "id": "enemy-4",
+        "hp": 100
+      },
+      {
+        "id": "enemy-10",
+        "hp": 100
+      }
+    ]
+  },
+  "readiness": [
+    {
+      "id": 120,
+      "role": "Guía de quebradas",
+      "hp": 79,
+      "maxHp": 79,
+      "morale": 11,
+      "personalMorale": 6,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 70,
+      "leadership": 63,
+      "explosives": 18,
+      "medical": 48,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 390
+    },
+    {
+      "id": 112,
+      "role": "Cirujano de posta",
+      "hp": 66,
+      "maxHp": 66,
+      "morale": 9,
+      "personalMorale": 4,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 42,
+      "leadership": 64,
+      "explosives": 19,
+      "medical": 94,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 385
+    },
+    {
+      "id": 119,
+      "role": "Recluta de saladero",
+      "hp": 78,
+      "maxHp": 78,
+      "morale": 11,
+      "personalMorale": 6,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 40,
+      "leadership": 24,
+      "explosives": 8,
+      "medical": 15,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 385
+    },
+    {
+      "id": 104,
+      "role": "Marinero irlandés",
+      "hp": 72,
+      "maxHp": 72,
+      "morale": 11,
+      "personalMorale": 6,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 54,
+      "leadership": 37,
+      "explosives": 15,
+      "medical": 35,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 385
+    },
+    {
+      "id": 140,
+      "role": "Armero genovés",
+      "hp": 67,
+      "maxHp": 67,
+      "morale": 11,
+      "personalMorale": 6,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 57,
+      "leadership": 40,
+      "explosives": 64,
+      "medical": 19,
+      "weapon": 1801,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 22,
+      "primaryCartridges": 12,
+      "expiresAt": 385
+    },
+    {
+      "id": 146,
+      "role": "Ex cirujano mayor del ejército francés",
+      "hp": 72,
+      "maxHp": 72,
+      "morale": 84,
+      "personalMorale": 84,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 41,
+      "leadership": 76,
+      "explosives": 26,
+      "medical": 91,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 391
+    },
+    {
+      "id": 123,
+      "role": "Fusilero veterano",
+      "hp": 83,
+      "maxHp": 83,
+      "morale": 48.55,
+      "personalMorale": 43.55,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 88,
+      "leadership": 65,
+      "explosives": 43,
+      "medical": 31,
+      "weapon": 1802,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoRifle",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 45,
+      "primaryCartridges": 12,
+      "expiresAt": 403
+    },
+    {
+      "id": 137,
+      "role": "Ex teniente coronel de caballería francés",
+      "hp": 85,
+      "maxHp": 85,
+      "morale": 41,
+      "personalMorale": 36,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 81,
+      "leadership": 85,
+      "explosives": 24,
+      "medical": 28,
+      "weapon": 1800,
+      "ammunitionChoice": "ammoShot",
+      "ammunitionFamily": "ammoShot",
+      "loaded": 1,
+      "selectedReserve": 9,
+      "effectiveRange": 6,
+      "primaryCartridges": 12,
+      "expiresAt": 403
+    },
+    {
+      "id": 124,
+      "role": "Ex mayor de dragones británico",
+      "hp": 85,
+      "maxHp": 85,
+      "morale": 41,
+      "personalMorale": 36,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 73,
+      "leadership": 79,
+      "explosives": 20,
+      "medical": 26,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 395
+    },
+    {
+      "id": 134,
+      "role": "Vigía nocturno",
+      "hp": 68,
+      "maxHp": 68,
+      "morale": 41,
+      "personalMorale": 36,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 68,
+      "leadership": 33,
+      "explosives": 17,
+      "medical": 29,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 395
+    },
+    {
+      "id": 125,
+      "role": "Zapador de milicias",
+      "hp": 85,
+      "maxHp": 85,
+      "morale": 41,
+      "personalMorale": 36,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 60,
+      "leadership": 45,
+      "explosives": 83,
+      "medical": 20,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 12,
+      "effectiveRange": 18,
+      "primaryCartridges": 12,
+      "expiresAt": 395
+    },
+    {
+      "id": 144,
+      "role": "Mecánico de piezas",
+      "hp": 79,
+      "maxHp": 79,
+      "morale": 16.099999999999994,
+      "personalMorale": 15.099999999999994,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 52,
+      "leadership": 43,
+      "explosives": 80,
+      "medical": 25,
+      "weapon": 1801,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 11,
+      "effectiveRange": 22,
+      "primaryCartridges": 11,
+      "expiresAt": 395
+    },
+    {
+      "id": 133,
+      "role": "Herrero de herraduras",
+      "hp": 89,
+      "maxHp": 89,
+      "morale": 80,
+      "personalMorale": 80,
+      "energy": 76,
+      "fatigue": 24,
+      "marksmanship": 43,
+      "leadership": 31,
+      "explosives": 31,
+      "medical": 20,
+      "weapon": 1800,
+      "ammunitionChoice": null,
+      "ammunitionFamily": "ammoMusket",
+      "loaded": 1,
+      "selectedReserve": 11,
+      "effectiveRange": 18,
+      "primaryCartridges": 11,
+      "expiresAt": 504
+    }
+  ],
+  "ownedUnusedCordobaGuns": [
+    {
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6,
+      "x": 38,
+      "y": 17,
+      "crewRequired": 2
+    },
+    {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6,
+      "x": 39,
+      "y": 15,
+      "crewRequired": 2
+    }
+  ],
+  "priorDefense": {
+    "clock": [
+      294,
+      1792
+    ],
+    "cash": 54630,
+    "gunIds": [
+      "arsenal:cordoba:1",
+      "arsenal:cordoba:2"
+    ]
+  },
+  "orders": {
+    "counts": {
+      "move": 51,
+      "stance": 27,
+      "fire": 39,
+      "reprime": 8,
+      "endTurn": 27,
+      "reload": 22,
+      "look": 3,
+      "weapon": 1,
+      "melee": 1
+    },
+    "fireTargets": {
+      "enemy-9": 15,
+      "enemy-8": 7,
+      "enemy-5": 6,
+      "enemy-6": 7,
+      "enemy-7": 4
+    },
+    "artilleryOrders": 0,
+    "fireRegions": {
+      "torso": 32,
+      "head": 7
+    }
+  },
+  "findings": [
+    {
+      "kind": "preparation omission",
+      "source": "tests/fresh-northern-fixture.mjs:258",
+      "detail": "Created route omits the existing artillerySupport:true option. Two canonical loaded bronze4 guns remain physically in Córdoba and the actual Tcl request has no gun."
+    },
+    {
+      "kind": "readiness limit",
+      "detail": "Six participants enter with morale below20; the earlier accepted Córdoba defense already left five at personal morale0. Full HP and energy do not imply recovered morale. Ordinary safe rest gains only1 morale per6 qualifying hours."
+    },
+    {
+      "kind": "recorded load",
+      "detail": "137 legally retains ammoShot as ammunitionChoice, giving a6-cell gun range and9 shot reserve, although12 ordinary musket cartridges are also owned. This is an actual inherited load, not a cartridge shortage or broken ammunition invariant."
+    }
+  ],
+  "conclusion": "The recording proves a legitimate infantry defeat with missing owned artillery support and weak morale. No concrete production invariant failure was identified. A prospective existing finite battery setup/controller can be tested from the real Córdoba defense checkpoint; this receipt does not claim that it wins.",
+  "limits": [
+    "No intermediate state reconstruction or new combat replay was run. The review cannot certify visibility/AP at every recorded order from final state alone.",
+    "No balanced combat, full route or campaign completion claim.",
+    "Candidate current build identity is pending; base identity is not a candidate build identity."
+  ]
+}

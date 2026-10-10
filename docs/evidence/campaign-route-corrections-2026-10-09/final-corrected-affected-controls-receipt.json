@@ -1,0 +1,22 @@
+{
+  "checkedUtc": "2026-10-10T04:06:37.066659+00:00",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "session": 9769,
+  "exitCode": 0,
+  "tests": 29,
+  "passed": 29,
+  "failed": 0,
+  "skipped": 0,
+  "durationMs": 30421.429084,
+  "logSha256": "f0192406f2b44f6037d5793171c5fec2eaa77cfd59cc6011d61131b0e519a8fd",
+  "sourceHashes": {
+    "tests/northern-route.mjs": "ce34ec82c0caf30aa905ef3d06363d6de80f766c773727266c8a91c82eefd3ec",
+    "tests/cuyo-route-driver.mjs": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+    "tests/fresh-mountain-route.mjs": "f5d7b8a96b302bb9a9950446e3c90957b94b35f32520d0b91ff644646b3490ea",
+    "tests/route-failure-evidence.mjs": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f",
+    "tests/northern-safe-posture.test.mjs": "b0b08601c2c0dd2feb6ce0f42404d02ff5c0b9b1c59b4015a232d27acd2adc3d",
+    "tests/fresh-mountain-ammunition.test.mjs": "7299a8d5811ea6d9465ade28fd43b547b990db360d7d75c56a4987d45d862df4"
+  },
+  "Mendoza205OrderVictoryAndOfficialReplayUnchanged": true,
+  "limits": "Affected candidate controls only. Generic Cuyo corrections are supported by source/native zero-order witnesses and await the next complete original campaigns; current complete942-file gate not yet run."
+}

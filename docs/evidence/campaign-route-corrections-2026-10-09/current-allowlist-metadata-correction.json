@@ -1,0 +1,16 @@
+{
+  "path": "/tmp/granaderos-campaign-integration-allowlist-current.json",
+  "beforeSha256": "3498e6b68036bf61757ce2ccba4af893e1a863cb56b99e4069a4584a244cd01a",
+  "afterSha256": "f43ab7949e166bb0c584178dacba62806d745ea8a210eb138c9b77b20d237a1b",
+  "previousScalarFields": {
+    "count": 305,
+    "totalBytes": 34826363
+  },
+  "currentScalarFields": {
+    "count": 337,
+    "totalBytes": 46327398
+  },
+  "filesArrayChanged": false,
+  "repositoryOrIndexChanged": false,
+  "evidence": "Independent read-only index/working/allowlist337 verification; root staged proof."
+}

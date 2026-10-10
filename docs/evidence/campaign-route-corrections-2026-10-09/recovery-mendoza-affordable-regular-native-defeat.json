@@ -1,0 +1,259 @@
+{
+  "scope": "Fixed prospective affordable regular preparation; one existing recoveryMendozaOrder native attempt and exact recorded replay. No production changes, force/policy/seed/price variants, full campaign pass, or later victory claim. Defeat retained honestly; battle probing stopped.",
+  "candidateFileHashes": {
+    "tests/fresh-cuyo-route.mjs": "8b43b6cbcd5a1463fa07595625c27954f6b875a897527e669ecd3403560c45e3",
+    "tests/fresh-cuyo-relief.test.mjs": "7ae94afc9a0231b46765b1d54b2cd818908045b2a11e70f5f71b8a0b0fe117fa",
+    "tests/recovery-mendoza-driver.mjs": "4b97ea48c699ed87718c644748798e4297b9de3ca72e5fa107917570571428a2",
+    "tests/recovery-mendoza-driver.test.mjs": "305330e53772a7351d452fab117b4f93a7b18cded34ae6dd123c42892194f0ff",
+    "tests/fixtures/cuyo-northern-real-losses.save.json.gz": "545389294cc086b9d7068c86b105bdbff5f5329d371ebe379acbfbf143910141",
+    "tests/fixtures/cuyo-northern-real-losses.provenance.json": "c98d035761d4ccb8604e83bb180011d00bd11879e6061e0df6ab05cbc8088c9b"
+  },
+  "focused": {
+    "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/fresh-cuyo-relief.test.mjs tests/recovery-mendoza-driver.test.mjs tests/campaign-battery-driver.test.mjs tests/route-battery.test.mjs tests/route-ammunition.test.mjs",
+    "tests": 26,
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 15887.508333,
+    "log": "/tmp/granaderos-recovery-mendoza-regular-focused-final.log",
+    "logSha256": "c063a2955fc60756b53f3fda21f562fe7b0c87f0ffcfd4dcaa634c9900431a7d",
+    "files": {
+      "tests/fresh-cuyo-route.mjs": "8b43b6cbcd5a1463fa07595625c27954f6b875a897527e669ecd3403560c45e3",
+      "tests/fresh-cuyo-relief.test.mjs": "7ae94afc9a0231b46765b1d54b2cd818908045b2a11e70f5f71b8a0b0fe117fa",
+      "tests/recovery-mendoza-driver.mjs": "4b97ea48c699ed87718c644748798e4297b9de3ca72e5fa107917570571428a2",
+      "tests/recovery-mendoza-driver.test.mjs": "305330e53772a7351d452fab117b4f93a7b18cded34ae6dd123c42892194f0ff",
+      "tests/fixtures/cuyo-northern-real-losses.save.json.gz": "545389294cc086b9d7068c86b105bdbff5f5329d371ebe379acbfbf143910141",
+      "tests/fixtures/cuyo-northern-real-losses.provenance.json": "c98d035761d4ccb8604e83bb180011d00bd11879e6061e0df6ab05cbc8088c9b"
+    },
+    "scope": "Actual earned preparation, fixed affordable regular102/native quote/arrival, Cuyo full ordinary action tape and official midpoint replay,37actual earlier deaths, matching finite firearm sources/ammunition,2cannon shots and crew controls. No battle victory claim."
+  },
+  "assembly": {
+    "scope": "All actual ordinary Cuyo assembly actions; midpoint official campaign save and exact final campaign equality. Mendoza reload visits are tested by official full saves and retained events, not falsely counted in this strategic action tape.",
+    "actions": 49,
+    "exactReplay": true,
+    "midpointOfficialSave": true,
+    "clock": [
+      406,
+      99
+    ],
+    "treasury": 112438,
+    "regularHire": {
+      "event": "cuyoPaidMendozaRegular",
+      "id": 102,
+      "price": 280,
+      "guarantee": 0,
+      "total": 280,
+      "dayPrice": 40,
+      "dayCeiling": 180,
+      "bookedSeconds": 1461699,
+      "arrivalSeconds": 1461699,
+      "travelHours": 0,
+      "contractExpiresAt": 574
+    },
+    "priorDeadIds": [
+      1,
+      4,
+      9,
+      101,
+      103,
+      104,
+      107,
+      108,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      129,
+      131,
+      133,
+      134,
+      136,
+      137,
+      139,
+      140,
+      141,
+      144,
+      146,
+      1000
+    ]
+  },
+  "native": {
+    "scope": "One fixed existing recoveryMendozaOrder native attempt from integrated actual earned preparation; exact recorded-order replay and official settlement. No battle strategy/seed/health/stock variants.",
+    "inputSha256": "7e781ef34c96f1a98bb0a7ed9e9b78dea0e7492c2962d9b3b3fa155967202b53",
+    "readyClock": [
+      417,
+      105
+    ],
+    "endpoint": [
+      417,
+      425
+    ],
+    "actualStatus": "defeat",
+    "expectedStatus": "victory",
+    "turns": 4,
+    "actions": 109,
+    "recordedOrders": 121,
+    "elapsedSeconds": 320,
+    "midpoint": {
+      "orderIndex": 60,
+      "elapsedSeconds": 302,
+      "clock": [
+        417,
+        407
+      ]
+    },
+    "exactMidpointSavedReplay": true,
+    "exactSettledReplay": true,
+    "acceptedFullSave": true,
+    "priorDeadIds": [
+      1,
+      4,
+      9,
+      101,
+      103,
+      104,
+      107,
+      108,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      129,
+      131,
+      133,
+      134,
+      136,
+      137,
+      139,
+      140,
+      141,
+      144,
+      146,
+      1000
+    ],
+    "actualNewDeadIds": [
+      0,
+      8,
+      100,
+      10
+    ],
+    "initialGun": {
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 1,
+      "facing": -1.0303768265243125
+    },
+    "finalGun": {
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 1,
+      "reloadProgress": 0.8813559322033898,
+      "facing": 1.5707963267948966
+    },
+    "treasury": 120418,
+    "campaignDefeated": false,
+    "mendozaOwner": "royalist",
+    "durationMs": 27103
+  },
+  "livingPlayersAtNativeDefeat": [
+    {
+      "id": "142",
+      "hp": 9,
+      "bleeding": 5,
+      "routed": false,
+      "surrendered": null,
+      "departure": null
+    },
+    {
+      "id": "130",
+      "hp": 13,
+      "bleeding": 1,
+      "routed": false,
+      "surrendered": null,
+      "departure": null
+    },
+    {
+      "id": "102",
+      "hp": 10,
+      "bleeding": 4,
+      "routed": false,
+      "surrendered": null,
+      "departure": null
+    },
+    {
+      "id": "11",
+      "hp": 4,
+      "bleeding": 8,
+      "routed": true,
+      "surrendered": null,
+      "departure": null
+    }
+  ],
+  "runtime": {
+    "binary": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "imports": 301,
+    "actualImportedHashDrift": [],
+    "startingImportHashDrift": []
+  },
+  "baseBuildIdentity": "9d03e36370d6",
+  "buildIdentityNote": "Base/revalidated identity. Game code unchanged; final cumulative candidate build identity pending because test suite config/helpers differ.",
+  "inputProvenance": {
+    "file": "tests/fixtures/cuyo-northern-real-losses.save.json.gz",
+    "earnedClock": [
+      395,
+      99
+    ],
+    "nativePrefixCodeCommit": "7448e2da",
+    "sha256Decompressed": "7e781ef34c96f1a98bb0a7ed9e9b78dea0e7492c2962d9b3b3fa155967202b53",
+    "boundary": "Official earned actual Salta/Yatasto aftermath, four serving survivors and37actual permanent deaths. Prospective ordinary paid preparation only; no report editing."
+  },
+  "commands": {
+    "focused": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/fresh-cuyo-relief.test.mjs tests/recovery-mendoza-driver.test.mjs tests/campaign-battery-driver.test.mjs tests/route-battery.test.mjs tests/route-ammunition.test.mjs",
+    "native": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --import /tmp/granaderos-recovery-mendoza-regular-native-audit/preload.mjs /tmp/granaderos-recovery-mendoza-regular-native-audit/probe.mjs"
+  },
+  "artifacts": {
+    "run.log": "ba76dbf30e60d8c8f70f0c8e9ca05308d343ef1d363a7aa6fa7d8d5426334f9a",
+    "native-trace.json": "c5ceec96fde8c1ae24540f8943ebdfbc1da6d0e42840274e3f159505656e1791",
+    "native-ready.save.json": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+    "native-settled.save.json": "ba6021b2d8c08a0f31643c700dfbcded1fb8348086b258356b5a0b707a59cb2b",
+    "recorded-midpoint.save.json": "59dcf19303f6529caa38c051ee8706917a4e4223d1028ec97f8debe75e3c64aa",
+    "assembly-replay-receipt.json": "40c6bc538d6c86d55308f02ab8ff03ddbcbc4f839a03298e37522912f3069e4a",
+    "final-source-scan.json": "087c08587730f8116791218423617bd36db9f3a6610f16f3f4eec8bb0463b63a",
+    "focused-controls-receipt.json": "a68ead71e6020f51b511a74d558823f278d43d8e56691b6ceef79b13c20f3b19"
+  },
+  "limits": [
+    "The26-case gate proves preparation/custody/replay and declared crew controls, not Mendoza victory.",
+    "The complete original fresh-campaign-recovery remains failing in its Mendoza acceptance scenario; no new complete recovery run is authorized after this defeat.",
+    "The prior seven-person native retreat remains separately preserved at /tmp/granaderos-recovery-mendoza-native-audit."
+  ]
+}

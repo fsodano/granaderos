@@ -1,0 +1,377 @@
+{
+  "inputSha256": "580cd2ec5c888c146ed289a343fb4b4f0e06bc7fcd2f8c58866e053c4f76b232",
+  "candidateSha256": "b1e2828a779a716e56f8dff47768ea954379989bc1e7ef6f4f36423a616f1c75",
+  "inputUnchanged": true,
+  "prepared": {
+    "event": "rescueClinicPrepared",
+    "sector": "tucuman",
+    "ids": [
+      112,
+      122,
+      103,
+      108,
+      121,
+      126,
+      129,
+      130
+    ],
+    "courier": 102,
+    "ungrouped": [
+      129,
+      130
+    ],
+    "armament": [
+      {
+        "id": 112,
+        "oldWeapon": 1800,
+        "weapon": 1800,
+        "sourceKey": "ground:service-return-2-0",
+        "sourceExpected": "{\"item\":\"weapon\",\"count\":1,\"weight\":4,\"weapon\":1800,\"loaded\":1,\"condition\":97,\"jammed\":false}",
+        "loaded": 1
+      },
+      {
+        "id": 103,
+        "oldWeapon": 1804,
+        "weapon": 1800,
+        "sourceKey": "ground:service-return-3-0",
+        "sourceExpected": "{\"item\":\"weapon\",\"ammunitionChoice\":\"ammoShot\",\"count\":1,\"weight\":4,\"weapon\":1800,\"loaded\":1,\"condition\":95,\"jammed\":false}",
+        "loaded": 1
+      }
+    ],
+    "ammunitionTransactions": [
+      {
+        "action": {
+          "type": "sectorInventory",
+          "sector": "tucuman",
+          "operativeId": 112,
+          "direction": "take",
+          "sourceKey": "ground:service-return-2-6",
+          "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"musket_75\",\"name\":\"Cartuchos de mosquete\",\"count\":9,\"weight\":0.04,\"item\":\"inventory:ammo:musket_75\"}",
+          "count": 4
+        },
+        "sector": "tucuman",
+        "hour": 271,
+        "secondOfHour": 3393,
+        "cost": 0,
+        "quantity": 4,
+        "family": "ammoMusket",
+        "sourceKind": "ground"
+      },
+      {
+        "action": {
+          "type": "sectorInventory",
+          "sector": "tucuman",
+          "operativeId": 122,
+          "direction": "take",
+          "sourceKey": "ground:service-return-2-6",
+          "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"musket_75\",\"name\":\"Cartuchos de mosquete\",\"count\":5,\"weight\":0.04,\"item\":\"inventory:ammo:musket_75\"}",
+          "count": 5
+        },
+        "sector": "tucuman",
+        "hour": 271,
+        "secondOfHour": 3393,
+        "cost": 0,
+        "quantity": 5,
+        "family": "ammoMusket",
+        "sourceKind": "ground"
+      },
+      {
+        "action": {
+          "type": "sectorInventory",
+          "sector": "tucuman",
+          "operativeId": 103,
+          "direction": "take",
+          "sourceKey": "ground:service-return-3-5",
+          "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"shot_16\",\"count\":7,\"weight\":0.04,\"name\":\"Cargas de perdigones\",\"item\":\"inventory:ammo:shot_16\"}",
+          "count": 7
+        },
+        "sector": "tucuman",
+        "hour": 271,
+        "secondOfHour": 3393,
+        "cost": 0,
+        "quantity": 7,
+        "family": "ammoShot",
+        "sourceKind": "ground"
+      },
+      {
+        "action": {
+          "type": "sectorInventory",
+          "sector": "tucuman",
+          "operativeId": 103,
+          "direction": "take",
+          "sourceKey": "container:tucuman:building:chest:14:7:4",
+          "expected": "{\"item\":\"inventory:ammo:shot_16\",\"kind\":\"ammunition\",\"ammoType\":\"shot_16\",\"name\":\"Cargas de perdigones\",\"count\":20,\"weight\":0.04}",
+          "count": 4
+        },
+        "sector": "tucuman",
+        "hour": 271,
+        "secondOfHour": 3393,
+        "cost": 0,
+        "quantity": 4,
+        "family": "ammoShot",
+        "sourceKind": "container"
+      },
+      {
+        "action": {
+          "type": "sectorInventory",
+          "sector": "tucuman",
+          "operativeId": 108,
+          "direction": "take",
+          "sourceKey": "[\"body\",\"127\",\"inventory:ammo:musket_75\"]",
+          "expected": "{\"kind\":\"ammunition\",\"ammoType\":\"musket_75\",\"count\":7,\"weight\":0.04,\"name\":\"Cartuchos de mosquete\",\"item\":\"inventory:ammo:musket_75\"}",
+          "count": 5
+        },
+        "sector": "tucuman",
+        "hour": 271,
+        "secondOfHour": 3393,
+        "cost": 0,
+        "quantity": 5,
+        "family": "ammoMusket",
+        "sourceKind": "body"
+      }
+    ],
+    "roofEvidence": {
+      "event": "routeRoofDefenders",
+      "sector": "tucuman",
+      "ids": [
+        112,
+        122,
+        103,
+        108,
+        121,
+        126,
+        129,
+        130
+      ],
+      "positions": [
+        {
+          "id": 122,
+          "x": 32,
+          "y": 23,
+          "tacticalLevel": 1
+        },
+        {
+          "id": 103,
+          "x": 33,
+          "y": 23,
+          "tacticalLevel": 1
+        },
+        {
+          "id": 108,
+          "x": 32,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "id": 121,
+          "x": 34,
+          "y": 23,
+          "tacticalLevel": 1
+        },
+        {
+          "id": 126,
+          "x": 34,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "id": 112,
+          "x": 32,
+          "y": 21,
+          "tacticalLevel": 1
+        },
+        {
+          "id": 129,
+          "x": 33,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "id": 130,
+          "x": 35,
+          "y": 23,
+          "tacticalLevel": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "movement",
+          "unitId": "122",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "122",
+          "x": 32,
+          "y": 23,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "122",
+          "stance": "crouched"
+        },
+        {
+          "type": "movement",
+          "unitId": "103",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "103",
+          "x": 33,
+          "y": 23,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "103",
+          "stance": "crouched"
+        },
+        {
+          "type": "movement",
+          "unitId": "108",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "108",
+          "x": 32,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "108",
+          "stance": "crouched"
+        },
+        {
+          "type": "movement",
+          "unitId": "121",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "121",
+          "x": 34,
+          "y": 23,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "121",
+          "stance": "crouched"
+        },
+        {
+          "type": "movement",
+          "unitId": "126",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "126",
+          "x": 34,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "126",
+          "stance": "crouched"
+        },
+        {
+          "type": "movement",
+          "unitId": "112",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "112",
+          "x": 32,
+          "y": 21,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "112",
+          "stance": "crouched"
+        },
+        {
+          "type": "movement",
+          "unitId": "129",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "129",
+          "x": 33,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "move",
+          "unitId": "129",
+          "x": 33,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "move",
+          "unitId": "129",
+          "x": 33,
+          "y": 22,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "129",
+          "stance": "crouched"
+        },
+        {
+          "type": "movement",
+          "unitId": "130",
+          "movement": "walk"
+        },
+        {
+          "type": "move",
+          "unitId": "130",
+          "x": 35,
+          "y": 23,
+          "tacticalLevel": 1
+        },
+        {
+          "type": "stance",
+          "unitId": "130",
+          "stance": "crouched"
+        }
+      ],
+      "elapsedSeconds": 644
+    },
+    "elapsedSeconds": 644,
+    "cost": 0
+  },
+  "hour": 272,
+  "second": 437,
+  "cash": 3218,
+  "actualImportedOriginalSources": 274,
+  "sourceDrift": [],
+  "nativeReplay": {
+    "status": "passed",
+    "scope": "The fixed admitted native tape first matched every original raw result hash without extra saves. This second replay uses an actual official midpoint reload, compares canonical object keys, preserves array order and compares the exact final decoded campaign.",
+    "rows": 99,
+    "counts": {
+      "campaign": 51,
+      "tactical": 27,
+      "enter": 5,
+      "sync": 5,
+      "skippedPlanning": 0,
+      "save": 6
+    },
+    "midpoint": 43,
+    "savedMidpoint": true,
+    "finalSha256": "366498a2939677b229ffd7e76047dfe1a44181a9f7df3753841de678e6596104",
+    "hour": 272,
+    "second": 437
+  },
+  "resultSaveSha256": "6d0b8ea12f211ecff140faee0d1cdd54fc66cb549bb36adca4b0541640b490ff"
+}

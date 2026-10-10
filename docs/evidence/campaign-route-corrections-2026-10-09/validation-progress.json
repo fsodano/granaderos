@@ -1,0 +1,3975 @@
+{
+  "codeCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "baseCommit": "2849279c5064e658a5106dc1f62c06ecab49e7f4",
+  "scope": "Campaign route helpers use actual living roles, native paid travel and care, finite equipment custody, known safe firearm decisions, and native action/save evidence. Parity descriptions and raw evidence preservation only; no production game/save/renderer rule change in this batch.",
+  "portRegression": {
+    "before": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "cause": "Public central sweep did not reveal the real edge resident."
+    },
+    "after": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMilliseconds": 49322,
+      "proof": "Actual native night search, public last-observed memory, sight loss and reacquisition, full saved action replay and real physical income agreement."
+    }
+  },
+  "recoveryRegression": {
+    "before": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "error": "Cada escala debe ser una celda terrestre accesible.",
+      "durationMilliseconds": 1895.576791,
+      "method": "External loader reads both original helpers from base commit; candidate test and earned fixture unchanged."
+    },
+    "after": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMilliseconds": 155496.947,
+      "proof": "Joined native recapture, every issued order replayed, official save, true deaths and finite supplies, actual captured cannon return and Salta preparation."
+    }
+  },
+  "createdFullRoutesAfterPort": {
+    "files": [
+      "tests/fresh-northern-route.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs"
+    ],
+    "passed": 0,
+    "failed": 3,
+    "skipped": 0,
+    "durationMilliseconds": 250395.000292,
+    "remainingFailure": "All three now reach the later native Tucuman assault, which retreats at12turns/152actions/startSeconds1330201."
+  },
+  "remainingWork": [
+    "Run complete current full948 without filters or exclusions; retain exact failures and ordinary native outcomes.",
+    "Correct any demonstrated remaining helper or gameplay defect from current evidence; preserve strict assertions, real deaths and finite costs.",
+    "Refresh the explicit current/staged allowlist, exact staged bytes, diff check and final local gates after evidence integration. Then commit, push, open and attach the authorized PR, merge and synchronize main.",
+    "Restart owned port3001 on merged main and archive only the clean merged repair checkout; preserve the map image."
+  ],
+  "artifacts": [
+    {
+      "path": "all-five-stash-audit.json.gz",
+      "sha256": "aa2fc0d8a0dc8e8bf97b78af1f6732096748e4143958f908adad21f1c9537a2c",
+      "bytes": 37294
+    },
+    {
+      "path": "all-five-stash-root-verification.json",
+      "sha256": "64545b24665dd7bb6f06c53d02c7e8f92e61c8fb6ac6a335436d28dea00b87b5",
+      "bytes": 3359
+    },
+    {
+      "path": "campaign-route-profile-check.log",
+      "sha256": "ce7c162be35faebba971ae9eb512483b53de1793dfe19e0cc6207a4fec5e50b9",
+      "bytes": 1215
+    },
+    {
+      "path": "clinic-knockdown-overlay-receipt.json",
+      "sha256": "041427b9f9bb5be1918585a90ff07eafa755aab53ee0552fcf18c28cad867a69",
+      "bytes": 10087
+    },
+    {
+      "path": "coastal-hired-native-progression-archive-receipt.json",
+      "bytes": 15163,
+      "sha256": "5fb43613844e28d09e7158133240b4721f99f03ab491baa625c6216114f43eda"
+    },
+    {
+      "path": "coastal-hired-native-progression-terminal-receipt.json",
+      "bytes": 27305,
+      "sha256": "4811440026f9985c7e2fd150d7595c0f399c6bc1f71426df46bfdf2ac4c2b0af"
+    },
+    {
+      "path": "coastal-hired-native-progression.tar.gz",
+      "bytes": 8709746,
+      "sha256": "d5464c9171372d79725b5284f26867ed956d799ae864269ad32af767a85e6bba"
+    },
+    {
+      "path": "coastal-morale-reviewed-packages-receipt.json",
+      "bytes": 3654,
+      "sha256": "cc4f0c3534e06aad4b013ac68960c2b68a7c7c7a3d1d93c43001a1f3451b5a8e"
+    },
+    {
+      "path": "coastal-original-clinic-failure-archive-receipt.json",
+      "bytes": 4579,
+      "sha256": "be46c05e10fc04094becde3e15a5d7884a935f353423a3f1dbb6496db7563aab"
+    },
+    {
+      "path": "coastal-original-clinic-failure-observation.tar.gz",
+      "bytes": 2189318,
+      "sha256": "3327f1db35cb84eed972661a40086a789609d3baff00bacfb7e6ad10c925ef58"
+    },
+    {
+      "path": "coastal-readiness-actual-repository-controls.log.gz",
+      "bytes": 313,
+      "sha256": "1a77f85399adaaaa7342e41e2470b0324a7c42bc9605a41d191ac232e9f54682"
+    },
+    {
+      "path": "coastal-readiness-applied-receipt.json",
+      "bytes": 1537,
+      "sha256": "f8426ac9beecbfd260fc8f52f487dcaa1c744022b3a88c16d899b85c0740b1a8"
+    },
+    {
+      "path": "coastal-readiness-reviewed-proposal.tar.gz",
+      "bytes": 165007,
+      "sha256": "37fa8036e8c88e45187395eb6491e7d93ebba923d3393d27f3a06a5dd2cadf41"
+    },
+    {
+      "path": "complete-created-three-validation.json",
+      "sha256": "cdaf815f6989cb1fa4721db207eccd9de04e5d96071bbcd5131b753d2802f5ea",
+      "bytes": 19274
+    },
+    {
+      "path": "cordoba-exact-canonical-analysis.json",
+      "sha256": "de0d312be4dc64ddecba8628fbbeaba9e10031f659e276b456fbead361e3096f",
+      "bytes": 29971
+    },
+    {
+      "path": "cordoba-exact-canonical-replay-allowlist.json",
+      "sha256": "c9838e58548d1f5c7cd9f5cfd2f5c419894486ebe438191dfffcae38d4ec3833",
+      "bytes": 8363
+    },
+    {
+      "path": "cordoba-exact-canonical-replay-closure.json",
+      "sha256": "af81c5b6425c05fb4d540563b7e4442bbb2ded07b7f32fd9ebce85571f4a7e0a",
+      "bytes": 8759
+    },
+    {
+      "path": "cordoba-exact-canonical-replay.tar.gz",
+      "sha256": "e380b598c65f40fa9fa7ab62aa8ae9f12b9c5d7b03e14c3344442555a2ab3521",
+      "bytes": 2079497
+    },
+    {
+      "path": "corrected-current-baseline.log",
+      "sha256": "151f2e8aaf0d70fcaeba50f47cb4c0c2b7bde56ba4d79c33944a3aec77e1b83b",
+      "bytes": 10602
+    },
+    {
+      "path": "corrected-current-build-info.json",
+      "sha256": "dab41fafae40527ed92ed6cc3b954d83756b578b2c9449813aa12695a62872bd",
+      "bytes": 193
+    },
+    {
+      "path": "corrected-current-docs.log",
+      "sha256": "b69f907a4f1cdf7a76596fb9835f68a17b2d6d0bbca5082973d3b3582def7120",
+      "bytes": 191
+    },
+    {
+      "path": "corrected-current-extended-profile.json",
+      "sha256": "0c5494ca70358e62067635e23adc4d97b6eb4935ff9743edbb701a18bead4ac6",
+      "bytes": 128549
+    },
+    {
+      "path": "corrected-current-profile-controls.log",
+      "sha256": "104e8848981de64164eb6f5ab7984cc2cafb3252730569c04c278b2b8e034280",
+      "bytes": 1212
+    },
+    {
+      "path": "corrected-current-quick-profile.json",
+      "sha256": "e95b1f73d73724bee9712501fc6f539a9a1b975347e4f4a1d1cf5e2dd676516d",
+      "bytes": 42991
+    },
+    {
+      "path": "corrected-current-shards.json",
+      "sha256": "3aff2360c72adb7d265e7cf2b4ee1c1f3096f0a9ffb000de8be1fd1891d2a133",
+      "bytes": 45349
+    },
+    {
+      "path": "corrected-current-typecheck.log",
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+      "bytes": 117
+    },
+    {
+      "path": "created-artillery-full-route.log",
+      "sha256": "88db66d60e1ae250c6b6e23ae8bc38de4a9ceb25fcf702073b3d33a10c53f7be",
+      "bytes": 1709
+    },
+    {
+      "path": "created-complete-shipment-imports.json.gz",
+      "sha256": "035c39e6492af637e5aece7f6ef150d57b8b54d61fe20286efd8558e59f075aa",
+      "bytes": 22242
+    },
+    {
+      "path": "created-complete-shipment-mountain-supply-failure.json",
+      "sha256": "1f1a65a3d71460ab02de2bb2881646f5438c44705ce98141e76a19122494e1af",
+      "bytes": 5840
+    },
+    {
+      "path": "created-complete-shipment-native-calls.ndjson.gz",
+      "sha256": "b73b7a78465ce3e92744741cc82a471909a124076de532a2f8b0be5c86c593a9",
+      "bytes": 2885248
+    },
+    {
+      "path": "created-complete-shipment-pre-mendoza.save.json.gz",
+      "sha256": "d5b84692768b8fa0f8894afba32f559f4714b9132295eb43aa7e52f756ae7dd1",
+      "bytes": 142932
+    },
+    {
+      "path": "created-complete-shipment-terminal.save.json.gz",
+      "sha256": "709de922c96082b73e169039f954499cc0fb16a4fc488dd688b110ae007098a6",
+      "bytes": 170716
+    },
+    {
+      "path": "created-cuyo-complete-funding-care-import-evidence.json.gz",
+      "sha256": "908a068bf82c40be593ed085b3417fae16ab59008a17b61c1fabcc5051b4593d",
+      "bytes": 22996
+    },
+    {
+      "path": "created-cuyo-funding-clinician-rest-replay.json",
+      "sha256": "ec46e2a8ff44088332e48183d4908ba274b979846eba88c833cd005697780b62",
+      "bytes": 21251
+    },
+    {
+      "path": "created-cuyo-funding-courier-replay.json",
+      "sha256": "9249d0fe3871433ee8d779d9ac297b6eb93ba903f4a1765e4d6b3f7848c2733e",
+      "bytes": 8375
+    },
+    {
+      "path": "created-cuyo-funding-native-care.json",
+      "sha256": "54c2f2c4daf678b9d3fd5139ccee5ee8016b27b3aff38062d64f29ae9fbbeacf",
+      "bytes": 1776
+    },
+    {
+      "path": "created-cuyo-salta-gun-shipment-quote.json",
+      "sha256": "eb67af7bdca6373518057b764c9dffcd58689860f596fd31c713a9b97b8a8402",
+      "bytes": 1820
+    },
+    {
+      "path": "created-cuyo-third-gun-shortage.json",
+      "sha256": "b9d043c68b0ebfefb698c8569a7193c4036b0605f40c7a5b1f8c45631a61a312",
+      "bytes": 3088
+    },
+    {
+      "path": "created-mendoza-admission-care-replay.json",
+      "sha256": "1153296b7d157f848510998f70113786b95b3e0c601c89dcaf94f6df5c3b5594",
+      "bytes": 66392
+    },
+    {
+      "path": "created-mendoza-finite-gun-selection.json",
+      "sha256": "8a64fa6cf604d34339d363fbec9f16e61f23f88acf747266ba149c77bea34235",
+      "bytes": 1366
+    },
+    {
+      "path": "created-relief-cargo-replay-validation.json",
+      "sha256": "e7a26d6db4679a65bd96f7f405d0e89881aace91c031e0c645a6b0536ae9cfb3",
+      "bytes": 4299
+    },
+    {
+      "path": "created-relief-final-manifest.json",
+      "sha256": "2b62a5468c9d658c9274101dd4395f5555c794080fa4c6671ea0e7bfb28a51d9",
+      "bytes": 12092
+    },
+    {
+      "path": "created-relief-yatasto-native-action-tape.json.gz",
+      "sha256": "33641ae00594d277a05d7146ea9b2b11158b245d9300d2d8f38feffe7a00955c",
+      "bytes": 194842
+    },
+    {
+      "path": "created-relief-yatasto-replay-validation.json",
+      "sha256": "ece1ce71c81daac56f143fb68aec642fdafa23a5e59bcea8237cc9a14fc3be4b",
+      "bytes": 4933
+    },
+    {
+      "path": "created-routes-after-port.log",
+      "sha256": "c31a2f73f6ea2ddd975f188a5cd847184a66216cb6fec1ce5258559b61820139",
+      "bytes": 10198
+    },
+    {
+      "path": "created-salta-gun-shipment.json",
+      "sha256": "1ac5dca5f4512444a9344571447106efbe3c840971ed18c8e5962429bcf63982",
+      "bytes": 1247
+    },
+    {
+      "path": "created-tucuman-causal-review.json",
+      "sha256": "f2796e28c9fb31ad71aa337f2b93c25af1bdd56085ffe7ae9bf49bcf2eb8c84e",
+      "bytes": 11675
+    },
+    {
+      "path": "cumulative-build.log",
+      "sha256": "efd63733060e6a1dc0d25d94dd1ce0b26fe81640f3cf72aa61d4eea7b7d5dd64",
+      "bytes": 1821
+    },
+    {
+      "path": "cumulative-full-935.after-source-hashes.json.gz",
+      "sha256": "48ecab838559d1583ed39c28c6e5c855b81a7c105a393167b1e88465321259ab",
+      "bytes": 659168
+    },
+    {
+      "path": "cumulative-full-935.before-source-hashes.json.gz",
+      "sha256": "48ecab838559d1583ed39c28c6e5c855b81a7c105a393167b1e88465321259ab",
+      "bytes": 659168
+    },
+    {
+      "path": "cumulative-full-935.log.gz",
+      "sha256": "9463007e5beed573e71ee50454c623343db35034d582de199934ea0d5ccbbd0c",
+      "bytes": 264644
+    },
+    {
+      "path": "cumulative-full-935.metadata.json",
+      "sha256": "5e19d8899a8660c3d0b2e8705dc8157f4f542afa7d484c9dd626313cea8595af",
+      "bytes": 450
+    },
+    {
+      "path": "cumulative-full-935.receipt.json",
+      "sha256": "0b08569de3a6724df649da2a689f20055f7acd61647d1d69823b183b5c7aee93",
+      "bytes": 2039
+    },
+    {
+      "path": "cumulative-full-935.report.json.gz",
+      "sha256": "51590fc58131b5a321f26badcf5bf4ea41d548c5110d9837dd70d1283ab29d22",
+      "bytes": 31587
+    },
+    {
+      "path": "cumulative-static-review.json",
+      "sha256": "8385b0e4f504e71073e907119089e59e6d4142e92046223f9aa96560a8dbc933",
+      "bytes": 8248
+    },
+    {
+      "path": "cumulative-test-profile.log",
+      "sha256": "4140e46d5145f1dc68006396b9f70f4dee811dd9727f04355b0de63c347b7583",
+      "bytes": 1211
+    },
+    {
+      "path": "cuyo-funding-care-finite-shortage.json",
+      "sha256": "b76821afe9bf63db360e6053cd1ff8cf3bc9737910ea32c0c08361c4dbda2be8",
+      "bytes": 8497
+    },
+    {
+      "path": "cuyo-known-view-cover-civilian-applied-receipt.json",
+      "sha256": "2badf43a59dec29cc0c2f2f161d59ef370e8ca49c210b0f8baadc17863b4fa92",
+      "bytes": 910
+    },
+    {
+      "path": "cuyo-known-view-cover-civilian-proposal-allowlist.json",
+      "sha256": "c037f7a182706271a1f6cc5f22174ec4f0048d948c780c83a412a08087a82e13",
+      "bytes": 2345
+    },
+    {
+      "path": "cuyo-known-view-cover-civilian-proposal.tar.gz",
+      "sha256": "80db0f71126cdbd4eceae5dc9595a899dfa6f60d124837f0e3f7e3514cb61f4a",
+      "bytes": 49153
+    },
+    {
+      "path": "cuyo-opt-in-known-friendly-proposal-allowlist.json",
+      "sha256": "8068090a2f2f5a973f41deeaccdd8543a5e07a5f1ee1ed81a7a8bd79276eafe4",
+      "bytes": 2074
+    },
+    {
+      "path": "cuyo-opt-in-known-friendly-proposal.tar.gz",
+      "sha256": "9c2b200a6b2dbcca0d5b77a393e4e5eeb5e9b0b22df4bae6ca4c11985dfb3ef6",
+      "bytes": 42879
+    },
+    {
+      "path": "cuyo-opt-in-safety-applied-receipt.json",
+      "sha256": "43c11c52be038c4973dfe4519570052c611adcfb628a781a5b8ff046626e359d",
+      "bytes": 618
+    },
+    {
+      "path": "cuyo-paid-relief-controls.log",
+      "sha256": "d9b8bfaf389d9a4ddf4e319bd03bacbf5f4e9d0b5ab5271cc3d49925a8e14afa",
+      "bytes": 1594
+    },
+    {
+      "path": "cuyo-paid-relief-focused.log",
+      "sha256": "aa9ebae34390407e9371528d757df8c5abd78ea13d5a3b79b2d9d45d3e8bcda8",
+      "bytes": 260
+    },
+    {
+      "path": "cuyo-paid-relief-validation.json",
+      "sha256": "871fba16f7942426544f7ebfa51656b6be611ee1a895243d7ed90618aff02ef9",
+      "bytes": 4967
+    },
+    {
+      "path": "explicit-ignored-evidence-logs-staged.json",
+      "sha256": "863ac10be48e08a467f5d9b22801d0e63f3ccbd61bb5518574bc9dcbb98395c1",
+      "bytes": 9957
+    },
+    {
+      "path": "final-corrected-affected-controls-receipt.json",
+      "sha256": "e3fc543b9e80d8acaf77a350361054d1e7b247f4014db4dc720fc4beca8df188",
+      "bytes": 1272
+    },
+    {
+      "path": "final-corrected-affected-controls.log.gz",
+      "sha256": "996a9acc9680265d7ff775a45cd6bc2e3500c30e45233a2bcca2abde045bd5a9",
+      "bytes": 4395
+    },
+    {
+      "path": "final-full-942-after-source-hashes.json.gz",
+      "sha256": "d29f44d0038e48293c956d1e780e5cec4d99253bf39d9ff35fb140236f9d4f24",
+      "bytes": 665599
+    },
+    {
+      "path": "final-full-942-archive-allowlist.json",
+      "sha256": "c9dc9f2ee819b798db2b217320d097fc2406c99e5bd69a4ba95de9baf754f780",
+      "bytes": 4624
+    },
+    {
+      "path": "final-full-942-before-source-hashes.json.gz",
+      "sha256": "1b42510a9e839ba911515d715df73533d8c32cad4ee8b9b8b7b4381542d54bd9",
+      "bytes": 665594
+    },
+    {
+      "path": "final-full-942-full-report.json.gz",
+      "sha256": "b75b518786a4b65840d642f1b3e27ec12a748605a95a1424538fc0dd95b1b712",
+      "bytes": 32250
+    },
+    {
+      "path": "final-full-942-metadata.json",
+      "sha256": "4dccfbce608e5f16ab2acc9302232d1ed1fcaf8a72c23e15be52f3f005105079",
+      "bytes": 568
+    },
+    {
+      "path": "final-full-942-preservation-receipt.json",
+      "sha256": "d3f18d22689369bcaab9f6e692d87dc135fbdc0708e8a71befd0a1d8f94a845d",
+      "bytes": 657
+    },
+    {
+      "path": "final-full-942-receipt.json",
+      "sha256": "1e13815459717afa91357dcd250dbc8ef20d696718a97dff2d69cc483a64aa19",
+      "bytes": 3212
+    },
+    {
+      "path": "final-full-942-terminal-native-evidence.tar.gz",
+      "sha256": "47ed5be0eabe4fe6337a3a48717691b548343559f6fe53b2d472b6b1b49d1985",
+      "bytes": 3095562
+    },
+    {
+      "path": "final-full-942.log.gz",
+      "sha256": "cda0ae6ffb0d516c1fff0910ff832fc74e665bcfe98c17017a4bddfe5b27e742",
+      "bytes": 270148
+    },
+    {
+      "path": "final-profile-controls.log",
+      "sha256": "c9c3bf10786d99bdeea7bbbfc67319b014a2ae7cc4d134b53b0cf44e7958fdbe",
+      "bytes": 1206
+    },
+    {
+      "path": "full940-after-source-hashes.json.gz",
+      "sha256": "b18515feda9592bcc4f4791d4a84bb2dfe46391f415290dbc9f2fd72a0ec1e1b",
+      "bytes": 661858
+    },
+    {
+      "path": "full940-before-source-hashes.json.gz",
+      "sha256": "b18515feda9592bcc4f4791d4a84bb2dfe46391f415290dbc9f2fd72a0ec1e1b",
+      "bytes": 661858
+    },
+    {
+      "path": "full940-final-receipt.json",
+      "sha256": "d4c2dcf895b01bc79fc138678c5494a8dfd178031ea43593a80c4f08ba4408ec",
+      "bytes": 2686
+    },
+    {
+      "path": "full940-metadata.json",
+      "sha256": "d7af0a5fd09d33c00b5c7c53e64d92d7fffa364da4da65e51933f3c7366b2163",
+      "bytes": 450
+    },
+    {
+      "path": "full940-report.json",
+      "sha256": "038c4fc7a394d6693eccd7f12ca5631d4104b4111a0cbb724e0907b1186ef193",
+      "bytes": 383788
+    },
+    {
+      "path": "full940-run.log.gz",
+      "sha256": "414ddead3a2d98ed81baf1cb3d54bf0cc2bc13d505dca310726cc4603a68bbb9",
+      "bytes": 268133
+    },
+    {
+      "path": "full942-salta-runner-readonly.json",
+      "sha256": "f92c5908b6a9f482d0cb7e41bc6a1b4169f00fb338399e511d93fa6c2e64560d",
+      "bytes": 42305
+    },
+    {
+      "path": "historical-cached-full-report.json.gz",
+      "sha256": "c51d14961a53daa28ced431105504ed58b81ca7366c9baae6e49254315a5309e",
+      "bytes": 31632
+    },
+    {
+      "path": "ignored-evidence-log-integration-audit.json",
+      "sha256": "a5a9452f491f14b2aa65fbfa841d382105d86d35418eae88455bb2c77fc4d659",
+      "bytes": 12234
+    },
+    {
+      "path": "los-patos-ammunition-final-receipt.json",
+      "sha256": "53c649fd335562bb7999582aff421fc03b352a49edb4db1538d60ea8bee77709",
+      "bytes": 13542
+    },
+    {
+      "path": "los-patos-ammunition-focused-controls.log",
+      "sha256": "5fe82cdf9175a1da746d0376268eea45998c23013fff42ffc92053a535a1ff6d",
+      "bytes": 2849
+    },
+    {
+      "path": "los-patos-empty-gun-earned-suffix.receipt.json",
+      "sha256": "d1205f0819bf79c8bebf76d2ab39dc5a2d8178fcff2705f072f2906f9c149f7c",
+      "bytes": 15619
+    },
+    {
+      "path": "mendoza-controller-handoff.json",
+      "sha256": "861ba80eb10c1348d0fa7cd8d66b007177dbc22825ce0d586a60397b3fe04d06",
+      "bytes": 2370
+    },
+    {
+      "path": "mountain-known-four-dressing-source-audit.json",
+      "sha256": "d908f1973b88169f5b16b823cf696ff14d47cbdd7b2dcce69cf3176aa3880692",
+      "bytes": 52316
+    },
+    {
+      "path": "mountain-known-supply-courier-final.json",
+      "sha256": "4442084b8ae8d44af3887b835bd2850f10f839d8bb1ed9c25cc64bbd185551c3",
+      "bytes": 3436
+    },
+    {
+      "path": "mountain-known-supply-courier-final.save.json.gz",
+      "sha256": "16bf81746bb37b77d97167e4969415d61aede39a4eefffbc62db5d852accebdc",
+      "bytes": 170875
+    },
+    {
+      "path": "mountain-known-supply-courier-integrated-imports.json.gz",
+      "sha256": "5b2741316e59c99310569dfbd858c5b89c52deb46a41accd34cfee6d1e402e8c",
+      "bytes": 15283
+    },
+    {
+      "path": "mountain-known-supply-courier-integrated-replay.json",
+      "sha256": "5ef50849955b114531e5c0d4eb2601dde3c8e86d6c08442477265298373674e2",
+      "bytes": 874
+    },
+    {
+      "path": "mountain-known-supply-courier-midpoint.save.json.gz",
+      "sha256": "6c2f92386032a32d7ae4803bd2ed7c7bd213f7303a548d57072c8e51192f5428",
+      "bytes": 170829
+    },
+    {
+      "path": "mountain-known-supply-courier-native-imports.json.gz",
+      "sha256": "69a8fa61e16d8e95345a28990707c28e251f156b4aef4690bbdb77ca5eba0de0",
+      "bytes": 14752
+    },
+    {
+      "path": "mountain-known-supply-courier-native.json",
+      "sha256": "ec47abc2bc61bcdb5cb6a64eec03743b82ba7cb21658f9b6cd59708df6f27782",
+      "bytes": 3174
+    },
+    {
+      "path": "mountain-known-supply-courier-orders.jsonl.gz",
+      "sha256": "af1aeb719ab4bfa5bb768924eb9a3e8b537572718b2148abe60a8dd3637461b2",
+      "bytes": 441
+    },
+    {
+      "path": "mountain-returned-kit-actual-repository-controls.log.gz",
+      "sha256": "300908990395988795f8873b228be81e8860752d633c89917831aa58c2596c71",
+      "bytes": 240
+    },
+    {
+      "path": "mountain-returned-kit-controls.tar.gz",
+      "sha256": "ad870e20ef6f6497a6c6455d7df3da4d8367267cfe6b3010d1dfaa348c203f9c",
+      "bytes": 764412
+    },
+    {
+      "path": "mountain-returned-kit-validation-receipt.json",
+      "sha256": "3aac62b2e4f064cf417ac210487cef4b251cd9f7d96079a5c8a6cda60979120b",
+      "bytes": 4096
+    },
+    {
+      "path": "northern-care-actual-repository-controls.log.gz",
+      "sha256": "20b2b5101868e4de769c6d0f7806b31b2c8d0fb1fd80337feff36b82fc35779c",
+      "bytes": 519
+    },
+    {
+      "path": "northern-doctor-rotation-archive-verification.json",
+      "sha256": "b0661461cce1517aacc04540956c4d9fd9b4aaeb8b593dba6c90032949c1fa6b",
+      "bytes": 4857
+    },
+    {
+      "path": "northern-doctor-rotation-controls.tar.gz",
+      "sha256": "d23fb79e66f116065178a4c7f4878713753ee1a028be051e68650fdad0f7a888",
+      "bytes": 700890
+    },
+    {
+      "path": "northern-medical-role-conflict-archive-verification.json",
+      "sha256": "377978fc326912b6f9e214f0a5f7b0007e74cd0da79f8b7f8a32448b74c26c6e",
+      "bytes": 6565
+    },
+    {
+      "path": "northern-medical-role-conflict-observation.tar.gz",
+      "sha256": "8945da3404ecb2d7f59e2612c51abadf2edf466f11f8d075a83ce4c382101aed",
+      "bytes": 1467091
+    },
+    {
+      "path": "northern-morale-selection-actual-repository-controls.log.gz",
+      "bytes": 235,
+      "sha256": "73651b3a1f681730858707fb957201c10f09f22b12604b3d3f95d29eac553a28"
+    },
+    {
+      "path": "northern-morale-selection-applied-receipt.json",
+      "bytes": 1133,
+      "sha256": "e8dd4932b23e27cc4c0185d0cc0b83d46129eeabeaf0141f136054932cab52ad"
+    },
+    {
+      "path": "northern-morale-selection-reviewed-proposal.tar.gz",
+      "bytes": 24911,
+      "sha256": "7710b919a3c98e93129baae0cda71bbb41f78a6288defcd837bb11571bea57a9"
+    },
+    {
+      "path": "opening-clinic-final-integration.json",
+      "sha256": "828bb2dbe9a2df212e8667a355637442cae2ba10bd98605cda510f6e282af6b1",
+      "bytes": 2398
+    },
+    {
+      "path": "opening-clinic-guard-native-orders.jsonl.gz",
+      "sha256": "5522a104c2da802b694439dcc870724706da91fcfb7b28fb2f0e79730c6bcf67",
+      "bytes": 397732
+    },
+    {
+      "path": "opening-clinic-guard-preparation.json",
+      "sha256": "f8d5c2e292888cb72dbd9e09209f47b85749486d28dee905cbca5a4fb95a13dc",
+      "bytes": 9434
+    },
+    {
+      "path": "opening-cordoba-morale-read-only-audit.json",
+      "bytes": 13300,
+      "sha256": "adac7fa22a43ef19e37dcf3e444e3cdcc0c2ae581696e3655562f6c91b1891d5"
+    },
+    {
+      "path": "opening-current-unsafe-fire-observer-archive-allowlist.json",
+      "sha256": "33a6a82ef9dfa5d4cff28926369de1998ed20c7f23fbeb8f2283e06c4294267a",
+      "bytes": 7661
+    },
+    {
+      "path": "opening-current-unsafe-fire-observer.tar.gz",
+      "sha256": "d23af8b04dd408ea7ee08304552f7e3e0b35635b176f851621502b5d5ce27cfd",
+      "bytes": 1574750
+    },
+    {
+      "path": "opening-finite-care-validation.json",
+      "sha256": "ee2ae8c8d5187346326519c5286f47a451b034dc93e3306e1a41d97fed67171c",
+      "bytes": 1931
+    },
+    {
+      "path": "opening-held-roof-native-decision-review.json",
+      "sha256": "a101b28aa29ed27cacae1a92cdf51e5cf1f15fa5cf63a8c80ee2def333c22fed",
+      "bytes": 40016
+    },
+    {
+      "path": "opening-medical-courier-native-defense-defeat.json",
+      "sha256": "3dee64783fdc8c419aed86762ec86d84ef27e6050c6882bbbd14a5387cfe1a3d",
+      "bytes": 7117
+    },
+    {
+      "path": "opening-medical-ready-full-validation.json",
+      "sha256": "fcc57151e3ffabf48ebd0335c66654682a36f0041538efd07efc70e8c7f48015",
+      "bytes": 2625
+    },
+    {
+      "path": "opening-medical-ready-full.log",
+      "sha256": "eaa171df2ee25e127ac64737944ace6f6c11a059d89eb4145b3c3b26330d2ae3",
+      "bytes": 17699
+    },
+    {
+      "path": "opening-rear-doctor-assertion-controls.json",
+      "sha256": "61bd48aa0e9b55c3c4e75623cedbabc28eb503eaa2ee3da04464780add9dd716",
+      "bytes": 1250
+    },
+    {
+      "path": "opening-roof-guards-native-defeat.json",
+      "sha256": "3c9abaf84274bb10a16afc95b56a6a6a7eb95ca3f4291cd795e90429b91f999a",
+      "bytes": 21340
+    },
+    {
+      "path": "opening-roof-guards-native-defense-orders.jsonl.gz",
+      "sha256": "85004d7d9982216a6d2c33f5132fbd4093d90fec56967346cc0c66e196ced992",
+      "bytes": 66915
+    },
+    {
+      "path": "port-corrected-helper.log",
+      "sha256": "9ac842e9568497aa31e5a78adced6f7b3cbb4a9229e43941444f6f1c3c2d44d5",
+      "bytes": 241
+    },
+    {
+      "path": "port-original-helper.log",
+      "sha256": "b3b5a83c491ef42695ae5983c6d59db199f09a0a60a663d38388f5c7954c113e",
+      "bytes": 1759
+    },
+    {
+      "path": "post-care-baseline.log.gz",
+      "bytes": 1433,
+      "sha256": "953ecff090d12dade92de032d70c6e3fbb74d77ad8ec37004bdc041db64617c0"
+    },
+    {
+      "path": "post-care-docs.log.gz",
+      "bytes": 124,
+      "sha256": "43fdac8c69ab64fb850ed6d581e3078f5292c044d2dfb7214cd1d808c2496245"
+    },
+    {
+      "path": "post-care-fast-gates-receipt.json",
+      "bytes": 2254,
+      "sha256": "09704e32dbb4436ec13d14c71465498da5d0872f3afd00f64e34bb39dd3c9da8"
+    },
+    {
+      "path": "post-care-profile-controls.log.gz",
+      "bytes": 640,
+      "sha256": "dfc0bb12cacd023cc50b725f71a327f8ba24d854d8068afc145901c5164ac219"
+    },
+    {
+      "path": "post-care-source-custody.json",
+      "bytes": 66710,
+      "sha256": "b93ed824f9fe726d8047db1ed5517a11d2717bff11b4240ddd580a090a1bc773"
+    },
+    {
+      "path": "post-care-typecheck.log.gz",
+      "bytes": 20,
+      "sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "path": "post-fallback-docs.log.gz",
+      "sha256": "b5d3b40bbd5546d70fe4023be255925d7862339d24fa19a84bbd4ceaff558cf0",
+      "bytes": 163
+    },
+    {
+      "path": "post-fallback-profile-controls.log.gz",
+      "sha256": "58b2a4f7156deabd222c4d061a3dc7ea31a4ef59774f171efdb4b1736efcb519",
+      "bytes": 645
+    },
+    {
+      "path": "post-fallback-shards.json",
+      "sha256": "a52394d7c218b0a3e9e2dfe6cd228d4d6d020edb41dc256d1b3bda4cf9249f16",
+      "bytes": 45398
+    },
+    {
+      "path": "post-full942-baseline.log.gz",
+      "bytes": 1433,
+      "sha256": "b4928091f83f7a7300ab6c2fd3bfc1a862277705aa5a93b1b0486764a135f70c"
+    },
+    {
+      "path": "post-full942-docs.log.gz",
+      "bytes": 124,
+      "sha256": "43fdac8c69ab64fb850ed6d581e3078f5292c044d2dfb7214cd1d808c2496245"
+    },
+    {
+      "path": "post-morale-extended-profile.json.gz",
+      "bytes": 7481,
+      "sha256": "c95237c9379926a08f7c0d8976eb735c2c15250a3ded35b029b3d7ad416d0137"
+    },
+    {
+      "path": "post-morale-quick-profile.json.gz",
+      "bytes": 7155,
+      "sha256": "befb815140d897d8211dcb112659a9e6b89adbbeb7f15ee77a772b1f6bba30ad"
+    },
+    {
+      "path": "post-morale-shard-coverage.json",
+      "bytes": 45696,
+      "sha256": "111816f646e399c6ff79033c2ef00182a711b9bbaf6d12007b1542e4fdb1be13"
+    },
+    {
+      "path": "pre-full942-baseline.log.gz",
+      "sha256": "92126fc34f44fd0e8fc186c5abeeec1ea0d58e4d14c9a6e88ad055c4a7d6a309",
+      "bytes": 1433
+    },
+    {
+      "path": "pre-full942-docs.log.gz",
+      "sha256": "43fdac8c69ab64fb850ed6d581e3078f5292c044d2dfb7214cd1d808c2496245",
+      "bytes": 124
+    },
+    {
+      "path": "pre-full942-profile-controls.log.gz",
+      "sha256": "cdfcf3061fa8b1bcbbd63f5b62874e04d87b9de53aa5638311f4d7bf3cd002a7",
+      "bytes": 845
+    },
+    {
+      "path": "pre-full942-shard-selftest.log.gz",
+      "sha256": "51009b210f4a799f71363f758772b440fdb45e7ddac0f54a043e5be8e3a1be5d",
+      "bytes": 361
+    },
+    {
+      "path": "pre-full942-shards.json",
+      "sha256": "271d8b8452970a5bcf28d786405d661f68b856bfd20fa08824fa80886fdc3c74",
+      "bytes": 45446
+    },
+    {
+      "path": "pre-terminal-full263-staged-index-audit.json",
+      "sha256": "bd7a474a2d96b810f9c78366ed71cd1ddb40e54b6ab3cec54fe869ae9b0152ad",
+      "bytes": 106998
+    },
+    {
+      "path": "preserve-full942-terminal.py",
+      "sha256": "4fca5801b8789173973d0ca94208d38a89c2c32661218ae615f6b1334684b58c",
+      "bytes": 5259
+    },
+    {
+      "path": "python-current-equivalence.json",
+      "sha256": "e3a4c101a973e25a3e866887f2305b58e766293615e20347322b792b3d2a8e8f",
+      "bytes": 10452
+    },
+    {
+      "path": "python-current.log",
+      "sha256": "62b6f5ed16274f7afdc69cd90ffd6f04bdd18dd96dc923b5a6e35212e5dfa747",
+      "bytes": 1135
+    },
+    {
+      "path": "recovery-corrected-helper.log",
+      "sha256": "a35de410af9b273994ecf99f8013523ea9b9af7a0702e1b03e88f800b02cef80",
+      "bytes": 264
+    },
+    {
+      "path": "recovery-current-full-route.log",
+      "sha256": "59a186fb77aee4d027086f91cfa008da9cc7aa45a8a3338146aff9547fe0850d",
+      "bytes": 17501
+    },
+    {
+      "path": "recovery-current-full-validation.json",
+      "sha256": "e75e627610179a40aee9269e5d59d17114ad7c304b64795a735e66d13f9bdbac",
+      "bytes": 10247
+    },
+    {
+      "path": "recovery-helper-validation.json",
+      "sha256": "71274f0be26d758bf64687db6eb09fdac7a300fdb7cc5147bec5103556e92629",
+      "bytes": 8489
+    },
+    {
+      "path": "recovery-mendoza-affordable-regular-native-defeat.json",
+      "sha256": "b4e9d8d07f8605dc796536420d313a4ad8d24d70d8af4f79bba11940266f50fe",
+      "bytes": 8693
+    },
+    {
+      "path": "recovery-mendoza-finite-controls.json",
+      "sha256": "ab6f8a50e446e1d440119900cff0e51f279b89f215aefd7253af8bdc5c49cf51",
+      "bytes": 1561
+    },
+    {
+      "path": "recovery-mendoza-forward-screen-actual-controls.log",
+      "sha256": "f0a501f13294d445ba4704d042b80fc389c4c07a62ce96882789f4520d2af69e",
+      "bytes": 878
+    },
+    {
+      "path": "recovery-mendoza-forward-screen-native.midpoint.save.json.gz",
+      "sha256": "3e4c98c0ea9c0073b29fa334c12ec4b0fb747a0d8cc9069f3c957391b05da61b",
+      "bytes": 153677
+    },
+    {
+      "path": "recovery-mendoza-forward-screen-native.receipt.json",
+      "sha256": "0a161c6f29a91b7af1469db22c6df0a1798e0549c3963454966062d1e79bb622",
+      "bytes": 1815
+    },
+    {
+      "path": "recovery-mendoza-forward-screen-native.runtime-receipt.json",
+      "sha256": "9c974aeb0d703898a5a03f66f4a83a24a898ac357b2b70c4e9c727ef7821d4bd",
+      "bytes": 69588
+    },
+    {
+      "path": "recovery-mendoza-forward-screen-native.settled.save.json.gz",
+      "sha256": "16855c39f5dcb7242773a5fbf21f31487cd839ac324ea3f667166c8ea487cddd",
+      "bytes": 150856
+    },
+    {
+      "path": "recovery-mendoza-forward-screen-native.trace.json.gz",
+      "sha256": "38b837bdf1d62ca5b4493109597fb4ef38e1e40caf2753712bad23312e55c668",
+      "bytes": 63420
+    },
+    {
+      "path": "recovery-mendoza-forward-screen-predeclared-policy.json",
+      "sha256": "eaaa2b4a9f02ec4831fae6723f7c2834feafd71a1886ff77c2b09ec7080483ee",
+      "bytes": 845
+    },
+    {
+      "path": "recovery-mendoza-native-defeat.json",
+      "sha256": "9ca128efcd80cc8bd2fc70607d36991d349aae5c8498fe69a7f32c1121334661",
+      "bytes": 6332
+    },
+    {
+      "path": "recovery-mendoza-policy-review.json",
+      "sha256": "06e864954f5f3d45b5b0ab8fae8fae02b5cc945d0411ecb0522edc3ed421f1fe",
+      "bytes": 23372
+    },
+    {
+      "path": "recovery-mendoza-recorded-replay.json",
+      "sha256": "d690e62e76e7bc013838a77dcec4f839dff8965bcfcf736d70a734067d232d65",
+      "bytes": 2186
+    },
+    {
+      "path": "recovery-mendoza-safe-fire-artillery-custody-audit.json",
+      "sha256": "0b8cb11c1ac2daac4f0dc1c4d47cdc46bfb2e040251404aea802c0f4212dd671",
+      "bytes": 3056
+    },
+    {
+      "path": "recovery-mendoza-safe-fire-native.midpoint.save.json.gz",
+      "sha256": "61fce3f153b383fce52441365789cb0590697a268e556d159ca7a3425655eb07",
+      "bytes": 152661
+    },
+    {
+      "path": "recovery-mendoza-safe-fire-native.receipt.json",
+      "sha256": "8814b6a3637de18dca236e1478c920c0aaec803736ad213ca1d97a2a2d1c8e9b",
+      "bytes": 1857
+    },
+    {
+      "path": "recovery-mendoza-safe-fire-native.runtime-receipt.json",
+      "sha256": "3a887032d11c304f1bbe37127782e2489669aadd360967c94680b7949fb6da52",
+      "bytes": 69588
+    },
+    {
+      "path": "recovery-mendoza-safe-fire-native.settled.save.json.gz",
+      "sha256": "97cb25e35ac72e56449348ce23001e00ee0e060bf60df21a3cb25d49add4b021",
+      "bytes": 150428
+    },
+    {
+      "path": "recovery-mendoza-safe-fire-native.trace.json.gz",
+      "sha256": "50142b09a7166aba208e85e7169eb319f7dc819a1da3a2fbc3529a75af0d142c",
+      "bytes": 62500
+    },
+    {
+      "path": "recovery-native-mendoza-full-validation.json",
+      "sha256": "24fe46e8f33d0fbf90c0eaaf110dc3f5be89431f27d0b227f0c057288cc76f59",
+      "bytes": 7618
+    },
+    {
+      "path": "recovery-original-helper.log",
+      "sha256": "4d9f9451bb98b9d0ea73fc8be63e1dae621b25a992f0a3aee985de5909e6944e",
+      "bytes": 2147
+    },
+    {
+      "path": "reviewed-safe-fallback-baseline.log.gz",
+      "sha256": "37238e16e49837edd4059a363951f381d03af7efeec32f93b2e6d88fc6f1cefb",
+      "bytes": 883
+    },
+    {
+      "path": "reviewed-safe-fallback-controls.log.gz",
+      "sha256": "731a436c374ff2fa8fe292767891dc6a56c6612ac5b2dcf9342f5e2e3b117f46",
+      "bytes": 2126
+    },
+    {
+      "path": "reviewed-safe-fallback-external-receipt.json",
+      "sha256": "53d16ed0368735f3f25126b69a82b14ecee67376c10c2f7108352a2bfc477b96",
+      "bytes": 12707
+    },
+    {
+      "path": "reviewed-safe-fallback-unapplied.patch",
+      "sha256": "bce0764a77f17b03e5945844b1af4fefdf7994f5ba4c4b59b900d2534390fd70",
+      "bytes": 11791
+    },
+    {
+      "path": "reviewed-safe-posture-proposal-allowlist.json",
+      "sha256": "3a93743158d9f0a0dc71fc585753e510e29cbe360e832d6f6667ac9392fed0a0",
+      "bytes": 2738
+    },
+    {
+      "path": "reviewed-safe-posture-proposal.tar.gz",
+      "sha256": "c4d7035e73339da66808eeab11365294120df6406465b0a452c74befd3feeff0",
+      "bytes": 119968
+    },
+    {
+      "path": "route-failure-recorder-zero-order-control-allowlist.json",
+      "sha256": "90e0c1e4e43eca3d699ae184654bed0389df3d95d3bae34347d03d729bd75f6c",
+      "bytes": 3306
+    },
+    {
+      "path": "route-failure-recorder-zero-order-control.tar.gz",
+      "sha256": "73dc910cacf5408bbad276beced5511853ce7ca315a9c443dbd00eba86bdeb15",
+      "bytes": 461681
+    },
+    {
+      "path": "route-failure-recorder-zero-order-receipt.json",
+      "sha256": "3fa72c10d269217e09d2cb68d0e4b6d9497ed06acdcb27e0c19da186a845da32",
+      "bytes": 1526
+    },
+    {
+      "path": "safe-fallback-actual-affected-controls.log.gz",
+      "sha256": "fce49af59c38b387367fba282458c3f6f64b2e24092fbb3ae4fe154637c9363e",
+      "bytes": 2748
+    },
+    {
+      "path": "safe-fallback-applied-current-receipt.json",
+      "sha256": "a74c57654112ba7a4c9d76e309af2ff69e8e0df5523c22943d2fa73a43c22fb3",
+      "bytes": 1174
+    },
+    {
+      "path": "safe-fire-clinic-actual-controls.log",
+      "sha256": "6a82bc94a1357daa90dc1d84159b50dba818771e892bba4f00c135ce683f37df",
+      "bytes": 3190
+    },
+    {
+      "path": "safe-posture-actual-affected-controls.log.gz",
+      "sha256": "60bc49e20fbf84352b8d717cb728e78b5f937ad669ca731e0b442b269d2937d1",
+      "bytes": 3742
+    },
+    {
+      "path": "safe-posture-applied-current-receipt.json",
+      "sha256": "5d1cda9be6edd1efeccbc071d2729f527cce476cef552033398e0adfcdba1a92",
+      "bytes": 1614
+    },
+    {
+      "path": "salta-initial-bounded-control-static-review.json",
+      "sha256": "8463b5ccd5342ec4c4a96d239f12a2b3e2c32cadc5c34c714266812a0d8ec4ef",
+      "bytes": 5219
+    },
+    {
+      "path": "salta-spent-gun-bounded-final-receipt.json",
+      "sha256": "0e4ad637767743bcab5cecc13e113df384a25b65d5728f47c7b69b642ad573df",
+      "bytes": 8890
+    },
+    {
+      "path": "salta-spent-gun-bounded-proof.tar.gz",
+      "sha256": "6745a5f8b2f107fd852799fd772df6ae43dd540062d19745dfb863d3db1ca513",
+      "bytes": 2110190
+    },
+    {
+      "path": "spent-gun-actual-repository-controls.log.gz",
+      "sha256": "6a8b00ace3c4a393d5dc7f85438298072646302447562b75d30aec96989ad315",
+      "bytes": 227
+    },
+    {
+      "path": "stock-complete-native-speaker-rural-travel-failure.json",
+      "sha256": "eaa3baaefdec097951ea515c81afbb4ba32597d09b467b7557b467030cbe6c3f",
+      "bytes": 106808
+    },
+    {
+      "path": "stock-complete-shipment-import-checks.json.gz",
+      "sha256": "c2fa2c75d4959595c64d3fdf622e52411d5d9692ad0a9185dae5563fbc83ef6e",
+      "bytes": 20242
+    },
+    {
+      "path": "stock-complete-shipment-stalemate.log.gz",
+      "sha256": "a28c9507d15c9b008e035c40c3e0ba63b306b6c1fcc4c29822539420995b0ebf",
+      "bytes": 14595
+    },
+    {
+      "path": "stock-current-full-validation.json",
+      "sha256": "9e4cc014eb574eb2fb30468cc55a36d72864a3c4854ad5cffa7ce5eda7e1a937",
+      "bytes": 106808
+    },
+    {
+      "path": "stock-cuyo-native-speaker-proposal.json",
+      "sha256": "b3db2b362b7605f9132a25480f59b946657d80d9b144bb5a67c6297b8096b57f",
+      "bytes": 364
+    },
+    {
+      "path": "stock-cuyo-native-speaker-validation.json",
+      "sha256": "ba52b5150525fdf91d294a2030958fb4aa99b3e2827f25cf9c2d1c0cdb15696b",
+      "bytes": 87673
+    },
+    {
+      "path": "stock-cuyo-reinforcement-native-travel.json",
+      "sha256": "a604f6d2733f65e78fad18c021c2a82b0364d23107f192580dc08a8f31961cfe",
+      "bytes": 2493
+    },
+    {
+      "path": "stock-earlier-entry-preparation.json",
+      "sha256": "821b31141d99ba1ca7fbc6e05f4d248a202968c7713f8da826b06d4ee30789f7",
+      "bytes": 404
+    },
+    {
+      "path": "stock-earlier-entry-preparation.log",
+      "sha256": "685ae64ee0089cc8b78fcaa494916c6d513906a46485daeeddbfabda422c139c",
+      "bytes": 299
+    },
+    {
+      "path": "stock-ending-headwear-archive-receipt.json",
+      "sha256": "9d7e0e9bd087d23f495718e597b29d3b19970910bd1243ff47456e2feb0eb474",
+      "bytes": 1243
+    },
+    {
+      "path": "stock-ending-headwear-observation.tar.gz",
+      "sha256": "befd23f3e7cff71c0884cfe099fb524426bf78bdc0048d6c7e45f4cc0ad77742",
+      "bytes": 1436383
+    },
+    {
+      "path": "stock-first-assault-validation.json",
+      "sha256": "b97e75197b1ad99c6c107473ee5e157db4f2c80ff58724e44471b2af8d9fd4ff",
+      "bytes": 34640
+    },
+    {
+      "path": "stock-foundry-final-receipt.json",
+      "sha256": "2e66d162766859268a58d1e19d2de91c35abff07683e7a1e93815dfa4f5c7564",
+      "bytes": 7901
+    },
+    {
+      "path": "stock-foundry-focused-controls.log",
+      "sha256": "4a2e561854df43c418e192a794d60f66d09ffcab4195ebed75a49e9f2dbdeec2",
+      "bytes": 1849
+    },
+    {
+      "path": "stock-integrated-departure-preparation.log",
+      "sha256": "330311064c87172a511ee7576571091fa209a001cc46f2fa14c543601537b2d6",
+      "bytes": 461
+    },
+    {
+      "path": "stock-mendoza-controller-audit.json",
+      "sha256": "a1c9ffce25119eb269269c65d862ef4dc44daf1f1621f90db2664a2b941fe946",
+      "bytes": 23239
+    },
+    {
+      "path": "stock-mendoza-native-initial-pair.save.json.gz",
+      "sha256": "b5acef6fef5bb46ad2f156dd480d5f10ba9287402d1d8deb5c411487339b7a54",
+      "bytes": 189315
+    },
+    {
+      "path": "stock-mendoza-native-stalemate-result.json.gz",
+      "sha256": "6df66ca8f300e381c6b6248e725d16491580b597f586f6d31a000598f3772531",
+      "bytes": 43820
+    },
+    {
+      "path": "stock-mendoza-stalemate-final-active.save.json.gz",
+      "sha256": "a8f16f879be90d296cdb1abd982000d30ae804312c9ba3366d99b243edd5a8b7",
+      "bytes": 189849
+    },
+    {
+      "path": "stock-mendoza-stalemate-midpoint.save.json.gz",
+      "sha256": "3353c20bd71ebaf4f1dabd73c02d7c3e8d6943067f9db42547b025637af652ad",
+      "bytes": 189791
+    },
+    {
+      "path": "stock-mendoza-stalemate-original-orders.json.gz",
+      "sha256": "8e2b724b8762a26d187ad70fa1d6c6c0f988c4a1a549eaed4ab5a9223c23f99e",
+      "bytes": 118
+    },
+    {
+      "path": "stock-mendoza-stalemate-saved-replay.json",
+      "sha256": "36f5d15a8ab3b5361f7492e55a6b6baffb90101ffaf5ede740939f77e0559d47",
+      "bytes": 1137
+    },
+    {
+      "path": "stock-native-envoy-stage-proposal.json",
+      "sha256": "40982ee7f3de54302b6d81d7e857f9c507e3c3d209c3e414faafd97c6077c409",
+      "bytes": 335
+    },
+    {
+      "path": "stock-native-envoy-stage-validation.json",
+      "sha256": "619a0acadd38a4663177529c491923ec62b51c1f9fcb114eb27af83e5ea06629",
+      "bytes": 832
+    },
+    {
+      "path": "stock-native-envoy-stage.log",
+      "sha256": "334966e3cee867194eab9171d7b595eb15ca72f135df81a8dc89addfbd5fd710",
+      "bytes": 429
+    },
+    {
+      "path": "stock-observer-admission-failure.log",
+      "sha256": "d9a39020de4780beac0869d9ee36cd5dd896a1b6984d877e2075922b779487ff",
+      "bytes": 2515
+    },
+    {
+      "path": "stock-observer-admission-validation.json",
+      "sha256": "d30dbfe67c5db5c6f062ad14bd1249b11bb1777dcaf23ec06135973846da7683",
+      "bytes": 98351
+    },
+    {
+      "path": "stock-physical-envoy-full-validation.json",
+      "sha256": "c5a575e30d4dc6fc5364d003dbc60695ac79968a5a459c860c271168a6da0fde",
+      "bytes": 106808
+    },
+    {
+      "path": "stock-salta-gun-shipment.json",
+      "sha256": "19ce42b6ebfeb3cc75dfc9fc36bcc9d7cdad92d7a881e8dc27309cd8b7906bef",
+      "bytes": 1105
+    },
+    {
+      "path": "stock-shipped-gun-assembly-and-replay.json",
+      "sha256": "a756992a1c8e14d4d0a6d01aa84ca154e71f6df415d08b6e9cba8054bba2ad81",
+      "bytes": 1878
+    },
+    {
+      "path": "stock-shipped-gun-committed-tape.jsonl.gz",
+      "sha256": "e45a27bab7b1237c121940b5124402c1648419b2673e3c1f9de4dfcbba5a7ae8",
+      "bytes": 542905
+    },
+    {
+      "path": "stock-shipped-gun-import-evidence.json.gz",
+      "sha256": "d82106bee334a023bf43fda70284e16c5049d9b4a44478f1d0d46e9d35a1fe90",
+      "bytes": 16777
+    },
+    {
+      "path": "stock-shipped-gun-original-native-calls.ndjson.gz",
+      "sha256": "e091e8d2537351ded99c1e7f7d107e380c4f8c7505127b40458821830d2470d5",
+      "bytes": 325195
+    },
+    {
+      "path": "uspallata-compatible-ammunition-actual-controls.log.gz",
+      "sha256": "52ff657e782ace6d14d90ba5a73cf0f506a9d5e3bed25c96cf84f5c463d93cec",
+      "bytes": 917
+    },
+    {
+      "path": "uspallata-compatible-ammunition-applied-receipt.json",
+      "sha256": "667b93bdd05b74ca78c377c88f8f39394469884876670bcc62a211977de50056",
+      "bytes": 1202
+    },
+    {
+      "path": "uspallata-compatible-ammunition-proposal-allowlist.json",
+      "sha256": "a7cd21ebc55d354b7c7cb0937a764f24c4b92fba2b86489fdd9811003fe6d9a0",
+      "bytes": 2424
+    },
+    {
+      "path": "uspallata-compatible-ammunition-proposal.tar.gz",
+      "sha256": "304b6ca4ce9832d52fad43d276f89486584920db336fd82621ce26e8dd2ffb8a",
+      "bytes": 54901
+    },
+    {
+      "path": "worktree-cleanup-closure.json",
+      "sha256": "95486ab702ae9400bb0cca603c5b260c661380dbad5ff6e923bec556e5e15ab9",
+      "bytes": 3382
+    },
+    {
+      "path": "final-full-947-terminal-native-evidence.tar.gz",
+      "sha256": "16cc3d3886e81a03fd37f8e2294ebd545b4d24c7b0b522ae531bed91e407a91f",
+      "bytes": 2808124
+    },
+    {
+      "path": "final-full-947-preservation-receipt.json",
+      "sha256": "ecd0f614dc3918563efdc95c76810e487d2462063f9efdb4407da7533bc5a583",
+      "bytes": 826
+    },
+    {
+      "path": "final-full-947-archive-allowlist.json",
+      "sha256": "16d97794084b60013e6697daeb731fdcf27e217478ca37b1066c67add1603711",
+      "bytes": 4055
+    },
+    {
+      "path": "final-full-947-receipt.json",
+      "sha256": "1cbbc256cf52d055f79058f9e165ab1b98228bdd93107f7bd1efb13b1ccb25cc",
+      "bytes": 3107
+    },
+    {
+      "path": "final-full-947-report.json.gz",
+      "sha256": "f360f226236ccd3ea6b40ff91da33901084e861576ebc494d10c88774e134518",
+      "bytes": 32402
+    },
+    {
+      "path": "final-full-947-run.log.gz",
+      "sha256": "0b16fbd3dff05914a6f93e6bcbd0fd5d922b7edaa444ec5b29747c3c9faac731",
+      "bytes": 271194
+    },
+    {
+      "path": "retained-safety-readonly-reviews.tar.gz",
+      "sha256": "3a6ca95f8ba4f561f00fdda04bc7cea29c3a6fdce557dd282ea3edd9d0c46363",
+      "bytes": 146300
+    },
+    {
+      "path": "retained-safety-readonly-reviews-archive-receipt.json",
+      "sha256": "cd26d239b902a185d044e96a641a4dec547539e848492ba53ab2cb1d6f833dd0",
+      "bytes": 539
+    },
+    {
+      "path": "san-lorenzo-shot-safety-reviewed-proposal.tar.gz",
+      "sha256": "8e0fa248e8c57c265da048e74782e7ac37146db5d7fedc7a66fc351cb76ead48",
+      "bytes": 9714
+    },
+    {
+      "path": "san-lorenzo-shot-safety-static-peer-review.json",
+      "sha256": "c4da8d7a9e7e4c41738f91c93024f38195a0198177d77f8139eee91cc0d4cc9e",
+      "bytes": 11368
+    },
+    {
+      "path": "san-lorenzo-shot-safety-applied-receipt.json",
+      "sha256": "152680a0a7e470dea32a8d26b6a29af2a8b6bdbfe3a3b7c00300a64ccb15d433",
+      "bytes": 1744
+    },
+    {
+      "path": "san-lorenzo-safety-actual-repository-controls.log.gz",
+      "sha256": "9006f0860dc6d85552e76e1837bc64910d88b0f6dbd551e61815a7b7012be3eb",
+      "bytes": 512
+    },
+    {
+      "path": "current-allowlist-metadata-correction.json",
+      "sha256": "8c47d1a3bd4aefa727c080bb226ebf1291ebc0a4f8a0b14b21fef10e8eaa8856",
+      "bytes": 568
+    },
+    {
+      "path": "post-san-lorenzo-quick-profile.json",
+      "sha256": "0b1f1e102bc74dad671e1716fac3f3300ec6c80ff4428457bfb0a9c928d6de9a",
+      "bytes": 43357
+    },
+    {
+      "path": "post-san-lorenzo-extended-profile.json",
+      "sha256": "f5ad290f107c71c2163f8b6af8d8df52f303ff6553f39753c53e56e2234a70b3",
+      "bytes": 129667
+    },
+    {
+      "path": "san-lorenzo-original-144-native-proof.tar.gz",
+      "sha256": "32a63d1aeb8e11b1eeb9817e766561ad8ff436c685b63d06d568295745e57c38",
+      "bytes": 1145562
+    },
+    {
+      "path": "san-lorenzo-original-144-native-proof-archive-receipt.json",
+      "sha256": "c4e71dc5cb347274f5d0968b14a121cd33e1b197fd3749760e00a878dc61dd06",
+      "bytes": 6793
+    },
+    {
+      "path": "san-lorenzo-original-144-terminal-artifact-summary.json",
+      "sha256": "265d4f9bbc04e7f1d5fdfc02b26672716eafaf1e4fc371fb3fdc549c854fda83",
+      "bytes": 5233
+    },
+    {
+      "path": "postvictory-passive-capture-applied-receipt.json",
+      "sha256": "9703ec741b929ee592ca464916c5fc4f0d14387d7d2b0fbd3c3ccd82ca9e6ef4",
+      "bytes": 652
+    },
+    {
+      "path": "full947-mendoza-read-only-audit.json",
+      "sha256": "685453568ba1f25c9a6e6d729c39f5fa6e2bb1c6b5eed9a31ef9db7c98673afe",
+      "bytes": 12067
+    },
+    {
+      "path": "post-san-lorenzo-fast-gates-portable-evidence.tar.gz",
+      "bytes": 1403175,
+      "sha256": "0d9f192d60299efcbd86414f89635ef3f437e7749025da30f9e3cac9267c42a9"
+    },
+    {
+      "path": "post-san-lorenzo-fast-gates-portable-evidence-receipt.json",
+      "bytes": 4657,
+      "sha256": "3cd532640d2b72a7d0e47f94b030d77d8317ec966612e8a510f85c23b3c36c15"
+    },
+    {
+      "path": "los-patos-original-33-native-proof.tar.gz",
+      "bytes": 4786776,
+      "sha256": "496d35a1e4dd17638f38b8d29d43f72d039a6d9cd82336b9337a4753d5f89273"
+    },
+    {
+      "path": "los-patos-original-33-native-proof-archive-receipt.json",
+      "bytes": 929,
+      "sha256": "ca8af9216efad56b4e89caf7453253d7bde34b4d4cf882140a4edea167ec39d0"
+    },
+    {
+      "path": "los-patos-original-33-terminal-summary.json",
+      "bytes": 1865,
+      "sha256": "1d0ae5f77484c85b57b5468846bcb1b2c8bd6055a671283d017ab504ac693aba"
+    },
+    {
+      "path": "los-patos-original-33-corrected-static-report.json",
+      "bytes": 7074,
+      "sha256": "251716b75679921dfa8551bfa70dba9b0e9c892ed9982982d05df051a168570d"
+    },
+    {
+      "path": "final-full-948-archive-allowlist.json",
+      "bytes": 7879,
+      "sha256": "489f614b0a942d1a7867f182e7380979a860a926c587b6fd3897b87e324713ba"
+    },
+    {
+      "path": "final-full-948-preservation-receipt.json",
+      "bytes": 3156,
+      "sha256": "0b429e1fdd6a1193e69735e706a2c6e60058300884edfda7fd8840b86a7bc109"
+    },
+    {
+      "path": "final-full-948-receipt.json",
+      "bytes": 2854,
+      "sha256": "4ed7ac4c4072f5240b830fe6048402bd6311cb35c9ff4f86a35ab82ea6b096f0"
+    },
+    {
+      "path": "final-full-948-report.json.gz",
+      "bytes": 32537,
+      "sha256": "39a58873c3ba904642b9c8bd77ab32e9078f3a9f44f8ee4601ff305ea7a5eebb"
+    },
+    {
+      "path": "final-full-948-run.log.gz",
+      "bytes": 271618,
+      "sha256": "703d98b3d7836bc7b9336b744e429fa4c2ef6244be2e332cdbe965c1a15b7c1c"
+    },
+    {
+      "path": "final-full-948-terminal-native-evidence.tar.gz",
+      "bytes": 3724760,
+      "sha256": "10ee64e2d6a6c5a05c16bfaa15c1f0de7dfb34aaff2b25f10454412e8b8c0fcc"
+    },
+    {
+      "path": "final-full-948-read-only-failure-review.json",
+      "bytes": 26744,
+      "sha256": "54d9e0077e6d9a4ef375e423e6021b6db1a103c5d4995af6003f2a5d9f4b93bb"
+    }
+  ],
+  "limits": "These focused successes do not establish a bug-free game or a green complete suite. No campaign outcome, seed, health, territory or equipment was granted by a correction.",
+  "currentLocalPatchState": "Six helper corrections are applied. The complete current unfiltered full948 gate ran all948 files:7021passed,6failed,5skipped across5failedfiles. All14091 source files stayed exact. The complete coastal file passed5/5; northern and northern recovery-recapture files passed. Other strict campaign failures remain. No bug-free game or full parity is claimed.",
+  "createdArtilleryFullRoute": {
+    "file": "tests/fresh-northern-route.test.mjs",
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "durationMilliseconds": 264367.333916,
+    "nativeTucumanVictory": true,
+    "remainingFailure": {
+      "file": "tests/fresh-northern-command.mjs",
+      "line": 144,
+      "message": "finite provincial care and real rest must restore the actual injured support",
+      "actual": 60,
+      "expected": 66
+    },
+    "scope": "Complete original route on committed helpers plus the proved native artillery call-site. No final route success."
+  },
+  "recoveryCurrentFullRoute": {
+    "file": "tests/fresh-campaign-recovery.test.mjs",
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "durationMilliseconds": 968399.051875,
+    "uniqueFrozenImports": 331,
+    "sourceDrift": [],
+    "lostCordobaInputDecodedEqual": true,
+    "lawfulCordobaRecapture": true,
+    "realSaltaVictory": true,
+    "actualYatastoPhase": 3,
+    "remainingFailure": {
+      "file": "tests/fresh-cuyo-route.mjs",
+      "line": 126,
+      "actual": 4,
+      "expected": 5,
+      "message": "keep five actual soldiers and a slot for the paid marksman"
+    },
+    "scope": "The complete original case reaches Yatasto, then stops at its later real Cuyo roster assertion."
+  },
+  "stockEarlierEntryPreparation": {
+    "inputClock": [
+      297,
+      1619
+    ],
+    "readyClock": [
+      320,
+      1634
+    ],
+    "paidHireCost": 6048,
+    "renewalCost": 2611,
+    "nativeOrders": 153,
+    "paidHires": 12,
+    "rearSurvivorsPreserved": 5,
+    "gun": "arsenal:cordoba:1",
+    "scope": "The same fixed preparation policy completed from the earlier earned C defense entry. No combat was run in this check; whole original stock ending remains unverified."
+  },
+  "testProfileCheck": {
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0,
+    "completePartitionFiles": 931,
+    "scope": "Profile runner and shard checks only. All full files remain selected; two new native long tests are explicitly extended."
+  },
+  "cuyoPaidReliefFocused": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "durationMilliseconds": 10722,
+    "supportControlsPassed": 13,
+    "supportControlsFailed": 0,
+    "inputClock": [
+      395,
+      99
+    ],
+    "preparedClock": [
+      406,
+      99
+    ],
+    "regularHireCost": 504,
+    "separateMarksmanCost": 7740,
+    "ordinaryServiceCost": 20,
+    "retainedDeaths": 37,
+    "scope": "Native paid assembly, finite supplies, exact saved order replay and next Mendoza paired preparation only; no Mendoza battle or full-route pass."
+  },
+  "openingMedicalReadyFullRoute": {
+    "tests": 8,
+    "passed": 3,
+    "failed": 2,
+    "skipped": 3,
+    "subtestsPassed": 3,
+    "subtestsFailed": 1,
+    "subtestsSkipped": 3,
+    "durationMilliseconds": 238629.114,
+    "nativeTucumanRescueVictory": true,
+    "actualCaptivesReleased": 4,
+    "finiteConfiscatedDressings": 5,
+    "uniqueFrozenImports": 308,
+    "sourceDrift": [],
+    "remainingFailure": "stabilizeRescued rejects the actual healthy local doctor because carried dressings are exhausted;9 actual reachable known-body dressings remain.",
+    "scope": "Complete original file stops at post-release supply admission, before courier/Salta/Yatasto checks."
+  },
+  "stockIntegratedDeparturePreparation": {
+    "inputClock": [
+      297,
+      1619
+    ],
+    "recoveredClock": [
+      299,
+      1619
+    ],
+    "readyClock": [
+      320,
+      1634
+    ],
+    "actualPaidHires": 12,
+    "hireCost": 6048,
+    "readinessRenewalCost": 0,
+    "nativePreparationOrders": 147,
+    "rearSurvivors": 5,
+    "gun": "arsenal:cordoba:1",
+    "scope": "Actual shared callback on the earned earlier C-defense entry; preparation only, no320h battle. The separate429h fixture victory is not a full ending proof."
+  },
+  "updatedAt": "2026-10-10T07:16:57.033172+00:00",
+  "currentBuildSource": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+  "openingFiniteCareFocused": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "nativeOrders": 35,
+    "finiteDressingsTaken": 6,
+    "nativeUrgentAidSeconds": 37,
+    "clinicSeconds": 14400,
+    "distinctCaptiveTreatments": 4,
+    "allPriorDeathsRetained": true,
+    "importedSources": 293,
+    "sourceDrift": [],
+    "scope": "Exact earned rescue entry, one real care execution and every saved order replay. No new combat or full opening pass."
+  },
+  "createdReliefFocused": {
+    "supportFullHealth": true,
+    "actualSaltaVictory": true,
+    "yatastoPhase": 3,
+    "northPact": true,
+    "retainedDeaths": 16,
+    "scope": "Chronological same-victory suffix through finite aid, physical cargo, paid relief, native Salta victory and Yatasto. Complete integrated prefix remains under test."
+  },
+  "currentGates": {
+    "docsAudit": {
+      "requirements": 275,
+      "originalRows": 50,
+      "parityRows": 87,
+      "evidenceRecords": 143,
+      "passed": true,
+      "receipt": "post-care-docs.log.gz"
+    },
+    "baselineAudit": {
+      "passed": 38,
+      "failed": 0,
+      "receipt": "post-care-baseline.log.gz"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "receipt": "post-care-typecheck.log.gz"
+    },
+    "shardCheck": {
+      "complete": true,
+      "files": 947,
+      "receipt": "post-morale-shard-coverage.json",
+      "beforeSixthSafetyCorrection": true,
+      "current948AuditPending": true
+    },
+    "diffCheck": {
+      "currentAuditPending": true,
+      "historicalPreSixthAllowlist": {
+        "files": 337,
+        "bytes": 46327398,
+        "scalarCorrectionReceipt": "current-allowlist-metadata-correction.json",
+        "filesArrayChanged": false,
+        "repositoryOrIndexChanged": false
+      },
+      "limits": "Historical337 path verification precedes the sixth helper and this evidence addition. Refresh exact current/staged allowlist and diff check after integration; this receipt does not prove the current index."
+    },
+    "build": {
+      "exitCode": 0,
+      "staticFiles": 1377,
+      "assetReferences": 1045,
+      "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+      "method": "Existing verified export retained; current dist/build-info source equals current buildIdentity. No production game/web edits since the build."
+    },
+    "fullNodeSuite": {
+      "suite": "full947",
+      "complete": true,
+      "selectionComplete": true,
+      "reportFresh": true,
+      "selectedFiles": 947,
+      "counts": {
+        "tests": 7024,
+        "failed": 7,
+        "passed": 7012,
+        "cancelled": 0,
+        "skipped": 5,
+        "todo": 0,
+        "topLevel": 6873,
+        "suites": 0
+      },
+      "failedFiles": 6,
+      "sourceFiles": 14064,
+      "sourceDrift": [],
+      "filters": [],
+      "exclusions": [],
+      "concurrency": 8,
+      "passed": false,
+      "exitCode": 1,
+      "beforeSixthSafetyCorrection": true,
+      "receipt": "final-full-947-receipt.json",
+      "pendingCorrection": "Sixth safety helper has eight passing focused declared controls; complete current full948 is pending."
+    },
+    "profileSelfTests": {
+      "profileTests": 15,
+      "shardSelfTests": 5,
+      "passed": 20,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cpp17Strict": {
+      "passed": true,
+      "command": "c++ -std=c++17 -Wall -Wextra -Werror -pedantic tests/black_powder_test.cpp followed by produced binary"
+    },
+    "python": {
+      "passed": 15,
+      "skipped": 0,
+      "candidateInputsIdenticalBeforeAndAfter": 39,
+      "engineGitlink": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+      "method": "Original tests in primary main with its initialized upstream fixtures; candidate code, generated tables and all tested sprite inputs matched before and after."
+    },
+    "testProfiles": {
+      "quick": 935,
+      "extended": 13,
+      "total": 948,
+      "disjointDiscoveryVerified": true,
+      "exclusionsInFull": 0,
+      "readOnlyDiscoveryOnly": true,
+      "quickReceipt": "post-san-lorenzo-quick-profile.json",
+      "extendedReceipt": "post-san-lorenzo-extended-profile.json",
+      "fullCompletedCandidate": "Latest complete full947 failed before the sixth correction; complete current full948 execution is pending."
+    }
+  },
+  "stockObserverAdmissionFailure": {
+    "campaignExecuted": false,
+    "nativeBattleExecuted": false,
+    "sourceDrift": [],
+    "cause": "External observer incorrectly targeted a re-exported freshCuyoRoute in the helper module; loader rejected it before campaign execution. Corrected observer now targets its defining fixture module."
+  },
+  "createdCompleteFilesBeforeLatestCare": {
+    "northern": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMilliseconds": 350382.531542,
+      "yatastoPhase": 3,
+      "allDeathsRetained": 17
+    },
+    "historicalLoss": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMilliseconds": 520493,
+      "requiredEngineerDeathRetained": true
+    },
+    "cuyo": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "durationMilliseconds": 492106,
+      "actualMendozaVictory": true,
+      "remainingFailure": "A healthy local physician with no carried dressing was excluded before later native supply collection;23 known reachable dressings remain."
+    },
+    "sourceDrift": [],
+    "scope": "Complete original files on the cumulative created-relief correction, before the latest stock-only envoy and Mendoza-care admission edits."
+  },
+  "stockCompleteAfterReadiness": {
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "durationMilliseconds": 267473.391834,
+    "actualTucumanVictory": true,
+    "uniqueOriginalImports": 349,
+    "sourceDrift": [],
+    "remainingFailure": "No serving local60-point envoy remained. Real TC117 has50, sufficient for native Quiroga/Paz50 gates; recruited9 then meets Azurduy60 gate."
+  },
+  "stockNativeEnvoyStages": {
+    "nativeCampaignActionsObserved": 109,
+    "inputClock": [
+      320,
+      1724
+    ],
+    "readyClock": [
+      350,
+      2191
+    ],
+    "courier": {
+      "id": 117,
+      "leadership": 50,
+      "requiredLeadership": 50
+    },
+    "azurduyEnvoy": {
+      "id": 9,
+      "leadership": 86,
+      "requiredLeadership": 60
+    },
+    "nativeSaltaVictory": {
+      "turns": 19,
+      "actions": 297,
+      "orders": 343,
+      "elapsedSeconds": 198
+    },
+    "actualYatasto": {
+      "clock": [
+        355,
+        2587
+      ],
+      "phase": 3,
+      "treasury": 89812,
+      "retainedDeaths": 28
+    },
+    "scope": "One prospective native relief preparation and same earned campaign continuation; unchanged original stock cautiousCombatOrder first native Salta execution. Complete corrected stock ending remains unverified."
+  },
+  "stockActualRestReceipts": {
+    "interrupted": {
+      "startClock": [
+        162,
+        2739
+      ],
+      "interruptionClock": [
+        294,
+        2739
+      ],
+      "restHours": 132,
+      "restBoundHours": 444,
+      "actualGroup": "enemy-group-2"
+    },
+    "completed": {
+      "startClock": [
+        297,
+        1619
+      ],
+      "finishClock": [
+        297,
+        1619
+      ],
+      "restHours": 0,
+      "patients": []
+    },
+    "scope": "Exact reports from the complete stock run; positive elapsed interrupted rest and a legitimate later zero-hour empty-patient receipt both retained."
+  },
+  "stockPhysicalEnvoyCompleteOriginal": {
+    "file": "tests/fresh-ending-route.test.mjs",
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "durationMilliseconds": 363031.511417,
+    "actualImports": 349,
+    "sourceDrift": 0,
+    "earnedStages": [
+      "Tucuman actual victory",
+      "Salta actual victory",
+      "Yatasto actual completion355:2587"
+    ],
+    "failure": "Quiet provincial speaker helper required fullHP before ordinary survivor hospital; actual qualified Salta survivor11 is stableHP15/78 and leadership82."
+  },
+  "stockProvincialSpeaker": {
+    "scope": "One native quiet meeting from the exact full-original stock Yatasto save; no battle.",
+    "nativeLeadershipGate": 65,
+    "speaker": 11,
+    "leadership": 82,
+    "hpBefore": 15,
+    "hpAfter": 15,
+    "actualRecruits": [
+      0,
+      8
+    ],
+    "campaignOrders": 8,
+    "tacticalOrders": 188,
+    "actualImports": 297,
+    "sourceDrift": 0,
+    "clock": [
+      355,
+      3225
+    ],
+    "treasury": 89812,
+    "inputUnchanged": true,
+    "priorDeathsRetained": true,
+    "officialSave": true,
+    "integratedSourceSha256": "f2cf16ed1046f1dcb2261d4c438b0b427362d5979e19675200654a0e3a917dfa"
+  },
+  "createdMendozaCare": {
+    "scope": "One native post-victory clinical suffix and its exact31-action official-save replay; not a full route.",
+    "criticalHp": [
+      7,
+      15
+    ],
+    "criticalBleeding": [
+      4,
+      0
+    ],
+    "hourlyDressings": 1,
+    "tacticalDressings": 3,
+    "finiteLocalPool": [
+      23,
+      19
+    ],
+    "actions": 31,
+    "priorDeaths": 27,
+    "clockBefore": [
+      514,
+      1587
+    ],
+    "clockAfter": [
+      517,
+      1662
+    ],
+    "renewalCost": 258
+  },
+  "recoveryNativeMendoza": {
+    "status": "retreat",
+    "turns": 6,
+    "actions": 88,
+    "recordedOrders": 101,
+    "elapsedSeconds": 245,
+    "all37PriorDeathsRetained": true,
+    "newActualDeaths": [
+      0,
+      8,
+      100,
+      130,
+      10
+    ],
+    "exactCompleteOfficialSavedReplay": true,
+    "finiteCannonShots": 2,
+    "actualImports": 301,
+    "sourceDrift": [],
+    "controllerReview": "No actionable empty-cannon hold or dynamic crew-selection defect established. Prospective route planning remains under read-only audit."
+  },
+  "createdCuyoFundingMedicalCare": {
+    "originalFileBeforeCorrection": "1fail0skip after genuine Mendoza victory, stabilization and foundry",
+    "acceptedClock": [
+      710,
+      1899
+    ],
+    "nativeOrders": 155,
+    "finiteSourceDressingDebit": 7,
+    "remainingDoctorDressings": 1,
+    "totalRenewalCost": 6271,
+    "all16ServingSurvivorsFullHp": true,
+    "all27DeathsRetained": true,
+    "exactOfficialMidpointAndFinalReplay": true,
+    "actualImports": 280,
+    "sourceDrift": [],
+    "completeOriginal": "running current frozen source SHA323205c4cbeea2c546818b2ce4504abcc4f47cc8ab03daf83607543840b5a20f"
+  },
+  "stockCompleteAfterNativeSpeaker": {
+    "test": "tests/fresh-ending-route.test.mjs",
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "durationMilliseconds": 376158.416708,
+    "actualImports": 349,
+    "sourceDrift": [],
+    "nativeQuietMeetingPassed": true,
+    "laterFailure": "Rural survivor1 atcell-12-8 was incorrectly ordered to use posta"
+  },
+  "stockRuralReinforcementCorrection": {
+    "scope": "Actual earned post-meeting assembly only; no repeated meeting or battles",
+    "nativeOrders": 76,
+    "from": [
+      355,
+      3225
+    ],
+    "to": [
+      391,
+      3225
+    ],
+    "all13ServingSurvivorsAtCordoba": true,
+    "all28PriorDeathsHeld": true,
+    "ruralMarchHours": 26,
+    "cityPostaHours": [
+      8,
+      4
+    ],
+    "officialMidpointAndExactFinalReplay": true,
+    "inputUnchanged": true,
+    "completeOriginal": "Awaiting prospective cannon-shipment correction and source freeze"
+  },
+  "createdCuyoAfterNativeFundingCare": {
+    "test": "tests/fresh-cuyo-route.test.mjs",
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "durationSeconds": 519.074,
+    "actualImports": 327,
+    "sourceDrift": [],
+    "allEarlierNativeWinsAndMedicalCarePassed": true,
+    "endpoint": [
+      759,
+      1903
+    ],
+    "all16ServingSurvivorsFullHp": true,
+    "all27DeathsHeld": true,
+    "remainingFailure": "Third canonical cannon was left at Salta before evacuation and became inaccessible after native loss of the town",
+    "prospectiveOrdinaryShipment": "Actual two-person local crew, Salta→Tucuman→Cordoba36h, zero cost, exact exhausted gun and ammo retained; not yet executed"
+  },
+  "recoveryAffordableRegularCorrection": {
+    "nativeWeeklyContract": 280,
+    "operativeId": 102,
+    "earlierDeathsHeld": 37,
+    "actualPreparationControls": {
+      "passed": 26,
+      "failed": 0,
+      "skipped": 0,
+      "durationSeconds": 15.8875
+    },
+    "actualNativeMendoza": {
+      "status": "defeat",
+      "turns": 4,
+      "actions": 109,
+      "recordedOrders": 121,
+      "elapsedSeconds": 320,
+      "earlierDeathsHeld": 37,
+      "newDeaths": [
+        0,
+        8,
+        100,
+        10
+      ],
+      "finiteShotsFired": 1,
+      "reserveShotRetained": 1
+    },
+    "exactOfficialMidpointFinalAndSettlement": true,
+    "originalImports": 301,
+    "sourceDrift": [],
+    "completeOriginalRecovery": "Not yet run; its victory expectation remains unresolved by this valid native defeat"
+  },
+  "openingAdditionalFiniteCareAndRealContact": {
+    "actualLocalCacheDressings": 12,
+    "cacheTacticalActions": 6,
+    "cacheDiscoverySeconds": 122,
+    "actualClinicHours": 6,
+    "patientsAt271": [
+      63,
+      53,
+      68,
+      56
+    ],
+    "acceptedCourierActions": 44,
+    "endpointBeforeDefense": [
+      288,
+      3393
+    ],
+    "renewalCost": 3112,
+    "treasury": 106,
+    "actualDefense": {
+      "status": "defeat",
+      "turns": 31,
+      "playerActions": 104,
+      "totalOrders": 155,
+      "elapsedSeconds": 301,
+      "newDeaths": [
+        103,
+        108,
+        121,
+        122,
+        126,
+        129,
+        130
+      ],
+      "captive": {
+        "id": 112,
+        "hp": 9,
+        "bleeding": 1
+      }
+    },
+    "actualSettlementClock": [
+      289,
+      94
+    ],
+    "exactOfficialMidpointAndNativeSettlement": true,
+    "actualImports": 292,
+    "sourceDrift": [],
+    "originalOpening": "Not run on current cumulative helper; remote and defense suffixes remain evidence, with prospective planning under read-only audit"
+  },
+  "prospectiveSaltaGunCustody": {
+    "stock": {
+      "hour": 355,
+      "second": 3225,
+      "gun": "arsenal:cordoba:2",
+      "loaded": true,
+      "reserve": 6,
+      "crew": 2,
+      "cost": 0,
+      "dueAt": 391,
+      "exactOfficialReplay": true
+    },
+    "created": {
+      "hour": 427,
+      "second": 3157,
+      "gun": "arsenal:cordoba:2",
+      "loaded": false,
+      "reserve": 0,
+      "crew": 2,
+      "cost": 0,
+      "dueAt": 463,
+      "exactShipmentReplayFromActualMeeting": true
+    },
+    "stockAssembly": {
+      "from": [
+        355,
+        3225
+      ],
+      "assembled": [
+        414,
+        949
+      ],
+      "prepared": [
+        436,
+        949
+      ],
+      "survivors": 13,
+      "priorDeaths": 28,
+      "committedNativeOrders": 368,
+      "immutableAdmissionProbes": 15,
+      "officialMidpoint": true,
+      "exactFullCampaignReplay": true
+    },
+    "limit": "Stock preparation has no Mendoza battle or funding proof. Created record selection is read-only; complete original retrieval and campaign remain under test."
+  },
+  "prospectiveClinicGuardReadiness": {
+    "input": [
+      271,
+      3393
+    ],
+    "prepared": [
+      272,
+      437
+    ],
+    "actualLocalGuards": 8,
+    "newSquadMembers": [
+      129,
+      130
+    ],
+    "finiteRecoveredGuns": 2,
+    "finiteRoundsTransferred": 25,
+    "elapsedSeconds": 644,
+    "cost": 0,
+    "officialMidpoint": true,
+    "exactCanonicalCampaignReplay": true,
+    "actualImportedFiles": 274,
+    "sourceDrift": 0,
+    "limits": "Preparation proof only. No victory or final medical recovery has been granted. The earlier actual ground-guard defeat remains retained."
+  },
+  "currentCompleteOriginals": {
+    "stock": {
+      "status": "terminal",
+      "exitCode": 1,
+      "session": 54971,
+      "tests": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "durationMs": 692811.079625
+      },
+      "actualImportedFiles": 350,
+      "sourceDrift": 0,
+      "failure": "Mendoza battle stayed active for81turns after3player orders; original victory assertion remains.",
+      "nativeBattle": {
+        "input": [
+          466,
+          962
+        ],
+        "turns": 81,
+        "orders": 83,
+        "elapsedSeconds": 48042,
+        "servingHealthyRespondents": 15,
+        "undamagedEnemies": 13
+      },
+      "limits": "Official saved pair is the genuine initial battle. The separate native result contains the81turn active endpoint; it is not a completed settlement.",
+      "savedReplay": {
+        "orders": 83,
+        "rawReplayExact": true,
+        "officialMidpointReplayExact": true,
+        "final": {
+          "hour": 479,
+          "second": 2204,
+          "turn": 81,
+          "elapsedSeconds": 48042,
+          "status": "active",
+          "owner": "royalist"
+        },
+        "receipt": "stock-mendoza-stalemate-saved-replay.json",
+        "limits": "Retains all83 original orders and the active battle. No victory or settlement."
+      }
+    },
+    "createdCuyo": {
+      "status": "terminal",
+      "exitCode": 1,
+      "session": 77868,
+      "tests": {
+        "tests": 1,
+        "pass": 0,
+        "fail": 1,
+        "skip": 0,
+        "durationMs": 547076.791292
+      },
+      "actualImportedFiles": 328,
+      "sourceDrift": 0,
+      "observationErrors": 0,
+      "clock": [
+        1020,
+        1903
+      ],
+      "location": "mendoza",
+      "phase": 3,
+      "treasury": 205784,
+      "servingAlive": 22,
+      "priorDeaths": 27,
+      "armyFunded": true,
+      "foundry": true,
+      "accepted": "Native northern/Mendoza victories, medical recovery and actual three-gun funding pass.",
+      "failure": "Uspallata readiness needs15 carried dressings for112;11 remain and no known reachable local supply. Uspallata battle not started."
+    },
+    "frozenCreatedCuyoSha256": "41457efce36243a88b372e43be30b34bc2309395cdd48e16d84f390ea0c0e8f0",
+    "frozenFreshCuyoSha256": "8b43b6cbcd5a1463fa07595625c27954f6b875a897527e669ecd3403560c45e3",
+    "limits": "Earlier original records certify their own inputs. Complete full947 later ran and failed before the sixth safety correction; full948 is pending. No filters, exclusions, replacement starts, forced outcomes or granted survival.",
+    "historicalLimits": "No filters, exclusions, replacement helpers, cached starts or forced outcomes. Current full Node suite remains unrun.",
+    "full947Northern": {
+      "file": "tests/fresh-northern-route.test.mjs",
+      "complete": true,
+      "passed": true,
+      "counts": {
+        "tests": 1,
+        "failed": 0,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      },
+      "duration_ms": 346295.378916,
+      "receipt": "final-full-947-report.json.gz",
+      "limit": "Original full northern route passed on pre-sixth source. This does not establish the cause from any individual correction."
+    }
+  },
+  "historicalCachedFullReport": {
+    "scope": "Historical cached report observed before the current cumulative full run. It has no source identity field and does not validate this current candidate.",
+    "complete": true,
+    "totalFiles": 927,
+    "selectedFiles": 927,
+    "excludedFiles": [],
+    "summary": {
+      "counts": {
+        "tests": 6973,
+        "failed": 7,
+        "passed": 6963,
+        "cancelled": 0,
+        "skipped": 3,
+        "todo": 0,
+        "topLevel": 6822,
+        "suites": 0
+      },
+      "duration_ms": 1256028.527708,
+      "success": false
+    },
+    "failedFiles": [
+      "tests/fresh-campaign-recovery.test.mjs",
+      "tests/fresh-ending-route.test.mjs",
+      "tests/opening-playthrough.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs",
+      "tests/fresh-northern-route.test.mjs"
+    ]
+  },
+  "openingPreparedClinicOutcome": {
+    "result": "defeat",
+    "turns": 21,
+    "playerActions": 141,
+    "totalOrders": 184,
+    "elapsedSeconds": 313,
+    "settled": [
+      288,
+      750
+    ],
+    "treasury": 2940,
+    "newActualDeaths": [
+      103,
+      108,
+      112,
+      121,
+      122,
+      126,
+      129,
+      130
+    ],
+    "capturedCourier": {
+      "id": 102,
+      "hp": 8,
+      "bleeding": 5
+    },
+    "officialMidpoint": 92,
+    "exactNativeReplayAndSettlement": true,
+    "actualImportedFiles": {
+      "preparation": 274,
+      "rest": 272,
+      "defense": 292
+    },
+    "sourceDrift": 0,
+    "limits": "No invalid issued action found; holding roof positions is a fixed-policy limitation. This does not prove victory or full-health recovery."
+  },
+  "mendozaControllerCorrection": {
+    "files": [
+      "tests/fresh-cuyo-fixture.mjs",
+      "tests/staged-battery-driver.test.mjs"
+    ],
+    "tests": {
+      "pass": 21,
+      "fail": 0,
+      "skip": 0
+    },
+    "behavior": "Select the existing staged battery policy for two supplied player guns; preserve the single-gun coastal policy.",
+    "limits": "Complete stock campaign with this correction remains pending."
+  },
+  "mountainKnownSupplyCourier": {
+    "orders": 16,
+    "from": [
+      1020,
+      1903
+    ],
+    "to": [
+      1028,
+      1903
+    ],
+    "source": [
+      4,
+      0
+    ],
+    "recipient": [
+      11,
+      15
+    ],
+    "spending": 179,
+    "servingAlive": 22,
+    "deaths": 27,
+    "officialMidpoint": true,
+    "exactReplay": true,
+    "integratedReplay": true,
+    "focused": {
+      "pass": 30,
+      "fail": 0,
+      "skip": 0
+    },
+    "limits": "The actual8h courier suffix is proved. Complete Andes campaign remains pending."
+  },
+  "openingClinicFinalIntegration": {
+    "files": 10,
+    "newFocused": {
+      "pass": 5,
+      "fail": 0,
+      "durationMs": 25292.225625
+    },
+    "existingControls": {
+      "pass": 18,
+      "fail": 0,
+      "durationMs": 9385.918333
+    },
+    "doctorAssertionControls": {
+      "pass": 11,
+      "fail": 0
+    },
+    "limits": "Retained native clinic defeat remains. Complete opening recovery/victory not proved."
+  },
+  "cumulativeFull935": {
+    "started": "2026-10-10T01:04:23.093Z",
+    "finished": "2026-10-10T02:29:17.253Z",
+    "exitCode": 1,
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "683a2829961b",
+      "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+      "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+    },
+    "sourceFiles": 13862,
+    "sourceDrift": [],
+    "complete": true,
+    "selectedFiles": 935,
+    "totalFiles": 935,
+    "excludedFiles": [],
+    "concurrency": 2,
+    "summary": {
+      "counts": {
+        "tests": 6991,
+        "failed": 5,
+        "passed": 6984,
+        "cancelled": 0,
+        "skipped": 2,
+        "todo": 0,
+        "topLevel": 6840,
+        "suites": 0
+      },
+      "duration_ms": 5090593.996708,
+      "success": false
+    },
+    "failedFiles": [
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "duration_ms": 975457.60625,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        },
+        "success": false
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "duration_ms": 586033.802084,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        },
+        "success": false
+      },
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "duration_ms": 490129.330292,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        },
+        "success": false
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "duration_ms": 275804.767,
+        "success": false,
+        "counts": {
+          "tests": 8,
+          "failed": 2,
+          "passed": 4,
+          "cancelled": 0,
+          "skipped": 2,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      }
+    ],
+    "scope": "Complete source-bound pre-correction full gate; no exclusions or test filters. This report precedes the new friendly-ray/clinic-knockdown and ledger changes.",
+    "receipt": "cumulative-full-935.receipt.json"
+  },
+  "currentFullFailures": {
+    "suite": "full948",
+    "failedTests": 6,
+    "failedFiles": 5,
+    "files": [
+      "tests/fresh-ending-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-campaign-recovery.test.mjs",
+      "tests/opening-playthrough.test.mjs"
+    ],
+    "strictAssertionsPreserved": true,
+    "classificationsRequireActualLogReview": true,
+    "review": "final-full-948-read-only-failure-review.json",
+    "classifications": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "reportedFailures": 1,
+        "classification": "required-victory assertion failed on native combat retreat",
+        "actualNativeOutcome": "retreat",
+        "battleId": "los_patos-654-4162937008",
+        "strictAssertion": "fightNorthernSector requires victory; actual retreat",
+        "sourceEvidence": [
+          "tests/northern-route.mjs:316-327",
+          "tests/fresh-cuyo-fixture.mjs:106",
+          "tests/fresh-ending-fixture.mjs:29"
+        ],
+        "retainedFacts": "Turn 8, 111 actor actions, 129 orders, elapsed 90 seconds; six of eight player units have zero HP and two are routed. Earlier stock-route victories and Uspallata were reached.",
+        "boundedGaps": [
+          "No independent original initial deployed or pre-decision scene in this pack.",
+          "No invalid native action or outcome-preventing controller correction established by this read-only audit.",
+          "The retained old posture hypothesis is superseded by the exact 33-order observation: standing was reconnaissance after a null native chooser; no useful safe shot was proved to be undone."
+        ]
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "reportedFailures": 1,
+        "classification": "native battlefield victory with mandatory commander already dead; synchronization and settlement retain strategic defeat",
+        "actualNativeOutcome": "victory",
+        "battleId": "mendoza-514-2591988814",
+        "strictAssertion": "after genuine settlement, returned.defeated must be false; actual true",
+        "sourceEvidence": [
+          "tests/northern-route.mjs:328-337",
+          "game/campaign-civilians.js:92-109"
+        ],
+        "retainedFacts": "Turn 14, 586 actor actions, 636 orders, elapsed 139 seconds. Unrecruited NPC San Martín (operative57) is dead; Beltrán (operative2) is alive at 76 HP. Returned campaign has pendingBattle null, Mendoza patriot, Retiro patriot, foundry false, defeated true. Native log explicitly names San Martín death as terminal and records Mendoza victory.",
+        "reason": "José de San Martín ha muerto. La campaña no puede continuar sin este mando.",
+        "recorderSettlementClarification": "settlementExecuted:false describes the recorder adding no settlement. The route had already dispatched battleResult before supplying returned-campaign.json. The official terminal pair can already be defeated through tactical clock/civilian synchronization.",
+        "boundedGaps": [
+          "No independent before-shot witness is retained. Native corpse incidents label player attackers and intentional:false, but this does not establish intended-ray obstruction versus scatter.",
+          "Preventability, a winning tactical correction, and any relation to the separate historical-loss fixture timing remain unproved."
+        ]
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "reportedFailures": 1,
+        "classification": "historical engineer-loss fixture no longer isolates commander survival",
+        "actualNativeOutcome": "victory asserted earlier inside freshMendozaLoss; no separate retained native pack",
+        "strictAssertion": "assert.ok(s.operativeState[57].hp > 0) is false",
+        "sourceEvidence": [
+          "tests/fresh-historical-loss.test.mjs:6-9",
+          "tests/historical-loss-fixture.mjs:13-34"
+        ],
+        "retainedFacts": "The fixture reached and passed battlefield victory, living engineer after combat, later actual engineer death, saved strategic defeat, settled patriot Mendoza, foundry false, and rejected foundry/wait orders. The final commander-survival assertion failed. The following engineer-reason log assertion was not reached.",
+        "boundedGaps": [
+          "No current independent prebattle, postbattle/pre-engineer-kill, or returned fixture state was emitted.",
+          "Exact first mandatory death and the timing/cause of operative57 loss within this distinct fixture remain unproved.",
+          "This is an isolation witness failure, not evidence that the essential death rule is wrong; no weaker witness or invented survival is proposed."
+        ]
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "reportedFailures": 1,
+        "classification": "required care-defense victory assertion failed on native combat defeat",
+        "actualNativeOutcome": "defeat",
+        "battleId": "defense-enemy-group-1-150",
+        "strictAssertion": "fightNorthernSector requires victory; actual defeat",
+        "sourceEvidence": [
+          "tests/northern-route.mjs:316-327",
+          "tests/fresh-campaign-route.mjs:367-373",
+          "tests/fresh-campaign-recovery.test.mjs:101"
+        ],
+        "retainedFacts": "Later Córdoba care defense: turn 12, 181 actor actions, 203 orders, elapsed 80 seconds. The request contains 12 current respondents; terminal sector retains 18 player bodies at zero HP, including prior sector bodies. This is distinct from the successful dedicated northern recovery-recapture file.",
+        "boundedGaps": [
+          "The 18 terminal zero-HP bodies cannot be labelled 18 new deaths without accounting for prior sector state.",
+          "No independently captured initial/pre-decision scene or exact order-admission replay in this read-only audit.",
+          "No invalid native action or outcome-preventing controller correction established; native combat loss remains real."
+        ]
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "reportedFailures": 2,
+        "underlyingFailureSites": 1,
+        "classification": "one native Córdoba retreat fails both child and parent; five dependent subtests skip",
+        "actualNativeOutcome": "retreat",
+        "battleId": "cordoba-84-18026106",
+        "strictAssertion": "survivors recover with finite supplies and paid replacements capture Córdoba requires victory; actual retreat",
+        "sourceEvidence": [
+          "tests/northern-route.mjs:316-327",
+          "tests/opening-playthrough.test.mjs:41-65"
+        ],
+        "retainedFacts": "Turn 8, 137 actor actions, 164 orders, elapsed 63 seconds; seven of twelve players have zero HP. Earlier relief-doctor subtest passed. Failed child propagates to its parent; five later captivity/rescue/courier/Salta/Yatasto subtests are skipped.",
+        "boundedGaps": [
+          "This file does not currently validate its skipped Tucumán capture, rescue, courier, Salta or Yatasto stages.",
+          "No independent initial/pre-decision scene or invalid-order proof from this capture.",
+          "Two reported test failures do not mean two independent gameplay defects."
+        ]
+      }
+    ]
+  },
+  "postFullApplied": {
+    "friendlyRay": "Known friend-body forecasts rejected in ranked and fallback shots; portable3case control.",
+    "clinicKnockdown": "Required native standing recovery is admitted; 12AP/6sec paid, no health/gear gain; portable3case control.",
+    "actualFocused": {
+      "tests": 15,
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 24961.870834
+    },
+    "ledger": "Three stale source/parity claims corrected; all statuses unchanged,143bounded evidence records, generated progress regenerated/audited."
+  },
+  "recoveryMendozaSafeFireTrial": {
+    "receipt": "recovery-mendoza-safe-fire-native.receipt.json",
+    "actualStatus": "defeat",
+    "knownFriendlyOrders": 0,
+    "exactRecordedReplay": true,
+    "officialMidpointSave": true,
+    "sourceDrift": 0,
+    "scope": "One genuine retained earned readiness continuation, not a fresh full route proof"
+  },
+  "omittedRunnerProposal": {
+    "externalReceipt": "/tmp/granaderos-runner-immediate-failures-overlay-d5098ypd/receipt.json",
+    "result": "21/22 controls passed, required early-assertion proof failed under process isolation; proposal not applied or part of current runtime."
+  },
+  "stockFoundryPreCourseCorrection": {
+    "scope": "Earned stock funding suffix; not a complete ending pass",
+    "finiteCanonicalGuns": 3,
+    "nativeOrders": 124,
+    "exactOfficialMidpointFinalReplay": true,
+    "preservedPriorDeaths": 30,
+    "newDeaths": 0,
+    "actualTucumanOccupationHour": 528,
+    "focusedTests": {
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    "receipt": "stock-foundry-final-receipt.json"
+  },
+  "losPatosFiniteCompatibleArmament": {
+    "scope": "Earned post-Uspallata finite preparation only; no Los Patos battle",
+    "nativeOrders": 15,
+    "compatibleRoundTarget": 12,
+    "finiteGunCount": 49,
+    "allFamilyChargesConserved": true,
+    "unchangedHealthDeathsContractsCash": true,
+    "normalReloadSeconds": 11,
+    "focusedTests": {
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    "receipt": "los-patos-ammunition-final-receipt.json"
+  },
+  "recoveryMendozaForwardScreen": {
+    "scope": "One earned current native Mendoza segment plus exact replay; complete recovery remains unverified",
+    "inputSha256": "1f9811f383d00b6d4f4780f1f8416a0e48388792ff2952da2341ffec664f3e60",
+    "actualStatus": "victory",
+    "turns": 7,
+    "orders": 205,
+    "elapsedSeconds": 825,
+    "priorDeaths": 37,
+    "newDeaths": [
+      130,
+      10
+    ],
+    "knownFriendlyFirearmOrders": 0,
+    "actualImportedSources": 296,
+    "sourceDrift": [],
+    "exactOfficialMidpointAndSettlement": true,
+    "actualRepoFocusedTests": {
+      "pass": 5,
+      "fail": 0,
+      "skip": 0
+    },
+    "receipt": "recovery-mendoza-forward-screen-native.receipt.json"
+  },
+  "declinedClinicDefenseExperiment": {
+    "status": "FAILED EXTERNAL EXPERIMENT; no active hook or controller applied",
+    "archiveDirectory": "../clinic-defense-policy-experiment-2026-10-10",
+    "verifiedArchivedPayloadFiles": 79,
+    "archiveEntriesIncludingManifest": 80,
+    "trialResult": "retreat",
+    "turns": 46,
+    "actions": 111,
+    "elapsedSeconds": 21068,
+    "newDeaths": [
+      102,
+      112,
+      121,
+      122,
+      126,
+      129,
+      130
+    ],
+    "newCaptures": [
+      103,
+      108
+    ],
+    "exactOfficialMidpointAndSettlement": true,
+    "fullHealthContinuation": false,
+    "sourceDrift": []
+  },
+  "losPatosOlderEarnedSuffix": {
+    "scope": "One older earned funding/courier precursor, predating the current foundry custody correction; not a complete current route",
+    "result": "retreat",
+    "initialDeployedGuns": 2,
+    "initialGunShots": 0,
+    "battleOrders": 108,
+    "deploymentOrders": 10,
+    "exactOfficialPairedMidpointAndSettlement": true,
+    "actualImportedSources": 309,
+    "sourceDrift": [],
+    "mandatoryAndesChecksReached": false,
+    "receipt": "los-patos-empty-gun-earned-suffix.receipt.json"
+  },
+  "cumulativeFull940": {
+    "started": "2026-10-10T03:04:25.129Z",
+    "finished": "2026-10-10T03:25:28.672Z",
+    "exitCode": 1,
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "683a2829961b",
+      "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+      "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+    },
+    "sourceFiles": 13915,
+    "sourceDrift": [],
+    "complete": true,
+    "selectedFiles": 940,
+    "totalFiles": 940,
+    "excludedFiles": [],
+    "concurrency": 8,
+    "summary": {
+      "counts": {
+        "tests": 7003,
+        "failed": 7,
+        "passed": 6991,
+        "cancelled": 0,
+        "skipped": 5,
+        "todo": 0,
+        "topLevel": 6852,
+        "suites": 0
+      },
+      "duration_ms": 1258941.233083,
+      "success": false
+    },
+    "failedFiles": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "duration_ms": 552251.754125,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "duration_ms": 424088.989625,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        },
+        "success": false
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "duration_ms": 328684.828625,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "duration_ms": 326544.985459,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-northern-route.test.mjs",
+        "duration_ms": 324271.95275,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "duration_ms": 51398.931625,
+        "success": false,
+        "counts": {
+          "tests": 8,
+          "failed": 2,
+          "passed": 1,
+          "cancelled": 0,
+          "skipped": 5,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      }
+    ],
+    "method": "Original complete suite, no filters/exclusions. Source snapshot covers all13915 tracked/nonignored files; exact before/after hash equality. This failure receipt predates the queued safe movement fallback."
+  },
+  "reviewedUnsafeFireMovementFallback": {
+    "status": "Applied reviewed native fallback to actual repository; affected19/19 controls passed. Genuine Mendoza205-order victory/replay remains exact. Full corrected campaign acceptance remains unresolved.",
+    "patch": "reviewed-safe-fallback-unapplied.patch",
+    "unchangedCurrentNewControls": {
+      "passed": 0,
+      "failed": 3
+    },
+    "externalOverlay": {
+      "passed": 9,
+      "failed": 0,
+      "campaignActions": 0,
+      "paidMoveAP": 23,
+      "paidMoveSeconds": 6,
+      "paidMoveEnergy": 2,
+      "healthAmmunitionConditionUnchanged": true,
+      "exactValidatedJSONReplay": true,
+      "privateOccupantInvariance": true
+    },
+    "sourceDrift": [],
+    "rootInputs": 301,
+    "limits": "Genuine Mendoza input is pure selection only. No Cordoba victory, clinic completion or current full acceptance is claimed.",
+    "actualCandidateControls": {
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 28010.933667,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "session": 68152,
+      "exitCode": 0,
+      "logSha256": "7dc2e472ee2c5e91792c275b92f4e4236d72c06a9cb874664f1f349b3790ded8",
+      "MendozaHistorical205OrderVictoryAndOfficialReplayUnchanged": true
+    }
+  },
+  "unchangedOpeningCurrentObserver": {
+    "archive": "opening-current-unsafe-fire-observer.tar.gz",
+    "archiveAllowlist": "opening-current-unsafe-fire-observer-archive-allowlist.json",
+    "files": 44,
+    "archiveEntries": 45,
+    "archiveSha256": "d23af8b04dd408ea7ee08304552f7e3e0b35635b176f851621502b5d5ce27cfd",
+    "terminalOriginalReceiptSha256": "5544fd95fb05e16d56b54d5ea27535683f08b21dc62b85e04ef3a58bac47eae2",
+    "originalImports": 311,
+    "originalSourceDrift": [],
+    "instrumentedModules": 4,
+    "wrappedExports": 7,
+    "observerErrors": 0,
+    "diagnosticInputChecksPassed": 178,
+    "nativeTerminal": "retreat",
+    "turns": 11,
+    "playerActions": 134,
+    "orders": 162,
+    "elapsedSeconds": 81,
+    "matchesUnobservedFull940Summary": true,
+    "unsafeOriginalDecisions": 13,
+    "safeReplacementOrders": 3,
+    "blockedNullDecisions": 10,
+    "blockedActor": "113",
+    "allTenNativeAIAlternatives": null,
+    "alternativesApplied": 0,
+    "limits": "Paid native-AI fallback alone cannot resolve these ten exact decisions. Subsequent one exact original-tape replay and pure posture forecasts are archived separately. No alternative was executed; no Córdoba victory claimed."
+  },
+  "uspallataCompatibleAmmunitionReuse": {
+    "applied": true,
+    "caller": "tests/fresh-mountain-route.mjs",
+    "sameCohort": 8,
+    "targetRounds": 12,
+    "actualCandidateControls": {
+      "tests": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 16419.842458,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "session": 47236,
+      "exitCode": 0,
+      "logSha256": "2ba0c9e9005feb4d0ac199ea59a7fc10cf21bf45112ac9eae89d6c1726b761c5",
+      "scope": "Actual current candidate bounded finite inventory/reload/refusal controls. Native LosPatos-derived input; no current Uspallata prefix or victory claim."
+    },
+    "proposalArchive": {
+      "archive": "uspallata-compatible-ammunition-proposal.tar.gz",
+      "allowlist": "uspallata-compatible-ammunition-proposal-allowlist.json",
+      "members": 13,
+      "sha256": "304b6ca4ce9832d52fad43d276f89486584920db336fd82621ce26e8dd2ffb8a",
+      "bytes": 54901
+    },
+    "originalFailureInputRetained": false,
+    "fullUspallataPrefixOrVictoryVerified": false,
+    "limits": "The absence control proves a real finite refusal from the retained LosPatos input. It does not prove that current actor116 has a real compatible replacement.",
+    "currentFull942Observation": {
+      "nativeCheckpointReached": true,
+      "clockHour": 594,
+      "treasury": 96291,
+      "wholeStockRoutePassed": false,
+      "remainingFailure": "Later LosPatos preparation cannot locate actor1 headwear. This log checkpoint is bounded prefix evidence, not an independently retained Uspallata action tape."
+    }
+  },
+  "cordobaExactCanonicalReplay": {
+    "archive": {
+      "archive": "cordoba-exact-canonical-replay.tar.gz",
+      "allowlist": "cordoba-exact-canonical-replay-allowlist.json",
+      "members": 49,
+      "sha256": "e380b598c65f40fa9fa7ab62aa8ae9f12b9c5d7b03e14c3344442555a2ab3521",
+      "bytes": 2079497
+    },
+    "orders": 162,
+    "exactCheckpoints": 10,
+    "allCanonicalBeforeAfterHashesExact": true,
+    "terminalDeepEqual": true,
+    "terminalStatus": "retreat",
+    "alternativeOrders": 0,
+    "nativeReplayCompleted": true,
+    "exitCode": 1,
+    "actualReplayImportInventoryRetained": false,
+    "limitation": "Exit observer lost its in-memory import list because Map entries were treated as row objects. Complete replay source drift cannot be claimed. No second replay was run.",
+    "separatePurePostureAnalysis": {
+      "actualImports": 269,
+      "sourceDrift": [],
+      "orders": 0
+    },
+    "findings": "All10 exact blocked states have no safe current shot. Paid crouch3AP or standing6AP permit a safe shot under the existing northern chance/team-visibility threshold. Reviewed cheapest useful paid-posture fallback is now applied and bounded controls passed; no alternative was executed in the retained original Córdoba fixture and no current Córdoba victory claimed."
+  },
+  "reviewedUnsafeFirePostureFallback": {
+    "applied": true,
+    "archive": {
+      "archive": "reviewed-safe-posture-proposal.tar.gz",
+      "allowlist": "reviewed-safe-posture-proposal-allowlist.json",
+      "members": 14,
+      "bytes": 119968,
+      "sha256": "c4d7035e73339da66808eeab11365294120df6406465b0a452c74befd3feeff0"
+    },
+    "baseline": {
+      "passed": 2,
+      "failed": 1
+    },
+    "externalControls": {
+      "passed": 12,
+      "failed": 0,
+      "sourceDrift": [],
+      "rootInputs": 302,
+      "earnedOrders": 0
+    },
+    "declaredNativeCrouch": {
+      "AP": 3,
+      "seconds": 6,
+      "healthAndFiniteSuppliesUnchanged": true,
+      "validatedJSONReplayExact": true
+    },
+    "actualCandidateControlsAtApplication": {
+      "tests": 22,
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 27994.99025,
+      "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "session": 60130,
+      "exitCode": 0,
+      "logSha256": "2d1774aa94974e29ab6be55c5d91dcfbd6fa0aa4a51c07df473cbd845eb7704d",
+      "Mendoza205OrderVictoryAndOfficialReplayUnchanged": true,
+      "scope": "Actual candidate after reviewed paid-posture application; precedes later passive mismatch-recorder and generic Cuyo safety/spatial corrections."
+    },
+    "limits": "AP12 original/native/proposed all null, so it did not reach blocked-fire branch. No budget sweep. No Córdoba/Salta/clinic victory proved by these bounded controls."
+  },
+  "genericCuyoSafetySurfaceKnownView": {
+    "applied": true,
+    "firstArchive": {
+      "archive": "cuyo-opt-in-known-friendly-proposal.tar.gz",
+      "allowlist": "cuyo-opt-in-known-friendly-proposal-allowlist.json",
+      "members": 11,
+      "bytes": 42879,
+      "sha256": "9c2b200a6b2dbcca0d5b77a393e4e5eeb5e9b0b22df4bae6ca4c11985dfb3ef6"
+    },
+    "secondArchive": {
+      "archive": "cuyo-known-view-cover-civilian-proposal.tar.gz",
+      "allowlist": "cuyo-known-view-cover-civilian-proposal-allowlist.json",
+      "members": 12,
+      "bytes": 49153,
+      "sha256": "80db0f71126cdbd4eceae5dc9595a899dfa6f60d124837f0e3f7e3514cb61f4a"
+    },
+    "sourceSha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+    "actualExternalImports": 265,
+    "sourceDrift": [],
+    "orders": 0,
+    "MendozaReachableCountBeforeAfter": [
+      55,
+      55
+    ],
+    "knownViewExcludedHiddenUnitsAndNPCs": [
+      9,
+      3
+    ],
+    "ownDeadBodiesRetained": 4,
+    "olderCordobaWalkableRoofCells": [
+      "2,18,L1",
+      "2,19,L1"
+    ],
+    "actualRoofCover": [
+      0,
+      0
+    ],
+    "legacyGroundCover": [
+      40,
+      40
+    ],
+    "scoreWeightsAndTiesUnchanged": true,
+    "limits": "Older roof map start541953 is not full940 care start542205. No current native outcome or exact failure cause proved."
+  },
+  "optInFailedBattleEvidence": {
+    "source": "tests/route-failure-evidence.mjs",
+    "sourceSha256": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f",
+    "environment": "GRANADEROS_CAMPAIGN_FAILURE_DIR",
+    "mismatchOnly": true,
+    "exclusiveDirectories": true,
+    "archive": {
+      "archive": "route-failure-recorder-zero-order-control.tar.gz",
+      "allowlist": "route-failure-recorder-zero-order-control-allowlist.json",
+      "members": 14,
+      "bytes": 461681,
+      "sha256": "73dc910cacf5408bbad276beced5511853ce7ca315a9c443dbd00eba86bdeb15"
+    },
+    "controlReceipt": "route-failure-recorder-zero-order-receipt.json",
+    "orders": 0,
+    "settlementExecuted": false,
+    "inputsPreserved": true,
+    "originalOutcomeAssertionUnchanged": true,
+    "limits": "Retained arguments are recorded after executor/report. Raw input/result stay separate from synced official pair. True initial/deployed battle is unavailable, and arbitrary injected executor input immutability is not independently certified. Diagnostic errors do not suppress the existing assertion."
+  },
+  "finalCorrectedAffectedControls": {
+    "checkedUtc": "2026-10-10T04:06:37.066659+00:00",
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "session": 9769,
+    "exitCode": 0,
+    "tests": 29,
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 30421.429084,
+    "logSha256": "f0192406f2b44f6037d5793171c5fec2eaa77cfd59cc6011d61131b0e519a8fd",
+    "sourceHashes": {
+      "tests/northern-route.mjs": "ce34ec82c0caf30aa905ef3d06363d6de80f766c773727266c8a91c82eefd3ec",
+      "tests/cuyo-route-driver.mjs": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+      "tests/fresh-mountain-route.mjs": "f5d7b8a96b302bb9a9950446e3c90957b94b35f32520d0b91ff644646b3490ea",
+      "tests/route-failure-evidence.mjs": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f",
+      "tests/northern-safe-posture.test.mjs": "b0b08601c2c0dd2feb6ce0f42404d02ff5c0b9b1c59b4015a232d27acd2adc3d",
+      "tests/fresh-mountain-ammunition.test.mjs": "7299a8d5811ea6d9465ade28fd43b547b990db360d7d75c56a4987d45d862df4"
+    },
+    "Mendoza205OrderVictoryAndOfficialReplayUnchanged": true,
+    "limits": "Affected29 candidate controls passed before frozen full942. Full942 then completed with8 failures; this bounded receipt does not establish complete campaign acceptance."
+  },
+  "cumulativeFull942": {
+    "started": "2026-10-10T04:08:10.490Z",
+    "finished": "2026-10-10T04:28:07.242Z",
+    "exitCode": 1,
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "683a2829961b",
+      "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+      "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+    },
+    "sourceFiles": 13992,
+    "sourceDrift": [],
+    "complete": true,
+    "selectedFiles": 942,
+    "totalFiles": 942,
+    "excludedFiles": [],
+    "concurrency": 8,
+    "nativeFailureDirectories": [
+      "67154-1-salta-423-3074369515-h2HnIc",
+      "67155-1-salta-423-3074369515-TAvzpM",
+      "67156-1-salta-423-3074369515-gVWN8S",
+      "81073-1-cordoba-84-18026106-zrmBHD"
+    ],
+    "summary": {
+      "counts": {
+        "tests": 7010,
+        "failed": 8,
+        "passed": 6997,
+        "cancelled": 0,
+        "skipped": 5,
+        "todo": 0,
+        "topLevel": 6859,
+        "suites": 0
+      },
+      "duration_ms": 1192316.147125,
+      "success": false
+    },
+    "failedFiles": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "duration_ms": 597385.272375,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "duration_ms": 327371.018917,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "duration_ms": 325350.360708,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-northern-route.test.mjs",
+        "duration_ms": 325047.254458,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-coastal-route.test.mjs",
+        "duration_ms": 158473.221667,
+        "success": false,
+        "counts": {
+          "tests": 5,
+          "failed": 1,
+          "passed": 4,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 4,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "duration_ms": 90447.035417,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "duration_ms": 50766.1885,
+        "success": false,
+        "counts": {
+          "tests": 8,
+          "failed": 2,
+          "passed": 1,
+          "cancelled": 0,
+          "skipped": 5,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      }
+    ],
+    "receipt": "final-full-942-receipt.json",
+    "archive": "final-full-942-terminal-native-evidence.tar.gz",
+    "archiveAllowlist": "final-full-942-archive-allowlist.json",
+    "preservationReceipt": "final-full-942-preservation-receipt.json",
+    "method": "Original complete suite on frozen source bytes; no filters/exclusions. Raw native mismatch captures use retained arguments after execution/report; independent initial/deployed state is not captured. Exit1 is failure, not full acceptance."
+  },
+  "rawLogWhitespacePolicy": {
+    "file": ".gitattributes",
+    "rule": "docs/evidence/campaign-route-corrections-2026-10-09/*.log -whitespace",
+    "scope": "Preserve exact archived validation output; normal code, Markdown and JSON whitespace checks remain active. No text/EOL payload conversion.",
+    "rawLogFiles": 27
+  },
+  "saltaSpentGunBoundedControl": {
+    "archive": "salta-spent-gun-bounded-proof.tar.gz",
+    "receipt": "salta-spent-gun-bounded-final-receipt.json",
+    "canonicalPrefixOrders": 334,
+    "additionalNativeOrders": 1,
+    "proposedMove": {
+      "type": "move",
+      "unitId": "11",
+      "x": 41,
+      "y": 36,
+      "tacticalLevel": 0
+    },
+    "nativeAPCost": 36,
+    "nativeEnergyCost": 5,
+    "healthAndFiniteStockUnchanged": true,
+    "officialSaveReplayMatched": true,
+    "sourceDrift": [],
+    "externalDrift": [],
+    "correctionApplied": true,
+    "persistentTestsExecuted": true,
+    "fullVictoryProved": false,
+    "repositoryControls": {
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "spent-gun-actual-repository-controls.log.gz"
+    }
+  },
+  "northernMedicalRoleConflictObservation": {
+    "archive": "northern-medical-role-conflict-observation.tar.gz",
+    "verification": "northern-medical-role-conflict-archive-verification.json",
+    "unchangedOriginalRuns": 1,
+    "actualDoctors": [
+      112,
+      122
+    ],
+    "actualPatients": [
+      113,
+      141,
+      112
+    ],
+    "overwrittenPatient": 112,
+    "requiredHealth": 64,
+    "actualHealthBeforeAndAfter": 15,
+    "nativeWaitHours": 60,
+    "carriedDressingsBefore": 30,
+    "carriedDressingsAfter": 22,
+    "originalDeadIds": [
+      110,
+      111,
+      114,
+      120,
+      123,
+      131,
+      137,
+      140
+    ],
+    "sourceDrift": [],
+    "externalDrift": [],
+    "correctionApplied": true,
+    "nativeCorrectionEvidence": "northern-doctor-rotation-controls.tar.gz",
+    "repositoryControls": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "log": "northern-care-actual-repository-controls.log.gz"
+    },
+    "nativeCorrection": {
+      "hours": 17,
+      "dressingsUsed": 17,
+      "remainingDressings": 13,
+      "patient112FullHealthAtHour": 89,
+      "allPatientsFullHealthAtHour": 97,
+      "orders": 24,
+      "fullRecordedOrderReplayEqual": true,
+      "eightOriginalDeadRecordsExact": true
+    },
+    "latestFull947Recovery": {
+      "oldPatient112CareAssertionPassed": true,
+      "laterNativeOutcome": "Cordoba raid defeat",
+      "completeRecoveryPassed": false,
+      "receipt": "final-full-947-run.log.gz"
+    }
+  },
+  "mountainReturnedKitCorrection": {
+    "observation": "stock-ending-headwear-observation.tar.gz",
+    "controlEvidence": "mountain-returned-kit-controls.tar.gz",
+    "correctionApplied": true,
+    "nativeEmptyEncounterIds": [
+      1,
+      2,
+      9
+    ],
+    "exemption": "Only explicit null clothing on permanent patriot encounter recruits; undefined, broken, paid, created and blade checks stay strict.",
+    "repositoryControls": {
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "mountain-returned-kit-actual-repository-controls.log.gz"
+    },
+    "paidHatNativeOrders": 3,
+    "paidHatSourceDebit": 1,
+    "officialFullReplayEqual": true,
+    "fullEndingProved": false,
+    "latestFull947Ending": {
+      "oldHeadwearGatePassed": true,
+      "laterNativeOutcome": "Los Patos retreat",
+      "fullEndingProved": false,
+      "receipt": "final-full-947-run.log.gz"
+    }
+  },
+  "coastalHiredMedicalCorrection": {
+    "applied": true,
+    "scope": "Observed hired route only; other coastal policies and toolkit witnesses remain unchanged.",
+    "patchSha256": "c5eb33c8d07bc8b80d901c6da072397ebc56a11b5be5fa71095f34f69cdc5e82",
+    "boundedActualRepositoryControls": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "nativeOriginalCase": {
+      "runs": 1,
+      "exitCode": 1,
+      "previousClinicAssertionPassed": true,
+      "actualImports": 291,
+      "sourceDrift": [],
+      "additionalNativeCalls": 0
+    },
+    "finiteReadiness": {
+      "courier": 112,
+      "medic": 120,
+      "collected": 2,
+      "elapsedSeconds": 14400,
+      "initialFieldDressings": 0,
+      "readyFieldDressings": 2
+    },
+    "actualCriticalCasualty": {
+      "id": 141,
+      "diedDuringPaidAid": true,
+      "restored": false,
+      "retainedInDeathSet": true
+    },
+    "remainingNativeOutcome": {
+      "sector": "san_lorenzo",
+      "status": "defeat",
+      "turn": 10,
+      "actions": 126,
+      "orders": 144,
+      "strictVictoryAssertionRetained": true,
+      "canonicalFinalPairReplayOrSettlement": false
+    },
+    "evidence": "coastal-hired-native-progression-terminal-receipt.json",
+    "limits": [
+      "One positive finite stock collection and paid native aid sequence is proved; survival and full route victory are not.",
+      "Native collector can return a partial quantity; this helper honestly requires its declared full deficit.",
+      "All captured San Nicolas actors have tacticalLevel0. Legacy level1 is progression; the earlier roof inference is withdrawn."
+    ],
+    "latestFull947HiredOriginal": {
+      "clinicGatePassed": true,
+      "laterNativeOutcome": "San Lorenzo defeat",
+      "beforeSixthSafetyCorrection": true,
+      "correctedSurvivalOrVictoryProved": false,
+      "receipt": "final-full-947-run.log.gz"
+    }
+  },
+  "northernMoraleSelectionCorrection": {
+    "applied": true,
+    "cutoff": 40,
+    "earnedExcludedId": 116,
+    "earnedMorale": 2,
+    "patchSha256": "f121c74eae8d2854e2c672a80fb732a18257fd25be5498f3ad2a2602a224a252",
+    "actualRepositoryControls": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "pureSelectionOnly": true,
+      "nativeCalls": 0
+    },
+    "nativeFieldsChanged": false,
+    "nativeForcePaymentInventoryAndCombatPending": true,
+    "limit": "Control uses exact retained Cordoba84 actor fields, not a false earlier San Nicolas selection campaign or game save. Exclusion does not prove the cause of the whole-force defeat or a corrected victory.",
+    "evidence": "northern-morale-selection-reviewed-proposal.tar.gz",
+    "latestFull947NorthernOriginal": {
+      "passed": true,
+      "receipt": "final-full-947-report.json.gz",
+      "beforeSixthSafetyCorrection": true,
+      "singleCorrectionCausalityProved": false
+    }
+  },
+  "historicalFull942Failures": {
+    "suite": "full942",
+    "failedTests": 8,
+    "failedFiles": 7,
+    "files": [
+      "tests/fresh-ending-route.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs",
+      "tests/fresh-northern-route.test.mjs",
+      "tests/fresh-coastal-route.test.mjs",
+      "tests/fresh-campaign-recovery.test.mjs",
+      "tests/opening-playthrough.test.mjs"
+    ],
+    "strictAssertionsPreserved": true,
+    "preparationFailures": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "message": "a real local source must supply 1's missing headwear",
+        "actualPreFailureCampaignRetained": true,
+        "provedCause": "Native empty clothing on permanent encounter recruits1/2/9 was incorrectly treated as missing paid returned kit.",
+        "evidence": "stock-ending-headwear-observation.tar.gz",
+        "boundedCorrectionApplied": true,
+        "completeRouteStillPending": true
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "message": "patient112 must finish paid care",
+        "actualHP": 15,
+        "requiredHP": 64,
+        "actualPreFailureCampaignRetained": true,
+        "provedCause": "Native patient assignment for wounded selected doctor112 was overwritten with doctor duty. Twenty-two dressings remained after60 actual hours.",
+        "evidence": "northern-medical-role-conflict-observation.tar.gz",
+        "boundedCorrectionApplied": true,
+        "completeRouteStillPending": true
+      },
+      {
+        "file": "tests/fresh-coastal-route.test.mjs",
+        "message": "stabilize the actual clinic patients before waiting for a physician",
+        "actualPreFailureCampaignRetained": true,
+        "boundedCorrectionApplied": true,
+        "originalCaseNowPassedClinicAssertion": true,
+        "completeRouteStillPending": true,
+        "remainingActualOutcome": "San Lorenzo defeat turn10; strict original assertion retained.",
+        "evidence": "coastal-hired-native-progression.tar.gz"
+      }
+    ],
+    "nativeFailureCaptures": 4,
+    "limits": "Do not infer the current physicians, inventory or exact preparation cause from a historical input. No corrected full victory is proved."
+  },
+  "historicalFull942FullNodeGate": {
+    "suite": "full942",
+    "complete": true,
+    "selectedFiles": 942,
+    "counts": {
+      "tests": 7010,
+      "failed": 8,
+      "passed": 6997,
+      "cancelled": 0,
+      "skipped": 5,
+      "todo": 0,
+      "topLevel": 6859,
+      "suites": 0
+    },
+    "sourceFiles": 13992,
+    "sourceDrift": [],
+    "filters": [],
+    "exclusions": [],
+    "passed": false,
+    "receipt": "final-full-942-receipt.json",
+    "pendingCorrection": "Current five helper corrections need unfiltered full947 execution; corrected hired case has a real later San Lorenzo defeat."
+  },
+  "historicalPreSafetyTestProfiles": {
+    "quick": 934,
+    "extended": 13,
+    "total": 947,
+    "exclusionsInFull": 0,
+    "fullCompletedCandidate": "Latest complete full942 is preserved failed evidence before these five corrections. Complete current full947 is pending."
+  },
+  "historicalPreSafetyDiffCheck": {
+    "exitCode": 0,
+    "method": "Cached explicit279-path index check with narrow raw-log whitespace policy;27 original evidence logs remain exact.",
+    "externalReceipt": "/tmp/granaderos-full279-staged-index-receipt-20261010.json"
+  },
+  "cumulativeFull947": {
+    "complete": true,
+    "exitCode": 1,
+    "passed": false,
+    "beforeSixthSafetyCorrection": true,
+    "selectedFiles": 947,
+    "totalFiles": 947,
+    "filters": [],
+    "exclusions": [],
+    "concurrency": 8,
+    "counts": {
+      "tests": 7024,
+      "failed": 7,
+      "passed": 7012,
+      "cancelled": 0,
+      "skipped": 5,
+      "todo": 0,
+      "topLevel": 6873,
+      "suites": 0
+    },
+    "failedFiles": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "duration_ms": 600068.086625,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "duration_ms": 496287.046084,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "duration_ms": 491116.493042,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "duration_ms": 462922.267541,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        },
+        "success": false
+      },
+      {
+        "file": "tests/fresh-coastal-route.test.mjs",
+        "duration_ms": 166864.593083,
+        "success": false,
+        "counts": {
+          "tests": 5,
+          "failed": 1,
+          "passed": 4,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 4,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "duration_ms": 71225.761542,
+        "success": false,
+        "counts": {
+          "tests": 8,
+          "failed": 2,
+          "passed": 1,
+          "cancelled": 0,
+          "skipped": 5,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      }
+    ],
+    "sourceFiles": 14064,
+    "sourceDrift": [],
+    "reportFresh": true,
+    "selectionComplete": true,
+    "started": "2026-10-10T05:39:01.356Z",
+    "finished": "2026-10-10T06:00:33.962Z",
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "683a2829961b",
+      "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+      "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+    },
+    "receipt": "final-full-947-receipt.json",
+    "report": "final-full-947-report.json.gz",
+    "log": "final-full-947-run.log.gz",
+    "nativeArchive": "final-full-947-terminal-native-evidence.tar.gz",
+    "archiveAllowlist": "final-full-947-archive-allowlist.json",
+    "preservationReceipt": "final-full-947-preservation-receipt.json",
+    "nativeFailureCaptures": 3,
+    "nativeCaptureLimit": "Retained battle arguments/results after execution/reporting; no independent pre-execution, deployed initial or before-shot witness.",
+    "currentFull948Pending": true,
+    "currentSourceGreenGateProved": false
+  },
+  "sanLorenzoShotSafetyCorrection": {
+    "applied": true,
+    "sixthCorrection": true,
+    "patchSha256": "cd695ce758bc584c88f045a05b35055517994dd868a77ffd1eacdec29074e786",
+    "files": [
+      {
+        "path": "tests/local-san-lorenzo-driver.mjs",
+        "bytes": 7038,
+        "sha256": "c65478b3c058c8b795cb0bb9061d4b94fac3da0cc3a3033f12fe7e7b71d2eba4"
+      },
+      {
+        "path": "tests/local-san-lorenzo-safety.test.mjs",
+        "bytes": 8214,
+        "sha256": "02395af5dba4729fdbc942210255f6993fe3a3b2158d54cc2da5247d31639b55"
+      }
+    ],
+    "proposalArchive": "san-lorenzo-shot-safety-reviewed-proposal.tar.gz",
+    "staticPeerReview": "san-lorenzo-shot-safety-static-peer-review.json",
+    "applicationReceipt": "san-lorenzo-shot-safety-applied-receipt.json",
+    "actualControlLog": "san-lorenzo-safety-actual-repository-controls.log.gz",
+    "actualRepositoryControls": {
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "exitCode": 0
+    },
+    "allSixCorrectionFocusedControls": {
+      "tests": 22,
+      "passed": 22,
+      "failed": 0
+    },
+    "scope": "Honor only explicit avoidCivilians; reject public known friendly/per-hand forecasts and known-only typed NPC intended-ray impacts for primary and actual paired offhand. Shared final fire guard covers the unchanged automatic fallback.",
+    "preserved": "Strategy,25% chance threshold, ranking, scores, budgets, finite sources, actor values, native outcomes and original assertions remain unchanged by the patch.",
+    "executionScope": "Eight declared geometry/selection controls ran in the actual repository, including unchanged-input assertions and existing immutable native action legality probes. Wrapper forwarding is static-reviewed. Fallback-shaped final guard is a declared control, not an actual automatic-selector campaign.",
+    "limits": [
+      "No corrected-controller native campaign survival or victory is proved.",
+      "Selected original orders can change when a known unsafe candidate is rejected; no all-outcome equivalence claim.",
+      "Nominal public intended-ray safety does not predict all off-aim scatter casualties.",
+      "Repeated per-aim/per-hand preview runtime cost is unmeasured.",
+      "The complete full947 gate precedes this correction; full948 remains pending."
+    ]
+  },
+  "sanLorenzoExactOriginal144Replay": {
+    "archive": "san-lorenzo-original-144-native-proof.tar.gz",
+    "archiveReceipt": "san-lorenzo-original-144-native-proof-archive-receipt.json",
+    "terminalSummary": "san-lorenzo-original-144-terminal-artifact-summary.json",
+    "acceptedOriginalOrders": 144,
+    "terminalProcessExitCode": 0,
+    "savePairs": 4,
+    "allSavePairsExact": true,
+    "sourceDrift": [],
+    "externalDrift": [],
+    "undeclaredRuntimeDifferences": [],
+    "controllerSelectorCalls": 0,
+    "alternativeOrders": 0,
+    "settlementCalls": 0,
+    "terminalComparison": {
+      "allNonBridgeBattleFieldsEqual": true,
+      "unitsSeedElapsedStatusEqual": true,
+      "officialClockBookkeeping": {
+        "syncedSeconds": {
+          "actual": 428,
+          "recorded": 0
+        },
+        "savedHour": {
+          "actual": 123
+        },
+        "savedSecond": {
+          "actual": 1236
+        }
+      },
+      "status": "defeat",
+      "turn": 10,
+      "seed": 2532192153,
+      "elapsedSeconds": 428,
+      "canonicalClock": [
+        123,
+        1236
+      ],
+      "noSettlement": true
+    },
+    "shotIndex113": {
+      "zeroBased": true,
+      "chance": 36,
+      "knownIntendedRayFriendlyRisk": false,
+      "knownIntendedRayCivilianRisk": false,
+      "actualNativeCasualty": "Lorenzo Silva136, HP17 to0, off-aim head hit",
+      "casualtyPreventionProved": false
+    },
+    "limits": [
+      "The original initial/before113 battle pair was not independently retained. These states derive from the bound original earned request plus exact recorded orders.",
+      "The terminal official pair includes real paid tactical time but is not settled; no victory or casualty-prevention claim.",
+      "Native API counts are direct external export invocations. Engine-internal dispatch, AI and projectile calls are part of those canonical native operations.",
+      "Current safety helper was absent from replay imports; this exact-original replay is not a corrected-controller outcome.",
+      "The public intended-ray warning is clear at the derived prefix; the off-aim casualty is not demonstrated predictable by the bounded guard."
+    ]
+  },
+  "retainedSafetyReadonlyReviews": {
+    "archive": "retained-safety-readonly-reviews.tar.gz",
+    "receipt": "retained-safety-readonly-reviews-archive-receipt.json",
+    "regularMembers": 9,
+    "payloadMembers": 8,
+    "repositoryOrIndexChanged": false,
+    "newGameplayOrReplayCalls": 0,
+    "limits": "Historical readonly retained-state review and pure extracts. Original custody and independent-before-shot limits remain; receipt hold fields describe its time."
+  },
+  "postvictoryPassiveCapture": {
+    "receipt": "postvictory-passive-capture-applied-receipt.json",
+    "files": [
+      {
+        "path": "tests/northern-route.mjs",
+        "bytes": 85026,
+        "sha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8"
+      },
+      {
+        "path": "tests/route-failure-evidence.mjs",
+        "bytes": 3274,
+        "sha256": "6af33f0e0fa35f73220a25c9a2030e7a9281b8a1621c6e2df3176f457da1db10"
+      }
+    ],
+    "observabilityOnly": true,
+    "seventhGameplayCorrection": false,
+    "syntaxChecksPassed": 2,
+    "additionalNativeDispatchOrOrders": 0,
+    "scope": "Passive capture of an already returned defeated campaign after an actual raw victory. Existing strict assertion, resources, controllers and outcomes remain unchanged.",
+    "recordTypes": {
+      "terminal.save.json": "Cloned pre-settlement official campaign/battle pair",
+      "returned-campaign.json": "Actual already-settled campaign supplied by caller; recorder performs no dispatch"
+    },
+    "strictVictoryAndCampaignPlayableAssertionsUnchanged": true,
+    "full947PredatesThisInstrumentation": true,
+    "completeCurrentFull948Pending": true
+  },
+  "full947MendozaReadonlyAudit": {
+    "receipt": "full947-mendoza-read-only-audit.json",
+    "diagnosticOnly": true,
+    "sourceEditsOrNativeCalls": 0,
+    "findings": [
+      "Normal unrecruited commander57 is a battle NPC; current route medic selection searches only units.",
+      "Native automatic bandage can provide finite visible-NPC care, but this route calls it after the playable-campaign assertion.",
+      "Historical-loss setup checks engineer2 alive and lacks a commander57-alive/playable boundary before the native engineer injury sequence."
+    ],
+    "limits": "No native Mendoza pair was retained for these two failed cases. Actual cause, care availability and preventability remain unproved; no production invariant fault or seventh completed correction is demonstrated."
+  },
+  "evidenceIntegrationStatus": {
+    "oldArtifactsRetained": 231,
+    "oldArtifactBytes": 39001796,
+    "newArtifacts": 20,
+    "artifactCountAfterIntegration": 251,
+    "currentAllowlistAndIndexRefreshPending": true,
+    "commitPushPRMergePending": true,
+    "sourceOrParityCompletionUpgraded": false
+  },
+  "currentFastGates": {
+    "archive": "post-san-lorenzo-fast-gates-portable-evidence.tar.gz",
+    "receipt": "post-san-lorenzo-fast-gates-portable-evidence-receipt.json",
+    "gateReceiptMember": "final-receipt.json",
+    "completedUtc": "2026-10-10T06:26:27.394931+00:00",
+    "docsPassed": true,
+    "baselinePassed": 38,
+    "typecheckExitCode": 0,
+    "profileShardControlsPassed": 20,
+    "fullDiscovery": 948,
+    "quickDiscovery": 935,
+    "extendedDiscovery": 13,
+    "shardGroupCounts": [
+      237,
+      237,
+      237,
+      237
+    ],
+    "sourceFiles": 14085,
+    "sourceDrift": [],
+    "indexUnchangedDuringFastGates": true,
+    "buildRerun": false,
+    "fullSuiteRun": false,
+    "scope": "Fast gates on recorded source only; historical build reused separately."
+  },
+  "currentIndexAuditPending": {
+    "pending": false,
+    "scope": "Original365 staged contents through full948 terminal; administrative index byte identity is not claimed.",
+    "initialProof": "See administrative evidence in final-full-948-terminal-native-evidence.tar.gz",
+    "terminalContentClosure": "granaderos-full948-terminal365-semantic-index-working-closure-20261010.json",
+    "terminalContentClosureSha256": "309e01dfe3ca1b69dc1f4991e7c660c76cff45da904a7d9d40e39618ad584004",
+    "finalDeliveryAudit": "The final documentation-only evidence additions require explicit staging and an external every-blob audit before commit."
+  },
+  "losPatosOriginalPrefixObservation": {
+    "archive": "los-patos-original-33-native-proof.tar.gz",
+    "archiveReceipt": "los-patos-original-33-native-proof-archive-receipt.json",
+    "summary": "los-patos-original-33-terminal-summary.json",
+    "correctedReport": "los-patos-original-33-corrected-static-report.json",
+    "singleAttempt": true,
+    "deploymentOrders": 11,
+    "prefixOrders": 33,
+    "originalSelectorEqualities": 5,
+    "officialSavePairs": 6,
+    "sourceDrift": [],
+    "externalDrift": [],
+    "undeclaredRuntimeDifferences": [],
+    "alternativeActions": 0,
+    "settlementCalls": 0,
+    "proposedStanceChangeApplied": false,
+    "wholeBattleOrVictoryProved": false,
+    "finding": "Standing at20 is reconnaissance after native chooser returned null; original enemy13 died before20 and enemy14 became visible at27. No useful standing shot was undone in this observed prefix."
+  },
+  "historicalFull947FailureSummary": {
+    "suite": "full947",
+    "failedTests": 7,
+    "failedFiles": 6,
+    "files": [
+      "tests/fresh-ending-route.test.mjs",
+      "tests/fresh-historical-loss.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-campaign-recovery.test.mjs",
+      "tests/fresh-coastal-route.test.mjs",
+      "tests/opening-playthrough.test.mjs"
+    ],
+    "strictAssertionsPreserved": true,
+    "classifications": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "actualOutcome": "Los Patos retreat, turn8,111 actions,90 elapsed seconds; strict victory assertion fails.",
+        "routePassed": false
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "actualOutcome": "Operative57 survival assertion fails (hp > 0).",
+        "survivalGranted": false
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "actualOutcome": "Actual battle victory settles to campaign defeated===true; the campaign-playable assertion fails.",
+        "causeKnown": false,
+        "campaignRoutePassed": false
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "actualOutcome": "The former patient112 care assertion passes; later actual Cordoba raid ends in defeat, turn12,181 actions,80 elapsed seconds.",
+        "recoveryRoutePassed": false
+      },
+      {
+        "file": "tests/fresh-coastal-route.test.mjs",
+        "actualOutcome": "Hired original case reaches actual San Lorenzo defeat, turn10; four other reported tests pass.",
+        "correctedSurvivalOrVictoryProved": false
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "actualOutcome": "Initial Cordoba battle retreats, turn8,137 actions,63 elapsed seconds. Five dependent stages skip; the two failures include the parent/subtest reports.",
+        "distinctFailedBattles": 1
+      }
+    ],
+    "nativeFailureCaptures": 3,
+    "beforeSixthSafetyCorrection": true,
+    "receipt": "final-full-947-receipt.json",
+    "limits": "No full948 result or safety-controller campaign outcome is established. Exact original San Lorenzo replay preserves defeat. Unproved Cuyo settlement cause and historical survival failure remain open."
+  },
+  "cumulativeFull948": {
+    "started": "2026-10-10T06:44:55.557Z",
+    "finished": "2026-10-10T07:06:25.911Z",
+    "exitCode": 1,
+    "signal": null,
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "683a2829961b",
+      "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+      "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+    },
+    "sourceFiles": 14091,
+    "sourceDrift": [],
+    "reportFresh": true,
+    "previousReportSha256": "045186a5c2ac2bdbc5d2c9b48ba8c88c5f7d28130cd09bc08d1afb426522f7e3",
+    "reportSha256": "6987c933d262c3744e62e7b4dd793590edc17ca850717675e2c48e8dd8a1c82d",
+    "selectionComplete": true,
+    "runnerComplete": true,
+    "complete": true,
+    "selectedFiles": 948,
+    "totalFiles": 948,
+    "excludedFiles": [],
+    "concurrency": 8,
+    "nativeFailureDirectories": [
+      "17923-1-los_patos-654-4162937008-OiTd85",
+      "17926-1-mendoza-514-2591988814-9a6Ddj",
+      "17927-1-defense-enemy-group-1-150-SpEhkU",
+      "30548-1-cordoba-84-18026106-zOQEVl"
+    ],
+    "summary": {
+      "counts": {
+        "tests": 7032,
+        "failed": 6,
+        "passed": 7021,
+        "cancelled": 0,
+        "skipped": 5,
+        "todo": 0,
+        "topLevel": 6881,
+        "suites": 0
+      },
+      "duration_ms": 1285810.040667,
+      "success": false
+    },
+    "failedFiles": [
+      {
+        "file": "tests/fresh-ending-route.test.mjs",
+        "duration_ms": 603770.165583,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-historical-loss.test.mjs",
+        "duration_ms": 497611.304834,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-cuyo-route.test.mjs",
+        "duration_ms": 491338.667542,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/fresh-campaign-recovery.test.mjs",
+        "duration_ms": 453980.5,
+        "success": false,
+        "counts": {
+          "tests": 1,
+          "failed": 1,
+          "passed": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        }
+      },
+      {
+        "file": "tests/opening-playthrough.test.mjs",
+        "duration_ms": 70599.924125,
+        "counts": {
+          "tests": 8,
+          "failed": 2,
+          "passed": 1,
+          "cancelled": 0,
+          "skipped": 5,
+          "todo": 0,
+          "topLevel": 1,
+          "suites": 0
+        },
+        "success": false
+      }
+    ],
+    "passed": false,
+    "filters": [],
+    "exclusions": [],
+    "receipt": "final-full-948-receipt.json",
+    "report": "final-full-948-report.json.gz",
+    "log": "final-full-948-run.log.gz",
+    "nativeArchive": "final-full-948-terminal-native-evidence.tar.gz",
+    "archiveAllowlist": "final-full-948-archive-allowlist.json",
+    "preservationReceipt": "final-full-948-preservation-receipt.json"
+  },
+  "currentFull948IndexPosture": {
+    "byteIdentityThroughRunClaimed": false,
+    "administrativeStatRefreshExceptionReported": true,
+    "unchangedStagedBlobsMustBeProvedBySeparateClosure": true,
+    "supplements": [
+      {
+        "role": "executed-full948-wrapper",
+        "archiveMember": "administrative-evidence/reviewed-full948-wrapper.mjs",
+        "bytes": 4539,
+        "sha256": "0cbb97321eeb798b88bd36bc581da4f3baf9e408131dc95839a54af513942cd4"
+      },
+      {
+        "role": "initial-index-proof",
+        "archiveMember": "administrative-evidence/initial365-independent-index-proof.json",
+        "bytes": 231746,
+        "sha256": "35328769f765a52228655b099dcd40c7f20d7adf6309520df12436f86aac4e1b"
+      },
+      {
+        "role": "index-stat-refresh-exception",
+        "archiveMember": "administrative-evidence/index-stat-refresh-exception.json",
+        "bytes": 3016,
+        "sha256": "67b49128e3549b8133a0f631fef54ea2e0e4d14febc393d8d74edc10cd6f92ee"
+      },
+      {
+        "role": "mendoza-readonly-settlement-review",
+        "archiveMember": "administrative-evidence/mendoza-settlement-readonly.json",
+        "bytes": 10180,
+        "sha256": "be4b91118c746b5bfa70b28fdbd7586458891277dd551c3379233d2b593c58f3"
+      },
+      {
+        "role": "terminal-index-content-closure",
+        "archiveMember": "administrative-evidence/terminal365-semantic-index-working-closure.json",
+        "bytes": 4296,
+        "sha256": "309e01dfe3ca1b69dc1f4991e7c660c76cff45da904a7d9d40e39618ad584004"
+      }
+    ]
+  },
+  "currentFull948MendozaCause": {
+    "nativeBattle": "victory",
+    "campaignDefeated": true,
+    "reason": "Mandatory commander57 death",
+    "engineer2AliveHp": 76,
+    "headquartersRetained": true,
+    "returnedCampaignCaptured": true,
+    "officialSyncedPairCanAlreadyContainDefeat": true,
+    "beforeShotGeometryOrPreventabilityProved": false,
+    "report": "administrative evidence in final-full-948-terminal-native-evidence.tar.gz"
+  },
+  "currentFull948CoastalAcceptance": {
+    "file": "tests/fresh-coastal-route.test.mjs",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "scope": "Complete original created/hired/local coastal cases retain native resources, casualties, medical care, paid replacements and saved reentry.",
+    "historicalOffAimCasualtyPreventionProved": false
+  },
+  "full948EvidenceIntegration": {
+    "oldArtifactsRetainedExact": 257,
+    "newArtifacts": 7,
+    "onlyDocumentationAndEvidenceChangedAfterFullGate": true,
+    "sourceOrParityCompletionUpgraded": false,
+    "remoteDeliveryRecordedByGitAndPR": "This evidence snapshot precedes final commit and exact-head merge; its full gate result remains failed."
+  },
+  "full948ReadOnlyReviewWordingErratum": {
+    "field": "Cuyo classification label in final-full-948-read-only-failure-review.json",
+    "correction": "San Martín is already dead in the victorious raw terminal battle. Acknowledgement and strategic defeat are retained by synchronization and settlement.",
+    "nativeEvidenceAndRetainedReviewBytesUnchanged": true
+  }
+}

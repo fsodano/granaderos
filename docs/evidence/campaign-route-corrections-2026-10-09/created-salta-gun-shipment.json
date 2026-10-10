@@ -1,0 +1,46 @@
+{
+  "input": "/tmp/granaderos-complete-northern-current.72930.terminal.save.json",
+  "inputSha256": "1f55ade15fa3d83f7e5a840ecbd6cc39dc6c4c8d1042b45f7a0f6c8abf73a350",
+  "scope": "One actual provincial meeting from earned original full northern Yatasto checkpoint, then exactly one native gun shipment; replay receipt binds shipment only from its accepted meeting save. No battle, care or courier was run. Private export is appended by external loader only; native helper body unchanged.",
+  "clockBefore": [
+    427,
+    3157
+  ],
+  "clockAfter": [
+    427,
+    3157
+  ],
+  "cashBefore": 85666,
+  "cashAfter": 85666,
+  "quote": {
+    "crew": 2,
+    "cost": 0
+  },
+  "transfer": {
+    "id": "arsenal:cordoba:2",
+    "from": "salta",
+    "to": "cordoba",
+    "mode": "carts",
+    "path": [
+      "salta",
+      "tucuman",
+      "cordoba"
+    ],
+    "departedAt": 427,
+    "dueAt": 463,
+    "gun": {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "facing": -1.0768549578753155
+    }
+  },
+  "actions": 1,
+  "officialMidpointReplay": true,
+  "exactCampaignReplay": true,
+  "inputUnchanged": true,
+  "allActorsContractsSquadsSectorsUnchanged": true,
+  "deathCount": 17
+}

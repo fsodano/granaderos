@@ -1,0 +1,138 @@
+{
+  "input": "/tmp/granaderos-cuyo-full-canonical-20261009-003606516277/full-original.89622.terminal.save.json",
+  "inputSha256": "fee5275a33fab311ba36d87544893e2a1a0e285425ed18087b3627d871ca5f14",
+  "scope": "One native finite known-resident courier roundtrip from accepted original1020 input; no care/battle/prefix repeated.",
+  "from": [
+    1020,
+    1903
+  ],
+  "to": [
+    1028,
+    1903
+  ],
+  "elapsedSeconds": 28800,
+  "orders": 16,
+  "sourceKey": "container:cordoba:building:chest:17:1:5",
+  "sourceDebit": [
+    4,
+    0
+  ],
+  "recipient": [
+    11,
+    15
+  ],
+  "courierFinalLocation": "cordoba",
+  "travelCost": 20,
+  "renewalCost": 159,
+  "totalNativeSpending": 179,
+  "treasury": [
+    205784,
+    205605
+  ],
+  "servingAlive": 22,
+  "deathsHeld": 27,
+  "inputUnchanged": true,
+  "officialMidpoint": true,
+  "exactFullCampaignReplay": true,
+  "orderedSquadsRestored": true,
+  "loadoutsUnchanged": true,
+  "hpAndBleedingUnchanged": true,
+  "events": [
+    {
+      "event": "nativeCourierContractRenewal",
+      "id": 123,
+      "quote": {
+        "guarantee": 0,
+        "total": 159,
+        "heldGuarantee": 0,
+        "expiresAt": 1051,
+        "expiresSecond": 1903,
+        "available": true,
+        "reason": null,
+        "topTier": false,
+        "permanent": false,
+        "term": "day",
+        "hours": 24,
+        "price": 159,
+        "daily": 159
+      },
+      "oldExpiry": 3699103,
+      "newExpiry": 3785503
+    },
+    {
+      "event": "nativeFiniteSourceDebit",
+      "sourceKey": "container:cordoba:building:chest:17:1:5",
+      "expected": "{\"item\":\"medkits\",\"count\":4,\"weight\":0.2}",
+      "sourceBefore": 4,
+      "sourceAfter": 0,
+      "carrierBefore": 0,
+      "carrierAfter": 4
+    },
+    {
+      "event": "nativeCourierRouteQuote",
+      "at": "mendoza",
+      "quote": {
+        "valid": true,
+        "reason": null,
+        "path": [
+          "cordoba",
+          "mendoza"
+        ],
+        "hours": 4,
+        "action": {
+          "type": "travel",
+          "sector": "mendoza",
+          "mode": "posta",
+          "queue": true
+        }
+      },
+      "hour": 1020,
+      "second": 1903
+    },
+    {
+      "event": "nativeCourierArrived",
+      "at": "mendoza",
+      "hour": 1024,
+      "second": 1903,
+      "treasury": 205615,
+      "cashBefore": 205625
+    },
+    {
+      "event": "nativeFiniteDelivery",
+      "sourceKey": "ground:sector-item-19",
+      "expected": "{\"item\":\"medkits\",\"count\":4,\"weight\":0.2}",
+      "carrierAfter": 0,
+      "recipientBefore": 11,
+      "recipientAfter": 15
+    },
+    {
+      "event": "nativeCourierRouteQuote",
+      "at": "cordoba",
+      "quote": {
+        "valid": true,
+        "reason": null,
+        "path": [
+          "mendoza",
+          "cordoba"
+        ],
+        "hours": 4,
+        "action": {
+          "type": "travel",
+          "sector": "cordoba",
+          "mode": "posta",
+          "queue": true
+        }
+      },
+      "hour": 1024,
+      "second": 1903
+    },
+    {
+      "event": "nativeCourierArrived",
+      "at": "cordoba",
+      "hour": 1028,
+      "second": 1903,
+      "treasury": 205605,
+      "cashBefore": 205615
+    }
+  ]
+}

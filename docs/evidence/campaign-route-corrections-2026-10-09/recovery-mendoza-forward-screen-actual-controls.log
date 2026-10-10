@@ -1,0 +1,14 @@
+✔ Mendoza retains the original capable commander and helper instead of replacing them with a closer infantryman (17.255917ms)
+✔ a real missing commander role is replaced by living local crew while a declared dead body remains unchanged (6.120334ms)
+✔ Mendoza assignment excludes incapacitated or non-ground crew without changing their bodies (1.193875ms)
+✔ the earned Mendoza preparation with permanent Salta losses selects only its actual living crew (8216.26925ms)
+✔ the earned recovery assault wins with a paid forward screen and retains native deaths and gun expenditure (27497.30325ms)
+ℹ {"orders":205,"priorDeaths":37,"newDeaths":[130,10],"officialMidpointReplay":true,"scope":"earned Mendoza segment; not a complete recovery campaign proof"}
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27726.950583

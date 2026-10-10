@@ -1,0 +1,260 @@
+{
+  "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --import /tmp/granaderos-recovery-cumulative-full-audit/preload.mjs --test --test-reporter=spec tests/fresh-campaign-recovery.test.mjs",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "node": "v25.9.0",
+  "startHead": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "finalHead": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "startBuildIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "674d2a9b485f",
+    "source": "674d2a9b485f8a811476308b1d15bba3c71c705b03ff0c4b9316934a7c1eddae",
+    "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+  },
+  "finalBuildIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "674d2a9b485f",
+    "source": "674d2a9b485f8a811476308b1d15bba3c71c705b03ff0c4b9316934a7c1eddae",
+    "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+  },
+  "loader": {
+    "policy": "Read-only module load observer. Return nextLoad original result with unchanged source bytes; no wrappers, replacement exports, order injections, filters or controller changes. Existing test checkpoint environment variable writes official native Tucuman preparation checkpoints.",
+    "sha256": "5f530620307acf58cc8d7e53df419544d5dbb05ab4241f7a0af1611577de7dd5"
+  },
+  "startingManifestSha256": "671ccb3d61efd63d15a3c2c2f3249d15f62a815df330801ea53459da2b070f38",
+  "importedRepositoryModules": 332,
+  "runtimeWorkers": [
+    72838
+  ],
+  "finalRuntimeManifestSha256": "06e902ab5f99002d72453207c09ce3214aa048da66b0ea1344076a862123b240",
+  "sourceDrift": [],
+  "createdFixtureImported": false,
+  "excludedNamedModules": [
+    {
+      "path": "tests/fresh-northern-command.mjs",
+      "imported": false
+    },
+    {
+      "path": "tests/created-cuyo-route.mjs",
+      "imported": false
+    },
+    {
+      "path": "tests/rescue-recovery.mjs",
+      "imported": false
+    }
+  ],
+  "run": {
+    "exitCode": 1,
+    "session": 11297,
+    "sessionTerminal": true,
+    "footer": {
+      "tests": 1,
+      "suites": 0,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 1001279.608416
+    },
+    "caseDurationMs": 1000999.330208,
+    "log": "/tmp/granaderos-recovery-cumulative-full-audit/run.log",
+    "logSha256": "f3f967643e7a92a15c74eae71858ffdd267bb12d7a35c901af148f569af5a75d"
+  },
+  "officialNativeCheckpointReceipt": {
+    "path": "/tmp/granaderos-recovery-cumulative-full-audit/native-preparation-checkpoints.json",
+    "sha256": "0c562bdf3a1aae42bd2a0c9c7bb913d83f6231ddba76c7d2d0b2f07436689f3a",
+    "readyDecodedCampaignExactlyEqualsPrior7448EarnedReady": true,
+    "readyDecodedBattleExactlyEqualsPrior7448EarnedReady": true
+  },
+  "passedOriginalAssertionsThrough": [
+    "paid initial recovery and coordinated San Nicolás/San Lorenzo/Córdoba/Tucumán victories",
+    "native hospital defense and original survivor/death care checks",
+    "lost-Córdoba joined recapture, ordinary return, native Salta victory and Yatasto phase3",
+    "paid Cuyo defender and five-field-plus-rear assembly, actual Salta withdrawal, prior permanent deaths",
+    "finite physical Mendoza battery/rear-reserve preparation, serving contracts and living request cohort"
+  ],
+  "terminalFailure": {
+    "test": "tests/fresh-campaign-recovery.test.mjs",
+    "line": 184,
+    "source": "tests/northern-route.mjs:287",
+    "actual": "retreat",
+    "expected": "victory",
+    "nativeSummary": {
+      "sector": "mendoza",
+      "preparationSeconds": 0,
+      "startSeconds": 1497705,
+      "elapsedSeconds": 400,
+      "status": "retreat",
+      "turns": 5,
+      "actions": 97,
+      "units": [
+        {
+          "id": "0",
+          "side": "player",
+          "hp": 0,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "8",
+          "side": "player",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "100",
+          "side": "player",
+          "hp": 54,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "142",
+          "side": "player",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "130",
+          "side": "player",
+          "hp": 3,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "11",
+          "side": "player",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "10",
+          "side": "player",
+          "hp": 0,
+          "ammo": 8,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-1",
+          "side": "enemy",
+          "hp": 15,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-2",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-3",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-4",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 10,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-5",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-6",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-7",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-8",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-9",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-10",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 10,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-11",
+          "side": "enemy",
+          "hp": 100,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-12",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        }
+      ]
+    }
+  },
+  "limits": [
+    "This is one complete original recovery test run on the cumulative candidate, with no filters or changed source bytes/controllers. It failed; no whole campaign pass is claimed.",
+    "The read-only loader only recorded original imported bytes. Native checkpoint capture used the unchanged test environment hook; the failed Mendoza battle has its exact scalar summary in the original assertion, but a raw final battle/save or full Mendoza order trace was not emitted by the original test.",
+    "No settlement of the rejected Mendoza victory report, strategy variant, restart, source edit, staging or commit was performed."
+  ],
+  "frozenGraphReleasedAfterTerminalScan": true
+}

@@ -1,0 +1,145 @@
+{
+  "started": "2026-10-10T04:08:10.490Z",
+  "finished": "2026-10-10T04:28:07.242Z",
+  "exitCode": 1,
+  "identity": {
+    "version": "0.4.0-dev.1",
+    "id": "683a2829961b",
+    "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+    "revision": "7448e2da612167ba183d85c82a9bb53d9d20321f"
+  },
+  "sourceFiles": 13992,
+  "sourceDrift": [],
+  "complete": true,
+  "selectedFiles": 942,
+  "totalFiles": 942,
+  "excludedFiles": [],
+  "concurrency": 8,
+  "nativeFailureDirectories": [
+    "67154-1-salta-423-3074369515-h2HnIc",
+    "67155-1-salta-423-3074369515-TAvzpM",
+    "67156-1-salta-423-3074369515-gVWN8S",
+    "81073-1-cordoba-84-18026106-zrmBHD"
+  ],
+  "summary": {
+    "counts": {
+      "tests": 7010,
+      "failed": 8,
+      "passed": 6997,
+      "cancelled": 0,
+      "skipped": 5,
+      "todo": 0,
+      "topLevel": 6859,
+      "suites": 0
+    },
+    "duration_ms": 1192316.147125,
+    "success": false
+  },
+  "failedFiles": [
+    {
+      "file": "tests/fresh-ending-route.test.mjs",
+      "duration_ms": 597385.272375,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-cuyo-route.test.mjs",
+      "duration_ms": 327371.018917,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-historical-loss.test.mjs",
+      "duration_ms": 325350.360708,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-northern-route.test.mjs",
+      "duration_ms": 325047.254458,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-coastal-route.test.mjs",
+      "duration_ms": 158473.221667,
+      "success": false,
+      "counts": {
+        "tests": 5,
+        "failed": 1,
+        "passed": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 4,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/fresh-campaign-recovery.test.mjs",
+      "duration_ms": 90447.035417,
+      "success": false,
+      "counts": {
+        "tests": 1,
+        "failed": 1,
+        "passed": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    },
+    {
+      "file": "tests/opening-playthrough.test.mjs",
+      "duration_ms": 50766.1885,
+      "success": false,
+      "counts": {
+        "tests": 8,
+        "failed": 2,
+        "passed": 1,
+        "cancelled": 0,
+        "skipped": 5,
+        "todo": 0,
+        "topLevel": 1,
+        "suites": 0
+      }
+    }
+  ]
+}

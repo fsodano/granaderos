@@ -1,0 +1,50 @@
+{
+  "kind": "Pure selection control from retained full942 native arguments",
+  "fixture": "northern-field-survivors-earned-cordoba-84.json",
+  "fixtureSha256": "01cb7f6ab50df6a04d059ba35170c3908f03628936885af394cfe6e95275b59d",
+  "nativeInputSha256": "2363be7e8c5eaf8503eaf80fdd64d68d0e4e33fcfbf674d22e1464675431c250",
+  "sourceSnapshotSha256": "732725d7989c30f04cc44138919406fb5f7b3b58dd2ce76f888dec2869e097b5",
+  "recordedClock": [
+    84,
+    670
+  ],
+  "battleId": "cordoba-84-18026106",
+  "inputCapturePhase": "retained arguments after execution and reporting",
+  "preExecutionInputIndependentlyCaptured": false,
+  "fields": [
+    "alive",
+    "captured",
+    "hp",
+    "maxHp",
+    "morale",
+    "assignment",
+    "location"
+  ],
+  "extraction": "recruited and each listed operative field copied exactly from native-input.campaign; clinic for the primary control is the actual request.sector. No input value changed.",
+  "recordedDoctorIdsBasis": "northern-route stageNorthernCare starts the fixed two qualified relief doctors112/122, both serving/local/rest in this native input.",
+  "limits": [
+    "This is not the earlier San Nicolas pre-selection campaign and is not accepted as a game save.",
+    "No native simulation, model, save, controller, battle, order, contract or inventory call is used by the control.",
+    "The selector preserves the existing 40 morale cutoff; no paid replacement, completed original route or Cordoba victory is proved.",
+    "Production call remains clinic san_nicolas. The primary control uses actual request clinic cordoba to verify earned readiness values without moving actors.",
+    "Existing care/rest and activation calls are unchanged by this patch. The original wounded116 was among patients; the preceding rest call excludes reserve116 from the later activation call after filtering."
+  ],
+  "bindings": {
+    "tests/northern-route.mjs": {
+      "currentSha256": "6ee951a219a3c9379caced2e2831350ac47f2fe3ea37c9100d62c8c44e7ef6f9",
+      "full942Sha256": "ce34ec82c0caf30aa905ef3d06363d6de80f766c773727266c8a91c82eefd3ec"
+    },
+    "tests/opening-campaign.mjs": {
+      "currentSha256": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976",
+      "full942Sha256": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976"
+    },
+    "tests/opening-playthrough.test.mjs": {
+      "currentSha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "full942Sha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7"
+    },
+    "tests/northern-care-roles.mjs": {
+      "currentSha256": "e7d0e82d3e1ea8d9fba787b4d9198bb3a546bdec7e0f232617332839f45b6399",
+      "full942Sha256": null
+    }
+  }
+}

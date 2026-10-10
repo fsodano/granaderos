@@ -1,0 +1,45 @@
+{
+  "input": "/tmp/granaderos-stock-cuyo-native-speaker-once/accepted.save.json",
+  "inputSha256": "98ab444fac0c64b8e95a484af293c050c0e785becc0c15f74ada3820d6ba2c42",
+  "scope": "Exactly one prospective native shipment from earned provincial meeting; no battles, care, recruitment or courier repeated. Private export is appended by external loader only; native helper body unchanged.",
+  "clockBefore": [
+    355,
+    3225
+  ],
+  "clockAfter": [
+    355,
+    3225
+  ],
+  "cashBefore": 89812,
+  "cashAfter": 89812,
+  "quote": {
+    "crew": 2,
+    "cost": 0
+  },
+  "transfer": {
+    "id": "arsenal:cordoba:2",
+    "from": "salta",
+    "to": "cordoba",
+    "mode": "carts",
+    "path": [
+      "salta",
+      "tucuman",
+      "cordoba"
+    ],
+    "departedAt": 355,
+    "dueAt": 391,
+    "gun": {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    }
+  },
+  "actions": 1,
+  "officialMidpointReplay": true,
+  "exactCampaignReplay": true,
+  "inputUnchanged": true,
+  "allActorsContractsSquadsSectorsUnchanged": true,
+  "deathCount": 28
+}

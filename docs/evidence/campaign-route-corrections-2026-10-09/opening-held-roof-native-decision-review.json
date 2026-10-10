@@ -1,0 +1,1651 @@
+{
+  "turn": 12,
+  "phase": "player",
+  "elapsedSeconds": 162,
+  "artillery": [
+    {
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "x": 41,
+      "y": 37,
+      "loaded": true,
+      "ammo": 2
+    }
+  ],
+  "visibleTargets": [
+    {
+      "id": "enemy-group-3-11",
+      "x": 34,
+      "y": 20,
+      "level": 1,
+      "hp": 100
+    },
+    {
+      "id": "enemy-group-3-12",
+      "x": 28,
+      "y": 20,
+      "level": 0,
+      "hp": 100
+    },
+    {
+      "id": "enemy-group-3-15",
+      "x": 28,
+      "y": 19,
+      "level": 0,
+      "hp": 100
+    }
+  ],
+  "guards": [
+    {
+      "id": "112",
+      "hp": 4,
+      "ap": 0,
+      "unconscious": true,
+      "routed": false,
+      "x": 32,
+      "y": 21,
+      "level": 1,
+      "stance": "prone",
+      "weapon": 1800,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoMusket",
+      "selectedAmmoCount": 13,
+      "canAct": false,
+      "ordinaryInfantryDecision": null,
+      "clinicDecision": null,
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            }
+          ]
+        }
+      ],
+      "morale": 0,
+      "shock": 0.013671875,
+      "energy": 100
+    },
+    {
+      "id": "122",
+      "hp": 67,
+      "ap": 119,
+      "unconscious": false,
+      "routed": false,
+      "x": 32,
+      "y": 23,
+      "level": 1,
+      "stance": "prone",
+      "weapon": 1800,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoMusket",
+      "selectedAmmoCount": 13,
+      "canAct": true,
+      "ordinaryInfantryDecision": null,
+      "clinicDecision": null,
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            }
+          ]
+        }
+      ],
+      "morale": 6,
+      "shock": 0,
+      "energy": 100
+    },
+    {
+      "id": "103",
+      "hp": 65,
+      "ap": 114,
+      "unconscious": false,
+      "routed": false,
+      "x": 33,
+      "y": 23,
+      "level": 1,
+      "stance": "prone",
+      "weapon": 1800,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoShot",
+      "selectedAmmoCount": 13,
+      "canAct": true,
+      "ordinaryInfantryDecision": null,
+      "clinicDecision": null,
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": false,
+          "options": []
+        }
+      ],
+      "morale": 16,
+      "shock": 0,
+      "energy": 100
+    },
+    {
+      "id": "108",
+      "hp": 82,
+      "ap": 116,
+      "unconscious": false,
+      "routed": false,
+      "x": 32,
+      "y": 22,
+      "level": 1,
+      "stance": "prone",
+      "weapon": 1803,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoMusket",
+      "selectedAmmoCount": 12,
+      "canAct": true,
+      "ordinaryInfantryDecision": {
+        "type": "stance",
+        "unitId": "108",
+        "stance": "standing"
+      },
+      "clinicDecision": null,
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0,
+              "damageFactor": 0
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0,
+              "damageFactor": 0
+            }
+          ]
+        }
+      ],
+      "currentNativeStanceCost": 6,
+      "currentNativeStanceAffordable": true,
+      "morale": 69.3,
+      "shock": 0,
+      "energy": 100
+    },
+    {
+      "id": "102",
+      "hp": 70,
+      "ap": 111,
+      "unconscious": false,
+      "routed": false,
+      "x": 32,
+      "y": 25,
+      "level": 0,
+      "stance": "standing",
+      "weapon": 1804,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoShot",
+      "selectedAmmoCount": 4,
+      "canAct": true,
+      "ordinaryInfantryDecision": null,
+      "clinicDecision": null,
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": false,
+          "options": []
+        }
+      ],
+      "morale": 57,
+      "shock": 0,
+      "energy": 100
+    },
+    {
+      "id": "121",
+      "hp": 65,
+      "ap": 108,
+      "unconscious": false,
+      "routed": false,
+      "x": 34,
+      "y": 23,
+      "level": 1,
+      "stance": "prone",
+      "weapon": 1801,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoMusket",
+      "selectedAmmoCount": 13,
+      "canAct": true,
+      "ordinaryInfantryDecision": {
+        "type": "move",
+        "unitId": "121",
+        "x": 34,
+        "y": 21,
+        "tacticalLevel": 1
+      },
+      "clinicDecision": null,
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0.32,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0.32,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 2,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 3,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 4,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 0.32,
+              "damageFactor": 0.4230769230769231
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 0.32,
+              "damageFactor": 0.4230769230769231
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 0.32,
+              "damageFactor": 0.4230769230769231
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 0.32,
+              "damageFactor": 0.4230769230769231
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 0.32,
+              "damageFactor": 0.4230769230769231
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0.32,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0.32,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0.32,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0.32,
+              "damageFactor": 0.5576923076923077
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0.32,
+              "damageFactor": 0.5576923076923077
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": false,
+          "options": []
+        }
+      ],
+      "currentNativeMovePath": {
+        "cost": 46,
+        "path": [
+          {
+            "x": 35,
+            "y": 22,
+            "tacticalLevel": 1,
+            "kind": "move"
+          },
+          {
+            "x": 34,
+            "y": 21,
+            "tacticalLevel": 1,
+            "kind": "move"
+          }
+        ],
+        "affordable": true
+      },
+      "morale": 46.500000000000014,
+      "shock": 0,
+      "energy": 100
+    },
+    {
+      "id": "126",
+      "hp": 55,
+      "ap": 94,
+      "unconscious": false,
+      "routed": false,
+      "x": 34,
+      "y": 22,
+      "level": 1,
+      "stance": "crouched",
+      "weapon": 1800,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoMusket",
+      "selectedAmmoCount": 7,
+      "canAct": true,
+      "ordinaryInfantryDecision": {
+        "type": "fire",
+        "unitId": "126",
+        "targetId": "enemy-group-3-11",
+        "aim": 4,
+        "hitLocation": "torso"
+      },
+      "clinicDecision": {
+        "type": "fire",
+        "unitId": "126",
+        "targetId": "enemy-group-3-11",
+        "aim": 4,
+        "hitLocation": "torso"
+      },
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 12,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 16,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 20,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 24,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 28,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 3,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 7,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 11,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 15,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 19,
+              "damageFactor": 1
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": false,
+          "options": []
+        }
+      ],
+      "morale": 64.8,
+      "shock": 0,
+      "energy": 100
+    },
+    {
+      "id": "129",
+      "hp": 70,
+      "ap": 90,
+      "unconscious": false,
+      "routed": false,
+      "x": 33,
+      "y": 22,
+      "level": 1,
+      "stance": "standing",
+      "weapon": 1803,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoMusket",
+      "selectedAmmoCount": 13,
+      "canAct": true,
+      "ordinaryInfantryDecision": {
+        "type": "stance",
+        "unitId": "129",
+        "stance": "crouched"
+      },
+      "clinicDecision": {
+        "type": "stance",
+        "unitId": "129",
+        "stance": "crouched"
+      },
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 0.16678020315443104
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 0.16678020315443104
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 0.16678020315443104
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 5,
+              "damageFactor": 0.16678020315443104
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 9,
+              "damageFactor": 0.16678020315443104
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 0.10273921606629312
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 0.10273921606629312
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 0.10273921606629312
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 0.10273921606629312
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 0.10273921606629312
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0.021599999999999998,
+              "damageFactor": 0.08762334938078711
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0.021599999999999998,
+              "damageFactor": 0.08762334938078711
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0.021599999999999998,
+              "damageFactor": 0.08762334938078711
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0.021599999999999998,
+              "damageFactor": 0.08762334938078711
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0.021599999999999998,
+              "damageFactor": 0.08762334938078711
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 0.24,
+              "damageFactor": 0.6590909090909091
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 0.24,
+              "damageFactor": 0.4159526732853749
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 0.24,
+              "damageFactor": 0.4159526732853749
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 0.24,
+              "damageFactor": 0.4159526732853749
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 0.24,
+              "damageFactor": 0.4159526732853749
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 0.24,
+              "damageFactor": 0.4159526732853749
+            }
+          ]
+        }
+      ],
+      "currentNativeStanceCost": 3,
+      "currentNativeStanceAffordable": true,
+      "morale": 49.20000000000002,
+      "shock": 0,
+      "energy": 100
+    },
+    {
+      "id": "130",
+      "hp": 58,
+      "ap": 107,
+      "unconscious": false,
+      "routed": false,
+      "x": 35,
+      "y": 23,
+      "level": 1,
+      "stance": "prone",
+      "weapon": 1801,
+      "loaded": 1,
+      "jammed": false,
+      "selectedAmmoFamily": "ammoMusket",
+      "selectedAmmoCount": 13,
+      "canAct": true,
+      "ordinaryInfantryDecision": {
+        "type": "move",
+        "unitId": "130",
+        "x": 35,
+        "y": 21,
+        "tacticalLevel": 1
+      },
+      "clinicDecision": null,
+      "targets": [
+        {
+          "id": "enemy-group-3-11",
+          "flatLOS": true,
+          "options": [
+            {
+              "hitLocation": "torso",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "torso",
+              "aim": 4,
+              "chance": 5,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "head",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 0,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 1,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 2,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 3,
+              "chance": 1,
+              "damageFactor": 1
+            },
+            {
+              "hitLocation": "legs",
+              "aim": 4,
+              "chance": 1,
+              "damageFactor": 1
+            }
+          ]
+        },
+        {
+          "id": "enemy-group-3-12",
+          "flatLOS": false,
+          "options": []
+        },
+        {
+          "id": "enemy-group-3-15",
+          "flatLOS": false,
+          "options": []
+        }
+      ],
+      "currentNativeMovePath": {
+        "cost": 32,
+        "path": [
+          {
+            "x": 35,
+            "y": 22,
+            "tacticalLevel": 1,
+            "kind": "move"
+          },
+          {
+            "x": 35,
+            "y": 21,
+            "tacticalLevel": 1,
+            "kind": "move"
+          }
+        ],
+        "affordable": true
+      },
+      "morale": 61.80000000000001,
+      "shock": 0,
+      "energy": 100
+    }
+  ]
+}

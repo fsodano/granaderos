@@ -1,0 +1,507 @@
+{
+  "kind": "Read-only opening Cordoba failure causal audit",
+  "createdUtc": "2026-10-10T05:13:50.679027+00:00",
+  "authoritativeFullRun": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "recordedBattle": {
+    "battleId": "cordoba-84-18026106",
+    "status": "retreat",
+    "turn": 12,
+    "startSeconds": 303070,
+    "elapsedSeconds": 87,
+    "actions": 157,
+    "recordedOrders": 193,
+    "lastError": null,
+    "deadPlayers": [
+      "116",
+      "120",
+      "134",
+      "136",
+      "117",
+      "119",
+      "137",
+      "113",
+      "111",
+      "125"
+    ],
+    "livingPlayers": [
+      {
+        "id": "124",
+        "hp": 25,
+        "morale": 0,
+        "routed": true,
+        "unconscious": false,
+        "departure": {
+          "exitId": "cordoba:buenos_aires",
+          "edge": "E",
+          "destination": "buenos_aires",
+          "x": 63,
+          "y": 27,
+          "elapsedSeconds": 57,
+          "mountId": null
+        }
+      },
+      {
+        "id": "141",
+        "hp": 2,
+        "morale": 0,
+        "routed": true,
+        "unconscious": true,
+        "departure": null
+      }
+    ],
+    "ordersByType": {
+      "move": 42,
+      "stance": 37,
+      "fire": 30,
+      "reload": 21,
+      "endTurn": 36,
+      "weapon": 14,
+      "useItem": 4,
+      "reprime": 3,
+      "melee": 2,
+      "loot": 2,
+      "equipLoot": 2
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/81073-1-cordoba-84-18026106-zrmBHD/native-input.json",
+      "bytes": 2631371,
+      "sha256": "2363be7e8c5eaf8503eaf80fdd64d68d0e4e33fcfbf674d22e1464675431c250",
+      "matchesCaptureReceipt": true
+    },
+    {
+      "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/81073-1-cordoba-84-18026106-zrmBHD/native-result.json",
+      "bytes": 824590,
+      "sha256": "4267e6a4e88be61ddd6f5f7a340801a36bdedda89c27373b00b53811fbef0297",
+      "matchesCaptureReceipt": true
+    },
+    {
+      "path": "/tmp/granaderos-campaign-final-posture-full-2026-10-10T040806965Z/native-failures/81073-1-cordoba-84-18026106-zrmBHD/terminal.save.json",
+      "bytes": 692459,
+      "sha256": "2c41855e13b210ed7ad89c890338a2c65e6eee106fa1a1d73c40cd925b981b06",
+      "matchesCaptureReceipt": true
+    }
+  ],
+  "sourceComparison": [
+    {
+      "path": "tests/opening-playthrough.test.mjs",
+      "full942Sha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "currentSha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "unchanged": true
+    },
+    {
+      "path": "tests/opening-campaign.mjs",
+      "full942Sha256": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976",
+      "currentSha256": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976",
+      "unchanged": true
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "full942Sha256": "ce34ec82c0caf30aa905ef3d06363d6de80f766c773727266c8a91c82eefd3ec",
+      "currentSha256": "6ee951a219a3c9379caced2e2831350ac47f2fe3ea37c9100d62c8c44e7ef6f9",
+      "unchanged": false
+    },
+    {
+      "path": "tests/northern-support-fixture.mjs",
+      "full942Sha256": "66170c45101963f8c5a2190f7cd0d0988aa2b17f94866c50f3080e1b9679e3e6",
+      "currentSha256": "66170c45101963f8c5a2190f7cd0d0988aa2b17f94866c50f3080e1b9679e3e6",
+      "unchanged": true
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "full942Sha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "currentSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "unchanged": true
+    },
+    {
+      "path": "tests/opening-equipment.mjs",
+      "full942Sha256": "3957a5793b30f4d9bfa529a4dc6d06bfdd245df8990a82d880b5d683e79d41b7",
+      "currentSha256": "3957a5793b30f4d9bfa529a4dc6d06bfdd245df8990a82d880b5d683e79d41b7",
+      "unchanged": true
+    },
+    {
+      "path": "game/morale.js",
+      "full942Sha256": "6ba46e211b28d06b73c545c1a2af5714bcbecdec652e93240bc768926e49180d",
+      "currentSha256": "6ba46e211b28d06b73c545c1a2af5714bcbecdec652e93240bc768926e49180d",
+      "unchanged": true
+    },
+    {
+      "path": "game/tactical.js",
+      "full942Sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "currentSha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "unchanged": true
+    },
+    {
+      "path": "game/targeted-combat.js",
+      "full942Sha256": "6632979be206d502af1bea2c089cccc27fc7a5855f4371c962f6fbf96bcd68d6",
+      "currentSha256": "6632979be206d502af1bea2c089cccc27fc7a5855f4371c962f6fbf96bcd68d6",
+      "unchanged": true
+    }
+  ],
+  "initialReadinessFromRetainedRequest": [
+    {
+      "id": 116,
+      "hp": 75,
+      "maxHp": 75,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 2,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 5,
+      "medkits": 0,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 36,
+        "startedSecond": 184,
+        "expiresSecond": 184,
+        "expiresAt": 204,
+        "paid": 336
+      }
+    },
+    {
+      "id": 120,
+      "hp": 73,
+      "maxHp": 73,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 5,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 672
+      }
+    },
+    {
+      "id": 134,
+      "hp": 68,
+      "maxHp": 68,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 5,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 546
+      }
+    },
+    {
+      "id": 136,
+      "hp": 90,
+      "maxHp": 90,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 90,
+      "weapon": 1801,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 588
+      }
+    },
+    {
+      "id": 117,
+      "hp": 88,
+      "maxHp": 88,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 8,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 630
+      }
+    },
+    {
+      "id": 119,
+      "hp": 76,
+      "maxHp": 76,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 90,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 210
+      }
+    },
+    {
+      "id": 137,
+      "hp": 85,
+      "maxHp": 85,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1801,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 1344
+      }
+    },
+    {
+      "id": 113,
+      "hp": 80,
+      "maxHp": 80,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1804,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 1134
+      }
+    },
+    {
+      "id": 124,
+      "hp": 85,
+      "maxHp": 85,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1803,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 1092
+      }
+    },
+    {
+      "id": 141,
+      "hp": 84,
+      "maxHp": 84,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 90,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 504
+      }
+    },
+    {
+      "id": 111,
+      "hp": 77,
+      "maxHp": 77,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1805,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 1176
+      }
+    },
+    {
+      "id": 125,
+      "hp": 85,
+      "maxHp": 85,
+      "energy": 76,
+      "fatigue": 24,
+      "morale": 80,
+      "weapon": 1805,
+      "loaded": 1,
+      "ammo": 9,
+      "medkits": 2,
+      "asleep": false,
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 72,
+        "startedSecond": 573,
+        "expiresSecond": 573,
+        "expiresAt": 240,
+        "paid": 756
+      }
+    }
+  ],
+  "morale116": {
+    "earlierNativeSanLorenzoRecord": {
+      "id": "116",
+      "hp": 55,
+      "morale": 0,
+      "personalMorale": 80,
+      "cohesionBonus": 1,
+      "routed": true,
+      "departure": {
+        "exitId": "san_lorenzo:san_nicolas",
+        "edge": "S",
+        "destination": "san_nicolas",
+        "x": 39,
+        "y": 47,
+        "elapsedSeconds": 99,
+        "mountId": null
+      },
+      "weapon": 1802,
+      "loaded": 0,
+      "ammo": 5
+    },
+    "laterSanNicolasRecord": {
+      "id": "116",
+      "hp": 75,
+      "morale": 2,
+      "personalMorale": 2,
+      "cohesionBonus": 0,
+      "routed": false,
+      "departure": null,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 5
+    },
+    "campaign": {
+      "alive": true,
+      "captured": false,
+      "hp": 75,
+      "maxHp": 75,
+      "morale": 2,
+      "moraleRestHours": 0,
+      "medkits": 0,
+      "assignment": "active",
+      "location": "cordoba"
+    },
+    "orders": [
+      {
+        "type": "stance",
+        "unitId": "116",
+        "stance": "crouched"
+      },
+      {
+        "type": "stance",
+        "unitId": "116",
+        "stance": "prone"
+      },
+      {
+        "type": "move",
+        "unitId": "116",
+        "x": 62,
+        "y": 24,
+        "tacticalLevel": 0
+      },
+      {
+        "type": "move",
+        "unitId": "116",
+        "x": 61,
+        "y": 25,
+        "tacticalLevel": 0
+      },
+      {
+        "type": "move",
+        "unitId": "116",
+        "x": 60,
+        "y": 25,
+        "tacticalLevel": 0
+      }
+    ],
+    "nativeRuleEvidence": [
+      "game/morale.js:55-63 preserves tactical morale delta",
+      "game/morale.js:92-96 applies victory and actual casualty morale",
+      "game/morale.js:99-107 recovers at most one morale per six eligible safe rest hours"
+    ]
+  },
+  "findings": [
+    {
+      "classification": "demonstrated preparation gap; causal contribution unproved",
+      "location": "tests/northern-route.mjs:256-265",
+      "detail": "Living local survivor selection re-admits actor116 at native morale2. There is no morale readiness check here, unlike the earlier opening reserve rule at tests/opening-campaign.mjs:96-102. Do not infer that this one soldier caused the whole-force retreat."
+    }
+  ],
+  "conclusion": "No demonstrated production invariant, paid-contract, equipment admission or rejected-action fault explains the recorded retreat. The native outcome remains a real strict failure.",
+  "limits": [
+    "No simulation, model, controller, engine, save or native order was executed for this audit. No repository/index file was changed.",
+    "Input was retained arguments captured after execution/reporting; it is not an independently captured true initial battle. No initial reconstruction or replay was executed.",
+    "No public pre-shot forecasts or intermediate state were retained; zero-force/friendly-ray shot claims cannot be proved from terminal record alone.",
+    "Current northern-route source differs from the authoritative full942 snapshot. Current-source original route behavior is not validated by this static audit.",
+    "Low actor116 morale is earned native data. Eleven other soldiers entered at morale80 or90; sole-cause attribution and successful replacement strategy remain unproved."
+  ]
+}

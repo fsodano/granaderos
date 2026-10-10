@@ -4,6 +4,8 @@ import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
+import {coastalBatteryController} from './coastal-command-driver.mjs';
+import {prepareStockTucumanReadiness} from './stock-tucuman-readiness.mjs';
 import {mountainBatteryOrder,assignedMountainBatteryController} from './mountain-battery-driver.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -87,10 +89,11 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
  return saved({campaign:s}).campaign;
 }
 
-// Both real crew members lower their profile before advancing the gun.
-// Crouching remains eligible for ordinary paid artillery work.
+// Both real crew members lower their profile while the gun has finite charges.
+// A spent piece leaves posture decisions to the ordinary infantry policy.
 export function northernOfficerSaltaOrder(battle,unit,artilleryId){
- if(['9','11'].includes(unit.id)&&unit.stance==='standing'&&!unit.knockedDown&&!unit.entangled&&unit.ap>=stanceCost(unit,'crouched'))return {type:'stance',unitId:unit.id,stance:'crouched'};
+ const chargedGun=battle.artillery.some(gun=>gun.id===artilleryId&&gun.side===unit.side&&(gun.loaded||gun.ammo>0));
+ if(chargedGun&&['9','11'].includes(unit.id)&&unit.stance==='standing'&&!unit.knockedDown&&!unit.entangled&&unit.ap>=stanceCost(unit,'crouched'))return {type:'stance',unitId:unit.id,stance:'crouched'};
  return mountainBatteryOrder(battle,unit,{leaderId:'9',helperId:'11',artilleryId,keepCrewTogether:true,screenDistance:3});
 }
 
@@ -128,22 +131,41 @@ export function meetNorthernRearPort(start,operativeId,{report=()=>{}}={}){
  const rear=s.squads.find(squad=>squad.location==='buenos_aires'&&squad.members.includes(operativeId)&&!squad.journey);
  s=order(s,rear?{type:'selectSquad',id:rear.id}:{type:'createSquad',ids:[operativeId],name:'Administración de retaguardia',sector:'buenos_aires'});s=order(s,{type:'assignCare',operativeId,assignment:'active'});
  let p=visit(s);const unitId=String(operativeId),actions=[],actor=()=>p.battle.units.find(unit=>unit.id===unitId),observed=()=>playerKnownBattle(p.battle).npcs.find(npc=>npc.id===source.representative.npcId),act=action=>{p=tactical(p,action);actions.push(action);};
+ const scan=()=>{for(const [dx,dy]of [[5,0],[0,5],[-5,0],[0,-5]]){const target={x:Math.max(0,Math.min(p.battle.width-1,actor().x+dx)),y:Math.max(0,Math.min(p.battle.height-1,actor().y+dy)),tacticalLevel:actor().tacticalLevel??0};if(lookPreview(p.battle,actor(),target).valid)act({type:'look',unitId,...target});if(observed())break;}};
+ const reachable=()=>{const known=playerKnownBattle(p.battle),view={...p.battle,npcs:p.battle.npcs.filter(npc=>known.npcs.some(row=>row.id===npc.id))};return getReachable(view,actor()).filter(point=>(point.tacticalLevel??0)===0);};
  const goals=[[.5,.5],[.25,.25],[.75,.25],[.75,.75],[.25,.75],[.5,.5]].map(([x,y])=>({x:Math.floor(p.battle.width*x),y:Math.floor(p.battle.height*y),tacticalLevel:0}));
  for(const goal of goals){
   for(let step=0;step<24&&!observed();step++){
    assert.ok(actor().energy>=15,'the actual physician needs energy for the public port sweep');
-   for(const [dx,dy]of [[5,0],[0,5],[-5,0],[0,-5]]){const target={x:Math.max(0,Math.min(p.battle.width-1,actor().x+dx)),y:Math.max(0,Math.min(p.battle.height-1,actor().y+dy)),tacticalLevel:actor().tacticalLevel??0};if(lookPreview(p.battle,actor(),target).valid)act({type:'look',unitId,...target});if(observed())break;}
+   scan();
    if(observed())break;
-   const known=playerKnownBattle(p.battle),view={...p.battle,npcs:p.battle.npcs.filter(npc=>known.npcs.some(row=>row.id===npc.id))},distance=point=>Math.hypot(point.x-goal.x,point.y-goal.y);if(distance(actor())<=2)break;
-   const spot=getReachable(view,actor()).filter(point=>point.cost>0&&distance(point)<distance(actor())&&(point.tacticalLevel??0)===0).sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];if(!spot)break;
+   const distance=point=>Math.hypot(point.x-goal.x,point.y-goal.y);if(distance(actor())<=2)break;
+   const spot=reachable().filter(point=>point.cost>0&&distance(point)<distance(actor())).sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];if(!spot)break;
    const prior=spacePoint(actor());act({type:'move',unitId,...spacePoint(spot)});assert.ok(!sameCell(actor(),prior));
   }
   if(observed())break;
  }
+ // The centre and quarter points miss edge neighbourhoods at night. Inspect
+ // every public map edge with gaps no larger than the native six-cell sight
+ // range. Goals depend only on map dimensions, never an unseen NPC position.
+ const inset=Math.min(2,Math.floor((Math.min(p.battle.width,p.battle.height)-1)/2)),axis=(start,end)=>{const values=[];for(let n=start;n<=end;n+=6)values.push(n);if(values.at(-1)!==end)values.push(end);return values;},xs=axis(inset,p.battle.width-1-inset),ys=axis(inset,p.battle.height-1-inset);
+ const perimeter=[...xs.map(x=>({x,y:ys[0]})),...ys.slice(1).map(y=>({x:xs.at(-1),y})),...xs.slice(0,-1).reverse().map(x=>({x,y:ys.at(-1)})),...ys.slice(1,-1).reverse().map(y=>({x:xs[0],y}))];
+ for(const goal of perimeter){
+  if(observed())break;
+  for(let step=0;step<p.battle.width*p.battle.height&&!observed();step++){
+   assert.ok(actor().energy>=15,'the actual physician needs energy for the public perimeter sweep');scan();if(observed())break;
+   const distance=point=>Math.hypot(point.x-goal.x,point.y-goal.y),spot=reachable().sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];if(!spot?.path.length)break;
+   const prior=spacePoint(actor());act({type:'move',unitId,...spacePoint(spot.path[0])});assert.ok(!sameCell(actor(),prior));
+  }
+ }
  assert.ok(observed(),'a public map sweep must reveal the actual representative');const firstObserved={hour:p.campaign.hour,second:p.campaign.secondOfHour,npc:structuredClone(observed())};
+ let remembered=structuredClone(observed());
  for(let step=0;step<120;step++){
-  const npc=observed();assert.ok(npc,'do not route toward a hidden representative');if(Math.abs(actor().x-npc.x)+Math.abs(actor().y-npc.y)<=1)break;
-  const known=playerKnownBattle(p.battle),view={...p.battle,npcs:p.battle.npcs.filter(npc=>known.npcs.some(row=>row.id===npc.id))},spot=getReachable(view,actor()).filter(point=>Math.abs(point.x-npc.x)+Math.abs(point.y-npc.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot?.path.length,'the observed representative needs a public reachable approach');act({type:'move',unitId,...spacePoint(spot.path[0])});
+  scan();const npc=observed();if(npc){remembered=structuredClone(npc);if(Math.abs(actor().x-npc.x)+Math.abs(actor().y-npc.y)<=1)break;}
+  // A wall can occlude a previously visible window resident on the way to
+  // the open door. Follow only the last public point, then reacquire them.
+  const spot=reachable().filter(point=>Math.abs(point.x-remembered.x)+Math.abs(point.y-remembered.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot?.path.length,'the last observed representative needs a public reachable approach');act({type:'move',unitId,...spacePoint(spot.path[0])});
+  const seen=observed();if(seen)remembered=structuredClone(seen);
  }
  assert.ok(observed());assert.ok(Math.abs(actor().x-observed().x)+Math.abs(actor().y-observed().y)<=1);assert.equal(p.campaign.pendingEncounter,null);
  s=order(p.campaign,{type:'talkNPC',npcId:observed().id,unitId:operativeId,approach:'direct',sectorState:p.battle});assert.equal(s.lastConversation.outcome,'incomeActivated');s=leave(saved({campaign:s,battle:p.battle}));
@@ -236,8 +258,8 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  }
  const readyDefense=prepareHiredNorthernDefense(s);onCheckpoint?.('cordoba-defense-ready',readyDefense,notes);
  const defense=fightNorthernSector(readyDefense,'cordoba',{controller:cautiousCombatOrder});onCheckpoint?.('cordoba-defense',defense.campaign,notes);
- const readyTucuman=prepareFreshTucumanAssault(defense.campaign);onCheckpoint?.('tucuman-ready',readyTucuman,notes);
- const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:tucumanCombatOrder});
+ const readyTucuman=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true});onCheckpoint?.('tucuman-ready',readyTucuman,notes);
+ const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:coastalBatteryController(enterSector(readyTucuman.pendingBattle,readyTucuman.sectorStates.tucuman),{sharedArtillerySight:true})});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const readySalta=prepareNorthernOfficerRelief(s,{report}),gun=readySalta.pendingBattle.artillery.find(piece=>piece.side==='player');assert.ok(gun,'the northern crew must deploy the actually recovered and transported gun');onCheckpoint?.('salta-ready',readySalta,notes);
  const salta=fightNorthernSector(readySalta,'salta',{controller:(battle,unit)=>northernOfficerSaltaOrder(battle,unit,gun.id)});
@@ -327,12 +349,20 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
   if(event.event==='tucumanRecoveryDefense'){
    const record={...event.summary,stage:'recovery-defense',groupId:event.groupId,deaths:deadIds(event.campaign)};
    notes.push(record);onCheckpoint?.('tucuman-recovery-defense',event.campaign,notes);
+  }else if(event.event==='tucumanRecoveryInterrupted'&&event.rest){
+   notes.push({event:event.event,stage:'recovery-rest-interruption',groupId:event.groupId,sector:event.sector,hour:event.hour,second:event.second,rest:structuredClone(event.rest)});
   }else if(['tucumanRecoveryFortified','tucumanRestRecovery'].includes(event.event)){
    notes.push({...event,stage:event.event});
   }
   report(event);
  };
- const tucuman=fightNorthernSector(prepareFreshTucumanAssault(defense.campaign,{report:recoveryReport,recovery:routeKind==='stock'?'rest':'doctor'}),'tucuman',{controller:tucumanCombatOrder,report});
+ const ready=prepareFreshTucumanAssault(defense.campaign,{report:recoveryReport,recovery:routeKind==='stock'?'rest':'doctor',prepareDeparture:routeKind==='stock'?recovered=>{
+  const prepared=prepareStockTucumanReadiness(recovered,{report}),receipt=prepared.receipt;
+  notes.push({stage:'stock-tucuman-readiness',hour:prepared.campaign.hour,second:prepared.campaign.secondOfHour,paid:receipt.paid,rear:receipt.rear,hireCost:receipt.paidHireCost,renewalCost:receipt.renewalCost,gun:receipt.gun});
+  return prepared.campaign;
+ }:null});
+ const controller=routeKind==='stock'?coastalBatteryController(enterSector(ready.pendingBattle,ready.sectorStates.tucuman),{sharedArtillerySight:true}):tucumanCombatOrder;
+ const tucuman=fightNorthernSector(ready,'tucuman',{controller,report});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const reliefCampaign=prepareNorthernOfficerRelief(s,{report,routeKind}),saltaInitial=enterSector({...reliefCampaign.pendingBattle,hour:reliefCampaign.hour,secondOfHour:reliefCampaign.secondOfHour??0},reliefCampaign.sectorStates.salta);
  // Bind the real two-person battery to capable issued bodies. The controller

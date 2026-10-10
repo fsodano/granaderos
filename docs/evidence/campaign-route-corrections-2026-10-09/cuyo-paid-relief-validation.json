@@ -1,0 +1,144 @@
+{
+  "scope": "Earned post-Salta/Yatasto Cuyo preparation correction only. No gameplay balance or production change; no new Mendoza battle and no complete original recovery pass claimed.",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "codeStartCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "baseBuildIdentity": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+  "finalCandidateBuildIdentity": "pending cumulative source freeze",
+  "ownedFiles": {
+    "tests/fresh-cuyo-route.mjs": "49973c5b4ed2791ab3fea364e39f8ee6c71122c2bb33de7482ec86d7dd05f6b3",
+    "tests/fresh-cuyo-relief.test.mjs": "dbe723d78103c5fc11084da38cb42eb3a74119ce5b65ad69f09b4a28eb0aa186",
+    "tests/fixtures/cuyo-northern-real-losses.save.json.gz": "545389294cc086b9d7068c86b105bdbff5f5329d371ebe379acbfbf143910141",
+    "tests/fixtures/cuyo-northern-real-losses.provenance.json": "c98d035761d4ccb8604e83bb180011d00bd11879e6061e0df6ab05cbc8088c9b"
+  },
+  "input": {
+    "sha256": "7e781ef34c96f1a98bb0a7ed9e9b78dea0e7492c2962d9b3b3fa155967202b53",
+    "hour": 395,
+    "second": 99,
+    "location": "tucuman",
+    "phase": 3,
+    "livingServingIds": [
+      0,
+      8,
+      10,
+      11
+    ],
+    "priorDeaths": 37,
+    "sourcePostSaltaSha256": "8d23c38525ec358a19beaa7c348da1e7f325797232b8c13ed1fd29a710757983",
+    "provenance": "Original full recovery run earned Salta victory and Yatasto phase 3, then failed the introduced fixed four-versus-five field premise. Ordinary mission/travel continuation only retained the pre-assembly save. No state changes or new battle."
+  },
+  "correction": {
+    "regularHires": [
+      {
+        "id": 100,
+        "term": "week",
+        "price": 252,
+        "arrivalHours": 0
+      },
+      {
+        "id": 130,
+        "term": "week",
+        "price": 252,
+        "arrivalHours": 0
+      }
+    ],
+    "separateMarksman": {
+      "id": 142,
+      "term": "day",
+      "price": 7740
+    },
+    "originalFieldCountAssertion": 5,
+    "field": [
+      0,
+      8,
+      11,
+      10,
+      100,
+      142
+    ],
+    "rearReserve": [
+      130
+    ],
+    "output": {
+      "hour": 406,
+      "second": 99,
+      "location": "cordoba",
+      "treasury": 112718
+    },
+    "actualTotalDebit": 8264,
+    "postaFees": 20,
+    "priorDeathsPreserved": 37,
+    "livingFullHp": 7,
+    "finiteCartridgesTaken": {
+      "musket_75": 30,
+      "rifle_62": 4
+    },
+    "finiteWeaponsTaken": [
+      {
+        "source": "drop:12",
+        "recipient": 0,
+        "weapon": 1800
+      },
+      {
+        "source": "drop:13",
+        "recipient": 8,
+        "weapon": 1800
+      },
+      {
+        "source": "drop:14",
+        "recipient": 100,
+        "weapon": 1801
+      }
+    ],
+    "sourceRemainders": "Every distinct cartridge source retains the exact initial count minus the witnessed take. Full save validates physical custody.",
+    "reportCorrection": "The existing defender supplyRouteAmmunition now forwards report, preserving its two real rifle rounds in the ordinary action trace.",
+    "savedExactOrderReplay": true,
+    "mendozaPreparation": {
+      "nativeBattleRun": false,
+      "requestSector": "mendoza",
+      "actualParticipants": [
+        0,
+        8,
+        10,
+        11,
+        100,
+        130,
+        142
+      ],
+      "allPriorDeathsPreserved": true,
+      "pairedSaveAccepted": true
+    }
+  },
+  "checks": [
+    {
+      "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/fresh-cuyo-relief.test.mjs",
+      "log": "/tmp/granaderos-cuyo-paid-relief-focused.log",
+      "sha256": "aa9ebae34390407e9371528d757df8c5abd78ea13d5a3b79b2d9d45d3e8bcda8",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "caseDurationMs": 10505.969375,
+      "fileDurationMs": 10721.959042
+    },
+    {
+      "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test --test-reporter=spec tests/route-ammunition.test.mjs tests/route-battery.test.mjs tests/hiring-arrival-seconds.test.mjs",
+      "log": "/tmp/granaderos-cuyo-paid-relief-controls.log",
+      "sha256": "d9b8bfaf389d9a4ddf4e319bd03bacbf5f4e9d0b5ab5271cc3d49925a8e14afa",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0,
+      "durationMs": 15603.12225
+    },
+    {
+      "command": "git diff --check",
+      "result": "pass"
+    }
+  ],
+  "limitations": [
+    "Complete original fresh-campaign-recovery.test.mjs still needs one rerun after all cumulative helper changes freeze.",
+    "This focused regression proves preparation, actual paid arrivals, finite source debits, exact saved ordinary action replay and next Mendoza assault construction only.",
+    "Earlier draft test failures were a droppedWeapons field-name error and an omitted existing ammunition report transaction; the final recorded commands above are the corrected targeted evidence."
+  ],
+  "status": "All four owned files are frozen and uncommitted. No staging or commits performed."
+}

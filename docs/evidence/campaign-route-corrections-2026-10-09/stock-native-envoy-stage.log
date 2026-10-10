@@ -1,0 +1,4 @@
+ENVOY_STAGE {"event":"northernReliefCourier","id":117,"leadership":50,"requiredLeadership":50,"hour":320,"second":1724,"treasury":83083}
+ENVOY_STAGE {"event":"northernReliefOfficerEnvoy","id":9,"leadership":86,"requiredLeadership":60,"hour":345,"second":1816,"treasury":90044}
+ENVOY_STAGE {"event":"northernReliefFormation","hour":345,"second":1980,"treasury":90044}
+ENVOY_PREPARATION_COMPLETE {"clock":[350,2191],"actions":109}

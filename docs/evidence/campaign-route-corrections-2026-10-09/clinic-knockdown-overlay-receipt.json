@@ -1,0 +1,264 @@
+{
+  "recordedAt": "2026-10-10T02:30:40.110227+00:00",
+  "scope": "Approved bounded external-only overlay validation of the minimal knocked-down roof recovery exception. No repository write, no long campaign route, and no new clinic battle-controller trial. Declared initial knockdown/AP arena is not a campaign victory receipt.",
+  "root": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "overlay": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/overlay",
+  "approvedSourcePatchSha256": "1cd6b73bd13118b331d60a9c5d77809ff8bead708c72620c922ebfc76964093a",
+  "installableTest": {
+    "path": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/northern-clinic-knockdown-recovery.test.mjs",
+    "sha256": "caf117827a953e6221170f7175293ee6cff872a2e1b0e3f2a72b381e021723b9",
+    "bytes": 6414,
+    "imports": "ordinary relative imports; no environment variable or dynamic loader"
+  },
+  "commandsAndResults": {
+    "baseline-regression": {
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "--test",
+        "tests/northern-clinic-knockdown-recovery.test.mjs"
+      ],
+      "cwd": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/overlay",
+      "started": "2026-10-10T02:28:54.896601+00:00",
+      "finished": "2026-10-10T02:28:55.203372+00:00",
+      "elapsedSeconds": 0.306624667,
+      "exitCode": 1,
+      "outputPath": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/baseline-regression.log",
+      "outputSha256": "3c66ca85647871634189b5782c7381c63a382f3809c9ef8a6e7252755d07c3af",
+      "scope": "Unmodified frozen source copied to external overlay; new declared regression only."
+    },
+    "patched-regression": {
+      "patchCheckCommand": [
+        "git",
+        "apply",
+        "--check",
+        "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/northern-clinic-knockdown-recovery.patch"
+      ],
+      "patchApplyCommand": [
+        "git",
+        "apply",
+        "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/northern-clinic-knockdown-recovery.patch"
+      ],
+      "patchSHA256": "1cd6b73bd13118b331d60a9c5d77809ff8bead708c72620c922ebfc76964093a",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "--test",
+        "tests/northern-clinic-knockdown-recovery.test.mjs"
+      ],
+      "cwd": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/overlay",
+      "started": "2026-10-10T02:29:06.139344+00:00",
+      "finished": "2026-10-10T02:29:06.441311+00:00",
+      "elapsedSeconds": 0.30174337500000004,
+      "exitCode": 0,
+      "outputPath": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/patched-regression.log",
+      "outputSha256": "ad0dd7486ce00e323f3de2f647097c504ad16c7d4894b6f380e39dad921de2b5",
+      "scope": "Only approved native recovery exception applied in external overlay; declared regression only."
+    },
+    "focused-clinic-roof-controls": {
+      "command": [
+        "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+        "--test",
+        "--test-concurrency=1",
+        "tests/rescue-clinic-readiness.test.mjs",
+        "tests/route-roof-defenders.test.mjs"
+      ],
+      "cwd": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/overlay",
+      "started": "2026-10-10T02:29:16.856093+00:00",
+      "finished": "2026-10-10T02:29:46.822093+00:00",
+      "elapsedSeconds": 29.965138375000002,
+      "exitCode": 0,
+      "outputPath": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/focused-clinic-roof-controls.log",
+      "outputSha256": "545c07e80a0399613f874ecca8a707bb068eee3ffcb855ba6d719134078f06fe",
+      "scope": "Existing focused clinic preparation/rest/retained-native-loss replay and roof staging controls in approved external overlay. No long campaign route or fresh battle-controller trial."
+    }
+  },
+  "counts": {
+    "baseline": {
+      "tests": 3,
+      "passed": 2,
+      "failed": 1,
+      "expectedFailure": "roof holding must admit this required native recovery: actual null, expected standing stance"
+    },
+    "patchedRegression": {
+      "tests": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "existingFocusedControls": {
+      "tests": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "patchedTotal": {
+      "tests": 9,
+      "passed": 9,
+      "failed": 0
+    }
+  },
+  "actualNativeObservations": [
+    {
+      "case": "paid-roof-knockdown-recovery",
+      "scope": "declared initial knockdown/AP arena; validated JSON round-trip only",
+      "apBefore": 12,
+      "apAfter": 0,
+      "paidAP": 12,
+      "elapsedBefore": 0,
+      "elapsedAfter": 6,
+      "cellBefore": {
+        "x": 2,
+        "y": 2,
+        "tacticalLevel": 1
+      },
+      "cellAfter": {
+        "x": 2,
+        "y": 2,
+        "tacticalLevel": 1
+      },
+      "finiteBefore": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "finiteAfter": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "knockedDownBefore": true,
+      "knockedDownAfter": false,
+      "inputUnchanged": true,
+      "jsonRoundTripExact": true
+    },
+    {
+      "case": "one-AP-short-native-refusal",
+      "apBefore": 11,
+      "apAfter": 11,
+      "requiredAP": 12,
+      "elapsedBefore": 0,
+      "elapsedAfter": 0,
+      "finiteBefore": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "finiteAfter": {
+        "hp": 75,
+        "maxHp": 100,
+        "bandaged": 25,
+        "bleeding": 0,
+        "energy": 80,
+        "weapon": 1800,
+        "loaded": 1,
+        "ammo": 4,
+        "medkits": 0,
+        "condition": 100
+      },
+      "knockedDownAfter": true,
+      "lastError": "Cambiar de postura requiere 3 PA.",
+      "atomicRefusal": true
+    },
+    {
+      "case": "ordinary-roof-hold-unchanged",
+      "knockedDown": false,
+      "turn": 1,
+      "nativeAction": {
+        "type": "stance",
+        "unitId": "guard",
+        "stance": "standing"
+      },
+      "clinicAction": null,
+      "inputUnchanged": true
+    }
+  ],
+  "rootInputProof": {
+    "before": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/overlay-source-inputs-before.json",
+    "after": "/tmp/granaderos-clinic-knockdown-recovery-review-20261010/overlay-source-inputs-after.json",
+    "inputFiles": 303,
+    "changedRootInputs": [],
+    "changedOverlayCopiedInputs": [
+      "tests/northern-route.mjs"
+    ],
+    "newTestAbsentFromRoot": true
+  },
+  "patchSemantics": "Only an actor marked knockedDown whose existing northern action is a standing stance bypasses the roof hold veto. Existing policy choices, campaign victory/full-health/casualty requirements, and prior retained tapes remain unchanged.",
+  "roundTripScope": "New regression uses JSON stringify/parse plus validateBattleSnapshot. This is a validated JSON round-trip, not official campaign save proof. Existing focused clinic controls independently retain their original official midpoint saves and exact native defeat receipts.",
+  "limits": [
+    "This proves paid native recovery and unchanged refusal/hold controls in the declared arena. It does not prove a clinic defense victory or identify the current full-run cause.",
+    "Broader same-roof movement and conditional ground crew staging remain follow-ups tied to actual terminal diagnostics."
+  ],
+  "conclusion": "Minimal source patch is validated externally. Recovery spent 12 AP and 6 seconds, cleared knockdown, and preserved HP/gear/roof cell. One AP short spent no AP/time/gear/health. Nine patched regression/focused tests passed; all 303 copied root inputs remained byte-identical.",
+  "artifacts": {
+    "baseline-regression-result.json": {
+      "sha256": "827f4f8413c2a29a3e0dd5270301b370eb8250c10dd501351b7a9e676ae8a0ff",
+      "bytes": 655
+    },
+    "baseline-regression.log": {
+      "sha256": "3c66ca85647871634189b5782c7381c63a382f3809c9ef8a6e7252755d07c3af",
+      "bytes": 2112
+    },
+    "focused-clinic-roof-controls-result.json": {
+      "sha256": "318bf94aef4b31147d4e8b53a09dc7f658b58f0da7a9d5c2e6dd2d06b186cb2e",
+      "bytes": 830
+    },
+    "focused-clinic-roof-controls.log": {
+      "sha256": "545c07e80a0399613f874ecca8a707bb068eee3ffcb855ba6d719134078f06fe",
+      "bytes": 822
+    },
+    "install-source-and-test.patch": {
+      "sha256": "f4d166fb46afc9ffce1441175c3a983a5970e15e75d0c35da0a132247633f46a",
+      "bytes": 7393
+    },
+    "northern-clinic-knockdown-recovery.patch": {
+      "sha256": "1cd6b73bd13118b331d60a9c5d77809ff8bead708c72620c922ebfc76964093a",
+      "bytes": 805
+    },
+    "northern-clinic-knockdown-recovery.test.mjs": {
+      "sha256": "caf117827a953e6221170f7175293ee6cff872a2e1b0e3f2a72b381e021723b9",
+      "bytes": 6414
+    },
+    "original-portable-review.test.mjs": {
+      "sha256": "d30244827278181669f01a3bd45d991ad3e7a6777fa632afb3605b69addc415c",
+      "bytes": 5705
+    },
+    "original-static-review.json": {
+      "sha256": "d107503b9aed645a01aac693153925b973038f8549b2987520bdd3c0ca53858b",
+      "bytes": 2731
+    },
+    "overlay-source-inputs-after.json": {
+      "sha256": "6f1e2893350f7eb84bff49f8b0432efbfc134a340d440eea9053a836de0e3aac",
+      "bytes": 44363
+    },
+    "overlay-source-inputs-before.json": {
+      "sha256": "0c6b86145bb9bb9f793dd67da4a97403e4f8882a2093d0837c0e76cd3732e90a",
+      "bytes": 236527
+    },
+    "patched-regression-result.json": {
+      "sha256": "aa18368ae64f6d41b8761e8b7d09c768d95cf0213d70bc9b23b69bba2d09b9b7",
+      "bytes": 1092
+    },
+    "patched-regression.log": {
+      "sha256": "ad0dd7486ce00e323f3de2f647097c504ad16c7d4894b6f380e39dad921de2b5",
+      "bytes": 1739
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "purpose": "Unmodified official earned Cuyo input after the complete native recovery route won Salta and ordinary Yatasto travel/mission completed. No owner, health, inventory, contract, position, seed or combat outcome was changed.",
+  "sha256": "7e781ef34c96f1a98bb0a7ed9e9b78dea0e7492c2962d9b3b3fa155967202b53",
+  "nativePrefixCommit": "7448e2da612167ba183d85c82a9bb53d9d20321f",
+  "nativePrefixBuildIdentity": "267963e2ada762db3f7feb5cf4468c301dd377a0842ab2bdcd3ab5a2939e5dec",
+  "baseBuildIdentity": "9d03e36370d63d3da4c59347683fdd3d1cacfdbb6a276cd1bf1847c0d665061c",
+  "nativePrefixCommand": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --import /tmp/granaderos-recovery-current-full-audit/preload.mjs --test --test-reporter=spec tests/fresh-campaign-recovery.test.mjs",
+  "nativePrefixResult": "The original complete recovery test reached native Salta victory, Yatasto phase 3 and then stopped at the unchanged five-soldier Cuyo assertion. This is segment evidence, not a complete campaign pass.",
+  "nativeSaltaCheckpointSha256": "8d23c38525ec358a19beaa7c348da1e7f325797232b8c13ed1fd29a710757983",
+  "continuation": "Only the existing ordinary Yatasto travel, mission and squad orders were repeated from the accepted post-Salta checkpoint to retain this pre-assembly official save. No new battle was run.",
+  "clock": {
+    "hour": 395,
+    "secondOfHour": 99
+  },
+  "sector": "tucuman",
+  "phase": 3,
+  "squad": [
+    11,
+    0,
+    8
+  ],
+  "livingServingIds": [
+    0,
+    8,
+    10,
+    11
+  ],
+  "priorDeadIds": [
+    1,
+    4,
+    9,
+    101,
+    103,
+    104,
+    107,
+    108,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    129,
+    131,
+    133,
+    134,
+    136,
+    137,
+    139,
+    140,
+    141,
+    144,
+    146,
+    1000
+  ],
+  "originalRefusal": {
+    "actual": 4,
+    "expected": 5,
+    "message": "keep five actual soldiers and a slot for the paid marksman"
+  }
+}

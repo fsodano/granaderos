@@ -1,0 +1,32 @@
+file:///private/tmp/granaderos-stock-ending-cumulative-20261009/preload.mjs:16
+ const wrapper=(name,index,callbackOptions=false)=>{const anchor='export function '+name+'(';if(!source.includes(anchor))throw Error('Missing observer anchor '+name);source=source.replace(anchor,'function __stockAuditOriginal_'+name+'(');source+='\nexport function '+name+'(...args){globalThis.__stockAuditCheckpoint?.('+JSON.stringify(name+'-input')+',args[0]?.campaign??args[0]);';if(callbackOptions)source+='const original=args['+index+']??{};args['+index+']={...original,onCheckpoint:(stage,c,...rest)=>{globalThis.__stockAuditCheckpoint?.('+JSON.stringify(name+'-checkpoint-')+'+stage,c,rest);return original.onCheckpoint?.(stage,c,...rest);},report:event=>{globalThis.__stockAuditCheckpoint?.('+JSON.stringify(name+'-report-')+'+(event.event??event.stage??"event"),event.campaign,event);return original.report?.(event);}};';source+='try{const result=__stockAuditOriginal_'+name+'(...args);globalThis.__stockAuditCheckpoint?.('+JSON.stringify(name+'-result')+',result?.campaign??result,result?.receipt??result?.care);return result;}catch(error){globalThis.__stockAuditCheckpoint?.('+JSON.stringify(name+'-throw')+',null,{message:error.message});throw error;}}\n';};
+                                                                                                                               ^
+
+Error: Missing observer anchor freshCuyoRoute
+    at wrapper (file:///private/tmp/granaderos-stock-ending-cumulative-20261009/preload.mjs:16:128)
+    at load (file:///private/tmp/granaderos-stock-ending-cumulative-20261009/preload.mjs:18:45)
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+    at loadWithHooks (node:internal/modules/customization_hooks:374:18)
+    at #loadSync (node:internal/modules/esm/loader:793:14)
+    at ModuleLoader.load (node:internal/modules/esm/loader:762:26)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:504:31)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:555:36)
+    at afterResolve (node:internal/modules/esm/loader:603:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:609:12)
+
+Node.js v25.9.0
+✖ tests/fresh-ending-route.test.mjs (226.810334ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 232.581042
+
+✖ failing tests:
+
+test at tests/fresh-ending-route.test.mjs:1:1
+✖ tests/fresh-ending-route.test.mjs (226.810334ms)
+  'test failed'

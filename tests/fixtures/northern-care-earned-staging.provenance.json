@@ -1,0 +1,50 @@
+{
+  "format": 1,
+  "kind": "earned unchanged native recovery state",
+  "fixture": "northern-care-earned-staging.json.gz",
+  "gzip": {
+    "bytes": 121872,
+    "sha256": "d97ca4c8d9b079001da3c6946523f7db7dc7d4e652899686869791c38573eb07"
+  },
+  "payload": {
+    "bytes": 3445259,
+    "sha256": "678b2365de5bd65bdf582339e6f4b71186c26cfb6a35ffbf29b24061f1156451"
+  },
+  "source": {
+    "capture": "/tmp/granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-3-northern-assigned-roles-MdB4l4/native-state.json",
+    "captureSha256": "678b2365de5bd65bdf582339e6f4b71186c26cfb6a35ffbf29b24061f1156451",
+    "captureReceipt": "/tmp/granaderos-northern-medical-observation-20261010T043614480954Z/observer-captures/84450-3-northern-assigned-roles-MdB4l4/receipt.json",
+    "captureReceiptSha256": "181e11a94454d3e1ea58b66280cca5bb265ee7a3f993fad3531f1e5f8359cb6c",
+    "observationTerminalReceipt": "/tmp/granaderos-northern-medical-observation-20261010T043614480954Z/terminal-receipt.json",
+    "observationTerminalReceiptSha256": "0e41d97f2a8282d0ed1d904cd32b51b449fabafe72f71e1846d88361d54a83cc",
+    "originalSource": "tests/northern-route.mjs",
+    "originalSourceSha256": "ce34ec82c0caf30aa905ef3d06363d6de80f766c773727266c8a91c82eefd3ec",
+    "phase": "northern-assigned-roles",
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "nodeVersion": "v25.9.0",
+    "ordersAddedByObserver": 0,
+    "sourceTransform": "passive four-anchor observer only; original native orders unchanged"
+  },
+  "nativeInput": {
+    "doctors": [
+      112,
+      122
+    ],
+    "patients": [
+      113,
+      141,
+      112
+    ],
+    "hour": 80,
+    "secondOfHour": 1278,
+    "doctorDressings": {
+      "112": 21,
+      "122": 9
+    },
+    "doctorHp": {
+      "112": 15,
+      "122": 65
+    }
+  },
+  "scope": "Exact raw cloned native campaign and context after original finite gathering and role assignments. No fixture gameplay fields changed. Declared pure variants are local test clones."
+}

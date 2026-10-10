@@ -1,0 +1,238 @@
+{
+  "audit": "Read-only source and retained-output review of full947 Mendoza failures",
+  "createdAtUtc": "2026-10-10T06:19:36.090838+00:00",
+  "repository": "/Users/fsodano/.codex/worktrees/blast-structures/granaderos",
+  "authoritativeFullRun": "/tmp/granaderos-campaign-post-care-full-2026-10-10T053856639Z",
+  "operations": {
+    "repositoryWrites": 0,
+    "indexWrites": 0,
+    "testsExecuted": 0,
+    "nativeCalls": 0,
+    "newOrders": 0,
+    "strategyOrSeedChanges": 0
+  },
+  "evidence": {
+    "runLogSha256": "7031f95c9f739d6d094fcea0b48c9cbd6a160ce707ee6ffaebf411fa34ca918e",
+    "beforeSourceSnapshotSha256": "2d26104cd657966f4cf60b3a29d6d671e10366f38995c14d73b73b07344e8147",
+    "afterSourceSnapshotSha256": "2d26104cd657966f4cf60b3a29d6d671e10366f38995c14d73b73b07344e8147",
+    "retainedNativeDirectories": [
+      "8571-1-defense-enemy-group-1-150-B92vop",
+      "9491-1-cordoba-84-18026106-SxjKOH",
+      "95799-1-los_patos-654-4162937008-hOCowN"
+    ],
+    "mendozaNativeArtifactRetained": false
+  },
+  "failures": [
+    {
+      "test": "tests/fresh-cuyo-route.test.mjs",
+      "logLines": [
+        12667,
+        12686
+      ],
+      "durationMs": 490835.270167,
+      "nativeOutcome": "victory",
+      "failedAssertion": "returned.defeated equals false",
+      "actual": true,
+      "expected": false,
+      "proved": "Native expected victory, deterministic replay, clock sync, official paired save and canonical battleResult succeeded before the playable assertion.",
+      "notProved": "Which essential actor or other native campaign failure rule set defeated; when it occurred; actual NPC wounds, available finite care and any preventable death."
+    },
+    {
+      "test": "tests/fresh-historical-loss.test.mjs",
+      "logLines": [
+        12689,
+        12706
+      ],
+      "durationMs": 496011.103375,
+      "failedAssertion": "s.operativeState[57].hp > 0",
+      "proved": "Commander57 is dead at the final endpoint after the unchanged native Mendoza victory/replay and intentional native engineer death sequence.",
+      "notProved": "Whether57 died during the initial assault, later explore/approach/paid injury sequence, or earlier prefix. The failure precedes the final engineer-specific log assertion."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "kind": "Demonstrated fixture isolation gap",
+      "locations": [
+        "tests/historical-loss-fixture.mjs:15",
+        "tests/historical-loss-fixture.mjs:17",
+        "tests/historical-loss-fixture.mjs:21",
+        "tests/historical-loss-fixture.mjs:24",
+        "tests/fresh-historical-loss.test.mjs:9"
+      ],
+      "evidence": "The historical fixture checks only engineer2 alive before/after victory, then executes explore and the actual engineer-kill sequence without recording/checking commander57 or a playable campaign at that boundary. It therefore cannot isolate an engineer-only historical loss if commander57 already died. All current strict outcome/survival assertions must remain.",
+      "narrowNextEvidence": "Passively retain the genuine first battle result and pre-engineer sequence health/campaign if57 is already dead; do not replace it, fail-fast change the original sequence or claim a cause before capture."
+    },
+    {
+      "id": "F2",
+      "kind": "Demonstrated helper care representation gap; causal role unproved",
+      "locations": [
+        "game/encounters.js:17",
+        "game/encounters.js:41",
+        "game/campaign.js:676",
+        "game/world.js:70",
+        "game/tactical.js:327",
+        "tests/fresh-cuyo-fixture.mjs:45",
+        "tests/opening-driver.mjs:21",
+        "tests/coastal-command-driver.mjs:74",
+        "tests/created-cuyo-route.mjs:244",
+        "tests/created-cuyo-route.mjs:247"
+      ],
+      "evidence": "The normal unrecruited Mendoza commander is NPC san-martin with operativeId57 in battle.npcs. Mendoza is not the San Lorenzo missionAlly path. Shared battle medic selection searches only battle.units; coastal protection u.id===57 is a unit branch; post-return survivor care starts only from living recruited IDs. None includes unrecruited commander57 as an explicit required NPC care/protection patient.",
+      "limit": "This proves a missing helper branch/guarantee, not that57 was injured, visible, reachable or treatable at any actual decisive time. No native state exists for these two Mendoza cases."
+    },
+    {
+      "id": "F3",
+      "kind": "Native finite NPC care exists; timing gap in route invocation",
+      "locations": [
+        "game/auto-bandage.js:7",
+        "game/auto-bandage.js:14",
+        "game/auto-bandage.js:19",
+        "game/auto-bandage.js:39",
+        "game/auto-bandage.js:44",
+        "game/auto-bandage.js:84",
+        "tests/northern-route.mjs:329",
+        "tests/northern-route.mjs:331",
+        "tests/northern-route.mjs:337",
+        "tests/fresh-cuyo-fixture.mjs:73"
+      ],
+      "evidence": "Production autoBandage includes only visible living NPCs, requires actual safe exploration/cleared victory, actual conscious medical units, finite carried dressings and legal reachable/visible ordinary useItem orders with targetKind npc. In the Cuyo route it is invoked on a later visit after the first playable-campaign requirement; the initial victory return has no autoBandage branch.",
+      "limit": "Do not add unconditional healing, revive commander57 or bypass a true terminal campaign. Raw pre-return capture is required before a lawful care proposal."
+    },
+    {
+      "id": "F4",
+      "kind": "No demonstrated production invariant fault",
+      "locations": [
+        "game/campaign-civilian-harm.js:95",
+        "game/campaign-civilian-harm.js:110",
+        "game/campaign-civilian-harm.js:222",
+        "game/historical-loss.js:8",
+        "game/historical-loss.js:17",
+        "game/historical-loss.js:19"
+      ],
+      "evidence": "Production binds authored NPC damage/paid restoration to its service record, preserves actual zero HP and does not revive the dead. Original commander57 death is an explicit historical campaign failure condition. Native tactical victory can lawfully coexist with strategic defeat. The retained failures alone do not contradict these rules."
+    }
+  ],
+  "subsequentInstrumentationReview": {
+    "files": [
+      "tests/northern-route.mjs",
+      "tests/route-failure-evidence.mjs"
+    ],
+    "divergesFromFull947": true,
+    "strictCheckOldLine": 335,
+    "strictCheckCurrentLine": 337,
+    "result": "No blocking static issue found. Existing native victory/strict playable assertion and controller/orders remain unchanged. New branch serializes only the already returned defeated campaign.",
+    "stateLabels": "returned-campaign.json is the already settled supplied campaign. terminal.save.json is the cloned pre-settlement campaign plus native result after sync, not the returned settled campaign. settlementExecuted:false describes recorder work only."
+  },
+  "sourceHashes": [
+    {
+      "path": "tests/northern-route.mjs",
+      "full947Sha256": "7c35845c6ef57bd58d4f6586449651dedf3429bd5c8c891b5fddad396d70f1b0",
+      "currentSha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8",
+      "sameAsFull947": false
+    },
+    {
+      "path": "tests/route-failure-evidence.mjs",
+      "full947Sha256": "6a2fc12dcba8efb8e6581a4f8ef08c885a59682fcf74178d607b99b0a084bf1f",
+      "currentSha256": "6af33f0e0fa35f73220a25c9a2030e7a9281b8a1621c6e2df3176f457da1db10",
+      "sameAsFull947": false
+    },
+    {
+      "path": "tests/historical-loss-fixture.mjs",
+      "full947Sha256": "5f9d5ae49fa513a6166d7114fadcfac2f91c1c16a37557ef92ebd7f05fea4f9c",
+      "currentSha256": "5f9d5ae49fa513a6166d7114fadcfac2f91c1c16a37557ef92ebd7f05fea4f9c",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/fresh-cuyo-fixture.mjs",
+      "full947Sha256": "4444c83013ba3b8aba605a0f0f8959ad799977ef851f35f7b0d677f4cf3857fa",
+      "currentSha256": "4444c83013ba3b8aba605a0f0f8959ad799977ef851f35f7b0d677f4cf3857fa",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/fresh-historical-loss.test.mjs",
+      "full947Sha256": "69d61cf5e8432277702a8ef251bb1ca454e554736aadd1a95bd5ffe01625ff53",
+      "currentSha256": "69d61cf5e8432277702a8ef251bb1ca454e554736aadd1a95bd5ffe01625ff53",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "full947Sha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "currentSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/coastal-command-driver.mjs",
+      "full947Sha256": "72b8ffff87f9b4072f2988f737c53d0157436cfec4f9bdc75d4389ca11c3ed74",
+      "currentSha256": "72b8ffff87f9b4072f2988f737c53d0157436cfec4f9bdc75d4389ca11c3ed74",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/created-cuyo-route.mjs",
+      "full947Sha256": "41457efce36243a88b372e43be30b34bc2309395cdd48e16d84f390ea0c0e8f0",
+      "currentSha256": "41457efce36243a88b372e43be30b34bc2309395cdd48e16d84f390ea0c0e8f0",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/mountain-battery-driver.mjs",
+      "full947Sha256": "ca3b9cf70cc7df4b43aadfaabb08867ceb3faf950581dec5204bc86a40c2bb4c",
+      "currentSha256": "ca3b9cf70cc7df4b43aadfaabb08867ceb3faf950581dec5204bc86a40c2bb4c",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/staged-battery-driver.mjs",
+      "full947Sha256": "98ae38a3f11423ea6914a211560639fa7573a15247d6cddb48b1d9c421d97cfd",
+      "currentSha256": "98ae38a3f11423ea6914a211560639fa7573a15247d6cddb48b1d9c421d97cfd",
+      "sameAsFull947": true
+    },
+    {
+      "path": "tests/team-artillery-driver.mjs",
+      "full947Sha256": "b5802e8c42c961fc88a77885ee2eec9b4fa2f47ebe1d1c151ec87a98361c073d",
+      "currentSha256": "b5802e8c42c961fc88a77885ee2eec9b4fa2f47ebe1d1c151ec87a98361c073d",
+      "sameAsFull947": true
+    },
+    {
+      "path": "game/auto-bandage.js",
+      "full947Sha256": "eeee581ffb2ee1eebc264feacbf8a33e5ae568fd639225ba06f520acc6b7f987",
+      "currentSha256": "eeee581ffb2ee1eebc264feacbf8a33e5ae568fd639225ba06f520acc6b7f987",
+      "sameAsFull947": true
+    },
+    {
+      "path": "game/historical-loss.js",
+      "full947Sha256": "02a72357fea1f3fe61e2d61193779040814c89324d603996bff7a2cba8f4b9f4",
+      "currentSha256": "02a72357fea1f3fe61e2d61193779040814c89324d603996bff7a2cba8f4b9f4",
+      "sameAsFull947": true
+    },
+    {
+      "path": "game/campaign-civilian-harm.js",
+      "full947Sha256": "2c25ad8094fa6cc8c655b4e85b028e715a9836a65257edb2ef824961347ed211",
+      "currentSha256": "2c25ad8094fa6cc8c655b4e85b028e715a9836a65257edb2ef824961347ed211",
+      "sameAsFull947": true
+    },
+    {
+      "path": "game/encounters.js",
+      "full947Sha256": "0dcfe47ecb126bc4b48163de5311ace06e8b402a8e16f41f92a25fab24087f23",
+      "currentSha256": "0dcfe47ecb126bc4b48163de5311ace06e8b402a8e16f41f92a25fab24087f23",
+      "sameAsFull947": true
+    },
+    {
+      "path": "game/world.js",
+      "full947Sha256": "a77579fb707e43ddfd0d773c9c49c7df0fb0c022c0475209ec3b7a9367912ee6",
+      "currentSha256": "a77579fb707e43ddfd0d773c9c49c7df0fb0c022c0475209ec3b7a9367912ee6",
+      "sameAsFull947": true
+    },
+    {
+      "path": "game/tactical.js",
+      "full947Sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "currentSha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "sameAsFull947": true
+    },
+    {
+      "path": "game/campaign.js",
+      "full947Sha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+      "currentSha256": "a4de1bad4712a076f58e4467c6e8d595a84d8486577aaefffe4994d546c869c4",
+      "sameAsFull947": true
+    }
+  ],
+  "conclusion": "Both strict acceptance failures remain unresolved. Source demonstrates an NPC-care representation gap and an engineer-loss fixture isolation gap; neither proves the cause or a production defect for these absent native Mendoza artifacts. No victory, successful care or full acceptance claim is made."
+}

@@ -1,0 +1,47 @@
+{
+  "appliedAt": "2026-10-10T06:03:00.388698+00:00",
+  "files": [
+    {
+      "path": "tests/local-san-lorenzo-driver.mjs",
+      "bytes": 7038,
+      "sha256": "c65478b3c058c8b795cb0bb9061d4b94fac3da0cc3a3033f12fe7e7b71d2eba4"
+    },
+    {
+      "path": "tests/local-san-lorenzo-safety.test.mjs",
+      "bytes": 8214,
+      "sha256": "02395af5dba4729fdbc942210255f6993fe3a3b2158d54cc2da5247d31639b55"
+    }
+  ],
+  "patchSha256": "cd695ce758bc584c88f045a05b35055517994dd868a77ffd1eacdec29074e786",
+  "staticPeerReview": "/tmp/granaderos-san-lorenzo-shot-safety-static-review-20261010-bg_k2c35/receipt.json",
+  "priorFull947SourceHoldReleased": true,
+  "priorFull947Counts": {
+    "tests": 7024,
+    "passed": 7012,
+    "failed": 7,
+    "skipped": 5,
+    "cancelled": 0
+  },
+  "nativeOrdersOrStrategiesRun": 0,
+  "testsRunAfterApplication": true,
+  "scope": "Test helper safety guards and eight declared geometry selection controls; no production rule, state, seed, cost, ranking, outcome or assertion edit.",
+  "actualRepositoryValidation": {
+    "completedAt": "2026-10-10T06:04:12.345165+00:00",
+    "command": [
+      "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "--test",
+      "--test-concurrency=1",
+      "tests/local-san-lorenzo-safety.test.mjs"
+    ],
+    "exitCode": 0,
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "log": "/tmp/granaderos-san-lorenzo-safety-actual-repository-controls-20261010.log",
+    "logBytes": 892,
+    "logSha256": "8f5151901a91018edd18cbe954ba8393d31d2d780c5fcf5de764a9e2cbc0a125",
+    "scope": "Declared geometry, known/per-hand firing lane and unchanged input selection controls. Native campaign outcome unproved; wrapper forwarding static only."
+  }
+}

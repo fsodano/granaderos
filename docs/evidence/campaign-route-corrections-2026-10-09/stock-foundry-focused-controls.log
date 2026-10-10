@@ -1,0 +1,23 @@
+✔ a stock hostile opening has no arsenal guns and cannot manufacture a friendly discovery request (320.518625ms)
+✔ a local soldier must discover and open the conquered arsenal before its finite gun becomes owned (615.668083ms)
+✔ discovery rejects forged identities, added shots, hidden or orphan source metadata atomically (581.733708ms)
+✔ transport, old-save admission and reopening keep one canonical gun and never refill the arsenal (850.468791ms)
+✔ unknown, future, missing and orphan saved recovery ledgers are rejected (635.70375ms)
+✔ local storage requires real available crew and preserves the recovered gun exactly once (736.077958ms)
+✔ Córdoba and Ensenada each expose only their own finite canonical inventory (1599.01375ms)
+✔ earned stock funding secures its exact rear gun before the native occupation, then pays for the course and project with saved order replay (17807.717125ms)
+✔ the witnessed occupied-source checkpoint still rejects a fabricated replacement battery (1569.358375ms)
+✔ route waits retain paid survivors outside the active squad at their exact expiry seconds (1411.564708ms)
+✔ route care uses finite hourly dressings and blocks an acute clock advance after the doctor runs out (340.374125ms)
+✔ a legal sector entry remains recorded when later route preparation stops for its tactical report (412.5225ms)
+✔ route preparation discovers and forwards three real finite bronze guns with canonical saved custody (8988.207833ms)
+✔ a route cannot recover unknown, occupied or exhausted artillery sources or mutate its input on failure (477.409458ms)
+✔ mixed route batteries use five distinct finite pieces and cannot borrow reserved guns or invent extra swivels (6164.377125ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19599.163

@@ -8,11 +8,14 @@ import {artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactica
 export function stagedBatteryController(){
  const plans=new WeakMap(),controllers=new WeakMap();
  return (battle,unit)=>{
-  if(battle.mode==='exploration'){
+  // A lone gun has no arrival conflict. Let the existing coastal controller
+  // move its infantry screen before the crew advances into contact.
+  const loadedGuns=battle.artillery.filter(g=>g.side==='player'&&(g.loaded||g.ammo>0));
+  if(battle.mode==='exploration'&&loadedGuns.length>1){
    if(!plans.has(battle)){
     const goal={x:Math.floor(battle.width*.65),y:Math.floor(battle.height*.5)};
     const distance=gun=>Math.hypot(gun.x-goal.x,gun.y-goal.y);
-    const guns=battle.artillery.filter(g=>g.side==='player'&&(g.loaded||g.ammo>0))
+    const guns=[...loadedGuns]
      .sort((a,b)=>distance(b)-distance(a)||a.id.localeCompare(b.id));
     let action=null;
     for(const gun of guns){
