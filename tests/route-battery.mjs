@@ -15,6 +15,18 @@ const fail=(report,message,details={})=>{report({event:'finiteBatteryUnavailable
 const controlled=(s,sector)=>s.sectors[sector]?.owner==='patriot';
 const pieces=s=>[...Object.entries(s.artilleryDepots??{}).flatMap(([sector,guns])=>guns.map(gun=>({sector,source:'depot',gun}))),...Object.entries(s.sectorStates??{}).flatMap(([sector,scene])=>(scene.artillery??[]).map(gun=>({sector,source:'field',gun})))].filter(row=>controlled(s,row.sector)&&row.gun.side==='player');
 const fit=(s,types,destination,excludeIds)=>{const rows=pieces(s).filter(row=>!excludeIds.has(row.gun.id)&&(row.sector===destination||artilleryTransportPath(s,row.sector,destination,'carts'))),chosen=[];for(const type of types){const row=rows.filter(row=>row.gun.type===type&&!chosen.some(candidate=>candidate.gun.id===row.gun.id)).sort((a,b)=>Number(b.sector===s.location)-Number(a.sector===s.location)||Number(b.source==='depot')-Number(a.source==='depot')||b.gun.ammo+Number(b.gun.loaded)-a.gun.ammo-Number(a.gun.loaded)||a.gun.id.localeCompare(b.gun.id))[0];if(row)chosen.push(row);}return chosen;};
+function resolveBatteryEncounter(state,report,resolveEncounter,keepServing,stage){
+ if(!resolveEncounter||!state.pendingBattle&&!state.pendingEncounter)return state;
+ const before=structuredClone(state),next=resolveEncounter(structuredClone(state),{report,stage});
+ assert.ok(next&&!next.pendingBattle&&!next.pendingEncounter,'The real battery encounter must finish before transport resumes.');
+ assert.ok(clock(next)>=clock(before),'Encounter resolution cannot move the campaign clock backwards.');
+ for(const [id,record]of Object.entries(before.operativeState))if(!record.alive)assert.equal(next.operativeState[id].alive,false,'Encounter resolution cannot restore an earlier casualty.');
+ // A settled actual defense can lose explicitly retained reserves. Keep
+ // renewing its surviving paid bodies; all new deaths remain permanent.
+ const retained=keepServing.filter(id=>next.operativeState[id].alive);keepServing.splice(0,keepServing.length,...retained);
+ report({event:'routeBatteryEncounterResolved',stage,groupId:before.pendingEncounter?.groupId??before.pendingBattle?.defenseGroupId,sector:before.pendingEncounter?.sector??before.pendingBattle?.sector,hour:next.hour,second:next.secondOfHour??0});
+ return saved({campaign:next}).campaign;
+}
 function renewCrew(state,report,keepServing){
  let s=state;
  for(const id of new Set([...s.squad,...keepServing])){
@@ -27,9 +39,10 @@ function renewCrew(state,report,keepServing){
  }
  return s;
 }
-function travel(state,sector,report,keepServing){
+function travel(state,sector,report,keepServing,resolveEncounter,waypointsFor){
  let s=state;
  for(let attempt=0;attempt<720;attempt++){
+  s=resolveBatteryEncounter(s,report,resolveEncounter,keepServing,'crew-travel');
   if(s.pendingBattle||s.pendingEncounter)fail(report,'Resolve the real encounter before moving the battery crew.',{sector:s.location,destination:sector});
   const journey=s.squads.find(q=>q.id===s.activeSquadId)?.journey;
   if(!journey&&s.location===sector)return s;
@@ -40,15 +53,18 @@ function travel(state,sector,report,keepServing){
    const tired=s.squad.filter(id=>tooTiredToMarch(s.operativeState[id])||s.operativeState[id].asleep);
    if(tired.length){for(const id of tired){const r=s.operativeState[id];if(r.asleep&&(r.energy??0)>=100)s=order(s,{type:'setSleep',operativeId:id,asleep:false});else if(!r.asleep)s=order(s,{type:'setSleep',operativeId:id,asleep:true});}s=order(s,{type:'wait',hours:1});continue;}
    for(const id of s.squad)if(s.operativeState[id].assignment!=='active')s=order(s,{type:'assignCare',id,assignment:'active'});
-   s=order(s,{type:'travel',sector,queue:true,mode:s.routes.posta?'posta':'march'});
+   const waypoints=waypointsFor?.(s,sector)??[];assert.ok(Array.isArray(waypoints),'The battery detour must supply ordinary travel waypoints.');
+   s=order(s,{type:'travel',sector,queue:true,mode:waypoints.length?'march':s.routes.posta?'posta':'march',...(waypoints.length?{waypoints}:{})});
+   if(waypoints.length)report({event:'routeBatteryDetour',destination:sector,waypoints,hour:s.hour,second:s.secondOfHour??0});
   }else s=order(s,{type:'wait',hours:1});
  }
  fail(report,`The actual battery crew journey to ${sector} did not finish within 720 hourly orders.`);
 }
-function readyCrew(state,required,report,keepServing){
+function readyCrew(state,required,report,keepServing,resolveEncounter){
  let s=state;
  const ready=()=>s.squad.filter(id=>{const r=s.operativeState[id];return r?.alive&&r.hp>=15&&!r.unconscious&&!r.routed&&!r.captured&&!r.asleep&&(r.energy??0)>10;});
  for(let hour=0;hour<168;hour++){
+  s=resolveBatteryEncounter(s,report,resolveEncounter,keepServing,'crew-rest');
   for(const id of s.squad){const r=s.operativeState[id];if(r.asleep&&(r.energy??0)>=75)s=order(s,{type:'setSleep',operativeId:id,asleep:false});}
   if(ready().length>=required){for(const id of s.squad)if(s.operativeState[id].assignment!=='active')s=order(s,{type:'assignCare',id,assignment:'active'});return s;}
   if(s.pendingBattle||s.pendingEncounter)fail(report,'Resolve the actual encounter before the artillery crew can rest.');
@@ -63,10 +79,13 @@ function readyCrew(state,required,report,keepServing){
 // route, dead crew, depleted source or interrupted delivery is a real failure.
 // Explicit supporting soldiers retain their actual paid terms during each
 // journey/rest/delivery wait, even when they are outside the gun's crew squad.
-export function prepareRouteBattery(start,types,{destination=start.location,excludeIds=[],keepServing=[],report=()=>{}}={}){
+export function prepareRouteBattery(start,types,{destination=start.location,excludeIds=[],keepServing=[],resolveEncounter,waypointsFor,report=()=>{}}={}){
  assert.ok(Array.isArray(types)&&types.length<=3&&types.every(type=>Object.hasOwn(ARTILLERY,type)),'Choose up to three existing artillery types.');
  assert.ok(Array.isArray(keepServing)&&keepServing.every(id=>Number.isSafeInteger(id)&&serving(start,id)),'Only explicitly named actual serving soldiers can retain their paid terms.');
+ assert.ok(resolveEncounter===undefined||typeof resolveEncounter==='function','The battery encounter resolver must be a public campaign driver.');keepServing=[...keepServing];
+ assert.ok(waypointsFor===undefined||typeof waypointsFor==='function','The battery detour must be an ordinary route planner.');
  let s=saved({campaign:structuredClone(start)}).campaign;
+ s=resolveBatteryEncounter(s,report,resolveEncounter,keepServing,'preparation');
  if(s.pendingBattle||s.pendingEncounter)fail(report,'Resolve the actual encounter before preparing finite artillery.');
  if(!controlled(s,destination))fail(report,'The real artillery destination must be controlled.',{destination});
  const selected=[];
@@ -76,7 +95,7 @@ export function prepareRouteBattery(start,types,{destination=start.location,excl
   if(!row){
    const arsenal=Object.values(FINITE_ARTILLERY_ARSENALS).filter(source=>source.pieces.some(gun=>gun.type===type&&!unavailable.has(gun.id))&&controlled(s,source.sector)&&!s.artilleryArsenalRecoveries[source.sector]&&(source.sector===destination||artilleryTransportPath(s,source.sector,destination,'carts'))).sort((a,b)=>Number(b.sector===s.location)-Number(a.sector===s.location))[0];
    if(!arsenal)fail(report,`No remaining controlled physical arsenal can supply ${type}.`,{destination,selected:selected.map(gun=>gun.id)});
-   s=readyCrew(travel(s,arsenal.sector,report,keepServing),1,report,keepServing);
+   s=readyCrew(travel(s,arsenal.sector,report,keepServing,resolveEncounter,waypointsFor),1,report,keepServing,resolveEncounter);
    for(const id of s.squad)if(s.operativeState[id].assignment!=='active')s=order(s,{type:'assignCare',id,assignment:'active'});
    const pair=visit(s),carrier=pair.battle.units.filter(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.asleep&&(unit.energy??0)>10).sort((a,b)=>b.energy-a.energy)[0];
    if(!carrier)fail(report,'A real awake local soldier must open the conquered arsenal.',{sector:arsenal.sector});
@@ -90,7 +109,7 @@ export function prepareRouteBattery(start,types,{destination=start.location,excl
  for(const gun of selected){
   const row=pieces(s).find(row=>row.gun.id===gun.id);assert.ok(row,'The selected actual piece must retain its original custody.');
   if(row.sector===destination&&row.source==='depot')continue;
-  s=readyCrew(travel(s,row.sector,report,keepServing),artilleryProfile(s,gun).crew,report,keepServing);
+  s=readyCrew(travel(s,row.sector,report,keepServing,resolveEncounter,waypointsFor),artilleryProfile(s,gun).crew,report,keepServing,resolveEncounter);
   for(const id of s.squad)if(s.operativeState[id].assignment!=='active')s=order(s,{type:'assignCare',id,assignment:'active'});
   if(row.sector===destination){
    s=order(s,{type:'storeArtillery',sector:row.sector,artilleryId:gun.id});report({event:'routeBatteryStored',sector:row.sector,id:gun.id,record:storedArtilleryRecord(gun),hour:s.hour});
@@ -102,8 +121,9 @@ export function prepareRouteBattery(start,types,{destination=start.location,excl
    report({event:'routeBatteryShipment',id:gun.id,from:row.sector,to:destination,cost:quote.cost,dueAt:transfer.dueAt,record:structuredClone(transfer.gun),hour:s.hour});
   }
  }
- s=travel(s,destination,report,keepServing);
+ s=travel(s,destination,report,keepServing,resolveEncounter,waypointsFor);
  for(let hour=0;selected.some(gun=>!(s.artilleryDepots[destination]??[]).some(stored=>stored.id===gun.id))&&hour<720;hour++){
+  s=resolveBatteryEncounter(s,report,resolveEncounter,keepServing,'gun-delivery');
   if(s.pendingEncounter||s.pendingBattle)fail(report,'Resolve the actual encounter before finite artillery delivery.',{destination});
   s=renewCrew(s,report,keepServing);s=order(s,{type:'wait',hours:1});
  }
@@ -116,7 +136,7 @@ export function prepareRouteBattery(start,types,{destination=start.location,excl
 
 // Earlier bots bought three identical light pieces. Select distinct actual
 // reachable guns for that tactical plan; missing property remains a failure.
-export function prepareRouteMixedBattery(start,count,{destination=start.location,preferredTypes=['swivel','bronze4','field8'],excludeIds=[],report=()=>{}}={}){
+export function prepareRouteMixedBattery(start,count,{destination=start.location,preferredTypes=['swivel','bronze4','field8'],excludeIds=[],resolveEncounter,waypointsFor,report=()=>{}}={}){
  assert.ok(Number.isSafeInteger(count)&&count>=1&&count<=3);
  const reachable=sector=>sector===destination||artilleryTransportPath(start,sector,destination,'carts');
  const pool=pieces(start).filter(row=>reachable(row.sector)).map(row=>row.gun);
@@ -124,7 +144,7 @@ export function prepareRouteMixedBattery(start,count,{destination=start.location
  const unavailable=new Set(excludeIds),priority=type=>{const index=preferredTypes.indexOf(type);return index<0?preferredTypes.length:index;};
  const available=[...new Map(pool.map(gun=>[gun.id,gun])).values()].filter(gun=>!unavailable.has(gun.id)&&artilleryProfile(start,gun).crew<=start.squad.length).sort((a,b)=>priority(a.type)-priority(b.type)||b.ammo+Number(b.loaded)-a.ammo-Number(a.loaded)||a.id.localeCompare(b.id)).slice(0,count);
  if(available.length!==count)fail(report,'The controlled reachable finite gun pool or actual crew cannot form the requested mixed battery.',{destination,count,available:available.map(gun=>({id:gun.id,type:gun.type,loaded:gun.loaded,ammo:gun.ammo}))});
- const result=prepareRouteBattery(start,available.map(gun=>gun.type),{destination,excludeIds,report});
+ const result=prepareRouteBattery(start,available.map(gun=>gun.type),{destination,excludeIds,resolveEncounter,waypointsFor,report});
  const records=result.selections.map(selection=>result.campaign.artilleryDepots[destination].find(gun=>depotSelection(gun)===selection));
  report({event:'routeMixedBatteryPrepared',destination,records:structuredClone(records)});return {...result,records};
 }

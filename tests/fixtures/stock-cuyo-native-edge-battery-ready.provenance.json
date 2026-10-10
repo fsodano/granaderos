@@ -1,0 +1,49 @@
+{
+  "description": "Actual earned stock Cuyo pre-battery state after native Salta/Yatasto, physical Córdoba assembly and ordinary stock preparation; local reserve is present for the real hour438 raid",
+  "sourceSnapshot": "dbb8d2be",
+  "productionSnapshot": "f12c2d0f",
+  "inputPath": "/tmp/wall-stock-mendoza-actualBatteryPreparationInput.save.json",
+  "captureMethod": "Read-only report at prepareRouteBattery entry through a temporary Node loader; no additional orders or synchronization",
+  "inputClock": [
+    426,
+    1356
+  ],
+  "sha256": "65aa6691b6dc46a635133d605cf1e21bdfa594a4d5a5408c4d96f6043896fe5d",
+  "gzipSha256": "8a223f87326ed662717c54242592843963ba412dc9662bb8d0beca5ef5ab7e0a",
+  "startingTreasury": 113855,
+  "squad": [
+    1,
+    0,
+    8,
+    127,
+    140
+  ],
+  "actualPriorDeaths": [
+    11,
+    100,
+    103,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    120,
+    122,
+    123,
+    124,
+    125,
+    126,
+    129,
+    131,
+    134,
+    136,
+    137,
+    139,
+    141,
+    144,
+    1000
+  ],
+  "log": "/tmp/wall-stock-mendoza-battery-callback-current.log",
+  "officialSaveRoundTripExact": true
+}
