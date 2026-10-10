@@ -83,7 +83,7 @@ test('each of nine finite pellets shares the one-reflection rule and its selecte
 });
 
 test('a real finite native pistol order injures the reflected bystander with paid costs and exact ordinary presented replay',()=>{
- const s=arena();const b=createBattle([{...source,id:107,weapon:1805,loaded:1,ammo:2,condition:100,marksmanship:100}],{...s,seed:8,hour:12,enemies:[{id:'reserve',x:25,y:10,hp:100}],npcs:[{id:'resident',name:'Residente',x:12,y:4,hp:100}],deferContact:true});
+ const s={width:32,height:16,tiles:flat(),props:[],wallEdges:[{id:'native-stone',x:7,y:5,axis:'x',type:'wall',material:'stone',blocked:true,blocksSight:true,cover:40}]};const b=createBattle([{...source,id:107,weapon:1805,loaded:1,ammo:2,condition:100,marksmanship:100}],{...s,seed:8,hour:12,enemies:[{id:'reserve',x:25,y:10,hp:100}],npcs:[{id:'resident',name:'Residente',x:12,y:4,hp:100}],deferContact:true});
  const action={type:'firePoint',unitId:'107',x:10,y:5,aim:4},u=b.units[0],before=structuredClone(b),next=actBattle(b,action);assert.equal(next.lastError,null);assert.deepEqual(b,before);assert.deepEqual(presentedActBattle(b,action).state,next);assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(b))),action),next);
  assert.equal(next.npcs[0].hp,81);assert.equal(next.units[0].hp,u.hp);assert.equal(next.units[0].loaded,0);assert.equal(next.units[0].ammo,2);assert.equal(next.units[0].condition,99);assert.equal(u.ap-next.units[0].ap,19);assert.equal(next.elapsedSeconds,6);assert.equal(next.seed,1276464017);assert.equal(next.smoke.length,1);assert.equal(next.units.find(v=>v.id==='reserve').hp,100);
  assert.equal(COMBAT_BALANCE.firearmRicochetLimit,1);assert.equal(COMBAT_BALANCE.firearmRicochetForceRetention,.5);

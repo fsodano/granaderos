@@ -65,10 +65,10 @@ test('invalid or unavailable targets reject before paying for a prone stance cha
 });
 
 test('a newly exposed prone attacker stops after its paid stand when the enemy fires a reaction',()=>{
- const tiles=floor();Object.assign(tiles[3*24+3],{type:'wall',blocked:true,obstacleHeight:.8});
+ const tiles=floor(),wallEdges=[{id:'low-cover',x:3,y:3,axis:'y',type:'window',blocked:true,obstacleHeight:.8}];
  const s=field({weapon:1800,weaponMode:'melee',weaponFittings:socket(),loaded:1,ammo:7,stance:'prone',movementMode:'prone',agility:0,wisdom:0,experienceLevel:1},
   {x:4,weapon:1805,loaded:1,activeSlot:'primary',ammo:0,marksmanship:100,agility:100,wisdom:100,experienceLevel:10,overwatch:true,ap:100},
-  {tiles,upperSurfaces:[{id:'roof-sight',x:20,y:3,tacticalLevel:1,type:'floor',kind:'roof',elevation:3,blocked:false,cover:0}]});
+  {tiles,wallEdges,upperSurfaces:[{id:'roof-sight',x:20,y:3,tacticalLevel:1,type:'floor',kind:'roof',elevation:3,blocked:false,cover:0}]});
  s.units.push({...structuredClone(unit(s)),id:'spotter',x:4,y:2,stance:'standing',movementMode:'walk',weapon:0,weaponFittings:undefined,activeSlot:'unarmed',loaded:0,ap:0});
  unit(s,'e').ap=actionCosts(s,unit(s,'e'),unit(s)).fire;
  assert.equal(canSee(s,unit(s,'e'),unit(s)),false);assert.equal(canSee(s,unit(s,'spotter'),unit(s,'e')),true);assert.equal(meleePreview(s,unit(s),unit(s,'e'),{approach:false}).valid,true);

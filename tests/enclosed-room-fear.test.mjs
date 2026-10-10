@@ -13,9 +13,9 @@ const ground=(width=18,height=12)=>Array.from({length:width*height},(_,i)=>({x:i
 function geometry({upper=false,roof='tile'}={}){
  const built=buildBuilding({id:'room',x:2,y:1,width:6,height:6,roof,doors:[{x:2,y:3,open:true}],windows:[{x:7,y:3}]});
  const overrides=new Map(built.tiles.map(t=>[`${t.x},${t.y}`,t]));
- const state={width:18,height:12,tiles:ground().map(t=>overrides.get(`${t.x},${t.y}`)??t),buildings:[built.building]};
+ const state={width:18,height:12,tiles:ground().map(t=>overrides.get(`${t.x},${t.y}`)??t),wallEdges:built.wallEdges,buildings:[built.building]};
  if(upper){
-  const room={id:'upper',cells:built.building.rooms[0].cells.map(c=>({...c,tacticalLevel:1}))};state.buildings[0].rooms.push(room);
+  const room={id:'upper',cells:built.building.rooms[0].cells.filter(c=>c.x>built.building.x&&c.x<built.building.x+built.building.width-1&&c.y>built.building.y&&c.y<built.building.y+built.building.height-1).map(c=>({...c,tacticalLevel:1}))};state.buildings[0].rooms.push(room);
   state.upperSurfaces=built.tiles.flatMap(t=>[
    {id:`floor:${t.x}:${t.y}`,x:t.x,y:t.y,tacticalLevel:1,elevation:3,type:'floor',kind:'platform',blocked:!room.cells.some(c=>c.x===t.x&&c.y===t.y),cover:0,material:'adobe',buildingId:'room',...(room.cells.some(c=>c.x===t.x&&c.y===t.y)?{roomId:'upper'}:{obstacleHeight:2.8})},
    {id:`ceiling:${t.x}:${t.y}`,x:t.x,y:t.y,tacticalLevel:2,elevation:6,type:'floor',kind:'roof',blocked:false,cover:0,material:'adobe',buildingId:'room'},
@@ -38,7 +38,7 @@ test('occupied intact ground and supported upper rooms differ from breached wall
  const state=geometry(),before=structuredClone(state);assert.equal(occupiedEnclosedRoom(state,person),true,'an open intact door remains part of a room');
  assert.deepEqual(state,before);
  for(const patch of [{type:'rubble',blocked:false},{type:'grass',blocked:false},{obstacleHeight:.45}]){
-  const damaged=structuredClone(state);Object.assign(damaged.tiles.find(t=>t.x===7&&t.y===4),patch);assert.equal(occupiedEnclosedRoom(damaged,person),false);
+  const damaged=structuredClone(state);Object.assign(damaged.wallEdges.find(t=>t.axis==='y'&&t.x===8&&t.y===4),patch);assert.equal(occupiedEnclosedRoom(damaged,person),false);
  }
  for(const roof of [undefined,'none','unknown']){const absent=geometry();absent.buildings[0].roof=roof;assert.equal(occupiedEnclosedRoom(absent,person),false);}
  const unrelated=structuredClone(state);unrelated.buildings[0].width=10;unrelated.upperSurfaces=[{id:'porch',x:10,y:3,tacticalLevel:1,elevation:3,type:'floor',kind:'platform',blocked:false,cover:0,buildingId:'room'}];
@@ -63,7 +63,7 @@ test('occupied intact ground and supported upper rooms differ from breached wall
  }
  const house=geometry({roof:'terrace'});Object.assign(house,buildTerrace(house.buildings[0]));assert.equal(occupiedEnclosedRoom(house,person),true,'canonical ground terrace preserves the established story extent');
  const floating=structuredClone(house);floating.upperSurfaces.forEach(s=>s.elevation=100);assert.equal(occupiedEnclosedRoom(floating,person),false);
- const low=structuredClone(house);low.tiles.find(t=>t.x===7&&t.y===4).obstacleHeight=1.7;assert.equal(occupiedEnclosedRoom(low,person),false,'an explicit lowered wall cannot use the default story exception');
+ const low=structuredClone(house);low.wallEdges.find(t=>t.axis==='y'&&t.x===8&&t.y===4).obstacleHeight=1.7;assert.equal(occupiedEnclosedRoom(low,person),false,'an explicit lowered wall cannot use the default story exception');
  const hole=structuredClone(above);hole.upperSurfaces=hole.upperSurfaces.filter(s=>!(s.tacticalLevel===2&&s.x===5&&s.y===3));assert.equal(occupiedEnclosedRoom(hole,upper),false);
  const terrace=structuredClone(above);terrace.upperSurfaces.filter(s=>s.tacticalLevel===1).forEach(s=>s.kind='roof');assert.equal(occupiedEnclosedRoom(terrace,upper),false);
  const noTerrace=geometry({roof:'terrace'});assert.equal(occupiedEnclosedRoom(noTerrace,person),false,'terrace metadata without its physical roof does not supply an intact ceiling');

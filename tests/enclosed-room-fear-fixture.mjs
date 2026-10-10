@@ -91,21 +91,23 @@ export function preparedRoomArena(options={}){
  // native hostile force. No victory, injury or fresh campaign conquest is
  // prepared. Both content controls share seed42, native health and finite kit.
  const hidden=placeBuilding(built.tiles,{id:'undisclosed-room',x:19,y:3,width:5,height:5,roof:'tile',doors:[{id:'undisclosed-door',x:21,y:7}]});
- const tiles=hidden.tiles.map(tile=>tile.x===16?{...tile,type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100}:tile);
+ const tiles=hidden.tiles;
+ const wallEdges=[...built.wallEdges,...hidden.wallEdges,...Array.from({length:height},(_,y)=>({id:`screen:${y}`,x:17,y,axis:'y',type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100}))];
  const buildings=[built.building,hidden.building],upperSurfaces=[],climbLinks=[];
  if(options.upper){
   const upperRoom={id:'fear-upper-room',tacticalLevel:1,cells:built.building.rooms[0].cells.map(cell=>({...cell,tacticalLevel:1}))};
   built.building.rooms.push(upperRoom);
   for(let y=4;y<10;y++)for(let x=4;x<10;x++){
-   const edge=x===4||x===9||y===4||y===9;
+   const edge=false;
    upperSurfaces.push({id:`fear-floor:${x}:${y}`,x,y,tacticalLevel:1,elevation:3,slabThickness:.2,type:'floor',kind:'platform',blocked:edge,cover:edge?40:0,
     material:'adobe',buildingId:'fear-room',...(edge?{obstacleHeight:2.8,blocksSight:true}:{roomId:upperRoom.id})});
    upperSurfaces.push({id:`fear-roof:${x}:${y}`,x,y,tacticalLevel:2,elevation:6,slabThickness:.2,type:'floor',kind:'roof',blocked:false,cover:0,material:'adobe',buildingId:'fear-room'});
   }
+  wallEdges.push(...built.wallEdges.map(edge=>({...edge,id:`${edge.id}:upper`,...(edge.doorId?{doorId:`${edge.doorId}:upper`}:{}),tacticalLevel:1,elevation:3,obstacleHeight:2.8})));
   climbLinks.push({id:'fear:stairs',kind:'climb',from:{x:5,y:5,tacticalLevel:0},to:{x:5,y:5,tacticalLevel:1}},
    {id:'fear:roof-access',kind:'climb',from:{x:5,y:5,tacticalLevel:1},to:{x:5,y:5,tacticalLevel:2}});
  }
- const battle=createBattle(request.squad.map(unit=>({...unit,x:6,y:3,facing:4})),{...request,width,height,tiles,buildings,upperSurfaces,climbLinks,
+ const battle=createBattle(request.squad.map(unit=>({...unit,x:6,y:3,facing:4})),{...request,width,height,tiles,wallEdges,buildings,upperSurfaces,climbLinks,
   seed:42,exploration:false,props:[{id:'undisclosed-furniture',type:options.privateVariant??'bed',x:20,y:4,buildingId:hidden.building.id,roomId:hidden.building.rooms[0].id}],
   enemies:request.enemies.map((unit,index)=>({...unit,x:24+index%3,y:11+Math.floor(index/3),patrol:false,overwatch:false})),
   npcs:request.npcs.map((npc,index)=>({...npc,x:20+index%3,y:16,roomId:undefined,buildingId:undefined})),

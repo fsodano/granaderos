@@ -25,6 +25,7 @@ assert.equal(sha(replayGzip),provenance.replayFixture.gzipSHA256);
 assert.equal(sha(replayRaw),provenance.replayFixture.rawSHA256);
 const tape=JSON.parse(replayRaw),start=()=>decodeSave(inputRaw.toString()).campaign;
 const official=c=>decodeSave(encodeSave(c)).campaign;
+const archivalValue=value=>Array.isArray(value)?value.map(archivalValue):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).filter(([key])=>!(Array.isArray(value.wallEdges)&&value.wallEdges.length===0&&['wallEdges','wallGeometryVersion'].includes(key))).map(([key,value])=>[key,archivalValue(value)])):value;
 const carried=(c,id)=>carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]);
 const known=c=>sectorInventoryModel(c,'mendoza',rosterFor(c),11).entries.map(row=>({...JSON.parse(row.expected),count:row.count}));
 
@@ -94,7 +95,7 @@ test('ordinary reloads finish the compatible Los Patos weapons with paid time an
   for(const operativeId of c.squad){c=dispatchCampaign(c,{type:'assignCare',operativeId,assignment:'active'});assert.equal(c.lastError,null);}
   c=finishReloadsBeforeMarch(c,{report:event=>events.push(event)});
  }
- assert.deepEqual(c,decodeSave(tape.ordinaryReloaded).campaign);assert.deepEqual(finitePool(c),finitePool(before));
+ assert.deepEqual(archivalValue(c),archivalValue(decodeSave(tape.ordinaryReloaded).campaign));assert.deepEqual(finitePool(c),finitePool(before));
  assert.equal((c.hour-before.hour)*3600+c.secondOfHour-before.secondOfHour,11);
  assert.equal(c.resources.treasury,before.resources.treasury);assert.deepEqual(c.contracts,before.contracts);
  for(const id of tape.field){const unit=carried(c,id);assert.equal(unit.loaded,1);assert.ok(unit.loaded+ammoCount(unit)>=tape.target);}

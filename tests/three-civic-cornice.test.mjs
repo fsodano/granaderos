@@ -12,7 +12,7 @@ const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.
 const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
 const {ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
 const {ISO_PITCH}=await import('../web/lib/three/projection.ts');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,V=25.066666666666666,ids=['ayuntamiento','palacio'],rotations=[0,90,180,270],camera=new Vector3(Math.cos(ISO_PITCH)/Math.SQRT2,Math.sin(ISO_PITCH),Math.cos(ISO_PITCH)/Math.SQRT2);
 function fixture(id,rotation,view='exterior',roof='original'){
  const s=createArchitectureReviewBattle(id,rotation,view,roof),b=s.buildings[0],frame=entranceFrame({...b,walls:s.tiles}),input={terrain:{width:s.width,height:s.height,tiles:s.tiles,buildings:s.buildings,upperSurfaces:s.upperSurfaces},revealedRooms:s.revealedRooms},g=new WorldGeometry(),m=new WorldMaterials({tileMetres:T,assetUrl:p=>p});

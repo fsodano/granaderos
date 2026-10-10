@@ -1,3 +1,4 @@
+import {wallEdgeCells} from '../game/wall-geometry.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {register} from 'node:module';
@@ -68,7 +69,7 @@ test('all fourteen compiled templates keep decoration on free floor cells throug
    assert.ok(tile&&!tile.blocked&&tile.type==='floor',`${prop.id} has a walkable floor`);
    assert.ok(room.cells.some(cell=>spaceKey(cell)===spaceKey(prop)));assert.deepEqual(prop.footprint,{width:1,height:1});
    assert.equal(prop.blocksMovement,false);assert.equal(prop.decorative,true);assert.ok(!occupied.has(spaceKey(prop))&&!seen.has(spaceKey(prop)));
-   assert.ok(!state.tiles.some(door=>door.type==='door'&&Math.abs(door.x-prop.x)+Math.abs(door.y-prop.y)<=1));seen.add(spaceKey(prop));
+   assert.ok(!state.wallEdges.filter(edge=>edge.type==='door').flatMap(wallEdgeCells).some(cell=>spaceKey(cell)===spaceKey(prop)));seen.add(spaceKey(prop));
    if(expected[name])assert.equal(prop.purpose,expected[name][room.name]);
   }
   assert.deepEqual(state,before,'dressing does not modify authored furniture, rooms or collision');

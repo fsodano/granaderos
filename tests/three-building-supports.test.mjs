@@ -6,7 +6,8 @@ const {Mesh,Raycaster,Vector3}=await import('../web/node_modules/three/build/thr
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
-const {ARCHITECTURE_REVIEW_TEMPLATES,createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {ARCHITECTURE_REVIEW_TEMPLATES}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,epsilon=1e-5;
 
 function supported(details,tiles,label){

@@ -33,9 +33,8 @@ test('a player interruption can interrupt another interruption and restore its p
  assert.doesNotThrow(()=>validateBattleSnapshot(finished));
 });
 test('a new sight line through an opened door grants a remaining-AP enemy reaction',()=>{
- const grid=tiles();for(const t of grid.filter(t=>t.x===4))Object.assign(t,{type:'wall',blocked:true});
- Object.assign(grid.find(t=>t.x===4&&t.y===2),{type:'door',doorId:'door',open:false,locked:false,blocksSight:true});
- const s=field([{id:'a',x:3,y:2}], [{id:'b',x:6,y:2,agility:100,weapon:1806}],{tiles:grid});s.units[1].ap=actionCosts(s,s.units[1]).fire;
+ const wallEdges=Array.from({length:10},(_,y)=>({id:`divider-${y}`,x:4,y,axis:'y',type:y===2?'door':'wall',blocked:true,blocksSight:true,...(y===2?{doorId:'door',open:false,locked:false}:{})}));
+ const s=field([{id:'a',x:3,y:2}], [{id:'b',x:6,y:2,agility:100,weapon:1806}],{wallEdges});s.units[1].ap=actionCosts(s,s.units[1]).fire;
  assert.equal(canSee(s,s.units[1],s.units[0]),false);
  const n=actBattle(s,{type:'door',unitId:'a',doorId:'door',open:true});
  assert.equal(n.lastError,null);assert.equal(n.units[0].ap,96);assert.equal(n.units[1].reactionTurn,1);assert.equal(n.units[1].ap,0);

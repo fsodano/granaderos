@@ -1,6 +1,8 @@
 'use client';
 import {pagePath} from '../../lib/site-path.js';
 import BuildIdentity from '../BuildIdentity';
+import {isometricWallEdge} from '../../lib/editor-wall-edge.js';
+import {wallEdgeCells,wallEdgeEndpoints} from '../../../game/wall-geometry.js';
 import {
   buildingAppearance,
   WALL_FINISHES,
@@ -53,7 +55,7 @@ import {
 } from '../../../game/map-editor-tools.js';
 import { BUILDING_TEMPLATES } from '../../../game/map-templates.js';
 import './editor.css';
-type Point = { x: number; y: number };
+type Point = { x: number; y: number; axis?:'x'|'y' };
 const labels: Record<string, string> = {
   features: 'Naturaleza',
   buildings: 'Edificios',
@@ -68,6 +70,7 @@ const draftKey = 'granaderos-sector-editor-v1';
 const diamond = (p: Point) =>
   `${p.x},${p.y - 14} ${p.x + 26},${p.y} ${p.x},${p.y + 14} ${p.x - 26},${p.y}`;
 export default function SectorEditor() {
+  const [wallSide,setWallSide]=useState('north');
   const [exportFile, setExportFile] = useState<{
     name: string;
     text: string;
@@ -156,15 +159,15 @@ export default function SectorEditor() {
   const doorApproaches = useMemo(
     () =>
       new Set(
-        map.tiles
+        (map.wallEdges??map.tiles)
           .filter((t: any) => t.type === 'door')
           .flatMap((t: any) =>
-            [
+            (t.axis?wallEdgeCells(t):[
               { x: t.x - 1, y: t.y },
               { x: t.x + 1, y: t.y },
               { x: t.x, y: t.y - 1 },
               { x: t.x, y: t.y + 1 },
-            ]
+            ])
               .filter(
                 (p) =>
                   !map.tiles.find((v: any) => v.x === p.x && v.y === p.y)
@@ -211,6 +214,7 @@ export default function SectorEditor() {
         : t,
     ),
     buildings: hidden.includes('buildings') ? [] : map.buildings,
+    wallEdges: hidden.includes('buildings') ? [] : visualMap.wallEdges,
     props: hidden.includes('props') ? [] : map.props,
     lights: hidden.includes('lights') ? [] : map.lights,
     units: [],
@@ -227,6 +231,7 @@ export default function SectorEditor() {
     )
       return rectangleCells(drag.start, hover);
     if (drag?.kind === 'paint') return drag.cells;
+    if(drag?.kind==='wall'){const axis=drag.start.axis??'x',length=Math.abs(axis==='x'?hover.x-drag.start.x:hover.y-drag.start.y),sign=Math.sign(axis==='x'?hover.x-drag.start.x:hover.y-drag.start.y);return Array.from({length:length+1},(_,i)=>({x:drag.start.x+(axis==='x'?i*sign:0),y:drag.start.y+(axis==='y'?i*sign:0),axis}));}
     const choice = drag?.asset ?? asset;
     if (tool === 'place' || drag?.kind === 'palette') {
       const size =
@@ -260,8 +265,8 @@ export default function SectorEditor() {
     (p: Point) =>
       p.x < 0 ||
       p.y < 0 ||
-      p.x >= doc.width ||
-      p.y >= doc.height ||
+      p.x >= doc.width+(p.axis==='y'?1:0) ||
+      p.y >= doc.height+(p.axis==='x'?1:0) ||
       ((tool === 'place' || drag?.kind === 'palette') &&
         ['props', 'buildings', 'features', 'spawns'].includes(
           (drag?.asset ?? asset).layer,
@@ -377,7 +382,7 @@ export default function SectorEditor() {
   function at(clientX: number, clientY: number) {
     const box = svg.current?.getBoundingClientRect();
     return box
-      ? isometricCell(
+      ? (['door','window','wall','floor'].includes(tool)?isometricWallEdge:isometricCell)(
           { x: clientX, y: clientY },
           box,
           camera,
@@ -454,6 +459,8 @@ export default function SectorEditor() {
       },
     };
   }
+  function keyboardEdge(p:Point):Point{return {x:p.x+(wallSide==='east'?1:0),y:p.y+(wallSide==='south'?1:0),axis:['north','south'].includes(wallSide)?'x':'y'};}
+  function edgeBuilding(p:Point){return map.buildings.find((b:any)=>p.axis==='x'?p.x>=b.x&&p.x<b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height:p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<b.y+b.height);}
   function click(p: Point) {
     const room = map.tiles.find((t: any) => cellKey(t) === cellKey(p))?.roomId;
     if (room) setActiveRoomId(room);
@@ -471,13 +478,8 @@ export default function SectorEditor() {
       return;
     }
     if (['door', 'window', 'wall', 'floor'].includes(tool)) {
-      const b = map.buildings.find(
-        (b: any) =>
-          p.x >= b.x &&
-          p.x < b.x + b.width &&
-          p.y >= b.y &&
-          p.y < b.y + b.height,
-      );
+      p=p.axis?p:keyboardEdge(p);
+      const b=edgeBuilding(p);
       if (!b || locked.includes('buildings')) {
         setNotice('Selecciona una casilla de edificio desbloqueado.');
         return;
@@ -565,28 +567,9 @@ export default function SectorEditor() {
       return;
     }
     if (g.kind === 'wall') {
-      const b = map.buildings.find(
-        (b: any) =>
-          g.start.x >= b.x &&
-          g.start.x < b.x + b.width &&
-          g.start.y >= b.y &&
-          g.start.y < b.y + b.height,
-      );
-      if (!b) return;
-      const horizontal = Math.abs(p.x - g.start.x) >= Math.abs(p.y - g.start.y),
-        length = horizontal
-          ? Math.abs(p.x - g.start.x)
-          : Math.abs(p.y - g.start.y);
-      edit(
-        Array.from({ length: length + 1 }, (_, i) => ({
-          type: 'setWall',
-          buildingId: b.id,
-          x: g.start.x + (horizontal ? i * Math.sign(p.x - g.start.x) : 0),
-          y: g.start.y + (!horizontal ? i * Math.sign(p.y - g.start.y) : 0),
-          wallType: 'wall',
-        })),
-      );
-      return;
+      const b=edgeBuilding(g.start);if(!b)return;
+      const axis=g.start.axis??'x',length=Math.abs(axis==='x'?p.x-g.start.x:p.y-g.start.y),sign=Math.sign(axis==='x'?p.x-g.start.x:p.y-g.start.y);
+      edit(Array.from({length:length+1},(_,i)=>({type:'setWall',buildingId:b.id,x:g.start.x+(axis==='x'?i*sign:0),y:g.start.y+(axis==='y'?i*sign:0),axis,wallType:'wall'})));return;
     }
     if (g.kind === 'paint') {
       let cells = g.cells;
@@ -980,6 +963,7 @@ export default function SectorEditor() {
               </button>
             ))}
           </div>
+          {['wall','door','window','floor'].includes(tool)&&<label>Borde para teclado<select aria-label="Borde de casilla para teclado" value={wallSide} onChange={event=>setWallSide(event.target.value)}><option value="north">Norte</option><option value="south">Sur</option><option value="west">Oeste</option><option value="east">Este</option></select></label>}
           <h2>Terreno</h2>
           <select
             aria-label="Tipo de terreno"
@@ -1267,6 +1251,7 @@ export default function SectorEditor() {
                 );
               })}
             </g>
+            {overlay==='blocked'&&!hidden.includes('buildings')&&(map.wallEdges??[]).map((edge:any)=>{const [a,b]=wallEdgeEndpoints(edge),start=project(a.x,a.y),end=project(b.x,b.y);return <path key={edge.id} data-editor-blocked-edge={edge.id} d={`M${start.x},${start.y}L${end.x},${end.y}`} fill="none" stroke={edge.type==='door'?'#edc566':'#e76a50'} strokeWidth="4" pointerEvents="none"/>;})}
             {all
               .filter(
                 (e: any) =>
@@ -1339,7 +1324,7 @@ export default function SectorEditor() {
                   },
                 ),
               )}
-            {preview.map((p: Point, i: number) => (
+            {preview.map((p: Point, i: number) => p.axis?(()=>{const [a,b]=wallEdgeEndpoints(p),start=project(a.x,a.y),end=project(b.x,b.y);return <path key={i} data-editor-edge-preview={p.axis} d={`M${start.x},${start.y}L${end.x},${end.y}`} fill="none" stroke={previewBlocked?'#ff9986':'#d3efb9'} strokeWidth="5" pointerEvents="none"/>;})():(
               <polygon
                 key={i}
                 points={diamond(project(p.x, p.y))}
@@ -1354,7 +1339,7 @@ export default function SectorEditor() {
           <footer>
             <span>
               {hover
-                ? `Casilla ${hover.x}, ${hover.y}`
+                ? `${hover.axis?'Borde '+hover.axis:'Casilla'} ${hover.x}, ${hover.y}`
                 : 'Arrastra para colocar · Alt + arrastrar para desplazar'}
             </span>
             <span>
@@ -1592,7 +1577,7 @@ export default function SectorEditor() {
                   {chosen.walls
                     .filter((w: any) => ['door', 'window'].includes(w.type))
                     .map((w: any) => (
-                      <label key={`${w.x},${w.y}`}>
+                      <label key={`${w.axis??'cell'}:${w.x},${w.y}`}>
                         {w.type === 'door' ? 'Puerta' : 'Ventana'} ({w.x}, {w.y}
                         )
                         <select
@@ -1605,6 +1590,7 @@ export default function SectorEditor() {
                                 buildingId: chosen.id,
                                 x: w.x,
                                 y: w.y,
+                                axis: w.axis,
                                 style: e.target.value || null,
                               },
                             ])

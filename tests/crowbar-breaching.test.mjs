@@ -5,20 +5,20 @@ import {TOOL_TYPES,environmentTargetSummary,environmentActionProfile} from '../g
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 
 const tool=(extra={})=>({count:1,weight:TOOL_TYPES.crowbar.weight,itemType:'tool',toolKey:'crowbar',condition:100,...extra});
-const ref={kind:'wall',id:'wall:6:3',x:6,y:3,tacticalLevel:0};
+const ref={kind:'wall',id:'wall:6:3',x:6,y:3,axis:'y',tacticalLevel:0};
 function field(actor={},options={}){
  const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0}));
- Object.assign(tiles.find(t=>t.x===6&&t.y===3),{type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40,obstacleHeight:2.5,projectileResistance:80});
+ const wallEdges=[{id:ref.id,x:6,y:3,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40,obstacleHeight:2.5,projectileResistance:80}];
  const state=createBattle([{id:'p',x:5,y:3,facing:2,activeSlot:'tool',activeTool:'inventory:bar',inventory:{bar:tool()},...actor}],{
-  width:16,height:10,tiles,seed:45,weather:{rain:0,humidity:0},enemies:[{id:'e',x:14,y:8,patrol:false,overwatch:false}],...options});
+  width:16,height:10,tiles,wallEdges,seed:45,weather:{rain:0,humidity:0},enemies:[{id:'e',x:14,y:8,patrol:false,overwatch:false}],...options});
  state.units[0].ap=actor.ap??100;for(const enemy of state.units.filter(u=>u.side==='enemy'))enemy.ap=0;
  return state;
 }
 const use=(state,target=ref)=>actBattle(state,{type:'useItem',unitId:'p',environment:target});
-const wall=state=>state.tiles.find(t=>t.x===6&&t.y===3);
+const wall=state=>state.wallEdges.find(t=>t.id===ref.id);
 function reject(state,action={type:'useItem',unitId:'p',environment:ref}){
  const after=actBattle(state,action);assert.ok(after.lastError);
- for(const key of ['units','tiles','props','seed','elapsedSeconds','groundItems','smoke','lights'])assert.deepEqual(after[key],state[key],key);
+ for(const key of ['units','tiles','wallEdges','props','seed','elapsedSeconds','groundItems','smoke','lights'])assert.deepEqual(after[key],state[key],key);
  return after;
 }
 
@@ -45,8 +45,8 @@ test('the last usable crowbar is retained at zero condition, and only one select
  assert.equal(after.lastError,null);assert.equal(after.units[0].inventory.bar.count,2);assert.equal(after.units[0].inventory.bar.condition,1);
  const selected=after.units[0].activeTool.slice(10);assert.notEqual(selected,'bar');assert.equal(after.units[0].inventory[selected].count,1);assert.equal(after.units[0].inventory[selected].condition,0);
  assert.equal(Object.values(after.units[0].inventory).filter(t=>t.toolKey==='crowbar').reduce((total,t)=>total+t.count,0),3);
- Object.assign(after.tiles.find(t=>t.x===6&&t.y===4),{type:'wall',material:'wood',blocked:true,blocksSight:true});
- const nextRef={kind:'wall',id:'wall:6:4',x:6,y:4,tacticalLevel:0};
+ after.wallEdges=[...after.wallEdges,{id:'wall:6:4',x:6,y:4,axis:'y',type:'wall',material:'wood',blocked:true,blocksSight:true,cover:40}];
+ const nextRef={kind:'wall',id:'wall:6:4',x:6,y:4,axis:'y',tacticalLevel:0};
  assert.equal(environmentPreview(after,after.units[0],nextRef).valid,false);reject(after,{type:'useItem',unitId:'p',environment:nextRef});
  assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(after))));
 });
@@ -67,7 +67,7 @@ test('bare hands, wrong or broken tools, unusable actors and insufficient AP rej
  const full=field({inventory});assert.equal(environmentActionProfile(full.units[0],wall(full),'breach').valid,false);reject(full);
 });
 
-test('only explicit ground adobe or wood wall tiles qualify; door, floor, roof and terrain remain intact',()=>{
+test('only explicit ground adobe or wood wall edges qualify; door, floor, roof and terrain remain intact',()=>{
  for(const patch of [{material:'stone'},{material:undefined},{material:'iron'},{type:'door',material:'adobe',doorId:'door'},{type:'floor',material:'wood'},{kind:'roof',material:'wood'},{type:'forest',material:'wood'},{type:'water',material:'wood'},{type:'cliff',material:'adobe'},{tacticalLevel:1}]){
   const state=field();Object.assign(wall(state),patch);reject(state,{type:'breach',unitId:'p',x:6,y:3});
   if(patch.type!=='door')assert.equal(environmentTargetAt(state,ref),null);

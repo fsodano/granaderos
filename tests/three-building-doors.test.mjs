@@ -8,7 +8,8 @@ const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {addDoorLeaf}=await import('../web/lib/three/world-building-doors.ts');
 const {buildBuilding,normalizedBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildingAppearance}=await import('../game/building-appearance.js');
-const {ARCHITECTURE_REVIEW_TEMPLATES,createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {ARCHITECTURE_REVIEW_TEMPLATES}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482;
 function render(battle,tiles=battle.tiles){
  const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),input={terrain:{width:battle.width,height:battle.height,tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},before=JSON.stringify(input),building=buildBuilding(battle.buildings[0],input,T,geometry,materials);

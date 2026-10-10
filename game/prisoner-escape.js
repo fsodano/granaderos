@@ -1,11 +1,12 @@
 import {atHand} from './tactical-planning-space.js';
 import {tacticalLevel} from './tactical-space.js';
-import {boundaryMatches,findSectorExit} from './tactical-exits.js';
+import {boundaryMatches,boundaryPassable,findSectorExit} from './tactical-exits.js';
 import {propBlocksAt} from './props.js';
+import {wallMovementBlocked} from './wall-geometry.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 export function prisonerCanExit(battle,npc,leader,exit){
  const tile=battle.tiles.find(t=>t.x===npc.x&&t.y===npc.y);
- return Boolean(npc.detention?.freed&&!npc.departure&&npc.hp>=15&&!npc.unconscious&&npc.energy>1&&!npc.entangled&&!npc.knockedDown&&!npc.surrendered&&npc.escort?.leaderId===leader.id&&!npc.escort.waiting&&tacticalLevel(npc)===0&&tacticalLevel(leader)===0&&boundaryMatches(battle,npc,exit.edge)&&boundaryMatches(battle,leader,exit.edge)&&atHand(npc,leader,1)&&tile&&!tile.blocked&&!propBlocksAt(battle,npc.x,npc.y));
+ return Boolean(npc.detention?.freed&&!npc.departure&&npc.hp>=15&&!npc.unconscious&&npc.energy>1&&!npc.entangled&&!npc.knockedDown&&!npc.surrendered&&npc.escort?.leaderId===leader.id&&!npc.escort.waiting&&tacticalLevel(npc)===0&&tacticalLevel(leader)===0&&boundaryPassable(battle,npc,exit.edge)&&boundaryPassable(battle,leader,exit.edge)&&atHand(npc,leader,1)&&!wallMovementBlocked(battle,npc,leader)&&tile&&!tile.blocked&&!propBlocksAt(battle,npc.x,npc.y));
 }
 export function crossPrisonerEscorts(battle,leader,exit){
  if(!leader.departure)return [];
@@ -28,6 +29,6 @@ export function validatePrisonerEscape(npc,battle=null){
  need(exit&&d&&Object.keys(d).length===7&&d.edge===exit.edge&&d.destination===exit.destination&&d.mountId===null&&Number.isSafeInteger(d.elapsedSeconds)&&d.elapsedSeconds>=(npc.detentionOrders?.at(-1)?.elapsedSeconds??npc.detentionRelease.elapsedSeconds)&&d.x===npc.x&&d.y===npc.y&&tacticalLevel(npc)===0&&boundaryMatches(receipt,d,exit.edge)&&boundaryMatches(receipt,receipt.leader,exit.edge)&&atHand(d,receipt.leader,1)&&!(d.x===receipt.leader.x&&d.y===receipt.leader.y),'El prisionero no cruzó junto a su rescatista.');
  if(battle){
   const leader=battle.units.find(u=>u.id===receipt.leaderId&&u.side==='player');
-  need(receipt.battleId===battle.battleId&&receipt.width===battle.width&&receipt.height===battle.height&&battle.exits?.some(e=>e.id===exit.id)&&d.elapsedSeconds<=(battle.elapsedSeconds??0)&&leader?.departure&&['exitId','edge','destination','elapsedSeconds'].every(k=>leader.departure[k]===d[k])&&leader.departure.x===receipt.leader.x&&leader.departure.y===receipt.leader.y,'El escape no corresponde a la salida del rescate.');
+  need(boundaryPassable(battle,npc,exit.edge)&&boundaryPassable(battle,leader,exit.edge)&&!wallMovementBlocked(battle,npc,leader)&&receipt.battleId===battle.battleId&&receipt.width===battle.width&&receipt.height===battle.height&&battle.exits?.some(e=>e.id===exit.id)&&d.elapsedSeconds<=(battle.elapsedSeconds??0)&&leader?.departure&&['exitId','edge','destination','elapsedSeconds'].every(k=>leader.departure[k]===d[k])&&leader.departure.x===receipt.leader.x&&leader.departure.y===receipt.leader.y,'El escape no corresponde a la salida del rescate.');
  }
 }

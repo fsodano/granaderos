@@ -15,8 +15,32 @@
         "id": "iglesia:interior",
         "cells": [
           {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
             "x": 1,
             "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 0
           },
           {
             "x": 2,
@@ -25,6 +49,14 @@
           {
             "x": 1,
             "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 0
           },
           {
             "x": 3,
@@ -39,6 +71,14 @@
             "y": 3
           },
           {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
             "x": 4,
             "y": 1
           },
@@ -55,6 +95,14 @@
             "y": 4
           },
           {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 0
+          },
+          {
             "x": 5,
             "y": 1
           },
@@ -75,6 +123,14 @@
             "y": 5
           },
           {
+            "x": 0,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
             "x": 5,
             "y": 2
           },
@@ -95,6 +151,14 @@
             "y": 6
           },
           {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
             "x": 5,
             "y": 3
           },
@@ -115,6 +179,14 @@
             "y": 7
           },
           {
+            "x": 0,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
             "x": 5,
             "y": 4
           },
@@ -135,6 +207,10 @@
             "y": 8
           },
           {
+            "x": 0,
+            "y": 9
+          },
+          {
             "x": 6,
             "y": 4
           },
@@ -159,6 +235,10 @@
             "y": 9
           },
           {
+            "x": 0,
+            "y": 10
+          },
+          {
             "x": 7,
             "y": 4
           },
@@ -183,6 +263,18 @@
             "y": 9
           },
           {
+            "x": 1,
+            "y": 10
+          },
+          {
+            "x": 0,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
             "x": 7,
             "y": 5
           },
@@ -207,6 +299,14 @@
             "y": 10
           },
           {
+            "x": 1,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 5
+          },
+          {
             "x": 7,
             "y": 6
           },
@@ -227,6 +327,14 @@
             "y": 10
           },
           {
+            "x": 2,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 6
+          },
+          {
             "x": 7,
             "y": 7
           },
@@ -243,6 +351,14 @@
             "y": 10
           },
           {
+            "x": 3,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
             "x": 7,
             "y": 8
           },
@@ -255,6 +371,14 @@
             "y": 10
           },
           {
+            "x": 4,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 8
+          },
+          {
             "x": 7,
             "y": 9
           },
@@ -263,8 +387,32 @@
             "y": 10
           },
           {
+            "x": 5,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 9
+          },
+          {
             "x": 7,
             "y": 10
+          },
+          {
+            "x": 6,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 10
+          },
+          {
+            "x": 7,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 11
           }
         ]
       },
@@ -273,11 +421,35 @@
         "cells": [
           {
             "x": 7,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 8,
             "y": 1
           },
           {
             "x": 7,
             "y": 2
+          },
+          {
+            "x": 8,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
+            "x": 8,
+            "y": 3
           }
         ]
       }
@@ -292,7 +464,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:0:0"
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "iglesia",
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:0"
       },
       {
         "x": 1,
@@ -303,7 +490,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:1:0"
       },
       {
         "x": 2,
@@ -314,7 +503,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:2:0"
       },
       {
         "x": 3,
@@ -325,7 +516,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:3:0"
       },
       {
         "x": 4,
@@ -336,7 +529,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:4:0"
       },
       {
         "x": 5,
@@ -347,7 +542,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:5:0"
       },
       {
         "x": 6,
@@ -358,7 +555,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:6:0"
       },
       {
         "x": 7,
@@ -369,7 +568,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:7:0"
+      },
+      {
+        "x": 7,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "iglesia",
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:7:0"
       },
       {
         "x": 8,
@@ -380,7 +594,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:8:0"
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "iglesia",
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:0"
       },
       {
         "x": 0,
@@ -391,10 +620,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:1"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 1,
         "type": "wall",
         "blocked": true,
@@ -402,7 +633,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:1"
       },
       {
         "x": 0,
@@ -413,10 +646,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:2"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 2,
         "type": "wall",
         "blocked": true,
@@ -424,7 +659,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:2"
       },
       {
         "x": 0,
@@ -435,10 +672,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:3"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 3,
         "type": "wall",
         "blocked": true,
@@ -446,7 +685,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:3"
+      },
+      {
+        "x": 8,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "iglesia",
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:8:4"
       },
       {
         "x": 0,
@@ -457,10 +711,12 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:4"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 4,
         "type": "window",
         "blocked": true,
@@ -468,7 +724,9 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:4"
       },
       {
         "x": 0,
@@ -479,10 +737,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:5"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 5,
         "type": "wall",
         "blocked": true,
@@ -490,7 +750,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:5"
       },
       {
         "x": 0,
@@ -501,10 +763,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:6"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 6,
         "type": "wall",
         "blocked": true,
@@ -512,7 +776,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:6"
       },
       {
         "x": 0,
@@ -523,10 +789,12 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:7"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 7,
         "type": "window",
         "blocked": true,
@@ -534,7 +802,9 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:7"
       },
       {
         "x": 0,
@@ -545,10 +815,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:8"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 8,
         "type": "wall",
         "blocked": true,
@@ -556,7 +828,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:8"
       },
       {
         "x": 0,
@@ -567,10 +841,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:9"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 9,
         "type": "wall",
         "blocked": true,
@@ -578,15 +854,20 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:9"
       },
       {
         "x": 0,
         "y": 10,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:y:0:10"
       },
       {
-        "x": 8,
+        "x": 9,
         "y": 10,
         "type": "window",
         "blocked": true,
@@ -594,7 +875,22 @@
         "cover": 25,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:10"
+      },
+      {
+        "x": 0,
+        "y": 12,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "iglesia",
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:0:12"
       },
       {
         "x": 0,
@@ -605,33 +901,39 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:0:11"
       },
       {
         "x": 2,
-        "y": 11,
+        "y": 12,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:2:12"
       },
       {
         "x": 3,
-        "y": 11,
+        "y": 12,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:3:12"
       },
       {
         "x": 4,
-        "y": 11,
+        "y": 12,
         "type": "door",
         "blocked": true,
         "blocksSight": true,
@@ -641,32 +943,51 @@
         "roomId": null,
         "doorId": "iglesia:door:4:11",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "id": "iglesia:wall:x:4:12"
       },
       {
         "x": 5,
-        "y": 11,
+        "y": 12,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:5:12"
       },
       {
         "x": 6,
-        "y": 11,
+        "y": 12,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:6:12"
       },
       {
         "x": 8,
+        "y": 12,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "iglesia",
+        "roomId": null,
+        "axis": "x",
+        "id": "iglesia:wall:x:8:12"
+      },
+      {
+        "x": 9,
         "y": 11,
         "type": "wall",
         "blocked": true,
@@ -674,45 +995,68 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "iglesia",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "iglesia:wall:y:9:11"
       },
       {
         "x": 1,
-        "y": 11,
-        "type": "wall"
+        "y": 12,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:x:1:12"
       },
       {
         "x": 7,
-        "y": 11,
-        "type": "window"
+        "y": 12,
+        "type": "window",
+        "axis": "x",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:x:7:12"
       },
       {
         "x": 7,
-        "y": 3,
-        "type": "wall"
+        "y": 4,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:x:7:4"
       },
       {
-        "x": 6,
+        "x": 7,
         "y": 1,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:y:7:1"
       },
       {
         "x": 6,
+        "y": 4,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:x:6:4"
+      },
+      {
+        "x": 7,
         "y": 3,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:y:7:3"
       },
       {
-        "x": 6,
+        "x": 7,
         "y": 2,
         "type": "door",
         "doorId": "iglesia:door:6:2",
         "open": false,
-        "locked": false
-      },
-      {
-        "x": 1,
-        "y": 10,
-        "type": "wall"
+        "locked": false,
+        "axis": "y",
+        "buildingId": "iglesia",
+        "id": "iglesia:wall:y:7:2"
       }
     ],
     "kind": "church",

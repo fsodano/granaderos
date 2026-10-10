@@ -3,11 +3,20 @@ import {useMemo} from 'react';
 import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {visibleRooms,canSee} from '../../game/tactical.js';
 import {tacticalMinimapLabel} from '../../game/tactical-minimap-label.js';
+import {tacticalLevel} from '../../game/tactical-space.js';
+import {sceneWallEdges} from '../../game/scene-wall-edges.js';
 type Props={state:any;units:any[];selected:any;project:(x:number,y:number)=>{x:number;y:number};width:number;height:number;camera:{x:number;y:number;width:number;height:number};onCenter:(x:number,y:number)=>void};
 export default function TacticalMinimap({state,units,selected,project,width,height,camera,onCenter}:Props){
  const label=tacticalMinimapLabel(state);
  const revealed=useMemo(()=>new Set([...(state.revealedRooms??[]),...visibleRooms(state)]),[state]);
  const players=useMemo(()=>state.units.filter((u:any)=>u.side==='player'),[state]);
+ const wallEdges=useMemo(()=>{
+  const level=tacticalLevel(state.units.find((u:any)=>u.id===selected));
+  return (sceneWallEdges(state,players)??[]).filter((edge:any)=>tacticalLevel(edge)===level&&!edge.destroyed&&edge.type!=='rubble').map((edge:any)=>{
+   const a=project(edge.x-.5,edge.y-.5),b=project(edge.x+(edge.axis==='x'?.5:-.5),edge.y+(edge.axis==='y'?.5:-.5));
+   return <path key={edge.id??`${edge.axis}:${edge.x},${edge.y}`} data-minimap-wall-edge={edge.id} d={`M${a.x},${a.y}L${b.x},${b.y}`} fill="none" stroke={edge.type==='door'?edge.open?'#bfac76':'#786344':'#c0b592'} strokeWidth="4"/>;
+  });
+ },[state,players,project,selected]);
  const colors:Record<string,string>={grass:'#73744c',forest:'#3c5439',scrub:'#697249',road:'#a08b5c',floor:'#9d8061',water:'#4b7271',wall:'#c0b592',window:'#a89e7c',door:'#786344',stone:'#777662',mud:'#74644b'};
  // One compound path per color replaces thousands of independent mini tiles.
  const terrain=useMemo(()=>{
@@ -21,6 +30,7 @@ export default function TacticalMinimap({state,units,selected,project,width,heig
   <rect width={width} height={height} fill="#17211a"/>
   {terrain}
 
+  {wallEdges}
   {markers}
   <rect x={camera.x} y={camera.y} width={camera.width} height={camera.height} fill="none" stroke="#ded387" strokeWidth="6"/>
  </svg>;

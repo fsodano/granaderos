@@ -59,6 +59,28 @@ test('the public trace stops at an observed fortification without executing anot
  for(const member of [20])assert.equal(unit(result.state,member).ap,100-artilleryCosts(state,unit(state,member),state.artillery[0]).fire);
 });
 
+test('an observed native wall stop presents its exact near-face contact and strips private proof',()=>{
+ const state=field('swivel',{wallEdges:[{id:'native-face',x:5,y:3,axis:'y',type:'wall',material:'stone',blocked:true,blocksSight:true,cover:40}]}),before=structuredClone(state);
+ assert.equal(teamCanSee(state,'player',state.wallEdges[0]),true);
+ const result=presentedActBattle(state,order),flight=result.frames.find(frame=>frame.type==='projectile'),impact=result.frames.find(frame=>frame.type==='impact');
+ assert.deepEqual(result.state,actBattle(state,order));assert.deepEqual(state,before);assert.equal(result.state.lastError,null);
+ assert.ok(Math.abs(flight.artilleryVisual.points.at(-1).x-4.44)<1e-10);assert.equal(flight.artilleryVisual.points.at(-1).y,3);
+ assert.deepEqual(impact.artilleryVisual.impacts,[{x:4.44,y:3,height:.65,tacticalLevel:0,outcome:'cover',material:'stone'}]);
+ assert.equal(result.state.wallEdges[0].blocked,true);assert.equal(unit(result.state,'target').hp,200);assert.equal(result.state.artillery[0].loaded,false);assert.equal(result.state.artillery[0].ammo,4);
+ assert.equal(unit(result.state,20).ap,100-artilleryCosts(state,unit(state,20),state.artillery[0]).fire);
+ for(const frame of visuals(result))assert.doesNotMatch(JSON.stringify(frame.artilleryVisual),/native-face|edgeId|SurfaceContact|surfaceContact/);
+});
+
+test('hidden or forged edge proof cannot supply a public cannon endpoint, cue or duration',()=>{
+ const state=field('swivel',{wallEdges:[{id:'private-face',x:5,y:3,axis:'y',type:'wall',material:'stone',blocked:true,blocksSight:true,cover:40}]}),point={x:4.44,y:3,height:.65,tacticalLevel:0},proof={edgeId:'private-face',point};
+ const base={source:{x:2,y:3,height:.65},destination:{x:14,y:3,height:.65},cannonId:'gun',discharge:true,impacts:[]};
+ const observe=(_state,point)=>point.side==='player'||point.x<4;
+ const capture=raw=>captureBattlePresentation(state,()=>{recordBattleFrame(state,{type:'projectile',action:'artillery',unitId:'20',artilleryVisual:raw});return state;},observe,()=>false).frames[0].artilleryVisual;
+ const ordinary=capture(base),hidden=capture({...base,displayEnd:point,displaySurfaceContact:proof,impacts:[{...point,outcome:'cover',material:'stone',surfaceContact:proof}]});
+ assert.deepEqual(hidden,ordinary);assert.equal(hidden.impacts.length,0);
+ const forged={...proof,edgeId:'unrelated'};assert.deepEqual(capture({...base,displayEnd:point,displaySurfaceContact:forged,impacts:[{...point,outcome:'cover',material:'stone',surfaceContact:forged}]}),ordinary);
+});
+
 test('the recorder clips an issued display line at visibility and strips hidden contact identifiers',()=>{
  const state=field(),raw={source:{x:2,y:3,height:.65},destination:{x:14,y:3,height:.65},cannonId:'gun',discharge:true,impacts:[{x:8,y:3,height:.65,outcome:'hit',victimId:'secret',victimKind:'npc'},{x:12,y:3,height:.65,outcome:'cover',material:'stone'}]};
  const result=captureBattlePresentation(state,()=>{recordBattleFrame(state,{type:'projectile',action:'artillery',unitId:'20',artilleryVisual:raw});return state;},(_state,point)=>point.side==='player'||point.x<=5),visual=visuals(result)[0].artilleryVisual;

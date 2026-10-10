@@ -1,8 +1,9 @@
 import {validatePrisonerRelease} from './prisoner-release.js';
 import {questsFor} from './quests.js';
-import {boundaryMatches,findSectorExit} from './tactical-exits.js';
+import {boundaryMatches,boundaryPassable,findSectorExit} from './tactical-exits.js';
 import {atHand} from './tactical-planning-space.js';
 import {tacticalLevel} from './tactical-space.js';
+import {wallMovementBlocked} from './wall-geometry.js';
 
 export function applyQuestEscortOrders(campaign,battle){
  if(!battle)return battle;
@@ -27,6 +28,6 @@ export function validateQuestEscortOrders(campaign,battle){
 export function escortArrival(quest,record,battle,npc,leader){
  if(!quest.escort||record?.status!=='offered'||record.escortOrder?.leaderId!==leader.id||record.escortOrder.waiting)throw Error('El combatiente debe conducir esta escolta.');
  const exit=findSectorExit(battle.sectorId,battle.sceneId??null,`${quest.sector}:${quest.escort.destination}`);
- if(!exit||exit.edge!==quest.escort.edge||!battle.exits?.some(e=>e.id===exit.id)||tacticalLevel(npc)!==0||tacticalLevel(leader)!==0||!(boundaryMatches(battle,npc,exit.edge)||boundaryMatches(battle,leader,exit.edge))||!atHand(npc,leader,1))throw Error('Acompañá al contacto hasta la salida indicada en el encargo y hablale allí.');
+ if(!exit||exit.edge!==quest.escort.edge||!battle.exits?.some(e=>e.id===exit.id)||tacticalLevel(npc)!==0||tacticalLevel(leader)!==0||!(boundaryMatches(battle,npc,exit.edge)||boundaryMatches(battle,leader,exit.edge))||!atHand(npc,leader,1)||wallMovementBlocked(battle,npc,leader)||[npc,leader].some(actor=>boundaryMatches(battle,actor,exit.edge)&&!boundaryPassable(battle,actor,exit.edge)))throw Error('Acompañá al contacto hasta la salida indicada en el encargo y hablale allí.');
  return {x:npc.x,y:npc.y,leaderX:leader.x,leaderY:leader.y,width:battle.width,height:battle.height};
 }

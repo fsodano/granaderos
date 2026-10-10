@@ -28,7 +28,7 @@ function render(prop,worldInput){
  return {group,dispose(){disposeWorldNode(group);geometry.dispose();materials.dispose();}};
 }
 function admitted(battle){
- const guard=battle.units[0],terrain={tiles:battle.tiles,buildings:battle.buildings,props:battle.props,night:battle.night};
+ const guard=battle.units[0],terrain={tiles:battle.tiles,wallEdges:battle.wallEdges,buildings:battle.buildings,props:battle.props,night:battle.night};
  return presentWorld(battle,terrain,[guard],new Set(battle.revealedRooms),[{key:`unit:${guard.id}`,kind:'unit',actor:guard}],0);
 }
 
@@ -96,7 +96,7 @@ test('room cell changes rebuild only a changed hearth yaw and dispose its old pr
 
 test('the ordinary furnishings admission turns the visible kitchen hearth without changing snapshots',()=>{
  const battle=createFurnishingsDetailBattle(),before=structuredClone(battle),shown=admitted(battle),prop=shown.terrain.props.find(item=>item.type==='hearth');
- assert.ok(prop);assert.equal(prop.id,'furnishings-detail-house:kitchen:dressing-0');assert.deepEqual([prop.x,prop.y],[10,5]);assert.equal(prop.rotation,undefined);assert.equal(visualPropRotation(prop,shown),180);
+ assert.ok(prop);assert.equal(prop.id,'furnishings-detail-house:kitchen:dressing-0');assert.deepEqual([prop.x,prop.y],[9,4]);assert.equal(prop.rotation,undefined);assert.equal(visualPropRotation(prop,shown),180);
  const world=createSectorWorld(new Scene(),{tileMetres:T,assetUrl:path=>path});world.update(shown);assert.ok(world.inspect().semanticIds.includes(`prop:${prop.id}`));
  const hidden=admitted(createFurnishingsDetailBattle('exterior'));assert.equal(hidden.terrain.props.length,0);world.update(hidden);assert.equal(world.inspect().semanticIds.filter(id=>id.startsWith('prop:')).length,0);world.dispose();assert.deepEqual(battle,before);
  assert.equal(prop.rotation,undefined,'derived orientation must not enter the saved or admitted prop');

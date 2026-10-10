@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "jujuy",
   "revision": 3,
   "width": 20,
@@ -669,16 +669,18 @@
     {
       "x": 14,
       "y": 4,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 15,
       "y": 4,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 16,
@@ -809,16 +811,18 @@
     {
       "x": 14,
       "y": 5,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 15,
       "y": 5,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 16,
@@ -2266,35 +2270,55 @@
           "id": "jujuy:building:interior",
           "cells": [
             {
+              "x": 5,
+              "y": 2
+            },
+            {
+              "x": 6,
+              "y": 2
+            },
+            {
+              "x": 5,
+              "y": 3
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
               "x": 6,
               "y": 3
+            },
+            {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 2
             },
             {
               "x": 7,
               "y": 3
             },
             {
-              "x": 8,
-              "y": 3
-            },
-            {
-              "x": 9,
-              "y": 3
-            },
-            {
               "x": 6,
               "y": 4
             },
             {
-              "x": 7,
-              "y": 4
-            },
-            {
-              "x": 8,
-              "y": 4
+              "x": 5,
+              "y": 5
             },
             {
               "x": 9,
+              "y": 2
+            },
+            {
+              "x": 8,
+              "y": 3
+            },
+            {
+              "x": 7,
               "y": 4
             },
             {
@@ -2302,16 +2326,68 @@
               "y": 5
             },
             {
+              "x": 5,
+              "y": 6
+            },
+            {
+              "x": 10,
+              "y": 2
+            },
+            {
+              "x": 9,
+              "y": 3
+            },
+            {
+              "x": 8,
+              "y": 4
+            },
+            {
               "x": 7,
               "y": 5
+            },
+            {
+              "x": 6,
+              "y": 6
+            },
+            {
+              "x": 10,
+              "y": 3
+            },
+            {
+              "x": 9,
+              "y": 4
             },
             {
               "x": 8,
               "y": 5
             },
             {
+              "x": 7,
+              "y": 6
+            },
+            {
+              "x": 10,
+              "y": 4
+            },
+            {
               "x": 9,
               "y": 5
+            },
+            {
+              "x": 8,
+              "y": 6
+            },
+            {
+              "x": 10,
+              "y": 5
+            },
+            {
+              "x": 9,
+              "y": 6
+            },
+            {
+              "x": 10,
+              "y": 6
             }
           ]
         }
@@ -2327,7 +2403,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:5:2"
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:5:2"
         },
         {
           "x": 6,
@@ -2338,7 +2429,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:6:2"
         },
         {
           "x": 7,
@@ -2349,7 +2442,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:7:2"
         },
         {
           "x": 8,
@@ -2360,7 +2455,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:8:2"
         },
         {
           "x": 9,
@@ -2371,7 +2468,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:9:2"
         },
         {
           "x": 10,
@@ -2382,7 +2481,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:10:2"
+        },
+        {
+          "x": 11,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:11:2"
         },
         {
           "x": 5,
@@ -2393,10 +2507,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:5:3"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2404,7 +2520,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:11:3"
         },
         {
           "x": 5,
@@ -2415,10 +2533,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:5:4"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 4,
           "type": "wall",
           "blocked": true,
@@ -2426,7 +2546,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:11:4"
         },
         {
           "x": 5,
@@ -2437,10 +2559,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:5:5"
         },
         {
-          "x": 10,
+          "x": 11,
           "y": 5,
           "type": "wall",
           "blocked": true,
@@ -2448,7 +2572,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:11:5"
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:5:7"
         },
         {
           "x": 5,
@@ -2459,33 +2598,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:5:6"
         },
         {
           "x": 6,
-          "y": 6,
+          "y": 7,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:6:7"
         },
         {
           "x": 7,
-          "y": 6,
+          "y": 7,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:7:7"
         },
         {
           "x": 8,
-          "y": 6,
+          "y": 7,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2495,11 +2640,13 @@
           "roomId": null,
           "doorId": "jujuy:door-left",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:8:7"
         },
         {
           "x": 9,
-          "y": 6,
+          "y": 7,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2509,10 +2656,25 @@
           "roomId": null,
           "doorId": "jujuy:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:9:7"
         },
         {
           "x": 10,
+          "y": 7,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:building:wall:x:10:7"
+        },
+        {
+          "x": 11,
           "y": 6,
           "type": "wall",
           "blocked": true,
@@ -2520,7 +2682,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:building:wall:y:11:6"
         }
       ]
     },
@@ -2539,43 +2703,55 @@
           "id": "jujuy:house-0:interior",
           "cells": [
             {
+              "x": 7,
+              "y": 9
+            },
+            {
+              "x": 8,
+              "y": 9
+            },
+            {
+              "x": 7,
+              "y": 10
+            },
+            {
+              "x": 9,
+              "y": 9
+            },
+            {
               "x": 8,
               "y": 10
+            },
+            {
+              "x": 7,
+              "y": 11
+            },
+            {
+              "x": 10,
+              "y": 9
             },
             {
               "x": 9,
               "y": 10
             },
             {
-              "x": 10,
-              "y": 10
-            },
-            {
-              "x": 11,
-              "y": 10
-            },
-            {
-              "x": 12,
-              "y": 10
-            },
-            {
               "x": 8,
               "y": 11
             },
             {
-              "x": 9,
-              "y": 11
-            },
-            {
-              "x": 10,
-              "y": 11
+              "x": 7,
+              "y": 12
             },
             {
               "x": 11,
-              "y": 11
+              "y": 9
             },
             {
-              "x": 12,
+              "x": 10,
+              "y": 10
+            },
+            {
+              "x": 9,
               "y": 11
             },
             {
@@ -2583,20 +2759,88 @@
               "y": 12
             },
             {
+              "x": 7,
+              "y": 13
+            },
+            {
+              "x": 12,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 10
+            },
+            {
+              "x": 10,
+              "y": 11
+            },
+            {
               "x": 9,
               "y": 12
+            },
+            {
+              "x": 8,
+              "y": 13
+            },
+            {
+              "x": 13,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 10
+            },
+            {
+              "x": 11,
+              "y": 11
             },
             {
               "x": 10,
               "y": 12
             },
             {
+              "x": 9,
+              "y": 13
+            },
+            {
+              "x": 13,
+              "y": 10
+            },
+            {
+              "x": 12,
+              "y": 11
+            },
+            {
               "x": 11,
               "y": 12
             },
             {
+              "x": 10,
+              "y": 13
+            },
+            {
+              "x": 13,
+              "y": 11
+            },
+            {
               "x": 12,
               "y": 12
+            },
+            {
+              "x": 11,
+              "y": 13
+            },
+            {
+              "x": 13,
+              "y": 12
+            },
+            {
+              "x": 12,
+              "y": 13
+            },
+            {
+              "x": 13,
+              "y": 13
             }
           ]
         }
@@ -2613,7 +2857,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:7:9"
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:7:9"
         },
         {
           "x": 8,
@@ -2624,7 +2883,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:8:9"
         },
         {
           "x": 9,
@@ -2635,7 +2896,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:9:9"
         },
         {
           "x": 10,
@@ -2646,7 +2909,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:10:9"
         },
         {
           "x": 11,
@@ -2657,7 +2922,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:11:9"
         },
         {
           "x": 12,
@@ -2668,7 +2935,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:12:9"
         },
         {
           "x": 13,
@@ -2679,7 +2948,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:13:9"
+        },
+        {
+          "x": 14,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:14:9"
         },
         {
           "x": 7,
@@ -2690,10 +2974,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:7:10"
         },
         {
-          "x": 13,
+          "x": 14,
           "y": 10,
           "type": "wall",
           "blocked": true,
@@ -2701,7 +2987,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:14:10"
         },
         {
           "x": 7,
@@ -2712,10 +3000,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:7:11"
         },
         {
-          "x": 13,
+          "x": 14,
           "y": 11,
           "type": "wall",
           "blocked": true,
@@ -2723,7 +3013,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:14:11"
         },
         {
           "x": 7,
@@ -2734,10 +3026,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:7:12"
         },
         {
-          "x": 13,
+          "x": 14,
           "y": 12,
           "type": "wall",
           "blocked": true,
@@ -2745,7 +3039,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:14:12"
+        },
+        {
+          "x": 7,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:7:14"
         },
         {
           "x": 7,
@@ -2756,33 +3065,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:7:13"
         },
         {
           "x": 8,
-          "y": 13,
+          "y": 14,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:8:14"
         },
         {
           "x": 9,
-          "y": 13,
+          "y": 14,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:9:14"
         },
         {
           "x": 10,
-          "y": 13,
+          "y": 14,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2792,32 +3107,51 @@
           "roomId": null,
           "doorId": "jujuy:house-0:door:10:13",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:10:14"
         },
         {
           "x": 11,
-          "y": 13,
+          "y": 14,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:11:14"
         },
         {
           "x": 12,
-          "y": 13,
+          "y": 14,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:12:14"
         },
         {
           "x": 13,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "jujuy:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "jujuy:house-0:wall:x:13:14"
+        },
+        {
+          "x": 14,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2825,22 +3159,24 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "jujuy:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "jujuy:house-0:wall:y:14:13"
         }
       ]
     }
   ],
   "props": [
     {
-      "id": "jujuy:building:table:6:3",
-      "type": "table",
+      "id": "jujuy:building:bed:6:5",
+      "type": "bed",
       "x": 6,
-      "y": 3,
+      "y": 4,
       "buildingId": "jujuy:building",
       "roomId": "jujuy:building:interior",
       "footprint": {
         "width": 1,
-        "height": 1
+        "height": 2
       },
       "blocksMovement": true
     },
@@ -2858,19 +3194,6 @@
       "blocksMovement": true
     },
     {
-      "id": "jujuy:building:bed:6:5",
-      "type": "bed",
-      "x": 6,
-      "y": 4,
-      "buildingId": "jujuy:building",
-      "roomId": "jujuy:building:interior",
-      "footprint": {
-        "width": 1,
-        "height": 2
-      },
-      "blocksMovement": true
-    },
-    {
       "id": "jujuy:building:chest:9:5",
       "type": "chest",
       "x": 9,
@@ -2884,25 +3207,12 @@
       "blocksMovement": true
     },
     {
-      "id": "jujuy:house-0:table:8:10",
+      "id": "jujuy:building:table:6:3",
       "type": "table",
-      "x": 8,
-      "y": 10,
-      "buildingId": "jujuy:house-0",
-      "roomId": "jujuy:house-0:interior",
-      "footprint": {
-        "width": 1,
-        "height": 1
-      },
-      "blocksMovement": true
-    },
-    {
-      "id": "jujuy:house-0:bench:12:10",
-      "type": "bench",
-      "x": 12,
-      "y": 10,
-      "buildingId": "jujuy:house-0",
-      "roomId": "jujuy:house-0:interior",
+      "x": 6,
+      "y": 3,
+      "buildingId": "jujuy:building",
+      "roomId": "jujuy:building:interior",
       "footprint": {
         "width": 1,
         "height": 1
@@ -2923,10 +3233,10 @@
       "blocksMovement": true
     },
     {
-      "id": "jujuy:house-0:chest:12:12",
-      "type": "chest",
+      "id": "jujuy:house-0:bench:12:10",
+      "type": "bench",
       "x": 12,
-      "y": 12,
+      "y": 10,
       "buildingId": "jujuy:house-0",
       "roomId": "jujuy:house-0:interior",
       "footprint": {
@@ -2942,6 +3252,32 @@
       "y": 12,
       "footprint": {
         "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "jujuy:house-0:chest:12:12",
+      "type": "chest",
+      "x": 12,
+      "y": 12,
+      "buildingId": "jujuy:house-0",
+      "roomId": "jujuy:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "jujuy:house-0:table:8:10",
+      "type": "table",
+      "x": 8,
+      "y": 10,
+      "buildingId": "jujuy:house-0",
+      "roomId": "jujuy:house-0:interior",
+      "footprint": {
+        "width": 1,
         "height": 1
       },
       "blocksMovement": true
@@ -2977,6 +3313,80 @@
     {
       "x": 19,
       "y": 8
+    }
+  ],
+  "wallEdges": [
+    {
+      "x": 14,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:14:5"
+    },
+    {
+      "x": 14,
+      "y": 6,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:14:6"
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:15:5"
+    },
+    {
+      "x": 15,
+      "y": 6,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:15:6"
+    },
+    {
+      "x": 15,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:15:4"
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:15:5"
+    },
+    {
+      "x": 16,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:16:4"
+    },
+    {
+      "x": 16,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:16:5"
     }
   ]
 }

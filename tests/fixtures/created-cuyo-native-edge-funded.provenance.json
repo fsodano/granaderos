@@ -1,0 +1,92 @@
+{
+  "description": "Unmodified official earned created Cuyo funded checkpoint. Native Yatasto507:1083 continued through real Mendoza victory, finite care, delayed foundry gun recovery and paid army funding. This fixture begins the finite Ensenada side procurement, not a fabricated campaign.",
+  "productionSnapshot": "f12c2d0f",
+  "testSnapshot": "0e9650bcc7faa2fe3817e2de76469f0f5486c672",
+  "inputPath": "/tmp/wall-created-cuyo-arsenal-input.save.json",
+  "originalFundedPath": "/tmp/wall-foundry-convoy-funded.save.json",
+  "mendozaInput": "/tmp/wall-created-cuyo-checkpoints/002-mendoza.save.json",
+  "yatastoInput": "/tmp/wall-northern-mobile-crew-yatasto.save.json",
+  "captureMethod": "Exact copy of the accepted official funded save after completeFreshArmyFunding; no fields or additional orders changed.",
+  "logs": [
+    "/tmp/wall-created-cuyo-continuation.log",
+    "/tmp/wall-foundry-convoy-regression-final.log",
+    "/tmp/wall-foundry-convoy-funding-proof.log",
+    "/tmp/wall-created-cuyo-arsenal-proof.log"
+  ],
+  "clock": [
+    680,
+    499
+  ],
+  "location": "mendoza",
+  "startingTreasury": 132640,
+  "squad": [
+    2,
+    0
+  ],
+  "priorDeaths": [
+    3,
+    8,
+    9,
+    11,
+    101,
+    103,
+    104,
+    107,
+    108,
+    110,
+    112,
+    113,
+    114,
+    115,
+    117,
+    119,
+    120,
+    122,
+    123,
+    124,
+    126,
+    129,
+    131,
+    133,
+    134,
+    136,
+    137,
+    139,
+    141,
+    146,
+    1000
+  ],
+  "spentGuns": [
+    {
+      "sector": "mendoza",
+      "id": "arsenal:buenos_aires:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "facing": 0.8850668158886104
+    },
+    {
+      "sector": "mendoza",
+      "id": "arsenal:cordoba:1",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "facing": 0.4636476090008061
+    },
+    {
+      "sector": "mendoza",
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "facing": -2.0899424410414196
+    }
+  ],
+  "sha256": "a1f2f314c96d3f1879b4ef584a0709ccb1aca2a4d594cfd5330de11f0926f7ca",
+  "gzipSha256": "0810feef0a2c172801872f6e571e5a1603b9bc031b62765a92bb046dc897e645",
+  "officialSaveRoundTripExact": true,
+  "routeChange": "An extra real Ensenada conquest obtains the remaining one-time field8 and swivel arsenal. The original three bronze guns remain spent. Actual northern withdrawal, paid terms, casualties and 54-hour cannon carts remain part of the route."
+}

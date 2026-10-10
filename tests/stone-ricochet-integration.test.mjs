@@ -38,9 +38,9 @@ function paidAssault(){
 function arena(campaign){
  const request=campaign.pendingBattle,width=32,height=16;
  const tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,blocksSight:false,cover:0}));
- Object.assign(tiles.find(tile=>tile.x===8&&tile.y===5),{type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100});
+ const wallEdges=[{id:'native-stone',x:7,y:5,axis:'x',type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100}];
  const battle=createBattle(request.squad.map(unit=>({...unit,x:unit.id===107?1:13,y:unit.id===107?3:5,facing:unit.id===107?2:6})),{
-  ...request,width,height,seed:8,weather:{rain:0,humidity:0},tiles,props:[],
+  ...request,width,height,seed:8,weather:{rain:0,humidity:0},tiles,wallEdges,props:[],
   enemies:request.enemies.map((unit,i)=>({...unit,x:i?28:12,y:i?10+i:4,patrol:false,overwatch:false})),
   npcs:request.npcs.map((npc,i)=>({...npc,x:31-i,y:15})),
  });
@@ -70,7 +70,7 @@ test('one paid native ball reflects from an exposed stone face, injures its obse
  const bounce=flight.ricochets?.[0],contact=flight.bodyImpacts.find(hit=>hit.victimKind==='unit'&&hit.victimId===target.id);
  assert.ok(bounce,'the real selected single-ball load reaches one exposed stone face');
  assert.equal(flight.ricochets.length,1);assert.deepEqual(bounce.normal,{x:0,y:-1,height:0});
- assert.ok(Math.abs(bounce.impact.x-7.75)<1e-10);assert.ok(Math.abs(bounce.impact.y-4.5)<1e-10);
+ assert.ok(Math.abs(bounce.impact.x-7.48)<1e-10);assert.ok(Math.abs(bounce.impact.y-4.44)<1e-10);
  assert.equal(bounce.remainingImpact,bounce.incomingImpact*COMBAT_BALANCE.firearmRicochetForceRetention);
  assert.ok(bounce.remainingImpact<bounce.incomingImpact);
  assert.ok(contact&&contact.segmentIndex===1,'the same physical ball reaches the observed body after its turn');
@@ -78,7 +78,7 @@ test('one paid native ball reflects from an exposed stone face, injures its obse
  assert.equal(flight.segments[0].fromDistance,0);assert.equal(flight.segments[1].fromDistance,flight.segments[0].toDistance);
  assert.ok(flight.segments.at(-1).toDistance<=weapon.range*COMBAT_BALANCE.firearmFlightRangeMultiplier+1e-10,'the reflection spends the original finite range');
  assert.ok(forecast.bodyImpacts.some(hit=>hit.victimKind==='unit'&&hit.victimId===target.id),'the public forecast uses the same observed path');
- const ordinaryCover={...start.battle,tiles:start.battle.tiles.map(tile=>tile.x===8&&tile.y===5?{...tile,material:'adobe'}:tile)};
+ const ordinaryCover={...start.battle,wallEdges:start.battle.wallEdges.map(edge=>({...edge,material:'adobe'}))};
  const straight=projectileFlight(ordinaryCover,shooter,point,weapon);
  assert.ok(!straight.ricochets?.length);assert.ok(!straight.bodyImpacts.some(hit=>hit.victimId===target.id&&hit.victimKind==='unit'),'ordinary penetrable material does not invent a reflected body contact');
  assert.deepEqual(start,before,'forecast and geometry spend no RNG, time, money or equipment');

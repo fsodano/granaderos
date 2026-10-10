@@ -1,0 +1,20 @@
+{
+  "scope": "Earned post-release native edge campaign from the ordinary opening, actual Tucuman defeat, paid rescue assault and public stabilization. No added health, supplies, force, ownership or outcomes after capture.",
+  "sourceCapture": "/tmp/wall-content-rescue-native-stabilized.json",
+  "sourceCommitRecorded": false,
+  "rawSha256": "447c68e9831fa5e63ed99b474f8e479f81a50474077330a73b08e89c11850896",
+  "gzipSha256": "3a80c082dc3f155db125b79743325aa18b18a7346f88efd6111a141f1dff6a61",
+  "inputClock": [
+    182,
+    1702
+  ],
+  "patients": [
+    121,
+    126,
+    129,
+    130
+  ],
+  "additionalHealthChanges": 0,
+  "additionalItems": 0,
+  "additionalActionsAfterCapture": 0
+}

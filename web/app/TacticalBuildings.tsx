@@ -32,7 +32,8 @@ export function buildBuildingObjects(args:Args):SceneObject[]{
 // Each renderer belongs to one immutable simulation/visibility/light snapshot.
 // Camera changes reuse retained nodes; discarded viewport objects are evicted.
 export function createBuildingRenderer({state:s,revealed:knownRooms,project,light,cursorLevel=0}:Omit<Args,'viewport'>){
- const buildings=(s.buildings??[]).map((b:any)=>b.kind==='estancia'?{...b,kind:'farmhouse'}:b.kind==='mansion'?{...b,kind:'palace'}:b),byId=new Map<any,any>(),doorsByBuilding=new Map<any,any[]>();
+ const edgeMode=s.wallEdges!==undefined,artInset=edgeMode?0:wallInset;
+ const buildings=(s.buildings??[]).map((source:any)=>{const b=edgeMode?{...source,walls:s.wallEdges.filter((edge:any)=>edge.buildingId===source.id)}:source;return b.kind==='estancia'?{...b,kind:'farmhouse'}:b.kind==='mansion'?{...b,kind:'palace'}:b;}),byId=new Map<any,any>(),doorsByBuilding=new Map<any,any[]>();
  const roofSurfaces=new Map<string,any[]>();
  for(const surface of s.upperSurfaces??[])if(surface.kind==='roof'&&surface.buildingId){
   const surfaces=roofSurfaces.get(surface.buildingId)??[];surfaces.push(surface);roofSurfaces.set(surface.buildingId,surfaces);
@@ -43,18 +44,18 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
  const coveredRooms=new Set(buildings.filter((b:any)=>terraceBuildings.has(b.id)).flatMap((b:any)=>(b.rooms??[]).filter((room:any)=>!tacticalLevel(room)).map((room:any)=>room.id)));
  const revealed=cursorLevel?new Set([...knownRooms].filter(id=>!coveredRooms.has(id))):knownRooms;
  for(const b of buildings)if(!byId.has(b.id))byId.set(b.id,b);
- for(const t of s.tiles)if(t.type==='door'){const doors=doorsByBuilding.get(t.buildingId)??[];doors.push(t);doorsByBuilding.set(t.buildingId,doors);}
- const wallTiles=s.tiles.filter((t:any)=>['wall','door','window'].includes(t.type));
+ for(const t of edgeMode?s.wallEdges:s.tiles)if(t.type==='door'){const doors=doorsByBuilding.get(t.buildingId)??[];doors.push(t);doorsByBuilding.set(t.buildingId,doors);}
+ const wallTiles=edgeMode?s.wallEdges.filter((t:any)=>['wall','door','window'].includes(t.type)).map((t:any)=>({...t,edgeX:t.x,edgeY:t.y,x:t.x-(t.axis==='y'?.5:0),y:t.y-(t.axis==='x'?.5:0)})):s.tiles.filter((t:any)=>['wall','door','window'].includes(t.type));
  const occupied=new Set(wallTiles.map((t:any)=>`${t.x},${t.y}`));
  const walls=wallTiles.map((t:any)=>{
   const b=byId.get(t.buildingId),style=buildingStyle(b);
-  const corner=b&&(t.x===b.x||t.x===b.x+b.width-1)&&(t.y===b.y||t.y===b.y+b.height-1);
+  const edge=Boolean(t.axis),corner=!edge&&b&&(t.x===b.x||t.x===b.x+b.width-1)&&(t.y===b.y||t.y===b.y+b.height-1);
   const junction=(occupied.has(`${t.x-1},${t.y}`)||occupied.has(`${t.x+1},${t.y}`))&&(occupied.has(`${t.x},${t.y-1}`)||occupied.has(`${t.x},${t.y+1}`));
-  const roomOpen=(b?.rooms?.length>0&&b.rooms.every((r:any)=>revealed.has(r.id)))||b?.rooms?.some((r:any)=>revealed.has(r.id)&&r.cells.some((c:any)=>corner||junction?Math.abs(c.x-t.x)<=1&&Math.abs(c.y-t.y)<=1:Math.abs(c.x-t.x)+Math.abs(c.y-t.y)===1));
-  const onX=b&&(t.x===b.x||t.x===b.x+b.width-1),onY=b&&(t.y===b.y||t.y===b.y+b.height-1);
-  const axes:WallAxis[]=b?[...(onX?['y' as const]:[]),...(onY?['x' as const]:[])]:[occupied.has(`${t.x+1},${t.y}`)||occupied.has(`${t.x-1},${t.y}`)?'x':'y'];
+  const roomOpen=(b?.rooms?.length>0&&b.rooms.every((r:any)=>revealed.has(r.id)))||b?.rooms?.some((r:any)=>revealed.has(r.id)&&r.cells.some((c:any)=>corner||junction?Math.abs(c.x-t.x)<=1&&Math.abs(c.y-t.y)<=1:Math.abs(c.x-t.x)+Math.abs(c.y-t.y)===(edge?.5:1)));
+  const onX=b&&(edge?t.axis==='y'&&(t.x===b.x-.5||t.x===b.x+b.width-.5):(t.x===b.x||t.x===b.x+b.width-1)),onY=b&&(edge?t.axis==='x'&&(t.y===b.y-.5||t.y===b.y+b.height-.5):(t.y===b.y||t.y===b.y+b.height-1));
+  const axes:WallAxis[]=edge?[t.axis]:b?[...(onX?['y' as const]:[]),...(onY?['x' as const]:[])]:[occupied.has(`${t.x+1},${t.y}`)||occupied.has(`${t.x-1},${t.y}`)?'x':'y'];
   if(!axes.length){if(occupied.has(`${t.x-1},${t.y}`)||occupied.has(`${t.x+1},${t.y}`))axes.push('x');if(occupied.has(`${t.x},${t.y-1}`)||occupied.has(`${t.x},${t.y+1}`))axes.push('y');if(!axes.length)axes.push('x');}
-  return {t,b,style,roomOpen,axes,onX,onY};
+  return {t,b,style,roomOpen,axes,onX,onY,edge};
  });
  const rooms=buildings.flatMap((b:any)=>(b.rooms??[]).map((room:any,index:number)=>({b,room,decor:roomDecorProfile(b,room,index),cells:new Set((room.cells??[]).map((c:any)=>`${c.x},${c.y}`))})));
  let retained=new Map<string,SceneObject>();
@@ -73,20 +74,20 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
   return {depth:-1002,node:<polygon data-building-shadow={b.id} points={points.map(p=>`${p.x},${p.y}`).join(' ')} fill="#131b10" opacity=".23" pointerEvents="none"/>};
   });
  }
- for(const {t,b,style,roomOpen,axes,onX,onY} of walls){
+ for(const {t,b,style,roomOpen,axes,onX,onY,edge} of walls){
   const profile=getBuildingRenderProfile(b,revealed);
   if(!pointInViewport(viewport,project(t.x,t.y),Math.max(100,legacyArchitecture(b)?style.height:profile.wallHeight)))continue;
   axes.forEach((axis:WallAxis,index:number)=>{
-   add(`architecture-${t.x}-${t.y}-${axis}`,()=>{
-   const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&(isFront||(!onX&&!onY)),fullHeight=legacyArchitecture(b)?style.height:onX||onY?profile.wallHeight:profile.groundFloorHeight,height=cut?BUILDING_OPENINGS.cutawayHeight:fullHeight;
+   add(`architecture-${t.id??`${t.x}-${t.y}`}-${axis}`,()=>{
+   const isFront=b&&(axis==='x'?t.y===b.y+b.height-(edge?.5:1):t.x===b.x+b.width-(edge?.5:1)),cut=roomOpen&&(isFront||(!onX&&!onY)),fullHeight=legacyArchitecture(b)?style.height:onX||onY?profile.wallHeight:profile.groundFloorHeight,height=cut?BUILDING_OPENINGS.cutawayHeight:fullHeight;
    // Place each face near its southern tile edge. Clamp corners to the
    // shifted intersection so both wall axes remain joined.
    const along=axis==='x'?t.x:t.y;
    const lower=b?(axis==='x'?b.x:b.y)+wallInset:-Infinity;
    const upper=b?(axis==='x'?b.x+b.width-1:b.y+b.height-1)+wallInset:Infinity;
-   const first=Math.max(along-.5,lower),last=Math.min(along+.5,upper);
-   const start=axis==='x'?project(first,t.y+wallInset):project(t.x+wallInset,first);
-   const end=axis==='x'?project(last,t.y+wallInset):project(t.x+wallInset,last);
+   const first=edge?along-.5:Math.max(along-.5,lower),last=edge?along+.5:Math.min(along+.5,upper);
+   const start=axis==='x'?project(first,t.y+artInset):project(t.x+artInset,first);
+   const end=axis==='x'?project(last,t.y+artInset):project(t.x+artInset,last);
    const width=40,dx=(end.x-start.x)/width,dy=(end.y-start.y)/width,seed=(t.x*17+t.y*31)%11;
    const isOpening=t.type!=='wall'&&index===0;
    const textureId=`building-wall-${t.x}-${t.y}-${axis}`,plaster=`url(#${textureId})`;
@@ -95,7 +96,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
    const openingStyle=t.style??(t.type==='door'?b?.doorStyle:b?.windowStyle)??(authoredWall?(t.type==='door'?appearance.doorStyle:appearance.windowStyle):undefined);
    const palette=WALL_COLOURS[appearance.wallFinish];
    const top=(p:Point,z:number)=>`${p.x},${p.y-z}`;
-   return {depth:t.x+t.y+wallInset+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} data-wall-height={height} data-visible-storeys={!cut&&(onX||onY)?legacyArchitecture(b)?(style.upper?2:1):profile.floors:1} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
+   return {depth:t.x+t.y+artInset+.015,node:<g data-wall-tile={edge?undefined:`${t.x},${t.y}`} data-wall-edge={edge?t.id:undefined} data-cutaway={Boolean(cut)} data-wall-height={height} data-visible-storeys={!cut&&(onX||onY)?legacyArchitecture(b)?(style.upper?2:1):profile.floors:1} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
     {legacyArchitecture(b)&&<defs><pattern id={textureId} patternUnits="userSpaceOnUse" width="128" height="128" x={-(t.x*37+t.y*23)%128} y={-(t.y*41+t.x*17)%128}><image href={sitePath(`/art/buildings/${materialName}-v1.webp`)} width="128" height="128" style={{imageRendering:'pixelated'}}/></pattern></defs>}
     {/* A shallow wall cap makes thickness readable without a full-tile cube. */}
     <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={authoredWall?palette.trim:cut?'#bda980':'#d2c49e'} stroke={authoredWall?palette.shadow:'#807459'} strokeWidth=".55"/>
@@ -131,8 +132,8 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
     const point=(x:number,y:number)=>{const p=project(x,y);return `${p.x},${p.y}`;};
     // Perimeter walls are drawn inside their structural cells. Extend only
     // adjacent floor edges to that wall plane, covering the underlying grass.
-    const x0=c.x===b.x+1?b.x+wallInset:c.x-.5,x1=c.x===b.x+b.width-2?b.x+b.width-1+wallInset:c.x+.5;
-    const y0=c.y===b.y+1?b.y+wallInset:c.y-.5,y1=c.y===b.y+b.height-2?b.y+b.height-1+wallInset:c.y+.5;
+    const x0=!edgeMode&&c.x===b.x+1?b.x+wallInset:c.x-.5,x1=!edgeMode&&c.x===b.x+b.width-2?b.x+b.width-1+wallInset:c.x+.5;
+    const y0=!edgeMode&&c.y===b.y+1?b.y+wallInset:c.y-.5,y1=!edgeMode&&c.y===b.y+b.height-2?b.y+b.height-1+wallInset:c.y+.5;
     const joints:string[]=[];
     for(let row=0;row<4;row++){
      const y=c.y-.5+row/4;
@@ -155,7 +156,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
   if(!legacyArchitecture(b))continue;
   add(`architecture-roof-${room.id}`,()=>{
   const xs=room.cells.map((p:any)=>p.x),ys=room.cells.map((p:any)=>p.y);
-  const left=Math.max(b.x-.18,Math.min(...xs)-1.18),right=Math.min(b.x+b.width-.82,Math.max(...xs)+1.18),top=Math.max(b.y-.18,Math.min(...ys)-1.18),bottom=Math.min(b.y+b.height-.82,Math.max(...ys)+1.18);
+  const left=edgeMode?b.x-.5:Math.max(b.x-.18,Math.min(...xs)-1.18),right=edgeMode?b.x+b.width-.5:Math.min(b.x+b.width-.82,Math.max(...xs)+1.18),top=edgeMode?b.y-.5:Math.max(b.y-.18,Math.min(...ys)-1.18),bottom=edgeMode?b.y+b.height-.5:Math.min(b.y+b.height-.82,Math.max(...ys)+1.18);
   // The detailed roof is one mesh. Sample its supported upper cells rather
   // than borrowing downstairs light, which must stop at the floor slab.
   const surfaces=roofSurfaces.get(b.id),brightness=surfaces?.length?surfaces.reduce((sum,p)=>sum+light(p.x,p.y,tacticalLevel(p)),0)/surfaces.length:light(b.x,b.y);
@@ -166,7 +167,7 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
  }
  // Campaign shells and editor templates use the same catalog massing,
  // rotated entrance details and roof clipping on the authored wall planes.
- const insetProject=(x:number,y:number)=>project(x+wallInset,y+wallInset);
+ const insetProject=(x:number,y:number)=>project(x+artInset,y+artInset);
  for(const b of buildings){
   if(legacyArchitecture(b)||!buildingInViewport(viewport,b,project))continue;
   const hidden=b.rooms?.find((r:any)=>r.cells?.length&&!revealed.has(r.id));

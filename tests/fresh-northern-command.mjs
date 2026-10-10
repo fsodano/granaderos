@@ -21,6 +21,8 @@ import {prepareRouteBattery} from './route-battery.mjs';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {operativeLocation,operativeInTransit} from '../game/squads.js';
 import {doctorRate} from '../game/medical-care.js';
+import {worldCell} from '../game/world-cells.js';
+import {previewStrategicRoute} from '../game/strategic-route.js';
 
 // Reinforce and position the real survivors before the arriving counterattack.
 export function prepareHiredNorthernDefense(start){
@@ -94,11 +96,15 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
  for(const sector of [...new Set(patients.map(at))]){
   for(let attempt=0;attempt<patients.length;attempt++){
    const urgent=localPatients(sector).filter(id=>c.operativeState[id].bleeding||c.operativeState[id].hp<15);if(!urgent.length)break;
+   // A conscious wounded soldier can dress his own injury before a long
+   // doctor approach. Obtain one actual reachable dressing for that work.
+   for(const id of urgent)if(c.operativeState[id].hp>=15&&rosterFor(c).find(op=>op.id===id).medical>0&&!c.operativeState[id].medkits)takeKnown(id,1);
    const medic=rosterFor(c).filter(op=>live().includes(op.id)&&at(op.id)===sector&&op.medical>0&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10).sort((a,b)=>Number(Boolean(c.operativeState[a.id].bleeding))-Number(Boolean(c.operativeState[b.id].bleeding))||b.medical-a.medical||a.id-b.id)[0];
    assert.ok(medic,'an actual conscious local medic must stabilize the urgent casualty');
    const ids=[...new Set([medic.id,...urgent])].slice(0,6),need=ids.filter(id=>urgent.includes(id)).reduce((sum,id)=>sum+Number(c.operativeState[id].bleeding>0)+Math.ceil(Math.max(0,15-c.operativeState[id].hp)/7),0);
    if(c.operativeState[medic.id].medkits<need)takeKnown(medic.id,need-c.operativeState[medic.id].medkits);
    order({type:'createSquad',ids,name:'Socorro provincial urgente',sector});for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
+   onCheckpoint(`northern-officer-emergency-input-${sector}`,c);
    const initial=visit(c),aid=autoBandageBattle(initial.battle);let paid=initial;
    for(let step=0;step<aid.steps.length;step++){
     const battle=actBattle(paid.battle,aid.steps[step]);assert.equal(battle.lastError,null);paid=sync({campaign:paid.campaign,battle});
@@ -321,6 +327,55 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  return prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
 }
 
+// A routed survivor can occupy a real rural cell without a local medic. Send
+// a serving doctor with actual carried dressings through an ordinary journey.
+export function relieveStockNorthernPatient(start,{patientId,doctorId,report=()=>{},onCheckpoint=()=>{}}={}){
+ let c=decodeSave(encodeSave(start)).campaign;const before=structuredClone(start),orders=[];
+ const target=operativeLocation(c,patientId),destination=worldCell(target),clock=()=>c.hour*3600+(c.secondOfHour??0);
+ assert.ok(destination&&c.recruited.includes(patientId)&&c.operativeState[patientId].alive);
+ const order=action=>{const previous=c;c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+c.lastError);orders.push({action:structuredClone(action),from:previous.hour*3600+(previous.secondOfHour??0),to:clock(),treasuryBefore:previous.resources.treasury,treasuryAfter:c.resources.treasury});};
+ const retain=()=>{
+  for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured)){
+   const contract=c.contracts[id],expiry=contractExpiresSeconds(contract);assert.ok(contract&&(expiry===null||expiry>clock()));
+   if(expiry!==null&&expiry<=clock()+3601){const quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'day'),cash=c.resources.treasury;assert.equal(quote.available,true,quote.reason);order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});assert.equal(c.resources.treasury,cash-quote.price);}
+  }
+ };
+ const distance=op=>{const cell=worldCell(operativeLocation(c,op.id));return cell?Math.abs(cell.col-destination.col)+Math.abs(cell.row-destination.row):Infinity;};
+ const candidates=rosterFor(c).filter(op=>{const record=c.operativeState[op.id];return (doctorId===undefined||op.id===doctorId)&&c.recruited.includes(op.id)&&record.alive&&!record.captured&&!operativeInTransit(c,op.id)&&record.hp>=15&&!record.bleeding&&!record.asleep&&record.energy>10&&record.medkits>0&&op.medical>=20;})
+  .sort((a,b)=>distance(a)-distance(b)||Number(c.operativeState[b.id].medkits>1)-Number(c.operativeState[a.id].medkits>1)||b.medical-a.medical||a.id-b.id);
+ let doctor=null,route=null;
+ for(const candidate of candidates){
+  order({type:'createSquad',ids:[candidate.id],sector:operativeLocation(c,candidate.id),name:'Socorro del camino'});order({type:'assignCare',operativeId:candidate.id,assignment:'active'});
+  if(operativeLocation(c,candidate.id)===target){doctor=candidate;route={path:[target],hours:0};break;}
+  const quote=previewStrategicRoute(c,c.activeSquadId,target,destination.anchor&&c.routes.posta?'posta':'march');
+  if(quote.valid){doctor=candidate;route=quote;break;}
+ }
+ assert.ok(doctor,`No actual serving doctor can reach the patient at ${target}.`);
+ const source=operativeLocation(c,doctor.id),squadId=c.activeSquadId,preparation=[];
+ // Preparing a finite dressing before departure avoids a weapon delay at a
+ // critical patient's cell. This remains an ordinary paid tactical order.
+ const prepared=visit(c),unit=prepared.battle.units.find(unit=>unit.id===String(doctor.id));assert.ok(unit);
+ let preparedBattle=prepared.battle;
+ if(unit.activeSlot!=='medical'){const action={type:'weapon',unitId:unit.id,slot:'medical'};preparedBattle=actBattle(preparedBattle,action);assert.equal(preparedBattle.lastError,null);preparation.push(action);}
+ c=leave(sync({campaign:prepared.campaign,battle:preparedBattle}));
+ if(route.action)order(route.action);
+ for(let hour=0;c.squads.find(squad=>squad.id===squadId).journey&&hour<48;hour++){
+  assert.equal(c.pendingEncounter,null);retain();order({type:'wait',hours:1});assert.ok(c.operativeState[patientId].alive,'The actual patient must survive the real relief journey.');
+ }
+ assert.equal(c.squads.find(squad=>squad.id===squadId).journey,undefined);assert.equal(operativeLocation(c,doctor.id),target);
+ const group=[doctor.id,patientId];order({type:'createSquad',ids:group,sector:target,name:'Socorro del herido'});for(const id of group)order({type:'assignCare',operativeId:id,assignment:'active'});
+ onCheckpoint('stock-road-relief-before-aid',structuredClone(c));
+ const p=visit(c),stock=p.battle.units.filter(unit=>group.includes(Number(unit.id))).reduce((total,unit)=>total+unit.medkits,0),aid=autoBandageBattle(p.battle);
+ c=leave(sync({campaign:p.campaign,battle:aid.battle}));
+ const treatments=aid.steps.filter(action=>action.type==='useItem').length;assert.equal(group.reduce((total,id)=>total+c.operativeState[id].medkits,0),stock-treatments);
+ assert.ok(c.operativeState[patientId].alive&&c.operativeState[patientId].hp>=15);assert.equal(c.operativeState[patientId].bleeding,0);
+ for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
+ assert.deepEqual(start,before);c=decodeSave(encodeSave(c)).campaign;assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ const receipt={doctor:doctor.id,patientId,source,destination:target,route:route.path,hours:route.hours,orders,preparation,aid:{steps:aid.steps,elapsedSeconds:aid.elapsedSeconds,treatedIds:aid.treatedIds,stoppedReason:aid.stoppedReason}};
+ report({event:'northernRoadRelief',doctor:doctor.id,patientId,source,destination:target,hours:route.hours,actions:aid.steps.length,elapsedSeconds:aid.elapsedSeconds,dressingsUsed:treatments});onCheckpoint('stock-road-relief-complete',structuredClone(c));
+ return {campaign:c,receipt};
+}
+
 // Yatasto accepts a capable local envoy; it does not require a particular officer.
 // Stable wounds remain real wounds. Only acute survivors need finite field aid.
 function completeStockNorthernMission(start,{report=()=>{},onCheckpoint}={}){
@@ -356,7 +411,7 @@ function completeStockNorthernMission(start,{report=()=>{},onCheckpoint}={}){
   assert.ok(batches<live().length,'Finite first aid must resolve each actual acute group.');keepServing();
   const patients=acute().sort((a,b)=>c.operativeState[a].hp/Math.max(1,c.operativeState[a].bleeding)-c.operativeState[b].hp/Math.max(1,c.operativeState[b].bleeding)),at=operativeLocation(c,patients[0]);
   const medic=rosterFor(c).filter(op=>live().includes(op.id)&&operativeLocation(c,op.id)===at&&!operativeInTransit(c,op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>0&&op.medical>0).sort((a,b)=>Number(c.operativeState[a.id].bleeding>0)-Number(c.operativeState[b.id].bleeding>0)||b.medical-a.medical)[0];
-  assert.ok(medic,`No actual capable local medic can stabilize the survivors at ${at}.`);
+  if(!medic){c=relieveStockNorthernPatient(c,{patientId:patients[0],report,onCheckpoint}).campaign;continue;}
   const group=[medic.id,...patients.filter(id=>id!==medic.id&&operativeLocation(c,id)===at).slice(0,5)];
   order({type:'createSquad',ids:group,sector:at,name:'Socorro del norte'});
   for(const id of group)order({type:'assignCare',operativeId:id,assignment:'active'});
@@ -388,6 +443,22 @@ function completeStockNorthernMission(start,{report=()=>{},onCheckpoint}={}){
  assert.equal(c.squads.find(q=>q.id===squadId).journey,undefined);assert.equal(c.location,'tucuman');checkpoint('northernMissionArrival');
  assert.equal(acute().length,0);keepServing();c=attendYatasto(c);
  assert.equal(c.phase,3);assert.equal(c.missions.yatasto.completed,true);assert.equal(c.defeated,false);assert.equal(c.completed,false);
+ // Preserve the envoy party and use existing local squads for the surviving
+ // reserve. Reorganizing bodies in their actual cells frees later relief
+ // slots without a journey, recovery hour, or equipment transfer.
+ const envoySquad=c.activeSquadId,envoyMembers=[...c.squad],records=structuredClone(c.operativeState),contracts=structuredClone(c.contracts),cash=c.resources.treasury,seconds=now(),locations=new Map(live().map(id=>[id,operativeLocation(c,id)]));
+ const cells=[...new Set(live().filter(id=>!envoyMembers.includes(id)&&!operativeInTransit(c,id)).map(id=>locations.get(id)))];
+ for(const cell of cells){
+  const ids=live().filter(id=>!envoyMembers.includes(id)&&!operativeInTransit(c,id)&&operativeLocation(c,id)===cell),used=new Set();
+  for(let offset=0;offset<ids.length;offset+=6){
+   const members=ids.slice(offset,offset+6),target=c.squads.find(squad=>squad.id!==envoySquad&&!used.has(squad.id)&&squad.location===cell&&!squad.journey&&squad.members.includes(members[0]))??c.squads.find(squad=>squad.id!==envoySquad&&!used.has(squad.id)&&squad.location===cell&&!squad.journey);
+   assert.ok(target,'Actual local survivors need an existing stationary party.');used.add(target.id);
+   order({type:'selectSquad',id:target.id});order({type:'squad',ids:members});
+  }
+ }
+ order({type:'selectSquad',id:envoySquad});assert.deepEqual(c.squad,envoyMembers);assert.deepEqual(c.operativeState,records);assert.deepEqual(c.contracts,contracts);assert.equal(c.resources.treasury,cash);assert.equal(now(),seconds);
+ for(const [id,cell]of locations)assert.equal(operativeLocation(c,id),cell);
+ report({event:'northernMissionLocalFormation',occupiedSquads:c.squads.filter(squad=>squad.members.length).length,envoySquad,envoyMembers,actualSurvivors:live().length});
  for(const [id,r]of Object.entries(prior.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  for(const id of live()){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);const expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(expiry===null||expiry>now());}
  assert.equal(c.operativeState[10].alive,prior.operativeState[10].alive);assert.equal(c.operativeState[57].hp,88);assert.ok(!c.recruited.includes(57));checkpoint('northernMissionCompleted');

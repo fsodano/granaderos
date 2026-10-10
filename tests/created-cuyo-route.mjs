@@ -1,6 +1,8 @@
 import {encounterDefinitions} from '../game/encounters.js';
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
+import {resolveStockCuyoBatteryEncounter} from './stock-cuyo-battery-defense.mjs';
+import {relieveStockCuyoService} from './stock-cuyo-service-relief.mjs';
 import {ownedArtilleryCount} from '../game/campaign-artillery.js';
 import {artilleryTransportPath,artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
@@ -94,18 +96,28 @@ function secureCreatedCuyoRearBattery(start,{report=()=>{}}={}){
 // Actual transport, finite carried care and defense after fresh Yatasto.
 export function assembleCreatedCuyo(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
- const order=a=>{
-  if(c.pendingEncounter?.sector==='salta'&&a.type!=='respondToEncounter'){
+ const withdrawRear=()=>{
+  if(c.pendingEncounter?.sector==='salta'){
    const selected=c.activeSquadId,groupId=c.pendingEncounter.groupId;
    c=dispatchCampaign(c,{type:'respondToEncounter',groupId,choice:'retreat',destination:'tucuman'});assert.equal(c.lastError,null,c.lastError);
    c=dispatchCampaign(c,{type:'selectSquad',id:selected});assert.equal(c.lastError,null,c.lastError);
    report({event:'cuyoRearWithdrawal',groupId,hour:c.hour,destination:'tucuman'});
   }
+ };
+ const order=a=>{
+  if(a.type!=='respondToEncounter')withdrawRear();
   const elapsed=a.type==='wait'?a.hours:a.type==='travel'?48:0;
   if(elapsed)for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<=c.hour+elapsed){const contract=c.contracts[id],next=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(next.lastError,null,next.lastError);c=next;}
   c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
+  // A blocking travel order can encounter the rear raid during its own
+  // elapsed hours. Resolve that actual interruption before route assertions.
+  if(a.type!=='respondToEncounter')withdrawRear();
  };
 const pastSurvivors=new Set((c.sectorStates.salta?.units??[]).filter(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure).map(unit=>Number(unit.id)));
+// A later physician visit can replace the scene's issued unit list. Actual
+// resident records retain the surviving deployment even when that quiet
+// visit issued only the departing doctor and no longer lists the veterans.
+for(const id of c.recruited){const r=c.operativeState[id];if(r.alive&&!r.captured&&r.residentSector==='salta'&&r.residentPosition)pastSurvivors.add(id);}
 const requiredLeadership=Math.max(...encounterDefinitions(c).filter(npc=>['guemes','macacha'].includes(npc.id)).map(npc=>npc.requiredLeadership));
 const clock=c.hour*3600+(c.secondOfHour??0),speaker=rosterFor(c).filter(op=>pastSurvivors.has(op.id)&&op.leadership>=requiredLeadership&&c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10&&(contractExpiresSeconds(c.contracts[op.id])===null||contractExpiresSeconds(c.contracts[op.id])>clock)).sort((a,b)=>Number(c.operativeState[b.id].location==='salta')-Number(c.operativeState[a.id].location==='salta')||b.leadership-a.leadership||a.id-b.id)[0];
 assert.ok(speaker,'the provincial meeting needs an actual fit serving survivor of Salta');
@@ -234,7 +246,13 @@ function stockPreparation(start,report){
   }
  };
  const order=action=>{renew(action.type==='wait'?Math.max(2,action.hours):2);raw(action);safe();};
- return {get campaign(){return c;},replace(next){c=next;safe();},safe,renew,order};
+ return {get campaign(){return c;},replace(next){c=next;safe();},replaceAfterBattle(next,casualties){
+  // Only explicit casualties from the admitted defense can leave this service
+  // ledger. Expired, captured, missing, or untreated survivors still fail safe.
+  for(const id of casualties){assert.ok(serving.has(id)&&c.operativeState[id].alive&&!next.operativeState[id].alive&&next.operativeState[id].hp===0,'Only an actual battle death can leave the retained service ledger.');serving.delete(id);}
+  for(const [id,record]of Object.entries(c.operativeState))if(!record.alive)assert.equal(next.operativeState[id].alive,false,'Earlier casualties stay final.');
+  c=next;safe();
+ },safe,renew,order};
 }
 
 // Stabilize the actual stock battle's survivors. This is a care route, not a
@@ -566,10 +584,11 @@ export function prepareStockMendozaAmmunition(start,fieldIds,{report=()=>{}}={})
  return p.campaign;
 }
 
-// Continue from the actual pre-ammunition checkpoint without hiring or
-// reissuing property. All formation, rest and attack hours use normal orders.
+// Continue from the actual pre-ammunition checkpoint. A refused expiring
+// contract uses paid relief; formation, rest and attack use normal orders.
 export function finishStockMendozaAssault(start,fieldIds,selections,{report=()=>{}}={}){
- const p=stockPreparation(prepareStockMendozaAmmunition(start,fieldIds,{report}),report),field=[...fieldIds];
+ const relief=relieveStockCuyoService(prepareStockMendozaAmmunition(start,fieldIds,{report}),fieldIds,{report});
+ const p=stockPreparation(relief.campaign,report),field=relief.field;
  for(const operativeId of field)p.order({type:'assignCare',operativeId,assignment:'rest'});
  for(let h=0;h<72&&(p.campaign.hour%24!==6||field.some(id=>{const r=p.campaign.operativeState[id];return r.fatigue||r.energy<100||r.asleep;}));h++)p.order({type:'wait',hours:1});
  assert.equal(p.campaign.hour%24,6);for(const id of field){const r=p.campaign.operativeState[id];assert.equal(r.fatigue,0);assert.equal(r.energy,100);assert.equal(r.asleep,false);p.order({type:'assignCare',operativeId:id,assignment:'active'});}
@@ -617,7 +636,16 @@ const order=a=>{
 const recruits=rosterFor(c).filter(o=>{const r=c.operativeState[o.id],q=contractQuote(c,o,'day');return o.id>=100&&o.id<1000&&!field.includes(o.id)&&r.alive&&r.hp===r.maxHp&&r.morale>=50&&q.available&&q.price<=routeHiringCeiling(c,30);}).map(o=>o.id);
 for(const id of recruits){order({type:'recruitCivic',id,term:'week',destination:'cordoba'});field.push(id);}
 if(stock){stock.replace(c);stock.renew();c=stock.campaign;}
-const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'cordoba',excludeIds:createdMendozaBatteryExclusions(c),report,...(stock?{keepServing:living(c)}:{})});c=battery.campaign;
+const batteryLosses=new Set(),resolveBatteryEncounter=(before,options)=>{
+ const next=resolveStockCuyoBatteryEncounter(before,options);
+ for(const id of living(before))if(!next.operativeState[id].alive)batteryLosses.add(id);
+ return next;
+};
+const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'cordoba',excludeIds:createdMendozaBatteryExclusions(c),report,...(stock?{keepServing:living(c),resolveEncounter:resolveBatteryEncounter}:{})});c=battery.campaign;
+if(stock)stock.replaceAfterBattle(c,[...batteryLosses]);
+// A settled rear defense can lose a named reserve while the battery travels.
+// Retain the actual survivors; a casualty cannot join the later assault.
+for(let i=field.length-1;i>=0;i--)if(!c.operativeState[field[i]].alive||c.operativeState[field[i]].captured||!c.recruited.includes(field[i]))field.splice(i,1);
 // Elite service competes with the finite army budget. Prefer an affordable
 // marksman when available; the existing paid force must otherwise fight with
 // its recovered rifles and the two actual arsenal guns.

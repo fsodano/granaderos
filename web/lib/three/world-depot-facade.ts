@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {WorldBatch} from './world-geometry';
@@ -10,11 +11,11 @@ import type {WorldBuilding,WorldInput} from './world-types';
 /** The retained depot sprite has substantial stone piers and a timber roof
  * hatch. These details bear on real wall cells; the hatch is exterior scenery. */
 export function depotFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,rise:number,geometry:WorldGeometry,materials:WorldMaterials,legacy=false){
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),V=25.066666666666666;
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),inset=buildingArtInset(b,input),V=25.066666666666666;
   const root=new Group();root.name=`building-depot-facade:${b.id}`;
   const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),light=illuminationAt(input,b),profile=getBuildingProfile(b),authored=!(legacy&&b.wallFinish===undefined),stone=materials.get('stone',authored?{architectureRole:'volume',colour:'#a99a79'}:{}),wood=materials.get('wood'),iron=materials.get('iron');
   const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,base+y,(p.y+inset)*T);};
-  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return walls.find(tile=>tile.x===p.x&&tile.y===p.y);};
+  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return buildingWallAtPoint(walls,p,b);};
   const feature=(name:string,draw:(batch:WorldBatch)=>void)=>{const batch=new WorldBatch(geometry);draw(batch);const node=batch.finish(`building-detail:${b.id}:${name}`);if(node.children.length)root.add(node);};
   const box=(batch:WorldBatch,u:number,v:number,y:number,w:number,h:number,d:number,material=stone)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
 

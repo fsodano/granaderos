@@ -46,7 +46,8 @@ export function preparedNervousArena({oldPinned=false,oldRenewal=false,term='day
  // pre-admission Brown Bess profile exception above is declared.
  const battle=createBattle(request.squad.map(unit=>({...unit,x:1,y:unit.id===130?3:5,facing:2})),{
   ...request,width,height,seed:42,props:[],
-  tiles:Array.from({length:width*height},(_,i)=>{const x=i%width,y=Math.floor(i/width);return x===7&&y===2?{x,y,type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100}:{x,y,type:'grass',blocked:false,cover:0};}),
+  tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),
+  wallEdges:[{x:7,y:2,axis:'x'},{x:7,y:3,axis:'x'},{x:7,y:2,axis:'y'},{x:8,y:2,axis:'y'}].map((edge,i)=>({...edge,id:`clinical-screen:${i}`,type:'wall',material:'stone',blocked:true,blocksSight:true,cover:100})),
   enemies:request.enemies.map((unit,i)=>({...unit,x:i===0?14:i===1?11:46,y:i===0?3:i===1?5:12+i,patrol:false,overwatch:false})),
   npcs:request.npcs.map((npc,i)=>({...npc,x:40+i,y:15})),
  });

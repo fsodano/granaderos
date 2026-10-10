@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
@@ -11,6 +11,16 @@ import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
+import {handRecord} from '../game/tactical-inventory.js';
+import {worldCell} from '../game/world-cells.js';
+
+export function saltaBatteryWaypoints(campaign,destination){
+ if(!campaign.enemyGroups.some(group=>group.target==='buenos_aires'&&group.status==='stationed'))return [];
+ const origin=worldCell(campaign.location),northOfPort=['cell-24-27','cell-25-27','cell-26-27','cell-26-28','retiro'];
+ if(destination==='ensenada'&&origin.col<26)return northOfPort;
+ if(destination!=='ensenada'&&origin.col>=26&&origin.row>=27)return [...northOfPort].reverse();
+ return [];
+}
 
 function orders(start){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
@@ -32,22 +42,31 @@ function renew(route,ids,buffer){
   }
  }
 }
-export function prepareSaltaAssault(start,{report=()=>{}}={}){
+export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{}}={}){
  const route=orders(start),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep the rear depot defended while the northern force marches. Its
  // actual reserves reload their own guns; a paid guard recovers finite gear.
  const selected=start.activeSquadId,reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});
  assert.ok(reserves.length<6);
- const guard=[113,140,144,146,108,101,102].find(id=>!route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured),cashBeforeGuard=route.campaign.resources.treasury;
+ const guardRoster=rosterFor(route.campaign),preferredGuards=[113,140,144,146,108,101,102];
+ const guardCandidates=guardRoster.filter(op=>op.id>=100&&op.id<1000&&civicStatus(route.campaign,op.id).available).map(op=>({op,quote:contractQuote(route.campaign,op,'week')})).filter(row=>row.quote.available&&row.quote.total<=route.campaign.resources.treasury).sort((a,b)=>a.quote.total-b.quote.total||b.op.marksmanship-a.op.marksmanship||a.op.id-b.op.id);
+ const chosenGuard=preferredGuards.map(id=>guardCandidates.find(row=>row.op.id===id)).find(Boolean)??guardCandidates[0],guard=chosenGuard?.op.id,cashBeforeGuard=route.campaign.resources.treasury;
  assert.ok(guard,'a living paid guard must be available for the rear depot');
  order({type:'recruitCivic',id:guard,term:'week',destination:'cordoba'});const guardCost=cashBeforeGuard-route.campaign.resources.treasury;
- assert.equal(guardCost,route.campaign.contracts[guard].paid);
+ assert.equal(guardCost,chosenGuard.quote.total);assert.equal(route.campaign.contracts[guard].paid,chosenGuard.quote.price);
  order({type:'createSquad',sector:'cordoba',name:'Reserva de Córdoba',ids:[...reserves,guard]});
  const reserveSquad=route.campaign.activeSquadId;
- const weaponCash=route.campaign.resources.treasury;route.apply(c=>recoverRoutePrimary(c,guard,{replace:true}));
+ const rearEquipment=()=>sectorInventoryModel(route.campaign,'cordoba',rosterFor(route.campaign),guard),weaponCash=route.campaign.resources.treasury,stockBefore=rearEquipment().entries;
+ const weaponEvents=[];route.apply(c=>recoverRoutePrimary(c,guard,{replace:true,report:event=>{weaponEvents.push(event);report(event);}}));
  assert.equal(route.campaign.resources.treasury,weaponCash);
- const reservePreparation={ids:[...reserves,guard],hired:guard,hiringCost:guardCost,weapon:rosterFor(route.campaign).find(op=>op.id===guard).weapon,weaponCost:0,returning:[],care:{patients:[],hours:0,usedDressings:0,recoveredDressings:0}},defenses=[];
+ const recoveredWeapon=weaponEvents.find(event=>event.event==='finitePrimaryRecovered');assert.ok(recoveredWeapon,'the paid rear guard receives a real recovered firearm');
+ const stockAfter=rearEquipment().entries,depleted=stockBefore.filter(row=>row.reachable&&JSON.parse(row.expected).weapon===recoveredWeapon.weapon&&row.count-(stockAfter.find(after=>after.key===row.key)?.count??0)===1);assert.equal(depleted.length,1,'the rear firearm consumes one actual reachable stock record');
+ const source=depleted[0],equipped=handRecord(rearEquipment().personal,'primary');
+ for(const [key,value]of Object.entries(JSON.parse(source.expected)))if(key!=='item')assert.deepEqual(equipped[key],value,'the rear guard preserves the recovered firearm '+key);
+ const weaponReceipt={sector:'cordoba',operativeId:guard,sourceKey:source.key,expected:source.expected,countBefore:source.count,countAfter:stockAfter.find(row=>row.key===source.key)?.count??0,weapon:recoveredWeapon.weapon,treasuryBefore:weaponCash,treasuryAfter:route.campaign.resources.treasury};
+ const reservePreparation={ids:[...reserves,guard],hired:guard,hiringCost:guardCost,hiringQuote:chosenGuard.quote,weapon:recoveredWeapon.weapon,weaponCost:0,weaponReceipt,returning:[],care:{patients:[],hours:0,usedDressings:0,recoveredDressings:0}},defenses=[];
+ onCheckpoint('salta-rear-guard',route.campaign,{reservePreparation,events:route.events});
  // Stabilize the actual routed reserve before any tactical loading or march.
  // This care uses paid doctors, carried dressings and finite local recovery.
  const rearPatients=reserves.filter(id=>route.campaign.operativeState[id].bleeding||route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp);
@@ -77,7 +96,11 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
   for(const operativeId of [...rearPatients,...rearDoctors]){assert.equal(route.campaign.operativeState[operativeId].bleeding,0);assert.equal(route.campaign.operativeState[operativeId].hp,route.campaign.operativeState[operativeId].maxHp);order({type:'assignCare',operativeId,assignment:'rest'});}
  }
  for(const operativeId of route.campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
- const battery=prepareRouteSupportBattery(route.campaign,{destination:'tucuman',report});route.apply(()=>battery.campaign);order({type:'configureArtillery',types:[]});
+ const battery=prepareRouteSupportBattery(route.campaign,{destination:'tucuman',waypointsFor:saltaBatteryWaypoints,keepServing:route.campaign.recruited.filter(id=>route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured),resolveEncounter:(campaign,{stage})=>{
+  const crewSquad=campaign.activeSquadId;onCheckpoint('support-battery-encounter',campaign,{stage});route.apply(()=>campaign);
+  const defense=route.resolveEncounter(report);assert.equal(defense.status,'victory','the actual support-battery raid must be won');defenses.push(defense);
+  order({type:'selectSquad',id:crewSquad});onCheckpoint('support-battery-settled',route.campaign,{stage,defense});return route.campaign;
+ },report});route.apply(()=>battery.campaign);order({type:'configureArtillery',types:[]});
  order({type:'selectSquad',id:reserveSquad});
  for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'active'});
  route.prepareWeapons(report);for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'rest'});

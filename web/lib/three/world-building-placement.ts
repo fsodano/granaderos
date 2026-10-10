@@ -1,3 +1,4 @@
+import {worldWallRecords,wallFrameRecords} from './world-wall-records';
 import {entranceFrame} from '../../../game/building-profile.js';
 import {surfaceRectangles,subtractRectangle} from './world-climb-openings';
 import type {ClimbOpening,SurfaceRectangle} from './world-climb-openings';
@@ -6,6 +7,7 @@ import type {WorldBuilding,WorldInput,WorldPoint} from './world-types';
 /** Centred warehouse, posta, supported domestic, stable, church, chapel barracks, town hall, palace and cabildo walls expose their details.
  * Corner openings retain the original shell to preserve their clipped spans. */
 export function buildingArtInset(b:WorldBuilding,input:WorldInput){
+  if(input.terrain.wallEdges!==undefined)return 0;
   const kind=b.kind??b.architecture??'';
   if(!['warehouse','posta','house','stable','farmhouse','church','chapel','pulperia','smithy','depot','barracks','townhall','palace','cabildo'].includes(kind))return .4;
   if(['house','stable','farmhouse','church','chapel','pulperia','smithy','depot','barracks','townhall','palace','cabildo'].includes(kind)){
@@ -22,6 +24,7 @@ export function buildingArtInset(b:WorldBuilding,input:WorldInput){
 /** A disclosed floor meets the inner faces of centred perimeter walls.
  * The returns occupy blocked wall cells and retain physical hatch clipping. */
 export function buildingFloorRectangles(b:WorldBuilding,input:WorldInput,cell:WorldPoint,T:number,openings:readonly ClimbOpening[],inset:number):SurfaceRectangle[]{
+  if(input.terrain.wallEdges!==undefined)return surfaceRectangles(cell,T,openings);
   if(inset!==0||(cell.tacticalLevel??0)!==0||cell.x<=b.x||cell.x>=b.x+b.width-1||cell.y<=b.y||cell.y>=b.y+b.height-1)return surfaceRectangles(cell,T,openings);
   const rect={minX:(cell.x-.5)*T,maxX:(cell.x+.5)*T,minZ:(cell.y-.5)*T,maxZ:(cell.y+.5)*T},halfWall=.09;
   const wall=(x:number,y:number)=>input.terrain.tiles.some(tile=>tile.buildingId===b.id&&tile.x===x&&tile.y===y&&['wall','door','window'].includes(tile.type)&&(x===b.x||x===b.x+b.width-1||y===b.y||y===b.y+b.height-1));

@@ -21,7 +21,7 @@ const field=(sector='retiro',hour=0,unit={},extra={})=>createBattle([{id:'p',x:1
 const firstHour=(predicate)=>{for(let hour=0;hour<8640;hour+=WEATHER_INTERVAL_HOURS)if(predicate(hour))return hour;throw Error('No matching weather block in the model year.');};
 const transitionHour=()=>firstHour(hour=>hour>0&&JSON.stringify(regionalWeatherAt('retiro',hour))!==JSON.stringify(regionalWeatherAt('retiro',hour-1)));
 const wetAndDryHour=()=>firstHour(hour=>regionalWeatherAt('tucuman',hour).rain>50&&regionalWeatherAt('mendoza',hour).rain===0);
-const geometry=b=>({width:b.width,height:b.height,tiles:b.tiles,buildings:b.buildings,props:b.props,decor:b.decor,exits:b.exits});
+const geometry=b=>({width:b.width,height:b.height,tiles:b.tiles,wallEdges:b.wallEdges,buildings:b.buildings,props:b.props,decor:b.decor,exits:b.exits});
 const currentWeather=b=>regionalWeatherAt(b.sectorId,(b.startSeconds+b.elapsedSeconds)/3600);
 function assertDeployment(campaign,sector,sceneId){
  const request=campaign.pendingBattle;
@@ -132,7 +132,7 @@ test('save, load and suspended battle resume preserve the exact next regional we
 
 test('re-entering a saved sector keeps its buildings and breaches but uses the current regional weather',()=>{
  const request={id:'regional-reentry',sector:'retiro',exploration:true,hour:0,seed:45,squad:[{id:'p',weapon:1800}],enemies:[],...regionalConditions('retiro',0)};
- const first=enterSector(request),wall=first.tiles.find(t=>t.type==='wall');
+ const first=enterSector(request),wall=first.wallEdges.find(t=>t.type==='wall');
  Object.assign(wall,{type:'rubble',blocked:false,blocksSight:false,cover:0});first.savedHour=0;first.savedSecond=0;
  const before=structuredClone(first),hour=transitionHour();
  const next=enterSector({...request,hour,squad:request.squad.map(u=>({...u,entryReason:'resident'}))},first);

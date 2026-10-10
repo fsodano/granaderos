@@ -4,6 +4,7 @@ import {chooseArtilleryAction} from '../game/tactical-ai-artillery.js';
 import {teamArtilleryOrder} from './team-artillery-driver.mjs';
 import {actBattle,teamCanSee,getReachable,stanceCost,artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactical.js';
 import {propCells} from '../game/props.js';
+import {wallMovementBlocked} from '../game/wall-geometry.js';
 
 // Plan a rigid crew route across known ground, then execute only its first
 // step through the engine. A sideways detour must not become a back-and-forth
@@ -26,7 +27,8 @@ function routedBatteryAdvance(b,u,gun,destination){
   const at=queue[i];if(distance(at)<distance(best))best=at;
   if(distance(at)===0)break;
   for(const [dx,dy]of [[1,0],[0,-1],[0,1],[-1,0]]){
-   const p={x:at.x+dx,y:at.y+dy};if(seen.has(key(p))||!fits(p))continue;
+   const p={x:at.x+dx,y:at.y+dy};
+   if(seen.has(key(p))||!fits(p)||offsets.some(o=>wallMovementBlocked(b,{x:at.x+o.x,y:at.y+o.y},{x:p.x+o.x,y:p.y+o.y})))continue;
    seen.add(key(p));queue.push({...p,first:at.first??p});
   }
  }

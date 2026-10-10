@@ -62,8 +62,8 @@ test('blast strikes each living body once, including allies, thrower, routed, su
 });
 
 test('closed walls shield a body from an otherwise identical blast, without team immunity',()=>{
- const floor=tiles();Object.assign(floor[3*24+9],{type:'wall',blocked:true,obstacleHeight:4});
- const s=field({},[enemy({x:10})],{tiles:floor}),n=throwAt(s);assert.equal(n.lastError,null);assert.equal(actor(n,'e').hp,100);
+ const wallEdges=[{id:'blast-screen',x:9,y:3,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40,obstacleHeight:4}];
+ const s=field({},[enemy({x:10})],{wallEdges}),n=throwAt(s);assert.equal(n.lastError,null);assert.equal(actor(n,'e').hp,100);
  const clear=field({},[enemy({x:10})]),hit=throwAt(clear);assert.equal(actor(hit,'e').hp,72);
 });
 
@@ -101,8 +101,8 @@ test('throw attributes affect range and accuracy; firearm aim, facing and explos
 });
 
 test('enemy reaction during standing preparation keeps the grenade unthrown',()=>{
- const floor=tiles();Object.assign(floor[3*24+3],{type:'wall',blocked:true,obstacleHeight:.8});
- const s=field({stance:'prone',movementMode:'prone',agility:0,wisdom:0,experienceLevel:1},[enemy({x:5,weapon:1805,loaded:1,activeSlot:'primary',marksmanship:100,agility:100,wisdom:100,experienceLevel:10,overwatch:true})],{tiles:floor,upperSurfaces:[{id:'roof',x:20,y:3,tacticalLevel:1,type:'floor',kind:'roof',elevation:3,blocked:false,cover:0}]});
+ const wallEdges=[{id:'low-screen',x:3,y:3,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40,obstacleHeight:.8}];
+ const s=field({stance:'prone',movementMode:'prone',agility:0,wisdom:0,experienceLevel:1},[enemy({x:5,weapon:1805,loaded:1,activeSlot:'primary',marksmanship:100,agility:100,wisdom:100,experienceLevel:10,overwatch:true})],{wallEdges,upperSurfaces:[{id:'roof',x:20,y:3,tacticalLevel:1,type:'floor',kind:'roof',elevation:3,blocked:false,cover:0}]});
  assert.equal(canSee(s,actor(s,'e'),actor(s)),false);const n=throwAt(s,{x:5});assert.equal(actor(n).stance,'standing');assert.equal(actor(n,'e').reactionTurn,s.turn);assert.equal(actor(n,'e').loaded,0);assert.ok(actor(n).hp<actor(s).hp);assert.equal(actor(n).inventory.grenades.count,2);assert.equal(getGrenadeThrowVisual(s,n),null);assert.ok(n.log.some(line=>line.includes('preparación se detuvo')));
 });
 

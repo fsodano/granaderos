@@ -14,10 +14,10 @@ export function worldCellPlan(id,roadsideDiscoveryDefinitions){
   const road=y===8&&(edges.has('W')&&x<=2||edges.has('E')&&x>=2)||x===2&&(edges.has('N')&&y<=8||edges.has('S')&&y>=8),stone=cell.biome==='mountain'&&y<3&&value<70;
   return {x,y,type:road?'road':stone?'stone':cell.biome==='wetland'&&value<45?'mud':value<12?'scrub':'grass',blocked:stone,cover:stone?30:!road&&value<12?10:0};
  });
- const buildings=[];
+ const buildings=[],wallEdges=[];
  if(cell.district)for(const [i,x]of [7,14].entries()){
   const result=placeBuilding(tiles,{id:`${id}:house-${i}`,name:`Casa ${i+1}`,x,y:3,width:5,height:5,doors:[{x:x+2,y:7}],windows:[{x,y:5}],material:'adobe',roof:'tile'});
-  tiles=result.tiles;buildings.push({...result.building,purpose:'home'});
+  tiles=result.tiles;wallEdges.push(...result.wallEdges);buildings.push({...result.building,purpose:'home'});
  }
- return {worldCell:true,width,height,tiles,buildings,props:roadsideDiscoveryProps(id,roadsideDiscoveryDefinitions),lights:[],groundItems:[],decor:[],sourceMapId:id,sourceMapRevision:2};
+ return {worldCell:true,width,height,tiles,wallEdges,wallGeometryVersion:2,buildings,props:roadsideDiscoveryProps(id,roadsideDiscoveryDefinitions),lights:[],groundItems:[],decor:[],sourceMapId:id,sourceMapRevision:2};
 }

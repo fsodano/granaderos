@@ -112,8 +112,8 @@ test('an NPC moving during the actual walk interrupts the reserved offer',()=>{
 });
 
 test('new enemy contact during exploration stops the gift before acceptance',()=>{
- const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0}));Object.assign(tiles.find(t=>t.x===3&&t.y===3),{type:'wall',blocked:true,blocksSight:true});
- const b=field({}, {x:7},{tiles,enemies:[{id:'hidden',x:5,y:4,facing:2,patrol:false,overwatch:false}]});assert.equal(b.mode,'exploration');assert.equal(canSee(b,unit(b),b.units[1]),false);
+ const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0})),wallEdges=[{id:'gift-contact-screen',x:3,y:3,axis:'x',type:'wall',blocked:true,blocksSight:true}];
+ const b=field({}, {x:7},{tiles,wallEdges,enemies:[{id:'hidden',x:5,y:4,facing:2,patrol:false,overwatch:false}]});assert.equal(b.mode,'exploration');assert.equal(canSee(b,unit(b),b.units[1]),false);
  const {after:n,result}=attempt(b);assert.equal(result.status,'interrupted');assert.equal(n.mode,'combat');assert.ok(unit(n).x>unit(b).x);assert.ok(n.elapsedSeconds>b.elapsedSeconds);assert.equal(unit(n).inventory.coat.instanceId,'gift');assert.equal(npc(n).questGifts,undefined);
 });
 

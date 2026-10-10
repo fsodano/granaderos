@@ -6,7 +6,7 @@ import {movementPackage,guest,callGuest} from './dialogue-movement-fixture.mjs';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {dispatchCampaign,initialCampaign} from '../game/campaign.js';
 import {dialogueForNPC} from '../game/content-dialogue.js';
-import {projectDialogueMovements} from '../game/dialogue-movement.js';
+import {projectDialogueMovements,movementQuote} from '../game/dialogue-movement.js';
 const point=n=>({x:n.x,y:n.y});
 
 test('a real dialogue orders a same-sector resident to walk, wait and retain the meeting across saves and visits',()=>{
@@ -56,4 +56,16 @@ test('a dead ordered resident stays dead and cannot resume moving after save and
 test('a daily sector relocation ends the old local meeting order without deleting its receipt',()=>{
  const d=movementPackage();Object.assign(d.placements.find(p=>p.character==='pablo'),{mode:'daily',selection:'alternate',sectors:['cell-26-27','cell-27-27']});
  let p=saved(callGuest(readyLocal(undefined,d))),s=leave(p);s=order(s,{type:'wait',hours:Math.ceil((s.contentPresence.nextDaily-s.contentPresence.minute)/60)});assert.equal(s.contentPresence.people.pablo.sector,'cell-26-27');s=order(s,{type:'travel',sector:'cell-26-27'});p=visit(s);assert.equal(guest(p).scriptedMove,undefined);assert.equal(p.campaign.dialogueMovements.length,1);assert.ok(guest(p).presenceRevision>p.campaign.dialogueMovements[0].revision);
+});
+
+
+test('a called resident cannot finish a meeting across a closed wall edge',()=>{
+ const p=readyLocal(undefined,movementPackage()),host=localNPC(p.battle),actor=guest(p);
+ Object.assign(host,{x:5,y:4});Object.assign(actor,{x:4,y:4});
+ p.battle.tiles=p.battle.tiles.map(tile=>({...tile,type:'grass',blocked:false,cover:0}));p.battle.props=[];
+ p.battle.wallEdges=[{x:5,y:4,axis:'y'},{x:6,y:4,axis:'y'},{x:5,y:4,axis:'x'},{x:5,y:5,axis:'x'}].map((edge,i)=>({...edge,id:`meeting-wall:${i}`,type:'wall',blocked:true,blocksSight:true,cover:40}));
+ const effect={character:'pablo',destination:'speaker'},before=structuredClone(p);
+ const closed=movementQuote(p.campaign,p.battle,effect,host);assert.match(closed.reason,/camino libre/);assert.deepEqual(p,before,'a quote cannot move either resident or change the campaign');
+ Object.assign(p.battle.wallEdges[0],{type:'rubble',destroyed:true,blocked:false,blocksSight:false});
+ const open=movementQuote(p.campaign,p.battle,effect,host);assert.equal(open.reason,null);assert.deepEqual(open.target,{x:4,y:4});
 });

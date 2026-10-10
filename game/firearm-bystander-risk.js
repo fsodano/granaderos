@@ -4,6 +4,7 @@ import {absoluteBodyHeight} from './sight-geometry.js';
 import {pairedPistol,secondaryPistolView} from './paired-fire.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {isShotLoad,shotLoadFlight,shotLoadScatter} from './shot-load.js';
+import {wallEdgeBlocksMovement} from './wall-geometry.js';
 
 // Reject rays outside every known bystander's cell before tracing terrain,
 // furniture, floors and bodies. Include corner touches and all heights here;
@@ -35,7 +36,7 @@ export function firearmBystanderRisk(state,attacker,target,hitLocation='torso'){
  const scene={...state,...firearmKnownTerrain(state,attacker),units,npcs},missScene={...scene,units:units.filter(body=>targetKind!=='unit'||body.id!==target.id),npcs:npcs.filter(body=>targetKind!=='npc'||body.id!==target.id)},direct=new Map(),scatter=new Map();
  // A known stone face can put a person outside the original aiming chord in
  // danger. Preserve the cheap cell cull only when reflection is impossible.
- const reflectingCover=[...scene.tiles,...(scene.upperSurfaces??[])].some(surface=>surface.material==='stone'&&surface.blocked&&['wall','stone','cliff'].includes(surface.type))||scene.props.some(prop=>prop.material==='stone'&&prop.type!=='hay');
+ const reflectingCover=[...(scene.wallEdges??[]),...scene.tiles,...(scene.upperSurfaces??[])].some(surface=>surface.material==='stone'&&(surface.axis?wallEdgeBlocksMovement(surface):surface.blocked)&&['wall','stone','cliff'].includes(surface.type))||scene.props.some(prop=>prop.material==='stone'&&prop.type!=='hay');
  const radius=Math.min(4,Math.max(1,Math.ceil(Math.hypot(target.x-attacker.x,target.y-attacker.y)/8)));
  const destinationHeight=absoluteBodyHeight(state,target,hitLocation),views=pairedPistol(attacker)?[attacker,secondaryPistolView(attacker)]:[attacker];
  const record=(flight,collection)=>{

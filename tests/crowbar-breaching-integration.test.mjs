@@ -11,11 +11,12 @@ import {repairEquipmentQueue} from '../game/equipment-repair.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {mountBattlefield} from './mounted-battlefield.mjs';
+import {wallEdgeCells} from '../game/wall-geometry.js';
 const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 
 const actor=p=>p.battle.units.find(u=>u.id==='110');
-const at=(s,p)=>s.tiles.find(t=>t.x===p.x&&t.y===p.y);
+const at=(s,p)=>p.axis?s.wallEdges.find(t=>t.id===(p.wallEdgeId??p.id)):s.tiles.find(t=>t.x===p.x&&t.y===p.y);
 const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 const stamp=s=>s.hour*3600+(s.secondOfHour??0);
 const saved=p=>decodeSave(encodeSave(p.campaign,p.battle));
@@ -64,15 +65,17 @@ function issue(pair,action,history){
 }
 
 function approach(pair,target,history){
- for(let attempts=0;distance(actor(pair),target)>1&&attempts<20;attempts++){
-  const spot=getReachable(pair.battle,actor(pair)).filter(p=>distance(p,target)===1).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
+ const inReach=point=>target.axis?wallEdgeCells(target).some(cell=>cell.x===point.x&&cell.y===point.y):distance(point,target)<=1;
+ for(let attempts=0;!inReach(actor(pair))&&attempts<20;attempts++){
+  const spot=getReachable(pair.battle,actor(pair)).filter(p=>inReach(p)).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
   assert.ok(spot,'the authored open doorway must permit a paid approach');
   const old={x:actor(pair).x,y:actor(pair).y};
   pair=issue(pair,{type:'move',x:spot.x,y:spot.y},history);
   assert.notDeepEqual({x:actor(pair).x,y:actor(pair).y},old);
  }
- assert.ok(distance(actor(pair),target)<=1);
- if(lookPreview(pair.battle,actor(pair),target).valid)pair=issue(pair,{type:'look',x:target.x,y:target.y},history);
+ assert.ok(inReach(actor(pair)));
+ const lookTarget=target.axis?wallEdgeCells(target).find(cell=>cell.x!==actor(pair).x||cell.y!==actor(pair).y):target;
+ if(lookPreview(pair.battle,actor(pair),lookTarget).valid)pair=issue(pair,{type:'look',x:lookTarget.x,y:lookTarget.y},history);
  return pair;
 }
 
@@ -91,13 +94,13 @@ function acquiredCrowbar(){
  pair=saved(pair);
  // The nearest usable original adobe wall beside the actual cache. Both sides
  // have ordinary floor/ground cells, so the resulting passage can be traversed.
- const wall=pair.battle.tiles.filter(t=>t.type==='wall'&&t.material==='adobe'&&t.buildingId==='yatasto:building')
-  .filter(t=>[[1,0],[0,1]].some(([dx,dy])=>{const a=at(pair.battle,{x:t.x-dx,y:t.y-dy}),b=at(pair.battle,{x:t.x+dx,y:t.y+dy});return a&&!a.blocked&&b&&!b.blocked;}))
+ const wall=pair.battle.wallEdges.filter(t=>t.type==='wall'&&t.material==='adobe'&&t.buildingId==='yatasto:building')
+  .filter(t=>wallEdgeCells(t).every(cell=>{const floor=at(pair.battle,cell);return floor&&!floor.blocked;}))
   .sort((a,b)=>distance(actor(pair),a)-distance(actor(pair),b)||a.y-b.y||a.x-b.x)[0];
  assert.ok(wall);pair=approach(pair,wall,history);
  assert.equal(canSee(pair.battle,actor(pair),wall),true);
  const ref=environmentTargetAt(pair.battle,wall);assert.equal(ref.kind,'wall');
- return {pair,initial,history,wall:{x:wall.x,y:wall.y},ref,key,scenario,quote};
+ return {pair,initial,history,wall:{x:wall.x,y:wall.y,axis:wall.axis,id:wall.id,wallEdgeId:wall.id},ref,key,scenario,quote};
 }
 
 test('paid Yatasto hire acquires one real crowbar, opens and walks through an adobe breach, and retains depletion on save/return/reentry',t=>{
@@ -118,9 +121,10 @@ test('paid Yatasto hire acquires one real crowbar, opens and walks through an ad
  const spent=pair.battle.elapsedSeconds;
  assert.equal(environmentPreview(pair.battle,actor(pair),ready.ref,'breach').valid,false);
  const repeated=actBattle(pair.battle,{type:'useItem',unitId:'110',environment:{...ready.ref,verb:'breach'}});
- assert.ok(repeated.lastError);for(const key of ['units','tiles','props','seed','elapsedSeconds'])assert.deepEqual(repeated[key],pair.battle[key]);
- pair=saved(pair);pair=issue(pair,{type:'move',...ready.wall},history);
- assert.deepEqual({x:actor(pair).x,y:actor(pair).y},ready.wall,'the opened collision cell must actually be traversable');
+ assert.ok(repeated.lastError);for(const key of ['units','tiles','wallEdges','props','seed','elapsedSeconds'])assert.deepEqual(repeated[key],pair.battle[key]);
+ const crossed=wallEdgeCells(breached).find(cell=>cell.x!==actor(pair).x||cell.y!==actor(pair).y);
+ pair=saved(pair);pair=issue(pair,{type:'move',...crossed},history);
+ assert.deepEqual({x:actor(pair).x,y:actor(pair).y},{x:crossed.x,y:crossed.y},'the opened edge must permit crossing to its other incident floor');
  assert.ok(pair.battle.elapsedSeconds>spent);assert.equal(heldTool(actor(pair)).condition,97);
  let replay=ready.initial;for(const action of history)replay=issue(replay,action);
  assert.deepEqual(saved(replay),saved(pair),'the complete finite acquisition and breach must replay through the official save boundary');

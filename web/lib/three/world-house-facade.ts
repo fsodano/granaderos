@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -14,7 +15,7 @@ import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
 export function houseFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy=false){
   const root=new Group();root.name=`building-house-facade:${b.id}`;
   if(legacy&&b.wallFinish===undefined)return root;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b);
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),inset=buildingArtInset(b,input),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b);
   const wall=materials.get(appearance.wallFinish,{architectureRole:'volume'}),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),wood=materials.get('wood'),copingColours:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('house-pier-coping',{colour:copingColours[appearance.wallFinish]??copingColours.adobe});
   const at=(u:number,v:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,0,(p.y+inset)*T);};
   const rectangle=(u0:number,v0:number,u1:number,v1:number)=>{const a=at(u0,v0),c=at(u1,v1);return {minX:Math.min(a.x,c.x),maxX:Math.max(a.x,c.x),minZ:Math.min(a.z,c.z),maxZ:Math.max(a.z,c.z)};};
@@ -25,7 +26,7 @@ export function houseFacade(b:WorldBuilding,input:WorldInput,T:number,height:num
   const capitalBottom=height-5.5/V,capitalTop=height-.5/V,foot=Math.min(profile.plinthHeight/V,capitalBottom*.35);
   if(capitalBottom>foot+.20)feature('house-corner-piers',batch=>{
     for(const u of [0,frame.width]){
-      const p=frame.at(u,0),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(tile?.type!=='wall')continue;
+      const p=frame.at(u,0),tile=buildingWallAtPoint(walls,p,b);if(tile?.type!=='wall')continue;
       const footRect=supported(tile,rectangle(u-.165,-.27,u+.165,.20));if(walking(footRect,capitalTop))continue;
       box(batch,footRect,0,foot,stone);
       box(batch,supported(tile,rectangle(u-.095,-.22,u+.095,.15)),foot,capitalBottom,wall);

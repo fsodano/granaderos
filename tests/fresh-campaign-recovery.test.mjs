@@ -18,8 +18,9 @@ import {recoveryMendozaOrder} from './recovery-mendoza-driver.mjs';
 import {recoveryPortSearchController} from './recovery-port-battery-driver.mjs';
 import {stagedBatteryController} from './staged-battery-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
-import {fight as fightWithCover} from './cuyo-route-driver.mjs';
+import {northernClearShotOrder} from './fresh-northern-fixture.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {stanceCost} from '../game/tactical.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
 import {fightNorthernSector,northernCombatOrder,prepareNorthernSquad} from './northern-route.mjs';
@@ -46,7 +47,14 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  assert.deepEqual(Object.keys(recovered.campaign.sectors).filter(id=>recovered.campaign.sectors[id].owner==='patriot').sort(),['buenos_aires','retiro']);
  assert.equal(recovered.campaign.completed,false);
  const deployed=prepareFreshNorthernAssault(recovered);
- const result=fightNorthernSector(deployed,'san_nicolas',{controller:northernCombatOrder});
+ // Keep the clinic physician at her issued reserve position while the field
+ // earns the town. Lowering her posture still spends the ordinary action cost.
+ const retainedPhysicianOrder=(battle,unit)=>{
+  const action=northernCombatOrder(battle,unit),field=battle.units.some(other=>other.id!=='107'&&other.side==='player'&&other.hp>=15&&!other.unconscious&&!other.routed&&!other.departure&&!other.surrendered);
+  if(unit.id==='107'&&field&&['move','charge','climb','exit'].includes(action?.type))return unit.stance!=='prone'&&unit.ap>=stanceCost(unit,'prone')?{type:'stance',unitId:unit.id,stance:'prone'}:null;
+  return action;
+ };
+ const result=fightNorthernSector(deployed,'san_nicolas',{controller:retainedPhysicianOrder});
  assert.equal(result.campaign.sectors.san_nicolas.owner,'patriot');
  for(const id of opening.casualties)assert.equal(result.campaign.operativeState[id].alive,false);
  assert.equal(result.campaign.completed,false);
@@ -92,7 +100,7 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  for(const trip of north.recovery.medicalTrips){assert.ok(trip.quantity>0&&trip.quantity<=20);assert.equal(trip.cost,trip.quantity*trip.unitPrice);assert.ok(trip.endHour>trip.startHour);}
  for(const [id,record]of Object.entries(won.campaign.operativeState))if(!record.alive)assert.equal(north.campaign.operativeState[id].alive,false);
  assert.ok(north.campaign.resources.treasury>=0);
- const cordoba=fightNorthernSector(prepareFreshCordobaAssault(north.campaign,north.recovery.doctors),'cordoba',{executeBattle:(request,previous)=>fightWithCover(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true})});
+ const cordoba=fightNorthernSector(prepareFreshCordobaAssault(north.campaign,north.recovery.doctors),'cordoba',{controller:northernClearShotOrder});
  assert.equal(cordoba.campaign.sectors.cordoba.owner,'patriot');
  for(const [id,record]of Object.entries(north.campaign.operativeState))if(!record.alive)assert.equal(cordoba.campaign.operativeState[id].alive,false);
  assert.ok(cordoba.campaign.resources.treasury>=0);
@@ -130,7 +138,7 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  }
  for(const unit of tucumanReady.pendingBattle.squad){assert.equal(unit.hp,unit.maxHp);assert.equal(unit.bleeding,0);assert.ok(unit.loaded>0,'finish reloading before the march');assert.ok(unit.ammo>0,'carry compatible reserve ammunition');}
  for(const [id,record]of Object.entries(beforeTucuman.operativeState))if(!record.alive)assert.equal(tucumanReady.operativeState[id].alive,false);
- const tucuman=fightNorthernSector(tucumanReady,'tucuman',{controller:coastalBatteryController(enterSector(tucumanReady.pendingBattle,tucumanReady.sectorStates.tucuman),{sharedArtillerySight:true})});
+ const tucuman=fightNorthernSector(tucumanReady,'tucuman',{controller:northernClearShotOrder});
  assert.equal(tucuman.campaign.sectors.tucuman.owner,'patriot');
  assert.ok(tucuman.campaign.resources.treasury>=0);
  assert.equal(tucuman.campaign.completed,false);

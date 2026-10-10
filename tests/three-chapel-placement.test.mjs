@@ -8,7 +8,7 @@ const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildingArtInset,buildingFloorRectangles}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270];
 function fixture(rotation,view='exterior',roof='original'){
  const battle=createArchitectureReviewBattle('capilla',rotation,view,roof),b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});

@@ -1,3 +1,4 @@
+import {wallEdgeEndpoints} from '../game/wall-geometry.js';
 import { register } from "node:module";
 register("./tactical-render-loader.mjs", import.meta.url);
 import test from "node:test";
@@ -33,26 +34,17 @@ function tower(document) {
     .flatMap((o) => descendants(o.node))
     .find((node) => node.props.label === "square-bell-tower");
 }
-function assertSolidFoundation(document, node) {
-  assert.ok(node, "a solid corner supports a tower");
-  const xs = node.props.points.map((p) => p.x),
-    ys = node.props.points.map((p) => p.y);
-  const x0 = Math.min(...xs),
-    x1 = Math.max(...xs),
-    y0 = Math.min(...ys),
-    y1 = Math.max(...ys);
-  const b = document.buildings[0];
-  for (let y = Math.floor(y0 + 0.5); y <= Math.ceil(y1 - 0.5); y++)
-    for (let x = Math.floor(x0 + 0.5); x <= Math.ceil(x1 - 0.5); x++) {
-      assert.equal(
-        b.walls.find((w) => w.x === x && w.y === y)?.type,
-        "wall",
-        `${x},${y} under the tower is solid`,
-      );
-    }
+function cornerEdges(document,point){return document.buildings[0].walls.filter(edge=>wallEdgeEndpoints(edge).some(p=>Math.abs(p.x-point.x)<1e-8&&Math.abs(p.y-point.y)<1e-8));}
+function editCorner(document,point,wallType){return cornerEdges(document,point).map(edge=>({type:"setWall",buildingId:"church",x:edge.x,y:edge.y,axis:edge.axis,wallType,...(wallType==="door"?{doorId:`${edge.id}:door`}:{})}));}
+function assertSolidFoundation(document,node){
+ assert.ok(node,"two incident wall edges support a tower");
+ const xs=node.props.points.map(p=>p.x),ys=node.props.points.map(p=>p.y),f=entranceFrame(document.buildings[0]);
+ const corners=[f.at(0,0),f.at(f.width,0)];
+ assert.ok(corners.some(c=>c.x>=Math.min(...xs)&&c.x<=Math.max(...xs)&&c.y>=Math.min(...ys)&&c.y<=Math.max(...ys)&&cornerEdges(document,c).length===2&&cornerEdges(document,c).every(w=>w.type==="wall")),"the tower has a complete supported corner");
+ const map=compileMap(document);assert.ok(map.tiles.filter(t=>t.buildingId==='church').every(t=>t.type==='floor'&&!t.blocked),'edge supports do not occupy floor cells');
 }
 
-test("a minimum-size church uses a one-cell solid corner through all rotations", () => {
+test("a minimum-size church uses an edge-supported corner through all rotations", () => {
   let document = fixture();
   for (let turn = 0; turn < 4; turn++) {
     const node = tower(document);
@@ -74,9 +66,7 @@ test("a corner door or window moves the fallback tower onto the other solid corn
     const f = entranceFrame(document.buildings[0]),
       occupiedCorner = f.at(f.width, 0),
       other = f.at(0, 0);
-    document = edit(document, [
-      { type: "setWall", buildingId: "church", ...occupiedCorner, wallType },
-    ]);
+    document = edit(document, editCorner(document,occupiedCorner,wallType));
     const node = tower(document);
     assertSolidFoundation(document, node);
     assert.ok(
@@ -97,20 +87,10 @@ test("a church with no solid front corner omits its tower and retains both openi
   const corners = [f.at(0, 0), f.at(f.width, 0)];
   document = edit(
     document,
-    corners.map((p, i) => ({
-      type: "setWall",
-      buildingId: "church",
-      ...p,
-      wallType: i ? "door" : "window",
-    })),
+    corners.flatMap((p,i)=>editCorner(document,p,i?"door":"window")),
   );
   const before = JSON.stringify(document);
   assert.equal(tower(document), undefined);
   assert.equal(JSON.stringify(document), before);
-  for (const p of corners)
-    assert.ok(
-      ["door", "window"].includes(
-        document.buildings[0].walls.find((w) => w.x === p.x && w.y === p.y).type,
-      ),
-    );
+  for(const p of corners)assert.ok(cornerEdges(document,p).every(w=>["door","window"].includes(w.type)));
 });

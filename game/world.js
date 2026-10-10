@@ -45,7 +45,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout},{restorePrevious:Boolean(previous)});
  if(!previous){
    const metadata=authoredEnvironment(request.sceneId??request.sector,map);
-   for(const patch of metadata.doors){const door=map.tiles.find(t=>t.doorId===patch.id);if(door)Object.assign(door,patch,{blocked:!patch.open,blocksSight:!patch.open});}
+   for(const patch of metadata.doors){const door=map.wallEdges.find(t=>t.doorId===patch.id);if(door)Object.assign(door,patch,{blocked:!patch.open,blocksSight:!patch.open});}
    for(const patch of metadata.containers){const chest=map.props.find(p=>p.id===patch.id);if(chest)Object.assign(chest,patch);}
  }
  if(previous){
@@ -53,7 +53,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    for(const field of ['sourceMapId','sourceMapRevision']){if(previous[field]!==undefined)map[field]=previous[field];else delete map[field];}
    // Missing rural props never backfill a newly authored cache. Keep the
    // existing legacy landmark fallback for maps outside physical world cells.
-   map.props=structuredClone(previous.props??(map.worldCell?[]:map.props));map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
+   map.props=structuredClone(previous.props??(map.worldCell?[]:map.props));map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);map.wallEdges=structuredClone(previous.wallEdges??[]);map.wallGeometryVersion=2;
    for(const field of ['upperSurfaces','climbLinks'])if(previous[field]!==undefined)map[field]=structuredClone(previous[field]);else delete map[field];
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.defenseGroupId&&!request.occupationGroupIds?.length&&!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'&&!u.departure)).map(clearEncounter);

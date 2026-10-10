@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "retiro",
   "revision": 3,
   "width": 20,
@@ -683,9 +683,10 @@
     {
       "x": 16,
       "y": 4,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 17,
@@ -823,9 +824,10 @@
     {
       "x": 16,
       "y": 5,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 17,
@@ -963,9 +965,10 @@
     {
       "x": 16,
       "y": 6,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 17,
@@ -1383,9 +1386,10 @@
     {
       "x": 16,
       "y": 9,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 17,
@@ -1523,9 +1527,10 @@
     {
       "x": 16,
       "y": 10,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 17,
@@ -1663,9 +1668,10 @@
     {
       "x": 16,
       "y": 11,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 17,
@@ -2266,52 +2272,132 @@
           "id": "retiro:building:interior",
           "cells": [
             {
+              "x": 6,
+              "y": 6
+            },
+            {
+              "x": 7,
+              "y": 6
+            },
+            {
+              "x": 6,
+              "y": 7
+            },
+            {
+              "x": 8,
+              "y": 6
+            },
+            {
               "x": 7,
               "y": 7
+            },
+            {
+              "x": 6,
+              "y": 8
+            },
+            {
+              "x": 9,
+              "y": 6
             },
             {
               "x": 8,
               "y": 7
             },
             {
-              "x": 9,
-              "y": 7
+              "x": 7,
+              "y": 8
+            },
+            {
+              "x": 6,
+              "y": 9
             },
             {
               "x": 10,
-              "y": 7
+              "y": 6
             },
             {
-              "x": 11,
+              "x": 9,
               "y": 7
-            },
-            {
-              "x": 12,
-              "y": 7
-            },
-            {
-              "x": 7,
-              "y": 8
             },
             {
               "x": 8,
               "y": 8
             },
             {
+              "x": 7,
+              "y": 9
+            },
+            {
+              "x": 11,
+              "y": 6
+            },
+            {
+              "x": 10,
+              "y": 7
+            },
+            {
               "x": 9,
               "y": 8
+            },
+            {
+              "x": 8,
+              "y": 9
+            },
+            {
+              "x": 12,
+              "y": 6
+            },
+            {
+              "x": 11,
+              "y": 7
             },
             {
               "x": 10,
               "y": 8
             },
             {
+              "x": 9,
+              "y": 9
+            },
+            {
+              "x": 13,
+              "y": 6
+            },
+            {
+              "x": 12,
+              "y": 7
+            },
+            {
               "x": 11,
               "y": 8
             },
             {
+              "x": 10,
+              "y": 9
+            },
+            {
+              "x": 13,
+              "y": 7
+            },
+            {
               "x": 12,
               "y": 8
+            },
+            {
+              "x": 11,
+              "y": 9
+            },
+            {
+              "x": 13,
+              "y": 8
+            },
+            {
+              "x": 12,
+              "y": 9
+            },
+            {
+              "x": 13,
+              "y": 9
             }
           ]
         }
@@ -2327,7 +2413,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:6:6"
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:6:6"
         },
         {
           "x": 7,
@@ -2338,7 +2439,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:7:6"
         },
         {
           "x": 8,
@@ -2349,7 +2452,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:8:6"
         },
         {
           "x": 9,
@@ -2360,7 +2465,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:9:6"
         },
         {
           "x": 10,
@@ -2371,7 +2478,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:10:6"
         },
         {
           "x": 11,
@@ -2382,7 +2491,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:11:6"
         },
         {
           "x": 12,
@@ -2393,7 +2504,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:12:6"
         },
         {
           "x": 13,
@@ -2404,7 +2517,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:13:6"
+        },
+        {
+          "x": 14,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:14:6"
         },
         {
           "x": 6,
@@ -2415,10 +2543,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:6:7"
         },
         {
-          "x": 13,
+          "x": 14,
           "y": 7,
           "type": "wall",
           "blocked": true,
@@ -2426,7 +2556,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:14:7"
         },
         {
           "x": 6,
@@ -2437,10 +2569,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:6:8"
         },
         {
-          "x": 13,
+          "x": 14,
           "y": 8,
           "type": "wall",
           "blocked": true,
@@ -2448,7 +2582,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:14:8"
+        },
+        {
+          "x": 6,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:6:10"
         },
         {
           "x": 6,
@@ -2459,44 +2608,52 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:6:9"
         },
         {
           "x": 7,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:7:10"
         },
         {
           "x": 8,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:8:10"
         },
         {
           "x": 9,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:9:10"
         },
         {
           "x": 10,
-          "y": 9,
+          "y": 10,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2506,11 +2663,13 @@
           "roomId": null,
           "doorId": "retiro:door-left",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "retiro:building:wall:x:10:10"
         },
         {
           "x": 11,
-          "y": 9,
+          "y": 10,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2520,21 +2679,38 @@
           "roomId": null,
           "doorId": "retiro:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "retiro:building:wall:x:11:10"
         },
         {
           "x": 12,
-          "y": 9,
+          "y": 10,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:12:10"
         },
         {
           "x": 13,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:building:wall:x:13:10"
+        },
+        {
+          "x": 14,
           "y": 9,
           "type": "wall",
           "blocked": true,
@@ -2542,7 +2718,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:building:wall:y:14:9"
         }
       ]
     },
@@ -2561,52 +2739,132 @@
           "id": "retiro:house-0:interior",
           "cells": [
             {
+              "x": 4,
+              "y": 0
+            },
+            {
+              "x": 5,
+              "y": 0
+            },
+            {
+              "x": 4,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 0
+            },
+            {
               "x": 5,
               "y": 1
+            },
+            {
+              "x": 4,
+              "y": 2
+            },
+            {
+              "x": 7,
+              "y": 0
             },
             {
               "x": 6,
               "y": 1
             },
             {
-              "x": 7,
-              "y": 1
+              "x": 5,
+              "y": 2
+            },
+            {
+              "x": 4,
+              "y": 3
             },
             {
               "x": 8,
-              "y": 1
+              "y": 0
             },
             {
-              "x": 9,
+              "x": 7,
               "y": 1
-            },
-            {
-              "x": 10,
-              "y": 1
-            },
-            {
-              "x": 5,
-              "y": 2
             },
             {
               "x": 6,
               "y": 2
             },
             {
+              "x": 5,
+              "y": 3
+            },
+            {
+              "x": 9,
+              "y": 0
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
               "x": 7,
               "y": 2
+            },
+            {
+              "x": 6,
+              "y": 3
+            },
+            {
+              "x": 10,
+              "y": 0
+            },
+            {
+              "x": 9,
+              "y": 1
             },
             {
               "x": 8,
               "y": 2
             },
             {
+              "x": 7,
+              "y": 3
+            },
+            {
+              "x": 11,
+              "y": 0
+            },
+            {
+              "x": 10,
+              "y": 1
+            },
+            {
               "x": 9,
               "y": 2
             },
             {
+              "x": 8,
+              "y": 3
+            },
+            {
+              "x": 11,
+              "y": 1
+            },
+            {
               "x": 10,
               "y": 2
+            },
+            {
+              "x": 9,
+              "y": 3
+            },
+            {
+              "x": 11,
+              "y": 2
+            },
+            {
+              "x": 10,
+              "y": 3
+            },
+            {
+              "x": 11,
+              "y": 3
             }
           ]
         }
@@ -2623,7 +2881,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:4:0"
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:4:0"
         },
         {
           "x": 5,
@@ -2634,7 +2907,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:5:0"
         },
         {
           "x": 6,
@@ -2645,7 +2920,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:6:0"
         },
         {
           "x": 7,
@@ -2656,7 +2933,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:7:0"
         },
         {
           "x": 8,
@@ -2667,7 +2946,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:8:0"
         },
         {
           "x": 9,
@@ -2678,7 +2959,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:9:0"
         },
         {
           "x": 10,
@@ -2689,7 +2972,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:10:0"
         },
         {
           "x": 11,
@@ -2700,7 +2985,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:11:0"
+        },
+        {
+          "x": 12,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:12:0"
         },
         {
           "x": 4,
@@ -2711,10 +3011,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:4:1"
         },
         {
-          "x": 11,
+          "x": 12,
           "y": 1,
           "type": "wall",
           "blocked": true,
@@ -2722,7 +3024,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:12:1"
         },
         {
           "x": 4,
@@ -2733,10 +3037,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:4:2"
         },
         {
-          "x": 11,
+          "x": 12,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2744,7 +3050,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:12:2"
+        },
+        {
+          "x": 4,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:4:4"
         },
         {
           "x": 4,
@@ -2755,44 +3076,52 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:4:3"
         },
         {
           "x": 5,
-          "y": 3,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:5:4"
         },
         {
           "x": 6,
-          "y": 3,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:6:4"
         },
         {
           "x": 7,
-          "y": 3,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:7:4"
         },
         {
           "x": 8,
-          "y": 3,
+          "y": 4,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2802,32 +3131,51 @@
           "roomId": null,
           "doorId": "retiro:house-0:door:8:3",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:8:4"
         },
         {
           "x": 9,
-          "y": 3,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:9:4"
         },
         {
           "x": 10,
-          "y": 3,
+          "y": 4,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:10:4"
         },
         {
           "x": 11,
+          "y": 4,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-0:wall:x:11:4"
+        },
+        {
+          "x": 12,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2835,7 +3183,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-0:wall:y:12:3"
         }
       ]
     },
@@ -2854,52 +3204,132 @@
           "id": "retiro:house-1:interior",
           "cells": [
             {
+              "x": 5,
+              "y": 12
+            },
+            {
+              "x": 6,
+              "y": 12
+            },
+            {
+              "x": 5,
+              "y": 13
+            },
+            {
+              "x": 7,
+              "y": 12
+            },
+            {
               "x": 6,
               "y": 13
+            },
+            {
+              "x": 5,
+              "y": 14
+            },
+            {
+              "x": 8,
+              "y": 12
             },
             {
               "x": 7,
               "y": 13
             },
             {
-              "x": 8,
-              "y": 13
+              "x": 6,
+              "y": 14
+            },
+            {
+              "x": 5,
+              "y": 15
             },
             {
               "x": 9,
-              "y": 13
+              "y": 12
             },
             {
-              "x": 10,
+              "x": 8,
               "y": 13
-            },
-            {
-              "x": 11,
-              "y": 13
-            },
-            {
-              "x": 6,
-              "y": 14
             },
             {
               "x": 7,
               "y": 14
             },
             {
+              "x": 6,
+              "y": 15
+            },
+            {
+              "x": 10,
+              "y": 12
+            },
+            {
+              "x": 9,
+              "y": 13
+            },
+            {
               "x": 8,
               "y": 14
+            },
+            {
+              "x": 7,
+              "y": 15
+            },
+            {
+              "x": 11,
+              "y": 12
+            },
+            {
+              "x": 10,
+              "y": 13
             },
             {
               "x": 9,
               "y": 14
             },
             {
+              "x": 8,
+              "y": 15
+            },
+            {
+              "x": 12,
+              "y": 12
+            },
+            {
+              "x": 11,
+              "y": 13
+            },
+            {
               "x": 10,
               "y": 14
             },
             {
+              "x": 9,
+              "y": 15
+            },
+            {
+              "x": 12,
+              "y": 13
+            },
+            {
               "x": 11,
               "y": 14
+            },
+            {
+              "x": 10,
+              "y": 15
+            },
+            {
+              "x": 12,
+              "y": 14
+            },
+            {
+              "x": 11,
+              "y": 15
+            },
+            {
+              "x": 12,
+              "y": 15
             }
           ]
         }
@@ -2916,7 +3346,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:5:12"
+        },
+        {
+          "x": 5,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:5:12"
         },
         {
           "x": 6,
@@ -2927,7 +3372,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:6:12"
         },
         {
           "x": 7,
@@ -2938,7 +3385,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:7:12"
         },
         {
           "x": 8,
@@ -2949,7 +3398,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:8:12"
         },
         {
           "x": 9,
@@ -2963,7 +3414,9 @@
           "roomId": null,
           "doorId": "retiro:house-1:door:9:12",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:9:12"
         },
         {
           "x": 10,
@@ -2974,7 +3427,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:10:12"
         },
         {
           "x": 11,
@@ -2985,7 +3440,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:11:12"
         },
         {
           "x": 12,
@@ -2996,7 +3453,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:12:12"
+        },
+        {
+          "x": 13,
+          "y": 12,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:13:12"
         },
         {
           "x": 5,
@@ -3007,10 +3479,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:5:13"
         },
         {
-          "x": 12,
+          "x": 13,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -3018,7 +3492,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:13:13"
         },
         {
           "x": 5,
@@ -3029,10 +3505,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:5:14"
         },
         {
-          "x": 12,
+          "x": 13,
           "y": 14,
           "type": "wall",
           "blocked": true,
@@ -3040,7 +3518,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:13:14"
+        },
+        {
+          "x": 5,
+          "y": 16,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:5:16"
         },
         {
           "x": 5,
@@ -3051,76 +3544,103 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:5:15"
         },
         {
           "x": 6,
-          "y": 15,
+          "y": 16,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:6:16"
         },
         {
           "x": 7,
-          "y": 15,
+          "y": 16,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:7:16"
         },
         {
           "x": 8,
-          "y": 15,
+          "y": 16,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:8:16"
         },
         {
           "x": 9,
-          "y": 15,
+          "y": 16,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:9:16"
         },
         {
           "x": 10,
-          "y": 15,
+          "y": 16,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:10:16"
         },
         {
           "x": 11,
-          "y": 15,
+          "y": 16,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:11:16"
         },
         {
           "x": 12,
+          "y": 16,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null,
+          "axis": "x",
+          "id": "retiro:house-1:wall:x:12:16"
+        },
+        {
+          "x": 13,
           "y": 15,
           "type": "wall",
           "blocked": true,
@@ -3128,12 +3648,26 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "retiro:house-1",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "retiro:house-1:wall:y:13:15"
         }
       ]
     }
   ],
   "props": [
+    {
+      "id": "retiro:armory-cache",
+      "type": "chest",
+      "x": 4,
+      "y": 5,
+      "purpose": "armory-cache",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
     {
       "id": "retiro:building:bed:7:7",
       "type": "bed",
@@ -3211,18 +3745,6 @@
         "height": 1
       },
       "blocksMovement": true
-    },
-    {
-      "id": "retiro:armory-cache",
-      "type": "chest",
-      "x": 4,
-      "y": 5,
-      "purpose": "armory-cache",
-      "footprint": {
-        "width": 1,
-        "height": 1
-      },
-      "blocksMovement": true
     }
   ],
   "items": [],
@@ -3287,6 +3809,62 @@
     {
       "x": 15,
       "y": 15
+    }
+  ],
+  "wallEdges": [
+    {
+      "x": 17,
+      "y": 10,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:17:10"
+    },
+    {
+      "x": 17,
+      "y": 11,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:17:11"
+    },
+    {
+      "x": 17,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:17:4"
+    },
+    {
+      "x": 17,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:17:5"
+    },
+    {
+      "x": 17,
+      "y": 6,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:17:6"
+    },
+    {
+      "x": 17,
+      "y": 9,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "y",
+      "id": "wall:0:y:17:9"
     }
   ]
 }

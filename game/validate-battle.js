@@ -1,3 +1,4 @@
+import {wallEdgeKey,wallEdgeCells,WALL_GEOMETRY_VERSION} from './wall-geometry.js';
 import {validateQuestWithdrawals} from './quest-withdrawal.js';
 import {validateCivilianWeapons} from './civilian-weapons.js';
 import {validateFiniteArsenalScene} from './finite-artillery-arsenals.js';
@@ -18,7 +19,7 @@ import {migrateBattleAmmunition} from './campaign-ammunition.js';
 import {civilianIncidents,validateCivilianWounds} from './civilian-harm.js';
 import {validateSectorDeployment} from './sector-deployment.js';
 import {NOISE_KINDS} from './tactical-awareness.js';
-import {validateTacticalSpace} from './tactical-space.js';
+import {validateTacticalSpace,MAX_TACTICAL_LEVEL,surfaceAt,surfaceHeight} from './tactical-space.js';
 import {validateRegionalWeather} from './regional-weather.js';
 import {validateQuestDefinitions} from './quest-definitions.js';
 import {validateRoadsideDiscoveries} from './roadside-discoveries.js';
@@ -32,7 +33,7 @@ import {validateReloadProgress} from './weapon-reload.js';
 import {validMilitiaExperience} from './militia-experience.js';
 import {validateCoverMetadata} from './projectile-cover.js';
 import {validateStructureDamage} from './structure-blast.js';
-import {boundaryMatches,EXIT_EDGES,validEntry} from './tactical-exits.js';
+import {boundaryMatches,boundaryPassable,EXIT_EDGES,validEntry} from './tactical-exits.js';
 import {NPC_ACTIVITIES} from './npc-ai.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool,validateEnvironment} from './environment-interactions.js';
@@ -57,6 +58,30 @@ need(object(value),'datos tácticos');validateGriefParticipants(value);validateC
 need(integer(s.width,4,128)&&integer(s.height,4,128),'dimensiones');const coord=p=>object(p)&&integer(p.x,0,s.width-1)&&integer(p.y,0,s.height-1);
 need(Array.isArray(s.tiles)&&s.tiles.length===s.width*s.height,'casillas');const seen=new Set();
 for(const t of s.tiles){validateCoverMetadata(t);validateStructureDamage(t);need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');seen.add(`${t.x},${t.y}`);need(['wall','grass','road','water','stone','mud','forest','scrub','floor','door','window','rubble','cliff'].includes(t.type)&&typeof t.blocked==='boolean'&&number(t.cover,0,100),'terreno');for(const key of ['blocksSight','open','locked'])if(t[key]!==undefined)need(typeof t[key]==='boolean','puertas');for(const key of ['buildingId','roomId','doorId'])if(t[key]!=null)need(text(t[key]),'habitaciones');}
+if(s.wallGeometryVersion!==undefined)need(s.wallGeometryVersion===WALL_GEOMETRY_VERSION,'versión de paredes');
+s.wallEdges??=[];
+need(Array.isArray(s.wallEdges)&&s.wallEdges.length<=(2*s.width*s.height+s.width+s.height)*(MAX_TACTICAL_LEVEL+1),'paredes');
+const wallKeys=new Set(),wallIds=new Set(),doorIds=new Set();
+for(const edge of s.wallEdges){
+ need(object(edge)&&text(edge.id)&&edge.id.length>0&&!wallIds.has(edge.id)&&["x","y"].includes(edge.axis)&&
+   Number.isInteger(edge.x)&&Number.isInteger(edge.y)&&edge.x>=0&&edge.y>=0&&
+   (edge.axis==='x'?edge.x<s.width&&edge.y<=s.height:edge.x<=s.width&&edge.y<s.height)&&
+   (edge.tacticalLevel===undefined||integer(edge.tacticalLevel,0,MAX_TACTICAL_LEVEL))&&!wallKeys.has(wallEdgeKey(edge))&&
+   ['wall','door','window','rubble'].includes(edge.type),'bordes de paredes');
+ wallKeys.add(wallEdgeKey(edge));wallIds.add(edge.id);validateCoverMetadata(edge);validateStructureDamage(edge);
+ const supports=wallEdgeCells(edge).filter(cell=>surfaceAt(s,cell));
+ need(supports.length>0,'apoyos de paredes');
+ if(edge.elevation!==undefined)need(number(edge.elevation,0,100)&&supports.some(cell=>surfaceHeight(s,cell)===edge.elevation),'altura de paredes');
+ for(const field of ['blocked','blocksSight','open','locked'])if(edge[field]!==undefined)need(typeof edge[field]==='boolean','estado de paredes');
+ if(edge.cover!==undefined)need(number(edge.cover,0,100),'cobertura de paredes');
+ if(edge.buildingId!==undefined)need(text(edge.buildingId),'edificio de la pared');
+ if(edge.type==='door'){
+  need(text(edge.doorId)&&edge.doorId.length>0&&!doorIds.has(edge.doorId)&&typeof edge.open==='boolean'&&typeof edge.locked==='boolean','puertas de borde');
+  doorIds.add(edge.doorId);validateEnvironment(edge);
+  if(edge.blocked!==undefined)need(edge.blocked===!edge.open,'paso de puerta');
+  if(edge.blocksSight!==undefined)need(edge.blocksSight===!edge.open,'vista de puerta');
+ }
+}
 need(!validateArtilleryProfiles(s.artilleryDefinitions).length,'modelos de artillería');need(!validateMilitiaPatrol(s.militiaPatrol).length,'reglas de patrulla');
 need(s.conditionVersion===undefined||s.conditionVersion===1,'versión del estado físico');const legacyCondition=s.conditionVersion===undefined;s.conditionVersion=1;
 if(s.enemyTurns!==undefined)need(integer(s.enemyTurns,0,1e9),'turnos enemigos');if(s.quietCombatTurns!==undefined)need(integer(s.quietCombatTurns,0,2),'turnos sin contacto');if(s.contactThisRound!==undefined)need(typeof s.contactThisRound==='boolean','contacto del turno');s.mode??='combat';s.phase??='player';s.status??='active';s.seed??=1812;s.turn??=1;s.weather??={rain:0,humidity:0};need(['combat','exploration'].includes(s.mode)&&['player','enemy','interrupt'].includes(s.phase)&&['active','victory','defeat','retreat'].includes(s.status)&&integer(s.seed,0,4294967295)&&integer(s.turn,1,1e9),'turnos');need(object(s.weather)&&number(s.weather.rain,0,100)&&number(s.weather.humidity,0,100),'clima');
@@ -115,7 +140,7 @@ for(const u of s.units)if(u.departure!==undefined){
  const receipt=u.departure,exit=(u.side==='enemy'?s.enemyExits:s.exits)?.find(v=>v.id===receipt?.exitId);
  need(object(receipt)&&Object.keys(receipt).length===7&&exit&&receipt.edge===exit.edge&&receipt.destination===exit.destination&&coord(receipt)&&receipt.x===u.x&&receipt.y===u.y&&boundaryMatches(s,receipt,receipt.edge),'constancia de salida');
  need(integer(receipt.elapsedSeconds,1,s.elapsedSeconds??0)&&Object.hasOwn(receipt,'mountId')&&(receipt.mountId===null||text(receipt.mountId)&&receipt.mountId.length>0),'reloj o montura de salida');
- need(!s.tiles.find(t=>t.x===receipt.x&&t.y===receipt.y)?.blocked&&!propBlocksAt(s,receipt.x,receipt.y),'paso de salida');
+ need(boundaryPassable(s,u,receipt.edge)&&!s.tiles.find(t=>t.x===receipt.x&&t.y===receipt.y)?.blocked&&!propBlocksAt(s,receipt.x,receipt.y),'paso de salida');
  if(receipt.mountId!==null)need(u.mount?.id===receipt.mountId,'identidad de montura salida');
  if(u.mounted&&u.mount?.id)need(receipt.mountId===u.mount.id,'montura que cruzó la salida');
 }
@@ -204,7 +229,7 @@ const groundIds=new Set();for(const g of s.groundItems){
  if(g.type==='item'){const {id,type,x,y,tacticalLevel,heldBy,knownToPlayer,...stack}=g;validateItemStack({...stack,count:Math.max(1,stack.count)});if(g.count>0)claimStack(g);}
 }
 for(const d of s.droppedWeapons){validateWeaponCarrier(d);if(d.weight!==undefined)need(number(d.weight,0,10000),'peso abandonado');need(coord(d)&&integer(d.weapon,0,65535)&&number(d.condition,0,100)&&integer(d.loaded,0,weaponSpecification(d)?.capacity??0)&&(d.taken===undefined||typeof d.taken==='boolean')&&(d.jammed===undefined||typeof d.jammed==='boolean'),'equipo abandonado');need(d.count===undefined||d.count===1,'cantidad de arma abandonada');validateWeaponFittings(d.fittings,d.weapon);validateFittingPattern(d.fittingPattern,d.weapon,d.instanceId);droppedWeaponStack(d);if(!d.taken)claimStack(d);}
-for(const t of s.tiles.filter(t=>t.type==='door')){validateEnvironment(t);if(t.open!==undefined)need(t.blocked===!t.open&&(t.blocksSight===undefined||t.blocksSight===!t.open),'paso de puerta');for(const stack of t.contents??[])claimStack(stack);}
+for(const t of [...s.tiles,...s.wallEdges].filter(t=>t.type==='door')){validateEnvironment(t);if(t.open!==undefined)need(t.blocked===!t.open&&(t.blocksSight===undefined||t.blocksSight===!t.open),'paso de puerta');for(const stack of t.contents??[])claimStack(stack);}
 const propIds=new Set();for(const p of s.props){validateCoverMetadata(p);validateStructureDamage(p,'prop');need(coord(p)&&text(p.id)&&p.id.length>0&&!propIds.has(p.id)&&PROP_TYPES.includes(p.type),'mobiliario');if(p.footprint!==undefined)need(object(p.footprint),'huella del mobiliario');const size=propSize(p);need(object(size)&&integer(size.width,1,8)&&integer(size.height,1,8),'dimensiones del mobiliario');need(propCells(p).every(coord),'huella del mobiliario');if(p.blocksMovement!==undefined)need(typeof p.blocksMovement==='boolean','colisión del mobiliario');propIds.add(p.id);if(p.type==='chest'){validateEnvironment(p);for(const stack of p.contents??[])claimStack(stack);}for(const key of ['buildingId','roomId'])if(p[key]!=null)need(text(p[key]),'habitación del mobiliario');}
 for(const d of s.decor)need(coord(d)&&integer(d.width,1,s.width)&&integer(d.height,1,s.height)&&d.x+d.width<=s.width&&d.y+d.height<=s.height&&text(d.type),'decoración');
 for(const b of s.buildings){need(coord(b)&&text(b.id)&&integer(b.width,1,s.width)&&integer(b.height,1,s.height)&&b.x+b.width<=s.width&&b.y+b.height<=s.height&&Array.isArray(b.rooms),'edificios');for(const room of b.rooms)need(object(room)&&text(room.id)&&Array.isArray(room.cells)&&room.cells.every(coord),'habitaciones');}need(s.revealedRooms.every(text),'habitaciones vistas');validateSectorDeployment(s);validateFiniteArsenalScene(s);return validateTacticalSpace(s);

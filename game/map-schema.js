@@ -1,4 +1,8 @@
+import {wallEdgeKey,wallEdgeCells,migrateWallGeometry} from './wall-geometry.js';
 import {BUILDING_TYPES} from './building-types.js';
+import {validateCoverMetadata} from './projectile-cover.js';
+import {STRUCTURE_BLAST,validateStructureDamage} from './structure-blast.js';
+import {validateEnvironment} from './environment-interactions.js';
 import { WALL_FINISHES, ROOF_FINISHES, DOOR_STYLES, WINDOW_STYLES } from "./building-appearance.js";
 import {
   TERRAIN,
@@ -11,9 +15,9 @@ import {
   ground,
   neighbours,
 } from "./map-catalog.js";
-import { compileMap, reachableMap } from "./compile-map.js";
+import { compileBuilding, compileMap, reachableMap } from "./compile-map.js";
 import { propCells, propPlacementError, propBlocksAt } from "./props.js";
-export const MAP_SCHEMA_VERSION = 1;
+export const MAP_SCHEMA_VERSION = 2;
 const placementMessages = {
   "Invalid furniture footprint.": "Dimensiones de mobiliario no válidas.",
   "Duplicate furniture ID.": "El mueble ya existe.",
@@ -44,12 +48,13 @@ export function blankMap({
   )
     throw Error("Dimensiones no válidas.");
   return {
-    schemaVersion: 1,
+    schemaVersion: MAP_SCHEMA_VERSION,
     id,
     revision: 0,
     width,
     height,
     metadata: { title },
+    wallEdges: [],
     terrain: Array.from({ length: width * height }, (_, i) =>
       ground(i % width, Math.floor(i / width)),
     ),
@@ -78,7 +83,28 @@ export function validateMap(input, { playable = false } = {}) {
       need = (ok, message) => {
         if (!ok) throw Error(message);
       };
-    need(d.schemaVersion === 1, "Versión de mapa no compatible.");
+    const wallMetadata = (wall, {runtime = false} = {}) => {
+      // Map authoring describes ground floors; upper geometry is a separate
+      // runtime layer. A displaced edge must never silently miss that floor.
+      need((wall.tacticalLevel === undefined || wall.tacticalLevel === 0) &&
+        (wall.elevation === undefined || wall.elevation === 0), "La pared debe estar al nivel del suelo.");
+      for (const field of ["blocked", "blocksSight", "open", "locked"])
+        need(wall[field] === undefined || typeof wall[field] === "boolean", "Estado de pared no válido.");
+      need(wall.cover === undefined || Number.isFinite(wall.cover) && wall.cover >= 0 && wall.cover <= 100, "Cobertura de pared no válida.");
+      need(wall.material === undefined || typeof wall.material === "string" && Object.hasOwn(STRUCTURE_BLAST.materials, wall.material), "Material de pared no válido.");
+      validateCoverMetadata(wall);
+      validateStructureDamage(wall);
+      if (wall.type === "door") {
+        // Building compilation derives these two flags from the door state.
+        // Freestanding edges are already runtime records and retain them.
+        if (runtime) {
+          validateEnvironment(wall);
+          need((wall.blocked === undefined || wall.blocked === !wall.open) &&
+            (wall.blocksSight === undefined || wall.blocksSight === !wall.open), "Paso de puerta exterior no válido.");
+        }
+      }
+    };
+    need([1, MAP_SCHEMA_VERSION].includes(d.schemaVersion), "Versión de mapa no compatible.");
     need(
       str(d.id) && Number.isSafeInteger(d.revision) && d.revision >= 0,
       "Identidad o revisión no válida.",
@@ -114,7 +140,7 @@ export function validateMap(input, { playable = false } = {}) {
           Number.isFinite(t.cover) &&
           t.cover >= 0 &&
           t.cover <= 100 &&
-          [...Object.keys(TERRAIN), "wall", "floor", "rubble", "cliff", "door", "window"].includes(
+          [...Object.keys(TERRAIN), "floor", "rubble", "cliff", ...(d.schemaVersion===1?["wall","door","window"]:[])].includes(
             t.type,
           ),
         "Terreno no válido o duplicado.",
@@ -126,6 +152,7 @@ export function validateMap(input, { playable = false } = {}) {
         t.buildingId == null && t.roomId == null,
         "La estructura debe estar en la capa de edificios.",
       );
+      if (["wall", "door", "window"].includes(t.type)) wallMetadata(t);
       keys.add(cellKey(t));
     }
     if (d.boundaryRoads !== undefined) {
@@ -136,7 +163,23 @@ export function validateMap(input, { playable = false } = {}) {
         roads.add(cellKey(entry));
       }
     }
-    const ids = new Set();
+    const edgeCoord = (p) => obj(p) && Number.isInteger(p.x) && Number.isInteger(p.y) &&
+      ((p.axis === "x" && p.x >= 0 && p.x < d.width && p.y >= 0 && p.y <= d.height) ||
+       (p.axis === "y" && p.x >= 0 && p.x <= d.width && p.y >= 0 && p.y < d.height));
+    const ids = new Set(), globalWallKeys = new Set();
+    if(d.wallEdges!==undefined){
+      need(Array.isArray(d.wallEdges)&&d.wallEdges.length<=2*d.width*d.height+d.width+d.height,"Bordes de pared no válidos.");
+      for(const wall of d.wallEdges){
+        need(edgeCoord(wall)&&str(wall.id)&&!ids.has(wall.id)&&!globalWallKeys.has(wallEdgeKey(wall))&&["wall","door","window"].includes(wall.type)&&wall.buildingId==null,"Pared exterior no válida o duplicada.");
+        wallMetadata(wall, {runtime:true});
+        ids.add(wall.id);globalWallKeys.add(wallEdgeKey(wall));
+        if(wall.type==="door"){
+          need(str(wall.doorId)&&(!ids.has(wall.doorId)||wall.doorId===wall.id)&&typeof wall.open==="boolean"&&typeof wall.locked==="boolean","Puerta exterior no válida.");
+          ids.add(wall.doorId);
+        }
+      }
+    }
+
     for (const layer of LAYERS) {
       need(Array.isArray(d[layer]) && d[layer].length <= 2000, `Capa no válida: ${layer}`);
       for (const e of d[layer]) {
@@ -178,29 +221,39 @@ export function validateMap(input, { playable = false } = {}) {
           need(!occupied.has(`${x},${y}`), "Los edificios se superponen.");
           occupied.add(`${x},${y}`);
         }
+      need(!(d.wallEdges??[]).some(edge=>wallEdgeCells(edge).every(c=>c.x>=b.x&&c.x<b.x+b.width&&c.y>=b.y&&c.y<b.y+b.height)), "Las paredes interiores deben estar en el edificio.");
       const wallKeys = new Set();
       for (const w of b.walls) {
+        wallMetadata(w);
+        const edge = w.axis !== undefined;
         need(
-          coord(w) &&
-            w.x >= b.x &&
-            w.x < b.x + b.width &&
-            w.y >= b.y &&
-            w.y < b.y + b.height &&
-            !wallKeys.has(cellKey(w)) &&
+          (edge ? edgeCoord(w) &&
+            w.x >= b.x && w.x <= b.x + b.width &&
+            w.y >= b.y && w.y <= b.y + b.height &&
+            (w.axis !== "x" || w.x < b.x + b.width) &&
+            (w.axis !== "y" || w.y < b.y + b.height)
+            : d.schemaVersion === 1 && coord(w) &&
+              w.x >= b.x && w.x < b.x + b.width &&
+              w.y >= b.y && w.y < b.y + b.height) &&
+            !wallKeys.has(edge ? wallEdgeKey(w) : cellKey(w)) &&
             ["wall", "door", "window"].includes(w.type),
           "Pared o abertura no válida.",
         );
+        if (edge) {
+          need(str(w.id) && !ids.has(w.id) && !globalWallKeys.has(wallEdgeKey(w)), "Borde de pared o ID duplicado.");
+          ids.add(w.id); globalWallKeys.add(wallEdgeKey(w));
+        }
         need(
           w.style === undefined ||
             (w.type === "door" && Object.hasOwn(DOOR_STYLES, w.style)) ||
             (w.type === "window" && Object.hasOwn(WINDOW_STYLES, w.style)),
           "Estilo de abertura no válido.",
         );
-        wallKeys.add(cellKey(w));
+        wallKeys.add(edge ? wallEdgeKey(w) : cellKey(w));
         if (w.type === "door")
           need(
             str(w.doorId) &&
-              !ids.has(w.doorId) &&
+              (!ids.has(w.doorId) || w.doorId === w.id) &&
               typeof w.open === "boolean" &&
               typeof w.locked === "boolean",
             "Puerta no válida.",
@@ -307,7 +360,7 @@ export function validateMap(input, { playable = false } = {}) {
         const doors = b.walls.filter(
           (w) =>
             w.type === "door" &&
-            room.cells.some((c) => neighbours(c).some((n) => cellKey(n) === cellKey(w))),
+            room.cells.some((c) => wallEdgeCells(w).some((n) => cellKey(n) === cellKey(c))),
         );
         if (!doors.length)
           warnings.push(
@@ -333,13 +386,28 @@ export function parseMap(text) {
   const doc = JSON.parse(text);
   const result = validateMap(doc);
   if (!result.valid) throw Error(result.errors.join("\n"));
-  return doc;
+  return migrateMapDocument(doc);
 }
 export function serializeMap(doc) {
   const result = validateMap(doc);
   if (!result.valid) throw Error(result.errors.join("\n"));
-  const copy = structuredClone(doc);
+  const copy = migrateMapDocument(doc);
   for (const layer of LAYERS) copy[layer].sort((a, b) => a.id.localeCompare(b.id));
   copy.terrain.sort((a, b) => a.y - b.y || a.x - b.x);
+  copy.wallEdges.sort((a,b)=>a.id.localeCompare(b.id));
   return JSON.stringify(copy, null, 2) + "\n";
+}
+
+// Import old authored plans once. Runtime compilation always uses edge geometry.
+export function migrateMapDocument(document) {
+  const copy = structuredClone(document);
+  const standalone=copy.terrain.filter(t=>["wall","door","window"].includes(t.type));
+  const converted=migrateWallGeometry({width:copy.width,height:copy.height,tiles:standalone,buildings:[]});
+  copy.schemaVersion = MAP_SCHEMA_VERSION;
+  copy.buildings = copy.buildings.map((building) => compileBuilding(building).building);
+  const owned = new Set(copy.buildings.flatMap(b=>b.walls.map(wallEdgeKey)));
+  // Legacy terrain under a footprint was hidden by the old building layer.
+  // Preserve that precedence only for converted cells, never authored edges.
+  copy.wallEdges=[...(copy.wallEdges??[]),...converted.wallEdges.filter(edge=>!owned.has(wallEdgeKey(edge)) && !copy.buildings.some(b=>wallEdgeCells(edge).every(c=>c.x>=b.x&&c.x<b.x+b.width&&c.y>=b.y&&c.y<b.y+b.height)))];
+  return copy;
 }

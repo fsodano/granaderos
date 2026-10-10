@@ -1,0 +1,47 @@
+{
+  "description": "Actual earned stock northern Salta input after native coastal, Córdoba defense, finite stock readiness, Tucumán victory, and paid officer relief",
+  "sourceSnapshot": "f12c2d0f",
+  "inputPath": "/tmp/wall-stock-ending-checkpoints/004-salta-ready.save.json",
+  "inputClock": [
+    371,
+    2150
+  ],
+  "sha256": "4fc51af2031091827963bf1ff7ec772ef8ff6dd6cb14e10b9549de7f74843024",
+  "gzipSha256": "2691d2b55b906f0a56b97d14a37812a31e0311e0a17da078f0e22ad5983f8399",
+  "officialSaveRoundTripExact": true,
+  "startingTreasury": 98928,
+  "requestId": "salta-371-3074369515",
+  "artillery": [
+    {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    }
+  ],
+  "preparationLog": "/tmp/wall-stock-ending-continuation.log",
+  "actualPriorDeaths": [
+    103,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    120,
+    122,
+    123,
+    124,
+    125,
+    126,
+    129,
+    131,
+    134,
+    136,
+    137,
+    141,
+    144,
+    1000
+  ]
+}

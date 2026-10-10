@@ -1,3 +1,4 @@
+import {wallEdgeId,wallEdgeCenter} from './wall-geometry.js';
 import {sectorDeploymentModel} from './sector-deployment.js';
 import {publicLogisticsNotice} from './logistics-attention.js';
 import {knownCampaignSectorEquipment,knownCampaignRepairReserves} from './sector-inventory.js';
@@ -25,7 +26,7 @@ const STRUCTURE=['structureDamage','destroyed'];
 const ACTOR=['id','name','nickname','side',...POSITION,'hp','maxHp','stance','movementMode','facing','mounted','unconscious','knockedDown','entangled','routed','surrendered','militia','missionAlly'];
 const OWN=['ammunitionVersion','ap','maxAP','carriedAP','energy','fatigue','bleeding','bandaged','shock','morale','weapon','blade','condition','bladeCondition','weaponDropped','weaponReady','weaponMode','loaded','reloadProgress','ammo','jammed','medkits','rations','torches','boleadoras','activeSlot','activeItem','leftHandItem','activeTool','activeSupply','stealthMode','agility','dexterity','strength','wisdom','leadership','marksmanship','medical','mechanical','explosives','stealth','experienceLevel','militiaRank','militiaExperience'];
 const ITEM=['item','ammoType','kind','grenadeType','outfit','label','name','count','weight','weapon','loaded','reloadProgress','condition','jammed','itemType','toolKey','fittingPattern'];
-const ACTION=['type','unitId','targetId','targetKind','item','count','slot','toolKey','supplyKey','stance','movement','enabled',...POSITION,'linkId','aim','hitLocation','groundId','dropIndex','inventoryKey','kind','id','verb','index','destination'];
+const ACTION=['type','unitId','targetId','targetKind','item','count','slot','toolKey','supplyKey','stance','movement','enabled',...POSITION,'linkId','aim','hitLocation','groundId','dropIndex','inventoryKey','kind','id','wallEdgeId','axis','verb','index','destination'];
 const ORDERS=new Set(['move','climb','look','stealth','useItem','loot','reload','reprime','weapon','stance','mount','brace','repair','free','endTurn']);
 const onField=unit=>!unit.departure&&!unit.fled;
 const fittings=value=>value?.bayonet?{bayonet:pick(value.bayonet,['weapon','fittingPattern','condition'])}:{};
@@ -72,11 +73,13 @@ export function playerKnownBattle(state){
   const visibleIds=new Set(visible.map(unit=>unit.id));
   const tiles=state.tiles.filter(seen);
   const surfaces=(state.upperSurfaces??[]).filter(seen);
+  const wallEdges=(state.wallEdges??[]).filter(edge=>actors.some(player=>canSee(state,player,edge)));
   const knownCells=new Set([...tiles,...surfaces].map(spaceKey));
   const environment=[];
-  for(const target of [...tiles.filter(tile=>tile.type==='door'),...(state.props??[]).filter(prop=>prop.type==='chest'&&seen(prop))]){
+  for(const target of [...wallEdges.filter(edge=>edge.type==='door'),...tiles.filter(tile=>tile.type==='door'),...(state.props??[]).filter(prop=>prop.type==='chest'&&seen(prop))]){
     const summary=environmentTargetSummary({side:'player'},target),kind=target.type==='door'?'door':'container';
-    environment.push({...pick(target,POSITION),...pick(summary,['id','type','label','open','locked','broken',...STRUCTURE]),kind,
+    if(target.axis)summary.id=target.doorId??wallEdgeId(target);
+    environment.push({...pick(target,[...POSITION,'axis']),...(target.axis?{wallEdgeId:wallEdgeId(target)}:{}),...pick(summary,['id','type','label','open','locked','broken',...STRUCTURE]),kind,
       ...(summary.trap?{trap:pick(summary.trap,['type','armed'])}:{}),
       ...(summary.contents?{contents:summary.contents.map((stack,index)=>({...item(stack),index}))}:{})});
   }
@@ -108,6 +111,7 @@ export function playerKnownBattle(state){
   const result={...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','phase','mode','status','sectorCleared','night','elapsedSeconds']),weather:pick(state.weather,['rain','humidity']),
     units:[...players.map(ownActor),...visible.map(unit=>pick(unit,ACTOR))],departedPlayers:state.units.filter(unit=>unit.side==='player'&&unit.departure).map(departure),
     npcs:visibleNpcs.map(npc=>pick(npc,['id','name',...POSITION,'hp','maxHp','bleeding','bandaged','unconscious','knockedDown','stance','mission'])),
+    wallEdges:wallEdges.map(edge=>pick(edge,['id','axis',...POSITION,'elevation','type','blocked','blocksSight','cover','open','doorId','material','buildingId',...STRUCTURE])),
     tiles:tiles.map(tile=>pick(tile,[...POSITION,'elevation','type','blocked','cover','open','buildingId','roomId',...STRUCTURE])),
     ...(state.upperSurfaces?{upperSurfaces:surfaces.map(surface=>pick(surface,['id',...POSITION,'elevation','type','kind','blocked','cover','slabThickness','material','buildingId','roomId',...STRUCTURE]))}:{}),
     ...(state.climbLinks?{climbLinks:state.climbLinks.filter(link=>knownCells.has(spaceKey(link.from))&&knownCells.has(spaceKey(link.to))).map(link=>({...pick(link,['id','kind']),from:pick(link.from,POSITION),to:pick(link.to,POSITION)}))}:{}),

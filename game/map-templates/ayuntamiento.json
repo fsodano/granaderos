@@ -13,10 +13,35 @@
     "rooms": [
       {
         "id": "ayuntamiento:secretaria",
+        "name": "Secretaría municipal",
         "cells": [
           {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
             "x": 1,
             "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 0
           },
           {
             "x": 2,
@@ -25,6 +50,14 @@
           {
             "x": 1,
             "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 0
           },
           {
             "x": 3,
@@ -39,6 +72,14 @@
             "y": 3
           },
           {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
             "x": 3,
             "y": 2
           },
@@ -47,18 +88,54 @@
             "y": 3
           },
           {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
             "x": 3,
             "y": 3
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 4
           }
-        ],
-        "name": "Secretaría municipal"
+        ]
       },
       {
         "id": "ayuntamiento:archivo",
+        "name": "Archivo municipal",
         "cells": [
           {
             "x": 5,
+            "y": 0
+          },
+          {
+            "x": 6,
+            "y": 0
+          },
+          {
+            "x": 5,
             "y": 1
+          },
+          {
+            "x": 7,
+            "y": 0
           },
           {
             "x": 6,
@@ -69,6 +146,10 @@
             "y": 2
           },
           {
+            "x": 8,
+            "y": 0
+          },
+          {
             "x": 7,
             "y": 1
           },
@@ -81,6 +162,10 @@
             "y": 3
           },
           {
+            "x": 9,
+            "y": 0
+          },
+          {
             "x": 8,
             "y": 1
           },
@@ -93,6 +178,14 @@
             "y": 3
           },
           {
+            "x": 5,
+            "y": 4
+          },
+          {
+            "x": 10,
+            "y": 0
+          },
+          {
             "x": 9,
             "y": 1
           },
@@ -105,6 +198,14 @@
             "y": 3
           },
           {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 11,
+            "y": 0
+          },
+          {
             "x": 10,
             "y": 1
           },
@@ -117,6 +218,14 @@
             "y": 3
           },
           {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 11,
+            "y": 1
+          },
+          {
             "x": 10,
             "y": 2
           },
@@ -125,18 +234,50 @@
             "y": 3
           },
           {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 11,
+            "y": 2
+          },
+          {
             "x": 10,
             "y": 3
+          },
+          {
+            "x": 9,
+            "y": 4
+          },
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 4
+          },
+          {
+            "x": 11,
+            "y": 4
           }
-        ],
-        "name": "Archivo municipal"
+        ]
       },
       {
         "id": "ayuntamiento:concejo",
+        "name": "Sala del concejo",
         "cells": [
           {
+            "x": 0,
+            "y": 5
+          },
+          {
             "x": 1,
             "y": 5
+          },
+          {
+            "x": 0,
+            "y": 6
           },
           {
             "x": 2,
@@ -145,6 +286,10 @@
           {
             "x": 1,
             "y": 6
+          },
+          {
+            "x": 0,
+            "y": 7
           },
           {
             "x": 3,
@@ -159,6 +304,10 @@
             "y": 7
           },
           {
+            "x": 0,
+            "y": 8
+          },
+          {
             "x": 4,
             "y": 5
           },
@@ -171,6 +320,10 @@
             "y": 7
           },
           {
+            "x": 1,
+            "y": 8
+          },
+          {
             "x": 5,
             "y": 5
           },
@@ -183,6 +336,10 @@
             "y": 7
           },
           {
+            "x": 2,
+            "y": 8
+          },
+          {
             "x": 6,
             "y": 5
           },
@@ -195,6 +352,10 @@
             "y": 7
           },
           {
+            "x": 3,
+            "y": 8
+          },
+          {
             "x": 7,
             "y": 5
           },
@@ -207,6 +368,10 @@
             "y": 7
           },
           {
+            "x": 4,
+            "y": 8
+          },
+          {
             "x": 8,
             "y": 5
           },
@@ -219,6 +384,10 @@
             "y": 7
           },
           {
+            "x": 5,
+            "y": 8
+          },
+          {
             "x": 9,
             "y": 5
           },
@@ -231,6 +400,10 @@
             "y": 7
           },
           {
+            "x": 6,
+            "y": 8
+          },
+          {
             "x": 10,
             "y": 5
           },
@@ -243,6 +416,14 @@
             "y": 7
           },
           {
+            "x": 7,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 5
+          },
+          {
             "x": 10,
             "y": 6
           },
@@ -251,11 +432,34 @@
             "y": 7
           },
           {
+            "x": 8,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
             "x": 10,
             "y": 7
+          },
+          {
+            "x": 9,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 7
+          },
+          {
+            "x": 10,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 8
           }
-        ],
-        "name": "Sala del concejo"
+        ]
       }
     ],
     "kind": "townhall",
@@ -273,7 +477,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:0:0"
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:0:0"
       },
       {
         "x": 1,
@@ -284,7 +503,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:1:0"
       },
       {
         "x": 3,
@@ -295,7 +516,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:3:0"
       },
       {
         "x": 4,
@@ -306,7 +529,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:4:0"
       },
       {
         "x": 5,
@@ -317,7 +542,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:5:0"
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:5:0"
       },
       {
         "x": 6,
@@ -328,7 +568,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:6:0"
       },
       {
         "x": 8,
@@ -339,7 +581,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:8:0"
       },
       {
         "x": 9,
@@ -350,7 +594,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:9:0"
       },
       {
         "x": 11,
@@ -361,7 +607,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:11:0"
+      },
+      {
+        "x": 12,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:12:0"
       },
       {
         "x": 0,
@@ -372,10 +633,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:0:1"
       },
       {
-        "x": 11,
+        "x": 12,
         "y": 1,
         "type": "wall",
         "blocked": true,
@@ -383,7 +646,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:12:1"
       },
       {
         "x": 0,
@@ -394,10 +659,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:0:3"
       },
       {
-        "x": 11,
+        "x": 12,
         "y": 3,
         "type": "wall",
         "blocked": true,
@@ -405,7 +672,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:12:3"
       },
       {
         "x": 0,
@@ -416,10 +685,25 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:0:4"
       },
       {
-        "x": 11,
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:0:5"
+      },
+      {
+        "x": 12,
         "y": 4,
         "type": "wall",
         "blocked": true,
@@ -427,18 +711,9 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
-      },
-      {
-        "x": 0,
-        "y": 5,
-        "type": "wall",
-        "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
-        "material": "adobe",
-        "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:12:4"
       },
       {
         "x": 11,
@@ -449,7 +724,35 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:11:5"
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:0:5"
+      },
+      {
+        "x": 12,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:12:5"
       },
       {
         "x": 0,
@@ -460,10 +763,12 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:0:7"
       },
       {
-        "x": 11,
+        "x": 12,
         "y": 7,
         "type": "wall",
         "blocked": true,
@@ -471,7 +776,22 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:12:7"
+      },
+      {
+        "x": 0,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:0:9"
       },
       {
         "x": 0,
@@ -482,55 +802,65 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:0:8"
       },
       {
         "x": 1,
-        "y": 8,
+        "y": 9,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:1:9"
       },
       {
         "x": 3,
-        "y": 8,
+        "y": 9,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:3:9"
       },
       {
         "x": 4,
-        "y": 8,
+        "y": 9,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:4:9"
       },
       {
         "x": 5,
-        "y": 8,
+        "y": 9,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:5:9"
       },
       {
         "x": 6,
-        "y": 8,
+        "y": 9,
         "type": "door",
         "blocked": true,
         "blocksSight": true,
@@ -540,43 +870,64 @@
         "roomId": null,
         "doorId": "ayuntamiento:door:6:8",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:6:9"
       },
       {
         "x": 7,
-        "y": 8,
+        "y": 9,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:7:9"
       },
       {
         "x": 8,
-        "y": 8,
+        "y": 9,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:8:9"
       },
       {
         "x": 10,
-        "y": 8,
+        "y": 9,
         "type": "wall",
         "blocked": true,
         "blocksSight": true,
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:10:9"
       },
       {
         "x": 11,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "axis": "x",
+        "id": "ayuntamiento:wall:x:11:9"
+      },
+      {
+        "x": 12,
         "y": 8,
         "type": "wall",
         "blocked": true,
@@ -584,123 +935,199 @@
         "cover": 40,
         "material": "adobe",
         "buildingId": "ayuntamiento",
-        "roomId": null
+        "roomId": null,
+        "axis": "y",
+        "id": "ayuntamiento:wall:y:12:8"
       },
       {
         "x": 1,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:1:5"
       },
       {
         "x": 3,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:3:5"
       },
       {
         "x": 4,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:4:5"
       },
       {
         "x": 5,
         "y": 4,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:5:4"
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:5:5"
       },
       {
         "x": 6,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:6:5"
       },
       {
         "x": 8,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:8:5"
       },
       {
         "x": 9,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:9:5"
       },
       {
         "x": 10,
-        "y": 4,
-        "type": "wall"
+        "y": 5,
+        "type": "wall",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:10:5"
       },
       {
-        "x": 4,
+        "x": 5,
         "y": 1,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:5:1"
       },
       {
-        "x": 4,
+        "x": 5,
         "y": 2,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:5:2"
       },
       {
-        "x": 4,
+        "x": 5,
         "y": 3,
-        "type": "wall"
+        "type": "wall",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:5:3"
       },
       {
         "x": 2,
-        "y": 4,
+        "y": 5,
         "type": "door",
         "doorId": "ayuntamiento:door:2:4",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:2:5"
       },
       {
         "x": 7,
-        "y": 4,
+        "y": 5,
         "type": "door",
         "doorId": "ayuntamiento:door:7:4",
         "open": false,
-        "locked": false
+        "locked": false,
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:7:5"
       },
       {
         "x": 2,
-        "y": 8,
-        "type": "window"
+        "y": 9,
+        "type": "window",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:2:9"
       },
       {
         "x": 9,
-        "y": 8,
-        "type": "window"
+        "y": 9,
+        "type": "window",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:9:9"
       },
       {
         "x": 0,
         "y": 2,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:0:2"
       },
       {
         "x": 0,
         "y": 6,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:0:6"
       },
       {
-        "x": 11,
+        "x": 12,
         "y": 2,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:12:2"
       },
       {
-        "x": 11,
+        "x": 12,
         "y": 6,
-        "type": "window"
+        "type": "window",
+        "axis": "y",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:y:12:6"
       },
       {
         "x": 2,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:2:0"
       },
       {
         "x": 7,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:7:0"
       },
       {
         "x": 10,
         "y": 0,
-        "type": "window"
+        "type": "window",
+        "axis": "x",
+        "buildingId": "ayuntamiento",
+        "id": "ayuntamiento:wall:x:10:0"
       }
     ]
   },

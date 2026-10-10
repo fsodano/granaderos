@@ -1,3 +1,4 @@
+import {migrateWallGeometry,wallEdgeId,wallEdgeCenter,wallEdgeCells,wallEdgesBetween,wallMovementBlocked,wallEdgeBlocksMovement} from './wall-geometry.js';
 import {formatAP} from './action-points.js';
 import {hasProjectileEnergy} from './projectile-energy.js';
 import {worldCell} from './world-cells.js';
@@ -41,7 +42,7 @@ import {knifeFlight} from './knife-flight.js';
 import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,grenadeThrowChance,grenadeScatterRadius,GRENADE_THROW} from './grenade-throw.js';
 import {grenadeFlight,grenadeBlastExposure} from './grenade-flight.js';
 import {itemFlight} from './item-flight.js';
-import {elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
+import {elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection,obstacleVolumesAt,volumeRayCell} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
 import {questGiftPlan,questGiftDecision} from './quests.js';
 import {commitQuestBeneficiary,questBeneficiaryDeliveryPreview,initializeQuestBeneficiaries} from './quest-beneficiaries.js';
@@ -62,7 +63,7 @@ import {recordMilitiaHit} from './militia-experience.js';
 import {projectilePath,projectileFlight,pointProjectileFlight,physicalBodies,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
 import {isShotLoad,shotLoadFlight,shotLoadForecast,shotLoadChance} from './shot-load.js';
 import {applyCivilianHarm,civilianWoundedByPlayer,advanceCivilianWoundTime} from './civilian-harm.js';
-import {boundaryMatches} from './tactical-exits.js';
+import {boundaryMatches,boundaryPassable} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,breachableWall,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
 import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
@@ -112,7 +113,8 @@ export function bladeFor(unit){
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const positionOf=p=>({x:p.x,y:p.y,...(p.tacticalLevel===undefined?{}:{tacticalLevel:p.tacticalLevel})});
-const contactDistance=(a,b)=>sameSurface(a,b)?dist(a,b):Infinity;
+const edgePoint=(p,s)=>{if(!p?.axis||p.side||p.hp!==undefined||p.wallPoint)return p;const edge=s?.wallEdges?.find(edge=>wallEdgeId(edge)===(p.wallEdgeId??p.id))??p;return {...p,...wallEdgeCenter(edge),wallEdgeId:wallEdgeId(edge),wallPoint:true};};
+const contactDistance=(a,b)=>sameSurface(a,b)?dist(edgePoint(a),edgePoint(b)):Infinity;
 const spaceDistance=(s,a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(surfaceHeight(s,a)??0)-(surfaceHeight(s,b)??0));
 const onField=u=>(u.hp??100)>0&&!u.departure&&!u.fled;
 const targetable=u=>onField(u)&&!u.surrendered;
@@ -256,8 +258,23 @@ export function artilleryShotTrace(s,u,gun,point,mode='solid'){
   }
  }else{
   let energy=spec.damage,penetration=spec.penetration+(hasCharacterAbility(u,'artillery_loading')?1:0);
+  const crossed=new Map(),sourceHeight=(surfaceHeight(s,gun)??0)+.65,endHeight=(surfaceHeight(s,point)??0)+.65;
+  for(const cell of geometryCells(gun,point))for(const volume of obstacleVolumesAt(s,cell)){
+   if(volume.kind!=='edge')continue;
+   const clipped=volumeRayCell(gun,point,cell,volume),hit=clipped&&rayHeightIntersection(sourceHeight,endHeight,clipped,volume.bottom,volume.top);
+   if(hit&&(!crossed.has(volume.edgeId)||hit.entry<crossed.get(volume.edgeId).fraction))crossed.set(volume.edgeId,{edgeId:volume.edgeId,fraction:hit.entry});
+  }
+  const barriers=[...crossed.values()].sort((a,b)=>a.fraction-b.fraction||a.edgeId.localeCompare(b.edgeId));let barrierIndex=0,stopped=false;
   for(const p of line(gun,point)){
    cells.push(p);const ground=tile(s,p.x,p.y);
+   const dx=point.x-gun.x,dy=point.y-gun.y,progress=((p.x-gun.x)*dx+(p.y-gun.y)*dy)/(dx*dx+dy*dy);
+   while(barrierIndex<barriers.length&&barriers[barrierIndex].fraction<=progress+1e-10){
+    const barrier=barriers[barrierIndex++],edge=(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===barrier.edgeId),stone=edge.material==='stone',resistance=stone?3:1;
+    const contact={x:gun.x+dx*barrier.fraction,y:gun.y+dy*barrier.fraction,height:sourceHeight+(endHeight-sourceHeight)*barrier.fraction,tacticalLevel:tacticalLevel(edge)};
+    if(penetration<resistance){events.push({type:'stop',edgeId:barrier.edgeId,...contact});stopped=true;break;}
+    penetration-=resistance;events.push({type:'breach',edgeId:barrier.edgeId,...contact,stone});
+   }
+   if(stopped)break;
    if(ground?.blocked){
     if(ground.type==='water'||ground.type==='cliff')break;
     const stone=ground.material==='stone'||ground.type==='stone',resistance=stone?3:1;
@@ -324,7 +341,7 @@ function applyReloadPlan(unit,plan){
   syncUnitAmmunition(unit);
 }
 function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return initializeUnitAmmunition({...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0});}
-export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),...(sector.errandDefinitions!==undefined?{errandDefinitions:structuredClone(sector.errandDefinitions)}:{}),...(sector.roadsideDiscoveryDefinitions!==undefined?{roadsideDiscoveryDefinitions:structuredClone(sector.roadsideDiscoveryDefinitions)}:{}),...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),ammunitionVersion:2,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(initializeCivilianHealth),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
+export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),...(sector.errandDefinitions!==undefined?{errandDefinitions:structuredClone(sector.errandDefinitions)}:{}),...(sector.roadsideDiscoveryDefinitions!==undefined?{roadsideDiscoveryDefinitions:structuredClone(sector.roadsideDiscoveryDefinitions)}:{}),...(sector.artilleryDefinitions!==undefined?{artilleryDefinitions:structuredClone(sector.artilleryDefinitions)}:{}),...(sector.militiaPatrol!==undefined?{militiaPatrol:structuredClone(sector.militiaPatrol)}:{}),ammunitionVersion:2,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(initializeCivilianHealth),props:structuredClone(sector.props??[]),buildings:structuredClone(sector.buildings||[]),revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:artilleryProfile(sector,g.type??'bronze4').initialLoaded,ammo:artilleryProfile(sector,g.type??'bronze4').initialAmmo,...g})),smoke:[],log:[],lastError:null};
 if(sector.questWithdrawals!==undefined)state.questWithdrawals=structuredClone(sector.questWithdrawals);
 const beneficiaryMap=sector.questBeneficiaries!==undefined?sector.questBeneficiaries:initializeQuestBeneficiaries(state);if(beneficiaryMap!==undefined)state.questBeneficiaries=structuredClone(beneficiaryMap);
 if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
@@ -333,6 +350,8 @@ if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeat
 state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:0):state.weather.rain;state.weather.humidity=state.weather.humidity>0&&state.weather.humidity<=1?state.weather.humidity*10:state.weather.humidity;
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
 if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,cover:0,...t}));
+if(Array.isArray(sector.wallEdges))state.wallEdges=structuredClone(sector.wallEdges);
+migrateWallGeometry(state);
 state.units=squad.map((u,i)=>makeUnit(u,'player',i,1+Math.floor(i/(height-2)),1+i%(height-2)));
 Object.assign(state,issueGriefParticipants(state.units));
 Object.assign(state,sector.conductObserverIds===undefined?issueConductObservers(state.units):{conductObserverIds:structuredClone(sector.conductObserverIds)});
@@ -376,7 +395,7 @@ export function visibleDistance(s,u,target){
   const cover=concealmentSightPenalty(s,target),normal=(s.night?6+nightSightBonus(u):12)-concealment-cover;
   return Math.max(0,normal,tileIllumination(s,target.x,target.y,tacticalLevel(target))>=.25?16-cover:0);
 }
-export function canSee(s,u,target){if(s.deployment||!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
+export function canSee(s,u,target){target=edgePoint(target,s);if(s.deployment||!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
 export function visibleRooms(s){const ids=new Set();for(const t of [...s.tiles,...(s.upperSurfaces??[])]){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
 function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);const pieces=revealFiniteArsenal(s);if(pieces.length)say(s,`Se recuperan ${pieces.length} piezas del arsenal. Conservan su carga y seis disparos de reserva.`);}
@@ -449,7 +468,7 @@ export function movementIntentReason(u,intent='forward'){
 }
 const intentFactor=intent=>intent==='preserveFacing'?1.25:1;
 function stepCostWithGeometry(s,u,from,to,lookup,propBlocked,intent='forward',costFor=null){
-  if(!sameSurface(from,to))return Infinity;
+  if(!sameSurface(from,to)||wallMovementBlocked(s,from,to))return Infinity;
   const dx=Math.abs(to.x-from.x),dy=Math.abs(to.y-from.y),start=lookup(from.x,from.y),ground=lookup(to.x,to.y),elevated=Boolean(s.upperSurfaces?.length);
   if(!Number.isInteger(from.x)||!Number.isInteger(from.y)||!start||!Number.isInteger(dx)||!Number.isInteger(dy)||Math.max(dx,dy)!==1||!ground||ground.blocked||propBlocked(to.x,to.y))return Infinity;
   // The route already has a floor-specific index. Reuse these records instead
@@ -544,7 +563,7 @@ function smokeBetween(s,a,b){
   const base=surfaceHeight(s,cloud);return base!==null&&dist(cell,cloud)<=cloud.radius&&rayHeightIntersection(start,end,cell,base,base+2);
  })).length;
 }
-export function hasLineOfSight(s,a,b){return elevationSightClear(s,a,b);}
+export function hasLineOfSight(s,a,b){return elevationSightClear(s,edgePoint(a,s),edgePoint(b,s));}
 export function firearmProjectilePath(s,attacker,target,hitLocation='torso'){return projectilePath(firearmPreviewScene(s,attacker,target),attacker,target,weaponFor(attacker),hitLocation);}
 // Forecast only known bodies; actual flight below checks every body. Hypothetical
 // target positions used by AI exposure replace that actor's old position.
@@ -642,16 +661,17 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
 }
 const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
 const playerObservedBody=(s,body)=>body.side==='player'||teamCanSee(s,'player',body)&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]));
-const stoneSurface=surface=>surface?.material==='stone'&&surface.blocked&&['wall','stone','cliff'].includes(surface.type);
+const stoneSurface=surface=>surface?.material==='stone'&&(surface.axis?wallEdgeBlocksMovement(surface):surface.blocked)&&['wall','stone','cliff'].includes(surface.type);
 // Unknown reflecting cover cannot bend a public forecast. Keep the supporting
 // ground and upper slab, but remove that cover volume from this transient copy.
 // Exterior wall faces use point sight; room discovery still guards furniture.
 export function firearmKnownTerrain(s,attacker={side:'player'}){
  const observed=point=>attacker.side==='player'?teamCanSee(s,'player',point):canSee(s,attacker,point);
  const surface=point=>stoneSurface(point)&&!observed(point)?{...point,obstacleHeight:0,projectileResistance:0,cover:0}:point;
- return {tiles:s.tiles.map(surface),...(s.upperSurfaces?{upperSurfaces:s.upperSurfaces.map(surface)}:{}),props:(s.props??[]).filter(prop=>observed(prop)&&(attacker.side!=='player'||isInteriorVisible(s,prop,new Set(s.revealedRooms??[]))))};
+ return {wallEdges:(s.wallEdges??[]).map(surface),tiles:s.tiles.map(surface),...(s.upperSurfaces?{upperSurfaces:s.upperSurfaces.map(surface)}:{}),props:(s.props??[]).filter(prop=>observed(prop)&&(attacker.side!=='player'||isInteriorVisible(s,prop,new Set(s.revealedRooms??[]))))};
 }
 const observedProjectileObstacle=(s,obstacle)=>{
+ if(obstacle.kind==='edge'){const edge=(s.wallEdges??[]).find(edge=>obstacle.sourceId===`edge:${wallEdgeId(edge)}`);return Boolean(edge&&teamCanSee(s,'player',edge));}
  if(obstacle.kind==='prop')return (s.props??[]).some(prop=>obstacle.sourceId===`prop:${prop.id}`&&playerObservedBody(s,prop));
  if(obstacle.material!=='stone')return true;
  if(obstacle.kind==='cover'){
@@ -990,7 +1010,7 @@ function interceptCharge(s,mover,target){const blade=fixedBayonetProfile(target)
 function damage(s,target,amount,source,projectile=false,hitLocation='torso',extraBreath=0,report=true,excludedBodyguards=null){
   if(isCivilianBody(s,target))return physicalImpact(s,target,amount,source,{projectile,hitLocation,extraBreath,report,intentional:true});
   if(projectile&&(hasCharacterAbility(target,'protected_commander')||(target.leadership||0)>=90)){
-    const guard=s.units.find(v=>!excludedBodyguards?.has(`unit:${v.id}`)&&hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&contactDistance(v,target)<=1.5);
+    const guard=s.units.find(v=>!excludedBodyguards?.has(`unit:${v.id}`)&&hasCharacterAbility(v,'bodyguard')&&v.side===target.side&&v.id!==target.id&&alive(v)&&v.hp>25&&v.ap>=8&&v.interceptTurn!==s.turn&&contactDistance(v,target)<=1.5&&hasLineOfSight(s,v,target)&&(sameCell(v,target)||Number.isFinite(movementStepCost(s,v,v,target))));
     if(guard){guard.ap-=8;guard.interceptTurn=s.turn;if(report)sayObserved(s,[guard,target],`${guard.name} se interpone para proteger a ${target.name}.`);target=guard;}
   }
   const grief=captureObservedCompanionGrief(s,target);
@@ -1733,13 +1753,22 @@ export function lootSearchPreview(s,u,point){
   if(!route)return result('No hay una ruta para acercarse al equipo.');
   return result(s.mode!=='exploration'&&u.ap<route.cost?'PA insuficientes para acercarse al equipo.':null,route);
 }
+const wallEdgeReferenceMatches=(edge,ref)=>['x','y','axis','tacticalLevel'].every(key=>ref[key]===undefined||(key==='tacticalLevel'?tacticalLevel(edge):edge[key])===ref[key])&&(ref.wallEdgeId===undefined||ref.wallEdgeId===wallEdgeId(edge));
 function environmentObject(s,ref){
+  const edge=(s.wallEdges??[]).find(edge=>(ref?.kind==='door'&&edge.type==='door'&&(edge.doorId??wallEdgeId(edge))===ref.id)||(ref?.kind==='wall'&&wallEdgeId(edge)===ref.id));
+  if(edge)return wallEdgeReferenceMatches(edge,ref)?edge:null;
   if(ref?.kind==='door')return s.tiles.find(t=>t.type==='door'&&(t.doorId??`door:${t.x}:${t.y}`)===ref.id);
   if(ref?.kind==='container')return s.props.find(p=>p.type==='chest'&&p.id===ref.id);
   if(ref?.kind==='wall'&&(ref.tacticalLevel??0)===0)return s.tiles.find(t=>(t.tacticalLevel??0)===0&&`wall:${t.x}:${t.y}`===ref.id&&(ref.x===undefined||ref.x===t.x)&&(ref.y===undefined||ref.y===t.y));
   return null;
 }
 export function environmentTargetAt(s,point){
+  if(point?.wallEdgeId||point?.axis){
+    const edge=(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===(point.wallEdgeId??point.id));
+    if(!edge||!wallEdgeReferenceMatches(edge,point))return null;
+    const kind=edge.type==='door'?'door':breachableWall(edge)?'wall':null;
+    return kind?{...edge,kind,id:kind==='door'?(edge.doorId??wallEdgeId(edge)):wallEdgeId(edge),wallEdgeId:wallEdgeId(edge)}:null;
+  }
   const door=s.tiles.find(t=>sameCell(t,point)&&t.type==='door');
   if(door)return {...door,kind:'door',id:door.doorId??`door:${door.x}:${door.y}`};
   const chest=s.props.find(p=>p.type==='chest'&&propCells(p).some(t=>sameCell(t,point)));
@@ -1758,7 +1787,7 @@ function environmentReachReason(s,u,object){
   if(!object)return 'El objeto ya no está en el sector.';
   if(!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return 'El soldado no puede manejar el objeto ahora.';
   const cells=object.type==='chest'?observedContainerCells(s,u,object):[object];
-  if(!cells.some(p=>contactDistance(u,p)<=1.5&&canSee(s,u,p)))return 'Acércate al objeto y mira hacia él.';
+  if(!cells.some(p=>(p.axis?wallEdgeCells(p).some(cell=>sameCell(u,cell)):contactDistance(u,p)<=1.5)&&canSee(s,u,p)))return 'Acércate al objeto y mira hacia él.';
   return null;
 }
 export function environmentPreview(s,u,ref,verb){
@@ -1768,9 +1797,9 @@ export function environmentPreview(s,u,ref,verb){
   const unseenWall=ref?.kind==='wall'&&(!target||!u||!canSee(s,u,target));
   const profile=environmentActionProfile(u??{},unseenWall?null:knownTarget,verb);
   let reason=unseenContainer?'El cofre debe estar a la vista del soldado.':unseenWall?'La pared debe estar a la vista del soldado.':environmentReachReason(s,u,target)??profile.reason;
-  if(!reason&&verb==='close'&&target.type==='door'&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
+  if(!reason&&verb==='close'&&target.type==='door'&&!target.axis&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
   if(!reason&&s.mode!=='exploration'&&u.ap<profile.pa)reason=`Faltan ${formatAP(profile.pa)} PA para manejar el objeto.`;
-  return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,verb}};
+  return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,...Object.fromEntries(['wallEdgeId','x','y','axis','tacticalLevel'].filter(key=>ref?.[key]!==undefined).map(key=>[key,ref[key]])),verb}};
 }
 export function environmentUsePreview(s,u,ref,verb){
   const local=environmentPreview(s,u,ref,verb),target=environmentObject(s,ref);
@@ -1783,10 +1812,11 @@ export function environmentUsePreview(s,u,ref,verb){
   if(!environmentReachReason(s,u,target))return result();
   // Check the held tool, lock, known trap and occupied doorway before spending
   // movement. Only position and the AP cap are relaxed in this pure preflight.
-  const ready=environmentPreview({...s,mode:'exploration'},{...u,...positionOf(visible),tacticalLevel:tacticalLevel(visible)},ref,local.action.verb);
+  const readyCell=target.axis?wallEdgeCells(target).find(cell=>surfaceAt(s,cell)&&!surfaceAt(s,cell).blocked):visible;
+  const ready=environmentPreview({...s,mode:'exploration'},{...u,...positionOf(readyCell),tacticalLevel:tacticalLevel(readyCell)},ref,local.action.verb);
   if(!ready.valid)return result(ready.reason);
   if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
-  const route=knownApproachRoute(s,u,cell=>cells.some(point=>contactDistance(cell,point)<=1.5&&canSee(s,{...u,...cell},point)));
+  const route=knownApproachRoute(s,u,cell=>cells.some(point=>(point.axis?wallEdgeCells(point).some(incident=>sameCell(cell,incident)):contactDistance(cell,point)<=1.5)&&canSee(s,{...u,...cell},point)));
   if(!route)return result('No hay una ruta para acercarse y usar el objeto.');
   return result(s.mode!=='exploration'&&route.cost+local.pa>u.ap?'PA insuficientes para acercarse y usar el objeto.':null,route);
 }
@@ -2248,6 +2278,7 @@ const assigned=crew.crew.map(id=>s.units.find(v=>v.id===id));
 if(a.type==='artilleryMove'){
 const dx=a.x-gun.x,dy=a.y-gun.y;if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||Math.abs(dx)+Math.abs(dy)!==1)return fail('La pieza se arrastra una casilla horizontal o vertical por orden.');
 const positions=[{x:a.x,y:a.y},...assigned.map(v=>({x:v.x+dx,y:v.y+dy}))],ids=new Set(assigned.map(v=>v.id));
+if([{from:gun,to:positions[0]},...assigned.map((v,i)=>({from:v,to:positions[i+1]}))].some(({from,to})=>wallMovementBlocked(s,from,to)))return fail('La pieza y su dotación no pueden atravesar una pared.');
 if(positions.some(p=>propBlocksAt(s,p.x,p.y)||!tile(s,p.x,p.y)||tile(s,p.x,p.y).blocked||tile(s,p.x,p.y).type==='water'||s.units.some(v=>onField(v)&&!ids.has(v.id)&&sameCell(v,p))||(s.npcs??[]).some(v=>onField(v)&&sameCell(v,p))||s.artillery.some(g=>g!==gun&&sameCell(g,p))))return fail('La pieza y su dotación no caben en ese terreno.');
 gun.x=a.x;gun.y=a.y;for(const v of assigned){v.x+=dx;v.y+=dy;}sayObserved(s,[u],`${u.name} dirige el arrastre de ${spec.name}.`);
 }else if(a.type==='artilleryPivot'){
@@ -2267,14 +2298,16 @@ const trace=artilleryShotTrace(s,u,gun,point,a.mode);
 // This second trace is read-only presentation, not a second shot. It uses
 // observed bodies/terrain with the existing grid rules and consumes no RNG.
 // Hidden force loss or a private stop cannot supply the display endpoint.
-const displayState={...s,units:s.units.filter(v=>playerObservedBody(s,v)),npcs:(s.npcs??[]).filter(v=>playerObservedBody(s,v)),tiles:s.tiles.map(t=>playerObservedBody(s,t)?t:{...t,blocked:false})};
-const displayTrace=artilleryShotTrace(displayState,u,gun,point,a.mode),displayEnd=displayTrace.cells.at(-1);
+const displayState={...s,units:s.units.filter(v=>playerObservedBody(s,v)),npcs:(s.npcs??[]).filter(v=>playerObservedBody(s,v)),wallEdges:(s.wallEdges??[]).filter(edge=>teamCanSee(s,'player',edge)),tiles:s.tiles.map(t=>playerObservedBody(s,t)?t:{...t,blocked:false})};
+const displayTrace=artilleryShotTrace(displayState,u,gun,point,a.mode),displayStop=displayTrace.events.find(event=>event.type==='stop'&&event.edgeId),displayEnd=displayStop??displayTrace.cells.at(-1);
 // The grid trace has no metric trajectory height. Display height is explicit
 // ground-relative artwork, not a new collision or ballistics calculation.
 const displayPoint=p=>({...positionOf(p),tacticalLevel:tacticalLevel(p),height:(surfaceHeight(s,p)??0)+.65});
-const artilleryVisual={source:displayPoint(gun),destination:displayPoint(point),...(displayEnd?{displayEnd:displayPoint(displayEnd)}:{}),cannonId:gun.id,canister:a.mode==='canister',discharge:true,impacts:[]};
+const displayContact=displayStop?{edgeId:displayStop.edgeId,point:{...positionOf(displayStop),tacticalLevel:tacticalLevel(displayStop),height:displayStop.height}}:null;
+const artilleryVisual={source:displayPoint(gun),destination:displayPoint(point),...(displayEnd?{displayEnd:displayContact?.point??displayPoint(displayEnd)}:{}),...(displayContact?{displaySurfaceContact:displayContact}:{}),cannonId:gun.id,canister:a.mode==='canister',discharge:true,impacts:[]};
 const terminal=displayEnd&&displayState.tiles.find(t=>t.x===displayEnd.x&&t.y===displayEnd.y);
-if(displayTrace.events.some(event=>event.type==='stop')||terminal?.blocked&&['water','cliff'].includes(terminal.type))artilleryVisual.impacts.push({...displayPoint(displayEnd),outcome:'cover',material:terminal?.material??(terminal?.type==='cliff'?'stone':terminal?.type)});
+if(displayContact){const edge=displayState.wallEdges.find(edge=>wallEdgeId(edge)===displayStop.edgeId);artilleryVisual.impacts.push({...displayContact.point,outcome:'cover',material:edge.material??'adobe',surfaceContact:displayContact});}
+else if(displayTrace.events.some(event=>event.type==='stop')||terminal?.blocked&&['water','cliff'].includes(terminal.type))artilleryVisual.impacts.push({...displayPoint(displayEnd),outcome:'cover',material:terminal?.material??(terminal?.type==='cliff'?'stone':terminal?.type)});
 recordBattleFrame(s,{type:'projectile',unitId:u.id,action:'artillery',artilleryVisual});
 for(const event of trace.events){
  if(event.type==='impact'){
@@ -2282,7 +2315,7 @@ for(const event of trace.events){
   if(victim.hp<hp)artilleryVisual.impacts.push({...contact,outcome:'hit',victimId:victim.id,victimKind:event.victimKind??'unit'});
   if(event.victimKind!=='npc'&&a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
  }else if(event.type==='breach'){
-  const ground=tile(s,event.x,event.y),contact=displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');if(ground.structureDamage!==undefined)destroyStructure(ground);else{ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;}
+  const ground=event.edgeId?(s.wallEdges??[]).find(edge=>wallEdgeId(edge)===event.edgeId):tile(s,event.x,event.y),contact=event.edgeId?event:displayPoint(ground),material=ground.material??(event.stone?'stone':'adobe');if(event.edgeId||ground.structureDamage!==undefined)destroyStructure(ground,event.edgeId?'edge':'surface');else{ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;}
   artilleryVisual.impacts.push({...contact,outcome:'cover',material});
   say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
  }else say(s,'La bala se detiene contra la fortificación.');
@@ -2297,15 +2330,15 @@ for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
 else if(a.type==='door'||a.type==='environment'||a.type==='breach'){
-  const ref=a.type==='door'?{kind:'door',id:a.doorId??environmentTargetAt(s,a)?.id}:a.type==='breach'?{kind:'wall',id:`wall:${a.x}:${a.y}`,x:a.x,y:a.y,tacticalLevel:a.tacticalLevel??0}:a;
+  const ref=a.type==='door'?{...a,kind:'door',id:a.doorId??environmentTargetAt(s,a)?.id}:a.type==='breach'?(environmentTargetAt(s,a)??(a.wallEdgeId||a.axis?null:{kind:'wall',id:`wall:${a.x}:${a.y}`,x:a.x,y:a.y,tacticalLevel:a.tacticalLevel??0})):a;
   const object=environmentObject(s,ref);
   const verb=a.type==='breach'?'breach':a.type==='door'?(typeof a.open==='boolean'?(a.open?'open':'close'):object?.open?'close':'open'):a.verb;
   const preview=environmentPreview(s,u,ref,verb);if(!preview.valid)return fail(preview.reason);
   const result=resolveEnvironmentInteraction(u,object,{verb:preview.verb,...(preview.requiresRoll?{roll:random(s)}:{})});
-  replaceUnit(u,result.unit);pay(result.pa);replaceUnit(object,result.target);u.facing=directionTo(u,object);
+  replaceUnit(u,result.unit);pay(result.pa);replaceUnit(object,result.target);u.facing=directionTo(u,edgePoint(object));
   for(const [skill,amount]of Object.entries(result.practice))practice(u,skill,amount);
   if(result.damage||result.breathLoss)damage(s,u,result.damage,{name:'La trampa'},false,'torso',Math.max(0,result.breathLoss-Math.ceil(result.damage/2)));
-  if(result.noiseKind)emitNoise(s,{...u,activeSlot:'unarmed'},result.noiseKind,object);
+  if(result.noiseKind)emitNoise(s,{...u,activeSlot:'unarmed'},result.noiseKind,edgePoint(object));
   sayObserved(s,[u],`${u.name}: ${result.message}`);
 }
 else if(a.type==='containerLoot'){
@@ -2618,7 +2651,7 @@ function exitUnitReason(s,u,exit,{routing=false}={}){
   if(tacticalLevel(u)!==0)return 'Bajá al suelo antes de salir del sector.';
   if(!boundaryMatches(s,u,exit.edge))return 'Debe alcanzar el borde de esta salida.';
   const ground=tile(s,u.x,u.y);
-  if(!ground||ground.blocked||propBlocksAt(s,u.x,u.y))return 'El paso de salida está bloqueado.';
+  if(!ground||ground.blocked||propBlocksAt(s,u.x,u.y)||!boundaryPassable(s,u,exit.edge))return 'El paso de salida está bloqueado.';
   if(s.mode!=='exploration'&&u.ap<stepCost(u,ground))return 'Faltan PA para cruzar el borde.';
   if(u.energy<=movementStepEnergy(s,u,ground))return 'Faltan fuerzas para cruzar el borde.';
   return null;
@@ -2683,7 +2716,7 @@ function processRout(s,u){
   if(stopped())return;
   // Garrisons retain town custody; only hired squads can return to rural cells.
   const exits=u.side==='player'?(s.exits??[]).filter(exit=>!u.militia||worldCell(exit.destination)?.anchor):s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
-  const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryMatches(s,point,exit.edge)).map(exit=>({...point,exit})));
+  const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryPassable(s,point,exit.edge)).map(exit=>({...point,exit})));
   routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
   if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}
   const route=routes[0];

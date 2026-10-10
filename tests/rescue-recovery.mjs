@@ -6,6 +6,7 @@ import {applyItemQuantity} from '../game/tactical-inventory.js';
 import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {collectRouteItems,discoverRouteCache} from './finite-route-equipment.mjs';
 import {prepareRescueClinicGuards,restRescuePatients} from './rescue-clinic-readiness.mjs';
+import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {actBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
@@ -68,10 +69,12 @@ export function recoverRescueForce(start,{patients,report=()=>{},onCheckpoint=()
  const doctors=local.filter(op=>op.medical>=20).sort((a,b)=>b.medical-a.medical).slice(0,2).map(op=>op.id);assert.equal(doctors.length,2,'two actual doctors provide recovery');
  const courier=local.filter(op=>!doctors.includes(op.id)&&campaign.operativeState[op.id].energy>10).sort((a,b)=>a.medical-b.medical)[0]?.id;assert.ok(courier,'a living local reserve carries the supplies');
  const [firstDoctor,secondDoctor]=doctors,firstPatient=patients[0];
- const courierTravel=destination=>{const quote=routeTo(destination);renew(quote.hours+1);const departureSeconds=seconds();onCheckpoint('courier-departure-'+destination,campaign,{quote,doctors,courier});order({...quote.action,queue:false});assert.equal(campaign.location,destination);assert.equal(campaign.pendingEncounter,null);assert.equal(seconds()-departureSeconds,quote.hours*3600);assert.ok([courier,...doctors].every(id=>campaign.recruited.includes(id)),'the courier and both physicians retain actual paid service through the quoted march');courierLegs.push({destination,quote,departureSeconds,arrivalSeconds:seconds()});};
- const restCourier=()=>{if(!campaign.operativeState[courier].asleep&&campaign.operativeState[courier].energy>10)return;order({type:'assignCare',operativeId:courier,assignment:'rest'});for(let requests=0;requests<48&&(campaign.operativeState[courier].asleep||campaign.operativeState[courier].energy<=10);requests++){assert.equal(campaign.pendingEncounter,null,'courier rest cannot bypass an actual encounter');renew(2);order({type:'wait',hours:1});}assert.equal(campaign.operativeState[courier].asleep,false);assert.ok(campaign.operativeState[courier].energy>10);order({type:'assignCare',operativeId:courier,assignment:'active'});};
+ const courierTravel=destination=>{restCourier();const quote=routeTo(destination);renew(quote.hours+1);const departureSeconds=seconds();onCheckpoint('courier-departure-'+destination,campaign,{quote,doctors,courier});order({...quote.action,queue:false});assert.equal(campaign.location,destination);assert.equal(campaign.pendingEncounter,null);assert.equal(seconds()-departureSeconds,quote.hours*3600);assert.ok([courier,...doctors].every(id=>campaign.recruited.includes(id)),'the courier and both physicians retain actual paid service through the quoted march');courierLegs.push({destination,quote,departureSeconds,arrivalSeconds:seconds()});};
+ // Each long march starts after ordinary local rest. Merely being awake above
+ // the exhaustion threshold is insufficient for the full quoted return leg.
+ const restCourier=()=>{const needsRest=()=>campaign.operativeState[courier].asleep||campaign.operativeState[courier].energy<100||campaign.operativeState[courier].fatigue>0;if(!needsRest())return;order({type:'assignCare',operativeId:courier,assignment:'rest'});for(let requests=0;requests<48&&needsRest();requests++){assert.equal(campaign.pendingEncounter,null,'courier rest cannot bypass an actual encounter');if(campaign.operativeState[courier].asleep&&campaign.operativeState[courier].energy>=100)order({type:'setSleep',operativeId:courier,asleep:false});if(!needsRest())break;renew(2);order({type:'wait',hours:1});}assert.equal(campaign.operativeState[courier].asleep,false);assert.equal(campaign.operativeState[courier].energy,100);assert.equal(campaign.operativeState[courier].fatigue,0);order({type:'assignCare',operativeId:courier,assignment:'active'});};
  const model=id=>sectorInventoryModel(campaign,'tucuman',rosterFor(campaign),id);
- let recovered=0,donated=0,guardPreparation=null,restRecovery=null;
+ let recovered=0,donated=0,medicalRemains=null,guardPreparation=null,restRecovery=null;
  const gather=(id,limit=1000000)=>{
   let taken=0;
   while(taken<limit){
@@ -116,11 +119,22 @@ export function recoverRescueForce(start,{patients,report=()=>{},onCheckpoint=()
    if(!count){const donor=rosterFor(campaign).find(op=>!doctors.includes(op.id)&&model(op.id).operativeId===op.id&&!model(op.id).reason&&campaign.operativeState[op.id].medkits>0);
     if(donor){const quantity=campaign.operativeState[donor.id].medkits;order({type:'sectorInventory',sector:'tucuman',operativeId:donor.id,direction:'drop',item:'medkits',count:quantity});donated+=quantity;count=gather(id);}
     else {
+     // An empty physician does not exhaust another physician's real stock.
+     // Let that treatment finish before requesting more supplies or rest.
+     if(doctors.some(other=>other!==id&&campaign.operativeState[other].medkits>0))continue;
      const before=campaign.operativeState[id].medkits,cash=campaign.resources.treasury,departure=seconds();
      // Keep the genuine discovery clock even when the known cache is empty.
      campaign=discoverRouteCache(campaign,id);count=gather(id,6);recovered+=count;
      assert.equal(campaign.operativeState[id].medkits,before+count);assert.equal(campaign.resources.treasury,cash);
      report({event:'localMedicalCacheRecovered',operativeId:id,count,elapsedSeconds:seconds()-departure,hour:campaign.hour});onCheckpoint('local-medical-cache-'+id,campaign,{count,elapsedSeconds:seconds()-departure});
+     if(!count&&medicalRemains===null){
+      // Empty known rows and an opened chest do not establish that the
+      // battlefield has been searched. Inspect bodies through the public
+      // map patrol and hand-loot controls before declaring local exhaustion.
+      renew(2);const found=recoverVisibleRouteDressings(campaign,courier,13,{report});campaign=found.campaign;medicalRemains=found.evidence;recovered+=found.collected;
+      onCheckpoint('visible-medical-remains',campaign,medicalRemains);
+      if(found.collected){order({type:'sectorInventory',sector:'tucuman',operativeId:courier,direction:'drop',item:'medkits',count:found.collected});donated+=found.collected;count=gather(id);}
+     }
      if(!count){
       assert.ok(foundDressings<13,'a partial actual C collection discovered its finite cache before reporting exhaustion');
       const prepared=prepareRescueClinicGuards(campaign,{courier,report});campaign=prepared.campaign;guardPreparation=prepared.evidence;onCheckpoint('rescue-clinic-prepared',campaign,guardPreparation);
@@ -140,5 +154,5 @@ export function recoverRescueForce(start,{patients,report=()=>{},onCheckpoint=()
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  for(const id of patients){assert.equal(campaign.operativeState[id].bleeding,0);assert.equal(campaign.operativeState[id].captured,false);assert.ok(campaign.recruited.includes(id));}
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- const recovery={startHour,endHour:campaign.hour,courierStartHour,courierLegs,rearPhysicians,patients,doctors,hiredDoctors,hiringCost,courier,boughtDressings,foundDressings,cost,unitPrice,recoveredDressings:recovered,donatedDressings:donated,guardPreparation,restRecovery};report({event:'rescueRecoveryComplete',...recovery});return {campaign,events,recovery};
+ const recovery={startHour,endHour:campaign.hour,courierStartHour,courierLegs,rearPhysicians,patients,doctors,hiredDoctors,hiringCost,courier,boughtDressings,foundDressings,cost,unitPrice,recoveredDressings:recovered,donatedDressings:donated,medicalRemains,guardPreparation,restRecovery};report({event:'rescueRecoveryComplete',...recovery});return {campaign,events,recovery};
 }

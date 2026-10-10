@@ -12,7 +12,7 @@ const {entranceFrame}=await import('../game/building-profile.js');
 const {buildTerrace}=await import('../game/buildings.js');
 const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
 const {ProjectedRoofSurface,ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270];
 const near=(a,b,message)=>assert.ok(Math.abs(a-b)<3e-5,`${message}: ${a} versus ${b}`);
 function fixture(rotation,view='exterior',roof='original'){

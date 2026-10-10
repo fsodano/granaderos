@@ -58,6 +58,7 @@ test('regional ground does not alter the authored landmark when expanding compac
    if(sector==='jujuy'&&tile.x===10&&tile.y>=14)continue;
    assert.deepEqual(map.tiles[(tile.y+16)*map.width+tile.x+dx],{...tile,x:tile.x+dx,y:tile.y+16},`${sector}: ${key(tile)}`);
   }
+  for(const edge of core.wallEdges)assert.deepEqual(map.wallEdges.find(candidate=>candidate.id===edge.id),{...edge,x:edge.x+dx,y:edge.y+16},`${sector}: ${edge.id}`);
   assert.deepEqual(core,before,'input authored plan remains reusable');
  }
 });
@@ -65,8 +66,8 @@ test('regional ground does not alter the authored landmark when expanding compac
 test('regional pass preserves obstacles, props, roads, door approaches, deployments and boundary strips',()=>{
  const width=32,height=24;
  const map={sector:'tucuman',width,height,tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',cover:0,blocked:false})),
-  buildings:[{x:5,y:5,width:5,height:4}],props:[{x:20,y:5,footprint:{width:3,height:2}}],squad:[{x:20,y:15}],enemies:[{x:25,y:15}],artillery:[{x:25,y:20}],lights:[{x:20,y:20}]};
- for(const [point,change] of [[{x:15,y:2},{type:'road'}],[{x:15,y:3},{type:'wall',blocked:true,cover:40}],[{x:15,y:4},{type:'mud'}],[{x:15,y:5},{buildingId:'interior',type:'grass'}]])Object.assign(map.tiles[point.y*width+point.x],change);
+  wallEdges:[{id:'adobe-screen',x:15,y:6,axis:'x',type:'wall',blocked:true,material:'adobe',cover:40},{id:'screen-door',doorId:'screen-door',x:16,y:6,axis:'y',type:'door',open:false,blocked:true,material:'wood',cover:30}],buildings:[{x:5,y:5,width:5,height:4}],props:[{x:20,y:5,footprint:{width:3,height:2}}],squad:[{x:20,y:15}],enemies:[{x:25,y:15}],artillery:[{x:25,y:20}],lights:[{x:20,y:20}]};
+ for(const [point,change] of [[{x:15,y:2},{type:'road'}],[{x:15,y:3},{type:'stone',blocked:true,cover:40}],[{x:15,y:4},{type:'mud'}],[{x:15,y:5},{buildingId:'interior',type:'grass'}]])Object.assign(map.tiles[point.y*width+point.x],change);
  const before=structuredClone(map),landmark={x:10,y:10,width:5,height:4};
  applyRegionalTerrain(map,landmark);
  const protectedPoints=[{x:15,y:2},{x:15,y:3},{x:15,y:4},{x:15,y:5},{x:4,y:5},{x:7,y:9},{x:10,y:8},{x:20,y:5},{x:22,y:6},{x:19,y:5},{x:20,y:15},{x:24,y:15},{x:25,y:20},{x:20,y:19},{x:10,y:10},{x:14,y:13}];
@@ -75,7 +76,7 @@ test('regional pass preserves obstacles, props, roads, door approaches, deployme
  for(const point of protectedPoints)assert.deepEqual(map.tiles[point.y*width+point.x],before.tiles[point.y*width+point.x],key(point));
  assert.ok(map.tiles.some(t=>t.type==='forest'),'the test must leave eligible landscape');
  assert.deepEqual(map.tiles.map(t=>t.blocked),before.tiles.map(t=>t.blocked),'no movement topology changes');
- for(const field of ['buildings','props','squad','enemies','artillery','lights'])assert.deepEqual(map[field],before[field]);
+ for(const field of ['wallEdges','buildings','props','squad','enemies','artillery','lights'])assert.deepEqual(map[field],before[field]);
 });
 
 test('regional mud consumes extra energy and turn AP, but exploration keeps AP untouched',()=>{
@@ -99,11 +100,11 @@ test('regional mud consumes extra energy and turn AP, but exploration keeps AP u
 test('saved regional ground, breaches and discovered equipment survive a different season',()=>{
  for(const sector of ['ensenada','tucuman','cordoba','mendoza']){
   const req=request(sector),first=enterSector(req);
-  const wall=first.tiles.find(t=>t.type==='wall');Object.assign(wall,{blocked:false,blocksSight:false,type:'rubble',cover:20});
+  const wall=first.wallEdges.find(t=>t.type==='wall');Object.assign(wall,{blocked:false,blocksSight:false,type:'rubble',cover:20});
   const at=first.units[0];first.groundItems=[{id:'kept',x:at.x,y:at.y,item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:'Cartucho de mosquete .75',count:3,weight:.04,type:'item',knownToPlayer:true}];
   const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(first))),before=structuredClone(saved);
   const returned=enterSector({...req,hour:5000,weather:{rain:60,humidity:9}},saved);
-  assert.deepEqual(returned.tiles,saved.tiles,sector);assert.deepEqual(returned.groundItems,saved.groundItems,sector);
+  assert.deepEqual(returned.tiles,saved.tiles,sector);assert.deepEqual(returned.wallEdges,saved.wallEdges,sector);assert.deepEqual(returned.groundItems,saved.groundItems,sector);
   assert.deepEqual(saved,before,'reentry does not mutate the saved sector');
  }
 });

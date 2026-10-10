@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -14,7 +15,7 @@ import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
 export function churchFrontPiers(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy=false){
   const root=new Group();root.name=`building-church-front-piers:${b.id}`;
   if(legacy&&b.wallFinish===undefined)return root;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b);
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),inset=buildingArtInset(b,input),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b);
   const recipe=architectureFinish(appearance.wallFinish,'volume')!,texture='/art/architecture-plaster-v2.png',wall=materials.get(appearance.wallFinish,{architectureRole:'volume',texture}),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),copingColours:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('church-pier-coping',{colour:copingColours[appearance.wallFinish]??copingColours.adobe});
   // pier() uses plaster even when its authored pigment is stone or brick.
   applyArchitectureFinish(wall,{...recipe,texture,textureOpacity:.36,multiplyOpacity:0});
@@ -27,7 +28,7 @@ export function churchFrontPiers(b:WorldBuilding,input:WorldInput,T:number,heigh
   const capitalBottom=height+3.5/V,capitalTop=height+8.5/V,foot=Math.min(profile.plinthHeight/V,capitalBottom*.35);
   if(capitalBottom>foot+.20)feature('church-facade-pilasters',batch=>{
     for(const u of [0,frame.width]){
-      const p=frame.at(u,0),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(tile?.type!=='wall')continue;
+      const p=frame.at(u,0),tile=buildingWallAtPoint(walls,p,b);if(tile?.type!=='wall')continue;
       const footRect=supported(tile,rectangle(u-.255,-.39,u+.255,.20));if(walking(footRect,capitalTop))continue;
       box(batch,footRect,0,foot,stone);
       box(batch,supported(tile,rectangle(u-.185,-.34,u+.185,.15)),foot,capitalBottom,wall);

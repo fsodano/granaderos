@@ -10,7 +10,8 @@ const {buildUpperSurfaces}=await import('../web/lib/three/world-terrain.ts');
 const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
 const {buildingDetails}=await import('../web/app/TacticalBuildingDetails.tsx');
 const {ArchitectureVolume}=await import('../web/app/TacticalBuildingVolumes.tsx');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
+const {createArchitectureReviewBattle:createNativeReview}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
 const T=1.2360585147470482,V=25.066666666666666;
 const features={capilla:'chapel-bell-gable',casa:'domestic-chimney',herreria:'forge-chimney'};
 
@@ -60,7 +61,8 @@ test('one playable upper cell removes the overlapping chapel crown or moves a ch
 
 test('authored flat-roof details leave no floating scenery during normal partial and full room disclosure',()=>{
  for(const id of Object.keys(features))for(const rotation of [0,90,180,270])for(const view of ['partial','interior']){
-  const f=fixture(id,rotation,'slab',view),building=f.build();assert.ok(f.battle.elapsedSeconds>0);assert.ok(f.input.revealedRooms.length>0);assert.equal(building.getObjectByName(f.name),undefined);f.dispose(building);
+  const native=createNativeReview(id,rotation,view,'slab');assert.ok(native.elapsedSeconds>0);assert.ok(native.revealedRooms.length>0);
+  const f=fixture(id,rotation,'slab',view),building=f.build();assert.ok(f.input.revealedRooms.length>0);assert.equal(building.getObjectByName(f.name),undefined);f.dispose(building);
  }
 });
 

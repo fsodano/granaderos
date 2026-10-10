@@ -12,9 +12,9 @@ const request=(style='balanced')=>({id:'auto-defense',sector:'san_nicolas',seed:
 const supply=b=>b.units.reduce((sum,u)=>sum+u.loaded+u.ammo,0);
 const physicalSupply=b=>totalAmmoCounts(fieldAmmunitionByType(b))+b.units.reduce((sum,u)=>sum+totalAmmoCounts(unitAmmunitionByType(u)),0);
 test('automatic defense on the authored map preserves deterministic outcomes, wounds and cartridges',()=>{
- // Seed42 produces a native defeat with one dead defender and two retained
- // critical survivors under the common physical sight rules.
- const r={...request(),seed:42},original=structuredClone(r),initial=enterSector(r),first=autoResolve(r),second=autoResolve(JSON.parse(JSON.stringify(r)));
+ // Seed1 earns a defeat with two dead defenders and one critical survivor
+ // on the shared-edge map under the common physical sight rules.
+ const r={...request(),seed:1},original=structuredClone(r),initial=enterSector(r),first=autoResolve(r),second=autoResolve(JSON.parse(JSON.stringify(r)));
  assert.deepEqual(first,second);assert.deepEqual(r,original);assert.equal(first.outcome,'defeat');assert.equal(first.timedOut,false);
  assert.ok(first.actions>0);
  assert.ok(supply(first.battle)<supply(initial));assert.ok(first.battle.units.some(u=>u.side==='enemy'&&u.hp===0));
@@ -95,10 +95,10 @@ test('bounded automatic resolution keeps an unfinished timeout instead of invent
 });
 
 
+const sealedCellEdges=(x,y)=>[{x,y,axis:'x'},{x,y:y+1,axis:'x'},{x,y,axis:'y'},{x:x+1,y,axis:'y'}].map(edge=>({...edge,id:`seal:${edge.axis}:${edge.x}:${edge.y}`,type:'wall',blocked:true,blocksSight:true,cover:100}));
 const withdrawalFixture=(players,extra={})=>{
  const tiles=Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}));
- for(const t of tiles)if(Math.abs(t.x-10)<=1&&Math.abs(t.y-6)<=1&&(t.x!==10||t.y!==6))Object.assign(t,{type:'wall',blocked:true,blocksSight:true});
- return createBattle(players,{id:'withdrawal',width:12,height:8,tiles,exits:[{id:'west',edge:'W',destination:'retiro',entryEdge:'E',entryAnchor:{x:19,y:3}}],enemies:[{id:'enemy',x:10,y:6,weapon:1813,overwatch:false}],...extra});
+ return createBattle(players,{id:'withdrawal',width:12,height:8,tiles,wallEdges:sealedCellEdges(10,6),exits:[{id:'west',edge:'W',destination:'retiro',entryEdge:'E',entryAnchor:{x:19,y:3}}],enemies:[{id:'enemy',x:10,y:6,weapon:1813,overwatch:false}],...extra});
 };
 const replayWithdrawal=(state,orders)=>orders.reduce((state,order)=>{const next=order.type==='endTurn'?endTurn(state):actBattle(state,order);assert.equal(next.lastError,null);return next;},state);
 
@@ -113,7 +113,7 @@ test('bounded withdrawal walks real paths across turns and exits through paid bo
 
 test('a sealed remaining soldier stays in the encounter after partial withdrawal reaches its bound',()=>{
  const state=withdrawalFixture([{id:'p',x:0,y:2},{id:'q',x:4,y:4}]);
- for(const t of state.tiles)if(Math.abs(t.x-4)<=1&&Math.abs(t.y-4)<=1&&(t.x!==4||t.y!==4))Object.assign(t,{type:'wall',blocked:true,blocksSight:true});
+ state.wallEdges.push(...sealedCellEdges(4,4));
  const result=withdrawAutomatically(state);
  assert.equal(result.battle.status,'active');assert.equal(result.rounds,2);assert.equal(result.battle.mode,'exploration');assert.ok(result.battle.units[0].departure);assert.equal(result.battle.units[1].departure,undefined);
  assert.deepEqual({x:result.battle.units[1].x,y:result.battle.units[1].y},{x:4,y:4});assert.deepEqual(result.battle,replayWithdrawal(state,result.orders));

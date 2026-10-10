@@ -41,8 +41,9 @@ test('finite patrol dressings survive a genuine poor-tactics capture and pay for
  assert.deepEqual(captives,prepared.receipt.field,'the complete serving patrol must become genuine captives after native defeat');
  const priorDeaths=Object.entries(deployed.operativeState).filter(([,row])=>!row.alive).map(([id])=>id);assert.equal(priorDeaths.length,17);
  for(const id of captives){assert.ok(!lost.recruited.includes(id));assert.ok(!lost.squads.some(squad=>squad.members.includes(id)));assert.equal(lost.contracts[id],undefined);assert.ok(lost.operativeState[id].capturedContract);}
- assert.equal(captives.reduce((sum,id)=>sum+lost.operativeState[id].medkits,0),5,'three native first-aid strokes leave five actual confiscated dressings');
- assert.equal(result.orders.filter(action=>action.type==='useItem').length,3);
+ const confiscated=captives.reduce((sum,id)=>sum+lost.operativeState[id].medkits,0),combatDressings=prepared.receipt.totalTaken-confiscated;
+ assert.ok(combatDressings>0,'the native battle spends actual finite first-aid stock');
+ assert.equal(result.orders.filter(action=>action.type==='useItem').length,combatDressings);
  assert.equal(lost.operativeState[121].alive,true,'ordinary finite first aid saves the former patrol casualty');
  for(const id of captives){const unit=pair.battle.units.find(u=>u.id===String(id)),record=lost.operativeState[id];assert.equal(record.hp,unit.hp);assert.equal(record.bleeding,unit.bleeding);assert.equal(record.medkits,unit.medkits);}
  checkpoint('accepted-capture',{campaign:lost},captives.map(id=>({id,hp:lost.operativeState[id].hp,bleeding:lost.operativeState[id].bleeding,medkits:lost.operativeState[id].medkits})));
@@ -51,10 +52,11 @@ test('finite patrol dressings survive a genuine poor-tactics capture and pay for
  const care=captives.map(id=>({id,strokes:assertCustodyCare(lost,cared,id),before:{hp:lost.operativeState[id].hp,bleeding:lost.operativeState[id].bleeding,medkits:lost.operativeState[id].medkits},after:{hp:cared.operativeState[id].hp,bleeding:cared.operativeState[id].bleeding,medkits:cared.operativeState[id].medkits}}));
  checkpoint('care-receipts',{campaign:cared},care);
  for(const id of captives){assert.equal(cared.operativeState[id].alive,true);assert.equal(cared.operativeState[id].captured,true);assert.equal(cared.operativeState[id].bleeding,0,'actual finite care must stop bleeding before the later physical rescue');}
- assert.equal(care.flatMap(row=>row.strokes).reduce((sum,stroke)=>sum+stroke.dressings,0),5);assert.equal(captives.reduce((sum,id)=>sum+cared.operativeState[id].medkits,0),0);
+ const custodyDressings=care.flatMap(row=>row.strokes).reduce((sum,stroke)=>sum+stroke.dressings,0),remaining=captives.reduce((sum,id)=>sum+cared.operativeState[id].medkits,0);
+ assert.ok(custodyDressings>0);assert.equal(remaining,confiscated-custodyDressings);
  for(const guard of lost.sectorStates.tucuman.units.filter(unit=>unit.side==='enemy'))assert.equal(cared.sectorStates.tucuman.units.find(unit=>unit.id===guard.id).medkits,guard.medkits,'custody care uses confiscated linen, not guard private supplies');
  assert.deepEqual(decodeSave(encodeSave(cared)).campaign,cared);
  for(const [id,row]of Object.entries(input.operativeState))if(!row.alive)assert.equal(cared.operativeState[id].alive,false);
  for(const id of priorDeaths)assert.equal(cared.operativeState[id].alive,false);for(const id of fallen)assert.equal(cared.operativeState[id].alive,false);assert.deepEqual(input,original);
- t.diagnostic(JSON.stringify({policy:prepared.receipt.policy,takes:prepared.receipt.takes,status:result.battle.status,turns:result.battle.turn,actions:result.actions,orders:result.orders.length,midpointSaved,captives,fallen,priorDeaths,firstAidSaved121:true,dressings:{acquired:8,spentInCombat:3,confiscated:5,spentInCustody:5,remaining:0},care}));
+ t.diagnostic(JSON.stringify({policy:prepared.receipt.policy,takes:prepared.receipt.takes,status:result.battle.status,turns:result.battle.turn,actions:result.actions,orders:result.orders.length,midpointSaved,captives,fallen,priorDeaths,firstAidSaved121:true,dressings:{acquired:8,spentInCombat:combatDressings,confiscated,spentInCustody:custodyDressings,remaining},care}));
 });

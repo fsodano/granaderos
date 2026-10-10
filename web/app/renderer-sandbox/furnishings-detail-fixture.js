@@ -1,3 +1,4 @@
+import {wallMovementBlocked,wallEdgesBetween} from '../../../game/wall-geometry.js';
 import {createBattle,actBattle} from '../../../game/tactical.js';
 import {placeBuilding} from '../../../game/buildings.js';
 import {propBlocksAt} from '../../../game/props.js';
@@ -20,14 +21,14 @@ const visits=Object.freeze([
 
 function freshBattle(){
  const width=24,height=20,ground=Array.from({length:width*height},(_,n)=>({x:n%width,y:Math.floor(n/width),type:'grass',cover:0,blocked:false}));
- const placed=placeBuilding(ground,{id:buildingId,name:'Casa del mobiliario',x:4,y:4,width:16,height:13,architecture:'house',doors:[{id:`${buildingId}:entrance`,x:11,y:16,open:false}]});
- const namedRooms=rooms.map(room=>({id:`${buildingId}:${room.id}`,name:room.name,purpose:room.purpose,cells:Array.from({length:20},(_,n)=>({x:room.x+n%4,y:room.y+Math.floor(n/4)}))}));
- const byCell=new Map(namedRooms.flatMap(room=>room.cells.map(cell=>[key(cell),room.id]))),doorCells=new Set(['6,10','11,10','16,10','9,7','9,13','14,7','14,13']);
- const tiles=placed.tiles.map(tile=>{
-  if(tile.type!=='floor')return tile;
-  const roomId=byCell.get(key(tile));if(roomId)return {...tile,roomId};
-  const door=doorCells.has(key(tile));return {...tile,type:door?'door':'wall',roomId:null,blocked:true,blocksSight:true,cover:40,...(door?{doorId:`${buildingId}:door:${key(tile)}`,open:false,locked:false}:{})};
- });
+ const placed=placeBuilding(ground,{id:buildingId,name:'Casa del mobiliario',x:4,y:4,width:16,height:13,architecture:'house',doors:[{id:`${buildingId}:entrance`,x:11,y:17,axis:'x',open:false}]});
+ const namedRooms=rooms.map((room,n)=>{const col=n%3,row=Math.floor(n/3),x=[4,9,14][col],y=[4,10][row],w=[5,5,6][col],h=[6,7][row];return {id:`${buildingId}:${room.id}`,name:room.name,purpose:room.purpose,cells:Array.from({length:w*h},(_,i)=>({x:x+i%w,y:y+Math.floor(i/w)}))};});
+ const byCell=new Map(namedRooms.flatMap(room=>room.cells.map(cell=>[key(cell),room.id])));
+ const tiles=placed.tiles.map(tile=>tile.type==='floor'?{...tile,roomId:byCell.get(key(tile))}:tile);
+ const partitions=[];
+ for(const x of [9,14])for(let y=4;y<17;y++)partitions.push({x,y,axis:'y',type:y===7||y===13?'door':'wall'});
+ for(let x=4;x<20;x++)partitions.push({x,y:10,axis:'x',type:[6,11,16].includes(x)?'door':'wall'});
+ const walls=[...placed.building.walls,...partitions.map(edge=>({...edge,id:`${buildingId}:partition:${edge.axis}:${key(edge)}`,blocked:true,blocksSight:true,cover:40,...(edge.type==='door'?{doorId:`${buildingId}:door:${edge.axis}:${key(edge)}`,open:false,locked:false}:{})}))];
  const tag={buildingId,roomId:`${buildingId}:main`,rotation:0,blocksMovement:true};
  const props=[
   {id:'detail-table',type:'table',x:5,y:5,footprint:{width:2,height:1},...tag},
@@ -37,7 +38,7 @@ function freshBattle(){
   {id:'detail-chest-open',type:'chest',x:8,y:9,footprint:{width:1,height:1},open:true,...tag},
  ];
  const guard={id:'furnishings-detail-guard',name:'Mobiliario',nickname:'Mobiliario',x:11,y:18,facing:0,weapon:1800,loaded:1,ammo:12,blade:1810,activeSlot:'unarmed',condition:100,energy:100,agility:90,dexterity:85,strength:85,marksmanship:85,spriteAppearance:'granadero',skinTone:'brown',headwear:null,outfit:null,legwear:null};
- return createBattle([guard],{id:'renderer-furnishings-detail',name:'Mobiliario de la casa',width,height,tiles,buildings:[{...placed.building,rooms:namedRooms}],props,enemies:[],exploration:true,seed:45});
+ return createBattle([guard],{id:'renderer-furnishings-detail',name:'Mobiliario de la casa',width,height,tiles,buildings:[{...placed.building,walls,rooms:namedRooms}],props,enemies:[],exploration:true,seed:45});
 }
 
 /** Only normal movement and door orders discover these rooms. The returned
@@ -49,7 +50,7 @@ export function createFurnishingsDetailReview(view='interior'){
   const start=battle.units[0],tiles=new Map(battle.tiles.map(tile=>[key(tile),tile])),queue=[{x:start.x,y:start.y}],previous=new Map([[key(start),null]]);
   for(let n=0;n<queue.length&&!previous.has(key(destination));n++)for(const [dx,dy]of [[1,0],[0,1],[-1,0],[0,-1]]){
    const point={x:queue[n].x+dx,y:queue[n].y+dy},tile=tiles.get(key(point));
-   if(previous.has(key(point))||!tile||propBlocksAt(battle,point.x,point.y)||tile.blocked&&(tile.type!=='door'||tile.locked))continue;
+   if(previous.has(key(point))||!tile||propBlocksAt(battle,point.x,point.y)||wallMovementBlocked(battle,queue[n],point,{openDoors:true})||tile.blocked&&(tile.type!=='door'||tile.locked))continue;
    previous.set(key(point),queue[n]);queue.push(point);
   }
   if(!previous.has(key(destination)))throw Error(`No legal furniture review route to ${destination.room}`);
@@ -57,7 +58,7 @@ export function createFurnishingsDetailReview(view='interior'){
   const actions=[],before=[...battle.revealedRooms];
   const order=action=>{const next=actBattle(battle,action);if(next.lastError)throw Error(`Furniture review ${action.type}: ${next.lastError}`);battle=next;actions.push(action);};
   for(const point of path){
-   const door=battle.tiles.find(tile=>key(tile)===key(point)&&tile.type==='door');
+   const door=wallEdgesBetween(battle,battle.units.find(unit=>unit.id===start.id),point).find(edge=>edge.type==='door');
    if(door&&!door.open)order({type:'door',unitId:start.id,doorId:door.doorId,open:true});
    order({type:'move',unitId:start.id,...point});
   }

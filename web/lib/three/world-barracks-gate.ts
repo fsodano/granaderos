@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -13,7 +14,7 @@ import type {WorldBuilding,WorldInput} from './world-types';
 export function barracksGate(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials){
   const root=new Group();root.name=`building-barracks-gate:${b.id}`;
   if(height<2.4)return root;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b),supports=[Math.round(frame.doorU-1),Math.round(frame.doorU+1)].filter(u=>u>=0&&u<=frame.width&&walls.find(tile=>{const p=frame.at(u,0);return tile.x===p.x&&tile.y===p.y;})?.type==='wall');
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b),supports=[Math.round(frame.doorU-1),Math.round(frame.doorU+1)].filter(u=>u>=0&&u<=frame.width&&buildingWallAtPoint(walls,frame.at(u,0),b)?.type==='wall');
   if(!supports.length)return root;
   const lo=Math.min(...supports)-.245,hi=Math.max(...supports)+.245,front=-.39,back=.20,a=frame.at(lo,front),c=frame.at(hi,back),minX=Math.min(a.x,c.x)*T,maxX=Math.max(a.x,c.x)*T,minZ=Math.min(a.y,c.y)*T,maxZ=Math.max(a.y,c.y)*T;
   // The complete gate includes the plaque and the capitals above the shell.

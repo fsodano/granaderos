@@ -18,23 +18,27 @@ for(const kind of ['created','hired'])test(`funded ${kind} force wins the coasta
  assert.ok(notes.every(n=>n.funds>=0));
  if(kind==='hired'){
   const care=notes.find(note=>note.stage==='paid-clinic-recovery'&&note.clinic==='buenos_aires');assert.ok(care);
-  assert.deepEqual(care.field,[110,114,136,141,120,131],'none of the six native opening survivors is replaced for clinic access');
-  assert.deepEqual(care.caregiverIds,[112]);assert.deepEqual(care.hires,[112]);assert.equal(care.hireCost,1050);
+  const opening=notes.find(note=>note.sector==='buenos_aires'),survivors=opening.units.filter(unit=>unit.hp>0).map(unit=>Number(unit.id));
+  assert.deepEqual(care.field,survivors,'every actual opening survivor retains field membership for clinic access');
+  assert.deepEqual(care.caregiverIds,care.field.length===6?[112]:[]);assert.deepEqual(care.hires,[112]);assert.equal(care.hireCost,1050);
+  for(const id of opening.deaths)assert.ok(!care.field.includes(id),'clinic care cannot replace or restore an actual casualty');
   assert.equal(care.arrivals[0].travelHours,6);assert.equal(care.arrivals[0].dueAt-care.arrivals[0].departedAt,6);assert.equal(care.arrivals[0].dueSecond,care.arrivals[0].departedSecond);
-  assert.ok(care.hours>0&&care.stockWaitHours>0&&care.donatedDressings>0&&care.dressingsFound>0);
+  assert.ok(care.hours>0&&care.hours<=48,'actual wounds receive bounded paid medical work');
   assert.equal(care.initialDressings+care.dressingsFound-care.remainingDressings,care.hours);
   assert.equal(care.dressingsBought,0);assert.equal(care.dressingCost,0);assert.equal(care.workshopCost,0);
  }
- if(kind==='created')await t.test('the actual surviving toolkit owner retains one finite identity and funds saved repair after native wound care',()=>{
-  const before=structuredClone(campaign),roster=rosterFor(campaign);
-  const instanceId='cache:buenos_aires:repair-kit',owners=roster.filter(o=>campaign.operativeState[o.id].alive&&Object.values(campaign.operativeState[o.id].inventory??{}).some(item=>item.instanceId===instanceId));
-  assert.deepEqual(owners.map(o=>o.id),[141]);const mechanic=owners[0],kit=Object.values(campaign.operativeState[mechanic.id].inventory).find(item=>item.instanceId===instanceId);
-  assert.ok(mechanic.mechanical>=20);assert.ok(campaign.operativeState[mechanic.id].condition>0&&campaign.operativeState[mechanic.id].condition<100);assert.equal(kit.repairPoints,100-notes.filter(note=>note.stage==='paid-clinic-recovery').reduce((sum,note)=>sum+note.repairPointsSpent,0));assert.equal(kit.count,1);
-  const native=campaign.sectorStates.san_lorenzo.units.find(unit=>unit.id===String(mechanic.id));assert.ok(native.hp>0);assert.equal(native.condition,campaign.operativeState[mechanic.id].condition);assert.equal(repairMaterialPoints(native),kit.repairPoints);
-  assert.equal(campaign.sectorStates.buenos_aires.props.find(prop=>prop.id===FINITE_SECTOR_CACHES.buenos_aires.chest).contents.some(item=>item.instanceId===instanceId),false);
+ if(kind==='created')await t.test('an actual finite toolkit reaches a surviving qualified carrier and funds saved repair after native wound care',()=>{
+  const before=structuredClone(campaign),roster=rosterFor(campaign);let s=saved({campaign}).campaign;
+  const candidates=roster.filter(o=>s.squad.includes(o.id)&&o.mechanical>=20&&s.operativeState[o.id].alive&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&!s.operativeState[o.id].asleep&&s.operativeState[o.id].energy>10&&s.operativeState[o.id].condition>0&&s.operativeState[o.id].condition<100).sort((a,b)=>b.mechanical-a.mechanical);
+  const owned=candidates.flatMap(o=>Object.values(s.operativeState[o.id].inventory??{}).filter(item=>item.kind==='repair-kit'&&item.instanceId&&item.repairPoints>0).map(kit=>({mechanic:o,sourceKit:kit}))),sources=candidates.flatMap(mechanic=>sectorInventorySites(s,s.location).flatMap(site=>sectorInventoryModel(s,site.id,roster,mechanic.id).entries.filter(row=>row.reachable&&JSON.parse(row.expected).kind==='repair-kit'&&JSON.parse(row.expected).instanceId&&JSON.parse(row.expected).repairPoints>0).map(row=>({mechanic,sourceKit:JSON.parse(row.expected),row,site:site.id}))));
+  const source=owned[0]??sources[0];assert.ok(source,'a qualified survivor must admit one real finite toolkit');const {mechanic,sourceKit}=source,instanceId=sourceKit.instanceId;
+  if(!owned.length){const clock={hour:s.hour,second:s.secondOfHour},found=collectRouteItems(s,mechanic.id,{kind:'repair-kit',instanceId},1);s=found.campaign;assert.equal(found.collected,1);assert.deepEqual({hour:s.hour,second:s.secondOfHour},clock,'known toolkit collection spends no time before critical wound care');}
+  const owners=roster.filter(o=>s.operativeState[o.id].alive&&Object.values(s.operativeState[o.id].inventory??{}).some(item=>item.instanceId===instanceId));assert.deepEqual(owners.map(o=>o.id),[mechanic.id]);const kit=Object.values(s.operativeState[mechanic.id].inventory).find(item=>item.instanceId===instanceId);
+  assert.equal(kit.repairPoints,sourceKit.repairPoints);assert.ok(kit.repairPoints>0&&kit.repairPoints<=100);assert.equal(kit.count,1);
+  const native=visit(s).battle.units.find(unit=>unit.id===String(mechanic.id));assert.ok(native.hp>0);assert.equal(native.condition,s.operativeState[mechanic.id].condition);assert.equal(repairMaterialPoints(native),kit.repairPoints);
+  const origin=instanceId.split(':')[1];assert.ok(FINITE_SECTOR_CACHES[origin]);assert.equal(s.sectorStates[origin].props.find(prop=>prop.id===FINITE_SECTOR_CACHES[origin].chest).contents.some(item=>item.instanceId===instanceId),false);
   const exposed=s=>sectorInventorySites(s,s.location).flatMap(site=>sectorInventoryModel(s,site.id,rosterFor(s),mechanic.id).entries).filter(row=>JSON.parse(row.expected).instanceId===instanceId);
-  assert.deepEqual(exposed(campaign),[],'historical living deployment records cannot expose a second toolkit as corpse loot');
-  let s=saved({campaign}).campaign;
+  assert.deepEqual(exposed(s),[],'historical deployments and emptied corpses cannot expose a second toolkit');
   const patients=s.squad.filter(id=>s.operativeState[id].bleeding>0);assert.ok(patients.length>0,'actual bleeding must receive native finite care before repair time');
   const doctors=roster.filter(op=>s.squad.includes(op.id)&&op.medical>=20&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&s.operativeState[op.id].energy>10).sort((a,b)=>s.operativeState[b.id].medkits-s.operativeState[a.id].medkits||b.medical-a.medical).slice(0,patients.length);assert.equal(doctors.length,patients.length);
   const dressingStock=s.squad.reduce((sum,id)=>sum+s.operativeState[id].medkits,0);
@@ -101,18 +105,20 @@ test('a fresh free officer and local recruits complete the opening without bulle
  const {campaign:s,notes}=freshCoastalRoute('local');
  assert.deepEqual(notes.filter(n=>n.sector).map(n=>n.sector),['buenos_aires','san_nicolas','san_lorenzo']);assert.ok(notes.every(n=>n.funds>=0));
  assert.deepEqual(notes[0].squad,[1000,3]);assert.equal(notes[0].funds,3200);
- const care=notes.find(n=>n.stage==='local-recovery');assert.equal(care.hours,0);assert.equal(care.dressingsFound,0);assert.equal(care.dressingsBought,0);assert.equal(care.dressingCost,0);assert.equal(care.weaponCost,0);assert.equal(care.workshopCost,0);assert.ok(care.repairPointsSpent>0);
- const woundedCare=notes.find(n=>n.stage==='local-final-recovery'&&n.hours>0);assert.ok(woundedCare,'the actual San Nicolás wounds must receive finite paid-time care');assert.equal(woundedCare.dressingsBought,0);assert.equal(woundedCare.dressingCost,0);
+ const care=notes.find(n=>n.stage==='local-recovery'),opening=notes.find(n=>n.sector==='buenos_aires'),roster=rosterFor(s);
+ assert.equal(care.hours>0,opening.units.some(unit=>unit.hp>0&&unit.hp<roster.find(op=>String(op.id)===unit.id).maxHp),'actual opening wounds determine paid medical work');
+ assert.equal(care.initialDressings+care.dressingsFound-care.remainingDressings,care.hours);assert.equal(care.dressingsBought,0);assert.equal(care.dressingCost,0);assert.equal(care.weaponCost,0);assert.equal(care.workshopCost,0);assert.ok(care.repairPointsSpent>0);
+ const woundedCare=notes.find(n=>n.stage==='local-final-recovery'&&n.hours>0)??care;assert.ok(woundedCare.hours>0,'actual opening wounds must receive finite paid-time care');assert.equal(woundedCare.dressingsBought,0);assert.equal(woundedCare.dressingCost,0);
  // Current combat determines who survives. Preserve every actual casualty and
  // finite recovery record instead of forcing an old number of deaths or hours.
  const fallen=[...new Set(notes.filter(n=>n.sector).flatMap(n=>n.deaths))];
  for(const id of fallen){assert.equal(s.operativeState[id].alive,false);assert.equal(s.operativeState[id].hp,0);assert.ok(!s.squad.includes(id));}
  assert.ok(s.squad.length>0);assert.ok(s.missionAllies.san_lorenzo.hp>0);
  const cohort=[1000,3,4,10],field=s.sectorStates.san_lorenzo.units;
- for(const id of cohort){const native=field.find(u=>u.id===String(id));assert.ok(native);assert.equal(s.operativeState[id].alive,native.hp>0);assert.equal(s.operativeState[id].hp,native.hp);}
+ for(const id of cohort){const native=field.find(u=>u.id===String(id))??Object.values(s.sectorStates).flatMap(scene=>scene.units).find(unit=>unit.id===String(id)&&unit.hp===0);assert.ok(native,'each recruit retains the native record at the final battle or actual death sector');assert.equal(s.operativeState[id].alive,native.hp>0);assert.equal(s.operativeState[id].hp,native.hp);}
  const finalCare=notes.find(n=>n.stage==='local-final-recovery');assert.ok(finalCare);assert.equal(finalCare.dressingCost,finalCare.dressingsBought*10);assert.equal(finalCare.weaponCost,0);
  const continued=saved({campaign:order(s,{type:'wait',hours:1})}).campaign,money=continued.resources.treasury,cost=deploymentCost(continued),p=visit(continued);
- assert.deepEqual(p.battle.units.filter(u=>u.side==='player'&&!u.missionAlly).map(u=>u.id).sort(),continued.squad.map(String).sort());assert.equal(new Set(p.battle.units.map(u=>u.id)).size,p.battle.units.length,'revisit must not duplicate a living soldier or a body');
+ assert.deepEqual(p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.missionAlly).map(u=>u.id).sort(),continued.squad.map(String).sort());assert.equal(new Set(p.battle.units.map(u=>u.id)).size,p.battle.units.length,'revisit must not duplicate a living soldier or a body');
  for(const id of fallen)assert.ok(!p.battle.units.some(u=>u.id===String(id)&&u.hp>0));
  const returned=saved({campaign:leave(p)}).campaign;
  assert.equal(returned.resources.treasury,money-cost);assert.deepEqual(returned.squad,continued.squad);

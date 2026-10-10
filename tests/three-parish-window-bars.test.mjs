@@ -11,7 +11,7 @@ const {buildingArtInset}=await import('../web/lib/three/world-building-placement
 const {entranceFrame}=await import('../game/building-profile.js');
 const {BUILDING_OPENINGS}=await import('../game/building-scale.js');
 const {Opening,WALL_COLOURS}=await import('../web/app/TacticalArchitectureMaterials.tsx');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270];
 function sourceBars(){const result=[];const visit=node=>{if(!node)return;if(Array.isArray(node)){for(const child of node)visit(child);return;}if(node.type==='path'&&node.props.stroke==='#767c68')result.push(node.props);visit(node.props?.children);};visit(Opening({type:'window',style:'arched',open:false,trim:'#eee6d1'}));return result;}
 function faceFixture(axis='x',sourceParish=true,style='arched'){

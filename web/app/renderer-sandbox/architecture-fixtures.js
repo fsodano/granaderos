@@ -1,3 +1,4 @@
+import {wallMovementBlocked,wallEdgesBetween,wallEdgeCells} from '../../../game/wall-geometry.js';
 import {BUILDING_TEMPLATES} from '../../../game/map-templates.js';
 import {blankMap} from '../../../game/map-schema.js';
 import {applyMapCommands} from '../../../game/map-commands.js';
@@ -29,14 +30,14 @@ function visit(battle,room){
   const point=queue[n];
   for(const [dx,dy]of [[1,0],[0,1],[-1,0],[0,-1]]){
    const next={x:point.x+dx,y:point.y+dy},cell=key(next),tile=tiles.get(cell);
-   if(previous.has(cell)||!tile||propBlocksAt(battle,next.x,next.y)||tile.blocked&&(tile.type!=='door'||tile.locked))continue;
+   if(previous.has(cell)||!tile||propBlocksAt(battle,next.x,next.y)||wallMovementBlocked(battle,point,next,{openDoors:true})||tile.blocked&&(tile.type!=='door'||tile.locked))continue;
    previous.set(cell,point);queue.push(next);if(goals.has(cell)){destination=next;break;}
   }
  }
  if(!destination)throw Error(`No legal review route to ${room.id}`);
  const path=[];for(let point=destination;previous.get(key(point));point=previous.get(key(point)))path.unshift(point);
  for(const point of path){
-  const door=battle.tiles.find(tile=>tile.x===point.x&&tile.y===point.y&&tile.type==='door');
+  const door=wallEdgesBetween(battle,battle.units.find(actor=>actor.id===unit.id),point).find(edge=>edge.type==='door')??battle.tiles.find(tile=>tile.x===point.x&&tile.y===point.y&&tile.type==='door');
   if(door&&!door.open)battle=order(battle,{type:'door',unitId:unit.id,doorId:door.doorId,open:true});
   battle=order(battle,{type:'move',unitId:unit.id,...point});
  }
@@ -58,8 +59,10 @@ export function createArchitectureReviewBattle(templateId='casa',rotation=0,view
   ...(roof==='terrace'||roof==='roof-route'?[{type:'setObject',id:`review-${templateId}`,values:{roof:'terrace'}}]:[]),
  ]);
  if(result.errors.length)throw Error(result.errors.join('; '));
- const map=compileMap(result.document),building=map.buildings[0],frame=entranceFrame(building),outside=frame.at(frame.doorU,-2);
- const upper=roof==='slab'||roof==='roof-route'?buildTerrace({...building,roof:'terrace'},{elevation:3,climbPoints:roof==='roof-route'?[{id:'review-access',from:frame.at(frame.doorU,-1),to:frame.at(frame.doorU,0)}]:[]}):{};
+ const map=compileMap(result.document),building=map.buildings[0],frame=entranceFrame(building);
+ const entry=map.wallEdges.find(edge=>edge.doorId===frame.door?.doorId),adjacent=entry?wallEdgeCells(entry):[],inside=adjacent.find(cell=>cell.x>=building.x&&cell.x<building.x+building.width&&cell.y>=building.y&&cell.y<building.y+building.height),exterior=adjacent.find(cell=>cell!==inside);
+ const outside=exterior?{x:exterior.x-frame.v.x,y:exterior.y-frame.v.y}:frame.at(frame.doorU,-2);
+ const upper=roof==='slab'||roof==='roof-route'?buildTerrace({...building,roof:'terrace'},{elevation:3,climbPoints:roof==='roof-route'?[{id:'review-access',from:{x:exterior.x,y:exterior.y},to:{x:inside.x,y:inside.y}}]:[]}):{};
  // A closed authored slab keeps the template's original roof metadata. Its
  // real metric upper cells, rather than an artwork override, set the height.
  if(roof==='slab')upper.upperSurfaces=upper.upperSurfaces.map(surface=>({...surface,blocked:true,obstacleHeight:0}));

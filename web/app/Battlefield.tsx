@@ -453,6 +453,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
     const additive=additiveClick.current;additiveClick.current=false;
     const intent=clickMovementIntent.current;clickMovementIntent.current='forward';
     const itemAction=clickItemIntent.current;clickItemIntent.current='use';
+    if(t.wallEdgeId){const environment=environmentTargetAt(s,t);if(environment&&u&&['move','useItem'].includes(mode)&&canSee(s,u,environment))order({type:'useItem',environment:{kind:environment.kind,id:environment.id}});return;}
     if(placeInventoryItem(t))return;
     if(mode==='move'&&!additive&&itemAction!=='steal'&&movement.isActive(selected)&&!presentation.busy&&u&&sameCell(u,t)){movement.cancel();clearGroup();setHover(null);return;}
     if(itemAction==='moveOnly'&&['move','useItem','loot'].includes(mode)&&isMovementGround(s,u,t)){order(moveTo(t,intent));return;}

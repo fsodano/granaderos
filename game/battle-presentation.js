@@ -3,7 +3,8 @@
 import {projectileTrajectoryPoint} from './projectile-trajectory.js';
 import {markFirearmNearMissPresented} from './firearm-near-miss-feedback.js';
 import {surfaceAt,tacticalLevel} from './tactical-space.js';
-import {obstacleVolumesAt} from './sight-geometry.js';
+import {obstacleVolumesAt,volumeRayCell,rayHeightIntersection} from './sight-geometry.js';
+import {wallEdgeId,wallEdgeCells} from './wall-geometry.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 let recorder=null,recordingShotHand=null;
 export function withBattleShotHand(hand,execute){const previous=recordingShotHand;recordingShotHand=hand==='offhand'?'offhand':'primary';try{return execute();}finally{recordingShotHand=previous;}}
@@ -28,9 +29,11 @@ function visibleSignature(state,visible){return JSON.stringify(bodyEntries(state
 function observedStoneContact(state,point,contact,canObserve,canObserveExterior){
  if(!contact||!point||!contact.point||tacticalLevel(point)!==tacticalLevel(contact.point)||!['x','y','height'].every(key=>Number.isFinite(point[key])&&Number.isFinite(contact.point[key])&&Math.abs(point[key]-contact.point[key])<1e-8))return false;
  const match=typeof contact.sourceId==='string'&&/^surface:(\d+):(\d+),(\d+)$/.exec(contact.sourceId);
- if(!match)return false;
- const cell={tacticalLevel:Number(match[1]),x:Number(match[2]),y:Number(match[3])},surface=surfaceAt(state,cell);
- const volume=surface&&obstacleVolumesAt(state,cell).find(volume=>volume.id===contact.sourceId&&volume.kind==='cover'&&volume.stoneFace);
+ const edge=typeof contact.sourceId==='string'&&contact.sourceId.startsWith('edge:')?
+  (state.wallEdges??[]).find(edge=>`edge:${wallEdgeId(edge)}`===contact.sourceId):null;
+ if(!match&&!edge)return false;
+ const cell=edge?wallEdgeCells(edge)[0]:{tacticalLevel:Number(match[1]),x:Number(match[2]),y:Number(match[3])},surface=edge??surfaceAt(state,cell);
+ const volume=surface&&obstacleVolumesAt(state,cell).find(volume=>volume.id===contact.sourceId&&['cover','edge'].includes(volume.kind)&&volume.stoneFace);
  if(!volume||tacticalLevel(point)!==cell.tacticalLevel||point.height<=volume.bottom+1e-8||point.height>=volume.top-1e-8)return false;
  const normal=contact.normal,bounds=volume.bounds;
  if(!normal||normal.height!==0)return false;
@@ -43,7 +46,13 @@ function observedStoneContact(state,point,contact,canObserve,canObserveExterior)
  // Private neighbouring material still affects physics, but cannot veto a
  // visible exterior contact in the public presentation.
  if(obstacleVolumesAt(state,outside).some(other=>{
-  if(!other.stoneFace||point.height<=other.bottom+1e-8||point.height>=other.top-1e-8)return false;
+  if(other.id===volume.id||!other.stoneFace||point.height<=other.bottom+1e-8||point.height>=other.top-1e-8)return false;
+  if(other.kind==='edge'){
+   const bounds=other.bounds,x=point.x+normal.x*.0001,y=point.y+normal.y*.0001;
+   if(x<bounds.minX||x>bounds.maxX||y<bounds.minY||y>bounds.maxY)return false;
+   const neighbour=(state.wallEdges??[]).find(edge=>`edge:${wallEdgeId(edge)}`===other.id);
+   return neighbour&&canObserveExterior(state,neighbour);
+  }
   if(other.kind==='cover'){
    const neighbour=surfaceAt(state,{...outside,tacticalLevel:other.tacticalLevel});
    return neighbour&&canObserveExterior(state,neighbour);
@@ -96,12 +105,20 @@ function observedShot(state,raw,known,canObserve,canObserveExterior){
  const outcome=!complete?null:hiddenVictim?(raw.pointShot||raw.aimHit?null:'miss'):raw.pointShot&&raw.outcome==='miss'?null:raw.outcome;
  return {source:snapshot(raw.source),impact:last,visible:true,outcome,spread:Boolean(raw.spread),shotHand:raw.shotHand==='offhand'?'offhand':'primary',...(raw.discharge===false?{discharge:false}:{}),...(outcome==='cover'&&raw.material?{material:raw.material}:{})};
 }
-function observedArtillery(state,raw,known,canObserve){
+function observedArtilleryEdgeContact(state,point,contact,raw,canObserveExterior){
+ if(!contact?.point||typeof contact.edgeId!=='string'||!['x','y','height'].every(key=>Number.isFinite(point?.[key])&&Math.abs(point[key]-contact.point[key])<1e-8)||tacticalLevel(point)!==tacticalLevel(contact.point))return false;
+ const edge=(state.wallEdges??[]).find(edge=>wallEdgeId(edge)===contact.edgeId);
+ if(!edge||tacticalLevel(point)!==tacticalLevel(edge)||!canObserveExterior(state,edge))return false;
+ const volume=obstacleVolumesAt(state,wallEdgeCells(edge)[0]).find(volume=>volume.kind==='edge'&&volume.edgeId===contact.edgeId);
+ const clipped=volume&&volumeRayCell(raw.source,raw.destination,{entry:0,exit:1},volume),hit=clipped&&rayHeightIntersection(raw.source.height,raw.destination.height,clipped,volume.bottom,volume.top);
+ return Boolean(hit&&['x','y','height'].every(key=>Math.abs(point[key]-(raw.source[key]+(raw.destination[key]-raw.source[key])*hit.entry))<1e-8));
+}
+function observedArtillery(state,raw,known,canObserve,canObserveExterior){
  if(!raw||![raw.source,raw.destination].every(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)))return null;
  const clean=point=>({x:point.x,y:point.y,height:point.height,tacticalLevel:point.tacticalLevel??0});
  const observed=point=>canObserve(state,{...point,x:Math.round(point.x),y:Math.round(point.y)});
  if(!observed(raw.source))return null;
- const source=clean(raw.source),canister=Boolean(raw.canister),points=[source],end=raw.displayEnd??raw.destination;
+ const source=clean(raw.source),canister=Boolean(raw.canister),points=[source],endContact=raw.displaySurfaceContact&&observedArtilleryEdgeContact(state,raw.displayEnd,raw.displaySurfaceContact,raw,canObserveExterior),end=raw.displaySurfaceContact&&!endContact?raw.destination:raw.displayEnd??raw.destination;
  if(![end.x,end.y,end.height].every(Number.isFinite))return null;
  // Artillery currently resolves grid cells, not a metric trajectory. This is
  // an observed-only grid trace from the issued aim. A private body/force stop
@@ -109,9 +126,9 @@ function observedArtillery(state,raw,known,canObserve){
  const distance=Math.hypot(end.x-source.x,end.y-source.y),steps=Math.min(255,Math.max(1,Math.ceil(distance*4)));
  if(!canister)for(let n=1;n<=steps;n++){
   const fraction=n/steps,point={x:source.x+(end.x-source.x)*fraction,y:source.y+(end.y-source.y)*fraction,height:source.height+(end.height-source.height)*fraction,tacticalLevel:source.tacticalLevel};
-  if(!observed(point))break;points.push(point);
+  if(!observed(point)&&!(n===steps&&endContact))break;points.push(point);
  }
- const impacts=(raw.impacts??[]).filter(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)&&observed(point)&&(!point.victimId||known.has(bodyKey(point.victimKind??'unit',point.victimId)))).map(point=>({...clean(point),outcome:point.outcome,...(point.material?{material:point.material}:{})}));
+ const impacts=(raw.impacts??[]).filter(point=>point&&[point.x,point.y,point.height].every(Number.isFinite)&&(point.surfaceContact?observedArtilleryEdgeContact(state,point,point.surfaceContact,raw,canObserveExterior):observed(point))&&(!point.victimId||known.has(bodyKey(point.victimKind??'unit',point.victimId)))).map(point=>({...clean(point),outcome:point.outcome,...(point.material?{material:point.material}:{})}));
  return {visible:true,source,canister,discharge:raw.discharge!==false,displayHeight:'ground-relative',durationMs:Math.min(650,Math.max(320,Math.round(distance*35))),impacts,...(typeof raw.cannonId==='string'?{cannonId:raw.cannonId}:{}),...(!canister&&points.length>1?{points}: {})};
 }
 export function captureBattlePresentation(before,execute,canObserve,canObserveExterior=canObserve){
@@ -134,7 +151,7 @@ export function captureBattlePresentation(before,execute,canObserve,canObserveEx
   if((event.type==='prepare'||event.type==='contact')&&!seen)return;
   const shotVisual=seen?observedShot(state,event.shotVisual,known,canObserve,canObserveExterior):null;
   if(shotVisual){if(event.type==='projectile'&&shotVisual.discharge!==false||!shotIds.has(event.unitId))shotIds.set(event.unitId,`${event.unitId}:${++shotSequence}`);shotVisual.shotId=shotIds.get(event.unitId);}
-  const artilleryVisual=seen?observedArtillery(state,event.artilleryVisual,known,canObserve):null;
+  const artilleryVisual=seen?observedArtillery(state,event.artilleryVisual,known,canObserve,canObserveExterior):null;
   if(event.type==='projectile'&&shotVisual)presentedShots.add(event.unitId);
   if(event.type==='projectile'&&artilleryVisual)presentedArtillery.add(event.unitId);
   const impacts=bodyEntries(state).filter(({body,kind})=>known.has(bodyKey(kind,body.id))).flatMap(({body:u,kind})=>{const before=bodyEntries(prior).find(old=>old.kind===kind&&old.body.id===u.id)?.body,loss=before?before.hp-u.hp:0;return loss>0?[{unitId:u.id,...(kind==='npc'?{victimKind:'npc'}:{}),x:u.x,y:u.y,tacticalLevel:u.tacticalLevel,damage:loss,fatal:u.hp===0}]:[];});

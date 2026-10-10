@@ -16,6 +16,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {entryFromSector} from '../game/tactical-exits.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
+import {wallEdgeCells} from '../game/wall-geometry.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
@@ -74,12 +75,12 @@ test('real travel and visits preserve two rural and two urban cells across campa
 test('separate city districts retain different terrain, doors and source identities without copying landmark loot',()=>{
  const a=buildSectorMap({sector:'cell-26-28',enemies:[],squad:[]}),b=buildSectorMap({sector:'cell-25-29',enemies:[],squad:[]});
  assert.notDeepEqual(a.tiles,b.tiles);assert.equal(a.buildings.length,2);assert.ok(a.buildings.every(x=>x.id.startsWith('cell-26-28:')));
- let pair=visit(travel(ready(),'cell-26-28'));const door=pair.battle.tiles.find(t=>t.type==='door'),u=pair.battle.units[0];
- Object.assign(u,{x:door.x,y:door.y+1});const wasOpen=door.open;
- pair.battle=actBattle(pair.battle,{type:'door',unitId:u.id,x:door.x,y:door.y});assert.equal(pair.battle.lastError,null);
- assert.notEqual(pair.battle.tiles.find(t=>t.x===door.x&&t.y===door.y).open,wasOpen);
- let s=saved(leave(pair)).campaign;s=travel(s,'cell-25-29');let other=visit(s);assert.equal(other.battle.tiles.find(t=>t.type==='door').open,wasOpen);s=leave(other);
- s=travel(s,'cell-26-28');pair=visit(s);assert.notEqual(pair.battle.tiles.find(t=>t.x===door.x&&t.y===door.y).open,wasOpen);
+ let pair=visit(travel(ready(),'cell-26-28'));const door=pair.battle.wallEdges.find(t=>t.type==='door'),u=pair.battle.units[0];
+ Object.assign(u,wallEdgeCells(door)[0]);const wasOpen=door.open;
+ pair.battle=actBattle(pair.battle,{type:'door',unitId:u.id,doorId:door.doorId});assert.equal(pair.battle.lastError,null);
+ assert.notEqual(pair.battle.wallEdges.find(t=>t.id===door.id).open,wasOpen);
+ let s=saved(leave(pair)).campaign;s=travel(s,'cell-25-29');let other=visit(s);assert.equal(other.battle.wallEdges.find(t=>t.type==='door').open,wasOpen);s=leave(other);
+ s=travel(s,'cell-26-28');pair=visit(s);assert.notEqual(pair.battle.wallEdges.find(t=>t.id===door.id).open,wasOpen);
  assert.throws(()=>enterSector(pair.campaign.pendingBattle,other.battle),/otra celda/);
 });
 test('grid routing uses land, avoids occupied districts and checks winter closure without moving or charging on rejection',()=>{
@@ -156,14 +157,15 @@ test('forty visited cells fit the existing browser save limit after actual march
 });
 test('compressed active and retained cells preserve all terrain fields and accept earlier tile arrays',()=>{
  const pair=visit(travel(ready(),'cell-26-28'));
- const wall=pair.battle.tiles.find(t=>t.type==='wall');Object.assign(wall,{type:'rubble',blocked:false,blocksSight:false,cover:17});
- const expected=JSON.parse(JSON.stringify(pair.battle.tiles)),before=JSON.stringify(pair.battle);
+ const wall=pair.battle.wallEdges.find(t=>t.type==='wall');Object.assign(wall,{type:'rubble',blocked:false,blocksSight:false,cover:17});
+ const expected=JSON.parse(JSON.stringify(pair.battle.tiles)),expectedEdges=structuredClone(pair.battle.wallEdges),before=JSON.stringify(pair.battle);
  const wire=encodeSave(pair.campaign,pair.battle);assert.equal(JSON.stringify(pair.battle),before);assert.equal(JSON.parse(wire).battle.tiles.format,'cell-tiles-v1');
  assert.deepEqual(decodeSave(wire).battle.tiles,expected);
- const s=leave(pair);assert.ok(Array.isArray(s.sectorStates[s.location].tiles)||s.sectorStates[s.location].tiles.format==='cell-tiles-v1');assert.deepEqual(visit(saved(s).campaign).battle.tiles,expected);
+ assert.deepEqual(decodeSave(wire).battle.wallEdges,expectedEdges);
+ const s=leave(pair);assert.ok(Array.isArray(s.sectorStates[s.location].tiles)||s.sectorStates[s.location].tiles.format==='cell-tiles-v1');const returned=visit(saved(s).campaign);assert.deepEqual(returned.battle.tiles,expected);assert.deepEqual(returned.battle.wallEdges,expectedEdges);
  const old=JSON.parse(encodeSave(s));old.campaign.sectorStates[s.location]=expandCellScene(s.sectorStates[s.location]);
- assert.deepEqual(visit(decodeSave(JSON.stringify(old)).campaign).battle.tiles,expected);
- const oldActive=JSON.parse(wire);oldActive.battle=pair.battle;assert.deepEqual(decodeSave(JSON.stringify(oldActive)).battle.tiles,expected);
+ const expanded=visit(decodeSave(JSON.stringify(old)).campaign);assert.deepEqual(expanded.battle.tiles,expected);assert.deepEqual(expanded.battle.wallEdges,expectedEdges);
+ const oldActive=JSON.parse(wire);oldActive.battle=pair.battle;const active=decodeSave(JSON.stringify(oldActive)).battle;assert.deepEqual(active.tiles,expected);assert.deepEqual(active.wallEdges,expectedEdges);
 });
 test('malformed or excessive compressed terrain is rejected before scene allocation',()=>{
  const pair=visit(travel(ready(),'cell-26-28')),wire=encodeSave(pair.campaign,pair.battle);

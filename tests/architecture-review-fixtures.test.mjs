@@ -6,6 +6,7 @@ import {BUILDING_TEMPLATES} from '../game/map-templates.js';
 import {entranceFrame} from '../game/building-profile.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {propBlocksAt} from '../game/props.js';
+import {wallEdgeCells,wallMovementBlocked} from '../game/wall-geometry.js';
 import {actBattle} from '../game/tactical.js';
 
 test('the playable catalogue covers fourteen compiled templates, three views and four actual rotations',()=>{
@@ -14,7 +15,8 @@ test('the playable catalogue covers fourteen compiled templates, three views and
  for(const {id}of ARCHITECTURE_REVIEW_TEMPLATES)for(const rotation of [0,90,180,270]){
   const exterior=createArchitectureReviewBattle(id,rotation,'exterior'),building=exterior.buildings[0],frame=entranceFrame(building),guard=exterior.units[0],original=BUILDING_TEMPLATES[id].building;
   assert.equal(building.kind,original.kind);assert.equal(building.width,rotation%180?original.height:original.width);assert.equal(building.height,rotation%180?original.width:original.height);
-  assert.deepEqual({x:guard.x,y:guard.y},frame.at(frame.doorU,-2));assert.deepEqual(exterior.revealedRooms,[]);assert.ok(exterior.tiles.filter(tile=>tile.type==='door').every(tile=>!tile.open));
+  const entry=exterior.wallEdges.find(edge=>edge.doorId===frame.door.doorId),outside=wallEdgeCells(entry).find(cell=>cell.x<building.x||cell.x>=building.x+building.width||cell.y<building.y||cell.y>=building.y+building.height);
+  assert.deepEqual({x:guard.x,y:guard.y},{x:outside.x-frame.v.x,y:outside.y-frame.v.y});assert.deepEqual(exterior.revealedRooms,[]);assert.ok(exterior.wallEdges.filter(tile=>tile.type==='door').every(tile=>!tile.open));
   for(const view of ['exterior','partial','interior']){
    const battle=view==='exterior'?exterior:createArchitectureReviewBattle(id,rotation,view),unit=battle.units[0],room=battle.buildings[0].rooms.find(room=>room.cells.some(cell=>cell.x===unit.x&&cell.y===unit.y));
    assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))),`${id}/${rotation}/${view}`);
@@ -22,7 +24,7 @@ test('the playable catalogue covers fourteen compiled templates, three views and
    assert.ok(!propBlocksAt(battle,unit.x,unit.y));
    if(view==='partial'){assert.ok(room,'guard actually entered the room');assert.deepEqual(battle.revealedRooms,[room.id]);}
    if(view==='interior')assert.deepEqual(new Set(battle.revealedRooms),new Set(battle.buildings[0].rooms.map(room=>room.id)));
-   if(view!=='exterior'){assert.ok(battle.elapsedSeconds>0,'preparation uses normal timed exploration orders');assert.ok(battle.tiles.some(tile=>tile.type==='door'&&tile.open),'the reducer opens the main door');}
+   if(view!=='exterior'){assert.ok(battle.elapsedSeconds>0,'preparation uses normal timed exploration orders');assert.ok(battle.wallEdges.some(edge=>edge.type==='door'&&edge.open),'the reducer opens the main door');}
    checked++;
   }
  }
@@ -33,7 +35,7 @@ test('catalogue views reset deterministically and can continue through ordinary 
  for(const view of ['exterior','partial','interior']){
   const id=`catalog:palacio:90:${view}`,battle=createRendererSandboxBattle(id),again=createRendererSandboxBattle(id),unit=battle.units[0];
   assert.deepEqual(again,battle);assert.notEqual(again,battle);assert.notEqual(again.tiles,battle.tiles);
-  const adjacent=battle.tiles.find(tile=>Math.abs(tile.x-unit.x)+Math.abs(tile.y-unit.y)===1&&!tile.blocked&&!propBlocksAt(battle,tile.x,tile.y));assert.ok(adjacent);
+  const adjacent=battle.tiles.find(tile=>Math.abs(tile.x-unit.x)+Math.abs(tile.y-unit.y)===1&&!tile.blocked&&!propBlocksAt(battle,tile.x,tile.y)&&!wallMovementBlocked(battle,unit,tile));assert.ok(adjacent);
   const before=structuredClone(battle),next=actBattle(battle,{type:'move',unitId:unit.id,x:adjacent.x,y:adjacent.y});
   assert.equal(next.lastError,null);assert.equal(next.units[0].x,adjacent.x);assert.equal(next.units[0].y,adjacent.y);assert.deepEqual(battle,before);assert.doesNotThrow(()=>validateBattleSnapshot(next));
  }
@@ -52,7 +54,7 @@ test('visible catalogue roof states retain compiled structure and ordinary room 
   for(const finish of ['wallFinish','roofFinish','doorStyle','windowStyle'])assert.equal(b[finish],source[finish],'the roof review must retain authored finishes');
   if(roof==='terrace')assert.equal(battle.upperSurfaces,undefined);
   else{assert.equal(battle.upperSurfaces.length,b.width*b.height);assert.ok(battle.upperSurfaces.every(surface=>surface.elevation===3&&surface.kind==='roof'&&surface.blocked===(roof==='slab')));if(roof==='slab')assert.ok(battle.upperSurfaces.every(surface=>surface.obstacleHeight===0));assert.equal(battle.climbLinks.length,roof==='roof-route'?1:0);}
-  if(view==='exterior')assert.deepEqual(battle.revealedRooms,[]);else{assert.ok(battle.elapsedSeconds>0);assert.ok(battle.tiles.some(tile=>tile.type==='door'&&tile.open));assert.equal(battle.revealedRooms.length,view==='partial'?1:b.rooms.length);}
+  if(view==='exterior')assert.deepEqual(battle.revealedRooms,[]);else{assert.ok(battle.elapsedSeconds>0);assert.ok(battle.wallEdges.some(edge=>edge.type==='door'&&edge.open));assert.equal(battle.revealedRooms.length,view==='partial'?1:b.rooms.length);}
   checked++;
  }
  assert.equal(checked,108);assert.deepEqual(BUILDING_TEMPLATES,before);

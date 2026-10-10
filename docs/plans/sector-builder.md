@@ -1,5 +1,11 @@
 # Sector builder implementation plan
 
+The original wall-cell constraint in this design is superseded by the
+[wall-edge implementation plan](wall-edges.md) and
+[version 2 map format](../development/sector-editor.md#format-and-runtime-boundary).
+Walls, doors and windows now occupy shared cell edges.
+
+
 Status: implemented as the web editor at `/editor` in the dedicated feature worktree.
 See [the editor guide](../development/sector-editor.md) for controls, file workflows, limits
 and verification evidence. The sections below preserve the design rationale.

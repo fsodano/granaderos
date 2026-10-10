@@ -1,6 +1,7 @@
 import {propCells,PROP_TYPES} from './props.js';
 import {surfaceAt,surfaceHeight,tacticalLevel} from './tactical-space.js';
-import {geometryCells,obstacleVolumesAt,rayHeightIntersection,propCoverProfile} from './sight-geometry.js';
+import {geometryCells,obstacleVolumesAt,rayHeightIntersection,propCoverProfile,volumeRayCell,wallEdgeBaseHeight} from './sight-geometry.js';
+import {wallEdgeId,wallEdgeCenter} from './wall-geometry.js';
 
 // JA2 1.13 TileEngine/structure.cpp, DamageStructure: explosions subtract
 // material armour before damaging a structure. These values and percentages
@@ -29,7 +30,7 @@ export function validateStructureDamage(target,kind='surface'){
     if(kind==='prop'){
       if(!PROP_TYPES.includes(target.type)||target.blocksMovement!==false)fail();
     }else if(!['rubble','door'].includes(target.type)||target.blocked!==false)fail();
-    if(kind==='surface'&&target.type==='rubble'&&target.cover>20)fail();
+    if(kind!=='prop'&&target.type==='rubble'&&target.cover>20)fail();
     if(['door','chest'].includes(target.type)&&(target.open!==true||target.locked!==false||target.broken!==true||target.trap?.armed===true))fail();
   }else if(target.structureDamage===100||!structureBlastProfile(target,kind))fail();
   return true;
@@ -39,18 +40,19 @@ export function validateStructureDamage(target,kind='surface'){
 // intervening structure, raised ground and floor slab remains physical cover.
 // Multi-cell furniture takes the strongest exposed hit once, never per cell.
 function exposure(state,origin,target,kind,point,radius){
-  const base=surfaceHeight(state,origin),endBase=surfaceHeight(state,point);
+  const base=surfaceHeight(state,origin),endBase=kind==='edge'?wallEdgeBaseHeight(state,target):surfaceHeight(state,point);
   if(!Number.isFinite(base)||!Number.isFinite(endBase))return 0;
   const distance=Math.hypot(point.x-origin.x,point.y-origin.y,endBase-base);
   if(distance>radius+epsilon)return 0;
-  const own=kind==='prop'?`prop:${target.id}`:`surface:${tacticalLevel(target)}:${target.x},${target.y}`;
+  const own=kind==='prop'?`prop:${target.id}`:kind==='edge'?`edge:${wallEdgeId(target)}`:`surface:${tacticalLevel(target)}:${target.x},${target.y}`;
   const height=kind==='prop'?Math.min(.6,(propCoverProfile(target)?.height??1.2)/2):.6;
   for(const cell of geometryCells(origin,point)){
     const ground=surfaceAt(state,cell);
     if(ground&&rayHeightIntersection(base+.2,endBase+height,cell,-1000,ground.elevation??0))return 0;
     for(const volume of obstacleVolumesAt(state,cell)){
       if(volume.id===own)continue;
-      if(rayHeightIntersection(base+.2,endBase+height,cell,volume.bottom,volume.top))return 0;
+      const crossed=volumeRayCell(origin,point,cell,volume);
+      if(crossed&&rayHeightIntersection(base+.2,endBase+height,crossed,volume.bottom,volume.top))return 0;
     }
   }
   return Math.max(0,(radius-distance+1)/(radius+1));
@@ -73,14 +75,14 @@ export function destroyStructure(target,kind='surface'){
 export function applyStructureBlast(state,origin,radius,{strength=STRUCTURE_BLAST.strength}={}){
   if(!Number.isFinite(radius)||radius<0||radius>20||!Number.isFinite(strength)||strength<0||strength>1000)return [];
   const hits=[];
-  for(const [kind,targets]of [['surface',state.tiles??[]],['prop',state.props??[]]])for(const target of targets){
+  for(const [kind,targets]of [['surface',state.tiles??[]],['edge',state.wallEdges??[]],['prop',state.props??[]]])for(const target of targets){
     const spec=structureBlastProfile(target,kind);if(!spec)continue;
-    const points=kind==='prop'?propCells(target):[target];
+    const points=kind==='prop'?propCells(target):kind==='edge'?[wallEdgeCenter(target)]:[target];
     const multiplier=Math.max(0,...points.map(point=>exposure(state,origin,target,kind,point,radius)));
     const damage=Math.round(Math.max(0,strength*multiplier-spec.armour)*100/spec.durability);
     if(damage<=0)continue;
     hits.push({target,kind,damage:Math.min(100,(target.structureDamage??0)+damage)});
   }
   for(const hit of hits){hit.target.structureDamage=hit.damage;if(hit.damage===100)destroyStructure(hit.target,hit.kind);}
-  return hits.map(({target,kind,damage})=>({kind,id:target.id??target.doorId??`wall:${target.x}:${target.y}`,x:target.x,y:target.y,tacticalLevel:tacticalLevel(target),structureDamage:damage,destroyed:Boolean(target.destroyed)}));
+  return hits.map(({target,kind,damage})=>({kind,id:kind==='edge'?wallEdgeId(target):target.id??target.doorId??`wall:${target.x}:${target.y}`,x:target.x,y:target.y,...(kind==='edge'?{axis:target.axis}:{}),tacticalLevel:tacticalLevel(target),structureDamage:damage,destroyed:Boolean(target.destroyed)}));
 }

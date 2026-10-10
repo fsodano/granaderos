@@ -1,0 +1,66 @@
+{
+  "scope": "Bounded continuation from earned native opening, defeat, rescue and finite clinic recovery. Qualifies rear hiring, one finite firearm, actual replayed raid and coastal detour admission/progress. Does not certify post-raid care, complete gun delivery, Salta or Yatasto.",
+  "sourceCommitRecorded": false,
+  "productionBaseCommit": "f12c2d0facd8ed0ab4821856e49c4e91bb709805",
+  "focusedProofSourceBaseCommit": "4660028ecd1f4017c932fe794fac3514fb55fe45",
+  "sourceBaseScope": "Repository bases for the final bounded proof. These do not identify the unknown commit at which the earned inputs were first captured.",
+  "upstream": {
+    "fixture": "opening-clinic-native-edge-stabilized.save.json.gz",
+    "rawSha256": "447c68e9831fa5e63ed99b474f8e479f81a50474077330a73b08e89c11850896",
+    "continuation": "recoverRescueForce through real public medical inspection, hiring, treatment and rest; then prepareSaltaAssault through real paid guard, native raid and ordinary crew travel."
+  },
+  "additionalHealthChanges": 0,
+  "additionalItems": 0,
+  "additionalActionsAfterCapture": 0,
+  "fixtures": {
+    "opening-salta-native-recovered.save.json.gz": {
+      "sourceCapture": "/tmp/wall-content-rescue-native-recovered.json",
+      "rawSha256": "267363259c083df328b6c84f057a2a68669c6c1ba03ae87e55424021904f108e",
+      "gzipSha256": "2fb098e249915bdb0809e556af9a9bb4b3b91b97d6b8493d0237eebc013f51be",
+      "clock": [
+        267,
+        1419
+      ],
+      "treasury": 8507
+    },
+    "opening-salta-native-detour.save.json.gz": {
+      "sourceCapture": "/tmp/wall-content-rescue-salta-battery-next-travel.json",
+      "rawSha256": "6a8a34c2288d8221493a8f7c214c88009faf572b962099b2f4c8b95d63e328c2",
+      "gzipSha256": "b164e33529f4a4e4a9c9c4808e572058fe94897388f0dc2be990ef85a892daac",
+      "clock": [
+        299,
+        1587
+      ],
+      "treasury": 7559
+    }
+  },
+  "boundedDetour": {
+    "scope": "Public waypoint plan and ordinary paid travel only. No fresh battery selection, care, artillery delivery or arrival claim.",
+    "hours": 24,
+    "clock": [323, 1587],
+    "location": "cell-26-27",
+    "journeyStatus": "paused",
+    "reason": "exhausted",
+    "renewalCost": 897,
+    "patients": [{"id": 144, "hp": 28, "bleeding": 1}, {"id": 130, "hp": 4, "bleeding": 2}],
+    "officialMidpointSaveReplay": true
+  },
+  "raid": {
+    "inputClock": [
+      288,
+      1419
+    ],
+    "settledClock": [
+      288,
+      1587
+    ],
+    "treasury": 7753,
+    "newDeaths": [
+      108,
+      126,
+      129,
+      133
+    ],
+    "sourceCapture": "/tmp/wall-content-rescue-salta-support-battery-settled.json"
+  }
+}

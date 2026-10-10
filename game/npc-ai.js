@@ -1,3 +1,4 @@
+import {wallEdgesBetween,wallMovementBlocked} from './wall-geometry.js';
 import {recoverCivilianBreath} from './civilian-health.js';
 import {accessStepsFrom,sameCell,sameSurface,spaceKey,surfaceHeight,tacticalLevel} from './tactical-space.js';
 import {atHand,planningPoint} from './tactical-planning-space.js';
@@ -29,7 +30,7 @@ export function npcRoutes(s,n,{stopWhen}={}) {
     if(stopWhen?.(from,tiles.get(key(from))))break;
     for(const [dx,dy] of [[1,0],[0,1],[-1,0],[0,-1]]){
       const at={...point(from),x:from.x+dx,y:from.y+dy},id=key(at);
-      if(records.has(id)||!usable(tiles.get(id))||surfaceHeight(s,from)!==surfaceHeight(s,at))continue;
+      if(records.has(id)||!usable(tiles.get(id))||surfaceHeight(s,from)!==surfaceHeight(s,at)||wallMovementBlocked(s,from,at,{openDoors:true}))continue;
       records.set(id,{...at,path:[...record.path,at]});queue.push(at);
     }
     if((n.stance??'standing')==='standing'&&!n.mounted&&!n.entangled&&!n.knockedDown)for(const at of accessStepsFrom(s,from)){
@@ -137,17 +138,18 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   for(const p of route.path){
     const t=routes.tiles.get(key(p)),climbing=!sameSurface(n,p),up=climbing&&surfaceHeight(s,p)>surfaceHeight(s,n),cost=climbing?(up?20:15):n.stance==='prone'?16:n.stance==='crouched'?10:8;
     if(climbing&&(n.stance??'standing')!=='standing')break;
-    if(t.type==='door'&&!t.open){
+    const leaf=wallEdgesBetween(s,n,p).find(edge=>edge.type==='door'&&!edge.open)??(t.type==='door'&&!t.open?t:null);
+    if(leaf){
       if(budget<6)break;
-      if(t.trap&&t.trap.armed!==false){
-        t.trap.armed=false;
-        if(t.trap.type==='alarm')hearNpcNoise(s,t,'alarm',20);
-        else applyCivilianHarm(s,n,{damage:t.trap.damage??18,breathLoss:t.trap.breathLoss??25});
+      if(leaf.trap&&leaf.trap.armed!==false){
+        leaf.trap.armed=false;
+        if(leaf.trap.type==='alarm')hearNpcNoise(s,n,'alarm',20);
+        else applyCivilianHarm(s,n,{damage:leaf.trap.damage??18,breathLoss:leaf.trap.breathLoss??25});
         // Triggering a trap spends this attempt; it never silently opens a door
         // or discloses the trap to either combat faction.
         break;
       }
-      t.open=true;t.blocked=false;t.blocksSight=false;budget-=6;
+      leaf.open=true;leaf.blocked=false;leaf.blocksSight=false;budget-=6;
     }
     if(budget<cost)break;
     // Spend this civilian phase resting before a climb would exhaust the

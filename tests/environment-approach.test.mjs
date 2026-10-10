@@ -11,18 +11,19 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 const ref={kind:'door',id:'store'},chestRef={kind:'container',id:'cache'};
 const tool=(toolKey,extra={})=>({count:1,weight:.5,itemType:'tool',toolKey,condition:100,...extra});
 function field(actor={},extra={}){
-  const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:i%16===10?'wall':'grass',blocked:i%16===10,blocksSight:i%16===10,cover:0}));
-  Object.assign(tiles.find(p=>p.x===6&&p.y===2),{type:'door',doorId:'store',open:false,locked:true,keyId:'store-key',lockDifficulty:25,lockIntegrity:100,blocked:true,blocksSight:true});
+  const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0}));
+  const wallEdges=[...Array.from({length:10},(_,y)=>({id:`barrier:${y}`,x:10,y,axis:'y',type:'wall',blocked:true,blocksSight:true,cover:0})),
+    {id:'store-edge',x:6,y:2,axis:'y',type:'door',doorId:'store',open:false,locked:true,keyId:'store-key',lockDifficulty:25,lockIntegrity:100,blocked:true,blocksSight:true}];
   const s=createBattle([{id:'p',x:2,y:2,facing:2,mechanical:90,strength:90,dexterity:90,wisdom:90,experienceLevel:8,activeSlot:'tool',activeTool:'inventory:key',inventory:{key:tool('key',{keyId:'store-key',condition:73})},...actor}],{
-    width:16,height:10,seed:45,tiles,props:[{id:'cache',type:'chest',x:6,y:5,blocksMovement:true,open:false,locked:false,contents:[ammoStack(12)]}],enemies:[{id:'e',x:14,y:8,patrol:false,overwatch:false}],...extra});
+    width:16,height:10,seed:45,tiles,wallEdges,props:[{id:'cache',type:'chest',x:6,y:5,blocksMovement:true,open:false,locked:false,contents:[ammoStack(12)]}],enemies:[{id:'e',x:14,y:8,patrol:false,overwatch:false}],...extra});
   s.units[0].ap=actor.ap??100;for(const u of s.units.filter(u=>u.side==='enemy'))u.ap=0;return s;
 }
 const plan=(s,target=ref,verb)=>environmentUsePreview(s,s.units[0],target,verb);
 const use=(s,target=ref,verb)=>actBattle(s,{type:'useItem',unitId:'p',environment:{...target,...(verb?{verb}:{})}});
-const door=s=>s.tiles.find(p=>p.doorId==='store');
+const door=s=>s.wallEdges.find(p=>p.doorId==='store');
 function rejected(s,target=ref,verb){
   const after=use(s,target,verb);assert.ok(after.lastError);
-  for(const key of ['units','tiles','props','seed','elapsedSeconds','groundItems'])assert.deepEqual(after[key],s[key],key);
+  for(const key of ['units','tiles','wallEdges','props','seed','elapsedSeconds','groundItems'])assert.deepEqual(after[key],s[key],key);
 }
 
 test('a held-key target pays the same approach and unlock as ordinary local orders',()=>{
@@ -43,12 +44,13 @@ test('normal target previews include total AP while direct environment aliases r
   const close=use(s),model=nearbyEnvironmentModel(close,close.units[0],{targetKey:'door:store'});assert.equal(model.preview.valid,true);assert.equal(model.preview.pa,4);
 });
 
-test('preflight rejects invalid explicit tools, AP, visibility, body state and blocked closing space atomically',()=>{
+test('preflight rejects invalid tools, AP, visibility and body state while occupied incident floors permit closing',()=>{
   const short=field({ap:27});assert.equal(plan(short).pa,28);assert.equal(plan(short).valid,false);rejected(short);
   rejected(field({inventory:{key:tool('key',{keyId:'other'})}}));
   rejected(field({activeSlot:'primary',activeTool:undefined}),ref,'unlock');
   for(const patch of [{knockedDown:true},{entangled:true},{energy:0},{facing:6}])rejected(field(patch));
-  const blocked=field();Object.assign(door(blocked),{open:true,locked:false,blocked:false,blocksSight:false});Object.assign(blocked.units[1],{x:6,y:2});rejected(blocked,ref,'close');
+  const occupied=field({x:5});Object.assign(door(occupied),{open:true,locked:false,blocked:false,blocksSight:false});Object.assign(occupied.units[1],{x:6,y:2});
+  const closed=use(occupied,ref,'close');assert.equal(closed.lastError,null);assert.equal(door(closed).open,false);assert.equal(door(closed).blocked,true);assert.equal(closed.units[0].x,5);assert.equal(closed.units[1].x,6);
   const wall=field();for(const p of wall.tiles.filter(p=>p.x===4))Object.assign(p,{type:'wall',blocked:true,blocksSight:true});rejected(wall);
   rejected(field(),{kind:'door',id:'gone'});
 });
@@ -106,8 +108,7 @@ test('a known unconscious occupant cannot become the chosen contact cell',()=>{
 test('an environment approach within a real player interrupt restores and resumes exactly',()=>{
   // A sabre preserves the approaching-enemy trigger; a facon can now throw.
   const s=field({x:1,y:1,agility:100,experienceLevel:10},{enemies:[{id:'e',x:7,y:1,weapon:1809,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;
-  const oldDoor=door(s),data={...oldDoor};Object.assign(oldDoor,{type:'grass',blocked:false,blocksSight:false});delete oldDoor.doorId;
-  Object.assign(s.tiles.find(p=>p.x===4&&p.y===4),data,{x:4,y:4});
+  Object.assign(door(s),{x:4,y:4});s.wallEdges=[...s.wallEdges];
   const paused=endTurn(s);assert.equal(paused.phase,'interrupt');assert.ok(paused.interrupt.unitIds.includes('p'));
   const p=plan(paused),after=use(paused);assert.equal(p.valid,true);assert.equal(after.lastError,null);assert.equal(after.phase,'interrupt');assert.equal(door(after).locked,false);assert.equal(after.units[0].ap,paused.units[0].ap-p.pa);assert.equal(after.elapsedSeconds,6);
   assert.deepEqual(use(validateBattleSnapshot(JSON.parse(JSON.stringify(paused)))),after);

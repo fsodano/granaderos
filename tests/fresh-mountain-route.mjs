@@ -21,8 +21,57 @@ import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {BLADES} from '../game/tactical.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
+import {artilleryProfile} from '../game/artillery-definitions.js';
 
 const capableMountainActor=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.asleep&&!r.unconscious&&!r.routed&&!r.surrendered&&r.energy>10;};
+
+const ownedMountainGuns=c=>[...Object.values(c.artilleryDepots??{}).flat(),...Object.values(c.sectorStates??{}).flatMap(scene=>scene.artillery??[])].filter(gun=>gun.side==='player');
+function mountainBatteryRecords(c,batteryIds){
+ assert.ok(Array.isArray(batteryIds)&&batteryIds.length>0&&batteryIds.length<=3&&new Set(batteryIds).size===batteryIds.length,'Explicit mountain guns must be distinct finite owned identities.');
+ return batteryIds.map(id=>{const gun=ownedMountainGuns(c).find(gun=>gun.id===id);assert.ok(gun,`The actual mountain gun ${id} must retain canonical custody.`);return gun;});
+}
+function prepareMountainBattery(c,defaults,{batteryIds,destination,keepServing,report}){
+ const records=batteryIds?mountainBatteryRecords(c,batteryIds):null;
+ const result=prepareRouteBattery(c,records?records.map(gun=>gun.type):defaults,{destination,keepServing,report,...(records?{excludeIds:ownedMountainGuns(c).filter(gun=>!batteryIds.includes(gun.id)).map(gun=>gun.id)}:{})});
+ if(records)assert.deepEqual(result.selections,batteryIds.map(id=>'depot:'+id),'The mountain column keeps the exact selected finite pieces.');
+ return result;
+}
+
+// The extra native arsenal battle can leave only four unused replacements.
+// Move healthy serving reserves from their actual friendly town and pay for
+// ordinary rest. Injured clinic patients and the clinic physician stay there.
+export function prepareNativeMountainReserve(start,{count=6,report=()=>{}}={}){
+ let c=start;
+ const ready=rosterFor(c).filter(op=>{
+  const r=c.operativeState[op.id],local=c.recruited.includes(op.id)&&r.location==='mendoza';
+  return op.id>=100&&op.id<1000&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=50&&(local||!c.recruited.includes(op.id)&&contractQuote(c,op,'day').available);
+ });
+ const needed=Math.max(0,count-ready.length);if(!needed)return c;
+ const reserves=rosterFor(c).filter(op=>{
+  const r=c.operativeState[op.id];
+  return op.id>=100&&op.id<1000&&c.recruited.includes(op.id)&&r.alive&&!r.captured&&!r.routed&&!r.unconscious&&r.hp===r.maxHp&&!r.bleeding&&op.medical<60&&r.location!=='mendoza'&&c.sectors[r.location]?.owner==='patriot'&&!c.squads.find(q=>q.members.includes(op.id))?.journey;
+ }).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id).slice(0,needed).map(op=>op.id);
+ assert.equal(reserves.length,needed,'Enough actual healthy serving reserves must remain for the native mountain column.');
+ const originalSquad=c.activeSquadId,retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report}),order=retained.order,columns=[];
+ for(const sector of new Set(reserves.map(id=>c.operativeState[id].location))){
+  const local=reserves.filter(id=>c.operativeState[id].location===sector);
+  for(let offset=0;offset<local.length;offset+=6){
+   const ids=local.slice(offset,offset+6);order({type:'createSquad',name:'Reserva de la cordillera',ids,sector});const squadId=c.activeSquadId;columns.push(squadId);
+   for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'rest'});
+   for(let hour=0;hour<72&&ids.some(id=>{const r=c.operativeState[id];return r.fatigue||r.energy<100||r.asleep;});hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+   assert.ok(ids.every(id=>{const r=c.operativeState[id];return !r.fatigue&&r.energy===100&&!r.asleep;}),'Actual reserves must finish ordinary rest before travelling.');
+   for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
+   const cash=c.resources.treasury;order({type:'travel',sector:'mendoza',queue:true,mode:'posta'});
+   report({event:'mountainNativeReserveTravel',ids,source:sector,squadId,bookingCost:cash-c.resources.treasury,hour:c.hour});
+  }
+ }
+ for(let hour=0;hour<168&&columns.some(id=>c.squads.find(q=>q.id===id).journey);hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+ assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).location==='mendoza'&&!c.squads.find(q=>q.id===id).journey),'Actual reserves must arrive before mountain preparation.');
+ for(const operativeId of reserves)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let hour=0;hour<600&&reserves.some(id=>{const r=c.operativeState[id];return r.morale<50||r.fatigue||r.energy<100||r.asleep;});hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+ assert.ok(reserves.every(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=50&&!r.fatigue&&r.energy===100&&!r.asleep;}),'Public paid rest must restore actual reserve readiness.');
+ order({type:'selectSquad',id:originalSquad});report({event:'mountainNativeReserveReady',ids:reserves,hour:c.hour,second:c.secondOfHour,treasury:c.resources.treasury});return c;
+}
 
 // A spent rifle cannot use surviving musket cartridges. Keep its actual gun
 // and rounds in the owner's pockets, and equip a known finite long gun only
@@ -180,7 +229,7 @@ export function collectReturnedMountainKit(start,ids,{report=()=>{}}={}){
 }
 
 // Normal funding, equipment, timed approaches and explicitly coordinated squads.
-export function prepareFreshUspallataAssault(start,{guns=2,report=()=>{}}={}){
+export function prepareFreshUspallataAssault(start,{guns=2,batteryIds=null,report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
  const order=retained.order;
@@ -199,6 +248,7 @@ order({type:'diplomacy',kind:'parliament'});order({type:'fortify',sector:'mendoz
 for(const operativeId of locals)order({type:'assignCare',operativeId,assignment:'rest'});
 c=bankRouteIncome(c,12000,{keepIds:retained.keepIds(),report});
 c=restorePaidMountainVeterans(c,{report});
+if(batteryIds)c=prepareNativeMountainReserve(c,{report});
 for(let i=0;i<24&&(c.hour%24<6||c.hour%24>10);i++)order({type:'wait',hours:1});
 // Contracts can expire while the treasury recovers. Select a physician who
 // is still in service at departure, rather than keeping a stale roster entry.
@@ -221,7 +271,8 @@ c=supplyKnownRouteDressings(c,physician.id,15,{report});
 c=supplyFreshMountainAmmunition(c,[leader.id,physician.id,...recruits],{target:12,report});
 order({type:'configureArtillery',types:[]});
 for(const id of [main,support]){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
-order({type:'selectSquad',id:main});const battery=prepareRouteBattery(c,Array.from({length:guns},()=> 'bronze4'),{destination:'mendoza',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
+order({type:'selectSquad',id:main});if(batteryIds){assert.equal(batteryIds.length,guns);assert.ok(mountainBatteryRecords(c,batteryIds).every(gun=>gun.loaded||gun.ammo>0),'Explicit Uspallata support must carry actual remaining rounds.');}
+const battery=prepareMountainBattery(c,Array.from({length:guns},()=> 'bronze4'),{batteryIds,destination:'mendoza',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
 for(const id of [main,support]){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});order({type:'attack',sector:'uspallata',queue:true,mode:'posta'});}
 for(let i=0;i<16&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++)order({type:'wait',hours:1});
 order({type:'beginAssault',sector:'uspallata'});
@@ -230,7 +281,7 @@ order({type:'beginAssault',sector:'uspallata'});
 
 // Recover finite field dressings and give real first aid before the return.
 // Hire an actual available doctor and retain every intended serving survivor.
-export function recoverFreshUspallata(start,{report=()=>{}}={}){
+export function recoverFreshUspallata(start,{batteryIds=null,report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
  const order=retained.order;
@@ -254,8 +305,9 @@ for(const group of [...groups].sort((a,b)=>Number(b.members.some(id=>c.operative
 report({event:'mountainFirstAid',hour:c.hour,survivors:survivors.map(id=>({id,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding}))});
 for(const id of survivors){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);order({type:'assignCare',operativeId:id,assignment:'active'});}
 order({type:'fortify',sector:'uspallata'});
-const batteryCrew=groups.find(group=>group.members.length>=2);assert.ok(batteryCrew,'two real local survivors must store the mountain guns');order({type:'selectSquad',id:batteryCrew.id});
-c=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'uspallata',keepServing:retained.keepIds(),report}).campaign;
+const crewRequired=batteryIds?Math.max(...mountainBatteryRecords(c,batteryIds).map(gun=>artilleryProfile(c,gun).crew)):2;
+const batteryCrew=groups.find(group=>group.members.length>=crewRequired);assert.ok(batteryCrew,'enough real local survivors must store the actual mountain guns');order({type:'selectSquad',id:batteryCrew.id});
+c=prepareMountainBattery(c,['bronze4','bronze4'],{batteryIds,destination:'uspallata',keepServing:retained.keepIds(),report}).campaign;
 for(const group of groups){order({type:'selectSquad',id:group.id});order({type:'travel',sector:'mendoza',mode:'posta',queue:true});}
 for(let h=0;h<48&&groups.some(group=>c.squads.find(q=>q.id===group.id)?.journey);h++){
  order({type:'wait',hours:1});
@@ -290,7 +342,7 @@ return c;
 }
 
 // Bank actual port income before signing contracts and reuse finite mountain guns.
-export function prepareFreshLosPatosAssault(start,{report=()=>{}}={}){
+export function prepareFreshLosPatosAssault(start,{batteryIds=null,report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
  const order=retained.order;
@@ -340,7 +392,8 @@ assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must 
  order({type:'configureArtillery',types:[]});
  for(const id of [main,support]){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
  for(const id of [main,support]){order({type:'selectSquad',id});order({type:'travel',sector:'uspallata',mode:'posta'});}
- order({type:'selectSquad',id:main});const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'uspallata',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
+ order({type:'selectSquad',id:main});if(batteryIds)assert.ok(mountainBatteryRecords(c,batteryIds).some(gun=>gun.loaded||gun.ammo>0),'Los Patos support needs real remaining rounds from the same finite battery.');
+ const battery=prepareMountainBattery(c,['bronze4','bronze4'],{batteryIds,destination:'uspallata',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
  for(const id of [main,support]){order({type:'selectSquad',id});order({type:'attack',sector:'los_patos',queue:true,mode:'posta'});}
  for(let i=0;i<16&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++){order({type:'wait',hours:1});}
  assert.ok([main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'both physical approaches finish before staging');

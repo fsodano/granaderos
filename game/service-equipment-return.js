@@ -6,7 +6,7 @@ import {syncCarriedAmmunition} from './campaign-ammunition.js';
 import {operativeLocation} from './squads.js';
 import {MISSION_SCENES} from './missions.js';
 import {validWorldLocation} from './world-cells.js';
-import {validEntry,boundaryMatches} from './tactical-exits.js';
+import {validEntry,boundaryPassable} from './tactical-exits.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {planningPoint} from './tactical-planning-space.js';
 import {propBlocksAt} from './props.js';
@@ -93,7 +93,7 @@ function returnPlacement(marker,snapshot){
  // A saved resident's invalid floor is not replaced by an invented position.
  if(marker.point)return null;
  const anchor=physicalEntryAnchor(marker.entryEdge,marker.entryAnchor,snapshot.width,snapshot.height,marker.siteId);
- const candidates=(snapshot.tiles??[]).filter(p=>boundaryMatches(snapshot,p,marker.entryEdge)&&usable(p));
+ const candidates=(snapshot.tiles??[]).filter(p=>boundaryPassable(snapshot,p,marker.entryEdge)&&usable(p));
  candidates.sort((a,b)=>Math.abs(a.x-anchor.x)+Math.abs(a.y-anchor.y)-Math.abs(b.x-anchor.x)-Math.abs(b.y-anchor.y)||a.y-b.y||a.x-b.x);
  return candidates[0]?planningPoint(candidates[0]):null;
 }

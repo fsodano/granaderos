@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -15,7 +16,7 @@ import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
 export function chapelPiers(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy=false){
   const root=new Group();root.name=`building-chapel-piers:${b.id}`;
   if(legacy&&b.wallFinish===undefined)return root;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b);
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),inset=buildingArtInset(b,input),V=25.066666666666666,appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b);
   const recipe=architectureFinish(appearance.wallFinish,'volume')!,texture='/art/architecture-plaster-v2.png',wall=materials.get(appearance.wallFinish,{architectureRole:'volume',texture}),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),copingColours:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('chapel-pier-coping',{colour:copingColours[appearance.wallFinish]??copingColours.adobe});
   // pier() uses plaster even when its authored pigment is stone or brick.
   applyArchitectureFinish(wall,{...recipe,texture,textureOpacity:.36,multiplyOpacity:0});
@@ -32,7 +33,7 @@ export function chapelPiers(b:WorldBuilding,input:WorldInput,T:number,height:num
   const capitalBottom=height-2.5/V,capitalTop=height+2.5/V,foot=Math.min(profile.plinthHeight/V,capitalBottom*.35);
   if(capitalBottom>foot+.20)feature('chapel-corner-piers',batch=>{
     for(const u of [0,frame.width]){
-      const p=frame.at(u,0),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(tile?.type!=='wall')continue;
+      const p=frame.at(u,0),tile=buildingWallAtPoint(walls,p,b);if(tile?.type!=='wall')continue;
       const footRect=supported(tile,rectangle(u-.21,-.39,u+.21,.20)),radius=.5/V*.5;
       if(walking({minX:footRect.minX-radius,maxX:footRect.maxX+radius,minZ:footRect.minZ-radius,maxZ:footRect.maxZ+radius},capitalTop+radius))continue;
       box(batch,footRect,0,foot,stone);

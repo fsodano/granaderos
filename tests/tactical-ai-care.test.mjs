@@ -79,7 +79,7 @@ test('a rescue does not start during an interrupt or through a visible close opp
 
 test('enemy rescue movement can be interrupted, saved and continued without refreshing AP or time',()=>{
   const s=field({x:11,ap:49,agility:30,experienceLevel:1},{x:14});
-  s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});
+  s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});s.wallEdges=[];
   Object.assign(s.units[0],{x:7,y:3,facing:2,ap:20,agility:100,experienceLevel:10});
   const paused=endTurn(s);assert.equal(paused.phase,'interrupt');assert.equal(medic(paused).x,12);assert.equal(medic(paused).ap,41);assert.equal(patient(paused).bleeding,3);assert.equal(medic(paused).medkits,2);
   const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(paused))),n=endTurn(restored);

@@ -1,4 +1,5 @@
 'use client';
+import {wallEdgeControlObjects} from './TacticalWallEdgeControls';
 import {artilleryProfile} from '../../game/artillery-definitions.js';
 import {createSceneTerrainCache} from '../../game/scene-terrain.js';
 import {pointInViewport} from '../../game/tactical-viewport.js';
@@ -93,9 +94,10 @@ export default function TacticalSceneControls({groundOverlay,terrainVisible=true
   return nodes;
  },[visiblePeople,groundNodes]);
  const ground=useMemo(()=><g>{visibleTiles.map((tile:any)=>{const key=`${tile.x},${tile.y}`;return occupiedGround.get(key)??groundNodes.get(key);})}{showSight&&visibleTiles.map((tile:any)=>{const p=projectSurface(terrain,project,tile);return <polygon key={`sight-${tile.x},${tile.y}`} points={diamond(p.x,p.y)} fill={sight.has(spaceKey(tile))?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>;})}</g>,[visibleTiles,groundNodes,occupiedGround,showSight,sight,terrain,project]);
+ objects.push(...wallEdgeControlObjects({state:s,players,revealed,cursorLevel,mode,interactive:sceneInteractive,hover,viewport,project,onTile,onHover,renderer:'three'}));
  return <g data-sector-input="true">
   {terrainVisible&&ground}
-  {terrainVisible&&hover&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
+  {terrainVisible&&hover&&!hover.wallEdgeId&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
   {groundOverlay}
   {objects.sort((a,b)=>a.depth-b.depth||a.key.localeCompare(b.key)).map(o=><g key={o.key}>{o.node}</g>)}
   {heard&&heardPoint&&u&&(()=>{const origin=projectSurface(s,project,position(u)??u),angle=Math.atan2(heardPoint.y-origin.y,heardPoint.x-origin.x)*180/Math.PI;return <g key={`${u.id}:${u.lastHeardNoise?.turn}:${heard.x}:${heard.y}`} className="tactical-noise-direction" aria-label="Ruido en esa dirección" transform={`translate(${origin.x} ${origin.y-18}) rotate(${angle})`} pointerEvents="none"><path d="M22,-5l5,5-5,5m7,-4l4,4-4,4" fill="none" stroke="#e0c58a" strokeWidth="1.5" opacity=".65"/></g>;})()}

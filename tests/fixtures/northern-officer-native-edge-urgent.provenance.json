@@ -1,0 +1,14 @@
+{
+  "sha256": "9deb3ebc63e17a912ba369f2c7918a6cf3eb4f9344167492ad96a30b4a3047e3",
+  "source": "Earned created northern route, resumed from the actual native-edge San Lorenzo checkpoint, after real Cordoba attack and defense and actual Tucuman victory.",
+  "sourceSnapshot": "74944df9",
+  "sourceCapture": "/tmp/wall-northern-current-tucuman.save.json",
+  "inputClock": [
+    467,
+    2100
+  ],
+  "startingCheckpoint": "/tmp/wall-common-north-checkpoint-san_lorenzo.json",
+  "additionalHealthChanges": 0,
+  "additionalItems": 0,
+  "additionalActionsAfterCapture": 0
+}

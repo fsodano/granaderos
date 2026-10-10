@@ -12,7 +12,7 @@ there is no desktop editor or account requirement.
    numeric seed to distribute the selected terrain over 15% of cells.
 3. Drag a house or furnished template onto the map. **Dibujar edificio** creates
    a rectangle. Use **Tabique** to draw partitions. Place doors and windows on
-   existing wall cells. Use **Quitar pared** to join rooms.
+   existing wall edges. Use **Quitar pared** to join rooms.
 4. Select **Interiores**, **Exteriores**, or **Habitación activa**. Place furniture
    on the grid. Beds occupy two tiles. The inspector can change names, positions,
    material and dimensions. Rotation turns the building and its contents together.
@@ -75,16 +75,17 @@ ochre limewash, stone masonry and exposed brick. Roofs include red clay tiles,
 aged tiles and thatch. Door and window catalogs each contain five styles.
 
 Under **Estilos de aberturas**, choose a style for a specific door or window by its
-tile coordinates. This change applies immediately. **Del edificio** removes the
+edge coordinates and axis. This change applies immediately. **Del edificio** removes the
 override and restores the building default. Changing an opening's style preserves
-its tile, door ID, open/locked state and movement rules. New openings inherit the
+its edge, door ID, open/locked state and movement rules. New openings inherit the
 building style. Styles are saved in JSON and follow moves, rotations and copies.
 
-Templates now use different combinations for rural, civic, religious, commercial
-and work buildings. They also include more side windows. Existing sector maps
-have varied finishes without changes to their original collision geometry.
+Templates use different combinations for rural, civic, religious, commercial
+and work buildings. They also include more side windows. Shipped sector maps
+and templates now use shared wall edges and full building floor footprints.
 Imported older buildings use defaults for their kind when explicit finishes are
-absent. Saved campaign geometry is retained.
+absent. During a new campaign, sector reentry retains damaged walls and door
+state. Compatibility with saves made before wall edges is outside this change.
 
 The normal editor grid is drawn below buildings. Use **Obstáculos** or
 **Rutas accesibles** when you need a diagnostic overlay above the scene.
@@ -124,25 +125,41 @@ Other commands include `moveObject`, `rotateObject`, `transformSelection`,
 
 ## Format and runtime boundary
 
-Version 1 stores base terrain, features, buildings with wall cells and room
+Version 2 stores base terrain, features, buildings with wall edges and room
 identity, furniture, supplies, spawns, exits and lights. The compiler derives
-room connectivity, floors and collision tiles. Unknown format versions and
-malformed files are rejected before use. All 15 original sector definitions
-were migrated into JSON; reference hashes test their compiled geometry,
-props, lighting and decoration against the pre-migration output.
+rooms by flood fill across unoccupied edges. Each building footprint has
+`width * height` usable floor cells. Doors split room identities even when open.
 
-Walls occupy full cells. Thin wall art does not change collision. Roofs use the
-building footprint, with clipped sections for revealed rooms in single-storey
-buildings. The town hall and palace lower their shell and remaining roof cover
-to ground-floor height when any room is revealed. Their extra storey is a renderer profile, with
-no extra floor records in the map JSON. Exterior and
-interior views share one map. Colonial limewashed adobe/stone, clay roof tiles,
-wooden doors and shutters match the existing historical setting.
+Building walls are in `building.walls`. Freestanding barricades use the map
+`wallEdges` array. Both arrays contain the same edge record format.
 
-Campaign snapshots retain their original geometry and source map revision.
-Editing a base map does not rewrite an active saved sector. Multi-floor maps,
-wall-edge collision, terrain elevation, shared editing and live save migration
-remain outside this version.
+A wall record has a stable `id`, integer `x` and `y`, `axis: "x" | "y"`, and
+`type: "wall" | "door" | "window"`. Coordinates name a grid vertex at world
+position `(x - .5, y - .5)`. An x edge runs one cell east; a y edge runs one
+cell south. A cell at `(x,y)` has north edge `(x,y,"x")`, south edge
+`(x,y+1,"x")`, west edge `(x,y,"y")` and east edge `(x+1,y,"y")`.
+`setWall` and `setOpeningStyle` use those coordinates and the explicit axis.
+
+Walls block crossing the shared edge. Both adjacent cells remain usable.
+Closed doors and windows block walking; an open door permits crossing.
+Destroying a wall changes its edge without replacing either floor cell.
+Version 1 map imports convert the former wall cells to edges; map export uses
+version 2. Unknown versions, duplicate edges and malformed files are rejected.
+Reference hashes cover the migrated edge plans, floor membership, props,
+lighting and decoration.
+
+Roofs use the building footprint, with clipped sections for revealed rooms.
+The town hall and palace lower their shell and roof cover to ground-floor
+height when any room is revealed. Their extra storey is a renderer profile,
+with no extra floor records in the map JSON. Exterior and interior views share
+one map. Colonial limewashed adobe/stone, clay roof tiles, wooden doors and
+shutters match the existing historical setting.
+
+Campaign snapshots retain edge geometry, door state, structural damage and
+source map revision. Editing a base map does not rewrite an active saved
+sector. Older campaign saves are outside the compatibility scope of this wall
+model change. Shared editing and multi-floor editor authoring remain separate
+work.
 
 ## Verification
 

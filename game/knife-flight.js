@@ -1,5 +1,5 @@
 import {spacePoint,surfaceAt,surfaceHeight,tacticalLevel} from './tactical-space.js';
-import {absoluteBodyHeight,relativeBodyHeight,geometryCells,obstacleVolumesAt,rayHeightIntersection} from './sight-geometry.js';
+import {absoluteBodyHeight,relativeBodyHeight,geometryCells,obstacleVolumesAt,rayHeightIntersection,volumeRayCell} from './sight-geometry.js';
 import {physicalBodies} from './projectile-cover.js';
 
 const epsilon=1e-9;
@@ -54,7 +54,8 @@ export function knifeFlight(state,attacker,target,hitLocation='torso',options={}
  const events=[],bodies=physicalBodies(state);
  for(const cell of cells){
   for(const volume of obstacleVolumesAt(state,cell)){
-   const hit=rayHeightIntersection(start,end,cell,volume.bottom,volume.top);
+   const crossed=volumeRayCell(attacker,target,cell,volume);if(!crossed)continue;
+   const hit=rayHeightIntersection(start,end,crossed,volume.bottom,volume.top);
    if(hit)events.push({fraction:hit.entry,cell,volume});
   }
   // Corner contacts can meet cover, but do not intersect a body silhouette.

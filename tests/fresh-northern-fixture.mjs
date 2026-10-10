@@ -24,7 +24,8 @@ import {prepareNorthernSupport} from './northern-support-fixture.mjs';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable,stanceCost,firearmShotOptions,teamCanSee,actionCosts,lookPreview} from '../game/tactical.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
-import {sameCell,spacePoint} from '../game/tactical-space.js';
+import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {wallMovementBlocked} from '../game/wall-geometry.js';
 import {townIncomeSources} from '../game/town-income.js';
 import {hasWorkshop} from '../game/campaign-headquarters.js';
 import {hiringArrivalOptions} from '../game/hiring-arrivals.js';
@@ -32,6 +33,7 @@ import {freshCoastalRoute} from './fresh-coastal-fixture.mjs';
 import {fight} from './opening-driver.mjs';
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
@@ -97,6 +99,30 @@ export function northernOfficerSaltaOrder(battle,unit,artilleryId){
  return mountainBatteryOrder(battle,unit,{leaderId:'9',helperId:'11',artilleryId,keepCrewTogether:true,screenDistance:3});
 }
 
+// Native edge approaches need a clear crew lane and scout sightings. Reuse the
+// mobile battery policy so a living assistant stays with the finite gun.
+export const northernOfficerSaltaController=initial=>coastalBatteryController(initial,{sharedArtillerySight:true});
+
+// Keep the finite field medic in a supporting posture with dressings ready.
+// The mobile crew and infantry retain their ordinary paid orders.
+export function stockNorthernSaltaController(initial){
+ const battery=coastalBatteryController(initial,{sharedArtillerySight:true});
+ const medic=initial.units.filter(unit=>unit.side==='player'&&unit.hp>=15&&unit.medkits>0&&unit.medical>0).sort((a,b)=>b.medical-a.medical)[0]?.id;
+ return (battle,unit)=>{
+  if(unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure&&unit.bleeding>0&&unit.medical>0&&unit.medkits>0){
+   const costs=actionCosts(battle,unit,unit);
+   if(unit.activeSlot==='medical'&&unit.ap>=costs.heal)return {type:'useItem',unitId:unit.id,targetId:unit.id};
+   if(unit.activeSlot!=='medical'&&unit.ap>=costs.weapon+costs.heal)return {type:'weapon',unitId:unit.id,slot:'medical'};
+  }
+  const normal=battery(battle,unit);
+  if(battle.mode==='combat'&&unit.id===medic&&!unit.knockedDown&&!unit.entangled){
+   if(normal?.type==='stance'&&normal.stance==='standing')return unit.activeSlot!=='medical'&&unit.medkits>0&&unit.ap>=actionCosts(battle,unit).weapon?{type:'weapon',unitId:unit.id,slot:'medical'}:null;
+   if(unit.activeSlot==='medical'&&normal?.type==='weapon'&&normal.slot==='primary')return null;
+  }
+  return normal;
+ };
+}
+
 // Stabilize the surviving local patient before any rifle/cache walk.
 // A paid arrival cannot undo a death that already happened during its journey.
 export function stabilizeNorthernRelief(start,{report=()=>{}}={}){
@@ -125,6 +151,7 @@ export function stabilizeNorthernRelief(start,{report=()=>{}}={}){
 // The paid rear physician meets the port administrator before future salaries
 // exhaust the field treasury. Public sweep points reveal the moving NPC first.
 export function meetNorthernRearPort(start,operativeId,{report=()=>{}}={}){
+ recordRouteStrategicEvidence({helper:'meetNorthernRearPort',stage:'preparation-input',campaign:start,context:{operativeId}});
  let s=saved({campaign:start}).campaign;const before=structuredClone(start),previous=s.activeSquadId,record=s.operativeState[operativeId],assignment=record.assignment,source=townIncomeSources(s).find(source=>source.id==='buenos_aires');
  assert.ok(source.controlled);if(source.activated)return s;
  assert.ok(s.recruited.includes(operativeId)&&record.alive&&!record.captured&&record.hp>=15&&!record.asleep&&record.location==='buenos_aires');assert.equal(s.pendingEncounter,null);assert.equal(s.pendingBattle,null);
@@ -159,19 +186,33 @@ export function meetNorthernRearPort(start,operativeId,{report=()=>{}}={}){
   }
  }
  assert.ok(observed(),'a public map sweep must reveal the actual representative');const firstObserved={hour:p.campaign.hour,second:p.campaign.secondOfHour,npc:structuredClone(observed())};
- let remembered=structuredClone(observed());
+ let remembered=structuredClone(observed()),searching=false,searchGoal=0;const reacquisitions=[],searchGoals=[...goals,...perimeter];
+ const contiguous=(point,target)=>sameSurface(point,target)&&Math.abs(point.x-target.x)+Math.abs(point.y-target.y)<=1&&!wallMovementBlocked(p.battle,point,target);
  for(let step=0;step<120;step++){
-  scan();const npc=observed();if(npc){remembered=structuredClone(npc);if(Math.abs(actor().x-npc.x)+Math.abs(actor().y-npc.y)<=1)break;}
+  scan();const npc=observed();if(npc){remembered=structuredClone(npc);searching=false;if(contiguous(actor(),npc))break;}
   // A wall can occlude a previously visible window resident on the way to
   // the open door. Follow only the last public point, then reacquire them.
-  const spot=reachable().filter(point=>Math.abs(point.x-remembered.x)+Math.abs(point.y-remembered.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot?.path.length,'the last observed representative needs a public reachable approach');act({type:'move',unitId,...spacePoint(spot.path[0])});
+  let spot=searching?null:reachable().filter(point=>contiguous(point,remembered)&&!sameCell(point,remembered)).sort((a,b)=>a.cost-b.cost)[0];
+  if(!npc&&!spot?.path.length){
+   // Civilian routines keep moving while each paid approach step resolves.
+   // Reaching an empty remembered contact resumes the public map sweep;
+   // it does not expose or follow the resident's current hidden position.
+   if(!searching){reacquisitions.push({lastSeen:spacePoint(remembered),from:spacePoint(actor()),hour:p.campaign.hour,second:p.campaign.secondOfHour});searching=true;searchGoal=0;}
+   for(;searchGoal<searchGoals.length;searchGoal++){
+    const goal=searchGoals[searchGoal],distance=point=>Math.hypot(point.x-goal.x,point.y-goal.y);
+    if(distance(actor())<=2)continue;
+    spot=reachable().sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost)[0];if(spot?.path.length)break;
+   }
+  }
+  if(!spot?.path.length)recordRouteStrategicEvidence({helper:'meetNorthernRearPort',stage:'approach-refusal',campaign:p.campaign,context:{operativeId,remembered,actor:actor(),observed:observed(),spot,battle:p.battle}});
+  assert.ok(spot?.path.length,'the last observed representative needs a public reachable approach');act({type:'move',unitId,...spacePoint(spot.path[0])});
   const seen=observed();if(seen)remembered=structuredClone(seen);
  }
- assert.ok(observed());assert.ok(Math.abs(actor().x-observed().x)+Math.abs(actor().y-observed().y)<=1);assert.equal(p.campaign.pendingEncounter,null);
+ assert.ok(observed());assert.ok(contiguous(actor(),observed()));assert.equal(p.campaign.pendingEncounter,null);
  s=order(p.campaign,{type:'talkNPC',npcId:observed().id,unitId:operativeId,approach:'direct',sectorState:p.battle});assert.equal(s.lastConversation.outcome,'incomeActivated');s=leave(saved({campaign:s,battle:p.battle}));
  if(assignment!=='active')s=order(s,{type:'assignCare',operativeId,assignment});s=order(s,{type:'selectSquad',id:previous});
  assert.equal(s.resources.treasury,start.resources.treasury,'the conversation cannot grant retroactive income');assert.equal(s.operativeState[operativeId].medkits,record.medkits);assert.deepEqual(start,before);for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(s.operativeState[id].alive,false);
- report({event:'northernRearPortAgreement',operativeId,firstObserved,actions,receipt:structuredClone(s.townIncome.activations[source.id]),daily:townIncomeSources(s).find(row=>row.id===source.id).daily,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-start.hour*3600-(start.secondOfHour??0),cash:s.resources.treasury});
+ report({event:'northernRearPortAgreement',operativeId,firstObserved,reacquisitions,actions,receipt:structuredClone(s.townIncome.activations[source.id]),daily:townIncomeSources(s).find(row=>row.id===source.id).daily,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-start.hour*3600-(start.secondOfHour??0),cash:s.resources.treasury});
  return saved({campaign:s}).campaign;
 }
 
@@ -262,7 +303,7 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:coastalBatteryController(enterSector(readyTucuman.pendingBattle,readyTucuman.sectorStates.tucuman),{sharedArtillerySight:true})});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const readySalta=prepareNorthernOfficerRelief(s,{report}),gun=readySalta.pendingBattle.artillery.find(piece=>piece.side==='player');assert.ok(gun,'the northern crew must deploy the actually recovered and transported gun');onCheckpoint?.('salta-ready',readySalta,notes);
- const salta=fightNorthernSector(readySalta,'salta',{controller:(battle,unit)=>northernOfficerSaltaOrder(battle,unit,gun.id)});
+ const salta=fightNorthernSector(readySalta,'salta',{controller:northernOfficerSaltaController(enterSector(readySalta.pendingBattle,readySalta.sectorStates.salta))});
  s=salta.campaign;notes.push({...salta.summary,deaths:deadIds(s)});onCheckpoint?.('salta',s,notes);
  s=completeHiredNorthernMission(s,{report});
  assert.equal(s.flags.northPact,true);assert.equal(s.flags.partisanSupply,true);assert.ok(isSupplied(s,'salta'));assert.equal(s.pendingBattle,null);
@@ -368,7 +409,7 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
  // Bind the real two-person battery to capable issued bodies. The controller
  // uses this list only to choose roles; every order resolves on the full field.
  const crewScene={...saltaInitial,units:saltaInitial.units.filter(unit=>unit.side!=='player'||unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.surrendered&&!unit.departure&&!unit.fled&&!unit.asleep&&!unit.knockedDown&&!unit.entangled&&(unit.energy??100)>0)};
- const salta=fightNorthernSector(reliefCampaign,'salta',{controller:routeKind==='stock'?cautiousCombatOrder:assignedMountainBatteryController(crewScene),report});
+ const salta=fightNorthernSector(reliefCampaign,'salta',{controller:routeKind==='stock'?stockNorthernSaltaController(saltaInitial):assignedMountainBatteryController(crewScene),report});
  s=salta.campaign;notes.push({...salta.summary,deaths:deadIds(s)});onCheckpoint?.('salta',s,notes);
  s=completeHiredNorthernMission(s,{report,routeKind});
  assert.equal(s.flags.northPact,true);assert.equal(s.flags.partisanSupply,true);assert.ok(isSupplied(s,'salta'));assert.equal(s.pendingBattle,null);

@@ -1,7 +1,9 @@
 'use client';
+import {wallEdgeControlObjects} from './TacticalWallEdgeControls';
 import {sitePath} from '../lib/site-path.js';
 import {artilleryProfile} from '../../game/artillery-definitions.js';
 import {createSceneTerrainCache} from '../../game/scene-terrain.js';
+import {sceneWallEdges} from '../../game/scene-wall-edges.js';
 import {pointInViewport} from '../../game/tactical-viewport.js';
 import {terrainMaterial} from '../../game/regional-terrain.js';
 import {aimedBodyPart,targetHitFrame} from '../../game/aim-cursor.js';
@@ -38,7 +40,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
  const filterPrefix=useId().replace(/:/g,''),enemyGlow=`enemy-glow-${filterPrefix}`,knownGhost=`actor-ghost-${filterPrefix}`;
  const terrainCache=useRef<ReturnType<typeof createSceneTerrainCache>|null>(null);
  if(!terrainCache.current)terrainCache.current=createSceneTerrainCache();
- const terrain=useMemo(()=>terrainCache.current!(s),[s]);
+ const terrain=useMemo(()=>terrainCache.current!({...s,wallEdges:sceneWallEdges(s,players)}),[s,players]);
  const roomKey=JSON.stringify([...revealed].sort());
  const stableRooms=useMemo(()=>new Set<string>(JSON.parse(roomKey)),[roomKey]);
  const handlers=useRef({onTile,onHover});handlers.current={onTile,onHover};
@@ -185,6 +187,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
   return nodes;
  },[visiblePeople,groundNodes]);
  const ground=useMemo(()=><g>{visibleTiles.map((tile:any)=>{const key=`${tile.x},${tile.y}`;return occupiedGround.get(key)??groundNodes.get(key);})}{showSight&&visibleTiles.map((tile:any)=>{const p=projectSurface(terrain,project,tile);return <polygon key={`sight-${tile.x},${tile.y}`} points={diamond(p.x,p.y)} fill={sight.has(spaceKey(tile))?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>;})}</g>,[visibleTiles,groundNodes,occupiedGround,showSight,sight,terrain,project]);
+ objects.push(...wallEdgeControlObjects({state:s,players,revealed,cursorLevel,mode,interactive:sceneInteractive,hover,viewport,project,onTile,onHover}));
  // At an exact actor/scenery depth tie retain the original key ordering.
  // Only that layer uses vectors for this frame; actors never jump in front of
  // a tree or prop merely because the surrounding scenery was cached.
@@ -200,10 +203,10 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
  return <>
   <defs>{materials.map(name=><pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width="128" height="128" patternTransform={['plaster','roof','wood'].includes(name)?undefined:'matrix(1 .538 -1 .538 0 0)'}><image href={sitePath(`/art/terrain-${name}-v1.webp`)} width="128" height="128"/></pattern>)}<radialGradient id="smokefill"><stop offset="0" stopColor="#d9dce0" stopOpacity=".72"/><stop offset=".45" stopColor="#aeb6bf" stopOpacity=".46"/><stop offset="1" stopColor="#84909d" stopOpacity="0"/></radialGradient><filter id={enemyGlow} x="-25%" y="-20%" width="150%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="1.5" result="expanded"/><feFlood floodColor="#fa5546" floodOpacity=".9" result="red"/><feComposite in="red" in2="expanded" operator="in" result="outline"/><feComposite in="outline" in2="SourceAlpha" operator="out"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id={knownGhost} x="-20%" y="-20%" width="140%" height="140%"><feColorMatrix type="matrix" values="0 0 0 0 .83 0 0 0 0 .92 0 0 0 0 .72 0 0 0 .65 0"/></filter></defs>
   {terrainVisible&&<><StaticSceneLayer>{groundPaint}</StaticSceneLayer>{ground}</>}
-  {terrainVisible&&hover&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
+  {terrainVisible&&hover&&!hover.wallEdgeId&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&routesPending?'#aaa99c':mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
   {groundOverlay}
   {orderedObjects.map(o=><g key={o.key}>{o.node}</g>)}
-  {[...visiblePeople,...visibleCivilians].filter(v=>!(visiblePeople.includes(v)&&v.side==='player'&&positions[v.id]?.moving)&&foregroundOccludesActor(s,{...v,...positions[v.id]},project,revealed)).map(v=>{const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false},at={...v,...moving},p=projectSurface(s,project,at),npc=visibleCivilians.includes(v),highlighted=!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered;return <g key={`ghost-${v.id}`} data-known-actor-silhouette={v.id} data-enemy-highlight={highlighted||undefined} filter={highlighted?`url(#${enemyGlow})`:undefined} pointerEvents="none"><g filter={`url(#${knownGhost})`} opacity=".7"><SpriteFigure unit={v} position={p} motion={{...moving,direction:moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:moving.direction}} pose={poses[v.id]??'idle'} appearance={npc?'civilian':'soldier'}/></g></g>;})}
+  {[...visiblePeople,...visibleCivilians].filter(v=>!(visiblePeople.includes(v)&&v.side==='player'&&positions[v.id]?.moving)&&foregroundOccludesActor(terrain,{...v,...positions[v.id]},project,revealed)).map(v=>{const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false},at={...v,...moving},p=projectSurface(s,project,at),npc=visibleCivilians.includes(v),highlighted=!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered;return <g key={`ghost-${v.id}`} data-known-actor-silhouette={v.id} data-enemy-highlight={highlighted||undefined} filter={highlighted?`url(#${enemyGlow})`:undefined} pointerEvents="none"><g filter={`url(#${knownGhost})`} opacity=".7"><SpriteFigure unit={v} position={p} motion={{...moving,direction:moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:moving.direction}} pose={poses[v.id]??'idle'} appearance={npc?'civilian':'soldier'}/></g></g>;})}
   {(()=>{
    const occurrences=new Map<string,number>();
    return (s.smoke??[]).map((v:any)=>{

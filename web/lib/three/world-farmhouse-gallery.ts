@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -14,8 +15,8 @@ import type {WorldBuilding,WorldInput} from './world-types';
 export function farmhouseGallery(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,edgeDetails:(panels:readonly (readonly Vector3[])[],low:number)=>Group){
   const root=new Group();root.name=`building-detail:${b.id}:farmhouse-gallery`;
   if(height<2.4)return root;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),along=inset*(frame.u.x+frame.u.y),depth=inset*(frame.v.x+frame.v.y),V=25.066666666666666,low=height-4/V,high=height+3/V,length=Math.max(1,Math.round(frame.depth*.57)),wood=materials.get('wood'),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),roof=materials.get(buildingAppearance(b).roofFinish),light=illuminationAt(input,b),batch=new WorldBatch(geometry);
-  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return walls.find(tile=>tile.x===p.x&&tile.y===p.y);};
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),inset=buildingArtInset(b,input),along=inset*(frame.u.x+frame.u.y),depth=inset*(frame.v.x+frame.v.y),V=25.066666666666666,low=height-4/V,high=height+3/V,length=Math.max(1,Math.round(frame.depth*.57)),wood=materials.get('wood'),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),roof=materials.get(buildingAppearance(b).roofFinish),light=illuminationAt(input,b),batch=new WorldBatch(geometry);
+  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return buildingWallAtPoint(walls,p,b);};
   const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+inset)*T,base+y,(p.y+inset)*T);};
   const rectangle=(u0:number,v0:number,u1:number,v1:number)=>{const a=at(u0,v0,0),c=at(u1,v1,0);return {minX:Math.min(a.x,c.x),maxX:Math.max(a.x,c.x),minZ:Math.min(a.z,c.z),maxZ:Math.max(a.z,c.z)};};
   const walking=(rect:ReturnType<typeof rectangle>,top:number)=>(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+top+.01&&(surface.x+.5)*T>rect.minX+1e-6&&(surface.x-.5)*T<rect.maxX-1e-6&&(surface.y+.5)*T>rect.minZ+1e-6&&(surface.y-.5)*T<rect.maxZ-1e-6);

@@ -1,0 +1,15 @@
+{
+  "description": "Earned stock Mendoza ammunition checkpoint after actual native Córdoba raid victory, finite patient care, gun delivery, service casualty ledger and finite ammunition transfers",
+  "sourceSnapshot": "5c4ec260 plus in-progress test-only Cuyo service ledger",
+  "productionSnapshot": "f12c2d0f",
+  "inputPath": "/tmp/wall-stock-mendoza-stockCuyoAmmoPrepared.save.json",
+  "captureMethod": "Read-only stockCuyoAmmoPrepared report from prepareCreatedMendozaAssault on the actual earned 426:1356 campaign",
+  "inputClock": [
+    463,
+    1435
+  ],
+  "sha256": "722283f148ed555c38c8ad23c4a2b2e7482f1ebc7e388ddb8ad367662489c1d7",
+  "gzipSha256": "41eafa3d73963ee70ed9b3523608008daf0129a2f1d8e4441901cec7bfbbf2ed",
+  "treasury": 121674,
+  "log": "/tmp/wall-stock-mendoza-full-prep-current.log"
+}

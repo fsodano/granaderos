@@ -29,7 +29,7 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
   const cliff=rural.has(id)&&(y<DY+4||y>=DY+12);
   return {x,y,type:water?'water':cliff?'stone':'grass',blocked:water||cliff,cover:water||cliff?40:0};
  });
- const map={...core,width,height,tiles,buildings:core.buildings.map(b=>({...shift(b),walls:(b.walls??[]).map(shift),rooms:b.rooms.map(r=>({...r,cells:r.cells.map(shift)}))})),groundItems:(core.groundItems??[]).map(shift),props:core.props.map(shift),lights:core.lights.map(shift),decor:core.decor.map(shift),npcs:(core.npcs??[]).map(shift),squad:core.squad.map(shift),enemies:core.enemies.map(shift),artillery:core.artillery.map(shift),garrison:(core.garrison??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+i)),missionAllies:(core.missionAllies??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+(core.garrison?.length??0)+i))};
+ const map={...core,width,height,tiles,wallEdges:(core.wallEdges??[]).map(shift),wallGeometryVersion:2,buildings:core.buildings.map(b=>({...shift(b),walls:(b.walls??[]).map(shift),rooms:b.rooms.map(r=>({...r,cells:r.cells.map(shift)}))})),groundItems:(core.groundItems??[]).map(shift),props:core.props.map(shift),lights:core.lights.map(shift),decor:core.decor.map(shift),npcs:(core.npcs??[]).map(shift),squad:core.squad.map(shift),enemies:core.enemies.map(shift),artillery:core.artillery.map(shift),garrison:(core.garrison??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+i)),missionAllies:(core.missionAllies??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+(core.garrison?.length??0)+i))};
  if(core.upperSurfaces!==undefined)map.upperSurfaces=core.upperSurfaces.map(shift);
  if(core.climbLinks!==undefined)map.climbLinks=core.climbLinks.map(link=>({...link,from:shift(link.from),to:shift(link.to)}));
  const road=(x,y)=>{const t=tiles[y*width+x];if(t&&!t.blocked&&!t.buildingId)Object.assign(t,{type:'road',cover:0});};
@@ -76,7 +76,7 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
   const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+Math.floor(w/2),y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+Math.floor(h/2)}],material:'adobe'});
   // New neighbourhood shells share the editor's catalog renderer. Keep the
   // structural walls for entrance-relative details and the original save IDs.
-  result.building.kind=architecture;result.building.walls=result.tiles.filter(t=>t.buildingId===buildingId&&['wall','door','window'].includes(t.type));
+  result.building.kind=architecture;map.wallEdges.push(...result.wallEdges);
   if(bar)Object.assign(result.building,{purpose:'bar',name:'Pulpería del barrio'});
   map.tiles=result.tiles;map.buildings.push(result.building);
   const prop={id:`${buildingId}:chest`,type:'chest',x:lot.x+1,y:lot.y+1,buildingId,roomId:result.building.rooms[0].id,footprint:{width:1,height:1},blocksMovement:true};

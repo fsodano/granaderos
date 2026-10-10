@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -12,7 +13,7 @@ import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
  * actual intact wall cells. The caller keeps edited and legacy shell fallback. */
 export function townhallColumns(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials){
   const root=new Group();root.name=`building-townhall-columns:${b.id}`;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),appearance=buildingAppearance(b),V=25.066666666666666,twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height,light=illuminationAt(input,b),batch=new WorldBatch(geometry);
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),profile=getBuildingProfile(b),appearance=buildingAppearance(b),V=25.066666666666666,twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height,light=illuminationAt(input,b),batch=new WorldBatch(geometry);
   const texture='/art/architecture-plaster-v2.png',wall=materials.get(appearance.wallFinish,{architectureRole:'volume',texture}),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),stoneCoping=materials.get('townhall-column-coping',{colour:'#c7b795'}),trims:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},coping=materials.get('townhall-pier-coping',{colour:trims[appearance.wallFinish]??trims.limewash});
   // pier() and formalSidePilasters() retain the source plaster overlay even
   // when the saved main wall paint selects stone or brick.
@@ -22,7 +23,7 @@ export function townhallColumns(b:WorldBuilding,input:WorldInput,T:number,height
   const clip=(tile:WorldTile,r:ReturnType<typeof rect>)=>({minX:Math.max(r.minX,(tile.x-.49)*T),maxX:Math.min(r.maxX,(tile.x+.49)*T),minZ:Math.max(r.minZ,(tile.y-.49)*T),maxZ:Math.min(r.maxZ,(tile.y+.49)*T)});
   const walking=(r:ReturnType<typeof rect>,top:number)=>(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+top+.01&&(surface.x+.5)*T>r.minX+1e-6&&(surface.x-.5)*T<r.maxX-1e-6&&(surface.y+.5)*T>r.minZ+1e-6&&(surface.y-.5)*T<r.maxZ-1e-6);
   const box=(r:ReturnType<typeof rect>,bottom:number,top:number,material=wall)=>{if(top>bottom&&r.maxX>r.minX&&r.maxZ>r.minZ)batch.box(material,(r.minX+r.maxX)*.5,base+(bottom+top)*.5,(r.minZ+r.maxZ)*.5,r.maxX-r.minX,top-bottom,r.maxZ-r.minZ,light);};
-  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return walls.find(tile=>tile.x===p.x&&tile.y===p.y&&tile.type==='wall');};
+  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return buildingWallAtPoint(walls,p,b,'wall');};
   const formal=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0));
   for(const u of formal){
     const tile=wallAt(u,0)!,footRect=clip(tile,rect(u-.23,-.43,u+.23,.24)),top=storey+2.5/V,foot=Math.min((profile.plinthHeight+2)/V,(storey-2/V)*.6);

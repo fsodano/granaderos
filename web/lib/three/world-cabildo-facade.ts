@@ -1,3 +1,4 @@
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import type {MeshStandardMaterial} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
@@ -13,7 +14,7 @@ import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
  * cupola. Taller edited shells retain their separate native upper arcade. */
 export function cabildoFacade(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,edgeDetails:(panels:readonly (readonly Vector3[])[],eave:number,roof:MeshStandardMaterial)=>Group){
   const root=new Group();root.name=`building-cabildo-facade:${b.id}`;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),appearance=buildingAppearance(b),V=25.066666666666666,storey=height>=4?height*.5:height,light=illuminationAt(input,b),texture='/art/architecture-plaster-v2.png';
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),profile=getBuildingProfile(b),appearance=buildingAppearance(b),V=25.066666666666666,storey=height>=4?height*.5:height,light=illuminationAt(input,b),texture='/art/architecture-plaster-v2.png';
   const recipe=architectureFinish(appearance.wallFinish,'volume')!,wall=materials.get(appearance.wallFinish,{architectureRole:'volume',texture}),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),trims:Record<string,string>={adobe:'#cab48e',limewash:'#eee6d1',ochre:'#e4d3ab',stone:'#c5bd9f',brick:'#cfb490'},shadows:Record<string,string>={adobe:'#776448',limewash:'#aaa18a',ochre:'#8f754f',stone:'#5e635c',brick:'#6f5140'},trim=materials.get('cabildo-coping',{colour:trims[appearance.wallFinish]??trims.limewash}),pierCoping=materials.get('cabildo-pier-coping',{colour:trims[appearance.wallFinish]??trims.limewash}),shadow=materials.get('cabildo-arcade-shadow',{colour:shadows[appearance.wallFinish]??shadows.limewash});
   // The source solid() default is plaster for arcade piers and tower volumes,
   // including explicitly saved stone/brick main-wall paints.
@@ -24,10 +25,10 @@ export function cabildoFacade(b:WorldBuilding,input:WorldInput,T:number,height:n
   const walking=(r:ReturnType<typeof rect>,top:number)=>(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+top+.01&&(surface.x+.5)*T>r.minX+1e-6&&(surface.x-.5)*T<r.maxX-1e-6&&(surface.y+.5)*T>r.minZ+1e-6&&(surface.y-.5)*T<r.maxZ-1e-6);
   const feature=(name:string,draw:(batch:WorldBatch)=>void)=>{const batch=new WorldBatch(geometry);draw(batch);const node=batch.finish(`building-detail:${b.id}:${name}`);if(node.children.length)root.add(node);return node;};
   const box=(batch:WorldBatch,r:ReturnType<typeof rect>,bottom:number,top:number,material=wall)=>{if(top>bottom&&r.maxX>r.minX&&r.maxZ>r.minZ)batch.box(material,(r.minX+r.maxX)*.5,base+(bottom+top)*.5,(r.minZ+r.maxZ)*.5,r.maxX-r.minX,top-bottom,r.maxZ-r.minZ,light);};
-  const rhythm=[...new Set([0,...Array.from({length:Math.max(0,Math.floor(frame.width/2)-1)},(_,n)=>(n+1)*2),frame.width])],columns=rhythm.filter(u=>{const p=frame.at(u,0);return walls.find(tile=>tile.x===p.x&&tile.y===p.y)?.type==='wall';});
+  const rhythm=[...new Set([0,...Array.from({length:Math.max(0,Math.floor(frame.width/2)-1)},(_,n)=>(n+1)*2),frame.width])],columns=rhythm.filter(u=>{const p=frame.at(u,0);return buildingWallAtPoint(walls,p,b)?.type==='wall';});
   feature('civic-ground-arcade',batch=>{
     const top=storey-5.5/V,capitalBottom=storey-10.5/V,foot=Math.min(profile.plinthHeight/V,capitalBottom*.6);
-    for(const u of columns){const p=frame.at(u,0),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y)!,footRect=clip(tile,rect(u-.20,-.39,u+.20,.20));if(walking(footRect,top)||capitalBottom<=foot+.10)continue;
+    for(const u of columns){const p=frame.at(u,0),tile=buildingWallAtPoint(walls,p,b)!,footRect=clip(tile,rect(u-.20,-.39,u+.20,.20));if(walking(footRect,top)||capitalBottom<=foot+.10)continue;
       box(batch,footRect,0,foot,stone);box(batch,clip(tile,rect(u-.13,-.34,u+.13,.15)),foot,capitalBottom);
       const cap=clip(tile,rect(u-.18,-.37,u+.18,.19));box(batch,cap,capitalBottom,top-.5/V);box(batch,cap,top-.5/V,top,pierCoping);
     }
@@ -48,7 +49,7 @@ export function cabildoFacade(b:WorldBuilding,input:WorldInput,T:number,height:n
   });
   const header=rect(-.12,-.40,frame.width+.12,.21);if(!walking(header,storey-3/V))feature('civic-source-entablature',batch=>box(batch,header,storey-9/V,storey-3/V));
 
-  const u=frame.width*.5,footprint=rect(u-.81,-.4,u+.81,.51),bearing=Array.from({length:Math.ceil(1.4)+1},(_,n)=>Math.floor(u-.7)+n).filter(a=>a>=u-.7-.5&&a<=u+.7+.5),supported=bearing.every(a=>{const p=frame.at(a,0);return walls.some(tile=>tile.x===p.x&&tile.y===p.y);});
+  const u=frame.width*.5,footprint=rect(u-.81,-.4,u+.81,.51),bearing=Array.from({length:Math.ceil(1.4)+1},(_,n)=>Math.floor(u-.7)+n).filter(a=>a>=u-.7-.5&&a<=u+.7+.5),supported=bearing.every(a=>{const p=frame.at(a,0);return Boolean(buildingWallAtPoint(walls,p,b));});
   if(!supported||frame.width<1.62||walking(footprint,height+75/V))return root;
   const crown=feature('civic-clock-tower',batch=>{
     box(batch,rect(u-.7,-.27,u+.7,.40),height-3/V,height+53/V);

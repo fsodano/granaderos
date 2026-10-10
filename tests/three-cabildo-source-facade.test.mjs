@@ -14,12 +14,12 @@ const {BUILDING_TEMPLATES}=await import('../game/map-templates.js');
 const {blankMap}=await import('../game/map-schema.js');
 const {applyMapCommands}=await import('../game/map-commands.js');
 const {compileMap}=await import('../game/compile-map.js');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle,legacyCellMap}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270];
 const near=(a,b,label)=>assert.ok(Math.abs(a-b)<2e-5,`${label}: ${a} versus ${b}`);
 function fixture(rotation,view='exterior',roof='original',resized=false){
  let battle=createArchitectureReviewBattle('cabildo',rotation,view,roof);
- if(resized){const edited=applyMapCommands(blankMap({id:'odd-cabildo',width:24,height:24}),[{type:'stampTemplate',id:'resized-cabildo',template:BUILDING_TEMPLATES.cabildo,x:4,y:4},{type:'resizeBuilding',id:'resized-cabildo',width:12,height:7},...Array.from({length:rotation/90},()=>({type:'rotateObject',id:'resized-cabildo'}))]);assert.deepEqual(edited.errors,[]);battle={...battle,...compileMap(edited.document),upperSurfaces:[],revealedRooms:[]};}
+ if(resized){const edited=applyMapCommands(blankMap({id:'odd-cabildo',width:24,height:24}),[{type:'stampTemplate',id:'resized-cabildo',template:BUILDING_TEMPLATES.cabildo,x:4,y:4},{type:'resizeBuilding',id:'resized-cabildo',width:12,height:7},...Array.from({length:rotation/90},()=>({type:'rotateObject',id:'resized-cabildo'}))]);assert.deepEqual(edited.errors,[]);battle={...battle,...legacyCellMap(compileMap(edited.document)),upperSurfaces:[],revealedRooms:[]};}
  const b=battle.buildings[0],input={terrain:{width:battle.width,height:battle.height,tiles:battle.tiles,buildings:battle.buildings,upperSurfaces:battle.upperSurfaces},revealedRooms:battle.revealedRooms},frame=entranceFrame({...b,walls:battle.tiles}),geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path});
  return {b,input,frame,point(u,v,y){const p=frame.at(u,v),inset=buildingArtInset(b,input);return new Vector3((p.x+inset)*T,y,(p.y+inset)*T);},feature(building,name){return building.getObjectByName(`building-detail:${b.id}:${name}`);},build(){const before=JSON.stringify(input),object=buildBuilding(b,input,T,geometry,materials);object.updateMatrixWorld(true);assert.equal(JSON.stringify(input),before);return object;},dispose(object){disposeWorldNode(object);geometry.dispose();materials.dispose();}};
 }

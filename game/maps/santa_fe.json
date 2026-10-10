@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "santa_fe",
   "revision": 3,
   "width": 20,
@@ -2266,35 +2266,55 @@
           "id": "santa_fe:building:interior",
           "cells": [
             {
+              "x": 11,
+              "y": 10
+            },
+            {
+              "x": 12,
+              "y": 10
+            },
+            {
+              "x": 11,
+              "y": 11
+            },
+            {
+              "x": 13,
+              "y": 10
+            },
+            {
               "x": 12,
               "y": 11
+            },
+            {
+              "x": 11,
+              "y": 12
+            },
+            {
+              "x": 14,
+              "y": 10
             },
             {
               "x": 13,
               "y": 11
             },
             {
-              "x": 14,
-              "y": 11
-            },
-            {
-              "x": 15,
-              "y": 11
-            },
-            {
               "x": 12,
               "y": 12
             },
             {
-              "x": 13,
-              "y": 12
-            },
-            {
-              "x": 14,
-              "y": 12
+              "x": 11,
+              "y": 13
             },
             {
               "x": 15,
+              "y": 10
+            },
+            {
+              "x": 14,
+              "y": 11
+            },
+            {
+              "x": 13,
               "y": 12
             },
             {
@@ -2302,16 +2322,68 @@
               "y": 13
             },
             {
+              "x": 11,
+              "y": 14
+            },
+            {
+              "x": 16,
+              "y": 10
+            },
+            {
+              "x": 15,
+              "y": 11
+            },
+            {
+              "x": 14,
+              "y": 12
+            },
+            {
               "x": 13,
               "y": 13
+            },
+            {
+              "x": 12,
+              "y": 14
+            },
+            {
+              "x": 16,
+              "y": 11
+            },
+            {
+              "x": 15,
+              "y": 12
             },
             {
               "x": 14,
               "y": 13
             },
             {
+              "x": 13,
+              "y": 14
+            },
+            {
+              "x": 16,
+              "y": 12
+            },
+            {
               "x": 15,
               "y": 13
+            },
+            {
+              "x": 14,
+              "y": 14
+            },
+            {
+              "x": 16,
+              "y": 13
+            },
+            {
+              "x": 15,
+              "y": 14
+            },
+            {
+              "x": 16,
+              "y": 14
             }
           ]
         }
@@ -2327,7 +2399,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:11:10"
+        },
+        {
+          "x": 11,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:11:10"
         },
         {
           "x": 12,
@@ -2338,7 +2425,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:12:10"
         },
         {
           "x": 13,
@@ -2349,7 +2438,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:13:10"
         },
         {
           "x": 14,
@@ -2360,7 +2451,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:14:10"
         },
         {
           "x": 15,
@@ -2371,7 +2464,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:15:10"
         },
         {
           "x": 16,
@@ -2382,7 +2477,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:16:10"
+        },
+        {
+          "x": 17,
+          "y": 10,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:17:10"
         },
         {
           "x": 11,
@@ -2393,10 +2503,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:11:11"
         },
         {
-          "x": 16,
+          "x": 17,
           "y": 11,
           "type": "wall",
           "blocked": true,
@@ -2404,7 +2516,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:17:11"
         },
         {
           "x": 11,
@@ -2415,10 +2529,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:11:12"
         },
         {
-          "x": 16,
+          "x": 17,
           "y": 12,
           "type": "wall",
           "blocked": true,
@@ -2426,7 +2542,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:17:12"
         },
         {
           "x": 11,
@@ -2437,10 +2555,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:11:13"
         },
         {
-          "x": 16,
+          "x": 17,
           "y": 13,
           "type": "wall",
           "blocked": true,
@@ -2448,7 +2568,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:17:13"
+        },
+        {
+          "x": 11,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:11:15"
         },
         {
           "x": 11,
@@ -2459,33 +2594,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:11:14"
         },
         {
           "x": 12,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:12:15"
         },
         {
           "x": 13,
-          "y": 14,
+          "y": 15,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:13:15"
         },
         {
           "x": 14,
-          "y": 14,
+          "y": 15,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2495,11 +2636,13 @@
           "roomId": null,
           "doorId": "santa_fe:door-left",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:14:15"
         },
         {
           "x": 15,
-          "y": 14,
+          "y": 15,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2509,10 +2652,25 @@
           "roomId": null,
           "doorId": "santa_fe:door-right",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:15:15"
         },
         {
           "x": 16,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:building",
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:building:wall:x:16:15"
+        },
+        {
+          "x": 17,
           "y": 14,
           "type": "wall",
           "blocked": true,
@@ -2520,7 +2678,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:building",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:building:wall:y:17:14"
         }
       ]
     },
@@ -2539,43 +2699,55 @@
           "id": "santa_fe:house-0:interior",
           "cells": [
             {
+              "x": 2,
+              "y": 0
+            },
+            {
+              "x": 3,
+              "y": 0
+            },
+            {
+              "x": 2,
+              "y": 1
+            },
+            {
+              "x": 4,
+              "y": 0
+            },
+            {
               "x": 3,
               "y": 1
+            },
+            {
+              "x": 2,
+              "y": 2
+            },
+            {
+              "x": 5,
+              "y": 0
             },
             {
               "x": 4,
               "y": 1
             },
             {
-              "x": 5,
-              "y": 1
-            },
-            {
-              "x": 6,
-              "y": 1
-            },
-            {
-              "x": 7,
-              "y": 1
-            },
-            {
               "x": 3,
               "y": 2
             },
             {
-              "x": 4,
-              "y": 2
-            },
-            {
-              "x": 5,
-              "y": 2
+              "x": 2,
+              "y": 3
             },
             {
               "x": 6,
-              "y": 2
+              "y": 0
             },
             {
-              "x": 7,
+              "x": 5,
+              "y": 1
+            },
+            {
+              "x": 4,
               "y": 2
             },
             {
@@ -2583,20 +2755,88 @@
               "y": 3
             },
             {
+              "x": 2,
+              "y": 4
+            },
+            {
+              "x": 7,
+              "y": 0
+            },
+            {
+              "x": 6,
+              "y": 1
+            },
+            {
+              "x": 5,
+              "y": 2
+            },
+            {
               "x": 4,
               "y": 3
+            },
+            {
+              "x": 3,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 0
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 2
             },
             {
               "x": 5,
               "y": 3
             },
             {
+              "x": 4,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 2
+            },
+            {
               "x": 6,
               "y": 3
             },
             {
+              "x": 5,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 2
+            },
+            {
               "x": 7,
               "y": 3
+            },
+            {
+              "x": 6,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 3
+            },
+            {
+              "x": 7,
+              "y": 4
+            },
+            {
+              "x": 8,
+              "y": 4
             }
           ]
         }
@@ -2613,7 +2853,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:2:0"
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:2:0"
         },
         {
           "x": 3,
@@ -2624,7 +2879,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:3:0"
         },
         {
           "x": 4,
@@ -2635,7 +2892,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:4:0"
         },
         {
           "x": 5,
@@ -2646,7 +2905,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:5:0"
         },
         {
           "x": 6,
@@ -2657,7 +2918,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:6:0"
         },
         {
           "x": 7,
@@ -2668,7 +2931,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:7:0"
         },
         {
           "x": 8,
@@ -2679,7 +2944,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:8:0"
+        },
+        {
+          "x": 9,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:9:0"
         },
         {
           "x": 2,
@@ -2690,10 +2970,12 @@
           "cover": 25,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:2:1"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 1,
           "type": "wall",
           "blocked": true,
@@ -2701,7 +2983,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:9:1"
         },
         {
           "x": 2,
@@ -2712,10 +2996,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:2:2"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 2,
           "type": "wall",
           "blocked": true,
@@ -2723,7 +3009,9 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:9:2"
         },
         {
           "x": 2,
@@ -2734,10 +3022,12 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:2:3"
         },
         {
-          "x": 8,
+          "x": 9,
           "y": 3,
           "type": "wall",
           "blocked": true,
@@ -2745,7 +3035,22 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:9:3"
+        },
+        {
+          "x": 2,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:2:5"
         },
         {
           "x": 2,
@@ -2756,33 +3061,39 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:2:4"
         },
         {
           "x": 3,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:3:5"
         },
         {
           "x": 4,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:4:5"
         },
         {
           "x": 5,
-          "y": 4,
+          "y": 5,
           "type": "door",
           "blocked": true,
           "blocksSight": true,
@@ -2792,32 +3103,51 @@
           "roomId": null,
           "doorId": "santa_fe:house-0:door:5:4",
           "open": false,
-          "locked": false
+          "locked": false,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:5:5"
         },
         {
           "x": 6,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:6:5"
         },
         {
           "x": 7,
-          "y": 4,
+          "y": 5,
           "type": "wall",
           "blocked": true,
           "blocksSight": true,
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:7:5"
         },
         {
           "x": 8,
+          "y": 5,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "santa_fe:house-0",
+          "roomId": null,
+          "axis": "x",
+          "id": "santa_fe:house-0:wall:x:8:5"
+        },
+        {
+          "x": 9,
           "y": 4,
           "type": "wall",
           "blocked": true,
@@ -2825,22 +3155,24 @@
           "cover": 40,
           "material": "adobe",
           "buildingId": "santa_fe:house-0",
-          "roomId": null
+          "roomId": null,
+          "axis": "y",
+          "id": "santa_fe:house-0:wall:y:9:4"
         }
       ]
     }
   ],
   "props": [
     {
-      "id": "santa_fe:building:table:12:11",
-      "type": "table",
+      "id": "santa_fe:building:bed:12:13",
+      "type": "bed",
       "x": 12,
-      "y": 11,
+      "y": 12,
       "buildingId": "santa_fe:building",
       "roomId": "santa_fe:building:interior",
       "footprint": {
         "width": 1,
-        "height": 1
+        "height": 2
       },
       "blocksMovement": true
     },
@@ -2858,19 +3190,6 @@
       "blocksMovement": true
     },
     {
-      "id": "santa_fe:building:bed:12:13",
-      "type": "bed",
-      "x": 12,
-      "y": 12,
-      "buildingId": "santa_fe:building",
-      "roomId": "santa_fe:building:interior",
-      "footprint": {
-        "width": 1,
-        "height": 2
-      },
-      "blocksMovement": true
-    },
-    {
       "id": "santa_fe:building:chest:15:13",
       "type": "chest",
       "x": 15,
@@ -2884,25 +3203,12 @@
       "blocksMovement": true
     },
     {
-      "id": "santa_fe:house-0:table:3:1",
+      "id": "santa_fe:building:table:12:11",
       "type": "table",
-      "x": 3,
-      "y": 1,
-      "buildingId": "santa_fe:house-0",
-      "roomId": "santa_fe:house-0:interior",
-      "footprint": {
-        "width": 1,
-        "height": 1
-      },
-      "blocksMovement": true
-    },
-    {
-      "id": "santa_fe:house-0:bench:7:1",
-      "type": "bench",
-      "x": 7,
-      "y": 1,
-      "buildingId": "santa_fe:house-0",
-      "roomId": "santa_fe:house-0:interior",
+      "x": 12,
+      "y": 11,
+      "buildingId": "santa_fe:building",
+      "roomId": "santa_fe:building:interior",
       "footprint": {
         "width": 1,
         "height": 1
@@ -2923,10 +3229,10 @@
       "blocksMovement": true
     },
     {
-      "id": "santa_fe:house-0:chest:7:3",
-      "type": "chest",
+      "id": "santa_fe:house-0:bench:7:1",
+      "type": "bench",
       "x": 7,
-      "y": 3,
+      "y": 1,
       "buildingId": "santa_fe:house-0",
       "roomId": "santa_fe:house-0:interior",
       "footprint": {
@@ -2942,6 +3248,32 @@
       "y": 6,
       "footprint": {
         "width": 2,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:house-0:chest:7:3",
+      "type": "chest",
+      "x": 7,
+      "y": 3,
+      "buildingId": "santa_fe:house-0",
+      "roomId": "santa_fe:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "santa_fe:house-0:table:3:1",
+      "type": "table",
+      "x": 3,
+      "y": 1,
+      "buildingId": "santa_fe:house-0",
+      "roomId": "santa_fe:house-0:interior",
+      "footprint": {
+        "width": 1,
         "height": 1
       },
       "blocksMovement": true
@@ -2986,5 +3318,6 @@
       "x": 5,
       "y": 15
     }
-  ]
+  ],
+  "wallEdges": []
 }

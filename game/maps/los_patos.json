@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "los_patos",
   "revision": 1,
   "width": 20,
@@ -2274,5 +2274,6 @@
       "x": 0,
       "y": 10
     }
-  ]
+  ],
+  "wallEdges": []
 }

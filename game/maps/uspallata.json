@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "uspallata",
   "revision": 1,
   "width": 20,
@@ -816,16 +816,18 @@
     {
       "x": 15,
       "y": 5,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 16,
       "y": 5,
-      "type": "wall",
-      "blocked": true,
-      "cover": 40
+      "type": "grass",
+      "blocked": false,
+      "cover": 0,
+      "blocksSight": false
     },
     {
       "x": 17,
@@ -2273,6 +2275,26 @@
     {
       "x": 19,
       "y": 8
+    }
+  ],
+  "wallEdges": [
+    {
+      "x": 15,
+      "y": 6,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:15:6"
+    },
+    {
+      "x": 16,
+      "y": 6,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40,
+      "axis": "x",
+      "id": "wall:0:x:16:6"
     }
   ]
 }

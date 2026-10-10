@@ -95,8 +95,8 @@ test('dawn starts contact at the first newly visible paid step without charging 
 
 function torchField(remainingSeconds) {
   const ground = tiles();
-  Object.assign(ground.find(t => t.x === 2 && t.y === 1), {type: 'wall', blocked: true, blocksSight: true});
-  return field({}, {night: true, tiles: ground, enemies: [{id: 'e', x: 10, y: 1, facing: 6, overwatch: false}], lights: [
+  const wallEdges=[{id:'initial-sight-screen',x:2,y:1,axis:'y',type:'wall',blocked:true,blocksSight:true}];
+  return field({}, {night: true, tiles: ground,wallEdges, enemies: [{id: 'e', x: 10, y: 1, facing: 6, overwatch: false}], lights: [
     {id: 'short-torch', type: 'torch', x: 10, y: 1, radius: 4, turns: 1, remainingSeconds},
   ]});
 }
