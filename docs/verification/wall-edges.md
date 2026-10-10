@@ -21,6 +21,8 @@ the new format. Compatibility with earlier campaign saves is outside scope.
 - Boundary checks cover exits, arrivals, departure receipts, prisoners and quest
   escorts at closed outside edges in all four directions. Ground cells remain
   usable; a closed outside edge prevents crossing out of the map.
+  The final arrival correction passed 43 tests, including distributed militia,
+  invaders, ordinary deployment, and a clear first inward step for entry.
 - Combat checks cover thin wall clipping, penetration depth, incident-cell
   firing, windows, doors, throws, blast shielding, damage, artillery contact,
   bodyguard interception, and hidden stone ricochet forecasts.
@@ -30,8 +32,9 @@ the new format. Compatibility with earlier campaign saves is outside scope.
   runtime damage and cache changes, facade partition junctions, raised controls,
   and exact edge IDs for mouse and keyboard input.
 - The final presentation check passed 53 tests. SVG, Three, and the minimap
-  retain the authored wall shape until an active player observer sees a door or
-  breach change. Unseen damage cannot change an actor silhouette. This check
+  use current active player sight for wall state. Outside that sight they use
+  static geometry, without persistent memory of live wall changes. Unseen
+  damage cannot change an actor silhouette. This check
   includes cache refreshes, inactive observers, and raised edges.
 - The browser review opened a door by its edge control and moved the soldier
   through that edge. The editor review placed a 5 by 5 building and a south-edge
@@ -41,7 +44,7 @@ the new format. Compatibility with earlier campaign saves is outside scope.
 ## Local build checks
 
 - Production build and type check passed. Static export verification checked
-  1,377 files and 1,045 asset references. Build identity: `f1079b1eba64`.
+  1,377 files and 1,045 asset references. Build identity: `be9a567f1fdc`.
 - Documentation and baseline audits passed. Test partition self-tests passed
   5/5, and final partition verification included all 965 files exactly once.
 - The complete full gate began with production source `74944df9`. The final
@@ -49,6 +52,9 @@ the new format. Compatibility with earlier campaign saves is outside scope.
   build, and browser door-crossing review passed separately. Campaign driver
   updates were checked against earned checkpoints with finite supplies, actual
   costs and casualties, official save round trips, and exact order replay.
+- Final production source is `f12c2d0f`. Its last correction makes distributed
+  militia use the same outside boundary rule as ordinary arrivals. The affected
+  43-test gate, type check, production build, and browser crossing review passed.
 
 ## Main branch comparison
 
@@ -93,3 +99,35 @@ The clinic follow-on diagnostic used two paid recruits, three paid forts, real
 contract renewals, and finite equipment. It won the raid with exact replay but
 still lost patient 129 and physician 122. The original patient assertions remain
 intact. This is a remaining branch campaign limit, not a confirmed main failure.
+
+The Cuyo follow-on handled the actual rear Salta raid with the existing
+withdrawal order, then won Mendoza with exact replay and settlement. Army
+funding still refused the third cannon: `arsenal:cordoba:2` remains in a delayed
+transfer on the occupied Salta route. The piece was retained, but had not reached
+a controlled physical source. No cannon was added to bypass that requirement.
+
+The stock northern follow-on passed actual Tucumán victory, paid officer relief,
+and Salta victory with saved replay. Its next finite first-aid approach still
+lost patient 146 before treatment; routed survivor 107 also needs physical relief
+at `cell-12-8`. Stock Yatasto and the full ending were not verified.
+
+## Campaign recheck
+
+The six failed campaign files were rechecked after the readiness, urgent care,
+and created Salta driver updates. The recheck ran on production `662f42a4`,
+before the final isolated militia arrival correction. It reported 13 tests:
+five passed, six failed, and two skipped. One of the six failed cases is the
+opening test's parent. The entire `fresh-northern-route.test.mjs` file passed.
+The remaining failures were:
+
+| File | Recheck result |
+| --- | --- |
+| `fresh-campaign-recovery.test.mjs` | Same inaccessible Córdoba travel error as main, before hospital setup. |
+| `fresh-cuyo-route.test.mjs` | The third bronze cannon had no remaining controlled physical supply source. |
+| `fresh-ending-route.test.mjs` | Finite first aid failed to stabilize actual survivor 101 after Salta. |
+| `fresh-historical-loss.test.mjs` | The Mendoza loss setup battle remained active at the driver's limit. |
+| `opening-playthrough.test.mjs` | The raid left an actual critical wound, capture, or death that rest could not bypass. |
+
+Only the recovery error was confirmed at the same stage on unchanged main.
+The other failures remain branch limits. The full suite was not run again after
+the isolated militia correction; its four affected files passed 43/43 instead.
