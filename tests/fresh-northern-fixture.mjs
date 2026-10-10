@@ -99,6 +99,10 @@ export function northernOfficerSaltaOrder(battle,unit,artilleryId){
  return mountainBatteryOrder(battle,unit,{leaderId:'9',helperId:'11',artilleryId,keepCrewTogether:true,screenDistance:3});
 }
 
+// Native edge approaches need a clear crew lane and scout sightings. Reuse the
+// mobile battery policy so a living assistant stays with the finite gun.
+export const northernOfficerSaltaController=initial=>coastalBatteryController(initial,{sharedArtillerySight:true});
+
 // Stabilize the surviving local patient before any rifle/cache walk.
 // A paid arrival cannot undo a death that already happened during its journey.
 export function stabilizeNorthernRelief(start,{report=()=>{}}={}){
@@ -279,7 +283,7 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:coastalBatteryController(enterSector(readyTucuman.pendingBattle,readyTucuman.sectorStates.tucuman),{sharedArtillerySight:true})});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
  const readySalta=prepareNorthernOfficerRelief(s,{report}),gun=readySalta.pendingBattle.artillery.find(piece=>piece.side==='player');assert.ok(gun,'the northern crew must deploy the actually recovered and transported gun');onCheckpoint?.('salta-ready',readySalta,notes);
- const salta=fightNorthernSector(readySalta,'salta',{controller:(battle,unit)=>northernOfficerSaltaOrder(battle,unit,gun.id)});
+ const salta=fightNorthernSector(readySalta,'salta',{controller:northernOfficerSaltaController(enterSector(readySalta.pendingBattle,readySalta.sectorStates.salta))});
  s=salta.campaign;notes.push({...salta.summary,deaths:deadIds(s)});onCheckpoint?.('salta',s,notes);
  s=completeHiredNorthernMission(s,{report});
  assert.equal(s.flags.northPact,true);assert.equal(s.flags.partisanSupply,true);assert.ok(isSupplied(s,'salta'));assert.equal(s.pendingBattle,null);

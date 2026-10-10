@@ -1,0 +1,43 @@
+{
+  "description": "Actual earned created northern Salta input after native coastal/Cordoba/Tucuman victories, finite urgent self-care and paid officer relief",
+  "sourceSnapshot": "74944df9",
+  "inputPath": "/tmp/wall-northern-officer-ready.save.json",
+  "inputClock": [
+    502,
+    2699
+  ],
+  "sha256": "1dd820161a4a192d78ca81719c46b8e14afb6648c5a9f5179fea45d8f7e34b34",
+  "gzipSha256": "c00c64f1fe7eb70f02547cae39114334d7e4aef734d4cd0c87ce6b9c9f67d610",
+  "officialSaveRoundTripExact": true,
+  "startingTreasury": 3200,
+  "requestId": "salta-502-3074369515",
+  "artillery": [
+    {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": true,
+      "ammo": 6
+    }
+  ],
+  "priorTucumanCheckpoint": "/tmp/wall-northern-current-tucuman.save.json",
+  "preparationLog": "/tmp/wall-northern-officer-current-care.log",
+  "actualPriorDeaths": [
+    3,
+    110,
+    112,
+    113,
+    114,
+    115,
+    120,
+    123,
+    124,
+    126,
+    131,
+    134,
+    136,
+    137,
+    141,
+    1000
+  ]
+}
