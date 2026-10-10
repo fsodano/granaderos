@@ -14,6 +14,7 @@ const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geom
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {createSectorWorld}=await import('../web/lib/three/sector-world.ts');
 const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
+const {worldWallRecords,buildingWallAtPoint}=await import('../web/lib/three/world-wall-records.ts');
 const {wallEdgeControlObjects}=await import('../web/app/TacticalWallEdgeControls.tsx');
 const T=1.2360585147470482,project=(x,y)=>({x:(x-y)*26,y:(x+y)*14});
 function render(battle){const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),input={terrain:battle,revealedRooms:battle.revealedRooms},building=buildBuilding(battle.buildings[0],input,T,geometry,materials);building.updateMatrixWorld(true);return {building,dispose(){disposeWorldNode(building);geometry.dispose();materials.dispose();}};}
@@ -52,6 +53,20 @@ test('open edge door apertures clear standing bodies through all catalogue rotat
   const battle=createArchitectureReviewBattle(id,rotation,'exterior');battle.wallEdges=battle.wallEdges.map(edge=>edge.type==='door'?{...edge,open:true}:edge);const b=battle.buildings[0],r=render(battle);
   for(const edge of battle.wallEdges.filter(edge=>edge.type==='door')){const center=wallEdgeCenter(edge),normal=edge.axis==='x'?new Vector3(0,0,1):new Vector3(1,0,0);for(const height of [1.3,1.8]){const start=new Vector3(center.x*T,height,center.y*T).addScaledVector(normal,-.42*T),hits=new Raycaster(start,normal,0,.84*T).intersectObject(r.building,true);assert.equal(hits.length,0,`${id}/${rotation}: ${edge.doorId} clear standing aperture`);}}
   r.dispose();
+ }
+});
+
+test('partition endpoints cannot support exterior artwork through an opening',()=>{
+ const built=makeBuilding({id:'junction-house',x:2,y:2,width:5,height:5,doors:[{id:'junction-before',x:2,y:3,axis:'y'},{id:'junction-door',x:2,y:4,axis:'y'}]}),partition={id:'partition',buildingId:built.building.id,x:2,y:4,axis:'x',type:'wall'},walls=worldWallRecords({terrain:{tiles:built.tiles,wallEdges:[...built.wallEdges,partition]}}),point={x:1.5,y:3.5};
+ assert.equal(buildingWallAtPoint(walls,point,built.building).type,'door');
+ assert.equal(buildingWallAtPoint(walls,point,built.building,'wall'),undefined,'the internal T-junction has no facade bearing wall');
+ for(const rotation of [0,90,180,270]){
+  const battle=createArchitectureReviewBattle('estancia',rotation,'exterior'),b=battle.buildings[0];
+  battle.wallEdges=battle.wallEdges.map(edge=>{const perimeter=edge.axis==='x'?edge.y===b.y||edge.y===b.y+b.height:edge.x===b.x||edge.x===b.x+b.width;return perimeter?{...edge,type:'door',doorId:edge.doorId??`opening:${edge.id}`,open:true}:edge;});
+  const before=JSON.stringify(battle),r=render(battle),names=[];r.building.traverse(object=>names.push(object.name));
+  assert.ok(!names.some(name=>name.includes('farmhouse-chimney')),`${rotation}: Three chimneys need an exterior wall`);
+  const svg=buildBuildingObjects({state:battle,revealed:new Set(),project,light:()=>1}).map(object=>markup(h('svg',null,object.node))).join('');
+  assert.ok(!svg.includes('farmhouse-chimney'),`${rotation}: SVG chimneys need an exterior wall`);assert.equal(JSON.stringify(battle),before);r.dispose();
  }
 });
 

@@ -10,3 +10,12 @@ export function wallAtPoint(walls:readonly WorldTile[],point:{x:number;y:number}
 }
 /** Facade frames consume canonical authoring coordinates, not projected centres. */
 export function wallFrameRecords(walls:readonly WorldTile[]){return walls.map(tile=>tile.axis?{...tile,x:tile.edgeX??tile.x,y:tile.edgeY??tile.y}:tile);}
+
+/** Exterior artwork follows its facade plane, even where a partition ends. */
+export function buildingWallAtPoint(walls:readonly WorldTile[],point:{x:number;y:number},building:{x:number;y:number;width:number;height:number},type?:string){
+ if(!walls.some(wall=>wall.axis))return wallAtPoint(walls,point,type);
+ const axes:string[]=[];
+ if(Math.abs(point.x-(building.x-.5))<1e-8||Math.abs(point.x-(building.x+building.width-.5))<1e-8)axes.push('y');
+ if(Math.abs(point.y-(building.y-.5))<1e-8||Math.abs(point.y-(building.y+building.height-.5))<1e-8)axes.push('x');
+ return wallAtPoint(axes.length?walls.filter(wall=>wall.axis&&axes.includes(wall.axis)):walls,point,type);
+}

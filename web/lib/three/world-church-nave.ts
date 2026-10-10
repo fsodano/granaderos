@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {CylinderGeometry,Group,Matrix4,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -42,7 +42,7 @@ export function churchNave(b:WorldBuilding,input:WorldInput,T:number,height:numb
     batch.add(line,material,undefined,light);line.dispose();
   };
   for(const u of [0,frame.width])for(let v=frame.depth-2;v>0;v-=3){
-    const p=frame.at(u,v),tile=wallAtPoint(walls,p);if(tile?.type!=='wall')continue;
+    const p=frame.at(u,v),tile=buildingWallAtPoint(walls,p,b);if(tile?.type!=='wall')continue;
     const out=u===0?-1:1,alongShift=inset*(frame.u.x+frame.u.y),depthShift=inset*(frame.v.x+frame.v.y),lo=Math.max(u-.39,u-alongShift-.49),hi=Math.min(u+.39,u-alongShift+.49),front=Math.max(v-.19,v-depthShift-.49),back=Math.min(v+.19,v-depthShift+.49);
     if(hi<=lo||back<=front)continue;
     const plan=[[lo,front],[hi,front],[hi,back],[lo,back]],bottom=plan.map(([a,c])=>at(a,c,0)),feet=plan.map(([a,c])=>at(a,c,foot)),top=plan.map(([a,c])=>at(a,c,inner+(outer-inner)*((a-u)*out+.39)/.78));

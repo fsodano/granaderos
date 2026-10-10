@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {BUILDING_OPENINGS} from '../../../game/building-scale.js';
@@ -31,7 +31,7 @@ export function civicStoreyBands(b:WorldBuilding,input:WorldInput,T:number,heigh
   for(const side of sides)for(const [bottom,top,outward,material,cap]of stages){
     const ranges:{first:number;last:number}[]=[];
     for(let along=0;along<=side.length;along++){
-      const [u,v]=side.point(along,0),p=frame.at(u,v),tile=wallAtPoint(walls,p);if(!tile)continue;
+      const [u,v]=side.point(along,0),p=frame.at(u,v),tile=buildingWallAtPoint(walls,p,b);if(!tile)continue;
       // An edited metric storey can move a band down into an opening. Keep
       // the complete standing aperture instead of masking its upper portion.
       if(tile.type!=='wall'&&bottom<Math.min(height-.12,(tile.type==='door'?BUILDING_OPENINGS.doorHeight:BUILDING_OPENINGS.windowTop)/V)+.05)continue;

@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Quaternion,Vector3} from 'three';
 import {entranceFrame} from '../../../game/building-profile.js';
 import {WorldBatch} from './world-geometry';
@@ -16,7 +16,7 @@ export function smithyChimney(b:WorldBuilding,input:WorldInput,T:number,height:n
   if(capBottom<=bottom)return root;
   const supports=[frame.width,0].flatMap(u=>Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>({u,v:n+1}))).filter(({u,v})=>{
     const point=frame.at(u,v);
-    return wallAtPoint(walls,point)?.type==='wall'&&!(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+flueTop+.01&&surface.x+.5>point.x-.35+1e-6&&surface.x-.5<point.x+.35-1e-6&&surface.y+.5>point.y-.35+1e-6&&surface.y-.5<point.y+.35-1e-6);
+    return buildingWallAtPoint(walls,point,b)?.type==='wall'&&!(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+flueTop+.01&&surface.x+.5>point.x-.35+1e-6&&surface.x-.5<point.x+.35-1e-6&&surface.y+.5>point.y-.35+1e-6&&surface.y-.5<point.y+.35-1e-6);
   }).sort((a,c)=>Math.abs(a.v-frame.depth*.66)-Math.abs(c.v-frame.depth*.66));
   if(!supports.length)return root;
   const {u,v}=supports[0],at=(du:number,dv:number,y:number)=>{const point=frame.at(u+du,v+dv);return new Vector3(point.x*T,base+y,point.y*T);};

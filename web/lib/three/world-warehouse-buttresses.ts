@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -28,7 +28,7 @@ export function warehouseButtresses(b:WorldBuilding,input:WorldInput,T:number,he
     const first=uv(points[0]);batch.polygon(material,points,light*shade,p=>{const value=uv(p);return [value[0]-first[0],value[1]];});
   };
   for(const u of [0,frame.width])for(let v=2;v<frame.depth;v+=3){
-    const p=frame.at(u,v);if(wallAtPoint(walls,p)?.type!=='wall')continue;
+    const p=frame.at(u,v);if(buildingWallAtPoint(walls,p,b)?.type!=='wall')continue;
     const shift=inset===0?0:.30,a=u-shift*(frame.u.x+frame.u.y),c=v-shift*(frame.v.x+frame.v.y),out=u===0?-1:1,inner=height-12/V,outer=Math.min(height*.59,inner-.04),foot=Math.min((profile.plinthHeight+2)/V,outer*.60);
     const plan=[[-.39,-.19],[.39,-.19],[.39,.19],[-.39,.19]] as const,bottom=plan.map(([x,z])=>at(a+x,c+z,0)),feet=plan.map(([x,z])=>at(a+x,c+z,foot)),top=plan.map(([x,z])=>at(a+x,c+z,x*out>0?outer:inner));
     // Join the body at the top of the footing. Overlapping plaster and stone

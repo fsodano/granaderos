@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {ExtrudeGeometry,Group,Matrix4,MeshStandardMaterial,Quaternion,Shape,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -59,7 +59,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   const alongInset=wallInset*(frame.u.x+frame.u.y),depthInset=wallInset*(frame.v.x+frame.v.y),doorU=frame.doorU-alongInset;
   const at=(u:number,v:number,y:number)=>{const point=frame.at(u,v);return new Vector3((point.x+wallInset)*T,base+y,(point.y+wallInset)*T);};
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
-  const wallAt=(u:number,v:number)=>{const point=frame.at(u,v);return wallAtPoint(walls,point);};
+  const wallAt=(u:number,v:number)=>{const point=frame.at(u,v);return buildingWallAtPoint(walls,point,b);};
   const bearing=(u:number,v=0,actualAlong=false)=>[u-(actualAlong?alongInset:.06*(frame.u.x+frame.u.y)),v-.06*(frame.v.x+frame.v.y)] as const;
   const walkableAbove=(u:number,v:number,w:number,d=w)=>{
     const point=at(u,v,0),alongReach=(w+1)*T*.5,depthReach=(d+1)*T*.5;

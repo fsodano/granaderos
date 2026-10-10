@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Matrix4,Mesh,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -20,7 +20,7 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
   const wall=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'volume'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),stone=materials.get('stone'),dark=materials.get('darkwood'),iron=materials.get('iron'),bars=materials.get('iron',{colour:'#a7ae9b'});
   const rotation=new Quaternion().setFromAxisAngle(new Vector3(0,1,0),Math.atan2(-frame.u.y,frame.u.x)),wallInset=buildingArtInset(b,input),alongInset=wallInset*(frame.u.x+frame.u.y),depthInset=wallInset*(frame.v.x+frame.v.y),doorU=frame.doorU-alongInset;
   const at=(u:number,v:number,y:number)=>{const p=frame.at(u,v);return new Vector3((p.x+wallInset)*T,base+y,(p.y+wallInset)*T);};
-  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return wallAtPoint(walls,p);};
+  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return buildingWallAtPoint(walls,p,b);};
   const bearing=(u:number,v=0,along=false)=>[u-(along?alongInset:.06*(frame.u.x+frame.u.y)),v-.06*(frame.v.x+frame.v.y)] as const;
   const root=new Group();root.name=`palace-facade:${b.id}`;let batch=new WorldBatch(geometry);
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);

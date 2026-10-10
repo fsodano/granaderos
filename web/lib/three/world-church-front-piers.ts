@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -28,7 +28,7 @@ export function churchFrontPiers(b:WorldBuilding,input:WorldInput,T:number,heigh
   const capitalBottom=height+3.5/V,capitalTop=height+8.5/V,foot=Math.min(profile.plinthHeight/V,capitalBottom*.35);
   if(capitalBottom>foot+.20)feature('church-facade-pilasters',batch=>{
     for(const u of [0,frame.width]){
-      const p=frame.at(u,0),tile=wallAtPoint(walls,p);if(tile?.type!=='wall')continue;
+      const p=frame.at(u,0),tile=buildingWallAtPoint(walls,p,b);if(tile?.type!=='wall')continue;
       const footRect=supported(tile,rectangle(u-.255,-.39,u+.255,.20));if(walking(footRect,capitalTop))continue;
       box(batch,footRect,0,foot,stone);
       box(batch,supported(tile,rectangle(u-.185,-.34,u+.185,.15)),foot,capitalBottom,wall);

@@ -4,6 +4,7 @@ import { BUILDING_TEMPLATES } from "../game/map-templates.js";
 import { blankMap, serializeMap, validateMap } from "../game/map-schema.js";
 import { applyMapCommands } from "../game/map-commands.js";
 import { compileMap, reachableMap } from "../game/compile-map.js";
+import { wallEdgeCells, wallEdgeCenter, wallEdgeEndpoints } from '../game/wall-geometry.js';
 import { propBlocksAt, propCells } from "../game/props.js";
 
 const names = [
@@ -23,6 +24,16 @@ const names = [
   "estancia",
 ];
 const key = ({ x, y }) => `${x},${y}`;
+const perimeterEdge = (w,b) => w.axis==='x' ? w.y===b.y || w.y===b.y+b.height : w.x===b.x || w.x===b.x+b.width;
+const pointWalls = (b,p) => b.walls.filter(w=>{
+ const [a,c]=wallEdgeEndpoints(w);
+ return w.axis==='x' ? Math.abs(p.y-a.y)<1e-8 && p.x>=a.x-1e-8 && p.x<=c.x+1e-8 : Math.abs(p.x-a.x)<1e-8 && p.y>=a.y-1e-8 && p.y<=c.y+1e-8;
+}).sort((a,c)=>Math.hypot(wallEdgeCenter(a).x-p.x,wallEdgeCenter(a).y-p.y)-Math.hypot(wallEdgeCenter(c).x-p.x,wallEdgeCenter(c).y-p.y)||(a.type==='wall'?-1:c.type==='wall'?1:0));
+const pointWall=(b,p)=>pointWalls(b,p)[0];
+const pointsCenter = points => ({x:points.reduce((v,p)=>v+p.x,0)/points.length,y:points.reduce((v,p)=>v+p.y,0)/points.length});
+// Historical support coordinates named perimeter cells. Convert each side to a
+// canonical edge without turning that cell into a collision obstacle.
+const formerPerimeterEdge = (b,x,y) => y===b.y ? {x,y,axis:'x'} : y===b.y+b.height-1 ? {x,y:y+1,axis:'x'} : x===b.x ? {x,y,axis:'y'} : {x:x+1,y,axis:'y'};
 function apply(document, commands) {
   const result = applyMapCommands(document, commands);
   assert.deepEqual(result.errors, []);
@@ -65,7 +76,7 @@ test("the fourteen architecture templates have distinct footprints and usable fu
       JSON.stringify({
         width: b.width,
         height: b.height,
-        walls: b.walls.map(({ x, y, type }) => [x, y, type]).sort(),
+        walls: b.walls.map(({ x, y, axis, type }) => [x, y, axis, type]).sort(),
         props: props.map(({ x, y, type, footprint }) => [x, y, type, footprint]).sort(),
       }),
     );
@@ -133,18 +144,18 @@ test("depot and farmhouse add distinct work and domestic rooms with clear facade
     }
     const template = BUILDING_TEMPLATES[name].building;
     const entrances = template.walls.filter(
-      (w) => w.type === "door" && w.y === template.height - 1,
+      (w) => w.type === "door" && w.axis==="x" && w.y === template.height,
     );
-    assert.deepEqual(entrances.map(({ x, y }) => [x, y]).sort(), requirement.doors);
+    assert.deepEqual(entrances.map(({ x, y }) => [x, y]).sort(), requirement.doors.map(([x,y])=>[x,y+1]));
     assert.ok(
       entrances.every((w) => !w.open && !w.locked),
       "loading and household doors start closed and unlocked",
     );
     for (const [x, y] of requirement.supports)
       assert.equal(
-        template.walls.find((w) => w.x === x && w.y === y)?.type,
+        pointWall(template,wallEdgeCenter(formerPerimeterEdge(template,x,y)))?.type,
         "wall",
-        `${name}: structural detail stays on solid cell ${x},${y}`,
+        `${name}: structural detail stays on a solid perimeter edge ${x},${y}`,
       );
   }
 });
@@ -179,7 +190,7 @@ test("town hall and palace have separate functional rooms and a clear perimeter 
       for (const type of types) assert.ok(furnished.has(type), `${roomName}: ${type}`);
     }
     const template = BUILDING_TEMPLATES[name],
-      front = template.building.height - 1,
+      front = template.building.height,
       entrance = template.building.walls.find((w) => w.type === "door");
     assert.equal(entrance.x, Math.floor(template.building.width / 2));
     assert.equal(entrance.y, front, "primary entrance is on the perimeter");
@@ -188,7 +199,7 @@ test("town hall and palace have separate functional rooms and a clear perimeter 
       assert.equal(
         template.building.walls.find((w) => w.x === x && w.y === front)?.type,
         "wall",
-        `${name}: facade support ${x},${front} occupies a solid wall cell`,
+        `${name}: facade support ${x},${front} has a solid wall edge`,
       );
   }
 });
@@ -207,16 +218,12 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
     ["palacio", "palace", "palace-portico-column", [4, 6, 8, 10]],
   ]) {
     const original = fixture(name);
-    const edited = apply(
-      original,
-      supportX.map((x, i) => ({
-        type: "setWall",
-        buildingId: name,
-        x: x + 3,
-        y: BUILDING_TEMPLATES[name].building.height + 2,
-        wallType: i % 2 ? "door" : "window",
-      })),
-    );
+    const supportEdits=(document,offsets,style)=>{
+      const b=document.buildings[0],frame=entranceFrame(b),edges=new Map();
+      for(const offset of offsets){const u=Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)));for(const edge of pointWalls(b,frame.at(u,0)).filter(edge=>edge.type==='wall'))edges.set(edge.id,edge);}
+      return apply(document,[...edges.values()].map(({x,y,axis,id},i)=>({type:'setWall',buildingId:name,x,y,axis,wallType:style??(i%2?'door':'window'),doorId:`${id}:edited-door`})));
+    };
+    const edited=supportEdits(original,name==='palacio'?[-3,-1,1,3]:[-2,2]);
     const tiny = apply(blankMap({ width: 12, height: 12 }), [
       { type: "addBuilding", building: { id: name, kind, x: 3, y: 3, width: 3, height: 3 } },
     ]);
@@ -226,24 +233,15 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
       ["minimum", tiny],
       [
         "corner-door",
-        apply(tiny, [{ type: "setWall", buildingId: name, x: 3, y: 5, wallType: "door" }]),
+        apply(tiny, [{ type: "setWall", buildingId: name, x: 3, y: 6, axis: "x", wallType: "door" }]),
       ],
       ...(name === "palacio"
         ? [
-            ["left-only", [8, 10]],
-            ["right-only", [4, 6]],
-          ].map(([label, removed]) => [
+            "left-only",
+            "right-only",
+          ].map((label) => [
             label,
-            apply(
-              original,
-              removed.map((x) => ({
-                type: "setWall",
-                buildingId: name,
-                x: x + 3,
-                y: BUILDING_TEMPLATES[name].building.height + 2,
-                wallType: "window",
-              })),
-            ),
+            supportEdits(original,label==='left-only'?[1,3]:[-3,-1],'window'),
           ])
         : []),
     ]) {
@@ -264,9 +262,9 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
         for (const u of columns) {
           const at = frame.at(u, 0);
           assert.equal(
-            b.walls.find((w) => w.x === at.x && w.y === at.y)?.type,
+            pointWall(b,at)?.type,
             "wall",
-            `${name}: column is supported by a solid cell`,
+            `${name}: column is supported by a solid edge`,
           );
         }
         if (caseName === "authored" && ["south", "east"].includes(frame.side))
@@ -282,7 +280,7 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
           );
         }
         if (caseName === "edited") {
-          assert.equal(columns.length, 0, "edited doors and windows remain unobstructed");
+          assert.equal(columns.length, 0, `${name} ${rotation*90}° edited doors and windows remain unobstructed: ${columns}`);
           assert.ok(
             !markup.includes(
               `data-architectural-volume="${kind === "townhall" ? "townhall-clock-pediment" : "palace-portico-pediment"}"`,
@@ -307,7 +305,7 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
           );
           if (frontVisible)
             assert.ok(
-              markup.includes(`data-upper-window="front:${frame.doorU}"`),
+              markup.includes(`data-upper-window="front:${Math.round(frame.doorU)}"`),
               "ordinary upper window fills the unsupported central bay",
             );
         }
@@ -317,7 +315,7 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
   }
 });
 
-test("depot and farmhouse details stay on solid wall cells after rotation and opening edits", async () => {
+test("depot and farmhouse details stay on solid wall edges after rotation and opening edits", async () => {
   const { register } = await import("node:module");
   register("./tactical-render-loader.mjs", import.meta.url);
   const { createElement: h } = await import("../web/node_modules/react/index.js");
@@ -343,7 +341,7 @@ test("depot and farmhouse details stay on solid wall cells after rotation and op
     const perimeter = b.walls.filter(
       (w) =>
         w.type === "wall" &&
-        (w.x === b.x || w.x === b.x + b.width - 1 || w.y === b.y || w.y === b.y + b.height - 1),
+        perimeterEdge(w,b),
     );
     const cases = [
       ["authored", original],
@@ -357,7 +355,7 @@ test("depot and farmhouse details stay on solid wall cells after rotation and op
         wallType,
         apply(original, [
           ...original.props.map((p) => ({ type: "deleteObject", id: p.id })),
-          ...perimeter.map(({ x, y }) => ({ type: "setWall", buildingId: name, x, y, wallType })),
+          ...perimeter.map(({ x, y, axis }) => ({ type: "setWall", buildingId: name, x, y, axis, wallType, doorId:`${name}:edited:${axis}:${x}:${y}` })),
         ]),
       ]),
     ];
@@ -374,26 +372,17 @@ test("depot and farmhouse details stay on solid wall cells after rotation and op
           `${name} ${caseName} ${turn * 90}°: finite geometry`,
         );
         for (const volume of solids.filter((v) => (v.bottom ?? 0) === 0)) {
-          const cells = new Set(
-            volume.points.map((p) => key({ x: Math.round(p.x), y: Math.round(p.y) })),
-          );
-          assert.equal(
-            cells.size,
-            1,
-            `${volume.label}: footprint stays inside one structural tile`,
-          );
-          const cell = [...cells][0];
-          assert.equal(
-            building.walls.find((w) => key(w) === cell)?.type,
-            "wall",
-            `${name} ${caseName} ${turn * 90}°: ${volume.label} must not cover a door, window or floor`,
-          );
+          const center=pointsCenter(volume.points),nearby=building.walls.map(edge=>{const [a,c]=wallEdgeEndpoints(edge),p=edge.axis==='x'?{x:Math.max(a.x,Math.min(c.x,center.x)),y:a.y}:{x:a.x,y:Math.max(a.y,Math.min(c.y,center.y))};return {edge,p,distance:Math.hypot(p.x-center.x,p.y-center.y)};}).sort((a,b)=>a.distance-b.distance);
+          assert.ok(nearby[0].distance<=.45,`${volume.label}: shallow support remains beside the wall`);
+          assert.equal(pointWall(building,nearby[0].p)?.type,'wall',`${name} ${caseName} ${turn*90}°: ${volume.label} bears on a solid edge`);
+          const xs=volume.points.map(p=>p.x),ys=volume.points.map(p=>p.y);
+          assert.ok(Math.max(...xs)-Math.min(...xs)<1&&Math.max(...ys)-Math.min(...ys)<1,`${volume.label}: support has a compact footprint`);
         }
         if (["door", "window"].includes(caseName)) {
           assert.equal(
             solids.length,
             0,
-            "unsupported piers, posts and chimneys disappear after opening edits",
+            `${name} ${caseName} ${turn*90}° unsupported details disappear: ${solids.map(v=>v.label)}`,
           );
           assert.ok(
             !markup.includes('-canopy"'),
@@ -409,13 +398,7 @@ test("depot and farmhouse details stay on solid wall cells after rotation and op
               `${turn * 90}°: paired domestic chimneys remain present`,
             );
             for (const chimney of chimneys) {
-              const p = chimney.points[0],
-                cell = { x: Math.round(p.x), y: Math.round(p.y) };
-              assert.equal(
-                building.walls.find((w) => key(w) === key(cell))?.type,
-                "wall",
-                "chimney bears on a wall",
-              );
+              assert.equal(pointWall(building,pointsCenter(chimney.points))?.type,'wall','chimney bears on a solid wall edge');
             }
           }
           if (turn === 0) {
@@ -459,27 +442,10 @@ for (const name of names) {
       const map = compileMap(document),
         open = reachableMap(map, { x: 1, y: 1 }),
         closed = reachableMap(map, { x: 1, y: 1 }, { openDoors: false });
-      if (name === "iglesia") {
-        const b = map.buildings[0],
-          solid = new Set(b.walls.filter((w) => w.type === "wall").map(key));
-        // The tower must stand over a reserved structural corner, never over a route.
-        const corners = [
-          [b.x, b.y],
-          [b.x + b.width - 2, b.y],
-          [b.x, b.y + b.height - 2],
-          [b.x + b.width - 2, b.y + b.height - 2],
-        ];
-        assert.ok(
-          corners.some(([x, y]) =>
-            [
-              [x, y],
-              [x + 1, y],
-              [x, y + 1],
-              [x + 1, y + 1],
-            ].every(([x, y]) => solid.has(key({ x, y }))),
-          ),
-          `${rotation * 90}° tower has a solid two-by-two foundation`,
-        );
+      if (name === 'iglesia') {
+        const b=map.buildings[0], corners=[[b.x-.5,b.y-.5],[b.x+b.width-.5,b.y-.5],[b.x-.5,b.y+b.height-.5],[b.x+b.width-.5,b.y+b.height-.5]];
+        assert.ok(corners.some(([x,y])=>b.walls.filter(w=>w.type==='wall'&&wallEdgeEndpoints(w).some(p=>p.x===x&&p.y===y)).length===2),`${rotation*90}° tower has two incident solid perimeter edges`);
+        assert.equal(map.tiles.filter(t=>t.buildingId===b.id).length,b.width*b.height,'the tower leaves the full floor footprint usable');
       }
       assert.deepEqual(
         map.buildings[0].rooms.map((r) => r.cells.length).sort((a, b) => a - b),
@@ -616,15 +582,10 @@ test("civic upper storeys preserve the ground-floor map through every reveal and
         let wallCount = 0,
           internalCount = 0;
         for (const object of objects) {
-          const match = /^architecture-(\d+)-(\d+)-([xy])$/.exec(object.key);
-          if (!match) continue;
-          const x = Number(match[1]),
-            y = Number(match[2]);
-          const perimeter =
-            x === building.x ||
-            x === building.x + building.width - 1 ||
-            y === building.y ||
-            y === building.y + building.height - 1;
+          const edgeId=object.node.props?.['data-wall-edge'];
+          if (!edgeId) continue;
+          const edge=state.wallEdges.find(w=>w.id===edgeId), {x,y}=edge;
+          const perimeter = perimeterEdge(edge,building);
           const cut = object.node.props["data-cutaway"];
           const expectedHeight = cut ? 9 : perimeter ? height : groundHeight;
           assert.equal(
@@ -773,139 +734,33 @@ test("church, chapel and chimneys retain their raised volumes in all rotations",
   }
 });
 
-test("revealing either side of a partition lowers it without changing rear walls or collision", async () => {
-  const { register } = await import("node:module");
-  register("./tactical-render-loader.mjs", import.meta.url);
-  const { createElement: h } = await import("../web/node_modules/react/index.js");
-  const { renderToStaticMarkup: render } =
-    await import("../web/node_modules/react-dom/server.node.js");
-  const { buildBuildingObjects } = await import("../web/app/TacticalBuildings.tsx");
-  let diagonalJunctionChecks = 0;
-  for (const name of ["iglesia", "cabildo"]) {
-    let document = fixture(name);
-    // Cabildo's partition ends on the exterior at local (4, 6). Both room
-    // floors touch it diagonally; the partition fills its cardinal neighbour.
-    let junction = { x: 7, y: 9 };
-    let towerCorner = { x: 3, y: 14 };
-    for (let rotation = 0; rotation < 4; rotation++) {
-      const state = compileMap(document),
-        b = state.buildings[0],
-        before = JSON.stringify(state);
-      const walls = new Map(
-        state.tiles
-          .filter((t) => ["wall", "window", "door"].includes(t.type))
-          .map((t) => [key(t), t]),
-      );
-      for (const room of b.rooms) {
-        const objects = buildBuildingObjects({
-          state,
-          project: (x, y) => ({ x: (x - y) * 26, y: (x + y) * 14 }),
-          light: () => 1,
-          revealed: new Set([room.id]),
-        });
-        let lowered = 0,
-          fullRear = 0;
-        for (const object of objects) {
-          const match = /^architecture-(\d+)-(\d+)-([xy])$/.exec(object.key);
-          if (!match) continue;
-          const t = walls.get(`${match[1]},${match[2]}`),
-            axis = match[3],
-            markup = render(h("svg", null, object.node));
-          if (
-            name === "cabildo" &&
-            t.x === junction.x &&
-            t.y === junction.y &&
-            ((axis === "x" && t.y === b.y + b.height - 1) ||
-              (axis === "y" && t.x === b.x + b.width - 1))
-          ) {
-            assert.ok(
-              !room.cells.some((c) => Math.abs(c.x - t.x) + Math.abs(c.y - t.y) === 1),
-              "the regression case has no direct floor neighbour",
-            );
-            assert.ok(
-              room.cells.some((c) => Math.abs(c.x - t.x) === 1 && Math.abs(c.y - t.y) === 1),
-              "the floor touches the junction diagonally",
-            );
-            assert.match(
-              markup,
-              /data-cutaway="true"/,
-              `${rotation * 90}° ${room.id}: exterior partition junction lowers`,
-            );
-            diagonalJunctionChecks++;
-          }
-          if (
-            t.x > b.x &&
-            t.x < b.x + b.width - 1 &&
-            t.y > b.y &&
-            t.y < b.y + b.height - 1 &&
-            room.cells.some((c) => Math.abs(c.x - t.x) + Math.abs(c.y - t.y) === 1)
-          ) {
-            lowered++;
-            assert.match(
-              markup,
-              /data-cutaway="true"/,
-              `${name} ${rotation * 90}° ${room.id}: partition ${key(t)}`,
-            );
-          }
-          if ((axis === "x" && t.y === b.y) || (axis === "y" && t.x === b.x)) {
-            fullRear++;
-            assert.match(
-              markup,
-              /data-cutaway="false"/,
-              `${name} ${rotation * 90}°: rear exterior ${key(t)}`,
-            );
-          }
-        }
-        assert.ok(lowered > 0, `${name}: test covers a partition beside ${room.id}`);
-        assert.ok(fullRear > 0, "test covers the rear shell");
-      }
-      if (name === "iglesia") {
-        // The outer corner of the solid2x2 tower base has no adjacent room cell.
-        assert.ok(
-          !b.rooms.some((r) =>
-            r.cells.some(
-              (c) => Math.abs(c.x - towerCorner.x) <= 1 && Math.abs(c.y - towerCorner.y) <= 1,
-            ),
-          ),
-        );
-        const objects = buildBuildingObjects({
-          state,
-          project: (x, y) => ({ x: (x - y) * 26, y: (x + y) * 14 }),
-          light: () => 1,
-          revealed: new Set(b.rooms.map((r) => r.id)),
-        });
-        for (const axis of ["x", "y"]) {
-          const object = objects.find(
-            (o) => o.key === `architecture-${towerCorner.x}-${towerCorner.y}-${axis}`,
-          );
-          assert.ok(object, "the tower corner has both exterior faces");
-          const front =
-            axis === "x"
-              ? towerCorner.y === b.y + b.height - 1
-              : towerCorner.x === b.x + b.width - 1;
-          assert.match(
-            render(h("svg", null, object.node)),
-            front ? /data-cutaway="true"/ : /data-cutaway="false"/,
-            `${rotation * 90}° complete reveal lowers the solid front corner while retaining rear walls`,
-          );
-        }
-      }
-      assert.equal(
-        JSON.stringify(state),
-        before,
-        "rendering preserves wall tiles, room cells and door state",
-      );
-      junction = { x: b.x + b.height - 1 - (junction.y - b.y), y: b.y + (junction.x - b.x) };
-      towerCorner = {
-        x: b.x + b.height - 1 - (towerCorner.y - b.y),
-        y: b.y + (towerCorner.x - b.x),
-      };
-      document = apply(document, [{ type: "rotateObject", id: name }]);
+test('revealing either incident room lowers partitions and front edges while keeping rear edges and routes', async()=>{
+ const {register}=await import('node:module');register('./tactical-render-loader.mjs',import.meta.url);
+ const {createElement:h}=await import('../web/node_modules/react/index.js');
+ const {renderToStaticMarkup:render}=await import('../web/node_modules/react-dom/server.node.js');
+ const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
+ for(const name of ['iglesia','cabildo']){
+  let document=fixture(name);
+  for(let rotation=0;rotation<4;rotation++){
+   const state=compileMap(document),b=state.buildings[0],before=JSON.stringify(state),routes=[...reachableMap(state,{x:1,y:1})].sort();
+   for(const room of b.rooms){
+    const roomCells=new Set(room.cells.map(key)),objects=buildBuildingObjects({state,project:(x,y)=>({x:(x-y)*26,y:(x+y)*14}),light:()=>1,revealed:new Set([room.id])});
+    let lowered=0,rear=0;
+    for(const object of objects){
+     const id=object.node.props?.['data-wall-edge'];if(!id)continue;
+     const edge=state.wallEdges.find(w=>w.id===id);if(edge.buildingId!==b.id)continue;
+     const perimeter=perimeterEdge(edge,b),front=edge.axis==='x'?edge.y===b.y+b.height:edge.x===b.x+b.width;
+     const incident=wallEdgeCells(edge).some(c=>roomCells.has(key(c)));
+     const expected=incident&&(front||!perimeter);
+     assert.equal(object.node.props['data-cutaway'],expected,`${name} ${rotation*90}° ${room.id}: ${id}`);
+     if(!perimeter&&incident)lowered++;
+     if(perimeter&&!front){rear++;assert.match(render(h('svg',null,object.node)),/data-cutaway="false"/);}
     }
+    assert.ok(lowered>0,`${name}: partition touches ${room.id}`);assert.ok(rear>0,'rear shell stays full height');
+   }
+   assert.equal(JSON.stringify(state),before,'rendering preserves edge state and floor membership');
+   assert.deepEqual([...reachableMap(state,{x:1,y:1})].sort(),routes,'rendering preserves routes');
+   document=apply(document,[{type:'rotateObject',id:name}]);
   }
-  assert.equal(
-    diagonalJunctionChecks,
-    4,
-    "both rooms and both front-facing junction orientations are covered",
-  );
+ }
 });

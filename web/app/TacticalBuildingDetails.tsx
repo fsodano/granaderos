@@ -3,7 +3,7 @@ import {
   entranceFrame,
   getBuildingProfile,
 } from '../../game/building-profile.js';
-import { worldWallRecords, wallAtPoint } from '../lib/three/world-wall-records';
+import { worldWallRecords, buildingWallAtPoint } from '../lib/three/world-wall-records';
 import { Opening, WALL_COLOURS } from './TacticalArchitectureMaterials';
 import {
   ArchitectureVolume,
@@ -75,7 +75,7 @@ export function buildingDetails(
   );
   const wallAt = (u: number, v: number) => {
     const p = at(u, v);
-    return nativeEdges ? wallAtPoint(walls, p) : walls.find(
+    return nativeEdges ? buildingWallAtPoint(walls, p, b) : walls.find(
       (w: any) => w.x === Math.round(p.x) && w.y === Math.round(p.y),
     );
   };

@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -16,7 +16,7 @@ export function workPorch(b:WorldBuilding,input:WorldInput,T:number,height:numbe
   const kind=b.kind??b.architecture,loading=kind==='depot',V=25.066666666666666;
   if(!['pulperia','smithy','depot'].includes(kind??'')||height<2.4)return root;
   const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),appearance=buildingAppearance(b),profile=getBuildingProfile(b),light=illuminationAt(input,b),wood=materials.get('wood'),stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),roof=materials.get(!loading&&appearance.roofFinish==='thatch'?'clay':appearance.roofFinish),batch=new WorldBatch(geometry),name=loading?'gallery':kind==='smithy'?'forge-canopy':'gallery';
-  const wallAt=(u:number)=>{const p=frame.at(u,0);return wallAtPoint(walls,p);};
+  const wallAt=(u:number)=>{const p=frame.at(u,0);return buildingWallAtPoint(walls,p,b);};
   const radius=kind==='pulperia'?2:1.25,sourceLo=Math.max(.15,frame.doorU-radius),sourceHi=Math.min(frame.width-.15,frame.doorU+radius),supports=loading?[...new Set([1/6,1/2,5/6].map(r=>Math.round(frame.width*r)))].filter(u=>wallAt(u)?.type==='wall'):Array.from({length:Math.max(1,Math.ceil(sourceHi-sourceLo))},(_,n)=>Math.round(sourceLo)+n).filter(u=>u<=sourceHi&&wallAt(u)?.type==='wall'&&!(u>sourceLo+.7&&u<sourceHi-.7&&u%2));
   if(supports.length<2)return root;
   const lo=loading?Math.min(...supports):sourceLo,hi=loading?Math.max(...supports):sourceHi,low=loading?height-3/V:Math.max(2.12,height*.72),sourceHigh=loading?height+6/V:low+height*.17,flat=b.roof==='terrace'||(input.terrain.upperSurfaces??[]).some(surface=>surface.kind==='roof'&&surface.buildingId===b.id),high=flat?Math.min(sourceHigh,height-.015):sourceHigh;

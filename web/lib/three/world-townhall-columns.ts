@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -23,7 +23,7 @@ export function townhallColumns(b:WorldBuilding,input:WorldInput,T:number,height
   const clip=(tile:WorldTile,r:ReturnType<typeof rect>)=>({minX:Math.max(r.minX,(tile.x-.49)*T),maxX:Math.min(r.maxX,(tile.x+.49)*T),minZ:Math.max(r.minZ,(tile.y-.49)*T),maxZ:Math.min(r.maxZ,(tile.y+.49)*T)});
   const walking=(r:ReturnType<typeof rect>,top:number)=>(input.terrain.upperSurfaces??[]).some(surface=>!surface.blocked&&(surface.tacticalLevel??0)>0&&(surface.elevation??3)<=base+top+.01&&(surface.x+.5)*T>r.minX+1e-6&&(surface.x-.5)*T<r.maxX-1e-6&&(surface.y+.5)*T>r.minZ+1e-6&&(surface.y-.5)*T<r.maxZ-1e-6);
   const box=(r:ReturnType<typeof rect>,bottom:number,top:number,material=wall)=>{if(top>bottom&&r.maxX>r.minX&&r.maxZ>r.minZ)batch.box(material,(r.minX+r.maxX)*.5,base+(bottom+top)*.5,(r.minZ+r.maxZ)*.5,r.maxX-r.minX,top-bottom,r.maxZ-r.minZ,light);};
-  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return wallAtPoint(walls,p,'wall');};
+  const wallAt=(u:number,v:number)=>{const p=frame.at(u,v);return buildingWallAtPoint(walls,p,b,'wall');};
   const formal=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0));
   for(const u of formal){
     const tile=wallAt(u,0)!,footRect=clip(tile,rect(u-.23,-.43,u+.23,.24)),top=storey+2.5/V,foot=Math.min((profile.plinthHeight+2)/V,(storey-2/V)*.6);

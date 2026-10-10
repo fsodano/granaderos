@@ -1,4 +1,4 @@
-import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
+import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -33,7 +33,7 @@ export function chapelPiers(b:WorldBuilding,input:WorldInput,T:number,height:num
   const capitalBottom=height-2.5/V,capitalTop=height+2.5/V,foot=Math.min(profile.plinthHeight/V,capitalBottom*.35);
   if(capitalBottom>foot+.20)feature('chapel-corner-piers',batch=>{
     for(const u of [0,frame.width]){
-      const p=frame.at(u,0),tile=wallAtPoint(walls,p);if(tile?.type!=='wall')continue;
+      const p=frame.at(u,0),tile=buildingWallAtPoint(walls,p,b);if(tile?.type!=='wall')continue;
       const footRect=supported(tile,rectangle(u-.21,-.39,u+.21,.20)),radius=.5/V*.5;
       if(walking({minX:footRect.minX-radius,maxX:footRect.maxX+radius,minZ:footRect.minZ-radius,maxZ:footRect.maxZ+radius},capitalTop+radius))continue;
       box(batch,footRect,0,foot,stone);
