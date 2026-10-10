@@ -167,8 +167,113 @@
       "path": "restored-opening-original-gate-receipt.json",
       "bytes": 1816,
       "sha256": "c9371b861e86a409ff2f8c2598d3961c649a6d70741468205c66ba460d9fa307"
+    },
+    {
+      "path": "strategic-passive-static-receipt.json",
+      "bytes": 1527,
+      "sha256": "68175d45a903eb22930bc3507395c00f99276710e2dc38b75a4fec0749e959ac"
+    },
+    {
+      "path": "shared-sighting-typecheck.log",
+      "bytes": 117,
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    {
+      "path": "shared-sighting-production-build.log",
+      "bytes": 1881,
+      "sha256": "a209693fb1351330c7fe05267209c8a75db7da38ec708de114d1c2849c8a9311"
+    },
+    {
+      "path": "shared-sighting-build-typecheck.json",
+      "bytes": 996,
+      "sha256": "1ff095518cea9817f3d11f995c7447e99ae5bc5c8330a9be6b06e5fed239fc9a"
+    },
+    {
+      "path": "granaderos-opening-shared-sighting-controls-20261010.tar.gz",
+      "bytes": 1732302,
+      "sha256": "d298d7514b2cd4891d7774a458426cb70019befe9e6b6386e0bedbc11c9ae29d"
+    },
+    {
+      "path": "granaderos-opening-shared-sighting-controls-20261010.manifest.json",
+      "bytes": 10900,
+      "sha256": "9bed9f219728271e8095c6120101e50740922ae8198b28cf6503239058d938bc"
+    },
+    {
+      "path": "granaderos-opening-shared-sighting-controls-20261010.report.md",
+      "bytes": 4613,
+      "sha256": "57fabc52a6e4c0c2f3d77bffaa9d7108d03a1a78ff41c77482018c776751f28d"
+    },
+    {
+      "path": "granaderos-coastal-critical-ally-rescue-evidence-20261010.tar.gz",
+      "bytes": 14968989,
+      "sha256": "ee5a2c5e0e0c2bd51d205b650f5f8b55184fa7d86908ac7761642b5252904df8"
+    },
+    {
+      "path": "granaderos-coastal-critical-ally-rescue-evidence-20261010.manifest.json",
+      "bytes": 979305,
+      "sha256": "6ef91d598373c8a87252aedfe61f5c70c3493b4b8a1e77df500a89d50dfbd7e1"
+    },
+    {
+      "path": "granaderos-coastal-critical-ally-rescue-evidence-20261010.report.md",
+      "bytes": 2862,
+      "sha256": "dd8aac18c2943315231db5a7d7b2d50737cffbc2904e42a644ff7b99ca6aa688"
+    },
+    {
+      "path": "coastal-critical-ally-rescue-checks.json",
+      "bytes": 3554,
+      "sha256": "0812f77f9ed4dbf06eb126f19dded33536938b38428b3dce4b236d9794a70771"
+    },
+    {
+      "path": "combined88-focused-gate-receipt.json",
+      "bytes": 2028,
+      "sha256": "87e5e40b6d5ed4e34c2495928f51cdf844a45a3476fb7dfba7996fd04327acc4"
+    },
+    {
+      "path": "granaderos-current-main-baseline-evidence-20261010.tar.gz",
+      "bytes": 3373509,
+      "sha256": "4d509d62cae4c8dcde46c25962c33108768bc3fbe680562b79b6822a99f8b668"
+    },
+    {
+      "path": "granaderos-combined88-controls-20261010.tar.gz",
+      "bytes": 1407231,
+      "sha256": "841b3ef145d10ab276de7f7e3cbede346c28938b656aa8aff2c2f72ed7cceb92"
+    },
+    {
+      "path": "granaderos-combined88-controls-20261010.manifest.json",
+      "bytes": 5763,
+      "sha256": "9a9f3c3bfbe5dee01a53398951e9cc709e5760206955fc7fbe92adbdc00f2cfa"
+    },
+    {
+      "path": "granaderos-current-main-baseline-evidence-20261010.report.json",
+      "bytes": 945,
+      "sha256": "46a9a6ca0160fbbe17880e8afd86a599f165af2a261d0564a76d9580c9910498"
+    },
+    {
+      "path": "granaderos-combined88-controls-20261010.report.md",
+      "bytes": 2201,
+      "sha256": "c865e7c83ae7643b9cb92069b0b5d2392a0ed0f2b21fe8c8cb29e923b788cdea"
+    },
+    {
+      "path": "granaderos-current-main-baseline-evidence-20261010.manifest.json",
+      "bytes": 13022,
+      "sha256": "b855d0e6dcee10ff2fd719da832b0cc411ae964f508629d569ee8c41fa9e4cef"
+    },
+    {
+      "path": "unchanged-main-original-gate-receipt.json",
+      "bytes": 1898,
+      "sha256": "14bd8c8bd5b7a87f57370135b180471ca2c8421bbf4bbb81d10c9ffbf0382fe4"
+    },
+    {
+      "path": "posture-aware88-focused-gate-receipt.json",
+      "bytes": 2028,
+      "sha256": "f00257874799a2f81b59fc7f1f5226a12626ee5f86a2f5fd3df6628472000800"
+    },
+    {
+      "path": "critical-ally-rescue-final-review.json",
+      "bytes": 1568,
+      "sha256": "6bf73ff01f03f0df8228875cf8ccc1e361988d1ef5d98dae6599bcbb0b7bd3f6"
     }
   ],
-  "scope": "Closed original observations and gates, finite earned care/ammunition controls, rejected broad opening posture, retained52 passing controls, and the failed restored-opening five-file gate. Original route acceptance and final full gameplay validation remain incomplete.",
-  "updatedAt": "2026-10-10T09:46:18.319978+00:00"
+  "scope": "Retained exact original failures, source-bound focused controls, canonical build, passive strategic diagnostics and one unchanged main baseline. Original route acceptance and final full gameplay validation remain incomplete.",
+  "updatedAt": "2026-10-10T10:09:07.186983+00:00"
 }

@@ -1,0 +1,11 @@
+The archive contains every file from the closed combined focused control run at /tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z. It preserves the original files without changes. It includes the execution wrapper, runtime and argument metadata, run log, terminal receipt, process IDs, both complete source hash snapshots, and all nested passive observer files.
+
+The retained receipt confirms one invocation of 18 selected test files. All 88 tests passed. There were no failed, skipped, cancelled, or pending tests. The process exited with code 0 and no signal. The receipt marks the run complete and successful. The parent and child processes are absent.
+
+The canonical source identity recorded by this run is c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026. The recorded revision is dd15b8bd99c55a8e4540b67cc9bf66b8053d2eb7. This canonical identity is distinct from the game-row-only hash used by the earlier two-control wrapper. The all-source snapshot SHA256 is c9c090c0d6912135b38449b6f09854904e40d988c8ebc594e5d6820328b57fc4. Both before and after snapshot files have this exact hash. The run bound 14,171 source files and recorded zero source drift.
+
+The runtime path is /opt/homebrew/Cellar/node/25.9.0_2/bin/node. Its invocation and arguments remain in the original metadata. The run used test concurrency 4, no test filters, and no seed changes. The receipt states that the original affected route tests were unchanged.
+
+The scope is 88 focused native safety and correction controls. This evidence does not replace original route acceptance and does not prove campaign victory. Root owns the next original five-file acceptance gate after the checkpoint commit.
+
+Archive preparation made zero new native actions, selectors, previews, controller calls, or test invocations. It made no source changes, staging, PR, or push. Every original run file is included under combined88-focused-run/. This report is the only added archive member. The external manifest gives the exact byte count and SHA256 of every member and of the compressed archive. Every member was read back and hash-verified, and all original file hashes were rechecked after archive creation.

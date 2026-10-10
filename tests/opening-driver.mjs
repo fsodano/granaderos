@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCosts,interruptAvailable,stanceCost,hasFirearm} from '../game/tactical.js';
-import {chooseEnemyAction} from '../game/tactical-ai.js';
+import {chooseEnemyAction,choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
+import {holdsArtilleryPost} from '../game/tactical-ai-artillery.js';
+import {firearmServiceable} from '../game/firearm-serviceability.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
@@ -48,6 +50,14 @@ export function combatOrder(b,u){
  if(automatic&&automatic.type!=='charge')return automatic;
  if(u.missionAlly&&players.length>1)return null; // Infantry scouts first; a lone commander must still act.
  if(visible.length){
+  // Keep the paid defensive posture. A stable, loaded infantry scout can
+  // investigate the current squad sighting when personal sight yields no order.
+  if(automatic===null&&target&&u.side==='player'&&!u.missionAlly&&!u.mounted&&u.stance==='prone'&&u.hp>=15&&!(u.bleeding>0)&&
+    (u.activeSlot??'primary')==='primary'&&!u.weaponDropped&&hasFirearm(u)&&firearmServiceable(u)&&u.loaded>0&&!u.jammed&&
+    !known&&!u.patrolOrigin&&u.patrol!==false&&!holdsArtilleryPost(b,u)&&sameSurface(u,target)&&!visible.some(contact=>canSee(b,u,contact))){
+   const investigation=choosePlayerSharedSightingInvestigation(b,u,target);
+   if(investigation)return investigation;
+  }
   recordRouteControllerDecisionEvidence({battle:b,unit:u,sharedContacts:visible,automatic});
   return null;
  }

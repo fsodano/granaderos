@@ -1,0 +1,75 @@
+{
+  "scope": "Read-only pure path, LOS and first-aid-plan inspection; no native order, controller invocation or route.",
+  "originalWitnessOrder": 132,
+  "actualMedicStance": "crouched",
+  "chosen": {
+    "point": {
+      "x": 49,
+      "y": 41,
+      "tacticalLevel": 0
+    },
+    "cost": 10,
+    "barePointLOS": true,
+    "actualDoctorPostureLOS": true,
+    "remainingTreatmentPlan": true
+  },
+  "postureMismatches": [],
+  "points": [
+    {
+      "point": {
+        "x": 49,
+        "y": 41,
+        "tacticalLevel": 0
+      },
+      "cost": 10,
+      "barePointLOS": true,
+      "actualDoctorPostureLOS": true,
+      "remainingTreatmentPlan": true
+    },
+    {
+      "point": {
+        "x": 48,
+        "y": 41,
+        "tacticalLevel": 0
+      },
+      "cost": 14,
+      "barePointLOS": true,
+      "actualDoctorPostureLOS": true,
+      "remainingTreatmentPlan": true
+    },
+    {
+      "point": {
+        "x": 49,
+        "y": 42,
+        "tacticalLevel": 0
+      },
+      "cost": 20,
+      "barePointLOS": true,
+      "actualDoctorPostureLOS": true,
+      "remainingTreatmentPlan": true
+    },
+    {
+      "point": {
+        "x": 47,
+        "y": 41,
+        "tacticalLevel": 0
+      },
+      "cost": 29,
+      "barePointLOS": true,
+      "actualDoctorPostureLOS": true,
+      "remainingTreatmentPlan": true
+    },
+    {
+      "point": {
+        "x": 49,
+        "y": 43,
+        "tacticalLevel": 0
+      },
+      "cost": 30,
+      "barePointLOS": true,
+      "actualDoctorPostureLOS": true,
+      "remainingTreatmentPlan": true
+    }
+  ],
+  "nativeOrders": 0
+}

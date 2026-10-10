@@ -25,6 +25,7 @@ import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {fight as fightOpeningBattle} from './opening-driver.mjs';
 import {artilleryProfile} from '../game/artillery-definitions.js';
 import {recoverRecapturedRoad} from './recovery-road-care.mjs';
+import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -41,13 +42,19 @@ export function northernHospitalCoverOrder(battle,unit){
 // Continue the actual wounded survivor at Buenos Aires. Recruitment hydration
 // uses the same createBattle record and NPC position as the application's talk handler.
 export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
- let c=decodeSave(encodeSave(start)).campaign;
+ const inputCapture=recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-input',campaign:start});
+ let c=start;
+ try{
+ c=decodeSave(encodeSave(start)).campaign;
  const order=a=>{
   const elapsed=a.type==='wait'?a.hours:a.type==='travel'?48:0;
   if(elapsed)for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured)){
    while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<=c.hour+elapsed){const contract=c.contracts[id],next=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(next.lastError,null,next.lastError);c=next;}
   }
-  c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
+  const before=c,diagnosticBefore=a.type==='travel'?captureRouteStrategicInput(c):null;
+  c=dispatchCampaign(c,a);
+  if(c.lastError&&a.type==='travel')recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'campaign-action-refusal',campaign:diagnosticBefore??before,action:a,returnedCampaign:c,inputCapture,error:c.lastError,preDispatchInputIndependentlyCloned:diagnosticBefore!==null});
+  assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
  };
  const patients=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.hp<r.maxHp;});
  assert.ok(patients.length&&patients.length<6,'a real wounded survivor needs relief');
@@ -199,6 +206,9 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  return c;
+ }catch(error){
+  recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;
+ }
 }
 
 // Use one native controller run, then replay only its issued orders. The official

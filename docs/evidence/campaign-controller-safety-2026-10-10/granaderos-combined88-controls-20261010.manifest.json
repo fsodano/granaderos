@@ -1,0 +1,138 @@
+{
+  "complete": true,
+  "archive": {
+    "path": "granaderos-combined88-controls-20261010.tar.gz",
+    "bytes": 1407231,
+    "sha256": "841b3ef145d10ab276de7f7e3cbede346c28938b656aa8aff2c2f72ed7cceb92",
+    "originalExternalPath": "/tmp/granaderos-combined88-controls-20261010.tar.gz"
+  },
+  "sourceDirectory": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z",
+  "allSourceRunFilesIncluded": true,
+  "sourceRunFileCount": 9,
+  "memberCount": 10,
+  "regularFilesOnly": true,
+  "allMembersReadAndHashVerified": true,
+  "allOriginalFilesPreservedAndRechecked": true,
+  "report": {
+    "path": "/tmp/granaderos-combined88-controls-20261010.report.md",
+    "bytes": 2201,
+    "sha256": "c865e7c83ae7643b9cb92069b0b5d2392a0ed0f2b21fe8c8cb29e923b788cdea"
+  },
+  "originalFinalReceiptSha256": "87e5e40b6d5ed4e34c2495928f51cdf844a45a3476fb7dfba7996fd04327acc4",
+  "scope": "88 focused controls across 18 files; not original route acceptance",
+  "counts": {
+    "tests": 88,
+    "suites": 0,
+    "pass": 88,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceFilesBound": 14171,
+  "sourceSnapshotSha256": "c9c090c0d6912135b38449b6f09854904e40d988c8ebc594e5d6820328b57fc4",
+  "canonicalIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "c132c162f024",
+    "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "revision": "dd15b8bd99c55a8e4540b67cc9bf66b8053d2eb7"
+  },
+  "sourceDrift": [],
+  "invocations": 1,
+  "filters": [],
+  "seedChanges": 0,
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "pids": {
+    "parent": 82220,
+    "child": 82244
+  },
+  "processesGone": {
+    "parent": true,
+    "child": true
+  },
+  "archivePreparationNativeActions": 0,
+  "archivePreparationSelectors": 0,
+  "archivePreparationControllerCalls": 0,
+  "archivePreparationTestInvocations": 0,
+  "sourceEdits": 0,
+  "stagingActions": 0,
+  "prsCreated": 0,
+  "pushes": 0,
+  "originalRouteVictoryClaim": false,
+  "members": [
+    {
+      "path": "archive-report.md",
+      "sourcePath": "/tmp/granaderos-combined88-controls-20261010.report.md",
+      "bytes": 2201,
+      "sha256": "c865e7c83ae7643b9cb92069b0b5d2392a0ed0f2b21fe8c8cb29e923b788cdea",
+      "origin": "new archive report only"
+    },
+    {
+      "path": "combined88-focused-run/after-source-hashes.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/after-source-hashes.json",
+      "bytes": 1889828,
+      "sha256": "c9c090c0d6912135b38449b6f09854904e40d988c8ebc594e5d6820328b57fc4",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/before-source-hashes.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/before-source-hashes.json",
+      "bytes": 1889828,
+      "sha256": "c9c090c0d6912135b38449b6f09854904e40d988c8ebc594e5d6820328b57fc4",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/executed-wrapper.mjs",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/executed-wrapper.mjs",
+      "bytes": 5496,
+      "sha256": "0f21d0465e3e08ca0ff032ea3720ece8e24c890e9aa55c443aca0c9e4cf7cd35",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/final-receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/final-receipt.json",
+      "bytes": 2028,
+      "sha256": "87e5e40b6d5ed4e34c2495928f51cdf844a45a3476fb7dfba7996fd04327acc4",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/metadata.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/metadata.json",
+      "bytes": 2497,
+      "sha256": "43a67c96c97586d87a3866161e008a2c824b630312250f0056fca578395e7c66",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/native-failures/82253-1-mendoza-controller-decision-p0ooy9/controller-decision.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/native-failures/82253-1-mendoza-controller-decision-p0ooy9/controller-decision.json",
+      "bytes": 974437,
+      "sha256": "16fbd4f896a0a76798deab287295f677360dee0eab5825fb1405056384be5c99",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/native-failures/82253-1-mendoza-controller-decision-p0ooy9/receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/native-failures/82253-1-mendoza-controller-decision-p0ooy9/receipt.json",
+      "bytes": 1829,
+      "sha256": "dcbd093354fbc61a02c18c456bfe2e06f786567e443fcafbafaf1c6f7fee6c99",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/pid.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/pid.json",
+      "bytes": 30,
+      "sha256": "9da2e3afa32963eb9871bdc50f2ea997f835632a062898c6a67d07182c819232",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "combined88-focused-run/run.log",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T095929209Z/run.log",
+      "bytes": 21364,
+      "sha256": "81ea5e16c931683c916153df4f3f3b5007f1e5520590eb48aac268f13c23997f",
+      "origin": "original retained run file"
+    }
+  ],
+  "originalExternalManifestSha256": "7cdf81c6737b0b855f0012ecf3371d3d78a19ae8538c44c5eb932798a5158ad7",
+  "originalExternalManifest": "/tmp/granaderos-combined88-controls-20261010.manifest.json",
+  "rootIndependentlyVerifiedAllMembers": true,
+  "rootVerifiedMemberCount": 10
+}

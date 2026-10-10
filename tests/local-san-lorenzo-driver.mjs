@@ -23,6 +23,20 @@ function teammateAidOrder(b,u){
  const patient=patients[0];
  return patient?(u.activeSlot==='medical'?{type:'heal',targetId:patient.id}:{type:'weapon',slot:'medical'}):null;
 }
+function criticalAllyRescueOrder(b,u,perceived){
+ if(!live(u)||u.hp<15||!(u.medical>0&&u.medkits>0))return null;
+ const patients=b.units.filter(patient=>patient.side===u.side&&patient.id!==u.id&&patient.missionAlly&&!patient.departure&&!patient.surrendered&&!patient.routed&&criticalFirstAidNeeded(patient)&&sameSurface(u,patient))
+  .sort((a,c)=>a.hp-c.hp||String(a.id).localeCompare(String(c.id)));
+ const adjacent=patients.find(patient=>distance(u,patient)<=1.5&&hasLineOfSight(b,u,patient)&&treatmentPlan(b,u,patient).valid);
+ if(adjacent)return u.activeSlot==='medical'?{type:'heal',targetId:adjacent.id}:{type:'weapon',slot:'medical'};
+ if(!patients.length)return null;
+ // Reserve the actual preparation and finite treatment cost before moving.
+ // Native movement can still interrupt; the next decision rechecks the state.
+ const moves=getReachable(perceived,u).filter(point=>point.cost>0&&point.cost<=32);
+ const routes=patients.flatMap(patient=>moves.filter(point=>sameSurface(point,patient)&&distance(point,patient)<=1.5&&hasLineOfSight(b,{...u,...point},patient)&&treatmentPlan(b,{...u,ap:u.ap-point.cost},patient).valid).map(point=>({patient,point})))
+  .sort((a,c)=>a.patient.hp-c.patient.hp||a.point.cost-c.point.cost||String(a.patient.id).localeCompare(String(c.patient.id))||a.point.y-c.point.y||a.point.x-c.point.x);
+ return routes[0]?{type:'move',...spacePoint(routes[0].point)}:null;
+}
 function woundedAllyOrder(b,u,perceived,visible){
  if(!needsAid(u))return null;
  const doctors=b.units.filter(doctor=>doctor.side===u.side&&doctor.id!==u.id&&live(doctor)&&doctor.hp>=15&&sameSurface(u,doctor)&&treatmentPlan(b,doctor,u).valid);
@@ -52,6 +66,7 @@ export function localSanLorenzoOrder(b,u,{avoidCivilians=false}={}){
  function* candidates(){
   const selfAid=u.bleeding&&firstAidPlan(u,u).valid;
   if(selfAid)yield u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'};
+  const rescue=criticalAllyRescueOrder(b,u,perceived);if(rescue)yield rescue;
   const aid=teammateAidOrder(b,u);if(aid)yield aid;
   if(!selfAid&&u.activeSlot==='medical')yield {type:'weapon',slot:'primary'};
   if(u.knockedDown)yield {type:'stance',stance:'standing'};

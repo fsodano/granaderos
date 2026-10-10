@@ -280,6 +280,20 @@ function investigate(state, unit, known, costs, paths) {
   return choices.length ? moveOrder(state,unit,choices[0].cell) : null;
 }
 
+// A squad's current sighting can guide a player search without becoming this
+// soldier's remembered contact or extending his own firing visibility.
+export function choosePlayerSharedSightingInvestigation(state,unit,sighting){
+ if(!unit||unit.side!=='player'||!state.units.includes(unit)||!active(unit)||state.status!=='active'||unit.ap<=0)return null;
+ if(!sighting||!state.units.includes(sighting)||sighting.side===unit.side||!active(sighting)||!sameSurface(unit,sighting))return null;
+ if(!Number.isInteger(sighting.x)||!Number.isInteger(sighting.y)||sighting.x<0||sighting.y<0||sighting.x>=state.width||sighting.y>=state.height)return null;
+ const observers=state.units.filter(other=>other.side===unit.side&&active(other)&&other.hp>=15);
+ const observed=point=>observers.some(observer=>canSee(state,observer,point));
+ if(!observed(sighting))return null;
+ const point=planningPoint(sighting,Boolean(state.upperSurfaces?.length));
+ const perceived={...state,units:state.units.filter(other=>other.side===unit.side||observed(other)),npcs:(state.npcs??[]).filter(observed)};
+ return investigate(perceived,unit,point,actionCosts(state,unit),()=>getReachable(perceived,unit));
+}
+
 // A remembered or observed position can justify a route through public access
 // links. The unlimited search is read-only geometry planning; the next order
 // remains bounded by this turn's AP and is revalidated by the reducer.

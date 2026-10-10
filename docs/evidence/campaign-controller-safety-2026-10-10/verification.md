@@ -173,8 +173,9 @@ Passive captures are ready for Los Patos preparation boundaries, actual shared
 contact/null controller decisions, and coastal field-care/hire-wait transitions.
 They retain accepted replay/postcombat orders with explicit trace scope limits.
 These diagnostics issue no extra orders, change no decisions and normalize no
-saved state. Current original route acceptance, the final full gate, PR and merge remain
-pending. The tested 70-path checkpoint is committed as `0b53d3fb`; new grounded
+saved state. Current original route acceptance, the final full gate and merge remain
+pending. [PR #330](https://github.com/fsodano/granaderos/pull/330) is open as a
+draft while the observed barriers are corrected. The tested 70-path checkpoint is committed as `0b53d3fb`; new grounded
 corrections require their own validation.
 
 
@@ -205,3 +206,96 @@ stages skipped. These are observed barriers, not completed campaign routes.
 Current strategic preparation inputs require separate passive capture before
 selecting a correction. The original Los Patos preparation boundary was not
 reached by this gate.
+
+
+The [strategic passive-source receipt](strategic-passive-static-receipt.json)
+records syntax checks and reconstruction of the unchanged native order logic
+in stock Tucumán readiness, Cuyo army funding and northern doctor recovery.
+Their raw entry/refusal/private-failure captures are opt-in and cannot issue
+orders, settle battles, normalize saves or replace original errors. No route
+acceptance is inferred from this static check.
+
+
+The [new typecheck/build receipt](shared-sighting-build-typecheck.json) records
+a passing typecheck and fresh static build for canonical production identity
+`c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026`.
+The build verifies 1,377 export files and 1,045 asset references. The optional
+player shared-sighting investigation wrapper reuses native point investigation;
+its export does not change `chooseEnemyAction`. Its explicit opening-controller
+call requires separate original-route acceptance. These build results do not
+prove route victory, user-facing integration of the optional helper or native
+C++ engine acceptance.
+
+
+## Earned shared-sighting control
+
+The [shared-sighting archive](granaderos-opening-shared-sighting-controls-20261010.tar.gz)
+and [manifest](granaderos-opening-shared-sighting-controls-20261010.manifest.json)
+retain all 46 verified members. The first two-control run failed a newly added
+transient-duration expectation; it had already accepted the same paid move.
+Correcting that expectation to the existing combat-clock contract yielded
+two passing controls with zero bound-source drift. Actor 124 moved one cell
+while prone, paid 16 internal AP and 3 energy, and kept his HP, ammunition and
+supplies. The native round clock remained unchanged. `chooseEnemyAction`
+remains byte-equivalent. The [report](granaderos-opening-shared-sighting-controls-20261010.report.md)
+distinguishes its game-file hash map from the canonical build digest. This
+optional test-controller fallback does not prove the original Córdoba victory
+or full campaign acceptance.
+
+
+## Earned critical ally rescue
+
+The [critical ally rescue archive](granaderos-coastal-critical-ally-rescue-evidence-20261010.tar.gz)
+and [manifest](granaderos-coastal-critical-ally-rescue-evidence-20261010.manifest.json)
+retain all 1,891 verified members. One exact pinned replay accepts the original
+166 combat and six postcombat actions and matches every captured pair and
+clock boundary, including the commander's original death at order 169.
+A source-pin admission failure accepted no orders and remains preserved.
+
+The earned state before original order 132 has commander 57 at 5 HP with
+bleeding 2 and supplied medic 137 close enough to approach. The bounded
+current controller moves the medic to an actual reachable adjacent cell,
+equips his medical slot and pays for one native treatment. It spends 39
+internal AP and one dressing: commander HP rises to 11 and bleeding stops.
+This is partial critical care; the combat round remains at 51 elapsed seconds.
+The [checks receipt](coastal-critical-ally-rescue-checks.json) records 15 passing
+focused rescue, previous field-care and civilian-fire-safety cases. Current
+original hired-route victory and complete recovery remain unproven until
+the original affected gate runs on the combined source.
+
+
+## Combined current controls
+
+The [combined control receipt](combined88-focused-gate-receipt.json) records
+88 passing tests across 18 files, zero skips and zero source drift. The
+[complete archive](granaderos-combined88-controls-20261010.tar.gz) retains all
+nine original run files and its report; all ten members passed independent
+byte and hash checks. Its canonical production source is `c132c162f024`, with
+revision `dd15b8bd`. These focused controls do not establish original route
+acceptance.
+
+## Unchanged main comparison
+
+The [main receipt](unchanged-main-original-gate-receipt.json) records one
+execution of the original five files on clean main `462abba`: six passes,
+five failures and five skips. All 14,098 source hashes matched. The
+[complete baseline archive](granaderos-current-main-baseline-evidence-20261010.tar.gz)
+retains all 29 members, including native failure inputs and terminal saves,
+the run log, wrapper, source maps and clean-main receipt. All members passed
+independent byte and hash checks. No recovery checkpoint was emitted.
+
+Main failed the Córdoba care-defense, created Mendoza survivor, Los Patos
+and established opening routes. The opening child and parent count as two
+failures. Hired coastal passed on main; the retained c7 candidate postcombat
+commander death is a regression. The new partial critical-care control does
+not establish recovery of that original hired route. The comparison used
+default seeds and unchanged assertions, with no filters or reruns.
+
+
+Final review found that the rescue destination sight check used a bare cell
+and therefore assumed a standing observer. It now retains the medic's actual
+posture. The [prior review](critical-ally-rescue-final-review.json) confirms
+that the earned crouched medic's destination was already valid. After this
+planning correction, the [new focused receipt](posture-aware88-focused-gate-receipt.json)
+records another 88/88 pass with zero skips and source drift. The production
+digest remains `c132c162f024`; the changed code is in the route controller.

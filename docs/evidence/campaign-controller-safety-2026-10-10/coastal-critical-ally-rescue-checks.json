@@ -1,0 +1,87 @@
+{
+  "ownedPaths": [
+    {
+      "path": "tests/local-san-lorenzo-driver.mjs",
+      "bytes": 10444,
+      "sha256": "7a85871eb7374b0100d7c42134340542e41a7028744c09eb88915f3a214252aa"
+    },
+    {
+      "path": "tests/local-san-lorenzo-critical-ally-rescue.test.mjs",
+      "bytes": 6691,
+      "sha256": "5f9897b974fa9078da33a54c088368f1e25dfe08579ae9b1bcdc9ba49783756b"
+    },
+    {
+      "path": "tests/fixtures/san-lorenzo-earned-critical-ally-rescue.battle.json.gz",
+      "bytes": 90451,
+      "sha256": "78690c71391b522a77235e040165544f35b2389091020091eb27d9c9ad23df7c"
+    },
+    {
+      "path": "tests/fixtures/san-lorenzo-earned-critical-ally-rescue.provenance.json",
+      "bytes": 28948,
+      "sha256": "7e6a7e15f66c785a7a2d2f878f101a4491ae3133bbd2f44ac7e70bbde10daf71"
+    }
+  ],
+  "scope": "Acceptance controller, exact earned fixture/provenance and four focused controls only. No production edit, staging, push, full route or alternative full fight.",
+  "focusedTests": {
+    "command": "env -u NODE_OPTIONS /opt/homebrew/Cellar/node/25.9.0_2/bin/node --test tests/local-san-lorenzo-critical-ally-rescue.test.mjs tests/local-san-lorenzo-field-care.test.mjs tests/local-san-lorenzo-safety.test.mjs",
+    "exitCode": 0,
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "log": "/tmp/granaderos-coastal-critical-ally-rescue-focused-20261010.log",
+    "logSha256": "f7ee9f8b58b9de71e412c30bea61accc952a1fc05ac084e1ff72c95ba6541958"
+  },
+  "scopedDiffCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "exactReplay": {
+    "receipt": "/tmp/granaderos-coastal-original166-pinned-causal-20261010/receipt.json",
+    "receiptSha256": "789c9d18e3e86901fe04da092f71331a3a629595a477b68b4d74cb70a1be6fbc",
+    "originalCombatOrders": 166,
+    "originalPostcombatOrders": 6,
+    "allAccepted": true,
+    "allRecordedBoundariesAndFullTerminalPairsMatched": true
+  },
+  "boundedNativeControl": {
+    "receipt": "/tmp/granaderos-coastal-critical-ally-rescue-controls-20261010/receipt.json",
+    "receiptSha256": "d82eb44bca93854e3b26dc43f51c77657df64c13fc3c43f499189dfc4d2ecf89",
+    "acceptedOrders": 3,
+    "commanderHP": [
+      5,
+      11
+    ],
+    "commanderBleeding": [
+      2,
+      0
+    ],
+    "medicAP": [
+      100,
+      61
+    ],
+    "medicDressings": [
+      1,
+      0
+    ],
+    "fullRecovery": false
+  },
+  "failedAdmissions": [
+    {
+      "reason": "Strict original-source guard rejected current changed tactical-ai helper during import.",
+      "nativeOrders": 0,
+      "log": "/tmp/granaderos-coastal-original166-causal-observer-20261010.log"
+    },
+    {
+      "reason": "Python archive setup failed because the installed tarfile API does not support the filter argument; the absent observer then failed syntax/entrypoint loading. The saved source archive was extracted with tar before the single successful172 replay.",
+      "nativeOrders": 0,
+      "entrypointLog": "/tmp/granaderos-coastal-original166-pinned-causal-observer-20261010.log",
+      "setupTranscript": "Tool output only; no durable setup transcript fabricated."
+    }
+  ],
+  "limitations": [
+    "The original commander death at original order169 remains in immutable exact evidence and the new fixture.",
+    "The rescue is partial critical first aid using one dressing, not full recovery.",
+    "No corrected full battle/route or campaign settlement was run. Root coordinates route acceptance.",
+    "Original replay uses exact checkpoint0b53d3fb35c67e6188926e71a221caf5ba1ed0f0; bounded controls separately identify current candidate helper sources."
+  ]
+}

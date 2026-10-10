@@ -1,0 +1,241 @@
+{
+  "archive": "granaderos-current-main-baseline-evidence-20261010.tar.gz",
+  "members": [
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/after-source-hashes.json",
+      "type": "file",
+      "bytes": 1879000,
+      "sha256": "c17ded8a4fd569c06731545a03f3adbaa2f992b9c3176e961ba739448dcab65a",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/after-source-hashes.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/before-source-hashes.json",
+      "type": "file",
+      "bytes": 1879000,
+      "sha256": "c17ded8a4fd569c06731545a03f3adbaa2f992b9c3176e961ba739448dcab65a",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/before-source-hashes.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/executed-wrapper.mjs",
+      "type": "file",
+      "bytes": 5956,
+      "sha256": "954f6b6cf0e479f4cb941be57436a10a3abdd431db7a7f404d4c7776d3b5b042",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/executed-wrapper.mjs",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/final-receipt.json",
+      "type": "file",
+      "bytes": 1898,
+      "sha256": "14bd8c8bd5b7a87f57370135b180471ca2c8421bbf4bbb81d10c9ffbf0382fe4",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/final-receipt.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/main-after.json",
+      "type": "file",
+      "bytes": 133,
+      "sha256": "f3178923e595b59c6fb76e5e76da85ef738326f0cda0103afc588923ecff7184",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/main-after.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/main-before.json",
+      "type": "file",
+      "bytes": 133,
+      "sha256": "f3178923e595b59c6fb76e5e76da85ef738326f0cda0103afc588923ecff7184",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/main-before.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/metadata.json",
+      "type": "file",
+      "bytes": 1409,
+      "sha256": "cac729b2ad099d7633c6e5dbc8ce6fb53a95202f36da3b9e20a90b169a7870a9",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/metadata.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/native-input.json",
+      "type": "file",
+      "bytes": 5378947,
+      "sha256": "2d85ec7a76e0f2870bffa38cbbcd83a5c1dfb5257588f18f26f0b88be7aa5c0d",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/native-input.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/native-result.json",
+      "type": "file",
+      "bytes": 890820,
+      "sha256": "2a7742d45a56307ebb61255681b6b709e924b5acf1097b58d4ccedf486cfcc91",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/native-result.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/receipt.json",
+      "type": "file",
+      "bytes": 1360,
+      "sha256": "9a18c6884013ce4e878c62a8fc8b2bff3a57d2d684f78a1abee9092a5432982d",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/receipt.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/terminal.save.json",
+      "type": "file",
+      "bytes": 1126542,
+      "sha256": "463deec4270ca439508b289421098e25e76209a913d9834d9ea64cf3604bdc4b",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81104-1-defense-enemy-group-1-150-unGnSc/terminal.save.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/native-input.json",
+      "type": "file",
+      "bytes": 7629339,
+      "sha256": "bcc33db01bb18ed9384e2f7e2d09396f1cd107167b3de296a2eaf4f3acbce525",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/native-input.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/native-result.json",
+      "type": "file",
+      "bytes": 1067595,
+      "sha256": "451b6f1f065646672993c19e6d1a9954b6465a48f23693ea9b6dec91d9cb3350",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/native-result.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/receipt.json",
+      "type": "file",
+      "bytes": 1510,
+      "sha256": "278284642739f6a59f78f01871f4a5589b1b65fafe582ca4de2ed7eb1935b1f5",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/receipt.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/returned-campaign.json",
+      "type": "file",
+      "bytes": 7759704,
+      "sha256": "83c03d3c927e7a79228c24a1b271917b43f17edf82a6a247dadd6d22a174085e",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/returned-campaign.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/terminal.save.json",
+      "type": "file",
+      "bytes": 1740082,
+      "sha256": "5a8ac6e88a776a50d86d957b8e2f8057fcc6753da1ce090fc3568d626dde7235",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81106-1-mendoza-514-2591988814-eZR7KO/terminal.save.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/native-input.json",
+      "type": "file",
+      "bytes": 9291949,
+      "sha256": "a3fa1ae6476d5f43541797bb54069417df1e14a992f7d3bafe720aff3385a89a",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/native-input.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/native-result.json",
+      "type": "file",
+      "bytes": 538297,
+      "sha256": "43a2231fba97830cda40a7e6e125cd122b0e04478b5a7c2dda8eda93a74cbcf6",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/native-result.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/receipt.json",
+      "type": "file",
+      "bytes": 1352,
+      "sha256": "659078fb805c4ffac1e5bd6810e3cbe8c9adbccafd4970227d0aefa3edd9de35",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/receipt.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/terminal.save.json",
+      "type": "file",
+      "bytes": 1874507,
+      "sha256": "0119d1a74eb392a0557cec5f4ac8c19bb6263028478cf21b7b87db95ae7b5cb3",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81107-1-los_patos-654-4162937008-kcKDxl/terminal.save.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/native-input.json",
+      "type": "file",
+      "bytes": 2631132,
+      "sha256": "80003047ee597852b84879d577b593de236e77e554de9d082facf4aacd59df30",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/native-input.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/native-result.json",
+      "type": "file",
+      "bytes": 817757,
+      "sha256": "5ce890283d46467024ba93b9f570b7d75a7ff297cd9ab8f99e97b98fadd258e2",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/native-result.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/receipt.json",
+      "type": "file",
+      "bytes": 1360,
+      "sha256": "d5ec1267b6afb160e613e68f03a21deb87a2ab2454b572bd45224c18ede5cfbf",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/receipt.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/terminal.save.json",
+      "type": "file",
+      "bytes": 690922,
+      "sha256": "d69c8007bdb0f7343c48ba0fa31465e951c866778ca04c9d70e4e095fe1501e9",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/native-failures/81108-1-cordoba-84-18026106-XTg8Td/terminal.save.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/pid.json",
+      "type": "file",
+      "bytes": 30,
+      "sha256": "82b6f257d349d554e3aab6467e250a3bd089601a3c2ebb69534dc5cb3362d76c",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/pid.json",
+      "byteMatch": true
+    },
+    {
+      "path": "granaderos-current-main-baseline-affected-2026-10-10T094953793Z/run.log",
+      "type": "file",
+      "bytes": 18118,
+      "sha256": "07be73322b7cb858f7a5e99bf4060bc4b005be606e614fb7fdb4d52bf09e6407",
+      "externalSource": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z/run.log",
+      "byteMatch": true
+    },
+    {
+      "path": "baseline-evidence/evidence-report.json",
+      "type": "file",
+      "bytes": 3497,
+      "sha256": "e24df84e9a1598b130de85852384df4062fae002b544a04b968988eba0f9b451",
+      "externalSource": "/tmp/granaderos-current-main-baseline-packaging-20261010/evidence-report.json",
+      "byteMatch": true
+    },
+    {
+      "path": "baseline-evidence/evidence-report.md",
+      "type": "file",
+      "bytes": 956,
+      "sha256": "16f459b18113c6c9a3654de63d368acb59c5b1230d75fc6dfc2f402a07146ac8",
+      "externalSource": "/tmp/granaderos-current-main-baseline-packaging-20261010/evidence-report.md",
+      "byteMatch": true
+    },
+    {
+      "path": "baseline-evidence/main-clean-receipt.json",
+      "type": "file",
+      "bytes": 1977,
+      "sha256": "c7b021a7ac17e4e85c3451c5fd06e3748aff6bb671b20580a2c015179bd051ba",
+      "externalSource": "/tmp/granaderos-current-main-baseline-packaging-20261010/main-clean-receipt.json",
+      "byteMatch": true
+    }
+  ],
+  "originalExternalManifestSha256": "af29d4d1c66d875e10f71305f96b4bb9a5311fe854e124ae68fde3d2840e91d2",
+  "originalExternalManifest": "/tmp/granaderos-current-main-baseline-evidence-20261010.members.json",
+  "rootIndependentlyVerifiedAllMembers": true,
+  "rootVerifiedMemberCount": 29
+}

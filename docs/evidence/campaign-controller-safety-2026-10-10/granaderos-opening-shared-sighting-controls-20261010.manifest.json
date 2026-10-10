@@ -1,0 +1,272 @@
+{
+  "complete": true,
+  "archive": {
+    "path": "granaderos-opening-shared-sighting-controls-20261010.tar.gz",
+    "bytes": 1732302,
+    "sha256": "d298d7514b2cd4891d7774a458426cb70019befe9e6b6386e0bedbc11c9ae29d",
+    "originalPath": "/tmp/granaderos-opening-shared-sighting-controls-20261010.tar.gz"
+  },
+  "memberCount": 46,
+  "regularFilesOnly": true,
+  "eachMemberReadAndHashVerified": true,
+  "allOriginalFilesPreserved": true,
+  "archivePreparationNativeActions": 0,
+  "archivePreparationNativeSelectors": 0,
+  "archivePreparationControllerInvocations": 0,
+  "sourceSnapshotScheme": "per-file SHA256 and bytes; raw control before/after snapshots remain unchanged",
+  "rawControlProductionIdentity": {
+    "value": "c826db9c921b0111c4428106ee21def69b23e2ce7a6d0feab2b2c700aef04557",
+    "scheme": "SHA256(JSON.stringify(gameRows)) from the control wrapper; game-only binding, not canonical build/source identity",
+    "notEquivalentToPriorCanonical683": true
+  },
+  "rootReportedCanonicalSourceIdentity": {
+    "value": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "tool": "tools/build-identity.mjs",
+    "computedByArchive": false,
+    "acceptanceGateBindingStillRequired": true
+  },
+  "report": {
+    "path": "granaderos-opening-shared-sighting-controls-20261010.report.md",
+    "bytes": 4613,
+    "sha256": "57fabc52a6e4c0c2f3d77bffaa9d7108d03a1a78ff41c77482018c776751f28d",
+    "originalPath": "/tmp/granaderos-opening-shared-sighting-controls-20261010.report.md"
+  },
+  "evidenceLimits": [
+    "No original route victory claim",
+    "No gameplay-user integration claim",
+    "One partial actual null-boundary witness, not a complete route tape"
+  ],
+  "members": [
+    {
+      "path": "archive-report.md",
+      "bytes": 4613,
+      "sha256": "57fabc52a6e4c0c2f3d77bffaa9d7108d03a1a78ff41c77482018c776751f28d"
+    },
+    {
+      "path": "corrected-closed-control-run/after-source-hashes.json",
+      "bytes": 50582,
+      "sha256": "b49fbee9a389e6ffa260e20e77878e6500ea7174b9ce2759dd7d2cd4de6a4197"
+    },
+    {
+      "path": "corrected-closed-control-run/before-source-hashes.json",
+      "bytes": 50582,
+      "sha256": "b49fbee9a389e6ffa260e20e77878e6500ea7174b9ce2759dd7d2cd4de6a4197"
+    },
+    {
+      "path": "corrected-closed-control-run/executed-wrapper.mjs",
+      "bytes": 5189,
+      "sha256": "6eca52f54ceb6bb76418897487b9daa8fb14b5c6c20bda12302861e84ca02818"
+    },
+    {
+      "path": "corrected-closed-control-run/final-receipt.json",
+      "bytes": 1922,
+      "sha256": "1bcbde68b11e4771b5fa18188e0c89c7e5e498f5d37d25a11e6072c7e4a41b96"
+    },
+    {
+      "path": "corrected-closed-control-run/metadata.json",
+      "bytes": 9434,
+      "sha256": "4b320da8e5555368d981d3fca3d984a91ef0e3719af659c1061a702f28505e68"
+    },
+    {
+      "path": "corrected-closed-control-run/pid.json",
+      "bytes": 40,
+      "sha256": "3d5574e723ae7d029841ae862b95d52dee94e70638228a203f80908dc28ff807"
+    },
+    {
+      "path": "corrected-closed-control-run/raw-controls/corrected-native-investigation-control.json",
+      "bytes": 1561667,
+      "sha256": "cb262b23ed8afd08a4ff14052c1791d0cb401812367be0a22fb7fcafe1465929"
+    },
+    {
+      "path": "corrected-closed-control-run/raw-controls/original-native-null-control.json",
+      "bytes": 780603,
+      "sha256": "29083aac9eb52c1dfbec53ac7b7958e7db0e5ede91e47dedce94770d5b5a801a"
+    },
+    {
+      "path": "corrected-closed-control-run/reviewed-source.json",
+      "bytes": 10246,
+      "sha256": "a0a78502c1b4a28a8da84e78dfa93f4e9433a5fd5ff8fefd194df95eec4dac3e"
+    },
+    {
+      "path": "corrected-closed-control-run/run.log",
+      "bytes": 338,
+      "sha256": "54d933a7a356aea3b5848496a66753ea0fdc234c0f71e56dc7cac275034e613e"
+    },
+    {
+      "path": "expectation-history-and-executed-source/corrected-executed-source/game/tactical-ai.js",
+      "bytes": 32759,
+      "sha256": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27"
+    },
+    {
+      "path": "expectation-history-and-executed-source/corrected-executed-source/tests/fixtures/opening-cordoba-shared-sighting.json.gz",
+      "bytes": 33220,
+      "sha256": "31198d1594dc728cf295109eba78863e0895c3a3f1f7339106c0ad44ed6b736f"
+    },
+    {
+      "path": "expectation-history-and-executed-source/corrected-executed-source/tests/fixtures/opening-cordoba-shared-sighting.provenance.json",
+      "bytes": 4540,
+      "sha256": "a63d70bad28fc8ded45451095a2f639006381236ddc546bdf1d12e77ce41fb79"
+    },
+    {
+      "path": "expectation-history-and-executed-source/corrected-executed-source/tests/opening-driver.mjs",
+      "bytes": 6665,
+      "sha256": "e27d393f1374964f538a0cce1bb8493eda9f1fcf5b2c997c025a698403796082"
+    },
+    {
+      "path": "expectation-history-and-executed-source/corrected-executed-source/tests/opening-shared-sighting-investigation.test.mjs",
+      "bytes": 5895,
+      "sha256": "3a868d05f7b5becefef0521b4e21b3f918604ce60f30d5e5ef83e8e8db885aa7"
+    },
+    {
+      "path": "expectation-history-and-executed-source/expectation-history.json",
+      "bytes": 2290,
+      "sha256": "c00eda19db6d255fdceb37eddadb9158b5c425702a10e7b5f1ecf38196c58225"
+    },
+    {
+      "path": "expectation-history-and-executed-source/first-executed-source/tests/opening-shared-sighting-investigation.test.mjs",
+      "bytes": 5738,
+      "sha256": "c2ed9fad7006573434fe83d36d51ccf71cce21a0f977bc433f5904a3eaaba8ea"
+    },
+    {
+      "path": "external-reviews-and-wrappers/granaderos-opening-shared-contact-design-20261010.md",
+      "bytes": 6986,
+      "sha256": "09ce85d9e8801b6790fb46c9c917bcc2003f378136e1cb6c1373eb8aa6398e22"
+    },
+    {
+      "path": "external-reviews-and-wrappers/granaderos-opening-shared-sighting-corrected-scoped-review-20261010.json",
+      "bytes": 10246,
+      "sha256": "a0a78502c1b4a28a8da84e78dfa93f4e9433a5fd5ff8fefd194df95eec4dac3e"
+    },
+    {
+      "path": "external-reviews-and-wrappers/granaderos-opening-shared-sighting-corrected-two-controls-20261010.mjs",
+      "bytes": 5189,
+      "sha256": "6eca52f54ceb6bb76418897487b9daa8fb14b5c6c20bda12302861e84ca02818"
+    },
+    {
+      "path": "external-reviews-and-wrappers/granaderos-opening-shared-sighting-final-handoff-20261010.json",
+      "bytes": 922,
+      "sha256": "50a6baf1b05693a3862ac39742c9e5e9332cfd47b27e595ad09e3481944da965"
+    },
+    {
+      "path": "external-reviews-and-wrappers/granaderos-opening-shared-sighting-scoped-review-20261010.json",
+      "bytes": 9562,
+      "sha256": "13ca2d5fd55211a0ad3d3cfad2cab8c09fe2179b763bd834025d95a6d6fd6efb"
+    },
+    {
+      "path": "external-reviews-and-wrappers/granaderos-opening-shared-sighting-two-controls-20261010.mjs",
+      "bytes": 4984,
+      "sha256": "c40b73e52828ab6861e184f22f0f8781b000ad8ebf6cf0f68796a01ca71d031a"
+    },
+    {
+      "path": "first-closed-control-run/after-source-hashes.json",
+      "bytes": 50582,
+      "sha256": "1201c00da5716fd4350a076577f060ec71d00543e890bfc4077cb53e7ab9158d"
+    },
+    {
+      "path": "first-closed-control-run/before-source-hashes.json",
+      "bytes": 50582,
+      "sha256": "1201c00da5716fd4350a076577f060ec71d00543e890bfc4077cb53e7ab9158d"
+    },
+    {
+      "path": "first-closed-control-run/executed-wrapper.mjs",
+      "bytes": 4984,
+      "sha256": "c40b73e52828ab6861e184f22f0f8781b000ad8ebf6cf0f68796a01ca71d031a"
+    },
+    {
+      "path": "first-closed-control-run/final-receipt.json",
+      "bytes": 1922,
+      "sha256": "ad5ee4788629c1863b29bbf530cb832b74ddcb295889b9dac8ab45507609ff1f"
+    },
+    {
+      "path": "first-closed-control-run/metadata.json",
+      "bytes": 9231,
+      "sha256": "9c8202e73aafadb84560f8f0f9850736a566a0be6f9c3d6396f179d435ae16d6"
+    },
+    {
+      "path": "first-closed-control-run/pid.json",
+      "bytes": 40,
+      "sha256": "0927e54dffb6d9aec75fde699bfd739fe6c8dfcfc11c386204a95e55c7c8d0f9"
+    },
+    {
+      "path": "first-closed-control-run/raw-controls/corrected-native-investigation-control.json",
+      "bytes": 1561809,
+      "sha256": "a4a3cf125f1aa293379430411d3cb512d94c539ff3f89c5f41170f04e7be59a1"
+    },
+    {
+      "path": "first-closed-control-run/raw-controls/original-native-null-control.json",
+      "bytes": 780603,
+      "sha256": "29083aac9eb52c1dfbec53ac7b7958e7db0e5ede91e47dedce94770d5b5a801a"
+    },
+    {
+      "path": "first-closed-control-run/raw-result-passive-audit.json",
+      "bytes": 851,
+      "sha256": "a464bdf95e5fd2309dab9d31e74b41861af73152fa1f2fc02159fce8305ebd96"
+    },
+    {
+      "path": "first-closed-control-run/reviewed-source.json",
+      "bytes": 9562,
+      "sha256": "13ca2d5fd55211a0ad3d3cfad2cab8c09fe2179b763bd834025d95a6d6fd6efb"
+    },
+    {
+      "path": "first-closed-control-run/run.log",
+      "bytes": 1333,
+      "sha256": "3eb0c4da33867583fb1ddbb62c67645facb8bf2b9df8f2458d3c2cc82aa27774"
+    },
+    {
+      "path": "original-gate-binding/after-source-hashes.json",
+      "bytes": 1886498,
+      "sha256": "c7a3e4fca512b42d80b0ee3e5bd26daad0967822b60713f50a39411e66d224bd"
+    },
+    {
+      "path": "original-gate-binding/before-source-hashes.json",
+      "bytes": 1886498,
+      "sha256": "c7a3e4fca512b42d80b0ee3e5bd26daad0967822b60713f50a39411e66d224bd"
+    },
+    {
+      "path": "original-gate-binding/executed-wrapper.mjs",
+      "bytes": 5212,
+      "sha256": "baeac3c7ef3a044a244b46d42c770235843b851f1774e1fcc003f98ae93e7638"
+    },
+    {
+      "path": "original-gate-binding/final-receipt.json",
+      "bytes": 1816,
+      "sha256": "c9371b861e86a409ff2f8c2598d3961c649a6d70741468205c66ba460d9fa307"
+    },
+    {
+      "path": "original-gate-binding/metadata.json",
+      "bytes": 1232,
+      "sha256": "f28084a00ffc9589bccc5f98ea87c185a433d6c58f33764d8c94c0d0f6bb0cae"
+    },
+    {
+      "path": "original-gate-binding/pid.json",
+      "bytes": 30,
+      "sha256": "4f6cb552058e5d233bbc57ccbde16305b160690680056db93c09555193c30fc7"
+    },
+    {
+      "path": "original-independent-witness/controller-decision.json",
+      "bytes": 786956,
+      "sha256": "6f0b96dccd46b38a8e3225ceb1aee27db4995d9a6e7a8458de159dfd448249b4"
+    },
+    {
+      "path": "original-independent-witness/receipt.json",
+      "bytes": 1812,
+      "sha256": "cfe10c274aeff466f551f1550a04022f08ecd6eb53f01f31f872bc5954067431"
+    },
+    {
+      "path": "original-source-before-correction/before-receipt.json",
+      "bytes": 750,
+      "sha256": "5e64c1f5084b91c2459895486a87b43b4eea934c0db5419b365656870573ccdd"
+    },
+    {
+      "path": "original-source-before-correction/game/tactical-ai.js",
+      "bytes": 31581,
+      "sha256": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4"
+    },
+    {
+      "path": "original-source-before-correction/tests/opening-driver.mjs",
+      "bytes": 5818,
+      "sha256": "3b8b0c4d4f4f60dea5a972d55a0008afeab9b676235b50a83ce10f4f73154dcd"
+    }
+  ],
+  "originalExternalManifestSHA256": "60f3a7b518e70e456673560f4a24c85718da6eb9eb41c3df9112e71d1ec076ae"
+}
