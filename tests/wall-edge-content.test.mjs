@@ -8,6 +8,7 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
 import {destroyStructure} from '../game/structure-blast.js';
 import {buildBuilding} from '../game/buildings.js';
+import {createMapPlaytest} from '../game/map-playtest.js';
 const edit=(doc,commands)=>{const result=applyMapCommands(doc,commands);assert.deepEqual(result.errors,[]);return result.document;};
 const house=()=>edit(blankMap({width:12,height:12}),[{type:'addBuilding',building:{id:'house',x:2,y:2,width:5,height:4}}]);
 
@@ -88,4 +89,24 @@ test('authoring route checks include initially locked doors without opening the 
  const invalid=house();invalid.terrain[0]={...invalid.terrain[0],type:'wall',blocked:true};
  assert.equal(validateMap(invalid).valid,false);assert.throws(()=>serializeMap(invalid));
  invalid.schemaVersion=1;const converted=parseMap(serializeMap(invalid));assert.equal(converted.terrain[0].type,'grass');assert.equal(converted.wallEdges.length,1);assert.equal(converted.wallEdges[0].type,'wall');
+});
+
+test('map admission rejects displaced or malformed wall metadata before native playtest',()=>{
+ const invalid=[{tacticalLevel:-1},{tacticalLevel:1},{tacticalLevel:8},{tacticalLevel:'0'},{tacticalLevel:null},{tacticalLevel:.5},{elevation:-1},{elevation:1},{elevation:1000},{elevation:'0'},{elevation:null},{blocked:'true'},{blocksSight:null},{open:1},{locked:'false'},{cover:-1},{cover:101},{cover:'40'},{material:3},{material:null},{material:'unknown'},{obstacleHeight:-1},{obstacleHeight:11},{obstacleHeight:'2'},{projectileResistance:1001},{concealment:101},{structureDamage:101},{destroyed:'true'}];
+ for(const owner of ['standalone','building'])for(const fields of invalid){
+  const doc=owner==='standalone'?blankMap({width:8,height:8}):house();doc.spawns=[{id:'player',x:0,y:0,side:'player'}];
+  const edge=owner==='standalone'?{id:'free-wall',x:4,y:3,axis:'y',type:'wall'}:doc.buildings[0].walls[0];
+  if(owner==='standalone')doc.wallEdges=[edge];Object.assign(edge,fields);
+  assert.equal(validateMap(doc).valid,false,`${owner}: ${JSON.stringify(fields)}`);assert.throws(()=>createMapPlaytest(doc));assert.throws(()=>serializeMap(doc));
+ }
+ for(const owner of ['standalone','building']){
+  const doc=owner==='standalone'?blankMap({width:8,height:8}):house();doc.spawns=[{id:'player',x:0,y:0,side:'player'}];
+  const edge=owner==='standalone'?{id:'free-wall',x:4,y:3,axis:'y',type:'wall'}:doc.buildings[0].walls[0];
+  if(owner==='standalone')doc.wallEdges=[edge];
+  Object.assign(edge,{tacticalLevel:0,elevation:0,blocked:true,blocksSight:true,cover:35,material:'wood',obstacleHeight:1.2,projectileResistance:70,concealment:20,structureDamage:12,destroyed:false});
+  assert.equal(validateMap(doc).valid,true);assert.doesNotThrow(()=>validateBattleSnapshot(createMapPlaytest(parseMap(serializeMap(doc)))));
+ }
+ const door=blankMap({width:8,height:8});door.spawns=[{id:'player',x:0,y:0,side:'player'}];door.wallEdges=[{id:'locked-leaf',doorId:'free-door',x:4,y:3,axis:'y',type:'door',open:false,locked:true,blocked:true,blocksSight:true,material:'wood',keyId:'private-key',lockDifficulty:40,lockIntegrity:75,trap:{type:'alarm',difficulty:20,armed:true,discoveredBy:['player']}}];
+ assert.equal(validateMap(door).valid,true);assert.doesNotThrow(()=>validateBattleSnapshot(createMapPlaytest(door)));
+ door.wallEdges[0].blocked=false;assert.equal(validateMap(door).valid,false);
 });

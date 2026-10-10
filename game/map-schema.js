@@ -1,5 +1,8 @@
 import {wallEdgeKey,wallEdgeCells,migrateWallGeometry} from './wall-geometry.js';
 import {BUILDING_TYPES} from './building-types.js';
+import {validateCoverMetadata} from './projectile-cover.js';
+import {STRUCTURE_BLAST,validateStructureDamage} from './structure-blast.js';
+import {validateEnvironment} from './environment-interactions.js';
 import { WALL_FINISHES, ROOF_FINISHES, DOOR_STYLES, WINDOW_STYLES } from "./building-appearance.js";
 import {
   TERRAIN,
@@ -80,6 +83,27 @@ export function validateMap(input, { playable = false } = {}) {
       need = (ok, message) => {
         if (!ok) throw Error(message);
       };
+    const wallMetadata = (wall, {runtime = false} = {}) => {
+      // Map authoring describes ground floors; upper geometry is a separate
+      // runtime layer. A displaced edge must never silently miss that floor.
+      need((wall.tacticalLevel === undefined || wall.tacticalLevel === 0) &&
+        (wall.elevation === undefined || wall.elevation === 0), "La pared debe estar al nivel del suelo.");
+      for (const field of ["blocked", "blocksSight", "open", "locked"])
+        need(wall[field] === undefined || typeof wall[field] === "boolean", "Estado de pared no válido.");
+      need(wall.cover === undefined || Number.isFinite(wall.cover) && wall.cover >= 0 && wall.cover <= 100, "Cobertura de pared no válida.");
+      need(wall.material === undefined || typeof wall.material === "string" && Object.hasOwn(STRUCTURE_BLAST.materials, wall.material), "Material de pared no válido.");
+      validateCoverMetadata(wall);
+      validateStructureDamage(wall);
+      if (wall.type === "door") {
+        // Building compilation derives these two flags from the door state.
+        // Freestanding edges are already runtime records and retain them.
+        if (runtime) {
+          validateEnvironment(wall);
+          need((wall.blocked === undefined || wall.blocked === !wall.open) &&
+            (wall.blocksSight === undefined || wall.blocksSight === !wall.open), "Paso de puerta exterior no válido.");
+        }
+      }
+    };
     need([1, MAP_SCHEMA_VERSION].includes(d.schemaVersion), "Versión de mapa no compatible.");
     need(
       str(d.id) && Number.isSafeInteger(d.revision) && d.revision >= 0,
@@ -128,6 +152,7 @@ export function validateMap(input, { playable = false } = {}) {
         t.buildingId == null && t.roomId == null,
         "La estructura debe estar en la capa de edificios.",
       );
+      if (["wall", "door", "window"].includes(t.type)) wallMetadata(t);
       keys.add(cellKey(t));
     }
     if (d.boundaryRoads !== undefined) {
@@ -146,6 +171,7 @@ export function validateMap(input, { playable = false } = {}) {
       need(Array.isArray(d.wallEdges)&&d.wallEdges.length<=2*d.width*d.height+d.width+d.height,"Bordes de pared no válidos.");
       for(const wall of d.wallEdges){
         need(edgeCoord(wall)&&str(wall.id)&&!ids.has(wall.id)&&!globalWallKeys.has(wallEdgeKey(wall))&&["wall","door","window"].includes(wall.type)&&wall.buildingId==null,"Pared exterior no válida o duplicada.");
+        wallMetadata(wall, {runtime:true});
         ids.add(wall.id);globalWallKeys.add(wallEdgeKey(wall));
         if(wall.type==="door"){
           need(str(wall.doorId)&&(!ids.has(wall.doorId)||wall.doorId===wall.id)&&typeof wall.open==="boolean"&&typeof wall.locked==="boolean","Puerta exterior no válida.");
@@ -198,6 +224,7 @@ export function validateMap(input, { playable = false } = {}) {
       need(!(d.wallEdges??[]).some(edge=>wallEdgeCells(edge).every(c=>c.x>=b.x&&c.x<b.x+b.width&&c.y>=b.y&&c.y<b.y+b.height)), "Las paredes interiores deben estar en el edificio.");
       const wallKeys = new Set();
       for (const w of b.walls) {
+        wallMetadata(w);
         const edge = w.axis !== undefined;
         need(
           (edge ? edgeCoord(w) &&
