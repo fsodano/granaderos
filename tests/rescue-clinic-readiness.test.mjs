@@ -13,8 +13,11 @@ import {northernClinicDefenseOrder} from './northern-route.mjs';
 
 const provenance=JSON.parse(readFileSync(new URL('./fixtures/opening-clinic-earned-exhaustion.provenance.json',import.meta.url),'utf8'));
 const sha=value=>createHash('sha256').update(value).digest('hex');
+// This immutable pre-edge tape has no edge geometry. Keep every historical
+// value in its hashes while omitting the new empty geometry envelope.
+const archivalValue=value=>Array.isArray(value)?value.map(archivalValue):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).filter(([key])=>!(Array.isArray(value.wallEdges)&&value.wallEdges.length===0&&['wallEdges','wallGeometryVersion'].includes(key))).map(([key,value])=>[key,archivalValue(value)])):value;
 const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])):value;
-const stateHash=value=>sha(JSON.stringify(canonical(value)));
+const stateHash=value=>sha(JSON.stringify(canonical(archivalValue(value))));
 const fixture=name=>{const compressed=readFileSync(new URL('./fixtures/'+name,import.meta.url)),raw=gunzipSync(compressed);assert.equal(sha(compressed),provenance.fixtures[name].gzipSha256);assert.equal(sha(raw),provenance.fixtures[name].rawSha256);return raw.toString();};
 const initial=decodeSave(fixture('opening-clinic-earned-exhaustion.save.json.gz')).campaign,patients=[121,126,129,130],doctors=[112,122],courier=102;
 const nativeTapes=JSON.parse(fixture('opening-clinic-preparation-rest-replay.json.gz'));
@@ -26,10 +29,10 @@ function replayRecordedStage(start,stage){
   if(row.kind==='campaign'&&row.action.type==='syncTacticalTime'){assert.equal(child,null);child=row;continue;}
   let result;
   if(row.kind==='campaign'){
-   if(row.action.sectorState&&pair.battle)assert.deepEqual(row.action.sectorState,pair.battle);
+   if(row.action.sectorState&&pair.battle)assert.deepEqual(archivalValue(row.action.sectorState),archivalValue(pair.battle));
    result=dispatchCampaign(pair.campaign,row.action);assert.equal(result.lastError,null);pair.campaign=result;if(['leaveSector','finishBattle','finishDefense'].includes(row.action.type))pair.battle=null;
   }else if(row.kind==='enter'){
-   const args=[pair.campaign.pendingBattle,pair.campaign.sectorStates[pair.campaign.location]];assert.deepEqual(row.args,args);result=enterSector(...args);pair.battle=result;
+   const args=[pair.campaign.pendingBattle,pair.campaign.sectorStates[pair.campaign.location]];assert.deepEqual(archivalValue(row.args),archivalValue(args));result=enterSector(...args);pair.battle=result;
   }else if(row.kind==='tactical'){
    assert.ok(pair.battle);result=actBattle(pair.battle,row.action,row.movementPath);assert.equal(result.lastError,null);pair.battle=result;
   }else if(row.kind==='save')result=decodeSave(encodeSave(pair.campaign,pair.battle));
@@ -73,13 +76,15 @@ test('native rest derives its bound from actual wounds and stops at the same gen
 
 test('repository preparation and rest tapes replay every native order with official midpoint saves',()=>{
  assert.ok(prepared);assert.equal(nativeTapes.preparation.orders.length,99);assert.equal(nativeTapes.rest.orders.length,25);
- const replayedPreparation=replayRecordedStage(initial,nativeTapes.preparation);assert.deepEqual(replayedPreparation,prepared.campaign);
+ const replayedPreparation=replayRecordedStage(initial,nativeTapes.preparation);assert.deepEqual(archivalValue(replayedPreparation),archivalValue(prepared.campaign));
  const replayedRest=replayRecordedStage(replayedPreparation,nativeTapes.rest);assert.equal(stateHash(replayedRest),provenance.expected.restRaidCanonicalSha256);
- assert.deepEqual(replayedRest,decodeSave(fixture('opening-clinic-earned-raid.save.json.gz')).campaign);
+ assert.deepEqual(archivalValue(replayedRest),archivalValue(decodeSave(fixture('opening-clinic-earned-raid.save.json.gz')).campaign));
 });
 
 test('retained native defeat tape settles exact losses and still fails the strict clinic victory requirement',()=>{
  const start=decodeSave(fixture('opening-clinic-earned-raid.save.json.gz')).campaign,before=structuredClone(start),retained=JSON.parse(fixture('opening-clinic-retained-defeat.json.gz'));let settled,evidence,executions=0;
+ assert.ok(retained.battle.wallEdges===undefined||retained.battle.wallEdges.length===0);
+ retained.battle.wallEdges=[];retained.battle.wallGeometryVersion=2;
  assert.equal(retained.orders.length,184);assert.equal(retained.battle.status,'defeat');
  assert.throws(()=>resolveRescueClinicEncounter(start,{executeBattle:(request,snapshot,options)=>{executions++;assert.equal(options.controller,northernClinicDefenseOrder);assert.equal(stateHash(request),provenance.expected.nativeRequestCanonicalSha256);assert.equal(stateHash(snapshot),provenance.expected.nativeSnapshotCanonicalSha256);return structuredClone(retained);},onCheckpoint:(name,campaign,receipt)=>{assert.equal(name,'rescue-clinic-defense');settled=structuredClone(campaign);evidence=receipt;}}),/real clinic defense must win/);
  assert.deepEqual(start,before);assert.equal(executions,1);assert.equal(evidence.exactNativeReplay,true);assert.equal(evidence.midpoint,92);assert.equal(evidence.status,'defeat');assert.equal(stateHash(settled),provenance.expected.settledDefeatCanonicalSha256);
