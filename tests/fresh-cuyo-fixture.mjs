@@ -15,6 +15,7 @@ import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {extractItemQuantity} from '../game/tactical-inventory.js';
 import {createdLosPatosBattery} from './created-los-patos-battery.mjs';
 import {recordRoutePreparationEvidence} from './route-preparation-evidence.mjs';
+import {recoverCreatedCuyoMountainArtillery} from './created-cuyo-artillery.mjs';
 
 const deaths=c=>Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
 
@@ -28,7 +29,7 @@ export function mendozaBatteryController(initial){
 export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='created',coastalCheckpoint,openingCheckpoint,report=()=>{}}={}){
  const prefix=northernCheckpoint?{campaign:northernCheckpoint,notes:[]}:freshNorthernRoute({onCheckpoint,report,routeKind,coastalCheckpoint,openingCheckpoint});
  assert.equal(prefix.campaign.phase,3);assert.equal(prefix.campaign.missions.yatasto.completed,true);assert.equal(prefix.campaign.flags.northPact,true);
- let c=assembleCreatedCuyo(prefix.campaign,{report});const notes=[];
+ let c=assembleCreatedCuyo(prefix.campaign,{report});const notes=[];let mountainBatteryIds=null;
  const checkpoint=(stage,extra={})=>{
   c=saved({campaign:c}).campaign;
   const record={stage,hour:c.hour,second:c.secondOfHour,funds:c.resources.treasury,phase:c.phase,squad:[...c.squad],deaths:deaths(c),engineerHp:c.operativeState[2].hp,commanderHp:c.operativeState[57].hp,...extra};
@@ -37,7 +38,7 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  const fight=sector=>{
   assert.ok(c.pendingBattle);assert.equal(c.pendingBattle.sector,sector);
   const initial=enterSector(c.pendingBattle,c.sectorStates[sector]);
-  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery():{controller:sector==='mendoza'?mendozaBatteryController(initial):coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
+  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery(mountainBatteryIds?{gunTypes:['field8','swivel']}:{}):{controller:sector==='mendoza'?mendozaBatteryController(initial):coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
   c=result.campaign;assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.completed,false);
   checkpoint(sector,{status:result.summary.status,actions:result.summary.actions,turns:result.summary.turns});
  };
@@ -103,10 +104,14 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  c=startFreshFoundry(c,{report});assert.equal(c.flags.foundry,true);assert.ok(c.recruited.includes(2)&&c.operativeState[2].alive);
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
  c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
- c=prepareFreshUspallataAssault(c,{report});fight('uspallata');
- c=recoverFreshUspallata(c,{report});
+ if(routeKind==='created'){
+  const arsenal=recoverCreatedCuyoMountainArtillery(c,{report});c=arsenal.campaign;
+  mountainBatteryIds=arsenal.selections.map(id=>id.slice(6));
+ }
+ c=prepareFreshUspallataAssault(c,{batteryIds:mountainBatteryIds,report});fight('uspallata');
+ c=recoverFreshUspallata(c,{batteryIds:mountainBatteryIds,report});
  const losPatosInputCapture=recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-input',routeKind});
- c=prepareFreshLosPatosAssault(c,{report});
+ c=prepareFreshLosPatosAssault(c,{batteryIds:mountainBatteryIds,report});
  recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-output',routeKind,inputCapture:losPatosInputCapture});
  fight('los_patos');
  assert.ok(!c.recruited.includes(57),'the commander joins through the subsequent physical meeting');
