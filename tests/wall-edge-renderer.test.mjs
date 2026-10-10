@@ -5,11 +5,14 @@ import {renderToStaticMarkup as markup} from '../web/node_modules/react-dom/serv
 import {buildBuilding as makeBuilding} from '../game/buildings.js';
 import {createSceneTerrainCache} from '../game/scene-terrain.js';
 import {wallEdgeCenter,wallEdgeCells} from '../game/wall-geometry.js';
+import {createVariedRoofClimbBattle} from '../web/app/renderer-sandbox/varied-roof-climb-fixture.js';
+import {wallEdgeEndpoints} from '../game/wall-geometry.js';
 import {entranceFrame} from '../game/building-profile.js';
 import {isometricWallEdge} from '../web/lib/editor-wall-edge.js';
 import {ARCHITECTURE_REVIEW_TEMPLATES,createArchitectureReviewBattle} from '../web/app/renderer-sandbox/architecture-fixtures.js';
 const {Box3,Raycaster,Vector3,Scene,Mesh}=await import('../web/node_modules/three/build/three.module.js');
-const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
+const {ELEVATION_PIXELS_PER_METRE,surfaceDrawDepth}=await import('../web/lib/tactical-elevation.ts');
+const {buildBuilding,buildIndependentWalls}=await import('../web/lib/three/world-buildings.ts');
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {createSectorWorld}=await import('../web/lib/three/sector-world.ts');
@@ -17,8 +20,10 @@ const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
 const {worldWallRecords,buildingWallAtPoint}=await import('../web/lib/three/world-wall-records.ts');
 const {wallEdgeControlObjects}=await import('../web/app/TacticalWallEdgeControls.tsx');
 const T=1.2360585147470482,project=(x,y)=>({x:(x-y)*26,y:(x+y)*14});
-function render(battle){const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),input={terrain:battle,revealedRooms:battle.revealedRooms},building=buildBuilding(battle.buildings[0],input,T,geometry,materials);building.updateMatrixWorld(true);return {building,dispose(){disposeWorldNode(building);geometry.dispose();materials.dispose();}};}
+function render(battle,cursorLevel=0){const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),input={terrain:battle,revealedRooms:battle.revealedRooms,cursorLevel},building=buildBuilding(battle.buildings[0],input,T,geometry,materials);building.updateMatrixWorld(true);return {building,dispose(){disposeWorldNode(building);geometry.dispose();materials.dispose();}};}
 function simple(){const built=makeBuilding({id:'edge-house',x:2,y:2,width:4,height:4,doors:[{x:3,y:6,axis:'x',id:'edge-door'}]});return {...built,width:10,height:10,buildings:[built.building],revealedRooms:[],props:[],lights:[],units:[],npcs:[],artillery:[],smoke:[]};}
+function controlPath(edge,height,elevation=0){const [start,end]=wallEdgeEndpoints(edge),a=project(start.x,start.y),b=project(end.x,end.y);a.y-=elevation*ELEVATION_PIXELS_PER_METRE;b.y-=elevation*ELEVATION_PIXELS_PER_METRE;return `M${a.x},${a.y}L${b.x},${b.y}L${b.x},${b.y-height}L${a.x},${a.y-height}Z`;}
+function hasFabricPlane(building,height){let found=false;building.traverse(object=>{if(object instanceof Mesh){const positions=object.geometry.getAttribute('position');for(let n=0;n<positions.count;n++)if(Math.abs(positions.getY(n)-height)<1e-5)found=true;}});return found;}
 
 test('wall fabric is one thin edge; both neighboring cell centres stay clear',()=>{
  const battle=simple(),before=JSON.stringify(battle),r=render(battle),fabric=r.building.getObjectByName('building-fabric:edge-house');
@@ -72,6 +77,29 @@ test('partition endpoints cannot support exterior artwork through an opening',()
 
 test('door controls send the edge identity for mouse and keyboard while preserving source coordinates',()=>{
  const battle=createArchitectureReviewBattle('casa',0,'exterior'),unit=battle.units[0],calls=[],objects=wallEdgeControlObjects({state:battle,players:[unit],revealed:new Set(),cursorLevel:0,mode:'move',interactive:true,hover:null,viewport:null,project,onTile:point=>calls.push(point),onHover:()=>{}}),edge=battle.wallEdges.find(edge=>edge.type==='door'),control=objects.find(object=>object.key===`edge-control-${edge.id}`);assert.ok(control);control.node.props.onClick();let prevented=false;control.node.props.onKeyDown({key:'Enter',preventDefault(){prevented=true;}});assert.ok(prevented);assert.equal(calls.length,2);for(const target of calls){assert.equal(target.wallEdgeId,edge.id);assert.equal(target.x,edge.x);assert.equal(target.y,edge.y);assert.equal(target.axis,edge.axis);}
+});
+
+test('edge controls follow raised building bases and explicit upper independent wall elevation',()=>{
+ const state=createVariedRoofClimbBattle('tall-cardinal'),edge=state.wallEdges.find(edge=>edge.type==='door'),center=wallEdgeCenter(edge),args={state,players:[state.units[0]],revealed:new Set(),cursorLevel:0,mode:'move',interactive:true,hover:null,viewport:null,project,onTile(){},onHover(){},renderer:'three'},before=JSON.stringify(state),control=wallEdgeControlObjects(args).find(object=>object.key===`edge-control-${edge.id}`),r=render(state),roofHeight=Math.min(...state.upperSurfaces.filter(surface=>surface.kind==='roof').map(surface=>surface.elevation)),height=(roofHeight-1.2)*ELEVATION_PIXELS_PER_METRE;
+ assert.ok(control);assert.equal(control.node.props.children[0].props.d,controlPath(edge,height,1.2));
+ assert.equal(control.depth,surfaceDrawDepth(state,center,.02));const fabric=r.building.getObjectByName(`building-fabric:${state.buildings[0].id}`);assert.ok(hasFabricPlane(fabric,1.2),'fabric and controls share the 1.2 m base');assert.ok(hasFabricPlane(fabric,roofHeight),'fabric and controls share the authored roof height');r.dispose();assert.equal(JSON.stringify(state),before);
+ const upper={id:'upper-edge',x:8,y:8,axis:'x',type:'door',doorId:'upper-door',tacticalLevel:1,elevation:4.3,obstacleHeight:3.7,open:false,blocked:true,blocksSight:true},platform=createVariedRoofClimbBattle('tall-cardinal');
+ platform.wallEdges=[upper];platform.upperSurfaces=platform.upperSurfaces.map(surface=>({...surface,elevation:upper.elevation}));platform.units=platform.units.map((unit,n)=>n?unit:{...unit,x:8,y:7,tacticalLevel:1});
+ const upperControl=wallEdgeControlObjects({...args,state:platform,players:[platform.units[0]],cursorLevel:1}).find(object=>object.key==='edge-control-upper-edge'),upperCenter=wallEdgeCenter(upper),saved=JSON.stringify(platform);
+ assert.ok(upperControl);assert.equal(upperControl.node.props.children[0].props.d,controlPath(upper,upper.obstacleHeight*ELEVATION_PIXELS_PER_METRE,upper.elevation));assert.equal(upperControl.depth,surfaceDrawDepth(platform,upperCenter,.02));assert.ok(upperControl.depth>upperCenter.x+upperCenter.y,'upper controls use roof painter depth');
+ const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),world=buildIndependentWalls({terrain:platform},T,geometry,materials);world.updateMatrixWorld(true);assert.ok(Math.abs(new Box3().setFromObject(world.getObjectByName('door:upper-door')).min.y-upper.elevation)<1e-5);assert.ok(hasFabricPlane(world,upper.elevation+upper.obstacleHeight),'independent control reaches its authored wall top');disposeWorldNode(world);geometry.dispose();materials.dispose();assert.equal(JSON.stringify(platform),saved);
+});
+
+test('SVG raised-wall controls keep the raw base and visible SVG wall height',()=>{
+ const state=createVariedRoofClimbBattle('tall-cardinal'),edge=state.wallEdges.find(edge=>edge.type==='door'),revealed=new Set(),before=JSON.stringify(state),control=wallEdgeControlObjects({state,players:[state.units[0]],revealed,cursorLevel:0,mode:'move',interactive:true,hover:null,viewport:null,project,onTile(){},onHover(){}}).find(object=>object.key===`edge-control-${edge.id}`),wall=buildBuildingObjects({state,revealed,project,light:()=>1}).find(object=>object.key===`architecture-${edge.id}-${edge.axis}`);
+ assert.ok(control);assert.ok(wall);assert.equal(control.node.props.children[0].props.d,controlPath(edge,wall.node.props['data-wall-height']));const center=wallEdgeCenter(edge);assert.equal(control.depth,center.x+center.y+.02);assert.equal(JSON.stringify(state),before);
+});
+
+test('disclosed front and interior edge controls match visible cutaway wall height',()=>{
+ const state=createVariedRoofClimbBattle('tall-cardinal'),b=state.buildings[0],partition={id:'cutaway-partition',buildingId:b.id,x:b.x+1,y:b.y+2,axis:'x',type:'wall',blocked:true,blocksSight:true};state.wallEdges.push(partition);state.revealedRooms=b.rooms.map(room=>room.id);
+ const revealed=new Set(state.revealedRooms),front=state.wallEdges.find(edge=>edge.axis==='x'&&edge.y===b.y+b.height),before=JSON.stringify(state);
+ for(const edge of [front,partition])for(const renderer of ['svg','three']){const player={...state.units[0],x:edge.x,y:edge.y-1},control=wallEdgeControlObjects({state,players:[player],revealed,cursorLevel:0,mode:'move',interactive:true,hover:null,viewport:null,project,onTile(){},onHover(){},renderer}).find(object=>object.key===`edge-control-${edge.id}`);assert.ok(control,`${renderer} ${edge.id} control`);assert.equal(control.node.props.children[0].props.d,controlPath(edge,9,renderer==='three'?1.2:0));}
+ const r=render(state);assert.ok(hasFabricPlane(r.building.getObjectByName(`building-fabric:${b.id}`),1.2+9/ELEVATION_PIXELS_PER_METRE),'Three fabric uses the same cutaway plane');r.dispose();assert.equal(JSON.stringify(state),before);
 });
 
 test('editor selects every side of a cell and accepts outer footprint boundaries',()=>{
