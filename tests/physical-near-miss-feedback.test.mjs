@@ -41,7 +41,7 @@ test('real hostile near passage has transient own-player evidence without learni
 
 test('hits, early physical stops, misfires and rejected or cancelled orders cannot create near feedback',()=>{
  const hit=hostile({}, {marksmanship:100}),wounded=fired(hit);assert.ok(actor(wounded.ordinary).hp<100);assert.deepEqual(getFirearmNearMissFeedback(hit,wounded.ordinary),[]);assert.deepEqual(nearFrames(wounded.shown),[]);
- const stopped=hostile();Object.assign(stopped.tiles.find(tile=>tile.x===6&&tile.y===4),{type:'wall',material:'stone',blocked:true,blocksSight:false});const stop=fired(stopped);assert.equal(actor(stop.ordinary).hp,100);assert.equal(actor(stop.ordinary,'e').loaded,0);assert.deepEqual(getFirearmNearMissFeedback(stopped,stop.ordinary),[]);assert.deepEqual(nearFrames(stop.shown),[]);
+ const stopped=hostile();stopped.wallEdges.push({id:'early-stop',x:5,y:4,axis:'x',projectileResistance:1000,type:'wall',material:'stone',blocked:true,blocksSight:false});const stop=fired(stopped);assert.equal(actor(stop.ordinary).hp,100);assert.equal(actor(stop.ordinary,'e').loaded,0);assert.deepEqual(getFirearmNearMissFeedback(stopped,stop.ordinary),[]);assert.deepEqual(nearFrames(stop.shown),[]);
  const wet=hostile({}, {},{weather:{rain:100,humidity:100}}),misfire=fired(wet);assert.equal(actor(misfire.ordinary,'e').jammed,true);assert.equal(actor(misfire.ordinary,'e').loaded,1);assert.deepEqual(getFirearmNearMissFeedback(wet,misfire.ordinary),[]);assert.deepEqual(nearFrames(misfire.shown),[]);
  for(const action of [{type:'fire',unitId:'p',targetId:'e'},{type:'firePoint',unitId:'p',x:99,y:3},{type:'fire',unitId:'e',targetId:'p'}]){
   const state=hostile(),shown=presentedActBattle(state,action);assert.ok(shown.state.lastError);assert.deepEqual(nearFrames(shown),[]);assert.deepEqual(getFirearmNearMissFeedback(state,shown.state),[]);assert.equal(actor(shown.state,'e').loaded,1);assert.equal(shown.state.seed,state.seed);
@@ -58,7 +58,7 @@ test('unseen hostile passage can be perceived without attacker, terminal, camera
 function friendly(mode='point',extra={}){
  const weapon=mode==='pair'||mode==='reflection'?1805:mode==='pellet'?1807:1800,position=mode==='reflection'?{x:11,y:3}:{x:9,y:4};
  const state=createBattle([{id:'p',name:'Tirador',x:1,y:3,facing:2,weapon,loaded:1,ammo:2,condition:100,marksmanship:100,...(mode==='pair'?{offHand:{weapon:1808,count:1,loaded:1,condition:100,weight:1.3}}:{})},{id:'ally',name:'Compañero',...position,weapon:1800,loaded:0,storyProfile:{speech}}],{width:32,height:16,seed:8,weather:{rain:0,humidity:0},tiles:tiles(32,16),enemies:[{id:'e',x:28,y:14,patrol:false,overwatch:false}],...extra});
- if(mode==='reflection')Object.assign(state.tiles.find(tile=>tile.x===8&&tile.y===5),{type:'wall',material:'stone',blocked:true,blocksSight:true});
+ if(mode==='reflection')state.wallEdges.push({id:'reflection-face',x:7,y:5,axis:'x',type:'wall',material:'stone',blocked:true,blocksSight:true});
  return saved(state);
 }
 const point={type:'firePoint',unitId:'p',x:10,y:5,aim:4};

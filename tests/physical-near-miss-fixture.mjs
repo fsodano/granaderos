@@ -42,12 +42,12 @@ export function preparedPhysicalNearMiss({control='near',omittedSpeech=false}={}
  assert.equal(pair.campaign.resources.treasury,3200-quotes.reduce((sum,quote)=>sum+quote.price,0));
  const handoff=physicalNearMissSaved(pair),request=pair.campaign.pendingBattle,issued=structuredClone({squad:request.squad,enemies:request.enemies});
  const width=32,height=16,tiles=Array.from({length:width*height},(_,index)=>({x:index%width,y:Math.floor(index/width),type:'grass',blocked:false,blocksSight:false,cover:0}));
- if(control==='stop')Object.assign(tiles.find(tile=>tile.x===6&&tile.y===4),{type:'wall',material:'stone',blocked:true,blocksSight:false,cover:100});
+ const wallEdges=control==='stop'?[{id:'early-stop',x:6,y:4,axis:'x',type:'wall',material:'stone',blocked:true,blocksSight:false,cover:100}]:[];
  const clinical={width,height,seed:control==='hit'?8:3,weather:control==='misfire'?{rain:100,humidity:100}:{rain:0,humidity:0},
   positions:{110:{x:9,y:3,facing:6},107:{x:12,y:7,facing:6}},sourceId:'enemy-1',source:{x:1,y:3,facing:2},
   ap:{source:12,other:0},control};
  const battle=createBattle(request.squad.map(unit=>({...unit,...clinical.positions[unit.id]})),{
-  ...request,width,height,seed:clinical.seed,weather:clinical.weather,regionalWeather:false,tiles,props:[],
+  ...request,width,height,seed:clinical.seed,weather:clinical.weather,regionalWeather:false,tiles,wallEdges,props:[],
   enemies:request.enemies.map((unit,index)=>({...unit,...(unit.id===clinical.sourceId?clinical.source:{x:27+index%3,y:10+Math.floor(index/3),facing:2}),patrol:false,overwatch:false})),
   npcs:request.npcs.map((npc,index)=>({...npc,x:31-index,y:15})),
  });
