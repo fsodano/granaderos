@@ -66,9 +66,8 @@ test('fleeing uses the available AP across turns without teleporting or restorin
  assert.equal(b.status,'victory');assert.ok(b.units[1].departure);assert.equal(b.units[1].weaponDropped,true);assert.equal(b.units[1].loaded,0);assert.equal(b.droppedWeapons.length,0);
 });
 test('closed doors and solid props prevent a routed actor escaping a sealed room',()=>{
- const tiles=ground();for(const t of tiles)if(Math.abs(t.x-5)<=1&&Math.abs(t.y-4)<=1&&(t.x!==5||t.y!==4)){t.type='wall';t.blocked=true;t.blocksSight=true;}
- const door=tiles.find(t=>t.x===5&&t.y===3);Object.assign(door,{type:'door',open:false,locked:true});
- let b=fixture([{id:'p',x:0,y:6}],{tiles,enemies:[{id:'router',x:5,y:4,routed:true,weaponDropped:true,loaded:0}]});b=endTurn(b);
+ const wallEdges=[{id:'north-door',x:5,y:4,axis:'x',type:'door',doorId:'sealed-door',open:false,locked:true},{id:'south',x:5,y:5,axis:'x'},{id:'west',x:5,y:4,axis:'y'},{id:'east',x:6,y:4,axis:'y'}].map(edge=>({type:'wall',material:'stone',blocked:true,blocksSight:true,cover:40,...edge}));
+ let b=fixture([{id:'p',x:0,y:6}],{wallEdges,enemies:[{id:'router',x:5,y:4,routed:true,weaponDropped:true,loaded:0}]});b=endTurn(b);
  assert.equal(b.units[1].surrendered,true);assert.equal(b.units[1].departure,undefined);assert.equal(b.units[1].fled,undefined);assert.deepEqual([b.units[1].x,b.units[1].y],[5,4]);assert.equal(b.status,'victory');assert.doesNotThrow(()=>validateBattleSnapshot(b));
 });
 test('a routed player with no authorized exit remains for capture and never becomes an escapee',()=>{

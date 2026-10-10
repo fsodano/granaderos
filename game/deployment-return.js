@@ -8,7 +8,7 @@ import {authoredEnvironment} from './environment-interactions.js';
 import {roadsideDiscoveriesFor} from './roadside-discoveries.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
-import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
+import {sectorExits,validateSectorExits,boundaryPassable,entryFromSector,validEntry} from './tactical-exits.js';
 import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition,ammunitionSource} from './ammunition.js';
 import {fieldAmmunitionByType,totalAmmoCounts,addAmmoCounts,unitAmmunitionByType} from './campaign-ammunition.js';
 import {totalReserveAmmunition} from './ammunition-types.js';
@@ -74,7 +74,7 @@ export function prepareDeploymentExits(s,request){
 function departureFor(s,request,snapshot,u){
   if(!u.departure)return null;
   const d=u.departure,e=request.exits.find(e=>e.id===d.exitId);
-  need(e&&d.edge===e.edge&&d.destination===e.destination&&boundaryMatches(snapshot,d,e.edge),'La salida no corresponde a una ruta del despliegue.');
+  need(e&&d.edge===e.edge&&d.destination===e.destination&&boundaryPassable(snapshot,u,e.edge),'La salida no corresponde a una ruta del despliegue.');
   need(Number.isSafeInteger(d.elapsedSeconds)&&d.elapsedSeconds>=0&&d.elapsedSeconds<=(snapshot.elapsedSeconds??0),'El reloj de salida es inválido.');
   need(safeExit(s,e.destination),'El destino de salida está ocupado.');
   need(!u.militia||worldCell(e.destination)?.anchor,'La guarnición necesita una localidad de destino.');

@@ -63,7 +63,7 @@ import {recordMilitiaHit} from './militia-experience.js';
 import {projectilePath,projectileFlight,pointProjectileFlight,physicalBodies,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
 import {isShotLoad,shotLoadFlight,shotLoadForecast,shotLoadChance} from './shot-load.js';
 import {applyCivilianHarm,civilianWoundedByPlayer,advanceCivilianWoundTime} from './civilian-harm.js';
-import {boundaryMatches} from './tactical-exits.js';
+import {boundaryMatches,boundaryPassable} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,breachableWall,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
 import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
@@ -2651,7 +2651,7 @@ function exitUnitReason(s,u,exit,{routing=false}={}){
   if(tacticalLevel(u)!==0)return 'Bajá al suelo antes de salir del sector.';
   if(!boundaryMatches(s,u,exit.edge))return 'Debe alcanzar el borde de esta salida.';
   const ground=tile(s,u.x,u.y);
-  if(!ground||ground.blocked||propBlocksAt(s,u.x,u.y))return 'El paso de salida está bloqueado.';
+  if(!ground||ground.blocked||propBlocksAt(s,u.x,u.y)||!boundaryPassable(s,u,exit.edge))return 'El paso de salida está bloqueado.';
   if(s.mode!=='exploration'&&u.ap<stepCost(u,ground))return 'Faltan PA para cruzar el borde.';
   if(u.energy<=movementStepEnergy(s,u,ground))return 'Faltan fuerzas para cruzar el borde.';
   return null;
@@ -2716,7 +2716,7 @@ function processRout(s,u){
   if(stopped())return;
   // Garrisons retain town custody; only hired squads can return to rural cells.
   const exits=u.side==='player'?(s.exits??[]).filter(exit=>!u.militia||worldCell(exit.destination)?.anchor):s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
-  const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryMatches(s,point,exit.edge)).map(exit=>({...point,exit})));
+  const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryPassable(s,point,exit.edge)).map(exit=>({...point,exit})));
   routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
   if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}
   const route=routes[0];

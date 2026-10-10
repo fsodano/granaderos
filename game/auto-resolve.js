@@ -1,7 +1,7 @@
 import {enterSector} from './world.js';
 import {completedTacticalVictory,actBattle,endTurn,interruptAvailable,getReachable,exitPreview} from './tactical.js';
 import {automaticOrder} from './autonomous-orders.js';
-import {boundaryMatches} from './tactical-exits.js';
+import {boundaryPassable} from './tactical-exits.js';
 const able=u=>u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled;
 
 
@@ -12,7 +12,7 @@ function withdrawalOrder(b,u){
  if(u.entangled)return {type:'free',unitId:u.id};
  // Read beyond the current turn's budget to choose a real boundary route.
  // Only an affordable prefix is ever sent to the ordinary movement reducer.
- const routes=getReachable({...b,mode:'exploration'},u).flatMap(point=>(b.exits??[]).filter(exit=>boundaryMatches(b,point,exit.edge)).map(exit=>({...point,exit})));
+ const routes=getReachable({...b,mode:'exploration'},u).flatMap(point=>(b.exits??[]).filter(exit=>boundaryPassable(b,point,exit.edge)).map(exit=>({...point,exit})));
  routes.sort((a,c)=>a.cost-c.cost||a.exit.id.localeCompare(c.exit.id)||a.y-c.y||a.x-c.x);
  const route=routes[0];if(!route?.path.length)return null;
  const reachable=getReachable(b,u),step=[...route.path].reverse().map(point=>reachable.find(p=>p.x===point.x&&p.y===point.y)).find(p=>p?.path.length);

@@ -1,7 +1,7 @@
 import {spaceKey} from './tactical-space.js';
 import {propBlocksAt} from './props.js';
 import {movementStepCost} from './tactical.js';
-import {boundaryMatches,inwardFromBoundary} from './tactical-exits.js';
+import {boundaryPassable,inwardFromBoundary} from './tactical-exits.js';
 const key=spaceKey;
 
 // Buildings cannot become an arrival fallback. The largest exterior component
@@ -21,5 +21,5 @@ export function exteriorComponent(state,unit){
 }
 
 export function entryTerrainCells(state,unit,edge,component=exteriorComponent(state,unit)){
- return state.tiles.filter(t=>boundaryMatches(state,t,edge)&&component.has(key(t))&&Number.isFinite(movementStepCost(state,unit,t,inwardFromBoundary(t,edge))));
+ return state.tiles.filter(t=>boundaryPassable(state,t,edge)&&component.has(key(t))&&Number.isFinite(movementStepCost(state,unit,t,inwardFromBoundary(t,edge))));
 }

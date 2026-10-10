@@ -9,7 +9,7 @@ import {handsRequired,handLayout} from './hand-layout.js';
 import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint,equipmentFingerprint} from './tactical-inventory.js';
 import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,planEquipmentPlacement,planEquipmentCursorOrder,WEAPONS,BLADES} from './tactical.js';
 import {propBlocksAt,propCells} from './props.js';
-import {boundaryMatches} from './tactical-exits.js';
+import {boundaryPassable} from './tactical-exits.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
 import {returnEquipment,setCarriedLoading,clearCarriedLoading,storeEquipment} from './equipment.js';
 import {syncUnitAmmunition} from './tactical-ammunition.js';
@@ -86,7 +86,7 @@ function actorAt(s,sectorId,op){
  const unit=carriedActor(s,op);
  if((r.residentPosition||old)&&r.residentSector===snapshot?.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))return {...unit,...planningPoint(r.residentPosition??old,Boolean(snapshot.upperSurfaces?.length))};
  const edge=r.arrival?.entryEdge??'S';
- const candidates=(snapshot?.tiles??[]).filter(t=>boundaryMatches(snapshot,t,edge)&&!t.blocked&&!propBlocksAt(snapshot,t.x,t.y));
+ const candidates=(snapshot?.tiles??[]).filter(t=>boundaryPassable(snapshot,t,edge)&&!t.blocked&&!propBlocksAt(snapshot,t.x,t.y));
  const anchor=r.arrival?.entryAnchor??{x:.5,y:.5};
  candidates.sort((a,b)=>Math.hypot(a.x/(snapshot.width-1)-anchor.x,a.y/(snapshot.height-1)-anchor.y)-Math.hypot(b.x/(snapshot.width-1)-anchor.x,b.y/(snapshot.height-1)-anchor.y)||a.y-b.y||a.x-b.x);
  return candidates[0]?{...unit,...planningPoint(candidates[0],Boolean(snapshot.upperSurfaces?.length)||unit.tacticalLevel!==undefined)}:null;

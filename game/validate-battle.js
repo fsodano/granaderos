@@ -33,7 +33,7 @@ import {validateReloadProgress} from './weapon-reload.js';
 import {validMilitiaExperience} from './militia-experience.js';
 import {validateCoverMetadata} from './projectile-cover.js';
 import {validateStructureDamage} from './structure-blast.js';
-import {boundaryMatches,EXIT_EDGES,validEntry} from './tactical-exits.js';
+import {boundaryMatches,boundaryPassable,EXIT_EDGES,validEntry} from './tactical-exits.js';
 import {NPC_ACTIVITIES} from './npc-ai.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool,validateEnvironment} from './environment-interactions.js';
@@ -140,7 +140,7 @@ for(const u of s.units)if(u.departure!==undefined){
  const receipt=u.departure,exit=(u.side==='enemy'?s.enemyExits:s.exits)?.find(v=>v.id===receipt?.exitId);
  need(object(receipt)&&Object.keys(receipt).length===7&&exit&&receipt.edge===exit.edge&&receipt.destination===exit.destination&&coord(receipt)&&receipt.x===u.x&&receipt.y===u.y&&boundaryMatches(s,receipt,receipt.edge),'constancia de salida');
  need(integer(receipt.elapsedSeconds,1,s.elapsedSeconds??0)&&Object.hasOwn(receipt,'mountId')&&(receipt.mountId===null||text(receipt.mountId)&&receipt.mountId.length>0),'reloj o montura de salida');
- need(!s.tiles.find(t=>t.x===receipt.x&&t.y===receipt.y)?.blocked&&!propBlocksAt(s,receipt.x,receipt.y),'paso de salida');
+ need(boundaryPassable(s,u,receipt.edge)&&!s.tiles.find(t=>t.x===receipt.x&&t.y===receipt.y)?.blocked&&!propBlocksAt(s,receipt.x,receipt.y),'paso de salida');
  if(receipt.mountId!==null)need(u.mount?.id===receipt.mountId,'identidad de montura salida');
  if(u.mounted&&u.mount?.id)need(receipt.mountId===u.mount.id,'montura que cruzó la salida');
 }

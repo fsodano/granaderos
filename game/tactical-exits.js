@@ -1,4 +1,5 @@
 import {validWorldLocation,worldCell} from './world-cells.js';
+import {wallMovementBlocked} from './wall-geometry.js';
 
 export const EXIT_EDGES = ['N', 'E', 'S', 'W'];
 // Explicit road links on schematic maps. Mountain passages need not retain
@@ -67,6 +68,14 @@ export function exitAnchorFor(sectorId, sceneId, exitId) {
 export function boundaryMatches(state, point, edge) {
   if (!state || !point || !EXIT_EDGES.includes(edge) || !Number.isInteger(state.width) || !Number.isInteger(state.height) || state.width < 1 || state.height < 1 || !Number.isInteger(point.x) || !Number.isInteger(point.y) || point.x < 0 || point.y < 0 || point.x >= state.width || point.y >= state.height) return false;
   return edge === 'N' ? point.y === 0 : edge === 'E' ? point.x === state.width - 1 : edge === 'S' ? point.y === state.height - 1 : point.x === 0;
+}
+
+// The boundary cell remains usable when a wall occupies its outside edge.
+// Leaving or arriving must also clear that physical edge.
+export function boundaryPassable(state, point, edge) {
+  if ((point?.tacticalLevel ?? 0) !== 0 || !boundaryMatches(state, point, edge)) return false;
+  const outside = {...point, x: point.x + (edge === 'W' ? -1 : edge === 'E' ? 1 : 0), y: point.y + (edge === 'N' ? -1 : edge === 'S' ? 1 : 0)};
+  return !wallMovementBlocked(state, point, outside);
 }
 
 export function validEntry(edge, anchor, width = 20, height = 16) {
