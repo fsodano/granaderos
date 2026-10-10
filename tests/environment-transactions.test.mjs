@@ -23,8 +23,8 @@ const soldier = state => state.units.find(u => u.id === 'p');
 const storedRecord = stack => {const record=structuredClone(stack);delete record.item;return record;};
 function field(extra = {}, chestExtra = {}) {
   const tiles = Array.from({length: 216}, (_, i) => ({x: i % 24, y: Math.floor(i / 24), type: 'grass', blocked: false, cover: 0}));
-  Object.assign(tiles.find(t => t.x === 2 && t.y === 3), {type: 'door', doorId: 'test-door', open: false, locked: true, keyId: 'store', lockDifficulty: 25, lockIntegrity: 100, blocked: true, blocksSight: true});
-  return createBattle([{id: 'p', x: 1, y: 3, mechanical: 90, dexterity: 90, wisdom: 90, experienceLevel: 8, inventory: {key: {...keyRecord}}, ...extra}], {width: 24, height: 9, tiles, seed: 45,
+  const wallEdges=[{id:'test-edge',x:2,y:3,axis:'y',type: 'door', doorId: 'test-door', open: false, locked: true, keyId: 'store', lockDifficulty: 25, lockIntegrity: 100, blocked: true, blocksSight: true}];
+  return createBattle([{id: 'p', x: 1, y: 3, mechanical: 90, dexterity: 90, wisdom: 90, experienceLevel: 8, inventory: {key: {...keyRecord}}, ...extra}], {width: 24, height: 9, tiles, wallEdges,seed: 45,
     props: [{id: 'test-chest', type: 'chest', x: 1, y: 4, blocksMovement: true, open: false, locked: false, contents: [ammoStack(12)], ...chestExtra}],
     enemies: [{id: 'guard', x: 22, y: 7, overwatch: false}]});
 }
@@ -36,7 +36,7 @@ function order(state, action, id = 'p') {
 function rejectUnchanged(state, action) {
   const next = actBattle(state, {unitId: 'p', ...action});
   assert.ok(next.lastError);
-  for (const key of ['units', 'tiles', 'props', 'groundItems', 'seed', 'elapsedSeconds']) assert.deepEqual(next[key], state[key], key);
+  for (const key of ['units', 'tiles', 'wallEdges','props', 'groundItems', 'seed', 'elapsedSeconds']) assert.deepEqual(next[key], state[key], key);
   return next;
 }
 const doorRef = {kind: 'door', id: 'test-door'}, chestRef = {kind: 'container', id: 'test-chest'};
@@ -50,12 +50,12 @@ test('actual held key actions pay equip/unlock/open once and persist door collis
   state = order(state, {type: 'useItem', environment: {...doorRef, verb: 'unlock'}});
   assert.equal(soldier(state).ap, ap - 4); assert.equal(state.seed, seed);
   state = order(state, {type: 'environment', ...doorRef, verb: 'open'});
-  const opened = state.tiles.find(t => t.doorId === doorRef.id);
+  const opened = state.wallEdges.find(t => t.doorId === doorRef.id);
   assert.equal(opened.open, true); assert.equal(opened.locked, false); assert.equal(opened.blocked, false); assert.equal(opened.blocksSight, false);
   assert.equal(soldier(state).inventory.key.condition, 73); assert.equal(soldier(state).inventory.key.count, 1);
   assert.equal(soldier(state).ap, ap - 8);
   assert.doesNotThrow(() => validateBattleSnapshot(state));
-  assert.equal(original.tiles.find(t => t.doorId === doorRef.id).locked, true);
+  assert.equal(original.wallEdges.find(t => t.doorId === doorRef.id).locked, true);
 });
 
 test('illegal environment commands reject atomically before RNG, wear, AP, contents or time', () => {
@@ -81,9 +81,9 @@ function heldToolCapacityPair(toolKey,{keys=1000,count=2,remote=false}={}){
   const campaign=dispatchCampaign(declared,{type:'visitSector'});assert.equal(campaign.lastError,null);
   const request=campaign.pendingBattle,width=24,height=9;
   const tiles=Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
-  Object.assign(tiles.find(t=>t.x===2&&t.y===3),{type:'door',doorId:'test-door',open:false,locked:true,keyId:'store',lockDifficulty:25,lockIntegrity:1,blocked:true,blocksSight:true});
+  const wallEdges=[{id:'test-edge',x:2,y:3,axis:'y',type:'door',doorId:'test-door',open:false,locked:true,keyId:'store',lockDifficulty:25,lockIntegrity:1,blocked:true,blocksSight:true}];
   const battle=createBattle(request.squad.map((u,i)=>({...u,x:u.id===10?(remote?6:1):19+i,y:u.id===10?3:1,facing:u.id===10?(remote?6:2):6})),{
-    ...request,width,height,tiles,buildings:[],decor:[],
+    ...request,width,height,tiles,wallEdges,buildings:[],decor:[],
     props:[{id:'test-chest',type:'chest',x:1,y:4,open:false,locked:false,contents:[],trap:{type:'alarm',difficulty:25,armed:true,discoveredBy:['player']}}],
     npcs:request.npcs.map((n,i)=>({...n,x:19+i,y:7})),
   });
@@ -306,22 +306,22 @@ test('Yatasto tools can be acquired through a legal open-door path and its key u
   const request = {id: 'cache-visit', sector: 'yatasto', sceneId: 'yatasto', exploration: true, hour: 12, squad: [{id: 'p', mechanical: 80, dexterity: 80, strength: 80}]};
   let state = enterSector(request);
   const chest = state.props.find(p => p.type === 'chest'); assert.ok(chest);
-  assert.equal(state.tiles.find(t => t.doorId === 'yatasto:door-left').open, true);
+  assert.equal(state.wallEdges.find(t => t.doorId === 'yatasto:door-left').open, true);
   const ref = {kind: 'container', id: chest.id};
   state = approach(state, 'p', chest);
   state = order(state, {type: 'environment', ...ref, verb: 'open'});
   while (state.props.find(p => p.id === chest.id).contents.length) state = order(state, {type: 'containerLoot', ...ref, index: 0, count: 1});
   assert.equal(inventoryUsage(soldier(state)).used, 9);
   assert.deepEqual(Object.values(soldier(state).inventory).filter(item => item.toolKey).map(item => item.toolKey).sort(), ['crowbar', 'key', 'lockpick', 'pliers']);
-  const right = state.tiles.find(t => t.doorId === 'yatasto:door-right');
+  const right = state.wallEdges.find(t => t.doorId === 'yatasto:door-right');
   state = approach(state, 'p', right);
   state = order(state, {type: 'weapon', slot: 'tool', toolKey: 'inventory:key'});
   state = order(state, {type: 'environment', kind: 'door', id: right.doorId, verb: 'unlock'});
-  assert.equal(state.tiles.find(t => t.doorId === right.doorId).locked, false);
+  assert.equal(state.wallEdges.find(t => t.doorId === right.doorId).locked, false);
   const validated = validateBattleSnapshot(state);
   const returned = enterSector({...request, squad: validated.units.filter(u => u.side === 'player')}, validated);
   assert.deepEqual(returned.props.find(p => p.id === chest.id).contents, []);
-  assert.equal(returned.tiles.find(t => t.doorId === right.doorId).locked, false);
+  assert.equal(returned.wallEdges.find(t => t.doorId === right.doorId).locked, false);
   assert.equal(soldier(returned).activeTool, 'inventory:key');
 });
 

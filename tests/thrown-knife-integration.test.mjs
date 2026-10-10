@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,knifeThrowPreview,getKnifeThrowVisual,canSee} from '../game/tactical.js';
+import {createBattle,actBattle,knifeThrowPreview,getKnifeThrowVisual,canSee,actionCosts} from '../game/tactical.js';
 import {heldThrowingKnife,knifeThrowChance,knifeThrowRange} from '../game/thrown-knife.js';
 import {handRecord,itemQuantity,inventoryUsage} from '../game/tactical-inventory.js';
 import {heldItemIds,fittingItemIds} from '../game/weapon-fittings.js';
@@ -72,8 +72,8 @@ test('a failed accuracy roll drops the real knife and never synthesizes another 
 });
 
 test('cover impact is a paid throw with one recoverable knife on the near side',()=>{
- const tiles=floor();Object.assign(tiles[3*24+4],{type:'wall',blocked:true,obstacleHeight:2.5});
- const s=field({},[enemy()],{tiles}),p=unit(s),knife=handRecord(p,'primary'),point={x:7,y:3,tacticalLevel:0};
+ const wallEdges=[{id:'knife-screen',x:4,y:3,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40,obstacleHeight:2.5}];
+ const s=field({},[enemy()],{wallEdges}),p=unit(s),knife=handRecord(p,'primary'),point={x:7,y:3,tacticalLevel:0};
  const preview=knifeThrowPreview(s,p,point);assert.equal(preview.valid,true);assert.equal(preview.chance,0);assert.equal(preview.flight.blocked,true);
  const n=order(s,{type:'throwKnife',...point});assert.equal(unit(n).ap,p.ap-preview.pa);assert.equal(unit(n).energy,p.energy-6);assert.equal(unit(n,'e').hp,unit(s,'e').hp);assert.deepEqual(spacePoint(n.groundItems[0]),{x:3,y:3,tacticalLevel:0});exactKnife(n,knife);
 });
@@ -126,8 +126,8 @@ test('preparation pays for standing and turning before the separate throw withou
 });
 
 test('new contact during standing or turning stops preparation with the knife still held',()=>{
- const tiles=floor();Object.assign(tiles[3*24+3],{type:'wall',blocked:true,obstacleHeight:.8});
- const crouched=field({stance:'prone',movementMode:'prone'},[enemy()],{tiles,upperSurfaces:[roof(20)],exploration:true});assert.equal(crouched.mode,'exploration');assert.equal(canSee(crouched,unit(crouched),unit(crouched,'e')),false);
+ const wallEdges=[{id:'low-screen',x:3,y:3,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40,obstacleHeight:.8}];
+ const crouched=field({stance:'prone',movementMode:'prone'},[enemy()],{wallEdges,upperSurfaces:[roof(20)],exploration:true});assert.equal(crouched.mode,'exploration');assert.equal(canSee(crouched,unit(crouched),unit(crouched,'e')),false);
  const turned=field({facing:6},[enemy({facing:2})],{exploration:true});assert.equal(turned.mode,'exploration');
  for(const s of [crouched,turned]){
   const p=unit(s),n=order(s,{type:'throwKnife',x:5,y:3});assert.equal(n.mode,'combat');assert.equal(unit(n).stance,'standing');assert.equal(unit(n).facing,2);assert.equal(unit(n).weaponDropped,undefined);assert.equal(unit(n).weaponInstanceId,'knife-owned');assert.equal(n.groundItems.length,0);assert.equal(unit(n,'e').hp,100);assert.equal(unit(n).ap,p.ap);assert.equal(getKnifeThrowVisual(s,n),null);assert.ok(n.log.some(line=>line.includes('preparación se detuvo')));
@@ -135,8 +135,11 @@ test('new contact during standing or turning stops preparation with the knife st
 });
 
 test('an actual enemy reaction during preparation spends its existing shot and leaves the knife unthrown',()=>{
- const tiles=floor();Object.assign(tiles[3*24+3],{type:'wall',blocked:true,obstacleHeight:.8});
- const s=field({stance:'prone',movementMode:'prone',agility:0,wisdom:0,experienceLevel:1},[enemy({weapon:1805,loaded:1,ammo:0,activeSlot:'primary',marksmanship:100,agility:100,wisdom:100,experienceLevel:10,overwatch:true})],{tiles,upperSurfaces:[roof(20)]});
+ const wallEdges=[{id:'low-screen',x:3,y:3,axis:'y',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40,obstacleHeight:.8}];
+ const s=field({stance:'prone',movementMode:'prone',agility:0,wisdom:0,experienceLevel:1},[enemy({weapon:1805,loaded:1,ammo:0,activeSlot:'primary',marksmanship:100,agility:100,wisdom:100,experienceLevel:10,overwatch:true})],{wallEdges,upperSurfaces:[roof(20)]});
+ // This preparation fixture grants one shot. The free floor beside the edge
+ // must not also fund a later approach and counterattack with the held knife.
+ unit(s,'e').ap=actionCosts(s,unit(s,'e'),unit(s)).fire;
  assert.equal(s.mode,'combat');assert.equal(canSee(s,unit(s,'e'),unit(s)),false);const knife=handRecord(unit(s),'primary');
  const n=order(s,{type:'throwKnife',x:5,y:3});assert.equal(unit(n).stance,'standing');assert.equal(unit(n,'e').reactionTurn,s.turn);assert.equal(unit(n,'e').loaded,0);assert.equal(unit(n,'e').ammo,0);assert.ok(unit(n,'e').ap<unit(s,'e').ap);assert.ok(unit(n).hp<unit(s).hp);assert.ok(unit(n).ap<unit(s).ap);
  assert.equal(exactKnife(n,knife).owner,'p');assert.equal(unit(n).weaponDropped,undefined);assert.equal(n.groundItems.length,0);assert.equal(getKnifeThrowVisual(s,n),null);assert.ok(n.log.some(line=>line.includes('preparación se detuvo')));

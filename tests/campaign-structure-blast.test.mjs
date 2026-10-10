@@ -12,8 +12,8 @@ const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError
 const act=(b,a)=>{const next=actBattle(b,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const save=(s,b=null)=>decodeSave(encodeSave(s,b));
 const sync=(s,b)=>{const result=syncBattleTime(s,b);assert.equal(result.error,null,result.error);return result;};
-const wood=b=>b.tiles.find(t=>t.x===5&&t.y===2);
-const adobe=b=>b.tiles.find(t=>t.x===4&&t.y===4);
+const wood=b=>b.wallEdges.find(t=>t.id==='wood-screen');
+const adobe=b=>b.wallEdges.find(t=>t.id==='adobe-screen');
 const cache=b=>b.props.find(p=>p.id==='retiro:armory-cache');
 
 test('actual grenade damage and finite cache depletion persist through save, sector return and repeated reentry',()=>{
@@ -22,11 +22,11 @@ test('actual grenade damage and finite cache depletion persist through save, sec
   let s=withCarriedGrenades(initialCampaign(45),10,1);Object.assign(s.operativeState[10],{activeSlot:'item',activeItem:'inventory:grenade:arsenal'});
   s=order(s,{type:'visitSector'});const request=s.pendingBattle,authored=enterSector(request),chest=structuredClone(cache(authored));assert.ok(chest);const originalContents=structuredClone(chest.contents);
   const tiles=Array.from({length:216},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
-  Object.assign(tiles[2*24+5],{type:'wall',material:'wood',blocked:true,blocksSight:true,cover:40});
-  Object.assign(tiles[4*24+4],{type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40});
+  const wallEdges=[{id:'wood-screen',x:5,y:3,axis:'x',type:'wall',material:'wood',blocked:true,blocksSight:true,cover:40},
+    {id:'adobe-screen',x:4,y:4,axis:'x',type:'wall',material:'adobe',blocked:true,blocksSight:true,cover:40}];
   Object.assign(chest,{x:6,y:3,roomId:undefined,buildingId:undefined,blocksMovement:true});
   let b=createBattle(request.squad.map((u,i)=>({...u,x:1,y:u.id===10?3:i===0?1:6,facing:2})),{
-    ...request,width:24,height:9,tiles,seed:45,buildings:[],props:[chest],decor:[],enemies:[],npcs:request.npcs.map((n,i)=>({...n,x:21+i,y:7})),exploration:true});
+    ...request,width:24,height:9,tiles,wallEdges,seed:45,buildings:[],props:[chest],decor:[],enemies:[],npcs:request.npcs.map((n,i)=>({...n,x:21+i,y:7})),exploration:true});
   ({campaign:s,battle:b}=save(s,b));b=act(b,{unitId:'10',type:'throwGrenade',x:5,y:3});
   assert.equal(cache(b).destroyed,true);assert.equal(cache(b).open,true);assert.deepEqual(cache(b).contents,originalContents);assert.equal(wood(b).destroyed,true);assert.ok(adobe(b).structureDamage>0&&adobe(b).structureDamage<100);
   ({campaign:s,battle:b}=sync(s,b));({campaign:s,battle:b}=save(s,b));const damage=structuredClone([wood(b),adobe(b)]),metadata=structuredClone(cache(b));
