@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "origin": "Unmodified native freshNorthernRoute created campaign immediately before the failed rear-port meeting with native wall edges",
+  "sourceMainRevision": "b5a4a1141081c0bf19d70567a64ced3fad5154d3",
+  "sourceBranchRevision": "b81e0213d6cd1c2bf9618a527ec53f133ca5b92b",
+  "sourceBytes": 5328059,
+  "sourceSha256": "2fb0850c7f5b670c598d0cebbb2feeaae7db69a709720b7d0a463acc0fac7d03",
+  "fixtureSha256": "313fc8a65084c16081876dec02333dd08861cf98bf346a7ee8274c8e41ca7396",
+  "hour": 198,
+  "secondOfHour": 2088,
+  "activeSquadId": "squad-1",
+  "operativeId": 146,
+  "treasury": 14772,
+  "priorDeadOperatives": [
+    3,
+    110,
+    112,
+    113,
+    114,
+    115,
+    136,
+    141,
+    1000
+  ],
+  "preparation": "Original fresh-created route controllers and campaign actions resumed from their real saved San Lorenzo result. Existing passive strategic evidence captured this helper input before its save round trip or further orders.",
+  "scope": "Focused native moving-resident meeting regression. No simulation fields were edited and no supplies were injected."
+}
