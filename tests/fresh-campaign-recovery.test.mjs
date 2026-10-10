@@ -18,7 +18,7 @@ import {recoveryMendozaOrder} from './recovery-mendoza-driver.mjs';
 import {recoveryPortSearchController} from './recovery-port-battery-driver.mjs';
 import {stagedBatteryController} from './staged-battery-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
-import {fight as fightWithCover} from './cuyo-route-driver.mjs';
+import {northernClearShotOrder} from './fresh-northern-fixture.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {stanceCost} from '../game/tactical.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
@@ -100,7 +100,7 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  for(const trip of north.recovery.medicalTrips){assert.ok(trip.quantity>0&&trip.quantity<=20);assert.equal(trip.cost,trip.quantity*trip.unitPrice);assert.ok(trip.endHour>trip.startHour);}
  for(const [id,record]of Object.entries(won.campaign.operativeState))if(!record.alive)assert.equal(north.campaign.operativeState[id].alive,false);
  assert.ok(north.campaign.resources.treasury>=0);
- const cordoba=fightNorthernSector(prepareFreshCordobaAssault(north.campaign,north.recovery.doctors),'cordoba',{executeBattle:(request,previous)=>fightWithCover(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true})});
+ const cordoba=fightNorthernSector(prepareFreshCordobaAssault(north.campaign,north.recovery.doctors),'cordoba',{controller:northernClearShotOrder});
  assert.equal(cordoba.campaign.sectors.cordoba.owner,'patriot');
  for(const [id,record]of Object.entries(north.campaign.operativeState))if(!record.alive)assert.equal(cordoba.campaign.operativeState[id].alive,false);
  assert.ok(cordoba.campaign.resources.treasury>=0);

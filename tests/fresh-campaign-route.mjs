@@ -630,9 +630,10 @@ if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
 const wounded=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&(r.bleeding>0||r.hp<15);});
 const medicalSectors=[...new Set(wounded.map(id=>operativeLocation(c,id)))].filter(sector=>worldOwner(c,sector)==='patriot');
 const doctors=new Map(),usedDoctors=new Set();
-const candidates=()=>rosterFor(c).filter(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&c.operativeState[op.id].medkits>0&&op.medical>=20&&!usedDoctors.has(op.id)).sort((a,b)=>b.medical-a.medical);
+const candidates=(needsCarriedDressings=true)=>rosterFor(c).filter(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&(!needsCarriedDressings||c.operativeState[op.id].medkits>0)&&op.medical>=20&&!usedDoctors.has(op.id)).sort((a,b)=>b.medical-a.medical);
 for(const sector of medicalSectors){
- const doctor=candidates().find(op=>operativeLocation(c,op.id)===sector);
+ // A local doctor can collect known finite stock before starting care.
+ const doctor=candidates(false).find(op=>operativeLocation(c,op.id)===sector&&(c.operativeState[op.id].medkits>0||sectorInventoryModel(c,sector,rosterFor(c),op.id).entries.some(row=>row.reachable&&JSON.parse(row.expected).item==='medkits')));
  if(!doctor)continue;
  doctors.set(sector,doctor.id);usedDoctors.add(doctor.id);
  // A doctor cannot carry every dressing left on a large battlefield. Keep
