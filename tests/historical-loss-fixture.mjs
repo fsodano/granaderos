@@ -9,16 +9,28 @@ import {freshNorthernRoute} from './fresh-northern-fixture.mjs';
 import {fight} from './opening-driver.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {assembleCreatedCuyo,prepareCreatedMendozaAssault} from './created-cuyo-route.mjs';
+import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 
 export function freshMendozaLoss(){
  let s=prepareCreatedMendozaAssault(assembleCreatedCuyo(freshNorthernRoute().campaign));
  assert.equal(s.operativeState[2].alive,true);
  const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
- const {battle,orders,actions}=fight(request,s.sectorStates.mendoza,{controller:coastalBatteryController(enterSector(request,s.sectorStates.mendoza),{sharedArtillerySight:true})});assert.equal(battle.status,'victory');assert.ok(battle.npcs.find(n=>n.operativeId===2).hp>0);
+ const controller=coastalBatteryController(enterSector(request,s.sectorStates.mendoza),{sharedArtillerySight:true});
+ const {battle,orders,actions}=fight(request,s.sectorStates.mendoza,{controller});assert.equal(battle.status,'victory');assert.ok(battle.npcs.find(n=>n.operativeId===2).hp>0);
  let p={campaign:s,battle:enterSector(request,s.sectorStates.mendoza)},deathCheckpoint;
  const execute=a=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null);p=sync({campaign:p.campaign,battle});};
+ const requirePreInjury=()=>{
+  const commander=p.battle.npcs.find(n=>n.operativeId===57),engineer=p.battle.npcs.find(n=>n.operativeId===2);
+  const isolated=p.campaign.defeated===false&&p.campaign.completed===false&&[57,2].every(id=>p.campaign.operativeState[id].alive===true&&p.campaign.operativeState[id].hp>0)&&commander?.hp>0&&engineer?.hp>0;
+  // The combat tape does not include the later approach. Retain the actual
+  // checkpoint without presenting a partial tape as its complete history.
+  if(!isolated)recordRouteBattleFailure({campaign:p.campaign,request:p.campaign.pendingBattle,previous:p.campaign.sectorStates.mendoza,result:{battle:p.battle},expectedOutcome:'victory',controller,executeBattle:fight,failureStage:'historical-engineer-pre-injury'});
+  assert.equal(p.campaign.defeated,false,'the engineer injury needs a playable campaign');assert.equal(p.campaign.completed,false);
+  for(const id of [57,2]){assert.equal(p.campaign.operativeState[id].alive,true);assert.ok(p.campaign.operativeState[id].hp>0);}
+  assert.ok(commander?.hp>0,'the commander must survive before the intentional engineer injury');assert.ok(engineer?.hp>0);
+ };
  for(let i=0;i<orders.length;i++){execute(orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
- assert.deepEqual(p.battle.units,battle.units);assert.deepEqual(p.battle.npcs,battle.npcs);assert.equal(p.battle.seed,battle.seed);execute({type:'explore'});
+ assert.deepEqual(p.battle.units,battle.units);assert.deepEqual(p.battle.npcs,battle.npcs);assert.equal(p.battle.seed,battle.seed);requirePreInjury();execute({type:'explore'});
  // A won battlefield cannot conceal a subsequent confirmed essential death.
  // Use actual movement and fatal orders, without inserting a prepared casualty.
  const engineer=()=>p.battle.npcs.find(n=>n.operativeId===2);
@@ -27,6 +39,7 @@ export function freshMendozaLoss(){
  if(p.battle.units.find(u=>u.id===actor.id).activeSlot!=='blade')execute({type:'weapon',unitId:actor.id,slot:'blade'});
  for(let i=0;i<20&&engineer().hp>0;i++){
   p=sync({campaign:p.campaign,battle:approachNPC(p.battle,actor.id,engineer().id)});
+  if(i===0)requirePreInjury();
   execute({type:'melee',unitId:actor.id,targetId:engineer().id,targetKind:'npc'});
  }
  assert.equal(engineer().hp,0);deathCheckpoint=saved(p);assert.ok(deathCheckpoint.campaign.defeated);
@@ -46,8 +59,9 @@ export async function servingEngineerLoss({built=false,custom=false}={}){
  if(built){const money=s.resources.treasury;s=order(s,{type:'foundry'});assert.equal(s.resources.treasury,money-137);}
  s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
  let battle=createBattle(r.squad.map(u=>({...u,x:u.id===110?5:1,y:u.id===110?1:6})),{...r,width:12,height:8,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:Math.floor(i/12)===4?'wall':'grass',blocked:Math.floor(i/12)===4,blocksSight:Math.floor(i/12)===4,cover:0})),enemies:r.enemies.map((u,i)=>({...u,x:7,y:i%8,...(i?{hp:0,bleeding:0,bandaged:0}:{y:1,marksmanship:100})}))});
+ const preInjury={campaign:structuredClone(s),battle:structuredClone(battle)};
  battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,0);const active=saved(sync({campaign:s,battle}));
  const returned=sync({campaign:active.campaign,battle:scriptedWithdrawal(active.battle)});
  s=saved({campaign:order(returned.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:returned.battle,survivors:returned.battle.units.filter(u=>u.side==='player')})}).campaign;
- return {campaign:s,active};
+ return {campaign:s,active,preInjury};
 }

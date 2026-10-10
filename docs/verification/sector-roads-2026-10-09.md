@@ -1,7 +1,6 @@
 # Connected sector roads and city travel
 
-Local development evidence, 9 October 2026. The implementation is in the
-`codex/blast-structures` checkout. This is not a published-main or full JA2 parity claim.
+Local validation record, 9 October 2026. The road implementation merged through [PR #326](https://github.com/fsodano/granaderos/pull/326) at `b8b14e2d544cec16535edbb26624ef80ac502720` and is included in main `462abba277a47dafbfed1f60fc4529c8a4721cdc`. The dated checks below retain their original scope and failures. They do not establish a passing full campaign gate or full JA2 parity.
 
 ## Implemented behavior
 

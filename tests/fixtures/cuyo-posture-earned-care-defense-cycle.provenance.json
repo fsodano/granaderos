@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "kind": "derived native battle-only posture checkpoint; not an official campaign save",
+  "fixture": "cuyo-posture-earned-care-defense-cycle.battle.json.gz",
+  "rawBytes": 906512,
+  "rawSha256": "cae180f559ee30554731182956fe6a0570abcc03c1655534e215a1fadd488000",
+  "compressedBytes": 64440,
+  "compressedSha256": "7a63f799ee3da3ea8af8992be10e736ed23091c9fbdbeafe80acad8446638f14",
+  "origin": {
+    "gate": "complete full948",
+    "battleId": "defense-enemy-group-1-150",
+    "originalResult": "defeat",
+    "originalOrders": 203,
+    "exactOriginalReplay": true,
+    "rawTerminalEqual": true,
+    "independentOriginalBeforeDecisionCapture": false,
+    "replayApiCalls": {
+      "enterSector": 1,
+      "syncBattleTime": 3,
+      "encodeSave": 3,
+      "decodeSave": 3,
+      "actBattle": 181,
+      "endTurn": 22,
+      "stanceCost": 48,
+      "teamCanSee": 176,
+      "canSee": 56,
+      "hasLineOfSight": 56,
+      "actionCosts": 56,
+      "firearmShotOptions": 56
+    },
+    "originalInputSha256": "2d85ec7a76e0f2870bffa38cbbcd83a5c1dfb5257588f18f26f0b88be7aa5c0d",
+    "originalResultSha256": "2a7742d45a56307ebb61255681b6b709e924b5acf1097b58d4ccedf486cfcc91",
+    "replayReceiptSha256": "608ded3e724bb35dfafaf4cacf58331f6a93c6015219fa6204c36a89cce837b1",
+    "closureReportSha256": "918c2e1e7c26b4e5a7d86a100e2348b58fd432cc8232a3e8767ed5f2acc40274",
+    "originalDriverSha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618"
+  },
+  "states": [
+    {
+      "originalOrderIndex": 40,
+      "actorId": "117",
+      "phase": "before original accepted crouch",
+      "captureSha256": "d7e8b4050542c4757840742237d47be5e977f66a708c95af91dfb06b20c5a794",
+      "maximumObservedCurrentChance": 1,
+      "paidStandingAlreadyAdmitted": true
+    },
+    {
+      "originalOrderIndex": 41,
+      "actorId": "133",
+      "phase": "before original accepted crouch",
+      "captureSha256": "f8275c8f28638120e797854ab550b7430dd13c116d3cd204915f53fd7fe5fdf7",
+      "maximumObservedCurrentChance": 1,
+      "paidStandingAlreadyAdmitted": true
+    }
+  ],
+  "limits": [
+    "Battle geometry, actors, supplies, AP and clock are extracted unchanged from exact original-order replay. JSON/gzip serialization is deterministic; no campaign tree is included.",
+    "The original prefix and full terminal are not replayed by the persistent test. Source-side exact replay closure is recorded by the hashes above.",
+    "Focused tests inspect only the native current movement/shot choices and a declared paid-crouch arena. They execute no earned alternate move, route, full fight, seed sweep or settlement.",
+    "No corrected Córdoba victory or outcome prevention is established."
+  ]
+}

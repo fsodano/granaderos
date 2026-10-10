@@ -1,0 +1,117 @@
+{
+  "archive": "full950-closed.tar.gz",
+  "archiveBytes": 2686225,
+  "archiveSha256": "0e234d9cf72309ca667b5f0999521076bcd87ca3714d7d89153e51ed5fe9d508",
+  "terminalReceiptSha256": "f75e2da66c32a2f42089c5079c99d139f5e0a0a16f10a9c4eb07dfd48df9a769",
+  "complete": true,
+  "result": "failed",
+  "sourceFiles": 14120,
+  "sourceDrift": [],
+  "counts": {
+    "tests": 7039,
+    "failed": 6,
+    "passed": 7028,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0,
+    "topLevel": 6888,
+    "suites": 0
+  },
+  "files": [
+    {
+      "path": "after-source-hashes.json",
+      "bytes": 1882002,
+      "sha256": "a3337d274a20a645df0a7ed658d13439785c8d5bdc9abf12e01fa0de741c7a58"
+    },
+    {
+      "path": "before-source-hashes.json",
+      "bytes": 1882002,
+      "sha256": "a3337d274a20a645df0a7ed658d13439785c8d5bdc9abf12e01fa0de741c7a58"
+    },
+    {
+      "path": "executed-wrapper.mjs",
+      "bytes": 5407,
+      "sha256": "21dccc126873d84a73d7a9d4598246d8e78f1d76638ed6328e6dee6f01d01f3c"
+    },
+    {
+      "path": "final-receipt.json",
+      "bytes": 2954,
+      "sha256": "f75e2da66c32a2f42089c5079c99d139f5e0a0a16f10a9c4eb07dfd48df9a769"
+    },
+    {
+      "path": "full-report.json",
+      "bytes": 387944,
+      "sha256": "fdccbf75eed3873467cb0c052ebc9082a84df2c97b06cf48e36407fb630411df"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 37701,
+      "sha256": "0fcfa7503b885ebfc098bc8daead8612d2edf34e01c04facb1384be49fce3b3e"
+    },
+    {
+      "path": "native-failures/41573-1-los_patos-654-4162937008-yK1lut/native-input.json",
+      "bytes": 9291949,
+      "sha256": "a3fa1ae6476d5f43541797bb54069417df1e14a992f7d3bafe720aff3385a89a"
+    },
+    {
+      "path": "native-failures/41573-1-los_patos-654-4162937008-yK1lut/native-result.json",
+      "bytes": 538297,
+      "sha256": "43a2231fba97830cda40a7e6e125cd122b0e04478b5a7c2dda8eda93a74cbcf6"
+    },
+    {
+      "path": "native-failures/41573-1-los_patos-654-4162937008-yK1lut/receipt.json",
+      "bytes": 1344,
+      "sha256": "ff8b00a4bcecdb42a9247ed8f20502bdc8fd31ac7e565e779528a73da697ca36"
+    },
+    {
+      "path": "native-failures/41573-1-los_patos-654-4162937008-yK1lut/terminal.save.json",
+      "bytes": 1874507,
+      "sha256": "7f955fba129197122644158b637c9a2cac561969f8e018d283873da4667397f5"
+    },
+    {
+      "path": "native-failures/60706-1-cordoba-108-18026106-30Ggpv/native-input.json",
+      "bytes": 2621499,
+      "sha256": "913628a9e2f5fcc9d3aabf788a86b202c8cbdd5c331ae810ce6a2ec1b1804bcd"
+    },
+    {
+      "path": "native-failures/60706-1-cordoba-108-18026106-30Ggpv/native-result.json",
+      "bytes": 817771,
+      "sha256": "5f33b73d5396bfcdaf8ea0e663e7f57406c9d07a40893ebdebdea88586ea46ef"
+    },
+    {
+      "path": "native-failures/60706-1-cordoba-108-18026106-30Ggpv/receipt.json",
+      "bytes": 1353,
+      "sha256": "e566913c2b6f8a069d3d1cf49ee619dc3c253a8ca005faa8f620073535cb94fd"
+    },
+    {
+      "path": "native-failures/60706-1-cordoba-108-18026106-30Ggpv/terminal.save.json",
+      "bytes": 687297,
+      "sha256": "97544816727ad3e4fdcd7b436f8268d4d5d3a6fc4c8f75e27d3bfdf8cbf92231"
+    },
+    {
+      "path": "pid.json",
+      "bytes": 30,
+      "sha256": "0483ecf7b50b3476f7f586424ea593abe387b60de9a23926320631b4f8ad23bb"
+    },
+    {
+      "path": "run.log",
+      "bytes": 1409510,
+      "sha256": "70c202f2f353928375c2e28e0e30282f8ed840d05977dccdc0f68cb6e5210619"
+    },
+    {
+      "path": "source-reconstruction/explicit-allowlist.json",
+      "bytes": 5940,
+      "sha256": "10e1b4d97374d4d4714b58f2ed21a6290d066dfb4383aeb2edc126e8984b7ae9"
+    },
+    {
+      "path": "source-reconstruction/receipt.json",
+      "bytes": 341,
+      "sha256": "083a06583c8a9b26a9eb8c64c3385ca19594d9c55b14233b21b58e8ead44a8ce"
+    },
+    {
+      "path": "source-reconstruction/staged-before-full950.patch",
+      "bytes": 353046,
+      "sha256": "5bca51b43b383305a538fbfa20c50ecd85099e9bf79c280dedefc34d9f09c0b6"
+    }
+  ]
+}

@@ -1,0 +1,336 @@
+{
+  "archive": "granaderos-three-original-diagnostics-20261010.tar.gz",
+  "bytes": 11597718,
+  "sha256": "54ca73378c2f277d20178ea5eef76d29ed5949eb7e7d692b375c0c88cf52b830",
+  "memberCount": 65,
+  "uncompressedBytes": 95578005,
+  "allMembersVerified": true,
+  "scope": "Three unchanged original failing invocations, each closed exit1 with zero source drift, plus exact staged42 source reconstruction. No corrected gameplay claim.",
+  "members": [
+    {
+      "path": "coastal/after-source-hashes.json",
+      "bytes": 1882546,
+      "sha256": "3fc1eef6943fa5124a62b0890136bfd8a3c1ce9ba295a897f76469a88825bf39"
+    },
+    {
+      "path": "coastal/before-source-hashes.json",
+      "bytes": 1882546,
+      "sha256": "3fc1eef6943fa5124a62b0890136bfd8a3c1ce9ba295a897f76469a88825bf39"
+    },
+    {
+      "path": "coastal/buenos_aires-before-execution.json",
+      "bytes": 431916,
+      "sha256": "0bc3c81567387f83c47d61bd2ea3ebed54672e3fd4cc1374e39372e2df9e2402"
+    },
+    {
+      "path": "coastal/buenos_aires-raw-result.json",
+      "bytes": 824075,
+      "sha256": "e1adb4b48c366d662d1240da85e26f71616519c1d78cba4d978acb525e351efb"
+    },
+    {
+      "path": "coastal/executed-observer.mjs",
+      "bytes": 1202,
+      "sha256": "976b84956348ba614c791a927a2343d5825cd7d9592343a53d185b5fd5a25456"
+    },
+    {
+      "path": "coastal/executed-wrapper.mjs",
+      "bytes": 3680,
+      "sha256": "8987957140017ab0fdab9a27fdee28ce031f5259a732ae5635f6f16a4ad3d4b9"
+    },
+    {
+      "path": "coastal/final-receipt.json",
+      "bytes": 1162,
+      "sha256": "19539e1830ac674828e7fc3ee25f6d1ce8a3698a798db1532aad4c6de1a372a9"
+    },
+    {
+      "path": "coastal/metadata.json",
+      "bytes": 614,
+      "sha256": "51192bdb0042607d5569a8ba2b1ff02e6642434c13ca7fae022e0bb9b80ab072"
+    },
+    {
+      "path": "coastal/native-failures/67095-1-san_lorenzo-103-18026106-E26xVf/native-input.json",
+      "bytes": 3147138,
+      "sha256": "3dfa54d7c5e7b8198670d4f5242acef001db0af4057b4f21e0ffbc01769e1f7d"
+    },
+    {
+      "path": "coastal/native-failures/67095-1-san_lorenzo-103-18026106-E26xVf/native-result.json",
+      "bytes": 559872,
+      "sha256": "a379331dfb6415066df03c8098ce346ca1aa2958428bd55cbbaca3f0a97f24d0"
+    },
+    {
+      "path": "coastal/native-failures/67095-1-san_lorenzo-103-18026106-E26xVf/receipt.json",
+      "bytes": 1381,
+      "sha256": "67bfe9fcfa5ca3430480127c6e69ab2f8108ba49e978cb0ddb4c76cf29395de1"
+    },
+    {
+      "path": "coastal/native-failures/67095-1-san_lorenzo-103-18026106-E26xVf/terminal.save.json",
+      "bytes": 744880,
+      "sha256": "ddac178f9ecacf8cc63879472898d8e0ef0dd708841e965a0a2e90ba30577eae"
+    },
+    {
+      "path": "coastal/observer-receipt.json",
+      "bytes": 2338,
+      "sha256": "e8dc0cd39bfe8f97bb2273ff7f5cd5ed75acffe9aadeccf16e2728539dfc2a8c"
+    },
+    {
+      "path": "coastal/original-error.json",
+      "bytes": 1826,
+      "sha256": "a605d22ac875dfd4b8de275a0f4ddea38436fcd79d451a2afa7f927676edc3d4"
+    },
+    {
+      "path": "coastal/pid.json",
+      "bytes": 30,
+      "sha256": "b2bbfb3abeccbea7ece8499eeb43ca855e9981a8304c009c7a6e8d2f655ac6e0"
+    },
+    {
+      "path": "coastal/run.log",
+      "bytes": 704,
+      "sha256": "25fc9f0f6802220c3219c53d00202d799d95c4525768a6bff249817362cd8959"
+    },
+    {
+      "path": "coastal/san_lorenzo-before-execution.json",
+      "bytes": 3147165,
+      "sha256": "fba987b32fe3511f36b15303606d955d920363a78ce2d14fa6fa1f0fb22070ae"
+    },
+    {
+      "path": "coastal/san_lorenzo-raw-result.json",
+      "bytes": 559899,
+      "sha256": "e97310c7c16cdb27f9dde18b6adb0eaf05bb90b70c00750f317553ef478d2ef3"
+    },
+    {
+      "path": "coastal/san_nicolas-before-execution.json",
+      "bytes": 2195157,
+      "sha256": "63285a28200311cb36e0f6b22e728558fb9f8bba6336dc1f3e585ec63e457d7c"
+    },
+    {
+      "path": "coastal/san_nicolas-raw-result.json",
+      "bytes": 803765,
+      "sha256": "93dcf1b0c719e06d0ce0fbda28d2fb7360aacd3245e4600be91cf2684e5a21c7"
+    },
+    {
+      "path": "care/after-source-hashes.json",
+      "bytes": 1882546,
+      "sha256": "3fc1eef6943fa5124a62b0890136bfd8a3c1ce9ba295a897f76469a88825bf39"
+    },
+    {
+      "path": "care/before-source-hashes.json",
+      "bytes": 1882546,
+      "sha256": "3fc1eef6943fa5124a62b0890136bfd8a3c1ce9ba295a897f76469a88825bf39"
+    },
+    {
+      "path": "care/earned-mendoza-before-care.json",
+      "bytes": 7750083,
+      "sha256": "cf4949e015b1a9f591d0391662c1dd3ec19553690a4ccb5ceb216badaa7ecb79"
+    },
+    {
+      "path": "care/executed-observer.mjs",
+      "bytes": 1502,
+      "sha256": "2861dc26b26499072382bd1144be7465affd4de0929b02bc2b4413878d4f6471"
+    },
+    {
+      "path": "care/executed-wrapper.mjs",
+      "bytes": 3680,
+      "sha256": "8987957140017ab0fdab9a27fdee28ce031f5259a732ae5635f6f16a4ad3d4b9"
+    },
+    {
+      "path": "care/existing-care-order-reports.jsonl",
+      "bytes": 2663,
+      "sha256": "635900e9824b1e37d198712104dfa3d0d21e10927f822a066f727f24844405d7"
+    },
+    {
+      "path": "care/existing-care-stopped-report.json",
+      "bytes": 9049401,
+      "sha256": "fa72b9a31b688d95b2ff89654c44ad581af5df22360adf3524e10754b82b687d"
+    },
+    {
+      "path": "care/final-receipt.json",
+      "bytes": 1050,
+      "sha256": "2c8dab06c5e22d569749cfd981d5b9ab458e2acbc7b1fa85acd63f7664f7e921"
+    },
+    {
+      "path": "care/metadata.json",
+      "bytes": 605,
+      "sha256": "9f2dbfdf5c59eab676bd870df43ccded8f2d886de5063e4479ef5acff12eafe7"
+    },
+    {
+      "path": "care/native-failures/67094-1-mendoza-care-qWaHWQ/care-action.json",
+      "bytes": 64,
+      "sha256": "42c404528e0196dfb581e1a2c82f705fe1dc914c8cb5ee2ebc78e77d117d16de"
+    },
+    {
+      "path": "care/native-failures/67094-1-mendoza-care-qWaHWQ/care-before.json",
+      "bytes": 9046893,
+      "sha256": "9d6538a125ce548335cdc76fd50bb25f39a75c2fc1bc6b96de2817ae7eefa50c"
+    },
+    {
+      "path": "care/native-failures/67094-1-mendoza-care-qWaHWQ/care-native-after.json",
+      "bytes": 751191,
+      "sha256": "b44eab902c521f615dc31a09869602173fc717fe840bb1cb04c504e3c05ef8c4"
+    },
+    {
+      "path": "care/native-failures/67094-1-mendoza-care-qWaHWQ/care-stopped-pair.json",
+      "bytes": 9049186,
+      "sha256": "d0733138d513ec57e1af1e196cc9ba1e78f9de0421a20c4860890c81b99555ab"
+    },
+    {
+      "path": "care/native-failures/67094-1-mendoza-care-qWaHWQ/care-synchronized-after.json",
+      "bytes": 9049203,
+      "sha256": "f96f019707ee22c91e3a071135b50094aa01cb4dee823376f91d47f7d67f79fa"
+    },
+    {
+      "path": "care/native-failures/67094-1-mendoza-care-qWaHWQ/receipt.json",
+      "bytes": 1943,
+      "sha256": "6fa1e40767a2325ed67afa6a6048045ff5526adcffd72d6247a3cdcfb70f63d2"
+    },
+    {
+      "path": "care/native-failures/ammunition-preparation/67094-1-tucuman-preliminary-armament-input.json",
+      "bytes": 2172246,
+      "sha256": "e492595197b8404c6829996196d60d596062a3d4f0fe27c65a6550484364a820"
+    },
+    {
+      "path": "care/native-failures/ammunition-preparation/67094-2-tucuman-preliminary-armament-output.json",
+      "bytes": 2445718,
+      "sha256": "7d2ac868d1ace9d01d08edf41ed16d8fc202cd674cc309bbd0602b9041df0021"
+    },
+    {
+      "path": "care/native-failures/ammunition-preparation/67094-3-tucuman-authoritative-ammunition-input.json",
+      "bytes": 2175074,
+      "sha256": "85be494ef8e5fec214d0173e0255b5da30a5e2aa582fd3d1e87cd9b170a92d92"
+    },
+    {
+      "path": "care/observer-receipt.json",
+      "bytes": 1731,
+      "sha256": "a3118725387d999bb2da7733f3e89a0dd4a2df2f1af942cba30770321de924a1"
+    },
+    {
+      "path": "care/original-error.json",
+      "bytes": 1237,
+      "sha256": "9118a3abb94fdf6abd678bea20181f9c0042ca6ef91c958381e3359347b14d62"
+    },
+    {
+      "path": "care/pid.json",
+      "bytes": 30,
+      "sha256": "4b98aaab7d85be0d18f78479ca3633ec5c69a58b30ba8746d802b6746215145c"
+    },
+    {
+      "path": "care/run.log",
+      "bytes": 130,
+      "sha256": "5cad338a576e025141f5e10797ad781303329e03a866666cd98955f65041d547"
+    },
+    {
+      "path": "ammunition/after-source-hashes.json",
+      "bytes": 1882546,
+      "sha256": "3fc1eef6943fa5124a62b0890136bfd8a3c1ce9ba295a897f76469a88825bf39"
+    },
+    {
+      "path": "ammunition/before-source-hashes.json",
+      "bytes": 1882546,
+      "sha256": "3fc1eef6943fa5124a62b0890136bfd8a3c1ce9ba295a897f76469a88825bf39"
+    },
+    {
+      "path": "ammunition/executed-wrapper.mjs",
+      "bytes": 3680,
+      "sha256": "8987957140017ab0fdab9a27fdee28ce031f5259a732ae5635f6f16a4ad3d4b9"
+    },
+    {
+      "path": "ammunition/final-receipt.json",
+      "bytes": 1287,
+      "sha256": "65735034bf922c3fa54f83e245422894a34287fce5132d4e6e2bce653db7dad7"
+    },
+    {
+      "path": "ammunition/metadata.json",
+      "bytes": 530,
+      "sha256": "fc3264ee7ab5c559b821cc8dacb7a2cd8f4be2deeccf9b60e5c59d6f933fed52"
+    },
+    {
+      "path": "ammunition/native-failures/ammunition-preparation/67096-1-tucuman-preliminary-armament-input.json",
+      "bytes": 2013069,
+      "sha256": "073f2a69cafe4c568764b64eb2f8e554e1a349b48e461827926d62ad65140059"
+    },
+    {
+      "path": "ammunition/native-failures/ammunition-preparation/67096-2-tucuman-preliminary-armament-output.json",
+      "bytes": 2193098,
+      "sha256": "9585606068be321140c4b04a4a34dc845e363a84c1e2521486406c022cda402f"
+    },
+    {
+      "path": "ammunition/native-failures/ammunition-preparation/67096-3-tucuman-authoritative-ammunition-input.json",
+      "bytes": 2022466,
+      "sha256": "631b2c642152f59de4cf8b1c3ac7f798c368da027a5528a64baa9fb409c21dfd"
+    },
+    {
+      "path": "ammunition/native-failures/ammunition-preparation/67096-4-finite-ammunition-refusal.json",
+      "bytes": 2022651,
+      "sha256": "879958fdaaeb50d6025dc48cc11f804a9cbc0099fdc78e59ba16bba170d9afe1"
+    },
+    {
+      "path": "ammunition/native-failures/ammunition-preparation/67096-5-tucuman-authoritative-ammunition-stopped.json",
+      "bytes": 2022622,
+      "sha256": "319888f3861592b8e1a1a7db3fcda0cfe3abb177175e4031db1c8900145067ff"
+    },
+    {
+      "path": "ammunition/pid.json",
+      "bytes": 30,
+      "sha256": "a03611543f379382b369a8ac8fcdc45b1f08b834e0611dc488d3139175e89c2f"
+    },
+    {
+      "path": "ammunition/recovery-checkpoint-tucuman-authoritative-ammunition-input.json",
+      "bytes": 901174,
+      "sha256": "bd568b4367e93d538838a1a24ede8ee1551f2580061fbe9b26778dc6e1c1b541"
+    },
+    {
+      "path": "ammunition/recovery-checkpoint-tucuman-authoritative-ammunition-refusal.json",
+      "bytes": 901174,
+      "sha256": "22d15a38b3fcc254c10fc98e678370882cb0ddb18dc6359ef1972d7a31d63f45"
+    },
+    {
+      "path": "ammunition/recovery-checkpoint-tucuman-battery-input.json",
+      "bytes": 894075,
+      "sha256": "dcf3ddc86d82b5cab60784274f989bc04809da6df4954d23e20e1a8adecb5b62"
+    },
+    {
+      "path": "ammunition/recovery-checkpoint-tucuman-battery-prior-squad.json",
+      "bytes": 894056,
+      "sha256": "01052ce3a205e1c6d6e547cdd9b78b6dc7e19c88fc23561ef6c05266b441b881"
+    },
+    {
+      "path": "ammunition/recovery-checkpoint-tucuman-battery-ready.json",
+      "bytes": 894237,
+      "sha256": "2239a21cab6b3595aff4eb1fdb23b3c34772804fe401c1325f3cd461408664c0"
+    },
+    {
+      "path": "ammunition/recovery-checkpoint-tucuman-preliminary-armament-input.json",
+      "bytes": 891793,
+      "sha256": "2cac48f02f82ab675410aadac45f415a9597a092458ae0e360ec2bd3b7295e92"
+    },
+    {
+      "path": "ammunition/recovery-checkpoint-tucuman-preparation-input.json",
+      "bytes": 890299,
+      "sha256": "b7a118e23dd060ac411d4beee44da179efc35032b6f92f797ede49d821bea76b"
+    },
+    {
+      "path": "ammunition/run.log",
+      "bytes": 1769,
+      "sha256": "7f7661f1a9c573d764c14d0f12a605cefee733fb71b7e01541978e44e5538902"
+    },
+    {
+      "path": "source-reconstruction/explicit-allowlist.json",
+      "bytes": 8124,
+      "sha256": "a9a3cfbf4f246bd17b821d3dcd10fc21a62bb8801b76b5f4c0f186c04c6bece2"
+    },
+    {
+      "path": "source-reconstruction/receipt.json",
+      "bytes": 3020,
+      "sha256": "67575ec0e96230038a8173e8cdb77cf9f66f62aa518b7c5753ccda531a9f8ab9"
+    },
+    {
+      "path": "source-reconstruction/staged-before-three-diagnostics.patch",
+      "bytes": 3779682,
+      "sha256": "34c6cbe5e5130dea239d258b834f891e5d86f925d87a6c42634048c5dcff2012"
+    },
+    {
+      "path": "original-diagnostic-closure.json",
+      "bytes": 13459,
+      "sha256": "7b1bddd5464b94a0868555ed3a87a2b9e9c04c5337925d815eabb810fb5816e8"
+    }
+  ]
+}

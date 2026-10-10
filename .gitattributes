@@ -4,6 +4,7 @@ assets/source/illustrated-sprites/*.prompt.txt -whitespace
 
 # Preserve exact raw validation output, including original whitespace.
 docs/evidence/campaign-route-corrections-2026-10-09/*.log -whitespace
+docs/evidence/campaign-controller-safety-2026-10-10/*.log -whitespace
 
 # Upstream character sources are archived byte-for-byte for checksum verification.
 # Preserve their original line endings and avoid huge numeric/source-data diffs.

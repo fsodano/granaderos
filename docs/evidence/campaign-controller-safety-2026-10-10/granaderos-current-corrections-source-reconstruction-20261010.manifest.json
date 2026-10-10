@@ -1,0 +1,26 @@
+{
+  "archive": "granaderos-current-corrections-source-reconstruction-20261010.tar.gz",
+  "bytes": 3517625,
+  "sha256": "6948820a2eb6793bc9794d6a8843b296a43a437fc296f70113541d7c80145943",
+  "base": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "sourceSnapshotSha256": "bd08d4d6fdd9b87fcad1b770308f1dcf28c0d1b154e1867521f6b6134ce4af28",
+  "paths": 57,
+  "cachedReconstructionVerified": true,
+  "members": [
+    {
+      "path": "source-reconstruction/complete-working-source.patch",
+      "bytes": 4456931,
+      "sha256": "4a6ebeb6794be9be24f30fa1b168d1af1b769d12af64b2b9c1374bacd66d6ec4"
+    },
+    {
+      "path": "source-reconstruction/explicit-allowlist.json",
+      "bytes": 12055,
+      "sha256": "e7fd18488da6b17009a308ef1db24214df41b4b970e5c307debb4fc0f6f35090"
+    },
+    {
+      "path": "source-reconstruction/receipt.json",
+      "bytes": 831,
+      "sha256": "f3408cca7857d6603bafa200ba5b7ad4378672fc6569f27f2da3cee0488c697f"
+    }
+  ]
+}

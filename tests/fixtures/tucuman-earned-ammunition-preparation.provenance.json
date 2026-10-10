@@ -1,0 +1,367 @@
+{
+  "scope": "Immutable independently earned Tucuman preparation input from one original fresh-campaign-recovery.test.mjs invocation. No grant, source splice, seed or controller variant.",
+  "source": "/tmp/granaderos-current-ammunition-single-diagnostic-2026-10-10T083117309Z/recovery-checkpoint-tucuman-preparation-input.json",
+  "sourceIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "683a2829961b",
+    "source": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387",
+    "revision": "462abba277a47dafbfed1f60fc4529c8a4721cdc"
+  },
+  "originalReceipt": {
+    "path": "/tmp/granaderos-current-ammunition-single-diagnostic-2026-10-10T083117309Z/final-receipt.json",
+    "sha256": "65735034bf922c3fa54f83e245422894a34287fce5132d4e6e2bce653db7dad7",
+    "exitCode": 1,
+    "invocations": 1,
+    "sourceDrift": []
+  },
+  "fixture": {
+    "path": "tucuman-earned-ammunition-preparation.save.json.gz",
+    "rawSha256": "b7a118e23dd060ac411d4beee44da179efc35032b6f92f797ede49d821bea76b",
+    "gzipSha256": "f4eff55fa9fe9b33ffd1c8fc83eaf9c81210b9186b493186f4660b754f83ecb7",
+    "rawBytes": 890299,
+    "gzipBytes": 88498
+  },
+  "originalPreparationSourceSha256": "d3c421e13f3104bc64a0bacdbbd99ae094ee7de6da5b0fec7d0937e291ecdd7d",
+  "originalAmmunitionSourceSha256": "14141e09fcc68718a2bbaa773ef1ad39c24a7b61702652079aed7c0ea78e4b77",
+  "fieldIds": [
+    115,
+    107,
+    113,
+    124,
+    141,
+    125,
+    103,
+    112,
+    122,
+    126,
+    101,
+    108,
+    139
+  ],
+  "target": 10,
+  "expectedInputClock": {
+    "hour": 240,
+    "second": 2340
+  },
+  "expectedArmamentClock": {
+    "hour": 274,
+    "second": 2340
+  },
+  "expectedSupplyClock": {
+    "hour": 290,
+    "second": 2340
+  },
+  "expectedFiniteColumnAndKnownCordobaStocks": {
+    "musket_75": 141,
+    "rifle_62": 44,
+    "pistol_69": 84,
+    "shot_16": 77
+  },
+  "originalFailure": {
+    "message": "Finite ammunition shortage for 108 at cordoba: 1 ammoMusket rounds are missing.",
+    "operativeId": 108,
+    "remaining": 1,
+    "acceptedTransactions": 0,
+    "earlyLooseAmmoOrders": 12
+  },
+  "retainedArmamentOrders": [
+    {
+      "type": "assignCare",
+      "operativeId": 115,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 107,
+      "direction": "take",
+      "sourceKey": "drop:11",
+      "expected": "{\"weapon\":1801,\"weight\":4,\"loaded\":0,\"condition\":84,\"item\":\"weapon\",\"count\":1,\"jammed\":false}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 107,
+      "direction": "equip",
+      "inventoryKey": "weapon:1801",
+      "expected": "{\"weapon\":1801,\"weight\":4,\"loaded\":0,\"condition\":84,\"count\":1,\"jammed\":false}",
+      "slot": "primary"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 107,
+      "direction": "drop",
+      "item": "inventory:weapon:1805",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 107,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 113,
+      "direction": "drop",
+      "item": "inventory:weapon:1804",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 113,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 124,
+      "direction": "take",
+      "sourceKey": "drop:12",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":1,\"condition\":85,\"jammed\":true,\"item\":\"weapon\",\"count\":1}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 124,
+      "direction": "equip",
+      "inventoryKey": "weapon:1800",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":1,\"condition\":85,\"jammed\":true,\"count\":1}",
+      "slot": "primary"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 124,
+      "direction": "drop",
+      "item": "inventory:weapon:1801",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 124,
+      "direction": "drop",
+      "item": "inventory:weapon:1803",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 124,
+      "assignment": "rest"
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 141,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 125,
+      "direction": "take",
+      "sourceKey": "ground:sector-item-4",
+      "expected": "{\"count\":1,\"weight\":4,\"weapon\":1801,\"loaded\":1,\"condition\":98,\"jammed\":true,\"item\":\"inventory:weapon:1801\"}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 125,
+      "direction": "equip",
+      "inventoryKey": "weapon:1801",
+      "expected": "{\"count\":1,\"weight\":4,\"weapon\":1801,\"loaded\":1,\"condition\":98,\"jammed\":true}",
+      "slot": "primary"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 125,
+      "direction": "drop",
+      "item": "inventory:weapon:1805",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 125,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 103,
+      "direction": "take",
+      "sourceKey": "drop:13",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":0,\"condition\":84,\"item\":\"weapon\",\"count\":1,\"jammed\":false}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 103,
+      "direction": "equip",
+      "inventoryKey": "weapon:1800",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":0,\"condition\":84,\"count\":1,\"jammed\":false}",
+      "slot": "primary"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 103,
+      "direction": "drop",
+      "item": "inventory:weapon:1804",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 103,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 112,
+      "direction": "take",
+      "sourceKey": "drop:14",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":1,\"condition\":97,\"item\":\"weapon\",\"count\":1,\"jammed\":false}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 112,
+      "direction": "equip",
+      "inventoryKey": "weapon:1800",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":1,\"condition\":97,\"count\":1,\"jammed\":false}",
+      "slot": "primary"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 112,
+      "direction": "drop",
+      "item": "inventory:weapon:1805",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 112,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 122,
+      "direction": "take",
+      "sourceKey": "drop:15",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":0,\"reloadProgress\":0.5751633986928104,\"condition\":95,\"item\":\"weapon\",\"count\":1,\"jammed\":false}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 122,
+      "direction": "equip",
+      "inventoryKey": "weapon:1800",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":0,\"reloadProgress\":0.5751633986928104,\"condition\":95,\"count\":1,\"jammed\":false}",
+      "slot": "primary"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 122,
+      "direction": "drop",
+      "item": "inventory:weapon:1805",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 122,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 126,
+      "direction": "take",
+      "sourceKey": "drop:16",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":0,\"condition\":94,\"item\":\"weapon\",\"count\":1,\"jammed\":false}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 126,
+      "direction": "equip",
+      "inventoryKey": "weapon:1800",
+      "expected": "{\"weapon\":1800,\"weight\":4,\"loaded\":0,\"condition\":94,\"count\":1,\"jammed\":false}",
+      "slot": "primary"
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 126,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 101,
+      "direction": "drop",
+      "item": "inventory:weapon:1804",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 101,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 108,
+      "direction": "drop",
+      "item": "inventory:weapon:1803",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 108,
+      "assignment": "rest"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 139,
+      "direction": "take",
+      "sourceKey": "drop:17",
+      "expected": "{\"weapon\":1801,\"weight\":4,\"loaded\":0,\"condition\":83,\"item\":\"weapon\",\"count\":1,\"jammed\":false}",
+      "count": 1
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 139,
+      "direction": "equip",
+      "inventoryKey": "weapon:1801",
+      "expected": "{\"weapon\":1801,\"weight\":4,\"loaded\":0,\"condition\":83,\"count\":1,\"jammed\":false}",
+      "slot": "primary"
+    },
+    {
+      "type": "sectorInventory",
+      "sector": "cordoba",
+      "operativeId": 139,
+      "direction": "drop",
+      "item": "inventory:weapon:1805",
+      "count": 1
+    },
+    {
+      "type": "assignCare",
+      "operativeId": 139,
+      "assignment": "rest"
+    }
+  ],
+  "strictScope": "A focused preparation check may return the pending Tucuman assault request. It must not execute an assault, replay a battle, restore casualties, relax target10, or create ammunition."
+}

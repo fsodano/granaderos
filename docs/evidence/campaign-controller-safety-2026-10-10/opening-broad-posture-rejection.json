@@ -1,0 +1,39 @@
+{
+  "createdAt": "2026-10-10T09:18:25.197490+00:00",
+  "reason": "Remove unsupported broad opening firing-posture guard after original route gate regressed initial San Nicolas before earlier Cordoba checkpoint. It conflated useful firing posture with defensive posture. Focused two-case proof did not establish original route acceptance.",
+  "closedAffectedGate": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z",
+  "closedGateReceiptSha256": "adf4c7f4380c83e88e956032ba63ae65a920c5afb2e6fb893f9e11e36cc3a2b5",
+  "rejectedSourceSnapshotSha256": "bd08d4d6fdd9b87fcad1b770308f1dcf28c0d1b154e1867521f6b6134ce4af28",
+  "preservedPortableSource": "/tmp/granaderos-current-corrections-source-reconstruction-20261010.tar.gz",
+  "restoredOpeningDriverSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+  "removedOnlyRootGeneratedExperimentalPaths": [
+    "tests/opening-posture-readiness.test.mjs",
+    "tests/fixtures/opening-cordoba-unproductive-posture.battle.json.gz",
+    "tests/fixtures/opening-cordoba-unproductive-posture.provenance.json"
+  ],
+  "rejectedPaths": [
+    {
+      "path": "tests/opening-driver.mjs",
+      "rejectedBytes": 6347,
+      "rejectedSha256": "4fc6a41e26d668042919711f6c428b3de0d94427239b3ebfbd22c2eed951f1a2"
+    },
+    {
+      "path": "tests/opening-posture-readiness.test.mjs",
+      "rejectedBytes": 4712,
+      "rejectedSha256": "543da537eda31fb46c999e4889553bf0632e3778aadcf1f9012c57f7b6d5145a"
+    },
+    {
+      "path": "tests/fixtures/opening-cordoba-unproductive-posture.battle.json.gz",
+      "rejectedBytes": 27134,
+      "rejectedSha256": "c8698811b5ecfbdcaa75e136526762ca6b4ac1dd234f53e22be7e0be7eeecec9"
+    },
+    {
+      "path": "tests/fixtures/opening-cordoba-unproductive-posture.provenance.json",
+      "rejectedBytes": 2099,
+      "rejectedSha256": "6e783dc73e8a2f447b9526455ab3cc42ef49354322c1669775473654debdc504"
+    }
+  ],
+  "originalRouteAssertionsUnchanged": true,
+  "notAControllerOrSeedSearch": true,
+  "remainingCorrections": "Finite care, whole-column ammunition, local San Lorenzo field care, original firearm safety and Cuyo posture correction retained."
+}

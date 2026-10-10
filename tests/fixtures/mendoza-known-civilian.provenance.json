@@ -1,0 +1,42 @@
+{
+  "sourceMain": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "replayedOrders": 636,
+  "terminalEqualsOriginal": true,
+  "originalInputs": [
+    {
+      "path": "native-input.json",
+      "bytes": 7629339,
+      "sha256": "bcc33db01bb18ed9384e2f7e2d09396f1cd107167b3de296a2eaf4f3acbce525"
+    },
+    {
+      "path": "native-result.json",
+      "bytes": 1067595,
+      "sha256": "451b6f1f065646672993c19e6d1a9954b6465a48f23693ea9b6dec91d9cb3350"
+    }
+  ],
+  "originalReplayReceiptSha256": "5c9e2bc28c09981d865ba0b1a1b740ed3ec1c9f3515778a20219ab11c62f10fa",
+  "files": {
+    "mendoza-known-civilian-order-66.json.gz": {
+      "orderIndex": 66,
+      "rawBytes": 964507,
+      "rawSha256": "6ad8a05ae40c78b5525fbff10d29db8d7877734ed3cf6b8de14178a3b97986d4",
+      "gzipBytes": 44995,
+      "gzipSha256": "8662fca4fe1c9687666359459f17a73e48d67a82af0195fa25e9944143425bec"
+    },
+    "mendoza-known-civilian-order-107.json.gz": {
+      "orderIndex": 107,
+      "rawBytes": 966828,
+      "rawSha256": "eeb3552e6a2b764e927e9e2d4fe8e039a43465559540c3f019acfb1be5bfec6d",
+      "gzipBytes": 45271,
+      "gzipSha256": "a552131603556e449cc70cbf5bbb75776faa4f9b0abe1532be47d827807e4dcc"
+    },
+    "mendoza-known-civilian-order-129.json.gz": {
+      "orderIndex": 129,
+      "rawBytes": 968509,
+      "rawSha256": "bf280625dff5a17f79f9bcb81310d16ea266f288c5c4288e44b0355828d9dfd9",
+      "gzipBytes": 45486,
+      "gzipSha256": "25eaf32b324b25649eba92ff7a50279066a134064eb82d31249ccce5ab339b37"
+    }
+  },
+  "scope": "Exact original prefix states derived from retained current full948 request and original636 orders; not independent original before-decision observations. No controller or alternative order during replay; original San Martin death and strategic defeat retained. Fixtures test known geometry selection only, not corrected survival or victory."
+}

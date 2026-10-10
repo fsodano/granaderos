@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-10T07:40:27.531333+00:00",
+  "base": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "artifacts": [
+    {
+      "path": "mendoza-original636-replay.json",
+      "bytes": 21960,
+      "sha256": "5c9e2bc28c09981d865ba0b1a1b740ed3ec1c9f3515778a20219ab11c62f10fa"
+    },
+    {
+      "path": "mendoza-original636-observer.mjs",
+      "bytes": 5143,
+      "sha256": "a73fa5bb0ccc8546c676a35ccdf52b88a40a5dad9f13be7dbe6dfb73e65f0d86"
+    },
+    {
+      "path": "cordoba-care-original203-review.json",
+      "bytes": 13144,
+      "sha256": "918c2e1e7c26b4e5a7d86a100e2348b58fd432cc8232a3e8767ed5f2acc40274"
+    },
+    {
+      "path": "historical-isolation-controls.json",
+      "bytes": 3139,
+      "sha256": "b11d7025dfcdd56695ee0e0e3ae0634ecbd94126536875663a9acdb0d5bd85b9"
+    },
+    {
+      "path": "historical-isolation-controls.log",
+      "bytes": 493,
+      "sha256": "1348eaba1abd169f2dae1aa989925d3731f329cc58cf94c7a9c98e9c908c02bf"
+    },
+    {
+      "path": "cuyo-posture-controls.json",
+      "bytes": 6136,
+      "sha256": "80aa4647c6a63d673f63a3b660ba1b4cb31c9e5b94cb88c342bcd78b0bd88933"
+    },
+    {
+      "path": "cuyo-posture-controls.log",
+      "bytes": 418,
+      "sha256": "fbb30b97be56db5af0a1dc497d85055a722101657ea98cbb9007481eff924ded"
+    },
+    {
+      "path": "fast-gates.json",
+      "bytes": 2407,
+      "sha256": "38fad1c25d7af23519364faf3d42485833a4b85ad7fabb005073c6288bfe4a8d"
+    },
+    {
+      "path": "typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "production-build.log",
+      "bytes": 1821,
+      "sha256": "e8a64cc6e58bc32dbc40d9953323cc48c2af15aa454ef96f25a09b61c3a3f273"
+    },
+    {
+      "path": "documentation-audit.log",
+      "bytes": 125,
+      "sha256": "9b31186b003b1bb595024b4b119d8e6fbdf3ca63d37118354b58ebdbfbdc3ed0"
+    },
+    {
+      "path": "full950-closed.tar.gz",
+      "bytes": 2686225,
+      "sha256": "0e234d9cf72309ca667b5f0999521076bcd87ca3714d7d89153e51ed5fe9d508"
+    },
+    {
+      "path": "full950-receipt.json",
+      "bytes": 2954,
+      "sha256": "f75e2da66c32a2f42089c5079c99d139f5e0a0a16f10a9c4eb07dfd48df9a769"
+    },
+    {
+      "path": "full950-artifact-manifest.json",
+      "bytes": 3932,
+      "sha256": "54cec7f66caaa350922d134d401a0244d29a9d8af62b6d15072fffddb53c1b4c"
+    },
+    {
+      "path": "granaderos-three-original-diagnostics-20261010.tar.gz",
+      "bytes": 11597718,
+      "sha256": "54ca73378c2f277d20178ea5eef76d29ed5949eb7e7d692b375c0c88cf52b830"
+    },
+    {
+      "path": "granaderos-three-original-diagnostics-manifest-20261010.json",
+      "bytes": 12451,
+      "sha256": "31b5577113a5dae51758584d9557cdb4cec0f8587b3a753e829e34d488071178"
+    },
+    {
+      "path": "granaderos-current-corrections-evidence-20261010.tar.gz",
+      "bytes": 5010091,
+      "sha256": "a93da7c86c8a0078e9de66ebb3bf32d387868f378e2f91a53c113cf417f2056b"
+    },
+    {
+      "path": "granaderos-current-corrections-evidence-20261010.manifest.json",
+      "bytes": 36473,
+      "sha256": "d00f908bd4ed4db18f2bb773a5b15256cee66a5d84ea89923895fbf3ece52001"
+    },
+    {
+      "path": "granaderos-current-corrections-affected-evidence-20261010.tar.gz",
+      "bytes": 1459605,
+      "sha256": "a1081be112a47e594c005fca1a3505cb4f9ae297950364c7b0142868ea9a0dac"
+    },
+    {
+      "path": "granaderos-current-corrections-affected-evidence-20261010.manifest.json",
+      "bytes": 4342,
+      "sha256": "ac26d931c1f828417727b2fce024a200a08bbe206ebb938e2ca60d9ce1066cf6"
+    },
+    {
+      "path": "granaderos-current-corrections-source-reconstruction-20261010.tar.gz",
+      "bytes": 3517625,
+      "sha256": "6948820a2eb6793bc9794d6a8843b296a43a437fc296f70113541d7c80145943"
+    },
+    {
+      "path": "granaderos-current-corrections-source-reconstruction-20261010.manifest.json",
+      "bytes": 948,
+      "sha256": "1e0352fa6b4bf7aadad814ce6807678b2773d29bea8c7a4199f84512a0b74791"
+    },
+    {
+      "path": "granaderos-current-corrections-evidence-20261010.report.md",
+      "bytes": 7612,
+      "sha256": "5a2fdd42226d450ecfe5b505c9b12d5edb8cb6ca8b3a50df0b33e8cee30787b2"
+    },
+    {
+      "path": "granaderos-current-corrections-affected-evidence-20261010.report.md",
+      "bytes": 4556,
+      "sha256": "718f97279e233a9173b6769f2a7db1c493f3a9ad9ddef96ccfcd17eeb7fb1465"
+    },
+    {
+      "path": "opening-broad-posture-rejection.json",
+      "bytes": 2159,
+      "sha256": "109a0c72be856b2f9c53e21ac9facb4a0b3b129a9fe42e7dd816bf9603dc7321"
+    },
+    {
+      "path": "original-three-diagnostics-closure.json",
+      "bytes": 13459,
+      "sha256": "7b1bddd5464b94a0868555ed3a87a2b9e9c04c5337925d815eabb810fb5816e8"
+    },
+    {
+      "path": "combined-correction-controls-receipt.json",
+      "bytes": 1759,
+      "sha256": "1eae6123b7add900a3fc6f7ab67fb1e39eb7b54d82d04ecb5bdd67dac3c2558f"
+    },
+    {
+      "path": "first-affected-original-gate-receipt.json",
+      "bytes": 1405,
+      "sha256": "adf4c7f4380c83e88e956032ba63ae65a920c5afb2e6fb893f9e11e36cc3a2b5"
+    }
+  ],
+  "scope": "Closed original observations, complete failed full950 gate, three closed original diagnostics, earned finite-care/ammunition controls, coastal bounded controls and rejected broad opening-posture candidate. Original route acceptance and final full gameplay validation remain incomplete.",
+  "updatedAt": "2026-10-10T09:25:17.395184+00:00"
+}

@@ -1,0 +1,59 @@
+{
+  "root": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos",
+  "head": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "branch": "codex/campaign-controller-safety",
+  "allowedEditedPaths": [
+    "tests/historical-loss-fixture.mjs",
+    "tests/historical-loss.test.mjs"
+  ],
+  "patchSha256": "69094a0ac104cbf503110442e067aa0686f13bb110d850b4c8adef5d251acb88",
+  "sourceFiles": 1584,
+  "sourceHashes": {
+    "tests/historical-loss-fixture.mjs": "ad2081426756a7396cce56b6881b40c9921d9c971fbf40bef91431e0f944f224",
+    "tests/historical-loss.test.mjs": "41080a24efcaa7f914c333c7105bcb0e9d4d272e94400ae6e415865f3fff907c"
+  },
+  "command": [
+    "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "--test",
+    "tests/historical-loss.test.mjs"
+  ],
+  "startedAtUtc": "2026-10-10T07:39:01.035821+00:00",
+  "exitCode": 0,
+  "finishedAtUtc": "2026-10-10T07:39:31.913114+00:00",
+  "log": "/tmp/granaderos-historical-isolation-controls-20261010-ue76x7_n/historical-loss.test.log",
+  "logBytes": 493,
+  "logSha256": "1348eaba1abd169f2dae1aa989925d3731f329cc58cf94c7a9c98e9c908c02bf",
+  "runtimeVersion": "v25.9.0",
+  "finishedClosureAtUtc": "2026-10-10T07:40:19.886464+00:00",
+  "onlyTestInvocation": "historical-loss.test.mjs, one invocation, 3 passed, 0 failed",
+  "sourceDriftDuringTest": [
+    {
+      "path": "tests/local-san-lorenzo-driver.mjs",
+      "before": "d1387c859ccaf0fd1f670ee4a31e4c4186108ca63c5472e093852a026e5bfaf0",
+      "after": "28efdebfad3adbdcf2b5b993e612285fb4acdb055acd290507213478de34a621"
+    }
+  ],
+  "ownedAfterSourceHashes": {
+    "tests/historical-loss-fixture.mjs": "ad2081426756a7396cce56b6881b40c9921d9c971fbf40bef91431e0f944f224",
+    "tests/historical-loss.test.mjs": "41080a24efcaa7f914c333c7105bcb0e9d4d272e94400ae6e415865f3fff907c"
+  },
+  "primaryOwnedSourcesUnchanged": true,
+  "primaryOwnedHashes": {
+    "tests/historical-loss-fixture.mjs": "5f9d5ae49fa513a6166d7114fadcfac2f91c1c16a37557ef92ebd7f05fea4f9c",
+    "tests/historical-loss.test.mjs": "dad3f06b02705cc3216b330045f0fb38d4ac4848275b2496fba90b728877f544"
+  },
+  "stageCommitPushPerformed": false,
+  "fullHistoricalRouteExecuted": false,
+  "newNativeOrdersAdded": 0,
+  "preInjuryCapture": "immutable clones of the existing declared compact campaign and battle before the existing native endTurn; no additional sync/save/order",
+  "assertionsProved": [
+    "campaign playable and selected engineer alive before existing fatal enemy action",
+    "commander57 alive before injury; full operative record unchanged at active checkpoint and after existing retreat settlement",
+    "actual selected engineer death, strategic defeat, engineer reason retained",
+    "official active save rejects revival",
+    "completed foundry/authored progression controls unchanged",
+    "native commander death control unchanged"
+  ],
+  "boundaryRecorder": "only on failed strict pre-injury boundary; actual checkpoint campaign/pending request/result.battle, no orders, no returnedCampaign, failureStage historical-engineer-pre-injury",
+  "scopeLimit": "compact controls passed; full Mendoza fixture and commander death timing remain unexecuted"
+}

@@ -1,8 +1,9 @@
 # Queued squad travel
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> **Implementation on main.** The road and squad-travel changes merged through [PR #326](https://github.com/fsodano/granaderos/pull/326)
+> at `b8b14e2d544cec16535edbb26624ef80ac502720` and are included in main `462abba277a47dafbfed1f60fc4529c8a4721cdc`.
+> The dated checks below retain their original scope. They do not establish a passing full campaign gate or full JA2 parity.
+> See [published progress](../../verification/published-progress.md) for the broader acceptance gaps.
 
 The map's move order schedules a route. It does not advance time. Each use of the existing clock advances every moving squad, while personnel in sectors perform their assignments. Tactical clock synchronization also advances other squads.
 

@@ -1,5 +1,5 @@
 import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
-import {supplyRouteAmmunition} from './route-ammunition.mjs';
+import {supplyRouteAmmunition,recordRouteAmmunitionDiagnostic} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
@@ -589,13 +589,21 @@ export function prepareFreshTucumanAssault(start,{report=()=>{},artillerySupport
  return prepare(start);
  function prepare(initial){
  let c=decodeSave(encodeSave(initial)).campaign;
+ let preliminaryArmamentActions=null;
+ const observeAmmunitionCheckpoint=(name,state)=>{
+  try{onCheckpoint(name,structuredClone(state));}
+  catch(error){process.stderr.write(JSON.stringify({event:'ammunitionDiagnosticCallbackFailed',stage:name,message:error.message})+'\n');}
+ };
  onCheckpoint('tucuman-preparation-input',c);
  if(recoveryDefenseBudget===null)recoveryDefenseBudget=c.enemyGroups.filter(g=>!['defeated','withdrawn'].includes(g.status)).length+Math.floor(Object.values(c.enemyReserves.remaining).reduce((sum,n)=>sum+n,0)/3);
 const order=a=>{
  // Regrouping also consumes paid time. Keep the doctor and remote survivors
  // employed before each wait, rather than discovering an expired hire later.
  if(a.type==='wait')for(const id of c.recruited){const contract=c.contracts[id];if(c.operativeState[id].alive&&!c.operativeState[id].captured&&contract?.expiresAt!==null&&contract?.expiresAt<=c.hour+a.hours){const renewed=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(renewed.lastError,null,renewed.lastError);c=renewed;}}
+ const diagnosticBefore=preliminaryArmamentActions?structuredClone(c.operativeState[a.operativeId??a.id]??null):null;
  c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
+ if(preliminaryArmamentActions)preliminaryArmamentActions.push({action:structuredClone(a),hour:c.hour,second:c.secondOfHour??0,
+  operativeBefore:diagnosticBefore,operativeAfter:structuredClone(c.operativeState[a.operativeId??a.id]??null)});
 };
 const defendRecovery=(rest=null)=>{
  const encounter=structuredClone(c.pendingEncounter),group=c.enemyGroups.find(g=>g.id===encounter?.groupId);
@@ -709,6 +717,10 @@ order({type:'squad',ids:fieldIds.slice(0,6)});const assaultSquads=[c.activeSquad
 for(let offset=6;offset<fieldIds.length;offset+=6){
  order({type:'createSquad',name:'Apoyo de Tucumán',ids:fieldIds.slice(offset,offset+6)});assaultSquads.push(c.activeSquadId);
 }
+if(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR){
+ observeAmmunitionCheckpoint('tucuman-preliminary-armament-input',c);
+ recordRouteAmmunitionDiagnostic('tucuman-preliminary-armament-input',c,{fieldIds});preliminaryArmamentActions=[];
+}
 for(const id of fieldIds){const model=()=>sectorInventoryModel(c,'cordoba',rosterFor(c),id);
  const currentWeapon=rosterFor(c).find(op=>op.id===id).weapon;
  const row=!c.operativeState[id].weaponDropped&&[1800,1801,1802].includes(currentWeapon)?null:model().entries.find(r=>r.reachable&&[1800,1801,1802].includes(JSON.parse(r.expected).weapon));
@@ -716,9 +728,13 @@ for(const id of fieldIds){const model=()=>sectorInventoryModel(c,'cordoba',roste
  // Return spare guns to the shared ground stock before the next soldier equips.
  // Keeping several muskets in one pack leaves later recruits with only blades.
  for(const spare of model().carried.filter(row=>row.inventoryKey&&row.expected&&JSON.parse(row.expected).weapon))order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'drop',item:spare.item,count:1});
- const ammoType=weaponAmmoType(rosterFor(c).find(o=>o.id===id).weapon);
- for(const row of model().entries.filter(r=>r.reachable&&JSON.parse(r.expected).ammoType===ammoType)){const count=Math.min(row.count,Math.max(0,12-availableAmmunition(c.operativeState[id],ammoType)));if(count)order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});}
+ // Supply the whole armed column together below. Early reserve allocations
+ // can exhaust the finite shared stock before later soldiers reach target 10.
  order({type:'assignCare',operativeId:id,assignment:'rest'});
+}
+if(preliminaryArmamentActions){
+ recordRouteAmmunitionDiagnostic('tucuman-preliminary-armament-output',c,{fieldIds,acceptedActions:preliminaryArmamentActions});
+ preliminaryArmamentActions=null;
 }
 c=sellSurplusEquipment(c,'cordoba',fieldIds,1000,{report});
 // Finish wound care in Córdoba before sending the force north. The stock route
@@ -832,7 +848,17 @@ if(artillerySupport){
 // Enemy movement and contract costs continue during this wait.
 order({type:'wait',hours:4});
 if(recovery==='rest'&&c.pendingEncounter)return defendRecovery();
-c=supplyRouteAmmunition(c,fieldIds,{report}).campaign;
+if(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR){
+ observeAmmunitionCheckpoint('tucuman-authoritative-ammunition-input',c);
+ recordRouteAmmunitionDiagnostic('tucuman-authoritative-ammunition-input',c,{fieldIds,target:10});
+}
+try{
+ c=supplyRouteAmmunition(c,fieldIds,{report,onDiagnosticCheckpoint:partial=>onCheckpoint('tucuman-authoritative-ammunition-refusal',partial)}).campaign;
+}catch(error){
+ recordRouteAmmunitionDiagnostic('tucuman-authoritative-ammunition-stopped',c,{fieldIds,message:error.message,
+  checkpointKind:'unchanged-caller-input-not-the-helper-partial-campaign'});
+ throw error;
+}
 for(const id of assaultSquads){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});order({type:'attack',sector:'tucuman',queue:true});}for(let i=0;i<24&&!assaultSquads.every(id=>c.squads.find(s=>s.id===id)?.journey?.status==='ready');i++)order({type:'wait',hours:1});
 // The musketeers wait for daylight instead of crossing the citadel approaches
 // at night without lamps. Strategic time, contracts and enemy movement continue.

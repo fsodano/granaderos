@@ -14,6 +14,7 @@ import {rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {extractItemQuantity} from '../game/tactical-inventory.js';
 import {createdLosPatosBattery} from './created-los-patos-battery.mjs';
+import {recordRoutePreparationEvidence} from './route-preparation-evidence.mjs';
 
 const deaths=c=>Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
 
@@ -103,7 +104,11 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
  c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
  c=prepareFreshUspallataAssault(c,{report});fight('uspallata');
- c=prepareFreshLosPatosAssault(recoverFreshUspallata(c,{report}),{report});fight('los_patos');
+ c=recoverFreshUspallata(c,{report});
+ const losPatosInputCapture=recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-input',routeKind});
+ c=prepareFreshLosPatosAssault(c,{report});
+ recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-output',routeKind,inputCapture:losPatosInputCapture});
+ fight('los_patos');
  assert.ok(!c.recruited.includes(57),'the commander joins through the subsequent physical meeting');
  c=completeFreshAndesPreparation(c,{report});
  assert.equal(c.phase,4);assert.ok(c.recruited.includes(57));assert.equal(c.contracts[57].expiresAt,null);assert.equal(c.contracts[57].paid,0);assert.ok(c.squad.includes(57));assert.ok(c.operativeState[57].hp>0);

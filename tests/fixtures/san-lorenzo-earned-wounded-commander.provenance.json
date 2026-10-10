@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "kind": "derived battle-only checkpoints from exact original hired coastal order prefixes; not an independently observed live initial battle or official campaign save",
+  "fixture": "san-lorenzo-earned-wounded-commander.battle.json.gz",
+  "rawBytes": 1972916,
+  "rawSha256": "66fa84a105417fd6d336299bd804e8cacc976d37ec0fba56857f12526ea1004c",
+  "compressedBytes": 77287,
+  "compressedSha256": "3add2dc4655bd77a5cf7fa8814b2eaed31b6a4c6a79fe7f434ae8276ce7624b4",
+  "origin": {
+    "diagnosticDirectory": "/tmp/granaderos-current-coastal-single-diagnostic-2026-10-10T083117310Z",
+    "initialInputCapture": "independently observed campaign/request before original execution; native initial battle later derived",
+    "originalInput": {
+      "name": "san_lorenzo-before-execution.json",
+      "bytes": 3147165,
+      "sha256": "fba987b32fe3511f36b15303606d955d920363a78ce2d14fa6fa1f0fb22070ae"
+    },
+    "originalResult": {
+      "name": "san_lorenzo-raw-result.json",
+      "bytes": 559899,
+      "sha256": "e97310c7c16cdb27f9dde18b6adb0eaf05bb90b70c00750f317553ef478d2ef3"
+    },
+    "originalOrders": 126,
+    "rawTerminalDeepEqual": true,
+    "allOriginalOrdersAccepted": true,
+    "originalDriverSha256": "28efdebfad3adbdcf2b5b993e612285fb4acdb055acd290507213478de34a621",
+    "derivationObserverSha256": "485a5f147e1c373786f4d09e9e48cfe6c0ca9970978a3315dc0a58f4a6224f44",
+    "derivationReceiptSha256": "d3069bbdb3cd57646b3c379a96bb2d0f9e4d1659340be644eac5dc4216dc7ea1",
+    "boundedRuleSha256": "374943106d9c18e2d19c03c02d334f4fca0f79b36290780a58f8bfbe33e88ae7"
+  },
+  "states": [
+    {
+      "beforeOriginalOrder": 25,
+      "originalOrder": {
+        "type": "fire",
+        "targetId": "enemy-6",
+        "aim": 4,
+        "hitLocation": "torso",
+        "unitId": "137"
+      },
+      "actorId": "57",
+      "baselineOrder": null
+    },
+    {
+      "beforeOriginalOrder": 41,
+      "originalOrder": {
+        "type": "fire",
+        "targetId": "enemy-4",
+        "aim": 4,
+        "hitLocation": "torso",
+        "unitId": "137"
+      },
+      "actorId": "57",
+      "baselineOrder": null
+    },
+    {
+      "beforeOriginalOrder": 97,
+      "originalOrder": {
+        "type": "weapon",
+        "slot": "medical",
+        "unitId": "137"
+      },
+      "actorId": "113",
+      "baselineOrder": null
+    }
+  ],
+  "limits": [
+    "These unchanged states are extracted before original orders 25, 41 and 97 from one exact original 126-order replay.",
+    "The persistent controls do not replay a campaign, controller search, route fight, seed sweep or settlement.",
+    "The corrected control may apply bounded ordinary approach, equipment and finite first-aid orders to a clone of the earned checkpoint. This is a focused continuation, not an original tape or proven route victory.",
+    "The old controller selected null at these recorded states. That admission fact is separately bound to the original driver and derivation receipt.",
+    "The original failed diagnostic artifacts are unchanged."
+  ]
+}

@@ -16,9 +16,32 @@ import {shotLocationEffects} from '../game/targeted-combat.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
 import {fight as recordedFight} from './opening-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
+import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {firstAidPlan} from '../game/first-aid.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
-const clearOfCivilians=(b,u,t)=>{const dx=t.x-u.x,dy=t.y-u.y,length=dx*dx+dy*dy;return !b.npcs.some(n=>{if(n.hp<=0||!teamCanSee(b,'player',n))return false;const f=((n.x-u.x)*dx+(n.y-u.y)*dy)/length;return f>0&&f<1&&Math.hypot(n.x-u.x-f*dx,n.y-u.y-f*dy)<.8;});};
+const safeFireOrder=(b,u,action)=>{
+ if(action?.type!=='fire')return true;
+ const target=b.units.find(other=>other.id===action.targetId);if(!target)return false;
+ const option=firearmShotOptions(b,u,target,action.aim??0).find(shot=>shot.aim===(action.aim??0)&&shot.hitLocation===(action.hitLocation??'torso'));
+ return knownRouteShotSafety(b,u,target)(option);
+};
+// Contact posture is selected separately so its paid readiness can be checked
+// against the actual public shot forecast before it preempts ordinary movement.
+export function cuyoCrouchOrder(b,u,{avoidCivilians=false}={}){
+ const visible=b.units.filter(t=>t.side==='enemy'&&live(t)&&teamCanSee(b,u.side,t));
+ if(!visible.length||!hasFirearm(u)||!u.loaded||u.jammed||u.stance!=='standing'||u.mounted||u.knockedDown||visible.some(t=>dist(u,t)<=2))return null;
+ const position={...u,stance:'crouched',movementMode:'crouch',momentum:0,weaponReady:false,ap:u.ap-stanceCost(u,'crouched')};
+ const posed={...b,units:b.units.map(other=>other.id===u.id?position:other)};
+ for(const target of visible){
+  if(!teamCanSee(posed,u.side,target))continue;
+  const costs=actionCosts(posed,position,target);if(position.ap<costs.fire+12)continue;
+  const aim=Math.min(4,Math.floor((position.ap-costs.fire)/costs.aim));
+  const safe=avoidCivilians?knownRouteShotSafety(posed,position,target):null;
+  const useful=firearmShotOptions(posed,position,target,aim).some(shot=>shot.chance>=25&&shot.damageFactor>0&&(!safe||safe(shot)));
+  if(useful)return {type:'stance',unitId:u.id,stance:'crouched'};
+ }
+ return null;
+}
 export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[],fallbackOrders=false}={}){
  if(request.sector==='buenos_aires')return recordedFight(request,previous,{controller:(battle,unit)=>{
   // Capital contact uses the current known-state cover/aid/fire decisions,
@@ -26,8 +49,7 @@ export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=f
   const action=cautiousCombatOrder(battle,unit);
   const hold=holdPosition.includes(unit.id)&&battle.units.some(other=>other.id!==unit.id&&!holdPosition.includes(other.id)&&other.side==='player'&&live(other)&&!other.departure&&!other.surrendered);
   if(hold&&['move','charge','climb','exit'].includes(action?.type))return null;
-  const target=action?.targetId&&battle.units.find(other=>other.id===action.targetId);
-  if(avoidCivilians&&action?.type==='fire'&&target&&!clearOfCivilians(battle,unit,target))return null;
+  if(avoidCivilians&&!safeFireOrder(battle,unit,action))return null;
   return action;
  }});
  let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
@@ -48,7 +70,7 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
     else if(u.activeSlot==='medical')yield ({type:'weapon',slot:'primary'});
     if(!visible.length&&u.stance==='prone')yield ({type:'stance',stance:'standing'});
     if(u.knockedDown)yield ({type:'stance',stance:'standing'});
-    if(visible.length&&u.loaded&&u.stance==='standing'&&!u.mounted&&visible.every(t=>dist(u,t)>2)&&u.ap>=stanceCost(u,'crouched')+actionCosts(b,{...u,stance:'crouched',weaponReady:false},visible[0]).fire+12)yield ({type:'stance',stance:'crouched'});
+    const crouch=cuyoCrouchOrder(b,u,{avoidCivilians});if(crouch)yield crouch;
     if(!u.loaded&&u.stance==='prone')yield ({type:'stance',stance:'crouched'});
     if(u.jammed)yield ({type:'reprime'});
     const adjacent=visible.filter(t=>sameSurface(u,t)&&dist(u,t)<=bladeFor(u).reach).sort((a,b)=>a.hp-b.hp);if(adjacent[0])yield ({type:'melee',targetId:adjacent[0].id});
@@ -58,11 +80,11 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
      // a torso shot while the head is exposed. Previewed bodies also protect
      // known civilians and teammates without reading hidden occupants.
      for(const t of visible){
-      if(avoidCivilians&&!clearOfCivilians(b,u,t))continue;
       const cost=actionCosts(b,u,t);if(u.ap<cost.fire)continue;
+      const safe=avoidCivilians?knownRouteShotSafety(b,u,t):null;
       for(const shot of firearmShotOptions(b,u,t,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim)))){
        if(shot.chance<25)continue;
-       if(avoidCivilians&&(shot.interveningFriendly||shot.shots?.some(hand=>hand.interveningFriendly)))continue;
+       if(safe&&!safe(shot))continue;
        const effect=shotLocationEffects(shot.hitLocation,weaponFor(u).damage*shot.damageFactor,t);
        const score=shot.chance*(Math.min(t.hp,effect.damage)+(t.hp-effect.damage<15?15:0))-(cost.fire+shot.aim*cost.aim)*.2;
        shots.push({t,...shot,score});
@@ -82,7 +104,7 @@ for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
     if(scored[0]&&scored[0].score>currentScore+2)yield ({type:'move',...spacePoint(scored[0].p)});
     if(hasFirearm(u)&&!u.loaded&&u.ammo)yield ({type:'reload'});
    }
-   let done=false;for(const a of candidates()){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done&&fallbackOrders){const fallback=automaticOrder(b,u),target=fallback?.targetId&&b.units.find(t=>t.id===fallback.targetId);if(fallback&&!(hold&&['move','charge','climb','exit'].includes(fallback.type))&&!(avoidCivilians&&fallback.type==='fire'&&target&&!clearOfCivilians(b,u,target))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(done)acted=true;
+   let done=false;for(const a of candidates()){const next=actBattle(b,{...a,unitId:id});if(!next.lastError){b=next;orders.push({...a,unitId:id});actions++;done=true;break;}}if(!done&&fallbackOrders){const fallback=automaticOrder(b,u);if(fallback&&!(hold&&['move','charge','climb','exit'].includes(fallback.type))&&(!avoidCivilians||safeFireOrder(b,u,fallback))){const next=actBattle(b,{...fallback,unitId:id});if(!next.lastError){b=next;orders.push({...fallback,unitId:id});actions++;done=true;}}}if(done)acted=true;
   }
   if(!acted)break;
  }

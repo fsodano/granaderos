@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {join} from 'node:path';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
@@ -8,9 +10,25 @@ import {applyItemQuantity} from '../game/tactical-inventory.js';
 import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
 import {discoverRouteCache} from './finite-route-equipment.mjs';
 
+let diagnosticSequence=0;
+// Opt-in raw observation only. Never normalize a save or apply another order.
+export function recordRouteAmmunitionDiagnostic(stage,campaign,context={}){
+ const root=process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR;if(!root)return null;
+ try{
+  const directory=join(root,'ammunition-preparation');mkdirSync(directory,{recursive:true});
+  const label=stage.replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,100);
+  const path=join(directory,`${process.pid}-${++diagnosticSequence}-${label}.json`);
+  writeFileSync(path,JSON.stringify({version:1,stage,sourceSnapshot:process.env.GRANADEROS_CAMPAIGN_SOURCE_SNAPSHOT??null,
+   scope:'Raw passive checkpoint. No extra dispatch, synchronization or save normalization.',context,campaign})+'\n',{flag:'wx'});
+  return path;
+ }catch(error){
+  process.stderr.write(JSON.stringify({event:'ammunitionDiagnosticWriteFailed',stage,message:error.message})+'\n');return null;
+ }
+}
+
 // Refill the actual selected load from finite depot and reachable known loot.
 // Discover the authored cache only after known physical stocks run out.
-export function supplyRouteAmmunition(start,ids,{target=10,report=()=>{}}={}){
+export function supplyRouteAmmunition(start,ids,{target=10,report=()=>{},onDiagnosticCheckpoint=null}={}){
  assert.ok(Number.isSafeInteger(target)&&target>=0&&target<=1_000_000,'Use a finite integer ammunition target.');
  let campaign=structuredClone(start);const transactions=[];
  for(const id of ids){
@@ -44,7 +62,15 @@ export function supplyRouteAmmunition(start,ids,{target=10,report=()=>{}}={}){
     }
     if(!row){
      report({event:'ammunitionShortage',operativeId:id,sector:campaign.location,family,target,remaining,carried:carried().loaded+ammoCount(carried(),family)});
-     throw Error(`Finite ammunition shortage for ${id} at ${campaign.location}: ${remaining} ${family} rounds are missing.`);
+     const error=Error(`Finite ammunition shortage for ${id} at ${campaign.location}: ${remaining} ${family} rounds are missing.`);
+     if(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR){
+      recordRouteAmmunitionDiagnostic('finite-ammunition-refusal',campaign,{operativeId:id,ids,target,family,remaining,
+       acceptedAmmunitionTransactions:transactions,cacheExplorationOrdersIncluded:false,
+       checkpointKind:'actual-partial-campaign-after-existing-accepted-orders'});
+      if(typeof onDiagnosticCheckpoint==='function')try{onDiagnosticCheckpoint(structuredClone(campaign));}
+      catch(diagnosticError){process.stderr.write(JSON.stringify({event:'ammunitionDiagnosticCallbackFailed',message:diagnosticError.message})+'\n');}
+     }
+     throw error;
     }
     const stack=JSON.parse(row.expected);quantity=Math.min(remaining,row.count);
     while(quantity>0){try{applyItemQuantity(model.personal,{...stack,count:quantity});break;}catch{quantity--;}}

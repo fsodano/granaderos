@@ -1,0 +1,75 @@
+{
+  "observedUtc": "2026-10-10T07:47:24.824588+00:00",
+  "candidate": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos",
+  "base": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "logs": {
+    "typecheck": {
+      "path": "/tmp/granaderos-controller-safety-typecheck-20261010.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "production-build": {
+      "path": "/tmp/granaderos-controller-safety-production-build-20261010.log",
+      "bytes": 1821,
+      "sha256": "e8a64cc6e58bc32dbc40d9953323cc48c2af15aa454ef96f25a09b61c3a3f273"
+    },
+    "documentation": {
+      "path": "/tmp/granaderos-controller-safety-documentation-20261010.log",
+      "bytes": 125,
+      "sha256": "9b31186b003b1bb595024b4b119d8e6fbdf3ca63d37118354b58ebdbfbdc3ed0"
+    },
+    "dependency-install": {
+      "path": "/tmp/granaderos-controller-safety-dependency-install-20261010.log",
+      "bytes": 26,
+      "sha256": "26c9942063e1650c2bdb142adbd9944f86682af17693091a1036b6e833c6c85f"
+    }
+  },
+  "typecheck": {
+    "session": 57760,
+    "exitCode": 0,
+    "incremental": false
+  },
+  "productionBuild": {
+    "session": 42766,
+    "exitCode": 0,
+    "staticExportFiles": 1377,
+    "assetReferences": 1045,
+    "sourceIdentity": "683a2829961b620a81feacaf41e99820ab21f535a6bd84a9b20e2d10f3a80387"
+  },
+  "documentationAudit": {
+    "exitCode": 0,
+    "requirements": 275,
+    "originalRows": 50,
+    "parityRows": 87,
+    "evidenceRecords": 143,
+    "progressMatches": true
+  },
+  "baselineAudit": {
+    "passed": 38,
+    "failed": 0
+  },
+  "runnerShardSelftest": {
+    "passed": 5,
+    "failed": 0
+  },
+  "focusedNPCAndExistingControls": {
+    "uniqueCases": 36,
+    "passed": 36,
+    "firstRun": {
+      "passed": 31,
+      "failed": 5,
+      "reason": "missed civilianRay reference during localSanL refactor"
+    },
+    "afterCorrectionLocalSanL": {
+      "passed": 8,
+      "failed": 0
+    }
+  },
+  "historicalCompact": {
+    "passed": 3,
+    "failed": 0
+  },
+  "environmentRepair": "First typecheck found absent locked @types/three in shared dependencies. Owned candidate installs existing locked web605 dependencies; final typecheck and fresh build pass. Primary dependencies/source/server unchanged.",
+  "fullGate": "pending; no bug-free, full campaign or victory claim"
+}

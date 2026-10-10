@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "archive": {
+    "path": "granaderos-current-corrections-evidence-20261010.tar.gz",
+    "bytes": 5010091,
+    "sha256": "a93da7c86c8a0078e9de66ebb3bf32d387868f378e2f91a53c113cf417f2056b",
+    "originalPath": "/tmp/granaderos-current-corrections-evidence-20261010.tar.gz"
+  },
+  "regularMembersOnly": true,
+  "members": [
+    {
+      "member": "MANIFEST.json",
+      "source": "/tmp/granaderos-current-corrections-evidence-20261010/MANIFEST.json",
+      "kind": "generated-internal-manifest",
+      "bytes": 36196,
+      "sha256": "2bd87e9192cd57af227784d757163d69b8d006c6fc5418625a625523461e0e67"
+    },
+    {
+      "member": "REPORT.md",
+      "source": "/tmp/granaderos-current-corrections-evidence-20261010.report.md",
+      "kind": "generated-archive-report",
+      "bytes": 7612,
+      "sha256": "5a2fdd42226d450ecfe5b505c9b12d5edb8cb6ca8b3a50df0b33e8cee30787b2"
+    },
+    {
+      "member": "ammunition/failed-admission-1/events.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correction-2026-10-10T085004629Z/events.json",
+      "kind": "recorded-artifact",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "member": "ammunition/failed-admission-1/invocation.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correction-2026-10-10T085004629Z/invocation.json",
+      "kind": "recorded-artifact",
+      "bytes": 173,
+      "sha256": "e1681c4eddbcadee7a1095f3e49578df0985b9150e4245f59b533cd93c06c217"
+    },
+    {
+      "member": "ammunition/failed-admission-1/receipt.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correction-2026-10-10T085004629Z/receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 1945,
+      "sha256": "7d4c21ac426403cdd3b1c57e05f6820026a1d89f92008d7ecdfbe24c4b3b7d2c"
+    },
+    {
+      "member": "ammunition/failed-admission-1/run.log",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correction-2026-10-10T085004629Z/run.log",
+      "kind": "recorded-artifact",
+      "bytes": 1627,
+      "sha256": "cd7f3e9f62cf9697c801f4f1f5ce81a68336fc3ccf7db5320cfa7d4388e119ef"
+    },
+    {
+      "member": "ammunition/failed-admission-2/after-source-graph.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/after-source-graph.json",
+      "kind": "recorded-artifact",
+      "bytes": 48878,
+      "sha256": "288539a2adfb0212efd2d7008b720657c54d42fa3c845270148e775786e1a355"
+    },
+    {
+      "member": "ammunition/failed-admission-2/before-source-graph.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/before-source-graph.json",
+      "kind": "recorded-artifact",
+      "bytes": 48878,
+      "sha256": "288539a2adfb0212efd2d7008b720657c54d42fa3c845270148e775786e1a355"
+    },
+    {
+      "member": "ammunition/failed-admission-2/bind-source-graph.mjs",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/bind-source-graph.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 2396,
+      "sha256": "1428bc414629bd309171d23842a7400873faa08e9be20a84fbbd2abb6e8f0329"
+    },
+    {
+      "member": "ammunition/failed-admission-2/events.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/events.json",
+      "kind": "recorded-artifact",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "member": "ammunition/failed-admission-2/final-admission-receipt.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/final-admission-receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 579,
+      "sha256": "956c2a714c103d0e831cae57b06b6df389c7f973d19757de32930739918fd781"
+    },
+    {
+      "member": "ammunition/failed-admission-2/invocation.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/invocation.json",
+      "kind": "recorded-artifact",
+      "bytes": 347,
+      "sha256": "b1a33774fb5ea23ea900202e83de0289ddf62dbf76c547e75889ce106fa4e117"
+    },
+    {
+      "member": "ammunition/failed-admission-2/run.log",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/run.log",
+      "kind": "recorded-artifact",
+      "bytes": 1143,
+      "sha256": "221b72191d84c021463587b0489bc4b50bd002a87daaf90e53a7663eb5d4bb7a"
+    },
+    {
+      "member": "ammunition/failed-admission-2/source-drift.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-correct-admission-2026-10-10T085204511Z/source-drift.json",
+      "kind": "recorded-artifact",
+      "bytes": 25,
+      "sha256": "e0a1e89fc93fdf5a86e73a114ec3fb46bbb313a1fd97eb6f6c6bebc3933d1895"
+    },
+    {
+      "member": "ammunition/native-preparation/admission-history.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/admission-history.json",
+      "kind": "recorded-artifact",
+      "bytes": 728,
+      "sha256": "f2569ded7fa07041366876ee5eba09408a60673e975d3fe4c3a37e9e8625a43d"
+    },
+    {
+      "member": "ammunition/native-preparation/after-source-graph.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/after-source-graph.json",
+      "kind": "recorded-artifact",
+      "bytes": 48878,
+      "sha256": "3585b0eb5db1070c83aa143760d58f248ed5a090331dcf82220cb033d5080983"
+    },
+    {
+      "member": "ammunition/native-preparation/before-source-graph.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/before-source-graph.json",
+      "kind": "recorded-artifact",
+      "bytes": 48878,
+      "sha256": "3585b0eb5db1070c83aa143760d58f248ed5a090331dcf82220cb033d5080983"
+    },
+    {
+      "member": "ammunition/native-preparation/bind-source-graph.mjs",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/bind-source-graph.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 2396,
+      "sha256": "1428bc414629bd309171d23842a7400873faa08e9be20a84fbbd2abb6e8f0329"
+    },
+    {
+      "member": "ammunition/native-preparation/events.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/events.json",
+      "kind": "recorded-artifact",
+      "bytes": 7406,
+      "sha256": "56b01a3feefccd8320b6ba34217405f838751245a55446fc523ce70822b73a29"
+    },
+    {
+      "member": "ammunition/native-preparation/invocation.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/invocation.json",
+      "kind": "recorded-artifact",
+      "bytes": 347,
+      "sha256": "b1a33774fb5ea23ea900202e83de0289ddf62dbf76c547e75889ce106fa4e117"
+    },
+    {
+      "member": "ammunition/native-preparation/native-failures/ammunition-preparation/70047-1-tucuman-preliminary-armament-input.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/native-failures/ammunition-preparation/70047-1-tucuman-preliminary-armament-input.json",
+      "kind": "recorded-artifact",
+      "bytes": 2012971,
+      "sha256": "04f1cdd3b237115e7a78467454227bc5a6243b931180d48e3c5151c767325e34"
+    },
+    {
+      "member": "ammunition/native-preparation/native-failures/ammunition-preparation/70047-2-tucuman-preliminary-armament-output.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/native-failures/ammunition-preparation/70047-2-tucuman-preliminary-armament-output.json",
+      "kind": "recorded-artifact",
+      "bytes": 2149873,
+      "sha256": "23e7412b17b961466e385a7a9e83b50ac6fddbbd0ff9dfeaf77aa483c2baa2dd"
+    },
+    {
+      "member": "ammunition/native-preparation/native-failures/ammunition-preparation/70047-3-tucuman-authoritative-ammunition-input.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/native-failures/ammunition-preparation/70047-3-tucuman-authoritative-ammunition-input.json",
+      "kind": "recorded-artifact",
+      "bytes": 2022096,
+      "sha256": "61cfe82dedc3029c528d09c67c91a24727332f48c2b581d744b7c8afa2b308cd"
+    },
+    {
+      "member": "ammunition/native-preparation/receipt.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 3163,
+      "sha256": "9275ee752450c20dd6bb2370b6567e2faa00e5d8ed166ab3a618765e143d8c5f"
+    },
+    {
+      "member": "ammunition/native-preparation/result.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/result.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2066739,
+      "sha256": "1327bf421c24625237cb20ae286fc9283f26dbaae7497db5bab5226a03405b99"
+    },
+    {
+      "member": "ammunition/native-preparation/run.log",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/run.log",
+      "kind": "recorded-artifact",
+      "bytes": 228,
+      "sha256": "b534208e8018ed094f2e53afa280e6792c8bb7e6bdd0a75b226d1373903ba67f"
+    },
+    {
+      "member": "ammunition/native-preparation/source-drift.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/source-drift.json",
+      "kind": "recorded-artifact",
+      "bytes": 25,
+      "sha256": "e0a1e89fc93fdf5a86e73a114ec3fb46bbb313a1fd97eb6f6c6bebc3933d1895"
+    },
+    {
+      "member": "ammunition/native-preparation/tucuman-authoritative-ammunition-input.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/tucuman-authoritative-ammunition-input.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2021819,
+      "sha256": "dc4912e26f9d5086df1cb23b01cf80ad66948925a2044a17b8891e0e06174643"
+    },
+    {
+      "member": "ammunition/native-preparation/tucuman-battery-input.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/tucuman-battery-input.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2014818,
+      "sha256": "19e7b8f00ae9f77a06c863f6bd0feabe701ca99d837e2b3771027e899b164528"
+    },
+    {
+      "member": "ammunition/native-preparation/tucuman-battery-prior-squad.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/tucuman-battery-prior-squad.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2014799,
+      "sha256": "369db4aafea3ea5cc09f73e2a2096d9bf945ffd315fb23538a7c177d3d5d9185"
+    },
+    {
+      "member": "ammunition/native-preparation/tucuman-battery-ready.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/tucuman-battery-ready.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2014954,
+      "sha256": "d5ddce004c2392d6fbbf28dad2548b8e2add6c7d885abb362e13b24ecc028ce6"
+    },
+    {
+      "member": "ammunition/native-preparation/tucuman-preliminary-armament-input.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/tucuman-preliminary-armament-input.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2012710,
+      "sha256": "87a2af8458176892d8db1ad699c0f2e43effada4be92ee1be94d4fb074f29217"
+    },
+    {
+      "member": "ammunition/native-preparation/tucuman-preparation-input.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/tucuman-preparation-input.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2011216,
+      "sha256": "5cf943761559f2a3318a744281818a6bc5d16d720cd8bee828970f85703c4b47"
+    },
+    {
+      "member": "ammunition/native-preparation/tucuman-ready.campaign.json",
+      "source": "/tmp/granaderos-tucuman-earned-ammunition-native-preparation-2026-10-10T085336574Z/tucuman-ready.campaign.json",
+      "kind": "recorded-artifact",
+      "bytes": 2066739,
+      "sha256": "1327bf421c24625237cb20ae286fc9283f26dbaae7497db5bab5226a03405b99"
+    },
+    {
+      "member": "archive-builder.py",
+      "source": "/tmp/granaderos-build-current-corrections-evidence-20261010.py",
+      "kind": "archive-tooling-only",
+      "bytes": 18661,
+      "sha256": "27d0cf6ebd6a5160b3e0ec87130dc3ae64c22346ec3a24f525d6f1abf10f530b"
+    },
+    {
+      "member": "care/executed-wrapper-original-location.mjs",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-20261010.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 4059,
+      "sha256": "d879fc68add45461bb23c1b98da57168fa2015eac64fab7571a3d912e4901a25"
+    },
+    {
+      "member": "care/two-controls/after-source-hashes.json",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/after-source-hashes.json",
+      "kind": "recorded-artifact",
+      "bytes": 54894,
+      "sha256": "5a73a3bfd822df0b81fcd7cf99481a2f743c31b8f3bc791abbd83465da9a45c1"
+    },
+    {
+      "member": "care/two-controls/before-source-hashes.json",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/before-source-hashes.json",
+      "kind": "recorded-artifact",
+      "bytes": 54894,
+      "sha256": "5a73a3bfd822df0b81fcd7cf99481a2f743c31b8f3bc791abbd83465da9a45c1"
+    },
+    {
+      "member": "care/two-controls/executed-wrapper.mjs",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/executed-wrapper.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 4059,
+      "sha256": "d879fc68add45461bb23c1b98da57168fa2015eac64fab7571a3d912e4901a25"
+    },
+    {
+      "member": "care/two-controls/final-receipt.json",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/final-receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 1562,
+      "sha256": "e3f94f6f669980c11e1833039ff50f994569bad026842841ab176fa99d5b0fd2"
+    },
+    {
+      "member": "care/two-controls/metadata.json",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/metadata.json",
+      "kind": "recorded-artifact",
+      "bytes": 10182,
+      "sha256": "c5eb6b8c60e65c93b4d762a9bdd8a6dcefcba57b70656df3ecfc129cfa37105d"
+    },
+    {
+      "member": "care/two-controls/pid.json",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/pid.json",
+      "kind": "recorded-artifact",
+      "bytes": 40,
+      "sha256": "d814716feedf6a6b7bd98465f69f47707a28bc3c2976d71b1ce99ed645cfc68e"
+    },
+    {
+      "member": "care/two-controls/raw-controls/corrected-care-control.json",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/raw-controls/corrected-care-control.json",
+      "kind": "recorded-artifact",
+      "bytes": 25709082,
+      "sha256": "2f6d84835e248acdc4cf582ada451e0af205080f0fbb7046e743f786c4de60da"
+    },
+    {
+      "member": "care/two-controls/raw-controls/original-native-control.json",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/raw-controls/original-native-control.json",
+      "kind": "recorded-artifact",
+      "bytes": 1651676,
+      "sha256": "3020d8835397f4615a18375575ac19ff7ed74d45d80ba7eb23ede470483c1fbe"
+    },
+    {
+      "member": "care/two-controls/run.log",
+      "source": "/tmp/granaderos-mendoza-care-two-controls-2026-10-10T084708386Z/run.log",
+      "kind": "recorded-artifact",
+      "bytes": 376,
+      "sha256": "0d06f88435e1c232ee2c88ff360fd016c4ec13bab0c1f3e5a9793fad8866fae5"
+    },
+    {
+      "member": "coastal/bounded-care-controls-receipt.json",
+      "source": "/tmp/granaderos-coastal-bounded-care-controls-receipt-20261010.json",
+      "kind": "recorded-artifact",
+      "bytes": 5013,
+      "sha256": "74b59e96ccbfdeaf34f30c753271dfeba0a68f4e0d0959d58a783035cbd93cb3"
+    },
+    {
+      "member": "coastal/bounded-care-rule.md",
+      "source": "/tmp/granaderos-coastal-bounded-care-rule-20261010.md",
+      "kind": "recorded-artifact",
+      "bytes": 2255,
+      "sha256": "374943106d9c18e2d19c03c02d334f4fca0f79b36290780a58f8bfbe33e88ae7"
+    },
+    {
+      "member": "coastal/controls/granaderos-coastal-bounded-care-final-baseline-red-20261010.log",
+      "source": "/tmp/granaderos-coastal-bounded-care-final-baseline-red-20261010.log",
+      "kind": "recorded-artifact",
+      "bytes": 2331,
+      "sha256": "d6af723c2fa3c1e4114312eb7402f577300ff238f38768221e062d2fd8fcd4e2"
+    },
+    {
+      "member": "coastal/controls/granaderos-coastal-bounded-care-final-controls-20261010.log",
+      "source": "/tmp/granaderos-coastal-bounded-care-final-controls-20261010.log",
+      "kind": "recorded-artifact",
+      "bytes": 1229,
+      "sha256": "f103d0fccf3fb1731491559321f13ecea2e927688d4740e731948e47cd8efb26"
+    },
+    {
+      "member": "coastal/controls/granaderos-coastal-bounded-care-final-green-20261010.log",
+      "source": "/tmp/granaderos-coastal-bounded-care-final-green-20261010.log",
+      "kind": "recorded-artifact",
+      "bytes": 1227,
+      "sha256": "191b01c570e97a66242ce2637e462b6ff3fe589eea7ad62fb110a781010294ed"
+    },
+    {
+      "member": "coastal/controls/granaderos-coastal-bounded-care-frozen-controls-20261010.log",
+      "source": "/tmp/granaderos-coastal-bounded-care-frozen-controls-20261010.log",
+      "kind": "recorded-artifact",
+      "bytes": 1226,
+      "sha256": "3cdacf15d4496ccf446f8981469e5d2c29a6fbd6b5d195a9df6b6252e4e2e3fc"
+    },
+    {
+      "member": "coastal/controls/granaderos-coastal-bounded-care-green-20261010.log",
+      "source": "/tmp/granaderos-coastal-bounded-care-green-20261010.log",
+      "kind": "recorded-artifact",
+      "bytes": 3134,
+      "sha256": "2d66e2cf5165413fa1c502db77ec0817f156838ffa8d49250e606a4aa127bc81"
+    },
+    {
+      "member": "coastal/controls/granaderos-coastal-bounded-care-red-20261010.log",
+      "source": "/tmp/granaderos-coastal-bounded-care-red-20261010.log",
+      "kind": "recorded-artifact",
+      "bytes": 2331,
+      "sha256": "4226902859ce6045b79f166ce743a0677d51e765909d85059dd45d2e0d358642"
+    },
+    {
+      "member": "coastal/earned-prefixes/baseline-driver.mjs",
+      "source": "/tmp/granaderos-coastal-earned-care-prefixes-20261010/baseline-driver.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 6536,
+      "sha256": "28efdebfad3adbdcf2b5b993e612285fb4acdb055acd290507213478de34a621"
+    },
+    {
+      "member": "coastal/earned-prefixes/receipt.json",
+      "source": "/tmp/granaderos-coastal-earned-care-prefixes-20261010/receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 24245,
+      "sha256": "d3069bbdb3cd57646b3c379a96bb2d0f9e4d1659340be644eac5dc4216dc7ea1"
+    },
+    {
+      "member": "coastal/earned-prefixes/states.json",
+      "source": "/tmp/granaderos-coastal-earned-care-prefixes-20261010/states.json",
+      "kind": "recorded-artifact",
+      "bytes": 1972916,
+      "sha256": "66fa84a105417fd6d336299bd804e8cacc976d37ec0fba56857f12526ea1004c"
+    },
+    {
+      "member": "coastal/observers/earned-care-prefixes.mjs",
+      "source": "/tmp/granaderos-coastal-earned-care-prefixes-20261010.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 4331,
+      "sha256": "485a5f147e1c373786f4d09e9e48cfe6c0ca9970978a3315dc0a58f4a6224f44"
+    },
+    {
+      "member": "coastal/observers/original126-causal-observer.mjs",
+      "source": "/tmp/granaderos-coastal-original126-causal-observer-20261010.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 6372,
+      "sha256": "a764071377a9021019db80cb696c1e5a9928fb6395bf985d54f86c5652224325"
+    },
+    {
+      "member": "coastal/original126-replay/derived-initial-battle.json",
+      "source": "/tmp/granaderos-coastal-original126-causal-20261010/derived-initial-battle.json",
+      "kind": "recorded-artifact",
+      "bytes": 478944,
+      "sha256": "ffaa2f7366bc528a7c7a79a2ec5826339e3fa7b6ebe4a433f6b93f99bf7ac7a6"
+    },
+    {
+      "member": "coastal/original126-replay/order-observations.json",
+      "source": "/tmp/granaderos-coastal-original126-causal-20261010/order-observations.json",
+      "kind": "recorded-artifact",
+      "bytes": 847935,
+      "sha256": "7d451bc9d4c8e6b6cce1f8c3b1df179b70ef86316c799bffa212c58529546db0"
+    },
+    {
+      "member": "coastal/original126-replay/receipt.json",
+      "source": "/tmp/granaderos-coastal-original126-causal-20261010/receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 25159,
+      "sha256": "65834b14b1158853c31d5a351af474834e57cd36f4bc1c4e4c1c36d6478b6055"
+    },
+    {
+      "member": "companions/three-original-diagnostics-manifest.json",
+      "source": "/tmp/granaderos-three-original-diagnostics-manifest-20261010.json",
+      "kind": "recorded-artifact",
+      "bytes": 12451,
+      "sha256": "31b5577113a5dae51758584d9557cdb4cec0f8587b3a753e829e34d488071178"
+    },
+    {
+      "member": "focused-gate/after-source-hashes.json",
+      "source": "/tmp/granaderos-current-corrections-focused-2026-10-10T091029769Z/after-source-hashes.json",
+      "kind": "recorded-artifact",
+      "bytes": 1884167,
+      "sha256": "bd08d4d6fdd9b87fcad1b770308f1dcf28c0d1b154e1867521f6b6134ce4af28"
+    },
+    {
+      "member": "focused-gate/before-source-hashes.json",
+      "source": "/tmp/granaderos-current-corrections-focused-2026-10-10T091029769Z/before-source-hashes.json",
+      "kind": "recorded-artifact",
+      "bytes": 1884167,
+      "sha256": "bd08d4d6fdd9b87fcad1b770308f1dcf28c0d1b154e1867521f6b6134ce4af28"
+    },
+    {
+      "member": "focused-gate/executed-wrapper.mjs",
+      "source": "/tmp/granaderos-current-corrections-focused-2026-10-10T091029769Z/executed-wrapper.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 5255,
+      "sha256": "f1ac1e7a094543d5fd87c18b732ddfa6689c38decc978da43e40be283bd8e249"
+    },
+    {
+      "member": "focused-gate/final-receipt.json",
+      "source": "/tmp/granaderos-current-corrections-focused-2026-10-10T091029769Z/final-receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 1759,
+      "sha256": "1eae6123b7add900a3fc6f7ab67fb1e39eb7b54d82d04ecb5bdd67dac3c2558f"
+    },
+    {
+      "member": "focused-gate/metadata.json",
+      "source": "/tmp/granaderos-current-corrections-focused-2026-10-10T091029769Z/metadata.json",
+      "kind": "recorded-artifact",
+      "bytes": 2005,
+      "sha256": "3038c8a4927260c60e4b1a64fc5cd48731012337486686d0c5c595b449a89ab8"
+    },
+    {
+      "member": "focused-gate/pid.json",
+      "source": "/tmp/granaderos-current-corrections-focused-2026-10-10T091029769Z/pid.json",
+      "kind": "recorded-artifact",
+      "bytes": 30,
+      "sha256": "a98786d6233fa13b84f30325b09557ecb8363ae7ce52c535aa3e5f05eba1b04d"
+    },
+    {
+      "member": "focused-gate/run.log",
+      "source": "/tmp/granaderos-current-corrections-focused-2026-10-10T091029769Z/run.log",
+      "kind": "recorded-artifact",
+      "bytes": 13369,
+      "sha256": "d1eced7782503787464be86977a5afa68dfa4ce06da8ba4063b276c02ffd7bbf"
+    },
+    {
+      "member": "opening/observers/order10-posture-analysis.mjs",
+      "source": "/tmp/granaderos-opening-order10-posture-analysis-20261010.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 2579,
+      "sha256": "73798dba3eff251f73d8a4d35d226e50c350183e98f7eb356087bedabccbd67e"
+    },
+    {
+      "member": "opening/observers/original164-causal-original-location.mjs",
+      "source": "/tmp/granaderos-opening-original164-causal-20261010.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 4633,
+      "sha256": "55736f6b20eba0d381ea342993217dc920762d40b00a58c329661c57d72972e8"
+    },
+    {
+      "member": "opening/observers/posture-fixture.mjs",
+      "source": "/tmp/granaderos-opening-posture-fixture-20261010.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 2173,
+      "sha256": "bee50815b6f054a6da31e83c0df51da2941f09eccbd5198e9ea868f3430765a1"
+    },
+    {
+      "member": "opening/order10-posture-analysis.json",
+      "source": "/tmp/granaderos-opening-order10-posture-analysis-20261010.json",
+      "kind": "recorded-artifact",
+      "bytes": 3372,
+      "sha256": "a8fd74ed7c5c8a8274041997baf71db3e1d29f2b3bc327fa43caea56a01ba5c9"
+    },
+    {
+      "member": "opening/original-native-failure/native-input.json",
+      "source": "/tmp/granaderos-controller-safety-full-2026-10-10T075355015Z/native-failures/60706-1-cordoba-108-18026106-30Ggpv/native-input.json",
+      "kind": "recorded-artifact",
+      "bytes": 2621499,
+      "sha256": "913628a9e2f5fcc9d3aabf788a86b202c8cbdd5c331ae810ce6a2ec1b1804bcd"
+    },
+    {
+      "member": "opening/original-native-failure/native-result.json",
+      "source": "/tmp/granaderos-controller-safety-full-2026-10-10T075355015Z/native-failures/60706-1-cordoba-108-18026106-30Ggpv/native-result.json",
+      "kind": "recorded-artifact",
+      "bytes": 817771,
+      "sha256": "5f33b73d5396bfcdaf8ea0e663e7f57406c9d07a40893ebdebdea88586ea46ef"
+    },
+    {
+      "member": "opening/original-native-failure/receipt.json",
+      "source": "/tmp/granaderos-controller-safety-full-2026-10-10T075355015Z/native-failures/60706-1-cordoba-108-18026106-30Ggpv/receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 1353,
+      "sha256": "e566913c2b6f8a069d3d1cf49ee619dc3c253a8ca005faa8f620073535cb94fd"
+    },
+    {
+      "member": "opening/original-native-failure/terminal.save.json",
+      "source": "/tmp/granaderos-controller-safety-full-2026-10-10T075355015Z/native-failures/60706-1-cordoba-108-18026106-30Ggpv/terminal.save.json",
+      "kind": "recorded-artifact",
+      "bytes": 687297,
+      "sha256": "97544816727ad3e4fdcd7b436f8268d4d5d3a6fc4c8f75e27d3bfdf8cbf92231"
+    },
+    {
+      "member": "opening/original164-replay/derived-initial-battle.json",
+      "source": "/tmp/granaderos-opening-original164-causal-20261010/derived-initial-battle.json",
+      "kind": "recorded-artifact",
+      "bytes": 409834,
+      "sha256": "60be448d5256b88a870864b2c625a4a4f0097670709342a73b53d50f2cbf72a6"
+    },
+    {
+      "member": "opening/original164-replay/executed-observer.mjs",
+      "source": "/tmp/granaderos-opening-original164-causal-20261010/executed-observer.mjs",
+      "kind": "recorded-artifact",
+      "bytes": 4633,
+      "sha256": "55736f6b20eba0d381ea342993217dc920762d40b00a58c329661c57d72972e8"
+    },
+    {
+      "member": "opening/original164-replay/observations.json",
+      "source": "/tmp/granaderos-opening-original164-causal-20261010/observations.json",
+      "kind": "recorded-artifact",
+      "bytes": 120437,
+      "sha256": "9acf4c0122358ae2510d2a0c2884cdaf6437b85cce91c3663b4bd90ebb73e7a7"
+    },
+    {
+      "member": "opening/original164-replay/receipt.json",
+      "source": "/tmp/granaderos-opening-original164-causal-20261010/receipt.json",
+      "kind": "recorded-artifact",
+      "bytes": 32424,
+      "sha256": "49a47ebd20e66e47a217d134dccdf2ba2f5f8dbe477ec831cec28c7a3b07c9e7"
+    },
+    {
+      "member": "opening/posture-fixture/opening-cordoba-unproductive-posture.battle.json.gz",
+      "source": "/tmp/granaderos-opening-posture-regression-20261010/opening-cordoba-unproductive-posture.battle.json.gz",
+      "kind": "recorded-artifact",
+      "bytes": 27134,
+      "sha256": "c8698811b5ecfbdcaa75e136526762ca6b4ac1dd234f53e22be7e0be7eeecec9"
+    },
+    {
+      "member": "opening/posture-fixture/opening-cordoba-unproductive-posture.provenance.json",
+      "source": "/tmp/granaderos-opening-posture-regression-20261010/opening-cordoba-unproductive-posture.provenance.json",
+      "kind": "recorded-artifact",
+      "bytes": 2099,
+      "sha256": "6e783dc73e8a2f447b9526455ab3cc42ef49354322c1669775473654debdc504"
+    },
+    {
+      "member": "source-at-archive/tests/created-cuyo-route.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/created-cuyo-route.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 57809,
+      "sha256": "aaf58e50d85132ac1a7abbcb5475830752065673e210d0db471a9b1a47f841bc"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/mendoza-earned-survivor-care.json.gz",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/mendoza-earned-survivor-care.json.gz",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 325352,
+      "sha256": "b07dc4e3693d72376ba56ddd33d1c6e2a4e6c893044da507fbc6e48eab38b93d"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/mendoza-earned-survivor-care.provenance.json",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/mendoza-earned-survivor-care.provenance.json",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 3491,
+      "sha256": "c16a60042aa2ed615b9bc6e9b4695e0d25104f3d6d66fe629e5349063ee1f70a"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/opening-cordoba-unproductive-posture.battle.json.gz",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/opening-cordoba-unproductive-posture.battle.json.gz",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 27134,
+      "sha256": "c8698811b5ecfbdcaa75e136526762ca6b4ac1dd234f53e22be7e0be7eeecec9"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/opening-cordoba-unproductive-posture.provenance.json",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/opening-cordoba-unproductive-posture.provenance.json",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 2099,
+      "sha256": "6e783dc73e8a2f447b9526455ab3cc42ef49354322c1669775473654debdc504"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/san-lorenzo-earned-wounded-commander.battle.json.gz",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/san-lorenzo-earned-wounded-commander.battle.json.gz",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 77287,
+      "sha256": "3add2dc4655bd77a5cf7fa8814b2eaed31b6a4c6a79fe7f434ae8276ce7624b4"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/san-lorenzo-earned-wounded-commander.provenance.json",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/san-lorenzo-earned-wounded-commander.provenance.json",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 3037,
+      "sha256": "5204b3df9f7cf72febc4161eb3bea6e244b689f657bba2574b39f85ab1c1b6bc"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/tucuman-earned-ammunition-preparation.provenance.json",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/tucuman-earned-ammunition-preparation.provenance.json",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 10460,
+      "sha256": "37cf689ba57162848bd05f2be0b3951221074718788466617937880ac26c4bd8"
+    },
+    {
+      "member": "source-at-archive/tests/fixtures/tucuman-earned-ammunition-preparation.save.json.gz",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/tucuman-earned-ammunition-preparation.save.json.gz",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 88498,
+      "sha256": "f4eff55fa9fe9b33ffd1c8fc83eaf9c81210b9186b493186f4660b754f83ecb7"
+    },
+    {
+      "member": "source-at-archive/tests/fresh-campaign-route.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-campaign-route.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 75680,
+      "sha256": "a6ac99e81c3ab9eb6f3efabe2a17a63bc802ebfc94450ceb7d464b2c8519e18f"
+    },
+    {
+      "member": "source-at-archive/tests/fresh-coastal-fixture.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-coastal-fixture.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 21569,
+      "sha256": "37e512125927cc213dde21bbdb73fcb76d74c81878da0a117511fe98350c829f"
+    },
+    {
+      "member": "source-at-archive/tests/local-san-lorenzo-driver.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/local-san-lorenzo-driver.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 8970,
+      "sha256": "30cd473055dc01b6463fd93d35511890be40b5d0b0846cfd7130ac45c57f15af"
+    },
+    {
+      "member": "source-at-archive/tests/local-san-lorenzo-field-care.test.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/local-san-lorenzo-field-care.test.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 6290,
+      "sha256": "d1efcb00d76e3dd924a4a40ed22c24438326e7fcf6bec09b83a4e9514748bde8"
+    },
+    {
+      "member": "source-at-archive/tests/local-san-lorenzo-safety.test.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/local-san-lorenzo-safety.test.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 8214,
+      "sha256": "02395af5dba4729fdbc942210255f6993fe3a3b2158d54cc2da5247d31639b55"
+    },
+    {
+      "member": "source-at-archive/tests/northern-route.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/northern-route.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 84993,
+      "sha256": "6623ef2b1396d3f4abf0c331cc0ca9cffb0b7070395280e98282c81868949ac7"
+    },
+    {
+      "member": "source-at-archive/tests/opening-driver.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/opening-driver.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 6347,
+      "sha256": "4fc6a41e26d668042919711f6c428b3de0d94427239b3ebfbd22c2eed951f1a2"
+    },
+    {
+      "member": "source-at-archive/tests/opening-posture-readiness.test.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/opening-posture-readiness.test.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 4712,
+      "sha256": "543da537eda31fb46c999e4889553bf0632e3778aadcf1f9012c57f7b6d5145a"
+    },
+    {
+      "member": "source-at-archive/tests/route-fire-safety.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/route-fire-safety.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 1160,
+      "sha256": "3a5e240e4524cc0a6cdffe3686d19c4173bfbb7138a1664258619798a3513a8d"
+    },
+    {
+      "member": "source-at-archive/tests/stock-mendoza-care-admission.test.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/stock-mendoza-care-admission.test.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 6439,
+      "sha256": "020f1ad3f14be4e9bcee295d0f9fe26adfc42401ef9b790ac5a4c8fd5cd7e7a0"
+    },
+    {
+      "member": "source-at-archive/tests/tucuman-earned-ammunition.test.mjs",
+      "source": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/tucuman-earned-ammunition.test.mjs",
+      "kind": "current-frozen-source-snapshot",
+      "bytes": 8818,
+      "sha256": "36da0062cda7839358fcd06e9e64430b8f8fd1381c4ffed81238fab92d070fa7"
+    }
+  ],
+  "memberCount": 103,
+  "uncompressedMemberBytes": 62934057,
+  "internalManifestSelfHashExcluded": true,
+  "externalManifestCoversEveryTarMember": true,
+  "missingSelectedSourceFiles": [
+    {
+      "path": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/campaign-ammunition-driver.mjs",
+      "reason": "Selected archive-time source snapshot is absent; not guessed or substituted."
+    }
+  ],
+  "companion": {
+    "archive": "granaderos-three-original-diagnostics-20261010.tar.gz",
+    "bytes": 11597718,
+    "sha256": "54ca73378c2f277d20178ea5eef76d29ed5949eb7e7d692b375c0c88cf52b830",
+    "includedInThisArchive": false,
+    "originalArchivePath": "/tmp/granaderos-three-original-diagnostics-20261010.tar.gz"
+  },
+  "originalManifestSHA256": "e26ddd746faa755bc743787c0e7d8702663ad8824ec3a77fb7c00611117c6608"
+}

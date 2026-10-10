@@ -6,6 +6,7 @@ import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
+import {recordRouteControllerDecisionEvidence} from './route-controller-decision-evidence.mjs';
 
 const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -46,7 +47,10 @@ export function combatOrder(b,u){
  if(u.missionAlly&&players.length>1&&automatic?.type==='move')return null;
  if(automatic&&automatic.type!=='charge')return automatic;
  if(u.missionAlly&&players.length>1)return null; // Infantry scouts first; a lone commander must still act.
- if(visible.length)return null;
+ if(visible.length){
+  recordRouteControllerDecisionEvidence({battle:b,unit:u,sharedContacts:visible,automatic});
+  return null;
+ }
  // Reconnaissance advances toward the known sector center in short bounds.
  const destination={x:Math.floor(b.width*.65),y:Math.floor(b.height*.5),tacticalLevel:0};
  if(sameSurface(u,destination)&&distance(u,destination)<=4)return null;

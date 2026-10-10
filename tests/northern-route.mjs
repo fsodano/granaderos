@@ -1,4 +1,5 @@
 import {northernFieldSurvivors} from './northern-field-survivors.mjs';
+import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {assertCustodyCare} from './custody-care-evidence.mjs';
 import {prepareOpeningPatrolMedicalReadiness} from './opening-patrol-medical-readiness.mjs';
@@ -55,8 +56,9 @@ export function northernCombatOrder(battle,unit){
  for(const target of targets){
   const cost=actionCosts(battle,unit,target);if(unit.ap<cost.fire)continue;
   const maxAim=Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim));
+  const safe=knownRouteShotSafety(battle,unit,target);
   for(const option of firearmShotOptions(battle,unit,target,maxAim)){
-   if(option.interveningFriendly||option.shots?.some(shot=>shot.interveningFriendly))continue;
+   if(!safe(option))continue;
    if(option.chance<25)continue;
    const damage=weaponFor(unit).damage,effect=shotLocationEffects(option.hitLocation,damage*option.damageFactor,target);
    const value=Math.min(target.hp,effect.damage)+(target.hp-effect.damage<15?0:effect.breathLoss*.15+(effect.knockedDown?10:0));
@@ -69,7 +71,7 @@ export function northernCombatOrder(battle,unit){
  if(action?.type==='fire'){
   const target=battle.units.find(target=>target.id===action.targetId);
   const preview=target&&firearmShotOptions(battle,unit,target,action.aim??0).find(option=>option.aim===(action.aim??0)&&option.hitLocation===(action.hitLocation??'torso'));
-  if(preview?.interveningFriendly||preview?.shots?.some(shot=>shot.interveningFriendly)){
+  if(!knownRouteShotSafety(battle,unit,target)(preview)){
    // A blocked shot can still admit an ordinary paid posture or cover move.
    // Let the native chooser use only the squad's currently known occupants.
    const view={...battle,units:battle.units.filter(other=>other.side===unit.side||teamCanSee(battle,unit.side,other)),npcs:(battle.npcs??[]).filter(other=>teamCanSee(battle,unit.side,other))};
@@ -86,7 +88,8 @@ export function northernCombatOrder(battle,unit){
       if(!teamCanSee(posed,unit.side,target)||!hasLineOfSight(posed,position,target))return false;
       const costs=actionCosts(posed,position,target);if(position.ap<costs.fire)return false;
       const aim=Math.min(4,Math.floor((position.ap-costs.fire)/costs.aim));
-      return firearmShotOptions(posed,position,target,aim).some(option=>option.chance>=25&&option.damageFactor>0&&!option.interveningFriendly&&!option.shots?.some(shot=>shot.interveningFriendly));
+      const safe=knownRouteShotSafety(posed,position,target);
+      return firearmShotOptions(posed,position,target,aim).some(option=>option.chance>=25&&option.damageFactor>0&&safe(option));
      });
      if(useful)return {type:'stance',unitId:unit.id,stance};
     }
@@ -94,7 +97,7 @@ export function northernCombatOrder(battle,unit){
    if(alternative?.type!=='fire')return alternative;
    const other=view.units.find(target=>target.id===alternative.targetId);
    const forecast=other&&firearmShotOptions(view,unit,other,alternative.aim??0).find(option=>option.aim===(alternative.aim??0)&&option.hitLocation===(alternative.hitLocation??'torso'));
-   return forecast&&!forecast.interveningFriendly&&!forecast.shots?.some(shot=>shot.interveningFriendly)?alternative:null;
+   return knownRouteShotSafety(view,unit,other)(forecast)?alternative:null;
   }
  }
  return action;
