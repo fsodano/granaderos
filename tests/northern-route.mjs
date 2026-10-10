@@ -26,7 +26,7 @@ import {doctorRate} from '../game/medical-care.js';
 import {assignNorthernCareRoles} from './northern-care-roles.mjs';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
-import {contractQuote} from '../game/contracts.js';
+import {contractQuote,contractRenewalQuote} from '../game/contracts.js';
 import {hiringTravelHours,pendingHire,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
 import {collectRouteItems,collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
@@ -524,14 +524,24 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  // Fill support seats with living, affordable recruits. Earlier battles can
  // permanently remove candidates; those deaths never become fresh hires.
  const present=id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured&&campaign.operativeState[id].location==='cordoba';
+ // A serving recruit can refuse renewal because of another serving soldier.
+ // Keep that person in reserve and hire a compatible field relief before
+ // the rescue's actual rest, defense and medical work consume the contract.
+ const renewalReserve=new Map();
+ const canRenew=id=>{
+  if(campaign.contracts[id]?.expiresAt==null)return true;
+  const quote=contractRenewalQuote(campaign,rosterFor(campaign).find(op=>op.id===id),'day');
+  if(!quote.available)renewalReserve.set(id,{id,reason:quote.reason,location:campaign.operativeState[id].location,expiresAt:campaign.contracts[id].expiresAt});
+  return quote.available;
+ };
  const supportCandidates=[111,...reserveIds],supportHires=[];
  for(const id of [120,136,134,140,133,129,130,100,101,102,108,121,126,144,146]){
-  if([...new Set(supportCandidates)].filter(present).length>=6)break;
+  if([...new Set(supportCandidates)].filter(id=>present(id)&&canRenew(id)).length>=6)break;
   if(campaign.recruited.includes(id)||!campaign.operativeState[id].alive||campaign.operativeState[id].captured)continue;
   hire(id,'day');supportCandidates.push(id);supportHires.push(id);
  }
- const supportIds=[...new Set(supportCandidates)].filter(present).slice(0,6);
- const fieldCandidates=()=>[...new Set([141,127,119,103,104,139,...campaign.recruited])].filter(id=>present(id)&&!supportIds.includes(id));
+ const supportIds=[...new Set(supportCandidates)].filter(id=>present(id)&&canRenew(id)).slice(0,6);
+ const fieldCandidates=()=>[...new Set([141,127,119,103,104,139,...campaign.recruited])].filter(id=>present(id)&&!supportIds.includes(id)&&canRenew(id));
  for(const id of [140,133,129,130,101,102,117,144,105,106,118]){
   if(fieldCandidates().length>=6)break;
   const quote=contractQuote(campaign,rosterFor(campaign).find(op=>op.id===id),'week');
@@ -539,6 +549,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
   hire(id);
  }
  const fieldIds=fieldCandidates().slice(0,6);let hiringCost=cash-campaign.resources.treasury;
+ for(const reserve of renewalReserve.values())report({event:'rescueRenewalReserve',...reserve});
  assert.equal(fieldIds.length,6,'six actual living soldiers make the rescue field squad');
  assert.ok(supportIds.includes(112)&&supportIds.includes(122)&&supportIds.length<=6);
  assert.ok(hiringCost>0);assert.equal(hiringCost,hired.reduce((sum,id)=>sum+campaign.contracts[id].paid,0));
@@ -663,9 +674,6 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
    }
    order({type:'selectSquad',id:support});order({type:'squad',ids:supportIds});
    order({type:'selectSquad',id:field});order({type:'squad',ids:fieldIds});
-   for(const operativeId of deploying.filter(id=>campaign.operativeState[id].weaponDropped)){
-    campaign=recoverRoutePrimary(campaign,operativeId);
-   }
    const patients=deploying.filter(id=>campaign.operativeState[id].bleeding||campaign.operativeState[id].hp<15);
    for(let h=0;h<12&&patients.some(id=>campaign.operativeState[id].bleeding||campaign.operativeState[id].hp<15);h++){
     const doctors=rosterFor(campaign).filter(op=>deploying.includes(op.id)&&!patients.includes(op.id)&&op.medical>=20&&campaign.operativeState[op.id].hp>=15&&!campaign.operativeState[op.id].bleeding&&campaign.operativeState[op.id].medkits>0);
@@ -705,7 +713,12 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
     renew();order({type:'wait',hours:1});
    }
    staging.recovery={patients:convalescents,hours:campaign.hour-careHour,usedDressings:deploying.reduce((sum,id)=>sum+beforeRecovery.operativeState[id].medkits-campaign.operativeState[id].medkits,0)+careFound.reduce((sum,collection)=>sum+collection.quantity,0)};
-   for(const id of deploying){assert.equal(campaign.operativeState[id].bleeding,0);assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp,`returned defender ${id} must finish actual medical care`);order({type:'assignCare',operativeId:id,assignment:'rest'});}
+   for(const id of deploying){
+    assert.equal(campaign.operativeState[id].bleeding,0);assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp,`returned defender ${id} must finish actual medical care`);
+    // Critical defenders need actual care before they can handle equipment.
+    if(campaign.operativeState[id].weaponDropped)campaign=recoverRoutePrimary(campaign,id);
+    order({type:'assignCare',operativeId:id,assignment:'rest'});
+   }
    if(deferredFieldReplacement){
     // Finish the real survivors' care before starting an expensive day term.
     // A weekly quote above the treasury does not justify a free replacement.
