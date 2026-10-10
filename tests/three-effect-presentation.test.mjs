@@ -7,6 +7,22 @@ const point=(x,y,height)=>({x,y,height});
 const shot={visible:true,source:point(0,0,1.4),impact:point(2,2,1.1),outcome:'hit'};
 const frame=(visual=shot)=>({sequenceId:'1:2',index:4,type:'projectile',startedAt:1000,durationMs:320,shotVisual:visual});
 
+test('firearm adapter copies admitted samples and strips private sample metadata',()=>{
+ const samples=[{...shot.source,fraction:0},{...point(1,1,2),fraction:.5,victimId:'hidden',privateTrace:{secret:true}},{...shot.impact,fraction:1}],visual={...shot,points:samples,shotHand:'offhand',shotId:'p:2'},before=JSON.stringify(visual),effect=presentCombatEffects(state,frame(visual))[0];
+ assert.deepEqual(effect.visual.points,[{...shot.source,fraction:0},{...point(1,1,2),fraction:.5},{...shot.impact,fraction:1}]);assert.notEqual(effect.visual.points,samples);assert.notEqual(effect.visual.points[1],samples[1]);assert.equal(effect.visual.shotHand,'offhand');assert.equal(effect.visual.shotId,'p:2');assert.doesNotMatch(JSON.stringify(effect),/hidden|secret/);assert.equal(JSON.stringify(visual),before);
+});
+
+test('firearm adapter rejects malformed paths instead of drawing replacement rays',()=>{
+ const invalid=[[],[shot.source],null,[shot.source,point(1,1,Infinity),shot.impact],Array.from({length:257},()=>shot.source),[point(9,9,1),shot.impact],[shot.source,point(9,9,1)]];
+ for(const points of invalid)assert.deepEqual(presentCombatEffects(state,frame({...shot,points})),[]);
+ assert.equal(presentCombatEffects(state,frame({...shot,points:[shot.source,shot.impact]})).length,1);
+});
+
+test('consecutive discharges keep separate identities and firing hands',()=>{
+ const a=presentCombatEffects(state,frame({...shot,shotHand:'primary',shotId:'p:1'}))[0],b=presentCombatEffects(state,{...frame({...shot,shotHand:'offhand',shotId:'p:2'}),index:5,startedAt:1400})[0];
+ assert.notEqual(a.id,b.id);assert.equal(a.visual.shotHand,'primary');assert.equal(b.visual.shotHand,'offhand');assert.equal(a.visual.shotId,'p:1');assert.equal(b.visual.shotId,'p:2');assert.equal(a.startedAtSeconds,1);assert.equal(b.startedAtSeconds,1.4);
+});
+
 test('the 3D effect boundary preserves admitted endpoints and never receives the roster or private shot data',()=>{
  const source=structuredClone(state),f=frame({...shot,victimId:'hidden',trajectoryModel:{private:true},flight:[point(100,100,5)]});f.state={units:[{id:'hidden',x:100,y:100}]};
  const result=presentCombatEffects(source,f);assert.equal(result.length,1);assert.deepEqual(result[0],{id:'1:2:4:firearm',kind:'firearm',stage:'projectile',startedAtSeconds:1,durationSeconds:.32,visual:shot});
