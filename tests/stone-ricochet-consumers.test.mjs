@@ -70,6 +70,24 @@ test('a visible native stone edge includes an ally hit only on the reflected leg
  assert.deepEqual(firearmBystanderRisk(hidden,actor(hidden),actor(hidden,'e')),firearmBystanderRisk(clear,actor(clear),actor(clear,'e')),'unobserved stone cannot create a public reflection warning');
 });
 
+test('native stone visibility and direct reflected risk use canonical blocking when optional blocked metadata is absent or false',()=>{
+ for(const blocked of [undefined,false]){
+  const s=field(),u=actor(s),target=actor(s,'e');Object.assign(target,{x:10,y:5});
+  Object.assign(s.tiles.find(tile=>tile.x===8&&tile.y===5),{type:'grass',material:undefined,blocked:false,blocksSight:false});
+  s.wallEdges=[{id:'metadata-light-stone',x:7,y:5,axis:'x',type:'wall',material:'stone',blocksSight:false,cover:100,...(blocked===undefined?{}:{blocked})}];
+  s.units.push({...structuredClone(u),id:'ally',name:'Aliado tras el rebote',x:12,y:4});
+  assert.doesNotThrow(()=>validateBattleSnapshot(s));assert.equal(teamCanSee(s,'player',s.wallEdges[0]),true);
+  assert.ok(firearmFlightPreview(s,u,target).bodyImpacts.some(impact=>impact.victimId==='ally'&&impact.segmentIndex===1));
+  assert.ok(firearmBystanderRisk(s,u,target).direct.some(body=>body.id==='ally'));
+  const hidden=structuredClone(s);actor(hidden).facing=6;actor(hidden,'ally').facing=2;
+  const clear=structuredClone(hidden);clear.wallEdges=[];
+  assert.equal(teamCanSee(hidden,'player',hidden.wallEdges[0]),false);
+  const forecast=firearmFlightPreview(hidden,actor(hidden),actor(hidden,'e'));
+  assert.deepEqual(forecast,firearmFlightPreview(clear,actor(clear),actor(clear,'e')));assert.equal((forecast.ricochets??[]).length,0);assert.doesNotMatch(JSON.stringify(forecast),/metadata-light-stone/);
+  assert.deepEqual(firearmBystanderRisk(hidden,actor(hidden),actor(hidden,'e')),firearmBystanderRisk(clear,actor(clear),actor(clear,'e')));
+ }
+});
+
 test('hidden bodies and stone furniture cannot alter complete public reflected flight, timing or camera',()=>{
  const clear=field(),stone=clear.tiles.find(tile=>tile.x===8&&tile.y===5);
  assert.equal(teamCanSee(clear,'player',stone),true,'the actual opaque stone face is observed');

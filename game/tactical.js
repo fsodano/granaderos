@@ -661,7 +661,7 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
 }
 const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
 const playerObservedBody=(s,body)=>body.side==='player'||teamCanSee(s,'player',body)&&isInteriorVisible(s,body,new Set(s.revealedRooms??[]));
-const stoneSurface=surface=>surface?.material==='stone'&&surface.blocked&&['wall','stone','cliff'].includes(surface.type);
+const stoneSurface=surface=>surface?.material==='stone'&&(surface.axis?wallEdgeBlocksMovement(surface):surface.blocked)&&['wall','stone','cliff'].includes(surface.type);
 // Unknown reflecting cover cannot bend a public forecast. Keep the supporting
 // ground and upper slab, but remove that cover volume from this transient copy.
 // Exterior wall faces use point sight; room discovery still guards furniture.
