@@ -11,7 +11,7 @@ const {buildingArtInset,buildingFloorRectangles}=await import('../web/lib/three/
 const {climbOpenings}=await import('../web/lib/three/world-climb-openings.ts');
 const {createSectorWorld}=await import('../web/lib/three/sector-world.ts');
 const {roomDecorProfile}=await import('../game/room-dressing.js');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,options={tileMetres:T,assetUrl:path=>path};
 const arrays=mesh=>Object.fromEntries(['position','normal','uv'].map(name=>[name,Array.from(mesh.geometry.getAttribute(name).array)]));
 function originalFloors(b0,input,geometry,materials){

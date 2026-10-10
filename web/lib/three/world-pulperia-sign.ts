@@ -1,3 +1,4 @@
+import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {entranceFrame} from '../../../game/building-profile.js';
 import {WorldBatch} from './world-geometry';
@@ -12,8 +13,8 @@ import type {WorldBuilding,WorldInput} from './world-types';
 export function pulperiaSign(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials){
   const root=new Group();root.name=`building-detail:${b.id}:trade-sign`;
   if((b.kind??b.architecture)!=='pulperia'||b.wallFinish===undefined||height<2.4||buildingArtInset(b,input)!==0)return root;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),V=25.066666666666666;
-  const anchor=Math.max(.4,frame.doorU-1.35),center=anchor+14/26,support=Math.round(center),cell=frame.at(support,0),tile=walls.find(tile=>tile.x===cell.x&&tile.y===cell.y);
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),V=25.066666666666666;
+  const anchor=Math.max(.4,frame.doorU-1.35),center=anchor+14/26,support=Math.round(center),cell=frame.at(support,0),tile=wallAtPoint(walls,cell);
   if(tile?.type!=='wall')return root;
   // Source screen x=-21..-7 becomes the entrance-relative along interval.
   // The shallow front plane clears the exposed porch shafts and beam.

@@ -16,11 +16,12 @@ const mix = (a: Vertex, b: Vertex, t: number): Vertex => ({
 // operation works for vertical fascia and gables, without flattening their tops.
 function clipToCell(points: Vertex[], cell: Cell, b: any, eave: number) {
   let result = points;
+  const edge=b.walls?.some((wall:any)=>wall.axis);
   const limits: [keyof Point, number, number][] = [
-    ['x', Math.max(b.x - eave, cell.x - .5), 1],
-    ['x', Math.min(b.x + b.width - 1 + eave, cell.x + .5), -1],
-    ['y', Math.max(b.y - eave, cell.y - .5), 1],
-    ['y', Math.min(b.y + b.height - 1 + eave, cell.y + .5), -1],
+    ['x', Math.max(b.x - (edge?.5:0) - eave, cell.x - .5), 1],
+    ['x', Math.min(b.x + b.width - (edge?.5:1) + eave, cell.x + .5), -1],
+    ['y', Math.max(b.y - (edge?.5:0) - eave, cell.y - .5), 1],
+    ['y', Math.min(b.y + b.height - (edge?.5:1) + eave, cell.y + .5), -1],
   ];
   for (const [axis, limit, sign] of limits) {
     const input = result; result = [];

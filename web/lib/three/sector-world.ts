@@ -1,3 +1,4 @@
+import {worldWallRecords} from './world-wall-records';
 import {Group,Mesh,Scene,Vector3} from 'three';
 import {buildBuilding,buildIndependentWalls,effectiveRooms,shownUpperSurfaces} from './world-buildings';
 import {buildCannon} from './world-artillery';
@@ -55,10 +56,10 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
       retain(`terrain:${id}`,signature([tiles,edges,next.terrain.sceneId??next.terrain.sectorId,lit(tiles)]),()=>buildTerrainChunk(id,tiles,next,T,geometry,materials));
     }
     updateCutaways();
-    const known=[...effectiveRooms(next)].sort(),allWalls=next.terrain.tiles.filter(tile=>['wall','door','window'].includes(tile.type));
+    const known=[...effectiveRooms(next)].sort(),allWalls=worldWallRecords(next);
     for(const building of next.terrain.buildings??[]){
       const tiles=next.terrain.tiles.filter(tile=>tile.buildingId===building.id),surfaces=(next.terrain.upperSurfaces??[]).filter(tile=>tile.buildingId===building.id);
-      retain(`building:${building.id}`,signature([building,tiles,surfaces,openings,known,next.cursorLevel,lit(tiles),lit(surfaces)]),()=>buildBuilding(building,next,T,geometry,materials));
+      retain(`building:${building.id}`,signature([building,tiles,allWalls.filter(tile=>tile.buildingId===building.id),surfaces,openings,known,next.cursorLevel,lit(tiles),lit(surfaces)]),()=>buildBuilding(building,next,T,geometry,materials));
     }
     const independent=allWalls.filter(tile=>!tile.buildingId);
     if(independent.length)retain('independent-walls',signature([independent,lit(independent)]),()=>buildIndependentWalls(next,T,geometry,materials));

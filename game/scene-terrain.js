@@ -7,7 +7,7 @@ export function createSceneTerrainCache(){
   // A burning light has the same appearance and illumination until it expires.
   // Countdown-only updates must not discard every cached building and tile.
   const lights=state.lights?.map(({remainingSeconds,turns,...light})=>({...light,...(turns===undefined?{}:{turns:turns===0?0:1})}));
-  const terrain={width:state.width,height:state.height,tiles:state.tiles,upperSurfaces:state.upperSurfaces,buildings:state.buildings,props:state.props,lights,night:state.night,sectorId:state.sectorId,sceneId:state.sceneId};
+  const terrain={width:state.width,height:state.height,tiles:state.tiles,wallEdges:state.wallEdges,upperSurfaces:state.upperSurfaces,buildings:state.buildings,props:state.props,lights,night:state.night,sectorId:state.sectorId,sceneId:state.sceneId};
   const next=JSON.stringify(terrain);
   if(next!==signature){signature=next;retained=terrain;}
   return retained;

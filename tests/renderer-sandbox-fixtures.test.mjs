@@ -4,6 +4,7 @@ import {createRendererSandboxBattle,RENDERER_SCENARIOS} from '../web/app/rendere
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {actBattle,canSee,climbPreview,tileIllumination,artilleryCosts,artilleryCrewPlan} from '../game/tactical.js';
 import {tacticalLevel,sameCell} from '../game/tactical-space.js';
+import {wallEdgeCells} from '../game/wall-geometry.js';
 import {BUILDING_TYPES} from '../game/building-types.js';
 const actor=(battle,id)=>battle.units.find(unit=>unit.id===id);
 function order(battle,action){
@@ -46,7 +47,7 @@ test('combat starts with visible targets and real usable rifle, pistol, sabre, g
     if(action.type==='throwKnife')assert.equal(actor(next,unit.id).weaponDropped,true);
   }
   const battle=createRendererSandboxBattle('combat');
-  assert.equal(battle.tiles.find(tile=>tile.doorId==='sandbox-door').open,true);
+  assert.equal(battle.wallEdges.find(tile=>tile.doorId==='sandbox-door').open,true);
   const fired=order(battle,actions[0]),reloaded=order(fired,{type:'reload',unitId:'rifle'});
   assert.equal(actor(reloaded,'rifle').loaded,1);assert.ok(actor(reloaded,'rifle').ammo<actor(fired,'rifle').ammo);
 });
@@ -67,14 +68,14 @@ test('architecture has all nine building identities, two facade directions, and 
   const battle=createRendererSandboxBattle('architecture');
   assert.deepEqual(battle.buildings.map(building=>building.architecture),Object.keys(BUILDING_TYPES));
   for(const building of battle.buildings){
-    const guard=actor(battle,`guard-${building.architecture}`),door=battle.tiles.find(tile=>tile.doorId===`${building.id}:door`);
+    const guard=actor(battle,`guard-${building.architecture}`),door=battle.wallEdges.find(tile=>tile.doorId===`${building.id}:door`);
     assert.ok(door);assert.equal(door.open,false);
-    const near={x:door.x+(door.x===building.x+building.width-1?1:0),y:door.y+(door.y===building.y+building.height-1?1:0)};
+    const cells=wallEdgeCells(door),inside=cells.find(cell=>cell.x>=building.x&&cell.x<building.x+building.width&&cell.y>=building.y&&cell.y<building.y+building.height),near=cells.find(cell=>cell!==inside);
     const approached=order(battle,{type:'move',unitId:guard.id,...near});
     const opened=order(approached,{type:'door',unitId:guard.id,doorId:door.doorId});
-    assert.equal(opened.tiles.find(tile=>tile.doorId===door.doorId).open,true);
-    const entered=order(opened,{type:'move',unitId:guard.id,x:door.x,y:door.y});
-    assert.ok(sameCell(actor(entered,guard.id),door));
+    assert.equal(opened.wallEdges.find(tile=>tile.doorId===door.doorId).open,true);
+    const entered=order(opened,{type:'move',unitId:guard.id,...inside});
+    assert.ok(sameCell(actor(entered,guard.id),inside));
   }
 });
 
@@ -116,7 +117,7 @@ test('individual building review keeps a real lone guard outside each closed fac
     assert.doesNotThrow(()=>validateBattleSnapshot(JSON.parse(JSON.stringify(battle))));
     const guard=battle.units[0],building=battle.buildings[0];
     assert.ok(guard.x>building.x+building.width-1||guard.y>building.y+building.height-1);
-    assert.equal(battle.tiles.find(tile=>tile.type==='door').open,false);
+    assert.equal(battle.wallEdges.find(tile=>tile.type==='door').open,false);
   }
   assert.throws(()=>createRendererSandboxBattle('architecture:unknown'));
 });
@@ -158,7 +159,7 @@ test('mounted movement, dismount, real roof ascent/descent and the open door use
   battle=order(battle,{type:'move',unitId:'climber',x:12,y:8,tacticalLevel:1});
   battle=order(battle,{type:'move',unitId:'climber',...link.to});
   battle=order(battle,{type:'climb',unitId:'climber',linkId:link.id});assert.equal(tacticalLevel(actor(battle,'climber')),0);
-  battle=order(battle,{type:'door',unitId:'door-guard',doorId:'sandbox-door'});assert.equal(battle.tiles.find(tile=>tile.doorId==='sandbox-door').open,false);
+  battle=order(battle,{type:'door',unitId:'door-guard',doorId:'sandbox-door'});assert.equal(battle.wallEdges.find(tile=>tile.doorId==='sandbox-door').open,false);
 });
 
 test('night uses actual lights, shot-produced smoke, reload supplies and usable torches',()=>{

@@ -1,3 +1,4 @@
+import {worldWallRecords,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
 import {getBuildingProfile,entranceFrame} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -79,6 +80,7 @@ function clipPlane(points:readonly Vector3[],axis:'x'|'z',bound:number,greater:b
 }
 export function clipRoofCell(points:readonly Vector3[],x0:number,z0:number,x1:number,z1:number){let result=[...points];for(const [axis,bound,greater]of [['x',x0,true],['x',x1,false],['z',z0,true],['z',z1,false]] as const)result=clipPlane(result,axis,bound,greater);return result;}
 export function buildingWallAxes(tile:WorldTile,b:WorldBuilding|undefined,occupied:ReadonlySet<string>):Axis[]{
+  if(tile.axis)return [tile.axis];
   const onX=b&&(tile.x===b.x||tile.x===b.x+b.width-1),onY=b&&(tile.y===b.y||tile.y===b.y+b.height-1);
   const result:Axis[]=b?[...(onX?['y' as const]:[]),...(onY?['x' as const]:[])]:[];
   if(!result.length){if(occupied.has(`${tile.x-1},${tile.y}`)||occupied.has(`${tile.x+1},${tile.y}`))result.push('x');if(occupied.has(`${tile.x},${tile.y-1}`)||occupied.has(`${tile.x},${tile.y+1}`))result.push('y');if(!result.length)result.push('x');}
@@ -86,7 +88,7 @@ export function buildingWallAxes(tile:WorldTile,b:WorldBuilding|undefined,occupi
 }
 export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
   const b=normalizedBuilding(b0),wallInset=buildingArtInset(b,input),known=effectiveRooms(input),profile=getBuildingProfile(b),appearance=appearanceFor(b),legacy=Boolean(b0.architecture&&(!b0.kind||b0.roof==='terrace'));
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),allWalls=input.terrain.tiles.filter(tile=>['wall','door','window'].includes(tile.type)),occupied=new Set(allWalls.map(tile=>`${tile.x},${tile.y}`));
+  const allWalls=worldWallRecords(input),walls=allWalls.filter(tile=>tile.buildingId===b.id),occupied=new Set(allWalls.map(tile=>`${tile.x},${tile.y}`));
   const roofs=(input.terrain.upperSurfaces??[]).filter(surface=>surface.kind==='roof'&&surface.buildingId===b.id),base=input.terrain.tiles.find(tile=>tile.x===b.x&&tile.y===b.y)?.elevation??0;
   const groundRooms=(b.rooms??[]).filter(room=>!(room.tacticalLevel??room.cells[0]?.tacticalLevel??0)),allOpen=groundRooms.length>0&&groundRooms.every(room=>known.has(room.id)),someOpen=groundRooms.some(room=>known.has(room.id));
   // Existing metric slabs and cover metadata win over artwork pixel heights.
@@ -97,13 +99,13 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
   const doorHeight=BUILDING_OPENINGS.doorHeight/V,doorWidth=T*.60,thickness=.18,cutaway=BUILDING_OPENINGS.cutawayHeight/V;
   const openingRecords:{id:string;type:string;open:boolean;axis:Axis;height:number;width:number}[]=[];
   for(const tile of walls){
-    const onX=tile.x===b.x||tile.x===b.x+b.width-1,onY=tile.y===b.y||tile.y===b.y+b.height-1,corner=onX&&onY;
-    const roomOpen=allOpen||groundRooms.some(room=>known.has(room.id)&&room.cells.some(cell=>corner?Math.abs(cell.x-tile.x)<=1&&Math.abs(cell.y-tile.y)<=1:Math.abs(cell.x-tile.x)+Math.abs(cell.y-tile.y)===1));
+    const edge=Boolean(tile.axis),onX=edge?tile.axis==='y'&&(tile.x===b.x-.5||tile.x===b.x+b.width-.5):tile.x===b.x||tile.x===b.x+b.width-1,onY=edge?tile.axis==='x'&&(tile.y===b.y-.5||tile.y===b.y+b.height-.5):tile.y===b.y||tile.y===b.y+b.height-1,corner=!edge&&onX&&onY;
+    const roomOpen=allOpen||groundRooms.some(room=>known.has(room.id)&&room.cells.some(cell=>corner?Math.abs(cell.x-tile.x)<=1&&Math.abs(cell.y-tile.y)<=1:Math.abs(cell.x-tile.x)+Math.abs(cell.y-tile.y)===(edge?.5:1)));
     const light=illuminationAt(input,tile),tileBase=tile.elevation??base;
     const worn=Boolean(tile.structureDamage&&!tile.destroyed),wallBatch=worn?new WorldBatch(geometry):batch,surfaceBatch=worn?new WorldBatch(geometry):surfaces,sillBatch=worn?new WorldBatch(geometry):sills;
     for(const [index,axis]of buildingWallAxes(tile,b,occupied).entries()){
-      const front=axis==='x'?tile.y===b.y+b.height-1:tile.x===b.x+b.width-1,cut=Boolean(roomOpen&&(front||!onX&&!onY)),h=cut?cutaway:onX||onY?height:floorHeight;
-      const along=axis==='x'?tile.x:tile.y,lower=(axis==='x'?b.x:b.y)+wallInset,upper=(axis==='x'?b.x+b.width-1:b.y+b.height-1)+wallInset,first=Math.max(along-.5,lower)*T,last=Math.min(along+.5,upper)*T;
+      const front=axis==='x'?tile.y===b.y+b.height-(edge?.5:1):tile.x===b.x+b.width-(edge?.5:1),cut=Boolean(roomOpen&&(front||!onX&&!onY)),h=cut?cutaway:onX||onY?height:floorHeight;
+      const along=axis==='x'?tile.x:tile.y,lower=(axis==='x'?b.x:b.y)+wallInset,upper=(axis==='x'?b.x+b.width-1:b.y+b.height-1)+wallInset,first=(edge?along-.5:Math.max(along-.5,lower))*T,last=(edge?along+.5:Math.min(along+.5,upper))*T;
       const mid=(first+last)*.5,len=last-first,cross=((axis==='x'?tile.y:tile.x)+wallInset)*T;
       const box=(u:number,y:number,w:number,hi:number,d:number,material=wallMat)=>axis==='x'?wallBatch.box(material,u,tileBase+y,cross,w,hi,d,light):wallBatch.box(material,cross,tileBase+y,u,d,hi,w,light);
       const opening=tile.type!=='wall'&&index===0,ow=Math.min(doorWidth,len*.65),top=Math.min(h-.12,tile.type==='door'?doorHeight:BUILDING_OPENINGS.windowTop/V),sill=tile.type==='window'?Math.min(top-.25,BUILDING_OPENINGS.windowSill/V):0;
@@ -151,7 +153,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
     }
   }
   if(!roofs.length&&!allOpen){
-    const frame=entranceFrame({...b,walls:walls as WorldTile[]}),join=civicCorniceRoofJoin(b,input,height,wallInset,legacy),e=join?.eave??profile.eave,eaveHeight=height+(join?.lift??0),rise=Math.min(profile.roofRise/V,Math.max(.4,frame.width*.28));
+    const frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),join=civicCorniceRoofJoin(b,input,height,wallInset,legacy),e=join?.eave??profile.eave,eaveHeight=height+(join?.lift??0),rise=Math.min(profile.roofRise/V,Math.max(.4,frame.width*.28));
     const terrace=b.roof==='terrace',roofMat=terrace&&!b.roofFinish?materials.get('stone',{colour:'#b2b0a4'}):materials.get(appearance.roofFinish),panels:Vector3[][]=[];
     // The wall coping and the roof meet at the same height. Bias the roof
     // surface in depth so the shared join cannot flicker into white triangles.
@@ -176,7 +178,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
 }
 
 export function buildIndependentWalls(input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const batch=new WorldBatch(geometry),tiles=input.terrain.tiles.filter(tile=>!tile.buildingId&&['wall','door','window'].includes(tile.type)),occupied=new Set(tiles.map(tile=>`${tile.x},${tile.y}`)),doors=new Group();
+  const batch=new WorldBatch(geometry),tiles=worldWallRecords(input).filter(tile=>!tile.buildingId),occupied=new Set(tiles.map(tile=>`${tile.x},${tile.y}`)),doors=new Group();
   for(const tile of tiles){
    const worn=Boolean(tile.structureDamage&&!tile.destroyed),wallBatch=worn?new WorldBatch(geometry):batch;
    for(const [n,axis]of buildingWallAxes(tile,undefined,occupied).entries()){

@@ -12,7 +12,7 @@ const {buildingArtInset}=await import('../web/lib/three/world-building-placement
 const {createElement}=await import('../web/node_modules/react/index.js');
 const {renderToStaticMarkup}=await import('../web/node_modules/react-dom/server.node.js');
 const {Opening}=await import('../web/app/TacticalArchitectureMaterials.tsx');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,V=25.066666666666666;
 
 test('timber lattice has clipped diagonal slats on both wall axes and readable lower openings from either face',()=>{

@@ -11,7 +11,8 @@ const {architectureFinish}=await import('../web/lib/three/world-architecture-fin
 const {WorldMaterials}=await import('../web/lib/three/world-materials.ts');
 const {WorldGeometry,disposeWorldNode}=await import('../web/lib/three/world-geometry.ts');
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
-const {ARCHITECTURE_REVIEW_TEMPLATES,createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {ARCHITECTURE_REVIEW_TEMPLATES}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 class OrdinaryMaterials extends WorldMaterials {get(kind,settings={}){const {architectureRole,...ordinary}=settings;return super.get(kind,ordinary);}}
 const T=1.2360585147470482,options={tileMetres:T,assetUrl:path=>path};
 

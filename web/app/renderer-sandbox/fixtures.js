@@ -16,6 +16,7 @@ import {PAIRED_LOADING_SCENARIO,FOUR_BORE_LOADING_SCENARIO,createPairedLoadingBa
 import {FURNISHINGS_DETAIL_SCENARIO,createFurnishingsDetailBattle} from './furnishings-detail-fixture.js';
 
 export const RENDERER_SCENARIOS=Object.freeze([
+  {id:'wall-edges',label:'Paredes entre casillas',help:'Cada pared ocupa el borde compartido de dos casillas. Los dos granaderos junto al tabique ocupan sus casillas completas. Abre la puerta del tabique y camina al otro lado. La casa muestra el suelo hasta sus paredes.'},
   VARIED_ROOF_CLIMB_SCENARIO,
   {id:'characters',label:'Ocho personajes',help:'Granadero, realista, trabajador, cirujano, gaucho, fraile, exploradora y mujer con rebozo. Selecciona cada personaje para caminar, correr o cambiar su equipo. Esta escena no usa tu campaña guardada.'},
   {id:'architecture',label:'Arquitectura',help:'Nueve edificios a escala de soldado. Selecciona al guardia de cada edificio para centrar la cámara. Abre su puerta y entra para comparar fachada, azotea e interior con las órdenes habituales.'},
@@ -160,6 +161,12 @@ function furnishings(){
   const types=['table','bench','bed','chest','barrels','hay','cart'],props=types.map((type,index)=>({id:`review-${type}`,type,x:4+index%4*4,y:5+Math.floor(index/4)*5,footprint:type==='bed'?{width:1,height:2}:type==='cart'?{width:2,height:1}:{width:1,height:1},rotation:type==='cart'?90:0,blocksMovement:true}));
   return {...createBattle([soldier('furniture-guard','Mobiliario',10,8,{activeSlot:'unarmed'})],{id:'renderer-furnishings',name:'Mobiliario de época',width:22,height:17,tiles:ground(22,17),props,enemies:[],exploration:true}),deploymentComplete:true};
 }
+function wallEdges(){
+  const width=18,height=14,house=placeBuilding(ground(width,height),{id:'edge-review-house',x:9,y:4,width:6,height:6,roof:'tile',doors:[{id:'edge-review-house-door',x:11,y:10,axis:'x'}],windows:[{x:9,y:6,axis:'y'}]});
+  const independent=Array.from({length:7},(_,index)=>({id:`edge-review-partition:${index}`,x:5,y:3+index,axis:'y',type:index===3?'door':index===5?'window':'wall',material:'adobe',blocked:true,blocksSight:index!==5,cover:40,...(index===3?{doorId:'edge-review-partition-door',open:false,locked:false}:{})}));
+  const squad=[soldier('edge-west','Oeste',4,5,{activeSlot:'unarmed'}),soldier('edge-east','Este',5,5,{activeSlot:'unarmed',spriteAppearance:'gaucho'}),soldier('edge-inside','Interior',11,6,{activeSlot:'unarmed'})];
+  return {...createBattle(squad,{id:'renderer-wall-edges',name:'Paredes entre casillas',width,height,tiles:house.tiles,wallEdges:[...house.wallEdges,...independent],buildings:[house.building],enemies:[],exploration:true,seed:45}),deploymentComplete:true};
+}
 function blastDamage(){
   const width=20,height=18,tiles=ground(width,height);
   for(const [y,material]of [[4,'wood'],[8,'adobe'],[12,'stone']])Object.assign(tiles[y*width+10],{type:'wall',material,blocked:true,blocksSight:true,cover:40});
@@ -201,6 +208,7 @@ export function createRendererSandboxBattle(id='combat'){
   if(id==='furnishings-detail')return createFurnishingsDetailBattle();
   if(id==='furnishings-detail:exterior')return createFurnishingsDetailBattle('exterior');
   if(id==='furnishings')return furnishings();
+  if(id==='wall-edges')return wallEdges();
   if(id==='blast-damage')return blastDamage();
   if(id==='terrain-detail')return terrainDetail();
   if(id==='combat'||id==='night')return combat(id==='night');

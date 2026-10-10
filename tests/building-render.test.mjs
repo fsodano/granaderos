@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
-import {buildBuilding} from '../game/buildings.js';
+import {buildBuilding} from './legacy-building-fixtures.mjs';
 import {entranceFrame,getBuildingProfile} from '../game/building-profile.js';
 import {BUILDING_TYPES} from '../game/building-types.js';
 const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
@@ -97,10 +97,10 @@ test('two-cell furniture uses its projected footprint while keeping its height f
 
 test('partition walls keep their axis and partial roofs use the complete building roof plane',async()=>{
  const {blankMap}=await import('../game/map-schema.js');const {applyMapCommands}=await import('../game/map-commands.js');const {compileMap}=await import('../game/compile-map.js');
- const result=applyMapCommands(blankMap(),[{type:'addBuilding',building:{id:'split',x:2,y:2,width:7,height:7}},...Array.from({length:5},(_,i)=>({type:'setWall',buildingId:'split',x:5,y:3+i,wallType:'wall'})),{type:'setWall',buildingId:'split',x:5,y:5,wallType:'door'}]);
+ const result=applyMapCommands(blankMap(),[{type:'addBuilding',building:{id:'split',x:2,y:2,width:7,height:7}},...Array.from({length:7},(_,i)=>({type:'setWall',buildingId:'split',x:5,y:2+i,axis:'y',wallType:'wall'})),{type:'setWall',buildingId:'split',x:5,y:5,axis:'y',wallType:'door'}]);
  assert.deepEqual(result.errors,[]);const map=compileMap(result.document);assert.equal(map.buildings[0].rooms.length,2);
  const build=(revealed)=>buildBuildingObjects({state:map,project,light:()=>1,revealed:new Set(revealed)});
- assert.ok(build([]).some(o=>o.key==='architecture-5-4-y'));
+ assert.ok(build([]).some(o=>o.key==='architecture-split:wall:y:5:4-y'));
  const roofs=build([]).filter(o=>o.key.startsWith('architecture-roof'));assert.equal(roofs.length,1);
  const partial=build([map.buildings[0].rooms[0].id]).filter(o=>o.key.startsWith('architecture-roof'));assert.equal(partial.length,1);assert.match(render(partial[0].node),/data-roof-partial="true"/);assert.ok(!/NaN|Infinity/.test(render(partial[0].node)));
  const fullSurfaces=roofSurfaces(roofs[0].node),partialSurfaces=roofSurfaces(partial[0].node);

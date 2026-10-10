@@ -21,6 +21,7 @@ export default function TacticalMinimap({state,units,selected,project,width,heig
   <rect width={width} height={height} fill="#17211a"/>
   {terrain}
 
+  {(state.wallEdges??[]).filter((edge:any)=>!edge.destroyed).map((edge:any)=>{const a=project(edge.x-.5,edge.y-.5),b=project(edge.x+(edge.axis==='x'?.5:-.5),edge.y+(edge.axis==='y'?.5:-.5));return <path key={edge.id??`${edge.axis}:${edge.x},${edge.y}`} data-minimap-wall-edge={edge.id} d={`M${a.x},${a.y}L${b.x},${b.y}`} fill="none" stroke={edge.type==='door'?edge.open?'#bfac76':'#786344':'#c0b592'} strokeWidth="4"/>;})}
   {markers}
   <rect x={camera.x} y={camera.y} width={camera.width} height={camera.height} fill="none" stroke="#ded387" strokeWidth="6"/>
  </svg>;

@@ -9,7 +9,7 @@ const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame,getBuildingProfile}=await import('../game/building-profile.js');
 const {buildTerrace}=await import('../game/buildings.js');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,rotations=[0,90,180,270];
 
 function fixture(rotation,view='exterior',roof='original'){

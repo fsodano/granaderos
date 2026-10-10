@@ -10,7 +10,7 @@ const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {BUILDING_OPENINGS}=await import('../game/building-scale.js');
 const {Opening}=await import('../web/app/TacticalArchitectureMaterials.tsx');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482,V=25.066666666666666,rotations=[0,90,180,270],ids=['barraca','capilla','cabildo','ayuntamiento','almacen','deposito','herreria'];
 function sourceBars(style){const result=[];const visit=node=>{if(!node)return;if(Array.isArray(node)){node.forEach(visit);return;}if(node.type==='path'&&node.props.stroke==='#767c68')result.push(node.props);visit(node.props?.children);};visit(Opening({type:'window',style,open:false,trim:'#eee6d1'}));return result;}
 function pane(style,axis='x',sourceRectangular=true){const geometry=new WorldGeometry(),materials=new WorldMaterials({tileMetres:T,assetUrl:path=>path}),batch=new WorldBatch(geometry),face={axis,mid:4,cross:3,base:.8,sill:BUILDING_OPENINGS.windowSill/V,top:BUILDING_OPENINGS.windowTop/V,width:.6*T,style,light:.43,sourceRectangular};addWindowFace(batch,materials,face);const node=batch.finish('pane');node.updateMatrixWorld(true);return {face,node,bars:node.children.find(mesh=>mesh.material.name==='world:iron'&&mesh.material.color.getHexString()==='767c68'),point(x,y,d){return axis==='x'?new Vector3(face.mid+x,face.base+y,face.cross+d):new Vector3(face.cross+d,face.base+y,face.mid+x);},dispose(){disposeWorldNode(node);geometry.dispose();materials.dispose();}};}

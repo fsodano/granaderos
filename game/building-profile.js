@@ -50,13 +50,15 @@ export function getBuildingRenderProfile(building = {}, revealed = new Set()) {
  * The first authored exterior door defines front; legacy shells use south.
  */
 export function entranceFrame(b) {
-  const x0 = b.x,
-    y0 = b.y,
-    x1 = b.x + b.width - 1,
-    y1 = b.y + b.height - 1;
-  const door = b.walls?.find(
-    (w) => w.type === "door" && (w.x === x0 || w.x === x1 || w.y === y0 || w.y === y1),
+  const edges=b.walls?.some(w=>w.axis==="x"||w.axis==="y");
+  const x0 = b.x-(edges?.5:0),
+    y0 = b.y-(edges?.5:0),
+    x1 = b.x + b.width - (edges?.5:1),
+    y1 = b.y + b.height - (edges?.5:1);
+  const authoredDoor = b.walls?.find(
+    (w) => w.type === "door" && (edges?(w.axis==="x"&&(w.y===b.y||w.y===b.y+b.height)||w.axis==="y"&&(w.x===b.x||w.x===b.x+b.width)):(w.x === x0 || w.x === x1 || w.y === y0 || w.y === y1)),
   );
+  const door=authoredDoor&&edges?{...authoredDoor,x:authoredDoor.x-(authoredDoor.axis==="y"?.5:0),y:authoredDoor.y-(authoredDoor.axis==="x"?.5:0)}:authoredDoor;
   const side =
     !door || door.y === y1 ? "south" : door.y === y0 ? "north" : door.x === x0 ? "west" : "east";
   const origin =
@@ -76,8 +78,8 @@ export function entranceFrame(b) {
           ? { x: 0, y: -1 }
           : { x: 0, y: 1 };
   const v = { x: -u.y, y: u.x };
-  const width = side === "north" || side === "south" ? b.width - 1 : b.height - 1;
-  const depth = side === "north" || side === "south" ? b.height - 1 : b.width - 1;
+  const width = side === "north" || side === "south" ? b.width - (edges?0:1) : b.height - (edges?0:1);
+  const depth = side === "north" || side === "south" ? b.height - (edges?0:1) : b.width - (edges?0:1);
   const doorU = door ? (door.x - origin.x) * u.x + (door.y - origin.y) * u.y : width / 2;
   return {
     side,

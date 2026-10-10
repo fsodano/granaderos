@@ -3,6 +3,7 @@ import {
   entranceFrame,
   getBuildingProfile,
 } from '../../game/building-profile.js';
+import { worldWallRecords, wallAtPoint } from '../lib/three/world-wall-records';
 import { Opening, WALL_COLOURS } from './TacticalArchitectureMaterials';
 import {
   ArchitectureVolume,
@@ -34,6 +35,8 @@ export function buildingDetails(
     profile = getBuildingProfile(b),
     h = profile.groundFloorHeight ?? profile.wallHeight;
   const palette = WALL_COLOURS[buildingAppearance(b).wallFinish];
+  const nativeEdges = b.walls?.some((wall: any) => wall.axis);
+  const walls = nativeEdges ? worldWallRecords({ terrain: { width: b.width, height: b.height, tiles: [], wallEdges: b.walls } } as any) : b.walls ?? [];
   const nodes: ReactNode[] = [];
   const backNodes: ReactNode[] = [];
   const frontVisible = -f.v.x - f.v.y > 0;
@@ -72,7 +75,7 @@ export function buildingDetails(
   );
   const wallAt = (u: number, v: number) => {
     const p = at(u, v);
-    return b.walls?.find(
+    return nativeEdges ? wallAtPoint(walls, p) : walls.find(
       (w: any) => w.x === Math.round(p.x) && w.y === Math.round(p.y),
     );
   };
@@ -388,10 +391,10 @@ export function buildingDetails(
   }
 
   function sideButtresses(kind: string) {
-    for (const w of b.walls ?? []) {
+    for (const w of walls) {
       if (w.type !== 'wall') continue;
-      const xEnd = w.x === b.x + b.width - 1,
-        yEnd = w.y === b.y + b.height - 1;
+      const xEnd = w.x === b.x + b.width - (nativeEdges ? .5 : 1),
+        yEnd = w.y === b.y + b.height - (nativeEdges ? .5 : 1);
       if ((!xEnd && !yEnd) || w.x === b.x || w.y === b.y) continue;
       const along = xEnd ? w.y - b.y : w.x - b.x;
       if (along % 3 !== 2) continue;
@@ -742,7 +745,7 @@ export function buildingDetails(
   }
 
   function depotPiers() {
-    for (const wall of b.walls ?? []) {
+    for (const wall of walls) {
       if (wall.type !== 'wall') continue;
       const u = (wall.x - f.origin.x) * f.u.x + (wall.y - f.origin.y) * f.u.y;
       const v = (wall.x - f.origin.x) * f.v.x + (wall.y - f.origin.y) * f.v.y;
@@ -1021,9 +1024,9 @@ export function buildingDetails(
   }
 
   function formalSidePilasters(label: string) {
-    for (const wall of b.walls ?? []) {
-      const onX = wall.x === b.x + b.width - 1,
-        onY = wall.y === b.y + b.height - 1;
+    for (const wall of walls) {
+      const onX = wall.x === b.x + b.width - (nativeEdges ? .5 : 1),
+        onY = wall.y === b.y + b.height - (nativeEdges ? .5 : 1);
       const localV =
         (wall.x - f.origin.x) * f.v.x + (wall.y - f.origin.y) * f.v.y;
       if (

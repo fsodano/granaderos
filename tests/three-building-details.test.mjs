@@ -9,7 +9,7 @@ const {architecturalDetails,roofEdgeDetails}=await import('../web/lib/three/worl
 const {buildBuilding}=await import('../web/lib/three/world-buildings.ts');
 const {buildingArtInset}=await import('../web/lib/three/world-building-placement.ts');
 const {entranceFrame}=await import('../game/building-profile.js');
-const {createArchitectureReviewBattle}=await import('../web/app/renderer-sandbox/architecture-fixtures.js');
+const {createArchitectureReviewBattle}=await import('./legacy-building-fixtures.mjs');
 const T=1.2360585147470482;
 
 function fixture(kind,side='south'){

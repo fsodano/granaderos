@@ -1,3 +1,4 @@
+import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
 import {Group,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {BUILDING_OPENINGS} from '../../../game/building-scale.js';
@@ -13,7 +14,7 @@ import type {WorldBuilding,WorldInput} from './world-types';
 /** Source civic stone bands and the plaster cornice use actual supported
  * wall cells. Flat/edited/legacy roofs keep their released upper trim. */
 export function civicStoreyBands(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),profile=getBuildingProfile(b),V=25.066666666666666,storey=height*profile.groundFloorHeight/profile.wallHeight,light=illuminationAt(input,b),batch=new WorldBatch(geometry);
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),profile=getBuildingProfile(b),V=25.066666666666666,storey=height*profile.groundFloorHeight/profile.wallHeight,light=illuminationAt(input,b),batch=new WorldBatch(geometry);
   const stone=materials.get('stone',{architectureRole:'volume',colour:'#a99a79'}),stoneCap=materials.get('civic-band-stone-coping',{colour:'#c7b795'});
   // Only the coplanar source cap is biased; its physical altitude stays exact.
   stoneCap.polygonOffset=true;stoneCap.polygonOffsetFactor=-1;stoneCap.polygonOffsetUnits=-1;
@@ -30,7 +31,7 @@ export function civicStoreyBands(b:WorldBuilding,input:WorldInput,T:number,heigh
   for(const side of sides)for(const [bottom,top,outward,material,cap]of stages){
     const ranges:{first:number;last:number}[]=[];
     for(let along=0;along<=side.length;along++){
-      const [u,v]=side.point(along,0),p=frame.at(u,v),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(!tile)continue;
+      const [u,v]=side.point(along,0),p=frame.at(u,v),tile=wallAtPoint(walls,p);if(!tile)continue;
       // An edited metric storey can move a band down into an opening. Keep
       // the complete standing aperture instead of masking its upper portion.
       if(tile.type!=='wall'&&bottom<Math.min(height-.12,(tile.type==='door'?BUILDING_OPENINGS.doorHeight:BUILDING_OPENINGS.windowTop)/V)+.05)continue;

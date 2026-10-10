@@ -8,6 +8,7 @@ import {createFurnishingsDetailBattle,createFurnishingsDetailReview} from '../we
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {actBattle} from '../game/tactical.js';
 import {PROP_TYPES,propBlocksAt,propCells,propPlacementError} from '../game/props.js';
+import {wallEdgeCells} from '../game/wall-geometry.js';
 import {roomAt} from '../game/tactical-visibility.js';
 import {roomDressings} from '../game/room-dressing.js';
 const {Scene}=await import('../web/node_modules/three/build/three.module.js');
@@ -15,7 +16,7 @@ const {presentWorld}=await import('../web/lib/three/presentation.ts');
 const {createSectorWorld}=await import('../web/lib/three/sector-world.ts');
 const T=1.2360585147470482;
 function admitted(battle){
- const guard=battle.units[0],terrain={tiles:battle.tiles,buildings:battle.buildings,props:battle.props,night:battle.night};
+ const guard=battle.units[0],terrain={tiles:battle.tiles,wallEdges:battle.wallEdges,buildings:battle.buildings,props:battle.props,night:battle.night};
  return presentWorld(battle,terrain,[guard],new Set(battle.revealedRooms),[{key:`unit:${guard.id}`,kind:'unit',actor:guard}],0);
 }
 function order(battle,action){
@@ -30,7 +31,7 @@ test('furniture detail choices create repeatable valid snapshots and keep the se
  }
  assert.deepEqual(createRendererSandboxBattle('furnishings-detail'),createFurnishingsDetailBattle());assert.deepEqual(createRendererSandboxBattle('furnishings-detail:exterior'),createFurnishingsDetailBattle('exterior'));
  assert.equal(RENDERER_SCENARIOS.find(item=>item.label==='Mobiliario').id,'furnishings-detail');
- const original=createRendererSandboxBattle('furnishings');assert.equal(createHash('sha256').update(JSON.stringify(original)).digest('hex'),'23a4c1bf53af0942720cdcfa699404a319fcac37fd02d59f3972ad2cf1448570');
+ const original=createRendererSandboxBattle('furnishings');assert.equal(createHash('sha256').update(JSON.stringify(original)).digest('hex'),'bc3c4f6682c570afefc7e63288a0ab1d4e63ff67b6724f3e11ee5c3e80fe4ec8');
  assert.deepEqual(original.props.map(prop=>prop.type),['table','bench','bed','chest','barrels','hay','cart']);assert.throws(()=>createFurnishingsDetailBattle('forced'),/Unknown furniture review view/);
 });
 
@@ -41,7 +42,7 @@ test('the recorded room visits replay only ordinary adjacent movement and door o
   for(const action of visit.actions){
    const guard=battle.units[0];assert.ok(['move','door'].includes(action.type));
    if(action.type==='move')assert.equal(Math.abs(guard.x-action.x)+Math.abs(guard.y-action.y),1,'each review move is one normal step');
-   else{const door=battle.tiles.find(tile=>tile.doorId===action.doorId);assert.ok(door&&!door.open&&action.open);assert.equal(Math.abs(guard.x-door.x)+Math.abs(guard.y-door.y),1,'doors are opened from an adjacent free cell');}
+   else{const door=battle.wallEdges.find(tile=>tile.doorId===action.doorId);assert.ok(door&&!door.open&&action.open);assert.ok(wallEdgeCells(door).some(cell=>cell.x===guard.x&&cell.y===guard.y),'doors are opened from an adjacent free cell');}
    battle=order(battle,action);
   }
   assert.deepEqual({x:battle.units[0].x,y:battle.units[0].y},visit.destination);assert.equal(roomAt(battle,battle.units[0]).id,visit.roomId);assert.deepEqual(battle.revealedRooms.filter(id=>!before.includes(id)),visit.newlyRevealed);
@@ -72,7 +73,7 @@ test('fixture furniture has legal sides and door approaches, while dressing stay
  for(const prop of roomDressings(battle)){
   const tile=battle.tiles.find(tile=>tile.x===prop.x&&tile.y===prop.y);assert.ok(tile&&!tile.blocked&&tile.type==='floor');assert.equal(roomCells.get(`${prop.x},${prop.y}`),prop.roomId);assert.ok(!occupied.has(`${prop.x},${prop.y}`));assert.equal(prop.blocksMovement,false);
  }
- battle.tiles.filter(tile=>tile.type==='door').forEach(door=>assert.ok(battle.tiles.some(tile=>Math.abs(tile.x-door.x)+Math.abs(tile.y-door.y)===1&&!tile.blocked&&!propBlocksAt(battle,tile.x,tile.y))));
+ battle.wallEdges.filter(edge=>edge.type==='door').forEach(door=>assert.ok(wallEdgeCells(door).some(cell=>battle.tiles.some(tile=>tile.x===cell.x&&tile.y===cell.y&&!tile.blocked&&!propBlocksAt(battle,tile.x,tile.y)))));
  assert.deepEqual(battle,before);
 });
 
@@ -80,7 +81,7 @@ test('a continued review can move, operate the entrance and return with normal o
  const trace=createFurnishingsDetailReview().visits;let battle=createFurnishingsDetailBattle('exterior');for(const action of trace[0].actions)battle=order(battle,action);
  const guardId=battle.units[0].id,entrance='furnishings-detail-house:entrance';
  for(const point of [{x:11,y:14},{x:11,y:15},{x:11,y:16},{x:11,y:17}])battle=order(battle,{type:'move',unitId:guardId,...point});
- battle=order(battle,{type:'door',unitId:guardId,doorId:entrance,open:false});assert.ok(battle.tiles.find(tile=>tile.doorId===entrance).blocked);
+ battle=order(battle,{type:'door',unitId:guardId,doorId:entrance,open:false});assert.ok(battle.wallEdges.find(tile=>tile.doorId===entrance).blocked);
  const failed=actBattle(battle,{type:'move',unitId:guardId,x:11,y:16});assert.ok(failed.lastError);assert.deepEqual({x:failed.units[0].x,y:failed.units[0].y},{x:11,y:17});
  battle=order(battle,{type:'door',unitId:guardId,doorId:entrance,open:true});battle=order(battle,{type:'move',unitId:guardId,x:11,y:16});battle=order(battle,{type:'move',unitId:guardId,x:11,y:15});assert.equal(roomAt(battle,battle.units[0]).id,'furnishings-detail-house:office');
 });

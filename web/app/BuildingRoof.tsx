@@ -10,7 +10,8 @@ type Args={building:any;left:number;right:number;top:number;bottom:number;doors?
 export function BuildingRoof({building:b,left:L,right:R,top:T,bottom:B,doors=[],project}:Args){
  const baseStyle=buildingStyle(b),palette=WALL_COLOURS[b?.wallFinish],style=palette?{...baseStyle,wall:palette.base,trim:palette.trim}:baseStyle,kind=b.architecture??'house',H=style.height/S+1;
  const nodes:ReactNode[]=[];
- const point=(x:number,y:number,z=0)=>{const p=project(x+.4,y+.4);return {x:p.x,y:p.y-z*S};};
+ const edgeMode=b.walls?.some((wall:any)=>wall.axis);
+ const point=(x:number,y:number,z=0)=>{const p=project(x+(edgeMode?0:.4),y+(edgeMode?0:.4));return {x:p.x,y:p.y-z*S};};
  const at=(x:number,y:number,z=0)=>{const p=point(x,y,z);return `${p.x},${p.y}`;};
  const polygon=(coords:number[][],fill:string,stroke='#68583e',width=.35)=>{
   const material=fill===style.wall?wallMaterial(b):fill===style.trim?'url(#building-plaster)':fill==='#a77d59'||fill==='#c09b71'?'url(#building-brick)':fill;
@@ -136,7 +137,7 @@ export function BuildingRoof({building:b,left:L,right:R,top:T,bottom:B,doors=[],
    <path d="M40,-39H60M41,-8H59" stroke={trim} strokeWidth="3"/>
   </g>));
   nodes.push(tower(L+w*.43,B-.9,w*.14,.85,H+7,H+66,true));
-  for(const door of doors.filter(t=>t.y===b.y+b.height-1))nodes.push(face(door.x-.7,B+.03,.6,'x',(wall,trim)=><g data-landmark-door={door.doorId}>
+  for(const door of doors.filter(t=>edgeMode?t.axis==='x'&&t.y===b.y+b.height:t.y===b.y+b.height-1))nodes.push(face(door.x-(edgeMode?.3:.7),B+.03,.6,'x',(wall,trim)=><g data-landmark-door={door.doorId}>
    <rect y="-30" width="100" height="30" fill="#30372a"/>
    <rect y="-29" width={door.open?12:100} height="29" fill="#70583b" stroke="#c4af72" strokeWidth="1"/>
    {!door.open&&<path d="M25,-27V0M50,-27V0M75,-27V0M0,-23H100M0,-6H100" stroke="#4d412a"/>}

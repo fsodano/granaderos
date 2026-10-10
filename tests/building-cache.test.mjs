@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {createElement} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup} from '../web/node_modules/react-dom/server.node.js';
 import {buildSectorMap} from '../game/maps.js';
-import {buildBuilding} from '../game/buildings.js';
+import {buildBuilding} from './legacy-building-fixtures.mjs';
 import {tileIllumination} from '../game/tactical.js';
 import {tacticalViewport} from '../game/tactical-viewport.js';
 const {buildBuildingObjects,createBuildingRenderer}=await import('../web/app/TacticalBuildings.tsx');

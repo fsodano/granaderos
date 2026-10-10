@@ -1,3 +1,4 @@
+import {worldWallRecords,wallAtPoint,wallFrameRecords} from './world-wall-records';
 import {CylinderGeometry,Group,Matrix4,Quaternion,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
 import {buildingAppearance} from '../../../game/building-appearance.js';
@@ -15,7 +16,7 @@ export function churchNave(b:WorldBuilding,input:WorldInput,T:number,height:numb
   const root=new Group();root.name=`building-church-nave:${b.id}`;
   const V=25.066666666666666,inner=height-12/V,outer=Math.min(height*.59,inner-.04);
   if(outer<=.20)return root;
-  const walls=input.terrain.tiles.filter(tile=>tile.buildingId===b.id&&['wall','door','window'].includes(tile.type)),frame=entranceFrame({...b,walls}),inset=buildingArtInset(b,input),appearance=buildingAppearance(b),profile=getBuildingProfile(b),batch=new WorldBatch(geometry),light=illuminationAt(input,b);
+  const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),inset=buildingArtInset(b,input),appearance=buildingAppearance(b),profile=getBuildingProfile(b),batch=new WorldBatch(geometry),light=illuminationAt(input,b);
   // sideButtresses uses plaster for every non-stone authored finish,
   // including edited brick. Retain that local source texture exception.
   const recipe=architectureFinish(appearance.wallFinish,'volume')!,texture=appearance.wallFinish==='stone'?'/art/architecture-stone-v2.png':'/art/architecture-plaster-v2.png',wall=materials.get(appearance.wallFinish,{architectureRole:'volume',texture});
@@ -41,7 +42,7 @@ export function churchNave(b:WorldBuilding,input:WorldInput,T:number,height:numb
     batch.add(line,material,undefined,light);line.dispose();
   };
   for(const u of [0,frame.width])for(let v=frame.depth-2;v>0;v-=3){
-    const p=frame.at(u,v),tile=walls.find(tile=>tile.x===p.x&&tile.y===p.y);if(tile?.type!=='wall')continue;
+    const p=frame.at(u,v),tile=wallAtPoint(walls,p);if(tile?.type!=='wall')continue;
     const out=u===0?-1:1,alongShift=inset*(frame.u.x+frame.u.y),depthShift=inset*(frame.v.x+frame.v.y),lo=Math.max(u-.39,u-alongShift-.49),hi=Math.min(u+.39,u-alongShift+.49),front=Math.max(v-.19,v-depthShift-.49),back=Math.min(v+.19,v-depthShift+.49);
     if(hi<=lo||back<=front)continue;
     const plan=[[lo,front],[hi,front],[hi,back],[lo,back]],bottom=plan.map(([a,c])=>at(a,c,0)),feet=plan.map(([a,c])=>at(a,c,foot)),top=plan.map(([a,c])=>at(a,c,inner+(outer-inner)*((a-u)*out+.39)/.78));
