@@ -80,11 +80,12 @@ override and restores the building default. Changing an opening's style preserve
 its edge, door ID, open/locked state and movement rules. New openings inherit the
 building style. Styles are saved in JSON and follow moves, rotations and copies.
 
-Templates now use different combinations for rural, civic, religious, commercial
-and work buildings. They also include more side windows. Existing sector maps
-have varied finishes without changes to their original collision geometry.
+Templates use different combinations for rural, civic, religious, commercial
+and work buildings. They also include more side windows. Shipped sector maps
+and templates now use shared wall edges and full building floor footprints.
 Imported older buildings use defaults for their kind when explicit finishes are
-absent. Saved campaign geometry is retained.
+absent. During a new campaign, sector reentry retains damaged walls and door
+state. Compatibility with saves made before wall edges is outside this change.
 
 The normal editor grid is drawn below buildings. Use **Obstáculos** or
 **Rutas accesibles** when you need a diagnostic overlay above the scene.
