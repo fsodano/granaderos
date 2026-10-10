@@ -1,0 +1,71 @@
+{
+  "description": "Earned native Yatasto and Mendoza campaign after real survivor care, foundry setup, and storage of two spent guns; third exact spent gun remains blocked on occupied Salta route",
+  "sourceSnapshot": "f12c2d0f",
+  "inputPath": "/tmp/wall-cuyo-recapture-ready.save.json",
+  "inputClock": [
+    595,
+    323
+  ],
+  "sha256": "b7272e5ec32c31f41ae343bb1e9cccc39286d0dfe49d21f5a1904b022d13d691",
+  "gzipSha256": "7434b36da9ed37eb3031eb7064821c0d861885f27f056d9b8b0178b1ca1f780f",
+  "officialSaveRoundTripExact": true,
+  "startingTreasury": 3200,
+  "priorYatastoClock": [
+    507,
+    1083
+  ],
+  "priorMendozaClock": [
+    586,
+    3429
+  ],
+  "preparationLog": "/tmp/wall-created-cuyo-continuation.log",
+  "actualPriorDeaths": [
+    3,
+    9,
+    101,
+    104,
+    107,
+    108,
+    110,
+    112,
+    113,
+    114,
+    115,
+    117,
+    119,
+    120,
+    123,
+    124,
+    126,
+    129,
+    131,
+    133,
+    134,
+    136,
+    137,
+    141,
+    146,
+    1000
+  ],
+  "transfer": {
+    "id": "arsenal:cordoba:2",
+    "from": "salta",
+    "to": "cordoba",
+    "mode": "carts",
+    "path": [
+      "salta",
+      "tucuman",
+      "cordoba"
+    ],
+    "departedAt": 507,
+    "dueAt": 543,
+    "gun": {
+      "id": "arsenal:cordoba:2",
+      "type": "bronze4",
+      "side": "player",
+      "loaded": false,
+      "ammo": 0,
+      "facing": -2.0899424410414196
+    }
+  }
+}
