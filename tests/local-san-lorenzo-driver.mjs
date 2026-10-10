@@ -2,24 +2,53 @@
 // This is one reproducible strategy, not the game AI or a balance guarantee.
 import {fight as recordedFight} from './opening-driver.mjs';
 import {automaticOrder} from '../game/autonomous-orders.js';
-import {actBattle,teamCanSee,meleePreview,getReachable,shotChance,actionCosts,stanceCost,hasFirearm,firearmShotOptions,firearmFlightPreview,weaponFor,reloadPlan} from '../game/tactical.js';
-import {spacePoint} from '../game/tactical-space.js';
+import {actBattle,teamCanSee,meleePreview,getReachable,shotChance,actionCosts,stanceCost,hasFirearm,firearmShotOptions,weaponFor,reloadPlan,hasLineOfSight} from '../game/tactical.js';
+import {spacePoint,sameSurface} from '../game/tactical-space.js';
 import {shotLocationEffects} from '../game/targeted-combat.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
-import {firstAidPlan} from '../game/first-aid.js';
-import {pairedPistol,secondaryPistolView} from '../game/paired-fire.js';
+import {firstAidPlan,criticalFirstAidNeeded} from '../game/first-aid.js';
+import {knownCivilianFireRisk} from './route-fire-safety.mjs';
 const live=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const friendlyRay=shot=>Boolean(shot?.interveningFriendly||shot?.shots?.some(hand=>hand.interveningFriendly));
-const civilianRay=(b,u,target,hitLocation)=>{
- const second=pairedPistol(u),views=[u,...(second?[secondaryPistolView(u,second)]:[])];
- return views.some(view=>{
-  // The public preview contains known bodies only, at their actual heights.
-  // It does not reveal hidden civilians or predict a seeded off-aim miss.
-  const flight=firearmFlightPreview(b,view,target,hitLocation);
-  return flight.victimKind==='npc'||Boolean(flight.bodyImpacts?.some(impact=>impact.victimKind==='npc'));
- });
+const needsAid=u=>u.hp>0&&(u.bleeding>0||criticalFirstAidNeeded(u));
+const treatmentPlan=(b,doctor,patient)=>{
+ const costs=actionCosts(b,doctor),prepare=doctor.activeSlot==='medical'?0:costs.weapon;
+ return firstAidPlan(doctor,patient,{baseCost:costs.heal,budgetAP:b.mode==='exploration'?Infinity:doctor.ap-prepare});
 };
+function teammateAidOrder(b,u){
+ if(!live(u)||!(u.medical>0&&u.medkits>0))return null;
+ const patients=b.units.filter(patient=>patient.side===u.side&&patient.id!==u.id&&!patient.departure&&!patient.surrendered&&needsAid(patient)&&sameSurface(u,patient)&&distance(u,patient)<=1.5&&hasLineOfSight(b,u,patient)&&treatmentPlan(b,u,patient).valid)
+  .sort((a,c)=>Number(Boolean(c.missionAlly))-Number(Boolean(a.missionAlly))||Number(criticalFirstAidNeeded(c))-Number(criticalFirstAidNeeded(a))||a.hp-c.hp||String(a.id).localeCompare(String(c.id)));
+ const patient=patients[0];
+ return patient?(u.activeSlot==='medical'?{type:'heal',targetId:patient.id}:{type:'weapon',slot:'medical'}):null;
+}
+function criticalAllyRescueOrder(b,u,perceived){
+ if(!live(u)||u.hp<15||!(u.medical>0&&u.medkits>0))return null;
+ const patients=b.units.filter(patient=>patient.side===u.side&&patient.id!==u.id&&patient.missionAlly&&!patient.departure&&!patient.surrendered&&!patient.routed&&criticalFirstAidNeeded(patient)&&sameSurface(u,patient))
+  .sort((a,c)=>a.hp-c.hp||String(a.id).localeCompare(String(c.id)));
+ const adjacent=patients.find(patient=>distance(u,patient)<=1.5&&hasLineOfSight(b,u,patient)&&treatmentPlan(b,u,patient).valid);
+ if(adjacent)return u.activeSlot==='medical'?{type:'heal',targetId:adjacent.id}:{type:'weapon',slot:'medical'};
+ if(!patients.length)return null;
+ // Reserve the actual preparation and finite treatment cost before moving.
+ // Native movement can still interrupt; the next decision rechecks the state.
+ const moves=getReachable(perceived,u).filter(point=>point.cost>0&&point.cost<=32);
+ const routes=patients.flatMap(patient=>moves.filter(point=>sameSurface(point,patient)&&distance(point,patient)<=1.5&&hasLineOfSight(b,{...u,...point},patient)&&treatmentPlan(b,{...u,ap:u.ap-point.cost},patient).valid).map(point=>({patient,point})))
+  .sort((a,c)=>a.patient.hp-c.patient.hp||a.point.cost-c.point.cost||String(a.patient.id).localeCompare(String(c.patient.id))||a.point.y-c.point.y||a.point.x-c.point.x);
+ return routes[0]?{type:'move',...spacePoint(routes[0].point)}:null;
+}
+function woundedAllyOrder(b,u,perceived,visible){
+ if(!needsAid(u))return null;
+ const doctors=b.units.filter(doctor=>doctor.side===u.side&&doctor.id!==u.id&&live(doctor)&&doctor.hp>=15&&sameSurface(u,doctor)&&treatmentPlan(b,doctor,u).valid);
+ if(doctors.length){
+  const moves=getReachable(perceived,u).filter(point=>point.cost>0&&point.cost<=Math.min(32,u.ap-20));
+  const routes=doctors.flatMap(doctor=>moves.filter(point=>sameSurface(point,doctor)&&distance(point,doctor)<distance(u,doctor)&&hasLineOfSight(b,point,doctor)).map(point=>({doctor,point,distance:distance(point,doctor)})))
+   .sort((a,c)=>Number(c.distance<=1.5)-Number(a.distance<=1.5)||a.distance-c.distance||a.point.cost-c.point.cost||c.doctor.medical-a.doctor.medical||String(a.doctor.id).localeCompare(String(c.doctor.id)));
+  if(routes[0])return {type:'move',...spacePoint(routes[0].point)};
+ }
+ if(!u.mounted&&u.stance!=='prone'&&visible.length&&visible.every(target=>distance(u,target)>2)&&u.ap>=stanceCost(u,'prone'))return {type:'stance',stance:'prone'};
+ return null;
+}
 // The final candidate boundary also checks the unchanged automatic fallback.
 // This predicate adds no chance threshold and applies no order to the input.
 export function localSanLorenzoFireSafe(b,u,action,{avoidCivilians=false}={}){
@@ -27,7 +56,7 @@ export function localSanLorenzoFireSafe(b,u,action,{avoidCivilians=false}={}){
  const target=b.units.find(other=>other.id===action.targetId);if(!target)return false;
  const aim=action.aim??0,hitLocation=action.hitLocation??'torso';
  const shot=firearmShotOptions(b,u,target,aim).find(option=>option.aim===aim&&option.hitLocation===hitLocation);
- return Boolean(shot)&&!friendlyRay(shot)&&(!avoidCivilians||!civilianRay(b,u,target,hitLocation));
+ return Boolean(shot)&&!friendlyRay(shot)&&(!avoidCivilians||!knownCivilianFireRisk(b,u,target,hitLocation));
 }
 export function localSanLorenzoOrder(b,u,{avoidCivilians=false}={}){
  const visible=b.units.filter(t=>t.side==='enemy'&&live(t)&&teamCanSee(b,'player',t));
@@ -35,8 +64,11 @@ export function localSanLorenzoOrder(b,u,{avoidCivilians=false}={}){
  const infantry=b.units.filter(t=>t.side==='player'&&live(t)&&!t.missionAlly&&t.hp>=15);
  const supported=!infantry.length||infantry.some(t=>distance(t,u)<8);
  function* candidates(){
-  if(u.bleeding&&firstAidPlan(u,u).valid)yield u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'};
-  else if(u.activeSlot==='medical')yield {type:'weapon',slot:'primary'};
+  const selfAid=u.bleeding&&firstAidPlan(u,u).valid;
+  if(selfAid)yield u.activeSlot==='medical'?{type:'heal'}:{type:'weapon',slot:'medical'};
+  const rescue=criticalAllyRescueOrder(b,u,perceived);if(rescue)yield rescue;
+  const aid=teammateAidOrder(b,u);if(aid)yield aid;
+  if(!selfAid&&u.activeSlot==='medical')yield {type:'weapon',slot:'primary'};
   if(u.knockedDown)yield {type:'stance',stance:'standing'};
   if(u.missionAlly){
    // The cavalry joins its actual infantry before contact. It keeps its
@@ -64,7 +96,7 @@ export function localSanLorenzoOrder(b,u,{avoidCivilians=false}={}){
     const cost=actionCosts(b,u,t);if(u.ap<cost.fire)continue;
     for(const shot of firearmShotOptions(b,u,t,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim)))){
      if(shot.chance<25)continue;
-     if(friendlyRay(shot)||avoidCivilians&&civilianRay(b,u,t,shot.hitLocation))continue;
+     if(friendlyRay(shot)||avoidCivilians&&knownCivilianFireRisk(b,u,t,shot.hitLocation))continue;
      const effect=shotLocationEffects(shot.hitLocation,weaponFor(u).damage*shot.damageFactor,t);
      const score=shot.chance*(Math.min(t.hp,effect.damage)+(t.hp-effect.damage<15?15:0))-(cost.fire+shot.aim*cost.aim)*.2;
      shots.push({t,...shot,score});
@@ -72,7 +104,12 @@ export function localSanLorenzoOrder(b,u,{avoidCivilians=false}={}){
    }
    for(const shot of shots.sort((a,c)=>c.score-a.score))yield {type:'fire',targetId:shot.t.id,aim:shot.aim,hitLocation:shot.hitLocation};
   }
-  if(u.missionAlly&&infantry.length)return;
+  if(u.missionAlly&&infantry.length){
+   // A wounded commander with no admitted offense can reach actual field
+   // care or lower his exposed posture. Healthy reserves retain their hold.
+   const defense=woundedAllyOrder(b,u,perceived,visible);if(defense)yield defense;
+   return;
+  }
   if(hasFirearm(u)&&!u.loaded&&u.ammo&&visible.length&&!reloadPlan(u,b).partial)yield {type:'reload'};
   const known=u.lastKnownEnemy??u.lastHeardNoise;
   if(!visible.length&&!known&&b.turn>=20){const search=sectorSearchOrder(b,u);if(search)yield search;}

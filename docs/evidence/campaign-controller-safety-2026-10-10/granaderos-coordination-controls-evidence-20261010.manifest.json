@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-10T10:47:00.009185+00:00",
+  "archive": "granaderos-coordination-controls-evidence-20261010.tar.gz",
+  "archiveBytes": 1869204,
+  "archiveSha256": "b82cf912180e37d1cb8edf54d982c060f2e0a4227a08af11acad1ba75a266554",
+  "members": [
+    {
+      "path": "original-controls/after-source-hashes.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/after-source-hashes.json",
+      "bytes": 1896228,
+      "sha256": "dc7e16f59b83e2d90bf8d52ed181cedbd85caa4b82c62e7b94e24fc4f3ba153a"
+    },
+    {
+      "path": "original-controls/before-source-hashes.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/before-source-hashes.json",
+      "bytes": 1896228,
+      "sha256": "dc7e16f59b83e2d90bf8d52ed181cedbd85caa4b82c62e7b94e24fc4f3ba153a"
+    },
+    {
+      "path": "original-controls/executed-wrapper.mjs",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/executed-wrapper.mjs",
+      "bytes": 5605,
+      "sha256": "c215b25d6bdb6955cb68ae791ae707b4620d8fcdaca33f4c770eb3902ec22545"
+    },
+    {
+      "path": "original-controls/final-receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/final-receipt.json",
+      "bytes": 2097,
+      "sha256": "3f2262a8d90fb0a782ad61c391da8a8631d6328a92a22700c3fc5d36b03548cd"
+    },
+    {
+      "path": "original-controls/metadata.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/metadata.json",
+      "bytes": 2587,
+      "sha256": "5837f0738722790b42f99a22a94b978ae5fa51169c1d8566e594280d4225080c"
+    },
+    {
+      "path": "original-controls/native-failures/94215-1-mendoza-controller-decision-Vs8dns/controller-decision.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94215-1-mendoza-controller-decision-Vs8dns/controller-decision.json",
+      "bytes": 974437,
+      "sha256": "16fbd4f896a0a76798deab287295f677360dee0eab5825fb1405056384be5c99"
+    },
+    {
+      "path": "original-controls/native-failures/94215-1-mendoza-controller-decision-Vs8dns/receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94215-1-mendoza-controller-decision-Vs8dns/receipt.json",
+      "bytes": 1829,
+      "sha256": "5ee418ddaecc468463526dd1a44720dbcaf5ce3a777263e745d466cff0977319"
+    },
+    {
+      "path": "original-controls/native-failures/94218-1-cordoba-controller-decision-k01Xjr/controller-decision.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94218-1-cordoba-controller-decision-k01Xjr/controller-decision.json",
+      "bytes": 786956,
+      "sha256": "6f0b96dccd46b38a8e3225ceb1aee27db4995d9a6e7a8458de159dfd448249b4"
+    },
+    {
+      "path": "original-controls/native-failures/94218-1-cordoba-controller-decision-k01Xjr/receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94218-1-cordoba-controller-decision-k01Xjr/receipt.json",
+      "bytes": 1832,
+      "sha256": "86da9662b1233a2b0f29bfa0364206a68a8c7c57e9c863ca9195cf9c461468f0"
+    },
+    {
+      "path": "original-controls/native-failures/94218-2-san_nicolas-controller-decision-utYmOh/controller-decision.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94218-2-san_nicolas-controller-decision-utYmOh/controller-decision.json",
+      "bytes": 787409,
+      "sha256": "c9289a3bb51fbebca75e0ca267fc5d1c6dcfb3db02f55afdeecacbaa3dd808eb"
+    },
+    {
+      "path": "original-controls/native-failures/94218-2-san_nicolas-controller-decision-utYmOh/receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94218-2-san_nicolas-controller-decision-utYmOh/receipt.json",
+      "bytes": 1853,
+      "sha256": "9a69a6d5cc5bd20238d1d8ab693fb8a2a5b04dcae944c5f1250beeac8631ac8d"
+    },
+    {
+      "path": "original-controls/native-failures/94218-3-san_nicolas-controller-decision-9npAbb/controller-decision.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94218-3-san_nicolas-controller-decision-9npAbb/controller-decision.json",
+      "bytes": 788561,
+      "sha256": "faeb9cde21c54c4f17aebc1c9b78262032be337c02b3f3ac8bebf238219562ed"
+    },
+    {
+      "path": "original-controls/native-failures/94218-3-san_nicolas-controller-decision-9npAbb/receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/native-failures/94218-3-san_nicolas-controller-decision-9npAbb/receipt.json",
+      "bytes": 1853,
+      "sha256": "bb1bff89e99848dd5f1fd8e7433e309e18050d9530c4d50772175a14541641a2"
+    },
+    {
+      "path": "original-controls/opening-controls/corrected-native-investigation-control.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/opening-controls/corrected-native-investigation-control.json",
+      "bytes": 1561711,
+      "sha256": "aafdd258c474c6df9eb6416c84004dfd5bf772b25969e1185eaf05c2ebfdc7df"
+    },
+    {
+      "path": "original-controls/opening-controls/custom-hold-scheduling-control.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/opening-controls/custom-hold-scheduling-control.json",
+      "bytes": 1633701,
+      "sha256": "b537ae05891c3cf549bb54873540ea2ad09521ae5fc1815b62d22922776189b4"
+    },
+    {
+      "path": "original-controls/opening-controls/explicit-one-bound-scheduling-control.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/opening-controls/explicit-one-bound-scheduling-control.json",
+      "bytes": 1634383,
+      "sha256": "0c21d41daeaa7ac3b0688cd3b75b325c373772e5b935e4b94a960574f5120df8"
+    },
+    {
+      "path": "original-controls/opening-controls/original-native-null-control.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/opening-controls/original-native-null-control.json",
+      "bytes": 780661,
+      "sha256": "e246cac963c35fe9374c7d9a6ac169b34b477df90372858cffdaa6bf34c9d092"
+    },
+    {
+      "path": "original-controls/opening-controls/stock-common13-ordinary-priority-control.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/opening-controls/stock-common13-ordinary-priority-control.json",
+      "bytes": 1618421,
+      "sha256": "9be60a37a40d605af7459a13861b0b19f7a0543c81c6c48c143d0c26dae184bf"
+    },
+    {
+      "path": "original-controls/pid.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/pid.json",
+      "bytes": 30,
+      "sha256": "9d27621a3d0bb41655effdae7c3ed8de1bc0c0c6eea6b12650c4cbbdd284e1e4"
+    },
+    {
+      "path": "original-controls/run.log",
+      "sourcePath": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/run.log",
+      "bytes": 22438,
+      "sha256": "f1398a699e3cdef4a729837c075ea7a8f7f045da87cc4eff387affbf66f782ea"
+    },
+    {
+      "path": "control-report.json",
+      "bytes": 2630,
+      "sha256": "37f9c4e61631ab4d7c8d5dda1e3fc4bc259092a2435bf6a37f25eb857dd76cea"
+    },
+    {
+      "path": "payload-manifest.json",
+      "bytes": 8437,
+      "sha256": "8d89423ed4deae08cbe7e4c50712c9c66f8cbb0497cd1c4d3e91d44483bd9395"
+    }
+  ],
+  "rootIndependentlyVerifiedAllMembers": true,
+  "receipt": "/tmp/granaderos-current-corrections-v3-focused-2026-10-10T104610511Z/final-receipt.json",
+  "completeOriginalRunIncluded": true
+}

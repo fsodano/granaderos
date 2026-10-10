@@ -1,0 +1,24 @@
+{
+  "archive": "/tmp/granaderos-current-main-baseline-evidence-20261010.tar.gz",
+  "archiveBytes": 3373509,
+  "archiveSha256": "4d509d62cae4c8dcde46c25962c33108768bc3fbe680562b79b6822a99f8b668",
+  "manifest": "/tmp/granaderos-current-main-baseline-evidence-20261010.members.json",
+  "manifestSha256": "af29d4d1c66d875e10f71305f96b4bb9a5311fe854e124ae68fde3d2840e91d2",
+  "memberCount": 29,
+  "allMemberBytesVerified": true,
+  "sourceFiles": 14098,
+  "counts": {
+    "tests": 16,
+    "suites": 0,
+    "pass": 6,
+    "fail": 5,
+    "cancelled": 0,
+    "skipped": 5,
+    "todo": 0
+  },
+  "soleInvocation": true,
+  "mainCleanReceipt": "/tmp/granaderos-current-main-baseline-packaging-20261010/main-clean-receipt.json",
+  "report": "/tmp/granaderos-current-main-baseline-packaging-20261010/evidence-report.json",
+  "originalGateFilesChanged": false,
+  "originalGateDirectory": "/tmp/granaderos-current-main-baseline-affected-2026-10-10T094953793Z"
+}

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
-import {fight} from './opening-driver.mjs';
+import {fight,sharedSightingInvestigationOrder} from './opening-driver.mjs';
 import {openingBodyRegionOrder} from './opening-body-region-driver.mjs';
 import {fight as cautiousFight} from './cuyo-route-driver.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -129,7 +129,7 @@ export function runOpeningCampaign({report=()=>{}}={}){
   assert.equal(entry.night,false,'ordinary departure and wait orders schedule daylight assaults');
   // Keep the mission commander in reserve while the infantry handles contact.
   // Every cover, shot, reload and medical order still spends the reducer's AP.
-  const engage=sector==='san_lorenzo'?()=>cautiousFight(request,undefined,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:['57']}):()=>fight(request,undefined,{controller:openingBodyRegionOrder});
+  const engage=sector==='san_lorenzo'?()=>cautiousFight(request,undefined,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true,holdPosition:['57']}):()=>fight(request,undefined,{controller:openingBodyRegionOrder,sharedFallback:sharedSightingInvestigationOrder});
   let {battle:b,actions}=engage();
   assert.deepEqual(b,engage().battle,'identical seed and legal orders replay deterministically');
   assert.ok(actions>0);assert.ok(b.turn>1);

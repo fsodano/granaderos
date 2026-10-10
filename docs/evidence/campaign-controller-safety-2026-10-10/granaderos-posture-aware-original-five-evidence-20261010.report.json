@@ -1,0 +1,119 @@
+{
+  "finalGateReceipt": {
+    "mode": "affected",
+    "started": "2026-10-10T10:13:43.674Z",
+    "finished": "2026-10-10T10:20:48.903Z",
+    "exitCode": 1,
+    "signal": null,
+    "terminalExit": true,
+    "complete": true,
+    "success": false,
+    "identity": {
+      "version": "0.4.0-dev.1",
+      "id": "c132c162f024",
+      "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+      "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5"
+    },
+    "base": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+    "sourceSnapshotSha256": "eadcf6e1279480a7c61696eb70b7c8f43b817d9964ca6b917925ac0e04e4efa7",
+    "sourceFiles": 14186,
+    "sourceDrift": [],
+    "invocations": 1,
+    "selectedFiles": [
+      "tests/fresh-campaign-recovery.test.mjs",
+      "tests/fresh-cuyo-route.test.mjs",
+      "tests/fresh-coastal-route.test.mjs",
+      "tests/opening-playthrough.test.mjs",
+      "tests/fresh-ending-route.test.mjs"
+    ],
+    "filters": [],
+    "seedChanges": 0,
+    "originalAffectedTestsUnchanged": true,
+    "counts": {
+      "tests": 9,
+      "suites": 0,
+      "pass": 5,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "artifacts": [
+      "after-source-hashes.json",
+      "before-source-hashes.json",
+      "executed-wrapper.mjs",
+      "metadata.json",
+      "native-failures",
+      "pid.json",
+      "run.log"
+    ],
+    "scope": "One execution of the five original affected test files with passive diagnostics; every original assertion retained."
+  },
+  "originalRegularFiles": 365,
+  "originalRawBytes": 464240688,
+  "controllerDecisionPacks": 90,
+  "coastalSectorPacks": 14,
+  "ammunitionBoundaryRecords": [
+    "native-failures/ammunition-preparation/89509-1-tucuman-preliminary-armament-input.json",
+    "native-failures/ammunition-preparation/89509-2-tucuman-preliminary-armament-output.json",
+    "native-failures/ammunition-preparation/89509-3-tucuman-authoritative-ammunition-input.json",
+    "native-failures/ammunition-preparation/89510-1-finite-ammunition-refusal.json"
+  ],
+  "actualStrategicHelperBodyCaptures": [],
+  "failures": [
+    {
+      "test": "fresh-campaign-recovery.test.mjs",
+      "barrier": "Cordoba garrison preparation cannot find an actually reachable recovered gun for a new recruit.",
+      "error": "a real recovered gun must be available",
+      "stackBoundary": "prepareFreshCordobaDefense, tests/fresh-campaign-route.mjs:482; called from recoverFreshCordobaSurvivors."
+    },
+    {
+      "test": "fresh-cuyo-route.test.mjs",
+      "barrier": "Created northern officer relief cannot find a living, conscious local medic to stabilize an actual urgent casualty.",
+      "error": "an actual conscious local medic must stabilize the urgent casualty",
+      "stackBoundary": "prepareCreatedNorthernOfficerRelief, tests/fresh-northern-command.mjs:98."
+    },
+    {
+      "test": "fresh-ending-route.test.mjs",
+      "barrier": "Stock northern staging cannot collect the required finite local field dressings. The assertion combines source availability and carrying capacity; this receipt does not choose an unobserved deeper cause.",
+      "error": "finite local equipment or carrying room is exhausted: san_nicolas {\"item\":\"medkits\"}",
+      "stackBoundary": "collectRouteItems, tests/finite-route-equipment.mjs:55; called by freshStockNorthernRoute, tests/fresh-northern-fixture.mjs:285."
+    },
+    {
+      "test": "opening-playthrough.test.mjs",
+      "barrier": "The actual San Nicolas native combat ends in defeat at turn18, actions142; the original victory assertion remains.",
+      "error": "actual defeat, expected victory",
+      "stackBoundary": "runOpeningCampaign, tests/opening-campaign.mjs:140."
+    }
+  ],
+  "coastalTestsPassed": 5,
+  "commanderSurvivesSavedSettlement": true,
+  "partialCriticalCare": true,
+  "originalDeathsPreserved": true,
+  "sourceMapBytesEqual": true,
+  "recordedPIDsGoneBeforePacking": {
+    "observedUTC": "2026-10-10T10:28:55.886162+00:00",
+    "pids": [
+      89482,
+      89506,
+      89507,
+      89508,
+      89509,
+      89510,
+      89511
+    ],
+    "command": [
+      "ps",
+      "-p",
+      "89482,89506,89507,89508,89509,89510,89511",
+      "-o",
+      "pid=,ppid=,stat=,command="
+    ],
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "",
+    "allRecordedPIDsGone": true
+  },
+  "observerNativeCalls": 0,
+  "observerCandidateEdits": 0
+}

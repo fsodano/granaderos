@@ -1,0 +1,224 @@
+{
+  "archive": "granaderos-stock-sann-common13-control-evidence-20261010.tar.gz",
+  "members": [
+    {
+      "member": "common13-control/accepted-prefix-events.json",
+      "bytes": 8424,
+      "sha256": "d538d4679722dee059548fc8a7bb62927042db774a1068d39cd81b65b12d81c0"
+    },
+    {
+      "member": "common13-control/actual-before-battle-execution.json",
+      "bytes": 2212691,
+      "sha256": "7fb5d2f322a75d1956e5ecfba4b7761a798df2b62a8ce184b3356c17f4195ab4"
+    },
+    {
+      "member": "common13-control/actual-pre-order-14-battle.json.gz",
+      "bytes": 28107,
+      "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b"
+    },
+    {
+      "member": "common13-control/actual-pre-order-14-pair.json",
+      "bytes": 2927302,
+      "sha256": "7b6ae8b1f9a9318799d109893372091499e28e8cd6a313cb7f30b17b6aaf1385"
+    },
+    {
+      "member": "common13-control/actual-recorded-replay-initial-pair.json",
+      "bytes": 2921123,
+      "sha256": "8802a07969db33ee1eae19f2304942e669cfb1923114b43bcd93431a8e4a4a92"
+    },
+    {
+      "member": "common13-control/bound-inputs.json",
+      "bytes": 2897,
+      "sha256": "6a5f8e570308e061bfd4956a7a02ba943ff3c8d9c35dbcbfbc0230b18d29da1e"
+    },
+    {
+      "member": "common13-control/common-native-orders.json",
+      "bytes": 1158,
+      "sha256": "813fe83ee3b82ce9b86d5278eb9a0da62ea0cc8b5c33aeb37552253598792e14"
+    },
+    {
+      "member": "common13-control/current-v2-captures/accepted-local-tactical-orders.json",
+      "bytes": 51205,
+      "sha256": "68383b742b77d69bff16f68dc6524f999859dc3d8ae408ad34cdf21803133c09"
+    },
+    {
+      "member": "common13-control/current-v2-captures/before-battle-execution.json",
+      "bytes": 2212691,
+      "sha256": "7fb5d2f322a75d1956e5ecfba4b7761a798df2b62a8ce184b3356c17f4195ab4"
+    },
+    {
+      "member": "common13-control/current-v2-captures/native-combat-result.json",
+      "bytes": 794865,
+      "sha256": "8f605280868e1a3de034813f6d3619c6448041eec5bf17b10c90695c61ed8c68"
+    },
+    {
+      "member": "common13-control/current-v2-captures/receipt.json",
+      "bytes": 5544,
+      "sha256": "0ece06bb51aea663af5ad0431279009f0e0e18a228c1ae46b8ff0a028bd1c2f2"
+    },
+    {
+      "member": "common13-control/current-v2-captures/replay-initial-pair.json",
+      "bytes": 2921123,
+      "sha256": "8802a07969db33ee1eae19f2304942e669cfb1923114b43bcd93431a8e4a4a92"
+    },
+    {
+      "member": "common13-control/earned-prefix-provenance.json",
+      "bytes": 8457,
+      "sha256": "4b61ffc9ad3c6bf62fcca2340927d94d0d5a4994e8c84b888e84c53332fd4d42"
+    },
+    {
+      "member": "common13-control/exact-common13-prefix.mjs",
+      "bytes": 11076,
+      "sha256": "952cff621c1c0e02c8be7b547a4fc484ae50c218d1fd05492c1a96e00cc2e60a"
+    },
+    {
+      "member": "common13-control/final-receipt.json",
+      "bytes": 25094,
+      "sha256": "a8c93e292c23cab329e9b904bf6b1285f31b5239893596b15ee73e2e76384672"
+    },
+    {
+      "member": "common13-control/initial-receipt.json",
+      "bytes": 864,
+      "sha256": "2cf54c62a581f7f92f234eb5a981b1aaedb2fbd8423d3151afbb97c9d7a3d4e9"
+    },
+    {
+      "member": "common13-control/native-source-after.json",
+      "bytes": 32547,
+      "sha256": "bedeb77651637673b741d869cec640e3b74b67c52b7142a4253f534f5988caf7"
+    },
+    {
+      "member": "common13-control/native-source-before.json",
+      "bytes": 32547,
+      "sha256": "bedeb77651637673b741d869cec640e3b74b67c52b7142a4253f534f5988caf7"
+    },
+    {
+      "member": "common13-control/official-pre-order-14-save.json.gz",
+      "bytes": 73747,
+      "sha256": "d1ecb9b3096893466f97a8633627b3e8614fc165b65f1a984eb6f0040e16853b"
+    },
+    {
+      "member": "common13-control/official-save-boundary-receipt.json",
+      "bytes": 226,
+      "sha256": "742f1998c4328bcdae5beffe394e71026ff863078aa3639b54b5cab9cea9b6fe"
+    },
+    {
+      "member": "common13-control/order-01-raw-values.json",
+      "bytes": 595655,
+      "sha256": "4314b61daebe1941a9f566e2975cf6be3cecba7deaea09d78b5799ca9210f4bf"
+    },
+    {
+      "member": "common13-control/order-02-raw-values.json",
+      "bytes": 597390,
+      "sha256": "c09039815b83b81ead0951cfd8e807e9c04094483896578de17d8e2152fbd2ef"
+    },
+    {
+      "member": "common13-control/order-03-raw-values.json",
+      "bytes": 598921,
+      "sha256": "072ef65e34013df5920c720bfd8b44d06d7b8c397893b42f6ac8705cef51f7bc"
+    },
+    {
+      "member": "common13-control/order-04-raw-values.json",
+      "bytes": 600313,
+      "sha256": "bb074cd30d630b6a1a5c5c02a574b779be34d6f58d5d2c9b3a89969bb45f00c0"
+    },
+    {
+      "member": "common13-control/order-05-raw-values.json",
+      "bytes": 601706,
+      "sha256": "2404379a79eaebd4ab251dcd0245d85e8b6cd74761310a97e33a77866467e2b7"
+    },
+    {
+      "member": "common13-control/order-06-raw-values.json",
+      "bytes": 603236,
+      "sha256": "ff3085d0f407cc6ad0e73c679993c7576cf45febe765a880c45569e7d7553c6e"
+    },
+    {
+      "member": "common13-control/order-07-raw-values.json",
+      "bytes": 603988,
+      "sha256": "b5d2a2b5c781700927fc9dc5438e3a2238dff19899caed548e5899f105aea222"
+    },
+    {
+      "member": "common13-control/order-08-raw-values.json",
+      "bytes": 603947,
+      "sha256": "4f3f0d4f953983d6706434bb1f52ba1f8479a152a48e5471dec813647d841a31"
+    },
+    {
+      "member": "common13-control/order-09-raw-values.json",
+      "bytes": 603943,
+      "sha256": "e53e8ba8cae9b7ba124c48e7cd8c35a09a90f32653dbc17afbfcac902651eeb8"
+    },
+    {
+      "member": "common13-control/order-10-raw-values.json",
+      "bytes": 603938,
+      "sha256": "5590b3f2719d7b6d0d4306043cc672a2809059cc0003b5bf6724cf0bb6e635a7"
+    },
+    {
+      "member": "common13-control/order-11-raw-values.json",
+      "bytes": 603934,
+      "sha256": "6d917ab6561aeabbbf1366b860065f591d0faec321ceecf86cab72bb919a993f"
+    },
+    {
+      "member": "common13-control/order-12-raw-values.json",
+      "bytes": 603930,
+      "sha256": "7b687401da5df9f7699555f576ec994e3367059ea9b9936cba70388e2c109322"
+    },
+    {
+      "member": "common13-control/order-13-raw-values.json",
+      "bytes": 604132,
+      "sha256": "9ee957e3d35e92f11a1cda31000afe7432d77d9f6a7297d1d757912bc0d254b4"
+    },
+    {
+      "member": "common13-control/original-c7-captures/accepted-local-tactical-orders.json",
+      "bytes": 54396,
+      "sha256": "10dfcf888228c4e2f6f74c2afb64090136480dfa68d4b3bf2f076b971d9dd683"
+    },
+    {
+      "member": "common13-control/original-c7-captures/before-battle-execution.json",
+      "bytes": 2212691,
+      "sha256": "7fb5d2f322a75d1956e5ecfba4b7761a798df2b62a8ce184b3356c17f4195ab4"
+    },
+    {
+      "member": "common13-control/original-c7-captures/native-combat-result.json",
+      "bytes": 794311,
+      "sha256": "ebe3844ab08c46d83f559fc45ee85283ce25ac7492dfdb64ee6a92a519584b4e"
+    },
+    {
+      "member": "common13-control/original-c7-captures/receipt.json",
+      "bytes": 4927,
+      "sha256": "cdb479a6c3b38b1586006570455186064d1372675d725aa26257d8fe04a47c55"
+    },
+    {
+      "member": "common13-control/original-c7-captures/replay-initial-pair.json",
+      "bytes": 2921123,
+      "sha256": "8802a07969db33ee1eae19f2304942e669cfb1923114b43bcd93431a8e4a4a92"
+    },
+    {
+      "member": "common13-control/original-capture-copy-receipt.json",
+      "bytes": 4369,
+      "sha256": "c763f56e7be42423923c268e4f08f2ad35426a73c223b902ec4cdd52086f706b"
+    },
+    {
+      "member": "common13-control/portable-member-inventory.json",
+      "bytes": 7255,
+      "sha256": "0056bb6bd552d3ffa711c6c3bbc8a1ba57effa5b9056056f627e2ed21f35f918"
+    },
+    {
+      "member": "common13-control/raw-after-values.json",
+      "bytes": 282028,
+      "sha256": "422bf2cc4d3aedd606ef198ec65bf1115fffff55c0a05795a8575f031e9bc3b5"
+    },
+    {
+      "member": "common13-control/raw-before-values.json",
+      "bytes": 277618,
+      "sha256": "2a95c27a6a5babbbe37b83468d8e8a46b71cb6fdcbd7f52adb89bbc29d3ea343"
+    },
+    {
+      "member": "common13-control/run.log",
+      "bytes": 322,
+      "sha256": "11f9ab843d8fd49ecb514eedca5707ed7c500f1f93169ffc2dfc9018ea342828"
+    }
+  ],
+  "originalExternalManifest": "/tmp/granaderos-stock-sann-common13-control-evidence-20261010.members.json",
+  "originalExternalManifestSha256": "a2e0dd64b372da09c1ee8b0006f00df9dec332cea44396be66fba7fbe6d47fda",
+  "rootIndependentlyVerifiedAllMembers": true,
+  "originalByteComparisons": 43
+}

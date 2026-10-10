@@ -1,0 +1,735 @@
+{
+  "scope": "Read-only raw JSON/tape comparison and source audit. No game imports/helpers, selectors, orders, replays, routes, retries, edits or index mutations.",
+  "latestGate": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z",
+  "latestReceiptSha256": "72ca1e59267f48b3063307418b3f68121a5788e67f33bc8a38261ce8b75d32c0",
+  "latestIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "c132c162f024",
+    "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5"
+  },
+  "latestCounts": {
+    "tests": 9,
+    "suites": 0,
+    "pass": 5,
+    "fail": 4,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceChangesSinceC7": [
+    {
+      "path": "game/tactical-ai.js",
+      "old": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4",
+      "latest": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27"
+    },
+    {
+      "path": "tests/fresh-cuyo-route.mjs",
+      "old": "ceba839d3064d468891e86d718eac3faf3b8a94c0fe6d55c9883cd5a25143bcf",
+      "latest": "f20de73bb5aef5b86a5a3e54a613922cd6ca77b1e7beda2b60f23ed2546350ee"
+    },
+    {
+      "path": "tests/fresh-northern-recovery.mjs",
+      "old": "d29b72ff330801d7fee9bf92b6b58cc04785c500975c1a9356baa07f613d647b",
+      "latest": "941d2841ceb51fe9f40f5689b0d4b4176c849846bcf5a0a9400d26117d5fb6f2"
+    },
+    {
+      "path": "tests/local-san-lorenzo-critical-ally-rescue.test.mjs",
+      "old": null,
+      "latest": "5f9897b974fa9078da33a54c088368f1e25dfe08579ae9b1bcdc9ba49783756b"
+    },
+    {
+      "path": "tests/local-san-lorenzo-driver.mjs",
+      "old": "30cd473055dc01b6463fd93d35511890be40b5d0b0846cfd7130ac45c57f15af",
+      "latest": "aa4fc318605b117fb9349113d91dc00c2dcd1f2f0d114612c35a6c0f4c24ea15"
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "old": "3b8b0c4d4f4f60dea5a972d55a0008afeab9b676235b50a83ce10f4f73154dcd",
+      "latest": "e27d393f1374964f538a0cce1bb8493eda9f1fcf5b2c997c025a698403796082"
+    },
+    {
+      "path": "tests/opening-shared-sighting-investigation.test.mjs",
+      "old": null,
+      "latest": "3a868d05f7b5becefef0521b4e21b3f918604ce60f30d5e5ef83e8e8db885aa7"
+    },
+    {
+      "path": "tests/route-strategic-failure-evidence.mjs",
+      "old": null,
+      "latest": "706bc83b388e3328ffe261180b955b5bbee916520ef085f9ac84f37f5a6d1f42"
+    },
+    {
+      "path": "tests/stock-tucuman-readiness.mjs",
+      "old": "83f5002c7a9b216e7eb88466fb03f6ba279d748c7fa9dad6ecbb90eb1bb522b4",
+      "latest": "56727c6e07970c3dfdecbdaabaf1ce5fcf08186b88e4a880794cef3a30bddbe9"
+    }
+  ],
+  "comparisons": [
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "created",
+        "buenos_aires"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-1-created-buenos_aires-buenos_aires-8-8-MGDRid",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-1-created-buenos_aires-buenos_aires-8-8-Tdeo0I",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "b5b8f6c6f89b2e8801a2f9bb2c0ccac77b1105da28829932106216d4e9e8a31d",
+      "latestBeforeSha256": "b5b8f6c6f89b2e8801a2f9bb2c0ccac77b1105da28829932106216d4e9e8a31d",
+      "campaignSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "requestSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        104,
+        104
+      ],
+      "commonOrderPrefixLength": 104,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "bf137f91d6fb72c9921e4b18d97f51cbe768728c8afd9b9dcee796450056d4ac",
+      "latestNativeResultSha256": "bf137f91d6fb72c9921e4b18d97f51cbe768728c8afd9b9dcee796450056d4ac",
+      "oldResult": [
+        "victory",
+        3,
+        100
+      ],
+      "latestResult": [
+        "victory",
+        3,
+        100
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "created",
+        "san_lorenzo"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-3-created-san_lorenzo-san_lorenzo-91-18026106-zfjZas",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-3-created-san_lorenzo-san_lorenzo-91-18026106-nVrnQc",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "21bfdeacf8abe30f9516776f41b447451475b26bdde2bd490ba3c328abc36beb",
+      "latestBeforeSha256": "21bfdeacf8abe30f9516776f41b447451475b26bdde2bd490ba3c328abc36beb",
+      "campaignSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "requestSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        110,
+        110
+      ],
+      "commonOrderPrefixLength": 110,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "a50e746e38631dc0dd02e2bf21d3ed95ad05a348527135a9c18ff0e2eb736428",
+      "latestNativeResultSha256": "a50e746e38631dc0dd02e2bf21d3ed95ad05a348527135a9c18ff0e2eb736428",
+      "oldResult": [
+        "victory",
+        5,
+        96
+      ],
+      "latestResult": [
+        "victory",
+        5,
+        96
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "created",
+        "san_nicolas"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-2-created-san_nicolas-san_nicolas-44-1027220423-Ydl87z",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-2-created-san_nicolas-san_nicolas-44-1027220423-FX1bdC",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "f8fc41b900538c9eac00e0263434fc834672fd239ae0ebf6191d19cf62e700a1",
+      "latestBeforeSha256": "f8fc41b900538c9eac00e0263434fc834672fd239ae0ebf6191d19cf62e700a1",
+      "campaignSeeds": [
+        18026106,
+        18026106
+      ],
+      "requestSeeds": [
+        18026106,
+        18026106
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        120,
+        120
+      ],
+      "commonOrderPrefixLength": 120,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "9904ad409e661884313050b96fa88da339dac454dd8674b2583a5958af3840d8",
+      "latestNativeResultSha256": "9904ad409e661884313050b96fa88da339dac454dd8674b2583a5958af3840d8",
+      "oldResult": [
+        "victory",
+        5,
+        112
+      ],
+      "latestResult": [
+        "victory",
+        5,
+        112
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "hired",
+        "buenos_aires"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-4-hired-buenos_aires-buenos_aires-8-8-rupLkr",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-4-hired-buenos_aires-buenos_aires-8-8-kQZ8d3",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "f88e77395e7c7a0c60cb6865f6d792f1772641e945c718405374b641e7f22f61",
+      "latestBeforeSha256": "f88e77395e7c7a0c60cb6865f6d792f1772641e945c718405374b641e7f22f61",
+      "campaignSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "requestSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        129,
+        129
+      ],
+      "commonOrderPrefixLength": 129,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "6c58b2d6c644a88eba621fc7fb119ebf43660c63ab0c37d669739854dbe3109c",
+      "latestNativeResultSha256": "6c58b2d6c644a88eba621fc7fb119ebf43660c63ab0c37d669739854dbe3109c",
+      "oldResult": [
+        "victory",
+        4,
+        119
+      ],
+      "latestResult": [
+        "victory",
+        4,
+        119
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "hired",
+        "san_lorenzo"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-6-hired-san_lorenzo-san_lorenzo-103-18026106-2aOBfx",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-6-hired-san_lorenzo-san_lorenzo-103-18026106-CbFfqA",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "3dfa54d7c5e7b8198670d4f5242acef001db0af4057b4f21e0ffbc01769e1f7d",
+      "latestBeforeSha256": "3dfa54d7c5e7b8198670d4f5242acef001db0af4057b4f21e0ffbc01769e1f7d",
+      "campaignSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "requestSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        166,
+        160
+      ],
+      "commonOrderPrefixLength": 131,
+      "firstDifferentIndexZeroBased": 131,
+      "oldDifferentOrder": {
+        "type": "reload",
+        "unitId": "137"
+      },
+      "latestDifferentOrder": {
+        "type": "move",
+        "x": 49,
+        "y": 41,
+        "tacticalLevel": 0,
+        "unitId": "137"
+      },
+      "oldNativeResultSha256": "883002d8ed1f6313f9ad6376b86be68b3fc5db6ee7830ef696a524b66798baf2",
+      "latestNativeResultSha256": "26834fa3351f2f9131412dd7581428823eb07f3563fa1a8fe9ba154e8e9c7d2b",
+      "oldResult": [
+        "victory",
+        8,
+        142
+      ],
+      "latestResult": [
+        "victory",
+        8,
+        135
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "hired",
+        "san_nicolas"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-5-hired-san_nicolas-san_nicolas-84-1027220423-CyyM4o",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-5-hired-san_nicolas-san_nicolas-84-1027220423-7h8cn1",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "33f9b6ea8c1ad75764db0ae09aa468325d32646341b7ef134bc91ad4980b108a",
+      "latestBeforeSha256": "33f9b6ea8c1ad75764db0ae09aa468325d32646341b7ef134bc91ad4980b108a",
+      "campaignSeeds": [
+        18026106,
+        18026106
+      ],
+      "requestSeeds": [
+        18026106,
+        18026106
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        151,
+        151
+      ],
+      "commonOrderPrefixLength": 151,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "6828a5c74f73e1ca3a40016720b6918d9732a266c4edc7609b5a73a9adf73fe9",
+      "latestNativeResultSha256": "6828a5c74f73e1ca3a40016720b6918d9732a266c4edc7609b5a73a9adf73fe9",
+      "oldResult": [
+        "victory",
+        10,
+        140
+      ],
+      "latestResult": [
+        "victory",
+        10,
+        140
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "local",
+        "buenos_aires"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-7-local-buenos_aires-buenos_aires-12-8-HGASA5",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-7-local-buenos_aires-buenos_aires-12-8-uzSrVL",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "0cad5fb33d86e52613962458dd92007a37e2ad84dc0d9b28c1b385b482d987d5",
+      "latestBeforeSha256": "0cad5fb33d86e52613962458dd92007a37e2ad84dc0d9b28c1b385b482d987d5",
+      "campaignSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "requestSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        88,
+        88
+      ],
+      "commonOrderPrefixLength": 88,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "213c50e346ffcaabd715d17b875259ef070efc619b211d011a64030985e7cf50",
+      "latestNativeResultSha256": "213c50e346ffcaabd715d17b875259ef070efc619b211d011a64030985e7cf50",
+      "oldResult": [
+        "victory",
+        10,
+        74
+      ],
+      "latestResult": [
+        "victory",
+        10,
+        74
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "local",
+        "san_lorenzo"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-9-local-san_lorenzo-san_lorenzo-58-18026106-PkdcHo",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-9-local-san_lorenzo-san_lorenzo-58-18026106-n2zAOR",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "a69c7c624fae74e96a49ec165cc44fe0f67b097801168648e9afd3d692bce883",
+      "latestBeforeSha256": "a69c7c624fae74e96a49ec165cc44fe0f67b097801168648e9afd3d692bce883",
+      "campaignSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "requestSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        81,
+        81
+      ],
+      "commonOrderPrefixLength": 81,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "63b8321a333514cde82533a73a2f342ed2ff8ff8317e8298b7e4db09e43be58d",
+      "latestNativeResultSha256": "63b8321a333514cde82533a73a2f342ed2ff8ff8317e8298b7e4db09e43be58d",
+      "oldResult": [
+        "victory",
+        5,
+        65
+      ],
+      "latestResult": [
+        "victory",
+        5,
+        65
+      ]
+    },
+    {
+      "case": [
+        "fresh-coastal-route.test.mjs",
+        "local",
+        "san_nicolas"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78258-8-local-san_nicolas-san_nicolas-36-1027220423-dpHPX8",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89508-8-local-san_nicolas-san_nicolas-36-1027220423-z2m1ho",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "ae2c9fba5c64607ff08c63c8baf8cfe83d0b4bf8ca13adc432f85b4ba1798f30",
+      "latestBeforeSha256": "ae2c9fba5c64607ff08c63c8baf8cfe83d0b4bf8ca13adc432f85b4ba1798f30",
+      "campaignSeeds": [
+        18026106,
+        18026106
+      ],
+      "requestSeeds": [
+        18026106,
+        18026106
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        144,
+        144
+      ],
+      "commonOrderPrefixLength": 144,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "159092eefaca25f26897da341c995a55961db6d7c5074237c122ee6d25224151",
+      "latestNativeResultSha256": "159092eefaca25f26897da341c995a55961db6d7c5074237c122ee6d25224151",
+      "oldResult": [
+        "victory",
+        10,
+        132
+      ],
+      "latestResult": [
+        "victory",
+        10,
+        132
+      ]
+    },
+    {
+      "case": [
+        "fresh-cuyo-route.test.mjs",
+        "created",
+        "buenos_aires"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78259-1-created-buenos_aires-buenos_aires-8-8-RBzZGY",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89509-1-created-buenos_aires-buenos_aires-8-8-gzQ1wC",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "b5b8f6c6f89b2e8801a2f9bb2c0ccac77b1105da28829932106216d4e9e8a31d",
+      "latestBeforeSha256": "b5b8f6c6f89b2e8801a2f9bb2c0ccac77b1105da28829932106216d4e9e8a31d",
+      "campaignSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "requestSeeds": [
+        1027220423,
+        1027220423
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        104,
+        104
+      ],
+      "commonOrderPrefixLength": 104,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "bf137f91d6fb72c9921e4b18d97f51cbe768728c8afd9b9dcee796450056d4ac",
+      "latestNativeResultSha256": "bf137f91d6fb72c9921e4b18d97f51cbe768728c8afd9b9dcee796450056d4ac",
+      "oldResult": [
+        "victory",
+        3,
+        100
+      ],
+      "latestResult": [
+        "victory",
+        3,
+        100
+      ]
+    },
+    {
+      "case": [
+        "fresh-cuyo-route.test.mjs",
+        "created",
+        "san_lorenzo"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78259-3-created-san_lorenzo-san_lorenzo-91-18026106-JWoSNV",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89509-3-created-san_lorenzo-san_lorenzo-91-18026106-lMdMBo",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "21bfdeacf8abe30f9516776f41b447451475b26bdde2bd490ba3c328abc36beb",
+      "latestBeforeSha256": "21bfdeacf8abe30f9516776f41b447451475b26bdde2bd490ba3c328abc36beb",
+      "campaignSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "requestSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        110,
+        110
+      ],
+      "commonOrderPrefixLength": 110,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "a50e746e38631dc0dd02e2bf21d3ed95ad05a348527135a9c18ff0e2eb736428",
+      "latestNativeResultSha256": "a50e746e38631dc0dd02e2bf21d3ed95ad05a348527135a9c18ff0e2eb736428",
+      "oldResult": [
+        "victory",
+        5,
+        96
+      ],
+      "latestResult": [
+        "victory",
+        5,
+        96
+      ]
+    },
+    {
+      "case": [
+        "fresh-cuyo-route.test.mjs",
+        "created",
+        "san_nicolas"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78259-2-created-san_nicolas-san_nicolas-44-1027220423-UHLEIA",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89509-2-created-san_nicolas-san_nicolas-44-1027220423-qo8y3g",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "f8fc41b900538c9eac00e0263434fc834672fd239ae0ebf6191d19cf62e700a1",
+      "latestBeforeSha256": "f8fc41b900538c9eac00e0263434fc834672fd239ae0ebf6191d19cf62e700a1",
+      "campaignSeeds": [
+        18026106,
+        18026106
+      ],
+      "requestSeeds": [
+        18026106,
+        18026106
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        120,
+        120
+      ],
+      "commonOrderPrefixLength": 120,
+      "firstDifferentIndexZeroBased": null,
+      "oldDifferentOrder": null,
+      "latestDifferentOrder": null,
+      "oldNativeResultSha256": "9904ad409e661884313050b96fa88da339dac454dd8674b2583a5958af3840d8",
+      "latestNativeResultSha256": "9904ad409e661884313050b96fa88da339dac454dd8674b2583a5958af3840d8",
+      "oldResult": [
+        "victory",
+        5,
+        112
+      ],
+      "latestResult": [
+        "victory",
+        5,
+        112
+      ]
+    },
+    {
+      "case": [
+        "fresh-ending-route.test.mjs",
+        "stock",
+        "san_lorenzo"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78260-2-stock-san_lorenzo-san_lorenzo-96-18026106-aQ8Aum",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89510-2-stock-san_lorenzo-san_lorenzo-216-18026106-2tExFp",
+      "beforeBytesEqual": false,
+      "oldBeforeSha256": "60634023304f53b93d4ff5b8df76816bfd37dcc5fbae0a3e232005b39fa8c745",
+      "latestBeforeSha256": "c1c98ce098868fa060b37d790bbcda7152e5aa764863399a649cf3e8b0ea4430",
+      "campaignSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "requestSeeds": [
+        1276464017,
+        1276464017
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        103,
+        130
+      ],
+      "commonOrderPrefixLength": 1,
+      "firstDifferentIndexZeroBased": 1,
+      "oldDifferentOrder": {
+        "type": "move",
+        "unitId": "123",
+        "x": 44,
+        "y": 42,
+        "tacticalLevel": 0
+      },
+      "latestDifferentOrder": {
+        "type": "move",
+        "unitId": "123",
+        "x": 43,
+        "y": 42,
+        "tacticalLevel": 0
+      },
+      "oldNativeResultSha256": "7ccfae18380c1f74fa4655ba18e74be3ed1e1c0907c0a1ee4f8014b6d0114f69",
+      "latestNativeResultSha256": "df121ab3d89087e2e9726434e09ea6c2cb546897b837fefd23d201b152f8be00",
+      "oldResult": [
+        "victory",
+        5,
+        91
+      ],
+      "latestResult": [
+        "victory",
+        16,
+        104
+      ]
+    },
+    {
+      "case": [
+        "fresh-ending-route.test.mjs",
+        "stock",
+        "san_nicolas"
+      ],
+      "oldPack": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/native-failures/coastal-boundaries/78260-1-stock-san_nicolas-san_nicolas-60-1027220423-caQpZS",
+      "latestPack": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/coastal-boundaries/89510-1-stock-san_nicolas-san_nicolas-60-1027220423-smgghd",
+      "beforeBytesEqual": true,
+      "oldBeforeSha256": "7fb5d2f322a75d1956e5ecfba4b7761a798df2b62a8ce184b3356c17f4195ab4",
+      "latestBeforeSha256": "7fb5d2f322a75d1956e5ecfba4b7761a798df2b62a8ce184b3356c17f4195ab4",
+      "campaignSeeds": [
+        18026106,
+        18026106
+      ],
+      "requestSeeds": [
+        18026106,
+        18026106
+      ],
+      "contentIdentitiesEqual": true,
+      "orderCounts": [
+        98,
+        92
+      ],
+      "commonOrderPrefixLength": 13,
+      "firstDifferentIndexZeroBased": 13,
+      "oldDifferentOrder": {
+        "type": "fire",
+        "unitId": "123",
+        "targetId": "enemy-4",
+        "aim": 2,
+        "hitLocation": "torso"
+      },
+      "latestDifferentOrder": {
+        "type": "move",
+        "unitId": "1000",
+        "x": 43,
+        "y": 41,
+        "tacticalLevel": 0
+      },
+      "oldNativeResultSha256": "ebe3844ab08c46d83f559fc45ee85283ce25ac7492dfdb64ee6a92a519584b4e",
+      "latestNativeResultSha256": "8f605280868e1a3de034813f6d3619c6448041eec5bf17b10c90695c61ed8c68",
+      "oldResult": [
+        "victory",
+        6,
+        85
+      ],
+      "latestResult": [
+        "victory",
+        6,
+        82
+      ]
+    }
+  ],
+  "initialIdentityConclusion": "Build digest is output metadata, not input to campaign RNG, save restoration or pinned content identity. Addition in game/tactical-ai.js is functional chooser source called by the new opening shared-sighting branch; it can alter order decisions and thereby subsequent results/clock/seed evolution.",
+  "stockFirstDifferenceAttribution": "Stock San Nicolas uses stockCoastalFight -> hiredAssaultOrder -> cautiousCombatOrder -> opening combatOrder. The local San Lorenzo rescue controller is not used for that battle. Original before-battle input matches c7 byte-for-byte. The new shared-sighting branch is the changed functional code in this chain.",
+  "hiredFirstDifference": "Identical hired San Lorenzo input; common131-order prefix; old reload137 vs latest move137 to49,41 at zero-based index131. Current critical-ally-rescue fixture provenance identifies the same original order132 reload137 boundary. This is the intended native rescue route change.",
+  "stockBoundary": {
+    "capturedStage": "actual coastal return before freshStockNorthernRoute; not collectRouteItems private failure",
+    "hour": 216,
+    "second": 1536,
+    "treasury": 66308,
+    "aliveServing": [
+      {
+        "id": 114,
+        "hp": 17,
+        "maxHp": 83,
+        "bleeding": 4,
+        "medkits": 0
+      },
+      {
+        "id": 136,
+        "hp": 90,
+        "maxHp": 90,
+        "bleeding": 0,
+        "medkits": 0
+      }
+    ],
+    "missionAlly57": {
+      "hp": 88,
+      "bleeding": 0,
+      "medkits": 0
+    },
+    "looseKnownDressings": 0,
+    "undiscoveredBodyDressings": {
+      "san_nicolas": 4,
+      "san_lorenzo": 4
+    },
+    "limits": "Raw undiscovered body stock is not admitted reachable inventory. No current local carried dressing donor exists at this return. Actual private failed collection state and native reach/capacity are not captured."
+  },
+  "optionalAmmoRefusal": {
+    "capture": "/tmp/granaderos-current-corrections-v2-affected-2026-10-10T101340233Z/native-failures/ammunition-preparation/89510-1-finite-ammunition-refusal.json",
+    "sha256": "fc93b3b4cfea7a3498219fdf47d5241dc100618953be9356b001c93a50071551",
+    "operativeId": 123,
+    "target": 10,
+    "family": "ammoRifle",
+    "loaded": 1,
+    "selectedReserve": 7,
+    "missing": 2,
+    "hour": 177,
+    "second": 886,
+    "treasury": 50058,
+    "acceptedAmmunitionTransactions": 0,
+    "scope": "Observed coastal target10 top-up refusal. The unchanged existing catch responds with a real paid Buenos Aires depot round trip, re-supply and return, then continues. This is not the terminal failure or Tucuman authoritative preparation; it is not an ignored shortage.",
+    "source": "tests/fresh-coastal-fixture.mjs:84-101, with real contract horizon and renewal quotes at89-93."
+  },
+  "unavailableEvidence": [
+    "No strategic preparation input/refusal/failure pack exists for stockTucumanReadiness or completeFreshArmyFunding.",
+    "No exact private missing-gun state captured at prepareFreshCordobaDefense refusal.",
+    "No exact private urgent-medic refusal state captured at prepareCreatedNorthernOfficerRelief.",
+    "No original execution complete opening San Nicolas order tape or independent pre-execution battle capture exists; limited null-decision packs do not identify its first changed action."
+  ],
+  "implementationRecommendation": "Do not implement the deferred strategic donor/morale changes. Resolve controller change scope and add passive exact earlier refusal/entry capture only if root authorizes it; retain actual losses/stocks/options and all assertions."
+}

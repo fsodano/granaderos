@@ -1,0 +1,27 @@
+{
+  "scope": "Complete sole exact common13 native prefix control, including raw retained original/current input bytes and no route continuation. Every archive member verified byte-for-byte and by SHA256.",
+  "archive": {
+    "path": "/tmp/granaderos-stock-sann-common13-control-evidence-20261010.tar.gz",
+    "bytes": 1523093,
+    "sha256": "4ce476578a01fb9eb6eacc83d5fb17ae9f90f77837534467239bdd318bc19bc3"
+  },
+  "manifest": {
+    "path": "/tmp/granaderos-stock-sann-common13-control-evidence-20261010.members.json",
+    "bytes": 8080,
+    "sha256": "a2e0dd64b372da09c1ee8b0006f00df9dec332cea44396be66fba7fbe6d47fda"
+  },
+  "members": 43,
+  "controlDirectory": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx",
+  "terminalReceipt": {
+    "path": "/var/folders/k2/r1ywdpdx5x513g1qp4m7m3340000gn/T/granaderos-stock-sann-common13-control-20261010-1wzu_hpx/final-receipt.json",
+    "sha256": "a8c93e292c23cab329e9b904bf6b1285f31b5239893596b15ee73e2e76384672"
+  },
+  "originalInputsUnchanged": true,
+  "sourceDrift": 0,
+  "nativeOrders": 13,
+  "directControllerSelectors": 0,
+  "settlements": 0,
+  "exitCode": 0,
+  "complete": true,
+  "allMembersVerified": true
+}

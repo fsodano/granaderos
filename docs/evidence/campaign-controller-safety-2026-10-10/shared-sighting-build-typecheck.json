@@ -1,0 +1,35 @@
+{
+  "verifiedAt": "2026-10-10T09:57:22.010689+00:00",
+  "canonicalBuildSourceIdentity": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+  "revision": "dd15b8bd99c55a8e4540b67cc9bf66b8053d2eb7",
+  "productionChanges": [
+    "game/tactical-ai.js"
+  ],
+  "typecheck": {
+    "command": "npm run typecheck",
+    "session": 60061,
+    "exitCode": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "session": 22690,
+    "exitCode": 0,
+    "staticExportFiles": 1377,
+    "assetReferences": 1045,
+    "identityDisplay": "0.4.0-dev.1 \u00b7 c132c162f024"
+  },
+  "nativeCppEngineTestsRun": false,
+  "originalRoutesPassed": false,
+  "logs": [
+    {
+      "path": "shared-sighting-typecheck.log",
+      "bytes": 117,
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    {
+      "path": "shared-sighting-production-build.log",
+      "bytes": 1881,
+      "sha256": "a209693fb1351330c7fe05267209c8a75db7da38ec708de114d1c2849c8a9311"
+    }
+  ]
+}

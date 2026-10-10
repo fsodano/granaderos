@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-10T10:43:27.143Z",
+  "head": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+  "ownedPaths": [
+    {
+      "path": "tests/opening-driver.mjs",
+      "bytes": 8254,
+      "sha256": "3a808100454045b1acf59e16acd14506ff6ad3e7502aeacabe415638d6718e3f"
+    },
+    {
+      "path": "tests/opening-shared-sighting-investigation.test.mjs",
+      "bytes": 12418,
+      "sha256": "fed35be577ac911bb2065c0246387fefa700b9a134579d1acddb2dc05903e538"
+    },
+    {
+      "path": "tests/fixtures/opening-squad-priority.json.gz",
+      "bytes": 28107,
+      "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b"
+    },
+    {
+      "path": "tests/fixtures/opening-squad-priority.provenance.json",
+      "bytes": 8457,
+      "sha256": "4b61ffc9ad3c6bf62fcca2340927d94d0d5a4994e8c84b888e84c53332fd4d42"
+    }
+  ],
+  "ordinaryBodyByteEqualC7": true,
+  "ordinaryBodySha256": "5b65eb375f2453e33c6f22af273ddd8d6409e0208549f35554e1ec95f801687a",
+  "nativeHelperSourceUnchanged": {
+    "path": "game/tactical-ai.js",
+    "bytes": 32759,
+    "sha256": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27"
+  },
+  "originalTests": [
+    {
+      "path": "tests/fresh-campaign-recovery.test.mjs",
+      "bytes": 39706,
+      "sha256": "5032e4549a9c2f2b015994f1089c88b513eb5b031419e1610fee287d1f8ca413",
+      "mainByteEqual": true
+    },
+    {
+      "path": "tests/fresh-cuyo-route.test.mjs",
+      "bytes": 982,
+      "sha256": "01c865bad985111081310a040103cce083902358dc41c047a38ff3234579cb93",
+      "mainByteEqual": true
+    },
+    {
+      "path": "tests/fresh-coastal-route.test.mjs",
+      "bytes": 14938,
+      "sha256": "8d3305f0fea5670bd72a9bdd2741e3d45df7dcab4407231172d8ee9f93558273",
+      "mainByteEqual": true
+    },
+    {
+      "path": "tests/opening-playthrough.test.mjs",
+      "bytes": 30015,
+      "sha256": "36c377fd98ed9912ace4a3d78158ab079a42bae5c9e3f4841a2d59b58004a9f7",
+      "mainByteEqual": true
+    },
+    {
+      "path": "tests/fresh-ending-route.test.mjs",
+      "bytes": 10111,
+      "sha256": "b15592c43228e5c7c62124258ca6cb9c9e956c5b02fdc4b698a8f771426e60f4",
+      "mainByteEqual": true
+    },
+    {
+      "path": "tests/opening-driver-control.test.mjs",
+      "bytes": 675,
+      "sha256": "a01658434c26509725b0c4da27effddf589af348e7ea24377b97a78e64d96fbc",
+      "mainByteEqual": true
+    }
+  ],
+  "api": {
+    "combatOrder": "Retained original c7 ordinary priorities with passive null capture.",
+    "sharedSightingInvestigationOrder": "Optional pure native shared-sighting proposal; callers retain policy hold/reserve gates.",
+    "openingControlWindow": "Ordinary round-robin full squad passes first; fallback only after a zero-order pass; at most one accepted fallback, then return for native endTurn/interrupt.",
+    "fight": "sharedFallback callback option; default ordinary controller gets default fallback; explicit custom controller gets no fallback unless its caller supplies a callback."
+  },
+  "controls": {
+    "newTestCount": 5,
+    "existingOpeningDriverControlIncludedByRoot": true,
+    "executedByAgent": false,
+    "rootOwnsOneFocusedGate": true,
+    "ordinaryPriorityInput": "Actual stock San Nicolás common13 raw state.",
+    "capInput": "Actual Córdoba post-prone witness, explicit custom zero-order policy plus shared callback.",
+    "originalNativeMoveStillAsserted": {
+      "unit": "124",
+      "destination": {
+        "x": 62,
+        "y": 27,
+        "tacticalLevel": 0
+      },
+      "AP": "78 -> 62",
+      "energy": "76 -> 73"
+    },
+    "additionalNativeOrderForSecondProposal": false
+  },
+  "scope": {
+    "sourceEdits": [
+      "tests/opening-driver.mjs",
+      "tests/opening-shared-sighting-investigation.test.mjs",
+      "tests/fixtures/opening-squad-priority.json.gz",
+      "tests/fixtures/opening-squad-priority.provenance.json"
+    ],
+    "nativeProductionEdits": 0,
+    "scenarioExceptions": 0,
+    "seedVariants": 0,
+    "originalRouteReruns": 0,
+    "agentTestInvocations": 0,
+    "staging": 0,
+    "pushes": 0
+  },
+  "caveats": [
+    "No route victory claim.",
+    "Custom callback must retain its policy-specific hold/reserve checks.",
+    "The focused controls await the root source freeze and single gate."
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "date": "2026-10-10T10:31:02.710Z",
+  "root": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos",
+  "gitHead": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+  "main": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "originMain": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "c7": {
+    "path": "/tmp/granaderos-current-corrections-affected-2026-10-10T092945091Z/before-source-hashes.json",
+    "bytes": 1886498,
+    "sha256": "c7a3e4fca512b42d80b0ee3e5bd26daad0967822b60713f50a39411e66d224bd",
+    "hashes": {
+      "tests/opening-driver.mjs": "3b8b0c4d4f4f60dea5a972d55a0008afeab9b676235b50a83ce10f4f73154dcd",
+      "tests/opening-campaign.mjs": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976",
+      "tests/northern-route.mjs": "6623ef2b1396d3f4abf0c331cc0ca9cffb0b7070395280e98282c81868949ac7",
+      "game/tactical-ai.js": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4",
+      "game/tactical.js": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "game/tactical-condition.js": "b758f2859fb899596d4c6cba57588499bf4288891fca2b0a1c40182edd9e4dc9"
+    }
+  },
+  "rows": [
+    {
+      "path": "tests/opening-driver.mjs",
+      "revision": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+      "bytes": 5622,
+      "sha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3"
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "revision": "0b53d3fb35c67e6188926e71a221caf5ba1ed0f0",
+      "bytes": 5818,
+      "sha256": "3b8b0c4d4f4f60dea5a972d55a0008afeab9b676235b50a83ce10f4f73154dcd"
+    },
+    {
+      "path": "tests/opening-driver.mjs",
+      "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+      "bytes": 6665,
+      "sha256": "e27d393f1374964f538a0cce1bb8493eda9f1fcf5b2c997c025a698403796082"
+    },
+    {
+      "path": "tests/opening-campaign.mjs",
+      "revision": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+      "bytes": 12512,
+      "sha256": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976"
+    },
+    {
+      "path": "tests/opening-campaign.mjs",
+      "revision": "0b53d3fb35c67e6188926e71a221caf5ba1ed0f0",
+      "bytes": 12512,
+      "sha256": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976"
+    },
+    {
+      "path": "tests/opening-campaign.mjs",
+      "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+      "bytes": 12512,
+      "sha256": "6007afcfc50b38afc42497442a56664d0b0d47be43d4388a10d6f49cf70f9976"
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "revision": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+      "bytes": 85026,
+      "sha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8"
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "revision": "0b53d3fb35c67e6188926e71a221caf5ba1ed0f0",
+      "bytes": 84993,
+      "sha256": "6623ef2b1396d3f4abf0c331cc0ca9cffb0b7070395280e98282c81868949ac7"
+    },
+    {
+      "path": "tests/northern-route.mjs",
+      "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+      "bytes": 84993,
+      "sha256": "6623ef2b1396d3f4abf0c331cc0ca9cffb0b7070395280e98282c81868949ac7"
+    },
+    {
+      "path": "game/tactical-ai.js",
+      "revision": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+      "bytes": 31581,
+      "sha256": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4"
+    },
+    {
+      "path": "game/tactical-ai.js",
+      "revision": "0b53d3fb35c67e6188926e71a221caf5ba1ed0f0",
+      "bytes": 31581,
+      "sha256": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4"
+    },
+    {
+      "path": "game/tactical-ai.js",
+      "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+      "bytes": 32759,
+      "sha256": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27"
+    },
+    {
+      "path": "game/tactical.js",
+      "revision": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+      "bytes": 271222,
+      "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3"
+    },
+    {
+      "path": "game/tactical.js",
+      "revision": "0b53d3fb35c67e6188926e71a221caf5ba1ed0f0",
+      "bytes": 271222,
+      "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3"
+    },
+    {
+      "path": "game/tactical.js",
+      "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+      "bytes": 271222,
+      "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3"
+    },
+    {
+      "path": "game/tactical-condition.js",
+      "revision": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+      "bytes": 2544,
+      "sha256": "b758f2859fb899596d4c6cba57588499bf4288891fca2b0a1c40182edd9e4dc9"
+    },
+    {
+      "path": "game/tactical-condition.js",
+      "revision": "0b53d3fb35c67e6188926e71a221caf5ba1ed0f0",
+      "bytes": 2544,
+      "sha256": "b758f2859fb899596d4c6cba57588499bf4288891fca2b0a1c40182edd9e4dc9"
+    },
+    {
+      "path": "game/tactical-condition.js",
+      "revision": "aa1cfe579e9156f6dfc4530520d87f78ef212db5",
+      "bytes": 2544,
+      "sha256": "b758f2859fb899596d4c6cba57588499bf4288891fca2b0a1c40182edd9e4dc9"
+    }
+  ],
+  "openingTransformChecks": {
+    "currentEqualsAa1": true,
+    "currentMinusSharedImportsAndBlockEqualsFirst70ByteExact": true,
+    "strippedCurrentSha256": "3b8b0c4d4f4f60dea5a972d55a0008afeab9b676235b50a83ce10f4f73154dcd",
+    "first70MinusPassiveRecorderEqualsMainByteExact": true,
+    "noRecorderSha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+    "first70EqualsC7Pin": true,
+    "paidProneBranchesByteExactAcrossMainC7First70Current": true,
+    "rejectedUsefulProneGuardAbsent": true,
+    "paidBranches": [
+      " if(visible.length&&u.missionAlly&&u.stance!=='prone'&&u.ap>=stanceCost(u,'prone'))return {type:'stance',unitId:u.id,stance:'prone'};",
+      "   if(u.stance!=='prone'&&!u.mounted&&u.ap>=cost.fire+cost.aim*2+6)return {type:'stance',unitId:u.id,stance:'prone'};"
+    ]
+  },
+  "nativeChecks": {
+    "first70EqualsMainByteExact": true,
+    "currentMinusSharedHelperInsertionEqualsFirst70ByteExact": true,
+    "chooseEnemyActionTailByteExact": true,
+    "chooseEnemyActionTailSha256": "253e4172cfa15791e70b367ab77563fb23a7ba31999f5d0e0d183d8bb28848f9"
+  },
+  "northern": {
+    "currentEqualsFirst70ByteExact": true,
+    "first70Diff": "diff --git a/tests/northern-route.mjs b/tests/northern-route.mjs\nindex 7d1ff09e..3076d991 100644\n--- a/tests/northern-route.mjs\n+++ b/tests/northern-route.mjs\n@@ -1,4 +1,5 @@\n import {northernFieldSurvivors} from './northern-field-survivors.mjs';\n+import {knownRouteShotSafety} from './route-fire-safety.mjs';\n import {routeHiringCeiling} from './funded-route-fixture.mjs';\n import {assertCustodyCare} from './custody-care-evidence.mjs';\n import {prepareOpeningPatrolMedicalReadiness} from './opening-patrol-medical-readiness.mjs';\n@@ -55,8 +56,9 @@ export function northernCombatOrder(battle,unit){\n  for(const target of targets){\n   const cost=actionCosts(battle,unit,target);if(unit.ap<cost.fire)continue;\n   const maxAim=Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim));\n+  const safe=knownRouteShotSafety(battle,unit,target);\n   for(const option of firearmShotOptions(battle,unit,target,maxAim)){\n-   if(option.interveningFriendly||option.shots?.some(shot=>shot.interveningFriendly))continue;\n+   if(!safe(option))continue;\n    if(option.chance<25)continue;\n    const damage=weaponFor(unit).damage,effect=shotLocationEffects(option.hitLocation,damage*option.damageFactor,target);\n    const value=Math.min(target.hp,effect.damage)+(target.hp-effect.damage<15?0:effect.breathLoss*.15+(effect.knockedDown?10:0));\n@@ -69,7 +71,7 @@ export function northernCombatOrder(battle,unit){\n  if(action?.type==='fire'){\n   const target=battle.units.find(target=>target.id===action.targetId);\n   const preview=target&&firearmShotOptions(battle,unit,target,action.aim??0).find(option=>option.aim===(action.aim??0)&&option.hitLocation===(action.hitLocation??'torso'));\n-  if(preview?.interveningFriendly||preview?.shots?.some(shot=>shot.interveningFriendly)){\n+  if(!knownRouteShotSafety(battle,unit,target)(preview)){\n    // A blocked shot can still admit an ordinary paid posture or cover move.\n    // Let the native chooser use only the squad's currently known occupants.\n    const view={...battle,units:battle.units.filter(other=>other.side===unit.side||teamCanSee(battle,unit.side,other)),npcs:(battle.npcs??[]).filter(other=>teamCanSee(battle,unit.side,other))};\n@@ -86,7 +88,8 @@ export function northernCombatOrder(battle,unit){\n       if(!teamCanSee(posed,unit.side,target)||!hasLineOfSight(posed,position,target))return false;\n       const costs=actionCosts(posed,position,target);if(position.ap<costs.fire)return false;\n       const aim=Math.min(4,Math.floor((position.ap-costs.fire)/costs.aim));\n-      return firearmShotOptions(posed,position,target,aim).some(option=>option.chance>=25&&option.damageFactor>0&&!option.interveningFriendly&&!option.shots?.some(shot=>shot.interveningFriendly));\n+      const safe=knownRouteShotSafety(posed,position,target);\n+      return firearmShotOptions(posed,position,target,aim).some(option=>option.chance>=25&&option.damageFactor>0&&safe(option));\n      });\n      if(useful)return {type:'stance',unitId:unit.id,stance};\n     }\n@@ -94,7 +97,7 @@ export function northernCombatOrder(battle,unit){\n    if(alternative?.type!=='fire')return alternative;\n    const other=view.units.find(target=>target.id===alternative.targetId);\n    const forecast=other&&firearmShotOptions(view,unit,other,alternative.aim??0).find(option=>option.aim===(alternative.aim??0)&&option.hitLocation===(alternative.hitLocation??'torso'));\n-   return forecast&&!forecast.interveningFriendly&&!forecast.shots?.some(shot=>shot.interveningFriendly)?alternative:null;\n+   return knownRouteShotSafety(view,unit,other)(forecast)?alternative:null;\n   }\n  }\n  return action;\n",
+    "note": "The first70 changes are knownRouteShotSafety for four shot safety preview points; the existing doctor reserve, standing-to-crouched adaptation, native fallback actor unit and posed unit replacement remain unchanged."
+  },
+  "execution": {
+    "nativeActions": 0,
+    "campaignInvocations": 0,
+    "sourceEdits": 0,
+    "testReruns": 0
+  },
+  "limits": [
+    "Source comparisons rule out retention of the rejected opening useful-prone guard.",
+    "They do not identify the later original gate defeat cause.",
+    "Shared-sighting proposal behavior is captured separately on three original independent states."
+  ]
+}

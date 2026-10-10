@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "archive": {
+    "path": "granaderos-current-corrections-affected-evidence-20261010.tar.gz",
+    "bytes": 1459605,
+    "sha256": "a1081be112a47e594c005fca1a3505cb4f9ae297950364c7b0142868ea9a0dac",
+    "originalPath": "/tmp/granaderos-current-corrections-affected-evidence-20261010.tar.gz"
+  },
+  "memberCount": 11,
+  "uncompressedMemberBytes": 5341749,
+  "members": [
+    {
+      "member": "MANIFEST.json",
+      "source": "/tmp/granaderos-current-corrections-affected-evidence-20261010/MANIFEST.json",
+      "kind": "generated-manifest",
+      "bytes": 4662,
+      "sha256": "9c9ded7edfb705d6c455cec7b20f67fa1ccdef4b6733dff0a3b48c788c64d103"
+    },
+    {
+      "member": "REPORT.md",
+      "source": "/tmp/granaderos-current-corrections-affected-evidence-20261010.report.md",
+      "kind": "generated-report",
+      "bytes": 4556,
+      "sha256": "718f97279e233a9173b6769f2a7db1c493f3a9ad9ddef96ccfcd17eeb7fb1465"
+    },
+    {
+      "member": "affected-gate/after-source-hashes.json",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/after-source-hashes.json",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 1884167,
+      "sha256": "bd08d4d6fdd9b87fcad1b770308f1dcf28c0d1b154e1867521f6b6134ce4af28"
+    },
+    {
+      "member": "affected-gate/before-source-hashes.json",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/before-source-hashes.json",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 1884167,
+      "sha256": "bd08d4d6fdd9b87fcad1b770308f1dcf28c0d1b154e1867521f6b6134ce4af28"
+    },
+    {
+      "member": "affected-gate/executed-wrapper.mjs",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/executed-wrapper.mjs",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 5255,
+      "sha256": "f1ac1e7a094543d5fd87c18b732ddfa6689c38decc978da43e40be283bd8e249"
+    },
+    {
+      "member": "affected-gate/final-receipt.json",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/final-receipt.json",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 1405,
+      "sha256": "adf4c7f4380c83e88e956032ba63ae65a920c5afb2e6fb893f9e11e36cc3a2b5"
+    },
+    {
+      "member": "affected-gate/metadata.json",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/metadata.json",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 1232,
+      "sha256": "81e4a8fc524cdc209588a6425cc3d96d1a62d4f8006648cffe2bb69188192358"
+    },
+    {
+      "member": "affected-gate/native-failures/ammunition-preparation/76152-1-finite-ammunition-refusal.json",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/native-failures/ammunition-preparation/76152-1-finite-ammunition-refusal.json",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 1544194,
+      "sha256": "f9a120391730b092c6b103b4fda1a81d924667c3864828fd8eee3a24d422fab2"
+    },
+    {
+      "member": "affected-gate/pid.json",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/pid.json",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 30,
+      "sha256": "08188c69880ae076b4363ffe8660cbaca44e9b0b208543e564dd02d15d416ba1"
+    },
+    {
+      "member": "affected-gate/run.log",
+      "source": "/tmp/granaderos-current-corrections-affected-2026-10-10T091133583Z/run.log",
+      "kind": "closed-affected-gate-original-bytes",
+      "bytes": 11133,
+      "sha256": "b41a5745fd316a917fbc6d9e519f956d29735afc3a68d24ebfdc0f8fd5e594ba"
+    },
+    {
+      "member": "companions/source-reconstruction-manifest.json",
+      "source": "/tmp/granaderos-current-corrections-source-reconstruction-20261010.manifest.json",
+      "kind": "unchanged-companion-manifest",
+      "bytes": 948,
+      "sha256": "1e0352fa6b4bf7aadad814ce6807678b2773d29bea8c7a4199f84512a0b74791"
+    }
+  ],
+  "externalManifestCoversEveryTarMember": true,
+  "gateExitCode": 1,
+  "gateCounts": {
+    "tests": 9,
+    "suites": 0,
+    "pass": 4,
+    "fail": 5,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "companionArchivesUnchanged": true,
+  "originalManifestSHA256": "3813d87220b063d47279e1cb97f32326b6900ce43eb27108ccd2075ed7320089"
+}

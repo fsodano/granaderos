@@ -1,5 +1,6 @@
 // Keep the commander behind the battery and fire from an affordable legal stance.
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
+import {knownRouteShotSafety} from './route-fire-safety.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {chooseGrenadeThrow} from '../game/tactical-ai-grenades.js';
@@ -17,7 +18,7 @@ export const coastalCommandOrder=(b,u,{leaderId='7',helperId='8',screenDistance=
  if(coverCommander&&u.id==='57'&&b.mode==='combat'&&normal?.type==='move')return null;
  if(normal||u.stance!=='crouched'||!u.loaded||u.jammed)return normal;
  const shots=[];
- for(const target of b.units.filter(v=>v.side!==u.side&&v.hp>=15&&!v.routed&&!v.surrendered&&!v.unconscious&&!v.departure&&teamCanSee(b,u.side,v))){const cost=actionCosts(b,u,target);if(u.ap<cost.fire)continue;for(const o of firearmShotOptions(b,u,target,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim))))if(o.chance>=25&&o.damageFactor>0)shots.push({score:o.chance*o.damageFactor,action:{type:'fire',unitId:u.id,targetId:target.id,aim:o.aim,hitLocation:o.hitLocation}});}
+ for(const target of b.units.filter(v=>v.side!==u.side&&v.hp>=15&&!v.routed&&!v.surrendered&&!v.unconscious&&!v.departure&&teamCanSee(b,u.side,v))){const cost=actionCosts(b,u,target);if(u.ap<cost.fire)continue;const safe=knownRouteShotSafety(b,u,target);for(const o of firearmShotOptions(b,u,target,Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim))))if(o.chance>=25&&o.damageFactor>0&&safe(o))shots.push({score:o.chance*o.damageFactor,action:{type:'fire',unitId:u.id,targetId:target.id,aim:o.aim,hitLocation:o.hitLocation}});}
  return shots.sort((a,c)=>c.score-a.score)[0]?.action??null;
 };
 

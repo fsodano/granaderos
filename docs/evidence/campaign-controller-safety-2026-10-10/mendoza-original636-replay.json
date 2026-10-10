@@ -1,0 +1,890 @@
+{
+  "schemaVersion": 1,
+  "completedAt": "2026-10-10T07:32:25.394Z",
+  "source": "/Users/fsodano/fibradev/games/granaderos",
+  "sourceRows": [
+    {
+      "path": "game/world.js",
+      "sha256": "a77579fb707e43ddfd0d773c9c49c7df0fb0c022c0475209ec3b7a9367912ee6"
+    },
+    {
+      "path": "game/tactical.js",
+      "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3"
+    },
+    {
+      "path": "game/tactical-ai.js",
+      "sha256": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4"
+    },
+    {
+      "path": "game/civilian-health.js",
+      "sha256": "9ff96c07fe6f9048a52e5e5a7e8d399bba25dcfcfc2ac744322bafad19d2b3a0"
+    },
+    {
+      "path": "game/civilian-harm.js",
+      "sha256": "8898c2998eae640c55d01590eebf9f5684b26811a0dcb6fd1e0ac34929e8226f"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "native-input.json",
+      "bytes": 7629339,
+      "sha256": "bcc33db01bb18ed9384e2f7e2d09396f1cd107167b3de296a2eaf4f3acbce525"
+    },
+    {
+      "path": "native-result.json",
+      "bytes": 1067595,
+      "sha256": "451b6f1f065646672993c19e6d1a9954b6465a48f23693ea9b6dec91d9cb3350"
+    }
+  ],
+  "orders": 636,
+  "ordersReplayedExactly": true,
+  "terminalEqualsOriginal": true,
+  "commanderFirstInjuryOrder": 66,
+  "changes": [
+    {
+      "orderIndex": 66,
+      "order": {
+        "type": "fire",
+        "unitId": "129",
+        "targetId": "enemy-4",
+        "aim": 2,
+        "hitLocation": "torso"
+      },
+      "turnBefore": 3,
+      "turnAfter": 3,
+      "elapsedBefore": 73,
+      "elapsedAfter": 73,
+      "before": {
+        "hp": 88,
+        "bleeding": 0,
+        "energy": 100,
+        "stance": "crouched",
+        "x": 43,
+        "y": 15,
+        "civilianHarm": null
+      },
+      "after": {
+        "hp": 40,
+        "bleeding": 4,
+        "energy": 76,
+        "stance": "prone",
+        "x": 43,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "visibleDoctors": []
+    },
+    {
+      "orderIndex": 75,
+      "order": {
+        "type": "endTurn"
+      },
+      "turnBefore": 3,
+      "turnAfter": 4,
+      "elapsedBefore": 73,
+      "elapsedAfter": 73,
+      "before": {
+        "hp": 40,
+        "bleeding": 4,
+        "energy": 76,
+        "stance": "prone",
+        "x": 43,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "after": {
+        "hp": 36,
+        "bleeding": 4,
+        "energy": 86,
+        "stance": "prone",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "visibleDoctors": [
+        {
+          "id": "129",
+          "hp": 86,
+          "bleeding": 0,
+          "medical": 26,
+          "medkits": 2,
+          "ap": 1,
+          "activeSlot": "primary",
+          "x": 43,
+          "y": 8,
+          "distance": 7,
+          "healCost": 25
+        }
+      ]
+    },
+    {
+      "orderIndex": 107,
+      "order": {
+        "type": "fire",
+        "unitId": "134",
+        "targetId": "enemy-1",
+        "aim": 4,
+        "hitLocation": "torso"
+      },
+      "turnBefore": 4,
+      "turnAfter": 4,
+      "elapsedBefore": 79,
+      "elapsedAfter": 79,
+      "before": {
+        "hp": 36,
+        "bleeding": 4,
+        "energy": 86,
+        "stance": "crouched",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "after": {
+        "hp": 20,
+        "bleeding": 6,
+        "energy": 78,
+        "stance": "crouched",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "visibleDoctors": []
+    },
+    {
+      "orderIndex": 129,
+      "order": {
+        "type": "fire",
+        "unitId": "100",
+        "targetId": "enemy-1",
+        "aim": 0,
+        "hitLocation": "torso"
+      },
+      "turnBefore": 4,
+      "turnAfter": 4,
+      "elapsedBefore": 79,
+      "elapsedAfter": 79,
+      "before": {
+        "hp": 20,
+        "bleeding": 6,
+        "energy": 78,
+        "stance": "crouched",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "after": {
+        "hp": 9,
+        "bleeding": 8,
+        "energy": 72,
+        "stance": "prone",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "visibleDoctors": []
+    },
+    {
+      "orderIndex": 157,
+      "order": {
+        "type": "endTurn"
+      },
+      "turnBefore": 4,
+      "turnAfter": 5,
+      "elapsedBefore": 79,
+      "elapsedAfter": 79,
+      "before": {
+        "hp": 9,
+        "bleeding": 8,
+        "energy": 72,
+        "stance": "prone",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "after": {
+        "hp": 1,
+        "bleeding": 8,
+        "energy": 82,
+        "stance": "prone",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "visibleDoctors": []
+    },
+    {
+      "orderIndex": 224,
+      "order": {
+        "type": "endTurn"
+      },
+      "turnBefore": 5,
+      "turnAfter": 6,
+      "elapsedBefore": 85,
+      "elapsedAfter": 85,
+      "before": {
+        "hp": 1,
+        "bleeding": 8,
+        "energy": 82,
+        "stance": "prone",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "after": {
+        "hp": 0,
+        "bleeding": 0,
+        "energy": 92,
+        "stance": "prone",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            },
+            {
+              "sequence": 2,
+              "kind": "death",
+              "attackerId": "100",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 1,
+              "hpAfter": 0
+            }
+          ]
+        }
+      },
+      "visibleDoctors": []
+    }
+  ],
+  "shotWitnesses": [
+    {
+      "orderIndex": 66,
+      "order": {
+        "type": "fire",
+        "unitId": "129",
+        "targetId": "enemy-4",
+        "aim": 2,
+        "hitLocation": "torso"
+      },
+      "turn": 3,
+      "elapsedSeconds": 73,
+      "actor": {
+        "id": "129",
+        "hp": 86,
+        "medical": 26,
+        "medkits": 2,
+        "x": 43,
+        "y": 8,
+        "stance": "prone"
+      },
+      "target": {
+        "id": "enemy-4",
+        "x": 42,
+        "y": 23,
+        "stance": "standing"
+      },
+      "commander": {
+        "hp": 88,
+        "bleeding": 0,
+        "energy": 100,
+        "stance": "crouched",
+        "x": 43,
+        "y": 15,
+        "civilianHarm": null
+      },
+      "commanderVisible": true,
+      "preview": {
+        "hitLocation": "torso",
+        "aim": 2,
+        "chance": 5,
+        "damageFactor": 0.3181818181818182,
+        "conditional": true,
+        "reachChance": 0.24
+      },
+      "bodyImpacts": [
+        {
+          "victimId": "san-martin",
+          "victimKind": "npc",
+          "hitLocation": "torso",
+          "impact": {
+            "x": 42.56666666666666,
+            "y": 14.5,
+            "height": 0.6183333333333334,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.27143451794284423,
+          "incomingImpact": 44,
+          "damageFactor": 1,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0,
+          "bodyResistance": 30,
+          "penetrationChance": 24,
+          "reachChance": 1,
+          "remainingImpact": 14,
+          "continued": true
+        },
+        {
+          "victimId": "enemy-4",
+          "victimKind": "unit",
+          "hitLocation": "torso",
+          "impact": {
+            "x": 42.03333333333333,
+            "y": 22.5,
+            "height": 1.0716666666666668,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.6055077707955756,
+          "incomingImpact": 14,
+          "damageFactor": 0.3181818181818182,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0.6818181818181818,
+          "bodyResistance": 30,
+          "penetrationChance": 0,
+          "reachChance": 0.24,
+          "remainingImpact": 0,
+          "continued": false
+        }
+      ],
+      "visibleDoctors": [],
+      "afterCommander": {
+        "hp": 40,
+        "bleeding": 4,
+        "energy": 76,
+        "stance": "prone",
+        "x": 43,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      }
+    },
+    {
+      "orderIndex": 107,
+      "order": {
+        "type": "fire",
+        "unitId": "134",
+        "targetId": "enemy-1",
+        "aim": 4,
+        "hitLocation": "torso"
+      },
+      "turn": 4,
+      "elapsedSeconds": 79,
+      "actor": {
+        "id": "134",
+        "hp": 70,
+        "medical": 29,
+        "medkits": 0,
+        "x": 35,
+        "y": 14,
+        "stance": "crouched"
+      },
+      "target": {
+        "id": "enemy-1",
+        "x": 42,
+        "y": 15,
+        "stance": "standing"
+      },
+      "commander": {
+        "hp": 36,
+        "bleeding": 4,
+        "energy": 86,
+        "stance": "crouched",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "commanderVisible": true,
+      "preview": {
+        "hitLocation": "torso",
+        "aim": 4,
+        "chance": 74,
+        "damageFactor": 1
+      },
+      "bodyImpacts": [
+        {
+          "victimId": "enemy-1",
+          "victimKind": "unit",
+          "hitLocation": "torso",
+          "impact": {
+            "x": 41.5,
+            "y": 14.928571428571429,
+            "height": 1.0857142857142859,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.41037447122433574,
+          "incomingImpact": 42,
+          "damageFactor": 1,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0,
+          "bodyResistance": 30,
+          "penetrationChance": 22,
+          "reachChance": 1,
+          "remainingImpact": 12,
+          "continued": true
+        },
+        {
+          "victimId": "san-martin",
+          "victimKind": "npc",
+          "hitLocation": "head",
+          "impact": {
+            "x": 43.5,
+            "y": 15.214285714285714,
+            "height": 1.142857142857143,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.5366435392933622,
+          "incomingImpact": 12,
+          "damageFactor": 0.2857142857142857,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0.7142857142857143,
+          "bodyResistance": 15,
+          "penetrationChance": 0,
+          "reachChance": 0.22,
+          "remainingImpact": 0,
+          "continued": false
+        }
+      ],
+      "visibleDoctors": [],
+      "afterCommander": {
+        "hp": 20,
+        "bleeding": 6,
+        "energy": 78,
+        "stance": "crouched",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      }
+    },
+    {
+      "orderIndex": 129,
+      "order": {
+        "type": "fire",
+        "unitId": "100",
+        "targetId": "enemy-1",
+        "aim": 0,
+        "hitLocation": "torso"
+      },
+      "turn": 4,
+      "elapsedSeconds": 79,
+      "actor": {
+        "id": "100",
+        "hp": 70,
+        "medical": 20,
+        "medkits": 2,
+        "x": 43,
+        "y": 9,
+        "stance": "prone"
+      },
+      "target": {
+        "id": "enemy-1",
+        "x": 42,
+        "y": 15,
+        "stance": "standing"
+      },
+      "commander": {
+        "hp": 20,
+        "bleeding": 6,
+        "energy": 78,
+        "stance": "crouched",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      },
+      "commanderVisible": false,
+      "preview": {
+        "hitLocation": "torso",
+        "aim": 0,
+        "shotLoad": true,
+        "pelletCount": 9,
+        "chance": 86,
+        "damageFactor": 0.3333333333333333,
+        "expectedForce": 13.831111111111113,
+        "expectedDamage": 14.898830128205129
+      },
+      "bodyImpacts": [
+        {
+          "victimId": "enemy-1",
+          "victimKind": "unit",
+          "hitLocation": "torso",
+          "impact": {
+            "x": 42.083333333333336,
+            "y": 14.5,
+            "height": 1.0291666666666668,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.1858621884257789,
+          "incomingImpact": 5.333333333333333,
+          "damageFactor": 1,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0,
+          "bodyResistance": 30,
+          "penetrationChance": 0,
+          "reachChance": 1,
+          "remainingImpact": 0,
+          "continued": false,
+          "pelletIndex": 0,
+          "weight": 0.1111111111111111
+        },
+        {
+          "victimId": "san-martin",
+          "victimKind": "npc",
+          "hitLocation": "head",
+          "impact": {
+            "x": 43.5,
+            "y": 15.250000000000004,
+            "height": 1.1000000000000005,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.20899893673307435,
+          "incomingImpact": 5.333333333333333,
+          "damageFactor": 1,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0,
+          "bodyResistance": 15,
+          "penetrationChance": 0,
+          "reachChance": 1,
+          "remainingImpact": 0,
+          "continued": false,
+          "pelletIndex": 1,
+          "weight": 0.1111111111111111
+        },
+        {
+          "victimId": "enemy-1",
+          "victimKind": "unit",
+          "hitLocation": "legs",
+          "impact": {
+            "x": 42.083333333333336,
+            "y": 14.5,
+            "height": 0.5830974144447973,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.1858621884257789,
+          "incomingImpact": 5.333333333333333,
+          "damageFactor": 1,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0,
+          "bodyResistance": 23,
+          "penetrationChance": 0,
+          "reachChance": 1,
+          "remainingImpact": 0,
+          "continued": false,
+          "pelletIndex": 3,
+          "weight": 0.1111111111111111
+        },
+        {
+          "victimId": "enemy-1",
+          "victimKind": "unit",
+          "hitLocation": "head",
+          "impact": {
+            "x": 42.083333333333336,
+            "y": 14.5,
+            "height": 1.475235918888536,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.1858621884257789,
+          "incomingImpact": 5.333333333333333,
+          "damageFactor": 1,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0,
+          "bodyResistance": 15,
+          "penetrationChance": 0,
+          "reachChance": 1,
+          "remainingImpact": 0,
+          "continued": false,
+          "pelletIndex": 4,
+          "weight": 0.1111111111111111
+        },
+        {
+          "victimId": "san-martin",
+          "victimKind": "npc",
+          "hitLocation": "torso",
+          "impact": {
+            "x": 43.5,
+            "y": 15.250000000000004,
+            "height": 0.6133789975761428,
+            "tacticalLevel": 0
+          },
+          "fraction": 0.20899893673307435,
+          "incomingImpact": 5.333333333333333,
+          "damageFactor": 1,
+          "coverDamageFactor": 1,
+          "bodyDamageReduction": 0,
+          "bodyResistance": 30,
+          "penetrationChance": 0,
+          "reachChance": 1,
+          "remainingImpact": 0,
+          "continued": false,
+          "pelletIndex": 5,
+          "weight": 0.1111111111111111
+        }
+      ],
+      "visibleDoctors": [],
+      "afterCommander": {
+        "hp": 9,
+        "bleeding": 8,
+        "energy": 72,
+        "stance": "prone",
+        "x": 44,
+        "y": 15,
+        "civilianHarm": {
+          "version": 1,
+          "incidents": [
+            {
+              "sequence": 1,
+              "kind": "wounded",
+              "attackerId": "129",
+              "side": "player",
+              "militia": false,
+              "intentional": false,
+              "hpBefore": 88,
+              "hpAfter": 40
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "durationMs": 19920,
+  "terminal": {
+    "status": "victory",
+    "turn": 14,
+    "commander": {
+      "hp": 0,
+      "bleeding": 0,
+      "energy": 92,
+      "stance": "prone",
+      "x": 44,
+      "y": 15,
+      "civilianHarm": {
+        "version": 1,
+        "incidents": [
+          {
+            "sequence": 1,
+            "kind": "wounded",
+            "attackerId": "129",
+            "side": "player",
+            "militia": false,
+            "intentional": false,
+            "hpBefore": 88,
+            "hpAfter": 40
+          },
+          {
+            "sequence": 2,
+            "kind": "death",
+            "attackerId": "100",
+            "side": "player",
+            "militia": false,
+            "intentional": false,
+            "hpBefore": 1,
+            "hpAfter": 0
+          }
+        ]
+      }
+    }
+  },
+  "scope": "Derived exact original636 tape replay. No original independent pre-decision witness; no controller, alternative action, campaign settlement or rule/resource/health/casualty change. Before-shot states derive from the bound retained request and exact prefix."
+}

@@ -5,7 +5,12 @@ import {saved} from './local-contract-fixture.mjs';
 
 test('a serving assigned engineer death fails the original campaign at the active checkpoint and rejects a revived active save',async()=>{
  const {servingEngineerLoss}=await import('./historical-loss-fixture.mjs');const {encodeSave,decodeSave}=await import('../game/save.js');const {campaignRole}=await import('../game/campaign-roles.js');
- const {campaign:s,active:p}=await servingEngineerLoss();assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.operativeState[110].alive,false);assert.equal(s.defeated,true);assert.equal(s.operativeState[2].alive,true);assert.ok(s.log.some(e=>e.text.startsWith(campaignRole(s,'foundryEngineer').name+' ha muerto')));
+ const {campaign:s,active:p,preInjury:q}=await servingEngineerLoss();
+ // Observe the existing declared battle before its real fatal enemy action.
+ assert.equal(q.campaign.defeated,false);assert.equal(q.campaign.completed,false);assert.equal(q.campaign.operativeState[110].alive,true);assert.ok(q.battle.units.find(u=>u.id==='110').hp>0);
+ const commander=q.campaign.operativeState[57];assert.equal(commander.alive,true);assert.ok(commander.hp>0);
+ assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.operativeState[110].alive,false);assert.equal(s.defeated,true);assert.equal(s.operativeState[2].alive,true);assert.ok(s.log.some(e=>e.text.startsWith(campaignRole(s,'foundryEngineer').name+' ha muerto')));
+ assert.deepEqual(p.campaign.operativeState[57],commander);assert.deepEqual(s.operativeState[57],commander);
  const bad=JSON.parse(encodeSave(p.campaign,p.battle));bad.battle.units.find(u=>u.id==='110').hp=1;assert.throws(()=>decodeSave(JSON.stringify(bad)));
  // Reproduce the previous format's nonterminal flag without changing its real casualty.
  const old=JSON.parse(encodeSave(s));old.campaign.defeated=false;old.campaign.log=old.campaign.log.filter(e=>!e.text.includes('responsable de fundición'));

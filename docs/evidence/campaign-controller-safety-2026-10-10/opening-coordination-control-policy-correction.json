@@ -1,0 +1,43 @@
+{
+  "time": "2026-10-10T10:45:49.261Z",
+  "reason": "One new control chose the default ordinary policy instead of the actual recorded hiredAssaultOrder -> cautiousCombatOrder policy. The original recorded action remains required.",
+  "priorSourceReport": "/tmp/granaderos-opening-coordination-source-freeze-20261010.json",
+  "changedPath": "tests/opening-shared-sighting-investigation.test.mjs",
+  "changes": [
+    "Import existing hiredAssaultOrder.",
+    "Pass it as the ordinary controller and keep explicit sharedSightingInvestigationOrder callback at the whole-squad boundary."
+  ],
+  "ownedPaths": [
+    {
+      "path": "tests/opening-driver.mjs",
+      "bytes": 8254,
+      "sha256": "3a808100454045b1acf59e16acd14506ff6ad3e7502aeacabe415638d6718e3f"
+    },
+    {
+      "path": "tests/opening-shared-sighting-investigation.test.mjs",
+      "bytes": 12559,
+      "sha256": "28535773cd1ac77c22d1dc1a62bab0c5fcbda2aa5c6cb6f0018e6f74090d5750"
+    },
+    {
+      "path": "tests/fixtures/opening-squad-priority.json.gz",
+      "bytes": 28107,
+      "sha256": "653aa4f95a0931b4422cdf52a33ab0eae8bc8f8704f25cce9401e5096643742b"
+    },
+    {
+      "path": "tests/fixtures/opening-squad-priority.provenance.json",
+      "bytes": 8457,
+      "sha256": "4b61ffc9ad3c6bf62fcca2340927d94d0d5a4994e8c84b888e84c53332fd4d42"
+    }
+  ],
+  "nativeHelperSourceUnchanged": {
+    "path": "game/tactical-ai.js",
+    "bytes": 32759,
+    "sha256": "eb325b8e122e13437938942414f91748c2811c132c0438bb6718c4d20bf6db27"
+  },
+  "recordedOriginalActionAssertionRetained": true,
+  "originalRouteTestsModified": false,
+  "ordinaryPolicyModified": false,
+  "sourceFrozen": true,
+  "agentTestInvocations": 0,
+  "nativeOrderInvocations": 0
+}

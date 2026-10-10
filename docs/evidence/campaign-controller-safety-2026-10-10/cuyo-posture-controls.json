@@ -1,0 +1,102 @@
+{
+  "createdAtUtc": "2026-10-10T07:47:41.993606+00:00",
+  "kind": "final focused general Cuyo paid posture and native-geometry safety correction",
+  "repository": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos",
+  "baseCommit": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "branch": "codex/campaign-controller-safety",
+  "files": [
+    {
+      "path": "tests/cuyo-route-driver.mjs",
+      "bytes": 9277,
+      "sha256": "eef671e56ca8edf20d257f3c166981deed3aa5ade5535940b29893f2fc063c92",
+      "absolutePath": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/cuyo-route-driver.mjs"
+    },
+    {
+      "path": "tests/cuyo-posture-readiness.test.mjs",
+      "bytes": 4044,
+      "sha256": "667097c2460f243a7651ed5ac96c9aa87058f58c44adf07922b19024e4c7c6de",
+      "absolutePath": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/cuyo-posture-readiness.test.mjs"
+    },
+    {
+      "path": "tests/fixtures/cuyo-posture-earned-care-defense-cycle.battle.json.gz",
+      "bytes": 64440,
+      "sha256": "7a63f799ee3da3ea8af8992be10e736ed23091c9fbdbeafe80acad8446638f14",
+      "absolutePath": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/cuyo-posture-earned-care-defense-cycle.battle.json.gz"
+    },
+    {
+      "path": "tests/fixtures/cuyo-posture-earned-care-defense-cycle.provenance.json",
+      "bytes": 2710,
+      "sha256": "e45fd34279580860d442f74d396dab83d52856815b96dd263d52e2b2e931041b",
+      "absolutePath": "/Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fixtures/cuyo-posture-earned-care-defense-cycle.provenance.json"
+    }
+  ],
+  "originalDriverSha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+  "primaryOriginalDriverUnchanged": true,
+  "correctedBehavior": "Require an affordable current-public >=25% positive-damage shot after native stance and ready/turn costs before preferring contact crouch. Keep12AP reserve. With avoidCivilians=true, use the shared native flight geometry for the crouch predicate, ranked primary/paired shots, capital branch and automatic fallback; reject public interveningFriendly/per-hand flags and typed known NPC impacts. With avoidCivilians=false, keep original fire scoring, ranking, ties and fallback eligibility. No rule, seed, resource or victory assertion change.",
+  "nativeOriginalProof": {
+    "directory": "/tmp/granaderos-cordoba-care-original-tape-20261010-bm7vlouo",
+    "receiptSha256": "608ded3e724bb35dfafaf4cacf58331f6a93c6015219fa6204c36a89cce837b1",
+    "analysisSha256": "918c2e1e7c26b4e5a7d86a100e2348b58fd432cc8232a3e8767ed5f2acc40274",
+    "original203OrdersAccepted": true,
+    "rawTerminalExactlyMatched": true,
+    "officialClonedPairsReloadEqual": 3,
+    "loadedSources": 266,
+    "sourceDrift": []
+  },
+  "focusedControls": {
+    "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+    "command": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node --test tests/cuyo-posture-readiness.test.mjs",
+    "red": {
+      "passed": 1,
+      "failed": 2,
+      "skipped": 0,
+      "log": "/tmp/granaderos-cuyo-posture-readiness-red-20261010.log",
+      "logSha256": "7d1e7b860e06a6ce694e7a26c571b17d5a4a5bcaf06c18e6299a50a5a5f12559",
+      "limit": "Mechanically extracted original crouch gate exported before corrected logic. Actual117/133 red controls fail on forced crouch."
+    },
+    "cases": [
+      "Declared native useful crouch still pays stance AP/time and preserves HP/load/reserves/medical/weapon condition.",
+      "Actual before40 actor117 has no useful crouch: gate returnsnull and unchanged native policy admits an affordable reachable movement; no earned alternate move executes.",
+      "Actual before41 actor133 has no useful crouch: gate returnsnull and unchanged native policy admits an affordable reachable movement; no earned alternate move executes."
+    ],
+    "intermediateGreen": {
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "log": "/tmp/granaderos-cuyo-posture-readiness-green-20261010.log",
+      "logSha256": "599f8ac355524f5f5c8cd9b6b2776674fee28e350404d674b954420074304f96"
+    },
+    "finalGreen": {
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 348.376625,
+      "log": "/tmp/granaderos-cuyo-posture-readiness-final-green-20261010.log",
+      "logSha256": "fbb30b97be56db5af0a1dc497d85055a722101657ea98cbb9007481eff924ded",
+      "logBytes": 418
+    },
+    "sourceIdentityScope": "Hashes in this final receipt are sampled after the focused run. The focused run has no import observer. The earlier original203-order replay separately bound266 runtime imports with no transform or drift."
+  },
+  "limitations": [
+    "No corrected C\u00f3rdoba care-defense victory or complete route is established. Original203-order defeat remains exact.",
+    "No new opening C\u00f3rdoba defect established; its current164-order retreat remains real.",
+    "Actual native standing rationale was not selected during original-order replay; corrected unit controls verify native movement on the already standing earned states.",
+    "Focused tests do not replay the entire203-order prefix; portable battle-only fixtures bind the independently closed exact replay.",
+    "No full route, full fight, seed/controller sweep, campaign settlement, repository stage/commit/push or primary checkout edit executed."
+  ],
+  "supersedesIntermediateReceipt": {
+    "path": "/tmp/granaderos-cordoba-care-original-tape-20261010-bm7vlouo/focused-correction-receipt.json",
+    "bytes": 4689,
+    "sha256": "84be223792964b85a1b36b44fa7eb79354fab0b9c7a1e8dd32438bece4d1eda6"
+  },
+  "sharedReadOnlyDependency": {
+    "path": "tests/route-fire-safety.mjs",
+    "bytes": 1160,
+    "sha256": "3a5e240e4524cc0a6cdffe3686d19c4173bfbb7138a1664258619798a3513a8d"
+  },
+  "sourceWritesFrozen": true,
+  "nativeControlsLimit": "Only one native stance order in the declared arena; earned117/133 movement is selected and previewed but never applied. No new campaign/fight/seed/controller trial."
+}

@@ -26,6 +26,7 @@ import {syncBattleTime} from '../game/time.js';
 import {boundaryMatches} from '../game/tactical-exits.js';
 import {recoverRouteFirearm} from './finite-route-equipment.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
+import {recordRouteCareFailure} from './route-care-failure-evidence.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -237,12 +238,14 @@ function stockPreparation(start,report){
 }
 
 // Stabilize the actual stock battle's survivors. This is a care route, not a
-// full-health reset: hourly doctors stop critical local bleeding before a long
+// full-health reset: hourly doctors stop local bleeding before a long
 // approach, then a supplied doctor treats each actual local/nearby patient.
 // Only discovered reachable supplies and the map's existing exits are used.
 export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector}={}){
  const original=structuredClone(start),serving=living(start),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  let pair={campaign:decodeSave(encodeSave(start)).campaign,battle:null},orders=0,hourlyDressings=0,tacticalDressings=0,clinicalPA=0,renewalCost=0;
+ const captureCareEvidence=Boolean(process.env.GRANADEROS_CAMPAIGN_FAILURE_DIR);
+ let latestTacticalBoundary=null,lastCareInvocation=null;
  const c=()=>pair.campaign,record=id=>c().operativeState[id],acute=r=>r.hp>0&&(r.hp<15||r.bleeding>0);
  const patients=sector=>serving.filter(id=>acute(record(id))&&(sector===undefined||operativeLocation(c(),id)===sector)).sort((a,b)=>record(a).hp-record(b).hp||record(b).bleeding-record(a).bleeding||a-b);
  const canonical=campaign=>{
@@ -261,6 +264,7 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
   }
  };
  const checkpoint=stage=>{
+  lastCareInvocation='checkpoint';
   safe();const restored=decodeSave(encodeSave(c(),pair.battle));
   assert.deepEqual(canonical(restored.campaign),canonical(c()),'official care save preserves every field after lossless terrain expansion');
   assert.deepEqual(restored.battle,pair.battle);pair=restored;
@@ -270,6 +274,7 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
  const emit=(kind,action,before)=>report({event:'stockMendozaCareOrder',kind,action:structuredClone(action),order:++orders,
   before,hour:c().hour,secondOfHour:c().secondOfHour??0,treasury:c().resources.treasury});
  const raw=(action,afterAccepted=()=>{})=>{
+  lastCareInvocation='campaign';
   const before={hour:c().hour,secondOfHour:c().secondOfHour??0,treasury:c().resources.treasury};
   const next=dispatchCampaign(c(),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
   pair={campaign:next,battle:action.type==='visitSector'?enterSector(next.pendingBattle,next.sectorStates[next.location]):pair.battle};
@@ -291,16 +296,26 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
  const order=(action,afterAccepted)=>{assert.equal(pair.battle,null,'strategic care orders require the actual tactical return');renew(action.type==='wait'?action.hours*3600:3600);raw(action,afterAccepted);};
  const unit=id=>pair.battle?.units.find(u=>u.side==='player'&&u.id===String(id));
  const tactical=(action,afterAccepted=()=>{})=>{
+  lastCareInvocation='tactical-admission';
   // Renew the whole force while quiet, before entering. A tactical action
   // cannot sneak past that horizon or renew a soldier mid-deployment.
   for(const id of serving){const expiry=contractExpiresSeconds(c().contracts[id]);assert.ok(expiry===null||expiry>clock(c())+600,`care action needs a new quiet renewal of ${id}`);}
   const prior=structuredClone(pair.battle),before={hour:c().hour,secondOfHour:c().secondOfHour??0,treasury:c().resources.treasury};
-  const next=actBattle(pair.battle,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
+  // Keep one independently observed action boundary only when diagnostics
+  // are enabled. Reuse the battle clone already required by the mutation check.
+  if(captureCareEvidence)latestTacticalBoundary={order:orders+1,action:structuredClone(action),before:{campaign:structuredClone(c()),battle:prior}};
+  lastCareInvocation='tactical';
+  const next=actBattle(pair.battle,action);
+  if(captureCareEvidence)latestTacticalBoundary.nativeAfter=structuredClone(next);
+  assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
   assert.deepEqual(presentedActBattle(pair.battle,action).state,next,'ordinary and presented finite care agree');assert.deepEqual(pair.battle,prior,'ordinary care does not mutate its source');
-  const synced=syncBattleTime(c(),next);assert.equal(synced.error,null,synced.error);pair={campaign:synced.campaign,battle:synced.battle};
+  const synced=syncBattleTime(c(),next);
+  if(captureCareEvidence)latestTacticalBoundary.synchronization=structuredClone(synced);
+  assert.equal(synced.error,null,synced.error);pair={campaign:synced.campaign,battle:synced.battle};
   emit('tactical',action,before);afterAccepted();safe();
  };
  const leaveCare=()=>{
+  lastCareInvocation='leave';
   assert.ok(pair.battle);const before={hour:c().hour,secondOfHour:c().secondOfHour??0,treasury:c().resources.treasury};
   const action={type:'leaveSector',battleId:c().pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')};
   const next=dispatchCampaign(c(),action);assert.equal(next.lastError,null,next.lastError);pair={campaign:next,battle:null};
@@ -376,29 +391,29 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
  };
  try{
  assert.equal(c().pendingBattle,null);assert.equal(c().location,'mendoza');safe();checkpoint('before');
- // Stop critical local bleeding before an approach can consume its last HP.
+ // Stop all local bleeding before an approach can consume a patient's HP.
  // Enough actual doctors must work in the same authorized hour. Unattended
  // remote patients must survive that hour's exact admitted wound loss.
- const criticalBleeders=patients('mendoza').filter(id=>record(id).hp<15&&record(id).bleeding>0);
- if(criticalBleeders.length){
+ const localBleeders=patients('mendoza').filter(id=>record(id).bleeding>0);
+ if(localBleeders.length){
   const selected=[];
   for(const op of doctors('mendoza',false)){
-   if(selected.length===criticalBleeders.length)break;
+   if(selected.length===localBleeders.length)break;
    supplyDoctor('mendoza',op);if(!careAssignmentReason(c(),op,'doctor'))selected.push(op);
   }
-  assert.equal(selected.length,criticalBleeders.length,'critical local patients require enough actual supplied hourly doctors');
-  for(const id of serving.filter(id=>!criticalBleeders.includes(id)&&record(id).bleeding>0))assert.ok(record(id).hp>Math.ceil(record(id).bleeding*strategicBleedingPercent(c())/100),`untreated ${id} cannot safely wait for a care hour`);
+  assert.equal(selected.length,localBleeders.length,'bleeding local patients require enough actual supplied hourly doctors');
+  for(const id of serving.filter(id=>!localBleeders.includes(id)&&record(id).bleeding>0))assert.ok(record(id).hp>Math.ceil(record(id).bleeding*strategicBleedingPercent(c())/100),`untreated ${id} cannot safely wait for a care hour`);
   for(const id of serving.filter(id=>operativeLocation(c(),id)==='mendoza'&&['doctor','patient'].includes(record(id).assignment)))order({type:'assignCare',operativeId:id,assignment:'active'});
   for(const op of selected)order({type:'assignCare',operativeId:op.id,assignment:'doctor'});
-  for(const id of criticalBleeders)order({type:'assignCare',operativeId:id,assignment:'patient'});
+  for(const id of localBleeders)order({type:'assignCare',operativeId:id,assignment:'patient'});
   const before=structuredClone(c()),hour=c().hour;order({type:'wait',hours:1},()=>{
   hourlyDressings=selected.reduce((n,op)=>n+before.operativeState[op.id].medkits-record(op.id).medkits,0);
-  report({event:'stockMendozaCareHour',doctors:selected.map(op=>op.id),patients:criticalBleeders,dressings:hourlyDressings,
+  report({event:'stockMendozaCareHour',doctors:selected.map(op=>op.id),patients:localBleeders,dressings:hourlyDressings,
    woundLoss:serving.filter(id=>record(id).hp<before.operativeState[id].hp).map(id=>({id,before:before.operativeState[id].hp,after:record(id).hp}))});
   });
-  assert.equal(c().hour,hour+1,'the finite medical hour must actually run');assert.equal(hourlyDressings,criticalBleeders.length);
-  for(const id of criticalBleeders)assert.equal(record(id).bleeding,0,'actual hourly work stops critical local bleeding');
-  for(const id of [...selected.map(op=>op.id),...criticalBleeders])order({type:'assignCare',operativeId:id,assignment:'active'});
+  assert.equal(c().hour,hour+1,'the finite medical hour must actually run');assert.equal(hourlyDressings,localBleeders.length);
+  for(const id of localBleeders)assert.equal(record(id).bleeding,0,'actual hourly work stops local bleeding');
+  for(const id of [...selected.map(op=>op.id),...localBleeders])order({type:'assignCare',operativeId:id,assignment:'active'});
   checkpoint('hourly-stabilization');
  }
  if(patients().length){
@@ -438,6 +453,7 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
  }catch(error){
   // Preserve the actual accepted state for diagnosis, including any new
   // encounter or clinical loss. A failure never substitutes a later trial.
+  recordRouteCareFailure({boundary:latestTacticalBoundary,pair,counters:{orders,hourlyDressings,tacticalDressings,clinicalPA,renewalCost},lastInvocation:lastCareInvocation,error});
   report({event:'stockMendozaCareStopped',reason:error.message,orders,hourlyDressings,tacticalDressings,clinicalPA,renewalCost,campaign:structuredClone(c()),battle:structuredClone(pair.battle)});
   throw error;
  }

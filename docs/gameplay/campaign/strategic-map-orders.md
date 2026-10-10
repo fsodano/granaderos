@@ -1,8 +1,9 @@
 # Squad orders on the campaign map
 
-> **Development-workspace record.** This note describes a separate development
-> checkout. Its implementation and test results are not published-main acceptance.
-> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+> **Implementation on main.** The road and squad-travel changes merged through [PR #326](https://github.com/fsodano/granaderos/pull/326)
+> at `b8b14e2d544cec16535edbb26624ef80ac502720` and are included in main `462abba277a47dafbfed1f60fc4529c8a4721cdc`.
+> The dated checks below retain their original scope. They do not establish a passing full campaign gate or full JA2 parity.
+> See [published progress](../../verification/published-progress.md) for the broader acceptance gaps.
 
 The original interface verification below is from 12 September 2026. The current controls and road costs were updated on 9 October 2026; see [sector road evidence](../../verification/sector-roads-2026-10-09.md). These checks do not establish full JA2 parity.
 

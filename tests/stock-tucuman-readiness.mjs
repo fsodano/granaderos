@@ -11,6 +11,7 @@ import {artilleryProfile} from '../game/artillery-definitions.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,reloadCost} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
+import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const compatible=(s,op)=>civicStatus(s,op.id).available&&contractQuote(s,op,'week').available&&contractQuote(s,op,'week').total<=1400;
@@ -19,9 +20,13 @@ const compatible=(s,op)=>civicStatus(s,op.id).available&&contractQuote(s,op,'wee
 // remain in real rear service. Public hires, local finite property and paid
 // clock orders create the two columns; failure remains an actual route failure.
 export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}={}){
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareStockTucumanReadiness',stage:'preparation-input',campaign:start});
+ let c=start,b=null,diagnosticContext=null;
+ try{
  const original=structuredClone(start),dead=Object.keys(start.operativeState).filter(id=>!start.operativeState[id].alive);
- let c=decodeSave(encodeSave(start)).campaign,b=null;
+ c=decodeSave(encodeSave(start)).campaign;
  const rear=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured),paid=[],orders=[],events=[];
+ if(inputCapture)diagnosticContext={rear,paid,orders,events};
  const event=e=>{events.push(e);report(e);};
  const validate=()=>{
   assert.deepEqual(start,original,'Readiness must not mutate its earned input.');
@@ -31,7 +36,10 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
  };
  const order=action=>{
   const before=c,quote=action.type==='recruitCivic'?contractQuote(c,rosterFor(c).find(op=>op.id===action.id),action.term):action.type==='renewContract'?contractRenewalQuote(c,rosterFor(c).find(op=>op.id===action.id),action.term):null;
-  c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);
+  const diagnosticBefore=captureRouteStrategicInput(c);
+  c=dispatchCampaign(c,action);
+  if(c.lastError)recordRouteStrategicEvidence({helper:'prepareStockTucumanReadiness',stage:'campaign-action-refusal',campaign:diagnosticBefore??before,action,returnedCampaign:c,inputCapture,error:c.lastError,preDispatchInputIndependentlyCloned:diagnosticBefore!==null});
+  assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);
   orders.push({kind:'campaign',action:structuredClone(action),quote:quote&&structuredClone(quote),from:clock(before),to:clock(c),treasuryBefore:before.resources.treasury,treasuryAfter:c.resources.treasury});
   if(quote){assert.ok(quote.available,quote.reason);assert.equal(c.resources.treasury,before.resources.treasury-(action.type==='recruitCivic'?quote.total:quote.price));}
   validate();
@@ -71,6 +79,7 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
  assert.ok(rear.length,'The actual existing rear party must remain available.');
  for(const id of rear){const r=c.operativeState[id];assert.equal(r.location,'cordoba');assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);order({type:'assignCare',operativeId:id,assignment:'rest'});}
  const candidates=rosterFor(c).filter(op=>compatible(c,op)),physician=candidates.filter(op=>op.medical>=70).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
+ if(diagnosticContext)diagnosticContext.physician=physician?.id??null;
  assert.ok(physician,'A real publicly available physician with at least70medical is required.');
  const sorted=[physician,...candidates.filter(op=>op.id!==physician.id).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id)];
  for(const op of sorted){
@@ -98,6 +107,7 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
   }
  }
  const backup=ranked.filter(op=>op.id!==physician.id&&op.medical>=70).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];assert.ok(backup);
+ if(diagnosticContext)diagnosticContext.backupPhysician=backup.id;
  for(const [id,target]of [[physician.id,12],[backup.id,8]])while(c.operativeState[id].medkits<target){const row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'Actual finite local physician dressings are required.');take(id,row,Math.min(target-c.operativeState[id].medkits,row.count));}
  order({type:'selectSquad',id:groups[0]});
  const gun=c.sectorStates.cordoba.artillery.filter(gun=>gun.side==='player'&&gun.type==='bronze4'&&(gun.loaded||gun.ammo>0)).sort((a,b)=>a.id.localeCompare(b.id))[0];assert.ok(gun,'A real owned supplied Córdoba bronze cannon is required.');assert.equal(artilleryProfile(c,gun).crew,2);
@@ -119,4 +129,7 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
  checkpoint('stock-readiness-assault');
  const receipt={rear,paid,physician:physician.id,backupPhysician:backup.id,columns,gun:record,orders,events,startingClock:clock(start),readyClock:clock(c),startingTreasury:start.resources.treasury,readyTreasury:c.resources.treasury,paidHireCost:orders.filter(row=>row.action?.type==='recruitCivic').reduce((sum,row)=>sum+row.quote.total,0),renewalCost:orders.filter(row=>row.action?.type==='renewContract').reduce((sum,row)=>sum+row.quote.price,0)};
  return {campaign:c,receipt};
+ }catch(error){
+  recordRouteStrategicEvidence({helper:'prepareStockTucumanReadiness',stage:'preparation-failure',campaign:c,inputCapture,context:diagnosticContext,error});throw error;
+ }
 }

@@ -19,6 +19,7 @@ import {decodeSave,encodeSave} from '../game/save.js';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
+import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 export const freshRouteServingIds=s=>s.recruited.filter(id=>s.operativeState[id]?.alive&&!s.operativeState[id].captured);
 const routeClock=s=>s.hour*3600+(s.secondOfHour??0);
@@ -26,7 +27,7 @@ const routeClock=s=>s.hour*3600+(s.secondOfHour??0);
 // Test-route protection only: every intended serving survivor keeps an actual
 // paid term. Explicit dismissals still return equipment through normal orders.
 // Report an accepted action before checking its resulting loss/interruption.
-export function createFreshRouteOrders(read,write,{report=()=>{},handledEncounters=[]}={}){
+export function createFreshRouteOrders(read,write,{report=()=>{},handledEncounters=[],onActionRefusal}={}){
  const intended=new Set(freshRouteServingIds(read()));
  const fail=message=>{report({event:'freshRouteStopped',reason:message,campaign:read()});throw Error(message);};
  const check=()=>{
@@ -44,7 +45,8 @@ export function createFreshRouteOrders(read,write,{report=()=>{},handledEncounte
     const quote=contractQuote(s,rosterFor(s).find(op=>op.id===id),'day');
     if(!quote.available||s.resources.treasury<quote.price)fail(`The actual renewal for ${id} is unavailable: ${quote.reason??'insufficient treasury'}.`);
     const action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0},cash=s.resources.treasury;
-    const next=dispatchCampaign(s,action);if(next.lastError)fail(next.lastError);write(next);s=next;
+    const diagnosticBefore=onActionRefusal?captureRouteStrategicInput(s):null;
+    const next=dispatchCampaign(s,action);if(next.lastError){onActionRefusal?.({campaign:diagnosticBefore??s,action,returnedCampaign:next,preDispatchInputIndependentlyCloned:diagnosticBefore!==null});fail(next.lastError);}write(next);s=next;
     assert.equal(s.resources.treasury,cash-quote.price);
     report({event:'freshRouteRenewal',action,id,price:quote.price,hour:s.hour,second:s.secondOfHour??0,campaign:s});
     contract=s.contracts[id];expiry=contractExpiresSeconds(contract);
@@ -391,8 +393,11 @@ export function prepareFreshArmyFunding(start,{report=()=>{}}={}){
 
 // Leave a trained local defense, recover a three-piece army battery and pay its project cost.
 export function completeFreshArmyFunding(start,{report=()=>{}}={}){
- let c=decodeSave(encodeSave(start)).campaign;
- const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report,handledEncounters:['tucuman']});
+ const inputCapture=recordRouteStrategicEvidence({helper:'completeFreshArmyFunding',stage:'preparation-input',campaign:start});
+ let c=start;
+ try{
+ c=decodeSave(encodeSave(start)).campaign;
+ const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report,handledEncounters:['tucuman'],onActionRefusal:detail=>recordRouteStrategicEvidence({helper:'completeFreshArmyFunding',stage:'campaign-action-refusal',...detail,inputCapture,error:detail.returnedCampaign.lastError})});
  const order=retained.order;
  const resolveNorthernDefense=()=>{
   if(c.pendingEncounter?.sector!=='tucuman')return;
@@ -433,4 +438,7 @@ export function completeFreshArmyFunding(start,{report=()=>{}}={}){
  assert.equal(c.sectors.cordoba.owner,'patriot');
  assert.equal(c.squads.find(q=>q.members.includes(trainer.id)).location,'cordoba');
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
+ }catch(error){
+  recordRouteStrategicEvidence({helper:'completeFreshArmyFunding',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;
+ }
 }

@@ -1,0 +1,1298 @@
+{
+  "observedAt": "2026-10-10T10:57:17.955182+00:00",
+  "gate": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z",
+  "gateTerminalReceiptPresent": false,
+  "gateIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "c132c162f024",
+    "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "revision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e"
+  },
+  "gateSourceSnapshotSha256": "5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+  "scope": "Read-only analysis of current independently captured stock-readiness entry and actual private failure. No stale campaigns, native orders, helper execution, selector evaluations, replays, route runs or source edits.",
+  "artifacts": [
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94803-1-prepareStockTucumanReadiness-preparation-input-IUVlgZ/campaign.json",
+      "bytes": 4585035,
+      "sha256": "d21f619ae519454baf9bee631d9c92c7c4bc972241080cb326bd960b1b053bea"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94803-1-prepareStockTucumanReadiness-preparation-input-IUVlgZ/receipt.json",
+      "bytes": 1186,
+      "sha256": "f9e773ecc9a9b79caf8c02e9654a427be0a3490602825faa5c08dc16d090b30a"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94803-2-prepareStockTucumanReadiness-preparation-failure-IOhNIE/campaign.json",
+      "bytes": 4607062,
+      "sha256": "544a62a07c879d84684bc4856eb040a31c76e4a070e824b42747f1f63a689f28"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94803-2-prepareStockTucumanReadiness-preparation-failure-IOhNIE/context.json",
+      "bytes": 72836,
+      "sha256": "dd207dacfea134dfadf96d1111e7a77054c8d461a2dbe27de7da08dc149c5eb4"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94803-2-prepareStockTucumanReadiness-preparation-failure-IOhNIE/error.json",
+      "bytes": 1666,
+      "sha256": "36cc53eca2bb0900286960553f5e3ce8090099999ec4d58ff79da9e1688601b0"
+    },
+    {
+      "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/strategic-preparation/94803-2-prepareStockTucumanReadiness-preparation-failure-IOhNIE/receipt.json",
+      "bytes": 1644,
+      "sha256": "3e371a354138ff394061391a19565dd882dd256dec2282c89933566a57cd2794"
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "tests/stock-tucuman-readiness.mjs",
+      "sha256": "56727c6e07970c3dfdecbdaabaf1ce5fcf08186b88e4a880794cef3a30bddbe9",
+      "matchesFrozenGateSnapshot": true
+    },
+    {
+      "path": "tests/route-strategic-failure-evidence.mjs",
+      "sha256": "706bc83b388e3328ffe261180b955b5bbee916520ef085f9ac84f37f5a6d1f42",
+      "matchesFrozenGateSnapshot": true
+    },
+    {
+      "path": "tests/route-dressings.mjs",
+      "sha256": "0a2774a7f06eccb9edd82ee5ac6535b48057264f073d6a9b18889f3e5da8b759",
+      "matchesFrozenGateSnapshot": true
+    },
+    {
+      "path": "game/sector-inventory.js",
+      "sha256": "8bc2d2abab3d93026744cf6c69fd52bc164d3f3d7b8ab88dcd535866a7f34078",
+      "matchesFrozenGateSnapshot": true
+    }
+  ],
+  "error": {
+    "name": "AssertionError",
+    "message": "Actual finite local physician dressings are required.",
+    "stack": "AssertionError [ERR_ASSERTION]: Actual finite local physician dressings are required.\n    at prepareStockTucumanReadiness (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/stock-tucuman-readiness.mjs:111:223)\n    at prepareFreshTucumanAssault.prepareDeparture (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-northern-fixture.mjs:360:18)\n    at prepare (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-campaign-route.mjs:818:46)\n    at defendRecovery (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-campaign-route.mjs:625:9)\n    at prepare (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-campaign-route.mjs:766:32)\n    at prepareFreshTucumanAssault (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-campaign-route.mjs:589:9)\n    at freshStockNorthernRoute (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-northern-fixture.mjs:359:14)\n    at freshNorthernRoute (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-northern-fixture.mjs:277:29)\n    at freshCuyoRoute (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-cuyo-fixture.mjs:29:73)\n    at freshHistoricalEnding (file:///Users/fsodano/.codex/worktrees/campaign-controller-safety/granaderos/tests/fresh-ending-fixture.mjs:29:83)"
+  },
+  "entry": {
+    "clock": {
+      "hour": 296,
+      "secondOfHour": 3196
+    },
+    "treasury": 80774,
+    "location": "cordoba",
+    "squad": [
+      104,
+      111,
+      140,
+      141,
+      126,
+      133
+    ],
+    "rear": [
+      104,
+      111,
+      140,
+      141,
+      126,
+      133
+    ],
+    "rearActors": [
+      {
+        "id": 104,
+        "name": "Patrick Doyle",
+        "medical": 35,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 72,
+          "maxHp": 72,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 18,
+          "morale": 0,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 49,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1233,
+          "expiresAt": 335,
+          "paid": 62
+        }
+      },
+      {
+        "id": 111,
+        "name": "Armand Delatour",
+        "medical": 24,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 79,
+          "maxHp": 79,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 0,
+          "morale": 0,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 50,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1233,
+          "expiresAt": 335,
+          "paid": 185
+        }
+      },
+      {
+        "id": 140,
+        "name": "Matteo Ricci",
+        "medical": 19,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 67,
+          "maxHp": 67,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 0,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 48,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1233,
+          "expiresAt": 335,
+          "paid": 106
+        }
+      },
+      {
+        "id": 141,
+        "name": "Joaquim Ferreira",
+        "medical": 30,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 86,
+          "maxHp": 86,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 1,
+          "morale": 2,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 40,
+            "y": 25,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1733,
+          "expiresAt": 335,
+          "paid": 80
+        }
+      },
+      {
+        "id": 126,
+        "name": "Teresa Godoy",
+        "medical": 32,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 65,
+          "maxHp": 65,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 2,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 48,
+            "y": 15,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1733,
+          "expiresAt": 335,
+          "paid": 47
+        }
+      },
+      {
+        "id": 133,
+        "name": "Pedro Albornoz",
+        "medical": 20,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 89,
+          "maxHp": 89,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 0,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 43,
+            "y": 19,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 162,
+          "startedSecond": 2739,
+          "expiresSecond": 2739,
+          "expiresAt": 330,
+          "paid": 462
+        }
+      }
+    ],
+    "knownLocalDressingSources": [
+      {
+        "kind": "body",
+        "id": "enemy-8",
+        "count": 2
+      },
+      {
+        "kind": "container",
+        "id": "cordoba:building:chest:17:1",
+        "index": 5,
+        "count": 12
+      }
+    ]
+  },
+  "failure": {
+    "clock": {
+      "hour": 302,
+      "secondOfHour": 3196
+    },
+    "treasury": 74726,
+    "location": "cordoba",
+    "squad": [
+      139,
+      100,
+      146,
+      116,
+      107,
+      122
+    ],
+    "paid": [
+      146,
+      101,
+      117,
+      108,
+      121,
+      102,
+      129,
+      139,
+      100,
+      116,
+      107,
+      122
+    ],
+    "physician": {
+      "id": 146,
+      "name": "Auguste Bellanger",
+      "medical": 91,
+      "record": {
+        "alive": true,
+        "location": "cordoba",
+        "hp": 72,
+        "maxHp": 72,
+        "bleeding": 0,
+        "energy": 100,
+        "fatigue": 0,
+        "asleep": false,
+        "captured": false,
+        "assignment": "active",
+        "medkits": 12,
+        "morale": 80,
+        "moraleRestHours": 0,
+        "residentSector": null,
+        "residentScene": null,
+        "residentPosition": null,
+        "arrival": null
+      },
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 302,
+        "startedSecond": 3196,
+        "expiresSecond": 3196,
+        "expiresAt": 470,
+        "paid": 966
+      }
+    },
+    "physicianTarget": 12,
+    "backupPhysician": {
+      "id": 139,
+      "name": "Bridget O\u2019Connell",
+      "medical": 89,
+      "record": {
+        "alive": true,
+        "location": "cordoba",
+        "hp": 73,
+        "maxHp": 73,
+        "bleeding": 0,
+        "energy": 100,
+        "fatigue": 0,
+        "asleep": false,
+        "captured": false,
+        "assignment": "active",
+        "medkits": 6,
+        "morale": 80,
+        "moraleRestHours": 0,
+        "residentSector": null,
+        "residentScene": null,
+        "residentPosition": null,
+        "arrival": null
+      },
+      "contract": {
+        "kind": "paid",
+        "term": "week",
+        "started": 302,
+        "startedSecond": 3196,
+        "expiresSecond": 3196,
+        "expiresAt": 470,
+        "paid": 798
+      }
+    },
+    "backupTarget": 8,
+    "backupMissing": 2,
+    "rearActors": [
+      {
+        "id": 104,
+        "name": "Patrick Doyle",
+        "medical": 35,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 72,
+          "maxHp": 72,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "rest",
+          "medkits": 18,
+          "morale": 1,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 49,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1233,
+          "expiresAt": 335,
+          "paid": 62
+        }
+      },
+      {
+        "id": 111,
+        "name": "Armand Delatour",
+        "medical": 24,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 79,
+          "maxHp": 79,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "rest",
+          "medkits": 0,
+          "morale": 1,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 50,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1233,
+          "expiresAt": 335,
+          "paid": 185
+        }
+      },
+      {
+        "id": 140,
+        "name": "Matteo Ricci",
+        "medical": 19,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 67,
+          "maxHp": 67,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "rest",
+          "medkits": 2,
+          "morale": 1,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 48,
+            "y": 14,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1233,
+          "expiresAt": 335,
+          "paid": 106
+        }
+      },
+      {
+        "id": 141,
+        "name": "Joaquim Ferreira",
+        "medical": 30,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 86,
+          "maxHp": 86,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "rest",
+          "medkits": 1,
+          "morale": 3,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 40,
+            "y": 25,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1733,
+          "expiresAt": 335,
+          "paid": 80
+        }
+      },
+      {
+        "id": 126,
+        "name": "Teresa Godoy",
+        "medical": 32,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 65,
+          "maxHp": 65,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "rest",
+          "medkits": 2,
+          "morale": 3,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 48,
+            "y": 15,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "day",
+          "started": 296,
+          "startedSecond": 3196,
+          "expiresSecond": 1733,
+          "expiresAt": 335,
+          "paid": 47
+        }
+      },
+      {
+        "id": 133,
+        "name": "Pedro Albornoz",
+        "medical": 20,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 89,
+          "maxHp": 89,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "rest",
+          "medkits": 2,
+          "morale": 1,
+          "moraleRestHours": 2,
+          "residentSector": "cordoba",
+          "residentScene": null,
+          "residentPosition": {
+            "x": 43,
+            "y": 19,
+            "tacticalLevel": 0
+          },
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 162,
+          "startedSecond": 2739,
+          "expiresSecond": 2739,
+          "expiresAt": 330,
+          "paid": 462
+        }
+      }
+    ],
+    "paidActors": [
+      {
+        "id": 146,
+        "name": "Auguste Bellanger",
+        "medical": 91,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 72,
+          "maxHp": 72,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 12,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 966
+        }
+      },
+      {
+        "id": 101,
+        "name": "Tomasa R\u00edos",
+        "medical": 20,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 70,
+          "maxHp": 70,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 308
+        }
+      },
+      {
+        "id": 117,
+        "name": "Jacinto Ojeda",
+        "medical": 20,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 88,
+          "maxHp": 88,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 630
+        }
+      },
+      {
+        "id": 108,
+        "name": "Juli\u00e1n Pereyra",
+        "medical": 24,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 82,
+          "maxHp": 82,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 378
+        }
+      },
+      {
+        "id": 121,
+        "name": "Ram\u00f3n C\u00e1ceres",
+        "medical": 26,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 80,
+          "maxHp": 80,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 420
+        }
+      },
+      {
+        "id": 102,
+        "name": "Mateo Ferreyra",
+        "medical": 20,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 70,
+          "maxHp": 70,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 280
+        }
+      },
+      {
+        "id": 129,
+        "name": "Francisco Tapia",
+        "medical": 26,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 86,
+          "maxHp": 86,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 378
+        }
+      },
+      {
+        "id": 139,
+        "name": "Bridget O\u2019Connell",
+        "medical": 89,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 73,
+          "maxHp": 73,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 6,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 798
+        }
+      },
+      {
+        "id": 100,
+        "name": "Rafael Sosa",
+        "medical": 20,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 70,
+          "maxHp": 70,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 252
+        }
+      },
+      {
+        "id": 116,
+        "name": "Petrona Lagos",
+        "medical": 70,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 75,
+          "maxHp": 75,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 336
+        }
+      },
+      {
+        "id": 107,
+        "name": "In\u00e9s Aguirre",
+        "medical": 88,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 72,
+          "maxHp": 72,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 588
+        }
+      },
+      {
+        "id": 122,
+        "name": "Isabel Molina",
+        "medical": 85,
+        "record": {
+          "alive": true,
+          "location": "cordoba",
+          "hp": 65,
+          "maxHp": 65,
+          "bleeding": 0,
+          "energy": 100,
+          "fatigue": 0,
+          "asleep": false,
+          "captured": false,
+          "assignment": "active",
+          "medkits": 2,
+          "morale": 80,
+          "moraleRestHours": 0,
+          "residentSector": null,
+          "residentScene": null,
+          "residentPosition": null,
+          "arrival": null
+        },
+        "contract": {
+          "kind": "paid",
+          "term": "week",
+          "started": 302,
+          "startedSecond": 3196,
+          "expiresSecond": 3196,
+          "expiresAt": 470,
+          "paid": 714
+        }
+      }
+    ],
+    "knownLocalDressingSources": [],
+    "pendingBattle": null,
+    "pendingEncounter": null,
+    "defeated": false,
+    "sectorCleared": true,
+    "cordobaOwner": "patriot",
+    "occupationGroups": []
+  },
+  "actualPartialHelperRecords": {
+    "orders": 89,
+    "events": 51,
+    "paidHireCost": 6048,
+    "clockAdvancedSeconds": 21600,
+    "dressingTakes": [
+      {
+        "kind": "campaign",
+        "action": {
+          "type": "sectorInventory",
+          "sector": "cordoba",
+          "operativeId": 146,
+          "direction": "take",
+          "sourceKey": "[\"body\",\"enemy-8\",\"medkits\"]",
+          "expected": "{\"item\":\"medkits\",\"count\":2,\"weight\":0.2}",
+          "count": 2
+        },
+        "quote": null,
+        "from": 1090396,
+        "to": 1090396,
+        "treasuryBefore": 74726,
+        "treasuryAfter": 74726
+      },
+      {
+        "kind": "campaign",
+        "action": {
+          "type": "sectorInventory",
+          "sector": "cordoba",
+          "operativeId": 146,
+          "direction": "take",
+          "sourceKey": "container:cordoba:building:chest:17:1:5",
+          "expected": "{\"item\":\"medkits\",\"count\":12,\"weight\":0.2}",
+          "count": 8
+        },
+        "quote": null,
+        "from": 1090396,
+        "to": 1090396,
+        "treasuryBefore": 74726,
+        "treasuryAfter": 74726
+      },
+      {
+        "kind": "campaign",
+        "action": {
+          "type": "sectorInventory",
+          "sector": "cordoba",
+          "operativeId": 139,
+          "direction": "take",
+          "sourceKey": "container:cordoba:building:chest:17:1:5",
+          "expected": "{\"item\":\"medkits\",\"count\":4,\"weight\":0.2}",
+          "count": 4
+        },
+        "quote": null,
+        "from": 1090396,
+        "to": 1090396,
+        "treasuryBefore": 74726,
+        "treasuryAfter": 74726
+      }
+    ],
+    "dressingDrops": 0,
+    "completeFullCampaignTape": false
+  },
+  "finiteDressingAccounting": {
+    "existingLiveRearCarriedAtEntry": 25,
+    "knownLooseAtEntry": 14,
+    "actualPaidArrivalCarried": 24,
+    "totalBefore": 63,
+    "liveRearCarriedAtFailure": 25,
+    "paidCarriedAtFailure": 38,
+    "knownLooseAtFailure": 0,
+    "totalAfter": 63,
+    "knownLooseTransferredByAcceptedOrders": 14,
+    "conserved": true,
+    "excluded": "Dead operativeState records and historical returned living tactical records are not counted as extra item custodians."
+  },
+  "retainedDeaths": [
+    103,
+    110,
+    112,
+    113,
+    114,
+    115,
+    119,
+    120,
+    123,
+    124,
+    125,
+    127,
+    131,
+    134,
+    136,
+    137,
+    144,
+    1000
+  ],
+  "allEarnedDeathsRetained": true,
+  "groundedCause": {
+    "source": "tests/stock-tucuman-readiness.mjs:111",
+    "finding": "The helper uses only reachable known loose dressing entries. It consumes all 14 known local loose dressings and raises the original assertion while actor139 is two short, despite actual living local actor104 retaining18 carried dressings. The source has no carried-donation branch.",
+    "nativeTransferSource": "game/sector-inventory.js:239",
+    "existingDonationPattern": "tests/route-dressings.mjs:18",
+    "finiteCandidate": "A two-dressing native drop from a qualified existing local donor, followed by re-reading the recipient reachable row and issuing the existing native take, could meet the unchanged backup8 target. Donor104 would retain16.",
+    "limits": "No native model, path, carrying validation or transfer was evaluated. The proposed transfer must retain the selected physician12/backup8 reserves and pass native access/carry checks; it is not an executed or accepted correction."
+  },
+  "fundingCapturePacks": [],
+  "fundingEvidenceLimit": "No current funding entry/renewal refusal/private failure was available at this observation.",
+  "currentStockAmmunitionBoundaries": [
+    {
+      "artifact": {
+        "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/ammunition-preparation/94803-1-finite-ammunition-refusal.json",
+        "bytes": 1381753,
+        "sha256": "ddfa6f8e6d89c263cfebeb415bf93d0f1e5865e44b95aa2053cd488f16909ad2"
+      },
+      "stage": "finite-ammunition-refusal",
+      "scope": "Raw passive checkpoint. No extra dispatch, synchronization or save normalization.",
+      "clock": {
+        "hour": 70,
+        "secondOfHour": 867
+      },
+      "location": "san_nicolas",
+      "treasury": 14804,
+      "contextSummary": {
+        "operativeId": 123,
+        "ids": [
+          1000,
+          123,
+          115,
+          114,
+          131,
+          120
+        ],
+        "target": 10,
+        "family": "ammoRifle",
+        "remaining": 2,
+        "cacheExplorationOrdersIncluded": false,
+        "checkpointKind": "actual-partial-campaign-after-existing-accepted-orders"
+      },
+      "acceptedAmmunitionTransactions": 1,
+      "contextKeys": [
+        "operativeId",
+        "ids",
+        "target",
+        "family",
+        "remaining",
+        "cacheExplorationOrdersIncluded",
+        "checkpointKind"
+      ],
+      "contextSummaryOmittedLargeCallerRecords": false
+    },
+    {
+      "artifact": {
+        "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/ammunition-preparation/94803-2-tucuman-preliminary-armament-input.json",
+        "bytes": 2206095,
+        "sha256": "102e35dce7c22197b49584fbf7552edc9600d140d4b9dfbc9294700360cbffed"
+      },
+      "stage": "tucuman-preliminary-armament-input",
+      "scope": "Raw passive checkpoint. No extra dispatch, synchronization or save normalization.",
+      "clock": {
+        "hour": 162,
+        "secondOfHour": 2739
+      },
+      "location": "cordoba",
+      "treasury": 34652,
+      "contextSummary": {},
+      "acceptedAmmunitionTransactions": null,
+      "contextKeys": [
+        "fieldIds"
+      ],
+      "contextSummaryOmittedLargeCallerRecords": true
+    },
+    {
+      "artifact": {
+        "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/ammunition-preparation/94803-3-tucuman-preliminary-armament-output.json",
+        "bytes": 2382407,
+        "sha256": "d0b0b31a6d8f11416521d578a8641757057a9391fed4a45bd9bc294833f5d610"
+      },
+      "stage": "tucuman-preliminary-armament-output",
+      "scope": "Raw passive checkpoint. No extra dispatch, synchronization or save normalization.",
+      "clock": {
+        "hour": 162,
+        "secondOfHour": 2739
+      },
+      "location": "cordoba",
+      "treasury": 34652,
+      "contextSummary": {},
+      "acceptedAmmunitionTransactions": null,
+      "contextKeys": [
+        "fieldIds",
+        "acceptedActions"
+      ],
+      "contextSummaryOmittedLargeCallerRecords": true
+    },
+    {
+      "artifact": {
+        "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/ammunition-preparation/94803-4-tucuman-preliminary-armament-input.json",
+        "bytes": 2261858,
+        "sha256": "6cc6862f2164ea91a3432a64b40734f0d2f9120d5fd92453fcda784c4ca4086a"
+      },
+      "stage": "tucuman-preliminary-armament-input",
+      "scope": "Raw passive checkpoint. No extra dispatch, synchronization or save normalization.",
+      "clock": {
+        "hour": 294,
+        "secondOfHour": 3196
+      },
+      "location": "cordoba",
+      "treasury": 81254,
+      "contextSummary": {},
+      "acceptedAmmunitionTransactions": null,
+      "contextKeys": [
+        "fieldIds"
+      ],
+      "contextSummaryOmittedLargeCallerRecords": true
+    },
+    {
+      "artifact": {
+        "path": "/tmp/granaderos-current-corrections-v3-affected-2026-10-10T105034196Z/native-failures/ammunition-preparation/94803-5-tucuman-preliminary-armament-output.json",
+        "bytes": 2313583,
+        "sha256": "7f905da7b28b0ce39c63608ffdf46b403d5d542ef6bace1502cdf5d0d29f0f1f"
+      },
+      "stage": "tucuman-preliminary-armament-output",
+      "scope": "Raw passive checkpoint. No extra dispatch, synchronization or save normalization.",
+      "clock": {
+        "hour": 294,
+        "secondOfHour": 3196
+      },
+      "location": "cordoba",
+      "treasury": 81254,
+      "contextSummary": {},
+      "acceptedAmmunitionTransactions": null,
+      "contextKeys": [
+        "fieldIds",
+        "acceptedActions"
+      ],
+      "contextSummaryOmittedLargeCallerRecords": true
+    }
+  ],
+  "ammunitionEvidenceLimit": "These raw preparation/refusal boundaries are separate recorded private states. They are not substituted for the actual stock-readiness failure campaign. The earlier target10 San Nicol\u00e1s refusal is an observed helper refusal, not proof that the coastal route terminated.",
+  "implementation": "None. User asked to finish and merge the current PR, then stop; no new readiness or funding work was started."
+}

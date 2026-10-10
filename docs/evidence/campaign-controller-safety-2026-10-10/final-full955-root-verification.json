@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "gateDirectory": "/tmp/granaderos-controller-safety-final-full-2026-10-10T110013978Z",
+  "finalReceiptSha256": "046e6584ae041156475cb14a294383a82c4757332a7fcb25c45cbdf76fb67ffd",
+  "rawReportSha256": "9fe2b38f0a3c21399e67c6a182a69bb6e64ae1b9dbf10ac934021fe7ed06b436",
+  "selectedScheduledCompletedFiles": 955,
+  "counts": {
+    "tests": 7054,
+    "failed": 5,
+    "passed": 7045,
+    "cancelled": 0,
+    "skipped": 4,
+    "todo": 0,
+    "topLevel": 6903,
+    "suites": 0
+  },
+  "sourcePinsVerified": 14215,
+  "beforeAfterIdentical": true,
+  "allCurrentSourceFilesMatched": true,
+  "parentRunnerAndCandidateWorkersAbsent": true,
+  "cleanExactHead": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e",
+  "canonicalSource": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+  "failureScope": "Four known original campaign route file families; five assertions fail; gate is complete but not passing"
+}

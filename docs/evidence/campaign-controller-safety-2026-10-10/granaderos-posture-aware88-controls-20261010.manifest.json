@@ -1,0 +1,149 @@
+{
+  "complete": true,
+  "archive": {
+    "path": "granaderos-posture-aware88-controls-20261010.tar.gz",
+    "bytes": 1408212,
+    "sha256": "9b3715f5d8a54b5a98bf21cf41897dd8dcd6068738346c438265312a93536ef4",
+    "originalExternalPath": "/tmp/granaderos-posture-aware88-controls-20261010.tar.gz"
+  },
+  "sourceDirectory": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z",
+  "allSourceRunFilesIncluded": true,
+  "sourceRunFileCount": 9,
+  "memberCount": 10,
+  "regularFilesOnly": true,
+  "allMembersReadAndHashVerified": true,
+  "allOriginalFilesPreservedAndRechecked": true,
+  "olderArchivesPreservedAndRechecked": [
+    {
+      "path": "/tmp/granaderos-combined88-controls-20261010.tar.gz",
+      "bytes": 1407231,
+      "sha256": "841b3ef145d10ab276de7f7e3cbede346c28938b656aa8aff2c2f72ed7cceb92"
+    },
+    {
+      "path": "/tmp/granaderos-opening-shared-sighting-controls-20261010.tar.gz",
+      "bytes": 1732302,
+      "sha256": "d298d7514b2cd4891d7774a458426cb70019befe9e6b6386e0bedbc11c9ae29d"
+    }
+  ],
+  "report": {
+    "path": "/tmp/granaderos-posture-aware88-controls-20261010.report.md",
+    "bytes": 2841,
+    "sha256": "c9e262828ec782b3efdbfae6285e63f4f540442472b42232fb2aee77a86959b3"
+  },
+  "originalFinalReceiptSha256": "f00257874799a2f81b59fc7f1f5226a12626ee5f86a2f5fd3df6628472000800",
+  "scope": "88 posture-aware focused controls across 18 files; not original route acceptance",
+  "counts": {
+    "tests": 88,
+    "suites": 0,
+    "pass": 88,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceFilesBound": 14179,
+  "sourceSnapshotSha256": "842cd31febacd85bd1460069268f1cdcbb31c9bce1d7317e72f61d0be3c2cdbd",
+  "canonicalIdentity": {
+    "version": "0.4.0-dev.1",
+    "id": "c132c162f024",
+    "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "revision": "dd15b8bd99c55a8e4540b67cc9bf66b8053d2eb7"
+  },
+  "sourceDrift": [],
+  "invocations": 1,
+  "filters": [],
+  "seedChanges": 0,
+  "runtime": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+  "pids": {
+    "parent": 88577,
+    "child": 88601
+  },
+  "processesGone": {
+    "parent": true,
+    "child": true
+  },
+  "archivePreparationNativeActions": 0,
+  "archivePreparationSelectors": 0,
+  "archivePreparationControllerCalls": 0,
+  "archivePreparationTestInvocations": 0,
+  "sourceEdits": 0,
+  "stagingActions": 0,
+  "prsCreated": 0,
+  "pushes": 0,
+  "originalRouteVictoryClaim": false,
+  "members": [
+    {
+      "path": "archive-report.md",
+      "sourcePath": "/tmp/granaderos-posture-aware88-controls-20261010.report.md",
+      "bytes": 2841,
+      "sha256": "c9e262828ec782b3efdbfae6285e63f4f540442472b42232fb2aee77a86959b3",
+      "origin": "new archive report only"
+    },
+    {
+      "path": "posture-aware88-focused-run/after-source-hashes.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/after-source-hashes.json",
+      "bytes": 1891212,
+      "sha256": "842cd31febacd85bd1460069268f1cdcbb31c9bce1d7317e72f61d0be3c2cdbd",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/before-source-hashes.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/before-source-hashes.json",
+      "bytes": 1891212,
+      "sha256": "842cd31febacd85bd1460069268f1cdcbb31c9bce1d7317e72f61d0be3c2cdbd",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/executed-wrapper.mjs",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/executed-wrapper.mjs",
+      "bytes": 5496,
+      "sha256": "0f21d0465e3e08ca0ff032ea3720ece8e24c890e9aa55c443aca0c9e4cf7cd35",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/final-receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/final-receipt.json",
+      "bytes": 2028,
+      "sha256": "f00257874799a2f81b59fc7f1f5226a12626ee5f86a2f5fd3df6628472000800",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/metadata.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/metadata.json",
+      "bytes": 2497,
+      "sha256": "587b7791924b3c39566c9b28c3e43a8ea2bc05d85154bb195f452318c4fed013",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/native-failures/88610-1-mendoza-controller-decision-1JjF7Y/controller-decision.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/native-failures/88610-1-mendoza-controller-decision-1JjF7Y/controller-decision.json",
+      "bytes": 974437,
+      "sha256": "16fbd4f896a0a76798deab287295f677360dee0eab5825fb1405056384be5c99",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/native-failures/88610-1-mendoza-controller-decision-1JjF7Y/receipt.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/native-failures/88610-1-mendoza-controller-decision-1JjF7Y/receipt.json",
+      "bytes": 1829,
+      "sha256": "591a12d4c315a5a7875d58527f54e67e271567bd8721d85f94c28477e6df393a",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/pid.json",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/pid.json",
+      "bytes": 30,
+      "sha256": "1a7814fbd5477642ca08bd865131c4fabefd3d050fdce74822ba146ae60b58d7",
+      "origin": "original retained run file"
+    },
+    {
+      "path": "posture-aware88-focused-run/run.log",
+      "sourcePath": "/tmp/granaderos-current-corrections-v2-focused-2026-10-10T101046964Z/run.log",
+      "bytes": 21348,
+      "sha256": "63209e456fc974851f5d3ef2240a2027aa433b981ab092c2d870fcf04ae1f21d",
+      "origin": "original retained run file"
+    }
+  ],
+  "originalExternalManifest": "/tmp/granaderos-posture-aware88-controls-20261010.manifest.json",
+  "originalExternalManifestSha256": "339fb9580dfdb735f4a52eaeab95e750b27943cb0acf8d65c8d8f7516c5e0105",
+  "rootIndependentlyVerifiedAllMembers": true
+}

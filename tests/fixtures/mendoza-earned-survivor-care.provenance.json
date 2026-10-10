@@ -1,0 +1,77 @@
+{
+  "scope": "One earned default Cuyo campaign before survivor care, and one independently captured original native care action boundary.",
+  "capture": {
+    "campaign": "existing Mendoza checkpoint callback, after actual native battle victory and ordinary campaign settlement; before care",
+    "beforeBattle": "independent clone before the original accepted tactical useItem",
+    "action": "original accepted care order 10, doctor 112 -> patient 129",
+    "nativeAfter": "raw original actBattle result before presented comparison and existing synchronization",
+    "fullCareTapeAvailable": false,
+    "additionalOrders": 0,
+    "additionalSynchronization": 0,
+    "additionalSettlement": 0
+  },
+  "sourceSnapshot": {
+    "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/before-source-hashes.json",
+    "bytes": 1882546,
+    "sha256": "3fc1eef6943fa5124a62b0890136bfd8a3c1ce9ba295a897f76469a88825bf39"
+  },
+  "originalRun": {
+    "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/final-receipt.json",
+    "bytes": 1050,
+    "sha256": "2c8dab06c5e22d569749cfd981d5b9ab458e2acbc7b1fa85acd63f7664f7e921"
+  },
+  "observerReceipt": {
+    "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/observer-receipt.json",
+    "bytes": 1731,
+    "sha256": "a3118725387d999bb2da7733f3e89a0dd4a2df2f1af942cba30770321de924a1"
+  },
+  "inputArtifacts": [
+    {
+      "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/earned-mendoza-before-care.json",
+      "bytes": 7750083,
+      "sha256": "cf4949e015b1a9f591d0391662c1dd3ec19553690a4ccb5ceb216badaa7ecb79"
+    },
+    {
+      "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/native-failures/67094-1-mendoza-care-qWaHWQ/care-before.json",
+      "bytes": 9046893,
+      "sha256": "9d6538a125ce548335cdc76fd50bb25f39a75c2fc1bc6b96de2817ae7eefa50c"
+    },
+    {
+      "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/native-failures/67094-1-mendoza-care-qWaHWQ/care-action.json",
+      "bytes": 64,
+      "sha256": "42c404528e0196dfb581e1a2c82f705fe1dc914c8cb5ee2ebc78e77d117d16de"
+    },
+    {
+      "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/native-failures/67094-1-mendoza-care-qWaHWQ/care-native-after.json",
+      "bytes": 751191,
+      "sha256": "b44eab902c521f615dc31a09869602173fc717fe840bb1cb04c504e3c05ef8c4"
+    },
+    {
+      "path": "/tmp/granaderos-current-care-single-diagnostic-2026-10-10T083117310Z/native-failures/67094-1-mendoza-care-qWaHWQ/receipt.json",
+      "bytes": 1943,
+      "sha256": "6fa1e40767a2325ed67afa6a6048045ff5526adcffd72d6247a3cdcfb70f63d2"
+    }
+  ],
+  "fixture": {
+    "path": "tests/fixtures/mendoza-earned-survivor-care.json.gz",
+    "bytes": 325352,
+    "sha256": "b07dc4e3693d72376ba56ddd33d1c6e2a4e6c893044da507fbc6e48eab38b93d",
+    "encoding": "gzip of compact UTF-8 JSON; decoded fields are unchanged",
+    "decodedBytes": 4635091,
+    "decodedSha256": "95e04b209a0aa3aa8c7f7dcdb903c5aa270d339775907d8ce9e29738fee6276f"
+  },
+  "observations": {
+    "patient129Before": {
+      "hp": 15,
+      "bleeding": 5
+    },
+    "doctor112DressingsBefore": 3,
+    "actionElapsedSeconds": 26,
+    "patient129RawNativeAfter": {
+      "hp": 0,
+      "bleeding": 0
+    },
+    "doctor112DressingsAfter": 3
+  },
+  "acceptanceScope": "Focused native care regressions only; no full campaign completion or full-health claim."
+}

@@ -1,0 +1,491 @@
+{
+  "createdAtUtc": "2026-10-10T07:38:24.149516+00:00",
+  "scope": "Single original203-order care-defense exact replay, no selector/controller/alternative order/settlement; opening read-only tape/source review only.",
+  "completeOriginalReplay": {
+    "acceptedOrders": 203,
+    "rawTerminalEqual": true,
+    "officialClonedPairs": 3,
+    "sourceRows": 266,
+    "drift": [],
+    "apiCalls": {
+      "enterSector": 1,
+      "syncBattleTime": 3,
+      "encodeSave": 3,
+      "decodeSave": 3,
+      "actBattle": 181,
+      "endTurn": 22,
+      "stanceCost": 48,
+      "teamCanSee": 176,
+      "canSee": 56,
+      "hasLineOfSight": 56,
+      "actionCosts": 56,
+      "firearmShotOptions": 56
+    },
+    "receiptSha256": "608ded3e724bb35dfafaf4cacf58331f6a93c6015219fa6204c36a89cce837b1",
+    "preparationShaAtClosure": "73778bb043e7db181a3a33a3eb634c107c6b6d28f0fc318d38b95e1a3de1b3d7"
+  },
+  "fixedObservations": [
+    {
+      "index": 35,
+      "phase": "before",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 71,
+        "stance": "crouched",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    },
+    {
+      "index": 35,
+      "phase": "after",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 68,
+        "stance": "standing",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 36,
+      "phase": "before",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 80,
+        "stance": "crouched",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 36,
+      "phase": "after",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 77,
+        "stance": "standing",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 40,
+      "phase": "before",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 68,
+        "stance": "standing",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 40,
+      "phase": "after",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 65,
+        "stance": "crouched",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    },
+    {
+      "index": 41,
+      "phase": "before",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 77,
+        "stance": "standing",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    },
+    {
+      "index": 41,
+      "phase": "after",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 74,
+        "stance": "crouched",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    },
+    {
+      "index": 44,
+      "phase": "before",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 65,
+        "stance": "crouched",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    },
+    {
+      "index": 44,
+      "phase": "after",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 62,
+        "stance": "standing",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 45,
+      "phase": "before",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 74,
+        "stance": "crouched",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 45,
+      "phase": "after",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 71,
+        "stance": "standing",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 50,
+      "phase": "before",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 62,
+        "stance": "standing",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 4
+    },
+    {
+      "index": 50,
+      "phase": "after",
+      "actor": {
+        "id": "117",
+        "hp": 36,
+        "ap": 59,
+        "stance": "crouched",
+        "energy": 92,
+        "morale": 18.79999999999999,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1803,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 21,
+        "facing": 6,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    },
+    {
+      "index": 51,
+      "phase": "before",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 71,
+        "stance": "standing",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    },
+    {
+      "index": 51,
+      "phase": "after",
+      "actor": {
+        "id": "133",
+        "hp": 53,
+        "ap": 68,
+        "stance": "crouched",
+        "energy": 82,
+        "morale": 36.8,
+        "loaded": 1,
+        "ammo": 7,
+        "activeSlot": "primary",
+        "weapon": 1805,
+        "tacticalLevel": 1,
+        "x": 14,
+        "y": 19,
+        "facing": 5,
+        "knockedDown": false
+      },
+      "maxChance": 1,
+      "usefulSafeAffordableShots": 0,
+      "teamKnownTargetCount": 3
+    }
+  ],
+  "careFinding": {
+    "demonstrated": "Actual117/133 each pay standing/crouch changes while keeping loaded1/reserve7. At first observed chain every actual standing/crouched forecast is at most1%; no useful safe25% shot is undone. Generic driver forces loaded standing actors to crouch before useful shot/movement/fallback assessment.",
+    "sourceEvidence": [
+      "tests/cuyo-route-driver.mjs:51,85",
+      "game/tactical-ai.js:287-304,447-449",
+      "game/tactical-condition.js:34-38"
+    ],
+    "nativeRationaleLimit": "Standing selector was not invoked in replay. Vertical pursuit is code-grounded inference from actual cross-building roof contact and elimination of native standing branches, not independently observed selector return.",
+    "notProved": "Preventable defeat, useful-shot cancellation, a corrected route or native victory."
+  },
+  "openingFinding": {
+    "status": "No new correctness defect established by static tape/source audit.",
+    "sourceEvidence": [
+      "tests/opening-driver.mjs:58-77",
+      "tests/northern-route.mjs:44-104"
+    ],
+    "retainedFacts": "12 genuine full-health respondents carry two actual dressings each at entry, energy76, morale80-90;164 original orders include adjacent native aid and accepted fire/reload/movement.7 die, survivors remain routed or unconscious. Existing fight asserts every original action admission.",
+    "missing": "No independently retained pre-decision forecasts to prove unsafe target, posture loop, missed affordable aid or useful movement; original order-only replay could derive those exact states if separately authorized."
+  },
+  "deathAccounting": "Care request has12 current respondents;6 additional zero-HP player bodies are already zero in previous sector.18 terminal bodies are not18new deaths.",
+  "sourceProof": [
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/tests/cuyo-route-driver.mjs",
+      "bytes": 8380,
+      "sha256": "30681969153846b810cef44a667ec891370ae0f35815e935c801f1cd60473618",
+      "matchesFull948": true
+    },
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/tests/opening-driver.mjs",
+      "bytes": 5622,
+      "sha256": "143eaaf3d2bafffecaae6cb82476257ef9264b95aec57e55f0cfd0b70948a6f3",
+      "matchesFull948": true
+    },
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/tests/northern-route.mjs",
+      "bytes": 85026,
+      "sha256": "064c1e7eee683d0379d15a07340bd134c0ad9a6b9492a763164c900917ae93c8",
+      "matchesFull948": true
+    },
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/tests/fresh-campaign-route.mjs",
+      "bytes": 74283,
+      "sha256": "4f22b93fe279a26ff1aee7eb1098779b53377dc155adf0889c6511ae2dbec81e",
+      "matchesFull948": true
+    },
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/game/tactical-ai.js",
+      "bytes": 31581,
+      "sha256": "d683bf0accd844b4b67e282688112a03332f08c1212403c3880d9cafde2fc6e4",
+      "matchesFull948": true
+    },
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/game/autonomous-orders.js",
+      "bytes": 2178,
+      "sha256": "45070fa416c870306ffc580151ff4e5842af2f06a24543e30a508c44992a1b17",
+      "matchesFull948": true
+    },
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/game/tactical-condition.js",
+      "bytes": 2544,
+      "sha256": "b758f2859fb899596d4c6cba57588499bf4288891fca2b0a1c40182edd9e4dc9",
+      "matchesFull948": true
+    },
+    {
+      "path": "/Users/fsodano/fibradev/games/granaderos/game/tactical.js",
+      "bytes": 271222,
+      "sha256": "0caf35fbdc2ebde38743d5d2de862230cdfc9931ec4f46156ac9e95a7e06b1f3",
+      "matchesFull948": true
+    }
+  ],
+  "closure": {
+    "boundExternalBytesExact": true,
+    "actualImportsExact": true,
+    "inputUnchanged": true,
+    "primarySourceEdits": 0,
+    "gitIndexWrites": 0,
+    "processTerminalExitCode": 0
+  }
+}

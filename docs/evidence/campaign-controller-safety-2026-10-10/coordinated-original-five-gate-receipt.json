@@ -1,0 +1,57 @@
+{
+  "mode": "affected",
+  "started": "2026-10-10T10:50:37.491Z",
+  "finished": "2026-10-10T10:59:00.329Z",
+  "exitCode": 1,
+  "signal": null,
+  "terminalExit": true,
+  "complete": true,
+  "success": false,
+  "identity": {
+    "version": "0.4.0-dev.1",
+    "id": "c132c162f024",
+    "source": "c132c162f02420175ffd65eae404efcd221cf53c994e3bf7930810d5c4748026",
+    "revision": "7f0ce1ee83c98914148f24ced70b7f3c59b01a3e"
+  },
+  "base": "462abba277a47dafbfed1f60fc4529c8a4721cdc",
+  "sourceSnapshotSha256": "5c9472aa27c907c3bd7655972b55f016a538fcf35b184b0219ed6a66e36b0b48",
+  "sourceFiles": 14215,
+  "sourceDrift": [],
+  "invocations": 1,
+  "selectedFiles": [
+    "tests/fresh-campaign-recovery.test.mjs",
+    "tests/fresh-cuyo-route.test.mjs",
+    "tests/fresh-coastal-route.test.mjs",
+    "tests/opening-playthrough.test.mjs",
+    "tests/fresh-ending-route.test.mjs"
+  ],
+  "filters": [],
+  "seedChanges": 0,
+  "originalAffectedTestsUnchanged": true,
+  "counts": {
+    "tests": 16,
+    "suites": 0,
+    "pass": 7,
+    "fail": 5,
+    "cancelled": 0,
+    "skipped": 4,
+    "todo": 0
+  },
+  "artifacts": [
+    "after-source-hashes.json",
+    "before-source-hashes.json",
+    "executed-wrapper.mjs",
+    "metadata.json",
+    "native-failures",
+    "pid.json",
+    "recovery-checkpoint-tucuman-authoritative-ammunition-input.json",
+    "recovery-checkpoint-tucuman-battery-input.json",
+    "recovery-checkpoint-tucuman-battery-prior-squad.json",
+    "recovery-checkpoint-tucuman-battery-ready.json",
+    "recovery-checkpoint-tucuman-preliminary-armament-input.json",
+    "recovery-checkpoint-tucuman-preparation-input.json",
+    "recovery-checkpoint-tucuman-ready.json",
+    "run.log"
+  ],
+  "scope": "One execution of the five original affected test files with passive diagnostics; every original assertion retained."
+}
