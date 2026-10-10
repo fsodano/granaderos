@@ -94,11 +94,15 @@ function prepareCreatedNorthernOfficerRelief(start,{report=()=>{},onCheckpoint=(
  for(const sector of [...new Set(patients.map(at))]){
   for(let attempt=0;attempt<patients.length;attempt++){
    const urgent=localPatients(sector).filter(id=>c.operativeState[id].bleeding||c.operativeState[id].hp<15);if(!urgent.length)break;
+   // A conscious wounded soldier can dress his own injury before a long
+   // doctor approach. Obtain one actual reachable dressing for that work.
+   for(const id of urgent)if(c.operativeState[id].hp>=15&&rosterFor(c).find(op=>op.id===id).medical>0&&!c.operativeState[id].medkits)takeKnown(id,1);
    const medic=rosterFor(c).filter(op=>live().includes(op.id)&&at(op.id)===sector&&op.medical>0&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10).sort((a,b)=>Number(Boolean(c.operativeState[a.id].bleeding))-Number(Boolean(c.operativeState[b.id].bleeding))||b.medical-a.medical||a.id-b.id)[0];
    assert.ok(medic,'an actual conscious local medic must stabilize the urgent casualty');
    const ids=[...new Set([medic.id,...urgent])].slice(0,6),need=ids.filter(id=>urgent.includes(id)).reduce((sum,id)=>sum+Number(c.operativeState[id].bleeding>0)+Math.ceil(Math.max(0,15-c.operativeState[id].hp)/7),0);
    if(c.operativeState[medic.id].medkits<need)takeKnown(medic.id,need-c.operativeState[medic.id].medkits);
    order({type:'createSquad',ids,name:'Socorro provincial urgente',sector});for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
+   onCheckpoint(`northern-officer-emergency-input-${sector}`,c);
    const initial=visit(c),aid=autoBandageBattle(initial.battle);let paid=initial;
    for(let step=0;step<aid.steps.length;step++){
     const battle=actBattle(paid.battle,aid.steps[step]);assert.equal(battle.lastError,null);paid=sync({campaign:paid.campaign,battle});
