@@ -112,6 +112,10 @@ export function assembleCreatedCuyo(start,{report=()=>{}}={}){
   if(a.type!=='respondToEncounter')withdrawRear();
  };
 const pastSurvivors=new Set((c.sectorStates.salta?.units??[]).filter(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure).map(unit=>Number(unit.id)));
+// A later physician visit can replace the scene's issued unit list. Actual
+// resident records retain the surviving deployment even when that quiet
+// visit issued only the departing doctor and no longer lists the veterans.
+for(const id of c.recruited){const r=c.operativeState[id];if(r.alive&&!r.captured&&r.residentSector==='salta'&&r.residentPosition)pastSurvivors.add(id);}
 const requiredLeadership=Math.max(...encounterDefinitions(c).filter(npc=>['guemes','macacha'].includes(npc.id)).map(npc=>npc.requiredLeadership));
 const clock=c.hour*3600+(c.secondOfHour??0),speaker=rosterFor(c).filter(op=>pastSurvivors.has(op.id)&&op.leadership>=requiredLeadership&&c.recruited.includes(op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10&&(contractExpiresSeconds(c.contracts[op.id])===null||contractExpiresSeconds(c.contracts[op.id])>clock)).sort((a,b)=>Number(c.operativeState[b.id].location==='salta')-Number(c.operativeState[a.id].location==='salta')||b.leadership-a.leadership||a.id-b.id)[0];
 assert.ok(speaker,'the provincial meeting needs an actual fit serving survivor of Salta');
