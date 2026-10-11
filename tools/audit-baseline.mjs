@@ -38,10 +38,17 @@ for(const[i,c]of blades.entries()){
   compare(`blade-${id}`,[Number(c[3]),Number(c[4])],[fixed?.ap,fixed?.damage]);
   const loose=bladeFor({weapon:1800,blade:1811,activeSlot:'blade'});
   compare('loose-bayonet',[16,24,1],[loose?.ap,loose?.damage,loose?.reach]);
-  const authored=defaultContentPackage().weapons.find(w=>w.template===1811);
+  const definitions=defaultContentPackage();
+  // Secondary assignments select the loose variant by identity. The first
+  // template match is the distinct primary/fixed 50-damage definition.
+  const owner=definitions.characters.find(c=>definitions.weapons.some(w=>w.id===c.blade&&w.template===1811));
+  const authored=definitions.weapons.find(w=>w.id===owner?.blade);
   const held=bladeFor({weapon:1800,blade:1811,activeSlot:'blade',bladeMetadata:weaponMetadata(authored)});
   compare('default-authored-loose-bayonet',[16,24,1],[held?.ap,held?.damage,held?.reach]);
-  adaptations.push({id:'blade-1811',reason:'The source describes the fixed bayonet. The later model also has a loose 24-damage, one-tile item. Its healthy fixed profile must retain 16 AP and 50 damage.'});
+  const primary=definitions.weapons.find(w=>w.template===1811&&w.id!==authored.id);
+  const primaryHeld=bladeFor({weapon:1811,activeSlot:'primary',weaponMetadata:weaponMetadata(primary)});
+  compare('default-authored-primary-bayonet',[16,50,2],[primaryHeld?.ap,primaryHeld?.damage,primaryHeld?.reach]);
+  adaptations.push({id:'blade-1811',reason:'The source describes the fixed bayonet. The held loose item retains 16 AP, 24 damage and one-tile reach. Stock secondary slots use its distinct authored identity; the primary/fixed definition retains 16 AP, 50 damage and two-tile reach.'});
  }else compare(`blade-${id}`,[Number(c[3]),Number(c[4])],[w?.ap,w?.damage]);
 }
 const guns=tables.filter(c=>c.length===7&&/^\d+ M(?:en|an)/.test(c[2]));

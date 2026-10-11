@@ -59,7 +59,7 @@ test('stock authored JSON preserves its pinned factory identity and detached com
  const d=defaultContentPackage();assert.deepEqual(d,stockContent);
  // The shipped campaign retains immediate ordinary recruitment. Older saves
  // still pin the former authoring package's six-hour arrivals independently.
- assert.equal(contentIdentity(d).hash,'sha256:ad28d906a8163f5a93f88788347ab39b751a2b175c38ad122d933ec4e9264b5a');
+ assert.equal(contentIdentity(d).hash,'sha256:fe949d7835a4eb76609d3c4453029974afe26b7f04e54c07e71b7118d568b889');
  assert.ok(d.characters.filter(isContractCharacter).every(c=>c.arrivalHours===0));
  assert.deepEqual(validateContentPackage(d),[]);
  for(const [actual,key]of [[OPERATIVES,'operatives'],[WEAPONS,'weapons'],[PHASES,'phases'],[CIVIC_RECRUITS,'civicRecruits'],[CHARACTER_PROFILES,'characterProfiles'],[CHARACTER_PORTRAITS,'characterPortraits'],[NPC_QUESTS,'npcQuests']]){
@@ -124,7 +124,7 @@ test('ordinary and installed stock match the original main startup, every weapon
  assert.equal(source.commit,'12ac2d9b0576a56f8499b70782d581b78f5fd373');
  assert.equal(expected.characters.length,61);
  assert.deepEqual(Object.keys(expected.terms),['day','week','month','fortnight']);
- const engine={campaign:campaignEngine,abilities:abilityEngine,weapons:weaponEngine,ammunition:ammunitionEngine,contracts:contractEngine};
+ const engine={campaign:campaignEngine,abilities:abilityEngine,weapons:weaponEngine,ammunition:ammunitionEngine,contracts:contractEngine,tactical:{bladeFor}};
  for(const [name,content]of [['ordinary',null],['installed',installedStock()]]){
   const actual=captureStockStartup(engine,content);
   assert.deepEqual(actual.startup,expected.startup,`${name}: startup`);

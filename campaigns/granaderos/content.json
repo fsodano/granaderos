@@ -423,7 +423,7 @@
       "spriteAppearance": "granadero",
       "monthlyPay": 643,
       "weapon": "blade-1809",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 96,
         "agility": 84,
@@ -575,7 +575,7 @@
       "spriteAppearance": "granadero",
       "monthlyPay": 771,
       "weapon": "firearm-1801",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 85,
         "agility": 80,
@@ -1203,7 +1203,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 84,
         "agility": 62,
@@ -1246,7 +1246,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 85,
         "agility": 61,
@@ -1422,7 +1422,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 81,
         "agility": 63,
@@ -1638,7 +1638,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 76,
         "agility": 67,
@@ -1813,7 +1813,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1802",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 83,
         "agility": 68,
@@ -1986,7 +1986,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 71,
         "agility": 76,
@@ -2030,7 +2030,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1802",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 79,
         "agility": 74,
@@ -2204,7 +2204,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 78,
         "agility": 55,
@@ -2379,7 +2379,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 90,
         "agility": 58,
@@ -2595,7 +2595,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 84,
         "agility": 75,
@@ -2638,7 +2638,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1802",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 79,
         "agility": 73,
@@ -2682,7 +2682,7 @@
       ],
       "ridingSkill": 20,
       "weapon": "firearm-1800",
-      "blade": "blade-1811",
+      "blade": "blade-1811-loose",
       "attributes": {
         "maxHp": 76,
         "agility": 58,
@@ -3061,6 +3061,14 @@
       "damage": 50,
       "ap": 16,
       "reach": 2
+    },
+    {
+      "id": "blade-1811-loose",
+      "template": 1811,
+      "name": "Bayoneta suelta",
+      "damage": 24,
+      "ap": 16,
+      "reach": 1
     },
     {
       "id": "blade-1812",
