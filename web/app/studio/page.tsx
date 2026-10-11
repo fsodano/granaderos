@@ -53,6 +53,7 @@ import StudioNavigation, {
   STUDIO_SECTIONS,
   type StudioSection,
 } from './StudioNavigation';
+import { DocumentDraftProvider, DocumentDraftStatus } from './DocumentDrafts';
 import {
   FolderOpen,
   ArrowUpRight,
@@ -547,548 +548,568 @@ export default function CampaignStudio() {
     </>
   );
   return (
-    <main className="campaign-studio">
-      <a className="studio-skip" href="#studio-panel">
-        Ir al panel del editor
-      </a>
-      <header className="studio-header">
-        <div>
-          <p className="studio-kicker">GRANADEROS / HERRAMIENTAS DE AUTOR</p>
-          <h1>Estudio de campañas</h1>
-        </div>
-        <div className="studio-header-actions">
-          <button
-            type="button"
-            aria-expanded={!project || managerOpen}
-            aria-controls="studio-project-manager"
-            disabled={Boolean(busy)}
-            onClick={() => setManagerOpen(!managerOpen)}
-          >
-            <FolderOpen size={16} aria-hidden="true" />
-            Administrar proyectos
-            <ChevronDown size={14} aria-hidden="true" />
-          </button>
-          <a href={pagePath('/')}>
-            <span>Volver al juego</span>
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </a>
-        </div>
-      </header>
-      <fieldset
-        id="studio-project-manager"
-        className="studio-controls"
-        hidden={Boolean(project) && !managerOpen}
-        disabled={Boolean(busy) || !ready}
-      >
-        <legend>Proyectos</legend>
-        <div className="studio-manager-grid">
-          <section className="studio-manager-group">
-            <h2>Crear una campaña</h2>
-            <p>Empezá con un mundo y un personaje guía que podés cambiar.</p>
-            <div className="studio-toolbar">
-              <label>
-                Identidad
-                <input
-                  value={createId}
-                  onChange={(e) => setCreateId(e.target.value)}
-                  pattern="[a-z][a-z0-9-]*"
-                />
-              </label>
-              <label>
-                Nombre
-                <input
-                  value={createName}
-                  onChange={(e) => setCreateName(e.target.value)}
-                />
-              </label>
-              <button
-                className="editor-action-primary"
-                onClick={() =>
-                  void run('Creando proyecto', async () => {
-                    if (projects.some((p) => p.manifest.id === createId))
-                      throw Error('Esta identidad ya tiene un borrador.');
-                    open(await createCampaignProject(createId, createName));
-                  })
-                }
-              >
-                Crear campaña
-              </button>
-            </div>
-            <p className="editor-help">
-              La identidad usa letras minúsculas, números y guiones; debe
-              comenzar con una letra.
-            </p>
-          </section>
-          <section className="studio-manager-group">
-            <h2>Abrir un proyecto</h2>
-            <p>
-              Continuá un borrador local o usá una campaña instalada como punto
-              de partida.
-            </p>
-            <div className="studio-toolbar">
-              <label>
-                Borrador guardado
-                <select
-                  value={project?.manifest.id ?? ''}
-                  onChange={(e) => {
-                    const next = projects.find(
-                      (p) => p.manifest.id === e.target.value,
-                    );
-                    if (next)
-                      void run('Abriendo borrador', async () => open(next));
-                  }}
-                >
-                  <option value="">Elegí un proyecto</option>
-                  {projects.map((p) => (
-                    <option key={p.manifest.id} value={p.manifest.id}>
-                      {p.manifest.name} · {p.manifest.id}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Campaña instalada
-                <select
-                  defaultValue=""
-                  onChange={(e) => {
-                    const entry = library.find((p) => p.id === e.target.value);
-                    e.target.value = '';
-                    if (entry)
-                      void run('Leyendo documentos y recursos', async () => {
-                        await acceptImport(
-                          await loadInstalledCampaignProject(entry),
-                        );
-                      });
-                  }}
-                >
-                  <option value="">Abrir paquete instalado</option>
-                  {library.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name} · {p.revision}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          </section>
-          <section className="studio-manager-group">
-            <h2>Importar archivos</h2>
-            <p>
-              Abrí un proyecto portátil, una campaña ZIP o una carpeta completa.
-            </p>
-            <div className="studio-toolbar">
-              <button onClick={() => fileRef.current?.click()}>
-                Importar proyecto o ZIP
-              </button>
-              <button onClick={() => folderRef.current?.click()}>
-                Importar carpeta
-              </button>
-            </div>
-            <p className="editor-help">
-              Los borradores con la misma identidad se importan como una copia.
-            </p>
-          </section>
-        </div>
-      </fieldset>
-      <input
-        hidden
-        type="file"
-        ref={fileRef}
-        accept=".json,.zip,application/json,application/zip"
-        onChange={(e) => {
-          const files = Array.from(e.target.files ?? []);
-          e.target.value = '';
-          if (files.length) void importFiles(files);
-        }}
-      />
-      <input
-        hidden
-        type="file"
-        ref={folderRef}
-        {...({ webkitdirectory: '', directory: '' } as any)}
-        multiple
-        onChange={(e) => {
-          const files = Array.from(e.target.files ?? []);
-          e.target.value = '';
-          if (files.length) void importFiles(files, true);
-        }}
-      />
-      {(busy || !ready) && <p role="status">{busy || 'Cargando proyectos…'}</p>}
-      {notice && (
-        <p role="status" className="studio-notice">
-          {notice}
-        </p>
-      )}
-      {pendingImport && (
-        <section className="studio-card">
-          <h2>Importar con identidad nueva</h2>
-          <p>El borrador existente se conserva.</p>
-          <label>
-            Identidad de copia
-            <input value={forkId} onChange={(e) => setForkId(e.target.value)} />
-          </label>
-          <label>
-            Nombre de copia
-            <input
-              value={forkName}
-              onChange={(e) => setForkName(e.target.value)}
-            />
-          </label>
-          <button
-            onClick={() => {
-              try {
-                fork(pendingImport);
-              } catch (error: any) {
-                setNotice(error.message);
-              }
-            }}
-          >
-            Importar como copia
-          </button>
-          <button onClick={() => setPendingImport(null)}>
-            Cancelar importación
-          </button>
-        </section>
-      )}
-      {!project ? (
-        <section className="studio-welcome">
-          <h2>Comenzá una campaña</h2>
-          <p>
-            Creá un proyecto vacío con dos localidades y un personaje guía.
-            También podés abrir un paquete instalado o importar una campaña
-            completa.
-          </p>
-          <ol>
-            <li>Definí el mundo y los mapas.</li>
-            <li>Agregá personajes, equipo, diálogos y objetivos.</li>
-            <li>Personalizá la presentación y los recursos.</li>
-            <li>
-              Probá el proyecto, corregí los informes y descargá el paquete.
-            </li>
-          </ol>
-        </section>
-      ) : (
-        <>
-          <div className="studio-project-bar">
-            <div>
-              <strong>{String(project.manifest.name ?? 'Sin nombre')}</strong>
-              <span>
-                {project.manifest.id} · revisión {project.manifest.revision}
-              </span>
-              <small
-                role="status"
-                className="editor-status"
-                data-state={
-                  saved.startsWith('Error')
-                    ? 'error'
-                    : saved === 'Guardado en este navegador'
-                      ? 'saved'
-                      : 'pending'
-                }
-              >
-                {saved}
-              </small>
-            </div>
-            <div className="studio-toolbar">
-              <button
-                title="Deshacer (Ctrl/Cmd + Z)"
-                disabled={!history.past.length || Boolean(busy)}
-                onClick={() => setHistory(undoStudioProject)}
-              >
-                <Undo2 size={15} aria-hidden="true" />
-                Deshacer
-              </button>
-              <button
-                title="Rehacer (Ctrl/Cmd + Mayús + Z)"
-                disabled={!history.future.length || Boolean(busy)}
-                onClick={() => setHistory(redoStudioProject)}
-              >
-                <Redo2 size={15} aria-hidden="true" />
-                Rehacer
-              </button>
-              <button
-                disabled={Boolean(busy)}
-                onClick={() =>
-                  download(
-                    JSON.stringify(project, null, 2),
-                    `${project.manifest.id}.project.json`,
-                    'application/json',
-                  )
-                }
-              >
-                <Download size={15} aria-hidden="true" />
-                Descargar proyecto
-              </button>
-              <button
-                className="editor-action-primary"
-                aria-describedby="studio-export-guidance"
-                disabled={!valid || Boolean(busy)}
-                onClick={() =>
-                  void run('Verificando y creando ZIP', async () => {
-                    download(
-                      await exportCampaignArchive(project),
-                      `${project.manifest.id}-${project.manifest.revision}.zip`,
-                      'application/zip',
-                    );
-                    setNotice('Paquete verificado y descargado.');
-                  })
-                }
-              >
-                <PackageCheck size={16} aria-hidden="true" />
-                Descargar campaña ZIP
-              </button>
-              <button
-                className="studio-validation-status"
-                data-state={checking ? 'pending' : valid ? 'valid' : 'error'}
-                onClick={() => setSection('package')}
-              >
-                {checking
-                  ? 'Validando…'
-                  : report?.valid
-                    ? 'Paquete válido'
-                    : `${report?.issues?.length ?? 0} problemas`}
-              </button>
-            </div>
+    <DocumentDraftProvider scope={project?.manifest.id ?? 'new'}>
+      <main className="campaign-studio">
+        <a className="studio-skip" href="#studio-panel">
+          Ir al panel del editor
+        </a>
+        <header className="studio-header">
+          <div>
+            <p className="studio-kicker">GRANADEROS / HERRAMIENTAS DE AUTOR</p>
+            <h1>Estudio de campañas</h1>
           </div>
-          <div id="studio-export-guidance" className="studio-export-guidance">
-            {checking ? (
-              'Comprobando el proyecto antes de exportar…'
-            ) : valid ? (
-              'El paquete está listo para probar y descargar.'
-            ) : (
-              <>
-                <span>
-                  El ZIP estará disponible cuando corrijas los problemas del
-                  proyecto. Podés descargar el borrador ahora.
-                </span>
-                <button type="button" onClick={() => setSection('package')}>
-                  Ver problemas
-                  <ArrowRight size={14} aria-hidden="true" />
-                </button>
-              </>
-            )}
-          </div>
-          <div className="studio-layout">
-            <StudioNavigation
-              section={section}
-              onSelect={setSection}
-              issues={report?.issues}
-            />
-            <fieldset
+          <div className="studio-header-actions">
+            <button
+              type="button"
+              aria-expanded={!project || managerOpen}
+              aria-controls="studio-project-manager"
               disabled={Boolean(busy)}
-              className="studio-panel"
-              id="studio-panel"
+              onClick={() => setManagerOpen(!managerOpen)}
             >
-              <legend className="sr-only">
-                {sections.find(([key]) => key === section)?.[1]}
-              </legend>
-              <div className="studio-panel-context">
-                <span>{String(project.manifest.name ?? 'Campaña')}</span>
-                <ChevronDown size={12} aria-hidden="true" />
-                <strong>
-                  {sections.find(([key]) => key === section)?.[1]}
-                </strong>
-              </div>
-              <PanelBoundary
-                resetKey={project}
-                key={`${section}-${project.manifest.id}`}
-                onRecover={() => setSection('documents')}
-              >
-                {section === 'project' ? (
-                  projectPanel
-                ) : section === 'world' ? (
-                  <WorldWorkspace {...panelProps!} />
-                ) : section === 'maps' ? (
-                  <MapWorkspace {...panelProps!} />
-                ) : section === 'buildings' ? (
-                  <BuildingWorkspace {...panelProps!} />
-                ) : section === 'content' ? (
-                  <ContentWorkspace {...panelProps!} />
-                ) : section === 'presentation' ? (
-                  <PresentationWorkspace {...panelProps!} />
-                ) : section === 'assets' ? (
-                  <AssetsWorkspace {...panelProps!} />
-                ) : section === 'tests' ? (
-                  <>
-                    <h2>Pruebas del proyecto</h2>
-                    <div className="studio-toolbar">
-                      <button
-                        aria-pressed={testTab === 'campaign'}
-                        onClick={() => setTestTab('campaign')}
-                      >
-                        Campaña y encargos
-                      </button>
-                      <button
-                        aria-pressed={testTab === 'weapons'}
-                        onClick={() => setTestTab('weapons')}
-                      >
-                        Equipo y combate
-                      </button>
-                    </div>
-                    {!valid ? (
-                      <p role="alert">
-                        Corregí la validación antes de iniciar una prueba.{' '}
-                        <button onClick={() => setSection('package')}>
-                          Ver informe
-                        </button>
-                      </p>
-                    ) : (
-                      compiled &&
-                      (testTab === 'campaign' ? (
-                        <QuestSandbox
-                          content={compiled}
-                          resolveAsset={resolveAsset}
-                        />
-                      ) : (
-                        <ContentEditor
-                          embedded
-                          initialTab="test"
-                          content={compiled}
-                          onContentChange={(next) =>
-                            change(updateProjectContent(project, next))
-                          }
-                          resolveAsset={resolveAsset}
-                        />
-                      ))
-                    )}
-                  </>
-                ) : section === 'package' ? (
-                  <>
-                    <h2>Validación y paquete</h2>
-                    <p>
-                      El estudio usa los validadores del motor y comprueba los
-                      bytes y las referencias de los recursos. Los proyectos con
-                      problemas se pueden guardar como borradores. El ZIP
-                      requiere un paquete válido.
-                    </p>
-                    <p role="status">
-                      {checking
-                        ? 'Validando el proyecto…'
-                        : report?.valid
-                          ? 'El paquete es válido.'
-                          : `${report?.issues?.length ?? 0} problemas requieren corrección.`}
-                    </p>
-                    {report?.checks && (
-                      <dl className="studio-checks">
-                        <dt>Mapas</dt>
-                        <dd>{report.checks.maps}</dd>
-                        <dt>Recursos</dt>
-                        <dd>{report.checks.resources}</dd>
-                        <dt>Bytes comprobados</dt>
-                        <dd>{report.checks.resourceBytes.toLocaleString()}</dd>
-                      </dl>
-                    )}
-                    <ul className="studio-issues">
-                      {report?.issues?.map((issue: any, index: number) => (
-                        <li key={index}>
-                          <button
-                            onClick={() =>
-                              setSection(issueSection(issue.section))
-                            }
-                          >
-                            {issue.section}
-                          </button>
-                          <span>{issue.message}</span>
-                          {issue.path && <code>{issue.path}</code>}
-                        </li>
-                      ))}
-                    </ul>
-                    <h3>Instalar una campaña descargada</h3>
-                    <p>
-                      Descomprimí el ZIP y copiá su carpeta en{' '}
-                      <code>campaigns/</code> del proyecto Granaderos. Iniciá el
-                      servidor o compilá y publicá el juego. La preparación del
-                      juego descubre los manifiestos y publica los recursos. La
-                      campaña conserva su identidad y revisión para las partidas
-                      guardadas.
-                    </p>
-                    <p>
-                      Descargá el archivo de proyecto para seguir editando en
-                      otro navegador. El ZIP contiene los archivos de juego; el
-                      proyecto también conserva las plantillas de autor.
-                    </p>
-                    <a
-                      href={pagePath('/studio') + '#studio-panel'}
-                      onClick={() => setSection('project')}
-                    >
-                      Volver a los datos del proyecto
-                    </a>
-                  </>
-                ) : (
-                  <>
-                    <h2>Todos los documentos</h2>
-                    <p>
-                      Estos campos editan los mismos documentos que los otros
-                      paneles. Las referencias se comprueban antes de exportar.
-                      El modo JSON es opcional.
-                    </p>
-                    {(
-                      [
-                        'manifest',
-                        'content',
-                        'world',
-                        'presentation',
-                        'maps',
-                        'mapIndex',
-                        'assets',
-                        'editor',
-                      ] as const
-                    ).map((key) => (
-                      <details key={key}>
-                        <summary>{key}</summary>
-                        <DocumentEditor
-                          value={project[key] ?? {}}
-                          path={key}
-                          onChange={(value) =>
-                            change({ ...project, [key]: value })
-                          }
-                        />
-                      </details>
-                    ))}
-                    <p>
-                      Los bytes de las imágenes y metadatos se administran en
-                      Recursos.
-                    </p>
-                  </>
-                )}
-              </PanelBoundary>
-            </fieldset>
+              <FolderOpen size={16} aria-hidden="true" />
+              Administrar proyectos
+              <ChevronDown size={14} aria-hidden="true" />
+            </button>
+            <a href={pagePath('/')}>
+              <span>Volver al juego</span>
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
           </div>
-        </>
-      )}
-      <footer className="studio-footer">
-        <p>
-          Ctrl/Cmd + Z: deshacer. Ctrl/Cmd + Mayús + Z: rehacer. Ctrl/Cmd + S:
-          descargar proyecto.
-        </p>
-        {project && (
-          <button
-            className="studio-text-danger"
-            disabled={Boolean(busy)}
-            onClick={() => {
-              if (
-                !window.confirm(
-                  `Eliminar el borrador local ${project.manifest.id}? Descargá una copia antes de eliminarlo.`,
-                )
-              )
-                return;
-              void run('Eliminando borrador', async () => {
-                await deleteStudioProject(project.manifest.id);
-                setProjects((current) =>
-                  current.filter((p) => p.manifest.id !== project.manifest.id),
-                );
-                setHistory(emptyStudioHistory());
-                setSaved('');
-                try {
-                  localStorage.removeItem(LAST_PROJECT);
-                } catch {}
-              });
-            }}
-          >
-            Eliminar este borrador local
-          </button>
+        </header>
+        <fieldset
+          id="studio-project-manager"
+          className="studio-controls"
+          hidden={Boolean(project) && !managerOpen}
+          disabled={Boolean(busy) || !ready}
+        >
+          <legend>Proyectos</legend>
+          <div className="studio-manager-grid">
+            <section className="studio-manager-group">
+              <h2>Crear una campaña</h2>
+              <p>Empezá con un mundo y un personaje guía que podés cambiar.</p>
+              <div className="studio-toolbar">
+                <label>
+                  Identidad
+                  <input
+                    value={createId}
+                    onChange={(e) => setCreateId(e.target.value)}
+                    pattern="[a-z][a-z0-9-]*"
+                  />
+                </label>
+                <label>
+                  Nombre
+                  <input
+                    value={createName}
+                    onChange={(e) => setCreateName(e.target.value)}
+                  />
+                </label>
+                <button
+                  className="editor-action-primary"
+                  onClick={() =>
+                    void run('Creando proyecto', async () => {
+                      if (projects.some((p) => p.manifest.id === createId))
+                        throw Error('Esta identidad ya tiene un borrador.');
+                      open(await createCampaignProject(createId, createName));
+                    })
+                  }
+                >
+                  Crear campaña
+                </button>
+              </div>
+              <p className="editor-help">
+                La identidad usa letras minúsculas, números y guiones; debe
+                comenzar con una letra.
+              </p>
+            </section>
+            <section className="studio-manager-group">
+              <h2>Abrir un proyecto</h2>
+              <p>
+                Continuá un borrador local o usá una campaña instalada como
+                punto de partida.
+              </p>
+              <div className="studio-toolbar">
+                <label>
+                  Borrador guardado
+                  <select
+                    value={project?.manifest.id ?? ''}
+                    onChange={(e) => {
+                      const next = projects.find(
+                        (p) => p.manifest.id === e.target.value,
+                      );
+                      if (next)
+                        void run('Abriendo borrador', async () => open(next));
+                    }}
+                  >
+                    <option value="">Elegí un proyecto</option>
+                    {projects.map((p) => (
+                      <option key={p.manifest.id} value={p.manifest.id}>
+                        {p.manifest.name} · {p.manifest.id}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Campaña instalada
+                  <select
+                    defaultValue=""
+                    onChange={(e) => {
+                      const entry = library.find(
+                        (p) => p.id === e.target.value,
+                      );
+                      e.target.value = '';
+                      if (entry)
+                        void run('Leyendo documentos y recursos', async () => {
+                          await acceptImport(
+                            await loadInstalledCampaignProject(entry),
+                          );
+                        });
+                    }}
+                  >
+                    <option value="">Abrir paquete instalado</option>
+                    {library.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} · {p.revision}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            </section>
+            <section className="studio-manager-group">
+              <h2>Importar archivos</h2>
+              <p>
+                Abrí un proyecto portátil, una campaña ZIP o una carpeta
+                completa.
+              </p>
+              <div className="studio-toolbar">
+                <button onClick={() => fileRef.current?.click()}>
+                  Importar proyecto o ZIP
+                </button>
+                <button onClick={() => folderRef.current?.click()}>
+                  Importar carpeta
+                </button>
+              </div>
+              <p className="editor-help">
+                Los borradores con la misma identidad se importan como una
+                copia.
+              </p>
+            </section>
+          </div>
+        </fieldset>
+        <input
+          hidden
+          type="file"
+          ref={fileRef}
+          accept=".json,.zip,application/json,application/zip"
+          onChange={(e) => {
+            const files = Array.from(e.target.files ?? []);
+            e.target.value = '';
+            if (files.length) void importFiles(files);
+          }}
+        />
+        <input
+          hidden
+          type="file"
+          ref={folderRef}
+          {...({ webkitdirectory: '', directory: '' } as any)}
+          multiple
+          onChange={(e) => {
+            const files = Array.from(e.target.files ?? []);
+            e.target.value = '';
+            if (files.length) void importFiles(files, true);
+          }}
+        />
+        {(busy || !ready) && (
+          <p role="status">{busy || 'Cargando proyectos…'}</p>
         )}
-      </footer>
-    </main>
+        {notice && (
+          <p role="status" className="studio-notice">
+            {notice}
+          </p>
+        )}
+        {pendingImport && (
+          <section className="studio-card">
+            <h2>Importar con identidad nueva</h2>
+            <p>El borrador existente se conserva.</p>
+            <label>
+              Identidad de copia
+              <input
+                value={forkId}
+                onChange={(e) => setForkId(e.target.value)}
+              />
+            </label>
+            <label>
+              Nombre de copia
+              <input
+                value={forkName}
+                onChange={(e) => setForkName(e.target.value)}
+              />
+            </label>
+            <button
+              onClick={() => {
+                try {
+                  fork(pendingImport);
+                } catch (error: any) {
+                  setNotice(error.message);
+                }
+              }}
+            >
+              Importar como copia
+            </button>
+            <button onClick={() => setPendingImport(null)}>
+              Cancelar importación
+            </button>
+          </section>
+        )}
+        {!project ? (
+          <section className="studio-welcome">
+            <h2>Comenzá una campaña</h2>
+            <p>
+              Creá un proyecto vacío con dos localidades y un personaje guía.
+              También podés abrir un paquete instalado o importar una campaña
+              completa.
+            </p>
+            <ol>
+              <li>Definí el mundo y los mapas.</li>
+              <li>Agregá personajes, equipo, diálogos y objetivos.</li>
+              <li>Personalizá la presentación y los recursos.</li>
+              <li>
+                Probá el proyecto, corregí los informes y descargá el paquete.
+              </li>
+            </ol>
+          </section>
+        ) : (
+          <>
+            <div className="studio-project-bar">
+              <div>
+                <strong>{String(project.manifest.name ?? 'Sin nombre')}</strong>
+                <span>
+                  {project.manifest.id} · revisión {project.manifest.revision}
+                </span>
+                <small
+                  role="status"
+                  className="editor-status"
+                  data-state={
+                    saved.startsWith('Error')
+                      ? 'error'
+                      : saved === 'Guardado en este navegador'
+                        ? 'saved'
+                        : 'pending'
+                  }
+                >
+                  {saved}
+                </small>
+              </div>
+              <div className="studio-toolbar">
+                <button
+                  title="Deshacer (Ctrl/Cmd + Z)"
+                  disabled={!history.past.length || Boolean(busy)}
+                  onClick={() => setHistory(undoStudioProject)}
+                >
+                  <Undo2 size={15} aria-hidden="true" />
+                  Deshacer
+                </button>
+                <button
+                  title="Rehacer (Ctrl/Cmd + Mayús + Z)"
+                  disabled={!history.future.length || Boolean(busy)}
+                  onClick={() => setHistory(redoStudioProject)}
+                >
+                  <Redo2 size={15} aria-hidden="true" />
+                  Rehacer
+                </button>
+                <button
+                  disabled={Boolean(busy)}
+                  onClick={() =>
+                    download(
+                      JSON.stringify(project, null, 2),
+                      `${project.manifest.id}.project.json`,
+                      'application/json',
+                    )
+                  }
+                >
+                  <Download size={15} aria-hidden="true" />
+                  Descargar proyecto
+                </button>
+                <button
+                  className="editor-action-primary"
+                  aria-describedby="studio-export-guidance"
+                  disabled={!valid || Boolean(busy)}
+                  onClick={() =>
+                    void run('Verificando y creando ZIP', async () => {
+                      download(
+                        await exportCampaignArchive(project),
+                        `${project.manifest.id}-${project.manifest.revision}.zip`,
+                        'application/zip',
+                      );
+                      setNotice('Paquete verificado y descargado.');
+                    })
+                  }
+                >
+                  <PackageCheck size={16} aria-hidden="true" />
+                  Descargar campaña ZIP
+                </button>
+                <button
+                  className="studio-validation-status"
+                  data-state={checking ? 'pending' : valid ? 'valid' : 'error'}
+                  onClick={() => setSection('package')}
+                >
+                  {checking
+                    ? 'Validando…'
+                    : report?.valid
+                      ? 'Paquete válido'
+                      : `${report?.issues?.length ?? 0} problemas`}
+                </button>
+              </div>
+            </div>
+            <DocumentDraftStatus onOpen={() => setSection('documents')} />
+            <div id="studio-export-guidance" className="studio-export-guidance">
+              {checking ? (
+                'Comprobando el proyecto antes de exportar…'
+              ) : valid ? (
+                'El paquete está listo para probar y descargar.'
+              ) : (
+                <>
+                  <span>
+                    El ZIP estará disponible cuando corrijas los problemas del
+                    proyecto. Podés descargar el borrador ahora.
+                  </span>
+                  <button type="button" onClick={() => setSection('package')}>
+                    Ver problemas
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </button>
+                </>
+              )}
+            </div>
+            <div className="studio-layout">
+              <StudioNavigation
+                section={section}
+                onSelect={setSection}
+                issues={report?.issues}
+              />
+              <fieldset
+                disabled={Boolean(busy)}
+                className="studio-panel"
+                id="studio-panel"
+              >
+                <legend className="sr-only">
+                  {sections.find(([key]) => key === section)?.[1]}
+                </legend>
+                <div className="studio-panel-context">
+                  <span>{String(project.manifest.name ?? 'Campaña')}</span>
+                  <ChevronDown size={12} aria-hidden="true" />
+                  <strong>
+                    {sections.find(([key]) => key === section)?.[1]}
+                  </strong>
+                </div>
+                <PanelBoundary
+                  resetKey={project}
+                  key={`${section}-${project.manifest.id}`}
+                  onRecover={() => setSection('documents')}
+                >
+                  {section === 'project' ? (
+                    projectPanel
+                  ) : section === 'world' ? (
+                    <WorldWorkspace {...panelProps!} />
+                  ) : section === 'maps' ? (
+                    <MapWorkspace {...panelProps!} />
+                  ) : section === 'buildings' ? (
+                    <BuildingWorkspace {...panelProps!} />
+                  ) : section === 'content' ? (
+                    <ContentWorkspace {...panelProps!} />
+                  ) : section === 'presentation' ? (
+                    <PresentationWorkspace {...panelProps!} />
+                  ) : section === 'assets' ? (
+                    <AssetsWorkspace {...panelProps!} />
+                  ) : section === 'tests' ? (
+                    <>
+                      <h2>Pruebas del proyecto</h2>
+                      <div className="studio-toolbar">
+                        <button
+                          aria-pressed={testTab === 'campaign'}
+                          onClick={() => setTestTab('campaign')}
+                        >
+                          Campaña y encargos
+                        </button>
+                        <button
+                          aria-pressed={testTab === 'weapons'}
+                          onClick={() => setTestTab('weapons')}
+                        >
+                          Equipo y combate
+                        </button>
+                      </div>
+                      {!valid ? (
+                        <p role="alert">
+                          Corregí la validación antes de iniciar una prueba.{' '}
+                          <button onClick={() => setSection('package')}>
+                            Ver informe
+                          </button>
+                        </p>
+                      ) : (
+                        compiled &&
+                        (testTab === 'campaign' ? (
+                          <QuestSandbox
+                            content={compiled}
+                            resolveAsset={resolveAsset}
+                          />
+                        ) : (
+                          <ContentEditor
+                            embedded
+                            initialTab="test"
+                            content={compiled}
+                            onContentChange={(next) =>
+                              change(updateProjectContent(project, next))
+                            }
+                            resolveAsset={resolveAsset}
+                          />
+                        ))
+                      )}
+                    </>
+                  ) : section === 'package' ? (
+                    <>
+                      <h2>Validación y paquete</h2>
+                      <p>
+                        El estudio usa los validadores del motor y comprueba los
+                        bytes y las referencias de los recursos. Los proyectos
+                        con problemas se pueden guardar como borradores. El ZIP
+                        requiere un paquete válido.
+                      </p>
+                      <p role="status">
+                        {checking
+                          ? 'Validando el proyecto…'
+                          : report?.valid
+                            ? 'El paquete es válido.'
+                            : `${report?.issues?.length ?? 0} problemas requieren corrección.`}
+                      </p>
+                      {report?.checks && (
+                        <dl className="studio-checks">
+                          <dt>Mapas</dt>
+                          <dd>{report.checks.maps}</dd>
+                          <dt>Recursos</dt>
+                          <dd>{report.checks.resources}</dd>
+                          <dt>Bytes comprobados</dt>
+                          <dd>
+                            {report.checks.resourceBytes.toLocaleString()}
+                          </dd>
+                        </dl>
+                      )}
+                      <ul className="studio-issues">
+                        {report?.issues?.map((issue: any, index: number) => (
+                          <li key={index}>
+                            <button
+                              onClick={() =>
+                                setSection(issueSection(issue.section))
+                              }
+                            >
+                              Revisar{' '}
+                              {STUDIO_SECTIONS.find(
+                                (item) =>
+                                  item.id === issueSection(issue.section),
+                              )?.label ?? issue.section}
+                            </button>
+                            <span>{issue.message}</span>
+                            {issue.path && <code>{issue.path}</code>}
+                          </li>
+                        ))}
+                      </ul>
+                      <h3>Instalar una campaña descargada</h3>
+                      <p>
+                        Descomprimí el ZIP y copiá su carpeta en{' '}
+                        <code>campaigns/</code> del proyecto Granaderos. Iniciá
+                        el servidor o compilá y publicá el juego. La preparación
+                        del juego descubre los manifiestos y publica los
+                        recursos. La campaña conserva su identidad y revisión
+                        para las partidas guardadas.
+                      </p>
+                      <p>
+                        Descargá el archivo de proyecto para seguir editando en
+                        otro navegador. El ZIP contiene los archivos de juego;
+                        el proyecto también conserva las plantillas de autor.
+                      </p>
+                      <a
+                        href={pagePath('/studio') + '#studio-panel'}
+                        onClick={() => setSection('project')}
+                      >
+                        Volver a los datos del proyecto
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <h2>Todos los documentos</h2>
+                      <p>
+                        Estos campos editan los mismos documentos que los otros
+                        paneles. Las referencias se comprueban antes de
+                        exportar. El modo JSON es opcional.
+                      </p>
+                      {(
+                        [
+                          'manifest',
+                          'content',
+                          'world',
+                          'presentation',
+                          'maps',
+                          'mapIndex',
+                          'assets',
+                          'editor',
+                        ] as const
+                      ).map((key) => (
+                        <details key={key}>
+                          <summary>{key}</summary>
+                          <DocumentEditor
+                            value={project[key] ?? {}}
+                            path={key}
+                            onChange={(value) =>
+                              change({ ...project, [key]: value })
+                            }
+                          />
+                        </details>
+                      ))}
+                      <p>
+                        Los bytes de las imágenes y metadatos se administran en
+                        Recursos.
+                      </p>
+                    </>
+                  )}
+                </PanelBoundary>
+              </fieldset>
+            </div>
+          </>
+        )}
+        <footer className="studio-footer">
+          <p>
+            Ctrl/Cmd + Z: deshacer. Ctrl/Cmd + Mayús + Z: rehacer. Ctrl/Cmd + S:
+            descargar proyecto.
+          </p>
+          {project && (
+            <button
+              className="studio-text-danger"
+              disabled={Boolean(busy)}
+              onClick={() => {
+                if (
+                  !window.confirm(
+                    `Eliminar el borrador local ${project.manifest.id}? Descargá una copia antes de eliminarlo.`,
+                  )
+                )
+                  return;
+                void run('Eliminando borrador', async () => {
+                  await deleteStudioProject(project.manifest.id);
+                  setProjects((current) =>
+                    current.filter(
+                      (p) => p.manifest.id !== project.manifest.id,
+                    ),
+                  );
+                  setHistory(emptyStudioHistory());
+                  setSaved('');
+                  try {
+                    localStorage.removeItem(LAST_PROJECT);
+                  } catch {}
+                });
+              }}
+            >
+              Eliminar este borrador local
+            </button>
+          )}
+        </footer>
+      </main>
+    </DocumentDraftProvider>
   );
 }

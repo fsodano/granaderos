@@ -83,6 +83,16 @@
 .studio-navigation button[data-issues]::after { content: attr(data-issues); margin-left: auto; font-size: 10px; border: 1px solid #806742; border-radius: 4px; color: var(--editor-warning); min-width: 18px; padding: 0 4px; text-align: center; }
 .studio-navigation-note { font-size: 11px; padding: 14px 10px 0; border-top: 1px solid var(--studio-line); color: var(--studio-muted); margin: 0 !important; }
 .studio-panel { border: 0; padding: 0; margin: 0; min-width: 0; }
+.studio-grid-scroll { border: 1px solid var(--studio-line); border-radius: 6px; padding: 10px; margin-bottom: 16px; background: var(--editor-panel); }
+.studio-grid-context { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 12px 14px; background: var(--editor-accent-soft); border: 1px solid #275052; border-radius: 6px; margin-bottom: 12px; }
+.studio-grid-context span { font-size: 12px; color: var(--studio-muted); }
+.studio-grid-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11px; color: var(--studio-muted); margin-bottom: 12px; }
+.studio-grid-legend [data-cell-kind=anchor] { color: var(--studio-accent); }
+.studio-locality-panel, .studio-locality-create, .studio-building-selection, .studio-building-preview-guide, .studio-building-empty { border: 1px solid var(--studio-line); background: var(--editor-panel); border-radius: 8px; padding: 18px; margin: 18px 0; min-width: 0; }
+.studio-locality-create summary { cursor: pointer; font-weight: 600; }
+.studio-locality-create[open] summary { margin-bottom: 12px; }
+.studio-building-empty { border-style: dashed; }
+.studio-building-preview-guide p:last-child { margin-bottom: 0; }
 .studio-panel-context { display: flex; align-items: center; gap: 10px; color: var(--studio-muted); font-size: 11px; margin-bottom: 20px; overflow-wrap: anywhere; }
 .studio-panel-context svg { transform: rotate(-90deg); flex: none; }
 .studio-panel-context strong { color: var(--studio-ink); font-weight: 500; }
@@ -104,24 +114,6 @@
 .studio-menu-preview { background-size: cover; background-position: center; padding: 36px; display: flex; flex-direction: column; justify-content: center; min-height: 330px; border: 1px solid var(--studio-line); border-radius: 8px; text-align: center; }
 .studio-menu-preview h3 { font: 32px Georgia,serif; }
 .studio-menu-preview button { margin: 20px auto; min-width: 180px; }
-.studio-fields { margin: 10px 0; border: 1px solid var(--studio-line); border-radius: 6px; background: var(--editor-panel); min-width: 0; }
-.studio-field-heading { width: 100%; display: flex !important; justify-content: space-between !important; text-align: left; background: var(--editor-surface) !important; gap: 12px; border: 0 !important; border-radius: 5px !important; padding: 12px !important; }
-.studio-field-heading small { font-size: 11px; font-weight: 400; flex: none; }
-.studio-field-body { padding: 16px; }
-.studio-field-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px; margin-bottom: 14px; align-items: start; border-bottom: 1px solid var(--studio-line); padding-bottom: 14px; }
-.studio-field-row:last-of-type { border-bottom: 0; }
-.studio-field-row-actions { align-items: center; max-width: 150px; gap: 5px; }
-.studio-field-row-actions button { font-size: 11px; padding: 5px 7px; min-height: 29px; background: transparent; }
-.studio-value-field small { font-size: 10px; overflow-wrap: anywhere; font-weight: 400; }
-.studio-check-field { flex-direction: row !important; align-items: center; flex-wrap: wrap; }
-.studio-check-field small { font-size: 10px; width: 100%; overflow-wrap: anywhere; font-weight: 400; }
-.studio-null-field { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.studio-null-field select { width: auto; }
-.studio-colour-field { display: flex; gap: 8px; }
-.studio-add-field { border-top: 1px solid var(--studio-line); padding-top: 14px; margin-top: 8px; }
-.studio-add-field label { flex: 1; min-width: 130px; }
-.studio-document-mode { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--studio-line); border-radius: 7px; margin: 10px 0 16px; }
-.studio-document-mode button { border: 0; background: transparent; min-height: 30px; }
 .campaign-studio button[aria-pressed=true] { border-color: #397a78; background: var(--editor-accent-soft); color: #aff5e5; }
 .studio-json, .campaign-studio pre { font: 12px/1.6 ui-monospace,monospace; overflow: auto; max-width: 100%; }
 .campaign-studio details { margin: 14px 0; border: 1px solid var(--studio-line); padding: 12px 14px; border-radius: 6px; background: var(--editor-panel); }

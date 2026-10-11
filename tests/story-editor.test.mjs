@@ -712,7 +712,7 @@ test('campaign objectives and local errands protect referenced residents through
  for(const [title,name]of dependent){assert.ok(warning.textContent.includes(title),title);assert.ok(warning.textContent.includes(name),`${name}: ${warning.textContent}`);}
  assert.match(warning.textContent,/Capataz del puerto/,'the secondary generic beneficiary also prevents resident removal');
  assert.doesNotMatch(warning.textContent,/Macacha Güemes/);await m.click(toggle());assert.equal(toggle().checked,true);assert.equal(m.dom.window.localStorage.getItem(draftKey),before);assert.deepEqual(draft().errands,d.errands);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
- await m.click(m.button('Encargos locales'));for(const [title]of dependent){await m.click(m.button(title));await m.click(m.button('Quitar encargo'));}
+ await m.click(m.button('Encargos locales'));for(const [title]of dependent){const card=[...m.document.querySelectorAll('.entry-list button')].find(button=>button.getAttribute('aria-label')===title);assert.ok(card,title);await m.click(card);await m.click(m.button('Quitar encargo'));}
  assert.deepEqual(draft().errands.map(q=>q.npcId),['macacha']);assert.deepEqual(draft().quests,d.quests);
  await m.click(m.button('Reglas'));assert.equal(toggle().disabled,false);assert.equal(m.document.getElementById('original-resident-dependencies'),null);await m.click(toggle());assert.equal(draft().includeOriginalResidents,false);
  await m.click(m.button('Deshacer'));assert.equal(draft().includeOriginalResidents,d.includeOriginalResidents);assert.equal(toggle().checked,true);await m.click(m.button('Rehacer'));assert.equal(draft().includeOriginalResidents,false);
@@ -1029,4 +1029,95 @@ test('the editor preserves omitted air loss and authors independent load profile
  const input=m.document.querySelectorAll('input[type="file"][accept="application/json,.json"]')[1];Object.defineProperty(input,'files',{configurable:true,value:[file]});await act(async()=>input.dispatchEvent(new m.dom.window.Event('change',{bubbles:true})));assert.deepEqual(draft(),imported);await choose();assert.equal(m.label('Energía restante al alcance principal (%)').value,'75');assert.equal(m.label('Energía restante al alcance de la carga (%)').value,'55');
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=withCarriedAmmo(campaign,110,'ammoShot',3);campaign=order(campaign,{type:'unloadAmmunition',operativeId:110});campaign=order(campaign,{type:'selectAmmunitionLoad',operativeId:110,family:'ammoShot'});
  const p=saved(tactical(visit(campaign),{type:'reload',unitId:'110'})),u=p.battle.units.find(u=>u.id==='110');assert.equal(u.loaded,1);assert.equal(ammoCount(u,'ammoShot'),2);assert.equal(ammoCount(u,'ammoMusket'),10);assert.equal(weaponSpecification(u).projectileAirDrag.retentionAtRange,.55);assert.equal(u.weaponMetadata.contentWeapon.projectileAirDrag.retentionAtRange,.75);assert.deepEqual(p.campaign.contentCampaign.package.weapons.find(w=>w.id==='firearm-1800'),configured);
+});
+
+test('content section tabs support one tab stop, arrow navigation, Home and End without changing the draft',async t=>{
+ const m=await mount(t),stored=m.dom.window.localStorage.getItem(draftKey),nav=m.document.querySelector('[role="tablist"][aria-label="Secciones del editor"]');
+ const tabs=()=>[...nav.querySelectorAll('[role="tab"]')],panel=()=>m.document.querySelector('[role="tabpanel"]');
+ assert.equal(tabs().filter(b=>b.tabIndex===0).length,1);assert.equal(tabs()[0].getAttribute('aria-selected'),'true');
+ assert.equal(m.document.getElementById(tabs()[0].getAttribute('aria-controls')),panel());
+ const key=async(element,value)=>{await act(async()=>element.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:value,bubbles:true,cancelable:true})));};
+ tabs()[0].focus();await key(tabs()[0],'ArrowRight');assert.equal(m.document.activeElement.textContent.trim(),'Armas');assert.equal(m.document.activeElement.getAttribute('aria-selected'),'true');
+ assert.equal(panel().getAttribute('aria-labelledby'),m.document.activeElement.id);assert.match(panel().textContent,/modelos de artillería/);
+ await key(m.document.activeElement,'End');assert.equal(m.document.activeElement.textContent.trim(),'Pruebas');
+ await key(m.document.activeElement,'ArrowRight');assert.equal(m.document.activeElement.textContent.trim(),'Personajes');
+ await key(m.document.activeElement,'ArrowLeft');assert.equal(m.document.activeElement.textContent.trim(),'Pruebas');
+ await key(m.document.activeElement,'Home');assert.equal(m.document.activeElement.textContent.trim(),'Personajes');
+ assert.equal(tabs().filter(b=>b.tabIndex===0).length,1);assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+});
+
+test('entity filtering explains a retained selection, clears with Escape and leaves content and history intact',async t=>{
+ const m=await mount(t),search=m.document.querySelector('input[type="search"]');
+ await m.input(search,'person-100');await m.click(m.document.querySelector('.entry-list button'));
+ const name=m.label('Nombre').value,stored=m.dom.window.localStorage.getItem(draftKey);
+ await m.input(search,'no-such-record');assert.equal(m.document.querySelectorAll('.entry-list button').length,0);
+ assert.match(m.document.querySelector('.entry-list').textContent,/No hay resultados/);assert.match(m.document.querySelector('.content-selection-note').textContent,/conserva la ficha/);
+ assert.equal(m.label('Nombre').value,name);assert.equal(m.button('Deshacer').disabled,true);
+ search.focus();const event=new m.dom.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true});await act(async()=>search.dispatchEvent(event));
+ assert.equal(event.defaultPrevented,true);assert.equal(search.value,'');assert.equal(m.document.activeElement,search);assert.equal(m.document.querySelector('.content-selection-note'),null);
+ assert.ok(m.document.querySelectorAll('.entry-list button').length>1);assert.equal(m.label('Nombre').value,name);assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+ await m.input(search,'missing-again');await m.click(m.button('Limpiar búsqueda'));assert.equal(search.value,'');assert.equal(m.label('Nombre').value,name);
+});
+
+test('standalone history shortcuts undo real edits while leaving text fields and export dialogs to native history',async t=>{
+ const m=await mount(t),field=m.label('Nombre'),name=field.value;
+ await m.input(field,'Nombre con historial');const changed=m.dom.window.localStorage.getItem(draftKey);
+ const key=async(target,extra={})=>{const event=new m.dom.window.KeyboardEvent('keydown',{key:'z',ctrlKey:true,bubbles:true,cancelable:true,...extra});await act(async()=>target.dispatchEvent(event));return event;};
+ assert.equal((await key(field)).defaultPrevented,false);assert.equal(field.value,'Nombre con historial');assert.equal(m.dom.window.localStorage.getItem(draftKey),changed);
+ assert.equal((await key(m.document.body)).defaultPrevented,true);assert.equal(m.label('Nombre').value,name);
+ assert.equal((await key(m.document.body,{shiftKey:true})).defaultPrevented,true);assert.equal(m.label('Nombre').value,'Nombre con historial');
+ await m.click(m.button('Exportar contenido'));const json=m.document.querySelector('[role="dialog"] textarea');assert.ok(json);
+ assert.equal((await key(json)).defaultPrevented,false);assert.equal(m.dom.window.localStorage.getItem(draftKey),changed);
+ await m.click(m.button('Cerrar exportación'));assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
+});
+
+test('quest and event lists search without accents, explain empty results and retain the selected record',async t=>{
+ const d=defaultContentPackage();d.quests=[{id:'misiones',title:'Misión del río',description:'Una misión.'}];d.campaignEvents=[{id:'aviso',atHour:24,text:'Reunión del ejército',conditions:[],effects:[]}];
+ const m=await mount(t,JSON.stringify(d)),stored=m.dom.window.localStorage.getItem(draftKey);
+ await m.click(m.button('Encargos'));let search=m.document.querySelector('input[type="search"]');await m.input(search,'MISION');assert.equal(m.document.querySelectorAll('.entry-list button').length,1);
+ await m.input(search,'no-match');assert.match(m.document.querySelector('.entry-list').textContent,/No hay resultados/);assert.equal(m.label('Título del encargo').value,'Misión del río');assert.match(m.document.querySelector('.content-selection-note').textContent,/conserva el encargo/);
+ await m.click(m.button('Limpiar búsqueda'));assert.equal(search.value,'');
+ await m.click(m.button('Eventos y suministros'));search=m.document.querySelector('input[type="search"]');await m.input(search,'REUNION');assert.equal(m.document.querySelectorAll('.entry-list button').length,1);
+ await m.input(search,'no-match');assert.match(m.document.querySelector('.entry-list').textContent,/No hay resultados/);assert.equal(m.label('Texto del evento').value,'Reunión del ejército');assert.match(m.document.querySelector('.content-selection-note').textContent,/conserva el evento/);
+ await m.click(m.button('Limpiar búsqueda'));assert.equal(search.value,'');assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+});
+
+test('the entity catalogue uses one tab stop and arrow keys select real records without writing content',async t=>{
+ const m=await mount(t),stored=m.dom.window.localStorage.getItem(draftKey),list=m.document.querySelector('.entry-list'),buttons=()=>[...list.querySelectorAll('button')];
+ assert.equal(buttons().filter(b=>b.tabIndex===0).length,1);buttons()[0].focus();
+ const key=async(value)=>{await act(async()=>m.document.activeElement.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:value,bubbles:true,cancelable:true})));};
+ await key('ArrowDown');assert.equal(m.document.activeElement,buttons()[1]);assert.equal(buttons()[1].getAttribute('aria-pressed'),'true');assert.equal(m.label('Nombre').value,defaultContentPackage().characters[1].name);
+ await key('End');assert.equal(m.document.activeElement,buttons().at(-1));assert.equal(buttons().at(-1).getAttribute('aria-pressed'),'true');
+ await key('Home');assert.equal(m.document.activeElement,buttons()[0]);assert.equal(buttons().filter(b=>b.tabIndex===0).length,1);
+ assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+});
+
+test('standalone advanced JSON survives section changes, guards closing and applies through the existing draft history',async t=>{
+ const d=defaultContentPackage();d.imports={port:'ensenada',minHours:12,maxHours:24};const m=await mount(t,JSON.stringify(d)),stored=m.dom.window.localStorage.getItem(draftKey);
+ const document=()=>[...m.document.querySelectorAll('h3')].find(h=>h.textContent==='Importaciones').parentElement.querySelector('.studio-document');
+ const button=(text)=>[...document().querySelectorAll('button')].find(b=>b.textContent.trim()===text);
+ await m.click(m.button('Eventos y suministros'));await m.click(button('JSON'));
+ const staged='{"port":"ensenada",\n  "minHours": 18,\n';await m.input(document().querySelector('textarea'),staged);
+ assert.match(document().textContent,/Texto sin aplicar/);assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);assert.match(m.document.querySelector('.studio-staged-notice').textContent,/1 documento tiene texto sin aplicar/);
+ const closing=new m.dom.window.Event('beforeunload',{cancelable:true});m.dom.window.dispatchEvent(closing);assert.equal(closing.defaultPrevented,true);
+ await m.click(m.button('Personajes'));assert.equal(m.document.querySelector('.studio-document'),null);await m.click(m.button('Revisar documentos'));
+ assert.equal(document().querySelector('textarea').value,staged);assert.equal(button('JSON').getAttribute('aria-pressed'),'true');assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+ await m.click(button('Aplicar documento'));assert.match(document().querySelector('[role="alert"]').textContent,/No se pudo aplicar/);assert.equal(document().querySelector('textarea').value,staged);assert.equal(m.dom.window.localStorage.getItem(draftKey),stored);
+ await m.input(document().querySelector('textarea'),JSON.stringify({...d.imports,minHours:18},null,2));await m.click(button('Aplicar documento'));
+ assert.equal(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).imports.minHours,18);assert.equal(m.document.querySelector('.studio-staged-notice'),null);assert.match(document().textContent,/Datos aplicados/);
+ await m.click(m.button('Deshacer'));assert.equal(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).imports.minHours,12);await m.click(m.button('Rehacer'));assert.equal(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).imports.minHours,18);
+ const after=new m.dom.window.Event('beforeunload',{cancelable:true});m.dom.window.dispatchEvent(after);assert.equal(after.defaultPrevented,false);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
+});
+
+test('embedded advanced JSON shares its owner and keeps unapplied text when the owner adopts new content',async t=>{
+ const {default:ContentEditor}=await import('../web/app/story/ContentEditor.tsx'),{DocumentDraftProvider,DocumentDraftStatus}=await import('../web/app/studio/DocumentDrafts.tsx');
+ const d=defaultContentPackage();d.imports={port:'ensenada',minHours:12,maxHours:24};let current=d,updates=0;
+ function Harness(){const [value,setValue]=useState(d);current=value;return h(DocumentDraftProvider,{scope:'owner-project'},h('div',null,h('button',{onClick:()=>setValue({...d,imports:{...d.imports,maxHours:40}})},'Adoptar contenido'),h(DocumentDraftStatus,{onOpen:()=>{}}),h(ContentEditor,{embedded:true,content:value,initialTab:'advanced',onContentChange:next=>{updates++;setValue(next);}})));}
+ const m=await mount(t,undefined,null,null,'recruitment',{ComponentOverride:Harness}),document=()=>[...m.document.querySelectorAll('h3')].find(h=>h.textContent==='Importaciones').parentElement.querySelector('.studio-document'),button=text=>[...document().querySelectorAll('button')].find(b=>b.textContent.trim()===text);
+ await m.click(button('JSON'));const staged=JSON.stringify({...d.imports,minHours:18},null,2);await m.input(document().querySelector('textarea'),staged);
+ assert.equal(m.document.querySelectorAll('.studio-staged-notice').length,1,'the parent reports the stage without a competing embedded store');assert.match(m.document.querySelector('.studio-staged-notice').textContent,/1 documento tiene texto sin aplicar/);assert.equal(updates,0);
+ await m.click(m.button('Adoptar contenido'));assert.equal(current.imports.maxHours,40);assert.equal(document().querySelector('textarea').value,staged);assert.match(document().querySelector('[role="alert"]').textContent,/datos aplicados cambiaron/);assert.equal(button('Aplicar documento').disabled,true);
+ await m.click(m.button('Armas'));await m.click(m.button('Eventos y suministros'));assert.equal(document().querySelector('textarea').value,staged);assert.equal(button('Aplicar documento').disabled,true);assert.equal(current.imports.maxHours,40);assert.equal(updates,0);
+ const replace=document().querySelector('.studio-document-conflict input[type="checkbox"]');assert.ok(replace);await m.click(replace);assert.equal(button('Aplicar documento').disabled,false);await m.click(button('Aplicar documento'));
+ assert.equal(updates,1);assert.deepEqual(current.imports,{port:'ensenada',minHours:18,maxHours:24});assert.equal(m.document.querySelector('.studio-staged-notice'),null);assert.equal(m.dom.window.localStorage.getItem(draftKey),null);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
 });

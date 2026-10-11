@@ -92,6 +92,7 @@ const diamond = (p: Point) =>
   `${p.x},${p.y - 14} ${p.x + 26},${p.y} ${p.x},${p.y + 14} ${p.x - 26},${p.y}`;
 type SectorEditorProps={document?:any;campaign?:any;onDocumentChange?:(next:any)=>void;embedded?:boolean;templates?:any[];onSaveTemplate?:(template:any)=>void};
 export default function SectorEditor({document:controlledDocument,campaign,onDocumentChange,embedded=false,templates=[],onSaveTemplate}:SectorEditorProps={}) {
+  const EditorRoot = embedded ? 'section' : 'main';
   const editorId=useId(),[mobilePanel,setMobilePanel]=useState('map'),[catalogueQuery,setCatalogueQuery]=useState(''),[draftStatus,setDraftStatus]=useState('loading');
   const validationPanel=useRef<HTMLElement>(null);
   const templateLibrary=useMemo(()=>({...BUILDING_TEMPLATES,...Object.fromEntries(templates.map((t,i)=>[`project-${i}`,t]))}),[templates]);
@@ -846,7 +847,7 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
   }
   if (battle)
     return (
-      <main className={`sector-editor playtest${embedded?' embedded':''}`}>
+      <EditorRoot className={`sector-editor playtest${embedded?' embedded':''}`}>
         <header className="editor-header">
           <strong>Prueba del sector</strong>
           <span>Los cambios de la prueba no se guardan en el mapa.</span>
@@ -859,10 +860,10 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
           onFinish={() => setBattle(null)}
           onMap={() => setBattle(null)}
         />
-      </main>
+      </EditorRoot>
     );
   return (
-    <main aria-busy={loadingCampaign} className={`sector-editor${embedded?' embedded':''}`} data-active-panel={mobilePanel}>
+    <EditorRoot aria-busy={loadingCampaign} className={`sector-editor${embedded?' embedded':''}`} data-active-panel={mobilePanel}>
       <header className="editor-header">
         <div className="editor-identity">
           <span className="editor-eyebrow">Editor de mapas</span>
@@ -1835,6 +1836,6 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
           </div>
         </DialogContent>
       </Dialog>
-    </main>
+    </EditorRoot>
   );
 }

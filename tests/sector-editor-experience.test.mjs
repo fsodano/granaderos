@@ -15,7 +15,7 @@ async function mount(t,{project=null,embedded=true,reader}={}){
  const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),IS_REACT_ACT_ENVIRONMENT:true,fetch:reader??(()=>{throw Error('Embedded editor must not fetch an installed campaign');})};
  const old=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));for(const[k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
  const {default:Editor}=await import('../web/app/editor/SectorEditor.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js');const root=createRoot(dom.window.document.getElementById('root'));let current=project,changes=0;
- function Harness(){const [value,setValue]=useState(project);current=value;return h(Editor,embedded?{document:value.maps.camp,campaign:projectContent(value),embedded,onDocumentChange:next=>{changes++;setValue(previous=>({...previous,maps:{...previous.maps,camp:next}}));}}:{});}
+ function Harness(){const [value,setValue]=useState(project);current=value;const editor=h(Editor,embedded?{document:value.maps.camp,campaign:projectContent(value),embedded,onDocumentChange:next=>{changes++;setValue(previous=>({...previous,maps:{...previous.maps,camp:next}}));}}:{});return embedded?h('main',{'data-editor-host':true},editor):editor;}
  t.after(async()=>{await act(async()=>root.unmount());dom.window.close();for(const[k,d]of old){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}assert.deepEqual(unexpected,[]);});
  await act(async()=>root.render(h(StrictMode,null,h(Harness))));
  const document=dom.window.document,button=(text,scope=document)=>{const b=[...scope.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(b,text);return b;};
@@ -24,6 +24,7 @@ async function mount(t,{project=null,embedded=true,reader}={}){
 
 test('map authoring groups commands, explains active tools and searches its catalogue without changing map data',async t=>{
  const m=await mount(t),before=structuredClone(m.project);
+ assert.equal(m.document.querySelector('.sector-editor').tagName,'SECTION');assert.equal(m.document.querySelectorAll('main').length,1);assert.equal(m.document.querySelector('main main'),null);
  for(const name of ['Acciones del mapa','Archivos del mapa','Pruebas del mapa','Navegar','Construir'])assert.ok(m.document.querySelector(`[aria-label="${name}"]`));
  assert.match(m.document.querySelector('[aria-label="Estado del mapa"]').textContent,/20 × 16.*Proyecto compartido/);
  await m.click(m.button('Medir ruta'));assert.equal(m.button('Medir ruta').getAttribute('aria-pressed'),'true');assert.match(m.document.querySelector('.editor-tool-context').textContent,/Elegí una casilla de inicio/);
@@ -55,6 +56,7 @@ test('empty maps explain their required player entry and return to ready status 
 
 test('standalone editor keeps real local save and undo/redo controls within the new toolbar',async t=>{
  const {reader}=alternateCampaignDocuments(),m=await mount(t,{embedded:false,reader});await m.wait(()=>m.dom.window.localStorage.getItem('granaderos.sector-draft.v2.another'));
+ assert.equal(m.document.querySelector('.sector-editor').tagName,'MAIN');assert.equal(m.document.querySelectorAll('main').length,1);
  assert.equal(m.document.querySelector('.sector-editor').classList.contains('embedded'),false);assert.match(m.document.querySelector('[aria-label="Estado del mapa"]').textContent,/Borrador guardado en este navegador/);assert.ok([...m.document.querySelectorAll('a')].some(a=>a.textContent==='Estudio de campaña'&&/^\/studio\/?$/.test(a.getAttribute('href'))));
  const input=m.document.querySelector('[aria-label="Nombre del sector"]'),before=input.value;await m.input(input,'Plano de trabajo');assert.equal(JSON.parse(m.dom.window.localStorage.getItem('granaderos.sector-draft.v2.another')).metadata.title,'Plano de trabajo');
  await m.click(m.button('Deshacer'));assert.equal(input.value,before);await m.click(m.button('Rehacer'));assert.equal(input.value,'Plano de trabajo');assert.equal(m.document.querySelector('[aria-label="Historial del mapa"]').querySelectorAll('button').length,2);
