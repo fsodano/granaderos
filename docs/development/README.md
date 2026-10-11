@@ -12,10 +12,11 @@ campaign creation and sharing are [future work](../plans/campaign-authoring.md).
 | Area | Read |
 | --- | --- |
 | Setup, commands and source layout | [Getting started](getting-started.md) |
+| Browser campaign studio workflow and pending acceptance | [Campaign studio](../authoring/campaign-studio.md) |
 | Create, check and install a local campaign folder | [Campaign authoring](campaign-authoring.md) |
 | Experimental campaign content editor | [Story editor](story-editor.md) |
 | Experimental editable example | [La ruta de las postas](example-post-campaign.md) |
-| Future campaign creator platform | [Campaign authoring plan](../plans/campaign-authoring.md) |
+| Future community publishing and distribution | [Campaign authoring plan](../plans/campaign-authoring.md) |
 | Tactical map authoring | [Sector editor](sector-editor.md) |
 | Campaign architecture and implementation history | [Browser campaign systems](WEB-SYSTEMS.md) |
 | Save storage and compaction | [Compact campaign saves](compact-saves.md) |

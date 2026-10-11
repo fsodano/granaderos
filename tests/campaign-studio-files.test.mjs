@@ -70,3 +70,20 @@ test('custom manifest document paths and nested map paths survive installable fo
  const project=await createCampaignProject('studio-custom-paths');project.manifest.content='documents/actors.json';project.manifest.world='documents/territory.json';project.manifest.presentation='documents/menu.json';project.manifest.assets='documents/images.json';project.manifest.maps='scenes/list.json';project.mapIndex.maps[0].path='south/camp.json';project.mapIndex.maps[1].path='north/watch-post.json';
  const imported=await importCampaignArchive(await exportCampaignArchive(project));assert.deepEqual(imported,project);assert.equal((await validateCampaignProject(imported)).valid,true);
 });
+
+test('directory entries from ordinary ZIP tools are accepted, including deflated empty folders',async()=>{
+ const project=await createCampaignProject('studio-folders'),records=await campaignProjectFiles(project),files=Object.fromEntries(records.map(record=>[`studio-folders/${record.path}`,record.bytes]));
+ files['studio-folders/']=new Uint8Array();files['studio-folders/assets/']=new Uint8Array();files['studio-folders/maps/']=new Uint8Array();
+ for(const level of [0,6])assert.deepEqual(await importCampaignArchive(zipSync(files,{level})),project);
+});
+test('an imported missing-file draft can be repaired without losing its asset identity or authored content',async()=>{
+ const project=await createCampaignProject('studio-repair'),records=await campaignProjectFiles(project),missing=records.filter(record=>record.path!=='assets/guide.png'),draft=await importCampaignFiles(missing);
+ assert.deepEqual(draft.content,project.content);assert.equal((await validateCampaignProject(draft)).valid,false);await assert.rejects(exportCampaignArchive(draft),/Falta el recurso assets\/guide.png/);
+ const {setProjectResource}=await import('../game/campaign-editor-project.js'),repaired=await setProjectResource(draft,'assets/guide.png',projectResourceBytes(project,'assets/guide.png'),'image/png');
+ assert.equal(repaired.assets.assets[0].id,'guide');assert.equal((await validateCampaignProject(repaired)).valid,true);
+});
+test('installable archive excludes editor-only templates while portable project download retains them',async()=>{
+ const project=await createCampaignProject('studio-templates');project.editor={buildingTemplates:[{name:'Casa propia',building:{kind:'house'}}]};
+ const {encodeCampaignProject,decodeCampaignProject}=await import('../game/campaign-editor-project.js');assert.deepEqual(decodeCampaignProject(encodeCampaignProject(project)).editor,project.editor);
+ const imported=await importCampaignArchive(await exportCampaignArchive(project));assert.equal(imported.editor,undefined);assert.deepEqual(imported.maps,project.maps);assert.equal((await validateCampaignProject(imported)).valid,true);
+});

@@ -8,6 +8,8 @@ requirements are complete. Check the [version 0.1 status](../verification/versio
 [feature evidence](../verification/README.md) and each record's source and date
 before selecting work.
 
+- [Complete campaign authoring studio](campaign-studio.md) — active website implementation; acceptance remains open.
+
 - [Campaign creation and community sharing](campaign-authoring.md) — future work;
   the existing editors and example provide bounded experimental tools.
 

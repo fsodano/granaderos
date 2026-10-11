@@ -14,6 +14,10 @@ results; they are not refreshed by a documentation update.
 Read the linked verification note for the setup, scope and limitations before
 using a result. Published acceptance is recorded in [published progress](../verification/published-progress.md).
 
+## Active campaign authoring website
+
+- [Campaign studio foundation receipt](campaign-studio-2026-10-10/README.md): focused project, archive, actual resource and durable storage checks. The record states which website checks remain pending.
+
 ## Historical alpha local acceptance
 
 - [Complete alpha local receipt](alpha-service-equipment-local-2026-10-01.json): final gates, actual full TAP totals and log hashes, shared build, copied browser/UI source relationship.
