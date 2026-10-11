@@ -1,9 +1,9 @@
 # La ruta de las postas
 
-Este ejemplo pertenece a las herramientas experimentales de la versión 0.1.
-Se conserva para jugar, editar y probar un paquete acotado. No demuestra una
-plataforma completa de creación y distribución de campañas. Esa capacidad queda
-para [trabajo futuro](../plans/campaign-authoring.md). Consultá el
+Este ejemplo es un paquete experimental para jugar, editar y probar.
+El [Estudio de campañas](../authoring/campaign-studio.md) permite crear y
+descargar paquetes. La publicación comunitaria sigue como
+[trabajo futuro](../plans/campaign-authoring.md). Consultá el
 [estado de la versión](../verification/version-0.1.md) y la fecha del recorrido
 verificado antes de usarlo como evidencia de aceptación.
 
@@ -39,6 +39,11 @@ controlado y esperar su llegada. Los suministros deben provenir de los objetos
 reales de los sectores y de lo que lleva cada persona. No hay reposición por
 compra en el taller. Fortificar las localidades ayuda a conservar la ruta.
 
+El cofre de Tucumán contiene 12 vendas. El de Córdoba contiene un juego de
+herramientas con 100 puntos de reparación, 60 cartuchos de mosquete y 40 de
+fusil. Estas existencias se agotan al recogerlas. Volvé a Córdoba para recoger
+los suministros que necesites y reparar las armas antes de partir hacia Salta.
+
 Liberá Salta y buscá a Elena. Su confirmación entrega otros 200 pesos. Volvé a
 Córdoba y hablá con Inés. La entrega de ambas respuestas paga 400 pesos; el final
 se registra al salir del sector. Si vence el plazo, el encargo falla y se conserva
@@ -50,5 +55,7 @@ El [registro de verificación](../verification/independent-post-campaign.md)
 identifica la versión, el recorrido, las bajas y los límites. Se verificó una
 estrategia con la semilla 8 en la fuente allí registrada. Ese resultado no es
 una nueva verificación de la versión 0.1. Tampoco garantiza la victoria con cualquier escuadra
-o sorteo. Los sistemas avanzados y la edición de facciones, comandantes enemigos,
-geografía y otros eventos siguen en el [seguimiento general](../verification/published-progress.md).
+o sorteo. El [Estudio de campañas](../authoring/campaign-studio.md) y la
+[guía de autoría](campaign-authoring.md) permiten configurar facciones,
+geografía, eventos y políticas de invasión. El recorrido de este ejemplo no
+verifica todas esas opciones ni demuestra el equilibrio de otras campañas.
