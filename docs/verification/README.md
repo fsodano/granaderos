@@ -2,8 +2,9 @@
 
 [Documentation index](../README.md)
 
-Read the [version 0.1 status](version-0.1.md) first. It records the current
-development checkpoint, checks and known limits. A tag does not establish
+Read the [campaign separation record](campaign-engine-separation-2026-10-10.md)
+for the current implementation and checks. The [version 0.1 status](version-0.1.md)
+records the earlier tagged checkpoint. A tag does not establish
 complete game acceptance or publish a new GitHub Pages deployment.
 
 The [published progress ledger](published-progress.md) and
@@ -13,6 +14,8 @@ of each check when assessing the current version.
 
 ## Current version and recent evidence
 
+- [Engine and campaign separation, 10 October](campaign-engine-separation-2026-10-10.md)
+  — local packages, isolated saves and editors, structural checks and bounded browser evidence.
 - [Version 0.1 scope and remaining work](version-0.1.md).
 - [Shared wall edges](wall-edges.md) — current map format, bounded checks and
   later campaign limits; earlier campaign saves are not guaranteed compatible.

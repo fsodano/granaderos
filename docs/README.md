@@ -1,8 +1,9 @@
 # Granaderos documentation
 
 Granaderos is a browser strategy and tactical game in active development. Read
-the [version 0.1 status](verification/version-0.1.md) for the current scope and
-known limits. Start with the [project README](../README.md) for the game overview and local setup.
+the [campaign separation record](verification/campaign-engine-separation-2026-10-10.md)
+for the current implementation and checks. The [version 0.1 status](verification/version-0.1.md)
+retains the earlier tagged checkpoint. Start with the [project README](../README.md) for the game overview and local setup.
 Player-facing text is Spanish. Code and documentation are English.
 
 ## Start here
@@ -12,9 +13,11 @@ Player-facing text is Spanish. Code and documentation are English.
 | Install, run, build or test the browser game | [Development setup](development/getting-started.md) |
 | Read the current game design | [Game design](specification/game-design.md) |
 | Check version 0.1 scope and remaining work | [Version 0.1 status](verification/version-0.1.md) |
+| Check current engine and campaign separation | [Campaign separation](verification/campaign-engine-separation-2026-10-10.md) |
 | Find requirement history and feature evidence | [Published progress ledger](verification/published-progress.md) |
 | Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
+| Create, check and install local campaign folders | [Campaign authoring](development/campaign-authoring.md) |
 | Use the experimental content editor | [Story editor](development/story-editor.md) |
 | Inspect or modify the experimental example | [La ruta de las postas](development/example-post-campaign.md) |
 | Review future campaign creation and sharing | [Campaign authoring plan](plans/campaign-authoring.md) |

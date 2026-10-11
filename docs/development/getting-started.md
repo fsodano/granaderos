@@ -4,8 +4,10 @@
 
 The browser implementation in `game/` and `web/` is the primary game. Its interface is Spanish. Code and documentation are English.
 
-Read the [version 0.1 status](../verification/version-0.1.md) for current scope
-and known limits. This development version is not complete game acceptance.
+Read the [campaign separation record](../verification/campaign-engine-separation-2026-10-10.md)
+for current scope and known limits. The [version 0.1 status](../verification/version-0.1.md)
+describes the earlier tagged checkpoint. Current development checks do not
+establish complete game acceptance.
 
 ## Requirements
 
@@ -28,16 +30,18 @@ npm ci --prefix web
 npm run dev
 ```
 
+Before this implementation is merged into `main`, run `git checkout feature/campaigns` before installing dependencies to use the campaign folder tools. To inspect the earlier checkpoint, use `git checkout 0.1` instead.
+
 Run subsequent commands from the repository root. Dependencies are installed in `web/node_modules`; the committed `web/package-lock.json` fixes their versions.
 
 `npm run dev` starts the web package's Vinext development server. Open [localhost:3000](http://localhost:3000), or the address printed by the server if its port changes. Stop the server with Ctrl+C.
 
-Choose **Nueva campaña** to begin at the Retiro desk. Retiro is the only controlled sector. Hire combatants or create a free character. The first person in service advances the opening chapter without an extra academy payment; wait for a pending hire to arrive. **Combate de San Lorenzo** starts a separate battle.
+Select an installed campaign. In the Granaderos campaign, choose **Nueva campaña** to begin at the Retiro desk. Retiro is the only controlled sector. Hire combatants or create a free character. The first person in service advances the opening chapter without an extra academy payment; wait for a pending hire to arrive. **Combate de San Lorenzo** starts a separate battle.
 
 The current economy uses pesos for hiring and campaign preparations. Equipment
 commerce is disabled: equipment comes with its owner or is found in a sector.
 Earlier supplier, price, import and artillery-trading records describe dated
-features; they do not enable purchases in version 0.1. The game has no strategic
+features; they do not enable purchases in the current development code or the 0.1 checkpoint. The game has no strategic
 material stocks, resource production chains or horse care. Physical equipment
 transport remains available. Saves from the earlier economy are rejected;
 start a new campaign.
@@ -46,12 +50,12 @@ The title screen opens the [story editor](story-editor.md) at `/story` and the
 [sector editor](sector-editor.md) at `/editor`. These are experimental tools.
 The story editor supports validated characters, weapons, abilities, dialogue
 choices, quests and bounded campaign definitions, including a separate example.
-A complete creator platform and community campaign sharing are
+Use the [campaign folder guide](campaign-authoring.md) to scaffold, check and install a local campaign. The editors open the selected package and keep its drafts separate. A complete creator platform and community campaign publication remain
 [future work](../plans/campaign-authoring.md).
 
 ## Save behavior
 
-Campaign progress and its active battle are saved in browser storage. **Continuar campaña** restores the stored game. **Guardar** exports a JSON file; **Importar partida** loads one.
+Campaign progress and its active battle are saved in browser storage. Installed campaigns use separate save slots by campaign ID. Editor launches use a content identity hash. **Continuar campaña** restores the stored game. **Guardar** exports a JSON file; **Importar partida** loads one.
 
 Browser storage belongs to the current browser profile and site origin. A different protocol, hostname or port has separate storage. GitHub Pages and localhost have separate storage. Export a save before moving between origins or clearing browser data, then import it at the destination. The export is the portable copy.
 
