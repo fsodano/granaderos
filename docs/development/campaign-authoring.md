@@ -1,7 +1,7 @@
 # Create and install a local campaign
 
-This guide describes the `feature/campaigns` development implementation.
-Use that branch until it is merged into `main`. The historical `0.1` tag
+This guide describes the campaign implementation published in `main` through
+[PR #334](https://github.com/fsodano/granaderos/pull/334). The historical `0.1` tag
 retains its original checkpoint. Only `campaigns/granaderos/` is
 installed in this repository. The engine can discover and select additional
 campaign folders without adding a title or character to engine code.

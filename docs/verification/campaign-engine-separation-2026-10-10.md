@@ -214,7 +214,9 @@ a finished game. The historical `0.1` tag retains its original checkpoint.
 
 The implementation's three progress commits are merged into `feature/campaigns`
 through [PR #333](https://github.com/fsodano/granaderos/pull/333). The author guide
-and this evidence record follow through a separate work PR to that branch.
-[PR #334](https://github.com/fsodano/granaderos/pull/334) is the draft comparison
-with `main`. It remains in draft; this work does not merge into `main` or deploy
-the game.
+and this evidence record followed through a separate work PR to that branch.
+Publication update, 11 October 2026: [PR #334](https://github.com/fsodano/granaderos/pull/334)
+merged the feature branch into `main` as
+`0a04f72c1c0a1b0ec56a8db84668f2e3b12a722e`. This update records publication;
+the checks above retain their original sources and limits. No production
+deployment was performed by this merge.

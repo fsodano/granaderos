@@ -1,6 +1,7 @@
 # Campaign folders and shared engine
 
-Implementation branch: `feature/campaigns`. The engine/package boundary is
+Implemented on `feature/campaigns` and published in `main` through
+[PR #334](https://github.com/fsodano/granaderos/pull/334). The engine/package boundary is
 implemented with the scope recorded below. Full campaign acceptance remains
 separate work; the final broad run and browser refresh were stopped at the
 user's instruction.
@@ -34,7 +35,8 @@ references. The first version installs only the existing Granaderos campaign.
   types, production export and bounded browser evidence. Record the incomplete
   final checks and run no further campaign checks, as instructed by the user.
 - [x] Commit progress, merge work PRs into `feature/campaigns`, and open a draft
-  PR to `main` with exact evidence and remaining limits. Keep it in draft.
+  PR to `main` with exact evidence and remaining limits. PR #334 was later
+  merged into `main` at the user's instruction.
 
 ## Current integration
 
@@ -59,6 +61,6 @@ remains separate from the engine/content boundary checks in this work.
 
 [Implementation PR #333](https://github.com/fsodano/granaderos/pull/333) contains
 three progress commits and is merged into `feature/campaigns`.
-[Draft PR #334](https://github.com/fsodano/granaderos/pull/334) compares that
-branch with `main`. Documentation and evidence are delivered through a separate
-work PR to `feature/campaigns`. The historical `0.1` tag remains unchanged.
+[PR #334](https://github.com/fsodano/granaderos/pull/334) merged the feature
+branch, documentation and evidence into `main` on 11 October 2026 as
+`0a04f72c1c0a1b0ec56a8db84668f2e3b12a722e`. The historical `0.1` tag remains unchanged.

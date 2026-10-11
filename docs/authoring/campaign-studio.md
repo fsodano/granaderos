@@ -7,8 +7,9 @@ Updated: 11 October 2026.
 The campaign studio authors the fields supported by the current campaign
 package format through one website at `/studio`. Specialized tools and
 complete structured document controls share one project, its resources and
-its history. It builds on the engine/package separation for
-`feature/campaigns`. New executable mechanics and hosted community publishing
+its history. The studio and engine/package separation are published in `main`
+through [PR #334](https://github.com/fsodano/granaderos/pull/334).
+New executable mechanics and hosted community publishing
 remain separate work.
 
 Read the [studio evidence record](../evidence/campaign-studio-2026-10-10/README.md)

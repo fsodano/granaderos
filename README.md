@@ -39,7 +39,7 @@ npm ci --prefix web
 npm run dev
 ```
 
-Para probar esta implementación de campañas separadas antes de su integración en `main`, ejecutá `git checkout feature/campaigns` antes de instalar las dependencias.
+El motor separado y el Estudio de campañas están integrados en `main`.
 
 Para revisar el código guardado de la versión 0.1, ejecutá `git checkout 0.1` antes de instalar las dependencias. Esa etiqueta conserva su alcance y no incluye las herramientas de campañas agregadas después.
 
