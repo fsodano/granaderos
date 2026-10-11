@@ -1,0 +1,14 @@
+✔ master studio edits one shared presentation through specialized and document views with global undo/redo (2444.358833ms)
+✔ master autosave and reload preserve separate project bytes and do not change installed gameplay save keys (1287.76825ms)
+✔ visible ZIP export waits for validation, blocks invalid calendars and exports a repaired full package (1193.528333ms)
+✔ imported missing-file drafts show Resources repair controls and return to a valid package after actual file replacement (429.623875ms)
+✔ importing an existing project identity requires a new copy and preserves the saved original (1109.50575ms)
+✔ master rejects invalid portable identities and nonobject documents while retaining a recoverable project download (796.345208ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9015.78125

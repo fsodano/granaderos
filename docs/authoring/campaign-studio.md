@@ -36,9 +36,10 @@ characters and objectives, then add presentation and resources. Open
 download both the editable project and the installable ZIP. The editable
 project is the recovery copy; the ZIP is the runtime package.
 
-The [editor experience plan](../plans/editor-experience.md) defines the next
-navigation, field guidance, recovery and layout improvements. Its acceptance
-is separate from the completed studio checks. Developers should use the
+The [editor experience plan](../plans/editor-experience.md) records navigation,
+field guidance, recovery and layout acceptance. Its
+[current evidence](../evidence/editor-experience-2026-10-11/README.md) is separate
+from the earlier studio checks. Developers should use the
 [editor extension guide](../development/editor-development.md).
 
 ## One project
@@ -87,6 +88,12 @@ Use **Crear campaña** to open the scaffold. The section menu opens **Mundo**,
 **Recursos**, **Pruebas**, **Validación y descarga**, and **Todos los documentos**.
 These sections edit the same project and share its history.
 
+**Administrar proyectos** opens the create, open, import and copy controls.
+The project bar shows the current identity, revision, applied-data save status
+and package status. The **Proyecto** overview gives counts and creation stages.
+The section navigation groups campaign tools, visual identity, review and
+advanced documents. Its search finds section labels and descriptions.
+
 The master retains up to 50 undo steps. Use **Deshacer** and **Rehacer**, or
 Ctrl/Cmd + Z and Ctrl/Cmd + Shift + Z outside text inputs. Text inputs retain
 their normal text-editing shortcuts. Map edits use the master's history when
@@ -126,6 +133,64 @@ The current components provide specialized controls and full structured field
 editing. A document view also permits JSON text editing. Use the structured
 controls for ordinary authoring. The document view preserves access to every
 supported optional field and permits repair of invalid drafts.
+
+Structured collections show result counts, search and an explicit empty state.
+Their search accepts labels and record names without requiring matching accents.
+Adding an entry clears the collection filter. Unrelated authored fields remain
+in the document. Numeric controls accept a minus sign and comma decimals while
+typing. Empty or invalid text does not change the applied number; leaving the
+field restores that number and shows a notice. Leaving an unchanged number
+does not create an undo step.
+
+## Apply or discard document text
+
+**Campos** changes applied project data through structured controls. **JSON**
+has a separate text stage. **Texto sin aplicar** means that text has not become
+project data. Use **Aplicar documento** to parse and apply it, or **Descartar
+texto** to return to the applied document. A rejected apply retains the text
+and the previous applied data.
+
+Staged text stays in memory under its project identity and document path.
+It survives changing panels or returning to another open project while the
+Studio page remains open. Embedded editors use that same owner. It is not
+stored in IndexedDB, a project download, a campaign ZIP or a game save.
+Apply or copy the text before reloading or closing the page. The editor
+requests a browser close warning while staged text exists; that warning is
+not a durable backup. Project autosave status refers only to applied data.
+
+The shared notice opens **Revisar documentos** for the current project. If
+text belongs to another project, return to that project to review it. If
+applied data changes while text is staged, the editor displays a conflict.
+Review both versions and explicitly choose **Reemplazar los datos actuales
+con este texto** before applying the staged version. Another applied-data
+change cancels that replacement approval. Switching documents cannot treat a
+rejected apply in one document as acceptance in another.
+
+## Keyboard and compact layouts
+
+The tools share a dark author interface, grouped commands and visible focus.
+Use Tab to reach navigation, forms and actions. The story editor's section
+tabs and entity list support arrows and Home/End. Its search can keep the
+current record selected while filtering; **Limpiar búsqueda** restores the list.
+
+In **Mundo**, Tab reaches the selected grid cell. Arrow keys move the selection;
+Home/End go to the start/end of its row, and Ctrl/Cmd + Home/End go to the grid
+corners. The context shows the selected cell, locality and region. These are
+editor selections and do not change the campaign's definitions.
+
+In the map editor, choose a tool, focus a cell and press Enter to apply it.
+For walls, doors and windows, **Borde para teclado** selects the cell edge.
+Arrow keys move a selected object. **Buscar elementos** filters the catalogue
+without changing the map. **Herramientas**, **Mapa** and **Propiedades** select
+compact-layout panels. Large maps can scroll inside their workspace.
+
+Global project history belongs to Studio when a tool is embedded. Standalone
+story and map routes retain their own history. Text fields use their normal
+text-editing shortcuts. See the current evidence for the exact keyboard and
+narrow-layout paths reviewed; this guide does not claim full accessibility
+certification.
+
+## Full content controls
 
 Imports, artillery supply/trading, ammunition markets and roadside placement
 records use the full structured fields where a dedicated form is absent.
