@@ -28,7 +28,7 @@ export const id='granaderos-historical-v1';
 export const maxPhase=4;
 export function chapters(state){
  const foundry=foundryFor(state),customFoundry=state?.contentCampaign?.package.foundry!==undefined;
- return catalogue.phases.map((p,i)=>i===0&&headquartersFor(state)!=='retiro'?{...p,name:`I · Formación en ${headquartersName(state)}`,objective:`Creá tu granadero o recibí a tu primer contratado en ${headquartersName(state)}.`}:i===3&&customFoundry?{...p,name:`IV · Preparativos de ${foundry.name}`,objective:`Organizá ${foundry.name} en ${foundryLocationName(state)}, financiá el ejército con ${foundry.fundingCost} pesos, comprá tres cañones, controlá y fortificá Mendoza y los pasos de Cuyo, y acordá el paso con los pehuenches.`}:i===4&&customFoundry?{...p,name:`V · ${foundry.armyName}`}:p);
+ return catalogue.phases.map((p,i)=>i===0&&headquartersFor(state)!=='retiro'?{...p,name:`I · Formación en ${headquartersName(state)}`,objective:`Creá tu granadero o recibí a tu primer contratado en ${headquartersName(state)}.`}:i===3&&customFoundry?{...p,name:`IV · Preparativos de ${foundry.name}`,objective:`Organizá ${foundry.name} en ${foundryLocationName(state)}, financiá el ejército con ${foundry.fundingCost} pesos, recuperá tres piezas de artillería de los arsenales conquistados, controlá y fortificá Mendoza y los pasos de Cuyo, y acordá el paso con los pehuenches.`}:i===4&&customFoundry?{...p,name:`V · ${foundry.armyName}`}:p);
 }
 
 export {missions,narrative,assault,losses,politics};

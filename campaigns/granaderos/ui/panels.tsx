@@ -46,6 +46,6 @@ function MissionFinish({state,mission,busy,onFinish}:MissionFinishProps){
  return state.sceneId==='yatasto'&&onFinish?<button className="line-button" disabled={busy||!(mission.objectives||[]).every((o:any)=>o.done)} onClick={onFinish}>Concluir el encuentro</button>:null;
 }
 function FundingProgress({state}:StatePanelProps){
- return <><p>Reuní tres cañones propios para preparar la campaña de los Andes. Los pasos se fortifican desde la carta.</p><p>{Math.min(3,ownedArtilleryCount(state))}/3 cañones propios</p></>;
+ return <><p>Reuní tres piezas propias de artillería para preparar la campaña de los Andes. Explorá los arsenales conquistados y abrí sus cofres para recuperar piezas con munición finita. Los pasos se fortifican desde la carta.</p><p>{Math.min(3,ownedArtilleryCount(state))}/3 piezas propias de artillería</p></>;
 }
 export const granaderosUI:CampaignUI={DeskBriefing,DeskObjective,SectorBriefing,Diplomacy,JournalReference,MissionFinish,FundingProgress,preparationOrders,journalLabel:'EL CAMINO A LA INDEPENDENCIA',victoryText:'Las provincias están libres. Podés continuar administrando tus fuerzas.',battleVictory:{title:'¡Victoria patriota!',text:'El enemigo abandona el campo. La patria avanza.'}};
