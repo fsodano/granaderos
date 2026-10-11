@@ -18,7 +18,11 @@ const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
 const {default:TacticalSceneControls}=await import('../web/app/TacticalSceneControls.tsx');
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
-const pair=({oldPinned=false,withoutAlternativeDrag=false}={})=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;const gun=d.weapons.find(w=>w.id==='firearm-1800');if(oldPinned)delete gun.projectileAirDrag;if(oldPinned||withoutAlternativeDrag)for(const load of gun.alternativeLoads??[])delete load.projectileAirDrag;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
+const pair=({oldPinned=false,withoutAlternativeDrag=false}={})=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;const gun=d.weapons.find(w=>w.id==='firearm-1800');
+ // This UI case declares the optional energy model before package admission.
+ gun.projectileEnergy={model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265};gun.projectileAirDrag={model:'range-energy-retention-v1',retentionAtRange:.8};
+ const shot=gun.alternativeLoads.find(load=>load.family==='ammoShot');shot.projectileEnergy={model:'kinetic-energy-v1',massGrams:16,muzzleVelocityMps:265};shot.projectileAirDrag={model:'range-energy-retention-v1',retentionAtRange:.65};
+ if(oldPinned)delete gun.projectileAirDrag;if(oldPinned||withoutAlternativeDrag)for(const load of gun.alternativeLoads??[])delete load.projectileAirDrag;let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});// Explicit finite carried shot in a subsystem save fixture.
  changeAmmo(s.operativeState[110],'ammoShot',3);syncCarriedAmmunition(s.operativeState[110],1800);return visit(s);};
 const choose=async(m,family)=>act(async()=>{const select=m.document.querySelector('[aria-label="Carga para esta arma"]');select.value=family;select.dispatchEvent(new m.dom.window.Event('change',{bubbles:true}));});
 

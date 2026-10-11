@@ -20,7 +20,7 @@ import {mountCampaign} from './mounted-campaign-fixture.mjs';
 import {createElement as h,act} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 const {default:Conversation,JA2Speech}=await import('../web/app/JA2Conversation.tsx');
 const {default:QuestJournal}=await import('../web/app/QuestJournal.tsx');
-const base={npc:{id:'local-retiro',name:'Sargento del cuartel',greeting:'La instrucción continúa.'},conversation:null,quest:{status:'unoffered'},reason:null,canApproach:false,onApproach(){},onTalk(){},onClose(){}};
+const base={npc:{id:'local-retiro',name:'Sargento del cuartel',portrait:'/campaigns/granaderos/assets/avatar-man-soldier.webp',greeting:'La instrucción continúa.'},conversation:null,quest:{status:'unoffered'},reason:null,canApproach:false,onApproach(){},onTalk(){},onClose(){}};
 // Explicit older pinned definition: new campaigns now offer two recipients.
 const cashCivicErrands=()=>defaultErrands().map(q=>q.id==='retiro-uniformes'?{...q,reward:{treasury:0,loyalty:false},rewardChoice:{reimbursement:40}}:q);
 test('a special non-recruitable character gets a portrait, text and relevant choices',()=>{const html=render(h(Conversation,base));assert.match(html,/role="dialog"/);assert.match(html,/avatar-man-soldier.webp/);assert.match(html,/La instrucción continúa/);assert.match(html,/Consultar encargo/);assert.match(html,/>Repetir respuesta</);assert.doesNotMatch(html,/Proponer incorporación/);assert.match(html,/>Listo</);});

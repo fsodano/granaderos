@@ -35,7 +35,7 @@ test('fresh civilian wounds are recorded before the clock can share settled stat
  assert.ok(syncBattleTime(p.campaign,forged).error,'an acknowledged wound cannot disappear on the fast path');
 });
 test('authored story conditions continue through full checkpoint evaluation',()=>{
- const content=defaultContentPackage();content.campaignStory=defaultCampaignStory();
+ const content=defaultContentPackage();content.errands=[];content.includeOriginalResidents=false;content.campaignStory=defaultCampaignStory();
  let p=ready(content);const before=p.campaign;p=sync(p,3);assert.notEqual(p.campaign.resources,before.resources);
 });
 test('hour-boundary work and invalid elapsed time retain full dispatch semantics',()=>{

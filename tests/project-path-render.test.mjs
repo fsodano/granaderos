@@ -5,6 +5,9 @@ import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {createBattle} from '../game/tactical.js';
 import {compileWeaponDefinition} from '../game/weapon-definition.js';
+import {defaultContentPackage} from '../game/content-package.js';
+import {contentIdentity} from '../game/content-identity.js';
+import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 
 // This is the value Vite supplies for a project build. Root rendering has its
 // own existing tests, in separate Node test processes.
@@ -25,8 +28,12 @@ function assertHostedUrls(markup){
 test('the story editor keeps navigation, campaign downloads and build metadata in the project',()=>{
  const markup=render(h(ContentEditor));
  assertHostedUrls(markup);
- assert.ok(markup.includes('href="/granaderos/editor/"'));
- assert.ok(markup.includes('href="/granaderos/?content=1"'));
+ const dom=new JSDOM(markup,{url:'https://granaderos.test'});
+ try{
+  const link=label=>{const node=[...dom.window.document.querySelectorAll('a')].find(node=>node.textContent===label);assert.ok(node,label);return new URL(node.href);};
+  const editor=link('Editar sectores');assert.equal(editor.pathname,'/granaderos/editor/');assert.equal(editor.searchParams.get('campaign'),'granaderos');
+  const continuation=link('Continuar campaña del editor'),identity=contentIdentity(defaultContentPackage());assert.equal(continuation.pathname,'/granaderos/');assert.equal(continuation.searchParams.get('content'),'1');assert.equal(continuation.searchParams.get('contentId'),identity.packageId);assert.equal(continuation.searchParams.get('contentHash'),identity.hash);
+ }finally{dom.window.close();}
  assert.ok(markup.includes('href="/granaderos/campaigns/la-ruta-de-las-postas.json"'));
  assert.ok(markup.includes('href="/granaderos/build-info.json"'));
 });
