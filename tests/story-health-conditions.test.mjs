@@ -37,6 +37,8 @@ test('conditions see an actually deployed critical patient before settlement and
 
 test('actual finite treatment opens an authored response and completes a rescue chapter only on saved departure',()=>{
  const d=dialoguePackage(),resident=d.characters.at(-1);resident.startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};person(d,110).attributes.medical=80;resident.encounter.dialogue.nodes[0].choices[0].conditions=gate(resident.id,'stable');resident.encounter.dialogue.nodes[1].text='Ya puedo seguir. Gracias por las vendas.';
+ // The authored rescue has its own resident, supplies and progression.
+ d.errands=[];d.includeOriginalResidents=false;
  d.campaignStory={introduction:'Encontrá a Alma.',victory:'Alma está estabilizada.',defeat:'Se perdió el rescate.',chapters:[{id:'rescate',name:'Estabilizar a Alma',objective:'Encontrala y prestale primeros auxilios.',conditions:gate(resident.id,'stable')}],failureConditions:gate(resident.id,'dead')};
  let p=readyLocal(undefined,d),npc=localNPC(p.battle),visible=()=>dialogueForNPC(p.campaign,localNPC(p.battle),p.battle).choices.some(c=>c.id==='north');assert.equal(visible(),false);assert.equal(p.campaign.completed,false);
  p=tactical(p,{type:'weapon',slot:'medical'});p=tactical(p,{type:'heal',targetId:npc.id});assert.equal(visible(),false);p=tactical(saved(p),{type:'heal',targetId:npc.id});assert.equal(visible(),true);assert.equal(p.campaign.completed,false);assert.equal(p.battle.units[0].medkits,0);assert.equal(condition(p.campaign,resident.id,'wounded',p.battle),true);assert.equal(condition(p.campaign,resident.id,'healthy',p.battle),false);
@@ -61,7 +63,7 @@ test('a named mission ally uses its current tactical condition before the civili
 
 
 test('an authored unconsciousness failure uses actual enemy damage immediately and never mistakes the deployed service sheet for current health',()=>{
- const d=dialoguePackage();person(d,110).attributes.maxHp=80;d.startingTerritory.buenos_aires.owner='patriot';d.campaignStory={introduction:'Inicio',victory:'Final',defeat:'El sanitario quedó inconsciente.',chapters:[{id:'later',name:'Después',objective:'Esperá.',conditions:[{type:'day',min:1000,max:null}]}],failureConditions:gate('person-110','unconscious')};
+ const d=dialoguePackage();d.errands=[];d.includeOriginalResidents=false;person(d,110).attributes.maxHp=80;d.startingTerritory.buenos_aires.owner='patriot';d.campaignStory={introduction:'Inicio',victory:'Final',defeat:'El sanitario quedó inconsciente.',chapters:[{id:'later',name:'Después',objective:'Esperá.',conditions:[{type:'day',min:1000,max:null}]}],failureConditions:gate('person-110','unconscious')};
  let p=hireLocal(readyLocal(undefined,d)),s=leave(p);s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
  // Compact geometry and the hostile loadout isolate one actual enemy hit.
  let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===110?1:6})),{...r,width:12,height:8,id:r.id,sector:r.sector,npcs:r.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1805,ammo:0,loaded:1,fatigue:0,marksmanship:100,patrol:false,overwatch:false}]});battle=endTurn(battle);const injuredHP=battle.units.find(u=>u.id==='110').hp;assert.ok(injuredHP>0&&injuredHP<15,'the actual enemy hit leaves a living critical patient');assert.equal(battle.status,'active');assert.equal(s.operativeState[110].hp,80);
