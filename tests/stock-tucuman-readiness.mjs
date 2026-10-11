@@ -12,6 +12,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,reloadCost} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {transferRouteAmmunition} from './route-ammunition-transfer.mjs';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const compatible=(s,op)=>civicStatus(s,op.id).available&&contractQuote(s,op,'week').available&&contractQuote(s,op,'week').total<=1400;
@@ -134,7 +135,13 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
   const family=ammoTypeFor({...load(),activeSlot:'primary'});assert.equal(family,'ammoMusket');
   while(load().loaded+ammoCount(load(),family)<12){
    const missing=12-load().loaded-ammoCount(load(),family),row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).kind==='ammunition'&&JSON.parse(row.expected).ammoType===AMMUNITION_FAMILIES[family].type);
-   assert.ok(row,'Actual reachable matching finite cartridges are required for '+id);take(id,row,Math.min(missing,row.count));
+   if(row)take(id,row,Math.min(missing,row.count));
+   else{
+    // Rear soldiers retain their current weapon's ammunition. Their unused
+    // carried family can supply the field through ordinary finite transfers.
+    const donors=rear.filter(donor=>{const held=inventory(donor).personal;return held&&ammoTypeFor({...held,activeSlot:'primary'})!==family&&ammoCount(held,family)>0;});
+    const shared=transferRouteAmmunition(c,{sector:'cordoba',recipientId:id,donorIds:donors,family,count:missing,execute:(state,action)=>{assert.equal(state,c);order(action);return c;},report:event});c=shared.campaign;
+   }
   }
  }
  const backup=ranked.filter(op=>op.id!==physician.id&&op.medical>=70).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];assert.ok(backup);
