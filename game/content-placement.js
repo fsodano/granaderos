@@ -1,6 +1,7 @@
 import {isContractCharacter} from './content-character-ids.js';
 import {contentCellIds} from './content-map.js';
-import { resolveContent, CONTENT_LIMIT, CONTENT_SECTORS } from "./content-package.js";
+import {campaignSectors,campaignWorld} from './campaign-definition.js';
+import { resolveContent, CONTENT_LIMIT } from "./content-package.js";
 const need = (ok, message) => {
   if (!ok) throw Error(message);
 };
@@ -46,7 +47,7 @@ export function createContentSession(content, seed = 18130203) {
 /** @param {any} state @param {number} minute @param {string|null} loadedSector */
 export function advancePlacementState(state, minute, loadedSector = null, maximumMinute = 525600) {
   need(
-    loadedSector === null || CONTENT_SECTORS.some((s) => s.id === loadedSector),
+    loadedSector === null || (campaignSectors(state.content).some((s) => s.id === loadedSector)||campaignWorld(state.content).cells.some(c=>c.id===loadedSector)),
     "Sector inválido.",
   );
   need(
@@ -56,7 +57,7 @@ export function advancePlacementState(state, minute, loadedSector = null, maximu
   const s = structuredClone(state);
   const blocked = event => event.destination !== undefined && (
     s.people[s.content.placements.find(p=>p.id===event.placement).character].suspended ||
-    loadedSector !== null && contentCellIds([event.destination])[0] === contentCellIds([loadedSector])[0]);
+    loadedSector !== null && contentCellIds([event.destination],s.content)[0] === contentCellIds([loadedSector],s.content)[0]);
   while (true) {
     const due = s.events.reduce((n, e) => blocked(e) ? n : Math.min(n, Math.max(s.minute,e.at)), Infinity);
     const next = Math.min(due, s.nextDaily);
@@ -83,15 +84,15 @@ export function advancePlacementState(state, minute, loadedSector = null, maximu
           !person.alive ||
           person.recruited ||
           person.suspended ||
-          (loadedSector !== null && contentCellIds(p.loadedGuard === 'range' ? p.sectors : [person.sector]).includes(contentCellIds([loadedSector])[0]))
+          (loadedSector !== null && contentCellIds(p.loadedGuard === 'range' ? p.sectors : [person.sector],s.content).includes(contentCellIds([loadedSector],s.content)[0]))
         )
           continue;
         if (draw(s) * 100 >= p.moveChance) continue;
         const destination = p.selection === 'alternate'
-          ? p.sectors.find(id=>contentCellIds([id])[0]!==contentCellIds([person.sector])[0])
+          ? p.sectors.find(id=>contentCellIds([id],s.content)[0]!==contentCellIds([person.sector],s.content)[0])
           : choose(s,p.sectors);
         // A protected destination cancels this day's move, without a redraw.
-        if (destination !== undefined && contentCellIds([destination])[0] !== contentCellIds([person.sector])[0] && (loadedSector === null || contentCellIds([destination])[0] !== contentCellIds([loadedSector])[0])) {person.sector = destination;person.revision++;}
+        if (destination !== undefined && contentCellIds([destination],s.content)[0] !== contentCellIds([person.sector],s.content)[0] && (loadedSector === null || contentCellIds([destination],s.content)[0] !== contentCellIds([loadedSector],s.content)[0])) {person.sector = destination;person.revision++;}
       }
       s.nextDaily += 1440;
     }

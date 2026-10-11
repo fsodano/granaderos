@@ -260,7 +260,7 @@ export function moveSectorItem(s,action,roster){
    delete old.equipmentCursor;
    for(const item of [...(old.offHand?[old.offHand]:[]),...BODY_SLOTS.flatMap(slot=>old[slot]?[old[slot]]:[]),...Object.values(old.inventory??{})]){delete item.instanceId;delete item.fittingPattern;delete item.fittings;}
   }
-  validateBattleSnapshot(snapshot);
+  validateBattleSnapshot(snapshot,s);
  }
  if(direction==='store')return `${op.nickname??op.name} guarda ${stackLabel(stack)} en la armería, con su estado y carga actuales.`;
  if(direction==='takeRepairPoints')return `${op.nickname??op.name} retira ${count} puntos de reparación en el sector.`;

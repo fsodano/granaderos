@@ -85,13 +85,17 @@ export function campaignArchiveEntries(bytes:Uint8Array){
   if(!safePath(normalized)||seen.has(normalized))fail(`El ZIP contiene una ruta inválida o repetida: ${path}.`);seen.add(normalized);
   const unixType=(attrs>>>16)&0xf000;
   if(unixType&&unixType!==0x8000&&unixType!==0x4000)fail(`El ZIP contiene un enlace o archivo especial: ${path}.`);
-  if(directory){if(size||compressedSize||unixType===0x8000)fail('El ZIP contiene una carpeta inválida.');offset=next;continue;}
-  if(unixType===0x4000||size>CAMPAIGN_PROJECT_LIMITS.fileBytes||entries.length>=CAMPAIGN_PROJECT_LIMITS.files)fail(`El archivo ${path} excede los límites.`);
+  if((!directory&&unixType===0x4000)||(directory&&unixType===0x8000)||size>CAMPAIGN_PROJECT_LIMITS.fileBytes||(!directory&&entries.length>=CAMPAIGN_PROJECT_LIMITS.files))fail(`El archivo ${path} excede los límites.`);
   total+=size;if(total>CAMPAIGN_PROJECT_LIMITS.totalBytes)fail('El ZIP expandido es demasiado grande.');
   if(localOffset+30>directoryOffset||u32(localOffset)!==0x04034b50||u16(localOffset+6)!==flags||u16(localOffset+8)!==compression)fail('La cabecera local ZIP no coincide con su directorio.');
   const localNameLength=u16(localOffset+26),localExtraLength=u16(localOffset+28),start=localOffset+30+localNameLength+localExtraLength;
   if(start+compressedSize>directoryOffset||decoder.decode(bytes.subarray(localOffset+30,localOffset+30+localNameLength))!==path)fail('La entrada ZIP no coincide con su archivo.');
   if(!(flags&8)&&(u32(localOffset+14)!==crc||u32(localOffset+18)!==compressedSize||u32(localOffset+22)!==size))fail('El tamaño local ZIP no coincide con su directorio.');
+  if(directory){
+   if(size||crc||compressedSize>128||(compression===0&&compressedSize))fail('El ZIP contiene una carpeta inválida.');
+   if(compression===8)new Inflate(chunk=>{if(chunk.length)fail('La carpeta ZIP contiene datos de archivo.');}).push(bytes.subarray(start,start+compressedSize),true);
+   offset=next;continue;
+  }
   entries.push({path,size,crc,compression,start,compressedSize});offset=next;
  }
  if(offset!==end||!entries.length)fail('El directorio ZIP no contiene archivos válidos.');

@@ -127,7 +127,7 @@ export function returnServiceEquipment(s,id,roster){
   if(ground){
    const placed=snapshotAt(planned,marker.siteId);retireSnapshotIdentities(placed);
    placed.groundItems??=[];for(const [index,item]of items.entries())placed.groundItems.push({...copy(item.stack),id:`${marker.id}-${index}`,type:'item',...point,knownToPlayer:true});
-   validateBattleSnapshot(placed);
+   validateBattleSnapshot(placed,planned);
    planned[sceneStateKeyFor(s,marker.siteId)][marker.siteId]=placed;
   }
   if(saveFits(planned,roster)){

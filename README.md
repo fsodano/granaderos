@@ -16,6 +16,8 @@ La versión 0.1 permite jugar la campaña y los combates. Todavía falta verific
 
 El motor y la campaña se guardan por separado. `campaigns/granaderos/` contiene la única campaña incluida. El menú puede mostrar varias campañas instaladas, cada una con su propio progreso. La [guía de campañas](docs/development/campaign-authoring.md) explica cómo crear, verificar e instalar una carpeta local. La publicación comunitaria y las herramientas adicionales siguen en el [plan de campañas propias](docs/plans/campaign-authoring.md).
 
+El [Estudio de campañas](docs/authoring/campaign-studio.md), en la ruta `/studio`, permite crear, editar, probar y descargar un paquete completo desde el navegador. La [verificación del estudio](docs/evidence/campaign-studio-2026-10-10/README.md) registra las pruebas realizadas, la exportación y los límites de la revisión del navegador.
+
 [Jugar en el navegador](https://fsodano.github.io/granaderos/) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Cómo se juega](#cómo-se-juega) · [Desarrollo](#desarrollo) · [Documentación](docs/README.md)
 
 ## Jugar en el navegador

@@ -5,10 +5,10 @@ import {APPEARANCE_LABELS,SPEECH_LABELS,SPEECH_LINE_LIMIT,characterPresentationD
 import {spriteRender,spriteViewport} from '../../../game/sprite-render.js';
 import ServiceRelationshipsEditor from './ServiceRelationshipsEditor';
 
-export default function CharacterPresentation({character,portraits,characters,weapon,onChange,content}:{content?:any;character:any;portraits:any[];characters?:any[];weapon:number;onChange:(patch:any)=>void}){
+export default function CharacterPresentation({character,portraits,characters,weapon,onChange,content,resolveAsset=sitePath}:{resolveAsset?:(reference:string)=>string;content?:any;character:any;portraits:any[];characters?:any[];weapon:number;onChange:(patch:any)=>void}){
  const values=characterPresentationDefaults(character,content);
  const choices=[...new Map([...campaignCharacterPortraits(content).filter(p=>p.selectable!==false),...portraits.filter(c=>c.portrait).map(c=>({src:c.portrait,name:c.name}))].map(p=>[p.src,p])).values()];
- const sprite=spriteRender({id:'preview',side:'player',hp:100,spriteAppearance:values.spriteAppearance,weapon},{direction:2,moving:false,frame:0});
+ const sprite=spriteRender({id:'preview',side:'player',hp:100,spriteAppearance:values.spriteAppearance,skinTone:values.skinTone,weapon},{direction:2,moving:false,frame:0});
  const viewport=spriteViewport(sprite,{x:0,y:0},2,0,90);
  return <section aria-label="Voz y apariencia del personaje" className="character-presentation">
   <h3>Retrato y apariencia</h3>
@@ -20,7 +20,7 @@ export default function CharacterPresentation({character,portraits,characters,we
   </label>
   <div className="appearance-choice">
    <svg viewBox={viewport.viewBox} width="112" height="112" role="img" aria-label={`Apariencia: ${APPEARANCE_LABELS[values.spriteAppearance as keyof typeof APPEARANCE_LABELS]}`}>
-    <image href={sitePath(sprite.href)} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:'pixelated'}}/>
+    <image href={resolveAsset(sprite.href)} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:'pixelated'}}/>
    </svg>
    <label>Apariencia en combate
     <select value={values.spriteAppearance} onChange={e=>onChange({spriteAppearance:e.target.value})}>
@@ -29,6 +29,7 @@ export default function CharacterPresentation({character,portraits,characters,we
     <small>El retrato y la apariencia se eligen por separado. No cambian los atributos ni las habilidades.</small>
    </label>
   </div>
+  <label>Paleta de piel<select value={character.skinTone??''} onChange={e=>onChange({skinTone:e.target.value||undefined})}><option value="">Valor del personaje</option><option value="light">Clara</option><option value="brown">Morena</option><option value="dark">Oscura</option></select></label>
   <h3>Carácter y frases</h3>
   <label>Carácter
    <textarea rows={3} maxLength={2000} value={values.personality} onChange={e=>onChange({personality:e.target.value})}/>

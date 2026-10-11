@@ -61,7 +61,7 @@ export function validateDialogueMovements(s,npcs){
   const receipt=s.conversations?.[o.npc]?.dialogueReceipts?.find(r=>r.node===o.node&&r.choice===o.choice),key=`${o.npc}/${o.node}/${o.choice}`;
   need(effect?.character===o.character&&definition&&isWorldCharacter(definition)&&(effect.destination==='routine'||owner.id!==o.character)&&receipt?.hour===o.hour&&!seen.has(key));seen.add(key);
   need((effect.destination==='routine'?o.target===null:exact(o.target,['x','y'])&&integer(o.target.x,0,127)&&integer(o.target.y,0,127))&&integer(o.hour,0,s.hour)&&integer(o.secondOfHour,0,3599)&&time(o)>=previous&&time(o)<=time(s));previous=time(o);
-  need(placement&&integer(o.revision,1,person?.revision??0)&&typeof o.sector==='string'&&contentCellIds(placement.sectors).includes(contentCellIds([o.sector])[0]));
+  need(placement&&integer(o.revision,1,person?.revision??0)&&typeof o.sector==='string'&&contentCellIds(placement.sectors,s).includes(contentCellIds([o.sector],s)[0]));
  }
  for(const [npc,record]of Object.entries(s.conversations??{})){
   const source=npcs.find(n=>n.id===npc),owner=source&&characterForOperative(s,source.operativeId);

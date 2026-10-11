@@ -1,0 +1,9 @@
+✔ master rejects invalid portable identities and nonobject documents while retaining a recoverable project download (2205.252333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3902.631708

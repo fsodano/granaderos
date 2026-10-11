@@ -1,0 +1,168 @@
+{
+  "result": "PASS",
+  "archive": "/Users/fsodano/Downloads/studio-static-review-1.zip",
+  "archiveBytes": 37494,
+  "archiveSHA256": "9f96977dbd99a1eb327329246fdf0acb6535b8cd9bba7f62c99e07bbf86dd7bd",
+  "entryCount": 9,
+  "entries": [
+    "studio-static-review/manifest.json",
+    "studio-static-review/content.json",
+    "studio-static-review/world.json",
+    "studio-static-review/presentation.json",
+    "studio-static-review/assets.json",
+    "studio-static-review/maps/index.json",
+    "studio-static-review/maps/camp.json",
+    "studio-static-review/maps/watch-post.json",
+    "studio-static-review/assets/guide.png"
+  ],
+  "temporaryFolder": "/tmp/granaderos-browser-studio-SB2Vsx/studio-static-review",
+  "import": "importCampaignArchive accepted",
+  "projectValidation": {
+    "valid": true,
+    "issues": [],
+    "checks": {
+      "maps": 2,
+      "resources": 1,
+      "resourceBytes": 429
+    }
+  },
+  "folderValidation": "verifyCampaignFolder accepted; compiled definitions equal project admission",
+  "manifest": {
+    "format": "granaderos-campaign",
+    "version": 1,
+    "id": "studio-static-review",
+    "name": "Prueba del estudio publicado",
+    "revision": "1",
+    "scenario": "generic-v1",
+    "content": "content.json",
+    "world": "world.json",
+    "maps": "maps/index.json",
+    "presentation": "presentation.json",
+    "assets": "assets.json"
+  },
+  "image": {
+    "path": "assets/guide.png",
+    "type": "image/png",
+    "bytes": 429,
+    "manifestSHA256": "63f3a344addd5f0c6db71924fa235fbd1f240805077dd68a2dcc4c3243ff6f7f",
+    "actualSHA256": "63f3a344addd5f0c6db71924fa235fbd1f240805077dd68a2dcc4c3243ff6f7f",
+    "pngSignature": "89504e470d0a1a0a",
+    "exactBytesPreserved": true
+  },
+  "quests": [
+    {
+      "id": "supply-report",
+      "title": "El informe",
+      "description": "Entregá el informe.",
+      "deadlineHours": 24
+    }
+  ],
+  "residents": [
+    {
+      "id": "resident",
+      "name": "Habitante del taller",
+      "service": "permanent",
+      "recruitmentSource": "encounter",
+      "encounter": {
+        "recruitable": false,
+        "greeting": "Tengo un encargo.",
+        "requiredLeadership": 0,
+        "requiredLiberated": 0,
+        "requiredSector": null,
+        "noncombatant": true,
+        "dialogue": {
+          "entry": "offer",
+          "nodes": [
+            {
+              "id": "offer",
+              "title": "Oferta",
+              "text": "Aceptá el encargo.",
+              "choices": [
+                {
+                  "id": "accept",
+                  "label": "Aceptar",
+                  "next": "active",
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "supply-report",
+                      "status": "active"
+                    },
+                    {
+                      "type": "treasury",
+                      "operation": "pay",
+                      "amount": 5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "active",
+              "title": "En curso",
+              "text": "Espero el informe.",
+              "choices": [
+                {
+                  "id": "complete",
+                  "label": "Entregar",
+                  "next": "done",
+                  "conditions": [
+                    {
+                      "type": "quest",
+                      "quest": "supply-report",
+                      "status": "active"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "supply-report",
+                      "status": "completed"
+                    },
+                    {
+                      "type": "treasury",
+                      "operation": "receive",
+                      "amount": 50
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "done",
+              "title": "Terminado",
+              "text": "Gracias.",
+              "choices": [
+                {
+                  "id": "back",
+                  "label": "Repetir",
+                  "next": "offer"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "placement": {
+        "id": "resident-place",
+        "character": "resident",
+        "mode": "fixed",
+        "sectors": [
+          "camp"
+        ],
+        "moveChance": 100,
+        "afterDeath": null,
+        "delayMin": 0,
+        "delayMax": 0
+      }
+    }
+  ],
+  "compiledQuestIds": [
+    "supply-report"
+  ],
+  "compiledCharacterIds": [
+    "guide",
+    "resident"
+  ],
+  "evidenceCopy": "/Users/fsodano/.codex/worktrees/campaigns/granaderos/docs/evidence/campaign-studio-2026-10-10/studio-static-review-1.zip"
+}

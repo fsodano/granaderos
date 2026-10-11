@@ -8,8 +8,10 @@ requirements are complete. Check the [version 0.1 status](../verification/versio
 [feature evidence](../verification/README.md) and each record's source and date
 before selecting work.
 
-- [Campaign creation and community sharing](campaign-authoring.md) — future work;
-  the existing editors and example provide bounded experimental tools.
+- [Complete campaign authoring studio](campaign-studio.md) — supported package authoring acceptance, exact evidence and publication status.
+
+- [Campaign creation and community sharing](campaign-authoring.md) — current studio
+  package authoring, with community publishing and wider mechanics kept as future work.
 
 - [Required equipment implementation plan](EQUIPMENT-IMPLEMENTATION-PLAN.md)
 - [Removable bayonet fitting plan — I06](bayonet-fitting-plan.md) *(workspace)*

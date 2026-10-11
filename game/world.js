@@ -224,6 +224,6 @@ export function enterSector(request,previous=null,{placement=false}={}){
  const issuedQuests=Object.fromEntries(Object.entries(request.questBeneficiaries??{}).map(([id,beneficiaryId])=>[id,{beneficiaryId}]));
  for(const [id,deliveredCount]of Object.entries(request.questWithdrawals??{}))issuedQuests[id]={...issuedQuests[id],status:'withdrawn',withdrawal:{deliveredCount}};
  validateQuestBeneficiaryContext({errandDefinitions:request.errandDefinitions,quests:issuedQuests},state,{request});
- if(selecting)return validateBattleSnapshot(state);
- return initializeBattlePerception(validateBattleSnapshot(state));
+ if(selecting)return validateBattleSnapshot(state,request);
+ return initializeBattlePerception(validateBattleSnapshot(state,request));
 }

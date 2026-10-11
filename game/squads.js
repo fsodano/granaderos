@@ -13,7 +13,7 @@ export function operativeInTransit(s,id){return Boolean(s.squads?.some(q=>q.memb
 export function canReassignOperative(s,id){return s.recruited.includes(id)&&s.operativeState[id]?.alive&&!s.operativeState[id]?.captured&&!s.squads?.some(q=>q.journey&&q.members.includes(id));}
 export function travelingOperatives(s){return (s.squads??[]).filter(q=>['moving','ready'].includes(q.journey?.status)).flatMap(q=>q.members);}
 export function synchronizeSquad(s){const squad=s.squads.find(q=>q.id===s.activeSquadId);if(squad){squad.members=[...s.squad];squad.location=s.location;}return s;}
-export function validateSectorSnapshot(snapshot){return validateBattleSnapshot(snapshot);}
+export function validateSectorSnapshot(snapshot,context=null){return validateBattleSnapshot(snapshot,context);}
 export function validatePersonalInventory(inventory){
  if(!inventory||typeof inventory!=='object'||Array.isArray(inventory)||Object.keys(inventory).length>1000)throw Error('El inventario del combatiente es inválido.');
  const identities=new Set();

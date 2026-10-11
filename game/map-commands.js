@@ -79,6 +79,12 @@ function children(doc, b) {
     .flatMap((l) => doc[l])
     .filter((e) => e.x >= b.x && e.x < b.x + b.width && e.y >= b.y && e.y < b.y + b.height);
 }
+function buildingLevels(doc,b){const surfaces=(doc.upperSurfaces??[]).filter(s=>s.buildingId===b.id);const contains=p=>surfaces.some(s=>s.x===p.x&&s.y===p.y&&(s.tacticalLevel??0)===(p.tacticalLevel??0));return {surfaces,links:(doc.climbLinks??[]).filter(l=>contains(l.from)||contains(l.to))};}
+function appendLevels(doc,template,id,dx,dy){
+ const shift=p=>({...p,x:p.x+dx,y:p.y+dy});
+ if(template.upperSurfaces?.length){doc.upperSurfaces??=[];doc.upperSurfaces.push(...template.upperSurfaces.map(s=>({...shift(s),id:`${id}:${s.id}`,buildingId:id,...(s.roomId?{roomId:`${id}:${s.roomId}`}:{})})));}
+ if(template.climbLinks?.length){doc.climbLinks??=[];doc.climbLinks.push(...template.climbLinks.map(l=>({...l,id:`${id}:${l.id}`,from:shift(l.from),to:shift(l.to)})));}
+}
 function transform(doc, id, { x, y, rotate = false }) {
   const { object: e, layer } = entity(doc, id),
     old = {
@@ -116,6 +122,9 @@ function transform(doc, id, { x, y, rotate = false }) {
     }
   }
   if (layer === "buildings") {
+    const levels=buildingLevels(doc,e);
+    for(const surface of levels.surfaces)Object.assign(surface,point(surface));
+    for(const link of levels.links){link.from={...link.from,...point(link.from)};link.to={...link.to,...point(link.to)};}
     e.walls = e.walls.map((w) => rotate
       ? {...w, x:old.x+old.height-(w.y-old.y)-(w.axis==="y"?1:0), y:old.y+w.x-old.x, axis:w.axis==="x"?"y":"x"}
       : {...w,...point(w)});
@@ -221,6 +230,9 @@ export function applyMapCommands(
       } else if (c.type === "deleteObject") {
         const { layer, index, object } = entity(doc, c.id);
         if (layer === "buildings") {
+          const levels=buildingLevels(doc,object);
+          if(doc.upperSurfaces)doc.upperSurfaces=doc.upperSurfaces.filter(s=>!levels.surfaces.includes(s));
+          if(doc.climbLinks)doc.climbLinks=doc.climbLinks.filter(l=>!levels.links.includes(l));
           const ids = new Set(children(doc, object).map((e) => e.id));
           for (const l of LAYERS)
             if (l !== "buildings") doc[l] = doc[l].filter((e) => !ids.has(e.id));
@@ -247,6 +259,7 @@ export function applyMapCommands(
           }
         }
         Object.assign(object, structuredClone(c.values));
+        for(const key of ["wallFinish","roofFinish","doorStyle","windowStyle"])if(c.values[key]===null)delete object[key];
         if ("containerId" in c.values && object.containerId) {
           const container = entity(doc, object.containerId).object;
           object.x = container.x;
@@ -316,6 +329,7 @@ export function applyMapCommands(
           }));
           const dx = c.x - object.x,
             dy = c.y - object.y;
+          const levels=buildingLevels(doc,object);appendLevels(doc,{upperSurfaces:levels.surfaces,climbLinks:levels.links},copy.id,dx,dy);
           copy.x = c.x;
           copy.y = c.y;
           copy.walls = copy.walls.map((w) => ({ ...w, x: w.x + dx, y: w.y + dy }));
@@ -368,6 +382,7 @@ export function applyMapCommands(
           cells: r.cells.map((p) => ({ x: p.x + dx, y: p.y + dy })),
         }));
         doc.buildings.push(b);
+        appendLevels(doc,template,c.id,dx,dy);
         for (const l of LAYERS.filter((l) => l !== "buildings"))
           for (const e of template[l] ?? [])
             doc[l].push({
@@ -398,6 +413,7 @@ export function buildingTemplate(doc, id) {
     version: 1,
     name: b.name ?? "Edificio",
     building: structuredClone(b),
+    ...Object.fromEntries(Object.entries(buildingLevels(doc,b)).map(([key,value])=>[key==="surfaces"?"upperSurfaces":"climbLinks",structuredClone(value)])),
     ...Object.fromEntries(
       LAYERS.filter((l) => l !== "buildings").map((l) => [
         l,
