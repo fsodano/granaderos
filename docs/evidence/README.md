@@ -16,7 +16,7 @@ using a result. Published acceptance is recorded in [published progress](../veri
 
 ## Active campaign authoring website
 
-- [Campaign studio foundation receipt](campaign-studio-2026-10-10/README.md): focused project, archive, actual resource and durable storage checks. The record states which website checks remain pending.
+- [Campaign studio acceptance](campaign-studio-2026-10-10/README.md): project, archive, resource and storage checks, final editor/CLI gate, production export and visible browser results with exact limits.
 
 ## Historical alpha local acceptance
 

@@ -4,15 +4,15 @@ Updated: 11 October 2026.
 
 [Documentation index](../README.md) · [Campaign folder format](../development/campaign-authoring.md) · [Studio acceptance plan](../plans/campaign-studio.md)
 
-The campaign studio is the active website authoring work on top of the
-`feature/campaigns` package implementation. Its route is `/studio`. The
-project, file and storage foundation is delivered; the master website and its
-workspaces are present in source, and visible acceptance checks are still in
-progress. This guide records the current
-interfaces and workflow. It does not certify a complete creator website.
+The campaign studio authors the fields supported by the current campaign
+package format through one website at `/studio`. Specialized tools and
+complete structured document controls share one project, its resources and
+its history. It builds on the engine/package separation for
+`feature/campaigns`. New executable mechanics and hosted community publishing
+remain separate work.
 
 Read the [studio evidence record](../evidence/campaign-studio-2026-10-10/README.md)
-for completed checks and pending evidence. The historical `0.1` tag remains a
+for completed checks, exact source identities and browser limits. The historical `0.1` tag remains a
 separate game checkpoint and does not include the studio.
 
 ## One project
@@ -49,8 +49,9 @@ two connected localities, a complete fixed strategic grid, two tactical maps,
 one recruit, a tool, one local neutral portrait, a calendar and a day-two
 chapter objective. It includes no Granaderos actors or campaign images.
 
-Use a new lowercase campaign ID with letters, digits and hyphens. Each installed
-folder uses the same ID. Campaign name and revision are separate fields. Keep
+Use a new lowercase campaign ID with letters, digits and hyphens. Start it with
+a letter and use at most 80 characters. Each installed folder uses the same ID.
+Campaign name and revision are separate fields. Keep
 stable character, weapon, locality, map and quest IDs when revising a campaign.
 The scaffold is an editable starting point; replace its text, forces, art and
 objectives before distributing it.
@@ -273,9 +274,16 @@ The package, archive, byte-integrity and storage foundation has focused test
 coverage, including the complete Granaderos package and acceptance by the
 existing folder validator. Mounted master checks also cover shared map history,
 autosave/reload isolation, actual ZIP controls and missing-resource repair.
-Live browser recovery, keyboard use, narrow layout and visible export/preview
-checks remain pending. Consult the [evidence record](../evidence/campaign-studio-2026-10-10/README.md)
-and [acceptance plan](../plans/campaign-studio.md) for current results.
+The final studio/CLI group passed 57 checks, and typecheck and the production
+export passed. Production browser review completed a real authored quest,
+3D character controls, shared undo, project reload and Resources at 390 × 844.
+Its actual downloaded ZIP passed archive and folder validation with exact
+resource bytes. Production file selection was blocked by the browser/host
+automation, so visual ZIP reimport and sandbox test-save reimport were not
+established; mounted/API checks cover import, repair and saved continuation.
+The narrow review covered the Resources panel. Consult the
+[evidence record](../evidence/campaign-studio-2026-10-10/README.md) and
+[acceptance plan](../plans/campaign-studio.md) for source and publication status.
 
 Full historical campaign routes, game balance, release readiness, unrestricted
 renderer imports and community hosting are outside this studio verification.

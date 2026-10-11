@@ -17,7 +17,7 @@ Player-facing text is Spanish. Code and documentation are English.
 | Find requirement history and feature evidence | [Published progress ledger](verification/published-progress.md) |
 | Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
-| Follow the active browser campaign studio work | [Campaign studio](authoring/campaign-studio.md) and [completed foundation evidence](evidence/campaign-studio-2026-10-10/README.md) |
+| Create a campaign in the browser | [Campaign studio](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
 | Create, check and install local campaign folders | [Campaign authoring](development/campaign-authoring.md) |
 | Use the experimental content editor | [Story editor](development/story-editor.md) |
 | Inspect or modify the experimental example | [La ruta de las postas](development/example-post-campaign.md) |
@@ -87,8 +87,8 @@ the current design and register. Preserve all original and parity requirements.
    They do not replace accepted scope changes or current verification.
 
 Full game completion remains open. The existing editors support bounded,
-experimental workflows. The complete browser campaign studio is active work with
-[its own acceptance plan](plans/campaign-studio.md). Community hosting and
+experimental workflows. The complete browser campaign studio has
+[its own scoped acceptance record](plans/campaign-studio.md). Community hosting and
 sharing services remain future work. Publishing a development record does not prove
 its implementation or acceptance on a later source.
 

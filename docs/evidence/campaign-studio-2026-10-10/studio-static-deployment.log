@@ -1,0 +1,17 @@
+✔ root hosting copies the complete export without changing source files or root routes (25.712625ms)
+✔ project hosting stages assets and reloadable routes for /granaderos without changing deployed URLs (19.66875ms)
+✔ project hosting stages assets and reloadable routes for /games/granaderos without changing deployed URLs (21.998292ms)
+✔ project hosting supports editor, story and studio pages without optional RSC companions (17.568958ms)
+✔ project hosting rejects a missing editor page and preserves the source export (15.548ms)
+✔ project hosting rejects a missing story page and preserves the source export (15.405209ms)
+✔ project hosting rejects a missing studio page and preserves the source export (15.648083ms)
+✔ deployed absolute and relative URLs resolve to the same exported file (1.055542ms)
+✔ published root-relative URLs cannot escape the repository path (0.247584ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 220.018708

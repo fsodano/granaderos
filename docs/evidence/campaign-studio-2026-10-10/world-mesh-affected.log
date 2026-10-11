@@ -1,0 +1,48 @@
+✔ selected generic wall, trim and height change real generated meshes without renderer mutation (154.141292ms)
+✔ generated tile, thatch and terrace roofs use their actual materials and tactical slab geometry (134.9375ms)
+✔ explicit authored map roof and finishes win over selected building defaults (88.495167ms)
+✔ generated world-grid district houses use their selected roof and real mesh pigments (232.998042ms)
+✔ selected optional gallery, awning, tower, arcade and upper-storey fields change visible geometry (475.243291ms)
+✔ selected styles survive actual active-save, departure and saved re-entry; forged styles fail admission (618.628875ms)
+✔ six stock authored and generated mesh signatures remain exact, ordinary and installed (834.924791ms)
+✔ embedded map authoring writes shared project state, keeps undo and switches maps without storage or URL effects (1962.018042ms)
+✔ mounted world grid creates and moves an indexed locality through shared state (582.4105ms)
+✔ mounted building panel saves reusable project templates and clears explicit finishes (172.0195ms)
+✔ grid authoring adds a playable indexed map, moves its anchor and preserves fixed identities (195.2925ms)
+✔ deletion reports authored references and prevents silent dangling quests, cities and headquarters (10.015083ms)
+✔ map updates keep package dimensions and identity while retaining explicit finishes and undoable clears (16.694625ms)
+✔ authored slabs compile, validate, survive template move/rotate/duplicate and enter real previews (81.663209ms)
+✔ selected preview renders actual authored and generated materials and applies finite physical sources (84.910625ms)
+✔ selected editor playtests use the package cast, equipment, names, appearance and weather (88.8515ms)
+✔ omitted enemy lists use neutral or authored generic force definitions and preserve legacy map equipment (62.5425ms)
+✔ selected preview assigns local primary definitions and leaves legacy one-argument map previews compatible (39.935ms)
+✔ editor appearances modify the enlarged textured building without changing its collision plan (125.582917ms)
+✔ changing a campaign building type removes the previous silhouette and preserves finish choices (101.157375ms)
+✔ the editable map catalogue provides the current building plans and full campaign sectors (589.445917ms)
+✔ editable road anchors reject malformed or duplicated map entries (3.377709ms)
+✔ the common scene retains authored artillery names and images (21.303667ms)
+✔ editor preview shares the scene while keeping its overlay and suppressing game controls (4.876875ms)
+✔ the migrated sector plans preserve edge geometry, floor membership, props and lighting (81.339667ms)
+✔ Retiro revision three adds one exterior armory chest without changing its empty ground surface (0.911792ms)
+✔ commands are atomic, reject stale revisions and preserve exported data (15.050333ms)
+✔ moving and rotating buildings carries walls, doors, rooms and contents together (28.919416ms)
+✔ partitions recompute rooms and door openings reconnect routes (16.1595ms)
+✔ templates and duplicated buildings remap object and container IDs (15.36575ms)
+✔ undo and redo restore one complete transaction with monotonic revisions (1.932417ms)
+✔ playtests preserve the map and correctly loot authored ground supplies (23.846584ms)
+✔ malformed geometry, overlap and invalid references are rejected (6.752042ms)
+✔ pointer projection remains correct with zoom, pan and letterboxing, and rejects outside drops (0.680542ms)
+✔ seeded generation and command batches are deterministic (5.170792ms)
+✔ oversized geometry and invalid templates fail before allocating geometry (4.411333ms)
+✔ group transforms preserve child identity and rotate a non-square building exactly (31.246958ms)
+✔ bundled building templates compile with walkable furnished interiors (174.851375ms)
+✔ all building types keep room floors reachable from an exterior start (375.834291ms)
+✔ appearance edits preserve geometry, opening IDs, door state and survive round trips (16.330125ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3527.602542

@@ -57,7 +57,9 @@ node --test --test-name-pattern='directory entries from ordinary|missing-file dr
 
 Terminal result: **3 passed, 0 failed, 0 skipped**, exit `0`, duration
 **730.042417 ms**. This is a separate focused run after the foundation commit.
-There is no combined 24-case final receipt yet. No raw log was saved.
+No combined 24-case receipt was taken at that checkpoint. The later final
+57-case group below includes the updated archive tests. No raw log was saved
+for this separate three-case run.
 
 The other two cases establish that a missing-file draft can be repaired while
 retaining its resource ID and content, and that editor-only templates survive
@@ -153,6 +155,53 @@ structured field view. Optional import, artillery supply/trading, ammunition
 market and roadside placement fields use structured controls where a domain
 form is absent. Compiler/save-generated origin is deliberately excluded.
 
+## Final combined studio gate and typecheck
+
+The published logs `studio-build-final.log`, `studio-build-hosting-final.log`,
+`studio-typecheck-final.log` and `world-preliminary-typecheck.log` normalize
+trailing spaces or empty lines at EOF only. Their reported commands and results
+are unchanged. Other original logs retain their captured content.
+
+```sh
+node --test --test-concurrency=2 tests/campaign-studio-project.test.mjs tests/campaign-studio-files.test.mjs tests/campaign-studio-storage.test.mjs tests/campaign-studio-history-assets.test.mjs tests/campaign-editor-world.test.mjs tests/campaign-editor-world-mounted.test.mjs tests/campaign-studio-content.test.mjs tests/campaign-editor-sandbox.test.mjs tests/campaign-studio-mounted.test.mjs tests/campaign-authoring.test.mjs
+npm run typecheck
+```
+
+The [final ten-file studio and CLI gate](studio-combined-final.log) records
+**57 passed, 0 failed, 0 skipped**, exit `0`, duration **16248.493 ms**.
+The [final typecheck](studio-typecheck-final.log), `npm run typecheck`, also
+exited `0`. Both ran at commit `43decf73`, with runtime source digest
+`d020aa84e2c7558c553cb0a290d5993b8b22a6e29e613f9aedf576de95390883`
+(build identity `d020aa84e2c7`). Documentation is excluded from that digest.
+These final affected results do not constitute the full game test suite or
+a historical campaign route.
+
+The [production export log](studio-build-final.log) records exit `0` for:
+
+```sh
+GRANADEROS_BASE_PATH=/granaderos npm run build
+```
+
+At the same source identity `d020aa84e2c7`, the build prerendered **7 routes,
+0 skipped**, including `/studio`, and exported **1409 files with 1043 static
+references**. The deployment base was `/granaderos`. This is the studio build;
+earlier engine-separation exports have different counts and source identities.
+
+A later static hosting review found that `/studio/` needed its own staged
+directory entry. Deployment staging now copies the studio HTML and optional
+RSC companion into that directory. The
+[affected deployment/path gate](studio-static-deployment.log) passed **9/9**,
+with no failed or skipped cases, in **220.018708 ms**.
+
+The [replacement hosted export](studio-build-hosting-final.log) passed at
+commit `26847f3faa7ee73d8fde398983143d6c4b9f37d9`, with full source digest
+`ee2f1aaf0cb1a7d9620bda824bb10fe4ab4c365108de6802cf2f0d74213ab091`
+(build identity `ee2f1aaf0cb1`). It used the same `/granaderos` production build
+command and prerendered **7 routes, 0 skipped**, exporting **1411 files and
+1043 static references**. This receipt supersedes the earlier export for
+static `/studio/` hosting. Browser acceptance is using this final export at
+`http://127.0.0.1:3172/granaderos/studio/`; its visible results follow below.
+
 ## Historical package copy admission
 
 A package-only check of the actual installed Granaderos project after changing
@@ -164,31 +213,91 @@ IDs. No campaign route was started. The copy helper does not automatically
 replace these definitions. The author guide names the repair work, and new
 chapter objectives must be authored if campaign progression is required.
 
-## Pending website acceptance
+## Production browser acceptance and limits
 
 The master `/studio` page and specialized workspaces are present in source.
-At this checkpoint there is no completed final website build or visible
-end-to-end browser receipt. Earlier engine-separation build and browser
+The final website build is recorded above. The production static browser
+review used build `ee2f1aaf0cb1`. Earlier engine-separation build and browser
 results belong to their named source; they do not validate this website.
 
-Required next evidence remains:
+Production browser review has created the valid `studio-static-review` project
+through normal controls and authored a neutral quest through the optional
+visible document editor. Actual hiring changed treasury **1000 → 940**. The
+guide approached and spoke with the authored NPC, accepted a **5-peso** cost
+(**940 → 935**) with a **24-hour** deadline, and completed the **50-peso**
+reward (**935 → 985**). The journal showed completion and the resulting save
+passed the strict game reader. The
+[production quest screenshot](studio-quest-browser.jpg) records the visible
+scene. The authored quest was `supply-report`; its fixed local resident,
+dialogue and deadline are also preserved in the downloaded package.
 
-1. Create or import a project through `/studio`, edit all supported documents,
-   resource bytes and tactical maps, and inspect actual selected previews.
-2. Verify project autosave/recovery, shared undo/redo and isolation from an
-   installed campaign save.
-3. Exercise real authored dialogue/quest success, failure, deadlines, finite
-   costs and save/restore in the integrated sandbox.
-4. Download a project and installable ZIP through visible browser controls,
-   reimport them, and validate the exported folder with the existing compiler.
-5. Check error recovery for missing/changed resources and unsupported content.
-6. Verify keyboard access and narrow layouts, then record the final typecheck,
-   affected editor checks and production export against the final source.
+The remaining completed browser results are:
+
+- The [actual 3D character preview](studio-character-browser.jpg) rendered
+  selected dark skin, southwest direction, walking then idle motion, and
+  crouched posture.
+- Ctrl/Cmd + Z restored the project name; Shift + Z redid it; another undo
+  restored the original name.
+- At **390 × 844**, the [Resources panel](studio-mobile-browser.jpg) had a
+  **390 px** document and **366 px** panel, with no outer horizontal overflow.
+  Both resource images loaded, each with a **96 px** natural dimension. This
+  is a Resources-panel check, not an exhaustive review of every mobile panel.
+- Reload recovered `studio-static-review`, displayed **Borrador recuperado
+  con sus documentos y recursos**, retained the name **Prueba del estudio
+  publicado**, and returned to **Guardado en este navegador**. Resources kept
+  the local guide image and its four references; both image views loaded.
+- The actual ZIP control saved the archive. The automation's download-event
+  listener timed out, but the file existed and was independently verified;
+  the timeout is not presented as a missing download or a successful listener.
+
+The exact [browser-produced archive](studio-static-review-1.zip) is
+**37,494 bytes**, SHA-256
+`9f96977dbd99a1eb327329246fdf0acb6535b8cd9bba7f62c99e07bbf86dd7bd`.
+The [original archive verification receipt](browser-zip-verification.json)
+records **9 files, 2 maps and 1 resource**, admission by
+`importCampaignArchive` and `validateCampaignProject`, and acceptance by
+`verifyCampaignFolder` with equal compiled definitions. Its `guide.png` has
+**429 bytes**, SHA-256
+`63f3a344addd5f0c6db71924fa235fbd1f240805077dd68a2dcc4c3243ff6f7f`,
+matching both the manifest and extracted bytes. The quest's 24-hour deadline,
+5-peso payment, 50-peso reward and local dialogue placement survived export.
+
+Production file import was blocked by the browser extension's local-file URL
+access and the locked host's native file picker. Therefore production ZIP
+reimport and sandbox test-save continuation were **not visually verified**.
+Archive/directory import, project recovery, strict saved continuation and
+missing-file repair are covered by the mounted/API receipts above. Actual
+production IndexedDB project reload was verified separately. This record does
+not claim every production UI path was exercised.
 
 An early foundation typecheck found no outstanding errors in its affected
 files, but another workspace still had a concurrent type error. The later
 workspace typecheck copied above passed. Final website typecheck evidence is
-pending against the combined source.
+now recorded above against the combined source. Production export and the
+scoped visible browser acceptance are complete. Publication to
+`feature/campaigns` and the current draft comparison with `main` are recorded
+separately in the studio plan.
+
+## Repository documentation and baseline audits
+
+At source `43decf73`, the documentation audit passed: **275 requirements,
+50 original rows, 87 parity rows and 150 evidence entries**. An optional
+baseline audit reported **37 passed, 1 failed**. These are transcribed terminal
+receipts; original stdout was not saved to a log file.
+
+The failing baseline row is `default-authored-loose-bayonet`: expected
+`[16, 24, 1]`, actual `[16, 50, 2]`. This preexisting stock baseline mismatch
+is separate from studio authoring acceptance. Stock data was not changed in
+this studio scope, and no campaign data correction was made for this audit.
+The receipt does not establish that every repository audit passed.
+The read-only diff against pre-studio source `a3579f01` was empty for
+`campaigns/granaderos/content.json`, `game/weapons.js` and
+`tools/audit-baseline.mjs`, confirming those inputs were unchanged here.
+
+The final changed-Markdown local review reported **359 file/anchor links across
+11 documents, 0 failures**. It removed the README video URL's query only when
+resolving its local file. This is a transcribed receipt; no original stdout
+file was saved. The receipt was appended after that review.
 
 No full historical campaign routes were run for this task. These receipts do
 not establish campaign completion, game balance, unrestricted mesh authoring,

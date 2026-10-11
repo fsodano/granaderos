@@ -14,8 +14,8 @@ of each check when assessing the current version.
 
 ## Current version and recent evidence
 
-- [Campaign studio foundation and pending website checks](../evidence/campaign-studio-2026-10-10/README.md)
-  — portable projects, real resource bytes, ZIP/folder validation and IndexedDB; full visible website acceptance remains open.
+- [Campaign studio checks, production export and browser limits](../evidence/campaign-studio-2026-10-10/README.md)
+  — portable projects, real resource bytes, ZIP/folder validation, IndexedDB and scoped production browser results; file-import and test-save reimport limits are explicit.
 
 - [Engine and campaign separation, 10 October](campaign-engine-separation-2026-10-10.md)
   — local packages, isolated saves and editors, structural checks and bounded browser evidence.
