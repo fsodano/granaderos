@@ -8,8 +8,8 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 // Planning only: the caller must acknowledge hpRestored atomically with these
 // medical fields, and settle custody separately if alive becomes false.
 // acknowledged is a trusted campaign receipt, never a tactical payload.
-export function planDetentionHealth(operativeId,record,npc,acknowledged=0){
- validateDetainedPrisoner(npc);validateCivilianWounds(npc);
+export function planDetentionHealth(operativeId,record,npc,acknowledged=0,context=null){
+ validateDetainedPrisoner(npc,context);validateCivilianWounds(npc);
  const d=npc.detention;
  need(d&&d.operativeId===operativeId&&sameCaptivity(record,d),'El parte no corresponde al cautiverio actual.');
  need(npc.maxHp===record.maxHp&&Number.isFinite(record.hp)&&record.hp>=0&&record.hp<=record.maxHp,'La salud del prisionero no corresponde a su hoja de servicio.');

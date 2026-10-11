@@ -1,3 +1,4 @@
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
 import {canonicalContent} from './content-identity.js';
 
 export const ROADSIDE_DISCOVERY_CHEST='roadside:cell-24-27:clothing-tools';
@@ -8,9 +9,7 @@ const integer=v=>Number.isSafeInteger(v)&&v>=1&&v<=100;
 
 // This small fictional cache is game tuning. Only an explicit pinned record
 // enables it; an omitted collection in an older campaign stays disabled.
-export function freshDefaultRoadsideDiscoveries(){
- return [{version:1,id:'roadside-clothing-tools',cell:'cell-24-27',x:10,y:7,crowbarCondition:60,linenShirtCondition:75}];
-}
+export function freshDefaultRoadsideDiscoveries(){return structuredClone(DEFAULT_CATALOGUE.roadsideDiscoveries);}
 export function validateRoadsideDiscoveries(definitions){
  if(definitions===undefined)return [];
  if(!Array.isArray(definitions)||definitions.length>1||Object.keys(definitions).length!==definitions.length)

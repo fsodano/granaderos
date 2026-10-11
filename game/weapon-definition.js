@@ -1,3 +1,4 @@
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
 import {handRecord} from './tactical-inventory.js';
 import {WEAPON_READY_AP} from './weapon-readiness.js';
 import {AMMO_TYPES,primaryAmmoTypeFor,selectedAmmunitionLoad,validateAmmunitionChoice} from './ammo-types.js';
@@ -9,13 +10,14 @@ import {canonicalContent} from './content-identity.js';
 import {validMaterialRangeSlope} from './material-range-penetration.js';
 import {validProjectileEnergy} from './projectile-energy.js';
 import {validProjectileAirDrag} from './projectile-air-drag.js';
-export const FIREARM_PRICES={1800:240,1801:230,1802:420,1803:180,1804:100,1805:130,1806:180,1807:160,1808:220};
-export const BLADE_PRICES={1809:160,1810:110,1811:50,1812:70,1813:40};
+import {isContentImageReference} from './campaign-assets.js';
+export const FIREARM_PRICES=structuredClone(DEFAULT_CATALOGUE.firearmPrices);
+export const BLADE_PRICES=structuredClone(DEFAULT_CATALOGUE.bladePrices);
 export const isBladeDefinition=value=>Object.hasOwn(BLADES,value?.template);
 export const FIREARM_MELEE_FIELDS=['stockAP','stockDamage','stockReach'];
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-export const validWeaponArt=value=>typeof value==='string'&&(/^\/art\/[a-zA-Z0-9_-]+\.(webp|png|jpg)$/.test(value)||(/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value)&&value.length<350000));
+export const validWeaponArt=value=>isContentImageReference(value)&&(!value.startsWith('data:')||value.length<350000);
 export function compileWeaponDefinition(authored){
  if(isBladeDefinition(authored)){
   need(authored.ammunitionFamily===undefined&&authored.alternativeLoads===undefined&&authored.materialRangeSlope===undefined&&authored.projectileEnergy===undefined&&authored.projectileAirDrag===undefined,'La munición solo se configura en armas de fuego.');

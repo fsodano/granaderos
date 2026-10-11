@@ -1,14 +1,17 @@
 import {worldCell,roadEdgesForCell} from './world-cells.js';
 import {placeBuilding} from './buildings.js';
 import {roadsideDiscoveryProps} from './roadside-discoveries.js';
+import {campaignDefinitions} from './campaign-definition.js';
+import {hasGenericCharacterDefinitions} from './content-character-ids.js';
+import {buildingTypes} from './building-types.js';
 
 // Schematic terrain, not a copy of the nearest locality's landmark or loot.
 // The cell key supplies stable geometry independent of the campaign's clock.
-export function worldCellPlan(id,roadsideDiscoveryDefinitions){
- const cell=worldCell(id);
+export function worldCellPlan(id,roadsideDiscoveryDefinitions,context=null){
+ const cell=worldCell(id,context);
  if(!cell?.land||cell.anchor)throw Error('La celda no tiene un plano terrestre independiente.');
  const width=20,height=16,seed=(cell.col+1)*7919+(cell.row+1)*104729;
- const edges=new Set(roadEdgesForCell(id));
+ const edges=new Set(roadEdgesForCell(id,context));
  let tiles=Array.from({length:width*height},(_,i)=>{
   const x=i%width,y=Math.floor(i/width),value=(x*37+y*71+seed)%101;
   const road=y===8&&(edges.has('W')&&x<=2||edges.has('E')&&x>=2)||x===2&&(edges.has('N')&&y<=8||edges.has('S')&&y>=8),stone=cell.biome==='mountain'&&y<3&&value<70;
@@ -16,7 +19,8 @@ export function worldCellPlan(id,roadsideDiscoveryDefinitions){
  });
  const buildings=[],wallEdges=[];
  if(cell.district)for(const [i,x]of [7,14].entries()){
-  const result=placeBuilding(tiles,{id:`${id}:house-${i}`,name:`Casa ${i+1}`,x,y:3,width:5,height:5,doors:[{x:x+2,y:7}],windows:[{x,y:5}],material:'adobe',roof:'tile'});
+  const roof=hasGenericCharacterDefinitions(campaignDefinitions(context))?buildingTypes(context).house.roof:'tile';
+  const result=placeBuilding(tiles,{id:`${id}:house-${i}`,name:`Casa ${i+1}`,x,y:3,width:5,height:5,doors:[{x:x+2,y:7}],windows:[{x,y:5}],material:'adobe',roof});
   tiles=result.tiles;wallEdges.push(...result.wallEdges);buildings.push({...result.building,purpose:'home'});
  }
  return {worldCell:true,width,height,tiles,wallEdges,wallGeometryVersion:2,buildings,props:roadsideDiscoveryProps(id,roadsideDiscoveryDefinitions),lights:[],groundItems:[],decor:[],sourceMapId:id,sourceMapRevision:2};

@@ -2,7 +2,8 @@ import {validWorldLocation,campaignPlace} from './world-cells.js';
 // A07 assignment attention only. These helpers never advance time or perform work.
 import {ALL_ASSIGNMENTS,CARE_ASSIGNMENTS,WORK_ASSIGNMENTS} from './assignment-labels.js';
 import {SLEEP_ISSUE_TEXT} from './sleep.js';
-import {CAMPAIGN_SECTORS,WEAPONS} from './data.js';
+import {WEAPONS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
 import {operativeLocation} from './squads.js';
 import {TRAINABLE_SKILLS} from './skill-training.js';
 import {CARE_ISSUE_TEXT,careAssignmentProgress} from './medical-care.js';
@@ -14,7 +15,7 @@ let issueCodes;
 const assignments={...ALL_ASSIGNMENTS,militia:'Instrucción de milicias',sleep:'Sueño'};
 const completeCodes=new Set(['healing_complete','repair_complete','training_complete','rest_complete','militia_complete','sleep_complete']);
 const codes=()=>issueCodes??=new Set([...Object.keys(CARE_ISSUE_TEXT),...Object.keys(WORK_ISSUE_TEXT),...Object.keys(SLEEP_ISSUE_TEXT)]);
-const sectors=new Set(CAMPAIGN_SECTORS.map(sector=>sector.id));
+const sectorIds=context=>new Set(campaignSectors(context).map(sector=>sector.id));
 const training=new Set(['practice','instructor','student']);
 const terminal=event=>event.state==='complete'||event.state==='blocked';
 const eventKeys=['subject','assignment','operativeId','sector','state','code','targetId','skill','binding'];
@@ -77,12 +78,12 @@ export function collectAssignmentAttention(s,states,extraEvents=[]){
   return events;
 }
 
-function bindingData(binding,ids){
+function bindingData(binding,ids,context){
   need(typeof binding==='string'&&binding.length<=300);
   let values;try{values=JSON.parse(binding);}catch{need(false);}
   need(Array.isArray(values)&&values.length===7&&JSON.stringify(values)===binding);
   const [assignment,id,sector,target,skill,instructor,weapon]=values;
-  need(typeof assignment==='string'&&Object.hasOwn(assignments,assignment)&&assignment!=='active'&&(ids.has(id)||assignment==='militia'&&id===null)&&(assignment==='militia'?sectors.has(sector):validWorldLocation(sector)));
+  need(typeof assignment==='string'&&Object.hasOwn(assignments,assignment)&&assignment!=='active'&&(ids.has(id)||assignment==='militia'&&id===null)&&(assignment==='militia'?sectorIds(context).has(sector):validWorldLocation(sector,context)));
   if(assignment==='militia'){
     need(integer(target,0,2)&&integer(skill,0,24*365*100)&&integer(instructor,1,96)&&weapon===3);
   }else{
@@ -103,18 +104,18 @@ function compatibleCode(assignment,code){
   if(assignment==='repair')return ['invalid_repair_scope','repair_pack_full','repair_complete','no_mechanical_skill','no_tools','target_unavailable','target_not_firearm','target_changed'].includes(code);
   return ['invalid_skill','zero_skill','training_complete',...(assignment==='instructor'?['no_students']:[]),...(assignment==='student'?['missing_instructor','instructor_unavailable','instructor_assignment','instructor_skill','instructor_busy']:[])].includes(code)&&!(assignment==='instructor'&&code==='training_complete');
 }
-function validateBindingCode(subject,binding,code,ids,hour){
-  const values=bindingData(binding,ids),[assignment,id,sector]=values;
+function validateBindingCode(subject,binding,code,ids,hour,context){
+  const values=bindingData(binding,ids,context),[assignment,id,sector]=values;
   need(subject===(assignment==='militia'?`militia:${sector}`:assignment==='sleep'?`sleep:${id}`:`operative:${id}`)&&codes().has(code)&&compatibleCode(assignment,code));
   if(assignment==='militia')need(values[4]<=hour);
   return values;
 }
 export function validateAssignmentAttention(s,roster){
   migrateAssignmentAttention(s);
-  const attention=s.assignmentAttention,ids=new Set(roster.map(op=>op.id)),limit=ids.size*2+sectors.size;
+  const attention=s.assignmentAttention,ids=new Set(roster.map(op=>op.id)),limit=ids.size*2+campaignSectors(s).length;
   need(exact(attention,['version','reported','notice'])&&attention.version===1&&object(attention.reported)&&Object.keys(attention.reported).length<=limit);
   for(const [subject,marker]of Object.entries(attention.reported)){
-    need(exact(marker,['binding','code']));validateBindingCode(subject,marker.binding,marker.code,ids,s.hour);
+    need(exact(marker,['binding','code']));validateBindingCode(subject,marker.binding,marker.code,ids,s.hour,s);
   }
   const notice=attention.notice;
   if(notice!==null){
@@ -122,7 +123,7 @@ export function validateAssignmentAttention(s,roster){
     const subjects=new Set();
     for(const event of notice.events){
       need(exact(event,eventKeys)&&!subjects.has(event.subject));subjects.add(event.subject);
-      const [assignment,id,sector,target,skill]=validateBindingCode(event.subject,event.binding,event.code,ids,notice.hour);
+      const [assignment,id,sector,target,skill]=validateBindingCode(event.subject,event.binding,event.code,ids,notice.hour,s);
       need(event.assignment===assignment&&event.operativeId===id&&event.sector===sector&&event.state===(completeCodes.has(event.code)?'complete':'blocked'));
       need(assignment==='militia'?event.targetId===null&&event.skill===null:event.targetId===target&&event.skill===skill);
     }
@@ -132,7 +133,7 @@ export function validateAssignmentAttention(s,roster){
 
 export function assignmentAttentionText(s,event,roster){
   const op=roster.find(op=>op.id===event.operativeId),name=op?.nickname??op?.name??'El personal';
-  const place=campaignPlace(event.sector)?.name??event.sector;
+  const place=campaignPlace(event.sector,s)?.name??event.sector;
   const reasons=event.assignment==='sleep'?SLEEP_ISSUE_TEXT:Object.hasOwn(CARE_ASSIGNMENTS,event.assignment)?CARE_ISSUE_TEXT:WORK_ISSUE_TEXT;
   const reason=reasons[event.code]??'La asignación necesita atención.';
   return `${name} · ${assignments[event.assignment]??'Asignación'} en ${place}: ${reason}`;

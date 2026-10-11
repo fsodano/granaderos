@@ -1,10 +1,10 @@
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
 
 // JA2 map scouting distinguishes counts, presence and no information. The
 // neighbor graph and 72-hour report lifetime are Granaderos adaptations.
 export const INTELLIGENCE_LIFETIME=72;
-const sectors=new Map(CAMPAIGN_SECTORS.map(sector=>[sector.id,sector]));
+const sectors=s=>new Map(campaignSectors(s).map(sector=>[sector.id,sector]));
 const active=g=>['marching','waiting','engaged','stationed'].includes(g.status);
 const able=u=>u&&u.hp>=15&&!u.captured&&!u.asleep&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure;
 const location=g=>g.routeIndex>0?g.route[Math.min(g.routeIndex-1,g.route.length-1)]:null;
@@ -14,7 +14,7 @@ export function migrateEnemyIntelligence(s){
 }
 function observers(s,{traveling=[]}={}){
  const seen=new Map(),deployedMilitia=new Set((s.pendingBattle?.garrison??[]).map(u=>String(u.id)));
- for(const sector of CAMPAIGN_SECTORS){
+ for(const sector of campaignSectors(s)){
   const militia=s.garrisons?.[sector.id]??[],counts=s.sectors[sector.id]?.militia??[];
   // New paid cohorts can still be count-only. Existing wounded/deployed
   // records occupy their own slots and cannot be replaced by imaginary scouts.
@@ -58,13 +58,13 @@ export function recordEnemyPresence(s,g){
 export function clearEnemyReport(s,id){delete migrateEnemyIntelligence(s).reports[id];}
 export function enemyIntelligenceReports(s){
  const {reports,live}=reportState(s);
- return Object.entries(reports).map(([id,r])=>({id,sector:r.sector,observedAt:r.observedAt,source:r.source,status:r.status,strength:r.strength,location:sectors.get(r.sector).name,ageHours:Math.max(0,s.hour-r.observedAt),stale:!live[id]}));
+ return Object.entries(reports).map(([id,r])=>({id,sector:r.sector,observedAt:r.observedAt,source:r.source,status:r.status,strength:r.strength,location:sectors(s).get(r.sector).name,ageHours:Math.max(0,s.hour-r.observedAt),stale:!live[id]}));
 }
 export function validateEnemyIntelligence(s){
  const intelligence=migrateEnemyIntelligence(s),object=v=>v&&typeof v==='object'&&!Array.isArray(v);
  const need=ok=>{if(!ok)throw Error('Los partes de exploración guardados son inválidos.');};
  need(object(intelligence)&&intelligence.version===1&&object(intelligence.reports)&&Object.keys(intelligence.reports).length<=128);
  for(const [id,r] of Object.entries(intelligence.reports)){
-  need(/^enemy-group-[1-9][0-9]*$/.test(id)&&Number(id.slice(12))<s.nextEnemyGroupId&&object(r)&&Object.keys(r).length===5&&Object.keys(r).every(k=>['sector','observedAt','source','status','strength'].includes(k))&&sectors.has(r.sector)&&Number.isInteger(r.observedAt)&&r.observedAt>=0&&r.observedAt<=s.hour&&['scouts','militia','contact','occupation'].includes(r.source)&&['moving','present'].includes(r.status)&&(r.strength===null||Number.isInteger(r.strength)&&r.strength>=0&&r.strength<=30));
+  need(/^enemy-group-[1-9][0-9]*$/.test(id)&&Number(id.slice(12))<s.nextEnemyGroupId&&object(r)&&Object.keys(r).length===5&&Object.keys(r).every(k=>['sector','observedAt','source','status','strength'].includes(k))&&sectors(s).has(r.sector)&&Number.isInteger(r.observedAt)&&r.observedAt>=0&&r.observedAt<=s.hour&&['scouts','militia','contact','occupation'].includes(r.source)&&['moving','present'].includes(r.status)&&(r.strength===null||Number.isInteger(r.strength)&&r.strength>=0&&r.strength<=30));
  }
 }

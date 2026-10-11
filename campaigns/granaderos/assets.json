@@ -1,0 +1,1253 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "avatar-man-artisan-brown-4",
+      "path": "assets/avatar-man-artisan-brown-4.webp",
+      "sha256": "1baafd7baee6bc477bef58206a75dd9f28008115b0221fc8dd47b3ceda2495cb",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-artisan-brown-5",
+      "path": "assets/avatar-man-artisan-brown-5.webp",
+      "sha256": "c3d7191d165130ddf7c5de42a4d5bf0ff6314df5e3e5659b00ec9c188e536962",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-artisan-dark-3",
+      "path": "assets/avatar-man-artisan-dark-3.webp",
+      "sha256": "e2148d942458e63b09a48d9d231b21c3cd4bfc22c1c1fe9ab2244a44e2d039b0",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-artisan-dark-4",
+      "path": "assets/avatar-man-artisan-dark-4.webp",
+      "sha256": "c66a7ae4cbd677018c32a04a93f925ef67ece143adb1d8a177c27b6870a73bfc",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-artisan-dark-5",
+      "path": "assets/avatar-man-artisan-dark-5.webp",
+      "sha256": "6d9411427d1e0691dd19dd980fb908bcb4caf58fb4d5518dbfda9fdaca1bc8c3",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-artisan-light-4",
+      "path": "assets/avatar-man-artisan-light-4.webp",
+      "sha256": "0b6c32f52596f800d843de065e8288d7c1c36a0364bc0c5abfa0ef23df4c2293",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-artisan-light-5",
+      "path": "assets/avatar-man-artisan-light-5.webp",
+      "sha256": "2d97c87c4f1da955a8668c7a664e19506f678a68422ce16ea0507bcc2afadc92",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-black-artisan",
+      "path": "assets/avatar-man-black-artisan.webp",
+      "sha256": "d5bdfc3bbc1a0facf0b02fef61015eb33ff51092ac69b4ca9a6013589acc4342",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-black-gaucho",
+      "path": "assets/avatar-man-black-gaucho.webp",
+      "sha256": "04663a9ffb1688bd1f2dc53f4f38325a12cfb2c6f3bce7f1b60aff55c8a472b7",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-black-medic",
+      "path": "assets/avatar-man-black-medic.webp",
+      "sha256": "64aa87b8cc75169980293646b3d220e122adf6fc30776e73df8a34e505bf0d2f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-black-officer",
+      "path": "assets/avatar-man-black-officer.webp",
+      "sha256": "f2e35fa4d7e1b21cab644ab1d2dda41de138d0f58170c8ee91a48eb450ac8031",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-black-scout",
+      "path": "assets/avatar-man-black-scout.webp",
+      "sha256": "0e7d481d35d701874a40582729d6ba15a1c45002ab1c6dab450c773f8f9edb54",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-black-soldier",
+      "path": "assets/avatar-man-black-soldier.webp",
+      "sha256": "10131c8b32003c8b75ffcdcca2bef2e60f348bca42288b3d481770a18b9213b4",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-1",
+      "path": "assets/avatar-man-gaucho-dark-1.webp",
+      "sha256": "d0f6e79b8bc0cc8cfc5fe0104533d5632f4f2a4ce3a775596a7fee7e0557b550",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-2",
+      "path": "assets/avatar-man-gaucho-dark-2.webp",
+      "sha256": "7e5e58c304f4514ace3d9859a5573befb0922d07b9a660df00b52d99fba1a7da",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-3",
+      "path": "assets/avatar-man-gaucho-dark-3.webp",
+      "sha256": "11b73cb146a962ab297ed7aca5b86914c53f5be57fc3384bd463f45f4e6ff265",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-4",
+      "path": "assets/avatar-man-gaucho-dark-4.webp",
+      "sha256": "fc559aa83eb1bb714cad5772ed245eb8ef65fb7d70a2ee37e152c2b9244e5ebd",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-dark-5",
+      "path": "assets/avatar-man-gaucho-dark-5.webp",
+      "sha256": "39a4a69845575e8e898397b5c6ae7ce836cd6c1ec56ea9c734e41c494dc8919f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-light-1",
+      "path": "assets/avatar-man-gaucho-light-1.webp",
+      "sha256": "afca6ebc9ab12c15fa0d4a2d92a666a78766efae4f701e68dc7fc2f882ad0299",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-light-2",
+      "path": "assets/avatar-man-gaucho-light-2.webp",
+      "sha256": "cdebb428d2219425fcab0f496e78bbd95e2a31576e8d239796f8c8b568c6ee7e",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-light-3",
+      "path": "assets/avatar-man-gaucho-light-3.webp",
+      "sha256": "018fb8b480d956a7ea2b80e58883d2f305a9ce5e4bf7f6a93bd3584f5f212585",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-light-4",
+      "path": "assets/avatar-man-gaucho-light-4.webp",
+      "sha256": "6ea3c795c2ba8beefaad901be934ab5cbfdde649e11a1e6105fde0551709e6e9",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho-light-5",
+      "path": "assets/avatar-man-gaucho-light-5.webp",
+      "sha256": "6ccb81a179b7438be34350cbfd40ac59f15689e327fa8e7b5120c5b6e8d085ff",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-gaucho",
+      "path": "assets/avatar-man-gaucho.webp",
+      "sha256": "159f09e1a0fb9a3ce5e4bfc540e48a593d552d2e91d68576446b1bd6134e8b19",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-brown-1",
+      "path": "assets/avatar-man-medic-brown-1.webp",
+      "sha256": "99e84015c10ec287b29bfa4fa6cb18c6fea3d637de35a04650ed4bf4d0437194",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-brown-2",
+      "path": "assets/avatar-man-medic-brown-2.webp",
+      "sha256": "f635779fd4608e003546861c9d59bcebbaa8753b82ac09b34b37a5b19b920840",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-brown-3",
+      "path": "assets/avatar-man-medic-brown-3.webp",
+      "sha256": "6af49f2b353a2595a7401ce1d063d29f6585f59f5511e7b1cf9cd617d03a63aa",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-brown-4",
+      "path": "assets/avatar-man-medic-brown-4.webp",
+      "sha256": "89e9ae71cb8d070d3dfd9331b3c27fe3d5adc2b8822ffd9bc5a10633b6994e9a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-brown-5",
+      "path": "assets/avatar-man-medic-brown-5.webp",
+      "sha256": "7bbc0e0758b15f9f96a45b6b2fbe4c1eedd97f30a29150b5ef6af232e9ce97ed",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-dark-2",
+      "path": "assets/avatar-man-medic-dark-2.webp",
+      "sha256": "75dbf85fbd306aed6b77e24433e6c59e0a2ea830129e594a0187a399a64bd4be",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-dark-3",
+      "path": "assets/avatar-man-medic-dark-3.webp",
+      "sha256": "0817732b91ecc505b4352db0a782b9eb25c925004ad6eee6c283b3420304c58b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-dark-4",
+      "path": "assets/avatar-man-medic-dark-4.webp",
+      "sha256": "b4d5601145ab9eb86efd12cc300f6f76114eec7f2af44d903bb3dd3413a227a9",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-dark-5",
+      "path": "assets/avatar-man-medic-dark-5.webp",
+      "sha256": "ee80ad6212fd42c46b659e6d31363bbcf804ba6ee9b5ea7d0d6df6f0791e15fd",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-light-3",
+      "path": "assets/avatar-man-medic-light-3.webp",
+      "sha256": "06d5bacecc82c4eacff33dc1b811a63cd1d63921580c0e9ef180d7693bb4fed8",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-light-4",
+      "path": "assets/avatar-man-medic-light-4.webp",
+      "sha256": "a5adf2c29c92786cef9dce07b7859f5a1dc963f2a402da261f04606b07bb4aeb",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-medic-light-5",
+      "path": "assets/avatar-man-medic-light-5.webp",
+      "sha256": "e8e740df3af4b6dfc58e329dae6e2a578486a5649dc50843541fb239f7a7ed3b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-officer-brown-3",
+      "path": "assets/avatar-man-officer-brown-3.webp",
+      "sha256": "6e8f569e2e1427562c3b83bab4367aaac2d16bd1b09f113f1cf0396eb9ca8054",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-officer-brown-4",
+      "path": "assets/avatar-man-officer-brown-4.webp",
+      "sha256": "38bda948112f8829fe1e1a7e9e15320c4a3bc94ef471388af8e55a6538b7cbde",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-officer-brown-5",
+      "path": "assets/avatar-man-officer-brown-5.webp",
+      "sha256": "a1a70c003a720bbab8e3c7b5cc45109453cd810ddd5c1da8f587d7c805d6a753",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-officer-dark-2",
+      "path": "assets/avatar-man-officer-dark-2.webp",
+      "sha256": "2628923fe69feab4381d09ab5c54cd32072effa801e7e40be9445eaf2418f9d8",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-officer-dark-3",
+      "path": "assets/avatar-man-officer-dark-3.webp",
+      "sha256": "04ddd59533685da5a57beaf989fac59a335a669f00494618a86b5cc4522f96bb",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-officer-dark-4",
+      "path": "assets/avatar-man-officer-dark-4.webp",
+      "sha256": "665cc3431b27dc7a56b0d06cbddda043d01611bd124a01813e89504d0cbf92b0",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-officer-dark-5",
+      "path": "assets/avatar-man-officer-dark-5.webp",
+      "sha256": "ec0b7e95ace73271604ded580d0370db421371796af246f64f44cdfc4c3e5c1f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-brown-3",
+      "path": "assets/avatar-man-scout-brown-3.webp",
+      "sha256": "05c04441d1fb23d064b57c3926b26b083d69148090e9c1682bb3a9814fd0a402",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-brown-4",
+      "path": "assets/avatar-man-scout-brown-4.webp",
+      "sha256": "1765c86b3ec299c70b286dd60eb5f13aba3a637428bf8b428d4e219f53877ae8",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-brown-5",
+      "path": "assets/avatar-man-scout-brown-5.webp",
+      "sha256": "6f60f34bbbda324187b05a38b45054ac1ecbab6b2f70c28a734cac270d200120",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-dark-3",
+      "path": "assets/avatar-man-scout-dark-3.webp",
+      "sha256": "faadcc090e2a1c643c7c63f5518e9e7d89ba816c32defc825477f3d96e70f5c8",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-dark-4",
+      "path": "assets/avatar-man-scout-dark-4.webp",
+      "sha256": "4de82be4225b9a5e138ede7c33ad69861c5f78f43fc07073968bdc3c73091603",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-dark-5",
+      "path": "assets/avatar-man-scout-dark-5.webp",
+      "sha256": "6176acd898f311b96ce58db38a77ad15bae08b46181dcc3561564e6c388f4a3d",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-light-2",
+      "path": "assets/avatar-man-scout-light-2.webp",
+      "sha256": "812f1a6468dde921db712f453640f47cb03a52d4ebe896be352b6e01cdc22f81",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-light-3",
+      "path": "assets/avatar-man-scout-light-3.webp",
+      "sha256": "fc35f8ee54390d48f35aa50a264a6168345856165cc1555a4242a088d9d1e96b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-light-4",
+      "path": "assets/avatar-man-scout-light-4.webp",
+      "sha256": "d87bfb20c056d32bdd4b666d261b9925ba584f4d6359fc5988a14a14c6ea66d8",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-scout-light-5",
+      "path": "assets/avatar-man-scout-light-5.webp",
+      "sha256": "747e7f0a5f78d260ef58b48572df91e1dbac4bbefd07794363e14981f8bb750a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-soldier-brown-4",
+      "path": "assets/avatar-man-soldier-brown-4.webp",
+      "sha256": "ade10168bf343170d63941195d288871f0930bfe139df768a3ef2ef3d88ba904",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-soldier-brown-5",
+      "path": "assets/avatar-man-soldier-brown-5.webp",
+      "sha256": "65c78a80189a0c8eda829f3b0901342c323a4f94ef01c1f91427e3f1a3bde044",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-soldier-dark-5",
+      "path": "assets/avatar-man-soldier-dark-5.webp",
+      "sha256": "87e46a2efa1f0a5c03e2b5fcd06fda3bb798f361bb45261e1cb7248afbc95643",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-man-soldier",
+      "path": "assets/avatar-man-soldier.webp",
+      "sha256": "4791863e467396bf4a96c891dbe6ed1e1fbc77cc437c2ac9a66456112753ef70",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-brown-2",
+      "path": "assets/avatar-woman-artisan-brown-2.webp",
+      "sha256": "1c9aa51beb3321a3996feeccfe3f5afa4fa34149242f96ae82a9e362d9964dc7",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-brown-3",
+      "path": "assets/avatar-woman-artisan-brown-3.webp",
+      "sha256": "4ac969e48177777de5c1cb8dc52cec39e6d0e2a21c014fe8206eff8c3174ff4d",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-brown-4",
+      "path": "assets/avatar-woman-artisan-brown-4.webp",
+      "sha256": "264164ea0bc4d2ba4c81a13f58b4741e61b028ddfb87752300a568f0baf14eb3",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-brown-5",
+      "path": "assets/avatar-woman-artisan-brown-5.webp",
+      "sha256": "63d279c91f51a246affc8e093d33efd9b0710821efa583c1782e3b3ab5e6c8d1",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-dark-2",
+      "path": "assets/avatar-woman-artisan-dark-2.webp",
+      "sha256": "269e0a239ed45ac24528b1a2733f779bbc56c8ccbc0dcc2d047d2aeb86292e93",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-dark-3",
+      "path": "assets/avatar-woman-artisan-dark-3.webp",
+      "sha256": "e4ed3b5c1188f022aeea8d59f0d2601649c266f8d4f19305df9d761a318b17c1",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-dark-4",
+      "path": "assets/avatar-woman-artisan-dark-4.webp",
+      "sha256": "a1548627920b2d3538e47c2d88f7b00a05cb8e03ac2fa95bd7cd7bccea4f0f14",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-dark-5",
+      "path": "assets/avatar-woman-artisan-dark-5.webp",
+      "sha256": "6ee0465a89e341b114e7fb60830b13c78f40deab7e379bb31c1ff17a86281335",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-light-1",
+      "path": "assets/avatar-woman-artisan-light-1.webp",
+      "sha256": "666ed9e135cae299f174386621e409fb5499670852e9f1c3af2027aad77de272",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-light-2",
+      "path": "assets/avatar-woman-artisan-light-2.webp",
+      "sha256": "3b8190a7f9d5df6fc1a8dd8baf4783e5bbdf68f87e0927ee2db6059f266a053e",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-light-3",
+      "path": "assets/avatar-woman-artisan-light-3.webp",
+      "sha256": "2022f05d4ef46a78810ab2ed351e6308a8333daa1e7db6653fb21a8e7771f3f1",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-light-4",
+      "path": "assets/avatar-woman-artisan-light-4.webp",
+      "sha256": "86473dd920cbcf0860981f89d47ee948c7542593acdc23b706f9b3188e60c001",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-artisan-light-5",
+      "path": "assets/avatar-woman-artisan-light-5.webp",
+      "sha256": "31683ec4c1dcb9ec279186e10c307025ad757fe027cf4c065c99b27fcf32cdd5",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-black-artisan",
+      "path": "assets/avatar-woman-black-artisan.webp",
+      "sha256": "42a249f5146d5e16401e6db533c280305d59477e7be350b373bb9bc699414de1",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-black-gaucho",
+      "path": "assets/avatar-woman-black-gaucho.webp",
+      "sha256": "8d1b6801ba7dfcf2a7b422a0badbca7476fb29f7c84ba4755aa48b63c507ef7e",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-black-medic",
+      "path": "assets/avatar-woman-black-medic.webp",
+      "sha256": "48af592e6e9ac45d0e85dae58f7ac522979fdc788932dbf869927101a0dd1789",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-black-officer",
+      "path": "assets/avatar-woman-black-officer.webp",
+      "sha256": "dafa85cb4b1c93042ae1a203688021980335d926758d7bd8f5c9697e9afe53df",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-black-scout",
+      "path": "assets/avatar-woman-black-scout.webp",
+      "sha256": "78938c39a69e52d87d72fe40a2e8d3e222001e213adeefcda1f895ac93db8cdf",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-black-soldier",
+      "path": "assets/avatar-woman-black-soldier.webp",
+      "sha256": "c8a52ddb7de4a9fc964e968b8d27ead136782f307c2bad6c73d8f61b939a4c86",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-civilian",
+      "path": "assets/avatar-woman-civilian.webp",
+      "sha256": "658da0308ccee8b8fb5c5b5547d7163aa0b220d43a293a68926a4d7e4e0284c4",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-2",
+      "path": "assets/avatar-woman-gaucho-brown-2.webp",
+      "sha256": "ac4d9aabeff6dd1f150af3bce4c8565292f480b7c2ed7042068cbde77ac6278b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-3",
+      "path": "assets/avatar-woman-gaucho-brown-3.webp",
+      "sha256": "639b63df5801429aa39c260f2ac7631a63cb17f79015ec50ac167a8f8c48d702",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-4",
+      "path": "assets/avatar-woman-gaucho-brown-4.webp",
+      "sha256": "f3d7ef71cb6096c4606a4e1b661ccca5961d802efc90b3884febf52d7417ca3b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-5",
+      "path": "assets/avatar-woman-gaucho-brown-5.webp",
+      "sha256": "44ae6778e5909d91e9a9ab279c8fcbaf3ad4a6aebd13083ea430985ea551c5cf",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-1",
+      "path": "assets/avatar-woman-gaucho-dark-1.webp",
+      "sha256": "9142fb48e91fc859dba58510d7f962f493c2f2f93291107af0caacbda7582605",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-2",
+      "path": "assets/avatar-woman-gaucho-dark-2.webp",
+      "sha256": "f3ebf9944d9ab9a49746c1be6f0286fe388c524919ccbd06f808cc10d8fd3be6",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-3",
+      "path": "assets/avatar-woman-gaucho-dark-3.webp",
+      "sha256": "146ad2c83e838b3ec735fbff5fc8984d160a16c3e8d3631068b814f54b4c4cf6",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-4",
+      "path": "assets/avatar-woman-gaucho-dark-4.webp",
+      "sha256": "d2e542948b3aee6b505ed514fca6bd78b19a82a6957864c67eb154a179144e7a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-5",
+      "path": "assets/avatar-woman-gaucho-dark-5.webp",
+      "sha256": "1d0a615197ed759771caa7a090b22b78f2ea73baa4facad304f1f437b9cd82b0",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-light-1",
+      "path": "assets/avatar-woman-gaucho-light-1.webp",
+      "sha256": "8633d415d93ea196f5395cbb88b9736e6305d8e3db0a27e0e5ac9ef794f0ede2",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-light-2",
+      "path": "assets/avatar-woman-gaucho-light-2.webp",
+      "sha256": "43b02a881e0f3177e77ca63463d3fa189700ddb86eaae468b7fecad61fa0b2dd",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-light-3",
+      "path": "assets/avatar-woman-gaucho-light-3.webp",
+      "sha256": "bd570ea0f8b2312cdc534f5790aacabdac3f9f883a1ff683c9145365dd04d01f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-light-4",
+      "path": "assets/avatar-woman-gaucho-light-4.webp",
+      "sha256": "b5ad9820e75a228e6798d8f91c72d9601471af0c74f4afd5c960d39886703f8b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-gaucho-light-5",
+      "path": "assets/avatar-woman-gaucho-light-5.webp",
+      "sha256": "e3082b88ab457722516dcfec6a7689d1858553fcaa27d3d5ace4ae094a73c868",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-brown-4",
+      "path": "assets/avatar-woman-medic-brown-4.webp",
+      "sha256": "bb10415e7a80b3dba4914639620c20e6b6f5843342ca56a12644a99eeeffe2ee",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-brown-5",
+      "path": "assets/avatar-woman-medic-brown-5.webp",
+      "sha256": "947ed7ed7761bababee7a0eed674f50813304749beff21ae039fc198dc0ea1c1",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-dark-4",
+      "path": "assets/avatar-woman-medic-dark-4.webp",
+      "sha256": "1c5e01e50932e1473826e09457dca63be21e15f0392daf7e743fec915568fe57",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-dark-5",
+      "path": "assets/avatar-woman-medic-dark-5.webp",
+      "sha256": "70b257b46082d07dddf65f0958c82950b19dce3a70a9d46dfaaa22e642f4a064",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-light-2",
+      "path": "assets/avatar-woman-medic-light-2.webp",
+      "sha256": "4c374913f8939fa3c9d8a0b78aceb2f28b5c4457a421413899324523231758b0",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-light-3",
+      "path": "assets/avatar-woman-medic-light-3.webp",
+      "sha256": "74a2daf917e1c3caecc03ede877117edfc64238094e3bca16e00e14f6017a077",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-light-4",
+      "path": "assets/avatar-woman-medic-light-4.webp",
+      "sha256": "af547e86f05bf3924311123e62d7094db4b3799336e3db93999e78e77e41e3da",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-medic-light-5",
+      "path": "assets/avatar-woman-medic-light-5.webp",
+      "sha256": "d5b5647203372b00181010567eed35e07c367f35561d949db1f49f4c9d4bd41b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-brown-1",
+      "path": "assets/avatar-woman-officer-brown-1.webp",
+      "sha256": "3f9bd0b9faf730863475d38da51c3038aebb662a3fcf34e20993832ebe18858b",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-brown-2",
+      "path": "assets/avatar-woman-officer-brown-2.webp",
+      "sha256": "069120ee2b30dde3ccfe672aa8c2f5bf454a0f61793ed74600a68663a976bb0f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-brown-3",
+      "path": "assets/avatar-woman-officer-brown-3.webp",
+      "sha256": "899edb7a2792a48c6ccf3d58e45734b157a00786647def6a406d2e92ae026071",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-brown-4",
+      "path": "assets/avatar-woman-officer-brown-4.webp",
+      "sha256": "850611a5737495239e758635bb217b367ce2545d1dee3b381fe16f91f885dcdc",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-brown-5",
+      "path": "assets/avatar-woman-officer-brown-5.webp",
+      "sha256": "ec193295db53c67d46d99bce5074a896c4e8b183857b8a1b49101558b7d08841",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-dark-2",
+      "path": "assets/avatar-woman-officer-dark-2.webp",
+      "sha256": "10395b74c7cc09921b4f62076d08a3f52309a6ae517916bc600f1a4346da9d25",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-dark-3",
+      "path": "assets/avatar-woman-officer-dark-3.webp",
+      "sha256": "cfc31955a89da586598782753ec68f83005db1386083b952007ffcf871b5b02f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-dark-4",
+      "path": "assets/avatar-woman-officer-dark-4.webp",
+      "sha256": "f27ca3850e31a99cff04fa01f7b62e1463687fca4d85b0259f84c5cec07c5b58",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-dark-5",
+      "path": "assets/avatar-woman-officer-dark-5.webp",
+      "sha256": "a0a1a4fa1d8d528af6143b80a650e19a5f53c3c2b4eb52c5939266cd5fea0c05",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-light-1",
+      "path": "assets/avatar-woman-officer-light-1.webp",
+      "sha256": "5a231fd324f8b957c096b661cd33f872c7bef6c632f6624ccb4c27b2cab4602a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-light-2",
+      "path": "assets/avatar-woman-officer-light-2.webp",
+      "sha256": "edea79418b4322b3d9a18316cffbd320d7d2a7abb050b54f1983cfd52a4af87c",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-light-3",
+      "path": "assets/avatar-woman-officer-light-3.webp",
+      "sha256": "9fa65a4bfbe94d557d306402dc06942adca4e0212806c390efce86f17305c00a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-light-4",
+      "path": "assets/avatar-woman-officer-light-4.webp",
+      "sha256": "1d7210863ac17ef72903207e45f0723dc6b235d688ee8955b20742be30f51796",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-officer-light-5",
+      "path": "assets/avatar-woman-officer-light-5.webp",
+      "sha256": "0e2864563be0da54b7e332f9d58eab68d2e9d304c3feb8236f90630055e251a8",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-brown-5",
+      "path": "assets/avatar-woman-scout-brown-5.webp",
+      "sha256": "e843a46eb895f87f5f5594a5c40781a5ce15711b39b4fd0c82195fc25898b39c",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-dark-2",
+      "path": "assets/avatar-woman-scout-dark-2.webp",
+      "sha256": "11f5f29e63661c2c8096bd01ff34467d299d83fae676135d5f4ccd7a17dc5b3f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-dark-3",
+      "path": "assets/avatar-woman-scout-dark-3.webp",
+      "sha256": "79441b996ecfb11e53049bf3aceb83807aa79571dc046c6628fada1e8472893a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-dark-4",
+      "path": "assets/avatar-woman-scout-dark-4.webp",
+      "sha256": "9c246e8034834f07c57d571a4948cafae5734756b644dbd5b21c32fea7d225d0",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-dark-5",
+      "path": "assets/avatar-woman-scout-dark-5.webp",
+      "sha256": "f18be2b07ed281251a27cc5b23e11f4a3daec5ae26acf4a5e67663258d9167bf",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-light-1",
+      "path": "assets/avatar-woman-scout-light-1.webp",
+      "sha256": "885d83473669a033f34a52cd031aa990799e89845c524a132985474ccef78b9f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-light-2",
+      "path": "assets/avatar-woman-scout-light-2.webp",
+      "sha256": "123b6e5dbb0a6405b59633257534d00b219c9748a32dd9b98c05fce8e028e4a4",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-light-3",
+      "path": "assets/avatar-woman-scout-light-3.webp",
+      "sha256": "3b75128190d4db11d9885e4b5b65aabd4c43d6080bcde1f43a627a9948fcb5db",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-light-4",
+      "path": "assets/avatar-woman-scout-light-4.webp",
+      "sha256": "b69d97393a05e426461f696a13e4f07d4a893eb6af76e1f7e049abe9c8ba0f70",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout-light-5",
+      "path": "assets/avatar-woman-scout-light-5.webp",
+      "sha256": "b61964eafd3ea9db5ef2317c7e29ef0fb7d9655ca98cb5c5cb1de210619b628a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-scout",
+      "path": "assets/avatar-woman-scout.webp",
+      "sha256": "795b266ead6b931a5cf06d45a2db79c2677077351fc3cbefa9a016bcf85c1f57",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-brown-1",
+      "path": "assets/avatar-woman-soldier-brown-1.webp",
+      "sha256": "1d5fdcd0dcb132d4fffa5160699d2afb72d16afbbe6cc64075956e448adf28a1",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-brown-2",
+      "path": "assets/avatar-woman-soldier-brown-2.webp",
+      "sha256": "be01d15596cb776442c02924c92edf046ca4bc77d5830d29874b30969600ea3f",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-brown-3",
+      "path": "assets/avatar-woman-soldier-brown-3.webp",
+      "sha256": "92f573ca7b035f5ae3ed6eaa7d552641b9b19e5181f4b4469740c6d06afd395a",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-brown-4",
+      "path": "assets/avatar-woman-soldier-brown-4.webp",
+      "sha256": "66eb2c04643dec5a04593f2da1841198377aba0134017ca3d5c0026731fffeef",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-brown-5",
+      "path": "assets/avatar-woman-soldier-brown-5.webp",
+      "sha256": "1fb37bedca431814ac33944c1a6a4330eaa6ceddb4733f84b12d5d9c3afa8d72",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-dark-2",
+      "path": "assets/avatar-woman-soldier-dark-2.webp",
+      "sha256": "2a214ae71ac5da264be34441f7ac82d3943ddce1c99318cf8e47248ba5142c07",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-dark-3",
+      "path": "assets/avatar-woman-soldier-dark-3.webp",
+      "sha256": "00015e060ee9d46b1718fe1d81b0540febf47fce2c97fe6a1e68d7785af109b4",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-dark-4",
+      "path": "assets/avatar-woman-soldier-dark-4.webp",
+      "sha256": "ebe190de41f37b8563c0b2b1870960e58a787a4d1ca934920897cff8113220f3",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-dark-5",
+      "path": "assets/avatar-woman-soldier-dark-5.webp",
+      "sha256": "d695b2289228086056f0d72568199e0ae9bccb4aebe7461dbdf94d975f88c138",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-light-1",
+      "path": "assets/avatar-woman-soldier-light-1.webp",
+      "sha256": "f80daac96ca35b44502f5bdfd19173069d28a7e5acedb06d35f58eec606119c1",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-light-2",
+      "path": "assets/avatar-woman-soldier-light-2.webp",
+      "sha256": "4ed67111c07a607106b41c3e30330bdf60b1380935c1a6e2957fc166cf991742",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-light-3",
+      "path": "assets/avatar-woman-soldier-light-3.webp",
+      "sha256": "c2c2b9a0ccd4fbae501a28894dcfbe2f746e745d54534456bd5dbe89094f0a93",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-light-4",
+      "path": "assets/avatar-woman-soldier-light-4.webp",
+      "sha256": "1c42e2d18a1b7b76818683d2522285ef972fbe367b9c3dd0e29c6d5c30921bb8",
+      "type": "image/webp"
+    },
+    {
+      "id": "avatar-woman-soldier-light-5",
+      "path": "assets/avatar-woman-soldier-light-5.webp",
+      "sha256": "74c0d6d5aa3cdaea717a61b9e53997999cdf843dfdfba398b063ab4b71e63fe9",
+      "type": "image/webp"
+    },
+    {
+      "id": "balanced-portraits",
+      "path": "assets/balanced-portraits.json",
+      "sha256": "5b52224e275f94419f56580106b97e499da3bb594e355a07151ed4f0cd7146fc",
+      "type": "application/json"
+    },
+    {
+      "id": "cabral",
+      "path": "assets/cabral.webp",
+      "sha256": "bb99cb3ffbb97a01fbba10cd0c6f62914c03df8859c01dee1f1c41a2471a24fd",
+      "type": "image/webp"
+    },
+    {
+      "id": "asset-convent",
+      "path": "assets/convent.png",
+      "sha256": "c4cd73ca02c6f0e32dbb1e62735eff966cc263bc9a8d8d2451257355d69e7ae0",
+      "type": "image/png"
+    },
+    {
+      "id": "custom-portraits",
+      "path": "assets/custom-portraits.json",
+      "sha256": "ba62183566f10fd5a4536a818907c0a32e80b679380cb046e96a8e2046ad8b2f",
+      "type": "application/json"
+    },
+    {
+      "id": "foundry",
+      "path": "assets/foundry.png",
+      "sha256": "5bea7b6a8f74f51b2b04404a4f4710f8c23d65d1d93c7fcab687aa7451933811",
+      "type": "image/png"
+    },
+    {
+      "id": "main-menu",
+      "path": "assets/main-menu.webp",
+      "sha256": "c1960033605006638b3970838556050d3efc1687ed87a7e4597dbf73252c2a03",
+      "type": "image/webp"
+    },
+    {
+      "id": "mercenary-portraits",
+      "path": "assets/mercenary-portraits.json",
+      "sha256": "fd104297398f5fa4be953aeb31060f395bb47737e6a9069f4702b60ff9347f8f",
+      "type": "application/json"
+    },
+    {
+      "id": "portrait-0",
+      "path": "assets/portrait-0.webp",
+      "sha256": "69dce231f1ecef9e094899bd47674c7c4504935ebe2a2843e24314af8c85f759",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-1",
+      "path": "assets/portrait-1.webp",
+      "sha256": "52412fb9d5b8e737289943a5c52c6b030a130f297eee2b7bd80f67a983d529e4",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-10",
+      "path": "assets/portrait-10.webp",
+      "sha256": "fdb9c19da761fca0e48c8231690659adb20d9a6217ba737a8e7ee684d31892a6",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-100",
+      "path": "assets/portrait-100.webp",
+      "sha256": "1fb1accaf3fd5f42442447b492c24c5495a4767e3a207eddb352133a48c9d4dd",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-101",
+      "path": "assets/portrait-101.webp",
+      "sha256": "81620c0122d7316d4a29bcede41e1f1ecdfc8bdd8b2f8e3e6c9a43331207c266",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-102",
+      "path": "assets/portrait-102.webp",
+      "sha256": "51ca47fda08c3f328db33861a16846403ad7d574178385b691d49a131e5ce289",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-103",
+      "path": "assets/portrait-103.png",
+      "sha256": "3fc91205dee589b08ab964821ca4a37b7cf038fedd07d90e8dc6fb805945c7ec",
+      "type": "image/png"
+    },
+    {
+      "id": "portrait-104",
+      "path": "assets/portrait-104.png",
+      "sha256": "236b2745f72f3a3689a5c5c32d3ec313736de8baea14190554320f1bfcbb6b88",
+      "type": "image/png"
+    },
+    {
+      "id": "portrait-105",
+      "path": "assets/portrait-105.webp",
+      "sha256": "1ce064000926e49b809af706008beeee7b2ad0a82b98b9340c2e3e26c93a4726",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-106",
+      "path": "assets/portrait-106.webp",
+      "sha256": "fe456ff8b20ea5434d275004bbd5624781b254aa3b2cab18983bfc1e125959d6",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-107",
+      "path": "assets/portrait-107.webp",
+      "sha256": "9ead14ccea24006c0f42595466bc90e9cf03445c9d2e494902dcb0399365209c",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-108",
+      "path": "assets/portrait-108.webp",
+      "sha256": "c993fe5630e97089b4ae8b0387075743af32f88344e2c677bdb652a0f0d3a70c",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-109",
+      "path": "assets/portrait-109.webp",
+      "sha256": "a0e123e909944750c39d4a5ce200573f4448d3420297e6bf735e5aaa96a3babc",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-11",
+      "path": "assets/portrait-11.webp",
+      "sha256": "8eadae9527d9d5469b1599df227054d911895ed811a4e139937323c142983f07",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-110",
+      "path": "assets/portrait-110.webp",
+      "sha256": "d47027a91832af0a34ddf75374d62512ab3571116f767294bd30acd0b4321ec7",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-111",
+      "path": "assets/portrait-111.webp",
+      "sha256": "184f708b71db7310a395ce141c9a1a97e5eafd306780e2d762f747b145e20acc",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-112",
+      "path": "assets/portrait-112.webp",
+      "sha256": "e2d7840a0ff2a5e80f6c7fc506d1dce2ac7429476ab288ecb98cceae5cf46713",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-113",
+      "path": "assets/portrait-113.webp",
+      "sha256": "7873d0ec3ffa409ac5e96fc56a9d8a4228331684948cba655f09534eae54dfa3",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-114",
+      "path": "assets/portrait-114.webp",
+      "sha256": "5cf19efa9fe8ba3042ddb4d73d240b458da8e6d9abe4c149c4095c207855d92e",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-115",
+      "path": "assets/portrait-115.webp",
+      "sha256": "15eadea761d48d2228516ce7908920c1e2fb136ba78c91dd791c3bc1dd0c6828",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-116",
+      "path": "assets/portrait-116.webp",
+      "sha256": "554fcb4ac202e791bf0040943e0affe37428be730c27c1bd3be2811462a3b6bc",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-117",
+      "path": "assets/portrait-117.webp",
+      "sha256": "c9f6ea65d0635d04a3ca7f17bb7cd22f5eeeb6b59328e76811eaff0a685fb9ae",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-118",
+      "path": "assets/portrait-118.webp",
+      "sha256": "5bdfb1c7aeed45626a434ebc496c77009f10b8f140e386b41f2f77ebb07c261d",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-119",
+      "path": "assets/portrait-119.webp",
+      "sha256": "bae2a6ed085ab50cc8bcec661c8aca8cef4ee3a774156d737b4025defd623a0a",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-120",
+      "path": "assets/portrait-120.webp",
+      "sha256": "a07792ba2b9a3bdce8057f29865f1b80f306ba63addbfbb2da3e9178a680bc28",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-121",
+      "path": "assets/portrait-121.webp",
+      "sha256": "1d80d40bfa4161e6c1dda8d5fa8bf48eb6021349e60e6c2c2fc5baa017138107",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-122",
+      "path": "assets/portrait-122.webp",
+      "sha256": "90bf95759cdbaa5ee5e9b69d7b64be37520c257c20ab63d9c30233c8754659c7",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-123",
+      "path": "assets/portrait-123.webp",
+      "sha256": "98fb14d988ab4022c98d96d2341935f71a7337652752590eed197eb1e12c3665",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-124",
+      "path": "assets/portrait-124.webp",
+      "sha256": "c61747fc2b0bb61124c34789120fadc32bcef6eb40cf702d71754bf2066270ab",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-125",
+      "path": "assets/portrait-125.webp",
+      "sha256": "08afdbfdd9c3876876089454cf6c2894e0da18d699960e49215ee1eb270bd105",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-126",
+      "path": "assets/portrait-126.webp",
+      "sha256": "49a07a421efdb0be047339de0d5b72e203852c8c37ca2c17572c7e26165119d6",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-127",
+      "path": "assets/portrait-127.webp",
+      "sha256": "9338240438f99a306a4d6b67213bd0d166ae9f67274fc14f0e9e9fa980f1c24e",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-128",
+      "path": "assets/portrait-128.webp",
+      "sha256": "3a3faf64817d2294e9dd77e3b99b2f28ade2e4280c7d8a6059131d8966422852",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-129",
+      "path": "assets/portrait-129.webp",
+      "sha256": "8abf85cd37680160dd893268c078e45f80cf216d19a104805c21d7ecd6b697e7",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-130",
+      "path": "assets/portrait-130.webp",
+      "sha256": "cc789afc80e1404d620a28d0b4d6a1184d6d8069aa421cc7b20111f50fe9bc2d",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-131",
+      "path": "assets/portrait-131.webp",
+      "sha256": "a951d15edf304dd4d937bf136416623f2fa7d9b1166aba7525fc60958508c15d",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-132",
+      "path": "assets/portrait-132.webp",
+      "sha256": "7aa2fa5212341623e03fded25517c2e6c50cbaf9cca8a76eb55bc52f60958d64",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-133",
+      "path": "assets/portrait-133.webp",
+      "sha256": "19442a63b2e706f5d165d93ae5d00a08aa41eaba5d25febc3bd30de544d1d0a1",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-134",
+      "path": "assets/portrait-134.webp",
+      "sha256": "d61f4ff97cd9ced6a0b37732b3881b8da6d6d2855650dc30855707a0063589eb",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-135",
+      "path": "assets/portrait-135.webp",
+      "sha256": "4b9a67657efd6e1aaba3dbd0491aca27290420f4fa43696368590b1facfe155c",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-136",
+      "path": "assets/portrait-136.webp",
+      "sha256": "119872b493f2a192728a723b2ac92f445abc99056753a7cc8eda5bbaaad2b720",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-137",
+      "path": "assets/portrait-137.webp",
+      "sha256": "bb3d383f2efdf7910e24e8a798eabc091b3bdb8ed649a0175d84a927e2af5cf8",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-138",
+      "path": "assets/portrait-138.webp",
+      "sha256": "969d0ad738c08d569fc453041dbdeb7f299ea952538c6f636a11fbfcd84ad925",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-139",
+      "path": "assets/portrait-139.webp",
+      "sha256": "72b6503370559674ef49471e5420415bc34643a12fea9d9f561b9c4e0c471b0d",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-140",
+      "path": "assets/portrait-140.webp",
+      "sha256": "d32de876c5cbcbecf92074229b97ae2187c8a2625ab673d5529cf88c62584e5c",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-141",
+      "path": "assets/portrait-141.webp",
+      "sha256": "eb5926d6cc0daa8ee39c8e27dc0aadeb3f98fa4df5c276a5f22c1c44dcd54cbb",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-142",
+      "path": "assets/portrait-142.webp",
+      "sha256": "73e116685e604ce69bb9a37b7e70bf5b880d6c6e272a5ed2f71f91d30cf5dcd1",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-143",
+      "path": "assets/portrait-143.webp",
+      "sha256": "7ca74ce00b644f0347b22017f600f95478129e02590c8b1224b7fa7d96b72db5",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-144",
+      "path": "assets/portrait-144.webp",
+      "sha256": "6746d2c337f154df2838a370f86b80747d33fe47ec2f4a5b58d564c2a3fedc93",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-145",
+      "path": "assets/portrait-145.webp",
+      "sha256": "80842dacd30eac0e64a03734be4db7856811a96e351dd510b531f530abda72fd",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-146",
+      "path": "assets/portrait-146.webp",
+      "sha256": "e671818764456df2e46a75d5d07fcdbaa0e08f1a86bda2b66cb5b34bf58bb4bf",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-147",
+      "path": "assets/portrait-147.webp",
+      "sha256": "0470e34597dd38cb25e262e7817e69bc2861e2b9056cf373f6177d7d58528ae2",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-2",
+      "path": "assets/portrait-2.webp",
+      "sha256": "408cc92c683cf1e3d7e34b2aae03b56cbdb232f758692902a0210970115630d0",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-3",
+      "path": "assets/portrait-3.webp",
+      "sha256": "bb99cb3ffbb97a01fbba10cd0c6f62914c03df8859c01dee1f1c41a2471a24fd",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-4",
+      "path": "assets/portrait-4.webp",
+      "sha256": "626dc3825d1e5d94ee46fc0099abc6e14337b396bf6c117be27d62d4020359de",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-5",
+      "path": "assets/portrait-5.webp",
+      "sha256": "c7dcf1edbf828e7f83d8e3263081ec4d2e91a4a8ec29599a141428b939d2efd2",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-57",
+      "path": "assets/portrait-57.webp",
+      "sha256": "11786bc0b648ffa686ac81924b72c1da548c46ee72b2f6156a5fc5f7e766d421",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-6",
+      "path": "assets/portrait-6.webp",
+      "sha256": "c1ef55a3bd18c29f81bce2aa2229d5e8b790d892df666d8c7271e0574c6b58d3",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-7",
+      "path": "assets/portrait-7.webp",
+      "sha256": "fea616e701198dfbc35cdd0961549488d5ae706ac2a8a60ee2ea94df3233f08f",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-8",
+      "path": "assets/portrait-8.webp",
+      "sha256": "a5bfe7d937a40a514397b650853c605e974987039a7c006d665aa46f55fc697a",
+      "type": "image/webp"
+    },
+    {
+      "id": "portrait-9",
+      "path": "assets/portrait-9.webp",
+      "sha256": "c103b93f590de47188e03b7e88df5c54da2d17fd35c5ab655c54e9ff1321ffdf",
+      "type": "image/webp"
+    },
+    {
+      "id": "san-lorenzo",
+      "path": "assets/san-lorenzo.webp",
+      "sha256": "e833d05f860805622243fd2d21e6dcfb7d752c97a5e869ba5dfda38e0e256e5d",
+      "type": "image/webp"
+    },
+    {
+      "id": "title",
+      "path": "assets/title.png",
+      "sha256": "317a9d0bde81aeda5b28ce1c29108f239ad842b3a2dda4e5de98b57a5f7e6f47",
+      "type": "image/png"
+    }
+  ]
+}

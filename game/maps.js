@@ -1,30 +1,35 @@
 import {wallMovementBlocked} from './wall-geometry.js';
-import {MAP_LIBRARY} from './map-library.js';
+import {mapLibrary} from './map-library.js';
 import {compileMap} from './compile-map.js';
 import {worldCellPlan} from './world-cell-map.js';
 import {worldCell} from './world-cells.js';
 import {expandSectorMap} from './sector-expansion.js';
 import {propBlocksAt} from './props.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors,campaignDefinitions,campaignWorld,campaignPresentation} from './campaign-definition.js';
 import {tacticalLevel,validateTacticalSpace} from './tactical-space.js';
 import {campaignTerraces} from './campaign-terraces.js';
 import {connectWorldCellApproaches} from './world-cell-approaches.js';
+import {hasGenericCharacterDefinitions} from './content-character-ids.js';
+import {authoredForceEquipment} from './content-force-equipment.js';
+import {campaignRules} from './campaign-rules.js';
+import {applyCampaignBuildingStyles} from './campaign-building-styles.js';
 
 // Authored tactical plans. Buildings are solid footprints, never walkable painted facades.
 // The strategic grid is schematic; these tactical layouts are original gameplay maps,
 // not archaeological reconstructions or surveyed historical plans.
-export const MAP_IDS = [...CAMPAIGN_SECTORS.map(s=>s.id),'san_lorenzo','yatasto'];
+export const MAP_IDS=Object.keys(mapLibrary());
 const WIDTH=20,HEIGHT=16;
 const clone=value=>JSON.parse(JSON.stringify(value));
-const names={yatasto:'Posta de Yatasto · Conferencia del Ejército del Norte',buenos_aires:'Plaza Mayor y Cabildo',retiro:'Cuartel de Retiro',ensenada:'Puerto de Ensenada',san_nicolas:'Paso de San Nicolás',santa_fe:'Puerto de Santa Fe',cordoba:'Talleres de Caroya',mendoza:'Campamento de El Plumerillo',uspallata:'Desfiladero de Uspallata',los_patos:'Senda de Los Patos',tucuman:'La Ciudadela de Tucumán',salta:'Quebradas de Salta',jujuy:'Posta de Jujuy',humahuaca:'Entrada a la Quebrada',san_lorenzo:'Convento de San Carlos · San Lorenzo'};
-
-function plan(id,definitions){const doc=MAP_LIBRARY[id];return doc?compileMap(doc):worldCellPlan(id,definitions);}
+function plan(id,definitions,context){const doc=mapLibrary(context)[id];return doc?{...compileMap(doc),title:doc.metadata?.title}:worldCellPlan(id,definitions,context);}
 const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start,props=[],wallEdges=[]){
  const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!propBlocksAt({props},x,y)&&!wallMovementBlocked({wallEdges},p,t)&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
 }
 function buildCompactSectorMap(request={},restorePrevious=false){
- const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id,request.roadsideDiscoveryDefinitions),tiles=authored.tiles;
+ const {campaignPackage,...storedRequest}=request;
+ const id=request.sceneId??request.sector??request.id??campaignPresentation(request).skirmish?.request.id??campaignSectors(request)[0].id;const authored=plan(id,request.roadsideDiscoveryDefinitions,request),tiles=authored.tiles;
+ const world=campaignWorld(request),deployment={...world.defaultDeployment,...world.deployment?.[id]},authoredPlayers=authored.spawns?.filter(s=>s.side==='player')??[],authoredEnemies=authored.spawns?.filter(s=>s.side==='enemy')??[];
+ const playerAnchors=deployment.playerAnchors??(authoredPlayers.length?authoredPlayers:[{x:1,y:4}]),enemyAnchors=deployment.enemyAnchor?[deployment.enemyAnchor]:authoredEnemies.length?authoredEnemies:[{x:17,y:3}];
  const customSpace=request.upperSurfaces!==undefined||request.climbLinks!==undefined;
  const elevation=customSpace?{upperSurfaces:request.upperSurfaces,climbLinks:request.climbLinks}:restorePrevious?{}:campaignTerraces({...authored,width:WIDTH,height:HEIGHT});
  // Saved actors use the saved topology, restored by world.js after this scaffold.
@@ -40,23 +45,26 @@ function buildCompactSectorMap(request={},restorePrevious=false){
    if(!candidates.length)throw Error('El mapa no tiene posiciones de despliegue suficientes.');
    reserved.add(key(candidates[0]));return{x:candidates[0].x,y:candidates[0].y};
  };
- const squad=(request.squad??[]).map((op,i)=>({...clone(op),...choose({x:id==='san_lorenzo'?2:1,y:id==='san_lorenzo'?(i%2===0?2:12)+Math.floor(i/2):4+i},'player')}));
+ const squad=(request.squad??[]).map((op,i)=>{const anchor=playerAnchors[i%playerAnchors.length];return {...clone(op),...choose({x:anchor.x,y:anchor.y+Math.floor(i/playerAnchors.length)},'player')};});
+ const content=campaignDefinitions(request),generic=hasGenericCharacterDefinitions(content),forceState={contentCampaign:{package:content}};
  const enemyCount=request.enemies?.length??Math.max(3,squad.length+(request.difficulty??1)-1);
  const enemies=Array.from({length:enemyCount},(_,i)=>{
-  const raw=request.enemies?.[i]??{},upper=tacticalLevel(raw)!==0;
-  return {id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(raw),...(upper?{}:choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy'))};
+  const base={id:`enemy-${i}`,name:`Combatiente adversario ${i+1}`,weapon:generic?0:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...(generic?{blade:0,loaded:0,ammo:0,spriteAppearance:'worker',skinTone:'brown'}:{})};
+  const raw=request.enemies?.[i]??(generic?authoredForceEquipment(forceState,'oppositionEquipment',i===0?'officer':i%3===0?'veteran':'line',base,campaignRules(forceState).enemyCartridges):{}),upper=tacticalLevel(raw)!==0;
+  const anchor=enemyAnchors[i%enemyAnchors.length];
+  return {...base,...clone(raw),...(upper?{}:choose({x:anchor.x,y:anchor.y+Math.floor(i/enemyAnchors.length)%10},'enemy'))};
  });
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>gun.stationed?clone(gun):({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
- return {map:{...clone(request),...elevation,...(authored.worldCell?{worldCell:true}:{}),groundItems:authored.groundItems,sourceMapId:authored.sourceMapId,sourceMapRevision:authored.sourceMapRevision,sector:request.sceneId?request.sector:id,name:request.name??names[id]??worldCell(id)?.name,width:WIDTH,height:HEIGHT,tiles,wallEdges:authored.wallEdges??[],wallGeometryVersion:2,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]??worldCell(id)?.name},boundaryRoads:authored.boundaryRoads};
+ return {map:{...clone(storedRequest),...elevation,...(authored.worldCell?{worldCell:true}:{}),groundItems:authored.groundItems,sourceMapId:authored.sourceMapId,sourceMapRevision:authored.sourceMapRevision,sector:request.sceneId?request.sector:id,name:request.name??authored.title??worldCell(id,request)?.name,width:WIDTH,height:HEIGHT,tiles,wallEdges:authored.wallEdges??[],wallGeometryVersion:2,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:authored.title??worldCell(id,request)?.name},boundaryRoads:authored.boundaryRoads};
 }
 
 export function buildSectorMap(request={}, {restorePrevious=false}={}){
  const {map:core,boundaryRoads}=buildCompactSectorMap(request,restorePrevious);
- if(request.compactLayout===true)return core;
- const map=expandSectorMap(core,boundaryRoads);
- if(!restorePrevious)connectWorldCellApproaches(map);
+ const map=request.compactLayout===true?core:expandSectorMap(core,boundaryRoads,request);
+ applyCampaignBuildingStyles(map,request);
+ if(!restorePrevious&&request.compactLayout!==true)connectWorldCellApproaches(map,request);
  // Neighbourhood lots and their props only exist after expansion. Derive all
  // fresh accesses there; saved maps and explicit authored fixtures keep theirs.
- if(!restorePrevious&&request.upperSurfaces===undefined&&request.climbLinks===undefined)Object.assign(map,campaignTerraces(map));
+ if(!restorePrevious&&request.compactLayout!==true&&request.upperSurfaces===undefined&&request.climbLinks===undefined)Object.assign(map,campaignTerraces(map));
  return map;
 }

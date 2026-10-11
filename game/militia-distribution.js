@@ -1,5 +1,5 @@
 import {cityForSector} from './cities.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
 import {MILITIA_LIMIT} from './militia.js';
 import {materializeGarrisonRank} from './garrison.js';
 import {militiaArrivalEntry} from './militia-arrival.js';
@@ -10,16 +10,16 @@ const mobile=u=>u.hp>=15&&!u.bleeding&&!u.unconscious&&!u.asleep&&!u.routed&&!u.
 const heldCounts=(s,id)=>[0,1,2].map(rank=>records(s,id).filter(u=>u.militiaRank===rank&&!mobile(u)).length);
 const trainees=(s,id)=>(s.militiaTraining??[]).filter(t=>t.sector===id).reduce((n,t)=>n+t.count,0);
 const safe=(s,id)=>s.sectors[id]?.owner==='patriot'&&!(s.enemyGroups??[]).some(g=>g.target===id&&['waiting','engaged','stationed'].includes(g.status));
-const name=id=>CAMPAIGN_SECTORS.find(x=>x.id===id)?.name??id;
+const name=(s,id)=>campaignSectors(s).find(x=>x.id===id)?.name??id;
 function cityPath(s,city,from,to){
  const queue=[[from]],seen=new Set([from]);
  while(queue.length){const path=queue.shift(),at=path.at(-1);if(at===to)return path;
-  for(const id of CAMPAIGN_SECTORS.find(x=>x.id===at)?.neighbors??[])if(city.sectors.includes(id)&&safe(s,id)&&!seen.has(id)){seen.add(id);queue.push([...path,id]);}
+  for(const id of campaignSectors(s).find(x=>x.id===at)?.neighbors??[])if(city.sectors.includes(id)&&safe(s,id)&&!seen.has(id)){seen.add(id);queue.push([...path,id]);}
  }
  return null;
 }
 export function militiaDistributionStatus(s,sector){
- const city=cityForSector(sector),blocked=reason=>({city,sectors:[],reason});
+ const city=cityForSector(sector,s),blocked=reason=>({city,sectors:[],reason});
  if(!city)return blocked('Las milicias solo se redistribuyen dentro de su ciudad.');
  if(s.defeated)return blocked('La campaña ha terminado.');
  if(s.pendingBattle||s.pendingEncounter)return blocked('Resolvé el despliegue o encuentro antes de redistribuir milicias.');
@@ -57,7 +57,7 @@ function transfer(s,city,from,to,rank,count){
  materializeGarrisonRank(s,from,rank,existing.length+Math.max(0,count-available.length));
  const selected=records(s,from).filter(u=>u.militiaRank===rank&&mobile(u)).sort((a,b)=>a.id-b.id).slice(0,count),ids=new Set(selected.map(u=>u.id));
  if(selected.length!==count)throw Error('Los defensores ya no están disponibles.');
- const path=cityPath(s,city,from,to),last=path.at(-2),entry=militiaArrivalEntry(last,to);if(!entry)throw Error('El destino no tiene una entrada válida.');
+ const path=cityPath(s,city,from,to),last=path.at(-2),entry=militiaArrivalEntry(last,to,s);if(!entry)throw Error('El destino no tiene una entrada válida.');
  s.garrisons[from]=records(s,from).filter(u=>!ids.has(u.id));s.garrisons[to]??=[];
  for(const u of selected){u.militiaArrival={from:last,to};delete u.x;delete u.y;s.garrisons[to].push(u);}
  s.sectors[from].militia[rank]-=count;s.sectors[to].militia[rank]+=count;
@@ -65,8 +65,8 @@ function transfer(s,city,from,to,rank,count){
 export function redistributeMilitia(s,action){
  if(action.type==='transferMilitia'){
   const preview=militiaTransferPreview(s,action);if(!preview.valid)throw Error(preview.reason);
-  transfer(s,cityForSector(action.from),action.from,action.to,action.rank,action.count);
-  return `${action.count} defensores se trasladan de ${name(action.from)} a ${name(action.to)} con su equipo y sus heridas.`;
+  transfer(s,cityForSector(action.from,s),action.from,action.to,action.rank,action.count);
+  return `${action.count} defensores se trasladan de ${name(s,action.from)} a ${name(s,action.to)} con su equipo y sus heridas.`;
  }
  const preview=militiaDistributionPreview(s,action.sector);if(!preview.valid)throw Error(preview.reason);
  for(const rank of [2,1,0])for(const from of preview.sectors){

@@ -2855,7 +2855,7 @@
   "decor": [
     {
       "type": "convent",
-      "asset": "/art/convent.png",
+      "asset": "/campaigns/granaderos/assets/convent.png",
       "name": "Convento de San Carlos",
       "x": 3,
       "y": 4,

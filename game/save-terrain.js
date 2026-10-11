@@ -27,7 +27,7 @@ export function expandSaveTerrain(value){
   if(Array.isArray(map.tiles))continue;
   const packed=map.tiles,{width,height}=map;
   if(packed?.format==='cell-tiles-v1'){
-   bytes+=cellSceneExpandedBytes(map)-saveByteLength(JSON.stringify(packed));
+   bytes+=cellSceneExpandedBytes(map,value.campaign)-saveByteLength(JSON.stringify(packed));
    if(bytes>MAX_EXPANDED_SAVE_BYTES)throw Error('La partida expandida supera el límite de 20 MB.');
    continue;
   }

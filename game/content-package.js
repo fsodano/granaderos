@@ -13,35 +13,33 @@ import {validStartingSupplies} from './character-supplies.js';
 import {validStartingCondition} from './character-condition.js';
 import {validateCampaignRoles} from './campaign-roles.js';
 import {validateCampaignStory} from './campaign-story.js';
-import {DEFAULT_IMPORT_RULES,validateImportRules} from './campaign-imports.js';
+import {validateImportRules} from './campaign-imports.js';
 import {validateHeadquarters} from './campaign-headquarters.js';
-import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
-import {DEFAULT_CAMPAIGN_RULES,validateCampaignRules} from './campaign-rules.js';
-import {validateQuestDefinitions,validateErrandContacts,freshDefaultErrands} from './quest-definitions.js';
-import {freshDefaultRoadsideDiscoveries,validateRoadsideDiscoveries} from './roadside-discoveries.js';
+import {validateStartingTerritory} from './content-territory.js';
+import {validateCampaignRules} from './campaign-rules.js';
+import {validateQuestDefinitions,validateErrandContacts} from './quest-definitions.js';
+import {validateRoadsideDiscoveries} from './roadside-discoveries.js';
 import {validateContentQuests} from './content-quests.js';
+import {validateCampaignEvents} from './campaign-events.js';
 import {validateDialogue} from './content-dialogue.js';
-import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
-import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
+import {FORCE_EQUIPMENT,validateForceEquipment,validateForceAppearance} from './content-force-equipment.js';
+import {validCharacterAbilities} from './character-abilities.js';
 import {CIVILIAN_CONSCIENCE,conductObserverDefinition,conductNoncombatantDefinition} from './service-objections.js';
 import {LOW_MORALE_REFUSAL} from './morale-renewal.js';
-import {legacyOperativeId,isWorldCharacter,isHistoricalCharacter} from './content-character-ids.js';
-import {characterProfile,SPEECH_EVENTS,AUTHORABLE_SPEECH_EVENTS} from './characters.js';
+import {legacyOperativeId,isWorldCharacter,isHistoricalCharacter,hasGenericCharacterIds} from './content-character-ids.js';
+import {SPEECH_EVENTS,AUTHORABLE_SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
-import {SPRITE_APPEARANCES,spriteAppearance} from './sprite-appearances.js';
+import {SPRITE_APPEARANCES} from './sprite-appearances.js';
 import {CONTENT_TRAITS} from './content-character-options.js';
 import {BLADES} from "./blade-definitions.js";
-import {LOOSE_BAYONET} from './weapon-fittings.js';
 import { compileWeaponDefinition } from "./weapon-definition.js";
-import {DEFAULT_ALTERNATIVE_LOADS} from './firearm-loads.js';
-import {DEFAULT_MATERIAL_RANGE_SLOPE} from './material-range-penetration.js';
 // Versioned authoring data. No mutable campaign state or global catalog changes.
-import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
-import { CONTENT_CELLS, contentCellIds } from "./content-map.js";
-import { OPERATIVES, CAMPAIGN_SECTORS } from "./data.js";
-import { CIVIC_RECRUITS } from "./civic-recruits.js";
-import { ENCOUNTERS } from "./encounters.js";
+import { validateArrivalSites } from "./arrival-sites.js";
+import { contentCells, contentCellIds } from "./content-map.js";
+import { CAMPAIGN_SECTORS } from "./data.js";
 import { WEAPONS } from "./firearm-definitions.js";
+import {isContentImageReference} from './campaign-assets.js';
+import {validateCampaignDefinitionFields,campaignSectors} from './campaign-definition.js';
 export const CONTENT_FORMAT = "granaderos-content";
 export const CONTENT_LIMIT = 2_000_000;
 export const ATTRIBUTE_FIELDS = [
@@ -58,86 +56,15 @@ export const ATTRIBUTE_FIELDS = [
 ];
 // Every visible grid cell is valid. Legacy sector IDs remain readable for saved packages.
 export const CONTENT_SECTORS = [
-  ...CONTENT_CELLS,
+  ...DEFAULT_WORLD.cells.map(({id,col,row,grid,name,x,y,district})=>({id,col,row,grid,name,x,y,district})),
   ...CAMPAIGN_SECTORS.map(({ id, name, grid }) => ({ id, name, grid })),
 ];
 export const BLADE_TEMPLATES=Object.values(BLADES).map(w=>({id:w.id,name:w.name}));
 export const FIREARM_TEMPLATES = Object.values(WEAPONS).map((w) => ({ id: w.id, name: w.name }));
-// Fresh authored text only. Runtime profiles never infer these optional lines
-// from an operative ID, so older pinned omissions remain silent.
-const freshCombatSpeech={
-  104:{near:'¡Esa pasó cerca! Prefiero contar la historia de pie.',interrupt:'Un respiro. Aprovechemos este momento.'},
-  105:{near:'Pasó cerca. Conservo el pulso.',interrupt:'Tengo un momento para preparar el tiro.'},
-  107:{near:'Pasó cerca. Primero busquemos abrigo.',interrupt:'Un momento. Puedo ayudar sin precipitarme.'},
-  110:{near:'Bajemos la cabeza y sigamos con calma.',interrupt:'Con calma. Todavía puedo actuar.'},
-  126:{near:'¡Por poco! Necesito espacio para moverme.',interrupt:'Ahora puedo moverme. No quiero quedar encerrada.'},
-  130:{near:'¡Cerca, muy cerca! No me dejen sola.',interrupt:'Un momento. Reunámonos antes de seguir.'},
-};
-const portrait = (id) => `/art/portrait-${id}.${[103, 104].includes(id) ? "png" : "webp"}`;
-export function defaultContentPackage() {
-  return {
-    format: CONTENT_FORMAT,
-    version: 1,
-    id: "granaderos",
-    name: "Granaderos",
-    quests: [],
-    errands: freshDefaultErrands(),
-    roadsideDiscoveries: freshDefaultRoadsideDiscoveries(),
-    rules: {...DEFAULT_CAMPAIGN_RULES},
-    startingTerritory: defaultStartingTerritory(),
-    headquarters: 'retiro',
-    imports: {...DEFAULT_IMPORT_RULES},
-    arrivalSites: defaultArrivalSites(),
-    oppositionEquipment: defaultForceEquipment('oppositionEquipment'),
-    militiaEquipment: defaultForceEquipment('militiaEquipment'),
-    characters: [...OPERATIVES, ...CIVIC_RECRUITS].map((o) => ({
-      id: `person-${o.id}`,
-      name: o.name,
-      nickname: o.nickname || o.name,
-      role: o.role || "",
-      biography: o.biography || "",
-      portrait: portrait(o.id),
-      abilities:o.id===126?['enclosed_room_fear']:o.id===130?['care_composure','nervous_isolation',LOW_MORALE_REFUSAL]:o.id===107?[CIVILIAN_CONSCIENCE]:legacyCharacterAbilities(o.id),
-      personality:characterProfile(o).personality,
-      ...(o.serviceRefusals===undefined?{}:{serviceRefusals:structuredClone(o.serviceRefusals)}),
-      ...(o.preferredCompanions===undefined?{}:{preferredCompanions:structuredClone(o.preferredCompanions)}),
-      speech:{...characterProfile(o).speech,...freshCombatSpeech[o.id]},
-      spriteAppearance:spriteAppearance(o),
-      monthlyPay: o.monthlyPay ?? 0,
-      ...(o.id >= 100 ? {arrivalHours:6,recruitmentSource:'contract',service:'contract',progression:'experience',traits:[...(o.traits??[])],ridingSkill:o.ridingSkill??((o.traits??[]).includes('expert_rider')?80:0)} : {}),
-      weapon: WEAPONS[o.weapon] ? `firearm-${o.weapon}` : null,
-      blade: `blade-${o.blade??1813}`,
-      attributes: Object.fromEntries(ATTRIBUTE_FIELDS.map((k) => [k, o[k] ?? 50])),
-    })),
-    weapons: [...Object.values(WEAPONS).map((w) => ({
-      id: `firearm-${w.id}`,
-      template: w.id,
-      name: w.name,
-      damage: w.damage,
-      fireAP: w.fireAP,
-      aimAP: w.aimAP,
-      reloadAP: w.reloadAP,
-      range: w.range,
-      materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE,
-      ...(w.id===1800?{projectileEnergy:{model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265},projectileAirDrag:{model:'range-energy-retention-v1',retentionAtRange:.80}}:{}),
-      alternativeLoads:(DEFAULT_ALTERNATIVE_LOADS[w.id]??[]).map(load=>({...load,materialRangeSlope:DEFAULT_MATERIAL_RANGE_SLOPE,...(w.id===1800&&load.family==='ammoShot'?{projectileEnergy:{model:'kinetic-energy-v1',massGrams:16,muzzleVelocityMps:265},projectileAirDrag:{model:'range-energy-retention-v1',retentionAtRange:.65}}:{})})),
-      readyAP: 0,
-    })),...Object.values(BLADES).map(base=>{
-      const w=base.id===1811?LOOSE_BAYONET:base;
-      return {id:`blade-${w.id}`,template:w.id,name:base.name,damage:w.damage,ap:w.ap,reach:w.reach};
-    })],
-    placements: ENCOUNTERS.filter((n) => n.operativeId !== undefined && n.operativeId < 100).map((n) => ({
-      id: `placement-${n.id}`,
-      character: `person-${n.operativeId}`,
-      mode: "fixed",
-      sectors: contentCellIds([n.sector]),
-      moveChance: 100,
-      afterDeath: null,
-      delayMin: 0,
-      delayMax: 0,
-    })),
-  };
-}
+// The installed campaign owns its authored defaults. Each caller receives a
+// fresh copy, and old saved packages keep their original content identity.
+import {DEFAULT_CONTENT,DEFAULT_WORLD} from '../campaigns/default.js';
+export function defaultContentPackage(){return structuredClone(DEFAULT_CONTENT);}
 const record = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 const identifier = (v) =>
   typeof v === "string" &&
@@ -150,6 +77,7 @@ export function validateContentPackage(value) {
     if (!ok) errors.push(`${path}: ${message}`);
   };
   if (!record(value)) return ["Contenido: se necesita un objeto."];
+  errors.push(...validateCampaignDefinitionFields(value));
   check(value.format === CONTENT_FORMAT && value.version === 1, "Formato", "versión incompatible.");
   check(identifier(value.id), "Campaña", "identificador inválido.");
   const text = (v, path, max, empty = false) =>
@@ -160,12 +88,13 @@ export function validateContentPackage(value) {
     );
   text(value.name, "Nombre", 100);
   check(value.includeOriginalResidents===undefined||typeof value.includeOriginalResidents==='boolean', "Habitantes originales", "elegí si se incluyen los habitantes genéricos del mapa.");
-  try{validateCampaignStory(value.campaignStory,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)),new Set((Array.isArray(value.quests)?value.quests:[]).map(q=>q?.id)));}catch(error){errors.push(error.message);}
+  try{validateCampaignStory(value.campaignStory,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)),new Set((Array.isArray(value.quests)?value.quests:[]).map(q=>q?.id)),value);}catch(error){errors.push(error.message);}
   try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
-  errors.push(...validateContractRules(value.contractRules),...validateArtilleryTradingRules(value.artilleryTrading),...validateArtilleryTransportRules(value.artilleryTransport),...validateArtilleryProfiles(value.artilleryProfiles),...validateAmmunitionMarket(value.ammunitionMarket),...validateArtillerySupply(value.artillerySupply),...validateMilitiaPatrol(value.militiaPatrol),...validateMilitiaProgression(value.militiaProgression),...validateCareRules(value.careRules),...validateFoundry(value.foundry),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[]),...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
-  if(value.errands!==undefined)errors.push(...validateQuestDefinitions(value.errands));
+  errors.push(...validateCampaignEvents(value.campaignEvents,value));
+  errors.push(...validateContractRules(value.contractRules),...validateArtilleryTradingRules(value.artilleryTrading,value),...validateArtilleryTransportRules(value.artilleryTransport),...validateArtilleryProfiles(value.artilleryProfiles),...validateAmmunitionMarket(value.ammunitionMarket,value),...validateArtillerySupply(value.artillerySupply),...validateMilitiaPatrol(value.militiaPatrol),...validateMilitiaProgression(value.militiaProgression),...validateCareRules(value.careRules),...validateFoundry(value.foundry,value),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[],value),...validateImportRules(value.imports,value),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters,value),...validateStartingTerritory(value.startingTerritory,value.headquarters,value));
+  if(value.errands!==undefined)errors.push(...validateQuestDefinitions(value.errands,value));
   errors.push(...validateRoadsideDiscoveries(value.roadsideDiscoveries));
-  if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
+  if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites,value));
   for (const key of ["characters", "weapons", "placements"])
     check(
       Array.isArray(value[key]) && value[key].length <= 500,
@@ -193,22 +122,23 @@ export function validateContentPackage(value) {
   for(const [field,group]of Object.entries(FORCE_EQUIPMENT)){
     if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],sets.weapons));
     if(value[group.bladeField]!==undefined)errors.push(...validateForceEquipment(field,value[group.bladeField],new Set(value.weapons.filter(w=>BLADES[w?.template]).map(w=>w.id))));
+    if(value[group.appearanceField]!==undefined)errors.push(...validateForceAppearance(field,value[group.appearanceField]));
   }
   for (const c of value.characters.filter(record)) {
     errors.push(...validateServiceRefusals(c,sets.characters));
     errors.push(...validatePreferredCompanions(c,sets.characters));
-    if(legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
+    if(hasGenericCharacterIds(value)||legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
     if(isWorldCharacter(c)){
       const e=c.encounter;
       check((c.service==='contract'||c.service==='permanent'&&c.monthlyPay===0)&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar; el servicio permanente no tiene paga ni demora de llegada.');
       check(record(e)&&['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].every(k=>Object.hasOwn(e,k))&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector','dialogue','noncombatant'].includes(k)),c.id,'la configuración del encuentro no es válida.');
       if(record(e)){
         if(e.noncombatant!==undefined)check(e.noncombatant===true&&conductNoncombatantDefinition(c,value.placements.find(p=>p.character===c.id)),c.id,'un civil no combatiente debe ser un habitante fijo, sin armas, no incorporable y de servicio permanente.');
-        if(e.dialogue!==undefined)try{validateDialogue(e.dialogue,sets.characters,sets.quests);for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const effect of choice.effects??[])if(effect.type==='movement')check((effect.destination==='routine'||effect.character!==c.id)&&value.characters.some(target=>target.id===effect.character&&isWorldCharacter(target)),c.id,'el movimiento necesita otro habitante del mundo.');for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const condition of choice.conditions??[])if(condition.type==='meeting')check(value.characters.some(target=>target.id===condition.character&&isWorldCharacter(target)),c.id,'la condición del encuentro necesita un habitante del mundo.');}catch(error){errors.push(`${c.id}: ${error.message}`);}
+        if(e.dialogue!==undefined)try{validateDialogue(e.dialogue,sets.characters,sets.quests,value);for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const effect of choice.effects??[])if(effect.type==='movement')check((effect.destination==='routine'||effect.character!==c.id)&&value.characters.some(target=>target.id===effect.character&&isWorldCharacter(target)),c.id,'el movimiento necesita otro habitante del mundo.');for(const node of e.dialogue.nodes)for(const choice of node.choices)for(const condition of choice.conditions??[])if(condition.type==='meeting')check(value.characters.some(target=>target.id===condition.character&&isWorldCharacter(target)),c.id,'la condición del encuentro necesita un habitante del mundo.');}catch(error){errors.push(`${c.id}: ${error.message}`);}
         check(typeof e.recruitable==='boolean',c.id,'elegí si puede incorporarse.');
         text(e.greeting,`${c.id}.encounter.greeting`,1000,true);
-        check(integer(e.requiredLeadership,0,100)&&integer(e.requiredLiberated,0,12),c.id,'los requisitos del encuentro están fuera de rango.');
-        check(e.requiredSector===null||CAMPAIGN_SECTORS.some(s=>s.id===e.requiredSector),c.id,'la localidad requerida no existe.');
+        check(integer(e.requiredLeadership,0,100)&&integer(e.requiredLiberated,0,Math.max(0,campaignSectors(value).length-1)),c.id,'los requisitos del encuentro están fuera de rango.');
+        check(e.requiredSector===null||campaignSectors(value).some(s=>s.id===e.requiredSector),c.id,'la localidad requerida no existe.');
       }
     }else check(c.encounter===undefined,c.id,'el encuentro editable pertenece a un habitante nuevo.');
     if(c.recruitmentSource!==undefined)check(['contract','encounter'].includes(c.recruitmentSource),c.id,'origen de contratación inválido.');
@@ -231,16 +161,15 @@ export function validateContentPackage(value) {
       if(record(c.speech))for(const event of Object.keys(c.speech))text(c.speech[event],`${c.id}.speech.${event}`,SPEECH_LINE_LIMIT,true);
     }
     if(c.spriteAppearance!==undefined)check(typeof c.spriteAppearance==='string'&&Object.hasOwn(SPRITE_APPEARANCES,c.spriteAppearance),c.id,'apariencia de combate no válida.');
+    if(c.skinTone!==undefined)check(['light','brown','dark'].includes(c.skinTone),c.id,'paleta de piel no válida.');
     check(
-      typeof c.portrait === "string" &&
-        (/^\/art\/[a-zA-Z0-9_-]+\.(webp|png|jpg)$/.test(c.portrait) ||
-          (/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(c.portrait) &&
-            c.portrait.length < 350000)),
+      isContentImageReference(c.portrait) &&
+        (!c.portrait.startsWith('data:') || c.portrait.length < 350000),
       `${c.id}.portrait`,
       "usá un retrato local o una imagen PNG, JPEG o WebP de hasta 250 KB.",
     );
     if (c.arrivalHours !== undefined) check(integer(c.arrivalHours, 0, 168), `${c.id}.arrivalHours`, "el viaje debe durar de 0 a 168 horas.");
-    if(c.serviceGuarantee!==undefined)check(integer(c.serviceGuarantee,0,1000000)&&(c.serviceGuarantee===0||c.service==='contract'&&!isHistoricalCharacter(c)),`${c.id}.serviceGuarantee`,'garantía inválida; solo un servicio por contrato admite fondos.');
+    if(c.serviceGuarantee!==undefined)check(integer(c.serviceGuarantee,0,1000000)&&(c.serviceGuarantee===0||c.service==='contract'&&!isHistoricalCharacter(c,value)),`${c.id}.serviceGuarantee`,'garantía inválida; solo un servicio por contrato admite fondos.');
     check(integer(c.monthlyPay, 0, 1000000), `${c.id}.monthlyPay`, "paga inválida.");
     check(c.weapon === null || sets.weapons.has(c.weapon), `${c.id}.weapon`, "el arma no existe.");
     if(c.blade!==undefined)check(value.weapons.some(w=>w?.id===c.blade&&BLADES[w.template]),`${c.id}.blade`,"el arma blanca no existe.");
@@ -269,6 +198,7 @@ export function validateContentPackage(value) {
       );
     check(w.readyAP < w.fireAP, `${w.id}.readyAP`, "debe ser menor que el coste del disparo.");
   }
+  const contentSectors=[...contentCells(value),...campaignSectors(value)];
   const placed = new Set();
   for (const p of value.placements.filter(record)) {
     check(
@@ -281,9 +211,9 @@ export function validateContentPackage(value) {
     check(
       Array.isArray(p.sectors) &&
         p.sectors.length > 0 &&
-        p.sectors.length <= CONTENT_SECTORS.length &&
-        contentCellIds(p.sectors).length === p.sectors.length &&
-        p.sectors.every((s) => CONTENT_SECTORS.some((d) => d.id === s)) &&
+        p.sectors.length <= contentSectors.length &&
+        contentCellIds(p.sectors,value).length === p.sectors.length &&
+        p.sectors.every((s) => contentSectors.some((d) => d.id === s)) &&
         (p.mode !== "fixed" || p.sectors.length === 1),
       p.id,
       "seleccioná sectores válidos; la ubicación fija necesita uno.",

@@ -1,37 +1,10 @@
-import {campaignRules} from './campaign-rules.js';
-import {authoredForceEquipment} from './content-force-equipment.js';
-import {CAMPAIGN_SECTORS} from './data.js';
-export const ROYALIST_COMMANDS=[
- {id:'crown',name:'Consejo de la Corona',commander:'Francisco Javier de Elío y Gaspar de Vigodet',theater:'coast',objective:'Sostener Montevideo, estrangular las aduanas y coordinar la restauración colonial.',doctrine:'Gobierno colonial y bloqueo del estuario'},
- {id:'north',name:'Ejército Real del Perú',commander:'Joaquín de la Pezuela',deputy:'Pío Tristán',theater:'north',objective:'Descender por Humahuaca, recuperar Jujuy y Salta, y alcanzar la Ciudadela de Tucumán.',doctrine:'Infantería veterana y penetración por el Camino Real'},
- {id:'naval',name:'Flotilla Realista del Plata',commander:'Jacinto de Romarate',theater:'coast',objective:'Interrumpir la recaudación aduanera y el contrabando mediante desembarcos y bloqueos.',doctrine:'Incursiones anfibias sobre los puertos de mayor valor'},
- {id:'partisans',name:'Cabildos leales y partidas del interior',commander:'Mandos locales y cuadros de Talavera',theater:'interior',objective:'Aprovechar el descontento para saquear estancias y cortar el enlace de Córdoba.',doctrine:'Sabotaje logístico y requisas sobre provincias de baja lealtad'},
-];
-export const NORTHERN_AXIS=['humahuaca','jujuy','salta','tucuman'];
-// Retiro alone starts at four defenders. The last hostile sector faces thirty.
-// Count current ownership, not elapsed time or the size of the attacking squad.
-export function campaignEnemyCount(campaign){
- const controlled=CAMPAIGN_SECTORS.filter(d=>campaign.sectors[d.id]?.owner==='patriot').length;
- const progress=Math.max(0,Math.min(1,(controlled-1)/(CAMPAIGN_SECTORS.length-2)));
- return 4+Math.round(26*progress);
-}
-export function coastalRevenue(s){return CAMPAIGN_SECTORS.filter(d=>d.theater==='coast'&&s.sectors[d.id].owner==='patriot').reduce((v,d)=>v+Math.floor(d.income*(s.sectors[d.id].damageUntil>s.hour?.25:1)*(s.blockade?.25:1)),0);}
-// Public background doctrine, not access to the enemy dispatch scheduler.
-export function royalistIntel(){return ROYALIST_COMMANDS.map(command=>({...command}));}
-
-export function mentorDispatch(s){
- const messages=[
- 'San Martín: «La instrucción comienza en Retiro. Reunamos hombres, caballos y armas antes de empeñar al regimiento».',
- 'San Martín: «El convento de San Carlos oculta nuestra preparación. Coordinemos las dos alas para impedir que el desembarco vuelva a sus embarcaciones».',
- 'San Martín: «En Yatasto estudiaremos el estado del Ejército del Norte. La vía del Alto Perú exige esfuerzos que pueden agotarnos sin resolver la guerra».',
- 'San Martín: «Güemes sostendrá la frontera. Desde Cuyo preparemos las maestranzas, la tropa y los acuerdos necesarios para franquear los Andes».',
- 'San Martín: «El ejército está preparado. Conservemos las comunicaciones y concluiremos la liberación de nuestras provincias».',
- ];
- return {name:'José de San Martín',role:s.phase<4?'Mentor estratégico':'Comandante disponible',text:messages[s.phase],deployable:s.phase>=4};
-}
-export function oppositionFor(request,state){
- const command=ROYALIST_COMMANDS.find(c=>c.id===(request.theater==='north'?'north':request.theater==='coast'?'naval':'partisans'));
- const count=request.enemyCount??Math.max(3,request.squad.length+request.difficulty-1);
- const names=request.theater==='north'?['Oficial de la vanguardia de Tristán','Veterano del Ejército Real del Perú','Fusilero de Pezuela']:request.theater==='coast'?['Oficial de la flotilla de Romarate','Infante de desembarco realista','Marinero de la escuadra de Montevideo']:['Oficial de los cuadros de Talavera','Partidario del Cabildo realista','Miliciano leal a la Corona'];
- return {enemyCommand:command.id,enemyCommander:command.commander,enemyObjective:command.objective,enemies:Array.from({length:count},(_,i)=>authoredForceEquipment(state,'oppositionEquipment',i===0?'officer':i%3===0?'veteran':'line',{id:`enemy-${i}`,name:`${names[i%names.length]} ${Math.floor(i/names.length)+1}`,weapon:i===0?1805:i%3===0?1801:1800,blade:i===0?1809:1811,marksmanship:50+request.difficulty*5+(request.theater==='north'?3:0),morale:60+request.difficulty*5,leadership:i===0?75:40},campaignRules(state).enemyCartridges))};
-}
+// Default constants remain available for older consumers. All runtime
+// narrative and opposition decisions use the selected, saved campaign context.
+export {ROYALIST_COMMANDS,NORTHERN_AXIS} from '../campaigns/granaderos/narrative.js';
+export {enemyCommandsFor} from './campaign-scenario.js';
+import {scenarioFor} from './campaign-scenario.js';
+export const campaignEnemyCount=s=>scenarioFor(s).narrative.campaignEnemyCount(s);
+export const coastalRevenue=s=>scenarioFor(s).narrative.coastalRevenue(s);
+export const royalistIntel=s=>scenarioFor(s).narrative.royalistIntel(s);
+export const mentorDispatch=s=>scenarioFor(s).narrative.mentorDispatch(s);
+export const oppositionFor=(request,s)=>scenarioFor(s).narrative.oppositionFor(request,s);

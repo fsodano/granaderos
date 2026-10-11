@@ -10,7 +10,8 @@ import {canSee,visibleRooms,actionCosts,stealPreview} from './tactical.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {environmentTargetSummary} from './environment-interactions.js';
 import {unitCanAct,handSlots,equipmentSlots,aimOptions,orderDescriptors,nearbyLootOptions,civilianMedicalInputAction,targetPreview,heardNoiseModel,fittingInventoryModel} from './ja2-hud.js';
-import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from './data.js';
+import {RESOURCE_NAMES} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
 import {rosterFor} from './campaign.js';
 import {enemyIntelligenceReports} from './enemy-intelligence.js';
 import {publicAssignmentNotice} from './assignment-attention.js';
@@ -139,7 +140,7 @@ export function playerKnownCampaign(state){
     contractNotice:publicContractNotice(state),
     travelNotice:state.travelNotice?{hour:state.travelNotice.hour,events:state.travelNotice.events.map(e=>pick(e,['squadId','name','sector','text']))}:null,
     resources:pick(state.resources,Object.keys(RESOURCE_NAMES)),reputation:pick(state.reputation,['directory','gauchos','pardos','foreign','indigenous','royalists']),
-    sectors:CAMPAIGN_SECTORS.map(sector=>({...pick(sector,['id','name','grid','biome','theater']),...pick(state.sectors[sector.id],['owner','loyalty','fort','damageUntil']),militia:[...(state.sectors[sector.id]?.militia??[])],equipment:knownCampaignSectorEquipment(state,sector.id),repairReserves:knownCampaignRepairReserves(state,sector.id)})),
+    sectors:campaignSectors(state).map(sector=>({...pick(sector,['id','name','grid','biome','theater']),...pick(state.sectors[sector.id],['owner','loyalty','fort','damageUntil']),militia:[...(state.sectors[sector.id]?.militia??[])],equipment:knownCampaignSectorEquipment(state,sector.id),repairReserves:knownCampaignRepairReserves(state,sector.id)})),
     squads:(state.squads??[]).map(squad=>({...pick(squad,['id','name','location']),members:squad.members.filter(id=>knownIds.has(id)),journey:squadTravelStatus(squad)})),
     operatives:roster.map(unit=>{const record=state.operativeState[unit.id];return {inTransit:operativeInTransit(state,unit.id),maximumEnergy:maximumEnergy(record),...pick(unit,['id','name','nickname','weapon','blade',...OWN]),...pick(record,['hp','maxHp','alive','location','assignment','asleep','sleepCollapsed','captured','capturedSector','energy','fatigue','bleeding','bandaged','morale','condition','carriedAmmo','carriedLoaded','carriedReloadProgress','medkits','rations','torches','boleadoras']),weaponFittings:fittings(record.weaponFittings),...pick(record,['activeItem','activeSlot','leftHandItem','weaponFittingPattern','bladeFittingPattern','bladeCondition','toolkitPoints','repairTargetId','repairWeaponId','repairScope']),...(record.pocketOrder?{pocketOrder:structuredClone(record.pocketOrder)}:{}),...cursor(record),...handMetadata(record),inventory:inventory(record),...Object.fromEntries(['headwear','outfit','legwear'].map(slot=>[slot,record[slot]?item(record[slot]):null])),...(record.offHand?{offHand:item(record.offHand)}:{}),contract:pick(state.contracts?.[unit.id],['kind','term','started','expiresAt','paid'])};}),
     flags:pick(state.flags,['academy','sanLorenzo','northPact','partisanSupply','foundry','parliament','emancipation','commission','mentoring']),

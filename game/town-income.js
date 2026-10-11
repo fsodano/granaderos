@@ -1,10 +1,8 @@
+import {campaignWorld} from './campaign-definition.js';
 // Initial game tuning, not a reconstruction of historical port revenues.
 export const TOWN_INCOME_VERSION=1;
-export const TOWN_INCOME_SOURCES=Object.freeze([
- {id:'buenos_aires',name:'Buenos Aires',source:'Puerto de Buenos Aires',sectorId:'buenos_aires',requiredSectors:['buenos_aires','retiro'],dailyAmount:8000,representative:{npcId:'local-buenos_aires',name:'Administrador del puerto',sectorId:'buenos_aires'}},
- {id:'ensenada',name:'Ensenada de Barragán',source:'Puerto de Ensenada',sectorId:'ensenada',requiredSectors:['ensenada'],dailyAmount:5000,representative:{npcId:'local-ensenada',name:'Capataz del puerto',sectorId:'ensenada'}},
- {id:'santa_fe',name:'Santa Fe',source:'Puerto fluvial de Santa Fe',sectorId:'santa_fe',requiredSectors:['santa_fe'],dailyAmount:4000,representative:{npcId:'local-santa_fe',name:'Consignatario del puerto',sectorId:'santa_fe'}},
-].map(source=>Object.freeze({...source,requiredSectors:Object.freeze(source.requiredSectors),representative:Object.freeze(source.representative)})));
+export const TOWN_INCOME_SOURCES=Object.freeze(campaignWorld().incomeSources);
+const incomeDefinitions=context=>campaignWorld(context).incomeSources??[];
 
 const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 const exact=(value,keys)=>object(value)&&Object.keys(value).length===keys.length&&keys.every(key=>Object.hasOwn(value,key));
@@ -12,25 +10,25 @@ const need=(ok,message='El registro de ingresos de las localidades es inválido.
 const receiptKeys=['sourceId','npcId','sectorId','approach','hour','secondOfHour'];
 const timeOf=state=>state.hour*3600+(state.secondOfHour??0);
 const receiptTime=receipt=>receipt.hour*3600+receipt.secondOfHour;
-const sourceById=id=>TOWN_INCOME_SOURCES.find(source=>source.id===id);
+const sourceById=(id,context)=>incomeDefinitions(context).find(source=>source.id===id);
 const validClock=state=>Number.isSafeInteger(state.hour)&&state.hour>=0&&Number.isSafeInteger(state.secondOfHour??0)&&(state.secondOfHour??0)>=0&&(state.secondOfHour??0)<3600&&Number.isSafeInteger(timeOf(state));
-const validAmounts=amounts=>object(amounts)&&Object.entries(amounts).every(([id,amount])=>sourceById(id)&&Number.isSafeInteger(amount)&&amount>=0&&amount<=1_000_000);
+const validAmounts=(amounts,context)=>object(amounts)&&Object.entries(amounts).every(([id,amount])=>sourceById(id,context)&&Number.isSafeInteger(amount)&&amount>=0&&amount<=1_000_000);
 const noOrphanAgreements=state=>need(Object.values(state.conversations??{}).every(record=>record?.incomeActivation===undefined),'Falta el acuerdo de ingresos de la conversación guardada.');
 
-export function townIncomeSourceForNPC(npcId){return TOWN_INCOME_SOURCES.find(source=>source.representative.npcId===npcId)??null;}
-export function townIncomeSourceForSector(sectorId){return TOWN_INCOME_SOURCES.find(source=>source.requiredSectors.includes(sectorId))??null;}
+export function townIncomeSourceForNPC(npcId,context=null){return incomeDefinitions(context).find(source=>source.representative.npcId===npcId)??null;}
+export function townIncomeSourceForSector(sectorId,context=null){return incomeDefinitions(context).find(source=>source.requiredSectors.includes(sectorId))??null;}
 
 // Missing older state gains an empty ledger. Prior control and conversations
 // cannot grant a new agreement or a payment for a past midnight.
 export function initializeTownIncome(state,{dailyAmounts}={}){
  need(validClock(state),'El reloj de ingresos de las localidades es inválido.');
- if(dailyAmounts!==undefined)need(validAmounts(dailyAmounts),'Los importes diarios de las localidades son inválidos.');
+ if(dailyAmounts!==undefined)need(validAmounts(dailyAmounts,state),'Los importes diarios de las localidades son inválidos.');
  if(state.townIncome===undefined){noOrphanAgreements(state);state.townIncome={version:TOWN_INCOME_VERSION,activations:{},lastPaidDay:Math.floor(state.hour/24),...(dailyAmounts===undefined?{}:{dailyAmounts:{...dailyAmounts}})};}
  return state.townIncome;
 }
 
 export function townIncomeSources(state){
- return TOWN_INCOME_SOURCES.map(source=>{
+ return incomeDefinitions(state).map(source=>{
   const uncontrolled=source.requiredSectors.filter(id=>state.sectors?.[id]?.owner!=='patriot');
   const controlled=uncontrolled.length===0,activated=Boolean(state.townIncome?.activations?.[source.id]);
   const base=state.townIncome?.dailyAmounts?.[source.id]??source.dailyAmount,daily=controlled&&activated?base:0;
@@ -42,7 +40,7 @@ export function townIncomeSources(state){
 export const dailyTownIncome=state=>townIncomeSources(state).reduce((total,source)=>total+source.daily,0);
 
 export function townIncomeActivationQuote(state,{npcId,sectorId,approach}={}){
- const source=townIncomeSourceForNPC(npcId);
+ const source=townIncomeSourceForNPC(npcId,state);
  const unavailable=(code,reason)=>({available:false,sourceId:source?.id??null,code,reason});
  if(!source)return unavailable('no-source','Este interlocutor no administra una fuente de ingresos.');
  if(sectorId!==source.representative.sectorId)return unavailable('wrong-sector','Hablá con el representante en su localidad.');
@@ -72,16 +70,16 @@ export function validateTownIncome(state){
  const ledger=state.townIncome;
  need(exact(ledger,['version','activations','lastPaidDay',...(Object.hasOwn(ledger??{},'dailyAmounts')?['dailyAmounts']:[])])&&ledger.version===TOWN_INCOME_VERSION&&object(ledger.activations));
  need(Number.isSafeInteger(ledger.lastPaidDay)&&ledger.lastPaidDay>=0&&ledger.lastPaidDay<=Math.floor(state.hour/24),'La fecha del último cobro de las localidades es inválida.');
- if(ledger.dailyAmounts!==undefined)need(validAmounts(ledger.dailyAmounts),'Los importes diarios de las localidades son inválidos.');
+ if(ledger.dailyAmounts!==undefined)need(validAmounts(ledger.dailyAmounts,state),'Los importes diarios de las localidades son inválidos.');
  for(const [id,receipt]of Object.entries(ledger.activations)){
-  const source=sourceById(id);
+  const source=sourceById(id,state);
   need(source&&exact(receipt,receiptKeys)&&receipt.sourceId===id&&receipt.npcId===source.representative.npcId&&receipt.sectorId===source.representative.sectorId&&['friendly','direct'].includes(receipt.approach),'El acuerdo de ingresos no corresponde al representante.');
   need(Number.isSafeInteger(receipt.hour)&&receipt.hour>=0&&Number.isSafeInteger(receipt.secondOfHour)&&receipt.secondOfHour>=0&&receipt.secondOfHour<3600&&Number.isSafeInteger(receiptTime(receipt))&&receiptTime(receipt)<=timeOf(state),'La fecha del acuerdo de ingresos es inválida.');
   const record=state.conversations?.[receipt.npcId],mirror=record?.incomeActivation;
   need(record?.met===true&&validClock(record)&&record.secondOfHour!==undefined&&timeOf(record)>=receiptTime(receipt)&&timeOf(record)<=timeOf(state)&&exact(mirror,receiptKeys)&&receiptKeys.every(key=>mirror[key]===receipt[key]),'El acuerdo de ingresos no coincide con su conversación.');
  }
  for(const [npcId,record]of Object.entries(state.conversations??{}))if(record?.incomeActivation!==undefined){
-  const source=townIncomeSourceForNPC(npcId);need(source&&ledger.activations[source.id],'Falta el acuerdo de ingresos de la conversación guardada.');
+  const source=townIncomeSourceForNPC(npcId,state);need(source&&ledger.activations[source.id],'Falta el acuerdo de ingresos de la conversación guardada.');
  }
 }
 

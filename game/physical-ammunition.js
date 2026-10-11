@@ -4,6 +4,7 @@ import {groupAmmunitionCounts,groupAmmunitionResources,groupSceneAmmunition,lega
 import {WEAPONS} from './data.js';
 import {AMMUNITION_TYPES,weaponAmmoType,isAmmunitionStack,validateAmmunitionStack,ammunitionByType,totalReserveAmmunition,availableAmmunition} from './ammunition-types.js';
 import {initializeUnitAmmunition,syncUnitAmmunition} from './tactical-ammunition.js';
+import {legacyMerchantAmmunitionLimit} from './merchant-preferences.js';
 
 export const AMMUNITION_VERSION=2;
 export const AMMUNITION_RESOURCE_KEYS=Object.freeze(Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,type==='musket_75'?'cartridges':`ammo_${type}`])));
@@ -58,7 +59,11 @@ function migrateStack(stack){
 function rejectMixedLegacy(root){
  const pending=[root];while(pending.length){const value=pending.pop();if(!value||typeof value!=='object')continue;
   need(value.ammunitionVersion===undefined&&!isAmmunitionStack(value)&&['ammunitionByType','issuedAmmunition','fieldAmmunition','creditedAmmunition'].every(key=>value[key]===undefined),'La partida mezcla reglas antiguas y nuevas de munición.');
-  for(const child of Object.values(value))if(child&&typeof child==='object')pending.push(child);
+  for(const [key,child]of Object.entries(value)){
+   // Authored allocations are validated definitions, not issued ammunition.
+   if(key==='campaignPackage'||key==='finiteResourceDefinitions'||key==='package'&&value===root.contentCampaign)continue;
+   if(child&&typeof child==='object')pending.push(child);
+  }
  }
 }
 export function migrateBattleAmmunition(snapshot,{legacy=snapshot?.ammunitionVersion===undefined}={}){
@@ -103,7 +108,7 @@ export function migrateCampaignAmmunition(state,roster=[],{fresh=false}={}){
  if(!fresh){rejectMixedLegacy(state);need(Object.values(AMMUNITION_RESOURCE_KEYS).filter(key=>key!=='cartridges').every(key=>state.resources?.[key]===undefined)&&Object.values(state.merchants??{}).every(m=>m.ammunition===undefined),'La partida mezcla reservas antiguas y nuevas de munición.');}
  const snapshots=[...Object.values(state.sectorStates??{}),...Object.values(state.sceneStates??{}),...(state.pendingBattle?.resumeSnapshot?[state.pendingBattle.resumeSnapshot]:[])];
  const looseLegacy=!fresh&&((state.resources?.cartridges??0)>0||Object.values(state.depots??{}).some(d=>d.cartridges>0)||[...(state.shipments??[]),...(state.convoys??[])].some(s=>s.goods?.cartridges>0)||Object.values(state.operativeState??{}).some(r=>r.ammunitionVersion===undefined&&((r.carriedAmmo??0)-(r.carriedLoaded??0)>0||r.capturedAmmunition?.ammo>0))||(state.pendingBattle?.squad??[]).some(u=>u.ammunitionVersion===undefined&&u.ammo>0)||snapshots.some(b=>(b.units??[]).some(u=>u.ammunitionVersion===undefined&&u.ammo>0)||fieldStacks(b).some(i=>i.item==='ammo'&&i.count>0)));
- if(state.economyVersion!==2)for(const [at,merchant]of Object.entries(state.merchants??{}))merchant.ammunition??=Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,at==='ensenada'?0:60*Object.values(AMMUNITION_FAMILIES).find(f=>f.type===type).legacyTypes.length]));
+ if(state.economyVersion!==2)for(const [at,merchant]of Object.entries(state.merchants??{}))merchant.ammunition??=Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,legacyMerchantAmmunitionLimit(state,at)*Object.values(AMMUNITION_FAMILIES).find(f=>f.type===type).legacyTypes.length]));
  if(state.economyVersion!==2&&state.resources)for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))if(state.resources[key]===undefined)state.resources[key]=0;
  for(const [id,record]of Object.entries(state.operativeState??{}))initializeStrategicRecord(record,roster.find(op=>String(op.id)===id)?.weapon??state.loadouts?.[id]?.weapon??0,true);
  const requests=state.pendingBattle?[state.pendingBattle]:[];
@@ -177,7 +182,7 @@ function migrateCampaignFamilies(state,roster) {
  for(const [at,goods]of Object.entries(state.depots??{}))state.depots[at]=groupAmmunitionResources(goods);
  for(const task of state.production??[])task.yield=groupAmmunitionResources(task.yield);
  for(const shipment of [...(state.shipments??[]),...(state.convoys??[])])shipment.goods=groupAmmunitionResources(shipment.goods);
- for(const [at,merchant]of Object.entries(state.merchants??{})){const counts=merchant.ammunition;need(counts&&Object.keys(counts).length===9&&Object.keys(LEGACY_AMMUNITION).every(type=>Number.isInteger(counts[type])&&counts[type]>=0&&counts[type]<=(at==='ensenada'?0:60)),'La munición antigua del comercio no es válida.');merchant.ammunition=groupAmmunitionCounts(counts);}
+ for(const [at,merchant]of Object.entries(state.merchants??{})){const counts=merchant.ammunition;need(counts&&Object.keys(counts).length===9&&Object.keys(LEGACY_AMMUNITION).every(type=>Number.isInteger(counts[type])&&counts[type]>=0&&counts[type]<=legacyMerchantAmmunitionLimit(state,at)),'La munición antigua del comercio no es válida.');merchant.ammunition=groupAmmunitionCounts(counts);}
  groupAmmunitionNotices(state);
  for(const [id,record]of Object.entries(state.operativeState??{})){
   need(record?.ammunitionVersion===1,'La munición personal antigua no tiene versión.');

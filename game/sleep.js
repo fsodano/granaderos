@@ -9,7 +9,7 @@ export const SLEEP_ENERGY=10;
 export const SLEEP_ISSUE_TEXT={sleep_started:'Se durmió por agotamiento. Su asignación queda suspendida.',sleep_collapsed:'Cayó dormido por agotamiento. Necesita recuperar al menos 60 de capacidad de energía antes de despertar.',sleep_complete:'Terminó de dormir y puede retomar su asignación.',sleep_disturbed:'Se despertó porque el sector ya no permite descansar.'};
 const deployed=(s,id)=>s.pendingBattle?.squad?.some(u=>Number(u.id)===id);
 const available=(s,id)=>s.recruited.includes(id)&&s.operativeState[id]?.alive&&!s.operativeState[id].captured&&!deployed(s,id)&&!operativeInTransit(s,id);
-const safe=(s,id,context={})=>available(s,id)&&!(context.traveling??[]).includes(id)&&!(context.unsafe??[]).includes(id)&&['patriot','neutral'].includes(worldOwner(s,operativeLocation(s,id)))&&s.pendingBattle?.sector!==operativeLocation(s,id)&&!s.enemyGroups?.some(g=>['waiting','engaged','stationed'].includes(g.status)&&(g.target===operativeLocation(s,id)||g.target===worldCell(operativeLocation(s,id))?.locality));
+const safe=(s,id,context={})=>available(s,id)&&!(context.traveling??[]).includes(id)&&!(context.unsafe??[]).includes(id)&&['patriot','neutral'].includes(worldOwner(s,operativeLocation(s,id)))&&s.pendingBattle?.sector!==operativeLocation(s,id)&&!s.enemyGroups?.some(g=>['waiting','engaged','stationed'].includes(g.status)&&(g.target===operativeLocation(s,id)||g.target===worldCell(operativeLocation(s,id),s)?.locality));
 export function sleepOrderReason(s,id,asleep){
  const r=s.operativeState[id];
  if(typeof asleep!=='boolean')return 'Indicá si debe dormir o despertar.';

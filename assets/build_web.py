@@ -2,10 +2,13 @@
 """Resize retained original tool outputs for browser delivery, preserving alpha."""
 import hashlib
 import json
+import shutil
+import subprocess
 from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent
+CAMPAIGN = ROOT.parent/'campaigns/granaderos/assets'
 SPECS = [
     ('san-lorenzo-menu-v2.png','main-menu.webp',1448,None),
     ('san-lorenzo-menu-v1.png','san-lorenzo.webp',1448,None),
@@ -31,6 +34,9 @@ def main():
         im.thumbnail((side,side),Image.Resampling.LANCZOS)
         output = ROOT/'web'/target
         im.save(output,quality=85,optimize=True)
+        if target.startswith('portrait-') or (CAMPAIGN/target).is_file():
+            CAMPAIGN.mkdir(parents=True,exist_ok=True)
+            shutil.copy2(output,CAMPAIGN/target)
         alpha = im.getchannel('A') if im.mode == 'RGBA' else None
         manifest['assets'].append({
             'path':target,'width':im.width,'height':im.height,'mode':im.mode,
@@ -40,6 +46,7 @@ def main():
             'source_sha256':hashlib.sha256(source_path.read_bytes()).hexdigest(),
         })
     (ROOT/'web/manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    subprocess.run(['node',str(ROOT.parent/'tools/campaign-authoring.mjs'),'assets',str(CAMPAIGN.parent)],check=True)
     print(f'Wrote {len(SPECS)} browser images and web/manifest.json')
 
 if __name__ == '__main__': main()

@@ -79,7 +79,8 @@ PNG retains original generated alpha for unit/building cutouts.
 
 These are single static unit poses, not eight-direction animation sheets.
 Movement can reposition the sprites but does not yet animate their limbs.
-The convent is a simplified interpretive building and does not reproduce the
+The convent image is served from `campaigns/granaderos/assets/convent.png`
+and is recorded in the campaign asset manifest. It is a simplified interpretive building and does not reproduce the
 full San Carlos complex. Grass was prompted as a repeating texture; exact
 edge continuity has not been mathematically guaranteed. All four transparent
 cutouts were verified to contain real alpha from 0 to 255, with no opaque
@@ -92,8 +93,8 @@ the browser game should use the web files above.
 All thirteen operative IDs (0 through 11, plus 57) now have original static
 portraits at `web/portrait-{id}.webp`, each 384×384. Cabral 3 reuses the initial
 portrait. All masters and prompts are retained. `build_web.py` includes the
-full set in the hash manifest. Copies are installed in `web/public/art/` at
-the repository root. See [portrait-references.md](portrait-references.md) for
+full set in the hash manifest. The served portrait copies are installed in
+`campaigns/granaderos/assets/`. See [portrait-references.md](portrait-references.md) for
 historical context and limits of the interpretive likenesses.
 
 ## Artillery, foundry and infantry action poses
@@ -102,8 +103,8 @@ historical context and limits of the interpretive likenesses.
 smoothbore field cannon. It can represent the 4 lb class; scaling the same art for
 8 lb guns is a gameplay symbol, not evidence of exact historical dimensions.
 `web/foundry.png` (512×512, RGBA) depicts a colonial ordnance workshop with an
-open forge, anvil and barrel stock. Both are installed in `web/public/art` and
-included by `build_web.py`.
+open forge, anvil and barrel stock. The cannon remains in `web/public/art`; the foundry image is in
+`campaigns/granaderos/assets/`. Both are included by `build_web.py`.
 
 `web/granadero-actions.png` is a 1280×640 transparent atlas, with 4 columns and
 2 rows of 320×320 cells. Row 0 faces southeast and row 1 southwest. Columns are

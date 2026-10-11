@@ -2,7 +2,7 @@ import {expandCellScene} from './cell-scene-storage.js';
 import {CRITICAL_HEALTH,refreshMilitaryCondition} from './actor-condition.js';
 
 export function previousDeploymentScene(campaign,request){
- return expandCellScene(request.sceneId?campaign.sceneStates[request.sceneId]:campaign.sectorStates[request.sector]);
+ return expandCellScene(request.sceneId?campaign.sceneStates[request.sceneId]:campaign.sectorStates[request.sector],campaign);
 }
 
 // Keep dead bodies and incapacitated enemy casualties across visits. Only a

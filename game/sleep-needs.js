@@ -1,15 +1,14 @@
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
+
 // Classic JA2: profile sleep need, +1/+2/+4 below 75/50/25% health,
 // Night Ops reduction, bounded to 4–12. Granaderos profile values are game
 // balance data, not historical claims about the named people's sleep habits.
-export const SLEEP_PROFILES=Object.freeze(Object.fromEntries([
- [6,[103,116,131,144]],
- [7,[101,106,110,118,123,128,137,142]],
- [9,[105,112,119,126,133,140,145]],
- [10,[109,125,139]],
-].flatMap(([hours,ids])=>ids.map(id=>[id,hours]))));
+export const SLEEP_PROFILES=Object.freeze({...DEFAULT_CATALOGUE.sleepProfiles});
 
 export function sleepNeed(unit){
- const base=Object.hasOwn(SLEEP_PROFILES,unit.id)?SLEEP_PROFILES[unit.id]:8;
+ // Older authored stories retain their numeric save slots. Those slots do
+ // not grant the historical cast's profile; explicit traits still apply.
+ const base=!unit.genericCharacter&&Object.hasOwn(SLEEP_PROFILES,unit.id)?SLEEP_PROFILES[unit.id]:8;
  const health=(unit.hp??unit.maxHp??100)/Math.max(1,unit.maxHp??100);
  const wounds=health<.25?4:health<.5?2:health<.75?1:0;
  const nightTraining=unit.traits?.includes('night_vision')?1:0;

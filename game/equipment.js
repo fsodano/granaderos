@@ -1,8 +1,9 @@
 import {expandCellScene} from './cell-scene-storage.js';
 import {equipmentWorkshopSectors,equipmentMerchantSectors,equipmentStockCap,merchantEquipmentCatalog,initialEquipmentMerchant,migrateMerchantWallets} from './equipment-merchants.js';
-import {hasWorkshop} from './campaign-headquarters.js';
+import {hasWorkshop,headquartersFor} from './campaign-headquarters.js';
 import {artilleryTradingRules} from './artillery-trading-rules.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
+import {scenarioFor,grenadeSupplyFor,grenadeCapacityFor,sceneAnchorFor} from './campaign-scenario.js';
 import {localArtilleryDepot,depotSelection} from './artillery-depots.js';
 import {artilleryProfile} from './artillery-definitions.js';
 import {importRulesFor,importPortName,importDelayReason,importOrderReason} from './campaign-imports.js';
@@ -71,7 +72,7 @@ export function deployedArtillery(s){
  return guns;
 }
 
-export const WORKSHOP_SECTORS=['retiro','cordoba','mendoza'];
+export {WORKSHOP_SECTORS,GRENADE_PRICE,GRENADE_STOCK_CAP} from '../campaigns/granaderos/equipment-supply.js';
 export const MERCHANT_CASH=1200;
 export const USED_EQUIPMENT_LIMIT=1000;
 export const AMMUNITION_PRICE=3;
@@ -83,37 +84,37 @@ export const ammunitionStock=(s,type,at=s.location)=>{const family=Object.values
 export const MEDICAL_STOCK_CAP=40;
 export const MEDICAL_DAILY_RESTOCK=5;
 export const medicalSupplyStock=(s,at=s.location)=>s.merchants?.[at]?.supplies?.medkits??0;
-export const GRENADE_PRICE=80;
-export const GRENADE_STOCK_CAP=6;
 export const grenadeStock=(s,at=s.location)=>s.merchants?.[at]?.grenades?.arsenal??0;
-// Authored campaign supply: one arsenal lot in Mendoza during the Cuyo phase.
-// This is not an attested shipment from Montevideo or a daily merchant refill.
+// Scenario admission supplies the location and story gate. Recipient, quantity,
+// money and pocket checks use the same physical inventory rules for every lot.
 export function grenadeOffer(s,op,isSupplied,quantity=1){
- const stock=grenadeStock(s),record=op&&s.operativeState[op.id];
- let reason=s.defeated?'La campaña terminó.':s.pendingBattle||s.pendingEncounter?'Resolvé el encuentro antes de comprar granadas.':s.phase<3?'La remesa de arsenal se habilita durante la campaña de Cuyo.':s.location!=='mendoza'||s.sectors.mendoza?.owner!=='patriot'||!isSupplied(s,'mendoza')?'La remesa requiere la maestranza de Mendoza propia y abastecida.':!op||!s.recruited.includes(op.id)||!record?.alive||record.captured||record.hp<15||record.asleep||record.unconscious||record.routed||record.surrendered||record.energy<=0||operativeInTransit(s,op.id)||operativeLocation(s,op.id)!==s.location?'Elegí un combatiente disponible y presente en Mendoza.':!Number.isSafeInteger(quantity)||quantity<1||quantity>GRENADE_STOCK_CAP?'Elegí entre 1 y 6 granadas.':stock<quantity?'La remesa de arsenal no tiene suficientes granadas.':s.resources.treasury<GRENADE_PRICE*quantity?'No hay pesos suficientes.':null;
+ const supply=grenadeSupplyFor(s),stock=grenadeStock(s),record=op&&s.operativeState[op.id],price=supply?.price??0,capacity=supply?.capacity??0;
+ let reason=s.defeated?'La campaña terminó.':s.pendingBattle||s.pendingEncounter?'Resolvé el encuentro antes de comprar granadas.':scenarioFor(s).grenadeSupplyReason(s,isSupplied)??(!op||!s.recruited.includes(op.id)||!record?.alive||record.captured||record.hp<15||record.asleep||record.unconscious||record.routed||record.surrendered||record.energy<=0||operativeInTransit(s,op.id)||operativeLocation(s,op.id)!==s.location?'Elegí un combatiente disponible y presente en esta localidad.':!Number.isSafeInteger(quantity)||quantity<1||quantity>capacity?`Elegí entre 1 y ${capacity} granadas.`:stock<quantity?'La remesa de arsenal no tiene suficientes granadas.':s.resources.treasury<price*quantity?'No hay pesos suficientes.':null);
  if(!reason)try{applyItemQuantity({...op,...record,id:String(op.id),loaded:record.carriedLoaded??0},{item:'inventory:grenade:arsenal',...makeGrenadeStack('arsenal',quantity)});}catch(error){reason=error.message;}
- return {grenadeType:'arsenal',name:'Granada de arsenal',price:GRENADE_PRICE,stock,available:!reason,reason,note:'Remesa de arsenal. Existencias limitadas; no se reponen.',action:{type:'purchaseGrenades',operativeId:op?.id,grenadeType:'arsenal',quantity}};
+ return {grenadeType:'arsenal',name:'Granada de arsenal',price,stock,available:!reason,reason,note:'Remesa de arsenal. Existencias limitadas; no se reponen.',action:{type:'purchaseGrenades',operativeId:op?.id,grenadeType:'arsenal',quantity}};
 }
 export function purchaseGrenades(s,op,isSupplied,quantity=1){
  const offer=grenadeOffer(s,op,isSupplied,quantity);need(offer.available,offer.reason);
  const record=s.operativeState[op.id],next=applyItemQuantity({...op,...record,id:String(op.id),loaded:record.carriedLoaded??0},{item:'inventory:grenade:arsenal',...makeGrenadeStack('arsenal',quantity)});
  record.inventory=next.inventory;if(next.pocketOrder)record.pocketOrder=next.pocketOrder;
- s.resources.treasury-=GRENADE_PRICE*quantity;s.merchants.mendoza.grenades.arsenal-=quantity;
- s.merchants.mendoza.cash=Math.min(1e9,s.merchants.mendoza.cash+GRENADE_PRICE*quantity);
- return `${op.nickname??op.name} recibe ${quantity} granada${quantity===1?'':'s'} de la remesa de arsenal por ${GRENADE_PRICE*quantity} pesos.`;
+ const merchant=s.merchants[grenadeSupplyFor(s).sector],cost=offer.price*quantity;
+ s.resources.treasury-=cost;merchant.grenades.arsenal-=quantity;
+ merchant.cash=Math.min(1e9,merchant.cash+cost);
+ return `${op.nickname??op.name} recibe ${quantity} granada${quantity===1?'':'s'} de la remesa de arsenal por ${cost} pesos.`;
 }
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const handheld=item=>Number.isInteger(Number(item))&&Number(item)>=1800&&Number(item)<=1813;
 const validInstanceId=validItemIdentity;
 const generatedIdentityNumber=id=>typeof id==='string'&&/^equipment-[1-9][0-9]{0,8}$/.test(id)?Number(id.slice(10)):null;
-function migratedIdentitySequence(s){let maximum=0;const pending=[s];while(pending.length){const value=pending.pop();if(!value||typeof value!=='object')continue;for(const [key,child]of Object.entries(value)){if(['instanceId','weaponInstanceId','bladeInstanceId'].includes(key)){const number=generatedIdentityNumber(child);if(number!==null)maximum=Math.max(maximum,number);}else if(child&&typeof child==='object')pending.push(child);}}return maximum+1;}
-const stockCap=equipmentStockCap;
-const merchantSectors=equipmentMerchantSectors;
-const merchantCatalog=merchantEquipmentCatalog;
-const initialMerchant=initialEquipmentMerchant;
+function migratedIdentitySequence(s){let maximum=0;const pending=[s],definitions=s.contentCampaign?.package;while(pending.length){const value=pending.pop();if(!value||typeof value!=='object'||value===definitions)continue;for(const [key,child]of Object.entries(value)){if(['instanceId','weaponInstanceId','bladeInstanceId'].includes(key)){const number=generatedIdentityNumber(child);if(number!==null)maximum=Math.max(maximum,number);}else if(child&&typeof child==='object')pending.push(child);}}return maximum+1;}
+// Resolve this helper when used, after the campaign/content module cycle loads.
+const stockCap=item=>equipmentStockCap(item);
+const merchantSectors=state=>equipmentMerchantSectors(state);
+const merchantCatalog=(state,sector)=>merchantEquipmentCatalog(state,sector);
+const initialMerchant=(state,sector)=>initialEquipmentMerchant(state,sector);
 function containsGrenades(state){
- const pending=[state],seen=new Set();
- while(pending.length){const value=pending.pop();if(!value||typeof value!=='object'||seen.has(value))continue;seen.add(value);if(isGrenadeStack(value))return true;for(const child of Object.values(value))if(child&&typeof child==='object')pending.push(child);}
+ const pending=[state],seen=new Set(),definitions=state.contentCampaign?.package;
+ while(pending.length){const value=pending.pop();if(!value||typeof value!=='object'||value===definitions||seen.has(value))continue;seen.add(value);if(isGrenadeStack(value))return true;for(const child of Object.values(value))if(child&&typeof child==='object')pending.push(child);}
  return false;
 }
 
@@ -136,10 +137,10 @@ export function migrateEquipment(s){
  else need(s.equipmentMerchantsVersion===1&&s.merchants&&merchantSectors(s).every(at=>Object.hasOwn(s.merchants,at)),'Faltan comerciantes de la campaña.');
  if(s.grenadeSupplyVersion===undefined){
   need(Object.values(s.merchants).every(merchant=>merchant.grenades===undefined)&&!containsGrenades(s),'La remesa de granadas mezcla versiones.');
-  s.grenadeSupplyVersion=1;for(const [at,merchant]of Object.entries(s.merchants))merchant.grenades={arsenal:at==='mendoza'?GRENADE_STOCK_CAP:0};
+  s.grenadeSupplyVersion=1;for(const [at,merchant]of Object.entries(s.merchants))merchant.grenades={arsenal:grenadeCapacityFor(s,at)};
  }
  need(s.grenadeSupplyVersion===1,'La versión de la remesa de granadas no es válida.');
- for(const [at,merchant]of Object.entries(s.merchants))need(merchant.grenades!==null&&typeof merchant.grenades==='object'&&!Array.isArray(merchant.grenades)&&Object.keys(merchant.grenades).length===1&&Number.isSafeInteger(merchant.grenades.arsenal)&&merchant.grenades.arsenal>=0&&merchant.grenades.arsenal<=(at==='mendoza'?GRENADE_STOCK_CAP:0),'Las existencias de granadas no son válidas.');
+ for(const [at,merchant]of Object.entries(s.merchants))need(merchant.grenades!==null&&typeof merchant.grenades==='object'&&!Array.isArray(merchant.grenades)&&Object.keys(merchant.grenades).length===1&&Number.isSafeInteger(merchant.grenades.arsenal)&&merchant.grenades.arsenal>=0&&merchant.grenades.arsenal<=grenadeCapacityFor(s,at),'Las existencias de granadas no son válidas.');
  if(legacy)for(const [at,merchant]of Object.entries(s.merchants)){merchant.supplies??={medkits:equipmentWorkshopSectors(s).includes(at)?MEDICAL_STOCK_CAP:0};if(equipmentWorkshopSectors(s).includes(at))merchant.stock['1811:india_socket']??=6;}
  if(s.clothingSupplyVersion===undefined){
   need(Object.values(s.merchants).every(merchant=>merchant.supplies&&merchant.supplies.ponchos===undefined),'Las existencias de vestimenta mezclan versiones.');
@@ -176,7 +177,7 @@ export function advanceMerchants(s,isSupplied){
 // still controls each merchant's buying preference.
 const exactCatalogItem=record=>{const definition=contentWeaponOf(record)??record?.itemMetadata?.contentWeapon;return definition?{...definition,item:definition.template}:equipmentCatalogItem(equipmentKey(record));};
 function tradeBreakdown(instance,fraction){const item=exactCatalogItem(instance),items=[];const append=(spec,condition)=>{const rate=typeof fraction==='function'?fraction(spec.item):fraction;items.push({name:spec.name,condition,price:Math.floor(spec.price*rate*condition/100)});};if(item&&handheld(item.item))append(item,instance.condition);const bayonet=instance?.fittings?.bayonet;if(bayonet){const spec=exactCatalogItem(bayonet);if(spec)append(spec,bayonet.condition);}return {items,total:items.reduce((sum,item)=>sum+item.price,0)};}
-export const resaleBreakdown=(instance,sector='retiro')=>({...tradeBreakdown(instance,item=>merchantBuyingTerms(sector,item).fraction),reason:merchantWeaponRefusal(sector,instance)});
+export const resaleBreakdown=(instance,sector=headquartersFor(),context=null)=>({...tradeBreakdown(instance,item=>merchantBuyingTerms(sector,item,context).fraction),reason:merchantWeaponRefusal(sector,instance,context)});
 export const usedEquipmentBreakdown=instance=>tradeBreakdown(instance,.8);
 export function usedEquipmentOffers(s,isSupplied){
  const market=merchantStatus(s,null,isSupplied);
@@ -186,7 +187,7 @@ export function usedEquipmentOffers(s,isSupplied){
   return {instance,quote,reason,available:!reason,action:{type:'purchaseUsedEquipment',sector:s.location,instanceId:instance.id}};
  });
 }
-export function resaleQuote(instance,sector='retiro'){return resaleBreakdown(instance,sector).total;}
+export function resaleQuote(instance,sector=headquartersFor(),context=null){return resaleBreakdown(instance,sector,context).total;}
 
 export function returnEquipment(s,id,report){
  for(const slot of BODY_SLOTS)if(report[slot]!==undefined||slot==='outfit'&&report.poncho!==undefined)s.operativeState[id][slot]=structuredClone(wornOutfit(report,slot));
@@ -222,7 +223,7 @@ export function validateEquipment(s,roster=[]){
  const object=v=>v&&typeof v==='object'&&!Array.isArray(v),integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
  need(s.fittingRulesVersion===FITTING_RULES_VERSION&&integer(s.nextEquipmentInstanceId,1,1e9),'La versión o secuencia del equipo es inválida.');
  const sectors=merchantSectors(s);
- need(object(s.merchants)&&Object.keys(s.merchants).length===sectors.length&&sectors.every(at=>CAMPAIGN_SECTORS.some(p=>p.id===at)),'Los comerciantes guardados son inválidos.');
+ need(object(s.merchants)&&Object.keys(s.merchants).length===sectors.length&&sectors.every(at=>campaignSectors(s).some(p=>p.id===at)),'Los comerciantes guardados son inválidos.');
  for(const sector of sectors){const merchant=s.merchants[sector],items=merchantCatalog(s,sector);
   need(object(merchant)&&merchant.ammunition===undefined&&object(merchant.stock)&&Object.keys(merchant.stock).length===items.length&&items.every(item=>integer(merchant.stock[item.stockKey??item.item],0,stockCap(item)))&&object(merchant.supplies)&&Object.keys(merchant.supplies).length===2&&integer(merchant.supplies.medkits,0,equipmentWorkshopSectors(s).includes(sector)?MEDICAL_STOCK_CAP:0)&&integer(merchant.supplies.ponchos,0,equipmentWorkshopSectors(s).includes(sector)?PONCHO_STOCK_CAP:0)&&integer(merchant.restockHours,0,23)&&integer(merchant.cash,0,1000000000),'Las existencias del comerciante son inválidas.');
  }
@@ -250,7 +251,7 @@ export function validateEquipment(s,roster=[]){
 export function validateEquipmentOwnership(s,roster=[],battle=null){
  const active=battle??s.pendingBattle?.resumeSnapshot??null,identities=new Set(),activePlayers=new Set((active?.units??[]).filter(u=>u.side==='player').map(u=>String(u.id))),activeEnemies=new Set((active?.units??[]).filter(u=>u.side==='enemy').map(u=>String(u.id)));
  const snapshots=[...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})],allies=new Set();
- const retainedOnField=(snapshot,u)=>{const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===u.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;return !u.departure&&(!disposition||['resident','dead'].includes(disposition.kind)&&disposition.sector===owner);};
+ const retainedOnField=(snapshot,u)=>{const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===u.id),owner=sceneAnchorFor(s,snapshot.sectorId);return !u.departure&&(!disposition||['resident','dead'].includes(disposition.kind)&&disposition.sector===owner);};
  const claim=id=>{need(validItemIdentity(id)&&!identities.has(id),'La identidad del equipo está duplicada o es inválida.');const number=generatedIdentityNumber(id);if(number!==null)need(number<s.nextEquipmentInstanceId,'La secuencia del equipo reutiliza una identidad existente.');identities.add(id);};
  const record=r=>{if(r&&typeof r==='object'&&(r.count??1)>0)for(const id of fittingItemIds(r))claim(id);};
  const unit=u=>{validateHands(u);validateEquipmentCursor(u);if(u.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);if(u.equipmentCursor)record(u.equipmentCursor.stack);};
@@ -288,7 +289,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
   }
   for(const r of snapshot.groundItems??[])if(r.type==='item')record(r);
   for(const r of snapshot.droppedWeapons??[])if(!r.taken)record(r);
-  for(const container of [...(expandCellScene(snapshot).tiles??[]),...(snapshot.props??[])])for(const r of container.contents??[])record(r);
+  for(const container of [...(expandCellScene(snapshot,s).tiles??[]),...(snapshot.props??[])])for(const r of container.contents??[])record(r);
   for(const npc of snapshot.npcs??[])for(const gift of npc.questGifts??[])record(gift);
  };
  for(const snapshot of snapshots)if(!active||snapshot.sectorId!==active.sectorId||(snapshot.sceneId??null)!==(active.sceneId??null))field(snapshot);

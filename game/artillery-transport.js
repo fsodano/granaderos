@@ -1,20 +1,22 @@
 import {artilleryTransportRules} from './artillery-transport-rules.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
+import {sceneAnchorFor} from './campaign-scenario.js';
 import {artilleryProfile} from './artillery-definitions.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
 import {careAssignmentBusy} from './medical-care.js';
 import {validateArtilleryInventory} from './campaign-artillery.js';
-const parent=id=>id==='san_lorenzo'?'san_nicolas':id;
-const place=id=>CAMPAIGN_SECTORS.find(s=>s.id===id);
+import {flotillaSectorAllowed} from './logistics.js';
+const parent=(s,id)=>sceneAnchorFor(s,id);
+const place=(s,id)=>campaignSectors(s).find(place=>place.id===id);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const capable=u=>u.hp>=15&&(u.energy??100)>0&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled&&!u.asleep&&!u.unconscious;
 const availableCrew=(s,at)=>(s.squad??[]).filter(id=>{const r=s.operativeState[id];return r?.alive&&capable(r)&&!r.captured&&!operativeInTransit(s,id)&&!careAssignmentBusy(r.assignment)&&!s.militiaTraining?.some(c=>c.trainerId===id)&&operativeLocation(s,id)===at;});
-const hostile=(s,at)=>s.enemyGroups?.some(g=>g.target===at&&['waiting','engaged','stationed'].includes(g.status))||Object.entries(s.sectorStates??{}).some(([key,b])=>parent(key)===at&&b.units?.some(u=>u.side==='enemy'&&capable(u)));
-const accepts=(id,mode)=>mode==='flotilla'?place(id)?.theater==='coast':place(id)?.biome!=='mountain';
+const hostile=(s,at)=>s.enemyGroups?.some(g=>g.target===at&&['waiting','engaged','stationed'].includes(g.status))||Object.entries(s.sectorStates??{}).some(([key,b])=>parent(s,key)===at&&b.units?.some(u=>u.side==='enemy'&&capable(u)));
+const accepts=(s,id,mode)=>mode==='flotilla'?flotillaSectorAllowed(s,id):place(s,id)?.biome!=='mountain';
 const hours=(s,path,mode)=>(path.length-1)*(artilleryTransportRules(s)[`${mode}Hours`]??0);
 export function artilleryTransportPath(s,from,to,mode,{ignoreControl=false}={}){
- if(!place(from)||!place(to)||!accepts(from,mode)||!accepts(to,mode))return null;
- const queue=[[from]],seen=new Set([from]);while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of place(last).neighbors)if(!seen.has(id)&&(ignoreControl||s.sectors[id]?.owner==='patriot')&&accepts(id,mode)){seen.add(id);queue.push([...path,id]);}}return null;
+ if(!place(s,from)||!place(s,to)||!accepts(s,from,mode)||!accepts(s,to,mode))return null;
+ const queue=[[from]],seen=new Set([from]);while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of place(s,last).neighbors)if(!seen.has(id)&&(ignoreControl||s.sectors[id]?.owner==='patriot')&&accepts(s,id,mode)){seen.add(id);queue.push([...path,id]);}}return null;
 }
 export const ARTILLERY_DELIVERY_ISSUES=Object.freeze({route_cut:'Una ocupación corta la ruta de la pieza.',blockade:'La flotilla espera el fin del bloqueo.',hostile:'La entrega espera que el destino quede despejado.',depot_full:'El depósito de destino está lleno.'});
 export function artilleryTransferDelayCode(s,transfer){
@@ -26,11 +28,11 @@ export function artilleryTransferDelayCode(s,transfer){
 }
 export function artilleryTransferDelay(s,transfer){return ARTILLERY_DELIVERY_ISSUES[artilleryTransferDelayCode(s,transfer)]??'';}
 export function artilleryTransportQuote(s,sector,gunId,to,mode,source='field'){
- const rules=artilleryTransportRules(s),cost=rules[`${mode}Fee`]??0,from=parent(sector),gun=(source==='depot'?s.artilleryDepots?.[sector]:s.sectorStates?.[sector]?.artillery)?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun),path=artilleryTransportPath(s,from,to,mode);
+ const rules=artilleryTransportRules(s),cost=rules[`${mode}Fee`]??0,from=parent(s,sector),gun=(source==='depot'?s.artilleryDepots?.[sector]:s.sectorStates?.[sector]?.artillery)?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun),path=artilleryTransportPath(s,from,to,mode);
  const crew=availableCrew(s,from);
- const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle||s.pendingEncounter?'Salí de la escena táctica antes de enviar la pieza.':!rules.enabled?'Esta campaña no permite trasladar piezas de artillería.':!['field','depot'].includes(source)?'El origen de la pieza no es válido.':!gun||from!==s.location||!place(from)||source==='depot'&&sector!==s.location?'La pieza debe estar emplazada o guardada en esta localidad.':
+ const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle||s.pendingEncounter?'Salí de la escena táctica antes de enviar la pieza.':!rules.enabled?'Esta campaña no permite trasladar piezas de artillería.':!['field','depot'].includes(source)?'El origen de la pieza no es válido.':!gun||from!==s.location||!place(s,from)||source==='depot'&&sector!==s.location?'La pieza debe estar emplazada o guardada en esta localidad.':
   gun.side!=='player'||s.sectors[from]?.owner!=='patriot'?'La pieza y su localidad deben estar bajo tu control.':hostile(s,from)?'Aún quedan enemigos capaces de combatir junto a la pieza.':
-  crew.length<spec.crew?`Se necesitan ${spec.crew} combatientes disponibles de la escuadra para cargar esta pieza.`:!place(to)||to===from?'Elegí otra localidad como destino.':s.sectors[to]?.owner!=='patriot'?'El destino debe estar bajo tu control.':
+  crew.length<spec.crew?`Se necesitan ${spec.crew} combatientes disponibles de la escuadra para cargar esta pieza.`:!place(s,to)||to===from?'Elegí otra localidad como destino.':s.sectors[to]?.owner!=='patriot'?'El destino debe estar bajo tu control.':
   !['carts','flotilla'].includes(mode)?'Los cañones completos viajan en carretas o flotilla.':!s.routes[mode]?'Primero organizá ese transporte.':!path?'No hay una ruta controlada apta para ese transporte. Las carretas no llevan cañones completos por los pasos de montaña.':
   mode==='flotilla'&&s.blockade?'La flotilla está bloqueada.':hostile(s,to)?'El destino aún tiene enemigos capaces de combatir.':
   artilleryCargoWeight(gun)>ARTILLERY_TRANSPORT_CAPACITY[mode]?'La pieza y sus municiones superan la capacidad del transporte.':
@@ -42,8 +44,8 @@ export const artilleryCargoWeight=gun=>500+(gun.ammo+Number(gun.loaded))*(gun.ty
 export function storedArtilleryRecord(gun){return Object.fromEntries(['id','type','side','loaded','ammo','reloadProgress','facing'].filter(key=>gun[key]!==undefined).map(key=>[key,structuredClone(gun[key])]));}
 const stored=storedArtilleryRecord;
 export function artilleryStorageQuote(s,sector,gunId){
- const from=parent(sector),gun=s.sectorStates?.[sector]?.artillery?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun);
- const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle||s.pendingEncounter?'Salí de la escena táctica antes de guardar la pieza.':!gun||from!==s.location||!place(from)?'La pieza debe estar emplazada en esta localidad.':gun.side!=='player'||s.sectors[from]?.owner!=='patriot'?'La pieza y su localidad deben estar bajo tu control.':hostile(s,from)?'Aún quedan enemigos capaces de combatir junto a la pieza.':availableCrew(s,from).length<spec.crew?`Se necesitan ${spec.crew} combatientes disponibles de la escuadra para guardar esta pieza.`:(s.artilleryDepots?.[from]?.length??0)>=2000?'El depósito local no tiene lugar.':'';
+ const from=parent(s,sector),gun=s.sectorStates?.[sector]?.artillery?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun);
+ const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle||s.pendingEncounter?'Salí de la escena táctica antes de guardar la pieza.':!gun||from!==s.location||!place(s,from)?'La pieza debe estar emplazada en esta localidad.':gun.side!=='player'||s.sectors[from]?.owner!=='patriot'?'La pieza y su localidad deben estar bajo tu control.':hostile(s,from)?'Aún quedan enemigos capaces de combatir junto a la pieza.':availableCrew(s,from).length<spec.crew?`Se necesitan ${spec.crew} combatientes disponibles de la escuadra para guardar esta pieza.`:(s.artilleryDepots?.[from]?.length??0)>=2000?'El depósito local no tiene lugar.':'';
  return {available:!reason,reason,sector,from,gun,crew:spec?.crew??0};
 }
 export function storeStationedArtillery(s,action){
@@ -61,18 +63,18 @@ export function deliverArtilleryTransfers(s){
  for(const t of [...(s.artilleryTransfers??[])])if(t.dueAt<=s.hour&&!artilleryTransferDelay(s,t)){
   s.artilleryDepots??={};s.artilleryDepots[t.to]??=[];s.artilleryDepots[t.to].push(structuredClone(t.gun));s.artilleryTransfers=s.artilleryTransfers.filter(v=>v.id!==t.id);
   delivered.push({kind:'artillery',sector:t.to,id:t.id,quantity:1});
-  s.log.unshift({hour:s.hour,text:`La pieza ${artilleryProfile(s,t.gun).name} llega al depósito de ${place(t.to).name} con su munición restante.`});s.log=s.log.slice(0,80);
+  s.log.unshift({hour:s.hour,text:`La pieza ${artilleryProfile(s,t.gun).name} llega al depósito de ${place(s,t.to).name} con su munición restante.`});s.log=s.log.slice(0,80);
  }
  return delivered;
 }
 export {localArtilleryDepot,depotSelection} from './artillery-depots.js';
 export function validateArtilleryTransport(s){
  const depots=s.artilleryDepots===undefined?{}:s.artilleryDepots,transfers=s.artilleryTransfers===undefined?[]:s.artilleryTransfers,object=v=>v&&typeof v==='object'&&!Array.isArray(v),integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
- need(object(depots)&&Object.keys(depots).every(id=>place(id)),'Los depósitos de artillería son inválidos.');
+ need(object(depots)&&Object.keys(depots).every(id=>place(s,id)),'Los depósitos de artillería son inválidos.');
  for(const guns of Object.values(depots)){validateArtilleryInventory(guns);need(guns.every(g=>g.side==='player'&&g.x===undefined&&g.y===undefined&&g.stationed===undefined&&g.fromDepot===undefined&&g.tacticalLevel===undefined&&g.recovered===undefined),'El depósito contiene una pieza inválida.');}
  need(Array.isArray(transfers)&&transfers.length<=1000&&new Set(transfers.map(t=>t?.id)).size===transfers.length,'Los traslados de artillería son inválidos.');
  for(const t of transfers){
-  need(object(t)&&Object.keys(t).length===8&&t.id===t.gun?.id&&place(t.from)&&place(t.to)&&t.from!==t.to&&['carts','flotilla'].includes(t.mode)&&s.routes[t.mode]&&Array.isArray(t.path)&&t.path.length>=2&&t.path.length<=13&&new Set(t.path).size===t.path.length&&t.path[0]===t.from&&t.path.at(-1)===t.to&&t.path.every((id,i)=>place(id)&&accepts(id,t.mode)&&(!i||place(t.path[i-1]).neighbors.includes(id)))&&integer(t.departedAt,0,s.hour)&&integer(t.dueAt,t.departedAt+1,1e9)&&t.dueAt===t.departedAt+hours(s,t.path,t.mode),'La ruta guardada de artillería es inválida.');
+  need(object(t)&&Object.keys(t).length===8&&t.id===t.gun?.id&&place(s,t.from)&&place(s,t.to)&&t.from!==t.to&&['carts','flotilla'].includes(t.mode)&&s.routes[t.mode]&&Array.isArray(t.path)&&t.path.length>=2&&t.path.length<=campaignSectors(s).length&&new Set(t.path).size===t.path.length&&t.path[0]===t.from&&t.path.at(-1)===t.to&&t.path.every((id,i)=>place(s,id)&&accepts(s,id,t.mode)&&(!i||place(s,t.path[i-1]).neighbors.includes(id)))&&integer(t.departedAt,0,s.hour)&&integer(t.dueAt,t.departedAt+1,1e9)&&t.dueAt===t.departedAt+hours(s,t.path,t.mode),'La ruta guardada de artillería es inválida.');
   validateArtilleryInventory([t.gun]);need(t.gun.side==='player'&&t.gun.x===undefined&&t.gun.y===undefined&&t.gun.stationed===undefined&&t.gun.fromDepot===undefined&&t.gun.tacticalLevel===undefined&&t.gun.recovered===undefined&&artilleryCargoWeight(t.gun)<=ARTILLERY_TRANSPORT_CAPACITY[t.mode],'La pieza en tránsito es inválida.');
  }
 }

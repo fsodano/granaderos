@@ -1,0 +1,2376 @@
+{
+  "version": 1,
+  "title": "Granaderos",
+  "subtitle": "La independencia se conquista",
+  "edition": "UN JUEGO TÁCTICO DE LA INDEPENDENCIA",
+  "eyebrow": "PROVINCIAS UNIDAS DEL RÍO DE LA PLATA",
+  "period": "1810 — 1820",
+  "menuArt": "/campaigns/granaderos/assets/main-menu.webp",
+  "menuArtAlt": "Granaderos, 1810–1820. Soldados ante el convento de San Lorenzo y el Paraná.",
+  "caption": "Organizá la revolución. Prepará tus tropas. Decidí el destino de la independencia.",
+  "introduction": {
+    "id": "granaderos-opening",
+    "version": 1,
+    "title": "El comienzo de la campaña",
+    "scenes": [
+      {
+        "id": "revolution",
+        "eyebrow": "BUENOS AIRES · 1812",
+        "title": "Una revolución por defender",
+        "text": "La revolución iniciada en mayo de 1810 sigue en guerra con las fuerzas realistas. San Martín organiza los Granaderos a Caballo. La independencia todavía está por conquistar.",
+        "visual": "map",
+        "durationMs": 10000
+      },
+      {
+        "id": "commission",
+        "eyebrow": "JOSÉ DE SAN MARTÍN · TENIENTE CORONEL",
+        "title": "Formemos una fuerza capaz",
+        "text": "Necesitamos soldados preparados y una fuerza disciplinada. Reuní a quienes puedan servir, cuidá de tus compañeros y asegurá los suministros. La libertad exige más que ganar una batalla.",
+        "portrait": "/campaigns/granaderos/assets/portrait-57.webp",
+        "portraitAlt": "Ilustración de José de San Martín",
+        "visual": "letter",
+        "durationMs": 12000,
+        "portraitName": "José de San Martín",
+        "portraitCaption": "AL SERVICIO DE LA CAUSA AMERICANA"
+      },
+      {
+        "id": "objective",
+        "eyebrow": "TU OBJETIVO",
+        "title": "Abrir el camino a la independencia",
+        "text": "Organizá tu escuadra, derrotá a las guarniciones realistas y defendé los territorios recuperados. Conseguí aliados y recursos para sostener la campaña. Cada vida y cada decisión cuentan.",
+        "visual": "route",
+        "durationMs": 11000
+      },
+      {
+        "id": "first-step",
+        "eyebrow": "TU PRIMER PASO · RETIRO",
+        "title": "Todo empieza con una persona",
+        "text": "Elegí a tu primer combatiente o creá tu propio granadero. Con una sola persona ya podés partir. Después, explorá Retiro y prepará tu primera salida.",
+        "visual": "muster",
+        "durationMs": 0,
+        "seal": {
+          "letter": "G",
+          "label": "RETIRO"
+        }
+      }
+    ],
+    "wordmark": "GRANADEROS",
+    "period": "1812",
+    "createLabel": "Crear mi granadero",
+    "chart": {
+      "land": "M0 0H485L477 65 490 100 467 160 475 188 446 220 470 242 443 267 460 290 417 310 433 340 409 365 445 389 428 418 377 447 352 490 323 521 310 570 283 620 271 640H0Z",
+      "river": "M404 50C420 120 381 175 406 232S423 310 417 347L445 389",
+      "mountains": "M140 36l-10 34 16-8-12 40 21-9-16 40 20-5-15 44 16-11-12 44 21-8-15 41 20-7-12 47 15-9-13 45 17-10-10 41 16-6-13 43 22-11-11 42 16-5-5 39 18-7-9 48",
+      "route": "M417 367Q370 336 362 292T309 234L282 169 278 114M362 292Q293 343 220 350",
+      "labels": [
+        {
+          "x": 54,
+          "y": 87,
+          "text": "CORDILLERA"
+        },
+        {
+          "x": 74,
+          "y": 109,
+          "text": "DE LOS ANDES"
+        },
+        {
+          "x": 463,
+          "y": 472,
+          "text": "ATLÁNTICO",
+          "transform": "rotate(-18 463 472)"
+        },
+        {
+          "x": 110,
+          "y": 585,
+          "text": "PROVINCIAS UNIDAS DEL RÍO DE LA PLATA",
+          "className": "intro-map-caption"
+        }
+      ],
+      "towns": [
+        {
+          "x": 417,
+          "y": 367,
+          "r": 6,
+          "text": "BUENOS AIRES",
+          "textX": 429,
+          "textY": 352
+        },
+        {
+          "x": 362,
+          "y": 292,
+          "r": 4,
+          "text": "LITORAL",
+          "textX": 376,
+          "textY": 285
+        },
+        {
+          "x": 278,
+          "y": 114,
+          "r": 4,
+          "text": "EL NORTE",
+          "textX": 292,
+          "textY": 113
+        },
+        {
+          "x": 220,
+          "y": 350,
+          "r": 4,
+          "text": "CUYO",
+          "textX": 233,
+          "textY": 373
+        }
+      ],
+      "beacon": {
+        "x": 417,
+        "y": 367
+      }
+    }
+  },
+  "footer": "ESTRATEGIA · TÁCTICA · HISTORIA",
+  "skirmish": {
+    "label": "Combate de San Lorenzo",
+    "operativeIds": [
+      3,
+      4,
+      7,
+      10
+    ],
+    "horse": true,
+    "request": {
+      "id": "san_lorenzo",
+      "name": "San Lorenzo · 3 de febrero de 1813",
+      "biome": "river",
+      "seed": 18130203,
+      "enemyCount": 4
+    }
+  },
+  "manual": {
+    "campaign": "Contratá al menos un combatiente o creá tu granadero en Retiro. Ya podés partir, sin pagar la fundación del regimiento. Liberá los sectores vecinos para abrir el Camino Real. Entrená milicias y fortificá las localidades para defenderlas.",
+    "goals": "Liberá todos los sectores de una localidad portuaria y hablá con su administrador para acordar el ingreso diario. Cumplí encargos y buscá armas, municiones y dinero en el terreno. Financiá el ejército y reuní tres cañones y pasos fortificados para incorporar a San Martín.",
+    "note": "Adaptación histórica inspirada en los sistemas de JA2 v1.13. Las representaciones y situaciones de campaña incluyen licencias de diseño."
+  },
+  "deskSeal": "G",
+  "atlas": {
+    "title": "PROVINCIAS UNIDAS · 1812–1817",
+    "label": "Mapa geográfico de la campaña en las Provincias Unidas",
+    "referenceLabel": "Argentina · referencia",
+    "scale": "500 km",
+    "legend": "■ Patriotas   ■ Realistas · Control de campaña",
+    "enemyLabel": "Realistas",
+    "friendlyLabel": "patriota",
+    "longitudes": [
+      -70,
+      -68,
+      -66,
+      -64,
+      -62,
+      -60,
+      -58,
+      -56
+    ],
+    "latitudes": [
+      -24,
+      -26,
+      -28,
+      -30,
+      -32,
+      -34
+    ],
+    "labels": [
+      {
+        "x": 90,
+        "y": 350,
+        "transform": "rotate(-83 90 350)",
+        "text": "CORDILLERA DE LOS ANDES"
+      },
+      {
+        "x": 297,
+        "y": 542,
+        "text": "PAMPAS"
+      },
+      {
+        "x": 362,
+        "y": 178,
+        "text": "GRAN CHACO"
+      },
+      {
+        "x": 125,
+        "y": 451,
+        "text": "CUYO"
+      },
+      {
+        "x": 550,
+        "y": 490,
+        "transform": "rotate(28 550 490)",
+        "text": "RÍO DE LA PLATA"
+      },
+      {
+        "x": 590,
+        "y": 573,
+        "text": "ATLÁNTICO"
+      },
+      {
+        "x": 50,
+        "y": 550,
+        "transform": "rotate(-90 50 550)",
+        "text": "CHILE"
+      }
+    ],
+    "sites": [
+      {
+        "id": "san_nicolas",
+        "label": "San Lorenzo · 1813",
+        "lon": -60.73,
+        "lat": -32.75
+      },
+      {
+        "id": "tucuman",
+        "label": "Posta de Yatasto · 1814",
+        "lon": -64.97,
+        "lat": -25.68
+      }
+    ],
+    "mountains": "M203.3019999999998,36 L194.57319999999996,78 L185.84439999999964,120 L177.11559999999983,162 L168.38680000000002,204 L159.65799999999967,246 L150.92919999999987,288 L142.20039999999955,330 L133.47159999999974,372 L124.74279999999992,414 L116.01399999999958,456 L107.28519999999976,498 L98.55639999999995,540 L89.82759999999962,582 L81.09879999999981,624",
+    "labelPositions": {
+      "retiro": {
+        "offset": -7
+      },
+      "ensenada": {
+        "offset": 12
+      },
+      "buenos_aires": {
+        "edge": "bottom",
+        "offset": 14
+      },
+      "los_patos": {
+        "offset": -9
+      }
+    }
+  },
+  "characterPortraits": [
+    {
+      "id": "avatar-woman-scout",
+      "name": "Exploradora con trenza",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout.webp",
+      "spriteSkinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-civilian",
+      "name": "Artesana con chal",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-shawl",
+      "src": "/campaigns/granaderos/assets/avatar-woman-civilian.webp",
+      "spriteSkinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho",
+      "name": "Gaucho de poncho rojizo",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "spriteAppearance": "gaucho",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho.webp",
+      "spriteSkinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-soldier",
+      "name": "Soldado con patillas",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "light",
+      "spriteAppearance": "granadero",
+      "src": "/campaigns/granaderos/assets/avatar-man-soldier.webp",
+      "spriteSkinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "100",
+      "src": "/campaigns/granaderos/assets/portrait-100.webp",
+      "name": "Campesino de poncho pardo",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "selectable": false
+    },
+    {
+      "id": "101",
+      "src": "/campaigns/granaderos/assets/portrait-101.webp",
+      "name": "Exploradora del Litoral",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "102",
+      "src": "/campaigns/granaderos/assets/portrait-102.webp",
+      "name": "Aprendiz con delantal",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "103",
+      "src": "/campaigns/granaderos/assets/portrait-103.png",
+      "name": "Artillero de marina",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "104",
+      "src": "/campaigns/granaderos/assets/portrait-104.png",
+      "name": "Marinero de chaqueta azul",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "light",
+      "selectable": false
+    },
+    {
+      "id": "105",
+      "src": "/campaigns/granaderos/assets/portrait-105.webp",
+      "name": "Fusilero veterano",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "106",
+      "src": "/campaigns/granaderos/assets/portrait-106.webp",
+      "name": "Jinete de frontera",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "selectable": false
+    },
+    {
+      "id": "107",
+      "src": "/campaigns/granaderos/assets/portrait-107.webp",
+      "name": "Enfermera con pañuelo blanco",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "108",
+      "src": "/campaigns/granaderos/assets/portrait-108.webp",
+      "name": "Gaucho de pañuelo rojo",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "selectable": false
+    },
+    {
+      "id": "109",
+      "src": "/campaigns/granaderos/assets/portrait-109.webp",
+      "name": "Oficial de casaca escarlata",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "110",
+      "src": "/campaigns/granaderos/assets/portrait-110.webp",
+      "name": "Miliciano de cuello rojo",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "111",
+      "src": "/campaigns/granaderos/assets/portrait-111.webp",
+      "name": "Oficial de ingenieros",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "112",
+      "src": "/campaigns/granaderos/assets/portrait-112.webp",
+      "name": "Cirujano con anteojos",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "113",
+      "src": "/campaigns/granaderos/assets/portrait-113.webp",
+      "name": "Oficial de infantería ligera",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "selectable": false
+    },
+    {
+      "id": "114",
+      "src": "/campaigns/granaderos/assets/portrait-114.webp",
+      "name": "Instructor de bigote gris",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "115",
+      "src": "/campaigns/granaderos/assets/portrait-115.webp",
+      "name": "Explorador de poncho oscuro",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "116",
+      "src": "/campaigns/granaderos/assets/portrait-116.webp",
+      "name": "Socorrista de chal azul",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "117",
+      "src": "/campaigns/granaderos/assets/portrait-117.webp",
+      "name": "Gaucho de poncho ocre",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "118",
+      "src": "/campaigns/granaderos/assets/portrait-118.webp",
+      "name": "Oficial de artillería",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "119",
+      "src": "/campaigns/granaderos/assets/portrait-119.webp",
+      "name": "Recluta de chaqueta parda",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "120",
+      "src": "/campaigns/granaderos/assets/portrait-120.webp",
+      "name": "Guía de chal bordó",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "121",
+      "src": "/campaigns/granaderos/assets/portrait-121.webp",
+      "name": "Carpintero de delantal",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "122",
+      "src": "/campaigns/granaderos/assets/portrait-122.webp",
+      "name": "Practicante de chal verde",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "123",
+      "src": "/campaigns/granaderos/assets/portrait-123.webp",
+      "name": "Infante veterano",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "124",
+      "src": "/campaigns/granaderos/assets/portrait-124.webp",
+      "name": "Oficial de caballería escarlata",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "125",
+      "src": "/campaigns/granaderos/assets/portrait-125.webp",
+      "name": "Zapador de chaqueta rojiza",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "126",
+      "src": "/campaigns/granaderos/assets/portrait-126.webp",
+      "name": "Exploradora serrana",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "127",
+      "src": "/campaigns/granaderos/assets/portrait-127.webp",
+      "name": "Instructor de túnica azul",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "128",
+      "src": "/campaigns/granaderos/assets/portrait-128.webp",
+      "name": "Oficial de fusileros",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "129",
+      "src": "/campaigns/granaderos/assets/portrait-129.webp",
+      "name": "Arriero de barba gris",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "130",
+      "src": "/campaigns/granaderos/assets/portrait-130.webp",
+      "name": "Auxiliar con pañuelo crema",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "131",
+      "src": "/campaigns/granaderos/assets/portrait-131.webp",
+      "name": "Carabinero de chaqueta azul",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "132",
+      "src": "/campaigns/granaderos/assets/portrait-132.webp",
+      "name": "Oficial de patillas blancas",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "133",
+      "src": "/campaigns/granaderos/assets/portrait-133.webp",
+      "name": "Herrero de delantal de cuero",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "134",
+      "src": "/campaigns/granaderos/assets/portrait-134.webp",
+      "name": "Vigía de bufanda oscura",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "135",
+      "src": "/campaigns/granaderos/assets/portrait-135.webp",
+      "name": "Practicante de trenzas grises",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "136",
+      "src": "/campaigns/granaderos/assets/portrait-136.webp",
+      "name": "Viajero de pañuelo ocre",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "137",
+      "src": "/campaigns/granaderos/assets/portrait-137.webp",
+      "name": "Oficial de caballería azul",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "138",
+      "src": "/campaigns/granaderos/assets/portrait-138.webp",
+      "name": "Artillero de casaca naval",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "139",
+      "src": "/campaigns/granaderos/assets/portrait-139.webp",
+      "name": "Enfermera de cabello rojizo",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "140",
+      "src": "/campaigns/granaderos/assets/portrait-140.webp",
+      "name": "Armero de chaleco de cuero",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "141",
+      "src": "/campaigns/granaderos/assets/portrait-141.webp",
+      "name": "Marinero de pañuelo rojo",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "142",
+      "src": "/campaigns/granaderos/assets/portrait-142.webp",
+      "name": "Fusilero de casaca verde",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "143",
+      "src": "/campaigns/granaderos/assets/portrait-143.webp",
+      "name": "Oficial de cuello alto",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "light",
+      "selectable": false
+    },
+    {
+      "id": "144",
+      "src": "/campaigns/granaderos/assets/portrait-144.webp",
+      "name": "Mecánico de barba cuadrada",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "145",
+      "src": "/campaigns/granaderos/assets/portrait-145.webp",
+      "name": "Gaucho de poncho rojo",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "146",
+      "src": "/campaigns/granaderos/assets/portrait-146.webp",
+      "name": "Cirujano de casaca azul",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "light",
+      "selectable": true
+    },
+    {
+      "id": "147",
+      "src": "/campaigns/granaderos/assets/portrait-147.webp",
+      "name": "Explorador de poncho tejido",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-black-soldier",
+      "src": "/campaigns/granaderos/assets/avatar-man-black-soldier.webp",
+      "name": "Soldado de casaca azul",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "dark",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-black-officer",
+      "src": "/campaigns/granaderos/assets/avatar-man-black-officer.webp",
+      "name": "Oficial de cuello rojo",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-black-scout",
+      "src": "/campaigns/granaderos/assets/avatar-man-black-scout.webp",
+      "name": "Explorador de campaña",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-black-gaucho",
+      "src": "/campaigns/granaderos/assets/avatar-man-black-gaucho.webp",
+      "name": "Gaucho de poncho tejido",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-black-artisan",
+      "src": "/campaigns/granaderos/assets/avatar-man-black-artisan.webp",
+      "name": "Artesano de delantal",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-black-medic",
+      "src": "/campaigns/granaderos/assets/avatar-man-black-medic.webp",
+      "name": "Médico de campaña",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-black-soldier",
+      "src": "/campaigns/granaderos/assets/avatar-woman-black-soldier.webp",
+      "name": "Soldada de casaca azul",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-black-officer",
+      "src": "/campaigns/granaderos/assets/avatar-woman-black-officer.webp",
+      "name": "Oficial de cuello rojo",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-black-scout",
+      "src": "/campaigns/granaderos/assets/avatar-woman-black-scout.webp",
+      "name": "Exploradora de campaña",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-black-gaucho",
+      "src": "/campaigns/granaderos/assets/avatar-woman-black-gaucho.webp",
+      "name": "Gaucha de poncho tejido",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-black-artisan",
+      "src": "/campaigns/granaderos/assets/avatar-woman-black-artisan.webp",
+      "name": "Artesana de delantal",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-black-medic",
+      "src": "/campaigns/granaderos/assets/avatar-woman-black-medic.webp",
+      "name": "Médica de campaña",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-light-1",
+      "name": "Soldada de 23 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-light-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-light-2",
+      "name": "Soldada de 34 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-light-3",
+      "name": "Soldada de 46 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-light-4",
+      "name": "Soldada de 59 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-light-5",
+      "name": "Soldada de 39 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-brown-1",
+      "name": "Soldada de 23 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-brown-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-brown-2",
+      "name": "Soldada de 34 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-brown-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-brown-3",
+      "name": "Soldada de 46 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-brown-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-brown-4",
+      "name": "Soldada de 59 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-brown-5",
+      "name": "Soldada de 39 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-dark-2",
+      "name": "Soldada de 34 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-dark-3",
+      "name": "Soldada de 46 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-dark-4",
+      "name": "Soldada de 59 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-soldier-dark-5",
+      "name": "Soldada de 39 años",
+      "gender": "woman",
+      "role": "soldier",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-soldier-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-light-1",
+      "name": "Oficial de 23 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-light-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-light-2",
+      "name": "Oficial de 34 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-light-3",
+      "name": "Oficial de 46 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-light-4",
+      "name": "Oficial de 59 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-light-5",
+      "name": "Oficial de 39 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-brown-1",
+      "name": "Oficial de 23 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-brown-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-brown-2",
+      "name": "Oficial de 34 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-brown-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-brown-3",
+      "name": "Oficial de 46 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-brown-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-brown-4",
+      "name": "Oficial de 59 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-brown-5",
+      "name": "Oficial de 39 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-dark-2",
+      "name": "Oficial de 34 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-dark-3",
+      "name": "Oficial de 46 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-dark-4",
+      "name": "Oficial de 59 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-officer-dark-5",
+      "name": "Oficial de 39 años",
+      "gender": "woman",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-officer-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-light-1",
+      "name": "Exploradora de 23 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-light-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-light-2",
+      "name": "Exploradora de 34 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-light-3",
+      "name": "Exploradora de 46 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-light-4",
+      "name": "Exploradora de 59 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-light-5",
+      "name": "Exploradora de 39 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-brown-5",
+      "name": "Exploradora de 39 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-dark-2",
+      "name": "Exploradora de 34 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-dark-3",
+      "name": "Exploradora de 46 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-dark-4",
+      "name": "Exploradora de 59 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-scout-dark-5",
+      "name": "Exploradora de 39 años",
+      "gender": "woman",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-scout-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-light-1",
+      "name": "Gaucha de 23 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-light-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-light-2",
+      "name": "Gaucha de 34 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-light-3",
+      "name": "Gaucha de 46 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-light-4",
+      "name": "Gaucha de 59 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-light-5",
+      "name": "Gaucha de 39 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-2",
+      "name": "Gaucha de 34 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-brown-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-3",
+      "name": "Gaucha de 46 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-brown-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-4",
+      "name": "Gaucha de 59 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-brown-5",
+      "name": "Gaucha de 39 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-1",
+      "name": "Gaucha de 23 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-dark-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-2",
+      "name": "Gaucha de 34 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-3",
+      "name": "Gaucha de 46 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-4",
+      "name": "Gaucha de 59 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-gaucho-dark-5",
+      "name": "Gaucha de 39 años",
+      "gender": "woman",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-scout",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-gaucho-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-light-1",
+      "name": "Artesana de 23 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-light-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-light-2",
+      "name": "Artesana de 34 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-light-3",
+      "name": "Artesana de 46 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-light-4",
+      "name": "Artesana de 59 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-light-5",
+      "name": "Artesana de 39 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-brown-2",
+      "name": "Artesana de 34 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-brown-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-brown-3",
+      "name": "Artesana de 46 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-brown-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-brown-4",
+      "name": "Artesana de 59 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-brown-5",
+      "name": "Artesana de 39 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-dark-2",
+      "name": "Artesana de 34 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-dark-3",
+      "name": "Artesana de 46 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-dark-4",
+      "name": "Artesana de 59 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-artisan-dark-5",
+      "name": "Artesana de 39 años",
+      "gender": "woman",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-artisan-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-light-2",
+      "name": "Médica de 34 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-light-3",
+      "name": "Médica de 46 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-light-4",
+      "name": "Médica de 59 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-light-5",
+      "name": "Médica de 39 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "light",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-brown-4",
+      "name": "Médica de 59 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-brown-5",
+      "name": "Médica de 39 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "brown",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-dark-4",
+      "name": "Médica de 59 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-woman-medic-dark-5",
+      "name": "Médica de 39 años",
+      "gender": "woman",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "woman-shawl",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-woman-medic-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-soldier-brown-4",
+      "name": "Soldado de 60 años",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "brown",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-soldier-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-soldier-brown-5",
+      "name": "Soldado de 41 años",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "brown",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-soldier-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-soldier-dark-5",
+      "name": "Soldado de 41 años",
+      "gender": "man",
+      "role": "soldier",
+      "skinTone": "dark",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-soldier-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-officer-brown-3",
+      "name": "Oficial de 48 años",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-officer-brown-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-officer-brown-4",
+      "name": "Oficial de 60 años",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-officer-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-officer-brown-5",
+      "name": "Oficial de 41 años",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "brown",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-officer-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-officer-dark-2",
+      "name": "Oficial de 35 años",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-officer-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-officer-dark-3",
+      "name": "Oficial de 48 años",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-officer-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-officer-dark-4",
+      "name": "Oficial de 60 años",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-officer-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-officer-dark-5",
+      "name": "Oficial de 41 años",
+      "gender": "man",
+      "role": "officer",
+      "skinTone": "dark",
+      "spriteAppearance": "granadero",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-officer-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-light-2",
+      "name": "Explorador de 35 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-light-3",
+      "name": "Explorador de 48 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-light-4",
+      "name": "Explorador de 60 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-light-5",
+      "name": "Explorador de 41 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-brown-3",
+      "name": "Explorador de 48 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "brown",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-brown-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-brown-4",
+      "name": "Explorador de 60 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "brown",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-brown-5",
+      "name": "Explorador de 41 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "brown",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-dark-3",
+      "name": "Explorador de 48 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-dark-4",
+      "name": "Explorador de 60 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-scout-dark-5",
+      "name": "Explorador de 41 años",
+      "gender": "man",
+      "role": "scout",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-scout-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-light-1",
+      "name": "Gaucho de 24 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-light-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-light-2",
+      "name": "Gaucho de 35 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-light-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-light-3",
+      "name": "Gaucho de 48 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-light-4",
+      "name": "Gaucho de 60 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-light-5",
+      "name": "Gaucho de 41 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "light",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-dark-1",
+      "name": "Gaucho de 24 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-dark-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-dark-2",
+      "name": "Gaucho de 35 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-dark-3",
+      "name": "Gaucho de 48 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-dark-4",
+      "name": "Gaucho de 60 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-gaucho-dark-5",
+      "name": "Gaucho de 41 años",
+      "gender": "man",
+      "role": "gaucho",
+      "skinTone": "dark",
+      "spriteAppearance": "gaucho",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-gaucho-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-artisan-light-4",
+      "name": "Artesano de 60 años",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "light",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-artisan-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-artisan-light-5",
+      "name": "Artesano de 41 años",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "light",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-artisan-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-artisan-brown-4",
+      "name": "Artesano de 60 años",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "brown",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-artisan-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-artisan-brown-5",
+      "name": "Artesano de 41 años",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "brown",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-artisan-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-artisan-dark-3",
+      "name": "Artesano de 48 años",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-artisan-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-artisan-dark-4",
+      "name": "Artesano de 60 años",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-artisan-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-artisan-dark-5",
+      "name": "Artesano de 41 años",
+      "gender": "man",
+      "role": "artisan",
+      "skinTone": "dark",
+      "spriteAppearance": "worker",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-artisan-dark-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-light-3",
+      "name": "Médico de 48 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "light",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-light-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-light-4",
+      "name": "Médico de 60 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "light",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-light-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-light-5",
+      "name": "Médico de 41 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "light",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "light",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-light-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-brown-1",
+      "name": "Médico de 24 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "brown",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-brown-1.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-brown-2",
+      "name": "Médico de 35 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "brown",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-brown-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-brown-3",
+      "name": "Médico de 48 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "brown",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-brown-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-brown-4",
+      "name": "Médico de 60 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "brown",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-brown-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-brown-5",
+      "name": "Médico de 41 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "brown",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "brown",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-brown-5.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-dark-2",
+      "name": "Médico de 35 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-dark-2.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-dark-3",
+      "name": "Médico de 48 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-dark-3.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-dark-4",
+      "name": "Médico de 60 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-dark-4.webp",
+      "selectable": true
+    },
+    {
+      "id": "avatar-man-medic-dark-5",
+      "name": "Médico de 41 años",
+      "gender": "man",
+      "role": "medic",
+      "skinTone": "dark",
+      "spriteAppearance": "surgeon",
+      "spriteSkinTone": "dark",
+      "src": "/campaigns/granaderos/assets/avatar-man-medic-dark-5.webp",
+      "selectable": true
+    }
+  ],
+  "officerCreation": {
+    "classes": [
+      {
+        "id": "gaucho",
+        "name": "Gaucho",
+        "description": "Facón, carabina y experiencia ecuestre.",
+        "weapon": "firearm-1803",
+        "blade": "blade-1813"
+      },
+      {
+        "id": "soldado",
+        "name": "Soldado de línea",
+        "description": "Mosquete y bayoneta para la infantería.",
+        "weapon": "firearm-1800",
+        "blade": "blade-1811"
+      },
+      {
+        "id": "baqueano",
+        "name": "Baqueano",
+        "description": "Escopeta y facón para explorar la campaña.",
+        "weapon": "firearm-1804",
+        "blade": "blade-1813"
+      },
+      {
+        "id": "artesano",
+        "name": "Artesano",
+        "description": "Pistola y saber de taller.",
+        "weapon": "firearm-1805",
+        "blade": "blade-1813"
+      }
+    ],
+    "questions": [
+      {
+        "id": "specialty",
+        "label": "¿Qué destreza personal te distingue?",
+        "choices": [
+          {
+            "id": "rider",
+            "name": "Domar y conducir los caballos"
+          },
+          {
+            "id": "night",
+            "name": "Reconocer el terreno después del ocaso"
+          },
+          {
+            "id": "teacher",
+            "name": "Instruir a los voluntarios nuevos"
+          },
+          {
+            "id": "ambidextrous",
+            "name": "Usar ambas manos: disparar dos pistolas sin la penalización de puntería"
+          }
+        ]
+      },
+      {
+        "id": "temperament",
+        "label": "Tras un revés, ¿cómo juzgas la próxima jornada?",
+        "choices": [
+          {
+            "id": "optimistic",
+            "name": "Confío en que podremos recuperarnos"
+          },
+          {
+            "id": "pessimistic",
+            "name": "Preveo lo peor para no exponer a mis compañeros"
+          },
+          {
+            "id": "steady",
+            "name": "Me concentro en la tarea inmediata"
+          }
+        ]
+      }
+    ],
+    "commissionQuestions": [
+      {
+        "id": "origin",
+        "label": "¿Dónde adquiriste tu formación?",
+        "choices": [
+          {
+            "id": "estancia",
+            "name": "En una estancia: caballos y trabajo de campo"
+          },
+          {
+            "id": "cabildo",
+            "name": "En el Cabildo: estudios y administración"
+          },
+          {
+            "id": "workshop",
+            "name": "En un taller: herramientas y metalurgia"
+          }
+        ]
+      },
+      {
+        "id": "doctrine",
+        "label": "¿Qué disciplina guiará tu servicio?",
+        "choices": [
+          {
+            "id": "cavalry_commander",
+            "name": "Comandante de caballería"
+          },
+          {
+            "id": "guerrilla_tactician",
+            "name": "Táctico de guerrillas"
+          },
+          {
+            "id": "gunsmith_artillerist",
+            "name": "Maestro armero y artillero"
+          },
+          {
+            "id": "line_marksman",
+            "name": "Tirador de línea"
+          }
+        ]
+      },
+      {
+        "id": "crisis",
+        "label": "Un compañero cae bajo el fuego. ¿Cómo respondes?",
+        "choices": [
+          {
+            "id": "rescue",
+            "name": "Acudo a socorrerlo"
+          },
+          {
+            "id": "rally",
+            "name": "Reúno al grupo y sostengo la posición"
+          },
+          {
+            "id": "flank",
+            "name": "Busco un flanco para aliviar la presión"
+          }
+        ]
+      }
+    ],
+    "traits": [
+      {
+        "id": "cavalry_commander",
+        "name": "Comandante de caballería",
+        "description": "Instrucción ecuestre, mando y maniobras a caballo."
+      },
+      {
+        "id": "guerrilla_tactician",
+        "name": "Táctico de guerrillas",
+        "description": "Exploración, ocultamiento y movilidad en terreno quebrado."
+      },
+      {
+        "id": "gunsmith_artillerist",
+        "name": "Maestro armero y artillero",
+        "description": "Cuidado de llaves, reparación y servicio de las piezas."
+      },
+      {
+        "id": "line_marksman",
+        "name": "Tirador de línea",
+        "description": "Puntería deliberada, tiro disciplinado y armas rayadas."
+      }
+    ],
+    "defaults": {
+      "classId": "gaucho",
+      "portraitId": "avatar-man-gaucho"
+    },
+    "commission": {
+      "role": "Oficial del Cabildo",
+      "biography": "Oficial incorporado mediante el Examen de Aptitud del Cabildo de Buenos Aires.",
+      "questionError": "Completa las tres preguntas del examen del Cabildo.",
+      "statusText": "aprueba el examen y recibe su comisión de oficial.",
+      "weapon": "firearm-1803",
+      "doctrineWeapons": {
+        "line_marksman": "firearm-1802"
+      },
+      "availableText": "Disponible en el boletín del Cabildo."
+    },
+    "biography": "Granadero ficticio creado por el jugador. Sus atributos fueron asignados al comenzar la campaña.",
+    "registry": "Tu granadero"
+  },
+  "incomeLabel": "acuerdos de puerto"
+}
