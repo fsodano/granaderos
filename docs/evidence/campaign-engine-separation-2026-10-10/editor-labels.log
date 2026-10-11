@@ -1,0 +1,23 @@
+✔ campaign role references validate existing identities, explicit disabling and older-package defaults (46.862125ms)
+✔ a real paid arrival activates the assigned workshop and marching benefit without historical identities (49.646667ms)
+✔ actual contract expiry removes both role privileges, including when it occurs during a real march (60.5395ms)
+✔ disabled roles grant no benefit, and prepared custody, death and occupation states block uncompleted services (23.453792ms)
+✔ role settings remain pinned through saves and external draft changes (11.517125ms)
+✔ an actual tactical death removes the assigned role after saved battle settlement without ending a custom campaign (255.879542ms)
+✔ a serving remote march commander benefits a separately queued squad without moving the commander (22.173917ms)
+✔ the editor retains omitted legacy defaults, offers named escort exits, and saves authored errands through undo and launch (1108.297834ms)
+✔ the editor authors finite delivery quantities and rewards without removing dialogue quests (404.79025ms)
+✔ changing a conversation contact selects its locality before adding a physical delivery (393.199458ms)
+✔ the editor authors an exclusive reward choice through undo, actual import and saved launch without changing dialogue quests (420.892125ms)
+✔ reward choice is restricted to city physical delivery and disabling it restores ordinary reward controls (325.819125ms)
+✔ the editor pins two fixed recipients, reserves both contacts and retains branch edits through undo and saved launch (489.625458ms)
+✔ an authored secondary recipient cannot be deleted until its errand reference is reassigned (645.617459ms)
+✔ the editor authors and imports withdrawal only for physical city deliveries, with undo and saved launch (440.269708ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4952.496917

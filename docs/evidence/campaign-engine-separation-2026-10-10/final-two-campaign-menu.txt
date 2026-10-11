@@ -1,0 +1,23 @@
+- main:
+  - paragraph: JUEGO TÁCTICO
+  - heading "Campaign Smoke" [level=1]
+  - text: Campaña
+  - combobox "Campaña":
+    - option "Campaign Smoke" [selected]
+    - 'option "Granaderos: la independencia"'
+  - button "Continuar campaña →":
+    - text: Continuar campaña
+    - generic: →
+  - button "Nueva campaña →":
+    - text: Nueva campaña
+    - generic: →
+  - link "Editor de historia":
+    - /url: /preview/granaderos/story/?campaign=campaign-smoke
+  - link "Constructor de sectores":
+    - /url: /preview/granaderos/editor/?campaign=campaign-smoke
+  - button "Manual de campaña"
+  - button "Importar partida"
+  - paragraph: Reuní tu escuadra y comenzá la campaña.
+  - generic: ESTRATEGIA · TÁCTICA
+  - link "Versión 0.1.0 · a5ad3a5621c6":
+    - /url: /preview/granaderos/build-info.json

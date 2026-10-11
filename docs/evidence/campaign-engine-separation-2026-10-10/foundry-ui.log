@@ -1,0 +1,13 @@
+✔ the editor assigns strategic functions with undo, protects assigned characters and launches their actual services (1184.269833ms)
+✔ the actual treasury names the assigned engineer and blocks its pending arrival (31.1575ms)
+✔ the actual treasury pays assigned services once after arrival (47.309167ms)
+✔ the editor configures foundry location, names and prices through validation, undo, reset and actual launch (336.634916ms)
+✔ the actual treasury displays and charges an authored foundry project and army (54.4275ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2357.674708

@@ -1,0 +1,30 @@
+THREE.WebGLRenderer: Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+✔ the actual page prevents competing orders and saves only the completed enemy sequence (5791.651041ms)
+✔ selected campaign squad and inventory use their faction names and a neutral mounted caption (59.293459ms)
+✔ inventory alone offers paid bayonet fitting and both removal destinations with separate conditions (30.043875ms)
+✔ close-combat mode shows thrust cost without a shot percentage until explicit fire mode (79.614334ms)
+✔ figure activation uses its fixed person frame instead of the clipped atlas bounding box (97.610583ms)
+✔ main controls expose facing and stealth while aim and body targeting stay on the battlefield (3.378375ms)
+✔ automatic exploration is explained without a separate return button (4.642041ms)
+✔ idle sprite directions follow all eight grid facings and preserve active movement (53.617708ms)
+✔ noise rendering shows a brief direction hint and removes stale reports (12.051083ms)
+✔ equipment panel keeps quantity, give/drop and selective pickup controls out of the combat strip (6.779292ms)
+✔ equipping a small weapon cannot hide the space needed to store the current gun (6.3375ms)
+✔ the environment panel never renders closed contents or an unknown trap (0.572917ms)
+✔ the real inventory renders equipped tools and only reveals an open nearby container (10.725125ms)
+✔ optional squad bandaging stays in medical equipment and reports untreated casualties (11.923916ms)
+✔ supplies use ordinary pockets and hands without dedicated selectors (8.603083ms)
+✔ group selection renders portrait membership, planned slots, and clear individual-control return (1.688833ms)
+✔ group route details stay collapsed before, during, and after a preview (0.493625ms)
+✔ settled exploration offers a campaign report separately from physical exit orders (0.533458ms)
+✔ preserved-facing animation belongs only to its accepted battle and keeps the moving sprite direction (6.599417ms)
+✔ withdrawal panel renders destinations, per-soldier rejection and an explicit eligible subset (1.729792ms)
+✔ departed actors disappear from scene and radar while a partial encounter stays active (5.811ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6472.526959

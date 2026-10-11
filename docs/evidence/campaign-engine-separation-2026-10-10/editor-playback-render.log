@@ -1,0 +1,44 @@
+✔ selected editor playtests use the package cast, equipment, names, appearance and weather (73.674125ms)
+✔ selected preview assigns local primary definitions and leaves legacy one-argument map previews compatible (32.475958ms)
+THREE.WebGLRenderer: Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+✔ the actual page prevents competing orders and saves only the completed enemy sequence (5996.042083ms)
+✔ the migrated sector plans preserve edge geometry, floor membership, props and lighting (74.690959ms)
+✔ Retiro revision three adds one exterior armory chest without changing its empty ground surface (1.157916ms)
+✔ commands are atomic, reject stale revisions and preserve exported data (14.118333ms)
+✔ moving and rotating buildings carries walls, doors, rooms and contents together (26.429291ms)
+✔ partitions recompute rooms and door openings reconnect routes (12.5375ms)
+✔ templates and duplicated buildings remap object and container IDs (12.696166ms)
+✔ undo and redo restore one complete transaction with monotonic revisions (2.110875ms)
+✔ playtests preserve the map and correctly loot authored ground supplies (17.628041ms)
+✔ malformed geometry, overlap and invalid references are rejected (4.880834ms)
+✔ pointer projection remains correct with zoom, pan and letterboxing, and rejects outside drops (0.835292ms)
+✔ seeded generation and command batches are deterministic (4.242291ms)
+✔ oversized geometry and invalid templates fail before allocating geometry (4.342584ms)
+✔ group transforms preserve child identity and rotate a non-square building exactly (24.394041ms)
+✔ bundled building templates compile with walkable furnished interiors (134.788583ms)
+✔ all building types keep room floors reachable from an exterior start (316.872458ms)
+✔ appearance edits preserve geometry, opening IDs, door state and survive round trips (16.983833ms)
+✔ armory renders matched stock separately and itemizes the sale of an actual fitted assembly (22.895291ms)
+✔ personnel keeps carried care and repair work without medical or toolkit purchases (13.469458ms)
+✔ front reports require observers and never disclose the enemy crossing schedule (17.519041ms)
+✔ the journal identifies historical commands without publishing target or activity predictions (59.771833ms)
+✔ a saved authored campaign actor renders its chosen body without inferring it from the portrait (353.134667ms)
+✔ scene preserves distinct dead/unconscious states even with pending motion and firing (21.929791ms)
+✔ rendered sprites preserve body scale and fixed ground anchors across every layout (4.055166ms)
+✔ published illustrated art reaches the SVG with its actual raster grid and no legacy URL (5.701417ms)
+✔ responsive tactical camera retains smooth magnification and bounded fractional panning (0.224583ms)
+✔ civilian selection uses idle columns and walk rows in all eight directions (4.446542ms)
+✔ props require their own room, including untagged and invalid membership (1.915542ms)
+✔ revealing one room retains the other roof and only cuts adjacent front walls (2.874834ms)
+✔ authored furnishings reach battle state and survive sector re-entry (1426.831709ms)
+✔ scene selects civilians and sorts NPCs at their animated ground position (12.440792ms)
+✔ radar hides unknown room floors and unseen enemy dots (1.577167ms)
+✔ visible hostile units retain an enemy marker independently of selection (53.689833ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6742.566333
