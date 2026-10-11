@@ -36,11 +36,13 @@ async function fixture(t,basePath=''){
   shared:{file:'vendor/shared.js'},
  };
  const client={appBrowserEntry:script,otherMetadata:{version:1}};
- await write(source,'index.html',`<script src="${browserPrefix}/_next/static/app.js"></script><a href="${browserPrefix}/editor/">Editor</a>`);
+ await write(source,'index.html',`<script src="${browserPrefix}/_next/static/app.js"></script><a href="${browserPrefix}/editor/">Editor</a><a href="${browserPrefix}/studio/">Studio</a>`);
  await write(source,'editor.html',`<h1>Editor</h1><img src="${browserPrefix}/art/portrait.webp">`);
  await write(source,'story.html','<h1>Story</h1>');
+ await write(source,'studio.html',`<h1>Studio</h1><script src="${browserPrefix}/_next/static/app.js"></script><img src="${browserPrefix}/art/portrait.webp">`);
  await write(source,'editor.rsc','editor-rsc');
  await write(source,'story.rsc','story-rsc');
+ await write(source,'studio.rsc',`studio-rsc:${browserPrefix}/studio/`);
  await write(source,script,`const worker="${browserPrefix}/_next/static/save-worker.js";`);
  await write(source,`${physicalPrefix}_next/static/save-worker.js`,'postMessage("ready");');
  await write(source,`${physicalPrefix}_next/static/app.css`,'body { color: black; }');
@@ -73,10 +75,10 @@ for(const basePath of ['/granaderos','/games/granaderos']){
   for(const file of ['app.js','save-worker.js','app.css','icon.webp']){
    assert.equal(staged[`_next/static/${file}`],before[`${basePath.slice(1)}/_next/static/${file}`]);
   }
-  for(const file of ['index.html','editor.html','story.html','art/portrait.webp','vendor/shared.js']){
+  for(const file of ['index.html','editor.html','story.html','studio.html','art/portrait.webp','vendor/shared.js']){
    assert.equal(staged[file],before[file]);
   }
-  for(const route of ['editor','story']){
+  for(const route of ['editor','story','studio']){
    assert.equal(staged[`${route}/index.html`],before[`${route}.html`]);
    assert.equal(staged[`${route}/index.rsc`],before[`${route}.rsc`]);
   }
@@ -91,20 +93,20 @@ for(const basePath of ['/granaderos','/games/granaderos']){
  });
 }
 
-test('project hosting supports editor and story pages without optional RSC companions',async t=>{
+test('project hosting supports editor, story and studio pages without optional RSC companions',async t=>{
  const {source,destination}=await fixture(t,'/granaderos');
- for(const route of ['editor','story'])await rm(join(source,`${route}.rsc`));
+ for(const route of ['editor','story','studio'])await rm(join(source,`${route}.rsc`));
  const before=await snapshot(source);
  await stageStaticDeployment(source,destination,'/granaderos');
  const staged=await snapshot(destination);
- for(const route of ['editor','story']){
+ for(const route of ['editor','story','studio']){
   assert.equal(staged[`${route}/index.html`],before[`${route}.html`]);
   assert.equal(staged[`${route}/index.rsc`],undefined);
  }
  assert.deepEqual(await snapshot(source),before);
 });
 
-for(const route of ['editor','story']){
+for(const route of ['editor','story','studio']){
  test(`project hosting rejects a missing ${route} page and preserves the source export`,async t=>{
   const {source,destination}=await fixture(t,'/granaderos');
   await rm(join(source,`${route}.html`));

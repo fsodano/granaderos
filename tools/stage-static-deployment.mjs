@@ -42,7 +42,7 @@ export async function stageStaticDeployment(source,destination,basePath=''){
   await writeFile(clientPath,JSON.stringify(client,null,2)+'\n');
   // Prerendering with trailingSlash redirects the route requests before they
   // can be exported. Keep its flat output and add static directory endpoints.
-  for(const route of ['editor','story']){
+  for(const route of ['editor','story','studio']){
    await mkdir(resolve(destination,route),{recursive:true});
    await cp(resolve(destination,`${route}.html`),resolve(destination,route,'index.html'));
    try{await cp(resolve(destination,`${route}.rsc`),resolve(destination,route,'index.rsc'));}
