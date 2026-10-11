@@ -4,6 +4,15 @@ import {TOWN_INCOME_SOURCES} from '../game/town-income.js';
 import {saved,visit,leave} from './local-contract-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {freshHistoricalEnding,stabilizeBeforeMarch} from './fresh-ending-fixture.mjs';
+import {stockPortOpening} from './stock-port-opening.mjs';
+import {verifyCampaignFolder} from '../tools/campaign-export.mjs';
+import {contentIdentity} from '../game/content-identity.js';
+
+const installedShippingCampaign=await verifyCampaignFolder(new URL('../campaigns/granaderos/',import.meta.url).pathname);
+const endingCases=[
+ {name:'a loose stock seed-8 campaign',seed:8},
+ {name:'the installed shipping campaign at the browser default seed',seed:1812,content:installedShippingCampaign},
+];
 
 function agreedPortQuote(state){
  const sources=TOWN_INCOME_SOURCES.filter(source=>state.townIncome.activations[source.id]&&source.requiredSectors.every(id=>state.sectors[id].owner==='patriot'))
@@ -13,19 +22,31 @@ function agreedPortQuote(state){
  return {sources,daily};
 }
 
-test('an ordinary 3200-peso Retiro-only campaign wins all localities with actual combat and continues after saved victory and service expiry',t=>{
- const {campaign:won,notes,prefix}=freshHistoricalEnding({onCheckpoint:(stage,campaign)=>console.log(JSON.stringify({routeCheckpoint:stage,hour:campaign.hour,treasury:campaign.resources.treasury}))});
+for(const route of endingCases)test(`${route.name} wins all localities from ordinary 3200-peso Retiro-only resources and continues after saved victory and service expiry`,t=>{
+ const opening=stockPortOpening(route);
+ const {campaign:won,notes,prefix}=freshHistoricalEnding({openingCheckpoint:opening,onCheckpoint:(stage,campaign)=>console.log(JSON.stringify({route:route.name,routeCheckpoint:stage,hour:campaign.hour,treasury:campaign.resources.treasury}))});
  const start=prefix.find(note=>note.stage==='stock-start'),arrivals=prefix.find(note=>note.stage==='paid-arrivals'),agreement=prefix.find(note=>note.stage==='physical-port-agreement'),firstPayment=prefix.find(note=>note.stage==='first-midnight-payment');
  assert.ok(start,'the whole ending must retain its actual stock starting receipt');
  assert.equal(start.treasury,3200);assert.deepEqual(start.controlledSectors,['retiro']);assert.deepEqual(start.recruited,[]);
+ assert.equal(start.seed,route.seed);
+ if(route.content){assert.deepEqual(won.campaignOrigin,route.content.campaignOrigin);assert.deepEqual(won.contentCampaign.identity,contentIdentity(route.content));}
  assert.ok(arrivals,'the ending must retain the five actual paid opening arrivals');
  assert.equal(arrivals.hour,6);assert.equal(arrivals.hires.length,5);assert.equal(new Set(arrivals.hires.map(hire=>hire.id)).size,5);
- for(const hire of arrivals.hires){assert.ok(hire.debited>0);assert.equal(hire.contract.kind,'paid');assert.equal(hire.contract.started,6);assert.equal(hire.contract.expiresAt,30);assert.equal(hire.contract.paid,hire.debited);}
+ for(const hire of arrivals.hires){
+  const started=hire.arrival.dueAt*3600+(hire.arrival.dueSecond??0);
+  assert.ok(hire.debited>0);assert.equal(hire.contract.kind,'paid');assert.equal(hire.contract.term,'day');
+  assert.equal(hire.contract.started*3600+(hire.contract.startedSecond??0),started);
+  assert.equal(hire.quote.hours,24);assert.equal(hire.contract.expiresAt*3600+(hire.contract.expiresSecond??0),started+24*3600);
+  assert.equal(hire.debited,hire.quote.total);assert.equal(hire.contract.paid,hire.quote.price);
+ }
  assert.equal(arrivals.treasury,start.treasury-arrivals.hires.reduce((sum,hire)=>sum+hire.debited,0),'the first arrival retains exactly the actual contract debits');
  assert.equal(won.contentCampaign.package.rules.startingTreasury,3200);
  assert.ok(agreement,'the starting force must physically agree to Buenos Aires port income');assert.equal(agreement.daily,8000);
  assert.ok(firstPayment,'the starting force must receive its first actual midnight payment');
  assert.equal(firstPayment.received,8000);assert.equal(firstPayment.treasury,firstPayment.treasuryBefore+8000);assert.equal(firstPayment.paidDay,Math.floor(firstPayment.hour/24));
+ const openingRenewals=prefix.filter(note=>note.stage==='opening-service-renewal');
+ assert.equal(firstPayment.renewalCost,openingRenewals.filter(note=>note.purpose==='first-midnight').reduce((sum,note)=>sum+note.debited,0));
+ for(const note of openingRenewals){assert.equal(note.debited,note.quote.price);assert.equal(note.treasury,note.treasuryBefore-note.debited);assert.equal(note.expirySeconds,note.previousExpirySeconds+note.quote.hours*3600);}
  t.diagnostic(JSON.stringify({stockStartingRoute:{start,arrivals,agreement,firstPayment}}));
  const recoveryDefenses=prefix.filter(note=>note.stage==='recovery-defense');
  assert.ok(recoveryDefenses.length>0,'the seeded stock recovery must resolve its real arriving enemy group through combat');
