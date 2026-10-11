@@ -6,7 +6,7 @@ import {createElement as h,act,StrictMode,useState} from '../web/node_modules/re
 
 register('./tactical-render-loader.mjs',import.meta.url);
 
-async function mount(t,{initial,kind='fields',path='content',nestedProvider=false}){
+async function mount(t,{initial,kind='fields',path='content',nestedProvider=false,withHistory=false}){
   const unexpected=[],console=new VirtualConsole();
   console.on('jsdomError',error=>unexpected.push(error));
   const dom=new JSDOM('<!doctype html><div id="root"></div>',{
@@ -26,22 +26,38 @@ async function mount(t,{initial,kind='fields',path='content',nestedProvider=fals
   for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
   const {default:FieldEditor,DocumentEditor}=await import('../web/app/studio/FieldEditor.tsx');
   const {DocumentDraftProvider,DocumentDraftStatus,useDocumentDraftStore}=await import('../web/app/studio/DocumentDrafts.tsx');
+  const {changeStudioProject,undoStudioProject,redoStudioProject}=await import('../web/lib/campaign-studio-history.ts');
   const {createRoot}=await import('../web/node_modules/react-dom/client.js');
   const root=createRoot(dom.window.document.getElementById('root'));
-  let applied,changeValue,changeVisibility,reject=false,drafts={},scope;
+  let applied,changeValue,changeVisibility,changeDocumentPath,changeOwnerHistory,ownerHistory,reject=false,drafts={},scope;
   const changes=[];
   function ObserveDrafts(){
     const store=useDocumentDraftStore();drafts=store.drafts;scope=store.scope;
     return h(DocumentDraftStatus,{onOpen:()=>changeVisibility(true)});
   }
   function Harness(){
-    const [value,setValue]=useState(()=>structuredClone(initial));
+    const [localValue,setValue]=useState(()=>structuredClone(initial));
+    // Use the master's actual project history, with an intentionally editable
+    // minimal draft; the numeric control owns only its calendar month field.
+    const [history,setHistory]=useState(()=>({past:[],current:{
+      format:'granaderos-editor-project',version:1,manifest:{id:'numeric-owner'},
+      content:{},world:{},presentation:{calendar:{month:initial}},maps:{},
+      mapIndex:{maps:[]},assets:{assets:[]},resources:{},
+    },future:[]}));
     const [visible,setVisible]=useState(true);
-    applied=value;changeValue=setValue;changeVisibility=setVisible;
+    const [documentPath,setDocumentPath]=useState(path);
+    const value=withHistory?history.current.presentation.calendar.month:localValue;
+    const accept=next=>withHistory?setHistory(current=>changeStudioProject(current,{
+      ...current.current,presentation:{...current.current.presentation,
+        calendar:{...current.current.presentation.calendar,month:next}},
+    })):setValue(next);
+    applied=value;changeValue=accept;changeVisibility=setVisible;
+    changeDocumentPath=setDocumentPath;
+    ownerHistory=history;changeOwnerHistory=setHistory;
     const editor=visible?h(kind==='document'?DocumentEditor:FieldEditor,{
-      value,label:'Documento',path,onChange:next=>{
+      value,label:'Documento',path:documentPath,onChange:next=>{
         changes.push(structuredClone(next));
-        if(!reject)setValue(next);
+        if(!reject)accept(next);
       },
     }):null;
     return h(DocumentDraftProvider,{scope:'project-a'},
@@ -68,10 +84,14 @@ async function mount(t,{initial,kind='fields',path='content',nestedProvider=fals
   };
   return {
     dom,document,button,label,changes,
-    get value(){return applied;},get drafts(){return drafts;},get scope(){return scope;},
+    get value(){return applied;},get drafts(){return drafts;},get scope(){return scope;},get history(){return ownerHistory;},
     rejectChanges(value=true){reject=value;},
     async external(value){await act(async()=>changeValue(value));},
+    async openDocument(nextPath,value){await act(async()=>{changeDocumentPath(nextPath);changeValue(value);});},
     async show(value){await act(async()=>changeVisibility(value));},
+    async undo(){await act(async()=>changeOwnerHistory(undoStudioProject));},
+    async redo(){await act(async()=>changeOwnerHistory(redoStudioProject));},
+    async focus(element){await act(async()=>element.focus());},
     async click(element){await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
     async input(element,value){
       const prototype=element.tagName==='SELECT'?dom.window.HTMLSelectElement.prototype:
@@ -79,22 +99,42 @@ async function mount(t,{initial,kind='fields',path='content',nestedProvider=fals
       Object.getOwnPropertyDescriptor(prototype,'value').set.call(element,value);
       await act(async()=>element.dispatchEvent(new dom.window.Event(element.tagName==='SELECT'?'change':'input',{bubbles:true})));
     },
-    async blur(element){await act(async()=>element.dispatchEvent(new dom.window.FocusEvent('focusout',{bubbles:true})));},
+    async blur(element){await act(async()=>{
+      if(document.activeElement===element)element.blur();
+      else element.dispatchEvent(new dom.window.FocusEvent('focusout',{bubbles:true}));
+    });},
   };
 }
 
 test('numeric fields retain the applied number while cleared or partial negative/comma input is typed',async t=>{
   const m=await mount(t,{initial:7,path:'world.projection.minLongitude'}),input=m.label('Documento');
   assert.equal(input.inputMode,'decimal');
+  await m.input(input,'7');await m.blur(input);assert.deepEqual(m.changes,[],'unchanged typing and blur cannot emit an edit');
   await m.input(input,'');assert.equal(input.value,'');assert.equal(m.value,7);assert.deepEqual(m.changes,[]);
   await m.input(input,'-');assert.equal(input.value,'-');assert.equal(m.value,7);
   await m.input(input,'-2');assert.equal(m.value,-2);
   await m.input(input,'-2,');assert.equal(input.value,'-2,');assert.equal(m.value,-2);
   await m.input(input,'-2,5');assert.equal(input.value,'-2,5');assert.equal(m.value,-2.5);
+  const changes=m.changes.length;
   await m.blur(input);assert.equal(input.value,'-2.5');assert.equal(m.value,-2.5);
+  await m.input(input,'-2.50');await m.blur(input);assert.equal(m.changes.length,changes,'equivalent numeric text must not add history');
   assert.ok(m.changes.length>0);assert.ok(m.changes.every(value=>typeof value==='number'));
   assert.equal(m.document.querySelector('[role="alert"]'),null);
   assert.equal(m.document.querySelector('.studio-null-field'),null);
+});
+
+test('master project redo survives focus and unchanged numeric blur after undo',async t=>{
+  const m=await mount(t,{initial:6,path:'presentation.calendar.month',withHistory:true}),input=m.label('Documento');
+  await m.focus(input);await m.input(input,'6');await m.blur(input);
+  assert.deepEqual(m.changes,[]);assert.equal(m.history.past.length,0);
+  await m.input(input,'7');assert.equal(m.value,7);assert.equal(m.history.past.length,1);
+  await m.undo();assert.equal(m.value,6);assert.equal(input.value,'6');assert.equal(m.history.future.length,1);
+  await m.focus(input);assert.equal(m.document.activeElement,input);
+  await m.blur(input);assert.equal(m.value,6);assert.equal(m.history.future.length,1);
+  assert.equal(m.history.past.length,0);assert.deepEqual(m.changes,[7]);
+  await m.redo();assert.equal(m.value,7);assert.equal(input.value,'7');
+  assert.equal(m.history.past.length,1);assert.equal(m.history.future.length,0);
+  await m.blur(input);assert.deepEqual(m.changes,[7]);assert.equal(m.history.past.length,1);
 });
 
 test('invalid numeric blur restores the last applied value and exposes its accessible notice',async t=>{
@@ -174,6 +214,31 @@ test('a rejected owner change retains staged JSON and the prior applied document
   assert.equal(m.label('Documento JSON').value,staged);assert.deepEqual(m.value,initial);
 });
 
+test('rejected apply cannot acknowledge another document with independently staged text when its path changes',async t=>{
+  const documentA={name:'A applied'},documentB={name:'B applied'};
+  const m=await mount(t,{initial:documentA,kind:'document',path:'maps.a'});
+  await m.click(m.button('JSON'));
+  await m.openDocument('maps.b',documentB);
+  const stagedB=JSON.stringify({name:'B unfinished',extension:{keep:'B text'}});
+  await m.input(m.label('Documento JSON'),stagedB);
+  await m.openDocument('maps.a',documentA);
+  // This rejected A replacement matches B's applied bytes. A pending apply
+  // without its document key used to delete B's unrelated staged record.
+  const stagedA=JSON.stringify(documentB);
+  await m.input(m.label('Documento JSON'),stagedA);m.rejectChanges();
+  await m.click(m.button('Aplicar documento'));
+  assert.deepEqual(m.changes,[documentB]);assert.deepEqual(m.value,documentA);
+  await m.openDocument('maps.b',documentB);
+  assert.deepEqual(m.value,documentB);assert.equal(m.label('Documento JSON').value,stagedB);
+  assert.equal(m.drafts['project-a:maps.b'].text,stagedB);
+  assert.equal(m.drafts['project-a:maps.a'].text,stagedA);
+  assert.equal(Object.keys(m.drafts).length,2);
+  assert.equal(m.document.querySelector('.editor-status').textContent,'Texto sin aplicar');
+  await m.openDocument('maps.a',documentA);
+  assert.equal(m.label('Documento JSON').value,stagedA);
+  assert.equal(m.drafts['project-a:maps.b'].text,stagedB);assert.deepEqual(m.changes,[documentB]);
+});
+
 test('external document changes require explicit replacement and accepted JSON clears the staged owner record',async t=>{
   const initial={name:'Original',extension:{kept:'original'}},m=await mount(t,{initial,kind:'document',path:'presentation'});
   await m.click(m.button('JSON'));const next={name:'Staged',extension:{kept:'draft'}},staged=JSON.stringify(next);
@@ -184,6 +249,11 @@ test('external document changes require explicit replacement and accepted JSON c
   await m.click(m.button('Aplicar documento'));assert.deepEqual(m.changes,[]);assert.deepEqual(m.value,external);
   await m.click(m.document.querySelector('.studio-document-conflict input[type="checkbox"]'));
   assert.equal(m.button('Aplicar documento').disabled,false);
+  const newer={name:'External again',extension:{kept:'newer'}};await m.external(newer);
+  assert.equal(m.document.querySelector('.studio-document-conflict input[type="checkbox"]').checked,false);
+  assert.equal(m.button('Aplicar documento').disabled,true,'replacement approval cannot survive another applied update');
+  assert.deepEqual(m.value,newer);assert.equal(m.label('Documento JSON').value,staged);
+  await m.click(m.document.querySelector('.studio-document-conflict input[type="checkbox"]'));
   await m.click(m.button('Aplicar documento'));assert.deepEqual(m.value,next);assert.deepEqual(m.changes,[next]);
   assert.deepEqual(m.drafts,{});assert.equal(m.document.querySelector('.studio-staged-notice'),null);
   assert.equal(m.document.querySelector('.studio-document-conflict'),null);
