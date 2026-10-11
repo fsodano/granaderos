@@ -14,6 +14,10 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
 
 const fresh=()=>initialCampaign(8,defaultContentPackage());
+const delayedFresh=()=>{
+ const content=defaultContentPackage();content.characters.find(person=>person.id==='person-113').arrivalHours=6;
+ return initialCampaign(8,content);
+};
 const restored=campaign=>decodeSave(encodeSave(campaign)).campaign;
 const actor=(state,id)=>carriedAmmunition(rosterFor(state).find(op=>op.id===id),state.operativeState[id]);
 function assertAllowance(state,id,family){
@@ -25,7 +29,8 @@ function assertAllowance(state,id,family){
 
 test('an actual 3200-peso Kerr hire brings a loaded charge and nine physical spare cartridges through queued assault and save',()=>{
  let s=fresh();const quote=contractQuote(s,rosterFor(s).find(op=>op.id===113),'week');assert.equal(quote.available,true);assert.equal(quote.price,1134);
- s=order(s,{type:'recruitCivic',id:113,term:'week'});assert.equal(s.resources.treasury,3200-quote.price);assert.equal(s.operativeState[113].startingCartridgesIssued,false);assert.equal(s.recruited.includes(113),false);
+ s=order(s,{type:'recruitCivic',id:113,term:'week'});assert.equal(s.resources.treasury,3200-quote.price);assert.equal(s.recruited.includes(113),true);assertAllowance(s,113,'ammoShot');
+ assert.equal(s.hiringArrivals.some(arrival=>arrival.id===113),false,'the canonical Kerr hire arrives at booking');
  s=order(restored(s),{type:'wait',hours:6});assertAllowance(s,113,'ammoShot');const cash=s.resources.treasury;
  const route=previewStrategicRoute(s,s.activeSquadId,'buenos_aires');assert.equal(route.valid,true);s=order(s,route.action);s=order(restored(s),{type:'wait',hours:12});assert.equal(s.squads[0].journey.status,'ready');
  s=order(s,{type:'beginAssault',sector:'buenos_aires'});assert.equal(s.resources.treasury,cash);assertAllowance(s,113,'ammoShot');
@@ -48,7 +53,9 @@ for(const oldFlag of [undefined,true])test(`a never-served older candidate with 
 });
 
 test('an older pending first hire is repaired before arrival without receiving ammunition at booking or cancellation',()=>{
- let s=order(fresh(),{type:'recruitCivic',id:113,term:'week'});s.operativeState[113].startingCartridgesIssued=true;s=restored(s);assert.equal(s.operativeState[113].startingCartridgesIssued,false);assert.equal(s.operativeState[113].carriedAmmo,0);
+ let s=delayedFresh();const quote=contractQuote(s,rosterFor(s).find(op=>op.id===113),'week');
+ s=order(s,{type:'recruitCivic',id:113,term:'week'});assert.equal(s.resources.treasury,3200-quote.price);assert.equal(s.recruited.includes(113),false);assert.equal(s.hiringArrivals.length,1);
+ s.operativeState[113].startingCartridgesIssued=true;s=restored(s);assert.equal(s.operativeState[113].startingCartridgesIssued,false);assert.equal(s.operativeState[113].carriedAmmo,0);
  const cancelled=order(s,{type:'cancelHireArrival',id:113});assert.equal(cancelled.resources.treasury,3200);assert.equal(cancelled.operativeState[113].carriedAmmo,0);
  s=order(s,{type:'wait',hours:6});assertAllowance(s,113,'ammoShot');
 });

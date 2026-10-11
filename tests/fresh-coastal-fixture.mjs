@@ -16,7 +16,7 @@ import {defaultProfile} from '../game/character-profile.js';
 import {createBattle,actBattle,endTurn,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {enterSector} from '../game/world.js';
-import {hiringArrivalOptions,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
+import {hiringArrivalOptions,hireArrivalDueSeconds,hireArrivalOrder} from '../game/hiring-arrivals.js';
 import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {operativeLocation} from '../game/squads.js';
 import {cellTravelPlan} from '../game/world-cells.js';
@@ -54,6 +54,55 @@ function recruitLocal(s,id=3){
  return saved({campaign:leave(saved({campaign:s,battle:p.battle}))}).campaign;
 }
 
+// Use each quoted arrival, including immediate stock hires. The preparation
+// still waits six real hours; authored longer journeys retain their full delay.
+export function prepareFreshCoastalHires(start,ids,{term='week',minimumWaitHours=6,report=()=>{}}={}){
+ assert.ok(Array.isArray(ids)&&new Set(ids).size===ids.length,'Opening hires must have unique identities.');
+ assert.ok(Number.isSafeInteger(minimumWaitHours)&&minimumWaitHours>=0&&minimumWaitHours<=720);
+ const clock=s=>s.hour*3600+(s.secondOfHour??0),original=structuredClone(start),started=clock(start),orders=[],hires=[];
+ let s=saved({campaign:start}).campaign;
+ const execute=action=>{
+  const before=s;s=order(s,action);orders.push(structuredClone(action));
+  report({event:'coastalOpeningHireOrder',action:structuredClone(action),hour:s.hour,second:s.secondOfHour??0,elapsedSeconds:clock(s)-clock(before),treasury:s.resources.treasury,campaign:s});
+ };
+ const arrived=hire=>{
+  const contract=s.contracts[hire.id],due=hireArrivalDueSeconds(hire.arrival);
+  assert.equal(s.recruited.filter(id=>id===hire.id).length,1,'Each actual hire arrives exactly once.');
+  assert.equal(s.hiringArrivals.some(a=>a.operativeId===hire.id),false);
+  assert.equal(s.operativeState[hire.id].location,hire.arrival.destination);
+  assert.equal(contract.kind,hire.quote.permanent?'patriot':'paid');assert.equal(contract.term,term);assert.equal(contract.paid,hire.quote.price);
+  assert.equal(contract.started*3600+(contract.startedSecond??0),due,'Service starts at the quoted arrival, including its booked second.');
+  assert.equal(contractExpiresSeconds(contract),hire.quote.permanent?null:due+hire.quote.hours*3600);
+ };
+ for(const id of ids){
+  assert.ok(!s.recruited.includes(id)&&!s.hiringArrivals.some(a=>a.operativeId===id),'Opening hiring cannot duplicate serving or pending people.');
+  const op=rosterFor(s).find(op=>op.id===id);assert.ok(op,`Opening hire ${id} must exist.`);
+  const destination=s.location;assert.ok(hiringArrivalOptions(s).some(site=>site.id===destination),'The opening destination must admit actual arrivals.');
+  const quote=contractQuote(s,op,term);assert.equal(quote.available,true,quote.reason);
+  const arrival=hireArrivalOrder(s,op,term,quote,destination),cash=s.resources.treasury;
+  execute({type:'recruitCivic',id,term,destination});assert.equal(s.resources.treasury,cash-quote.total,'Hiring pays the current service quote and any guarantee once.');
+  const hire={id,quote:structuredClone(quote),arrival:structuredClone(arrival),debited:cash-s.resources.treasury};hires.push(hire);
+  if(arrival.travelHours){
+   assert.equal(s.recruited.includes(id),false);assert.equal(s.contracts[id],undefined);
+   const pending=s.hiringArrivals.filter(a=>a.operativeId===id);assert.equal(pending.length,1);
+   for(const [key,value]of Object.entries(arrival))assert.deepEqual(pending[0][key],value);
+  }else arrived(hire);
+ }
+ s=saved({campaign:s}).campaign;
+ const until=Math.max(started+minimumWaitHours*3600,...hires.map(hire=>hireArrivalDueSeconds(hire.arrival)));
+ for(let attempts=0;clock(s)<until;attempts++){
+  assert.ok(attempts<240,'Opening readiness must finish through bounded real wait orders.');
+  assert.ok(!s.pendingBattle&&!s.pendingEncounter,'Resolve an actual encounter before the opening hiring wait.');
+  const future=hires.map(hire=>hireArrivalDueSeconds(hire.arrival)).filter(due=>due>clock(s)),next=Math.min(until,...future);
+  const hours=Math.min(24,Math.ceil((next-clock(s))/3600));execute({type:'wait',hours});s=saved({campaign:s}).campaign;
+  for(const hire of hires)if(hireArrivalDueSeconds(hire.arrival)<=clock(s))arrived(hire);
+ }
+ assert.equal(clock(s),until);for(const hire of hires)arrived(hire);
+ assert.equal(s.resources.treasury,start.resources.treasury-hires.reduce((sum,hire)=>sum+hire.debited,0),'The opening wait does not repeat any hiring payment.');
+ assert.deepEqual(start,original,'Opening preparation cannot change its input checkpoint.');
+ return {campaign:s,hires,orders,waitHours:(clock(s)-started)/3600};
+}
+
 export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBattle,onBattleFinished,fightOpening,fightFinal,report=()=>{},openingCheckpoint}={}){
  const prefix=kind==='stock'?(openingCheckpoint??stockPortOpening()):null;
  let s=prefix?saved({campaign:prefix.campaign}).campaign:stock(kind);const openingFunds=kind==='local'?3200:ROUTE_STARTING_TREASURY;const notes=prefix?[...prefix.notes]:[],dead=new Set(Object.entries(s.operativeState).filter(([,record])=>!record.alive).map(([id])=>Number(id)));
@@ -73,10 +122,8 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
   let p=takeFiniteCache(visit(s),3,[{weapon:1801,count:1},{ammoType:'musket_75',count:12}]);const key=Object.keys(p.battle.units.find(u=>u.id==='3').inventory).find(key=>p.battle.units.find(u=>u.id==='3').inventory[key].weapon===1801);assert.ok(key);p=tactical(p,{type:'equipLoot',unitId:'3',inventoryKey:key});p=tactical(p,{type:'reload',unitId:'3'});s=leaveFiniteCache(p);assert.equal(s.resources.treasury,3200);assert.equal(s.operativeState[1000].ammo+s.operativeState[1000].carriedLoaded,10);
  }
  const first=kind==='local'?[]:kind==='created'?[110,136,141,120]:[110,114,136,141,120,131];
- for(const id of first)s=order(s,{type:'recruitCivic',id,term:'week'});
- assert.equal(s.hiringArrivals.length,first.length);assert.ok(first.every(id=>!s.recruited.includes(id)));
- s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;
- assert.ok(first.every(id=>s.recruited.includes(id)&&s.contracts[id].started===6));notes.push({stage:'ready',hour:s.hour,funds:s.resources.treasury,squad:[...s.squad]});
+ const prepared=prepareFreshCoastalHires(s,first,{report});s=prepared.campaign;
+ notes.push({stage:'ready',hour:s.hour,funds:s.resources.treasury,squad:[...s.squad],hires:prepared.hires,waitHours:prepared.waitHours});
  }
  for(const sector of prefix?['san_nicolas','san_lorenzo']:['buenos_aires','san_nicolas','san_lorenzo']){
   // Recovered rifles and spent cartridges need matching finite reserve in
@@ -195,15 +242,20 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
    const auxiliary=kind==='hired'?(relief!==undefined&&!replacements.includes(relief)?relief:localPhysician?.id):undefined,hires=[...replacements,...(auxiliary===relief&&relief!==undefined?[relief]:[])],cash=s.resources.treasury;
    assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const location=s.location;
    const quotes=hires.map(id=>({id,...contractQuote(s,rosterFor(s).find(op=>op.id===id),'week')}));
+   const arrivals=hires.map((id,index)=>hireArrivalOrder(s,rosterFor(s).find(op=>op.id===id),'week',quotes[index],location));
    evidence?.capture('before-clinic-hire-orders',{campaign:s,field,hires,replacements,auxiliary,relief,clinic,fieldSquad,quotes});
    for(const id of hires)s=order(s,{type:'recruitCivic',id,term:'week',destination:location});
-   const arrivals=hires.map(id=>s.hiringArrivals.find(arrival=>arrival.operativeId===id));
    if(hires.length){
-    assert.ok(hires.every(id=>!s.recruited.includes(id)));assert.ok(arrivals.every(arrival=>arrival.travelHours===6));
-    if(auxiliary!==undefined){for(const id of field){assert.ok(s.operativeState[id].hp>=15&&!s.operativeState[id].bleeding,'stabilize the actual clinic patients before waiting for a physician');s=order(s,{type:'assignCare',id,assignment:'rest'});}}
-    const due=Math.max(...arrivals.map(hireArrivalDueSeconds));evidence?.capture('before-clinic-hire-wait',{campaign:s,field,hires,arrivals,auxiliary,clinic,fieldSquad,due});while(s.hour*3600+(s.secondOfHour??0)<due)s=advanceCampaignHours(s,1);
+    for(const arrival of arrivals){
+     if(arrival.travelHours){assert.equal(s.recruited.includes(arrival.operativeId),false);const pending=s.hiringArrivals.filter(hire=>hire.operativeId===arrival.operativeId);assert.equal(pending.length,1);for(const [key,value]of Object.entries(arrival))assert.deepEqual(pending[0][key],value);}
+     else assert.equal(s.recruited.filter(id=>id===arrival.operativeId).length,1);
+    }
+    const due=Math.max(...arrivals.map(hireArrivalDueSeconds));
+    if(auxiliary!==undefined&&s.hour*3600+(s.secondOfHour??0)<due){for(const id of field){assert.ok(s.operativeState[id].hp>=15&&!s.operativeState[id].bleeding,'stabilize the actual clinic patients before waiting for a physician');s=order(s,{type:'assignCare',id,assignment:'rest'});}}
+    evidence?.capture('before-clinic-hire-wait',{campaign:s,field,hires,arrivals,auxiliary,clinic,fieldSquad,due});while(s.hour*3600+(s.secondOfHour??0)<due)s=advanceCampaignHours(s,1);
     evidence?.capture('after-clinic-hire-wait',{campaign:s,field,hires,arrivals,auxiliary,clinic,fieldSquad,due});
     s=saved({campaign:s}).campaign;assert.ok(hires.every(id=>s.recruited.includes(id)&&operativeLocation(s,id)===location));assert.equal(s.resources.treasury,cash-quotes.reduce((sum,quote)=>sum+quote.total,0));
+    for(const [index,arrival]of arrivals.entries()){const contract=s.contracts[arrival.operativeId],started=hireArrivalDueSeconds(arrival);assert.equal(contract.started*3600+(contract.startedSecond??0),started);assert.equal(contract.paid,quotes[index].price);assert.equal(contractExpiresSeconds(contract),quotes[index].permanent?null:started+quotes[index].hours*3600);}
    }
    if(auxiliary!==undefined&&!s.squads.some(squad=>squad.members.includes(auxiliary))){s=order(s,{type:'createSquad',ids:[auxiliary],name:'Atención local',sector:clinic});s=order(s,{type:'selectSquad',id:fieldSquad});}
    evidence?.capture('before-clinic-survivor-assertion',{campaign:s,field,hires,arrivals,auxiliary,clinic,fieldSquad});

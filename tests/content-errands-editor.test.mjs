@@ -19,7 +19,7 @@ async function mount(t,stored=defaultContentPackage()){
  const {default:Editor}=await import('../web/app/story/page.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js');const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{await act(async()=>root.unmount());dom.window.close();for(const[k,d]of previous)if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];});await act(async()=>root.render(h(Editor)));await campaignUIReady(dom.window.document);
  const document=dom.window.document;return {dom,document,draft:()=>parseContentPackage(dom.window.localStorage.getItem(draftKey)),
- button:text=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(b,text);return b;},
+ button:text=>{const b=[...document.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')===text||b.textContent.trim()===text);assert.ok(b,text);return b;},
  label:text=>{const l=[...document.querySelectorAll('label')].find(l=>l.firstChild?.textContent.trim()===text);assert.ok(l,text);return l.querySelector('input,select,textarea');},
  checkbox:text=>{const l=[...document.querySelectorAll('label')].find(l=>l.textContent.trim().startsWith(text));assert.ok(l,text);return l.querySelector('input[type="checkbox"]');},
  click:async e=>act(async()=>e.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true}))),

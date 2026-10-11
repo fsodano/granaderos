@@ -83,7 +83,7 @@ test('a real second battle settles and saves with the original player and enemy 
  assert.ok(s.sectorStates.buenos_aires.units.filter(u=>u.hp===0).length>=oldBodies.length);
 });
 
-test('finite enemy first aid can stabilize a retained casualty without authorizing replacement, revival or unsupported health',()=>{
+test('finite enemy first aid stabilizes a retained casualty before its later death without authorizing forged care or revival',()=>{
  // Seed 42 leaves native critical survivors and actual corpses. Only the new
  // occupation is declared here; no health, routing or supplies are changed.
  const {campaign:before}=paidCasualty(42);
@@ -91,44 +91,69 @@ test('finite enemy first aid can stabilize a retained casualty without authorizi
  before.sectors.buenos_aires.owner='royalist';
  const campaign=order(before,{type:'attack',sector:'buenos_aires'}),request=campaign.pendingBattle;
  const initial=enterSector(request,campaign.sectorStates.buenos_aires),{battle,orders}=fight(request,campaign.sectorStates.buenos_aires);
- const healed=battle.units.filter(unit=>unit.side==='enemy'&&unit.originalUnitId&&unit.hp>initial.units.find(old=>old.id===unit.id).hp);
- assert.ok(healed.length>0,'the native new garrison must actually treat a retained living casualty');
- for(const unit of healed){assert.ok(unit.hp<=15);assert.ok(initial.units.find(old=>old.id===unit.id).hp>0);}
  const dressings=state=>state.units.filter(unit=>unit.side==='enemy').reduce((sum,unit)=>sum+unit.medkits,0);
- assert.ok(dressings(battle)<dressings(initial),'retained care consumes the actual finite enemy issue');
- const doctor=initial.units.find(unit=>unit.side==='enemy'&&unit.hp>=15&&unit.medical>0&&unit.medkits>battle.units.find(old=>old.id===unit.id).medkits);
- assert.ok(doctor,'native care spends supplies carried by a living medic');
- const treatment=firstAidPlan(doctor,initial.units.find(unit=>unit.id===healed[0].id));
- assert.equal(treatment.hpAfter,healed[0].hp);assert.equal(treatment.dressingsUsed,1);
- let replay=structuredClone(initial);
+ let replay=structuredClone(initial),care;
  for(let index=0;index<orders.length;index++){
+  const prior=replay;
   replay=orders[index].type==='endTurn'?endTurn(replay):actBattle(replay,orders[index]);assert.equal(replay.lastError,null,JSON.stringify(orders[index]));
+  const healed=replay.units.find(unit=>unit.side==='enemy'&&unit.originalUnitId&&prior.units.find(old=>old.id===unit.id).hp>0&&unit.hp>prior.units.find(old=>old.id===unit.id).hp);
+  if(!care&&healed)care={before:structuredClone(prior),after:structuredClone(replay),unitId:healed.id,index};
   if(index===Math.floor(orders.length/2))replay=validateBattleSnapshot(JSON.parse(JSON.stringify(replay)));
  }
+ assert.ok(care,'the native new garrison must actually treat a retained living casualty during combat');
+ const patient=care.before.units.find(unit=>unit.id===care.unitId),stabilized=care.after.units.find(unit=>unit.id===care.unitId);
+ assert.ok(patient.hp>0&&patient.hp<15);assert.equal(stabilized.hp,15);assert.equal(stabilized.bleeding,0);assert.equal(care.after.status,'active');
+ const doctors=care.before.units.filter(unit=>unit.side==='enemy'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&unit.medical>0&&unit.medkits>care.after.units.find(old=>old.id===unit.id).medkits);
+ assert.ok(doctors.length>0,'native care spends supplies carried by living medics');
+ let treated=structuredClone(patient),treatmentDressings=0;
+ for(const doctor of doctors){
+  const debit=doctor.medkits-care.after.units.find(unit=>unit.id===doctor.id).medkits;
+  for(let count=0;count<debit;count++){
+   const treatment=firstAidPlan(doctor,treated);assert.equal(treatment.valid,true);assert.equal(treatment.dressingsUsed,1);
+   treatmentDressings+=treatment.dressingsUsed;treated={...treated,hp:treatment.hpAfter,bleeding:treatment.bleedingAfter,bandaged:treatment.bandagedAfter};
+  }
+ }
+ assert.deepEqual([treated.hp,treated.bleeding,treated.bandaged],[stabilized.hp,stabilized.bleeding,stabilized.bandaged]);
+ assert.equal(dressings(care.before)-dressings(care.after),treatmentDressings);assert.ok(treatmentDressings>1,'this native critical injury needs more than one finite dressing');
  assert.deepEqual(replay,battle,'native retained care and the actual outcome replay exactly across a tactical save');
+ const careSync=syncBattleTime(campaign,care.after);assert.equal(careSync.error,null);const careSaved=saved(careSync);
+ assert.equal(careSaved.battle.units.find(unit=>unit.id===care.unitId).hp,15);
+ let continued=careSaved.battle;
+ for(const action of orders.slice(care.index+1)){continued=action.type==='endTurn'?endTurn(continued):actBattle(continued,action);assert.equal(continued.lastError,null,JSON.stringify(action));}
  const pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null);const admitted=saved(pair);
+ const continuedSync=syncBattleTime(careSaved.campaign,continued);assert.equal(continuedSync.error,null);
+ assert.deepEqual(saved(continuedSync),admitted,'the actual later death and victory continue exactly from the official care checkpoint');
+ const corpse=admitted.battle.units.find(unit=>unit.id===care.unitId);assert.equal(corpse.hp,0);assert.ok(corpse.originalUnitId,'the treated retained identity dies later through the recorded ordinary orders');
  const report={type:'battleResult',battleId:request.id,outcome:battle.status,sectorState:admitted.battle,survivors:admitted.battle.units.filter(unit=>unit.side==='player')};
  const accepted=order(admitted.campaign,report);assert.deepEqual(saved({campaign:accepted}).campaign,accepted);
- for(const unit of healed)assert.equal(accepted.sectorStates.buenos_aires.units.find(old=>old.id===unit.id).hp,unit.hp);
- const corpse=battle.units.find(unit=>unit.side==='enemy'&&unit.originalUnitId&&unit.hp===0);assert.ok(corpse);
+ assert.equal(accepted.sectorStates.buenos_aires.units.find(unit=>unit.id===care.unitId).hp,0);
+ assert.equal(visit(accepted).battle.units.find(unit=>unit.id===care.unitId).hp,0,'re-entry retains the later native death');
+ // A genuine active care report passes enemy admission, but cannot invent a
+ // victory. Its live stabilized HP makes the finite medical budget observable.
+ const careReport={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:careSaved.battle,survivors:careSaved.battle.units.filter(unit=>unit.side==='player')};
+ const premature=dispatchCampaign(careSaved.campaign,careReport);assert.match(premature.lastError,/desenlace táctico/);
+ assert.deepEqual({...premature,lastError:null},{...careSaved.campaign,lastError:null});
  const changes=[
-  scene=>{scene.units.find(unit=>unit.id===healed[0].id).id+=':replacement';},
-  scene=>{scene.units.find(unit=>unit.id===healed[0].id).originalUnitId='unrelated-enemy';},
-  scene=>{const unit=scene.units.find(unit=>unit.id===healed[0].id);unit.hp=16;unit.bandaged=unit.maxHp-unit.hp;},
+  scene=>{scene.units.find(unit=>unit.id===care.unitId).id+=':replacement';},
+  scene=>{scene.units.find(unit=>unit.id===care.unitId).originalUnitId='unrelated-enemy';},
+  scene=>{const unit=scene.units.find(unit=>unit.id===care.unitId);unit.hp=16;unit.bandaged=unit.maxHp-unit.hp;},
   scene=>{for(const unit of scene.units.filter(unit=>unit.side==='enemy'))unit.medkits=initial.units.find(old=>old.id===unit.id).medkits;},
   scene=>{
    for(const unit of scene.units.filter(unit=>unit.side==='enemy'))unit.medkits=initial.units.find(old=>old.id===unit.id).medkits;
-   // This native 12→15 HP treatment needs one living dressing. Refund every
-   // living carrier, then charge only a real corpse for that exact expense.
-   const dead=initial.units.find(unit=>unit.side==='enemy'&&unit.hp===0&&unit.medkits>=treatment.dressingsUsed);assert.ok(dead);
-   scene.units.find(unit=>unit.id===dead.id).medkits-=treatment.dressingsUsed;
+   // Refund the living carriers, then charge the real treatment expense only
+   // to a corpse. A dead carrier cannot authorize critical first aid.
+   const dead=initial.units.find(unit=>unit.side==='enemy'&&unit.hp===0&&unit.medkits>=treatmentDressings);assert.ok(dead);
+   scene.units.find(unit=>unit.id===dead.id).medkits-=treatmentDressings;
   },
-  scene=>{const unit=scene.units.find(unit=>unit.id===corpse.id);unit.hp=1;unit.bandaged=unit.maxHp-unit.hp;refreshMilitaryCondition(unit);},
  ];
  for(const change of changes){
-  const forged=structuredClone(report);change(forged.sectorState);const rejected=dispatchCampaign(admitted.campaign,forged);
-  assert.match(rejected.lastError,/enemigos del despliegue/);assert.deepEqual({...rejected,lastError:null},{...admitted.campaign,lastError:null});
+  const forged=structuredClone(careReport);change(forged.sectorState);const rejected=dispatchCampaign(careSaved.campaign,forged);
+  assert.match(rejected.lastError,/enemigos del despliegue/);assert.deepEqual({...rejected,lastError:null},{...careSaved.campaign,lastError:null});
  }
+ const originalCorpse=initial.units.find(unit=>unit.side==='enemy'&&unit.originalUnitId&&unit.hp===0);assert.ok(originalCorpse);
+ const revived=structuredClone(report),revivedUnit=revived.sectorState.units.find(unit=>unit.id===originalCorpse.id);
+ revivedUnit.hp=1;revivedUnit.bandaged=revivedUnit.maxHp-revivedUnit.hp;refreshMilitaryCondition(revivedUnit);
+ const rejected=dispatchCampaign(admitted.campaign,revived);assert.match(rejected.lastError,/enemigos del despliegue/);assert.deepEqual({...rejected,lastError:null},{...admitted.campaign,lastError:null});
 });
 
 // Prepared retained casualty: the case isolates revisiting a cleared sector.
