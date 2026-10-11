@@ -1,0 +1,41 @@
+'use client';
+import {useRef,useState} from 'react';
+import {campaignRelativePath} from '../../../game/campaign-assets.js';
+import {setProjectResource,removeProjectResource,projectResourceBytes} from '../../../game/campaign-editor-project.js';
+import {projectAssetUsage,replaceProjectImageReferences,useStudioAssetResolver} from '../../lib/campaign-studio-assets';
+import FieldEditor from './FieldEditor';
+
+const fileTypes:Record<string,string>={png:'image/png',webp:'image/webp',jpg:'image/jpeg',jpeg:'image/jpeg',json:'application/json'};
+const bytesLabel=(bytes:number)=>bytes<1024?`${bytes} B`:bytes<1048576?`${(bytes/1024).toFixed(1)} KB`:`${(bytes/1048576).toFixed(1)} MB`;
+
+export default function AssetsWorkspace({project,onChange}:{project:any;onChange:(next:any)=>void}){
+ const input=useRef<HTMLInputElement>(null),latest=useRef(project);latest.current=project;
+ const [selected,setSelected]=useState(''),[rename,setRename]=useState(''),[person,setPerson]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),resolveAsset=useStudioAssetResolver(project);
+ const assets=Array.isArray(project.assets?.assets)?project.assets.assets.filter((a:any)=>a&&typeof a.path==='string'):[],asset=assets.find((a:any)=>a.path===selected)??assets[0],usage=asset?projectAssetUsage(project,asset.path):[],characters=Array.isArray(project.content?.characters)?project.content.characters:[];
+ let byteCount:number|null=null,resourceError='';try{if(asset)byteCount=projectResourceBytes(project,asset.path).length;}catch(error:any){resourceError=error.message;}
+ async function upload(files:FileList|null){
+  if(!files?.length)return;setBusy(true);setNotice('');const original=latest.current;let next=original;
+  try{for(const file of Array.from(files)){const name=file.name.replaceAll(' ','-'),path=`assets/${name}`,type=fileTypes[name.split('.').at(-1)?.toLowerCase()??''];if(!campaignRelativePath(path)||!type)throw Error(`Usá una imagen PNG, JPEG o WebP, o un archivo JSON: ${file.name}`);next=await setProjectResource(next,path,new Uint8Array(await file.arrayBuffer()),type);setSelected(path);setRename(path);}if(latest.current!==original)throw Error('El proyecto cambió durante la carga. Volvé a seleccionar los archivos para conservar ambos cambios.');onChange(next);setNotice(`${files.length} recurso${files.length===1?'':'s'} incluido${files.length===1?'':'s'} en el proyecto.`);}catch(error:any){setNotice(error.message);}finally{setBusy(false);if(input.current)input.current.value='';}
+ }
+ function renameAsset(){
+  if(!asset)return;if(byteCount===null){setNotice('Incluí el archivo ausente antes de renombrarlo.');return;}const path=rename.trim();if(!campaignRelativePath(path)||!path.startsWith('assets/')||fileTypes[path.split('.').at(-1)??'']!==asset.type){setNotice('La ruta debe comenzar con assets/ y conservar el tipo de archivo.');return;}
+  if(path!==asset.path&&project.resources[path]){setNotice('Ya existe un archivo en esa ruta.');return;}
+  const next=replaceProjectImageReferences(project,`/campaigns/${project.manifest.id}/${asset.path}`,`/campaigns/${project.manifest.id}/${path}`),resources={...next.resources};resources[path]=resources[asset.path];if(path!==asset.path)delete resources[asset.path];next.resources=resources;next.assets={...next.assets,assets:next.assets.assets.map((entry:any)=>entry.path===asset.path?{...entry,path}:entry)};onChange(next);setSelected(path);setNotice('Archivo renombrado. Sus referencias también cambiaron.');
+ }
+ let metadata:any=null;try{if(asset?.type==='application/json')metadata=JSON.parse(new TextDecoder().decode(projectResourceBytes(project,asset.path)));}catch{}
+ return <div className="studio-workspace"><div className="studio-section-heading"><div><p className="studio-kicker">Biblioteca del proyecto</p><h2>Recursos e imágenes</h2><p>El archivo y su suma de control viajan con la campaña. Las vistas previas usan estos mismos bytes.</p></div><button type="button" disabled={busy} onClick={()=>input.current?.click()}>{busy?'Incluyendo archivos…':'Agregar archivos'}</button></div>
+  <input ref={input} type="file" accept=".png,.webp,.jpg,.jpeg,.json" multiple hidden onChange={e=>upload(e.target.files)}/>{notice&&<p role="status" className="studio-notice">{notice}</p>}
+  <div className="studio-asset-layout"><section className="studio-card"><h3>{assets.length} recursos</h3><div className="studio-asset-list">{assets.map((entry:any)=><button type="button" key={entry.path} aria-pressed={asset?.path===entry.path} onClick={()=>{setSelected(entry.path);setRename(entry.path);setNotice('');}}>{typeof entry.type==='string'&&entry.type.startsWith('image/')&&project.resources[entry.path]?<img src={resolveAsset(`/campaigns/${project.manifest.id}/${entry.path}`)} alt=""/>:<span className="studio-asset-file">{project.resources[entry.path]?'JSON':'Falta archivo'}</span>}<span><strong>{entry.id}</strong><small>{entry.path}</small></span></button>)}</div>{!assets.length&&<p>Subí el primer recurso para usarlo como retrato, imagen de arma o presentación.</p>}</section>
+   {asset&&<section className="studio-card studio-asset-detail"><h3>{asset.id}</h3>{typeof asset.type==='string'&&asset.type.startsWith('image/')&&byteCount!==null&&<img className="studio-resource-preview" src={resolveAsset(`/campaigns/${project.manifest.id}/${asset.path}`)} alt={`Vista previa de ${asset.id}`}/>}
+    {resourceError&&<p role="alert">{resourceError} Incluí un archivo con la misma ruta para reparar el recurso.</p>}
+    <dl><div><dt>Tipo</dt><dd>{asset.type}</dd></div><div><dt>Tamaño</dt><dd>{byteCount===null?'Archivo ausente':bytesLabel(byteCount)}</dd></div><div><dt>SHA-256</dt><dd><code>{asset.sha256}</code></dd></div></dl>
+    <label>Identidad del recurso<input value={asset.id} onChange={e=>onChange({...project,assets:{...project.assets,assets:assets.map((entry:any)=>entry.path===asset.path?{...entry,id:e.target.value}:entry)}})}/></label><label>Ruta del archivo<input value={selected===asset.path?rename:asset.path} onChange={e=>{setSelected(asset.path);setRename(e.target.value);}}/></label><button type="button" disabled={busy||!rename||rename===asset.path} onClick={renameAsset}>Renombrar archivo y referencias</button>
+    {typeof asset.type==='string'&&asset.type.startsWith('image/')&&<div className="studio-asset-use"><button type="button" onClick={()=>onChange({...project,presentation:{...project.presentation,menuArt:`/campaigns/${project.manifest.id}/${asset.path}`,menuArtAlt:asset.id}})}>Usar en el menú</button><label>Personaje<select value={person} onChange={e=>setPerson(e.target.value)}><option value="">Elegir personaje</option>{characters.map((c:any)=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><button type="button" disabled={!person} onClick={()=>onChange({...project,content:{...project.content,characters:characters.map((c:any)=>c.id===person?{...c,portrait:`/campaigns/${project.manifest.id}/${asset.path}`}:c)}})}>Asignar como retrato</button></div>}
+    {metadata!==null&&<FieldEditor value={metadata} label="Metadatos JSON" path={asset.path} onChange={async value=>{setBusy(true);const original=project;try{const next=await setProjectResource(original,asset.path,new TextEncoder().encode(JSON.stringify(value,null,2)+'\n'),asset.type,asset.id);if(latest.current!==original)throw Error('El proyecto cambió. Volvé a editar estos metadatos.');onChange(next);}catch(e:any){setNotice(e.message);}finally{setBusy(false);}}}/>}
+    <h4>Referencias ({usage.length})</h4>{usage.length?<ul>{usage.map(pointer=><li key={pointer}><code>{pointer}</code></li>)}</ul>:<p>Este recurso todavía no está usado.</p>}
+    <button type="button" className="studio-text-danger" disabled={usage.length>0||busy} onClick={()=>{onChange(removeProjectResource(project,asset.path));setSelected('');setRename('');}}>Quitar recurso</button>{usage.length>0&&<small>Quitá o reemplazá sus referencias antes de eliminarlo.</small>}
+   </section>}
+  </div>
+  <details className="studio-card"><summary>Catálogo completo de recursos</summary><FieldEditor value={project.assets} onChange={assets=>onChange({...project,assets})} label="Catálogo" path="assets"/></details>
+ </div>;
+}
