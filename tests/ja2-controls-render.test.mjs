@@ -23,6 +23,18 @@ function stripProps(s,inventory=false,extra={}){
   return {battle:s,selected:unit.id,unit,players:[unit],missionAllies:[],localMilitia:[],mode:'move',showSight:false,aim:0,hitLocation:'torso',costs:actionCosts(s,unit),weapon:weaponFor(unit),firearm:hasFirearm(unit),cannonId:'',shotType:'solid',gunCosts:null,artillery:[],busy:false,inventoryId:inventory?unit.id:null,vw:1000,vh:700,cameraRect:{x:0,y:0,width:500,height:300},project,cameraX:0,cameraY:0,zoom:1,onSelect:noop,onOrder:noop,onMode:noop,onToggleSight:noop,onEndTurn:noop,onRetreat:noop,onOpenInventory:noop,onCloseInventory:noop,onCameraCenter:noop,onCameraPan:noop,onZoom:noop,onCannonChange:noop,onShotTypeChange:noop,onSetAim:noop,onHitLocationChange:noop,...extra};
 }
 const strip=(s,inventory=false,extra={})=>render(h(JA2Strip,stripProps(s,inventory,extra)));
+test('selected campaign squad and inventory use their faction names and a neutral mounted caption',()=>{
+ const s=fixture(),context={world:{factions:[{id:'patriot',name:'La escuadra'},{id:'royalist',name:'La oposición'}]}};
+ for(const mounted of [false,true]){
+  s.units[0].mounted=mounted;
+  for(const inventory of [false,true]){
+   const html=strip(s,inventory,{campaignContext:context});assert.match(html,/Turno 1 · La escuadra/);assert.doesNotMatch(html,/Ejército patriota|Granadero a caballo/);
+   if(inventory&&mounted)assert.match(html,/La escuadra · A caballo/);
+  }
+ }
+ s.phase='enemy';assert.match(strip(s,false,{campaignContext:context}),/Turno 1 · La oposición/);
+ assert.match(strip(fixture(),true),/Ejército patriota/,'bare legacy inventory remains compatible');
+});
 const orders=(s,extra={})=>render(h(JA2OrdersPanel,stripProps(s,false,extra)));
 function scene(s,positions={},extra={}){
   return render(h('svg',null,h(TacticalScene,{state:s,selected:'scout',unit:s.units[0],players:[s.units[0]],units:[s.units[0]],positions,poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project,onTile:noop,onHover:noop,onTalk:noop,onCannon:noop,cannonId:'',...extra})));

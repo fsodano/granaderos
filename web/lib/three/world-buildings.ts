@@ -1,7 +1,6 @@
 import {worldWallRecords,wallFrameRecords} from './world-wall-records';
 import {Group,Vector3} from 'three';
-import {getBuildingProfile,entranceFrame} from '../../../game/building-profile.js';
-import {buildingAppearance} from '../../../game/building-appearance.js';
+import {entranceFrame} from '../../../game/building-profile.js';
 import {buildingStyle} from '../../../game/building-types.js';
 import {BUILDING_OPENINGS} from '../../../game/building-scale.js';
 import {roomDecorProfile} from '../../../game/room-dressing.js';
@@ -18,6 +17,7 @@ import {addWindowFace} from './world-building-windows';
 import {addWindowSill} from './world-window-sills';
 import {architectureTrimColour} from './world-architecture-finish';
 import {buildingArtInset,buildingFloorRectangles} from './world-building-placement';
+import {buildingRenderAppearance,buildingRenderProfile,buildingRenderMaterials,selectedBuildingStyle} from './world-building-style';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput,WorldTile} from './world-types';
@@ -36,7 +36,6 @@ function openingArch(batch:WorldBatch,wall:ReturnType<WorldMaterials['get']>,tri
   }
 }
 export function normalizedBuilding(b:WorldBuilding){const kind=b.kind??b.architecture;return {...b,kind:kind==='estancia'?'farmhouse':kind==='mansion'?'palace':kind};}
-function appearanceFor(b:WorldBuilding){return buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)});}
 /** Rejoin one worn tile to the same material batches without shading its neighbours. */
 function appendWornWall(target:WorldBatch,source:WorldBatch,tile:WorldTile,height:number,base:number){
   const group=source.finish('worn-wall');applyStructureWear(group,tile.structureDamage??0,tile.x,tile.y,height,base);
@@ -87,12 +86,14 @@ export function buildingWallAxes(tile:WorldTile,b:WorldBuilding|undefined,occupi
   return result;
 }
 export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const b=normalizedBuilding(b0),wallInset=buildingArtInset(b,input),known=effectiveRooms(input),profile=getBuildingProfile(b),appearance=appearanceFor(b),legacy=Boolean(b0.architecture&&(!b0.kind||b0.roof==='terrace'));
+  const b=normalizedBuilding(b0),wallInset=buildingArtInset(b,input),known=effectiveRooms(input),profile=buildingRenderProfile(b),appearance=buildingRenderAppearance(b),selected=selectedBuildingStyle(b),legacy=Boolean(b0.architecture&&(!b0.kind||b0.roof==='terrace'));
+  if(selected&&b.roof!=='terrace'&&b.roofFinish===undefined)b.roofFinish=appearance.roofFinish;
+  materials=buildingRenderMaterials(b,materials);
   const allWalls=worldWallRecords(input),walls=allWalls.filter(tile=>tile.buildingId===b.id),occupied=new Set(allWalls.map(tile=>`${tile.x},${tile.y}`));
   const roofs=(input.terrain.upperSurfaces??[]).filter(surface=>surface.kind==='roof'&&surface.buildingId===b.id),base=input.terrain.tiles.find(tile=>tile.x===b.x&&tile.y===b.y)?.elevation??0;
   const groundRooms=(b.rooms??[]).filter(room=>!(room.tacticalLevel??room.cells[0]?.tacticalLevel??0)),allOpen=groundRooms.length>0&&groundRooms.every(room=>known.has(room.id)),someOpen=groundRooms.some(room=>known.has(room.id));
   // Existing metric slabs and cover metadata win over artwork pixel heights.
-  const fullHeight=roofs.length?Math.min(...roofs.map(surface=>(surface.elevation??3)-base)):Math.max(2.5,(legacy?buildingStyle(b).height:profile.wallHeight)/V);
+  const fullHeight=roofs.length?Math.min(...roofs.map(surface=>(surface.elevation??3)-base)):Math.max(2.5,(selected?selected.height:legacy?buildingStyle(b).height:profile.wallHeight)/V);
   const floorHeight=roofs.length?fullHeight:Math.min(fullHeight,Math.max(2.5,profile.groundFloorHeight/V));
   const height=profile.floors>1&&someOpen?floorHeight:fullHeight,batch=new WorldBatch(geometry),surfaces=new WorldBatch(geometry),sills=new WorldBatch(geometry),group=new Group();group.name=`building:${b.id}`;group.userData.semanticId=`building:${b.id}`;
   const wallMat=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'wall'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),iron=materials.get('iron');
@@ -109,7 +110,7 @@ export function buildBuilding(b0:WorldBuilding,input:WorldInput,T:number,geometr
       const mid=(first+last)*.5,len=last-first,cross=((axis==='x'?tile.y:tile.x)+wallInset)*T;
       const box=(u:number,y:number,w:number,hi:number,d:number,material=wallMat)=>axis==='x'?wallBatch.box(material,u,tileBase+y,cross,w,hi,d,light):wallBatch.box(material,cross,tileBase+y,u,d,hi,w,light);
       const opening=tile.type!=='wall'&&index===0,ow=Math.min(doorWidth,len*.65),top=Math.min(h-.12,tile.type==='door'?doorHeight:BUILDING_OPENINGS.windowTop/V),sill=tile.type==='window'?Math.min(top-.25,BUILDING_OPENINGS.windowSill/V):0;
-      const windowPaint=opening&&tile.type==='window'&&!cut&&(!legacy||b.wallFinish!==undefined)?architectureTrimColour(appearance.wallFinish):undefined;
+      const windowPaint=opening&&tile.type==='window'&&!cut?(selected&&b.wallFinish===undefined?selected.trim:(!legacy||b.wallFinish!==undefined)?architectureTrimColour(appearance.wallFinish):undefined):undefined;
       const openingTrim=windowPaint?materials.get(`window-trim-${appearance.wallFinish}`,{colour:windowPaint}):trim;
       if(!opening){box(mid,h*.5,len,h,thickness);}
       else{

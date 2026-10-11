@@ -31,7 +31,7 @@ test('explicit saved visual overrides win and independent custom characters do n
   const custom={id:1000,portraitId,spriteAppearance:'woman-scout',skinTone:'dark'};
   assert.deepEqual(signature(custom),{appearance:'woman-scout',skin:'dark'});
   assert.equal(spriteSkinTone({...custom,skinTone:'white'}),'light');
-  assert.equal(spriteAppearance({...custom,side:'enemy'}),'royalist','enemy uniforms keep their existing precedence');
+  assert.equal(spriteAppearance({...custom,side:'enemy'}),'woman-scout','an explicit authored appearance also applies to enemy characters');
  }
  assert.deepEqual([dark,light],before);
 });

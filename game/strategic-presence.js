@@ -2,6 +2,7 @@ import {enemyIntelligenceReports} from './enemy-intelligence.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
 import {worldCell} from './world-cells.js';
 import {strategicSector} from './deployment-return.js';
+import {campaignFactions} from './campaign-definition.js';
 
 const present=unit=>unit?.hp>0&&!unit.captured&&!unit.surrendered&&!unit.departure&&!unit.fled;
 
@@ -10,7 +11,7 @@ const present=unit=>unit?.hp>0&&!unit.captured&&!unit.surrendered&&!unit.departu
 export function strategicSectorPresence(state,battle=null){
  const rows=new Map();
  const at=location=>{
-  const cell=worldCell(location);if(!cell)return null;
+  const cell=worldCell(location,state);if(!cell)return null;
   if(!rows.has(cell.location))rows.set(cell.location,{sector:cell.location,players:[],militia:0,enemies:0,unknownEnemy:false,staleEnemy:false,enemyAgeHours:0});
   return rows.get(cell.location);
  };
@@ -40,7 +41,7 @@ export function strategicSectorPresence(state,battle=null){
  // The map can be opened before a tactical casualty/exit is settled. Read only
  // our live actors from that scene; its hostile actors are never map evidence.
  if(battle&&state.pendingBattle?.id===battle.battleId){
-  const row=at(strategicSector(state.pendingBattle));
+  const row=at(strategicSector(state.pendingBattle,state));
   if(row){
    const own=(battle.units??[]).filter(unit=>unit.side==='player'),issued=new Set((state.pendingBattle.squad??[]).map(unit=>String(unit.id)));
    for(const unit of own)if(!unit.militia)issued.add(String(unit.id));
@@ -67,13 +68,14 @@ export function strategicSectorPresence(state,battle=null){
  return [...rows.values()].filter(row=>row.players.length||row.militia||row.enemies||row.unknownEnemy);
 }
 
-export function strategicPresenceLabel(row){
+export function strategicPresenceLabel(row,context=null){
  if(!row)return '';
+ const enemyName=campaignFactions(context).find(faction=>['royalist','royalists'].includes(faction.id))?.name??'la oposición';
  const parts=[];
  if(row.players.length)parts.push(`${row.players.length} combatientes propios`);
  if(row.militia)parts.push(`${row.militia} milicianos`);
- if(row.enemies)parts.push(`${row.enemies} realistas observados`);
- if(row.unknownEnemy)parts.push(row.staleEnemy?`Último parte hace ${row.enemyAgeHours} h; presencia actual sin confirmar`:'Fuerza realista sin confirmar');
+ if(row.enemies)parts.push(`${row.enemies} combatientes de ${enemyName} observados`);
+ if(row.unknownEnemy)parts.push(row.staleEnemy?`Último parte hace ${row.enemyAgeHours} h; presencia actual sin confirmar`:`Fuerza de ${enemyName} sin confirmar`);
  return parts.join(' · ');
 }
 

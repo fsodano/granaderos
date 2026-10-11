@@ -5,6 +5,7 @@ import {dispatchCampaign,rosterFor,hasPendingNpcGiftProgress,nextContractExpiryS
 import {hasPendingCivilians,nextUnloadedCivilianDeath} from './campaign-civilians.js';
 import {campaignStory} from './campaign-story.js';
 import {nextContentQuestDeadline} from './content-quests.js';
+import {nextCampaignEventTime} from './campaign-events.js';
 import {nextCampaignPresenceChange} from './campaign-presence.js';
 import {nextHireArrivalSeconds} from './hiring-arrivals.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
@@ -25,7 +26,7 @@ function syncSettledClock(campaign,battle,elapsed){
  if(delta>=(nextHireArrivalSeconds(campaign)??Infinity)||delta>=(nextContractExpirySeconds(campaign)??Infinity))return null;
  // These cases can change more than the clock, including events between hours.
  const end=campaign.hour*3600+second+delta;
- if(Number.isFinite(nextUnloadedCivilianDeath(campaign))||end>=nextContentQuestDeadline(campaign)||end>=nextCampaignPresenceChange(campaign)||battle.units.some(u=>u.side==='player'&&(u.hp<=0||u.missionAlly)))return null;
+ if(Number.isFinite(nextUnloadedCivilianDeath(campaign))||end>=nextContentQuestDeadline(campaign)||end>=nextCampaignPresenceChange(campaign)||end>=nextCampaignEventTime(campaign)||battle.units.some(u=>u.side==='player'&&(u.hp<=0||u.missionAlly)))return null;
  if(hasPendingServiceObjections(campaign,battle)||hasPendingNpcGiftProgress(campaign,battle)||hasPendingCivilians(campaign,battle))return null;
  const pendingBattle={...campaign.pendingBattle,syncedSeconds:elapsed};delete pendingBattle.resumeSnapshot;
  retainRepairReserves(pendingBattle,battle);
@@ -41,7 +42,7 @@ export function advanceBattleClock(s,seconds,{resting=false}={}){
   if(resting&&s.mode==='exploration')recoverFatigue(unit,hours,0);else gainFatigue(unit,2*hours);
  }
  s.night=total%86400<21600||total%86400>=72000;
- if(s.regionalWeather&&Math.floor(before/(WEATHER_INTERVAL_HOURS*3600))!==Math.floor(total/(WEATHER_INTERVAL_HOURS*3600)))s.weather=regionalWeatherAt(s.sectorId,total/3600);
+ if(s.regionalWeather&&Math.floor(before/(WEATHER_INTERVAL_HOURS*3600))!==Math.floor(total/(WEATHER_INTERVAL_HOURS*3600)))s.weather=regionalWeatherAt(s.sectorId,total/3600,s);
  s.lights=(s.lights??[]).map(l=>Number.isFinite(l.turns)?{...l,remainingSeconds:Math.max(0,(l.remainingSeconds??l.turns*600)-seconds),turns:Math.max(0,Math.ceil(((l.remainingSeconds??l.turns*600)-seconds)/600))}:l).filter(l=>l.remainingSeconds!==0);
 }
 export function syncBattleTime(campaign,battle){

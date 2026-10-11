@@ -6,7 +6,7 @@ import {campaignPlace} from '../../game/world-cells.js';
 import './logistics.css';
 type Props={state:any;dispatch:(action:any)=>void};
 export default function Logistics({state:s,dispatch}:Props){
- const title=(id:string)=>campaignPlace(id)?.name??id;
+ const title=(id:string)=>campaignPlace(id,s)?.name??id;
  const disabled=Boolean(s.defeated||s.pendingBattle||s.pendingEncounter);
  return <section className="logistics-section" aria-labelledby="logistics-title">
   <div className="section-intro"><p className="eyebrow">TRANSPORTE Y DEPÓSITOS</p><h2 id="logistics-title">Rutas de campaña</h2><p>Organizá el transporte para las escuadras y la artillería. Elegí las piezas y su destino desde la armería.</p></div>

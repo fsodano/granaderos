@@ -13,7 +13,7 @@ const out=resolve(root,'assets/previews/portrait-balance');
 const reports=[],hashes=new Set(),images=new Map();
 assert.equal(SELECTABLE_CHARACTER_PORTRAITS.length,180);
 for(const p of SELECTABLE_CHARACTER_PORTRAITS){
- const bytes=await readFile(resolve(root,`web/public${p.src}`));
+ const bytes=await readFile(resolve(root,p.src.slice(1)));
  // Legacy portrait 103 keeps its full-size PNG in assets/web and a reduced game copy.
  // Every other portrait, including all additions, has byte-identical production copies.
  if(p.id==='103'){

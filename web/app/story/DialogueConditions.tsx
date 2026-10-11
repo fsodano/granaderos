@@ -4,11 +4,13 @@ import {DIALOGUE_PERSON_STATE_LABELS} from '../../../game/dialogue-conditions.js
 import {CAMPAIGN_PROJECT_LABELS} from '../../../game/campaign-projects.js';
 import {isWorldCharacter} from '../../../game/content-character-ids.js';
 import {QUEST_STATE_LABELS} from '../../../game/content-quests.js';
-import {CAMPAIGN_SECTORS} from '../../../game/data.js';
-export default function DialogueConditions({conditions=[],characters,quests,onChange,campaign=false}:{campaign?:boolean;conditions?:any[];characters:any[];quests:any[];onChange:(conditions:any[])=>void}){
+import {campaignSectors} from '../../../game/campaign-definition.js';
+import {campaignFactionName} from '../../lib/campaign-labels';
+export default function DialogueConditions({conditions=[],characters,quests,onChange,campaign=false,content}:{content?:any;campaign?:boolean;conditions?:any[];characters:any[];quests:any[];onChange:(conditions:any[])=>void}){
+ const sectors=campaignSectors(content);
  const residents=characters.filter(isWorldCharacter);
  const update=(index:number,value:any)=>onChange(conditions.map((c,i)=>i===index?value:c));
- const initial=(type:string)=>type==='supply'?{type,character:characters[0].id,item:'medkits',min:1,max:null}:type==='project'?{type,project:'foundry',completed:true}:type==='meeting'?{type,character:residents[0].id}:type==='quest'?{type,quest:quests[0].id,status:'active'}:type==='character'?{type,character:characters[0].id,state:'alive'}:type==='sector'?{type,sector:'retiro',owner:'patriot'}:{type,min:type==='day'?1:0,max:null};
+ const initial=(type:string)=>type==='supply'?{type,character:characters[0].id,item:'medkits',min:1,max:null}:type==='project'?{type,project:'foundry',completed:true}:type==='meeting'?{type,character:residents[0].id}:type==='quest'?{type,quest:quests[0].id,status:'active'}:type==='character'?{type,character:characters[0].id,state:'alive'}:type==='sector'?{type,sector:sectors[0]?.id,owner:'patriot'}:{type,min:type==='day'?1:0,max:null};
  return <div><p>{campaign?'Se evalúan todas las condiciones en el estado de la campaña.':'La opción aparece cuando se cumplen todas sus condiciones.'}</p>
   {conditions.map((c,i)=><fieldset key={i} aria-label={`Condición ${i+1}`}><legend>Condición {i+1}</legend>
    <label>Tipo de condición<select value={c.type} onChange={e=>update(i,initial(e.target.value))}><option value="day">Día de campaña</option><option value="treasury">Pesos disponibles</option><option value="sector">Control de una localidad</option><option value="project">Estado de un proyecto</option><option value="character" disabled={!characters.length}>Estado de un personaje</option><option value="supply" disabled={!characters.length}>Suministros de un personaje</option>{!campaign&&<option value="meeting" disabled={!residents.length}>Personaje en su encuentro</option>}<option value="quest" disabled={!quests.length}>Estado de un encargo</option></select></label>
@@ -33,8 +35,8 @@ export default function DialogueConditions({conditions=[],characters,quests,onCh
     <label>Estado requerido<select value={c.state} onChange={e=>update(i,{...c,state:e.target.value})}>{Object.entries(DIALOGUE_PERSON_STATE_LABELS).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>
     <p>La salud usa el estado actual, también durante el combate. Estar consciente o sano no exige presencia ni servicio: combiná esas condiciones si las necesitás. Una persona estabilizada todavía puede estar herida.</p>
    </>:c.type==='sector'?<>
-    <label>Localidad de la condición<select value={c.sector} onChange={e=>update(i,{...c,sector:e.target.value})}>{CAMPAIGN_SECTORS.map(place=><option key={place.id} value={place.id}>{place.name}</option>)}</select></label>
-    <label>Control requerido<select value={c.owner} onChange={e=>update(i,{...c,owner:e.target.value})}><option value="patriot">Patriota</option><option value="royalist">Realista</option></select></label>
+    <label>Localidad de la condición<select value={c.sector} onChange={e=>update(i,{...c,sector:e.target.value})}>{sectors.map((place:{id:string;name:string})=><option key={place.id} value={place.id}>{place.name}</option>)}</select></label>
+    <label>Control requerido<select value={c.owner} onChange={e=>update(i,{...c,owner:e.target.value})}><option value="patriot">{campaignFactionName(content,'patriot')}</option><option value="royalist">{campaignFactionName(content,'royalist')}</option></select></label>
    </>:<>
     <label>{c.type==='day'?'Desde el día':'Pesos mínimos'}<input type="number" min={c.type==='day'?1:0} max={1000000000} value={c.min} onChange={e=>update(i,{...c,min:e.target.valueAsNumber})}/></label>
     <label>{c.type==='day'?'Hasta el día (opcional)':'Pesos máximos (opcional)'}<input type="number" min={c.min} max={1000000000} value={c.max??''} onChange={e=>update(i,{...c,max:e.target.value===''?null:e.target.valueAsNumber})}/></label>

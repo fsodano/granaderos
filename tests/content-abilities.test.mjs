@@ -1,3 +1,4 @@
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
@@ -143,7 +144,9 @@ test('historical contacts and mission actors carry changed abilities; save valid
  for(const abilities of [null,'bodyguard',['bad'],['bodyguard','bodyguard'],[{}]]){const invalid=content();invalid.characters.at(-1).abilities=abilities;assert.ok(validateContentPackage(invalid).length);assert.throws(()=>initialCampaign(42,invalid));}
  const malformed=battle([subject([])]);malformed.units[0].abilities=['bad'];assert.throws(()=>validateBattleSnapshot(malformed),/habilidades/);
  const care=CHARACTER_ABILITIES.find(ability=>ability.id==='care_composure');assert.ok(care);assert.match(care.description,/otra persona.*hasta 2.*PA.*vendas.*sí mismo/);
- const fresh=defaultContentPackage();assert.deepEqual(fresh.characters.filter(c=>c.abilities.includes('care_composure')).map(c=>c.id),['person-130']);
+ // The optional caregiver capability belongs to this authored experiment.
+ const fresh=authoredEditorPackage();assert.deepEqual(fresh.characters.filter(c=>c.abilities.includes('care_composure')).map(c=>c.id),['person-130']);
+ assert.deepEqual(defaultContentPackage().characters.filter(c=>c.abilities.includes('care_composure')),[]);
 });
 
 test('older authored and ordinary campaigns retain historical behavior without allowing saved capability injection',()=>{

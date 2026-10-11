@@ -53,7 +53,7 @@ export function createSectorWorld(scene:Scene,options:WorldOptions):SectorWorld{
     const groundEdges=new Map(next.terrain.tiles.map(tile=>[worldKey(tile),[tile.elevation??0,tile.type,tile.material,tile.buildingId,tile.roomId,tile.blocked]]));
     for(const [id,tiles]of chunks){
       const edges=tiles.flatMap(tile=>[[tile.x-1,tile.y],[tile.x+1,tile.y],[tile.x,tile.y-1],[tile.x,tile.y+1]].map(([x,y])=>groundEdges.get(`0:${x},${y}`)));
-      retain(`terrain:${id}`,signature([tiles,edges,next.terrain.sceneId??next.terrain.sectorId,lit(tiles)]),()=>buildTerrainChunk(id,tiles,next,T,geometry,materials));
+      retain(`terrain:${id}`,signature([tiles,edges,next.terrain.sceneId??next.terrain.sectorId,next.terrain.landscape,lit(tiles)]),()=>buildTerrainChunk(id,tiles,next,T,geometry,materials));
     }
     updateCutaways();
     const known=[...effectiveRooms(next)].sort(),allWalls=worldWallRecords(next);

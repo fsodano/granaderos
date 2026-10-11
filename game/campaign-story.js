@@ -10,12 +10,12 @@ export const campaignStory=s=>s?.contentCampaign?.package.campaignStory??null;
 export function defaultCampaignStory(){
  return {introduction:'Reuní una escuadra y cumplí los objetivos de esta campaña.',victory:'La misión de la escuadra está cumplida.',defeat:'La campaña no puede continuar.',chapters:[{id:'chapter-1',name:'Primer objetivo',objective:'Llegá al segundo día de campaña.',conditions:[{type:'day',min:2,max:null}]}],failureConditions:[]};
 }
-export function validateCampaignStory(value,characters,quests){
+export function validateCampaignStory(value,characters,quests,context=null){
  if(value==null)return;
  need(exact(value,['introduction','victory','defeat','chapters','failureConditions'])&&['introduction','victory','defeat'].every(k=>text(value[k],1000)),'La campaña necesita introducción, victoria, derrota y capítulos válidos.');
  need(Array.isArray(value.chapters)&&value.chapters.length>=1&&value.chapters.length<=12,'La campaña admite entre uno y doce capítulos.');
  const conditions=(list,required)=>{
-  validateDialogueConditions(list,characters,quests);
+  validateDialogueConditions(list,characters,quests,context);
   need(Array.isArray(list)&&(!required||list.length>0)&&list.every(c=>c.type!=='meeting'),'Los objetivos necesitan condiciones de campaña; los encuentros se resuelven mediante encargos.');
  };
  const ids=new Set();for(const chapter of value.chapters){

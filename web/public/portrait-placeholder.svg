@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 190" role="img" aria-label="Personaje sin retrato">
+ <rect width="160" height="190" fill="#293c3a"/>
+ <circle cx="80" cy="67" r="32" fill="#a7b2a5"/>
+ <path d="M24 174v-23c0-31 25-49 56-49s56 18 56 49v23" fill="#a7b2a5"/>
+</svg>

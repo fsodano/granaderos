@@ -4,7 +4,7 @@ import {syncCarriedAmmunition,unitAmmunitionByType,fieldAmmunitionByType} from '
 import {initializeUnitAmmunition,syncUnitAmmunition} from './tactical-ammunition.js';
 import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 import {AMMO_KEYS,AMMO_TYPES,ammoTypeFor,ammoStock,ammoCount,totalAmmo,changeAmmo,validateAmmo,validateAmmunitionChoice,ammunitionChoiceReason} from './ammo-types.js';
-import {AMMUNITION_MARKET_LOCATIONS,ammunitionMarketRules,ammunitionUnitPrice} from './ammunition-market-rules.js';
+import {ammunitionMarketLocations,ammunitionMarketRules,ammunitionUnitPrice} from './ammunition-market-rules.js';
 import {campaignRules} from './campaign-rules.js';
 import {arrivalFacilityOptions} from './arrival-sites.js';
 import {operativeLocation} from './squads.js';
@@ -17,7 +17,7 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 const count=value=>Number.isSafeInteger(value)&&value>=0&&value<=1000000;
 export const AMMUNITION_ORDER_LIMIT=60;
-export const hasAmmunitionMarket=(s,at)=>arrivalFacilityOptions(at).length>0&&ammunitionMarketRules(s,at).enabled;
+export const hasAmmunitionMarket=(s,at)=>arrivalFacilityOptions(at,s).length>0&&ammunitionMarketRules(s,at).enabled;
 export const ammunitionShopCapacity=(key,s,at)=>ammunitionMarketRules(s,at).families[key].capacity;
 const freshShop=(s,at)=>({stock:Object.fromEntries(AMMO_KEYS.map(key=>[key,ammunitionMarketRules(s,at).families[key].initial])),restockHours:0});
 const shop=(s,at=s.location)=>s.ammunitionShops?.[at]??freshShop(s,at);
@@ -45,10 +45,10 @@ export function migrateAmmunitionCustody(s){
  if(s.ammunitionCustodyVersion===undefined){
   need(s.ammunitionStores===undefined&&s.ammunitionShops===undefined,'Falta la versión de las reservas de munición.');
   const shops={};
-  if(s.contentCampaign?.package.ammunitionMarket)for(const {id}of AMMUNITION_MARKET_LOCATIONS)shops[id]=freshShop(s,id);
+  if(s.contentCampaign?.package.ammunitionMarket)for(const {id}of ammunitionMarketLocations(s))shops[id]=freshShop(s,id);
   for(const [at,merchant]of oldMerchants){
    const stock=merchant.ammunition,rules=ammunitionMarketRules(s,at),families=Object.values(AMMUNITION_FAMILIES);
-   need(arrivalFacilityOptions(at).length>0&&object(stock)&&Object.keys(stock).length===families.length&&families.every(f=>count(stock[f.type])&&stock[f.type]<=rules.families[f.id].capacity),'Las existencias antiguas de munición no son válidas.');
+   need(arrivalFacilityOptions(at,s).length>0&&object(stock)&&Object.keys(stock).length===families.length&&families.every(f=>count(stock[f.type])&&stock[f.type]<=rules.families[f.id].capacity),'Las existencias antiguas de munición no son válidas.');
    need(Number.isSafeInteger(merchant.restockHours)&&merchant.restockHours>=0&&merchant.restockHours<rules.restockHours,'El plazo antiguo de reposición no es válido.');
    shops[at]={stock:Object.fromEntries(families.map(f=>[f.id,stock[f.type]])),restockHours:merchant.restockHours};
   }
@@ -61,10 +61,10 @@ export function migrateAmmunitionCustody(s){
 export function validateAmmunitionCustody(s,roster){
  migrateAmmunitionCustody(s);
  need(object(s.ammunitionStores)&&object(s.ammunitionShops),'Las reservas de munición no son válidas.');
- if(s.contentCampaign?.package.ammunitionMarket)need(AMMUNITION_MARKET_LOCATIONS.every(({id})=>Object.hasOwn(s.ammunitionShops,id)),'Faltan existencias de un proveedor configurado.');
- for(const [at,counts]of Object.entries(s.ammunitionStores)){need(validWorldLocation(at),'El depósito de munición no existe.');validateCounts(counts);}
+ if(s.contentCampaign?.package.ammunitionMarket)need(ammunitionMarketLocations(s).every(({id})=>Object.hasOwn(s.ammunitionShops,id)),'Faltan existencias de un proveedor configurado.');
+ for(const [at,counts]of Object.entries(s.ammunitionStores)){need(validWorldLocation(at,s),'El depósito de munición no existe.');validateCounts(counts);}
  for(const [at,merchant]of Object.entries(s.ammunitionShops)){
-  need(arrivalFacilityOptions(at).length>0&&object(merchant)&&object(merchant.stock)&&Object.keys(merchant.stock).length===AMMO_KEYS.length&&AMMO_KEYS.every(key=>count(merchant.stock[key])&&merchant.stock[key]<=ammunitionShopCapacity(key,s,at))&&Number.isInteger(merchant.restockHours)&&merchant.restockHours>=0&&merchant.restockHours<ammunitionMarketRules(s,at).restockHours,'Las existencias de munición del proveedor no son válidas.');
+  need(arrivalFacilityOptions(at,s).length>0&&object(merchant)&&object(merchant.stock)&&Object.keys(merchant.stock).length===AMMO_KEYS.length&&AMMO_KEYS.every(key=>count(merchant.stock[key])&&merchant.stock[key]<=ammunitionShopCapacity(key,s,at))&&Number.isInteger(merchant.restockHours)&&merchant.restockHours>=0&&merchant.restockHours<ammunitionMarketRules(s,at).restockHours,'Las existencias de munición del proveedor no son válidas.');
  }
  for(const op of roster){
   const record=s.operativeState[op.id];if(!record)continue;validateAmmunitionChoice(carriedAmmunition(op,record));

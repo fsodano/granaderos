@@ -1,20 +1,11 @@
-import {NORTHERN_AXIS} from './narrative.js';
-import {entryFromSector} from './tactical-exits.js';
+import {scenarioFor} from './campaign-scenario.js';
 import {entryTerrainCells,exteriorComponent} from './sector-entry.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {spaceKey} from './tactical-space.js';
 import {movementStepCost} from './tactical.js';
 
-// These are approach roads on the schematic tactical maps. The upper gorge
-// opens west; coastal columns enter along the southern shore, not in water.
 export function invaderEntry(request){
- if(request.enemyCommand==='north'){
-  const index=NORTHERN_AXIS.indexOf(request.sector);
-  if(index>0)return entryFromSector(NORTHERN_AXIS[index-1],request.sector);
-  if(request.sector==='humahuaca')return {entryEdge:'W',entryAnchor:{x:0,y:8}};
-  return {entryEdge:'N',entryAnchor:{x:10,y:0}};
- }
- return request.enemyCommand==='naval'?{entryEdge:'S',entryAnchor:{x:16,y:15}}:{entryEdge:'W',entryAnchor:{x:0,y:8}};
+ return scenarioFor(request).invaderEntry(request);
 }
 
 export function placeInvaders(state,units,request,occupied){
@@ -22,7 +13,7 @@ export function placeInvaders(state,units,request,occupied){
  const {entryEdge,entryAnchor}=invaderEntry(request),actor=units[0];
  const component=exteriorComponent(state,actor),boundary=entryTerrainCells(state,actor,entryEdge,component);
  if(!boundary.length)throw Error('La incursión no tiene una entrada transitable.');
- const anchor=physicalEntryAnchor(entryEdge,entryAnchor,state.width,state.height,state.sceneId??state.sectorId);
+ const anchor=physicalEntryAnchor(entryEdge,entryAnchor,state.width,state.height,state.sceneId??state.sectorId,request);
  const available=new Map(state.tiles.filter(t=>component.has(spaceKey(t))).map(t=>[spaceKey(t),t]));
  // Fill the boundary first. A narrow gorge needs additional ranks on its
  // connected approach; each added cell must have an actual traversable step.

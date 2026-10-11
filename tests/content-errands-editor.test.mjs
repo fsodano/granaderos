@@ -1,3 +1,5 @@
+import {campaignUIReady} from './mounted-campaign-ready.mjs';
+import {campaignFetch} from './campaign-library-fixture.mjs';
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
 import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
@@ -7,15 +9,15 @@ import {defaultErrands,validateQuestDefinitions} from '../game/quest-definitions
 import {decodeSave} from '../game/save.js';
 import {CONTENT_LAUNCH_KEY} from '../game/content-launch.js';
 import {localPackage} from './local-contract-fixture.mjs';
-const draftKey='granaderos.content-draft.v1';
+const draftKey='granaderos.story-draft.v2.granaderos';
 async function mount(t,stored=defaultContentPackage()){
  const console=new VirtualConsole();console.on('jsdomError',e=>{if(!e.message.includes('navigation'))throw e;});
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test/story',pretendToBeVisual:true,virtualConsole:console});
  dom.window.localStorage.setItem(draftKey,JSON.stringify(stored));
- const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),FileReader:dom.window.FileReader,IS_REACT_ACT_ENVIRONMENT:true};
+ const globals={fetch:campaignFetch,window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),FileReader:dom.window.FileReader,IS_REACT_ACT_ENVIRONMENT:true};
  const previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));for(const [k,value]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value});
  const {default:Editor}=await import('../web/app/story/page.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js');const root=createRoot(dom.window.document.getElementById('root'));
- t.after(async()=>{await act(async()=>root.unmount());dom.window.close();for(const[k,d]of previous)if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];});await act(async()=>root.render(h(Editor)));
+ t.after(async()=>{await act(async()=>root.unmount());dom.window.close();for(const[k,d]of previous)if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];});await act(async()=>root.render(h(Editor)));await campaignUIReady(dom.window.document);
  const document=dom.window.document;return {dom,document,draft:()=>parseContentPackage(dom.window.localStorage.getItem(draftKey)),
  button:text=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(b,text);return b;},
  label:text=>{const l=[...document.querySelectorAll('label')].find(l=>l.firstChild?.textContent.trim()===text);assert.ok(l,text);return l.querySelector('input,select,textarea');},

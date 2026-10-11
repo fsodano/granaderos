@@ -1,3 +1,4 @@
+import {refreshCampaignAssets} from './refresh-campaign-assets.mjs';
 // Rebuild production custom portraits from the checked-in generated originals.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
@@ -18,14 +19,14 @@ for (const portrait of portraits) {
     .webp({ quality: 86 })
     .toBuffer();
 
-  for (const base of ['assets/web', 'web/public/art']) {
+  for (const base of ['assets/web', 'campaigns/granaderos/assets']) {
     await mkdir(resolve(root, base), { recursive: true });
     await writeFile(resolve(root, base, filename), output);
   }
 
   manifest.push({
     id: portrait.id,
-    file: `/art/${filename}`,
+    file: `/campaigns/granaderos/assets/${filename}`,
     source: portrait.source,
     size: [384, 384],
     bytes: output.length,
@@ -35,8 +36,10 @@ for (const portrait of portraits) {
   });
 }
 
-for (const base of ['assets/web', 'web/public/art']) {
+for (const base of ['assets/web', 'campaigns/granaderos/assets']) {
   await writeFile(resolve(root, base, 'custom-portraits.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
 console.log(`Built ${manifest.length} custom portraits.`);
+
+await refreshCampaignAssets(root);

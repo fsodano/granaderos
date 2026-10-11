@@ -12,6 +12,9 @@ function finalServiceSecond(){
  // Authored friendly roads isolate contract admission. The hire, its arrival,
  // paid service and the journey to San Nicolás all use the public reducer.
  const content=defaultContentPackage();
+ // This service-boundary experiment opts into a six-hour arrival; stock hires
+ // arrive immediately unless the author sets a delay.
+ content.characters.find(c=>c.id==='person-103').arrivalHours=6;
  content.campaignRoles={foundryEngineer:'person-103',marchCommander:'person-103'};
  content.startingTerritory.buenos_aires.owner='patriot';
  content.startingTerritory.san_nicolas.owner='patriot';

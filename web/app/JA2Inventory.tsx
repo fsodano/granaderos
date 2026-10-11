@@ -1,4 +1,5 @@
 'use client';
+import {campaignFactionName} from '../lib/campaign-labels';
 import {formatAP} from '../../game/action-points.js';
 
 import {sitePath} from '../lib/site-path.js';
@@ -40,14 +41,14 @@ const STANCE_IDS = ['mount', 'free', 'brace', 'repair'];
 const shockFormat = new Intl.NumberFormat('es-AR', {maximumFractionDigits: 2});
 
 type RadarProps = {
-  equipmentScope?:string;
+  campaignContext?:any; equipmentScope?:string;
   battle: any; units: any[]; selected: any; project: (x: number, y: number) => { x: number; y: number };
   vw: number; vh: number; cameraRect: any; zoom: number; mode: any;
   missionAllies: any[]; localMilitia: any[];
   onSelect: (id: any, additive?: boolean) => void; onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void;
 };
 // Shared far-right cluster (radar + locale + garrison popovers + Retirada), reused by MODE A (.ja2-right) and MODE B.
-export function RadarCluster({equipmentScope,battle, units, selected, project, vw, vh, cameraRect, zoom, mode, missionAllies, localMilitia, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom}: RadarProps) {
+export function RadarCluster({campaignContext,equipmentScope,battle, units, selected, project, vw, vh, cameraRect, zoom, mode, missionAllies, localMilitia, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom}: RadarProps) {
   const enemies = visibleEnemies(battle);
   const actor = battle.units.find((u: any) => u.id === selected);
   const medicalTargeting = actor?.activeSlot === 'medical' && unitCanAct(battle, actor);
@@ -72,7 +73,7 @@ export function RadarCluster({equipmentScope,battle, units, selected, project, v
       <div className="ja2-locale">
         <p className="eyebrow">OPERACIÓN TERRESTRE · {battle.night ? 'NOCHE' : 'DÍA'} · {battle.weather?.rain ? 'LLUVIA' : 'CIELO DESPEJADO'}</p>
         <h3 title={`Sector ${radarLabel.sectorCode}`}>{battle.sectorName}</h3>
-        <p>{turnModel(battle).label}</p>
+        <p>{turnModel(battle,campaignContext).label}</p>
         <p>{enemies.length} avistados</p>
         <p>{targetingHelp(mode, battle.units.find((u: any) => u.id === selected))}</p>
       </div>
@@ -100,7 +101,7 @@ function InventoryCursorLevel({level,onChange}:{level:number;onChange:(level:num
 }
 
 type Props = {
-  cursorLevel?:number; onCursorLevelChange?:(level:number)=>void;
+  campaignContext?:any; cursorLevel?:number; onCursorLevelChange?:(level:number)=>void;
   unit: any; battle: any; mode: any; showSight: boolean; busy: boolean; units: any[]; selected: any;
   missionAllies: any[]; localMilitia: any[];
   vw: number; vh: number; cameraRect: any; project: (x: number, y: number) => { x: number; y: number }; zoom: number;
@@ -109,7 +110,9 @@ type Props = {
   onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void; onCloseInventory: () => void;
   onAutoBandage?: () => void; bandageReport?: any;
 };
-export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onInventoryUnit, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
+export default function JA2Inventory({campaignContext,cursorLevel=0,onCursorLevelChange,unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onInventoryUnit, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
+  const selectedContext=campaignContext??battle.campaignPackage??battle.contentCampaign?.package;
+  const unitLabel=selectedContext?`${campaignFactionName(selectedContext,unit.side==='enemy'?'royalist':'patriot')}${unit.mounted?' · A caballo':''}`:unit.mounted?'Granadero a caballo':'Ejército patriota';
   const cost=(n:number|undefined)=>battle.mode==='exploration'?'sin PA':`${formatAP(n ?? 0)} PA`;
   const inv: any = inventoryModel(battle, unit);
   const isolation = nervousIsolationStatus(battle, {...unit, shock: (unit.shock ?? 0) / 2});
@@ -207,8 +210,8 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   return (
     <EquipmentInteractionProvider key={unit.id}><div className="ja2-inventory" role="region" aria-label="Equipo y órdenes del combatiente">
       <div className="ja2-inv-header">
-        <button className={`portrait ja2-inventory-portrait ${unit.hp<=0?'dead':''}`} aria-label={`${unit.name}${unit.hp<=0?' · muerto':''}. Botón derecho: cerrar equipo`} onContextMenu={event=>{event.preventDefault();onCloseInventory();}}>{unit.hp<=0?<><Skull className="ja2-dead-skull" aria-hidden="true"/><span className="ja2-portrait-blood" aria-hidden="true"/></>:portraitFor(unit.portraitId ?? unit.id) ? <img src={sitePath(portraitFor(unit.portraitId ?? unit.id)!)} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</button>
-        <div><h2>{short(unit)}</h2><span>{unit.mounted ? 'Granadero a caballo' : 'Ejército patriota'} · Nivel {levelFor(unit)}</span></div>
+        <button className={`portrait ja2-inventory-portrait ${unit.hp<=0?'dead':''}`} aria-label={`${unit.name}${unit.hp<=0?' · muerto':''}. Botón derecho: cerrar equipo`} onContextMenu={event=>{event.preventDefault();onCloseInventory();}}>{unit.hp<=0?<><Skull className="ja2-dead-skull" aria-hidden="true"/><span className="ja2-portrait-blood" aria-hidden="true"/></>:portraitFor(unit.portrait??unit.portraitId??unit.id,battle) ? <img src={sitePath(portraitFor(unit.portrait??unit.portraitId??unit.id,battle)!)} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</button>
+        <div><h2>{short(unit)}</h2><span>{unitLabel} · Nivel {levelFor(unit)}</span></div>
         <nav className="ja2-inventory-paging" aria-label="Combatiente del inventario"><button disabled={busy||inventoryUnits.length<2} aria-label="Combatiente anterior" onClick={()=>navigateInventory(-1)}>←</button><span>{inventoryIndex+1}/{inventoryUnits.length}</span><button disabled={busy||inventoryUnits.length<2} aria-label="Combatiente siguiente" onClick={()=>navigateInventory(1)}>→</button></nav>
         {!vitals.dead&&<div className="ja2-inventory-vitals" aria-label="Salud, energía y moral"><span title={`Salud ${Math.ceil(unit.hp)}/${unit.maxHp} · heridas vendadas ${vitals.bandaged} · sin tratar ${vitals.untreated}`}><i className="untreated" style={{width:'100%'}}/><i className="bandaged" style={{width:`${Math.min(100,vitals.hpPct+vitals.bandaged/unit.maxHp*100)}%`}}/><i className="health" style={{width:`${vitals.hpPct}%`}}/></span><span title={`Energía ${Math.round(unit.energy??100)}/${maximumEnergy(unit)}`}><i className="energy" style={{width:`${Math.max(0,Math.min(100,unit.energy??100))}%`}}/></span><span title={`Moral ${Math.round(unit.morale??0)}%`}><i className="morale" style={{width:`${vitals.moralePct}%`}}/></span></div>}
 <details className="ja2-inventory-extra"><summary>Postura y órdenes</summary><div className="ja2-inventory-popup">      <div className="ja2-stance-grid">
@@ -337,7 +340,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
           onContent={index => { if(!containerTarget)return;const preview=containerLootPreview(battle,unit,containerTarget,index,1);setContentIndex(index);setContentQuantity(1);setContentSource(preview.action.expectedSource?{targetKey:containerTarget.key,expectedSource:preview.action.expectedSource}:null); }} onCount={setContentQuantity} onLoot={() => containerLoot?.valid && onOrder(containerLoot.action)} />
       </div></details>
       <div className="ja2-right">
-        <InventoryRadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
+        <InventoryRadarCluster campaignContext={campaignContext} battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <button className="ja2-done gold-button" onClick={onCloseInventory}>Listo</button>
       </div>
     </div></EquipmentInteractionProvider>

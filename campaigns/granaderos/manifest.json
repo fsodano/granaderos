@@ -1,0 +1,13 @@
+{
+  "format": "granaderos-campaign",
+  "version": 1,
+  "id": "granaderos",
+  "name": "Granaderos: la independencia",
+  "revision": "0.1.0",
+  "scenario": "granaderos-historical-v1",
+  "content": "content.json",
+  "world": "world.json",
+  "maps": "maps/index.json",
+  "presentation": "presentation.json",
+  "assets": "assets.json"
+}

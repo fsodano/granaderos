@@ -5,14 +5,10 @@ import {cityForSector,CITY_LOYALTY_REWARDS} from './cities.js';
 import {questWithdrawalChoice} from './quest-withdrawal.js';
 import {questContactIds,questBeneficiaryForNPC,selectedQuestBeneficiary} from './quest-beneficiaries.js';
 // Authored errands use physical delivery receipts or adjacent NPC dialogue.
-export const NPC_QUESTS=[
- {id:'jujuy-arriero',npcId:'local-jujuy',sector:'jujuy',title:'Escolta hasta la salida de la Quebrada',cost:{},escort:{edge:'W',destination:'humahuaca'},requiredSectors:['jujuy','humahuaca'],offer:'Acompañame hasta la salida occidental de Jujuy, hacia Humahuaca. Allí me reuniré con la recua. Seguiré al combatiente que acepte; hablame si debo esperar o seguir a otra persona. El camino debe estar bajo control patriota.',delivery:'Llegamos a la salida de la Quebrada. Esperaré aquí a la recua. El pueblo recordará tu ayuda.'},
- {id:'tucuman-vendas',npcId:'local-tucuman',sector:'tucuman',title:'Vendas para la Ciudadela',cost:{},carried:{item:'medkits',count:3,label:'Vendas',instruction:'Llevá las vendas restantes. Seleccioná la cantidad en tu inventario y entregásela al oficial.'},requiredSectors:['tucuman'],offer:'Necesitamos tres vendas para atender a los heridos de la Ciudadela. Traelas en tu equipo y entregámelas. Podemos recibirlas por separado.',delivery:'Recibimos las tres vendas para los heridos. La ciudad reconoce tu ayuda.'},
- {id:'retiro-uniformes',npcId:'local-retiro',sector:'retiro',title:'Abrigo para los nuevos reclutas',cost:{},carried:{outfit:'poncho',count:2,label:'Ponchos',instruction:'Llevá los ponchos restantes. Seleccioná cada uno en el inventario y entregáselo al contacto.'},requiredSectors:['retiro'],offer:'Los nuevos reclutas pasan frío en el patio. Traé dos ponchos de lana en buen estado. Seleccioná cada uno en tu inventario y entregámelo. El Cabildo sabrá que cumpliste tu palabra.',delivery:'Recibimos los dos ponchos. Los reclutas tendrán abrigo y el vecindario recordará esta ayuda.'},
- {id:'posta-polvora',npcId:'local-san_nicolas',sector:'san_nicolas',title:'Asegurar la posta',reward:200,requiredSectors:['san_nicolas'],offer:'Liberá San Nicolás y volvé a dar el parte. El Cabildo pagará 200 pesos por restablecer el servicio de correos.',delivery:'La posta vuelve a funcionar. Recibís 200 pesos por el servicio.'},
- {id:'salta-correos',npcId:'macacha',sector:'salta',title:'Abrir la ruta del norte',reward:400,requiredSectors:['salta','jujuy'],offer:'Asegurá Salta y Jujuy y volvé a informarme. Pagaré 400 pesos cuando los enlaces puedan recorrer ambas localidades.',delivery:'Salta y Jujuy están seguras. Recibís 400 pesos por abrir la ruta.'},
-];
-export function questsFor(state={}){return state.contentCampaign?.package.errands??state.errandDefinitions??NPC_QUESTS;}
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
+import {hasGenericCharacterDefinitions} from './content-character-ids.js';
+export const NPC_QUESTS=structuredClone(DEFAULT_CATALOGUE.npcQuests);
+export function questsFor(state={}){const content=state.contentCampaign?.package;return content?.errands??(hasGenericCharacterDefinitions(content)?[]:state.errandDefinitions??NPC_QUESTS);}
 const definitionForNPC=(state,npcId)=>questsFor(state).find(q=>questContactIds(q).includes(npcId));
 export function questForNPC(state,npcId){
  const q=definitionForNPC(state,npcId);if(!q)return null;
@@ -27,31 +23,31 @@ export function questGiftProgressPending(quest,count,acknowledged){
  if(quest.status==='withdrawn')return false;
  return count>acknowledged||count>0&&count===quest?.carried?.count&&!['completed','failed'].includes(quest.status)&&quest.conditionMet&&quest.rewardChoice===undefined&&quest.beneficiaries===undefined;
 }
-export function questResolutionReward(quest,choice){
+export function questResolutionReward(quest,choice,context){
  const reimbursement=quest?.rewardChoice?.reimbursement;
- if(!quest?.carried||!cityForSector(quest.sector)||Object.keys(quest.rewardChoice??{}).length!==1||!Object.hasOwn(quest.rewardChoice??{},'reimbursement')||!Number.isSafeInteger(reimbursement)||reimbursement<1||reimbursement>10000||quest.reward!==undefined&&(quest.reward?.treasury!==0||quest.reward?.loyalty!==false)||!['cash','civic'].includes(choice))throw Error('La resolución del encargo es inválida.');
+ if(!quest?.carried||!cityForSector(quest.sector,context)||Object.keys(quest.rewardChoice??{}).length!==1||!Object.hasOwn(quest.rewardChoice??{},'reimbursement')||!Number.isSafeInteger(reimbursement)||reimbursement<1||reimbursement>10000||quest.reward!==undefined&&(quest.reward?.treasury!==0||quest.reward?.loyalty!==false)||!['cash','civic'].includes(choice))throw Error('La resolución del encargo es inválida.');
  return choice==='cash'?{treasury:reimbursement,loyalty:false}:{treasury:0,loyalty:true};
 }
-export function questResolutionText(quest,choice){
- const reward=questResolutionReward(quest,choice);
+export function questResolutionText(quest,choice,context){
+ const reward=questResolutionReward(quest,choice,context);
  return `${quest.delivery} ${choice==='cash'?`Recibís un reintegro de ${reward.treasury} pesos.`:`Renunciás al reintegro. El apoyo de la localidad aumenta ${CITY_LOYALTY_REWARDS.quest} puntos, hasta un máximo de 100.`}`;
 }
-export function questBeneficiaryResolutionText(quest){
+export function questBeneficiaryResolutionText(quest,context){
  const branch=quest.beneficiary??quest.beneficiaries?.find(b=>b.id===quest.beneficiaryId);
  if(!branch)throw Error('El destino de la entrega no es válido.');
- const effects=[branch.reward.treasury>0?`Recibís ${branch.reward.treasury} pesos.`:'',branch.reward.loyalty?`El apoyo de ${cityForSector(branch.sector).name} aumenta ${CITY_LOYALTY_REWARDS.quest} puntos, hasta un máximo de 100.`:''].filter(Boolean);
+ const effects=[branch.reward.treasury>0?`Recibís ${branch.reward.treasury} pesos.`:'',branch.reward.loyalty?`El apoyo de ${cityForSector(branch.sector,context).name} aumenta ${CITY_LOYALTY_REWARDS.quest} puntos, hasta un máximo de 100.`:''].filter(Boolean);
  return [branch.delivery,...effects].join(' ');
 }
-export function questDeliveryText(quest,count){
+export function questDeliveryText(quest,count,context){
  if(count<quest.carried.count)return `Recibimos ${count} de ${quest.carried.count} ${quest.carried.label.toLowerCase()}. Todavía faltan objetos para completar el encargo.`;
  if(quest.beneficiaries){
   if(quest.status==='failed')return 'Recibimos todos los objetos. El encargo terminó sin recompensa.';
-  if(quest.status==='completed')return questBeneficiaryResolutionText(quest);
+  if(quest.status==='completed')return questBeneficiaryResolutionText(quest,context);
   return quest.conditionMet===false?'Recibimos todos los objetos. Falta asegurar las localidades y completar los encargos previos antes de confirmar.':'Recibimos todos los objetos. Hablá conmigo para confirmar la entrega y mejorar el apoyo de esta localidad.';
  }
  if(quest.rewardChoice){
   if(quest.status==='failed')return 'Recibimos todos los objetos. El encargo terminó sin recompensa.';
-  if(quest.status==='completed')return questResolutionText(quest,quest.questResolution);
+  if(quest.status==='completed')return questResolutionText(quest,quest.questResolution,context);
   if(quest.conditionMet===false)return 'Recibimos todos los objetos. Falta asegurar las localidades y completar los encargos previos antes de elegir la recompensa.';
   return `Recibimos todos los objetos. Hablá conmigo para cobrar ${quest.rewardChoice.reimbursement} pesos de reintegro o renunciar al pago para mejorar el apoyo local.`;
  }
@@ -146,11 +142,11 @@ export function questGiftDecision(npc,stack,state={}){
   const remaining=quest.carried.count-gifts.length;
   if(stack.count>remaining)return refuse(`Solo faltan ${remaining} ${quest.carried.label.toLowerCase()}. Seleccioná esa cantidad o una menor.`);
   const supply=SUPPLY_ITEMS[quest.carried.item],received=Array.from({length:stack.count},()=>({item:supply.item,count:1,weight:supply.weight}));
-  return {accepted:true,gifts:[...structuredClone(gifts),...received],text:stack.count===remaining?(quest.rewardChoice||branch?questDeliveryText(quest,quest.carried.count):quest.delivery):`Gracias por la entrega. Todavía faltan ${remaining-stack.count} ${quest.carried.label.toLowerCase()}.`};
+  return {accepted:true,gifts:[...structuredClone(gifts),...received],text:stack.count===remaining?(quest.rewardChoice||branch?questDeliveryText(quest,quest.carried.count,state):quest.delivery):`Gracias por la entrega. Todavía faltan ${remaining-stack.count} ${quest.carried.label.toLowerCase()}.`};
  }
  if(stack?.kind!=='outfit'||stack.outfit!==quest.carried.outfit||!(stack.condition>0)||stack.count!==1)return refuse(`Necesitamos ${quest.carried.label.toLowerCase()} en buen estado.`);
  const {item,...gift}=structuredClone(stack);validateOutfit(gift,{worn:true});
- return {accepted:true,gifts:[...structuredClone(gifts),gift],text:quest.rewardChoice||branch?questDeliveryText(quest,gifts.length+1):state.errandDefinitions!==undefined?(gifts.length+1===quest.carried.count?quest.delivery:`Gracias por la entrega. Todavía faltan ${quest.carried.count-gifts.length-1}.`):(gifts.length+1===quest.carried.count?'Gracias. Ya tenemos los dos ponchos para los reclutas.':'Gracias por el poncho. Todavía necesitamos uno más.')};
+ return {accepted:true,gifts:[...structuredClone(gifts),gift],text:quest.rewardChoice||branch?questDeliveryText(quest,gifts.length+1,state):state.errandDefinitions!==undefined?(gifts.length+1===quest.carried.count?quest.delivery:`Gracias por la entrega. Todavía faltan ${quest.carried.count-gifts.length-1}.`):(gifts.length+1===quest.carried.count?'Gracias. Ya tenemos los dos ponchos para los reclutas.':'Gracias por el poncho. Todavía necesitamos uno más.')};
 }
 export function questGiftPlan(unit,npc,state={}){
  const quest=definitionForNPC(state,npc?.id);

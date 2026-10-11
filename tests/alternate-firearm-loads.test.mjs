@@ -2,12 +2,14 @@ import {withCarriedAmmo} from './commerce-gear-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import {compileWeaponDefinition,weaponSpecification,weaponRecord,weaponMetadata} from '../game/weapon-definition.js';
 import {AMMO_TYPES,ammoTypeFor,ammoCount,ammunitionLoadsFor} from '../game/ammo-types.js';
 import {createBattle,actBattle} from '../game/tactical.js';
 import {initialCampaign,dispatchCampaign,deploymentCost,rosterFor} from '../game/campaign.js';
 import {order,saved,visit,leave,tactical} from './local-contract-fixture.mjs';
-const content=()=>{const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;d.rules.startingTreasury=9000;return d;};
+// This authoring experiment pins optional material penetration for both loads.
+const content=()=>{const d=authoredEditorPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;d.rules.startingTreasury=9000;return d;};
 const hire=(d=content())=>order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'month'});
 const action=(s,type,extra={})=>order(s,{type,operativeId:110,...extra});
 const choose=(s,family)=>{if(s.operativeState[110].carriedLoaded&&ammoTypeFor({...rosterFor(s).find(op=>op.id===110),...s.operativeState[110]})!==family)s=action(s,'unloadAmmunition');return action(s,'selectAmmunitionLoad',{family});};

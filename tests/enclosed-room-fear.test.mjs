@@ -6,6 +6,7 @@ import {createBattle,actBattle,endTurn,presentedEndTurn,shotChance} from '../gam
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {runBattleJob} from '../game/battle-job.js';
 import {defaultContentPackage} from '../game/content-package.js';
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import {initialCampaign,rosterFor} from '../game/campaign.js';
 import {tacticalFeedback} from '../game/tactical-feedback.js';
 const actor=b=>b.units.find(u=>u.id==='126');
@@ -104,7 +105,9 @@ test('quiet exploration and restored turns cannot issue another fear charge or n
 });
 
 test('fresh fictional Godoy opts in while old omitted packages remain neutral and malformed saved notices reject',()=>{
- const fresh=defaultContentPackage();assert.deepEqual(fresh.characters.filter(c=>c.abilities.includes('enclosed_room_fear')).map(c=>c.id),['person-126']);
+ // The editor experiment opts into fear; ordinary stock does not.
+ const fresh=authoredEditorPackage();assert.deepEqual(fresh.characters.filter(c=>c.abilities.includes('enclosed_room_fear')).map(c=>c.id),['person-126']);
+ assert.deepEqual(defaultContentPackage().characters.filter(c=>c.abilities.includes('enclosed_room_fear')),[]);
  const old=structuredClone(fresh);delete old.characters.find(c=>c.id==='person-126').abilities;
  assert.equal(rosterFor(initialCampaign(42,old)).find(c=>c.id===126).abilities,undefined);
  assert.equal(rosterFor(initialCampaign(42)).find(c=>c.id===126).abilities,undefined);

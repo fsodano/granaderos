@@ -85,8 +85,8 @@ def _files(directory, excluded=()):
 
 def _input_paths(root):
     paths = _files(root / 'web/public/models/characters')
-    for relative in ('tools/characters-3d', 'web/lib', 'game'):
-        paths.extend(_files(root / relative, ('__pycache__', '.build', 'node_modules')))
+    for relative in ('tools/characters-3d', 'web/lib', 'game', 'campaigns'):
+        paths.extend(_files(root / relative, ('__pycache__', '.build', 'node_modules', 'assets')))
     # Native surface postpasses need source modules, not the large authoring
     # vendor bodies. Keep every top-level source module available for recipes.
     paths.extend(path for path in (root / 'assets/source/characters-3d/authoring').iterdir()

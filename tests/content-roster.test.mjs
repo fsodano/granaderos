@@ -20,7 +20,7 @@ const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError
 const save=(s,b=null)=>decodeSave(encodeSave(s,b));
 function authored(){
  const d=defaultContentPackage(),template=d.characters.find(c=>c.id==='person-100');
- const c={...structuredClone(template),id:'lucia-del-rio',name:'Lucía del Río',nickname:'Luz',biography:'Exploradora del río.',portrait:'/art/avatar-woman-scout.webp',monthlyPay:300,arrivalHours:2,traits:['teacher','line_marksman'],ridingSkill:35,attributes:{...template.attributes,marksmanship:85,mechanical:80}};
+ const c={...structuredClone(template),id:'lucia-del-rio',name:'Lucía del Río',nickname:'Luz',biography:'Exploradora del río.',portrait:'/campaigns/granaderos/assets/avatar-woman-scout.webp',monthlyPay:300,arrivalHours:2,traits:['teacher','line_marksman'],ridingSkill:35,attributes:{...template.attributes,marksmanship:85,mechanical:80}};
  // Compatibility fixture: the first authored roster format had no voice or appearance fields.
  for(const field of ['personality','speech','spriteAppearance'])delete c[field];
  d.characters=d.characters.filter(c=>!isContractCharacter(c));d.characters.push(c);return d;
@@ -48,7 +48,7 @@ test('a newly authored candidate has one paid saved arrival, actual deployment a
  assert.equal(s.resources.treasury,cash-quote.price);assert.equal(s.recruited.includes(id),false);assert.equal(s.contracts[id],undefined);
  assert.ok(dispatchCampaign(s,{type:'recruitCivic',id,term:'week'}).lastError);
  s=order(save(s).campaign,{type:'wait',hours:2});assert.equal(s.resources.treasury,cash-quote.price);assert.equal(s.contracts[id].started,2);assert.equal(s.contracts[id].expiresAt,170);
- const op=rosterFor(s).find(o=>o.id===id);assert.equal(characterProfile(op).registry,'Boletín Revolucionario Cívico');assert.equal(characterProfile(op).personality,'Exploradora del río.');assert.ok(characterProfile(op).skills.includes('Instrucción'));
+ const op=rosterFor(s).find(o=>o.id===id);assert.equal(characterProfile(op).registry,'Contratación de la campaña');assert.equal(characterProfile(op).personality,'Exploradora del río.');assert.ok(characterProfile(op).skills.includes('Instrucción'));
  s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle);const u=b.units.find(u=>u.id===String(id));
  assert.equal(u.name,'Lucía del Río');assert.equal(u.portraitId,d.characters.at(-1).portrait);assert.equal(u.marksmanship,85);assert.deepEqual(u.traits,['teacher','line_marksman']);
  assert.equal(u.weaponMetadata.contentWeapon.id,d.characters.at(-1).weapon);assert.ok(actionCosts(b,u).aim<actionCosts(b,{...u,traits:[]}).aim);

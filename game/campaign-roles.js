@@ -1,12 +1,15 @@
 import {foundryFor,foundryLocationName} from './campaign-foundry.js';
 import {OPERATIVES} from './data.js';
+import {campaignWorld} from './campaign-definition.js';
 import {operativeIdForCharacter} from './content-character-ids.js';
 import {contractExpiresSeconds} from './contracts.js';
 
-export const ORIGINAL_CAMPAIGN_ROLES=Object.freeze({foundryEngineer:'person-2',marchCommander:'person-57'});
+export const ORIGINAL_CAMPAIGN_ROLES=Object.freeze(campaignWorld().defaultRoles);
 export function rolesForContent(content){
  if(content?.campaignRoles!==undefined)return content.campaignRoles;
- return Object.fromEntries(Object.entries(ORIGINAL_CAMPAIGN_ROLES).map(([role,id])=>[role,!content||content.characters.some(c=>c.id===id)?id:null]));
+ const defaults=content?.world?.defaultRoles;
+ if(!defaults&&(content?.scenario==='generic-v1'||content?.campaignStory))return {foundryEngineer:null,marchCommander:null};
+ return Object.fromEntries(Object.entries(defaults??ORIGINAL_CAMPAIGN_ROLES).map(([role,id])=>[role,!content||content.characters.some(c=>c.id===id)?id:null]));
 }
 export function validateCampaignRoles(value,characters){
  if(value===undefined)return [];

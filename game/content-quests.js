@@ -59,8 +59,8 @@ export function validateContentQuestState(s,npcs){
  const events=s.contentQuestEvents??[];need(Array.isArray(events)&&events.length<=(s.contentCampaign?.package.quests?.length??0)*2,'El registro de encargos es inválido.');
  const states={},starts={},seen=new Set();let lastTime=0;
  for(const event of events){
-  const timed=event?.deadline!==undefined,death=event?.death!==undefined,automatic=timed||death;
-  need(exact(event,['quest','from','to','hour',...(event?.secondOfHour===undefined?[]:['secondOfHour']),...(timed?['deadline']:death?['death']:['npc','node','choice'])]),'El registro de encargos es inválido.');
+  const timed=event?.deadline!==undefined,death=event?.death!==undefined,automatic=timed||death,authored=event?.campaignEvent!==undefined;
+  need(exact(event,['quest','from','to','hour',...(event?.secondOfHour===undefined?[]:['secondOfHour']),...(timed?['deadline']:death?['death']:authored?['campaignEvent']:['npc','node','choice'])]),'El registro de encargos es inválido.');
   const quest=s.contentCampaign.package.quests.find(q=>q.id===event.quest),time=secondsOf(event);
   need(quest&&Number.isSafeInteger(event.hour)&&event.hour>=0&&(event.secondOfHour===undefined||Number.isSafeInteger(event.secondOfHour))&&(event.secondOfHour??0)>=0&&(event.secondOfHour??0)<3600&&time>=lastTime&&time<=timeOf(s),'La secuencia guardada del encargo es inválida.');
   if(automatic){
@@ -68,9 +68,15 @@ export function validateContentQuestState(s,npcs){
    if(timed)need(quest.deadlineHours!=null&&event.deadline===starts[event.quest]+quest.deadlineHours*3600&&time===event.deadline,'El vencimiento guardado del encargo es inválido.');
    else {const record=quest.requiredAlive?.includes(event.death)?deathRecord(s,event.death):null;need(record?.alive===false&&record.deathMinute===Math.floor(time/60),'La muerte guardada del encargo no coincide con el personaje.');}
   }else{
+  if(authored){
+   const definition=s.contentCampaign.package.campaignEvents?.find(e=>e.id===event.campaignEvent),effect=definition?.effects.find(e=>e.type==='quest'),receipt=s.campaignEventState?.receipts.find(r=>r.event===event.campaignEvent),key=`event/${event.campaignEvent}`;
+   need(effect&&effect.quest===event.quest&&effect.status===event.to&&receipt?.outcome==='applied'&&receipt.hour===event.hour&&event.hour===definition.atHour&&event.secondOfHour===0&&!seen.has(key),'El encargo guardado no coincide con su evento de campaña.');seen.add(key);
+  }else{
   const npc=npcs.find(n=>n.id===event.npc),graph=characterForOperative(s,npc?.operativeId)?.encounter?.dialogue,choice=graph?.nodes.find(n=>n.id===event.node)?.choices.find(c=>c.id===event.choice),effect=choice?.effects?.find(e=>e.type==='quest'),receipt=s.conversations?.[event.npc]?.dialogueReceipts?.find(r=>r.node===event.node&&r.choice===event.choice),key=`${event.npc}/${event.node}/${event.choice}`;
   need(effect&&effect.quest===event.quest&&effect.status===event.to&&receipt&&receipt.hour===event.hour&&!seen.has(key),'El encargo guardado no coincide con su conversación.');
-  need(event.from===(states[event.quest]??'not-started')&&allowed(event.from,event.to)&&(event.to==='active'||quest.deadlineHours==null||time<starts[event.quest]+quest.deadlineHours*3600),'La secuencia guardada del encargo es inválida.');seen.add(key);
+  seen.add(key);
+  }
+  need(event.from===(states[event.quest]??'not-started')&&allowed(event.from,event.to)&&(event.to==='active'||quest.deadlineHours==null||time<starts[event.quest]+quest.deadlineHours*3600),'La secuencia guardada del encargo es inválida.');
   }
   if(event.to==='active')starts[event.quest]=time;states[event.quest]=event.to;lastTime=time;
  }
@@ -85,4 +91,5 @@ export function validateContentQuestState(s,npcs){
    if(choice?.effects?.some(e=>e.type==='quest'))need(seen.has(`${npc.id}/${r.node}/${r.choice}`),'Falta el registro del encargo aplicado por el diálogo.');
   }
  }
+ for(const receipt of s.campaignEventState?.receipts??[]){const event=s.contentCampaign.package.campaignEvents.find(e=>e.id===receipt.event);if(receipt.outcome==='applied'&&event.effects.some(e=>e.type==='quest'))need(seen.has(`event/${receipt.event}`),'Falta el registro del encargo aplicado por el evento de campaña.');}
 }

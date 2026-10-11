@@ -19,13 +19,13 @@ export function crossPrisonerEscorts(battle,leader,exit){
  }
  return escaped;
 }
-export function validatePrisonerEscape(npc,battle=null){
+export function validatePrisonerEscape(npc,battle=null,context=battle){
  const receipt=npc.detentionEscape,d=npc.departure;
  if(!npc.detention){need(receipt===undefined,'La salida no tiene prisionero.');return;}
  if(!receipt){need(d===undefined,'La salida del prisionero no tiene recibo.');return;}
  need(npc.detention.freed&&npc.hp>=15&&!npc.unconscious&&npc.energy>0&&receipt&&Object.keys(receipt).length===7&&receipt.version===1&&receipt.energySpent===1&&receipt.battleId===npc.detentionRelease?.battleId&&receipt.leaderId===npc.escort?.leaderId&&!npc.escort.waiting,'El recibo de escape es inválido.');
  need(Number.isInteger(receipt.width)&&receipt.width>=4&&receipt.width<=128&&Number.isInteger(receipt.height)&&receipt.height>=4&&receipt.height<=128&&receipt.leader&&Object.keys(receipt.leader).length===2,'Las dimensiones del escape son inválidas.');
- const exit=findSectorExit(npc.detention.sector,null,d?.exitId);
+ const exit=context?.contentCampaign||context?.campaignPackage?findSectorExit(npc.detention.sector,null,d?.exitId,context):battle?.exits?.find(e=>e.id===d?.exitId)??findSectorExit(npc.detention.sector,null,d?.exitId,context);
  need(exit&&d&&Object.keys(d).length===7&&d.edge===exit.edge&&d.destination===exit.destination&&d.mountId===null&&Number.isSafeInteger(d.elapsedSeconds)&&d.elapsedSeconds>=(npc.detentionOrders?.at(-1)?.elapsedSeconds??npc.detentionRelease.elapsedSeconds)&&d.x===npc.x&&d.y===npc.y&&tacticalLevel(npc)===0&&boundaryMatches(receipt,d,exit.edge)&&boundaryMatches(receipt,receipt.leader,exit.edge)&&atHand(d,receipt.leader,1)&&!(d.x===receipt.leader.x&&d.y===receipt.leader.y),'El prisionero no cruzó junto a su rescatista.');
  if(battle){
   const leader=battle.units.find(u=>u.id===receipt.leaderId&&u.side==='player');

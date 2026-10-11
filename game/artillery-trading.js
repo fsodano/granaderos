@@ -1,7 +1,8 @@
 import {merchantCash,changeMerchantCash} from './equipment-merchants.js';
 import {storedArtilleryRecord} from './artillery-transport.js';
 import {artilleryTradingRules,artilleryBuyingPercent} from './artillery-trading-rules.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
+import {sceneAnchorFor} from './campaign-scenario.js';
 import {artilleryProfile,ARTILLERY} from './artillery-definitions.js';
 import {stationedArtillery,validateArtilleryInventory} from './campaign-artillery.js';
 import {localArtilleryDepot} from './artillery-depots.js';
@@ -9,7 +10,7 @@ import {hasWorkshop} from './campaign-headquarters.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
 import {careAssignmentBusy} from './medical-care.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-const parent=id=>id==='san_lorenzo'?'san_nicolas':id;
+const parent=(s,id)=>sceneAnchorFor(s,id);
 const capable=u=>u.hp>=15&&(u.energy??100)>0&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled&&!u.asleep&&!u.unconscious;
 const actors=s=>(s.squad??[]).filter(id=>{const r=s.operativeState[id];return r?.alive&&capable(r)&&!r.captured&&!operativeInTransit(s,id)&&!careAssignmentBusy(r.assignment)&&!s.militiaTraining?.some(c=>c.trainerId===id)&&operativeLocation(s,id)===s.location;});
 export const artilleryMerchant=s=>({cash:merchantCash(s),guns:s.artilleryMerchants?.[s.location]?.guns??[]});
@@ -19,7 +20,7 @@ function access(s,supplied){
  if(s.pendingBattle||s.pendingEncounter)return 'Salí de la escena táctica antes de comerciar.';
  if(!artilleryTradingRules(s).enabled)return 'Esta campaña no permite comerciar piezas de artillería.';
  if(!hasWorkshop(s,s.location)||s.sectors[s.location]?.owner!=='patriot'||!supplied)return 'El comercio de piezas necesita un taller controlado y comunicado con el cuartel general.';
- if(s.enemyGroups?.some(g=>g.target===s.location&&['waiting','engaged','stationed'].includes(g.status))||Object.entries(s.sectorStates??{}).some(([id,b])=>parent(id)===s.location&&b.units?.some(u=>u.side==='enemy'&&capable(u))))return 'Aún quedan enemigos capaces de combatir junto al taller.';
+ if(s.enemyGroups?.some(g=>g.target===s.location&&['waiting','engaged','stationed'].includes(g.status))||Object.entries(s.sectorStates??{}).some(([id,b])=>parent(s,id)===s.location&&b.units?.some(u=>u.side==='enemy'&&capable(u))))return 'Aún quedan enemigos capaces de combatir junto al taller.';
  if(!actors(s).length)return 'Se necesita un combatiente disponible de la escuadra en el taller.';
  return '';
 }
@@ -48,6 +49,6 @@ export function repurchaseArtillery(s,id,supplied,options={}){
 }
 export function validateArtilleryMerchants(s){
  if(s.artilleryMerchants===undefined)return;
- const object=v=>v&&typeof v==='object'&&!Array.isArray(v),shops=s.artilleryMerchants;need(object(shops)&&Object.keys(shops).every(id=>CAMPAIGN_SECTORS.some(p=>p.id===id)),'Los talleres de artillería son inválidos.');
+ const object=v=>v&&typeof v==='object'&&!Array.isArray(v),shops=s.artilleryMerchants;need(object(shops)&&Object.keys(shops).every(id=>campaignSectors(s).some(p=>p.id===id)),'Los talleres de artillería son inválidos.');
  for(const shop of Object.values(shops)){need(object(shop)&&Object.keys(shop).length===1&&Array.isArray(shop.guns)&&shop.guns.length<=100,'La caja o las existencias del taller son inválidas.');validateArtilleryInventory(shop.guns);need(shop.guns.every(g=>g.side==='player'&&g.x===undefined&&g.y===undefined&&g.stationed===undefined&&g.fromDepot===undefined&&g.tacticalLevel===undefined&&g.recovered===undefined),'El taller contiene una pieza inválida.');}
 }

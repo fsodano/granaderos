@@ -2,7 +2,7 @@
 import {verifyBrowserWorkers} from './verify-browser-workers.mjs';
 import {buildIdentity} from './build-identity.mjs';
 import {verifyTacticalAssets} from './verify-tactical-assets.mjs';
-import {MERCENARY_ADDITIONS} from '../game/mercenaries.js';
+import {DEFAULT_CONTENT} from '../campaigns/default.js';
 import {CHARACTER_PORTRAITS} from '../game/character-profile.js';
 import {spawnSync} from 'node:child_process';
 import {readFile,readdir,stat} from 'node:fs/promises';
@@ -12,6 +12,7 @@ import {createHash} from 'node:crypto';
 import {normalizeBasePath} from './deployment-path.mjs';
 import {staticExportPath} from './static-export-path.mjs';
 import {stageStaticDeployment} from './stage-static-deployment.mjs';
+import {stageCampaigns} from './campaign-export.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const basePath=normalizeBasePath();
 const buildSource=resolve(root,'web/dist/client'),destination=resolve(root,'dist');
@@ -22,6 +23,7 @@ if(!process.argv.includes('--stage-only')){
   if(build.status!==0)process.exit(build.status??1);
 }
 await stageStaticDeployment(buildSource,destination,basePath);
+await stageCampaigns(root,destination);
 async function filesAt(directory){
   const files=[];
   for(const entry of await readdir(directory,{withFileTypes:true})){
@@ -62,11 +64,10 @@ for(const file of sourceFiles){
     for(const match of css.matchAll(/url\(\s*["']?([^"')\s]+)["']?\s*\)/g))requireAsset(match[1],name,{deployed:true});
   }
 }
-for(const id of [103,104])requireAsset(`/art/portrait-${id}.png`,'foreign volunteer portrait');
+
 for(const portrait of CHARACTER_PORTRAITS)requireAsset(portrait.src,'custom portrait catalog');
 // Dynamic portrait and action-frame URLs are not visible to literal URL scans.
-for(const id of [0,1,2,3,4,5,6,7,8,9,10,11,57,100,101,102,105,106])requireAsset(`/art/portrait-${id}.webp`,'roster');
-for(const {id} of MERCENARY_ADDITIONS)requireAsset(`/art/portrait-${id}.webp`,'paid mercenary roster');
+for(const character of DEFAULT_CONTENT.characters)if(character.portrait)requireAsset(character.portrait,'installed roster');
 for(let id=1800;id<=1813;id++)requireAsset(`/art/weapon-${id}.png`,'armory');
 for(const direction of ['se','sw'])for(const pose of ['idle','fire','reload','strike'])requireAsset(`/art/granadero-${direction}-${pose}.png`,'tactical sprites');
 const artwork=JSON.parse(await readFile(resolve(source,'art/manifest.json'),'utf8'));

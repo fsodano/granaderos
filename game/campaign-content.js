@@ -3,9 +3,9 @@ import {startingCharacterSupplies} from './character-supplies.js';
 import {startingCharacterCondition} from './character-condition.js';
 import {applyStartingTerritory} from './content-territory.js';
 import {campaignRules} from './campaign-rules.js';
-import {validateAbilityReferences} from './content-character-abilities.js';
+import {validateAbilityReferences,restoreGenericCharacterReferences} from './content-character-abilities.js';
 import {validatePresentationReferences} from './content-character-presentation.js';
-import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,operativeIdForCharacter} from './content-character-ids.js';
+import {hasGenericCharacterDefinitions,isContractCharacter,isHistoricalCharacter,isWorldCharacter,operativeIdForCharacter} from './content-character-ids.js';
 import {FIREARM_MELEE_FIELDS,weaponMetadata,validateWeaponReferences,restoreWeaponReferences} from './weapon-definition.js';
 import {contentIdentity,canonicalContent} from "./content-identity.js";
 import { defaultContentPackage, resolveContent } from "./content-package.js";
@@ -17,18 +17,19 @@ export function campaignContentReport(content) {
     baseline = defaultContentPackage(),
     blocked = [],
     pending = [];
-  const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules','startingTerritory','headquarters','imports','campaignStory','includeOriginalResidents','campaignRoles','foundry','careRules','militiaProgression','militiaPatrol','artillerySupply','artilleryProfiles','artilleryTransport','artilleryTrading','ammunitionMarket','contractRules','errands','roadsideDiscoveries']);
-  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','serviceGuarantee','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter','startingSupplies','startingCondition','serviceRefusals','preferredCompanions']);
+  const historical=!value.campaignStory&&value.scenario!=='generic-v1';
+  const supported=new Set(['format','version','id','name','scenario','world','maps','presentation','assets','campaignOrigin','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','oppositionAppearance','militiaAppearance','quests','rules','startingTerritory','headquarters','imports','campaignStory','campaignEvents','includeOriginalResidents','campaignRoles','foundry','careRules','militiaProgression','militiaPatrol','artillerySupply','artilleryProfiles','artilleryTransport','artilleryTrading','ammunitionMarket','contractRules','errands','roadsideDiscoveries']);
+  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','serviceGuarantee','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','skinTone','abilities','encounter','startingSupplies','startingCondition','serviceRefusals','preferredCompanions']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
   if(value.characters.some(c=>!isContractCharacter(c)&&c.arrivalHours!==undefined))
     blocked.push("El tiempo de llegada se configura solo para los contratables del boletín.");
-  if(value.characters.some(c=>isHistoricalCharacter(c)&&c.monthlyPay!==baseline.characters.find(b=>b.id===c.id)?.monthlyPay))
+  if(historical&&value.characters.some(c=>isHistoricalCharacter(c)&&c.monthlyPay!==baseline.characters.find(b=>b.id===c.id)?.monthlyPay))
     blocked.push('Los personajes históricos conservan su servicio permanente; su paga todavía no se puede cambiar.');
   const ids=new Set(value.characters.map(c=>c.id));
-  if(!value.campaignStory&&baseline.characters.some(c=>!isContractCharacter(c)&&!ids.has(c.id)))
+  if(historical&&baseline.characters.some(c=>!isContractCharacter(c)&&!ids.has(c.id)))
     blocked.push('El avance histórico necesita sus mandos. Usá capítulos propios para quitar personajes históricos.');
-  if(value.characters.some(c=>isHistoricalCharacter(c)&&['recruitmentSource','service','progression','traits','ridingSkill'].some(key=>c[key]!==undefined)))
+  if(historical&&value.characters.some(c=>isHistoricalCharacter(c)&&['recruitmentSource','service','progression','traits','ridingSkill'].some(key=>c[key]!==undefined)))
     blocked.push('El servicio, el progreso y las especialidades de los mandos históricos todavía conservan sus reglas originales.');
   if(value.characters.some(c=>isContractCharacter(c)&&(c.recruitmentSource==='encounter'||c.service==='permanent')))
     blocked.push('Los candidatos del boletín se incorporan por contrato. Para servicio permanente, creá un habitante.');
@@ -40,11 +41,11 @@ export function campaignContentReport(content) {
     blocked.push('Este paquete incluye reglas de apariciones que todavía no se pueden aplicar.');
   if(value.placements.some(p=>isContractCharacter(value.characters.find(c=>c.id===p.character))))
     blocked.push('Los contratables del boletín no tienen apariciones: llegan después de contratarlos.');
-  if(value.placements.some(p=>p.sectors.some(id=>!worldCell(id)?.land)))
+  if(value.placements.some(p=>p.sectors.some(id=>!worldCell(id,value)?.land)))
     blocked.push('Las apariciones necesitan celdas terrestres. Las celdas de agua todavía no admiten encuentros.');
   if(value.placements.some(p=>p.afterDeath!==null&&!isWorldCharacter(value.characters.find(c=>c.id===p.character))))
     blocked.push('La aparición por muerte necesita un habitante nuevo; los mandos históricos conservan sus funciones de campaña.');
-  pending.push(
+  if(historical)pending.push(
     value.campaignStory?"Los personajes históricos que conserves mantienen sus requisitos de incorporación y papeles de misión. La fundición y la marcha usan las funciones asignadas en Reglas. Sus copias como habitantes tienen reglas propias.":"Los requisitos de reclutamiento, los papeles de misión y el servicio permanente de los personajes históricos conservan sus reglas originales. La fundición y la marcha usan las funciones asignadas en Reglas.",
   );
   return { blocked, pending };
@@ -54,6 +55,12 @@ export function attachCampaignContent(state, content) {
     report = campaignContentReport(definitions);
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
   state.contentCampaign = { version: 2, adapter: "character-presence-v1", identity: contentIdentity(definitions), package: definitions };
+  if(definitions.campaignOrigin)state.campaignOrigin=structuredClone(definitions.campaignOrigin);
+  // An omitted legacy collection retains its old stock fallback. Generic
+  // stories cannot inherit that fallback; an explicit empty collection wins.
+  if(definitions.errands!==undefined||hasGenericCharacterDefinitions(definitions))state.errandDefinitions=structuredClone(definitions.errands??[]);
+  else delete state.errandDefinitions;
+  state.roadsideDiscoveryDefinitions=structuredClone(definitions.roadsideDiscoveries??[]);
   state.resources.treasury=campaignRules(state).startingTreasury;
   applyStartingTerritory(state);
   state.armoryItems=[];state.nextArmoryItemId=1;
@@ -78,13 +85,14 @@ export function attachCampaignContent(state, content) {
   return state;
 }
 export function validateCampaignContent(state) {
-  if (state?.contentCampaign === undefined) {validateWeaponReferences(state,state);validatePresentationReferences(state);validateAbilityReferences(state);return;}
+  if (state?.contentCampaign === undefined) {if(state.campaignOrigin!==undefined)throw Error('Falta el contenido de la campaña guardada.');validateWeaponReferences(state,state);validatePresentationReferences(state);validateAbilityReferences(state);return;}
   const context = state.contentCampaign;
   if (!context || context.version !== 2 || !["character-sheets-v1","character-weapons-v2","character-presence-v1"].includes(context.adapter))
     throw Error("La versión del contenido de campaña no es compatible.");
   const definitions = resolveContent(context.package),
     report = campaignContentReport(definitions);
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
+  if(canonicalContent(state.campaignOrigin??null)!==canonicalContent(definitions.campaignOrigin??null))throw Error('La identidad de campaña guardada no coincide con su contenido.');
   if(canonicalContent(context.identity)!==canonicalContent(contentIdentity(definitions)))throw Error("El contenido de campaña no coincide con su identidad guardada.");
   if(context.adapter!=='character-presence-v1'){
     if(definitions.characters.some(isWorldCharacter))throw Error('Los habitantes nuevos necesitan una campaña con presencia de personajes.');
@@ -92,7 +100,7 @@ export function validateCampaignContent(state) {
     if(canonicalContent(locations(definitions.placements))!==canonicalContent(locations(defaultContentPackage().placements)))
       throw Error('Las apariciones editadas necesitan una campaña nueva con presencia de personajes.');
   }
-  restoreWeaponReferences(state,state);validateWeaponReferences(state,state);
+  restoreWeaponReferences(state,state);validateWeaponReferences(state,state);restoreGenericCharacterReferences(state,state);
   validatePresentationReferences(state);validateAbilityReferences(state);
   state.contentCampaign = { version: 2, adapter: context.adapter, identity: contentIdentity(definitions), package: definitions };
 }

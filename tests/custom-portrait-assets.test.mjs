@@ -19,7 +19,7 @@ test('the twelve new custom portraits have distinct sources and intact productio
  assert.deepEqual(manifest.map(p=>p.id).sort(),portraits.map(p=>p.id).sort());
  assert.deepEqual(prompts.map(p=>p.id).sort(),portraits.map(p=>p.id).sort());
  assert.equal(new Set(manifest.map(p=>p.sha256)).size,12);
- assert.deepEqual(read('assets/web/custom-portraits.json'),read('web/public/art/custom-portraits.json'));
+ assert.deepEqual(read('assets/web/custom-portraits.json'),read('campaigns/granaderos/assets/custom-portraits.json'));
  const sourceHashes=new Set();
  for(const entry of manifest){
   const portrait=portraits.find(p=>p.id===entry.id),prompt=prompts.find(p=>p.id===entry.id);
@@ -27,7 +27,7 @@ test('the twelve new custom portraits have distinct sources and intact productio
   assert.equal(entry.source,prompt.source);
   assert.equal(prompt.method,'built-in image_gen');
   assert.ok(prompt.prompt.length>100);
-  const source=read(entry.source),deployed=read(`web/public${entry.file}`);
+  const source=read(entry.source),deployed=read(entry.file.slice(1));
   sourceHashes.add(createHash('sha256').update(source).digest('hex'));
   assert.deepEqual(deployed,read(`assets/web/${entry.file.split('/').at(-1)}`));
   assert.equal(createHash('sha256').update(deployed).digest('hex'),entry.sha256);
@@ -47,14 +47,14 @@ test('all 122 balancing portraits have individual generated sources, correct met
  assert.equal(BALANCED_PORTRAITS.length,122);
  assert.deepEqual(manifest.map(p=>p.id).sort(),BALANCED_PORTRAITS.map(p=>p.id).sort());
  assert.deepEqual(prompts.map(p=>p.id).sort(),BALANCED_PORTRAITS.map(p=>p.id).sort());
- assert.deepEqual(read('assets/web/balanced-portraits.json'),read('web/public/art/balanced-portraits.json'));
+ assert.deepEqual(read('assets/web/balanced-portraits.json'),read('campaigns/granaderos/assets/balanced-portraits.json'));
  const sourceHashes=new Set(),productionHashes=new Set();
  for(const entry of manifest){
   const portrait=BALANCED_PORTRAITS.find(p=>p.id===entry.id),prompt=prompts.find(p=>p.id===entry.id);
   assert.equal(entry.file,portrait.src);assert.equal(entry.source,prompt.source);
   assert.equal(prompt.method,'built-in image_gen');
   for(const key of ['gender','role','skinTone','spriteAppearance','spriteSkinTone'])assert.equal(portrait[key],prompt[key],`${portrait.id} ${key}`);
-  const source=read(entry.source),deployed=read(`web/public${entry.file}`);
+  const source=read(entry.source),deployed=read(entry.file.slice(1));
   sourceHashes.add(createHash('sha256').update(source).digest('hex'));
   const digest=createHash('sha256').update(deployed).digest('hex');productionHashes.add(digest);
   assert.equal(digest,entry.sha256);assert.equal(deployed.length,entry.bytes);

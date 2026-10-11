@@ -1,3 +1,4 @@
+import {regionalLandscape} from '../../../game/regional-terrain.js';
 import {ACTOR_ACTION_CAPABILITIES} from '../../../game/actor-action-contract.js';
 import {spriteAppearance} from '../../../game/sprite-appearances.js';
 import {spriteSkinTone} from '../../../game/sprite-skin.js';
@@ -205,5 +206,5 @@ export function presentWorld(state:any,terrain:any,players:any[],revealed:Readon
   const loot=[...(state.droppedWeapons??[]).filter((item:any)=>!item.taken),...(state.groundItems??[]).filter((item:any)=>item.count>0&&!item.heldBy&&!item.containerId)].filter((item:any)=>lootKeys.has(spaceKey(item))).map(height);
   // Origin belongs to the admitted copy. Authored props cannot claim dressing status.
   const props=[...(terrain.props??[]).map((prop:any)=>({...prop,generatedRoomDressing:false})),...roomDressings(terrain).map((prop:any)=>({...prop,generatedRoomDressing:true}))].filter(visible).map(height);
-  return {terrain:{...terrain,wallEdges:sceneWallEdges(state,players),climbLinks:state.climbLinks,props,lights:(state.lights??[]).filter(observed).map(height)},revealedRooms:revealed,cursorLevel,admittedActorPoints:entries.map(({actor})=>height(actor)),loot,cannons:(state.artillery??[]).filter(observed).map((gun:any)=>({...height(gun),profile:artilleryProfile(state,gun)})),smoke:(state.smoke??[]).filter(observed).map(height),illumination:new Map([...state.tiles,...(state.upperSurfaces??[])].map((tile:any)=>[spaceKey(tile),observed(tile)?tileIllumination(state,tile.x,tile.y,tacticalLevel(tile)):state.night?.08:1]))};
+  return {terrain:{...terrain,landscape:regionalLandscape(state.sceneId??state.sectorId,state),wallEdges:sceneWallEdges(state,players),climbLinks:state.climbLinks,props,lights:(state.lights??[]).filter(observed).map(height)},revealedRooms:revealed,cursorLevel,admittedActorPoints:entries.map(({actor})=>height(actor)),loot,cannons:(state.artillery??[]).filter(observed).map((gun:any)=>({...height(gun),profile:artilleryProfile(state,gun)})),smoke:(state.smoke??[]).filter(observed).map(height),illumination:new Map([...state.tiles,...(state.upperSurfaces??[])].map((tile:any)=>[spaceKey(tile),observed(tile)?tileIllumination(state,tile.x,tile.y,tacticalLevel(tile)):state.night?.08:1]))};
 }

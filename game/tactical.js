@@ -36,7 +36,7 @@ import {pairedPistol,secondHeldPistol,pistolPairPenalty,secondaryPistolView} fro
 import {firearmServiceable,BROKEN_FIREARM_REASON} from './firearm-serviceability.js';
 import {pocketOrderFromSlots} from './inventory-pockets.js';
 import {planEquipmentUnload,planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
-import {regionalWeatherAt} from './regional-weather.js';
+import {regionalWeatherAt,regionalWeatherSource} from './regional-weather.js';
 import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
 import {knifeFlight} from './knife-flight.js';
 import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,grenadeThrowChance,grenadeScatterRadius,GRENADE_THROW} from './grenade-throw.js';
@@ -346,7 +346,9 @@ if(sector.questWithdrawals!==undefined)state.questWithdrawals=structuredClone(se
 const beneficiaryMap=sector.questBeneficiaries!==undefined?sector.questBeneficiaries:initializeQuestBeneficiaries(state);if(beneficiaryMap!==undefined)state.questBeneficiaries=structuredClone(beneficiaryMap);
 if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
 if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
-if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600);}
+if(sector.regionalWeather){state.regionalWeather=true;state.regionalWeatherDefinition=structuredClone(sector.regionalWeatherDefinition??regionalWeatherSource(state.sectorId,sector));state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600,state);}
+if(sector.localityIds!==undefined)state.localityIds=structuredClone(sector.localityIds);
+if(sector.sectorCode!==undefined)state.sectorCode=sector.sectorCode;
 state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:0):state.weather.rain;state.weather.humidity=state.weather.humidity>0&&state.weather.humidity<=1?state.weather.humidity*10:state.weather.humidity;
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
 if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,cover:0,...t}));
@@ -398,7 +400,7 @@ export function visibleDistance(s,u,target){
 export function canSee(s,u,target){target=edgePoint(target,s);if(s.deployment||!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
 export function visibleRooms(s){const ids=new Set();for(const t of [...s.tiles,...(s.upperSurfaces??[])]){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
-function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);const pieces=revealFiniteArsenal(s);if(pieces.length)say(s,`Se recuperan ${pieces.length} piezas del arsenal. Conservan su carga y seis disparos de reserva.`);}
+function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);const pieces=revealFiniteArsenal(s);if(pieces.length)say(s,`Se recuperan ${pieces.length} piezas del arsenal. Conservan su carga y su munición de reserva.`);}
 export function visibleTiles(s,u){return [...s.tiles,...(s.upperSurfaces??[])].filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,...(t.tacticalLevel!==undefined?{tacticalLevel:t.tacticalLevel}:{}),illumination:tileIllumination(s,t.x,t.y,tacticalLevel(t))}));}
 export function visibleHostiles(s,u){return s.units.filter(v=>v.side!==u.side&&onField(v)&&canSee(s,u,v));}
 // Test each enemy directly. Building a complete hostile list for every pair
@@ -2715,7 +2717,7 @@ function processRout(s,u){
   if(u.entangled){if(!routedOrder(s,u,{type:'free'})||stopped())return;}
   if(stopped())return;
   // Garrisons retain town custody; only hired squads can return to rural cells.
-  const exits=u.side==='player'?(s.exits??[]).filter(exit=>!u.militia||worldCell(exit.destination)?.anchor):s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
+  const exits=u.side==='player'?(s.exits??[]).filter(exit=>!u.militia||(s.localityIds?s.localityIds.includes(exit.destination):worldCell(exit.destination)?.anchor)):s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
   const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryPassable(s,point,exit.edge)).map(exit=>({...point,exit})));
   routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
   if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}

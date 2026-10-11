@@ -10,7 +10,7 @@ import {campaignPlace} from '../../game/world-cells.js';
 export default function CampaignAmmunition({state:s,operative,dispatch}:{state:any;operative:any;dispatch:(action:any)=>void}){
  const [family,setFamily]=useState(ammoTypeFor(operative)??'ammoMusket'),[quantity,setQuantity]=useState('10');
  const value=Number(quantity),supplied=isSupplied(s,s.location),quotes=Object.fromEntries(['buy','store','take'].map(direction=>[direction,ammunitionOrderQuote(s,operative,family,value,direction,supplied)]));
- const selected=AMMO_TYPES[family],location=campaignPlace(s.location)?.name??s.location;
+ const selected=AMMO_TYPES[family],location=campaignPlace(s.location,s)?.name??s.location;
  const act=(direction:string)=>dispatch({type:'ammunition',operativeId:operative?.id,family,quantity:value,direction});
  return <section className="campaign-ammunition" aria-label="Munición y depósito">
   <h3>Munición y depósito</h3>

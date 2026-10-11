@@ -48,7 +48,7 @@ test('a real wound can end service during a march, preserving one death and the 
 });
 
 test('a strategic death triggers an authored ending at that hour and remains a loss after saving',()=>{
- const configure=d=>{d.campaignStory={introduction:'La guardia de Alma.',chapters:[{id:'guard',name:'Sostener la guardia',objective:'Mantener la guardia durante la campaña.',conditions:[{type:'day',min:100,max:null}]}],victory:'La guardia cumplió su misión.',defeat:'La guardia perdió a Alma.',failureConditions:[{type:'character',character:'alma-contract',state:'dead'}]};};
+ const configure=d=>{d.includeOriginalResidents=true;d.campaignStory={introduction:'La guardia de Alma.',chapters:[{id:'guard',name:'Sostener la guardia',objective:'Mantener la guardia durante la campaña.',conditions:[{type:'day',min:100,max:null}]}],victory:'La guardia cumplió su misión.',defeat:'La guardia perdió a Alma.',failureConditions:[{type:'character',character:'alma-contract',state:'dead'}]};};
  let s=woundedService({term:'week',careRules:rules(100),configure}),id=localId(s),at=s.hour,remaining=Math.ceil(current(s).hp/current(s).bleeding);s=order(s,{type:'wait',hours:remaining+3});assert.equal(s.hour,at+remaining);assert.equal(s.defeated,true);assert.equal(current(s).alive,false);assert.ok(saved({campaign:s}).campaign.defeated);assert.ok(dispatchCampaign(s,{type:'wait',hours:1}).lastError);
 });
 

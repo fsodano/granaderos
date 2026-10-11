@@ -19,7 +19,7 @@ test('maximum normal deployments and artillery are collision-free, unblocked and
  for(const unit of all){assert.equal(map.tiles[unit.y*map.width+unit.x].blocked,false,`${sector}:${key(unit)}`);assert.ok(path(map,map.squad[0],unit),`${sector}: disconnected spawn ${key(unit)}`);}}
 });
 test('San Lorenzo convent has an enterable interior, windows and independent double doors',()=>{
- const map=buildSectorMap({sector:'san_lorenzo',squad:OPERATIVES.slice(0,6)}),d=map.decor[0];assert.equal(d.type,'convent');assert.equal(d.asset,'/art/convent.png');
+ const map=buildSectorMap({sector:'san_lorenzo',squad:OPERATIVES.slice(0,6)}),d=map.decor[0];assert.equal(d.type,'convent');assert.equal(d.asset,'/campaigns/granaderos/assets/convent.png');
  const interior=map.tiles.filter(t=>t.buildingId==='san_lorenzo:building');assert.equal(interior.length,d.width*d.height);
  const floor=interior.filter(t=>t.type==='floor');assert.equal(floor.length,d.width*d.height);assert.ok(floor.every(t=>!t.blocked));
  const doors=map.wallEdges.filter(t=>t.buildingId==='san_lorenzo:building'&&t.type==='door');assert.equal(doors.length,2);assert.notEqual(doors[0].doorId,doors[1].doorId);assert.equal(doors[0].y,doors[1].y);assert.equal(Math.abs(doors[0].x-doors[1].x),1);

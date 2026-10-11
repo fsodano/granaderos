@@ -4,6 +4,7 @@ import {revealFiniteArsenal} from './finite-artillery-arsenals.js';
 import {placeInvaders} from './invader-entry.js';
 import {sectorCash} from './economy.js';
 import {worldCell} from './world-cells.js';
+import {campaignSectors} from './campaign-definition.js';
 import {expandCellScene} from './cell-scene-storage.js';
 import {retainedMilitaryBodies} from './military-remains.js';
 import {placeDetainedPrisoners} from './detention.js';
@@ -12,6 +13,7 @@ import {beginSectorDeployment} from './sector-deployment.js';
 import {spaceKey,surfacesAtLevel,tacticalLevel,validateTacticalSpace} from './tactical-space.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {authoredEnvironment} from './environment-interactions.js';
+import {sceneAnchorFor} from './campaign-scenario.js';
 import {propBlocksAt} from './props.js';
 import {buildSectorMap} from './maps.js';
 import {createBattle,initializeBattlePerception} from './tactical.js';
@@ -29,22 +31,24 @@ const clearEncounter=unit=>{
  for(const field of ['reactionTurn','reactionSpent','interceptTurn','parryTurn','counterTurn','braceTurn'])unit[field]=0;
  return unit;
 };
-const sourceRecord=(previous,unit,sector)=>{
+const sourceRecord=(previous,unit,sector,context)=>{
  if(unit.departure)return false;
  const entry=previous?.returnLedger?.entries?.find(e=>e.unitId===unit.id);
- const owner=sector==='san_lorenzo'?'san_nicolas':sector;
+ const owner=sceneAnchorFor(context,sector);
  return !entry||entry.sector===owner&&['resident','dead'].includes(entry.kind);
 };
 
 // Re-enter a persistent sector with the current squad, retaining terrain and ground gear.
 export function enterSector(request,previous=null,{placement=false}={}){
- previous=expandCellScene(previous);
- if(previous&&worldCell(request.sector)?.anchor===false&&(previous.sectorId!==request.sector||previous.sourceMapId!==request.sector))throw Error('La escena guardada pertenece a otra celda.');
- if(request.exits!==undefined&&!validateSectorExits(request.sector,request.sceneId??null,request.exits))throw Error('Las salidas no corresponden a este sector.');
+ previous=expandCellScene(previous,request);
+ if(previous&&worldCell(request.sector,request)?.anchor===false&&(previous.sectorId!==request.sector||previous.sourceMapId!==request.sector))throw Error('La escena guardada pertenece a otra celda.');
+ if(request.exits!==undefined&&!validateSectorExits(request.sector,request.sceneId??null,request.exits,request))throw Error('Las salidas no corresponden a este sector.');
  if(previous)validateTacticalSpace(previous);
  const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout},{restorePrevious:Boolean(previous)});
+ map.localityIds=campaignSectors(request).map(s=>s.id);
+ map.sectorCode=worldCell(request.sector,request)?.grid??'';
  if(!previous){
-   const metadata=authoredEnvironment(request.sceneId??request.sector,map);
+   const metadata=authoredEnvironment(request.sceneId??request.sector,map,request);
    for(const patch of metadata.doors){const door=map.wallEdges.find(t=>t.doorId===patch.id);if(door)Object.assign(door,patch,{blocked:!patch.open,blocksSight:!patch.open});}
    for(const patch of metadata.containers){const chest=map.props.find(p=>p.id===patch.id);if(chest)Object.assign(chest,patch);}
  }
@@ -92,7 +96,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    state.lights=structuredClone(previous.lights??map.lights??[]).map(light=>Number.isFinite(light.turns)?{...light,remainingSeconds:Math.max(0,(light.remainingSeconds??light.turns*600)-elapsedSeconds),turns:Math.max(0,Math.ceil(((light.remainingSeconds??light.turns*600)-elapsedSeconds)/600)),age:(light.age||0)+ticks}:light).filter(light=>light.turns!==0);
    // createBattle has normalized the retained enemy conditions and new turn budget.
  }
- if(previous)for(const raw of retainedMilitaryBodies({...previous,units:previous.units.filter(u=>sourceRecord(previous,u,request.sector))},state.units,request.sector)){
+ if(previous)for(const raw of retainedMilitaryBodies({...previous,units:previous.units.filter(u=>sourceRecord(previous,u,request.sector,request))},state.units,request.sector)){
    if(!state.units.some(u=>u.id===raw.id)){const retained=clearEncounter(raw);delete retained.griefCompanionIds;state.units.push(retained);}
  }
  const queued=[];const remainsIds=new Set();
@@ -148,7 +152,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  for(const unit of state.units.filter(u=>u.side==='player'&&(u.hp>0||queued.includes(u)))){
    if(unit.militiaArrival){
      const route=`${unit.militiaArrival.from}:${unit.militiaArrival.to}`;
-     if(!arrivalAreas.has(route))arrivalAreas.set(route,militiaArrivalTerrain(state,unit));
+     if(!arrivalAreas.has(route))arrivalAreas.set(route,militiaArrivalTerrain(state,unit,request));
      const arrival=arrivalAreas.get(route);Object.assign(unit,reserve(arrival.anchor,arrival.cells,true));delete unit.militiaArrival;continue;
    }
    if(unit.entryReason!==undefined&&!['arrival','resident'].includes(unit.entryReason))throw Error('El motivo de entrada no es válido.');
@@ -158,7 +162,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
      arriving.push(unit);continue;
    }
    if(unit.entryEdge!==undefined||unit.entryAnchor!==undefined)throw Error('La posición de entrada necesita un traslado explícito.');
-   const prior=unit.entryReason==='resident'?(unit.residentPosition??previous?.units.find(v=>v.side==='player'&&v.id===unit.id&&sourceRecord(previous,v,request.sector))):null;
+   const prior=unit.entryReason==='resident'?(unit.residentPosition??previous?.units.find(v=>v.side==='player'&&v.id===unit.id&&sourceRecord(previous,v,request.sector,request))):null;
    delete unit.residentPosition;
    Object.assign(unit,reserve(prior??unit));
  }
@@ -197,10 +201,11 @@ export function enterSector(request,previous=null,{placement=false}={}){
  }
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  if(request.finiteArtilleryArsenal)state.finiteArtilleryArsenal=structuredClone(request.finiteArtilleryArsenal);
+ if(request.finiteResourceDefinitions)state.finiteResourceDefinitions=structuredClone(request.finiteResourceDefinitions);
  revealFiniteArsenal(state);
- if(!previous&&!request.sceneId&&sectorCash(request.sector)){
+ if(!previous&&!request.sceneId&&sectorCash(request.sector,request)){
    const leader=state.units.find(u=>u.side==='player'&&u.hp>0),spot=leader&&state.tiles.find(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(key(t))&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
-   if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});
+   if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector,request)});
  }
  // Prisoner placement clones the battle. Select arrivals from the current
  // state so the final scene receives their positions and patrol origins.

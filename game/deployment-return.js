@@ -3,6 +3,8 @@ import {completedTacticalVictory} from './battle-outcome.js';
 import {expandCellScene} from './cell-scene-storage.js';
 import {surfaceAt} from './tactical-space.js';
 import {validWorldLocation,worldOwner,worldCell} from './world-cells.js';
+import {campaignWorld} from './campaign-definition.js';
+import {sceneAnchorFor,isCampaignScene,sceneStateKeyFor} from './campaign-scenario.js';
 import {buildSectorMap} from './maps.js';
 import {authoredEnvironment} from './environment-interactions.js';
 import {roadsideDiscoveriesFor} from './roadside-discoveries.js';
@@ -20,13 +22,13 @@ import {initializeQuestBeneficiaries,validateQuestBeneficiaryContext} from './qu
 
 const clone=value=>structuredClone(value);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-const sector=id=>validWorldLocation(id)||id==='san_lorenzo';
-const safeExit=(s,destination)=>['patriot','neutral'].includes(worldOwner(s,destination))&&!s.enemyGroups?.some(g=>(g.target===destination||g.target===worldCell(destination)?.locality)&&['waiting','engaged','stationed'].includes(g.status));
-const authorizedExits=(s,request)=>sectorExits(request.sector,request.sceneId??null).filter(e=>safeExit(s,e.destination));
-export const strategicSector=request=>request.sector==='san_lorenzo'?'san_nicolas':request.sector;
+const sector=(id,context)=>validWorldLocation(id,context)||isCampaignScene(context,id);
+const safeExit=(s,destination)=>['patriot','neutral'].includes(worldOwner(s,destination))&&!s.enemyGroups?.some(g=>(g.target===destination||g.target===worldCell(destination,s)?.locality)&&['waiting','engaged','stationed'].includes(g.status));
+const authorizedExits=(s,request)=>sectorExits(request.sector,request.sceneId??null,s).filter(e=>safeExit(s,e.destination));
+export const strategicSector=(request,context=request)=>sceneAnchorFor(context,request.sceneId??request.sector);
 export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
-  const entry=entryFromSector(fromSector,toSector,sceneId);if(!entry)return;
-  for(const id of ids){const r=s.operativeState[id];r.location=toSector==='san_lorenzo'?'san_nicolas':toSector;r.arrival={battleId:`travel-${s.hour}-${fromSector}-${sceneId??toSector}`,fromSector,toSector,sceneId,fromScene:null,...clone(entry)};r.residentSector=null;r.residentScene=null;delete r.residentPosition;}
+  const entry=entryFromSector(fromSector,toSector,sceneId,s);if(!entry)return;
+  for(const id of ids){const r=s.operativeState[id];r.location=sceneAnchorFor(s,toSector);r.arrival={battleId:`travel-${s.hour}-${fromSector}-${sceneId??toSector}`,fromSector,toSector,sceneId,fromScene:null,...clone(entry)};r.residentSector=null;r.residentScene=null;delete r.residentPosition;}
 }
 
 // Request routes are immutable authority. Later arrivals are queued while a
@@ -45,7 +47,7 @@ export function prepareDeploymentExits(s,request){
   for(const unit of [...request.squad,...(request.garrison??[]),...(request.missionAllies??[])])normalizeUnitFittings(unit);
   request.exits=authorizedExits(s,request);
   request.exitRulesVersion=1;
-  request.remains=clone(s.sectorRemains?.[strategicSector(request)]??[]);
+  request.remains=clone(s.sectorRemains?.[strategicSector(request,s)]??[]);
   const previous=request.sceneId?s.sceneStates?.[request.sceneId]:s.sectorStates?.[request.sector];
   // An unfinished assault reuses the actual enemy equipment on that field.
   // Match enterSector: a new occupation or defense force has its own issue.
@@ -53,19 +55,19 @@ export function prepareDeploymentExits(s,request){
     request.ammunitionSources=previous.units.filter(u=>u.side==='enemy'&&!u.departure).map(ammunitionSource);
   // Bind first-entry caches to the same authored map that tactical entry uses.
   // A survivor cannot claim those rounds twice by also leaving them in the chest.
-  let field=expandCellScene(previous);
-  if(!field){const map=buildSectorMap(request),metadata=authoredEnvironment(request.sceneId??request.sector,map);field={...map,props:map.props.map(prop=>({...prop,...metadata.containers.find(patch=>patch.id===prop.id)}))};}
+  let field=expandCellScene(previous,s);
+  if(!field){const map=buildSectorMap(request),metadata=authoredEnvironment(request.sceneId??request.sector,map,request);field={...map,props:map.props.map(prop=>({...prop,...metadata.containers.find(patch=>patch.id===prop.id)}))};}
   request.fieldAmmunition=fieldAmmunitionByType(field);
   request.fieldCartridges=totalAmmoCounts(request.fieldAmmunition);
   request.issuedAmmunition={};for(const unit of request.squad)addAmmoCounts(request.issuedAmmunition,unitAmmunitionByType(unit));
   request.issuedCartridges=totalAmmoCounts(request.issuedAmmunition);
   request.storedCartridges=storedWeaponAmmunition(request.squad);
-  const bodies=(previous?.units??[]).filter(u=>u.side==='player'&&u.hp<=0&&!u.departure&&(!previous.returnLedger?.entries?.some(e=>e.unitId===u.id)||previous.returnLedger.entries.some(e=>e.unitId===u.id&&e.kind==='dead'&&e.sector===strategicSector(request))));
+  const bodies=(previous?.units??[]).filter(u=>u.side==='player'&&u.hp<=0&&!u.departure&&(!previous.returnLedger?.entries?.some(e=>e.unitId===u.id)||previous.returnLedger.entries.some(e=>e.unitId===u.id&&e.kind==='dead'&&e.sector===strategicSector(request,s))));
   request.casualtyLootSources=[...new Map([...bodies,...request.remains.map(r=>r.unit)].map(u=>[String(u.id),ammunitionSource(u)])).values()];
   for(const u of request.squad){
     const r=s.operativeState[Number(u.id)],arrival=r?.arrival;
     delete u.entryEdge;delete u.entryAnchor;delete u.entryReason;delete u.residentPosition;
-    if(arrival&&r.location===strategicSector(request)){u.entryEdge=arrival.entryEdge;u.entryAnchor=clone(arrival.entryAnchor);u.entryReason='arrival';}
+    if(arrival&&r.location===strategicSector(request,s)){u.entryEdge=arrival.entryEdge;u.entryAnchor=clone(arrival.entryAnchor);u.entryReason='arrival';}
     else if(r?.residentSector===request.sector&&(r.residentScene??null)===(request.sceneId??null)){u.entryReason='resident';if(r.residentPosition)u.residentPosition=clone(r.residentPosition);}
   }
   return request;
@@ -77,7 +79,7 @@ function departureFor(s,request,snapshot,u){
   need(e&&d.edge===e.edge&&d.destination===e.destination&&boundaryPassable(snapshot,u,e.edge),'La salida no corresponde a una ruta del despliegue.');
   need(Number.isSafeInteger(d.elapsedSeconds)&&d.elapsedSeconds>=0&&d.elapsedSeconds<=(snapshot.elapsedSeconds??0),'El reloj de salida es inválido.');
   need(safeExit(s,e.destination),'El destino de salida está ocupado.');
-  need(!u.militia||worldCell(e.destination)?.anchor,'La guarnición necesita una localidad de destino.');
+  need(!u.militia||worldCell(e.destination,s)?.anchor,'La guarnición necesita una localidad de destino.');
   need(d.mountId===null||typeof d.mountId==='string'&&d.mountId===u.mount?.id,'La montura de salida no corresponde al combatiente.');
   return {...clone(d),entryEdge:e.entryEdge,entryAnchor:clone(e.entryAnchor)};
 }
@@ -85,10 +87,10 @@ function departureFor(s,request,snapshot,u){
 export function planDeploymentReturn(s,request,snapshot,outcome){
  if(snapshot)validateQuestBeneficiaryContext(s,snapshot,{request});
   need(request.exitRulesVersion===1&&Array.isArray(request.exits),'El despliegue no contiene rutas de salida válidas.');
-  need(validateSectorExits(request.sector,request.sceneId??null,request.exits),'Las rutas del despliegue son inválidas.');
-  need(validateSectorExits(request.sector,request.sceneId??null,snapshot.exits),'Las rutas tácticas son inválidas.');
+  need(validateSectorExits(request.sector,request.sceneId??null,request.exits,s),'Las rutas del despliegue son inválidas.');
+  need(validateSectorExits(request.sector,request.sceneId??null,snapshot.exits,s),'Las rutas tácticas son inválidas.');
   need(JSON.stringify(request.exits)===JSON.stringify(snapshot.exits),'Las rutas tácticas no corresponden al despliegue.');
-  const sourceSector=strategicSector(request),players=snapshot.units.filter(u=>u.side==='player');
+  const sourceSector=strategicSector(request,s),players=snapshot.units.filter(u=>u.side==='player');
   const departed=players.filter(u=>u.departure);
   if(request.exploration&&snapshot.status==='active')need(!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u)),'La visita tiene un combate pendiente.');
   if(outcome==='retreat')need(snapshot.status==='retreat'&&departed.length>0&&!players.some(fieldCapable),'La retirada necesita salidas físicas y el cierre del combate.');
@@ -134,7 +136,7 @@ export function planMountReturn(s,request,snapshot,entries){
     if(!issued.mount){need(!actual.mount,'La montura no pertenece al despliegue.');continue;}
     const horse=s.horseState.horses.find(h=>h.id===issued.mount.id&&!h.returned&&h.assignedTo===id);
     need(horse&&actual.mount?.id===horse.id,'Falta la montura del combatiente en el parte.');
-    const crossed=entry.departure?.mountId===horse.id,at=crossed?entry.sector:strategicSector(request);
+    const crossed=entry.departure?.mountId===horse.id,at=crossed?entry.sector:strategicSector(request,s);
     const captured=entry.kind==='captured',available=entry.kind==='resident'||entry.kind==='departed'&&crossed;
     changes.push({id:horse.id,location:at,stamina:actual.mount.stamina,condition:actual.mount.condition,assignedTo:available?id:null,
       custody:captured?{kind:'captured',sector:at,operativeId:id}:available?null:{kind:'field',sector:at,operativeId:id}});
@@ -144,12 +146,12 @@ export function planMountReturn(s,request,snapshot,entries){
 
 export function migrateDeploymentReturns(s){s.sectorRemains??={};for(const r of Object.values(s.operativeState??{}))r.capturedAmmunition??={loaded:0,ammo:0};return s;}
 const sameEntry=(a,b)=>Boolean(a&&b&&a.entryEdge===b.entryEdge&&a.entryAnchor?.x===b.entryAnchor?.x&&a.entryAnchor?.y===b.entryAnchor?.y);
-const knownExit=id=>{if(typeof id!=='string')return null;const source=id.split(':')[0];return sectorExits(source==='yatasto'?'tucuman':source,source==='yatasto'?'yatasto':null).find(e=>e.id===id);};
+const knownExit=(id,context)=>{if(typeof id!=='string')return null;const source=id.split(':')[0],scene=campaignWorld(context).sceneExits?.[source];return sectorExits(scene?.sector??source,scene?source:null,context).find(e=>e.id===id);};
 function remainsGeometry(s,exit){
   const source=exit.id.slice(0,exit.id.indexOf(':'));
-  const saved=source==='yatasto'?s.sceneStates?.[source]:s.sectorStates?.[source];
+  const saved=s[sceneStateKeyFor(s,source)]?.[source];
   const request=(s.pendingBattle?.sceneId??s.pendingBattle?.sector)===source?s.pendingBattle:null;
-  const map=expandCellScene(saved??request?.resumeSnapshot??request);
+  const map=expandCellScene(saved??request?.resumeSnapshot??request,s);
   // The body still has source-map coordinates until its destination is entered.
   // Older records without a source map retain the compact-map validation bounds.
   const width=map?.width??20,height=map?.height??16;
@@ -161,17 +163,17 @@ function remainsGeometry(s,exit){
   if(Array.isArray(map?.tiles))return {width,height,tiles:map.tiles,buildings:map.buildings??[],upperSurfaces:map.upperSurfaces,climbLinks:map.climbLinks};
   return {width,height,tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}))};
 }
-function validateReturnLedger(snapshot){
+function validateReturnLedger(snapshot,s){
   if(snapshot.returnLedger===undefined)return;
   const ledger=snapshot.returnLedger,seen=new Set(),friendly=snapshot.status==='victory'||snapshot.mode==='exploration'&&!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
   need(ledger&&ledger.battleId===snapshot.battleId&&Array.isArray(ledger.entries)&&ledger.entries.length<=snapshot.units.length&&Number.isSafeInteger(ledger.creditedCartridges)&&ledger.creditedCartridges>=0&&ledger.creditedCartridges<=1000000,'El registro del parte es inválido.');
   for(const e of ledger.entries){
-    const u=snapshot.units.find(u=>u.id===e?.unitId),source=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;
-    need(u?.side==='player'&&!seen.has(e.unitId)&&['dead','resident','departed','captured','dispersed'].includes(e.kind)&&sector(e.sector),'La distribución del parte es inválida.');seen.add(e.unitId);
+    const u=snapshot.units.find(u=>u.id===e?.unitId),source=sceneAnchorFor(s,snapshot.sectorId);
+    need(u?.side==='player'&&!seen.has(e.unitId)&&['dead','resident','departed','captured','dispersed'].includes(e.kind)&&sector(e.sector,s),'La distribución del parte es inválida.');seen.add(e.unitId);
     need(e.kind==='dead'?u.hp===0:u.hp>0,'La salud y el destino del parte no coinciden.');
     if(e.kind==='resident')need(friendly,'El parte declara residentes en un campo perdido.');
     if(['captured','dispersed'].includes(e.kind))need(!friendly,'El parte declara cautivos en un campo seguro.');
-    if(u.departure){const exit=knownExit(u.departure.exitId);need(['departed','dead'].includes(e.kind)&&exit&&exit.destination===e.sector&&e.departure&&['exitId','edge','destination','x','y','elapsedSeconds','mountId'].every(k=>e.departure[k]===u.departure[k])&&sameEntry(e.departure,exit),'La salida del parte es inválida.');}
+    if(u.departure){const exit=knownExit(u.departure.exitId,s);need(['departed','dead'].includes(e.kind)&&exit&&exit.destination===e.sector&&e.departure&&['exitId','edge','destination','x','y','elapsedSeconds','mountId'].every(k=>e.departure[k]===u.departure[k])&&sameEntry(e.departure,exit),'La salida del parte es inválida.');}
     else need(e.kind!=='departed'&&e.sector===source&&!e.departure,'La residencia del parte es inválida.');
   }
   const loose=ledger.entries.filter(e=>['resident','departed'].includes(e.kind)).reduce((sum,e)=>{const u=snapshot.units.find(u=>u.id===e.unitId);return sum+(u.militia||u.missionAlly?0:u.loaded+totalReserveAmmunition(u));},0);
@@ -184,7 +186,7 @@ export function validateDeploymentReturnState(s){
     // Legacy saves gain routes only. Do not reissue equipment, rebuild loot
     // allowances, or infer that a soldier has already crossed a boundary.
     if(request.exits===undefined&&request.exitRulesVersion===undefined){request.exits=authorizedExits(s,request);request.exitRulesVersion=1;}
-    need(request.exitRulesVersion===1&&validateSectorExits(request.sector,request.sceneId??null,request.exits),'Las rutas del despliegue son inválidas.');
+    need(request.exitRulesVersion===1&&validateSectorExits(request.sector,request.sceneId??null,request.exits,s),'Las rutas del despliegue son inválidas.');
     for(const unit of request.squad??[]){
       const r=s.operativeState[Number(unit.id)],point=unit.residentPosition,actual=r?.residentPosition,matching=r?.residentSector===request.sector&&(r.residentScene??null)===(request.sceneId??null)&&r.arrival==null;
       if(matching&&actual!==undefined)need(unit.entryReason==='resident'&&object(point)&&object(actual)&&Object.keys(point).every(k=>['x','y','tacticalLevel'].includes(k))&&(point.tacticalLevel===undefined||integer(point.tacticalLevel,8))&&point.x===actual.x&&point.y===actual.y&&(point.tacticalLevel??0)===(actual.tacticalLevel??0),'La posición del residente desplegado es inválida.');
@@ -196,10 +198,10 @@ export function validateDeploymentReturnState(s){
   migrateDeploymentReturns(s);need(object(s.sectorRemains),'Los restos del campo son inválidos.');
   const seen=new Set();
   for(const [at,records]of Object.entries(s.sectorRemains)){
-    need(sector(at)&&Array.isArray(records)&&records.length<=200,'Los restos del campo son inválidos.');
+    need(sector(at,s)&&Array.isArray(records)&&records.length<=200,'Los restos del campo son inválidos.');
     for(const r of records){
       const key=`${r?.battleId}:${r?.unitId}`;need(object(r)&&typeof r.battleId==='string'&&r.battleId.length<100&&typeof r.unitId==='string'&&r.unit?.id===r.unitId&&r.unit.hp===0&&r.unit.side==='player'&&validEntry(r.entryEdge,r.entryAnchor)&&!seen.has(key),'La identidad de un caído está duplicada o es inválida.');seen.add(key);
-      const exit=knownExit(r.unit.departure?.exitId);need(exit&&exit.destination===at&&sameEntry(r,exit),'La llegada del caído no corresponde a su salida.');
+      const exit=knownExit(r.unit.departure?.exitId,s);need(exit&&exit.destination===at&&sameEntry(r,exit),'La llegada del caído no corresponde a su salida.');
       const unit=clone(r.unit);delete unit.departure;
       const rawFields=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','rations','torches','boleadoras','activeSlot','weaponFittings','weaponFittingPattern','bladeFittingPattern'];need(rawFields.every(k=>Object.hasOwn(unit,k)&&unit[k]!==undefined),'El equipo del caído está incompleto.');
       validateBattleSnapshot({...(unit.ammunitionVersion===undefined?{}:{ammunitionVersion:unit.ammunitionVersion}),...remainsGeometry(s,exit),units:[unit],status:'defeat'});
@@ -212,18 +214,18 @@ export function validateDeploymentReturnState(s){
     if(r.capturedAmmunition.preserveLoading){const capacity=WEAPONS[s.loadouts[id]?.weapon]?.capacity??0;need(!r.weaponDropped&&capacity>0&&r.capturedAmmunition.loaded<=capacity,'La carga en custodia no corresponde al arma.');validateReloadProgress(r.capturedAmmunition.reloadProgress,capacity,r.capturedAmmunition.loaded);}
     else need(r.capturedAmmunition.reloadProgress===undefined,'La recarga en custodia es inválida.');
     if(r.arrival!=null){
-      const a=r.arrival;need(object(a)&&typeof a.battleId==='string'&&a.battleId.length<100&&(sector(a.fromSector)||a.fromSector==='san_lorenzo')&&validEntry(a.entryEdge,a.entryAnchor),'La llegada del combatiente es inválida.');
-      const entry=a.exitId?sectorExits(a.fromSector,a.fromScene??null).find(e=>e.id===a.exitId&&e.destination===r.location):entryFromSector(a.fromSector,a.toSector??r.location,a.sceneId??null);
+      const a=r.arrival;need(object(a)&&typeof a.battleId==='string'&&a.battleId.length<100&&sector(a.fromSector,s)&&validEntry(a.entryEdge,a.entryAnchor),'La llegada del combatiente es inválida.');
+      const entry=a.exitId?sectorExits(a.fromSector,a.fromScene??null,s).find(e=>e.id===a.exitId&&e.destination===r.location):entryFromSector(a.fromSector,a.toSector??r.location,a.sceneId??null,s);
       need(sameEntry(a,entry),'La llegada no corresponde a una ruta física.');
     }
-    if(r.residentSector!=null)need(sector(r.residentSector)||r.residentSector==='san_lorenzo','La residencia táctica es inválida.');
-    if(r.residentScene!=null)need(r.residentScene==='yatasto'&&r.residentSector==='tucuman','La residencia de escena es inválida.');
+    if(r.residentSector!=null)need(sector(r.residentSector,s),'La residencia táctica es inválida.');
+    if(r.residentScene!=null)need(isCampaignScene(s,r.residentScene)&&r.residentSector===sceneAnchorFor(s,r.residentScene),'La residencia de escena es inválida.');
     if(r.residentPosition!==undefined){
-      const point=r.residentPosition,field=expandCellScene(r.residentScene?s.sceneStates?.[r.residentScene]:s.sectorStates?.[r.residentSector]);
-      need(object(point)&&Object.hasOwn(point,'x')&&Object.hasOwn(point,'y')&&Object.keys(point).every(k=>['x','y','tacticalLevel'].includes(k))&&r.residentSector!=null&&r.arrival==null&&r.location===(r.residentSector==='san_lorenzo'?'san_nicolas':r.residentSector)&&field&&surfaceAt(field,point),'La posición del residente es inválida.');
+      const point=r.residentPosition,field=expandCellScene(r.residentScene?s.sceneStates?.[r.residentScene]:s.sectorStates?.[r.residentSector],s);
+      need(object(point)&&Object.hasOwn(point,'x')&&Object.hasOwn(point,'y')&&Object.keys(point).every(k=>['x','y','tacticalLevel'].includes(k))&&r.residentSector!=null&&r.arrival==null&&r.location===sceneAnchorFor(s,r.residentSector)&&field&&surfaceAt(field,point),'La posición del residente es inválida.');
     }
   }
-  for(const h of s.horseState.horses)if(h.custody!=null)need(object(h.custody)&&['field','captured'].includes(h.custody.kind)&&sector(h.custody.sector)&&h.location===h.custody.sector&&Number.isInteger(h.custody.operativeId)&&s.operativeState[h.custody.operativeId]&&h.assignedTo===null&&!h.returned,'La custodia de la montura es inválida.');
-  for(const snapshot of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})])validateReturnLedger(snapshot);
+  for(const h of s.horseState.horses)if(h.custody!=null)need(object(h.custody)&&['field','captured'].includes(h.custody.kind)&&sector(h.custody.sector,s)&&h.location===h.custody.sector&&Number.isInteger(h.custody.operativeId)&&s.operativeState[h.custody.operativeId]&&h.assignedTo===null&&!h.returned,'La custodia de la montura es inválida.');
+  for(const snapshot of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})])validateReturnLedger(snapshot,s);
   return s;
 }

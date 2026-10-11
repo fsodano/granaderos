@@ -1,11 +1,12 @@
 'use client';
 import {useState} from 'react';
-import {CAMPAIGN_SECTORS} from '../../game/data.js';
+import {campaignSectors} from '../../game/campaign-definition.js';
 import {MILITIA_NAMES} from '../../game/militia.js';
 import {militiaDistributionStatus,militiaTransferPreview,militiaDistributionPreview} from '../../game/militia-distribution.js';
 import './militia-distribution.css';
-const label=(id:string)=>CAMPAIGN_SECTORS.find(x=>x.id===id)?.name??id;
+
 export default function MilitiaDistribution({state,sector,dispatch}:{state:any;sector:string;dispatch:(action:any)=>void}){
+ const label=(id:string)=>campaignSectors(state).find(sector=>sector.id===id)?.name??id;
  const status=militiaDistributionStatus(state,sector),destinations=status.sectors.filter((id:string)=>id!==sector);
  const [destination,setDestination]=useState(''),[rank,setRank]=useState(0),[quantity,setQuantity]=useState('1');
  const to=destinations.includes(destination)?destination:destinations[0]??'';

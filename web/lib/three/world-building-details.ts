@@ -1,7 +1,6 @@
 import {worldWallRecords,buildingWallAtPoint,wallFrameRecords} from './world-wall-records';
 import {ExtrudeGeometry,Group,Matrix4,MeshStandardMaterial,Quaternion,Shape,Vector3} from 'three';
 import {entranceFrame,getBuildingProfile} from '../../../game/building-profile.js';
-import {buildingAppearance} from '../../../game/building-appearance.js';
 import {buildingStyle} from '../../../game/building-types.js';
 import {WorldBatch,roofTextureProjector} from './world-geometry';
 import {illuminationAt} from './world-materials';
@@ -24,6 +23,7 @@ import {cabildoFacade} from './world-cabildo-facade';
 import {pulperiaSign} from './world-pulperia-sign';
 import {civicStoreyBands} from './world-civic-storey-bands';
 import {buildingArtInset} from './world-building-placement';
+import {buildingRenderAppearance,buildingRenderMaterials,selectedBuildingStyle} from './world-building-style';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -51,7 +51,8 @@ export function roofEdgeDetails(id:string,panels:readonly (readonly Vector3[])[]
  * Positions and face orientation therefore follow every authored rotation. */
 export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,height:number,base:number,geometry:WorldGeometry,materials:WorldMaterials,legacy:boolean){
   const walls=worldWallRecords(input).filter(tile=>tile.buildingId===b.id);
-  const wallInset=buildingArtInset(b,input),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),kind=b.kind??b.architecture??'house',appearance=buildingAppearance({...b,roofFinish:b.roofFinish??(b.roof==='thatch'?'thatch':undefined)});
+  const wallInset=buildingArtInset(b,input),frame=entranceFrame({...b,walls:wallFrameRecords(walls)}),kind=b.kind??b.architecture??'house',appearance=buildingRenderAppearance(b),style=selectedBuildingStyle(b);
+  materials=buildingRenderMaterials(b,materials);
   const wall=materials.get(appearance.wallFinish,legacy&&b.wallFinish===undefined?{colour:buildingStyle(b).wall}:{architectureRole:'volume'}),trim=materials.get('trim',legacy?{colour:buildingStyle(b).trim}:{}),wood=materials.get('wood'),darkwood=materials.get('darkwood'),iron=materials.get('iron'),roof=materials.get(appearance.roofFinish),light=illuminationAt(input,b);
   const root=new Group();root.name=`building-details:${b.id}`;
   let batch=new WorldBatch(geometry);
@@ -242,7 +243,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
   else if(kind==='church'){
     const reserved=(end:boolean)=>[0,1].every(u=>[0,1].every(v=>wallAt(end?frame.width-u:u,v)?.type==='wall'))&&!walkableAbove((end?frame.width-.5:.5)-alongInset,.5-depthInset,1.95);
     const end=[true,false].find(reserved)??[true,false].find(end=>wallAt(end?frame.width:0,0)?.type==='wall'&&!walkableAbove((end?frame.width:0)-alongInset,-depthInset,.95));
-    if(end!==undefined){
+    if(end!==undefined&&style?.tower!==false){
       const wide=reserved(end),u=end?frame.width-(wide?.5:0):wide?.5:0,v=wide?.5:0;
       // The tower foundation follows the solid authored cells rather than
       // the wall-art inset. A narrow corner never occupies the nave floor.
@@ -277,7 +278,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     if(!legacy||b.wallFinish!==undefined)root.add(churchNave(b,input,T,height,base,geometry,materials));
     else for(let v=1;v<frame.depth;v+=1.6)for(const u of [0,frame.width])if(wallAt(u,Math.round(v))?.type==='wall')box(u,v,.80,.20,1.6,.32,trim);
   }else if(kind==='townhall'){
-    const profile=getBuildingProfile(b),twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height,stone=materials.get('stone'),formal=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0)?.type==='wall');
+    const profile=getBuildingProfile(b),twoStoreys=height>=4&&style?.upper!==false,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height,stone=materials.get('stone'),formal=[...new Set([-2,2].map(offset=>Math.max(0,Math.min(frame.width,Math.round(frame.doorU+offset)))))].filter(u=>wallAt(u,0)?.type==='wall');
     if(wallInset===0&&(!legacy||b.wallFinish!==undefined))root.add(townhallColumns(b,input,T,height,base,geometry,materials));
     else feature('townhall-formal-columns',()=>{
       const column=(u:number,v:number,w:number,material:MeshStandardMaterial)=>{
@@ -322,7 +323,7 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     });
     townhallCrown();
   }else if(kind==='cabildo'){
-    const sourceCabildo=wallInset===0&&(!legacy||b.wallFinish!==undefined),twoStoreys=height>=4,storey=twoStoreys?height*.50:height,records:{a:number;u:number;v:number}[]=[];
+    const sourceCabildo=wallInset===0&&(!legacy||b.wallFinish!==undefined),twoStoreys=height>=4&&style?.upper!==false,storey=twoStoreys?height*.50:height,records:{a:number;u:number;v:number}[]=[];
     for(let u=0;u<=frame.width;u++)if(wallAt(u,0)?.type==='wall'&&(!sourceCabildo||u===0||u===frame.width||u%2===0&&u<frame.width-1)){const [a,v]=bearing(u,0,u!==0&&u!==frame.width);records.push({a:u===0||u===frame.width?u:u-alongInset,u:a,v});}
     records.sort((a,b)=>a.a-b.a);
     const arcade=(name:string,bottom:number,top:number,upper=false)=>feature(name,()=>{
@@ -345,9 +346,12 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         for(let k=1;k<arch.length;k++)batch.cylinder(trim,arch[k-1],arch[k],.053,light);
       }
     });
-    if(sourceCabildo)root.add(cabildoFacade(b,input,T,height,base,geometry,materials,(panels,eave,localRoof)=>roofEdgeDetails(`${b.id}:civic-cupola`,panels,eave,geometry,localRoof,darkwood,light)));
-    else arcade('civic-ground-arcade',.03,storey-.09);
-    if(twoStoreys)arcade('civic-upper-arcade',storey+.12,height-.12,true);
+    if(sourceCabildo){
+      const facade=cabildoFacade(b,input,T,height,base,geometry,materials,(panels,eave,localRoof)=>roofEdgeDetails(`${b.id}:civic-cupola`,panels,eave,geometry,localRoof,darkwood,light));
+      for(const suffix of [...(style?.arcade===false?['civic-ground-arcade']:[]),...(style?.tower===false?['civic-clock-tower','civic-cupola']:[])]){const child=facade.getObjectByName(`building-detail:${b.id}:${suffix}`)??facade.getObjectByName(`building-roof-edges:${b.id}:${suffix}`);if(child)child.visible=false;}
+      root.add(facade);
+    }else if(style?.arcade!==false)arcade('civic-ground-arcade',.03,storey-.09);
+    if(twoStoreys&&style?.arcade!==false)arcade('civic-upper-arcade',storey+.12,height-.12,true);
     feature('civic-cornices',()=>{
       for(const y of sourceCabildo?(twoStoreys?[height-.10]:[]):twoStoreys?[storey,height-.10]:[height-.10]){
         box(frame.width*.5,-.12/T,y,frame.width+.20/T,.15,.29/T,trim);
@@ -366,20 +370,22 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
         box(u+sign*.045/T,v,y-.16,.023/T,.024,.72/T,iron);
       }
     });
-    if(!sourceCabildo)tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
+    if(!sourceCabildo&&style?.tower!==false)tower(frame.width*.5,.1,Math.min(1.4,Math.max(1.1,frame.width*.22)),height+(twoStoreys?2.05:1.35),height-.12,true);
   }else if(kind==='posta'){
     const supports=Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall'&&(u===0||u===frame.width||u%2===0));
     roofCanopy('posta-masonry-veranda',supports,.55,true);
     root.add(postaPiers(b,input,T,height,base,geometry,materials,legacy));
   }else if(['farmhouse','estancia'].includes(kind)){
-    if(legacy&&b.wallFinish===undefined)farmhouseGallery();
-    else root.add(supportedFarmhouseGallery(b,input,T,height,base,geometry,materials,(panels,low)=>roofEdgeDetails(`${b.id}:farmhouse-gallery`,panels,low,geometry,roof,darkwood,light)));
+    if(style?.gallery!==false){
+      if(legacy&&b.wallFinish===undefined)farmhouseGallery();
+      else root.add(supportedFarmhouseGallery(b,input,T,height,base,geometry,materials,(panels,low)=>roofEdgeDetails(`${b.id}:farmhouse-gallery`,panels,low,geometry,roof,darkwood,light)));
+    }
     for(const u of [0,frame.width]){
       const v=Array.from({length:Math.max(0,Math.floor(frame.depth)-1)},(_,n)=>n+1).filter(v=>wallAt(u,v)?.type==='wall'&&!walkableAbove(u-alongInset,v-depthInset,.48)).sort((a,c)=>Math.abs(a-frame.depth+1)-Math.abs(c-frame.depth+1))[0];
       if(v!==undefined)chimney(u-alongInset,v-depthInset,{name:u===0?'farmhouse-chimney-left':'farmhouse-chimney-right',material:wall,capMaterial:materials.get('stone'),top:height+roofRise+.68});
     }
   }else if(kind==='pulperia'){
-    workCanopy('gallery',frontSupports(),.55);
+    if(style?.awning!==false)workCanopy('gallery',frontSupports(),.55);
     const support=Array.from({length:Math.floor(frame.width)+1},(_,u)=>u).filter(u=>wallAt(u,0)?.type==='wall').sort((a,c)=>Math.abs(a-frame.doorU-1)-Math.abs(c-frame.doorU-1))[0];
     if(b.wallFinish!==undefined){
       if(root.getObjectByName(`building-detail:${b.id}:gallery`)){
@@ -439,5 +445,13 @@ export function architecturalDetails(b:WorldBuilding,input:WorldInput,T:number,h
     workCanopy('forge-canopy',entranceSupports(),.50);
   }
   else if(kind==='house'){sideChimney();root.add(houseFacade(b,input,T,height,base,geometry,materials,legacy));}
+  // Optional additions reuse the existing supported exterior details. They
+  // never add collision cells, playable floors or access links.
+  if(style?.gallery===true&&!['farmhouse','estancia'].includes(kind))farmhouseGallery();
+  if(style?.awning===true&&kind!=='pulperia')workCanopy('campaign-awning',entranceSupports(),.55);
+  if(style?.tower===true&&!['church','cabildo','townhall'].includes(kind)){
+    const end=[0,frame.width].find(u=>wallAt(u,0)?.type==='wall');
+    if(end!==undefined)tower(end-alongInset,-depthInset,.8,height+roofRise+1.25);
+  }
   root.add(batch.finish(`building-detail:${b.id}:fabric`));return root;
 }

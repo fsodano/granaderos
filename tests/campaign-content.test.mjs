@@ -16,7 +16,9 @@ const authored = () => {
     role: "Exploradora",
     biography: "Una nueva historia.",
     monthlyPay: 900,
-    portrait: "/art/avatar-woman-scout.webp",
+    // This authoring test chooses a delayed arrival; ordinary stock is immediate.
+    arrivalHours: 6,
+    portrait: "/campaigns/granaderos/assets/avatar-woman-scout.webp",
   });
   Object.assign(c.attributes, { maxHp: 55, marksmanship: 76, medical: 80, strength: 44 });
   return d;
@@ -27,7 +29,7 @@ test("new campaign applies authored sheets without changing the ordinary campaig
     op = rosterFor(s).find((o) => o.id === 100);
   assert.equal(op.name, "Clara del Río");
   assert.equal(op.biography, "Una nueva historia.");
-  assert.equal(op.portraitId, "/art/avatar-woman-scout.webp");
+  assert.equal(op.portraitId, "/campaigns/granaderos/assets/avatar-woman-scout.webp");
   assert.equal(op.marksmanship, 76);
   assert.equal(op.strength, 44);
   assert.equal(s.operativeState[100].hp, 55);
@@ -37,7 +39,7 @@ test("new campaign applies authored sheets without changing the ordinary campaig
   assert.equal(rosterFor(s).find((o) => o.id === 100).name, "Clara del Río");
   assert.notEqual(rosterFor(initialCampaign()).find((o) => o.id === 100).name, op.name);
   const contactDefinition=d.characters.find(c=>c.id==='person-3');
-  contactDefinition.name='Contacto del cuartel';contactDefinition.portrait='/art/avatar-man-soldier.webp';
+  contactDefinition.name='Contacto del cuartel';contactDefinition.portrait='/campaigns/granaderos/assets/avatar-man-soldier.webp';
   const contactCampaign=initialCampaign(81,d),npc=encountersFor(contactCampaign,'retiro').find(n=>n.operativeId===3);
   assert.equal(npc.name,contactDefinition.name);assert.equal(npc.portraitId,contactDefinition.portrait);
 });
@@ -57,7 +59,7 @@ test("authored campaign can hire, deploy, save and restore with exact identity a
   assert.equal(unit.name, "Clara del Río");
   assert.equal(unit.hp, 55);
   assert.equal(unit.maxHp, 55);
-  assert.equal(unit.portraitId, "/art/avatar-woman-scout.webp");
+  assert.equal(unit.portraitId, "/campaigns/granaderos/assets/avatar-woman-scout.webp");
   const restored = decodeSave(encodeSave(pair.campaign, pair.battle));
   assert.deepEqual(restored.campaign.contentCampaign, pair.campaign.contentCampaign);
   assert.equal(rosterFor(restored.campaign).find((o) => o.id === 100).marksmanship, 76);
@@ -130,8 +132,8 @@ test('unknown story settings cannot launch with silently ignored rules',()=>{
 test('authored campaign storage never replaces the ordinary or QA save slot',async()=>{
  const {CONTENT_SAVE_KEY,campaignStorageKey}=await import('../game/content-launch.js');
  const state=initialCampaign(81,authored());
- assert.equal(campaignStorageKey(state,''),CONTENT_SAVE_KEY);
- assert.equal(campaignStorageKey(state,'?qa=1'),CONTENT_SAVE_KEY);
+ const key=campaignStorageKey(state,'');assert.match(key,/^granaderos\.content-campaign\.v2\./);
+ assert.equal(campaignStorageKey(state,'?qa=1'),key+'.qa');
  assert.equal(campaignStorageKey(initialCampaign(),'?content=1'),'granaderos.campaign.v1');
  assert.equal(campaignStorageKey(null,'?content=1'),CONTENT_SAVE_KEY);
  assert.equal(campaignStorageKey(null,'?qa=1'),'granaderos.campaign.v1.qa');
@@ -153,7 +155,8 @@ test('contract candidates remain off-map before hiring in ordinary and authored 
 test('attribute records cannot inject identifiers, weapons or combat rules',()=>{
  for(const key of ['id','weapon','traits','side','constructor']){
   const definition=authored();definition.characters[0].attributes[key]='override';
-  assert.throws(()=>initialCampaign(1,definition),/atributos/);
+  // Unsafe JSON keys can reject before the attribute schema is reached.
+  assert.throws(()=>initialCampaign(1,definition),/atributos|clave no permitida/);
  }
 });
 
@@ -162,7 +165,7 @@ test('the mission commander also uses the authored sheet and retains existing wo
  const {sanLorenzoAlly}=await import('../game/missions.js');
  const {createBattle}=await import('../game/tactical.js');
  const definition=authored(),commander=definition.characters.find(c=>c.id==='person-57');
- commander.name='Comandante de prueba';commander.attributes.maxHp=60;commander.attributes.marksmanship=72;commander.portrait='/art/avatar-man-soldier.webp';
+ commander.name='Comandante de prueba';commander.attributes.maxHp=60;commander.attributes.marksmanship=72;commander.portrait='/campaigns/granaderos/assets/avatar-man-soldier.webp';
  const state=decodeSave(encodeSave(initialCampaign(81,definition))).campaign;
  const ally=sanLorenzoAlly(state),battle=createBattle([ally],{enemies:[],exploration:true});
  assert.equal(battle.units[0].name,'Comandante de prueba · Comandante aliado');assert.equal(battle.units[0].hp,60);assert.equal(battle.units[0].marksmanship,72);assert.equal(battle.units[0].portrait,commander.portrait);

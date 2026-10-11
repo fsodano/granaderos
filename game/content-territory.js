@@ -1,11 +1,13 @@
 import {headquartersFor,headquartersName} from './campaign-headquarters.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors,campaignWorld} from './campaign-definition.js';
 
-export const defaultStartingTerritory=(headquarters='retiro')=>Object.fromEntries(CAMPAIGN_SECTORS.map(s=>[s.id,{owner:s.id===headquarters?'patriot':'royalist',loyalty:s.id===headquarters?65:25}]));
-export const startingTerritoryFor=state=>state?.contentCampaign?.package.startingTerritory??defaultStartingTerritory(headquartersFor(state));
-export function validateStartingTerritory(value,headquarters='retiro'){
+export const defaultStartingTerritory=(headquarters,context=null)=>{headquarters??=campaignWorld(context).defaultHeadquarters;return Object.fromEntries(campaignSectors(context).map(s=>[s.id,{owner:s.id===headquarters?'patriot':'royalist',loyalty:s.id===headquarters?65:25}]));};
+export const startingTerritoryFor=state=>state?.contentCampaign?.package.startingTerritory??defaultStartingTerritory(headquartersFor(state),state);
+export function validateStartingTerritory(value,headquarters,context=null){
+ headquarters??=campaignWorld(context).defaultHeadquarters;
+ const CAMPAIGN_SECTORS=campaignSectors(context);
  if(value===undefined)return [];
- if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==CAMPAIGN_SECTORS.length||!CAMPAIGN_SECTORS.every(s=>Object.hasOwn(value,s.id)))return ['Territorio inicial: configurá las trece localidades del mapa.'];
+ if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==CAMPAIGN_SECTORS.length||!CAMPAIGN_SECTORS.every(s=>Object.hasOwn(value,s.id)))return ['Territorio inicial: configurá todas las localidades del mapa.'];
  const errors=[];
  for(const sector of CAMPAIGN_SECTORS){
   const r=value[sector.id];
@@ -15,13 +17,14 @@ export function validateStartingTerritory(value,headquarters='retiro'){
  return errors;
 }
 export function startingTerritoryDescription(state){
- const territory=startingTerritoryFor(state),names=CAMPAIGN_SECTORS.filter(s=>territory[s.id].owner==='patriot').map(s=>s.name);
+ const territory=startingTerritoryFor(state),names=campaignSectors(state).filter(s=>territory[s.id].owner==='patriot').map(s=>s.name);
  return names.length===1?`Empezás con ${headquartersName(state)} como único sector controlado.`:`Control inicial: ${names.join('; ')}.`;
 }
 export function applyStartingTerritory(state){
  const territory=startingTerritoryFor(state),headquarters=headquartersFor(state);
  state.location=headquarters;state.squads[0].location=headquarters;
- for(const sector of CAMPAIGN_SECTORS)Object.assign(state.sectors[sector.id],territory[sector.id]);
+ for(const sector of campaignSectors(state))Object.assign(state.sectors[sector.id],territory[sector.id]);
  // No capture, quest, force issue or reward occurs when composing a new campaign.
- if(headquarters!=='retiro'||CAMPAIGN_SECTORS.some(s=>s.id!=='retiro'&&territory[s.id].owner==='patriot'))state.log[0].text=`${headquartersName(state)}, 1812. ${startingTerritoryDescription(state)} Contratá combatientes, creá tu granadero o combiná ambas opciones para partir.`;
+ const defaultHeadquarters=campaignWorld(state).defaultHeadquarters;
+ if(!state.contentCampaign?.package.campaignOrigin&&(headquarters!==defaultHeadquarters||campaignSectors(state).some(s=>s.id!==defaultHeadquarters&&territory[s.id].owner==='patriot')))state.log[0].text=`${headquartersName(state)}. ${startingTerritoryDescription(state)} Contratá combatientes, creá tu personaje o combiná ambas opciones para partir.`;
 }

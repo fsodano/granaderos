@@ -8,9 +8,9 @@ const directions=[[0,-1,'N'],[1,0,'E'],[0,1,'S'],[-1,0,'W']];
 
 // Fresh landmarks must admit every adjacent land route on the strategic grid.
 // Keep the authored core intact; connect approaches through the outer landscape.
-export function connectWorldCellApproaches(map){
- const cell=worldCell(map.sector);if(!cell?.anchor||map.sceneId)return map;
- const offset=physicalEntryAnchor('N',{x:0,y:0},map.width,map.height,map.sector);
+export function connectWorldCellApproaches(map,context=null){
+ const cell=worldCell(map.sector,context);if(!cell?.anchor||map.sceneId)return map;
+ const offset=physicalEntryAnchor('N',{x:0,y:0},map.width,map.height,map.sector,context);
  const dy=(map.height-16)/2,inside=t=>t.x>=offset.x&&t.x<offset.x+20&&t.y>=dy&&t.y<dy+16;
  const props=new Set((map.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(key));
  const tiles=new Map(map.tiles.map(t=>[key(t),t]));
@@ -23,10 +23,10 @@ export function connectWorldCellApproaches(map){
   for(let i=0;i<queue.length;i++)for(const next of neighbors(queue[i]))if(passable(next)&&!seen.has(key(next))&&!wallMovementBlocked(map,queue[i],next)){seen.add(key(next));component.add(key(next));queue.push(next);}
   if(component.size>exterior.size)exterior=component;
  }
- const roads=new Set(map.tiles.filter(t=>t.type==='road'&&exterior.has(key(t))).map(key)),roadEdges=roadEdgesForCell(cell.location);
+ const roads=new Set(map.tiles.filter(t=>t.type==='road'&&exterior.has(key(t))).map(key)),roadEdges=roadEdgesForCell(cell.location,context);
  for(const [dx,dy,edge]of directions){
-  if(!worldCell(`cell-${cell.col+dx}-${cell.row+dy}`)?.land)continue;
-  const anchor=physicalEntryAnchor(edge,{x:edge==='E'?19:edge==='W'?0:2,y:edge==='S'?15:edge==='N'?0:8},map.width,map.height,map.sector);
+  if(!worldCell(`cell-${cell.col+dx}-${cell.row+dy}`,context)?.land)continue;
+  const anchor=physicalEntryAnchor(edge,{x:edge==='E'?19:edge==='W'?0:2,y:edge==='S'?15:edge==='N'?0:8},map.width,map.height,map.sector,context);
   const boundary=t=>edge==='N'?t.y===0:edge==='S'?t.y===map.height-1:edge==='W'?t.x===0:t.x===map.width-1;
   const narrow=map.tiles.filter(t=>boundary(t)&&exterior.has(key(t))).length<6;
   const road=roadEdges.includes(edge),target=road&&roads.size?roads:exterior;

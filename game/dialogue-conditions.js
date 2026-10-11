@@ -4,7 +4,8 @@ import {rosterFor} from './recruitment.js';
 import {CAMPAIGN_PROJECT_LABELS,campaignProjectComplete} from './campaign-projects.js';
 import {atDialogueMeeting} from './dialogue-movement.js';
 import {contentQuestStatus,CONTENT_QUEST_STATES} from './content-quests.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
+import {scenarioFor} from './campaign-scenario.js';
 import {operativeIdForCharacter} from './content-character-ids.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
@@ -12,7 +13,7 @@ const exact=(v,keys)=>object(v)&&Object.keys(v).length===keys.length&&keys.every
 const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
 export const DIALOGUE_PERSON_STATE_LABELS=Object.freeze({alive:'Vivo',dead:'Muerto',serving:'Incorporado al servicio',present:'Presente en el mundo',conscious:'Consciente',unconscious:'Inconsciente',wounded:'Herido',bleeding:'Con hemorragia',stable:'Consciente y sin sangrado',healthy:'Salud completa y consciente'});
 export const DIALOGUE_PERSON_STATES=Object.keys(DIALOGUE_PERSON_STATE_LABELS);
-export function validateDialogueConditions(conditions,characters,quests){
+export function validateDialogueConditions(conditions,characters,quests,context=null){
  if(conditions===undefined)return;
  need(Array.isArray(conditions)&&conditions.length<=6,'Cada opción admite hasta seis condiciones.');
  for(const c of conditions){
@@ -22,7 +23,7 @@ export function validateDialogueConditions(conditions,characters,quests){
   else if(c.type==='meeting')need(exact(c,['type','character'])&&characters?.has(c.character),'La condición del encuentro necesita un personaje válido.');
   else if(c.type==='quest')need(exact(c,['type','quest','status'])&&quests?.has(c.quest)&&CONTENT_QUEST_STATES.includes(c.status),'La condición necesita un encargo y un estado válidos.');
   else if(c.type==='project')need(exact(c,['type','project','completed'])&&Object.hasOwn(CAMPAIGN_PROJECT_LABELS,c.project)&&typeof c.completed==='boolean','La condición necesita un proyecto y un estado válidos.');
-  else if(c.type==='sector')need(exact(c,['type','sector','owner'])&&CAMPAIGN_SECTORS.some(s=>s.id===c.sector)&&['patriot','royalist'].includes(c.owner),'La condición necesita una localidad y un control válidos.');
+  else if(c.type==='sector')need(exact(c,['type','sector','owner'])&&campaignSectors(context).some(s=>s.id===c.sector)&&['patriot','royalist'].includes(c.owner),'La condición necesita una localidad y un control válidos.');
   else if(c.type==='day'||c.type==='treasury')need(exact(c,['type','min','max'])&&integer(c.min,c.type==='day'?1:0,1000000000)&&(c.max===null||integer(c.max,c.min,1000000000)),'La condición necesita un intervalo válido.');
   else need(false,'El tipo de condición del diálogo no está disponible.');
  }
@@ -31,7 +32,7 @@ function characterPhysical(s,character,battle){
  const id=operativeIdForCharacter(s.contentCampaign.package,character),record=s.operativeState[id],request=s.pendingBattle,deployed=[...(request?.squad??[]),...(request?.missionAllies??[])].some(u=>Number(u.id)===id);
  const scene=battle&&request&&battle.sectorId===request.sector&&(battle.sceneId??null)===(request.sceneId??null)&&(!battle.battleId||battle.battleId===request.id)?battle:null;
  const unit=deployed?scene?.units.find(u=>u.side==='player'&&Number(u.id)===id):null;
- const identifies=n=>n.operativeId!=null&&Number(n.operativeId)===id||n.contentId===character||id===57&&n.id==='yatasto-san-martin';
+ const identifies=n=>{const missionId=scenarioFor(s).missionCivilianOperativeId(n);return n.operativeId!=null&&Number(n.operativeId)===id||n.contentId===character||missionId!=null&&Number(missionId)===id;};
  const resident=!s.recruited.includes(id)?scene?.npcs?.find(n=>identifies(n)&&request.npcs?.some(expected=>expected.id===n.id&&identifies(expected))):null;
  return {id,record,deployed,unit,resident};
 }

@@ -1,4 +1,5 @@
 'use client';
+import {campaignUI} from '../lib/campaign-ui';
 import {formatAP} from '../../game/action-points.js';
 
 import BattlePerformance from './BattlePerformance';
@@ -54,7 +55,7 @@ import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight,Hand,RotateCcw,RotateCw,MessageCircle,Eye,ChevronUp,ChevronDown } from 'lucide-react';
 import { actBattle, presentedActBattle, getKnifeThrowVisual, getGrenadeThrowVisual, getMeleeAttackResult, getNpcGiftResult, getCareComposureResult, endTurn, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
 
-type Props = {onPlaybackBusy?:(busy:boolean)=>void;onPlaybackValidate?:(state:any)=>boolean;onPlaybackFrame?:(before:any,after:any)=>void;battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:ConversationChoice)=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
+type Props = {campaignContext?:any;onPlaybackBusy?:(busy:boolean)=>void;onPlaybackValidate?:(state:any)=>boolean;onPlaybackFrame?:(before:any,after:any)=>void;battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:ConversationChoice)=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
 type CameraView={x:number;y:number;width:number;height:number;worldWidth:number;worldHeight:number;zoom:number};
 type CameraAnchor={x:number;y:number};
 type CameraGesture={dx:number;dy:number}|{scale:number;from:CameraAnchor;to:CameraAnchor};
@@ -64,8 +65,8 @@ const composureFormat=new Intl.NumberFormat('es-AR',{maximumFractionDigits:2});
 export default function Battlefield(props:Props){
  return <EquipmentInteractionProvider key={`${props.battle.battleId??''}:${props.battle.sectorId??''}`}><BattlefieldContents {...props}/></EquipmentInteractionProvider>;
 }
-function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame,onChange,onFinish,peacefulVisit=false,conversation,onTalk,onMap,quests,onMissionFinish,mission,hireTerms,dialogues}:Props){
-  const presentation=useEnemyPlayback(committed,onChange,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame),s=presentation.state;
+function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame,onChange,onFinish,peacefulVisit=false,conversation,onTalk,onMap,quests,onMissionFinish,mission,hireTerms,dialogues}:Props){
+  const presentation=useEnemyPlayback(committed,onChange,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame),s=presentation.state,{MissionFinish,battleVictory}=campaignUI(campaignContext??s);
   const calculation=useBattleExecutor(committed);
   const [failedDestination,setFailedDestination]=useState<any>(null),[feedbackPopup,setFeedbackPopup]=useState<{message:string;id:number}|null>(null);
   const feedbackId=useRef(0);
@@ -175,7 +176,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
   const sight=useMemo(()=>new Set<string>(showSight&&u?visibleTiles(s,u).map(spaceKey):[]),[s,u,showSight]);
   const {hiredPlayers,missionAllies,localMilitia}=useMemo(()=>({hiredPlayers:players.filter((p:any)=>!p.militia&&!p.missionAlly),missionAllies:players.filter((p:any)=>p.missionAlly),localMilitia:players.filter((p:any)=>p.militia)}),[players]);
   const withdrawal=useMemo(()=>exitModel(s,{unitIds:exitUnitIds,exitId}),[s,exitUnitIds,exitId]);
-  const readyPlayers=useMemo(()=>players.filter((p:any)=>unitCanAct(s,p)),[s,players]);const turn=useMemo(()=>turnModel(s),[s]);
+  const readyPlayers=useMemo(()=>players.filter((p:any)=>unitCanAct(s,p)),[s,players]);const turn=useMemo(()=>turnModel(s,campaignContext??s),[s,campaignContext]);
   // Search once per actor/state/intent in a background worker. Pointer changes
   // reuse the result; stale snapshots never supply a destination or approach.
   const routeRequest=useMemo(()=>unitCanAct(s,u)?{unitId:u.id,movementIntent,previewBudget:true}:null,[s,u,movementIntent]);
@@ -529,7 +530,7 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
       </div>
     </header>
     <PrisonerActions state={s} unit={u} busy={busy} onRelease={id=>order({type:'free',targetKind:'npc',targetId:id})} onEscort={(id,escortOrder)=>order({type:'prisonerEscort',targetKind:'npc',targetId:id,escortOrder})}/>
-    {mission&&<details className="hud-mission" aria-label="Objetivos de la misión"><summary>{mission.name} · Objetivos</summary><ul>{(mission.objectives||[]).map((objective:any,index:number)=><li key={index}>{typeof objective==='string'?objective:`${objective.done?'✓ ':''}${objective.text||objective.label||objective.name}`}</li>)}</ul>{s.sceneId==='yatasto'&&onMissionFinish&&<button className="line-button" disabled={busy||!(mission.objectives||[]).every((o:any)=>o.done)} onClick={onMissionFinish}>Concluir el encuentro</button>}</details>}
+    {mission&&<details className="hud-mission" aria-label="Objetivos de la misión"><summary>{mission.name} · Objetivos</summary><ul>{(mission.objectives||[]).map((objective:any,index:number)=><li key={index}>{typeof objective==='string'?objective:`${objective.done?'✓ ':''}${objective.text||objective.label||objective.name}`}</li>)}</ul>{MissionFinish&&<MissionFinish state={s} mission={mission} busy={busy} onFinish={onMissionFinish}/>}</details>}
 
     {exitOpen&&s.status==='active'&&<JA2ExitPanel model={withdrawal} selectedId={selected} busy={busy} exploring={s.mode==='exploration'} onUnits={setExitUnitIds} onExit={setExitId} onLeave={leaveSector} onClose={()=>setExitOpen(false)}/>}
     {withdrawal.departures.length>0&&s.status==='active'&&<p className="ja2-departure-notice" role="status">{withdrawal.departures.length} combatientes ya salieron. El encuentro continúa con los que permanecen en el sector.</p>}
@@ -568,14 +569,15 @@ function BattlefieldContents({battle:committed,onPlaybackBusy,onPlaybackValidate
         {pickedItem&&<InventoryMapCursor state={field} preview={itemPreview} target={mapItemTarget} project={project}/>}
         </g>
       </svg>
-      {talking&&<JA2Conversation dialogue={dialogues?.[talking.id]} hireTerms={hireTerms?.[talking.id]} npc={talking} conversation={giftReply?.id===talking.id?giftReply.conversation:conversation} responseOnly={giftReply?.id===talking.id&&giftReply.responseOnly} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':talkingAvailability.reason} availability={talkingAvailability} canApproach={Boolean(onTalk&&talkingAvailability.canApproach&&!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&talkingApproach)} onApproach={()=>{if(talkingApproach)order(movementAction(talkingApproach));}} onTalk={(approach,term,choice)=>{setGiftReply(null);onTalk?.(talking.id,approach,selected,term,choice);}} onClose={()=>{setTalking(null);setGiftReply(null);}}/>}
+      {talking&&<JA2Conversation state={s} dialogue={dialogues?.[talking.id]} hireTerms={hireTerms?.[talking.id]} npc={talking} conversation={giftReply?.id===talking.id?giftReply.conversation:conversation} responseOnly={giftReply?.id===talking.id&&giftReply.responseOnly} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':talkingAvailability.reason} availability={talkingAvailability} canApproach={Boolean(onTalk&&talkingAvailability.canApproach&&!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&talkingApproach)} onApproach={()=>{if(talkingApproach)order(movementAction(talkingApproach));}} onTalk={(approach,term,choice)=>{setGiftReply(null);onTalk?.(talking.id,approach,selected,term,choice);}} onClose={()=>{setTalking(null);setGiftReply(null);}}/>}
       {speech&&<JA2Speech name={speech.name} text={speech.text} position={{left:Math.max(15,Math.min(85,(projectSurface(s,project,speech).x-cameraX)/viewWidth*100)),top:Math.max(38,Math.min(85,(projectSurface(s,project,speech).y-cameraY-42)/viewHeight*100))}} onClose={()=>setSpeech(null)}/>}
       {preview&&!preview.movement&&<aside className={`ja2-target-preview ${preview.valid?'':'unavailable'}`} aria-label="Vista previa de la orden"><strong>{preview.name}</strong><span>{!pickedItem&&preview.chance!==undefined?`${preview.hitLocation||preview.attackLabel||'Ataque'} · ${chancePercent(preview.chance)} de ${preview.chanceLabel||'impacto'} · `:preview.actionLabel?`${preview.actionLabel} · `:''}{preview.pa!==undefined&&(!pickedItem||preview.valid)&&s.mode!=='exploration'?`${formatAP(preview.pa)} PA · ${formatAP(preview.remaining)} PA restantes`:''}</span>{preview.coverNote&&<span>{preview.coverNote}</span>}{preview.reason&&<span>{preview.reason}</span>}</aside>}
-      {!presentation.busy&&s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?'¡Victoria patriota!':s.status==='retreat'?'Retirada completada':'La escuadra ha caído'}</h2><p>{s.status==='victory'?'El enemigo abandona el campo. La patria avanza.':s.status==='retreat'?'La salida quedó registrada. Los combatientes conservan sus heridas y su equipo.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}
+      {!presentation.busy&&s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?(battleVictory?.title??'¡Victoria!'):s.status==='retreat'?'Retirada completada':'La escuadra ha caído'}</h2><p>{s.status==='victory'?(battleVictory?.text??'El enemigo abandona el campo.'):s.status==='retreat'?'La salida quedó registrada. Los combatientes conservan sus heridas y su equipo.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}
     </div>
     </div>
     {lootPoint&&u&&<JA2LootPicker battle={s} unit={u} point={lootPoint} busy={busy} onClose={()=>setLootPoint(null)} onTake={action=>{setLootPoint(null);order(action);}}/>}
     <JA2Strip
+      campaignContext={campaignContext}
       battle={s}
       ambientPaused={ambientPaused}
       onToggleAmbientPause={()=>setAmbientPaused(paused=>!paused)}

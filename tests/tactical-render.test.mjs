@@ -20,7 +20,7 @@ test('a saved authored campaign actor renders its chosen body without inferring 
  const {defaultContentPackage}=await import('../game/content-package.js');
  const {initialCampaign,dispatchCampaign}=await import('../game/campaign.js');
  const {encodeSave,decodeSave}=await import('../game/save.js');
- const d=defaultContentPackage(),c=d.characters.find(c=>c.id==='person-100');c.spriteAppearance='woman-scout';c.portrait='/art/avatar-man-gaucho.webp';c.arrivalHours=0;
+ const d=defaultContentPackage(),c=d.characters.find(c=>c.id==='person-100');c.spriteAppearance='woman-scout';c.portrait='/campaigns/granaderos/assets/avatar-man-gaucho.webp';c.arrivalHours=0;
  let campaign=dispatchCampaign(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
  const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle))),unit=pair.battle.units.find(u=>u.id==='100');
  const markup=render(h(SpriteFigure,{unit,position:{x:100,y:100},motion:{direction:2,moving:false,frame:0}}));
@@ -38,7 +38,7 @@ test('scene preserves distinct dead/unconscious states even with pending motion 
 });
 test('rendered sprites preserve body scale and fixed ground anchors across every layout',()=>{
  for(const [unit,pose,name] of [
-  [{},'idle','granadero-idle'],[{side:'enemy'},'fire','royalist-fire'],
+  [{},'idle','granadero-idle'],[{side:'enemy',spriteAppearance:'royalist'},'fire','royalist-fire'],
   [{stance:'prone'},'idle','granadero-prone-unarmed-idle'],[{movementMode:'crouch'},'idle','granadero-crouch-idle'],
   [{mounted:true},'idle','cavalry-idle'],
  ]){
@@ -91,7 +91,7 @@ test('civilian selection uses idle columns and walk rows in all eight directions
   assert.ok(markup.includes(`viewBox="${viewport.viewBox}"`));
   assert.ok(!/royalist|granadero|cavalry/.test(markup));
  }
- assert.match(render(h(SpriteFigure,{unit:{side:'enemy'},position:{x:0,y:0},motion:{direction:2,moving:false,frame:0}})),/data-sprite="royalist-idle"/);
+ assert.match(render(h(SpriteFigure,{unit:{side:'enemy',spriteAppearance:'royalist'},position:{x:0,y:0},motion:{direction:2,moving:false,frame:0}})),/data-sprite="royalist-idle"/);
 });
 test('props require their own room, including untagged and invalid membership',()=>{
  assert.deepEqual(props([]).map(p=>p.key),['prop-outside']);
@@ -131,7 +131,7 @@ test('visible hostile units retain an enemy marker independently of selection',(
  const enemy={...s.units[0],id:'enemy',side:'enemy',x:2,y:1,hp:100,spriteAppearance:'blue-officer'};
  const draw=units=>render(h('svg',null,h(TacticalScene,{state:s,players:s.units,units,positions:{},poses:{},directions:{},reachable:[],sight:new Set(),revealed:new Set(),project})));
  assert.match(draw([enemy]),/aria-label="Enemigo"/);
- assert.match(draw([enemy]),/royalist-idle/);
+ assert.match(draw([enemy]),/granadero-idle/);
  assert.doesNotMatch(draw(s.units),/aria-label="Enemigo"/);
  assert.doesNotMatch(draw([{...enemy,hp:0}]),/aria-label="Enemigo"/);
  assert.doesNotMatch(draw([{...enemy,surrendered:true}]),/aria-label="Enemigo"/);

@@ -1,4 +1,5 @@
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
+import {isCampaignScene} from './campaign-scenario.js';
 
 export const TREASURY_CAP=1000000000;
 const headroom=s=>Math.max(0,TREASURY_CAP-s.resources.treasury);
@@ -49,7 +50,7 @@ export function validatePendingVictoryFunds(s){
  for(const e of entries??[]){
   const keys=['battleId','sector','earnedAt','earnedSecond','amount','creditedAmount'];
   need(e&&typeof e==='object'&&!Array.isArray(e)&&Object.keys(e).length===keys.length&&keys.every(k=>Object.hasOwn(e,k)));
-  need(CAMPAIGN_SECTORS.some(d=>d.id===e.sector)||e.sector==='san_lorenzo');
+  need(campaignSectors(s).some(d=>d.id===e.sector)||isCampaignScene(s,e.sector));
   need(typeof e.battleId==='string'&&e.battleId.length<100&&!seen.has(e.battleId));seen.add(e.battleId);
   const prefix=`${e.sector}-`;need(e.battleId.startsWith(prefix));
   const match=e.battleId.slice(prefix.length).match(/^(0|[1-9]\d*)-(0|[1-9]\d*)$/);

@@ -16,8 +16,8 @@ test('project hosting resolves saved and catalog art without changing their URLs
  assert.equal(JSON.stringify(item),before);
  assert.equal(sitePath('/art/pixel/granadero-idle-atlas.png','/granaderos'),'/granaderos/art/pixel/granadero-idle-atlas.png');
  assert.equal(sitePath('/campaigns/example.json?download=1','/granaderos'),'/granaderos/campaigns/example.json?download=1');
- assert.equal(sitePath('/granaderos/art/portrait-57.webp','/granaderos'),'/granaderos/art/portrait-57.webp');
- assert.equal(sitePath('/art/portrait-57.webp',''),'/art/portrait-57.webp');
+ assert.equal(sitePath('/granaderos/campaigns/granaderos/assets/portrait-57.webp','/granaderos'),'/granaderos/campaigns/granaderos/assets/portrait-57.webp');
+ assert.equal(sitePath('/campaigns/granaderos/assets/portrait-57.webp',''),'/campaigns/granaderos/assets/portrait-57.webp');
 });
 
 test('browser-created, external and optional image URLs pass through unchanged',()=>{

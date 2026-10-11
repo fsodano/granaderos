@@ -1,18 +1,17 @@
 'use client';
 import { useId, useState } from 'react';
-import geography from '../../../game/strategic-geography.json';
+import {campaignWorld} from '../../../game/campaign-definition.js';
 import {
   project,
-  MAP_PLACES,
   mapTilesForSector,
 } from '../../../game/strategic-map.js';
 import {
-  CONTENT_CELLS,
+  contentCells,
   CONTENT_MAP,
   contentCellIds,
   toggleContentCell,
 } from '../../../game/content-map.js';
-function path(geometry: any): string {
+function path(geometry: any,content: any): string {
   const lines =
     geometry.type === 'MultiPolygon'
       ? geometry.coordinates.flat()
@@ -24,7 +23,7 @@ function path(geometry: any): string {
       (ring: number[][]) =>
         ring
           .map(([lon, lat], i) => {
-            const p = project(lon, lat);
+            const p = project(lon, lat,content);
             return `${i ? 'L' : 'M'}${p.x},${p.y}`;
           })
           .join('') + (geometry.type.includes('Polygon') ? 'Z' : ''),
@@ -34,16 +33,19 @@ function path(geometry: any): string {
 export default function PlacementMap({
   selected,
   onChange,
+  content,
 }: {
   selected: string[];
+  content?: any;
   onChange: (ids: string[]) => void;
 }) {
   const clip = useId();
+  const world=campaignWorld(content),geography=world.geography??{land:[],rivers:[]},cells=contentCells(content);
   const [focused, setFocused] = useState('cell-0-0');
   const [hovered, setHovered] = useState('');
-  const chosen = new Set<string>(contentCellIds(selected));
+  const chosen = new Set<string>(contentCellIds(selected,content));
   function toggle(id: string) {
-    onChange(toggleContentCell(selected, id));
+    onChange(toggleContentCell(selected, id,content));
   }
   return (
     <div className="placement-map">
@@ -73,18 +75,18 @@ export default function PlacementMap({
           <g clipPath={`url(#${clip})`}>
             <rect x="36" y="36" width="648" height="588" fill="#25454d" />
             {geography.land.map((g: any, i: number) => (
-              <path key={i} d={path(g)} fill="#69704c" />
+              <path key={i} d={path(g,content)} fill="#69704c" />
             ))}
             {geography.rivers.map((g: any, i: number) => (
               <path
                 key={i}
-                d={path(g)}
+                d={path(g,content)}
                 fill="none"
                 stroke="#80b1b6"
                 strokeWidth="2"
               />
             ))}
-            {CONTENT_CELLS.map((cell) => (
+            {cells.map((cell) => (
               <g
                 key={cell.id}
                 role="button"
@@ -163,8 +165,9 @@ export default function PlacementMap({
               strokeWidth="2.5"
               paintOrder="stroke"
             >
-              {Object.entries(MAP_PLACES).map(([id, place]) => {
-                const tile = mapTilesForSector(id)[0];
+              {Object.entries(world.places as Record<string,{label:string}>).map(([id, place]) => {
+                const tile = mapTilesForSector(id,content)[0];
+                if(!tile)return null;
                 return (
                   <text key={id} x={tile.x} y={tile.y - 4}>
                     {place.label}

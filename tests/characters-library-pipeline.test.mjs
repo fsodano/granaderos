@@ -218,7 +218,7 @@ import shutil, subprocess
 s=importlib.util.spec_from_file_location('glb',root/'tools/characters-3d/merge-animation-bank.py');glb=importlib.util.module_from_spec(s);s.loader.exec_module(glb)
 with tempfile.TemporaryDirectory() as folder:
  target=Path(folder);out=target/'web/public/models/characters';out.mkdir(parents=True)
- for relative in ('tools/characters-3d','assets/source/characters-3d/authoring','web/lib','game'):
+ for relative in ('tools/characters-3d','assets/source/characters-3d/authoring','web/lib','game','campaigns'):
   shutil.copytree(root/relative,target/relative,ignore=shutil.ignore_patterns('__pycache__','.build'))
  for name in ('published-actor-fixture.mjs','tactical-render-loader.mjs'):
   destination=target/'tests'/name;destination.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(root/'tests'/name,destination)

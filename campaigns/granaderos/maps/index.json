@@ -1,0 +1,64 @@
+{
+  "maps": [
+    {
+      "id": "san_nicolas",
+      "path": "san_nicolas.json"
+    },
+    {
+      "id": "yatasto",
+      "path": "yatasto.json"
+    },
+    {
+      "id": "los_patos",
+      "path": "los_patos.json"
+    },
+    {
+      "id": "salta",
+      "path": "salta.json"
+    },
+    {
+      "id": "santa_fe",
+      "path": "santa_fe.json"
+    },
+    {
+      "id": "san_lorenzo",
+      "path": "san_lorenzo.json"
+    },
+    {
+      "id": "jujuy",
+      "path": "jujuy.json"
+    },
+    {
+      "id": "tucuman",
+      "path": "tucuman.json"
+    },
+    {
+      "id": "humahuaca",
+      "path": "humahuaca.json"
+    },
+    {
+      "id": "retiro",
+      "path": "retiro.json"
+    },
+    {
+      "id": "ensenada",
+      "path": "ensenada.json"
+    },
+    {
+      "id": "mendoza",
+      "path": "mendoza.json"
+    },
+    {
+      "id": "cordoba",
+      "path": "cordoba.json"
+    },
+    {
+      "id": "uspallata",
+      "path": "uspallata.json"
+    },
+    {
+      "id": "buenos_aires",
+      "path": "buenos_aires.json"
+    }
+  ]
+}

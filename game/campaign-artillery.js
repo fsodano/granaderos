@@ -7,10 +7,11 @@ import {artillerySupplyQuote} from './artillery-supply.js';
 import {artilleryCount} from './economy.js';
 import {expandCellScene} from './cell-scene-storage.js';
 import {validateReloadProgress} from './weapon-reload.js';
+import {sceneAnchorFor} from './campaign-scenario.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const site=r=>r.sceneId??r.sector;
-const parent=id=>id==='san_lorenzo'?'san_nicolas':id;
-const previous=(s,r)=>expandCellScene(r.sceneId?s.sceneStates?.[r.sceneId]:s.sectorStates?.[r.sector]);
+const parent=(s,id)=>sceneAnchorFor(s,id);
+const previous=(s,r)=>expandCellScene(r.sceneId?s.sceneStates?.[r.sceneId]:s.sectorStates?.[r.sector],s);
 const validGun=g=>g&&typeof g.id==='string'&&g.id.length>0&&g.id.length<=160&&Object.hasOwn(ARTILLERY,g.type)&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&Number.isInteger(g.ammo)&&g.ammo>=0&&g.ammo<=1000000&&(g.facing===undefined||Number.isFinite(g.facing)&&Math.abs(g.facing)<=Math.PI*2);
 const list=values=>{need(Array.isArray(values)&&values.length<=2000&&new Set(values.map(g=>g?.id)).size===values.length&&values.every(validGun),'Las piezas de artillería son inválidas.');for(const g of values)validateReloadProgress(g.reloadProgress,1,Number(g.loaded));return values;};
 export {list as validateArtilleryInventory};
@@ -57,7 +58,6 @@ function migrateArtilleryStateValue(s){
 export function prepareSectorArtillery(s,request){
  const current=request===s.pendingBattle;migrateArtilleryState(s);if(current)request=s.pendingBattle;
  if(request.artilleryDeployment?.site===site(request))return request;
- prepareFiniteArsenalRequest(s,request);
  const fresh=structuredClone(list(request.artillery??[])),old=structuredClone(list(previous(s,request)?.artillery??[]));
  const stockState={...s,armory:{...s.armory},artilleryDepots:structuredClone(s.artilleryDepots??{})};
  for(const gun of fresh){
@@ -67,9 +67,10 @@ export function prepareSectorArtillery(s,request){
   }else{need((stockState.armory?.[gun.type]??0)>0,'No quedan esas piezas en la armería.');stockState.armory[gun.type]--;gun.id=nextId(stockState);}
   delete gun.stationed;
  }
- const occupied=s.sectors[parent(request.sector)]?.owner==='royalist';
+ const occupied=s.sectors[parent(s,request.sector)]?.owner==='royalist';
  const stationed=old.map(g=>({...g,stationed:true,...(occupied?{side:'enemy'}:{})}));
  const planned={...request,artillery:[...stationed,...fresh],cannons:stationed.length+fresh.length,artilleryDeployment:{version:1,site:site(request),issued:fresh.map(g=>g.id)}};
+ prepareFiniteArsenalRequest(s,planned);
  validateArtilleryDeployment(planned);s.armory=stockState.armory;s.artilleryDepots=stockState.artilleryDepots;s.nextArtilleryId=stockState.nextArtilleryId;Object.assign(request,planned);return request;
 }
 export function validateArtilleryDeployment(request){
@@ -94,7 +95,7 @@ export function settleSectorArtillery(snapshot,outcome){
  for(const gun of snapshot.artillery)delete gun.stationed;
 }
 export function ownedArtilleryCount(s){
- const owned=new Map();for(const [id,b]of [...Object.entries(s.sectorStates??{}),...Object.entries(s.sceneStates??{})])if(s.sectors[parent(b.sectorId??id)]?.owner==='patriot')for(const g of b.artillery??[])if(g.side==='player')owned.set(g.id,g);
+ const owned=new Map();for(const [id,b]of [...Object.entries(s.sectorStates??{}),...Object.entries(s.sceneStates??{})])if(s.sectors[parent(s,b.sectorId??id)]?.owner==='patriot')for(const g of b.artillery??[])if(g.side==='player')owned.set(g.id,g);
  if(s.pendingBattle)for(const g of s.pendingBattle.artillery??[])if(g.side==='player')owned.set(g.id,g);else owned.delete(g.id);
  for(const [at,guns]of Object.entries(s.artilleryDepots??{}))if(s.sectors[at]?.owner==='patriot')for(const g of guns)owned.set(g.id,g);
  for(const t of s.artilleryTransfers??[])owned.set(t.gun.id,t.gun);
@@ -108,12 +109,12 @@ export function validateCampaignArtillery(s){
  if(s.pendingBattle){
   const r=s.pendingBattle;validateArtilleryDeployment(r);
   for(const id of r.artilleryDeployment.issued){need(!ids.has(id),'Una pieza desplegada ya existe en otro sector.');if(/^piece-[1-9][0-9]*$/.test(id))need(Number(id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');}
-  const old=list(previous(s,r)?.artillery??[]),occupied=s.sectors[parent(r.sector)]?.owner==='royalist';
+  const old=list(previous(s,r)?.artillery??[]),occupied=s.sectors[parent(s,r.sector)]?.owner==='royalist';
   for(const g of r.artillery.filter(g=>g.stationed)){const source=old.find(v=>v.id===g.id);need(source&&g.type===source.type&&g.side===(occupied?'enemy':source.side)&&g.ammo===source.ammo&&g.loaded===source.loaded&&g.x===source.x&&g.y===source.y&&g.facing===source.facing&&g.reloadProgress===source.reloadProgress,'La pieza emplazada no coincide con su sector.');}
   need(old.every(g=>r.artillery.some(v=>v.id===g.id&&v.stationed)),'Faltan piezas emplazadas en el despliegue.');
  }
 }
-export function stationedArtillery(s){return Object.entries(s.sectorStates??{}).filter(([id])=>parent(id)===s.location).flatMap(([sector,b])=>(b.artillery??[]).map(gun=>({sector,gun})));
+export function stationedArtillery(s){return Object.entries(s.sectorStates??{}).filter(([id])=>parent(s,id)===s.location).flatMap(([sector,b])=>(b.artillery??[]).map(gun=>({sector,gun})));
 }
 
 
