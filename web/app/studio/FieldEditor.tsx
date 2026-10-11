@@ -2,7 +2,7 @@
 import {useEffect,useId,useState} from 'react';
 
 export const FIELD_LABELS:Record<string,string>={
- id:'Identidad',name:'Nombre',title:'Título',version:'Versión del formato',revision:'Revisión',
+ id:'Identidad',name:'Nombre',title:'Título',version:'Versión del formato',revision:'Revisión',format:'Formato',scenario:'Reglas de escenario',
  content:'Contenido',world:'Mundo',presentation:'Presentación',assets:'Recursos',maps:'Mapas',
  characters:'Personajes',weapons:'Armas',placements:'Ubicaciones',quests:'Misiones',errands:'Encargos',
  rules:'Reglas',campaignStory:'Historia',campaignEvents:'Eventos programados',roadsideDiscoveries:'Hallazgos',
@@ -27,7 +27,7 @@ export const FIELD_LABELS:Record<string,string>={
  wallFinish:'Acabado de pared',roofFinish:'Acabado de techo',doorStyle:'Estilo de puerta',windowStyle:'Estilo de ventana',
  land:'Tierra',rivers:'Ríos',neighbors:'Localidades conectadas',income:'Ingreso',biome:'Bioma',theater:'Región',
  caches:'Depósitos',arsenals:'Artillería almacenada',environment:'Puertas y contenedores',
- classes:'Clases',questions:'Preguntas',choices:'Opciones',defaults:'Valores iniciales',equipment:'Equipo',
+ classes:'Clases',questions:'Preguntas',choices:'Opciones',defaults:'Valores iniciales',equipment:'Equipo',traits:'Rasgos',commissionQuestions:'Preguntas de formación',commission:'Incorporación',registry:'Registro',classId:'Clase inicial',portraitId:'Retrato inicial',doctrineWeapons:'Armas por doctrina',questionError:'Mensaje de preguntas incompletas',availableText:'Mensaje de disponibilidad',statusText:'Mensaje de incorporación',weapon:'Arma principal',blade:'Arma corta',
  templates:'Plantillas',buildingsTemplates:'Plantillas de edificios',longitudes:'Longitudes',latitudes:'Latitudes',
  longitudeScale:'Escala de longitud',latitudeScale:'Escala de latitud',minLongitude:'Longitud inicial',maxLatitude:'Latitud superior',
  startingTerritory:'Territorio inicial',startingTreasury:'Tesorería inicial',owner:'Control',loyalty:'Lealtad',
@@ -36,6 +36,7 @@ export const FIELD_LABELS:Record<string,string>={
  ammunitionMarket:'Munición',oppositionAppearance:'Apariencia adversaria',militiaAppearance:'Apariencia de milicias',
 };
 const forbidden=new Set(['__proto__','constructor','prototype']);
+const enumerated:Record<string,string[]>={visual:['map','letter','route','muster'],gender:['woman','man'],skinTone:['light','brown','dark'],spriteSkinTone:['light','brown','dark']};
 const valueFor=(type:string)=>type==='number'?0:type==='boolean'?false:type==='object'?{}:type==='array'?[]:type==='null'?null:'';
 export const fieldLabel=(key:string)=>FIELD_LABELS[key]??key.replace(/([a-z])([A-Z])/g,'$1 $2').replaceAll('_',' ');
 export type FieldEditorProps={value:any;onChange:(next:any)=>void;label?:string;path?:string;depth?:number};
@@ -74,7 +75,8 @@ export default function FieldEditor({value,onChange,label='Campos',path='',depth
  if(typeof value==='boolean')return <label className="studio-check-field"><input type="checkbox" checked={value} onChange={e=>onChange(e.target.checked)}/><span>{label}</span><small>{path}</small></label>;
  if(typeof value==='number')return <label className="studio-value-field">{label}<input type="number" step="any" value={Number.isFinite(value)?value:''} onChange={e=>onChange(e.target.value===''?null:e.target.valueAsNumber)}/><small>{path}</small></label>;
  if(value===null||value===undefined)return <div className="studio-null-field"><span>{label}</span><small>Sin valor</small><select aria-label={`Tipo de ${label}`} value={newType} onChange={e=>setNewType(e.target.value)}><option value="string">Texto</option><option value="number">Número</option><option value="boolean">Sí / no</option><option value="object">Grupo de campos</option><option value="array">Lista</option></select><button type="button" onClick={()=>onChange(valueFor(newType))}>Definir</button></div>;
- return <label className="studio-value-field">{label}{typeof value==='string'&&/^#[a-f\d]{6}$/i.test(value)?<span className="studio-colour-field"><input aria-label={`Color de ${label}`} type="color" value={value} onChange={e=>onChange(e.target.value)}/><input value={value} onChange={e=>onChange(e.target.value)}/></span>:typeof value==='string'&&(value.length>100||/text|description|biography|introduction|objective|victory|defeat|caption|personality|note/i.test(path))?<textarea rows={3} value={value} onChange={e=>onChange(e.target.value)}/>:<input value={String(value??'')} onChange={e=>onChange(e.target.value)}/>}<small>{path}</small></label>;
+ const choices=enumerated[path.split('.').at(-1)??''];
+ return <label className="studio-value-field">{label}{typeof value==='string'&&choices?<select value={value} onChange={e=>onChange(e.target.value)}>{!choices.includes(value)&&<option value={value}>{value||'Elegir valor'}</option>}{choices.map(choice=><option key={choice}>{choice}</option>)}</select>:typeof value==='string'&&/^#[a-f\d]{6}$/i.test(value)?<span className="studio-colour-field"><input aria-label={`Color de ${label}`} type="color" value={value} onChange={e=>onChange(e.target.value)}/><input value={value} onChange={e=>onChange(e.target.value)}/></span>:typeof value==='string'&&(value.length>100||/text|description|biography|introduction|objective|victory|defeat|caption|personality|note/i.test(path))?<textarea rows={3} value={value} onChange={e=>onChange(e.target.value)}/>:<input value={String(value??'')} onChange={e=>onChange(e.target.value)}/>}<small>{path}</small></label>;
 }
 
 export function DocumentEditor(props:FieldEditorProps){

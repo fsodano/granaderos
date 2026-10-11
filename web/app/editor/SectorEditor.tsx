@@ -383,8 +383,20 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
     }
   }, [doc, ready, recover,draftKey]);
   useEffect(()=>{if(embedded)setCampaignContent(campaign??null);},[campaign,embedded]);
-  useEffect(()=>{if(!embedded||!controlledDocument||controlledDocument===emittedDocument.current)return;emittedDocument.current=controlledDocument;if(JSON.stringify(controlledDocument)!==JSON.stringify(doc)){setHistory(createHistory(controlledDocument));setSelected([]);setBattle(null);}},[controlledDocument,embedded]);
-  useEffect(()=>{if(!embedded||doc===emittedDocument.current)return;emittedDocument.current=doc;changeCallback.current?.(doc);},[doc,embedded]);
+  useEffect(()=>{
+    if(!embedded)return;
+    // Adopt master undo/redo before considering a local edit. The old local
+    // document belongs to this render and must not be emitted while syncing.
+    if(controlledDocument&&controlledDocument!==emittedDocument.current){
+      emittedDocument.current=controlledDocument;
+      if(JSON.stringify(controlledDocument)!==JSON.stringify(doc)){
+        setHistory(createHistory(controlledDocument));setSelected([]);setBattle(null);
+      }
+      return;
+    }
+    if(doc===emittedDocument.current)return;
+    emittedDocument.current=doc;changeCallback.current?.(doc);
+  },[controlledDocument,doc,embedded]);
   useEffect(() => {
     setFields(
       chosen
@@ -672,6 +684,7 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
         return;
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        if(embedded)return;
         e.preventDefault();
         setHistory((h: any) => (e.shiftKey ? redoHistory(h) : undoHistory(h)));
         return;
@@ -830,7 +843,7 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
             edit([{ type: 'setMetadata', values: { title: e.target.value } }])
           }
         />
-        <button
+        {!embedded&&<><button
           onClick={() => setHistory((h: any) => undoHistory(h))}
           disabled={!history.past.length}
         >
@@ -841,7 +854,7 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
           disabled={!history.future.length}
         >
           Rehacer
-        </button>
+        </button></>}
         <button onClick={() => file.current?.click()}>Importar</button>
         <button
           onClick={() => {

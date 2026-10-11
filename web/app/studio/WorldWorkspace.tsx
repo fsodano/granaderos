@@ -5,6 +5,7 @@ import {addProjectLocality,moveProjectLocality,updateProjectLocality,updateProje
 const biomes=['plains','wetland','foothills','forest','scrub','river','urban','mountain','water'];
 const groups:Record<string,string[]>={
  'Ciudades y regiones':['cities','theaters','factions','projection','geography'],
+ 'Etiquetas y distritos':['places','districts'],
  'Instalaciones, ingresos y suministros':['arrivalFacilities','incomeSources','sectorCash','workshopSectors','defaultHeadquarters','defaultFoundry','defaultRoles','physical','merchantPolicies','artilleryTrading'],
  'Escenas, salidas y despliegue':['exitLinks','sceneExits','sceneEntries','sceneExitAnchors','sceneLocations','deployment','defaultDeployment','landscapes','ruralSectors'],
  'Viajes, clima e invasiones':['travel','weather','enemyStrategy'],
