@@ -72,7 +72,11 @@ const uid = (kind: string) => `${kind}-${crypto.randomUUID()}`;
 type LibraryMap={id:string;metadata:{title:string};[key:string]:any};
 const diamond = (p: Point) =>
   `${p.x},${p.y - 14} ${p.x + 26},${p.y} ${p.x},${p.y + 14} ${p.x - 26},${p.y}`;
-export default function SectorEditor() {
+type SectorEditorProps={document?:any;campaign?:any;onDocumentChange?:(next:any)=>void;embedded?:boolean;templates?:any[];onSaveTemplate?:(template:any)=>void};
+export default function SectorEditor({document:controlledDocument,campaign,onDocumentChange,embedded=false,templates=[],onSaveTemplate}:SectorEditorProps={}) {
+  const templateLibrary=useMemo(()=>({...BUILDING_TEMPLATES,...Object.fromEntries(templates.map((t,i)=>[`project-${i}`,t]))}),[templates]);
+  const changeCallback=useRef(onDocumentChange);changeCallback.current=onDocumentChange;
+  const emittedDocument=useRef(controlledDocument);
   const [wallSide,setWallSide]=useState('north');
   const [exportFile, setExportFile] = useState<{
     name: string;
@@ -98,7 +102,7 @@ export default function SectorEditor() {
   }
 
   const [history, setHistory] = useState<any>(() =>
-      createHistory(blankMap()),
+      createHistory(controlledDocument??blankMap()),
     ),
     doc = history.document;
   const [notice, setNotice] = useState(
@@ -120,7 +124,7 @@ export default function SectorEditor() {
     [locked, setLocked] = useState<string[]>([]),
     [battle, setBattle] = useState<any>(null);
   const [template, setTemplate] = useState<any>(null),
-    [ready, setReady] = useState(false),
+    [ready, setReady] = useState(embedded),
     [recover, setRecover] = useState<string | null>(null);
   const [size, setSize] = useState({ width: 20, height: 16 }),
     [buildingSize, setBuildingSize] = useState({ width: 5, height: 5 });
@@ -128,8 +132,8 @@ export default function SectorEditor() {
   const [sector, setSector] = useState(''),
     [fields, setFields] = useState<any>({});
   const [library,setLibrary]=useState<Record<string,LibraryMap>>({}),[campaigns,setCampaigns]=useState<CampaignEntry[]>([]),[campaignId,setCampaignId]=useState('granaderos'),[draftKey,setDraftKey]=useState(editorDraftKey('sector','granaderos'));
-  const [campaignContent,setCampaignContent]=useState<LoadedCampaign['content']|null>(null);
-  const [loadingCampaign,setLoadingCampaign]=useState(true);
+  const [campaignContent,setCampaignContent]=useState<LoadedCampaign['content']|null>(campaign??null);
+  const [loadingCampaign,setLoadingCampaign]=useState(!embedded);
  const loadingSequence=useRef(0);
   const svg = useRef<SVGSVGElement>(null),
     file = useRef<HTMLInputElement>(null),
@@ -346,7 +350,8 @@ export default function SectorEditor() {
     return true;
   }
   function replace(next: any) {
-    if (
+    if(embedded&&(next.width!==20||next.height!==16||next.id!==doc.id)){setNotice("El mapa debe conservar su identidad y medir 20 × 16.");return;}
+    if (!embedded&&
       history.past.length &&
       !window.confirm(
         '¿Abrir otro mapa? Exporta primero los cambios que quieras conservar.',
@@ -367,16 +372,19 @@ export default function SectorEditor() {
     try{const stored=localStorage.getItem(key)??(loaded.entry.id==='granaderos'?localStorage.getItem('granaderos-sector-editor-v1'):null);if(stored)setRecover(stored);}catch{setNotice('La recuperación local no está disponible. Exporta tus cambios.');}
     setReady(true);
   }
-  useEffect(()=>{let active=true;editorCampaignBase().then(({entries,loaded})=>{if(active){setCampaigns(entries);openBase(loaded);}}).catch((error:Error)=>{if(active)setNotice(error.message);}).finally(()=>{if(active)setLoadingCampaign(false);});return()=>{active=false;loadingSequence.current++;};},[]);
+  useEffect(()=>{if(embedded)return;let active=true;editorCampaignBase().then(({entries,loaded})=>{if(active){setCampaigns(entries);openBase(loaded);}}).catch((error:Error)=>{if(active)setNotice(error.message);}).finally(()=>{if(active)setLoadingCampaign(false);});return()=>{active=false;loadingSequence.current++;};},[]);
   async function chooseBase(entry:CampaignEntry){const sequence=++loadingSequence.current;setReady(false);setLoadingCampaign(true);try{const loaded=await loadInstalledCampaign(entry);if(sequence===loadingSequence.current){openBase(loaded);setNotice('Campaña abierta.');}}catch(error){if(sequence===loadingSequence.current)setNotice(error instanceof Error?error.message:'No se pudo abrir la campaña.');}finally{if(sequence===loadingSequence.current)setLoadingCampaign(false);}}
   useEffect(() => {
-    if (!ready || recover) return;
+    if (embedded || !ready || recover) return;
     try {
       localStorage.setItem(draftKey, serializeMap(doc));
     } catch {
       setNotice('No se pudo guardar el borrador. Exporta el mapa.');
     }
   }, [doc, ready, recover,draftKey]);
+  useEffect(()=>{if(embedded)setCampaignContent(campaign??null);},[campaign,embedded]);
+  useEffect(()=>{if(!embedded||!controlledDocument||controlledDocument===emittedDocument.current)return;emittedDocument.current=controlledDocument;if(JSON.stringify(controlledDocument)!==JSON.stringify(doc)){setHistory(createHistory(controlledDocument));setSelected([]);setBattle(null);}},[controlledDocument,embedded]);
+  useEffect(()=>{if(!embedded||doc===emittedDocument.current)return;emittedDocument.current=doc;changeCallback.current?.(doc);},[doc,embedded]);
   useEffect(() => {
     setFields(
       chosen
@@ -733,8 +741,8 @@ export default function SectorEditor() {
             type: 'stampTemplate',
             id: 'template-check',
             template: value,
-            x: 0,
-            y: 0,
+            x: value.building.x,
+            y: value.building.y,
           },
         ]);
         if (check.errors.length) throw Error(check.errors.join(' '));
@@ -773,6 +781,7 @@ export default function SectorEditor() {
       'name',
       'material',
       'kind',
+      'roof',
       'wallFinish',
       'roofFinish',
       'doorStyle',
@@ -810,10 +819,10 @@ export default function SectorEditor() {
   return (
     <main aria-busy={loadingCampaign} className="sector-editor">
       <header>
-        <a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)} className="editor-brand">
+        {!embedded&&<><a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)} className="editor-brand">
           {campaignContent?campaignPresentation(campaignContent).title:'Campaña'} <small>Constructor de sectores</small>
         </a>
-        <a href={pagePath(`/story?campaign=${encodeURIComponent(campaignId)}`)}>Editor de historia</a><BuildIdentity/>
+        <a href={pagePath(`/story?campaign=${encodeURIComponent(campaignId)}`)}>Editor de historia</a><BuildIdentity/></>}
         <input
           aria-label="Nombre del sector"
           value={doc.metadata.title}
@@ -860,6 +869,7 @@ export default function SectorEditor() {
         >
           Probar mapa
         </button>
+        {embedded&&<button onClick={()=>{try{setBattle(createMapPlaytest(doc,campaignContent,{expanded:true}));}catch(e:any){setNotice(e.message);}}}>Probar escena expandida</button>}
         <input
           ref={file}
           type="file"
@@ -888,7 +898,7 @@ export default function SectorEditor() {
       )}
       <div className="editor-layout">
         <aside className="editor-palette">
-          <label>Campaña base<select value={campaignId} disabled={loadingCampaign} onChange={event=>{const entry=campaigns.find(item=>item.id===event.target.value);if(entry)void chooseBase(entry);}}>{campaigns.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label>
+          {!embedded&&<><label>Campaña base<select value={campaignId} disabled={loadingCampaign} onChange={event=>{const entry=campaigns.find(item=>item.id===event.target.value);if(entry)void chooseBase(entry);}}>{campaigns.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label>
           <h2>Sector</h2>
           <select
             aria-label="Sector existente"
@@ -947,7 +957,7 @@ export default function SectorEditor() {
             }}
           >
             Nuevo mapa
-          </button>
+          </button></>}
           <h2>Herramientas</h2>
           <div className="editor-tools">
             {[
@@ -1026,27 +1036,27 @@ export default function SectorEditor() {
               aria-label="Plantilla de edificio"
               value={
                 template
-                  ? (Object.entries(BUILDING_TEMPLATES).find(
+                  ? (Object.entries(templateLibrary).find(
                       ([_, t]) => t === template,
                     )?.[0] ?? 'custom')
                   : 'basic'
               }
               onChange={(e) => {
                 setTemplate(
-                  (BUILDING_TEMPLATES as any)[e.target.value] ?? null,
+                  (templateLibrary as any)[e.target.value] ?? null,
                 );
                 setAsset({ layer: 'buildings', type: 'house' });
                 setTool('place');
               }}
             >
               <option value="basic">Casa básica</option>
-              {Object.entries(BUILDING_TEMPLATES).map(([id, t]) => (
+              {Object.entries(templateLibrary).map(([id, t]) => (
                 <option key={id} value={id}>
                   {t.name}
                 </option>
               ))}
               {template &&
-                !Object.values(BUILDING_TEMPLATES).some(
+                !Object.values(templateLibrary).some(
                   (t) => t === template,
                 ) && <option value="custom">{template.name}</option>}
             </select>
@@ -1423,6 +1433,7 @@ export default function SectorEditor() {
                       ))}
                     </select>
                   </label>
+                  <label>Forma del techo<select value={fields.roof??chosen.roof} onChange={e=>setFields({...fields,roof:e.target.value})}>{["tile","thatch","terrace"].map(value=><option key={value}>{value}</option>)}</select></label>
                   {Object.entries({
                     wallFinish: WALL_FINISHES,
                     roofFinish: ROOF_FINISHES,
@@ -1441,11 +1452,12 @@ export default function SectorEditor() {
                         )[key]
                       }
                       <select
-                        value={fields[key] ?? buildingAppearance(chosen)[key]}
+                        value={fields[key] ?? ''}
                         onChange={(e) =>
-                          setFields({ ...fields, [key]: e.target.value })
+                          setFields({ ...fields, [key]: e.target.value || null })
                         }
                       >
+                        <option value="">Heredar estilo de campaña</option>
                         {Object.entries(catalog).map(([id, name]) => (
                           <option key={id} value={id}>
                             {name}
@@ -1572,7 +1584,8 @@ export default function SectorEditor() {
                     onClick={() => {
                       const t = buildingTemplate(doc, chosen.id);
                       setTemplate(t);
-                      download(
+                      onSaveTemplate?.(t);
+                      if(!embedded)download(
                         `${chosen.id}-template.json`,
                         JSON.stringify(t, null, 2),
                       );

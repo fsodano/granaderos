@@ -1,3 +1,5 @@
+import {prepareFiniteArsenalRequest} from './finite-artillery-arsenals.js';
+import {enterSector} from './world.js';
 import { compileMap } from "./compile-map.js";
 import { validateMap } from "./map-schema.js";
 import { createBattle } from "./tactical.js";
@@ -31,7 +33,7 @@ function previewUnits(map,content){
  });
 }
 /** @param {*} context Selected campaign package or state; omitted preserves legacy previews. */
-export function createMapPlaytest(document,context=null) {
+export function createMapPlaytest(document,context=null,{expanded=false}={}) {
   const checked = validateMap(document, { playable: true });
   if (!checked.valid) throw Error(checked.errors.join("\n"));
   const map = compileMap(document),content=campaignDefinitions(context),
@@ -44,18 +46,12 @@ export function createMapPlaytest(document,context=null) {
       weapon: 1800,
     }));
   const sector=content?campaignWorld(content).sectors.find(s=>s.id===document.id):null;
-  const battle = createBattle(
-    units.filter((s) => s.side === "player"),
-    {
-      ...map,
-      ...(content?{id:document.id,sector:document.id,name:document.metadata?.title??sector?.name??document.id,biome:sector?.biome??'plains',campaignPackage:content,...(sector?regionalConditions(document.id,12,content):{})}:{}),
-      exploration: true,
-      enemies: units.filter((s) => s.side === "enemy"),
-      npcs: units.filter((s) => s.side === "civilian"),
-    },
-  );
+  const selected=content?{...content,maps:{...content.maps,[document.id]:structuredClone(document)}}:null;
+  const request={id:document.id,sector:document.id,name:document.metadata?.title??sector?.name??document.id,biome:sector?.biome??'plains',campaignPackage:selected,compactLayout:!expanded,exploration:true,squad:units.filter(s=>s.side==='player'),enemies:units.filter(s=>s.side==='enemy'),npcs:units.filter(s=>s.side==='civilian'),...(sector?regionalConditions(document.id,12,selected):{})};
+  if(selected)prepareFiniteArsenalRequest({contentCampaign:{package:selected},sectors:selected.startingTerritory??{}},request);
+  const battle=selected&&document.width===20&&document.height===16?enterSector(request):createBattle(units.filter(s=>s.side==='player'),{...map,exploration:true,enemies:units.filter(s=>s.side==='enemy'),npcs:units.filter(s=>s.side==='civilian')});
   battle.sourceMapId = document.id;
   battle.sourceMapRevision = document.revision;
-  if(content)battle.campaignPackage=structuredClone(content);
+  if(content)battle.campaignPackage=structuredClone(selected);
   return battle;
 }

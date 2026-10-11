@@ -13,6 +13,7 @@ import {hasGenericCharacterDefinitions} from './content-character-ids.js';
 import {authoredForceEquipment} from './content-force-equipment.js';
 import {campaignRules} from './campaign-rules.js';
 import {applyCampaignBuildingStyles} from './campaign-building-styles.js';
+import {roadsideDiscoveryProps} from './roadside-discoveries.js';
 
 // Authored tactical plans. Buildings are solid footprints, never walkable painted facades.
 // The strategic grid is schematic; these tactical layouts are original gameplay maps,
@@ -20,7 +21,11 @@ import {applyCampaignBuildingStyles} from './campaign-building-styles.js';
 export const MAP_IDS=Object.keys(mapLibrary());
 const WIDTH=20,HEIGHT=16;
 const clone=value=>JSON.parse(JSON.stringify(value));
-function plan(id,definitions,context){const doc=mapLibrary(context)[id];return doc?{...compileMap(doc),title:doc.metadata?.title}:worldCellPlan(id,definitions,context);}
+function plan(id,definitions,context){
+ const doc=mapLibrary(context)[id];if(!doc)return worldCellPlan(id,definitions,context);
+ const map=compileMap(doc),cell=worldCell(id,context)?.id??id,discoveries=roadsideDiscoveryProps(cell,definitions);
+ return {...map,title:doc.metadata?.title,props:[...(map.props??[]),...discoveries.filter(d=>!map.props?.some(p=>p.id===d.id))]};
+}
 const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start,props=[],wallEdges=[]){
  const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!propBlocksAt({props},x,y)&&!wallMovementBlocked({wallEdges},p,t)&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
@@ -30,8 +35,9 @@ function buildCompactSectorMap(request={},restorePrevious=false){
  const id=request.sceneId??request.sector??request.id??campaignPresentation(request).skirmish?.request.id??campaignSectors(request)[0].id;const authored=plan(id,request.roadsideDiscoveryDefinitions,request),tiles=authored.tiles;
  const world=campaignWorld(request),deployment={...world.defaultDeployment,...world.deployment?.[id]},authoredPlayers=authored.spawns?.filter(s=>s.side==='player')??[],authoredEnemies=authored.spawns?.filter(s=>s.side==='enemy')??[];
  const playerAnchors=deployment.playerAnchors??(authoredPlayers.length?authoredPlayers:[{x:1,y:4}]),enemyAnchors=deployment.enemyAnchor?[deployment.enemyAnchor]:authoredEnemies.length?authoredEnemies:[{x:17,y:3}];
- const customSpace=request.upperSurfaces!==undefined||request.climbLinks!==undefined;
- const elevation=customSpace?{upperSurfaces:request.upperSurfaces,climbLinks:request.climbLinks}:restorePrevious?{}:campaignTerraces({...authored,width:WIDTH,height:HEIGHT});
+ const customSpace=request.upperSurfaces!==undefined||request.climbLinks!==undefined||authored.upperSurfaces!==undefined||authored.climbLinks!==undefined;
+ const surfaces=request.upperSurfaces??authored.upperSurfaces,links=request.climbLinks??authored.climbLinks;
+ const elevation=customSpace?{...(surfaces!==undefined?{upperSurfaces:surfaces}:{}),...(links!==undefined?{climbLinks:links}:{})}:restorePrevious?{}:campaignTerraces({...authored,width:WIDTH,height:HEIGHT});
  // Saved actors use the saved topology, restored by world.js after this scaffold.
  // Fresh upper posts must be admitted at their authored coordinates before cloning.
  if(!restorePrevious)validateTacticalSpace({...authored,width:WIDTH,height:HEIGHT,...elevation,units:(request.enemies??[]).filter(unit=>tacticalLevel(unit)!==0)});
@@ -55,16 +61,16 @@ function buildCompactSectorMap(request={},restorePrevious=false){
   return {...base,...clone(raw),...(upper?{}:choose({x:anchor.x,y:anchor.y+Math.floor(i/enemyAnchors.length)%10},'enemy'))};
  });
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>gun.stationed?clone(gun):({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
- return {map:{...clone(storedRequest),...elevation,...(authored.worldCell?{worldCell:true}:{}),groundItems:authored.groundItems,sourceMapId:authored.sourceMapId,sourceMapRevision:authored.sourceMapRevision,sector:request.sceneId?request.sector:id,name:request.name??authored.title??worldCell(id,request)?.name,width:WIDTH,height:HEIGHT,tiles,wallEdges:authored.wallEdges??[],wallGeometryVersion:2,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:authored.title??worldCell(id,request)?.name},boundaryRoads:authored.boundaryRoads};
+ return {map:{...clone(storedRequest),...elevation,...(authored.worldCell?{worldCell:true}:{}),groundItems:authored.groundItems,sourceMapId:authored.sourceMapId,sourceMapRevision:authored.sourceMapRevision,sector:request.sceneId?request.sector:id,name:request.name??authored.title??worldCell(id,request)?.name,width:WIDTH,height:HEIGHT,tiles,wallEdges:authored.wallEdges??[],wallGeometryVersion:2,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:authored.title??worldCell(id,request)?.name},boundaryRoads:authored.boundaryRoads,customSpace};
 }
 
 export function buildSectorMap(request={}, {restorePrevious=false}={}){
- const {map:core,boundaryRoads}=buildCompactSectorMap(request,restorePrevious);
+ const {map:core,boundaryRoads,customSpace}=buildCompactSectorMap(request,restorePrevious);
  const map=request.compactLayout===true?core:expandSectorMap(core,boundaryRoads,request);
  applyCampaignBuildingStyles(map,request);
  if(!restorePrevious&&request.compactLayout!==true)connectWorldCellApproaches(map,request);
  // Neighbourhood lots and their props only exist after expansion. Derive all
  // fresh accesses there; saved maps and explicit authored fixtures keep theirs.
- if(!restorePrevious&&request.compactLayout!==true&&request.upperSurfaces===undefined&&request.climbLinks===undefined)Object.assign(map,campaignTerraces(map));
+ if(!restorePrevious&&request.compactLayout!==true&&request.upperSurfaces===undefined&&request.climbLinks===undefined&&!customSpace)Object.assign(map,campaignTerraces(map));
  return map;
 }
