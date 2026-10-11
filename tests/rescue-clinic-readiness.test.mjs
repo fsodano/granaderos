@@ -13,18 +13,43 @@ import {syncBattleTime} from '../game/time.js';
 import {prepareRescueClinicGuards,rescueMedicalRouteOptions,restRescuePatients,resolveRescueClinicEncounter} from './rescue-clinic-readiness.mjs';
 import {northernClinicDefenseOrder} from './northern-route.mjs';
 import {recoverRescueForce} from './rescue-recovery.mjs';
+import {regionalWeatherSource} from '../game/regional-weather.js';
+import {physicalSourcesFor} from '../game/campaign-physical.js';
+import {campaignSectors} from '../game/campaign-definition.js';
+import {worldCell} from '../game/world-cells.js';
 
 const provenance=JSON.parse(readFileSync(new URL('./fixtures/opening-clinic-earned-exhaustion.provenance.json',import.meta.url),'utf8'));
 const sha=value=>createHash('sha256').update(value).digest('hex');
-// This immutable pre-edge tape has no edge geometry. Keep every historical
-// value in its hashes while omitting the new empty geometry envelope.
-const archivalValue=value=>Array.isArray(value)?value.map(archivalValue):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).filter(([key])=>!(Array.isArray(value.wallEdges)&&value.wallEdges.length===0&&['wallEdges','wallGeometryVersion'].includes(key))).map(([key,value])=>[key,archivalValue(value)])):value;
+// The immutable tape predates empty edge geometry and pinned weather/resource
+// contexts. Validate each new context against stock before omitting that
+// envelope from the old hash. Every original physical field remains compared.
+function archivalValue(value){
+ if(Array.isArray(value))return value.map(archivalValue);
+ if(!value||typeof value!=='object')return value;
+ if(value.regionalWeatherDefinition!==undefined)assert.deepEqual(value.regionalWeatherDefinition,regionalWeatherSource(value.sectorId??value.sector),'archival weather context must match the canonical stock source');
+ if(value.finiteResourceDefinitions!==undefined)assert.deepEqual(value.finiteResourceDefinitions,physicalSourcesFor(null),'archival physical context must match the canonical stock source');
+ if(value.localityIds!==undefined)assert.deepEqual(value.localityIds,campaignSectors(null).map(sector=>sector.id),'archival locality context must match the canonical stock source');
+ if(value.sectorCode!==undefined)assert.equal(value.sectorCode,worldCell(value.sectorId??value.sector)?.grid??'','archival grid context must match the canonical stock source');
+ return Object.fromEntries(Object.entries(value).filter(([key])=>!['regionalWeatherDefinition','finiteResourceDefinitions','localityIds','sectorCode'].includes(key)&&!(Array.isArray(value.wallEdges)&&value.wallEdges.length===0&&['wallEdges','wallGeometryVersion'].includes(key))).map(([key,child])=>[key,archivalValue(child)]));
+}
 const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])):value;
 const stateHash=value=>sha(JSON.stringify(canonical(archivalValue(value))));
 const fixture=name=>{const compressed=readFileSync(new URL('./fixtures/'+name,import.meta.url)),raw=gunzipSync(compressed);assert.equal(sha(compressed),provenance.fixtures[name].gzipSha256);assert.equal(sha(raw),provenance.fixtures[name].rawSha256);return raw.toString();};
 const initial=decodeSave(fixture('opening-clinic-earned-exhaustion.save.json.gz')).campaign,patients=[121,126,129,130],doctors=[112,122],courier=102;
 const nativeTapes=JSON.parse(fixture('opening-clinic-preparation-rest-replay.json.gz'));
 let prepared;
+
+test('archival comparisons admit only canonical new contexts and keep changed physical values observable',()=>{
+ const current={sector:'tucuman',hp:33,medkits:0,regionalWeatherDefinition:regionalWeatherSource('tucuman'),finiteResourceDefinitions:structuredClone(physicalSourcesFor(null))};
+ assert.deepEqual(archivalValue(current),{sector:'tucuman',hp:33,medkits:0});
+ assert.notEqual(stateHash(current),stateHash({...current,hp:34}));assert.notEqual(stateHash(current),stateHash({...current,medkits:1}));
+ const badWeather=structuredClone(current);badWeather.regionalWeatherDefinition.seed++;
+ assert.throws(()=>archivalValue(badWeather),/archival weather context/);
+ const badStock=structuredClone(current);badStock.finiteResourceDefinitions.caches.tucuman.contents.find(item=>item.item==='medkits').count++;
+ assert.throws(()=>archivalValue(badStock),/archival physical context/);
+ const badLocality={...current,localityIds:campaignSectors(null).map(sector=>sector.id).slice(1)};assert.throws(()=>archivalValue(badLocality),/archival locality context/);
+ assert.throws(()=>archivalValue({...current,sectorCode:'forged'}),/archival grid context/);
+});
 
 function replayRecordedStage(start,stage){
  let pair=decodeSave(encodeSave(start)),child=null,saved=false;const expected=new Map(stage.canonicalResults.map(row=>[row.index,row.resultSha256]));
@@ -89,7 +114,11 @@ test('retained native defeat tape settles exact losses and still fails the stric
  assert.ok(retained.battle.wallEdges===undefined||retained.battle.wallEdges.length===0);
  retained.battle.wallEdges=[];retained.battle.wallGeometryVersion=2;
  assert.equal(retained.orders.length,184);assert.equal(retained.battle.status,'defeat');
- assert.throws(()=>resolveRescueClinicEncounter(start,{executeBattle:(request,snapshot,options)=>{executions++;assert.equal(options.controller,northernClinicDefenseOrder);assert.equal(stateHash(request),provenance.expected.nativeRequestCanonicalSha256);assert.equal(stateHash(snapshot),provenance.expected.nativeSnapshotCanonicalSha256);return structuredClone(retained);},onCheckpoint:(name,campaign,receipt)=>{assert.equal(name,'rescue-clinic-defense');settled=structuredClone(campaign);evidence=receipt;}}),/real clinic defense must win/);
+ assert.throws(()=>resolveRescueClinicEncounter(start,{executeBattle:(request,snapshot,options)=>{
+  executions++;assert.equal(options.controller,northernClinicDefenseOrder);assert.equal(stateHash(request),provenance.expected.nativeRequestCanonicalSha256);assert.equal(stateHash(snapshot),provenance.expected.nativeSnapshotCanonicalSha256);
+  const result=structuredClone(retained);Object.assign(result.battle,{regionalWeatherDefinition:structuredClone(request.regionalWeatherDefinition),finiteResourceDefinitions:structuredClone(request.finiteResourceDefinitions),localityIds:campaignSectors(null).map(sector=>sector.id),sectorCode:worldCell(request.sector)?.grid??''});
+  assert.deepEqual(archivalValue(result.battle),archivalValue(retained.battle),'the archival context envelope cannot change the retained native defeat');return result;
+ },onCheckpoint:(name,campaign,receipt)=>{assert.equal(name,'rescue-clinic-defense');settled=structuredClone(campaign);evidence=receipt;}}),/real clinic defense must win/);
  assert.deepEqual(start,before);assert.equal(executions,1);assert.equal(evidence.exactNativeReplay,true);assert.equal(evidence.midpoint,92);assert.equal(evidence.status,'defeat');assert.equal(stateHash(settled),provenance.expected.settledDefeatCanonicalSha256);
  assert.equal(settled.hour,288);assert.equal(settled.secondOfHour,750);assert.equal(settled.resources.treasury,2940);assert.equal(settled.sectors.tucuman.owner,'royalist');assert.equal(settled.pendingEncounter,null);assert.equal(settled.pendingBattle,null);
  assert.deepEqual(Object.entries(settled.operativeState).filter(([id,record])=>before.operativeState[id].alive&&!record.alive).map(([id])=>Number(id)),[103,108,112,121,122,126,129,130]);
