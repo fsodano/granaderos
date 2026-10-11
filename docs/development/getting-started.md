@@ -71,6 +71,11 @@ a new campaign for version 0.1 checks. See the
 
 ## Checks
 
+For editor changes, use the [editor development guide](editor-development.md)
+to select affected project, archive, storage, embedded or standalone checks.
+The [editor experience plan](../plans/editor-experience.md) defines the current
+UX/DX acceptance and its browser evidence requirements.
+
 The root [`package.json`](../../package.json) defines these commands:
 
 | Command | Purpose |

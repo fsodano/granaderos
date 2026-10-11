@@ -14,6 +14,8 @@ of each check when assessing the current version.
 
 ## Current version and recent evidence
 
+- [Editor experience, 11 October](../evidence/editor-experience-2026-10-11/README.md)
+  — delivered bounded UX/DX checks and production route review, with preview and file-picker limits.
 - [Campaign studio checks, production export and browser limits](../evidence/campaign-studio-2026-10-10/README.md)
   — portable projects, real resource bytes, ZIP/folder validation, IndexedDB and scoped production browser results; file-import and test-save reimport limits are explicit.
 

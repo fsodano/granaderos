@@ -40,21 +40,24 @@ export default function ErrandEditor({draft,onChange}:{draft:any;onChange:(value
     change(quests.map((q:any)=>q===quest?next:q));
   };
   const norm=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const filtered=quests.filter((q:any)=>norm(`${q.title} ${q.id} ${contacts.find(c=>c.id===q.npcId)?.name??''}`).includes(norm(search.trim())));
   return <section aria-label="Encargos locales editables"><p>Configurá entregas de objetos, escoltas y recompensas. Cada contacto admite un encargo local. Los encargos del diálogo se conservan en la sección Encargos.</p><div className="editor-columns">
-    <aside><h2>Encargos locales <small>{quests.length}</small></h2>
-      <label>Buscar encargo<input type="search" value={search} onChange={e=>setSearch(e.target.value)}/></label>
-      <button disabled={!freeContact||quests.length>=200} onClick={()=>{
+    <aside aria-label="Catálogo de encargos locales"><h2>Encargos locales <small>{quests.length}</small></h2>
+      <label className="list-search">Buscar encargo<input type="search" value={search} placeholder="Título, contacto o ID" onChange={e=>setSearch(e.target.value)} onKeyDown={e=>{if(e.key==='Escape')setSearch('');}}/></label>
+      <button className="primary" disabled={!freeContact||quests.length>=200} onClick={()=>{
         if(!freeContact)return;const added={id:id(),npcId:freeContact.id,sector:freeContact.sector??draft.headquarters??CAMPAIGN_SECTORS[0]?.id,title:'Nuevo encargo',offer:'Necesito tu ayuda.',delivery:'Gracias por tu ayuda.',cost:{},requiredSectors:[],requires:[],reward:{treasury:0,loyalty:Boolean(cityForSector(freeContact.sector))}};
         change([...quests,added]);select(added.id);setSearch('');
       }}>Crear encargo</button>
-      {quests.filter((q:any)=>norm(`${q.title} ${q.id} ${contacts.find(c=>c.id===q.npcId)?.name??''}`).includes(norm(search))).map((q:any)=><button key={q.id} aria-current={quest===q?'true':undefined} onClick={()=>select(q.id)}>{q.title}</button>)}
+      <div className="content-list-feedback"><span role="status">{filtered.length} de {quests.length} encargos</span>{search&&<button type="button" onClick={()=>setSearch('')}>Limpiar búsqueda</button>}</div>
+      <div className="entry-list">{filtered.map((q:any)=><button key={q.id} aria-label={q.title} aria-current={quest===q?'true':undefined} onClick={()=>select(q.id)}>{q.title}<small>{q.id}</small></button>)}{filtered.length===0&&<p role="status" className="content-empty">{search?'No hay resultados para esta búsqueda.':'No hay encargos locales. Creá uno para comenzar.'}</p>}</div>
       {!freeContact&&<p>Cada contacto admite un encargo. Agregá otro personaje con una aparición para crear más.</p>}
     </aside>
     <section className="editor-detail">
-      {!quest?<p>No hay encargos. Creá uno para comenzar.</p>:<>
+      {!quest?<div className="content-empty"><h2>Prepará un encargo local</h2><p>Elegí un habitante con una aparición en el mapa para configurar una entrega o escolta.</p></div>:<>
+        {search&&!filtered.some((q:any)=>q.id===quest.id)&&<p className="content-selection-note">El filtro conserva el encargo que estás editando.</p>}
         <h2>{quest.title}</h2>
         <p>Las entregas del inventario conservan cada objeto. Una recompensa se entrega una sola vez. La muerte del destinatario elegido termina el encargo pendiente.</p>
-        <div className="toolbar"><button disabled={quests.some((q:any)=>q.requires?.includes(quest.id))} onClick={()=>{change(quests.filter((q:any)=>q!==quest));select('');}}>Quitar encargo</button></div>
+        <div className="toolbar"><button className="content-danger" disabled={quests.some((q:any)=>q.requires?.includes(quest.id))} onClick={()=>{change(quests.filter((q:any)=>q!==quest));select('');}}>Quitar encargo</button></div>
         {quests.some((q:any)=>q.requires?.includes(quest.id))&&<p>Otros encargos dependen de este. Quitá esas condiciones antes de borrarlo.</p>}
         <div className="fields">
           <label>Título<input value={quest.title} maxLength={120} onChange={e=>update({title:e.target.value})}/></label>

@@ -16,7 +16,7 @@ import ErrandEditor from './ErrandEditor';
 import {errandContacts} from '../../../game/quest-definitions.js';
 import CampaignRules from './CampaignRules';
 import ContractPricePreview from './ContractPricePreview';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   ATTRIBUTE_FIELDS,
@@ -43,6 +43,7 @@ import { encodeSave } from '../../../game/save.js';
 import { campaignContentReport } from '../../../game/campaign-content.js';
 import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
+import '../editor-tools.css';
 import {CHARACTER_ABILITIES,legacyCharacterAbilities} from '../../../game/character-abilities.js';
 import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,legacyOperativeId,hasGenericCharacterDefinitions} from '../../../game/content-character-ids.js';
 import {conductObserverDefinition,conductNoncombatantDefinition} from '../../../game/service-objections.js';
@@ -64,6 +65,7 @@ import ForceEquipment from './ForceEquipment';
 import AdvancedContent from './AdvancedContent';
 import CharacterPreview from '../studio/CharacterPreview';
 import QuestSandbox from '../studio/QuestSandbox';
+import {DocumentDraftProvider,DocumentDraftStatus} from '../studio/DocumentDrafts';
 import {forceWeaponUsers} from '../../../game/content-force-equipment.js';
 const labels: Record<string, string> = {
   maxHp: 'Salud',
@@ -99,7 +101,20 @@ function nextId(prefix: string, items: any[]) {
   return `${prefix}-${n}`;
 }
 export type ContentEditorProps={content?:any;onContentChange?:(next:any)=>void;embedded?:boolean;initialTab?:string;resolveAsset?:(reference:string)=>string};
+const editorSections = [
+  {id:'characters',name:'Personajes',help:'Editá las fichas, el equipo, la apariencia y las conversaciones.'},
+  {id:'weapons',name:'Armas',help:'Configurá armas portátiles y modelos de artillería. Los cambios se aplican a las fichas que los usan.'},
+  {id:'arrivals',name:'Llegadas',help:'Elegí destinos de contratación y puntos de recepción en el mundo de esta campaña.'},
+  {id:'rules',name:'Reglas',help:'Configurá el estado inicial, los capítulos y las reglas de campaña.'},
+  {id:'quests',name:'Encargos',help:'Definí objetivos, plazos y requisitos para las conversaciones.'},
+  {id:'errands',name:'Encargos locales',help:'Prepará entregas físicas, escoltas y recompensas con contactos del mapa.'},
+  {id:'advanced',name:'Eventos y suministros',help:'Programá eventos y configurá hallazgos, importaciones y suministros.'},
+  {id:'quests-test',name:'Probar encargos',help:'Probá conversaciones y objetivos con las acciones reales del juego en una sesión separada.'},
+  {id:'test',name:'Pruebas',help:'Comprobá apariciones y armas sin cambiar una partida guardada.'},
+];
 export default function ContentEditor({content,onContentChange,embedded=false,initialTab='characters',resolveAsset=sitePath}:ContentEditorProps={}) {
+  const editorId = `content-editor-${useId().replace(/:/g,'')}`;
+  const EditorRoot = embedded ? 'section' : 'main';
   const [exportFile, setExportFile] = useState<{ text: string; name: string } | null>(null);
   const [exportStatus, setExportStatus] = useState('');
   const [exportUrl, setExportUrl] = useState<string>();
@@ -117,7 +132,7 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
  const loadingSequence=useRef(0);
   const [past, setPast] = useState<any[]>([]);
   const [future, setFuture] = useState<any[]>([]);
-  const [tab, setTab] = useState(initialTab);
+  const [tab, setTab] = useState(editorSections.some(section=>section.id===initialTab)?initialTab:'characters');
   const [weaponKind,setWeaponKind]=useState('handheld');
   const [selected, setSelected] = useState('person-0');
   const [searches, setSearches] = useState<Record<string, string>>({});
@@ -179,6 +194,9 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
         )
       : items;
   const item = items.find((i: any) => i.id === selected) ?? items[0];
+  const activeSection=editorSections.find(section=>section.id===tab)!;
+  const selectionFiltered=Boolean(searchable&&query&&item&&!visibleItems.some((entry:any)=>entry.id===item.id));
+  const clearSearch=()=>setSearches(current=>({...current,[collection]:''}));
   const contractDefaults = tab==='characters' ? (embedded?draft:baseContent).characters.find((c:any)=>c.id===item?.id) : null;
   const characterTraits = item?.traits??contractDefaults?.traits??[];
   const ridingSkill = item?.ridingSkill??contractDefaults?.ridingSkill??0;
@@ -257,6 +275,40 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
     } catch (e: any) {
       setNotice(e.message);
     }
+  }
+  useEffect(()=>{
+    if(embedded)return;
+    function onHistoryKey(event:KeyboardEvent){
+      if(!(event.ctrlKey||event.metaKey)||event.altKey||event.defaultPrevented)return;
+      const target=event.target;
+      if(target instanceof Element&&target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="dialog"]'))return;
+      const key=event.key.toLowerCase(),back=key==='z'&&!event.shiftKey,forward=key==='y'||key==='z'&&event.shiftKey;
+      if(back&&past.length){event.preventDefault();undo();}
+      if(forward&&future.length){event.preventDefault();redo();}
+    }
+    window.addEventListener('keydown',onHistoryKey);
+    return()=>window.removeEventListener('keydown',onHistoryKey);
+  },[embedded,draft,past,future]);
+  function navigateSection(id:string){setTab(id);setSelected('');}
+  function onSectionKey(event:ReactKeyboardEvent<HTMLButtonElement>,index:number){
+    const offsets:Record<string,number>={ArrowRight:1,ArrowLeft:-1};
+    let next=index;
+    if(event.key==='Home')next=0;
+    else if(event.key==='End')next=editorSections.length-1;
+    else if(event.key in offsets)next=(index+offsets[event.key]+editorSections.length)%editorSections.length;
+    else return;
+    event.preventDefault();navigateSection(editorSections[next].id);
+    event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]?.focus();
+  }
+  function onEntityKey(event:ReactKeyboardEvent<HTMLButtonElement>,index:number){
+    let next=index;
+    if(event.key==='ArrowDown')next=Math.min(index+1,visibleItems.length-1);
+    else if(event.key==='ArrowUp')next=Math.max(index-1,0);
+    else if(event.key==='Home')next=0;
+    else if(event.key==='End')next=visibleItems.length-1;
+    else return;
+    event.preventDefault();setSelected(visibleItems[next].id);
+    event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('button')[next]?.focus();
   }
   function add(kind='contract') {
     let added: any;
@@ -406,24 +458,31 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
       ? contentShotPreview(battle,player,target)
       : null;
   return (
-    <main aria-busy={loadingCampaign} className="content-editor">
-      {!embedded&&<><header>
+    <DocumentDraftProvider scope={`story:${draft.id}`}>
+    <EditorRoot aria-label="Editor de contenido" aria-busy={loadingCampaign} className={`content-editor${embedded?' content-editor-embedded':''}`}>
+      <a className="content-skip" href={`#${editorId}-panel`}>Ir al contenido de la sección</a>
+      {!embedded&&<><header className="content-header">
         <div>
-          <a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)}>← Volver al juego</a> · <a href={pagePath(`/editor?campaign=${encodeURIComponent(campaignId)}`)}>Editar sectores</a>
-          <p className="eyebrow">Taller de campañas</p><BuildIdentity/>
-          <h1>El mundo y sus protagonistas</h1>
-          <p>Editá el contenido. Probá sus reglas en una sesión separada.</p>
+          <div className="content-breadcrumbs"><a href={pagePath(`/studio?campaign=${encodeURIComponent(campaignId)}`)}>Estudio de campañas</a><span aria-hidden="true">/</span><span>Contenido</span></div>
+          <p className="eyebrow">Herramientas de autor</p>
+          <h1>Editor de contenido</h1>
+          <p>Personajes, equipo y objetivos en un mismo borrador.</p>
+          <details className="content-build"><summary>Información de versión</summary><BuildIdentity/></details>
         </div>
-        <div className="toolbar">
-          <button disabled={!past.length} onClick={undo}>
+        <div className="toolbar content-actions" role="toolbar" aria-label="Acciones del borrador">
+          <div className="content-history">
+          <button disabled={!past.length} onClick={undo} title="Deshacer · Ctrl/Cmd+Z" aria-keyshortcuts="Control+Z Meta+Z">
             Deshacer
           </button>
-          <button disabled={!future.length} onClick={redo}>
+          <button disabled={!future.length} onClick={redo} title="Rehacer · Ctrl/Cmd+Mayús+Z" aria-keyshortcuts="Control+Shift+Z Meta+Shift+Z Control+Y">
             Rehacer
           </button>
+          </div>
           <button onClick={() => importRef.current?.click()}>Importar</button>
           <button
+            className="primary"
             disabled={!!errors.length}
+            title={errors.length?'Corregí los problemas de validación para exportar.':'Descargar o copiar el contenido del borrador'}
             onClick={() =>
               safely(() =>
                 download(encodeContentPackage(draft), `${draft.id}.json`),
@@ -434,7 +493,7 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
           </button>
         </div>
       </header>
-      <details>
+      <details className="content-example">
         <summary>Campaña de ejemplo: La ruta de las postas</summary>
         <p>Partí de Córdoba, reuní una custodia y recuperá las comunicaciones con Tucumán y Salta. Incluye personajes, contratos, encuentros y tres capítulos propios.</p>
         <button onClick={()=>safely(()=>{
@@ -497,30 +556,20 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
           </button>
         </div>
       )}
-      {!embedded&&<><label>Campaña base<select aria-label="Campaña base" value={campaignId} onChange={event=>{const entry=campaigns.find(item=>item.id===event.target.value);if(entry)void chooseBase(entry);}}>{campaigns.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label><p className="scope-note">
-        El borrador se guarda en este navegador. Las pruebas no modifican tu
-        partida. Editá personajes, armas y apariciones. Podés iniciar una campaña
-        separada con estas fichas.
-      </p>
+      {!embedded&&<><div className="content-project-bar"><label>Campaña base<select aria-label="Campaña base" value={campaignId} disabled={loadingCampaign} onChange={event=>{const entry=campaigns.find(item=>item.id===event.target.value);if(entry)void chooseBase(entry);}}>{campaigns.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label><p className="scope-note">Borrador local en este navegador. Exportá una copia para conservarlo o compartirlo. Las pruebas usan una sesión separada.</p><div className="content-secondary-links"><a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)}>Volver al juego</a><a href={pagePath(`/editor?campaign=${encodeURIComponent(campaignId)}`)}>Editar sectores</a></div></div>
       <section className="campaign-launch" aria-label="Integración de campaña">
-        <h2>Jugar con el contenido editado</h2>
-        <p>
-          Creá contratables y habitantes, elegí sus celdas y configurá sus fichas,
-          encuentros y sucesores. También podés editar las armas de personajes,
-          enemigos y milicias. La campaña conserva una copia de este contenido
-          y se guarda por separado.
-        </p>
-        {integration && (
-          <ul>
+        <div className="content-launch-heading"><h2>Probar la campaña</h2><small>La partida conserva una copia de estas fichas y se guarda por separado.</small></div>
+        {integration && (integration.blocked.length>0||integration.pending.length>0) && (
+          <details open={integration.blocked.length>0}><summary>Revisar integración de campaña · {integration.blocked.length+integration.pending.length} avisos</summary><ul>
             {[...integration.blocked, ...integration.pending].map(
               (message: string) => (
                 <li key={message}>{message}</li>
               ),
             )}
-          </ul>
+          </ul></details>
         )}
+        <div className="toolbar">
         <button
-          className="primary"
           disabled={!ready || !integration || integration.blocked.length > 0}
           onClick={() =>
             safely(() => {
@@ -531,37 +580,35 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
           }
         >
           Iniciar campaña con estas fichas
-        </button>{' '}
+        </button>
         <a href={pagePath(`/?${campaignLaunchSearch({contentCampaign:{identity:contentIdentity(draft)}})}`)}>Continuar campaña del editor</a>
+        </div>
       </section></>}
-      <nav aria-label="Secciones del editor">
-        {[
-          ['characters', 'Personajes'],
-          ['weapons', 'Armas'],
-          ['arrivals', 'Llegadas'],
-          ['rules', 'Reglas'],
-          ['quests', 'Encargos'],
-          ['errands', 'Encargos locales'],
-          ['advanced', 'Eventos y suministros'],
-          ['quests-test', 'Probar encargos'],
-          ['test', 'Pruebas'],
-        ].map(([id, name]) => (
+      <nav className="content-section-tabs" role="tablist" aria-label="Secciones del editor">
+        {editorSections.map(({id,name},index) => (
           <button
             key={id}
+            type="button"
+            role="tab"
+            id={`${editorId}-tab-${id}`}
+            aria-controls={`${editorId}-panel`}
+            aria-selected={tab===id}
+            tabIndex={tab===id?0:-1}
             aria-current={tab === id ? 'page' : undefined}
-            onClick={() => {
-              setTab(id);
-              setSelected('');
-            }}
+            onKeyDown={event=>onSectionKey(event,index)}
+            onClick={() => navigateSection(id)}
           >
             {name}
           </button>
         ))}
       </nav>
+      {!embedded&&<DocumentDraftStatus onOpen={()=>navigateSection('advanced')}/>}
+      <section id={`${editorId}-panel`} role="tabpanel" aria-labelledby={`${editorId}-tab-${tab}`} tabIndex={0} className="content-section-panel">
+      <div className="content-section-heading"><h2>{activeSection.name}</h2><p>{activeSection.help}</p></div>
       {tab==='weapons'&&<nav aria-label="Tipos de armas"><button aria-pressed={weaponKind==='handheld'} onClick={()=>setWeaponKind('handheld')}>Armas portátiles</button><button aria-pressed={weaponKind==='artillery'} onClick={()=>setWeaponKind('artillery')}>Artillería</button></nav>}
-      {tab==='advanced'?<AdvancedContent draft={draft} onChange={change}/>:tab==='quests-test'?<QuestSandbox content={draft} resolveAsset={resolveAsset}/>:tab==='weapons'&&weaponKind==='artillery'?<ArtilleryProfiles draft={draft} onChange={change}/>:tab === 'rules' ? <CampaignRules draft={draft} onChange={change}/> : tab === 'errands' ? <ErrandEditor draft={draft} onChange={change}/> : tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
+      {tab==='advanced'?<AdvancedContent draft={draft} onChange={change}/>:tab==='quests-test'?<QuestSandbox content={draft} resolveAsset={resolveAsset}/>:tab==='weapons'&&weaponKind==='artillery'?<ArtilleryProfiles draft={draft} onChange={change} resolveAsset={resolveAsset}/>:tab === 'rules' ? <CampaignRules draft={draft} onChange={change}/> : tab === 'errands' ? <ErrandEditor draft={draft} onChange={change}/> : tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
         <div className="editor-columns">
-          <aside>
+          <aside className="content-entity-sidebar" aria-label={tab==='characters'?'Catálogo de personajes':'Catálogo de armas'}>
             <h2>
               {tab === 'characters'
                 ? 'Personajes'
@@ -574,8 +621,7 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
                   : items.length}
               </small>
             </h2>
-            {tab==='characters'&&<button onClick={()=>add('encounter')}>Crear habitante</button>}
-            {tab==='weapons'&&<button onClick={()=>add('blade')}>Crear arma blanca</button>}
+            <div className="content-create-actions">
             <button className="primary" onClick={()=>add()}>
               + Crear{' '}
               {tab === 'characters'
@@ -584,12 +630,16 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
                   ? 'arma'
                   : 'aparición'}
             </button>
+            {tab==='characters'&&<button onClick={()=>add('encounter')}>Crear habitante</button>}
+            {tab==='weapons'&&<button onClick={()=>add('blade')}>Crear arma blanca</button>}
+            </div>
             {searchable && (
               <label className="list-search">
                 {tab === 'characters' ? 'Buscar personajes' : 'Buscar armas'}
                 <input
                   type="search"
                   value={search}
+                  aria-describedby={`${editorId}-search-help`}
                   placeholder={
                     tab === 'characters' ? 'Nombre, apodo o ID' : 'Nombre o ID'
                   }
@@ -599,22 +649,27 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
                       [collection]: e.target.value,
                     }))
                   }
+                  onKeyDown={event=>{if(event.key==='Escape'&&search){event.preventDefault();clearSearch();}}}
                 />
+                <small id={`${editorId}-search-help`}>Escape limpia el filtro. En la lista, las flechas arriba y abajo cambian de ficha.</small>
               </label>
             )}
-            <div className="entry-list">
+            <div className="content-list-feedback"><span role="status" aria-live="polite">{visibleItems.length} de {items.length} {tab==='characters'?'personajes':'armas'}</span>{search&&<button type="button" onClick={clearSearch}>Limpiar búsqueda</button>}</div>
+            <div className="entry-list" aria-label={tab==='characters'?'Personajes disponibles':'Armas disponibles'}>
               {visibleItems.length === 0 && (
-                <p role="status">No hay resultados para esta búsqueda.</p>
+                <p className="content-empty" role="status">{query?'No hay resultados para esta búsqueda.':'El catálogo está vacío. Creá una ficha para comenzar.'}</p>
               )}
-              {visibleItems.map((i: any) => (
+              {visibleItems.map((i: any,index:number) => (
                 <button
                   key={i.id}
                   aria-pressed={i.id === item?.id}
+                  tabIndex={i.id===item?.id||selectionFiltered&&index===0?0:-1}
+                  onKeyDown={event=>onEntityKey(event,index)}
                   onClick={() => {
                     setSelected(i.id);
                   }}
                 >
-                  {tab === 'weapons' && <img className="weapon-thumbnail" src={sitePath(i.art??`/art/weapon-${i.template}.png`)} alt=""/>}
+                  {tab === 'weapons' && <img className="weapon-thumbnail" src={resolveAsset(i.art??`/art/weapon-${i.template}.png`)} alt=""/>}
                   {i.name ??
                     draft.characters.find((c: any) => c.id === i.character)
                       ?.name ??
@@ -624,7 +679,8 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
               ))}
             </div>
           </aside>
-          <section className="form-panel">
+          <section className="form-panel" aria-label="Ficha seleccionada">
+            {selectionFiltered&&<p className="content-selection-note" role="status">La ficha seleccionada no aparece en los resultados. El filtro conserva la ficha que estás editando.</p>}
             {item ? (
               <>
                 <div className="panel-heading">
@@ -632,9 +688,9 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
                     <h2>{item.name ?? 'Regla de aparición'}</h2>
                     <code>{item.id}</code>
                   </div>
-                  <div>
+                  <div className="toolbar content-record-actions">
                     {tab==='characters'&&(!isHistoricalCharacter(item,draft)||draft.campaignStory)&&<button onClick={duplicateCharacter}>{isHistoricalCharacter(item,draft)?'Copiar como habitante independiente':'Duplicar personaje'}</button>}
-                    <button onClick={remove}>Eliminar</button>
+                    <button className="content-danger" onClick={remove}>Eliminar</button>
                   </div>
                 </div>
                 {tab === 'characters' && (
@@ -1048,7 +1104,7 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
                 )}
               </>
             ) : (
-              <p>Creá un registro para comenzar.</p>
+              <div className="content-empty"><h2>No hay una ficha seleccionada</h2><p>Creá una ficha desde el catálogo para comenzar.</p></div>
             )}
             {tab==='weapons'&&<ForceEquipment draft={draft} onChange={change}/>}
           </section>
@@ -1341,8 +1397,9 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
           )}
         </section>
       )}
-      <footer>
-        <strong>
+      </section>
+      <footer className="content-validation">
+        <strong className="editor-status" data-state={errors.length?'error':'valid'}>
           {errors.length
             ? `${errors.length} problemas por corregir`
             : 'Contenido válido'}
@@ -1378,6 +1435,7 @@ export default function ContentEditor({content,onContentChange,embedded=false,in
           </div>
         </DialogContent>
       </Dialog>
-    </main>
+    </EditorRoot>
+    </DocumentDraftProvider>
   );
 }

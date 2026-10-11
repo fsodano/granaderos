@@ -18,6 +18,7 @@ Player-facing text is Spanish. Code and documentation are English.
 | Review the historical cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
 | Create a campaign in the browser | [Campaign studio](authoring/campaign-studio.md) and [studio acceptance evidence](evidence/campaign-studio-2026-10-10/README.md) |
+| Extend or improve the editing tools | [Editor development](development/editor-development.md) and [editor experience plan](plans/editor-experience.md) |
 | Create, check and install local campaign folders | [Campaign authoring](development/campaign-authoring.md) |
 | Use the experimental content editor | [Story editor](development/story-editor.md) |
 | Inspect or modify the experimental example | [La ruta de las postas](development/example-post-campaign.md) |
@@ -30,8 +31,9 @@ Player-facing text is Spanish. Code and documentation are English.
 The [alpha service-equipment record](verification/alpha-service-equipment-return-2026-10-01.md)
 and [PR #139 consolidation](verification/latest-build-consolidation.md) retain
 their 1 October source, checks and delivery limits. They do not describe the
-current version's complete acceptance. Full community campaign creation and
-sharing are [future work](plans/campaign-authoring.md).
+current version's complete acceptance. Local campaign creation is available in
+Studio; community hosting and sharing services are
+[future work](plans/campaign-authoring.md).
 
 ## Documentation map
 

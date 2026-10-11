@@ -19,8 +19,10 @@ test('embedded story editor publishes changes to its owner without browser draft
  const root=createRoot(dom.window.document.getElementById('root'));t.after(async()=>{await act(async()=>root.unmount());storage.setItem=setItem;globalThis.fetch=fetchBefore;dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}});
  await act(async()=>root.render(h(Harness)));const button=text=>[...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);
  assert.equal(button('Deshacer'),undefined);assert.equal(dom.window.document.querySelector('select[aria-label="Campaña base"]'),null);
+ assert.equal(dom.window.document.querySelector('.content-editor').tagName,'SECTION');assert.equal(dom.window.document.querySelector('.content-editor main'),null);
  await act(async()=>button('Crear encargo').click());assert.equal(updates,1);assert.equal(current.quests.length,1);assert.ok(current.world);assert.ok(current.maps.camp);assert.ok(current.presentation.characterPortraits.length);
  await act(async()=>button('Eventos y suministros').click());await act(async()=>button('Crear evento').click());assert.equal(current.campaignEvents.length,1);assert.equal(updates,2);assert.equal(writes,0);assert.equal(fetches,0);assert.equal(dom.window.location.href,'https://granaderos.test/studio');
+ const shortcut=new dom.window.KeyboardEvent('keydown',{key:'z',ctrlKey:true,bubbles:true,cancelable:true});await act(async()=>dom.window.document.querySelector('.content-editor').dispatchEvent(shortcut));assert.equal(shortcut.defaultPrevented,false);assert.equal(updates,2,'embedded history remains owned by the master project');
 });
 test('character preview presents the shared 3D actor with authored skin, weapons, stance and motion while keeping the source intact',async()=>{
  const {characterPreviewScene,default:CharacterPreview}=await import('../web/app/studio/CharacterPreview.tsx'),d=content(),c=d.characters[0];c.skinTone='dark';c.spriteAppearance='woman-scout';const hash=contentIdentity(d).hash;
@@ -41,4 +43,14 @@ test('a generic numeric identity remains editable and does not show inherited hi
  const {default:ContentEditor}=await import('../web/app/story/ContentEditor.tsx'),d=content();d.characters[0].id='person-3';delete d.characters[0].abilities;
  const html=renderToStaticMarkup(h(ContentEditor,{embedded:true,content:d})),dom=new JSDOM(html),field=dom.window.document.querySelector('fieldset[aria-label="Habilidades de combate"]');
  assert.equal(field.querySelectorAll('input:checked').length,0);assert.match(html,/Duplicar personaje/);assert.match(html,/Formación y progreso/);dom.window.close();
+});
+test('weapon and artillery catalogue previews resolve private project images without changing authored asset references',async()=>{
+ const {default:ContentEditor}=await import('../web/app/story/ContentEditor.tsx'),{default:ArtilleryProfiles}=await import('../web/app/story/ArtilleryProfiles.tsx'),{ARTILLERY}=await import('../game/artillery-definitions.js'),d=content(),hash=contentIdentity(d).hash;
+ const privateImage='data:image/png;base64,cHJldmlldw==',resolveAsset=()=>privateImage;
+ const html=renderToStaticMarkup(h(ContentEditor,{embedded:true,initialTab:'weapons',content:d,resolveAsset})),dom=new JSDOM(html);
+ for(const image of dom.window.document.querySelectorAll('.weapon-thumbnail,.weapon-preview'))assert.equal(image.getAttribute('src'),privateImage);
+ assert.ok(dom.window.document.querySelector('.weapon-thumbnail'));dom.window.close();
+ const profiles=Object.fromEntries(Object.entries(ARTILLERY).map(([id,profile])=>[id,{...profile,art:`/campaigns/studio-content/assets/${id}.png`}])),artillery=new JSDOM(renderToStaticMarkup(h(ArtilleryProfiles,{draft:{...d,artilleryProfiles:profiles},onChange:()=>{},resolveAsset})));
+ assert.equal(artillery.window.document.querySelectorAll('img').length,4);for(const image of artillery.window.document.querySelectorAll('img'))assert.equal(image.getAttribute('src'),privateImage);
+ artillery.window.close();assert.equal(contentIdentity(d).hash,hash);
 });

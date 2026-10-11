@@ -1,0 +1,17 @@
+✔ numeric fields retain the applied number while cleared or partial negative/comma input is typed (164.680333ms)
+✔ master project redo survives focus and unchanged numeric blur after undo (14.619458ms)
+✔ invalid numeric blur restores the last applied value and exposes its accessible notice (10.846291ms)
+✔ collection search uses translated accent-insensitive labels and adding clears an empty filter without losing unknown data (69.45ms)
+✔ array collection search finds accented names and adding retains the original authored records (21.579334ms)
+✔ unapplied JSON survives document unmount/reopen through the persistent owner provider (20.168625ms)
+✔ a rejected owner change retains staged JSON and the prior applied document after reopening (20.682917ms)
+✔ rejected apply cannot acknowledge another document with independently staged text when its path changes (20.8455ms)
+✔ external document changes require explicit replacement and accepted JSON clears the staged owner record (33.657875ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 892.543208

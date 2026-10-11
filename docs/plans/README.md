@@ -10,6 +10,8 @@ before selecting work.
 
 - [Complete campaign authoring studio](campaign-studio.md) — supported package authoring acceptance, exact evidence and publication status.
 
+- [Editor experience](editor-experience.md) — delivered bounded UX/DX for Studio and standalone editors; current evidence and broader preview limits.
+
 - [Campaign creation and community sharing](campaign-authoring.md) — current studio
   package authoring, with community publishing and wider mechanics kept as future work.
 
