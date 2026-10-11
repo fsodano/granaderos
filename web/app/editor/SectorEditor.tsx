@@ -11,7 +11,7 @@ import {
   WINDOW_STYLES,
 } from '../../../game/building-appearance.js';
 import { BUILDING_KINDS } from '../../../game/map-catalog.js';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import TacticalScene from '../TacticalScene';
 import Battlefield from '../Battlefield';
 import {
@@ -57,6 +57,7 @@ import {
   seededTerrainCommands,
 } from '../../../game/map-editor-tools.js';
 import { BUILDING_TEMPLATES } from '../../../game/map-templates.js';
+import '../editor-tools.css';
 import './editor.css';
 type Point = { x: number; y: number; axis?:'x'|'y' };
 const labels: Record<string, string> = {
@@ -69,11 +70,30 @@ const labels: Record<string, string> = {
   lights: 'Luces',
 };
 const uid = (kind: string) => `${kind}-${crypto.randomUUID()}`;
+const toolGroups=[
+  {name:'Navegar',tools:[['select','Seleccionar'],['pan','Desplazar'],['route','Medir ruta']]},
+  {name:'Construir',tools:[['building','Dibujar edificio'],['wall','Tabique'],['door','Puerta'],['window','Ventana'],['floor','Quitar pared']]},
+  {name:'Terreno',tools:[['paint','Pintar']]},
+];
+const toolHints:Record<string,string>={
+  select:'Hacé clic en un elemento para editarlo. Mayús suma elementos a la selección.',
+  pan:'Arrastrá el mapa para cambiar la vista. También podés usar Alt + arrastrar.',
+  route:'Elegí una casilla de inicio para ver sus rutas accesibles.',
+  paint:'Arrastrá sobre las casillas para aplicar el terreno elegido.',
+  building:'Arrastrá un rectángulo para dibujar un edificio con acceso.',
+  wall:'Arrastrá sobre un borde del edificio para crear un tabique.',
+  door:'Hacé clic en un borde del edificio para colocar una puerta.',
+  window:'Hacé clic en un borde del edificio para colocar una ventana.',
+  floor:'Hacé clic en un borde del edificio para quitar su pared.',
+  place:'Hacé clic en una casilla libre o arrastrá un elemento desde el catálogo.',
+};
 type LibraryMap={id:string;metadata:{title:string};[key:string]:any};
 const diamond = (p: Point) =>
   `${p.x},${p.y - 14} ${p.x + 26},${p.y} ${p.x},${p.y + 14} ${p.x - 26},${p.y}`;
 type SectorEditorProps={document?:any;campaign?:any;onDocumentChange?:(next:any)=>void;embedded?:boolean;templates?:any[];onSaveTemplate?:(template:any)=>void};
 export default function SectorEditor({document:controlledDocument,campaign,onDocumentChange,embedded=false,templates=[],onSaveTemplate}:SectorEditorProps={}) {
+  const editorId=useId(),[mobilePanel,setMobilePanel]=useState('map'),[catalogueQuery,setCatalogueQuery]=useState(''),[draftStatus,setDraftStatus]=useState('loading');
+  const validationPanel=useRef<HTMLElement>(null);
   const templateLibrary=useMemo(()=>({...BUILDING_TEMPLATES,...Object.fromEntries(templates.map((t,i)=>[`project-${i}`,t]))}),[templates]);
   const changeCallback=useRef(onDocumentChange);changeCallback.current=onDocumentChange;
   const emittedDocument=useRef(controlledDocument);
@@ -140,11 +160,18 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
     gesture = useRef<any>(null),
     current = useRef<any>(null);
   const map = useMemo(() => compileMap(doc), [doc]),
-    report = useMemo(() => validateMap(doc), [doc]);
+    report = useMemo(() => validateMap(doc), [doc]),
+    playtestReport=useMemo(()=>validateMap(doc,{playable:true}),[doc]);
   const all = LAYERS.flatMap((layer) =>
       doc[layer].map((e: any) => ({ ...e, layer })),
     ),
     chosen = all.find((e: any) => e.id === selected[0]);
+  const placedName=asset.layer==='features'?(FEATURES as any)[asset.type]?.name:asset.layer==='props'?(FURNITURE as any)[asset.type]?.name:asset.layer==='items'?(ITEM_TYPES as any)[asset.type]:asset.layer==='buildings'?template?.name??'Casa colonial':asset.layer==='spawns'?asset.type==='player'?campaignFactionName(campaignContent,'patriot'):asset.type==='enemy'?campaignFactionName(campaignContent,'royalist'):'Vecino':asset.layer==='lights'?'Farol':asset.layer==='exits'?'Salida':labels[asset.layer];
+  const activeToolName=tool==='place'?`Colocar: ${placedName??asset.type}`:toolGroups.flatMap(group=>group.tools).find(([id])=>id===tool)?.[1]??tool;
+  const searchText=(value:string)=>value.normalize('NFD').replace(/\p{Diacritic}/gu,'').toLocaleLowerCase();
+  const matchesCatalogue=(name:string)=>searchText(name).includes(searchText(catalogueQuery.trim()));
+  const catalogueNames=[...Object.values(FEATURES).map(s=>s.name),...Object.values(FURNITURE).map(s=>`${s.name} · ${s.width}×${s.height}`),...Object.values(ITEM_TYPES),template?`Plantilla: ${template.name}`:'Casa colonial',campaignFactionName(campaignContent,'patriot'),campaignFactionName(campaignContent,'royalist'),'Vecino','Farol','Salida'];
+  const catalogueMatches=catalogueNames.filter(matchesCatalogue).length;
   const world = {
     width: (doc.width + doc.height) * 26 + 120,
     height: (doc.width + doc.height) * 14 + 160,
@@ -378,7 +405,9 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
     if (embedded || !ready || recover) return;
     try {
       localStorage.setItem(draftKey, serializeMap(doc));
+      setDraftStatus('saved');
     } catch {
+      setDraftStatus('error');
       setNotice('No se pudo guardar el borrador. Exporta el mapa.');
     }
   }, [doc, ready, recover,draftKey]);
@@ -718,6 +747,7 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
     return () => window.removeEventListener('keydown', key);
   });
   function palette(layer: string, type: string, name: string) {
+    if(!matchesCatalogue(name))return null;
     return (
       <button
         key={type}
@@ -726,6 +756,8 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
             ? 'active'
             : ''
         }
+        aria-pressed={tool==='place'&&asset.layer===layer&&asset.type===type}
+        title={`Colocar ${name}. Hacé clic en el mapa o arrastrá este elemento.`}
         onClick={() => {
           setAsset({ layer, type });
           setTool('place');
@@ -814,8 +846,8 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
   }
   if (battle)
     return (
-      <main className="sector-editor playtest">
-        <header>
+      <main className={`sector-editor playtest${embedded?' embedded':''}`}>
+        <header className="editor-header">
           <strong>Prueba del sector</strong>
           <span>Los cambios de la prueba no se guardan en el mapa.</span>
           <button onClick={() => setBattle(null)}>Volver al editor</button>
@@ -830,32 +862,38 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
       </main>
     );
   return (
-    <main aria-busy={loadingCampaign} className="sector-editor">
-      <header>
-        {!embedded&&<><a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)} className="editor-brand">
-          {campaignContent?campaignPresentation(campaignContent).title:'Campaña'} <small>Constructor de sectores</small>
-        </a>
-        <a href={pagePath(`/story?campaign=${encodeURIComponent(campaignId)}`)}>Editor de historia</a><BuildIdentity/></>}
+    <main aria-busy={loadingCampaign} className={`sector-editor${embedded?' embedded':''}`} data-active-panel={mobilePanel}>
+      <header className="editor-header">
+        <div className="editor-identity">
+          <span className="editor-eyebrow">Editor de mapas</span>
+          {!embedded?<a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)} className="editor-brand">{campaignContent?campaignPresentation(campaignContent).title:'Campaña'}</a>:<strong>Plano táctico del proyecto</strong>}
+        </div>
+        {!embedded&&<nav className="editor-navigation" aria-label="Editores"><a href={pagePath('/studio')}>Estudio de campaña</a><a href={pagePath(`/story?campaign=${encodeURIComponent(campaignId)}`)}>Editor de historia</a><BuildIdentity/></nav>}
+      </header>
+      <div className="editor-toolbar" role="toolbar" aria-label="Acciones del mapa">
+        <label className="editor-map-name">Nombre del mapa
         <input
           aria-label="Nombre del sector"
           value={doc.metadata.title}
           onChange={(e) =>
             edit([{ type: 'setMetadata', values: { title: e.target.value } }])
           }
-        />
-        {!embedded&&<><button
+        /></label>
+        {!embedded&&<div className="editor-toolbar-group" role="group" aria-label="Historial del mapa"><button
+          title="Deshacer el último cambio (Ctrl o ⌘ + Z)"
           onClick={() => setHistory((h: any) => undoHistory(h))}
           disabled={!history.past.length}
         >
           Deshacer
         </button>
         <button
+          title="Rehacer el último cambio (Ctrl o ⌘ + Mayús + Z)"
           onClick={() => setHistory((h: any) => redoHistory(h))}
           disabled={!history.future.length}
         >
           Rehacer
-        </button></>}
-        <button onClick={() => file.current?.click()}>Importar</button>
+        </button></div>}
+        <div className="editor-toolbar-group" role="group" aria-label="Archivos del mapa"><button title="Abrir un mapa o una plantilla JSON" onClick={() => file.current?.click()}>Importar</button>
         <button
           onClick={() => {
             try {
@@ -869,9 +907,12 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
           }}
         >
           Exportar
-        </button>
+        </button></div>
+        <div className="editor-toolbar-group" role="group" aria-label="Pruebas del mapa">
         <button
           className="primary"
+          disabled={loadingCampaign||!playtestReport.valid}
+          title={playtestReport.valid?'Abrir una prueba aislada con las reglas del juego':playtestReport.errors.join(' ')}
           onClick={() => {
             try {
               setBattle(createMapPlaytest(doc,campaignContent));
@@ -882,7 +923,8 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
         >
           Probar mapa
         </button>
-        {embedded&&<button onClick={()=>{try{setBattle(createMapPlaytest(doc,campaignContent,{expanded:true}));}catch(e:any){setNotice(e.message);}}}>Probar escena expandida</button>}
+        {embedded&&<button disabled={!playtestReport.valid} onClick={()=>{try{setBattle(createMapPlaytest(doc,campaignContent,{expanded:true}));}catch(e:any){setNotice(e.message);}}}>Probar escena expandida</button>}
+        </div>
         <input
           ref={file}
           type="file"
@@ -890,7 +932,13 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
           hidden
           onChange={importFile}
         />
-      </header>
+      </div>
+      <div className="editor-document-bar" aria-label="Estado del mapa">
+        <span><strong>{doc.width} × {doc.height}</strong> casillas · revisión {doc.revision}</span>
+        <span className="editor-document-id" title={doc.id}>{doc.id}</span>
+        <span>{embedded?'Proyecto compartido':loadingCampaign?'Cargando campaña…':recover?'Borrador por recuperar':draftStatus==='saved'?'Borrador guardado en este navegador':draftStatus==='error'?'Guardado local no disponible':'Preparando borrador…'}</span>
+        <button className={`editor-validation-badge ${playtestReport.valid?'valid':'invalid'}`} onClick={()=>{setMobilePanel('properties');validationPanel.current?.scrollIntoView?.({block:'nearest'});validationPanel.current?.focus();}}>{playtestReport.valid?'Listo para probar':`${playtestReport.errors.length} ${playtestReport.errors.length===1?'error':'errores'}`} · {report.warnings.length} {report.warnings.length===1?'aviso':'avisos'}</button>
+      </div>
       {recover && (
         <div className="editor-recovery">
           Hay un borrador guardado.{' '}
@@ -909,8 +957,9 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
           <button onClick={() => setRecover(null)}>Descartar borrador</button>
         </div>
       )}
+      <nav className="editor-panel-tabs" aria-label="Paneles del mapa">{[['tools','Herramientas'],['map','Mapa'],['properties',selected.length?`Propiedades (${selected.length})`:'Propiedades']].map(([id,name])=><button key={id} aria-pressed={mobilePanel===id} aria-controls={`${editorId}-${id}`} onClick={()=>setMobilePanel(id)}>{name}</button>)}</nav>
       <div className="editor-layout">
-        <aside className="editor-palette">
+        <aside className="editor-palette" id={`${editorId}-tools`} aria-label="Herramientas y catálogo">
           {!embedded&&<><label>Campaña base<select value={campaignId} disabled={loadingCampaign} onChange={event=>{const entry=campaigns.find(item=>item.id===event.target.value);if(entry)void chooseBase(entry);}}>{campaigns.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label>
           <h2>Sector</h2>
           <select
@@ -972,27 +1021,19 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
             Nuevo mapa
           </button></>}
           <h2>Herramientas</h2>
-          <div className="editor-tools">
-            {[
-              ['select', 'Seleccionar'],
-              ['pan', 'Desplazar'],
-              ['paint', 'Pintar'],
-              ['building', 'Dibujar edificio'],
-              ['wall', 'Tabique'],
-              ['door', 'Puerta'],
-              ['window', 'Ventana'],
-              ['floor', 'Quitar pared'],
-              ['route', 'Medir ruta'],
-            ].map(([id, name]) => (
+          {toolGroups.map(group=><div className="editor-tool-group" role="group" aria-label={group.name} key={group.name}><h3>{group.name}</h3><div className="editor-tools">
+            {group.tools.map(([id, name]) => (
               <button
                 key={id}
+                aria-pressed={tool===id}
+                title={toolHints[id]}
                 className={tool === id ? 'active' : ''}
                 onClick={() => setTool(id)}
               >
                 {name}
               </button>
             ))}
-          </div>
+          </div></div>)}
           {['wall','door','window','floor'].includes(tool)&&<label>Borde para teclado<select aria-label="Borde de casilla para teclado" value={wallSide} onChange={event=>setWallSide(event.target.value)}><option value="north">Norte</option><option value="south">Sur</option><option value="west">Oeste</option><option value="east">Este</option></select></label>}
           <h2>Terreno</h2>
           <select
@@ -1036,13 +1077,16 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
               Distribuir terreno (15%)
             </button>
           </details>
-          <h2>Naturaleza</h2>
+          <h2>Catálogo</h2>
+          <label className="editor-catalogue-search">Buscar elementos<input type="search" aria-label="Buscar en catálogo" placeholder="Árbol, mesa, munición…" value={catalogueQuery} onChange={e=>setCatalogueQuery(e.target.value)}/></label>
+          {catalogueQuery.trim()&&<p className="editor-help" role="status">{catalogueMatches?`${catalogueMatches} elementos encontrados.`:'No hay elementos con ese nombre. Probá otra búsqueda.'}</p>}
+          <details className="editor-catalogue-group" open><summary>Naturaleza</summary>
           <div className="editor-tools">
             {Object.entries(FEATURES).map(([type, s]) =>
               palette('features', type, s.name),
             )}
-          </div>
-          <h2>Edificios</h2>
+          </div></details>
+          <details className="editor-catalogue-group" open><summary>Edificios</summary>
           <label>
             Plantilla
             <select
@@ -1116,28 +1160,30 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
           {template && (
             <button onClick={() => setTemplate(null)}>Usar casa básica</button>
           )}
-          <h2>Mobiliario</h2>
+          </details>
+          <details className="editor-catalogue-group" open><summary>Mobiliario</summary>
           <div className="editor-tools">
             {Object.entries(FURNITURE).map(([type, s]) =>
               palette('props', type, `${s.name} · ${s.width}×${s.height}`),
             )}
-          </div>
-          <h2>Objetos</h2>
+          </div></details>
+          <details className="editor-catalogue-group" open><summary>Objetos y suministros</summary>
           <div className="editor-tools">
             {Object.entries(ITEM_TYPES).map(([type, name]) =>
               palette('items', type, name),
             )}
-          </div>
-          <h2>Escenario</h2>
+          </div></details>
+          <details className="editor-catalogue-group" open><summary>Apariciones, luces y salidas</summary>
           <div className="editor-tools">
             {palette('spawns', 'player', campaignFactionName(campaignContent,'patriot'))}
             {palette('spawns', 'enemy', campaignFactionName(campaignContent,'royalist'))}
             {palette('spawns', 'civilian', 'Vecino')}
             {palette('lights', 'lantern', 'Farol')}
             {palette('exits', 'exit', 'Salida')}
-          </div>
+          </div></details>
         </aside>
-        <section className="editor-workspace">
+        <section className="editor-workspace" id={`${editorId}-map`} aria-label="Plano táctico">
+          <div className="editor-tool-context"><strong>{activeToolName}</strong><span>{toolHints[tool]}</span></div>
           <div className="editor-viewbar">
             <select
               aria-label="Vista del edificio"
@@ -1174,11 +1220,11 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
               <option value="routes">Rutas accesibles</option>
               <option value="none">Sin cuadrícula</option>
             </select>
-            <button onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}>
+            <button aria-label="Alejar mapa" title="Alejar mapa" disabled={zoom<=0.5} onClick={() => setZoom((z) => Math.max(0.5, z - 0.25))}>
               −
             </button>
-            <span>{Math.round(zoom * 100)}%</span>
-            <button onClick={() => setZoom((z) => Math.min(4, z + 0.25))}>
+            <output aria-label="Nivel de zoom">{Math.round(zoom * 100)}%</output>
+            <button aria-label="Acercar mapa" title="Acercar mapa" disabled={zoom>=4} onClick={() => setZoom((z) => Math.min(4, z + 0.25))}>
               +
             </button>
             <button
@@ -1190,6 +1236,7 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
               Centrar
             </button>
           </div>
+          {all.length===0&&<div className="editor-map-empty"><strong>Empezá por una aparición de tu escuadra.</strong><span>En Herramientas, abrí Apariciones, luces y salidas. Después agregá edificios y objetos.</span></div>}
           <svg
             ref={svg}
             className="editor-map"
@@ -1344,9 +1391,9 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
                         points={diamond(
                           project(e.x + (i % w), e.y + Math.floor(i / w)),
                         )}
-                        fill="#f4d889"
+                        fill="#69dcc5"
                         fillOpacity=".17"
-                        stroke="#ffdf8b"
+                        stroke="#69dcc5"
                         strokeWidth="1.5"
                         pointerEvents="none"
                       />
@@ -1377,16 +1424,19 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
             </span>
           </footer>
         </section>
-        <aside className="editor-inspector">
+        <aside className="editor-inspector" id={`${editorId}-properties`} aria-label="Propiedades, capas y validación">
+          <section className="editor-selection-panel">
           <h2>Propiedades</h2>
           {chosen ? (
             <>
-              <p>
+              <div className="editor-selection-summary"><strong>{chosen.name??labels[chosen.layer]??'Elemento'}</strong><code>{chosen.id}</code><p>
                 {labels[chosen.layer]} ·{' '}
                 {selected.length > 1
                   ? `${selected.length} seleccionados`
                   : (chosen.type ?? 'Edificio')}
-              </p>
+              </p></div>
+              {selected.length>1&&<p className="editor-help">Las propiedades corresponden al primer elemento. Girar, duplicar y eliminar se aplican a toda la selección.</p>}
+              {locked.includes(chosen.layer)&&<p className="editor-warning">Esta capa está bloqueada. Desbloqueala en Capas antes de editar.</p>}
               <label>
                 Nombre
                 <input
@@ -1686,12 +1736,12 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
               )}
             </>
           ) : (
-            <p>
-              Selecciona un elemento del mapa para editarlo. Usa Mayús para
-              seleccionar varios.
-            </p>
+            <div className="editor-empty-selection"><strong>Ningún elemento seleccionado</strong><p>Usá Seleccionar y hacé clic en un edificio u objeto. Mayús permite elegir varios.</p><p className="editor-help">Las casillas de terreno se editan con Pintar.</p><button onClick={()=>{setTool('select');setMobilePanel('map');}}>Activar selección</button></div>
           )}
+          </section>
+          <section className="editor-layers-panel">
           <h2>Capas</h2>
+          <p className="editor-help">La casilla controla la vista. El candado protege la capa de cambios.</p>
           {['terrain', ...LAYERS].map((layer) => (
             <div className="editor-layer" key={layer}>
               <label>
@@ -1719,27 +1769,32 @@ export default function SectorEditor({document:controlledDocument,campaign,onDoc
                   )
                 }
               >
-                {locked.includes(layer) ? '🔒' : '🔓'}
+                {locked.includes(layer) ? 'Bloqueada' : 'Libre'}
               </button>
             </div>
           ))}
+          </section>
+          <section className="editor-validation-panel" ref={validationPanel} tabIndex={-1} aria-label="Validación del mapa">
           <h2>Validación</h2>
-          <p className={report.valid ? 'valid' : 'invalid'}>
-            {report.valid
-              ? 'Sin errores de estructura'
-              : `${report.errors.length} errores`}
+          <p className={playtestReport.valid ? 'valid' : 'invalid'}>
+            {playtestReport.valid
+              ? 'Sin errores de estructura. Listo para probar.'
+              : `${playtestReport.errors.length} errores impiden la prueba.`}
           </p>
-          {[...report.errors, ...report.warnings].map(
+          {report.warnings.length===0&&playtestReport.valid&&<p className="editor-help">Las rutas desde la entrada del jugador están conectadas. La prueba permite revisar el mapa con las reglas del juego.</p>}
+          {[...new Set([...playtestReport.errors,...report.warnings])].map(
             (s: string, i: number) => (
               <p className="editor-warning" key={i}>
                 {s}
               </p>
             ),
           )}
+          </section>
+          <details className="editor-shortcuts"><summary>Atajos de teclado</summary><dl><div><dt>Seleccionar varios</dt><dd><kbd>Mayús</kbd> + clic</dd></div><div><dt>Mover selección</dt><dd><kbd>↑ ↓ ← →</kbd></dd></div><div><dt>Eliminar selección</dt><dd><kbd>Supr</kbd></dd></div><div><dt>Desplazar vista</dt><dd><kbd>Alt</kbd> + arrastrar</dd></div><div><dt>Cancelar gesto</dt><dd><kbd>Esc</kbd></dd></div>{!embedded&&<div><dt>Deshacer / rehacer</dt><dd><kbd>Ctrl / ⌘</kbd> + <kbd>Z</kbd> / <kbd>Mayús + Z</kbd></dd></div>}</dl>{embedded&&<p className="editor-help">Deshacer y rehacer se controlan desde el proyecto compartido.</p>}</details>
         </aside>
       </div>
       <div className="editor-status" role="status" aria-live="polite">
-        {notice}
+        <span>{notice}</span><span className="editor-selection-count">{selected.length?`${selected.length} ${selected.length===1?'elemento seleccionado':'elementos seleccionados'}`:'Sin selección'}</span>
       </div>
       <Dialog
         open={Boolean(exportFile)}
