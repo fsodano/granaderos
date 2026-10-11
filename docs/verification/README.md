@@ -30,8 +30,8 @@ of each check when assessing the current version.
 - [Connected sector roads, 9 October](sector-roads-2026-10-09.md).
 - [Accepted 3D graphics delivery, 9 October](tactical-reference-delivery-2026-10-09.md).
 - [Integrated 3D gameplay check, 8 October](latest-3d-gameplay-2026-10-08.md).
-- [Future campaign creation and sharing](../plans/campaign-authoring.md)
-  — the existing editors and example remain bounded experimental tools.
+- [Campaign creation and sharing](../plans/campaign-authoring.md)
+  — the studio supports campaign authoring; community publishing remains future work.
 
 ## Historical consolidation and alpha records
 

@@ -3,8 +3,8 @@
 Updated: 11 October 2026.
 
 The owner will design campaigns and wants other people to design their own.
-Campaign creation is the active studio work; community publishing and wider
-mechanics remain future work. Version 0.1 records an earlier playable game and
+Campaign creation is available through `/studio` on `main`; community publishing
+and wider mechanics remain future work. Version 0.1 records an earlier playable game and
 does not include the studio.
 
 [Campaign studio workflow](../authoring/campaign-studio.md) ·
@@ -22,8 +22,8 @@ Campaigns pin validated content, and drafts support undo, import and export.
 The [La ruta de las postas example](../development/example-post-campaign.md)
 demonstrates an independent scenario in the existing world.
 
-The current development branch separates the engine and installed campaign
-folders. Local authors can scaffold, check and install a generic campaign using
+The `main` branch separates the engine and installed campaign folders.
+Local authors can scaffold, check and install a generic campaign using
 the [campaign folder workflow](../development/campaign-authoring.md). The menu
 can select multiple installed packages, with separate saves and editor drafts.
 Only Granaderos ships in the repository. This local workflow does not add a

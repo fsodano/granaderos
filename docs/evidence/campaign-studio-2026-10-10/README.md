@@ -274,9 +274,9 @@ An early foundation typecheck found no outstanding errors in its affected
 files, but another workspace still had a concurrent type error. The later
 workspace typecheck copied above passed. Final website typecheck evidence is
 now recorded above against the combined source. Production export and the
-scoped visible browser acceptance are complete. Publication to
-`feature/campaigns` and the current draft comparison with `main` are recorded
-separately in the studio plan.
+scoped visible browser acceptance are complete. Publication to `main` through
+PR #334 is recorded separately in the studio plan. The recorded build
+identities and browser limits remain unchanged.
 
 ## Repository documentation and baseline audits
 

@@ -30,7 +30,7 @@ npm ci --prefix web
 npm run dev
 ```
 
-Before this implementation is merged into `main`, run `git checkout feature/campaigns` before installing dependencies to use the campaign folder tools. To inspect the earlier checkpoint, use `git checkout 0.1` instead.
+The `main` branch includes the campaign folder tools and `/studio`. To inspect the earlier checkpoint, use `git checkout 0.1` instead.
 
 Run subsequent commands from the repository root. Dependencies are installed in `web/node_modules`; the committed `web/package-lock.json` fixes their versions.
 
@@ -50,8 +50,11 @@ The title screen opens the [story editor](story-editor.md) at `/story` and the
 [sector editor](sector-editor.md) at `/editor`. These are experimental tools.
 The story editor supports validated characters, weapons, abilities, dialogue
 choices, quests and bounded campaign definitions, including a separate example.
-Use the [campaign folder guide](campaign-authoring.md) to scaffold, check and install a local campaign. The editors open the selected package and keep its drafts separate. A complete creator platform and community campaign publication remain
-[future work](../plans/campaign-authoring.md).
+Use the [campaign studio](../authoring/campaign-studio.md) at `/studio` to create,
+edit, test and export a complete campaign package. The
+[campaign folder guide](campaign-authoring.md) describes local installation.
+The editors open the selected package and keep its drafts separate. Community
+campaign publication remains [future work](../plans/campaign-authoring.md).
 
 ## Save behavior
 

@@ -1,14 +1,14 @@
 # Complete campaign authoring studio
 
 The user requests one website that authors a campaign from start to finish.
-This is the active goal. A launch page with links to separate tools is not the
-required result. The studio must edit and export every supported campaign
+This plan records the completed studio goal. The required result is one
+workspace that edits and exports every supported campaign
 definition, resource and tactical map through one project and one history.
 
-Implementation branch: `feature/campaigns`. Work PRs merge into this branch;
-the comparison with `main` remains [draft PR #334](https://github.com/fsodano/granaderos/pull/334).
+Implemented on `feature/campaigns` and published in `main` through
+[PR #334](https://github.com/fsodano/granaderos/pull/334).
 Progress PR #336 and [studio PR #337](https://github.com/fsodano/granaderos/pull/337)
-are merged. Draft PR #334 has the current scope, evidence and test limits.
+are merged. PR #334 records the scope, evidence and test limits.
 
 ## Required result and evidence
 
@@ -52,7 +52,8 @@ are merged. Draft PR #334 has the current scope, evidence and test limits.
   and visible browser evidence match the final source. Historical campaign
   playthroughs remain outside this goal.
 - [x] Progress is committed and published through work PRs to
-  `feature/campaigns`; the draft PR to `main` has current scope and evidence.
+  `feature/campaigns`; PR #334 published it in `main` with current scope and
+  evidence.
 
 ## Acceptance scope and publication
 
@@ -67,9 +68,9 @@ visually established; mounted/API checks cover those paths. Narrow review was
 of Resources at 390 × 844, not every panel.
 
 Studio PR #337 merged into `feature/campaigns` as
-`c2e7ae602418075c9270c1e72e431ef92d140d74`. Draft PR #334 records the current
-engine-separation and studio scope, evidence and test limits. Publication to
-the feature branch is complete; the comparison into `main` remains a draft.
+`c2e7ae602418075c9270c1e72e431ef92d140d74`. PR #334 records the
+engine-separation and studio scope, evidence and test limits. It merged into
+`main` on 11 October 2026 as `0a04f72c1c0a1b0ec56a8db84668f2e3b12a722e`.
 This acceptance does not add arbitrary executable mechanics, unrestricted
 meshes or a hosted community service. It does not certify the full game or
 historical campaign routes. The historical `0.1` tag remains unchanged.
