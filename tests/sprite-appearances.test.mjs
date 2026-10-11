@@ -13,6 +13,16 @@ test('the complete live roster maps to shared art combinations',()=>{
  assert.ok(new Set(roster.map(op=>spriteAppearance(op))).size<roster.length/2,'Art must be shared, not bespoke');
 });
 
+test('generic omissions use a neutral family across civilian, enemy and capture sides while explicit styles remain stable',()=>{
+ const actor={id:1,genericCharacter:true};
+ for(const side of ['player','enemy','civilian'])for(const kind of ['soldier','civilian']){
+  assert.equal(spriteAppearance({...actor,side},kind),'worker');
+  assert.equal(spriteAppearance({...actor,side,captured:true},kind),'worker');
+  assert.equal(spriteAppearance({...actor,side,spriteAppearance:'granadero'},kind),'granadero');
+  assert.equal(spriteAppearance({...actor,side,spriteAppearance:'woman-shawl'},kind),'woman-shawl');
+ }
+});
+
 test('consolidated bodies retain female representation and shared military bodies',()=>{
  for(const id of [1,8,101,107,116,120,122,126,130,135,139])assert.equal(SPRITE_APPEARANCES[spriteAppearance({id})].gender,'woman');
  for(const id of [3,7,110,119,127,133,136])assert.equal(spriteAppearance({id}),'granadero');
@@ -51,11 +61,12 @@ test('seven families cover eight retained variants and all retired appearances r
  assert.equal(spriteAppearance({}),'granadero');
 });
 
-test('enemy military retains white uniforms even with an old allied appearance',()=>{
+test('explicit enemy appearances resolve normally and default enemies retain white uniforms',()=>{
  for(const appearance of ['granadero','militia','blue-officer','scarlet-officer','rifleman']){
   assert.equal(spriteAppearance({side:'player',spriteAppearance:appearance}),'granadero');
-  assert.equal(spriteAppearance({side:'enemy',spriteAppearance:appearance}),'royalist');
+  assert.equal(spriteAppearance({side:'enemy',spriteAppearance:appearance}),'granadero');
  }
  assert.equal(SPRITE_APPEARANCES.royalist.clothing,'white-uniform');
  assert.equal(SPRITE_APPEARANCES.granadero.clothing,'navy-uniform');
+ assert.equal(spriteAppearance({side:'enemy'}),'royalist');
 });

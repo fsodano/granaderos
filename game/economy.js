@@ -1,5 +1,5 @@
 import {townIncomeSources,dailyTownIncome} from './town-income.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignWorld} from './campaign-definition.js';
 import {treasuryIncomeReason} from './treasury-rewards.js';
 
 // Town trade and local contributions funded the independence armies.
@@ -12,10 +12,10 @@ export function incomeSummary(state){const secondsUntilPayment=86400-(state.hour
 export function artilleryCount(state){return ['bronze4','field8','swivel'].reduce((sum,key)=>sum+(state.armory?.[key]??0),0);}
 
 
-export function sectorCash(sectorId){const index=CAMPAIGN_SECTORS.findIndex(s=>s.id===sectorId);return index<0?0:100+index*10;}
+export function sectorCash(sectorId,context=null){return campaignWorld(context).sectorCash?.[sectorId]??0;}
 export function collectSectorCash(state,snapshot){
  if(!snapshot)return;
- const sectorId=state.pendingBattle.sector,key=`cash:${sectorId}`,amount=sectorCash(sectorId);
+ const sectorId=state.pendingBattle.sector,key=`cash:${sectorId}`,amount=sectorCash(sectorId,state);
  state.foundMoney??=[];
  if(!amount||state.foundMoney.includes(sectorId))return;
  const cashKey=id=>id===key||id.startsWith(`${key}:`);

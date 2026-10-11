@@ -54,7 +54,7 @@ export default function Recruitment({state:s,dispatch}:Props){
    const cancellationReason=arrival?hireCancellationReason(s,o.id):null,departureReason=hired?guaranteeDepartureReason(s,contract,o):null;
    const held=arrival&&(hiringArrivalReason(s,arrival.destination)||(s.pendingBattle?.sector===arrival.destination?'La llegada espera a que salgas del sector.':null));
    return <article key={o.id} className="contract-card" data-operative-id={o.id}>
-    <button className="candidate-face" onClick={()=>setSelected(o.id)} aria-label={`Ver hoja de servicio de ${o.name}`}>{portraitFor((o as any).portraitId??o.id)?<img src={sitePath(portraitFor((o as any).portraitId??o.id)!)} alt={o.name} loading="lazy"/>:<span>{o.nickname.slice(0,2).toUpperCase()}</span>}<span>{o.name}</span></button>
+    <button className="candidate-face" onClick={()=>setSelected(o.id)} aria-label={`Ver hoja de servicio de ${o.name}`}>{portraitFor((o as any).portrait??(o as any).portraitId??o.id,s)?<img src={sitePath(portraitFor((o as any).portrait??(o as any).portraitId??o.id,s)!)} alt={o.name} loading="lazy"/>:<span>{o.nickname.slice(0,2).toUpperCase()}</span>}<span>{o.name}</span></button>
     <p className="eyebrow">{o.role}</p><p className="candidate-greeting">«{profile.speech.hired}»</p><p className="candidate-specialties">{profile.skills.join(' · ')}</p>
     {characterAbilityDescriptions(o).map((ability:{id:string;description:string})=><small key={ability.id}>{ability.description}</small>)}
     <div className="candidate-stats"><span>Puntería <b>{o.marksmanship}</b></span><span>Liderazgo <b>{o.leadership}</b></span><span>Grado <b>{o.level}</b></span></div>

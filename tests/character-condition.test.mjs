@@ -28,7 +28,7 @@ test('initial condition validates complete finite integer fields and coherent wo
 });
 
 test('authored paid candidates remain off the map and preserve condition through arrival, actual recovery and rehire',()=>{
- const d=defaultContentPackage();person(d).startingCondition=state();let s=initialCampaign(42,d);
+ const d=defaultContentPackage();person(d).startingCondition=state();person(d).arrivalHours=6;let s=initialCampaign(42,d);
  assert.deepEqual(condition(s.operativeState[110]),state());assert.ok(!encountersFor(s,'retiro').some(n=>n.operativeId===110));
  s=order(s,{type:'recruitCivic',id:110,term:'week'});assert.ok(!s.recruited.includes(110));assert.ok(!encountersFor(s,'retiro').some(n=>n.operativeId===110));s=order(saved({campaign:s}).campaign,{type:'wait',hours:6});assert.deepEqual(condition(s.operativeState[110]),state());
  s=order(s,{type:'assignCare',id:110,assignment:'rest'});s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[110].hp,31);assert.ok(s.operativeState[110].energy>61);assert.ok(s.operativeState[110].fatigue<23);assert.equal(s.operativeState[110].bandaged,7);

@@ -37,7 +37,7 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
       {cells.map((cell: any, i: number) => {
         if (cell.empty) return <div className="empty-portrait-slot" key={`empty-${i}`} aria-hidden="true"><span>—</span></div>;
         const u = cell.unit;
-        const portrait = cell.portrait || portraitFor(u.portraitId ?? u.id);
+        const portrait = portraitFor(cell.portrait??u.portrait??u.portraitId??u.id,battle);
         const hands = rosterHands(u).map(hand=>{const loading=firearmLoadingProgress(u,hand.item);return {...hand,loading,description:`${hand.description}${loading?` ${loading.description}`:''}`};});
         return (
           <button

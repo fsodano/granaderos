@@ -1,17 +1,21 @@
 'use client';
 import {useState} from 'react';
-import {cityForSector} from '../../../game/cities.js';
-import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from '../../../game/data.js';
+import {cityForSector as findCityForSector} from '../../../game/cities.js';
+import {RESOURCE_NAMES} from '../../../game/data.js';
 import {errandContacts,defaultErrands,QUEST_RESOURCES} from '../../../game/quest-definitions.js';
 import {SUPPLY_ITEMS} from '../../../game/tactical-inventory.js';
 import {OUTFITS} from '../../../game/outfits.js';
 import {sectorExits} from '../../../game/tactical-exits.js';
+import {campaignSectors} from '../../../game/campaign-definition.js';
+type NamedSector={id:string;name:string};
+type NamedExit={id:string;destination:string;edge:string};
 
-const namedExits=(id:string)=>sectorExits(id).filter(exit=>CAMPAIGN_SECTORS.some(s=>s.id===exit.destination));
+
 const contactIds=(quest:any):string[]=>[...new Set<string>([quest.npcId,...(quest.beneficiaries??[]).map((recipient:any)=>recipient.npcId)])];
 export default function ErrandEditor({draft,onChange}:{draft:any;onChange:(value:any)=>void}){
+  const CAMPAIGN_SECTORS:NamedSector[]=campaignSectors(draft),cityForSector=(id:string)=>findCityForSector(id,draft),namedExits=(id:string)=>(sectorExits(id,null,draft) as NamedExit[]).filter(exit=>CAMPAIGN_SECTORS.some(s=>s.id===exit.destination));
   const [selected,select]=useState(''),[search,setSearch]=useState('');
-  const contacts=errandContacts(draft),quests=draft.errands??defaultErrands().filter(q=>contacts.some(c=>c.id===q.npcId));
+  const contacts=errandContacts(draft),quests=draft.errands??defaultErrands(draft).filter((q:{npcId:string})=>contacts.some(c=>c.id===q.npcId));
   const quest=quests.find((q:any)=>q.id===selected)??quests[0];
   const change=(next:any[])=>onChange({...draft,errands:next});
   const update=(patch:any,remove:string[]=[])=>change(quests.map((q:any)=>{if(q!==quest)return q;const next={...q,...patch};for(const key of remove)delete next[key];return next;}));
@@ -23,7 +27,7 @@ export default function ErrandEditor({draft,onChange}:{draft:any;onChange:(value
   const contact=contacts.find(c=>c.id===quest?.npcId),physicalAllowed=Boolean(contact?.fixedSector)&&!contact?.canRecruit;
   const reward=quest?.reward??{treasury:0,loyalty:true};
   const recipientContacts=contacts.filter(c=>c.fixedSector&&!c.canRecruit&&!reserved(c.id));
-  const alternateContact=recipientContacts.find(c=>c.id==='local-ensenada'&&c.id!==quest?.npcId)??recipientContacts.find(c=>c.id!==quest?.npcId);
+  const alternateContact=recipientContacts.find(c=>c.id!==quest?.npcId);
   const beneficiariesAllowed=kind==='carried'&&physicalAllowed&&Boolean(alternateContact);
   const withdrawalAllowed=kind==='carried'&&physicalAllowed&&quest?.carried?.count>=2&&(quest?.beneficiaries?quest.beneficiaries.every((b:any)=>Boolean(cityForSector(b.sector))):Boolean(cityForSector(quest?.sector)));
   const rewardChoiceAllowed=kind==='carried'&&physicalAllowed&&Boolean(cityForSector(quest?.sector))&&!quest?.beneficiaries;
@@ -40,7 +44,7 @@ export default function ErrandEditor({draft,onChange}:{draft:any;onChange:(value
     <aside><h2>Encargos locales <small>{quests.length}</small></h2>
       <label>Buscar encargo<input type="search" value={search} onChange={e=>setSearch(e.target.value)}/></label>
       <button disabled={!freeContact||quests.length>=200} onClick={()=>{
-        if(!freeContact)return;const added={id:id(),npcId:freeContact.id,sector:freeContact.sector??'retiro',title:'Nuevo encargo',offer:'Necesito tu ayuda.',delivery:'Gracias por tu ayuda.',cost:{},requiredSectors:[],requires:[],reward:{treasury:0,loyalty:Boolean(cityForSector(freeContact.sector))}};
+        if(!freeContact)return;const added={id:id(),npcId:freeContact.id,sector:freeContact.sector??draft.headquarters??CAMPAIGN_SECTORS[0]?.id,title:'Nuevo encargo',offer:'Necesito tu ayuda.',delivery:'Gracias por tu ayuda.',cost:{},requiredSectors:[],requires:[],reward:{treasury:0,loyalty:Boolean(cityForSector(freeContact.sector))}};
         change([...quests,added]);select(added.id);setSearch('');
       }}>Crear encargo</button>
       {quests.filter((q:any)=>norm(`${q.title} ${q.id} ${contacts.find(c=>c.id===q.npcId)?.name??''}`).includes(norm(search))).map((q:any)=><button key={q.id} aria-current={quest===q?'true':undefined} onClick={()=>select(q.id)}>{q.title}</button>)}

@@ -5,11 +5,15 @@ import {validateMovementScene} from './dialogue-movement.js';
 import {validateCivilianScene,migrateActiveCivilians} from './campaign-civilians.js';
 import {validatePresenceScene,synchronizeCampaignPresence,validateActiveSuccessionDeaths} from './campaign-presence.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
+import {restoreGenericCharacterReferences} from './content-character-abilities.js';
 import {validatePresentationReferences} from './content-character-presentation.js';
 import {validateWeaponReferences,weaponSaveReplacer,restoreWeaponReferences} from './weapon-definition.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {restoreCampaignValue,rosterFor,hasPendingNpcGiftProgress} from './campaign.js';
 import {worldCell} from './world-cells.js';
+import {validateRegionalWeather} from './regional-weather.js';
+import {validateFiniteArsenalScene} from './finite-artillery-arsenals.js';
+import {validateCampaignSceneDefinitions} from './campaign-scene-definitions.js';
 import {expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {compactSaveTerrain,expandSaveTerrain,MAX_EXPANDED_SAVE_BYTES} from './save-terrain.js';
 import {validateQuestEscortOrders} from './quest-escort.js';
@@ -22,9 +26,10 @@ import {validateServiceObjectionContext} from './service-objections.js';
 import {validateRoadsideDiscoveryContext} from './roadside-discoveries.js';
 import {validateQuestBeneficiaryContext} from './quest-beneficiaries.js';
 import {validateRepairReserveContext,retainRepairReserves} from './repair-materials.js';
+import {campaignPackageSaveReplacer} from './campaign-package-storage.js';
 export const SAVE_KEY='granaderos.campaign.v1';
 export function encodeSave(campaign,battle=null){
- const replacer=cellSceneSaveReplacer(artillerySaveReplacer(campaign,weaponSaveReplacer(campaign)));
+ const replacer=campaignPackageSaveReplacer(campaign,cellSceneSaveReplacer(artillerySaveReplacer(campaign,weaponSaveReplacer(campaign)),campaign));
  const text=JSON.stringify({format:'granaderos',schema:1,savedAt:new Date().toISOString(),campaign,battle},replacer),bytes=saveByteLength(text);
  if(bytes<1_000_000)return assertSaveSize(text);
  if(bytes>MAX_EXPANDED_SAVE_BYTES)throw Error('La partida expandida supera el límite de 20 MB.');
@@ -37,18 +42,21 @@ export function decodeSave(text){
   if(value?.format!=='granaderos'||![1,2].includes(value.schema))throw Error('Esta versión de la partida no es compatible.');
   if(value.schema===2)expandSaveTerrain(value);
   const legacyCivilians=value.campaign?.civilianState===undefined;
-  const campaign=restoreCampaignValue(structuredClone(value.campaign));const b=expandCellScene(value.battle);
+  const campaign=restoreCampaignValue(structuredClone(value.campaign));const b=expandCellScene(value.battle,campaign);
   if(Boolean(campaign.pendingBattle)!==Boolean(b))throw Error('La batalla guardada no coincide con la campaña.');
-  if(b){restoreWeaponReferences(campaign,b);restoreArtilleryReferences(campaign,b);}
+  if(b){restoreWeaponReferences(campaign,b);restoreArtilleryReferences(campaign,b);restoreGenericCharacterReferences(campaign,b);}
   if(b&&value.campaign.fittingRulesVersion===FITTING_RULES_VERSION&&b.fittingRulesVersion!==FITTING_RULES_VERSION)throw Error('Las reglas de accesorios no corresponden al despliegue guardado.');
   if(b&&value.campaign.ammunitionVersion!==undefined&&value.campaign.ammunitionVersion!==b.ammunitionVersion)throw Error('Las reglas de munición no corresponden al despliegue guardado.');
   if(b&&(b.exits===undefined)!==(b.exitRulesVersion===undefined))throw Error('Las reglas de salida guardadas están incompletas.');
-  let battle=b?validateBattleSnapshot(b):null;if(battle){battle.startSeconds??=campaign.hour*3600+(campaign.secondOfHour??0);battle.elapsedSeconds??=0;battle.syncedSeconds??=0;}
+  if(b)validateRegionalWeather(b,campaign);
+  let battle=b?validateBattleSnapshot(b,campaign):null;if(battle){battle.startSeconds??=campaign.hour*3600+(campaign.secondOfHour??0);battle.elapsedSeconds??=0;battle.syncedSeconds??=0;}
   if(battle&&((battle.sceneId??null)!==(campaign.pendingBattle.sceneId??null)||(battle.syncedSeconds??0)!==(campaign.pendingBattle.syncedSeconds??0)||(battle.elapsedSeconds??0)!==(battle.syncedSeconds??0)))throw Error('El reloj táctico guardado no coincide con la campaña.');
   if(battle&&campaign.pendingBattle.hour!==undefined&&battle.startSeconds!==campaign.pendingBattle.hour*3600+(campaign.pendingBattle.secondOfHour??0))throw Error('La hora inicial del combate no coincide con el despliegue.');
   if(battle&&battle.battleId!=null&&battle.battleId!==campaign.pendingBattle.id)throw Error('El reloj pertenece a otro despliegue.');
   if(battle&&(battle.sectorId!==campaign.pendingBattle.sector||!campaign.pendingBattle.squad.every(u=>battle.units.some(t=>t.side==='player'&&String(t.id)===String(u.id)))))throw Error('El destacamento guardado no corresponde al sector.');
-  if(battle&&worldCell(battle.sectorId)?.anchor===false&&battle.sourceMapId!==battle.sectorId)throw Error('La escena guardada no corresponde a la celda.');
+  if(battle&&worldCell(battle.sectorId,campaign)?.anchor===false&&battle.sourceMapId!==battle.sectorId)throw Error('La escena guardada no corresponde a la celda.');
+  if(battle)validateFiniteArsenalScene(battle,campaign);
+  if(battle)validateCampaignSceneDefinitions(campaign,battle);
   if(battle){validateArtilleryReport(campaign.pendingBattle,battle);validateCampaignPatrol(campaign,battle);validateCampaignArtilleryProfiles(campaign,battle);migrateActiveCivilians(campaign,battle,{legacy:legacyCivilians});if(legacyCivilians)synchronizeCampaignPresence(campaign);validateCivilianScene(campaign,battle,{active:true});validatePresenceScene(campaign,battle);validateMovementScene(campaign,battle);validateActiveSuccessionDeaths(campaign,battle);validateWeaponReferences(campaign,battle);validatePresentationReferences(campaign,battle);validateAbilityReferences(campaign,battle);}
   // Older validated tactical saves did not carry a deployment identifier.
   // Bind them only after the sector and participant checks above succeed.

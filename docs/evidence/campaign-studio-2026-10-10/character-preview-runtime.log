@@ -1,0 +1,12 @@
+✔ embedded story editor publishes changes to its owner without browser draft, navigation, loading or private undo (1480.231ms)
+✔ character preview presents the shared 3D actor with authored skin, weapons, stance and motion while keeping the source intact (43.016ms)
+✔ quest editor protects event references and force appearance controls use explicit neutral generic defaults (3.022208ms)
+✔ a generic numeric identity remains editable and does not show inherited historical abilities (42.585625ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2179.059083

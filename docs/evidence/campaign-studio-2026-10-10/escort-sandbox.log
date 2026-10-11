@@ -1,0 +1,37 @@
+✔ studio uses real hiring, map entry, dialogue payment and permanent quest receipts without changing author data (390.663042ms)
+✔ studio preserves atomic insufficient-funds rejection and actual deadline expiry after leaving a sector (375.611167ms)
+✔ studio exposes conditions from the real evaluator and rejects a save whose author content changed (276.298333ms)
+✔ studio test setup is explicit, isolated, validated and uses scheduled event outcomes (195.773458ms)
+✔ an authored roadside cache uses its own physical identity and admitted tile (344.105458ms)
+✔ placement rehearsal protects renamed world localities and replays the selected geography (39.994584ms)
+✔ local hiring projects the real recruit into the battle before strict save and leave (405.988084ms)
+✔ dialogue movement projects selected-world orders and preserves their physical identity on save (253.745375ms)
+✔ sandbox physical delivery consumes declared supplies, acknowledges custody and rewards only once (612.627042ms)
+✔ selected-world escort follows real movement to its authored exit and saves completion (521.200583ms)
+✔ accepted escort follows real movement, waits locally, reaches the exit and rewards once through full saves (3630.340208ms)
+✔ escort death permanently fails the accepted quest and saved directives cannot be forged (405.231416ms)
+✔ leadership changes require a present adjacent speaker and retain the escort position (453.120084ms)
+✔ an unfinished escort keeps its order and local position through return and reentry (473.49475ms)
+✔ authored resources and prerequisite errands resolve in real conversations, reward once and persist (5335.053625ms)
+✔ authored physical supply quantity, reply, reward and custody survive partial delivery, saves and reentry (1367.065625ms)
+✔ an authored physical reward choice waits for retained gifts and a real prerequisite conversation, then saves only the chosen reward (6447.755833ms)
+✔ accepted physical supplies lock the actual receiver before acknowledgement and confirmation pays only that town once (1522.125958ms)
+✔ clock-only resume cannot acknowledge a new physical gift and discard its custody before a full report (1356.002791ms)
+✔ first 1 accepted supplies and a real selected-contact death in one checkpoint fail without a quest reward (928.804583ms)
+✔ first 2 accepted supplies and a real selected-contact death in one checkpoint fail without a quest reward (936.652125ms)
+✔ an authored southward escort follows paid movement to its actual exit and saves its arrival (3341.009959ms)
+✔ authored contact death fails a pending errand without a reward and saves the incident (1041.351167ms)
+✔ quest definitions cannot be substituted in reports, pending requests, dormant sectors or saves (953.712084ms)
+✔ quest import rejects cycles, unknown contacts, remote hires and unsupported delivery definitions (35.187667ms)
+✔ authored errands coexist with dialogue quest definitions and reject missing contacts (100.903125ms)
+✔ a new resident retains dialogue quest history while receiving finite items for a local errand (1265.308125ms)
+✔ omitted-roster reentry retains an authored nonrecruitable recipient and its acknowledged items (1404.790333ms)
+✔ an authored conversation errand follows contact death independently of its reward locality (1046.506792ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27290.60575

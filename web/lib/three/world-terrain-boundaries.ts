@@ -10,10 +10,10 @@ const outdoor=(tile:WorldTile)=>!tile.buildingId&&!tile.roomId&&!tile.blocked&&(
 
 /** Flat, disjoint partitions use only admitted ground records. Each tongue
  * stays inside its centre-to-edge triangle, leaving cell corners untouched. */
-export function soilGrassTop(batch:WorldBatch,tile:WorldTile,all:ReadonlyMap<string,WorldTile>,sceneId:string|undefined,T:number,materials:WorldMaterials,light:number){
-  if(!outdoor(tile)||!['road','stone'].includes(tile.type)||terrainMaterial(tile,sceneId)!=='dirt')return false;
+export function soilGrassTop(batch:WorldBatch,tile:WorldTile,all:ReadonlyMap<string,WorldTile>,sceneId:string|undefined,T:number,materials:WorldMaterials,light:number,context?:{world:{landscapes:Record<string,string>}}){
+  if(!outdoor(tile)||!['road','stone'].includes(tile.type)||terrainMaterial(tile,sceneId,context)!=='dirt')return false;
   const neighbours=sides.map(([dx,dy])=>all.get(worldKey({x:tile.x+dx,y:tile.y+dy})));
-  const kinds=neighbours.map(neighbour=>neighbour&&outdoor(neighbour)&&['grass','scrub','forest'].includes(neighbour.type)&&(neighbour.elevation??0)===(tile.elevation??0)?terrainMaterial(neighbour,sceneId):undefined);
+  const kinds=neighbours.map(neighbour=>neighbour&&outdoor(neighbour)&&['grass','scrub','forest'].includes(neighbour.type)&&(neighbour.elevation??0)===(tile.elevation??0)?terrainMaterial(neighbour,sceneId,context):undefined);
   if(!kinds.some(kind=>kind==='dry-grass'||kind==='green-grass'))return false;
   const x=tile.x*T,z=tile.y*T,h=tile.elevation??0,centre=new Vector3(x,h,z),soil=materials.terrain('dirt');
   const corners=[new Vector3(x-T*.5,h,z-T*.5),new Vector3(x-T*.5,h,z+T*.5),new Vector3(x+T*.5,h,z+T*.5),new Vector3(x+T*.5,h,z-T*.5)];

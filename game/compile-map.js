@@ -97,6 +97,8 @@ export function compileMap(doc) {
     return copy;
   });
   return {
+    ...(doc.upperSurfaces!==undefined?{upperSurfaces:structuredClone(doc.upperSurfaces)}:{}),
+    ...(doc.climbLinks!==undefined?{climbLinks:structuredClone(doc.climbLinks)}:{}),
     width: doc.width,
     height: doc.height,
     tiles: [...terrain.values()].sort((a, b) => a.y - b.y || a.x - b.x),

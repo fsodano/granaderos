@@ -25,9 +25,9 @@ export function validateQuestEscortOrders(campaign,battle){
   if(Boolean(npc.escort)!==Boolean(order)||npc.escort&&(npc.escort.leaderId!==order.leaderId||npc.escort.waiting!==order.waiting))throw Error('La orden de escolta no coincide con el encargo.');
  }
 }
-export function escortArrival(quest,record,battle,npc,leader){
+export function escortArrival(quest,record,battle,npc,leader,context=battle){
  if(!quest.escort||record?.status!=='offered'||record.escortOrder?.leaderId!==leader.id||record.escortOrder.waiting)throw Error('El combatiente debe conducir esta escolta.');
- const exit=findSectorExit(battle.sectorId,battle.sceneId??null,`${quest.sector}:${quest.escort.destination}`);
+ const exit=findSectorExit(battle.sectorId,battle.sceneId??null,`${quest.sector}:${quest.escort.destination}`,context);
  if(!exit||exit.edge!==quest.escort.edge||!battle.exits?.some(e=>e.id===exit.id)||tacticalLevel(npc)!==0||tacticalLevel(leader)!==0||!(boundaryMatches(battle,npc,exit.edge)||boundaryMatches(battle,leader,exit.edge))||!atHand(npc,leader,1)||wallMovementBlocked(battle,npc,leader)||[npc,leader].some(actor=>boundaryMatches(battle,actor,exit.edge)&&!boundaryPassable(battle,actor,exit.edge)))throw Error('Acompañá al contacto hasta la salida indicada en el encargo y hablale allí.');
  return {x:npc.x,y:npc.y,leaderX:leader.x,leaderY:leader.y,width:battle.width,height:battle.height};
 }

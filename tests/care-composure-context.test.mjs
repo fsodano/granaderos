@@ -13,6 +13,8 @@ const order=(campaign,action)=>{
 };
 function visit({older=false}={}){
  const content=defaultContentPackage();
+ // Care composure is an authored capability, not an ordinary stock default.
+ content.characters.find(person=>person.id==='person-130').abilities=['care_composure'];
  if(older)delete content.characters.find(person=>person.id==='person-130').abilities;
  let campaign=order(initialCampaign(42,content),{type:'recruitCivic',id:130,term:'week'});
  campaign=order(campaign,{type:'wait',hours:6});

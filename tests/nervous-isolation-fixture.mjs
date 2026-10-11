@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import {contractQuote} from '../game/contracts.js';
 import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,weaponFor} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -14,10 +14,11 @@ export const nervousOrder=(campaign,action)=>{
 };
 
 export function preparedNervousArena({oldPinned=false,oldRenewal=false,term='day'}={}){
- const content=defaultContentPackage();
+ // This experiment pins optional caregiver traits and six-hour arrivals.
+ const content=authoredEditorPackage();
  // This declared clinical experiment pins the original pre-kinetic Brown Bess
  // balance before campaign creation. The separate kinetic acceptance tests the
- // fresh default energy profile; no executed health, gear or RNG is reset here.
+ // authored energy profile; no executed health, gear or RNG is reset here.
  const clinicalGun=content.weapons.find(weapon=>weapon.template===1800);
  delete clinicalGun.projectileEnergy;delete clinicalGun.projectileAirDrag;
  for(const load of clinicalGun.alternativeLoads??[]){delete load.projectileEnergy;delete load.projectileAirDrag;}

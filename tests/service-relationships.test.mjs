@@ -58,7 +58,9 @@ test('another squad or a real march does not hide a currently serving rival',()=
 });
 
 test('an already accepted paid arrival is honoured when a rival enters service before it arrives',()=>{
- const d=defaultContentPackage();d.characters.find(c=>c.id==='person-112').arrivalHours=0;
+ const d=defaultContentPackage();
+ // Declare the pending arrival used by this race; ordinary stock arrives now.
+ d.characters.find(c=>c.id==='person-107').arrivalHours=6;d.characters.find(c=>c.id==='person-112').arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:107,term:'day'});const receipt=structuredClone(s.hiringArrivals[0]),cash=s.resources.treasury;
  s=order(s,{type:'recruitCivic',id:112,term:'day'});assert.equal(contractQuote(s,op(s,107)).available,false);s=save(s);
  const afterRival=s.resources.treasury;s=save(advanceTo(s,6*3600));assert.ok(s.recruited.includes(107));assert.equal(s.hiringArrivals.length,0);

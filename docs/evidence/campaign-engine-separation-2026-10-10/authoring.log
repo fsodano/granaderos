@@ -1,0 +1,11 @@
+✔ a scaffold is a playable independent campaign with its own map, cast, portrait and saved identity (285.665875ms)
+✔ author checks use build validation and reject invalid data, changed resources and linked files (66.880833ms)
+✔ asset refresh retains resource identity and admits changed bytes only after an explicit refresh (98.214042ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 646.904625

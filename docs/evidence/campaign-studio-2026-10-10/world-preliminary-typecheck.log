@@ -1,0 +1,3 @@
+
+> granaderos@0.1.0 typecheck
+> node web/node_modules/typescript/bin/tsc --project web/tsconfig.typecheck.json --noEmit

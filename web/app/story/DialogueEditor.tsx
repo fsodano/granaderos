@@ -3,7 +3,7 @@ import DialogueConditions from './DialogueConditions';
 import DialogueEffects from './DialogueEffects';
 import {useState} from 'react';
 const nextId=(prefix:string,items:any[])=>{let n=1;while(items.some(i=>i.id===`${prefix}-${n}`))n++;return `${prefix}-${n}`;};
-export default function DialogueEditor({value,greeting,characters,quests,ownerId,onChange}:{value:any;greeting:string;characters:any[];quests:any[];ownerId:string;onChange:(value:any)=>void}){
+export default function DialogueEditor({value,greeting,characters,quests,ownerId,onChange,content}:{content?:any;value:any;greeting:string;characters:any[];quests:any[];ownerId:string;onChange:(value:any)=>void}){
  const [selected,setSelected]=useState(value?.entry??'start');
  const node=value?.nodes.find((n:any)=>n.id===selected)??value?.nodes[0];
  const changeNode=(patch:any)=>onChange({...value,nodes:value.nodes.map((n:any)=>n.id===node.id?{...n,...patch}:n)});
@@ -24,7 +24,7 @@ export default function DialogueEditor({value,greeting,characters,quests,ownerId
    {node.choices.map((choice:any,i:number)=><fieldset key={choice.id} aria-label={`Opción ${i+1}`}><legend>Opción {i+1}</legend>
     <label>Texto de la opción<input maxLength={160} value={choice.label} onChange={e=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,label:e.target.value}:c)})}/></label>
     <label>Respuesta siguiente<select value={choice.next} onChange={e=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,next:e.target.value}:c)})}>{value.nodes.map((n:any)=><option key={n.id} value={n.id}>{n.title}</option>)}</select></label>
-    <DialogueConditions conditions={choice.conditions} characters={characters} quests={quests} onChange={conditions=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,conditions}:c)})}/>
+    <DialogueConditions content={content} conditions={choice.conditions} characters={characters} quests={quests} onChange={conditions=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,conditions}:c)})}/>
     <DialogueEffects ownerId={ownerId} characters={characters} quests={quests} effects={choice.effects} onChange={effects=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,effects}:c)})}/>
     <button type="button" onClick={()=>changeNode({choices:node.choices.filter((c:any)=>c.id!==choice.id)})}>Quitar opción {i+1}</button>
    </fieldset>)}

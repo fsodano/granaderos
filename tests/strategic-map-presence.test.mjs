@@ -8,7 +8,10 @@ import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,CAMPAIGN_SECTORS} from '../game/campaign.js';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
 import {refreshEnemyIntelligence} from '../game/enemy-intelligence.js';
-import {strategicSectorPresence,strategicTravelPresence} from '../game/strategic-presence.js';
+import {strategicSectorPresence,strategicTravelPresence,strategicPresenceLabel} from '../game/strategic-presence.js';
+import {scaffoldDocuments} from '../tools/campaign-authoring.mjs';
+import {compileCampaignPackage} from '../game/campaign-library.js';
+import {initialCampaign as createCampaign} from '../game/campaign.js';
 import {worldCell,WORLD_CELLS} from '../game/world-cells.js';
 import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -88,10 +91,22 @@ test('existing militia in promotion retain dots beside a casualty-adjusted deplo
 
 test('only current admitted intelligence produces enemy count dots; unknown strength gets a question mark',t=>{
  const s=initialCampaign(),g=launchEnemyGroup(s,'coast','retiro',{immediate:true}),before=structuredClone(s),doc=map(t,s);
- assert.equal(dots(doc,'retiro','enemy').length,g.units.length);assert.match(doc.querySelector('[data-map-sector="retiro"]').getAttribute('aria-label'),new RegExp(`${g.units.length} realistas observados`));
+ assert.equal(dots(doc,'retiro','enemy').length,g.units.length);assert.match(doc.querySelector('[data-map-sector="retiro"]').getAttribute('aria-label'),new RegExp(`${g.units.length} combatientes de Realistas españoles observados`));
  assert.equal(doc.querySelector('[data-sector-presence="retiro"] [data-enemy-unknown]'),null);assert.deepEqual(s,before);
  g.status='stationed';g.resolvedAt=0;const occupied=map(t,s);assert.equal(dots(occupied,'retiro','enemy').length,0);assert.ok(occupied.querySelector('[data-sector-presence="retiro"] [data-enemy-unknown]'));
  assert.ok(occupied.querySelector('[data-sector-presence="jujuy"] [data-enemy-unknown]'),'public royalist control does not reveal garrison size');
+});
+
+test('presence labels use the selected campaign faction without exposing hidden strength',t=>{
+ const documents=scaffoldDocuments('presence-world');
+ documents.world.factions.find(faction=>faction.id==='royalist').name='La guardia del valle';
+ const state=createCampaign(1,compileCampaignPackage(documents.manifest,documents)),before=structuredClone(state),doc=map(t,state);
+ const label=doc.querySelector('[data-map-sector="watch-post"]').getAttribute('aria-label');
+ assert.match(label,/Fuerza de La guardia del valle sin confirmar/);
+ assert.doesNotMatch(label,/realista/i);
+ assert.equal(dots(doc,'watch-post','enemy').length,0);
+ assert.equal(strategicPresenceLabel({...row(state,'watch-post'),enemies:2,unknownEnemy:false},state),'2 combatientes de La guardia del valle observados');
+ assert.deepEqual(state,before);
 });
 
 test('unseen groups and hidden tactical snapshots cannot alter strategic markers',t=>{

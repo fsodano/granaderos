@@ -23,6 +23,12 @@ const campaignOrder=(pair,action)=>{
 export function preparedPhysicalNearMiss({control='near',omittedSpeech=false}={}){
  assert.ok(['near','stop','misfire','hit'].includes(control));
  const content=defaultContentPackage();
+ // This authored firing case opts into kinetic energy, air drag and transient
+ // quotes. The ordinary campaign keeps its established ballistics and speech.
+ const musket=content.weapons.find(weapon=>weapon.template===1800);
+ musket.projectileEnergy={model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265};
+ musket.projectileAirDrag={model:'range-energy-retention-v1',retentionAtRange:.8};
+ for(const id of [110,107]){const character=content.characters.find(c=>c.id===`person-${id}`);character.speech.near='Bajemos la cabeza. Ese disparo pasó cerca.';character.speech.interrupt='Ahora podemos actuar.';}
  if(omittedSpeech)for(const character of content.characters){delete character.speech.near;delete character.speech.interrupt;}
  const paidInitial=physicalNearMissSaved({campaign:initialCampaign(8,content)}),paidHistory=[],quotes=[];
  let pair=paidInitial;

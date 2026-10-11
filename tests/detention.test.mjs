@@ -6,7 +6,7 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 const roster=[{id:112,name:'Médico',maxHp:64},{id:122,name:'Cirujano',maxHp:65}];
 const captive=(extra={})=>({captured:true,alive:true,capturedSector:'tucuman',capturedAt:18,hp:11,maxHp:64,energy:30,bleeding:2,bandaged:40,inventory:{weapon:{weapon:1801,count:1}},medkits:8,...extra});
 const campaign=()=>({operativeState:{112:captive(),122:captive({capturedSector:'cordoba'})}});
-function field(){return createBattle([{id:'p',x:1,y:1}],{width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0,...(i%12>=7&&Math.floor(i/12)>=3?{roomId:'guardroom'}:{})})),enemies:[{id:'guard',x:8,y:4}],npcs:[]});}
+function field(){return createBattle([{id:'p',x:1,y:1}],{sector:'tucuman',width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0,...(i%12>=7&&Math.floor(i/12)>=3?{roomId:'guardroom'}:{})})),enemies:[{id:'guard',x:8,y:4}],npcs:[]});}
 test('detention manifest preserves exact local identities and wounds without copying confiscated equipment',()=>{
  const s=campaign(),before=structuredClone(s),m=detentionManifest(s,roster,'tucuman');assert.equal(m.length,1);assert.equal(m[0].id,'captive:112:18');assert.equal(m[0].hp,11);assert.equal(m[0].maxHp,64);assert.equal(m[0].energy,30);assert.equal(m[0].bleeding,2);assert.equal(m[0].bandaged,40);assert.equal(m[0].unconscious,true);assert.equal(m[0].inventory,undefined);assert.equal(m[0].medkits,undefined);assert.deepEqual(s,before);
  m[0].hp=1;assert.equal(s.operativeState[112].hp,11);s.operativeState[112].alive=false;assert.deepEqual(detentionManifest(s,roster,'tucuman'),[]);

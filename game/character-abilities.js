@@ -1,3 +1,4 @@
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
 // Named capabilities belong to the character definition. Numeric slots remain
 // only as a compatibility fallback for campaigns created before authoring.
 export const CHARACTER_ABILITIES = [
@@ -26,7 +27,7 @@ export const CHARACTER_ABILITIES = [
  ['protected_commander','Mando protegido','Puede recibir la protección de un compañero sin exigir 90 puntos de liderazgo.'],
  ['mounted_charge','Carga precisa','Aumenta el daño de una carga montada.'],
 ].map(([id,name,description])=>Object.freeze({id,name,description,...(['civilian_conscience','low_morale_refusal'].includes(id)?{contractOnly:true}:{})}));
-const legacy={0:['mud_rider'],1:['militia_command'],2:['loading_support'],3:['counterattack','bodyguard'],4:['quick_shot','quick_movement'],5:['artillery_fire'],6:['breaching','night_scout','scatter_concealment'],7:['artillery_loading','foot_morale'],9:['mounted_intimidation'],10:['rapid_first_aid'],11:['tactical_command'],57:['strategic_command','protected_commander','mounted_charge']};
+const legacy=DEFAULT_CATALOGUE.legacyAbilityAssignments;
 export const legacyCharacterAbilities=id=>[...(legacy[Number(id)]??[])];
-export function hasCharacterAbility(unit,ability){return (unit.abilities??legacy[Number(unit.id)]??[]).includes(ability);}
+export function hasCharacterAbility(unit,ability){return (unit.abilities??(unit.genericCharacter?[]:legacy[Number(unit.id)])??[]).includes(ability);}
 export function validCharacterAbilities(value){return Array.isArray(value)&&value.length<=CHARACTER_ABILITIES.length&&new Set(value).size===value.length&&value.every(id=>CHARACTER_ABILITIES.some(a=>a.id===id));}

@@ -1,3 +1,4 @@
+import {validateTacticalSpace} from './tactical-space.js';
 import {wallEdgeKey,wallEdgeCells,migrateWallGeometry} from './wall-geometry.js';
 import {BUILDING_TYPES} from './building-types.js';
 import {validateCoverMetadata} from './projectile-cover.js';
@@ -84,8 +85,8 @@ export function validateMap(input, { playable = false } = {}) {
         if (!ok) throw Error(message);
       };
     const wallMetadata = (wall, {runtime = false} = {}) => {
-      // Map authoring describes ground floors; upper geometry is a separate
-      // runtime layer. A displaced edge must never silently miss that floor.
+      // Authored wall edges belong to the ground floor. Upper floors and
+      // platforms use upperSurfaces; a displaced edge cannot replace them.
       need((wall.tacticalLevel === undefined || wall.tacticalLevel === 0) &&
         (wall.elevation === undefined || wall.elevation === 0), "La pared debe estar al nivel del suelo.");
       for (const field of ["blocked", "blocksSight", "open", "locked"])
@@ -315,7 +316,9 @@ export function validateMap(input, { playable = false } = {}) {
         "Luz no válida.",
       );
     for (const e of d.exits) need(str(e.target), "Destino de salida no válido.");
-    const map = compileMap(d),
+    const map = compileMap(d);
+    validateTacticalSpace(map);
+    const
       tiles = new Map(map.tiles.map((t) => [cellKey(t), t]));
     const featureKeys = new Set();
     for (const f of d.features) {

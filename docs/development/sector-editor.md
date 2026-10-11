@@ -61,10 +61,11 @@ references include the [rural church at Chamical](https://www.argentina.gob.ar/c
 heritage records are not used. The cabildo remains a playable single-floor
 abstraction; no second-floor navigation is implied.
 
-The browser stores one local recovery draft. Recovery is explicit after reload.
+The browser stores a recovery draft for each selected installed campaign. Recovery is explicit after reload.
 Export important work to a file; local storage is not a project database. Opening
 another sector does not save it into the repository. To change a shipped sector,
-replace its JSON file under `game/maps/`, validate, and rebuild the game.
+replace its JSON file under `campaigns/<campaign-id>/maps/`, validate the campaign
+folder, and rebuild the game. See [campaign authoring](campaign-authoring.md).
 
 ## Building finishes and openings
 

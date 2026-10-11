@@ -62,7 +62,7 @@ function PersonnelCard({s,op,roster,blocked,dispatch}:{s:any;op:any;roster:any[]
 export default function MedicalCare({state:s,sectorId=s.location,dispatch}:{state:any;sectorId?:string;dispatch:(action:any)=>void}){
   const roster=rosterFor(s),personnel=roster.filter(o=>s.recruited.includes(o.id)&&!s.operativeState[o.id]?.captured&&!operativeInTransit(s,o.id)&&operativeLocation(s,o.id)===sectorId);
   const blocked=Boolean(s.pendingBattle||s.pendingEncounter)||s.defeated;
-  const place=campaignPlace(sectorId);
+  const place=campaignPlace(sectorId,s);
   return <section className="medical-care" aria-label="Atención médica en campaña" aria-labelledby="medical-care-title">
     <header><div><p className="eyebrow">PERSONAL EN {place?.grid}</p><h2 id="medical-care-title">Asignaciones del personal</h2></div><p>Organizá la atención, el descanso, la práctica y las reparaciones. Cada trabajo necesita tiempo y personal presente en un sector seguro.</p></header>
     {!personnel.length?<p className="care-empty">No hay combatientes contratados en {place?.name}.</p>:<div className="care-personnel">{personnel.map(op=><PersonnelCard key={op.id} s={s} op={op} roster={roster} blocked={blocked} dispatch={dispatch}/>)}</div>}

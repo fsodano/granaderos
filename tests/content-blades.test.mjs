@@ -75,7 +75,8 @@ test('save validation pins blades in both slots, stock and inventory and compres
 });
 
 test('older packages retain their original blades and the mission ally accepts an explicit blade',()=>{
- const d=defaultContentPackage();d.weapons=d.weapons.filter(w=>w.template<1809);for(const c of d.characters)delete c.blade;
+ // The older sheet omitted primary melee references as well as blade definitions.
+ const d=defaultContentPackage();d.weapons=d.weapons.filter(w=>w.template<1809);for(const c of d.characters){delete c.blade;if(c.weapon?.startsWith('blade-'))c.weapon=null;}
  assert.deepEqual(campaignContentReport(d).blocked,[]);const old=save(initialCampaign(8,d)).campaign;assert.equal(rosterFor(old).find(o=>o.id===110).blade,rosterFor(initialCampaign()).find(o=>o.id===110).blade);assert.equal(rosterFor(old).find(o=>o.id===110).bladeMetadata,undefined);assert.ok(equipmentCatalog(old).some(w=>w.item===1812));
  const authored=content();authored.characters.find(c=>c.id==='person-57').blade='lanza-del-sur';const s=initialCampaign(8,authored);s.missionAllies.san_lorenzo=sanLorenzoAlly(s);assert.equal(contentWeaponOf(save(s).campaign.missionAllies.san_lorenzo,'blade').id,'lanza-del-sur');assert.equal(s.missionAllies.san_lorenzo.blade,1812);
  for(const values of [{ap:0},{ap:101},{reach:.9},{reach:4.1},{damage:0},{weight:0},{price:-1}])assert.throws(()=>compileWeaponDefinition(blade(values)));

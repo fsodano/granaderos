@@ -104,6 +104,8 @@ function rejectTrustedSync(pair,change){
  assert.match(result.error,/destino|destinos/i);assert.deepEqual(forged,before,'rejection must not advance time or consume items');
 }
 function startingCampaign(secured=false,content=defaultContentPackage()){
+ // The courier experiment chooses a real six-hour arrival before any order.
+ for(const id of IDS)content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
  const campaign=initialCampaign(42,content);
  // Separate declared territorial boundary, before the first admitted order.
  // This proves the town gate and never claims a native conquest or victory.
@@ -162,7 +164,7 @@ test('native paid Retiro couriers commit two original ponchos by physical delive
  assert.equal(pair.campaign.resources.treasury,cash);assert.equal(dailyIncome(pair.campaign),0);assert.deepEqual(pair.campaign.contracts,contracts);assert.deepEqual(health(pair),issuedHealth);
  for(const [index,id]of IDS.entries()){assert.deepEqual(campaignKit(pair,id),kits[index]);assert.equal(pair.campaign.operativeState[id].outfit,null);assert.deepEqual(pair.campaign.operativeState[id].inventory,originalPockets[index],'delivery removes the poncho and retains every original pocket record');}
  assert.deepEqual(replay(initial,history),pair,'all paid hires, physical orders and conversations replay through official saves');
- t.diagnostic(JSON.stringify({scenario:'native default seed42 Retiro visit; no conquest',prices:[252,420],treasury:cash,orders:history.length,arrivalHour:6,deliverySeconds:completedAt-6*3600,totalSeconds:stamp(pair.campaign),health:health(pair),rounds:IDS.map(id=>campaignKit(pair,id).rounds),received:issued,beneficiary:branch.id}));
+ t.diagnostic(JSON.stringify({scenario:'seed42 Retiro visit with authored six-hour arrivals; no conquest',prices:[252,420],treasury:cash,orders:history.length,arrivalHour:6,deliverySeconds:completedAt-6*3600,totalSeconds:stamp(pair.campaign),health:health(pair),rounds:IDS.map(id=>campaignKit(pair,id).rounds),received:issued,beneficiary:branch.id}));
 });
 
 test('prepared paid couriers in separate towns keep the opposite original poncho after a real refused offer and official replay',t=>{
@@ -305,11 +307,12 @@ test('native paid partial delivery can be withdrawn once with exact retained cus
  for(const [index,id]of IDS.entries())assert.deepEqual(campaignKit(pair,id),kits[index]);
  assert.deepEqual(replay(initial,history),pair,'all native paid actions replay through complete official campaign/tactical saves');
  assert.deepEqual(save(partial),partial);assert.deepEqual(save(terminal),terminal);
- t.diagnostic(JSON.stringify({scenario:'fresh default seed42; real day hires and six-hour arrival; no prepared control or outcome',prices:[36,60],cash,orders:history.length,withdrawalTime:{hour:record.withdrawnAt,second:record.withdrawnSecond},finalTime:{hour:pair.campaign.hour,second:pair.campaign.secondOfHour},status:record.status,cost:events[0],delivered:gifts[0],retained:gifts[1],health:health(pair),rounds:IDS.map(id=>campaignKit(pair,id).rounds),laterDeath:{gunOnlyHealth,shots,orders:deathHistory.length,health:health(afterDeath),rounds:IDS.map(id=>campaignKit(afterDeath,id).rounds),treasury:afterDeath.campaign.resources.treasury,terminal:afterDeath.campaign.quests[QUEST].status},occupationControl:'declared saved-admission compatibility only, not earned occupation'}));
+ t.diagnostic(JSON.stringify({scenario:'seed42; real day hires with authored six-hour arrivals; no prepared control or outcome',prices:[36,60],cash,orders:history.length,withdrawalTime:{hour:record.withdrawnAt,second:record.withdrawnSecond},finalTime:{hour:pair.campaign.hour,second:pair.campaign.secondOfHour},status:record.status,cost:events[0],delivered:gifts[0],retained:gifts[1],health:health(pair),rounds:IDS.map(id=>campaignKit(pair,id).rounds),laterDeath:{gunOnlyHealth,shots,orders:deathHistory.length,health:health(afterDeath),rounds:IDS.map(id=>campaignKit(afterDeath,id).rounds),treasury:afterDeath.campaign.resources.treasury,terminal:afterDeath.campaign.quests[QUEST].status},occupationControl:'declared saved-admission compatibility only, not earned occupation'}));
 });
 
 for(const rewardChoice of [false,true])test(`declared ${rewardChoice?'cash/civic':'single-recipient'} physical errand permits a clipped withdrawal without changing old omitted behavior`,t=>{
  const content=defaultContentPackage(),definition=content.errands.find(q=>q.id===QUEST);delete definition.beneficiaries;
+ for(const id of IDS)content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
  definition.reward={treasury:0,loyalty:false};definition.withdrawal={supportCost:20};if(rewardChoice)definition.rewardChoice={reimbursement:40};
  // Declared low support boundary BEFORE official admission and every paid order.
  // Original ownership stays intact; this is not earned conquest or political history.

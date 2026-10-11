@@ -10,9 +10,11 @@ import {order,saved,readyLocal,talk,leave,tactical,sync} from './local-contract-
 const chapter=(id,conditions)=>({id,name:`Objetivo ${id}`,objective:`Cumplir ${id}.`,conditions});
 const day=min=>({type:'day',min,max:null});
 const story=()=>({...defaultCampaignStory(),introduction:'Cuidá el puesto de la ribera.',victory:'El parte llegó a destino.',defeat:'Se perdió el parte.'});
-const content=()=>({...defaultContentPackage(),campaignStory:story()});
+// Chapter mechanics are tested over an explicit reuse of the stock cast and
+// its ambient errands, rather than an implicit generic resident fallback.
+const content=()=>({...defaultContentPackage(),includeOriginalResidents:true,campaignStory:story()});
 const choose=(p,node,id)=>({...p,campaign:order(p.campaign,{...talk(p,undefined,'dialogue'),dialogueNode:node,dialogueChoice:id})});
-const fixture=()=>{const d=questPackage();d.campaignStory=story();d.campaignStory.chapters=[chapter('service',[{type:'character',character:'person-110',state:'serving'}]),chapter('report',[{type:'quest',quest:'river-post',status:'completed'}])];return d;};
+const fixture=()=>{const d=questPackage();d.includeOriginalResidents=true;d.campaignStory=story();d.campaignStory.chapters=[chapter('service',[{type:'character',character:'person-110',state:'serving'}]),chapter('report',[{type:'quest',quest:'river-post',status:'completed'}])];return d;};
 
 test('authored chapters validate bounded definitions, references and campaign-only conditions while legacy packages retain their phases',()=>{
  for(const mutate of [d=>d.campaignStory={},d=>d.campaignStory.chapters=[],d=>d.campaignStory.chapters=Array(13).fill(d.campaignStory.chapters[0]),d=>d.campaignStory.chapters.push(structuredClone(d.campaignStory.chapters[0])),d=>d.campaignStory.victory='',d=>d.campaignStory.defeat='x'.repeat(1001),d=>d.campaignStory.chapters[0].conditions=[],d=>d.campaignStory.chapters[0].conditions=[{type:'meeting',character:'person-3'}],d=>d.campaignStory.chapters[0].conditions=[{type:'character',character:'missing',state:'alive'}],d=>d.campaignStory.failureConditions=[{type:'quest',quest:'missing',status:'failed'}],d=>d.campaignStory.chapters[0].reward=100,d=>d.campaignStory.chapters[0].id='constructor',d=>d.campaignStory.failureConditions=null]){const d=content();mutate(d);assert.throws(()=>initialCampaign(42,d));}
@@ -60,7 +62,7 @@ test('chapter history admission rejects missing, reordered, future, extra and in
 });
 
 test('a completed service chapter survives the actual contract expiry without repeating or losing its saved result',()=>{
- const d=content();d.campaignStory.chapters=[chapter('serve',[{type:'character',character:'person-100',state:'serving'}]),chapter('third-day',[day(3)])];let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'day'});assert.equal(s.campaignProgress.completed.length,0);s=order(s,{type:'wait',hours:6});assert.equal(s.campaignProgress.completed.length,1);const event=structuredClone(s.campaignProgress.completed[0]);for(let attempts=0;s.hour<48&&attempts<20;attempts++)s=order(s,{type:'wait',hours:48-s.hour});assert.equal(s.hour,48,'acknowledging contract and work notices completes the requested time');s=saved({campaign:s}).campaign;assert.equal(s.recruited.includes(100),false);assert.equal(s.completed,true);assert.deepEqual(s.campaignProgress.completed[0],event);
+ const d=content();d.characters.find(c=>c.id==='person-100').arrivalHours=6;d.campaignStory.chapters=[chapter('serve',[{type:'character',character:'person-100',state:'serving'}]),chapter('third-day',[day(3)])];let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'day'});assert.equal(s.campaignProgress.completed.length,0);s=order(s,{type:'wait',hours:6});assert.equal(s.campaignProgress.completed.length,1);const event=structuredClone(s.campaignProgress.completed[0]);for(let attempts=0;s.hour<48&&attempts<20;attempts++)s=order(s,{type:'wait',hours:48-s.hour});assert.equal(s.hour,48,'acknowledging contract and work notices completes the requested time');s=saved({campaign:s}).campaign;assert.equal(s.recruited.includes(100),false);assert.equal(s.completed,true);assert.deepEqual(s.campaignProgress.completed[0],event);
 });
 
 test('an authored death condition uses an actual tactical death and historical names do not impose an implicit custom-story defeat',async()=>{

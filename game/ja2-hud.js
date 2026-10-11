@@ -2,7 +2,7 @@ import {wallEdgeId,wallEdgeCenter} from './wall-geometry.js';
 import {formatAP} from './action-points.js';
 import {firearmServiceable,BROKEN_FIREARM_REASON} from './firearm-serviceability.js';
 import {CIVILIAN_SUPPLY_FIELDS} from './civilian-supplies.js';
-import {FINITE_ARTILLERY_ARSENALS} from './finite-artillery-arsenals.js';
+import {finiteArsenalsFor} from './campaign-physical.js';
 import {weaponSpecification} from './weapon-definition.js';
 import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
@@ -30,7 +30,8 @@ import {npcGiftPreview,contextualAttack,meleePreview,meleePointPreview, fitBayon
 import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings.js';
 import {firearmBystanderRisk,firearmBystanderWarning} from './firearm-bystander-risk.js';
 import {environmentContainerVisible} from './tactical.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
+import {campaignFactionName} from './campaign-faction-presentation.js';
 import {CITY_LOYALTY_REWARDS} from './cities.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
@@ -40,9 +41,9 @@ const toolTargets = unit => heldTool(unit)?.toolKey === 'crowbar' ? 'una puerta,
 export const chancePercent = value => value > 0 && value < 1 ? '<1%' : `${Math.round(value)}%`;
 const maintenanceGainFormat = new Intl.NumberFormat('es-AR', {maximumFractionDigits: 2});
 /** Public authored destinations and the accepted delivery's saved choice. */
-export function beneficiaryDeliveryNotice(delivery){
+export function beneficiaryDeliveryNotice(delivery,context=null){
   if(!delivery?.beneficiaries?.length)return null;
-  const place=id=>CAMPAIGN_SECTORS.find(sector=>sector.id===id)?.name??id;
+  const place=id=>campaignSectors(context).find(sector=>sector.id===id)?.name??id;
   const selected=delivery.beneficiaries.find(recipient=>recipient.id===delivery.selectedBeneficiaryId);
   if(selected)return `Destino fijado: ${place(selected.sector)}. ${delivery.beneficiaryId&&delivery.beneficiaryId!==selected.id?'Este contacto rechazará el objeto; seguirá en tu equipo.':'Todos los objetos deben ir al mismo contacto.'}`;
   const destinations=delivery.beneficiaries.map(recipient=>`${place(recipient.sector)}: ${[recipient.reward.treasury>0?`${recipient.reward.treasury} pesos`:null,recipient.reward.loyalty?`apoyo local +${CITY_LOYALTY_REWARDS.quest}`:null].filter(Boolean).join(' y ')||'sin recompensa'}`);
@@ -222,11 +223,14 @@ export function movementGroupModel(state, ids, selectedId, point, {preview=true}
   return {members, anchorId, request, preview: preview&&request ? planGroupMove(state, request) : null};
 }
 
-export function turnModel(state) {
+export function turnModel(state,context=null) {
   const interrupted = state.phase === 'interrupt' && state.interrupt?.side === 'player';
+  const selected=context??state;
+  const packaged=selected?.world||selected?.campaignPackage||selected?.contentCampaign?.package;
+  const faction=packaged?campaignFactionName(selected,state.phase==='enemy'?'royalist':'patriot'):state.phase==='enemy'?'Ejército realista':'Ejército patriota';
   return {
     interrupted,
-    label: interrupted ? 'Interrupción' : state.mode === 'exploration' ? 'Exploración libre' : `Turno ${state.turn} · ${state.phase === 'enemy' ? 'Ejército realista' : 'Ejército patriota'}`,
+    label: interrupted ? 'Interrupción' : state.mode === 'exploration' ? 'Exploración libre' : `Turno ${state.turn} · ${faction}`,
     endLabel: interrupted ? 'Continuar turno enemigo' : state.mode === 'exploration' ? 'Descansar' : 'Fin del turno',
     units: interrupted ? state.units.filter(u => unitCanAct(state, u)) : [],
     canExplore: canEndCombat(state),
@@ -378,7 +382,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,treatment:preview.treatment,...(preview.composureRelief>0?{composureRelief:preview.composureRelief}:{}),coverNote:medicalTreatmentText(state,preview)};
   }
   const recipient=state.npcs?.find(n=>!n.departure&&!n.fled&&sameCell(n,point)&&canSee(state,unit,n));
-  if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:[beneficiaryDeliveryNotice(gift.beneficiaryDelivery),'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'].filter(Boolean).join(' ')};}
+  if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:[beneficiaryDeliveryNotice(gift.beneficiaryDelivery,state),'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'].filter(Boolean).join(' ')};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){
@@ -779,7 +783,7 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   const targets = [...found].map(([key, raw]) => {
     const summary = environmentTargetSummary(unit, raw);
     if (raw.kind === 'wall') return {key, kind: raw.kind, id: raw.id, x: raw.x, y: raw.y,...(raw.axis?{axis:raw.axis,wallEdgeId:wallEdgeId(raw)}:{}),tacticalLevel: 0, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, material: summary.material};
-    const arsenal=FINITE_ARTILLERY_ARSENALS[state.sectorId],arsenalAvailable=arsenal?.chest===raw.id&&(state.finiteArtilleryArsenal||raw.artilleryRecovered);
+    const arsenal=finiteArsenalsFor(state)[state.sectorId],arsenalAvailable=arsenal?.chest===raw.id&&(state.finiteArtilleryArsenal||raw.artilleryRecovered);
     return {key, kind: raw.kind, id: raw.id, label: `${summary.label} · ${tacticalGridLabel(raw.x,raw.y)}`, open: summary.open, locked: summary.locked, broken: summary.broken, trapKnown: Boolean(summary.trap), trapArmed: summary.trap?.armed,...(arsenalAvailable?{arsenalHint:raw.artilleryRecovered?'Las piezas recuperadas quedan emplazadas. Usá Artillería en la carta para guardarlas o trasladarlas.':`Abrí este cofre para recuperar ${arsenal.pieces.length} piezas del arsenal con munición finita.`}:{})};
   });
   const target = targets.find(entry => entry.key === ctx.targetKey) || targets[0];

@@ -6,17 +6,17 @@ import {dialogueOptions} from '../../game/npc-dialogue.js';
 import {beneficiaryDeliveryNotice} from '../../game/ja2-hud.js';
 import './ja2-dialogue.css';
 export type ConversationChoice={node?:string;id?:string;questResolution?:'cash'|'civic';questWithdrawal?:{questId:string;beneficiaryId?:string;deliveredCount:number}};
-type Props={dialogue?:any;hireTerms?:any[];npc:any;conversation:any;quest:any;reason:string|null;canApproach:boolean;availability?:{code:string|null;reason:string|null;canApproach:boolean};responseOnly?:boolean;onApproach:()=>void;onTalk:(approach:string,term?:string,choice?:ConversationChoice)=>void;onClose:()=>void};
-export default function JA2Conversation({dialogue,hireTerms=[],npc,conversation,quest,reason,canApproach,availability,responseOnly=false,onApproach,onTalk,onClose}:Props){
+type Props={state?:any;dialogue?:any;hireTerms?:any[];npc:any;conversation:any;quest:any;reason:string|null;canApproach:boolean;availability?:{code:string|null;reason:string|null;canApproach:boolean};responseOnly?:boolean;onApproach:()=>void;onTalk:(approach:string,term?:string,choice?:ConversationChoice)=>void;onClose:()=>void};
+export default function JA2Conversation({state,dialogue,hireTerms=[],npc,conversation,quest,reason,canApproach,availability,responseOnly=false,onApproach,onTalk,onClose}:Props){
  const close=useRef<HTMLButtonElement>(null);
  const [selectedTerm,setTerm]=useState('day');
  const quote=hireTerms.find(q=>q.term===selectedTerm)??hireTerms[0];
  useEffect(()=>{const previous=document.activeElement as HTMLElement|null;close.current?.focus();return()=>{if(previous?.isConnected)previous.focus();};},[npc.id]);
- const portrait=portraitFor(npc.portraitId??npc.operativeId??(npc.id==='yatasto-san-martin'?57:npc.id==='local-san_nicolas'?'avatar-woman-civilian':'avatar-man-soldier'));
+ const portrait=portraitFor(npc.portrait??npc.portraitId??npc.operativeId,state);
  const current=conversation?.npcId===npc.id?conversation:null;
  const refusal=availability?.code==='refused'?availability.reason:null;
  const pendingResolution=!responseOnly&&quest?.status==='offered'&&Boolean(quest.rewardChoice);
- const beneficiaryNotice=quest?.beneficiaries&&!['completed','failed','withdrawn'].includes(quest.status)?beneficiaryDeliveryNotice({beneficiaries:quest.beneficiaries,beneficiaryId:quest.beneficiary?.id,selectedBeneficiaryId:quest.beneficiaryId}):null;
+ const beneficiaryNotice=quest?.beneficiaries&&!['completed','failed','withdrawn'].includes(quest.status)?beneficiaryDeliveryNotice({beneficiaries:quest.beneficiaries,beneficiaryId:quest.beneficiary?.id,selectedBeneficiaryId:quest.beneficiaryId},state):null;
  const choices=responseOnly?[]:[...(dialogue?[['dialogue','Conversar']]:[]),...dialogueOptions(npc,quest)].filter(([approach])=>approach!=='questWithdraw'&&(approach!=='recruit'||npc.recruitable!==false)&&(!pendingResolution||approach!=='quest'));
  return <section className="ja2-conversation" role="dialog" aria-label={`Conversación con ${npc.name}`} onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();onClose();}}}>
   <div className="ja2-conversation-head"><figure>{portrait&&<img src={sitePath(portrait)} alt={npc.name}/>}<figcaption>{npc.name}</figcaption></figure>

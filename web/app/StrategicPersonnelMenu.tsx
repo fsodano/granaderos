@@ -49,8 +49,8 @@ export default function StrategicPersonnelMenu({state:s,roster,id,kind,onClose,d
  const order=(action:any)=>{dispatch(action);onClose();};
  const options={skill,targetId:Number(target),instructorId:teacher?Number(teacher):undefined,repairScope:'equipment'};
  const mount=mountForOperative(s.horseState,id)?.mount;
- const squad=s.squads.find((q:any)=>q.members.includes(id)),journey=squad?squadTravelStatus(squad):null,title=kind==='contract'?'Contrato':kind==='destination'?'Destino':'Asignación';
- const place=(sector:string)=>campaignPlace(sector)?.name??sector;
+ const squad=s.squads.find((q:any)=>q.members.includes(id)),journey=squad?squadTravelStatus(squad,s):null,title=kind==='contract'?'Contrato':kind==='destination'?'Destino':'Asignación';
+ const place=(sector:string)=>campaignPlace(sector,s)?.name??sector;
  return <div className="strategic-menu-backdrop" onClick={onClose}><section ref={dialog} tabIndex={-1} className="strategic-person-menu" role="dialog" aria-modal="true" aria-label={`${title} de ${op.nickname}`} onClick={e=>e.stopPropagation()} onKeyDown={e=>{
   if(e.key==='Escape'){e.preventDefault();e.stopPropagation();onClose();}
   if(e.key==='Tab'){

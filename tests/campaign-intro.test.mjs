@@ -1,3 +1,4 @@
+import {campaignUIReady} from './mounted-campaign-ready.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,6 +7,7 @@ import {createElement as h,act,StrictMode} from '../web/node_modules/react/index
 import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {encodeSave} from '../game/save.js';
+import {campaignFetch,stockPresentation,alternateCampaignDocuments} from './campaign-library-fixture.mjs';
 
 // Keep the real Home, introduction and autosave behavior. Only the heavy game
 // screens and dialog presentation are replaced with observable controls.
@@ -25,40 +27,41 @@ register(`data:text/javascript,${encodeURIComponent(`const views=${JSON.stringif
 const {default:Home}=await import('../web/app/page.tsx');
 const {default:CampaignIntro}=await import('../web/app/CampaignIntro.tsx');
 
-async function mount(t,element,{stored=null,reducedMotion=false,controlledTime=false}={}){
+async function mount(t,element,{stored=null,reducedMotion=false,controlledTime=false,reader=campaignFetch,keyedSaves=false}={}){
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true});
  dom.window.scrollTo=()=>{};
  dom.window.matchMedia=()=>({matches:reducedMotion,addEventListener(){},removeEventListener(){}});
  const timers=new Map();let time=0,nextTimer=0;
  if(controlledTime){dom.window.setTimeout=(callback,delay=0)=>{const id=++nextTimer;timers.set(id,{callback,due:time+delay});return id;};dom.window.clearTimeout=id=>timers.delete(id);}
- const jobs=[],writes=[],reads=[];
+ const jobs=[],writes=[],reads=[],saves=new Map();
  class Worker{postMessage(job){jobs.push(structuredClone(job));}terminate(){this.closed=true;}}
- const globals={window:dom.window,document:dom.window.document,Worker,IS_REACT_ACT_ENVIRONMENT:true,
-  localStorage:{getItem(key){reads.push(key);return stored;},setItem(key,text){writes.push({key,text});stored=text;}}};
+ const globals={fetch:reader,window:dom.window,document:dom.window.document,Worker,IS_REACT_ACT_ENVIRONMENT:true,
+  localStorage:{getItem(key){reads.push(key);return keyedSaves?saves.get(key)??null:stored;},setItem(key,text){writes.push({key,text});saves.set(key,text);stored=text;}}};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
  for(const [key,value] of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
  const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
- await act(async()=>root.render(element));
+ await act(async()=>root.render(element));await campaignUIReady(dom.window.document);
  const button=text=>{
   const buttons=[...dom.window.document.querySelectorAll('button')];
   return buttons.find(button=>button.textContent.trim()===text||button.getAttribute('aria-label')===text)??buttons.find(button=>button.textContent.includes(text));
  };
- return {dom,jobs,writes,reads,button,timers,
+ return {dom,jobs,writes,reads,button,timers,saves,
   intro:()=>dom.window.document.querySelector('[data-campaign-intro]'),
   scene:()=>dom.window.document.querySelector('[data-intro-scene]')?.getAttribute('data-intro-scene'),
   screen:()=>dom.window.document.querySelector('[data-screen]'),
   stored:()=>stored,
-  async click(text){const target=button(text);assert.ok(target,`missing button ${text}`);await act(async()=>target.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
+  async click(text){const target=button(text);assert.ok(target,`missing button ${text}`);await act(async()=>target.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));await campaignUIReady(dom.window.document);},
   async lastScene(){const scenes=[...dom.window.document.querySelectorAll('button[aria-label^="Ver escena "]')];assert.ok(scenes.length>1);await act(async()=>scenes.at(-1).dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
   async advance(ms){const until=time+ms;for(;;){const [id,timer]=[...timers.entries()].sort((a,b)=>a[1].due-b[1].due)[0]??[];if(!timer||timer.due>until)break;time=timer.due;timers.delete(id);await act(async()=>timer.callback());}time=until;},
   async hidden(hidden){Object.defineProperty(dom.window.document,'hidden',{configurable:true,value:hidden});await act(async()=>dom.window.document.dispatchEvent(new dom.window.Event('visibilitychange')));},
   async key(key){await act(async()=>dom.window.document.activeElement.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key,bubbles:true})));},
   async clear(){await act(async()=>root.render(null));},
+  async choose(id){const select=dom.window.document.querySelector('select[aria-label="Campaña"]');Object.getOwnPropertyDescriptor(dom.window.HTMLSelectElement.prototype,'value').set.call(select,id);await act(async()=>select.dispatchEvent(new dom.window.Event('change',{bubbles:true})));await campaignUIReady(dom.window.document);},
  };
 }
 
-function callbacks(){const completed=[],back=[];return {completed,back,props:{onComplete:destination=>completed.push(destination),onBack:()=>back.push(true)}};}
+function callbacks(){const completed=[],back=[];return {completed,back,props:{content:stockPresentation.introduction,onComplete:destination=>completed.push(destination),onBack:()=>back.push(true)}};}
 const editableContent={id:'test-intro',version:1,title:'An edited opening',scenes:['arrival','orders','muster'].map(id=>({id,eyebrow:'1812',title:`Edited ${id}`,text:`Editable story text: ${id}`,visual:'route',durationMs:1000}))};
 
 test('edited content advances on its own timing, pauses while hidden, and stops at the final choice',async t=>{
@@ -154,4 +157,13 @@ for(const activeBattle of [false,true])test(`in-game replay preserves the curren
 test('title replay is available before creating a campaign and does not create a save',async t=>{
  const m=await mount(t,h(Home));await m.click('Ver introducción');assert.ok(m.intro());await m.click('Cerrar introducción');
  assert.equal(m.intro(),null);assert.equal(m.screen(),null);assert.equal(m.jobs.length,0);assert.equal(m.writes.length,0);assert.equal(m.button('Continuar campaña'),undefined);
+});
+
+test('campaign selection keeps independent saves and uses each campaign menu and starting flow',async t=>{
+ const {reader}=alternateCampaignDocuments(),m=await mount(t,h(Home),{reader,keyedSaves:true});
+ await m.click('Nueva campaña');await m.click('Omitir introducción');const stock=JSON.parse(m.screen().dataset.campaign);assert.equal(stock.campaignOrigin.id,'granaderos');
+ await m.click('Menú');await m.click('Volver al menú principal');await m.choose('another');assert.ok(m.dom.window.document.body.textContent.includes('Una campaña diferente.'));assert.equal(m.button('Continuar campaña'),undefined);assert.equal(m.button('Ver introducción'),undefined);assert.equal(m.button('Combate de San Lorenzo'),undefined);
+ await m.click('Nueva campaña');assert.equal(m.intro(),null);assert.equal(JSON.parse(m.screen().dataset.campaign).campaignOrigin.id,'another');
+ await m.click('Menú');await m.click('Volver al menú principal');await m.choose('granaderos');assert.ok(m.button('Continuar campaña'));await m.click('Continuar campaña');assert.deepEqual(JSON.parse(m.screen().dataset.campaign),stock);
+ assert.ok(m.saves.has('granaderos.campaign.v2.granaderos'));assert.ok(m.saves.has('granaderos.campaign.v2.another'));
 });

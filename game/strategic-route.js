@@ -1,4 +1,5 @@
-import {CAMPAIGN_SECTORS,isSupplied} from './campaign.js';
+import {isSupplied} from './campaign.js';
+import {campaignSectors} from './campaign-definition.js';
 import {queueSquadTravel,squadTravelStatus} from './squad-travel.js';
 import {worldCell,locationId,cellTravelPlan} from './world-cells.js';
 import {tooTiredToMarch} from './march-fatigue.js';
@@ -16,11 +17,11 @@ export function previewStrategicRoute(s,squadId,destination,mode='march',waypoin
  if(q.members.some(id=>!s.recruited.includes(id)||!s.operativeState[id]?.alive||s.operativeState[id].captured))return reject('Hay combatientes que no pueden marchar.');
  if(q.members.some(id=>s.operativeState[id].asleep||s.operativeState[id].assignment!=='active'||s.militiaTraining?.some(t=>t.trainerId===id)))return reject('Hay combatientes durmiendo o con otra asignación.');
  if(q.members.some(id=>tooTiredToMarch(s.operativeState[id])))return reject('La escuadra necesita descansar.');
- const cell=worldCell(destination);
+ const cell=worldCell(destination,s);
  if(!cell)return reject('Elegí un destino en el mapa.');
- destination=locationId(destination);
+ destination=locationId(destination,s);
  if(destination===q.location&&!waypoints.length)return reject('La escuadra ya está en este sector.');
- const target=CAMPAIGN_SECTORS.find(d=>d.id===destination);
+ const target=campaignSectors(s).find(d=>d.id===destination);
  const intent=target&&(s.sectors[destination].owner==='royalist'||s.blockade&&target.theater==='coast')?'attack':'travel';
  if(intent==='attack'){
   if(s.completed)return reject('La campaña está ganada.');
@@ -29,7 +30,7 @@ export function previewStrategicRoute(s,squadId,destination,mode='march',waypoin
  try{
   const draft={...q,members:[...q.members]};
   queueSquadTravel(s,draft,{sector:destination,mode,intent,waypoints});
-  const status=squadTravelStatus(draft);
+  const status=squadTravelStatus(draft,s);
   return {valid:true,reason:null,path:status.path,hours:status.remaining,action:{type:intent,sector:destination,mode,...(waypoints.length?{waypoints}:{}),queue:true}};
  }catch(error){return reject(error.message);}
 }

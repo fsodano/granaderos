@@ -1,12 +1,14 @@
 import {TRAVEL_BALANCE} from './travel-balance.js';
 import {entryFromSector} from './tactical-exits.js';
-import {CAMPAIGN_SECTORS} from './data.js';
-import {validWorldLocation,campaignPlace,adjacentCells,cellLegHours,legacyCellStepHours,previousCellStepHours,cellTravelPlan,cellWinterClosed,worldOwner,worldCell,sameCityCells,ROAD_LINKS} from './world-cells.js';
+import {campaignSectors} from './campaign-definition.js';
+import {scenarioFor} from './campaign-scenario.js';
+import {validWorldLocation,campaignPlace,adjacentCells,cellLegHours,legacyCellStepHours,previousCellStepHours,cellTravelPlan,cellWinterClosed,worldOwner,worldCell,sameCityCells,roadLinks} from './world-cells.js';
 import {tooTiredToMarch,advanceMarchFatigue} from './march-fatigue.js';
 import {mountForOperative} from './horses.js';
 import {recordStrategicArrival} from './deployment-return.js';
+import {flotillaSectorAllowed} from './logistics.js';
 
-const sector=id=>CAMPAIGN_SECTORS.find(d=>d.id===id);
+const sector=(id,context)=>campaignSectors(context).find(d=>d.id===id);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const modes=['march','horse','posta','flotilla','carts'];
 const progressSeconds=j=>j.elapsed*3600+(j.elapsedSecond??0);
@@ -19,28 +21,28 @@ export function nextSquadTravelBoundarySeconds(s){
  return due.length?Math.min(...due):null;
 }
 export const TRAVEL_REASONS={exhausted:'La escuadra necesita descansar.',assignment:'Hay combatientes durmiendo o con otra asignación.',blocked:'La ruta está ocupada.',winter:'La nieve cerró el paso.',transport:'El transporte no está disponible.',remounts:'Faltan pesos para la siguiente etapa de postas.',contact:'Hay un encuentro en este sector.',empty:'La escuadra no tiene combatientes.',unavailable:'Hay combatientes que no pueden marchar.',assault:'En el límite del sector. Puede atacar o esperar a otras escuadras.'};
-export const assaultNeighbor=(from,to)=>Boolean(sector(to)&&(sector(from)?.neighbors.includes(to)||validWorldLocation(from)&&adjacentCells(from,to)));
-export const travelLegHours=(from,to,mode='march')=>{
- if(adjacentCells(from,to))return cellLegHours(from,to,mode);
- if(sameCityCells(from,to)){
-  const link=ROAD_LINKS.find(link=>link.from===from&&link.to===to||link.from===to&&link.to===from);
+export const assaultNeighbor=(from,to,context=null)=>Boolean(sector(to,context)&&(sector(from,context)?.neighbors.includes(to)||validWorldLocation(from,context)&&adjacentCells(from,to,context)));
+export const travelLegHours=(from,to,mode='march',context=null)=>{
+ if(adjacentCells(from,to,context))return cellLegHours(from,to,mode,context);
+ if(sameCityCells(from,to,context)){
+  const link=roadLinks(context).find(link=>link.from===from&&link.to===to||link.from===to&&link.to===from);
   if(link)return (link.path.length-1)*TRAVEL_BALANCE.cityCellHours;
  }
- return Math.ceil(({march:TRAVEL_BALANCE.roadWalkHours,horse:TRAVEL_BALANCE.horseHours,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?TRAVEL_BALANCE.mountainFactor:1));
+ return Math.ceil(({march:TRAVEL_BALANCE.roadWalkHours,horse:TRAVEL_BALANCE.horseHours,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id,context)?.biome==='mountain')?TRAVEL_BALANCE.mountainFactor:1));
 };
-export function supportedTravelLegHours(from,to,mode='march'){
- const hours=new Set([travelLegHours(from,to,mode)]);
- if(adjacentCells(from,to)){hours.add(legacyCellStepHours(to,mode));hours.add(previousCellStepHours(to,mode));}
- if(!sector(from)&&adjacentCells(from,to)){
-  if(mode==='march')hours.add(worldCell(to)?.biome==='mountain'?4:2);
- }else hours.add(Math.ceil(({march:12,horse:6,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id)?.biome==='mountain')?1.5:1)));
+export function supportedTravelLegHours(from,to,mode='march',context=null){
+ const hours=new Set([travelLegHours(from,to,mode,context)]);
+ if(adjacentCells(from,to,context)){hours.add(legacyCellStepHours(to,mode,context));hours.add(previousCellStepHours(to,mode,context));}
+ if(!sector(from,context)&&adjacentCells(from,to,context)){
+  if(mode==='march')hours.add(worldCell(to,context)?.biome==='mountain'?4:2);
+ }else hours.add(Math.ceil(({march:12,horse:6,posta:4,flotilla:5,carts:18}[mode])*([from,to].some(id=>sector(id,context)?.biome==='mountain')?1.5:1)));
  return [...hours];
 }
 export const squadHasHorses=(s,q)=>Boolean(q?.members.length&&q.members.every(id=>mountForOperative(s.horseState,id)?.canMount));
 function pathTo(s,from,to,mode){
- if(['march','horse'].includes(mode)||!sector(from)||!sector(to))return cellTravelPlan({location:from,hour:s.hour,sectors:s.sectors},to,mode).path;
+ if(['march','horse'].includes(mode)||!sector(from,s)||!sector(to,s))return cellTravelPlan({location:from,hour:s.hour,sectors:s.sectors,...(s.contentCampaign?{contentCampaign:s.contentCampaign}:{})},to,mode).path;
  const queue=[[from]],seen=new Set([from]);
- while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of sector(last).neighbors)if(!seen.has(id)&&s.sectors[id].owner==='patriot'){seen.add(id);queue.push([...path,id]);}}
+ while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of sector(last,s).neighbors)if(!seen.has(id)&&s.sectors[id].owner==='patriot'){seen.add(id);queue.push([...path,id]);}}
  return null;
 }
 function legIssue(s,q){
@@ -61,13 +63,13 @@ export function queueSquadTravel(s,q,{sector:destination,waypoints=[],mode='marc
  need(!q.journey,'Terminá o cancelá la ruta anterior.');need(modes.includes(mode),'Medio de transporte desconocido.');
  need(Array.isArray(waypoints)&&waypoints.length<=8,'Elegí hasta ocho escalas.');
  need(['travel','attack'].includes(intent),'La intención de marcha es inválida.');
- if(intent==='attack')need(waypoints.length===0&&assaultNeighbor(q.location,destination),'Prepará el ataque desde un sector vecino, sin escalas.');
- need(validWorldLocation(q.location),'La ubicación de la escuadra no existe.');
- let path=[q.location];for(const to of [...waypoints,destination]){need(validWorldLocation(to)&&(intent==='attack'||worldOwner(s,to)!=='royalist'),'Cada escala debe ser una celda terrestre accesible.');const leg=intent==='attack'?[q.location,to]:pathTo(s,path.at(-1),to,mode);need(leg?.length,'Los realistas cortan la ruta de tránsito.');path.push(...leg.slice(1));}
+ if(intent==='attack')need(waypoints.length===0&&assaultNeighbor(q.location,destination,s),'Prepará el ataque desde un sector vecino, sin escalas.');
+ need(validWorldLocation(q.location,s),'La ubicación de la escuadra no existe.');
+ let path=[q.location];for(const to of [...waypoints,destination]){need(validWorldLocation(to,s)&&(intent==='attack'||worldOwner(s,to)!=='royalist'),'Cada escala debe ser una celda terrestre accesible.');const leg=intent==='attack'?[q.location,to]:pathTo(s,path.at(-1),to,mode);need(leg?.length,'Los realistas cortan la ruta de tránsito.');path.push(...leg.slice(1));}
  need(path.length>1&&path.length<=65,'La ruta debe tener entre una y 64 etapas.');
- need(['march','horse'].includes(mode)||path.every(id=>sector(id)),'Las celdas rurales requieren marcha a pie o caballos.');
- need(mode!=='flotilla'||path.every(id=>sector(id).theater==='coast'),'La flotilla requiere una ruta costera.');
- q.journey={version:1,path,mode,startedAt:s.hour,...(s.secondOfHour?{startedSecond:s.secondOfHour}:{}),legHours:travelLegHours(path[0],path[1],mode),elapsed:0,status:'moving',returning:false,reason:null,...(intent==='attack'?{intent}:{})};
+ need(['march','horse'].includes(mode)||path.every(id=>sector(id,s)),'Las celdas rurales requieren marcha a pie o caballos.');
+ need(mode!=='flotilla'||path.every(id=>flotillaSectorAllowed(s,id)),'La flotilla requiere una ruta navegable.');
+ q.journey={version:1,path,mode,startedAt:s.hour,...(s.secondOfHour?{startedSecond:s.secondOfHour}:{}),legHours:travelLegHours(path[0],path[1],mode,s),elapsed:0,status:'moving',returning:false,reason:null,...(intent==='attack'?{intent}:{})};
  const reason=legIssue(s,q);need(!reason,TRAVEL_REASONS[reason]);return q.journey;
 }
 export function cancelSquadTravel(q,choice='stop'){
@@ -79,10 +81,10 @@ export function cancelSquadTravel(q,choice='stop'){
 export function resumeSquadTravel(s,q){
  need(q?.journey?.status==='paused','La ruta no está detenida.');const reason=legIssue(s,q);need(!reason,TRAVEL_REASONS[reason]);q.journey.status='moving';q.journey.reason=null;
 }
-export function squadTravelStatus(q){
+export function squadTravelStatus(q,context=null){
  const j=q.journey;if(!j)return null;
  const covered=progressSeconds(j)/3600,legRemaining=j.returning?covered:j.legHours-covered;
- return {status:j.status,intent:j.intent??'travel',mode:j.mode,from:j.path[0],to:j.returning?j.path[0]:j.path[1],destination:j.returning?j.path[0]:j.path.at(-1),returning:j.returning,elapsed:covered,elapsedSeconds:progressSeconds(j),legHours:j.legHours,legRemaining,remaining:legRemaining+(j.returning?0:j.path.slice(2).reduce((sum,to,i)=>sum+travelLegHours(j.path[i+1],to,j.mode),0)),path:[...j.path],reason:j.reason?TRAVEL_REASONS[j.reason]:null};
+ return {status:j.status,intent:j.intent??'travel',mode:j.mode,from:j.path[0],to:j.returning?j.path[0]:j.path[1],destination:j.returning?j.path[0]:j.path.at(-1),returning:j.returning,elapsed:covered,elapsedSeconds:progressSeconds(j),legHours:j.legHours,legRemaining,remaining:legRemaining+(j.returning?0:j.path.slice(2).reduce((sum,to,i)=>sum+travelLegHours(j.path[i+1],to,j.mode,context),0)),path:[...j.path],reason:j.reason?TRAVEL_REASONS[j.reason]:null};
 }
 // One hour for every squad, independent of which squad the player selected.
 // Call after work/recovery, before enemy contacts. Arrivals stop explicit waits.
@@ -104,12 +106,12 @@ export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=
   const traveled=Math.min(seconds,j.returning?covered:j.legHours*3600-covered),work=(j.pendingSeconds??0)+traveled,hours=Math.floor(work/3600);
   if(work%3600)j.pendingSeconds=work%3600;else delete j.pendingSeconds;
   for(let hour=0;hour<hours;hour++){
-   advanceMarchFatigue(s,roster.map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),{traveling:q.members,mode:j.mode,mountain:j.path.slice(0,2).some(id=>campaignPlace(id)?.biome==='mountain')});
+   advanceMarchFatigue(s,roster.map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),{traveling:q.members,mode:j.mode,mountain:j.path.slice(0,2).some(id=>campaignPlace(id,s)?.biome==='mountain')});
    for(const horse of s.horseState.horses)if(!horse.returned&&q.members.includes(horse.assignedTo))horse.stamina=Math.max(0,horse.stamina-2);
   }
   setProgressSeconds(j,covered+(j.returning?-traveled:traveled));
   if(j.returning?progressSeconds(j)>0:progressSeconds(j)<j.legHours*3600)continue;
-  if(!j.returning&&j.intent==='attack'){j.status='ready';j.reason='assault';announce(q,`alcanza el límite de ${campaignPlace(j.path[1]).name}. Puede atacar o esperar a otras escuadras.`);continue;}
+  if(!j.returning&&j.intent==='attack'){j.status='ready';j.reason='assault';announce(q,`alcanza el límite de ${campaignPlace(j.path[1],s).name}. Puede atacar o esperar a otras escuadras.`);continue;}
   const from=q.location,to=j.returning?from:j.path[1];
   if(to!==from)recordStrategicArrival(s,q.members,from,to);
   q.location=to;for(const id of q.members)s.operativeState[id].location=to;
@@ -119,9 +121,9 @@ export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=
   onArrival(q);
   for(const horse of s.horseState.horses)if(!horse.returned&&horse.hired&&horse.hireUntil<=s.hour&&q.members.includes(horse.assignedTo)){horse.returned=true;horse.assignedTo=null;}
   releaseAtArrival(q);
-  if(j.returning||j.path.length===2||!q.members.length){delete q.journey;announce(q,`llega a ${campaignPlace(to).name}.`);continue;}
-  j.path.shift();j.legHours=travelLegHours(j.path[0],j.path[1],j.mode);j.reason=legIssue(s,q);
-  if(j.reason)announce(q,`${campaignPlace(to).name}. ${TRAVEL_REASONS[j.reason]}`);else{j.status='moving';if(stopAtEveryArrival)announce(q,`llega a ${campaignPlace(to).name}; la ruta continúa hacia ${campaignPlace(j.path.at(-1)).name}.`);}
+  if(j.returning||j.path.length===2||!q.members.length){delete q.journey;announce(q,`llega a ${campaignPlace(to,s).name}.`);continue;}
+  j.path.shift();j.legHours=travelLegHours(j.path[0],j.path[1],j.mode,s);j.reason=legIssue(s,q);
+  if(j.reason)announce(q,`${campaignPlace(to,s).name}. ${TRAVEL_REASONS[j.reason]}`);else{j.status='moving';if(stopAtEveryArrival)announce(q,`llega a ${campaignPlace(to,s).name}; la ruta continúa hacia ${campaignPlace(j.path.at(-1),s).name}.`);}
  }
  if(events.length)s.travelNotice={hour:s.hour,...(s.secondOfHour?{secondOfHour:s.secondOfHour}:{}),events};
  return events.length>0;
@@ -129,16 +131,16 @@ export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=
 export function validateSquadTravel(s){
  const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
  const notice=s.travelNotice;
- need(notice===undefined||notice===null||notice&&integer(notice.hour,0,s.hour)&&(notice.secondOfHour===undefined||integer(notice.secondOfHour,0,3599))&&notice.hour*3600+(notice.secondOfHour??0)<=campaignSeconds(s)&&Array.isArray(notice.events)&&notice.events.length>0&&notice.events.length<=16&&notice.events.every(e=>e&&typeof e.squadId==='string'&&s.squads.some(q=>q.id===e.squadId)&&typeof e.name==='string'&&e.name.length<=30&&validWorldLocation(e.sector)&&typeof e.text==='string'&&e.text.length<=500),'El aviso de marcha guardado es inválido.');
+ need(notice===undefined||notice===null||notice&&integer(notice.hour,0,s.hour)&&(notice.secondOfHour===undefined||integer(notice.secondOfHour,0,3599))&&notice.hour*3600+(notice.secondOfHour??0)<=campaignSeconds(s)&&Array.isArray(notice.events)&&notice.events.length>0&&notice.events.length<=16&&notice.events.every(e=>e&&typeof e.squadId==='string'&&s.squads.some(q=>q.id===e.squadId)&&typeof e.name==='string'&&e.name.length<=30&&validWorldLocation(e.sector,s)&&typeof e.text==='string'&&e.text.length<=500),'El aviso de marcha guardado es inválido.');
  for(const q of s.squads){const j=q.journey;if(j===undefined)continue;
-  need(j&&typeof j==='object'&&!Array.isArray(j)&&j.version===1&&modes.includes(j.mode)&&['moving','paused','ready'].includes(j.status)&&typeof j.returning==='boolean'&&(j.reason===null||Object.hasOwn(TRAVEL_REASONS,j.reason))&&integer(j.startedAt,0,s.hour)&&Array.isArray(j.path)&&j.path.length>=2&&j.path.length<=65&&j.path[0]===q.location&&j.path.every((id,i)=>validWorldLocation(id)&&(i===0||sector(j.path[i-1])?.neighbors.includes(id)||adjacentCells(j.path[i-1],id)))&&integer(j.legHours,1,96)&&integer(j.elapsed,0,j.returning||j.status==='ready'?j.legHours:j.legHours-1),'La ruta guardada es inválida.');
+  need(j&&typeof j==='object'&&!Array.isArray(j)&&j.version===1&&modes.includes(j.mode)&&['moving','paused','ready'].includes(j.status)&&typeof j.returning==='boolean'&&(j.reason===null||Object.hasOwn(TRAVEL_REASONS,j.reason))&&integer(j.startedAt,0,s.hour)&&Array.isArray(j.path)&&j.path.length>=2&&j.path.length<=65&&j.path[0]===q.location&&j.path.every((id,i)=>validWorldLocation(id,s)&&(i===0||sector(j.path[i-1],s)?.neighbors.includes(id)||adjacentCells(j.path[i-1],id,s)))&&integer(j.legHours,1,96)&&integer(j.elapsed,0,j.returning||j.status==='ready'?j.legHours:j.legHours-1),'La ruta guardada es inválida.');
   need(['startedSecond','elapsedSecond','pendingSeconds'].every(key=>j[key]===undefined||integer(j[key],0,3599))&&j.startedAt*3600+(j.startedSecond??0)<=campaignSeconds(s),'Los segundos de la ruta guardada son inválidos.');
   const covered=progressSeconds(j);
   need(covered<=j.legHours*3600&&covered<=campaignSeconds(s)-(j.startedAt*3600+(j.startedSecond??0))&&(j.returning||(j.pendingSeconds??0)===(j.elapsedSecond??0)),'El tiempo recorrido de la ruta guardada es inválido.');
-  need(['march','horse'].includes(j.mode)||j.path.every(id=>sector(id)),'La ruta guardada usa transporte no disponible en celdas rurales.');
-  need(supportedTravelLegHours(j.path[0],j.path[1],j.mode).includes(j.legHours),'La duración de la etapa guardada es inválida.');
+  need(['march','horse'].includes(j.mode)||j.path.every(id=>sector(id,s)),'La ruta guardada usa transporte no disponible en celdas rurales.');
+  need(supportedTravelLegHours(j.path[0],j.path[1],j.mode,s).includes(j.legHours),'La duración de la etapa guardada es inválida.');
   need((j.intent===undefined||j.intent==='attack')&&(j.intent!=='attack'||j.path.length===2)&&(j.status!=='ready'||j.intent==='attack'&&covered===j.legHours*3600&&!j.pendingSeconds&&!j.returning&&j.reason==='assault'),'La preparación de ataque guardada es inválida.');
-  need(q.members.length>0&&(j.mode!=='flotilla'||j.path.every(id=>sector(id).theater==='coast'))&&(j.status!=='paused'||covered===0&&!j.returning)&&(j.returning?covered>0:true),'El avance guardado es inválido.');
+  need(q.members.length>0&&(j.mode!=='flotilla'||j.path.every(id=>flotillaSectorAllowed(s,id)))&&(j.status!=='paused'||covered===0&&!j.returning)&&(j.returning?covered>0:true),'El avance guardado es inválido.');
   need(q.members.every(id=>!s.pendingBattle?.squad?.some(u=>Number(u.id)===id)),'Una escuadra en ruta no puede estar desplegada.');
   if(['moving','ready'].includes(j.status))need(q.members.every(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.operativeState[id].asleep&&s.operativeState[id].assignment==='active'&&!s.militiaTraining?.some(t=>t.trainerId===id)),'Los viajeros guardados no están disponibles.');
  }
@@ -147,7 +149,7 @@ export function validateSquadTravel(s){
 // A ready squad is at the boundary, not a defender or worker in either sector.
 export function assaultGroups(s){
  const targets=[...new Set(s.squads.filter(q=>q.journey?.intent==='attack'&&!q.journey.returning).map(q=>q.journey.path[1]))];
- return targets.map(target=>({sector:target,ready:s.squads.filter(q=>q.journey?.intent==='attack'&&q.journey.path[1]===target&&q.journey.status==='ready').map(q=>({id:q.id,name:q.name,origin:q.location,members:[...q.members]})),incoming:s.squads.filter(q=>q.journey?.intent==='attack'&&!q.journey.returning&&q.journey.path[1]===target&&q.journey.status!=='ready').map(q=>({id:q.id,name:q.name,remaining:squadTravelStatus(q).remaining,status:q.journey.status}))}));
+ return targets.map(target=>({sector:target,ready:s.squads.filter(q=>q.journey?.intent==='attack'&&q.journey.path[1]===target&&q.journey.status==='ready').map(q=>({id:q.id,name:q.name,origin:q.location,members:[...q.members]})),incoming:s.squads.filter(q=>q.journey?.intent==='attack'&&!q.journey.returning&&q.journey.path[1]===target&&q.journey.status!=='ready').map(q=>({id:q.id,name:q.name,remaining:squadTravelStatus(q,s).remaining,status:q.journey.status}))}));
 }
 export function readyAssaultSquads(s,target){const groups=s.squads.filter(q=>q.journey?.status==='ready'&&q.journey.path[1]===target);need(groups.length>0,'No hay escuadras listas en ese límite.');return groups;}
 export function arriveForAssault(s,groups,target){
@@ -157,11 +159,11 @@ export function arriveForAssault(s,groups,target){
 }
 export function validateAssaultDeployment(s){
  const b=s.pendingBattle;if(b?.assaultSquads===undefined)return;
- const manifest=b.assaultSquads,mission=b.missionId==='san_lorenzo'&&b.sector==='san_lorenzo',location=mission?'san_nicolas':b.sector;
- need(!b.defenseGroupId&&!b.exploration&&(!b.missionId&&sector(b.sector)||mission)&&Array.isArray(manifest)&&manifest.length>0&&manifest.length<=8&&new Set(manifest.map(q=>q?.id)).size===manifest.length,'Las escuadras del asalto son inválidas.');
- need(manifest.every(group=>{const q=s.squads.find(q=>q.id===group?.id);return q&&q.location===location&&!q.journey&&(mission?group.origin==='san_nicolas':assaultNeighbor(group.origin,b.sector))&&Array.isArray(group.members)&&group.members.length>0&&group.members.length<=6&&JSON.stringify(group.members)===JSON.stringify(q.members);}), 'Los participantes del asalto no corresponden a sus escuadras.');
+ const manifest=b.assaultSquads,mission=scenarioFor(s).assault.validationContext(s,b),location=mission?.location??b.sector;
+ need(!b.defenseGroupId&&!b.exploration&&(!b.missionId&&sector(b.sector,s)||mission)&&Array.isArray(manifest)&&manifest.length>0&&manifest.length<=8&&new Set(manifest.map(q=>q?.id)).size===manifest.length,'Las escuadras del asalto son inválidas.');
+ need(manifest.every(group=>{const q=s.squads.find(q=>q.id===group?.id);return q&&q.location===location&&!q.journey&&(mission?group.origin===mission.origin:assaultNeighbor(group.origin,b.sector,s))&&Array.isArray(group.members)&&group.members.length>0&&group.members.length<=6&&JSON.stringify(group.members)===JSON.stringify(q.members);}), 'Los participantes del asalto no corresponden a sus escuadras.');
  for(const group of manifest){const name=s.squads.find(q=>q.id===group.id).name||group.id;if(group.name===undefined)group.name=name;need(group.name===name,'El nombre de la escuadra de llegada no corresponde a la campaña.');}
- need(!mission||(b.origin==='san_nicolas'&&manifest.some(q=>q.id===s.activeSquadId)),'El origen de la misión no corresponde a la escuadra activa.');
+ need(!mission||(b.origin===mission.origin&&manifest.some(q=>q.id===s.activeSquadId)),'El origen de la misión no corresponde a la escuadra activa.');
  const ids=manifest.flatMap(q=>q.members);need(new Set(ids).size===ids.length&&ids.length===b.squad.length&&b.squad.every(u=>ids.includes(u.id)),'El destacamento del asalto está incompleto.');
- for(const group of manifest){const entry=entryFromSector(group.origin,b.sector);need(group.members.every(id=>{const unit=b.squad.find(u=>u.id===id);return s.operativeState[id]?.arrival?.fromSector===group.origin&&s.operativeState[id]?.location===location&&unit.entryEdge===entry.entryEdge&&unit.entryAnchor?.x===entry.entryAnchor.x&&unit.entryAnchor?.y===entry.entryAnchor.y;}),'La entrada del asalto no corresponde al origen.');}
+ for(const group of manifest){const entry=entryFromSector(group.origin,b.sector,null,s);need(group.members.every(id=>{const unit=b.squad.find(u=>u.id===id);return s.operativeState[id]?.arrival?.fromSector===group.origin&&s.operativeState[id]?.location===location&&unit.entryEdge===entry.entryEdge&&unit.entryAnchor?.x===entry.entryAnchor.x&&unit.entryAnchor?.y===entry.entryAnchor.y;}),'La entrada del asalto no corresponde al origen.');}
 }

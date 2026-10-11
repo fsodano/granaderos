@@ -40,7 +40,7 @@ test('income readout requires an agreement and local control and ignores damage 
  s.sectors[d.id].owner='royalist';assert.equal(sectorIncome(s,d,()=>true),0);
 });
 test('cartography contains continental Argentina and all three main river geometries',()=>{
- const g=JSON.parse(readFileSync(new URL('../game/strategic-geography.json',import.meta.url)));
+ const g=JSON.parse(readFileSync(new URL('../campaigns/granaderos/world.json',import.meta.url))).geography;
  assert.equal(g.rivers.length,3);assert.ok(g.land.length>=10);
  const points=g.argentina.coordinates.flat(2);assert.ok(points.some(p=>p[1]<-54));assert.ok(points.some(p=>p[1]>-23));
 });

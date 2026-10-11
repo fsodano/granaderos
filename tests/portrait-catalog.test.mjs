@@ -53,13 +53,13 @@ test('catalog preserves existing save IDs and supplies complete visual categorie
  assert.equal(portraitFor('avatar-man-black-unknown'),null);
  assert.equal(characterPortrait('__proto__'),undefined);
  assert.equal(characterPortrait(100),undefined,'saved portrait IDs must remain strings');
- assert.equal(characterPortrait('103').src,'/art/portrait-103.png');
- assert.equal(characterPortrait('104').src,'/art/portrait-104.png');
+ assert.equal(characterPortrait('103').src,'/campaigns/granaderos/assets/portrait-103.png');
+ assert.equal(characterPortrait('104').src,'/campaigns/granaderos/assets/portrait-104.png');
 });
 
 test('new Black portrait choices cover both genders in all six roles and keep independent gameplay profiles',()=>{
  const baseline=createOfficerRecord('Rostro de prueba',answers,defaultProfile());
- const withoutPortrait=({portrait,portraitId,...record})=>record;
+ const withoutPortrait=({portrait,portraitId,spriteAppearance,skinTone,...record})=>record;
  for(const gender of PORTRAIT_GENDERS)for(const role of PORTRAIT_ROLES){
   const portrait=characterPortrait(`avatar-${gender.id}-black-${role.id}`);
   assert.ok(portrait,`${gender.id}/${role.id}`);
@@ -87,7 +87,7 @@ test('new portrait families and palettes remain stable across animation, saved o
    assert.deepEqual(signature({...unit,spriteAppearance:'friar',skinTone:'light'}),{appearance:'friar',skin:'light'});
    assert.equal(spriteSkinTone({...unit,skinTone:'white'}),'light');
    assert.equal(spriteSkinTone({...unit,skinTone:'black'}),'dark');
-   assert.equal(spriteAppearance({...unit,side:'enemy',spriteAppearance:'granadero'}),'royalist');
+   assert.equal(spriteAppearance({...unit,side:'enemy',spriteAppearance:'granadero'}),'granadero','explicit appearance is independent of side');
   }
  }
  const dark={id:1000,portraitId:newIds[0]},brown={id:1000,portraitId:'avatar-man-black-gaucho'};

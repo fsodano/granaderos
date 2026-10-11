@@ -1,20 +1,16 @@
+import {campaignWorld} from './campaign-definition.js';
 import {propCells} from './props.js';
 
 // Original regional landscapes, not surveyed historical plans. Terrain is
 // fixed geography: weather and campaign time must never reroll a saved map.
-const landscapes={
- ensenada:'wetland',santa_fe:'wetland',san_nicolas:'river',san_lorenzo:'river',
- cordoba:'scrub',mendoza:'dry-foothills',tucuman:'woodland',yatasto:'woodland',
- salta:'wooded-foothills',jujuy:'wooded-foothills',
- uspallata:'dry-mountain',los_patos:'dry-mountain',humahuaca:'dry-mountain',
-};
 const key=p=>`${p.x},${p.y}`;
 const hash=(x,y,seed)=>{
  let value=Math.imul(x+seed,374761393)^Math.imul(y-seed,668265263);
  value=Math.imul(value^(value>>>13),1274126177);
  return ((value^(value>>>16))>>>0)%100;
 };
-export const regionalLandscape=sectorId=>Object.hasOwn(landscapes,sectorId)?landscapes[sectorId]:'settlement';
+/** @param {*} context */
+export const regionalLandscape=(sectorId,context=null)=>{const landscapes=campaignWorld(context).landscapes;return landscapes&&Object.hasOwn(landscapes,sectorId)?landscapes[sectorId]:'settlement';};
 
 function terrainAt(landscape,x,y,seed,shoreDistance){
  // Broad patches with irregular edges avoid both checkerboards and a single
@@ -31,8 +27,8 @@ function terrainAt(landscape,x,y,seed,shoreDistance){
 
 // Called only for newly expanded maps, after every building, road and prop.
 // Existing tiles and movement topology are retained: all added ground is open.
-export function applyRegionalTerrain(map,landmark){
- const id=map.sceneId??map.sector,landscape=regionalLandscape(id);
+export function applyRegionalTerrain(map,landmark,context=null){
+ const id=map.sceneId??map.sector,landscape=regionalLandscape(id,context);
  if(landscape==='settlement')return map;
  const seed=[...id].reduce((value,char)=>Math.imul(value,31)+char.charCodeAt(0)|0,17);
  const reserved=new Set();
@@ -61,12 +57,13 @@ export function applyRegionalTerrain(map,landmark){
 
 // Existing textures retain their world scale. Natural stone uses bare earth
 // and loose rock scenery; authored stone paving keeps its cobbled surface.
-export function terrainMaterial(tile,sectorId){
+/** @param {*} context */
+export function terrainMaterial(tile,sectorId,context=null){
  if(tile.type==='road')return 'dirt';
  if(tile.type==='stone')return tile.material==='stone'&&!tile.buildingId?'dirt':'cobble';
  if(tile.type==='mud')return 'mud';
  if(tile.type==='floor')return 'floor';
  if(tile.type==='forest')return 'green-grass';
- if(tile.type==='grass'&&['wetland','river','woodland','wooded-foothills'].includes(regionalLandscape(sectorId)))return 'green-grass';
+ if(tile.type==='grass'&&['wetland','river','woodland','wooded-foothills'].includes(regionalLandscape(sectorId,context)))return 'green-grass';
  return 'dry-grass';
 }

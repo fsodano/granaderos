@@ -1,11 +1,11 @@
-import {AMMUNITION_TYPES} from './ammunition-types.js';
 import {validateItemStack} from './tactical-inventory.js';
 import {finiteSectorCache} from './finite-sector-caches.js';
+import {finiteEnvironmentFor} from './campaign-physical.js';
 import {hasCharacterAbility} from './character-abilities.js';
 import {makeOutfit} from './outfits.js';
 import {destroyStructure} from './structure-blast.js';
 import {wallEdgeId,wallEdgeBlocksMovement} from './wall-geometry.js';
-import {roadsideDiscoveryForMap,ROADSIDE_DISCOVERY_CHEST,ROADSIDE_CROWBAR_ID,ROADSIDE_SHIRT_ID} from './roadside-discoveries.js';
+import {roadsideDiscoveryForMap,roadsideDiscoveryIds} from './roadside-discoveries.js';
 
 // Classic JA2 manual, printed pp. 25–27: held tools, keys, lock picks,
 // crowbars, force, uncertain examination, disarming, and finite containers.
@@ -231,27 +231,23 @@ export function extractContainerItem(target, index, count = 1) {
 
 // Fresh-map logical metadata only. Call once for a new sector, then persist
 // the resulting objects. These caches reuse existing furniture and doors.
-export function authoredEnvironment(sector, map) {
+export function authoredEnvironment(sector, map, context=map) {
   const doors = [], containers = [];
-  const cache=finiteSectorCache(sector,map);if(cache)containers.push(cache);
-  const hasChest = id => (map.props ?? []).some(prop => prop.type === 'chest' && prop.id === id);
+  const cache=finiteSectorCache(sector,map,context);if(cache)containers.push(cache);
   const tool = (toolKey, keyId) => ({item: `inventory:${toolKey}`, count: 1, weight: TOOL_TYPES[toolKey].weight, itemType: 'tool', toolKey, condition: 100, ...(keyId ? {keyId} : {})});
   const roadside=roadsideDiscoveryForMap(sector,map);
-  if(roadside)containers.push({id:ROADSIDE_DISCOVERY_CHEST,type:'chest',open:false,locked:false,contents:[
-    {...tool('crowbar'),condition:roadside.crowbarCondition,instanceId:ROADSIDE_CROWBAR_ID},
-    {item:'inventory:linen-shirt:roadside',...makeOutfit('linen_shirt',roadside.linenShirtCondition),instanceId:ROADSIDE_SHIRT_ID},
+  if(roadside)containers.push({id:roadsideDiscoveryIds(roadside).chest,type:'chest',open:false,locked:false,contents:[
+    {...tool('crowbar'),condition:roadside.crowbarCondition,instanceId:roadsideDiscoveryIds(roadside).crowbar},
+    {item:'inventory:linen-shirt:roadside',...makeOutfit('linen_shirt',roadside.linenShirtCondition),instanceId:roadsideDiscoveryIds(roadside).shirt},
   ]});
-  if (sector === 'yatasto') {
-    const id = 'yatasto:building:chest:11:8';
-    if (hasChest(id)) containers.push({id, type: 'chest', open: false, locked: false, contents: [tool('lockpick'), tool('crowbar'), tool('pliers'), tool('key', 'yatasto-store')]});
-    const door = [...(map.wallEdges??[]),...(map.tiles ?? [])].find(tile => tile.doorId === 'yatasto:door-right');
-    if (door) doors.push({id: door.doorId, type: 'door', open: false, locked: true, keyId: 'yatasto-store', lockDifficulty: 25, lockIntegrity: 100});
+  const authored=finiteEnvironmentFor(context)[sector];
+  for(const configuration of authored?.doors??[]){
+    const door=[...(map.wallEdges??[]),...(map.tiles??[])].find(tile=>tile.doorId===configuration.id);
+    if(door)doors.push(structuredClone(configuration));
   }
-  if (sector === 'mendoza') {
-    // Room dimensions and furniture positions can change; the supply cache keeps its role.
-    const chest = (map.props ?? []).find(prop => prop.type === 'chest' && prop.buildingId === 'mendoza:house-0' && prop.purpose === 'supply-cache');
-    if (chest) containers.push({id: chest.id, type: 'chest', open: false, locked: true, lockDifficulty: 40, lockIntegrity: 100,
-      trap: {type: 'alarm', difficulty: 35, armed: true, discoveredBy: []}, contents: [{item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count:12,weight:.04}, {item: 'medkits', count: 3, weight: .2}]});
+  for(const {selector,configuration} of authored?.containers??[]){
+    const container=(map.props??[]).find(prop=>Object.entries(selector).every(([key,value])=>prop[key]===value));
+    if(container)containers.push({id:container.id,...structuredClone(configuration)});
   }
   return {doors, containers};
 }

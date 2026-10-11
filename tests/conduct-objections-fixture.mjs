@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import {contractQuote} from '../game/contracts.js';
 import {createBattle,actBattle,presentedActBattle,canSee} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -15,7 +15,8 @@ export function conductOrder(state,action){
 }
 
 export function preparedConductArena({oldPinned=false,hiddenWitness=false,nearbyContact=false}={}){
- const content=defaultContentPackage();
+ // Conscience and six-hour arrivals are explicit options in this experiment.
+ const content=authoredEditorPackage();
  if(oldPinned){
   // Declared old content before campaign creation; no runtime receipt reset.
   const character=content.characters.find(person=>person.id==='person-107');

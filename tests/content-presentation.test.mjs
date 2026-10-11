@@ -20,7 +20,7 @@ import {createContentTestRange} from '../game/content-test-range.js';
 const order=(s,a)=>{const n=a.type==='travel'?completeTestTravel(s,a):dispatchCampaign(s,a);assert.equal(n.lastError,null,`${a.type}: ${n.lastError}`);return n;};
 const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
 function definition(){
- const d=defaultContentPackage();const c={...structuredClone(d.characters.find(c=>c.id==='person-100')),id:'clara',name:'Clara del Río',nickname:'Clara',personality:'Paciente y resuelta.',spriteAppearance:'woman-scout',portrait:'/art/avatar-woman-civilian.webp',traits:[],arrivalHours:2};
+ const d=defaultContentPackage();const c={...structuredClone(d.characters.find(c=>c.id==='person-100')),id:'clara',name:'Clara del Río',nickname:'Clara',personality:'Paciente y resuelta.',spriteAppearance:'woman-scout',portrait:'/campaigns/granaderos/assets/avatar-woman-civilian.webp',traits:[],arrivalHours:2};
  c.speech=Object.fromEntries(SPEECH_EVENTS.map(event=>[event,`Frase propia: ${event}.`]));c.attributes.marksmanship=100;
  d.characters.push(c);return d;
 }

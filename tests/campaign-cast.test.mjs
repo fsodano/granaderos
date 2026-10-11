@@ -23,15 +23,29 @@ test('a wholly authored cast hires, encounters, completes a real dialogue quest 
 });
 
 test('historical progression still requires its cast, and original ambient residents are independently optional with legacy defaults',()=>{
- const d=defaultContentPackage();d.characters=d.characters.filter(c=>c.id!=='person-57');d.placements=d.placements.filter(p=>p.character!=='person-57');assert.throws(()=>initialCampaign(42,d),/avance histórico/);d.campaignStory=defaultCampaignStory();let s=initialCampaign(42,d);assert.ok(!encounterDefinitions(s).some(n=>n.operativeId===57));assert.ok(encountersFor(s,'retiro').some(n=>n.id==='local-retiro'));
+ const d=defaultContentPackage();d.characters=d.characters.filter(c=>c.id!=='person-57');d.placements=d.placements.filter(p=>p.character!=='person-57');assert.throws(()=>initialCampaign(42,d),/avance histórico/);d.campaignStory=defaultCampaignStory();
+ // This story deliberately reuses the stock ambient cast and its errands.
+ d.includeOriginalResidents=true;let s=initialCampaign(42,d);assert.ok(!encounterDefinitions(s).some(n=>n.operativeId===57));assert.ok(encountersFor(s,'retiro').some(n=>n.id==='local-retiro'));
  d.errands=[];d.includeOriginalResidents=false;s=initialCampaign(42,d);assert.ok(!encountersFor(s,'retiro').some(n=>n.id==='local-retiro'));assert.ok(encountersFor(s,'retiro').some(n=>n.operativeId===3));assert.ok(saved({campaign:s}));
  const stock=initialCampaign(),old=initialCampaign(42,defaultContentPackage());assert.deepEqual(encountersFor(old,'retiro').map(n=>n.id),encountersFor(stock,'retiro').map(n=>n.id));
  for(const value of [null,0,'false',{},[]]){const bad=cast();bad.includeOriginalResidents=value;assert.throws(()=>initialCampaign(42,bad),/Habitantes originales/);}
 });
 
+test('authored stories and generic campaigns omit stock ambient residents unless they explicitly include them',()=>{
+ const stockResidents=encounterDefinitions(initialCampaign()).filter(n=>n.operativeId===undefined).map(n=>n.id);
+ assert.ok(stockResidents.length>0);
+ for(const scenario of [undefined,'generic-v1']){
+  const d=cast();if(scenario===undefined)delete d.scenario;else d.scenario=scenario;delete d.includeOriginalResidents;
+  let s=initialCampaign(42,d);assert.deepEqual(encounterDefinitions(s).filter(n=>n.operativeId===undefined),[]);
+  s=decodeSave(encodeSave(s)).campaign;assert.deepEqual(encounterDefinitions(s).filter(n=>n.operativeId===undefined),[]);
+  d.includeOriginalResidents=true;s=initialCampaign(42,d);assert.deepEqual(encounterDefinitions(s).filter(n=>n.operativeId===undefined).map(n=>n.id),stockResidents);
+  assert.deepEqual(encounterDefinitions(decodeSave(encodeSave(s)).campaign).filter(n=>n.operativeId===undefined).map(n=>n.id),stockResidents);
+ }
+});
+
 test('an empty authored cast can launch a free player officer and save a real peaceful visit',()=>{
  const d=defaultContentPackage();d.characters=[];d.placements=[];d.errands=[];d.includeOriginalResidents=false;d.campaignStory=defaultCampaignStory();let s=initialCampaign(42,d);assert.deepEqual(rosterFor(s),[]);assert.deepEqual(availableActions(s).recruits,[]);assert.deepEqual(encounterDefinitions(s),[]);assert.ok(saved({campaign:s}));
- s=order(s,{type:'createOfficer',name:'Isabel',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally',specialty:'teacher',temperament:'steady'}});assert.equal(s.resources.treasury,3200);assert.deepEqual(s.recruited,[1000]);const p=saved(visit(s));assert.equal(p.battle.npcs.length,0);assert.equal(p.battle.units.filter(u=>u.side==='player').length,1);assert.ok(saved({campaign:leave(p)}));
+ s=order(s,{type:'createOfficer',name:'Isabel',profile:defaultProfile(s),answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally',specialty:'teacher',temperament:'steady'}});assert.equal(s.resources.treasury,3200);assert.deepEqual(s.recruited,[1000]);const p=saved(visit(s));assert.equal(p.battle.npcs.length,0);assert.equal(p.battle.units.filter(u=>u.side==='player').length,1);assert.ok(saved({campaign:leave(p)}));
 });
 
 test('removed cast and resident options stay pinned, and injected absent historical actors are rejected on save admission',()=>{

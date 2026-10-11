@@ -14,7 +14,7 @@ function plans(campaign,battle){
  const manifest=request.detainedPrisoners??[],seen=new Set(),result=[];
  for(const npc of battle.npcs??[]){
   if(npc.detention===undefined)continue;
-  validateDetainedPrisoner(npc);validateCivilianWounds(npc,battle);validatePrisonerRelease(npc,battle);validatePrisonerEscape(npc,battle);
+  validateDetainedPrisoner(npc,campaign);validateCivilianWounds(npc,battle);validatePrisonerRelease(npc,battle);validatePrisonerEscape(npc,battle,campaign);
   const original=manifest.find(n=>n.id===npc.id),d=npc.detention;
   need(original&&!seen.has(npc.id)&&equal({...original.detention,freed:d.freed},d),'El parte cambió la custodia de un prisionero.');seen.add(npc.id);
   const record=campaign.operativeState[d.operativeId],prior=campaign.detentionRecords?.[npc.id];
@@ -29,7 +29,7 @@ function plans(campaign,battle){
    if(!equal(prior.npc,npc))result.push({npc,record,plan:{health:Object.fromEntries(healthFields.map(key=>[key,record[key]]))}});
    continue;
   }
-  const plan=planDetentionHealth(d.operativeId,record,npc,civilianRestoredHp(prior?.npc));
+  const plan=planDetentionHealth(d.operativeId,record,npc,civilianRestoredHp(prior?.npc),campaign);
   // Campaign medical records use integral health. Tactical damage in this
   // version is integral; do not silently create HP by rounding a report.
   need(Number.isInteger(plan.health.hp),'La salud del prisionero debe ser entera.');
@@ -59,13 +59,13 @@ export function validateCampaignDetention(campaign){
  need(records&&typeof records==='object'&&!Array.isArray(records)&&Object.keys(records).length<=10000,'El registro de prisioneros es inválido.');
  for(const [id,entry]of Object.entries(records)){
   need(entry&&typeof entry==='object'&&Object.keys(entry).every(k=>['npc','ammunition','care','releaseAttempts','escape'].includes(k))&&entry.npc?.id===id,'El recibo del prisionero es inválido.');
-  const npc=entry.npc;validateDetainedPrisoner(npc);validateCivilianWounds(npc);
+  const npc=entry.npc;validateDetainedPrisoner(npc,campaign);validateCivilianWounds(npc);
   need(npc.detention,'La custodia guardada es inválida.');
   const d=npc.detention,r=campaign.operativeState[d.operativeId];
   need(r&&captureSequence(d)<=captureSequence(r)&&d.capturedAt<=campaign.hour,'Falta la hoja de servicio del prisionero.');
   if(npc.detentionEscape&&!sameCaptivity(r,d))need(entry.escape,'Falta el parte de escape aceptado.');
   if(entry.escape!==undefined){
-   const e=entry.escape;validatePrisonerEscape(npc);
+   const e=entry.escape;validatePrisonerEscape(npc,null,campaign);
    need(e&&Object.keys(e).length===4&&e.battleId===npc.detentionEscape?.battleId&&e.destination===npc.departure?.destination&&Number.isInteger(e.hour)&&e.hour>=d.capturedAt&&e.hour<=campaign.hour&&Array.isArray(e.cacheIds)&&new Set(e.cacheIds).size===e.cacheIds.length&&e.cacheIds.every((key,index)=>key===`custody:${id}:${index}`)&&!sameCaptivity(r,d),'El parte de escape es inválido.');
   }
   if(entry.releaseAttempts!==undefined){
@@ -94,7 +94,7 @@ export function validateCampaignDetention(campaign){
  const request=campaign.pendingBattle,manifest=request?.detainedPrisoners??[],ids=new Set();
  need(Array.isArray(manifest),'El manifiesto de prisioneros es inválido.');
  for(const npc of manifest){
-  validateDetainedPrisoner(npc);const d=npc.detention,r=campaign.operativeState[d?.operativeId];
+  validateDetainedPrisoner(npc,campaign);const d=npc.detention,r=campaign.operativeState[d?.operativeId];
   need(d&&d.sector===request.sector&&!request.sceneId&&(!d.freed||npc.hp===0)&&!ids.has(npc.id)&&r,'El manifiesto de prisioneros no corresponde al sector.');ids.add(npc.id);
   need(sameCaptivity(r,d)||records[npc.id]?.npc.hp===0,'El manifiesto no corresponde al cautiverio.');
  }

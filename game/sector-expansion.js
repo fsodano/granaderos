@@ -1,4 +1,6 @@
-import {BUILDING_TYPES,BUILDING_FOOTPRINTS,sectorBuildingType} from './building-types.js';
+import {campaignDefinitions,campaignWorld} from './campaign-definition.js';
+import {hasGenericCharacterDefinitions} from './content-character-ids.js';
+import {buildingTypes,buildingFootprints,sectorBuildingType} from './building-types.js';
 import {placeBuilding} from './buildings.js';
 import {propPlacementError,placePulperiaCart} from './props.js';
 import {applyRegionalTerrain} from './regional-terrain.js';
@@ -6,9 +8,9 @@ import {applyRegionalTerrain} from './regional-terrain.js';
 export const TACTICAL_SIZE=Object.freeze({width:64,height:48});
 export const LEGACY_SIZE=Object.freeze({width:20,height:16});
 const DY=16;
-const rural=new Set(['uspallata','los_patos','humahuaca']);
-const coast=new Set(['ensenada','san_nicolas','santa_fe','san_lorenzo']);
-export function physicalEntryAnchor(edge,anchor,width,height,sectorId){
+
+export function physicalEntryAnchor(edge,anchor,width,height,sectorId,context=null){
+ const coast=new Set(campaignWorld(context).expansion.coast);
  if(width===20&&height===16)return {...anchor};
  const dx=Math.floor((width-20)/2)+(coast.has(sectorId)?10:0),dy=Math.floor((height-16)/2);
  return {x:edge==='W'?0:edge==='E'?width-1:anchor.x+dx,y:edge==='N'?0:edge==='S'?height-1:anchor.y+dy};
@@ -16,12 +18,13 @@ export function physicalEntryAnchor(edge,anchor,width,height,sectorId){
 
 // Retain the authored landmark and its stable IDs in a larger neighbourhood.
 // Saved compact sectors continue to use their original layout when revisited.
-export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==='road'&&(t.x===0||t.x===19||t.y===0||t.y===15))){
+export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==='road'&&(t.x===0||t.x===19||t.y===0||t.y===15)),context=null){
+ const expansion=campaignWorld(context).expansion,coast=new Set(expansion.coast),rural=new Set(expansion.rural),BUILDING_TYPES=buildingTypes(context),BUILDING_FOOTPRINTS=buildingFootprints(context);
  const {width,height}=TACTICAL_SIZE,id=core.sceneId??core.sector;
  const DX=coast.has(id)?32:22;
  const shift=p=>({...p,x:p.x+DX,y:p.y+DY});
  const shiftReinforcement=(p,index)=>shift({...p,x:p.x??1+Math.floor(index/14),y:p.y??1+index%14});
- const waterX=DX+(id==='santa_fe'?17:18);
+ const waterX=DX+(expansion.waterOffsets?.[id]??18);
  const tiles=Array.from({length:width*height},(_,i)=>{
   const x=i%width,y=Math.floor(i/width);
   if(x>=DX&&x<DX+20&&y>=DY&&y<DY+16)return shift(core.tiles[(y-DY)*20+x-DX]);
@@ -40,18 +43,17 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
   if(p.y===0)for(let y=0;y<DY;y++)road(p.x+DX,y);
   if(p.y===15)for(let y=DY+16;y<height;y++)road(p.x+DX,y);
  }
- // The old Jujuy south-facing house ended against the cliff. Extend its
- // doorstep through that narrow strip so the retained interior is accessible.
- if(id==='jujuy')for(let y=DY+14;y<=DY+15;y++)Object.assign(tiles[y*width+DX+10],{type:'road',blocked:false,blocksSight:false,cover:0});
+ // Authored access corrections retain their compact-map coordinates.
+ for(const p of expansion.accessRoads?.[id]??[])Object.assign(tiles[(DY+p.y)*width+DX+p.x],{type:'road',blocked:false,blocksSight:false,cover:0});
  // Place complete plans with two clear cells between façades. Large plans
  // are packed first, so a church cannot be replaced by a narrow leftover lot.
  // The central mission area remains reserved, including troop deployment.
- const target=core.worldCell?core.buildings.length:rural.has(id)?0:['san_lorenzo','yatasto'].includes(id)?6:20;
+ const target=core.worldCell?core.buildings.length:rural.has(id)?0:expansion.buildingTargets?.[id]??20;
  const seed=[...id].reduce((n,c)=>n+c.charCodeAt(0),0);
  const firstIndex=map.buildings.length,needsBar=target===20&&!map.buildings.some(b=>b.purpose==='bar');
  const plans=Array.from({length:Math.max(0,target-firstIndex)},(_,i)=>{
   const index=firstIndex+i,bar=needsBar&&i===0;
-  const architecture=bar?'pulperia':sectorBuildingType(id,index);
+  const architecture=bar?'pulperia':sectorBuildingType(id,index,false,context);
   const [w,h]=BUILDING_FOOTPRINTS[architecture];
   return {index,architecture,w,h,bar};
  }).sort((a,b)=>b.w*b.h-a.w*a.h||b.h-a.h||a.index-b.index);
@@ -73,7 +75,8 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
   }
   if(!lot)throw Error(`El plano de ${id} no tiene espacio para ${BUILDING_TYPES[architecture].name} (${w}×${h}).`);
   const buildingId=`${id}:neighbourhood-${index}`;
-  const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+Math.floor(w/2),y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+Math.floor(h/2)}],material:'adobe'});
+  const roof=hasGenericCharacterDefinitions(campaignDefinitions(context))?{roof:BUILDING_TYPES[architecture].roof}:{};
+  const result=placeBuilding(map.tiles,{id:buildingId,architecture,...roof,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+Math.floor(w/2),y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+Math.floor(h/2)}],material:'adobe'});
   // New neighbourhood shells share the editor's catalog renderer. Keep the
   // structural walls for entrance-relative details and the original save IDs.
   result.building.kind=architecture;map.wallEdges.push(...result.wallEdges);
@@ -88,7 +91,7 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
   return index(a)-index(b);
  });
  for(const b of map.buildings)placePulperiaCart(map,b);
- if(id==='buenos_aires'){
+ if(expansion.pavedStreets?.includes(id)){
   // Continuous streets between the lots, with stone pavements beside the houses.
   for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){
    if(x>=DX-1&&x<=DX+20&&y>=DY-1&&y<=DY+16)continue;
@@ -100,5 +103,5 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
  if(target===20&&map.buildings.length!==20)throw Error(`El plano de ${id} no tiene veinte solares accesibles.`);
  // Preserve the relative deployment around the authored landmark. New houses
  // cannot overlap it; arrivals are placed on the enlarged boundary by world.js.
- return applyRegionalTerrain(map,{x:DX,y:DY,width:20,height:16});
+ return applyRegionalTerrain(map,{x:DX,y:DY,width:20,height:16},context);
 }

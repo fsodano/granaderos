@@ -20,10 +20,10 @@ does not play the introduction. **Ver introducción** in the title or game menu
 replays it without changing the campaign, battle, clock or resources.
 
 All authored scene text, timing and portrait references are in
-`game/campaign-intro.json`. `CampaignIntro` accepts a content record separately
+`campaigns/granaderos/presentation.json`, under `introduction`. `CampaignIntro` accepts a content record separately
 from its completion callbacks. This keeps story content separate from campaign
-creation and allows the content editor to supply a future validated record.
-This is not a claim that the separate story editor is integrated.
+creation. Installed campaigns load their own validated presentation through their
+manifest. See [campaign authoring](../../development/campaign-authoring.md).
 
 ## Historical basis
 

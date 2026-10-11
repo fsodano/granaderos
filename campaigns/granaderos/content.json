@@ -1,0 +1,3240 @@
+{
+  "format": "granaderos-content",
+  "version": 1,
+  "id": "granaderos",
+  "name": "Granaderos",
+  "quests": [],
+  "errands": [
+    {
+      "id": "jujuy-arriero",
+      "npcId": "local-jujuy",
+      "sector": "jujuy",
+      "title": "Escolta hasta la salida de la Quebrada",
+      "cost": {},
+      "escort": {
+        "edge": "W",
+        "destination": "humahuaca"
+      },
+      "requiredSectors": [
+        "jujuy",
+        "humahuaca"
+      ],
+      "offer": "Acompañame hasta la salida occidental de Jujuy, hacia Humahuaca. Allí me reuniré con la recua. Seguiré al combatiente que acepte; hablame si debo esperar o seguir a otra persona. El camino debe estar bajo control patriota.",
+      "delivery": "Llegamos a la salida de la Quebrada. Esperaré aquí a la recua. El pueblo recordará tu ayuda.",
+      "reward": {
+        "treasury": 0,
+        "loyalty": true
+      }
+    },
+    {
+      "id": "tucuman-vendas",
+      "npcId": "local-tucuman",
+      "sector": "tucuman",
+      "title": "Vendas para la Ciudadela",
+      "cost": {},
+      "carried": {
+        "item": "medkits",
+        "count": 3,
+        "label": "Vendas",
+        "instruction": "Llevá las vendas restantes. Seleccioná la cantidad en tu inventario y entregásela al oficial."
+      },
+      "requiredSectors": [
+        "tucuman"
+      ],
+      "offer": "Necesitamos tres vendas para atender a los heridos de la Ciudadela. Traelas en tu equipo y entregámelas. Podemos recibirlas por separado.",
+      "delivery": "Recibimos las tres vendas para los heridos. La ciudad reconoce tu ayuda.",
+      "reward": {
+        "treasury": 0,
+        "loyalty": true
+      }
+    },
+    {
+      "id": "retiro-uniformes",
+      "npcId": "local-retiro",
+      "sector": "retiro",
+      "title": "Abrigo para el cuartel o el puerto",
+      "cost": {},
+      "carried": {
+        "outfit": "poncho",
+        "count": 2,
+        "label": "Ponchos",
+        "instruction": "Llevá los ponchos restantes. Seleccioná cada uno en el inventario y entregáselo al contacto."
+      },
+      "requiredSectors": [
+        "retiro"
+      ],
+      "offer": "Traé dos ponchos de lana en buen estado. Podés entregarlos al sargento de Retiro para los nuevos reclutas o al capataz de Ensenada para la guardia del puerto. La localidad elegida gana 8 puntos de apoyo. La primera entrega fija el destino; no podrás cambiarlo. Entregá ambos allí y hablá con el destinatario para confirmar.",
+      "delivery": "Recibimos los dos ponchos.",
+      "reward": {
+        "treasury": 0,
+        "loyalty": false
+      },
+      "withdrawal": {
+        "supportCost": 4
+      },
+      "beneficiaries": [
+        {
+          "id": "cuartel",
+          "npcId": "local-retiro",
+          "sector": "retiro",
+          "delivery": "Recibimos los dos ponchos. Los reclutas del cuartel tendrán abrigo.",
+          "reward": {
+            "treasury": 0,
+            "loyalty": true
+          }
+        },
+        {
+          "id": "puerto",
+          "npcId": "local-ensenada",
+          "sector": "ensenada",
+          "delivery": "Recibimos los dos ponchos. La guardia del puerto tendrá abrigo.",
+          "reward": {
+            "treasury": 0,
+            "loyalty": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "posta-polvora",
+      "npcId": "local-san_nicolas",
+      "sector": "san_nicolas",
+      "title": "Asegurar la posta",
+      "reward": {
+        "treasury": 200,
+        "loyalty": true
+      },
+      "requiredSectors": [
+        "san_nicolas"
+      ],
+      "offer": "Liberá San Nicolás y volvé a dar el parte. El Cabildo pagará 200 pesos por restablecer el servicio de correos.",
+      "delivery": "La posta vuelve a funcionar. Recibís 200 pesos por el servicio.",
+      "cost": {}
+    },
+    {
+      "id": "salta-correos",
+      "npcId": "macacha",
+      "sector": "salta",
+      "title": "Abrir la ruta del norte",
+      "reward": {
+        "treasury": 400,
+        "loyalty": true
+      },
+      "requiredSectors": [
+        "salta",
+        "jujuy"
+      ],
+      "offer": "Asegurá Salta y Jujuy y volvé a informarme. Pagaré 400 pesos cuando los enlaces puedan recorrer ambas localidades.",
+      "delivery": "Salta y Jujuy están seguras. Recibís 400 pesos por abrir la ruta.",
+      "cost": {}
+    }
+  ],
+  "roadsideDiscoveries": [
+    {
+      "version": 1,
+      "id": "roadside-clothing-tools",
+      "cell": "cell-24-27",
+      "x": 10,
+      "y": 7,
+      "crowbarCondition": 60,
+      "linenShirtCondition": 75
+    }
+  ],
+  "rules": {
+    "startingTreasury": 3200,
+    "deploymentCartridges": 10,
+    "enemyCartridges": 13,
+    "militiaCartridges": 6
+  },
+  "startingTerritory": {
+    "buenos_aires": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "retiro": {
+      "owner": "patriot",
+      "loyalty": 65
+    },
+    "ensenada": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "san_nicolas": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "santa_fe": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "cordoba": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "mendoza": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "uspallata": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "los_patos": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "tucuman": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "salta": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "jujuy": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "humahuaca": {
+      "owner": "royalist",
+      "loyalty": 25
+    }
+  },
+  "headquarters": "retiro",
+  "imports": {
+    "port": "ensenada",
+    "minHours": 72,
+    "maxHours": 120
+  },
+  "arrivalSites": [
+    {
+      "sector": "retiro",
+      "facilities": [
+        "barracks"
+      ]
+    },
+    {
+      "sector": "buenos_aires",
+      "facilities": [
+        "port",
+        "post"
+      ]
+    },
+    {
+      "sector": "ensenada",
+      "facilities": [
+        "port"
+      ]
+    },
+    {
+      "sector": "san_nicolas",
+      "facilities": [
+        "landing",
+        "post"
+      ]
+    },
+    {
+      "sector": "santa_fe",
+      "facilities": [
+        "port",
+        "post"
+      ]
+    },
+    {
+      "sector": "cordoba",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "mendoza",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "tucuman",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "salta",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "jujuy",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "humahuaca",
+      "facilities": [
+        "post"
+      ]
+    }
+  ],
+  "oppositionEquipment": {
+    "officer": "firearm-1805",
+    "line": "firearm-1800",
+    "veteran": "firearm-1801"
+  },
+  "militiaEquipment": {
+    "green": "firearm-1804",
+    "regular": "firearm-1803",
+    "veteran": "firearm-1801"
+  },
+  "characters": [
+    {
+      "id": "person-0",
+      "name": "Martín Miguel de Güemes",
+      "nickname": "Güemes",
+      "role": "Jefe de caballería irregular",
+      "biography": "Martín Miguel de Güemes organiza la defensa del norte con sus gauchos. Su conocimiento de las quebradas y su autoridad entre las milicias lo convierten en un jefe de exploración y emboscadas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-0.webp",
+      "abilities": [
+        "mud_rider"
+      ],
+      "personality": "Protector de su gente, firme en la autonomía del norte. Habla con franqueza y conoce el terreno antes de comprometer a sus gauchos.",
+      "speech": {
+        "hired": "Aquí estoy. Primero, la tierra y su gente.",
+        "contact": "Por la quebrada vienen. Dejémoslos acercarse.",
+        "cleared": "El paso queda en nuestras manos.",
+        "wounded": "No es nada. Mi gente sigue conmigo.",
+        "exhausted": "Hasta el mejor caballo precisa un respiro.",
+        "death": "Que no abandonen la frontera…",
+        "ending": "El norte resistió. Ahora cuidemos la libertad."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 0,
+      "weapon": "firearm-1803",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 82,
+        "agility": 90,
+        "dexterity": 85,
+        "strength": 78,
+        "leadership": 95,
+        "wisdom": 88,
+        "marksmanship": 81,
+        "mechanical": 35,
+        "explosives": 40,
+        "medical": 30
+      }
+    },
+    {
+      "id": "person-1",
+      "name": "Juana Azurduy",
+      "nickname": "Azurduy",
+      "role": "Jefa de partidas",
+      "biography": "Juana Azurduy conduce fuerzas partisanas en el Alto Perú. Combina liderazgo, resistencia y combate cercano para sostener la lucha en un territorio disputado.",
+      "portrait": "/campaigns/granaderos/assets/portrait-1.webp",
+      "abilities": [
+        "militia_command"
+      ],
+      "personality": "Resuelta y solidaria con las partidas. Su autoridad nace de compartir los riesgos y sostener a quienes combaten lejos de sus hogares.",
+      "speech": {
+        "hired": "Marcharé con ustedes. Nadie queda atrás.",
+        "contact": "Atención, compañeros. Ya los tenemos delante.",
+        "cleared": "Hoy este pueblo duerme sin su guardia.",
+        "wounded": "Sigo en pie. Cubran a los heridos.",
+        "exhausted": "Un momento. Reunamos fuerzas.",
+        "death": "Sigan por los que todavía esperan…",
+        "ending": "La victoria pertenece también a quienes no volvieron."
+      },
+      "spriteAppearance": "woman-scout",
+      "monthlyPay": 0,
+      "weapon": "firearm-1803",
+      "blade": "blade-1809",
+      "attributes": {
+        "maxHp": 88,
+        "agility": 89,
+        "dexterity": 86,
+        "strength": 80,
+        "leadership": 91,
+        "wisdom": 82,
+        "marksmanship": 77,
+        "mechanical": 20,
+        "explosives": 45,
+        "medical": 52
+      }
+    },
+    {
+      "id": "person-2",
+      "name": "Fray Luis Beltrán",
+      "nickname": "Beltrán",
+      "role": "Maestro armero",
+      "biography": "Fray Luis Beltrán pone sus conocimientos de mecánica y metalurgia al servicio del ejército. En las maestranzas prepara armas, repara piezas y organiza la producción de municiones.",
+      "portrait": "/campaigns/granaderos/assets/portrait-2.webp",
+      "abilities": [
+        "loading_support"
+      ],
+      "personality": "Metódico, paciente y práctico. Ve en una herramienta bien cuidada una oportunidad de salvar vidas y en cada problema una tarea que resolver.",
+      "speech": {
+        "hired": "Mostradme las herramientas y empezamos.",
+        "contact": "Preparad las piezas. Sin precipitación.",
+        "cleared": "Guardemos el material; aún puede servir.",
+        "wounded": "Ajustaremos también esta avería.",
+        "exhausted": "Hasta la fragua necesita bajar el fuego.",
+        "death": "Que las herramientas sigan trabajando…",
+        "ending": "Lo que fundimos aquí abrirá otros caminos."
+      },
+      "spriteAppearance": "friar",
+      "monthlyPay": 1714,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 76,
+        "agility": 65,
+        "dexterity": 94,
+        "strength": 84,
+        "leadership": 72,
+        "wisdom": 96,
+        "marksmanship": 50,
+        "mechanical": 99,
+        "explosives": 90,
+        "medical": 45
+      }
+    },
+    {
+      "id": "person-3",
+      "name": "Juan Bautista Cabral",
+      "nickname": "Cabral",
+      "role": "Granadero y escolta",
+      "biography": "Juan Bautista Cabral integra el Regimiento de Granaderos a Caballo. Su fortaleza física y su valor en el combate cercano lo convierten en un soldado decisivo en la defensa de sus compañeros.",
+      "portrait": "/campaigns/granaderos/assets/portrait-3.webp",
+      "abilities": [
+        "counterattack",
+        "bodyguard"
+      ],
+      "personality": "Leal, directo y atento a sus compañeros. Prefiere proteger con hechos antes que discutir y conserva la calma cuando el combate se acerca.",
+      "speech": {
+        "hired": "A sus órdenes. Estaré cerca.",
+        "contact": "Ahí están. No se aparte de mí.",
+        "cleared": "El campo es nuestro, mi comandante.",
+        "wounded": "Puedo sostenerme. Mire al frente.",
+        "exhausted": "Me falta el aire… cubra mi lugar.",
+        "death": "Mi puesto… que alguien lo cubra…",
+        "ending": "Cumplimos con los nuestros. Eso vale la pena."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 643,
+      "weapon": "blade-1809",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 96,
+        "agility": 84,
+        "dexterity": 80,
+        "strength": 92,
+        "leadership": 60,
+        "wisdom": 70,
+        "marksmanship": 68,
+        "mechanical": 40,
+        "explosives": 25,
+        "medical": 35
+      }
+    },
+    {
+      "id": "person-4",
+      "name": "Manuel Dorrego",
+      "nickname": "Dorrego",
+      "role": "Jefe de cazadores",
+      "biography": "Manuel Dorrego es un oficial de infantería ligera de carácter decidido. Favorece la iniciativa de los cazadores, el reconocimiento adelantado y las acciones rápidas contra posiciones enemigas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-4.webp",
+      "abilities": [
+        "quick_shot",
+        "quick_movement"
+      ],
+      "personality": "Vivaz, audaz y poco amigo de órdenes rígidas. Busca oportunidades rápidas y discute cuando cree que una maniobra desperdicia hombres.",
+      "speech": {
+        "hired": "Bien. Espero que nos dejen maniobrar.",
+        "contact": "¡Los vi! Hay un hueco por ese lado.",
+        "cleared": "No les dimos tiempo de entenderlo.",
+        "wounded": "Me rozaron. Todavía puedo moverme.",
+        "exhausted": "Una pausa, y vuelvo por el flanco.",
+        "death": "No desperdicien la oportunidad…",
+        "ending": "Ganamos terreno. Ahora toca ganarnos a la gente."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 2571,
+      "weapon": "firearm-1808",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 84,
+        "agility": 92,
+        "dexterity": 88,
+        "strength": 74,
+        "leadership": 80,
+        "wisdom": 78,
+        "marksmanship": 89,
+        "mechanical": 30,
+        "explosives": 35,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-5",
+      "name": "Guillermo Brown",
+      "nickname": "Brown",
+      "role": "Comandante naval",
+      "biography": "Guillermo Brown aporta experiencia naval a la causa de las Provincias Unidas. Su mando resulta fundamental para disputar el control de los ríos y combatir a las fuerzas realistas del Plata.",
+      "portrait": "/campaigns/granaderos/assets/portrait-5.webp",
+      "abilities": [
+        "artillery_fire"
+      ],
+      "personality": "Marino sobrio y perseverante. Valora las cuentas claras, la preparación de las dotaciones y la confianza que se gana en una travesía difícil.",
+      "speech": {
+        "hired": "Mi servicio está con esta causa. Acordemos los pertrechos.",
+        "contact": "Enemigo a la vista. Que nadie rompa la formación.",
+        "cleared": "La comunicación vuelve a estar abierta.",
+        "wounded": "Atiendan primero a la dotación.",
+        "exhausted": "Sin descanso tampoco se gobierna una nave.",
+        "death": "Mantengan el rumbo…",
+        "ending": "La bandera tiene por fin un horizonte abierto."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 3857,
+      "weapon": "firearm-1805",
+      "blade": "blade-1809",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 72,
+        "dexterity": 80,
+        "strength": 86,
+        "leadership": 92,
+        "wisdom": 90,
+        "marksmanship": 75,
+        "mechanical": 78,
+        "explosives": 85,
+        "medical": 40
+      }
+    },
+    {
+      "id": "person-6",
+      "name": "Hipólito Bouchard",
+      "nickname": "Bouchard",
+      "role": "Corsario de asalto",
+      "biography": "Hipólito Bouchard sirve a la revolución como marino y combatiente. Su experiencia favorece las incursiones, los ataques nocturnos y el asalto de posiciones defendidas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-6.webp",
+      "abilities": [
+        "breaching",
+        "night_scout",
+        "scatter_concealment"
+      ],
+      "personality": "Impaciente ante las defensas inmóviles y decidido en el asalto. Disfruta la iniciativa, pero espera que cada compañero cumpla su parte.",
+      "speech": {
+        "hired": "Si hay una entrada, la encontraremos.",
+        "contact": "Allí está su defensa. Vamos a quebrarla.",
+        "cleared": "La puerta está abierta. Que entre el resto.",
+        "wounded": "Todavía tengo un brazo para pelear.",
+        "exhausted": "Dénme un respiro antes del siguiente asalto.",
+        "death": "Abran paso… no se detengan…",
+        "ending": "Ya nadie nos cerrará todos los puertos."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 3429,
+      "weapon": "firearm-1807",
+      "blade": "blade-1810",
+      "attributes": {
+        "maxHp": 86,
+        "agility": 85,
+        "dexterity": 87,
+        "strength": 85,
+        "leadership": 76,
+        "wisdom": 84,
+        "marksmanship": 78,
+        "mechanical": 60,
+        "explosives": 75,
+        "medical": 30
+      }
+    },
+    {
+      "id": "person-7",
+      "name": "Lorenzo Barcala",
+      "nickname": "Barcala",
+      "role": "Artillero de línea",
+      "biography": "Lorenzo Barcala representa la experiencia militar de los batallones de pardos y morenos. Aporta disciplina, destreza técnica y firmeza bajo el fuego a las fuerzas patriotas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-7.webp",
+      "abilities": [
+        "artillery_loading",
+        "foot_morale"
+      ],
+      "personality": "Disciplinado y consciente de lo que representa su mando. Exige respeto entre compañeros y precisión en cada operación de la batería.",
+      "speech": {
+        "hired": "Serviré con disciplina y con dignidad.",
+        "contact": "Firmes. Cada hombre conoce su puesto.",
+        "cleared": "Mantengan el orden y cuenten a los nuestros.",
+        "wounded": "Continúen el servicio de la pieza.",
+        "exhausted": "Releven mi puesto un instante.",
+        "death": "Que se reconozca a mis hombres…",
+        "ending": "La libertad debe alcanzar también a nuestros hogares."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 771,
+      "weapon": "firearm-1801",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 80,
+        "dexterity": 91,
+        "strength": 79,
+        "leadership": 78,
+        "wisdom": 85,
+        "marksmanship": 84,
+        "mechanical": 72,
+        "explosives": 80,
+        "medical": 35
+      }
+    },
+    {
+      "id": "person-8",
+      "name": "Macacha Güemes",
+      "nickname": "Macacha",
+      "role": "Agente de información",
+      "biography": "Macacha Güemes participa en las redes políticas y de información de Salta. Su capacidad para reunir noticias, establecer contactos y sostener acuerdos fortalece la defensa del norte.",
+      "portrait": "/campaigns/granaderos/assets/portrait-8.webp",
+      "abilities": [],
+      "personality": "Observadora, persuasiva y prudente. Escucha antes de hablar y protege a quienes arriesgan su vida llevando noticias entre los pueblos.",
+      "speech": {
+        "hired": "Las noticias también ganan campañas.",
+        "contact": "Bajen la voz. Hay movimiento delante.",
+        "cleared": "Revisemos los caminos antes de darlo por seguro.",
+        "wounded": "No se preocupen por mí. Protejan al correo.",
+        "exhausted": "Necesito sentarme. Después seguimos.",
+        "death": "Los nombres… no entreguen los nombres…",
+        "ending": "Que ahora las noticias lleven esperanza."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 1071,
+      "weapon": "firearm-1806",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 88,
+        "dexterity": 86,
+        "strength": 55,
+        "leadership": 89,
+        "wisdom": 94,
+        "marksmanship": 65,
+        "mechanical": 45,
+        "explosives": 20,
+        "medical": 65
+      }
+    },
+    {
+      "id": "person-9",
+      "name": "Facundo Quiroga",
+      "nickname": "Quiroga",
+      "role": "Lancero de montoneras",
+      "biography": "Facundo Quiroga reúne las capacidades de un jefe de montoneras: fuerza, decisión y ascendiente personal. Su combate se apoya en la lanza y el facón de los hombres de la campaña.",
+      "portrait": "/campaigns/granaderos/assets/portrait-9.webp",
+      "abilities": [
+        "mounted_intimidation"
+      ],
+      "personality": "Intenso y orgulloso de su ascendiente entre los jinetes. Respeta el valor personal y reacciona con dureza ante el abandono de los pueblos.",
+      "speech": {
+        "hired": "Mis hombres no marchan para ser olvidados.",
+        "contact": "¡Ahí los tienen! Que sientan la carga.",
+        "cleared": "Ya saben quién sostiene este camino.",
+        "wounded": "No me han tumbado todavía.",
+        "exhausted": "El cuerpo pide tregua, aunque no me guste.",
+        "death": "Sostengan a los muchachos…",
+        "ending": "Que nadie cambie una obediencia por otra."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 1500,
+      "weapon": "blade-1812",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 92,
+        "agility": 87,
+        "dexterity": 76,
+        "strength": 94,
+        "leadership": 86,
+        "wisdom": 68,
+        "marksmanship": 55,
+        "mechanical": 30,
+        "explosives": 20,
+        "medical": 25
+      }
+    },
+    {
+      "id": "person-10",
+      "name": "James Paroissien",
+      "nickname": "Paroissien",
+      "role": "Cirujano de campaña",
+      "biography": "James Paroissien aporta formación médica y conocimientos científicos al ejército. Su trabajo permite atender heridos, organizar la asistencia de campaña y apoyar las tareas técnicas de los talleres.",
+      "portrait": "/campaigns/granaderos/assets/portrait-10.webp",
+      "abilities": [
+        "rapid_first_aid"
+      ],
+      "personality": "Sereno y analítico. Prioriza a los heridos sin perder de vista los recursos limitados; explica sus decisiones y evita promesas vacías.",
+      "speech": {
+        "hired": "Prepararé los vendajes antes de partir.",
+        "contact": "Busquemos abrigo. Quiero poder atenderlos.",
+        "cleared": "Traigan a los heridos. Aún queda trabajo.",
+        "wounded": "Presión sobre la herida. Puedo indicarles cómo.",
+        "exhausted": "Necesito recuperar el pulso antes de continuar.",
+        "death": "El instrumental… que otro lo use…",
+        "ending": "Ojalá el próximo esfuerzo sea reconstruir vidas."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 2357,
+      "weapon": "firearm-1806",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 72,
+        "agility": 70,
+        "dexterity": 89,
+        "strength": 62,
+        "leadership": 65,
+        "wisdom": 95,
+        "marksmanship": 60,
+        "mechanical": 68,
+        "explosives": 65,
+        "medical": 98
+      }
+    },
+    {
+      "id": "person-11",
+      "name": "José María Paz",
+      "nickname": "Paz",
+      "role": "Oficial de táctica",
+      "biography": "José María Paz estudia el terreno y prepara cuidadosamente sus posiciones. Su método combina precisión de tiro, disciplina y coordinación entre los combatientes.",
+      "portrait": "/campaigns/granaderos/assets/portrait-11.webp",
+      "abilities": [
+        "tactical_command"
+      ],
+      "personality": "Reservado y calculador. Se siente más cómodo con un plano y una posición bien elegida que con una carga improvisada.",
+      "speech": {
+        "hired": "Estudiemos la posición antes de dar la orden.",
+        "contact": "Distancias y campos de tiro. No se precipiten.",
+        "cleared": "La maniobra dio resultado. Revisemos las bajas.",
+        "wounded": "Una herida no cambia la geometría del campo.",
+        "exhausted": "Fatigado no calcularé bien. Necesito una pausa.",
+        "death": "Conserven la posición…",
+        "ending": "La victoria exige ahora la misma previsión que la guerra."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 1929,
+      "weapon": "firearm-1802",
+      "blade": "blade-1810",
+      "attributes": {
+        "maxHp": 78,
+        "agility": 82,
+        "dexterity": 88,
+        "strength": 72,
+        "leadership": 82,
+        "wisdom": 92,
+        "marksmanship": 91,
+        "mechanical": 65,
+        "explosives": 70,
+        "medical": 30
+      }
+    },
+    {
+      "id": "person-57",
+      "name": "José de San Martín",
+      "nickname": "San Martín",
+      "role": "Comandante del ejército",
+      "biography": "José de San Martín organiza el Regimiento de Granaderos a Caballo y prepara una estrategia continental de liberación. Su mando une la instrucción militar con una exigente preparación logística.",
+      "portrait": "/campaigns/granaderos/assets/portrait-57.webp",
+      "abilities": [
+        "strategic_command",
+        "protected_commander",
+        "mounted_charge"
+      ],
+      "personality": "Exigente, austero y atento a la preparación. Inspira confianza mediante objetivos claros y una visión que excede el combate inmediato.",
+      "speech": {
+        "hired": "El ejército está preparado. Marchemos juntos.",
+        "contact": "Mantengan la serenidad. Cada cual a su puesto.",
+        "cleared": "La posición es nuestra. Aseguren las comunicaciones.",
+        "wounded": "No desordenen la línea por mí.",
+        "exhausted": "Un ejército agotado no puede cumplir su misión.",
+        "death": "La causa debe continuar…",
+        "ending": "Hemos preparado el camino. La libertad exige sostenerlo."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 0,
+      "weapon": "firearm-1808",
+      "blade": "blade-1809",
+      "attributes": {
+        "maxHp": 88,
+        "agility": 88,
+        "dexterity": 90,
+        "strength": 84,
+        "leadership": 99,
+        "wisdom": 98,
+        "marksmanship": 92,
+        "mechanical": 65,
+        "explosives": 60,
+        "medical": 50
+      }
+    },
+    {
+      "id": "person-100",
+      "name": "Rafael Sosa",
+      "nickname": "Sosa",
+      "role": "Peón y miliciano provincial",
+      "biography": "Un peón de la campaña que acude al boletín del Cabildo. Su experiencia con caballos y facón compensa una instrucción militar todavía escasa.",
+      "portrait": "/campaigns/granaderos/assets/portrait-100.webp",
+      "abilities": [],
+      "personality": "Trabajador de pocas palabras, aprende con la práctica y se preocupa por conservar las monturas.",
+      "speech": {
+        "hired": "Me sumo. Sé trabajar y sé montar.",
+        "contact": "Patrón… digo, comandante: los veo.",
+        "cleared": "No pensé que podríamos hacerlo.",
+        "wounded": "Me dieron, pero todavía aguanto.",
+        "exhausted": "Las piernas no me responden.",
+        "death": "Avísenle a mi familia…",
+        "ending": "Volveré con algo más que mi facón."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 180,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander"
+      ],
+      "ridingSkill": 0,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 72,
+        "dexterity": 60,
+        "strength": 78,
+        "leadership": 35,
+        "wisdom": 60,
+        "marksmanship": 43,
+        "mechanical": 20,
+        "explosives": 15,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-101",
+      "name": "Tomasa Ríos",
+      "nickname": "Ríos",
+      "role": "Exploradora del Litoral",
+      "biography": "Conoce los senderos y bañados del Litoral. Se incorpora para proteger los pueblos ribereños y aprende con rapidez durante las incursiones.",
+      "portrait": "/campaigns/granaderos/assets/portrait-101.webp",
+      "abilities": [],
+      "personality": "Curiosa y alerta, se orienta por los detalles del paisaje y comparte lo que sabe con los recién llegados.",
+      "speech": {
+        "hired": "Por estos senderos puedo guiarlos.",
+        "contact": "Ese movimiento no es del viento.",
+        "cleared": "El camino quedó libre.",
+        "wounded": "Una venda y sigo con ustedes.",
+        "exhausted": "Necesito agua y descanso.",
+        "death": "No pierdan el sendero…",
+        "ending": "Volveremos a cruzar sin escondernos."
+      },
+      "spriteAppearance": "woman-scout",
+      "monthlyPay": 220,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "guerrilla_tactician"
+      ],
+      "ridingSkill": 0,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 80,
+        "dexterity": 60,
+        "strength": 65,
+        "leadership": 35,
+        "wisdom": 74,
+        "marksmanship": 48,
+        "mechanical": 20,
+        "explosives": 15,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-102",
+      "name": "Mateo Ferreyra",
+      "nickname": "Ferreyra",
+      "role": "Aprendiz de la maestranza",
+      "biography": "Un aprendiz de Caroya que conoce las herramientas y desea servir en la artillería. Su oficio brinda una base para aprender a reparar las armas de campaña.",
+      "portrait": "/campaigns/granaderos/assets/portrait-102.webp",
+      "abilities": [],
+      "personality": "Joven y aplicado, hace preguntas y anota los procedimientos para no repetir sus errores.",
+      "speech": {
+        "hired": "Puedo ayudar con las armas. Y aprender.",
+        "contact": "¿Preparo la pieza? Estoy listo.",
+        "cleared": "Voy a revisar lo que quedó en el campo.",
+        "wounded": "La herida no parece buena…",
+        "exhausted": "Me tiemblan las manos. Debo parar.",
+        "death": "Mis apuntes están en la bolsa…",
+        "ending": "En Caroya tendrán mucho que escuchar."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 200,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist"
+      ],
+      "ridingSkill": 0,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 65,
+        "dexterity": 74,
+        "strength": 65,
+        "leadership": 35,
+        "wisdom": 60,
+        "marksmanship": 45,
+        "mechanical": 65,
+        "explosives": 15,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-103",
+      "name": "Étienne Morel",
+      "nickname": "Morel",
+      "role": "Artillero de marina francés",
+      "biography": "Personaje ficticio. Un marinero francés que ofrece sus conocimientos de pólvora y reparación en el puerto de Ensenada. Busca un estipendio regular y una causa que pueda defender.",
+      "portrait": "/campaigns/granaderos/assets/portrait-103.png",
+      "abilities": [],
+      "personality": "Metódico y paciente con las herramientas, impaciente con las órdenes confusas. Lleva cuentas de cada carga y exige que sus compañeros respeten las distancias de seguridad.",
+      "speech": {
+        "hired": "Mi oficio está a disposición del regimiento.",
+        "contact": "Hay movimiento. Preparen la pólvora.",
+        "cleared": "Revisaré la pieza antes de celebrar.",
+        "wounded": "No dejen caer la caja de municiones.",
+        "exhausted": "Mis manos necesitan un descanso.",
+        "death": "Que la pólvora no se moje…",
+        "ending": "Ahora podré reparar barcos, en vez de destruirlos."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 340,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist"
+      ],
+      "ridingSkill": 0,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 65,
+        "dexterity": 72,
+        "strength": 65,
+        "leadership": 35,
+        "wisdom": 60,
+        "marksmanship": 58,
+        "mechanical": 68,
+        "explosives": 72,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-104",
+      "name": "Patrick Doyle",
+      "nickname": "Doyle",
+      "role": "Marinero irlandés",
+      "biography": "Personaje ficticio. Un marinero irlandés establecido en el Río de la Plata, acostumbrado al trabajo de cubierta y al combate cercano. Se presenta como voluntario por paga ante los enlaces del puerto.",
+      "portrait": "/campaigns/granaderos/assets/portrait-104.png",
+      "abilities": [],
+      "personality": "Sociable, terco y leal a quienes comparten el peligro. Cuenta historias de puerto para aliviar la tensión y detesta abandonar a un compañero.",
+      "speech": {
+        "hired": "Cuenten conmigo. Y guárdenme una ración.",
+        "contact": "A cubierto, compañeros. Nos han encontrado.",
+        "cleared": "Hoy tendremos una historia más que contar.",
+        "wounded": "He conocido cubiertas más duras que este suelo.",
+        "exhausted": "Un momento. Ya no siento las piernas.",
+        "death": "Lleven mis noticias al puerto…",
+        "ending": "Brindaremos por los que no volvieron."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 280,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "guerrilla_tactician"
+      ],
+      "ridingSkill": 0,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 74,
+        "dexterity": 60,
+        "strength": 80,
+        "leadership": 35,
+        "wisdom": 60,
+        "marksmanship": 54,
+        "mechanical": 20,
+        "explosives": 15,
+        "medical": 35
+      }
+    },
+    {
+      "id": "person-105",
+      "name": "Lucien Arnaud",
+      "nickname": "Arnaud",
+      "role": "Veterano fusilero francés",
+      "biography": "Personaje ficticio. Un veterano expatriado que vende su experiencia de combate por contratos pagos por adelantado.",
+      "portrait": "/campaigns/granaderos/assets/portrait-105.webp",
+      "abilities": [],
+      "personality": "Reservado y exigente. Prefiere un disparo bien preparado a una demostración temeraria y cumple exactamente el plazo pactado.",
+      "speech": {
+        "hired": "Contrato claro. Prepararé mi arma.",
+        "contact": "Tengo el blanco. Mantengan despejado el tiro.",
+        "cleared": "Podemos avanzar; cubriré el camino.",
+        "wounded": "La herida no me impedirá apuntar todavía.",
+        "exhausted": "Necesito reposo para sostener el pulso.",
+        "death": "Mi arma… que no quede en el barro…",
+        "ending": "He cumplido mi palabra. Que esta paz dure."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 48000,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "line_marksman"
+      ],
+      "ridingSkill": 0,
+      "weapon": "firearm-1802",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 82,
+        "dexterity": 60,
+        "strength": 65,
+        "leadership": 70,
+        "wisdom": 60,
+        "marksmanship": 92,
+        "mechanical": 20,
+        "explosives": 15,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-106",
+      "name": "Manuel Leiva",
+      "nickname": "Leiva",
+      "role": "Sargento de frontera",
+      "biography": "Personaje ficticio. Un sargento experimentado que se incorpora mediante contratos de campaña.",
+      "portrait": "/campaigns/granaderos/assets/portrait-106.webp",
+      "abilities": [],
+      "personality": "Paciente al enseñar, firme al exigir disciplina. Conoce los caballos de frontera y protege a los reclutas sin ocultarles el peligro.",
+      "speech": {
+        "hired": "Reuní a los nuevos. Empezaremos por lo esencial.",
+        "contact": "Calma, muchachos. Cada uno a su puesto.",
+        "cleared": "Bien hecho. Ahora contemos a los nuestros.",
+        "wounded": "Ajusten esa venda. Todavía puedo enseñarles algo.",
+        "exhausted": "Den agua a los caballos mientras recobramos fuerzas.",
+        "death": "Cuida a los muchachos…",
+        "ending": "Ojalá lo aprendido sirva para volver a casa."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 41400,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "teacher"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 65,
+        "dexterity": 60,
+        "strength": 83,
+        "leadership": 75,
+        "wisdom": 60,
+        "marksmanship": 90,
+        "mechanical": 20,
+        "explosives": 15,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-107",
+      "name": "Inés Aguirre",
+      "nickname": "Aguirre",
+      "role": "Enfermera de campaña",
+      "biography": "Personaje ficticio. Atendía a los trabajadores del matadero antes de organizar un puesto de socorro. Cobra para mantener a su hermana y exige llevar vendas suficientes.",
+      "portrait": "/campaigns/granaderos/assets/portrait-107.webp",
+      "abilities": [],
+      "personality": "Serena y franca. No tolera que se oculte una herida por orgullo.",
+      "serviceRefusals": [
+        {
+          "character": "person-112",
+          "reason": "Discrepan sobre el trato a los pacientes."
+        }
+      ],
+      "preferredCompanions": [
+        {
+          "character": "person-116",
+          "reason": "Confía en su ayuda para atender heridos."
+        }
+      ],
+      "speech": {
+        "hired": "Llevo vendas. Ustedes traigan prudencia.",
+        "contact": "Veo uniformes entre los árboles.",
+        "cleared": "Ahora sí, traigan las camillas.",
+        "wounded": "Yo también necesito una venda.",
+        "exhausted": "Sin pulso firme no puedo atender.",
+        "death": "Cuiden de mi hermana…",
+        "ending": "Volveré a abrir mi puesto de socorro."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 420,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 72,
+        "agility": 62,
+        "dexterity": 83,
+        "strength": 58,
+        "leadership": 55,
+        "wisdom": 84,
+        "marksmanship": 38,
+        "mechanical": 25,
+        "explosives": 12,
+        "medical": 88
+      }
+    },
+    {
+      "id": "person-108",
+      "name": "Julián Pereyra",
+      "nickname": "Tiento",
+      "role": "Domador de la campaña",
+      "biography": "Personaje ficticio. Domó potros para las postas del sur. Perdió su tropilla en una requisa y busca reunir dinero para empezar de nuevo.",
+      "portrait": "/campaigns/granaderos/assets/portrait-108.webp",
+      "abilities": [],
+      "personality": "Risueño con los compañeros, desconfiado con los oficiales. Nunca apura a una montura agotada.",
+      "speech": {
+        "hired": "Con un buen caballo llego.",
+        "contact": "Hay gente cerrando el paso.",
+        "cleared": "Hasta los potros están tranquilos.",
+        "wounded": "Un tiento y aguanto.",
+        "exhausted": "Preciso bajar de la montura.",
+        "death": "Suelten mi caballo…",
+        "ending": "Con esta paga armaré otra tropilla."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 270,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1803",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 82,
+        "agility": 76,
+        "dexterity": 64,
+        "strength": 86,
+        "leadership": 32,
+        "wisdom": 52,
+        "marksmanship": 46,
+        "mechanical": 18,
+        "explosives": 10,
+        "medical": 24
+      }
+    },
+    {
+      "id": "person-109",
+      "name": "Edward Harcourt",
+      "nickname": "Harcourt",
+      "role": "Ex teniente coronel británico",
+      "biography": "Personaje ficticio. Antiguo teniente coronel de infantería británico. Vendió su comisión para cubrir deudas familiares y llegó al Plata como asesor de un comerciante. Ofrece instrucción y mando por contrato pago por adelantado, sin representar a la Corona.",
+      "portrait": "/campaigns/granaderos/assets/portrait-109.webp",
+      "abilities": [],
+      "personality": "Formal y exigente. Prefiere una reserva bien situada a una carga vistosa y admite sus errores ante la tropa.",
+      "speech": {
+        "hired": "Mi antigua comisión terminó. Acordemos este servicio.",
+        "contact": "Mantengan la reserva fuera del fuego.",
+        "cleared": "Reorganicen los pelotones antes de avanzar.",
+        "wounded": "El segundo debe asumir mi puesto.",
+        "exhausted": "Un mando agotado da malas órdenes.",
+        "death": "Conserven la reserva…",
+        "ending": "He servido según lo pactado. Ahora regresaré a mis asuntos."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 40800,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "teacher",
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 84,
+        "agility": 62,
+        "dexterity": 78,
+        "strength": 72,
+        "leadership": 94,
+        "wisdom": 88,
+        "marksmanship": 83,
+        "mechanical": 31,
+        "explosives": 38,
+        "medical": 25
+      }
+    },
+    {
+      "id": "person-110",
+      "name": "Baltasar Acosta",
+      "nickname": "Acosta",
+      "role": "Fusilero de milicias",
+      "biography": "Personaje ficticio. Trabajó como estibador y costeó su instrucción en las milicias. Prefiere un contrato escrito que le permita enviar parte de la paga a casa.",
+      "portrait": "/campaigns/granaderos/assets/portrait-110.webp",
+      "abilities": [],
+      "personality": "Formal y protector. Repite las órdenes para que los más nuevos no queden perdidos.",
+      "speech": {
+        "hired": "Entendido. Ocuparé mi puesto.",
+        "contact": "Milicianos, mantengan la línea.",
+        "cleared": "Contemos antes de celebrar.",
+        "wounded": "Sigo sosteniendo el fusil.",
+        "exhausted": "Necesito relevo en la línea.",
+        "death": "No separen la escuadra…",
+        "ending": "Mi familia tendrá noticias y mi paga."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 300,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 61,
+        "dexterity": 68,
+        "strength": 83,
+        "leadership": 58,
+        "wisdom": 61,
+        "marksmanship": 72,
+        "mechanical": 25,
+        "explosives": 28,
+        "medical": 18
+      }
+    },
+    {
+      "id": "person-111",
+      "name": "Armand Delatour",
+      "nickname": "Delatour",
+      "role": "Ex mayor de ingenieros francés",
+      "biography": "Personaje ficticio. Antiguo mayor de ingenieros francés, separado del servicio tras una disputa por suministros desaparecidos. Trabajó en obras portuarias antes de ofrecer al Cabildo sus conocimientos de fortificación, armas y pólvora.",
+      "portrait": "/campaigns/granaderos/assets/portrait-111.webp",
+      "abilities": [],
+      "personality": "Meticuloso y poco diplomático. Exige cuentas claras porque una firma ajena ya le costó su carrera.",
+      "speech": {
+        "hired": "Necesito planos, herramientas y cuentas claras.",
+        "contact": "Ese abrigo no resistirá mucho.",
+        "cleared": "Mediré los daños antes de ordenar reparaciones.",
+        "wounded": "Aparten la pólvora mientras me vendan.",
+        "exhausted": "No calcularé una carga con este cansancio.",
+        "death": "Mis cálculos están en la cartera…",
+        "ending": "Construiré un taller donde pueda responder por cada cuenta."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 840,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist",
+        "workshop_training"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 77,
+        "agility": 60,
+        "dexterity": 89,
+        "strength": 71,
+        "leadership": 78,
+        "wisdom": 91,
+        "marksmanship": 62,
+        "mechanical": 92,
+        "explosives": 86,
+        "medical": 24
+      }
+    },
+    {
+      "id": "person-112",
+      "name": "Gaspar Villalba",
+      "nickname": "Villalba",
+      "role": "Cirujano de posta",
+      "biography": "Personaje ficticio. Se formó como practicante y atendió a viajeros del Camino Real. Su instrumental es bueno, pero su consultorio no sobrevivió a las deudas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-112.webp",
+      "abilities": [],
+      "personality": "Minucioso y algo vanidoso. Explica cada cura incluso cuando nadie se lo pide.",
+      "speech": {
+        "hired": "Mi instrumental está preparado.",
+        "contact": "Busquemos un lugar para atender.",
+        "cleared": "Primero revisaré a los heridos.",
+        "wounded": "La hemorragia debe detenerse.",
+        "exhausted": "Mis manos ya no están firmes.",
+        "death": "El maletín, por favor…",
+        "ending": "La próxima consulta será en mi casa."
+      },
+      "spriteAppearance": "surgeon",
+      "monthlyPay": 750,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer",
+        "teacher"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 64,
+        "agility": 58,
+        "dexterity": 91,
+        "strength": 49,
+        "leadership": 62,
+        "wisdom": 91,
+        "marksmanship": 42,
+        "mechanical": 30,
+        "explosives": 19,
+        "medical": 94
+      }
+    },
+    {
+      "id": "person-113",
+      "name": "Alistair Kerr",
+      "nickname": "Kerr",
+      "role": "Ex mayor de infantería ligera británico",
+      "biography": "Personaje ficticio. Escocés que dejó el ejército británico con grado de mayor tras una herida y una larga convalecencia. Recuperado para marchas cortas, llegó al Plata acompañando una expedición comercial y busca trabajo como explorador e instructor.",
+      "portrait": "/campaigns/granaderos/assets/portrait-113.webp",
+      "abilities": [],
+      "personality": "Observador y seco al hablar. No permite que el orgullo de un oficial exponga a los exploradores.",
+      "speech": {
+        "hired": "Reconoceré el frente antes de comprometer hombres.",
+        "contact": "Hay movimiento más allá de esa cresta.",
+        "cleared": "Dejen una pareja vigilando el paso.",
+        "wounded": "La vieja herida no era la única.",
+        "exhausted": "Debemos acortar esta marcha.",
+        "death": "Retírense por el camino reconocido…",
+        "ending": "Volveré a elegir mis caminos sin recibir órdenes."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 810,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "guerrilla_tactician",
+        "night_vision"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 80,
+        "agility": 86,
+        "dexterity": 78,
+        "strength": 72,
+        "leadership": 81,
+        "wisdom": 84,
+        "marksmanship": 79,
+        "mechanical": 25,
+        "explosives": 24,
+        "medical": 36
+      }
+    },
+    {
+      "id": "person-114",
+      "name": "Eusebio Ledesma",
+      "nickname": "Ledesma",
+      "role": "Sargento instructor",
+      "biography": "Personaje ficticio. Pasó años instruyendo milicianos que partían antes de completar el ejercicio. Busca una unidad estable donde enseñar sin desperdiciar vidas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-114.webp",
+      "abilities": [],
+      "personality": "Severo con el descuido y paciente con el error honesto. Aprende los nombres de todos.",
+      "speech": {
+        "hired": "Comencemos por revisar la formación.",
+        "contact": "Recuerden lo que practicamos.",
+        "cleared": "El ejercicio dio resultado.",
+        "wounded": "Cubran mi lugar en la fila.",
+        "exhausted": "Hasta el instructor necesita relevo.",
+        "death": "No olviden la instrucción…",
+        "ending": "Quiero verlos volver a sus oficios."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 660,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "teacher",
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 81,
+        "agility": 63,
+        "dexterity": 72,
+        "strength": 77,
+        "leadership": 88,
+        "wisdom": 78,
+        "marksmanship": 78,
+        "mechanical": 34,
+        "explosives": 35,
+        "medical": 28
+      }
+    },
+    {
+      "id": "person-115",
+      "name": "Nicolás Funes",
+      "nickname": "Funes",
+      "role": "Tirador de las sierras",
+      "biography": "Personaje ficticio. Cazaba para abastecer a una posta serrana. Compró un fusil usado a un viajero y paga sus deudas trabajando como tirador de escolta.",
+      "portrait": "/campaigns/granaderos/assets/portrait-115.webp",
+      "abilities": [],
+      "personality": "Reservado y competitivo. Lleva una cuenta privada de los disparos desperdiciados.",
+      "speech": {
+        "hired": "Necesito una posición con buena vista.",
+        "contact": "Veo un blanco entre las piedras.",
+        "cleared": "No hizo falta vaciar la cartuchera.",
+        "wounded": "Todavía puedo sostener la mira.",
+        "exhausted": "Se me nubla la vista.",
+        "death": "Guarden mi fusil…",
+        "ending": "Volveré a cazar para la posta."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 570,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "line_marksman"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1802",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 74,
+        "dexterity": 82,
+        "strength": 62,
+        "leadership": 31,
+        "wisdom": 75,
+        "marksmanship": 86,
+        "mechanical": 42,
+        "explosives": 21,
+        "medical": 17
+      }
+    },
+    {
+      "id": "person-116",
+      "name": "Petrona Lagos",
+      "nickname": "Lagos",
+      "role": "Socorrista del Litoral",
+      "biography": "Personaje ficticio. Rescató familias durante las crecientes del Paraná. Quiere ganar lo suficiente para reparar la canoa con la que trabaja su comunidad.",
+      "portrait": "/campaigns/granaderos/assets/portrait-116.webp",
+      "abilities": [],
+      "personality": "Práctica y generosa. Habla con calma incluso cuando todos gritan.",
+      "speech": {
+        "hired": "Si alguien cae, iré a buscarlo.",
+        "contact": "Agáchense junto a la ribera.",
+        "cleared": "Voy a buscar a los rezagados.",
+        "wounded": "Ayúdenme a salir de aquí.",
+        "exhausted": "Necesito sentarme junto al agua.",
+        "death": "No dejen a nadie atrás…",
+        "ending": "Ya puedo reparar nuestra canoa."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 240,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 75,
+        "agility": 75,
+        "dexterity": 71,
+        "strength": 72,
+        "leadership": 43,
+        "wisdom": 68,
+        "marksmanship": 39,
+        "mechanical": 18,
+        "explosives": 9,
+        "medical": 70
+      }
+    },
+    {
+      "id": "person-117",
+      "name": "Jacinto Ojeda",
+      "nickname": "Ojeda",
+      "role": "Lancero de frontera",
+      "biography": "Personaje ficticio. Escoltó arreos por caminos de frontera. Acepta un estipendio para reemplazar el ganado perdido por una sociedad comercial mal llevada.",
+      "portrait": "/campaigns/granaderos/assets/portrait-117.webp",
+      "abilities": [],
+      "personality": "Orgulloso y directo. Respeta a quien comparte la guardia nocturna.",
+      "speech": {
+        "hired": "La lanza está lista para marchar.",
+        "contact": "Puedo abrir paso por ese costado.",
+        "cleared": "El camino nos pertenece.",
+        "wounded": "No han logrado derribarme.",
+        "exhausted": "Den respiro a la caballada.",
+        "death": "Que siga la carga…",
+        "ending": "Esta vez el arreo será mío."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 450,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1803",
+      "blade": "blade-1812",
+      "attributes": {
+        "maxHp": 88,
+        "agility": 72,
+        "dexterity": 62,
+        "strength": 91,
+        "leadership": 50,
+        "wisdom": 55,
+        "marksmanship": 48,
+        "mechanical": 14,
+        "explosives": 12,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-118",
+      "name": "Étienne Valcourt",
+      "nickname": "Valcourt",
+      "role": "Ex coronel de artillería francés",
+      "biography": "Personaje ficticio. Antiguo coronel de artillería francés. Una disputa política lo apartó del mando; abandonó Europa antes de 1812 y sobrevivió asesorando a armadores. Firma por día, semana o mes según pague la tesorería, y exige revisar las municiones personalmente.",
+      "portrait": "/campaigns/granaderos/assets/portrait-118.webp",
+      "abilities": [],
+      "personality": "Austero y paciente con los sirvientes de pieza. Se vuelve inflexible cuando un superior pretende ahorrar en seguridad.",
+      "speech": {
+        "hired": "Antes de firmar, quiero ver las municiones.",
+        "contact": "Batería, esperen mi indicación de tiro.",
+        "cleared": "Aseguren las piezas y registren el consumo.",
+        "wounded": "El servicio de la batería debe continuar.",
+        "exhausted": "Solicito relevo junto a la pieza.",
+        "death": "No precipiten la siguiente carga…",
+        "ending": "Prefiero fundir herramientas a dirigir otra batería."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 42900,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist",
+        "teacher"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 82,
+        "agility": 54,
+        "dexterity": 83,
+        "strength": 76,
+        "leadership": 89,
+        "wisdom": 92,
+        "marksmanship": 67,
+        "mechanical": 84,
+        "explosives": 95,
+        "medical": 23
+      }
+    },
+    {
+      "id": "person-119",
+      "name": "Benjamín Duarte",
+      "nickname": "Duarte",
+      "role": "Recluta de saladero",
+      "biography": "Personaje ficticio. Dejó el saladero después de varios meses sin jornal. No tiene experiencia militar, pero sabe cargar peso y cumplir turnos largos.",
+      "portrait": "/campaigns/granaderos/assets/portrait-119.webp",
+      "abilities": [],
+      "personality": "Tímido y aplicado. Pide instrucciones claras y guarda cada moneda.",
+      "speech": {
+        "hired": "Díganme dónde debo formar.",
+        "contact": "Creo que vienen hacia nosotros.",
+        "cleared": "Lo logramos, de verdad.",
+        "wounded": "No sé si es grave.",
+        "exhausted": "Necesito recuperar el aire.",
+        "death": "Manden mi jornal a casa…",
+        "ending": "Voy a buscar un trabajo con paga cierta."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 150,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 76,
+        "agility": 67,
+        "dexterity": 52,
+        "strength": 81,
+        "leadership": 22,
+        "wisdom": 49,
+        "marksmanship": 40,
+        "mechanical": 12,
+        "explosives": 8,
+        "medical": 15
+      }
+    },
+    {
+      "id": "person-120",
+      "name": "Mercedes Quiroga",
+      "nickname": "Quiroga",
+      "role": "Guía de quebradas",
+      "biography": "Personaje ficticio. Guio caravanas entre quebradas y conoce los refugios donde se puede pasar una noche sin fuego. Cobra para recuperar un pequeño almacén familiar.",
+      "portrait": "/campaigns/granaderos/assets/portrait-120.webp",
+      "abilities": [],
+      "personality": "Cauta y mordaz. Desconfía de los mapas que omiten a los pobladores.",
+      "speech": {
+        "hired": "Conozco un camino con reparo.",
+        "contact": "Hay una silueta en la quebrada.",
+        "cleared": "Podremos encender el fogón.",
+        "wounded": "La piedra me sirve de abrigo.",
+        "exhausted": "Debemos parar antes de perdernos.",
+        "death": "Busquen el refugio alto…",
+        "ending": "Reabriré el almacén junto al camino."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 480,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "guerrilla_tactician",
+        "night_vision"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 73,
+        "agility": 85,
+        "dexterity": 75,
+        "strength": 68,
+        "leadership": 57,
+        "wisdom": 86,
+        "marksmanship": 70,
+        "mechanical": 20,
+        "explosives": 18,
+        "medical": 48
+      }
+    },
+    {
+      "id": "person-121",
+      "name": "Ramón Cáceres",
+      "nickname": "Cáceres",
+      "role": "Carpintero de campaña",
+      "biography": "Personaje ficticio. Reparaba carretas y embarcaciones pequeñas. Viaja con sus herramientas para reunir dinero con que comprar madera y establecerse.",
+      "portrait": "/campaigns/granaderos/assets/portrait-121.webp",
+      "abilities": [],
+      "personality": "Paciente y literal. Prefiere medidas exactas a discursos largos.",
+      "speech": {
+        "hired": "Traje herramientas para la marcha.",
+        "contact": "Busquen abrigo detrás de la madera.",
+        "cleared": "Eso puede repararse mañana.",
+        "wounded": "No es una astilla pequeña.",
+        "exhausted": "Debo soltar las herramientas.",
+        "death": "Aprovechen la madera…",
+        "ending": "Ya tengo para abrir la carpintería."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 300,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "workshop_training",
+        "gunsmith_artillerist"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 80,
+        "agility": 58,
+        "dexterity": 79,
+        "strength": 84,
+        "leadership": 39,
+        "wisdom": 67,
+        "marksmanship": 46,
+        "mechanical": 78,
+        "explosives": 40,
+        "medical": 26
+      }
+    },
+    {
+      "id": "person-122",
+      "name": "Isabel Molina",
+      "nickname": "Molina",
+      "role": "Botánica y practicante",
+      "biography": "Personaje ficticio. Recogía plantas y preparaba remedios para una botica tucumana. Quiere financiar un local propio sin depender del crédito del comerciante.",
+      "portrait": "/campaigns/granaderos/assets/portrait-122.webp",
+      "abilities": [],
+      "personality": "Curiosa y prudente. Distingue lo que sabe de lo que apenas supone.",
+      "speech": {
+        "hired": "Llevo remedios y vendas limpias.",
+        "contact": "Necesitamos cubrir a los heridos.",
+        "cleared": "Ahora revisaré sus lesiones.",
+        "wounded": "Me falta fuerza en ese brazo.",
+        "exhausted": "No debo tratar a nadie así.",
+        "death": "Entreguen mis notas a la botica…",
+        "ending": "Tendré una botica con cuentas propias."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 510,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 65,
+        "agility": 69,
+        "dexterity": 84,
+        "strength": 50,
+        "leadership": 48,
+        "wisdom": 92,
+        "marksmanship": 36,
+        "mechanical": 29,
+        "explosives": 32,
+        "medical": 85
+      }
+    },
+    {
+      "id": "person-123",
+      "name": "Santiago Soria",
+      "nickname": "Soria",
+      "role": "Fusilero veterano",
+      "biography": "Personaje ficticio. Sirvió en escoltas y guarniciones antes de quedar sin destino. Ofrece tiro disciplinado y pide un contrato que termine en una fecha cierta.",
+      "portrait": "/campaigns/granaderos/assets/portrait-123.webp",
+      "abilities": [],
+      "personality": "Sobrio y escéptico. No promete victorias, pero cumple cada guardia.",
+      "speech": {
+        "hired": "Una fecha y una paga. Entendido.",
+        "contact": "Esperen a tener un tiro claro.",
+        "cleared": "La guardia continúa hasta el relevo.",
+        "wounded": "Puedo terminar este turno.",
+        "exhausted": "Hace falta un relevo ahora.",
+        "death": "Mi turno termina aquí…",
+        "ending": "He cumplido hasta el último día."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 720,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "line_marksman",
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1802",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 83,
+        "agility": 68,
+        "dexterity": 81,
+        "strength": 76,
+        "leadership": 65,
+        "wisdom": 72,
+        "marksmanship": 88,
+        "mechanical": 35,
+        "explosives": 43,
+        "medical": 31
+      }
+    },
+    {
+      "id": "person-124",
+      "name": "Thomas Ashford",
+      "nickname": "Ashford",
+      "role": "Ex mayor de dragones británico",
+      "biography": "Personaje ficticio. Antiguo mayor de dragones británico que vendió su comisión y perdió el dinero en una sociedad de transporte. Llegó al Plata para trabajar con caballos y ofrece instrucción de caballería para recuperar su independencia.",
+      "portrait": "/campaigns/granaderos/assets/portrait-124.webp",
+      "abilities": [],
+      "personality": "Enérgico y orgulloso de su equitación. Cuida más a las monturas que a su uniforme y rechaza las cargas sin salida.",
+      "speech": {
+        "hired": "Ensillaremos cuando conozcamos la ruta.",
+        "contact": "Dejen espacio entre las monturas.",
+        "cleared": "Reúnan los caballos antes de perseguir.",
+        "wounded": "Puedo desmontar sin ayuda.",
+        "exhausted": "La caballada necesita un descanso.",
+        "death": "No cierren la salida…",
+        "ending": "Trabajaré con caballos sin pedir crédito otra vez."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 780,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander",
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1803",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 80,
+        "dexterity": 74,
+        "strength": 83,
+        "leadership": 79,
+        "wisdom": 72,
+        "marksmanship": 73,
+        "mechanical": 22,
+        "explosives": 20,
+        "medical": 26
+      }
+    },
+    {
+      "id": "person-125",
+      "name": "Diego Barrera",
+      "nickname": "Barrera",
+      "role": "Zapador de milicias",
+      "biography": "Personaje ficticio. Abrió zanjas y cimentó depósitos del puerto. Busca un estipendio mejor como zapador, con experiencia práctica en pólvora y herramientas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-125.webp",
+      "abilities": [],
+      "personality": "Precavido y tenaz. Se niega a improvisar con munición húmeda.",
+      "speech": {
+        "hired": "Primero revisaré las herramientas.",
+        "contact": "Cuidado con ese parapeto.",
+        "cleared": "Ya podemos trabajar sin fuego.",
+        "wounded": "Aparten las cargas de aquí.",
+        "exhausted": "No sostengo otra palada.",
+        "death": "No enciendan esa mecha…",
+        "ending": "Construiré algo que no haya que derribar."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 540,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 61,
+        "dexterity": 75,
+        "strength": 88,
+        "leadership": 45,
+        "wisdom": 71,
+        "marksmanship": 60,
+        "mechanical": 76,
+        "explosives": 83,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-126",
+      "name": "Teresa Godoy",
+      "nickname": "Godoy",
+      "role": "Exploradora serrana",
+      "biography": "Personaje ficticio. Cuidaba cabras en las sierras y conoce atajos entre puestos aislados. Su primer contrato ayudará a pagar el arrendamiento de su madre.",
+      "portrait": "/campaigns/granaderos/assets/portrait-126.webp",
+      "abilities": [],
+      "personality": "Callada hasta que conoce a la gente. Aprende deprisa y no presume de ello.",
+      "speech": {
+        "hired": "Puedo mostrarles un atajo.",
+        "contact": "No son cabras: vi un arma.",
+        "cleared": "Conozco dónde encontrar agua.",
+        "wounded": "Me cuesta apoyar el pie.",
+        "exhausted": "Necesito parar en la sombra.",
+        "death": "Busquen a mi madre…",
+        "ending": "Podremos conservar el puesto otro año."
+      },
+      "spriteAppearance": "woman-scout",
+      "monthlyPay": 210,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "guerrilla_tactician"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 63,
+        "agility": 81,
+        "dexterity": 65,
+        "strength": 53,
+        "leadership": 28,
+        "wisdom": 71,
+        "marksmanship": 49,
+        "mechanical": 14,
+        "explosives": 10,
+        "medical": 32
+      }
+    },
+    {
+      "id": "person-127",
+      "name": "Esteban Peralta",
+      "nickname": "Peralta",
+      "role": "Tambor e instructor",
+      "biography": "Personaje ficticio. Marcaba el paso de una milicia local y terminó enseñando a los reemplazos. Quiere convertir esa experiencia en un oficio estable.",
+      "portrait": "/campaigns/granaderos/assets/portrait-127.webp",
+      "abilities": [],
+      "personality": "Sociable y obstinado. Recuerda las órdenes como si fueran compases.",
+      "speech": {
+        "hired": "Cada cual encontrará su paso.",
+        "contact": "Junten filas, sin correr.",
+        "cleared": "Buen trabajo, mantengan el orden.",
+        "wounded": "Todavía puedo dar la voz.",
+        "exhausted": "Debo recuperar el ritmo.",
+        "death": "Que otro marque el paso…",
+        "ending": "Ahora enseñaré a leer a los muchachos."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 360,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "teacher"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 71,
+        "agility": 76,
+        "dexterity": 80,
+        "strength": 61,
+        "leadership": 79,
+        "wisdom": 74,
+        "marksmanship": 57,
+        "mechanical": 20,
+        "explosives": 23,
+        "medical": 38
+      }
+    },
+    {
+      "id": "person-128",
+      "name": "William Blackwood",
+      "nickname": "Blackwood",
+      "role": "Ex teniente coronel de fusileros británico",
+      "biography": "Personaje ficticio. Antiguo teniente coronel británico retirado tras desacuerdos con sus superiores sobre el uso de sus tiradores. Vendió sus intereses en Europa y trabaja para comerciantes del Plata. Cobra su tiro e instrucción por contrato, al contado y por adelantado.",
+      "portrait": "/campaigns/granaderos/assets/portrait-128.webp",
+      "abilities": [],
+      "personality": "Reservado y preciso. Reprende el disparo apresurado con más dureza que una mala puntería honesta.",
+      "speech": {
+        "hired": "Contrato firmado. Revisaré los campos de tiro.",
+        "contact": "Esperen a distinguir bien el blanco.",
+        "cleared": "No abandonen todavía sus posiciones.",
+        "wounded": "Tendré que modificar mi apoyo.",
+        "exhausted": "No instruiré ni dispararé con el pulso así.",
+        "death": "Mantengan despejado el tiro…",
+        "ending": "La última jornada está cumplida y anotada."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 44700,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "line_marksman",
+        "teacher"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1802",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 79,
+        "agility": 74,
+        "dexterity": 88,
+        "strength": 69,
+        "leadership": 87,
+        "wisdom": 85,
+        "marksmanship": 94,
+        "mechanical": 38,
+        "explosives": 29,
+        "medical": 22
+      }
+    },
+    {
+      "id": "person-129",
+      "name": "Francisco Tapia",
+      "nickname": "Tapia",
+      "role": "Arriero del oeste",
+      "biography": "Personaje ficticio. Condujo mulas cargadas de vino y herramientas. Una mala temporada lo llevó a ofrecer sus brazos y su experiencia ecuestre al ejército.",
+      "portrait": "/campaigns/granaderos/assets/portrait-129.webp",
+      "abilities": [],
+      "personality": "Afable y firme. No acepta que se maltrate a los animales de carga.",
+      "speech": {
+        "hired": "Repartan la carga y salimos.",
+        "contact": "Detengan las mulas. Hay gente.",
+        "cleared": "La carga puede seguir.",
+        "wounded": "Me duele hasta la cincha.",
+        "exhausted": "Hay que aliviar el peso.",
+        "death": "Lleven las mulas al agua…",
+        "ending": "Volveré a transportar vino por el paso."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 270,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1803",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 86,
+        "agility": 64,
+        "dexterity": 60,
+        "strength": 88,
+        "leadership": 44,
+        "wisdom": 65,
+        "marksmanship": 45,
+        "mechanical": 32,
+        "explosives": 10,
+        "medical": 26
+      }
+    },
+    {
+      "id": "person-130",
+      "name": "Ángela Cejas",
+      "nickname": "Cejas",
+      "role": "Auxiliar de hospital",
+      "biography": "Personaje ficticio. Lavaba vendas y asistía a los practicantes del hospital. Se incorpora con poca experiencia de combate para sostener a su padre enfermo.",
+      "portrait": "/campaigns/granaderos/assets/portrait-130.webp",
+      "abilities": [],
+      "personality": "Compasiva y ansiosa. La rutina de atender a otros le devuelve la calma.",
+      "speech": {
+        "hired": "Puedo ayudar con los vendajes.",
+        "contact": "Busquen un muro, por favor.",
+        "cleared": "Déjenme revisar esas vendas.",
+        "wounded": "Esta sangre es mía.",
+        "exhausted": "Necesito calmar las manos.",
+        "death": "Cuiden de mi padre…",
+        "ending": "Con la paga podré llevarlo a casa."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 180,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 67,
+        "agility": 64,
+        "dexterity": 68,
+        "strength": 55,
+        "leadership": 35,
+        "wisdom": 73,
+        "marksmanship": 30,
+        "mechanical": 19,
+        "explosives": 8,
+        "medical": 65
+      }
+    },
+    {
+      "id": "person-131",
+      "name": "Vicente Arce",
+      "nickname": "Arce",
+      "role": "Carabinero de frontera",
+      "biography": "Personaje ficticio. Patrulló caminos del norte hasta que su compañía quedó sin fondos. Aporta experiencia de carabina y una disciplina poco habitual entre partidas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-131.webp",
+      "abilities": [],
+      "personality": "Orgulloso de su oficio. Acepta críticas precisas y rechaza las burlas.",
+      "speech": {
+        "hired": "Carabina revisada. Podemos salir.",
+        "contact": "Jinetes, mantengan distancia.",
+        "cleared": "Aseguremos el camino de vuelta.",
+        "wounded": "Puedo mantenerme en la silla.",
+        "exhausted": "Mi montura y yo precisamos parar.",
+        "death": "Sostengan el camino…",
+        "ending": "Buscaré una patrulla con paga regular."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 630,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander",
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1803",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 82,
+        "agility": 81,
+        "dexterity": 76,
+        "strength": 79,
+        "leadership": 64,
+        "wisdom": 68,
+        "marksmanship": 82,
+        "mechanical": 29,
+        "explosives": 23,
+        "medical": 25
+      }
+    },
+    {
+      "id": "person-132",
+      "name": "Charles Pembroke",
+      "nickname": "Pembroke",
+      "role": "Ex coronel de infantería británico",
+      "biography": "Personaje ficticio. Antiguo coronel británico que dejó el servicio para administrar una herencia que resultó estar endeudada. Tras vender lo que quedaba, cruzó el Atlántico como instructor particular. Busca un contrato pago por adelantado con atribuciones claras.",
+      "portrait": "/campaigns/granaderos/assets/portrait-132.webp",
+      "abilities": [],
+      "personality": "Cortés y obstinado. Escucha a los sargentos, pero puede tardar demasiado en abandonar una formación conocida.",
+      "speech": {
+        "hired": "Definamos mis responsabilidades antes de comenzar.",
+        "contact": "Sargentos, mantengan unidas sus secciones.",
+        "cleared": "Pasen lista y preparen el relevo.",
+        "wounded": "Delegaré el mando mientras me atienden.",
+        "exhausted": "Necesito una pausa antes de decidir.",
+        "death": "Escuchen a sus sargentos…",
+        "ending": "No dejaré otra cuenta sin pagar."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 38700,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "teacher",
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 78,
+        "agility": 55,
+        "dexterity": 71,
+        "strength": 64,
+        "leadership": 95,
+        "wisdom": 91,
+        "marksmanship": 74,
+        "mechanical": 27,
+        "explosives": 30,
+        "medical": 38
+      }
+    },
+    {
+      "id": "person-133",
+      "name": "Pedro Albornoz",
+      "nickname": "Albornoz",
+      "role": "Herrero de herraduras",
+      "biography": "Personaje ficticio. Forjó herraduras y reparó útiles de estancia durante veinte años. Se presenta con sus herramientas para pagar una nueva fragua.",
+      "portrait": "/campaigns/granaderos/assets/portrait-133.webp",
+      "abilities": [],
+      "personality": "Lento al hablar y rápido al trabajar. No tolera el desperdicio de hierro.",
+      "speech": {
+        "hired": "Mi martillo viaja conmigo.",
+        "contact": "Busquen cubierta resistente.",
+        "cleared": "Recojan el hierro aprovechable.",
+        "wounded": "La herida no es superficial.",
+        "exhausted": "Los brazos ya no responden.",
+        "death": "No pierdan el martillo…",
+        "ending": "Levantaré una fragua mejor ventilada."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 330,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist",
+        "workshop_training"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 89,
+        "agility": 52,
+        "dexterity": 74,
+        "strength": 94,
+        "leadership": 31,
+        "wisdom": 60,
+        "marksmanship": 43,
+        "mechanical": 83,
+        "explosives": 31,
+        "medical": 20
+      }
+    },
+    {
+      "id": "person-134",
+      "name": "Mariano Véliz",
+      "nickname": "Véliz",
+      "role": "Vigía nocturno",
+      "biography": "Personaje ficticio. Vigilaba depósitos de tabaco y acompañaba convoyes de noche. Le cuesta trabajar de día, pero distingue movimiento donde otros apenas ven sombras.",
+      "portrait": "/campaigns/granaderos/assets/portrait-134.webp",
+      "abilities": [],
+      "personality": "Suspicaz y puntual. Revisa dos veces cada puerta antes de descansar.",
+      "speech": {
+        "hired": "Tomaré la guardia después del ocaso.",
+        "contact": "Esa sombra acaba de moverse.",
+        "cleared": "La noche vuelve a estar quieta.",
+        "wounded": "No dejen que me duerma.",
+        "exhausted": "Necesito cerrar los ojos un rato.",
+        "death": "Hay alguien detrás…",
+        "ending": "Por fin dormiré una noche entera."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 390,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "night_vision",
+        "guerrilla_tactician"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 68,
+        "agility": 84,
+        "dexterity": 77,
+        "strength": 58,
+        "leadership": 33,
+        "wisdom": 80,
+        "marksmanship": 68,
+        "mechanical": 23,
+        "explosives": 17,
+        "medical": 29
+      }
+    },
+    {
+      "id": "person-135",
+      "name": "Josefa Roldán",
+      "nickname": "Roldán",
+      "role": "Practicante veterana",
+      "biography": "Personaje ficticio. Organizó puestos de socorro para varias caravanas atacadas. La solicitan por su experiencia y solo firma contratos pagos por adelantado.",
+      "portrait": "/campaigns/granaderos/assets/portrait-135.webp",
+      "abilities": [],
+      "personality": "Firme y poco sentimental al trabajar. Después recuerda el nombre de cada paciente.",
+      "speech": {
+        "hired": "Hoy tendrán un puesto de socorro.",
+        "contact": "Preparen un lugar protegido.",
+        "cleared": "Nadie se va sin revisión.",
+        "wounded": "Necesito que compriman la herida.",
+        "exhausted": "Otro debe hacerse cargo un momento.",
+        "death": "Anoten los nombres…",
+        "ending": "Seguiré atendiendo cuando termine la guerra."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 35100,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer",
+        "teacher"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 76,
+        "agility": 65,
+        "dexterity": 89,
+        "strength": 60,
+        "leadership": 74,
+        "wisdom": 90,
+        "marksmanship": 49,
+        "mechanical": 31,
+        "explosives": 21,
+        "medical": 93
+      }
+    },
+    {
+      "id": "person-136",
+      "name": "Lorenzo Silva",
+      "nickname": "Silva",
+      "role": "Guardia de convoy",
+      "biography": "Personaje ficticio. Custodió carretas de cuero y yerba durante años. Busca empleo en una escuadra donde el relevo sea tan fiable como la paga.",
+      "portrait": "/campaigns/granaderos/assets/portrait-136.webp",
+      "abilities": [],
+      "personality": "Tranquilo y resistente. No deja su puesto mientras falte un compañero.",
+      "speech": {
+        "hired": "Me encargaré de la retaguardia.",
+        "contact": "No dejen descubierto el convoy.",
+        "cleared": "Llegaron todos. Ahora descanso.",
+        "wounded": "Aún puedo cubrir el camino.",
+        "exhausted": "Preciso que alguien me releve.",
+        "death": "No abandonen las carretas…",
+        "ending": "Llevaré un convoy sin escolta algún día."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 420,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 90,
+        "agility": 58,
+        "dexterity": 65,
+        "strength": 89,
+        "leadership": 52,
+        "wisdom": 61,
+        "marksmanship": 69,
+        "mechanical": 27,
+        "explosives": 26,
+        "medical": 31
+      }
+    },
+    {
+      "id": "person-137",
+      "name": "Louis Desforges",
+      "nickname": "Desforges",
+      "role": "Ex teniente coronel de caballería francés",
+      "biography": "Personaje ficticio. Antiguo teniente coronel de caballería francés, apartado del servicio después de negarse a respaldar una denuncia contra sus oficiales. Llegó al Plata por contactos mercantiles y alquila su experiencia sin jurar fidelidad a un nuevo monarca.",
+      "portrait": "/campaigns/granaderos/assets/portrait-137.webp",
+      "abilities": [],
+      "personality": "Audaz, con orgullo herido. Protege a sus subordinados, aunque le cuesta aceptar el mando de alguien más joven.",
+      "speech": {
+        "hired": "Serviré a la escuadra según nuestro acuerdo.",
+        "contact": "Reconozcan el flanco antes de cargar.",
+        "cleared": "Detengan la persecución y reúnan la tropa.",
+        "wounded": "Cubran a los jinetes mientras desmonto.",
+        "exhausted": "Necesito recuperar fuerzas antes de otra carga.",
+        "death": "No abandonen a los desmontados…",
+        "ending": "Mi nombre volverá a valer por mi palabra."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 960,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander",
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1803",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 83,
+        "dexterity": 79,
+        "strength": 82,
+        "leadership": 85,
+        "wisdom": 78,
+        "marksmanship": 81,
+        "mechanical": 23,
+        "explosives": 24,
+        "medical": 28
+      }
+    },
+    {
+      "id": "person-138",
+      "name": "Henri Beaumont",
+      "nickname": "Beaumont",
+      "role": "Artillero francés",
+      "biography": "Personaje ficticio. Un artillero francés que llegó como tripulante de un mercante. Ofrece sus conocimientos de piezas y municiones para establecerse en el puerto.",
+      "portrait": "/campaigns/granaderos/assets/portrait-138.webp",
+      "abilities": [],
+      "personality": "Metódico y orgulloso. Cuenta las cargas en voz baja cuando está nervioso.",
+      "speech": {
+        "hired": "Revisaré el material antes del contrato.",
+        "contact": "Atención a la distancia del blanco.",
+        "cleared": "La pieza ha cumplido su servicio.",
+        "wounded": "Otro debe tomar el atacador.",
+        "exhausted": "Mis manos necesitan reposo.",
+        "death": "Cuenten las cargas restantes…",
+        "ending": "Quiero un oficio en este puerto."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 33000,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 77,
+        "agility": 55,
+        "dexterity": 84,
+        "strength": 75,
+        "leadership": 64,
+        "wisdom": 85,
+        "marksmanship": 67,
+        "mechanical": 84,
+        "explosives": 94,
+        "medical": 26
+      }
+    },
+    {
+      "id": "person-139",
+      "name": "Bridget O’Connell",
+      "nickname": "Bridget",
+      "role": "Enfermera irlandesa",
+      "biography": "Personaje ficticio. Una irlandesa que asistió a tripulantes enfermos en travesías mercantes. Busca un contrato de tierra para dejar de depender de cada capitán.",
+      "portrait": "/campaigns/granaderos/assets/portrait-139.webp",
+      "abilities": [],
+      "personality": "Cálida y resuelta. Usa el humor para distraer a los pacientes del dolor.",
+      "speech": {
+        "hired": "Prefiero atender en tierra firme.",
+        "contact": "A cubierto, que aquí no hay borda.",
+        "cleared": "Traigan agua limpia para las vendas.",
+        "wounded": "Hoy me toca ser paciente.",
+        "exhausted": "Necesito sentarme sin que todo se mueva.",
+        "death": "Lleven mi carta al puerto…",
+        "ending": "Abriré una casa de socorro en tierra."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 570,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 73,
+        "agility": 68,
+        "dexterity": 86,
+        "strength": 62,
+        "leadership": 59,
+        "wisdom": 84,
+        "marksmanship": 44,
+        "mechanical": 27,
+        "explosives": 16,
+        "medical": 89
+      }
+    },
+    {
+      "id": "person-140",
+      "name": "Matteo Ricci",
+      "nickname": "Ricci",
+      "role": "Armero genovés",
+      "biography": "Personaje ficticio. Un cerrajero genovés que reparó armas de marineros para costear su pasaje. Espera reunir suficiente plata para traer sus herramientas del depósito.",
+      "portrait": "/campaigns/granaderos/assets/portrait-140.webp",
+      "abilities": [],
+      "personality": "Perfeccionista y hablador. Describe cada pieza como si fuera irreemplazable.",
+      "speech": {
+        "hired": "Una buena llave merece cuidado.",
+        "contact": "No golpeen el arma al cubrirse.",
+        "cleared": "Voy a revisar esos mecanismos.",
+        "wounded": "No puedo mover bien los dedos.",
+        "exhausted": "Necesito soltar las tenazas.",
+        "death": "Mi juego de limas…",
+        "ending": "Ya puedo rescatar todas mis herramientas."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 480,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 65,
+        "agility": 71,
+        "dexterity": 92,
+        "strength": 56,
+        "leadership": 38,
+        "wisdom": 81,
+        "marksmanship": 57,
+        "mechanical": 91,
+        "explosives": 64,
+        "medical": 19
+      }
+    },
+    {
+      "id": "person-141",
+      "name": "Joaquim Ferreira",
+      "nickname": "Ferreira",
+      "role": "Marinero portugués",
+      "biography": "Personaje ficticio. Un marinero portugués que quedó varado tras venderse su buque. Busca empleo regular como guardia y conoce bien la reparación de cubierta.",
+      "portrait": "/campaigns/granaderos/assets/portrait-141.webp",
+      "abilities": [],
+      "personality": "Pragmático y buen compañero. Siempre separa una ración para quien falta.",
+      "speech": {
+        "hired": "Mientras haya paga, hay servicio.",
+        "contact": "Busquen abrigo como en cubierta.",
+        "cleared": "Hoy nadie falta al reparto.",
+        "wounded": "He recibido golpes peores en el puerto.",
+        "exhausted": "Necesito agua y un banco.",
+        "death": "Guarden mi ración…",
+        "ending": "Buscaré una casa cerca del muelle."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 360,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 84,
+        "agility": 75,
+        "dexterity": 70,
+        "strength": 85,
+        "leadership": 40,
+        "wisdom": 62,
+        "marksmanship": 62,
+        "mechanical": 44,
+        "explosives": 32,
+        "medical": 30
+      }
+    },
+    {
+      "id": "person-142",
+      "name": "Samuel Reed",
+      "nickname": "Reed",
+      "role": "Fusilero británico",
+      "biography": "Personaje ficticio. Un tirador británico expatriado que trabaja para comerciantes. Cobra caro por su experiencia y solo firma contratos pagos por adelantado.",
+      "portrait": "/campaigns/granaderos/assets/portrait-142.webp",
+      "abilities": [],
+      "personality": "Distante y exacto. Considera sagrados los términos de un contrato.",
+      "speech": {
+        "hired": "Firmado. Cubriré el sector pactado.",
+        "contact": "Distancia suficiente. No se crucen.",
+        "cleared": "Mi sector está despejado.",
+        "wounded": "Tendré que cambiar de apoyo.",
+        "exhausted": "Necesito descansar antes de otro tiro.",
+        "death": "El contrato queda cumplido…",
+        "ending": "Cobraré lo acordado y seguiré viaje."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 38700,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "line_marksman"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1802",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 79,
+        "agility": 73,
+        "dexterity": 88,
+        "strength": 70,
+        "leadership": 60,
+        "wisdom": 79,
+        "marksmanship": 94,
+        "mechanical": 39,
+        "explosives": 33,
+        "medical": 22
+      }
+    },
+    {
+      "id": "person-143",
+      "name": "Philippe Montreuil",
+      "nickname": "Montreuil",
+      "role": "Ex coronel de estado mayor francés",
+      "biography": "Personaje ficticio. Antiguo coronel de estado mayor francés. Perdió su destino tras una purga administrativa y emigró con cartas de recomendación de comerciantes. Ofrece organización e instrucción por contrato; su talento está en preparar una operación, no en encabezarla.",
+      "portrait": "/campaigns/granaderos/assets/portrait-143.webp",
+      "abilities": [],
+      "personality": "Analítico y desconfiado del entusiasmo. Redacta órdenes breves y pide a cada subordinado que las repita.",
+      "speech": {
+        "hired": "Comenzaremos por los efectivos y los suministros.",
+        "contact": "Confirmen el contacto antes de cambiar el plan.",
+        "cleared": "Aseguren el enlace con la retaguardia.",
+        "wounded": "Otro debe transmitir las órdenes.",
+        "exhausted": "No debo decidir con esta fatiga.",
+        "death": "Las instrucciones están en la cartera…",
+        "ending": "Esta vez prepararé una empresa sin soldados."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 41400,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "teacher",
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1800",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 76,
+        "agility": 58,
+        "dexterity": 77,
+        "strength": 61,
+        "leadership": 93,
+        "wisdom": 94,
+        "marksmanship": 71,
+        "mechanical": 43,
+        "explosives": 46,
+        "medical": 35
+      }
+    },
+    {
+      "id": "person-144",
+      "name": "Karl Weiss",
+      "nickname": "Weiss",
+      "role": "Mecánico de piezas",
+      "biography": "Personaje ficticio. Un mecánico de habla alemana contratado por comerciantes para mantener herramientas importadas. Viaja a Caroya buscando un taller mejor equipado.",
+      "portrait": "/campaigns/granaderos/assets/portrait-144.webp",
+      "abilities": [],
+      "personality": "Literal y perseverante. No abandona una reparación porque termine la jornada.",
+      "speech": {
+        "hired": "Revisaré los ejes y las llaves.",
+        "contact": "Protejan el material de repuesto.",
+        "cleared": "Podremos reparar con tranquilidad.",
+        "wounded": "No aprieten demasiado la venda.",
+        "exhausted": "Debo descansar antes de ajustar nada.",
+        "death": "Las piezas están numeradas…",
+        "ending": "Buscaré un banco de trabajo permanente."
+      },
+      "spriteAppearance": "worker",
+      "monthlyPay": 630,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist",
+        "workshop_training"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 79,
+        "agility": 56,
+        "dexterity": 87,
+        "strength": 80,
+        "leadership": 43,
+        "wisdom": 86,
+        "marksmanship": 52,
+        "mechanical": 94,
+        "explosives": 80,
+        "medical": 25
+      }
+    },
+    {
+      "id": "person-145",
+      "name": "Domingo Farías",
+      "nickname": "Farías",
+      "role": "Jinete veterano",
+      "biography": "Personaje ficticio. Condujo escoltas por el norte durante dos décadas. Su experiencia permite organizar una carga, pero solo acepta compromisos pagos por adelantado y bien pagados.",
+      "portrait": "/campaigns/granaderos/assets/portrait-145.webp",
+      "abilities": [],
+      "personality": "Austero y protector. Nunca pide al más joven que asuma el mayor riesgo.",
+      "speech": {
+        "hired": "De acuerdo. Yo guiaré a los jinetes.",
+        "contact": "Esperen mi señal para avanzar.",
+        "cleared": "Reúnan la caballada y cuenten a todos.",
+        "wounded": "No pierdan el orden por mi herida.",
+        "exhausted": "Hay que dar descanso a las monturas.",
+        "death": "El más joven debe volver…",
+        "ending": "Volveré al norte con los que queden."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 36900,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander",
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1803",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 88,
+        "agility": 85,
+        "dexterity": 78,
+        "strength": 87,
+        "leadership": 77,
+        "wisdom": 74,
+        "marksmanship": 87,
+        "mechanical": 24,
+        "explosives": 20,
+        "medical": 33
+      }
+    },
+    {
+      "id": "person-146",
+      "name": "Auguste Bellanger",
+      "nickname": "Bellanger",
+      "role": "Ex cirujano mayor del ejército francés",
+      "biography": "Personaje ficticio. Antiguo cirujano mayor de un hospital militar francés. Renunció tras un conflicto por suministros y viajó como médico de un mercante. Quiere reunir dinero para una clínica; aporta mando sanitario y experiencia, pero poca práctica con armas.",
+      "portrait": "/campaigns/granaderos/assets/portrait-146.webp",
+      "abilities": [],
+      "personality": "Compasivo con los pacientes y áspero con la negligencia. Exige agua limpia antes que una mesa elegante.",
+      "speech": {
+        "hired": "Organizaré el socorro antes de que partamos.",
+        "contact": "Preparen un lugar para recibir heridos.",
+        "cleared": "Clasifiquen las lesiones; nadie espera por su grado.",
+        "wounded": "Ahora necesito que sigan mis indicaciones.",
+        "exhausted": "Mis manos requieren descanso.",
+        "death": "El instrumental debe seguir en uso…",
+        "ending": "Abriré una clínica con suministros suficientes."
+      },
+      "spriteAppearance": "surgeon",
+      "monthlyPay": 690,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer",
+        "teacher"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1805",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 72,
+        "agility": 61,
+        "dexterity": 90,
+        "strength": 55,
+        "leadership": 76,
+        "wisdom": 92,
+        "marksmanship": 41,
+        "mechanical": 33,
+        "explosives": 26,
+        "medical": 91
+      }
+    },
+    {
+      "id": "person-147",
+      "name": "Andrés Montiel",
+      "nickname": "Montiel",
+      "role": "Explorador veterano",
+      "biography": "Personaje ficticio. Guio partidas por pasos de altura y sobrevivió a varias retiradas. Pide paga de veterano y plazos pactados de antemano para escoger sus próximos destinos.",
+      "portrait": "/campaigns/granaderos/assets/portrait-147.webp",
+      "abilities": [],
+      "personality": "Calmo y desconfiado de la prisa. Siempre reconoce una segunda salida.",
+      "speech": {
+        "hired": "Primero reconoceré el camino de vuelta.",
+        "contact": "Hay una patrulla sobre el paso.",
+        "cleared": "Dejaré señales para los rezagados.",
+        "wounded": "Todavía conozco una salida.",
+        "exhausted": "No llegaré si sigo sin descanso.",
+        "death": "Sigan mis marcas…",
+        "ending": "Esta vez cruzaré sin mirar atrás."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 34200,
+      "arrivalHours": 0,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "guerrilla_tactician",
+        "night_vision"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1804",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 78,
+        "agility": 94,
+        "dexterity": 86,
+        "strength": 71,
+        "leadership": 67,
+        "wisdom": 88,
+        "marksmanship": 83,
+        "mechanical": 28,
+        "explosives": 24,
+        "medical": 47
+      }
+    }
+  ],
+  "weapons": [
+    {
+      "id": "firearm-1800",
+      "template": 1800,
+      "name": "Brown Bess",
+      "damage": 58,
+      "fireAP": 12,
+      "aimAP": 6,
+      "reloadAP": 45,
+      "range": 18,
+      "alternativeLoads": [
+        {
+          "family": "ammoShot",
+          "damage": 28,
+          "range": 6,
+          "pattern": "cone"
+        }
+      ],
+      "readyAP": 6
+    },
+    {
+      "id": "firearm-1801",
+      "template": 1801,
+      "name": "Charleville",
+      "damage": 52,
+      "fireAP": 11,
+      "aimAP": 5,
+      "reloadAP": 42,
+      "range": 22,
+      "alternativeLoads": [
+        {
+          "family": "ammoShot",
+          "damage": 26,
+          "range": 6,
+          "pattern": "cone"
+        }
+      ],
+      "readyAP": 6
+    },
+    {
+      "id": "firearm-1802",
+      "template": 1802,
+      "name": "Fusil Baker",
+      "damage": 64,
+      "fireAP": 16,
+      "aimAP": 10,
+      "reloadAP": 70,
+      "range": 45,
+      "alternativeLoads": [],
+      "readyAP": 8
+    },
+    {
+      "id": "firearm-1803",
+      "template": 1803,
+      "name": "Tercerola",
+      "damage": 44,
+      "fireAP": 9,
+      "aimAP": 4,
+      "reloadAP": 38,
+      "range": 12,
+      "alternativeLoads": [
+        {
+          "family": "ammoShot",
+          "damage": 22,
+          "range": 5,
+          "pattern": "cone"
+        }
+      ],
+      "readyAP": 4
+    },
+    {
+      "id": "firearm-1804",
+      "template": 1804,
+      "name": "Escopeta Criolla",
+      "damage": 48,
+      "fireAP": 10,
+      "aimAP": 4,
+      "reloadAP": 35,
+      "range": 10,
+      "alternativeLoads": [
+        {
+          "family": "ammoMusket",
+          "damage": 35,
+          "range": 10,
+          "pattern": "single"
+        }
+      ],
+      "readyAP": 4
+    },
+    {
+      "id": "firearm-1805",
+      "template": 1805,
+      "name": "Pistola de Arzón",
+      "damage": 42,
+      "fireAP": 7,
+      "aimAP": 3,
+      "reloadAP": 32,
+      "range": 8,
+      "alternativeLoads": [
+        {
+          "family": "ammoShot",
+          "damage": 14,
+          "range": 3,
+          "pattern": "cone"
+        }
+      ],
+      "readyAP": 2
+    },
+    {
+      "id": "firearm-1806",
+      "template": 1806,
+      "name": "Pistola de Duelo de Oficial",
+      "damage": 38,
+      "fireAP": 6,
+      "aimAP": 2,
+      "reloadAP": 28,
+      "range": 12,
+      "alternativeLoads": [
+        {
+          "family": "ammoShot",
+          "damage": 12,
+          "range": 3,
+          "pattern": "cone"
+        }
+      ],
+      "readyAP": 2
+    },
+    {
+      "id": "firearm-1807",
+      "template": 1807,
+      "name": "Trabuco Naranjero",
+      "damage": 75,
+      "fireAP": 12,
+      "aimAP": 5,
+      "reloadAP": 40,
+      "range": 6,
+      "alternativeLoads": [
+        {
+          "family": "ammoMusket",
+          "damage": 32,
+          "range": 8,
+          "pattern": "single"
+        }
+      ],
+      "readyAP": 6
+    },
+    {
+      "id": "firearm-1808",
+      "template": 1808,
+      "name": "Pistola Doble Cañón",
+      "damage": 40,
+      "fireAP": 8,
+      "aimAP": 3,
+      "reloadAP": 55,
+      "range": 9,
+      "alternativeLoads": [
+        {
+          "family": "ammoShot",
+          "damage": 14,
+          "range": 3,
+          "pattern": "cone"
+        }
+      ],
+      "readyAP": 2
+    },
+    {
+      "id": "blade-1809",
+      "template": 1809,
+      "name": "Sable Corvo Sanmartiniano",
+      "damage": 46,
+      "ap": 12,
+      "reach": 1.5
+    },
+    {
+      "id": "blade-1810",
+      "template": 1810,
+      "name": "Sable de Caroya",
+      "damage": 42,
+      "ap": 14,
+      "reach": 1.5
+    },
+    {
+      "id": "blade-1811",
+      "template": 1811,
+      "name": "Bayoneta de Cubo",
+      "damage": 50,
+      "ap": 16,
+      "reach": 2
+    },
+    {
+      "id": "blade-1812",
+      "template": 1812,
+      "name": "Lanza de Tacuara",
+      "damage": 56,
+      "ap": 18,
+      "reach": 2.5
+    },
+    {
+      "id": "blade-1813",
+      "template": 1813,
+      "name": "Facón Gaucho con Poncho",
+      "damage": 32,
+      "ap": 8,
+      "reach": 1.5
+    }
+  ],
+  "placements": [
+    {
+      "id": "placement-cabral",
+      "character": "person-3",
+      "mode": "fixed",
+      "sectors": [
+        "cell-27-28"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-dorrego",
+      "character": "person-4",
+      "mode": "fixed",
+      "sectors": [
+        "cell-25-28"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-bouchard",
+      "character": "person-6",
+      "mode": "fixed",
+      "sectors": [
+        "cell-28-30"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-barcala",
+      "character": "person-7",
+      "mode": "fixed",
+      "sectors": [
+        "cell-6-25"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-quiroga",
+      "character": "person-9",
+      "mode": "fixed",
+      "sectors": [
+        "cell-14-20"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-paroissien",
+      "character": "person-10",
+      "mode": "fixed",
+      "sectors": [
+        "cell-25-28"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-san-martin",
+      "character": "person-57",
+      "mode": "fixed",
+      "sectors": [
+        "cell-6-25"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-guemes",
+      "character": "person-0",
+      "mode": "fixed",
+      "sectors": [
+        "cell-12-7"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-azurduy",
+      "character": "person-1",
+      "mode": "fixed",
+      "sectors": [
+        "cell-12-11"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-beltran",
+      "character": "person-2",
+      "mode": "fixed",
+      "sectors": [
+        "cell-6-25"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-paz",
+      "character": "person-11",
+      "mode": "fixed",
+      "sectors": [
+        "cell-14-20"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-brown",
+      "character": "person-5",
+      "mode": "fixed",
+      "sectors": [
+        "cell-28-30"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "placement-macacha",
+      "character": "person-8",
+      "mode": "fixed",
+      "sectors": [
+        "cell-12-7"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    }
+  ]
+}

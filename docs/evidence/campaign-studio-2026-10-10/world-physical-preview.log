@@ -1,0 +1,22 @@
+✔ grid authoring adds a playable indexed map, moves its anchor and preserves fixed identities (178.046458ms)
+✔ deletion reports authored references and prevents silent dangling quests, cities and headquarters (10.377709ms)
+✔ map updates keep package dimensions and identity while retaining explicit finishes and undoable clears (15.5225ms)
+✔ authored slabs compile, validate, survive template move/rotate/duplicate and enter real previews (80.169084ms)
+✔ selected preview renders actual authored and generated materials and applies finite physical sources (83.343541ms)
+✔ building slab authoring creates a valid real access and rejects invalid heights atomically (102.527333ms)
+✔ playtest uses selected finite supplies and the real owned arsenal reveal path (63.481459ms)
+✔ selected editor playtests use the package cast, equipment, names, appearance and weather (73.639625ms)
+✔ omitted enemy lists use neutral or authored generic force definitions and preserve legacy map equipment (56.126375ms)
+✔ selected preview assigns local primary definitions and leaves legacy one-argument map previews compatible (36.150208ms)
+✔ stock physical source is one world object and its generated metadata stays unchanged (337.705042ms)
+✔ generic stock sector names do not enable inherited caches, locks, or arsenal guns (120.346417ms)
+✔ custom physical sources use configured quantities and retain exact custody through save and reentry (1397.1425ms)
+✔ physical admission rejects invalid stacks, duplicated identities and impossible arsenal ammunition (37.499709ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2100.699875

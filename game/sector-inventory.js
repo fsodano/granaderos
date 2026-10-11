@@ -16,7 +16,7 @@ import {syncUnitAmmunition} from './tactical-ammunition.js';
 import {syncCarriedAmmunition} from './campaign-ammunition.js';
 import {weaponItemWeight} from './weapon-fittings.js';
 import {validateBattleSnapshot} from './validate-battle.js';
-import {MISSION_SCENES} from './missions.js';
+import {missionScenesFor,sceneAnchorFor,workshopSectorsFor} from './campaign-scenario.js';
 import {serviceReturnSources,serviceReturnSites,consumeServiceReturn} from './service-equipment-return.js';
 
 const copy=value=>structuredClone(value);
@@ -27,7 +27,7 @@ function stackLabel(stack){
  const key=stack.item==='weapon'?'weapon':stack.item.replace(/^inventory:/,'');
  return itemDescriptor({inventory:{[key]:{...stack}},weapon:0,weaponDropped:true},`inventory:${key}`).label;
 }
-function poolSources(snapshot){
+function poolSources(snapshot,state){
  if(!snapshot)return [];
  const rows=[];
  const add=(key,source,stack,extra={})=>{if(stack.count>0)rows.push({key,source,stack,label:stackLabel(stack),...planningPoint(source),...extra});};
@@ -39,7 +39,7 @@ function poolSources(snapshot){
   add(`drop:${index}`,d,droppedWeaponStack(d),{kind:'drop'});
  }
  for(const body of snapshot.units??[])if(body.knownToPlayer&&body.hp<=0&&!body.departure&&!body.fled){
-  const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===body.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;
+  const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===body.id),owner=sceneAnchorFor(state??snapshot,snapshot.sectorId);
   if(disposition&&(disposition.kind!=='dead'||disposition.sector!==owner))continue;
   const items=[...Object.keys(SUPPLY_ITEMS).filter(key=>key!=='ammo'||body.ammunitionVersion!==2),...(!body.weaponDropped&&body.weapon?['primary']:[]),...(body.blade?['blade']:[]),...(body.offHand?['offhand']:[]),...wornBodyItems(body),...(body.equipmentCursor?['cursor']:[]),...Object.keys(body.inventory??{}).map(key=>`inventory:${key}`)];
   for(const item of items)if(itemQuantity(body,item)>0){const {stack}=extractItemQuantity(body,item,itemQuantity(body,item));add(JSON.stringify(['body',body.id,item]),body,stack,{kind:'body',item});}
@@ -50,24 +50,24 @@ function poolSources(snapshot){
  return rows;
 }
 // Strategic read surfaces expose discovered rows, never full sector snapshots.
-export function knownSectorEquipment(snapshot){
- return poolSources(snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,...planningPoint(row),kind:row.kind,
+export function knownSectorEquipment(snapshot,state=null){
+ return poolSources(snapshot,state).map(row=>({key:row.key,label:row.label,count:row.stack.count,...planningPoint(row),kind:row.kind,
   ...(row.stack.condition!==undefined?{condition:row.stack.condition}:{}),...(row.stack.loaded!==undefined?{loaded:row.stack.loaded,jammed:row.stack.jammed??false}:{})}));
 }
 function siteSources(s,siteId,snapshot){
- return [...poolSources(snapshot),...serviceReturnSources(s,siteId,snapshot).filter(row=>row.stack).map(row=>({...row,source:row.placement,label:stackLabel(row.stack)}))];
+ return [...poolSources(snapshot,s),...serviceReturnSources(s,siteId,snapshot).filter(row=>row.stack).map(row=>({...row,source:row.placement,label:stackLabel(row.stack)}))];
 }
 function knownSiteEquipment(s,site){
  return siteSources(s,site.id,site.snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,...(row.source?planningPoint(row.source):{}),kind:row.kind,
   ...(row.stack.condition!==undefined?{condition:row.stack.condition}:{}),...(row.stack.loaded!==undefined?{loaded:row.stack.loaded,jammed:row.stack.jammed??false}:{})}));
 }
 function inventorySite(s,id){
- const mission=MISSION_SCENES[id];
- const snapshot=mission?(id==='san_lorenzo'?s.sectorStates[id]:s.sceneStates?.[id]):s.sectorStates[id];
- return {id,sectorId:mission?.anchor??id,name:mission?.name??'Terreno del sector',snapshot:expandCellScene(snapshot)};
+ const mission=missionScenesFor(s)[id];
+ const snapshot=s.sceneStates?.[id]??s.sectorStates[id];
+ return {id,sectorId:mission?.anchor??id,name:mission?.name??'Terreno del sector',snapshot:expandCellScene(snapshot,s)};
 }
 export function sectorInventorySites(s,sectorId){
- const ids=[sectorId,...Object.values(MISSION_SCENES).filter(m=>m.anchor===sectorId).map(m=>m.id).filter(id=>inventorySite(s,id).snapshot),...serviceReturnSites(s,sectorId)];
+ const ids=[sectorId,...Object.values(missionScenesFor(s)).filter(m=>m.anchor===sectorId).map(m=>m.id).filter(id=>inventorySite(s,id).snapshot),...serviceReturnSites(s,sectorId)];
  return [...new Set(ids)].map(id=>{
   const site=inventorySite(s,id),repairPoints=serviceReturnSources(s,id,site.snapshot).reduce((n,row)=>n+(row.repairPoints??0),0);
   return {id,name:site.name,count:knownSiteEquipment(s,site).reduce((n,row)=>n+row.count,0),repairPoints};
@@ -154,7 +154,7 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
 }
 
 function modelStoreReason(s,location,reason,actor){
- return reason??(s.location!==location?'La escuadra activa debe estar en este sector.':!['retiro','cordoba','mendoza'].includes(location)?'Llevá el arma a una maestranza.':actor?.equipmentCursor?'Colocá primero el objeto del cursor.':(s.armoryItems?.length??0)>=10000?'La armería está llena.':null);
+ return reason??(s.location!==location?'La escuadra activa debe estar en este sector.':!workshopSectorsFor(s).includes(location)?'Llevá el arma a una maestranza.':actor?.equipmentCursor?'Colocá primero el objeto del cursor.':(s.armoryItems?.length??0)>=10000?'La armería está llena.':null);
 }
 
 // The campaign dispatcher provides a private copy. Plan every transfer before
@@ -260,7 +260,7 @@ export function moveSectorItem(s,action,roster){
    delete old.equipmentCursor;
    for(const item of [...(old.offHand?[old.offHand]:[]),...BODY_SLOTS.flatMap(slot=>old[slot]?[old[slot]]:[]),...Object.values(old.inventory??{})]){delete item.instanceId;delete item.fittingPattern;delete item.fittings;}
   }
-  validateBattleSnapshot(snapshot);
+  validateBattleSnapshot(snapshot,s);
  }
  if(direction==='store')return `${op.nickname??op.name} guarda ${stackLabel(stack)} en la armería, con su estado y carga actuales.`;
  if(direction==='takeRepairPoints')return `${op.nickname??op.name} retira ${count} puntos de reparación en el sector.`;

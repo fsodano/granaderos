@@ -1,0 +1,17 @@
+✔ embedded map authoring writes shared project state, keeps undo and switches maps without storage or URL effects (1788.160667ms)
+✔ mounted world grid creates and moves an indexed locality through shared state (538.797375ms)
+✔ mounted building panel saves reusable project templates and clears explicit finishes (181.711208ms)
+✔ grid authoring adds a playable indexed map, moves its anchor and preserves fixed identities (175.950416ms)
+✔ deletion reports authored references and prevents silent dangling quests, cities and headquarters (9.153584ms)
+✔ map updates keep package dimensions and identity while retaining explicit finishes and undoable clears (15.432ms)
+✔ authored slabs compile, validate, survive template move/rotate/duplicate and enter real previews (78.050791ms)
+✔ selected preview renders actual authored and generated materials and applies finite physical sources (85.222375ms)
+✔ building slab authoring creates a valid real access and rejects invalid heights atomically (100.754083ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3137.393167

@@ -1,0 +1,13 @@
+✔ all 36 chooser combinations have exactly five portraits and surplus faces still load from old saves (133.51ms)
+✔ catalog preserves existing save IDs and supplies complete visual categories for every portrait (0.893833ms)
+✔ new Black portrait choices cover both genders in all six roles and keep independent gameplay profiles (0.447041ms)
+✔ new portrait families and palettes remain stable across animation, saved overrides and independent characters (2.969875ms)
+✔ every new portrait survives campaign creation, deployment and tactical save with its matching appearance (22540.295541ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22917.460667

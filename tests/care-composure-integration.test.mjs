@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import {contractQuote} from '../game/contracts.js';
 import {createBattle,actBattle,endTurn,presentedActBattle,presentedEndTurn,medicalUsePreview,getCareComposureResult,shotChance,canSee,weaponFor} from '../game/tactical.js';
 import {fieldPractice} from '../game/skill-training.js';
@@ -17,10 +17,11 @@ const stamp=campaign=>campaign.hour*3600+(campaign.secondOfHour??0);
 const order=(campaign,action)=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,next.lastError);return next;};
 
 function paidArena({oldPinned=false}={}){
- const content=defaultContentPackage();
+ // This experiment pins optional caregiver traits and six-hour arrivals.
+ const content=authoredEditorPackage();
  // This declared clinical experiment pins the original pre-kinetic Brown Bess
  // balance before campaign creation. The separate kinetic acceptance tests the
- // fresh default energy profile; no executed health, gear or RNG is reset here.
+ // authored energy profile; no executed health, gear or RNG is reset here.
  const clinicalGun=content.weapons.find(weapon=>weapon.template===1800);
  delete clinicalGun.projectileEnergy;delete clinicalGun.projectileAirDrag;
  for(const load of clinicalGun.alternativeLoads??[]){delete load.projectileEnergy;delete load.projectileAirDrag;}

@@ -1,10 +1,11 @@
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
 // Body slots retain exact garment records; legacy outfit/poncho means torso.
 export const OUTFIT_CHANGE_AP=8;
 export const PONCHO_PRICE=20;
 export const PONCHO_STOCK_CAP=6;
 export const PONCHO_DAILY_RESTOCK=1;
 export const BODY_SLOTS=Object.freeze(['headwear','outfit','legwear']);
-export const OUTFITS=Object.freeze({poncho:Object.freeze({name:'Poncho de lana',weight:2,slot:'outfit'}),linen_shirt:Object.freeze({name:'Camisa de lino',weight:.6,slot:'outfit'}),hat:Object.freeze({name:'Sombrero de fieltro',weight:.3,slot:'headwear'}),trousers:Object.freeze({name:'Pantalón de campaña',weight:.7,slot:'legwear'})});
+export const OUTFITS=Object.freeze(Object.fromEntries(Object.entries(DEFAULT_CATALOGUE.outfitDefinitions).map(([id,definition])=>[id,Object.freeze({...definition})])));
 export const outfitSlot=value=>OUTFITS[value?.outfit]?.slot??null;
 export function makeOutfit(kind='poncho',condition=100){const spec=Object.hasOwn(OUTFITS,kind)&&OUTFITS[kind];if(!spec)throw Error('La vestimenta no existe.');return {kind:'outfit',outfit:kind,count:1,weight:spec.weight,condition};}
 export function validateOutfit(value,{worn=false,slot=null}={}){

@@ -41,7 +41,7 @@ or a saved battle as the authoring format.
 
 Implemented files:
 
-- `game/maps/<sector-id>.json`: one authoring document per sector.
+- `campaigns/<campaign-id>/maps/<sector-id>.json`: one authoring document per sector.
 - `game/map-schema.js`: validation, schema versions and migrations.
 - `game/map-commands.js`: pure, transactional editing operations.
 - `game/compile-map.js`: deterministic conversion to existing tactical structures.

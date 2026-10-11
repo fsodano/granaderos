@@ -4,7 +4,7 @@ import {returnEquipment} from './equipment.js';
 import {syncUnitAmmunition} from './tactical-ammunition.js';
 import {syncCarriedAmmunition} from './campaign-ammunition.js';
 import {operativeLocation} from './squads.js';
-import {MISSION_SCENES} from './missions.js';
+import {missionScenesFor,sceneAnchorFor,sceneStateKeyFor} from './campaign-scenario.js';
 import {validWorldLocation} from './world-cells.js';
 import {validEntry,boundaryPassable} from './tactical-exits.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
@@ -23,8 +23,8 @@ const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const need=(ok,message='El equipo devuelto del servicio es inválido.')=>{if(!ok)throw Error(message);};
 const copy=v=>structuredClone(v);
 const idNumber=id=>typeof id==='string'&&/^service-return-[1-9][0-9]*$/.test(id)?Number(id.slice(15)):NaN;
-const siteSector=id=>MISSION_SCENES[id]?.anchor??id;
-const snapshotAt=(s,id)=>expandCellScene(id==='yatasto'?s.sceneStates?.[id]:s.sectorStates?.[id]);
+const siteSector=(s,id)=>sceneAnchorFor(s,id);
+const snapshotAt=(s,id)=>expandCellScene(s.sceneStates?.[id]??s.sectorStates?.[id],s);
 const sourceKey=(id,item)=>JSON.stringify(['serviceReturn',id,item]);
 const recordFields=['inventory','condition','rations','medkits','boleadoras','torches','pocketOrder'];
 const equipmentRoster=s=>baseRosterFor(s).map(op=>({...op,...s.loadouts?.[op.id]}));
@@ -77,7 +77,7 @@ function commitCarrier(s,id,next,{empty=false}={}){
 function markerAt(s,id){
  const r=s.operativeState[id],sectorId=operativeLocation(s,id);
  const resident=r.residentScene??r.residentSector;
- const siteId=resident&&siteSector(resident)===sectorId?resident:sectorId;
+ const siteId=resident&&siteSector(s,resident)===sectorId?resident:sectorId;
  const marker={id:`service-return-${s.serviceEquipmentReturns.nextId++}`,siteId,sectorId,entryEdge:r.arrival?.entryEdge??'S',entryAnchor:copy(r.arrival?.entryAnchor??{x:10,y:15})};
  const snapshot=snapshotAt(s,siteId),old=snapshot?.units?.find(u=>String(u.id)===String(id)&&u.side==='player'&&u.hp>0&&!u.departure);
  if((r.residentPosition||old)&&r.residentSector===snapshot?.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))marker.point=planningPoint(r.residentPosition??old,Boolean(snapshot.upperSurfaces?.length));
@@ -127,12 +127,12 @@ export function returnServiceEquipment(s,id,roster){
   if(ground){
    const placed=snapshotAt(planned,marker.siteId);retireSnapshotIdentities(placed);
    placed.groundItems??=[];for(const [index,item]of items.entries())placed.groundItems.push({...copy(item.stack),id:`${marker.id}-${index}`,type:'item',...point,knownToPlayer:true});
-   validateBattleSnapshot(placed);
-   if(marker.siteId==='yatasto')planned.sceneStates[marker.siteId]=placed;else planned.sectorStates[marker.siteId]=placed;
+   validateBattleSnapshot(placed,planned);
+   planned[sceneStateKeyFor(s,marker.siteId)][marker.siteId]=placed;
   }
   if(saveFits(planned,roster)){
    s.serviceEquipmentReturns.entries=planned.serviceEquipmentReturns.entries;s.operativeState[id]=planned.operativeState[id];s.loadouts[id]=planned.loadouts[id];
-   if(ground){if(marker.siteId==='yatasto')s.sceneStates[marker.siteId]=planned.sceneStates[marker.siteId];else s.sectorStates[marker.siteId]=planned.sectorStates[marker.siteId];}
+   if(ground){const key=sceneStateKeyFor(s,marker.siteId);s[key][marker.siteId]=planned[key][marker.siteId];}
    return {siteId:marker.siteId,sectorId:marker.sectorId,fallback:false};
   }
  }
@@ -190,7 +190,7 @@ export function validateServiceEquipmentReturns(s,roster){
  const checkMarker=marker=>{
   need(object(marker)&&Object.keys(marker).every(k=>['id','siteId','sectorId','entryEdge','entryAnchor','point','operativeId','items','repairPoints'].includes(k)));
   const number=idNumber(marker.id);need(number>0&&number<cache.nextId&&!ids.has(marker.id));ids.add(marker.id);
-  need(typeof marker.siteId==='string'&&(validWorldLocation(marker.siteId)||Object.hasOwn(MISSION_SCENES,marker.siteId))&&validWorldLocation(marker.sectorId)&&siteSector(marker.siteId)===marker.sectorId&&validEntry(marker.entryEdge,marker.entryAnchor));
+  need(typeof marker.siteId==='string'&&(validWorldLocation(marker.siteId,s)||Object.hasOwn(missionScenesFor(s),marker.siteId))&&validWorldLocation(marker.sectorId,s)&&siteSector(s,marker.siteId)===marker.sectorId&&validEntry(marker.entryEdge,marker.entryAnchor));
   if(marker.point!==undefined)need(object(marker.point)&&Object.keys(marker.point).every(k=>['x','y','tacticalLevel'].includes(k))&&Number.isFinite(marker.point.x)&&marker.point.x>=0&&marker.point.x<=1000&&Number.isFinite(marker.point.y)&&marker.point.y>=0&&marker.point.y<=1000&&(marker.point.tacticalLevel===undefined||Number.isSafeInteger(marker.point.tacticalLevel)&&marker.point.tacticalLevel>=0&&marker.point.tacticalLevel<=20));
  };
  for(const entry of cache.entries){

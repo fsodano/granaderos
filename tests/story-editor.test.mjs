@@ -1,3 +1,6 @@
+import {campaignUIReady} from './mounted-campaign-ready.mjs';
+import {authoredEditorPackage,authoredEditorPackage as defaultContentPackage} from './authored-editor-fixture.mjs';
+import {campaignFetch,alternateCampaignDocuments} from './campaign-library-fixture.mjs';
 import {approachNPC} from './approach-npc.mjs';
 import {withStoredGear,withCarriedAmmo,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {ammoCount} from '../game/ammo-types.js';
@@ -13,8 +16,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
 import {createElement as h,act,useState,StrictMode} from '../web/node_modules/react/index.js';
-import {defaultContentPackage,parseContentPackage,encodeContentPackage} from '../game/content-package.js';
-import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY} from '../game/content-launch.js';
+import {parseContentPackage,encodeContentPackage} from '../game/content-package.js';
+import {CONTENT_LAUNCH_KEY,campaignStorageKey} from '../game/content-launch.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS,deploymentCost} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
@@ -22,7 +25,63 @@ import {actBattle,getReachable,actionCosts} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
-const draftKey='granaderos.content-draft.v1';
+const draftKey='granaderos.story-draft.v2.granaderos';
+
+test('the editor loads actual installed stock rules and does not add optional authoring defaults',async t=>{
+ const m=await mount(t,undefined,null,null,'recruitment',{installedBase:true});
+ const draft=parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ assert.equal(draft.campaignOrigin,undefined);
+ assert.ok(draft.world);assert.ok(draft.maps.retiro);assert.ok(draft.assets.assets.length);
+ assert.equal(draft.characters.find(character=>character.id==='person-110').arrivalHours,0);
+ assert.equal(draft.weapons.find(weapon=>weapon.id==='firearm-1800').readyAP,6);
+ assert.equal(draft.weapons.find(weapon=>weapon.id==='firearm-1800').projectileEnergy,undefined);
+ assert.ok(!draft.characters.find(character=>character.id==='person-130').abilities.includes('nervous_isolation'));
+ assert.equal(m.dom.window.localStorage.getItem('granaderos.content-draft.v1'),null);
+});
+test('switching installed stock to authored chapters explicitly preserves its effective resident selection and valid launch',async t=>{
+ const m=await mount(t,undefined,null,null,'recruitment',{installedBase:true}),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ assert.equal(draft().includeOriginalResidents,undefined);assert.equal(draft().errands.length,5);
+ await m.click(m.button('Reglas'));await m.input(m.label('Avance de la historia'),'authored');
+ assert.equal(draft().includeOriginalResidents,true);assert.equal(draft().errands.length,5);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ assert.equal(campaign.contentCampaign.package.includeOriginalResidents,true);assert.ok(campaign.contentCampaign.package.campaignStory);
+});
+test('an omitted generic resident option appears unchecked and remains explicit false when chapters are enabled',async t=>{
+ const {docs,reader}=alternateCampaignDocuments();delete docs.get('/campaigns/another/content.json').includeOriginalResidents;
+ const m=await mount(t,undefined,null,null,'recruitment',{reader,installedBase:true,url:'https://granaderos.test/story?campaign=another'});
+ await m.click(m.button('Reglas'));const checkbox=[...m.document.querySelectorAll('label')].find(l=>l.textContent.includes('Incluir habitantes genéricos del mapa original')).querySelector('input');
+ assert.equal(checkbox.checked,false);await m.input(m.label('Avance de la historia'),'authored');
+ const draft=parseContentPackage(m.dom.window.localStorage.getItem('granaderos.story-draft.v2.another'));assert.equal(draft.includeOriginalResidents,false);assert.equal(checkbox.checked,false);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
+});
+
+test('story drafts switch between selected campaign bases and launch as independently saved authored content',async t=>{
+ const {reader}=alternateCampaignDocuments(),m=await mount(t,undefined,null,null,'recruitment',{reader,installedBase:true});
+ await m.input(m.label('Campaña base'),'another');
+ const key='granaderos.story-draft.v2.another',draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(key));
+ assert.equal(draft().id,'another');assert.equal(draft().characters.length,1);assert.equal(draft().campaignOrigin,undefined);
+ await m.input(m.label('Nombre'),'Persona de otra campaña');
+ assert.equal(draft().characters[0].name,'Persona de otra campaña');
+ const untouched=m.dom.window.localStorage.getItem(draftKey);assert.ok(untouched);
+ await m.input(m.label('Campaña base'),'granaderos');assert.equal(m.dom.window.localStorage.getItem(draftKey),untouched);
+ await m.input(m.label('Campaña base'),'another');assert.equal(m.label('Nombre').value,'Persona de otra campaña');
+ await m.click(m.button('Iniciar campaña con estas fichas'));
+ const launched=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
+ assert.equal(launched.campaignOrigin,undefined);assert.equal(launched.contentCampaign.package.id,'another');
+ assert.match(campaignStorageKey(launched),/^granaderos\.content-campaign\.v2\.another\.sha256%3A[0-9a-f]+$/);
+ assert.equal(m.dom.window.localStorage.getItem(draftKey),untouched);
+});
+
+test('sector editor opens selected campaign maps and keeps each campaign draft separate',async t=>{
+ const {reader}=alternateCampaignDocuments(),{default:SectorEditor}=await import('../web/app/editor/SectorEditor.tsx');
+ const m=await mount(t,undefined,null,null,'recruitment',{reader,ComponentOverride:SectorEditor,url:'https://granaderos.test/editor?campaign=another'});
+ assert.equal(m.label('Campaña base').value,'another');
+ const first=m.dom.window.localStorage.getItem('granaderos.sector-draft.v2.another');assert.ok(first);
+ assert.equal(JSON.parse(first).id,'retiro');
+ await m.input(m.label('Campaña base'),'granaderos');
+ assert.ok(m.dom.window.localStorage.getItem('granaderos.sector-draft.v2.granaderos'));
+ assert.equal(m.dom.window.localStorage.getItem('granaderos.sector-draft.v2.another'),first);
+ assert.equal(m.dom.window.localStorage.getItem('granaderos-sector-editor-v1'),null);
+});
 
 test('the editor authors named relationships with bounded choices, protected references, undo and saved campaign launch',async t=>{
  const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
@@ -93,12 +152,12 @@ test('the editor previews independent portrait and body choices and authors the 
  const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click(m.document.querySelector('.entry-list button'));
  const oldBody=m.label('Apariencia en combate').value;
- await m.input(m.label('Retrato disponible'),'/art/avatar-woman-scout.webp');assert.equal(m.label('Apariencia en combate').value,oldBody);
+ await m.input(m.label('Retrato disponible'),'/campaigns/granaderos/assets/avatar-woman-scout.webp');assert.equal(m.label('Apariencia en combate').value,oldBody);
  await m.input(m.label('Apariencia en combate'),'woman-scout');await m.input(m.label('Carácter'),'Serena y observadora.');
  await m.input(m.label('Al incorporarse'),'Lista para partir.');await m.input(m.label('Al recibir una herida'),'');
  assert.match(m.document.querySelector('.appearance-choice image').getAttribute('href'),/woman-scout/);
  await m.click(m.button('Deshacer'));assert.notEqual(m.label('Al recibir una herida').value,'');await m.click(m.button('Rehacer'));assert.equal(m.label('Al recibir una herida').value,'');
- await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.equal(copy.personality,'Serena y observadora.');assert.equal(copy.speech.hired,'Lista para partir.');assert.equal(copy.speech.wounded,'');assert.equal(copy.spriteAppearance,'woman-scout');assert.equal(copy.portrait,'/art/avatar-woman-scout.webp');
+ await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.equal(copy.personality,'Serena y observadora.');assert.equal(copy.speech.hired,'Lista para partir.');assert.equal(copy.speech.wounded,'');assert.equal(copy.spriteAppearance,'woman-scout');assert.equal(copy.portrait,'/campaigns/granaderos/assets/avatar-woman-scout.webp');
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
  const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'week'});campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);
  campaign=dispatchCampaign(campaign,{type:'visitSector'});const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));const unit=pair.battle.units.find(u=>u.id===String(id));
@@ -145,15 +204,16 @@ test('the bulletin searches and hires a new identity without showing deleted cat
  assert.equal(decodeSave(encodeSave(m.campaign)).campaign.recruited.includes(id),false);
 });
 
-async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment',{strict=false}={}){
+async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment',{strict=false,reader=campaignFetch,url,ComponentOverride,installedBase=false}={}){
  const console=new VirtualConsole();
  console.on('jsdomError',error=>{if(!error.message.includes('navigation'))throw error;});
- const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:launch?'https://granaderos.test/?content=1&launch=1':'https://granaderos.test/story',pretendToBeVisual:true,virtualConsole:console});
+ const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:url??(launch?'https://granaderos.test/?content=1&launch=1':'https://granaderos.test/story'),pretendToBeVisual:true,virtualConsole:console});
+ if(stored===undefined&&!launch&&!recruitCampaign&&!installedBase&&!ComponentOverride)stored=JSON.stringify(authoredEditorPackage());
  if(stored!==undefined)dom.window.localStorage.setItem(draftKey,stored);
  if(launch)dom.window.sessionStorage.setItem(CONTENT_LAUNCH_KEY,encodeSave(launch));
  dom.window.scrollTo=()=>{};
  dom.window.localStorage.setItem('granaderos.campaign.v1','ordinary save');
- const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),FileReader:dom.window.FileReader,IS_REACT_ACT_ENVIRONMENT:true};
+ const globals={fetch:reader,window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),FileReader:dom.window.FileReader,IS_REACT_ACT_ENVIRONMENT:true};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
  for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
  // Portal components must load after the DOM exists, as they do in the browser.
@@ -168,21 +228,21 @@ async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment
  t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  let current=recruitCampaign;
  function HiringScreen(){const [campaign,setCampaign]=useState(recruitCampaign);current=campaign;return h(view==='armory'?Armory:view==='treasury'?Treasury:Recruitment,{state:campaign,dispatch:action=>setCampaign(s=>dispatchCampaign(s,action))});}
- const Component=recruitCampaign?HiringScreen:launch?(await import('../web/app/page.tsx')).default:StoryEditor;
- await act(async()=>root.render(strict?h(StrictMode,null,h(Component)):h(Component)));
+ const Component=ComponentOverride??(recruitCampaign?HiringScreen:launch?(await import('../web/app/page.tsx')).default:StoryEditor);
+ await act(async()=>root.render(strict?h(StrictMode,null,h(Component)):h(Component)));await campaignUIReady(dom.window.document);
  const document=dom.window.document;
  return {dom,document,unmount,get campaign(){return current;},
   button(text){const button=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(button,text);return button;},
   label(text){const label=[...document.querySelectorAll('label')].find(l=>l.firstChild?.textContent.trim()===text);assert.ok(label,text);return label.querySelector('input,select,textarea');},
-  async click(element){await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
-  async input(element,value){assert.ok(element);const prototype=element.tagName==='SELECT'?dom.window.HTMLSelectElement.prototype:element.tagName==='TEXTAREA'?dom.window.HTMLTextAreaElement.prototype:dom.window.HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(prototype,'value').set.call(element,String(value));await act(async()=>element.dispatchEvent(new dom.window.Event(element.tagName==='SELECT'?'change':'input',{bubbles:true})));},
+  async click(element){await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));await campaignUIReady(document);},
+  async input(element,value){assert.ok(element);const prototype=element.tagName==='SELECT'?dom.window.HTMLSelectElement.prototype:element.tagName==='TEXTAREA'?dom.window.HTMLTextAreaElement.prototype:dom.window.HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(prototype,'value').set.call(element,String(value));await act(async()=>element.dispatchEvent(new dom.window.Event(element.tagName==='SELECT'?'change':'input',{bubbles:true})));await campaignUIReady(document);},
  };
 }
 
 test('the mounted story editor authors a character, recovers the draft and launches a separately saved playable campaign',async t=>{
  const stored=defaultContentPackage();stored.name='Historia de prueba';
  const m=await mount(t,JSON.stringify(stored));
- assert.ok(m.document.querySelector('a[href="/editor"]'),'sector editing remains accessible');
+ assert.ok(m.document.querySelector('a[href="/editor?campaign=granaderos"]'),'sector editing remains accessible');
  await m.input(m.document.querySelector('input[type="search"]'),'person-100');
  const entry=m.document.querySelector('.entry-list button');assert.ok(entry);await m.click(entry);
  assert.equal(m.document.querySelector('section[aria-label="Aparición del personaje"]'),null);
@@ -286,9 +346,9 @@ test('the real game entry consumes the editor launch and saves the authored camp
  const definition=defaultContentPackage();definition.characters[0].name='Nombre de campaña';
  const m=await mount(t,undefined,initialCampaign(123,definition));
  assert.equal(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY),null);
- assert.equal(m.dom.window.location.search,'?content=1');
+ assert.equal(new URLSearchParams(m.dom.window.location.search).get('content'),'1');assert.ok(new URLSearchParams(m.dom.window.location.search).get('contentHash'));
  assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
- const saved=decodeSave(m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY));
+ const saved=decodeSave(m.dom.window.localStorage.getItem(campaignStorageKey(null,m.dom.window.location.search)));
  assert.equal(rosterFor(saved.campaign).find(o=>o.id===0).name,'Nombre de campaña');
  assert.ok(m.document.querySelector('.game-shell'));
  await m.click(m.button('Correspondencia'));
@@ -641,7 +701,7 @@ test('the mounted editor creates, orders, undoes and launches authored campaign 
 });
 
 test('campaign objectives and local errands protect referenced residents through valid edits, undo, import and launch',async t=>{
- const {defaultCampaignStory}=await import('../game/campaign-story.js');const d=questPackage();d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'character',character:'alma-contract',state:'alive'},{type:'quest',quest:'river-post',status:'completed'}];const m=await mount(t,JSON.stringify(d));
+ const {defaultCampaignStory}=await import('../game/campaign-story.js');const d=questPackage();d.includeOriginalResidents=true;d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'character',character:'alma-contract',state:'alive'},{type:'quest',quest:'river-post',status:'completed'}];const m=await mount(t,JSON.stringify(d));
  await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.body.textContent,/Quitá primero/);assert.ok(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).characters.some(c=>c.id==='alma-contract'));
  await m.click(m.button('Encargos'));assert.equal(m.button('Eliminar encargo').disabled,true);assert.match(m.document.body.textContent,/Usado por los objetivos/);
  const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey)),toggle=()=>[...m.document.querySelectorAll('label')].find(l=>l.textContent.includes('Incluir habitantes genéricos del mapa original')).querySelector('input');
@@ -666,7 +726,7 @@ test('campaign objectives and local errands protect referenced residents through
 test('authored progression can copy and replace a historical actor with an independent resident through undo and actual local hiring',async t=>{
  const {defaultCampaignStory}=await import('../game/campaign-story.js');const {isHistoricalCharacter,legacyOperativeId}=await import('../game/content-character-ids.js');const {order,saved,visit,sync,leave}=await import('./local-contract-fixture.mjs');const {createBattle}=await import('../game/tactical.js');
  // This cast/progression scenario declares no local errands.
- const d=defaultContentPackage();d.errands=[];d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];d.placements.find(p=>p.character==='person-57').sectors=['cell-27-27'];const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ const d=defaultContentPackage();d.errands=[];d.includeOriginalResidents=true;d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];d.placements.find(p=>p.character==='person-57').sectors=['cell-27-27'];const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  await m.input(m.document.querySelector('input[type="search"]'),'person-57');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Copiar como habitante independiente'));const copy=draft().characters.at(-1);assert.equal(isHistoricalCharacter(copy),false);assert.equal(legacyOperativeId(copy.id),undefined);assert.equal(copy.recruitmentSource,'encounter');assert.equal(copy.service,'permanent');assert.equal(copy.monthlyPay,0);assert.equal(copy.encounter.requiredLeadership,0);assert.equal(copy.encounter.requiredSector,null);assert.deepEqual(copy.attributes,d.characters.find(c=>c.id==='person-57').attributes);assert.equal(copy.portrait,d.characters.find(c=>c.id==='person-57').portrait);assert.deepEqual(draft().placements.at(-1).sectors,['cell-27-27']);await m.input(m.label('Nombre'),'Elena del Paso');
  await m.input(m.document.querySelector('input[type="search"]'),'person-57');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(!draft().characters.some(c=>c.id==='person-57'));await m.click(m.button('Deshacer'));assert.ok(draft().characters.some(c=>c.id==='person-57'));await m.click(m.button('Rehacer'));assert.ok(!draft().characters.some(c=>c.id==='person-57'));
  await m.click(m.button('Reglas'));const original=[...m.document.querySelectorAll('label')].find(l=>l.textContent.includes('Incluir habitantes genéricos del mapa original')).querySelector('input');await m.click(original);assert.equal(draft().includeOriginalResidents,false);await m.input(m.label('Avance de la historia'),'original');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
@@ -683,7 +743,7 @@ test('an empty custom cast creates fresh identities without reusing removed hist
 test('the editor assigns strategic functions with undo, protects assigned characters and launches their actual services',async t=>{
  const {rolePackage}=await import('./campaign-roles-fixture.mjs');const {campaignRoleActive}=await import('../game/campaign-roles.js');const {order,saved,A}=await import('./local-contract-fixture.mjs');const d=rolePackage();delete d.campaignRoles;const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Reglas'));assert.equal(m.label('Responsable de fundición').value,'');await m.input(m.label('Responsable de fundición'),'engineer');await m.input(m.label('Responsable de marcha'),'engineer');await m.click(m.button('Deshacer'));assert.equal(m.label('Responsable de marcha').value,'');await m.click(m.button('Rehacer'));assert.equal(draft().campaignRoles.marchCommander,'engineer');
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'engineer');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.body.textContent,/reasigná su función de campaña/);assert.ok(draft().characters.some(c=>c.id==='engineer'));
- await m.click(m.button('Reglas'));await m.click(m.button('Restaurar funciones originales'));assert.equal(draft().campaignRoles,undefined);assert.equal(m.label('Responsable de fundición').value,'');await m.click(m.button('Deshacer'));assert.equal(draft().campaignRoles.foundryEngineer,'engineer');await m.input(m.label('Responsable de fundición'),'');await m.input(m.label('Responsable de marcha'),'');await m.click(m.button('Personajes'));await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(!draft().characters.some(c=>c.id==='engineer'));await m.click(m.button('Deshacer'));await m.click(m.button('Deshacer'));await m.click(m.button('Deshacer'));assert.deepEqual(draft().campaignRoles,{foundryEngineer:'engineer',marchCommander:'engineer'});
+ await m.click(m.button('Reglas'));await m.click(m.button('Restaurar funciones del paquete base'));assert.equal(draft().campaignRoles,undefined);assert.equal(m.label('Responsable de fundición').value,'');await m.click(m.button('Deshacer'));assert.equal(draft().campaignRoles.foundryEngineer,'engineer');await m.input(m.label('Responsable de fundición'),'');await m.input(m.label('Responsable de marcha'),'');await m.click(m.button('Personajes'));await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(!draft().characters.some(c=>c.id==='engineer'));await m.click(m.button('Deshacer'));await m.click(m.button('Deshacer'));await m.click(m.button('Deshacer'));assert.deepEqual(draft().campaignRoles,{foundryEngineer:'engineer',marchCommander:'engineer'});
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,'engineer');campaign=order(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaignRoleActive(campaign,'foundryEngineer'),false);campaign=order(campaign,{type:'wait',hours:6});campaign=order(campaign,{type:'foundry'});campaign=order(campaign,{type:'travel',sector:A});campaign=saved({campaign}).campaign;assert.equal(campaign.flags.foundry,true);assert.equal(campaign.operativeState[id].fatigue,0);assert.equal(campaignRoleActive(campaign,'marchCommander'),true);
 });
 
@@ -708,7 +768,7 @@ test('the editor authors a project chapter with undo and reaches its ending thro
 });
 
 test('the dialogue editor saves a project condition through copy and its launched campaign uses actual funding',async t=>{
- const {defaultCampaignStory}=await import('../game/campaign-story.js');const {order,saved}=await import('./local-contract-fixture.mjs');const d=dialoguePackage();d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];d.rules.startingTreasury=10000;d.campaignRoles={foundryEngineer:'person-110',marchCommander:null};d.foundry={sector:'retiro',name:'Taller del Cuartel',armyName:'Ejército Libre',setupCost:100,fundingCost:200};const m=await mount(t,JSON.stringify(d));await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Agregar condición'));await m.input(m.label('Tipo de condición'),'project');await m.input(m.label('Proyecto de la condición'),'army');await m.click(m.button('Duplicar personaje'));const draft=parseContentPackage(m.dom.window.localStorage.getItem(draftKey)),clauses=draft.characters.at(-1).encounter.dialogue.nodes[0].choices[0].conditions;assert.deepEqual(clauses,[{type:'project',project:'army',completed:true}]);await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(dialogueConditionsMet(campaign,clauses),false);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=order(campaign,{type:'foundry'});assert.equal(dialogueConditionsMet(campaign,clauses),false);campaign=order(campaign,{type:'fundArmy'});assert.equal(dialogueConditionsMet(saved({campaign}).campaign,clauses),true);
+ const {defaultCampaignStory}=await import('../game/campaign-story.js');const {order,saved}=await import('./local-contract-fixture.mjs');const d=dialoguePackage();d.includeOriginalResidents=true;d.campaignStory=defaultCampaignStory();d.campaignStory.chapters[0].conditions=[{type:'day',min:100,max:null}];d.rules.startingTreasury=10000;d.campaignRoles={foundryEngineer:'person-110',marchCommander:null};d.foundry={sector:'retiro',name:'Taller del Cuartel',armyName:'Ejército Libre',setupCost:100,fundingCost:200};const m=await mount(t,JSON.stringify(d));await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Agregar condición'));await m.input(m.label('Tipo de condición'),'project');await m.input(m.label('Proyecto de la condición'),'army');await m.click(m.button('Duplicar personaje'));const draft=parseContentPackage(m.dom.window.localStorage.getItem(draftKey)),clauses=draft.characters.at(-1).encounter.dialogue.nodes[0].choices[0].conditions;assert.deepEqual(clauses,[{type:'project',project:'army',completed:true}]);await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(dialogueConditionsMet(campaign,clauses),false);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=order(campaign,{type:'foundry'});assert.equal(dialogueConditionsMet(campaign,clauses),false);campaign=order(campaign,{type:'fundArmy'});assert.equal(dialogueConditionsMet(saved({campaign}).campaign,clauses),true);
 });
 
 test('the editor edits starting supplies through undo, copy, reset and a playable saved launch',async t=>{
@@ -795,7 +855,7 @@ test('the editor authors personal supply ranges with undo, validation, copy, pro
 });
 
 test('the campaign editor authors a supply objective that recognizes actual declared carried kits on paid arrival',async t=>{
- const {defaultCampaignStory}=await import('../game/campaign-story.js');const {order,saved}=await import('./local-contract-fixture.mjs');const d=dialoguePackage();d.campaignStory=defaultCampaignStory();d.characters.find(c=>c.id==='person-110').startingSupplies={rations:2,torches:2,medkits:5,boleadoras:1};const m=await mount(t,JSON.stringify(d));await m.click(m.button('Reglas'));await m.input(m.label('Tipo de condición'),'supply');await m.input(m.label('Personaje que lleva los suministros'),'person-110');await m.input(m.label('Cantidad mínima'),5);await m.input(m.label('Cantidad máxima (opcional)'),5);await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(campaign.completed,false);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});assert.equal(campaign.completed,true);assertTradeRejected(campaign,{type:'purchaseMedicalSupplies',id:110,quantity:3});campaign=saved({campaign}).campaign;assert.equal(campaign.completed,true);assert.equal(campaign.operativeState[110].medkits,5);
+ const {defaultCampaignStory}=await import('../game/campaign-story.js');const {order,saved}=await import('./local-contract-fixture.mjs');const d=dialoguePackage();d.includeOriginalResidents=true;d.campaignStory=defaultCampaignStory();d.characters.find(c=>c.id==='person-110').startingSupplies={rations:2,torches:2,medkits:5,boleadoras:1};const m=await mount(t,JSON.stringify(d));await m.click(m.button('Reglas'));await m.input(m.label('Tipo de condición'),'supply');await m.input(m.label('Personaje que lleva los suministros'),'person-110');await m.input(m.label('Cantidad mínima'),5);await m.input(m.label('Cantidad máxima (opcional)'),5);await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(campaign.completed,false);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});assert.equal(campaign.completed,true);assertTradeRejected(campaign,{type:'purchaseMedicalSupplies',id:110,quantity:3});campaign=saved({campaign}).campaign;assert.equal(campaign.completed,true);assert.equal(campaign.operativeState[110].medkits,5);
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.body.textContent,/Quitá primero las apariciones y condiciones/);assert.ok(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).characters.some(c=>c.id==='person-110'));
 });
 
@@ -949,7 +1009,7 @@ test('the editor authors alternative firearm effects through undo, validation, r
 test('the editor preserves omitted air loss and authors independent load profiles through atomic undo, import and saved play',async t=>{
  const {order,visit,saved,tactical}=await import('./local-contract-fixture.mjs'),{weaponSpecification}=await import('../game/weapon-definition.js');
  // Explicit older package: no air-loss profile is declared on either load.
- const d=defaultContentPackage(),old=d.weapons.find(w=>w.id==='firearm-1800');delete old.projectileAirDrag;for(const load of old.alternativeLoads??[])delete load.projectileAirDrag;d.characters.find(c=>c.id==='person-110').arrivalHours=0;
+ const d=authoredEditorPackage(),old=d.weapons.find(w=>w.id==='firearm-1800');delete old.projectileAirDrag;for(const load of old.alternativeLoads??[])delete load.projectileAirDrag;d.characters.find(c=>c.id==='person-110').arrivalHours=0;
  const m=await mount(t,JSON.stringify(d)),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey)),gun=()=>draft().weapons.find(w=>w.id==='firearm-1800');
  const choose=async()=>{await m.click(m.button('Armas'));await m.input(m.document.querySelector('input[type="search"]'),'firearm-1800');await m.click(m.document.querySelector('.entry-list button'));};
  const toggle=text=>{const label=[...m.document.querySelectorAll('label')].find(l=>l.textContent.trim()===text);assert.ok(label,text);return label.querySelector('input[type="checkbox"]');};

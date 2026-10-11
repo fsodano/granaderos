@@ -16,11 +16,11 @@ export function initializeCampaignPresence(state){
 }
 export function characterPresentInSector(state,characterId,sector){
   const person=state.contentPresence?.people[characterId];
-  return Boolean(person?.alive&&!person.recruited&&!person.suspended&&person.appeared&&locationId(person.sector)===locationId(sector));
+  return Boolean(person?.alive&&!person.recruited&&!person.suspended&&person.appeared&&locationId(person.sector,state)===locationId(sector,state));
 }
 function currentResident(state,npc,sector){
   if(npc.detention!==undefined){
-    validateDetainedPrisoner(npc);
+    validateDetainedPrisoner(npc,state);
     const d=npc.detention,request=state.pendingBattle;
     if(d.sector!==sector)return false;
     const sources=[state.detentionRecords?.[npc.id]?.npc,
@@ -42,8 +42,8 @@ function currentResident(state,npc,sector){
 export function synchronizeCampaignPresence(state){
   if(!state.contentPresence)return;
   let runtime={...state.contentPresence,content:state.contentCampaign.package,history:[]};
-  const loaded=state.pendingBattle&&locationId(state.pendingBattle.sector)
-    ?contentCellIds([state.pendingBattle.sector])[0]:null;
+  const loaded=state.pendingBattle&&locationId(state.pendingBattle.sector,state)
+    ?contentCellIds([state.pendingBattle.sector],state)[0]:null;
   // Off-screen bleeding can confirm a death inside a batched interval.
   // Process those events in order before daily movement or successor deadlines.
   const deaths=runtime.content.characters.map(c=>({character:c,id:operativeIdForCharacter(runtime.content,c.id)}))
@@ -117,7 +117,7 @@ function validateSuccessions(state){
   const p=placements.find(p=>p.id===event.placement),receipt=receipts.get(event.placement);
   need(p&&receipt&&event.at===receipt.at&&!events.has(p.id)&&!r.people[p.character]?.appeared);
   need(event.destination===undefined||p.sectors.includes(event.destination));
-  if(event.at<=r.minute)need(event.destination!==undefined&&state.pendingBattle&&locationId(event.destination)===locationId(state.pendingBattle.sector));
+  if(event.at<=r.minute)need(event.destination!==undefined&&state.pendingBattle&&locationId(event.destination,state)===locationId(state.pendingBattle.sector,state));
   else need(event.destination===undefined);
   events.set(p.id,event);
  }

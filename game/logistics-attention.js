@@ -1,13 +1,15 @@
 import {importRulesFor} from './campaign-imports.js';
 import {artilleryTransferDelayCode,ARTILLERY_DELIVERY_ISSUES} from './artillery-transport.js';
-import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from './data.js';
+import {RESOURCE_NAMES} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
+import {headquartersName} from './campaign-headquarters.js';
 import {equipmentCatalogItem,isImportedEquipment} from './equipment.js';
-import {convoyStatus,TRANSPORT_ISSUES} from './logistics.js';
+import {convoyStatus,TRANSPORT_ISSUES,transportIssuesFor} from './logistics.js';
 
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const exact=(v,keys)=>object(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
-const sectors=new Set(CAMPAIGN_SECTORS.map(s=>s.id));
+
 const keys={production:['kind','sector','name','goods'],shipment:['kind','sector','goods'],equipment:['kind','sector','item','quantity'],convoy:['kind','sector','goods'],artillery:['kind','sector','id','quantity']};
 const need=value=>{if(!value)throw Error('Los avisos de producción y entregas guardados son inválidos.');};
 const LIMIT=3009;
@@ -33,7 +35,7 @@ function blockedStates(s,{isSupplied}){
  };
  for(const job of s.production??[])add(job,{kind:'production',sector:job.sector,name:job.name,goods:job.yield},s.sectors[job.sector].owner!=='patriot'?'occupied':!isSupplied(s,job.sector)?'unsupplied':null,job.id);
  const port=importRulesFor(s).port,portIssue=s.sectors[port]?.owner!=='patriot'?'occupied':s.blockade?'blockade':null;
- for(const job of s.shipments??[])add(job,{kind:'shipment',sector:'ensenada',goods:job.goods},portIssue);
+ for(const job of s.shipments??[])add(job,{kind:'shipment',sector:port,goods:job.goods},portIssue);
  for(const job of s.equipmentShipments??[])add(job,{kind:'equipment',sector:port,item:job.item,quantity:job.quantity},portIssue??((s.armoryItems?.length??0)+job.quantity>10000?'armory_full':null));
  for(const job of s.convoys??[]){
   if(job.due>s.hour)continue;
@@ -78,11 +80,11 @@ export function publicLogisticsNotice(s){
 }
 function validateEvent(e,s){
  need(object(e)&&Object.hasOwn(keys,e.kind)&&exact(e,eventKeys(e)));
- need(sectors.has(e.sector)||e.kind==='convoy'&&e.sector==='reserve');
+ need(campaignSectors(s).some(p=>p.id===e.sector)||e.kind==='convoy'&&e.sector==='reserve');
  if(e.state==='blocked')need(compatibleCode(e.kind,e.code));
- if(e.kind==='shipment')need(e.sector==='ensenada');
+ if(e.kind==='shipment')need(e.sector===importRulesFor(s).port);
  if(e.kind==='equipment')need(e.sector===importRulesFor(s).port);
- if(e.kind==='production')need(['retiro','cordoba','mendoza'].includes(e.sector)&&typeof e.name==='string'&&e.name.length<100);
+ if(e.kind==='production')need(campaignSectors(s).some(p=>p.id===e.sector)&&typeof e.name==='string'&&e.name.length<100);
  if(e.kind==='equipment')need(isImportedEquipment(equipmentCatalogItem(e.item,s))&&integer(e.quantity,1,100));
  else if(e.kind==='artillery')need(typeof e.id==='string'&&e.id.length>0&&e.id.length<=160&&e.quantity===1);
  else need(object(e.goods)&&Object.entries(e.goods).every(([key,value])=>Object.hasOwn(RESOURCE_NAMES,key)&&integer(value,0,1e9)));
@@ -105,16 +107,16 @@ export function validateLogisticsNotice(s){
  need(Array.isArray(n.events)&&n.events.length>0&&n.events.length<=LIMIT);
  for(const e of n.events){validateEvent(e,s);if(n.advancedHours===0)need(e.state==='blocked');}
 }
-export function logisticsEventText(event){
- const place=event.sector==='reserve'?'la reserva de Retiro':CAMPAIGN_SECTORS.find(s=>s.id===event.sector)?.name??event.sector;
+export function logisticsEventText(event,context=null){
+ const place=event.sector==='reserve'?`la reserva de ${headquartersName(context)}`:campaignSectors(context).find(s=>s.id===event.sector)?.name??event.sector;
  if(event.state==='blocked'){
-  const label=event.kind==='artillery'?'La pieza de artillería':event.kind==='production'?event.name:event.kind==='equipment'?`${event.quantity} × ${equipmentCatalogItem(event.item)?.name??'arma importada'}`:event.kind==='convoy'?'El convoy':'El cargamento';
-  return `${place}: ${label}, entrega pendiente. ${ARTILLERY_DELIVERY_ISSUES[event.code]??TRANSPORT_ISSUES[event.code]??issueText[event.code]??'La entrega necesita atención.'}`;
+  const label=event.kind==='artillery'?'La pieza de artillería':event.kind==='production'?event.name:event.kind==='equipment'?`${event.quantity} × ${equipmentCatalogItem(event.item,context)?.name??'arma importada'}`:event.kind==='convoy'?'El convoy':'El cargamento';
+  return `${place}: ${label}, entrega pendiente. ${ARTILLERY_DELIVERY_ISSUES[event.code]??transportIssuesFor(context)[event.code]??issueText[event.code]??'La entrega necesita atención.'}`;
  }
  if(event.kind==='artillery')return `${place}: la pieza de artillería llegó al depósito con su munición.`;
- if(event.kind==='equipment')return `${place}: llegaron ${event.quantity} × ${equipmentCatalogItem(event.item)?.name??'arma importada'} a la sala de armas.`;
+ if(event.kind==='equipment')return `${place}: llegaron ${event.quantity} × ${equipmentCatalogItem(event.item,context)?.name??'arma importada'} a la sala de armas.`;
  const goods=Object.entries(event.goods).filter(([,count])=>count>0).map(([key,count])=>`${count} ${RESOURCE_NAMES[key].toLowerCase()}`).join(', ');
  if(event.kind==='production')return `${place}: se completó ${event.name}. La reserva recibe ${goods}.`;
- if(event.kind==='shipment')return `Ensenada: llegó el cargamento. La reserva recibe ${goods}.`;
+ if(event.kind==='shipment')return `${place}: llegó el cargamento. La reserva recibe ${goods}.`;
  return `${place}: el convoy entregó ${goods}.`;
 }

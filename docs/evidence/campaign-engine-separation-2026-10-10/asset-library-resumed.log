@@ -1,0 +1,17 @@
+✔ empty and unrelated stale source caches preserve every current library record (125.699042ms)
+✔ explicit source jobs reject stale or mismatched receipts before changing records (61.415542ms)
+✔ an identical body receipt keeps all reviewed fields and rejects stale triangle counts (144.166417ms)
+✔ one changed body owns its fresh record while both bank support tables and other LODs remain exact (27067.969584ms)
+✔ missing or duplicate selected LODs reject both fresh and current records (139.202209ms)
+✔ a failed direct-output receipt keeps the old manifest but cannot roll back the selected worker file (27120.458ms)
+✔ palette postpass accepts raw and reviewed material states while retaining completed hem data (30381.002291ms)
+✔ coarse donor composition supplies hem classification and the retained UV0 palette resource (53770.94675ms)
+✔ completed layered surface replay keeps final bytes exact and safely rebases selected close and coarse sources (476425.601083ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 615324.303417

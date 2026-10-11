@@ -2,13 +2,14 @@
 import {readFileSync,existsSync} from 'node:fs';
 import ts from '../web/node_modules/typescript/lib/typescript.js';
 export function resolve(specifier,context,next){
+ if(context.parentURL?.includes('/campaigns/')&&(specifier==='react'||specifier.startsWith('react/')))return next(specifier,{...context,parentURL:new URL('../web/app/page.tsx',import.meta.url).href});
  if(specifier.endsWith('?worker&url'))return {url:new URL(specifier,context.parentURL).href,shortCircuit:true};
  if(specifier.startsWith('@/')){
   const base=new URL(`../web/${specifier.slice(2)}`,import.meta.url);
   const extension=['','.tsx','.ts','.js'].find(ext=>existsSync(new URL(`${base.href}${ext}`)));
   if(extension!==undefined)return next(`${base.href}${extension}`,context);
  }
- if(context.parentURL?.includes('/web/')&&specifier.startsWith('.')&&!/\.[a-z]+$/.test(specifier)){
+ if((context.parentURL?.includes('/web/')||context.parentURL?.includes('/campaigns/'))&&specifier.startsWith('.')&&!/\.[a-z]+$/.test(specifier)){
   const extension=['.tsx','.ts','.js'].find(ext=>existsSync(new URL(`${specifier}${ext}`,context.parentURL)));
   if(extension)return next(`${specifier}${extension}`,context);
  }

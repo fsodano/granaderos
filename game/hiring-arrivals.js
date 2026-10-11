@@ -1,7 +1,7 @@
 import {settleServiceGuarantee,guaranteeRecord,treasuryRefundReason} from './service-guarantees.js';
 import {hiringPriceMultiplier} from './economy-balance.js';
 import {characterForOperative,isContractOperative} from './content-character-ids.js';
-import {CAMPAIGN_SECTORS} from './data.js';
+import {campaignSectors} from './campaign-definition.js';
 import {arrivalSitesFor,arrivalSiteLabel} from './arrival-sites.js';
 import {CONTRACT_TERMS,contractQuote} from './contracts.js';
 
@@ -14,7 +14,7 @@ export function hiringArrivalReason(state,destination){
   return null;
 }
 export function hiringArrivalOptions(state){
-  return CAMPAIGN_SECTORS.filter(s=>!hiringArrivalReason(state,s.id)).map(s=>({id:s.id,name:s.name,infrastructure:arrivalSiteLabel(arrivalSitesFor(state).find(site=>site.sector===s.id))}));
+  return campaignSectors(state).filter(s=>!hiringArrivalReason(state,s.id)).map(s=>({id:s.id,name:s.name,infrastructure:arrivalSiteLabel(arrivalSitesFor(state).find(site=>site.sector===s.id))}));
 }
 export function hiringTravelHours(state,id){return characterForOperative(state,id)?.arrivalHours??0;}
 export function pendingHire(state,id){return (state.hiringArrivals??[]).find(a=>a.operativeId===Number(id));}

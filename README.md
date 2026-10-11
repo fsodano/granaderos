@@ -2,7 +2,7 @@
 
 **Formá un ejército. Mantenelo abastecido. Conducilo a la batalla.**
 
-**Versión 0.1 · Juego para navegador en desarrollo.** Consultá el [estado de esta versión](docs/verification/version-0.1.md) para conocer su alcance y las verificaciones pendientes.
+**Juego para navegador en desarrollo.** Consultá la [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) para el código actual. La [etiqueta 0.1](docs/verification/version-0.1.md) conserva el alcance de su punto de control anterior.
 
 [![Vista previa del tráiler de Granaderos: La independencia se conquista](assets/video/intro/preview.gif)](assets/video/intro/granaderos-intro.mp4?raw=true)
 
@@ -14,7 +14,9 @@ La interfaz del juego y este README están en **español**. El código y la mayo
 
 La versión 0.1 permite jugar la campaña y los combates. Todavía falta verificar una campaña completa en esta versión, el equilibrio entre distintas fuerzas y estrategias, el rendimiento en equipos registrados y la presentación gráfica, sonora e histórica para una versión final. Las pruebas de rutas anteriores conservan su fecha y alcance; no certifican estos puntos en el código actual.
 
-La creación y publicación de campañas propias es trabajo futuro. Ya hay editores parciales y un ejemplo editable. El [plan de campañas propias](docs/plans/campaign-authoring.md) describe lo que falta para completar ese proceso.
+El motor y la campaña se guardan por separado. `campaigns/granaderos/` contiene la única campaña incluida. El menú puede mostrar varias campañas instaladas, cada una con su propio progreso. La [guía de campañas](docs/development/campaign-authoring.md) explica cómo crear, verificar e instalar una carpeta local. La publicación comunitaria y las herramientas adicionales siguen en el [plan de campañas propias](docs/plans/campaign-authoring.md).
+
+El [Estudio de campañas](docs/authoring/campaign-studio.md), en la ruta `/studio`, permite crear, editar, probar y descargar un paquete completo desde el navegador. La [verificación del estudio](docs/evidence/campaign-studio-2026-10-10/README.md) registra las pruebas realizadas, la exportación y los límites de la revisión del navegador.
 
 [Jugar en el navegador](https://fsodano.github.io/granaderos/) · [Ejecutar en tu equipo](#ejecutar-en-tu-equipo) · [Cómo se juega](#cómo-se-juega) · [Desarrollo](#desarrollo) · [Documentación](docs/README.md)
 
@@ -28,23 +30,28 @@ Para probar la versión 0.1, iniciá una campaña nueva. No se garantiza que fun
 
 ## Ejecutar en tu equipo
 
-Instalá **Node.js 22.13.0 o posterior** y npm. Después, ejecutá:
+Instalá **Node.js 22.13.0 o posterior** y npm. Estos comandos descargan la rama predeterminada del repositorio:
 
 ```sh
 git clone https://github.com/fsodano/granaderos.git
 cd granaderos
-git checkout 0.1
 npm ci --prefix web
 npm run dev
 ```
 
+Para probar esta implementación de campañas separadas antes de su integración en `main`, ejecutá `git checkout feature/campaigns` antes de instalar las dependencias.
+
+Para revisar el código guardado de la versión 0.1, ejecutá `git checkout 0.1` antes de instalar las dependencias. Esa etiqueta conserva su alcance y no incluye las herramientas de campañas agregadas después.
+
 Abrí [localhost:3000](http://localhost:3000) o la dirección que indique el servidor de desarrollo.
 
-Elegí **Nueva campaña** para comenzar en el despacho del Retiro. Retiro es el único sector bajo tu control. Contratá combatientes o creá tu propio personaje sin costo. La primera persona que entre en servicio permite avanzar el capítulo inicial, sin un pago adicional a la academia. Las contrataciones usan el precio indicado y los combatientes deben llegar antes de incorporarse a la fuerza. **Combate de San Lorenzo** inicia una batalla independiente.
+Seleccioná una campaña instalada. En la campaña Granaderos, elegí **Nueva campaña** para comenzar en el despacho del Retiro. Retiro es el único sector bajo tu control. Contratá combatientes o creá tu propio personaje sin costo. La primera persona que entre en servicio permite avanzar el capítulo inicial, sin un pago adicional a la academia. Las contrataciones usan el precio indicado y los combatientes deben llegar antes de incorporarse a la fuerza. **Combate de San Lorenzo** inicia una batalla independiente.
 
 El juego guarda el progreso de la campaña en el navegador. Usá **Guardar** para exportar una partida a un archivo y **Importar partida** para cargarla.
 
-La pantalla de inicio también permite abrir el [editor de historia](docs/development/story-editor.md) en `/story` y el [editor de sectores](docs/development/sector-editor.md) en `/editor`. Podés probar sus herramientas actuales y el ejemplo **La ruta de las postas**. El proceso completo para crear, compartir e instalar campañas propias queda para una versión futura.
+La pantalla de inicio también permite abrir el [editor de historia](docs/development/story-editor.md) y el [editor de sectores](docs/development/sector-editor.md) para la campaña seleccionada. Sus borradores se guardan por separado para cada campaña. Una partida iniciada desde el editor usa una copia de su contenido y no reemplaza el progreso de la campaña instalada. El ejemplo **La ruta de las postas** sigue disponible como contenido experimental; no figura como segunda campaña instalada.
+
+Para crear una campaña local, usá `npm run campaign:new -- mi-campana ./borradores/mi-campana`. Verificá su carpeta con `npm run campaign:check -- ./borradores/mi-campana`. La [guía de campañas](docs/development/campaign-authoring.md) detalla el formato, los recursos gráficos y la instalación. Estas órdenes están en el código actual de desarrollo; la etiqueta histórica `0.1` conserva su contenido original.
 
 El juego para navegador usa JavaScript y React. No requiere el submódulo del motor ni una instalación original de JA2.
 
@@ -71,9 +78,9 @@ Consultá el **Manual de campaña** dentro del juego para comenzar. Los [control
 
 <table>
   <tr>
-    <td align="center"><img src="web/public/art/portrait-0.webp" width="180" alt="Retrato pintado de Martín Miguel de Güemes utilizado en el juego"><br><strong>Martín Miguel de Güemes</strong></td>
-    <td align="center"><img src="web/public/art/portrait-3.webp" width="180" alt="Retrato pintado de Juan Bautista Cabral utilizado en el juego"><br><strong>Juan Bautista Cabral</strong></td>
-    <td align="center"><img src="web/public/art/portrait-1.webp" width="180" alt="Retrato pintado de Juana Azurduy utilizado en el juego"><br><strong>Juana Azurduy</strong></td>
+    <td align="center"><img src="campaigns/granaderos/assets/portrait-0.webp" width="180" alt="Retrato pintado de Martín Miguel de Güemes utilizado en el juego"><br><strong>Martín Miguel de Güemes</strong></td>
+    <td align="center"><img src="campaigns/granaderos/assets/portrait-3.webp" width="180" alt="Retrato pintado de Juan Bautista Cabral utilizado en el juego"><br><strong>Juan Bautista Cabral</strong></td>
+    <td align="center"><img src="campaigns/granaderos/assets/portrait-1.webp" width="180" alt="Retrato pintado de Juana Azurduy utilizado en el juego"><br><strong>Juana Azurduy</strong></td>
   </tr>
 </table>
 
@@ -94,12 +101,13 @@ npm run build        # Compilación y validación de la exportación estática e
 
 La [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo elegir pruebas específicas, rápidas o completas, y cómo registrar el alcance de una versión de desarrollo. Ejecutá todas las pruebas antes de cambiar las reglas de juego compartidas o de declarar completa la validación de una campaña.
 
-Consultá primero el [estado de la versión 0.1](docs/verification/version-0.1.md) para conocer el alcance probado y el trabajo pendiente. El [registro de avances publicados](docs/verification/published-progress.md) y el [índice de verificación](docs/verification/README.md) conservan pruebas de entregas anteriores. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
+Consultá primero la [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) para conocer las pruebas y los límites del código actual. El [estado de la versión 0.1](docs/verification/version-0.1.md) conserva la evidencia del punto de control anterior. El [registro de avances publicados](docs/verification/published-progress.md) y el [índice de verificación](docs/verification/README.md) conservan pruebas de entregas anteriores. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
 
 | Ruta | Contenido |
 | --- | --- |
-| [web/](web/) | Interfaz para navegador, editores e ilustraciones utilizadas por el juego |
-| [game/](game/) | Reglas tácticas, sistemas de campaña, mapas y validación de partidas guardadas |
+| [web/](web/) | Interfaz para navegador, editores y recursos visuales compartidos |
+| [game/](game/) | Motor compartido, reglas tácticas y validación de partidas guardadas |
+| [campaigns/](campaigns/) | Campañas instaladas: contenido, mundo, mapas, presentación y recursos propios |
 | [assets/](assets/) | Fuentes gráficas, instrucciones de generación, referencias y exportaciones |
 | [tests/](tests/) | Pruebas de reglas e integración |
 | [tools/](tools/) | Herramientas de compilación, recursos gráficos y verificación |
@@ -108,6 +116,6 @@ Consultá primero el [estado de la versión 0.1](docs/verification/version-0.1.m
 
 La [guía de desarrollo](docs/development/getting-started.md) detalla la instalación, los archivos generados y las comprobaciones. La versión para navegador es el juego principal. La conversión nativa anterior tiene requisitos de compilación y ejecución separados.
 
-Para contribuir, revisá el [estado de la versión 0.1](docs/verification/version-0.1.md), los criterios de aceptación y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
+Para contribuir, revisá la [verificación actual](docs/verification/campaign-engine-separation-2026-10-10.md), los criterios de aceptación y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
 
-[VERSION](VERSION) registra la versión del código. La etiqueta `0.1` conserva este punto de desarrollo. La versión final requiere cerrar sus criterios de aceptación y superar la auditoría de finalización.
+[VERSION](VERSION) registra la versión del código. La etiqueta `0.1` conserva el punto de desarrollo publicado antes de la separación de campañas. La versión final requiere cerrar sus criterios de aceptación y superar la auditoría de finalización.

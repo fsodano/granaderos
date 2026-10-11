@@ -1,3 +1,4 @@
+import {campaignUIReady} from './mounted-campaign-ready.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,6 +7,7 @@ import {createElement as h,act} from '../web/node_modules/react/index.js';
 import {createRoot} from '../web/node_modules/react-dom/client.js';
 import {initialCampaign} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {campaignFetch} from './campaign-library-fixture.mjs';
 
 // Mount the actual Home state and autosave controller. Replace only its screen
 // presentation children so navigation assertions do not depend on map graphics.
@@ -31,16 +33,16 @@ async function mountHome(t,stored){
  dom.window.scrollTo=()=>{};
  const jobs=[],attempts=[],reads=[];
  class Worker{postMessage(job){jobs.push({worker:this,...structuredClone(job)});}terminate(){this.closed=true;}}
- const globals={window:dom.window,document:dom.window.document,Worker,IS_REACT_ACT_ENVIRONMENT:true,
+ const globals={fetch:campaignFetch,window:dom.window,document:dom.window.document,Worker,IS_REACT_ACT_ENVIRONMENT:true,
   localStorage:{getItem(key){reads.push(key);return stored;},setItem(key,text){attempts.push({key,text});throw Error('QuotaExceededError');}}};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
  for(const [key,value] of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
  const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor] of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
- await act(async()=>root.render(h(Home)));
+ await act(async()=>root.render(h(Home)));await campaignUIReady(dom.window.document);
  return {dom,jobs,attempts,reads,
-  async click(text){const button=[...dom.window.document.querySelectorAll('button')].find(button=>button.textContent.includes(text));assert.ok(button,`missing button ${text}`);await act(async()=>button.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
-  async menu(){const button=dom.window.document.querySelector('button[aria-label="Menú"]');assert.ok(button);await act(async()=>button.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
+  async click(text){const button=[...dom.window.document.querySelectorAll('button')].find(button=>button.textContent.includes(text));assert.ok(button,`missing button ${text}`);await act(async()=>button.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));await campaignUIReady(dom.window.document);},
+  async menu(){const button=dom.window.document.querySelector('button[aria-label="Menú"]');assert.ok(button);await act(async()=>button.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));await campaignUIReady(dom.window.document);},
   async fail(){assert.ok(jobs[0]);await act(async()=>jobs[0].worker.onmessageerror());},
   screen(){return dom.window.document.querySelector('[data-screen]');},
   warning(){return dom.window.document.body.textContent.includes('No se pudo guardar en este navegador. Exportá la partida para conservarla.');},

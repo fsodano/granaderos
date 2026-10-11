@@ -11,6 +11,7 @@ import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {portraitFor} from '../web/lib/portraits.ts';
 import {BALANCED_PORTRAITS} from '../game/portrait-expansion.js';
+import {canonicalSpriteAppearance} from '../game/sprite-appearances.js';
 import {CRITICAL_HEALTH} from '../game/actor-condition.js';
 
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -31,8 +32,8 @@ test('the catalog preserves all 64 old faces and adds 122 distinct faces with re
  assert.equal(defaultProfile().portraitId,'avatar-man-gaucho');assert.equal(defaultProfile().version,2);
  for(const p of CHARACTER_PORTRAITS){
   assert.ok(p.name.length>3,p.id);assert.ok(PORTRAIT_GENDERS.some(g=>g.id===p.gender),p.id);assert.ok(PORTRAIT_ROLES.some(r=>r.id===p.role),p.id);assert.ok(PORTRAIT_SKIN_TONES.some(t=>t.id===p.skinTone),p.id);
-  assert.equal(p.src,portraitFor(p.id),p.id);assert.match(p.src,/^\/art\/[a-z0-9-]+\.(webp|png)$/);
-  const file=new URL(`../web/public${p.src}`,import.meta.url);assert.ok(existsSync(file),p.id);
+  assert.equal(p.src,portraitFor(p.id),p.id);assert.match(p.src,/^\/campaigns\/granaderos\/assets\/[a-z0-9-]+\.(webp|png)$/);
+  const file=new URL(`..${p.src}`,import.meta.url);assert.ok(existsSync(file),p.id);
   const bytes=readFileSync(file);assert.ok(bytes.length>1000,p.id);
   if(p.src.endsWith('.png'))assert.deepEqual([...bytes.subarray(0,8)],[137,80,78,71,13,10,26,10]);
   else{assert.equal(bytes.subarray(0,4).toString(),'RIFF');assert.equal(bytes.subarray(8,12).toString(),'WEBP');}
@@ -44,8 +45,10 @@ for(const portraitId of expectedIds)test(`custom portrait ${portraitId} survives
  const profile=profileFor(portraitId),originalProfile=structuredClone(profile);
  const baseline=createOfficerRecord('Elena Testigo',answers,profileFor('avatar-man-gaucho'));
  const selected=createOfficerRecord('Elena Testigo',answers,profile);
- const withoutPortrait=({portrait,portraitId,...rest})=>rest;
+ const withoutPortrait=({portrait,portraitId,spriteAppearance,skinTone,...rest})=>rest;
  assert.deepEqual(withoutPortrait(selected),withoutPortrait(baseline),'choosing a face changes no attributes, traits, class, equipment, pay or identity');
+ if(p.spriteAppearance)assert.equal(selected.spriteAppearance,canonicalSpriteAppearance(p.spriteAppearance));
+ assert.equal(selected.skinTone,p.spriteSkinTone??p.skinTone);
  let campaign=order(starting,{type:'createOfficer',name:'Elena Testigo',answers,profile});
  assert.deepEqual(profile,originalProfile);assert.equal(campaign.resources.treasury,starting.resources.treasury);assert.deepEqual(campaign.recruited,[1000]);assert.equal(campaign.contracts[1000].paid,0);
  campaign=decodeSave(encodeSave(campaign)).campaign;

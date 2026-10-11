@@ -13,6 +13,8 @@ import {advanceBattleClock,syncBattleTime} from '../game/time.js';
 const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next.lastError,null,next.lastError);return next;};
 const hire={type:'recruitCivic',id:110,term:'day',destination:'retiro'};
 const saved=s=>decodeSave(encodeSave(s)).campaign;
+// Arrival tests explicitly author their six-hour trip; stock hires are immediate.
+const delayedContent=()=>{const content=defaultContentPackage();content.characters.find(c=>c.id==='person-110').arrivalHours=6;return content;};
 
 test('hiring rejects uncontrolled, open-water and unsupported destinations without charging',()=>{
  const s=initialCampaign(42);
@@ -29,7 +31,7 @@ test('a controlled port receives legacy hires at that port instead of teleportin
  s=saved(s);assert.equal(s.operativeState[110].location,'ensenada');assert.equal(s.contracts[110].started,0);
 });
 test('a pending hire remains off-map across saves and pays once with service starting on arrival',()=>{
- let s=initialCampaign(42,defaultContentPackage());const money=s.resources.treasury;
+ let s=initialCampaign(42,delayedContent());const money=s.resources.treasury;
  s=order(s,hire);const paid=money-s.resources.treasury;assert.ok(paid>0);
  assert.equal(s.hiringArrivals[0].dueAt,6);assert.equal(s.contracts[110],undefined);assert.equal(s.recruited.includes(110),false);
  for(const sector of Object.keys(s.sectors))assert.equal(encountersFor(s,sector).some(n=>n.operativeId===110),false);
@@ -42,14 +44,14 @@ test('a pending hire remains off-map across saves and pays once with service sta
  s=saved(s);assert.equal(s.contracts[110].paid,paid);assert.equal(s.recruited.filter(id=>id===110).length,1);
 });
 test('lost control holds arrivals and a saved redirect restarts travel without another payment',()=>{
- let s=order(secureArea(initialCampaign(42,defaultContentPackage()),'ensenada','buenos_aires'),{...hire,destination:'ensenada'});const money=s.resources.treasury;
+ let s=order(secureArea(initialCampaign(42,delayedContent()),'ensenada','buenos_aires'),{...hire,destination:'ensenada'});const money=s.resources.treasury;
  s.sectors.ensenada.owner='royalist';s=order(s,{type:'wait',hours:6});assert.equal(s.recruited.includes(110),false);assert.equal(s.contracts[110],undefined);
  const invalid=dispatchCampaign(s,{type:'redirectHire',id:110,destination:'river'});assert.ok(invalid.lastError);assert.deepEqual(invalid.hiringArrivals,s.hiringArrivals);
  s=order(saved(s),{type:'redirectHire',id:110,destination:'retiro'});assert.equal(s.hiringArrivals[0].dueAt,12);assert.equal(s.resources.treasury,money);
  s=order(saved(s),{type:'wait',hours:6});assert.equal(s.operativeState[110].location,'retiro');assert.equal(s.contracts[110].started,12);assert.equal(s.resources.treasury,money);
 });
 test('naval blockade holds a water-only arrival until a safe land destination is chosen',()=>{
- let s=order(secureArea(initialCampaign(42,defaultContentPackage()),'ensenada','buenos_aires'),{...hire,destination:'ensenada'});
+ let s=order(secureArea(initialCampaign(42,delayedContent()),'ensenada','buenos_aires'),{...hire,destination:'ensenada'});
  s.blockade=true;s=order(s,{type:'wait',hours:6});assert.equal(s.recruited.includes(110),false);
  s=order(saved(s),{type:'redirectHire',id:110,destination:'buenos_aires'});
  s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[110].location,'buenos_aires');assert.equal(s.squad.includes(110),false);assert.equal(s.contracts[110].started,12);
@@ -65,13 +67,13 @@ test('a naval force arriving in the same hour is resolved before a hire is admit
  assert.ok(saved(s));
 });
 test('cancelling refunds exactly once and never creates a contract',()=>{
- let s=initialCampaign(42,defaultContentPackage());const money=s.resources.treasury;
+ let s=initialCampaign(42,delayedContent());const money=s.resources.treasury;
  s=order(s,hire);s=order(saved(s),{type:'cancelHireArrival',id:110});assert.equal(s.resources.treasury,money);assert.equal(s.hiringArrivals.length,0);assert.equal(s.contracts[110],undefined);
  const again=dispatchCampaign(s,{type:'cancelHireArrival',id:110});assert.ok(again.lastError);assert.equal(again.resources.treasury,money);
  s=order(s,hire);assert.equal(s.hiringArrivals.length,1);
 });
 test('invalid saved receipts cannot change refunds, terms, identities or arrival timing',()=>{
- const s=order(initialCampaign(42,defaultContentPackage()),hire);
+ const s=order(initialCampaign(42,delayedContent()),hire);
  for(const mutate of [a=>a.dueAt++,a=>a.destination='river',a=>a.serviceHours=1,a=>a.paid++,a=>a.permanent=true,a=>a.travelHours++,a=>a.operativeId=3,a=>a.term='constructor',a=>a.departedAt=-1,a=>a.extra=true]){
   const copy=structuredClone(s);mutate(copy.hiringArrivals[0]);assert.throws(()=>saved(copy),/llegadas/);
  }
@@ -80,7 +82,7 @@ test('invalid saved receipts cannot change refunds, terms, identities or arrival
  const captive=structuredClone(s);captive.operativeState[110].captured=true;assert.throws(()=>saved(captive),/llegadas/);
 });
 test('a loaded destination holds the hire through tactical time and save, then accepts on departure',()=>{
- const d=defaultContentPackage();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
+ const d=delayedContent();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});s=order(s,hire);s=order(s,{type:'visitSector'});
  let battle=enterSector(s.pendingBattle);advanceBattleClock(battle,6*3600);
  const pair=syncBattleTime(s,battle);assert.equal(pair.error,null);assert.equal(pair.campaign.recruited.includes(110),false);assert.equal(pair.battle.units.some(u=>u.id==='110'),false);
@@ -89,7 +91,7 @@ test('a loaded destination holds the hire through tactical time and save, then a
  assert.ok(s.recruited.includes(110));assert.equal(s.hiringArrivals.length,0);assert.equal(s.contracts[110].started,6);assert.equal(saved(s).contracts[110].expiresAt,30);
 });
 test('remote arrival during another deployment does not alter its squad or invalidate its save',()=>{
- const d=defaultContentPackage();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
+ const d=delayedContent();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});secureArea(s,'ensenada');s=order(s,{...hire,destination:'ensenada'});s=order(s,{type:'visitSector'});
  const battle=enterSector(s.pendingBattle);advanceBattleClock(battle,6*3600);const pair=syncBattleTime(s,battle);assert.equal(pair.error,null);
  assert.ok(pair.campaign.recruited.includes(110));assert.equal(pair.campaign.squad.includes(110),false);assert.equal(pair.campaign.operativeState[110].location,'ensenada');
@@ -115,7 +117,7 @@ test('each configured travel duration and published weekly or monthly term is re
 
 
 test('an arrival at the departure point does not join a squad already marching elsewhere',()=>{
- const d=defaultContentPackage();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
+ const d=delayedContent();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});s=order(s,hire);
  // The rural waypoint keeps the real march active when the six-hour hire arrives.
  secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires',waypoints:['cell-23-29']});

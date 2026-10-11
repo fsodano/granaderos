@@ -1,12 +1,12 @@
 'use client';
 import {useState} from 'react';
-import {CAMPAIGN_SECTORS} from '../../game/data.js';
+import {campaignSectors} from '../../game/campaign-definition.js';
 import {artilleryProfile} from '../../game/artillery-definitions.js';
 import {artilleryTransportQuote,artilleryTransferDelay,localArtilleryDepot} from '../../game/artillery-transport.js';
-const place=(id:string)=>CAMPAIGN_SECTORS.find(s=>s.id===id)?.name??id;
+
 const load=(gun:any)=>`${gun.loaded?'Cargada':gun.reloadProgress?`Recarga ${Math.floor(gun.reloadProgress*100)}%`:'Descargada'} · ${gun.ammo} en reserva`;
 export function SendArtillery({state:s,sector,gun,source='field',dispatch}:{state:any;sector:string;gun:any;source?:'field'|'depot';dispatch:(a:any)=>void}){
- const destinations=CAMPAIGN_SECTORS.filter(p=>p.id!==s.location&&s.sectors[p.id]?.owner==='patriot');
+ const destinations=campaignSectors(s).filter(p=>p.id!==s.location&&s.sectors[p.id]?.owner==='patriot');
  const [chosen,setChosen]=useState(''),[mode,setMode]=useState(s.routes.carts?'carts':'flotilla'),to=chosen||destinations[0]?.id||'',quote=artilleryTransportQuote(s,sector,gun.id,to,mode,source);
  return <fieldset aria-label={`Trasladar ${artilleryProfile(s,gun).name}`}><legend>Trasladar pieza</legend>
   <label>Destino de la pieza<select value={to} onChange={e=>setChosen(e.target.value)}><option value="">Elegir destino</option>{destinations.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
@@ -16,6 +16,7 @@ export function SendArtillery({state:s,sector,gun,source='field',dispatch}:{stat
  </fieldset>;
 }
 export function ArtilleryStorage({state:s,dispatch}:{state:any;dispatch:(a:any)=>void}){
+ const place=(id:string)=>campaignSectors(s).find(sector=>sector.id===id)?.name??id;
  const depot=localArtilleryDepot(s),transfers=s.artilleryTransfers??[];
  return <>
   {depot.length>0&&<section aria-label="Depósito local de artillería"><h3>Depósito de {place(s.location)}</h3><p>Podés elegir estas piezas en la batería para el próximo ataque. Conservan su munición y el trabajo de recarga.</p>{depot.map((gun:any)=><div key={gun.id} data-stored-artillery-id={gun.id}><p>{artilleryProfile(s,gun).name} · {load(gun)}</p><SendArtillery state={s} sector={s.location} gun={gun} source="depot" dispatch={dispatch}/></div>)}</section>}

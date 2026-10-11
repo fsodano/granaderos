@@ -1,5 +1,15 @@
 /* global __GRANADEROS_BASE_PATH__ */
 const basePath = typeof __GRANADEROS_BASE_PATH__ === 'undefined' ? '' : __GRANADEROS_BASE_PATH__;
+const previewScopes=[];
+
+/** Private editor assets are presentation URLs only. Definitions retain their
+ * portable package paths. The scope disappears when the editor unmounts.
+ * @param {Map<string,string>} assets
+ */
+export function registerPreviewAssets(assets){
+ const scope={assets};previewScopes.push(scope);
+ return ()=>{const index=previewScopes.indexOf(scope);if(index>=0)previewScopes.splice(index,1);};
+}
 
 /** Apply the hosting path only at the browser boundary. Saved art URLs stay portable.
  * @template {string | null | undefined} T
@@ -8,6 +18,7 @@ const basePath = typeof __GRANADEROS_BASE_PATH__ === 'undefined' ? '' : __GRANAD
  * @returns {T}
  */
 export function sitePath(path, base = basePath) {
+ if(typeof path==='string')for(let index=previewScopes.length-1;index>=0;index--){const resolved=previewScopes[index].assets.get(path);if(resolved)return /** @type {T} */(resolved);}
  if (typeof path !== 'string' || !base || !path.startsWith('/') || path.startsWith('//')) return path;
  if (path === base || path.startsWith(`${base}/`) || path.startsWith(`${base}?`) || path.startsWith(`${base}#`)) return path;
  return /** @type {T} */ (`${base}${path}`);

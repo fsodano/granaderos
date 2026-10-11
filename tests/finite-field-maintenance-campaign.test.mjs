@@ -38,7 +38,9 @@ function event(pair,action,history){
 const tactical=(pair,action,history)=>event(pair,{kind:'tactical',order:{unitId:String(ID),...action}},history);
 
 function paidArrival(){
- const start=saved({campaign:initialCampaign(45,defaultContentPackage())}),quote=contractQuote(start.campaign,rosterFor(start.campaign).find(op=>op.id===ID),'week'),history=[];
+ // This physical maintenance fixture authors its six-hour delivery explicitly.
+ const content=defaultContentPackage();content.characters.find(c=>c.id===`person-${ID}`).arrivalHours=6;
+ const start=saved({campaign:initialCampaign(45,content)}),quote=contractQuote(start.campaign,rosterFor(start.campaign).find(op=>op.id===ID),'week'),history=[];
  assert.ok(quote.available&&quote.price>0);
  let pair=event(start,{kind:'campaign',order:{type:'recruitCivic',id:ID,term:'week'}},history);
  assert.equal(pair.campaign.recruited.includes(ID),false,'booking does not bypass the real arrival');
@@ -108,7 +110,7 @@ test('a real paid native hire acquires the finite Retiro toolkit, repairs actual
  assert.equal(actor(pair).hp,initial.hp);assert.equal(actor(pair).bleeding,initial.bleeding);assert.equal(pair.campaign.resources.treasury,cash);
  assert.equal(chest(pair).contents.some(item=>item.instanceId===KIT),false);
  replay(paid.start,paid.history,pair);
- t.diagnostic(JSON.stringify({fixture:'fresh default seed45, native Acosta hire and real Retiro chest; wear earned through actual empty-ground fire, no prepared outcome',operative:ID,price:paid.quote.price,treasury:cash,hour:pair.campaign.hour,second:pair.campaign.secondOfHour,events:paid.history.length,fieldSeconds:seconds,maintenanceSeconds:repairSeconds,condition:[100,97,actor(pair).condition],materials:[100,repairMaterialPoints(actor(pair))],rounds:[10,rounds(actor(pair))],hp:actor(pair).hp,bleeding:actor(pair).bleeding,kitInstance:kit(actor(pair)).instanceId,chestKits:chest(pair).contents.filter(item=>item.instanceId===KIT).length}));
+ t.diagnostic(JSON.stringify({fixture:'seed45, native Acosta with authored six-hour arrival and real Retiro chest; wear earned through actual empty-ground fire, no prepared outcome',operative:ID,price:paid.quote.price,treasury:cash,hour:pair.campaign.hour,second:pair.campaign.secondOfHour,events:paid.history.length,fieldSeconds:seconds,maintenanceSeconds:repairSeconds,condition:[100,97,actor(pair).condition],materials:[100,repairMaterialPoints(actor(pair))],rounds:[10,rounds(actor(pair))],hp:actor(pair).hp,bleeding:actor(pair).bleeding,kitInstance:kit(actor(pair)).instanceId,chestKits:chest(pair).contents.filter(item=>item.instanceId===KIT).length}));
 });
 
 test('a declared older worn-gun reserve spends its real numeric and cache materials, rejects forged resumes and never restores exhausted stock on return',t=>{

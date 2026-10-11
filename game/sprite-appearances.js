@@ -1,4 +1,4 @@
-import {CHARACTER_PORTRAITS} from './character-portraits.js';
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
 
 // Shared visual archetypes, not one sprite set per named character.
 // These traits describe the actual art to author; they are not inferred from
@@ -52,34 +52,20 @@ const canonicalMappings=entries=>Object.freeze(Object.fromEntries(Object.entries
 
 // The portrait roster was visually reviewed. A named character selects a
 // reusable combination; no unique animation or atlas is required for that ID.
-export const ROSTER_SPRITE_APPEARANCES = canonicalMappings({
- 0:'scout',1:'woman-officer',2:'friar',3:'militia',4:'blue-officer',
- 5:'blue-officer',6:'naval',7:'militia',8:'woman-shawl',9:'gaucho',
- 10:'naval',11:'blue-officer',57:'blue-officer',
- 100:'gaucho',101:'woman-scout',102:'worker',103:'naval',104:'naval',
- 105:'rifleman',106:'gaucho',107:'woman-headscarf',108:'gaucho',109:'scarlet-officer',
- 110:'militia',111:'blue-officer',112:'surgeon',113:'rifleman',114:'militia',
- 115:'scout',116:'woman-headscarf',117:'gaucho',118:'scarlet-officer',119:'militia',
- 120:'woman-shawl',121:'artisan',122:'woman-shawl',123:'blue-officer',124:'scarlet-officer',
- 125:'artisan',126:'woman-scout',127:'militia',128:'rifleman',129:'gaucho',
- 130:'woman-shawl',131:'blue-officer',132:'scarlet-officer',133:'militia',134:'scout',
- 135:'woman-elder',136:'militia',137:'blue-officer',138:'blue-officer',139:'woman-shawl',
- 140:'worker',141:'blue-officer',142:'rifleman',143:'rifleman',144:'artisan',
- 145:'gaucho',146:'surgeon',147:'scout',
-});
-
-export const CUSTOM_SPRITE_APPEARANCES = canonicalMappings({
- ...Object.fromEntries(CHARACTER_PORTRAITS.filter(portrait=>portrait.spriteAppearance).map(portrait=>[portrait.id,portrait.spriteAppearance])),
- '103':'naval','104':'naval',
-});
+export const ROSTER_SPRITE_APPEARANCES=canonicalMappings(DEFAULT_CATALOGUE.rosterSpriteAppearances);
+export const CUSTOM_SPRITE_APPEARANCES=canonicalMappings(DEFAULT_CATALOGUE.customSpriteAppearances);
 
 export function spriteAppearance(unit, kind='soldier') {
  // An explicit saved appearance is stable across roster changes and can also
  // be used by authored NPCs. Ignore unknown values in older or edited saves.
- // Enemy military always retains its distinct faction uniform.
- if(unit.side==='enemy'&&kind!=='civilian')return 'royalist';
  const explicit=canonicalSpriteAppearance(unit.spriteAppearance);
  if(explicit)return explicit;
+ // Generic actors do not infer a historical body or uniform from a legacy
+ // numeric slot, civilian status, or a faction change after capture.
+ if(unit.genericCharacter)return 'worker';
+ // Authored visual selections take precedence over faction defaults. Ordinary
+ // enemies without a selection retain their existing military appearance.
+ if(unit.side==='enemy'&&kind!=='civilian')return 'royalist';
  if(kind==='civilian')return 'surgeon';
  if(unit.side==='enemy')return 'royalist';
  if(Number(unit.id)===1000){

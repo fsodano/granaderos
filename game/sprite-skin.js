@@ -6,19 +6,20 @@ export const SKIN_PALETTES=Object.freeze({
  dark:Object.freeze({label:'Oscura',r:[.025,.08,.16,.29,.50],g:[.018,.04,.08,.16,.32],b:[.014,.025,.05,.10,.20]}),
 });
 // Existing portrait art direction for the named historical cast.
-const historical={0:'brown',1:'brown',2:'light',3:'dark',4:'light',5:'light',6:'light',7:'dark',8:'brown',9:'brown',10:'light',11:'light',57:'light'};
+import {DEFAULT_CATALOGUE} from '../campaigns/default.js';
+const historical=DEFAULT_CATALOGUE.historicalSkinTones;
 import {ROSTER_SKIN_TONES} from './sprite-skin-roster.js';
 import {characterPortrait} from './character-portraits.js';
 export function spriteSkinTone(unit){
  const explicit=({white:'light',black:'dark'})[unit.skinTone]??unit.skinTone;
  if(Object.hasOwn(SKIN_PALETTES,explicit))return explicit;
- const avatarTone=Number(unit.id)===1000?characterPortrait(unit.portraitId)?.spriteSkinTone:undefined;
+ const avatarTone=!unit.genericCharacter&&Number(unit.id)===1000?characterPortrait(unit.portraitId)?.spriteSkinTone:undefined;
  if(avatarTone)return avatarTone;
  // Reusing a recruit's portrait also reuses that portrait's palette. Keep
  // avatar and legacy officer IDs on their existing stable fallback.
  const portraitId=Number(unit.portraitId),id=Number(unit.id)===1000&&Number.isInteger(portraitId)&&portraitId>=100&&portraitId<=147?portraitId:unit.id;
- if(Object.hasOwn(historical,id))return historical[id];
- if(Object.hasOwn(ROSTER_SKIN_TONES,id))return ROSTER_SKIN_TONES[id];
+ if(!unit.genericCharacter&&Object.hasOwn(historical,id))return historical[id];
+ if(!unit.genericCharacter&&Object.hasOwn(ROSTER_SKIN_TONES,id))return ROSTER_SKIN_TONES[id];
  // Stable ID selection also works for saved NPCs and enemy units. Never use RNG
  // here: drawing another frame or reloading a save cannot change a person's skin.
  let hash=2166136261;for(const c of String(id??unit.portraitId??'default'))hash=Math.imul(hash^c.charCodeAt(0),16777619)>>>0;

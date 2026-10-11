@@ -1,6 +1,7 @@
 import {authoredPresentation} from './content-character-presentation.js';
-import {characterForOperative,operativeIdForCharacter,legacyOperativeId,isContractCharacter} from './content-character-ids.js';
+import {characterForOperative,operativeIdForCharacter,legacyOperativeId,isContractCharacter,hasGenericCharacterDefinitions} from './content-character-ids.js';
 import {CIVIC_DEFAULTS} from './civic-recruits.js';
+import {scenarioFor} from './campaign-scenario.js';
 // Historical roles keep their original slots. New authored identities never
 // acquire their numeric powers and need no entry in the built-in catalogue.
 export function authoredOperative(state, operative) {
@@ -10,6 +11,7 @@ export function authoredOperative(state, operative) {
     ...operative,
     ...definition.attributes,
     ...authoredPresentation(definition),
+    ...(hasGenericCharacterDefinitions(state.contentCampaign?.package)?{genericCharacter:true,abilities:[...(definition.abilities??[])]}:{}),
     // Do not inherit a newer default preference into an older pinned package.
     serviceRefusals:structuredClone(definition.serviceRefusals??[]),
     preferredCompanions:structuredClone(definition.preferredCompanions??[]),
@@ -26,7 +28,7 @@ export function authoredOperative(state, operative) {
     biography: definition.biography,
     monthlyPay: definition.monthlyPay,
     ...(definition.serviceGuarantee===undefined?{}:{serviceGuarantee:definition.serviceGuarantee}),
-    weeklyPay: Math.ceil((definition.monthlyPay * 7) / 30),
+    weeklyPay: scenarioFor(state).weeklyPayFor(state,operative,definition),
     portraitId: definition.portrait,
     portrait: definition.portrait,
     contentId: definition.id,
@@ -35,7 +37,7 @@ export function authoredOperative(state, operative) {
 /** @returns {Array<ReturnType<typeof authoredOperative>>} */
 export function authoredRoster(state,baseline){
  const content=state.contentCampaign?.package;if(!content)return baseline;
- return content.characters.map(c=>authoredOperative(state,baseline.find(o=>o.id===legacyOperativeId(c.id))??{
+ return content.characters.map(c=>authoredOperative(state,(!hasGenericCharacterDefinitions(content)&&baseline.find(o=>o.id===legacyOperativeId(c.id)))||{
   ...CIVIC_DEFAULTS,id:operativeIdForCharacter(content,c.id),name:c.name,nickname:c.nickname,role:c.role,biography:c.biography,
   classId:'soldado',traits:[],ridingSkill:0,monthlyPay:c.monthlyPay,service:'contract',progression:'experience',
  }));

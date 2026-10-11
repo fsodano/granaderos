@@ -7,12 +7,12 @@ const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const id=v=>typeof v==='string'&&/^[a-z][a-z0-9-]{0,59}$/.test(v)&&!['constructor','prototype'].includes(v);
 const text=(v,max)=>typeof v==='string'&&v.trim().length>0&&v.length<=max;
 const fields=(v,keys)=>object(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
-export function validateDialogue(graph,characters,quests){
+export function validateDialogue(graph,characters,quests,context=null){
  need(fields(graph,['entry','nodes'])&&id(graph.entry)&&Array.isArray(graph.nodes)&&graph.nodes.length>=1&&graph.nodes.length<=30,'El diálogo necesita un comienzo y entre 1 y 30 pasajes.');
  const ids=new Set();
  for(const node of graph.nodes){
   need(fields(node,['id','title','text','choices'])&&id(node.id)&&!ids.has(node.id)&&text(node.title,80)&&text(node.text,1000)&&Array.isArray(node.choices)&&node.choices.length<=12,'Cada pasaje necesita identidad, título, texto y hasta 12 opciones válidas.');ids.add(node.id);
-  const choices=new Set();for(const c of node.choices){need(object(c)&&['id','label','next'].every(k=>Object.hasOwn(c,k))&&Object.keys(c).every(k=>['id','label','next','conditions','effects'].includes(k))&&id(c.id)&&!choices.has(c.id)&&text(c.label,160)&&id(c.next),'Las opciones del diálogo no son válidas.');choices.add(c.id);validateDialogueConditions(c.conditions,characters,quests);validateDialogueEffects(c.effects,quests,characters);}
+  const choices=new Set();for(const c of node.choices){need(object(c)&&['id','label','next'].every(k=>Object.hasOwn(c,k))&&Object.keys(c).every(k=>['id','label','next','conditions','effects'].includes(k))&&id(c.id)&&!choices.has(c.id)&&text(c.label,160)&&id(c.next),'Las opciones del diálogo no son válidas.');choices.add(c.id);validateDialogueConditions(c.conditions,characters,quests,context);validateDialogueEffects(c.effects,quests,characters);}
  }
  need(ids.has(graph.entry)&&graph.nodes.every(n=>n.choices.every(c=>ids.has(c.next))),'El comienzo o un destino del diálogo no existe.');
 

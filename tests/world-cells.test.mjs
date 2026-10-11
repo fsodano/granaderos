@@ -141,7 +141,9 @@ test('saved cell locations and scene receipts cannot alias another cell, open wa
  }
  const pair=visit(s),wrong=structuredClone(pair.battle);wrong.sourceMapId='cell-27-27';assert.throws(()=>saved(pair.campaign,wrong),/celda/);
  for(const source of ['cell-27-27','retiro',null,undefined]){const report=structuredClone(wrong);report.sourceMapId=source;const rejected=dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:report,survivors:report.units});assert.match(rejected.lastError,/celda/);assert.deepEqual({...rejected,lastError:null},pair.campaign);}
- const completed=leave(pair);completed.sectorStates['cell-26-27'].sectorId='cell-27-27';assert.throws(()=>saved(completed),/sectores|celda/);
+ // The forged sector alias also conflicts with its pinned weather definition;
+ // either admission guard rejects the unchanged copied scene.
+ const completed=leave(pair);completed.sectorStates['cell-26-27'].sectorId='cell-27-27';assert.throws(()=>saved(completed),/sectores|celda|clima/);
 });
 test('land cell placements can launch with the live character-presence adapter',()=>{
  const d=defaultContentPackage();d.placements[0].sectors=['cell-26-27'];assert.deepEqual(campaignContentReport(d).blocked,[]);

@@ -41,6 +41,8 @@ test('starting supplies accept only complete bounded integer allocations and old
 
 test('paid arrivals use the authored supplies and consumption survives saves, renewal, dismissal and rehire',()=>{
  const d=defaultContentPackage();person(d).startingSupplies=allocation;
+ // The delayed arrival is part of this authored allocation experiment.
+ person(d).arrivalHours=6;
  let s=initialCampaign(42,d);assert.ok(!encountersFor(s,'retiro').some(n=>n.operativeId===110));
  s=order(s,{type:'recruitCivic',id:110,term:'day'});assert.ok(!s.recruited.includes(110));assert.deepEqual(supplies(s.operativeState[110]),allocation);
  s=order(saved({campaign:s}).campaign,{type:'wait',hours:6});let p=visit(s);assert.deepEqual(supplies(unit(p,110)),allocation);

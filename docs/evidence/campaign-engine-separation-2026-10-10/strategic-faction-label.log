@@ -1,0 +1,20 @@
+✔ sector dots count physical own actors across squads and place local militia at one anchor (406.764625ms)
+✔ dead, captured, departed and no-longer-serving records cannot add own dots (5.419541ms)
+✔ live own tactical casualties and exits update dots before strategic settlement without exposing enemies (323.488166ms)
+✔ live militia dots remove casualties and exits while retaining the actual local reserve (535.276292ms)
+✔ live San Lorenzo actors use the actual San Nicolas map cell without deploying its local militia (406.279542ms)
+✔ existing militia in promotion retain dots beside a casualty-adjusted deployment without counting new recruits (592.279ms)
+✔ only current admitted intelligence produces enemy count dots; unknown strength gets a question mark (244.94325ms)
+✔ presence labels use the selected campaign faction without exposing hidden strength (177.384417ms)
+✔ unseen groups and hidden tactical snapshots cannot alter strategic markers (296.516542ms)
+✔ old reports show uncertainty and expire without following unseen casualties or movement (141.024ms)
+✔ moving troops have one dot each on their known route and no stationary duplicate or numbered pin (126.302875ms)
+✔ selected cells remain discoverable without a permanent readout or an unrequested travel route (202.105625ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4416.33125

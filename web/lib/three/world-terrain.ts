@@ -15,12 +15,12 @@ export const WORLD_CHUNK_CELLS=8;
 export const chunkKey=(point:{x:number;y:number})=>`${Math.floor(point.x/WORLD_CHUNK_CELLS)},${Math.floor(point.y/WORLD_CHUNK_CELLS)}`;
 export function terrainChunks(tiles:readonly WorldTile[]){const chunks=new Map<string,WorldTile[]>();for(const tile of tiles){const key=chunkKey(tile),list=chunks.get(key)??[];list.push(tile);chunks.set(key,list);}return chunks;}
 export function buildTerrainChunk(id:string,tiles:readonly WorldTile[],input:WorldInput,T:number,geometry:WorldGeometry,materials:WorldMaterials){
-  const batch=new WorldBatch(geometry),all=new Map(input.terrain.tiles.map(tile=>[worldKey(tile),tile]));
+  const batch=new WorldBatch(geometry),all=new Map(input.terrain.tiles.map(tile=>[worldKey(tile),tile])),sceneId=input.terrain.sceneId??input.terrain.sectorId,context=input.terrain.landscape&&sceneId?{world:{landscapes:{[sceneId]:input.terrain.landscape}}}:undefined;
   for(const tile of tiles){
     const x=tile.x*T,z=tile.y*T,height=tile.elevation??0,light=illuminationAt(input,tile);
-    const kind=tile.type==='rubble'?'dirt':terrainMaterial(tile,input.terrain.sceneId??input.terrain.sectorId);
+    const kind=tile.type==='rubble'?'dirt':terrainMaterial(tile,sceneId,context);
     const material=tile.type==='water'?materials.get('water'):materials.terrain(kind);
-    if(!soilGrassTop(batch,tile,all,input.terrain.sceneId??input.terrain.sectorId,T,materials,light))cellTop(batch,material,x-T*.5,z-T*.5,x+T*.5,z+T*.5,height,light);
+    if(!soilGrassTop(batch,tile,all,sceneId,T,materials,light,context))cellTop(batch,material,x-T*.5,z-T*.5,x+T*.5,z+T*.5,height,light);
     soilFragments(batch,tile,kind,T,materials,light);
     dryWeeds(batch,tile,kind,T,materials,light);
     // Exact authored cell heights remain flat. Vertical skirts join unequal
