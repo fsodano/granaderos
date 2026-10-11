@@ -248,7 +248,12 @@ function NumericField({
           setRaw(next);
           setError('');
           const parsed = Number(next.replace(',', '.'));
-          if (next.trim() && !/[.,]$/.test(next) && Number.isFinite(parsed))
+          if (
+            next.trim() &&
+            !/[.,]$/.test(next) &&
+            Number.isFinite(parsed) &&
+            parsed !== value
+          )
             onChange(parsed);
         }}
         onBlur={() => {
@@ -259,7 +264,7 @@ function NumericField({
               'Ingresá un número. Se conservó el último valor aplicado.',
             );
           } else {
-            onChange(parsed);
+            if (parsed !== value) onChange(parsed);
             setRaw(String(parsed));
           }
         }}
@@ -652,8 +657,18 @@ function StagedDocumentEditor(props: FieldEditorProps) {
   const [mode, setMode] = useState(staged ? 'json' : 'fields');
   const [error, setError] = useState('');
   const [replace, setReplace] = useState(false);
-  const [pending, setPending] = useState<string | null>(null);
+  const [pending, setPending] = useState<{ key: string; text: string } | null>(
+    null,
+  );
   const conflict = Boolean(staged && staged.base !== applied);
+  useEffect(() => {
+    setReplace(false);
+  }, [applied]);
+  useEffect(() => {
+    setReplace(false);
+    setError('');
+    setPending(null);
+  }, [key]);
   const discard = () =>
     store.setDrafts((current) => {
       const next = { ...current };
@@ -661,7 +676,7 @@ function StagedDocumentEditor(props: FieldEditorProps) {
       return next;
     });
   useEffect(() => {
-    if (pending === applied) {
+    if (pending?.key === key && pending.text === applied) {
       store.setDrafts((current) => {
         const next = { ...current };
         delete next[key];
@@ -759,7 +774,7 @@ function StagedDocumentEditor(props: FieldEditorProps) {
               onClick={() => {
                 try {
                   const next = JSON.parse(text);
-                  setPending(JSON.stringify(next, null, 2));
+                  setPending({ key, text: JSON.stringify(next, null, 2) });
                   props.onChange(next);
                   setError('');
                 } catch (error: any) {
