@@ -18,7 +18,7 @@ const order=(s,a)=>{const n=dispatchCampaign(a.type==='travel'?restForMarch(s):s
 const save=(campaign,battle=null)=>decodeSave(encodeSave(campaign,battle));
 function authored({recruitable=true,mode='fixed',sectors=[A]}={}){
  const d=defaultContentPackage(),template=structuredClone(d.characters.find(c=>c.id==='person-100'));delete template.arrivalHours;
- d.characters.push({...template,id:'alma-posta',name:'Alma de la Posta',nickname:'Alma',monthlyPay:0,recruitmentSource:'encounter',service:'permanent',weapon:null,portrait:'/art/avatar-woman-scout.webp',spriteAppearance:'woman-shawl',attributes:{...template.attributes,maxHp:75},abilities:[],traits:[],encounter:{recruitable,greeting:'Conozco los caminos de la posta.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
+ d.characters.push({...template,id:'alma-posta',name:'Alma de la Posta',nickname:'Alma',monthlyPay:0,recruitmentSource:'encounter',service:'permanent',weapon:null,portrait:'/campaigns/granaderos/assets/avatar-woman-scout.webp',spriteAppearance:'woman-shawl',attributes:{...template.attributes,maxHp:75},abilities:[],traits:[],encounter:{recruitable,greeting:'Conozco los caminos de la posta.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
  d.placements.push({id:'alma-location',character:'alma-posta',mode,sectors,selection:mode==='daily'?'alternate':'random',moveChance:100,afterDeath:null,delayMin:0,delayMax:0});
  d.characters.find(c=>c.id==='person-110').arrivalHours=0;return d;
 }
@@ -55,7 +55,7 @@ test('new world identities are independent of bulletin candidates and cannot inh
 
 test('an authored resident keeps her greeting, portrait, wounds and refusal after harm and relocation',()=>{
  let p=approach(visit(ready(authored({mode:'daily',sectors:[A,B]})))),n=resident(p.battle),id=idFor(p.campaign);
- assert.equal(n.maxHp,75);assert.equal(n.hp,75);assert.equal(n.portraitId,'/art/avatar-woman-scout.webp');assert.equal(n.spriteAppearance,'woman-shawl');
+ assert.equal(n.maxHp,75);assert.equal(n.hp,75);assert.equal(n.portraitId,'/campaigns/granaderos/assets/avatar-woman-scout.webp');assert.equal(n.spriteAppearance,'woman-shawl');
  p.campaign=order(p.campaign,talk(p));assert.equal(p.campaign.lastConversation.text,'Conozco los caminos de la posta.');
  p=act(p,{type:'melee',targetId:n.id});p=act(p,{type:'weapon',slot:'medical'});p=act(p,{type:'heal',targetId:n.id});const hp=resident(p.battle).hp;assert.ok(hp>0&&hp<75);
  p=save(p.campaign,p.battle);let s=leave(p),old=s.location;

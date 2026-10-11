@@ -48,7 +48,8 @@ test("the migrated sector plans preserve edge geometry, floor membership, props 
       wallEdges: m.wallEdges.map(w=>Object.fromEntries(Object.entries(w).sort())).sort((a,b)=>a.id.localeCompare(b.id)),
       props: m.props,
       lights: m.lights,
-      decor: m.decor,
+      // Normalize only the relocated presentation URL in this geometry receipt.
+      decor: m.decor.map(d=>({...d,...(d.asset==='/campaigns/granaderos/assets/convent.png'?{asset:'/art/convent.png'}:{})})),
     };
     assert.equal(createHash("sha256").update(JSON.stringify(data)).digest("hex"), expected[id], id);
   }

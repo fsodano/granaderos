@@ -22,7 +22,10 @@ const observe=(s,actor,body)=>(actor===body||canSee(s,actor,body))&&isInteriorVi
 const rejectsAtomically=(pair,action)=>{const before=structuredClone(pair.campaign),next=dispatchCampaign(pair.campaign,action);assert.ok(next.lastError);assert.deepEqual({...next,lastError:null},before);};
 
 test('only explicit paid candidate capability and fixed unarmed noncombatant authoring are admitted',()=>{
- const d=defaultContentPackage(),native=d.characters.find(c=>c.id==='person-107');assert.deepEqual(native.abilities,[CIVILIAN_CONSCIENCE]);assert.equal(conductObserverDefinition(native),true);
+ const d=defaultContentPackage(),native=d.characters.find(c=>c.id==='person-107');
+ // This admission case explicitly opts into conscience; the shipped cast does
+ // not enable this authorable behavior through the old editor defaults.
+ native.abilities=[CIVILIAN_CONSCIENCE];assert.deepEqual(native.abilities,[CIVILIAN_CONSCIENCE]);assert.equal(conductObserverDefinition(native),true);
  assert.deepEqual(validateContentPackage(d),[]);assert.equal(createBattle([{id:107}]).conductObserverIds,undefined,'numeric legacy slot is neutral');
  for(const change of [c=>delete c.service,c=>c.service='permanent',c=>c.id='person-3']){const bad=structuredClone(d),c=bad.characters.find(c=>c.id==='person-107');change(c);assert.ok(validateContentPackage(bad).length);}
  const resident={...structuredClone(native),id:'civil-resident',recruitmentSource:'encounter',service:'permanent',monthlyPay:0,weapon:null,abilities:[],encounter:{recruitable:false,greeting:'Un vecino de este escenario.',requiredLeadership:0,requiredLiberated:0,requiredSector:null,noncombatant:true}};

@@ -9,7 +9,7 @@ import {readyLocal,talk,leave} from './local-contract-fixture.mjs';
 const order=(state,action)=>{const next=dispatchCampaign(state,action);assert.equal(next.lastError,null);return next;};
 
 test('continuous time stops on the exact campaign victory boundary and a new postgame order can continue',()=>{
- const content=defaultContentPackage();content.campaignStory={...defaultCampaignStory(),chapters:[{id:'day-two',name:'Segundo día',objective:'Esperar hasta el segundo día.',conditions:[{type:'day',min:2,max:null}]}]};
+ const content=defaultContentPackage();content.includeOriginalResidents=true;content.campaignStory={...defaultCampaignStory(),chapters:[{id:'day-two',name:'Segundo día',objective:'Esperar hasta el segundo día.',conditions:[{type:'day',min:2,max:null}]}]};
  let state=initialCampaign(42,content);state=order(state,{type:'wait',hours:23});state=order(state,{type:'advanceStrategicTime',seconds:3570});
  assert.equal(state.completed,false);assert.equal(state.hour*3600+state.secondOfHour,24*3600-30);
  state=order(state,{type:'advanceStrategicTime',seconds:60});
@@ -20,7 +20,7 @@ test('continuous time stops on the exact campaign victory boundary and a new pos
 });
 
 test('continuous time stops at a fractional quest deadline that defeats the campaign',()=>{
- const content=questPackage();content.quests[0].deadlineHours=1;
+ const content=questPackage();content.includeOriginalResidents=true;content.quests[0].deadlineHours=1;
  content.campaignStory={...defaultCampaignStory(),chapters:[{id:'late',name:'Después',objective:'Esperar.',conditions:[{type:'day',min:50,max:null}]}],failureConditions:[{type:'quest',quest:'river-post',status:'failed'}]};
  let visit=readyLocal(undefined,content);visit={...visit,campaign:order(visit.campaign,{...talk(visit,undefined,'dialogue'),dialogueNode:'start',dialogueChoice:'accept'})};
  const accepted=visit.campaign.contentQuestEvents.at(-1),deadline=accepted.hour*3600+(accepted.secondOfHour??0)+3600;

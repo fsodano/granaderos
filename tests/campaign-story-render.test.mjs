@@ -4,7 +4,7 @@ import {createElement as h} from '../web/node_modules/react/index.js';import {re
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';import {defaultContentPackage} from '../game/content-package.js';import {defaultCampaignStory} from '../game/campaign-story.js';
 const {default:Desk}=await import('../web/app/Desk.tsx'),{default:Office}=await import('../web/app/CampaignOffice.tsx'),{default:Campaign}=await import('../web/app/Campaign.tsx');
 test('desk, journal and map display authored objectives and final text without original chapter or mentor instructions',()=>{
- const d=defaultContentPackage();d.campaignStory={...defaultCampaignStory(),introduction:'Protegé la correspondencia.',victory:'El correo está a salvo.',defeat:'Se perdió el correo.'};d.campaignStory.chapters[0].name='El correo';let s=initialCampaign(8,d);
+ const d=defaultContentPackage();d.includeOriginalResidents=true;d.campaignStory={...defaultCampaignStory(),introduction:'Protegé la correspondencia.',victory:'El correo está a salvo.',defeat:'Se perdió el correo.'};d.campaignStory.chapters[0].name='El correo';let s=initialCampaign(8,d);
  let html=render(h(Desk,{state:s,dispatch(){},onClose(){}}));assert.match(html,/Protegé la correspondencia/);assert.match(html,/El correo/);assert.doesNotMatch(html,/Marchar a San Lorenzo|Formación en Retiro|Conferencia de Yatasto/);
  html=render(h(Office,{state:s,dispatch(){},section:'journal'}));assert.match(html,/OBJETIVOS DE CAMPAÑA/);assert.match(html,/El correo/);assert.doesNotMatch(html,/Despacho dramatizado|EL CAMINO A LA INDEPENDENCIA|Formación en Retiro/);
  html=render(h(Campaign,{state:s,dispatch(){},onBattle(){},onOpenDesk(){}}));assert.match(html,/Objetivo actual de campaña/);assert.match(html,/Llegá al segundo día/);

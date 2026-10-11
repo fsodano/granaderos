@@ -77,7 +77,10 @@ test('a marching rival cannot be dismissed through the compact relationship noti
 });
 
 test('real hiring and saved deployment disclose the directed preference without changing paid service',async t=>{
- const content=defaultContentPackage();let state=initialCampaign(42,content);const m=await mount(t,state,'recruitment');
+ const content=defaultContentPackage();
+ // The disclosure case authors the optional conscience capability explicitly.
+ content.characters.find(c=>c.id==='person-107').abilities.push('civilian_conscience');
+ let state=initialCampaign(42,content);const m=await mount(t,state,'recruitment');
  const card=id=>m.doc.querySelector(`[data-operative-id="${id}"]`),preference=()=>card(107).querySelector('.companion-preferences');
  assert.match(preference().textContent,/Petrona Lagos.*hasta \+3.*no supera \+5.*No cambia la paga ni el contrato/);assert.doesNotMatch(preference().textContent,/Apoyo de/);assert.equal(card(116).querySelector('.companion-preferences'),null,'the authored default is directed');
  assert.match(card(107).textContent,/Si ve directamente una orden intencional matar a un civil no combatiente.*rechaza nuevos contratos.*plazo ya pagado/);assert.equal(card(107).querySelector('[aria-label="Objeción de servicio"]'),null,'disclosure does not claim an event');
@@ -108,7 +111,10 @@ test('assignment choices disclose prospective support without granting it merely
 
 
 test('the hiring card and real dossier explain authored care, isolation, renewal and load conditions while older pinned prose remains neutral',async t=>{
- const content=defaultContentPackage();content.characters.find(person=>person.id==='person-130').abilities.push('scatter_concealment');
+ const content=defaultContentPackage(),authored=content.characters.find(person=>person.id==='person-130');
+ // This capability card has its own rules and delayed arrival; these are not
+ // ordinary stock defaults inherited from the former editor template.
+ authored.abilities=['care_composure','nervous_isolation','low_morale_refusal','scatter_concealment'];authored.arrivalHours=6;
  const state=initialCampaign(42,content),m=await mount(t,state,'recruitment');
  const card=()=>m.doc.querySelector('[data-operative-id="130"]');
  assert.match(card().textContent,/Serenidad al cuidar/);assert.match(card().textContent,/otra persona a la vista.*hasta 2 puntos de tensión.*PA.*vendas.*sí mismo/);

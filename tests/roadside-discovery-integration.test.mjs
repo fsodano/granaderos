@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import {contractQuote} from '../game/contracts.js';
 import {cellTravelPlan} from '../game/world-cells.js';
 import {enterSector} from '../game/world.js';
@@ -84,10 +84,10 @@ function replay(initial,history){
  return pair;
 }
 
-test('fresh paid squads discover one finite roadside cache and retain its worn items through official replay, return and shared reentry',t=>{
- // This is a real new default campaign. No territory, actor, equipment,
+test('fresh authored paid squads discover one finite roadside cache and retain its worn items through official replay, return and shared reentry',t=>{
+ // The authored package declares delayed arrivals before admission. No territory, actor, equipment,
  // health, placement, time, seed or outcome is assigned after admission.
- const initial=saved({campaign:initialCampaign(45,defaultContentPackage())}),history=[];
+ const initial=saved({campaign:initialCampaign(45,authoredEditorPackage())}),history=[];
  let pair=initial;const cash=pair.campaign.resources.treasury;
  const quotes=[CARRIER,OTHER].map(id=>({id,...contractQuote(pair.campaign,rosterFor(pair.campaign).find(op=>op.id===id),'week')}));
  for(const quote of quotes){
@@ -187,7 +187,7 @@ test('fresh paid squads discover one finite roadside cache and retain its worn i
  assert.deepEqual(dead,[CARRIER].filter(id=>!pair.campaign.operativeState[id].alive));
  assert.deepEqual(replay(initial,history),pair,'all ordinary paid orders reproduce the full saved campaign and current scene');
  assert.deepEqual(replay(initial,acquiredHistory),acquired);
- t.diagnostic(JSON.stringify({scenario:'fresh pinned default campaign; actual paid arrival and field marches; no granted resources or outcomes',
+ t.diagnostic(JSON.stringify({scenario:'fresh pinned authored campaign; actual paid arrival and field marches; no granted resources or outcomes',
   hires:quotes.map(({id,price})=>({id,price})),treasury:paidCash,arrivalHour:6,outboundHours:plan.hours,returnHours:returnPlan.hours,
   finalHour:pair.campaign.hour,finalSecond:pair.campaign.secondOfHour,orderCount:history.length,actionSeconds:stamp(pair.campaign)-stamp(initial.campaign),
   sleepSeconds,sleepHours:sleepSeconds/3600,healthBeforeRest,healthAfterRest,

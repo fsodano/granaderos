@@ -35,7 +35,7 @@ test('an alternate headquarters starts a free officer, chapter and real peaceful
 });
 
 test('a real paid hire arrives at the chosen base and local control supports independent town operations',()=>{
- const d=content('mendoza');d.startingTerritory.cordoba.owner='patriot';d.startingTerritory.retiro.owner='patriot';let s=initialCampaign(8,d);
+ const d=content('mendoza');d.characters.find(c=>c.id==='person-110').arrivalHours=6;d.startingTerritory.cordoba.owner='patriot';d.startingTerritory.retiro.owner='patriot';let s=initialCampaign(8,d);
  assert.equal(isSupplied(s,'cordoba'),true);assert.equal(isSupplied(s,'retiro'),true);s=order(s,{type:'recruitCivic',id:110,term:'week'});assert.equal(s.hiringArrivals[0].destination,'mendoza');assert.equal(s.recruited.length,0);assert.equal(s.phase,0);s=order(save(s).campaign,{type:'wait',hours:6});assert.deepEqual(s.squad,[110]);assert.equal(s.operativeState[110].location,'mendoza');assert.equal(s.phase,1);assert.equal(s.contracts[110].started,6);s=order(s,{type:'travel',sector:'cordoba'});s=save(s).campaign;assert.equal(s.location,'cordoba');assert.equal(headquartersFor(s),'mendoza');assert.equal(s.squads[0].location,'cordoba');
  // Existing state may later open the route; the supply root stays in Mendoza.
  s.sectors.buenos_aires.owner='patriot';assert.equal(isSupplied(s,'retiro'),true);s.sectors.mendoza.owner='royalist';assert.equal(isSupplied(s,'retiro'),true);assert.equal(isSupplied(s,'cordoba'),true);

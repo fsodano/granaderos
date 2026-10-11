@@ -26,7 +26,7 @@ test('a dead prisoner cannot receive care or supply another prisoner',()=>{
  const s=fixture();Object.assign(s.operativeState[4],{hp:0,alive:false,captured:false,capturedSector:null});const before=structuredClone(s);assert.deepEqual(advanceDetentionCare(s,roster),[]);assert.deepEqual(s,before);
 });
 test('the last breath spent on custody care leaves both guard records valid for a saved sector',()=>{
- const s=fixture(),battle=createBattle([{id:100,x:1,y:1}],{width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:8,y:4,hp:60,maxHp:60,medical:40,dexterity:70,experienceLevel:2,energy:3}]});
+ const s=fixture(),battle=createBattle([{id:100,x:1,y:1}],{sector:'tucuman',width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:8,y:4,hp:60,maxHp:60,medical:40,dexterity:70,experienceLevel:2,energy:3}]});
  const guard=battle.units.find(u=>u.side==='enemy');Object.assign(guard,{weaponReady:true,mounted:true,braced:true,overwatch:true});
  s.sectorStates.tucuman=placeDetainedPrisoners(battle,detentionManifest(s,roster,'tucuman'));
  Object.assign(s.sectorStates.tucuman,{sectorId:'tucuman',battleId:'custody-collapse'});

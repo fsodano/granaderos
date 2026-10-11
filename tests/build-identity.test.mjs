@@ -8,9 +8,9 @@ test('game, editor, tools and public art changes each produce a different source
  const root=await mkdtemp(join(tmpdir(),'granaderos-build-id-'));
  try{
   await writeFile(join(root,'package.json'),JSON.stringify({version:'test'}));
-  for(const dir of ['game','web/app','web/public/art','tools','web/dist','web/node_modules'])await mkdir(join(root,dir),{recursive:true});
+  for(const dir of ['game','web/app','web/public/art','tools','web/dist','web/node_modules','campaigns/example/assets'])await mkdir(join(root,dir),{recursive:true});
   let before=await buildIdentity(root);assert.equal(before.version,'test');assert.equal(before.revision,null);
-  for(const file of ['game/rules.js','web/app/editor.tsx','tools/audit.mjs','web/public/art/building.png']){
+  for(const file of ['game/rules.js','web/app/editor.tsx','tools/audit.mjs','web/public/art/building.png','campaigns/example/manifest.json','campaigns/example/assets/portrait.png']){
    await writeFile(join(root,file),'changed source');const after=await buildIdentity(root);assert.notEqual(after.id,before.id);before=after;
   }
   await writeFile(join(root,'web/dist/output.js'),'compiled output');await writeFile(join(root,'web/node_modules/dependency.js'),'installed dependency');

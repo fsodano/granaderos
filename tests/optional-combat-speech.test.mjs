@@ -12,17 +12,27 @@ const events=['near','interrupt'];
 const paidIds=[107,110];
 const person=(d,id)=>d.characters.find(c=>c.id===`person-${id}`);
 const order=(s,action)=>{const next=dispatchCampaign(s,action);assert.equal(next.lastError,null,next.lastError);return next;};
-const olderPackage=()=>{const d=defaultContentPackage();for(const c of d.characters)for(const event of events)delete c.speech[event];return d;};
+// Optional reactions are an authored opt-in. The installed stock campaign
+// keeps its ordinary voice; this fixture supplies six distinct test voices.
+const authoredPackage=()=>{
+ const d=defaultContentPackage();
+ for(const id of [104,105,107,110,126,130]){
+  const c=person(d,id);c.speech.near=`${c.nickname}: el disparo pasó cerca.`;c.speech.interrupt=`${c.nickname}: puedo actuar ahora.`;
+ }
+ for(const id of paidIds)person(d,id).arrivalHours=6;
+ return d;
+};
+const olderPackage=()=>{const d=authoredPackage();for(const c of d.characters)for(const event of events)delete c.speech[event];return d;};
 function paidVisit(d){
  let campaign=initialCampaign(42,d);for(const id of paidIds)campaign=order(campaign,{type:'recruitCivic',id,term:'week'});
  campaign=order(campaign,{type:'wait',hours:6});campaign=order(campaign,{type:'visitSector'});
  return decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));
 }
 
-test('fresh fictional reactions are explicit distinct optional lines; older packages and legacy profiles stay silent',()=>{
+test('authored fictional reactions are explicit distinct optional lines; older packages and legacy profiles stay silent',()=>{
  assert.deepEqual(SPEECH_EVENTS,['hired','contact','cleared','wounded','exhausted','death','ending']);
  assert.ok(events.every(event=>OPTIONAL_SPEECH_EVENTS.includes(event)));
- const fresh=defaultContentPackage(),speakers=fresh.characters.filter(c=>events.some(event=>Object.hasOwn(c.speech,event)));
+ const fresh=authoredPackage(),speakers=fresh.characters.filter(c=>events.some(event=>Object.hasOwn(c.speech,event)));
  assert.deepEqual(speakers.map(c=>c.id).sort(),['person-104','person-105','person-107','person-110','person-126','person-130']);
  for(const event of events){assert.equal(new Set(speakers.map(c=>c.speech[event])).size,speakers.length);assert.ok(speakers.every(c=>c.speech[event].trim()&&c.speech[event]!==c.speech.contact));}
  const older=olderPackage(),identity=contentIdentity(older),restored=parseContentPackage(encodeContentPackage(older));
@@ -47,7 +57,7 @@ test('optional combat lines use existing strict text admission without weakening
 });
 
 test('actual paid arrivals and official deployment saves pin each optional line without changing physical issue or old omissions',()=>{
- const fresh=defaultContentPackage(),older=olderPackage(),pair=paidVisit(fresh),oldPair=paidVisit(older);
+ const fresh=authoredPackage(),older=olderPackage(),pair=paidVisit(fresh),oldPair=paidVisit(older);
  assert.equal(pair.campaign.hour,6);assert.deepEqual(pair.campaign.contracts,oldPair.campaign.contracts);assert.equal(pair.campaign.resources.treasury,oldPair.campaign.resources.treasury);assert.deepEqual(pair.campaign.operativeState,oldPair.campaign.operativeState);
  assert.equal(pair.campaign.contracts[107].paid,588);assert.equal(pair.campaign.contracts[110].paid,420);assert.equal(pair.campaign.resources.treasury,3200-588-420);
  for(const id of paidIds){

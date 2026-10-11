@@ -18,6 +18,10 @@ const notices=s=>s.log.filter(e=>e.text.includes('pierde ánimo al quedar sin co
 // The independent native acceptance earns the low morale with actual combat.
 function prepared({oldPinned=false,morale=40,term='week',royalist=false,extraFriend=false}={}){
  const content=defaultContentPackage();
+ // Author the isolation rule and paid six-hour arrival used by these clock
+ // checkpoints. Ordinary stock does not enable the optional fear rule.
+ content.characters.find(c=>c.id==='person-130').abilities=['nervous_isolation'];
+ for(const id of [130,110,100])content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
  if(oldPinned){const person=content.characters.find(c=>c.id==='person-130');person.abilities=person.abilities.filter(a=>a!=='nervous_isolation');}
  let s=initialCampaign(42,content);s.operativeState[130].morale=morale;if(!royalist)s.sectors.buenos_aires.owner='patriot';
  for(const id of [130,110,...(extraFriend?[100]:[])])s=dispatchCampaign(s,{type:'recruitCivic',id,term});

@@ -1,3 +1,4 @@
+import {authoredEditorPackage} from './authored-editor-fixture.mjs';
 import {withStoredGear,assertTradeRejected} from './commerce-gear-fixture.mjs';
 import {storedEquipmentStack} from '../game/stored-equipment.js';
 import {secondaryRetreat} from './secondary-loot-fixture.mjs';
@@ -155,6 +156,8 @@ test('energy profiles validate finite projectile mass, retain independent select
  for(const where of [v=>v.operativeState[110].weaponMetadata.contentWeapon,v=>v.armoryItems[0].itemMetadata.contentWeapon]){const changed=structuredClone(restored);where(changed).projectileAirDrag.retentionAtRange=.7;assert.throws(()=>save(changed),/arma guardada/);}
  const legacy=custom();assert.equal(Object.hasOwn(compileWeaponDefinition(legacy),'projectileEnergy'),false);
  assert.equal(Object.hasOwn(compileWeaponDefinition(legacy),'projectileAirDrag'),false);
- const defaults=defaultContentPackage();assert.deepEqual(defaults.weapons.filter(w=>w.projectileEnergy).map(w=>w.template),[1800]);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).alternativeLoads[0].projectileEnergy,{...profile,massGrams:16});
+ // Energy and drag are explicit authored options; ordinary stock remains unchanged.
+ const stock=defaultContentPackage();assert.deepEqual(stock.weapons.filter(w=>w.projectileEnergy||w.projectileAirDrag),[]);
+ const defaults=authoredEditorPackage();assert.deepEqual(defaults.weapons.filter(w=>w.projectileEnergy).map(w=>w.template),[1800]);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).alternativeLoads[0].projectileEnergy,{...profile,massGrams:16});
  assert.deepEqual(defaults.weapons.filter(w=>w.projectileAirDrag).map(w=>w.template),[1800]);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).projectileAirDrag,air);assert.deepEqual(defaults.weapons.find(w=>w.template===1800).alternativeLoads[0].projectileAirDrag,{...air,retentionAtRange:.65});
 });
