@@ -355,7 +355,7 @@ export function hasPendingNpcGiftProgress(campaign,battle){
  return changed;
 }
 function validatedInteractionSnapshot(s,raw){
- const snapshot=validateSectorSnapshot(raw),request=s.pendingBattle;validateCampaignSceneDefinitions(s,snapshot);validateQuestContext(s,snapshot);validateRoadsideDiscoveryContext(s,snapshot);validateQuestBeneficiaryContext(s,snapshot);validateCompanionGriefContext(s,snapshot,rosterFor(s));
+ const snapshot=validateSectorSnapshot(raw,s),request=s.pendingBattle;validateCampaignSceneDefinitions(s,snapshot);validateQuestContext(s,snapshot);validateRoadsideDiscoveryContext(s,snapshot);validateQuestBeneficiaryContext(s,snapshot);validateCompanionGriefContext(s,snapshot,rosterFor(s));
  validateRepairReserveContext(request,snapshot);
  validateAbilityReferences(s,snapshot);
  validateServiceObjectionContext(s,snapshot,rosterFor(s));
@@ -425,7 +425,7 @@ function completeDeploymentReport(s,request,action){
   validateQuestContext(s,action.sectorState);
   validateQuestBeneficiaryContext(s,action.sectorState,{request});
   validateRoadsideDiscoveryContext(s,action.sectorState);
-  const raw=action.sectorState,snapshot=validateSectorSnapshot(raw),ids=request.squad.map(u=>String(u.id));
+  const raw=action.sectorState,snapshot=validateSectorSnapshot(raw,s),ids=request.squad.map(u=>String(u.id));
   validateCampaignSceneDefinitions(s,snapshot);
   validateRepairReserveContext(request,snapshot);
   validateAbilityReferences(s,snapshot);
@@ -1117,7 +1117,7 @@ export function restoreCampaignValue(s){
   const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
   requireThat(object(s)&&s.version===1&&integer(s.hour,0,24*365*100)&&integer(s.phase,0,1000000)&&integer(s.seed,0,4294967295)&&validWorldLocation(s.location,s),'El archivo de campaña no es compatible.');
-  requireThat(s.errandDefinitions===undefined||validateQuestDefinitions(s.errandDefinitions).length===0,'Los encargos guardados son inválidos.');
+  requireThat(s.errandDefinitions===undefined||validateQuestDefinitions(s.errandDefinitions,s).length===0,'Los encargos guardados son inválidos.');
   requireThat(validateRoadsideDiscoveries(s.roadsideDiscoveryDefinitions).length===0,'Los hallazgos de camino guardados son inválidos.');
   requireThat(!['production','shipments','depots','convoys'].some(key=>key in s),'Esta partida contiene sistemas retirados. Iniciá una campaña nueva.');
   requireThat(s.economyVersion===2,'Esta partida usa la economía anterior. Iniciá una campaña nueva.');
@@ -1137,7 +1137,7 @@ export function restoreCampaignValue(s){
   for(const op of s.contentCampaign?[]:CIVIC_RECRUITS)s.operativeState[op.id]??={hp:op.maxHp,fatigue:0,alive:true,xp:0,rations:2,torches:2,condition:100};
   for(const op of Object.values(s.operativeState)){requireThat(object(op),'Las hojas de servicio son inválidas.');if(op.missionSuppliesVersion!==undefined)requireThat(op.missionSuppliesVersion===1,'La versión de suministros del aliado no es válida.');validateTraining(op);validatePocketOrder(op.pocketOrder);for(const k of ['medkits','bleeding'])if(op[k]!==undefined)requireThat(Number.isInteger(op[k]),'Los suministros y heridas guardados son inválidos.');op.xp??=0;if(op.inventory!==undefined)validatePersonalInventory(op.inventory);for(const [field,limit]of Object.entries({energy:100,bleeding:10,medkits:1000000,weight:1000,strength:100,strengthTraining:10000,boleadoras:100000})){if(op[field]!==undefined)requireThat(Number.isFinite(op[field])&&op[field]>=0&&op[field]<=limit,'El estado físico guardado es inválido.');}for(const [field,baseline] of Object.entries({rations:2,torches:2,condition:100})){op[field]??=baseline;requireThat(integer(op[field],0,field==='condition'?100:100000),'Los suministros guardados son inválidos.');}requireThat(integer(op.xp,0,1e7),'La experiencia guardada es inválida.');}
   for(const op of rosterFor(s)){const unit={...op,...s.operativeState[op.id]};validateWeaponCarrier(unit);personalPockets(unit);requireThat(unit.activeSlot===undefined||['primary','blade','medical','unarmed','tool','supply','item'].includes(unit.activeSlot),'La mano guardada no es válida.');}
-  s.missions??={};s.sceneStates??={};s.missionAllies??={};requireThat(scenarioFor(s).validateStoredScenes(s,{validateSectorSnapshot}),'Las escenas guardadas son inválidas.');
+  s.missions??={};s.sceneStates??={};s.missionAllies??={};requireThat(scenarioFor(s).validateStoredScenes(s,{validateSectorSnapshot:snapshot=>validateSectorSnapshot(snapshot,s)}),'Las escenas guardadas son inválidas.');
   s.garrisons??={};s.nextMilitiaId??=20000;requireThat(validGarrisons(s),'Las guarniciones guardadas son inválidas.');
   requireThat(s.militiaTraining.every(course=>validMilitiaTrainees(s,course)),'Los milicianos en instrucción son inválidos.');
   const traineeIds=s.militiaTraining.flatMap(course=>(course.trainees??[]).map(u=>u.id));requireThat(new Set(traineeIds).size===traineeIds.length,'Los milicianos en instrucción son inválidos.');
@@ -1203,7 +1203,7 @@ export function restoreCampaignValue(s){
   migrateSquads(s);validateSquadTravel(s);validateAssaultDeployment(s);
   requireThat(Array.isArray(s.squads)&&s.squads.length>0&&s.squads.length<=8&&new Set(s.squads.map(q=>q.id)).size===s.squads.length&&s.squads.every(q=>object(q)&&typeof q.id==='string'&&/^squad-[1-9][0-9]*$/.test(q.id)&&typeof q.name==='string'&&q.name.length<=30&&validWorldLocation(q.location,s)&&validIds(q.members)&&q.members.length<=6&&q.members.every(id=>s.recruited.includes(id))),'Las escuadras guardadas son inválidas.');
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');
-  requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(validWorldLocation(id,s)||isCampaignScene(s,id))&&validateSectorSnapshot(expandCellScene(snapshot,s))&&(sector(id,s)||isCampaignScene(s,id)||snapshot.sectorId===id&&snapshot.sourceMapId===id)),'Los sectores guardados son inválidos.');
+  requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(validWorldLocation(id,s)||isCampaignScene(s,id))&&validateSectorSnapshot(expandCellScene(snapshot,s),s)&&(sector(id,s)||isCampaignScene(s,id)||snapshot.sectorId===id&&snapshot.sourceMapId===id)),'Los sectores guardados son inválidos.');
   validateAmmunitionCustody(s,rosterFor(s));
   migrateArtilleryState(s);validateArtilleryTransport(s);validateArtilleryMerchants(s);validateCampaignArtillery(s);
   for(const scene of [s.pendingBattle,...Object.values(s.sectorStates),...Object.values(s.sceneStates)]){validateCampaignPatrol(s,scene);validateCampaignArtilleryProfiles(s,scene);}

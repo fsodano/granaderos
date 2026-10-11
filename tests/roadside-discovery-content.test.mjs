@@ -55,10 +55,10 @@ test('omitted and explicitly disabled packages stay neutral after restore and ma
  assert.equal(buildSectorMap({sector:CELL}).props.some(p=>p.id===CHEST),false);
 });
 
-test('discovery import rejects unsupported locations, equipment, quantities and versions',()=>{
+test('discovery import rejects invalid locations, equipment, quantities and versions',()=>{
  assert.deepEqual(validateRoadsideDiscoveries(undefined),[]);assert.deepEqual(validateRoadsideDiscoveries([]),[]);
  for(const value of [null,{},[null],[...freshDefaultRoadsideDiscoveries(),...freshDefaultRoadsideDiscoveries()]])assert.ok(validateRoadsideDiscoveries(value).length);
- const mutations=[r=>r.version=2,r=>r.id='different-cache',r=>r.cell='retiro',r=>r.cell='cell-0-0',r=>r.x=9,r=>r.y=8,r=>r.crowbarCondition=0,r=>r.crowbarCondition=101,r=>r.linenShirtCondition=1.5,r=>r.linenShirtCondition=NaN,r=>r.ammo=100,r=>r.explosives=1,r=>delete r.crowbarCondition];
+ const mutations=[r=>r.version=2,r=>r.id='constructor',r=>r.cell='retiro',r=>r.cell='cell-36-0',r=>r.x=20,r=>r.y=16,r=>r.crowbarCondition=0,r=>r.crowbarCondition=101,r=>r.linenShirtCondition=1.5,r=>r.linenShirtCondition=NaN,r=>r.ammo=100,r=>r.explosives=1,r=>delete r.crowbarCondition];
  for(const mutate of mutations){const d=defaultContentPackage();mutate(d.roadsideDiscoveries[0]);assert.ok(validateContentPackage(d).length,mutate.toString());assert.throws(()=>initialCampaign(42,d));}
  const d=defaultContentPackage();d.roadsideDiscoveries[0].crowbarCondition=1;d.roadsideDiscoveries[0].linenShirtCondition=100;
  assert.deepEqual(validateContentPackage(d),[]);

@@ -93,7 +93,7 @@ export function validateContentPackage(value) {
   errors.push(...validateCampaignEvents(value.campaignEvents,value));
   errors.push(...validateContractRules(value.contractRules),...validateArtilleryTradingRules(value.artilleryTrading,value),...validateArtilleryTransportRules(value.artilleryTransport),...validateArtilleryProfiles(value.artilleryProfiles),...validateAmmunitionMarket(value.ammunitionMarket,value),...validateArtillerySupply(value.artillerySupply),...validateMilitiaPatrol(value.militiaPatrol),...validateMilitiaProgression(value.militiaProgression),...validateCareRules(value.careRules),...validateFoundry(value.foundry,value),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[],value),...validateImportRules(value.imports,value),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters,value),...validateStartingTerritory(value.startingTerritory,value.headquarters,value));
   if(value.errands!==undefined)errors.push(...validateQuestDefinitions(value.errands,value));
-  errors.push(...validateRoadsideDiscoveries(value.roadsideDiscoveries));
+  errors.push(...validateRoadsideDiscoveries(value.roadsideDiscoveries,value));
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites,value));
   for (const key of ["characters", "weapons", "placements"])
     check(
