@@ -1,0 +1,24 @@
+{
+  "format": "granaderos-earned-campaign-capture",
+  "version": 1,
+  "sourceRevision": "575bd01810eb893332696f5dc50fb89cc59c33e0",
+  "sourceTest": "tests/fresh-campaign-recovery.test.mjs",
+  "sourceHelper": "recoverFreshNorthernDoctor",
+  "sourceCapture": "/Users/fsodano/fibradev/games/granaderos/.cache/core-campaign-2026-10-11/baseline-575bd018/passive-captures/strategic-preparation/36430-1-recoverFreshNorthernDoctor-preparation-input-JVPS8r/campaign.json",
+  "sha256": "8f68676aca45e30701f8a72ddaed8035dc04556fbae4e5378f3194b0d0adaa0f",
+  "rawBytes": 6401140,
+  "compression": "gzip",
+  "scope": "Exact raw helper argument before its save round trip or any local hospital orders. Original earned wounds, deaths, funds, contracts, finite stock, royalist Cordoba and stationary occupying group retained. This is a funded recovery route, not ordinary3200-peso opening acceptance.",
+  "hour": 296,
+  "secondOfHour": 2213,
+  "location": "tucuman",
+  "treasury": 100072,
+  "patientIds": [
+    103,
+    111,
+    125,
+    141
+  ],
+  "additionalOrders": 0,
+  "saveNormalizationPerformed": false
+}
