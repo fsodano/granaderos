@@ -12,7 +12,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,reloadCost} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
-import {transferRouteAmmunition} from './route-ammunition-transfer.mjs';
+import {transferRouteAmmunition,transferRouteSupply} from './route-ammunition-transfer.mjs';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const compatible=(s,op)=>civicStatus(s,op.id).available&&contractQuote(s,op,'week').available&&contractQuote(s,op,'week').total<=1400;
@@ -146,7 +146,14 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
  }
  const backup=ranked.filter(op=>op.id!==physician.id&&op.medical>=70).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];assert.ok(backup);
  if(diagnosticContext)diagnosticContext.backupPhysician=backup.id;
- for(const [id,target]of [[physician.id,12],[backup.id,8]])while(c.operativeState[id].medkits<target){const row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'Actual finite local physician dressings are required.');take(id,row,Math.min(target-c.operativeState[id].medkits,row.count));}
+ for(const [id,target]of [[physician.id,12],[backup.id,8]])while(c.operativeState[id].medkits<target){
+  const row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits'),missing=target-c.operativeState[id].medkits;
+  if(row)take(id,row,Math.min(missing,row.count));
+  else{
+   const donors=[...rear,...paid].filter(donor=>![physician.id,backup.id].includes(donor)&&c.operativeState[donor].medkits>0);
+   const shared=transferRouteSupply(c,{sector:'cordoba',recipientId:id,donorIds:donors,item:'medkits',count:missing,execute:(state,action)=>{assert.equal(state,c);order(action);return c;},report:event});c=shared.campaign;
+  }
+ }
  order({type:'selectSquad',id:groups[0]});
  const gun=c.sectorStates.cordoba.artillery.filter(gun=>gun.side==='player'&&gun.type==='bronze4'&&(gun.loaded||gun.ammo>0)).sort((a,b)=>a.id.localeCompare(b.id))[0];assert.ok(gun,'A real owned supplied Córdoba bronze cannon is required.');assert.equal(artilleryProfile(c,gun).crew,2);
  const record=storedArtilleryRecord(gun);order({type:'storeArtillery',sector:'cordoba',artilleryId:gun.id});assert.deepEqual(c.artilleryDepots.cordoba.find(piece=>piece.id===gun.id),record);assert.ok(!c.sectorStates.cordoba.artillery.some(piece=>piece.id===gun.id));order({type:'configureArtillery',types:['depot:'+gun.id]});
