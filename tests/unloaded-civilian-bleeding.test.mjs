@@ -11,6 +11,7 @@ import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {civilianIncidents} from '../game/civilian-harm.js';
 import {synchronizeCampaignPresence} from '../game/campaign-presence.js';
+import {expandCellScene} from '../game/cell-scene-storage.js';
 import {approachNPC} from './approach-npc.mjs';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 const A='cell-27-27';
@@ -116,7 +117,14 @@ test('a batched remote checkpoint crossing midnight uses the actual wound delta 
  const before=now(p.campaign);let battle=actBattle(p.battle,{type:'rest',unitId:'111'});assert.equal(battle.lastError,null);assert.equal(battle.elapsedSeconds-p.battle.elapsedSeconds,600);
  p=sync({...p,battle});assert.equal(now(p.campaign),before+600);assert.equal(health(p.campaign).hp,0);
  assert.equal(p.campaign.contentPresence.receipts[0].minute,Math.floor(deathSecond/60));assert.ok(p.campaign.contentPresence.receipts[0].minute<p.campaign.contentPresence.minute);
- assert.equal(p.campaign.contentPresence.people.successor.appeared,true);assert.equal(serializeCampaign(sync(saved(p)).campaign),serializeCampaign(p.campaign));assert.ok(saved(p));
+ assert.equal(p.campaign.contentPresence.people.successor.appeared,true);
+ const resynchronized=sync(saved(p)).campaign;
+ // Retained cell terrain is stored compressed and expands on reentry. Compare
+ // every logical field, then every saved field; JSON key order is not state.
+ const expanded=structuredClone(resynchronized);
+ for(const [key,scene]of Object.entries(expanded.sectorStates))expanded.sectorStates[key]=expandCellScene(scene,expanded);
+ assert.deepEqual(expanded,p.campaign);
+ assert.deepEqual(JSON.parse(serializeCampaign(resynchronized)),JSON.parse(serializeCampaign(p.campaign)));assert.ok(saved(p));
 });
 
 

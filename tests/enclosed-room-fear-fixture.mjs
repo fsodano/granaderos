@@ -44,10 +44,13 @@ export function roomStep(pair,event,history){
 export const roomAction=(pair,action,history)=>roomStep(pair,{kind:'action',action:{unitId:String(ROOM_ACTOR),...action}},history);
 export function roomReplay(start,history){let pair=roomSaved(start);for(const event of history)pair=roomStep(pair,event);return pair;}
 
-// Real stock hire, delayed arrival, marches and discovery. Only the later
-// combat arena is prepared; this acquisition has no assigned gear or outcomes.
+// This experiment authors room fear and a six-hour arrival before real paid
+// hiring, marches and discovery. Only the later combat arena is prepared;
+// this acquisition has no assigned gear or outcomes.
 export function paidRoomArrival({oldPinned=false,crowbar=true}={}){
  const content=defaultContentPackage();
+ const godoy=content.characters.find(person=>person.id==='person-126');
+ godoy.abilities=['enclosed_room_fear'];godoy.arrivalHours=6;
  if(oldPinned){const godoy=content.characters.find(person=>person.id==='person-126');godoy.abilities=godoy.abilities.filter(id=>id!=='enclosed_room_fear');}
  const start=roomSaved({campaign:initialCampaign(42,content)}),history=[];
  const quote=contractQuote(start.campaign,rosterFor(start.campaign).find(person=>person.id===ROOM_ACTOR),'week');

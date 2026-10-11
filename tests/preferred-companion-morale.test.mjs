@@ -17,6 +17,9 @@ const now=s=>s.hour*3600+(s.secondOfHour??0);
 const advanceTo=(s,target)=>{for(let i=0;i<160&&now(s)<target;i++)s=order(s,{type:'advanceStrategicTime',seconds:Math.min(3600,target-now(s))});assert.equal(now(s),target);return s;};
 const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
 const paidPair=(content=defaultContentPackage(),term='week')=>{
+ // These issue/sleep/expiry controls deliberately schedule both arrivals at
+ // hour six. Stock arrival remains immediate; no serving condition is reset.
+ content=structuredClone(content);for(const id of [107,116])content.characters.find(c=>c.id===`person-${id}`).arrivalHours=6;
  let s=initialCampaign(42,content);for(const id of [107,116]){const quote=contractQuote(s,rosterFor(s).find(o=>o.id===id),id===116?term:'week'),cash=s.resources.treasury;s=order(s,{type:'recruitCivic',id,term:id===116?term:'week'});assert.equal(s.resources.treasury,cash-quote.price);}
  s=advanceTo(s,21600);assert.deepEqual(s.recruited,[107,116]);return saved(s).campaign;
 };
@@ -142,7 +145,7 @@ test('a native paid sleeping survivor saves the confirmed loss and sends once af
  // Every condition comes from paid service, native Retiro orders and the wound
  // clock. Running before the shot earns enough tiredness to remain asleep at
  // the fatal strategic hour; no clinical health or energy is assigned.
- const initial=saved(initialCampaign(42,defaultContentPackage()));let pair=initial;
+const initial=saved(initialCampaign(42,defaultContentPackage()));let pair=initial;
  const history=[];
  const perform=(entry,input)=>{
   if(entry.kind==='enter'){

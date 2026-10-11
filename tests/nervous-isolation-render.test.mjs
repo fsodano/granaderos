@@ -24,6 +24,9 @@ const popup=tree=>nodes(tree).find(node=>node.props?.className==='tactical-feedb
 
 function preparedIsolation({oldPinned=false}={}){
  const content=defaultContentPackage();
+ // This prepared UI experiment explicitly enables the optional capability;
+ // the shipped profile remains neutral and older pinned omissions stay valid.
+ content.characters.find(person=>person.id==='person-130').abilities=['care_composure','nervous_isolation','low_morale_refusal'];
  if(oldPinned){const cejas=content.characters.find(person=>person.id==='person-130');cejas.abilities=cejas.abilities.filter(id=>id!=='nervous_isolation');}
  const roster=rosterFor(initialCampaign(42,content));
  // Prepared low-morale UI context, not an earned campaign injury or opening
