@@ -5,7 +5,8 @@ import {dialoguePackage} from './dialogue-fixture.mjs';
 import {readyLocal,localPackage,localId,localNPC,tactical as localTactical,order as localOrder,leave as leaveLocal,visit as visitLocal} from './local-contract-fixture.mjs';
 import {playerKnownState,playerKnownBattle} from '../game/player-known-state.js';
 import {battleFromRequest} from '../game/battle-handoff.js';
-import {OPERATIVES} from '../game/campaign.js';
+import {rosterFor} from '../game/campaign.js';
+import {campaignDocuments,campaignFetch} from './campaign-library-fixture.mjs';
 import {encounterHireTerms} from '../game/encounters.js';
 import {contentQuestStatus,contentQuestJournal} from '../game/content-quests.js';
 import test from 'node:test';
@@ -100,7 +101,15 @@ test('rejected tool and UI orders leave both simulation states and the saved cam
 });
 
 test('registered orders retain standalone combat and unregister when the game unmounts',async t=>{
- const m=await mount(t);await m.click('Combate de San Lorenzo');const before=battleFromRequest({squad:OPERATIVES.filter(x=>[3,4,7,10].includes(x.id)).map(x=>({...x,horse:true})),id:'san_lorenzo',name:'San Lorenzo · 3 de febrero de 1813',biome:'river',seed:18130203,enemyCount:4}),want=withCharacterSpeech(before,endTurn(before));
+ const m=await mount(t),entry=campaignDocuments.get('/campaigns/index.json').campaigns[0];
+ const {loadInstalledCampaign}=await import('../web/lib/campaign-library.ts'),installed=await loadInstalledCampaign(entry,{reader:campaignFetch});
+ // The generic editor landing page has no inherited stock skirmish. Select
+ // its actual installed package through the ordinary title-screen control.
+ const picker=m.document.querySelector('select[aria-label="Campaña"]');assert.ok(picker);
+ await act(async()=>{picker.value=entry.id;picker.dispatchEvent(new m.dom.window.Event('change',{bubbles:true}));});
+ const config=installed.presentation.skirmish,state=initialCampaign(1812,installed.content);
+ await m.click(config.label);
+ const before=battleFromRequest({...config.request,campaignPackage:installed.content,squad:rosterFor(state).filter(x=>config.operativeIds.includes(x.id)).map(x=>({...x,horse:Boolean(config.horse)}))},state),want=withCharacterSpeech(before,endTurn(before));
  await act(async()=>m.issue({type:'endTurn'}));assert.equal(m.read().campaign,null);assert.deepEqual(m.read().battle,playerKnownBattle(want));assert.equal(m.dom.window.localStorage.getItem(CONTENT_SAVE_KEY),null);
  await m.unmount();assert.ok(m.registrations.every(r=>r.signal.aborted));
 });
