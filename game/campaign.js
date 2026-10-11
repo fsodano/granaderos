@@ -959,7 +959,7 @@ export function dispatchCampaign(previous,action){
           }
           else{
             requireThat(!quest.carried,'Los objetos del encargo se registran cuando el interlocutor los recibe.');requireThat(quest.conditionMet,'Primero asegurá las localidades y completá los encargos previos indicados.');
-            const arrival=quest.escort?escortArrival(quest,s.quests[quest.id],snapshot,local,unit):null;
+            const arrival=quest.escort?escortArrival(quest,s.quests[quest.id],snapshot,local,unit,s):null;
             if(quest.cost)pay(s,quest.cost);rewardQuest(s,quest);
             s.quests[quest.id]={...s.quests[quest.id],status:'completed',completedAt:s.hour,...(arrival?{arrival}:{})};text=quest.delivery;outcome='questCompleted';note(s,`Encargo cumplido: ${quest.title}.${typeof quest.reward==='number'?` Pago recibido: ${quest.reward} pesos.`:''}`);
           }

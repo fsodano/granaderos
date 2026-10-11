@@ -4,6 +4,7 @@ import TacticalThreeScene from '../TacticalThreeScene';
 import {presentActors,presentWorld} from '../../lib/three/presentation';
 import {sectorProject} from '../../lib/three/projection';
 import {createBattle} from '../../../game/tactical.js';
+import {createSceneTerrainCache} from '../../../game/scene-terrain.js';
 import {weaponMetadata} from '../../../game/weapon-definition.js';
 import {characterPresentationDefaults,authoredPresentation} from '../../../game/content-character-presentation.js';
 import {startingCharacterSupplies} from '../../../game/character-supplies.js';
@@ -16,7 +17,7 @@ export function characterPreviewScene(content:any,character:any,{direction=3,mot
   battle.campaignPackage=content;
   const unit=battle.units[0],entries=[{key:'unit:preview',kind:'unit' as const,actor:unit}],rooms=new Set<string>(),yaw=(5-direction)*Math.PI/4;
   const positions:any=motion==='walk'||motion==='run'?{'unit:preview':{x:3,y:3,direction,moving:true,frame:0,travelX:Math.sin(yaw),travelY:Math.cos(yaw)}}:{};
-  const actors=presentActors(battle,entries,positions,rooms,{selected:'preview',mode:motion==='aim'?'fire':'move'}),world=presentWorld(battle,battle,[unit],rooms,entries,0),point=sectorProject(7)(3,3);
+  const actors=presentActors(battle,entries,positions,rooms,{selected:'preview',mode:motion==='aim'?'fire':'move'}),world=presentWorld(battle,createSceneTerrainCache()(battle),[unit],rooms,entries,0),point=sectorProject(7)(3,3);
   return {actors,world,view:{x:point.x-115,y:point.y-145,width:230,height:220,mapHeight:7}};
 }
 

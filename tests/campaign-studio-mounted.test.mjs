@@ -5,7 +5,7 @@ import {resolveObjectURL} from 'node:buffer';
 import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
 import {IDBFactory} from '../web/node_modules/fake-indexeddb/build/esm/index.js';
 import {createElement as h,act,StrictMode} from '../web/node_modules/react/index.js';
-import {createCampaignProject,projectResourceBytes,validateCampaignProject} from '../game/campaign-editor-project.js';
+import {createCampaignProject,projectResourceBytes,validateCampaignProject,decodeCampaignProject} from '../game/campaign-editor-project.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {loadStudioProjects}=await import('../web/lib/campaign-studio-storage.ts');
 const {importCampaignArchive}=await import('../web/lib/campaign-studio-files.ts');
@@ -67,4 +67,12 @@ test('importing an existing project identity requires a new copy and preserves t
  await m.file(m.document.querySelector('input[accept=".json,.zip,application/json,application/zip"]'),'copy.project.json',JSON.stringify(incoming));await m.wait(()=>m.document.body.textContent.includes('Importar con identidad nueva'));assert.equal((await m.snapshot()).content.characters[0].name,original.content.characters[0].name);
  const panel=[...m.document.querySelectorAll('section')].find(section=>section.querySelector('h2')?.textContent==='Importar con identidad nueva');await m.input(m.label('Identidad de copia',panel),'mounted-existing-copy');await m.click(m.button('Importar como copia',panel));await m.saved();const projects=await loadStudioProjects();assert.equal(projects.length,2);assert.deepEqual(projects.find(project=>project.manifest.id==='mounted-existing').content,original.content);
  const copy=projects.find(project=>project.manifest.id==='mounted-existing-copy');assert.equal(copy.content.characters[0].name,'Persona importada');assert.equal(copy.content.characters[0].portrait,'/campaigns/mounted-existing-copy/assets/guide.png');assert.equal((await validateCampaignProject(copy)).valid,true);
+});
+test('master rejects invalid portable identities and nonobject documents while retaining a recoverable project download',async t=>{
+ const m=await mount(t);await m.create('mounted-guards','Proyecto recuperable');await m.section('Presentación');await m.input(m.label('Subtítulo'),'Edición que debe conservarse');await m.saved();const previous=await m.snapshot();
+ await m.section('Todos los documentos');const documentPanel=name=>{const detail=[...m.document.querySelectorAll('details')].find(detail=>detail.querySelector('summary')?.textContent===name);assert.ok(detail,`document ${name}`);detail.open=true;return detail;};
+ const manifest=documentPanel('manifest');await m.input(m.label('Identidad',manifest),'bad id');assert.match(m.document.querySelector('.studio-notice').textContent,/identidad necesita letras minúsculas/);assert.equal(m.label('Identidad',manifest).value,'mounted-guards');assert.deepEqual(await m.snapshot(),previous);
+ const world=documentPanel('world');await m.click(m.button('JSON',world));await m.input(world.querySelector('textarea'),'null');await m.click(m.button('Aplicar documento',world));assert.match(m.document.querySelector('.studio-notice').textContent,/documentos principales deben ser grupos de campos/);
+ const downloaded=await m.snapshot();assert.deepEqual(downloaded,previous);assert.deepEqual(decodeCampaignProject(JSON.stringify(downloaded)),previous);assert.equal((await validateCampaignProject(downloaded)).valid,true);assert.deepEqual((await loadStudioProjects())[0],previous);
+ await m.reload();assert.ok(m.document.querySelector('.studio-project-bar').textContent.includes('mounted-guards'));assert.deepEqual(await m.snapshot(),previous);await m.section('Presentación');assert.equal(m.label('Subtítulo').value,'Edición que debe conservarse');
 });

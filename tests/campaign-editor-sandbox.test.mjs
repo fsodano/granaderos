@@ -106,3 +106,24 @@ test('sandbox physical delivery consumes declared supplies, acknowledges custody
  s=command(s,{type:'leave'});s=command(s,{type:'enter'});assert.equal(s.battle.npcs.find(n=>n.id==='authored-resident').questGifts.length,2);assert.equal(s.campaign.resources.treasury,cash+23);assert.equal(s.campaign.conversations['authored-resident'].giftCount,2);
  assert.deepEqual(decodeCampaignSandbox(encodeCampaignSandbox(s),content),s);
 });
+
+test('selected-world escort follows real movement to its authored exit and saves completion',()=>{
+ const content=structuredClone(packageForTest());content.world.exitLinks=[['camp','E',19,8,'watch-post','W',0,8]];
+ // The authored destination starts safe; escort completion still requires its
+ // issued exit and actual adjacent arrival, as in an ordinary campaign.
+ content.startingTerritory['watch-post']={owner:'patriot',loyalty:65};
+ content.errands=[{id:'camp-escort',npcId:'authored-resident',sector:'camp',title:'Llegar a la salida',offer:'Acompañame a la salida.',delivery:'Llegamos a la salida.',cost:{},requiredSectors:['camp','watch-post'],escort:{edge:'E',destination:'watch-post'},reward:{treasury:23,loyalty:false}}];
+ let s=ready(content),cash=s.campaign.resources.treasury;s=command(s,{type:'talk',unitId:'2000',npcId:'authored-resident',approach:'quest'});assert.equal(s.campaign.quests['camp-escort'].status,'offered');
+ assert.equal(s.battle.npcs.find(n=>n.id==='authored-resident').escort.waiting,false);const started=s.battle.elapsedSeconds;
+ for(let i=0;i<240;i++){
+  const actor=s.battle.units.find(u=>u.id==='2000');if(actor.x===s.battle.width-1)break;
+  const target=getReachable(s.battle,actor).filter(p=>p.x===s.battle.width-1).sort((a,b)=>a.cost-b.cost)[0];
+  if(!target){s=command(s,{type:'tactical',order:{type:'rest'}});continue;}
+  s=command(s,{type:'tactical',order:{type:'move',unitId:actor.id,x:target.x,y:target.y}});
+ }
+ for(let i=0;i<30;i++){const actor=s.battle.units.find(u=>u.id==='2000'),npc=s.battle.npcs.find(n=>n.id==='authored-resident');if(Math.abs(actor.x-npc.x)+Math.abs(actor.y-npc.y)<=1)break;s=command(s,{type:'tactical',order:{type:'rest'}});}
+ const leader=s.battle.units.find(u=>u.id==='2000'),contact=s.battle.npcs.find(n=>n.id==='authored-resident');assert.equal(leader.x,s.battle.width-1);assert.ok(s.battle.elapsedSeconds>started);assert.ok(Math.abs(leader.x-contact.x)+Math.abs(leader.y-contact.y)<=1,JSON.stringify({leader:[leader.x,leader.y],contact:[contact.x,contact.y],order:contact.escort,exits:s.battle.exits}));assert.ok(s.battle.exits.some(e=>e.id==='camp:watch-post'),JSON.stringify(s.battle.exits));
+ if(!canSee(s.battle,leader,contact))s=command(s,{type:'tactical',order:{type:'look',unitId:leader.id,x:contact.x,y:contact.y}});
+ s=command(s,{type:'talk',unitId:leader.id,npcId:contact.id,approach:'quest'});assert.equal(s.campaign.quests['camp-escort'].status,'completed');assert.equal(s.campaign.resources.treasury,cash+23);assert.equal(s.campaign.quests['camp-escort'].arrival.leaderX,s.battle.width-1);assert.equal(s.battle.npcs.find(n=>n.id===contact.id).escort.waiting,true);
+ assert.deepEqual(decodeCampaignSandbox(encodeCampaignSandbox(s),content),s);s=command(s,{type:'leave'});s=command(s,{type:'enter'});assert.equal(s.campaign.quests['camp-escort'].status,'completed');assert.equal(s.campaign.resources.treasury,cash+23);assert.deepEqual(decodeCampaignSandbox(encodeCampaignSandbox(s),content),s);
+});

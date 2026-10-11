@@ -80,7 +80,8 @@ runs, not an aggregate final website gate.
 The embedded map workspace edits the current project's map directly. These
 runs do not establish the final master page's shared undo/recovery or visible
 browser acceptance. The expanded master mounted gate exposed a controlled-map
-sync loop during global undo; that integration fix and rerun are pending.
+sync loop during global undo. The guarded synchronization fix now passes the
+integrated master workflow run below.
 
 ## Content editor and sandbox checks
 
@@ -93,11 +94,64 @@ affected checks are recorded in the original copied logs:
 | --- | --- | --- |
 | [Content editor and dialogue](content-editor-dialogue.log) | 118 passed, 0 failed or skipped; 72587.439458 ms | Full story editor, actual Three character projection, controlled document edits, hiring, dialogue, deadlines, costs, saves, custom-world movement and finite cache collection/re-entry. |
 | [Errands, saves and sandbox](errands-save-sandbox.log) | 86 passed, 0 failed or skipped; 28695.366084 ms | All nine new sandbox cases, physical delivery, selected errand/save/squad/inventory/service-return behavior. |
+| [Character preview runtime handoff](character-preview-runtime.log) | 4 passed, 0 failed or skipped; 2179.059083 ms | Actual sector renderer updates from the character preview's physical scene and actor projection. |
+| [Authored escort sandbox](escort-sandbox.log) | 29 passed, 0 failed or skipped; 27290.60575 ms | Ten sandbox cases plus content errands and campaign escort checks; real custom-world escort completion and save/re-entry. |
 
 The final physical-delivery assertion exposed and corrected selected-world
 context in errand admission. The correction changed context arguments and
 signatures; it added no saved fields. Neither run is a historical campaign
 route or visible master website acceptance.
+
+Later browser review found a character renderer handoff gap that the earlier
+projection checks had not covered. The preview now passes the same physical
+scene cache as Battlefield and keeps the roster in the actor projection. The
+four-case runtime handoff receipt checks actual renderer updates. The final
+escort receipt verifies selected-world safe exits, real elapsed movement,
+boundary/adjacency admission, one-time reward and strict save/re-entry.
+
+## Integrated master workflow
+
+```sh
+node --test tests/campaign-studio-mounted.test.mjs
+```
+
+The [original master workflow log](master-workflow.log) records **5 passed,
+0 failed, 0 skipped**, exit `0`, duration **7158.647875 ms**. This run uses the
+actual `/studio` page and its workspaces mounted in JSDOM with React StrictMode
+and a fresh IndexedDB implementation. It is not a live browser capture.
+
+Covered behavior:
+
+- Specialized presentation and full document views edit one project.
+- Map title changes participate in master keyboard undo/redo, while preserving
+  the presentation edit and other maps.
+- Two projects retain separate document and resource bytes through autosave,
+  unmount, reload and selection. Installed gameplay save keys remain intact.
+- The actual download control blocks an invalid calendar; after repair it
+  produces a full ZIP that can be reimported and validated.
+- A missing nested resource opens the repair panel; uploading a different
+  basename replaces the selected nested path and retains its asset ID/content.
+- Importing an existing project ID requires a new copy and retains the
+  original saved project's content.
+
+A separate bounded guard case then passed:
+
+```sh
+node --test --test-name-pattern='master rejects invalid portable' tests/campaign-studio-mounted.test.mjs
+```
+
+The [original guard/recovery log](master-guard-recovery.log) records **1 passed,
+0 failed, 0 skipped**, exit `0`, duration **3902.631708 ms**. Directly entering an
+invalid portable campaign ID and applying a nonobject required world document
+both retain the previous project. That project remains downloadable,
+decodable, valid and recoverable after reload. This separate receipt is not
+a combined six-case final master run.
+
+The [author guide's content coverage table](../../authoring/campaign-studio.md#workspaces)
+maps every admitted authored content group to a controlled form or the complete
+structured field view. Optional import, artillery supply/trading, ammunition
+market and roadside placement fields use structured controls where a domain
+form is absent. Compiler/save-generated origin is deliberately excluded.
 
 ## Historical package copy admission
 
@@ -112,7 +166,7 @@ chapter objectives must be authored if campaign progression is required.
 
 ## Pending website acceptance
 
-The master `/studio` page and specialized workspaces are under implementation.
+The master `/studio` page and specialized workspaces are present in source.
 At this checkpoint there is no completed final website build or visible
 end-to-end browser receipt. Earlier engine-separation build and browser
 results belong to their named source; they do not validate this website.
@@ -131,10 +185,10 @@ Required next evidence remains:
 6. Verify keyboard access and narrow layouts, then record the final typecheck,
    affected editor checks and production export against the final source.
 
-The foundation's affected files have no outstanding TypeScript errors from the
-latest preliminary typecheck. That preliminary run was not a passing whole
-website gate because another workspace had a concurrent type error. Final
-website typecheck evidence is pending.
+An early foundation typecheck found no outstanding errors in its affected
+files, but another workspace still had a concurrent type error. The later
+workspace typecheck copied above passed. Final website typecheck evidence is
+pending against the combined source.
 
 No full historical campaign routes were run for this task. These receipts do
 not establish campaign completion, game balance, unrestricted mesh authoring,

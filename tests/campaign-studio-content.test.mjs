@@ -26,6 +26,9 @@ test('character preview presents the shared 3D actor with authored skin, weapons
  const {characterPreviewScene,default:CharacterPreview}=await import('../web/app/studio/CharacterPreview.tsx'),d=content(),c=d.characters[0];c.skinTone='dark';c.spriteAppearance='woman-scout';const hash=contentIdentity(d).hash;
  const run=characterPreviewScene(d,c,{direction:2,motion:'run',equipment:'blade'});assert.equal(run.actors[0].skin,'dark');assert.equal(run.actors[0].appearance,'woman-scout');assert.equal(run.actors[0].action,'run');assert.ok(run.actors[0].items.some(i=>i.id==='1813'&&i.socket==='handRight'));
  const crouch=characterPreviewScene(d,c,{direction:6,posture:'crouched',equipment:'none'});assert.equal(crouch.actors[0].posture,'crouched');assert.ok(crouch.actors[0].items.every(i=>!['handRight','handLeft'].includes(i.socket)));assert.notEqual(run.actors[0].yaw,crouch.actors[0].yaw);assert.equal(contentIdentity(d).hash,hash);
+ const {Scene}=await import('../web/node_modules/three/build/three.module.js'),{createSectorWorld}=await import('../web/lib/three/sector-world.ts'),{TILE_METRES}=await import('../web/lib/three/projection.ts');
+ const world=createSectorWorld(new Scene(),{tileMetres:TILE_METRES,assetUrl:path=>path});
+ try{for(const rendered of [run,crouch]){for(const key of ['units','npcs','players','enemies'])assert.equal(key in rendered.world.terrain,false);assert.doesNotThrow(()=>world.update(rendered.world));assert.ok(world.inspect().meshes>0);}}finally{world.dispose();}
  const html=renderToStaticMarkup(h(CharacterPreview,{content:d,character:c,resolveAsset:ref=>ref===c.portrait?'data:image/png;base64,test':ref}));assert.match(html,/data-sector-renderer="three"/);assert.match(html,/data:image\/png;base64,test/);assert.match(html,/Dirección de la vista/);assert.match(html,/Movimiento de la vista/);
 });
 test('quest editor protects event references and force appearance controls use explicit neutral generic defaults',async()=>{
