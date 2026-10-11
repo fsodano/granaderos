@@ -1,0 +1,13 @@
+✔ browser discovers campaigns, loads the selected pinned package, and restores its asset and world data (668.117708ms)
+✔ loader rejects mismatched manifests, duplicate map ids and traversal before reading outside a campaign (26.601375ms)
+✔ saved resource verification detects changed or missing bytes without replacing its pinned package (168.242209ms)
+✔ static export discovers a second local campaign, preserves nested assets, and verifies their checksums (430.792125ms)
+✔ development middleware serves prefixed campaign documents and blocks traversal (0.915792ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1734.137292

@@ -1,0 +1,25 @@
+✔ a scaffold is a playable independent campaign with its own map, cast, portrait and saved identity (294.725083ms)
+✔ author checks use build validation and reject invalid data, changed resources and linked files (77.132584ms)
+✔ browser discovers campaigns, loads the selected pinned package, and restores its asset and world data (684.133333ms)
+✔ loader rejects mismatched manifests, duplicate map ids and traversal before reading outside a campaign (26.003333ms)
+✔ saved resource verification detects changed or missing bytes without replacing its pinned package (165.125333ms)
+✔ static export discovers a second local campaign, preserves nested assets, and verifies their checksums (453.13375ms)
+✔ development middleware serves prefixed campaign documents and blocks traversal (1.016375ms)
+✔ all fifteen authored maps have unique deterministic layouts (71.290417ms)
+✔ maximum normal deployments and artillery are collision-free, unblocked and connected (58.2415ms)
+✔ San Lorenzo convent has an enterable interior, windows and independent double doors (1.60825ms)
+✔ San Lorenzo has two independent charge avenues around the convent (2.29875ms)
+✔ river sectors retain impassable connected eastern water boundaries (4.459292ms)
+✔ Andean cliffs constrain a connected pass and defensive choke (3.252875ms)
+✔ unknown maps reject rather than silently substitute a generic battlefield (0.297541ms)
+✔ tactical engine consumes authored tiles and troop positions without a generic wall (116.159167ms)
+✔ local and map equipment controls retain physical inventory and owned riders without any shop path (530.3785ms)
+✔ the desk keeps hiring and received correspondence without finance, supply or shop folders (22.010083ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1787.2795

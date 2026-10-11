@@ -3,10 +3,11 @@
 Updated: 10 October 2026.
 
 The owner will design campaigns and wants other people to design their own.
-This is the future product direction. Version 0.1 records the current playable
+This is the future product direction. Version 0.1 records an earlier playable
 game; it does not add or claim a complete campaign creator platform.
 
-[Current version](../verification/version-0.1.md) ·
+[Current separation checks](../verification/campaign-engine-separation-2026-10-10.md) ·
+[Version 0.1 checkpoint](../verification/version-0.1.md) ·
 [Story editor](../development/story-editor.md) ·
 [Sector editor](../development/sector-editor.md)
 
@@ -18,9 +19,16 @@ Campaigns pin validated content, and drafts support undo, import and export.
 The [La ruta de las postas example](../development/example-post-campaign.md)
 demonstrates an independent scenario in the existing world.
 
+The current development branch separates the engine and installed campaign
+folders. Local authors can scaffold, check and install a generic campaign using
+the [campaign folder workflow](../development/campaign-authoring.md). The menu
+can select multiple installed packages, with separate saves and editor drafts.
+Only Granaderos ships in the repository. This local workflow does not add a
+community catalogue or certify a finished campaign.
+
 The sector editor authors tactical maps, buildings and shared wall edges.
-These tools provide useful starting points. They do not yet form a complete
-workflow for publishing arbitrary campaigns to other players.
+Authors export each map and update the package files themselves. Full visual
+composition, publishing and community distribution remain future work.
 
 ## Planned capabilities
 

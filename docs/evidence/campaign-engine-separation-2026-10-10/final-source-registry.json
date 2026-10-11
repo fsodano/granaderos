@@ -1,0 +1,12 @@
+{
+  "format": "granaderos-campaign-registry",
+  "version": 1,
+  "campaigns": [
+    {
+      "id": "granaderos",
+      "name": "Granaderos: la independencia",
+      "revision": "0.1.0",
+      "manifest": "granaderos/manifest.json"
+    }
+  ]
+}

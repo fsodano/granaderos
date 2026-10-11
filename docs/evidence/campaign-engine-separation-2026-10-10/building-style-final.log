@@ -1,0 +1,18 @@
+✔ selected generic wall, trim and height change real generated meshes without renderer mutation (127.235875ms)
+✔ generated tile, thatch and terrace roofs use their actual materials and tactical slab geometry (116.896916ms)
+✔ explicit authored map roof and finishes win over selected building defaults (83.279958ms)
+✔ generated world-grid district houses use their selected roof and real mesh pigments (222.202083ms)
+✔ selected optional gallery, awning, tower, arcade and upper-storey fields change visible geometry (478.274667ms)
+✔ selected styles survive actual active-save, departure and saved re-entry; forged styles fail admission (607.293667ms)
+✔ six stock authored and generated mesh signatures remain exact, ordinary and installed (858.599291ms)
+✔ legacy scene validation preserves its exact save shape (1.544958ms)
+✔ a pinned world restores only its own locality list (0.151583ms)
+✔ a forged tactical locality list is rejected without replacement (0.249958ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3186.137917

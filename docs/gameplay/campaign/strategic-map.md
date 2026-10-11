@@ -27,10 +27,15 @@ Surface and three disabled depth controls stay at the lower right. No undergroun
 
 ## Geographic data
 
-`game/strategic-geography.json` contains only geometry extracted from Natural Earth:
+`campaigns/granaderos/world.json`, under `geography`, contains the stock campaign's
+geometry extracted from Natural Earth:
 
 - [1:110m country geometry](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_admin_0_countries.geojson): South American land and the Argentina locator.
 - [1:50m river geometry](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_50m_rivers_lake_centerlines.geojson): Paraná, Paraguay, and Uruguay.
 - [Natural Earth terms](https://www.naturalearthdata.com/about/terms-of-use/): public domain.
 
 Place anchors are approximate regional display coordinates, not survey data. The Andes band is schematic. The projection's scale bar is approximate across this latitude range.
+
+Other campaigns define their own geography, projection, cells, locality anchors,
+districts and tactical maps. The engine keeps the same 36 by 33 grid. These
+definitions are pinned to a campaign save and are not shared mutable catalogues.
