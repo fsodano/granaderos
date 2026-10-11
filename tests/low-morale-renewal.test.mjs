@@ -17,7 +17,9 @@ const order=(s,a)=>{const input=structuredClone(s),next=dispatchCampaign(s,a);as
 // the separate paid integration earns and recovers morale through real orders.
 function prepared({morale=29.7,oldPinned=false,second=17}={}){
  const content=defaultContentPackage();
- if(oldPinned)content.characters.find(c=>c.id==='person-130').abilities=content.characters.find(c=>c.id==='person-130').abilities.filter(a=>a!=='low_morale_refusal');
+ const cejas=content.characters.find(c=>c.id==='person-130');
+ cejas.abilities=cejas.abilities.filter(a=>a!=='low_morale_refusal');
+ if(!oldPinned)cejas.abilities.push('low_morale_refusal');
  let s=initialCampaign(42,content);s.operativeState[130].morale=morale;s.cohesion['110:130']=120;
  s=order(s,{type:'advanceStrategicTime',seconds:second});
  s=order(s,{type:'recruitCivic',id:130,term:'day'});s=order(s,{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'wait',hours:6});
@@ -42,19 +44,21 @@ test('pinned paid ability uses exact personal morale, leaves hiring neutral and 
 
 test('atomic renewal refusal preserves precedence, exact contract and pay clock; thirty permits ordinary paid extensions once per reward day',()=>{
  const low=prepared(),expiry=contractExpiresSeconds(low.contracts[130]);
- rejection(low,{type:'renewContract',id:130,term:'day',expectedExpiresAt:30,expectedExpiresSecond:18},/contrato cambió/);
+ const expected={expectedExpiresAt:low.contracts[130].expiresAt,expectedExpiresSecond:low.contracts[130].expiresSecond??0};
+ assert.equal(expiry,24*3600+17,'an immediate day hire starts at its actual booking second');
+ rejection(low,{type:'renewContract',id:130,term:'day',...expected,expectedExpiresSecond:expected.expectedExpiresSecond+1},/contrato cambió/);
  rejection(low,{type:'renewContract',id:130,term:'year'},/plazos de contrato/);
- rejection(low,{type:'renewContract',id:130,term:'day',expectedExpiresAt:30,expectedExpiresSecond:17},/moral personal menor que 30/);
+ rejection(low,{type:'renewContract',id:130,term:'day',...expected},/moral personal menor que 30/);
  assert.equal(low.operativeState[130].lastMoralePayAt,null);assert.equal(contractExpiresSeconds(low.contracts[130]),expiry);
  let s=prepared({morale:30}),q=contractRenewalQuote(s,person(s)),cash=s.resources.treasury;
  assert.equal(lowMoraleRenewalStatus(s,person(s)).blocked,false);assert.equal(q.available,true);
- s=order(s,{type:'renewContract',id:130,term:'day',expectedExpiresAt:30,expectedExpiresSecond:17});
+ s=order(s,{type:'renewContract',id:130,term:'day',expectedExpiresAt:s.contracts[130].expiresAt,expectedExpiresSecond:s.contracts[130].expiresSecond??0});
  assert.equal(s.resources.treasury,cash-q.price);assert.equal(contractExpiresSeconds(s.contracts[130]),expiry+86400);
  assert.equal(s.operativeState[130].morale,32);assert.equal(s.operativeState[130].lastMoralePayAt,6);assert.equal(s.operativeState[130].lastMoralePaySecond,17);
  const record=structuredClone(s.operativeState[130]);s=order(s,{type:'renewContract',id:130,term:'day'});
  assert.equal(s.operativeState[130].morale,32);assert.deepEqual(s.operativeState[130],record);assert.equal(contractExpiresSeconds(s.contracts[130]),expiry+172800);
  // A rival refusal keeps its existing reason ahead of the reversible morale condition.
- const authored=defaultContentPackage();const cejas=authored.characters.find(c=>c.id==='person-130');cejas.serviceRefusals=[{character:'person-110',reason:'No acepta servir con esta persona.'}];
+ const authored=defaultContentPackage();const cejas=authored.characters.find(c=>c.id==='person-130');cejas.abilities.push('low_morale_refusal');cejas.serviceRefusals=[{character:'person-110',reason:'No acepta servir con esta persona.'}];
  let rival=initialCampaign(42,authored);rival.operativeState[130].morale=20;rival=order(rival,{type:'recruitCivic',id:130,term:'day'});rival=order(rival,{type:'recruitCivic',id:110,term:'week'});rival=order(rival,{type:'wait',hours:6});
  assert.equal(contractRenewalQuote(rival,person(rival)).reason,contractQuote(rival,person(rival)).reason);assert.match(contractRenewalQuote(rival,person(rival)).reason,/No acepta servir/);
 });
