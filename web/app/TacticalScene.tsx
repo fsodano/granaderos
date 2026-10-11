@@ -167,7 +167,7 @@ export default function TacticalScene({groundOverlay,terrainVisible=true,interac
  }
  const groundPaint=useMemo(()=>{
   const fills=new Map<string,string[]>(),shades=new Map<number,string[]>();
-  for(const t of terrain.tiles){const p=projectSurface(terrain,project,t),d=`M${p.x},${p.y-14}l26,14 -26,14 -26,-14z`,fill=t.type==='water'?'#516b67':`url(#terrain-${terrainMaterial(t,terrain.sceneId??terrain.sectorId)})`;
+  for(const t of terrain.tiles){const p=projectSurface(terrain,project,t),d=`M${p.x},${p.y-14}l26,14 -26,14 -26,-14z`,fill=t.type==='water'?'#516b67':`url(#terrain-${terrainMaterial(t,terrain.sceneId??terrain.sectorId,s)})`;
    if(!fills.has(fill))fills.set(fill,[]);fills.get(fill)!.push(d);
    if(terrain.night){const opacity=.78*(1-(illumination.get(`${t.x},${t.y}`)??0));if(!shades.has(opacity))shades.set(opacity,[]);shades.get(opacity)!.push(d);}
   }

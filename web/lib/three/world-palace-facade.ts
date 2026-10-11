@@ -10,6 +10,7 @@ import {buildingArtInset} from './world-building-placement';
 import {palaceColumns} from './world-palace-columns';
 import {civicStoreyBands} from './world-civic-storey-bands';
 import {palacePorticoHipReturn} from './world-palace-portico';
+import {buildingRenderProfile,selectedBuildingStyle} from './world-building-style';
 import type {WorldGeometry} from './world-geometry';
 import type {WorldMaterials} from './world-materials';
 import type {WorldBuilding,WorldInput} from './world-types';
@@ -25,7 +26,7 @@ export function palaceFacade(b:WorldBuilding,input:WorldInput,T:number,height:nu
   const root=new Group();root.name=`palace-facade:${b.id}`;let batch=new WorldBatch(geometry);
   const box=(u:number,v:number,y:number,w:number,h:number,d:number,material=wall)=>batch.primitive('box',material,at(u,v,y),[w*T,h,d*T],rotation,light);
   const feature=(name:string,draw:()=>void)=>{const previous=batch;batch=new WorldBatch(geometry);draw();const group=batch.finish(`building-detail:${b.id}:${name}`);root.add(group);batch=previous;return group;};
-  const twoStoreys=height>=4,storey=twoStoreys?height*profile.groundFloorHeight/profile.wallHeight:height;
+  const twoStoreys=height>=4&&selectedBuildingStyle(b)?.upper!==false,storey=twoStoreys?height*buildingRenderProfile(b).groundFloorHeight/buildingRenderProfile(b).wallHeight:height;
   // Compact edited shells retain their attached corner piers instead of
   // adding a second detached entrance column in the same corner wall cell.
   const supports=[...new Set([-3,-1,1,3].map(offset=>Math.round(frame.doorU+offset)))].filter(u=>u>0&&u<frame.width&&wallAt(u,0)?.type==='wall');

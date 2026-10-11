@@ -1,13 +1,13 @@
 import {sitePath} from '../../lib/site-path.js';
 import {AUTHORABLE_SPEECH_EVENTS,OPTIONAL_SPEECH_EVENTS} from '../../../game/characters.js';
-import {CHARACTER_PORTRAITS} from '../../../game/character-profile.js';
+import {campaignCharacterPortraits} from '../../../game/campaign-portraits.js';
 import {APPEARANCE_LABELS,SPEECH_LABELS,SPEECH_LINE_LIMIT,characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {spriteRender,spriteViewport} from '../../../game/sprite-render.js';
 import ServiceRelationshipsEditor from './ServiceRelationshipsEditor';
 
-export default function CharacterPresentation({character,portraits,characters,weapon,onChange}:{character:any;portraits:any[];characters?:any[];weapon:number;onChange:(patch:any)=>void}){
- const values=characterPresentationDefaults(character);
- const choices=[...CHARACTER_PORTRAITS.filter(p=>p.id.startsWith('avatar-')),...portraits.map(c=>({src:c.portrait,name:c.name}))];
+export default function CharacterPresentation({character,portraits,characters,weapon,onChange,content}:{content?:any;character:any;portraits:any[];characters?:any[];weapon:number;onChange:(patch:any)=>void}){
+ const values=characterPresentationDefaults(character,content);
+ const choices=[...new Map([...campaignCharacterPortraits(content).filter(p=>p.selectable!==false),...portraits.filter(c=>c.portrait).map(c=>({src:c.portrait,name:c.name}))].map(p=>[p.src,p])).values()];
  const sprite=spriteRender({id:'preview',side:'player',hp:100,spriteAppearance:values.spriteAppearance,weapon},{direction:2,moving:false,frame:0});
  const viewport=spriteViewport(sprite,{x:0,y:0},2,0,90);
  return <section aria-label="Voz y apariencia del personaje" className="character-presentation">

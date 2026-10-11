@@ -1,13 +1,14 @@
 'use client';
 import {questWithdrawalText} from '../../game/quest-withdrawal.js';
 import {questJournal,questResolutionText,questBeneficiaryResolutionText} from '../../game/quests.js';
-import {CAMPAIGN_SECTORS} from '../../game/data.js';
+import {campaignSectors} from '../../game/campaign-definition.js';
 import {encounterDefinitions} from '../../game/encounters.js';
 import {beneficiaryDeliveryNotice} from '../../game/ja2-hud.js';
 import './quest-journal.css';
-const sectorName=(id:string)=>CAMPAIGN_SECTORS.find(sector=>sector.id===id)?.name??id;
+
 const stamp=(hour:number)=>`Día ${1+Math.floor(hour/24)} · ${hour%24}:00`;
 export default function QuestJournal({state}:{state:any}){
+ const sectorName=(id:string)=>campaignSectors(state).find(sector=>sector.id===id)?.name??id;
  const entries=questJournal(state);
  return <section className="quest-journal" aria-labelledby="quest-journal-title">
   <h3 id="quest-journal-title">Encargos locales</h3>
@@ -17,7 +18,7 @@ export default function QuestJournal({state}:{state:any}){
     <p>{encounterDefinitions(state).find(npc=>npc.id===recipientId)?.name} · {sectorName(selected?.sector??quest.sector)}</p>
     <p className="quest-date">Aceptado: {stamp(quest.offeredAt)}</p>
     {quest.carried&&<p>{quest.carried.label} entregad{quest.carried.item?'as':'os'}: {quest.delivered}/{quest.carried.count}</p>}
-    {quest.beneficiaries&&quest.status==='offered'&&<p>{beneficiaryDeliveryNotice({beneficiaries:quest.beneficiaries,selectedBeneficiaryId:quest.beneficiaryId})}</p>}
+    {quest.beneficiaries&&quest.status==='offered'&&<p>{beneficiaryDeliveryNotice({beneficiaries:quest.beneficiaries,selectedBeneficiaryId:quest.beneficiaryId},state)}</p>}
     {quest.status==='offered'?<>
      <p>{quest.escort&&state.contentCampaign?.package.errands===undefined?'Acompañá al arriero hasta la salida occidental hacia Humahuaca. Hablale allí para confirmar la llegada. Podés pedirle que espere o que siga a otro combatiente.':quest.carried?quest.carried.instruction:quest.offer}</p>
      {quest.escort&&<p>{quest.escortOrder?.waiting?'El arriero espera. Hablale para continuar.':'El arriero sigue al combatiente designado cuando el camino está libre.'}</p>}
@@ -25,7 +26,7 @@ export default function QuestJournal({state}:{state:any}){
      {selected&&<p>{quest.resolutionReady?'Entrega completa. Conversá con el destinatario para confirmar el encargo.':'Completá la entrega y las condiciones. Después, conversá con el destinatario para confirmar.'}</p>}
      {quest.missingQuests.length>0&&<p className="quest-blocker">Primero completá: {quest.missingQuests.join(', ')}.</p>}
      {quest.unsecured.length>0&&<p className="quest-blocker">Primero asegurá: {quest.unsecured.map(sectorName).join(', ')}.</p>}
-    </>:quest.status==='withdrawn'?<p>{questWithdrawalText(quest,quest)} <span className="quest-date">Retirado: {stamp(quest.withdrawnAt)}.</span></p>:quest.status==='completed'?<p>{quest.questResolution?questResolutionText(quest,quest.questResolution):selected?questBeneficiaryResolutionText(quest):quest.delivery} <span className="quest-date">Cumplido: {stamp(quest.completedAt)}.</span></p>:<p>{quest.failureReason==='contacts-dead'?'Ambos destinatarios murieron. El encargo terminó sin recompensa.':quest.escort?'El arriero murió. La escolta terminó sin recompensa.':'El contacto murió. El encargo terminó sin recompensa. Los objetos ya entregados permanecen con el contacto.'} <span className="quest-date">Fallido: {stamp(quest.failedAt)}.</span></p>}
+    </>:quest.status==='withdrawn'?<p>{questWithdrawalText(quest,quest)} <span className="quest-date">Retirado: {stamp(quest.withdrawnAt)}.</span></p>:quest.status==='completed'?<p>{quest.questResolution?questResolutionText(quest,quest.questResolution):selected?questBeneficiaryResolutionText(quest,state):quest.delivery} <span className="quest-date">Cumplido: {stamp(quest.completedAt)}.</span></p>:<p>{quest.failureReason==='contacts-dead'?'Ambos destinatarios murieron. El encargo terminó sin recompensa.':quest.escort?'El arriero murió. La escolta terminó sin recompensa.':'El contacto murió. El encargo terminó sin recompensa. Los objetos ya entregados permanecen con el contacto.'} <span className="quest-date">Fallido: {stamp(quest.failedAt)}.</span></p>}
    </article>
   </li>;})}</ul>}
  </section>;

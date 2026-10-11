@@ -16,4 +16,3 @@ export function physicalSourcesFor(value){
 export const finiteCachesFor=value=>physicalSourcesFor(value).caches;
 export const finiteArsenalsFor=value=>physicalSourcesFor(value).arsenals;
 export const finiteEnvironmentFor=value=>physicalSourcesFor(value).environment;
-

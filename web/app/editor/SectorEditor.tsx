@@ -20,7 +20,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { MAP_LIBRARY } from '../../../game/map-library.js';
+import {editorCampaignBase,editorCampaignURL,editorDraftKey} from '../../lib/editor-campaign';
+import {loadInstalledCampaign,type CampaignEntry,type LoadedCampaign} from '../../lib/campaign-library';
+import {campaignPresentation} from '../../../game/campaign-definition.js';
+import {campaignFactionName} from '../../lib/campaign-labels';
 import {
   blankMap,
   parseMap,
@@ -66,7 +69,7 @@ const labels: Record<string, string> = {
   lights: 'Luces',
 };
 const uid = (kind: string) => `${kind}-${crypto.randomUUID()}`;
-const draftKey = 'granaderos-sector-editor-v1';
+type LibraryMap={id:string;metadata:{title:string};[key:string]:any};
 const diamond = (p: Point) =>
   `${p.x},${p.y - 14} ${p.x + 26},${p.y} ${p.x},${p.y + 14} ${p.x - 26},${p.y}`;
 export default function SectorEditor() {
@@ -95,7 +98,7 @@ export default function SectorEditor() {
   }
 
   const [history, setHistory] = useState<any>(() =>
-      createHistory(structuredClone(MAP_LIBRARY.yatasto)),
+      createHistory(blankMap()),
     ),
     doc = history.document;
   const [notice, setNotice] = useState(
@@ -122,8 +125,12 @@ export default function SectorEditor() {
   const [size, setSize] = useState({ width: 20, height: 16 }),
     [buildingSize, setBuildingSize] = useState({ width: 5, height: 5 });
   const [seed, setSeed] = useState(1810);
-  const [sector, setSector] = useState('yatasto'),
+  const [sector, setSector] = useState(''),
     [fields, setFields] = useState<any>({});
+  const [library,setLibrary]=useState<Record<string,LibraryMap>>({}),[campaigns,setCampaigns]=useState<CampaignEntry[]>([]),[campaignId,setCampaignId]=useState('granaderos'),[draftKey,setDraftKey]=useState(editorDraftKey('sector','granaderos'));
+  const [campaignContent,setCampaignContent]=useState<LoadedCampaign['content']|null>(null);
+  const [loadingCampaign,setLoadingCampaign]=useState(true);
+ const loadingSequence=useRef(0);
   const svg = useRef<SVGSVGElement>(null),
     file = useRef<HTMLInputElement>(null),
     gesture = useRef<any>(null),
@@ -208,6 +215,7 @@ export default function SectorEditor() {
     : map;
   const scene = {
     ...visualMap,
+    campaignPackage:campaignContent,
     tiles: visualMap.tiles.map((t: any) =>
       hidden.includes('buildings') && t.buildingId
         ? doc.terrain.find((v: any) => cellKey(v) === cellKey(t))
@@ -353,17 +361,14 @@ export default function SectorEditor() {
     setRouteStart(null);
     setNotice('Mapa abierto.');
   }
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(draftKey);
-      if (stored) setRecover(stored);
-    } catch {
-      setNotice(
-        'La recuperación local no está disponible. Exporta tus cambios.',
-      );
-    }
+  function openBase(loaded:LoadedCampaign){
+    const maps=loaded.content.maps as Record<string,LibraryMap>,first=maps[loaded.content.headquarters]??Object.values(maps)[0],key=editorDraftKey('sector',loaded.entry.id);
+    setLibrary(maps);setCampaignContent(loaded.content);setCampaignId(loaded.entry.id);setDraftKey(key);editorCampaignURL(loaded.entry);setHistory(createHistory(structuredClone(first??blankMap())));setSector(first?.id??'');setSelected([]);setBattle(null);setRecover(null);setPan({x:0,y:0});setZoom(1);setRouteStart(null);
+    try{const stored=localStorage.getItem(key)??(loaded.entry.id==='granaderos'?localStorage.getItem('granaderos-sector-editor-v1'):null);if(stored)setRecover(stored);}catch{setNotice('La recuperación local no está disponible. Exporta tus cambios.');}
     setReady(true);
-  }, []);
+  }
+  useEffect(()=>{let active=true;editorCampaignBase().then(({entries,loaded})=>{if(active){setCampaigns(entries);openBase(loaded);}}).catch((error:Error)=>{if(active)setNotice(error.message);}).finally(()=>{if(active)setLoadingCampaign(false);});return()=>{active=false;loadingSequence.current++;};},[]);
+  async function chooseBase(entry:CampaignEntry){const sequence=++loadingSequence.current;setReady(false);setLoadingCampaign(true);try{const loaded=await loadInstalledCampaign(entry);if(sequence===loadingSequence.current){openBase(loaded);setNotice('Campaña abierta.');}}catch(error){if(sequence===loadingSequence.current)setNotice(error instanceof Error?error.message:'No se pudo abrir la campaña.');}finally{if(sequence===loadingSequence.current)setLoadingCampaign(false);}}
   useEffect(() => {
     if (!ready || recover) return;
     try {
@@ -371,7 +376,7 @@ export default function SectorEditor() {
     } catch {
       setNotice('No se pudo guardar el borrador. Exporta el mapa.');
     }
-  }, [doc, ready, recover]);
+  }, [doc, ready, recover,draftKey]);
   useEffect(() => {
     setFields(
       chosen
@@ -431,9 +436,9 @@ export default function SectorEditor() {
               side: choice.type,
               name:
                 choice.type === 'player'
-                  ? 'Granadero'
+                  ? campaignFactionName(campaignContent,'patriot')
                   : choice.type === 'enemy'
-                    ? 'Realista'
+                    ? campaignFactionName(campaignContent,'royalist')
                     : 'Vecino',
             }
           : {}),
@@ -452,7 +457,7 @@ export default function SectorEditor() {
                 : {}),
             }
           : {}),
-        ...(choice.layer === 'exits' ? { target: 'retiro' } : {}),
+        ...(choice.layer === 'exits' ? { target: sector || Object.keys(library)[0] || doc.id } : {}),
         ...(choice.layer === 'lights'
           ? { radius: 4, intensity: 0.8, type: 'lantern' }
           : {}),
@@ -795,6 +800,7 @@ export default function SectorEditor() {
         </header>
         <Battlefield
           battle={battle}
+          campaignContext={campaignContent}
           onChange={setBattle}
           onFinish={() => setBattle(null)}
           onMap={() => setBattle(null)}
@@ -802,12 +808,12 @@ export default function SectorEditor() {
       </main>
     );
   return (
-    <main className="sector-editor">
+    <main aria-busy={loadingCampaign} className="sector-editor">
       <header>
-        <a href={pagePath('/')} className="editor-brand">
-          GRANADEROS <small>Constructor de sectores</small>
+        <a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)} className="editor-brand">
+          {campaignContent?campaignPresentation(campaignContent).title:'Campaña'} <small>Constructor de sectores</small>
         </a>
-        <a href={pagePath('/story')}>Editor de historia</a><BuildIdentity/>
+        <a href={pagePath(`/story?campaign=${encodeURIComponent(campaignId)}`)}>Editor de historia</a><BuildIdentity/>
         <input
           aria-label="Nombre del sector"
           value={doc.metadata.title}
@@ -846,7 +852,7 @@ export default function SectorEditor() {
           className="primary"
           onClick={() => {
             try {
-              setBattle(createMapPlaytest(doc));
+              setBattle(createMapPlaytest(doc,campaignContent));
             } catch (e: any) {
               setNotice(e.message);
             }
@@ -882,13 +888,14 @@ export default function SectorEditor() {
       )}
       <div className="editor-layout">
         <aside className="editor-palette">
+          <label>Campaña base<select value={campaignId} disabled={loadingCampaign} onChange={event=>{const entry=campaigns.find(item=>item.id===event.target.value);if(entry)void chooseBase(entry);}}>{campaigns.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label>
           <h2>Sector</h2>
           <select
             aria-label="Sector existente"
             value={sector}
             onChange={(e) => setSector(e.target.value)}
           >
-            {Object.entries(MAP_LIBRARY).map(([id, d]: any) => (
+            {Object.entries(library).map(([id, d]) => (
               <option key={id} value={id}>
                 {d.metadata.title}
               </option>
@@ -896,7 +903,7 @@ export default function SectorEditor() {
           </select>
           <button
             onClick={() =>
-              replace(structuredClone((MAP_LIBRARY as any)[sector]))
+              library[sector]&&replace(structuredClone(library[sector]))
             }
           >
             Abrir sector
@@ -1100,8 +1107,8 @@ export default function SectorEditor() {
           </div>
           <h2>Escenario</h2>
           <div className="editor-tools">
-            {palette('spawns', 'player', 'Granadero')}
-            {palette('spawns', 'enemy', 'Realista')}
+            {palette('spawns', 'player', campaignFactionName(campaignContent,'patriot'))}
+            {palette('spawns', 'enemy', campaignFactionName(campaignContent,'royalist'))}
             {palette('spawns', 'civilian', 'Vecino')}
             {palette('lights', 'lantern', 'Farol')}
             {palette('exits', 'exit', 'Salida')}

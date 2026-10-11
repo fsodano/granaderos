@@ -180,7 +180,7 @@
       "nickname": "León",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-123.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-123.webp",
       "abilities": [],
       "personality": "Sobrio y escéptico. No promete victorias, pero cumple cada guardia.",
       "speech": {
@@ -232,7 +232,7 @@
       "nickname": "Alonso",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-137.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-137.webp",
       "abilities": [],
       "personality": "Audaz, con orgullo herido. Protege a sus subordinados, aunque le cuesta aceptar el mando de alguien más joven.",
       "speech": {
@@ -284,7 +284,7 @@
       "nickname": "Benicio",
       "role": "Sanitario del correo",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-112.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-112.webp",
       "abilities": [],
       "personality": "Minucioso y algo vanidoso. Explica cada cura incluso cuando nadie se lo pide.",
       "speech": {
@@ -336,7 +336,7 @@
       "nickname": "Tomás",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-134.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-134.webp",
       "abilities": [],
       "personality": "Suspicaz y puntual. Revisa dos veces cada puerta antes de descansar.",
       "speech": {
@@ -388,7 +388,7 @@
       "nickname": "Julián",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-111.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-111.webp",
       "abilities": [],
       "personality": "Meticuloso y poco diplomático. Exige cuentas claras porque una firma ajena ya le costó su carrera.",
       "speech": {
@@ -440,7 +440,7 @@
       "nickname": "Simón",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-108.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-108.webp",
       "abilities": [],
       "personality": "Risueño con los compañeros, desconfiado con los oficiales. Nunca apura a una montura agotada.",
       "speech": {
@@ -491,7 +491,7 @@
       "nickname": "Roque",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-114.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-114.webp",
       "abilities": [],
       "personality": "Severo con el descuido y paciente con el error honesto. Aprende los nombres de todos.",
       "speech": {
@@ -543,7 +543,7 @@
       "nickname": "Claudio",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-124.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-124.webp",
       "abilities": [],
       "personality": "Enérgico y orgulloso de su equitación. Cuida más a las monturas que a su uniforme y rechaza las cargas sin salida.",
       "speech": {
@@ -595,7 +595,7 @@
       "nickname": "Nicolás",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-115.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-115.webp",
       "abilities": [],
       "personality": "Reservado y competitivo. Lleva una cuenta privada de los disparos desperdiciados.",
       "speech": {
@@ -646,7 +646,7 @@
       "nickname": "Feliciano",
       "role": "Custodia de las postas",
       "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
-      "portrait": "/art/portrait-131.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-131.webp",
       "abilities": [],
       "personality": "Orgulloso de su oficio. Acepta críticas precisas y rechaza las burlas.",
       "speech": {
@@ -698,7 +698,7 @@
       "nickname": "Inés",
       "role": "Enlace de la posta",
       "biography": "Mantiene las comunicaciones locales. Su supervivencia es necesaria para completar el encargo de las postas.",
-      "portrait": "/art/portrait-8.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-8.webp",
       "abilities": [],
       "personality": "Observadora, persuasiva y prudente. Escucha antes de hablar y protege a quienes arriesgan su vida llevando noticias entre los pueblos.",
       "speech": {
@@ -866,7 +866,7 @@
       "nickname": "Mateo",
       "role": "Enlace de la posta",
       "biography": "Mantiene las comunicaciones locales. Su supervivencia es necesaria para completar el encargo de las postas.",
-      "portrait": "/art/portrait-100.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-100.webp",
       "abilities": [],
       "personality": "Trabajador de pocas palabras, aprende con la práctica y se preocupa por conservar las monturas.",
       "speech": {
@@ -1009,7 +1009,7 @@
       "nickname": "Elena",
       "role": "Enlace de la posta",
       "biography": "Mantiene las comunicaciones locales. Su supervivencia es necesaria para completar el encargo de las postas.",
-      "portrait": "/art/portrait-1.webp",
+      "portrait": "/campaigns/granaderos/assets/portrait-1.webp",
       "abilities": [],
       "personality": "Resuelta y solidaria con las partidas. Su autoridad nace de compartir los riesgos y sostener a quienes combaten lejos de sus hogares.",
       "speech": {

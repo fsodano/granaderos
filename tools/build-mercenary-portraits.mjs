@@ -1,3 +1,4 @@
+import {refreshCampaignAssets} from './refresh-campaign-assets.mjs';
 // Rebuild production portraits from the checked-in source manifest.
 import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
@@ -12,12 +13,14 @@ const manifest=[];
 for(const row of rows){
  const source=resolve(root,row.source),filename=`portrait-${row.id}.webp`;
  const output=await sharp(source).resize(384,384,{fit:'cover'}).webp({quality:86}).toBuffer();
- for(const base of ['assets/web','web/public/art']){
+ for(const base of ['assets/web','campaigns/granaderos/assets']){
   await mkdir(resolve(root,base),{recursive:true});
   await writeFile(resolve(root,base,filename),output);
  }
- manifest.push({id:row.id,file:`/art/${filename}`,source:row.source,size:[384,384],bytes:output.length,sha256:createHash('sha256').update(output).digest('hex'),fictional:true});
+ manifest.push({id:row.id,file:`/campaigns/granaderos/assets/${filename}`,source:row.source,size:[384,384],bytes:output.length,sha256:createHash('sha256').update(output).digest('hex'),fictional:true});
 }
 await writeFile(resolve(root,'assets/web/mercenary-portraits.json'),JSON.stringify(manifest,null,2)+'\n');
-await copyFile(resolve(root,'assets/web/mercenary-portraits.json'),resolve(root,'web/public/art/mercenary-portraits.json'));
+await copyFile(resolve(root,'assets/web/mercenary-portraits.json'),resolve(root,'campaigns/granaderos/assets/mercenary-portraits.json'));
 console.log(`Built ${manifest.length} mercenary portraits.`);
+
+await refreshCampaignAssets(root);

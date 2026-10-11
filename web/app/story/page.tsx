@@ -2,6 +2,11 @@
 import {formatAP,displayedAP,storedAP,isAPField} from '../../../game/action-points.js';
 
 import {pagePath,sitePath} from '../../lib/site-path.js';
+import {editorCampaignBase,editorCampaignContent,editorCampaignURL,editorDraftKey} from '../../lib/editor-campaign';
+import {loadInstalledCampaign,type CampaignEntry} from '../../lib/campaign-library';
+import {contentIdentity} from '../../../game/content-identity.js';
+import {campaignLaunchSearch} from '../../../game/content-launch.js';
+import {campaignSectors} from '../../../game/campaign-definition.js';
 import BuildIdentity from '../BuildIdentity';
 import AlternativeLoads from './AlternativeLoads';
 import {storyReferences} from '../../../game/campaign-story.js';
@@ -15,7 +20,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   ATTRIBUTE_FIELDS,
-  CONTENT_SECTORS,
   FIREARM_TEMPLATES,
   BLADE_TEMPLATES,
   CONTENT_LIMIT,
@@ -54,12 +58,10 @@ import {AMMO_TYPES,ammunitionForWeapon} from '../../../game/ammo-types.js';
 import {BUTTSTOCK} from '../../../game/unarmed-combat.js';
 import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
 import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
-import {CAMPAIGN_SECTORS} from '../../../game/data.js';
 import PlacementMap from './PlacementMap';
 import ArrivalSites from './ArrivalSites';
 import ForceEquipment from './ForceEquipment';
 import {forceWeaponUsers} from '../../../game/content-force-equipment.js';
-const DRAFT_KEY = 'granaderos.content-draft.v1';
 const labels: Record<string, string> = {
   maxHp: 'Salud',
   agility: 'Agilidad',
@@ -105,6 +107,9 @@ export default function ContentEditor() {
   }, [exportFile]);
   function download(text: string, name: string) { setExportStatus(''); setExportFile({ text, name }); }
   const [draft, setDraft] = useState<any>(() => defaultContentPackage());
+  const [baseContent,setBaseContent]=useState<any>(()=>defaultContentPackage()),[campaigns,setCampaigns]=useState<CampaignEntry[]>([]),[campaignId,setCampaignId]=useState('granaderos'),[draftKey,setDraftKey]=useState(editorDraftKey('story','granaderos'));
+  const [loadingCampaign,setLoadingCampaign]=useState(true);
+ const loadingSequence=useRef(0);
   const [past, setPast] = useState<any[]>([]);
   const [future, setFuture] = useState<any[]>([]);
   const [tab, setTab] = useState('characters');
@@ -122,31 +127,30 @@ export default function ContentEditor() {
   const portraitRef = useRef<HTMLInputElement>(null);
   const weaponArtRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(DRAFT_KEY);
-      if (saved) {
-        const parsed = parseContentPackage(saved);
-        setDraft(parsed);
-        setSelected(parsed.characters[0]?.id ?? '');
-      }
-    } catch {
-      setNotice('No se pudo recuperar el borrador. El archivo original se conserva hasta que hagas un cambio o importes una copia.');
-      return;
-    }
-    setReady(true);
+    let active=true;
+    editorCampaignBase().then(({entries,loaded})=>{if(active){setCampaigns(entries);openBase(loaded);}}).catch((error:any)=>{if(active)setNotice(error.message);}).finally(()=>{if(active)setLoadingCampaign(false);});
+    return()=>{active=false;loadingSequence.current++;};
   }, []);
+  function openBase(loaded:any){
+    const base=editorCampaignContent(loaded.content),key=editorDraftKey('story',loaded.entry.id);
+    setBaseContent(base);setDraft(base);setCampaignId(loaded.entry.id);setDraftKey(key);editorCampaignURL(loaded.entry);setPast([]);setFuture([]);setSession(null);setBattle(null);
+    try{const saved=localStorage.getItem(key)??(loaded.entry.id==='granaderos'?localStorage.getItem('granaderos.content-draft.v1'):null),value=saved?editorCampaignContent(parseContentPackage(saved)):base;setDraft(value);setSelected(value.characters[0]?.id??'');setReady(true);}
+    catch{setNotice('No se pudo recuperar el borrador. El archivo original se conserva hasta que hagas un cambio o importes una copia.');setReady(false);}
+  }
+  async function chooseBase(entry:CampaignEntry){const sequence=++loadingSequence.current;setReady(false);setLoadingCampaign(true);try{const loaded=await loadInstalledCampaign(entry);if(sequence===loadingSequence.current){openBase(loaded);setNotice('Campaña abierta.');}}catch(error:any){if(sequence===loadingSequence.current)setNotice(error.message);}finally{if(sequence===loadingSequence.current)setLoadingCampaign(false);}}
   useEffect(() => {
     if (!ready) return;
     try {
       const text = JSON.stringify(draft);
       if (new TextEncoder().encode(text).length > CONTENT_LIMIT) throw Error();
-      localStorage.setItem(DRAFT_KEY, text);
+      localStorage.setItem(draftKey, text);
     } catch {
       setNotice(
         'No se pudo guardar el borrador. Exportá una copia antes de salir.',
       );
     }
-  }, [draft, ready]);
+  }, [draft, ready,draftKey]);
+  const CAMPAIGN_SECTORS=campaignSectors(draft),CONTENT_SECTORS=CAMPAIGN_SECTORS;
   const errors = validateContentPackage(draft);
   const integration = errors.length ? null : campaignContentReport(draft);
   const collection = tab === 'weapons' ? 'weapons' : 'characters';
@@ -168,11 +172,18 @@ export default function ContentEditor() {
         )
       : items;
   const item = items.find((i: any) => i.id === selected) ?? items[0];
-  const contractDefaults = tab==='characters' ? defaultContentPackage().characters.find(c=>c.id===item?.id) : null;
+  const contractDefaults = tab==='characters' ? baseContent.characters.find((c:any)=>c.id===item?.id) : null;
   const characterTraits = item?.traits??contractDefaults?.traits??[];
   const ridingSkill = item?.ridingSkill??contractDefaults?.ridingSkill??0;
   const placement = draft.placements.find((p: any) => p.character === item?.id);
+  function omitOptionalFields(value:any):any {
+    if(!value||typeof value!=='object')return value;
+    if(Array.isArray(value))return value.map(omitOptionalFields);
+    return Object.fromEntries(Object.entries(value).filter(([,entry])=>entry!==undefined).map(([key,entry])=>[key,omitOptionalFields(entry)]));
+  }
   function change(next: any) {
+    next=omitOptionalFields(next);
+    if(next.campaignOrigin)next=editorCampaignContent(next);
     setReady(true);
     setPast((p) => [...p.slice(-29), draft]);
     setFuture([]);
@@ -207,7 +218,7 @@ export default function ContentEditor() {
           id: nextId('placement', draft.placements),
           character: item.id,
           mode: 'fixed',
-          sectors: ['retiro'],
+          sectors: [draft.headquarters??CAMPAIGN_SECTORS[0]?.id],
           moveChance: 100,
           afterDeath: null,
           delayMin: 0,
@@ -243,7 +254,7 @@ export default function ContentEditor() {
     let added: any;
     if (collection === 'characters')
       added = {
-        ...structuredClone(defaultContentPackage().characters.find(isContractCharacter)!),
+        ...structuredClone(draft.characters.find(isContractCharacter)??baseContent.characters.find(isContractCharacter)??defaultContentPackage().characters.find(isContractCharacter)!),
         id: nextId('person', draft.characters),
         name: 'Nuevo personaje',
         nickname: 'Nuevo',
@@ -260,7 +271,7 @@ export default function ContentEditor() {
       };
     else if (collection === 'weapons')
       added = {
-        ...structuredClone(defaultContentPackage().weapons.find(w=>isBladeDefinition(w)===(kind==='blade'))!),
+        ...structuredClone(draft.weapons.find((w:any)=>isBladeDefinition(w)===(kind==='blade'))??baseContent.weapons.find((w:any)=>isBladeDefinition(w)===(kind==='blade'))??defaultContentPackage().weapons.find(w=>isBladeDefinition(w)===(kind==='blade'))!),
         id: nextId(kind==='blade'?'blade':'firearm', draft.weapons),
         name: 'Nueva arma',
       };
@@ -274,7 +285,7 @@ export default function ContentEditor() {
   }
   function duplicateCharacter() {
     if (collection !== 'characters' || isHistoricalCharacter(item)&&!draft.campaignStory) return;
-    const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), abilities:[...(item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id)))], recruitmentSource:item.recruitmentSource??'contract', service:item.service??'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
+    const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item,draft)), abilities:[...(item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id)))], recruitmentSource:item.recruitmentSource??'contract', service:item.service??'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
     if(isHistoricalCharacter(item))Object.assign(added,{recruitmentSource:'encounter',service:'permanent',monthlyPay:0,serviceGuarantee:0,progression:'experience',encounter:{recruitable:true,greeting:'Buen día. Hablemos de la campaña.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
     change({...draft, characters: [...draft.characters, added],placements:placement?[...draft.placements,{...structuredClone(placement),id:nextId('placement',draft.placements),character:added.id}]:draft.placements});
     setSelected(added.id);
@@ -387,10 +398,10 @@ export default function ContentEditor() {
       ? contentShotPreview(battle,player,target)
       : null;
   return (
-    <main className="content-editor">
+    <main aria-busy={loadingCampaign} className="content-editor">
       <header>
         <div>
-          <a href={pagePath('/')}>← Volver al juego</a> · <a href={pagePath('/editor')}>Editar sectores</a>
+          <a href={pagePath(`/?campaign=${encodeURIComponent(campaignId)}`)}>← Volver al juego</a> · <a href={pagePath(`/editor?campaign=${encodeURIComponent(campaignId)}`)}>Editar sectores</a>
           <p className="eyebrow">Taller de campañas</p><BuildIdentity/>
           <h1>El mundo y sus protagonistas</h1>
           <p>Editá el contenido. Probá sus reglas en una sesión separada.</p>
@@ -477,7 +488,7 @@ export default function ContentEditor() {
           </button>
         </div>
       )}
-      <p className="scope-note">
+      <label>Campaña base<select aria-label="Campaña base" value={campaignId} onChange={event=>{const entry=campaigns.find(item=>item.id===event.target.value);if(entry)void chooseBase(entry);}}>{campaigns.map(entry=><option key={entry.id} value={entry.id}>{entry.name}</option>)}</select></label><p className="scope-note">
         El borrador se guarda en este navegador. Las pruebas no modifican tu
         partida. Editá personajes, armas y apariciones. Podés iniciar una campaña
         separada con estas fichas.
@@ -506,13 +517,13 @@ export default function ContentEditor() {
             safely(() => {
               const campaign = initialCampaign(seed, draft);
               sessionStorage.setItem(CONTENT_LAUNCH_KEY, encodeSave(campaign));
-              window.location.assign(pagePath('/?content=1&launch=1'));
+              window.location.assign(pagePath(`/?${campaignLaunchSearch(campaign)}&launch=1`));
             })
           }
         >
           Iniciar campaña con estas fichas
         </button>{' '}
-        <a href={pagePath('/?content=1')}>Continuar campaña del editor</a>
+        <a href={pagePath(`/?${campaignLaunchSearch({contentCampaign:{identity:contentIdentity(draft)}})}`)}>Continuar campaña del editor</a>
       </section>
       <nav aria-label="Secciones del editor">
         {[
@@ -757,12 +768,12 @@ export default function ContentEditor() {
                         <label>Localidad que debe estar liberada
                           <select value={item.encounter.requiredSector??''} onChange={e=>update({encounter:{...item.encounter,requiredSector:e.target.value||null}})}>
                             <option value="">Ninguna</option>
-                            {CAMPAIGN_SECTORS.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}
+                            {CAMPAIGN_SECTORS.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}
                           </select>
                         </label>
                       </>}
                     </fieldset>}
-                    {isWorldCharacter(item)&&<DialogueEditor key={item.id} ownerId={item.id} characters={draft.characters} quests={draft.quests??[]} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
+                    {isWorldCharacter(item)&&<DialogueEditor content={draft} key={item.id} ownerId={item.id} characters={draft.characters} quests={draft.quests??[]} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
                     <fieldset aria-label="Habilidades de combate">
                       <legend>Habilidades de combate</legend>
                       <p>Elegí las capacidades y condiciones de servicio de este personaje. Sin casillas marcadas, no tendrá ninguna de estas capacidades o condiciones. Las funciones de historia se conservan por ahora.</p>
@@ -779,7 +790,7 @@ export default function ContentEditor() {
                     </fieldset>
       <CharacterSupplies character={item} onChange={update}/>
       <CharacterCondition character={item} onChange={update}/>
-                    <CharacterPresentation character={item} portraits={defaultContentPackage().characters} characters={draft.characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
+                    <CharacterPresentation content={draft} character={item} portraits={baseContent.characters} characters={draft.characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
                     <h3>Atributos</h3>
                     <div className="fields">
                       {ATTRIBUTE_FIELDS.map((k) =>
@@ -850,7 +861,7 @@ export default function ContentEditor() {
                         'range',
                       ]).map((k) => numeric(k, item[k]))}
                       {!isBladeDefinition(item)&&<fieldset><legend>Golpe con la culata</legend><p>Se usa al atacar cuerpo a cuerpo con esta arma de fuego. No consume cartuchos. Su alcance máximo es una casilla contigua, incluidas las diagonales. Para cargar, seleccioná un arma blanca.</p>{numeric('stockAP',item.stockAP??BUTTSTOCK.ap)}{numeric('stockDamage',item.stockDamage??BUTTSTOCK.damage)}{numeric('stockReach',item.stockReach??BUTTSTOCK.reach)}</fieldset>}
-                      {!isBladeDefinition(item)&&numeric('capacity',item.capacity??BASE_FIREARMS[item.template]?.capacity)}
+                      {!isBladeDefinition(item)&&numeric('capacity',item.capacity??BASE_FIREARMS[item.template as keyof typeof BASE_FIREARMS]?.capacity)}
                       {numeric('weight',item.weight??(BASE_ITEMS as any)[item.template]?.weight)}
                       {numeric('price',item.price??({...FIREARM_PRICES,...BLADE_PRICES} as any)[item.template])}
                     </div>
@@ -898,6 +909,7 @@ export default function ContentEditor() {
                           </select>
                         </label>
                         <PlacementMap
+                          content={draft}
                           selected={placement.sectors}
                           onChange={(sectors) =>
                             updatePlacement({
@@ -917,10 +929,10 @@ export default function ContentEditor() {
                           <ul>
                             {placement.sectors.map((id: string) => (
                               <li key={id}>
-                                {CONTENT_SECTORS.find((s) => s.id === id)
+                                {CONTENT_SECTORS.find((s:any) => s.id === id)
                                   ?.name ?? id}{' '}
                                 <button
-                                  aria-label={`Quitar ${CONTENT_SECTORS.find((s) => s.id === id)?.name ?? id}`}
+                                  aria-label={`Quitar ${CONTENT_SECTORS.find((s:any) => s.id === id)?.name ?? id}`}
                                   onClick={() =>
                                     updatePlacement({
                                       sectors: placement.sectors.filter(
@@ -1050,7 +1062,7 @@ export default function ContentEditor() {
                 onChange={(e) => setLoaded(e.target.value)}
               >
                 <option value="">Ninguno</option>
-                {CONTENT_SECTORS.map((s) => (
+                {CONTENT_SECTORS.map((s:any) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
                   </option>
@@ -1141,7 +1153,7 @@ export default function ContentEditor() {
                         <tr key={c.id}>
                           <td>{c.name}</td>
                           <td>
-                            {CONTENT_SECTORS.find((d) => d.id === s.sector)
+                            {CONTENT_SECTORS.find((d:any) => d.id === s.sector)
                               ?.name ?? '—'}
                           </td>
                           <td>
