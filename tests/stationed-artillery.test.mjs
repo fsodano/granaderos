@@ -14,6 +14,7 @@ import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {propBlocksAt} from '../game/props.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
+import {regionalConditions} from '../game/regional-weather.js';
 
 test('declared finite stock is issued once and real victory retains the same owned physical cannon',()=>{
  const s=issuedBattery();assert.equal(s.armory.swivel,0);assert.deepEqual(deployedArtillery(s),[]);assert.equal(s.pendingBattle.artillery.length,1);assert.equal(s.pendingBattle.artillery[0].id,'piece-1');assert.equal(ownedArtilleryCount(s),1);
@@ -46,16 +47,19 @@ test('actual withdrawal leaves the issued gun to the occupation and a real retur
 });
 test('legacy repeated projections are reconciled against legacy paid stock once and retain the latest actual load',()=>{
  const original=leave(fireStationed(visit(wonBattery()))),old=structuredClone(original);delete old.artilleryVersion;delete old.nextArtilleryId;old.armory.swivel=1;
- const latest=old.sectorStates.san_nicolas;latest.artillery[0].id='gun-0';latest.savedHour=old.hour;const previous=structuredClone(latest);previous.sectorId='buenos_aires';delete previous.returnLedger;previous.savedHour=0;previous.artillery[0].loaded=true;old.sectorStates.buenos_aires=previous;
+ const latest=old.sectorStates.san_nicolas;latest.artillery[0].id='gun-0';latest.savedHour=old.hour;const previous=structuredClone(latest);previous.sectorId='buenos_aires';delete previous.returnLedger;previous.savedHour=0;previous.artillery[0].loaded=true;
+ // This declared older projection belongs to the capital. Its modern weather
+ // context must also name the capital; a copied town identity remains invalid.
+ Object.assign(previous,regionalConditions('buenos_aires',previous.savedHour,old));old.sectorStates.buenos_aires=previous;
  const restored=restoreCampaign(serializeCampaign(old));assert.equal(restored.artilleryVersion,1);assert.equal(restored.armory.swivel,0);assert.equal(restored.sectorStates.buenos_aires.artillery.length,0);assert.equal(restored.sectorStates.san_nicolas.artillery.length,1);assert.equal(restored.sectorStates.san_nicolas.artillery[0].loaded,false);assert.equal(ownedArtilleryCount(restored),1);assert.deepEqual(saved({campaign:restored}).campaign,restored);
 });
 
 test('an actual reload spends reserve once and an empty battery choice leaves that saved emplacement in place',()=>{
- let p=visit(wonBattery());if(p.battle.artillery[0].loaded)p=fireStationed(p);const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.loaded,false);assert.equal(gun.ammo,1);
+ let p=visit(wonBattery());if(p.battle.artillery[0].loaded)p=fireStationed(p);const gun=structuredClone(p.battle.artillery[0]);assert.equal(gun.loaded,false);assert.ok(Number.isInteger(gun.ammo)&&gun.ammo>0,'reload uses the actual finite reserve retained by the victory');
  const approach=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed).flatMap(actor=>getReachable(p.battle,actor).filter(spot=>Math.hypot(spot.x-gun.x,spot.y-gun.y)<=1.5).map(spot=>({actor,spot}))).sort((a,b)=>a.spot.cost-b.spot.cost)[0];assert.ok(approach);
  let battle=p.battle;if(approach.spot.cost)battle=actBattle(battle,{type:'move',unitId:approach.actor.id,x:approach.spot.x,y:approach.spot.y});assert.equal(battle.lastError,null);
- battle=actBattle(battle,{type:'artilleryReload',unitId:approach.actor.id,artilleryId:gun.id});assert.equal(battle.lastError,null);assert.equal(battle.artillery[0].loaded,true);assert.equal(battle.artillery[0].ammo,0);assert.equal(battle.artillery[0].ammo+Number(battle.artillery[0].loaded),gun.ammo+Number(gun.loaded));
- p=saved(sync({campaign:p.campaign,battle}));let s=order(leave(p),{type:'configureArtillery',types:[]});p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);assert.equal(p.battle.artillery[0].id,gun.id);assert.equal(p.battle.artillery[0].loaded,true);assert.equal(p.battle.artillery[0].ammo,0);assert.deepEqual(deployedArtillery(p.campaign),[]);
+ battle=actBattle(battle,{type:'artilleryReload',unitId:approach.actor.id,artilleryId:gun.id});assert.equal(battle.lastError,null);assert.equal(battle.artillery[0].loaded,true);assert.equal(battle.artillery[0].ammo,gun.ammo-1);assert.equal(battle.artillery[0].ammo+Number(battle.artillery[0].loaded),gun.ammo+Number(gun.loaded));
+ p=saved(sync({campaign:p.campaign,battle}));let s=order(leave(p),{type:'configureArtillery',types:[]});p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);assert.equal(p.battle.artillery[0].id,gun.id);assert.equal(p.battle.artillery[0].loaded,true);assert.equal(p.battle.artillery[0].ammo,gun.ammo-1);assert.deepEqual(deployedArtillery(p.campaign),[]);
 });
 
 test('a second declared finite piece joins the returned battlefield without replacing or overlapping the captured gun',()=>{
@@ -82,6 +86,8 @@ test('the separate Yatasto conference does not copy stationed town artillery int
  // Prepared northern story boundary, reusing the actual issued, fired and
  // returned piece. This checks scene separation, not a northern conquest route.
  let s=leave(fireStationed(visit(wonBattery())));s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';
- const town=structuredClone(s.sectorStates.san_nicolas);s.sectorStates.san_nicolas.artillery=[];town.sectorId='tucuman';for(const e of town.returnLedger?.entries??[])e.sector='tucuman';s.sectorStates.tucuman=town;s=completeTestTravel(s,{sector:'tucuman'});s=wakeBatteryCrew(s);s=saved({campaign:s}).campaign;const before=structuredClone(s.sectorStates.tucuman.artillery);
+ const town=structuredClone(s.sectorStates.san_nicolas);s.sectorStates.san_nicolas.artillery=[];town.sectorId='tucuman';for(const e of town.returnLedger?.entries??[])e.sector='tucuman';
+ // The declared stationed-town context includes that town's real weather data.
+ Object.assign(town,regionalConditions('tucuman',town.savedHour??s.hour,s));s.sectorStates.tucuman=town;s=completeTestTravel(s,{sector:'tucuman'});s=wakeBatteryCrew(s);s=saved({campaign:s}).campaign;const before=structuredClone(s.sectorStates.tucuman.artillery);
  s=order(s,{type:'visitMission',mission:'yatasto'});let p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour})});assert.deepEqual(p.battle.artillery,[]);assert.deepEqual(p.campaign.sectorStates.tucuman.artillery,before);s=leave(p);p=visit(saved({campaign:s}).campaign);assert.equal(p.battle.artillery.length,1);for(const key of ['id','loaded','ammo','x','y'])assert.equal(p.battle.artillery[0][key],before[0][key]);
 });

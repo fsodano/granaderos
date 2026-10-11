@@ -18,7 +18,12 @@ function issue(pair,action,history){
  const synced=syncBattleTime(pair.campaign,normal);assert.equal(synced.error,null,synced.error);history?.push(action);return {pair:saved(synced),shown};
 }
 function prepared({omitted=false,airOmitted=false,hidden=false}={}){
- const content=defaultContentPackage();if(omitted){const gun=content.weapons.find(w=>w.template===1800);delete gun.projectileEnergy;delete gun.projectileAirDrag;for(const load of gun.alternativeLoads){delete load.projectileEnergy;delete load.projectileAirDrag;}}
+ const content=defaultContentPackage(),gun=content.weapons.find(w=>w.template===1800);
+ // This experiment opts into kinetic energy and air drag before paid hiring.
+ // Ordinary stock omits both; its weapon, cost and ammunition data stay intact.
+ gun.projectileEnergy={model:'kinetic-energy-v1',massGrams:32,muzzleVelocityMps:265};gun.projectileAirDrag={model:'range-energy-retention-v1',retentionAtRange:.8};
+ const shot=gun.alternativeLoads.find(load=>load.family==='ammoShot');shot.projectileEnergy={model:'kinetic-energy-v1',massGrams:16,muzzleVelocityMps:265};shot.projectileAirDrag={model:'range-energy-retention-v1',retentionAtRange:.65};
+ if(omitted){delete gun.projectileEnergy;delete gun.projectileAirDrag;for(const load of gun.alternativeLoads){delete load.projectileEnergy;delete load.projectileAirDrag;}}
  if(airOmitted){const gun=content.weapons.find(w=>w.template===1800);delete gun.projectileAirDrag;for(const load of gun.alternativeLoads)delete load.projectileAirDrag;}
  let campaign=initialCampaign(8,content),quotes=[];for(const id of [110,107]){const quote=contractQuote(campaign,rosterFor(campaign).find(u=>u.id===id),'week');assert.ok(quote.available);quotes.push({id,price:quote.price});campaign=order(campaign,{type:'recruitCivic',id,term:'week'});}
  assert.equal(campaign.resources.treasury,3200-quotes.reduce((n,q)=>n+q.price,0));campaign=order(campaign,{type:'wait',hours:6});assert.ok(campaign.recruited.includes(110)&&campaign.recruited.includes(107));

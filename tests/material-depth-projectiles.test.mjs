@@ -9,6 +9,7 @@ import {ammoCount} from '../game/ammo-types.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
+import {DEFAULT_MATERIAL_RANGE_SLOPE} from '../game/material-range-penetration.js';
 
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
 const act=(s,a)=>{const next=actBattle(s,a);assert.equal(next.lastError,null,next.lastError);return next;};
@@ -91,7 +92,11 @@ test('a paid hire fires into finite cover, injures an embedded target and preser
 // dry weather, seed8 and thin material are declared before the official arena
 // save. The omission control is authored before either campaign begins.
 function rangeArena({omitted=false,privateCover=false}={}){
- const content=defaultContentPackage();
+ const content=defaultContentPackage(),gun=content.weapons.find(weapon=>weapon.template===1805);
+ // Distant-material tuning is an authored opt-in, set before paid hiring.
+ // The ordinary shipped pistol and the older omission control remain neutral.
+ gun.materialRangeSlope=DEFAULT_MATERIAL_RANGE_SLOPE;
+ for(const load of gun.alternativeLoads??[])load.materialRangeSlope=DEFAULT_MATERIAL_RANGE_SLOPE;
  if(omitted)for(const weapon of content.weapons){delete weapon.materialRangeSlope;for(const load of weapon.alternativeLoads??[])delete load.materialRangeSlope;}
  let campaign=initialCampaign(45,content);const cash=campaign.resources.treasury,quotes=[];
  for(const id of [107,110]){const quote=contractQuote(campaign,rosterFor(campaign).find(u=>u.id===id),'week');assert.ok(quote.available&&quote.price>0);quotes.push({id,price:quote.price});campaign=order(campaign,{type:'recruitCivic',id,term:'week'});}
