@@ -16,6 +16,8 @@ bounded experimental workflows.
 | --- | --- |
 | Setup, commands and source layout | [Getting started](getting-started.md) |
 | Browser campaign studio workflow and verified scope | [Campaign studio](../authoring/campaign-studio.md) |
+| Extend editor fields, panels and controlled adapters | [Editor development](editor-development.md) |
+| Editor UX/DX requirements and pending acceptance | [Editor experience plan](../plans/editor-experience.md) |
 | Create, check and install a local campaign folder | [Campaign authoring](campaign-authoring.md) |
 | Experimental campaign content editor | [Story editor](story-editor.md) |
 | Experimental editable example | [La ruta de las postas](example-post-campaign.md) |

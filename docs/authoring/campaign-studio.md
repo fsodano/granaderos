@@ -16,6 +16,31 @@ Read the [studio evidence record](../evidence/campaign-studio-2026-10-10/README.
 for completed checks, exact source identities and browser limits. The historical `0.1` tag remains a
 separate game checkpoint and does not include the studio.
 
+## Choose an editor
+
+| Task | Route and owner of the draft |
+| --- | --- |
+| Create or revise a complete installable campaign | `/studio`; one project owns documents, maps, resources, history and downloads. |
+| Edit content for an installed campaign | `/story?campaign=<id>`; a separate standalone content draft for that campaign. |
+| Edit a tactical map for an installed campaign | `/editor?campaign=<id>`; a separate standalone map draft for that campaign. |
+
+Use Studio when a change spans characters, dialogue, world, maps or images.
+Its **Historia y personajes** and **Mapas tácticos** panels embed the same
+editors, with Studio as their owner. Opening the standalone route does not
+open the active Studio project. To keep a complete project together, make
+those changes inside Studio.
+
+For a first package, create a project, review its world and maps, edit its
+characters and objectives, then add presentation and resources. Open
+**Pruebas** after validation passes. Finish in **Validación y descarga** and
+download both the editable project and the installable ZIP. The editable
+project is the recovery copy; the ZIP is the runtime package.
+
+The [editor experience plan](../plans/editor-experience.md) defines the next
+navigation, field guidance, recovery and layout improvements. Its acceptance
+is separate from the completed studio checks. Developers should use the
+[editor extension guide](../development/editor-development.md).
+
 ## One project
 
 A project contains a campaign's manifest, content, world, presentation, map
@@ -202,6 +227,12 @@ The result lists issues by section with file or field paths when available.
 The installable campaign ZIP is blocked while validation has errors. An
 imported missing-file draft can be repaired by replacing the missing resource
 without changing its asset ID or other content.
+
+Repair the section named in the report. For an image error, open **Recursos**
+and replace the selected missing or changed file. For a reference error,
+inspect the named identity and the document that uses it. Keep a project
+download before making a large repair. Recheck the current draft before
+downloading its ZIP; an earlier valid report does not validate later changes.
 
 Archive and directory admission has bounded limits: 4096 files, 16 MiB per
 file, 128 MiB in total, and 8 MiB per JSON document. Existing content and map
