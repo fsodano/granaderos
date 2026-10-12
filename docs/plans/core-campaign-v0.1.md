@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are merged into `main` through PR #375. Each receipt
+The following changes are merged into `main` through PR #379. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
@@ -66,6 +66,25 @@ has its own scope; their counts are not one complete campaign result.
 | [#372](https://github.com/fsodano/granaderos/pull/372) | Reserve each selected Salta doctor's dressing before supplying the other doctors from actual local stock or a finite donor. | The earned allocation control passes 1/1 in 3.791 seconds, with all 2,277 pins unchanged. It preserves doctor 122's dressing, debits donor 100's two dressings, performs two ordinary care ticks and reproduces through official saves. Local exhaustion remains an honest refusal; full clinic recovery and Salta remain open. |
 | [#373](https://github.com/fsodano/granaderos/pull/373) | After the specific finite Mendoza clinic shortage, finish stable patients' recovery through ordinary paid rest. Keep acute care, safety and every original full-health gate. | The affected gate passes 12/12 in 112.119 seconds, with all 593 source/shipping pins and seven consumed inputs unchanged. All five earned survivors fully recover after 23 local dressings and 348 actual rest hours. Exact renewals and daily income remain asserted; the next active-journey refusal remains open. |
 | [#375](https://github.com/fsodano/granaderos/pull/375) | Treat the actual critical Córdoba survivors before the medical courier resumes. Use four known corpse dressings and four carried dressings from two uniquely paid weekly medics. Keep all native battle deaths and the patients' remaining wounds. | Both complete affected earned files pass 5/5 in 147.953 seconds. All 560 source/config/fixture/shipping pins and five consumed inputs remain unchanged, including after current-main integration. Seven real care hours consume seven dressings and 504 pesos; patients 112, 122 and 101 survive at 18, 17 and 50 HP, with no bleeding. Every public order replays through an official midpoint save. The prior hour-294 helper remains unchanged and its earned native defense still passes. The complete original recovery remains unproved. |
+| [#377](https://github.com/fsodano/granaderos/pull/377) | Resolve the real paused capital journey with twelve serving soldiers, four existing bronze charges and ordinary commander withdrawal and return. Keep every actual casualty. | The earned blocked-journey control passes 1/1 in 175.803 seconds. All 553 static/config/shipping/fixture pins and two observed inputs remain unchanged. The native capital victory uses ten turns and 422 orders; seven new deaths remain permanent. It clears the real occupation and blockade and returns the commander at hour 1,454, second 3,196, with 33,668 pesos. The later coastal-route integration remains separate. |
+| [#378](https://github.com/fsodano/granaderos/pull/378) | Supply the actual critical northern-hospital patients after Córdoba's local linen is exhausted. Book uniquely paid immediate day medics, assign legal local squads and share their existing dressings through public inventory. | Both complete affected earned files pass 6/6 in 172.967 seconds. All 562 source/config/fixture/shipping pins and 344 consumed files remain unchanged. The exact hour-370 boundary uses 13,860 pesos and four local dressings over four care hours; the simultaneous Tucumán clinic uses four other dressings. All prior deaths and remaining wounds are retained, and every public order replays through an official midpoint save. This proves acute stabilization, not the newer whole hospital or complete original recovery. |
+| [#379](https://github.com/fsodano/granaderos/pull/379) | Use the actual healthy local arsenal cohort, pay enough currently available hires for twelve people, and allow ordinary rest to cover the real morale deficit. Keep all readiness and survival gates. | Four complete affected files pass 4/4 in 268.906 seconds. All 607 static/config/shipping/fixture pins and eight actual filesystem inputs remain unchanged. The new loose preparation uses four veterans and eight paid hires; both physicians carry eight finite dressings at the actual pending assault, hour 1,306, second 2,952, with 240,191 pesos. Three unchanged earned native arsenal controls still pass. The new loose native return and complete ending remain open. |
+
+A separate complete loose arsenal-return attempt reaches the native battle,
+then fails the unchanged original-foundry-squad survival assertion. It fails
+0/1 in 132.061 seconds, with all 374 source and input pins unchanged. Its
+private log hash is
+`355394ab5175b055cf5060ba57a77cca30bacbeddd9b2874ca0dd96602cab346`.
+The passing preparation control does not replace that failed return or the
+existing complete fresh ending file.
+
+A separate whole-hospital diagnostic starts from the actual hour-368
+post-Tucumán input. It passes the corrected acute-source boundary, then
+loses the genuine enemy-group-3 counterattack at Tucumán at hour 528.
+The native result is retreat, with actual deaths 104 and 140. Its failed
+3/4 receipt remains private under `northern-hospital-finite-relief-candidate-v2`.
+No existing full recovery or hospital victory assertion was relaxed. This
+next boundary and the complete original recovery remain open.
 
 The PR #370 mountain receipt uses the actual post-Uspallata save. Ordinary
 orders form columns of six, six and four people at the east, north and south
@@ -94,16 +113,35 @@ later Salta clinic tries to assign a doctor after donating that doctor's last
 dressing. PR #372 proves the narrow allocation correction, but later full
 clinic recovery, Salta, Yatasto and the complete opening remain open.
 
-The unchanged original recovery at `c4e12285` fails 0/1 in 1,790.022 seconds,
-with no skips or cancellations. All 609 source/config/shipping pins remain
-unchanged. It passes the later rear defense, but the final recovery assertion
-finds patient 112 dead after the earlier hour-150 hospital defense. Those
-complete failures remain open until a correction passes the affected route.
+The unchanged complete original recovery was run again on merged `main` at
+`8fafc671`. It fails 0/1 after 1,731.317 seconds, with no skips or
+cancellations. All 611 static/source/config/shipping pins and 391 actually
+loaded module sources remain unchanged. The first Córdoba critical care,
+later native Córdoba defense and Tucumán victory now pass. The run next stops
+at hour 368, second 2,667, when the hospital needs more finite Córdoba linen.
+Patients 114, 124 and 125 remain alive with actual critical wounds. This is
+progress past the earlier `c4e12285` casualty failure, not a complete recovery
+pass. The current full-run log hash is
+`a49451720d14a244a0013bf466103e21d10b703c1a08a914cf43a90238c7e101`.
+
+The complete unchanged two-case ending file also ran on `8fafc671`. Both cases
+fail in 1,753.937 seconds, with no skips or cancellations. All 623 static
+source/shipping/config pins and 229 actual filesystem inputs remain unchanged.
+The loose seed-8 route reaches funded Mendoza at hour 977, second 2,952, with
+262,695 pesos. Its arsenal helper then requires five local healthy veterans
+when only four are available. The installed default-seed route passes actual
+Uspallata and Los Patos victories and the physical San Martín meeting at hour
+1,025, second 747, with 62,713 pesos. It then stops at the actual paused Buenos
+Aires journey during coastal preparation. These are fresh complete-prefix
+results from 3,200 pesos. Neither case proves victory or the 48-hour saved
+ending continuation. The current full-run log hash is
+`4d108be0fe8b64ad85bc9b124c44804e01415e7944d0596ef6fa23ce50baacb8`.
 
 Merge checks on `797d1e28` pass: runner self-tests 14/14, complete coverage of
 1,048 test files, documentation audit, baseline audit 39/39 and typecheck.
-They do not replace the complete release gate. The latest complete ending
-receipt remains the failed two-case `711adfef` run recorded below.
+They do not replace the complete release gate. The latest complete ending and
+original recovery receipts are the failed `8fafc671` runs above. Earlier runs
+below retain their historical scope.
 
 ## Recorded checks and remaining limits
 
