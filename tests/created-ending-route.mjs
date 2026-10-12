@@ -35,6 +35,7 @@ import {stableCrewController} from './stable-crew-driver.mjs';
 import {contractQuote} from '../game/contracts.js';
 import {BLADES,actBattle} from '../game/tactical.js';
 import {prepareCreatedRiverAssault} from './created-river-preparation.mjs';
+import {deployRiverInfantry,riverInfantryOrder} from './created-river-driver.mjs';
 import {createdSaltaReserveDeployment,stageCreatedSaltaBattery} from './created-salta-battery.mjs';
 import {createdJujuyContinuingDefense} from './created-jujuy-continuing-defense.mjs';
 import {enterControlledPort,controlledPortAvailable,priorPortVictories} from './controlled-port-handover.mjs';
@@ -393,8 +394,8 @@ export function finishCreatedCoast(prefix,{onCheckpoint,report=()=>{},reinforcem
   campaign=capital.campaign;note('buenos_aires',capital.summary);
  }
  assert.equal(campaign.blockade,false);
- campaign=prepareCreatedRiverAssault(campaign);
- const river=fightNorthernSector(campaign,'santa_fe',{controller:coastalSearchController(enterSector(campaign.pendingBattle,campaign.sectorStates.santa_fe))});
+ campaign=prepareCreatedRiverAssault(campaign,{report,reinforcementCount:4});
+ const river=fightNorthernSector(campaign,'santa_fe',{report,deploy:deployRiverInfantry,controller:riverInfantryOrder});
  campaign=river.campaign;note('santa_fe',river.summary);
  // A later naval occupation can leave the city flag friendly while closing
  // the road. Clear the real blockade before moving the Retiro rear guard.
