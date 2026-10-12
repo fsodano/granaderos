@@ -1,42 +1,14 @@
-name: Web game build, tests and Pages
-# Run builds only when a maintainer starts them. PRs, pushes, and tags must not
-# start GitHub Actions jobs automatically.
+name: Web game build and Pages
+# Browser builds and publication remain manual. Simulation tests have their
+# own core/campaign workflows and do not run as part of a deployment.
 on:
   workflow_dispatch:
-    inputs:
-      run_simulation_tests:
-        description: Run the full tactical and campaign simulation suite
-        type: boolean
-        default: true
+concurrency:
+  group: web-game-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
-  tests:
-    if: inputs.run_simulation_tests
-    name: Tests (${{ matrix.group }}/4)
-    runs-on: ubuntu-latest
-    # The complete ending route took 49 minutes locally before other shard work.
-    # Allow slower CI runners to finish without a paid timeout and repeat run.
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        group: [1, 2, 3, 4]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - name: Install test dependencies
-        run: npm ci --prefix web
-      - name: Test partition coverage and failure propagation
-        run: node --test tools/test-shard-selftest.mjs
-      - name: Verify complete test partition
-        run: node tools/test-shard.mjs --check
-      - name: Test tactical and strategic simulation
-        run: node tools/test-shard.mjs --run ${{ matrix.group }}
   web:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -61,6 +33,15 @@ jobs:
         run: node --test tests/site-path.test.mjs tests/project-path-render.test.mjs tests/static-export-path.test.mjs tests/stage-static-deployment.test.mjs tests/browser-worker-export.test.mjs
       - name: Build and verify static game export
         run: npm run build
+      - name: Record verified build revision
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync,appendFileSync} from 'node:fs';
+          const build=JSON.parse(readFileSync('dist/build-info.json','utf8'));
+          assert.equal(build.revision,process.env.GITHUB_SHA,'The export must match the selected revision.');
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY,`Verified static export: ${build.version} · ${build.id}\n\nRevision: ${build.revision}\n`);
+          NODE
       - uses: actions/upload-artifact@v4
         with:
           name: Granaderos-web
@@ -69,13 +50,13 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Upload GitHub Pages artifact
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist/
   deploy:
     name: Publish browser game
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main'
     needs: web
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -83,29 +64,17 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    concurrency:
-      group: github-pages
-      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Confirm latest main revision
-        id: current
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          latest=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')
-          if [ "$latest" = "$GITHUB_SHA" ]; then
-            echo 'publish=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'publish=false' >> "$GITHUB_OUTPUT"
-            echo 'A newer main revision exists; this export will not be published.'
-          fi
       - name: Configure GitHub Pages
-        if: steps.current.outputs.publish == 'true'
         uses: actions/configure-pages@v5
       - name: Publish verified static game
-        if: steps.current.outputs.publish == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Record published revision
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          printf 'Published %s\n\nRevision: %s\n' "$PAGE_URL" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
