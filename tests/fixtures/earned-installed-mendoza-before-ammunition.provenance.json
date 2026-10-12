@@ -1,0 +1,53 @@
+{
+  "scope": "Exact earned installed browser-default seed-1812 stock preparation after actual Yatasto and Cuyo assembly; finite ammunition allocation only, not a fresh complete ending.",
+  "sourceRevision": "e1f781726d5232a0f45e42384203ad1c9d19181e",
+  "sourceLogSha256": "3ed2bdd3e557b82fe9f8d6d6d8a5d090e6e53adaf21b6cd449441b3183a2965d",
+  "upstreamRevision": "b6151aba6a90877a9c18b0038dd2d9db643debdb",
+  "upstreamLogSha256": "3207ccc99d71e69f5fd471cfa20cf740e2def82f85be9b995dc5db0bdb358efa",
+  "upstreamInputPath": "/Users/fsodano/.codex/worktrees/campaign-stock-north/granaderos/.cache/core-campaign-2026-10-12/original-ending-stock-care-v1/passive-captures/strategic-preparation/54779-21-freshHistoricalEnding-route-checkpoint-jLLwlm/campaign.json",
+  "upstreamInputSha256": "a74f192141697de3f0cbeef2d5de65dbc173522ca3ff873d7b2ddbf3c6735708",
+  "sha256": "3d4754f99264f6613d3ba3b1bf62bc8bbe7bed664786d12a869f753a0a54ff9a",
+  "gzipSha256": "eff924447b283f5e358eb6cce07dca92649d4e7b606f32cd3cdfb475e03469aa",
+  "rawBytes": 2991398,
+  "clock": [
+    641,
+    1378
+  ],
+  "treasury": 159027,
+  "field": [
+    119,
+    127,
+    103,
+    104,
+    111,
+    140,
+    124,
+    134,
+    139,
+    133,
+    146,
+    101,
+    117,
+    108,
+    121,
+    102,
+    129,
+    116,
+    107,
+    122,
+    130,
+    9,
+    11,
+    1,
+    0,
+    8,
+    114,
+    120,
+    142
+  ],
+  "selections": [
+    "depot:arsenal:buenos_aires:1",
+    "depot:arsenal:cordoba:1"
+  ],
+  "derivation": "Official saved installed Yatasto checkpoint -> unchanged ordinary assembleCreatedCuyo and prepareCreatedMendozaAssault -> existing createdMendozaAmmunition report before allocation. No authored health, resources, ownership or outcome changes."
+}

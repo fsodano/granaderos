@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
 import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoStock,ammoCount,AMMO_KEYS} from '../game/ammo-types.js';
 import {AMMUNITION_FAMILIES} from '../game/ammunition-families.js';
@@ -542,7 +542,7 @@ function stockAmmunitionLedger(c){
 
 // The stock force keeps its serviceable selected loads. Real off-family loose
 // rounds enter the depot before allocation; a healthy courier fetches only the
-// measured remaining deficit from already known Tucuman bodies/containers.
+// measured remaining deficit from known stock in reachable controlled sectors.
 export function prepareStockMendozaAmmunition(start,fieldIds,{report=()=>{}}={}){
  const p=stockPreparation(start,report),field=[...fieldIds],target=12;
  p.safe();assert.equal(p.campaign.location,'cordoba');assert.equal(new Set(field).size,field.length);
@@ -567,7 +567,8 @@ export function prepareStockMendozaAmmunition(start,fieldIds,{report=()=>{}}={})
  };
  for(const id of field){const u=carried(p.campaign,id),selected=ammoTypeFor(u);for(const [family,n]of Object.entries(ammoStock(u)))if(family!==selected)transfer(id,family,n,'store');}
  const model=(sector,id)=>sectorInventoryModel(p.campaign,sector,rosterFor(p.campaign),id);
- const rows=(sector,id,family)=>model(sector,id).entries.filter(row=>{const stack=JSON.parse(row.expected);return row.reachable&&stack.kind==='ammunition'&&stack.ammoType===AMMUNITION_FAMILIES[family].type&&row.count>0;});
+ const knownRows=(sector,id,family)=>sectorInventorySites(p.campaign,sector).flatMap(site=>model(site.id,id).entries.map(row=>({...row,siteId:site.id}))).filter(row=>{const stack=JSON.parse(row.expected);return stack.kind==='ammunition'&&stack.ammoType===AMMUNITION_FAMILIES[family].type&&row.count>0;});
+ const rows=(sector,id,family)=>knownRows(sector,id,family).filter(row=>row.reachable);
  const local=field.find(id=>!model('cordoba',id).reason);assert.notEqual(local,undefined,'an actual local carrier must access the known Cordoba stock');
  const needed=Object.fromEntries(AMMO_KEYS.map(family=>[family,field.reduce((n,id)=>{const u=carried(p.campaign,id);return n+(ammoTypeFor(u)===family?Math.max(0,target-u.loaded-ammoCount(u,family)):0);},0)]));
  const deficit=Object.fromEntries(AMMO_KEYS.map(family=>[family,Math.max(0,needed[family]-(p.campaign.ammunitionStores.cordoba?.[family]??0)-rows('cordoba',local,family).reduce((n,row)=>n+row.count,0))]));
@@ -575,18 +576,18 @@ export function prepareStockMendozaAmmunition(start,fieldIds,{report=()=>{}}={})
  const pick=(sector,id,family,quantity)=>{
   while(quantity){
    p.renew();
-   const m=model(sector,id),row=rows(sector,id,family)[0];assert.equal(m.operativeId,id);assert.ok(row,`actual reachable ${family} source exhausted at ${sector}`);
+   const row=rows(sector,id,family)[0];assert.ok(row,`actual reachable ${family} source exhausted at ${sector}`);const m=model(row.siteId,id);assert.equal(m.operativeId,id);
    let n=Math.min(quantity,row.count);const stack=JSON.parse(row.expected);while(n>0){try{applyItemQuantity(m.personal,{...stack,count:n});break;}catch{n--;}}
    assert.ok(n>0,`actual pocket capacity exhausted for courier ${id}`);
    const sourceTotal=m.entries.reduce((sum,item)=>{const value=JSON.parse(item.expected);return sum+(value.kind==='ammunition'&&value.ammoType===stack.ammoType?item.count:0);},0);
    const old=ammoCount(carried(p.campaign,id),family),cash=p.campaign.resources.treasury;
-   p.order({type:'sectorInventory',sector,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:n});
+   p.order({type:'sectorInventory',sector:row.siteId,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:n});
    assert.equal(ammoCount(carried(p.campaign,id),family),old+n);assert.equal(p.campaign.resources.treasury,cash);
    // Removing a complete container stack shifts the remaining array indexes.
    // The expected-source action binds the original stack; compare the actual
    // family debit rather than treating the next stack at that index as it.
-   const sourceAfter=model(sector,id).entries.reduce((sum,item)=>{const value=JSON.parse(item.expected);return sum+(value.kind==='ammunition'&&value.ammoType===stack.ammoType?item.count:0);},0);assert.equal(sourceAfter,sourceTotal-n);
-   report({event:'stockCuyoAmmoPickup',sector,id,family,quantity:n,sourceKey:row.key,before:row.count,after:row.count-n,sourceFamilyBefore:sourceTotal,sourceFamilyAfter:sourceAfter,hour:p.campaign.hour,secondOfHour:p.campaign.secondOfHour??0});quantity-=n;
+   const sourceAfter=model(row.siteId,id).entries.reduce((sum,item)=>{const value=JSON.parse(item.expected);return sum+(value.kind==='ammunition'&&value.ammoType===stack.ammoType?item.count:0);},0);assert.equal(sourceAfter,sourceTotal-n);
+   report({event:'stockCuyoAmmoPickup',sector:row.siteId,id,family,quantity:n,sourceKey:row.key,expected:row.expected,before:row.count,after:row.count-n,sourceFamilyBefore:sourceTotal,sourceFamilyAfter:sourceAfter,hour:p.campaign.hour,secondOfHour:p.campaign.secondOfHour??0});quantity-=n;
   }
  };
  if(Object.values(deficit).some(n=>n>0)){
@@ -607,8 +608,28 @@ export function prepareStockMendozaAmmunition(start,fieldIds,{report=()=>{}}={})
    }
    throw Error(`actual ammunition courier cannot reach ${destination} within 72 hourly steps`);
   };
-  travel('tucuman');
-  for(const [family,n]of Object.entries(deficit))if(n)pick('tucuman',courier,family,n);
+  const remaining={...deficit},visited=new Set();
+  while(Object.values(remaining).some(n=>n>0)){
+   // Quote after ordinary readiness, from the actual current location. Only
+   // already discovered stock is counted; arrival must still prove access.
+   for(let h=0;h<72;h++){
+    const r=p.campaign.operativeState[courier];
+    if(!r.asleep&&r.energy>=75&&r.fatigue<=40)break;
+    if(r.assignment!=='rest')p.order({type:'assignCare',operativeId:courier,assignment:'rest'});
+    if(r.asleep&&r.energy>=100)p.order({type:'setSleep',operativeId:courier,asleep:false});else p.order({type:'wait',hours:1});
+   }
+   p.order({type:'assignCare',operativeId:courier,assignment:'active'});
+   const sources=Object.keys(p.campaign.sectors).filter(sector=>sector!=='cordoba'&&!visited.has(sector)&&p.campaign.sectors[sector].owner==='patriot').map(sector=>{
+    const counts=Object.fromEntries(AMMO_KEYS.map(family=>[family,knownRows(sector,courier,family).reduce((n,row)=>n+row.count,0)]));
+    const quote=previewStrategicRoute(p.campaign,p.campaign.activeSquadId,sector,'posta');
+    return {sector,counts,quote,complete:AMMO_KEYS.every(family=>counts[family]>=remaining[family]),quantity:AMMO_KEYS.reduce((n,family)=>n+Math.min(counts[family],remaining[family]),0)};
+   }).filter(source=>source.quantity>0&&source.quote.valid).sort((a,b)=>Number(b.complete)-Number(a.complete)||Number(b.complete&&b.sector==='tucuman')-Number(a.complete&&a.sector==='tucuman')||a.quote.hours-b.quote.hours||b.quantity-a.quantity||a.sector.localeCompare(b.sector));
+   const source=sources[0];assert.ok(source,'No reachable controlled known ammunition source covers the remaining actual deficit.');visited.add(source.sector);
+   report({event:'stockCuyoAmmoSource',sector:source.sector,remaining:{...remaining},known:source.counts,path:source.quote.path,hours:source.quote.hours});
+   travel(source.sector);let collected=0;
+   for(const [family,n]of Object.entries(remaining))if(n){const available=rows(source.sector,courier,family).reduce((sum,row)=>sum+row.count,0),quantity=Math.min(n,available);if(quantity){pick(source.sector,courier,family,quantity);remaining[family]-=quantity;collected+=quantity;}}
+   report({event:'stockCuyoAmmoSourceCollected',sector:source.sector,collected,remaining:{...remaining}});
+  }
   travel('cordoba');for(const [family,n]of Object.entries(deficit))if(n)transfer(courier,family,n,'store');
   for(const key of ['hp','bleeding','weaponInstanceId','condition','medkits','headwear','outfit','legwear'])assert.deepEqual(p.campaign.operativeState[courier][key],courierBefore[key],`real courier keeps ${key}`);
   p.order({type:'selectSquad',id:main});
