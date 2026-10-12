@@ -1,0 +1,31 @@
+{
+  "scope": "Unchanged original c688 complete funded recovery: exact returned681 boundary plus original368 pre-Tucum\u00e1n cohort; whole original run failed only at reunion prepayment, not a completed full campaign",
+  "revision": "c6881d9927e6e0c189171cb6348870ab6fc1a235",
+  "originalRunReceipt": ".cache/core-campaign-2026-10-12/original-recovery-main-c6881d99/receipt.json",
+  "originalRunLogSHA": "5f8936c1864e1ce032ba2512d64f0d81df0f2c707d23ce79a6f5e73276f2a9c8",
+  "inputs": {
+    "returned": {
+      "file": "earned-original-northern-reunion.campaign.json.gz",
+      "rawBytes": 3288988,
+      "rawSHA": "d352ff0bfc615b83584d081640139b2bfed74eb2067f2b8354aa30b88c2d66b0",
+      "compressedSHA": "b5b624193e51c6e00888e78cfb61219e3243131084917c13cdf01868e610737c",
+      "capturedSource": ".cache/core-campaign-2026-10-12/original-recovery-main-c6881d99/passive-captures/observed/47825-45-hospital-return.json",
+      "clock": [
+        681,
+        335
+      ]
+    },
+    "originalCohort": {
+      "file": "earned-original-northern-reunion-cohort.campaign.json.gz",
+      "rawBytes": 2773382,
+      "rawSHA": "95e7618a8945c8d584f3051493ef002d89029c4b70476a9fc5b903820ad428c7",
+      "compressedSHA": "b0a833c29ca4d387895db9f295da1aa7831e8efa8945f57a9b4975eefc7fbe2b",
+      "capturedSource": ".cache/core-campaign-2026-10-12/original-recovery-main-c6881d99/passive-captures/observed/47825-26-campaign-request.json",
+      "clock": [
+        368,
+        2583
+      ]
+    }
+  },
+  "returnedTreasury": 21878
+}
