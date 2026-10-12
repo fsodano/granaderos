@@ -14,6 +14,7 @@ import {contractExpiresSeconds} from '../game/contracts.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {workAssignmentReason} from '../game/assignments.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
+import {cellTravelPlan} from '../game/world-cells.js';
 
 // Public collection at the actual person's location. Temporarily return a
 // local squad to service only when it must physically discover its cache.
@@ -104,12 +105,14 @@ export function collectRouteMedicalSupplies(start,operativeId,requested,{report=
  const source=sources[0];assert.ok(source,'no controlled finite medical source remains for an actual courier');
  if(home)s=order(s,{type:'selectSquad',id:home.id});s=order(s,{type:'assignCare',id:operativeId,assignment:'active'});
  if(!home||home.members.length>1)s=order(s,{type:'createSquad',ids:[operativeId],name:'Vendas recuperadas',sector:clinic});
- // Quote the same public route used by the actual single-person courier.
- // A cell-only walking estimate does not price a named-town posta journey.
- const courierId=s.activeSquadId,outward=previewStrategicRoute(s,courierId,source.at,mode);
+ // Walking couriers retain the original budget before completeTestTravel
+ // performs ordinary sleep recovery. Public previews correctly reject sleep.
+ // Explicit posta trips use the actual named-town route and its travel price.
+ const courierId=s.activeSquadId,outward=mode==='march'?cellTravelPlan({...s,location:clinic},source.at):previewStrategicRoute(s,courierId,source.at,mode);
  const returnPreview={...s,squads:s.squads.map(q=>q.id===courierId?{...q,location:source.at}:q)};
- const returning=previewStrategicRoute(returnPreview,courierId,clinic,mode);
- assert.equal(outward.valid,true,outward.reason);assert.equal(returning.valid,true,returning.reason);
+ const returning=mode==='march'?cellTravelPlan({...s,location:source.at},clinic):previewStrategicRoute(returnPreview,courierId,clinic,mode);
+ if(mode==='march'){assert.equal(outward.reason,null);assert.equal(returning.reason,null);}
+ else{assert.equal(outward.valid,true,outward.reason);assert.equal(returning.valid,true,returning.reason);}
  const horizon=(outward.hours+returning.hours+24)*3600,now=s.hour*3600+(s.secondOfHour??0);
  for(const id of s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured)){
   let contract=s.contracts[id];while(contractExpiresSeconds(contract)!==null&&contractExpiresSeconds(contract)<=now+horizon){

@@ -89,7 +89,7 @@ test('a serving reserve doctor makes a real finite medical courier trip and leav
  const again=collectRouteMedicalSupplies(s,10,2);s=again.campaign;assert.equal(again.collected,2);assert.equal(s.operativeState[10].medkits,5);assert.equal(s.sectorStates.buenos_aires.props.find(p=>p.id===chest.id).contents.find(item=>item.item==='medkits').count,7,'an already discovered chest remains a finite courier source when no soldier is stationed there');assert.deepEqual(saved({campaign:s}).campaign,s);
 });
 
-test('a paid doctor renews actual service and recovers another finite source after the opening cache is empty',t=>{
+for(const asleep of [false,true])test(`a paid ${asleep?'sleeping ':''}doctor renews actual service and recovers another finite source after the opening cache is empty`,t=>{
  // Declared older clinic checkpoint. The wound exists before save admission;
  // every hire, source collection, handover, march and renewal is a real order.
  let s=initialCampaign();s.operativeState[3].hp-=12;s.operativeState[3].bandaged=12;s=saved({campaign:s}).campaign;
@@ -103,6 +103,12 @@ test('a paid doctor renews actual service and recovers another finite source aft
   const row=sectorInventoryModel(s,'retiro',rosterFor(s),4).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row);
   const count=Math.min(remaining,row.count);s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:4,direction:'take',sourceKey:row.key,expected:row.expected,count});remaining-=count;
  }
+ if(asleep){
+  // Declared exhausted subsystem checkpoint, not a campaign playthrough.
+  s.operativeState[112].energy=14;s.operativeState[112].fatigue=80;
+  s=order(s,{type:'setSleep',operativeId:112,asleep:true});s=saved({campaign:s}).campaign;
+  assert.equal(s.operativeState[112].asleep,true);
+ }
  const input=s,before=structuredClone(s),events=[],result=collectRouteMedicalSupplies(s,112,3,{report:event=>events.push(event)});s=result.campaign;
  assert.deepEqual(before.operativeState[3].hp,s.operativeState[3].hp,'the remote courier cannot heal the patient left in Retiro');
  assert.equal(s.operativeState[3].location,'retiro');assert.equal(s.operativeState[3].assignment,'patient');
@@ -114,6 +120,7 @@ test('a paid doctor renews actual service and recovers another finite source aft
  const renewals=events.filter(event=>event.event==='medicalCourierRenewal');assert.ok(renewals.length>0);assert.ok(renewals.every(event=>event.id===112&&event.cost>0));
  assert.equal(before.resources.treasury-s.resources.treasury,renewals.reduce((sum,event)=>sum+event.cost,0),'the courier pays every real contract extension');
  assert.ok(contractExpiresSeconds(s.contracts[112])>s.hour*3600+(s.secondOfHour??0));assert.ok(s.recruited.includes(112));
+ assert.equal(s.operativeState[112].asleep,false,'ordinary rest must finish before the actual courier travels');
  const receipt=events.find(event=>event.event==='finiteMedicalCourier');assert.equal(receipt.source,'buenos_aires');assert.equal(receipt.clinic,'retiro');assert.equal(receipt.quantity,3);assert.ok(receipt.elapsedSeconds>=(cellTravelPlan(before,'buenos_aires').hours+cellTravelPlan({...before,location:'buenos_aires'},'retiro').hours)*3600);
  assert.deepEqual(saved({campaign:s}).campaign,s);assert.deepEqual(input,before,'collection does not mutate its input');
  t.diagnostic(JSON.stringify({source:receipt.source,quantity:receipt.quantity,elapsedSeconds:receipt.elapsedSeconds,contractRenewalCost:renewals.reduce((sum,event)=>sum+event.cost,0),retainedDonations:donated,sourceRemaining:9}));
