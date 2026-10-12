@@ -43,6 +43,7 @@ export const campaignTestGroups = [
   "tests/earned-stock-mountain-arsenal.test.mjs",
   "tests/earned-stock-mountain-clinic.test.mjs",
   "tests/earned-stock-northern-clinic-defense.test.mjs",
+  "tests/expanded-capital-relief-plan.test.mjs",
   "tests/foundry-convoy-route.test.mjs",
   "tests/fresh-cuyo-relief.test.mjs",
   "tests/fresh-foundry-custody.test.mjs",

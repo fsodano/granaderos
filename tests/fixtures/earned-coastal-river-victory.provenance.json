@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "source": "earned-coastal-river.test.mjs: genuine four-person paid reinforcement and native two-front river victory",
+  "sourceFixture": "earned-paid-coastal-care",
+  "captureMethod": "Unchanged official saved campaign after the accepted native victory and real settlement",
+  "rawSha256": "385c57843fbf71683b02de385f9fc3966becf8d04b6c56d6d8cf36718de255f7",
+  "gzipSha256": "ba50fdcdc96d80b4835570435feca9b2333d4896b774fcc18e71bccff66a1181",
+  "rawBytes": 4392954,
+  "campaignSha256": "29a7d1a2ea85307538ae56e55d8ee88ff180b0896ab307cbc8a79814d68f5fec",
+  "clock": [
+    1806,
+    1057
+  ],
+  "treasury": 198933,
+  "fieldIds": [
+    2,
+    57,
+    10,
+    101,
+    117,
+    102,
+    6,
+    116,
+    107,
+    122
+  ],
+  "riverDeaths": [
+    5,
+    9,
+    121,
+    127,
+    133,
+    146
+  ],
+  "native": {
+    "outcome": "victory",
+    "turns": 10,
+    "orders": 275,
+    "seconds": 355
+  },
+  "scope": "Real river victory input; no capital victory, ending, or 48-hour continuation claim"
+}
