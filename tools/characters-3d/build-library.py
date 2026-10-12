@@ -161,7 +161,7 @@ if manifest['complete']:
  subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-layered-cloth-depth.py'),'--layer','family'],cwd=ROOT,check=True)
  # Keep the accepted cloth form/hem stages exact below a reversible material
  # layer. This last pass adds broad pigment, boot wear and matte gun fittings.
- subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/build-apparel-surfaces.py')],cwd=ROOT,check=True)
+ subprocess.run([sys.executable,str(ROOT/'tools/characters-3d/apparel_png_replay.py')],cwd=ROOT,check=True)
 
  # Strict correction lineage and final donor checks remain explicit after the
  # complete native and frozen colour replay. Library rig checks are separate.

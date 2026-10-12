@@ -110,3 +110,10 @@ npm run build
 npm run audit:docs
 git diff --check
 ```
+
+For current cross-platform replay, use
+`python3 tools/characters-3d/apparel_png_replay.py --verify-only`. This adapter
+keeps the frozen installer above and all accepted GLB, PNG and manifest bytes
+exact. It selects an approved PNG encoding only after the generated mode,
+dimensions and every pixel match; new pixels use a fixed lossless encoding.
+The material, predecessor, texture-hash and collision checks remain strict.
