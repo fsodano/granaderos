@@ -10,6 +10,7 @@ test('automatic test workflow delegates complete changed paths to one classifier
  assert.match(source,/push:\s*\n\s+branches: \[main\]/);
  assert.match(source,/!github\.event\.pull_request\.draft/);
  assert.match(source,/fetch-depth: 0/);
+ assert.match(source,/filter: blob:none/);
  assert.match(source,/github\.event\.pull_request\.base\.sha \|\| github\.event\.before/);
  assert.match(source,/github\.event\.pull_request\.head\.sha \|\| github\.sha/);
  assert.match(source,/three-dot.*two-dot/);
@@ -21,6 +22,7 @@ test('automatic test workflow delegates complete changed paths to one classifier
   assert.match(job,new RegExp(`uses: ./\\.github/workflows/test-${scope}\\.yml`));
   assert.match(job,/duration: quick/);assert.doesNotMatch(job,/duration: (full|extended)/);
  }
+ assert.match(source,/group: focused-tests-\$\{\{ github.event.pull_request.number \|\| github.run_id \}\}/,'A later documentation-only main push must not cancel an earlier relevant two-dot check.');
  assert.match(source,/cancel-in-progress: true/);assert.match(source,/contents: read/);
  assert.doesNotMatch(source,/pull_request_target|contents: write|npm (?:run build|test\b)|test-shard\.mjs --run|secrets:/);
 });
