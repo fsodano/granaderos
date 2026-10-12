@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are delivered to `main` through PR #383. Each receipt
+The following changes are delivered to `main` through PR #386. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
@@ -71,6 +71,27 @@ has its own scope; their counts are not one complete campaign result.
 | [#379](https://github.com/fsodano/granaderos/pull/379) | Use the actual healthy local arsenal cohort, pay enough currently available hires for twelve people, and allow ordinary rest to cover the real morale deficit. Keep all readiness and survival gates. | Four complete affected files pass 4/4 in 268.906 seconds. All 607 static/config/shipping/fixture pins and eight actual filesystem inputs remain unchanged. The new loose preparation uses four veterans and eight paid hires; both physicians carry eight finite dressings at the actual pending assault, hour 1,306, second 2,952, with 240,191 pesos. Three unchanged earned native arsenal controls still pass. The new loose native return and complete ending remain open. |
 | [#380](https://github.com/fsodano/granaderos/pull/380) | Carry ten known Córdoba dressings to the actual Tucumán clinic, pay two supplied guards, walk the selected physician and patients to reachable cover, and renew actual service before post-raid urgent care. | The complete new earned file passes 1/1 in 89.242 seconds, with all 2,299 source and input pins unchanged. The native hour-408 defense wins in seventeen turns and 342 orders. Eight new deaths remain permanent; original patients 121 and 122 survive. Three quoted renewals cost 186 pesos, and three finite dressings stabilize patient 108 to 16 HP at hour 412, second 47. The complete selected-doctor compatibility file passes 1/1; suite controls pass 6/6 after main integration, with complete coverage of 1,055 files. The full clinic, Salta, Yatasto and original opening remain open. |
 | [#383](https://github.com/fsodano/granaderos/pull/383) | Continue the actual commander through the earlier native capital response, finite compatible coastal ammunition, a known two-dressing courier, returned-equipment collection and one ordinary paid rehire. Retain the complete field during battery transport and spend two real guard hours despite attention pauses. | Seven complete affected files pass 22/22 in 527.174 seconds, with all 597 source/config/shipping/fixture pins and six observed inputs unchanged. The eight-person paid force reaches the actual 21-enemy Buenos Aires defense request at hour 1,520, second 3,477, with 55,868 pesos. The 86-peso rehire, four spent charges, earlier capital victory and seven deaths remain exact. The paired official save passes. This proves the complete paid force and ensuing native defense readiness only: no second victory, port arrival, ending or 48-hour continuation. Suite controls pass 6/6 after current-main integration. |
+| [#384](https://github.com/fsodano/granaderos/pull/384) | Open the declared paid-cohort cannon ambush after one ordinary daylight hour. Place its synthetic raider on the approach that permits the existing solid-shot assertion. Keep native targeting and projectile rules unchanged. | All seventeen original artillery-autonomy cases pass in 19.698 seconds, with all 2,304 source/configuration pins unchanged. Paid training costs 60 pesos and reaches hour 53, second 159; the ordinary wait reaches hour 54, second 159. The native solid shot spends one finite charge, and the gunner's actual 60-to-18-HP wound survives full save and re-entry. This is a corrected daylight fixture, not night-search or campaign acceptance. The complete quick suite was not rerun. |
+| [#385](https://github.com/fsodano/granaderos/pull/385) | Place the coastal commander at the authorized west–north arrival corner before the ordinary Retiro exit. Keep other issued combatants and equipment unchanged. | The complete coastal reserve, command reserve and tactical exit files pass 28/28. All 515 relevant source/shipping pins and both observed fixture inputs remain unchanged. The physical exit costs three seconds; official deployment saves, exact replay, custody and unavailable opposite-edge refusal remain asserted. The subsequent native defense and complete ending remain unproved. |
+| [#386](https://github.com/fsodano/granaderos/pull/386) | Recover each physically dropped arsenal primary through ordinary finite pickup and equip before supplying ammunition. Require all twelve actual field soldiers to hold a compatible physical firearm. | Both complete affected earned preparation and owned-equipment files pass 4/4 in 45.987 seconds. All 592 source/config/shipping pins and both observed inputs remain unchanged. The actual Mendoza allocation gives physician 8 the condition-100 gun from `drop:5`, then gives veteran 133 the condition-99 gun from `drop:6`; both separate sources are consumed once. Loaded charge, jam state and authored weapon metadata remain exact. This proves preparation and official save admission, not the original native return or ending. |
+
+The PR #386 passive complete-preparation trace finishes in 44.533 seconds,
+with all 3,721 source/config/shipping/private-input pins and both observed
+filesystem inputs unchanged. There is no condition-100-to-99 wear transition
+for actor 133: the full field allocation gives that actor the already
+condition-99 `drop:6`. The isolated one-actor probe had taken `drop:5` first.
+The actual issued firearm retains one loaded charge, no jam and its exact
+authored 52 damage, 11 fire AP and 22 range. The input remains unchanged and
+the official paired save round trip passes.
+
+The subsequent complete original loose arsenal-return attempt still fails
+its one case in 107.931 seconds. All 591 source/config/shipping pins and both
+observed inputs remain unchanged. Its native Ensenada battle wins in ten
+turns and 353 orders over 1,013 game seconds, but actual deaths include
+original foundry-squad members 126 and 133, so the unchanged survival
+requirement fails. This failed return is separate from the passing
+preparation control. Complete ending, 48-hour continuation, full release
+regression and final production browser campaign review remain open.
 
 The PR #383 [earned preparation control](../../tests/earned-stock-coast-preparation.test.mjs)
 starts from the unchanged installed commander checkpoint at hour 1,025,
@@ -84,7 +105,7 @@ defense, a clear blockade, actual commander return and strict port travel. Those
 later actions are not executed by this readiness control. The earlier failed
 preparation gates and complete-route receipts remain retained.
 
-A separate complete loose arsenal-return attempt reaches the native battle,
+An earlier complete loose arsenal-return attempt reaches the native battle,
 then fails the unchanged original-foundry-squad survival assertion. It fails
 0/1 in 132.061 seconds, with all 374 source and input pins unchanged. Its
 private log hash is
@@ -161,12 +182,14 @@ below retain their historical scope.
 
 The complete quick suite ran on `main` at `1c4017c0`. All 1,029 selected
 files ran out of 1,055 total files. It passed 7,513 of 7,515 tests, with two
-failures, no skips and no cancellations, in 1,298.872 seconds. The two
-failures are native battle outcomes:
+failures, no skips and no cancellations, in 1,298.872 seconds. Both failed
+cases stop at an active native battle:
 
 - `artillery-autonomy.test.mjs:129`: the paid local cohort's battle remains
   active where victory is required. Its later save and re-entry assertions
-  are not reached.
+  are not reached on this revision. PR #384 later corrects the declared
+  daylight/solid-shot fixture and passes its complete seventeen-case file.
+  That affected result does not turn this earlier quick run into a pass.
 - `stock-cuyo-battery-defense.test.mjs`: the actual Córdoba defense remains
   active after 81 turns and 107 orders, with real casualties. It stops before
   the required victory, aid and original gun delivery.
