@@ -433,6 +433,7 @@ The completed increments are merged into `main` through their own PRs:
 | [#351](https://github.com/fsodano/granaderos/pull/351) | Native rear defense during the northern handover and arrival checkpoint. | Two earned handover cases pass with exact saved replay. |
 | [#352](https://github.com/fsodano/granaderos/pull/352) | Finite early San Lorenzo ally aid in the original recovery driver. | Twenty affected cases pass across two receipts. |
 | [#354](https://github.com/fsodano/granaderos/pull/354) | Five actual hires join seven ready serving veterans when the loose seed-8 hiring pool is small. | The new earned readiness/victory case and both existing readiness cases pass, 3/3. |
+| [#355](https://github.com/fsodano/granaderos/pull/355) | Fetch the measured Mendoza ammunition deficit from controlled, discovered stock with valid ordinary travel. | Two allocation/rearm cases and twelve finite-supply controls pass. The actual installed earned Mendoza assault wins. |
 
 PR #354 retains three rear staff and their four actual dressings. The native
 Tucumán victory uses five turns and 140 actions; physician 107 dies and
@@ -448,9 +449,42 @@ that local failure; typecheck then passed without source changes. These
 merge checks do not replace the full release gate.
 
 Unproved rear-defense default experiments are preserved privately. They are
-not part of the published source. Mendoza ammunition supply, completion of
-the default opening, the complete current-source ending and continuation,
-the final browser review and the full release gate remain open.
+not part of the published source. Completion of the default opening, the
+complete current-source ending and continuation, the final browser review
+and the full release gate remain open.
 
 This merge delivery preserves the historical `0.1` tag. It does not create a
 new release or certify campaign completion.
+
+## Installed Mendoza supply and latest complete-route result
+
+The complete original ending file ran at `e1f78172`, before PR #355. Both
+unchanged cases failed with no skips or cancellations. All 614 combined
+source/shipping pins and 229 observed filesystem inputs stayed unchanged;
+these categories overlap. The loose seed-8 case won Tucumán at hour 681,
+then an actual counterattack interrupted clinical relief at hour 768. The
+installed browser-default case won Salta and completed Yatasto, then its
+Mendoza courier exhausted the known Tucumán musket stock.
+
+PR #355 corrects that finite supply choice. The actual installed preparation
+needs 75 more musket rounds, while Tucumán has only 70 known rounds. An
+ordinary courier instead collects 75 of the 78 known Buenos Aires rounds
+over two four-hour posta legs. All 29 selected soldiers keep the requirement
+of twelve compatible rounds. Existing firearm metadata, artillery, wounds,
+dressings and prior deaths remain intact; two empty hands recover actual
+local firearms. The two allocation/rearm controls pass on 343 unchanged
+pinned inputs. Twelve existing finite supply controls pass on 309 unchanged
+pins.
+
+The earned installed Mendoza assault then wins in seven turns and 779
+actions. Soldiers 119 and 124 die and remain dead. Official saves and an
+exact second native combat replay pass, with 376 relevant pins unchanged.
+This closes the affected allocation and assault boundary. It is not a new
+complete fresh-start result.
+
+The current full funded recovery and the corrected post-Mendoza stock
+continuation remain under review. A private continuation that omitted the
+actual short-term specialist's service end was rejected as evidence for the
+original route. The subsequent probe uses the actual support receipt and
+preserves the native Mendoza losses. No complete campaign or release pass
+has been recorded.
