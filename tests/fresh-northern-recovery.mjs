@@ -36,6 +36,7 @@ import {bookRouteHires,assertRouteHireArrived} from './paid-route-hiring.mjs';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {prepareNorthernHospitalRear} from './northern-hospital-rear-readiness.mjs';
 import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueNorthernHandoverTravel} from './northern-handover-route.mjs';
+import {previewStrategicRoute} from '../game/strategic-route.js';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -546,23 +547,36 @@ export function prepareNorthernReunionColumns(start,{report=()=>{}}={}){
  return {campaign:c,field,groups};
 }
 
-export function reuniteFreshNorthernSquad(start,{report=()=>{}}={}){
+// The original duty cohort, returning ward and permanent mission recruits stay
+// under service. Later temporary clinic hires are not silently made permanent.
+export function northernReunionDutyKeepers(start,originalIds){
+ assert.ok(Array.isArray(originalIds)&&originalIds.every(Number.isSafeInteger));
+ return [...new Set([...originalIds,...start.squad,...start.recruited.filter(id=>start.contracts[id]?.kind==='patriot')])].filter(id=>start.recruited.includes(id)&&start.operativeState[id].alive&&!start.operativeState[id].captured);
+}
+
+export function reuniteFreshNorthernSquad(start,{report=()=>{},keepServing,mode='march'}={}){
  let c=decodeSave(encodeSave(start)).campaign;
+ assert.ok(['march','posta'].includes(mode),'The actual reunion uses an ordinary land travel mode.');
+ assert.ok(keepServing===undefined||Array.isArray(keepServing)&&new Set(keepServing).size===keepServing.length&&keepServing.every(id=>Number.isSafeInteger(id)&&c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured),'Necessary keepers must be actual distinct serving survivors.');
+ const keepers=keepServing===undefined?null:new Set(keepServing);
  const lostCordoba=c.sectors.cordoba.owner==='royalist';
  const retainFor=hours=>{
   const until=(c.hour+hours)*3600+(c.secondOfHour??0);
-  for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))while(contractExpiresSeconds(c.contracts[id])!==null&&contractExpiresSeconds(c.contracts[id])<=until){
+  for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&(!keepers||keepers.has(id))))while(contractExpiresSeconds(c.contracts[id])!==null&&contractExpiresSeconds(c.contracts[id])<=until){
    const contract=c.contracts[id],quote=contractRenewalQuote(c,rosterFor(c).find(op=>op.id===id),'day'),cash=c.resources.treasury,action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0};
+   if(!quote.available||quote.price>cash)report({event:'northernReunionFundingRefused',id,quote:structuredClone(quote),campaign:structuredClone(c)});
    assert.equal(quote.available,true,quote.reason);c=dispatchCampaign(c,action);assert.equal(c.lastError,null,c.lastError);assert.equal(c.resources.treasury,cash-quote.price);
    assert.equal(contractExpiresSeconds(c.contracts[id]),quote.expiresAt*3600+(quote.expiresSecond??0));
    report({event:'northernReunionRenewal',id,action,quote:structuredClone(quote),cost:cash-c.resources.treasury,beforeExpiry:contractExpiresSeconds(contract),afterExpiry:contractExpiresSeconds(c.contracts[id]),hour:c.hour,second:c.secondOfHour??0});
   }
  };
  const order=a=>{
-  const elapsed=a.type==='wait'?a.hours:a.type==='travel'?48:0;
+  const elapsed=a.type==='wait'?a.hours:a.type==='travel'&&(a.queue!==true||!keepers&&mode==='march')?48:0;
   if(elapsed)retainFor(elapsed);
   const before=c;c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
   report({event:'northernReunionOrder',action:structuredClone(a),cost:before.resources.treasury-c.resources.treasury,elapsedSeconds:(c.hour-before.hour)*3600+(c.secondOfHour??0)-(before.secondOfHour??0),hour:c.hour,second:c.secondOfHour??0});
+  const expired=before.recruited.filter(id=>before.operativeState[id].alive&&!c.recruited.includes(id)&&c.operativeState[id].alive);
+  if(expired.length)report({event:'northernReunionServiceExpired',rows:expired.map(id=>({id,contract:structuredClone(before.contracts[id]),before:structuredClone(before.operativeState[id]),after:structuredClone(c.operativeState[id])})),campaign:structuredClone(c)});
   if(lostCordoba)assert.equal(c.pendingEncounter,null,'the real recapture preparation must stop for an unrelated encounter');
   while(elapsed&&c.pendingEncounter){
    const returning=c.activeSquadId,encounter=c.pendingEncounter;
@@ -574,6 +588,8 @@ export function reuniteFreshNorthernSquad(start,{report=()=>{}}={}){
  };
 const formation=prepareNorthernReunionColumns(c,{report});c=formation.campaign;
 const {field,groups:southernColumns}=formation,primaryField=[...c.squad];
+ assert.ok(!keepers||field.every(id=>keepers.has(id)),'Every actual returning soldier must retain service.');
+ report({event:'northernReunionKeepers',ids:keepers?[...keepers]:c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured),campaign:structuredClone(c)});
 const reloadColumns=()=>{
  const selected=c.activeSquadId;
  for(const id of southernColumns){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});}
@@ -634,6 +650,21 @@ if(lostCordoba){
  assert.equal(c.pendingEncounter,null);for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);report({event:'northernReturnReunited',campaign:structuredClone(c)});return c;
 }
+if(mode==='posta'){
+ // Organize the same network already needed by the later northern road. Both
+ // real columns depart before advancing time; neither survivor is dropped.
+ for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let h=0;h<30&&field.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++)order({type:'wait',hours:1});
+ for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
+ if(!c.routes.posta)order({type:'transport',mode:'posta'});
+ for(const id of southernColumns){
+  order({type:'selectSquad',id});const quote=previewStrategicRoute(c,id,'cordoba','posta');assert.equal(quote.valid,true,quote.reason);
+  report({event:'northernReunionTravelQuote',id,quote:structuredClone(quote),campaign:structuredClone(c)});order(quote.action);
+ }
+ for(let h=0;h<48&&!southernColumns.every(id=>{const q=c.squads.find(q=>q.id===id);return q.location==='cordoba'&&!q.journey;});h++)order({type:'wait',hours:1});
+ assert.ok(southernColumns.every(id=>{const q=c.squads.find(q=>q.id===id);return q.location==='cordoba'&&!q.journey;}),'Both paid reunion columns must reach Córdoba through their actual journeys.');
+ report({event:'northernReunionColumnsArrived',field:[...field],campaign:structuredClone(c)});
+}else{
 for(const id of southernColumns){
 order({type:'selectSquad',id});
 for(let leg=0;leg<6&&c.location!=='cordoba';leg++){
@@ -645,8 +676,9 @@ for(let leg=0;leg<6&&c.location!=='cordoba';leg++){
 }
 assert.equal(c.location,'cordoba');
 }
+}
 order({type:'selectSquad',id:southernColumns[0]});c=meetRecruits(c,['quiroga','paz']);
-return restoreNorthernRoad(c,{report});
+return restoreNorthernRoad(c,{report,...(keepers?{keepServing:[...keepers]}:{})});
 }
 
 export const prepareFreshSaltaAssault=prepareRestoredSalta;

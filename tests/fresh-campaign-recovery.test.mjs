@@ -12,7 +12,7 @@ import {mountainBatteryOrder,closeMountainBatteryOrder,mendozaBatteryOrder,assig
 import {prepareFreshCoastalCommand,prepareFreshEnsenadaAssault,stabilizeFreshPortSurvivors,recruitFreshNavalCommand,recoverFreshPort,prepareFreshBlockadeAssault,prepareFreshSantaFeAssault} from './fresh-coastal-route.mjs';
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry,prepareFreshArmyFunding,completeFreshArmyFunding} from './fresh-cuyo-route.mjs';
-import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
+import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,northernReunionDutyKeepers,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {recoveryMendozaOrder} from './recovery-mendoza-driver.mjs';
 import {recoveryPortSearchController} from './recovery-port-battery-driver.mjs';
@@ -152,7 +152,9 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  // This relief fixture uses the legacy questionnaire, which still costs 300.
  assert.equal(relief.contracts[1000].paid,300);
  assert.ok(relief.hour>tucuman.campaign.hour);
- const reunited=reuniteFreshNorthernSquad(relief);
+ // Retain the original duty cohort and returning clinic, rather than extending
+ // completed temporary clinic service indefinitely. Both real columns travel.
+ const reunited=reuniteFreshNorthernSquad(relief,{keepServing:northernReunionDutyKeepers(relief,survivors),mode:'posta'});
  assert.equal(reunited.location,'tucuman');
  assert.ok(reunited.squad.includes(1));assert.ok(reunited.squad.every(id=>reunited.operativeState[id].alive));
  assert.equal(reunited.sectors.cordoba.owner,'patriot');

@@ -1,6 +1,7 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
  {file:'tests/earned-original-hospital-return.test.mjs',reason:'Exact recovered hospital locality selection, quoted hourly service retention, actual second raid and finite bleeding aid before the complete six-person return.'},
+ {file:'tests/earned-original-northern-reunion.test.mjs',reason:'Whole genuine returned681 paid reunion, completed clinic service, quoted simultaneous postas, native northern road and strict saved custody.'},
  {file:'tests/earned-original-hospital-rear-guard.test.mjs',reason:'Exact earned original hospital rear preparation, finite forward battery and complete native hospital care; full original recovery remains separate.'},
  {file:'tests/earned-coastal-river.test.mjs',reason:'Genuine coastal-care eight/twelve-person compatibility, paid sixteen-person finite river preparation and native two-front victory with official replay/settlement.'},
  {file:'tests/earned-coastal-native-defense.test.mjs',reason:'Genuine paid fifteen-person native capital defense, official replay and actual controlled port/naval/care continuation; no ending claim.'},
