@@ -12,7 +12,9 @@ import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
 import assert from 'node:assert/strict';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,civicStatus} from '../game/campaign.js';
+import {careAssignmentIssue} from '../game/medical-care.js';
+import {hiringTravelHours} from '../game/hiring-arrivals.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
@@ -81,6 +83,61 @@ export function northernHospitalOrder(state,a,{inputCapture=null,report=()=>{}}=
  return c;
 }
 
+// Local linen can be truly exhausted after the preceding native battles.
+// Book supplied relief only after known stock and local donations are absent.
+// Each arrival carries its existing finite kit; an expired profile is not refilled.
+export function stabilizeNorthernHospitalPatients(start,patients,doctorIds,{inputCapture=null,report=()=>{}}={}){
+ let c=decodeSave(encodeSave(start)).campaign;const before=structuredClone(start),doctors=[...doctorIds],orders=[],hires=[],donations=[],ticks=[];
+ const observe=event=>{if(event.event==='northernHospitalOrder'||event.event==='northernHospitalRenewal')orders.push(structuredClone(event.action));report(event);};
+ const order=action=>{c=northernHospitalOrder(c,action,{inputCapture,report:observe});};
+ const urgent=id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0;
+ const local=(id,at)=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)===at;
+ for(let h=0;h<24&&patients.some(urgent);h++){
+  assert.equal(c.pendingEncounter,null,'defend a real hospital interruption before continuing critical care');
+  assert.equal(c.pendingBattle,null);
+  for(let index=0;index<doctors.length;index++){
+   let id=doctors[index],at=operativeLocation(c,id);
+   if(c.operativeState[id].medkits||c.operativeState[id].asleep||!patients.some(patient=>local(patient,at)&&urgent(patient)))continue;
+   let row=sectorInventoryModel(c,at,rosterFor(c),id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+   if(row){order({type:'sectorInventory',sector:at,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});continue;}
+   let donor=c.recruited.find(other=>other!==id&&local(other,at)&&c.operativeState[other].medkits>0&&!sectorInventoryModel(c,at,rosterFor(c),other).reason);
+   if(donor===undefined&&c.sectorStates[at]?.props.some(prop=>prop.contents?.some(item=>item.item==='medkits'&&item.count>0))){c=collectRouteItems(c,id,{item:'medkits'},1).campaign;continue;}
+   if(donor===undefined){
+    const candidate=rosterFor(c).filter(op=>{
+     const record=c.operativeState[op.id],quote=contractQuote(c,op,'day');
+     return civicStatus(c,op.id).available&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(arrival=>arrival.operativeId===op.id)&&record.alive&&!record.captured&&record.medkits>0&&op.medical>=careRules(c).minimumSkill&&hiringTravelHours(c,op.id)===0&&quote.available&&quote.total<=c.resources.treasury;
+    }).sort((a,b)=>b.medical-a.medical||contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||a.id-b.id)[0];
+    assert.ok(candidate,'critical hospital care needs known finite linen or an actual supplied immediate paid medic');
+    const booked=bookRouteHires(c,[candidate.id],{term:'day',destination:at,report});c=booked.campaign;hires.push(...booked.hires);assertRouteHireArrived(c,booked.hires[0]);
+    orders.push({type:'recruitCivic',id:candidate.id,term:'day',destination:at});
+    const home=c.squads.find(squad=>squad.location===at&&!squad.journey&&squad.members.length>0&&squad.members.length<6&&squad.members.some(member=>patients.includes(member)||doctors.includes(member)));
+    if(home)order({type:'assignToSquad',operativeId:candidate.id,squadId:home.id});else order({type:'createSquad',name:'Socorro del hospital',ids:[candidate.id],sector:at});
+    const physician=rosterFor(c).filter(op=>local(op.id,at)&&[undefined,'no_medkits'].includes(careAssignmentIssue(c,op,'doctor')?.code)).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];assert.ok(physician);
+    if(physician.id!==id){order({type:'assignCare',operativeId:id,assignment:'rest'});id=physician.id;doctors[index]=id;}
+    donor=candidate.id;
+   }
+   if(!c.operativeState[id].medkits){
+    const stock=c.operativeState[id].medkits+c.operativeState[donor].medkits,known=new Set(sectorInventoryModel(c,at,rosterFor(c),id).entries.map(row=>row.key));
+    order({type:'sectorInventory',sector:at,operativeId:donor,direction:'drop',item:'medkits',count:1});
+    row=sectorInventoryModel(c,at,rosterFor(c),id).entries.find(row=>!known.has(row.key)&&row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'the clinic physician needs a real path to the finite local donation');
+    order({type:'sectorInventory',sector:at,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});
+    assert.equal(c.operativeState[id].medkits+c.operativeState[donor].medkits,stock);donations.push({sector:at,donor,recipient:id,count:1});
+   }
+   order({type:'assignCare',operativeId:id,assignment:'doctor'});
+  }
+  const began=c.hour*3600+(c.secondOfHour??0),stock=doctors.reduce((sum,id)=>sum+c.operativeState[id].medkits,0);
+  for(let notice=0;c.hour*3600+(c.secondOfHour??0)===began&&notice<3;notice++)order({type:'wait',hours:1});
+  assert.ok(c.hour*3600+(c.secondOfHour??0)>began||c.pendingEncounter,'critical care must advance or expose its real encounter');
+  assert.ok(patients.every(id=>c.recruited.includes(id)&&c.operativeState[id].alive),'retain every actual serving patient during critical care');
+  c=decodeSave(encodeSave(c)).campaign;
+  const tick={hour:c.hour,secondOfHour:c.secondOfHour??0,doctors:[...doctors],dressingsSpent:stock-doctors.reduce((sum,id)=>sum+c.operativeState[id].medkits,0),patients:patients.map(id=>({id,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding}))};ticks.push(tick);report({event:'northernHospitalStabilizationTick',tick,campaign:structuredClone(c)});
+ }
+ assert.ok(patients.every(id=>c.operativeState[id].alive&&!urgent(id)),'stop real critical wounds and bleeding before evacuation');
+ for(const [id,record]of Object.entries(before.operativeState))if(!record.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,record.deathMinute);}
+ assert.deepEqual(start,before);const receipt={orders,hires,donations,ticks,patients:[...patients],doctors:[...doctors],startSeconds:start.hour*3600+(start.secondOfHour??0),endSeconds:c.hour*3600+(c.secondOfHour??0)};
+ report({event:'northernHospitalStabilized',receipt});return {campaign:c,doctors,receipt};
+}
+
 
 // Stabilize the actual survivors and use their controlled hospital. The
 // continued return is separate so a saved hospital boundary can be checked.
@@ -131,10 +188,7 @@ export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
   if(at==='tucuman'&&localPatients.some(id=>c.operativeState[id].bleeding)){order({type:'wait',hours:1});for(const id of localPatients)assert.ok(c.operativeState[id].alive);}
   if(c.operativeState[medic.id].medkits<3&&at==='tucuman'){c=collectRouteItems(c,medic.id,{item:'medkits'},12).campaign;order({type:'assignCare',operativeId:medic.id,assignment:'doctor'});}
  }
- for(let h=0;h<24&&patients.some(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0);h++){
-  for(const id of stabilizationDoctors)if(!c.operativeState[id].medkits&&!c.operativeState[id].asleep&&patients.some(patient=>c.operativeState[patient].location===c.operativeState[id].location&&(c.operativeState[patient].hp<15||c.operativeState[patient].bleeding)))c=collectRouteItems(c,id,{item:'medkits'},1).campaign;
-  order({type:'wait',hours:1});
- }
+ const stabilized=stabilizeNorthernHospitalPatients(c,patients,stabilizationDoctors,{inputCapture,report});c=stabilized.campaign;stabilizationDoctors.splice(0,stabilizationDoctors.length,...stabilized.doctors);
  for(const id of patients){assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);}
  for(const operativeId of [...patients,...stabilizationDoctors])order({type:'assignCare',operativeId,assignment:'active'});
  // Treat each actual location before the evacuation clock advances. The
