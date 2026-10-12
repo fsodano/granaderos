@@ -10,11 +10,12 @@ import {order,visit,saved} from './local-contract-fixture.mjs';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 import {transportPath} from '../game/logistics.js';
-import {contractExpiresSeconds} from '../game/contracts.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {workAssignmentReason} from '../game/assignments.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {cellTravelPlan} from '../game/world-cells.js';
+import {tooTiredToMarch} from '../game/march-fatigue.js';
 
 // Public collection at the actual person's location. Temporarily return a
 // local squad to service only when it must physically discover its cache.
@@ -92,42 +93,90 @@ export function repairRouteFirearms(state,ids,{maxHours=48}={}){
 // dressings from another controlled cache. Patients stay in their real clinic;
 // the journey, rest, contract extensions and source debit are ordinary orders.
 export function collectRouteMedicalSupplies(start,operativeId,requested,{report=()=>{},resolveEncounter,mode='march'}={}){
- try{return collectRouteItems(start,operativeId,{item:'medkits'},requested);}
- catch(error){if(!error.message.startsWith('finite local equipment or carrying room is exhausted:'))throw error;}
  let s=start;const clinic=operativeLocation(s,operativeId),previous=s.activeSquadId,home=s.squads.find(q=>q.members.includes(operativeId)&&!q.journey),assignment=s.operativeState[operativeId].assignment;
+ try{
+ const clock=()=>s.hour*3600+(s.secondOfHour??0);let courierId=null;
+ const needsRest=()=>s.operativeState[operativeId].asleep||tooTiredToMarch(s.operativeState[operativeId]);
+ const retain=(seconds,phase)=>{
+  for(const id of s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured)){
+   let contract=s.contracts[id],expiry=contractExpiresSeconds(contract);
+   while(expiry!==null&&expiry<=clock()+seconds){
+    const quote=contractRenewalQuote(s,rosterFor(s).find(op=>op.id===id),'day');assert.equal(quote.available,true,quote.reason);
+    const action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0},cash=s.resources.treasury;
+    s=order(s,action);assert.equal(s.resources.treasury,cash-quote.price);contract=s.contracts[id];
+    assert.equal(contract.expiresAt,quote.expiresAt);assert.equal(contract.expiresSecond??0,quote.expiresSecond??0);
+    report({event:'medicalCourierRenewal',id,cost:cash-s.resources.treasury,hour:s.hour,secondOfHour:s.secondOfHour??0,phase,action,quote});
+    const extended=contractExpiresSeconds(contract);assert.ok(extended>expiry,'An actual courier renewal must extend its paid service.');expiry=extended;
+   }
+  }
+ };
+ const selectCourier=()=>{
+  if(courierId!==null){if(s.activeSquadId!==courierId)s=order(s,{type:'selectSquad',id:courierId});return;}
+  if(home)s=order(s,{type:'selectSquad',id:home.id});s=order(s,{type:'assignCare',id:operativeId,assignment:'active'});
+  if(!home||home.members.length>1)s=order(s,{type:'createSquad',ids:[operativeId],name:'Vendas recuperadas',sector:clinic});
+  courierId=s.activeSquadId;
+ };
+ const encounter=(phase,destination)=>{
+  if(!s.pendingEncounter)return;
+  assert.ok(typeof resolveEncounter==='function','resolve the actual medical courier encounter before continuing care');
+  const before=clock();report({event:'medicalCourierEncounter',operativeId,clinic,destination,phase,encounter:structuredClone(s.pendingEncounter),hour:s.hour,secondOfHour:s.secondOfHour??0});
+  s=resolveEncounter(s);assert.ok(clock()>=before,'An actual encounter cannot rewind the courier clock.');
+  assert.equal(s.pendingEncounter,null,'the actual medical courier encounter must finish before continuing care');assert.equal(s.pendingBattle,null);
+  assert.ok(s.recruited.includes(operativeId)&&s.operativeState[operativeId].alive&&!s.operativeState[operativeId].captured,'the actual courier must survive and remain under paid service');
+  if(courierId!==null)selectCourier();
+ };
+ const preparePostaCourier=()=>{
+  encounter('readiness',clinic);
+  assert.equal(operativeLocation(s,operativeId),clinic,'An actual encounter must return the courier to the clinic before quoting departure.');
+  if(!needsRest())return;
+  selectCourier();assert.equal(operativeLocation(s,operativeId),clinic,'The courier must finish real local rest before departure.');
+  assert.ok(s.recruited.filter(id=>operativeLocation(s,id)===clinic&&s.operativeState[id].alive).every(id=>!s.operativeState[id].bleeding),'stabilize local bleeding patients before their doctor rests for the journey');
+  const began=clock();let hours=0,zeroTimeNotices=0;
+  report({event:'medicalCourierRestStarted',operativeId,campaign:structuredClone(s)});
+  while(needsRest()){
+   assert.ok(hours<48,'The actual posta courier must recover within 48 ordinary rest hours.');
+   retain(3601,'readiness');
+   if(!s.operativeState[operativeId].asleep){const action={type:'setSleep',operativeId,asleep:true};s=order(s,action);report({event:'medicalCourierRestOrder',action,hour:s.hour,secondOfHour:s.secondOfHour??0});}
+   const before=clock(),action={type:'wait',hours:1};s=order(s,action);const elapsed=clock()-before;
+   assert.ok(elapsed>=0&&elapsed<=3600,'An ordinary courier rest order cannot exceed its requested hour.');hours+=elapsed/3600;
+   report({event:'medicalCourierRestOrder',action,elapsedSeconds:elapsed,hour:s.hour,secondOfHour:s.secondOfHour??0});
+   zeroTimeNotices=elapsed===0?zeroTimeNotices+1:0;assert.ok(zeroTimeNotices<3,'Courier rest stopped after three consecutive zero-time notices.');
+   encounter('readiness',clinic);assert.equal(operativeLocation(s,operativeId),clinic,'An actual encounter must return the courier to the clinic before quoting departure.');
+  }
+  report({event:'medicalCourierReady',operativeId,restHours:hours,elapsedSeconds:clock()-began,campaign:structuredClone(s)});
+ };
+ const restoreSelection=()=>{
+  if(courierId===null)return;
+  if(home){const current=s.squads.find(q=>q.id===home.id);assert.ok(current,'The original medical courier squad must remain available.');if(!current.members.includes(operativeId))s=order(s,{type:'assignToSquad',operativeId,squadId:home.id});}
+  if(assignment!=='active')s=order(s,{type:'assignCare',id:operativeId,assignment});
+  if(s.activeSquadId!==previous)s=order(s,{type:'selectSquad',id:previous});
+ };
+ if(mode==='posta')preparePostaCourier();
+ try{const local=collectRouteItems(s,operativeId,{item:'medkits'},requested);s=local.campaign;restoreSelection();return {...local,campaign:saved({campaign:s}).campaign};}
+ catch(error){if(!error.message.startsWith('finite local equipment or carrying room is exhausted:'))throw error;}
  assert.ok(s.recruited.includes(operativeId)&&s.operativeState[operativeId].alive,'the actual courier must be serving');
  assert.ok(s.recruited.filter(id=>operativeLocation(s,id)===clinic&&s.operativeState[id].alive).every(id=>!s.operativeState[id].bleeding),'stabilize local bleeding patients before their doctor leaves for dressings');
+ selectCourier();if(mode==='posta')preparePostaCourier();
  const sources=Object.entries(FINITE_SECTOR_CACHES).filter(([at])=>at!==clinic&&s.sectors[at]?.owner==='patriot'&&transportPath(s,clinic,at)).map(([at,cache])=>{
   const local=s.recruited.find(id=>s.operativeState[id].alive&&operativeLocation(s,id)===at),known=local===undefined?[]:sectorInventoryModel(s,at,rosterFor(s),local).entries.filter(row=>JSON.parse(row.expected).item==='medkits'),chest=s.sectorStates[at]?.props.find(prop=>prop.id===cache.chest);
   const available=known.filter(row=>row.kind!=='container').reduce((sum,row)=>sum+row.count,0)+(chest?chest.contents.filter(item=>item.item==='medkits').reduce((sum,item)=>sum+item.count,0):cache.medical);
   return {at,available,path:transportPath(s,clinic,at)};
  }).filter(source=>source.available>0).sort((a,b)=>b.available-a.available||a.path.length-b.path.length);
  const source=sources[0];assert.ok(source,'no controlled finite medical source remains for an actual courier');
- if(home)s=order(s,{type:'selectSquad',id:home.id});s=order(s,{type:'assignCare',id:operativeId,assignment:'active'});
- if(!home||home.members.length>1)s=order(s,{type:'createSquad',ids:[operativeId],name:'Vendas recuperadas',sector:clinic});
  // Walking couriers retain the original budget before completeTestTravel
  // performs ordinary sleep recovery. Public previews correctly reject sleep.
  // Explicit posta trips use the actual named-town route and its travel price.
- const courierId=s.activeSquadId,outward=mode==='march'?cellTravelPlan({...s,location:clinic},source.at):previewStrategicRoute(s,courierId,source.at,mode);
+ const outward=mode==='march'?cellTravelPlan({...s,location:clinic},source.at):previewStrategicRoute(s,courierId,source.at,mode);
  const returnPreview={...s,squads:s.squads.map(q=>q.id===courierId?{...q,location:source.at}:q)};
  const returning=mode==='march'?cellTravelPlan({...s,location:source.at},clinic):previewStrategicRoute(returnPreview,courierId,clinic,mode);
  if(mode==='march'){assert.equal(outward.reason,null);assert.equal(returning.reason,null);}
  else{assert.equal(outward.valid,true,outward.reason);assert.equal(returning.valid,true,returning.reason);}
- const horizon=(outward.hours+returning.hours+24)*3600,now=s.hour*3600+(s.secondOfHour??0);
- for(const id of s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured)){
-  let contract=s.contracts[id];while(contractExpiresSeconds(contract)!==null&&contractExpiresSeconds(contract)<=now+horizon){
-   const cash=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});report({event:'medicalCourierRenewal',id,cost:cash-s.resources.treasury,hour:s.hour});contract=s.contracts[id];
-  }
- }
+ const horizon=(outward.hours+returning.hours+24)*3600;retain(horizon,'journey');
  const travel=at=>{
   for(let leg=0;leg<32;leg++){
    s=completeTestTravel(s,{sector:at,mode});
    if(s.pendingEncounter){
-    assert.ok(typeof resolveEncounter==='function','resolve the actual medical courier encounter before continuing care');
-    report({event:'medicalCourierEncounter',operativeId,clinic,destination:at,encounter:structuredClone(s.pendingEncounter),hour:s.hour,secondOfHour:s.secondOfHour??0});
-    s=resolveEncounter(s);
-    assert.equal(s.pendingEncounter,null,'the actual medical courier encounter must finish before travel resumes');
-    assert.equal(s.pendingBattle,null);assert.ok(s.operativeState[operativeId].alive&&!s.operativeState[operativeId].captured,'the actual courier must survive and remain free');
+    encounter('journey',at);
     continue;
    }
    assert.equal(s.pendingBattle,null);assert.equal(s.location,at);assert.ok(s.recruited.includes(operativeId),'the real courier must remain under paid service');return;
@@ -136,9 +185,8 @@ export function collectRouteMedicalSupplies(start,operativeId,requested,{report=
  };
  const departure=s.hour*3600+(s.secondOfHour??0);travel(source.at);
  const found=collectRouteItems(s,operativeId,{item:'medkits'},requested);s=found.campaign;travel(clinic);
- if(home&&!s.squads.find(q=>q.id===home.id).members.includes(operativeId))s=order(s,{type:'assignToSquad',operativeId,squadId:home.id});
- if(assignment!=='active')s=order(s,{type:'assignCare',id:operativeId,assignment});
- if(s.activeSquadId!==previous)s=order(s,{type:'selectSquad',id:previous});
+ restoreSelection();
  report({event:'finiteMedicalCourier',operativeId,clinic,source:source.at,quantity:found.collected,mode,outward,returning,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-departure});
  return {campaign:saved({campaign:s}).campaign,collected:found.collected};
+ }catch(error){report({event:'medicalCourierStopped',operativeId,reason:error.message,campaign:structuredClone(s)});error.campaign=s;throw error;}
 }
