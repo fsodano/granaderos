@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are delivered to `main` through PR #390. Each receipt
+The following changes are delivered to `main` through PR #393. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
@@ -74,11 +74,37 @@ has its own scope; their counts are not one complete campaign result.
 | [#384](https://github.com/fsodano/granaderos/pull/384) | Open the declared paid-cohort cannon ambush after one ordinary daylight hour. Place its synthetic raider on the approach that permits the existing solid-shot assertion. Keep native targeting and projectile rules unchanged. | All seventeen original artillery-autonomy cases pass in 19.698 seconds, with all 2,304 source/configuration pins unchanged. Paid training costs 60 pesos and reaches hour 53, second 159; the ordinary wait reaches hour 54, second 159. The native solid shot spends one finite charge, and the gunner's actual 60-to-18-HP wound survives full save and re-entry. This is a corrected daylight fixture, not night-search or campaign acceptance. The complete quick suite was not rerun. |
 | [#385](https://github.com/fsodano/granaderos/pull/385) | Place the coastal commander at the authorized west–north arrival corner before the ordinary Retiro exit. Keep other issued combatants and equipment unchanged. | The complete coastal reserve, command reserve and tactical exit files pass 28/28. All 515 relevant source/shipping pins and both observed fixture inputs remain unchanged. The physical exit costs three seconds; official deployment saves, exact replay, custody and unavailable opposite-edge refusal remain asserted. The subsequent native defense and complete ending remain unproved. |
 | [#386](https://github.com/fsodano/granaderos/pull/386) | Recover each physically dropped arsenal primary through ordinary finite pickup and equip before supplying ammunition. Require all twelve actual field soldiers to hold a compatible physical firearm. | Both complete affected earned preparation and owned-equipment files pass 4/4 in 45.987 seconds. All 592 source/config/shipping pins and both observed inputs remain unchanged. The actual Mendoza allocation gives physician 8 the condition-100 gun from `drop:5`, then gives veteran 133 the condition-99 gun from `drop:6`; both separate sources are consumed once. Loaded charge, jam state and authored weapon metadata remain exact. This proves preparation and official save admission, not the original native return or ending. |
-
-
 | [#388](https://github.com/fsodano/granaderos/pull/388) | Recover finite rear weapons and ammunition, prepare thirteen distinct roof posts through ordinary single-person home-squad visits, and book the existing paid specialist before the stock gun crew leaves. | Five complete affected files pass 8/8 in 193.989 seconds, with all 576 static source/shipping pins and 356 consumed inputs unchanged. Both the earned trip and actual stock caller win the native defense in twelve turns and 120 orders, retain six actual deaths, and spend three recovered dressings over seven seconds. Patients 102, 104 and 108 survive and stabilize; carrier 101 keeps thirteen dressings and physician 146 keeps two. Guard 142 arrives at 432:1435 and receives one quoted 7,740-peso renewal at 438:1507, extending service to 480:1435. Both original guns arrive at 456:1514 with 113,994 pesos after 8,081 in renewals, forty in posta fees and two daily incomes. Native, finite-source, aid and official save replay remain exact. Later Mendoza combat and complete fresh routes remain open. |
 | [#389](https://github.com/fsodano/granaderos/pull/389) | Honor the selected local depot battery during a tactical or automatic defense at the active location. Reuse the existing one-time physical issue and custody rules. | The complete affected battery, custody, transport and defense files pass 51/51; the final six-case local/default/automatic control passes 6/6 separately. The selected physical gun preserves its remaining rounds and partial reload work. Empty selection, remote defense and precombat retreat retain depot custody. The genuine complete coastal attempt still retreats after nineteen turns, 310 orders and 709 tactical seconds; all seven fighting actors die while commander 57 exits alive. Complete coast and 48-hour ending acceptance remain open. |
 | [#390](https://github.com/fsodano/granaderos/pull/390) | Keep a present foundry cohort behind paid infantry through ordinary reachable movement in the west-entry arsenal route. A lone original field commander retains the established tactic. Restore the complete loose arsenal return control. | Four complete affected files pass 12/12 in 286.299 seconds, with all 596 relevant source/config/shipping pins and four observed inputs unchanged. The loose force wins in seventeen turns and 324 orders; paid soldier 132 dies and stays dead. All original foundry members survive; finite care, the paid return and both original gun deliveries complete at Mendoza 1361:305 with 255,449 pesos. The earlier funded control retains its exact eight-turn/420-order win and 976:1524 delivery. Original deaths, source immutability and official saves remain asserted. Fresh complete endings, 48-hour continuation and the full release gate remain open. |
+| [#392](https://github.com/fsodano/granaderos/pull/392) | Publish the verified revision selected by the manual Pages run. A later main commit no longer makes a successful job silently skip publication. | Nineteen deployment path and worker tests, typecheck, docs and baseline audits, YAML parsing and the nested production export pass. The live site starts the installed campaign at Retiro and loads a ready Three.js battlefield without browser console errors. This verifies startup and rendering, not a complete browser campaign. |
+| [#393](https://github.com/fsodano/granaderos/pull/393) | Separate reviewed core and campaign test scopes from quick/extended duration profiles. Use complete changed paths to select independent Actions; keep full native routes manual. | The complete tooling gate passes 34/34 in 3.762 seconds with 1,296 relevant pins unchanged. At this revision, all 1,061 files partition into 912 core and 149 campaign files. Automatic quick selections contain 911 core and 123 campaign files; manual extended selections retain one core and 26 campaign files. This is runner/selection evidence, not a new gameplay-suite pass. |
+
+### Published build after PR #392
+
+[Pages run 38285198825](https://github.com/fsodano/granaderos/actions/runs/38285198825)
+actually publishes revision `4ff6562c1e6efbcdeb1fcceee085cd392c17fd41`.
+The live metadata reports `0.1.0 · c4d578e66ae9` and the same revision. A
+browser review selects **Granaderos: la independencia**, starts the campaign,
+and reaches the Retiro desk with 3,200 pesos and no serving personnel. The
+independent San Lorenzo scene finishes loading its Three.js canvas. Local
+captures and metadata are retained in `.cache/pages-parity-2026-10-12/` in
+the primary checkout. They are diagnostic evidence, not shipping fixtures.
+
+The earlier public build was from 3 October, revision `b987d631`. The old
+deployment guard returned success while skipping publication after main
+advanced. Both the missing installed-campaign selector and the old battlefield
+came from that stale export. Later source changes still need a manual Pages
+deployment. This startup/rendering review does not replace creation, hiring,
+orders, save/continue or ending review on the final release export.
+
+PR #393 changes test tooling and documentation only. Its local log hash is
+`2057db4502dd54cf897f6ea94d56cb7caed868ff89dc0f6c5dc26bbf1f109536`.
+The [development guide](../development/getting-started.md#focused-github-actions)
+describes the complete semantic partitions, routine quick selection and manual
+full/extended runs. No earlier gameplay failure is converted into a pass by
+this test split; fresh endings, 48-hour continuation and the full release gate
+remain open.
 
 The PR #386 passive complete-preparation trace finishes in 44.533 seconds,
 with all 3,721 source/config/shipping/private-input pins and both observed
