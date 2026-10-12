@@ -9,17 +9,18 @@ import {order,saved} from './local-contract-fixture.mjs';
 
 // Keep a serviceable primary unless replacement is explicitly requested.
 // New equipment comes from this person's actual pockets or known local loot.
-export function recoverRoutePrimary(start,operativeId,{preferredWeapon=1801,required=true,replace=false,report=()=>{}}={}){
+export function recoverRoutePrimary(start,operativeId,{preferredWeapon=1801,required=true,replace=false,strictPreference=false,report=()=>{}}={}){
  let campaign=structuredClone(start);const op=rosterFor(campaign).find(unit=>unit.id===operativeId),record=campaign.operativeState[operativeId];
  assert.ok(op&&campaign.recruited.includes(operativeId)&&record?.alive&&!record.captured,'The actual firearm recipient must be serving and alive.');
  const sector=operativeLocation(campaign,operativeId),model=()=>sectorInventoryModel(campaign,sector,rosterFor(campaign),operativeId);
  const primary=()=>model().personal;
  if(!record.weaponDropped&&WEAPONS[primary()?.weapon]?.capacity>0&&!replace)return saved({campaign}).campaign;
- const choices=()=>model().carried.filter(row=>row.expected&&WEAPONS[JSON.parse(row.expected).weapon]?.capacity>0&&row.equip?.some(option=>option.slot==='primary'&&option.valid)).sort((a,b)=>Number(JSON.parse(b.expected).weapon===preferredWeapon)-Number(JSON.parse(a.expected).weapon===preferredWeapon));
+ const matches=row=>row.expected&&WEAPONS[JSON.parse(row.expected).weapon]?.capacity>0&&(!strictPreference||JSON.parse(row.expected).weapon===preferredWeapon);
+ const choices=()=>model().carried.filter(row=>matches(row)&&row.equip?.some(option=>option.slot==='primary'&&option.valid)).sort((a,b)=>Number(JSON.parse(b.expected).weapon===preferredWeapon)-Number(JSON.parse(a.expected).weapon===preferredWeapon));
  let gun=choices()[0],incoming;
  if(!gun){
-  let available=model().entries.filter(row=>row.reachable&&row.count>0&&WEAPONS[JSON.parse(row.expected).weapon]?.capacity>0).sort((a,b)=>Number(JSON.parse(b.expected).weapon===preferredWeapon)-Number(JSON.parse(a.expected).weapon===preferredWeapon));
-  if(!available.length){campaign=discoverRouteCache(campaign,operativeId);available=model().entries.filter(row=>row.reachable&&row.count>0&&WEAPONS[JSON.parse(row.expected).weapon]?.capacity>0).sort((a,b)=>Number(JSON.parse(b.expected).weapon===preferredWeapon)-Number(JSON.parse(a.expected).weapon===preferredWeapon));}
+  let available=model().entries.filter(row=>row.reachable&&row.count>0&&matches(row)).sort((a,b)=>Number(JSON.parse(b.expected).weapon===preferredWeapon)-Number(JSON.parse(a.expected).weapon===preferredWeapon));
+  if(!available.length){campaign=discoverRouteCache(campaign,operativeId);available=model().entries.filter(row=>row.reachable&&row.count>0&&matches(row)).sort((a,b)=>Number(JSON.parse(b.expected).weapon===preferredWeapon)-Number(JSON.parse(a.expected).weapon===preferredWeapon));}
   const row=available.find(row=>{try{applyItemQuantity(primary(),{...JSON.parse(row.expected),count:1});return true;}catch{return false;}});
   if(row){
    const keys=new Set(Object.keys(primary().inventory??{}));incoming={...JSON.parse(row.expected),count:1};
