@@ -37,12 +37,16 @@ import {prepareCreatedRiverAssault} from './created-river-preparation.mjs';
 import {createdSaltaReserveDeployment,stageCreatedSaltaBattery} from './created-salta-battery.mjs';
 import {createdJujuyContinuingDefense} from './created-jujuy-continuing-defense.mjs';
 import {enterControlledPort,controlledPortAvailable,priorPortVictories} from './controlled-port-handover.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {restStableRoutePatients} from './stable-route-rest.mjs';
 
 // Recover the actual mountain survivors before their paid terms end. The
 // affordable relief column waits for real arrivals, finite care and rest.
 export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementCount=1}={}){
  assert.ok(Number.isInteger(reinforcementCount)&&reinforcementCount>=0&&reinforcementCount<=4);
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedCoastalAssault',stage:'preparation-input',campaign:start});
  let c=decodeSave(encodeSave(start)).campaign;
+ try{
  const mountainSurvivors=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='mendoza';});
  const expeditionIds=mountainSurvivors.filter(id=>id!==57&&c.contracts[id]?.kind==='paid').sort((a,b)=>a-b);
  assert.ok(mountainSurvivors.includes(57),'the actual living commander must be present for coastal preparation');
@@ -146,7 +150,20 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
   order({type:'assignCare',operativeId:patientId,assignment:'patient'});
   const careStart=c.hour,healthBefore=c.operativeState[patientId].hp;
   for(let h=0;h<36&&(c.operativeState[patientId].hp<c.operativeState[patientId].maxHp||c.operativeState[patientId].bleeding>0);h++){
-   if(!c.operativeState[doctorId].medkits)c=supplyRouteDressings(c,doctorId,1,{report});
+   if(!c.operativeState[doctorId].medkits){
+    try{c=supplyRouteDressings(c,doctorId,1,{report});}
+    catch(error){
+     // A real exhausted clinic may still recover stable survivors through
+     // ordinary paid rest. Acute wounds and every other refusal remain errors.
+     if(error.message!==`No actual reachable finite dressings remain for ${doctorId} at mendoza.`)throw error;
+     const remaining=patients.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding>0);
+     const rest=restStableRoutePatients(c,{patients:remaining,sector:'mendoza',report});c=rest.campaign;
+     events.push({action:{type:'stableCoastalClinicRest'},hour:c.hour,...rest.receipt});
+     report({event:'coastalClinicRestFinished',...rest.receipt,campaign:c});
+     assert.equal(rest.completed,true,rest.stoppedReason??'the real coast clinic rest must finish');
+     break;
+    }
+   }
    order({type:'assignCare',operativeId:doctorId,assignment:'doctor'});order({type:'wait',hours:1});
   }
   assert.equal(c.operativeState[patientId].hp,c.operativeState[patientId].maxHp);assert.equal(c.operativeState[patientId].bleeding,0);
@@ -242,6 +259,7 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
  else assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  report({event:'createdCoastalAssaultReady',hour:c.hour,treasury:c.resources.treasury,field,events});
  return {campaign:c,field,events,controlledPort,roles:{expeditionIds,doctorId,reliefId,supportIds,reinforcements}};
+ }catch(error){recordRouteStrategicEvidence({helper:'prepareCreatedCoastalAssault',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }
 
 // The issued coastal guns share helpers at the entry. Pay for the actual
