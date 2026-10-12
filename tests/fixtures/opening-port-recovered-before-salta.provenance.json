@@ -1,0 +1,30 @@
+{
+  "scope": "Earned original opening prefix after its first five subtests. No Salta, Yatasto, completed campaign or full release is certified.",
+  "sourceHead": "a4877a891f808709d22c0f668a5ffd5f21da0341",
+  "inputSource": "tests/opening-playthrough.test.mjs original first five subtests, unchanged except private capture and omission of the unused Salta import",
+  "capture": ".cache/core-campaign-2026-10-12/rear-guard/earned-before-salta.save.json",
+  "capturePhase": "after original paid medical-courier recovery; before prepareSaltaAssault",
+  "additionalOrdersAfterCapture": 0,
+  "additionalHealthChanges": 0,
+  "additionalItems": 0,
+  "fixture": "opening-port-recovered-before-salta.save.json.gz",
+  "rawSha256": "b55ca96c492ebc26a97ecf3b45140080a1814fadbc06c593ec34a792e89d7dc3",
+  "gzipSha256": "a9ad86cc54a17010e26dfcf54bde9e81ec9a772af25f0161a07865f2301dd1e6",
+  "prefixReceipt": {
+    "command": [
+      "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "--test",
+      "/Users/fsodano/.codex/worktrees/campaign-rear-guard/granaderos/.cache/core-campaign-2026-10-12/rear-guard/earn-opening-prefix.test.mjs"
+    ],
+    "exitCode": 0,
+    "seconds": 394.815,
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "sourceFiles": 342,
+    "changedPins": [],
+    "rawLog": ".cache/core-campaign-2026-10-12/rear-guard/earned-opening-prefix.log",
+    "rawLogSha256": "3c8bec4f142348d62e143ad4ff2687269cbf23342c7b3ebe8ccd7d985bfe5121"
+  }
+}
