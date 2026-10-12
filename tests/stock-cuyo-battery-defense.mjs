@@ -6,6 +6,51 @@ import {operativeLocation,operativeInTransit} from '../game/squads.js';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {relieveStockNorthernPatient} from './fresh-northern-command.mjs';
+import {autoBandageBattle} from '../game/auto-bandage.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {stanceCost} from '../game/tactical.js';
+import {visit,sync,leave} from './local-contract-fixture.mjs';
+import {careAssignmentReason} from '../game/medical-care.js';
+import {expandCellScene} from '../game/cell-scene-storage.js';
+import {bookRouteHires} from './paid-route-hiring.mjs';
+
+const expandedDefenseState=state=>{
+ const copy=structuredClone(state);
+ for(const [sector,scene]of Object.entries(copy.sectorStates))copy.sectorStates[sector]=expandCellScene(scene,state);
+ return copy;
+};
+const savedDefenseState=state=>{
+ const restored=decodeSave(encodeSave(state)).campaign;
+ // Rural retained scenes use the lossless tile codec. Compare every expanded
+ // tile and all campaign fields, then continue from the admitted save shape.
+ assert.deepEqual(expandedDefenseState(restored),expandedDefenseState(state));
+ assert.deepEqual(decodeSave(encodeSave(restored)).campaign,restored);
+ return restored;
+};
+
+// Book an affordable existing guard before the crew's journey advances time.
+// This leaves the arrival to the ordinary campaign clock and preserves the
+// authored soldier, equipment, travel delay and start of paid service.
+export function prepareStockCuyoBatteryGuard(start,{report=()=>{}}={}){
+ const before=structuredClone(start);assert.equal(start.pendingEncounter,null);assert.equal(start.pendingBattle,null);
+ const candidates=rosterFor(start).filter(op=>op.id>=100&&op.id<1000&&!start.recruited.includes(op.id)&&start.operativeState[op.id].alive&&!start.operativeState[op.id].captured).map(op=>({op,quote:contractQuote(start,op,'day')})).filter(row=>row.quote.available&&row.quote.total<=start.resources.treasury).sort((a,b)=>b.op.marksmanship-a.op.marksmanship||a.quote.price-b.quote.price||a.op.id-b.op.id);
+ const selected=candidates[0];assert.ok(selected,'An actual affordable guard must be available before the battery journey.');
+ const action={type:'recruitCivic',id:selected.op.id,term:'day',destination:'cordoba'},booked=bookRouteHires(start,[selected.op.id],{term:'day',destination:'cordoba'}),campaign=booked.campaign,arrival=booked.hires[0].arrival;
+ assert.equal(campaign.resources.treasury,start.resources.treasury-selected.quote.total);assert.deepEqual([campaign.hour,campaign.secondOfHour],[start.hour,start.secondOfHour]);assert.deepEqual(start,before);
+ report({event:'stockCuyoBatteryGuardBooked',id:selected.op.id,price:selected.quote.price,action,arrival:structuredClone(arrival),hour:campaign.hour,second:campaign.secondOfHour??0});
+ assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
+ return {campaign,guardId:selected.op.id,quote:structuredClone(selected.quote),arrival:structuredClone(arrival)};
+}
+
+// Keep a supplied expert physician in the local reserve. Prone is an ordinary
+// paid stance order; all other defenders retain the existing infantry policy.
+export function stockCuyoBatteryDefenseOrder(battle,unit){
+ if(unit.medical>=90&&unit.medkits>=2){
+  if(unit.stance!=='prone'&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&unit.ap>=stanceCost(unit,'prone'))return {type:'stance',unitId:unit.id,stance:'prone'};
+  return null;
+ }
+ return cautiousCombatOrder(battle,unit);
+}
 
 // An actual local Córdoba reserve resolves a raid while the gun crew is away.
 // Every battle and care order retains the native outcome, time and supplies.
@@ -26,24 +71,41 @@ export function resolveStockCuyoBatteryEncounter(start,{report=()=>{}}={}){
  };
  if(c.pendingEncounter){assert.equal(c.pendingEncounter.sector,'cordoba');order({type:'respondToEncounter',groupId,choice:'tactical'});}
  assert.equal(c.pendingBattle?.sector,'cordoba');assert.equal(c.pendingBattle.defenseGroupId,groupId);
- const result=fightNorthernSector(c,'cordoba',{controller:cautiousCombatOrder,report});c=result.campaign;
+ const result=fightNorthernSector(c,'cordoba',{controller:stockCuyoBatteryDefenseOrder,report});c=result.campaign;
  assert.equal(c.sectors.cordoba.owner,'patriot');assert.equal(c.defeated,false);
  report({event:'stockCuyoBatteryDefenseSettled',groupId,campaign:structuredClone(c)});
  const survivors=live().length,startSeconds=clock();
+ // Keep the arrived local guard and surviving reserve in paid service while
+ // the existing guns finish their remaining delivery journey.
+ retain(24);
  const acute=()=>live().filter(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0);
  for(let batch=0;acute().length;batch++){
   assert.ok(batch<live().length,'Actual finite defense care must resolve each patient.');
-  const patientId=acute().sort((a,b)=>c.operativeState[a].hp-c.operativeState[b].hp)[0],sector=operativeLocation(c,patientId),patient=c.operativeState[patientId];
-  const doctor=rosterFor(c).filter(op=>live().includes(op.id)&&op.id!==patientId&&operativeLocation(c,op.id)===sector&&!operativeInTransit(c,op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>10&&c.operativeState[op.id].medkits>=(patient.bleeding>0?2:1)&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];
-  assert.ok(doctor,'The actual local patient needs a living supplied doctor.');
-  if(patient.bleeding>0){
-   retain(2);const stock=c.operativeState[doctor.id].medkits,hp=patient.hp;
-   order({type:'assignCare',operativeId:doctor.id,assignment:'doctor'});order({type:'assignCare',operativeId:patientId,assignment:'patient'});order({type:'wait',hours:1});
-   assert.equal(c.pendingEncounter,null);assert.equal(c.operativeState[patientId].alive,true);assert.equal(c.operativeState[patientId].bleeding,0);assert.equal(c.operativeState[doctor.id].medkits,stock-1);
-   report({event:'stockCuyoBatteryDefenseHourlyCare',doctor:doctor.id,patientId,hpBefore:hp,hpAfter:c.operativeState[patientId].hp,dressingsUsed:1,hour:c.hour,second:c.secondOfHour??0});
+  const patientId=acute().sort((a,b)=>c.operativeState[a].hp/Math.max(1,c.operativeState[a].bleeding)-c.operativeState[b].hp/Math.max(1,c.operativeState[b].bleeding))[0],sector=operativeLocation(c,patientId);
+  const patients=acute().filter(id=>operativeLocation(c,id)===sector).slice(0,5),position=id=>c.operativeState[id].residentPosition??c.sectorStates[sector]?.units.find(unit=>unit.id===String(id));
+  const target=position(patientId),distance=id=>{const point=position(id);return target&&point?(point.tacticalLevel??0)===(target.tacticalLevel??0)?Math.hypot(point.x-target.x,point.y-target.y):Infinity:Infinity;};
+  const doctors=rosterFor(c).filter(op=>live().includes(op.id)&&operativeLocation(c,op.id)===sector&&!operativeInTransit(c,op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>0&&op.medical>0).sort((a,b)=>distance(a.id)-distance(b.id)||b.medical-a.medical||a.id-b.id);
+  if(!doctors.length){c=relieveStockNorthernPatient(c,{patientId,report}).campaign;continue;}
+  if(!doctors.some(op=>c.operativeState[op.id].medkits>0)){
+   const doctor=doctors[0],row=sectorInventoryModel(c,sector,rosterFor(c),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+   assert.ok(row,'The actual local aid party needs reachable finite dressings.');
+   const count=Math.min(row.count,2*patients.length),stock=c.operativeState[doctor.id].medkits;
+   order({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});
+   assert.equal(c.operativeState[doctor.id].medkits,stock+count);assert.equal(sectorInventoryModel(c,sector,rosterFor(c),doctor.id).entries.find(next=>next.key===row.key)?.count??0,row.count-count);
+   report({event:'stockCuyoBatteryDefenseDressingsCollected',doctor:doctor.id,sector,sourceKey:row.key,count});
   }
-  if(c.operativeState[patientId].hp<15)c=relieveStockNorthernPatient(c,{patientId,doctorId:doctor.id,report}).campaign;
-  for(const id of [doctor.id,patientId])order({type:'assignCare',operativeId:id,assignment:'rest'});
+  // Include nearby supplied physicians, rather than replacing them with only
+  // the most skilled distant doctor. A stable bleeding medic can use self aid.
+  const group=[...new Set([...patients,...doctors.filter(op=>c.operativeState[op.id].medkits>0).map(op=>op.id)])].slice(0,6);
+  order({type:'createSquad',ids:group,sector,name:'Socorro de la reserva'});for(const id of group)order({type:'assignCare',operativeId:id,assignment:'active'});
+  const p=visit(c),stock=group.reduce((sum,id)=>sum+c.operativeState[id].medkits,0),patientRecords=patients.map(id=>({id,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding}));
+  report({event:'stockCuyoBatteryDefenseAidStarted',sector,ids:group,campaign:structuredClone(p.campaign),battle:structuredClone(p.battle)});
+  const aid=autoBandageBattle(p.battle);c=leave(sync({campaign:p.campaign,battle:aid.battle}));
+  const used=aid.steps.filter(action=>action.type==='useItem').length;assert.equal(group.reduce((sum,id)=>sum+c.operativeState[id].medkits,0),stock-used);
+  for(const id of patients){assert.ok(c.operativeState[id].alive&&c.operativeState[id].hp>=15,`Actual timely first aid must stabilize ${id}.`);assert.equal(c.operativeState[id].bleeding,0);}
+  assert.equal(c.pendingEncounter,null);c=savedDefenseState(c);
+  report({event:'stockCuyoBatteryDefenseFirstAid',sector,ids:group,patientsBefore:patientRecords,patientsAfter:patients.map(id=>({id,hp:c.operativeState[id].hp,bleeding:c.operativeState[id].bleeding})),orders:aid.steps,dressingsUsed:used,elapsedSeconds:aid.elapsedSeconds,treatedIds:aid.treatedIds,stoppedReason:aid.stoppedReason,campaign:structuredClone(c)});
+  for(const id of group)if(!careAssignmentReason(c,rosterFor(c).find(op=>op.id===id),'rest'))order({type:'assignCare',operativeId:id,assignment:'rest'});
  }
  order({type:'selectSquad',id:active});
  for(const [id,record]of Object.entries(before.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
