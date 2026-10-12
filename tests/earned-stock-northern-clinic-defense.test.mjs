@@ -35,10 +35,12 @@ test('the earned seed-8 Tucumán care raid keeps its physicians, real losses, fi
  // The selected local depot gun is issued once when the clinic is defended.
  // No artillery order spends its charge or reserve; both physical guns remain
  // in the settled scene, including their exact native placement and facing.
+ // Settlement removes the temporary stationed marker from inherited pieces.
  const issued=start.artilleryDepots.tucuman;
  assert.deepEqual(start.artillerySelection,issued.map(gun=>'depot:'+gun.id));assert.equal(start.artillerySelectionExplicit,true);
  assert.deepEqual(c.artilleryDepots,{...start.artilleryDepots,tucuman:[]});
- assert.deepEqual(after.artillery,native.artillery);
+ assert.equal(native.artillery.find(gun=>gun.id==='arsenal:cordoba:1').stationed,true);
+ assert.deepEqual(after.artillery,native.artillery.map(({stationed,...gun})=>gun));
  const physical=gun=>({id:gun.id,type:gun.type,side:gun.side,loaded:gun.loaded,ammo:gun.ammo});
  assert.deepEqual(after.artillery.map(physical).sort((a,b)=>a.id.localeCompare(b.id)),[...start.sectorStates.tucuman.artillery,...issued].map(physical).sort((a,b)=>a.id.localeCompare(b.id)));
  assert.equal(new Set(after.artillery.map(gun=>gun.id)).size,after.artillery.length);
