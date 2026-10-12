@@ -360,10 +360,13 @@ if(patients.length&&!servingDoctor){
  assert.equal(c.operativeState[medic.id].location,'mendoza');assert.ok(c.recruited.includes(medic.id));
 }
 const localDoctors=rosterFor(c).filter(o=>c.recruited.includes(o.id)&&!patients.includes(o.id)&&c.operativeState[o.id].alive&&!c.operativeState[o.id].captured&&c.operativeState[o.id].location==='mendoza'&&o.medical>=20).sort((a,b)=>b.medical-a.medical).slice(0,patients.length).map(o=>o.id);
+// A selected physician must keep the dressing already allocated for this
+// medical hour. Cycling it through the other doctors leaves care blocked.
+const medicalReserves=Object.fromEntries(localDoctors.map(id=>[id,1]));
 c=bankRouteIncome(c,5000,{keepIds:retained.keepIds(),report});
 for(let h=0;h<48&&patients.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);h++){
  assert.equal(c.pendingEncounter,null);
- for(const id of localDoctors){if(!c.operativeState[id].medkits)c=supplyRouteDressings(c,id,1,{report});order({type:'assignCare',operativeId:id,assignment:'doctor'});}
+ for(const id of localDoctors){if(!c.operativeState[id].medkits)c=supplyRouteDressings(c,id,1,{reserves:medicalReserves,report});order({type:'assignCare',operativeId:id,assignment:'doctor'});}
  for(const id of patients)order({type:'assignCare',operativeId:id,assignment:'patient'});
  order({type:'wait',hours:1});report({event:'mountainMedicalCare',hour:c.hour,treasury:c.resources.treasury,patients:patients.map(id=>({id,hp:c.operativeState[id].hp}))});
 }
