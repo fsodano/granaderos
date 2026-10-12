@@ -1,0 +1,55 @@
+{
+  "scope": "Exact earned loose stock seed-8 inputs from the attempted complete ordinary 3200-peso ending. Bounded native Tucumán clinic counterattack, finite care and Salta preparation only; not a complete campaign ending.",
+  "sourceRevision": "e1f781726d5232a0f45e42384203ad1c9d19181e",
+  "sourceLogSha256": "9f42c4ae0a3567c03117b47327f74a61d8490f5cd6686efac74393e7d41e2951",
+  "sourceRun": {
+    "tests": 2,
+    "pass": 0,
+    "fail": 2,
+    "skipped": 0,
+    "cancelled": 0,
+    "staticClosureFiles": 400,
+    "shippingFiles": 241,
+    "uniqueSourceShippingFiles": 614,
+    "actualFilesystemInputFiles": 229,
+    "changedSourcePins": 0,
+    "changedActualInputPins": 0
+  },
+  "derivation": "Unmodified passive pre-relief and actual thrown-failure campaign bytes. Each raw state passes strict official encode/decode equality before lossless gzip storage. No health, money, ownership, clock, assignment, supply, event or casualty writes.",
+  "sources": {
+    "beforeRelief": {
+      "source": "/Users/fsodano/.codex/worktrees/campaign-handover/granaderos/.cache/core-campaign-2026-10-12/ending-main-e1f78172/passive-captures/strategic-preparation/68768-10-prepareStockNorthernOfficerRelief-preparation-input-DC4ycL/campaign.json",
+      "rawSha256": "bbab2202c6ae25b7964200a322d51297fa4fbe57757968863ba21536c324ee88",
+      "gzipSha256": "094059609cb3cbb42f53e5e54234a11f25eeaae190aeee1dd2f04d09beef8c64",
+      "rawBytes": 6759034,
+      "gzipBytes": 282612,
+      "file": "earned-stock-northern-clinic-before-relief.campaign.json.gz",
+      "clock": [
+        681,
+        982
+      ],
+      "treasury": 194184,
+      "pendingEncounter": null,
+      "strictOfficialSaveAdmission": true
+    },
+    "counterattack": {
+      "source": "/Users/fsodano/.codex/worktrees/campaign-handover/granaderos/.cache/core-campaign-2026-10-12/ending-main-e1f78172/passive-captures/strategic-preparation/68768-11-prepareStockNorthernOfficerRelief-preparation-failure-QZDcjH/campaign.json",
+      "rawSha256": "2ebc8cd5a9d7298c420e808e24cfbcbd17b670087f0cb7e2996e029ba0166354",
+      "gzipSha256": "4876c34dd762239d9a6e04ee1075d77136c55547e9b842653cf41bd189b880a1",
+      "rawBytes": 6674506,
+      "gzipBytes": 275332,
+      "file": "earned-stock-northern-clinic-counterattack.campaign.json.gz",
+      "clock": [
+        768,
+        1589
+      ],
+      "treasury": 223505,
+      "pendingEncounter": {
+        "groupId": "enemy-group-2",
+        "sector": "tucuman",
+        "arrivedAt": 768
+      },
+      "strictOfficialSaveAdmission": true
+    }
+  }
+}
