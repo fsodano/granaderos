@@ -24,10 +24,10 @@ export function saltaBatteryWaypoints(campaign,destination){
 
 function orders(start){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
- return {get campaign(){return campaign;},events,apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report){
+ return {get campaign(){return campaign;},events,apply(transform){campaign=transform(campaign);},prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report,controller=northernCombatOrder){
   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
   const next=dispatchCampaign(campaign,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(next.lastError,null,next.lastError);assert.deepEqual(next.pendingBattle.enemies,group.units);
-  const result=fightNorthernSector(next,encounter.sector,{controller:northernCombatOrder,report});campaign=result.campaign;
+  const result=fightNorthernSector(next,encounter.sector,{controller,report});campaign=result.campaign;
   return {groupId:group.id,...result.summary};
  },order(action){
   const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
@@ -42,7 +42,7 @@ function renew(route,ids,buffer){
   }
  }
 }
-export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{}}={}){
+export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},encounterController=northernCombatOrder}={}){
  const route=orders(start),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep the rear depot defended while the northern force marches. Its
@@ -98,7 +98,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{}}={}
  for(const operativeId of route.campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
  const battery=prepareRouteSupportBattery(route.campaign,{destination:'tucuman',waypointsFor:saltaBatteryWaypoints,keepServing:route.campaign.recruited.filter(id=>route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured),resolveEncounter:(campaign,{stage})=>{
   const crewSquad=campaign.activeSquadId;onCheckpoint('support-battery-encounter',campaign,{stage});route.apply(()=>campaign);
-  const defense=route.resolveEncounter(report);assert.equal(defense.status,'victory','the actual support-battery raid must be won');defenses.push(defense);
+  const defense=route.resolveEncounter(report,encounterController);assert.equal(defense.status,'victory','the actual support-battery raid must be won');defenses.push(defense);
   order({type:'selectSquad',id:crewSquad});onCheckpoint('support-battery-settled',route.campaign,{stage,defense});return route.campaign;
  },report});route.apply(()=>battery.campaign);order({type:'configureArtillery',types:[]});
  order({type:'selectSquad',id:reserveSquad});
@@ -156,7 +156,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{}}={}
    for(const operativeId of local)order({type:'assignCare',operativeId,assignment:hourlyDoctors.includes(operativeId)?'doctor':wounded.includes(operativeId)?'patient':'rest'});
   }else for(const operativeId of local)order({type:'assignCare',operativeId,assignment:'rest'});
   renew(route,route.campaign.recruited,2);order({type:'wait',hours:1});
-  if(route.campaign.pendingEncounter)defenses.push(route.resolveEncounter(report));
+  if(route.campaign.pendingEncounter)defenses.push(route.resolveEncounter(report,encounterController));
  }
  assert.ok(Number.isInteger(departure),'supplied paid care completes before the daylight march');assert.equal(route.campaign.hour,departure);
  for(const id of patients)assert.equal(route.campaign.operativeState[id].hp,route.campaign.operativeState[id].maxHp);
@@ -202,7 +202,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{}}={}
  assert.ok(deploying.every(id=>route.campaign.squads.find(s=>s.id===id)?.journey?.status==='ready'));
  while(route.campaign.pendingEncounter){
   const queued=structuredClone(route.campaign.squads.filter(s=>deploying.includes(s.id)).map(s=>s.journey));
-  defenses.push(route.resolveEncounter(report));
+  defenses.push(route.resolveEncounter(report,encounterController));
   assert.deepEqual(route.campaign.squads.filter(s=>deploying.includes(s.id)).map(s=>s.journey),queued,'a remote defense preserves both waiting assault routes');
  }
  order({type:'beginAssault',sector:'salta'});
