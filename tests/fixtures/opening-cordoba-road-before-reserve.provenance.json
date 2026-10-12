@@ -1,0 +1,30 @@
+{
+  "scope": "Earned original opening at the settled Tucuman288 boundary, before paid Cordoba reserve preparation. No completed Salta, Yatasto, opening or release is certified.",
+  "sourceHead": "711adfef93b0e66d8af8383a8d637dfb61eba492",
+  "inputSource": "Admit opening-port-recovered-before-salta.save.json.gz, then current prepareSaltaAssault with passive capture at support-battery-settled.",
+  "capture": ".cache/core-campaign-2026-10-12/custody-711adfef/checkpoint-support-battery-settled.save.json",
+  "capturePhase": "After actual Tucuman288 defense and existing urgent care; before the next battery travel tick.",
+  "additionalOrdersAfterCapture": 0,
+  "additionalHealthChanges": 0,
+  "additionalItems": 0,
+  "fixture": "opening-cordoba-road-before-reserve.save.json.gz",
+  "rawSha256": "711e6168c349b040fdf19294e0620a46708bf9a848455ae252eae07b68f2b630",
+  "gzipSha256": "6aa11ca7fec076a6374a1ae6e4b8fd82ee23396f0ea263afcb421d83a176e562",
+  "inputProvenance": "opening-port-recovered-before-salta.provenance.json",
+  "diagnosticReceipt": {
+    "command": [
+      "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "--test",
+      "/Users/fsodano/.codex/worktrees/campaign-rear-guard/granaderos/.cache/core-campaign-2026-10-12/custody-711adfef/diagnose-custody.test.mjs"
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "seconds": 98.754,
+    "sourceFiles": 334,
+    "changedPins": [],
+    "log": "/Users/fsodano/.codex/worktrees/campaign-rear-guard/granaderos/.cache/core-campaign-2026-10-12/custody-711adfef/diagnose-current-custody.log",
+    "logSHA256": "b62304bc02671a9677c33072f81b849f4407528fcaad210a8a741d342b6387d4",
+    "head": "711adfef93b0e66d8af8383a8d637dfb61eba492",
+    "scope": "Expected-refusal diagnostic. The later canonical custody refusal was reproduced; this fixture was captured earlier after the actual Tucuman victory and urgent care."
+  }
+}
