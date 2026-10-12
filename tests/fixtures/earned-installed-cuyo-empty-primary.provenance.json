@@ -1,0 +1,51 @@
+{
+  "format": "granaderos-earned-official-save",
+  "version": 1,
+  "sha256": "7e9172572592ac90a8ff8a207fa1ff8168fb977ee5f299aff6b183f6256b0417",
+  "rawBytes": 3027733,
+  "gzipSha256": "3a62ff66a0ea9c4e7a814c9ac64558c5b92dfcb6db78eb12177df4873e5e74c0",
+  "sourceRevision": "55dbe6adad7bbefb065ced354b0c71cd82f6d8e2",
+  "sourceReport": ".cache/core-campaign-2026-10-11/installed-mendoza-run5-pre-ammunition.json",
+  "sourceNote": "Exact passive createdMendozaAmmunition boundary from the existing installed Cuyo preparation. The probe intercepted the report before ammunition allocation or firearm recovery. The retained inputs use the earned installed seed-1812 northern and Yatasto continuation. No money, supplies, health, territory, random state or outcomes were assigned.",
+  "inputOfficialSave": ".cache/core-campaign-2026-10-11/installed-cuyo-assembled.save.json",
+  "scope": "Bounded real empty-primary and finite ammunition preparation regression, not a fresh whole campaign or final ending proof.",
+  "clock": [
+    1029,
+    544
+  ],
+  "operativeId": 120,
+  "weaponDropped": false,
+  "field": [
+    119,
+    127,
+    103,
+    104,
+    111,
+    140,
+    113,
+    110,
+    136,
+    134,
+    133,
+    112,
+    117,
+    108,
+    100,
+    146,
+    9,
+    11,
+    1,
+    0,
+    8,
+    116,
+    120,
+    122,
+    130,
+    142
+  ],
+  "selections": [
+    "depot:arsenal:buenos_aires:1",
+    "depot:arsenal:cordoba:1"
+  ],
+  "additionalOrdersAfterCapture": 0
+}
