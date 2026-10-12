@@ -16,6 +16,7 @@ import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {withdrawCommandToRear,rejoinCommandAfterExit} from './command-reserve-driver.mjs';
+import {withdrawCoastalCommandToRear} from './coastal-command-reserve.mjs';
 import {coastalSearchController} from './coastal-search-driver.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
@@ -354,7 +355,7 @@ export function finishCreatedCoast(prefix,{onCheckpoint,report=()=>{}}={}){
  };
  note('coastal-preparation',{field:prepared.field});
  if(campaign.pendingBattle?.sector==='buenos_aires'){
-  const initial=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires),defense=fightNorthernSector(campaign,'buenos_aires',{report,deploy:withdrawCommandToRear(initial,57,'retiro'),controller:coastalBatteryController(initial,{sharedArtillerySight:true})});campaign=defense.campaign;
+  const initial=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires),defense=fightNorthernSector(campaign,'buenos_aires',{report,deploy:withdrawCoastalCommandToRear(initial,57,'retiro'),controller:coastalBatteryController(initial,{sharedArtillerySight:true})});campaign=defense.campaign;
   assert.equal(defense.summary.status,'victory');assert.equal(campaign.blockade,false);assert.equal(occupyingGroups(campaign,'buenos_aires').length,0);note('buenos_aires',defense.summary);
   campaign=rejoinCommandAfterExit(campaign,57,'buenos_aires');
   const survivors=prepared.field.filter(id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured);
