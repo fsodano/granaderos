@@ -1,7 +1,8 @@
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,artilleryContact} from '../game/tactical.js';
+import {createBattle,actBattle,presentedActBattle,artilleryContact,artilleryCrewPlan,artilleryCosts} from '../game/tactical.js';
+import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {santaFeBatteryOrder,humahuacaBatteryOrder,coastalBatteryController} from './coastal-command-driver.mjs';
 import {mountainBatteryOrder,mendozaBatteryOrder} from './mountain-battery-driver.mjs';
 
@@ -35,6 +36,31 @@ test('an assigned helper joins its distant cannon instead of scouting ahead alon
  assert.notEqual(`${joined.x},${joined.y}`,'4,2','the living commander blocks his cell');
  assert.deepEqual(next.artillery,battle.artillery,'joining does not move or spend the cannon');
  assert.equal(mountainBatteryOrder(next,joined,{leaderId:'2',helperId:'147',artilleryId:gun.id,screenDistance:3,keepCrewTogether:true}),null,'the helper stays with the crew');
+});
+
+test('all three actual field-gun crew members join and hold contact before a paid rigid advance',()=>{
+ let battle=createBattle([{id:'11',x:4,y:3,hp:80,maxHp:80},{id:'12',x:5,y:2,hp:80,maxHp:80},{id:'13',x:5,y:5,hp:80,maxHp:80},{id:'14',x:2,y:10,hp:80,maxHp:80}],{
+  width:24,height:12,tiles:Array.from({length:288},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false})),
+  exploration:true,enemies:[],artillery:[{id:'three-person-field-gun',type:'field8',side:'player',x:5,y:3,loaded:true,ammo:4}],
+ });
+ const initial=structuredClone(battle),controller=coastalBatteryController(battle),gun=battle.artillery[0],third=battle.units.find(u=>u.id==='13'),actions=[];
+ assert.equal(artilleryContact(battle,third,gun),false);assert.ok(artilleryCrewPlan(battle,battle.units[0],gun,0).reason,'two contact actors cannot replace the three-person crew');
+ const join=controller(battle,third);assert.equal(join?.type,'move');assert.equal(join.unitId,'13');
+ battle=actBattle(battle,join);assert.equal(battle.lastError,null);actions.push(join);
+ assert.equal(artilleryContact(battle,battle.units.find(u=>u.id==='13'),battle.artillery[0]),true);assert.deepEqual(battle.artillery,initial.artillery);
+ assert.equal(controller(battle,battle.units.find(u=>u.id==='13')),null,'the third artillerist holds contact rather than becoming a flank scout');
+ const beforeAdvance=structuredClone(battle),leader=battle.units.find(u=>u.id==='11'),cost=artilleryCosts(battle,leader,battle.artillery[0]).move,plan=artilleryCrewPlan(battle,leader,battle.artillery[0],cost);
+ assert.equal(plan.reason,null);assert.deepEqual(plan.crew,['11','12','13']);
+ const advance=controller(battle,leader);assert.equal(advance?.type,'artilleryMove');assert.equal(advance.artilleryId,gun.id);
+ battle=actBattle(battle,advance);assert.equal(battle.lastError,null);actions.push(advance);
+ const dx=battle.artillery[0].x-beforeAdvance.artillery[0].x,dy=battle.artillery[0].y-beforeAdvance.artillery[0].y;assert.equal(Math.abs(dx)+Math.abs(dy),1);
+ for(const id of plan.crew){const old=beforeAdvance.units.find(u=>u.id===id),now=battle.units.find(u=>u.id===id);assert.deepEqual([now.x,now.y],[old.x+dx,old.y+dy]);assert.equal(artilleryContact(battle,now,battle.artillery[0]),true);assert.ok(now.energy<=old.energy);}
+ assert.deepEqual(battle.units.find(u=>u.id==='14'),initial.units.find(u=>u.id==='14'),'the unrelated scout is not silently added to the crew');
+ assert.equal(battle.artillery[0].loaded,true);assert.equal(battle.artillery[0].ammo,4);assert.ok(battle.elapsedSeconds>initial.elapsedSeconds);
+ for(const old of initial.units){const now=battle.units.find(u=>u.id===old.id);for(const key of ['hp','bleeding','medkits','loaded','ammo','condition','inventory'])assert.deepEqual(now[key],old[key]);}
+ let ordinary=structuredClone(initial),presented=structuredClone(initial),restored=validateBattleSnapshot(JSON.parse(JSON.stringify(initial)));
+ for(const action of actions){ordinary=actBattle(ordinary,action);assert.equal(ordinary.lastError,null);presented=presentedActBattle(presented,action).state;restored=validateBattleSnapshot(JSON.parse(JSON.stringify(actBattle(restored,action))));assert.deepEqual(presented,ordinary);assert.deepEqual(restored,ordinary);}
+ assert.deepEqual(ordinary,battle);assert.deepEqual(initial,validateBattleSnapshot(JSON.parse(JSON.stringify(initial))));
 });
 
 test('an assigned helper walks around a blocked corner before operating the gun',()=>{

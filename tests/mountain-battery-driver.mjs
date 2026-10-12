@@ -37,14 +37,14 @@ function routedBatteryAdvance(b,u,gun,destination){
  return actBattle(b,action).lastError?null:action;
 }
 
-export const mountainBatteryOrder=(b,u,{screenDistance=Infinity,leaderId='7',helperId='8',clearCrewLane=false,artilleryId=null,routeAroundObstacles=false,flankScreen=false,keepCrewTogether=false,sharedArtillerySight=false}={})=>{
+export const mountainBatteryOrder=(b,u,{screenDistance=Infinity,leaderId='7',helperId='8',crewIds=[leaderId,helperId],clearCrewLane=false,artilleryId=null,routeAroundObstacles=false,flankScreen=false,keepCrewTogether=false,sharedArtillerySight=false}={})=>{
  const assignedGun=g=>g.side===u.side&&(!artilleryId||g.id===artilleryId);
  const normal=tucumanCombatOrder(b,u);
  if(u.knockedDown||u.entangled)return normal;
  if(normal?.type==='useItem'||normal?.slot==='medical')return normal;
  // A bound helper may start outside contact with the gun. Rejoin the crew
  // through a real reachable cell before taking another exploration order.
- if(keepCrewTogether&&artilleryId&&b.mode==='exploration'&&[leaderId,helperId].includes(u.id)){
+ if(keepCrewTogether&&artilleryId&&b.mode==='exploration'&&crewIds.includes(u.id)){
   const gun=b.artillery.find(g=>assignedGun(g)&&(g.loaded||g.ammo>0));
   if(gun&&!artilleryContact(b,u,gun)){
    const view={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v))};
@@ -52,7 +52,7 @@ export const mountainBatteryOrder=(b,u,{screenDistance=Infinity,leaderId='7',hel
    routes.sort((a,c)=>a.cost-c.cost||a.y-c.y||a.x-c.x);
    return routes[0]?{type:'move',unitId:u.id,x:routes[0].x,y:routes[0].y,tacticalLevel:0}:null;
   }
-  if(gun&&u.id===helperId){
+  if(gun&&u.id!==leaderId){
    const leader=b.units.find(v=>v.id===leaderId&&v.hp>=15&&!v.routed&&!v.unconscious&&!v.departure);
    if(leader){
     const goal={x:Math.floor(b.width*.65),y:Math.floor(b.height*.5)},distance=p=>Math.hypot(goal.x-p.x,goal.y-p.y);
@@ -72,7 +72,7 @@ export const mountainBatteryOrder=(b,u,{screenDistance=Infinity,leaderId='7',hel
  }
  // Keep the infantry screen within supporting distance while approaching.
  // A scout must not spend several exploration moves outrunning the cannon.
- if(clearCrewLane&&b.mode==='exploration'&&Number.isFinite(screenDistance)&&(!normal||normal.type==='move')&&![leaderId,helperId].includes(u.id)){
+ if(clearCrewLane&&b.mode==='exploration'&&Number.isFinite(screenDistance)&&(!normal||normal.type==='move')&&!crewIds.includes(u.id)){
   const gun=b.artillery.find(g=>assignedGun(g)&&(g.loaded||g.ammo>0));
   if(gun){
    const center={x:Math.floor(b.width*.65),y:Math.floor(b.height*.5)};
@@ -89,7 +89,7 @@ export const mountainBatteryOrder=(b,u,{screenDistance=Infinity,leaderId='7',hel
    }
   }
  }
- if(b.mode==='exploration'&&normal?.type==='move'&&![leaderId,helperId].includes(u.id)){
+ if(b.mode==='exploration'&&normal?.type==='move'&&!crewIds.includes(u.id)){
   const gun=b.artillery.find(g=>assignedGun(g)&&(g.loaded||g.ammo>0));
   if(gun&&Math.hypot(normal.x-gun.x,normal.y-gun.y)>screenDistance){
    const view={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v))};
@@ -100,8 +100,8 @@ export const mountainBatteryOrder=(b,u,{screenDistance=Infinity,leaderId='7',hel
  }
  const near=b.artillery.some(g=>assignedGun(g)&&(g.loaded||g.ammo>0)&&Math.hypot(g.x-u.x,g.y-u.y)<=1.5);
  if(!near)return normal;
- if(b.mode==='exploration'&&[leaderId,helperId].includes(u.id)){
-  if(u.id===helperId)return null;
+ if(b.mode==='exploration'&&crewIds.includes(u.id)){
+  if(u.id!==leaderId)return null;
   const gun=b.artillery.find(g=>assignedGun(g)&&(g.loaded||g.ammo>0)&&Math.hypot(g.x-u.x,g.y-u.y)<=1.5),dest={x:Math.floor(b.width*.65),y:Math.floor(b.height*.5)},dist=p=>Math.hypot(dest.x-p.x,dest.y-p.y);
   if(routeAroundObstacles)return routedBatteryAdvance(b,u,gun,dest);
   for(const p of [[-1,0],[0,-1],[0,1],[1,0]].map(([dx,dy])=>({x:gun.x+dx,y:gun.y+dy})).filter(p=>dist(p)<dist(gun)).sort((a,c)=>dist(a)-dist(c))){const a={type:'artilleryMove',unitId:u.id,artilleryId:gun.id,...p};if(!actBattle(b,a).lastError)return a;}
