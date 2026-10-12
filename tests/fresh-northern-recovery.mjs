@@ -34,6 +34,7 @@ import {cellTravelPlan} from '../game/world-cells.js';
 import {baseMorale} from '../game/morale.js';
 import {bookRouteHires,assertRouteHireArrived} from './paid-route-hiring.mjs';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {prepareNorthernHospitalRear} from './northern-hospital-rear-readiness.mjs';
 import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueNorthernHandoverTravel} from './northern-handover-route.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
@@ -217,6 +218,12 @@ export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
  report({event:'northernHospitalSelected',sector,preferred:'cordoba',preferredOwner:c.sectors.cordoba.owner,hour:c.hour,patientLocations:[...new Set(patients.map(id=>operativeLocation(c,id)))]});
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  report({event:'northernHospitalCheckpoint',stage:'stabilized',sector,campaign:structuredClone(c)});
+ const rear=escort.filter(id=>operativeLocation(c,id)!==sector);
+ if(rear.length){
+  const reserves=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&!patients.includes(op.id)&&op.id!==1000&&operativeLocation(c,op.id)===sector;}).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id).map(op=>op.id);
+  const prepared=prepareNorthernHospitalRear(c,rear,{applyOrder:(state,action)=>northernHospitalOrder(state,action,{inputCapture,report}),reserveIds:reserves,report});c=prepared.campaign;escort.push(...prepared.ids.filter(id=>!escort.includes(id)));
+  for(let index=stabilizationDoctors.length-1;index>=0;index--)if(prepared.ids.includes(stabilizationDoctors[index]))stabilizationDoctors.splice(index,1);
+ }
  for(const at of new Set(patients.map(id=>c.operativeState[id].location).filter(at=>at!==sector))){
   const evacuees=[...new Set([...patients.filter(id=>c.operativeState[id].location===at),...stabilizationDoctors.filter(id=>c.operativeState[id].location===at)])];
   order({type:'createSquad',name:'Evacuación de heridos',ids:evacuees,sector:at});
@@ -262,7 +269,8 @@ export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
    const defenders=c.squads.find(q=>q.location===encounter.sector&&q.members.length);assert.ok(defenders,'a real local squad must defend the hospital');
    order({type:'selectSquad',id:defenders.id});
    order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   c=fightNorthernSector(c,encounter.sector,{controller:northernHospitalCoverOrder,report}).campaign;
+   const initial=enterSector(c.pendingBattle,c.sectorStates[encounter.sector]),controller=initial.artillery.some(g=>g.side==='player'&&(g.loaded||g.ammo>0))?coastalBatteryController(initial,{sharedArtillerySight:true}):northernHospitalCoverOrder;
+   c=fightNorthernSector(c,encounter.sector,{controller,report}).campaign;
    report({event:'hospitalDefended',campaign:structuredClone(c)});
   }
   const injured=localPatients();if(!injured.length)break;
@@ -303,7 +311,7 @@ export function recoverFreshNorthernHospital(start,{report=()=>{}}={}){
   }
   const beforeClock=c.hour*3600+(c.secondOfHour??0);
   const careBefore={stock:c.operativeState[medic.id].medkits,energy:c.operativeState[medic.id].energy,fatigue:c.operativeState[medic.id].fatigue,health:injured.reduce((sum,id)=>sum+c.operativeState[id].hp,0)};
-  order({type:'wait',hours:1});
+  for(let notice=0;c.hour*3600+(c.secondOfHour??0)===beforeClock&&!c.pendingEncounter&&notice<3;notice++)order({type:'wait',hours:1});
   assert.ok(c.hour*3600+(c.secondOfHour??0)>beforeClock||c.pendingEncounter,'the actual care wait must advance or expose its real encounter');
   report({event:'northernHospitalCareTick',medic:medic.id,medical:medic.medical,before:careBefore,after:{stock:c.operativeState[medic.id].medkits,energy:c.operativeState[medic.id].energy,fatigue:c.operativeState[medic.id].fatigue,asleep:c.operativeState[medic.id].asleep,health:injured.reduce((sum,id)=>sum+c.operativeState[id].hp,0)},elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-beforeClock,hour:c.hour});
  }
