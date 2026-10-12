@@ -9,7 +9,7 @@ import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {carriedAmmunition,ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoStock,ammoCount,AMMO_KEYS} from '../game/ammo-types.js';
@@ -20,6 +20,7 @@ import {operativeLocation} from '../game/squads.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {applyItemQuantity} from '../game/tactical-inventory.js';
 import {firstAidPlan} from '../game/first-aid.js';
+import {autoBandageBattle} from '../game/auto-bandage.js';
 import {careAssignmentReason} from '../game/medical-care.js';
 import {strategicBleedingPercent} from '../game/campaign-care-rules.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
@@ -38,6 +39,54 @@ import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {actBattle,presentedActBattle,itemUsePreview,exitPreview,getReachable} from '../game/tactical.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+
+// Stop actual acute wounds before meetings, travel or defensive roof walks.
+// A bleeding medic can use an owned dressing immediately; other patients
+// receive the same ordinary field orders from an actual supplied local medic.
+export function stabilizeCreatedCuyoSurvivors(start,{report=()=>{}}={}){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const living=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
+ const acute=id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0;
+ const kept=[...living()],oldDeaths=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>id);
+ const orders=[];
+ const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);orders.push(action);};
+ const sectors=[...new Set(kept.filter(acute).map(id=>operativeLocation(c,id)))];
+ for(const sector of sectors)while(living().some(id=>operativeLocation(c,id)===sector&&acute(id))){
+  assert.equal(c.pendingEncounter,null,'resolve the real encounter before Cuyo field aid');
+  const patients=living().filter(id=>operativeLocation(c,id)===sector&&acute(id)).sort((a,b)=>c.operativeState[a].hp/Math.max(1,c.operativeState[a].bleeding)-c.operativeState[b].hp/Math.max(1,c.operativeState[b].bleeding)).slice(0,5);
+  const ready=op=>{const r=c.operativeState[op.id];return living().includes(op.id)&&operativeLocation(c,op.id)===sector&&r.hp>=15&&!r.asleep&&r.energy>0&&r.medkits>0&&op.medical>0;};
+  const doctor=rosterFor(c).filter(ready).sort((a,b)=>Number(!patients.includes(a.id)||!c.operativeState[a.id].bleeding)-Number(!patients.includes(b.id)||!c.operativeState[b.id].bleeding)||b.medical-a.medical||a.id-b.id)[0];
+  assert.ok(doctor,'actual acute Cuyo survivors need a living local medic with finite dressings');
+  const ids=[...new Set([doctor.id,...patients])],selected=c.activeSquadId;
+  const membership=ids.map(id=>({id,squadId:c.squads.find(squad=>squad.members.includes(id))?.id}));
+  for(const id of kept){
+   const expiry=contractExpiresSeconds(c.contracts[id]);
+   if(expiry!==null&&expiry<=c.hour*3600+(c.secondOfHour??0)+3600){
+    const quote=contractRenewalQuote(c,rosterFor(c).find(op=>op.id===id),'day'),before=c.resources.treasury,contract=c.contracts[id];assert.ok(quote.available,quote.reason);
+    order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});
+    assert.equal(c.resources.treasury,before-quote.price);assert.equal(contractExpiresSeconds(c.contracts[id]),quote.expiresAt*3600+(quote.expiresSecond??0));
+   }
+  }
+  order({type:'createSquad',name:'Auxilio de Cuyo',sector,ids});
+  for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
+  let p=visit(c);const before=structuredClone(p.battle),slots=new Map(p.battle.units.filter(unit=>ids.includes(Number(unit.id))).map(unit=>[unit.id,unit.activeSlot]));
+  const aid=autoBandageBattle(p.battle),steps=[...aid.steps];
+  const act=action=>{const battle=actBattle(p.battle,action);assert.equal(battle.lastError,null,JSON.stringify(action)+': '+battle.lastError);p=sync({campaign:p.campaign,battle});};
+  for(const [index,action]of aid.steps.entries()){act(action);if(index===Math.floor(aid.steps.length/2))p=savedCarePair(p);}
+  assert.deepEqual(p.battle.units,aid.battle.units);assert.deepEqual(p.battle.npcs,aid.battle.npcs);assert.equal(p.battle.seed,aid.battle.seed);assert.equal(p.battle.elapsedSeconds,aid.battle.elapsedSeconds);
+  for(const id of patients){const unit=p.battle.units.find(unit=>unit.id===String(id));assert.ok(unit&&unit.hp>=15,'the actual Cuyo patient must survive finite field aid');assert.equal(unit.bleeding,0,'actual bleeding must stop before Cuyo preparation');}
+  for(const [unitId,slot]of slots)if(p.battle.units.find(unit=>unit.id===unitId).activeSlot!==slot){const action={type:'weapon',unitId,slot};act(action);steps.push(action);}
+  p=savedCarePair(p);c=leave(p);
+  for(const {id,squadId}of membership)if(squadId&&c.squads.some(squad=>squad.id===squadId)&&!c.squads.find(squad=>squad.id===squadId).members.includes(id))order({type:'assignToSquad',operativeId:id,squadId});
+  if(c.activeSquadId!==selected)order({type:'selectSquad',id:selected});
+  for(const id of kept)assert.ok(c.operativeState[id].alive&&c.recruited.includes(id),'finite Cuyo aid must retain every actual living survivor');
+  for(const id of oldDeaths)assert.equal(c.operativeState[id].alive,false,'finite Cuyo aid cannot revive an earlier casualty');
+  report({event:'createdCuyoFieldAid',sector,doctor:doctor.id,patients,steps,orders:[...orders],elapsedSeconds:p.battle.elapsedSeconds,officialMidpoint:true,before:before.units.filter(unit=>ids.includes(Number(unit.id))).map(({id,hp,bleeding,medkits})=>({id,hp,bleeding,medkits})),after:p.battle.units.filter(unit=>ids.includes(Number(unit.id))).map(({id,hp,bleeding,medkits})=>({id,hp,bleeding,medkits})),campaign:structuredClone(c)});
+ }
+ return decodeSave(encodeSave(c)).campaign;
+}
+
+const savedCarePair=pair=>decodeSave(encodeSave(pair.campaign,pair.battle));
 
 // Treat only actual local survivors with finite carried or recovered
 // dressings. Renew each real contract before an hourly care step.
@@ -95,7 +144,7 @@ function secureCreatedCuyoRearBattery(start,{report=()=>{}}={}){
 
 // Actual transport, finite carried care and defense after fresh Yatasto.
 export function assembleCreatedCuyo(start,{report=()=>{}}={}){
- let c=decodeSave(encodeSave(start)).campaign;
+ let c=stabilizeCreatedCuyoSurvivors(start,{report});
  const withdrawRear=()=>{
   if(c.pendingEncounter?.sector==='salta'){
    const selected=c.activeSquadId,groupId=c.pendingEncounter.groupId;

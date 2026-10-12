@@ -1,0 +1,35 @@
+{
+  "kind": "Untouched actual completed northern campaign before prospective Cuyo aid",
+  "sourceCheckpoint": ".cache/core-campaign-2026-10-11/northern-historical-7415af55/northern-checkpoint-yatasto.json",
+  "sourceTest": "tests/fresh-northern-route.test.mjs",
+  "sourceCommand": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=spec",
+    "tests/fresh-northern-route.test.mjs",
+    "tests/fresh-historical-loss.test.mjs"
+  ],
+  "sourceBeforeRevision": "7415af5564d9a0309f2055a4bc2a63a2170a88ca",
+  "sourceAfterRevision": "cb3350b93f809bc737cb853c65838d7ce0e3c70a",
+  "sourceGate": "Original northern entry passed; historical-loss failed later during Cuyo roof assembly;376 static/package inputs unchanged.",
+  "sourceTerminalLogSha256": "48e47cae504381649739ae3ee62eb7d88b9a868fdf5e5ec3079e7cbac848d333",
+  "sourceReceipt": ".cache/core-campaign-2026-10-11/northern-historical-7415af55/receipt.json",
+  "inputBytes": 2136828,
+  "inputSha256": "49b11abf797134f366670c38bdc225dd1acc22a99b6c6ffe5f8649d41fc80b62",
+  "gzipBytes": 198423,
+  "gzipSha256": "348ad0bac5494c1cf848e4146e6a02a27994c182dfb71534e0a14f7acccab8e1",
+  "normalization": "none; exact browser/save envelope including its original savedAt",
+  "ordinaryEarnedClock": [
+    507,
+    2014
+  ],
+  "actualPatient": {
+    "id": 133,
+    "hp": 40,
+    "maxHp": 91,
+    "bleeding": 3,
+    "medkits": 1
+  },
+  "scope": "Genuine 13-person Yatasto cohort with paid terms and permanent officers, real prior casualties and northern victories. No HP/supplies/time/outcome edits."
+}
