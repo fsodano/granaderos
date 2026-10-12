@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are merged into `main` through PR #375. Each receipt
+The following changes are merged into `main` through PR #378. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
