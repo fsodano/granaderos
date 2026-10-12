@@ -28,7 +28,7 @@ export function mendozaBatteryController(initial){
 // The stock route must not send the depleted bronze guns through both passes.
 export function prepareFreshCuyoMountainArtillery(start,options={}){
  const arsenal=recoverCreatedCuyoMountainArtillery(start,options);
- return {campaign:arsenal.campaign,batteryIds:arsenal.selections.map(id=>id.slice(6))};
+ return {campaign:arsenal.campaign,batteryIds:arsenal.selections.map(id=>id.slice(6)),summary:arsenal.summary};
 }
 
 // Continue a real new campaign. Preparation pays for the survivors, finite
@@ -112,6 +112,8 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
  c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
  const arsenal=prepareFreshCuyoMountainArtillery(c,{report});c=arsenal.campaign;
+ const arsenalEnd=arsenal.summary.startSeconds+arsenal.summary.elapsedSeconds;
+ notes.push({stage:'ensenada',hour:Math.floor(arsenalEnd/3600),second:arsenalEnd%3600,...arsenal.summary});
  mountainBatteryIds=arsenal.batteryIds;
  c=prepareFreshUspallataAssault(c,{batteryIds:mountainBatteryIds,report});fight('uspallata');
  c=recoverFreshUspallata(c,{batteryIds:mountainBatteryIds,report});

@@ -8,6 +8,7 @@ import {enterSector} from '../game/world.js';
 import {FINITE_ARTILLERY_ARSENALS} from '../game/finite-artillery-arsenals.js';
 import {storedArtilleryRecord} from '../game/artillery-transport.js';
 import {prepareFreshCuyoMountainArtillery} from './fresh-cuyo-fixture.mjs';
+import {priorPortVictories} from './controlled-port-handover.mjs';
 
 test('the actual funded stock route earns the remaining mountain guns without refilling its depleted bronze battery',t=>{
  const name='earned-stock-funded-before-mountain-arsenal',fixture=suffix=>readFileSync(new URL(`./fixtures/${name}.${suffix}`,import.meta.url)),meta=JSON.parse(fixture('provenance.json')),gzip=fixture('save.json.gz'),raw=gunzipSync(gzip),sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -24,6 +25,9 @@ test('the actual funded stock route earns the remaining mountain guns without re
  assert.equal(ready.pendingBattle.squad.length,12);assert.deepEqual(ready.pendingBattle.artillery,[]);assert.equal(preparation.reinforcements.length,7);
  for(const id of preparation.reinforcements){assert.equal(ready.contracts[id].kind,'paid');assert.equal(ready.contracts[id].term,'day');assert.ok(ready.contracts[id].paid>0);}
  assert.equal(battle.sector,'ensenada');assert.equal(battle.status,'victory');assert.ok(battle.actions>0&&battle.elapsedSeconds>0);
+ const {event,...nativeSummary}=battle;assert.deepEqual(result.summary,nativeSummary,'The later ending retains this actual earlier Ensenada victory receipt.');
+ const actualPortRecord={stage:'ensenada',...result.summary};assert.deepEqual(priorPortVictories([actualPortRecord]),[actualPortRecord]);
+ assert.deepEqual(priorPortVictories([{stage:'controlled-port-arrival'}]),[],'A friendly visit must never invent a victory receipt.');
  const losses=preparation.field.filter(id=>!victory.operativeState[id].alive);assert.deepEqual(losses,[120,139,128,135]);
  assert.equal(end.sectors.ensenada.owner,'patriot');assert.ok(end.artilleryArsenalRecoveries.ensenada);assert.equal(end.location,'mendoza');assert.equal(end.pendingBattle,null);assert.equal(end.pendingEncounter,null);assert.equal(end.defeated,false);
  assert.deepEqual(result.batteryIds,FINITE_ARTILLERY_ARSENALS.ensenada.pieces.map(gun=>gun.id));
