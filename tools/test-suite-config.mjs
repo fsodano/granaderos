@@ -1,5 +1,6 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
+ {file:'tests/earned-stock-coast-preparation.test.mjs',reason:'Earned complete paid coastal force, first capital victory replay, finite supplies and later native defense readiness; no ending claim.'},
  {file:'tests/earned-stock-blocked-capital-journey.test.mjs',reason:'Earned twelve-person capital response, finite gun/care stocks, native blockade victory and exact saved replay.'},
  {file:'tests/earned-installed-arsenal.test.mjs',reason:'Earned native coastal arsenal victory, actual care and return, finite cannon delivery and service accounting.'},
  {file:'tests/earned-loose-mountain-arsenal.test.mjs',reason:'Earned loose-route paid morale recovery, available reinforcement, finite medical kit and pending arsenal assault.'},

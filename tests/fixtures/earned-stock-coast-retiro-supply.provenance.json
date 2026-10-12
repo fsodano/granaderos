@@ -1,0 +1,31 @@
+{
+  "format": "granaderos-earned-route-fixture",
+  "version": 1,
+  "scope": "Exact earned Retiro input after the native capital response and physical Buenos Aires recruitment. Finite compatible weapon/ammunition control and complete coastal preparation only; not a fresh complete ending or48h continuation.",
+  "sourceRevision": "de55845d80620472cb117e80d052ee316ad27a8a",
+  "sourceNote": "The default commander suffix ran on de55845d with then-uncommitted created-ending-route integration. This raw passive failure is re-encoded without campaign state changes.",
+  "sourcePath": ".cache/core-campaign-2026-10-12/blocked-coast-command-v3/passive-captures/strategic-preparation/26778-4-prepareCreatedCoastalAssault-preparation-failure-cwdtCJ/campaign.json",
+  "sourceCaptureSha256": "8fcddd3433bfda1c2f46a8dbab7bdc3403ed128e16a20bd4ed52a29ff75bf925",
+  "sourceCaptureBytes": 14240794,
+  "sourceReceipt": ".cache/core-campaign-2026-10-12/blocked-coast-command-v3/receipt.json",
+  "sourceLogSha256": "d4a516bda6d2096ff852c6e3017508425e8d6bced905521ecffce2792a97b688",
+  "clock": [
+    1456,
+    3471
+  ],
+  "treasury": 33648,
+  "rawSha256": "571ebf577256541414eb34a0015e2277c8e19aa55bcca56c6825454f6cce0c5c",
+  "gzipSha256": "404089048fff9b37f6c75fb1ff74c3b71243aa4862e14ffeb9643a1a8a6272d0",
+  "rawBytes": 3875127,
+  "gzipBytes": 366477,
+  "earlierPortVictory": {
+    "sector": "ensenada",
+    "status": "victory",
+    "turns": 20,
+    "actions": 448,
+    "startSeconds": 3148703,
+    "elapsedSeconds": 1063
+  },
+  "earlierPortReceipt": ".cache/core-campaign-2026-10-12/stock-finite-arsenal/events.json native battleFinished",
+  "earlierPortReceiptCopySha256": "7f76bfa9c01fca2fafe63f992e5280109d66ea127e1198506afd100f7f9270d9"
+}

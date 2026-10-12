@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are merged into `main` through PR #380. Each receipt
+The following changes are delivered to `main` through PR #383. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
@@ -70,6 +70,19 @@ has its own scope; their counts are not one complete campaign result.
 | [#378](https://github.com/fsodano/granaderos/pull/378) | Supply the actual critical northern-hospital patients after Córdoba's local linen is exhausted. Book uniquely paid immediate day medics, assign legal local squads and share their existing dressings through public inventory. | Both complete affected earned files pass 6/6 in 172.967 seconds. All 562 source/config/fixture/shipping pins and 344 consumed files remain unchanged. The exact hour-370 boundary uses 13,860 pesos and four local dressings over four care hours; the simultaneous Tucumán clinic uses four other dressings. All prior deaths and remaining wounds are retained, and every public order replays through an official midpoint save. This proves acute stabilization, not the newer whole hospital or complete original recovery. |
 | [#379](https://github.com/fsodano/granaderos/pull/379) | Use the actual healthy local arsenal cohort, pay enough currently available hires for twelve people, and allow ordinary rest to cover the real morale deficit. Keep all readiness and survival gates. | Four complete affected files pass 4/4 in 268.906 seconds. All 607 static/config/shipping/fixture pins and eight actual filesystem inputs remain unchanged. The new loose preparation uses four veterans and eight paid hires; both physicians carry eight finite dressings at the actual pending assault, hour 1,306, second 2,952, with 240,191 pesos. Three unchanged earned native arsenal controls still pass. The new loose native return and complete ending remain open. |
 | [#380](https://github.com/fsodano/granaderos/pull/380) | Carry ten known Córdoba dressings to the actual Tucumán clinic, pay two supplied guards, walk the selected physician and patients to reachable cover, and renew actual service before post-raid urgent care. | The complete new earned file passes 1/1 in 89.242 seconds, with all 2,299 source and input pins unchanged. The native hour-408 defense wins in seventeen turns and 342 orders. Eight new deaths remain permanent; original patients 121 and 122 survive. Three quoted renewals cost 186 pesos, and three finite dressings stabilize patient 108 to 16 HP at hour 412, second 47. The complete selected-doctor compatibility file passes 1/1; suite controls pass 6/6 after main integration, with complete coverage of 1,055 files. The full clinic, Salta, Yatasto and original opening remain open. |
+| [#383](https://github.com/fsodano/granaderos/pull/383) | Continue the actual commander through the earlier native capital response, finite compatible coastal ammunition, a known two-dressing courier, returned-equipment collection and one ordinary paid rehire. Retain the complete field during battery transport and spend two real guard hours despite attention pauses. | Seven complete affected files pass 22/22 in 527.174 seconds, with all 597 source/config/shipping/fixture pins and six observed inputs unchanged. The eight-person paid force reaches the actual 21-enemy Buenos Aires defense request at hour 1,520, second 3,477, with 55,868 pesos. The 86-peso rehire, four spent charges, earlier capital victory and seven deaths remain exact. The paired official save passes. This proves the complete paid force and ensuing native defense readiness only: no second victory, port arrival, ending or 48-hour continuation. Suite controls pass 6/6 after current-main integration. |
+
+The PR #383 [earned preparation control](../../tests/earned-stock-coast-preparation.test.mjs)
+starts from the unchanged installed commander checkpoint at hour 1,025,
+second 747. Its source was pinned on execution base `de55845d` with the then-uncommitted
+eight-path change, later committed as `b8fb471a`. Current-main integration changed
+only the suite configuration within that loaded graph; its six controls passed again.
+The passing private log hash is
+`bc159f578ef713b238ec9718de0ef01a7ca49ae08ba2b146937d650c6d04b113`.
+The ending dispatcher still requires a native victory in the pending Buenos Aires
+defense, a clear blockade, actual commander return and strict port travel. Those
+later actions are not executed by this readiness control. The earlier failed
+preparation gates and complete-route receipts remain retained.
 
 A separate complete loose arsenal-return attempt reaches the native battle,
 then fails the unchanged original-foundry-squad survival assertion. It fails
