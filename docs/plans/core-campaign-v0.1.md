@@ -300,7 +300,15 @@ merges portable replay without changing accepted models, textures or frozen
 recipes. The nine affected local files pass 84/84; the final source guard
 separately passes all four portable controls under both encoder conditions.
 The retained merged Linux core [run 38314290110](https://github.com/fsodano/granaderos/actions/runs/38314290110)
-at `1806d8f9` is still running; no current complete core pass is claimed.
+passes at exact `1806d8f9`: all 912 selected files complete, with 7,123/7,123
+tests, no failures, skips or cancellations, in 4,994.849 seconds. The job log
+confirms Pillow 11.2.1 and NumPy 2.2.6. All eight earlier failing asset files
+and all four new portable controls execute and pass, including the loaded-source
+guard. Artifact ZIP SHA is
+`4d33cac935cec7cc8401f8739dec03944a17fe56b9715616fd5e25736d10ef19`;
+the job log SHA is
+`c8d4c72279555a5c43bce57a529a8fc3c686371950989ae2d585ca0c7c1b4670`.
+This is complete core quick evidence, not campaign or full-release acceptance.
 
 The campaign quick job in [Actions run 38306852089](https://github.com/fsodano/granaderos/actions/runs/38306852089)
 also passes on main `c6881d99`: all 123 files and 420 tests pass, without
