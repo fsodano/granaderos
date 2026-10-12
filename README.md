@@ -90,7 +90,7 @@ Las imágenes anteriores son **ilustraciones del juego, no capturas de una parti
 
 ## Desarrollo
 
-Después de instalar las dependencias de la interfaz web, ejecutá estos comandos desde la raíz del repositorio. Las pruebas de recursos 3D del grupo `core` también requieren Python y Pillow; la [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo instalar esas dependencias en un entorno separado.
+Después de instalar las dependencias de la interfaz web, ejecutá estos comandos desde la raíz del repositorio. Las pruebas de recursos 3D del grupo `core` también requieren Python, Pillow y NumPy; la [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo instalar esas dependencias en un entorno separado.
 
 ```sh
 npm run test:core      # Reglas compartidas, renderizado y herramientas

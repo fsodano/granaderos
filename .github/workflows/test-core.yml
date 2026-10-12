@@ -22,7 +22,7 @@ jobs:
   core:
     name: Core mechanics (${{ inputs.duration }})
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -39,6 +39,8 @@ jobs:
           cache-dependency-path: tools/requirements-core-tests.txt
       - name: Install core test Python dependencies
         run: python3 -m pip install --requirement tools/requirements-core-tests.txt
+      - name: Verify core Python test runtime
+        run: python3 -c 'import PIL, numpy; print("Pillow", PIL.__version__, "NumPy", numpy.__version__)'
       - name: Run the selected core duration profile
         env:
           DURATION: ${{ inputs.duration }}

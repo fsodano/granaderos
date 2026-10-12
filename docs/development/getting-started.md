@@ -14,7 +14,7 @@ establish complete game acceptance.
 - Git, to clone the repository.
 - Node.js **22.13.0 or newer**, as required by [`web/package.json`](../../web/package.json).
 - npm and a current browser.
-- Python 3.9 or newer and the pinned Pillow dependency for core and full tests.
+- Python 3.10 or newer and the pinned Pillow/NumPy dependencies for core and full tests.
 
 The browser game does not require the `engine/` submodule, a C++ toolchain or an original JA2 installation.
 
@@ -79,9 +79,9 @@ UX/DX acceptance and its browser evidence requirements.
 
 The root [`package.json`](../../package.json) defines these commands:
 
-The core renderer tests reconstruct and verify image resources with Python and
-Pillow. Before `test:core`, `test:quick`, `test:extended` or `npm test`, install the
-pinned test dependency in a virtual environment. The core Action uses Python
+The core renderer tests reconstruct and verify image and face resources with
+Python, Pillow and NumPy. Before `test:core`, `test:quick`, `test:extended` or
+`npm test`, install the pinned test dependencies in a virtual environment. The core Action uses Python
 3.13 and the same requirements file. This dependency is used by tests; it is
 not required to play, run or build the browser game.
 
