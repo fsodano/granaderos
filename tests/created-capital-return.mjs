@@ -5,7 +5,9 @@ import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {repairRouteFirearms} from './finite-route-equipment.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
+import {medicalSupplyQuote} from '../game/medical-care.js';
+import {medicalSupplyStock} from '../game/equipment.js';
 import {contractQuote} from '../game/contracts.js';
 import {recoverFreshPort} from './fresh-coastal-route.mjs';
 import {restoreFinalMorale} from './final-campaign-route.mjs';
@@ -35,7 +37,7 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
   if(a.type==='wait')for(const id of [...field,...rear]){let contract=c.contracts[id];while(contract?.expiresAt!=null&&contract.expiresAt<=c.hour+a.hours){const n=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(n.lastError,null,n.lastError);c=n;contract=c.contracts[id];}}
   const n=dispatchCampaign(c,a);assert.equal(n.lastError,null,JSON.stringify(a)+n.lastError);c=n;
  };
- report({stage:'capitalCare',hour:c.hour,field});
+ report({stage:'capitalCare',hour:c.hour,field,campaign:structuredClone(c)});
  for(const id of rear){const r=c.operativeState[id];assert.ok(r.alive);assert.equal(r.location,'retiro');assert.equal(r.hp,r.maxHp);order({type:'assignCare',operativeId:id,assignment:'rest'});}
  const missing=fieldSize-rear.length-field.length;assert.ok(missing>=0,'the actual field and rear guard must fit the selected relief');
  const candidates=rosterFor(c).filter(o=>{const r=c.operativeState[o.id],q=contractQuote(c,o,'day');return o.id>=100&&o.id<1000&&r.alive&&!r.captured&&!c.recruited.includes(o.id)&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=65&&q.available;}).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price||a.id-b.id).slice(0,missing);
@@ -59,7 +61,7 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  for(let h=0;h<24&&field.some(id=>!c.recruited.includes(id));h++)order({type:'wait',hours:1});
  assert.equal(field.length,fieldSize-rear.length);assert.ok(field.every(id=>c.recruited.includes(id)));
  order({type:'createSquad',name:'Auxilio del puerto',ids:field,sector:'cordoba'});const main=c.activeSquadId;
- c=restoreFinalMorale(c);report({stage:'capitalRest',hour:c.hour,treasury:c.resources.treasury,field});
+ c=restoreFinalMorale(c);report({stage:'capitalRest',hour:c.hour,treasury:c.resources.treasury,field,campaign:structuredClone(c)});
  let support=null;
  if(rear.length){order({type:'createSquad',name:'Retiro',ids:rear,sector:'retiro'});support=c.activeSquadId;}
  const rearm=()=>{
@@ -71,7 +73,20 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
   }
   c=supplyRouteAmmunition(c,c.squad,{target:16}).campaign;
   const reserves=Object.fromEntries([...field,...rear].map(id=>[id,5]));
-  for(const operativeId of c.squad){if(c.operativeState[operativeId].medkits<5)c=supplyRouteDressings(c,operativeId,5,{reserves,report});order({type:'assignCare',operativeId,assignment:'active'});}
+  for(const operativeId of c.squad){
+   if(c.operativeState[operativeId].medkits<5){
+    try{c=supplyRouteDressings(c,operativeId,5,{reserves,report});}
+    catch(error){
+     if(!error.message.startsWith('No actual reachable finite dressings remain'))throw error;
+     const quantity=5-c.operativeState[operativeId].medkits,quote=medicalSupplyQuote(c,rosterFor(c).find(op=>op.id===operativeId),quantity,isSupplied(c,c.location)),stock=medicalSupplyStock(c),cash=c.resources.treasury,clock=[c.hour,c.secondOfHour];
+     assert.equal(quote.available,true,quote.reason);assert.ok(stock>=quantity,'The real local merchant must hold every purchased dressing.');
+     order({type:'purchaseMedicalSupplies',operativeId,quantity});
+     assert.equal(c.resources.treasury,cash-quote.cost);assert.equal(medicalSupplyStock(c),stock-quantity);assert.deepEqual([c.hour,c.secondOfHour],clock);
+     report({event:'capitalFiniteDressingsPurchased',operativeId,sector:c.location,quantity,cost:quote.cost,stockBefore:stock,stockAfter:medicalSupplyStock(c)});
+    }
+   }
+   order({type:'assignCare',operativeId,assignment:'active'});
+  }
   assert.ok(c.squad.every(id=>c.operativeState[id].medkits>=5));
   c=finishReloadsBeforeMarch(c);
  };
