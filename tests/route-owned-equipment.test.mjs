@@ -46,3 +46,14 @@ test('an explicit primary replacement takes one actual cache gun and preserves t
  assert.equal(campaign.resources.treasury,before.resources.treasury);
  assert.deepEqual(saved({campaign}).campaign,campaign);
 });
+
+test('strict primary preference takes the requested finite rifle instead of another carried firearm',()=>{
+ let start=ready();
+ start=recoverRoutePrimary(start,1000,{replace:true,preferredWeapon:1801});
+ const before=structuredClone(start),oldGun=handRecord(model(start).personal,'primary');
+ const campaign=recoverRoutePrimary(start,1000,{replace:true,preferredWeapon:1802,strictPreference:true});
+ assert.equal(model(campaign).personal.weapon,1802);assert.deepEqual(start,before);
+ const previous=model(campaign).carried.find(row=>row.inventoryKey&&JSON.parse(row.expected).weapon===1801);assert.ok(previous);
+ for(const [key,value]of Object.entries(oldGun))assert.deepEqual(JSON.parse(previous.expected)[key],value);
+ assert.equal(campaign.resources.treasury,start.resources.treasury);assert.deepEqual(saved({campaign}).campaign,campaign);
+});

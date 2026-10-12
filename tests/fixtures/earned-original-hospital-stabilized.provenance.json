@@ -1,0 +1,57 @@
+{
+  "scope": "Exact passive stabilized checkpoint from the unchanged genuine original368 hospital input. Ordinary acute care precedes the new rear preparation. No health, resources, deaths, equipment, clock or outcomes edited. Complete private hospital control subsequently won the actual528 defense and finished the original clinical cohort; full original recovery/ending remain separate.",
+  "inputFixture": "earned-original-tucuman-hospital-input.campaign.json.gz",
+  "inputRawSha256": "c79840f94168288c2c6ad06bbdfc7d81277ac89832b3ca1fccad3f7467fc32e8",
+  "sourceRevision": "2f87dc501e3b579115f83de4bf63e5ca9e10a7fb",
+  "capturePath": ".cache/core-campaign-2026-10-12/northern-whole-hospital-forward-battery-v1/checkpoint-1-stabilized.save.json",
+  "originalReceipt": {
+    "runtime": {
+      "version": "v25.9.0",
+      "path": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "sha256": "32e234a5b6bec67d72a016f2baadf7fadf3afd328470b395b73af473fdee0d85"
+    },
+    "command": [
+      "node",
+      "--import",
+      "/Users/fsodano/.codex/worktrees/campaign-courier-rest/granaderos/.cache/core-campaign-2026-10-12/northern-whole-hospital-forward-battery-v1/read-audit-preload.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      ".cache/core-campaign-2026-10-12/northern-whole-hospital-forward-battery-v1/whole-original-hospital.test.mjs"
+    ],
+    "sourceRevision": "2f87dc501e3b579115f83de4bf63e5ca9e10a7fb",
+    "startedAt": "2026-10-12T18:55:51.715985+00:00",
+    "status": "complete",
+    "staticClosureFiles": 561,
+    "shippingFiles": 242,
+    "scope": "One complete bounded candidate whole-hospital helper control on currentmain2f87dc50 with prospective finite serving reserve, forward stationed gun, four roof riflemen and two actual contact crew preparation from exact unchanged earned original368 input (rawSHA c79840f94168288c2c6ad06bbdfc7d81277ac89832b3ca1fccad3f7467fc32e8). Only owned helper/hook tracked candidate edits. Require native defense victory, every original patient and clinical officer/physician alive/fullHP, finite public care, prior permanent deaths, input immutability and official saves. Recursive code/config/fixture/shipping plus actual ESM and filesystem input pins. Passive native input/deployment/order/result and actual strategic checkpoint captures. Unfiltered one complete control; not original full recovery/ending or release acceptance.",
+    "pid": 14299,
+    "exitCode": 0,
+    "seconds": 99.07068875,
+    "finishedAt": "2026-10-12T18:57:30.693950+00:00",
+    "afterRevision": "2f87dc501e3b579115f83de4bf63e5ca9e10a7fb",
+    "changedStaticPins": [],
+    "actualConsumedFiles": 341,
+    "actualESMLoadFiles": 339,
+    "actualFilesystemInputFiles": 2,
+    "changedActualInputPins": [],
+    "logSha256": "b6237aa97346f4b792f0f45451277a4a32d16d9dd724231c1c26d2a0deac56b7",
+    "summary": {
+      "tests": 1.0,
+      "pass": 1.0,
+      "fail": 0.0,
+      "cancelled": 0.0,
+      "skipped": 0.0,
+      "duration_ms": 98720.469458
+    }
+  },
+  "fixture": "earned-original-hospital-stabilized.save.json.gz",
+  "rawBytes": 1709764,
+  "rawSha256": "00b57be60a89f73268f97f7d97bfd251c3c2216302e981ebc3db42afa996c2a8",
+  "gzipSha256": "14edb060d7aea582dcb49e5e5a967c81440b954f8fd8a59d7f1aa8992cee8b26",
+  "clock": [
+    374,
+    2667
+  ],
+  "treasury": 100466
+}

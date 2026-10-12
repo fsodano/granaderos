@@ -184,7 +184,7 @@ export function prepareRouteBattery(start,types,{destination=start.location,excl
 
 // Earlier bots bought three identical light pieces. Select distinct actual
 // reachable guns for that tactical plan; missing property remains a failure.
-export function prepareRouteMixedBattery(start,count,{destination=start.location,preferredTypes=['swivel','bronze4','field8'],excludeIds=[],resolveEncounter,waypointsFor,report=()=>{}}={}){
+export function prepareRouteMixedBattery(start,count,{destination=start.location,preferredTypes=['swivel','bronze4','field8'],excludeIds=[],keepServing=[],resolveEncounter,waypointsFor,report=()=>{}}={}){
  assert.ok(Number.isSafeInteger(count)&&count>=1&&count<=3);
  const reachable=sector=>sector===destination||artilleryTransportPath(start,sector,destination,'carts');
  const pool=pieces(start).filter(row=>reachable(row.sector)).map(row=>row.gun);
@@ -192,7 +192,7 @@ export function prepareRouteMixedBattery(start,count,{destination=start.location
  const unavailable=new Set(excludeIds),priority=type=>{const index=preferredTypes.indexOf(type);return index<0?preferredTypes.length:index;};
  const available=[...new Map(pool.map(gun=>[gun.id,gun])).values()].filter(gun=>!unavailable.has(gun.id)&&artilleryProfile(start,gun).crew<=start.squad.length).sort((a,b)=>priority(a.type)-priority(b.type)||b.ammo+Number(b.loaded)-a.ammo-Number(a.loaded)||a.id.localeCompare(b.id)).slice(0,count);
  if(available.length!==count)fail(report,'The controlled reachable finite gun pool or actual crew cannot form the requested mixed battery.',{destination,count,available:available.map(gun=>({id:gun.id,type:gun.type,loaded:gun.loaded,ammo:gun.ammo}))});
- const result=prepareRouteBattery(start,available.map(gun=>gun.type),{destination,excludeIds,resolveEncounter,waypointsFor,report});
+ const result=prepareRouteBattery(start,available.map(gun=>gun.type),{destination,excludeIds,keepServing,resolveEncounter,waypointsFor,report});
  const records=result.selections.map(selection=>result.campaign.artilleryDepots[destination].find(gun=>depotSelection(gun)===selection));
  report({event:'routeMixedBatteryPrepared',destination,records:structuredClone(records)});return {...result,records};
 }
