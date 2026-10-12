@@ -2,6 +2,7 @@ import {ROUTE_STARTING_TREASURY} from './funded-route-fixture.mjs';
 import {supplyRouteAmmunition,recordRouteAmmunitionDiagnostic} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
+import {prepareCordobaMedicalRear,resolveCordobaMedicalRearEncounter} from './cordoba-medical-rear-guard.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {sellSurplusEquipment} from './surplus-equipment-route.mjs';
@@ -367,7 +368,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
  }
  assert.deepEqual(urgent(),[],'stabilize the actual critical patients before moving defenders');
  c=prepareFreshCordobaDefense(c,{stageOnly:true});
- const doctors=new Set(),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+ const doctors=new Set(),medicalRearPrepared=new Set(),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);};
  const alive=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
  const wounded=()=>alive().filter(id=>{const r=c.operativeState[id];return r.hp<r.maxHp||r.bleeding>0;});
@@ -377,12 +378,11 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
   assert.ok(squad,`the actual survivors need a squad at ${sector}`);order({type:'selectSquad',id:squad.id});
  };
  const resolveCareEncounter=(state,{restoreSquad=false}={})=>{
+  if(state.pendingEncounter?.sector==='cordoba'&&medicalRearPrepared.has('cordoba')){c=resolveCordobaMedicalRearEncounter(state,{restoreSquad,report});return c;}
   c=state;const previous=c.activeSquadId,encounter=c.pendingEncounter;assert.ok(encounter);
   selectSite(encounter.sector);
   report({event:'recoveryCounterattack',sector:encounter.sector,hour:c.hour,campaign:structuredClone(c)});
   order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-  // Use the same observed cover, body-region and aid orders as the actual
-  // Córdoba assault. Every defense is replayed before its native settlement.
   c=fightNorthernSector(c,encounter.sector,{report,executeBattle:(request,previous)=>cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true})}).campaign;
   if(restoreSquad&&c.activeSquadId!==previous)order({type:'selectSquad',id:previous});
   return c;
@@ -423,6 +423,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
       // Discover the actual local cache; patients remain at their clinic.
       // Stable patients can recover naturally during the real courier wait.
       for(const operativeId of patients)if(c.operativeState[operativeId].hp>=15&&!c.operativeState[operativeId].bleeding)order({type:'assignCare',operativeId,assignment:'rest'});
+      if(site==='cordoba'&&!medicalRearPrepared.has(site)){c=prepareCordobaMedicalRear(c,doctor.id,{report}).campaign;medicalRearPrepared.add(site);}
       report({event:'careCollectionCheckpoint',site,doctor:doctor.id,campaign:structuredClone(c)});
       try{c=collectRouteMedicalSupplies(c,doctor.id,12,{report,resolveEncounter:state=>resolveCareEncounter(state,{restoreSquad:true})}).campaign;}
       catch(error){
