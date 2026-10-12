@@ -84,7 +84,8 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
   columns.push(c.activeSquadId);
  }
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
- for(const id of field)if(![1800,1801,1802,1803].includes(rosterFor(c).find(op=>op.id===id).weapon))c=recoverRoutePrimary(c,id,{preferredWeapon:1801,replace:true,report});
+ for(const id of field)if(c.operativeState[id].weaponDropped||![1800,1801,1802,1803].includes(rosterFor(c).find(op=>op.id===id).weapon))c=recoverRoutePrimary(c,id,{preferredWeapon:1801,replace:true,report});
+ assert.ok(field.every(id=>!c.operativeState[id].weaponDropped&&[1800,1801,1802,1803].includes(rosterFor(c).find(op=>op.id===id).weapon)),'Every actual arsenal soldier must hold a compatible firearm before ammunition is supplied.');
  c=supplyFreshMountainAmmunition(c,field,{target:12,report});
  const doctor=rosterFor(c).filter(op=>local.includes(op.id)&&op.medical>=60).sort((a,b)=>b.medical-a.medical)[0];
  const medicalReserves={};
