@@ -13,7 +13,8 @@ import {syncBattleTime} from '../game/time.js';
 import {storedArtilleryRecord} from '../game/artillery-transport.js';
 import {queueSquadTravel} from '../game/squad-travel.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {prepareStockCuyoBatteryReserve} from './stock-cuyo-reserve-readiness.mjs';
+import {prepareStockCuyoBatteryReserve,stockCuyoBatteryReservePosts} from './stock-cuyo-reserve-readiness.mjs';
+import {prepareCreatedMendozaAssault} from './created-cuyo-route.mjs';
 import {fight} from './opening-driver.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {prepareStockCuyoBatteryGuard,stockCuyoBatteryDefenseOrder,resolveStockCuyoBatteryEncounter} from './stock-cuyo-battery-defense.mjs';
@@ -29,6 +30,7 @@ test('earned stock battery pays for its arriving guard, resolves the actual raid
  // the real guard before the journey, rather than inserting a defender into
  // the already interrupted deployment or rewriting an existing soldier.
  const posts=[[108,14,21],[104,14,20],[102,14,19],[146,14,18],[119,13,21],[133,13,20],[101,13,19],[121,13,18],[117,12,21],[116,12,20],[107,12,19],[130,12,18],[9,11,21]].map(([id,x,y])=>({id,x,y,tacticalLevel:1}));
+ assert.deepEqual(stockCuyoBatteryReservePosts(start),posts);
  const reserve=prepareStockCuyoBatteryReserve(start,posts,{report:event=>events.push(structuredClone(event))});
  assert.deepEqual(reserve.preparation.startClock,[426,1356]);assert.deepEqual(reserve.preparation.endClock,[426,1435]);assert.equal(reserve.preparation.elapsedSeconds,79);assert.equal(new Set(reserve.preparation.positions.map(post=>`${post.tacticalLevel}:${post.x}:${post.y}`)).size,13);
  assert.deepEqual(reserve.campaign.squads,start.squads);assert.deepEqual(reserve.campaign.contracts,start.contracts);assert.equal(reserve.campaign.resources.treasury,start.resources.treasury);
@@ -97,4 +99,21 @@ test('earned stock battery pays for its arriving guard, resolves the actual raid
  assert.deepEqual(completed.townIncome.activations,start.townIncome.activations);assert.equal(incomeSummary(completed).daily,incomeSummary(start).daily);assert.equal(completed.resources.treasury,start.resources.treasury+midnights*incomeSummary(start).daily-quoted.price-renewals-shipments-postaCost);
  assert.deepEqual(keepServing,retained);assert.deepEqual(start,before);assert.deepEqual(decodeSave(encodeSave(completed)).campaign,completed);
  t.diagnostic(JSON.stringify({inputClock:[start.hour,start.secondOfHour],guardId:guard.guardId,paidGuard:quoted.price,arrivalClock:[interrupted.contracts[guard.guardId].started,interrupted.contracts[guard.guardId].startedSecond],raidClock:[interrupted.hour,interrupted.secondOfHour],turns:defense.turns,actions:defense.actions,losses:defense.losses,finiteDressings:care.reduce((sum,event)=>sum+event.dressingsUsed,0),careSeconds:defense.careSeconds,aid:care.map(({campaign,...event})=>event),deliveryClock:[completed.hour,completed.secondOfHour],guns:result.selections,paidRenewals:renewals,shipments,postaCost,midnights,treasury:completed.resources.treasury,exactBattleReplay:true,exactAidReplay:true,officialMidpoint:true}));
+});
+
+// This is the genuine full-route entry, stopped only after its real pre-trip
+// preparation report. The complete earned trip above still proves native
+// defense, acute aid and delivery; this control proves their caller placement.
+test('the real stock Mendoza caller prepares its existing rear and books one specialist before the gun crew leaves',t=>{
+ const raw=gunzipSync(readFileSync(new URL('./fixtures/stock-cuyo-native-edge-battery-ready.save.json.gz',import.meta.url)));
+ const start=decodeSave(raw.toString()).campaign,before=structuredClone(start),events=[],stop=new Error('actual pre-battery checkpoint');let checkpoint;
+ assert.throws(()=>prepareCreatedMendozaAssault(start,{routeKind:'stock',report:event=>{events.push(event);if(event.event==='stockCuyoPreBatteryReady'){checkpoint=event;throw stop;}}}),error=>error===stop);
+ assert.ok(checkpoint);assert.deepEqual(start,before);const c=checkpoint.campaign,preparation=events.find(event=>event.event==='stockCuyoReserveReady');
+ assert.ok(preparation);assert.deepEqual(checkpoint.posts,stockCuyoBatteryReservePosts(start));assert.equal(preparation.positions.length,13);assert.equal(preparation.elapsedSeconds,79);assert.deepEqual([c.hour,c.secondOfHour],[426,1435]);
+ assert.deepEqual(c.squad,start.squad);assert.equal(c.activeSquadId,start.activeSquadId);assert.deepEqual(c.squads,start.squads);assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.equal(events.some(event=>event.event==='routeBatteryPrepared'),false);
+ assert.deepEqual(checkpoint.specialistIds,[142]);const booked=c.hiringArrivals.find(arrival=>arrival.operativeId===142);assert.ok(booked);assert.deepEqual([booked.bookedAt,booked.bookedSecond,booked.dueAt,booked.dueSecond],[426,1435,432,1435]);assert.equal(booked.paid,7740);assert.equal(booked.serviceHours,24);assert.equal(c.resources.treasury,start.resources.treasury-7740);
+ assert.equal(events.filter(event=>event.event==='createdMendozaSupport').length,1);assert.equal(c.hiringArrivals.filter(arrival=>arrival.operativeId===142).length,1);
+ for(const [id,record]of Object.entries(start.operativeState))for(const key of ['alive','hp','bleeding','medkits','captured','morale'])assert.deepEqual(c.operativeState[id][key],record[key],id+'.'+key);
+ assert.equal(c.operativeState[101].medkits,13);assert.equal(c.operativeState[146].medkits,2);assert.deepEqual(c.artilleryDepots,start.artilleryDepots);assert.deepEqual(c.artilleryTransfers,start.artilleryTransfers);assert.deepEqual(c.artilleryStores,start.artilleryStores);
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);t.diagnostic(JSON.stringify({scope:'Actual stock full-route pre-trip caller only; native defense/delivery are covered by the complete preceding case.',clock:[c.hour,c.secondOfHour],rear:checkpoint.posts.map(post=>post.id),specialist:142,paid:7740,arrival:[432,1435],crew:c.squad}));
 });

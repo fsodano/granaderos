@@ -10,6 +10,27 @@ import {carriedAmmunition} from '../game/campaign-ammunition.js';
 import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
+import {expandCellScene} from '../game/cell-scene-storage.js';
+
+// Allocate the existing roof residents' real authored cells before departure.
+// Keep the clinical patients and reserved physician behind the firing edge;
+// dead, captured, offsite and travelling soldiers never receive a post.
+export function stockCuyoBatteryReservePosts(state){
+ const scene=expandCellScene(state.sectorStates.cordoba,state),priority=[108,104,102,146,119,133,101,121,117,116,107,130,9],groups=new Map();
+ for(const id of state.recruited){
+  const record=state.operativeState[id],home=state.squads.find(squad=>squad.members.includes(id)),point=record.residentPosition;
+  if(!record.alive||record.captured||state.squad.includes(id)||operativeLocation(state,id)!=='cordoba'||!home||home.journey||!point||(point.tacticalLevel??0)===0)continue;
+  const roof=scene?.upperSurfaces?.find(cell=>sameCell(cell,point));if(!roof?.buildingId)continue;
+  if(!groups.has(roof.buildingId))groups.set(roof.buildingId,[]);groups.get(roof.buildingId).push(id);
+ }
+ const rank=id=>priority.includes(id)?priority.indexOf(id):priority.length+state.recruited.indexOf(id),posts=[];
+ for(const [buildingId,ids]of groups){
+  ids.sort((a,b)=>rank(a)-rank(b));const cells=scene.upperSurfaces.filter(cell=>cell.buildingId===buildingId&&!cell.blocked&&cell.kind==='roof').sort((a,b)=>b.x-a.x||b.y-a.y);
+  assert.ok(cells.length>=ids.length,'The actual reserve needs enough distinct authored roof cells.');
+  ids.forEach((id,index)=>posts.push({id,x:cells[index].x,y:cells[index].y,tacticalLevel:cells[index].tacticalLevel}));
+ }
+ return posts;
+}
 
 // Prepare the actual reserve before the crew leaves. Each supplied post is
 // public map geometry, checked through the present soldier's legal movement.

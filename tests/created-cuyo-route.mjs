@@ -2,6 +2,7 @@ import {encounterDefinitions} from '../game/encounters.js';
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {resolveStockCuyoBatteryEncounter} from './stock-cuyo-battery-defense.mjs';
+import {prepareStockCuyoBatteryReserve,stockCuyoBatteryReservePosts} from './stock-cuyo-reserve-readiness.mjs';
 import {relieveStockCuyoService} from './stock-cuyo-service-relief.mjs';
 import {ownedArtilleryCount} from '../game/campaign-artillery.js';
 import {artilleryTransportPath,artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
@@ -709,6 +710,23 @@ const order=a=>{
 const recruits=rosterFor(c).filter(o=>{const r=c.operativeState[o.id],q=contractQuote(c,o,'day');return o.id>=100&&o.id<1000&&!field.includes(o.id)&&r.alive&&r.hp===r.maxHp&&r.morale>=50&&q.available&&q.price<=routeHiringCeiling(c,30);}).map(o=>o.id);
 for(const id of recruits){order({type:'recruitCivic',id,term:'week',destination:'cordoba'});field.push(id);}
 if(stock){stock.replace(c);stock.renew();c=stock.campaign;}
+// The paid specialist guards the actual rear during the stock crew's trip.
+// The created route keeps its existing post-delivery booking order.
+let specialist;
+const bookSpecialist=()=>{
+ specialist=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],q=contractQuote(c,op,'day');return op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&!field.includes(op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&r.morale>=50&&op.marksmanship>=65&&q.available&&q.price<=Math.max(0,c.resources.treasury-2000);}).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price)[0];
+ if(specialist){const quote=contractQuote(c,specialist,'day'),cash=c.resources.treasury;order({type:'recruitCivic',id:specialist.id,term:'day',destination:'cordoba'});assert.equal(cash-c.resources.treasury,quote.price);field.push(specialist.id);}
+ report({event:'createdMendozaSupport',ids:specialist?[specialist.id]:[],hour:c.hour,treasury:c.resources.treasury});
+};
+if(stock){
+ const posts=stockCuyoBatteryReservePosts(c),crew=[...c.squad];
+ if(posts.length){c=prepareStockCuyoBatteryReserve(c,posts,{report}).campaign;stock.replace(c);}
+ bookSpecialist();
+ // An immediate paid arrival can join a five-person active squad. Keep the
+ // same gun crew so the newly booked guard really stays at the defended city.
+ if(c.squad.length!==crew.length||c.squad.some((id,index)=>id!==crew[index]))order({type:'squad',ids:crew});
+ report({event:'stockCuyoPreBatteryReady',posts,specialistIds:specialist?[specialist.id]:[],campaign:structuredClone(c)});
+}
 const batteryLosses=new Set(),resolveBatteryEncounter=(before,options)=>{
  const next=resolveStockCuyoBatteryEncounter(before,options);
  for(const id of living(before))if(!next.operativeState[id].alive)batteryLosses.add(id);
@@ -722,9 +740,7 @@ for(let i=field.length-1;i>=0;i--)if(!c.operativeState[field[i]].alive||c.operat
 // Elite service competes with the finite army budget. Prefer an affordable
 // marksman when available; the existing paid force must otherwise fight with
 // its recovered rifles and the two actual arsenal guns.
-const specialist=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],q=contractQuote(c,op,'day');return op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&!field.includes(op.id)&&r.alive&&!r.captured&&r.hp===r.maxHp&&r.morale>=50&&op.marksmanship>=65&&q.available&&q.price<=Math.max(0,c.resources.treasury-2000);}).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price)[0];
-if(specialist){const quote=contractQuote(c,specialist,'day'),cash=c.resources.treasury;order({type:'recruitCivic',id:specialist.id,term:'day',destination:'cordoba'});assert.equal(cash-c.resources.treasury,quote.price);field.push(specialist.id);}
-report({event:'createdMendozaSupport',ids:specialist?[specialist.id]:[],hour:c.hour,treasury:c.resources.treasury});
+if(!stock)bookSpecialist();
 for(let h=0;h<24&&field.some(id=>!c.recruited.includes(id));h++)order({type:'wait',hours:1});
 order({type:'configureArtillery',types:[]});
 report({event:'createdMendozaAmmunition',field:[...field],selections:[...battery.selections],campaign:structuredClone(c)});
