@@ -45,11 +45,12 @@ import {occupyingGroups} from '../game/enemy-groups.js';
 import {supplyCoastalAmmunition} from './coastal-ammunition.mjs';
 import {supplyCoastalDressings} from './coastal-dressings.mjs';
 import {prepareCoastalReinforcements} from './coastal-reinforcements.mjs';
+import {preparePaidCoastalColumn} from './coastal-paid-column.mjs';
 
 // Recover the actual mountain survivors before their paid terms end. The
 // affordable relief column waits for real arrivals, finite care and rest.
 export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementCount=1}={}){
- assert.ok(Number.isInteger(reinforcementCount)&&reinforcementCount>=0&&reinforcementCount<=4);
+ assert.ok(Number.isInteger(reinforcementCount)&&reinforcementCount>=0&&reinforcementCount<=12);
  const inputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedCoastalAssault',stage:'preparation-input',campaign:start});
  let c=decodeSave(encodeSave(start)).campaign;
  try{
@@ -231,7 +232,16 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
  // The surviving local command requires actual support at the port. Bank
  // ordinary income before hiring the quoted relief and paying for its rest.
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
- const preparedRelief=prepareCoastalReinforcements(c,{excluded:[...keep],count:reinforcementCount,report});c=preparedRelief.campaign;const reinforcements=preparedRelief.reinforcements;
+ let reinforcements;
+ if(reinforcementCount>1){
+  const column=preparePaidCoastalColumn(c,{count:reinforcementCount,keepServing:[...keep],report});c=column.campaign;reinforcements=column.ids;
+  events.push(...column.receipt.events.map(row=>({action:row.action,hour:Math.floor(row.endSeconds/3600),cost:row.cost})));
+  for(const id of reinforcements)keep.add(id);
+  waitUntil(48,()=>column.receipt.squadIds.every(id=>!c.squads.find(q=>q.id===id).journey));
+  for(const operativeId of reinforcements){assert.equal(c.operativeState[operativeId].location,'buenos_aires');order({type:'assignCare',operativeId,assignment:'rest'});}
+  report({event:'coastalPaidColumnArrived',ids:reinforcements,squadIds:column.receipt.squadIds,hour:c.hour,secondOfHour:c.secondOfHour,campaign:c});
+ }else{
+ const preparedRelief=prepareCoastalReinforcements(c,{excluded:[...keep],count:reinforcementCount,report});c=preparedRelief.campaign;reinforcements=preparedRelief.reinforcements;
  assert.equal(reinforcements.length,reinforcementCount,'every requested healthy quoted reinforcement must remain available');
  // Bank the initial service and two possible renewals before signing the
  // relief. Actual arrival, finite rearming and daylight staging can cross
@@ -254,13 +264,14 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
   rearmMissingPrimaries(reinforcements);
   c=supplyCoastalAmmunition(c,reinforcements,{target:16,report}).campaign;c=finishReloadsBeforeMarch(c);
  }
+ }
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  waitUntil(48,()=>c.hour%24===6&&field.every(id=>{
   const r=c.operativeState[id];return r.energy===100&&!r.fatigue&&!r.asleep;
  }));
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
  order({type:'createSquad',ids:field.slice(0,6),sector:'retiro',name:'Batería del puerto'});
- const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'buenos_aires',keepServing:field,report});c=battery.campaign;
+ const battery=prepareRouteBattery(c,['bronze4','bronze4'],{destination:'buenos_aires',keepServing:[...new Set([...field,...reinforcements])],report});c=battery.campaign;
  const remaining=field.filter(id=>c.operativeState[id].location!=='buenos_aires');
  for(let offset=0;offset<remaining.length;offset+=6){
   const ids=remaining.slice(offset,offset+6),at=c.operativeState[ids[0]].location;assert.ok(ids.every(id=>c.operativeState[id].location===at));
@@ -269,8 +280,10 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
   order({type:'travel',sector:'buenos_aires',queue:true,mode:'posta'});const moving=c.activeSquadId;
   waitUntil(48,()=>!c.squads.find(q=>q.id===moving).journey);assert.equal(c.location,'buenos_aires');
  }
+ if(reinforcementCount>1)field.push(...reinforcements);
  assert.ok(field.every(id=>c.operativeState[id].location==='buenos_aires'));
  order({type:'configureArtillery',types:battery.selections});
+ if(reinforcementCount>1)while(c.sectors.buenos_aires.fort<3)order({type:'fortify',sector:'buenos_aires'});
  // Hold the assembled local guard for two ordinary paid rest hours before
  // leaving the capital. React only to public contact, never hidden routes.
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
@@ -345,8 +358,8 @@ export function createdCoastalBattery(campaign,{doctorId,reliefId}){
 
 // Continue the actual Cuyo survivors through port and river victories. The
 // commander returns from his boundary exit before meeting the naval officers.
-export function finishCreatedCoast(prefix,{onCheckpoint,report=()=>{}}={}){
- const prepared=prepareCreatedCoastalAssault(prefix.campaign,{report});
+export function finishCreatedCoast(prefix,{onCheckpoint,report=()=>{},reinforcementCount=8}={}){
+ const prepared=prepareCreatedCoastalAssault(prefix.campaign,{report,reinforcementCount});
  let campaign=prepared.campaign;const notes=priorPortVictories(prefix.notes);
  for(const receipt of prepared.capitalResponses)notes.push({stage:'buenos_aires',hour:Math.floor((receipt.summary.startSeconds+receipt.summary.elapsedSeconds)/3600),...receipt.summary,losses:receipt.losses});
  const note=(stage,details={})=>{

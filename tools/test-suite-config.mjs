@@ -1,5 +1,7 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
+ {file:'tests/earned-coastal-native-defense.test.mjs',reason:'Genuine paid fifteen-person native capital defense, official replay and actual controlled port/naval/care continuation; no ending claim.'},
+ {file:'tests/coastal-paid-column.test.mjs',reason:'Eight actual returned veterans, finite local kit, ordinary paid contracts and real two-column coastal arrival.'},
  {file:'tests/earned-stock-coast-preparation.test.mjs',reason:'Earned complete paid coastal force, first capital victory replay, finite supplies and later native defense readiness; no ending claim.'},
  {file:'tests/earned-stock-blocked-capital-journey.test.mjs',reason:'Earned twelve-person capital response, finite gun/care stocks, native blockade victory and exact saved replay.'},
  {file:'tests/earned-installed-arsenal.test.mjs',reason:'Earned native coastal arsenal victory, actual care and return, finite cannon delivery and service accounting.'},
