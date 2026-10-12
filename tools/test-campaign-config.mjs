@@ -12,6 +12,7 @@ export const campaignTestGroups = [
   "tests/earned-controlled-port-handover.test.mjs",
   "tests/earned-coastal-native-defense.test.mjs",
   "tests/earned-coastal-river.test.mjs",
+  "tests/earned-expanded-capital-return.test.mjs",
   "tests/earned-convoy-stable-rest.test.mjs",
   "tests/earned-cordoba-first-defense-care.test.mjs",
   "tests/earned-cordoba-medical-trip-defense.test.mjs",

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "source": "earned-coastal-river.test.mjs: genuine four-person paid reinforcement and native two-front river victory",
-  "sourceFixture": "earned-paid-coastal-care",
+  "sourceFixture": "tests/fixtures/earned-paid-coastal-care.save.json.gz",
   "captureMethod": "Unchanged official saved campaign after the accepted native victory and real settlement",
   "rawSha256": "385c57843fbf71683b02de385f9fc3966becf8d04b6c56d6d8cf36718de255f7",
   "gzipSha256": "ba50fdcdc96d80b4835570435feca9b2333d4896b774fcc18e71bccff66a1181",
@@ -38,5 +38,36 @@
     "orders": 275,
     "seconds": 355
   },
-  "scope": "Real river victory input; no capital victory, ending, or 48-hour continuation claim"
+  "scope": "Real river victory input; no capital victory, ending, or 48-hour continuation claim",
+  "sourcePath": ".cache/core-campaign-2026-10-12/earned-coastal-river-twofront16-v1/river.victory.save.json",
+  "sourceReceipt": ".cache/core-campaign-2026-10-12/earned-coastal-river-twofront16-v1/receipt.json",
+  "sourceRevision": "b4f3c1e90f7b61d731b98acf346fa56c81f16860",
+  "sourceLogSha256": "5a8441197f1d503682dafb6a1530fed7f8703c69b913cf9e879af7db7bd2c1d7",
+  "producerValidatedHead": "4a9406570903015fa3739701a9106ae68903aeed",
+  "producerMerge": "6bb5ba6c7ce383d45c4438ebfe2fc4698fb7ae00",
+  "parentRawSha256": "9fcc930f6db48bc59f84db31bea3dad2112338bca66f633b64e7581a6e205fd0",
+  "parentInstalledCommanderRawSha256": "1f16d57ad254173224f65f1d9a731febf8a98752a17870b3b6449610b1d508e8",
+  "sourceNote": "The accepted capture used then-uncommitted river helper/controller work at sourceRevision. Producer PR399 later validated the actual8/12 compatibility plus native16 replay in seven complete files (32/32). All 559 source/shipping pins and two actual input pins were unchanged during this capture.",
+  "sourceHelperPins": {
+    ".cache/core-campaign-2026-10-12/earned-coastal-river-twofront16-v1/care.input.save.json": {
+      "sha256": "9fcc930f6db48bc59f84db31bea3dad2112338bca66f633b64e7581a6e205fd0",
+      "bytes": 4027107
+    },
+    ".cache/core-campaign-2026-10-12/earned-coastal-river-twofront16-v1/policy.mjs": {
+      "sha256": "ca16c826128eb1f46ec48bda32c02742df5d46c999099a81d23d701911a5e9c4",
+      "bytes": 2304
+    },
+    ".cache/core-campaign-2026-10-12/earned-coastal-river-twofront16-v1/probe.mjs": {
+      "sha256": "fe1879140d57d703a49ce8ff6f2a27fb6b8ac0a47c84a36e6a5744cde6239e7c",
+      "bytes": 3806
+    },
+    "tests/created-river-approaches.mjs": {
+      "sha256": "37509a08a9749c809f6fcb473b978df08aa3d197f352182f74978bc637142d9d",
+      "bytes": 3733
+    },
+    "tests/created-river-preparation.mjs": {
+      "sha256": "a01d462032a250678988940dbb8e960783c817a7be7f5c3e8f873dd5a217bf65",
+      "bytes": 10519
+    }
+  }
 }
