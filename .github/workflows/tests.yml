@@ -1,0 +1,52 @@
+name: Select focused test suites
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: focused-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  select:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      core: ${{ steps.paths.outputs.core }}
+      campaign: ${{ steps.paths.outputs.campaign }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Select suites from the complete changed-path list
+        id: paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          COMPARISON: ${{ github.event_name == 'pull_request' && 'three-dot' || 'two-dot' }}
+        run: node tools/ci-test-selection.mjs --base "$BASE_SHA" --head "$HEAD_SHA" --comparison "$COMPARISON" --github-output
+
+  core:
+    needs: select
+    if: needs.select.outputs.core == 'true'
+    uses: ./.github/workflows/test-core.yml
+    with:
+      duration: quick
+
+  campaign:
+    needs: select
+    if: needs.select.outputs.campaign == 'true'
+    uses: ./.github/workflows/test-campaign.yml
+    with:
+      duration: quick
