@@ -308,10 +308,18 @@ export function recoverFreshPort(start,{hospital='retiro',report=()=>{},fieldIds
  // their real location before advancing any evacuation clock.
  for(const at of new Set(patients.filter(id=>c.operativeState[id].bleeding).map(id=>c.operativeState[id].location))){
   const local=field.filter(id=>c.operativeState[id].location===at);
-  assert.ok(local.length<=6,'the actual first-aid party must fit a squad');
-  order({type:'createSquad',name:'Socorro del puerto',ids:local,sector:at});order({type:'visitSector'});
-  const aid=autoBandageBattle(enterSector(c.pendingBattle,c.sectorStates[at])),pair=syncBattleTime(c,aid.battle);assert.equal(pair.error,null);c=pair.campaign;
-  order({type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
+  for(let partyCount=0;local.some(id=>c.operativeState[id].bleeding)&&partyCount<local.length;partyCount++){
+   const bleeding=local.filter(id=>c.operativeState[id].bleeding),doctor=rosterFor(c).filter(op=>local.includes(op.id)&&c.operativeState[op.id].hp>=15&&op.medical>=20&&c.operativeState[op.id].medkits>0).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
+   const party=local.length<=6?local:[...new Set([...(doctor?[doctor.id]:[]),...bleeding,...local])].slice(0,6);
+   assert.ok(party.length<=6,'the actual first-aid party must fit a squad');
+   const beforeBleeding=local.reduce((sum,id)=>sum+c.operativeState[id].bleeding,0);
+   order({type:'createSquad',name:'Socorro del puerto',ids:party,sector:at});order({type:'visitSector'});
+   const aid=autoBandageBattle(enterSector(c.pendingBattle,c.sectorStates[at])),pair=syncBattleTime(c,aid.battle);assert.equal(pair.error,null);c=pair.campaign;
+   order({type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
+   for(const id of party)assert.equal(c.operativeState[id].bleeding,0);
+   assert.ok(local.reduce((sum,id)=>sum+c.operativeState[id].bleeding,0)<beforeBleeding,'Every actual first-aid party must stop existing bleeding before travel.');
+   report({event:'portFirstAidParty',sector:at,ids:party,orders:aid.steps,elapsedSeconds:aid.elapsedSeconds});
+  }
   for(const id of local)assert.equal(c.operativeState[id].bleeding,0);
  }
  const groups=[];

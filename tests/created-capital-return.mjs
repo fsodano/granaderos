@@ -24,8 +24,12 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  assert.ok([4,6].includes(fieldSize),'a real relief battery has two or three complete pairs');
  const batterySize=fieldSize/2;
  const returning=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='santa_fe';});
- let c=recoverFreshPort(start,{hospital:'cordoba',fieldIds:preparedFieldIds?[57,...preparedFieldIds]:returning});
- const rear=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='retiro';}),field=c.recruited.filter(id=>{const r=c.operativeState[id];return id!==57&&r.alive&&!r.captured&&r.location==='cordoba'&&(preparedFieldIds?preparedFieldIds.includes(id):(c.contracts[id].expiresAt===null||contractQuote(c,rosterFor(c).find(o=>o.id===id),'day').price<=routeHiringCeiling(c,100)));});
+ // Command may have used a real boundary exit to another friendly province.
+ // The recovery helper forms legal local parties and travels from each real
+ // location; including him does not teleport him into the river survivors.
+ let c=recoverFreshPort(start,{hospital:'cordoba',fieldIds:preparedFieldIds?[57,...preparedFieldIds]:[...new Set([...returning,57])]});
+ const rear=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='retiro';}),availableField=c.recruited.filter(id=>{const r=c.operativeState[id];return id!==57&&r.alive&&!r.captured&&r.location==='cordoba'&&(preparedFieldIds?preparedFieldIds.includes(id):(c.contracts[id].expiresAt===null||contractQuote(c,rosterFor(c).find(o=>o.id===id),'day').price<=routeHiringCeiling(c,100)));});
+ const field=preparedFieldIds?availableField:availableField.slice(0,Math.max(0,fieldSize-rear.length));
  if(preparedFieldIds){assert.equal(preparedFieldIds.length+rear.length,fieldSize);assert.equal(new Set([...preparedFieldIds,...rear]).size,fieldSize);assert.deepEqual([...field].sort((a,b)=>a-b),[...preparedFieldIds].sort((a,b)=>a-b));for(const id of [...field,...rear])assert.ok(c.contracts[id].expiresAt===null||c.contracts[id].expiresAt>c.hour,'every explicitly prepared paid actor must be in actual active service');}
  const order=a=>{
   if(a.type==='wait')for(const id of [...field,...rear]){let contract=c.contracts[id];while(contract?.expiresAt!=null&&contract.expiresAt<=c.hour+a.hours){const n=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(n.lastError,null,n.lastError);c=n;contract=c.contracts[id];}}
