@@ -20,6 +20,7 @@ export default [
  {file:'tests/salta-battery-readiness.test.mjs',reason:'Earned rear guard, finite firearm, exact native raid replay and bounded coastal detour.'},
  {file:'tests/earned-opening-cordoba-road.test.mjs',reason:'Earned paid rear reserve, native Cordoba raid replay and finite relief of the actual escaped wounded defender.'},
  {file:'tests/earned-opening-battery-continuation.test.mjs',reason:'Default earned opening, two native rear defense replays, finite escaped-person relief and canonical artillery shipment.'},
+ {file:'tests/earned-opening-salta-clinic-supply.test.mjs',reason:'Earned paid clinic courier, finite dressings, native Tucuman defense replay and retained urgent-care service.'},
  {file:'tests/fresh-coastal-route.test.mjs',reason:'Three fresh opening forces with actual losses, paid recovery and saved replay.'},
  {file:'tests/fresh-historical-loss.test.mjs',reason:'Actual Mendoza victory followed by required engineer death retained across save and settlement.'},
  {file:'tests/opening-playthrough.test.mjs',reason:'Opening campaign playthrough through defeat, prisoner rescue and the northern mission.'},
