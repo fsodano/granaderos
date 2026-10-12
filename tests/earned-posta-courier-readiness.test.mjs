@@ -8,8 +8,9 @@ import {rosterFor} from '../game/campaign.js';
 import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
 import {TRANSPORT_NETWORKS} from '../game/transport-network.js';
+import {transportPath} from '../game/logistics.js';
 import {dailyTownIncome} from '../game/town-income.js';
-import {launchEnemyGroup,queueEnemyEncounter} from '../game/enemy-groups.js';
+import {launchEnemyGroup} from '../game/enemy-groups.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {sameSurface} from '../game/tactical-space.js';
@@ -82,10 +83,26 @@ test('an earned posted clinic spends real movement energy, sleeps, then pays cur
  assert.deepEqual(admitted(end),end);assert.deepEqual(start,before);t.diagnostic(JSON.stringify({nativeMoveSeconds:battle.elapsedSeconds,restHours:ready.restHours,journeySeconds:trip.elapsedSeconds,fees,renewalCost:cost,source:[11,7],clock:[end.hour,end.secondOfHour]}));
 });
 
+test('a native occupation during paid rest cuts the old medical path before a new courier quote',t=>{
+ const control=earnedInput();assert.deepEqual(transportPath(control,'cordoba','retiro'),['cordoba','buenos_aires','retiro']);
+ // Declared marching-column control before admission. Actual shared reserve
+ // and arrival rules occupy the unguarded town while the doctor sleeps.
+ assert.deepEqual(control.sectors.buenos_aires.militia,[0,0,0]);
+ const group=launchEnemyGroup(control,'interior','buenos_aires');assert.ok(group);const start=admitted(control),before=structuredClone(start),events=[];
+ const local=collectRouteMedicalSupplies(start,146,100,{mode:'posta',report:e=>events.push(e)}),s=local.campaign,ready=events.find(e=>e.event==='medicalCourierReady');
+ assert.ok(ready);assert.ok(s.hour>=group.arrivalAt);assert.equal(s.pendingEncounter,null);assert.equal(s.sectors.buenos_aires.owner,'royalist');assert.equal(s.enemyGroups.find(g=>g.id===group.id).status,'stationed');
+ assert.equal(transportPath(s,'cordoba','retiro'),null);assert.ok(local.collected>0);assert.equal(cacheStock(s),6);
+ const localRows=sectorInventoryModel(s,'cordoba',rosterFor(s),146).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.deepEqual(localRows,[],'The first collection exhausts only actual reachable local stock.');
+ let failure;try{collectRouteMedicalSupplies(s,146,1,{mode:'posta'});}catch(error){failure=error;}
+ assert.ok(failure);assert.match(failure.message,/no controlled finite medical source/);assert.equal(clock(failure.campaign),clock(s));assert.equal(failure.campaign.resources.treasury,s.resources.treasury);assert.equal(cacheStock(failure.campaign),6);
+ assert.equal(events.some(e=>e.event==='finiteMedicalCourier'),false);for(const id of start.recruited.filter(id=>start.operativeState[id].alive)){assert.equal(s.operativeState[id].alive,true);assert.ok(s.recruited.includes(id));assert.ok(contractExpiresSeconds(s.contracts[id])===null||contractExpiresSeconds(s.contracts[id])>clock(s));}
+ assert.deepEqual(admitted(failure.campaign),failure.campaign);assert.deepEqual(start,before);t.diagnostic(JSON.stringify({scope:'Declared finite enemy column; native timed occupation and source-path refusal, no battle or full-route claim',arrivalHour:group.arrivalAt,restHours:ready.restHours,localDressings:local.collected,remoteDressings:cacheStock(s),occupation:'buenos_aires'}));
+});
+
 function incomingRestWave(){
- // Declared immediate hostile-column control before initial admission. The
- // shared finite reserve, group and encounter helpers create the real wave.
- const s=earnedInput(),group=launchEnemyGroup(s,'interior','cordoba',{immediate:true});assert.ok(group);queueEnemyEncounter(s);return {start:admitted(s),group};
+ // Declared marching-column control before initial admission. Shared finite
+ // reserve and arrival rules create a real interruption after six rest hours.
+ const s=earnedInput(),group=launchEnemyGroup(s,'interior','cordoba');assert.ok(group);return {start:admitted(s),group};
 }
 test('a real finite enemy arrival interrupts posta readiness and retains the exact stopped state',()=>{
  const {start,group}=incomingRestWave(),before=structuredClone(start);let failure;
