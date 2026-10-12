@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "source": "/Users/fsodano/.codex/worktrees/campaigns/granaderos/.cache/core-campaign-2026-10-12/current-installed-army-funded.save.json",
+  "rawSha256": "730ff046f1bb10305885f78f9db35508e87996d1505ed1bd2749f63c6db66bc7",
+  "gzipSha256": "09e87de13ca6cb5fa169d7d72b7ccee21dbe3aea7bcd2f64098aa39932ef896d",
+  "rawBytes": 3545941,
+  "clock": [
+    1602,
+    1397
+  ],
+  "treasury": 187920,
+  "scope": "Exact earned installed army funding through native Uspallata victory and ordinary care/return. Fresh start, arsenal mission, Los Patos and ending are separate requirements."
+}
