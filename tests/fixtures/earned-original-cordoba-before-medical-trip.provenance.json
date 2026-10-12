@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "fixture": "earned-original-cordoba-before-medical-trip.save.json.gz",
+  "rawSha256": "28bce810c889198f9537d73fb18c9d83120671f4f3cac6522b35f8c3170fc912",
+  "gzipSha256": "1b42399fd89e4920af920cbdde9026b0ecf209c8a89257fe8efd909b219cb192",
+  "rawBytes": 1341314,
+  "sourceRevision": "0dce8a93575fcc6743893e10d6dab2eca5bb518d",
+  "sourcePath": ".cache/core-campaign-2026-10-12/cordoba-care-pretrip-observer/care-collection-cordoba-222-2346-doctor146.save.json",
+  "sourceReceipt": ".cache/core-campaign-2026-10-12/cordoba-care-pretrip-observer/receipt.json",
+  "sourceLogSha256": "014941db0e7e312201425a38fb2cc78053ebd2128cb9139008fd947f5c5c0e88",
+  "sourcePins": 608,
+  "shippingPins": 242,
+  "clock": {
+    "hour": 222,
+    "second": 2346
+  },
+  "scope": "Exact official save from the unchanged funded original recovery prefix after actual first Cordoba raid/care, immediately before doctor146 departs to collect physical linen. Preserves14 prior operative deaths; not a completed campaign. Observer exit0,1588.824s,all source/shipping pins unchanged. Node ESM imports are statically pinned; application read hook observed0 files. No input/outcome/health/resource alteration."
+}
