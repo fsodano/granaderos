@@ -7,7 +7,7 @@ import {decodeSave,encodeSave} from '../game/save.js';
 import {contractQuote} from '../game/contracts.js';
 import {rosterFor,civicStatus} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {expandedCapitalReliefPlan} from './created-expanded-capital-return.mjs';
+import {expandedCapitalReliefPlan,prepareCreatedExpandedCapitalReturn} from './created-expanded-capital-return.mjs';
 
 const sha=v=>createHash('sha256').update(v).digest('hex');
 function fixture(){
@@ -50,4 +50,10 @@ test('the quotation excludes wounded former carriers and never budgets occupied 
  assert.equal(known.reduce((sum,row)=>sum+row.count,0),35);
  const occupied=sectorInventoryModel(c,'buenos_aires',rosterFor(c),57);assert.ok(occupied.reason);assert.ok(c.enemyGroups.some(group=>group.target==='buenos_aires'&&group.status==='stationed'));
  assert.equal(c.operativeState[57].location,'san_nicolas');assert.equal(c.operativeState[57].alive,true);
+});
+
+test('expanded preparation rejects an unbounded saving policy before it can issue first aid or alter the earned input',()=>{
+ const c=fixture(),before=structuredClone(c),events=[];
+ assert.throws(()=>prepareCreatedExpandedCapitalReturn(c,{maxSavingHours:24001,report:e=>events.push(e)}),/bounded income-saving/);
+ assert.equal(events.length,0);assert.deepEqual(c,before);
 });

@@ -30,15 +30,16 @@ const living=c=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operative
 const healthy=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding;};
 
 function activateFieldPrimaries(start,report){
+ const rounds=s=>start.squad.reduce((sum,id)=>{const r=s.operativeState[id],u=carriedAmmunition(rosterFor(s).find(op=>op.id===id),r);return sum+totalAmmo(u)+u.loaded;},0),beforeRounds=rounds(start);
  let c=dispatchCampaign(start,{type:'visitSector'});assert.equal(c.lastError,null);
  let battle=enterSector(c.pendingBattle,c.sectorStates[c.location]);const began=battle.elapsedSeconds;
- const rounds=()=>start.squad.reduce((sum,id)=>{const r=c.operativeState[id],u=carriedAmmunition(rosterFor(c).find(op=>op.id===id),r);return sum+totalAmmo(u)+u.loaded;},0),beforeRounds=rounds();let switches=0;
+ let switches=0;
  for(const id of start.squad){const unit=battle.units.find(u=>u.id===String(id)&&u.side==='player');assert.ok(unit&&unit.hp===unit.maxHp&&!unit.weaponDropped);
   if(unit.activeSlot==='primary')continue;
   const action={type:'weapon',unitId:unit.id,slot:'primary'};battle=actBattle(battle,action);assert.equal(battle.lastError,null);switches++;report({event:'expandedCapitalPrimaryActivated',id,action});
  }
  const pair=syncBattleTime(c,battle);assert.equal(pair.error,null);c=dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.equal(c.lastError,null);
- assert.equal(rounds(),beforeRounds);assert.ok(switches?pair.battle.elapsedSeconds>began:pair.battle.elapsedSeconds>=began);
+ assert.equal(rounds(c),beforeRounds);assert.ok(switches?pair.battle.elapsedSeconds>began:pair.battle.elapsedSeconds>=began);
  for(const id of start.squad)assert.equal(c.operativeState[id].activeSlot,'primary');return c;
 }
 
@@ -185,15 +186,17 @@ export function prepareCreatedExpandedCapitalReturn(start,{report=()=>{},fieldSi
   phase='paid-arrivals';const additions=[];
   for(const op of candidates){const quote=contractQuote(c,op,'week'),cash=c.resources.treasury,record=c.operativeState[op.id],personal=carriedAmmunition(op,record),old={medkits:record.medkits,rounds:totalAmmo(personal)+personal.loaded,startingCartridgesIssued:record.startingCartridgesIssued};
    assert.ok(healthy(c,op.id));assert.equal(civicStatus(c,op.id).available,true,civicStatus(c,op.id).reason);assert.equal(quote.available,true,quote.reason);const destination=c.sectors[record.location]?.owner==='patriot'?record.location:hospital;
-   order({type:'recruitCivic',id:op.id,term:'week',destination});assert.equal(c.resources.treasury,cash-quote.total);
+   const bookedAt=clock(c);order({type:'recruitCivic',id:op.id,term:'week',destination});assert.equal(c.resources.treasury,cash-quote.total);const treasuryAfterHire=c.resources.treasury;
    for(let h=0;h<48&&!c.recruited.includes(op.id);h++)order({type:'wait',hours:1});assert.ok(c.recruited.includes(op.id));keepers.add(op.id);additions.push(op.id);field.push(op.id);safe();assert.equal(c.operativeState[op.id].location,destination);
    const after=carriedAmmunition(rosterFor(c).find(next=>next.id===op.id),c.operativeState[op.id]);assert.equal(c.operativeState[op.id].medkits,old.medkits);assert.equal(totalAmmo(after)+after.loaded,old.rounds);assert.equal(c.operativeState[op.id].startingCartridgesIssued,old.startingCartridgesIssued,'Returned veterans receive no second starting allowance.');
-   emit({event:'expandedCapitalVeteranHired',id:op.id,destination,quote,treasuryBefore:cash,treasuryAfter:c.resources.treasury});
+   emit({event:'expandedCapitalVeteranHired',id:op.id,destination,quote,treasuryBefore:cash,treasuryAfter:treasuryAfterHire,treasuryAtArrival:c.resources.treasury,bookedAt,arrivedAt:clock(c)});
   }
   assert.equal(field.length,fieldSize);
   phase='finite-veteran-equipment';
   for(const at of new Set(additions.map(id=>c.operativeState[id].location))){
-   const local=additions.filter(id=>c.operativeState[id].location===at),group=form(local,at,'Veteranos del puerto');
+   const localIds=additions.filter(id=>c.operativeState[id].location===at);
+   for(let offset=0;offset<localIds.length;offset+=6){
+   const local=localIds.slice(offset,offset+6),group=form(local,at,'Veteranos del puerto');
    adopt('finite veteran protection',(input,r)=>recoverRouteBodywear(input,local,{report:r}));
    for(const id of local){
     const model=sectorInventoryModel(c,at,rosterFor(c),id),preferred=rosterFor(c).find(op=>op.id===id).weapon===1802?1802:1800;
@@ -209,6 +212,7 @@ export function prepareCreatedExpandedCapitalReturn(start,{report=()=>{},fieldSi
     }
    }
    move(group,hospital);
+   }
   }
   phase='paid-native-rest';rest([...keepers]);assert.equal(c.operativeState[commanderId].location,hospital);
   emit({stage:'expandedCapitalPaidRest',field:[...field],keepers:[...keepers],campaign:structuredClone(c)});
