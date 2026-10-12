@@ -2,7 +2,7 @@
 
 Updated: 12 October 2026.
 
-Status: partial fixes implemented. End-to-end campaign verification remains
+Status: partial fixes merged into `main`. End-to-end campaign verification remains
 incomplete. No complete current-source campaign result is claimed.
 
 The shipping campaign is `campaigns/granaderos/`, selected by the normal
@@ -395,8 +395,9 @@ skips or cancellations and with the same pin categories unchanged. Seed 8
 won Córdoba and its defense, then stopped because only five compatible new
 hires were admitted by a plan requiring twelve. The installed route won
 Salta and completed Yatasto at hour 585, then exhausted reachable musket
-ammunition during Mendoza preparation. These new failure boundaries remain
-open; neither run is an ending pass.
+ammunition during Mendoza preparation. These are the recorded failure
+boundaries of that run; neither case is an ending pass. Later affected
+regressions are described below and do not replace a complete ending result.
 
 The arsenal changes in PR #348 passed both earned controls
 on frozen inputs, with all 369 static/source/fixture pins unchanged. The
@@ -410,8 +411,32 @@ integrates PR #350. The final two-case affected gate passed again, with all
 369 pinned inputs unchanged. Runner checks passed 14/14; baseline checks
 passed 39/39. Documentation audit, typecheck and diff checks passed.
 
-The original funded recovery also carries a separate wounded San Martín
-record into Yatasto. Native entry trials cannot reach that actor before the
-actual bleeding deadline. First aid must occur in the earlier San Lorenzo
-operation. This driver correction is in progress; the later fatal record is
-preserved. Full campaign, final browser and release acceptance remain open.
+The original funded recovery carried a separate wounded San Martín record
+into Yatasto. Native entry trials could not reach that actor before the
+actual bleeding deadline. PR #352 gives first aid in the earlier San Lorenzo
+operation. Nine ordinary field orders spend three dressings and 52 seconds;
+the ally keeps 15 HP with zero bleeding. The twenty affected cases passed
+across two receipts after installing the locked web dependencies. Exact
+default settlement, actual casualties and official midpoint replay remain
+covered. The full original recovery was not rerun for this merge.
+
+## Merge delivery on 12 October
+
+The completed increments are merged into `main` through their own PRs:
+
+| PR | Merged change | Recorded affected evidence |
+| --- | --- | --- |
+| [#347](https://github.com/fsodano/granaderos/pull/347) | Reusable rear-cover preparation and an explicit earned control; the default route is unchanged. | One earned native raid passes. The prior six-case opening prefix produced its input. |
+| [#348](https://github.com/fsodano/granaderos/pull/348) | Available arsenal medical roles, finite supply, squad reuse and actual service end after return. | Both earned arsenal controls pass after PR #350. |
+| [#349](https://github.com/fsodano/granaderos/pull/349) | Legal Córdoba staging and finite field aid before northern relief. | One earned installed relief case passes. |
+| [#350](https://github.com/fsodano/granaderos/pull/350) | Ordinary courier rest and paid retention before a new supply quote. | Thirteen focused courier cases pass. |
+| [#351](https://github.com/fsodano/granaderos/pull/351) | Native rear defense during the northern handover and arrival checkpoint. | Two earned handover cases pass with exact saved replay. |
+| [#352](https://github.com/fsodano/granaderos/pull/352) | Finite early San Lorenzo ally aid in the original recovery driver. | Twenty affected cases pass across two receipts. |
+
+Unproved rear-defense default experiments are preserved privately. They are
+not part of the published source. Mendoza ammunition supply, completion of
+the default opening, the complete current-source ending and continuation,
+the final browser review and the full release gate remain open.
+
+This merge delivery preserves the historical `0.1` tag. It does not create a
+new release or certify campaign completion.
