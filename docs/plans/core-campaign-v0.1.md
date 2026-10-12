@@ -515,3 +515,33 @@ The unchanged complete opening on PR #357 passes its first five stages,
 then fails at recovered swivel custody. Its terminal result is five passes,
 two failures including the parent, and one dependent skip, with 346 pins
 unchanged. No complete current campaign or release pass has been recorded.
+
+## Further main merges on 12 October
+
+The following bounded changes are now merged into `main`:
+
+| PR | Change | Recorded evidence |
+| --- | --- | --- |
+| [#361](https://github.com/fsodano/granaderos/pull/361) | Both ordinary mountain routes recover the finite Ensenada arsenal. Uspallata stages the actual mixed crew. | The earned stock arsenal control passes 1/1 in 128.324 seconds; 378 pins stay unchanged. Four native deaths remain permanent, and the original bronze guns retain their actual charges. |
+| [#362](https://github.com/fsodano/granaderos/pull/362) | Prepare paid Córdoba rear cover before the medical courier leaves; use finite urgent care after the native defense. | The earned preparation and interrupted trip pass 2/2 in 136.944 seconds; 555 relevant source/config/shipping pins and two consumed inputs stay unchanged. All eight new guard deaths and the separate native civilian loss remain permanent. The courier returns six actual Retiro dressings. |
+| [#363](https://github.com/fsodano/granaderos/pull/363) | The northern handover accepts the living, conscious commander's actual wounds. | The earned commander control and complete web mission file pass 5/5. The commander retains 21 HP. No runtime mission condition changes. |
+| [#364](https://github.com/fsodano/granaderos/pull/364) | Update the unchanged earned Salta control to its current native result. | The final affected gate passes 6/6 in 56.312 seconds; 584 source/shipping pins and five consumed inputs stay unchanged. Actual deaths, six gun charges, one road dressing and saved replay remain exact. |
+
+These receipts have separate scopes. Do not add their counts as one complete
+test run. The arsenal continuation wins Uspallata and completes full care,
+but its subsequent eight-person Los Patos force still loses. Entry movement
+and crew changes do not establish a battle victory.
+
+The latest complete ending file ran on frozen `711adfef`, before these merges.
+Both unchanged cases failed: 0/2, no skips or cancellations, 1,368.573
+seconds. All 617 combined source/shipping pins and 229 observed filesystem
+inputs stayed unchanged. The loose seed-8 route reached the native Yatasto
+handover, then failed the obsolete 88-HP commander assertion. The installed
+seed-1812 route won Uspallata and completed full care, then retreated at Los
+Patos with depleted guns. PR #363 corrects the commander assertion; PR #361
+earns a finite replacement battery. No new complete ending result is inferred
+from either fix.
+
+The historical `0.1` tag remains unchanged. Complete campaign acceptance,
+saved continuation, final browser review and the full release gate remain
+open.
