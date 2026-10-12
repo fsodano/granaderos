@@ -103,16 +103,35 @@ later Salta clinic tries to assign a doctor after donating that doctor's last
 dressing. PR #372 proves the narrow allocation correction, but later full
 clinic recovery, Salta, Yatasto and the complete opening remain open.
 
-The unchanged original recovery at `c4e12285` fails 0/1 in 1,790.022 seconds,
-with no skips or cancellations. All 609 source/config/shipping pins remain
-unchanged. It passes the later rear defense, but the final recovery assertion
-finds patient 112 dead after the earlier hour-150 hospital defense. Those
-complete failures remain open until a correction passes the affected route.
+The unchanged complete original recovery was run again on merged `main` at
+`8fafc671`. It fails 0/1 after 1,731.317 seconds, with no skips or
+cancellations. All 611 static/source/config/shipping pins and 391 actually
+loaded module sources remain unchanged. The first Córdoba critical care,
+later native Córdoba defense and Tucumán victory now pass. The run next stops
+at hour 368, second 2,667, when the hospital needs more finite Córdoba linen.
+Patients 114, 124 and 125 remain alive with actual critical wounds. This is
+progress past the earlier `c4e12285` casualty failure, not a complete recovery
+pass. The current full-run log hash is
+`a49451720d14a244a0013bf466103e21d10b703c1a08a914cf43a90238c7e101`.
+
+The complete unchanged two-case ending file also ran on `8fafc671`. Both cases
+fail in 1,753.937 seconds, with no skips or cancellations. All 623 static
+source/shipping/config pins and 229 actual filesystem inputs remain unchanged.
+The loose seed-8 route reaches funded Mendoza at hour 977, second 2,952, with
+262,695 pesos. Its arsenal helper then requires five local healthy veterans
+when only four are available. The installed default-seed route passes actual
+Uspallata and Los Patos victories and the physical San Martín meeting at hour
+1,025, second 747, with 62,713 pesos. It then stops at the actual paused Buenos
+Aires journey during coastal preparation. These are fresh complete-prefix
+results from 3,200 pesos. Neither case proves victory or the 48-hour saved
+ending continuation. The current full-run log hash is
+`4d108be0fe8b64ad85bc9b124c44804e01415e7944d0596ef6fa23ce50baacb8`.
 
 Merge checks on `797d1e28` pass: runner self-tests 14/14, complete coverage of
 1,048 test files, documentation audit, baseline audit 39/39 and typecheck.
-They do not replace the complete release gate. The latest complete ending
-receipt remains the failed two-case `711adfef` run recorded below.
+They do not replace the complete release gate. The latest complete ending and
+original recovery receipts are the failed `8fafc671` runs above. Earlier runs
+below retain their historical scope.
 
 ## Recorded checks and remaining limits
 
