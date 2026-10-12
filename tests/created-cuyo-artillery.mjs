@@ -43,8 +43,9 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
   retained.order({type:'selectSquad',id:selected});
  };
  const order=action=>{resolve();return retained.order(action);};
- const veterans=rosterFor(c).filter(op=>!originalMembers.includes(op.id)&&op.id!==2&&living(c).includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp)
+ const healthy=rosterFor(c).filter(op=>op.id!==2&&living(c).includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp)
   .sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id);
+ const reserve=healthy.filter(op=>!originalMembers.includes(op.id)),veterans=reserve.length>=5?reserve:healthy;
  let local=veterans.slice(0,5).map(op=>op.id);
  if(!veterans.slice(0,5).some(op=>op.medical>=60)){
   const medic=veterans.filter(op=>op.medical>=60).sort((a,b)=>c.operativeState[b.id].morale-c.operativeState[a.id].morale||b.medical-a.medical||a.id-b.id)[0];
