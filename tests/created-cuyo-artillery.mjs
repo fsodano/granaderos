@@ -122,7 +122,11 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  const spent=Object.entries(start.artilleryDepots??{}).flatMap(([sector,guns])=>guns.filter(g=>!g.loaded&&!g.ammo).map(g=>({sector,gun:storedArtilleryRecord(g)})));
  const prepared=prepareCreatedCuyoArsenalAssault(start,{report});let c=prepared.campaign;
  onCheckpoint('arsenal-assault',c);
- const victory=fightNorthernSector(c,'ensenada',{controller:recoveryPortSearchController(enterSector(c.pendingBattle,c.sectorStates.ensenada)),report});c=victory.campaign;
+ const initial=enterSector(c.pendingBattle,c.sectorStates.ensenada),foundryField=initial.units.filter(unit=>unit.side==='player'&&unit.hp>0&&prepared.originalMembers.includes(Number(unit.id))).map(unit=>unit.id);
+ // Keep a present foundry cohort together behind paid infantry. A lone
+ // original field commander retains the established ordinary assault policy.
+ const reserveIds=foundryField.length>1?foundryField:[];
+ const victory=fightNorthernSector(c,'ensenada',{controller:recoveryPortSearchController(initial,{reserveIds}),report});c=victory.campaign;
  onCheckpoint('arsenal-victory',c);
  const survivors=prepared.field.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
  assert.ok(survivors.length>=3,'The actual field gun needs three surviving available crew.');
