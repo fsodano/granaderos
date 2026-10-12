@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {operativeLocation,operativeInTransit} from '../game/squads.js';
 import {bookRouteHires} from './paid-route-hiring.mjs';
@@ -7,6 +7,7 @@ import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {stageOpeningRearCover} from './opening-rear-guard.mjs';
+import {relieveStockNorthernPatient} from './fresh-northern-command.mjs';
 
 // The original opening's courier leaves Córdoba without a local reserve.
 // Book actual short paid service after the Tucumán defense, before another
@@ -50,4 +51,26 @@ export function prepareOpeningCordobaReserve(start,{report=()=>{}}={}){
  campaign=decodeSave(encodeSave(campaign)).campaign;
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  return {campaign,receipt};
+}
+
+// A native defender can escape into a neighbouring cell while the town wins.
+// Send an actual supplied local doctor there before continuing the gun trip.
+export function relieveOpeningCordobaReserve(start,ids,{report=()=>{}}={}){
+ const before=structuredClone(start),receipts=[];let campaign=decodeSave(encodeSave(start)).campaign;
+ const urgent=()=>ids.filter(id=>{
+  const r=campaign.operativeState[id];
+  return campaign.recruited.includes(id)&&r.alive&&!r.captured&&!operativeInTransit(campaign,id)&&operativeLocation(campaign,id)!=='cordoba'&&(r.bleeding>0||r.hp<15);
+ });
+ for(let visit=0;urgent().length;visit++){
+  assert.ok(visit<ids.length,'Each actual escaped reserve patient receives finite relief.');
+  const patientId=urgent()[0],doctor=rosterFor(campaign).filter(op=>{
+   const r=campaign.operativeState[op.id];
+   return campaign.recruited.includes(op.id)&&r.alive&&!r.captured&&!operativeInTransit(campaign,op.id)&&operativeLocation(campaign,op.id)==='cordoba'&&r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10&&r.medkits>0&&op.medical>=20;
+  }).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
+  assert.ok(doctor,'A supplied actual Córdoba physician must reach the escaped wounded defender.');
+  const relieved=relieveStockNorthernPatient(campaign,{patientId,doctorId:doctor.id,report});campaign=relieved.campaign;receipts.push(relieved.receipt);
+ }
+ for(const [id,r]of Object.entries(before.operativeState))if(!r.alive){assert.equal(campaign.operativeState[id].alive,false);assert.equal(campaign.operativeState[id].deathMinute,r.deathMinute);}
+ assert.deepEqual(start,before);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
+ return {campaign,receipts};
 }
