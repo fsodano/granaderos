@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "sourceRevision": "58bf21cfd5b270f86640a44ccabbea3b591e5d74",
+  "sha256": "2d09950476d2d087d0df74e84137c5b9ba2fa3208dbf816dbba57b9ce1fb300c",
+  "rawBytes": 2592893,
+  "sourceCapture": ".cache/core-campaign-2026-10-12/legacy-recapture-care-observation-v1/northernReturnRecaptured.json",
+  "sourceReceipt": ".cache/core-campaign-2026-10-12/legacy-recapture-care-observation-v1/receipt.json",
+  "sourceLogSha256": "182cf60077400224c6c1c6de5691c4da5d9097743e2fcd57cb7b8b071cd35b14",
+  "sourceScope": "Unchanged native lost-Cordoba recapture from the genuine306 original fixture, before the Quiroga/Paz meeting. The source run used passive test-helper clinical observation only; this recapture checkpoint precedes those observed clinical calls. Runtime, controller, native orders, input and outcome were not transformed. The captured event JSON is stored verbatim.",
+  "clock": {
+    "hour": 350,
+    "secondOfHour": 2134
+  },
+  "native": {
+    "status": "victory",
+    "turns": 30,
+    "actions": 362,
+    "orders": 412,
+    "elapsedSeconds": 6369,
+    "exactSavedReplay": true
+  },
+  "newNativeDeaths": [
+    10,
+    4,
+    121,
+    112,
+    1000
+  ],
+  "patient": {
+    "id": 119,
+    "hp": 11,
+    "maxHp": 82,
+    "bleeding": 5,
+    "bandaged": 0,
+    "x": 47,
+    "y": 30,
+    "tacticalLevel": 0,
+    "routed": true,
+    "unconscious": true
+  },
+  "adjacentSuppliedPhysician": {
+    "id": 103,
+    "medical": 20,
+    "hp": 74,
+    "maxHp": 74,
+    "energy": 73,
+    "medkits": 1,
+    "x": 48,
+    "y": 31,
+    "tacticalLevel": 0
+  },
+  "boundary": "The former meeting consumed63seconds before any care and killed119. The regression must use ordinary finite first aid before that meeting, retain all five native deaths, and then perform real supplied clinical recovery."
+}
