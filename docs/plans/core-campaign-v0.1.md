@@ -69,12 +69,24 @@ tested source and limits.
 | [#400](https://github.com/fsodano/granaderos/pull/400), [#403](https://github.com/fsodano/granaderos/pull/403) | Install pinned Pillow and NumPy in the core Actions job. Use Python 3.13 in CI and the local setup guide. | The complete eight previously failing asset files and three scope controls pass 98/98. The complete reviewed-face file and scope controls separately pass 25/25; all five previously skipped NumPy cases execute. These are affected dependency checks, not a complete core or release result. |
 | [#402](https://github.com/fsodano/granaderos/pull/402) | Assemble the actual Córdoba patients locally, quote the real return horizon and use an hourly paid journey when prepaid renewals are unaffordable. Give real finite care after the interrupted rear defense. | The final complete three-case regression and scope controls pass 21/21. Nine legacy compatibility cases also pass on the same helper. The original patients reach Buenos Aires at `681:335`, with 21,878 pesos. The real Tucumán interruption wins in 48 turns and 405 orders; deaths 116 and 104 remain permanent. This earned return does not replace the complete original recovery. |
 
-The current complete original recovery is still being collected on frozen
-`c6881d99`. It is not reported as passed. Draft [PR #401](https://github.com/fsodano/granaderos/pull/401)
+The complete original recovery on frozen `c6881d99` finishes with one failure,
+no skips or cancellations, in 2,003.189 seconds. All 618 static pins, including
+242 shipping files, and 393 actual module inputs remain unchanged. The whole
+hospital and real return defense pass; that defense uses 48 turns, 405 orders
+and 9,224 tactical seconds. The next reunion stops at `681:335`, with 21,878
+pesos, when its helper tries to prepay 48 hours of every serving contract.
+The actual 7,722-peso renewal is refused. This is a failed whole-route receipt,
+not a complete recovery pass. Its log hash is
+`5f8936c1864e1ce032ba2512d64f0d81df0f2c707d23ce79a6f5e73276f2a9c8`.
+
+Draft [PR #401](https://github.com/fsodano/granaderos/pull/401)
 has an earned capital preparation and official paired-save control, but its
 native capital victory remains unproved. Failed cover/controller attempts
-remain failure receipts. Neither fresh ending nor its 48-hour continuation
-has a complete passing result on the final source.
+remain failure receipts. Its newer three-case planning control quotes a
+twelve-person relief with paid veterans and the three real empty guns; it
+does not execute that preparation or prove a native victory. Neither fresh
+ending nor its 48-hour continuation has a complete passing result on the
+final source.
 
 | PR | Change | Recorded affected checks |
 | --- | --- | --- |
@@ -251,18 +263,31 @@ ending continuation. The current full-run log hash is
 
 Merge checks on `797d1e28` pass: runner self-tests 14/14, complete coverage of
 1,048 test files, documentation audit, baseline audit 39/39 and typecheck.
-They do not replace the complete release gate. The latest complete ending and
-original recovery receipts are the failed `8fafc671` runs above. Earlier runs
-below retain their historical scope.
+They do not replace the complete release gate. At that earlier check, the
+complete ending and original recovery receipts were the failed `8fafc671`
+runs above. The later original recovery failure on `c6881d99` is recorded at
+the start of this document. Earlier runs below retain their historical scope.
 
 ## Current main regression checks
 
 The campaign quick job in [Actions run 38300410385](https://github.com/fsodano/granaderos/actions/runs/38300410385)
 passes on main `1e7f550d`: all 123 selected files finish, with 420/420 tests,
-no skips or cancellations, in 1,524.080 seconds. Its core job remains active
-at this documentation update. The later main `c6881d99` checks remain active.
-No active or cancelled job is reported as passed. Extended routes and the
-complete release gate remain open.
+no skips or cancellations, in 1,524.080 seconds. Its complete core quick job
+finishes all 911 selected files: 7,043/7,061 tests pass, eighteen fail, none
+are skipped or cancelled, in 5,133.924 seconds. Python dependencies load;
+the remaining failures concern the frozen apparel surface replay in eight
+asset files. A separate diagnostic reproduces the same refusal using an
+alternate PNG encoding with identical decoded pixels. Portable replay is
+under review; no current complete core pass is claimed.
+
+The campaign quick job in [Actions run 38306852089](https://github.com/fsodano/granaderos/actions/runs/38306852089)
+also passes on main `c6881d99`: all 123 files and 420 tests pass, without
+skips or cancellations, in 2,449.437 seconds. Its remaining core job is
+cancelled after this campaign result. The eight failing asset files, their
+source/accepted asset trees, Python requirements and core workflow are exact
+matches to the completed predecessor failure. The cancelled core job is
+not a passing result. Extended routes and the complete release gate remain
+open.
 
 The earlier combined quick result below retains its historical failure.
 
