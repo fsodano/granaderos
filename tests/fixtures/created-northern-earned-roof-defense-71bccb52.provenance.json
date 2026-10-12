@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "kind": "earned-official-campaign-save",
+  "sourceRevision": "71bccb521689de6465c1b49ab2410b7078a5d847",
+  "sourceWorkingTree": "The clinic-raid test helper fix was present. Runtime and all662 sources remained unchanged across the complete two-file batch that produced this pending defense. No roof-policy change had run before this input.",
+  "inputPath": ".cache/core-campaign-2026-10-11/northern-historical-55dbe6ad/after-care-northern-checkpoint-cordoba-defense-ready.json",
+  "inputSha256": "25302056a7ad1eb3361b7507c47d176438d54434f7ba2e6b1ef09f9425296dde",
+  "gzipPath": "created-northern-earned-roof-defense-71bccb52.save.json.gz",
+  "gzipSha256": "43626c7fe33be490252179f189a258187d128d7247b226792cbefaaf1caba195",
+  "rawBytes": 1921814,
+  "gzipBytes": 192265,
+  "checkpoint": "cordoba-defense-ready",
+  "battleId": "defense-enemy-group-2-294",
+  "preparation": "Existing prepareHiredNorthernDefense uses real paid replacements, known finite equipment, ordinary roof moves, fortification and waiting until the actual group arrives.",
+  "policy": "Existing northernClinicDefenseOrder holds roof cover through observed contact. Ground actors keep ordinary northernCombatOrder.",
+  "policyReceipt": ".cache/core-campaign-2026-10-11/northern-historical-55dbe6ad/cordoba-roof-policy-receipt.json",
+  "policySources": {
+    "game/campaign.js": "5cc9972f40c70ddea6ca024d94cb83f9298b6f0a1f9004dab86105b2248a15f3",
+    "game/tactical.js": "5ab2384b51441b456aec48a5cb9bacb19ef369fb9d94cc808152148d56641b3c",
+    "game/auto-bandage.js": "eeee581ffb2ee1eebc264feacbf8a33e5ae568fd639225ba06f520acc6b7f987",
+    "tests/northern-route.mjs": "2cc8e2510f7f75987467d0be9e73f4503b4c2024506aa780d6aa4c66c63d3135",
+    "tests/opening-driver.mjs": "3a808100454045b1acf59e16acd14506ff6ad3e7502aeacabe415638d6718e3f"
+  },
+  "scope": "Funded created Retiro route; exact pending second Córdoba defense after real earlier casualties and clinic care. This is not installed-default ending proof.",
+  "mutations": "None. Exact official save bytes are compressed without edits to state, actors, health, supplies, money, positions or outcomes."
+}

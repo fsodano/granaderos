@@ -46,10 +46,20 @@ test('finite supplies, aptitude, AP and patient state exclude impossible treatme
   for(const patch of [{medkits:0},{medical:0},{ap:28},{energy:0},{routed:true}]) {
     const s=field(patch);assert.notEqual(chooseEnemyAction(s,medic(s))?.slot,'medical');
   }
-  for(const patch of [{hp:0},{routed:true},{surrendered:true},{fled:true},{departure:{edge:'E'}},{hp:15,bleeding:0,bandaged:85}]) {
+  // A conscious routed patient can refuse care; a critical unconscious one cannot.
+  for(const patch of [{hp:0},{hp:40,routed:true},{surrendered:true},{fled:true},{departure:{edge:'E'}},{hp:15,bleeding:0,bandaged:85}]) {
     const s=field({},patch);assert.notEqual(chooseEnemyAction(s,medic(s))?.slot,'medical');
   }
   const s=field({ap:25,activeSlot:'medical'});assert.equal(chooseEnemyAction(s,medic(s)).targetId,'patient');
+});
+
+test('a real enemy medic treats an unconscious routed ally without restoring command or granting patient AP',()=>{
+  const s=field({}, {routed:true}),before=structuredClone(s),n=endTurn(s);
+  assert.equal(chooseEnemyAction(s,medic(s)).slot,'medical');
+  assert.equal(n.lastError,null);assert.equal(patient(n).hp,15);assert.equal(patient(n).bleeding,0);
+  assert.equal(patient(n).routed,true);assert.equal(patient(n).unconscious,false);assert.equal(patient(n).ap,0);
+  assert.equal(medic(n).medkits,1);assert.equal(medic(n).ap,0);assert.equal(medic(n).activeSlot,'primary');
+  assert.equal(n.elapsedSeconds,6);assert.deepEqual(s,before);assert.deepEqual(n,endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(s)))));
 });
 
 test('a medic walks a real short path while reserving AP for equipment, treatment and a weapon',()=>{

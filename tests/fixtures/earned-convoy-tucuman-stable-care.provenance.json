@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "scope": "Exact captured admitted partial finite-care campaign, followed by bounded ordinary rest. Not a fresh campaign-ending fixture.",
+  "source": ".cache/core-campaign-2026-10-11/convoy-tucuman-care-diagnosis/strategic-preparation/20234-2-recoverNorthernLocalPatients-preparation-failure-21R2a4/campaign.json",
+  "rawBytes": 12028030,
+  "sha256": "4e72b2c83d98d6376d4007c16562596777ab73ba10bfebc63bc20be296cb47fc",
+  "compressedSha256": "d591e5e39ddce5ef70cb82e819e77799657ac71dc776498114fba17f853f9f05",
+  "clock": [
+    1457,
+    1310
+  ],
+  "sector": "tucuman",
+  "patientIds": [
+    110,
+    134
+  ],
+  "patients": [
+    {
+      "id": 110,
+      "hp": 77,
+      "maxHp": 87,
+      "bleeding": 0
+    },
+    {
+      "id": 134,
+      "hp": 65,
+      "maxHp": 70,
+      "bleeding": 0
+    }
+  ],
+  "treasury": 317515,
+  "inputOrigin": "Actual convoy route, admitted captured recoverNorthernLocalPatients preparation failure after all nine finite dressings were spent. Exact bytes are retained; no live-state grants or rewritten outcome."
+}

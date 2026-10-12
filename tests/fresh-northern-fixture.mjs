@@ -1,7 +1,7 @@
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {prepareHiredNorthernDefense,prepareNorthernOfficerRelief,completeHiredNorthernMission} from './fresh-northern-command.mjs';
 import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
-import {fightNorthernSector} from './northern-route.mjs';
+import {fightNorthernSector,northernClinicDefenseOrder} from './northern-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
@@ -36,9 +36,18 @@ import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 import {bookRouteHires,finishRouteHireArrivals,assertRouteHireArrived} from './paid-route-hiring.mjs';
+import {restStableRoutePatients} from './stable-route-rest.mjs';
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+
+// The paid defense already reached real roof cover during preparation.
+// Keep that cover through observed enemy contact; ground troops retain their
+// ordinary fire, movement, reload and medical orders.
+export function fightCreatedNorthernDefense(ready,{report=()=>{}}={}){
+ assert.equal(ready.pendingBattle?.sector,'cordoba');assert.ok(ready.pendingBattle.defenseGroupId);
+ return fightNorthernSector(ready,'cordoba',{controller:northernClinicDefenseOrder,report});
+}
 
 // A real raid interrupts clinic work. Resolve it before another care hour,
 // and pay native field aid before strategic settlement resumes the clock.
@@ -124,7 +133,11 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
     const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row);campaignOrder({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});assert.equal(s.operativeState[donor].medkits,before-count);transfers.push({donor,count});
    }else{
     if(!individualCare){individualCare=true;for(const operativeId of servingLocal())campaignOrder({type:'assignCare',operativeId,assignment:'rest'});}
-    const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'remaining care needs an actual known reachable finite dressing source');
+    const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+    if(!row){
+     const rest=restStableRoutePatients(s,{patients,sector,report});s=rest.campaign;
+     assert.equal(rest.completed,true,rest.stoppedReason);break;
+    }
     const before=s.operativeState[doctor.id].medkits,count=Math.min(row.count,12);campaignOrder({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});assert.equal(s.operativeState[doctor.id].medkits,before+count);transfers.push({source:row.key,count});
    }
   }
@@ -345,7 +358,7 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
   notes.push({...record,fundsBeforeSettlement:before,fundsAfterReplacements:s.resources.treasury,replacements,deaths});onCheckpoint?.(sector,s,notes);
  }
  const readyDefense=prepareHiredNorthernDefense(s);onCheckpoint?.('cordoba-defense-ready',readyDefense,notes);
- const defense=fightNorthernSector(readyDefense,'cordoba',{controller:cautiousCombatOrder});onCheckpoint?.('cordoba-defense',defense.campaign,notes);
+ const defense=fightCreatedNorthernDefense(readyDefense,{report});onCheckpoint?.('cordoba-defense',defense.campaign,notes);
  const readyTucuman=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true});onCheckpoint?.('tucuman-ready',readyTucuman,notes);
  const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:coastalBatteryController(enterSector(readyTucuman.pendingBattle,readyTucuman.sectorStates.tucuman),{sharedArtillerySight:true})});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
