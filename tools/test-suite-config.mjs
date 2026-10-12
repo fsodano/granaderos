@@ -3,7 +3,7 @@ export default [
  {file:'tests/earned-stock-coast-preparation.test.mjs',reason:'Earned complete paid coastal force, first capital victory replay, finite supplies and later native defense readiness; no ending claim.'},
  {file:'tests/earned-stock-blocked-capital-journey.test.mjs',reason:'Earned twelve-person capital response, finite gun/care stocks, native blockade victory and exact saved replay.'},
  {file:'tests/earned-installed-arsenal.test.mjs',reason:'Earned native coastal arsenal victory, actual care and return, finite cannon delivery and service accounting.'},
- {file:'tests/earned-loose-mountain-arsenal.test.mjs',reason:'Earned loose-route paid morale recovery, available reinforcement, finite medical kit and pending arsenal assault.'},
+ {file:'tests/earned-loose-mountain-arsenal.test.mjs',reason:'Earned loose-route paid preparation, native arsenal combat, finite care and physical cannon return.'},
  {file:'tests/earned-stock-mountain-arsenal.test.mjs',reason:'Earned stock coastal arsenal victory, finite mountain cannon delivery and native saved continuation.'},
  {file:'tests/earned-stock-flanked-los-patos.test.mjs',reason:'Earned paid mountain flanks, native Los Patos replay, finite care and physical commander handover.'},
  {file:'tests/earned-cordoba-medical-trip-defense.test.mjs',reason:'Earned paid Cordoba reserve, native medical-trip defense replay and finite post-battle aid.'},
