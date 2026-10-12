@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "source": "Complete paid twelve-person capital native candidate after unchanged earned full preparation; exact official saved campaign after real settlement",
+  "sourceRevision": "245471dae84aa6f89daedb023c753de592aa87e2",
+  "producerValidatedHead": "95dc7aa4e652d22d9a16fb8b931460c61ff2ef2b",
+  "producerMerge": "58bf21cfd5b270f86640a44ccabbea3b591e5d74",
+  "sourcePath": ".cache/core-campaign-2026-10-12/expanded-capital-native-infantry-v1/capital.victory.save.json",
+  "sourceReceipt": ".cache/core-campaign-2026-10-12/expanded-capital-native-infantry-v1/receipt.json",
+  "sourceLogSha256": "e2e39b88195f1325983bf43868ae845b67fa640429ff2c89ac6d0b1a552a9c6a",
+  "sourceFixture": "tests/fixtures/earned-expanded-capital-assault.save.json.gz",
+  "parentRawSha256": "c035ceca500d9efc757ef4c969b56c8a78fad9cc3fda2a2668a1fc77e30827a0",
+  "parentRiverRawSha256": "385c57843fbf71683b02de385f9fc3966becf8d04b6c56d6d8cf36718de255f7",
+  "rawSha256": "4709604fe2f3d6ca6f379266384186f87a39ae857b09088f4f9f2296272a6561",
+  "gzipSha256": "79c752cb0358162a3ad550af686d94b010453c8616ae2b4d88b82556deafdff0",
+  "rawBytes": 4437478,
+  "savedAt": "2026-10-12T22:36:28.684Z",
+  "campaignSha256": "72819736056dafb9baad763ca6b8e514b6d7bba0c4785c670115b52a336248c7",
+  "clock": [
+    3850,
+    1672
+  ],
+  "treasury": 905389,
+  "livingKeepers": [
+    2,
+    57,
+    10,
+    101,
+    117,
+    102,
+    107,
+    122
+  ],
+  "fieldIds": [
+    2,
+    10,
+    101,
+    117,
+    102,
+    107,
+    122
+  ],
+  "newNativeDeaths": [
+    6,
+    116,
+    105,
+    145,
+    109
+  ],
+  "patients": [
+    {
+      "id": 117,
+      "hp": 15,
+      "maxHp": 95,
+      "bleeding": 0
+    },
+    {
+      "id": 107,
+      "hp": 22,
+      "maxHp": 78,
+      "bleeding": 0
+    }
+  ],
+  "native": {
+    "outcome": "victory",
+    "turns": 17,
+    "orders": 571,
+    "seconds": 164,
+    "originalPrivateTests": 1,
+    "originalPrivatePass": 1,
+    "permanentGateTests": 19,
+    "permanentGatePass": 19,
+    "permanentGateLogSha256": "2cb1af3983c977bfea062f7c1f9a40d75ed4b33bfe8e87eefaadd3d866ea8194"
+  },
+  "scope": "Exact accepted earned capital victory. Care, northern requests/victories, both fresh endings and real48h remain unproved."
+}
