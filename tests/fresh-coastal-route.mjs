@@ -3,6 +3,7 @@ import {ensureRouteTownIncome,meetLocalIncomeRepresentative} from './route-town-
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {collectRouteItems,repairRouteFirearms} from './finite-route-equipment.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
+import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 import {doctorRate} from '../game/medical-care.js';
 import {prepareSantaFePaidColumn} from './santa-fe-paid-column.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
@@ -334,9 +335,22 @@ export function recoverFreshPort(start,{hospital='retiro',report=()=>{},fieldIds
   assert.ok(doctors.length,'Actual wounded return parties need a serving local physician.');
   const rate=Math.min(...doctors.map(op=>doctorRate(op,c))),healingKits=wounded.reduce((sum,id)=>sum+Math.ceil((c.operativeState[id].maxHp-c.operativeState[id].hp)/rate),0);
   const reliefKits=Math.ceil(carryDressings*local.length/field.length);
-  const reserves=Object.fromEntries(doctors.map(op=>[op.id,1]));
-  c=supplyRouteDressings(c,doctors[0].id,healingKits+Math.max(doctors.length,reliefKits),{reserves,report});
-  report({event:'portReturnDressingsCarried',sector:at,physician:doctors[0].id,wounded,healingKits,reliefKits,carried:c.operativeState[doctors[0].id].medkits,hour:c.hour,second:c.secondOfHour});
+  const carriers=rosterFor(c).filter(op=>local.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>15).sort((a,b)=>b.medical-a.medical||a.id-b.id).slice(0,3);
+  assert.ok(carriers.length,'The finite return reserve needs an actual awake local carrier.');
+  const total=healingKits+Math.max(doctors.length,reliefKits),share=Math.ceil(total/carriers.length),targets=Object.fromEntries(carriers.map((op,index)=>[op.id,Math.min(share,total-index*share)]));
+  for(const carrier of carriers){
+   const target=targets[carrier.id];
+   if(c.operativeState[carrier.id].medkits>=target)continue;
+   try{c=supplyRouteDressings(c,carrier.id,target,{reserves:targets,report});}
+   catch(error){
+    if(!error.message.startsWith('No actual reachable finite dressings remain'))throw error;
+    // Inspect real visible remains through the normal hand UI. The helper
+    // neither reads hidden contents nor marks bodies as discovered.
+    const found=recoverVisibleRouteDressings(c,carrier.id,target-c.operativeState[carrier.id].medkits,{report});c=found.campaign;
+    c=supplyRouteDressings(c,carrier.id,target,{reserves:targets,report});
+   }
+  }
+  report({event:'portReturnDressingsCarried',sector:at,wounded,healingKits,reliefKits,carriers:carriers.map(op=>({id:op.id,target:targets[op.id],carried:c.operativeState[op.id].medkits})),hour:c.hour,second:c.secondOfHour});
  }
  report({event:'portReturnDeparture',campaign:structuredClone(c),hospital,field});
  const groups=[];
