@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are delivered to `main` through PR #393. Each receipt
+The following changes are delivered to `main` through PR #395. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
@@ -79,6 +79,34 @@ has its own scope; their counts are not one complete campaign result.
 | [#390](https://github.com/fsodano/granaderos/pull/390) | Keep a present foundry cohort behind paid infantry through ordinary reachable movement in the west-entry arsenal route. A lone original field commander retains the established tactic. Restore the complete loose arsenal return control. | Four complete affected files pass 12/12 in 286.299 seconds, with all 596 relevant source/config/shipping pins and four observed inputs unchanged. The loose force wins in seventeen turns and 324 orders; paid soldier 132 dies and stays dead. All original foundry members survive; finite care, the paid return and both original gun deliveries complete at Mendoza 1361:305 with 255,449 pesos. The earlier funded control retains its exact eight-turn/420-order win and 976:1524 delivery. Original deaths, source immutability and official saves remain asserted. Fresh complete endings, 48-hour continuation and the full release gate remain open. |
 | [#392](https://github.com/fsodano/granaderos/pull/392) | Publish the verified revision selected by the manual Pages run. A later main commit no longer makes a successful job silently skip publication. | Nineteen deployment path and worker tests, typecheck, docs and baseline audits, YAML parsing and the nested production export pass. The live site starts the installed campaign at Retiro and loads a ready Three.js battlefield without browser console errors. This verifies startup and rendering, not a complete browser campaign. |
 | [#393](https://github.com/fsodano/granaderos/pull/393) | Separate reviewed core and campaign test scopes from quick/extended duration profiles. Use complete changed paths to select independent Actions; keep full native routes manual. | The complete tooling gate passes 34/34 in 3.762 seconds with 1,296 relevant pins unchanged. At this revision, all 1,061 files partition into 912 core and 149 campaign files. Automatic quick selections contain 911 core and 123 campaign files; manual extended selections retain one core and 26 campaign files. This is runner/selection evidence, not a new gameplay-suite pass. |
+| [#395](https://github.com/fsodano/granaderos/pull/395) | Recover eight returned veterans' actual equipment, pay their quoted contracts, complete two real travel columns and fortify the capital before its native coastal defense. Keep the original one-hire preparation branch for its complete readiness control. | The complete native/port and finite equipment/service gate passes 30/30 in 259.502 seconds with 573 source/shipping and six actual input pins unchanged. The direct eight-person preparation/arrival and CI scope controls separately pass 30/30 in 96.313 seconds with 533 source/shipping and 917 actual input pins unchanged. The resulting fifteen-person force wins the actual twenty-one-enemy defense in nineteen turns, 907 orders and 614 tactical seconds. All seven new deaths remain permanent; command rejoin, controlled-port arrival, the naval meeting, finite care and official saves pass. Both new files remain in campaign scope and extended duration. River victory and complete ending/48-hour acceptance remain open. |
+
+### Coastal continuation after PR #395
+
+The earned native defense settles at `1521:492` with 53,478 pesos. The
+commander returns from the real Retiro exit before the surviving field reaches
+Ensenada at `1527:492`, with 53,448 pesos. The physical naval meeting finishes
+at `1527:692`; finite coast care finishes at `1538:692`, with 66,408 pesos.
+The new [fixture provenance](../../tests/fixtures/earned-paid-coastal-capital-defense.provenance.json)
+records the immutable installed-campaign input and the separate native, port
+and care evidence. This earned continuation does not replace a fresh default
+start on the final source.
+
+The native affected-gate log hash is
+`95a0d2690b6b626ebc972e330e6fa6d221a16aeeedeb251490ac47b7cd340885`;
+the direct paid-column/control log hash is
+`1eef03741902c54191ce578999e3fc4a01dc386d6e72fa05bb125cfce1149bf0`.
+The whole commander suffix reached the later river helper's eight-person
+upper bound after retaining twelve real survivors. Its failing receipt is
+preserved. Subsequent preparation and native river attempts remain diagnostic
+work and are not reported as an ending pass.
+
+Supplementary checks on clean main `2f87dc50` pass fifteen Python data/STI
+tests and the standalone strict C++17 black-powder rule check. Local logs are
+retained under `.cache/core-campaign-2026-10-12/native-current-2f87dc50/`.
+These checks do not compile Windows or prove the browser campaign. The fresh
+installed ending, 48-hour continuation, final browser review and complete
+unfiltered release gate remain open.
 
 ### Published build after PR #392
 
