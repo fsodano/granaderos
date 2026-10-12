@@ -21,4 +21,5 @@ export default [
  {file:'tests/fresh-historical-loss.test.mjs',reason:'Actual Mendoza victory followed by required engineer death retained across save and settlement.'},
  {file:'tests/opening-playthrough.test.mjs',reason:'Opening campaign playthrough through defeat, prisoner rescue and the northern mission.'},
  {file:'tests/illustrated-sprite-repack.test.mjs',reason:'Repack every authored illustrated sheet and validate the resulting raster atlases.'},
+ {file:'tests/earned-stock-coastal-clinic-rest.test.mjs',reason:'Earned post-Andes finite clinic exhaustion, bounded native stable rest and exact service/save accounting.'},
 ];
