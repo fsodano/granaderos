@@ -112,7 +112,7 @@ soldier remains dead, and the settled save reloads. The northern helper then
 recovered officers, a provincial gun and finite dressings, healed the actual
 injured support and saved the pending Salta assault. These are bounded
 checkpoint results. The following actual Salta assault also won after 265
-orders, but post-battle first aid did not stabilize officer Paz. That failure
+orders, but post-battle first aid did not stabilize officer Quiroga (ID 9). That failure
 is retained. These results do not prove a fresh complete campaign ending.
 
 The production opening review used build `0.1.0 · 66560194cd5b`, from
@@ -130,9 +130,10 @@ spend the real officer fee, paid physician, fortifications and finite
 dressings, then save and replay an ordinary rural sleep tick. The later return
 still fails at its actual hour-408 Tucumán raid.
 
-The full release regression, post-Salta care, later hospital return and Cuyo
-defense routes remain open. Earlier native raid defeats are retained as
-failures. Neither a passing checkpoint nor a merge changes that status.
+The full release regression, later hospital return and complete Cuyo route
+remain open. Bounded post-Salta care and Cuyo defense checks are recorded
+below. Earlier native raid defeats remain recorded failures. A passing
+checkpoint or a merge does not establish complete campaign acceptance.
 
 ## Complete regression receipt for this batch
 
@@ -166,3 +167,44 @@ verified 1,413 files and 1,045 asset references, with the same
 primary-checkout Python checks passed 15/15, and the standalone strict C++17
 rule check passed. All 69 native inputs and 42 shared candidate input hashes
 still match their recorded receipt. This is not a Windows engine build.
+
+## Timely aid and travel follow-up
+
+PR #343 changes route test helpers and adds earned checkpoint regressions.
+It does not change the runtime, installed campaign, resource definitions or
+victory requirements.
+
+The complete installed Salta first-aid test passed 1/1. The nearby physician
+recovers two existing dressings from known enemy remains and spends one in
+three seconds. Quiroga survives with 15 health and no bleeding. Ordinary
+payment, travel and conference orders then complete Yatasto. Earlier deaths
+remain permanent, and the resulting campaign reloads through the official
+save codec. This proves the earned checkpoint continuation, not a fresh
+complete installed campaign.
+
+All seven tests in the three affected battery files passed, with all 593
+pinned inputs unchanged. Native route previews now select rural rest stops
+before the crew becomes exhausted, including interrupted journeys. The
+earned regression preserves the actual later occupation and looting of
+Córdoba, remote wounds, finite equipment and exact saved order replay.
+
+The complete earned Cuyo battery defense test passed 1/1 after the guard
+booking update. The local reserve defeats the original raid through ordinary orders,
+preserves its four actual deaths, stabilizes the three surviving casualties
+with five existing dressings and delivers both original guns. Battle and
+first-aid orders replay through official midpoint saves. Four separate paid
+hiring and guard-booking checks also passed, including a current installed
+immediate arrival with its actual quote and exact service duration.
+
+All nineteen tests in the five affected coastal files passed, with all 647
+pinned inputs unchanged. Created, hired and local forces complete their
+coastal routes with actual victories, casualties and saved continuation.
+The helpers keep the mission commander in reserve, stabilize unconscious
+survivors before strategic time resumes, select a physically reachable cache
+carrier and inspect friendly remains through ordinary movement and look
+orders. Paid care assertions use actual wounds, vacancies, hire quotes and
+arrival receipts. Finite equipment and permanent deaths remain enforced.
+
+These are bounded results. The full opening, later hospital return, complete
+installed ending, final browser continuation and passing full release gate
+remain open. The earlier unfiltered regression receipt is unchanged.
