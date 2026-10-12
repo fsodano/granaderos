@@ -1,0 +1,53 @@
+{
+  "scope": "Bounded earned in-flight battery crew after actual replayed support raid. Tests ordinary route staging/rest and strict save continuation only; remote wounds remain real. No artillery recovery, Salta/Yatasto victory or completed campaign is certified.",
+  "fixture": "opening-battery-native-inflight.save.json.gz",
+  "sourceHead": "d615e2cc",
+  "inputSource": "tests/fixtures/opening-salta-native-recovered.save.json.gz",
+  "inputRawSha256": "267363259c083df328b6c84f057a2a68669c6c1ba03ae87e55424021904f108e",
+  "capture": ".cache/core-campaign-2026-10-11/battery-native-rest-diagnosis/support-battery-settled.json",
+  "captureSha256": "59a72326f6430f291b79091f18ebb33124fd28fcf5112232ee9b2572e315ce77",
+  "capturePhase": "prepareSaltaAssault support-battery-settled callback, after actual native raid result and exact real-order replay, before resumed crew travel",
+  "captureHelperChanges": "Opt-in passive refused-action recorder only in route-battery.mjs; no native action or policy changes before this capture.",
+  "additionalOrdersAfterCapture": 0,
+  "canonicalStrictSaveAdmission": true,
+  "rawSha256": "296c5d497f5bb3e315971f3358f58d633f6a37898d8a4156f24508bbe0aa6cab",
+  "gzipSha256": "19e518f2393839438fdf68cebb09784da82b5418aaae5fce17f44a8a1696dcaf",
+  "clock": [
+    288,
+    1587
+  ],
+  "location": "cell-21-25",
+  "squad": [
+    100
+  ],
+  "crew": {
+    "hp": 70,
+    "energy": 58,
+    "fatigue": 42
+  },
+  "earlierRaid": {
+    "groupId": "enemy-group-3",
+    "status": "victory",
+    "newDeaths": [
+      108,
+      126,
+      129,
+      133
+    ]
+  },
+  "unresolvedRemotePatients": [
+    {
+      "id": 144,
+      "hp": 63,
+      "bleeding": 1,
+      "location": "tucuman"
+    },
+    {
+      "id": 130,
+      "hp": 39,
+      "bleeding": 2,
+      "location": "tucuman"
+    }
+  ],
+  "receipt": ".cache/core-campaign-2026-10-11/battery-native-rest-diagnosis/receipt.json"
+}
