@@ -12,6 +12,7 @@ import {restoreFinalMorale} from './final-campaign-route.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {decodeSave,encodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {actBattle,artilleryContact,teamCanSee,stanceCost,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {sectorDeploymentModel,sectorDeploymentAction} from '../game/sector-deployment.js';
@@ -24,14 +25,18 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  assert.ok([4,6].includes(fieldSize),'a real relief battery has two or three complete pairs');
  const batterySize=fieldSize/2;
  const returning=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='santa_fe';});
- let c=recoverFreshPort(start,{hospital:'cordoba',fieldIds:preparedFieldIds?[57,...preparedFieldIds]:returning});
- const rear=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='retiro';}),field=c.recruited.filter(id=>{const r=c.operativeState[id];return id!==57&&r.alive&&!r.captured&&r.location==='cordoba'&&(preparedFieldIds?preparedFieldIds.includes(id):(c.contracts[id].expiresAt===null||contractQuote(c,rosterFor(c).find(o=>o.id===id),'day').price<=routeHiringCeiling(c,100)));});
+ // Command may have used a real boundary exit to another friendly province.
+ // The recovery helper forms legal local parties and travels from each real
+ // location; including him does not teleport him into the river survivors.
+ let c=recoverFreshPort(start,{hospital:'cordoba',fieldIds:preparedFieldIds?[57,...preparedFieldIds]:[...new Set([...returning,57])],prepareCareSupplies:true,retainField:true,carryDressings:fieldSize*5,report});
+ const rear=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='retiro';}),availableField=c.recruited.filter(id=>{const r=c.operativeState[id];return id!==57&&r.alive&&!r.captured&&r.location==='cordoba'&&(preparedFieldIds?preparedFieldIds.includes(id):(c.contracts[id].expiresAt===null||contractQuote(c,rosterFor(c).find(o=>o.id===id),'day').price<=routeHiringCeiling(c,100)));});
+ const field=preparedFieldIds?availableField:availableField.slice(0,Math.max(0,fieldSize-rear.length));
  if(preparedFieldIds){assert.equal(preparedFieldIds.length+rear.length,fieldSize);assert.equal(new Set([...preparedFieldIds,...rear]).size,fieldSize);assert.deepEqual([...field].sort((a,b)=>a-b),[...preparedFieldIds].sort((a,b)=>a-b));for(const id of [...field,...rear])assert.ok(c.contracts[id].expiresAt===null||c.contracts[id].expiresAt>c.hour,'every explicitly prepared paid actor must be in actual active service');}
  const order=a=>{
   if(a.type==='wait')for(const id of [...field,...rear]){let contract=c.contracts[id];while(contract?.expiresAt!=null&&contract.expiresAt<=c.hour+a.hours){const n=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(n.lastError,null,n.lastError);c=n;contract=c.contracts[id];}}
   const n=dispatchCampaign(c,a);assert.equal(n.lastError,null,JSON.stringify(a)+n.lastError);c=n;
  };
- report({stage:'capitalCare',hour:c.hour,field});
+ report({stage:'capitalCare',hour:c.hour,field,campaign:structuredClone(c)});
  for(const id of rear){const r=c.operativeState[id];assert.ok(r.alive);assert.equal(r.location,'retiro');assert.equal(r.hp,r.maxHp);order({type:'assignCare',operativeId:id,assignment:'rest'});}
  const missing=fieldSize-rear.length-field.length;assert.ok(missing>=0,'the actual field and rear guard must fit the selected relief');
  const candidates=rosterFor(c).filter(o=>{const r=c.operativeState[o.id],q=contractQuote(c,o,'day');return o.id>=100&&o.id<1000&&r.alive&&!r.captured&&!c.recruited.includes(o.id)&&r.hp===r.maxHp&&!r.bleeding&&r.morale>=65&&q.available;}).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price||a.id-b.id).slice(0,missing);
@@ -55,7 +60,7 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  for(let h=0;h<24&&field.some(id=>!c.recruited.includes(id));h++)order({type:'wait',hours:1});
  assert.equal(field.length,fieldSize-rear.length);assert.ok(field.every(id=>c.recruited.includes(id)));
  order({type:'createSquad',name:'Auxilio del puerto',ids:field,sector:'cordoba'});const main=c.activeSquadId;
- c=restoreFinalMorale(c);report({stage:'capitalRest',hour:c.hour,treasury:c.resources.treasury,field});
+ c=restoreFinalMorale(c);report({stage:'capitalRest',hour:c.hour,treasury:c.resources.treasury,field,campaign:structuredClone(c)});
  let support=null;
  if(rear.length){order({type:'createSquad',name:'Retiro',ids:rear,sector:'retiro'});support=c.activeSquadId;}
  const rearm=()=>{
@@ -90,6 +95,8 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  assert.deepEqual(c.pendingBattle.artillery.filter(g=>!g.stationed).map(g=>g.type),Array(batterySize).fill('bronze4'));
  report({event:'capitalReliefReady',hour:c.hour,fieldSize,batterySize,field,rear});
  for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
+ const admitted=enterSector(c.pendingBattle,c.sectorStates.buenos_aires);
+ assert.deepEqual(decodeSave(encodeSave(c,admitted)),{campaign:c,battle:admitted});
  return c;
 }
 

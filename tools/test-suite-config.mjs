@@ -4,6 +4,8 @@ export default [
  {file:'tests/earned-original-northern-reunion.test.mjs',reason:'Whole genuine returned681 paid reunion, completed clinic service, quoted simultaneous postas, native northern road and strict saved custody.'},
  {file:'tests/earned-original-hospital-rear-guard.test.mjs',reason:'Exact earned original hospital rear preparation, finite forward battery and complete native hospital care; full original recovery remains separate.'},
  {file:'tests/earned-coastal-river.test.mjs',reason:'Genuine coastal-care eight/twelve-person compatibility, paid sixteen-person finite river preparation and native two-front victory with official replay/settlement.'},
+ {file:'tests/earned-expanded-capital-return.test.mjs',reason:'Genuine nine-person river survivor care, paid three-veteran relief, finite Ensenada courier/property recovery and twelve-person coordinated capital preparation with paired save; no native battle in this file.'},
+ {file:'tests/earned-expanded-capital-native.test.mjs',reason:'Actual paid twelve-person capital infantry victory, exact two-execution native replay, five permanent deaths, unchanged three empty guns and official finite settlement.'},
  {file:'tests/earned-coastal-native-defense.test.mjs',reason:'Genuine paid fifteen-person native capital defense, official replay and actual controlled port/naval/care continuation; no ending claim.'},
  {file:'tests/coastal-paid-column.test.mjs',reason:'Eight actual returned veterans, finite local kit, ordinary paid contracts and real two-column coastal arrival.'},
  {file:'tests/earned-stock-coast-preparation.test.mjs',reason:'Earned complete paid coastal force, first capital victory replay, finite supplies and later native defense readiness; no ending claim.'},
