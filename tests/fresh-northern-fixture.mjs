@@ -36,6 +36,7 @@ import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 import {bookRouteHires,finishRouteHireArrivals,assertRouteHireArrived} from './paid-route-hiring.mjs';
+import {restStableRoutePatients} from './stable-route-rest.mjs';
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
@@ -132,7 +133,11 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
     const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row);campaignOrder({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});assert.equal(s.operativeState[donor].medkits,before-count);transfers.push({donor,count});
    }else{
     if(!individualCare){individualCare=true;for(const operativeId of servingLocal())campaignOrder({type:'assignCare',operativeId,assignment:'rest'});}
-    const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'remaining care needs an actual known reachable finite dressing source');
+    const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+    if(!row){
+     const rest=restStableRoutePatients(s,{patients,sector,report});s=rest.campaign;
+     assert.equal(rest.completed,true,rest.stoppedReason);break;
+    }
     const before=s.operativeState[doctor.id].medkits,count=Math.min(row.count,12);campaignOrder({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});assert.equal(s.operativeState[doctor.id].medkits,before+count);transfers.push({source:row.key,count});
    }
   }
