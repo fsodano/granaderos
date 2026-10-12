@@ -53,6 +53,43 @@ failure receipt; it is not proof that a game mechanic is broken.
 - [ ] Complete the installed default-seed route and its saved continuation.
 - [ ] Complete the final production browser review and full release gate.
 
+## Latest merged evidence
+
+The following changes are merged into `main` through PR #370. Each receipt
+has its own scope; their counts are not one complete campaign result.
+
+| PR | Change | Recorded affected checks |
+| --- | --- | --- |
+| [#368](https://github.com/fsodano/granaderos/pull/368) | Visit a clear, controlled Ensenada through ordinary travel and a physical naval meeting. Keep the earlier actual arsenal victory receipt; a blockaded or occupied port still requires combat. | Three tests pass in 130.263 seconds. All 596 source/shipping pins and four consumed inputs remain unchanged. The real blockade control refuses the friendly visit. |
+| [#369](https://github.com/fsodano/granaderos/pull/369) | Integrate the paid Córdoba rear reserve after the actual Tucumán battery checkpoint, then give finite rural aid after the native defense. | The earned original battery continuation passes 1/1 in 148.135 seconds. All 2,314 pins remain unchanged. The original recovered swivel reaches Tucumán at hour 402, second 3,204, with one loaded charge and six spare charges. A separate earned road-relief file passes 1/1. |
+| [#370](https://github.com/fsodano/granaderos/pull/370) | Prepare sixteen serving Los Patos arrivals with actual paid hires through three real approaches, supply a physician in each column, follow the cliff road and activate the returned envoy before the physical commander meeting. | Six affected files pass 33/33 in 86.638 seconds, with all 600 pins unchanged. The earned native assault wins in seven turns and 295 orders. Its actual death remains permanent. |
+
+The PR #370 mountain receipt uses the actual post-Uspallata save. Ordinary
+orders form columns of six, six and four people at the east, north and south
+approaches. Three field-gun shots leave one loaded charge; the empty swivel
+receives no replacement charge. Fifteen survivors receive finite care and
+return. The foundry engineer stays alive in Mendoza. The physical meeting
+recruits San Martín at hour 1,025, second 747, with 62,713 pesos remaining.
+The real naval blockade is still active. This is an earned mountain
+continuation, not a fresh campaign ending or an ending continuation pass.
+
+Two newer complete route runs also retain their failures. The unchanged
+original opening at `16073a87` runs to terminal with five passes, two failures
+(including the parent) and one dependent skip in 530.432 seconds. All 2,325
+pins remain unchanged. Battery delivery now succeeds; the later Salta clinic
+tries to assign a doctor after donating that doctor's last dressing.
+
+The unchanged original recovery at `c4e12285` fails 0/1 in 1,790.022 seconds,
+with no skips or cancellations. All 609 source/config/shipping pins remain
+unchanged. It passes the later rear defense, but the final recovery assertion
+finds patient 112 dead after the earlier hour-150 hospital defense. Those
+complete failures remain open until a correction passes the affected route.
+
+Merge checks on `797d1e28` pass: runner self-tests 14/14, complete coverage of
+1,048 test files, documentation audit, baseline audit 39/39 and typecheck.
+They do not replace the complete release gate. The latest complete ending
+receipt remains the failed two-case `711adfef` run recorded below.
+
 ## Recorded checks and remaining limits
 
 The first unfiltered baseline completed on frozen `main` at
