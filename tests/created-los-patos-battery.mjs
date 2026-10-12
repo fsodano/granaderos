@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {sectorDeploymentAction,sectorDeploymentModel} from '../game/sector-deployment.js';
-import {actBattle} from '../game/tactical.js';
+import {actBattle,artilleryContact,artilleryCrewPlan} from '../game/tactical.js';
 import {recoveryBronzeContactController} from './recovery-paid-battery-driver.mjs';
 
 // This paid column has eight real arrivals and two owned guns. Place its
@@ -57,6 +57,27 @@ export function createdLosPatosBattery({gunTypes=['bronze4','bronze4'],report=()
   assert.equal(battle.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+(u.medkits??0),0),stock);
   assert.deepEqual(battle.artillery,guns);
   report({event:'createdLosPatosDressingRoles',donorId:donor.id,doctorIds:doctors.map(u=>u.id),transferred,stock});
+  // A spent arrival gun can block the translated crew of the remaining
+  // supplied piece. Pay to move it with a separate actual local operator.
+  const supplied=battle.artillery.filter(g=>g.side==='player'&&(g.loaded||g.ammo>0));
+  for(const empty of battle.artillery.filter(candidate=>candidate.side==='player'&&!candidate.loaded&&!candidate.ammo&&supplied.some(g=>Math.hypot(g.x-candidate.x,g.y-candidate.y)<=2))){
+   const reserved=new Set(supplied.flatMap(g=>{
+    const leader=battle.units.find(u=>capable(u)&&artilleryContact(battle,u,g)&&!artilleryCrewPlan(battle,u,g,0).reason);
+    return leader?artilleryCrewPlan(battle,leader,g,0).crew:[];
+   }));
+   const operators=battle.units.filter(u=>capable(u)&&!reserved.has(u.id)&&artilleryContact(battle,u,empty));
+   const distance=p=>Math.min(...supplied.map(g=>Math.hypot(g.x-p.x,g.y-p.y)));
+   const points=[[-1,0],[1,0],[0,-1],[0,1]].map(([dx,dy])=>({x:empty.x+dx,y:empty.y+dy})).filter(p=>distance(p)>distance(empty)).sort((a,b)=>distance(b)-distance(a)||a.y-b.y||a.x-b.x);
+   let moved=false;
+   for(const operator of operators){
+    for(const point of points){
+     const action={type:'artilleryMove',unitId:operator.id,artilleryId:empty.id,...point},next=actBattle(battle,action);
+     if(next.lastError)continue;
+     battle=next;report({event:'createdLosPatosEmptyPieceMoved',action:structuredClone(action)});moved=true;break;
+    }
+    if(moved)break;
+   }
+  }
   return battle;
  }
  return {deploy,controller:recoveryBronzeContactController({holdCommand:false})};

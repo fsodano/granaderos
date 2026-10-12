@@ -57,7 +57,7 @@ export function coastalBatteryController(initial,{sharedArtillerySight=false}={}
   const crew=crews.find(p=>p.ids.includes(u.id))??crews[0];
   if(!crew)return tucumanCombatOrder(b,u);
   const gun=b.artillery.find(g=>g.id===crew.artilleryId);
-  const action=mountainBatteryOrder(b,u,{leaderId:crew.ids[0],helperId:crew.ids[1]??'none',artilleryId:crew.artilleryId,screenDistance:4,clearCrewLane:true,routeAroundObstacles:true,flankScreen:true,keepCrewTogether:true,sharedArtillerySight});
+  const action=mountainBatteryOrder(b,u,{leaderId:crew.ids[0],helperId:crew.ids[1]??'none',crewIds:crew.ids,artilleryId:crew.artilleryId,screenDistance:4,clearCrewLane:true,routeAroundObstacles:true,flankScreen:true,keepCrewTogether:true,sharedArtillerySight});
   if(assigned.has(u.id)&&b.mode==='combat'&&b.phase==='player'&&!artilleryContact(b,u,gun)&&!u.knockedDown&&!u.entangled&&(!action||action.type==='move')){
    if(u.stance==='prone')return u.ap>=stanceCost(u,'crouched')?{type:'stance',unitId:u.id,stance:'crouched'}:null;
    const view={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v))};
