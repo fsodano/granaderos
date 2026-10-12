@@ -2,6 +2,7 @@
 export default [
  {file:'tests/earned-installed-arsenal.test.mjs',reason:'Earned native coastal arsenal victory, actual care and return, finite cannon delivery and service accounting.'},
  {file:'tests/earned-stock-mountain-arsenal.test.mjs',reason:'Earned stock coastal arsenal victory, finite mountain cannon delivery and native saved continuation.'},
+ {file:'tests/earned-stock-flanked-los-patos.test.mjs',reason:'Earned paid mountain flanks, native Los Patos replay, finite care and physical commander handover.'},
  {file:'tests/earned-cordoba-medical-trip-defense.test.mjs',reason:'Earned paid Cordoba reserve, native medical-trip defense replay and finite post-battle aid.'},
  {file:'tests/earned-foundry-convoy-recapture.test.mjs',reason:'Two native occupied-town recaptures, exact delayed gun delivery and saved surviving force return.'},
  {file:'tests/earned-installed-uspallata.test.mjs',reason:'Earned mountain preparation, native victory, finite recovery and exact saved return.'},
