@@ -229,6 +229,11 @@ the recorded count. The original complete northern and historical-loss files
 still failed, both at the subsequent actual Tucumán defeat. All 662 inputs
 remained unchanged during that complete two-file run.
 
+Later review corrected donation, rest and replacement-physician selection to
+use the current living, serving, local cohort after a raid. The original
+cohort remains the basis for supply accounting. That final filter passed
+syntax and diff checks; the earned campaign run was not repeated after it.
+
 The complete earned hospital file passed 3/3 with all 337 pinned inputs
 unchanged. A paid guard donates one existing dressing to the local physician,
 who moves to reachable roof cover through ordinary tactical orders. The

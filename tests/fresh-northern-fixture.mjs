@@ -95,6 +95,7 @@ export function northernClearShotOrder(battle,unit){
 export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
  const inputCapture=recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'preparation-input',campaign:start});
  let s=saved({campaign:start}).campaign;const sector=s.location,local=s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&s.operativeState[id].location===sector),initialPatients=local.filter(id=>s.operativeState[id].hp<s.operativeState[id].maxHp);let patients=[...initialPatients];
+ const servingLocal=()=>local.filter(id=>s.recruited.includes(id)&&s.operativeState[id].alive&&!s.operativeState[id].captured&&s.operativeState[id].location===sector);
  try{
  if(!patients.length)return s;
  let doctor=rosterFor(s).filter(op=>local.includes(op.id)&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];assert.ok(doctor,'the real local patients need an available paid physician');
@@ -104,25 +105,25 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
   const stock=local.reduce((total,id)=>total+s.operativeState[id].medkits,0);s=order(s,action);
   if(action.type==='wait')dressingsUsed+=stock-local.reduce((total,id)=>total+s.operativeState[id].medkits,0);
  };
- for(const operativeId of local)campaignOrder({type:'assignCare',operativeId,assignment:'rest'});
+ for(const operativeId of servingLocal())campaignOrder({type:'assignCare',operativeId,assignment:'rest'});
  for(let hour=0;hour<48&&patients.some(id=>s.operativeState[id].hp<s.operativeState[id].maxHp);hour++){
   if(s.pendingEncounter){
    assert.equal(s.pendingEncounter.sector,sector,'local clinic work must stop for an unrelated actual encounter');
    s=resolveNorthernLocalCareRaid(s,{report:event=>{if(event.event==='northernLocalCareDefense')defenses.push(event.summary);report(event);}});
    patients=local.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&s.operativeState[id].location===sector&&s.operativeState[id].hp<s.operativeState[id].maxHp);
    if(!patients.length)break;
-   if(!s.operativeState[doctor.id].alive||s.operativeState[doctor.id].hp<15||s.operativeState[doctor.id].bleeding)doctor=rosterFor(s).filter(op=>local.includes(op.id)&&s.operativeState[op.id].alive&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];
+   if(!servingLocal().includes(doctor.id)||s.operativeState[doctor.id].hp<15||s.operativeState[doctor.id].bleeding)doctor=rosterFor(s).filter(op=>servingLocal().includes(op.id)&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&op.medical>=20).sort((a,b)=>b.medical-a.medical)[0];
    assert.ok(doctor,'the surviving actual clinic patients need a living qualified physician');
   }
   assert.equal(s.pendingEncounter,null);assert.equal(s.pendingBattle,null);
   if(s.operativeState[doctor.id].asleep){campaignOrder({type:'wait',hours:1});continue;}
   if(!s.operativeState[doctor.id].medkits){
-   const donor=local.find(id=>id!==doctor.id&&s.operativeState[id].medkits&&!sectorInventoryModel(s,sector,rosterFor(s),id).reason);
+   const donor=servingLocal().find(id=>id!==doctor.id&&s.operativeState[id].medkits&&!sectorInventoryModel(s,sector,rosterFor(s),id).reason);
    if(donor!==undefined){
     const before=s.operativeState[donor].medkits,count=Math.min(before,4);campaignOrder({type:'sectorInventory',sector,operativeId:donor,direction:'drop',item:'medkits',count});
     const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row);campaignOrder({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});assert.equal(s.operativeState[donor].medkits,before-count);transfers.push({donor,count});
    }else{
-    if(!individualCare){individualCare=true;for(const operativeId of local)campaignOrder({type:'assignCare',operativeId,assignment:'rest'});}
+    if(!individualCare){individualCare=true;for(const operativeId of servingLocal())campaignOrder({type:'assignCare',operativeId,assignment:'rest'});}
     const row=sectorInventoryModel(s,sector,rosterFor(s),doctor.id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'remaining care needs an actual known reachable finite dressing source');
     const before=s.operativeState[doctor.id].medkits,count=Math.min(row.count,12);campaignOrder({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count});assert.equal(s.operativeState[doctor.id].medkits,before+count);transfers.push({source:row.key,count});
    }
@@ -134,7 +135,7 @@ export function recoverNorthernLocalPatients(start,{report=()=>{}}={}){
  }
  for(const id of patients){assert.equal(s.operativeState[id].hp,s.operativeState[id].maxHp);assert.equal(s.operativeState[id].bleeding,0);}
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(s.operativeState[id].alive,false);
- if(s.operativeState[doctor.id].alive)campaignOrder({type:'assignCare',operativeId:doctor.id,assignment:'rest'});
+ if(servingLocal().includes(doctor.id))campaignOrder({type:'assignCare',operativeId:doctor.id,assignment:'rest'});
  report({event:'northernLocalCare',sector,doctor:doctor.id,initialPatients,patients,defenses,hour:s.hour,second:s.secondOfHour??0,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-startSeconds,paid:cash-s.resources.treasury,transfers,dressingsUsed});
  return saved({campaign:s}).campaign;
  }catch(error){recordRouteStrategicEvidence({helper:'recoverNorthernLocalPatients',stage:'preparation-failure',campaign:s,inputCapture,error});throw error;}
