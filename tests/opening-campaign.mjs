@@ -15,12 +15,13 @@ import {unitAmmunitionByType,fieldAmmunitionByType,totalAmmoCounts} from '../gam
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {travelLegHours} from '../game/squad-travel.js';
+import {meetLocalIncomeRepresentative} from './route-town-income.mjs';
 
 const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
 const tacticalOrder=(b,action)=>{const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
 const fieldCartridges=battle=>totalAmmoCounts(fieldAmmunitionByType(battle))+battle.units.reduce((sum,unit)=>sum+totalAmmoCounts(unitAmmunitionByType(unit)),0);
 
-export function runOpeningCampaign({report=()=>{}}={}){
+export function runOpeningCampaign({report=()=>{},onCheckpoint=()=>{}}={}){
  // This southern-front regression starts after Buenos Aires and Ensenada are secured.
  // The Retiro-only opening has separate acceptance tests; this is not a fresh-start proof.
  // Keep this seed and the actual casualties as maps and tactical rules evolve.
@@ -41,6 +42,9 @@ export function runOpeningCampaign({report=()=>{}}={}){
  assert.equal(c.squad.length,6);c=collectRouteItems(c,107,{item:'medkits'},12).campaign;
  c=supplyRouteAmmunition(c,c.squad,{target:20,report}).campaign;
  order({type:'academy'});order({type:'travel',sector:'buenos_aires'});
+ onCheckpoint('opening-before-port',structuredClone(c));
+ c=meetLocalIncomeRepresentative(c,{sourceId:'buenos_aires',operativeId:1000,report});
+ onCheckpoint('opening-port-agreement',structuredClone(c));
  // Finish actual staging sleep. Schedule departure from the resulting clock
  // and current assault duration before the daylight battle.
  for(const operativeId of c.squad)order({type:'setSleep',operativeId,asleep:true});
