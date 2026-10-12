@@ -5,9 +5,7 @@ import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {repairRouteFirearms} from './finite-route-equipment.mjs';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
-import {medicalSupplyQuote} from '../game/medical-care.js';
-import {medicalSupplyStock} from '../game/equipment.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {contractQuote} from '../game/contracts.js';
 import {recoverFreshPort} from './fresh-coastal-route.mjs';
 import {restoreFinalMorale} from './final-campaign-route.mjs';
@@ -73,20 +71,7 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
   }
   c=supplyRouteAmmunition(c,c.squad,{target:16}).campaign;
   const reserves=Object.fromEntries([...field,...rear].map(id=>[id,5]));
-  for(const operativeId of c.squad){
-   if(c.operativeState[operativeId].medkits<5){
-    try{c=supplyRouteDressings(c,operativeId,5,{reserves,report});}
-    catch(error){
-     if(!error.message.startsWith('No actual reachable finite dressings remain'))throw error;
-     const quantity=5-c.operativeState[operativeId].medkits,quote=medicalSupplyQuote(c,rosterFor(c).find(op=>op.id===operativeId),quantity,isSupplied(c,c.location)),stock=medicalSupplyStock(c),cash=c.resources.treasury,clock=[c.hour,c.secondOfHour];
-     assert.equal(quote.available,true,quote.reason);assert.ok(stock>=quantity,'The real local merchant must hold every purchased dressing.');
-     order({type:'purchaseMedicalSupplies',operativeId,quantity});
-     assert.equal(c.resources.treasury,cash-quote.cost);assert.equal(medicalSupplyStock(c),stock-quantity);assert.deepEqual([c.hour,c.secondOfHour],clock);
-     report({event:'capitalFiniteDressingsPurchased',operativeId,sector:c.location,quantity,cost:quote.cost,stockBefore:stock,stockAfter:medicalSupplyStock(c)});
-    }
-   }
-   order({type:'assignCare',operativeId,assignment:'active'});
-  }
+  for(const operativeId of c.squad){if(c.operativeState[operativeId].medkits<5)c=supplyRouteDressings(c,operativeId,5,{reserves,report});order({type:'assignCare',operativeId,assignment:'active'});}
   assert.ok(c.squad.every(id=>c.operativeState[id].medkits>=5));
   c=finishReloadsBeforeMarch(c);
  };
