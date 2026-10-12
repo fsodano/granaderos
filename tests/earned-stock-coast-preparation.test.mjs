@@ -80,7 +80,7 @@ test('the unchanged earned default commander prepares the complete paid coastal 
  const boundary=Error('The actual complete coastal preparation boundary was reached');let captured;
  assert.throws(()=>finishCreatedCoast({campaign:start,notes:[{stage:'ensenada',...proof.earlierPortVictory}],prefix:[]},{report:event=>{const{campaign,battle,...receipt}=event;events.push(receipt);},onCheckpoint:(stage,campaign,notes)=>{
   assert.equal(stage,'coastal-preparation');captured={campaign,notes};throw boundary;
- }}),error=>error===boundary);
+ },reinforcementCount:1}),error=>error===boundary);
  assert.ok(captured);const {campaign:end,notes}=captured,ready=events.find(e=>e.event==='createdCoastalAssaultReady');assert.ok(ready);
  assert.deepEqual([end.hour,end.secondOfHour],[1520,3477]);assert.equal(end.location,'buenos_aires');assert.equal(end.pendingEncounter,null);assert.equal(end.blockade,false);assert.equal(end.sectors.ensenada.owner,'patriot');assert.equal(end.pendingBattle.sector,'buenos_aires');assert.equal(end.pendingBattle.defenseGroupId,'enemy-group-5');assert.ok(!events.some(e=>e.event==='controlledPortArrival'),'A pending actual defense cannot be reported as a friendly-port arrival.');
  assert.equal(end.enemyGroups.find(g=>g.id==='enemy-group-5').status,'engaged');assert.equal(end.pendingBattle.enemies.length,21);assert.deepEqual(end.pendingBattle.squad.map(op=>Number(op.id)).sort((a,b)=>a-b),ready.field.slice().sort((a,b)=>a-b));

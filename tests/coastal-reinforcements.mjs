@@ -3,11 +3,12 @@ import {dispatchCampaign,rosterFor,civicStatus,contractQuote} from '../game/camp
 import {decodeSave,encodeSave} from '../game/save.js';
 import {operativeLocation} from '../game/squads.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {extractItemQuantity} from '../game/tactical-inventory.js';
 
 // A former serving veteran may be hired again only after a real local actor
 // collects all the equipment that veteran left behind. Never clear the marker.
-export function prepareCoastalReinforcements(start,{excluded=[],count=1,report=()=>{}}={}){
- assert.ok(Number.isInteger(count)&&count>=0&&count<=4);
+export function prepareCoastalReinforcements(start,{excluded=[],count=1,stageReturnedItems=false,report=()=>{}}={}){
+ assert.ok(Number.isInteger(count)&&count>=0&&count<=12);
  let c=decodeSave(encodeSave(start)).campaign;const before=structuredClone(start),reinforcements=[],receipts=[];
  const healthy=op=>{const r=c.operativeState[op.id];return op.id>=100&&op.id<1000&&!excluded.includes(op.id)&&!reinforcements.includes(op.id)&&!c.recruited.includes(op.id)&&r.alive&&!r.captured&&!r.bleeding&&r.hp===r.maxHp&&r.morale>=50;};
  const sorted=rows=>rows.sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').total-contractQuote(c,b,'day').total||a.id-b.id);
@@ -24,9 +25,23 @@ export function prepareCoastalReinforcements(start,{excluded=[],count=1,report=(
    const model=()=>sectorInventoryModel(c,marker.siteId,rosterFor(c),collector.id),items=model().entries.filter(owns).map(row=>({...row})),repair=model().repairReserves.filter(owns).map(row=>({...row}));
    for(const original of [...items,...repair]){
     const isRepair=original.repairPoints!==undefined,row=(isRepair?model().repairReserves:model().entries).find(row=>row.key===original.key);assert.ok(row?.reachable,row?.reason);
+    const carriedBefore=new Set(model().carried.filter(row=>row.inventoryKey).map(row=>row.inventoryKey));
     const action={type:'sectorInventory',sector:marker.siteId,operativeId:collector.id,direction:isRepair?'takeRepairPoints':'take',sourceKey:row.key,expected:row.expected,count:isRepair?row.repairPoints:row.count};
     const next=dispatchCampaign(c,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);c=next;orders.push(action);
     assert.equal((isRepair?model().repairReserves:model().entries).find(row=>row.key===original.key)?.[isRepair?'repairPoints':'count']??0,0,'The exact returned source must be fully collected once.');
+    if(stageReturnedItems&&!isRepair){
+     const source=JSON.parse(row.expected),carried=model().carried.find(item=>item.inventoryKey&&!carriedBefore.has(item.inventoryKey))??model().carried.find(item=>item.item===source.item);
+     assert.ok(carried,'The collector must hold the exact returned item before putting it down.');
+     const payload=extractItemQuantity(model().personal,carried.item,row.count).stack;
+     // Pickup names the carried inventory slot. All physical fields remain
+     // equal to the returned source before the public drop order.
+     for(const[key,value]of Object.entries(source))if(key!=='item')assert.deepEqual(payload[key],value,`The collected return retains ${key}.`);
+     const groundBefore=new Set((c.sectorStates[marker.siteId]?.groundItems??[]).map(item=>item.id));
+     const drop={type:'sectorInventory',sector:marker.siteId,operativeId:collector.id,direction:'drop',item:carried.item,count:row.count};
+     const dropped=dispatchCampaign(c,drop);assert.equal(dropped.lastError,null,JSON.stringify(drop)+': '+dropped.lastError);c=dropped;orders.push(drop);
+     const parcel=c.sectorStates[marker.siteId].groundItems.find(item=>!groundBefore.has(item.id));assert.ok(parcel);
+     for(const[key,value]of Object.entries(payload))assert.deepEqual(parcel[key],value,`The local returned parcel retains ${key}.`);
+    }
    }
    assert.equal(c.operativeState[candidate.id].serviceEquipmentReturn,undefined,'Only actual full collection may release this veteran for rehire.');
    for(const field of ['alive','hp','maxHp','bleeding','morale','energy','fatigue','location'])assert.deepEqual(c.operativeState[candidate.id][field],owner[field]);
