@@ -1,6 +1,8 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
  {file:'tests/earned-installed-arsenal.test.mjs',reason:'Earned native coastal arsenal victory, actual care and return, finite cannon delivery and service accounting.'},
+ {file:'tests/earned-stock-mountain-arsenal.test.mjs',reason:'Earned stock coastal arsenal victory, finite mountain cannon delivery and native saved continuation.'},
+ {file:'tests/earned-cordoba-medical-trip-defense.test.mjs',reason:'Earned paid Cordoba reserve, native medical-trip defense replay and finite post-battle aid.'},
  {file:'tests/earned-foundry-convoy-recapture.test.mjs',reason:'Two native occupied-town recaptures, exact delayed gun delivery and saved surviving force return.'},
  {file:'tests/earned-installed-uspallata.test.mjs',reason:'Earned mountain preparation, native victory, finite recovery and exact saved return.'},
  {file:'tests/fresh-ending-route.test.mjs',reason:'Complete campaign route with actual battles, saved victory and contract expiry.'},
@@ -13,6 +15,7 @@ export default [
  {file:'tests/opening-patrol-medical-readiness.test.mjs',reason:'Finite patrol dressings, genuine native captivity and saved hourly custody care.'},
  {file:'tests/rescue-clinic-readiness.test.mjs',reason:'Finite clinic guard preparation, paid native rest and exact saved defeat replay.'},
  {file:'tests/salta-battery-readiness.test.mjs',reason:'Earned rear guard, finite firearm, exact native raid replay and bounded coastal detour.'},
+ {file:'tests/earned-opening-cordoba-road.test.mjs',reason:'Earned paid rear reserve, native Cordoba raid replay and finite relief of the actual escaped wounded defender.'},
  {file:'tests/fresh-coastal-route.test.mjs',reason:'Three fresh opening forces with actual losses, paid recovery and saved replay.'},
  {file:'tests/fresh-historical-loss.test.mjs',reason:'Actual Mendoza victory followed by required engineer death retained across save and settlement.'},
  {file:'tests/opening-playthrough.test.mjs',reason:'Opening campaign playthrough through defeat, prisoner rescue and the northern mission.'},
