@@ -84,6 +84,20 @@ export function northernHospitalOrder(state,a,{inputCapture=null,report=()=>{}}=
  return c;
 }
 
+// Preserve the established prepaid march when its actual service quotes can
+// be paid. Otherwise use zero-time queued departure and renew before each
+// real wait, so ordinary income can fund the same serving cohort.
+export function northernHospitalReturnFunding(state,hours=48){
+ const now=state.hour*3600+(state.secondOfHour??0),until=now+hours*3600,roster=rosterFor(state),renewals=[];
+ for(const id of state.recruited.filter(id=>state.operativeState[id].alive&&!state.operativeState[id].captured)){
+  const expiry=contractExpiresSeconds(state.contracts[id]);if(expiry===null||expiry>until)continue;
+  const quote=contractRenewalQuote(state,roster.find(op=>op.id===id),'day'),count=quote.hours?Math.floor((until-Math.max(now,expiry))/(quote.hours*3600))+1:1;
+  renewals.push({id,count,quote:structuredClone(quote),cost:count*quote.price});
+ }
+ const total=renewals.reduce((sum,row)=>sum+row.cost,0);
+ return {hours,untilSeconds:until,treasury:state.resources.treasury,total,queued:total>state.resources.treasury,renewals};
+}
+
 // Local linen can be truly exhausted after the preceding native battles.
 // Book supplied relief only after known stock and local donations are absent.
 // Each arrival carries its existing finite kit; an expired profile is not refilled.
@@ -465,10 +479,12 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
   for(let h=0;h<48&&c.squad.some(id=>c.operativeState[id].asleep);h++){order({type:'wait',hours:1});resolveReturnContact();}
   assert.ok(c.squad.every(id=>!c.operativeState[id].asleep),'the actual party must finish its sleep before continuing');
   for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
-  // Queue the actual route, then retain every serving paid actor before each
-  // real hourly wait. Departure itself advances no clock and needs no 48-hour
-  // prepayment before the ordinary midnight income can be earned.
-  order(journey()?{type:'resumeTravel'}:{type:'travel',sector:'buenos_aires',queue:true});resolveReturnContact();
+  if(journey())order({type:'resumeTravel'});
+  else{
+   const funding=northernHospitalReturnFunding(c);report({event:'northernHospitalReturnFunding',hour:c.hour,secondOfHour:c.secondOfHour??0,...funding});
+   order({type:'travel',sector:'buenos_aires',...(funding.queued?{queue:true}:{})});
+  }
+  resolveReturnContact();
  }
  assert.equal(c.location,'buenos_aires');
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
