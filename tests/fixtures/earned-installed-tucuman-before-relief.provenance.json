@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "source": "/Users/fsodano/fibradev/games/granaderos/.cache/core-campaign-2026-10-12/original-ending-a4877a89/passive-captures/strategic-preparation/45397-15-prepareStockNorthernOfficerRelief-preparation-input-63m5sL/campaign.json",
+  "sourceRevision": "a4877a891f808709d22c0f668a5ffd5f21da0341",
+  "sourceLogSha256": "38c62a752a5a54b8aca69b9a44e535253a33b6397ca344c0878a6ab20ba62f37",
+  "rawSha256": "6ff465d9dad683054b3771a1ed4f84650735d7d8c13b5c6679c382b2dc680d53",
+  "gzipSha256": "31b332957ec9598438547401e1a7d78c3a40178f0067ab6cd5c6955d048b79f7",
+  "rawBytes": 8889740,
+  "clock": [
+    536,
+    2586
+  ],
+  "scope": "Exact earned installed default-seed native Tucum\u00e1n settlement before northern officer relief. Initial real bleeding remains; no campaign or battle outcome was assigned."
+}

@@ -405,7 +405,7 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
  s=advanceCampaignHours(s,6);s=order(s,{type:'createSquad',ids:supportIds,name:'Apoyo de Córdoba',sector:s.location});const support=s.activeSquadId;s=rearm(s);
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=finishReloadsBeforeMarch(s);}
  report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
- for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
+ for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=marchToFront(s,{type:'attack',sector:'cordoba'});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
  for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
  report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);

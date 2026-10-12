@@ -1,6 +1,7 @@
 import {encounterDefinitions} from '../game/encounters.js';
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
+import {stabilizeCreatedCuyoSurvivors} from './created-cuyo-route.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
@@ -267,6 +268,9 @@ function prepareStockNorthernOfficerRelief(start,{report=()=>{}}={}){
  const inputCapture=recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-input',campaign:start});
  let c=structuredClone(start);
  try{
+ // The settled field retains actual bleeding. Native finite aid must precede
+ // the courier's rest and supply trip, including a wounded serving doctor.
+ c=stabilizeCreatedCuyoSurvivors(c,{report});
  const live=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
 const order=a=>{if(a.type==='assignCare'&&c.operativeState[a.operativeId].assignment===a.assignment)return;if(a.type==='wait')for(const id of live()){const q=c.contracts[id];if(q?.expiresAt!=null&&q.expiresAt<=c.hour+a.hours){c=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:q.expiresAt});assert.equal(c.lastError,null);}}c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
 const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:true,mode:'posta'});for(let h=0;h<36&&c.squads.find(q=>q.id===id).journey;h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}assert.equal(c.location,at);};
