@@ -116,7 +116,7 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  const spent=Object.entries(start.artilleryDepots??{}).flatMap(([sector,guns])=>guns.filter(g=>!g.loaded&&!g.ammo).map(g=>({sector,gun:storedArtilleryRecord(g)})));
  const prepared=prepareCreatedCuyoArsenalAssault(start,{report});let c=prepared.campaign;
  onCheckpoint('arsenal-assault',c);
- c=fightNorthernSector(c,'ensenada',{controller:recoveryPortSearchController(enterSector(c.pendingBattle,c.sectorStates.ensenada)),report}).campaign;
+ const victory=fightNorthernSector(c,'ensenada',{controller:recoveryPortSearchController(enterSector(c.pendingBattle,c.sectorStates.ensenada)),report});c=victory.campaign;
  onCheckpoint('arsenal-victory',c);
  const survivors=prepared.field.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
  assert.ok(survivors.length>=3,'The actual field gun needs three surviving available crew.');
@@ -177,5 +177,5 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  for(const id of oldDeaths)assert.equal(c.operativeState[id].alive,false);assert.deepEqual(start,before);
  const selections=source.pieces.map(gun=>'depot:'+gun.id);onCheckpoint('arsenal-delivered',c);
  report({event:'createdCuyoMountainArsenalReady',selections,hour:c.hour,second:c.secondOfHour,campaign:c});
- return {campaign:saved({campaign:c}).campaign,selections};
+ return {campaign:saved({campaign:c}).campaign,selections,summary:victory.summary};
 }
