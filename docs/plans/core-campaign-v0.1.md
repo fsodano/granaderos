@@ -73,9 +73,10 @@ The complete original recovery on frozen `c6881d99` finishes with one failure,
 no skips or cancellations, in 2,003.189 seconds. All 618 static pins, including
 242 shipping files, and 393 actual module inputs remain unchanged. The whole
 hospital and real return defense pass; that defense uses 48 turns, 405 orders
-and 9,224 tactical seconds. The next reunion stops at `681:335`, with 21,878
-pesos, when its helper tries to prepay 48 hours of every serving contract.
-The actual 7,722-peso renewal is refused. This is a failed whole-route receipt,
+and 9,224 tactical seconds. The earned hospital return reaches `681:335`,
+with 21,878 pesos. The next reunion pays twelve hours of real rest, then
+tries to prepay 48 hours of every serving contract before travel. The actual
+7,722-peso renewal is refused. This is a failed whole-route receipt,
 not a complete recovery pass. Its log hash is
 `5f8936c1864e1ce032ba2512d64f0d81df0f2c707d23ce79a6f5e73276f2a9c8`.
 
