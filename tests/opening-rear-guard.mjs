@@ -7,12 +7,12 @@ import {stageRouteRoofDefenders} from './route-roof-defenders.mjs';
 // Released prisoners can be serving locally without belonging to a squad.
 // Give each actual defender a normal squad before walking to known roof cover.
 // This never adds a body, changes their equipment, or settles a raid.
-export function stageOpeningRearCover(start,{sector=start.location,report=()=>{}}={}){
+export function stageOpeningRearCover(start,{sector=start.location,exclude=[],report=()=>{}}={}){
  assert.equal(start.pendingBattle,null);assert.equal(start.pendingEncounter,null);
  let campaign=decodeSave(encodeSave(start)).campaign;
  const ids=campaign.recruited.filter(id=>{
   const r=campaign.operativeState[id];
-  return r.alive&&!r.captured&&!operativeInTransit(campaign,id)&&operativeLocation(campaign,id)===sector&&r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10;
+  return !exclude.includes(id)&&r.alive&&!r.captured&&!operativeInTransit(campaign,id)&&operativeLocation(campaign,id)===sector&&r.hp>=15&&!r.bleeding&&!r.asleep&&r.energy>10;
  });
  assert.ok(ids.length,'The actual rear guard needs physically present capable soldiers.');
  const actions=[];

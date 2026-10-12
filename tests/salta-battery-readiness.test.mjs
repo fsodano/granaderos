@@ -29,13 +29,16 @@ test('earned native rear guard recovers one finite gun and resolves the real sup
  assert.ok(start.sectorStates.tucuman.wallEdges.length>0);
  assert.ok([121,126,129,130].every(id=>start.operativeState[id].alive&&start.operativeState[id].hp===start.operativeState[id].maxHp&&start.operativeState[id].bleeding===0));
  assert.ok([113,140,144,146,108,101,102].every(id=>!civicStatus(start,id).available),'the old guard shortlist is unavailable in this actual campaign');
- let guard,guardState,raid,settled,defense;const events=[];
+ let guard,guardState,medical,raid,victory,settled,defense,care;const events=[];
  assert.throws(()=>prepareSaltaAssault(start,{report:event=>events.push(event),onCheckpoint:(name,campaign,evidence)=>{
   if(name==='salta-rear-guard'){guard=structuredClone(evidence.reservePreparation);guardState=structuredClone(campaign);}
+  if(name==='salta-medical-courier')medical=structuredClone(evidence.receipt);
   if(name==='support-battery-encounter')raid=structuredClone(campaign);
+  if(name==='support-battery-victory')victory=structuredClone(campaign);
+  if(name==='support-battery-care')care=structuredClone(evidence.care);
   if(name==='support-battery-settled'){settled=structuredClone(campaign);defense=structuredClone(evidence.defense);throw stop;}
  }}),error=>error===stop);
- assert.deepEqual(start,before);assert.ok(guard&&guardState&&raid&&settled&&defense);
+ assert.deepEqual(start,before);assert.ok(guard&&guardState&&medical&&raid&&victory&&settled&&defense&&care);
  assert.equal(guard.hired,100);assert.deepEqual(guard.ids,[100]);assert.equal(guard.hiringCost,252);assert.equal(guard.hiringQuote.available,true);assert.equal(guard.hiringQuote.total,guard.hiringCost);
  assert.equal(guardState.contracts[100].paid,guard.hiringQuote.price);assert.equal(before.resources.treasury-guardState.resources.treasury,guard.hiringCost);
  assert.equal(guard.weapon,1801);assert.equal(guard.weaponCost,0);
@@ -43,15 +46,25 @@ test('earned native rear guard recovers one finite gun and resolves the real sup
  const model=sectorInventoryModel(guardState,'cordoba',rosterFor(guardState),100),equipped=handRecord(model.personal,'primary');
  for(const [key,value]of Object.entries(JSON.parse(receipt.expected)))if(key!=='item')assert.deepEqual(equipped[key],value);
  assert.equal(equipped.loaded,1);assert.equal(equipped.condition,84);assert.equal(model.entries.find(row=>row.key===receipt.sourceKey)?.count??0,receipt.countAfter);
- assert.deepEqual([raid.hour,raid.secondOfHour],provenance.raid.inputClock);assert.equal(raid.pendingEncounter.groupId,'enemy-group-3');assert.equal(raid.pendingEncounter.sector,'tucuman');
+ // The original fixture provenance remains dated. Current default preparation
+ // inspects ten finite dressings and pays for the actual medical courier.
+ assert.equal(medical.needed,true);assert.equal(medical.found.collected,10);assert.equal(medical.found.elapsedSeconds,133);
+ assert.deepEqual(medical.found.receipts,[{bodyId:'146',count:10,before:14,after:4}]);
+ assert.equal(medical.transportCost,150);assert.equal(medical.travelCost,10);assert.equal(medical.travelHours,4);assert.equal(medical.quantity,6);
+ assert.deepEqual(medical.transfers.map(row=>[row.id,row.count,row.before-row.after]),[[122,3,3],[116,3,3]]);
+ assert.deepEqual(medical.renewals.map(row=>[row.id,row.price]),[[102,40]]);
+ assert.deepEqual([raid.hour,raid.secondOfHour],[288,1552]);assert.equal(raid.pendingEncounter.groupId,'enemy-group-3');assert.equal(raid.pendingEncounter.sector,'tucuman');
  assert.equal(defense.groupId,'enemy-group-3');assert.equal(defense.status,'victory');assert.ok(defense.actions>0&&defense.elapsedSeconds>0);
- assert.equal(clock(settled),defense.startSeconds+defense.elapsedSeconds);assert.deepEqual([settled.hour,settled.secondOfHour],provenance.raid.settledClock);
+ assert.deepEqual([defense.turns,defense.actions,defense.elapsedSeconds],[14,412,162]);
+ assert.equal(clock(victory),defense.startSeconds+defense.elapsedSeconds);assert.deepEqual([victory.hour,victory.secondOfHour],[288,1714]);
+ assert.equal(care.hours,2);assert.equal(care.usedDressings,2);assert.deepEqual(care.patients,[103,144]);assert.equal(clock(settled),clock(victory)+7200);
+ assert.deepEqual([settled.hour,settled.secondOfHour],[290,1714]);
  assert.equal(settled.pendingEncounter,null);assert.equal(settled.pendingBattle,null);assert.equal(settled.defeated,false);assert.equal(settled.sectors.tucuman.owner,'patriot');
  assert.equal(settled.enemyGroups.find(group=>group.id===defense.groupId).status,'defeated');assert.ok(settled.encounterHistory.some(row=>row.groupId===defense.groupId&&row.outcome==='victory'));
- assert.deepEqual(Object.entries(before.operativeState).filter(([id,record])=>record.alive&&!settled.operativeState[id].alive).map(([id])=>Number(id)),provenance.raid.newDeaths);
+ assert.deepEqual(Object.entries(before.operativeState).filter(([id,record])=>record.alive&&!settled.operativeState[id].alive).map(([id])=>Number(id)),[108,126,129]);
  preserveDeaths(before,settled);
- assert.deepEqual([144,130].map(id=>[settled.operativeState[id].hp,settled.operativeState[id].bleeding]),[[63,1],[39,2]],'real victory retains its bleeding survivors');
- assert.equal(settled.resources.treasury,provenance.raid.treasury);assert.equal(before.resources.treasury-settled.resources.treasury,guard.hiringCost+events.filter(row=>row.event==='routeBatteryRenewal').reduce((sum,row)=>sum+row.price,0));
+ for(const id of care.patients){assert.equal(settled.operativeState[id].alive,true);assert.equal(settled.operativeState[id].bleeding,0);assert.ok(settled.operativeState[id].hp<settled.operativeState[id].maxHp,'finite urgent care does not grant complete wound recovery');}
+ assert.equal(settled.resources.treasury,7593);assert.equal(before.resources.treasury-settled.resources.treasury,guard.hiringCost+medical.transportCost+medical.travelCost+medical.renewals.reduce((sum,row)=>sum+row.price,0)+events.filter(row=>row.event==='routeBatteryRenewal').reduce((sum,row)=>sum+row.price,0));
  assert.deepEqual(settled.squad,[100]);assert.equal(settled.squads.find(row=>row.id===settled.activeSquadId).journey.status,'moving');
  assert.deepEqual(save(settled),settled);
  // The production test driver above runs the actual battle twice, compares
