@@ -33,6 +33,25 @@ import {meetLocalIncomeRepresentative} from './route-town-income.mjs';
 import {travelLegHours} from '../game/squad-travel.js';
 import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
 
+// Mission allies keep their real wounds in later historical scenes. Use the
+// cleared battlefield's finite supplies before strategic travel resumes.
+export function stabilizeFreshMissionAllies(start,{execute,report=()=>{}}={}){
+ const allies=start.battle.units.filter(unit=>unit.side==='player'&&unit.missionAlly);
+ assert.ok(allies.length,'the native mission must supply its actual ally');
+ assert.ok(allies.every(unit=>unit.hp>0),'field aid cannot restore a fallen mission ally');
+ const aid=autoBandageBattle(start.battle);let pair=start;
+ for(const action of aid.steps)pair=execute(pair,action);
+ assert.deepEqual(pair.battle.units,aid.battle.units);assert.equal(pair.battle.seed,aid.battle.seed);assert.equal(pair.battle.elapsedSeconds,aid.battle.elapsedSeconds);
+ for(const ally of allies){
+  const treated=pair.battle.units.find(unit=>unit.id===ally.id);
+  assert.ok(treated.hp>0,'the actual mission ally must survive native field aid');
+  assert.equal(treated.bleeding,0,'the surviving mission ally needs finite aid before strategic travel');
+ }
+ const kits=battle=>battle.units.filter(unit=>unit.side==='player').reduce((sum,unit)=>sum+(unit.medkits??0),0);
+ report({event:'freshMissionAllyFieldAid',battleId:pair.battle.battleId,steps:aid.steps,elapsedSeconds:aid.elapsedSeconds,dressingsSpent:kits(start.battle)-kits(pair.battle),treasuryBefore:start.campaign.resources.treasury,treasuryAfter:pair.campaign.resources.treasury,treated:aid.treatedIds,untreated:aid.untreated,stoppedReason:aid.stoppedReason});
+ return pair;
+}
+
 // Starts from a declared funded Retiro-only campaign. Checkpoints are outputs of
 // ordinary orders, never authored victories or granted territory.
 export function beginFreshCampaign({seed=8,report=()=>{}}={}){
