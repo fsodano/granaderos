@@ -26,7 +26,10 @@ test('earned stock Salta keeps a finite medic ready and physically relieves the 
  const initial=enterSector(start.pendingBattle,start.sectorStates.salta),gun=initial.artillery.find(piece=>piece.id==='arsenal:cordoba:2');
  assert.ok(gun);assert.equal(gun.loaded,true);assert.equal(gun.ammo,6);
  const result=fight(start.pendingBattle,start.sectorStates.salta,{controller:stockNorthernSaltaController(initial)});
- assert.equal(result.battle.status,'victory');assert.equal(result.battle.turn,10);assert.equal(result.actions,275);
+ // Re-run the unchanged earned input through the current native controller.
+ // Its actual tape, deaths and wounds remain receipts; old outcomes are not
+ // permission to restore bodies or manufacture the former critical wounds.
+ assert.equal(result.battle.status,'victory');assert.equal(result.battle.turn,9);assert.equal(result.actions,243);
  const spent=result.battle.artillery.find(piece=>piece.id===gun.id),shots=result.orders.filter(action=>action.type==='artillery'&&action.artilleryId===gun.id);
  assert.equal(Number(gun.loaded)+gun.ammo-Number(spent.loaded)-spent.ammo,shots.length,'Every shot consumes an actual finite charge.');
  assert.ok(result.orders.some(action=>action.type==='weapon'&&action.unitId==='146'&&action.slot==='medical'));
@@ -40,19 +43,21 @@ test('earned stock Salta keeps a finite medic ready and physically relieves the 
  const direct=syncBattleTime(start,result.battle);assert.equal(direct.error,null);assert.deepEqual(pair,{campaign:direct.campaign,battle:direct.battle});
  const settled=dispatchCampaign(pair.campaign,{type:'battleResult',battleId:start.pendingBattle.id,outcome:pair.battle.status,survivors:pair.battle.units.filter(unit=>unit.side==='player'),sectorState:pair.battle});
  assert.equal(settled.lastError,null);assert.equal(settled.sectors.salta.owner,'patriot');assert.equal(settled.pendingBattle,null);
- const losses=result.battle.units.filter(unit=>unit.side==='player'&&unit.hp<=0).map(unit=>Number(unit.id));assert.deepEqual(losses,[11,139,100]);
- for(const id of [146,101]){assert.equal(settled.operativeState[id].alive,true);assert.ok(settled.operativeState[id].hp>=15);assert.equal(settled.operativeState[id].bleeding,0);}
- assert.equal(settled.operativeState[102].hp,8);assert.equal(settled.operativeState[102].bleeding,4);
- assert.equal(settled.operativeState[107].hp,12);assert.equal(settled.operativeState[107].bleeding,3);assert.equal(operativeLocation(settled,107),'cell-12-8');assert.equal(settled.operativeState[107].medkits,0);
+ const losses=result.battle.units.filter(unit=>unit.side==='player'&&unit.hp<=0).map(unit=>Number(unit.id));assert.deepEqual(losses,[11,101,117,139]);
+ for(const id of [146,100,102]){assert.equal(settled.operativeState[id].alive,true);assert.equal(settled.operativeState[id].hp,settled.operativeState[id].maxHp);assert.equal(settled.operativeState[id].bleeding,0);}
+ assert.equal(settled.operativeState[146].medkits,start.operativeState[146].medkits,'The protected field physician retains the actual dressing reserve.');
+ assert.equal(settled.operativeState[102].hp,72);assert.equal(settled.operativeState[102].bleeding,0);
+ assert.equal(settled.operativeState[107].hp,42);assert.equal(settled.operativeState[107].bleeding,2);assert.equal(operativeLocation(settled,107),'cell-12-8');assert.equal(settled.operativeState[107].medkits,0);
  const events=[];let roadInput=null,roadOutput=null;
  const completed=completeHiredNorthernMission(settled,{routeKind:'stock',report:event=>events.push(structuredClone(event)),onCheckpoint:(stage,campaign)=>{
   if(stage==='stock-road-relief-before-aid')roadInput=structuredClone(campaign);
   if(stage==='stock-road-relief-complete')roadOutput=structuredClone(campaign);
  }});
- const local=events.find(event=>event.event==='northernMissionFirstAid'),relief=events.find(event=>event.event==='northernRoadRelief');
- assert.deepEqual(local.ids,[146,102,117]);assert.equal(local.elapsedSeconds,38);assert.equal(local.stoppedReason,null);
+ assert.equal(events.some(event=>event.event==='northernMissionFirstAid'),false,'This real result has no local acute patient; it must not spend phantom field dressings.');
+ const relief=events.find(event=>event.event==='northernRoadRelief');
  assert.equal(relief.patientId,107);assert.equal(relief.doctor,116);assert.equal(relief.source,'salta');assert.equal(relief.destination,'cell-12-8');assert.equal(relief.hours,2);assert.equal(relief.dressingsUsed,1);
- assert.ok(roadInput&&roadOutput);assert.equal(operativeLocation(roadInput,116),'cell-12-8');assert.equal(roadInput.operativeState[116].activeSlot,'medical');assert.equal(roadInput.operativeState[107].hp,10);
+ assert.equal(relief.actions,1);assert.equal(relief.elapsedSeconds,2);
+ assert.ok(roadInput&&roadOutput);assert.equal(operativeLocation(roadInput,116),'cell-12-8');assert.equal(roadInput.operativeState[116].activeSlot,'medical');assert.equal(roadInput.operativeState[107].hp,40);
  const dressingStock=roadInput.operativeState[116].medkits+roadInput.operativeState[107].medkits;
  let aidPair=visit(roadInput);const aid=autoBandageBattle(aidPair.battle);
  for(let index=0;index<aid.steps.length;index++){
@@ -61,12 +66,13 @@ test('earned stock Salta keeps a finite medic ready and physically relieves the 
  }
  assert.deepEqual(decodeSave(encodeSave(leave(aidPair))).campaign,roadOutput,'Actual road aid replays exactly through the official midpoint save.');
  assert.equal(roadOutput.operativeState[116].medkits+roadOutput.operativeState[107].medkits,dressingStock-1);
- assert.equal(roadOutput.operativeState[107].hp,15);assert.equal(roadOutput.operativeState[107].bleeding,0);
+ assert.equal(roadOutput.operativeState[107].hp,40);assert.equal(roadOutput.operativeState[107].bleeding,0);assert.equal(roadOutput.operativeState[107].bandaged,34);
  assert.equal(completed.flags.northPact,true);assert.equal(completed.flags.partisanSupply,true);assert.equal(completed.missions.yatasto.completed,true);assert.equal(completed.phase,3);assert.equal(completed.pendingBattle,null);assert.ok(completed.resources.treasury>0);
  const formation=events.find(event=>event.event==='northernMissionLocalFormation');assert.equal(formation.occupiedSquads,5);assert.deepEqual(formation.envoyMembers,[1]);assert.equal(completed.activeSquadId,formation.envoySquad);assert.equal(completed.squads.filter(squad=>squad.members.length).length,5);
  for(const id of losses)assert.equal(completed.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(completed.operativeState[id].alive,false);
  for(const id of completed.recruited.filter(id=>completed.operativeState[id].alive&&!completed.operativeState[id].captured)){assert.ok(completed.operativeState[id].hp>=15);assert.equal(completed.operativeState[id].bleeding,0);}
  assert.deepEqual(decodeSave(encodeSave(completed)).campaign,completed);assert.deepEqual(start,before);
- t.diagnostic(JSON.stringify({inputClock:[start.hour,start.secondOfHour],status:result.battle.status,turns:result.battle.turn,actions:result.actions,shots:shots.length,losses,localAidSeconds:local.elapsedSeconds,actualRoadDoctor:relief.doctor,roadHours:relief.hours,dressingsUsed:relief.dressingsUsed,occupiedSquads:formation.occupiedSquads,yatastoClock:[completed.hour,completed.secondOfHour],exactBattleReplay:true,officialRoadAidMidpoint:true}));
+ assert.deepEqual([completed.hour,completed.secondOfHour],[378,2528]);assert.equal(completed.resources.treasury,98868);
+ t.diagnostic(JSON.stringify({inputClock:[start.hour,start.secondOfHour],status:result.battle.status,turns:result.battle.turn,actions:result.actions,shots:shots.length,losses,localAidSeconds:0,actualRoadDoctor:relief.doctor,roadHours:relief.hours,dressingsUsed:relief.dressingsUsed,occupiedSquads:formation.occupiedSquads,yatastoClock:[completed.hour,completed.secondOfHour],treasury:completed.resources.treasury,exactBattleReplay:true,officialRoadAidMidpoint:true}));
 });
