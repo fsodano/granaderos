@@ -303,6 +303,8 @@ identity `0.1.0 · ed2b946508e1`. No new full suite was started for this merge.
 
 ## Survivor columns, convoy and mountain follow-up
 
+This section records the earlier PR #346 checkpoint. Later results appear below.
+
 PR #346 contains route helper corrections and focused earned regressions.
 The game runtime, installed campaign data and victory requirements are
 unchanged. The following results have separate scopes; they are not one
@@ -330,29 +332,29 @@ combined campaign or release gate.
   reach Mendoza at hour 1656, second 1491. The other tests retain their finite
   ammunition and declared clinical-control scopes. This does not prove a
   fresh start, the arsenal mission, Los Patos or the campaign ending.
-  Los Patos still stops for a sleeping posted courier or an unhandled actual
-  encounter; these are driver limits, not game-runtime failures.
+  At that checkpoint, Los Patos stopped for a sleeping posted courier or an
+  unhandled actual encounter; those were driver limits, not game-runtime failures.
 - The focused port-income test passed 1/1 with all 312 inputs unchanged.
   The actual Buenos Aires meeting records the income agreement before
   departure. It grants no immediate money; the next real midnight pays once,
   and an official saved continuation cannot pay it again. This is the port
   meeting and income boundary, not the complete opening route.
 
-The latest recorded complete recovery entry failed 0/1 without skips. It
+The complete recovery entry at that checkpoint failed 0/1 without skips. It
 passed the corrected reunion and actual Salta victory, then stopped during
 the Yatasto handover trip with the real Salta counterattack still pending:
 `enemy-group-4`, arrived at hour 516. All 384 inputs remained unchanged. The
 encounter was not cleared or replaced with a forced outcome.
 
-The latest complete historical-loss entry also failed 0/1 without skips,
+The complete historical-loss entry at that checkpoint also failed 0/1 without skips,
 with all 376 inputs unchanged. It stopped before Tucumán when the medical
 courier could not enter with a sleeping or unavailable combatant. The walking
 courier budget has since been corrected to retain the original travel plan;
 explicit posta quotes remain supported. Its seven focused courier and finite
 equipment tests passed 7/7 without skips or cancellations, including the
 exhausted doctor's actual twelve-hour rest and 150-peso service fee. Neither
-complete failed entry was rerun after this correction. Their full-route
-outcomes remain unverified on the corrected source.
+complete failed entry had been rerun after this correction at that checkpoint.
+Their full-route outcomes were then unverified on the corrected source.
 
 The opening file completed with eight tests: five passed, two failed and one
 dependent Yatasto test was skipped. None was cancelled, and all 344 inputs
@@ -434,6 +436,9 @@ The completed increments are merged into `main` through their own PRs:
 | [#352](https://github.com/fsodano/granaderos/pull/352) | Finite early San Lorenzo ally aid in the original recovery driver. | Twenty affected cases pass across two receipts. |
 | [#354](https://github.com/fsodano/granaderos/pull/354) | Five actual hires join seven ready serving veterans when the loose seed-8 hiring pool is small. | The new earned readiness/victory case and both existing readiness cases pass, 3/3. |
 | [#355](https://github.com/fsodano/granaderos/pull/355) | Fetch the measured Mendoza ammunition deficit from controlled, discovered stock with valid ordinary travel. | Two allocation/rearm cases and twelve finite-supply controls pass. The actual installed earned Mendoza assault wins. |
+| [#357](https://github.com/fsodano/granaderos/pull/357) | Prepare real rear cover, finite physician supplies and urgent care in the default opening route. | Both original battery-readiness cases and the new earned default-cover case pass. The complete opening still fails later at recovered swivel custody. |
+| [#358](https://github.com/fsodano/granaderos/pull/358) | Resolve the actual stock northern clinic counterattack and treat its surviving wounded with finite supplies. | Four affected cases pass, including the genuine seed-8 interruption and exact native replay. |
+| [#359](https://github.com/fsodano/granaderos/pull/359) | Reserve each selected mountain doctor's actual dressing while supplying the other doctors. | The new earned stock clinic control passes. The existing installed Uspallata control also passes in a separate receipt. |
 
 PR #354 retains three rear staff and their four actual dressings. The native
 Tucumán victory uses five turns and 140 actions; physician 107 dies and
@@ -441,15 +446,15 @@ remains dead. Preparation and battle replay through official midpoint
 saves. This closes the affected seed-8 preparation boundary, with no new
 complete ending run.
 
-The merge checks passed: runner/shard self-tests 14/14, complete shard
+The earlier merge checks passed: runner/shard self-tests 14/14, complete shard
 coverage, documentation audit, baseline audit 39/39, typecheck and clean
 diff. The primary checkout's typecheck first found missing Three.js types
 in its old dependency tree. Installing the locked web dependencies fixed
 that local failure; typecheck then passed without source changes. These
 merge checks do not replace the full release gate.
 
-Unproved rear-defense default experiments are preserved privately. They are
-not part of the published source. Completion of the default opening, the
+Older unproved rear-defense experiments remain private. PR #357 publishes
+the separately verified default preparation. Completion of the default opening, the
 complete current-source ending and continuation, the final browser review
 and the full release gate remain open.
 
@@ -482,9 +487,31 @@ exact second native combat replay pass, with 376 relevant pins unchanged.
 This closes the affected allocation and assault boundary. It is not a new
 complete fresh-start result.
 
-The current full funded recovery and the corrected post-Mendoza stock
-continuation remain under review. A private continuation that omitted the
-actual short-term specialist's service end was rejected as evidence for the
-original route. The subsequent probe uses the actual support receipt and
-preserves the native Mendoza losses. No complete campaign or release pass
-has been recorded.
+The complete original funded recovery ran at `e1f78172` and failed 0/1 with
+no skips. Its actual Córdoba counterattack at hour 294 ended in retreat
+during the medical courier's return. All 607 pinned inputs stayed unchanged.
+This remains an unresolved complete-route failure.
+
+The corrected earned post-Mendoza continuation uses the actual short-term
+specialist's service-end receipt and preserves the native Mendoza losses.
+It wins Uspallata at hour 783, then fails the original full-health clinic
+requirement because the doctors cycle one dressing between themselves.
+A prior probe that omitted that service end remains excluded as evidence
+for the original route.
+
+PR #359 fixes the dressing allocation. All seven earned survivors finish
+full recovery and return to Mendoza. The new control passes 1/1 with 368
+pins unchanged. The existing complete installed Uspallata control passes
+1/1 in the earlier two-case gate. That gate's new case failed an incorrect
+test premise about starting HP; only that premise was corrected before
+the passing new-case rerun. The original 48-attempt limit is unchanged.
+
+The next earned continuation reaches Los Patos at hour 822 and loses the
+native battle by retreat. Its two actual guns have no ammunition at entry.
+All 371 source and input pins stayed unchanged. This is a recorded failure
+boundary, not a new complete fresh-start result.
+
+The unchanged complete opening on PR #357 passes its first five stages,
+then fails at recovered swivel custody. Its terminal result is five passes,
+two failures including the parent, and one dependent skip, with 346 pins
+unchanged. No complete current campaign or release pass has been recorded.
