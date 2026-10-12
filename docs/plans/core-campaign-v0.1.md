@@ -96,8 +96,17 @@ actual seven-charge gun shipment quote costs zero. Twenty-one returned
 property rows and the spent Tucumán gun remain unchanged. The final log hash
 is `7ff6e196ad53ea3b6abe031fbc8b7bd547f0e8d214b4ba87b89ffb42cc1f797e`.
 
-The new complete original recovery on `58bf21cf` is still running. No passing whole-route
-result is claimed. The separate old lost-Córdoba care control remains open:
+The complete original recovery on frozen `58bf21cf` finishes with one failure
+in 2,030.359 seconds; its wrapper takes 2,036.065 seconds. All 14,680 frozen
+source/input pins and 393 actual consumed inputs remain unchanged, including
+the runtime and initialized engine. At the original Salta assault call on
+line 163, `openingControlWindow` rejects the proposed move for actor 11 to
+`42,28`, level 0, with “Destino inaccesible o puntos de acción insuficientes.”
+The receipt is a failed complete run; its log SHA is
+`ddc3d593b71353840b678ec44d84275539dd6cc3425434e027fdce9824c12b6b`.
+The original assertions remain unchanged. This refusal still needs diagnosis;
+it does not establish a core mechanic fault or a passing recovery.
+The separate old lost-Córdoba care control remains open:
 its unchanged original helper finds actor 1000 dead where the old test expects
 23 HP. PR #401 proves the earned native capital victory at `3850:1672`,
 with 905,389 pesos; its final permanent native log hash is

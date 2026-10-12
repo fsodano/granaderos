@@ -5,7 +5,9 @@ describe the dated September source. Read the [shipping campaign status](../plan
 for current checks. Merged PR #401 proves an earned twelve-person capital
 victory; PR #407 proves an earned paid northern reunion. These separate
 receipts do not prove either complete fresh ending, its 48-hour continuation
-or release acceptance. The complete original recovery is still under test.
+or release acceptance. The latest complete original recovery on `58bf21cf`
+fails when a proposed tactical move is refused during the Salta assault;
+the current status record preserves its exact receipt and unchanged assertions.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 
