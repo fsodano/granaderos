@@ -1,0 +1,71 @@
+{
+  "scope": "Exact earned loose stock seed-8 Salta victory from the complete unchanged ordinary 3200-peso ending run. Bounded native aid and Yatasto handover with the commander actual wounds only; not a complete campaign ending.",
+  "sourceRevision": "711adfef93b0e66d8af8383a8d637dfb61eba492",
+  "sourcePath": "/Users/fsodano/.codex/worktrees/campaign-handover/granaderos/.cache/core-campaign-2026-10-12/ending-main-711adfef/passive-captures/strategic-preparation/83685-12-freshHistoricalEnding-route-checkpoint-XplVbq/campaign.json",
+  "sourceLogSha256": "a2db79d4000c746b009606e8005c31b59f09ad3f27b1139c09dea240b22a2342",
+  "sourceRun": {
+    "tests": 2,
+    "pass": 0,
+    "fail": 2,
+    "skipped": 0,
+    "cancelled": 0,
+    "uniqueSourceShippingFiles": 617,
+    "actualFilesystemInputFiles": 229,
+    "changedSourcePins": 0,
+    "changedActualInputPins": 0
+  },
+  "input": {
+    "fixture": "earned-loose-stock-salta-before-yatasto.campaign.json.gz",
+    "rawSha256": "1ec31fa93d170a981e00ec22cd1e4229ba655197fcfbc59670816b45af248b20",
+    "gzipSha256": "542c6bef15fbabbe4cd5fe5af86ee6a45756476dbfcf7d243523fa95e2dd150f",
+    "rawBytes": 7878065,
+    "clock": [
+      792,
+      3583
+    ],
+    "treasury": 231172,
+    "commander": {
+      "alive": true,
+      "hp": 21,
+      "maxHp": 88,
+      "bleeding": 0,
+      "bandaged": 67,
+      "energy": 86.71
+    }
+  },
+  "continuation": {
+    "fixture": "earned-loose-stock-yatasto-native-wounds.campaign.json.gz",
+    "rawSha256": "4f50b901e46cbb49fe85b366ccc825bb3abb95b2990d9914e45307973d3de995",
+    "gzipSha256": "051e9b5dc196b9f01dcf3764acce943f7bc9990941969f10b362b29356761fc4",
+    "rawBytes": 8452952,
+    "clock": [
+      798,
+      107
+    ],
+    "treasury": 230600,
+    "commander": {
+      "alive": true,
+      "hp": 21,
+      "maxHp": 88,
+      "bleeding": 0,
+      "bandaged": 67,
+      "energy": 100
+    },
+    "phase": 3,
+    "yatastoCompleted": true
+  },
+  "continuationProof": {
+    "scope": "Actual existing native first aid, retained service, posta journey, Yatasto dialogue and local survivor formation after changing only the obsolete helper health assertion; no runtime or campaign data changes.",
+    "helperSha256": "11ed7187e41a3fe10b8786a1a48223ee6e2c9b2c524171197181e6194c327394",
+    "nativeProbeLogSha256": "63a226e6824a41971a31632dbc80df0e48b0e03bf3264ca66de5e55c4e9db4a9",
+    "seconds": 6.49880675,
+    "exitCode": 0,
+    "uniqueSourceShippingFiles": 555,
+    "actualFilesystemInputFiles": 1,
+    "changedSourcePins": 0,
+    "changedActualInputPins": 0,
+    "officialSaveSha256": "e3b98ff8aa5301368dee563f236039feff0b954bc5fd38dcfbb2f41cb48cd5fb",
+    "inputUnchanged": true,
+    "officialSaveAdmitted": true
+  }
+}

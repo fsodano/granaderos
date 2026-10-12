@@ -8,6 +8,7 @@ import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {sameCell,spacePoint} from '../game/tactical-space.js';
 import {atHand} from '../game/tactical-planning-space.js';
 import {firstAidPlan} from '../game/first-aid.js';
+import {isUnconscious} from '../game/actor-condition.js';
 import {visit,sync,leave} from './local-contract-fixture.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -515,6 +516,11 @@ function completeStockNorthernMission(start,{report=()=>{},onCheckpoint}={}){
  report({event:'northernMissionLocalFormation',occupiedSquads:c.squads.filter(squad=>squad.members.length).length,envoySquad,envoyMembers,actualSurvivors:live().length});
  for(const [id,r]of Object.entries(prior.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  for(const id of live()){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);const expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(expiry===null||expiry>now());}
- assert.equal(c.operativeState[10].alive,prior.operativeState[10].alive);assert.equal(c.operativeState[57].hp,88);assert.ok(!c.recruited.includes(57));checkpoint('northernMissionCompleted');
+ assert.equal(c.operativeState[10].alive,prior.operativeState[10].alive);
+ const commander=c.operativeState[57];
+ assert.ok(commander.alive&&!isUnconscious(commander),'The native Yatasto commander must remain alive and conscious.');
+ assert.equal(commander.hp,prior.operativeState[57].hp,'The conference preserves the actual allied commander wounds; it does not restore untouched health.');
+ assert.equal(commander.bleeding,prior.operativeState[57].bleeding,'The conference preserves the actual allied commander bleeding.');
+ assert.ok(!c.recruited.includes(57));checkpoint('northernMissionCompleted');
  return c;
 }
