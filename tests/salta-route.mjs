@@ -11,7 +11,7 @@ import {fightNorthernSector,northernCombatOrder,northernClinicDefenseOrder} from
 import {stageOpeningRearCover} from './opening-rear-guard.mjs';
 import {openingRearFormation,supplyOpeningRearDoctors,stabilizeOpeningRearSurvivors} from './opening-rear-medical-supply.mjs';
 import {prepareOpeningCordobaReserve,relieveOpeningCordobaReserve} from './opening-cordoba-rear-reserve.mjs';
-import {supplySaltaClinicDoctors} from './salta-clinic-supply.mjs';
+import {prepareSaltaClinicSupply,supplySaltaClinicDoctors,stabilizeSaltaClinicSurvivors} from './salta-clinic-supply.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
@@ -145,6 +145,9 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
   assert.ok(returning.every(id=>route.campaign.operativeState[id].location==='tucuman'),'the healed rear relief completes its actual march');reservePreparation.returning=returning;
  }
  order({type:'selectSquad',id:selected});
+ const clinicSupply=prepareSaltaClinicSupply(route.campaign,{report});route.apply(()=>clinicSupply.campaign);
+ route.events.push(...clinicSupply.receipt.actions.filter(row=>!row.tactical));
+ onCheckpoint('salta-clinic-supplied',route.campaign,{receipt:clinicSupply.receipt});
  // Keep service paid while staging a daylight arrival. Replacements are hired
  // locally after the rest, with their normal equipment and real contracts.
  const earliestDeparture=route.campaign.hour+(24-route.campaign.hour%24)%24;
@@ -170,10 +173,15 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
    for(const operativeId of local)order({type:'assignCare',operativeId,assignment:hourlyDoctors.includes(operativeId)?'doctor':wounded.includes(operativeId)?'patient':'rest'});
   }else for(const operativeId of local)order({type:'assignCare',operativeId,assignment:'rest'});
   renew(route,route.campaign.recruited,2);order({type:'wait',hours:1});
-  if(route.campaign.pendingEncounter)defenses.push(route.resolveEncounter(report,encounterController));
+  if(route.campaign.pendingEncounter){
+   const defense=route.resolveEncounter(report,encounterController);defenses.push(defense);assert.equal(defense.status,'victory','The actual clinic raid must be won.');
+   const urgent=stabilizeSaltaClinicSurvivors(route.campaign,defense.sector,{report});route.apply(()=>urgent.campaign);
+   local.splice(0,local.length,...route.campaign.recruited.filter(id=>{const r=route.campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='tucuman';}));
+   onCheckpoint('salta-clinic-defense-settled',route.campaign,{defense,care:urgent.receipt});
+  }
  }
  assert.ok(Number.isInteger(departure),'supplied paid care completes before the daylight march');assert.equal(route.campaign.hour,departure);
- for(const id of patients)assert.equal(route.campaign.operativeState[id].hp,route.campaign.operativeState[id].maxHp);
+ for(const id of local)assert.equal(route.campaign.operativeState[id].hp,route.campaign.operativeState[id].maxHp);
  const usedDressings=medicalStart+gatheredDressings-donatedDressings-local.reduce((sum,id)=>sum+route.campaign.operativeState[id].medkits,0);assert.ok(patients.length?usedDressings>0:usedDressings===0);
  // Pay for an available specialist and ordinary replacements. Fallen recruits
  // stay dead; a living contracted rifleman can serve in the next assault.
@@ -225,7 +233,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  const battle=enterSector(request,campaign.sectorStates.salta);
  assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
  report({event:'jointSaltaDeployment',hour:campaign.hour,units:request.squad.map(u=>u.id),patients,usedDressings});
- return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,cordobaReserve,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
+ return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,cordobaReserve,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings,supply:clinicSupply.receipt}};
 }
 
 export function completeNorthernMission(start,{report=()=>{}}={}){
