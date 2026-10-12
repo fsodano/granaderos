@@ -55,7 +55,8 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are delivered to `main` through PR #403. Each receipt
+The following changes are delivered to `main` through PR #407, including the
+later merge of PR #401 at `58bf21cf`. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 Recent deliveries are listed first. Earlier receipts below retain their own
@@ -63,6 +64,8 @@ tested source and limits.
 
 | PR | Change | Recorded affected checks |
 | --- | --- | --- |
+| [#407](https://github.com/fsodano/granaderos/pull/407) | Retain the original duty cohort and returning ward, queue both actual columns on paid postas, and let completed temporary clinic service expire normally. Keep the native Tucumán defense and transport the same charged Córdoba depot gun. | The complete three-case earned reunion and eighteen scope controls pass 21/21 in 52.607 seconds, with 632 static pins and 1,262 actual consumed inputs unchanged. Separately, all six existing hospital cases pass on the same final helper bytes in a retained 24/27 aggregate; its three new fixture-loader failures are corrected in the 21/21 gate. This is not one 27/27 run. The real reunion wins in 19 turns, 240 orders and 331 tactical seconds; death 141 remains permanent. Four ward members arrive at `772:1386`; the final state is `786:1527`, with 48,739 pesos. |
+| [#401](https://github.com/fsodano/granaderos/pull/401) | Recover the actual river survivors, pay three returned veterans and prepare a separate twelve-person capital relief. Preserve the four/six-person helper and three original empty guns. | Earned full preparation passes 1/1; the permanent native capital file and scope controls pass 19/19. The unchanged default coastal-defense file separately passes 2/2 in 136.790 seconds. The twelve-person capital force wins in 17 turns, 571 orders and 164 tactical seconds. Deaths 6, 116, 105, 145 and 109 remain permanent; seven field actors survive. Actors 117 and 107 retain 15/95 and 22/78 HP without bleeding. Commander 57 stays alive in Córdoba reserve; all three guns remain empty. No fresh ending caller or later northern-tail integration is included. |
 | [#397](https://github.com/fsodano/granaderos/pull/397) | Check the actual settled clinic gun after local defense issues it once. Preserve its finite charge, reserve and unique identity. | Both complete affected files pass 8/8 in 235.092 seconds. All 2,205 source and fixture pins remain unchanged. The native clinic result remains 20 turns, 407 orders and 573 tactical seconds, with four permanent deaths. |
 | [#398](https://github.com/fsodano/granaderos/pull/398) | Supply and pay the real Tucumán rear guard, reach actual roof cover and use finite care after the hospital defense. | Eleven complete affected files pass 50/50 in 643.335 seconds. The native defense wins in seven turns, 146 orders and 137 tactical seconds; actor 140 remains dead. The original patients fully recover at `646:1725`, with 22,572 pesos. This proves the earned hospital, not the complete original route. |
 | [#399](https://github.com/fsodano/granaderos/pull/399) | Pay four available river veterans, recover finite ammunition and stage sixteen real arrivals through west and south approaches. Preserve the three empty physical bronze guns. | Seven complete affected files pass 32/32 in 385.511 seconds. The native river victory uses ten turns, 275 orders and 355 tactical seconds. Deaths 5, 9, 121, 127, 133 and 146 remain permanent. It settles at `1806:1057` with 198,933 pesos. Later capital recovery and victory remain separate. |
@@ -81,14 +84,27 @@ the actual 7,722-peso renewal is refused at the same clock. This is a failed who
 not a complete recovery pass. Its log hash is
 `5f8936c1864e1ce032ba2512d64f0d81df0f2c707d23ce79a6f5e73276f2a9c8`.
 
-Draft [PR #401](https://github.com/fsodano/granaderos/pull/401)
-has an earned capital preparation and official paired-save control, but its
-native capital victory remains unproved. Failed cover/controller attempts
-remain failure receipts. Its newer four-case planning control quotes a
-twelve-person relief with paid veterans and the three real empty guns; it
-does not execute that preparation or prove a native victory. Neither fresh
-ending nor its 48-hour continuation has a complete passing result on the
-final source.
+PR #407 corrects that earned reunion through actual paid service and postas.
+Its keeper set comes from the real `302:2571` caller checkpoint with sixteen
+living, noncaptured serving actors. The separate prepared `368:2583` state
+has seventeen after adding actor 133, who is dead at the returned `681:335`
+boundary. Both recorded cohorts produce the same nine necessary keepers.
+The hospital helper remains byte-identical to its accepted prior source;
+the queued-travel retention guard is confined to reunion. Renewals debit
+3,661 plus 858 pesos; posta setup costs 150, carts setup costs 180, and the
+actual seven-charge gun shipment quote costs zero. Twenty-one returned
+property rows and the spent Tucumán gun remain unchanged. The final log hash
+is `7ff6e196ad53ea3b6abe031fbc8b7bd547f0e8d214b4ba87b89ffb42cc1f797e`.
+
+The new complete original recovery on `58bf21cf` is still running. No passing whole-route
+result is claimed. The separate old lost-Córdoba care control remains open:
+its unchanged original helper finds actor 1000 dead where the old test expects
+23 HP. PR #401 proves the earned native capital victory at `3850:1672`,
+with 905,389 pesos; its final permanent native log hash is
+`2cb1af3983c977bfea062f7c1f9a40d75ed4b33bfe8e87eefaadd3d866ea8194`.
+Earlier failed preparation and controller receipts remain failures. Neither
+fresh ending nor its 48-hour continuation has a complete passing result on
+the final source. Final browser and release checks also remain open.
 
 | PR | Change | Recorded affected checks |
 | --- | --- | --- |
@@ -283,7 +299,8 @@ alternate PNG encoding with identical decoded pixels. [PR #406](https://github.c
 merges portable replay without changing accepted models, textures or frozen
 recipes. The nine affected local files pass 84/84; the final source guard
 separately passes all four portable controls under both encoder conditions.
-The merged Linux core job is pending; no current complete core pass is claimed.
+The retained merged Linux core [run 38314290110](https://github.com/fsodano/granaderos/actions/runs/38314290110)
+at `1806d8f9` is still running; no current complete core pass is claimed.
 
 The campaign quick job in [Actions run 38306852089](https://github.com/fsodano/granaderos/actions/runs/38306852089)
 also passes on main `c6881d99`: all 123 files and 420 tests pass, without
@@ -293,6 +310,11 @@ source/accepted asset trees, Python requirements and core workflow are exact
 matches to the completed predecessor failure. The cancelled core job is
 not a passing result. Extended routes and the complete release gate remain
 open.
+
+The current combined-source campaign-only [run 38320797582](https://github.com/fsodano/granaderos/actions/runs/38320797582)
+on `58bf21cf` is still running. Its result is separate from the passing
+campaign quick job on `c6881d99` above. Superseded automatic runs are cancelled
+to avoid duplicate core work; cancellation is not a passing result.
 
 The earlier combined quick result below retains its historical failure.
 
