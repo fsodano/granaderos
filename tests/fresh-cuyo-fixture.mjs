@@ -24,6 +24,13 @@ export function mendozaBatteryController(initial){
  return supplied.length>1?stagedBatteryController():coastalBatteryController(initial,{sharedArtillerySight:true});
 }
 
+// Both ordinary routes need the remaining physical arsenal after Mendoza.
+// The stock route must not send the depleted bronze guns through both passes.
+export function prepareFreshCuyoMountainArtillery(start,options={}){
+ const arsenal=recoverCreatedCuyoMountainArtillery(start,options);
+ return {campaign:arsenal.campaign,batteryIds:arsenal.selections.map(id=>id.slice(6))};
+}
+
 // Continue a real new campaign. Preparation pays for the survivors, finite
 // supplies and physical journeys; every battle is replayed and saved in full.
 export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='created',coastalCheckpoint,openingCheckpoint,report=()=>{}}={}){
@@ -38,7 +45,7 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  const fight=sector=>{
   assert.ok(c.pendingBattle);assert.equal(c.pendingBattle.sector,sector);
   const initial=enterSector(c.pendingBattle,c.sectorStates[sector]);
-  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery(mountainBatteryIds?{gunTypes:['field8','swivel']}:{}):{controller:sector==='mendoza'?mendozaBatteryController(initial):coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
+  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery(mountainBatteryIds?{gunTypes:['field8','swivel']}:{}):{controller:sector==='mendoza'?mendozaBatteryController(initial):sector==='uspallata'&&mountainBatteryIds?stagedBatteryController():coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
   c=result.campaign;assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.completed,false);
   checkpoint(sector,{status:result.summary.status,actions:result.summary.actions,turns:result.summary.turns});
  };
@@ -104,10 +111,8 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  c=startFreshFoundry(c,{report});assert.equal(c.flags.foundry,true);assert.ok(c.recruited.includes(2)&&c.operativeState[2].alive);
  for(const id of deaths(prefix.campaign))assert.equal(c.operativeState[id].alive,false);
  c=completeFreshArmyFunding(prepareFreshArmyFunding(c,{report}),{report});assert.equal(c.flags.armyFunded,true);assert.ok(ownedArtilleryCount(c)>=3);assert.equal(c.phase,3);checkpoint('funded',{artillery:ownedArtilleryCount(c)});
- if(routeKind==='created'){
-  const arsenal=recoverCreatedCuyoMountainArtillery(c,{report});c=arsenal.campaign;
-  mountainBatteryIds=arsenal.selections.map(id=>id.slice(6));
- }
+ const arsenal=prepareFreshCuyoMountainArtillery(c,{report});c=arsenal.campaign;
+ mountainBatteryIds=arsenal.batteryIds;
  c=prepareFreshUspallataAssault(c,{batteryIds:mountainBatteryIds,report});fight('uspallata');
  c=recoverFreshUspallata(c,{batteryIds:mountainBatteryIds,report});
  const losPatosInputCapture=recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-input',routeKind});
