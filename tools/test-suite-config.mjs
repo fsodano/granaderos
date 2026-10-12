@@ -1,5 +1,6 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
+ {file:'tests/earned-original-hospital-rear-guard.test.mjs',reason:'Exact earned original hospital rear preparation, finite forward battery and complete native hospital care; full original recovery remains separate.'},
  {file:'tests/earned-coastal-native-defense.test.mjs',reason:'Genuine paid fifteen-person native capital defense, official replay and actual controlled port/naval/care continuation; no ending claim.'},
  {file:'tests/coastal-paid-column.test.mjs',reason:'Eight actual returned veterans, finite local kit, ordinary paid contracts and real two-column coastal arrival.'},
  {file:'tests/earned-stock-coast-preparation.test.mjs',reason:'Earned complete paid coastal force, first capital victory replay, finite supplies and later native defense readiness; no ending claim.'},
