@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import extendedTests from './test-suite-config.mjs';
+import campaignTests from './test-campaign-config.mjs';
+import {partitionTestScopes} from './test-scopes.mjs';
 
-const names=['full','quick','extended'];
+const names=['full','quick','extended','core','campaign'];
 
 export function suiteOptions(args){
- let suite='full',specified=false,list=false;
+ let suite='full',specified=false,list=false,duration;
  const runnerArgs=[];
  for(let index=0;index<args.length;index++){
   const arg=args[index];
@@ -12,13 +14,18 @@ export function suiteOptions(args){
    assert.ok(!specified,'Usage: specify --suite only once.');
    specified=true;
    suite=arg==='--suite'?args[++index]:arg.slice('--suite='.length);
-   assert.ok(names.includes(suite),'Usage: --suite must be full, quick or extended.');
+   assert.ok(names.includes(suite),'Usage: --suite must be full, quick, extended, core or campaign.');
+  }else if(arg==='--duration'||arg.startsWith('--duration=')){
+   assert.equal(duration,undefined,'Usage: specify --duration only once.');
+   duration=arg==='--duration'?args[++index]:arg.slice('--duration='.length);
+   assert.ok(['full','quick','extended'].includes(duration),'Usage: --duration must be full, quick or extended.');
   }else if(arg==='--list'){
    assert.ok(!list,'Usage: specify --list only once.');
    list=true;
   }else runnerArgs.push(arg);
  }
- return {suite,list,runnerArgs};
+ assert.ok(duration===undefined||['core','campaign'].includes(suite),'Usage: --duration applies only to core or campaign.');
+ return {suite,list,runnerArgs,...(duration===undefined?{}:{duration})};
 }
 
 export function partitionTestSuites(all,configuration=extendedTests){
@@ -39,11 +46,15 @@ export function partitionTestSuites(all,configuration=extendedTests){
  return {suites,reasons:extended};
 }
 
-export function suiteManifest(all,suite,configuration=extendedTests){
+export function suiteManifest(all,suite,configuration=extendedTests,campaignConfiguration=campaignTests,duration='full'){
  assert.ok(names.includes(suite),`Unknown test suite: ${suite}`);
- const {suites,reasons}=partitionTestSuites(all,configuration),selectedFiles=suites[suite];
+ assert.ok(['full','quick','extended'].includes(duration),`Unknown duration profile: ${duration}`);
+ const {suites,reasons}=partitionTestSuites(all,configuration),scopePartition=partitionTestScopes(all,campaignConfiguration);
+ const semantic=['core','campaign'].includes(suite),durationFiles=new Set(suites[duration]);
+ Object.assign(suites,scopePartition.scopes);
+ const selectedFiles=semantic?suites[suite].filter(file=>durationFiles.has(file)):suites[suite];
  assert.ok(selectedFiles.length,`No test files were selected for the ${suite} suite.`);
  const selected=new Set(selectedFiles);
- const excludedFiles=all.filter(file=>!selected.has(file)).map(file=>({file,reason:reasons.get(file)??'Routine regression file included in the quick suite.'}));
- return {suite,totalFiles:all.length,selectedFiles,excludedFiles,partitionCounts:{full:suites.full.length,quick:suites.quick.length,extended:suites.extended.length}};
+ const excludedFiles=all.filter(file=>!selected.has(file)).map(file=>({file,reason:semantic&&suites[suite].includes(file)?reasons.get(file)??'Routine regression file included in the quick duration profile.':semantic?scopePartition.reasons.get(file)??'Reusable engine, renderer or tooling regression in the core suite.':reasons.get(file)??'Routine regression file included in the quick suite.'}));
+ return {suite,...(semantic?{durationProfile:duration}:{}),totalFiles:all.length,selectedFiles,excludedFiles,partitionCounts:{full:suites.full.length,quick:suites.quick.length,extended:suites.extended.length,core:suites.core.length,campaign:suites.campaign.length}};
 }
