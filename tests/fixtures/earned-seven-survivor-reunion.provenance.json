@@ -1,0 +1,27 @@
+{
+  "scope": "Exact earned original funded recovery hospital input continued through the unmodified native hour408 defense, finite aid, return and Buenos Aires conversations. This fixture starts at the seven-survivor reunion boundary, not a fresh campaign ending.",
+  "sourceRevision": "2dea1d96",
+  "sourceInputSha256": "bddbbd600bb0c0cc69490d51d61d4543b5d36eb9a39b3c2e566cb3cf373e4f0a",
+  "sha256": "60aeaa2cb8472b2524cd3841b1e047a0163d62c6fad06b3c6e796596d4738b70",
+  "rawBytes": 1736426,
+  "compressedSha256": "a9665808390019eee8bad89da09e0c2c43b59b3ac981b1a7f8cdf4c873501b13",
+  "clock": [
+    438,
+    89
+  ],
+  "field": [
+    10,
+    4,
+    141,
+    111,
+    125,
+    103,
+    1000
+  ],
+  "actualReturnLosses": [
+    116,
+    119,
+    142
+  ],
+  "sourceReceipt": ".cache/core-campaign-2026-10-12/seven-survivor-reunion/earned-input-provenance.json"
+}
