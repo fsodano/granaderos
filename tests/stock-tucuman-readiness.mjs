@@ -17,22 +17,22 @@ import {transferRouteAmmunition,transferRouteSupply} from './route-ammunition-tr
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const compatible=(s,op)=>civicStatus(s,op.id).available&&contractQuote(s,op,'week').available&&contractQuote(s,op,'week').total<=1400;
 
-// Prepare the first stock assault prospectively. The five existing survivors
-// remain in real rear service. Public hires, local finite property and paid
-// clock orders create the two columns; failure remains an actual route failure.
+// Prepare twelve actual soldiers for the first stock assault. Available public
+// hires can join ready serving veterans when the unused quote pool is small.
+// Clinic staff and patients remain in the rear; property and time stay finite.
 export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}={}){
  const inputCapture=recordRouteStrategicEvidence({helper:'prepareStockTucumanReadiness',stage:'preparation-input',campaign:start});
  let c=start,b=null,diagnosticContext=null;
  try{
  const original=structuredClone(start),dead=Object.keys(start.operativeState).filter(id=>!start.operativeState[id].alive);
  c=decodeSave(encodeSave(start)).campaign;
- const rear=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured),paid=[],orders=[],events=[];
- if(inputCapture)diagnosticContext={rear,paid,orders,events};
+ const retained=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured),rear=[...retained],paid=[],veterans=[],field=[],orders=[],events=[];
+ if(inputCapture)diagnosticContext={retained,rear,paid,veterans,field,orders,events};
  const event=e=>{events.push(e);report(e);};
  const validate=()=>{
   assert.deepEqual(start,original,'Readiness must not mutate its earned input.');
   for(const id of dead)assert.equal(c.operativeState[id].alive,false,'Earlier casualties remain permanent.');
-  for(const id of rear)assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured,'Existing rear survivors must retain actual service.');
+  for(const id of retained)assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured,'Existing rear survivors must retain actual service.');
   assert.equal(c.pendingEncounter,null,'Resolve the actual encounter before continuing stock readiness.');
  };
  const order=action=>{
@@ -47,7 +47,7 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
  };
  const checkpoint=stage=>{validate();const scene=b??(c.pendingBattle?enterSector(c.pendingBattle,c.sectorStates[c.pendingBattle.sector]):null);const pair=decodeSave(encodeSave(c,scene));assert.deepEqual(pair.campaign,c);if(scene)assert.deepEqual(pair.battle,scene);onCheckpoint?.(stage,structuredClone(c),scene&&structuredClone(scene));};
  const wait=()=>{
-  for(const id of [...rear,...paid]){
+  for(const id of [...retained,...paid]){
    if(!c.recruited.includes(id))continue;
    const expires=contractExpiresSeconds(c.contracts[id]);assert.ok(expires===null||expires>clock(c),'An expired rear or field contract cannot be restored.');
    if(expires!==null&&expires<=clock(c)+3601)order({type:'renewContract',id,term:'week',expectedExpiresAt:c.contracts[id].expiresAt,expectedExpiresSecond:c.contracts[id].expiresSecond??0});
@@ -111,18 +111,27 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
   order({type:'recruitCivic',id:op.id,term:'week',destination:'cordoba'});paid.push(op.id);
   event({event:'stockReadinessPaidArrivalBooked',id:op.id,medical:op.medical,marksmanship:op.marksmanship,arrival:structuredClone(c.hiringArrivals.find(arrival=>arrival.operativeId===op.id))});
  }
- assert.equal(paid.length,12,'The actual compatible public quote pool must supply the twelve-person force.');checkpoint('stock-readiness-booked');
+ if(paid.length<12){
+  const reserved=rosterFor(c).filter(op=>retained.includes(op.id)).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];
+  assert.ok(reserved,'The rear must retain its actual strongest medical worker.');
+  const ready=rosterFor(c).filter(op=>{const r=c.operativeState[op.id],prior=original.operativeState[op.id];return retained.includes(op.id)&&op.id!==reserved.id&&r.alive&&!r.captured&&r.location==='cordoba'&&r.hp===r.maxHp&&!r.bleeding&&!r.asleep&&r.energy>=80&&r.morale>=30&&!['doctor','patient','militia_doctor'].includes(prior.assignment);}).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id);
+  veterans.push(...ready.slice(0,12-paid.length).map(op=>op.id));
+  for(const id of veterans)rear.splice(rear.indexOf(id),1);
+  event({event:'stockReadinessServingVeterans',ids:[...veterans],rear:[...rear],retainedMedicalWorker:reserved.id});
+ }
+ field.push(...paid,...veterans);assert.equal(field.length,12,'Twelve real compatible hires and ready serving veterans must form the force.');assert.equal(new Set(field).size,12);checkpoint('stock-readiness-booked');
  for(let h=0;h<24&&paid.some(id=>!c.recruited.includes(id));h++)wait();
  for(const id of paid){assert.ok(c.recruited.includes(id)&&c.operativeState[id].alive);assert.equal(c.operativeState[id].location,'cordoba');}
- const ranked=rosterFor(c).filter(op=>paid.includes(op.id)).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id),columns=[ranked.slice(0,6).map(op=>op.id),ranked.slice(6).map(op=>op.id)],groups=[];
+ const ranked=rosterFor(c).filter(op=>field.includes(op.id)).sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id),columns=[ranked.slice(0,6).map(op=>op.id),ranked.slice(6).map(op=>op.id)],groups=[];
  for(const ids of columns){order({type:'createSquad',ids,sector:'cordoba',name:'Relevo pagado del Norte'});groups.push(c.activeSquadId);for(const id of ids)order({type:'assignCare',operativeId:id,assignment:'active'});}checkpoint('stock-readiness-arrived');
- for(const id of paid){
+ for(const id of field){
+  const held=inventory(id).personal;if(veterans.includes(id)&&held?.weapon===1800&&!held.weaponDropped&&held.condition>=10){event({event:'stockReadinessRetainedLongGun',id,weapon:held.weapon,condition:held.condition});continue;}
   const row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).weapon===1800&&JSON.parse(row.expected).condition>=10)??exchangeRearRifle(id);
   assert.ok(row,'A real known reachable Córdoba long gun must equip '+id);take(id,row,1);
   const packed=inventory(id).carried.find(item=>item.expected&&JSON.parse(item.expected).weapon===1800);assert.ok(packed);
   order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'equip',inventoryKey:packed.inventoryKey,expected:packed.expected,slot:'primary'});
  }
- for(const id of paid){
+ for(const id of field){
   const load=()=>carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]);
   const previous=ammoTypeFor({...load(),activeSlot:'primary'});
   if(previous!=='ammoMusket'){
@@ -150,7 +159,7 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
   const row=inventory(id).entries.find(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits'),missing=target-c.operativeState[id].medkits;
   if(row)take(id,row,Math.min(missing,row.count));
   else{
-   const donors=[...rear,...paid].filter(donor=>![physician.id,backup.id].includes(donor)&&c.operativeState[donor].medkits>0);
+   const donors=(veterans.length?[...field,...rear]:[...rear,...field]).filter(donor=>![physician.id,backup.id].includes(donor)&&c.operativeState[donor].medkits>0);
    const shared=transferRouteSupply(c,{sector:'cordoba',recipientId:id,donorIds:donors,item:'medkits',count:missing,execute:(state,action)=>{assert.equal(state,c);order(action);return c;},report:event});c=shared.campaign;
   }
  }
@@ -158,21 +167,21 @@ export function prepareStockTucumanReadiness(start,{report=()=>{},onCheckpoint}=
  const gun=c.sectorStates.cordoba.artillery.filter(gun=>gun.side==='player'&&gun.type==='bronze4'&&(gun.loaded||gun.ammo>0)).sort((a,b)=>a.id.localeCompare(b.id))[0];assert.ok(gun,'A real owned supplied Córdoba bronze cannon is required.');assert.equal(artilleryProfile(c,gun).crew,2);
  const record=storedArtilleryRecord(gun);order({type:'storeArtillery',sector:'cordoba',artilleryId:gun.id});assert.deepEqual(c.artilleryDepots.cordoba.find(piece=>piece.id===gun.id),record);assert.ok(!c.sectorStates.cordoba.artillery.some(piece=>piece.id===gun.id));order({type:'configureArtillery',types:['depot:'+gun.id]});
  for(const id of groups){order({type:'selectSquad',id});reload();}
- for(const id of paid)order({type:'assignCare',operativeId:id,assignment:'rest'});
- for(let h=0;h<48&&paid.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue||c.operativeState[id].asleep);h++){
-  for(const id of paid)if(c.operativeState[id].asleep&&c.operativeState[id].energy>=100)order({type:'setSleep',operativeId:id,asleep:false});
-  if(paid.every(id=>c.operativeState[id].energy>=100&&!c.operativeState[id].fatigue&&!c.operativeState[id].asleep))break;wait();
+ for(const id of field)order({type:'assignCare',operativeId:id,assignment:'rest'});
+ for(let h=0;h<48&&field.some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue||c.operativeState[id].asleep);h++){
+  for(const id of field)if(c.operativeState[id].asleep&&c.operativeState[id].energy>=100)order({type:'setSleep',operativeId:id,asleep:false});
+  if(field.every(id=>c.operativeState[id].energy>=100&&!c.operativeState[id].fatigue&&!c.operativeState[id].asleep))break;wait();
  }
- for(const id of paid){const r=c.operativeState[id];assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);assert.equal(r.energy,100);assert.equal(r.fatigue,0);assert.equal(r.asleep,false);assert.ok(r.morale>=30,'The public low-morale warning must be resolved before deployment.');order({type:'assignCare',operativeId:id,assignment:'active'});}checkpoint('stock-readiness-local-ready');
+ for(const id of field){const r=c.operativeState[id];assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);assert.equal(r.energy,100);assert.equal(r.fatigue,0);assert.equal(r.asleep,false);assert.ok(r.morale>=30,'The public low-morale warning must be resolved before deployment.');order({type:'assignCare',operativeId:id,assignment:'active'});}checkpoint('stock-readiness-local-ready');
  for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'tucuman',queue:true,mode:c.routes.posta?'posta':'march'});}
  for(let h=0;h<48&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)wait();
  assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'Both actual approach journeys must finish.');
  for(let h=0;h<24&&(c.hour%24<8||c.hour%24>16);h++)wait();assert.ok(c.hour%24>=8&&c.hour%24<=16);
- order({type:'beginAssault',sector:'tucuman'});assert.equal(c.pendingBattle.squad.length,12);assert.deepEqual(new Set(c.pendingBattle.squad.map(op=>op.id)),new Set(paid));
+ order({type:'beginAssault',sector:'tucuman'});assert.equal(c.pendingBattle.squad.length,12);assert.deepEqual(new Set(c.pendingBattle.squad.map(op=>op.id)),new Set(field));
  const deployed=c.pendingBattle.artillery.filter(gun=>gun.side==='player');assert.equal(deployed.length,1);for(const key of ['id','type','side','loaded','ammo'])assert.deepEqual(deployed[0][key],record[key]);
  for(const id of rear){assert.equal(c.operativeState[id].location,'cordoba');assert.equal(c.operativeState[id].assignment,'rest');assert.ok(!c.pendingBattle.squad.some(op=>op.id===id));}
  checkpoint('stock-readiness-assault');
- const receipt={rear,paid,physician:physician.id,backupPhysician:backup.id,columns,gun:record,orders,events,startingClock:clock(start),readyClock:clock(c),startingTreasury:start.resources.treasury,readyTreasury:c.resources.treasury,paidHireCost:orders.filter(row=>row.action?.type==='recruitCivic').reduce((sum,row)=>sum+row.quote.total,0),renewalCost:orders.filter(row=>row.action?.type==='renewContract').reduce((sum,row)=>sum+row.quote.price,0)};
+ const receipt={retained,rear,paid,veterans,field,physician:physician.id,backupPhysician:backup.id,columns,gun:record,orders,events,startingClock:clock(start),readyClock:clock(c),startingTreasury:start.resources.treasury,readyTreasury:c.resources.treasury,paidHireCost:orders.filter(row=>row.action?.type==='recruitCivic').reduce((sum,row)=>sum+row.quote.total,0),renewalCost:orders.filter(row=>row.action?.type==='renewContract').reduce((sum,row)=>sum+row.quote.price,0)};
  return {campaign:c,receipt};
  }catch(error){
   recordRouteStrategicEvidence({helper:'prepareStockTucumanReadiness',stage:'preparation-failure',campaign:c,inputCapture,context:diagnosticContext,error});throw error;

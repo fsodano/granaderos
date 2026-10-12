@@ -1,0 +1,16 @@
+{
+  "scope": "Exact earned seed8 input from the complete installed current-stock 3200 treasury entry; bounded readiness and Tucum\u00e1n victory only, not a complete campaign ending.",
+  "sourceRevision": "b6151aba6a90877a9c18b0038dd2d9db643debdb",
+  "rawSourcePath": "/Users/fsodano/.codex/worktrees/campaign-stock-north/granaderos/.cache/core-campaign-2026-10-12/original-ending-stock-care-v1/passive-captures/strategic-preparation/54779-8-prepareStockTucumanReadiness-preparation-input-2KwkqB/campaign.json",
+  "rawSourceSha256": "f678dae999fe50bf278a89db5a46bc19a45baee0d2c41c588235d4ffd2c229ee",
+  "sha256": "613c5f369066ad6e9c451106dd6bd77391c99aba6ff5ee992bb74034dcd7cfb5",
+  "compressedSha256": "26145e43d280c6b2fe3c34dd462eaa51f35be4d4ffe0b7e4e20f520f68653017",
+  "rawBytes": 1534397,
+  "clock": [
+    669,
+    903
+  ],
+  "startingTreasury": 3200,
+  "officialSaveRoundTripExact": true,
+  "sourceReceiptLogSha256": "3207ccc99d71e69f5fd471cfa20cf740e2def82f85be9b995dc5db0bdb358efa"
+}
