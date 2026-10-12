@@ -32,6 +32,7 @@ import {cellTravelPlan} from '../game/world-cells.js';
 import {baseMorale} from '../game/morale.js';
 import {bookRouteHires,assertRouteHireArrived} from './paid-route-hiring.mjs';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
+import {retainNorthernHandoverService,resolveNorthernHandoverEncounter,continueNorthernHandoverTravel} from './northern-handover-route.mjs';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -556,18 +557,16 @@ return restoreNorthernRoad(c,{report});
 
 export const prepareFreshSaltaAssault=prepareRestoredSalta;
 
-export function finishFreshNorthernCampaign(start,{report=()=>{}}={}){
+export function prepareFreshNorthernHandover(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const order=a=>{const next=dispatchCampaign(c,a);if(next.lastError)report({event:'northernHandoverStopped',campaign:structuredClone(c),action:a,error:next.lastError});c=next;assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
  const waitHour=()=>{
   if(c.pendingEncounter){
-   const encounter=c.pendingEncounter;
    report({event:'saltaCounterattack',campaign:structuredClone(c)});
-   const local=c.squads.find(q=>q.location===encounter.sector&&q.members.some(id=>c.operativeState[id].alive));assert.ok(local);
-   order({type:'selectSquad',id:local.id});order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   c=fightNorthernSector(c,encounter.sector,{controller:tucumanCombatOrder,report}).campaign;
+   c=resolveNorthernHandoverEncounter(c,{report});
    report({event:'saltaDefended',campaign:structuredClone(c)});
   }
+  c=retainNorthernHandoverService(c,{report});
   order({type:'wait',hours:1});
  };
  // Stabilize the actual local casualties before meetings advance tactical time.
@@ -593,7 +592,14 @@ export function finishFreshNorthernCampaign(start,{report=()=>{}}={}){
  order({type:'selectSquad',id:envoySquad.id});order({type:'squad',ids:[envoy.id]});
  c=meetRecruits(c,['guemes','macacha'],envoy.id);
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});for(let i=0;i<30&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);i++)waitHour();for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
-order({type:'travel',sector:'tucuman'});assert.equal(c.pendingEncounter,null);order({type:'visitMission',mission:'yatasto'});let b=enterSector(c.pendingBattle,c.sceneStates.yatasto);
+order({type:'travel',sector:'tucuman'});report({event:'northernHandoverTravel',campaign:structuredClone(c),envoy:envoy.id,envoySquad:envoySquad.id});
+c=continueNorthernHandoverTravel(c,{squadId:envoySquad.id,report});return {campaign:c,envoy:envoy.id};
+}
+
+export function finishFreshNorthernCampaign(start,{report=()=>{}}={}){
+ const handover=prepareFreshNorthernHandover(start,{report});let c=handover.campaign;
+ const envoy={id:handover.envoy},order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+order({type:'visitMission',mission:'yatasto'});let b=enterSector(c.pendingBattle,c.sceneStates.yatasto);
 for(const npcId of ['yatasto-belgrano','yatasto-san-martin','yatasto-san-martin']){b=approachNPC(b,String(envoy.id),npcId);const pair=syncBattleTime(c,b);assert.equal(pair.error,null);c=pair.campaign;b=pair.battle;order({type:'talkNPC',npcId,unitId:envoy.id,approach:'mission',sectorState:b});const saved=decodeSave(encodeSave(c,b));c=saved.campaign;b=saved.battle;}
 order({type:'finishMission',battleId:c.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(c.phase,3);assert.equal(c.missions.yatasto.completed,true);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }

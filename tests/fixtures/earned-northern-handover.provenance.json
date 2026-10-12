@@ -1,0 +1,77 @@
+{
+  "scope": "Earned actual Salta victory and its native travel interruption, replayed from the retained reunited checkpoint. This is not a fresh complete campaign ending.",
+  "sourceRevision": "a4877a891f808709d22c0f668a5ffd5f21da0341",
+  "capturedLogSha256": "b42d92bbe76ec4a9478ff1373cd41cedb9f96e253869c578302960c10b493cd8",
+  "unchangedConsumedSourcePins": 340,
+  "createdOutputPaths": [
+    ".cache/core-campaign-2026-10-12/northern-handover/capture-v2/northernHandoverTravel.save.json",
+    ".cache/core-campaign-2026-10-12/northern-handover/capture-v2/salta-victory.save.json"
+  ],
+  "captureSeconds": 64.42277475,
+  "reunitedInput": {
+    "scope": "Retained official earned reunion from the identical original recovered-hospital input; current Salta and handover continuation only.",
+    "inputPath": "/Users/fsodano/.codex/worktrees/campaigns/granaderos/.cache/core-campaign-2026-10-12/seven-survivor-reunion/focused-v5/completed-reunion.save.json",
+    "inputSha256": "2597beef9a1f6cd4fe25173a4922a4703b8262e97ce3c9304563aca6af12ae8a",
+    "originalRecoveredHospitalRawSha256": "bddbbd600bb0c0cc69490d51d61d4543b5d36eb9a39b3c2e566cb3cf373e4f0a",
+    "originalReunionReceipt": {
+      "command": [
+        "node",
+        "--import",
+        "/Users/fsodano/.codex/worktrees/campaigns/granaderos/.cache/core-campaign-2026-10-12/seven-survivor-reunion/focused-v5/read-audit-preload.mjs",
+        "--test",
+        "tests/earned-seven-survivor-reunion.test.mjs"
+      ],
+      "sourceRevision": "6ce03b1dbcc5bb40fe32bfb5761fdb4b476f6c2d",
+      "startedAt": "2026-10-12T04:02:23.212263+00:00",
+      "status": "complete",
+      "staticClosureFiles": 339,
+      "scope": "Exact earned seven-survivor reunion: public formation, actual travel/recapture and strict save continuation. Recursive static imports/data and the exact consumed earned fixture; no fresh whole-campaign claim.",
+      "pid": 39674,
+      "exitCode": 0,
+      "seconds": 116.041985875,
+      "finishedAt": "2026-10-12T04:04:19.254751+00:00",
+      "changedStaticPins": [],
+      "actualFilesystemInputFiles": 2,
+      "changedActualInputPins": [],
+      "logSha256": "728ff153ca5f07ef171ba8938e6dc966dacdf707e2f0cac5b4fe1266b7e11bdc",
+      "summary": {
+        "tests": 2.0,
+        "pass": 2.0,
+        "fail": 0.0,
+        "cancelled": 0.0,
+        "skipped": 0.0,
+        "duration_ms": 115860.207792
+      }
+    }
+  },
+  "records": {
+    "salta-victory": {
+      "path": "tests/fixtures/earned-northern-handover-salta-victory.save.json.gz",
+      "sha256": "33126b4a784b4cc1d8211243c364777f50d9996417ffc65931e86338201ab385",
+      "rawBytes": 2062903,
+      "compressedSha256": "2179e06477e53745ac645d6616a321cca48e5b300866272764ddb973156afd55"
+    },
+    "counterattack": {
+      "path": "tests/fixtures/earned-northern-handover-counterattack.save.json.gz",
+      "sha256": "85329c1810b5be08b0f637defa44e242283545a3d798cb25bb99250f75913ca3",
+      "rawBytes": 2040640,
+      "compressedSha256": "b016e059b43ed799447a0d4eb527ee66f470368df489c600429daa042a1912e7"
+    }
+  },
+  "counterattack": {
+    "groupId": "enemy-group-4",
+    "sector": "salta",
+    "clock": [
+      516,
+      2046
+    ],
+    "envoyId": 1,
+    "envoySquadId": "squad-23",
+    "members": [
+      1,
+      0,
+      8
+    ],
+    "location": "cell-12-8"
+  }
+}
