@@ -3,8 +3,10 @@ import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
-import {actBattle,getReachable} from '../game/tactical.js';
+import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {sameCell,spacePoint} from '../game/tactical-space.js';
+import {atHand} from '../game/tactical-planning-space.js';
+import {firstAidPlan} from '../game/first-aid.js';
 import {visit,sync,leave} from './local-contract-fixture.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -434,7 +436,19 @@ function completeStockNorthernMission(start,{report=()=>{},onCheckpoint}={}){
  for(let batches=0;acute().length;batches++){
   assert.ok(batches<live().length,'Finite first aid must resolve each actual acute group.');keepServing();
   const patients=acute().sort((a,b)=>c.operativeState[a].hp/Math.max(1,c.operativeState[a].bleeding)-c.operativeState[b].hp/Math.max(1,c.operativeState[b].bleeding)),at=operativeLocation(c,patients[0]);
-  const medic=rosterFor(c).filter(op=>live().includes(op.id)&&operativeLocation(c,op.id)===at&&!operativeInTransit(c,op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>0&&op.medical>0).sort((a,b)=>Number(c.operativeState[a.id].bleeding>0)-Number(c.operativeState[b.id].bleeding>0)||b.medical-a.medical)[0];
+  // A more skilled but distant physician can arrive after a critical patient
+  // dies. Plan from the actual retained friendly positions and finite stock.
+  // These read-only forecasts neither move a doctor nor spend a dressing.
+  const retained=c.sectorStates[at],patient=retained?.units.find(unit=>unit.side==='player'&&unit.id===String(patients[0]));
+  const candidates=rosterFor(c).filter(op=>live().includes(op.id)&&operativeLocation(c,op.id)===at&&!operativeInTransit(c,op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>0&&op.medical>0).flatMap(op=>{
+   const record=c.operativeState[op.id],stock=record.medkits||sectorInventoryModel(c,at,rosterFor(c),op.id).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0);
+   if(!firstAidPlan({...op,...record,medkits:stock},c.operativeState[patients[0]]).valid)return [];
+   const doctor=retained?.units.find(unit=>unit.side==='player'&&unit.id===String(op.id));
+   if(!doctor||!patient)return [{op,cost:Infinity}];
+   const planning={...retained,status:'active',mode:'exploration',phase:'player'},destination=getReachable(planning,doctor).filter(point=>atHand(point,patient)&&hasLineOfSight(planning,point,patient)).sort((a,b)=>a.cost-b.cost||a.path.length-b.path.length)[0];
+   return destination?[{op,cost:destination.cost}]:[];
+  });
+  const medic=candidates.sort((a,b)=>Number(c.operativeState[a.op.id].bleeding>0)-Number(c.operativeState[b.op.id].bleeding>0)||a.cost-b.cost||b.op.medical-a.op.medical)[0]?.op;
   if(!medic){c=relieveStockNorthernPatient(c,{patientId:patients[0],report,onCheckpoint}).campaign;continue;}
   const group=[medic.id,...patients.filter(id=>id!==medic.id&&operativeLocation(c,id)===at).slice(0,5)];
   order({type:'createSquad',ids:group,sector:at,name:'Socorro del norte'});
