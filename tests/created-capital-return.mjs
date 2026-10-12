@@ -12,6 +12,7 @@ import {restoreFinalMorale} from './final-campaign-route.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {decodeSave,encodeSave} from '../game/save.js';
+import {enterSector} from '../game/world.js';
 import {prepareFinalAssault} from './final-campaign-route.mjs';
 import {actBattle,artilleryContact,teamCanSee,stanceCost,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {sectorDeploymentModel,sectorDeploymentAction} from '../game/sector-deployment.js';
@@ -94,6 +95,8 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  assert.deepEqual(c.pendingBattle.artillery.filter(g=>!g.stationed).map(g=>g.type),Array(batterySize).fill('bronze4'));
  report({event:'capitalReliefReady',hour:c.hour,fieldSize,batterySize,field,rear});
  for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
+ const admitted=enterSector(c.pendingBattle,c.sectorStates.buenos_aires);
+ assert.deepEqual(decodeSave(encodeSave(c,admitted)),{campaign:c,battle:admitted});
  return c;
 }
 

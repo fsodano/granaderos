@@ -337,7 +337,7 @@ export function recoverFreshPort(start,{hospital='retiro',report=()=>{},fieldIds
   const reliefKits=Math.ceil(carryDressings*local.length/field.length);
   const carriers=rosterFor(c).filter(op=>local.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&c.operativeState[op.id].energy>15).sort((a,b)=>b.medical-a.medical||a.id-b.id).slice(0,3);
   assert.ok(carriers.length,'The finite return reserve needs an actual awake local carrier.');
-  const total=healingKits+Math.max(doctors.length,reliefKits),share=Math.ceil(total/carriers.length),targets=Object.fromEntries(carriers.map((op,index)=>[op.id,Math.min(share,total-index*share)]));
+  const total=healingKits+Math.max(doctors.length,reliefKits),share=Math.ceil(total/carriers.length),targets=Object.fromEntries(carriers.map((op,index)=>[op.id,Math.max(0,Math.min(share,total-index*share))]));
   for(const carrier of carriers){
    const target=targets[carrier.id];
    if(c.operativeState[carrier.id].medkits>=target)continue;
