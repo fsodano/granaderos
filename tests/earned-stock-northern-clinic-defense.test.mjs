@@ -32,7 +32,19 @@ test('the earned seed-8 Tucumán care raid keeps its physicians, real losses, fi
  assert.deepEqual(medical.map(action=>[action.unitId,action.targetId]),[['110','101'],['121','122'],['117','116']]);
  const dressingStock=battle=>battle.units.filter(unit=>unit.side==='player').reduce((sum,unit)=>sum+(unit.medkits??0),0);
  assert.equal(dressingStock(native),30);assert.equal(dressingStock(after),27);assert.equal(dressingStock(native)-dressingStock(after),medical.length);
- assert.deepEqual(c.artilleryDepots,start.artilleryDepots);assert.deepEqual(after.artillery,start.sectorStates.tucuman.artillery);assert.equal(summary.orders.some(action=>action.type.startsWith('artillery')),false);
+ // The selected local depot gun is issued once when the clinic is defended.
+ // No artillery order spends its charge or reserve; both physical guns remain
+ // in the settled scene, including their exact native placement and facing.
+ // Settlement removes the temporary stationed marker from inherited pieces.
+ const issued=start.artilleryDepots.tucuman;
+ assert.deepEqual(start.artillerySelection,issued.map(gun=>'depot:'+gun.id));assert.equal(start.artillerySelectionExplicit,true);
+ assert.deepEqual(c.artilleryDepots,{...start.artilleryDepots,tucuman:[]});
+ assert.equal(native.artillery.find(gun=>gun.id==='arsenal:cordoba:1').stationed,true);
+ assert.deepEqual(after.artillery,native.artillery.map(({stationed,...gun})=>gun));
+ const physical=gun=>({id:gun.id,type:gun.type,side:gun.side,loaded:gun.loaded,ammo:gun.ammo});
+ assert.deepEqual(after.artillery.map(physical).sort((a,b)=>a.id.localeCompare(b.id)),[...start.sectorStates.tucuman.artillery,...issued].map(physical).sort((a,b)=>a.id.localeCompare(b.id)));
+ assert.equal(new Set(after.artillery.map(gun=>gun.id)).size,after.artillery.length);
+ assert.equal(summary.orders.some(action=>action.type.startsWith('artillery')),false);
  for(const id of start.recruited.filter(id=>start.operativeState[id].alive&&!summary.losses.includes(id)))assert.deepEqual(c.contracts[id],start.contracts[id]);
  assert.equal(c.activeSquadId,start.activeSquadId);assert.deepEqual(c.squad,start.squad);assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);assert.equal(c.sectors.tucuman.owner,'patriot');assert.equal(c.defeated,false);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
