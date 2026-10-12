@@ -288,7 +288,8 @@ export function prepareSantaFeBatteries(start,field,{report=()=>{},includeLightG
 }
 
 // Stabilize the surviving command with carried supplies and paid patient contracts.
-export function recoverFreshPort(start,{hospital='retiro',report=()=>{},fieldIds,prepareCareSupplies=false,retainField=false}={}){
+export function recoverFreshPort(start,{hospital='retiro',report=()=>{},fieldIds,prepareCareSupplies=false,retainField=false,carryDressings=0}={}){
+ assert.ok(Number.isSafeInteger(carryDressings)&&carryDressings>=0,'The return reserve must name a finite nonnegative dressing count.');
  let c=decodeSave(encodeSave(start)).campaign;
  const field=[...new Set(fieldIds??[...c.sectorStates.ensenada.units.filter(u=>u.side==='player'&&u.hp>0).map(u=>Number(u.id)),...c.recruited.filter(id=>['ensenada','buenos_aires'].includes(c.operativeState[id].location)),5,6])].filter(id=>c.recruited.includes(id)&&c.operativeState[id].alive&&!c.operativeState[id].captured);
  const patients=field.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding);
@@ -326,15 +327,16 @@ export function recoverFreshPort(start,{hospital='retiro',report=()=>{},fieldIds
  }
  // Carry the actual finite stock before leaving a province with wounds.
  // Córdoba may have spent its own cache during the earlier hospital route.
- if(prepareCareSupplies)for(const at of new Set(patients.map(id=>c.operativeState[id].location))){
+ if(prepareCareSupplies)for(const at of new Set(field.map(id=>c.operativeState[id].location))){
   const local=field.filter(id=>c.operativeState[id].location===at),wounded=local.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);
-  if(!wounded.length||at===hospital)continue;
+  if((!wounded.length&&!carryDressings)||at===hospital)continue;
   const doctors=rosterFor(c).filter(op=>local.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&op.medical>=20&&affordableDoctor(op)).sort((a,b)=>b.medical-a.medical||a.id-b.id).slice(0,Math.max(1,wounded.length));
   assert.ok(doctors.length,'Actual wounded return parties need a serving local physician.');
   const rate=Math.min(...doctors.map(op=>doctorRate(op,c))),healingKits=wounded.reduce((sum,id)=>sum+Math.ceil((c.operativeState[id].maxHp-c.operativeState[id].hp)/rate),0);
+  const reliefKits=Math.ceil(carryDressings*local.length/field.length);
   const reserves=Object.fromEntries(doctors.map(op=>[op.id,1]));
-  c=supplyRouteDressings(c,doctors[0].id,healingKits+doctors.length,{reserves,report});
-  report({event:'portReturnDressingsCarried',sector:at,physician:doctors[0].id,wounded,healingKits,carried:c.operativeState[doctors[0].id].medkits,hour:c.hour,second:c.secondOfHour});
+  c=supplyRouteDressings(c,doctors[0].id,healingKits+Math.max(doctors.length,reliefKits),{reserves,report});
+  report({event:'portReturnDressingsCarried',sector:at,physician:doctors[0].id,wounded,healingKits,reliefKits,carried:c.operativeState[doctors[0].id].medkits,hour:c.hour,second:c.secondOfHour});
  }
  report({event:'portReturnDeparture',campaign:structuredClone(c),hospital,field});
  const groups=[];

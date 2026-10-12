@@ -27,7 +27,7 @@ export function prepareCreatedCapitalReturn(start,{report=()=>{},fieldSize=6,pre
  // Command may have used a real boundary exit to another friendly province.
  // The recovery helper forms legal local parties and travels from each real
  // location; including him does not teleport him into the river survivors.
- let c=recoverFreshPort(start,{hospital:'cordoba',fieldIds:preparedFieldIds?[57,...preparedFieldIds]:[...new Set([...returning,57])],prepareCareSupplies:true,retainField:true,report});
+ let c=recoverFreshPort(start,{hospital:'cordoba',fieldIds:preparedFieldIds?[57,...preparedFieldIds]:[...new Set([...returning,57])],prepareCareSupplies:true,retainField:true,carryDressings:fieldSize*5,report});
  const rear=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='retiro';}),availableField=c.recruited.filter(id=>{const r=c.operativeState[id];return id!==57&&r.alive&&!r.captured&&r.location==='cordoba'&&(preparedFieldIds?preparedFieldIds.includes(id):(c.contracts[id].expiresAt===null||contractQuote(c,rosterFor(c).find(o=>o.id===id),'day').price<=routeHiringCeiling(c,100)));});
  const field=preparedFieldIds?availableField:availableField.slice(0,Math.max(0,fieldSize-rear.length));
  if(preparedFieldIds){assert.equal(preparedFieldIds.length+rear.length,fieldSize);assert.equal(new Set([...preparedFieldIds,...rear]).size,fieldSize);assert.deepEqual([...field].sort((a,b)=>a-b),[...preparedFieldIds].sort((a,b)=>a-b));for(const id of [...field,...rear])assert.ok(c.contracts[id].expiresAt===null||c.contracts[id].expiresAt>c.hour,'every explicitly prepared paid actor must be in actual active service');}
