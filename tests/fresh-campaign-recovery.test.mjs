@@ -28,7 +28,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {writeFileSync} from 'node:fs';
 import {encodeSave} from '../game/save.js';
-import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
+import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault,stabilizeFreshMissionAllies} from './fresh-campaign-route.mjs';
 
 test('a funded Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza funding and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture, Jujuy and Humahuaca',()=>{
  const opening=beginFreshCampaign();
@@ -84,7 +84,7 @@ test('a funded Retiro-only campaign retains paid recovery and real losses throug
  for(const id of supportIds)assert.deepEqual(supported.campaign.contracts[id],beforeSupport.contracts[id]);
  const mission=dispatchCampaign(supported.campaign,{type:'attack',sector:'san_lorenzo',squadIds:supported.squads});
  assert.equal(mission.lastError,null);assert.equal(mission.pendingBattle.squad.length,12);
- const won=fightNorthernSector(mission,'san_lorenzo',{controller:sanLorenzoCombatOrder});
+ const won=fightNorthernSector(mission,'san_lorenzo',{controller:sanLorenzoCombatOrder,beforeSettlement:stabilizeFreshMissionAllies});
  assert.equal(won.campaign.flags.sanLorenzo,true);assert.equal(won.campaign.phase,2);
  assert.ok(won.campaign.missionAllies.san_lorenzo.hp>0);assert.equal(won.campaign.defeated,false);
  for(const [id,record]of Object.entries(prior.operativeState))if(!record.alive)assert.equal(won.campaign.operativeState[id].alive,false);

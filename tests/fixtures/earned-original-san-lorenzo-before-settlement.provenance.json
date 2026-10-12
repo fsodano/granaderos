@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "scope": "Genuine original funded recovery prefix through the twelve-person San Lorenzo request and native victory only. The fixture contains the exact official ready-save string and parsed native result; no later route or ending claim.",
+  "sourceRevision": "a4877a891f808709d22c0f668a5ffd5f21da0341",
+  "capturePath": ".cache/core-campaign-2026-10-12/san-lorenzo-original-prefix/",
+  "captureCommand": [
+    "node",
+    ".cache/core-campaign-2026-10-12/san-lorenzo-original-prefix/probe.mjs"
+  ],
+  "captureLogSha256": "9762f1ed9decca9fc39a20d5053e1262d08a8ad932bf271efedd4c51c8cd22cc",
+  "unchangedInputPins": 334,
+  "generatedOutputPins": 3,
+  "pinNote": "Three write-only new URL output literals were added after execution and separately classified; all original334 before-run inputs were unchanged.",
+  "sourceReadySaveSha256": "a59c19cdeda12ed851f519036dc365a379ccb793537ec144c5de7cbe29808ba4",
+  "sourceNativeResultSha256": "396e16a8bde213449a41236e12f1cc1a544b39c3a2087245ee5b15877c8d3c7f",
+  "sourceVictorySaveSha256": "9c4cf8da70daaf680cbe0b8b841cbfefdb6f6ea068849e50678efbbb80be25d5",
+  "rawSha256": "36caef243d042df868c757ba127d1199f827692154a3ca6b378dfae991df062d",
+  "gzipSha256": "28aaac551f494f24028557b80ca1c6220b3af837943ab8d9a0ed31b70fbacbfe",
+  "rawBytes": 1551450,
+  "gzipBytes": 122678,
+  "requestClock": [
+    56,
+    1265
+  ],
+  "squad": [
+    120,
+    111,
+    125,
+    103,
+    140,
+    112,
+    131,
+    113,
+    114,
+    124,
+    110,
+    136
+  ],
+  "nativeActions": 158,
+  "nativeOrders": 180,
+  "nativeTurns": 6,
+  "nativeAlly": {
+    "id": "57",
+    "hp": 17,
+    "bleeding": 6,
+    "bandaged": 0,
+    "maxHp": 88
+  },
+  "nativeBattleDeaths": [
+    120,
+    131
+  ],
+  "earlierCapitalDeaths": [
+    115,
+    123
+  ]
+}

@@ -316,7 +316,7 @@ export function prepareNorthernSquad(start,{report=()=>{},ammunitionTarget=10}={
  return {campaign,events,dead,recovery};
 }
 
-export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller,deploy,executeBattle=fight}={}){
+export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller,deploy,executeBattle=fight,beforeSettlement}={}){
  const before=structuredClone(start),prepared=start.pendingBattle?structuredClone(start):finishReloadsBeforeMarch(start,{report});
  const preparationSeconds=(prepared.hour-start.hour)*3600+(prepared.secondOfHour??0)-(start.secondOfHour??0),campaign=start.pendingBattle?prepared:dispatchCampaign(prepared,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
  assert.deepEqual(start,before);assert.ok(campaign.pendingBattle,'the real march produces a tactical deployment');
@@ -331,7 +331,30 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  const replay=executeBattle(request,campaign.sectorStates[sector],{controller,deploy});assert.deepEqual(replay.battle,result.battle);
  const pair=syncBattleTime(campaign,result.battle);assert.equal(pair.error,null);
  const restored=decodeSave(encodeSave(pair.campaign,pair.battle));
- const returned=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,survivors:restored.battle.units.filter(u=>u.side==='player'),sectorState:restored.battle});
+ let settlement=restored;
+ if(beforeSettlement){
+  assert.equal(result.battle.status,'victory','post-victory field orders require the real native victory');
+  const fieldStart=decodeSave(encodeSave(restored.campaign,restored.battle));
+  const orders=[],execute=(current,action)=>{
+   assert.equal(current,settlement,'field orders must continue the current synchronized pair');
+   const battle=actBattle(current.battle,action);assert.equal(battle.lastError,null,JSON.stringify(action)+': '+battle.lastError);
+   const next=syncBattleTime(current.campaign,battle);assert.equal(next.error,null);
+   settlement={campaign:next.campaign,battle:next.battle};orders.push(structuredClone(action));return settlement;
+  };
+  const aided=beforeSettlement(settlement,{execute,report,request});assert.deepEqual(aided,settlement,'field aid cannot replace native order results');
+  let replay=fieldStart;
+  for(let i=0;i<orders.length;i++){
+   const battle=actBattle(replay.battle,orders[i]);assert.equal(battle.lastError,null);
+   const next=syncBattleTime(replay.campaign,battle);assert.equal(next.error,null);replay={campaign:next.campaign,battle:next.battle};
+   if(i===Math.floor(orders.length/2))replay=decodeSave(encodeSave(replay.campaign,replay.battle));
+  }
+  assert.deepEqual(replay,settlement,'every field order must replay through the real clock and an official midpoint save');
+  summary.beforeSettlement={orders,elapsedSeconds:settlement.battle.elapsedSeconds-fieldStart.battle.elapsedSeconds,units:settlement.battle.units.filter(u=>u.side==='player').map(u=>({id:u.id,hp:u.hp,bleeding:u.bleeding,bandaged:u.bandaged,medkits:u.medkits}))};
+  settlement=decodeSave(encodeSave(settlement.campaign,settlement.battle));
+ }
+ // Native exploration can follow victory for finite aid. Report the earned
+ // combat outcome while retaining the actual explored scene and paid clock.
+ const returned=dispatchCampaign(settlement.campaign,{type:'battleResult',battleId:request.id,outcome:result.battle.status,survivors:settlement.battle.units.filter(u=>u.side==='player'),sectorState:settlement.battle});
  assert.equal(returned.lastError,null,returned.lastError);
  // A cleared battlefield cannot certify a continuing campaign when its
  // commander has died and settlement has made the campaign terminal.
