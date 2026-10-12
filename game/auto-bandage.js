@@ -3,15 +3,20 @@ import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {actBattle, canEndCombat, CRITICAL_HEALTH, getReachable, hasLineOfSight, canSee} from './tactical.js';
 import {civilianBandaged,civilianMaxHp} from './civilian-harm.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
+import {medicalPatientPresent,medicalPatientAvailable} from './medical-patient.js';
 
 const present = unit => (unit.side === 'player' || unit.targetKind === 'npc') && unit.hp > 0 && !unit.routed && !unit.fled && !unit.departure && !unit.surrendered;
-const needsBandage = unit => present(unit) && (criticalFirstAidNeeded(unit) || unit.bleeding > 0 || (unit.bandaged ?? 0) < unit.maxHp - unit.hp);
+const patientPresent = unit => unit.targetKind === 'npc' ? present(unit) : unit.side === 'player' && medicalPatientPresent(unit);
+const patientAvailable = unit => unit.targetKind === 'npc' ? present(unit) : unit.side === 'player' && medicalPatientAvailable(unit);
+const remainingWork = unit => criticalFirstAidNeeded(unit) || unit.bleeding > 0 || (unit.bandaged ?? 0) < unit.maxHp - unit.hp;
+const needsBandage = unit => patientAvailable(unit) && remainingWork(unit);
 const conscious = unit => present(unit) && unit.hp >= CRITICAL_HEALTH && !unit.unconscious && (unit.energy ?? 100) > 0;
 const doctorReady = unit => !unit.militia && conscious(unit) && unit.medical > 0 && (!unit.knockedDown || unit.activeSlot === 'medical');
 const visibleCivilian = (state,npc) => state.units.some(observer=>conscious(observer)&&canSee(state,observer,npc));
 const civilianPatient = npc => ({...npc, targetKind:'npc', maxHp:civilianMaxHp(npc), hp:npc.hp??civilianMaxHp(npc), bandaged:civilianBandaged(npc)});
 const patientKey = patient => patient.targetKind==='npc'?`npc:${patient.id}`:patient.id;
 const patientsFor = state => [...state.units.filter(needsBandage), ...(state.npcs??[]).filter(npc=>visibleCivilian(state,npc)).map(civilianPatient).filter(needsBandage)];
+const remainingPatientsFor = state => [...state.units.filter(unit=>patientPresent(unit)&&remainingWork(unit)), ...(state.npcs??[]).filter(npc=>visibleCivilian(state,npc)).map(civilianPatient).filter(unit=>patientPresent(unit)&&remainingWork(unit))];
 const findPatient = (state,key) => key.startsWith('npc:')?(()=>{const npc=state.npcs?.find(n=>`npc:${n.id}`===key);return npc?civilianPatient(npc):null;})():state.units.find(unit=>unit.id===key);
 const summary = unit => ({id: patientKey(unit), name: unit.nickname || unit.name, hp: unit.hp, bleeding: unit.bleeding ?? 0, medkits: unit.medkits ?? 0});
 const DANGER = 'Vendaje detenido: hay contacto o señales recientes del enemigo.';
@@ -30,7 +35,7 @@ function admissionReason(state) {
 export function autoBandageStatus(state) {
   const patients = patientsFor(state);
   const doctors = state.units.filter(doctorReady);
-  const reason = admissionReason(state) || (!patients.length ? 'Todas las heridas están vendadas.' : !doctors.length ? 'No hay un sanitario consciente y disponible.' : !doctors.some(unit => unit.medkits > 0) ? 'Los sanitarios no tienen vendas.' : null);
+  const reason = admissionReason(state) || (!patients.length ? remainingPatientsFor(state).length ? 'Los heridos pendientes no están disponibles para recibir vendas.' : 'Todas las heridas están vendadas.' : !doctors.length ? 'No hay un sanitario consciente y disponible.' : !doctors.some(unit => unit.medkits > 0) ? 'Los sanitarios no tienen vendas.' : null);
   return {available: !reason, reason, patients: patients.map(summary), doctors: doctors.map(summary)};
 }
 
@@ -60,7 +65,7 @@ function plansFor(state) {
 export function autoBandageBattle(state) {
   let battle = state;
   const steps = [], treatedIds = [];
-  const initialPatients = patientsFor(state).map(patientKey);
+  const initialPatients = remainingPatientsFor(state).map(patientKey);
   const initial = autoBandageStatus(state);
   let stoppedReason = initial.reason;
   if (initial.available) {
@@ -89,20 +94,20 @@ export function autoBandageBattle(state) {
       const actor = next.units.find(unit => unit.id === doctor.id);
       const casualty = findPatient(next,patientKey(patient));
       const progressed = action.type === 'stance' ? actor.stance==='standing' : action.type === 'weapon' ? actor.activeSlot === 'medical' : action.type === 'move' ? !sameCell(actor,doctor) : actor.medkits < doctor.medkits && (casualty.hp>patient.hp||casualty.bleeding<patient.bleeding||(casualty.bandaged??0)>(patient.bandaged??0));
-      if (action.type === 'useItem' && progressed && !needsBandage(casualty) && !treatedIds.includes(patientKey(patient))) treatedIds.push(patientKey(patient));
+      if (action.type === 'useItem' && progressed && !remainingWork(casualty) && !treatedIds.includes(patientKey(patient))) treatedIds.push(patientKey(patient));
       if (next.mode !== 'exploration' || next.phase !== 'player') { stoppedReason = DANGER; break; }
       if (!conscious(actor)) { stoppedReason = 'Vendaje detenido: el sanitario quedó sin fuerzas o fuera de combate.'; break; }
       if (next.status !== 'active' || admissionReason(next)) { stoppedReason = DANGER; break; }
       if (!progressed) { stoppedReason = 'Vendaje detenido: la orden no produjo avance.'; break; }
     }
   }
-  const pending = new Set([...initialPatients, ...patientsFor(battle).map(patientKey)]);
+  const pending = new Set([...initialPatients, ...remainingPatientsFor(battle).map(patientKey)]);
   const untreated = [...pending].flatMap(id => {
     const unit = findPatient(battle,id);
     if(unit?.targetKind==='npc'&&!visibleCivilian(battle,unit))return [{id,name:unit.name,reason:'Ya no está a la vista.'}];
-    if (unit && !needsBandage(unit) && unit.hp > 0 && !unit.routed && !unit.fled && !unit.departure && !unit.surrendered) return [];
-    const reason = !unit || unit.hp <= 0 ? 'Murió antes de recibir las vendas.' : unit.routed || unit.fled ? 'Ya no está disponible en el sector.' : stoppedReason || 'No hay un camino abierto hasta este herido.';
+    if (unit && patientPresent(unit) && !remainingWork(unit)) return [];
+    const reason = !unit || unit.hp <= 0 ? 'Murió antes de recibir las vendas.' : !patientAvailable(unit) ? 'Ya no está disponible en el sector.' : stoppedReason || 'No hay un camino abierto hasta este herido.';
     return [{id, name: unit?.nickname || unit?.name || id, reason}];
   });
-  return {battle, treatedIds, steps, stoppedReason: untreated.length ? stoppedReason : null, untreated, elapsedSeconds: (battle.elapsedSeconds ?? 0) - (state.elapsedSeconds ?? 0)};
+  return {battle, treatedIds, steps, stoppedReason: untreated.length ? stoppedReason || untreated[0].reason : null, untreated, elapsedSeconds: (battle.elapsedSeconds ?? 0) - (state.elapsedSeconds ?? 0)};
 }

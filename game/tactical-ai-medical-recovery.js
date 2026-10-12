@@ -1,6 +1,7 @@
 import {atHand} from './tactical-planning-space.js';
 import {canSee,hasLineOfSight,actionCosts,lootPreview,planLoot,planReadyMainHand,medicalUsePreview} from './tactical.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
+import {medicalPatientAvailable} from './medical-patient.js';
 
 const present=unit=>unit.hp>0&&!unit.departure&&!unit.fled&&!unit.routed&&!unit.surrendered;
 const dressing=ground=>ground.type==='medkits'||ground.type==='item'&&ground.item==='medkits';
@@ -13,7 +14,7 @@ export function chooseGroundDressingRecovery(state,unit){
       !(unit.medical>0)||unit.medkits!==0)return null;
   const costs=actionCosts(state,unit),prepare=unit.activeSlot==='medical'?0:costs.weapon;
   if(unit.ap<costs.loot+prepare+costs.heal)return null;
-  const patients=state.units.filter(patient=>patient.side===unit.side&&present(patient)&&
+  const patients=state.units.filter(patient=>patient.side===unit.side&&medicalPatientAvailable(patient)&&
     (patient.bleeding>0||criticalFirstAidNeeded(patient))&&atHand(unit,patient)&&hasLineOfSight(state,unit,patient)&&
     (patient.id===unit.id||canSee(state,unit,patient)));
   if(!patients.length)return null;

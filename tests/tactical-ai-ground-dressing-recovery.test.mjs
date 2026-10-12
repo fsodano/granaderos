@@ -82,7 +82,17 @@ test('partial critical work consumes one dressing and retains the actual incompl
 
 test('no present need, no aptitude, an owned dressing or current incapacity leaves ground supplies alone',()=>{
  for(const patch of [{medical:0},{medkits:1},{ap:36},{hp:0},{unconscious:true},{routed:true},{surrendered:true},{fled:true},{departure:{edge:'E'}},{knockedDown:true},{entangled:true}]){const s=field(),u=doctor(s);Object.assign(u,patch);const before=structuredClone(s);assert.equal(chooseGroundDressingRecovery(s,u),null,JSON.stringify(patch));assert.deepEqual(s,before);}
- for(const patch of [{hp:100,bleeding:0},{hp:15,bleeding:0},{hp:0},{routed:true},{surrendered:true},{fled:true},{departure:{edge:'E'}},{side:'player'},{x:14},{tacticalLevel:1}]){const s=field();Object.assign(patient(s),patch);const before=structuredClone(s);assert.equal(chooseGroundDressingRecovery(s,doctor(s)),null,JSON.stringify(patch));assert.deepEqual(s,before);}
+ // Conscious panic still excludes care and cannot justify a finite pickup.
+ for(const patch of [{hp:100,bleeding:0},{hp:15,bleeding:0},{hp:0},{hp:40,routed:true},{surrendered:true},{fled:true},{departure:{edge:'E'}},{side:'player'},{x:14},{tacticalLevel:1}]){const s=field();Object.assign(patient(s),patch);const before=structuredClone(s);assert.equal(chooseGroundDressingRecovery(s,doctor(s)),null,JSON.stringify(patch));assert.deepEqual(s,before);}
+});
+
+test('one finite ground dressing supports actual native aid for an unconscious routed ally, with exact saved replay',()=>{
+ const s=restored(field({}, {routed:true})),before=structuredClone(s),old=physical(doctor(s));
+ assert.deepEqual(chooseGroundDressingRecovery(s,doctor(s)),pickup);
+ const n=endTurn(s);assert.equal(n.lastError,null);assert.equal(n.groundItems[0].count,0);assert.equal(doctor(n).medkits,0);
+ assert.equal(patient(n).hp,15);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).routed,true);assert.equal(patient(n).ap,0);
+ assert.equal(doctor(n).ap,0);assert.deepEqual(physical(doctor(n)),old);assert.equal(n.elapsedSeconds,6);
+ assert.deepEqual(s,before);assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
 
 test('source visibility, exact supply type, obstacles, floor, quantity and custody all retain the ordinary pickup boundary',()=>{

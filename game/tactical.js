@@ -4,6 +4,7 @@ import {hasProjectileEnergy} from './projectile-energy.js';
 import {worldCell} from './world-cells.js';
 import {canonicalContent} from './content-identity.js';
 import {fieldCapable} from './actor-condition.js';
+import {medicalPatientAvailable} from './medical-patient.js';
 import {issueGriefParticipants,captureCompanionGrief,applyCompanionGrief} from './companion-grief.js';
 import {issueConductObservers,captureServiceObjection,applyServiceObjection} from './service-objections.js';
 export {fieldCapable};
@@ -1846,7 +1847,7 @@ export function medicalUsePreview(s,u,target=u,{targetKind='unit'}={}){
   if(!reason&&!['unit','npc'].includes(targetKind))reason='El tipo de herido no es válido.';
   if(!reason&&u.activeSlot!=='medical')reason='Prepará las vendas en la mano antes de tratar una herida.';
   if(!reason&&civilian&&(!target||!s.npcs?.includes(target)||target.departure||target.fled||(target.hp??100)<=0||!canSee(s,u,target)))reason='El habitante herido debe estar vivo y a la vista.';
-  if(!reason&&(!target||!civilian&&(target.side!==u.side||target.hp<=0||target.departure||target.routed)||contactDistance(u,target)>1.5||!hasLineOfSight(s,u,target)))reason='El herido debe estar vivo, junto a ti y al alcance de las vendas.';
+  if(!reason&&(!target||!civilian&&(target.side!==u.side||!medicalPatientAvailable(target))||contactDistance(u,target)>1.5||!hasLineOfSight(s,u,target)))reason='El herido debe estar vivo, junto a ti y al alcance de las vendas.';
   if(!reason&&!u.medkits)reason='No quedan vendas.';
   if(!reason&&!(u.medical>0))reason='Este soldado no tiene conocimientos de primeros auxilios.';
   if(!reason){treatment=firstAidPlan(u,target,{baseCost,budgetAP:s.mode==='exploration'?Infinity:u.ap,targetKind});if(!treatment.valid)reason=treatment.reason;}

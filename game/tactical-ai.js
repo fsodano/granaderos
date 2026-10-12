@@ -16,6 +16,7 @@ import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
 import {reprimePlan,reloadPlan} from './tactical.js';
 import {criticalFirstAidNeeded} from './first-aid.js';
+import {medicalPatientAvailable} from './medical-patient.js';
 import {contentWeaponOf} from './weapon-definition.js';
 import {firearmServiceable} from './firearm-serviceability.js';
 
@@ -164,8 +165,8 @@ function fieldAid(state, unit, costs, targets, paths) {
   if (!(unit.medkits > 0 && unit.medical > 0)) return null;
   const prepare = unit.activeSlot === 'medical' ? 0 : costs.weapon;
   if (unit.ap < prepare + costs.heal || unit.knockedDown && prepare) return null;
-  const patients = state.units.filter(other => other.side === unit.side && other.hp > 0 && (other.bleeding > 0 || criticalFirstAidNeeded(other)) &&
-    !other.departure && !other.fled && !other.routed && !other.surrendered && distance(unit, other) <= 5 &&
+  const patients = state.units.filter(other => other.side === unit.side && medicalPatientAvailable(other) && (other.bleeding > 0 || criticalFirstAidNeeded(other)) &&
+    distance(unit, other) <= 5 &&
     (other.id === unit.id || atHand(unit,other) && hasLineOfSight(state, unit, other) || canSee(state, unit, other)));
   // First stop the medic's own bleeding. For others, prefer the shortest
   // estimated time to blood loss; ties are stable across unit-array ordering.
