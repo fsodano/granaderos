@@ -15,6 +15,8 @@
     "audit:baseline": "node tools/audit-baseline.mjs",
     "campaign:new": "node tools/campaign-authoring.mjs scaffold",
     "campaign:check": "node tools/campaign-authoring.mjs check",
-    "campaign:assets": "node tools/campaign-authoring.mjs assets"
+    "campaign:assets": "node tools/campaign-authoring.mjs assets",
+    "test:core": "node tools/test-runner.mjs --suite core",
+    "test:campaign": "node tools/test-runner.mjs --suite campaign"
   }
 }

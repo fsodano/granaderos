@@ -80,6 +80,8 @@ The root [`package.json`](../../package.json) defines these commands:
 
 | Command | Purpose |
 | --- | --- |
+| `npm run test:core` | Run every core mechanic, renderer, portable editor and tooling test file. |
+| `npm run test:campaign` | Run every reviewed campaign data, scenario, earned episode and route test file. |
 | `npm run test:quick` | Run all discovered test files except the extended files listed in the suite configuration. |
 | `npm run test:extended` | Run the campaign, native replay and artwork files listed in the extended suite configuration. |
 | `npm test` | Run every `tests/*.test.mjs` file with automatic worker selection and a timing report. |
@@ -93,7 +95,29 @@ node --test tests/economy-web.test.mjs tests/campaign-web.test.mjs
 node --test tests/save-web.test.mjs
 ```
 
-The first command checks campaign and economy rules. The second checks save behavior. Run `npm run test:quick` for routine development checks after the focused tests pass. Report failures, skipped cases and the exact scope checked.
+The first command checks campaign and economy rules. The second checks save behavior. Select core tests for shared mechanic changes and campaign tests for campaign changes. Report failures, skipped cases and the exact scope checked.
+
+Core and campaign are separate file scopes. The reviewed campaign list is
+[`tools/test-campaign-config.mjs`](../../tools/test-campaign-config.mjs); all other
+discovered files belong to core. Mixed files run intact in their assigned scope.
+Portable campaign-engine or editor tests can belong to core; the word
+"campaign" in a filename does not assign its scope. The runner rejects stale or
+duplicate manifest entries. New earned-input and full-route dependencies need
+an explicit campaign declaration or a justified core fixture review. Core and
+campaign cover the complete discovered suite once, with no overlap.
+
+Duration is a separate selection. Both semantic commands default to all files
+in their scope. Use these forms to inspect or run a bounded intersection:
+
+```sh
+npm run test:core -- --duration quick
+npm run test:campaign -- --duration quick
+npm run test:campaign -- --duration extended --list
+npm run test:campaign -- --duration full
+```
+
+Each command runs every assertion in its selected files. Duration selection
+does not change the semantic membership or the exhaustive `npm test` command.
 
 The quick and extended partition is defined in
 [`tools/test-suite-config.mjs`](../../tools/test-suite-config.mjs) and checked by
@@ -105,7 +129,7 @@ remain in quick. New test files enter quick by default. Timings change execution
 order; they do not remove files from a suite. Use the runner's list commands
 below for the current file counts.
 
-Use the extended checks when changing their campaign routes, test drivers, authored sprite sources or sprite packer. Run the full suite for shared combat, campaign progression, save format or content rule changes, and before a release. A short result does not establish that the complete campaign passes.
+Use affected extended checks when changing their campaign routes, test drivers, authored sprite sources or sprite packer. Add affected campaign checks when a shared mechanic can change a route outcome. Run the full suite before a release or a claim of complete campaign acceptance. A short result does not establish that the complete campaign passes.
 
 Use `npm run test:quick -- --list` or `npm run test:extended -- --list` to inspect the selected files. The runner checks that quick and extended form the complete suite with no missing files or overlap. It fails if an excluded file is missing. The quick and extended commands print their scope before running and reject test-name filters, as the full command does.
 
@@ -113,13 +137,48 @@ The full runner uses one process per test file. It runs up to eight files at onc
 
 Use `npm test -- --concurrency 4` to select the worker count, or set `GRANADEROS_TEST_CONCURRENCY=4`. Explicit settings accept integers from 1 to 64. The full runner does not accept file or test-name filters. All selected files run, and any failure makes the command fail.
 
-The runner writes per-file durations, results and totals to `.cache/test-times/full.json`, `quick.json` or `extended.json`. It updates the report as files finish and marks it complete after every selected file finishes. Future runs start the measured slow files first. A new profile uses the full report for scheduling until it has its own timings. Without a timing report, known long campaign-route and artillery tests start first. Each CI group writes its own `group-1.json` through `group-4.json` in the same directory.
+The runner writes per-file durations, results and totals to `.cache/test-times/`.
+The report names are `full.json`, `quick.json`, `extended.json`, `core.json` and
+`campaign.json`; a semantic duration intersection uses `core-quick.json`,
+`campaign-quick.json`, `core-extended.json` or `campaign-extended.json`. Reports
+contain the selected files, exclusions, duration profile and complete totals.
+They update as files finish and become complete after all selected files finish.
+Future runs start measured slow files first. A new profile uses the full report
+until it has its own timings. The old four-group shard tool remains available
+and writes `group-1.json` through `group-4.json`.
+
+### Focused GitHub Actions
+
+[`tests.yml`](../../.github/workflows/tests.yml) selects separate
+[core](../../.github/workflows/test-core.yml) and
+[campaign](../../.github/workflows/test-campaign.yml) jobs on main pushes and
+non-draft pull requests. Draft pull requests wait until they are ready for
+review. Automatic jobs run only their scope intersected with `quick`. The
+separate workflows also accept manual `quick`, `full` or `extended` selections.
+Choose `full` or `extended` explicitly for long campaign routes. Test failures
+fail the job, and timing/scope reports are retained as artifacts.
+
+[`tools/ci-test-selection.mjs`](../../tools/ci-test-selection.mjs) is the single
+path authority. It reads the complete Git diff: three-dot for pull requests,
+two-dot for pushes, including both sides of renames. Campaign JSON, maps,
+scenario code and assets in `campaigns/` select campaign tests. `game/` and
+`web/` changes select core tests. Test files use the same reviewed scope list;
+helper and fixture ownership follows their test dependencies. A shared helper,
+runner, scope configuration or package change selects both. Tracked earned
+campaign cache inputs also select campaign. Documentation-only changes select
+neither test job. Unknown paths select both as a safe fallback.
+
+This is a focused ownership rule, not exhaustive runtime dependency analysis.
+A core mechanic change can affect a historical route. Select the affected
+campaign checks locally or start the campaign workflow manually when needed.
+Automatic quick success does not prove the extended routes or full suite.
+These workflows do not build the browser, deploy Pages or compile Windows.
 
 <a id="before-pushing"></a>
 
 ### Before a release or broad gameplay change
 
-Keep small fixes local. GitHub Actions runs only when a maintainer starts the workflow manually. Use focused tests and the quick suite to find and fix failures during development. Routine changes do not require a complete campaign on every edit. Before publishing a release or pushing a broad gameplay change, run all checks below on the complete candidate:
+Keep small fixes local. Use focused tests and the relevant quick scope to find and fix failures during development. Routine changes do not require a complete campaign on every edit. The focused test Actions are automatic; browser builds, Pages deployment and Windows builds remain manual. Before publishing a release, run all checks below on the complete candidate:
 
 ```sh
 node --test tools/test-shard-selftest.mjs tests/test-runner.test.mjs
@@ -132,7 +191,7 @@ npm run build
 git diff --check
 ```
 
-Each command must finish successfully. `npm test` includes every test file used by the four CI groups and selects the worker count for the current machine. Record the source revision, test totals, failures and skips. Use the timing report to identify slow files. A focused or quick result does not replace this release check. If a command fails, fix the problem locally; do not push to use CI as a diagnostic tool.
+Each command must finish successfully. `npm test` includes every file in both semantic scopes and both duration profiles, and selects the worker count for the current machine. Record the source revision, test totals, failures and skips. Use the timing report to identify slow files. A focused or quick result does not replace this release check. If a command fails, fix the problem locally; do not push to use CI as a diagnostic tool.
 
 Run the build in a private candidate folder if a preview serves this checkout's output. The build replaces both `web/dist/` and root `dist/`. Check the affected game or editor behavior in the browser before delivery. Keep the user's preview origin and saved progress intact.
 
@@ -173,9 +232,15 @@ The hosted game is at [fsodano.github.io/granaderos](https://fsodano.github.io/g
 GitHub Pages serves the export from its last deployment; it can differ from
 current `main` or a version tag. The game needs no application server.
 
-The [web workflow](../../.github/workflows/web.yml) builds with `GRANADEROS_BASE_PATH=/granaderos`. It checks browser types, deployment paths, browser workers and the static export before publishing `dist/`. Publication runs only when a maintainer starts the workflow manually on the latest `main` revision. Pushes, pull requests and tags do not start a run.
+The [web workflow](../../.github/workflows/web.yml) builds with `GRANADEROS_BASE_PATH=/granaderos`. It checks browser types, deployment paths, browser workers and the static export before publishing `dist/`. Publication runs only when a maintainer starts this workflow manually on `main`. Pushes, pull requests and tags do not start a web build.
 
-The **Run the full tactical and campaign simulation suite** option is enabled by default. Its four test groups run independently and can take more than an hour. Clear this option when those tests have already passed locally and the run is only for publication. Browser export checks always run and must pass before publication.
+The selected main revision publishes even if unrelated commits advance main
+during the build. A newer manual dispatch replaces an older run. The workflow
+records its selected revision in the run summary. Verify that the published
+`/granaderos/build-info.json` revision equals that selected revision. This
+confirms the deployed source, not complete campaign acceptance. Simulation
+tests use the separate workflows above; the web workflow does not run the full
+campaign suite.
 
 Set the repository's **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. The workflow uses the `github-pages` environment and the official [GitHub Pages actions](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 

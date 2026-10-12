@@ -93,13 +93,18 @@ Las imágenes anteriores son **ilustraciones del juego, no capturas de una parti
 Después de instalar las dependencias de la interfaz web, ejecutá estos comandos desde la raíz del repositorio:
 
 ```sh
-npm run test:quick   # Pruebas para el trabajo habitual
-npm test             # Todas las pruebas, incluidas las rutas completas de campaña
-npm run typecheck    # Validación de TypeScript
-npm run build        # Compilación y validación de la exportación estática en dist/
+npm run test:core      # Reglas compartidas, renderizado y herramientas
+npm run test:campaign  # Datos, escenarios y rutas de campaña
+npm run test:quick     # Perfil rápido de ambos grupos
+npm run test:extended  # Rutas largas, repeticiones nativas y recursos del perfil extendido
+npm test              # Todas las pruebas, incluidas las rutas completas de campaña
+npm run typecheck     # Validación de TypeScript
+npm run build         # Compilación y validación de la exportación estática en dist/
 ```
 
-La [guía de desarrollo](docs/development/getting-started.md#checks) explica cómo elegir pruebas específicas, rápidas o completas, y cómo registrar el alcance de una versión de desarrollo. Ejecutá todas las pruebas antes de cambiar las reglas de juego compartidas o de declarar completa la validación de una campaña.
+Los cambios del motor usan las pruebas de `core`; los cambios de campaña usan las de `campaign`. Ambos comandos ejecutan todo su grupo. Agregá `-- --duration quick` para limitar un grupo al perfil rápido, o `-- --list` para ver su selección. Las Actions automáticas ejecutan el perfil rápido del grupo que corresponde a los archivos modificados. Las rutas completas y las compilaciones se inician de forma manual.
+
+La [guía de desarrollo](docs/development/getting-started.md#checks) explica la selección, las Actions y el registro de resultados. `npm test` conserva todas las pruebas. Ejecutalo antes de declarar completa la validación de una versión o campaña.
 
 Consultá primero la [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) para conocer las pruebas y los límites del código actual. El [estado de la versión 0.1](docs/verification/version-0.1.md) conserva la evidencia del punto de control anterior. El [registro de avances publicados](docs/verification/published-progress.md) y el [índice de verificación](docs/verification/README.md) conservan pruebas de entregas anteriores. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
 
