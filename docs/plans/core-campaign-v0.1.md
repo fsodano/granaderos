@@ -55,8 +55,26 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are delivered to `main` through PR #395. Each receipt
+The following changes are delivered to `main` through PR #403. Each receipt
 has its own scope; their counts are not one complete campaign result.
+
+Recent deliveries are listed first. Earlier receipts below retain their own
+tested source and limits.
+
+| PR | Change | Recorded affected checks |
+| --- | --- | --- |
+| [#397](https://github.com/fsodano/granaderos/pull/397) | Check the actual settled clinic gun after local defense issues it once. Preserve its finite charge, reserve and unique identity. | Both complete affected files pass 8/8 in 235.092 seconds. All 2,205 source and fixture pins remain unchanged. The native clinic result remains 20 turns, 407 orders and 573 tactical seconds, with four permanent deaths. |
+| [#398](https://github.com/fsodano/granaderos/pull/398) | Supply and pay the real Tucumán rear guard, reach actual roof cover and use finite care after the hospital defense. | Eleven complete affected files pass 50/50 in 643.335 seconds. The native defense wins in seven turns, 146 orders and 137 tactical seconds; actor 140 remains dead. The original patients fully recover at `646:1725`, with 22,572 pesos. This proves the earned hospital, not the complete original route. |
+| [#399](https://github.com/fsodano/granaderos/pull/399) | Pay four available river veterans, recover finite ammunition and stage sixteen real arrivals through west and south approaches. Preserve the three empty physical bronze guns. | Seven complete affected files pass 32/32 in 385.511 seconds. The native river victory uses ten turns, 275 orders and 355 tactical seconds. Deaths 5, 9, 121, 127, 133 and 146 remain permanent. It settles at `1806:1057` with 198,933 pesos. Later capital recovery and victory remain separate. |
+| [#400](https://github.com/fsodano/granaderos/pull/400), [#403](https://github.com/fsodano/granaderos/pull/403) | Install pinned Pillow and NumPy in the core Actions job. Use Python 3.13 in CI and the local setup guide. | The complete eight previously failing asset files and three scope controls pass 98/98. The complete reviewed-face file and scope controls separately pass 25/25; all five previously skipped NumPy cases execute. These are affected dependency checks, not a complete core or release result. |
+| [#402](https://github.com/fsodano/granaderos/pull/402) | Assemble the actual Córdoba patients locally, quote the real return horizon and use an hourly paid journey when prepaid renewals are unaffordable. Give real finite care after the interrupted rear defense. | The final complete three-case regression and scope controls pass 21/21. Nine legacy compatibility cases also pass on the same helper. The original patients reach Buenos Aires at `681:335`, with 21,878 pesos. The real Tucumán interruption wins in 48 turns and 405 orders; deaths 116 and 104 remain permanent. This earned return does not replace the complete original recovery. |
+
+The current complete original recovery is still being collected on frozen
+`c6881d99`. It is not reported as passed. Draft [PR #401](https://github.com/fsodano/granaderos/pull/401)
+has an earned capital preparation and official paired-save control, but its
+native capital victory remains unproved. Failed cover/controller attempts
+remain failure receipts. Neither fresh ending nor its 48-hour continuation
+has a complete passing result on the final source.
 
 | PR | Change | Recorded affected checks |
 | --- | --- | --- |
@@ -98,8 +116,8 @@ the direct paid-column/control log hash is
 `1eef03741902c54191ce578999e3fc4a01dc386d6e72fa05bb125cfce1149bf0`.
 The whole commander suffix reached the later river helper's eight-person
 upper bound after retaining twelve real survivors. Its failing receipt is
-preserved. Subsequent preparation and native river attempts remain diagnostic
-work and are not reported as an ending pass.
+preserved. PR #399 later supplies and wins the actual river battle as recorded
+above. That earned river result is not a complete ending pass.
 
 Supplementary checks on clean main `2f87dc50` pass fifteen Python data/STI
 tests and the standalone strict C++17 black-powder rule check. Local logs are
@@ -238,6 +256,15 @@ original recovery receipts are the failed `8fafc671` runs above. Earlier runs
 below retain their historical scope.
 
 ## Current main regression checks
+
+The campaign quick job in [Actions run 38300410385](https://github.com/fsodano/granaderos/actions/runs/38300410385)
+passes on main `1e7f550d`: all 123 selected files finish, with 420/420 tests,
+no skips or cancellations, in 1,524.080 seconds. Its core job remains active
+at this documentation update. The later main `c6881d99` checks remain active.
+No active or cancelled job is reported as passed. Extended routes and the
+complete release gate remain open.
+
+The earlier combined quick result below retains its historical failure.
 
 The complete quick suite ran on `main` at `1c4017c0`. All 1,029 selected
 files ran out of 1,055 total files. It passed 7,513 of 7,515 tests, with two
