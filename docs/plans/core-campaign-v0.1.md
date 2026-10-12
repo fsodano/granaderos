@@ -527,6 +527,23 @@ The following bounded changes are now merged into `main`:
 | [#363](https://github.com/fsodano/granaderos/pull/363) | The northern handover accepts the living, conscious commander's actual wounds. | The earned commander control and complete web mission file pass 5/5. The commander retains 21 HP. No runtime mission condition changes. |
 | [#364](https://github.com/fsodano/granaderos/pull/364) | Update the unchanged earned Salta control to its current native result. | The final affected gate passes 6/6 in 56.312 seconds; 584 source/shipping pins and five consumed inputs stay unchanged. Actual deaths, six gun charges, one road dressing and saved replay remain exact. |
 
+PR [#366](https://github.com/fsodano/granaderos/pull/366) adds a reusable paid
+Córdoba reserve helper and an earned control. Its complete file passes 1/1
+in 38.061 seconds with 343 source pins unchanged. The actual raid preserves
+three deaths. Physician 135 marches two hours to the escaped defender and
+spends one dressing; the survivor keeps his wounds, zero morale and dropped
+weapon. The default Salta route is unchanged. Artillery delivery and the
+complete opening still need integration and proof. Three long earned native
+controls are registered in the extended suite.
+
+PR [#367](https://github.com/fsodano/granaderos/pull/367) keeps all three actual
+field-gun crew members together and clears a depleted arrival piece with a
+paid native move. The four complete focused files pass 29/29 on `1381964a`
+plus this increment, with 594 source/shipping pins unchanged. Declared small
+scenes retain finite charges, health, paid time and exact native, presented
+and saved-snapshot replay. These checks do not run a campaign. Runtime rules
+and shipping content are unchanged.
+
 These receipts have separate scopes. Do not add their counts as one complete
 test run. The arsenal continuation wins Uspallata and completes full care,
 but its subsequent eight-person Los Patos force still loses. Entry movement
