@@ -410,11 +410,15 @@ export function startFreshFoundry(start,{report=()=>{}}={}){
  // command and leave room for living residents who can still join.
  const delegates=[envoy,...local.map(op=>op.id).filter(id=>id!==envoy)].slice(0,4);
  order(c.location==='mendoza'?{type:'squad',ids:delegates}:{type:'createSquad',sector:'mendoza',ids:delegates,name:'Comitiva de la fundición'});
- c=bankRouteIncome(retained.retain(),foundryFor(c).setupCost+150,{keepIds:retained.keepIds(),report});
+ c=bankRouteIncome(retained.retain(),foundryFor(c).setupCost+250,{keepIds:retained.keepIds(),report});
  c=meetRecruits(c,['beltran'],envoy);
  const before=c.resources.treasury;order({type:'foundry'});
  assert.equal(c.resources.treasury,before-foundryFor(c).setupCost);
- order({type:'diplomacy',kind:'emancipation'});
+ // Weekly unanswered claims can lower the real Pardos reputation before
+ // Cuyo. Pay both existing guarantees before asking Barcala to join; an
+ // emancipation decree alone need not meet his actual recruitment gate.
+ if(!c.flags.emancipation)order({type:'diplomacy',kind:'emancipation'});
+ if(!c.flags.commission)order({type:'diplomacy',kind:'commission'});
  if(c.operativeState[7].alive&&!c.operativeState[7].captured&&!c.recruited.includes(7))c=meetRecruits(c,['barcala'],envoy);
  // A lone paid survivor first brings the real permanent founders into
  // service. Only then can the expensive short assignment end safely.
