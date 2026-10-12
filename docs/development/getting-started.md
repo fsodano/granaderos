@@ -14,6 +14,7 @@ establish complete game acceptance.
 - Git, to clone the repository.
 - Node.js **22.13.0 or newer**, as required by [`web/package.json`](../../web/package.json).
 - npm and a current browser.
+- Python 3.9 or newer and the pinned Pillow dependency for core and full tests.
 
 The browser game does not require the `engine/` submodule, a C++ toolchain or an original JA2 installation.
 
