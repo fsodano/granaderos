@@ -12,6 +12,8 @@ import {actBattle,endTurn} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {storedArtilleryRecord} from '../game/artillery-transport.js';
 import {queueSquadTravel} from '../game/squad-travel.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {prepareStockCuyoBatteryReserve} from './stock-cuyo-reserve-readiness.mjs';
 import {fight} from './opening-driver.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {prepareStockCuyoBatteryGuard,stockCuyoBatteryDefenseOrder,resolveStockCuyoBatteryEncounter} from './stock-cuyo-battery-defense.mjs';
@@ -26,23 +28,48 @@ test('earned stock battery pays for its arriving guard, resolves the actual raid
  // This older source-pinned preparation has expensive authored hires. Book
  // the real guard before the journey, rather than inserting a defender into
  // the already interrupted deployment or rewriting an existing soldier.
- const guard=prepareStockCuyoBatteryGuard(start,{report:event=>events.push(structuredClone(event))}),quoted=contractQuote(start,rosterFor(start).find(op=>op.id===guard.guardId),'day');
+ const posts=[[108,14,21],[104,14,20],[102,14,19],[146,14,18],[119,13,21],[133,13,20],[101,13,19],[121,13,18],[117,12,21],[116,12,20],[107,12,19],[130,12,18],[9,11,21]].map(([id,x,y])=>({id,x,y,tacticalLevel:1}));
+ const reserve=prepareStockCuyoBatteryReserve(start,posts,{report:event=>events.push(structuredClone(event))});
+ assert.deepEqual(reserve.preparation.startClock,[426,1356]);assert.deepEqual(reserve.preparation.endClock,[426,1435]);assert.equal(reserve.preparation.elapsedSeconds,79);assert.equal(new Set(reserve.preparation.positions.map(post=>`${post.tacticalLevel}:${post.x}:${post.y}`)).size,13);
+ assert.deepEqual(reserve.campaign.squads,start.squads);assert.deepEqual(reserve.campaign.contracts,start.contracts);assert.equal(reserve.campaign.resources.treasury,start.resources.treasury);
+ for(const [id,weapon]of [[117,1803],[102,1804],[107,1805]]){assert.equal(reserve.preparation.equipmentReady.operativeState[id].weaponDropped,false);assert.equal(sectorInventoryModel(reserve.preparation.equipmentReady,'cordoba',rosterFor(reserve.preparation.equipmentReady),id).personal.weapon,weapon);}
+ const roundSource='["body","137","inventory:ammo:musket_75"]',knownCount=c=>sectorInventoryModel(c,'cordoba',rosterFor(c),104).entries.find(row=>row.key===roundSource)?.count??0;
+ assert.equal(knownCount(start),11);assert.equal(knownCount(reserve.preparation.equipmentReady),2);assert.equal(reserve.preparation.ammunition.length,1);assert.equal(reserve.preparation.ammunition[0].quantity,9);
+ // Independently replay every formation, visit, paid movement and return.
+ // A real official midpoint save must keep the same final reserved positions.
+ let formation={campaign:reserve.preparation.equipmentReady,battle:null};
+ for(let index=0;index<reserve.preparation.journal.length;index++){
+  const step=reserve.preparation.journal[index];
+  if(step.kind==='campaign'){formation.campaign=dispatchCampaign(formation.campaign,step.action);assert.equal(formation.campaign.lastError,null);}
+  else if(step.kind==='enter')formation.battle=enterSector(formation.campaign.pendingBattle,formation.campaign.sectorStates.cordoba);
+  else if(step.kind==='battle'){formation.battle=actBattle(formation.battle,step.action);assert.equal(formation.battle.lastError,null);}
+  else if(step.kind==='sync'){const pair=syncBattleTime(formation.campaign,formation.battle);assert.equal(pair.error,null);formation={campaign:pair.campaign,battle:pair.battle};}
+  else if(step.kind==='leave'){formation.campaign=dispatchCampaign(formation.campaign,{type:'leaveSector',battleId:step.battleId,sectorState:formation.battle,survivors:formation.battle.units.filter(unit=>unit.side==='player')});assert.equal(formation.campaign.lastError,null);formation.battle=null;}
+  else assert.fail('Unknown native preparation step.');
+  if(index===Math.floor(reserve.preparation.journal.length/2))formation=decodeSave(encodeSave(formation.campaign,formation.battle));
+ }
+ assert.deepEqual(decodeSave(encodeSave(formation.campaign)).campaign,reserve.campaign);
+ const guard=prepareStockCuyoBatteryGuard(reserve.campaign,{report:event=>events.push(structuredClone(event))}),quoted=contractQuote(start,rosterFor(start).find(op=>op.id===guard.guardId),'day');
  assert.equal(guard.guardId,142);assert.equal(guard.quote.price,quoted.price);assert.equal(guard.quote.price,7740);assert.equal(guard.campaign.resources.treasury,start.resources.treasury-quoted.price);
- assert.equal(guard.campaign.recruited.includes(guard.guardId),false);assert.equal(guard.campaign.contracts[guard.guardId],undefined);assert.deepEqual([guard.arrival.bookedAt,guard.arrival.bookedSecond,guard.arrival.dueAt,guard.arrival.dueSecond],[426,1356,432,1356]);assert.equal(guard.arrival.serviceHours,24);
+ assert.equal(guard.campaign.recruited.includes(guard.guardId),false);assert.equal(guard.campaign.contracts[guard.guardId],undefined);assert.deepEqual([guard.arrival.bookedAt,guard.arrival.bookedSecond,guard.arrival.dueAt,guard.arrival.dueSecond],[426,1435,432,1435]);assert.equal(guard.arrival.serviceHours,24);
  let interrupted=null,stage=null;
  const result=prepareRouteBattery(guard.campaign,['bronze4','bronze4'],{destination:'cordoba',keepServing,report:event=>events.push(structuredClone(event)),resolveEncounter:(campaign,context)=>{assert.equal(interrupted,null);interrupted=structuredClone(campaign);stage=context.stage;return resolveStockCuyoBatteryEncounter(campaign,context);}});
- const completed=result.campaign;assert.equal(stage,'crew-travel');assert.deepEqual([interrupted.hour,interrupted.secondOfHour],[438,1356]);assert.equal(interrupted.location,'tucuman');assert.equal(interrupted.pendingEncounter.sector,'cordoba');assert.equal(interrupted.pendingEncounter.groupId,'enemy-group-3');
- assert.equal(interrupted.hiringArrivals.some(arrival=>arrival.operativeId===guard.guardId),false);assert.equal(interrupted.recruited.includes(guard.guardId),true);assert.deepEqual([interrupted.contracts[guard.guardId].started,interrupted.contracts[guard.guardId].startedSecond,interrupted.contracts[guard.guardId].expiresAt,interrupted.contracts[guard.guardId].expiresSecond],[432,1356,456,1356]);
- assert.equal(completed.sectors.cordoba.owner,'patriot');assert.deepEqual(result.selections,['depot:arsenal:buenos_aires:1','depot:arsenal:cordoba:1']);assert.deepEqual([completed.hour,completed.secondOfHour],[456,1405]);assert.equal(completed.location,'cordoba');assert.equal(completed.pendingBattle,null);assert.equal(completed.pendingEncounter,null);
+ const completed=result.campaign;assert.equal(stage,'crew-travel');assert.deepEqual([interrupted.hour,interrupted.secondOfHour],[438,1435]);assert.equal(interrupted.location,'tucuman');assert.equal(interrupted.pendingEncounter.sector,'cordoba');assert.equal(interrupted.pendingEncounter.groupId,'enemy-group-3');
+ assert.equal(interrupted.hiringArrivals.some(arrival=>arrival.operativeId===guard.guardId),false);assert.equal(interrupted.recruited.includes(guard.guardId),true);assert.deepEqual([interrupted.contracts[guard.guardId].started,interrupted.contracts[guard.guardId].startedSecond,interrupted.contracts[guard.guardId].expiresAt,interrupted.contracts[guard.guardId].expiresSecond],[432,1435,456,1435]);
+ assert.equal(completed.sectors.cordoba.owner,'patriot');assert.deepEqual(result.selections,['depot:arsenal:buenos_aires:1','depot:arsenal:cordoba:1']);assert.deepEqual([completed.hour,completed.secondOfHour],[456,1514]);assert.equal(completed.location,'cordoba');assert.equal(completed.pendingBattle,null);assert.equal(completed.pendingEncounter,null);
  const defense=events.find(event=>event.event==='stockCuyoBatteryDefenseComplete'),settled=events.find(event=>event.event==='stockCuyoBatteryDefenseSettled').campaign;
- assert.deepEqual(defense.losses,[117,116,107,130]);assert.equal(defense.turns,6);assert.equal(defense.actions,122);assert.equal(defense.battleSeconds,36);
- const care=events.filter(event=>event.event==='stockCuyoBatteryDefenseFirstAid'),aidStarts=events.filter(event=>event.event==='stockCuyoBatteryDefenseAidStarted');assert.equal(care.length,2);assert.equal(aidStarts.length,care.length);
- assert.deepEqual(care.flatMap(event=>event.patientsBefore.map(patient=>patient.id)).sort((a,b)=>a-b),[102,104,108]);assert.equal(settled.operativeState[104].hp,1);assert.equal(settled.operativeState[104].bleeding,4);
+ assert.deepEqual(defense.losses,[117,121,116,107,130,9]);assert.equal(defense.turns,12);assert.equal(defense.actions,120);assert.equal(defense.battleSeconds,72);
+ const care=events.filter(event=>event.event==='stockCuyoBatteryDefenseFirstAid'),aidStarts=events.filter(event=>event.event==='stockCuyoBatteryDefenseAidStarted');assert.equal(care.length,1);assert.equal(aidStarts.length,care.length);
+ assert.deepEqual(care.flatMap(event=>event.patientsBefore.map(patient=>patient.id)).sort((a,b)=>a-b),[102,104]);assert.equal(settled.operativeState[102].hp,7);assert.equal(settled.operativeState[102].bleeding,3);assert.equal(settled.operativeState[104].hp,39);assert.equal(settled.operativeState[104].bleeding,2);assert.equal(settled.operativeState[108].hp,84);
  for(const patient of [102,104,108]){assert.equal(defense.campaign.operativeState[patient].alive,true);assert.ok(defense.campaign.operativeState[patient].hp>=15);assert.equal(defense.campaign.operativeState[patient].bleeding,0);assert.equal(completed.operativeState[patient].alive,true);assert.ok(completed.operativeState[patient].hp>=15);assert.equal(completed.operativeState[patient].bleeding,0);}
  for(const id of settled.recruited.filter(id=>settled.operativeState[id].alive))assert.equal(completed.operativeState[id].alive,true,'Every actual survivor must remain alive through finite care and delivery.');
- assert.equal(defense.careSeconds,13);assert.equal(defense.careSeconds,care.reduce((sum,event)=>sum+event.elapsedSeconds,0));assert.equal(care.reduce((sum,event)=>sum+event.dressingsUsed,0),5);
+ assert.equal(defense.careSeconds,7);assert.equal(defense.careSeconds,care.reduce((sum,event)=>sum+event.elapsedSeconds,0));assert.equal(care.reduce((sum,event)=>sum+event.dressingsUsed,0),3);
  assert.equal(settled.operativeState[146].medkits,2);assert.equal(defense.campaign.operativeState[146].medkits,2);assert.equal(completed.operativeState[146].medkits,2,'The reserved physician keeps the unspent original dressings.');
  assert.equal(settled.operativeState[101].medkits,13);assert.equal(completed.operativeState[101].medkits,13,'The unused nearby stock remains finite and unchanged.');
+ const collected=events.filter(event=>event.event==='stockCuyoBatteryDefenseDressingsCollected');assert.deepEqual(collected.map(row=>[row.sourceKey,row.count]),[['["body","130","medkits"]',1],['["body","137","medkits"]',2],['["body","134","medkits"]',1]]);assert.equal(collected.reduce((sum,row)=>sum+row.count,0),4);
+ let recovered=events.find(event=>event.event==='stockCuyoBatteryDefenseMedicalSourceStarted').campaign;
+ for(const entry of collected){const old=sectorInventoryModel(recovered,entry.sector,rosterFor(recovered),entry.doctor).entries.find(row=>row.key===entry.sourceKey);assert.ok(old?.reachable);assert.equal(old.expected,entry.action.expected);assert.equal(old.count,entry.beforeCount);recovered=dispatchCampaign(recovered,entry.action);assert.equal(recovered.lastError,null);assert.equal(sectorInventoryModel(recovered,entry.sector,rosterFor(recovered),entry.doctor).entries.find(row=>row.key===entry.sourceKey)?.count??0,entry.afterCount);}
+ assert.deepEqual(decodeSave(encodeSave(recovered)).campaign,decodeSave(encodeSave(events.find(event=>event.event==='stockCuyoBatteryDefenseMedicalSourceReady').campaign)).campaign);assert.equal(completed.operativeState[104].medkits,1);
  for(let index=0;index<care.length;index++){
   const receipt=care[index],entry=aidStarts[index];assert.equal(receipt.stoppedReason,null);assert.equal(receipt.dressingsUsed,receipt.orders.filter(action=>action.type==='useItem').length);
   let aidPair={campaign:entry.campaign,battle:entry.battle};
