@@ -78,6 +78,21 @@ UX/DX acceptance and its browser evidence requirements.
 
 The root [`package.json`](../../package.json) defines these commands:
 
+The core renderer tests reconstruct and verify image resources with Python and
+Pillow. Before `test:core`, `test:quick`, `test:extended` or `npm test`, install the
+pinned test dependency in a virtual environment. The core Action uses Python
+3.13 and the same requirements file. This dependency is used by tests; it is
+not required to play, run or build the browser game.
+
+```sh
+python3 -m venv .venv-core-tests
+source .venv-core-tests/bin/activate
+python3 -m pip install --requirement tools/requirements-core-tests.txt
+```
+
+Keep the environment active while running the checks below. Use `deactivate`
+when finished.
+
 | Command | Purpose |
 | --- | --- |
 | `npm run test:core` | Run every core mechanic, renderer, portable editor and tooling test file. |

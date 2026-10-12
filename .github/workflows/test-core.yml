@@ -32,6 +32,13 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - name: Install test dependencies
         run: npm ci --prefix web
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: tools/requirements-core-tests.txt
+      - name: Install core test Python dependencies
+        run: python3 -m pip install --requirement tools/requirements-core-tests.txt
       - name: Run the selected core duration profile
         env:
           DURATION: ${{ inputs.duration }}
