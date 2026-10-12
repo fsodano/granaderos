@@ -14,7 +14,7 @@ establish complete game acceptance.
 - Git, to clone the repository.
 - Node.js **22.13.0 or newer**, as required by [`web/package.json`](../../web/package.json).
 - npm and a current browser.
-- Python 3.10 or newer and the pinned Pillow/NumPy dependencies for core and full tests.
+- Python 3.13 and the pinned Pillow/NumPy dependencies for core and full tests, matching CI.
 
 The browser game does not require the `engine/` submodule, a C++ toolchain or an original JA2 installation.
 
@@ -86,7 +86,7 @@ Python, Pillow and NumPy. Before `test:core`, `test:quick`, `test:extended` or
 not required to play, run or build the browser game.
 
 ```sh
-python3 -m venv .venv-core-tests
+python3.13 -m venv .venv-core-tests
 source .venv-core-tests/bin/activate
 python3 -m pip install --requirement tools/requirements-core-tests.txt
 ```
