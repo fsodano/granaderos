@@ -8,7 +8,7 @@ import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 
 test('the mounted inventory shows the authored secondary picture, changes hands and preserves the active save',async t=>{
- const d=defaultContentPackage(),blade=d.weapons.find(w=>w.id==='blade-1811');Object.assign(blade,{name:'Bayoneta azul',art:'/art/weapon-1810.png',ap:21,damage:31,reach:2.3});d.characters.find(c=>c.id==='person-110').arrivalHours=0;
+ const d=defaultContentPackage(),person=d.characters.find(c=>c.id==='person-110'),blade=d.weapons.find(w=>w.id===person.blade);Object.assign(blade,{name:'Bayoneta azul',art:'/art/weapon-1810.png',ap:21,damage:31,reach:2.3});person.arrivalHours=0;
  let campaign=initialCampaign(8,d);for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'visitSector'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
  const m=await mountCampaign(t,{campaign,battle:enterSector(campaign.pendingBattle)});
  await m.click('Equipo');

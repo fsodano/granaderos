@@ -133,3 +133,36 @@ still fails at its actual hour-408 Tucumán raid.
 The full release regression, post-Salta care, later hospital return and Cuyo
 defense routes remain open. Earlier native raid defeats are retained as
 failures. Neither a passing checkpoint nor a merge changes that status.
+
+## Complete regression receipt for this batch
+
+The supported unfiltered `npm test` run completed on clean
+`0f2f8ae99ef6aa1e2baed353edb9e7a381ddc0c2`: all 1,013 selected files ran,
+with 7,468 tests passed, 13 failed and one skipped. Its exit code was 1.
+All 14,497 pinned repository files remained unchanged through the run and
+subsequent local gates. The receipt, complete report and passive failure
+captures remain in the managed worktree under
+`.cache/core-campaign-2026-10-11/release-0f2f8ae9/`.
+
+Thirty-two of the forty previously failing file names now pass. Eight long
+route files still fail: opening playthrough, fresh ending, campaign recovery,
+coastal, northern, Cuyo, historical loss and the Cuyo battery defense. Their
+current causes must be read from the new results; a repeated file name does
+not establish an unchanged cause. In particular, the recovery now reaches
+the later actual hour-408 guard defeat instead of attempting travel through
+occupied Córdoba.
+
+One additional inventory test authored the fixed bayonet while its soldier
+carried the loose secondary bayonet. That fixture is corrected separately
+after this complete run, retaining its mounted inventory, hand change and
+saved metadata assertions. Its complete file passed 1/1 with all 923 pinned
+inputs unchanged. This does not turn the recorded full run into a passing
+result.
+
+Runner integrity and shard coverage, documentation and baseline audits,
+typecheck, nested production export and diff checks all passed. The export
+verified 1,413 files and 1,045 asset references, with the same
+`0.1.0 · 66560194cd5b` identity as the reviewed browser build. Supplementary
+primary-checkout Python checks passed 15/15, and the standalone strict C++17
+rule check passed. All 69 native inputs and 42 shared candidate input hashes
+still match their recorded receipt. This is not a Windows engine build.
