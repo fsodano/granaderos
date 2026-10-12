@@ -320,9 +320,16 @@ not a passing result. Extended routes and the complete release gate remain
 open.
 
 The current combined-source campaign-only [run 38320797582](https://github.com/fsodano/granaderos/actions/runs/38320797582)
-on `58bf21cf` is still running. Its result is separate from the passing
-campaign quick job on `c6881d99` above. Superseded automatic runs are cancelled
-to avoid duplicate core work; cancellation is not a passing result.
+passes on `58bf21cf`: all 124 selected files complete, with 426/426 tests,
+no failures, skips or cancellations, in 1,945.744 seconds. Artifact ZIP SHA is
+`a6e33b3ae793a80cc509864d65ecffde1debd0d7a11d94ae4507422b80f53f2c`;
+the job log SHA is
+`7de3ad2bc687ce685b434ae6659bce8a98dcca783499ce271b4e643be97625cc`.
+Its source and result are separate from the core quick job at `1806d8f9`
+and the earlier campaign quick job at `c6881d99`. These are scoped quick
+results, not complete fresh endings, saved 48-hour continuation or release
+acceptance. Superseded automatic runs are cancelled to avoid duplicate core
+work; cancellation is not a passing result.
 
 The earlier combined quick result below retains its historical failure.
 
