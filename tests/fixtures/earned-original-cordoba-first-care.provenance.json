@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "fixtures": [
+    {
+      "fixture": "earned-original-cordoba-first-care-paired.save.json.gz",
+      "rawSha256": "98660afbce5a68e28680faa4a8f434a1b5a48228976580e14a3087e729028906",
+      "gzipSha256": "67973a56bf6b5726bb7b302d4939040b771de4bdd6d25673a8195b8023a73bdb",
+      "rawBytes": 1713304,
+      "sourcePath": ".cache/core-campaign-2026-10-12/cordoba-first-care-defense-diagnosis-v2/native-victory.paired.save.json"
+    },
+    {
+      "fixture": "earned-original-cordoba-first-care-settled.save.json.gz",
+      "rawSha256": "aa3343c66b4e9306d54d126b1557695e01e0f78110133d641dcf87d6d4eeb33a",
+      "gzipSha256": "64a193ad72763e19ae169ad3ec14c1f4e2d97571aa6fa8e19ccd2067e272863e",
+      "rawBytes": 1384076,
+      "sourcePath": ".cache/core-campaign-2026-10-12/cordoba-first-care-defense-diagnosis-v2/native-settled.save.json"
+    }
+  ],
+  "sourceRevision": "c4e1228517be20e7b5c355cb5ba56493aa699b5c",
+  "sourceReceipt": ".cache/core-campaign-2026-10-12/cordoba-first-care-defense-diagnosis-v2/receipt.json",
+  "sourceLogSha256": "e6aefd71bb80aa7624db4b26a90748fe90023479114df94deab52314103cd446",
+  "sourcePins": 547,
+  "shippingPins": 242,
+  "actualInputPins": 1,
+  "sourceInputSha256": "4110ec94c921676c60167c62c0f09b66a0d33fb886cc5309e087e10a3f7c2f6e",
+  "scope": "Exact official native victory pair and settlement from the real150 counterattack during doctor137's interrupted medical courier trip. The recorded131 pre-trip input is from the original funded route prefix. Runtime/battle helpers between its source revision0dce8a93 andc4e12285 were unchanged; only the later222 paid rear guard was added. Native victory:7turns,173ordinary orders,50seconds; exact native replay passed. Deaths121/129/108 remain genuine. 112survives7HP/bleeding3,1225HP/bleeding3,10152HP/bleeding1; allserving defenders0dressings. No health/resource/outcome/input editing. Diagnostic exit0,1262.340seconds,all547static/242shipping/1actual-read inputs unchanged. Node ESM loader imports are statically pinned. Not a full campaign pass."
+}

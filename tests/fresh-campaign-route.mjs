@@ -3,6 +3,7 @@ import {supplyRouteAmmunition,recordRouteAmmunitionDiagnostic} from './route-amm
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {prepareCordobaMedicalRear,resolveCordobaMedicalRearEncounter} from './cordoba-medical-rear-guard.mjs';
+import {stabilizeCordobaFirstDefense} from './cordoba-first-defense-care.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {sellSurplusEquipment} from './surplus-equipment-route.mjs';
@@ -384,6 +385,7 @@ export function recoverFreshCordobaSurvivors(start,{report=()=>{}}={}){
   report({event:'recoveryCounterattack',sector:encounter.sector,hour:c.hour,campaign:structuredClone(c)});
   order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
   c=fightNorthernSector(c,encounter.sector,{report,executeBattle:(request,previous)=>cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,fallbackOrders:true})}).campaign;
+  if(encounter.sector==='cordoba')c=stabilizeCordobaFirstDefense(c,{report}).campaign;
   if(restoreSquad&&c.activeSquadId!==previous)order({type:'selectSquad',id:previous});
   return c;
  };
