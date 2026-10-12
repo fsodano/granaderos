@@ -1,0 +1,72 @@
+{
+  "revision": "8fafc671f20f42439e352a98c116515c4a62dd84",
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=spec",
+    "tests/fresh-campaign-recovery.test.mjs"
+  ],
+  "originalRun": ".cache/core-campaign-2026-10-12/original-recovery-main-8fafc671/",
+  "originalLogSha256": "a49451720d14a244a0013bf466103e21d10b703c1a08a914cf43a90238c7e101",
+  "originalReceipt": {
+    "runtime": {
+      "version": "v25.9.0",
+      "path": "/opt/homebrew/Cellar/node/25.9.0_2/bin/node",
+      "sha256": "32e234a5b6bec67d72a016f2baadf7fadf3afd328470b395b73af473fdee0d85"
+    },
+    "command": [
+      "node",
+      "--import",
+      "/Users/fsodano/.codex/worktrees/campaign-courier-rest/granaderos/.cache/core-campaign-2026-10-12/original-recovery-main-8fafc671/read-audit-preload.mjs",
+      "--test",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "tests/fresh-campaign-recovery.test.mjs"
+    ],
+    "sourceRevision": "8fafc671f20f42439e352a98c116515c4a62dd84",
+    "startedAt": "2026-10-12T10:20:55.306743+00:00",
+    "status": "complete",
+    "staticClosureFiles": 611,
+    "shippingFiles": 242,
+    "scope": "Complete original unfiltered funded recovery file on merged main8fafc671 after the real150 finite critical-care fix. Frozen recursive code/data/config/orchestration closure plus all242 tracked installed Granaderos package files. Passive loader source hashes and application read bytes record actual consumed inputs without changing the test or simulation. Existing route checkpoints/failure captures enabled. Not shipping opening/ending acceptance; no earned subset, filters, skips or timeout restart.",
+    "pid": 16281,
+    "exitCode": 1,
+    "seconds": 1731.316748833,
+    "finishedAt": "2026-10-12T10:49:46.770467+00:00",
+    "afterRevision": "8fafc671f20f42439e352a98c116515c4a62dd84",
+    "changedStaticPins": [],
+    "actualConsumedFiles": 391,
+    "actualESMLoadFiles": 391,
+    "actualFilesystemInputFiles": 0,
+    "changedActualInputPins": [],
+    "logSha256": "a49451720d14a244a0013bf466103e21d10b703c1a08a914cf43a90238c7e101",
+    "summary": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 1730937.313667
+    }
+  },
+  "scope": "Actual unmodified whole original recovery reached native Tucumán victory, then the hospital helper failed on exhausted Córdoba linen. Raw exact helper input and actual failure state are gzip copies of passive captures. Tests admit them through the official save codec; no edited health, supplies, resources, casualties or outcome.",
+  "fixtures": [
+    {
+      "fixture": "earned-original-tucuman-hospital-input.campaign.json.gz",
+      "stage": "input",
+      "rawBytes": 6522701,
+      "rawSha256": "c79840f94168288c2c6ad06bbdfc7d81277ac89832b3ca1fccad3f7467fc32e8",
+      "gzipSha256": "9403585f6fe3ba4c1806596e436291e8c16ead4a871846e5a4cb66a55d55870d",
+      "capturePath": ".cache/core-campaign-2026-10-12/original-recovery-main-8fafc671/passive-captures/strategic-preparation/16285-1-recoverFreshNorthernDoctor-preparation-input-owg4T0/campaign.json"
+    },
+    {
+      "fixture": "earned-original-tucuman-hospital-failure.campaign.json.gz",
+      "stage": "failure",
+      "rawBytes": 6526964,
+      "rawSha256": "e6971434227d9069d4aa16970c6af4370e3a4363d7ccc1f92d0af03467de539c",
+      "gzipSha256": "b50aece3fb4f046864a2d7c44b1c554c670da6e93e614c75968fa10e862d37c8",
+      "capturePath": ".cache/core-campaign-2026-10-12/original-recovery-main-8fafc671/passive-captures/strategic-preparation/16285-2-recoverFreshNorthernDoctor-preparation-failure-qIhDf1/campaign.json"
+    }
+  ]
+}
