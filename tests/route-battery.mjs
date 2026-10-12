@@ -7,11 +7,13 @@ import {depotSelection} from '../game/artillery-depots.js';
 import {contractExpiresSeconds,contractQuote} from '../game/contracts.js';
 import {tooTiredToMarch} from '../game/march-fatigue.js';
 import {campaignMarchFatigueRate} from '../game/march-fatigue.js';
-import {queueSquadTravel,squadTravelStatus} from '../game/squad-travel.js';
-import {campaignPlace} from '../game/world-cells.js';
+import {queueSquadTravel,squadTravelStatus,travelLegHours} from '../game/squad-travel.js';
+import {campaignPlace,worldCell,worldOwner} from '../game/world-cells.js';
+import {mountForOperative} from '../game/horses.js';
 import {sleepOrderReason} from '../game/sleep.js';
 import {order,visit,saved} from './local-contract-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
+import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 const clock=s=>s.hour*3600+(s.secondOfHour??0);
 const serving=(s,id)=>s.recruited.includes(id)&&s.operativeState[id]?.alive&&!s.operativeState[id].captured&&s.contracts[id]&&(contractExpiresSeconds(s.contracts[id])===null||contractExpiresSeconds(s.contracts[id])>clock(s));
@@ -43,9 +45,26 @@ function renewCrew(state,report,keepServing){
  }
  return s;
 }
+// The public route preview exposes geography and leg durations. Reserve enough
+// fatigue to stop before exhaustion; a rural stop does not presume a cleared
+// town, a won battle or any hidden tactical enemy position.
+const ruralRestStop=(s,id)=>worldOwner(s,id)==='neutral'&&!worldCell(id,s)?.locality;
+function projectedCrewFatigue(s,path,mode,journey=null){
+ const roster=rosterFor(s);
+ return s.squad.map(id=>{
+  const record=s.operativeState[id],unit={...roster.find(op=>op.id===id),...record,...(mountForOperative(s.horseState,id)??{})};
+  let fatigue=record.fatigue??0;
+  for(let index=1;index<path.length;index++){
+   const hours=index===1&&journey?Math.ceil((journey.pendingSeconds??0)/3600+squadTravelStatus({journey},s).legRemaining):travelLegHours(path[index-1],path[index],mode,s);
+   const mountain=path.slice(index-1,index+1).some(location=>campaignPlace(location,s)?.biome==='mountain');
+   fatigue+=hours*campaignMarchFatigueRate(s,unit,{mode,mountain});
+  }
+  return {id,fatigue};
+ });
+}
 function travel(state,sector,report,keepServing,resolveEncounter,waypointsFor){
  let s=state;
- const issue=action=>{s=order(s,action);report({event:'routeBatteryTravelOrder',action:structuredClone(action),hour:s.hour,second:s.secondOfHour??0,sector:s.location});};
+ const issue=action=>{const diagnosticBefore=captureRouteStrategicInput(s);try{s=order(s,action);}catch(error){recordRouteStrategicEvidence({helper:'prepareRouteBattery',stage:'campaign-action-refusal',campaign:diagnosticBefore??s,action,error,context:{destination:sector},preDispatchInputIndependentlyCloned:diagnosticBefore!==null});throw error;}report({event:'routeBatteryTravelOrder',action:structuredClone(action),hour:s.hour,second:s.secondOfHour??0,sector:s.location});};
  for(let attempt=0;attempt<720;attempt++){
   s=resolveBatteryEncounter(s,report,resolveEncounter,keepServing,'crew-travel');
   if(s.pendingBattle||s.pendingEncounter)fail(report,'Resolve the real encounter before moving the battery crew.',{sector:s.location,destination:sector});
@@ -61,22 +80,31 @@ function travel(state,sector,report,keepServing,resolveEncounter,waypointsFor){
    const waypoints=waypointsFor?.(s,sector)??[];assert.ok(Array.isArray(waypoints),'The battery detour must supply ordinary travel waypoints.');
    const mode=waypoints.length?'march':s.routes.posta?'posta':'march',draft={...s.squads.find(q=>q.id===s.activeSquadId),members:[...s.squad]};
    queueSquadTravel(s,draft,{sector,mode,intent:'travel',waypoints});const preview=squadTravelStatus(draft,s);
-   const mountain=preview.path.some(id=>campaignPlace(id,s)?.biome==='mountain'),roster=rosterFor(s);
    // Recover the existing fatigue reserve at the admitted departure point.
    // Waiting until exhaustion can strand a detour crew in hostile territory,
    // where the ordinary sleep order correctly refuses to protect them.
-   const sleep=s.squad.filter(id=>{
-    const record=s.operativeState[id],rate=campaignMarchFatigueRate(s,{...roster.find(op=>op.id===id),...record},{mode,mountain});
-    return record.fatigue>0&&record.fatigue+rate*preview.remaining>=80;
-   });
+   const forecast=projectedCrewFatigue(s,preview.path,mode),sleep=forecast.filter(({id,fatigue})=>s.operativeState[id].fatigue>0&&fatigue>=80).map(({id})=>id);
    if(sleep.length){
     for(const id of sleep){const reason=sleepOrderReason(s,id,true);if(reason)fail(report,`The battery crew needs an actual safe rest stop before this journey: ${reason}`,{id,sector:s.location,destination:sector});issue({type:'setSleep',operativeId:id,asleep:true});}
     report({event:'routeBatteryDepartureRest',ids:sleep,sector:s.location,destination:sector,plannedHours:preview.remaining,hour:s.hour,second:s.secondOfHour??0});
     issue({type:'wait',hours:1});continue;
    }
-   issue({type:'travel',sector,queue:true,mode,...(waypoints.length?{waypoints}:{})});
-   if(waypoints.length)report({event:'routeBatteryDetour',destination:sector,waypoints,hour:s.hour,second:s.secondOfHour??0});
-  }else issue({type:'wait',hours:1});
+   let stage=sector,stagedWaypoints=waypoints;
+   if(forecast.some(row=>row.fatigue>=80)){
+    const index=preview.path.findLastIndex((location,index)=>index>0&&ruralRestStop(s,location)&&projectedCrewFatigue(s,preview.path.slice(0,index+1),mode).every(row=>row.fatigue<80));
+    if(index<1)fail(report,'The actual battery route needs a reachable rural rest stop before exhaustion.',{sector:s.location,destination:sector,forecast});
+    stage=preview.path[index];stagedWaypoints=waypoints.filter(location=>preview.path.indexOf(location)<index);
+    report({event:'routeBatteryRestStage',destination:sector,stage,forecast,plannedHours:preview.remaining,hour:s.hour,second:s.secondOfHour??0});
+   }
+   issue({type:'travel',sector:stage,queue:true,mode,...(stagedWaypoints.length?{waypoints:stagedWaypoints}:{})});
+   if(stagedWaypoints.length)report({event:'routeBatteryDetour',destination:stage,waypoints:stagedWaypoints,hour:s.hour,second:s.secondOfHour??0});
+  }else{
+   // A real encounter may interrupt an older long journey. Stop at the next
+   // admitted rural boundary while the crew still has its fatigue reserve.
+   if(!journey.returning&&journey.path.length>2&&ruralRestStop(s,journey.path[1])&&projectedCrewFatigue(s,journey.path,journey.mode,journey).some(row=>row.fatigue>=80)&&projectedCrewFatigue(s,journey.path.slice(0,2),journey.mode,journey).every(row=>row.fatigue<80)){
+    const stage=journey.path[1];issue({type:'cancelTravel',choice:'stop'});report({event:'routeBatteryRestStage',destination:sector,stage,inFlight:true,hour:s.hour,second:s.secondOfHour??0});
+   }else issue({type:'wait',hours:1});
+  }
  }
  fail(report,`The actual battery crew journey to ${sector} did not finish within 720 hourly orders.`);
 }

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {rosterFor} from '../game/campaign.js';
 import {doctorRate,careAssignmentReason} from '../game/medical-care.js';
 import {order,saved,visit,tactical} from './local-contract-fixture.mjs';
-import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
+import {takeFiniteCache,leaveFiniteCache,finiteCacheCarrier} from './finite-cache-driver.mjs';
 import {collectRouteItems,collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
 import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
 import {repairMaterialPoints,REPAIR_KIT_POINTS} from '../game/repair-materials.js';
@@ -17,7 +17,7 @@ import {operativeLocation} from '../game/squads.js';
 
 // Actual finite found equipment and doctor/patient/repair/rest orders only.
 // Select roles from current survivors; preserve all real wounds and casualties.
-export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor',caregiverIds=[]}={}){
+export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor',caregiverIds=[],onCacheApproach}={}){
  assert.ok(['doctor','rest'].includes(recovery),'Choose actual doctor care or stable rest.');
  const earlierDeaths=Object.entries(s.operativeState).filter(([,record])=>!record.alive).map(([id])=>id);
  const returnSector=s.location;
@@ -99,7 +99,11 @@ export function prepareLocalOpening(s,{buyWeapons=true,recovery='doctor',caregiv
  // Recover only the one real rifle remaining in the local cache. Earlier
  // acquisition may already have removed it; never replace a depleted weapon.
  if(buyWeapons){
-  let p=FINITE_SECTOR_CACHES[careSector]?takeFiniteCache(visit(s),s.squad[0],[]):visit(s);
+  let p=visit(s);
+  if(FINITE_SECTOR_CACHES[careSector]){
+   const opener=finiteCacheCarrier(p,s.squad);assert.ok(opener!==null,'finite equipment recovery needs an actual carrier with a reachable chest or ordinary doorway');
+   p=takeFiniteCache(p,opener,[],{onApproach:onCacheApproach});
+  }
   const cache=p.battle.props.find(prop=>prop.id===FINITE_SECTOR_CACHES[careSector]?.chest),rifle=cache?.contents.find(item=>[1800,1801,1802].includes(item.weapon));
   if(rifle){
    const carrier=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed).sort((a,b)=>b.marksmanship-a.marksmanship)[0];assert.ok(carrier);

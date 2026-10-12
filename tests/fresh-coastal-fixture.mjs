@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {defaultProfile} from '../game/character-profile.js';
-import {createBattle,actBattle,endTurn,getReachable,hasLineOfSight} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,getReachable,hasLineOfSight,lookPreview} from '../game/tactical.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {enterSector} from '../game/world.js';
 import {hiringArrivalOptions,hireArrivalDueSeconds,hireArrivalOrder} from '../game/hiring-arrivals.js';
@@ -24,7 +24,7 @@ import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {fight as cautiousFight} from './cuyo-route-driver.mjs';
 import {fight as createdOpeningFight} from './created-coastal-opening-driver.mjs';
 import {fight as localOpeningFight} from './local-buenos-aires-driver.mjs';
-import {fight as localFinalFight} from './local-san-lorenzo-driver.mjs';
+import {localSanLorenzoOrder} from './local-san-lorenzo-driver.mjs';
 import {prepareLocalOpening} from './local-opening-care-fixture.mjs';
 import {order,visit,leave,saved,sync} from './local-contract-fixture.mjs';
 import {stockPortOpening} from './stock-port-opening.mjs';
@@ -42,6 +42,34 @@ const stockCoastalFight=(request,previous)=>recordedFight(request,previous,{cont
  const hold=unit.missionAlly&&battle.units.some(other=>other.side==='player'&&!other.missionAlly&&other.hp>=15&&!other.unconscious&&!other.routed&&!other.departure&&!other.surrendered);
  return hold&&['move','charge','climb','exit'].includes(action?.type)?null:action;
 }});
+
+// A mission commander remains a real, vulnerable reserve while infantry serves.
+// The local fighter otherwise rallies the cavalry forward before its hold rule.
+// A wounded reserve may still approach a supplied doctor through normal movement.
+export function coastalMissionOrder(battle,unit,options={}){
+ const action=localSanLorenzoOrder(battle,unit,options);
+ if(!unit.missionAlly||!['move','charge','climb','exit'].includes(action?.type))return action;
+ const infantry=battle.units.filter(other=>other.side===unit.side&&!other.missionAlly&&other.hp>=15&&!other.unconscious&&!other.routed&&!other.departure&&!other.surrendered);
+ if(!infantry.length)return action;
+ const approachesCare=action.type==='move'&&unit.bleeding>0&&infantry.some(doctor=>doctor.medical>0&&doctor.medkits>0&&sameSurface(doctor,unit)&&firstAidPlan(doctor,unit).valid&&Math.hypot(action.x-doctor.x,action.y-doctor.y)<Math.hypot(unit.x-doctor.x,unit.y-doctor.y));
+ return approachesCare?action:null;
+}
+const coastalFinalFight=(request,previous,options={})=>recordedFight(request,previous,{controller:(battle,unit)=>coastalMissionOrder(battle,unit,options)});
+
+// A surviving soldier can inspect a reachable fallen comrade before leaving.
+// Inspect every reachable friendly body, without selecting by hidden contents.
+export function inspectCoastalRemains(start,{execute=actBattle}={}){
+ let battle=start;const orders=[];
+ const bodies=start.units.filter(unit=>unit.side==='player'&&unit.hp===0&&!unit.departure&&!unit.knownToPlayer).map(unit=>unit.id);
+ const issue=action=>{battle=execute(battle,action);assert.equal(battle.lastError,null,battle.lastError);orders.push(structuredClone(action));};
+ for(const id of bodies){
+  const body=battle.units.find(unit=>unit.id===id),choices=battle.units.filter(unit=>unit.side==='player'&&unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure&&!unit.asleep&&unit.energy>10).flatMap(unit=>getReachable(battle,unit).filter(point=>sameSurface(point,body)&&Math.hypot(point.x-body.x,point.y-body.y)<=1.5&&hasLineOfSight(battle,point,body)).map(point=>({unit,point}))).sort((a,b)=>a.point.cost-b.point.cost);
+  const found=choices[0];if(!found)continue;
+  if(found.point.cost)issue({type:'move',unitId:found.unit.id,...spacePoint(found.point)});
+  const current=battle.units.find(unit=>unit.id===found.unit.id);if(lookPreview(battle,current,body).valid)issue({type:'look',unitId:current.id,...spacePoint(body)});
+ }
+ return {battle,orders};
+}
 
 // Loot one existing field dressing through native approach and pickup orders.
 // Cleared enemy remains are a finite source just like fallen friendly soldiers.
@@ -175,7 +203,7 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
   }
   if(kind==='stock'||sector!=='buenos_aires')s=finishReloadsBeforeMarch(s,{report});
   s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
-  const engage=sector==='buenos_aires'?(fightOpening??(kind==='created'?createdOpeningFight:kind==='local'?localOpeningFight:cautiousFight)):sector==='san_lorenzo'?(fightFinal??(kind==='stock'?stockCoastalFight:localFinalFight)):kind==='stock'?stockCoastalFight:cautiousFight;
+  const engage=sector==='buenos_aires'?(fightOpening??(kind==='created'?createdOpeningFight:kind==='local'?localOpeningFight:cautiousFight)):sector==='san_lorenzo'?(fightFinal??(kind==='stock'?stockCoastalFight:coastalFinalFight)):kind==='stock'?stockCoastalFight:kind==='local'?localOpeningFight:cautiousFight;
   const evidence=beginRouteCoastalEvidence({routeKind:kind,sector,battleId:request.id});
   onBeforeBattle?.(structuredClone({sector,campaign:s,request,previous}));
   evidence?.capture('before-battle-execution',{campaign:s,request,previous});
@@ -209,9 +237,9 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
    assert.deepEqual(p.battle.units,aid.battle.units);
    assert.ok(p.battle.units.filter(u=>u.missionAlly&&u.hp>0).every(u=>u.bleeding===0),'The surviving commander must receive finite field aid before strategic time resumes.');
   }
-  if(kind==='hired'){
-   // Complete native paid aid for the observed hired-route clinic admission.
-   // This includes unconscious survivors and partial stabilization strokes.
+  if(kind==='hired'||kind==='local'){
+   // Stabilize actual field wounds before clinic or recruit orders spend time.
+   // Unconscious survivors need the same finite, partial native aid strokes.
    const fieldAid=autoBandageBattle(p.battle);for(const action of fieldAid.steps)p=observedTactical(p,action);
    assert.deepEqual(p.battle.units,fieldAid.battle.units);assert.equal(p.battle.seed,fieldAid.battle.seed);assert.equal(p.battle.elapsedSeconds,fieldAid.battle.elapsedSeconds);
    report({event:'coastalFieldAid',sector,treated:fieldAid.treatedIds,untreated:fieldAid.untreated,stoppedReason:fieldAid.stoppedReason,steps:fieldAid.steps});
@@ -221,6 +249,7 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
    }
   }
   for(const u of p.battle.units.filter(u=>u.side==='player'&&!u.missionAlly&&u.hp===0))dead.add(Number(u.id));
+  if(sector==='san_lorenzo')inspectCoastalRemains(p.battle,{execute:(battle,action)=>{assert.equal(battle,p.battle);p=observedTactical(p,action);return p.battle;}});
   evidence?.capture('after-field-aid-before-settlement',p);
   p=saved(p);const resultReport={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
   evidence?.capture('before-existing-settlement',{pair:p,resultReport});
