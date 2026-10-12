@@ -1,6 +1,6 @@
 # Shipping campaign: version 0.1
 
-Updated: 11 October 2026.
+Updated: 12 October 2026.
 
 Status: partial fixes implemented. End-to-end campaign verification remains
 incomplete. No complete current-source campaign result is claimed.
@@ -254,3 +254,50 @@ not a passing complete Cuyo or ending test.
 This merge does not establish campaign acceptance. The earlier full regression failures,
 complete installed ending and final browser continuation remain open. The
 historical `0.1` tag retains its original commit.
+
+## First aid, roof defense and stable rest follow-up
+
+PR #345 permits finite first aid for an unconscious routed soldier who is
+still present on the field. Manual care, auto-bandage and tactical AI share
+the same patient rule. Conscious routed soldiers, departed actors and
+military custody cases remain excluded. Physician eligibility, visibility,
+distance, floor, AP and finite supply requirements still apply. Auto-bandage
+now reports unfinished treatment when a weak stroke wakes a routed patient
+who still needs care. It preserves unused dressings and refuses another
+stroke. All 127 tests in the sixteen affected clinical files passed without
+skips, with all 342 input hashes unchanged.
+
+The created northern defense now retains cover reached through paid roof
+movement. Its earned Córdoba defense ends in actual victory after 103 orders
+and eleven turns. One new death remains permanent, ten soldiers survive and
+their actual wounds and ammunition remain recorded. All four tests in the
+two affected roof and knockdown files passed, with all 644 inputs unchanged.
+
+After finite dressings are exhausted, the northern care helper can use
+ordinary rest for stable patients with no bleeding. Its bound comes from
+actual missing health and the authored rest rule. It retains paid service,
+charges real renewals, preserves earlier deaths and stops for an unresolved
+encounter or unsafe patient. The earned Tucumán checkpoint restores its two
+stable patients after 59 actual hours within a 60-hour bound. It uses no
+dressings and receives three normal 8,000-peso income payments. The official
+midpoint save replays exactly. All seven affected rest and clinic integration
+tests passed, with all 744 inputs unchanged.
+
+The complete original recovery test still fails on this source. Its reunion
+helper requests seven living soldiers in a squad whose public limit is six.
+The test ran to completion without skips, and all 382 imported inputs remained
+unchanged. This is a remaining route helper failure. The complete original
+northern and historical-loss batch is still running at this documentation
+checkpoint; it has no passing complete receipt.
+
+The convoy recapture prototype remains a private unfinished experiment. It
+won the actual Tucumán and Salta recaptures but then rejected a real Salta
+casualty in its retained cohort. It is not included in PR #345. The full
+installed ending, final browser continuation and passing unfiltered release
+gate remain open. This merge does not establish campaign acceptance, and the
+historical `0.1` tag retains its original commit.
+
+Before publication, the documentation audit, all 39 baseline assertions,
+typecheck, nested production export and diff check passed on the current
+source. The export verified 1,413 files and 1,045 asset references, with build
+identity `0.1.0 · ed2b946508e1`. No new full suite was started for this merge.
