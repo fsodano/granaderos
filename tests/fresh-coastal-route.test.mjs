@@ -10,9 +10,15 @@ import {sectorInventorySites} from '../game/sector-inventory.js';
 import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import {FINITE_SECTOR_CACHES} from '../game/finite-sector-caches.js';
 import {paidCasualty} from './paid-casualty-fixture.mjs';
+import {contractQuote,contractExpiresSeconds} from '../game/contracts.js';
+import {hireArrivalOrder,hireArrivalDueSeconds} from '../game/hiring-arrivals.js';
 
 for(const kind of ['created','hired'])test(`funded ${kind} force wins the coastal opening with real losses, paid replacements and saved replay`,async t=>{
- const {campaign,notes}=freshCoastalRoute(kind);
+ let beforeClinic,afterClinic;
+ const {campaign,notes}=freshCoastalRoute(kind,{onCheckpoint:(stage,state)=>{
+  if(stage==='buenos_aires')beforeClinic=structuredClone(state);
+  if(stage==='paid-clinic-recovery'&&!afterClinic)afterClinic=structuredClone(state);
+ }});
  assert.equal(Boolean(campaign.officer),kind==='created');
  assert.deepEqual(notes.filter(n=>n.sector).map(n=>n.sector),['buenos_aires','san_nicolas','san_lorenzo']);
  assert.ok(notes.every(n=>n.funds>=0));
@@ -20,10 +26,21 @@ for(const kind of ['created','hired'])test(`funded ${kind} force wins the coasta
   const care=notes.find(note=>note.stage==='paid-clinic-recovery'&&note.clinic==='buenos_aires');assert.ok(care);
   const opening=notes.find(note=>note.sector==='buenos_aires'),survivors=opening.units.filter(unit=>unit.hp>0).map(unit=>Number(unit.id));
   assert.deepEqual(care.field,survivors,'every actual opening survivor retains field membership for clinic access');
-  assert.deepEqual(care.caregiverIds,care.field.length===6?[112]:[]);assert.deepEqual(care.hires,[112]);assert.equal(care.hireCost,1050);
+  assert.ok(beforeClinic&&afterClinic);assert.equal(new Set(care.hires).size,care.hires.length);
+  assert.equal(care.hires.length,6-care.field.length+care.caregiverIds.filter(id=>!beforeClinic.recruited.includes(id)).length,'only actual field vacancies or a needed local caregiver receive paid hires');
+  const quotes=care.hires.map(id=>{assert.ok(!beforeClinic.recruited.includes(id));const quote=contractQuote(beforeClinic,rosterFor(beforeClinic).find(op=>op.id===id),'week');assert.equal(quote.available,true,quote.reason);return quote;});
+  assert.equal(care.hireCost,quotes.reduce((sum,quote)=>sum+quote.total,0),'every replacement pays its actual quote and guarantee');
+  for(const id of care.caregiverIds){const op=rosterFor(afterClinic).find(op=>op.id===id),record=afterClinic.operativeState[id];assert.ok(op.medical>=70&&record.alive&&record.hp>=15&&!record.bleeding);assert.ok(!care.field.includes(id),'the local caregiver cannot displace a field survivor');}
   for(const id of opening.deaths)assert.ok(!care.field.includes(id),'clinic care cannot replace or restore an actual casualty');
-  assert.equal(care.arrivals[0].travelHours,6);assert.equal(care.arrivals[0].dueAt-care.arrivals[0].departedAt,6);assert.equal(care.arrivals[0].dueSecond,care.arrivals[0].departedSecond);
-  assert.ok(care.hours>0&&care.hours<=48,'actual wounds receive bounded paid medical work');
+  assert.equal(care.arrivals.length,care.hires.length);
+  for(const [index,id]of care.hires.entries()){
+   const expected=hireArrivalOrder(beforeClinic,rosterFor(beforeClinic).find(op=>op.id===id),'week',quotes[index],care.clinic),arrival=care.arrivals[index],contract=afterClinic.contracts[id];
+   assert.deepEqual(arrival,expected);assert.equal(contract.started*3600+(contract.startedSecond??0),hireArrivalDueSeconds(arrival));assert.equal(contract.paid,quotes[index].price);assert.equal(contractExpiresSeconds(contract),hireArrivalDueSeconds(arrival)+quotes[index].hours*3600);
+   assert.equal(afterClinic.recruited.filter(person=>person===id).length,1);assert.equal(afterClinic.operativeState[id].location,care.clinic);
+  }
+  const wounded=care.field.some(id=>beforeClinic.operativeState[id].hp<beforeClinic.operativeState[id].maxHp||beforeClinic.operativeState[id].bleeding>0);
+  assert.equal(care.hours>0,wounded,'only actual clinic wounds require medical work');assert.ok(care.hours<=48);
+  for(const id of care.field){const record=afterClinic.operativeState[id];assert.equal(record.hp,record.maxHp);assert.equal(record.bleeding,0);}
   assert.equal(care.initialDressings+care.dressingsFound-care.remainingDressings,care.hours);
   assert.equal(care.dressingsBought,0);assert.equal(care.dressingCost,0);assert.equal(care.workshopCost,0);
  }
@@ -39,7 +56,8 @@ for(const kind of ['created','hired'])test(`funded ${kind} force wins the coasta
   const origin=instanceId.split(':')[1];assert.ok(FINITE_SECTOR_CACHES[origin]);assert.equal(s.sectorStates[origin].props.find(prop=>prop.id===FINITE_SECTOR_CACHES[origin].chest).contents.some(item=>item.instanceId===instanceId),false);
   const exposed=s=>sectorInventorySites(s,s.location).flatMap(site=>sectorInventoryModel(s,site.id,rosterFor(s),mechanic.id).entries).filter(row=>JSON.parse(row.expected).instanceId===instanceId);
   assert.deepEqual(exposed(s),[],'historical deployments and emptied corpses cannot expose a second toolkit');
-  const patients=s.squad.filter(id=>s.operativeState[id].bleeding>0);assert.ok(patients.length>0,'actual bleeding must receive native finite care before repair time');
+  const patients=s.squad.filter(id=>s.operativeState[id].bleeding>0);
+  assert.equal(Boolean(patients.length),campaign.squad.some(id=>campaign.operativeState[id].bleeding>0),'only retained actual bleeding requires further stabilization');
   const doctors=roster.filter(op=>s.squad.includes(op.id)&&op.medical>=20&&s.operativeState[op.id].hp>=15&&!s.operativeState[op.id].bleeding&&!s.operativeState[op.id].asleep&&s.operativeState[op.id].energy>10).sort((a,b)=>s.operativeState[b.id].medkits-s.operativeState[a.id].medkits||b.medical-a.medical).slice(0,patients.length);assert.equal(doctors.length,patients.length);
   const dressingStock=s.squad.reduce((sum,id)=>sum+s.operativeState[id].medkits,0);
   let collectedDressings=0;
@@ -62,7 +80,7 @@ for(const kind of ['created','hired'])test(`funded ${kind} force wins the coasta
    s=order(s,{type:'assignCare',id:doctor.id,assignment:'doctor'});
   }
   for(const id of patients)s=order(s,{type:'assignCare',id,assignment:'patient'});
-  const wounds=patients.map(id=>({id,hp:s.operativeState[id].hp}));s=advanceCampaignHours(s,1);
+  const wounds=patients.map(id=>({id,hp:s.operativeState[id].hp}));if(patients.length)s=advanceCampaignHours(s,1);
   for(const {id,hp}of wounds){assert.equal(s.operativeState[id].hp,hp);assert.equal(s.operativeState[id].bleeding,0);}
   assert.equal(dressingStock+collectedDressings-s.squad.reduce((sum,id)=>sum+s.operativeState[id].medkits,0),patients.length);
   for(const doctor of doctors)s=order(s,{type:'assignCare',id:doctor.id,assignment:'active'});
@@ -70,7 +88,7 @@ for(const kind of ['created','hired'])test(`funded ${kind} force wins the coasta
   const condition=s.operativeState[mechanic.id].condition;s=repairRouteFirearms(s,[mechanic.id]);
   assert.equal(s.operativeState[mechanic.id].condition,100);assert.equal(kit.repairPoints-repairMaterialPoints(s.operativeState[mechanic.id]),100-condition);
   assert.equal(Object.values(s.operativeState[mechanic.id].inventory).find(item=>item.kind==='repair-kit').instanceId,instanceId);
-  assert.equal(s.resources.treasury,campaign.resources.treasury);assert.equal(s.hour,campaign.hour+2);assert.equal(s.secondOfHour,campaign.secondOfHour);
+  assert.equal(s.resources.treasury,campaign.resources.treasury);assert.ok(s.hour>campaign.hour,'finite repair spends actual work hours for the surviving mechanic');assert.equal(s.secondOfHour,campaign.secondOfHour);
   assert.deepEqual(exposed(s),[]);const repaired=structuredClone(s);assert.throws(()=>collectRouteItems(s,mechanic.id,{kind:'repair-kit',instanceId},1),/finite local equipment/);assert.deepEqual(s,repaired,'the same retained owner identity cannot be collected again');
   for(const [id,r]of Object.entries(before.operativeState))if(!r.alive)assert.equal(s.operativeState[id].alive,false);
   assert.deepEqual(saved({campaign:s}).campaign,s);assert.deepEqual(campaign,before);
