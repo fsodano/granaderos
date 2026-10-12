@@ -303,6 +303,8 @@ identity `0.1.0 · ed2b946508e1`. No new full suite was started for this merge.
 
 ## Survivor columns, convoy and mountain follow-up
 
+This section records the earlier PR #346 checkpoint. Later results appear below.
+
 PR #346 contains route helper corrections and focused earned regressions.
 The game runtime, installed campaign data and victory requirements are
 unchanged. The following results have separate scopes; they are not one
@@ -330,29 +332,29 @@ combined campaign or release gate.
   reach Mendoza at hour 1656, second 1491. The other tests retain their finite
   ammunition and declared clinical-control scopes. This does not prove a
   fresh start, the arsenal mission, Los Patos or the campaign ending.
-  Los Patos still stops for a sleeping posted courier or an unhandled actual
-  encounter; these are driver limits, not game-runtime failures.
+  At that checkpoint, Los Patos stopped for a sleeping posted courier or an
+  unhandled actual encounter; those were driver limits, not game-runtime failures.
 - The focused port-income test passed 1/1 with all 312 inputs unchanged.
   The actual Buenos Aires meeting records the income agreement before
   departure. It grants no immediate money; the next real midnight pays once,
   and an official saved continuation cannot pay it again. This is the port
   meeting and income boundary, not the complete opening route.
 
-The latest recorded complete recovery entry failed 0/1 without skips. It
+The complete recovery entry at that checkpoint failed 0/1 without skips. It
 passed the corrected reunion and actual Salta victory, then stopped during
 the Yatasto handover trip with the real Salta counterattack still pending:
 `enemy-group-4`, arrived at hour 516. All 384 inputs remained unchanged. The
 encounter was not cleared or replaced with a forced outcome.
 
-The latest complete historical-loss entry also failed 0/1 without skips,
+The complete historical-loss entry at that checkpoint also failed 0/1 without skips,
 with all 376 inputs unchanged. It stopped before Tucumán when the medical
 courier could not enter with a sleeping or unavailable combatant. The walking
 courier budget has since been corrected to retain the original travel plan;
 explicit posta quotes remain supported. Its seven focused courier and finite
 equipment tests passed 7/7 without skips or cancellations, including the
 exhausted doctor's actual twelve-hour rest and 150-peso service fee. Neither
-complete failed entry was rerun after this correction. Their full-route
-outcomes remain unverified on the corrected source.
+complete failed entry had been rerun after this correction at that checkpoint.
+Their full-route outcomes were then unverified on the corrected source.
 
 The opening file completed with eight tests: five passed, two failed and one
 dependent Yatasto test was skipped. None was cancelled, and all 344 inputs
