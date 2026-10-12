@@ -74,16 +74,17 @@ no skips or cancellations, in 2,003.189 seconds. All 618 static pins, including
 242 shipping files, and 393 actual module inputs remain unchanged. The whole
 hospital and real return defense pass; that defense uses 48 turns, 405 orders
 and 9,224 tactical seconds. The earned hospital return reaches `681:335`,
-with 21,878 pesos. The next reunion pays twelve hours of real rest, then
-tries to prepay 48 hours of every serving contract before travel. The actual
-7,722-peso renewal is refused. This is a failed whole-route receipt,
+with 21,878 pesos. The next reunion pays twelve hours of real rest and reaches
+`693:335`, with 6,277 pesos, then tries to prepay 48 hours of every serving
+contract before travel. After earlier accepted renewals leave 4,387 pesos,
+the actual 7,722-peso renewal is refused at the same clock. This is a failed whole-route receipt,
 not a complete recovery pass. Its log hash is
 `5f8936c1864e1ce032ba2512d64f0d81df0f2c707d23ce79a6f5e73276f2a9c8`.
 
 Draft [PR #401](https://github.com/fsodano/granaderos/pull/401)
 has an earned capital preparation and official paired-save control, but its
 native capital victory remains unproved. Failed cover/controller attempts
-remain failure receipts. Its newer three-case planning control quotes a
+remain failure receipts. Its newer four-case planning control quotes a
 twelve-person relief with paid veterans and the three real empty guns; it
 does not execute that preparation or prove a native victory. Neither fresh
 ending nor its 48-hour continuation has a complete passing result on the
