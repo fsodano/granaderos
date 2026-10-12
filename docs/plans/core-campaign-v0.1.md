@@ -370,3 +370,48 @@ Local receipts are retained in the managed worktree under
 The fresh installed 3,200-peso ending, final browser continuation and a passing
 unfiltered release gate remain open. This bounded merge does not establish
 complete campaign acceptance; the historical `0.1` tag is unchanged.
+
+## Courier readiness and current stock continuation
+
+PR #350 is merged. The thirteen focused courier checks passed with all 308
+relevant inputs unchanged. Ordinary hourly rest retains actual paid service
+before the clock advances. Current source inventory and routes are quoted
+after readiness and any resolved native encounter. Walking couriers retain
+their existing recovery path. This is a courier boundary proof.
+
+The complete stock ending file was run at `a4877a89`: both cases failed,
+with all 615 static/shipping pins and 229 actual filesystem inputs unchanged.
+Seed 8 tried to attack Córdoba without reaching a legal adjacent sector. The
+installed seed-1812 route reached Tucumán, then a bleeding physician fell
+from 19 to 12 HP during the relief courier plan.
+
+The tested correction in PR #349 uses real front staging and finite
+field aid before relief. Its earned installed relief test passed 1/1. Three
+carried dressings and ten seconds stop three actual wounds; the physician
+retains 19 HP before the existing paid clinic care restores his 65 HP.
+
+Both complete stock cases then ran at `b6151aba` to terminal failure, without
+skips or cancellations and with the same pin categories unchanged. Seed 8
+won Córdoba and its defense, then stopped because only five compatible new
+hires were admitted by a plan requiring twelve. The installed route won
+Salta and completed Yatasto at hour 585, then exhausted reachable musket
+ammunition during Mendoza preparation. These new failure boundaries remain
+open; neither run is an ending pass.
+
+The arsenal changes in PR #348 passed both earned controls
+on frozen inputs, with all 369 static/source/fixture pins unchanged. The
+installed continuation wins Ensenada in eleven turns and 408 orders, retains
+its one actual death, gives finite care, returns the six temporary recruits,
+ends their service at Mendoza and delivers the two exact arsenal guns with
+35,392 pesos remaining. The older continuation now preserves each doctor's
+eight-dressing reserve: its native victory has one death, seven ready local
+or recruitable candidates, and needs no additional reserve trip. The source
+integrates PR #350. The final two-case affected gate passed again, with all
+369 pinned inputs unchanged. Runner checks passed 14/14; baseline checks
+passed 39/39. Documentation audit, typecheck and diff checks passed.
+
+The original funded recovery also carries a separate wounded San Martín
+record into Yatasto. Native entry trials cannot reach that actor before the
+actual bleeding deadline. First aid must occur in the earlier San Lorenzo
+operation. This driver correction is in progress; the later fatal record is
+preserved. Full campaign, final browser and release acceptance remain open.
