@@ -1,7 +1,7 @@
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {prepareHiredNorthernDefense,prepareNorthernOfficerRelief,completeHiredNorthernMission} from './fresh-northern-command.mjs';
 import {prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
-import {fightNorthernSector} from './northern-route.mjs';
+import {fightNorthernSector,northernClinicDefenseOrder} from './northern-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
@@ -39,6 +39,14 @@ import {bookRouteHires,finishRouteHireArrivals,assertRouteHireArrived} from './p
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+
+// The paid defense already reached real roof cover during preparation.
+// Keep that cover through observed enemy contact; ground troops retain their
+// ordinary fire, movement, reload and medical orders.
+export function fightCreatedNorthernDefense(ready,{report=()=>{}}={}){
+ assert.equal(ready.pendingBattle?.sector,'cordoba');assert.ok(ready.pendingBattle.defenseGroupId);
+ return fightNorthernSector(ready,'cordoba',{controller:northernClinicDefenseOrder,report});
+}
 
 // A real raid interrupts clinic work. Resolve it before another care hour,
 // and pay native field aid before strategic settlement resumes the clock.
@@ -345,7 +353,7 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
   notes.push({...record,fundsBeforeSettlement:before,fundsAfterReplacements:s.resources.treasury,replacements,deaths});onCheckpoint?.(sector,s,notes);
  }
  const readyDefense=prepareHiredNorthernDefense(s);onCheckpoint?.('cordoba-defense-ready',readyDefense,notes);
- const defense=fightNorthernSector(readyDefense,'cordoba',{controller:cautiousCombatOrder});onCheckpoint?.('cordoba-defense',defense.campaign,notes);
+ const defense=fightCreatedNorthernDefense(readyDefense,{report});onCheckpoint?.('cordoba-defense',defense.campaign,notes);
  const readyTucuman=prepareFreshTucumanAssault(defense.campaign,{artillerySupport:true});onCheckpoint?.('tucuman-ready',readyTucuman,notes);
  const tucuman=fightNorthernSector(readyTucuman,'tucuman',{controller:coastalBatteryController(enterSector(readyTucuman.pendingBattle,readyTucuman.sectorStates.tucuman),{sharedArtillerySight:true})});
  s=tucuman.campaign;notes.push({...tucuman.summary,deaths:deadIds(s),defense:defense.summary});onCheckpoint?.('tucuman',s,notes);
