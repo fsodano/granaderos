@@ -10,6 +10,7 @@ import {contractQuote} from '../game/contracts.js';
 import {fightNorthernSector,northernCombatOrder,northernClinicDefenseOrder} from './northern-route.mjs';
 import {stageOpeningRearCover} from './opening-rear-guard.mjs';
 import {openingRearFormation,supplyOpeningRearDoctors,stabilizeOpeningRearSurvivors} from './opening-rear-medical-supply.mjs';
+import {prepareOpeningCordobaReserve,relieveOpeningCordobaReserve} from './opening-cordoba-rear-reserve.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
@@ -107,15 +108,27 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
   route.apply(()=>covered.campaign);selected=route.campaign.activeSquadId;
   onCheckpoint('salta-rear-cover',route.campaign,{receipt:covered.receipt});order({type:'selectSquad',id:courierSquad});
  }
- encounterController??=formation.hasCover&&!formation.allCovered?northernCombatOrder:northernClinicDefenseOrder;
+ let cordobaReserve=null;
+ const northernController=formation.hasCover&&!formation.allCovered?northernCombatOrder:northernClinicDefenseOrder;
+ encounterController??=(battle,unit)=>cordobaReserve?.needed&&battle.sectorId==='cordoba'?northernClinicDefenseOrder(battle,unit):northernController(battle,unit);
  const battery=prepareRouteSupportBattery(route.campaign,{destination:'tucuman',waypointsFor:saltaBatteryWaypoints,keepServing:route.campaign.recruited.filter(id=>route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured),resolveEncounter:(campaign,{stage})=>{
   const crewSquad=campaign.activeSquadId;onCheckpoint('support-battery-encounter',campaign,{stage});route.apply(()=>campaign);
   const defense=route.resolveEncounter(report,encounterController);assert.equal(defense.status,'victory','the actual support-battery raid must be won');defenses.push(defense);
   onCheckpoint('support-battery-victory',route.campaign,{stage,defense});
   const care=stabilizeOpeningRearSurvivors(route.campaign,defense.sector,{report});route.apply(()=>care.campaign);
   onCheckpoint('support-battery-care',route.campaign,{stage,defense,care:care.receipt});
-  order({type:'selectSquad',id:crewSquad});onCheckpoint('support-battery-settled',route.campaign,{stage,defense});return route.campaign;
+  if(cordobaReserve?.needed&&defense.sector==='cordoba'){
+   const relief=relieveOpeningCordobaReserve(route.campaign,cordobaReserve.ids,{report});route.apply(()=>relief.campaign);
+   onCheckpoint('support-battery-road-relief',route.campaign,{stage,defense,receipts:relief.receipts});
+  }
+  order({type:'selectSquad',id:crewSquad});onCheckpoint('support-battery-settled',route.campaign,{stage,defense});
+  if(defense.sector==='tucuman'&&!cordobaReserve){
+   const reserve=prepareOpeningCordobaReserve(route.campaign,{report});route.apply(()=>reserve.campaign);cordobaReserve=reserve.receipt;
+   onCheckpoint('support-battery-road-reserve',route.campaign,{stage,defense,reserve:cordobaReserve});
+  }
+  return route.campaign;
  },report});route.apply(()=>battery.campaign);order({type:'configureArtillery',types:[]});
+ onCheckpoint('salta-battery-delivered',route.campaign,{selections:battery.selections,cordobaReserve});
  order({type:'selectSquad',id:reserveSquad});
  for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'active'});
  route.prepareWeapons(report);for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'rest'});
@@ -226,7 +239,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  const battle=enterSector(request,campaign.sectorStates.salta);
  assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
  report({event:'jointSaltaDeployment',hour:campaign.hour,units:request.squad.map(u=>u.id),patients,usedDressings});
- return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
+ return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,cordobaReserve,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
 }
 
 export function completeNorthernMission(start,{report=()=>{}}={}){
