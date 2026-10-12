@@ -5,9 +5,9 @@ import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {contractQuote} from '../game/contracts.js';
-import {rosterFor,civicStatus} from '../game/campaign.js';
+import {rosterFor,civicStatus,dispatchCampaign} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
-import {expandedCapitalReliefPlan,prepareCreatedExpandedCapitalReturn} from './created-expanded-capital-return.mjs';
+import {expandedCapitalReliefPlan,prepareCreatedExpandedCapitalReturn,expandedCapitalWaitNotice} from './created-expanded-capital-return.mjs';
 
 const sha=v=>createHash('sha256').update(v).digest('hex');
 function fixture(){
@@ -56,4 +56,22 @@ test('expanded preparation rejects an unbounded saving policy before it can issu
  const c=fixture(),before=structuredClone(c),events=[];
  assert.throws(()=>prepareCreatedExpandedCapitalReturn(c,{maxSavingHours:24001,report:e=>events.push(e)}),/bounded income-saving/);
  assert.equal(events.length,0);assert.deepEqual(c,before);
+});
+
+test('a real public zero-time assignment notice is acknowledged by a second paid-clock wait and reproduces through the official save',()=>{
+ const input=fixture(),before=structuredClone(input);let c=dispatchCampaign(input,{type:'assignCare',operativeId:2,assignment:'patient'});assert.equal(c.lastError,null);
+ const startedSeconds=c.hour*3600+c.secondOfHour,money=c.resources.treasury,paused=dispatchCampaign(c,{type:'wait',hours:1});assert.equal(paused.lastError,null);
+ const notice=expandedCapitalWaitNotice(paused,{startedSeconds,requestedHours:1});assert.ok(notice.events.some(e=>e.operativeId===2&&e.code==='healing_complete'));assert.ok(notice.events.every(e=>!Object.hasOwn(e,'binding')));
+ assert.equal(paused.resources.treasury,money);assert.equal(paused.hour*3600+paused.secondOfHour,startedSeconds);
+ const next=dispatchCampaign(paused,{type:'wait',hours:1}),replay=dispatchCampaign(decodeSave(encodeSave(paused)).campaign,{type:'wait',hours:1});assert.equal(next.lastError,null);
+ assert.equal(next.hour*3600+next.secondOfHour,startedSeconds+3600);assert.equal(next.assignmentAttention.notice,null);assert.deepEqual(replay,next);assert.deepEqual(input,before);
+});
+
+test('the expanded zero-time guard rejects absent notices, wrong requested periods and any unresolved contact',()=>{
+ const c=fixture(),startedSeconds=c.hour*3600+c.secondOfHour;
+ assert.throws(()=>expandedCapitalWaitNotice(c,{startedSeconds,requestedHours:1}),/actual matching public assignment notice/);
+ let paused=dispatchCampaign(c,{type:'assignCare',operativeId:2,assignment:'patient'});paused=dispatchCampaign(paused,{type:'wait',hours:1});assert.equal(paused.lastError,null);
+ assert.throws(()=>expandedCapitalWaitNotice(paused,{startedSeconds,requestedHours:2}),/actual matching public assignment notice/);
+ const blocked=structuredClone(paused);blocked.pendingEncounter={groupId:'unresolved-control',sector:'santa_fe'};
+ assert.throws(()=>expandedCapitalWaitNotice(blocked,{startedSeconds,requestedHours:1}),/actual contact/);
 });

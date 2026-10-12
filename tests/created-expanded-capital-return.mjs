@@ -5,6 +5,7 @@ import {isContractOperative} from '../game/content-character-ids.js';
 import {serviceRelationshipRefusal} from '../game/service-relationships.js';
 import {serviceObjectionReason} from '../game/service-objections.js';
 import {baseMorale} from '../game/morale.js';
+import {publicAssignmentNotice} from '../game/assignment-attention.js';
 import {sectorInventoryModel,sectorInventorySites} from '../game/sector-inventory.js';
 import {applyItemQuantity,inventoryUsage} from '../game/tactical-inventory.js';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
@@ -28,6 +29,17 @@ import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 const clock=c=>c.hour*3600+(c.secondOfHour??0);
 const living=c=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
 const healthy=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding;};
+
+// A second explicit public wait acknowledges a reported assignment. Keep the
+// zero-time exception tied to that real notice, rather than clearing its state.
+export function expandedCapitalWaitNotice(c,{startedSeconds,requestedHours}){
+ assert.ok(Number.isSafeInteger(requestedHours)&&requestedHours>=1&&requestedHours<=24,'Keep ordinary waits between one and twenty-four hours.');
+ assert.equal(clock(c),startedSeconds,'Only a zero-time attention stop may be acknowledged.');
+ assert.ok(!c.pendingEncounter&&!c.pendingBattle&&!c.defeated&&!c.completed,'Stop for every actual contact, battle or campaign outcome.');
+ const notice=publicAssignmentNotice(c);
+ assert.ok(notice&&notice.hour===c.hour&&notice.requestedHours===requestedHours&&notice.advancedHours===0&&notice.events.length,'A zero-time wait needs its actual matching public assignment notice.');
+ return notice;
+}
 
 function activateFieldPrimaries(start,report){
  const rounds=s=>start.squad.reduce((sum,id)=>{const r=s.operativeState[id],u=carriedAmmunition(rosterFor(s).find(op=>op.id===id),r);return sum+totalAmmo(u)+u.loaded;},0),beforeRounds=rounds(start);
@@ -109,9 +121,21 @@ export function prepareCreatedExpandedCapitalReturn(start,{report=()=>{},fieldSi
   const next=contractExpiresSeconds(c.contracts[id]);assert.ok(next>expiry);expiry=next;emit({event:'expandedCapitalRenewal',id,quote,action});
  }}};
  const order=action=>{
-  if(action.type==='wait'){assert.ok(action.hours>0&&action.hours<=24);retain(action.hours*3600+1);}
-  const time=clock(c);issue(action);
-  if(action.type==='wait')assert.ok(clock(c)>time&&clock(c)-time<=action.hours*3600,'The ordinary wait must advance within its stated bound.');
+  if(action.type!=='wait'){issue(action);return;}
+  assert.ok(Number.isSafeInteger(action.hours)&&action.hours>=1&&action.hours<=24);
+  const until=clock(c)+action.hours*3600;let consecutivePauses=0;
+  for(let attempts=0;clock(c)<until&&attempts<action.hours+3;attempts++){
+   assert.ok(!c.pendingEncounter&&!c.pendingBattle&&!c.defeated&&!c.completed,'Stop for every actual contact, battle or campaign outcome.');
+   const remaining=until-clock(c);assert.equal(remaining%3600,0,'The public hourly wait must preserve the actual second offset.');
+   const requestedHours=remaining/3600,time=clock(c);retain(remaining+1);issue({...action,hours:requestedHours});
+   assert.ok(!c.pendingEncounter&&!c.pendingBattle&&!c.defeated&&!c.completed,'Stop for every actual contact, battle or campaign outcome.');
+   const elapsed=clock(c)-time;assert.ok(elapsed>=0&&elapsed<=remaining,'The ordinary wait must advance within its remaining requested interval.');
+   if(!elapsed){
+    const notice=expandedCapitalWaitNotice(c,{startedSeconds:time,requestedHours});assert.ok(++consecutivePauses<=3,'Stop after three consecutive actual zero-time notices.');
+    emit({event:'expandedCapitalWaitPaused',phase,notice,startSeconds:time,endSeconds:clock(c),remainingSeconds:until-clock(c)});
+   }else consecutivePauses=0;
+  }
+  assert.equal(clock(c),until,'The complete retained public wait must spend its exact requested hours after acknowledgement.');
  };
  const adopt=(name,fn,{hours=24}={})=>{
   retain(hours*3600+1);const beforeStock=publicStock(),receipts=[],next=fn(c,e=>receipts.push(e));c=next;safe();assert.equal(c.pendingBattle,null,'Finish the actual local preparation visit.');
@@ -180,7 +204,8 @@ export function prepareCreatedExpandedCapitalReturn(start,{report=()=>{},fieldSi
   assert.equal(candidates.length,fieldSize-field.length,'The restored real property must release enough healthy actual candidates.');
   move(propertyGroup,hospital);rest([...keepers],{limit:48});
   phase='funding';const required=()=>reserve+plan.serviceWeeks*([...keepers].reduce((sum,id)=>sum+contractQuote(c,rosterFor(c).find(op=>op.id===id),'week').price,0)+candidates.reduce((sum,op)=>sum+contractQuote(c,op,'week').price,0))+candidates.reduce((sum,op)=>sum+contractQuote(c,op,'week').guarantee,0);
-  const savingStart=clock(c);for(let hours=0;hours<maxSavingHours&&c.resources.treasury<required();hours+=24)order({type:'wait',hours:24});
+  const savingStart=clock(c),savingEnd=savingStart+maxSavingHours*3600;
+  while(clock(c)<savingEnd&&c.resources.treasury<required())order({type:'wait',hours:Math.min(24,(savingEnd-clock(c))/3600)});
   assert.ok(c.resources.treasury>=required(),'Ordinary real income must bank the complete quoted relief service and transport reserve.');
   emit({event:'expandedCapitalReliefFunded',hour:c.hour,second:c.secondOfHour??0,required:required(),treasury:c.resources.treasury,serviceWeeks:plan.serviceWeeks,savingSeconds:clock(c)-savingStart,candidates:candidates.map(op=>({id:op.id,day:contractQuote(c,op,'day'),week:contractQuote(c,op,'week')}))});
   phase='paid-arrivals';const additions=[];
