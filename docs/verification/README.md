@@ -2,8 +2,9 @@
 
 [Documentation index](../README.md)
 
-Read the [campaign separation record](campaign-engine-separation-2026-10-10.md)
-for the current implementation and checks. The [version 0.1 status](version-0.1.md)
+Read the [shipping campaign status](../plans/core-campaign-v0.1.md) for current
+checks and remaining acceptance work. The [campaign separation record](campaign-engine-separation-2026-10-10.md)
+records the engine/content boundary. The [version 0.1 status](version-0.1.md)
 records the earlier tagged checkpoint. A tag does not establish
 complete game acceptance or publish a new GitHub Pages deployment.
 
@@ -14,6 +15,8 @@ of each check when assessing the current version.
 
 ## Current version and recent evidence
 
+- [Shipping campaign status, 12 October](../plans/core-campaign-v0.1.md)
+  — merged fixes, scoped regression receipts, published 3D startup and open ending/release checks.
 - [Editor experience, 11 October](../evidence/editor-experience-2026-10-11/README.md)
   — delivered bounded UX/DX checks and production route review, with preview and file-picker limits.
 - [Campaign studio checks, production export and browser limits](../evidence/campaign-studio-2026-10-10/README.md)

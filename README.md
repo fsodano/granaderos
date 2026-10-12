@@ -106,7 +106,7 @@ Los cambios del motor usan las pruebas de `core`; los cambios de campaña usan l
 
 La [guía de desarrollo](docs/development/getting-started.md#checks) explica la selección, las Actions y el registro de resultados. `npm test` conserva todas las pruebas. Ejecutalo antes de declarar completa la validación de una versión o campaña.
 
-Consultá primero la [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) para conocer las pruebas y los límites del código actual. El [estado de la versión 0.1](docs/verification/version-0.1.md) conserva la evidencia del punto de control anterior. El [registro de avances publicados](docs/verification/published-progress.md) y el [índice de verificación](docs/verification/README.md) conservan pruebas de entregas anteriores. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
+Consultá primero el [estado de la campaña principal](docs/plans/core-campaign-v0.1.md) para conocer las pruebas actuales y el trabajo pendiente. La [verificación de campañas separadas](docs/verification/campaign-engine-separation-2026-10-10.md) registra la separación del motor y del contenido. El [estado de la versión 0.1](docs/verification/version-0.1.md) conserva la evidencia del punto de control anterior. El [registro de avances publicados](docs/verification/published-progress.md) y el [índice de verificación](docs/verification/README.md) conservan pruebas de entregas anteriores. Las pruebas automáticas cubren situaciones específicas. La validación completa de la campaña también requiere pruebas de juego.
 
 | Ruta | Contenido |
 | --- | --- |
@@ -121,6 +121,6 @@ Consultá primero la [verificación de campañas separadas](docs/verification/ca
 
 La [guía de desarrollo](docs/development/getting-started.md) detalla la instalación, los archivos generados y las comprobaciones. La versión para navegador es el juego principal. La conversión nativa anterior tiene requisitos de compilación y ejecución separados.
 
-Para contribuir, revisá la [verificación actual](docs/verification/campaign-engine-separation-2026-10-10.md), los criterios de aceptación y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
+Para contribuir, revisá el [estado de la campaña principal](docs/plans/core-campaign-v0.1.md), los criterios de aceptación y el [índice de documentación](docs/README.md). Presentá una solicitud de cambios con un alcance definido y pruebas de verificación. Los recursos generados deben poder reproducirse a partir de sus archivos fuente. Indicá qué comportamiento comprobaste en el navegador.
 
 [VERSION](VERSION) registra la versión del código. La etiqueta `0.1` conserva el punto de desarrollo publicado antes de la separación de campañas. La versión final requiere cerrar sus criterios de aceptación y superar la auditoría de finalización.
