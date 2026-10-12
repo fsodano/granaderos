@@ -29,7 +29,7 @@ export function recordRouteStrategicEvidence({helper,stage,campaign,action,retur
    testFile:basename(process.argv[1]??''),pid:process.pid,runtime:process.execPath,nodeVersion:process.version,
    sourceSnapshot:process.env.GRANADEROS_CAMPAIGN_SOURCE_SNAPSHOT??null,buildRevision:process.env.GRANADEROS_CAMPAIGN_BUILD_REVISION??null,
    helper,stage,inputCapture,rawCampaignIndependentlyCloned:true,prePreparationInputIndependentlyCaptured:stage==='preparation-input',preDispatchInputIndependentlyCloned,
-   capturePhase:stage==='preparation-input'?'raw helper argument before its save round trip or native orders':stage==='campaign-action-refusal'?'actual existing action input and returned rejected state; rejection is not adopted unless the original helper already assigned it':'actual private helper state at its original thrown failure',
+   capturePhase:stage==='route-checkpoint'?'actual existing route checkpoint after its native orders':stage==='preparation-input'?'raw helper argument before its save round trip or native orders':stage==='campaign-action-refusal'?'actual existing action input and returned rejected state; rejection is not adopted unless the original helper already assigned it':'actual private helper state at its original thrown failure',
    scope:'Passive boundary only. Context contains current caller values and any existing partial helper records; no full campaign tape is claimed.',
    additionalOrders:0,additionalSynchronization:0,saveNormalizationPerformed:false,settlementExecuted:false,artifacts,
   };

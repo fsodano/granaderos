@@ -13,6 +13,10 @@ import {handRecord,applyItemQuantity} from '../game/tactical-inventory.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {supplyFreshMountainAmmunition} from './fresh-mountain-route.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
+import {physicalSourcesFor} from '../game/campaign-physical.js';
+import {regionalWeatherSource} from '../game/regional-weather.js';
+import {campaignSectors} from '../game/campaign-definition.js';
+import {worldCell} from '../game/world-cells.js';
 
 const fixture=name=>readFileSync(new URL(`./fixtures/${name}`,import.meta.url));
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -95,7 +99,12 @@ test('ordinary reloads finish the compatible Los Patos weapons with paid time an
   for(const operativeId of c.squad){c=dispatchCampaign(c,{type:'assignCare',operativeId,assignment:'active'});assert.equal(c.lastError,null);}
   c=finishReloadsBeforeMarch(c,{report:event=>events.push(event)});
  }
- assert.deepEqual(archivalValue(c),archivalValue(decodeSave(tape.ordinaryReloaded).campaign));assert.deepEqual(finitePool(c),finitePool(before));
+ const expected=decodeSave(tape.ordinaryReloaded).campaign,scene=expected.sectorStates.mendoza;
+ // The old receipt predates selected-world request context. Derive every new
+ // field independently from its pinned campaign and retain all old fields.
+ const context={regionalWeatherDefinition:regionalWeatherSource('mendoza',expected),localityIds:campaignSectors(expected).map(sector=>sector.id),sectorCode:worldCell('mendoza',expected).grid,finiteResourceDefinitions:structuredClone(physicalSourcesFor(expected))};
+ for(const [key,value]of Object.entries(context)){assert.equal(Object.hasOwn(scene,key),false,`the historical receipt must still omit ${key}`);assert.deepEqual(c.sectorStates.mendoza[key],value);scene[key]=value;}
+ assert.deepEqual(archivalValue(c),archivalValue(expected));assert.deepEqual(finitePool(c),finitePool(before));
  assert.equal((c.hour-before.hour)*3600+c.secondOfHour-before.secondOfHour,11);
  assert.equal(c.resources.treasury,before.resources.treasury);assert.deepEqual(c.contracts,before.contracts);
  for(const id of tape.field){const unit=carried(c,id);assert.equal(unit.loaded,1);assert.ok(unit.loaded+ammoCount(unit)>=tape.target);}

@@ -8,7 +8,8 @@ test('public body inspection recovers finite dressings from actual native deaths
  let checkpoint;const stop=new Error('native capital checkpoint complete');
  assert.throws(()=>freshCoastalRoute('local',{onCheckpoint:(sector,campaign)=>{if(sector==='buenos_aires'){checkpoint=campaign;throw stop;}}}),error=>error===stop);
  assert.ok(checkpoint);assert.equal(checkpoint.sectors.buenos_aires.owner,'patriot');
- const before=structuredClone(checkpoint),carrier=3,bodyStock=campaign=>campaign.sectorStates.buenos_aires.units.filter(u=>u.hp===0&&!u.departure).reduce((sum,u)=>sum+(u.medkits??0),0),stock=bodyStock(checkpoint);
+ const before=structuredClone(checkpoint),carrier=checkpoint.squad.find(id=>{const record=checkpoint.operativeState[id];return record.alive&&!record.captured&&record.hp>=15&&!record.unconscious&&!record.routed&&!record.asleep&&record.energy>15;}),bodyStock=campaign=>campaign.sectorStates.buenos_aires.units.filter(u=>u.hp===0&&!u.departure).reduce((sum,u)=>sum+(u.medkits??0),0),stock=bodyStock(checkpoint);
+ assert.ok(carrier!==undefined,'ordinary body inspection needs an actual fit survivor, not a fixed wounded identity');
  assert.ok(stock>0,'native combat leaves actual finite corpse dressings');
  const result=recoverVisibleRouteDressings(checkpoint,carrier,1);
  const newlyFallen=result.campaign.sectorStates.buenos_aires.units.filter(unit=>unit.hp===0&&before.sectorStates.buenos_aires.units.find(old=>old.id===unit.id)?.hp>0);

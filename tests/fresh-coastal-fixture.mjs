@@ -43,6 +43,26 @@ const stockCoastalFight=(request,previous)=>recordedFight(request,previous,{cont
  return hold&&['move','charge','climb','exit'].includes(action?.type)?null:action;
 }});
 
+// Loot one existing field dressing through native approach and pickup orders.
+// Cleared enemy remains are a finite source just like fallen friendly soldiers.
+export function recoverCoastalFieldDressing(start,{execute=actBattle}={}){
+ let battle=start;const orders=[];
+ const doctors=battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed&&u.medical>0);
+ if(doctors.some(u=>u.medkits>0))return {battle,orders,recovery:null};
+ const remains=battle.units.filter(u=>u.hp===0&&!u.departure&&u.medkits>0);
+ const choices=doctors.flatMap(doctor=>{
+  const reachable=getReachable(battle,doctor);
+  return remains.flatMap(body=>reachable.filter(point=>sameSurface(point,body)&&Math.hypot(point.x-body.x,point.y-body.y)<=1.5&&hasLineOfSight(battle,point,body)).map(point=>({doctor,body,point})));
+ }).sort((a,b)=>a.point.cost-b.point.cost);
+ const found=choices[0];assert.ok(found,'a conscious medic must physically reach an actual remaining field dressing');
+ const issue=action=>{battle=execute(battle,action);assert.equal(battle.lastError,null,battle.lastError);orders.push(structuredClone(action));};
+ if(found.point.cost)issue({type:'move',unitId:found.doctor.id,...spacePoint(found.point)});
+ const stock=battle.units.find(u=>u.id===found.body.id).medkits,carried=battle.units.find(u=>u.id===found.doctor.id).medkits;
+ issue({type:'loot',unitId:found.doctor.id,targetId:found.body.id,item:'medkits',count:1});
+ assert.equal(battle.units.find(u=>u.id===found.body.id).medkits,stock-1);assert.equal(battle.units.find(u=>u.id===found.doctor.id).medkits,carried+1);
+ return {battle,orders,recovery:{doctorId:found.doctor.id,sourceId:found.body.id,sourceSide:found.body.side,dressings:1}};
+}
+
 function recruitLocal(s,id=3){
  let p=visit(s);const npc=p.battle.npcs.find(n=>n.operativeId===id),actor=p.battle.units.find(u=>u.hp>=15&&!u.unconscious&&!u.routed);assert.ok(npc);assert.ok(actor);
  p=sync({campaign:p.campaign,battle:approachNPC(p.battle,actor.id,npc.id)});
@@ -183,16 +203,8 @@ export function freshCoastalRoute(kind,{onCheckpoint,onReplayFailure,onBeforeBat
   // Recover a fallen soldier's finite dressing when the last conscious medic
   // has none. The commander can treat himself with his current medical skill.
   if(sector==='san_lorenzo'&&p.battle.units.some(u=>u.missionAlly&&u.hp>0&&u.bleeding>0)){
-   const doctors=p.battle.units.filter(u=>u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.routed&&u.medical>0);
-   if(!doctors.some(u=>u.medkits>0)){
-    const remains=p.battle.units.filter(u=>u.side==='player'&&u.hp===0&&u.medkits>0);
-    const choices=doctors.flatMap(doctor=>remains.flatMap(body=>getReachable(p.battle,doctor).filter(point=>sameSurface(point,body)&&Math.hypot(point.x-body.x,point.y-body.y)<=1.5&&hasLineOfSight(p.battle,point,body)).map(point=>({doctor,body,point})))).sort((a,b)=>a.point.cost-b.point.cost);
-    const found=choices[0];assert.ok(found,'a conscious medic must physically reach an actual remaining field dressing');
-    if(found.point.cost)p=observedTactical(p,{type:'move',unitId:found.doctor.id,...spacePoint(found.point)});
-    const stock=p.battle.units.find(u=>u.id===found.body.id).medkits,carried=p.battle.units.find(u=>u.id===found.doctor.id).medkits;
-    p=observedTactical(p,{type:'loot',unitId:found.doctor.id,targetId:found.body.id,item:'medkits',count:1});
-    assert.equal(p.battle.units.find(u=>u.id===found.body.id).medkits,stock-1);assert.equal(p.battle.units.find(u=>u.id===found.doctor.id).medkits,carried+1);
-   }
+   const recovered=recoverCoastalFieldDressing(p.battle,{execute:(battle,action)=>{assert.equal(battle,p.battle);p=observedTactical(p,action);return p.battle;}});
+   if(recovered.recovery)report({event:'coastalFieldDressingRecovered',...recovered.recovery,steps:recovered.orders});
    const aid=autoBandageBattle(p.battle);for(const action of aid.steps)p=observedTactical(p,action);
    assert.deepEqual(p.battle.units,aid.battle.units);
    assert.ok(p.battle.units.filter(u=>u.missionAlly&&u.hp>0).every(u=>u.bleeding===0),'The surviving commander must receive finite field aid before strategic time resumes.');

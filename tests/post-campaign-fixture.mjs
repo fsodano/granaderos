@@ -9,7 +9,7 @@ import {parseContentPackage} from '../game/content-package.js';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {contentQuestStatus} from '../game/content-quests.js';
-import {actBattle,endTurn,getReachable,actionCosts,hasLineOfSight} from '../game/tactical.js';
+import {actBattle,endTurn,getReachable,actionCosts,hasLineOfSight,canSee,firearmShotOptions} from '../game/tactical.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {contractQuote} from '../game/contracts.js';
 import {enterSector} from '../game/world.js';
@@ -19,11 +19,37 @@ import {order,saved,visit,leave,sync} from './local-contract-fixture.mjs';
 import {collectPhysicalCacheItems} from './finite-care-cache.mjs';
 import {repairMaterialPoints} from '../game/repair-materials.js';
 import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
+import {firearmBystanderRisk} from '../game/firearm-bystander-risk.js';
 export const postContent=()=>parseContentPackage(readFileSync(new URL('../web/public/campaigns/la-ruta-de-las-postas.json',import.meta.url),'utf8'));
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const summary=s=>({hour:s.hour,second:s.secondOfHour??0,funds:s.resources.treasury,controlled:Object.keys(s.sectors).filter(k=>s.sectors[k].owner==='patriot'),chapters:s.campaignProgress.completed.map(c=>c.chapter),squad:[...s.squad],wounds:s.recruited.filter(id=>s.operativeState[id].alive&&(s.operativeState[id].hp<s.operativeState[id].maxHp||s.operativeState[id].bleeding)).map(id=>({id,hp:s.operativeState[id].hp,maxHp:s.operativeState[id].maxHp,bleeding:s.operativeState[id].bleeding})),deaths:Object.keys(s.operativeState).filter(id=>!s.operativeState[id].alive),completed:s.completed,defeated:s.defeated});
 function postAssaultOrder(battle,unit){
- if(unit.medical<80||unit.marksmanship>=60)return hiredAssaultOrder(battle,unit,{reconBudget:16});
+ const combat=()=>{
+  const action=hiredAssaultOrder(battle,unit);
+  if(action?.type==='fire'){
+   const target=battle.units.find(other=>other.id===action.targetId),risk=firearmBystanderRisk(battle,unit,target,action.hitLocation??'torso');
+   // Required contacts are physical bystanders. Change the target or pay for
+   // a new angle when the ordinary public forecast warns of civilian injury.
+   if([...risk.direct,...risk.scatter].some(person=>person.kind==='npc')){
+    const visible=battle.units.filter(other=>other.side!==unit.side&&other.hp>=15&&!other.routed&&!other.unconscious&&!other.departure&&!other.surrendered&&canSee(battle,unit,other)).sort((a,b)=>a.hp-b.hp);
+    const shot=(actor,remainingAP)=>{
+     for(const enemy of visible){
+      if(!canSee(battle,actor,enemy))continue;
+      const costs=actionCosts(battle,actor,enemy),aim=Math.min(4,Math.floor((remainingAP-costs.fire)/costs.aim));if(aim<0)continue;
+      const options=firearmShotOptions(battle,actor,enemy,aim).filter(option=>option.chance>=25).sort((a,b)=>b.chance-a.chance);
+      for(const option of options){const forecast=firearmBystanderRisk(battle,actor,enemy,option.hitLocation);if(![...forecast.direct,...forecast.scatter].some(person=>person.kind==='npc'))return {type:'fire',unitId:unit.id,targetId:enemy.id,hitLocation:option.hitLocation,aim};}
+     }
+     return null;
+    };
+    const alternate=shot(unit,unit.ap);if(alternate)return alternate;
+    const positions=getReachable(battle,unit).filter(point=>point.cost>0&&point.cost<=Math.min(24,unit.ap-30)).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x).slice(0,24);
+    for(const point of positions)if(shot({...unit,...spacePoint(point),weaponReady:false},unit.ap-point.cost))return {type:'move',unitId:unit.id,...spacePoint(point)};
+    return null;
+   }
+  }
+  return action;
+ };
+ if(unit.medical<80||unit.marksmanship>=60)return combat();
  const cost=actionCosts(battle,unit),patients=battle.units.filter(u=>u.side===unit.side&&u.id!==unit.id&&!u.routed&&!u.departure&&!u.surrendered&&sameSurface(unit,u)&&firstAidPlan(unit,u).valid).sort((a,b)=>a.hp-b.hp);
  const patient=patients[0];
  if(patient){
@@ -36,7 +62,7 @@ function postAssaultOrder(battle,unit){
   if(next)return {type:'move',unitId:unit.id,...spacePoint(next)};
  }
  const riflemen=battle.units.some(u=>u.id!==unit.id&&u.side===unit.side&&u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure);
- return riflemen?null:hiredAssaultOrder(battle,unit,{reconBudget:16});
+ return riflemen?null:combat();
 }
 export function approachPost(s,person){
  let p=visit(s);const npc=p.battle.npcs.find(n=>n.contentId===person);assert.ok(npc,person);assert.ok(npc.hp>0,person);
@@ -68,7 +94,7 @@ export function finishPostCampaign({onCheckpoint}={}){
   p=tactical(saved(p),{type:'explore'});
   for(const u of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious&&firstAidPlan(u,u).valid))p=tactical(p,{type:'heal',unitId:u.id});
   const report={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};s=saved({campaign:order(p.campaign,report)}).campaign;
-  assert.ok(dispatchCampaign(s,report).lastError);assert.equal(s.sectors[sector].owner,'patriot');assert.equal(s.completed,false);assert.equal(s.defeated,false);
+  assert.ok(dispatchCampaign(s,report).lastError);assert.equal(s.sectors[sector].owner,'patriot');assert.equal(s.completed,false);assert.equal(s.defeated,false,JSON.stringify({sector,hour:s.hour,second:s.secondOfHour,progress:s.campaignProgress,questEvents:s.contentQuestEvents,residents:p.battle.npcs.filter(n=>n.contentId).map(n=>({id:n.contentId,hp:n.hp,bleeding:n.bleeding,harm:n.civilianHarm})),log:s.log.slice(-8)}));
   p=approachPost(s,contact);p=choosePost(choosePost(p,'waiting','prepare'),'confirm','reopen');s=saved({campaign:leave(saved(p))}).campaign;assert.equal(contentQuestStatus(s,quest),'completed');
   notes.push({stage:sector,actions:result.actions,turns:result.battle.turn,...summary(s)});onCheckpoint?.(sector,s,notes);
   s=order(s,{type:'fortify',sector});
@@ -80,14 +106,18 @@ export function finishPostCampaign({onCheckpoint}={}){
    if(arrivals.length)s=order(s,{type:'wait',hours:6});
    // Treat actual battle wounds through paid, hourly campaign work. The best
    // surviving doctor is selected from this campaign, not a fixed identity.
-   const care={hours:0,dressingsBought:0,dressingsFound:0,dressingsUsed:0,repairPointsSpent:0,repairHours:0,cost:0};
+   const care={hours:0,dressingsBought:0,dressingsFound:0,dressingsFromCache:0,dressingsFromBodies:0,dressingsUsed:0,repairPointsSpent:0,repairHours:0,cost:0};
+   const dressings=state=>{
+    const scene=state.sectorStates[sector],cache=state.contentCampaign.package.world.physical.caches[sector];
+    return {cache:scene.props.find(prop=>prop.id===cache.chest).contents.filter(stack=>stack.item==='medkits').reduce((sum,stack)=>sum+stack.count,0),bodies:scene.units.filter(unit=>unit.hp<=0).reduce((sum,unit)=>sum+(unit.medkits??0),0)};
+   };
    while(true){
     const roster=rosterFor(s).filter(o=>s.squad.includes(o.id));
     const patient=roster.filter(o=>s.operativeState[o.id].hp<o.maxHp||s.operativeState[o.id].bleeding).sort((a,b)=>a.medical-b.medical)[0];if(!patient)break;
     assert.ok(care.hours<48,'the route must recover with finite care before its deadline');
     const doctor=roster.filter(o=>o.id!==patient.id&&o.medical>=20&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&s.operativeState[o.id].energy>10).sort((a,b)=>b.medical-a.medical)[0];assert.ok(doctor,'a living, available local doctor is required');
     for(const o of roster)s=order(s,{type:'assignCare',id:o.id,assignment:'active'});
-    if(!s.operativeState[doctor.id].medkits){const quantity=Math.max(1,Math.min(20,Math.ceil((patient.maxHp-s.operativeState[patient.id].hp)/doctorRate(doctor,s))+Number(s.operativeState[patient.id].bleeding>0))),found=collectPhysicalCacheItems(s,doctor.id,{item:'medkits'},quantity);s=found.campaign;care.dressingsFound+=found.collected;}
+    if(!s.operativeState[doctor.id].medkits){const quantity=Math.max(1,Math.min(20,Math.ceil((patient.maxHp-s.operativeState[patient.id].hp)/doctorRate(doctor,s))+Number(s.operativeState[patient.id].bleeding>0))),before=dressings(s),found=collectPhysicalCacheItems(s,doctor.id,{item:'medkits'},quantity);s=found.campaign;const after=dressings(s),fromCache=before.cache-after.cache,fromBodies=before.bodies-after.bodies;assert.ok(fromCache>=0&&fromBodies>=0);assert.equal(found.collected,fromCache+fromBodies,'every dressing must leave its actual chest or fallen soldier');care.dressingsFound+=found.collected;care.dressingsFromCache+=fromCache;care.dressingsFromBodies+=fromBodies;}
     assert.equal(careAssignmentReason(s,doctor,'doctor'),'');s=order(s,{type:'assignCare',id:doctor.id,assignment:'doctor'});s=order(s,{type:'assignCare',id:patient.id,assignment:'patient'});
     const stock=s.operativeState[doctor.id].medkits;s=saved({campaign:order(s,{type:'wait',hours:1})}).campaign;assert.equal(s.operativeState[doctor.id].medkits,stock-1);care.hours++;care.dressingsUsed++;
    }

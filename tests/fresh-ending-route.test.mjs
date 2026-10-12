@@ -7,6 +7,7 @@ import {freshHistoricalEnding,stabilizeBeforeMarch} from './fresh-ending-fixture
 import {stockPortOpening} from './stock-port-opening.mjs';
 import {verifyCampaignFolder} from '../tools/campaign-export.mjs';
 import {contentIdentity} from '../game/content-identity.js';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 const installedShippingCampaign=await verifyCampaignFolder(new URL('../campaigns/granaderos/',import.meta.url).pathname);
 const endingCases=[
@@ -24,7 +25,10 @@ function agreedPortQuote(state){
 
 for(const route of endingCases)test(`${route.name} wins all localities from ordinary 3200-peso Retiro-only resources and continues after saved victory and service expiry`,t=>{
  const opening=stockPortOpening(route);
- const {campaign:won,notes,prefix}=freshHistoricalEnding({openingCheckpoint:opening,onCheckpoint:(stage,campaign)=>console.log(JSON.stringify({route:route.name,routeCheckpoint:stage,hour:campaign.hour,treasury:campaign.resources.treasury}))});
+ const {campaign:won,notes,prefix}=freshHistoricalEnding({openingCheckpoint:opening,onCheckpoint:(stage,campaign)=>{
+  recordRouteStrategicEvidence({helper:'freshHistoricalEnding',stage:'route-checkpoint',campaign,context:{route:route.name,checkpoint:stage}});
+  console.log(JSON.stringify({route:route.name,routeCheckpoint:stage,hour:campaign.hour,treasury:campaign.resources.treasury}));
+ }});
  const start=prefix.find(note=>note.stage==='stock-start'),arrivals=prefix.find(note=>note.stage==='paid-arrivals'),agreement=prefix.find(note=>note.stage==='physical-port-agreement'),firstPayment=prefix.find(note=>note.stage==='first-midnight-payment');
  assert.ok(start,'the whole ending must retain its actual stock starting receipt');
  assert.equal(start.treasury,3200);assert.deepEqual(start.controlledSectors,['retiro']);assert.deepEqual(start.recruited,[]);

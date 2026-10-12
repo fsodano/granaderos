@@ -6,6 +6,10 @@ import {artilleryTransportPath,artilleryTransportQuote,storedArtilleryRecord} fr
 import {depotSelection} from '../game/artillery-depots.js';
 import {contractExpiresSeconds,contractQuote} from '../game/contracts.js';
 import {tooTiredToMarch} from '../game/march-fatigue.js';
+import {campaignMarchFatigueRate} from '../game/march-fatigue.js';
+import {queueSquadTravel,squadTravelStatus} from '../game/squad-travel.js';
+import {campaignPlace} from '../game/world-cells.js';
+import {sleepOrderReason} from '../game/sleep.js';
 import {order,visit,saved} from './local-contract-fixture.mjs';
 import {takeFiniteCache,leaveFiniteCache} from './finite-cache-driver.mjs';
 
@@ -34,13 +38,14 @@ function renewCrew(state,report,keepServing){
   const expiry=contractExpiresSeconds(s.contracts[id]);if(expiry===null||expiry>clock(s)+2*3600)continue;
   const quote=contractQuote(s,rosterFor(s).find(op=>op.id===id),'day');
   if(!quote.available||s.resources.treasury<quote.price)fail(report,`The real battery crew renewal for ${id} is unaffordable.`,{id,price:quote.price,treasury:s.resources.treasury});
-  const cash=s.resources.treasury,contract=s.contracts[id];s=order(s,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});assert.equal(s.resources.treasury,cash-quote.price);
-  report({event:'routeBatteryRenewal',id,price:quote.price,hour:s.hour,second:s.secondOfHour??0});
+  const cash=s.resources.treasury,contract=s.contracts[id],action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0};s=order(s,action);assert.equal(s.resources.treasury,cash-quote.price);
+  report({event:'routeBatteryRenewal',id,price:quote.price,action,hour:s.hour,second:s.secondOfHour??0});
  }
  return s;
 }
 function travel(state,sector,report,keepServing,resolveEncounter,waypointsFor){
  let s=state;
+ const issue=action=>{s=order(s,action);report({event:'routeBatteryTravelOrder',action:structuredClone(action),hour:s.hour,second:s.secondOfHour??0,sector:s.location});};
  for(let attempt=0;attempt<720;attempt++){
   s=resolveBatteryEncounter(s,report,resolveEncounter,keepServing,'crew-travel');
   if(s.pendingBattle||s.pendingEncounter)fail(report,'Resolve the real encounter before moving the battery crew.',{sector:s.location,destination:sector});
@@ -48,15 +53,30 @@ function travel(state,sector,report,keepServing,resolveEncounter,waypointsFor){
   if(!journey&&s.location===sector)return s;
   s=renewCrew(s,report,keepServing);
   if(journey?.status==='ready')fail(report,'The battery crew reached an unresolved assault.',{destination:sector});
-  if(journey?.status==='paused'){s=order(s,{type:'cancelTravel',choice:'stop'});continue;}
+  if(journey?.status==='paused'){issue({type:'cancelTravel',choice:'stop'});continue;}
   if(!journey){
    const tired=s.squad.filter(id=>tooTiredToMarch(s.operativeState[id])||s.operativeState[id].asleep);
-   if(tired.length){for(const id of tired){const r=s.operativeState[id];if(r.asleep&&(r.energy??0)>=100)s=order(s,{type:'setSleep',operativeId:id,asleep:false});else if(!r.asleep)s=order(s,{type:'setSleep',operativeId:id,asleep:true});}s=order(s,{type:'wait',hours:1});continue;}
-   for(const id of s.squad)if(s.operativeState[id].assignment!=='active')s=order(s,{type:'assignCare',id,assignment:'active'});
+   if(tired.length){for(const id of tired){const r=s.operativeState[id];if(r.asleep&&(r.energy??0)>=100)issue({type:'setSleep',operativeId:id,asleep:false});else if(!r.asleep)issue({type:'setSleep',operativeId:id,asleep:true});}issue({type:'wait',hours:1});continue;}
+   for(const id of s.squad)if(s.operativeState[id].assignment!=='active')issue({type:'assignCare',id,assignment:'active'});
    const waypoints=waypointsFor?.(s,sector)??[];assert.ok(Array.isArray(waypoints),'The battery detour must supply ordinary travel waypoints.');
-   s=order(s,{type:'travel',sector,queue:true,mode:waypoints.length?'march':s.routes.posta?'posta':'march',...(waypoints.length?{waypoints}:{})});
+   const mode=waypoints.length?'march':s.routes.posta?'posta':'march',draft={...s.squads.find(q=>q.id===s.activeSquadId),members:[...s.squad]};
+   queueSquadTravel(s,draft,{sector,mode,intent:'travel',waypoints});const preview=squadTravelStatus(draft,s);
+   const mountain=preview.path.some(id=>campaignPlace(id,s)?.biome==='mountain'),roster=rosterFor(s);
+   // Recover the existing fatigue reserve at the admitted departure point.
+   // Waiting until exhaustion can strand a detour crew in hostile territory,
+   // where the ordinary sleep order correctly refuses to protect them.
+   const sleep=s.squad.filter(id=>{
+    const record=s.operativeState[id],rate=campaignMarchFatigueRate(s,{...roster.find(op=>op.id===id),...record},{mode,mountain});
+    return record.fatigue>0&&record.fatigue+rate*preview.remaining>=80;
+   });
+   if(sleep.length){
+    for(const id of sleep){const reason=sleepOrderReason(s,id,true);if(reason)fail(report,`The battery crew needs an actual safe rest stop before this journey: ${reason}`,{id,sector:s.location,destination:sector});issue({type:'setSleep',operativeId:id,asleep:true});}
+    report({event:'routeBatteryDepartureRest',ids:sleep,sector:s.location,destination:sector,plannedHours:preview.remaining,hour:s.hour,second:s.secondOfHour??0});
+    issue({type:'wait',hours:1});continue;
+   }
+   issue({type:'travel',sector,queue:true,mode,...(waypoints.length?{waypoints}:{})});
    if(waypoints.length)report({event:'routeBatteryDetour',destination:sector,waypoints,hour:s.hour,second:s.secondOfHour??0});
-  }else s=order(s,{type:'wait',hours:1});
+  }else issue({type:'wait',hours:1});
  }
  fail(report,`The actual battery crew journey to ${sector} did not finish within 720 hourly orders.`);
 }

@@ -12,7 +12,11 @@ for(const path of ['continue','import'])for(const stage of ['empty','pending','h
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true});dom.window.scrollTo=()=>{};
  const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,IS_REACT_ACT_ENVIRONMENT:true};
  const previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));for(const[k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
- let s=initialCampaign(8,stage==='pending'?defaultContentPackage():null);
+ // The pending-screen control authors a delay; ordinary stock hires arrive
+ // immediately and must still open the hired-roster campaign screen.
+ const content=stage==='pending'?defaultContentPackage():null;
+ if(content)content.characters.find(person=>person.id==='person-110').arrivalHours=6;
+ let s=initialCampaign(8,content);
  if(stage!=='empty'){s=dispatchCampaign(s,{type:'recruitCivic',id:110,term:'week'});assert.equal(s.lastError,null);}assert.equal(s.officer,null);
  const wire=encodeSave(s);if(path==='continue')dom.window.localStorage.setItem(SAVE_KEY,wire);
  const {default:Home}=await import('../web/app/page.tsx');const {createRoot}=await import('../web/node_modules/react-dom/client.js');const root=createRoot(dom.window.document.getElementById('root'));

@@ -34,6 +34,7 @@ import {fight} from './opening-driver.mjs';
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
 import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {bookRouteHires,finishRouteHireArrivals,assertRouteHireArrived} from './paid-route-hiring.mjs';
 
 const tactical=(p,a)=>{const battle=a.type==='endTurn'?endTurn(p.battle):actBattle(p.battle,a);assert.equal(battle.lastError,null,battle.lastError);return sync({campaign:p.campaign,battle});};
 const deadIds=s=>Object.entries(s.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
@@ -233,8 +234,7 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  const rearm=state=>{const depot=visit(state),rearmed=equipOpeningRifles(depot.battle,state.squad);return leave(sync({campaign:depot.campaign,battle:rearmed.battle}));};
  s=prepareLocalOpening(rearm(s),{buyWeapons:false}).campaign;
  const missing=6-s.squad.length,lateRelief=[115,123,114,137,113,124,108,139,111].filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.recruited.includes(id)&&contractQuote(s,rosterFor(s).find(op=>op.id===id),'week').available).slice(0,missing);assert.equal(lateRelief.length,missing,'only a real vacant local slot can receive a paid replacement');
- for(const id of lateRelief){const quote=contractQuote(s,rosterFor(s).find(op=>op.id===id),'week'),cash=s.resources.treasury;s=order(s,{type:'recruitCivic',id,term:'week',destination:s.location});assert.equal(cash-s.resources.treasury,quote.price);assert.ok(!s.recruited.includes(id));}
- if(lateRelief.length){s=advanceCampaignHours(s,6);for(const id of lateRelief){assert.ok(s.recruited.includes(id));assert.equal(s.operativeState[id].location,s.location);}s=rearm(s);}
+ if(lateRelief.length){const booked=bookRouteHires(s,lateRelief,{report});s=finishRouteHireArrivals(booked.campaign,booked.hires,{report});s=rearm(s);}
  assert.equal(s.squad.length,6,'the real recovered field and paid replacements must fill the first column');
  report({event:'fieldRecovered',hour:s.hour,ids:s.squad,units:stagingUnits(s.squad)});
  const field=s.activeSquadId,supportIds=[119,127,103,104,111,140,100,101,102,105,106,117,118,121,122,126,129,130,133,134].filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.recruited.includes(id)).slice(0,6);assert.equal(supportIds.length,6);
@@ -244,14 +244,12 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
  // A routed casualty can reach Buenos Aires before a doctor could return
  // from Córdoba. Book the rear clinic before the columns start their march.
  const rearPhysician=[146,...rosterFor(s).filter(op=>op.medical>=70).sort((a,b)=>b.medical-a.medical).map(op=>op.id)].find(id=>s.operativeState[id].alive&&!s.operativeState[id].captured&&!s.recruited.includes(id)&&!s.hiringArrivals.some(arrival=>arrival.operativeId===id)&&contractQuote(s,rosterFor(s).find(op=>op.id===id),'week').available);assert.ok(rearPhysician,'the rear clinic needs an available paid physician');
- const rearQuote=contractQuote(s,rosterFor(s).find(op=>op.id===rearPhysician),'week'),rearCash=s.resources.treasury;
- s=order(s,{type:'recruitCivic',id:rearPhysician,term:'week',destination:'buenos_aires'});
- const rearArrival=s.hiringArrivals.find(arrival=>arrival.operativeId===rearPhysician);assert.ok(rearArrival);assert.equal(rearArrival.destination,'buenos_aires');assert.equal(rearArrival.travelHours,6);assert.equal(rearCash-s.resources.treasury,rearQuote.price);assert.ok(!s.recruited.includes(rearPhysician));
- report({event:'rearClinicBooked',id:rearPhysician,cost:rearQuote.price,bookedAt:rearArrival.bookedAt,dueAt:rearArrival.dueAt,destination:rearArrival.destination});
+ const rearBooking=bookRouteHires(s,[rearPhysician],{destination:'buenos_aires',report});s=rearBooking.campaign;const rearHire=rearBooking.hires[0],rearArrival=rearHire.arrival;
+ report({event:'rearClinicBooked',id:rearPhysician,cost:rearHire.debited,bookedAt:rearArrival.bookedAt,dueAt:rearArrival.dueAt,travelHours:rearArrival.travelHours,destination:rearArrival.destination});
  report({event:'columnsLoaded',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  for(const id of [field,support]){s=order(s,{type:'selectSquad',id});s=order(s,{type:'attack',sector:'cordoba',queue:true});}
  for(let hour=0;hour<24&&![field,support].every(id=>s.squads.find(q=>q.id===id)?.journey?.status==='ready');hour++)s=order(s,{type:'wait',hours:1});
- assert.ok(s.recruited.includes(rearPhysician));assert.equal(s.operativeState[rearPhysician].location,'buenos_aires');assert.equal(s.contracts[rearPhysician].started,rearArrival.dueAt);
+ assertRouteHireArrived(s,rearHire);
  s=order(s,{type:'assignCare',operativeId:rearPhysician,assignment:'doctor'});
  report({event:'columnsArrived',hour:s.hour,squads:s.squads,units:stagingUnits([...s.squads.find(q=>q.id===field).members,...supportIds])});
  s=order(s,{type:'beginAssault',sector:'cordoba'});assert.equal(s.pendingBattle.squad.length,12);onCheckpoint?.('cordoba-ready',s,notes);
@@ -288,8 +286,7 @@ function freshCreatedNorthernRoute({onCheckpoint,report=()=>{},coastalCheckpoint
   const affordable=rosterFor(s).filter(o=>o.id>=100&&contractQuote(s,o,'week').price<=routeHiringCeiling(s,200)).sort((a,b)=>contractQuote(s,a,'week').price-contractQuote(s,b,'week').price||a.id-b.id).map(o=>o.id);
   const candidates=[...new Set([115,123,114,137,113,124,112,134,139,108,111,117,121,126,129,133,130,...affordable])].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)),replacements=candidates.slice(0,6-s.squad.length);
   assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const at=s.location;
-  for(const id of replacements){const quote=contractQuote(s,rosterFor(s).find(op=>op.id===id),'week'),cash=s.resources.treasury;assert.ok(quote.available,quote.reason);s=order(s,{type:'recruitCivic',id,term:'week',destination:at});assert.equal(cash-s.resources.treasury,quote.price);}
-  if(replacements.length){assert.ok(replacements.every(id=>!s.recruited.includes(id)));s=saved({campaign:advanceCampaignHours(s,6)}).campaign;assert.ok(replacements.every(id=>s.recruited.includes(id)&&s.operativeState[id].location===at));}
+  if(replacements.length){const booked=bookRouteHires(s,replacements,{destination:at,report});s=finishRouteHireArrivals(booked.campaign,booked.hires,{report});}
   s=rearm(s);
   if(hasWorkshop(s,s.location))for(const id of s.squad)for(const type of ['resupply','repairWeapon']){const next=dispatchCampaign(s,{type,operativeId:id});if(!next.lastError){assert.ok(next.resources.treasury<s.resources.treasury);s=next;}}
   s=supplyRouteAmmunition(s,s.squad).campaign;
@@ -378,8 +375,7 @@ function freshStockNorthernRoute({onCheckpoint,report=()=>{},routeKind='created'
   const affordable=rosterFor(s).filter(o=>o.id>=100&&contractQuote(s,o,'week').price<=routeHiringCeiling(s,200)).sort((a,b)=>contractQuote(s,a,'week').price-contractQuote(s,b,'week').price||a.id-b.id).map(o=>o.id);
   const candidates=[...new Set([115,123,114,137,113,124,112,134,139,108,111,117,121,126,129,133,130,...affordable])].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)),replacements=candidates.slice(0,6-s.squad.length);
   assert.ok(hiringArrivalOptions(s).some(o=>o.id===s.location));const at=s.location;
-  for(const id of replacements)s=order(s,{type:'recruitCivic',id,term:'week',destination:at});
-  if(replacements.length){assert.ok(replacements.every(id=>!s.recruited.includes(id)));s=saved({campaign:order(s,{type:'wait',hours:6})}).campaign;assert.ok(replacements.every(id=>s.recruited.includes(id)&&s.operativeState[id].location===at));}
+  if(replacements.length){const booked=bookRouteHires(s,replacements,{destination:at,report});s=finishRouteHireArrivals(booked.campaign,booked.hires,{report});}
   s=rearm(s);
   s=supplyRouteAmmunition(s,s.squad).campaign;
   notes.push({...record,fundsBeforeSettlement:before,fundsAfterReplacements:s.resources.treasury,replacements,deaths});onCheckpoint?.(sector,s,notes);report({event:'northernBattleSettled',...notes.at(-1)});

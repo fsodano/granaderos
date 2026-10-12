@@ -43,6 +43,13 @@ failure receipt; it is not proof that a game mechanic is broken.
 - [x] Retain opening paid survivors through their actual first service expiry.
   The unchanged baseline ending deployed only the created officer at San
   Nicolás after the five day hires had left service.
+- [x] Preserve explicit returned equipment without inheriting the starting
+  weapon's metadata. A missing or replaced physical hand must survive the
+  official save round trip.
+- [x] Recover and share actual finite dressings and ammunition. Keep spent
+  supplies, elapsed discovery time, paid service and permanent casualties.
+- [x] Review the production opening in the browser. Creation, a paid hire,
+  Retiro orders, export, page reload and Continue passed on a fresh origin.
 - [ ] Complete the installed default-seed route and its saved continuation.
 - [ ] Complete the final production browser review and full release gate.
 
@@ -80,3 +87,82 @@ been recorded for this batch.
 
 Changes use `fix/...` branches and PRs into `main`. The historical `0.1` tag
 retains its original source and scope.
+
+## Route recovery batch
+
+PR #342 fixes a real roster projection error: returned raw equipment could
+inherit metadata from a character's starting weapon. The corrected projection
+keeps the actual physical hand, preserves displaced authored equipment and
+still rejects forged metadata on an absent hand. Seven equipment and saved
+ownership tests passed.
+
+The route helpers now use actual paid arrival receipts, recovered enemy
+dressings, shared unused rear ammunition and ordinary rest before a long
+detour. Test fixtures explicitly provide their optional projectile settings,
+current world context and arrival delay. No stock abilities or victory rules
+are relaxed. All 44 selected UI and Campaign Studio checks passed with their
+source files unchanged. The downloadable post route supplies explicit finite
+physical sources and passed its two route tests; the four affected files
+passed in two recorded runs, not one combined run.
+
+The earned installed/default-seed checkpoint now prepares twelve paid
+soldiers and two supplied physicians for Tucumán. The subsequent actual
+assault won after 210 ordinary orders and seven turns. Its actual fallen
+soldier remains dead, and the settled save reloads. The northern helper then
+recovered officers, a provincial gun and finite dressings, healed the actual
+injured support and saved the pending Salta assault. These are bounded
+checkpoint results. The following actual Salta assault also won after 265
+orders, but post-battle first aid did not stabilize officer Paz. That failure
+is retained. These results do not prove a fresh complete campaign ending.
+
+The production opening review used build `0.1.0 · 66560194cd5b`, from
+`12de741add7ee16fedb15c5595264a7c259389e2`. A legal created character, a
+1,134-peso weekly hire and normal Retiro movement and posture orders passed.
+Export and page reload followed by Continue retained both soldiers' exact
+equipment, health, position, treasury and service. The browser error log was
+empty. All 2,267 pinned build inputs remained unchanged. The later commits
+to this batch change route tests and documentation; final ending and
+continuation browser review remains open.
+
+Two earned hospital tests passed with all 624 pinned inputs unchanged. They
+keep Córdoba occupied, heal all four actual patients at controlled Tucumán,
+spend the real officer fee, paid physician, fortifications and finite
+dressings, then save and replay an ordinary rural sleep tick. The later return
+still fails at its actual hour-408 Tucumán raid.
+
+The full release regression, post-Salta care, later hospital return and Cuyo
+defense routes remain open. Earlier native raid defeats are retained as
+failures. Neither a passing checkpoint nor a merge changes that status.
+
+## Complete regression receipt for this batch
+
+The supported unfiltered `npm test` run completed on clean
+`0f2f8ae99ef6aa1e2baed353edb9e7a381ddc0c2`: all 1,013 selected files ran,
+with 7,468 tests passed, 13 failed and one skipped. Its exit code was 1.
+All 14,497 pinned repository files remained unchanged through the run and
+subsequent local gates. The receipt, complete report and passive failure
+captures remain in the managed worktree under
+`.cache/core-campaign-2026-10-11/release-0f2f8ae9/`.
+
+Thirty-two of the forty previously failing file names now pass. Eight long
+route files still fail: opening playthrough, fresh ending, campaign recovery,
+coastal, northern, Cuyo, historical loss and the Cuyo battery defense. Their
+current causes must be read from the new results; a repeated file name does
+not establish an unchanged cause. In particular, the recovery now reaches
+the later actual hour-408 guard defeat instead of attempting travel through
+occupied Córdoba.
+
+One additional inventory test authored the fixed bayonet while its soldier
+carried the loose secondary bayonet. That fixture is corrected separately
+after this complete run, retaining its mounted inventory, hand change and
+saved metadata assertions. Its complete file passed 1/1 with all 923 pinned
+inputs unchanged. This does not turn the recorded full run into a passing
+result.
+
+Runner integrity and shard coverage, documentation and baseline audits,
+typecheck, nested production export and diff checks all passed. The export
+verified 1,413 files and 1,045 asset references, with the same
+`0.1.0 · 66560194cd5b` identity as the reviewed browser build. Supplementary
+primary-checkout Python checks passed 15/15, and the standalone strict C++17
+rule check passed. All 69 native inputs and 42 shared candidate input hashes
+still match their recorded receipt. This is not a Windows engine build.

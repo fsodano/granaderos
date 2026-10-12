@@ -23,6 +23,8 @@ import {operativeLocation,operativeInTransit} from '../game/squads.js';
 import {doctorRate} from '../game/medical-care.js';
 import {worldCell} from '../game/world-cells.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
+import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
 
 // Reinforce and position the real survivors before the arriving counterattack.
 export function prepareHiredNorthernDefense(start){
@@ -260,7 +262,9 @@ export function completeHiredNorthernMission(start,{routeKind='created',...optio
 
 // A courier recovers officers, a real provincial gun and finite dressings.
 function prepareStockNorthernOfficerRelief(start,{report=()=>{}}={}){
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-input',campaign:start});
  let c=structuredClone(start);
+ try{
  const live=()=>c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
 const order=a=>{if(a.type==='assignCare'&&c.operativeState[a.operativeId].assignment===a.assignment)return;if(a.type==='wait')for(const id of live()){const q=c.contracts[id];if(q?.expiresAt!=null&&q.expiresAt<=c.hour+a.hours){c=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:q.expiresAt});assert.equal(c.lastError,null);}}c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
 const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:true,mode:'posta'});for(let h=0;h<36&&c.squads.find(q=>q.id===id).journey;h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}assert.equal(c.location,at);};
@@ -311,7 +315,26 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(let h=0;h<48&&patients.some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding);h++){
   assert.equal(c.pendingEncounter,null);
-  for(const id of physicians)if(!c.operativeState[id].medkits){const row=model(id).entries.find(r=>r.reachable&&JSON.parse(r.expected).item==='medkits');assert.ok(row,'the doctor must recover actual field dressings when the delivered batch is spent');order({type:'sectorInventory',sector:'tucuman',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:Math.min(10,row.count)});}
+  for(const id of physicians)if(!c.operativeState[id].medkits){
+   const row=model(id).entries.find(r=>r.reachable&&JSON.parse(r.expected).item==='medkits');
+   if(row)order({type:'sectorInventory',sector:'tucuman',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:Math.min(10,row.count)});
+   else{
+    // Keep every discovery or patrol's real time even if it finds no supply.
+    // Carried donations precede public inspection of the actual fallen bodies.
+    const reserves=Object.fromEntries(physicians.filter(other=>other!==id).map(other=>[other,c.operativeState[other].medkits]));
+    const donor=live().find(other=>other!==id&&c.operativeState[other].location==='tucuman'&&c.operativeState[other].medkits>(reserves[other]??0)&&!model(other).reason);
+    if(donor!==undefined)c=supplyRouteDressings(c,id,1,{reserves,report});
+    else{
+     c=discoverRouteCache(c,id);const cache=model(id).entries.find(entry=>entry.reachable&&JSON.parse(entry.expected).item==='medkits');
+     if(cache)order({type:'sectorInventory',sector:'tucuman',operativeId:id,direction:'take',sourceKey:cache.key,expected:cache.expected,count:1});
+     else{const found=recoverVisibleRouteDressings(c,id,1,{report});c=found.campaign;assert.equal(found.collected,1,'the doctor must recover an actual finite field dressing');}
+    }
+    assert.ok(c.operativeState[id].medkits>0);report({event:'northernReliefFiniteFieldDressing',id,hour:c.hour,campaign:structuredClone(c)});
+   }
+  }
+  // Visiting the cleared field for a dressing returns the physician to active
+  // service. Restore the real doctor assignment before the next care hour.
+  for(const operativeId of physicians)order({type:'assignCare',operativeId,assignment:'doctor'});
   order({type:'wait',hours:1});
  }
  for(const id of patients)assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp,'finite provincial care must restore the actual injured support');
@@ -325,6 +348,7 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  for(const id of field){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);order({type:'assignCare',operativeId:id,assignment:'active'});}
  for(let i=0;i<field.length;i+=6){order({type:'createSquad',ids:field.slice(i,i+6),name:'Columna con oficiales',sector:'tucuman'});const p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));c=finishReloadsBeforeMarch(c);}
  return prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
+ }catch(error){recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }
 
 // A routed survivor can occupy a real rural cell without a local medic. Send
