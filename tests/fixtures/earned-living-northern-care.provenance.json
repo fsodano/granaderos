@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "scope": "Exact official saved campaign after whole finite capital-survivor care and physical C\u00f3rdoba return. Northern readiness/request/native victories, final coastal wave and ending/48h remain unproved.",
+  "sourceRevision": "5197c63d0f61ee0454bb08f35cd651a33ab44c36",
+  "sourcePath": ".cache/core-campaign-2026-10-12/living-northern-care-v2/care.save.json",
+  "sourceFixture": "earned-expanded-capital-victory.save.json.gz",
+  "sourceRawSha256": "4709604fe2f3d6ca6f379266384186f87a39ae857b09088f4f9f2296272a6561",
+  "sourceLogSha256": "f7d29bf65e8ab63261ecfcf930487bbcb750ed1dba447ed0052b50d8f3bf486b",
+  "rawSha256": "c06882a5663002a9c03f537bdccc49acc9d1eae0146d076cc4632ebc81dcbeed",
+  "rawBytes": 4453539,
+  "gzipSha256": "bd424efcac6b9b18852dffca5c72f2941d5423fbf1556d450e4493c27ac43d81",
+  "campaignSha256": "e340f9b54d5a50f463caca80cf986fbff1ab301f890b9dbc36c0b8e2c6d97af3",
+  "savedAt": "2026-10-12T23:31:40.220Z",
+  "clock": [
+    3878,
+    1672
+  ],
+  "treasury": 918369,
+  "keepers": [
+    2,
+    57,
+    10,
+    101,
+    117,
+    102,
+    107,
+    122
+  ],
+  "field": [
+    2,
+    10,
+    101,
+    117,
+    102,
+    107,
+    122
+  ],
+  "preservedNativeDeaths": [
+    6,
+    116,
+    105,
+    145,
+    109
+  ],
+  "carriedDressings": 36,
+  "enemyReserves": {
+    "north": 88,
+    "coast": 0,
+    "interior": 29
+  },
+  "unresolvedCoastalGroup": "enemy-group-7",
+  "provenance": "Original official4709 capital victory was immutable; corrected whole3-case care+18scopecontrols passed21/21 with unchanged14687source/private/runtime pins,242shipping and1244actualinputs. All8fullHP and exact24finite dressings consumed. Group7 genuinely launched3864 and arrived3872 with20, restoring blockade while BAflagpatriot. No failedv1snapshot was resumed or adopted. No source/actor/stock/health/clock/outcome edits."
+}

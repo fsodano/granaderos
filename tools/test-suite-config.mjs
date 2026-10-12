@@ -1,6 +1,7 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
  {file:'tests/earned-living-northern-care.test.mjs',reason:'Exact seven living capital field survivors and the real Córdoba commander receive finite paid care and physical return; no northern battle or ending claim.'},
+ {file:'tests/earned-living-northern-supply.test.mjs',reason:'The actual living northern column uses paid retained rest, real public medical couriers and finite ammunition before a coordinated infantry request; native victory and ending remain separate.'},
  {file:'tests/earned-original-hospital-return.test.mjs',reason:'Exact recovered hospital locality selection, quoted hourly service retention, actual second raid and finite bleeding aid before the complete six-person return.'},
  {file:'tests/earned-original-northern-reunion.test.mjs',reason:'Whole genuine returned681 paid reunion, completed clinic service, quoted simultaneous postas, native northern road and strict saved custody.'},
  {file:'tests/earned-original-hospital-rear-guard.test.mjs',reason:'Exact earned original hospital rear preparation, finite forward battery and complete native hospital care; full original recovery remains separate.'},
