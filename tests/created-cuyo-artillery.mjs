@@ -120,7 +120,14 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  const survivors=prepared.field.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);
  assert.ok(survivors.length>=3,'The actual field gun needs three surviving available crew.');
  assert.ok(prepared.originalMembers.every(id=>c.operativeState[id].alive),'The original foundry squad must survive this side operation.');
- const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});const order=retained.order;
+ let retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});const order=action=>retained.order(action);
+ const endService=id=>{
+  const cash=c.resources.treasury;c=dispatchCampaign(c,{type:'dismiss',id});assert.equal(c.lastError,null,c.lastError);assert.equal(c.resources.treasury,cash);
+  // Ending a paid term must not first purchase another day for that person.
+  // Rebuild retention from the actual remaining serving cohort afterward.
+  retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
+  report({event:'createdCuyoArsenalServiceEnded',id,sector:'mendoza',hour:c.hour,second:c.secondOfHour});
+ };
  const doctors=rosterFor(c).filter(op=>survivors.includes(op.id)&&op.medical>0&&c.operativeState[op.id].hp>=15).sort((a,b)=>b.medical-a.medical).map(op=>op.id);
  const remaining=[...survivors],groups=[],localSlots=c.squads.filter(q=>q.location==='ensenada'&&!q.journey).map(q=>q.id);
  while(remaining.length){
@@ -156,13 +163,12 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
   // End temporary service after the real return, while the slower carts
   // finish their paid delivery. Their exact returned kit stays in Mendoza.
   for(const id of prepared.recruits)if(c.recruited.includes(id)&&c.operativeState[id].alive&&c.operativeState[id].location==='mendoza'&&!c.squads.some(q=>q.members.includes(id)&&q.journey)){
-   const cash=c.resources.treasury;order({type:'dismiss',id});assert.equal(c.resources.treasury,cash);
-   report({event:'createdCuyoArsenalServiceEnded',id,sector:'mendoza',hour:c.hour,second:c.secondOfHour});
+   endService(id);
   }
   order({type:'wait',hours:1});
  }
  assert.equal(c.location,'mendoza');assert.ok(groups.every(group=>!c.squads.find(q=>q.id===group.id).journey));
- for(const id of prepared.recruits)if(c.recruited.includes(id)&&c.operativeState[id].alive)order({type:'dismiss',id});
+ for(const id of prepared.recruits)if(c.recruited.includes(id)&&c.operativeState[id].alive)endService(id);
  for(const id of prepared.originalMembers)if(!c.squads.find(q=>q.id===prepared.originalSquad).members.includes(id))order({type:'assignToSquad',operativeId:id,squadId:prepared.originalSquad});
  order({type:'selectSquad',id:prepared.originalSquad});assert.deepEqual(c.squad,prepared.originalMembers);
  for(const {sector,gun}of spent)assert.deepEqual(c.artilleryDepots[sector].find(g=>g.id===gun.id),gun,'Existing spent pieces retain their original depot and exact ammunition.');
