@@ -52,19 +52,24 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
   assert.ok(medic,'The actual local column needs a healthy serving physician.');
   local=[...veterans.filter(op=>op.id!==medic.id).slice(0,4).map(op=>op.id),medic.id];
  }
- assert.equal(local.length,5,'Five existing healthy local veterans provide the shortest paid arsenal column.');
+ assert.ok(local.length>0&&local.length<=5,'Use the actual healthy local veterans and fill the remaining places through quoted paid recruitment.');
  assert.ok(local.some(id=>rosterFor(c).find(op=>op.id===id).medical>=60),'The actual local column needs its existing physician.');
  const freshPhysician=rosterFor(c).find(op=>op.id>=100&&op.id<1000&&op.medical>=60&&!c.recruited.includes(op.id)&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&c.operativeState[op.id].morale>=50&&contractQuote(c,op,'day').available);
  const servingPhysician=freshPhysician?null:veterans.filter(op=>!local.includes(op.id)&&op.medical>=60).sort((a,b)=>c.operativeState[b.id].morale-c.operativeState[a.id].morale||b.medical-a.medical||a.id-b.id)[0];
  assert.ok(freshPhysician||servingPhysician,'The second column needs an available physician or an actual serving reserve.');
  const rested=[...local,...(servingPhysician?[servingPhysician.id]:[])];
  for(const operativeId of rested)order({type:'assignCare',operativeId,assignment:'rest'});
- for(let hour=0;hour<240&&rested.some(id=>{const r=c.operativeState[id];return r.morale<50||r.fatigue||r.energy<100||r.asleep;});hour++)order({type:'wait',hours:1});
+ // Safe strategic rest earns one morale point per six actual hours. The
+ // fresh loose route can bring permanent veterans home with zero morale;
+ // its paid wait must cover the real deficit before the readiness check.
+ const restLimit=Math.max(240,...rested.map(id=>Math.ceil(Math.max(0,50-c.operativeState[id].morale))*6+24));
+ for(let hour=0;hour<restLimit&&rested.some(id=>{const r=c.operativeState[id];return r.morale<50||r.fatigue||r.energy<100||r.asleep;});hour++)order({type:'wait',hours:1});
  assert.ok(rested.every(id=>{const r=c.operativeState[id];return r.morale>=50&&!r.fatigue&&r.energy===100&&!r.asleep;}),'Existing paid rest must finish before the actual coastal march.');
  const candidates=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&c.operativeState[op.id].morale>=50&&contractQuote(c,op,'day').available)
   .sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price);
  const physician=servingPhysician??candidates.filter(op=>op.medical>=60).sort((a,b)=>b.medical-a.medical)[0];assert.ok(physician,'A second actual physician accompanies the second column.');
- const recruits=[...candidates.filter(op=>op.id!==physician.id).slice(0,6),physician];assert.equal(recruits.length,7);
+ const recruitCount=12-local.length;
+ const recruits=[...candidates.filter(op=>op.id!==physician.id).slice(0,recruitCount-1),physician];assert.equal(recruits.length,recruitCount,'The actual local veterans and available paid recruits must supply the complete twelve-person arsenal force.');
  const hired=recruits.filter(op=>!c.recruited.includes(op.id));
  assert.ok(hired.reduce((sum,op)=>sum+contractQuote(c,op,'day').price,0)<=c.resources.treasury-30000,'The actual first paid terms must fit the treasury and return reserve.');
  for(const recruit of hired){const quote=contractQuote(c,recruit,'day'),cash=c.resources.treasury;order({type:'recruitCivic',id:recruit.id,term:'day',destination:'mendoza'});assert.equal(c.resources.treasury,cash-quote.price);}

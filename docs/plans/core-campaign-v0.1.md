@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are merged into `main` through PR #375. Each receipt
+The following changes are merged into `main` through PR #380. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
@@ -66,6 +66,26 @@ has its own scope; their counts are not one complete campaign result.
 | [#372](https://github.com/fsodano/granaderos/pull/372) | Reserve each selected Salta doctor's dressing before supplying the other doctors from actual local stock or a finite donor. | The earned allocation control passes 1/1 in 3.791 seconds, with all 2,277 pins unchanged. It preserves doctor 122's dressing, debits donor 100's two dressings, performs two ordinary care ticks and reproduces through official saves. Local exhaustion remains an honest refusal; full clinic recovery and Salta remain open. |
 | [#373](https://github.com/fsodano/granaderos/pull/373) | After the specific finite Mendoza clinic shortage, finish stable patients' recovery through ordinary paid rest. Keep acute care, safety and every original full-health gate. | The affected gate passes 12/12 in 112.119 seconds, with all 593 source/shipping pins and seven consumed inputs unchanged. All five earned survivors fully recover after 23 local dressings and 348 actual rest hours. Exact renewals and daily income remain asserted; the next active-journey refusal remains open. |
 | [#375](https://github.com/fsodano/granaderos/pull/375) | Treat the actual critical Córdoba survivors before the medical courier resumes. Use four known corpse dressings and four carried dressings from two uniquely paid weekly medics. Keep all native battle deaths and the patients' remaining wounds. | Both complete affected earned files pass 5/5 in 147.953 seconds. All 560 source/config/fixture/shipping pins and five consumed inputs remain unchanged, including after current-main integration. Seven real care hours consume seven dressings and 504 pesos; patients 112, 122 and 101 survive at 18, 17 and 50 HP, with no bleeding. Every public order replays through an official midpoint save. The prior hour-294 helper remains unchanged and its earned native defense still passes. The complete original recovery remains unproved. |
+| [#377](https://github.com/fsodano/granaderos/pull/377) | Resolve the real paused capital journey with twelve serving soldiers, four existing bronze charges and ordinary commander withdrawal and return. Keep every actual casualty. | The earned blocked-journey control passes 1/1 in 175.803 seconds. All 553 static/config/shipping/fixture pins and two observed inputs remain unchanged. The native capital victory uses ten turns and 422 orders; seven new deaths remain permanent. It clears the real occupation and blockade and returns the commander at hour 1,454, second 3,196, with 33,668 pesos. The later coastal-route integration remains separate. |
+| [#378](https://github.com/fsodano/granaderos/pull/378) | Supply the actual critical northern-hospital patients after Córdoba's local linen is exhausted. Book uniquely paid immediate day medics, assign legal local squads and share their existing dressings through public inventory. | Both complete affected earned files pass 6/6 in 172.967 seconds. All 562 source/config/fixture/shipping pins and 344 consumed files remain unchanged. The exact hour-370 boundary uses 13,860 pesos and four local dressings over four care hours; the simultaneous Tucumán clinic uses four other dressings. All prior deaths and remaining wounds are retained, and every public order replays through an official midpoint save. This proves acute stabilization, not the newer whole hospital or complete original recovery. |
+| [#379](https://github.com/fsodano/granaderos/pull/379) | Use the actual healthy local arsenal cohort, pay enough currently available hires for twelve people, and allow ordinary rest to cover the real morale deficit. Keep all readiness and survival gates. | Four complete affected files pass 4/4 in 268.906 seconds. All 607 static/config/shipping/fixture pins and eight actual filesystem inputs remain unchanged. The new loose preparation uses four veterans and eight paid hires; both physicians carry eight finite dressings at the actual pending assault, hour 1,306, second 2,952, with 240,191 pesos. Three unchanged earned native arsenal controls still pass. The new loose native return and complete ending remain open. |
+| [#380](https://github.com/fsodano/granaderos/pull/380) | Carry ten known Córdoba dressings to the actual Tucumán clinic, pay two supplied guards, walk the selected physician and patients to reachable cover, and renew actual service before post-raid urgent care. | The complete new earned file passes 1/1 in 89.242 seconds, with all 2,299 source and input pins unchanged. The native hour-408 defense wins in seventeen turns and 342 orders. Eight new deaths remain permanent; original patients 121 and 122 survive. Three quoted renewals cost 186 pesos, and three finite dressings stabilize patient 108 to 16 HP at hour 412, second 47. The complete selected-doctor compatibility file passes 1/1; suite controls pass 6/6 after main integration, with complete coverage of 1,055 files. The full clinic, Salta, Yatasto and original opening remain open. |
+
+A separate complete loose arsenal-return attempt reaches the native battle,
+then fails the unchanged original-foundry-squad survival assertion. It fails
+0/1 in 132.061 seconds, with all 374 source and input pins unchanged. Its
+private log hash is
+`355394ab5175b055cf5060ba57a77cca30bacbeddd9b2874ca0dd96602cab346`.
+The passing preparation control does not replace that failed return or the
+existing complete fresh ending file.
+
+A separate whole-hospital diagnostic starts from the actual hour-368
+post-Tucumán input. It passes the corrected acute-source boundary, then
+loses the genuine enemy-group-3 counterattack at Tucumán at hour 528.
+The native result is retreat, with actual deaths 104 and 140. Its failed
+3/4 receipt remains private under `northern-hospital-finite-relief-candidate-v2`.
+No existing full recovery or hospital victory assertion was relaxed. This
+next boundary and the complete original recovery remain open.
 
 The PR #370 mountain receipt uses the actual post-Uspallata save. Ordinary
 orders form columns of six, six and four people at the east, north and south
@@ -123,6 +143,33 @@ Merge checks on `797d1e28` pass: runner self-tests 14/14, complete coverage of
 They do not replace the complete release gate. The latest complete ending and
 original recovery receipts are the failed `8fafc671` runs above. Earlier runs
 below retain their historical scope.
+
+## Current main regression checks
+
+The complete quick suite ran on `main` at `1c4017c0`. All 1,029 selected
+files ran out of 1,055 total files. It passed 7,513 of 7,515 tests, with two
+failures, no skips and no cancellations, in 1,298.872 seconds. The two
+failures are native battle outcomes:
+
+- `artillery-autonomy.test.mjs:129`: the paid local cohort's battle remains
+  active where victory is required. Its later save and re-entry assertions
+  are not reached.
+- `stock-cuyo-battery-defense.test.mjs`: the actual Córdoba defense remains
+  active after 81 turns and 107 orders, with real casualties. It stops before
+  the required victory, aid and original gun delivery.
+
+These failed controllers do not establish an engine defect. The quick run
+does not include the 26 declared extended files or replace the full release
+gate. Its local log hash is
+`e3bc4a9591c71a928038c4cab247960d5509f0841d4aea7cee3a6c4aca5b4196`.
+
+The production build on the same revision passes with
+`GRANADEROS_BASE_PATH=/granaderos`: 1,413 static files and 1,045 asset
+references are verified. Build `0.1.0 · 7cad60fa2240` opens on a fresh local
+browser origin, starts a new game with 3,200 pesos and no serving personnel,
+and offers Continue after reload. No browser console errors were captured.
+This startup and save smoke check does not prove combat, the ending or its
+saved continuation. The complete campaign and release checks remain open.
 
 ## Recorded checks and remaining limits
 
@@ -620,7 +667,7 @@ test run. The arsenal continuation wins Uspallata and completes full care,
 but its subsequent eight-person Los Patos force still loses. Entry movement
 and crew changes do not establish a battle victory.
 
-The latest complete ending file ran on frozen `711adfef`, before these merges.
+An earlier complete ending file ran on frozen `711adfef`, before these merges.
 Both unchanged cases failed: 0/2, no skips or cancellations, 1,368.573
 seconds. All 617 combined source/shipping pins and 229 observed filesystem
 inputs stayed unchanged. The loose seed-8 route reached the native Yatasto
