@@ -21,7 +21,7 @@ from family_surface_context import (
 
 FIELD = 'apparelSurface'
 PRIVATE_ENV = 'GRANADEROS_APPAREL_SURFACE_PRIVATE_ROOT'
-INSTALLER = 'build-apparel-surfaces.py'
+INSTALLER = 'apparel_png_replay.py'
 LAYER_PASSES = {
     'build-cloth-depth.py': {f'{preset}-lod{lod}.glb' for preset in ('granadero', 'worker') for lod in (0, 1, 2)},
     'build-family-cloth-depth.py': {
@@ -33,7 +33,8 @@ OWNED_PASSES = dict(NATIVE_BODIES, **LAYER_PASSES)
 
 
 def _installer(root):
-    return _module('apparel_surface_installer', root / 'tools/characters-3d' / INSTALLER)
+    portable = _module('apparel_png_replay', root / 'tools/characters-3d/apparel_png_replay.py')
+    return portable.load_installer(root)
 
 
 def _completed(manifest, assets):

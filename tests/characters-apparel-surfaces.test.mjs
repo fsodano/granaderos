@@ -140,7 +140,7 @@ with tempfile.TemporaryDirectory(prefix='granaderos-apparel-test-') as folder:
    if preset=='equipment':manifest['equipment']=previous
    else:manifest['appearances'][preset]['lods'][i]=previous
  mp.write_text(json.dumps(manifest));baseline_manifest=mp.read_bytes()
- command=['python3',str(target/'tools/characters-3d/build-apparel-surfaces.py'),'--root',str(target)]
+ command=['python3',str(target/'tools/characters-3d/apparel_png_replay.py'),'--root',str(target)]
  run=lambda extra=[]:subprocess.run(command+extra,capture_output=True,text=True)
  first=run();assert first.returncode==0,first.stderr;assert {p.name:digest(p.read_bytes())for p in out.glob('*.glb')}==expected
  files=lambda:{str(p.relative_to(out)):digest(p.read_bytes())for p in out.rglob('*')if p.is_file()}
@@ -154,7 +154,7 @@ with tempfile.TemporaryDirectory(prefix='granaderos-apparel-test-') as folder:
   for name,raw in originals.items():(co/name).write_bytes(raw)
   (co/'manifest.json').write_bytes(baseline_manifest);(co/uris[0]).unlink();(co/uris[-1]).write_bytes(b'collision')
   pins={str(p.relative_to(co)):digest(p.read_bytes())for p in co.rglob('*')if p.is_file()}
-  reject=subprocess.run(['python3',str(collision/'tools/characters-3d/build-apparel-surfaces.py'),'--root',str(collision)],capture_output=True,text=True)
+  reject=subprocess.run(['python3',str(collision/'tools/characters-3d/apparel_png_replay.py'),'--root',str(collision)],capture_output=True,text=True)
   assert reject.returncode!=0 and 'Content-addressed apparel surface collision' in reject.stderr
   assert pins=={str(p.relative_to(co)):digest(p.read_bytes())for p in co.rglob('*')if p.is_file()}
  source=target/'assets/source/characters-3d/authoring/apparel_surfaces.py';old=source.read_bytes();source.write_bytes(old+b'\n# changed recipe\n');reject=run();assert reject.returncode!=0 and 'Changed apparel surface recipe' in reject.stderr and files()==final;source.write_bytes(old)
