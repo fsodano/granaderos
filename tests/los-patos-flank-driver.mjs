@@ -1,0 +1,22 @@
+import {tucumanCombatOrder} from './tucuman-driver.mjs';
+import {actBattle,getReachable,teamCanSee,stanceCost} from '../game/tactical.js';
+import {sameSurface,spacePoint,spaceKey} from '../game/tactical-space.js';
+
+// A flanking column must follow the road around a cliff rather than require
+// every short bound to reduce straight-line distance to the sector center.
+// Keep normal fire, finite aid and reload orders before an ordinary paid bound.
+export function losPatosFlankOrder(battle,unit){
+ const normal=tucumanCombatOrder(battle,unit);
+ if(normal)return normal;
+ if(unit.hp<15||unit.routed||unit.unconscious||unit.knockedDown||unit.entangled||unit.departure||unit.fled||battle.phase==='interrupt')return null;
+ if(unit.stance!=='standing')return unit.ap>=stanceCost(unit,'standing')?{type:'stance',unitId:unit.id,stance:'standing'}:null;
+ const goal={x:Math.floor(battle.width*.65),y:Math.floor(battle.height*.5),tacticalLevel:0};
+ if(sameSurface(unit,goal)&&Math.hypot(unit.x-goal.x,unit.y-goal.y)<=2)return null;
+ const view={...battle,units:battle.units.filter(other=>other.side===unit.side||teamCanSee(battle,unit.side,other)),npcs:battle.npcs.filter(other=>teamCanSee(battle,unit.side,other))};
+ const route=getReachable({...view,mode:'exploration'},unit,{stopAt:point=>sameSurface(point,goal)&&Math.hypot(point.x-goal.x,point.y-goal.y)<=2})[0];
+ const reachable=new Map(getReachable(view,unit).map(point=>[spaceKey(point),point]));
+ const step=[...(route?.path??[])].reverse().map(point=>reachable.get(spaceKey(point))).find(point=>point&&point.cost>0&&point.cost<=Math.min(40,unit.ap-20));
+ if(!step)return null;
+ const action={type:'move',unitId:unit.id,...spacePoint(step)};
+ return actBattle(battle,action).lastError?null:action;
+}

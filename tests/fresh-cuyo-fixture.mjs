@@ -36,7 +36,7 @@ export function prepareFreshCuyoMountainArtillery(start,options={}){
 export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='created',coastalCheckpoint,openingCheckpoint,report=()=>{}}={}){
  const prefix=northernCheckpoint?{campaign:northernCheckpoint,notes:[]}:freshNorthernRoute({onCheckpoint,report,routeKind,coastalCheckpoint,openingCheckpoint});
  assert.equal(prefix.campaign.phase,3);assert.equal(prefix.campaign.missions.yatasto.completed,true);assert.equal(prefix.campaign.flags.northPact,true);
- let c=assembleCreatedCuyo(prefix.campaign,{report});const notes=[];let mountainBatteryIds=null;
+ let c=assembleCreatedCuyo(prefix.campaign,{report});const notes=[],losPatosFieldCount=16;let mountainBatteryIds=null;
  const checkpoint=(stage,extra={})=>{
   c=saved({campaign:c}).campaign;
   const record={stage,hour:c.hour,second:c.secondOfHour,funds:c.resources.treasury,phase:c.phase,squad:[...c.squad],deaths:deaths(c),engineerHp:c.operativeState[2].hp,commanderHp:c.operativeState[57].hp,...extra};
@@ -45,7 +45,7 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  const fight=sector=>{
   assert.ok(c.pendingBattle);assert.equal(c.pendingBattle.sector,sector);
   const initial=enterSector(c.pendingBattle,c.sectorStates[sector]);
-  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery(mountainBatteryIds?{gunTypes:['field8','swivel']}:{}):{controller:sector==='mendoza'?mendozaBatteryController(initial):sector==='uspallata'&&mountainBatteryIds?stagedBatteryController():coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
+  const result=fightNorthernSector(c,sector,{...(sector==='los_patos'?createdLosPatosBattery({fieldCount:losPatosFieldCount,...(mountainBatteryIds?{gunTypes:['field8','swivel']}:{})}):{controller:sector==='mendoza'?mendozaBatteryController(initial):sector==='uspallata'&&mountainBatteryIds?stagedBatteryController():coastalBatteryController(initial,{sharedArtillerySight:true})}),report});
   c=result.campaign;assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.completed,false);
   checkpoint(sector,{status:result.summary.status,actions:result.summary.actions,turns:result.summary.turns});
  };
@@ -118,7 +118,7 @@ export function freshCuyoRoute({onCheckpoint,northernCheckpoint,routeKind='creat
  c=prepareFreshUspallataAssault(c,{batteryIds:mountainBatteryIds,report});fight('uspallata');
  c=recoverFreshUspallata(c,{batteryIds:mountainBatteryIds,report});
  const losPatosInputCapture=recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-input',routeKind});
- c=prepareFreshLosPatosAssault(c,{batteryIds:mountainBatteryIds,report});
+ c=prepareFreshLosPatosAssault(c,{batteryIds:mountainBatteryIds,fieldCount:losPatosFieldCount,report});
  recordRoutePreparationEvidence({campaign:c,stage:'los-patos-preparation-output',routeKind,inputCapture:losPatosInputCapture});
  fight('los_patos');
  assert.ok(!c.recruited.includes(57),'the commander joins through the subsequent physical meeting');
