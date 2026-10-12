@@ -279,8 +279,11 @@ finishes all 911 selected files: 7,043/7,061 tests pass, eighteen fail, none
 are skipped or cancelled, in 5,133.924 seconds. Python dependencies load;
 the remaining failures concern the frozen apparel surface replay in eight
 asset files. A separate diagnostic reproduces the same refusal using an
-alternate PNG encoding with identical decoded pixels. Portable replay is
-under review; no current complete core pass is claimed.
+alternate PNG encoding with identical decoded pixels. [PR #406](https://github.com/fsodano/granaderos/pull/406)
+merges portable replay without changing accepted models, textures or frozen
+recipes. The nine affected local files pass 84/84; the final source guard
+separately passes all four portable controls under both encoder conditions.
+The merged Linux core job is pending; no current complete core pass is claimed.
 
 The campaign quick job in [Actions run 38306852089](https://github.com/fsodano/granaderos/actions/runs/38306852089)
 also passes on main `c6881d99`: all 123 files and 420 tests pass, without
