@@ -144,6 +144,33 @@ They do not replace the complete release gate. The latest complete ending and
 original recovery receipts are the failed `8fafc671` runs above. Earlier runs
 below retain their historical scope.
 
+## Current main regression checks
+
+The complete quick suite ran on `main` at `1c4017c0`. All 1,029 selected
+files ran out of 1,055 total files. It passed 7,513 of 7,515 tests, with two
+failures, no skips and no cancellations, in 1,298.872 seconds. The two
+failures are native battle outcomes:
+
+- `artillery-autonomy.test.mjs:129`: the paid local cohort's battle remains
+  active where victory is required. Its later save and re-entry assertions
+  are not reached.
+- `stock-cuyo-battery-defense.test.mjs`: the actual Córdoba defense remains
+  active after 81 turns and 107 orders, with real casualties. It stops before
+  the required victory, aid and original gun delivery.
+
+These failed controllers do not establish an engine defect. The quick run
+does not include the 26 declared extended files or replace the full release
+gate. Its local log hash is
+`e3bc4a9591c71a928038c4cab247960d5509f0841d4aea7cee3a6c4aca5b4196`.
+
+The production build on the same revision passes with
+`GRANADEROS_BASE_PATH=/granaderos`: 1,413 static files and 1,045 asset
+references are verified. Build `0.1.0 · 7cad60fa2240` opens on a fresh local
+browser origin, starts a new game with 3,200 pesos and no serving personnel,
+and offers Continue after reload. No browser console errors were captured.
+This startup and save smoke check does not prove combat, the ending or its
+saved continuation. The complete campaign and release checks remain open.
+
 ## Recorded checks and remaining limits
 
 The first unfiltered baseline completed on frozen `main` at
@@ -640,7 +667,7 @@ test run. The arsenal continuation wins Uspallata and completes full care,
 but its subsequent eight-person Los Patos force still loses. Entry movement
 and crew changes do not establish a battle victory.
 
-The latest complete ending file ran on frozen `711adfef`, before these merges.
+An earlier complete ending file ran on frozen `711adfef`, before these merges.
 Both unchanged cases failed: 0/2, no skips or cancellations, 1,368.573
 seconds. All 617 combined source/shipping pins and 229 observed filesystem
 inputs stayed unchanged. The loose seed-8 route reached the native Yatasto
