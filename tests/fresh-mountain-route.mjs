@@ -1,8 +1,10 @@
 import {bankRouteIncome} from './route-income-banking.mjs';
 import {supplyRouteDressings} from './route-dressings.mjs';
 import {supplyKnownRouteDressings} from './route-known-medical-courier.mjs';
+import {collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
 import {prepareRouteBattery} from './route-battery.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
+import {transferRouteAmmunition} from './route-ammunition-transfer.mjs';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import assert from 'node:assert/strict';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -24,6 +26,19 @@ import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {artilleryProfile} from '../game/artillery-definitions.js';
 
 const capableMountainActor=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.asleep&&!r.unconscious&&!r.routed&&!r.surrendered&&r.energy>10;};
+
+function prepareMountainDressings(start,recipientId,target,{reserves={},report}={}){
+ let c=start;
+ const stock=()=>c.operativeState[recipientId].medkits+
+  sectorInventoryModel(c,'mendoza',rosterFor(c),recipientId).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0)+
+  c.recruited.filter(id=>id!==recipientId&&c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='mendoza'&&!sectorInventoryModel(c,'mendoza',rosterFor(c),id).reason).reduce((sum,id)=>sum+Math.max(0,c.operativeState[id].medkits-(reserves[id]??0)),0);
+ for(let deliveries=0;stock()<target;deliveries++){
+  assert.ok(deliveries<target,'Finite medical deliveries must make progress toward the existing reserve.');
+  const before=stock(),delivery=collectRouteMedicalSupplies(c,recipientId,target-before,{mode:c.routes.posta?'posta':'march',report});c=delivery.campaign;
+  assert.ok(delivery.collected>0&&stock()>before,'An ordinary courier must debit and deliver actual finite stock.');
+ }
+ return c;
+}
 
 const ownedMountainGuns=c=>[...Object.values(c.artilleryDepots??{}).flat(),...Object.values(c.sectorStates??{}).flatMap(scene=>scene.artillery??[])].filter(gun=>gun.side==='player');
 function mountainBatteryRecords(c,batteryIds){
@@ -111,6 +126,15 @@ export function supplyFreshMountainAmmunition(start,ids,{target=12,report=()=>{}
   }
   // Allocate each actor in order so several rifles cannot claim the same last
   // loose rounds. The original finite helper retains its shortage refusal.
+  const family=ammoTypeFor({...carried(),activeSlot:'primary'});
+  let shortage=family?Math.max(0,target-carried().loaded-ammoCount(carried(),family)-knownRounds(family)):0;
+  if(shortage)for(const donorId of c.recruited.filter(donorId=>!ids.includes(donorId))){
+   const record=c.operativeState[donorId];
+   if(!record?.alive||record.captured||record.location!==c.location||sectorInventoryModel(c,c.location,rosterFor(c),donorId).reason)continue;
+   const reserve=ammoCount(carriedAmmunition(rosterFor(c).find(op=>op.id===donorId),record),family),count=Math.min(shortage,Math.max(0,reserve-2));
+   if(count){c=transferRouteAmmunition(c,{recipientId:id,donorIds:[donorId],family,count,report}).campaign;shortage-=count;}
+   if(!shortage)break;
+  }
   c=supplyRouteAmmunition(c,[id],{target,report}).campaign;
  }
  return c;
@@ -234,7 +258,7 @@ export function prepareFreshUspallataAssault(start,{guns=2,batteryIds=null,repor
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});
  const order=retained.order;
 const leader=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&capableMountainActor(c,op.id)&&op.leadership>=60)
- .sort((a,b)=>Number(c.operativeState[b.id].location==='mendoza')-Number(c.operativeState[a.id].location==='mendoza')||b.leadership-a.leadership||a.id-b.id)[0];
+ .sort((a,b)=>Number(c.operativeState[b.id].morale>=50)-Number(c.operativeState[a.id].morale>=50)||Number(c.operativeState[b.id].location==='mendoza')-Number(c.operativeState[a.id].location==='mendoza')||b.leadership-a.leadership||a.id-b.id)[0];
 assert.ok(leader,'the actual mountain column needs a serving capable leader');
 const leaderSquad=c.squads.find(q=>q.members.includes(leader.id)&&!q.journey);
 if(leaderSquad)order({type:'selectSquad',id:leaderSquad.id});
@@ -252,7 +276,7 @@ if(batteryIds)c=prepareNativeMountainReserve(c,{report});
 for(let i=0;i<24&&(c.hour%24<6||c.hour%24>10);i++)order({type:'wait',hours:1});
 // Contracts can expire while the treasury recovers. Select a physician who
 // is still in service at departure, rather than keeping a stale roster entry.
-const physician=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&capableMountainActor(c,op.id)&&c.operativeState[op.id].location==='mendoza'&&op.id!==leader.id&&op.medical>=20).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];assert.ok(physician,'the mountain column needs a living local medic');
+const physician=rosterFor(c).filter(op=>c.recruited.includes(op.id)&&capableMountainActor(c,op.id)&&c.operativeState[op.id].location==='mendoza'&&op.id!==leader.id&&op.medical>=20).sort((a,b)=>Number(c.operativeState[b.id].morale>=50)-Number(c.operativeState[a.id].morale>=50)||b.medical-a.medical||a.id-b.id)[0];assert.ok(physician,'the mountain column needs a living local medic');
 const column=affordableMountainColumn(c,6,{exclude:[leader.id,physician.id]}),recruits=column.ids;
 assert.equal(recruits.length,6,'six living and ready replacements must accept paid contracts');
 report({event:'mountainPaidColumn',sector:'uspallata',ids:recruits,price:column.price,hour:c.hour,treasury:c.resources.treasury});
@@ -264,19 +288,24 @@ assert.ok(recruits.every(id=>c.recruited.includes(id)),'paid replacements must a
 c=collectReturnedMountainKit(c,recruits,{report});
 for(const operativeId of rearm)c=recoverRoutePrimary(c,operativeId,{preferredWeapon:1801,replace:true,report});
 order({type:'squad',ids:[leader.id,physician.id,...recruits.slice(0,4)]});const main=c.activeSquadId;
-order({type:'createSquad',name:'Apoyo de la cordillera',ids:recruits.slice(4),sector:'mendoza'});const support=c.activeSquadId;
+order({type:'createSquad',name:'Apoyo de la cordillera',ids:recruits.slice(4),sector:'mendoza'});const support=c.activeSquadId,columns=[main,support];
+const field=[leader.id,physician.id,...recruits];
 // Redistribute actual remaining field dressings and known local cartridges.
+c=prepareMountainDressings(c,physician.id,15,{report});
 c=supplyKnownRouteDressings(c,physician.id,15,{report});
 // Finish real reloads before attaching the recovered reserve battery.
-c=supplyFreshMountainAmmunition(c,[leader.id,physician.id,...recruits],{target:12,report});
+c=supplyFreshMountainAmmunition(c,field,{target:12,report});
+for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
+for(let h=0;h<48&&field.some(id=>{const r=c.operativeState[id];return r.energy<100||r.fatigue||r.asleep;});h++)order({type:'wait',hours:1});
+assert.ok(field.every(id=>{const r=c.operativeState[id];return r.energy===100&&!r.fatigue&&!r.asleep;}),'Actual field reserves must finish ordinary rest before departure.');
 order({type:'configureArtillery',types:[]});
-for(const id of [main,support]){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
+for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});c=finishReloadsBeforeMarch(c);}
 order({type:'selectSquad',id:main});if(batteryIds){assert.equal(batteryIds.length,guns);assert.ok(mountainBatteryRecords(c,batteryIds).every(gun=>gun.loaded||gun.ammo>0),'Explicit Uspallata support must carry actual remaining rounds.');}
 const battery=prepareMountainBattery(c,Array.from({length:guns},()=> 'bronze4'),{batteryIds,destination:'mendoza',keepServing:retained.keepIds(),report});c=battery.campaign;order({type:'configureArtillery',types:battery.selections});
-for(const id of [main,support]){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});order({type:'attack',sector:'uspallata',queue:true,mode:'posta'});}
-for(let i=0;i<16&&![main,support].every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++)order({type:'wait',hours:1});
+for(const id of columns){order({type:'selectSquad',id});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});order({type:'attack',sector:'uspallata',queue:true,mode:'posta'});}
+for(let i=0;i<16&&!columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');i++)order({type:'wait',hours:1});
 order({type:'beginAssault',sector:'uspallata'});
- assert.equal(c.pendingBattle.squad.length,8);return c;
+ assert.deepEqual(c.pendingBattle.squad.map(unit=>unit.id).sort((a,b)=>a-b),field.slice().sort((a,b)=>a-b));return c;
 }
 
 // Recover finite field dressings and give real first aid before the return.
@@ -289,13 +318,16 @@ const survivors=c.recruited.filter(id=>{const r=c.operativeState[id];return r.al
 assert.ok(survivors.length>0,'the actual mountain survivors need recovery');
 const doctors=rosterFor(c).filter(o=>survivors.includes(o.id)&&c.operativeState[o.id].hp>=15&&!c.operativeState[o.id].bleeding&&o.medical>=20).sort((a,b)=>b.medical-a.medical).map(o=>o.id);
 assert.ok(doctors.length);
-const remaining=[...survivors],groups=[];
+const remaining=[...survivors],groups=[],localSlots=c.squads.filter(q=>q.location==='uspallata'&&!q.journey).map(q=>q.id);
 while(remaining.length){
  const doctor=doctors.find(id=>remaining.includes(id));assert.notEqual(doctor,undefined,'each physical recovery squad needs a conscious physician');
  const reservedDoctors=doctors.filter(id=>id!==doctor&&remaining.includes(id)).slice(0,Math.ceil(remaining.length/6)-1);
  const members=[doctor,...remaining.filter(id=>id!==doctor&&!reservedDoctors.includes(id))].slice(0,6);
  for(const id of members)remaining.splice(remaining.indexOf(id),1);
- order({type:'createSquad',name:'Socorro de la cordillera',ids:members,sector:'uspallata'});groups.push({id:c.activeSquadId,members});
+ const slot=localSlots.find(id=>!groups.some(group=>group.id===id));
+ if(slot){order({type:'selectSquad',id:slot});order({type:'squad',ids:members});}
+ else order({type:'createSquad',name:'Socorro de la cordillera',ids:members,sector:'uspallata'});
+ groups.push({id:c.activeSquadId,members});
 }
 for(const id of doctors)for(const row of sectorInventoryModel(c,'uspallata',rosterFor(c),id).entries.filter(r=>r.reachable&&JSON.parse(r.expected).item==='medkits')){const count=Math.min(row.count,10-c.operativeState[id].medkits);if(count>0)order({type:'sectorInventory',sector:'uspallata',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});}
 for(const group of [...groups].sort((a,b)=>Number(b.members.some(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0))-Number(a.members.some(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding>0)))){
@@ -361,11 +393,11 @@ export function prepareFreshLosPatosAssault(start,{batteryIds=null,report=()=>{}
  const commander=rosterFor(c).filter(op=>readyLocal(op)&&op.leadership>=80&&(permanent.some(p=>p.id===op.id)||op.id>=100&&op.id<1000&&(c.recruited.includes(op.id)&&c.operativeState[op.id].location==='mendoza'||contractQuote(c,op,'day').available))).sort((a,b)=>Number(permanent.some(op=>op.id===b.id))-Number(permanent.some(op=>op.id===a.id))||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price||b.marksmanship-a.marksmanship)[0];
  assert.ok(commander,'the second column needs a real ready leader');
  const doctors=rosterFor(c).filter(op=>op.id!==commander.id&&op.medical>=60&&
-  (c.recruited.includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&capableMountainActor(c,op.id)||
+  (c.recruited.includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&capableMountainActor(c,op.id)&&readyLocal(op)||
    !c.recruited.includes(op.id)&&op.id>=100&&op.id<1000&&readyLocal(op)&&contractQuote(c,op,'day').available))
   .sort((a,b)=>Number(c.recruited.includes(b.id))-Number(c.recruited.includes(a.id))||b.medical-a.medical||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price||a.id-b.id).slice(0,2);
  assert.equal(doctors.length,2,'two actual capable medical>=60 doctors must serve the issued column');
- const base=[...new Set([commander.id,...doctors.map(op=>op.id),...permanent.filter(op=>capableMountainActor(c,op.id)).map(op=>op.id)])].slice(0,8);
+ const base=[...new Set([commander.id,...doctors.map(op=>op.id),...permanent.filter(op=>capableMountainActor(c,op.id)&&readyLocal(op)).map(op=>op.id)])].slice(0,8);
  const rolePrice=base.reduce((sum,id)=>sum+(c.recruited.includes(id)?0:contractQuote(c,rosterFor(c).find(op=>op.id===id),'day').price),0);
  const column=affordableMountainColumn(c,8-base.length,{reserve:2000+2*rolePrice,paidDays:2,exclude:base}),recruits=column.ids;
  assert.equal(recruits.length,8-base.length,'available survivors or replacements accept actual contracts');
@@ -386,7 +418,9 @@ assert.ok(hiringIds.every(id=>c.recruited.includes(id)),'paid replacements must 
  const donor=field.find(id=>!doctors.some(op=>op.id===id)&&capableMountainActor(c,id));
  assert.notEqual(donor,undefined,'a distinct capable issued donor must carry the actual doctor reserve');
  const deficits=doctors.map(op=>({id:op.id,medical:op.medical,carried:c.operativeState[op.id].medkits,needed:Math.max(0,5-c.operativeState[op.id].medkits)}));
- c=supplyRouteDressings(c,donor,deficits.reduce((sum,row)=>sum+row.needed,0),{reserves:Object.fromEntries(doctors.map(op=>[op.id,c.operativeState[op.id].medkits])),report});
+ const medicalReserves=Object.fromEntries(doctors.map(op=>[op.id,c.operativeState[op.id].medkits])),neededReserve=deficits.reduce((sum,row)=>sum+row.needed,0);
+ c=prepareMountainDressings(c,donor,neededReserve,{reserves:medicalReserves,report});
+ c=supplyRouteDressings(c,donor,neededReserve,{reserves:medicalReserves,report});
  report({event:'mountainClinicalRoles',sector:'los_patos',commanderId:commander.id,donorId:donor,donorKits:c.operativeState[donor].medkits,doctors:deficits,field:[...field],campaign:c});
  c=supplyFreshMountainAmmunition(c,field,{target:12,report});
  order({type:'configureArtillery',types:[]});

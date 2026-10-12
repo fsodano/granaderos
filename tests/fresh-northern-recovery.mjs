@@ -3,6 +3,7 @@ import {restoreNorthernRoad,returnNorthernOfficers,prepareRestoredSalta} from '.
 import {operativeLocation,operativeInTransit} from '../game/squads.js';
 import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
+import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {fightNorthernSector,northernCombatOrder,northernClinicDefenseOrder} from './northern-route.mjs';
@@ -406,7 +407,9 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
 function settleNorthernReturnRecapture(start,report){
  const request=start.pendingBattle,previous=start.sectorStates.cordoba;
  assert.equal(request.sector,'cordoba');
- const result=fightOpeningBattle(request,previous,{controller:coastalBatteryController(enterSector(request,previous),{sharedArtillerySight:true})});
+ // The returning infantry has two edge approaches. Use the existing native
+ // infantry policy rather than advancing every soldier with the mobile gun.
+ const result=fightOpeningBattle(request,previous,{controller:northernCombatOrder});
  const summary={sector:'cordoba',preparationSeconds:0,startSeconds:result.battle.startSeconds,elapsedSeconds:result.battle.elapsedSeconds,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
  report({event:'battleFinished',...summary});assert.equal(result.battle.status,'victory',JSON.stringify(summary));
  const replay=withSave=>{
@@ -428,16 +431,43 @@ function settleNorthernReturnRecapture(start,report){
  return c;
 }
 
+// The relief can return with seven living soldiers after the two real Buenos
+// Aires conversations. Form ordinary columns; no survivor is left behind to
+// satisfy the public six-member squad limit.
+export function prepareNorthernReunionColumns(start,{report=()=>{}}={}){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const field=[...new Set([10,4,...c.squad])].filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id]?.captured);
+ assert.ok(field.length,'The reunion needs its actual living field soldiers.');
+ const actions=[],groups=[],at=c.location;
+ const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+c.lastError);actions.push(structuredClone(action));};
+ order({type:'squad',ids:field.slice(0,6)});groups.push(c.activeSquadId);
+ for(let offset=6;offset<field.length;offset+=6){
+  order({type:'createSquad',ids:field.slice(offset,offset+6),sector:at,name:'Apoyo del regreso'});groups.push(c.activeSquadId);
+ }
+ order({type:'selectSquad',id:groups[0]});
+ const columns=groups.map(id=>({id,members:[...c.squads.find(q=>q.id===id).members]}));
+ assert.deepEqual(columns.flatMap(q=>q.members),field);
+ report({event:'northernReunionColumns',field:[...field],columns,actions,campaign:structuredClone(c)});
+ return {campaign:c,field,groups};
+}
+
 export function reuniteFreshNorthernSquad(start,{report=()=>{}}={}){
  let c=decodeSave(encodeSave(start)).campaign;
  const lostCordoba=c.sectors.cordoba.owner==='royalist';
  const retainFor=hours=>{
-  for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<=c.hour+hours){const contract=c.contracts[id],next=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(next.lastError,null,next.lastError);c=next;}
+  const until=(c.hour+hours)*3600+(c.secondOfHour??0);
+  for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured))while(contractExpiresSeconds(c.contracts[id])!==null&&contractExpiresSeconds(c.contracts[id])<=until){
+   const contract=c.contracts[id],quote=contractRenewalQuote(c,rosterFor(c).find(op=>op.id===id),'day'),cash=c.resources.treasury,action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0};
+   assert.equal(quote.available,true,quote.reason);c=dispatchCampaign(c,action);assert.equal(c.lastError,null,c.lastError);assert.equal(c.resources.treasury,cash-quote.price);
+   assert.equal(contractExpiresSeconds(c.contracts[id]),quote.expiresAt*3600+(quote.expiresSecond??0));
+   report({event:'northernReunionRenewal',id,action,quote:structuredClone(quote),cost:cash-c.resources.treasury,beforeExpiry:contractExpiresSeconds(contract),afterExpiry:contractExpiresSeconds(c.contracts[id]),hour:c.hour,second:c.secondOfHour??0});
+  }
  };
  const order=a=>{
   const elapsed=a.type==='wait'?a.hours:a.type==='travel'?48:0;
   if(elapsed)retainFor(elapsed);
-  c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
+  const before=c;c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
+  report({event:'northernReunionOrder',action:structuredClone(a),cost:before.resources.treasury-c.resources.treasury,elapsedSeconds:(c.hour-before.hour)*3600+(c.secondOfHour??0)-(before.secondOfHour??0),hour:c.hour,second:c.secondOfHour??0});
   if(lostCordoba)assert.equal(c.pendingEncounter,null,'the real recapture preparation must stop for an unrelated encounter');
   while(elapsed&&c.pendingEncounter){
    const returning=c.activeSquadId,encounter=c.pendingEncounter;
@@ -447,8 +477,13 @@ export function reuniteFreshNorthernSquad(start,{report=()=>{}}={}){
    order({type:'selectSquad',id:returning});
   }
  };
-const field=[...new Set([10,4,...c.squad])].filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id]?.captured);
-order({type:'squad',ids:field});
+const formation=prepareNorthernReunionColumns(c,{report});c=formation.campaign;
+const {field,groups:southernColumns}=formation,primaryField=[...c.squad];
+const reloadColumns=()=>{
+ const selected=c.activeSquadId;
+ for(const id of southernColumns){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});}
+ order({type:'selectSquad',id:selected});
+};
 if(lostCordoba){
  const occupations=c.enemyGroups.filter(group=>group.target==='cordoba'&&group.status==='stationed').map(group=>group.id);
  assert.ok(occupations.length,'the return must identify the actual occupying force');
@@ -457,19 +492,30 @@ if(lostCordoba){
  for(let h=0;h<30&&field.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++)order({type:'wait',hours:1});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
  retainFor(48);report({event:'northernReturnRested',campaign:structuredClone(c)});
- c=supplyRouteAmmunition(c,field,{target:10,report}).campaign;c=finishReloadsBeforeMarch(c,{report});
+ for(const id of field)if(c.operativeState[id].weaponDropped)c=recoverRoutePrimary(c,id,{report});
+ c=supplyRouteAmmunition(c,field,{target:10,report}).campaign;reloadColumns();
  const pool=[...Object.entries(c.artilleryDepots??{}).flatMap(([at,guns])=>guns.map(gun=>({at,source:'depot',gun}))),...Object.entries(c.sectorStates).flatMap(([at,scene])=>(scene.artillery??[]).map(gun=>({at,source:'field',gun})))].filter(row=>c.sectors[row.at]?.owner==='patriot'&&row.gun.side==='player');
- const piece=pool.filter(row=>(row.gun.loaded||row.gun.ammo>0)&&artilleryProfile(c,row.gun).crew<=field.length).sort((a,b)=>Number(b.at===c.location)-Number(a.at===c.location)||Number(b.source==='depot')-Number(a.source==='depot')||b.gun.ammo+Number(b.gun.loaded)-a.gun.ammo-Number(a.gun.loaded)||a.gun.id.localeCompare(b.gun.id))[0];
+ const piece=pool.filter(row=>(row.gun.loaded||row.gun.ammo>0)&&artilleryProfile(c,row.gun).crew<=primaryField.length).sort((a,b)=>Number(b.at===c.location)-Number(a.at===c.location)||Number(b.source==='depot')-Number(a.source==='depot')||b.gun.ammo+Number(b.gun.loaded)-a.gun.ammo-Number(a.gun.loaded)||a.gun.id.localeCompare(b.gun.id))[0];
  assert.ok(piece,'the recapture needs an actual controlled cannon and enough living crew');
- const battery=prepareRouteBattery(c,[piece.gun.type],{destination:'san_nicolas',excludeIds:pool.filter(row=>row.gun.id!==piece.gun.id).map(row=>row.gun.id),keepServing:guard,report});c=battery.campaign;
- assert.equal(c.location,'san_nicolas');assert.deepEqual(c.squad,field);
+ const keepServing=[...new Set([...guard,...field])];
+ const battery=prepareRouteBattery(c,[piece.gun.type],{destination:'san_nicolas',excludeIds:pool.filter(row=>row.gun.id!==piece.gun.id).map(row=>row.gun.id),keepServing,report});c=battery.campaign;
+ assert.equal(c.location,'san_nicolas');assert.deepEqual(c.squad,primaryField);
  const southern=c.activeSquadId;
+ // The support column has its own ordinary journey, sleep and paid terms.
+ // An empty battery request moves people without acquiring another gun.
+ for(const id of southernColumns.slice(1)){
+  order({type:'selectSquad',id});c=prepareRouteBattery(c,[],{destination:'san_nicolas',keepServing,report}).campaign;
+  assert.equal(c.location,'san_nicolas');
+  report({event:'northernReunionColumnArrived',id,members:[...c.squad],campaign:structuredClone(c)});
+ }
+ order({type:'selectSquad',id:southern});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let h=0;h<48&&field.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);h++)order({type:'wait',hours:1});
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
- c=finishReloadsBeforeMarch(c,{report});const northern=[];
+ reloadColumns();const northern=[];
  for(let offset=0;offset<guard.length;offset+=6){
-  order({type:'selectSquad',id:c.squads.find(q=>q.members.includes(guard[offset])).id});
+  // A living local guard may be unassigned after the earlier native defense.
+  // Creating its real local squad does not require an existing squad first.
   order({type:'createSquad',ids:guard.slice(offset,offset+6),sector:'tucuman',name:'Guardia del camino'});northern.push(c.activeSquadId);
   for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
   c=finishReloadsBeforeMarch(c,{report});
@@ -477,7 +523,7 @@ if(lostCordoba){
  // A depot choice belongs to its physical origin, even when another squad is
  // currently selected. Both real approaches join the same assault afterward.
  order({type:'selectSquad',id:southern});order({type:'configureArtillery',types:battery.selections});retainFor(36);
- const groups=[southern,...northern];for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true});}
+ const groups=[...southernColumns,...northern];for(const id of groups){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true});}
  for(let h=0;h<36&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');h++)order({type:'wait',hours:1});
  assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'),'both actual recapture approaches must finish');order({type:'beginAssault',sector:'cordoba'});
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),[...field,...guard].sort((a,b)=>a-b));
@@ -493,6 +539,8 @@ if(lostCordoba){
  assert.equal(c.pendingEncounter,null);for(const [id,r]of Object.entries(start.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);report({event:'northernReturnReunited',campaign:structuredClone(c)});return c;
 }
+for(const id of southernColumns){
+order({type:'selectSquad',id});
 for(let leg=0;leg<6&&c.location!=='cordoba';leg++){
  for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
  for(let i=0;i<30&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});
@@ -500,7 +548,9 @@ for(let leg=0;leg<6&&c.location!=='cordoba';leg++){
  order({type:'travel',sector:'cordoba'});
  assert.equal(c.pendingEncounter,null);
 }
-assert.equal(c.location,'cordoba');c=meetRecruits(c,['quiroga','paz']);
+assert.equal(c.location,'cordoba');
+}
+order({type:'selectSquad',id:southernColumns[0]});c=meetRecruits(c,['quiroga','paz']);
 return restoreNorthernRoad(c,{report});
 }
 

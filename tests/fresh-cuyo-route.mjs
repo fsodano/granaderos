@@ -26,6 +26,8 @@ import {itemUsePreview} from '../game/tactical.js';
 import {fightNorthernSector} from './northern-route.mjs';
 import {coastalBatteryController} from './coastal-command-driver.mjs';
 import {order as publicOrder,visit,tactical,leave,saved} from './local-contract-fixture.mjs';
+import {recaptureFoundryConvoy} from './foundry-convoy-recapture.mjs';
+import {recoverNorthernLocalPatients} from './fresh-northern-fixture.mjs';
 
 export const freshRouteServingIds=s=>s.recruited.filter(id=>s.operativeState[id]?.alive&&!s.operativeState[id].captured);
 const routeClock=s=>s.hour*3600+(s.secondOfHour??0);
@@ -321,6 +323,9 @@ export function recoverDelayedFoundryConvoy(start,{report=()=>{}}={}){
  const transfer=start.artilleryTransfers.find(t=>t.gun.type==='bronze4'&&artilleryTransferDelayCode(start,t)==='route_cut');
  if(!transfer)return start;
  assert.equal(transfer.from,'salta');assert.equal(transfer.to,'cordoba');
+ if(transfer.path.filter(id=>start.sectors[id].owner!=='patriot').length>1){
+  return recaptureFoundryConvoy(start,{transferId:transfer.id,createOrders:createFreshRouteOrders,recoverPatients:recoverNorthernLocalPatients,report}).campaign;
+ }
  assert.deepEqual(transfer.path.filter(id=>start.sectors[id].owner!=='patriot'),['salta']);
  const original=structuredClone(start),origin=start.activeSquadId,priorDeaths=Object.entries(start.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
  let c=saved({campaign:start}).campaign;

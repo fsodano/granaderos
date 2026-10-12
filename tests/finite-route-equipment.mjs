@@ -13,6 +13,7 @@ import {transportPath} from '../game/logistics.js';
 import {contractExpiresSeconds} from '../game/contracts.js';
 import {completeTestTravel} from './campaign-test-helpers.mjs';
 import {workAssignmentReason} from '../game/assignments.js';
+import {previewStrategicRoute} from '../game/strategic-route.js';
 import {cellTravelPlan} from '../game/world-cells.js';
 
 // Public collection at the actual person's location. Temporarily return a
@@ -90,7 +91,7 @@ export function repairRouteFirearms(state,ids,{maxHours=48}={}){
 // When a clinic has exhausted its actual local stock, a paid doctor can carry
 // dressings from another controlled cache. Patients stay in their real clinic;
 // the journey, rest, contract extensions and source debit are ordinary orders.
-export function collectRouteMedicalSupplies(start,operativeId,requested,{report=()=>{},resolveEncounter}={}){
+export function collectRouteMedicalSupplies(start,operativeId,requested,{report=()=>{},resolveEncounter,mode='march'}={}){
  try{return collectRouteItems(start,operativeId,{item:'medkits'},requested);}
  catch(error){if(!error.message.startsWith('finite local equipment or carrying room is exhausted:'))throw error;}
  let s=start;const clinic=operativeLocation(s,operativeId),previous=s.activeSquadId,home=s.squads.find(q=>q.members.includes(operativeId)&&!q.journey),assignment=s.operativeState[operativeId].assignment;
@@ -102,19 +103,25 @@ export function collectRouteMedicalSupplies(start,operativeId,requested,{report=
   return {at,available,path:transportPath(s,clinic,at)};
  }).filter(source=>source.available>0).sort((a,b)=>b.available-a.available||a.path.length-b.path.length);
  const source=sources[0];assert.ok(source,'no controlled finite medical source remains for an actual courier');
- const outward=cellTravelPlan({...s,location:clinic},source.at),returning=cellTravelPlan({...s,location:source.at},clinic);
- assert.equal(outward.reason,null);assert.equal(returning.reason,null);
+ if(home)s=order(s,{type:'selectSquad',id:home.id});s=order(s,{type:'assignCare',id:operativeId,assignment:'active'});
+ if(!home||home.members.length>1)s=order(s,{type:'createSquad',ids:[operativeId],name:'Vendas recuperadas',sector:clinic});
+ // Walking couriers retain the original budget before completeTestTravel
+ // performs ordinary sleep recovery. Public previews correctly reject sleep.
+ // Explicit posta trips use the actual named-town route and its travel price.
+ const courierId=s.activeSquadId,outward=mode==='march'?cellTravelPlan({...s,location:clinic},source.at):previewStrategicRoute(s,courierId,source.at,mode);
+ const returnPreview={...s,squads:s.squads.map(q=>q.id===courierId?{...q,location:source.at}:q)};
+ const returning=mode==='march'?cellTravelPlan({...s,location:source.at},clinic):previewStrategicRoute(returnPreview,courierId,clinic,mode);
+ if(mode==='march'){assert.equal(outward.reason,null);assert.equal(returning.reason,null);}
+ else{assert.equal(outward.valid,true,outward.reason);assert.equal(returning.valid,true,returning.reason);}
  const horizon=(outward.hours+returning.hours+24)*3600,now=s.hour*3600+(s.secondOfHour??0);
  for(const id of s.recruited.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured)){
   let contract=s.contracts[id];while(contractExpiresSeconds(contract)!==null&&contractExpiresSeconds(contract)<=now+horizon){
    const cash=s.resources.treasury;s=order(s,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0});report({event:'medicalCourierRenewal',id,cost:cash-s.resources.treasury,hour:s.hour});contract=s.contracts[id];
   }
  }
- if(home)s=order(s,{type:'selectSquad',id:home.id});s=order(s,{type:'assignCare',id:operativeId,assignment:'active'});
- if(!home||home.members.length>1)s=order(s,{type:'createSquad',ids:[operativeId],name:'Vendas recuperadas',sector:clinic});
  const travel=at=>{
   for(let leg=0;leg<32;leg++){
-   s=completeTestTravel(s,{sector:at});
+   s=completeTestTravel(s,{sector:at,mode});
    if(s.pendingEncounter){
     assert.ok(typeof resolveEncounter==='function','resolve the actual medical courier encounter before continuing care');
     report({event:'medicalCourierEncounter',operativeId,clinic,destination:at,encounter:structuredClone(s.pendingEncounter),hour:s.hour,secondOfHour:s.secondOfHour??0});
@@ -132,6 +139,6 @@ export function collectRouteMedicalSupplies(start,operativeId,requested,{report=
  if(home&&!s.squads.find(q=>q.id===home.id).members.includes(operativeId))s=order(s,{type:'assignToSquad',operativeId,squadId:home.id});
  if(assignment!=='active')s=order(s,{type:'assignCare',id:operativeId,assignment});
  if(s.activeSquadId!==previous)s=order(s,{type:'selectSquad',id:previous});
- report({event:'finiteMedicalCourier',operativeId,clinic,source:source.at,quantity:found.collected,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-departure});
+ report({event:'finiteMedicalCourier',operativeId,clinic,source:source.at,quantity:found.collected,mode,outward,returning,elapsedSeconds:s.hour*3600+(s.secondOfHour??0)-departure});
  return {campaign:saved({campaign:s}).campaign,collected:found.collected};
 }

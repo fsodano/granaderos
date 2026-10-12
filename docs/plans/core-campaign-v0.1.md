@@ -283,16 +283,15 @@ dressings and receives three normal 8,000-peso income payments. The official
 midpoint save replays exactly. All seven affected rest and clinic integration
 tests passed, with all 744 inputs unchanged.
 
-The complete original recovery test still fails on this source. Its reunion
-helper requests seven living soldiers in a squad whose public limit is six.
-The test ran to completion without skips, and all 382 imported inputs remained
-unchanged. This is a remaining route helper failure. The complete original
-northern and historical-loss batch is still running at this documentation
-checkpoint; it has no passing complete receipt.
+At the PR #345 checkpoint, the complete original recovery test failed because
+its reunion helper requested seven living soldiers in a squad whose public
+limit is six. The test completed without skips, and all 382 imported inputs
+remained unchanged. The complete northern and historical-loss batch had not
+yet finished at that checkpoint. Later results are recorded below.
 
-The convoy recapture prototype remains a private unfinished experiment. It
-won the actual Tucumán and Salta recaptures but then rejected a real Salta
-casualty in its retained cohort. It is not included in PR #345. The full
+The convoy recapture prototype was a private unfinished experiment at PR #345.
+It won the actual Tucumán and Salta recaptures but then rejected a real Salta
+casualty in its retained cohort. It was not included in PR #345. The full
 installed ending, final browser continuation and passing unfiltered release
 gate remain open. This merge does not establish campaign acceptance, and the
 historical `0.1` tag retains its original commit.
@@ -301,3 +300,73 @@ Before publication, the documentation audit, all 39 baseline assertions,
 typecheck, nested production export and diff check passed on the current
 source. The export verified 1,413 files and 1,045 asset references, with build
 identity `0.1.0 · ed2b946508e1`. No new full suite was started for this merge.
+
+## Survivor columns, convoy and mountain follow-up
+
+PR #346 contains route helper corrections and focused earned regressions.
+The game runtime, installed campaign data and victory requirements are
+unchanged. The following results have separate scopes; they are not one
+combined campaign or release gate.
+
+- The earned two-town convoy test passed 1/1 with all 362 inputs unchanged.
+  Actual Tucumán and Salta victories restore the original gun's route. Its
+  four new deaths remain permanent. The same finite gun arrives at Córdoba
+  with its recorded loading and ammunition, and the actual survivors return
+  to Mendoza. This is an earned continuation, not a fresh installed ending.
+- The two earned pre-assembly Cuyo tests passed 2/2 with all 340 inputs
+  unchanged. Ordinary finite aid precedes inventory work and assembly;
+  the real wounds, accepted orders, paid service and official saves remain.
+- The earned northern reunion file passed 2/2 with all 339 static/source/data
+  pins and both consumed fixture pins unchanged.
+  Seven returning soldiers form legal six-plus-one columns. All seven and
+  five northern guards deploy in the actual Córdoba recapture. Its seven
+  southern deaths remain permanent. Native orders replay through an official
+  midpoint save. The return selects a capable real crew for cannon transport,
+  pays the configured quote and reaches Tucumán at hour 506, second 600.
+- The combined Uspallata, mountain ammunition and first-aid run passed 7/7
+  with all 366 inputs unchanged. The earned installed checkpoint wins
+  Uspallata after eight turns and 162 orders, preserves all eight survivors
+  and reuses existing local squad slots for care. Actual recovery and return
+  reach Mendoza at hour 1656, second 1491. The other tests retain their finite
+  ammunition and declared clinical-control scopes. This does not prove a
+  fresh start, the arsenal mission, Los Patos or the campaign ending.
+  Los Patos still stops for a sleeping posted courier or an unhandled actual
+  encounter; these are driver limits, not game-runtime failures.
+- The focused port-income test passed 1/1 with all 312 inputs unchanged.
+  The actual Buenos Aires meeting records the income agreement before
+  departure. It grants no immediate money; the next real midnight pays once,
+  and an official saved continuation cannot pay it again. This is the port
+  meeting and income boundary, not the complete opening route.
+
+The latest recorded complete recovery entry failed 0/1 without skips. It
+passed the corrected reunion and actual Salta victory, then stopped during
+the Yatasto handover trip with the real Salta counterattack still pending:
+`enemy-group-4`, arrived at hour 516. All 384 inputs remained unchanged. The
+encounter was not cleared or replaced with a forced outcome.
+
+The latest complete historical-loss entry also failed 0/1 without skips,
+with all 376 inputs unchanged. It stopped before Tucumán when the medical
+courier could not enter with a sleeping or unavailable combatant. The walking
+courier budget has since been corrected to retain the original travel plan;
+explicit posta quotes remain supported. Its seven focused courier and finite
+equipment tests passed 7/7 without skips or cancellations, including the
+exhausted doctor's actual twelve-hour rest and 150-peso service fee. Neither
+complete failed entry was rerun after this correction. Their full-route
+outcomes remain unverified on the corrected source.
+
+The opening file completed with eight tests: five passed, two failed and one
+dependent Yatasto test was skipped. None was cancelled, and all 344 inputs
+remained unchanged. The master route and Tucumán raid checks stopped at a
+real defense still active after 81 turns and 1,022 actions during battery
+travel for the Salta assault. The focused port-income pass does not close
+this opening failure.
+
+Local receipts are retained in the managed worktree under
+`.cache/core-campaign-2026-10-12/`: `earned-installed-convoy-v1/`,
+`created-cuyo-early-field-aid/verified/`,
+`seven-survivor-reunion/focused-v5/`, `earned-installed-uspallata-v1/`,
+`original-recovery-survivor-columns/`,
+`original-historical-loss-after-early-aid/` and `opening-fresh-rear/`.
+The fresh installed 3,200-peso ending, final browser continuation and a passing
+unfiltered release gate remain open. This bounded merge does not establish
+complete campaign acceptance; the historical `0.1` tag is unchanged.

@@ -17,6 +17,7 @@ import {canReassignOperative,operativeLocation} from '../game/squads.js';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {artilleryProfile} from '../game/artillery-definitions.js';
+import {artilleryTransportQuote,storedArtilleryRecord} from '../game/artillery-transport.js';
 
 const localMembers=(c,preferred,limit=6)=>[...new Set([...preferred,...c.squad,...c.recruited])].filter(id=>canReassignOperative(c,id)&&operativeLocation(c,id)===c.location).slice(0,limit);
 
@@ -93,7 +94,16 @@ export function returnNorthernOfficers(start){
  for(let i=0;i<field.length;i+=6){order({type:'createSquad',ids:field.slice(i,i+6),sector:'cordoba',name:'Regreso del norte'});groups.push(c.activeSquadId);for(const id of c.squad)order({type:'assignCare',operativeId:id,assignment:'active'});}
  if(!c.routes.carts)order({type:'transport',mode:'carts'});
  const gun=c.sectorStates.cordoba.artillery.find(g=>g.side==='player');assert.ok(gun);assert.ok(gun.loaded||gun.ammo>0,'the transported battery needs actual remaining shots');
+ // A final support column can have one member after real casualties. Load
+ // the piece with an existing local column admitted by the ordinary quote.
+ const crew=groups.find(id=>{
+  const selected=dispatchCampaign(c,{type:'selectSquad',id});
+  return !selected.lastError&&selected.squad.length>=artilleryProfile(selected,gun).crew&&artilleryTransportQuote(selected,'cordoba',gun.id,'tucuman','carts').available;
+ });
+ assert.ok(crew,'The actual return needs a capable local crew for the remaining finite gun.');order({type:'selectSquad',id:crew});
+ const quote=artilleryTransportQuote(c,'cordoba',gun.id,'tucuman','carts'),treasury=c.resources.treasury,record=storedArtilleryRecord(gun);
  order({type:'transportArtillery',sector:'cordoba',artilleryId:gun.id,to:'tucuman',mode:'carts'});
+ assert.equal(c.resources.treasury,treasury-quote.cost);assert.deepEqual(c.artilleryTransfers.find(transfer=>transfer.id===gun.id).gun,record,'The return transports the same remaining rounds and loading state.');
  for(const id of groups){order({type:'selectSquad',id});order({type:'travel',sector:'tucuman',queue:true,mode:'posta'});}
  for(let h=0;h<36&&groups.some(id=>c.squads.find(q=>q.id===id).journey);h++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
  order({type:'squad',ids:localMembers(c,[9,11,10,4],5)});for(const id of field)order({type:'assignCare',operativeId:id,assignment:'rest'});

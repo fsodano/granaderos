@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "status": "earned unchanged installed/default-seed preparation",
+  "source": "/Users/fsodano/.codex/worktrees/campaigns/granaderos/.cache/core-campaign-2026-10-11/installed-foundry-run7-prepared.save.json",
+  "rawSha256": "4d71053ab30241523422056b43c1aaff5fbb091051c8cb5f360799aeed6dd1c2",
+  "gzipSha256": "8ff088876f1dd707000f6cb125b3f35a3a801bed2b765f8c3a992465182f5706",
+  "rawBytes": 3331371,
+  "inputClock": [
+    1428,
+    1194
+  ],
+  "inputTreasury": 377361,
+  "originalTransferId": "arsenal:cordoba:2",
+  "cutLocalities": [
+    "tucuman",
+    "salta"
+  ],
+  "scope": "Native two-cut convoy recovery and physical return, not a fresh complete ending."
+}
