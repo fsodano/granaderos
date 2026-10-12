@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "kind": "earned-official-campaign-save",
+  "sourceRevision": "55dbe6adad7bbefb065ced354b0c71cd82f6d8e2",
+  "inputPath": ".cache/core-campaign-2026-10-11/northern-historical-55dbe6ad/earned-created-cordoba-local-care.save.json",
+  "inputSha256": "e692a94d9c1dc9d58f59bb48951d5fe0e3e0a4dfbb2d369d1218b9d7be2ad415",
+  "gzipPath": "created-northern-earned-local-care-55dbe6ad.save.json.gz",
+  "gzipSha256": "9ddffe3c1cec31f3fd7055143ce855b3c6e626b7cae58443031ccbd03de2bc22",
+  "rawBytes": 1441338,
+  "gzipBytes": 146579,
+  "checkpoint": "cordoba-local-care-ready",
+  "hour": 145,
+  "second": 3002,
+  "sourceHashes": {
+    "tests/fresh-northern-fixture.mjs": "f11ec406ca97e535c2611c254a091e7862876324af9a3b9104f07f7daa15f4d4",
+    "tests/fresh-northern-command.mjs": "1f267fbc216be3b6929594db714a27bd4c1ce2aa1e33240cf6fbfbaa149b3175",
+    "tests/northern-route.mjs": "2cc8e2510f7f75987467d0be9e73f4503b4c2024506aa780d6aa4c66c63d3135",
+    "game/campaign.js": "5cc9972f40c70ddea6ca024d94cb83f9298b6f0a1f9004dab86105b2248a15f3",
+    "game/tactical.js": "5ab2384b51441b456aec48a5cb9bacb19ef369fb9d94cc808152148d56641b3c"
+  },
+  "coastalInput": {
+    "path": ".cache/core-campaign-2026-10-11/northern-historical-55dbe6ad/northern-checkpoint-san_lorenzo.json",
+    "sha256": "9dc4d800a95d1dc9f893e059727f86c6d77fabe402753172ba9fa893fb777ca5"
+  },
+  "scope": "Resume actual earned San Lorenzo save through unchanged northern preparation and actual C\u00f3rdoba victory. Stop before local care; no state, supplies, outcomes or paid orders replaced.",
+  "authoring": "Funded created Retiro route; this fixture does not claim installed-default ending acceptance.",
+  "mutations": "None. The exact official save bytes are compressed without changes to state, health, supplies, costs, positions or outcomes.",
+  "sourceWorkingTree": "Runtime at main 55dbe6ad. The test helper had passive checkpoint and new raid-handling code; raid handling had not executed at this captured pre-care boundary. Its exact dirty-source hash is recorded above."
+}

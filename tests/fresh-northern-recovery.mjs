@@ -1,7 +1,7 @@
 import {routeHiringCeiling} from './funded-route-fixture.mjs';
 import {restoreNorthernRoad,returnNorthernOfficers,prepareRestoredSalta} from './recovery-road-route.mjs';
 import {operativeLocation,operativeInTransit} from '../game/squads.js';
-import {contractQuote} from '../game/contracts.js';
+import {contractQuote,contractRenewalQuote,contractExpiresSeconds} from '../game/contracts.js';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
@@ -15,7 +15,7 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
-import {createBattle,actBattle,endTurn,teamCanSee,hasLineOfSight,firearmShotOptions,actionCosts} from '../game/tactical.js';
+import {createBattle,actBattle,endTurn,teamCanSee,hasLineOfSight,firearmShotOptions,actionCosts,getReachable,interruptAvailable,completedTacticalVictory} from '../game/tactical.js';
 import {approachNPC} from './approach-npc.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {careRules} from '../game/campaign-care-rules.js';
@@ -29,6 +29,8 @@ import {captureRouteStrategicInput,recordRouteStrategicEvidence} from './route-s
 import {campaignSectors} from '../game/campaign-definition.js';
 import {cellTravelPlan} from '../game/world-cells.js';
 import {baseMorale} from '../game/morale.js';
+import {bookRouteHires,assertRouteHireArrived} from './paid-route-hiring.mjs';
+import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 
 // A guarded roof can have a valid low-probability lane while the ordinary
 // infantry policy wants to advance. Pay for the real previewed shot first.
@@ -61,7 +63,13 @@ export function northernHospitalOrder(state,a,{inputCapture=null,report=()=>{}}=
  let c=state;
   const elapsed=a.type==='wait'?a.hours:a.type==='travel'?48:0;
   if(elapsed)for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured)){
-   while(c.contracts[id]?.expiresAt!==null&&c.contracts[id]?.expiresAt<=c.hour+elapsed){const contract=c.contracts[id],next=dispatchCampaign(c,{type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.equal(next.lastError,null,next.lastError);c=next;}
+   const until=(c.hour+elapsed)*3600+(c.secondOfHour??0);
+   while(contractExpiresSeconds(c.contracts[id])!==null&&contractExpiresSeconds(c.contracts[id])<=until){
+    const contract=c.contracts[id],quote=contractRenewalQuote(c,rosterFor(c).find(op=>op.id===id),'day'),cash=c.resources.treasury,action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0};
+    assert.equal(quote.available,true,quote.reason);const next=dispatchCampaign(c,action);assert.equal(next.lastError,null,next.lastError);c=next;
+    assert.equal(c.resources.treasury,cash-quote.price);assert.equal(contractExpiresSeconds(c.contracts[id]),quote.expiresAt*3600+(quote.expiresSecond??0));
+    report({event:'northernHospitalRenewal',action,quote:structuredClone(quote),cost:cash-c.resources.treasury,hour:c.hour,secondOfHour:c.secondOfHour??0,contract:structuredClone(c.contracts[id])});
+   }
   }
   const before=c,diagnosticBefore=a.type==='travel'?captureRouteStrategicInput(c):null;
   c=dispatchCampaign(c,a);
@@ -259,11 +267,92 @@ export function recoverFreshNorthernDoctor(start,{report=()=>{}}={}){
  return returnFreshNorthernHospital(recoverFreshNorthernHospital(start,{report}),{report});
 }
 
+// Keep an actual paid rifleman at the clinic before the return advances time.
+// Its issued dressing is transferred through the public sector inventory. The
+// physician takes a reachable vacant roof cell beside the earned guard posts;
+// no other defender is restaged and no body, stock or clock is assigned.
+export function prepareNorthernHospitalReturnGuard(hospital,{report=()=>{}}={}){
+ const before=structuredClone(hospital),sector=hospital.sector,escort=[...hospital.escort];let c=decodeSave(encodeSave(hospital.campaign)).campaign;
+ if(!c.enemyGroups.some(group=>group.target===sector&&group.status==='marching'))return {...hospital,campaign:c,escort,returnDoctor:null};
+ assert.equal(c.pendingEncounter,null);assert.equal(c.pendingBattle,null);
+ const candidates=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&!c.hiringArrivals.some(row=>row.operativeId===op.id)&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured).map(op=>({op,quote:contractQuote(c,op,'day')})).filter(row=>row.quote.available&&row.quote.total<=c.resources.treasury).sort((a,b)=>b.op.marksmanship-a.op.marksmanship||a.quote.total-b.quote.total||a.op.id-b.op.id);
+ const selected=candidates[0];assert.ok(selected,'The threatened clinic needs an actual available paid guard.');
+ const booked=bookRouteHires(c,[selected.op.id],{term:'day',destination:sector,report});c=booked.campaign;const hire=booked.hires[0];
+ const order=action=>{c=northernHospitalOrder(c,action,{report});};
+ for(let hour=0;hour<24&&c.hiringArrivals.some(row=>row.operativeId===hire.id);hour++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+ assertRouteHireArrived(c,hire);
+ const home=c.squads.filter(q=>q.location===sector&&!q.journey&&q.members.length>0&&q.members.length<6&&q.members.some(id=>escort.includes(id))).sort((a,b)=>b.members.length-a.members.length||a.id.localeCompare(b.id))[0];
+ if(home)order({type:'assignToSquad',operativeId:hire.id,squadId:home.id});else order({type:'createSquad',ids:[hire.id],sector,name:'Guardia de la evacuación'});
+ escort.push(hire.id);
+ const doctor=rosterFor(c).filter(op=>escort.includes(op.id)&&op.id!==hire.id&&operativeLocation(c,op.id)===sector&&c.operativeState[op.id].alive&&!c.operativeState[op.id].captured&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&!c.operativeState[op.id].asleep&&op.medical>0).sort((a,b)=>b.medical-a.medical||a.id-b.id)[0];assert.ok(doctor,'A serving local physician must cover the actual clinic guard.');
+ if(!c.operativeState[doctor.id].medkits){
+  assert.ok(c.operativeState[hire.id].medkits>0,'The paid guard must carry a real dressing for the clinic.');
+  const stock=c.operativeState[hire.id].medkits+c.operativeState[doctor.id].medkits,known=new Set(sectorInventoryModel(c,sector,rosterFor(c),doctor.id).entries.map(row=>row.key));
+  order({type:'sectorInventory',sector,operativeId:hire.id,direction:'drop',item:'medkits',count:1});
+  const row=sectorInventoryModel(c,sector,rosterFor(c),doctor.id).entries.find(row=>!known.has(row.key)&&row.reachable&&JSON.parse(row.expected).item==='medkits');assert.ok(row,'The clinic physician needs the actual reachable donated dressing.');
+  order({type:'sectorInventory',sector,operativeId:doctor.id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});
+  assert.equal(c.operativeState[hire.id].medkits+c.operativeState[doctor.id].medkits,stock);report({event:'northernReturnDressingDonation',donor:hire.id,doctor:doctor.id,count:1,sourceKey:row.key,stockBefore:stock,stockAfter:stock});
+ }
+ const active=c.activeSquadId,startSeconds=c.hour*3600+(c.secondOfHour??0),positions=escort.filter(id=>id!==doctor.id&&c.operativeState[id].residentPosition&&(c.operativeState[id].residentPosition.tacticalLevel??0)>0).map(id=>c.operativeState[id].residentPosition);
+ const occupied=c.recruited.filter(id=>id!==doctor.id&&c.operativeState[id].alive&&!c.operativeState[id].captured&&operativeLocation(c,id)===sector).map(id=>c.operativeState[id].residentPosition).filter(Boolean);
+ order({type:'createSquad',ids:[doctor.id],sector,name:'Sanitario de la guardia'});order({type:'assignCare',operativeId:doctor.id,assignment:'active'});order({type:'visitSector'});
+ let battle=enterSector(c.pendingBattle,c.sectorStates[sector]);const unitId=String(doctor.id),actions=[];
+ const roofs=getReachable(battle,battle.units.find(unit=>unit.id===unitId)).filter(point=>(point.tacticalLevel??0)>0&&!occupied.some(other=>sameCell(other,point))).map(point=>({...point,neighbors:positions.filter(other=>sameSurface(other,point)&&Math.hypot(other.x-point.x,other.y-point.y)<=1.5).length,distance:positions.reduce((sum,other)=>sum+Math.hypot(other.x-point.x,other.y-point.y),0)})).sort((a,b)=>b.neighbors-a.neighbors||a.distance-b.distance||a.cost-b.cost||a.y-b.y||a.x-b.x);
+ const destination=roofs[0];assert.ok(destination&&destination.neighbors>0,'The physician needs reachable cover beside the actual roof guards.');
+ const act=action=>{battle=actBattle(battle,action);assert.equal(battle.lastError,null,JSON.stringify(action)+battle.lastError);actions.push(action);};
+ act({type:'movement',unitId,movement:'walk'});for(let leg=0;!sameCell(battle.units.find(unit=>unit.id===unitId),destination)&&leg<64;leg++)act({type:'move',unitId,...spacePoint(destination)});
+ assert.ok(sameCell(battle.units.find(unit=>unit.id===unitId),destination));act({type:'stance',unitId,stance:'crouched'});
+ const synced=syncBattleTime(c,battle);assert.equal(synced.error,null);c=synced.campaign;order({type:'leaveSector',battleId:c.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(unit=>unit.side==='player')});order({type:'selectSquad',id:active});
+ report({event:'northernReturnGuardReady',guardId:hire.id,doctorId:doctor.id,hire:structuredClone(hire),position:structuredClone(c.operativeState[doctor.id].residentPosition),actions,elapsedSeconds:c.hour*3600+(c.secondOfHour??0)-startSeconds,campaign:structuredClone(c)});
+ assert.deepEqual(hospital,before);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return {...hospital,campaign:c,escort,returnDoctor:doctor.id};
+}
+
+// Stop at the same native victory gate as the game. A cleared exploration
+// sector is complete even while its status remains active. Replay only real
+// issued orders, with the official campaign/battle save at the midpoint.
+export function settleNorthernHospitalReturnDefense(start,sector,{doctorId,report=()=>{}}={}){
+ const before=structuredClone(start),request=start.pendingBattle,previous=start.sectorStates[sector];assert.equal(request.sector,sector);
+ let battle=enterSector(request,previous);const orders=[];
+ report({event:'northernReturnDefenseInput',campaign:structuredClone(start),battle:structuredClone(battle)});
+ for(let window=0;window<600&&battle.turn<=80&&battle.status==='active'&&!completedTacticalVictory(battle);window++){
+  const ids=battle.units.filter(unit=>unit.side==='player'&&!unit.militia).sort((a,b)=>b.marksmanship-a.marksmanship).map(unit=>unit.id);
+  for(let attempt=0;attempt<16&&battle.status==='active'&&!completedTacticalVictory(battle);attempt++){
+   let acted=false;
+   for(const id of ids){
+    if(battle.status!=='active'||completedTacticalVictory(battle))break;
+    const unit=battle.units.find(unit=>unit.id===id);if(!interruptAvailable(battle,unit)||unit.ap<3)continue;
+    const action=id===String(doctorId)?northernHospitalCoverOrder(battle,unit):tucumanCombatOrder(battle,unit);if(!action)continue;
+    const next=actBattle(battle,action);assert.equal(next.lastError,null,JSON.stringify(action)+next.lastError);battle=next;orders.push(action);acted=true;
+   }
+   if(!acted)break;
+  }
+  if(battle.status==='active'&&!completedTacticalVictory(battle)){battle=endTurn(battle);assert.equal(battle.lastError,null,battle.lastError);orders.push({type:'endTurn'});}
+ }
+ const summary={sector,preparationSeconds:0,startSeconds:battle.startSeconds,elapsedSeconds:battle.elapsedSeconds,status:battle.status,mode:battle.mode,sectorCleared:battle.sectorCleared,turns:battle.turn,actions:orders.filter(action=>action.type!=='endTurn').length,units:battle.units.map(unit=>({id:unit.id,side:unit.side,hp:unit.hp,ammo:unit.ammo,loaded:unit.loaded,routed:unit.routed}))};
+ report({event:'battleFinished',...summary});assert.ok(completedTacticalVictory(battle),JSON.stringify(summary));
+ const replay=withSave=>{
+  let pair={campaign:structuredClone(start),battle:enterSector(request,previous)};
+  for(let index=0;index<orders.length;index++){
+   const action=orders[index],next=action.type==='endTurn'?endTurn(pair.battle):actBattle(pair.battle,action);assert.equal(next.lastError,null,JSON.stringify(action)+next.lastError);
+   const synced=syncBattleTime(pair.campaign,next);assert.equal(synced.error,null,synced.error);pair={campaign:synced.campaign,battle:synced.battle};
+   if(withSave&&index===Math.floor(orders.length/2))pair=decodeSave(encodeSave(pair.campaign,pair.battle));
+  }
+  return pair;
+ };
+ const played=replay(false),restored=replay(true);assert.deepEqual(restored,played);assert.deepEqual(played.battle.units,battle.units);assert.equal(played.battle.seed,battle.seed);assert.equal(played.battle.elapsedSeconds,battle.elapsedSeconds);assert.ok(completedTacticalVictory(restored.battle));
+ const c=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:'victory',sectorState:restored.battle,survivors:restored.battle.units.filter(unit=>unit.side==='player')});assert.equal(c.lastError,null,c.lastError);assert.equal(c.defeated,false);assert.equal(c.sectors[sector].owner,'patriot');assert.equal(c.pendingBattle,null);
+ for(const unit of battle.units.filter(unit=>unit.side==='player'&&unit.hp<=0&&!unit.militia&&!unit.missionAlly))assert.equal(c.operativeState[Number(unit.id)].alive,false);
+ for(const [id,record]of Object.entries(before.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
+ assert.deepEqual(start,before);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);report({event:'northernReturnDefenseReplay',...summary,orders,exactSavedReplay:true,losses:start.recruited.filter(id=>start.operativeState[id].alive&&!c.operativeState[id].alive),campaign:structuredClone(c)});
+ return {campaign:c,summary};
+}
+
 // Resume a strict saved hospital boundary without repeating treatment or fees.
 export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
  const start=hospital.campaign,inputCapture=recordRouteStrategicEvidence({helper:'recoverFreshNorthernDoctor',stage:'recovered-hospital-input',campaign:start});
  let c=decodeSave(encodeSave(start)).campaign;assert.deepEqual(c,start);
- const {sector,escort}=hospital;
+ const prepared=prepareNorthernHospitalReturnGuard(hospital,{report});c=prepared.campaign;
+ const {sector,escort,returnDoctor}=prepared;
  const order=a=>{c=northernHospitalOrder(c,a,{inputCapture,report});};
  try{
  const party=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&operativeLocation(c,id)===sector&&!escort.includes(id);});
@@ -275,7 +364,10 @@ export function returnFreshNorthernHospital(hospital,{report=()=>{}}={}){
    const defenders=c.squads.find(q=>q.location===encounter.sector&&q.members.some(id=>c.operativeState[id].alive&&!c.operativeState[id].captured));
    assert.ok(defenders,'the threatened sector needs its actual local guard');
    order({type:'selectSquad',id:defenders.id});order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
-   const defense=fightNorthernSector(c,encounter.sector,{controller:northernHospitalCoverOrder,report});c=defense.campaign;
+   const defense=settleNorthernHospitalReturnDefense(c,encounter.sector,{doctorId:returnDoctor,report});c=defense.campaign;
+   for(const unit of defense.summary.units.filter(unit=>unit.side==='player'&&unit.hp>0)){
+    const record=c.operativeState[Number(unit.id)];if(record)assert.ok(record.alive&&record.hp>=15&&!record.bleeding,'Actual surviving guards need timely finite aid before the return clock advances.');
+   }
    report({event:'northernReturnDefended',groupId:encounter.groupId,...defense.summary});
    order({type:'selectSquad',id:returning});
   }

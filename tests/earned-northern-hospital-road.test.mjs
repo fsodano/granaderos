@@ -6,7 +6,7 @@ import {createHash} from 'node:crypto';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {dispatchCampaign} from '../game/campaign.js';
 import {cellTravelPlan,worldOwner} from '../game/world-cells.js';
-import {northernRecoveryHospital,recoverFreshNorthernHospital,northernHospitalOrder} from './fresh-northern-recovery.mjs';
+import {northernRecoveryHospital,recoverFreshNorthernHospital,returnFreshNorthernHospital,northernHospitalOrder} from './fresh-northern-recovery.mjs';
 
 function earnedInput(){
  const raw=gunzipSync(readFileSync(new URL('./fixtures/earned-northern-hospital-occupied-cordoba.campaign.json.gz',import.meta.url)));
@@ -33,6 +33,34 @@ test('earned wounded northern survivors select a controlled local hospital and r
  assert.ok(plan.path.every(at=>worldOwner(campaign,at)!=='royalist'));
  assert.ok(!plan.path.includes('cordoba'));
  assert.deepEqual(campaign,before,'planning neither moves actors nor recaptures a locality');
+});
+
+test('earned hospital patients return through paid guard preparation, native raid victory and exact saved replay',t=>{
+ const {campaign:start,metadata}=earnedInput(),before=structuredClone(start),events=[];
+ const hospital=recoverFreshNorthernHospital(start),hospitalBefore=structuredClone(hospital),returned=returnFreshNorthernHospital(hospital,{report:event=>events.push(event)});
+ assert.deepEqual(start,before);assert.deepEqual(hospital,hospitalBefore,'Return preparation cannot rewrite the earned hospital boundary.');
+ assert.equal(returned.location,'buenos_aires');assert.equal(returned.pendingEncounter,null);assert.equal(returned.pendingBattle,null);assert.equal(returned.defeated,false);assert.equal(returned.completed,false);
+ for(const id of metadata.patientIds){const record=returned.operativeState[id];assert.equal(record.alive,true);assert.equal(record.hp,record.maxHp);assert.equal(record.bleeding,0);assert.equal(record.location,'buenos_aires');}
+ for(const [id,record]of Object.entries(before.operativeState))if(!record.alive){assert.equal(returned.operativeState[id].alive,false);assert.equal(returned.operativeState[id].hp,0);}
+ assert.equal(returned.contracts[1000].paid,300);assert.equal(returned.sectors.tucuman.fort,3);
+ assert.equal(returned.sectorStates.tucuman.props.find(prop=>prop.id==='tucuman:building:chest:14:7').contents.filter(item=>item.item==='medkits').reduce((sum,row)=>sum+row.count,0),0);
+ assert.equal(returned.sectors.cordoba.owner,'royalist');assert.equal(returned.enemyGroups.find(group=>group.id==='enemy-group-2').status,'stationed');
+ assert.equal(returned.enemyGroups.find(group=>group.id==='enemy-group-3').status,'defeated');assert.ok(returned.encounterHistory.some(row=>row.groupId==='enemy-group-3'&&row.outcome==='victory'));
+ const ready=events.find(event=>event.event==='northernReturnGuardReady'),donation=events.find(event=>event.event==='northernReturnDressingDonation'),input=events.find(event=>event.event==='northernReturnDefenseInput'),defense=events.find(event=>event.event==='northernReturnDefenseReplay');
+ assert.ok(ready&&donation&&input&&defense);assert.equal(ready.guardId,142);assert.equal(ready.doctorId,139);assert.equal(ready.hire.quote.total,7740);assert.equal(ready.hire.debited,ready.hire.quote.total);
+ assert.equal(ready.hire.arrival.travelHours,0);assert.equal(ready.hire.arrival.dueAt,hospital.campaign.hour);assert.equal(ready.hire.arrival.dueSecond,hospital.campaign.secondOfHour);
+ assert.deepEqual(ready.position,{x:32,y:21,tacticalLevel:1});assert.equal(ready.elapsedSeconds,8);assert.deepEqual(ready.actions.map(action=>action.type),['movement','move','stance']);
+ assert.equal(donation.count,1);assert.equal(donation.stockBefore,2);assert.equal(donation.stockAfter,2);assert.equal(ready.campaign.operativeState[139].medkits,1);assert.equal(ready.campaign.operativeState[142].medkits,1);
+ assert.equal(input.campaign.hour,408);assert.equal(input.battle.artillery.length,0);assert.equal(input.battle.units.filter(unit=>unit.side==='player'&&unit.hp>0).length,8,'The actual existing guard and one paid arrival defend; no bodies are inserted.');
+ assert.equal(defense.status,'victory');assert.equal(defense.sectorCleared,true);assert.equal(defense.exactSavedReplay,true);assert.equal(defense.turns,18);assert.equal(defense.actions,713);assert.equal(defense.elapsedSeconds,205);
+ assert.deepEqual([...defense.losses].sort((a,b)=>a-b),[116,119,142]);
+ for(const unit of defense.units.filter(unit=>unit.side==='player'&&unit.hp>0)){const record=returned.operativeState[Number(unit.id)];if(record){assert.equal(record.alive,true,'Native victory survivors remain alive during the actual return.');assert.ok(record.hp>=15);assert.equal(record.bleeding,0);}}
+ for(const id of defense.losses){assert.equal(returned.operativeState[id].alive,false);assert.ok(defense.units.some(unit=>unit.id===String(id)&&unit.hp===0),'Every new death belongs to the actual battle result.');}
+ const renewals=events.filter(event=>event.event==='northernHospitalRenewal');assert.ok(renewals.length);for(const row of renewals){assert.equal(row.cost,row.quote.price);assert.equal(row.contract.expiresAt,row.quote.expiresAt);assert.equal(row.contract.expiresSecond??0,row.quote.expiresSecond??0);}
+ const booking=events.filter(event=>event.event==='routeHireBooked').reduce((sum,row)=>sum+row.debited,0),renewalCost=renewals.reduce((sum,row)=>sum+row.cost,0),otherCost=events.filter(event=>event.event==='northernHospitalOrder').reduce((sum,row)=>sum+row.cost,0);
+ assert.equal(returned.resources.treasury,hospital.campaign.resources.treasury-booking-renewalCost-otherCost,'Every paid arrival, retained-service renewal and real income tick has its exact ledger.');
+ assert.ok(returned.recruited.includes(10)&&returned.recruited.includes(4)&&returned.recruited.includes(1000));assert.deepEqual(decodeSave(encodeSave(returned)).campaign,returned);
+ t.diagnostic(JSON.stringify({scope:'Earned original296 hospital input, actual408 raid and complete native Buenos Aires return; not a fresh whole campaign ending.',hospitalClock:[hospital.campaign.hour,hospital.campaign.secondOfHour],guardQuote:ready.hire.quote,position:ready.position,battle:{turns:defense.turns,actions:defense.actions,seconds:defense.elapsedSeconds,losses:defense.losses,exactSavedReplay:defense.exactSavedReplay},booking,renewalCost,incomeAndOtherCosts:otherCost,returnedClock:[returned.hour,returned.secondOfHour],treasury:returned.resources.treasury}));
 });
 
 test('earned northern hospital care and a saved rural sleep boundary retain finite supplies, real time and occupation',t=>{

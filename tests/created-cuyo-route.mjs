@@ -26,7 +26,7 @@ import {expandCellScene} from '../game/cell-scene-storage.js';
 import {enterSector} from '../game/world.js';
 import {syncBattleTime} from '../game/time.js';
 import {boundaryMatches} from '../game/tactical-exits.js';
-import {recoverRouteFirearm} from './finite-route-equipment.mjs';
+import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {fightNorthernSector} from './northern-route.mjs';
 import {recordRouteCareFailure} from './route-care-failure-evidence.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
@@ -499,7 +499,10 @@ export function prepareStockMendozaAmmunition(start,fieldIds,{report=()=>{}}={})
  p.safe();assert.equal(p.campaign.location,'cordoba');assert.equal(new Set(field).size,field.length);
  for(const id of field){assert.ok(living(p.campaign).includes(id));assert.equal(operativeLocation(p.campaign,id),'cordoba');}
  const before=structuredClone(p.campaign),ledger=stockAmmunitionLedger(before),main=before.activeSquadId;
- for(const id of field)if(p.campaign.operativeState[id].weaponDropped){p.renew();p.replace(recoverRouteFirearm(p.campaign,id));report({event:'stockCuyoRecoveredGun',id,hour:p.campaign.hour});}
+ // A returning hire keeps an explicitly empty hand after service ends. The
+ // absence is not always a tactical weaponDropped flag. Rearm either case
+ // from actual pockets or reachable finite stock before allocating rounds.
+ for(const id of field)if(p.campaign.operativeState[id].weaponDropped||!weaponSpecification(carried(p.campaign,id))?.capacity){p.renew();p.replace(recoverRoutePrimary(p.campaign,id,{report}));report({event:'stockCuyoRecoveredGun',id,hour:p.campaign.hour});}
  const guns=new Map(field.map(id=>{const u=carried(p.campaign,id);assert.ok(!u.weaponDropped&&weaponSpecification(u)?.capacity>0&&u.condition>0,`actual serviceable firearm required for ${id}`);return [id,Object.fromEntries(['weapon','weaponMetadata','weaponInstanceId','weaponFittings','weaponFittingPattern','condition','ammunitionChoice'].filter(key=>u[key]!==undefined).map(key=>[key,structuredClone(u[key])]))];}));
  const nonAmmo=new Map(field.map(id=>[id,Object.fromEntries(Object.entries(p.campaign.operativeState[id].inventory??{}).filter(([,item])=>item.kind!=='ammunition'))]));
  const transfer=(id,family,quantity,direction)=>{
