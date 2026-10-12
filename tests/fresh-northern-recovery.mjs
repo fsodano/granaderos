@@ -67,7 +67,7 @@ export function northernRecoveryHospital(c,patients,preferred='cordoba'){
 
 export function northernHospitalOrder(state,a,{inputCapture=null,report=()=>{}}={}){
  let c=state;
-  const elapsed=a.type==='wait'?a.hours:a.type==='travel'&&(a.queue!==true||!keepers&&mode==='march')?48:0;
+  const elapsed=a.type==='wait'?a.hours:a.type==='travel'&&a.queue!==true?48:0;
   if(elapsed)for(const id of c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured)){
    const until=(c.hour+elapsed)*3600+(c.secondOfHour??0);
    while(contractExpiresSeconds(c.contracts[id])!==null&&contractExpiresSeconds(c.contracts[id])<=until){
@@ -571,7 +571,7 @@ export function reuniteFreshNorthernSquad(start,{report=()=>{},keepServing,mode=
   }
  };
  const order=a=>{
-  const elapsed=a.type==='wait'?a.hours:a.type==='travel'&&a.queue!==true?48:0;
+  const elapsed=a.type==='wait'?a.hours:a.type==='travel'&&(a.queue!==true||!keepers&&mode==='march')?48:0;
   if(elapsed)retainFor(elapsed);
   const before=c;c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);
   report({event:'northernReunionOrder',action:structuredClone(a),cost:before.resources.treasury-c.resources.treasury,elapsedSeconds:(c.hour-before.hour)*3600+(c.secondOfHour??0)-(before.secondOfHour??0),hour:c.hour,second:c.secondOfHour??0});

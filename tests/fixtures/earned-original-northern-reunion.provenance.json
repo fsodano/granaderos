@@ -1,5 +1,5 @@
 {
-  "scope": "Unchanged original c688 complete funded recovery: exact returned681 boundary plus original368 pre-Tucum\u00e1n cohort; whole original run failed only at reunion prepayment, not a completed full campaign",
+  "scope": "Unchanged original c688 complete funded recovery: exact returned681 boundary, real302 pre-Tucuman caller cohort, and prepared368 pending-assault cohort comparison. Whole original run failed at reunion prepayment; no complete campaign claim.",
   "revision": "c6881d9927e6e0c189171cb6348870ab6fc1a235",
   "originalRunReceipt": ".cache/core-campaign-2026-10-12/original-recovery-main-c6881d99/receipt.json",
   "originalRunLogSHA": "5f8936c1864e1ce032ba2512d64f0d81df0f2c707d23ce79a6f5e73276f2a9c8",
@@ -15,7 +15,7 @@
         335
       ]
     },
-    "originalCohort": {
+    "preparedCohort": {
       "file": "earned-original-northern-reunion-cohort.campaign.json.gz",
       "rawBytes": 2773382,
       "rawSHA": "95e7618a8945c8d584f3051493ef002d89029c4b70476a9fc5b903820ad428c7",
@@ -24,8 +24,28 @@
       "clock": [
         368,
         2583
-      ]
+      ],
+      "format": "observed-campaign-request",
+      "survivingServingCount": 17
+    },
+    "originalCohort": {
+      "file": "earned-original-northern-reunion-duty.save.json.gz",
+      "format": "official-save",
+      "rawBytes": 1431297,
+      "rawSHA": "bcd8b434e8ac162c8fb154286dcdfe113a82709d9fd56b52199c516c1e934240",
+      "compressedSHA": "0f976c67b942d1bf17e2db6802cced626ce52d8e1751df8cf8eefdf42f52eab3",
+      "capturedSource": ".cache/core-campaign-2026-10-12/original-recovery-main-c6881d99/checkpoint-tucuman-preparation-input.json",
+      "clock": [
+        302,
+        2571
+      ],
+      "treasury": 95413,
+      "survivingServingCount": 16
     }
   },
-  "returnedTreasury": 21878
+  "returnedTreasury": 21878,
+  "cohortRelationship": {
+    "caller": "tests/fresh-campaign-recovery.test.mjs:133 derives survivors from beforeTucuman, captured by the first preparation-input checkpoint at302:2571",
+    "prepared": "The368:2583 pending-assault capture follows preparation. It has17 living noncaptured serving actors: the same16 original302 survivors plus133. Eight other original recruited rows leave the recruited list during preparation; none belonged to that16-person living noncaptured cohort. Actual133 is dead at681. Tests derive both keeper sets from the recorded states and require equality, without price/ID selection exceptions or forced service/death."
+  }
 }

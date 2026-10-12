@@ -17,17 +17,23 @@ function earned(){
  const meta=JSON.parse(readFileSync(new URL('./fixtures/earned-original-northern-reunion.provenance.json',import.meta.url)));
  const load=key=>{const row=meta.inputs[key],packed=readFileSync(new URL('./fixtures/'+row.file,import.meta.url)),raw=gunzipSync(packed);
   assert.equal(sha(packed),row.compressedSHA);assert.equal(sha(raw),row.rawSHA);assert.equal(raw.length,row.rawBytes);
-  const observed=JSON.parse(raw),battle=observed.campaign.pendingBattle?enterSector(observed.request,observed.previous??observed.campaign.sectorStates[observed.request.sector]):null;
-  const campaign=decodeSave(encodeSave(observed.campaign,battle)).campaign;assert.deepEqual(campaign,observed.campaign);assert.deepEqual([campaign.hour,campaign.secondOfHour],row.clock);return campaign;
+  const observed=JSON.parse(raw);let campaign,battle;
+  if(row.format==='official-save')({campaign,battle}=decodeSave(raw.toString()));
+  else{battle=observed.campaign.pendingBattle?enterSector(observed.request,observed.previous??observed.campaign.sectorStates[observed.request.sector]):null;campaign=decodeSave(encodeSave(observed.campaign,battle)).campaign;assert.deepEqual(campaign,observed.campaign);}
+  assert.deepEqual(decodeSave(encodeSave(campaign,battle)).campaign,campaign);assert.deepEqual([campaign.hour,campaign.secondOfHour],row.clock);return campaign;
  };
- const campaign=load('returned'),original=load('originalCohort');
+ const campaign=load('returned'),original=load('originalCohort'),prepared=load('preparedCohort');
  const originalIds=original.recruited.filter(id=>original.operativeState[id].alive&&!original.operativeState[id].captured);
- return {campaign,original,meta,keepers:northernReunionDutyKeepers(campaign,originalIds)};
+ return {campaign,original,prepared,meta,keepers:northernReunionDutyKeepers(campaign,originalIds)};
 }
 function retainedDeaths(start,end){for(const [id,r]of Object.entries(start.operativeState))if(!r.alive){assert.equal(end.operativeState[id].alive,false);assert.equal(end.operativeState[id].deathMinute,r.deathMinute);}}
 
 test('the genuine returned681 duty cohort derives from its original paid survivors and the actual returned ward, rather than a price or ID exception',()=>{
- const {campaign:c,original,keepers}=earned();assert.deepEqual([c.hour,c.secondOfHour],[681,335]);assert.equal(c.resources.treasury,21878);
+ const {campaign:c,original,prepared,keepers}=earned();assert.deepEqual([c.hour,c.secondOfHour],[681,335]);assert.equal(c.resources.treasury,21878);
+ assert.deepEqual([original.hour,original.secondOfHour,original.resources.treasury],[302,2571,95413]);assert.deepEqual([prepared.hour,prepared.secondOfHour],[368,2583]);
+ const callerSurvivors=original.recruited.filter(id=>original.operativeState[id].alive&&!original.operativeState[id].captured),preparedSurvivors=prepared.recruited.filter(id=>prepared.operativeState[id].alive&&!prepared.operativeState[id].captured);
+ assert.equal(callerSurvivors.length,16);assert.equal(preparedSurvivors.length,17);assert.deepEqual(preparedSurvivors.filter(id=>!callerSurvivors.includes(id)),[133]);assert.ok(callerSurvivors.every(id=>preparedSurvivors.includes(id)));
+ assert.equal(c.operativeState[133].alive,false);assert.equal(c.operativeState[133].hp,0);assert.deepEqual(northernReunionDutyKeepers(c,preparedSurvivors),northernReunionDutyKeepers(c,callerSurvivors));
  assert.deepEqual(keepers,[114,137,124,141,125,146,1000,10,4]);assert.ok(c.squad.every(id=>keepers.includes(id)));
  const temporary=c.recruited.filter(id=>c.operativeState[id].alive&&!keepers.includes(id));assert.deepEqual(temporary,[135,147]);
  assert.ok(temporary.every(id=>!original.recruited.includes(id)));assert.ok(keepers.every(id=>c.contracts[id]));
