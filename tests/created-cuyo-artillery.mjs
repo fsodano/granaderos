@@ -14,6 +14,8 @@ import {fightNorthernSector} from './northern-route.mjs';
 import {visit,saved,leave,sync} from './local-contract-fixture.mjs';
 import {takeFiniteCache} from './finite-cache-driver.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
+import {collectRouteMedicalSupplies} from './finite-route-equipment.mjs';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
 
 const living=c=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
 const stable=(c,id)=>{const r=c.operativeState[id];return r?.alive&&!r.captured&&r.hp>=15&&!r.bleeding&&!r.unconscious&&!r.routed;};
@@ -41,28 +43,55 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
   retained.order({type:'selectSquad',id:selected});
  };
  const order=action=>{resolve();return retained.order(action);};
- const local=rosterFor(c).filter(op=>op.id!==2&&living(c).includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp)
-  .sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id).slice(0,5).map(op=>op.id);
+ const veterans=rosterFor(c).filter(op=>!originalMembers.includes(op.id)&&op.id!==2&&living(c).includes(op.id)&&c.operativeState[op.id].location==='mendoza'&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp)
+  .sort((a,b)=>b.marksmanship-a.marksmanship||a.id-b.id);
+ let local=veterans.slice(0,5).map(op=>op.id);
+ if(!veterans.slice(0,5).some(op=>op.medical>=60)){
+  const medic=veterans.filter(op=>op.medical>=60).sort((a,b)=>c.operativeState[b.id].morale-c.operativeState[a.id].morale||b.medical-a.medical||a.id-b.id)[0];
+  assert.ok(medic,'The actual local column needs a healthy serving physician.');
+  local=[...veterans.filter(op=>op.id!==medic.id).slice(0,4).map(op=>op.id),medic.id];
+ }
  assert.equal(local.length,5,'Five existing healthy local veterans provide the shortest paid arsenal column.');
  assert.ok(local.some(id=>rosterFor(c).find(op=>op.id===id).medical>=60),'The actual local column needs its existing physician.');
- for(const operativeId of local)order({type:'assignCare',operativeId,assignment:'rest'});
- for(let hour=0;hour<240&&local.some(id=>{const r=c.operativeState[id];return r.morale<50||r.fatigue||r.energy<100||r.asleep;});hour++)order({type:'wait',hours:1});
- assert.ok(local.every(id=>{const r=c.operativeState[id];return r.morale>=50&&!r.fatigue&&r.energy===100&&!r.asleep;}),'Existing paid rest must finish before the actual coastal march.');
+ const freshPhysician=rosterFor(c).find(op=>op.id>=100&&op.id<1000&&op.medical>=60&&!c.recruited.includes(op.id)&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&c.operativeState[op.id].morale>=50&&contractQuote(c,op,'day').available);
+ const servingPhysician=freshPhysician?null:veterans.filter(op=>!local.includes(op.id)&&op.medical>=60).sort((a,b)=>c.operativeState[b.id].morale-c.operativeState[a.id].morale||b.medical-a.medical||a.id-b.id)[0];
+ assert.ok(freshPhysician||servingPhysician,'The second column needs an available physician or an actual serving reserve.');
+ const rested=[...local,...(servingPhysician?[servingPhysician.id]:[])];
+ for(const operativeId of rested)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let hour=0;hour<240&&rested.some(id=>{const r=c.operativeState[id];return r.morale<50||r.fatigue||r.energy<100||r.asleep;});hour++)order({type:'wait',hours:1});
+ assert.ok(rested.every(id=>{const r=c.operativeState[id];return r.morale>=50&&!r.fatigue&&r.energy===100&&!r.asleep;}),'Existing paid rest must finish before the actual coastal march.');
  const candidates=rosterFor(c).filter(op=>op.id>=100&&op.id<1000&&!c.recruited.includes(op.id)&&stable(c,op.id)&&c.operativeState[op.id].hp===c.operativeState[op.id].maxHp&&c.operativeState[op.id].morale>=50&&contractQuote(c,op,'day').available)
   .sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'day').price-contractQuote(c,b,'day').price);
- const physician=candidates.filter(op=>op.medical>=60).sort((a,b)=>b.medical-a.medical)[0];assert.ok(physician,'A second actual physician accompanies the second column.');
+ const physician=servingPhysician??candidates.filter(op=>op.medical>=60).sort((a,b)=>b.medical-a.medical)[0];assert.ok(physician,'A second actual physician accompanies the second column.');
  const recruits=[...candidates.filter(op=>op.id!==physician.id).slice(0,6),physician];assert.equal(recruits.length,7);
- assert.ok(recruits.reduce((sum,op)=>sum+contractQuote(c,op,'day').price,0)<=c.resources.treasury-30000,'The actual first paid terms must fit the treasury and return reserve.');
- for(const recruit of recruits){const quote=contractQuote(c,recruit,'day'),cash=c.resources.treasury;order({type:'recruitCivic',id:recruit.id,term:'day',destination:'mendoza'});assert.equal(c.resources.treasury,cash-quote.price);}
+ const hired=recruits.filter(op=>!c.recruited.includes(op.id));
+ assert.ok(hired.reduce((sum,op)=>sum+contractQuote(c,op,'day').price,0)<=c.resources.treasury-30000,'The actual first paid terms must fit the treasury and return reserve.');
+ for(const recruit of hired){const quote=contractQuote(c,recruit,'day'),cash=c.resources.treasury;order({type:'recruitCivic',id:recruit.id,term:'day',destination:'mendoza'});assert.equal(c.resources.treasury,cash-quote.price);}
  for(let hour=0;hour<24&&recruits.some(op=>!c.recruited.includes(op.id));hour++)order({type:'wait',hours:1});
  assert.ok(recruits.every(op=>c.recruited.includes(op.id)&&c.operativeState[op.id].location==='mendoza'));
  const field=[...local,...recruits.map(op=>op.id)],columns=[];
- for(let offset=0;offset<field.length;offset+=6){order({type:'createSquad',name:'Arsenal de Barragán',ids:field.slice(offset,offset+6),sector:'mendoza'});columns.push(c.activeSquadId);}
+ const localSlots=c.squads.filter(q=>q.id!==originalSquad&&q.location==='mendoza'&&!q.journey).map(q=>q.id);
+ for(let offset=0;offset<field.length;offset+=6){
+  const slot=localSlots.find(id=>!columns.includes(id)),ids=field.slice(offset,offset+6);
+  if(slot){order({type:'selectSquad',id:slot});order({type:'squad',ids});}
+  else order({type:'createSquad',name:'Arsenal de Barragán',ids,sector:'mendoza'});
+  columns.push(c.activeSquadId);
+ }
  for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
  for(const id of field)if(![1800,1801,1802,1803].includes(rosterFor(c).find(op=>op.id===id).weapon))c=recoverRoutePrimary(c,id,{preferredWeapon:1801,replace:true,report});
  c=supplyFreshMountainAmmunition(c,field,{target:12,report});
  const doctor=rosterFor(c).filter(op=>local.includes(op.id)&&op.medical>=60).sort((a,b)=>b.medical-a.medical)[0];
- for(const op of [doctor,physician])c=supplyRouteDressings(c,op.id,8,{report});
+ const medicalReserves={};
+ for(const op of [doctor,physician]){
+  const localStock=()=>c.operativeState[op.id].medkits+sectorInventoryModel(c,'mendoza',rosterFor(c),op.id).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits').reduce((sum,row)=>sum+row.count,0)+
+   c.recruited.filter(id=>id!==op.id&&c.operativeState[id].alive&&!c.operativeState[id].captured&&c.operativeState[id].location==='mendoza'&&!sectorInventoryModel(c,'mendoza',rosterFor(c),id).reason).reduce((sum,id)=>sum+Math.max(0,c.operativeState[id].medkits-(medicalReserves[id]??0)),0);
+  for(let delivery=0;localStock()<8;delivery++){
+   assert.ok(delivery<8,'Finite arsenal medical couriers must make actual progress.');
+   const found=collectRouteMedicalSupplies(c,op.id,8-localStock(),{mode:c.routes.posta?'posta':'march',report});c=found.campaign;
+   assert.ok(found.collected>0);
+  }
+  c=supplyRouteDressings(c,op.id,8,{reserves:medicalReserves,report});medicalReserves[op.id]=8;
+ }
  order({type:'configureArtillery',types:[]});
  for(const id of columns){order({type:'selectSquad',id});c=finishReloadsBeforeMarch(c,{report});order({type:'travel',sector:'buenos_aires',mode:'posta',queue:true});}
  for(let hour=0;hour<168&&columns.some(id=>c.squads.find(q=>q.id===id).journey);hour++){
@@ -77,8 +106,8 @@ export function prepareCreatedCuyoArsenalAssault(start,{report=()=>{}}={}){
  for(let hour=0;hour<24&&columns.some(id=>c.squads.find(q=>q.id===id).journey?.status!=='ready');hour++)order({type:'wait',hours:1});
  assert.ok(columns.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'));retained.retain(8*3600);
  order({type:'beginAssault',sector:'ensenada'});assert.deepEqual(c.pendingBattle.squad.map(op=>op.id),field);assert.deepEqual(c.pendingBattle.artillery,[]);
- report({event:'createdCuyoArsenalAssaultReady',field,doctors:[doctor.id,physician.id],reinforcements:recruits.map(op=>op.id),hour:c.hour,second:c.secondOfHour,campaign:c});
- return {campaign:c,originalSquad,originalMembers,field,recruits:recruits.map(op=>op.id)};
+ report({event:'createdCuyoArsenalAssaultReady',field,doctors:[doctor.id,physician.id],reinforcements:hired.map(op=>op.id),hour:c.hour,second:c.secondOfHour,campaign:c});
+ return {campaign:c,originalSquad,originalMembers,field,recruits:hired.map(op=>op.id)};
 }
 
 export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheckpoint=()=>{}}={}){
@@ -93,8 +122,16 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
  assert.ok(prepared.originalMembers.every(id=>c.operativeState[id].alive),'The original foundry squad must survive this side operation.');
  const retained=createFreshRouteOrders(()=>c,next=>{c=next;},{report});const order=retained.order;
  const doctors=rosterFor(c).filter(op=>survivors.includes(op.id)&&op.medical>0&&c.operativeState[op.id].hp>=15).sort((a,b)=>b.medical-a.medical).map(op=>op.id);
- const remaining=[...survivors],groups=[];
- while(remaining.length){const doctor=doctors.find(id=>remaining.includes(id));assert.notEqual(doctor,undefined,'Each actual surviving six-person care party needs a conscious member with medical skill.');const reserved=doctors.filter(id=>id!==doctor&&remaining.includes(id)).slice(0,Math.ceil(remaining.length/6)-1);const ids=[doctor,...remaining.filter(id=>id!==doctor&&!reserved.includes(id))].slice(0,6);for(const id of ids)remaining.splice(remaining.indexOf(id),1);order({type:'createSquad',name:'Arsenal y socorro de Barragán',ids,sector:'ensenada'});groups.push({id:c.activeSquadId,members:ids});}
+ const remaining=[...survivors],groups=[],localSlots=c.squads.filter(q=>q.location==='ensenada'&&!q.journey).map(q=>q.id);
+ while(remaining.length){
+  const doctor=doctors.find(id=>remaining.includes(id));assert.notEqual(doctor,undefined,'Each actual surviving six-person care party needs a conscious member with medical skill.');
+  const reserved=doctors.filter(id=>id!==doctor&&remaining.includes(id)).slice(0,Math.ceil(remaining.length/6)-1),ids=[doctor,...remaining.filter(id=>id!==doctor&&!reserved.includes(id))].slice(0,6);
+  for(const id of ids)remaining.splice(remaining.indexOf(id),1);
+  const slot=localSlots.find(id=>!groups.some(group=>group.id===id));
+  if(slot){order({type:'selectSquad',id:slot});order({type:'squad',ids});}
+  else order({type:'createSquad',name:'Arsenal y socorro de Barragán',ids,sector:'ensenada'});
+  groups.push({id:c.activeSquadId,members:ids});
+ }
  for(const operativeId of survivors)order({type:'assignCare',operativeId,assignment:'active'});retained.retain(8*3600);
  for(const group of [...groups].sort((a,b)=>Number(b.members.some(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding))-Number(a.members.some(id=>c.operativeState[id].hp<15||c.operativeState[id].bleeding)))){
   order({type:'selectSquad',id:group.id});let care=visit(c);const dressings=care.battle.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+(u.medkits??0),0),aid=autoBandageBattle(care.battle);
@@ -115,7 +152,15 @@ export function recoverCreatedCuyoMountainArtillery(start,{report=()=>{},onCheck
   report({event:'createdCuyoArsenalShipment',id:gun.id,cost:quote.cost,hours:quote.hours,hour:c.hour});
  }
  for(const group of groups){order({type:'selectSquad',id:group.id});order({type:'travel',sector:'mendoza',mode:'posta',queue:true});}
- for(let hour=0;hour<168&&(groups.some(group=>c.squads.find(q=>q.id===group.id).journey)||source.pieces.some(gun=>!c.artilleryDepots.mendoza?.some(g=>g.id===gun.id)));hour++)order({type:'wait',hours:1});
+ for(let hour=0;hour<168&&(groups.some(group=>c.squads.find(q=>q.id===group.id).journey)||source.pieces.some(gun=>!c.artilleryDepots.mendoza?.some(g=>g.id===gun.id)));hour++){
+  // End temporary service after the real return, while the slower carts
+  // finish their paid delivery. Their exact returned kit stays in Mendoza.
+  for(const id of prepared.recruits)if(c.recruited.includes(id)&&c.operativeState[id].alive&&c.operativeState[id].location==='mendoza'&&!c.squads.some(q=>q.members.includes(id)&&q.journey)){
+   const cash=c.resources.treasury;order({type:'dismiss',id});assert.equal(c.resources.treasury,cash);
+   report({event:'createdCuyoArsenalServiceEnded',id,sector:'mendoza',hour:c.hour,second:c.secondOfHour});
+  }
+  order({type:'wait',hours:1});
+ }
  assert.equal(c.location,'mendoza');assert.ok(groups.every(group=>!c.squads.find(q=>q.id===group.id).journey));
  for(const id of prepared.recruits)if(c.recruited.includes(id)&&c.operativeState[id].alive)order({type:'dismiss',id});
  for(const id of prepared.originalMembers)if(!c.squads.find(q=>q.id===prepared.originalSquad).members.includes(id))order({type:'assignToSquad',operativeId:id,squadId:prepared.originalSquad});
