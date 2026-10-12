@@ -341,13 +341,17 @@ export function recoverFreshPort(start,{hospital='retiro',report=()=>{},fieldIds
   for(const carrier of carriers){
    const target=targets[carrier.id];
    if(c.operativeState[carrier.id].medkits>=target)continue;
-   try{c=supplyRouteDressings(c,carrier.id,target,{reserves:targets,report});}
+   const supply=()=>{
+    const receipts=[],next=supplyRouteDressings(c,carrier.id,target,{reserves:targets,report:event=>receipts.push(event)});
+    c=next;for(const receipt of receipts)report(receipt);
+   };
+   try{supply();}
    catch(error){
     if(!error.message.startsWith('No actual reachable finite dressings remain'))throw error;
     // Inspect real visible remains through the normal hand UI. The helper
     // neither reads hidden contents nor marks bodies as discovered.
     const found=recoverVisibleRouteDressings(c,carrier.id,target-c.operativeState[carrier.id].medkits,{report});c=found.campaign;
-    c=supplyRouteDressings(c,carrier.id,target,{reserves:targets,report});
+    supply();
    }
   }
   report({event:'portReturnDressingsCarried',sector:at,wounded,healingKits,reliefKits,carriers:carriers.map(op=>({id:op.id,target:targets[op.id],carried:c.operativeState[op.id].medkits})),hour:c.hour,second:c.secondOfHour});
