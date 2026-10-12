@@ -432,6 +432,20 @@ The completed increments are merged into `main` through their own PRs:
 | [#350](https://github.com/fsodano/granaderos/pull/350) | Ordinary courier rest and paid retention before a new supply quote. | Thirteen focused courier cases pass. |
 | [#351](https://github.com/fsodano/granaderos/pull/351) | Native rear defense during the northern handover and arrival checkpoint. | Two earned handover cases pass with exact saved replay. |
 | [#352](https://github.com/fsodano/granaderos/pull/352) | Finite early San Lorenzo ally aid in the original recovery driver. | Twenty affected cases pass across two receipts. |
+| [#354](https://github.com/fsodano/granaderos/pull/354) | Five actual hires join seven ready serving veterans when the loose seed-8 hiring pool is small. | The new earned readiness/victory case and both existing readiness cases pass, 3/3. |
+
+PR #354 retains three rear staff and their four actual dressings. The native
+Tucumán victory uses five turns and 140 actions; physician 107 dies and
+remains dead. Preparation and battle replay through official midpoint
+saves. This closes the affected seed-8 preparation boundary, with no new
+complete ending run.
+
+The merge checks passed: runner/shard self-tests 14/14, complete shard
+coverage, documentation audit, baseline audit 39/39, typecheck and clean
+diff. The primary checkout's typecheck first found missing Three.js types
+in its old dependency tree. Installing the locked web dependencies fixed
+that local failure; typecheck then passed without source changes. These
+merge checks do not replace the full release gate.
 
 Unproved rear-defense default experiments are preserved privately. They are
 not part of the published source. Mendoza ammunition supply, completion of
