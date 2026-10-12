@@ -55,7 +55,8 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are merged into `main` through PR #373. Each receipt
+The following changes are merged into `main` through PR #373. PR #375 records
+the next bounded care correction. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
 | PR | Change | Recorded affected checks |
@@ -65,6 +66,7 @@ has its own scope; their counts are not one complete campaign result.
 | [#370](https://github.com/fsodano/granaderos/pull/370) | Prepare sixteen serving Los Patos arrivals with actual paid hires through three real approaches, supply a physician in each column, follow the cliff road and activate the returned envoy before the physical commander meeting. | Six affected files pass 33/33 in 86.638 seconds, with all 600 pins unchanged. The earned native assault wins in seven turns and 295 orders. Its actual death remains permanent. |
 | [#372](https://github.com/fsodano/granaderos/pull/372) | Reserve each selected Salta doctor's dressing before supplying the other doctors from actual local stock or a finite donor. | The earned allocation control passes 1/1 in 3.791 seconds, with all 2,277 pins unchanged. It preserves doctor 122's dressing, debits donor 100's two dressings, performs two ordinary care ticks and reproduces through official saves. Local exhaustion remains an honest refusal; full clinic recovery and Salta remain open. |
 | [#373](https://github.com/fsodano/granaderos/pull/373) | After the specific finite Mendoza clinic shortage, finish stable patients' recovery through ordinary paid rest. Keep acute care, safety and every original full-health gate. | The affected gate passes 12/12 in 112.119 seconds, with all 593 source/shipping pins and seven consumed inputs unchanged. All five earned survivors fully recover after 23 local dressings and 348 actual rest hours. Exact renewals and daily income remain asserted; the next active-journey refusal remains open. |
+| [#375](https://github.com/fsodano/granaderos/pull/375) | Treat the actual critical Córdoba survivors before the medical courier resumes. Use four known corpse dressings and four carried dressings from two uniquely paid weekly medics. Keep all native battle deaths and the patients' remaining wounds. | Both complete affected earned files pass 5/5 in 147.953 seconds. All 560 source/config/fixture/shipping pins and five consumed inputs remain unchanged, including after current-main integration. Seven real care hours consume seven dressings and 504 pesos; patients 112, 122 and 101 survive at 18, 17 and 50 HP, with no bleeding. Every public order replays through an official midpoint save. The prior hour-294 helper remains unchanged and its earned native defense still passes. The complete original recovery remains unproved. |
 
 The PR #370 mountain receipt uses the actual post-Uspallata save. Ordinary
 orders form columns of six, six and four people at the east, north and south
