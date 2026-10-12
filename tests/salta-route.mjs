@@ -7,7 +7,9 @@ import {enterSector} from '../game/world.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {attendYatasto} from './mission-helpers.mjs';
 import {contractQuote} from '../game/contracts.js';
-import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
+import {fightNorthernSector,northernCombatOrder,northernClinicDefenseOrder} from './northern-route.mjs';
+import {stageOpeningRearCover} from './opening-rear-guard.mjs';
+import {openingRearFormation,supplyOpeningRearDoctors,stabilizeOpeningRearSurvivors} from './opening-rear-medical-supply.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
@@ -42,12 +44,12 @@ function renew(route,ids,buffer){
   }
  }
 }
-export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},encounterController=northernCombatOrder}={}){
+export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},encounterController}={}){
  const route=orders(start),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep the rear depot defended while the northern force marches. Its
  // actual reserves reload their own guns; a paid guard recovers finite gear.
- const selected=start.activeSquadId,reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});
+ let selected=start.activeSquadId;const formation=openingRearFormation(start),reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});
  assert.ok(reserves.length<6);
  const guardRoster=rosterFor(route.campaign),preferredGuards=[113,140,144,146,108,101,102];
  const guardCandidates=guardRoster.filter(op=>op.id>=100&&op.id<1000&&civicStatus(route.campaign,op.id).available).map(op=>({op,quote:contractQuote(route.campaign,op,'week')})).filter(row=>row.quote.available&&row.quote.total<=route.campaign.resources.treasury).sort((a,b)=>a.quote.total-b.quote.total||b.op.marksmanship-a.op.marksmanship||a.op.id-b.op.id);
@@ -96,9 +98,22 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
   for(const operativeId of [...rearPatients,...rearDoctors]){assert.equal(route.campaign.operativeState[operativeId].bleeding,0);assert.equal(route.campaign.operativeState[operativeId].hp,route.campaign.operativeState[operativeId].maxHp);order({type:'assignCare',operativeId,assignment:'rest'});}
  }
  for(const operativeId of route.campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
+ const medical=supplyOpeningRearDoctors(route.campaign,guard,{report});route.apply(()=>medical.campaign);
+ onCheckpoint('salta-medical-courier',route.campaign,{receipt:medical.receipt});
+ // Preserve earned mixed scout/roof positions. A force without existing
+ // cover walks there normally before its courier spends more travel time.
+ if(!formation.hasCover){
+  const courierSquad=route.campaign.activeSquadId,covered=stageOpeningRearCover(route.campaign,{sector:'tucuman',exclude:[guard],report});
+  route.apply(()=>covered.campaign);selected=route.campaign.activeSquadId;
+  onCheckpoint('salta-rear-cover',route.campaign,{receipt:covered.receipt});order({type:'selectSquad',id:courierSquad});
+ }
+ encounterController??=formation.hasCover&&!formation.allCovered?northernCombatOrder:northernClinicDefenseOrder;
  const battery=prepareRouteSupportBattery(route.campaign,{destination:'tucuman',waypointsFor:saltaBatteryWaypoints,keepServing:route.campaign.recruited.filter(id=>route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured),resolveEncounter:(campaign,{stage})=>{
   const crewSquad=campaign.activeSquadId;onCheckpoint('support-battery-encounter',campaign,{stage});route.apply(()=>campaign);
   const defense=route.resolveEncounter(report,encounterController);assert.equal(defense.status,'victory','the actual support-battery raid must be won');defenses.push(defense);
+  onCheckpoint('support-battery-victory',route.campaign,{stage,defense});
+  const care=stabilizeOpeningRearSurvivors(route.campaign,defense.sector,{report});route.apply(()=>care.campaign);
+  onCheckpoint('support-battery-care',route.campaign,{stage,defense,care:care.receipt});
   order({type:'selectSquad',id:crewSquad});onCheckpoint('support-battery-settled',route.campaign,{stage,defense});return route.campaign;
  },report});route.apply(()=>battery.campaign);order({type:'configureArtillery',types:[]});
  order({type:'selectSquad',id:reserveSquad});
