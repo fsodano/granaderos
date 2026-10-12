@@ -53,6 +53,57 @@ failure receipt; it is not proof that a game mechanic is broken.
 - [ ] Complete the installed default-seed route and its saved continuation.
 - [ ] Complete the final production browser review and full release gate.
 
+## Latest merged evidence
+
+The following changes are merged into `main` through PR #373. Each receipt
+has its own scope; their counts are not one complete campaign result.
+
+| PR | Change | Recorded affected checks |
+| --- | --- | --- |
+| [#368](https://github.com/fsodano/granaderos/pull/368) | Visit a clear, controlled Ensenada through ordinary travel and a physical naval meeting. Keep the earlier actual arsenal victory receipt; a blockaded or occupied port still requires combat. | Three tests pass in 130.263 seconds. All 596 source/shipping pins and four consumed inputs remain unchanged. The real blockade control refuses the friendly visit. |
+| [#369](https://github.com/fsodano/granaderos/pull/369) | Integrate the paid Córdoba rear reserve after the actual Tucumán battery checkpoint, then give finite rural aid after the native defense. | The earned original battery continuation passes 1/1 in 148.135 seconds. All 2,314 pins remain unchanged. The original recovered swivel reaches Tucumán at hour 402, second 3,204, with one loaded charge and six spare charges. A separate earned road-relief file passes 1/1. |
+| [#370](https://github.com/fsodano/granaderos/pull/370) | Prepare sixteen serving Los Patos arrivals with actual paid hires through three real approaches, supply a physician in each column, follow the cliff road and activate the returned envoy before the physical commander meeting. | Six affected files pass 33/33 in 86.638 seconds, with all 600 pins unchanged. The earned native assault wins in seven turns and 295 orders. Its actual death remains permanent. |
+| [#372](https://github.com/fsodano/granaderos/pull/372) | Reserve each selected Salta doctor's dressing before supplying the other doctors from actual local stock or a finite donor. | The earned allocation control passes 1/1 in 3.791 seconds, with all 2,277 pins unchanged. It preserves doctor 122's dressing, debits donor 100's two dressings, performs two ordinary care ticks and reproduces through official saves. Local exhaustion remains an honest refusal; full clinic recovery and Salta remain open. |
+| [#373](https://github.com/fsodano/granaderos/pull/373) | After the specific finite Mendoza clinic shortage, finish stable patients' recovery through ordinary paid rest. Keep acute care, safety and every original full-health gate. | The affected gate passes 12/12 in 112.119 seconds, with all 593 source/shipping pins and seven consumed inputs unchanged. All five earned survivors fully recover after 23 local dressings and 348 actual rest hours. Exact renewals and daily income remain asserted; the next active-journey refusal remains open. |
+
+The PR #370 mountain receipt uses the actual post-Uspallata save. Ordinary
+orders form columns of six, six and four people at the east, north and south
+approaches. Three field-gun shots leave one loaded charge; the empty swivel
+receives no replacement charge. Fifteen survivors receive finite care and
+return. The foundry engineer stays alive in Mendoza. The physical meeting
+recruits San Martín at hour 1,025, second 747, with 62,713 pesos remaining.
+The real naval blockade is still active. This is an earned mountain
+continuation, not a fresh campaign ending or an ending continuation pass.
+
+The PR #373 clinic spends 158,278 pesos on actual renewals and receives
+120,000 pesos from fifteen ordinary daily incomes. The five survivors reach
+full health at hour 1,396, second 747, with 21,194 pesos. Prior deaths,
+artillery identities and charges, and the two unused Córdoba dressings remain
+intact. This is earned clinic acceptance. The subsequent default commander
+continuation fails when it tries to reorganize `[57, 8, 11, 0]` while its actual
+Buenos Aires journey is still active. That suffix ends with exit 1 in 94.087
+seconds, with all 615 source/shipping pins and both consumed inputs unchanged.
+It does not prove the coast battle, a fresh ending or saved-ending continuation.
+
+Two newer complete route runs also retain their failures. The unchanged
+original opening at `16073a87` runs to terminal with five passes, two failures
+(including the parent) and one dependent skip in 530.432 seconds. All 2,325
+pins remain unchanged. Battery delivery succeeds; that run stops when the
+later Salta clinic tries to assign a doctor after donating that doctor's last
+dressing. PR #372 proves the narrow allocation correction, but later full
+clinic recovery, Salta, Yatasto and the complete opening remain open.
+
+The unchanged original recovery at `c4e12285` fails 0/1 in 1,790.022 seconds,
+with no skips or cancellations. All 609 source/config/shipping pins remain
+unchanged. It passes the later rear defense, but the final recovery assertion
+finds patient 112 dead after the earlier hour-150 hospital defense. Those
+complete failures remain open until a correction passes the affected route.
+
+Merge checks on `797d1e28` pass: runner self-tests 14/14, complete coverage of
+1,048 test files, documentation audit, baseline audit 39/39 and typecheck.
+They do not replace the complete release gate. The latest complete ending
+receipt remains the failed two-case `711adfef` run recorded below.
+
 ## Recorded checks and remaining limits
 
 The first unfiltered baseline completed on frozen `main` at

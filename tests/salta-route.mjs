@@ -10,6 +10,8 @@ import {contractQuote} from '../game/contracts.js';
 import {fightNorthernSector,northernCombatOrder,northernClinicDefenseOrder} from './northern-route.mjs';
 import {stageOpeningRearCover} from './opening-rear-guard.mjs';
 import {openingRearFormation,supplyOpeningRearDoctors,stabilizeOpeningRearSurvivors} from './opening-rear-medical-supply.mjs';
+import {prepareOpeningCordobaReserve,relieveOpeningCordobaReserve} from './opening-cordoba-rear-reserve.mjs';
+import {supplySaltaClinicDoctors} from './salta-clinic-supply.mjs';
 import {collectRouteItems} from './finite-route-equipment.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {prepareRouteSupportBattery} from './route-support-battery.mjs';
@@ -107,15 +109,27 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
   route.apply(()=>covered.campaign);selected=route.campaign.activeSquadId;
   onCheckpoint('salta-rear-cover',route.campaign,{receipt:covered.receipt});order({type:'selectSquad',id:courierSquad});
  }
- encounterController??=formation.hasCover&&!formation.allCovered?northernCombatOrder:northernClinicDefenseOrder;
+ let cordobaReserve=null;
+ const northernController=formation.hasCover&&!formation.allCovered?northernCombatOrder:northernClinicDefenseOrder;
+ encounterController??=(battle,unit)=>cordobaReserve?.needed&&battle.sectorId==='cordoba'?northernClinicDefenseOrder(battle,unit):northernController(battle,unit);
  const battery=prepareRouteSupportBattery(route.campaign,{destination:'tucuman',waypointsFor:saltaBatteryWaypoints,keepServing:route.campaign.recruited.filter(id=>route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured),resolveEncounter:(campaign,{stage})=>{
   const crewSquad=campaign.activeSquadId;onCheckpoint('support-battery-encounter',campaign,{stage});route.apply(()=>campaign);
   const defense=route.resolveEncounter(report,encounterController);assert.equal(defense.status,'victory','the actual support-battery raid must be won');defenses.push(defense);
   onCheckpoint('support-battery-victory',route.campaign,{stage,defense});
   const care=stabilizeOpeningRearSurvivors(route.campaign,defense.sector,{report});route.apply(()=>care.campaign);
   onCheckpoint('support-battery-care',route.campaign,{stage,defense,care:care.receipt});
-  order({type:'selectSquad',id:crewSquad});onCheckpoint('support-battery-settled',route.campaign,{stage,defense});return route.campaign;
+  if(cordobaReserve?.needed&&defense.sector==='cordoba'){
+   const relief=relieveOpeningCordobaReserve(route.campaign,cordobaReserve.ids,{report});route.apply(()=>relief.campaign);
+   onCheckpoint('support-battery-road-relief',route.campaign,{stage,defense,receipts:relief.receipts});
+  }
+  order({type:'selectSquad',id:crewSquad});onCheckpoint('support-battery-settled',route.campaign,{stage,defense});
+  if(defense.sector==='tucuman'&&!cordobaReserve){
+   const reserve=prepareOpeningCordobaReserve(route.campaign,{report});route.apply(()=>reserve.campaign);cordobaReserve=reserve.receipt;
+   onCheckpoint('support-battery-road-reserve',route.campaign,{stage,defense,reserve:cordobaReserve});
+  }
+  return route.campaign;
  },report});route.apply(()=>battery.campaign);order({type:'configureArtillery',types:[]});
+ onCheckpoint('salta-battery-delivered',route.campaign,{selections:battery.selections,cordobaReserve});
  order({type:'selectSquad',id:reserveSquad});
  for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'active'});
  route.prepareWeapons(report);for(const operativeId of [...reserves,guard])order({type:'assignCare',operativeId,assignment:'rest'});
@@ -138,24 +152,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  const local=route.campaign.recruited.filter(id=>{const record=route.campaign.operativeState[id];return record.alive&&!record.captured&&record.location==='tucuman';});
  const patients=local.filter(id=>route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp),doctors=[];
  const medicalStart=local.reduce((sum,id)=>sum+route.campaign.operativeState[id].medkits,0);
- const careModel=id=>sectorInventoryModel(route.campaign,'tucuman',rosterFor(route.campaign),id);
  let gatheredDressings=0,donatedDressings=0;
- const supplyDoctor=id=>{
-  let source=careModel(id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
-  if(!source){
-   const donor=local.find(other=>other!==id&&route.campaign.operativeState[other].medkits>0&&!careModel(other).reason);
-   if(!donor){const found=collectRouteItems(route.campaign,id,{item:'medkits'},1);route.apply(()=>found.campaign);gatheredDressings+=found.collected;return true;}
-   const carried=route.campaign.operativeState[donor].medkits;
-   order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'medkits',count:1});
-   assert.equal(route.campaign.operativeState[donor].medkits,carried-1);donatedDressings++;
-   source=careModel(id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
-  }
-  assert.ok(source,'the doctor must reach the actual dressing');
-  const carried=route.campaign.operativeState[id].medkits;
-  order({type:'sectorInventory',sector:'tucuman',operativeId:id,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
-  assert.equal(route.campaign.operativeState[id].medkits,carried+1);assert.equal(careModel(id).entries.find(row=>row.key===source.key)?.count??0,source.count-1);gatheredDressings++;
-  return true;
- };
  // A stable wounded physician can treat another patient, then receive care
  // from a recovered colleague. Their own wounds must also be restored.
  for(let i=0;i<72;i++){
@@ -167,7 +164,9 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
    const hourlyDoctors=eligible.slice(0,2).map(op=>op.id);
    if(wounded.every(id=>hourlyDoctors.includes(id)))hourlyDoctors.splice(hourlyDoctors.indexOf(wounded.at(-1)),1);
    assert.ok(hourlyDoctors.length,'an actual stable colleague must restore the wounded doctor');
-   for(const id of hourlyDoctors){if(!route.campaign.operativeState[id].medkits)supplyDoctor(id);assert.ok(route.campaign.operativeState[id].medkits,'continued care consumes finite reachable dressings');if(!doctors.includes(id))doctors.push(id);}
+   const supplied=supplySaltaClinicDoctors(route.campaign,hourlyDoctors);route.apply(()=>supplied.campaign);
+   gatheredDressings+=supplied.gatheredDressings;donatedDressings+=supplied.donatedDressings;route.events.push(...supplied.actions.map(action=>({action,hour:route.campaign.hour,second:route.campaign.secondOfHour??0})));
+   for(const id of hourlyDoctors){assert.ok(route.campaign.operativeState[id].medkits,'continued care consumes finite reachable dressings');if(!doctors.includes(id))doctors.push(id);}
    for(const operativeId of local)order({type:'assignCare',operativeId,assignment:hourlyDoctors.includes(operativeId)?'doctor':wounded.includes(operativeId)?'patient':'rest'});
   }else for(const operativeId of local)order({type:'assignCare',operativeId,assignment:'rest'});
   renew(route,route.campaign.recruited,2);order({type:'wait',hours:1});
@@ -226,7 +225,7 @@ export function prepareSaltaAssault(start,{report=()=>{},onCheckpoint=()=>{},enc
  const battle=enterSector(request,campaign.sectorStates.salta);
  assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
  report({event:'jointSaltaDeployment',hour:campaign.hour,units:request.squad.map(u=>u.id),patients,usedDressings});
- return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
+ return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,cordobaReserve,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
 }
 
 export function completeNorthernMission(start,{report=()=>{}}={}){

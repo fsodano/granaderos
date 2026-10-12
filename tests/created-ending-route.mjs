@@ -36,12 +36,17 @@ import {BLADES,actBattle} from '../game/tactical.js';
 import {prepareCreatedRiverAssault} from './created-river-preparation.mjs';
 import {createdSaltaReserveDeployment,stageCreatedSaltaBattery} from './created-salta-battery.mjs';
 import {createdJujuyContinuingDefense} from './created-jujuy-continuing-defense.mjs';
+import {enterControlledPort,controlledPortAvailable,priorPortVictories} from './controlled-port-handover.mjs';
+import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {restStableRoutePatients} from './stable-route-rest.mjs';
 
 // Recover the actual mountain survivors before their paid terms end. The
 // affordable relief column waits for real arrivals, finite care and rest.
 export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementCount=1}={}){
  assert.ok(Number.isInteger(reinforcementCount)&&reinforcementCount>=0&&reinforcementCount<=4);
+ const inputCapture=recordRouteStrategicEvidence({helper:'prepareCreatedCoastalAssault',stage:'preparation-input',campaign:start});
  let c=decodeSave(encodeSave(start)).campaign;
+ try{
  const mountainSurvivors=c.recruited.filter(id=>{const r=c.operativeState[id];return r.alive&&!r.captured&&r.location==='mendoza';});
  const expeditionIds=mountainSurvivors.filter(id=>id!==57&&c.contracts[id]?.kind==='paid').sort((a,b)=>a-b);
  assert.ok(mountainSurvivors.includes(57),'the actual living commander must be present for coastal preparation');
@@ -145,7 +150,20 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
   order({type:'assignCare',operativeId:patientId,assignment:'patient'});
   const careStart=c.hour,healthBefore=c.operativeState[patientId].hp;
   for(let h=0;h<36&&(c.operativeState[patientId].hp<c.operativeState[patientId].maxHp||c.operativeState[patientId].bleeding>0);h++){
-   if(!c.operativeState[doctorId].medkits)c=supplyRouteDressings(c,doctorId,1,{report});
+   if(!c.operativeState[doctorId].medkits){
+    try{c=supplyRouteDressings(c,doctorId,1,{report});}
+    catch(error){
+     // A real exhausted clinic may still recover stable survivors through
+     // ordinary paid rest. Acute wounds and every other refusal remain errors.
+     if(error.message!==`No actual reachable finite dressings remain for ${doctorId} at mendoza.`)throw error;
+     const remaining=patients.filter(id=>c.operativeState[id].hp<c.operativeState[id].maxHp||c.operativeState[id].bleeding>0);
+     const rest=restStableRoutePatients(c,{patients:remaining,sector:'mendoza',report});c=rest.campaign;
+     events.push({action:{type:'stableCoastalClinicRest'},hour:c.hour,...rest.receipt});
+     report({event:'coastalClinicRestFinished',...rest.receipt,campaign:c});
+     assert.equal(rest.completed,true,rest.stoppedReason??'the real coast clinic rest must finish');
+     break;
+    }
+   }
    order({type:'assignCare',operativeId:doctorId,assignment:'doctor'});order({type:'wait',hours:1});
   }
   assert.equal(c.operativeState[patientId].hp,c.operativeState[patientId].maxHp);assert.equal(c.operativeState[patientId].bleeding,0);
@@ -232,13 +250,16 @@ export function prepareCreatedCoastalAssault(start,{report=()=>{},reinforcementC
  }
  assert.ok(field.every(id=>c.operativeState[id].location==='buenos_aires'));
  order({type:'configureArtillery',types:battery.selections});
- c=prepareFinalAssault(c,{staging:'buenos_aires',target:'ensenada',fieldIds:field});
+ const controlledPort=controlledPortAvailable(c);
+ if(controlledPort)c=enterControlledPort(c,{fieldIds:field,report}).campaign;
+ else c=prepareFinalAssault(c,{staging:'buenos_aires',target:'ensenada',fieldIds:field});
  for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(c.operativeState[id].alive,false);
  assert.ok(expeditionIds.every(id=>c.operativeState[id].alive&&(retainedRoles.has(id)?c.recruited.includes(id)&&c.contracts[id].expiresAt>c.hour:!c.recruited.includes(id))), 'actual paid veterans retain service only when selected for continuing roles');
- const battle=enterSector(c.pendingBattle,c.sectorStates.ensenada);
- assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
+ if(c.pendingBattle){const battle=enterSector(c.pendingBattle,c.sectorStates.ensenada);assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});}
+ else assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  report({event:'createdCoastalAssaultReady',hour:c.hour,treasury:c.resources.treasury,field,events});
- return {campaign:c,field,events,roles:{expeditionIds,doctorId,reliefId,supportIds,reinforcements}};
+ return {campaign:c,field,events,controlledPort,roles:{expeditionIds,doctorId,reliefId,supportIds,reinforcements}};
+ }catch(error){recordRouteStrategicEvidence({helper:'prepareCreatedCoastalAssault',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }
 
 // The issued coastal guns share helpers at the entry. Pay for the actual
@@ -278,17 +299,21 @@ export function createdCoastalBattery(campaign,{doctorId,reliefId}){
 // commander returns from his boundary exit before meeting the naval officers.
 export function finishCreatedCoast(prefix,{onCheckpoint}={}){
  const prepared=prepareCreatedCoastalAssault(prefix.campaign);
- let campaign=prepared.campaign;const notes=[];
+ let campaign=prepared.campaign;const notes=priorPortVictories(prefix.notes);
  const note=(stage,details={})=>{
   notes.push({stage,hour:campaign.hour,treasury:campaign.resources.treasury,squad:[...campaign.squad],...details});
   onCheckpoint?.(stage,campaign,notes);
  };
  note('coastal-preparation',{field:prepared.field});
- const port=fightNorthernSector(campaign,'ensenada',createdCoastalBattery(campaign,prepared.roles));
- campaign=port.campaign;
- assert.equal(campaign.operativeState[57].location,'buenos_aires');
- note('ensenada',port.summary);
- campaign=recruitFreshNavalCommand(rejoinCommandAfterExit(campaign,57,'ensenada'));
+ if(prepared.controlledPort){
+  assert.equal(campaign.location,'ensenada');assert.equal(campaign.pendingBattle,null);
+  assert.equal(campaign.operativeState[57].location,'ensenada');note('controlled-port-arrival');
+ }else{
+  const port=fightNorthernSector(campaign,'ensenada',createdCoastalBattery(campaign,prepared.roles));campaign=port.campaign;
+  assert.equal(campaign.operativeState[57].location,'buenos_aires');note('ensenada',port.summary);
+  campaign=rejoinCommandAfterExit(campaign,57,'ensenada');
+ }
+ campaign=recruitFreshNavalCommand(campaign);
  note('naval-command');
  campaign=recoverFreshPort(campaign);
  note('coastal-care');
