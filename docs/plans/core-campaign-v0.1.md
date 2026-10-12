@@ -127,8 +127,9 @@ continuation browser review remains open.
 Two earned hospital tests passed with all 624 pinned inputs unchanged. They
 keep Córdoba occupied, heal all four actual patients at controlled Tucumán,
 spend the real officer fee, paid physician, fortifications and finite
-dressings, then save and replay an ordinary rural sleep tick. The later return
-still fails at its actual hour-408 Tucumán raid.
+dressings, then save and replay an ordinary rural sleep tick. At this batch,
+the later return failed at its actual hour-408 Tucumán raid. The bounded
+return correction is recorded below.
 
 The full release regression, later hospital return and complete Cuyo route
 remain open. Bounded post-Salta care and Cuyo defense checks are recorded
@@ -208,3 +209,43 @@ arrival receipts. Finite equipment and permanent deaths remain enforced.
 These are bounded results. The full opening, later hospital return, complete
 installed ending, final browser continuation and passing full release gate
 remain open. The earlier unfiltered regression receipt is unchanged.
+
+## Equipment and northern return follow-up
+
+PR #344 adds route helper corrections and earned checkpoint tests. It changes
+neither game rules nor the installed campaign package.
+
+Four equipment tests passed with all 719 pinned inputs unchanged. A returning
+Cuyo hire had a correctly saved empty primary hand without `weaponDropped`.
+The route now recovers one real local firearm through the existing inventory
+orders before allocating ammunition. The regression keeps finite sources,
+permanent deaths, paid service, actual posta fares and the exact official save.
+
+The earned Córdoba clinic regression passed 1/1. Ordinary care stops for the
+actual hour-150 raid, replays the native victory through an official midpoint
+save and resumes care only after settlement. The two actual deaths remain
+dead. Five clinic dressings and two combat dressings leave the finite pool at
+the recorded count. The original complete northern and historical-loss files
+still failed, both at the subsequent actual Tucumán defeat. All 662 inputs
+remained unchanged during that complete two-file run.
+
+The complete earned hospital file passed 3/3 with all 337 pinned inputs
+unchanged. A paid guard donates one existing dressing to the local physician,
+who moves to reachable roof cover through ordinary tactical orders. The
+actual hour-408 raid ends in native victory after 18 turns and 713 actions.
+Its three deaths remain permanent. All four original patients and the actual
+surviving guards return alive to Buenos Aires at hour 438, second 89. The
+regression records exact booking, renewal and income costs, and replays the
+battle through the official save codec. This proves the earned return, not
+the original fresh whole-campaign recovery file or the campaign ending.
+
+The foundry helper now budgets and pays both existing political guarantees
+before asking Barcala to join, unless they were already enacted. A diagnostic
+installed continuation completed Mendoza with actual casualties and reached
+foundry preparation. Later army funding still stopped at a convoy whose path
+crossed two occupied localities. That continuation is diagnostic evidence,
+not a passing complete Cuyo or ending test.
+
+This merge does not establish campaign acceptance. The earlier full regression failures,
+complete installed ending and final browser continuation remain open. The
+historical `0.1` tag retains its original commit.
