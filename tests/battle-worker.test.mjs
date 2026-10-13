@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {Worker} from 'node:worker_threads';
-import {actBattle,endTurn,createBattle,getReachable} from '../game/tactical.js';
+import {actBattle,endTurn,createBattle,getReachable,canSee,teamCanSee,knownArtillery} from '../game/tactical.js';
 import {createBattleExecutor} from '../web/lib/battle-executor.js';
 import {executeGroupMove,planGroupMove} from '../game/group-movement.js';
 import {movementGroupModel} from '../game/ja2-hud.js';
@@ -72,14 +72,18 @@ for(const event of ['onerror','onmessageerror'])test(`executor releases all pend
  executor.close();executor.close();assert.equal(terminated,1);
 });
 
-test('background reachable previews preserve routes and leave battle snapshots unchanged',async()=>{
+test('background reachable previews use observed occupants and leave battle snapshots unchanged',async()=>{
  await withExecutor(async executor=>{
   for(const exploration of [false,true])for(const movementIntent of ['forward','preserveFacing']){
    const battle=fixture();if(exploration)battle.mode='exploration';
    const before=structuredClone(battle);
    for(const unitId of ['p','missing']){
     const result=await executor.run({battle,action:{unitId,movementIntent},kind:'reachable-preview'});
-    assert.deepEqual(result,getReachable(battle,unitId,{movementIntent}));
+    const unit=battle.units.find(candidate=>candidate.id===unitId);
+    const seen=point=>unit.side==='player'?teamCanSee(battle,unit.side,point):canSee(battle,unit,point);
+    const observed=unit?{...battle,units:battle.units.filter(other=>other.side===unit.side||seen(other)),npcs:(battle.npcs??[]).filter(seen),artillery:knownArtillery(battle,unit)}:null;
+    assert.deepEqual(result,unit?getReachable(observed,unitId,{movementIntent}):[]);
+    if(unit)for(const other of battle.units.filter(candidate=>candidate.side!==unit.side&&!seen(candidate)))assert.ok(result.some(point=>point.x===other.x&&point.y===other.y),'a hidden opponent cannot disclose its cell through the worker bridge');
     if(unitId==='p'&&movementIntent==='forward')assert.ok(result.length);
    }
    assert.deepEqual(battle,before);
