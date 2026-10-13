@@ -175,7 +175,7 @@ export function stockNorthernSaltaController(initial){
   if(unit.hp>=15&&!unit.unconscious&&!unit.routed&&!unit.departure&&unit.bleeding>0&&unit.medical>0&&unit.medkits>0){
    const costs=actionCosts(battle,unit,unit);
    if(unit.activeSlot==='medical'&&unit.ap>=costs.heal)return {type:'useItem',unitId:unit.id,targetId:unit.id};
-   if(unit.activeSlot!=='medical'&&unit.ap>=costs.weapon+costs.heal)return {type:'weapon',unitId:unit.id,slot:'medical'};
+   if(unit.activeSlot!=='medical'&&!unit.knockedDown&&unit.ap>=costs.weapon+costs.heal)return {type:'weapon',unitId:unit.id,slot:'medical'};
   }
   const normal=battery(battle,unit);
   if(battle.mode==='combat'&&unit.id===medic&&!unit.knockedDown&&!unit.entangled){
