@@ -58,5 +58,156 @@
   "notYetRecruited": [
     0,
     8
-  ]
+  ],
+  "unchangedDiagnosticExpiry": {
+    "scope": "The unchanged original helper already lets this temporary contract end through ordinary march time. Its living patient and finite ground property remain in Salta. The new party correction does not dismiss him, alter his term, consume his property or create this expiry.",
+    "source": ".cache/core-campaign-2026-10-12/yatasto-party-diagnostic-v1/after.save.json",
+    "pathSha256": "c22fdb102fd06fa0538f8b47acdb820711712a985bfbc836f1b276c1ed83700e",
+    "operativeId": 125,
+    "clock": [
+      798,
+      1150
+    ],
+    "alive": true,
+    "hp": 15,
+    "maxHp": 87,
+    "bleeding": 0,
+    "bandaged": 72,
+    "location": "salta",
+    "groundRows": [
+      {
+        "item": "weapon",
+        "count": 1,
+        "weight": 4,
+        "weapon": 1800,
+        "loaded": 1,
+        "condition": 84,
+        "jammed": false,
+        "id": "service-return-3-0",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "weapon",
+        "count": 1,
+        "weight": 0.6,
+        "weapon": 1813,
+        "loaded": 0,
+        "condition": 100,
+        "jammed": false,
+        "id": "service-return-3-1",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "headwear",
+        "kind": "outfit",
+        "outfit": "hat",
+        "count": 1,
+        "weight": 0.3,
+        "condition": 100,
+        "id": "service-return-3-2",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "outfit",
+        "kind": "outfit",
+        "outfit": "poncho",
+        "count": 1,
+        "weight": 2,
+        "condition": 61,
+        "id": "service-return-3-3",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "legwear",
+        "kind": "outfit",
+        "outfit": "trousers",
+        "count": 1,
+        "weight": 0.7,
+        "condition": 100,
+        "id": "service-return-3-4",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "kind": "ammunition",
+        "ammoType": "pistol_69",
+        "count": 7,
+        "weight": 0.04,
+        "name": "Cartuchos de pistola",
+        "item": "inventory:ammo:pistol_69",
+        "id": "service-return-3-5",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "kind": "ammunition",
+        "ammoType": "musket_75",
+        "count": 10,
+        "weight": 0.04,
+        "name": "Cartuchos de mosquete",
+        "item": "inventory:ammo:musket_75",
+        "id": "service-return-3-6",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "rations",
+        "count": 2,
+        "weight": 0.5,
+        "id": "service-return-3-7",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "boleadoras",
+        "count": 1,
+        "weight": 0.8,
+        "id": "service-return-3-8",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      },
+      {
+        "item": "torches",
+        "count": 2,
+        "weight": 0.4,
+        "id": "service-return-3-9",
+        "type": "item",
+        "x": 43,
+        "y": 25,
+        "tacticalLevel": 0,
+        "knownToPlayer": true
+      }
+    ]
+  }
 }

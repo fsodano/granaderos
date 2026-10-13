@@ -748,12 +748,16 @@ export function prepareFreshNorthernHandover(start,{report=()=>{}}={}){
  for(const operativeId of careDoctors)order({type:'assignCare',operativeId,assignment:'active'});
  const before=structuredClone(c.resources);order({type:'diplomacy',kind:'northPact'});
  assert.equal(c.resources.treasury,before.treasury-300);assert.deepEqual(Object.keys(c.resources),['treasury']);
- // Select the living envoy explicitly after a multi-squad victory. Other
- // survivors retain their records and equipment in Salta.
+ // Keep the strongest eligible envoy and bring serving local northern
+ // officers with him. Other survivors retain their actual Salta records.
  const envoy=rosterFor(c).filter(op=>{const r=c.operativeState[op.id];return c.recruited.includes(op.id)&&r.alive&&!r.captured&&r.hp>=15&&r.location==='salta';}).sort((a,b)=>b.leadership-a.leadership||a.id-b.id)[0];
  assert.ok(envoy,'a living local envoy must continue the northern mission');
  const envoySquad=c.squads.find(q=>q.members.includes(envoy.id));assert.ok(envoySquad);
- order({type:'selectSquad',id:envoySquad.id});order({type:'squad',ids:[envoy.id]});
+ const party=[...new Set([envoy.id,...[1,0,8].filter(id=>{
+  const r=c.operativeState[id];return c.recruited.includes(id)&&r.alive&&!r.captured&&!operativeInTransit(c,id)&&operativeLocation(c,id)==='salta';
+ })])];assert.ok(party.length<=6,'The actual envoy party must fit the ordinary squad limit.');
+ order({type:'selectSquad',id:envoySquad.id});const partyAction={type:'squad',ids:party};order(partyAction);
+ report({event:'northernHandoverParty',action:partyAction,envoy:envoy.id,campaign:structuredClone(c)});
  c=meetRecruits(c,['guemes','macacha'],envoy.id);
 for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});for(let i=0;i<30&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);i++)waitHour();for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
 order({type:'travel',sector:'tucuman'});report({event:'northernHandoverTravel',campaign:structuredClone(c),envoy:envoy.id,envoySquad:envoySquad.id});

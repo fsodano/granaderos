@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -57,11 +57,27 @@ test('the actual Salta envoy and serving northern officer complete Yatasto toget
  for(const id of [0,8]){assert.equal(c.contracts[id].kind,'patriot');assert.equal(c.contracts[id].started,790);assert.ok(c.contracts[id].startedSecond>start.secondOfHour);}
  const travel=events.find(e=>e.event==='northernHandoverTravel'),arrived=events.find(e=>e.event==='northernHandoverArrived');assert.ok(travel&&arrived);
  assert.deepEqual(travel.campaign.squad,[114,1,0,8]);assert.equal(travel.envoy,114);assert.equal(travel.envoySquad,'squad-27');
- assert.ok(clock(c)>clock(start));assert.ok(clock(arrived.campaign)>clock(travel.campaign));
+ // The ordinary travel call can complete synchronously before its report.
+ // Its real elapsed journey still precedes the arrival and mission clocks.
+ assert.ok(clock(travel.campaign)>clock(formed.campaign));assert.ok(clock(arrived.campaign)>=clock(travel.campaign));assert.ok(clock(c)>=clock(arrived.campaign));
  for(const q of before.squads)if(q.id!=='squad-27')assert.deepEqual(c.squads.find(v=>v.id===q.id),{...q,members:q.members.filter(id=>id!==1)},'Other actual columns keep their members, locality and travel records.');
  const renewals=events.filter(e=>e.event==='northernHandoverRenewal');
  for(const id of before.recruited){
   const r=before.operativeState[id];assert.equal(c.operativeState[id].alive,r.alive);assert.equal(c.operativeState[id].captured,r.captured);
+  if(id===meta.unchangedDiagnosticExpiry.operativeId){
+   // This exact temporary service also expired in the unchanged diagnostic.
+   // Prove its living patient and unique physical owner, rather than treating
+   // an ordinary returned kit as lost gear or extending an unrelated duty.
+   const expected=meta.unchangedDiagnosticExpiry,expiry=contractExpiresSeconds(before.contracts[id]);
+   assert.equal(expiry,expected.clock[0]*3600+expected.clock[1]);assert.ok(expiry>clock(before)&&expiry<clock(c));
+   assert.equal(c.recruited.includes(id),false);assert.equal(c.contracts[id],undefined);
+   for(const key of ['alive','hp','maxHp','bleeding','bandaged','location'])assert.equal(c.operativeState[id][key],expected[key]);
+   assert.equal(c.operativeState[id].deathMinute,r.deathMinute);assert.deepEqual(c.operativeState[id].inventory,{});assert.equal(c.operativeState[id].carriedLoaded,0);assert.equal(c.operativeState[id].carriedAmmo,0);
+   const returned=c.sectorStates.salta.groundItems.filter(row=>row.id?.startsWith('service-return-3-'));
+   assert.deepEqual(returned,expected.groundRows);assert.equal(new Set(returned.map(row=>row.id)).size,returned.length);
+   assert.equal(c.operativeState[id].serviceEquipmentReturn,undefined);assert.equal(c.serviceEquipmentReturns.entries.length,0);
+   continue;
+  }
   assert.deepEqual(physical(c.operativeState[id]),physical(r),`The handover must not grant or discard ${id}'s carried equipment.`);
   if(!r.alive)assert.equal(c.operativeState[id].deathMinute,r.deathMinute);
   if(![114,1].includes(id))assert.equal(operativeLocation(c,id),operativeLocation(before,id));
@@ -74,11 +90,13 @@ test('the actual Salta envoy and serving northern officer complete Yatasto toget
  }
  for(const [id,r]of Object.entries(before.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}
  for(const id of [114,1])for(const key of ['hp','maxHp','bleeding','bandaged'])assert.equal(c.operativeState[id][key],before.operativeState[id][key]);
- assert.deepEqual(guns(c),guns(before));assert.deepEqual(c.serviceEquipmentReturns,before.serviceEquipmentReturns);
+ assert.deepEqual(guns(c),guns(before));assert.equal(c.serviceEquipmentReturns.nextId,before.serviceEquipmentReturns.nextId+1);assert.deepEqual(c.serviceEquipmentReturns.entries,before.serviceEquipmentReturns.entries);
  for(const row of renewals)assert.equal(row.cost,row.quote.price);
  const midnights=Math.floor(c.hour/24)-Math.floor(start.hour/24);assert.equal(midnights,1);
  assert.equal(c.resources.treasury,start.resources.treasury-300+dailyIncome(start)*midnights-renewals.reduce((sum,row)=>sum+row.cost,0),'The pact, real midnight income and actual quoted retention account for all cash.');
  const official=decodeSave(encodeSave(start)).campaign,replay=finishFreshNorthernCampaign(official);assert.deepEqual(replay,c,'The entire public handover must replay from the official saved earned input.');
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ const out=process.env.GRANADEROS_YATASTO_PARTY_EVIDENCE;
+ if(out){mkdirSync(out,{recursive:true});writeFileSync(`${out}/yatasto.save.json`,encodeSave(c));writeFileSync(`${out}/events.json`,JSON.stringify(events));}
  t.diagnostic(JSON.stringify({scope:'Complete earned Salta-to-Yatasto handover; not the whole fresh recovery or ending',fixtureSha256:meta.rawSha256,envoy:114,previouslyOmittedOfficer:1,publicParty:[114,1],finalParty:c.squad,clock:[c.hour,c.secondOfHour],treasury:c.resources.treasury,renewals:renewals.map(e=>({id:e.action.id,cost:e.cost})),priorDeathsPreserved:true,physicalGunsUnchanged:true,officialWholeHandoverReplayExact:true}));
 });
