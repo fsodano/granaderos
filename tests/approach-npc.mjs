@@ -1,12 +1,13 @@
 import {actBattle,getReachable,endTurn,canSee} from '../game/tactical.js';
 import {wallEdgeCells,wallMovementBlocked} from '../game/wall-geometry.js';
-import {sameSurface} from '../game/tactical-space.js';
+import {sameSurface,spaceKey} from '../game/tactical-space.js';
 import {dialogueApproach} from '../game/npc-dialogue.js';
 import {beginNPCApproachEvidence,observeNPCApproachAction,recordNPCApproachFailure} from './npc-approach-evidence.mjs';
 // Civilian routines advance during movement. Replan short, legal steps rather
 // than walking toward an obsolete NPC coordinate on a larger sector.
 export function approachNPC(battle,unitId,npcId){
  const trace=beginNPCApproachEvidence(battle,unitId,npcId);
+ const visits=new Map();let chasing=false,lastNpcPosition=null,npcMoves=0;
  const run=action=>{const before=battle;battle=action.type==='endTurn'?endTurn(battle):actBattle(battle,action);observeNPCApproachAction(trace,before,battle,action);};
  try{
  for(let i=0;i<240;i++){
@@ -19,9 +20,15 @@ export function approachNPC(battle,unitId,npcId){
   if(actor.hp>=15&&actor.energy<10&&battle.mode==='exploration'){run({type:'endTurn'});if(battle.lastError)throw Error(battle.lastError);continue;}
   const reachable=getReachable(battle,actor);
   const adjacent=dialogueApproach(reachable.filter(p=>!wallMovementBlocked(battle,p,npc)),npc);
-  // A roaming civilian can outpace single walking cells. Use the ordinary
-  // running order in exploration; its native energy and time costs still apply.
-  const movement=battle.mode==='exploration'&&npc.ai?.activity==='roaming'?{movement:'run'}:{};
+  const npcPosition=spaceKey(npc),pair=`${spaceKey(actor)}>${npcPosition}`;
+  if(lastNpcPosition!==null&&lastNpcPosition!==npcPosition)npcMoves++;
+  lastNpcPosition=npcPosition;
+  // Keep successful walking meetings exact. A repeated physical pair after
+  // actual civilian movement proves a chase cycle. Only then use ordinary
+  // running, within the same 240 actions and with its native energy/time costs.
+  if(visits.has(pair)&&npcMoves>visits.get(pair))chasing=true;
+  if(!visits.has(pair))visits.set(pair,npcMoves);
+  const movement=chasing&&battle.mode==='exploration'&&npc.ai?.activity==='roaming'?{movement:'run'}:{};
   let action;
   if(adjacent?.path.length)action={type:'move',unitId:actor.id,...adjacent.path[0],...movement};
   else{

@@ -35,17 +35,15 @@ test('a visitor beside a ground NPC on a different level must pay for the actual
 function nearResident(activity){
  return validateBattleSnapshot(createBattle([{...person,x:2,y:2}],{id:'declared-roaming-conversation',width:8,height:8,tiles:tiles(8,8),npcs:[resident(4,2,activity)],artillery:[{id:'declared-finite-gun',type:'bronze4',side:'player',x:7,y:1,loaded:true,ammo:2}],exploration:true,enemies:[]}));
 }
-test('only a roaming exploration approach uses the actual finite running order, with native time, energy and snapshot replay',()=>{
+test('a converging exploration approach preserves ordinary walking even when the resident is roaming',()=>{
  for(const activity of ['roaming','working']){
   const start=nearResident(activity),before=structuredClone(start),route=dialogueApproach(getReachable(start,actor(start)),npc(start));assert.equal(route.path.length,1);
-  const action={type:'move',unitId:'301',...route.path[0],...(activity==='roaming'?{movement:'run'}:{})};
+  const action={type:'move',unitId:'301',...route.path[0]};
   const expected=native(start,action),reached=approachNPC(start,'301','resident');assert.deepEqual(reached,expected,'No direct position, posture, energy or clock assignment replaces the real order.');
-  assert.ok(reached.elapsedSeconds>start.elapsedSeconds);assert.ok(actor(reached).energy<actor(start).energy);assert.equal(actor(reached).movementMode,activity==='roaming'?'run':'walk');
+  assert.ok(reached.elapsedSeconds>start.elapsedSeconds);assert.ok(actor(reached).energy<actor(start).energy);assert.equal(actor(reached).movementMode,'walk');
   assert.deepEqual(finite(actor(reached)),finite(actor(start)));assert.deepEqual(reached.artillery,start.artillery);assert.equal(reached.seed,start.seed);
   assert.equal(dialogueAvailability(reached,actor(reached),npc(reached),{visible:canSee(reached,actor(reached),npc(reached))}).reason,null);
   const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(start)));assert.deepEqual(approachNPC(restored,'301','resident'),reached);assert.deepEqual(start,before);
-  if(activity==='roaming'){
-   const walking=native(start,{type:'move',unitId:'301',...route.path[0]});assert.ok(reached.elapsedSeconds<walking.elapsedSeconds);assert.ok(actor(reached).energy<actor(walking).energy,'Running pays more native energy than walking.');
-  }
+  const running=native(start,{type:'move',unitId:'301',...route.path[0],movement:'run'});assert.ok(running.elapsedSeconds<reached.elapsedSeconds);assert.ok(actor(running).energy<actor(reached).energy,'The successful walking meeting does not spend the extra running energy.');
  }
 });
