@@ -1,6 +1,6 @@
 import {artilleryProfile} from './artillery-definitions.js';
 import {isUnconscious} from './actor-condition.js';
-import {artilleryCosts,artilleryContact,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,canSee,hasLineOfSight,getReachable,stanceCost} from './tactical.js';
+import {artilleryCosts,artilleryContact,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,canSee,hasLineOfSight,getReachable,knownArtillery,stanceCost} from './tactical.js';
 import {sameSurface,tacticalLevel} from './tactical-space.js';
 import {moveOrder} from './tactical-planning-space.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -33,7 +33,7 @@ export function chooseArtilleryAction(s,u,targets,paths){
  // the next decision, spending the whole battle between the same two cells.
  if(u.side==='player'&&!u.militia&&gun.loaded&&!targets.some(v=>tacticalLevel(v)===0&&distance(gun,v)<=artilleryProfile(s,gun).range))return null;
  const reacting=s.phase==='interrupt'||Boolean(s.reactionStack?.length);
- const perceived={...s,units:s.units.filter(v=>v.side===u.side||canSee(s,u,v)),npcs:(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&canSee(s,u,n))};
+ const perceived={...s,units:s.units.filter(v=>v.side===u.side||canSee(s,u,v)),npcs:(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&canSee(s,u,n)),artillery:knownArtillery(s,u)};
  if(!near(s,u,gun)){
   if(reacting)return null;
   const routes=(paths?paths():getReachable(perceived,u)).filter(p=>p.cost>0&&p.cost<=Math.min(24,u.ap)&&p.path.length<=3&&distance(p,gun)<distance(u,gun)&&p.path.every(step=>!targets.some(v=>sameSurface(step,v)&&distance(step,v)<=2.5)));

@@ -18,7 +18,7 @@ import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmVolleyPreview, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
+import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmVolleyPreview, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, knownArtillery, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
 import {pairedPistol,secondaryPistolView} from './paired-fire.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
@@ -401,7 +401,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const preserveFacing = mode === 'move' && ctx.movementIntent === 'preserveFacing' && isMovementGround(state, unit, point);
   if (preserveFacing) {
     const pending=pendingMovementPreview(point,ctx);if(pending)return pending;
-    const destination = (ctx.reachable || getReachable(state, unit, {movementIntent: 'preserveFacing'})).find(tile => sameCell(tile, point));
+    const destination = (ctx.reachable || getReachable({...state,artillery:knownArtillery(state,unit)}, unit, {movementIntent: 'preserveFacing'})).find(tile => sameCell(tile, point));
     const reason = movementIntentReason(unit, 'preserveFacing') || (!unitCanAct(state, unit) ? 'El combatiente no puede actuar.' : unit.knockedDown ? 'Primero debés levantarte.' : unit.entangled ? 'Primero debés liberarte de las boleadoras.' : !destination || !destination.path.length ? 'Destino inaccesible o PA insuficientes.' : null);
     const pa = destination ? state.mode === 'exploration' ? 0 : destination.cost : undefined;
     const insufficient=state.mode!=='exploration'&&pa>unit.ap;

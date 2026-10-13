@@ -2628,8 +2628,8 @@ function advanceAmbientTime(s,seconds){
       const patrolState={...s,turn:(s.civilianTurns??0)+1,mode:'combat'};
       const order=holdsArtilleryPost(patrolState,u)?null:u.militia?militiaPatrolOrder(patrolState,{...u,ap:100}):choosePatrolAction(patrolState,{...u,patrolTurn:undefined,ap:24});
       if(!order)continue;
-      const step=getReachable(patrolState,{...u,ap:u.militia?100:24}).find(p=>sameCell(p,{...order,tacticalLevel:order.tacticalLevel??tacticalLevel(u)}))?.path[0];
-      if(!step)continue;
+      const step=getReachable({...patrolState,artillery:knownArtillery(s,u)},{...u,ap:u.militia?100:24}).find(p=>sameCell(p,{...order,tacticalLevel:order.tacticalLevel??tacticalLevel(u)}))?.path[0];
+      if(!step||artilleryStepBlocked(s,u,step))continue;
       const climbing=!sameSurface(u,step)?climbStep(s,u,u,step):null;
       if(climbing&&!climbing.valid)continue;
       const cost=climbing?.energy??movementEnergy(u,surfaceAt(s,step));
