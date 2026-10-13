@@ -86,9 +86,13 @@ cancellations. It uses Node 25.1.0, concurrency six, Python 3.13.5, Pillow
 unchanged. Documentation and baseline audits, the web typecheck and diff checks
 also pass. The quick profile excludes 35 extended files. This is not the full
 Node suite, either complete ending, its 48-hour continuation or a C++ result.
-The two PRs were merged with one main push after these local checks. The Linux
-campaign quick job then passes 128/128 files and 440/440 tests on the same source.
-That job is separate from the complete core job and workflow result.
+The two PRs were merged with one main push after these local checks. The complete
+Linux [workflow 38347119132](https://github.com/fsodano/granaderos/actions/runs/38347119132)
+then passes on the same source. Its campaign quick job passes 128/128 files and
+440/440 tests; its core quick job passes 912/912 files and 7,123/7,123 tests in
+3,611.836 seconds. Both jobs use Node 22.23.3 with concurrency two and have no
+failures, skips or cancellations. These quick results do not include the two
+complete fresh endings or their saved 48-hour continuation.
 
 The unchanged complete funded recovery on `d5632100` finishes **0/1** in
 2,125.308 seconds. It passes the earlier clinic refusal, then line 194 stops on

@@ -36,7 +36,11 @@ the completed campaign job remains successful. Cancellation is not a
 passing `a68dd0dc` complete core result. The combined local quick profile on
 merged `d5632100` passes 1,040/1,040 files and 7,563/7,563 tests without skips or
 cancellations; documentation/baseline audits, web typecheck and diff checks also
-pass. Its 35 extended files remain outside that result. The complete unchanged
+pass. Its 35 extended files remain outside that result. The complete Linux
+[workflow 38347119132](https://github.com/fsodano/granaderos/actions/runs/38347119132)
+also passes on `d5632100`: campaign quick passes 128/128 files and 440/440 tests,
+and core quick passes 912/912 files and 7,123/7,123 tests, without skips or
+cancellations. These remain quick-profile results. The complete unchanged
 ending file on the same source finishes 0/2: loose seed 8 retreats at Salta;
 installed seed 1812 passes Yatasto, then reserve preparation refuses more
 residents than one authored roof can hold. The full failure records and exact
