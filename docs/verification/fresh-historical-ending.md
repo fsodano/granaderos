@@ -86,8 +86,8 @@ These earned-segment and preparation receipts are separate from the combined
 local quick on `ecbb783b`: all 1,043 files finish, with 7,570/7,571 tests passing
 and one failure. The original clinic battle passes. Its second case fails the
 complete pre-defense campaign equality because the early cannon selection
-and matching log entry changed. The failed batch remains off `main`; neither
-component quick count is a combined passing result. Their 35 extended files
+and matching log entry changed. The failure kept the batch off `main` while the clinic correction was tested;
+neither component quick count is a combined passing result. Their 35 extended files
 remain excluded.
 
 The complete unchanged recovery on `3aa8f281` passes Mendoza, then finishes

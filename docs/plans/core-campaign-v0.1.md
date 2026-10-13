@@ -62,7 +62,7 @@ remain separate from each other. The combined local gate on `ecbb783b`
 finishes all 1,043 quick files with 7,570/7,571 tests passing and one failure.
 The original northern clinic battle passes; the second clinic case fails its
 complete pre-defense campaign equality because the early cannon selection
-and matching log entry changed. That failed batch remains off `main`.
+and matching log entry changed. The failure kept the batch off `main` while the clinic correction was tested.
 
 | Reviewed change | Bounded result | Separate component checks |
 | --- | --- | --- |
@@ -93,7 +93,7 @@ All 14,705 frozen pins and 627 unique actual inputs remain unchanged, with no
 skips or cancellations. Neither ending or its saved 48-hour continuation is
 accepted. Final browser/full-release acceptance also remains open.
 
-## Latest merged evidence
+## Earlier merged evidence
 
 The following changes are delivered to `main` through PRs #416 and #417,
 merged together at `d5632100`. Earlier deliveries include PR #413 at
