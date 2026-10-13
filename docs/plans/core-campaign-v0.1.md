@@ -55,7 +55,7 @@ failure receipt; it is not proof that a game mechanic is broken.
 
 ## Latest merged evidence
 
-The following changes are delivered to `main` through PR #412 at `8d777d51`,
+The following changes are delivered to `main` through PR #413 at `a68dd0dc`,
 including the later merge of PR #401 at `58bf21cf`. Each receipt
 has its own scope; their counts are not one complete campaign result.
 
@@ -64,6 +64,7 @@ tested source and limits.
 
 | PR | Change | Recorded affected checks |
 | --- | --- | --- |
+| [#413](https://github.com/fsodano/granaderos/pull/413) | Keep the strongest local envoy and include only already serving, living, noncaptured northern officers who are physically local and not in transit. Use the ordinary squad order and retain the existing mission dialogue and squad limit. | The complete new handover file and eighteen scope controls pass 20/20 in 19.031 seconds, with all 628 source/shipping pins and 1,260 actual inputs unchanged. The existing two-case Salta counterattack/journey file separately passes on the same helper bytes in the retained 21/22 gate; its one new clock-oracle failure is later corrected. This is not a 22/22 aggregate. The earned party `[114,1,0,8]` completes Yatasto at `799:3471`, with 56,669 pesos and exact official saved replay. The pact costs 300 and one real midnight pays 8,000; no renewal is needed. Actor 125's preexisting expiry at `798:1150`, living wounded state and ten unique returned equipment rows remain exact. This is earned handover proof, not the complete original route. |
 | [#412](https://github.com/fsodano/granaderos/pull/412) | Retain every living, noncaptured serving returnee in the capital relief, regardless of province. Keep the commander in reserve; Santa Fe still identifies the three physical river guns. | The complete quotation file passes 7/7 after an actual four-hour posta journey reproduces the omitted survivor. New day/week quote expiries advance by those four hours; the field, candidates and budget stay exact. The complete earned twelve-person preparation separately passes 1/1 in 312.613 seconds on the same helper bytes, with all 353 actual preparation inputs unchanged after the test-only expiry correction. The retained aggregate is 7/8, not one 8/8 pass. Existing finite care, paid service, three empty guns and the official paired save remain required. This proves quotation and preparation, not a new native victory or complete fresh caller. |
 | [#411](https://github.com/fsodano/granaderos/pull/411) | Keep legal automatic movement proposals unchanged and respect occupants already visible to the squad. Use a paid reachable point on the proposed route or hold when the personal-sight chooser proposes an occupied destination. | Twelve complete affected files pass 65/65 in 14.133 seconds, with all 632 source/shipping/fixture pins and 1,320 actual consumed inputs unchanged. The exact Salta refusal first pays an eight-AP legal move, then reaches native victory at turn eight and 1,501 tactical seconds after 32 further orders. No new player death occurs; settlement is `790:3114`, with 48,969 pesos. The original crew, finite gun, official midpoint replay, controller holds and 600/80/16 limits remain exact. The regression is in campaign quick. This earned continuation does not replace the complete original recovery. |
 | [#410](https://github.com/fsodano/granaderos/pull/410) | Give finite first aid before the northern recapture meeting, complete the existing clinical care and retain paid service during rest and return. Preserve all five native deaths and the cannon's actual one-charge debit. | The complete two-case recapture file and eighteen scope controls pass 20/20 in 174.908 seconds, with all 572 static source/config/input pins, including 242 shipping files, and 1,262 actual consumed inputs unchanged. The existing seven-survivor reunion file separately passes 2/2 on the same final helper bytes. Actor 119 receives one carried dressing over three seconds, then 23 clinic hours use 15 known body dressings and eight known chest dressings for 67 HP of recovery. Eight hours of ordinary rest include the actual 39-peso renewal. The five native deaths remain permanent; the official save and exact remaining gun custody pass. This is earned recapture care and return, not the complete original recovery or either fresh ending. |
@@ -125,8 +126,11 @@ The isolated engine is uninitialized; this receipt claims no C++ check.
 A separate public handover diagnostic from the earned Salta input on
 `8d777d51` confirms the cause: envoy 114 returns with actors 0 and 8, while
 Juana (1) remains alive and serving in Salta. The mission completes; the missed
-physical reunion is a route-helper gap. That bounded diagnostic does not
-replace the failed complete original route or prove its later Cuyo ending.
+physical reunion is a route-helper gap. PR #413 corrects the earned party;
+the complete original rerun on `a68dd0dc` remains open. The bounded diagnostic
+and passing handover do not replace the failed complete original route or
+prove its later Cuyo ending. The final handover log SHA is
+`db3c744aacabea776ad6440e9ca427364ebb97a1f710a8bde6261ac52419afaf`.
 
 The earlier lost-Córdoba care failure is retained: its former helper finds
 actor 1000 dead where the old test expects 23 HP. PR #410 now passes the
