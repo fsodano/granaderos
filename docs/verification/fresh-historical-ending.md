@@ -1,11 +1,16 @@
 # Fresh historical victory and saved continuation
 
-**Current status — 4 October 2026:** The completion figures and methods below
-describe the dated September source. The current ordinary 3,200-peso route has
-separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
-Its coastal battles, finite aid, stable rest and Córdoba continuation pass;
-the current full ending remains under test. Separate 32,000-peso funded
-fixtures do not establish ordinary-start acceptance.
+**Current status — 12 October 2026:** The completion figures and methods below
+describe the dated September source. Read the [shipping campaign status](../plans/core-campaign-v0.1.md)
+for current checks. Merged PR #401 proves an earned twelve-person capital
+victory; PR #407 proves an earned paid northern reunion, and PR #410 proves
+finite recapture care and the living cohort's return. These separate
+receipts do not prove either complete fresh ending, its 48-hour continuation
+or release acceptance. The latest complete original recovery on `58bf21cf`
+fails when a proposed tactical move is refused during the Salta assault;
+the current status record preserves its exact receipt and unchanged assertions.
+Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
+Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 
 The [persistent ammunition record](strategic-ammunition-custody.md) contains
 the later route checkpoints, actual costs and surviving force. The original

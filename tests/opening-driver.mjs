@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCosts,interruptAvailable,stanceCost,hasFirearm} from '../game/tactical.js';
+import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,teamCanSee,shotChance,actionCosts,interruptAvailable,stanceCost,hasFirearm} from '../game/tactical.js';
 import {chooseEnemyAction,choosePlayerSharedSightingInvestigation} from '../game/tactical-ai.js';
 import {holdsArtilleryPost} from '../game/tactical-ai-artillery.js';
 import {firearmServiceable} from '../game/firearm-serviceability.js';
-import {sameSurface,spacePoint} from '../game/tactical-space.js';
+import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
 import {criticalFirstAidNeeded} from '../game/first-aid.js';
 import {sectorSearchOrder} from './sector-search-driver.mjs';
@@ -12,6 +12,19 @@ import {recordRouteControllerDecisionEvidence} from './route-controller-decision
 
 const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function knownPlayerMovement(b,u,action){
+ if(action?.type!=='move'||u.side!=='player')return action;
+ // The native enemy chooser paths with this actor's own sight. A player
+ // order must also respect occupants already seen by the rest of the squad.
+ const known={...b,units:b.units.filter(v=>v.side===u.side||teamCanSee(b,u.side,v)),npcs:(b.npcs??[]).filter(v=>teamCanSee(b,u.side,v))};
+ const options={movementIntent:action.movementIntent??'forward'},reachable=getReachable(known,u,options);
+ if(reachable.some(p=>p.cost>0&&sameCell(p,action)))return action;
+ const personal={...b,units:b.units.filter(v=>v.side===u.side||canSee(b,u,v)),npcs:(b.npcs??[]).filter(v=>canSee(b,u,v))};
+ const proposed=getReachable(personal,u,{...options,stopAt:p=>sameCell(p,action)})[0];
+ const point=proposed&&[...proposed.path].reverse().map(step=>reachable.find(p=>p.cost>0&&sameCell(p,step))).find(Boolean);
+ // Pay for an affordable prefix of that same route, or hold if none remains.
+ return point?{...action,...spacePoint(point)}:null;
+}
 export function combatOrder(b,u){
  let cost=actionCosts(b,u);const players=b.units.filter(v=>v.side===u.side&&alive(v)&&v.hp>=15);
  if(u.knockedDown||u.entangled)return chooseEnemyAction(b,u);
@@ -47,6 +60,7 @@ export function combatOrder(b,u){
  if(!visible.length&&age>3&&b.turn>=20)return sectorSearchOrder(b,u);
  const automatic=chooseEnemyAction(b,u);
  if(u.missionAlly&&players.length>1&&automatic?.type==='move')return null;
+ if(automatic?.type==='move')return knownPlayerMovement(b,u,automatic);
  if(automatic&&automatic.type!=='charge')return automatic;
  if(u.missionAlly&&players.length>1)return null; // Infantry scouts first; a lone commander must still act.
  if(visible.length){

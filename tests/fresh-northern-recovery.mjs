@@ -527,6 +527,34 @@ function settleNorthernReturnRecapture(start,report){
  return c;
 }
 
+// Stabilize the actual recapture survivors before a conversation advances the
+// tactical clock. This uses only ordinary orders and the carried finite kits.
+// Full health still requires the existing paid, supplied clinical care below.
+export function stabilizeNorthernRecapture(start,{report=()=>{}}={}){
+ const prior=decodeSave(encodeSave(start)).campaign;
+ const urgent=prior.squad.filter(id=>{const r=prior.operativeState[id];return r.alive&&!r.captured&&(r.hp<15||r.bleeding>0);});
+ if(!urgent.length)return prior;
+ const campaign=dispatchCampaign(prior,{type:'visitSector'});assert.equal(campaign.lastError,null,campaign.lastError);
+ const initial=enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location]),aid=autoBandageBattle(initial);
+ const replay=withSave=>{
+  let pair={campaign:structuredClone(campaign),battle:initial};
+  for(let index=0;index<aid.steps.length;index++){
+   const battle=actBattle(pair.battle,aid.steps[index]);assert.equal(battle.lastError,null,JSON.stringify(aid.steps[index])+battle.lastError);
+   const synced=syncBattleTime(pair.campaign,battle);assert.equal(synced.error,null,synced.error);pair={campaign:synced.campaign,battle:synced.battle};
+   if(withSave&&index===Math.floor(aid.steps.length/2))pair=decodeSave(encodeSave(pair.campaign,pair.battle));
+  }
+  return pair;
+ };
+ const played=replay(false),restored=replay(true);assert.deepEqual(restored,played);assert.deepEqual(played.battle.units,aid.battle.units);assert.equal(played.battle.seed,aid.battle.seed);assert.equal(played.battle.elapsedSeconds,aid.battle.elapsedSeconds);
+ for(const id of urgent){const patient=played.battle.units.find(u=>u.id===String(id));assert.ok(patient?.hp>=15&&!patient.bleeding,`Actual recapture patient ${id} needs finite first aid before the meeting: ${aid.stoppedReason??''}`);}
+ const c=dispatchCampaign(restored.campaign,{type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player')});assert.equal(c.lastError,null,c.lastError);
+ for(const [id,r]of Object.entries(prior.operativeState))if(!r.alive)assert.equal(c.operativeState[id].alive,false);
+ for(const id of prior.recruited.filter(id=>prior.operativeState[id].alive))assert.equal(c.operativeState[id].alive,true);
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ report({event:'northernRecaptureFirstAid',urgent,actions:aid.steps,elapsedSeconds:aid.elapsedSeconds,treatedIds:aid.treatedIds,untreated:aid.untreated,stoppedReason:aid.stoppedReason,exactSavedReplay:true,before:initial.units.filter(u=>u.side==='player').map(u=>({id:u.id,hp:u.hp,bleeding:u.bleeding,bandaged:u.bandaged,medical:u.medical,medkits:u.medkits,energy:u.energy,x:u.x,y:u.y,tacticalLevel:u.tacticalLevel??0,routed:u.routed,unconscious:u.unconscious})),campaign:structuredClone(c)});
+ return c;
+}
+
 // The relief can return with seven living soldiers after the two real Buenos
 // Aires conversations. Form ordinary columns; no survivor is left behind to
 // satisfy the public six-member squad limit.
@@ -640,9 +668,19 @@ if(lostCordoba){
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),[...field,...guard].sort((a,b)=>a-b));
  report({event:'northernReturnRecaptureReady',campaign:structuredClone(c),occupations});c=settleNorthernReturnRecapture(c,report);
  for(const id of occupations)assert.equal(c.enemyGroups.find(group=>group.id===id).status,'defeated','the actual road occupation must be defeated, not skipped');
+ c=stabilizeNorthernRecapture(c,{report});
  const actor=c.squad.includes(4)?4:rosterFor(c).filter(op=>c.squad.includes(op.id)&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].asleep).sort((a,b)=>b.leadership-a.leadership)[0]?.id;assert.ok(actor!==undefined);
  c=meetRecruits(c,['quiroga','paz'],actor);
+ report({event:'northernRoadMeeting',campaign:structuredClone(c)});
  const recovered=recoverRecapturedRoad(c);c=recovered.campaign;report({event:'northernRoadRecovered',hour:c.hour,treasury:c.resources.treasury,careEvents:recovered.events,campaign:structuredClone(c)});
+ // Real clinical work can leave its physician asleep. Finish ordinary paid
+ // rest before forming the returning columns; no patient is left behind.
+ const local=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured&&operativeLocation(c,id)==='cordoba'&&!operativeInTransit(c,id));
+ for(const operativeId of local)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let h=0;h<48&&local.some(id=>{const r=c.operativeState[id];return r.asleep||r.fatigue>0||r.energy<100;});h++)order({type:'wait',hours:1});
+ assert.ok(local.every(id=>{const r=c.operativeState[id];return !r.asleep&&r.fatigue===0&&r.energy===100;}),'The actual clinical survivors must finish rest before returning.');
+ for(const operativeId of local)order({type:'assignCare',operativeId,assignment:'active'});
+ report({event:'northernRoadCareRested',campaign:structuredClone(c)});
  if(!c.routes.posta)order({type:'transport',mode:'posta'});
  c=returnNorthernOfficers(c);
  // Future marching incursions remain real campaign state. This branch only

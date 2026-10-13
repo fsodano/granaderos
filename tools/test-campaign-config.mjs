@@ -35,6 +35,7 @@ export const campaignTestGroups = [
   "tests/earned-opening-salta-clinic-supply.test.mjs",
   "tests/earned-opening-salta-doctor-reserve.test.mjs",
   "tests/earned-original-san-lorenzo-field-aid.test.mjs",
+  "tests/earned-original-salta-legal-movement.test.mjs",
   "tests/earned-original-tucuman-hospital-care.test.mjs",
   "tests/earned-original-hospital-rear-guard.test.mjs",
   "tests/earned-original-hospital-return.test.mjs",
