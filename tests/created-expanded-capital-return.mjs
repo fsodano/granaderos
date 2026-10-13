@@ -64,7 +64,9 @@ export function expandedCapitalReliefPlan(c,{fieldSize=12,commanderId=57,source=
  assert.ok(Number.isSafeInteger(reserve)&&reserve>=0);
  assert.equal(c.pendingBattle,null,'Settle the actual river battle before quoting relief.');
  assert.equal(c.pendingEncounter,null);
- const keepers=living(c),field=keepers.filter(id=>id!==commanderId&&c.operativeState[id].location===source);
+ // Local treatment and travel below reunite every actual serving returnee.
+ // The source province identifies the river guns, not the relief membership.
+ const keepers=living(c),field=keepers.filter(id=>id!==commanderId);
  assert.ok(keepers.includes(commanderId),'The actual living commander must return to reserve.');
  assert.ok(field.length>=6&&field.length<=fieldSize,'Retain every actual river survivor.');
  for(const id of keepers){const expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(c.contracts[id]&&(expiry===null||expiry>clock(c)),'The original living returnees must still be serving.');}
