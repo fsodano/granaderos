@@ -727,7 +727,7 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
  const segments=known.segments??[{source:muzzle,destination:terminal.impact,fromDistance:0,toDistance:Math.hypot(terminal.impact.x-muzzle.x,terminal.impact.y-muzzle.y),trajectoryModel:known.trajectoryModel}];
  const distanceOf=entry=>entry.distance??Math.hypot(entry.impact.x-muzzle.x,entry.impact.y-muzzle.y);
  const stopped=known.obstacles?.find(entry=>entry.stopped),terminalOutcome=terminal.termination==='body'?null:stopped?'cover':'miss';
- let origin=muzzle,progress=0,index=0,discharged=false,waiting=false,visual,sourceSurfaceContact=null;
+ let origin=muzzle,sourceBodyKey=null,progress=0,index=0,discharged=false,waiting=false,visual,sourceSurfaceContact=null;
  const surfaceContact=bounce=>({sourceId:bounce.sourceId,point:{...bounce.impact},normal:{...bounce.normal}});
  const frame=(type,shotVisual)=>recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type,shotVisual});
  const projectile=()=>{
@@ -739,9 +739,9 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
    if(segment.toDistance<=progress+1e-8||segment.fromDistance>goal+1e-8)continue;
    const end=segment.toDistance<goal-1e-8?segment.destination:impact;
    const bounce=segment.toDistance<goal-1e-8?known.ricochets?.find(entry=>Math.abs(entry.distance-segment.toDistance)<1e-8):null;
-   visual={source:{...origin},destination:{...end},impact:{...end},outcome:bounce?'cover':collision||projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(bounce?{material:'stone',impactSurfaceContact:surfaceContact(bounce)}:!collision&&!projected&&terminalOutcome==='cover'&&stopped?.material?{material:stopped.material}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(discharged?{discharge:false}:{})};
+   visual={source:{...origin},destination:{...end},impact:{...end},outcome:bounce?'cover':collision||projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(!bounce&&(collision||projected)?{bodyTargetKey:`${(collision??projected).victimKind??'unit'}:${(collision??projected).victimId}`}:{}) ,...(sourceBodyKey?{sourceBodyKey}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(bounce?{material:'stone',impactSurfaceContact:surfaceContact(bounce)}:!collision&&!projected&&terminalOutcome==='cover'&&stopped?.material?{material:stopped.material}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(discharged?{discharge:false}:{})};
    frame('projectile',visual);discharged=true;
-   if(bounce){frame('impact',visual);origin={...end};progress=segment.toDistance;sourceSurfaceContact=surfaceContact(bounce);}
+   if(bounce){frame('impact',visual);origin={...end};sourceBodyKey=null;progress=segment.toDistance;sourceSurfaceContact=surfaceContact(bounce);}
    else{waiting=true;break;}
   }
  };
@@ -756,7 +756,7 @@ function presentReflectedFirearmFlight(s,actor,flight,known,source,{pointShot,ai
    const body=bodyFor(entry),injury=knownHealth.some(record=>record.body===body&&record.body.hp<record.hp),redirected=entry.actualVictimId!==undefined&&(entry.actualVictimId!==entry.victimId||entry.actualVictimKind!==entry.victimKind);
    recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact',...(!redirected?{shotVisual:{...visual,outcome:injury?'hit':null}}:{})});
    for(const record of knownHealth)record.hp=record.body.hp;
-   origin={...entry.impact};progress=distanceOf(entry);index++;waiting=false;sourceSurfaceContact=null;
+   origin={...entry.impact};sourceBodyKey=visual.bodyTargetKey??null;progress=distanceOf(entry);index++;waiting=false;sourceSurfaceContact=null;
    if(entry.continued!==false)projectile();
    return;
   }
@@ -782,12 +782,12 @@ function presentKineticFlight(s,actor,destination,hitLocation,source,{pointShot,
   if(!last||Math.abs(last.distance-segment.toDistance)>1e-8)endpoints.push({point:segment.destination,distance:segment.toDistance,outcome:bounce?'cover':terminal.termination==='body'?null:stopped?'cover':'miss'});
   const sourceBounce=known.ricochets?.find(entry=>Math.abs(entry.distance-segment.fromDistance)<1e-8);
   const surfaceContact=entry=>({sourceId:entry.sourceId,point:{...entry.impact},normal:{...entry.normal}});
-  let origin=segment.source,sourceSurfaceContact=sourceBounce?surfaceContact(sourceBounce):null;
+  let origin=segment.source,sourceBodyKey=null,sourceSurfaceContact=sourceBounce?surfaceContact(sourceBounce):null;
   for(const endpoint of endpoints){
    if(Math.hypot(endpoint.point.x-origin.x,endpoint.point.y-origin.y)<1e-8)continue;
    const impactBounce=bounce&&Math.abs(endpoint.distance-segment.toDistance)<1e-8?bounce:null;
-   const visual={source:{...origin},destination:{...endpoint.point},impact:{...endpoint.point},outcome:endpoint.outcome,pointShot,spread:false,aimHit,...(endpoint.outcome==='cover'?{material:impactBounce?'stone':stopped?.material}:{}),...(impactBounce?{impactSurfaceContact:surfaceContact(impactBounce)}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(discharged?{discharge:false}:{})};
-   schedule.push({visual,bodyKey:endpoint.bodyKey});discharged=true;origin=endpoint.point;sourceSurfaceContact=null;
+   const visual={source:{...origin},destination:{...endpoint.point},impact:{...endpoint.point},outcome:endpoint.outcome,pointShot,spread:false,aimHit,...(endpoint.bodyKey?{bodyTargetKey:endpoint.bodyKey}:{}),...(sourceBodyKey?{sourceBodyKey}:{}),...(endpoint.outcome==='cover'?{material:impactBounce?'stone':stopped?.material}:{}),...(impactBounce?{impactSurfaceContact:surfaceContact(impactBounce)}:{}),...(sourceSurfaceContact?{sourceSurfaceContact}:{}),...(segment.trajectoryModel?{trajectoryModel:segment.trajectoryModel}:{}),...(discharged?{discharge:false}:{})};
+   schedule.push({visual,bodyKey:endpoint.bodyKey});discharged=true;origin=endpoint.point;sourceBodyKey=endpoint.bodyKey;sourceSurfaceContact=null;
   }
  }
  let cursor=0,waiting=null,displayed=structuredClone(s);
@@ -839,7 +839,7 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
   const terminal=known.terminal??{impact:known.impact??known.destination,termination:known.termination};
   const obstacle=known.obstacles?.find(item=>item.stopped);
   const terminalOutcome=terminal.termination==='body'?null:obstacle?'cover':'miss';
-  let origin={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},index=0,discharged=false,waiting=false,visual;
+  let origin={...positionOf(actor),tacticalLevel:tacticalLevel(actor),height:absoluteBodyHeight(s,actor,'muzzle')},sourceBodyKey=null,index=0,discharged=false,waiting=false,visual;
   const samePoint=(a,b)=>a&&b&&['x','y','height'].every(key=>Math.abs(a[key]-b[key])<1e-8);
   const projectile=()=>{
    const collision=observed[index]?.collision;
@@ -850,7 +850,7 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
    const projected=known.trajectoryModel&&hidden&&!collision?known.bodyImpacts?.find(entry=>entry.fraction>previous):null;
    const impact=collision?.impact??projected?.impact??terminal.impact;
    if(!impact||discharged&&samePoint(origin,impact)){waiting=false;return;}
-   visual={source:{...origin},destination:{...impact},impact:{...impact},outcome:collision?'hit':projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(known.trajectoryModel?{trajectoryModel:known.trajectoryModel}:{}),...(!collision&&!projected&&terminalOutcome==='cover'&&obstacle?.material?{material:obstacle.material}:{}),...(discharged?{discharge:false}:{})};
+   visual={source:{...origin},destination:{...impact},impact:{...impact},outcome:collision?'hit':projected?null:terminalOutcome,pointShot,spread:false,aimHit,...(collision||projected?{bodyTargetKey:`${(collision??projected).victimKind??'unit'}:${(collision??projected).victimId}`}:{}) ,...(sourceBodyKey?{sourceBodyKey}:{}),...(known.trajectoryModel?{trajectoryModel:known.trajectoryModel}:{}),...(!collision&&!projected&&terminalOutcome==='cover'&&obstacle?.material?{material:obstacle.material}:{}),...(discharged?{discharge:false}:{})};
    waiting=true;recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'projectile',shotVisual:visual});discharged=true;
   };
   projectile();
@@ -869,7 +869,7 @@ function presentFirearmFlight(s,actor,destination,flight=null,hitLocation='torso
     const injury=knownHealth.some(record=>record.body===entry.body&&record.body.hp<record.hp);
     recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact',...(!redirected?{shotVisual:{...visual,outcome:injury?'hit':null}}:{})});
     for(const record of knownHealth)record.hp=record.body.hp;
-    origin={...collision.impact};index++;waiting=false;projectile();return;
+    origin={...collision.impact};sourceBodyKey=visual.bodyTargetKey??null;index++;waiting=false;projectile();return;
    }
    if(waiting){recordBattleFrame(s,{unitId:source.id,action:pointShot?'firePoint':'fire',type:'impact',shotVisual:visual});waiting=false;}
   };

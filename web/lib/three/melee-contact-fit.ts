@@ -109,7 +109,7 @@ export class NativeMeleeContactFit {
      let weight=0;for(let slot=0;slot<4;slot++)if([`foot_${side}`,`ball_${side}`].includes(footwear.skeleton.bones[indices.getComponent(index,slot)].name))weight+=weights.getComponent(index,slot);
      if(weight>.99)vertices.push(index);
     }
-    if(vertices.length){const points=vertices.map(index=>root.worldToLocal(footwear.localToWorld(footwear.getVertexPosition(index,new Vector3())))),floor=Math.min(...points.map(point=>point.y)),outline=vertices.filter((_,index)=>points[index].y<=floor+.003);this.soles.set(side,{mesh:footwear,vertices,outline,floor});}
+    if(vertices.length){const points=vertices.map(index=>root.worldToLocal(footwear.localToWorld(footwear.getVertexPosition(index,new Vector3())))),floor=Math.min(...points.map(point=>point.y)),outline=vertices.filter((_,index)=>points[index].y<=floor+.003);this.soles.set(side,{mesh:footwear,vertices,outline,floor:floor*root.getWorldScale(new Vector3()).y});}
    }
   }
   const bounds=new Map<Object3D,{bone:Object3D;low:Vector3;high:Vector3}>();if(preview)model.traverse(mesh=>{
@@ -220,7 +220,7 @@ export class NativeMeleeContactFit {
   // Sample only this actor's known native clip. This hierarchy has no meshes
   // or second skinning palette, and is allocated only for a paired strike.
   if(!this.sample){
-   this.sample=poseTree(this.model)!;this.sampleRoot.add(this.sample);this.sampleMixer=new AnimationMixer(this.sample);
+   this.sample=poseTree(this.model)!;this.root.getWorldScale(this.sampleRoot.scale);this.sampleRoot.add(this.sample);this.sampleMixer=new AnimationMixer(this.sample);
    const meshes:SkinnedMesh[]=[];this.model.traverse(node=>{if(node instanceof SkinnedMesh&&visible(node))meshes.push(node);});
    for(const mesh of meshes){
     const copy=mesh.clone(false),bones=mesh.skeleton.bones.map(bone=>this.sample!.getObjectByName(bone.name)!);

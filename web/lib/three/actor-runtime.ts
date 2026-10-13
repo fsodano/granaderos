@@ -51,8 +51,9 @@ export class ActorRuntime {
   private actionHand:HandRole='handRight';private actionBarrel=0;
   private seatActions=new Map<AnimationAction,{spec:ClipSpec;mounted:boolean}>();private saddlePosition=new Vector3();
   readonly root=new Group();readonly model:Object3D;private mixer:AnimationMixer;private action:AnimationAction|null=null;private actionKey='';private clipSpec:any;private ownedMaterials=new Set<Material>();private equipment=new Group();private equipmentKey='';private clothesKey='';private colorKey='';private horse?:Object3D;private horseMixer?:AnimationMixer;private horseAction?:AnimationAction;private horseClip='';private visual:ActorVisual;private bones=new Map<string,Object3D>();private clothing?:Object3D;private ghost?:Group;private cueStartedAt=0;private temporaryProps=new Map<string,Object3D>();private completedCues=new Set<string>();
-  constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver){
-    this.visual=visual;this.model=clone(asset.body.scene);this.root.add(this.model);this.root.name=visual.key;
+  constructor(readonly asset:LoadedActor,visual:ActorVisual,private onCueComplete?:(key:string,id:string)=>void,private contactActor?:ContactActorResolver,readonly visualScale=1){
+    if(!Number.isFinite(visualScale)||visualScale<=0)throw Error('Invalid actor visual scale');
+    this.visual=visual;this.model=clone(asset.body.scene);this.root.scale.setScalar(visualScale);this.root.add(this.model);this.root.name=visual.key;
     this.model.traverse(node=>{this.bones.set(node.name,node);if(node instanceof Mesh){node.castShadow=true;node.receiveShadow=true;node.frustumCulled=false;const targets=node.morphTargetDictionary;if(targets?.cloth_prone!==undefined&&targets?.cloth_crouched!==undefined)this.clothMeshes.push({mesh:node,prone:targets.cloth_prone,crouched:targets.cloth_crouched,boot:targets.cloth_prone_boot_clearance,bootClips:new Set(node.userData.nativeClothBootSupport?.clips??[])});}});
     this.gaitSupport=new NativeGaitTransitionSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
     this.gestureSupport=new NativeGestureBlendSupport(this.model,this.root,asset.appearance.parts?.footwear?.replace('{lod}',String(asset.lod)));
@@ -309,7 +310,8 @@ export class ActorRuntime {
     // Total path length keeps gait phase through turns. Net displacement loses
     // distance on curved paths; projecting it onto a new facing loses more.
     const inputMotion=motion?{...motion,elapsedDistance:motion.elapsedDistance===undefined?undefined:motion.elapsedDistance*TILE_METRES,signedDistance:motion.elapsedDistance===undefined?undefined:motion.elapsedDistance*TILE_METRES*direction,speed:(motion.speed??0)*TILE_METRES,signedForwardSpeed:direction*(motion.speed??0)*TILE_METRES}:undefined;
-    const timing=sampleAnimationTime({clip:{...this.clipSpec,duration:clip.duration},action:visual.action,cue:visual.cue,motion:inputMotion,now,reducedMotion});
+    const clipMotion=inputMotion?{...inputMotion,elapsedDistance:inputMotion.elapsedDistance===undefined?undefined:inputMotion.elapsedDistance/this.visualScale,signedDistance:inputMotion.signedDistance===undefined?undefined:inputMotion.signedDistance/this.visualScale,speed:inputMotion.speed/this.visualScale,signedForwardSpeed:inputMotion.signedForwardSpeed/this.visualScale}:undefined;
+    const timing=sampleAnimationTime({clip:{...this.clipSpec,duration:clip.duration},action:visual.action,cue:visual.cue,motion:clipMotion,now,reducedMotion});
     const loadingItem=this.loadingItem(visual,timing.workIndex);
     const barrel=visual.cue?.work?.[timing.workIndex??0]?.barrel??0;
     if(loadingItem&&(loadingItem.socket!==this.actionHand||barrel!==this.actionBarrel)){this.update(visual,now);this.tick(0,now,reducedMotion);return;}
@@ -334,7 +336,7 @@ export class ActorRuntime {
     if(this.horse&&this.horseMixer){
       const visibility=this.clipSpec.horseVisibility;
       if(visibility)this.horse.visible=this.action.time>=visibility.start&&this.action.time<=visibility.end;
-      if(this.horseAction){const horseSpec=this.asset.manifest.horse?.clips?.find(clip=>clip.name===this.horseClip),horseTime=sampleAnimationTime({clip:{duration:this.horseAction.getClip().duration,loop:true,locomotionSpeed:horseSpec?.locomotionSpeed},action:visual.action,motion:inputMotion,now});this.horseAction.timeScale=horseTime.rate;if(horseTime.time!==undefined)this.horseAction.time=horseTime.time;}
+      if(this.horseAction){const horseSpec=this.asset.manifest.horse?.clips?.find(clip=>clip.name===this.horseClip),horseTime=sampleAnimationTime({clip:{duration:this.horseAction.getClip().duration,loop:true,locomotionSpeed:horseSpec?.locomotionSpeed},action:visual.action,motion:clipMotion,now});this.horseAction.timeScale=horseTime.rate;if(horseTime.time!==undefined)this.horseAction.time=horseTime.time;}
       this.horseMixer.update(Math.min(delta,.1));
       const saddleSpec=this.asset.manifest.horse?.saddle;
       const socket=saddleSpec&&this.horse.getObjectByName(saddleSpec.node);
@@ -352,8 +354,16 @@ export class ActorRuntime {
     if(!visual.contactWarm||visual.cue||visual.motion?.moving||visual.posture!=='standing'||visual.mounted||!visual.selected){this.meleeFit.prewarm(undefined,this.action!.getClip(),this.clipSpec,undefined,this.contactActor);return;}
     const bound=boundClip(this.asset.clips,this.asset.animation.animations,'stand.butt.long-gun');this.meleeFit.prewarm(visual.contactWarm,bound.clip,bound.spec,gun,this.contactActor);
   }
-  anchor(role:string){
-    const hand=this.actionHand,held=this.visual.items.find(item=>item.socket===hand),spec=held&&this.itemSpec(held.id);
+  bodyAnchor(nativeHeight:number){
+    if(!Number.isFinite(nativeHeight))return null;
+    const relative=nativeHeight-this.visual.position[1],parts=['head','torso','legs'].filter(part=>Number.isFinite(this.visual.bodyHeights[part])).sort((a,b)=>Math.abs(this.visual.bodyHeights[a]-relative)-Math.abs(this.visual.bodyHeights[b]-relative)),part=parts[0];
+    if(part==='head')return this.anchor('head');
+    if(part==='torso')return this.anchor('chest')??this.anchor('spine');
+    if(part==='legs'){const hips=this.anchor('hips'),left=this.anchor('footLeft'),right=this.anchor('footRight');return hips&&left&&right?left.add(right).multiplyScalar(.5).lerp(hips,.5):null;}
+    return null;
+  }
+  anchor(role:string,shotHand?:HandRole){
+    const hand=shotHand??this.actionHand,held=this.visual.items.find(item=>item.socket===hand),spec=held&&this.itemSpec(held.id);
     const instance=(this.equipment.userData.attached as Object3D[]).find(item=>item.userData.hand===hand);
     const node=role==='muzzle'&&spec?.muzzle?instance?.getObjectByName(spec.muzzle):this.socket(role);
     return node?.getWorldPosition(new Vector3())??null;
