@@ -21,6 +21,7 @@ export const campaignTestGroups = [
   "tests/earned-foundry-convoy-recapture.test.mjs",
   "tests/earned-installed-arsenal.test.mjs",
   "tests/earned-installed-cuyo-rearm.test.mjs",
+  "tests/earned-installed-cuyo-overflow-reserve.test.mjs",
   "tests/earned-installed-mendoza-ammunition.test.mjs",
   "tests/earned-installed-northern-first-aid.test.mjs",
   "tests/earned-installed-northern-relief.test.mjs",
