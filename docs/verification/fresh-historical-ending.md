@@ -18,8 +18,9 @@ unchanged original rerun on `a68dd0dc` finishes 0/1. Its actual Salta,
 Yatasto and living-officer participation assertions pass, then line 174
 stops on the lack of a reachable finite dressing for actor 10 at Córdoba.
 PR #416 supplies that clinic through a real finite courier and ordinary care;
-its eight complete affected files pass 36/36. The complete unchanged recovery
-rerun after that fix remains pending. PR #417 corrects duplicated ammunition
+its eight complete affected files pass 36/36. The complete unchanged funded
+recovery rerun on `d5632100` passes that clinic gate, then finishes 0/1 at the
+actual Mendoza retreat on original line 194. PR #417 corrects duplicated ammunition
 ownership in the route checks; its complete funded historical-loss file passes
 1/1 after a real Mendoza victory and intentional melee loss of the engineer.
 That declared loss path does not prove a natural enemy casualty or either
@@ -35,7 +36,11 @@ the completed campaign job remains successful. Cancellation is not a
 passing `a68dd0dc` complete core result. The combined local quick profile on
 merged `d5632100` passes 1,040/1,040 files and 7,563/7,563 tests without skips or
 cancellations; documentation/baseline audits, web typecheck and diff checks also
-pass. Its 35 extended files remain outside that result. Both fresh endings, saved 48-hour
+pass. Its 35 extended files remain outside that result. The complete unchanged
+ending file on the same source finishes 0/2: loose seed 8 retreats at Salta;
+installed seed 1812 passes Yatasto, then reserve preparation refuses more
+residents than one authored roof can hold. The full failure records and exact
+source limits are in the shipping campaign status. Both fresh endings, saved 48-hour
 continuation and full-release acceptance remain open.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.

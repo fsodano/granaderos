@@ -86,9 +86,27 @@ cancellations. It uses Node 25.1.0, concurrency six, Python 3.13.5, Pillow
 unchanged. Documentation and baseline audits, the web typecheck and diff checks
 also pass. The quick profile excludes 35 extended files. This is not the full
 Node suite, either complete ending, its 48-hour continuation or a C++ result.
-The two PRs were merged with one main push after these local checks. The
-complete original recovery and both unchanged fresh ending cases are being
-checked separately; their results are pending.
+The two PRs were merged with one main push after these local checks. The Linux
+campaign quick job then passes 128/128 files and 440/440 tests on the same source.
+That job is separate from the complete core job and workflow result.
+
+The unchanged complete funded recovery on `d5632100` finishes **0/1** in
+2,125.308 seconds. It passes the earlier clinic refusal, then line 194 stops on
+an actual Mendoza retreat after 17 turns, 267 orders and 164 tactical seconds.
+Eight actual deaths remain in the failure record. All 14,696 frozen pins and
+394 consumed files stay unchanged. The log SHA is
+`0ab2e366cf8d31e87db9c7bb3568c1e4358a8abe6c3a69e2153fc0f0a936f0f5`.
+
+The unchanged complete ending file on that source finishes **0/2** in 953.216
+seconds, with no skips or cancellations. Loose seed 8 retreats at Salta after
+eight turns, 110 actions and 392 tactical seconds. Installed seed 1812 passes
+Salta and Yatasto, then the Cuyo reserve helper refuses 21 residents assigned
+to one 19-cell roof. The actual scene has other authored roofs; this refusal
+does not show missing engine geometry. All 57,278 frozen pins and 627 unique
+observed inputs stay unchanged. The log SHA is
+`b3549620025e71bd844fcbca87711acf0a058c5d4841df6fd534c3c88c93258d`.
+These are complete failure receipts. Neither ending, its 48-hour continuation
+nor full-release acceptance is established.
 
 The complete original recovery on frozen `c6881d99` finishes with one failure,
 no skips or cancellations, in 2,003.189 seconds. All 618 static pins, including
