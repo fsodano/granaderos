@@ -63,15 +63,21 @@ affected gate passes 25/25; its own normal local quick passes 1,041 files and
 7,567 tests. Each component also passes docs, baseline 39/39, typecheck and
 diff checks, with no quick failures, skips or cancellations.
 
-The reviewed Salta preparation at `240cb7b8` keeps the actual Córdoba gun
-`arsenal:cordoba:2` in its depot during quiet visits, then selects it for the
-assault with all seven real charges. Ordinary pickups supply 49 finite
-cartridges, and the empty Baker finishes a paid reload. Five complete affected
-files pass 21/21, including the full earned loose-stock preparation and the
-existing installed preparation control. The original casualties, physical
-ammunition and paid service are preserved; the official paired save roundtrip
-and both finite supply-phase replays pass. This does not prove a native Salta victory or a separate
-normal quick result.
+The reviewed Salta custody correction at `42ab7964` retains the original
+clinic cannon selection, then recovers the same actual Córdoba gun
+`arsenal:cordoba:2` from the local field through public storage after equipment
+visits. The earned unfired input keeps all seven charges for the assault.
+Ordinary pickups supply 49 finite cartridges, and the empty Baker finishes a
+paid reload. Six complete affected files pass 23/23, including both unchanged
+original clinic cases, the full earned loose-stock preparation and the
+installed preparation control. All 57,280 source/runtime/dependency pins and
+1,268 unique actual inputs remain unchanged. The original casualties,
+physical ammunition and paid service are preserved; the official paired save
+roundtrip, both finite supply-phase replays and the complete late physical
+recovery replay pass. This does not prove a native Salta victory or a separate
+normal quick result. The earlier `240cb7b8` five-file affected gate passes
+21/21; the later combined failure below remains recorded. The corrected
+combined normal quick remains a separate pending check.
 
 These earned-segment and preparation receipts are separate from the combined
 local quick on `ecbb783b`: all 1,043 files finish, with 7,570/7,571 tests passing
