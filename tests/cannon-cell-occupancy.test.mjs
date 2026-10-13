@@ -90,7 +90,7 @@ test('all cannon work refuses a deliberately malformed current-version legacy sh
 });
 
 test('drag rejects a live outside body and another gun, but permits the selected crew to vacate a destination together',()=>{
- const b=arena({squad:[{id:'20',x:2,y:2},{id:'21',x:3,y:3},{id:'22',x:1,y:2}],gun:{type:'bronze4',x:2,y:3}}),request={type:'artilleryMove',unitId:'20',artilleryId:'gun',x:3,y:3};
+ const b=arena({squad:[{id:'20',x:2,y:2},{id:'21',x:3,y:3},{id:'22',x:1,y:2}],gun:{type:'bronze4',x:2,y:3},exploration:false,enemies:[{id:'e',x:14,y:8,hp:300,maxHp:300,weapon:1813,loaded:0,ammo:0,patrol:false,overwatch:false}]}),request={type:'artilleryMove',unitId:'20',artilleryId:'gun',x:3,y:3};
  const crew=artilleryCrewPlan(b,unit(b,'20'),b.artillery[0],artilleryCosts(b,unit(b,'20'),b.artillery[0]).move);assert.equal(crew.reason,null);assert.deepEqual(crew.crew,['20','21']);
  for(const obstacle of ['npc','gun']){
   const blocked=structuredClone(b);if(obstacle==='npc')blocked.npcs.push({id:'outside',x:4,y:3,hp:100});else blocked.artillery.push({...blocked.artillery[0],id:'other',x:4,y:3});
