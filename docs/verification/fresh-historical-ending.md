@@ -77,14 +77,17 @@ roundtrip, both finite supply-phase replays and the complete late physical
 recovery replay pass. This does not prove a native Salta victory or a separate
 normal quick result. The earlier `240cb7b8` five-file affected gate passes
 21/21; the later combined failure below remains recorded. The corrected
-combined normal quick remains a separate pending check.
+combined normal quick on `3d57e9af` passes all 1,043 files and 7,571 tests,
+with no failures, skips or cancellations. Its Node duration is 1,579.001
+seconds, and all 15,705 source/runtime pins remain unchanged. The 35 extended
+files remain outside quick validation.
 
 These earned-segment and preparation receipts are separate from the combined
 local quick on `ecbb783b`: all 1,043 files finish, with 7,570/7,571 tests passing
 and one failure. The original clinic battle passes. Its second case fails the
 complete pre-defense campaign equality because the early cannon selection
-and matching log entry changed. The failed batch remains off `main`; neither
-component quick count is a combined passing result. Their 35 extended files
+and matching log entry changed. The failure kept the batch off `main` while the clinic correction was tested;
+neither component quick count is a combined passing result. Their 35 extended files
 remain excluded.
 
 The complete unchanged recovery on `3aa8f281` passes Mendoza, then finishes
