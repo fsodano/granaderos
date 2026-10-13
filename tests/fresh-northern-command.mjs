@@ -312,9 +312,9 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  // Ensenada holds the only swivel. The first northern assault instead uses
  // Córdoba's existing bronze piece and its real two-person provincial crew.
  const battery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=battery.campaign;
- // Keep the delivered physical gun in its depot during clinic and equipment
- // visits. Selecting it now issues it into that quiet field instead of Salta.
- order({type:'configureArtillery',types:[]});
+ // Retain the original clinic selection and its real native defense context.
+ // Quiet visits may issue this finite piece into the local field.
+ order({type:'configureArtillery',types:battery.selections});
  order({type:'diplomacy',kind:'partisanSupply'});
  // The Córdoba envoy meets the actual fifty-point officer contacts. A
  // genuinely recruited local officer then meets Azurduy's higher gate.
@@ -374,7 +374,11 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
   report({event:'northernReliefFieldAmmunition',ids:[...c.squad],ammunitionStart,transactions:supplied.transactions,campaign:structuredClone(c)});
   c=finishReloadsBeforeMarch(c,{report});
  }
- order({type:'configureArtillery',types:battery.selections});
+ // Recover the surviving physical piece after the last quiet equipment visit.
+ // Ordinary storage preserves any actual spent charges and native losses.
+ const batteryRecoveryStart=structuredClone(c),assaultBattery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=assaultBattery.campaign;
+ report({event:'northernReliefAssaultBattery',batteryRecoveryStart,selections:assaultBattery.selections,campaign:structuredClone(c)});
+ order({type:'configureArtillery',types:assaultBattery.selections});
  return prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
  }catch(error){recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }

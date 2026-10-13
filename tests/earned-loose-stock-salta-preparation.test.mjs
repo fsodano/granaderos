@@ -12,9 +12,15 @@ import {ammoTypeFor,ammoCount} from '../game/ammo-types.js';
 import {contractExpiresSeconds} from '../game/contracts.js';
 import {prepareNorthernOfficerRelief} from './fresh-northern-command.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
+import {prepareRouteBattery} from './route-battery.mjs';
 import {stockAmmunitionLedger} from './created-cuyo-route.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+const gunCustody=(c,id)=>[
+ ...Object.entries(c.artilleryDepots??{}).flatMap(([sector,guns])=>guns.filter(g=>g.id===id).map(g=>({source:'depot',sector,record:storedArtilleryRecord(g)}))),
+ ...Object.entries(c.sectorStates??{}).flatMap(([sector,scene])=>(scene.artillery??[]).filter(g=>g.id===id).map(g=>({source:'field',sector,record:storedArtilleryRecord(g)}))),
+ ...(c.artilleryTransfers??[]).filter(t=>t.gun.id===id).map(t=>({source:'transfer',sector:t.to,record:storedArtilleryRecord(t.gun)}))
+];
 function earned(){
  const stem='./fixtures/earned-loose-stock-salta-preparation',proof=JSON.parse(readFileSync(new URL(stem+'.provenance.json',import.meta.url))),packed=readFileSync(new URL(stem+'.campaign.json.gz',import.meta.url)),raw=gunzipSync(packed);
  assert.equal(sha(packed),proof.gzipSha256);assert.equal(sha(raw),proof.rawSha256);assert.equal(raw.length,proof.rawBytes);
@@ -41,17 +47,24 @@ test('the complete earned stock officer preparation supplies real cartridges and
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id),[9,11,1,108,117,121,110,125]);
  assert.ok(c.pendingBattle.assaultSquads.every(q=>q.members.length<=6));
  assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);
- const delivered=events.filter(e=>e.event==='routeBatteryPrepared');assert.equal(delivered.length,1);
+ const delivered=events.filter(e=>e.event==='routeBatteryPrepared');assert.equal(delivered.length,2);
  assert.deepEqual(delivered[0].records,[{id:'arsenal:cordoba:2',type:'bronze4',side:'player',loaded:true,ammo:6}]);
- assert.deepEqual(c.pendingBattle.artillery.map(storedArtilleryRecord),delivered[0].records,'Quiet field visits must leave all seven actual cannon charges for the assault.');
+ assert.deepEqual(delivered[1].records,delivered[0].records,'Recover the same unfired physical piece without adding or replacing any charge.');
+ assert.deepEqual(c.pendingBattle.artillery.map(storedArtilleryRecord),delivered[1].records,'All seven actual cannon charges must reach the assault after ordinary local recovery.');
  const supplies=events.filter(e=>e.event==='northernReliefFieldAmmunition');assert.equal(supplies.length,2);
  for(const e of supplies){
-  assert.deepEqual(e.campaign.artilleryDepots.tucuman.map(storedArtilleryRecord),delivered[0].records,'A supplied field visit must preserve the same physical depot gun.');
+  for(const state of [e.ammunitionStart,e.campaign]){const custody=gunCustody(state,'arsenal:cordoba:2');assert.equal(custody.length,1,'The actual piece has one field/depot/transfer owner.');assert.equal(custody[0].sector,'tucuman');assert.deepEqual(custody.map(g=>g.record),delivered[0].records,'A supplied quiet visit must preserve the same physical charges.');}
   assert.deepEqual(stockAmmunitionLedger(e.campaign),stockAmmunitionLedger(e.ammunitionStart),'Public pickup and any actual cache inspection cannot grant cartridges.');
   const restored=decodeSave(encodeSave(e.ammunitionStart)).campaign,replayed=supplyRouteAmmunition(restored,e.ids,{target:12});
   assert.deepEqual(replayed.campaign,e.campaign);assert.deepEqual(replayed.transactions,e.transactions,'The complete finite supply phase replays from its official save.');
   for(const id of e.ids){const u=carriedAmmunition(rosterFor(e.campaign).find(op=>op.id===id),e.campaign.operativeState[id]),family=ammoTypeFor({...u,activeSlot:'primary'});assert.ok(u.loaded+ammoCount(u,family)>=12);}
  }
+ const recovery=events.filter(e=>e.event==='northernReliefAssaultBattery');assert.equal(recovery.length,1);
+ assert.deepEqual(gunCustody(recovery[0].batteryRecoveryStart,'arsenal:cordoba:2'),[{source:'field',sector:'tucuman',record:delivered[0].records[0]}]);
+ assert.deepEqual(gunCustody(recovery[0].campaign,'arsenal:cordoba:2'),[{source:'depot',sector:'tucuman',record:delivered[0].records[0]}]);
+ assert.ok(events.some(e=>e.event==='routeBatteryStored'&&e.id==='arsenal:cordoba:2'),'A real public local storage order must recover the issued gun.');
+ const restoredRecovery=decodeSave(encodeSave(recovery[0].batteryRecoveryStart)).campaign,late=prepareRouteBattery(restoredRecovery,['bronze4'],{destination:'tucuman',keepServing:restoredRecovery.recruited.filter(id=>restoredRecovery.operativeState[id].alive&&!restoredRecovery.operativeState[id].captured)});
+ assert.deepEqual(late.campaign,recovery[0].campaign);assert.deepEqual(late.selections,recovery[0].selections,'The complete late physical recovery must replay from an official save.');
  assert.ok(supplies.flatMap(e=>e.transactions).some(row=>row.action.operativeId===11&&row.family==='ammoRifle'),'The actual Baker officer needs compatible rifle cartridges.');
  assert.ok(events.some(e=>e.event==='finishedReload'&&e.id===11),'The empty Baker must finish a real paid reload before marching.');
  for(const u of c.pendingBattle.squad){const family=ammoTypeFor({...u,activeSlot:'primary'});assert.equal(u.loaded,1);assert.ok(u.loaded+ammoCount(u,family)>=12);assert.equal(u.bleeding,0);assert.equal(u.hp,u.maxHp);}
