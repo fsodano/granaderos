@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "scope": "Independent raw helper input from the complete unchanged loose seed8 ending attempt. The preparation suffix is earned; no native Salta victory, full prefix replay, complete ending or48h proof is claimed.",
+  "sourceCommit": "d563210054afefa1e070a5448a84ad4104f5eafe",
+  "producerTest": "tests/fresh-ending-route.test.mjs",
+  "producerTestSha256": "262fc5fc0239b014ea394db64f7bc5e903c006882c79b35c3cbe1eae66fbb425",
+  "producerFullResult": "0/2; loose seed8 retreats at Salta; installed seed1812 stops on Cuyo reserve roof capacity",
+  "capturePhase": "raw helper argument before its save round trip or native orders",
+  "prePreparationInputIndependentlyCaptured": true,
+  "rawCampaignIndependentlyCloned": true,
+  "additionalOrders": 0,
+  "additionalSynchronization": 0,
+  "saveNormalizationPerformed": false,
+  "rawSha256": "bbab2202c6ae25b7964200a322d51297fa4fbe57757968863ba21536c324ee88",
+  "rawBytes": 6759034,
+  "gzipSha256": "817433a3dc9a6b7de2df88689701e1d77e81a98cf58a1ad86b6cfbc4dca18932",
+  "gzipBytes": 282612,
+  "priorDeaths": [
+    102,
+    103,
+    104,
+    107,
+    111,
+    112,
+    113,
+    114,
+    115,
+    119,
+    120,
+    123,
+    124,
+    127,
+    129,
+    131,
+    136,
+    137,
+    139,
+    140,
+    141,
+    144,
+    1000
+  ],
+  "originalDiagnostic": {
+    "source": "d563210054afefa1e070a5448a84ad4104f5eafe",
+    "completePreparationOnly": true,
+    "files": 1,
+    "tests": 1,
+    "passed": 1,
+    "nativeBattleExecuted": false,
+    "originalReadyClock": [
+      792,
+      2353
+    ],
+    "originalField": [
+      9,
+      11,
+      1,
+      108,
+      117,
+      121,
+      110,
+      125
+    ],
+    "originalAssaultArtillery": [],
+    "deliveredGun": {
+      "id": "arsenal:cordoba:2",
+      "loaded": true,
+      "ammo": 6
+    },
+    "officerLoads": [
+      [
+        9,
+        1,
+        0
+      ],
+      [
+        11,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        0
+      ]
+    ],
+    "logSha256": "f3624dcdce7295325fcd8381d8ff7edf5e3172638354374e34ff829743b453ad"
+  }
+}

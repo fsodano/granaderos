@@ -312,7 +312,9 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
  // Ensenada holds the only swivel. The first northern assault instead uses
  // Córdoba's existing bronze piece and its real two-person provincial crew.
  const battery=prepareRouteBattery(c,['bronze4'],{destination:'tucuman',keepServing:live(),report});c=battery.campaign;
- order({type:'configureArtillery',types:battery.selections});
+ // Keep the delivered physical gun in its depot during clinic and equipment
+ // visits. Selecting it now issues it into that quiet field instead of Salta.
+ order({type:'configureArtillery',types:[]});
  order({type:'diplomacy',kind:'partisanSupply'});
  // The Córdoba envoy meets the actual fifty-point officer contacts. A
  // genuinely recruited local officer then meets Azurduy's higher gate.
@@ -365,7 +367,14 @@ const travel=at=>{const id=c.activeSquadId;order({type:'travel',sector:at,queue:
   resolveEncounter();for(const id of live())order({type:'assignCare',operativeId:id,assignment:c.operativeState[id].hp<c.operativeState[id].maxHp?'patient':'rest'});order({type:'wait',hours:1});
  }
  for(const id of field){assert.ok(c.operativeState[id].hp>=15);assert.equal(c.operativeState[id].bleeding,0);order({type:'assignCare',operativeId:id,assignment:'active'});}
- for(let i=0;i<field.length;i+=6){order({type:'createSquad',ids:field.slice(i,i+6),name:'Columna con oficiales',sector:'tucuman'});const p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));c=finishReloadsBeforeMarch(c);}
+ for(let i=0;i<field.length;i+=6){
+  order({type:'createSquad',ids:field.slice(i,i+6),name:'Columna con oficiales',sector:'tucuman'});
+  const p=visit(c);c=leave(sync({campaign:p.campaign,battle:equipOpeningRifles(p.battle,c.squad).battle}));
+  const ammunitionStart=structuredClone(c),supplied=supplyRouteAmmunition(c,c.squad,{target:12,report});c=supplied.campaign;
+  report({event:'northernReliefFieldAmmunition',ids:[...c.squad],ammunitionStart,transactions:supplied.transactions,campaign:structuredClone(c)});
+  c=finishReloadsBeforeMarch(c,{report});
+ }
+ order({type:'configureArtillery',types:battery.selections});
  return prepareFinalAssault(c,{staging:'tucuman',target:'salta',fieldIds:field});
  }catch(error){recordRouteStrategicEvidence({helper:'prepareStockNorthernOfficerRelief',stage:'preparation-failure',campaign:c,inputCapture,error});throw error;}
 }

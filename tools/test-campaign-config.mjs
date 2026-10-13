@@ -28,6 +28,7 @@ export const campaignTestGroups = [
   "tests/earned-installed-uspallata.test.mjs",
   "tests/earned-loose-mountain-arsenal.test.mjs",
   "tests/earned-loose-stock-commander-wounds.test.mjs",
+  "tests/earned-loose-stock-salta-preparation.test.mjs",
   "tests/earned-mendoza-ammunition-service-return.test.mjs",
   "tests/earned-mountain-medical-courier.test.mjs",
   "tests/earned-northern-handover.test.mjs",
