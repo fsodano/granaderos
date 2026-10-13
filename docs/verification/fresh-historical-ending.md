@@ -73,11 +73,22 @@ ammunition and paid service are preserved; the official paired save roundtrip
 and both finite supply-phase replays pass. This does not prove a native Salta victory or a separate
 normal quick result.
 
-These accepted earned-segment and preparation receipts are separate from the
-pending combined local gate. The two component quick runs retain their 35
-extended exclusions. The unchanged complete `d5632100` recovery 0/1 and ending 0/2
-failures remain recorded. Both complete new-source fresh endings, saved
-48-hour continuation and final browser/full-release acceptance remain open.
+These earned-segment and preparation receipts are separate from the combined
+local quick on `ecbb783b`: all 1,043 files finish, with 7,570/7,571 tests passing
+and one failure. The original clinic battle passes. Its second case fails the
+complete pre-defense campaign equality because the early cannon selection
+and matching log entry changed. The failed batch remains off `main`; neither
+component quick count is a combined passing result. Their 35 extended files
+remain excluded.
+
+The complete unchanged recovery on `3aa8f281` passes Mendoza, then finishes
+0/1 at original line 223 during initial foundry battery recovery: no second
+controlled, reachable bronze piece is available. It does not reach either
+mountain-pass assault. All 14,699 frozen pins and 394 actual inputs remain
+unchanged, with no skips or cancellations. The older complete `d5632100`
+recovery 0/1 and ending 0/2 failures remain recorded. Both complete new-source
+fresh endings, saved 48-hour continuation and final browser/full-release
+acceptance remain open.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 

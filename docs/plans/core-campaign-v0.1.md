@@ -58,7 +58,11 @@ failure receipt; it is not proof that a game mechanic is broken.
 PRs [#419](https://github.com/fsodano/granaderos/pull/419) and
 [#420](https://github.com/fsodano/granaderos/pull/420), plus the Salta
 preparation change at `240cb7b8`, have accepted local receipts. Their results
-remain separate from each other and from the pending combined local gate.
+remain separate from each other. The combined local gate on `ecbb783b`
+finishes all 1,043 quick files with 7,570/7,571 tests passing and one failure.
+The original northern clinic battle passes; the second clinic case fails its
+complete pre-defense campaign equality because the early cannon selection
+and matching log entry changed. That failed batch remains off `main`.
 
 | Reviewed change | Bounded result | Separate component checks |
 | --- | --- | --- |
@@ -69,9 +73,13 @@ remain separate from each other and from the pending combined local gate.
 Both component quick runs retain the 35 extended exclusions. Neither count is
 a combined result. Game rules, shipping data, authored geometry and both
 original ending cases stay unchanged. The complete `d5632100` recovery result
-of 0/1 and ending result of 0/2 below remain historical failures. Complete
-new-source recovery, both fresh endings, saved 48-hour continuation and final
-browser/full-release acceptance remain open.
+of 0/1 and ending result of 0/2 below remain historical failures. The complete unchanged recovery on `3aa8f281` now passes Mendoza, then
+finishes 0/1 at original line 223 during the initial two-gun foundry recovery:
+no second controlled, reachable bronze piece is available. It does not reach
+either mountain-pass assault. All 14,699 frozen pins and 394 actual inputs
+remain unchanged, with no skips or cancellations. Both complete new-source
+fresh endings, saved 48-hour continuation and final browser/full-release
+acceptance remain open.
 
 ## Latest merged evidence
 
