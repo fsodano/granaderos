@@ -198,7 +198,8 @@ test('a light gun ahead of a heavy gun clears the approach regardless of purchas
 });
 
 test('the Mendoza screen clears the heavy gun crew and keeps a legal advance open',()=>{
- let battle=createBattle([{id:'101',x:10,y:3},{id:'102',x:11,y:3},{id:'125',x:10,y:4}],{
+ // The screen blocks the helper's translated cell, beside the occupied gun.
+ let battle=createBattle([{id:'101',x:10,y:3},{id:'102',x:11,y:3},{id:'125',x:11,y:4}],{
   width:20,height:20,tiles:Array.from({length:400},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass'})),
   exploration:true,enemies:[],artillery:[{id:'heavy',type:'bronze4',side:'player',x:10,y:4,loaded:true,ammo:6}],
  });
