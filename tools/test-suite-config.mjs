@@ -1,6 +1,5 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
- {file:'tests/earned-original-salta-legal-movement.test.mjs',reason:'Exact original Salta shared-occupancy move, finite legal prefix and complete native continuation with official saved replay.'},
  {file:'tests/earned-original-hospital-return.test.mjs',reason:'Exact recovered hospital locality selection, quoted hourly service retention, actual second raid and finite bleeding aid before the complete six-person return.'},
  {file:'tests/earned-original-northern-reunion.test.mjs',reason:'Whole genuine returned681 paid reunion, completed clinic service, quoted simultaneous postas, native northern road and strict saved custody.'},
  {file:'tests/earned-original-hospital-rear-guard.test.mjs',reason:'Exact earned original hospital rear preparation, finite forward battery and complete native hospital care; full original recovery remains separate.'},
