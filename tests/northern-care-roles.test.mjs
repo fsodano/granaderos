@@ -10,6 +10,7 @@ import {doctorRate} from '../game/medical-care.js';
 import {careRules} from '../game/campaign-care-rules.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {northernCareRolePlan,assignNorthernCareRoles} from './northern-care-roles.mjs';
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 
 const provenance=JSON.parse(readFileSync(new URL('./fixtures/northern-care-earned-staging.provenance.json',import.meta.url),'utf8'));
 const fixtureGzip=readFileSync(new URL('./fixtures/northern-care-earned-staging.json.gz',import.meta.url)),fixtureRaw=gunzipSync(fixtureGzip);
@@ -19,7 +20,7 @@ assert.equal(fixtureRaw.length,provenance.payload.bytes);assert.equal(byteHash(f
 const fixture=JSON.parse(fixtureRaw);
 assert.equal(fixture.phase,provenance.source.phase);assert.deepEqual(fixture.context.doctors,provenance.nativeInput.doctors);assert.deepEqual(fixture.context.patients,provenance.nativeInput.patients);
 const {doctors,patients}=fixture.context;
-const initial=()=>structuredClone(fixture.campaign);
+const initial=()=>admitEarnedArtilleryMarkers(fixture.campaign,{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo'],label:'earned northern care staging'});
 const canonical=value=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])):value;
 const hash=value=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(canonical(value))).digest('hex');
 const role=(plan,id)=>plan.roles.find(action=>action.operativeId===id)?.assignment;
