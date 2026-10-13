@@ -69,8 +69,8 @@ assault with all seven real charges. Ordinary pickups supply 49 finite
 cartridges, and the empty Baker finishes a paid reload. Five complete affected
 files pass 21/21, including the full earned loose-stock preparation and the
 existing installed preparation control. The original casualties, physical
-ammunition and paid service are preserved, and the official campaign/battle
-pair replays exactly. This does not prove a native Salta victory or a separate
+ammunition and paid service are preserved; the official paired save roundtrip
+and both finite supply-phase replays pass. This does not prove a native Salta victory or a separate
 normal quick result.
 
 These accepted earned-segment and preparation receipts are separate from the
