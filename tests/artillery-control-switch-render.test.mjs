@@ -53,6 +53,11 @@ async function mount(t,battle,{workers=false}={}){
  await act(async()=>root.render(h(Screen)));
  timers=battleTimers(act);
  const doc=dom.window.document;
+ // JSDOM has no SVG screen matrix. Declare an identity viewport for focus
+ // positioning; native keyboard targeting still selects the actual torso ID.
+ const field=doc.querySelector('.tactical-field'),screenMatrix={};
+ field.getScreenCTM=()=>({inverse:()=>screenMatrix});
+ field.createSVGPoint=()=>({x:0,y:0,matrixTransform(matrix){assert.equal(matrix,screenMatrix);return {x:this.x,y:this.y};}});
  const click=async element=>{assert.ok(element,'the visible control exists');await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
  const button=label=>[...doc.querySelectorAll('.ja2-artillery-toolbar button')].find(element=>element.textContent.startsWith(label));
  const menu=()=>doc.querySelector('.ja2-artillery-menu');
@@ -78,6 +83,11 @@ async function mount(t,battle,{workers=false}={}){
   // comparison; no simulated pixel coordinate chooses another body part.
   await act(async()=>element.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
  };
+ const hoverTarget=async()=>{
+  const element=doc.querySelector('[data-unit-id="e"] [data-person-hit-target]');assert.ok(element,'the actual enemy has its native hit target');
+  await act(async()=>element.dispatchEvent(new dom.window.FocusEvent('focusin',{bubbles:true})));
+ };
+ const aim=async()=>{await act(async()=>doc.querySelector('.tactical-field').dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'f',bubbles:true})));};
  const moveTo=async(x,y)=>{
   const label=tacticalGridLabel(x,y),cell=[...doc.querySelectorAll('[data-surface-level="0"]')].find(el=>el.getAttribute('aria-label')?.startsWith(label+','));
   assert.ok(cell,'the native ground cell exists');
@@ -89,7 +99,7 @@ async function mount(t,battle,{workers=false}={}){
   const {worker,id,job}=pending.splice(index,1)[0],result=runBattleJob(job);
   await act(async()=>worker.onmessage({data:{id,battle:result}}));return result;
  };
- return {moveTo,jobs,deliver,doc,read:()=>current,commits,button,menu,select,open,close,choose,click,fireAtTarget,until:timers.until,settle:()=>timers.settle(doc)};
+ return {moveTo,jobs,deliver,doc,read:()=>current,commits,button,menu,select,open,close,choose,click,fireAtTarget,hoverTarget,aim,until:timers.until,settle:()=>timers.settle(doc)};
 }
 
 function assertCrew(m,battle){
@@ -115,8 +125,9 @@ test('visible adjacent controls switch personal fire and cannon fire with their 
  await m.choose();assertCrew(m,initial);
  assert.equal(m.commits.length,0,'selecting the cannon is a UI choice');
  await m.click(m.button('Arma personal'));
- assertMenuExited(m);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');
+ assertMenuExited(m);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Mover');
  assert.deepEqual(m.read(),initial);assert.equal(m.commits.length,0,'an already held primary needs no weapon order');
+ await m.hoverTarget();assert.match(m.doc.querySelector('[data-context-action-cursor="aim"]').textContent,/Disparar/);assert.equal(m.doc.querySelector('.aim-cursor'),null,'the normal enemy hover uses the compact contextual cursor before explicit F targeting');assert.equal(m.commits.length,0);
  const rifleBefore=structuredClone(m.read()),rifleRequest={type:'fire',unitId:'20',targetId:'e',aim:0,hitLocation:'torso'},rifleExpected=actBattle(rifleBefore,rifleRequest);
  assert.equal(rifleExpected.lastError,null);
  await m.fireAtTarget();await m.settle();
@@ -184,9 +195,10 @@ test('using a personal weapon from a different held slot pays only the existing 
  await m.click(m.button('Arma personal'));
  assert.equal(m.commits.length,1);assert.deepEqual(m.read(),expected);
  assert.equal(actor(m.read()).activeSlot,'primary');assert.equal(actor(m.read()).ap,actor(initial).ap-4);
- assertMenuExited(m);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');
+ assertMenuExited(m);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Mover');
  assert.deepEqual(point(actor(m.read())),point(actor(initial)));assert.deepEqual(m.read().artillery,initial.artillery);
  assert.deepEqual(validateBattleSnapshot(m.read()),m.read());
+ await m.hoverTarget();assert.ok(m.doc.querySelector('[data-context-action-cursor="aim"]'));await m.aim();assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');assert.ok(m.doc.querySelector('.aim-cursor'),'explicit F retains the real firearm targeting forecast');assert.equal(m.commits.length,1);assert.deepEqual(m.read(),expected,'hover and explicit targeting spend no native AP, time or ammunition');
 });
 
 test('an ineligible nearby crew disables cannon work and reports its real deficit without blocking personal fire',async t=>{
@@ -199,7 +211,7 @@ test('an ineligible nearby crew disables cannon work and reports its real defici
  assert.equal(m.commits.length,0);assert.deepEqual(m.read(),initial);
  assert.equal(m.button('Arma personal').disabled,false);await m.click(m.button('Arma personal'));
  assertMenuExited(m);
- assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');assert.deepEqual(m.read(),initial);
+ assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Mover');assert.deepEqual(m.read(),initial);
 });
 
 for(const [label,change]of [

@@ -9,7 +9,8 @@ export default function ContextActionCursor({state,unit,hover,preview=null,mode=
  const model=contextActionCursorModel(state,unit,hover,{preview,mode,itemIntent,movementIntent,busy});
  if(!model||!point||![point.x,point.y,scale].every(Number.isFinite)||scale<=0)return null;
  const color=model.valid?'#f3e6c8':'#d9a294';
- const label=`${model.label}${model.pa===undefined?'':` · ${formatAP(model.pa)} PA`}`;
+ const pa='pa' in model?model.pa:undefined;
+ const label=`${model.label}${pa===undefined?'':` · ${formatAP(pa)} PA`}`;
  return <g data-context-action-cursor={model.icon} transform={`translate(${point.x+12*scale} ${point.y+8*scale}) scale(${scale})`} pointerEvents="none" role="img" aria-label={`${label}${model.reason?': '+model.reason:''}`}>
   <title>{`${label}${model.reason?': '+model.reason:''}`}</title>
   <g data-context-icon-size="16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
