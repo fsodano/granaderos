@@ -20,7 +20,7 @@ import {stockAmmunitionLedger,prepareCreatedMendozaAssault} from './created-cuyo
 import {admitEarnedArtillerySave,beforeEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-const markerScenes={sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta'],scenes:{yatasto:'tucuman'},label:'installed Cuyo reserve input'};
+const markerScenes={sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta'],scenes:{yatasto:'tucuman'},weaponReferences:{count:326,ids:['firearm-1800','firearm-1801','firearm-1802','firearm-1803','firearm-1804','firearm-1805','firearm-1806','firearm-1807','firearm-1808','blade-1809','blade-1810','blade-1811','blade-1811-loose','blade-1812','blade-1813']},label:'installed Cuyo reserve input'};
 function input(){
  const stem='./fixtures/earned-installed-cuyo-overflow-reserve',proof=JSON.parse(readFileSync(new URL(stem+'.provenance.json',import.meta.url))),packed=readFileSync(new URL(stem+'.save.json.gz',import.meta.url)),raw=gunzipSync(packed);
  assert.equal(sha(packed),proof.gzipSha256);assert.equal(sha(raw),proof.rawSha256);assert.equal(raw.length,proof.rawBytes);assert.equal(JSON.parse(raw).savedAt,proof.savedAt);

@@ -3,11 +3,12 @@ import {decodeSave,encodeSave} from '../game/save.js';
 import {expandSaveTerrain} from '../game/save-terrain.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {restoreWeaponReferences} from '../game/weapon-definition.js';
 
 // These specifically pinned old earned records have no living gun-cell
-// overlaps. Their only admitted change is the new version marker. This oracle
-// permits no coordinate migration and preserves every other campaign field.
-export function admitEarnedArtilleryMarkers(input,{sectors,scenes={},label='earned campaign'}){
+// overlaps. Admission adds the new version marker and only explicitly listed
+// missing empty wall arrays. No coordinate or physical state may change.
+export function admitEarnedArtilleryMarkers(input,{sectors,scenes={},missingWallEdges,label='earned campaign'}){
  const before=structuredClone(input),expected=structuredClone(input);
  assert.equal(input.pendingBattle,null,`${label}: no active snapshot is omitted by the expected scene set`);
  assert.deepEqual(Object.keys(input.sectorStates).sort(),[...sectors].sort(),`${label}: exact retained sector set`);
@@ -21,13 +22,42 @@ export function admitEarnedArtilleryMarkers(input,{sectors,scenes={},label='earn
  };
  for(const id of sectors){assert.equal(input.sectorStates[id].sectorId,id);assert.equal(input.sectorStates[id].sceneId??null,null);mark(expected.sectorStates[id],id);}
  for(const [id,sector]of Object.entries(scenes)){assert.equal(input.sceneStates[id].sceneId,id);assert.equal(input.sceneStates[id].sectorId,sector);mark(expected.sceneStates[id],id);}
+ addDeclaredEmptyWalls(expected,{sectors,scenes,missingWallEdges,label});
  const admitted=decodeSave(encodeSave(input)).campaign;
- assert.deepEqual(admitted,expected,`${label}: official admission adds only the exact scene version markers; every coordinate, physical stock, wound, death, clock and resource stays exact`);
+ assert.deepEqual(admitted,expected,`${label}: official admission adds only the exact scene version markers and declared empty wall arrays; every coordinate, physical stock, wound, death, clock and resource stays exact`);
  assert.deepEqual(input,before,`${label}: admission does not mutate the raw earned input`);
  assert.deepEqual(decodeSave(encodeSave(admitted)).campaign,admitted,`${label}: marker admission is idempotent`);
  return admitted;
 }
 
+function addDeclaredEmptyWalls(campaign,{sectors,scenes={},missingWallEdges,label='earned campaign'}){
+ if(missingWallEdges===undefined)return;
+ assert.deepEqual(Object.keys(missingWallEdges).sort(),['scenes','sectors'],`${label}: exact empty-wall declaration fields`);
+ for(const [field,kind,declared]of [['sectorStates','sectors',sectors],['sceneStates','scenes',Object.keys(scenes)]]){
+  const ids=missingWallEdges[kind];assert.ok(Array.isArray(ids));assert.equal(new Set(ids).size,ids.length);
+  const missing=Object.entries(campaign[field]??{}).filter(([,battle])=>!Object.hasOwn(battle,'wallEdges')).map(([id])=>id);
+  assert.deepEqual(missing.sort(),[...ids].sort(),`${label}: exact legacy scenes lacking wallEdges`);
+  for(const id of ids){assert.ok(declared.includes(id));assert.equal(Object.hasOwn(campaign[field][id],'wallEdges'),false);campaign[field][id].wallEdges=[];}
+ }
+}
+function expandDeclaredWeaponReferences(value,{weaponReferences,label='earned save'}){
+ const ids=[];
+ const visit=node=>{
+  if(!node||typeof node!=='object')return;
+  if(node.contentWeapon&&Object.hasOwn(node.contentWeapon,'definitionRef')){
+   assert.deepEqual(Object.keys(node.contentWeapon),['definitionRef'],`${label}: exact compact weapon reference`);ids.push(node.contentWeapon.definitionRef);
+  }
+  for(const [key,child]of Object.entries(node))if(key!=='contentCampaign'&&key!=='contentWeapon')visit(child);
+ };
+ visit(value);
+ if(weaponReferences===undefined){assert.equal(ids.length,0,`${label}: compact weapon references need an explicit fixture declaration`);return;}
+ assert.deepEqual(Object.keys(weaponReferences).sort(),['count','ids']);assert.equal(ids.length,weaponReferences.count);
+ assert.equal(new Set(weaponReferences.ids).size,weaponReferences.ids.length);
+ assert.deepEqual([...new Set(ids)].sort(),[...weaponReferences.ids].sort(),`${label}: exact compact weapon ID set`);
+ const embedded=new Set(value.campaign.contentCampaign.package.weapons.map(weapon=>weapon.id));
+ for(const id of ids)assert.ok(embedded.has(id),`${label}: the raw embedded package owns ${id}`);
+ restoreWeaponReferences(value.campaign,value);
+}
 function declaredScenes(campaign,{sectors,scenes={},label='earned campaign'}){
  assert.deepEqual(Object.keys(campaign.sectorStates).sort(),[...sectors].sort(),`${label}: exact retained sector set`);
  assert.deepEqual(Object.keys(campaign.sceneStates??{}).sort(),Object.keys(scenes).sort(),`${label}: exact retained mission scene set`);
@@ -47,6 +77,7 @@ function addLegacyMarker(battle,label,{current=false}={}){
 function expectedPair(pair,options){
  const expected=structuredClone(pair),label=options.label??'earned pair';
  for(const [id,battle]of declaredScenes(expected.campaign,options))addLegacyMarker(battle,`${label}/${id}`);
+ addDeclaredEmptyWalls(expected.campaign,options);
  const request=expected.campaign.pendingBattle;
  // The reviewed active inputs have no hidden resumed scene. Future fixtures
  // must state and check that extra scene explicitly before using this oracle.
@@ -78,6 +109,7 @@ export function admitEarnedArtillerySave(text,options){
  // equality. These transformations add no campaign actions or tactical work.
  if(value.schema===2)expandSaveTerrain(value);
  for(const field of ['sectorStates','sceneStates'])for(const [id,battle]of Object.entries(value.campaign[field]??{}))value.campaign[field][id]=expandCellScene(battle,value.campaign);
+ expandDeclaredWeaponReferences(value,options);
  const input={campaign:value.campaign,battle:expandCellScene(value.battle,value.campaign)??null};
  return verifyPair(input,decodeSave(text),options);
 }
