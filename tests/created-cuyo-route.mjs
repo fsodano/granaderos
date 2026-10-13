@@ -528,14 +528,15 @@ export function stabilizeStockMendozaSurvivors(start,{report=()=>{},returnSector
 }
 
 // This ledger compares the same physical owners before/after transfers. Living
-// scene copies are historical receipts; their current operative record owns
-// the carried rounds. Dead bodies, loose field stacks and depots remain owners.
-function stockAmmunitionLedger(c){
+// player scene copies are historical receipts, including former contractors:
+// current serving records or their actual returned stacks own those rounds.
+// Dead bodies, loose field stacks and depots remain owners.
+export function stockAmmunitionLedger(c){
  const total={},ids=new Set(living(c).map(String));
  for(const id of living(c))addAmmoCounts(total,unitAmmunitionByType(carried(c,id)));
  for(const scene of [...Object.values(c.sectorStates??{}),...Object.values(c.sceneStates??{})]){
   addAmmoCounts(total,fieldAmmunitionByType(scene));
-  for(const unit of scene.units??[])if(!ids.has(unit.id))addAmmoCounts(total,unitAmmunitionByType(unit));
+   for(const unit of scene.units??[])if(!ids.has(unit.id)&&(unit.side!=='player'||unit.hp<=0))addAmmoCounts(total,unitAmmunitionByType(unit));
  }
  for(const depot of Object.values(c.ammunitionStores??{}))for(const [family,count]of Object.entries(depot))addAmmoCounts(total,{[AMMUNITION_FAMILIES[family].type]:count});
  return Object.fromEntries(Object.values(AMMUNITION_FAMILIES).map(f=>[f.type,total[f.type]??0]));

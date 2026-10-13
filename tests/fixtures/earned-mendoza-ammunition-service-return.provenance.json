@@ -1,0 +1,107 @@
+{
+  "scope": "Genuine current pre-ammunition state from an unchanged Cuyo suffix executed on the older earned funded507 Yatasto input. Not a direct capture of the failed complete4e historical-loss run or a fresh-prefix/ending pass.",
+  "producerSource": "10f42cf4cf0c8ce96b74199c081e953f40f1868a",
+  "sourceBase": "64e6fb3c65ef93efc3c51a7418b78fd5898252b7",
+  "producer": "assembleCreatedCuyo then prepareCreatedMendozaAssault, with only passive reporting before the unchanged conservation assertion",
+  "parentInput": "tests/fixtures/created-cuyo-earned-yatasto-7415af55.save.json.gz",
+  "parentRawSha256": "49b11abf797134f366670c38bdc225dd1acc22a99b6c6ffe5f8649d41fc80b62",
+  "parentClock": [
+    507,
+    2014
+  ],
+  "producerReceipt": ".cache/core-campaign-2026-10-13/mendoza-custody-earned-507-v1/receipt.json",
+  "producerTerminalLogSha256": "3f129ff02a366b9213b57187bc3100516e454809d66ac93ea8e4fbbd23fe3064",
+  "producerExitCode": 1,
+  "producerSeconds": 58.692749459000005,
+  "frozenPins": 14690,
+  "actualInputRecords": 342,
+  "changedPins": [],
+  "changedActualInputs": [],
+  "normalization": "none; exact official save envelope admitted from the passive beforeCampaign",
+  "rawSha256": "ac74d5b0578fefe6284f1990a6b216fcd7da627deab7a894abde88e8c3be7e50",
+  "gzipSha256": "cb1dc119737fdf6435b708279874e327e3364beb488d5604949df3b3da3e408f",
+  "rawBytes": 2152080,
+  "savedAt": "2026-10-13T03:03:37.056Z",
+  "clock": [
+    572,
+    466
+  ],
+  "field": [
+    123,
+    146,
+    125,
+    144,
+    126,
+    101,
+    9,
+    11,
+    1,
+    0,
+    8,
+    100,
+    102,
+    107,
+    116,
+    122,
+    129,
+    130,
+    142
+  ],
+  "target": 12,
+  "observedOldLedgerBefore": {
+    "musket_75": 1049,
+    "rifle_62": 208,
+    "pistol_69": 341,
+    "shot_16": 206
+  },
+  "observedOldLedgerAfter": {
+    "musket_75": 1042,
+    "rifle_62": 208,
+    "pistol_69": 332,
+    "shot_16": 206
+  },
+  "duplicateSceneOwner": {
+    "sector": "cordoba",
+    "unitId": "133",
+    "snapshotHp": 40,
+    "actualAlive": true,
+    "actualHp": 91,
+    "serving": false,
+    "expiredClock": [
+      570,
+      3483
+    ],
+    "counts": {
+      "musket_75": 7,
+      "pistol_69": 9
+    }
+  },
+  "actualReturnedSources": {
+    "service-return-2-0": {
+      "musket_75": 1
+    },
+    "service-return-2-5": {
+      "pistol_69": 9
+    },
+    "service-return-2-6": {
+      "musket_75": 6
+    }
+  },
+  "actualLooseMusketRecipients": [
+    [
+      146,
+      3
+    ],
+    [
+      125,
+      2
+    ],
+    [
+      144,
+      1
+    ]
+  ],
+  "sourceTransforms": false,
+  "stateGrants": false,
+  "sourceAssertionUnchanged": true
+}
