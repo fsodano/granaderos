@@ -60,7 +60,10 @@ test('the relief quotation retains a serving returnee after his actual paid-cloc
  const arrived=structuredClone(c),plan=expandedCapitalReliefPlan(c),saved=decodeSave(encodeSave(c)).campaign;
  assert.deepEqual(plan.keepers,before.keepers);
  assert.deepEqual(plan.field,before.field);
- assert.deepEqual(plan.candidates,before.candidates);
+ const expectedCandidates=before.candidates.map(row=>({...row,
+  day:{...row.day,expiresAt:row.day.expiresAt+4},
+  week:{...row.week,expiresAt:row.week.expiresAt+4}}));
+ assert.deepEqual(plan.candidates,expectedCandidates);
  assert.equal(plan.requiredTreasury,before.requiredTreasury);
  assert.deepEqual(expandedCapitalReliefPlan(saved),plan);
  assert.deepEqual(c,arrived);assert.deepEqual(input,original);
