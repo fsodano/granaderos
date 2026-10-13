@@ -44,8 +44,63 @@ cancellations. These remain quick-profile results. The complete unchanged
 ending file on the same source finishes 0/2: loose seed 8 retreats at Salta;
 installed seed 1812 passes Yatasto, then reserve preparation refuses more
 residents than one authored roof can hold. The full failure records and exact
-source limits are in the shipping campaign status. Both fresh endings, saved 48-hour
-continuation and full-release acceptance remain open.
+source limits are in the shipping campaign status.
+
+The reviewed change in [PR #419](https://github.com/fsodano/granaderos/pull/419), at
+`3aa8f281`, separately proves an earned Mendoza victory: 15 turns, 448 actions,
+489 exact replay orders and 1,289 tactical seconds. Eight actual deaths and six
+remaining gun charges are retained; original victory, driver bounds, physical
+custody and official-save assertions remain required. Its affected gate passes
+29/29; its own normal local quick passes 1,041 files and 7,565 tests.
+The reviewed change in [PR #420](https://github.com/fsodano/granaderos/pull/420), at
+`bc92e1fb`, separately proves all 21 actual reserves can reach unique authored
+roof posts through 243 seconds of native movement. Real off-family donations
+of 11 rounds from actor 119 and four from actor 139 conserve the physical
+ammunition ledger. The actual entered postures, midpoint save and full replay
+pass. The paid caller reaches its pre-battery checkpoint with the original
+five crew members plus paid arrival 114 within the six-person limit. Its
+affected gate passes 25/25; its own normal local quick passes 1,041 files and
+7,567 tests. Each component also passes docs, baseline 39/39, typecheck and
+diff checks, with no quick failures, skips or cancellations.
+
+The reviewed Salta custody correction at `42ab7964` retains the original
+clinic cannon selection, then recovers the same actual Córdoba gun
+`arsenal:cordoba:2` from the local field through public storage after equipment
+visits. The earned unfired input keeps all seven charges for the assault.
+Ordinary pickups supply 49 finite cartridges, and the empty Baker finishes a
+paid reload. Six complete affected files pass 23/23, including both unchanged
+original clinic cases, the full earned loose-stock preparation and the
+installed preparation control. All 57,280 source/runtime/dependency pins and
+1,268 unique actual inputs remain unchanged. The original casualties,
+physical ammunition and paid service are preserved; the official paired save
+roundtrip, both finite supply-phase replays and the complete late physical
+recovery replay pass. This does not prove a native Salta victory or a separate
+normal quick result. The earlier `240cb7b8` five-file affected gate passes
+21/21; the later combined failure below remains recorded. The corrected
+combined normal quick remains a separate pending check.
+
+These earned-segment and preparation receipts are separate from the combined
+local quick on `ecbb783b`: all 1,043 files finish, with 7,570/7,571 tests passing
+and one failure. The original clinic battle passes. Its second case fails the
+complete pre-defense campaign equality because the early cannon selection
+and matching log entry changed. The failed batch remains off `main`; neither
+component quick count is a combined passing result. Their 35 extended files
+remain excluded.
+
+The complete unchanged recovery on `3aa8f281` passes Mendoza, then finishes
+0/1 at original line 223 during initial foundry battery recovery: no second
+controlled, reachable bronze piece is available. It does not reach either
+mountain-pass assault. All 14,699 frozen pins and 394 actual inputs remain
+unchanged, with no skips or cancellations. The older complete `d5632100`
+recovery 0/1 and ending 0/2 failures remain recorded.
+
+The complete unchanged ending file on `ecbb783b` also finishes 0/2. Loose seed
+8 stops during Salta on a refused medical-slot order for a knocked-down actor.
+Installed seed 1812 passes Salta, Yatasto and Cuyo, then stops before Uspallata
+combat on the paid-recruit treasury equality: actual 104,030 versus expected
+104,096 pesos. All 14,705 frozen pins and 627 unique actual inputs remain
+unchanged, with no skips or cancellations. Both fresh endings, their saved
+48-hour continuation and final browser/full-release acceptance remain open.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 
