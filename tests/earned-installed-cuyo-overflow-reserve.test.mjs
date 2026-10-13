@@ -56,7 +56,7 @@ function replay(preparation){
    pair=decodeSave(encodeSave(pair.campaign,pair.battle));
   }
  }
- return {campaign:decodeSave(encodeSave(pair.campaign)).campaign,crossings};
+ return {campaign:decodeSave(encodeSave(pair.campaign)).campaign,crossings,enteredPostures:[...posture].map(([id,stance])=>({id:Number(id),stance}))};
 }
 
 test('the genuine twenty-one reserves retain all priority posts and use unique authored cells instead of dropping overflow residents',()=>{
@@ -74,6 +74,7 @@ test('all twenty-one actual reserves reach their paid posts with finite equipmen
  const {campaign:start,proof}=input(),before=structuredClone(start),posts=stockCuyoBatteryReservePosts(start),ledger=stockAmmunitionLedger(start),oldGuns=structuredClone(guns(start)),result=prepareStockCuyoBatteryReserve(start,posts),{campaign:c,preparation}=result,replayed=replay(preparation);
  assert.deepEqual(start,before);assert.deepEqual(c.recruited,start.recruited);assert.deepEqual(c.squads,start.squads);assert.equal(c.activeSquadId,start.activeSquadId);assert.deepEqual(c.squad,proof.fieldCrew);assert.deepEqual(c.contracts,start.contracts);assert.equal(c.resources.treasury,start.resources.treasury);assert.deepEqual(guns(c),oldGuns);assert.deepEqual(stockAmmunitionLedger(c),ledger);
  assert.deepEqual(preparation.positions,posts);assert.equal(preparation.positions.length,21);assert.equal(new Set(preparation.positions.map(spaceKey)).size,21);assert.deepEqual(replayed.campaign,c);assert.deepEqual(replayed.crossings.map(row=>row.id),[129,122]);
+ assert.deepEqual(replayed.enteredPostures,preparation.enteredPostures);for(const {id,stance}of preparation.enteredPostures)assert.equal(c.sectorStates.cordoba.units.find(u=>u.id===String(id)).stance,stance);
  assert.deepEqual(preparation.donations.map(({donor,family,count})=>({donor,family,count})),[{donor:119,family:'ammoMusket',count:11},{donor:139,family:'ammoMusket',count:4}]);
  assert.deepEqual(stockAmmunitionLedger(preparation.equipmentStart),ledger);assert.deepEqual(stockAmmunitionLedger(preparation.equipmentReady),ledger);
  for(const id of [119,139]){
@@ -88,10 +89,10 @@ test('all twenty-one actual reserves reach their paid posts with finite equipmen
  t.diagnostic(JSON.stringify({scope:'Earned complete reserve formation and paid native cross-roof placement only; battery raid, Mendoza victory and full ending remain separate',inputRaw:proof.rawSha256,reserves:posts.length,fieldCrew:c.squad,crossings:replayed.crossings,clock:[c.hour,c.secondOfHour],treasury:c.resources.treasury,elapsedSeconds:preparation.elapsedSeconds,ammunitionTransactions:preparation.ammunition}));
 });
 
-test('a saved crouched overflow physician pays to stand before real descent and ascent, then restores the saved posture',()=>{
+test('an old crouched scene copy does not replace the actual entered posture during paid overflow descent and ascent',()=>{
  const {campaign:start}=input(),post=stockCuyoBatteryReservePosts(start).find(p=>p.id===122),old=expandCellScene(start.sectorStates.cordoba,start).units.find(u=>u.id==='122');assert.equal(old.stance,'crouched');
  const {campaign:c,preparation}=prepareStockCuyoBatteryReserve(start,[post]),replayed=replay(preparation);
- assert.deepEqual(replayed.campaign,c);assert.deepEqual(replayed.crossings.map(row=>row.id),[122]);assert.deepEqual(preparation.journal.filter(row=>row.kind==='battle'&&row.action.type==='stance').map(row=>row.action.stance),['standing','crouched']);assert.equal(c.sectorStates.cordoba.units.find(u=>u.id==='122').stance,'crouched');
+ assert.deepEqual(replayed.campaign,c);assert.deepEqual(replayed.crossings.map(row=>row.id),[122]);assert.deepEqual(preparation.enteredPostures,[{id:122,stance:'standing'}]);assert.deepEqual(replayed.enteredPostures,preparation.enteredPostures);assert.deepEqual(preparation.journal.filter(row=>row.kind==='battle'&&row.action.type==='stance'),[]);assert.equal(c.sectorStates.cordoba.units.find(u=>u.id==='122').stance,preparation.enteredPostures[0].stance);
 });
 
 test('the unchanged paid stock Mendoza caller finishes real reserve preparation and booking before its original battery operation',t=>{

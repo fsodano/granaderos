@@ -47,7 +47,7 @@ export function stockCuyoBatteryReservePosts(state){
 // Single-person visits reuse that soldier's home slot: other squad members
 // cannot block a narrow roof, and no extra squad capacity is required.
 export function prepareStockCuyoBatteryReserve(start,posts,{report=()=>{}}={}){
- const before=structuredClone(start),ids=posts.map(post=>post.id),journal=[],positions=[];
+ const before=structuredClone(start),ids=posts.map(post=>post.id),journal=[],positions=[],enteredPostures=[];
  assert.equal(new Set(ids).size,ids.length);assert.equal(new Set(posts.map(spaceKey)).size,posts.length,'Every actual reserve needs a distinct post.');assert.equal(start.pendingBattle,null);assert.equal(start.pendingEncounter,null);
  let c=decodeSave(encodeSave(start)).campaign;const active=c.activeSquadId;
  const issue=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);journal.push({kind:'campaign',action:structuredClone(action)});};
@@ -71,7 +71,7 @@ export function prepareStockCuyoBatteryReserve(start,posts,{report=()=>{}}={}){
    if(!missing)break;
    const r=c.operativeState[donor];if(!r.alive||r.captured||operativeLocation(c,donor)!=='cordoba')continue;
    const model=sectorInventoryModel(c,'cordoba',rosterFor(c),donor);if(model.operativeId!==donor||model.reason)continue;
-   const unit=carriedAmmunition(rosterFor(c).find(op=>op.id===donor),r),primaryFamily=ammoTypeFor({...unit,activeSlot:'primary'}),row=model.carried.find(row=>row.item===family);
+   const unit=carriedAmmunition(rosterFor(c).find(op=>op.id===donor),r),primaryFamily=ammoTypeFor({...unit,activeSlot:'primary'}),row=model.carried.find(row=>{const stack=row.item.startsWith('inventory:')?model.personal.inventory[row.item.slice(10)]:null;return stack?.kind==='ammunition'&&stack.ammoType===AMMUNITION_FAMILIES[family].type;});
    if(!primaryFamily||primaryFamily===family||!row?.count)continue;
    const count=Math.min(missing,row.count),primary=structuredClone(handRecord(model.personal,'primary')),compatible=unit.loaded+ammoCount(unit,primaryFamily),stock=ammoCount(unit,family),poolBefore=pool(),cash=c.resources.treasury,time=[c.hour,c.secondOfHour??0],contracts=structuredClone(c.contracts);
    const action={type:'sectorInventory',sector:'cordoba',operativeId:donor,direction:'drop',item:row.item,count};
@@ -92,15 +92,10 @@ export function prepareStockCuyoBatteryReserve(start,posts,{report=()=>{}}={}){
   if(c.operativeState[id].asleep)issue({type:'setSleep',operativeId:id,asleep:false});
   issue({type:'assignCare',operativeId:id,assignment:'active'});issue({type:'visitSector'});
   let battle=enterSector(c.pendingBattle,c.sectorStates.cordoba);journal.push({kind:'enter'});
-  let unit=battle.units.find(unit=>unit.id===String(id));const destination={x:post.x,y:post.y,tacticalLevel:post.tacticalLevel},posture=unit?.stance,reach=()=>getReachable(battle,unit,{stopAt:point=>sameCell(point,destination)}).find(point=>sameCell(point,destination));
-  // A second roof needs its real descent and ascent. Preview the same path in
-  // a standing posture, then pay that posture through the native order before
-  // querying and executing the actual movement. Same-roof legacy posts keep
-  // their original orders and clock.
-  if(unit&&!reach()&&unit.stance!=='standing'){
-   const standing={...unit,stance:'standing',movementMode:'walk'},preview={...battle,units:battle.units.map(other=>other.id===unit.id?standing:other)},path=getReachable(preview,standing,{stopAt:point=>sameCell(point,destination)}).find(point=>sameCell(point,destination));
-   if(path?.path.some(step=>step.kind==='climb')){const action={type:'stance',unitId:unit.id,stance:'standing'};battle=actBattle(battle,action);assert.equal(battle.lastError,null);journal.push({kind:'battle',action});unit=battle.units.find(other=>other.id===unit.id);}
-  }
+  const unit=battle.units.find(unit=>unit.id===String(id)),destination={x:post.x,y:post.y,tacticalLevel:post.tacticalLevel},posture=unit?.stance,reach=()=>getReachable(battle,unit,{stopAt:point=>sameCell(point,destination)}).find(point=>sameCell(point,destination));
+  // Check the actual entered unit, not an older scene's posture. A second
+  // roof still requires its legal native descent and ascent with real costs.
+  enteredPostures.push({id,stance:posture});
   assert.ok(unit&&reach(),'The actual reserve post must be reachable.');
   if(!sameCell(unit,destination)){
    const action={type:'move',unitId:String(id),...destination};battle=actBattle(battle,action);assert.equal(battle.lastError,null);journal.push({kind:'battle',action});
@@ -117,6 +112,6 @@ export function prepareStockCuyoBatteryReserve(start,posts,{report=()=>{}}={}){
  assert.equal(c.resources.treasury,start.resources.treasury);assert.deepEqual(c.contracts,start.contracts);
  for(const [id,record]of Object.entries(start.operativeState))for(const key of ['alive','hp','bleeding','medkits','captured','morale'])assert.deepEqual(c.operativeState[id][key],record[key],`${id}.${key} only changes through later native combat/care.`);
  assert.deepEqual(start,before);c=decodeSave(encodeSave(c)).campaign;assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
- const preparation={event:'stockCuyoReserveReady',ids,positions,journal,equipmentStart,supplyOrders,donations,equipmentReady,ammunition:ammunition.transactions,startClock:[start.hour,start.secondOfHour??0],endClock:[c.hour,c.secondOfHour??0],elapsedSeconds:(c.hour-start.hour)*3600+(c.secondOfHour??0)-(start.secondOfHour??0)};
+ const preparation={event:'stockCuyoReserveReady',ids,positions,enteredPostures,journal,equipmentStart,supplyOrders,donations,equipmentReady,ammunition:ammunition.transactions,startClock:[start.hour,start.secondOfHour??0],endClock:[c.hour,c.secondOfHour??0],elapsedSeconds:(c.hour-start.hour)*3600+(c.secondOfHour??0)-(start.secondOfHour??0)};
  report(preparation);return {campaign:c,preparation};
 }
