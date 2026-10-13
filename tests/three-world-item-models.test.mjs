@@ -6,6 +6,7 @@ register('./tactical-render-loader.mjs',import.meta.url);
 const {Scene,Box3,Mesh}=await import('../web/node_modules/three/build/three.module.js');
 const {GLTFLoader}=await import('../web/node_modules/three/examples/jsm/loaders/GLTFLoader.js');
 const {createSectorWorld}=await import('../web/lib/three/sector-world.ts');
+const {markActorMaterials}=await import('../web/lib/three/actor-occlusion.ts');
 const manifest=JSON.parse(readFileSync(new URL('../web/public/models/characters/manifest.json',import.meta.url)));
 const packed=readFileSync(new URL('../web/public/models/characters/equipment.glb',import.meta.url));
 const equipment=await new GLTFLoader().parseAsync(packed.buffer.slice(packed.byteOffset,packed.byteOffset+packed.byteLength),'');
@@ -36,4 +37,23 @@ test('equipment admission uses the current visible floor records and cannot revi
  world.update({terrain,loot:[{id:'current',weapon:'campaign-rifle',weaponMetadata:{contentWeapon:{template:1802}},x:2,y:1,elevation:3}]});load(assets);await ready();
  assert.equal(scene.getObjectByName('loot:old'),undefined);assert.deepEqual(scene.getObjectByName('loot:current').userData.modelNodes,['item_1802']);
  world.dispose();assert.equal(scene.getObjectByName('sector-world'),undefined);
+});
+
+test('floor models retain world occlusion and admitted night light without owning carried materials or textures',async()=>{
+ markActorMaterials(equipment.scene);
+ const sources=new Set();equipment.scene.traverse(object=>{if(object instanceof Mesh)sources.add(object.material);});
+ const sourceDisposed=new Map([...sources].map(material=>[material,0]));for(const material of sources)material.addEventListener('dispose',()=>sourceDisposed.set(material,sourceDisposed.get(material)+1));
+ const scene=new Scene(),world=createSectorWorld(scene,{tileMetres:1.2,assetUrl:path=>path,equipment:Promise.resolve(assets)});
+ const input={terrain:{...terrain,night:true},illumination:{'0:1,1':0,'0:2,1':1},loot:[{id:'dark',weapon:1800,x:1,y:1},{id:'lit',weapon:1800,x:2,y:1}]};world.update(input);await ready();
+ const retained=new Set(),disposed=new Map();
+ for(const [id,light]of [['dark',.27],['lit',1]])scene.getObjectByName(`loot:${id}`).traverse(object=>{if(object instanceof Mesh){
+  assert.equal(sources.has(object.material),false);assert.equal(object.material.vertexColors,true);assert.equal(object.material.stencilRef,1);assert.equal(object.material.stencilWrite,true);
+  for(const value of object.geometry.getAttribute('color').array)assert.ok(Math.abs(value-light)<1e-6,'actual floor model receives the admitted cell light');
+  retained.add(object.material);
+ }});
+ // Actor occlusion marks shared carried materials every frame. It must never
+ // change a floor material, or cause floor removal to dispose a carried asset.
+ markActorMaterials(equipment.scene);for(const material of retained){assert.equal(material.stencilRef,1);disposed.set(material,0);material.addEventListener('dispose',()=>disposed.set(material,disposed.get(material)+1));}
+ world.update({terrain});for(const material of retained)assert.equal(disposed.get(material),0,'cached world material survives pile replacement');
+ world.dispose();for(const material of retained)assert.equal(disposed.get(material),1);for(const material of sources){assert.equal(sourceDisposed.get(material),0);assert.equal(material.stencilRef,0);}
 });

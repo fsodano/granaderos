@@ -3,6 +3,7 @@ import type {LoadedActor} from './actor-assets';
 import {ACTOR_VISUAL_SCALE} from './actor-visual-scale';
 import type {WorldBatch} from './world-geometry';
 import type {WorldItem} from './world-types';
+import type {WorldMaterials} from './world-materials';
 
 export type WorldEquipment=Pick<LoadedActor,'manifest'|'equipment'>;
 export function worldEquipmentReference(item:WorldItem){
@@ -12,7 +13,7 @@ export function worldEquipmentReference(item:WorldItem){
 }
 
 /** Reuse the carried model without changing its shared geometry or materials. */
-export function addWorldItemModel(batch:WorldBatch,item:WorldItem,assets:WorldEquipment,offset:Vector3,angle:number){
+export function addWorldItemModel(batch:WorldBatch,item:WorldItem,assets:WorldEquipment,offset:Vector3,angle:number,materials:WorldMaterials,light=1){
  const reference=worldEquipmentReference(item),key=assets.manifest.equipment.aliases?.[reference]??reference,spec=assets.manifest.equipment.items[key];
  if(!spec||key==='item')return null;
  const source=assets.equipment.scene.getObjectByName(spec.node);if(!source)throw Error(`Missing ground item model: ${spec.node}`);
@@ -28,6 +29,6 @@ export function addWorldItemModel(batch:WorldBatch,item:WorldItem,assets:WorldEq
  object.quaternion.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0,1,0),angle));
  const bounds=new Box3().setFromObject(object),centre=bounds.getCenter(new Vector3());
  object.position.set(offset.x-centre.x,offset.y-bounds.min.y,offset.z-centre.z);object.updateMatrixWorld(true);
- object.traverse(child=>{if(child instanceof Mesh){if(Array.isArray(child.material))throw Error(`Unsupported ground item material group: ${spec.node}`);batch.add(child.geometry,child.material as MeshStandardMaterial,child.matrixWorld);}});
+ object.traverse(child=>{if(child instanceof Mesh){if(Array.isArray(child.material))throw Error(`Unsupported ground item material group: ${spec.node}`);batch.add(child.geometry,materials.equipment(child.material as MeshStandardMaterial),child.matrixWorld,light);}});
  return spec.node;
 }

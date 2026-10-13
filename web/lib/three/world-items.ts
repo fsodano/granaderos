@@ -17,7 +17,7 @@ export function buildLoot(id:string,pile:WorldLoot,input:WorldInput,T:number,geo
   const batch=new WorldBatch(geometry),items=pile.items?.length?pile.items:[pile],light=illuminationAt(input,pile),modelNodes:string[]=[];
   for(const [n,item]of items.slice(0,5).entries()){
     const angle=seeded(Math.floor(pile.x),Math.floor(pile.y),n+90)*Math.PI;
-    const model=equipment&&addWorldItemModel(batch,item,equipment,new Vector3((n%3-1)*.17,.006+Math.floor(n/3)*.035,(Math.floor(n/3)-.5)*.18),angle);
+    const model=equipment&&addWorldItemModel(batch,item,equipment,new Vector3((n%3-1)*.17,.006+Math.floor(n/3)*.035,(Math.floor(n/3)-.5)*.18),angle,materials,light);
     if(model){modelNodes.push(model);continue;}
     const kind=worldItemKind(item),part=new WorldBatch(geometry),wood=materials.get('wood'),iron=materials.get('iron'),brass=materials.get('brass');
     if(/pistol|pistola/.test(kind)){
