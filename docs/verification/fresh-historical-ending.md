@@ -4,11 +4,21 @@
 describe the dated September source. Read the [shipping campaign status](../plans/core-campaign-v0.1.md)
 for current checks. Merged PR #401 proves an earned twelve-person capital
 victory; PR #407 proves an earned paid northern reunion, and PR #410 proves
-finite recapture care and the living cohort's return. These separate
+finite recapture care and the living cohort's return. PR #411 proves the
+earned Salta movement continuation; PR #412 retains serving returnees in
+capital relief regardless of their province; PR #413 proves the earned
+northern party's corrected Yatasto handover. These separate
 receipts do not prove either complete fresh ending, its 48-hour continuation
-or release acceptance. The latest complete original recovery on `58bf21cf`
-fails when a proposed tactical move is refused during the Salta assault;
-the current status record preserves its exact receipt and unchanged assertions.
+or release acceptance. The latest complete original recovery on `2603c3e6`
+passes the actual Salta and Yatasto gates, then fails the preserved return-party
+assertion at line 170. A separate handover diagnostic identifies living Juana
+remaining in Salta instead of joining the return party. The
+mission completes; PR #413 corrects that earned party, while the complete
+original rerun on `a68dd0dc` remains open.
+The current status record preserves this failure and the earlier receipts.
+Linux campaign quick passes 125/125 files and 428/428 tests on `2603c3e6`,
+then separately passes 125/125 files and 429/429 tests on `8d777d51`.
+The `2603c3e6` core quick job remains active.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 
