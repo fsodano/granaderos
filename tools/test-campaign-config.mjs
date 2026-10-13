@@ -30,6 +30,7 @@ export const campaignTestGroups = [
   "tests/earned-living-northern-care.test.mjs",
   "tests/earned-living-northern-clinic.test.mjs",
   "tests/earned-living-northern-equipment.test.mjs",
+  "tests/earned-living-northern-group8-native.test.mjs",
   "tests/earned-living-northern-native.test.mjs",
   "tests/earned-living-northern-readiness.test.mjs",
   "tests/earned-living-northern-replacements.test.mjs",
