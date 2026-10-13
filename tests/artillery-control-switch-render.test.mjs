@@ -57,6 +57,10 @@ async function mount(t,battle){
   await timers.until(()=>Boolean(select()));
  };
  const select=()=>doc.querySelector('select[aria-label="Seleccionar pieza de artillería"]');
+ const close=async()=>{
+  if(menu().open)await act(async()=>menu().querySelector('summary').click());
+  await timers.until(()=>!doc.querySelector('.ja2-artillery'));
+ };
  const choose=async()=>{
   await open();const element=select();assert.ok(element);
   Object.getOwnPropertyDescriptor(dom.window.HTMLSelectElement.prototype,'value').set.call(element,'gun');
@@ -68,7 +72,7 @@ async function mount(t,battle){
   // comparison; no simulated pixel coordinate chooses another body part.
   await act(async()=>element.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
  };
- return {doc,read:()=>current,commits,button,menu,select,choose,click,fireAtTarget,until:timers.until,settle:()=>timers.settle(doc)};
+ return {doc,read:()=>current,commits,button,menu,select,open,close,choose,click,fireAtTarget,until:timers.until,settle:()=>timers.settle(doc)};
 }
 
 function assertCrew(m,battle){
@@ -77,17 +81,36 @@ function assertCrew(m,battle){
  const rows=[...m.doc.querySelectorAll('.ja2-artillery-crew [data-artillery-crew-id]')];
  assert.deepEqual(rows.map(row=>row.dataset.artilleryCrewId),plan.crew);
  for(const row of rows){const member=actor(battle,row.dataset.artilleryCrewId);assert.equal(row.textContent,`${member.nickname||member.name} · ${formatAP(cost)} PA`);}
- assert.match(m.doc.querySelector('.ja2-artillery-status').textContent,/Control: cañón/);
- assert.ok(m.doc.querySelector('.ja2-artillery-status').textContent.includes(`Operario: ${unit.nickname||unit.name}`));
+ assert.match(m.doc.querySelector('.ja2-artillery-active').textContent,/Cañón/);
+ assert.ok(m.doc.querySelector('.ja2-artillery-active').textContent.includes(unit.nickname||unit.name));
 }
 
-test('visible same-cell controls switch personal fire and cannon fire with their exact native ammunition and crew costs',async t=>{
- const initial=arena(),original=structuredClone(initial),m=await mount(t,initial);
- assert.deepEqual(point(actor(initial)),point(initial.artillery[0]));
+function assertMenuExited(m){
+ assert.equal(m.menu().open,false);
+ assert.equal(m.select(),null,'the closed menu unmounts its cannon selector');
+ assert.equal(m.doc.querySelector('.ja2-artillery-active'),null);
+}
+
+for(const [placement,change]of [
+ ['same-cell',()=>{}],
+ ['adjacent-cell',battle=>{
+  // Declared orthogonally adjacent operator, with distinct nearby helpers
+  // behind the muzzle. No clock, HP, ammunition or RNG field is changed.
+  Object.assign(actor(battle),{x:2,y:2});
+  Object.assign(actor(battle,'21'),{x:1,y:3});
+  Object.assign(actor(battle,'22'),{x:1,y:2});
+ }],
+])test(`visible ${placement} controls switch personal fire and cannon fire with their exact native ammunition and crew costs`,async t=>{
+ const initial=arena(change),original=structuredClone(initial),m=await mount(t,initial);
+ if(placement==='same-cell')assert.deepEqual(point(actor(initial)),point(initial.artillery[0]));
+ else{
+  const unit=actor(initial),gun=initial.artillery[0];assert.equal(Math.abs(unit.x-gun.x)+Math.abs(unit.y-gun.y),1);
+  assert.equal(new Set(initial.units.filter(member=>member.side==='player').map(member=>point(member).join(','))).size,3);
+ }
  await m.choose();assertCrew(m,initial);
  assert.equal(m.commits.length,0,'selecting the cannon is a UI choice');
- await m.click(m.button('Usar arma personal'));
- assert.equal(m.select().value,'');assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');
+ await m.click(m.button('Arma personal'));
+ assertMenuExited(m);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');
  assert.deepEqual(m.read(),initial);assert.equal(m.commits.length,0,'an already held primary needs no weapon order');
  const rifleBefore=structuredClone(m.read()),rifleRequest={type:'fire',unitId:'20',targetId:'e',aim:0,hitLocation:'torso'},rifleExpected=actBattle(rifleBefore,rifleRequest);
  assert.equal(rifleExpected.lastError,null);
@@ -105,8 +128,9 @@ test('visible same-cell controls switch personal fire and cannon fire with their
  const cannonExpected=actBattle(cannonBefore,{type:'artillery',unitId:'20',artilleryId:'gun',x:8,y:3,tacticalLevel:0,targetId:'e',mode:'solid',aim:0,hitLocation:'torso'});
  assert.equal(cannonExpected.lastError,null);
  await m.fireAtTarget();assert.ok(m.doc.querySelector('[data-enemy-frame]'));
- assert.equal(m.button('Dejar cañón').disabled,true);assert.equal(m.button('Usar arma personal').disabled,true);
- await m.click(m.button('Dejar cañón'));await m.click(m.button('Usar arma personal'));
+ assert.equal(m.button('Dejar cañón').disabled,true);assert.equal(m.button('Arma personal').disabled,true);
+ await m.click(m.button('Dejar cañón'));await m.click(m.button('Arma personal'));
+ assert.equal(m.menu().open,true,'disabled busy switches cannot close the cannon menu');
  assert.equal(m.select().value,'gun');assert.equal(m.commits.length,1,'busy switches cannot issue another order');
  await m.settle();assert.equal(m.commits.length,2);assert.deepEqual(m.read(),cannonExpected);
  assert.equal(m.read().artillery[0].loaded,false);assert.equal(m.read().artillery[0].ammo,gun.ammo);
@@ -117,15 +141,20 @@ test('visible same-cell controls switch personal fire and cannon fire with their
  assert.deepEqual(validateBattleSnapshot(m.read()),m.read());assert.deepEqual(initial,original,'the declared input is immutable');
 });
 
-test('the always visible leave control clears the cannon cursor without an order, AP cost, time advance or movement',async t=>{
+test('compact operator and personal switch stay visible while optional leave clears the cursor without an order or cost',async t=>{
  const initial=arena(),m=await mount(t,initial);assert.ok(m.doc.querySelector('.ja2-artillery-toolbar'));
  await m.choose();assertCrew(m,initial);
- await act(async()=>{m.menu().querySelector('summary').click();});
- await m.until(()=>!m.doc.querySelector('.ja2-artillery'));
- assert.equal(m.menu().open,false);assert.ok(m.button('Dejar cañón'),'leaving stays visible with advanced artillery controls closed');
+ await m.close();assert.equal(m.menu().open,false);
+ assert.ok(m.doc.querySelector('.ja2-artillery-active').textContent.includes(actor(initial).nickname||actor(initial).name));
+ assert.match(m.doc.querySelector('.ja2-artillery-active').textContent,/Cañón/);
+ assert.equal(m.doc.querySelector('.ja2-artillery-crew'),null,'crew detail stays inside the optional menu');
+ assert.equal(m.button('Dejar cañón'),undefined,'pure leave is an optional menu action');
+ assert.ok(m.button('Arma personal'));assert.equal(m.button('Arma personal').disabled,false);
+ assert.equal(m.commits.length,0);assert.deepEqual(m.read(),initial);
+ await m.open();assert.ok(m.button('Dejar cañón'));
  await m.click(m.button('Dejar cañón'));
  assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Mover');
- assert.equal(m.doc.querySelector('.ja2-artillery-status'),null);
+ assertMenuExited(m);
  assert.equal(m.commits.length,0);assert.deepEqual(m.read(),initial);
  assert.deepEqual(validateBattleSnapshot(m.read()),initial);
 });
@@ -133,11 +162,11 @@ test('the always visible leave control clears the cannon cursor without an order
 test('using a personal weapon from a different held slot pays only the existing native switch and preserves the same cell and gun',async t=>{
  const initial=arena(battle=>{const unit=actor(battle);unit.activeSlot='medical';unit.medkits=2;}),m=await mount(t,initial);
  await m.choose();const expected=actBattle(initial,{type:'weapon',unitId:'20',slot:'primary',aim:0,hitLocation:'torso'});assert.equal(expected.lastError,null);
- assert.match(m.button('Usar arma personal').textContent,/1 PA/);
- await m.click(m.button('Usar arma personal'));
+ assert.match(m.button('Arma personal').textContent,/1 PA/);
+ await m.click(m.button('Arma personal'));
  assert.equal(m.commits.length,1);assert.deepEqual(m.read(),expected);
  assert.equal(actor(m.read()).activeSlot,'primary');assert.equal(actor(m.read()).ap,actor(initial).ap-4);
- assert.equal(m.select().value,'');assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');
+ assertMenuExited(m);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');
  assert.deepEqual(point(actor(m.read())),point(actor(initial)));assert.deepEqual(m.read().artillery,initial.artillery);
  assert.deepEqual(validateBattleSnapshot(m.read()),m.read());
 });
@@ -150,7 +179,8 @@ test('an ineligible nearby crew disables cannon work and reports its real defici
  assert.ok(m.doc.querySelector('.ja2-artillery-crew').textContent.includes(plan.reason));
  for(const label of ['Disparar pieza','Mover pieza','Girar pieza']){assert.equal(m.button(label).disabled,true);await m.click(m.button(label));}
  assert.equal(m.commits.length,0);assert.deepEqual(m.read(),initial);
- assert.equal(m.button('Usar arma personal').disabled,false);await m.click(m.button('Usar arma personal'));
+ assert.equal(m.button('Arma personal').disabled,false);await m.click(m.button('Arma personal'));
+ assertMenuExited(m);
  assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Disparo');assert.deepEqual(m.read(),initial);
 });
 
@@ -159,8 +189,8 @@ for(const [label,change]of [
  ['one AP short of preparing the primary',battle=>{actor(battle).activeSlot='medical';actor(battle).medkits=2;actor(battle).ap=3;}],
 ])test(`personal switch refuses an unavailable ${label} without changing the cannon or actor`,async t=>{
  const initial=arena(change),m=await mount(t,initial);await m.choose();
- assert.equal(m.button('Usar arma personal').disabled,true);assert.ok(m.button('Usar arma personal').title);
- await m.click(m.button('Usar arma personal'));
+ assert.equal(m.button('Arma personal').disabled,true);assert.ok(m.button('Arma personal').title);
+ await m.click(m.button('Arma personal'));
  assert.equal(m.select().value,'gun');assert.equal(m.commits.length,0);assert.deepEqual(m.read(),initial);
  assert.deepEqual(validateBattleSnapshot(m.read()),initial);
 });

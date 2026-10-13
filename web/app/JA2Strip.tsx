@@ -41,7 +41,7 @@ export default function JA2Strip({campaignContext,battle, ambientPaused, onToggl
   }
   return (
     <div className="ja2-hud">
-    <section className="ja2-strip squad-view">
+    <section className={`ja2-strip squad-view${artillery.length ? ' has-artillery' : ''}`}>
       {artillery.length > 0 && <JA2ArtilleryMenu battle={battle} unit={unit} artillery={artillery} cannonId={cannonId} shotType={shotType} busy={busy} mode={mode} onCannonChange={onCannonChange} onShotTypeChange={onShotTypeChange} onOrder={onOrder} onMode={onMode} onLeaveCannon={onLeaveCannon} onPersonalWeapon={onPersonalWeapon} personalWeaponReason={personalWeaponReason} personalWeaponPA={personalWeaponPA}/>}
       <JA2Roster groupIds={groupIds} battle={battle} players={rosterPlayers} selected={selected} medicalTargeting={unit?.activeSlot === 'medical' && unitCanAct(battle, unit)} onSelect={onSelect} onOpenInventory={onOpenInventory} />
       <div className="ja2-right">
