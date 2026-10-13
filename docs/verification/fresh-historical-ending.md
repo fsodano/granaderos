@@ -44,8 +44,30 @@ cancellations. These remain quick-profile results. The complete unchanged
 ending file on the same source finishes 0/2: loose seed 8 retreats at Salta;
 installed seed 1812 passes Yatasto, then reserve preparation refuses more
 residents than one authored roof can hold. The full failure records and exact
-source limits are in the shipping campaign status. Both fresh endings, saved 48-hour
-continuation and full-release acceptance remain open.
+source limits are in the shipping campaign status.
+
+Reviewed draft [PR #419](https://github.com/fsodano/granaderos/pull/419), at
+`3aa8f281`, separately proves an earned Mendoza victory: 15 turns, 448 actions,
+489 exact replay orders and 1,289 tactical seconds. Eight actual deaths and six
+remaining gun charges are retained; original victory, driver bounds, physical
+custody and official-save assertions remain required. Its affected gate passes
+29/29; its own normal local quick passes 1,041 files and 7,565 tests.
+Reviewed draft [PR #420](https://github.com/fsodano/granaderos/pull/420), at
+`bc92e1fb`, separately proves all 21 actual reserves can reach unique authored
+roof posts through 243 seconds of native movement. Real off-family donations
+of 11 rounds from actor 119 and four from actor 139 conserve the physical
+ammunition ledger. The actual entered postures, midpoint save and full replay
+pass. The paid caller reaches its pre-battery checkpoint with the original
+five crew members plus paid arrival 114 within the six-person limit. Its
+affected gate passes 25/25; its own normal local quick passes 1,041 files and
+7,567 tests. Each component also passes docs, baseline 39/39, typecheck and
+diff checks, with no quick failures, skips or cancellations.
+
+These are accepted earned-segment and preparation receipts in open drafts,
+not merged deliveries or a passing combined gate. Their 35 extended exclusions
+stay intact. The unchanged complete `d5632100` recovery 0/1 and ending 0/2
+failures remain recorded. Both complete new-source fresh endings, saved
+48-hour continuation and final browser/full-release acceptance remain open.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 
