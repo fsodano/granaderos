@@ -651,7 +651,11 @@ export function prepareStockMendozaAmmunition(start,fieldIds,{report=()=>{}}={})
   assert.deepEqual(Object.fromEntries(Object.entries(p.campaign.operativeState[id].inventory??{}).filter(([,item])=>item.kind!=='ammunition')),nonAmmo.get(id),'allocation keeps every existing non-ammunition pocket item');
   assert.ok(u.loaded+ammoCount(u,ammoTypeFor(u))>=target);
  }
- assert.deepEqual(stockAmmunitionLedger(p.campaign),ledger,'all transferred firearm ammunition families remain conserved');
+ const finalLedger=stockAmmunitionLedger(p.campaign);
+ // Keep the actual physical owners available for diagnosis when this strict
+ // conservation check fails. Reporting does not change either campaign.
+ report({event:'stockCuyoAmmoConservation',target,field:[...field],beforeLedger:structuredClone(ledger),afterLedger:structuredClone(finalLedger),beforeCampaign:structuredClone(before),campaign:structuredClone(p.campaign)});
+ assert.deepEqual(finalLedger,ledger,'all transferred firearm ammunition families remain conserved');
  for(const [id,r]of Object.entries(before.operativeState))if(!r.alive)assert.equal(p.campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(p.campaign)).campaign,p.campaign);
  report({event:'stockCuyoAmmoPrepared',target,field,hour:p.campaign.hour,secondOfHour:p.campaign.secondOfHour??0,treasury:p.campaign.resources.treasury,ammunition:ledger,campaign:structuredClone(p.campaign)});
