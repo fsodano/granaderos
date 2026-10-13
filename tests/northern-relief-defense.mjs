@@ -11,6 +11,7 @@ import {fight} from './opening-driver.mjs';
 import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {retainNorthernHandoverService} from './northern-handover-route.mjs';
 import {recordRouteStrategicEvidence} from './route-strategic-failure-evidence.mjs';
+import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
 
 // Keep the actual clinic physicians and soldiers without usable rounds in
 // reserve. Adjacent native aid remains available; prone is a paid order.
@@ -43,7 +44,8 @@ export function resolveStockNorthernReliefEncounter(start,{physicianIds=[],repor
   const prepared=structuredClone(c),request=c.pendingBattle,previous=c.sectorStates[encounter.sector];
   assert.equal(request.defenseGroupId,encounter.groupId);
   report({event:'northernReliefDefenseInput',campaign:structuredClone(c),battle:enterSector(request,previous)});
-  const result=fight(request,previous,{controller:northernReliefDefenseController(physicianIds)});
+  const controller=northernReliefDefenseController(physicianIds),result=fight(request,previous,{controller});
+  if(!completedTacticalVictory(result.battle))recordRouteBattleFailure({campaign:prepared,request,previous,result,expectedOutcome:'victory',controller,executeBattle:fight});
   assert.ok(completedTacticalVictory(result.battle),'The actual local reserve must win the native counterattack.');
   const aid=autoBandageBattle(result.battle),orders=[...result.orders,...aid.steps];
   for(const unit of aid.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.militia&&!u.surrendered&&!u.departure))assert.ok(unit.hp>=15&&!unit.bleeding,`Actual survivor ${unit.id} needs timely finite aid before care hours resume.`);
