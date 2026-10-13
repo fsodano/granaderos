@@ -37,6 +37,11 @@ test('the earned loose Tucumán preparation input retains its real casualties an
  assert.equal(c.location,'tucuman');assert.equal(c.sectors.tucuman.owner,'patriot');
  assert.deepEqual(storedArtilleryRecord(c.sectorStates.cordoba.artillery.find(g=>g.id==='arsenal:cordoba:2')),{id:'arsenal:cordoba:2',type:'bronze4',side:'player',loaded:true,ammo:6});
  assert.deepEqual(Object.entries(c.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id)),proof.priorDeaths);
+ // Preserve the dated d563 preparation-only diagnostic (2026-10-13). It is
+ // historical provenance, not a current native casualty or readiness oracle.
+ assert.equal(proof.originalDiagnostic.nativeBattleExecuted,false);
+ assert.deepEqual(proof.originalDiagnostic.originalField,[9,11,1,108,117,121,110,125]);
+ assert.deepEqual(proof.originalDiagnostic.originalReadyClock,[792,2353]);
  for(const id of [9,11,1])assert.ok(!c.recruited.includes(id),'Officer participation must still be earned through the original contact route.');
  assert.deepEqual(c,before);
 });
@@ -45,7 +50,24 @@ test('the complete earned stock officer preparation supplies real cartridges and
  const {campaign:start,proof}=earned(),before=structuredClone(start),events=[];
  const c=prepareNorthernOfficerRelief(start,{routeKind:'stock',report:e=>events.push(e)});
  assert.deepEqual(start,before);assert.equal(c.pendingBattle.sector,'salta');
- assert.deepEqual(c.pendingBattle.squad.map(u=>u.id),[9,11,1,108,117,121,110,125]);
+ // Dated 2026-10-13 source7f witness: context0de2398614fe63ce / ready
+ // campaign661680fedab3bb37 had twelve actors including110, native15/215/295
+ // and782:2233/c222938. Preserve that history separately from current policy.
+ // Source936 full-preparation witness: context95ff74d2cb0fa6ee / returned
+ // campaigncd3d56109e80c8ea keeps the actual134/110 deaths and eleven survivors.
+ assert.deepEqual(c.pendingBattle.squad.map(u=>u.id),[9,11,1,108,117,121,125,101,116,122,130]);
+ assert.ok(c.pendingBattle.squad.length>=8,'The original minimum fit force remains required.');
+ assert.deepEqual([c.hour,c.secondOfHour,c.resources.treasury],[782,2397,223004]);
+ const defenses=events.filter(e=>e.event==='northernReliefDefenseComplete');assert.equal(defenses.length,1);const defense=defenses[0];
+ assert.deepEqual([defense.status,defense.turns,defense.actions,defense.elapsedSeconds],['victory',49,274,472]);
+ assert.deepEqual(defense.losses,[134,110]);assert.deepEqual(defense.physicianIds,[1,146]);assert.equal(defense.exactSavedReplay,true);
+ assert.equal(defense.orders.length,347);assert.equal(defense.orders.filter(action=>action.type==='endTurn').length,73);
+ assert.deepEqual(defense.aid.steps,[]);assert.equal(defense.orders.some(action=>action.type.startsWith('artillery')),false);
+ assert.deepEqual([defense.campaign.hour,defense.campaign.secondOfHour,defense.campaign.resources.treasury],[768,2061,223505]);
+ for(const [id,hp,kits]of [[1,88,3],[146,37,10]]){const doctor=defense.campaign.operativeState[id];assert.equal(doctor.alive,true);assert.equal(doctor.hp,hp);assert.equal(doctor.bleeding,0);assert.equal(doctor.medkits,kits);}
+ for(const id of [134,110]){assert.equal(defense.campaign.operativeState[id].alive,false);assert.equal(defense.campaign.operativeState[id].hp,0);assert.equal(defense.campaign.operativeState[id].deathMinute,46114);assert.equal(defense.campaign.sectorStates.tucuman.units.find(unit=>unit.id===String(id)).hp,0);assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,46114);}
+ for(const id of [101,116,122,130])assert.equal(defense.campaign.operativeState[id].alive,true,'Actual additional survivors must remain alive after native settlement.');
+ for(const record of [{id:'arsenal:cordoba:1',type:'bronze4',side:'player',loaded:true,ammo:1,facing:-1.0516502125483738},{id:'arsenal:cordoba:2',type:'bronze4',side:'player',loaded:true,ammo:6}])assert.deepEqual(gunCustody(defense.campaign,record.id),[{source:'field',sector:'tucuman',record}],'Every original unfired piece has one physical owner after the actual defense.');
  assert.ok(c.pendingBattle.assaultSquads.every(q=>q.members.length<=6));
  assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);
  const delivered=events.filter(e=>e.event==='routeBatteryPrepared');assert.equal(delivered.length,2);
