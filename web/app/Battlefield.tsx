@@ -15,6 +15,7 @@ import {battleFramePose} from '../../game/battle-playback.js';
 import {tacticalViewport} from '../../game/tactical-viewport.js';
 import AimCursor from './AimCursor';
 import MovementCursor from './MovementCursor';
+import ContextActionCursor from './ContextActionCursor';
 import {tacticalFeedback,contextualBanter} from '../../game/tactical-feedback.js';
 import './playtest-feedback.css';
 import {KNIFE_EFFECT_DURATION,type KnifeVisual} from './KnifeThrowEffect';
@@ -407,7 +408,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
   const terrain=useMemo(()=>terrainCache.current!(s),[s]);
   const worldVisual=useMemo(()=>presentWorld(s,terrain,players,revealedBuildingRooms,actorEntries,cursorLevel),[s,terrain,players,revealedBuildingRooms,actorEntries,cursorLevel]);
   const actorVisual=useMemo(()=>presentActors(s,actorEntries,motion.actorPositions,revealedBuildingRooms,{selected,mode,cues:actorCues.cues,frame:presentation.frame,now:performance.now()}),[s,actorEntries,motion.actorPositions,revealedBuildingRooms,selected,mode,actorCues.cues,presentation.frame]);
-  const combatEffects=useMemo(()=>presentCombatEffects(s,presentation.frame,knifeEffect,grenadeEffect),[s,presentation.frame,knifeEffect,grenadeEffect]);
+  const combatEffects=useMemo(()=>presentCombatEffects(s,presentation.frame,knifeEffect,grenadeEffect,actorVisual),[s,presentation.frame,knifeEffect,grenadeEffect,actorVisual]);
   const manualCamera=useRef(false),gestureFrame=useRef<number|null>(null),cameraGestures=useRef<CameraGesture[]>([]),touchPinch=useRef<{distance:number;anchor:CameraAnchor}|null>(null);
   const limitCamera=(value:number,extent:number)=>Math.max(0,Math.min(Math.max(0,extent),value));
   const cameraState=useRef<CameraView>({x:0,y:0,width:viewWidth,height:viewHeight,worldWidth:vw,worldHeight:vh,zoom});
@@ -598,12 +599,13 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
           <text y="-13" textAnchor="middle" fill="#ed9d7c" stroke="#11190f" strokeWidth="2" paintOrder="stroke" fontSize="10">Caída</text>
         </g>}
         {!pickedItem&&aimedCursorMode(mode)&&cursorPoint&&!busy&&unitCanAct(s,u)&&<AimCursor exploring={s.mode==='exploration'} point={cursorPoint} aim={aim} preview={preview} target={hover} scale={1/zoom} bounds={{x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}}/>}
+        {!pickedItem&&!aimedCursorMode(mode)&&hover&&!busy&&u&&<ContextActionCursor state={s} unit={u} hover={hover} preview={preview} mode={mode} point={cursorPoint??projectSurface(s,project,hover)} scale={1/zoom} itemIntent={itemIntent} movementIntent={movementIntent}/>}
         {pickedItem&&<InventoryMapCursor state={field} preview={itemPreview} target={mapItemTarget} project={project}/>}
         </g>
       </svg>
       {talking&&<JA2Conversation state={s} dialogue={dialogues?.[talking.id]} hireTerms={hireTerms?.[talking.id]} npc={talking} conversation={giftReply?.id===talking.id?giftReply.conversation:conversation} responseOnly={giftReply?.id===talking.id&&giftReply.responseOnly} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':talkingAvailability.reason} availability={talkingAvailability} canApproach={Boolean(onTalk&&talkingAvailability.canApproach&&!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&talkingApproach)} onApproach={()=>{if(talkingApproach)order(movementAction(talkingApproach));}} onTalk={(approach,term,choice)=>{setGiftReply(null);onTalk?.(talking.id,approach,selected,term,choice);}} onClose={()=>{setTalking(null);setGiftReply(null);}}/>}
       {speech&&<JA2Speech name={speech.name} text={speech.text} position={{left:Math.max(15,Math.min(85,(projectSurface(s,project,speech).x-cameraX)/viewWidth*100)),top:Math.max(38,Math.min(85,(projectSurface(s,project,speech).y-cameraY-42)/viewHeight*100))}} onClose={()=>setSpeech(null)}/>}
-      {preview&&!preview.movement&&<aside className={`ja2-target-preview ${preview.valid?'':'unavailable'}`} aria-label="Vista previa de la orden"><strong>{preview.name}</strong><span>{!pickedItem&&preview.chance!==undefined?`${preview.hitLocation||preview.attackLabel||'Ataque'} · ${chancePercent(preview.chance)} de ${preview.chanceLabel||'impacto'} · `:preview.actionLabel?`${preview.actionLabel} · `:''}{preview.pa!==undefined&&(!pickedItem||preview.valid)&&s.mode!=='exploration'?`${formatAP(preview.pa)} PA · ${formatAP(preview.remaining)} PA restantes`:''}</span>{preview.coverNote&&<span>{preview.coverNote}</span>}{preview.reason&&<span>{preview.reason}</span>}</aside>}
+      {pickedItem&&preview&&!preview.movement&&<aside className={`ja2-target-preview ${preview.valid?'':'unavailable'}`} aria-label="Vista previa de la orden"><strong>{preview.name}</strong><span>{preview.actionLabel?`${preview.actionLabel} · `:''}{preview.pa!==undefined&&preview.valid&&s.mode!=='exploration'?`${formatAP(preview.pa)} PA · ${formatAP(preview.remaining)} PA restantes`:''}</span>{preview.coverNote&&<span>{preview.coverNote}</span>}{preview.reason&&<span>{preview.reason}</span>}</aside>}
       {!presentation.busy&&s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?(battleVictory?.title??'¡Victoria!'):s.status==='retreat'?'Retirada completada':'La escuadra ha caído'}</h2><p>{s.status==='victory'?(battleVictory?.text??'El enemigo abandona el campo.'):s.status==='retreat'?'La salida quedó registrada. Los combatientes conservan sus heridas y su equipo.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}
     </div>
     </div>

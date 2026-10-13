@@ -10,7 +10,7 @@ const manifest=JSON.parse(readFileSync(new URL('../web/public/models/characters/
 const packed=readFileSync(new URL('../web/public/models/characters/equipment.glb',import.meta.url));
 const equipment=await new GLTFLoader().parseAsync(packed.buffer.slice(packed.byteOffset,packed.byteOffset+packed.byteLength),'');
 const assets={manifest,equipment};
-const terrain={width:4,height:4,tiles:Array.from({length:16},(_,n)=>({x:n%4,y:Math.floor(n/4),type:'grass',elevation:0}))};
+const terrain={width:4,height:6,tiles:Array.from({length:24},(_,n)=>({x:n%4,y:Math.floor(n/4),type:'grass',elevation:0}))};
 const ready=()=>new Promise(resolve=>queueMicrotask(resolve));
 
 test('floor weapons and supplies use the actual carried GLB models, stay on the surface and preserve the shared assets',async()=>{
