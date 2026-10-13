@@ -11,13 +11,14 @@ import {syncBattleTime} from '../game/time.js';
 import {missionContacts} from '../game/missions.js';
 import {fightNorthernSector} from './northern-route.mjs';
 import {stabilizeFreshMissionAllies} from './fresh-campaign-route.mjs';
+import {admitEarnedArtillerySave,admitEarnedArtilleryBattle} from './earned-artillery-admission-fixture.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const stem='./fixtures/earned-original-san-lorenzo-before-settlement';
 const proof=JSON.parse(readFileSync(new URL(`${stem}.provenance.json`,import.meta.url))),compressed=readFileSync(new URL(`${stem}.json.gz`,import.meta.url)),raw=gunzipSync(compressed);
 assert.equal(sha(compressed),proof.gzipSha256);assert.equal(sha(raw),proof.rawSha256);assert.equal(raw.length,proof.rawBytes);
 const earned=JSON.parse(raw);assert.equal(sha(earned.readySave),proof.sourceReadySaveSha256);
-const input=()=>decodeSave(earned.readySave),clock=s=>s.hour*3600+(s.secondOfHour??0);
+const input=()=>admitEarnedArtillerySave(earned.readySave,{sectors:['retiro','buenos_aires','san_nicolas'],label:'original San Lorenzo ready pair'}),clock=s=>s.hour*3600+(s.secondOfHour??0);
 const ally=b=>b.units.find(u=>u.id==='57'&&u.missionAlly),kits=b=>b.units.filter(u=>u.side==='player').reduce((n,u)=>n+(u.medkits??0),0);
 
 // Replay the exact earned native combat tape. This bounded file does not
@@ -26,7 +27,8 @@ function replayEarnedCombat(request,previous){
  const ready=input();assert.deepEqual(request,ready.campaign.pendingBattle);assert.equal(previous,undefined);
  let battle=enterSector(request,previous);
  for(const action of earned.nativeResult.orders){battle=action.type==='endTurn'?endTurn(battle):actBattle(battle,action);assert.equal(battle.lastError,null,JSON.stringify(action));}
- assert.deepEqual(battle,earned.nativeResult.battle);
+ const expected=admitEarnedArtilleryBattle(earned.nativeResult.battle,{context:ready.campaign,label:'original San Lorenzo native result'});
+ assert.deepEqual(battle,expected);
  assert.equal(battle.status,'victory');assert.equal(battle.turn,proof.nativeTurns);assert.equal(earned.nativeResult.actions,proof.nativeActions);
  return {...earned.nativeResult,battle};
 }

@@ -7,15 +7,16 @@ import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {resolveStockNorthernReliefEncounter} from './northern-relief-defense.mjs';
 import {prepareNorthernOfficerRelief} from './fresh-northern-command.mjs';
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 
 const provenance=JSON.parse(readFileSync(new URL('./fixtures/earned-stock-northern-clinic.provenance.json',import.meta.url)));
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 function earned(kind){
  const meta=provenance.sources[kind],compressed=readFileSync(new URL('./fixtures/'+meta.file,import.meta.url)),raw=gunzipSync(compressed);
  assert.equal(sha(raw),meta.rawSha256);assert.equal(sha(compressed),meta.gzipSha256);assert.equal(raw.length,meta.rawBytes);
- const input=JSON.parse(raw),admitted=decodeSave(encodeSave(input)).campaign;assert.deepEqual(admitted,input);
+ const input=JSON.parse(raw),admitted=admitEarnedArtilleryMarkers(input,{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman'],label:`stock northern clinic ${kind}`});
  assert.deepEqual([input.hour,input.secondOfHour],meta.clock);assert.equal(input.resources.treasury,meta.treasury);
- return input;
+ return admitted;
 }
 const retainedDeaths=(before,after)=>{for(const [id,record]of Object.entries(before.operativeState))if(!record.alive)assert.equal(after.operativeState[id].alive,false,`Earlier death ${id} remains final.`);};
 

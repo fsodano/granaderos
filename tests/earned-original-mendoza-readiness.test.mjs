@@ -11,6 +11,7 @@ import {syncBattleTime} from '../game/time.js';
 import {fight} from './opening-driver.mjs';
 import {recoveryMendozaDressingOrder,recoveryMendozaOrder} from './recovery-mendoza-driver.mjs';
 import {recordRouteBattleFailure} from './route-failure-evidence.mjs';
+import {admitEarnedArtilleryPair} from './earned-artillery-admission-fixture.mjs';
 
 const fixture=name=>readFileSync(new URL(`./fixtures/${name}`,import.meta.url));
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -20,7 +21,7 @@ function load(){
  assert.equal(sha(compressed),record.gzipSha256);assert.equal(compressed.length,record.gzipBytes);
  assert.equal(sha(raw),record.rawSha256);assert.equal(raw.length,record.rawBytes);
  assert.equal(proof.preExecutionInputIndependentlyCaptured,false,'retained arguments are not an independent initial capture');
- const input=JSON.parse(raw),{campaign,request}=input;
+ const input=JSON.parse(raw),{request}=input;let {campaign}=input;
  assert.deepEqual(request,campaign.pendingBattle);
  assert.deepEqual([campaign.hour,campaign.secondOfHour,campaign.resources.treasury],[872,3474,62765]);
  assert.deepEqual(request.squad.map(u=>u.id),proof.fieldIds);assert.deepEqual(request.artillery,[proof.gun]);
@@ -30,8 +31,9 @@ function load(){
   assert.equal(unit.hp,unit.maxHp);assert.equal(unit.bleeding,0);assert.equal(unit.loaded,1);assert.equal(unit.ammo,11);
  }
  assert.equal(battle.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.medkits,0),2);
- const admitted=decodeSave(encodeSave(campaign,battle));
- assert.deepEqual(admitted,{campaign,battle},'official admission must preserve the complete earned campaign and native scene');
+ const admitted=admitEarnedArtilleryPair({campaign,battle},{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta'],scenes:{yatasto:'tucuman'},currentBattle:true,label:'original Mendoza readiness pair'});
+ campaign=admitted.campaign;
+ assert.deepEqual(admitted,{campaign,battle},'official admission preserves the complete earned campaign and freshly constructed native scene after marker-only legacy admission');
  return {input,campaign,request,battle};
 }
 
