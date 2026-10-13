@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,appendFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -23,7 +23,7 @@ test('the earlier accepted capital victory quotes two actual high-mark paid vete
 
 test('the same immutable capital victory earns the complete nine-person paired northern request twice through paid finite public preparation',t=>{
  const {c:start,proof}=earned(),before=structuredClone(start),reports=[];
- const c=prepareStrengthenedLivingNorthernRequest(start,{report:e=>reports.push(e)}),secondInput=decodeSave(encodeSave(start)).campaign,secondBefore=structuredClone(secondInput),second=prepareStrengthenedLivingNorthernRequest(secondInput);
+ const c=prepareStrengthenedLivingNorthernRequest(start,{report:e=>{reports.push(e);if(process.env.GRANADEROS_STRENGTHENED_NORTH_EVENTS)appendFileSync(process.env.GRANADEROS_STRENGTHENED_NORTH_EVENTS,JSON.stringify(e)+'\n');}}),secondInput=decodeSave(encodeSave(start)).campaign,secondBefore=structuredClone(secondInput),second=prepareStrengthenedLivingNorthernRequest(secondInput);
  assert.deepEqual(c,second,'Two complete preparations must return the same entire campaign.');assert.deepEqual(start,before);assert.deepEqual(secondInput,secondBefore);
  const field=[...proof.fieldIds,142,106],keepers=[...proof.livingKeepers,142,106],actual=c.recruited.filter(id=>c.operativeState[id].alive&&!c.operativeState[id].captured);assert.deepEqual(actual,keepers);assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),field.slice().sort((a,b)=>a-b));assert.equal(c.pendingBattle.enemies.length,16);assert.deepEqual(c.pendingBattle.occupationGroupIds,['enemy-group-3']);assert.deepEqual(c.pendingBattle.artillery,[]);assert.deepEqual(c.pendingBattle.assaultSquads.map(q=>q.members.length),[6,3]);assert.equal(c.pendingBattle.sector,'tucuman');assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.equal(c.blockade,true);
  const roster=rosterFor(c);for(const id of keepers){const r=c.operativeState[id],op=roster.find(op=>op.id===id),expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.energy===100&&!r.fatigue&&!r.asleep&&r.morale>=baseMorale(op));assert.ok(expiry===null||expiry>clock(c));if(id!==57){const u=carriedAmmunition(op,r);assert.equal(r.activeSlot,'primary');assert.ok(u.loaded>0&&!u.jammed&&u.loaded+ammoCount(u)>=16);assert.equal(r.medkits,10);for(const slot of ['headwear','outfit','legwear'])assert.ok(r[slot].condition>0);}}
