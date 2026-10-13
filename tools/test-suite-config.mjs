@@ -2,6 +2,7 @@
 export default [
  {file:'tests/earned-living-northern-care.test.mjs',reason:'Exact seven living capital field survivors and the real Córdoba commander receive finite paid care and physical return; no northern battle or ending claim.'},
  {file:'tests/earned-living-northern-native.test.mjs',reason:'Actual seven-person Tucumán roof/rifle native victory, exact two-execution replay, five further permanent deaths, two real survivors, unchanged physical guns and official finite settlement.'},
+ {file:'tests/earned-living-northern-readiness.test.mjs',reason:'Actual finite cache/remains discovery, two paid return columns and hundreds of retained natural-rest hours restore the real replacement field while preserving new northern raids; no native victory or ending claim.'},
  {file:'tests/earned-living-northern-supply.test.mjs',reason:'The actual living northern column uses paid retained rest, real public medical couriers and finite ammunition before a coordinated infantry request; native victory and ending remain separate.'},
  {file:'tests/earned-original-hospital-return.test.mjs',reason:'Exact recovered hospital locality selection, quoted hourly service retention, actual second raid and finite bleeding aid before the complete six-person return.'},
  {file:'tests/earned-original-northern-reunion.test.mjs',reason:'Whole genuine returned681 paid reunion, completed clinic service, quoted simultaneous postas, native northern road and strict saved custody.'},
