@@ -53,17 +53,18 @@ failure receipt; it is not proof that a game mechanic is broken.
 - [ ] Complete the installed default-seed route and its saved continuation.
 - [ ] Complete the final production browser review and full release gate.
 
-## Reviewed local delivery candidates
+## Reviewed changes
 
-Draft PRs [#419](https://github.com/fsodano/granaderos/pull/419) and
-[#420](https://github.com/fsodano/granaderos/pull/420) have accepted local
-receipts. They are not yet delivered to `main`. Their results remain separate
-from each other and from the pending combined local gate.
+PRs [#419](https://github.com/fsodano/granaderos/pull/419) and
+[#420](https://github.com/fsodano/granaderos/pull/420), plus the Salta
+preparation change at `240cb7b8`, have accepted local receipts. Their results
+remain separate from each other and from the pending combined local gate.
 
-| Draft PR | Bounded result | Separate component checks |
+| Reviewed change | Bounded result | Separate component checks |
 | --- | --- | --- |
 | #419, `3aa8f281` | The earned Mendoza input wins through native public orders in 15 turns, 448 actions and 1,289 tactical seconds. All 489 replay orders match; eight actual deaths and six remaining gun charges are preserved. A real adjacent two-dressing relay and public movement improve the controller. Original victory, driver bounds, physical custody and official-save assertions remain required. This is an earned battle segment, not a complete original recovery or fresh ending. | Complete affected checks pass 29/29. Its own normal complete local quick passes 1,041/1,041 files and 7,565/7,565 tests, with no failures, skips or cancellations. Docs, baseline 39/39, typecheck and diff checks pass. |
 | #420, `bc92e1fb` | All 21 actual Córdoba reserves receive unique cells across existing authored roofs. Native movement costs 243 seconds, including real descent and ascent; actual entered postures and official midpoint replay remain exact. Local pistol users 119 and 139 donate 11 and four existing off-family musket rounds through real drop/pickup orders. The physical ledger, held pistols, medical stock and paid terms remain conserved. The unchanged paid caller reaches its pre-battery checkpoint with the original five-person crew plus actual paid arrival 114, within the six-person squad limit. This is complete earned reserve placement and booking, not the later twenty-one-person defense or an ending. | Six complete affected files pass 25/25, including the unchanged thirteen-person native defense, finite aid and gun delivery controls. Its own normal complete local quick passes 1,041/1,041 files and 7,567/7,567 tests, with no failures, skips or cancellations. Docs, baseline 39/39, typecheck and diff checks pass. |
+| Salta preparation, `240cb7b8` | Keep the actual Córdoba bronze gun `arsenal:cordoba:2` in its depot during quiet clinic and equipment visits, then select it for the assault with all seven real charges. Public pickups supply 49 finite cartridges, and the empty Baker finishes a paid reload. Actual cohorts, casualties, contracts and physical ammunition remain conserved. This proves preparation and official paired admission, not a native Salta victory. | Five complete affected files pass 21/21, including the full earned loose-stock preparation and the existing installed preparation control. All 14,699 source/runtime pins and 1,264 unique actual inputs remain unchanged. No separate normal quick result is claimed for this change. |
 
 Both component quick runs retain the 35 extended exclusions. Neither count is
 a combined result. Game rules, shipping data, authored geometry and both
