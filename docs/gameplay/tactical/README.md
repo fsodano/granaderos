@@ -40,6 +40,18 @@ unobserved targets. Reduced-motion settings disable its movement and animation.
 
 ## Controls and information
 
+Select a soldier, open **Artillería**, and select a cannon. The cannon panel
+shows the selected operator, the nearby crew for the next order, and each
+member's PA cost. Crew members must be able to act and reach the piece. The
+game selects them for each order; it does not keep a permanent assignment.
+
+Use **Dejar cañón** to return to movement, or **Usar arma personal** to prepare
+the selected soldier's primary weapon. Neither control moves the soldier. A
+soldier can fire a personal weapon and operate a cannon from the same cell,
+subject to the usual PA, ammunition, crew and targeting rules. Leaving the
+cannon has no PA cost. Preparing a different held slot pays the normal weapon
+switch cost shown by the button. Controls wait until the current action ends.
+
 - [Keyboard controls](TACTICAL-HOTKEYS.md)
 - [Interface and equipment target](ja2-interface-target.md) *(workspace)*
 - [Optional orders panel](lazy-orders-panel.md) *(workspace)*

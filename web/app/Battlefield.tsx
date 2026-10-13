@@ -53,7 +53,7 @@ import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {projectSurface} from '../lib/tactical-elevation';
 import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight,Hand,RotateCcw,RotateCw,MessageCircle,Eye,ChevronUp,ChevronDown } from 'lucide-react';
-import { actBattle, presentedActBattle, getKnifeThrowVisual, getGrenadeThrowVisual, getMeleeAttackResult, getNpcGiftResult, getCareComposureResult, endTurn, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
+import { actBattle, presentedActBattle, getKnifeThrowVisual, getGrenadeThrowVisual, getMeleeAttackResult, getNpcGiftResult, getCareComposureResult, endTurn, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, planReadyMainHand, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
 
 type Props = {campaignContext?:any;onPlaybackBusy?:(busy:boolean)=>void;onPlaybackValidate?:(state:any)=>boolean;onPlaybackFrame?:(before:any,after:any)=>void;battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:ConversationChoice)=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
 type CameraView={x:number;y:number;width:number;height:number;worldWidth:number;worldHeight:number;zoom:number};
@@ -185,6 +185,34 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
   const talkingApproach=dialogueApproach(reachable,talking);
   const talkingAvailability=dialogueAvailability(s,u,talking,{visible:Boolean(u&&talking&&canSee(s,u,talking)),busy});
   const costs=useMemo(()=>u?actionCosts(s,u):null,[s,u]);const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
+  useEffect(()=>{if(!mode.startsWith('artillery'))setCannonId('');},[mode]);
+  const personalWeaponPA = u?.activeSlot === 'primary' || s.mode === 'exploration' ? 0 : costs?.weapon ?? 4;
+  const personalWeaponReason = useMemo(() => {
+    if (!u || !unitCanAct(s, u)) return 'Seleccioná un combatiente disponible.';
+    if (u.activeSlot === 'primary') return undefined;
+    if (u.knockedDown) return 'El soldado debe ponerse de pie para cambiar de arma.';
+    if (s.mode !== 'exploration' && u.ap < personalWeaponPA) return `Faltan ${formatAP(personalWeaponPA)} PA para preparar el arma.`;
+    try { planReadyMainHand(u, 'primary'); } catch (error) { return (error as Error).message; }
+    return undefined;
+  }, [s, u, personalWeaponPA]);
+  function chooseCannon(id: string) {
+    if (busy) return;
+    clearGroup(); setCannonId(id); setMode(id ? 'artillery' : 'move'); setAim(0);
+  }
+  function leaveCannon() {
+    if (busy) return;
+    setCannonId(''); setMode('move'); setAim(0);
+  }
+  function usePersonalWeapon() {
+    if (busy || personalWeaponReason || !u) return;
+    let actor = u;
+    if (actor.activeSlot !== 'primary') {
+      const next = order({type:'weapon', slot:'primary'});
+      if (!next || next.lastError) return;
+      actor = next.units.find((member: any) => member.id === selected);
+    }
+    clearGroup(); setCannonId(''); setMode(attackCursorMode(actor)); setAim(0);
+  }
   const maxAim=useMemo(()=>aimOptions(s,u,{mode,target:hover,hitLocation}).filter((option:any)=>!option.disabled).at(-1)?.level??0,[s,u,mode,hover,hitLocation]);
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
   useEffect(()=>{setTalking(null);setPendingGift(null);setGiftReply(null);},[selected]);
@@ -507,7 +535,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
   const orderHelp=pickedItem?'Objeto seleccionado: clic para pasar, dejar o lanzar. Sobre un personaje, botón derecho cambia el destino al suelo. Esc devuelve el objeto.':targetingHelp(mode,u,{movementIntent,itemIntent});
   const stepStance=(delta:number)=>{if(!u)return;const index=Math.max(0,STANCES.findIndex(([id])=>id===u.stance)),stance=STANCES[Math.max(0,Math.min(2,index+delta))][0];order({type:'stance',stance:u.knockedDown?'standing':stance});};
   const turnUnit=(delta:number)=>{if(!u)return;const direction=((u.facing??2)+delta+8)%8,[dx,dy]=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]][direction];order({type:'look',x:u.x+dx,y:u.y+dy,tacticalLevel:tacticalLevel(u)});};
-  const orderLabel=pickedItem?'Objeto en mano':mode==='useItem'?(u?.activeSlot==='medical'?'Vendar':hasFirearm(u||{})?u.weaponMode==='melee'?fixedBayonetFor(u)?'Bayoneta':'Culatazo':'Disparo':'Usar equipo'):({move:'Mover',fire:'Disparo',throwKnife:'Lanzar facón',throwGrenade:'Granada',look:'Mirar',talk:'Hablar',loot:'Recoger',torch:'Antorcha',bolas:'Boleadoras'} as Record<string,string>)[mode]??'Orden';
+  const orderLabel=pickedItem?'Objeto en mano':mode==='useItem'?(u?.activeSlot==='medical'?'Vendar':hasFirearm(u||{})?u.weaponMode==='melee'?fixedBayonetFor(u)?'Bayoneta':'Culatazo':'Disparo':'Usar equipo'):({move:'Mover',fire:'Disparo',artillery:'Disparo de cañón',artilleryMove:'Mover cañón',artilleryPivot:'Girar cañón',artilleryReload:'Recargar cañón',throwKnife:'Lanzar facón',throwGrenade:'Granada',look:'Mirar',talk:'Hablar',loot:'Recoger',torch:'Antorcha',bolas:'Boleadoras'} as Record<string,string>)[mode]??'Orden';
   return <section className={`battle-layout ${s.night?'night-field':''}`}>
     <header className="battle-header tactical-map-toolbar" aria-label="Órdenes y cámara del campo">
       <JA2CampaignReturn battle={s} peacefulVisit={peacefulVisit} busy={busy} onFinish={onFinish} compact/>
@@ -556,7 +584,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
         {/* Camera motion changes one transform. The root viewport dimensions stay
             fixed. Models render on the canvas below the input and HUD layer. */}
         <g data-scene-camera="true" transform={`translate(${-cameraX} ${-cameraY})`}>
-        <TacticalSceneControls cursorLevel={cursorLevel} viewport={sceneViewport} state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.actorPositions} poses={presentation.frame?.unitId?{...poses,[presentation.frame.unitId]:battleFramePose(presentation.frame)}:poses} directions={directions} hover={hover} mode={pickedItem?'inventory':mode} aim={aim} hitLocation={hitLocation} reachable={reachable} routesPending={routePreview.working} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{const itemPoint=s.artillery?.find((gun:any)=>gun.id===id);if(itemPoint&&placeInventoryItem({...itemPoint,id:undefined}))return;if(mode==='throwKnife'||grenadeTargetingMode(u,mode)){const point=s.artillery?.find((gun:any)=>gun.id===id);if(point)tileClick(point);return;}setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
+        <TacticalSceneControls cursorLevel={cursorLevel} viewport={sceneViewport} state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.actorPositions} poses={presentation.frame?.unitId?{...poses,[presentation.frame.unitId]:battleFramePose(presentation.frame)}:poses} directions={directions} hover={hover} mode={pickedItem?'inventory':mode} aim={aim} hitLocation={hitLocation} reachable={reachable} routesPending={routePreview.working} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{const itemPoint=s.artillery?.find((gun:any)=>gun.id===id);if(itemPoint&&placeInventoryItem({...itemPoint,id:undefined}))return;if(mode==='throwKnife'||grenadeTargetingMode(u,mode)){const point=s.artillery?.find((gun:any)=>gun.id===id);if(point)tileClick(point);return;}chooseCannon(id)}} cannonId={cannonId}/>
         {!pickedItem&&!busy&&u&&<MovementCursor state={s} unit={u} preview={preview} project={project} scale={1/zoom}/>}
         {failedDestination&&<g key={failedDestination.id} className="tactical-action-failure" data-action-failed="true" aria-label="Orden no disponible" pointerEvents="none" transform={`translate(${projectSurface(s,project,failedDestination).x} ${projectSurface(s,project,failedDestination).y}) scale(${1/zoom})`}><path d="M-7-7L7 7M7-7L-7 7"/></g>}
         {(presentation.frame?.impacts??[]).map((impact:any)=>{const point=projectSurface(s,project,impact);return <g key={`${presentation.frame.sequenceId}:${presentation.frame.index}:${impact.victimKind??'unit'}:${impact.unitId}`} data-hit-reaction={impact.unitId} className="tactical-hit-reaction" transform={`translate(${point.x} ${point.y-20})`}><path d="M-16-8l-5-6M16-8l5-6M-18 6l7 2M18 6l7 2"/><text className="tactical-damage-number" y="-30" textAnchor="middle">−{Math.ceil(impact.damage)}</text></g>;})}
@@ -623,7 +651,11 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
       onCameraCenter={centerCamera}
       onCameraPan={panCamera}
       onZoom={delta=>setZoom(value=>Math.max(1,Math.min(3,value+Math.sign(delta))))}
-      onCannonChange={(id)=>setCannonId(id)}
+      onCannonChange={chooseCannon}
+      onLeaveCannon={leaveCannon}
+      onPersonalWeapon={usePersonalWeapon}
+      personalWeaponReason={personalWeaponReason}
+      personalWeaponPA={personalWeaponPA}
       onShotTypeChange={(t)=>setShotType(t)}
       onSetAim={(n)=>setAim(Math.max(0,Math.min(maxAim,n)))}
       onHitLocationChange={setHitLocation}
