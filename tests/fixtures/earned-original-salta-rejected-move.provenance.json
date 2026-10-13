@@ -1,0 +1,100 @@
+{
+  "scope": "Byte-identical pre-refusal capture from the exact current646 hospital-return/reunion/Salta suffix. The suffix uses the actual raw original recovered646 checkpoint and official original302 duty cohort, current58bf helpers, originalNode25.1.0, original initial Salta crew114/124 and exact16-pass native windows. No state/resource/health/time/death/selection/RNG grants. This retained failed input is never adopted as a victory. Regression uses the real pre-action state and ordinary legal orders; not full original recovery or ending proof.",
+  "fixture": "earned-original-salta-rejected-move.json.gz",
+  "sourceRevision": "58bf21cfd5b270f86640a44ccabbea3b591e5d74",
+  "capturePath": ".cache/core-campaign-2026-10-12/actual-salta-suffix-v1/failure.json",
+  "rawBytes": 5018520,
+  "rawSha256": "a645117f91710a5caa7cd44a4e10cf10b467077b6bc4009f9fa4cf67a99ed5ec",
+  "gzipSha256": "d9c424ab97eb3ea757ba29777ef84e674fc4fd1562c3e284190f986f1ce84dcf",
+  "suffixReceipt": {
+    "runtime": {
+      "version": "v25.1.0",
+      "path": "/Users/fsodano/.nvm/versions/node/v25.1.0/bin/node",
+      "sha256": "6341aad90f8f6d2fc9203ea509131b36cbd4529ec83167d3976be11ee7784430"
+    },
+    "command": [
+      "/Users/fsodano/.nvm/versions/node/v25.1.0/bin/node",
+      "--import",
+      "/Users/fsodano/.codex/worktrees/campaigns/granaderos/.cache/core-campaign-2026-10-12/actual-salta-suffix-v1/read-audit-preload.mjs",
+      "/Users/fsodano/.codex/worktrees/campaigns/granaderos/.cache/core-campaign-2026-10-12/actual-salta-suffix-v1/probe.mjs"
+    ],
+    "sourceRevision": "58bf21cfd5b270f86640a44ccabbea3b591e5d74",
+    "startedAt": "2026-10-13T00:04:35.312463+00:00",
+    "status": "complete",
+    "staticClosureFiles": 562,
+    "shippingFiles": 242,
+    "scope": "Diagnostic exact current646 hospital-return/reunion/Salta suffix using genuine raw646 and official original302 cohort, original controller initialization and exact16-pass native player windows. Node25.1.0 matches original runtime. No test source transformation, no tracked source edit, no health/resources/clock/death grants. Capture exact rejected action before identifying controller or core issue. Not full original route acceptance.",
+    "pid": 17735,
+    "exitCode": 1,
+    "seconds": 213.45981295800001,
+    "finishedAt": "2026-10-13T00:08:08.650229+00:00",
+    "afterRevision": "58bf21cfd5b270f86640a44ccabbea3b591e5d74",
+    "changedStaticPins": [],
+    "actualConsumedFiles": 341,
+    "actualESMLoadFiles": 339,
+    "actualFilesystemInputFiles": 2,
+    "changedActualInputPins": [],
+    "logSha256": "e08edfb97c20a0562e459c232fe2bd3ecd39660c9157b2874f3ae7d787b2c73e",
+    "summary": {}
+  },
+  "inputs": {
+    "hospital646.campaign.json": {
+      "source": "/Users/fsodano/fibradev/games/granaderos/.cache/core-campaign-2026-10-12/original-recovery-merged-main-v1/passive-captures/strategic-preparation/93258-2-recoverFreshNorthernDoctor-recovered-hospital-input-N80dpX/campaign.json",
+      "sha256": "398ce29d95fdf8309a33d5602fe938759b12f759f5b71572a7a23ca13aa620eb",
+      "bytes": 6620593
+    },
+    "original302.save.json": {
+      "source": "/Users/fsodano/fibradev/games/granaderos/.cache/core-campaign-2026-10-12/original-recovery-merged-main-v1/checkpoint-tucuman-preparation-input.json",
+      "sha256": "3832cd5a5c06e29d79e6c2b09b9b8d865fedc7309dd0fa48ae5067afedc673e4",
+      "bytes": 1431297
+    }
+  },
+  "initialCrew": [
+    {
+      "gunId": "arsenal:cordoba:2",
+      "ids": [
+        "114",
+        "124"
+      ]
+    }
+  ],
+  "cursor": {
+    "window": 19,
+    "attempt": 3,
+    "turn": 7,
+    "elapsed": 1495,
+    "mode": "combat",
+    "phase": "player"
+  },
+  "acceptedOrdersBeforeRefusal": 339,
+  "action": {
+    "type": "move",
+    "unitId": "11",
+    "x": 42,
+    "y": 28,
+    "tacticalLevel": 0
+  },
+  "refusal": "Destino inaccesible o puntos de acci\u00f3n insuficientes.",
+  "observedActor": {
+    "id": "11",
+    "position": [
+      41,
+      26,
+      0
+    ],
+    "ap": 38,
+    "hp": 18,
+    "bleeding": 0
+  },
+  "knownOccupant": {
+    "id": "enemy-4",
+    "position": [
+      42,
+      28,
+      0
+    ],
+    "hp": 2,
+    "personallyVisible": false,
+    "squadVisible": true
+  }
+}
