@@ -127,10 +127,22 @@ A separate public handover diagnostic from the earned Salta input on
 `8d777d51` confirms the cause: envoy 114 returns with actors 0 and 8, while
 Juana (1) remains alive and serving in Salta. The mission completes; the missed
 physical reunion is a route-helper gap. PR #413 corrects the earned party;
-the complete original rerun on `a68dd0dc` remains open. The bounded diagnostic
-and passing handover do not replace the failed complete original route or
-prove its later Cuyo ending. The final handover log SHA is
+the bounded diagnostic and passing handover do not replace the complete
+original route or prove its later Cuyo ending. The final handover log SHA is
 `db3c744aacabea776ad6440e9ca427364ebb97a1f710a8bde6261ac52419afaf`.
+
+The complete unchanged original recovery on frozen `a68dd0dc` finishes 0/1,
+with no skips or cancellations. The Node run takes 2,130.432 seconds and its
+wrapper takes 2,136.014 seconds. All 14,688 tracked/private/runtime pins and
+393 actual consumed inputs remain unchanged, including 242 shipping files.
+Actual Salta, Yatasto and all living-officer participation assertions pass.
+The next stop is preserved line 174, through `fresh-cuyo-route.mjs:188` and
+`route-dressings.mjs:21`: no reachable finite dressing is available for actor
+10 at Córdoba. The next ordinary finite-source and care diagnosis remains
+open; this failure does not establish a core mechanic defect or a completed
+route. The isolated engine remains uninitialized; no C++ check is claimed.
+The log SHA is
+`ffb5aae542394af4a311d59ce3282ab933df11b2c88fa9a84ec9bcb4e40dbc35`.
 
 The earlier lost-Córdoba care failure is retained: its former helper finds
 actor 1000 dead where the old test expects 23 HP. PR #410 now passes the
@@ -395,9 +407,16 @@ cases. Artifact ZIP SHA is
 `9f623700b0124c7d9fce1b935b12e59988ce59d584a8ab593099deb71f5ea58e`;
 the job log SHA is
 `e646b08f35ad7a9641f8bf629b8a5629e3dee2ab964cdf431252c53031b26eee`.
-The core quick job in that run remains active. PR #411 changes a driver
-reachable from 23 core quick test files, so the earlier core pass at
-`1806d8f9` is not a current full core result.
+The complete core quick job in that same run also passes at `2603c3e6`:
+912/912 files and 7,123/7,123 tests, with no failures, skips or cancellations,
+in 5,645.024 seconds. This includes the 23 core test files that reach the
+driver changed in PR #411. The job log confirms Pillow 11.2.1 and NumPy
+2.2.6; all four portable PNG controls execute and pass. Artifact ZIP SHA is
+`25b469f3d5acc73d040f903ccb737bc79c07119715f863f44020438c26d0d27d`;
+the job log SHA is
+`2b69a76e6e1d66fd937826c39d8f8b5d5263528bc038e677ba3a3fe94896fbf9`.
+These are complete core and campaign quick results on `2603c3e6`, not a
+complete original recovery, either fresh ending or full-release acceptance.
 
 The retained campaign-only [run 38330442401](https://github.com/fsodano/granaderos/actions/runs/38330442401)
 passes at `8d777d51` after PR #412: 125/125 files and 429/429 tests, with no
@@ -406,7 +425,21 @@ Artifact ZIP SHA is
 `f9064400cd813286f28af9789bb6260902ba5aadad7c050dfafe38d8d4cb1c7b`;
 the job log SHA is
 `2cd313d3945da372b9829577829e63ff2fa423b4086335538a9ca385e7b21aa0`.
-No passing result is claimed for the active `2603c3e6` core job. Both fresh
+
+The campaign quick job in [run 38333592425](https://github.com/fsodano/granaderos/actions/runs/38333592425)
+passes at `a68dd0dc` after PR #413: 126/126 files and 431/431 tests, with no
+failures, skips or cancellations, in 2,365.233 seconds. The new Yatasto party
+file actually runs both cases. Artifact ZIP SHA is
+`67103dde2a43122a8d1ba7d1c3342dc990b40ddd8a9f7a131cac66ba06bdfa80`;
+the job log SHA is
+`77f3f3fca42116f428abca89a3f81f2583b8b549d4f66aed26be57d96e804404`.
+Its successful campaign report and log are saved before the duplicate core
+job is cancelled. The workflow and its core job end cancelled; the completed
+campaign job remains successful. Static relative-import analysis finds the
+same 912 core test files and only changed campaign-scope configuration in
+their graph; eighteen affected scope controls pass separately. This is a
+static scope check, not another complete core execution or whole-tree
+equivalence. The passing `2603c3e6` core result remains separate. Both fresh
 endings, saved 48-hour continuation and final release acceptance remain open.
 
 The earlier combined quick result below retains its historical failure.

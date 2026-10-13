@@ -9,16 +9,25 @@ earned Salta movement continuation; PR #412 retains serving returnees in
 capital relief regardless of their province; PR #413 proves the earned
 northern party's corrected Yatasto handover. These separate
 receipts do not prove either complete fresh ending, its 48-hour continuation
-or release acceptance. The latest complete original recovery on `2603c3e6`
+or release acceptance. The complete original recovery on `2603c3e6`
 passes the actual Salta and Yatasto gates, then fails the preserved return-party
 assertion at line 170. A separate handover diagnostic identifies living Juana
 remaining in Salta instead of joining the return party. The
 mission completes; PR #413 corrects that earned party, while the complete
-original rerun on `a68dd0dc` remains open.
+unchanged original rerun on `a68dd0dc` finishes 0/1. Its actual Salta,
+Yatasto and living-officer participation assertions pass, then line 174
+stops on the lack of a reachable finite dressing for actor 10 at Córdoba.
+That finite-source and ordinary-care diagnosis remains open.
 The current status record preserves this failure and the earlier receipts.
 Linux campaign quick passes 125/125 files and 428/428 tests on `2603c3e6`,
-then separately passes 125/125 files and 429/429 tests on `8d777d51`.
-The `2603c3e6` core quick job remains active.
+then separately passes 125/125 files and 429/429 tests on `8d777d51`, and
+126/126 files and 431/431 tests on `a68dd0dc`. Complete Linux core quick
+passes 912/912 files and 7,123/7,123 tests on `2603c3e6`, including all four
+portable PNG controls. The newer `a68dd0dc` workflow and duplicate core job
+are cancelled only after its successful campaign report and log are saved;
+the completed campaign job remains successful. Cancellation is not a
+passing `a68dd0dc` complete core result. Both fresh endings, saved 48-hour
+continuation and full-release acceptance remain open.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 
