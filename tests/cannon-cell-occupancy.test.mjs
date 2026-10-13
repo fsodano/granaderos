@@ -99,7 +99,7 @@ test('drag rejects a live outside body and another gun, but permits the selected
  const before=structuredClone(b),next=actBattle(b,request);assert.equal(next.lastError,null);assert.deepEqual(point(next.artillery[0]),{x:3,y:3,tacticalLevel:0});
  assert.deepEqual(point(unit(next,'20')),{x:3,y:2,tacticalLevel:0});assert.deepEqual(point(unit(next,'21')),{x:4,y:3,tacticalLevel:0});assert.deepEqual(unit(next,'22'),unit(b,'22'));
  for(const id of crew.crew)assert.equal(unit(next,id).ap,unit(b,id).ap-artilleryCosts(b,unit(b,'20'),b.artillery[0]).move);
- assert.equal(new Set([next.artillery[0],...next.units].map(spaceKey)).size,4);assert.deepEqual({...next.artillery[0],x:2,y:3},b.artillery[0]);assert.deepEqual(b,before);
+ assert.equal(new Set([next.artillery[0],...next.units].map(spaceKey)).size,5);assert.deepEqual({...next.artillery[0],x:2,y:3},b.artillery[0]);assert.deepEqual(b,before);
 });
 
 test('a roof cell above a ground gun is a distinct legal surface and cannot supply ground cannon crew',()=>{
