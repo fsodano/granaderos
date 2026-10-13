@@ -1,10 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-import {gunzipSync} from 'node:zlib';
-import {createHash} from 'node:crypto';
-import {decodeSave} from '../game/save.js';
-import {expandSaveTerrain} from '../game/save-terrain.js';
+import {admittedKnownFriendlyFire} from './known-friendly-fire-fixture.mjs';
 import {createBattle,firearmShotOptions} from '../game/tactical.js';
 import {northernCombatOrder} from './northern-route.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
@@ -22,20 +18,10 @@ function assertSafeFire(battle,unit,action){
 }
 
 test('the genuine retained Mendoza pre-shot state cannot reintroduce its known friendly-ray shot through the normal or low-chance fallback',()=>{
- const raw=gunzipSync(readFileSync(new URL('./fixtures/northern-known-friendly-fire.save.json.gz',import.meta.url))),proof=JSON.parse(readFileSync(new URL('./fixtures/northern-known-friendly-fire.provenance.json',import.meta.url)));
- assert.equal(createHash('sha256').update(raw).digest('hex'),proof.sha256);
- const historical=expandSaveTerrain(JSON.parse(raw)),original=proof.nextRecordedAction;
+ const {historical,admitted,proof}=admittedKnownFriendlyFire(),original=proof.nextRecordedAction;
  const witnessed=selectedForecast(historical.battle,historical.battle.units.find(actor=>actor.id==='142'),original);
  assert.equal(witnessed.interveningFriendly,true);assert.equal(witnessed.chance,41);assert.equal(witnessed.damageFactor,.640625);
- const {battle}=decodeSave(raw.toString()),before=structuredClone(battle),unit=battle.units.find(actor=>actor.id==='142');
- // The old interrupted save has enemy-3 on a captured cannon. Admission
- // clears only that enemy's cell; the witnessed raw forecast stays checked.
- const expected=structuredClone(historical.battle),cleared=expected.units.find(actor=>actor.id==='enemy-3');
- assert.deepEqual([cleared.x,cleared.y],[34,14]);
- assert.ok(expected.artillery.some(gun=>gun.id==='arsenal:cordoba:1'&&gun.x===34&&gun.y===14));
- assert.equal(expected.artilleryOccupancyVersion,undefined);assert.equal(expected.wallEdges,undefined);
- cleared.y=13;expected.artilleryOccupancyVersion=1;expected.wallEdges=[];
- assert.deepEqual(battle,expected,'Admission may clear this one legacy cell and add the occupancy and empty-wall markers only.');
+ const {battle}=admitted,before=structuredClone(battle),unit=battle.units.find(actor=>actor.id==='142');
  assert.deepEqual([battle.turn,battle.phase,battle.status],[4,'interrupt','active']);assert.equal(proof.replayedPrefixOrders,116);
  const unsafe=selectedForecast(battle,unit,original);
  assert.equal(unsafe.interveningFriendly,true);assert.equal(unsafe.chance,42);assert.equal(unsafe.damageFactor,.640625);
