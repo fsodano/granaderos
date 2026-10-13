@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,appendFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -26,7 +26,7 @@ test('the actual two-person northern return quotes its real qualified clinic and
 
 test('the complete actual northern survivor clinic consumes real local dressings and time while preserving deaths, service and the live enemy schedule',t=>{
  const {c:start,proof}=input(),before=structuredClone(start),events=[],oldGuns=guns(start),p=livingNorthernReliefPlan(start),pool=knownKits(start,107),carried=start.operativeState[101].medkits+start.operativeState[107].medkits;
- const c=recoverLivingNorthernClinic(start,{report:e=>events.push(e)});assert.deepEqual(start,before);
+ const c=recoverLivingNorthernClinic(start,{report:e=>{events.push(e);if(process.env.GRANADEROS_LIVING_NORTHERN_CLINIC_EVENTS)appendFileSync(process.env.GRANADEROS_LIVING_NORTHERN_CLINIC_EVENTS,JSON.stringify(e)+'\n');}});assert.deepEqual(start,before);
  assert.deepEqual(c.recruited,start.recruited);assert.deepEqual(c.enemyGroups,start.enemyGroups);assert.deepEqual(c.enemyReserves,start.enemyReserves);assert.equal(c.blockade,true);assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.deepEqual(guns(c),oldGuns);
  for(const id of p.keepers){const r=c.operativeState[id];assert.ok(r.alive&&!r.captured);assert.equal(r.hp,r.maxHp);assert.equal(r.bleeding,0);assert.equal(r.location,start.operativeState[id].location);const expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(expiry===null||expiry>clock(c));}
  for(const[id,r]of Object.entries(start.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}for(const id of proof.newNativeDeaths)assert.equal(c.operativeState[id].hp,0);
@@ -36,4 +36,7 @@ test('the complete actual northern survivor clinic consumes real local dressings
  for(const receipt of events.filter(e=>e.event==='livingNorthernClinicOrder'))if(receipt.action.type!=='wait')assert.equal(receipt.startSeconds,receipt.endSeconds);
  const official=encodeSave(c);assert.deepEqual(decodeSave(official).campaign,c);
  t.diagnostic(JSON.stringify({scope:'Actual two-survivor local clinical care and willing paid replacement quotes only; no hire/north request/ending proof',inputRawSha:proof.rawSha256,keepers:p.keepers,patients:p.patients,doctor:p.clinics[0].doctorId,picked,consumed:11,elapsedSeconds:elapsed,clock:[c.hour,c.secondOfHour],treasury:c.resources.treasury,currentQuotes:livingNorthernReliefPlan(c).candidates,canonicalCampaignSha:sha(JSON.stringify(c))}));
+ // Optional receipt files contain only the existing asserted official save.
+ // Capturing a file does not accept it; the entire unfiltered gate must pass.
+ if(process.env.GRANADEROS_LIVING_NORTHERN_CLINIC_CAPTURE)writeFileSync(process.env.GRANADEROS_LIVING_NORTHERN_CLINIC_CAPTURE,official);
 });
