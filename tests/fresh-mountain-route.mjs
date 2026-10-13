@@ -285,7 +285,7 @@ assert.equal(recruits.length,6,'six living and ready replacements must accept pa
 report({event:'mountainPaidColumn',sector:'uspallata',ids:recruits,price:column.price,hour:c.hour,treasury:c.resources.treasury});
 const rearm=recruits.filter(id=>![1800,1801,1802].includes(rosterFor(c).find(op=>op.id===id).weapon));
 for(let h=0;h<24&&(c.hour%24<6||c.hour%24>10);h++)order({type:'wait',hours:1});
-for(const id of recruits){if(c.recruited.includes(id))continue;const quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'day'),cash=c.resources.treasury;order({type:'recruitCivic',id,term:'day'});assert.equal(c.resources.treasury,cash-quote.price);}
+for(const id of recruits){if(c.recruited.includes(id))continue;retained.retain();const quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'day'),cash=c.resources.treasury;order({type:'recruitCivic',id,term:'day'});assert.equal(c.resources.treasury,cash-quote.price);}
 for(let h=0;h<24&&recruits.some(id=>!c.recruited.includes(id));h++)order({type:'wait',hours:1});
 assert.ok(recruits.every(id=>c.recruited.includes(id)),'paid replacements must arrive before receiving equipment');
 c=collectReturnedMountainKit(c,recruits,{report});
