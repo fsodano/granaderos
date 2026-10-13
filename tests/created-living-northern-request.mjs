@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {baseMorale} from '../game/morale.js';
+import {contractExpiresSeconds,contractRenewalQuote} from '../game/contracts.js';
+import {previewStrategicRoute} from '../game/strategic-route.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {ammoCount} from '../game/ammo-types.js';
+import {storedArtilleryRecord} from '../game/artillery-transport.js';
+import {enterSector} from '../game/world.js';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {expandedCapitalWaitNotice} from './created-expanded-capital-return.mjs';
+
+const clock=c=>c.hour*3600+(c.secondOfHour??0),living=c=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
+const guns=c=>[...Object.values(c.artilleryDepots??{}).flat(),...Object.values(c.sectorStates??{}).flatMap(s=>s.artillery??[]),...Object.values(c.sceneStates??{}).flatMap(s=>s.artillery??[]),...(c.artilleryTransfers??[]).map(t=>t.gun)].map(storedArtilleryRecord);
+
+// A force that already passed finite full readiness needs its real public
+// approach, not another clinic/supply/rest operation or a fixed dead cohort.
+export function readyLivingNorthernAssaultPlan(c,{commanderId=57,hospital='cordoba',target='tucuman'}={}){
+ assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.equal(c.location,hospital);
+ const keepers=living(c),field=keepers.filter(id=>id!==commanderId),roster=rosterFor(c);assert.ok(keepers.includes(commanderId)&&field.length>=6&&field.length<=42);assert.equal(c.operativeState[commanderId].location,hospital);assert.ok(field.some(id=>roster.find(op=>op.id===id).medical>=60));
+ for(const id of keepers){const r=c.operativeState[id],op=roster.find(op=>op.id===id),expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(r.hp===r.maxHp&&!r.bleeding&&!r.asleep&&r.energy===100&&!r.fatigue&&r.morale>=baseMorale(op));assert.equal(r.location,hospital);assert.ok(expiry===null||expiry>clock(c));if(id!==commanderId){const u=carriedAmmunition(op,r);assert.equal(r.activeSlot,'primary');assert.ok([1800,1801,1802].includes(u.weapon)&&u.loaded>0&&!u.jammed&&u.loaded+ammoCount(u)>=16&&r.medkits>=10);}}
+ const occupations=c.enemyGroups.filter(g=>g.target===target&&g.status==='stationed');assert.ok(occupations.length||c.sectors[target].owner==='royalist','The real next target must still require its native assault.');
+ return {commanderId,hospital,target,keepers,field,occupations:occupations.map(g=>g.id),occupationSoldiers:occupations.reduce((sum,g)=>sum+g.units.length,0)};
+}
+
+export function requestReadyLivingNorthernInfantry(start,{report=()=>{},...options}={}){
+ const before=structuredClone(start),plan=readyLivingNorthernAssaultPlan(start,options),oldGuns=guns(start),oldGroups=structuredClone(start.enemyGroups),oldReserves=structuredClone(start.enemyReserves),events=[];
+ let c=decodeSave(encodeSave(start)).campaign;const emit=e=>events.push(e);
+ const safe=()=>{assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.deepEqual(living(c),plan.keepers);assert.deepEqual(guns(c),oldGuns);assert.deepEqual(c.enemyGroups,oldGroups);assert.deepEqual(c.enemyReserves,oldReserves);for(const[id,r]of Object.entries(start.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}for(const id of plan.keepers){const r=c.operativeState[id],expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(r.alive&&!r.captured&&r.hp===r.maxHp&&!r.bleeding&&r.energy===100&&!r.fatigue&&!r.asleep);assert.ok(expiry===null||expiry>clock(c));for(const slot of ['headwear','outfit','legwear'])assert.deepEqual(r[slot],start.operativeState[id][slot]);}assert.deepEqual(c.operativeState[plan.commanderId],start.operativeState[plan.commanderId]);};
+ const issue=action=>{const time=clock(c),cash=c.resources.treasury,next=dispatchCampaign(c,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);c=next;safe();emit({event:'livingNorthernReadyApproachOrder',action,startSeconds:time,endSeconds:clock(c),treasuryBefore:cash,treasuryAfter:c.resources.treasury});};
+ const retain=seconds=>{for(const id of plan.keepers){let expiry=contractExpiresSeconds(c.contracts[id]);while(expiry!==null&&expiry<=clock(c)+seconds){const contract=c.contracts[id],quote=contractRenewalQuote(c,rosterFor(c).find(op=>op.id===id),'day'),cash=c.resources.treasury,action={type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt,expectedExpiresSecond:contract.expiresSecond??0};assert.equal(quote.available,true,quote.reason);issue(action);assert.equal(c.resources.treasury,cash-quote.price);assert.equal(c.contracts[id].expiresAt,quote.expiresAt);assert.equal(c.contracts[id].expiresSecond??0,quote.expiresSecond??0);assert.ok(contractExpiresSeconds(c.contracts[id])>expiry);expiry=contractExpiresSeconds(c.contracts[id]);emit({event:'livingNorthernReadyApproachRenewal',id,quote,action});}}};
+ try{
+  issue({type:'configureArtillery',types:[]});const groups=[];
+  for(let offset=0;offset<plan.field.length;offset+=6){const ids=plan.field.slice(offset,offset+6),existing=c.squads.find(q=>q.location===plan.hospital&&!q.journey&&q.members.length===ids.length&&ids.every(id=>q.members.includes(id)));if(existing)issue({type:'selectSquad',id:existing.id});else issue({type:'createSquad',ids,sector:plan.hospital,name:'Infantería del Norte'});const id=c.activeSquadId;for(const operativeId of ids)issue({type:'assignCare',operativeId,assignment:'active'});const quote=previewStrategicRoute(c,id,plan.target,'posta');assert.equal(quote.valid,true,quote.reason);assert.equal(quote.action.type,'attack');assert.deepEqual(quote.path,[plan.hospital,plan.target]);assert.equal(quote.hours,4);emit({event:'livingNorthernReadyAssaultQuoted',squadId:id,ids,quote});issue(quote.action);groups.push(id);}
+  const departure=clock(c);let pauses=0;
+  for(let attempts=0;attempts<27&&!groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready');attempts++){assert.ok(clock(c)-departure<24*3600);retain(3601);const time=clock(c);issue({type:'wait',hours:1});const elapsed=clock(c)-time;assert.ok(elapsed>=0&&elapsed<=3600);if(!elapsed){const notice=expandedCapitalWaitNotice(c,{startedSeconds:time,requestedHours:1});assert.ok(++pauses<=3);emit({event:'livingNorthernReadyApproachPaused',notice});}else pauses=0;}
+  assert.ok(groups.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready'));assert.equal(clock(c)-departure,4*3600);issue({type:'beginAssault',sector:plan.target});assert.ok(c.pendingBattle&&!c.pendingBattle.exploration);assert.equal(c.pendingBattle.sector,plan.target);assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),plan.field.slice().sort((a,b)=>a-b));assert.ok(c.pendingBattle.assaultSquads.every(q=>q.members.length<=6));assert.deepEqual(c.pendingBattle.artillery,[]);assert.deepEqual(c.pendingBattle.occupationGroupIds??[],plan.occupations);
+  for(const id of plan.field){const r=c.operativeState[id],op=rosterFor(c).find(op=>op.id===id),u=carriedAmmunition(op,r);assert.equal(r.location,plan.target);assert.equal(r.activeSlot,'primary');assert.ok(r.morale>=baseMorale(op)&&u.loaded>0&&!u.jammed&&u.loaded+ammoCount(u)>=16&&r.medkits>=10);}
+  const battle=enterSector(c.pendingBattle,c.sectorStates[plan.target]),official=encodeSave(c,battle),decoded=decodeSave(official);assert.deepEqual(decoded,{campaign:c,battle});assert.deepEqual(start,before);emit({event:'livingNorthernReadyRequest',plan,groups,elapsedSeconds:clock(c)-departure,campaign:structuredClone(c),battle:structuredClone(battle),scope:'Real fully-ready infantry request and official paired admission only; no native victory/northern completion/final coast/ending claim.'});for(const e of events)report(e);return {campaign:c,battle,official};
+ }catch(error){assert.deepEqual(start,before);report({event:'livingNorthernReadyRequestStopped',reason:error.message,attemptReports:events,input:structuredClone(start),lastObservedCampaign:structuredClone(c),scope:'Failure evidence only; no returned or adopted paired request.'});throw error;}
+}
