@@ -14,7 +14,7 @@ test('current actual willingness and owned-property admission quote a seven-pers
  const {c}=input(),before=structuredClone(c),p=livingNorthernReplacementPlan(c);
  assert.deepEqual(p.keepers,[57,101,107]);assert.deepEqual(p.field,[101,107]);assert.equal(p.fieldSize,7);assert.equal(p.destination,'tucuman');assert.deepEqual(p.candidates.map(r=>r.id),[130,142,106,147,118]);assert.equal(p.cost,226366);
  assert.deepEqual(p.quotes.map(r=>r.quote.price),[280,54180,57960,47880,66066]);assert.ok(p.retainedQuotes.every(r=>r.day.available&&r.week.available));assert.equal(p.retainedQuotes.find(r=>r.id===101).week.price,434);assert.equal(p.retainedQuotes.find(r=>r.id===107).week.price,826);
- assert.deepEqual(p.candidates.filter(r=>r.hp<r.maxHp).map(r=>r.id),[142,106,147]);assert.deepEqual(c,before);assert.throws(()=>livingNorthernReplacementPlan(c,{fieldSize:8}),/actual willing living candidate/);
+ assert.deepEqual(p.candidates.filter(r=>r.hp<r.maxHp).map(r=>r.id),[142,106,147]);assert.deepEqual(c,before);assert.throws(()=>livingNorthernReplacementPlan(c,{fieldSize:8}),/real willing living candidate/);
 });
 
 test('the complete actual weekly replacement booking pays every quote and admits five living recovered-property veterans while preserving wounds, finite stock and old survivors',t=>{
