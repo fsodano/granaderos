@@ -18,6 +18,7 @@ import {cloneElement,useMemo,useRef,useId,type CSSProperties,type ReactElement,t
 import './tactical-readability.css';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../../game/tactical-space.js';
 import {projectSurface,surfaceDrawDepth,surfaceRenderOffset} from '../lib/tactical-elevation';
+import {ACTOR_VISUAL_SCALE} from '../lib/three/actor-visual-scale';
 type Props={groundOverlay?:ReactNode;terrainVisible?:boolean;interactive?:boolean;viewport?:any;cursorLevel?:number;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;hitLocation?:string;reachable:any[];routesPending?:boolean;showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
 const ignoreInteraction=()=>{};
 const diamond=(x:number,y:number)=>`${x},${y-14} ${x+26},${y} ${x},${y+14} ${x-26},${y}`;
@@ -42,8 +43,8 @@ export default function TacticalSceneControls({groundOverlay,terrainVisible=true
   const posture=spriteCondition(v),collapsed=posture==='dead'||posture==='unconscious';
   const mounted=v.mounted&&!collapsed;
   const direction=collapsed||moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:poses[v.id]&&poses[v.id]!=='idle'?(directions[v.id]??moving.direction):moving.direction;
-  const selectedUnit=v.id===selected&&!(!npc&&v.side==='player'&&moving.moving),top=p.y-(collapsed||posture==='prone'?24:mounted?72:49);
-  const frame=targetHitFrame(v,p);
+  const selectedUnit=v.id===selected&&!(!npc&&v.side==='player'&&moving.moving),top=p.y-(collapsed||posture==='prone'?24:mounted?72:49)*ACTOR_VISUAL_SCALE;
+  const nativeFrame=targetHitFrame(v,p),frame={x:p.x+(nativeFrame.x-p.x)*ACTOR_VISUAL_SCALE,y:p.y+(nativeFrame.y-p.y)*ACTOR_VISUAL_SCALE,width:nativeFrame.width*ACTOR_VISUAL_SCALE,height:nativeFrame.height*ACTOR_VISUAL_SCALE};
   const bodyAim=!npc&&!areaThrow&&canChooseShotLocation(v);
   const medicalInteraction=npc&&Boolean(civilianMedicalInputAction(s,u,v,mode));
   const pickupInteraction=npc&&!medicalInteraction&&(mode==='loot'||(['move','useItem'].includes(mode)&&!grenadeHeld&&!(u?.activeSlot==='supply'&&u.activeSupply==='torches')&&collapsed));
@@ -58,7 +59,7 @@ export default function TacticalSceneControls({groundOverlay,terrainVisible=true
    {selectedUnit&&<ellipse cx={p.x} cy={p.y} rx="15" ry="6" fill="none" stroke="#dacb86" strokeWidth="1" pointerEvents="none"/>}
    {v.hp>0&&(selectedUnit||hovered)&&<><rect x={p.x-14} y={top} width="28" height="2" fill="#191d14"/><rect x={p.x-14} y={top} width={28*v.hp/v.maxHp} height="2" fill={v.side==='player'?'#81a866':'#bf644b'}/></>}
    {(selectedUnit||npc&&hovered)&&<text x={p.x} y={top-4} textAnchor="middle" fill="#ede6c3" fontSize="8" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{v.nickname||v.name}{npc&&!collapsed&&v.ai?.activity?` · ${(NPC_ACTIVITY_LABELS as any)[v.ai.activity]}`:""}</text>}
-   {mode!=='inventory'&&hovered&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&u&&hasFirearm(u)&&contextualAttack(s,u,v,{type:mode,aim}).type==='fire'&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{chancePercent(shotChance(s,u,v,aim,hitLocation))}</text>}
+   {mode==='fire'&&hovered&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&u&&hasFirearm(u)&&contextualAttack(s,u,v,{type:mode,aim}).type==='fire'&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{chancePercent(shotChance(s,u,v,aim,hitLocation))}</text>}
   </g>;
  };
  const visiblePeople=useMemo(()=>sightAdmittedUnits.filter(v=>!v.fled&&!v.departure&&actorInteriorReadable(s,v,position(v),revealed)),[s,sightAdmittedUnits,revealed,positions]);

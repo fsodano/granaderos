@@ -211,7 +211,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
       if (!next || next.lastError) return;
       actor = next.units.find((member: any) => member.id === selected);
     }
-    clearGroup(); setCannonId(''); setMode(attackCursorMode(actor)); setAim(0);
+    clearGroup(); setCannonId(''); setMode('move'); setAim(0);
   }
   const maxAim=useMemo(()=>aimOptions(s,u,{mode,target:hover,hitLocation}).filter((option:any)=>!option.disabled).at(-1)?.level??0,[s,u,mode,hover,hitLocation]);
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
@@ -243,7 +243,7 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
   const groupTarget=mode==='move'&&!grenadeTargetingMode(u,mode)&&movementIntent!=='preserveFacing'&&(isGroupGround(s,u,hover)||groupSelectionMode(s)&&tacticalLevel(hover)>0&&isMovementGround(s,u,hover))?hover:null;
   const movementGroup=useMemo(()=>movementGroupModel(s,groupIds,selected,groupTarget,{preview:false}),[s,groupIds,selected,groupTarget?.x,groupTarget?.y,groupTarget?.tacticalLevel]);
   const movementGroupIds=useMemo(()=>movementGroup.members.map((member:any)=>member.id),[movementGroup]);
-  const groupPreview=useGroupMovePreview(s,groupPreviewOpen&&!busy?movementGroup.request:null);
+  const groupPreview=useGroupMovePreview(s,!busy?movementGroup.request:null);
   const mapItemTarget=hover?(inventoryPeople.find((person:any)=>sameCell(person,hover))??hover):null;
   const inventoryMapIntent=inventoryIntentAt(inventoryMapOverride,mapItemTarget);
   const itemPreview=useMemo(()=>selectedItemMapPreview(s,u,pickedItem,mapItemTarget,inventoryMapIntent),[s,u,pickedItem,mapItemTarget?.id,mapItemTarget?.x,mapItemTarget?.y,mapItemTarget?.tacticalLevel,inventoryMapIntent]);
@@ -586,6 +586,10 @@ function BattlefieldContents({battle:committed,campaignContext,onPlaybackBusy,on
         <g data-scene-camera="true" transform={`translate(${-cameraX} ${-cameraY})`}>
         <TacticalSceneControls cursorLevel={cursorLevel} viewport={sceneViewport} state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.actorPositions} poses={presentation.frame?.unitId?{...poses,[presentation.frame.unitId]:battleFramePose(presentation.frame)}:poses} directions={directions} hover={hover} mode={pickedItem?'inventory':mode} aim={aim} hitLocation={hitLocation} reachable={reachable} routesPending={routePreview.working} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{const itemPoint=s.artillery?.find((gun:any)=>gun.id===id);if(itemPoint&&placeInventoryItem({...itemPoint,id:undefined}))return;if(mode==='throwKnife'||grenadeTargetingMode(u,mode)){const point=s.artillery?.find((gun:any)=>gun.id===id);if(point)tileClick(point);return;}chooseCannon(id)}} cannonId={cannonId}/>
         {!pickedItem&&!busy&&u&&<MovementCursor state={s} unit={u} preview={preview} project={project} scale={1/zoom}/>}
+        {!pickedItem&&!busy&&groupPreview.preview?.ok&&groupPreview.preview.members.map((member:any)=>{
+          const actor=players.find((person:any)=>person.id===member.unitId);
+          return actor&&<MovementCursor key={member.unitId} state={s} unit={actor} preview={{movement:true,path:member.path,pa:member.cost}} project={project} scale={1/zoom} showCost={member.unitId===movementGroup.anchorId}/>;
+        })}
         {failedDestination&&<g key={failedDestination.id} className="tactical-action-failure" data-action-failed="true" aria-label="Orden no disponible" pointerEvents="none" transform={`translate(${projectSurface(s,project,failedDestination).x} ${projectSurface(s,project,failedDestination).y}) scale(${1/zoom})`}><path d="M-7-7L7 7M7-7L-7 7"/></g>}
         {(presentation.frame?.impacts??[]).map((impact:any)=>{const point=projectSurface(s,project,impact);return <g key={`${presentation.frame.sequenceId}:${presentation.frame.index}:${impact.victimKind??'unit'}:${impact.unitId}`} data-hit-reaction={impact.unitId} className="tactical-hit-reaction" transform={`translate(${point.x} ${point.y-20})`}><path d="M-16-8l-5-6M16-8l5-6M-18 6l7 2M18 6l7 2"/><text className="tactical-damage-number" y="-30" textAnchor="middle">−{Math.ceil(impact.damage)}</text></g>;})}
         {grenadeLanding&&!pickedItem&&<g data-grenade-landing="true" transform={`translate(${grenadeLanding.x} ${grenadeLanding.y})`} pointerEvents="none" aria-label={`Caída prevista: ${preview.landingLabel}`}>
