@@ -224,3 +224,47 @@ for(const [label,change]of [
  assert.equal(m.select().value,'gun');assert.equal(m.commits.length,0);assert.deepEqual(m.read(),initial);
  assert.deepEqual(validateBattleSnapshot(m.read()),initial);
 });
+
+// JSDOM has no elementsFromPoint. Use the mounted SVG's numeric hit shapes
+// and actual paint order, not a forced actor-target event, for this declared
+// viewport. The real browser witness at source54 has the same front-cannon
+// overlap. Keep the whole native reducer as the rifle/cannon cost oracle.
+function mountedHitAt(doc,x,y){
+ const shapes=[...doc.querySelectorAll('[data-sector-input] [data-person-hit-target], [data-sector-input] g[aria-label^="Seleccionar "] > rect, [data-sector-input] [data-artillery-hit-target]')];
+ return shapes.reverse().find(element=>{
+  if(element.getAttribute('pointer-events')==='none')return false;
+  const n=key=>Number(element.getAttribute(key));
+  if(element.tagName.toLowerCase()==='ellipse')return ((x-n('cx'))/n('rx'))**2+((y-n('cy'))/n('ry'))**2<=1;
+  return x>=n('x')&&x<=n('x')+n('width')&&y>=n('y')&&y<=n('y')+n('height');
+ });
+}
+
+test('the visible adjacent gunner body selects its real actor before the cannon base and keeps exact native personal and crew fire',async t=>{
+ const initial=arena(),before=structuredClone(initial),m=await mount(t,initial);
+ const spare=m.doc.querySelector('[data-unit-id="22"] [data-person-hit-target]');
+ await act(async()=>spare.dispatchEvent(new spare.ownerDocument.defaultView.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
+ assert.deepEqual(m.read(),initial);assert.equal(m.commits.length,0,'selecting another actual friend spends no native action');
+ const body=m.doc.querySelector('[data-unit-id="20"] [data-person-hit-target]'),num=key=>Number(body.getAttribute(key));
+ const bodyCenter={x:num('x')+num('width')/2,y:num('y')+num('height')/2},bodyHit=mountedHitAt(m.doc,bodyCenter.x,bodyCenter.y);
+ assert.equal(bodyHit,body,'the painted cannon hit area must not intercept the actual adjacent actor body center');
+ await m.click(bodyHit);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Mover');
+ assert.deepEqual(m.read(),initial);assert.equal(m.commits.length,0,'body selection changes no native AP, clock, ammunition or positions');
+ const pieceHit=m.doc.querySelector('[data-artillery-hit-target]');assert.ok(pieceHit,'the cannon has a real small base hit shape');
+ const base={x:Number(pieceHit.getAttribute('cx')),y:Number(pieceHit.getAttribute('cy'))};
+ assert.equal(mountedHitAt(m.doc,base.x,base.y),pieceHit,'the actual cannon base remains selectable');
+ await m.click(pieceHit);await m.open();assertCrew(m,initial);assert.equal(m.commits.length,0);
+ await m.click(m.button('Arma personal'));assertMenuExited(m);assert.equal(m.doc.querySelector('.map-order-mode').textContent,'Mover');
+ const rifleBefore=structuredClone(m.read()),rifleExpected=actBattle(rifleBefore,{type:'fire',unitId:'20',targetId:'e',aim:0,hitLocation:'torso'});assert.equal(rifleExpected.lastError,null);
+ await m.fireAtTarget();await m.settle();assert.deepEqual(m.read(),rifleExpected);assert.equal(m.commits.length,1);
+ assert.equal(actor(m.read()).loaded,actor(rifleBefore).loaded-1);assert.equal(actor(m.read()).ap,actor(rifleBefore).ap-actionCosts(rifleBefore,actor(rifleBefore),actor(rifleBefore,'e')).fire);
+ assert.deepEqual(m.read().artillery,rifleBefore.artillery);for(const id of ['21','22'])assert.deepEqual(actor(m.read(),id),actor(rifleBefore,id));
+ const cannonBefore=structuredClone(m.read()),gun=cannonBefore.artillery[0],cost=artilleryCosts(cannonBefore,actor(cannonBefore),gun).fire,crew=artilleryCrewPlan(cannonBefore,actor(cannonBefore),gun,cost).crew;
+ const again=m.doc.querySelector('[data-artillery-hit-target]');await m.click(again);await m.open();assertCrew(m,cannonBefore);
+ const cannonExpected=actBattle(cannonBefore,{type:'artillery',unitId:'20',artilleryId:'gun',x:8,y:3,tacticalLevel:0,targetId:'e',mode:'solid',aim:0,hitLocation:'torso'});assert.equal(cannonExpected.lastError,null);
+ await m.fireAtTarget();assert.equal(m.button('Arma personal').disabled,true);await m.settle();assert.deepEqual(m.read(),cannonExpected);assert.equal(m.commits.length,2);
+ assert.equal(m.read().artillery[0].loaded,false);assert.equal(m.read().artillery[0].ammo,gun.ammo);assert.equal(actor(m.read()).loaded,actor(cannonBefore).loaded);
+ for(const id of crew)assert.equal(actor(m.read(),id).ap,actor(cannonBefore,id).ap-cost);
+ for(const member of cannonBefore.units.filter(unit=>unit.side==='player'&&!crew.includes(unit.id)))assert.deepEqual(actor(m.read(),member.id),member);
+ for(const member of cannonBefore.units.filter(unit=>unit.side==='player'))assert.deepEqual(point(actor(m.read(),member.id)),point(member));
+ assert.deepEqual(validateBattleSnapshot(m.read()),m.read());assert.deepEqual(initial,before);
+});
