@@ -42,6 +42,30 @@ test('field quotation keeps three physical empty guns independent of infantry co
  assert.throws(()=>expandedCapitalReliefPlan(c,{maxRestHours:601}),/600-hour/);
 });
 
+test('the relief quotation retains a serving returnee after his actual paid-clock journey to another friendly province',()=>{
+ const input=fixture(),original=structuredClone(input),before=expandedCapitalReliefPlan(input);
+ let c=input;
+ const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+' '+c.lastError);assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);};
+ order({type:'createSquad',ids:[101],sector:'santa_fe',name:'Regreso a Córdoba'});
+ const squadId=c.activeSquadId;
+ order({type:'configureArtillery',types:[]});
+ order({type:'travel',sector:'cordoba',queue:true,mode:'posta'});
+ assert.equal(c.squads.find(q=>q.id===squadId).journey.legHours,4);
+ for(let hour=0;hour<4;hour++)order({type:'wait',hours:1});
+ assert.equal(c.hour,input.hour+4);assert.equal(c.secondOfHour,input.secondOfHour);
+ assert.equal(c.squads.find(q=>q.id===squadId).journey,undefined);
+ assert.equal(c.operativeState[101].location,'cordoba');
+ assert.equal(c.operativeState[57].location,'san_nicolas');
+ assert.equal(c.operativeState[117].location,'santa_fe');
+ const arrived=structuredClone(c),plan=expandedCapitalReliefPlan(c),saved=decodeSave(encodeSave(c)).campaign;
+ assert.deepEqual(plan.keepers,before.keepers);
+ assert.deepEqual(plan.field,before.field);
+ assert.deepEqual(plan.candidates,before.candidates);
+ assert.equal(plan.requiredTreasury,before.requiredTreasury);
+ assert.deepEqual(expandedCapitalReliefPlan(saved),plan);
+ assert.deepEqual(c,arrived);assert.deepEqual(input,original);
+});
+
 test('the quotation excludes wounded former carriers and never budgets occupied capital loot as current medical supply',()=>{
  const c=fixture(),plan=expandedCapitalReliefPlan(c);
  assert.ok(plan.candidates.every(row=>c.operativeState[row.id].hp===c.operativeState[row.id].maxHp&&!c.operativeState[row.id].bleeding));
