@@ -1,4 +1,5 @@
 import type {Object3D, Vector3} from 'three';
+import type {LoadedActor} from './actor-assets';
 
 /** Presentation records only. Simulation rosters are deliberately absent. */
 export type WorldPoint={x:number;y:number;tacticalLevel?:number;elevation?:number;activeClimbLink?:string};
@@ -26,7 +27,7 @@ export type WorldInput={
   timeSeconds?:number;
   reducedMotion?:boolean;
 };
-export type WorldOptions={tileMetres:number;assetUrl:(path:string)=>string;onAssetError?:(error:Error)=>void};
-export type WorldInspection={objects:number;meshes:number;triangles:number;chunks:number;semanticIds:readonly string[];pendingTextures:number;assetErrors:readonly string[];disposed:boolean};
+export type WorldOptions={tileMetres:number;assetUrl:(path:string)=>string;onAssetError?:(error:Error)=>void;equipment?:Promise<Pick<LoadedActor,'manifest'|'equipment'>>};
+export type WorldInspection={objects:number;meshes:number;triangles:number;chunks:number;semanticIds:readonly string[];pendingTextures:number;pendingModels:number;assetErrors:readonly string[];disposed:boolean};
 export type SectorWorld={update:(input:WorldInput)=>void;updateActors:(points:readonly WorldPoint[])=>void;tick:(deltaSeconds:number,timeSeconds:number)=>void;dispose:()=>void;inspect:()=>WorldInspection;anchor:(id:string,role:string)=>Vector3|null};
 export type WorldNode={id:string;signature:string;object:Object3D;anchors?:Map<string,Object3D>};
