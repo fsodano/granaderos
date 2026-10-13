@@ -1,3 +1,4 @@
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -25,7 +26,7 @@ function earned(){
  const stem='./fixtures/earned-loose-stock-salta-preparation',proof=JSON.parse(readFileSync(new URL(stem+'.provenance.json',import.meta.url))),packed=readFileSync(new URL(stem+'.campaign.json.gz',import.meta.url)),raw=gunzipSync(packed);
  assert.equal(sha(packed),proof.gzipSha256);assert.equal(sha(raw),proof.rawSha256);assert.equal(raw.length,proof.rawBytes);
  assert.equal(proof.prePreparationInputIndependentlyCaptured,true);
- const campaign=JSON.parse(raw);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
+ const campaign=admitEarnedArtilleryMarkers(JSON.parse(raw),{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman'],label:'earned loose Salta preparation input'});assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  assert.deepEqual([campaign.hour,campaign.secondOfHour,campaign.resources.treasury],[681,982,194184]);
  assert.equal(campaign.pendingBattle,null);assert.equal(campaign.pendingEncounter,null);return {campaign,proof};
 }

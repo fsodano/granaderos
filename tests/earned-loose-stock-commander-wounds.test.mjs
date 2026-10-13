@@ -1,3 +1,4 @@
+import {admitEarnedArtilleryMarkers} from './earned-artillery-admission-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -15,7 +16,7 @@ test('earned loose stock Yatasto preserves the capable commander wounds, finite 
  const metadata=JSON.parse(readFileSync(new URL('./fixtures/earned-loose-stock-commander-wounds.provenance.json',import.meta.url)));
  const fixture=record=>{
   const compressed=readFileSync(new URL(`./fixtures/${record.fixture}`,import.meta.url));assert.equal(sha(compressed),record.gzipSha256);
-  const raw=gunzipSync(compressed);assert.equal(raw.length,record.rawBytes);assert.equal(sha(raw),record.rawSha256);return JSON.parse(raw);
+  const raw=gunzipSync(compressed);assert.equal(raw.length,record.rawBytes);assert.equal(sha(raw),record.rawSha256);return admitEarnedArtilleryMarkers(JSON.parse(raw),{sectors:['retiro','buenos_aires','san_nicolas','san_lorenzo','cordoba','tucuman','salta'],scenes:record===metadata.continuation?{yatasto:'tucuman'}:{},label:record.fixture});
  };
  const start=fixture(metadata.input),expected=fixture(metadata.continuation),before=structuredClone(start);
  assert.deepEqual([start.hour,start.secondOfHour],[792,3583]);assert.equal(start.resources.treasury,231172);
