@@ -1,0 +1,37 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,appendFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {decodeSave,encodeSave} from '../game/save.js';
+import {rosterFor} from '../game/campaign.js';
+import {contractExpiresSeconds} from '../game/contracts.js';
+import {baseMorale} from '../game/morale.js';
+import {carriedAmmunition} from '../game/campaign-ammunition.js';
+import {ammoCount} from '../game/ammo-types.js';
+import {storedArtilleryRecord} from '../game/artillery-transport.js';
+import {livingNorthernCommandRecoveryPlan,recoverLivingNorthernCommand} from './created-living-northern-command-recovery.mjs';
+
+const sha=b=>createHash('sha256').update(b).digest('hex'),clock=c=>c.hour*3600+(c.secondOfHour??0);
+const guns=c=>[...Object.values(c.artilleryDepots??{}).flat(),...Object.values(c.sectorStates??{}).flatMap(s=>s.artillery??[]),...Object.values(c.sceneStates??{}).flatMap(s=>s.artillery??[]),...(c.artilleryTransfers??[]).map(t=>t.gun)].map(storedArtilleryRecord);
+function input(){
+ const stem='./fixtures/earned-living-northern-group8-victory',proof=JSON.parse(readFileSync(new URL(stem+'.provenance.json',import.meta.url))),packed=readFileSync(new URL(stem+'.save.json.gz',import.meta.url)),raw=gunzipSync(packed);assert.equal(sha(packed),proof.gzipSha256);assert.equal(sha(raw),proof.rawSha256);assert.equal(raw.length,proof.rawBytes);assert.equal(JSON.parse(raw).savedAt,proof.savedAt);const c=decodeSave(raw.toString()).campaign;assert.equal(sha(JSON.stringify(c)),proof.decodedCampaignSha256);return {c,proof};
+}
+
+test('the actual three-person survivor party funds real17 rounds and full retained recovery while only its native commander can practice to60 medicine',()=>{
+ const {c}=input(),before=structuredClone(c),plan=livingNorthernCommandRecoveryPlan(c);assert.deepEqual(plan.keepers,[57,142,147]);assert.deepEqual(plan.field,[142,147]);assert.equal(plan.source,'tucuman');assert.equal(plan.hospital,'cordoba');assert.equal(plan.missingRounds,17);assert.deepEqual(plan.ammunition.map(r=>[r.id,r.missing]),[[142,10],[147,7]]);assert.equal(plan.qualifiedMedical,60);assert.equal(plan.forecast.value,50);assert.equal(plan.forecast.remainingGains,10);assert.equal(plan.forecast.hoursToNext,35);assert.equal(plan.requiredTreasury,426988);assert.ok(c.resources.treasury>=plan.requiredTreasury);assert.throws(()=>livingNorthernCommandRecoveryPlan(c,{qualifiedMedical:61}),/lifetime practice/);assert.deepEqual(c,before);
+});
+
+test('the complete actual surviving-party return recovers finite17 rounds, pays the four-hour public journey, retains real service and qualifies57 through bounded native practice and rest',t=>{
+ const {c:start,proof}=input(),before=structuredClone(start),events=[],c=recoverLivingNorthernCommand(start,{report:e=>{events.push(e);if(process.env.GRANADEROS_LIVING_NORTHERN_COMMAND_EVENTS)appendFileSync(process.env.GRANADEROS_LIVING_NORTHERN_COMMAND_EVENTS,JSON.stringify(e)+'\n');}}),roster=rosterFor(c),keepers=[57,142,147];
+ assert.deepEqual(start,before);assert.deepEqual(c.recruited.filter(id=>c.operativeState[id].alive),keepers);assert.deepEqual(guns(c),guns(start));assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.equal(c.blockade,true);assert.equal(c.location,'cordoba');
+ for(const g of start.enemyGroups)assert.deepEqual(c.enemyGroups.find(row=>row.id===g.id),g);for(const[id,r]of Object.entries(start.operativeState))if(!r.alive){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].hp,0);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}for(const id of proof.nativeDeaths)assert.equal(c.operativeState[id].alive,false);
+ for(const id of keepers){const r=c.operativeState[id],op=roster.find(o=>o.id===id),expiry=contractExpiresSeconds(c.contracts[id]);assert.equal(r.location,'cordoba');assert.equal(r.hp,start.operativeState[id].hp);assert.equal(r.maxHp,start.operativeState[id].maxHp);assert.equal(r.bleeding,0);assert.equal(r.energy,100);assert.equal(r.fatigue,0);assert.equal(r.asleep,false);assert.ok(r.morale>=baseMorale(op));assert.ok(expiry===null||expiry>clock(c));if(id!==57){const u=carriedAmmunition(op,r);assert.equal(r.activeSlot,'primary');assert.equal(u.loaded,1);assert.equal(u.loaded+ammoCount(u),16);assert.equal(r.medkits,10);}}
+ assert.equal(roster.find(o=>o.id===57).medical,60);assert.equal(c.operativeState[57].trainedStats.medical,10);assert.equal(c.operativeState[57].hp,88);assert.equal(c.operativeState[57].medkits,0);assert.deepEqual(c.operativeState[3],start.operativeState[3]);assert.ok(!c.recruited.includes(3),'A quoted Cabral encounter is not remote recruitment.');
+ assert.equal(events.filter(e=>e.event==='livingNorthernCommandRoundsRecovered').reduce((sum,e)=>sum+e.rounds,0),17);const quotes=events.filter(e=>e.event==='livingNorthernCommandReturnQuoted');assert.equal(quotes.length,1);assert.deepEqual(quotes[0].group.ids,[142,147]);assert.deepEqual(quotes[0].quote.path,['tucuman','cordoba']);assert.equal(quotes[0].quote.hours,4);assert.equal(quotes[0].quote.action.type,'travel');
+ const renewalEvents=events.filter(e=>e.event==='livingNorthernCommandRecoveryRenewal'),renewalCost=renewalEvents.reduce((sum,e)=>sum+e.quote.price,0);assert.ok(renewalEvents.length>0);for(const row of renewalEvents)assert.ok([142,147].includes(row.id)&&row.quote.available&&row.quote.price>0);
+ const ready=events.find(e=>e.event==='livingNorthernCommandRecoveryReady');assert.equal(ready.returnSeconds,4*3600);assert.ok(ready.restPracticeSeconds>0&&ready.restPracticeSeconds<=600*3600);assert.equal(clock(c)-clock(start),ready.returnSeconds+ready.restPracticeSeconds);
+ const newGroups=c.enemyGroups.filter(g=>!start.enemyGroups.some(old=>old.id===g.id));assert.ok(newGroups.length>0,'Paid rest/practice must retain the actual new northern schedule.');for(const theater of ['north','coast','interior'])assert.equal(start.enemyReserves.remaining[theater]-c.enemyReserves.remaining[theater],newGroups.filter(g=>g.theater===theater).reduce((sum,g)=>sum+g.initialStrength,0));assert.equal(c.enemyReserves.remaining.coast,0);assert.equal(c.enemyGroups.find(g=>g.id==='enemy-group-7').status,'stationed');
+ const official=encodeSave(c),decoded=decodeSave(official);assert.deepEqual(decoded.campaign,c);const summary={scope:'Actual survivor return/finite ammunition/full paid rest and native commander medicine60 only; no six/seven-person force, militia participation, Cabral recruitment, native request or ending proof.',inputRawSha:proof.rawSha256,keepers,field:[142,147],roundsRecovered:17,renewals:renewalEvents.length,renewalCost,returnSeconds:ready.returnSeconds,restPracticeSeconds:ready.restPracticeSeconds,clock:[c.hour,c.secondOfHour],treasury:c.resources.treasury,newGroups:newGroups.map(g=>({id:g.id,theater:g.theater,target:g.target,strength:g.initialStrength,status:g.status})),reserves:c.enemyReserves.remaining,officialRawSha:sha(official),decodedCampaignSha:sha(JSON.stringify(decoded.campaign)),savedAt:JSON.parse(official).savedAt};t.diagnostic(JSON.stringify(summary));
+ if(process.env.GRANADEROS_LIVING_NORTHERN_COMMAND_CAPTURE)writeFileSync(process.env.GRANADEROS_LIVING_NORTHERN_COMMAND_CAPTURE,official);
+});

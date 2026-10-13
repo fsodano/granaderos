@@ -1,5 +1,6 @@
 // Extended acceptance work is explicit. New test files remain in quick by default.
 export default [
+ {file:'tests/earned-living-northern-command-recovery.test.mjs',reason:'Actual three-person party recovers finite17 musket rounds, completes paid four-hour return and hundreds of retained rest/medical-practice hours with actual raid generation. No next force, native battle or ending claim.'},
  {file:'tests/earned-living-northern-care.test.mjs',reason:'Exact seven living capital field survivors and the real Córdoba commander receive finite paid care and physical return; no northern battle or ending claim.'},
  {file:'tests/earned-living-northern-group8-native.test.mjs',reason:'Actual seven-person replacement infantry defeat of the finite25-soldier northern group8, two complete native executions, five further permanent deaths, two native survivors and unchanged real gun custody through strict saved settlement.'},
  {file:'tests/earned-living-northern-native.test.mjs',reason:'Actual seven-person Tucumán roof/rifle native victory, exact two-execution replay, five further permanent deaths, two real survivors, unchanged physical guns and official finite settlement.'},

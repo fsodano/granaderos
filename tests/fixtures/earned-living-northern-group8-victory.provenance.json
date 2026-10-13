@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "scope": "Exact accepted official native group8 victory after whole private1 and separate permanent19 acceptance. Only57/142/147 remain serving and alive; further finite return/rest/practice is unproved at this input.",
+  "sourceRevision": "e95d080c6f075c5c62e070500e4d9b3add07f0ab",
+  "sourcePath": ".cache/core-campaign-2026-10-12/living-northern-group8-native-roof-v1/tucuman.victory.save.json",
+  "sourceFixture": "earned-living-northern-group8-request.save.json.gz",
+  "sourceRawSha256": "3c80467fd306d4856ea539d7d7dd0627385f818b446c3af4b47a43f54df7e2cd",
+  "sourceLogSha256": "df1927e612b1a21caefc02fca842217ef09aa1694e4aafe457d47ebd46b7b972",
+  "sourceControlSha256": "f12d69ee79a1bf534121c9469d668dd9da4215694fb1c4c29a1b4e804eaee670",
+  "rawSha256": "2c157c24a33e486caddf82c14b3b246570125cead1f29a61fc79cd54d3ca2972",
+  "rawBytes": 4615394,
+  "gzipSha256": "aade47cc92b3c5f18295c8f84f1343512dc165245a5f1cec1e790cf5ac2d4dcf",
+  "savedAt": "2026-10-13T03:04:37.108Z",
+  "decodedCampaignSha256": "4101972d00f4ae1c9ddcf0d45fefc3df1af106fd19c4b74f516a7f38767d6090",
+  "clock": [
+    4650,
+    403
+  ],
+  "treasury": 807436,
+  "fieldIds": [
+    142,
+    147
+  ],
+  "reserveIds": [
+    57
+  ],
+  "nativeDeaths": [
+    101,
+    107,
+    130,
+    106,
+    118
+  ],
+  "nativeProof": {
+    "tests": 1,
+    "pass": 1,
+    "executions": 2,
+    "turns": 12,
+    "actions": 277,
+    "replayOrders": 308,
+    "endTurnOrders": 31,
+    "seconds": 144,
+    "frozenPins": 14720,
+    "actualReadRecords": 328,
+    "nodeSeconds": 64.26008254199999,
+    "wrapperSeconds": 68.282101958
+  },
+  "provenance": "The exact official saved native settlement, including all58 prior/current roster deaths, two real elite infantry survivors with native stat gains, commander57 atCba, actual fixed gun custody, group8 defeated and coast7 stillstationed. No alteration of source savedAt, clock, actor health, resources, inventory, raids or campaign outcome."
+}
