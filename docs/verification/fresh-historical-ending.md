@@ -14,8 +14,9 @@ assertion at line 170. A separate handover diagnostic identifies living Juana
 remaining in Salta instead of joining the return party. The
 mission completes; the physical reunion helper still needs correction.
 The current status record preserves this failure and the earlier receipts.
-Linux campaign quick passes 125/125 files and 428/428 tests on `2603c3e6`;
-its core quick job and the newer `8d777d51` campaign job remain active.
+Linux campaign quick passes 125/125 files and 428/428 tests on `2603c3e6`,
+then separately passes 125/125 files and 429/429 tests on `8d777d51`.
+The `2603c3e6` core quick job remains active.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 

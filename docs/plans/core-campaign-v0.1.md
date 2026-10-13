@@ -396,8 +396,13 @@ reachable from 23 core quick test files, so the earlier core pass at
 `1806d8f9` is not a current full core result.
 
 The retained campaign-only [run 38330442401](https://github.com/fsodano/granaderos/actions/runs/38330442401)
-is running at `8d777d51` after PR #412; core is skipped. No passing result is
-claimed for this active job or the active `2603c3e6` core job. Both fresh
+passes at `8d777d51` after PR #412: 125/125 files and 429/429 tests, with no
+failures, skips or cancellations, in 2,060.915 seconds. Core is skipped here.
+Artifact ZIP SHA is
+`f9064400cd813286f28af9789bb6260902ba5aadad7c050dfafe38d8d4cb1c7b`;
+the job log SHA is
+`2cd313d3945da372b9829577829e63ff2fa423b4086335538a9ca385e7b21aa0`.
+No passing result is claimed for the active `2603c3e6` core job. Both fresh
 endings, saved 48-hour continuation and final release acceptance remain open.
 
 The earlier combined quick result below retains its historical failure.
