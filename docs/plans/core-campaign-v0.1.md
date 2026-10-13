@@ -72,8 +72,11 @@ and matching log entry changed. That failed batch remains off `main`.
 
 The earlier Salta preparation at `240cb7b8` passes its five-file affected gate
 21/21; the later combined clinic failure above remains recorded. The corrected
-combined normal quick is a separate pending check. Both component quick runs
-retain the 35 extended exclusions. Neither count is a combined result. Game rules, shipping data, authored geometry and both
+combined normal quick on `3d57e9af` passes all 1,043 files and 7,571 tests,
+with no failures, skips or cancellations. Its Node duration is 1,579.001
+seconds, and all 15,705 source/runtime pins remain unchanged. This is the
+combined quick result; the separate component counts retain their own scope.
+All 35 extended files remain outside quick validation. Game rules, shipping data, authored geometry and both
 original ending cases stay unchanged. The complete `d5632100` recovery result
 of 0/1 and ending result of 0/2 below remain historical failures. The complete unchanged recovery on `3aa8f281` now passes Mendoza, then
 finishes 0/1 at original line 223 during the initial two-gun foundry recovery:
