@@ -29,7 +29,7 @@ const clock=c=>c.hour*3600+(c.secondOfHour??0),living=c=>c.recruited.filter(id=>
 const guns=c=>[...Object.values(c.artilleryDepots??{}).flat(),...Object.values(c.sectorStates??{}).flatMap(s=>s.artillery??[]),...Object.values(c.sceneStates??{}).flatMap(s=>s.artillery??[]),...(c.artilleryTransfers??[]).map(t=>t.gun)].map(storedArtilleryRecord);
 const occupied=(c,at)=>c.enemyGroups.some(g=>g.target===at&&['waiting','engaged','stationed'].includes(g.status));
 const medical=(c,at,id)=>sectorInventorySites(c,at).flatMap(site=>sectorInventoryModel(c,site.id,rosterFor(c),id).entries.filter(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).item==='medkits').map(row=>({site:site.id,...row})));
-const property=r=>Object.fromEntries(['hp','maxHp','bleeding','bandaged','energy','fatigue','morale','medkits','inventory','primary','weaponDropped','headwear','outfit','legwear','startingCartridgesIssued','initialOutfitIssued'].map(key=>[key,structuredClone(r[key])]));
+const property=r=>Object.fromEntries(['hp','maxHp','bleeding','bandaged','energy','fatigue','morale','medkits','inventory','primary','weaponDropped','carriedLoaded','carriedReloadProgress','ammo','ammunitionVersion','ammunitionChoice','activeSlot','condition','jammed','weaponInstanceId','weaponMetadata','weaponFittings','headwear','outfit','legwear','startingCartridgesIssued','initialOutfitIssued'].map(key=>[key,structuredClone(r[key])]));
 const ready=(c,id)=>{const r=c.operativeState[id],op=rosterFor(c).find(o=>o.id===id);return r.hp===r.maxHp&&!r.bleeding&&r.energy===100&&!r.fatigue&&!r.asleep&&r.morale>=baseMorale(op);};
 
 // Plan only real serving survivors and willing living paid candidates. Stable
@@ -87,11 +87,13 @@ export function prepareStrengthenedLivingNorthernRequest(start,{report=()=>{},ta
  const take=(id,site,row,count)=>{
   const model=sectorInventoryModel(c,site,rosterFor(c),id);assert.equal(model.operativeId,id);
   assert.ok(model.entries.some(r=>r.key===row.key&&r.expected===row.expected&&r.reachable&&r.count>=count));
-  applyItemQuantity(model.personal,{...JSON.parse(row.expected),count});
+  const stack=JSON.parse(row.expected);applyItemQuantity(model.personal,{...stack,count});
+  const matches=r=>{const value=JSON.parse(r.expected);return stack.weapon!==undefined?value.weapon===stack.weapon:stack.ammoType!==undefined?value.ammoType===stack.ammoType:value.item===stack.item;};
+  const pool=()=>sectorInventoryModel(c,site,rosterFor(c),id).entries.filter(matches).reduce((n,r)=>n+r.count,0),poolBefore=pool();
   const time=clock(c),cash=c.resources.treasury;
   issue({type:'sectorInventory',sector:site,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});
-  assert.equal(clock(c),time);assert.equal(c.resources.treasury,cash);
-  emit({event:'strengthenedNorthernFinitePickup',id,site,sourceKey:row.key,expected:row.expected,count});
+  assert.equal(clock(c),time);assert.equal(c.resources.treasury,cash);assert.equal(pool(),poolBefore-count);
+  emit({event:'strengthenedNorthernFinitePickup',id,site,sourceKey:row.key,expected:row.expected,count,poolBefore,poolAfter:pool()});
  };
  const stockPreserved=()=>assert.equal(field.reduce((n,id)=>n+c.operativeState[id].medkits,0),plan.carriedDressings+plan.knownDepartureDressings,'Ordinary rest cannot consume the actual departure linen.');
  try{
