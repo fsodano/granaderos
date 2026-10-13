@@ -5,11 +5,12 @@ import {hiringArrivalReason,hiringTravelHours} from '../game/hiring-arrivals.js'
 import {careRules} from '../game/campaign-care-rules.js';
 import {baseMorale} from '../game/morale.js';
 import {sectorInventoryModel,sectorInventorySites,knownCampaignSectorEquipment} from '../game/sector-inventory.js';
-import {applyItemQuantity} from '../game/tactical-inventory.js';
+import {applyItemQuantity,inventoryUsage,handRecord} from '../game/tactical-inventory.js';
 import {carriedAmmunition} from '../game/campaign-ammunition.js';
-import {ammoCount} from '../game/ammo-types.js';
+import {ammoCount,ammoTypeFor} from '../game/ammo-types.js';
 import {storedArtilleryRecord} from '../game/artillery-transport.js';
 import {previewStrategicRoute} from '../game/strategic-route.js';
+import {queueSquadTravel,squadTravelStatus} from '../game/squad-travel.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {actBattle} from '../game/tactical.js';
@@ -18,7 +19,10 @@ import {expandedCapitalWaitNotice} from './created-expanded-capital-return.mjs';
 import {recoverRoutePrimary} from './route-owned-equipment.mjs';
 import {recoverRouteBodywear} from './route-owned-bodywear.mjs';
 import {supplyRouteAmmunition} from './route-ammunition.mjs';
-import {prepareLivingCreatedNorthernSupply} from './created-living-northern-supply.mjs';
+import {supplyRouteDressings} from './route-dressings.mjs';
+import {recoverVisibleRouteDressings} from './route-visible-medical-remains.mjs';
+import {prepareRouteBattery} from './route-battery.mjs';
+import {saltaBatteryWaypoints} from './salta-route.mjs';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 
 const clock=c=>c.hour*3600+(c.secondOfHour??0),living=c=>c.recruited.filter(id=>c.operativeState[id]?.alive&&!c.operativeState[id].captured);
@@ -30,31 +34,65 @@ const ready=(c,id)=>{const r=c.operativeState[id],op=rosterFor(c).find(o=>o.id==
 
 // Plan only real serving survivors and willing living paid candidates. Stable
 // wounds use ordinary rest; no future inspection or income is counted as stock.
-export function strengthenedLivingNorthernPlan(c,{commanderId=57,hospital='cordoba',addCount=2,maxRestHours=600,maxLogisticsHours=720}={}){
+export function strengthenedLivingNorthernPlan(c,{commanderId=57,hospital='cordoba',addCount=2,maxTotalHours=600,maxLogisticsHours=120}={}){
  assert.equal(c.pendingBattle,null);assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.equal(c.blockade,false);
- assert.ok(Number.isSafeInteger(addCount)&&addCount>0&&addCount<=6);assert.ok(Number.isSafeInteger(maxRestHours)&&maxRestHours>0&&maxRestHours<=600);assert.ok(Number.isSafeInteger(maxLogisticsHours)&&maxLogisticsHours>0&&maxLogisticsHours<=720);
+ assert.ok(addCount===2);assert.ok(Number.isSafeInteger(maxTotalHours)&&maxTotalHours>0&&maxTotalHours<=600);assert.ok(Number.isSafeInteger(maxLogisticsHours)&&maxLogisticsHours>0&&maxLogisticsHours<=120);
  const keepers=living(c),field=keepers.filter(id=>id!==commanderId),source=c.operativeState[field[0]]?.location,roster=rosterFor(c);
  assert.ok(keepers.includes(commanderId)&&field.length>=6&&field.length+addCount<=42);assert.equal(c.operativeState[commanderId].location,hospital);assert.equal(c.sectors[source].owner,'patriot');assert.equal(c.sectors[hospital].owner,'patriot');assert.ok(!occupied(c,source)&&!occupied(c,hospital));assert.equal(hiringArrivalReason(c,hospital),null);
  for(const id of field){const r=c.operativeState[id];assert.equal(r.location,source);assert.ok(r.hp>=15&&!r.bleeding&&r.alive&&!r.captured);}
  const candidates=roster.filter(op=>op.service==='contract'&&!c.recruited.includes(op.id)&&c.operativeState[op.id]?.alive&&!c.operativeState[op.id].captured&&!c.operativeState[op.id].serviceEquipmentReturn&&c.operativeState[op.id].hp>=15&&!c.operativeState[op.id].bleeding&&hiringTravelHours(c,op.id)===0&&civicStatus(c,op.id).available&&contractQuote(c,op,'week').available).sort((a,b)=>b.marksmanship-a.marksmanship||contractQuote(c,a,'week').total-contractQuote(c,b,'week').total||a.id-b.id).slice(0,addCount);
  assert.equal(candidates.length,addCount,'Each added fighter must be alive, willing, unblocked and an admitted immediate paid arrival.');
  const quotes=candidates.map(op=>({id:op.id,marksmanship:op.marksmanship,medical:op.medical,hp:c.operativeState[op.id].hp,maxHp:c.operativeState[op.id].maxHp,week:contractQuote(c,op,'week'),day:contractQuote(c,op,'day')}));
- const futureDays=Math.ceil((maxRestHours+maxLogisticsHours)/24),dailyService=[...keepers,...candidates.map(op=>op.id)].reduce((n,id)=>n+contractQuote(c,roster.find(op=>op.id===id),'day').price,0),hireCost=quotes.reduce((n,row)=>n+row.week.total,0),futureServiceFunds=10000+futureDays*dailyService;
+ // Fund one elapsed horizon. Courier travel overlaps ordinary local rest;
+ // no future income is counted before booking the actual willing veterans.
+ const futureDays=1+Math.ceil(maxTotalHours/24),dailyService=[...keepers,...candidates.map(op=>op.id)].reduce((n,id)=>n+contractQuote(c,roster.find(op=>op.id===id),'day').price,0),hireCost=quotes.reduce((n,row)=>n+row.week.total,0),futureServiceFunds=10000+futureDays*dailyService;
  const knownDepartureDressings=medical(c,source,field[0]).reduce((n,row)=>n+row.count,0),carriedDressings=field.reduce((n,id)=>n+c.operativeState[id].medkits,0),knownSafeDressings=Object.keys(c.sectors).filter(at=>at!==source&&c.sectors[at].owner==='patriot'&&!occupied(c,at)).reduce((n,at)=>n+knownCampaignSectorEquipment(c,at).filter(row=>row.label==='Vendas').reduce((a,row)=>a+row.count,0),0),targetDressings=(field.length+addCount)*10;
- return {commanderId,hospital,source,keepers,field,quotes,maxRestHours,maxLogisticsHours,futureDays,dailyService,hireCost,futureServiceFunds,preHireTreasury:hireCost+futureServiceFunds,carriedDressings,knownDepartureDressings,knownSafeDressings,targetDressings,unprovedDressings:Math.max(0,targetDressings-carriedDressings-knownDepartureDressings-knownSafeDressings)};
+ const stableRecoveryHours=Math.max(...[...keepers,...candidates.map(op=>op.id)].map(id=>(c.operativeState[id].maxHp-c.operativeState[id].hp)*careRules(c).restHealingHours));
+ return {commanderId,hospital,source,keepers,field,quotes,maxTotalHours,maxLogisticsHours,stableRecoveryHours,futureDays,dailyService,hireCost,futureServiceFunds,preHireTreasury:hireCost+futureServiceFunds,carriedDressings,knownDepartureDressings,knownSafeDressings,targetDressings,unprovedDressings:Math.max(0,targetDressings-carriedDressings-knownDepartureDressings-knownSafeDressings)};
 }
 
 export function prepareStrengthenedLivingNorthernRequest(start,{report=()=>{},target='tucuman',...options}={}){
  const before=structuredClone(start),plan=strengthenedLivingNorthernPlan(start,options),oldGuns=guns(start),dead=Object.entries(start.operativeState).filter(([,r])=>!r.alive),oldGroups=structuredClone(start.enemyGroups),events=[];
- let c=decodeSave(encodeSave(start)).campaign,phase='departure-stock',keepers=plan.keepers.slice(),field=plan.field.slice(),zeroPauses=0;
+ let c=decodeSave(encodeSave(start)).campaign,phase='departure-stock',keepers=plan.keepers.slice(),field=plan.field.slice(),zeroPauses=0;const started=clock(c),deadline=started+plan.maxTotalHours*3600;
  const emit=e=>events.push(e);
- const safe=()=>{assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.deepEqual(living(c),keepers);assert.deepEqual(guns(c),oldGuns);for(const[id,r]of dead){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);}for(const g of oldGroups)assert.deepEqual(c.enemyGroups.find(row=>row.id===g.id),g);for(const id of keepers){const r=c.operativeState[id],expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(r.alive&&!r.captured&&!r.bleeding);assert.ok(expiry===null||expiry>clock(c));}assert.equal(c.operativeState[plan.commanderId].location,plan.hospital);};
+ const safe=()=>{assert.ok(clock(c)<=deadline,'All return, courier, recovery and approach time must fit the same600h elapsed bound.');assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);assert.equal(c.completed,false);assert.deepEqual(living(c),keepers);assert.deepEqual(guns(c),oldGuns);for(const[id,r]of dead){assert.equal(c.operativeState[id].alive,false);assert.equal(c.operativeState[id].deathMinute,r.deathMinute);assert.equal(c.operativeState[id].hp,r.hp);}for(const g of oldGroups)assert.deepEqual(c.enemyGroups.find(row=>row.id===g.id),g);for(const id of keepers){const r=c.operativeState[id],expiry=contractExpiresSeconds(c.contracts[id]);assert.ok(r.alive&&!r.captured&&!r.bleeding);assert.ok(expiry===null||expiry>clock(c));if(plan.keepers.includes(id))for(const slot of ['headwear','outfit','legwear'])assert.deepEqual(r[slot],start.operativeState[id][slot]);}assert.equal(c.operativeState[plan.commanderId].location,plan.hospital);};
  const issue=action=>{const time=clock(c),cash=c.resources.treasury,next=dispatchCampaign(c,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);c=next;safe();emit({event:'strengthenedNorthernOrder',phase,action,startSeconds:time,endSeconds:clock(c),treasuryBefore:cash,treasuryAfter:c.resources.treasury});};
  const retain=seconds=>{for(const id of keepers){let expiry=contractExpiresSeconds(c.contracts[id]);while(expiry!==null&&expiry<=clock(c)+seconds){const op=rosterFor(c).find(o=>o.id===id),quote=contractRenewalQuote(c,op,'day'),old=c.contracts[id],cash=c.resources.treasury;assert.equal(quote.available,true,quote.reason);issue({type:'renewContract',id,term:'day',expectedExpiresAt:old.expiresAt,expectedExpiresSecond:old.expiresSecond??0});assert.equal(c.resources.treasury,cash-quote.price);assert.equal(c.contracts[id].expiresAt,quote.expiresAt);assert.equal(c.contracts[id].expiresSecond??0,quote.expiresSecond??0);assert.ok(contractExpiresSeconds(c.contracts[id])>expiry);expiry=contractExpiresSeconds(c.contracts[id]);emit({event:'strengthenedNorthernRenewal',phase,id,quote});}}};
  const wait=()=>{retain(3601);const time=clock(c);issue({type:'wait',hours:1});const elapsed=clock(c)-time;assert.ok(elapsed>=0&&elapsed<=3600);if(!elapsed){const notice=expandedCapitalWaitNotice(c,{startedSeconds:time,requestedHours:1});assert.ok(++zeroPauses<=3);emit({event:'strengthenedNorthernPaused',phase,notice});}else zeroPauses=0;};
  const form=(ids,at,name)=>{assert.ok(ids.length&&ids.length<=6);const existing=c.squads.find(q=>q.location===at&&!q.journey&&q.members.length===ids.length&&ids.every(id=>q.members.includes(id)));if(existing){issue({type:'selectSquad',id:existing.id});return existing.id;}issue({type:'createSquad',ids,sector:at,name});return c.activeSquadId;};
- const adopt=(name,transform)=>{const reports=[],next=transform(c,e=>reports.push(e));c=next;safe();for(const e of reports)emit(e);emit({event:'strengthenedNorthernAdopted',phase,name,hour:c.hour,second:c.secondOfHour??0});};
- const travel=(squadId,to,waypoints=[])=>{issue({type:'selectSquad',id:squadId});const quote=previewStrategicRoute(c,squadId,to,'posta',waypoints);assert.equal(quote.valid,true,quote.reason);assert.equal(quote.action.type,'travel');assert.ok(!quote.path.includes('buenos_aires'),'Use the actual owned northern route around the later naval occupation.');retain((quote.hours+1)*3600);emit({event:'strengthenedNorthernTravelQuoted',phase,squadId,quote});issue(quote.action);const began=clock(c);while(c.squads.find(q=>q.id===squadId).journey){wait();assert.ok(clock(c)-began<=plan.maxLogisticsHours*3600);}assert.equal(c.squads.find(q=>q.id===squadId).location,to);};
+ const adopt=(name,transform)=>{retain(deadline-clock(c)+1);const reports=[],next=transform(c,e=>reports.push(e));c=next;safe();for(const e of reports)emit(e);emit({event:'strengthenedNorthernAdopted',phase,name,hour:c.hour,second:c.secondOfHour??0});};
+ // Quote explicit ordinary travel on a detached public squad record. The
+ // menu preview infers attack for coastal targets under the naval blockade;
+ // the native travel API still admits owned, unoccupied named roads.
+ const travel=(squadId,to,waypoints=[])=>{
+  issue({type:'selectSquad',id:squadId});
+  const draft=structuredClone(c.squads.find(q=>q.id===squadId));
+  queueSquadTravel(c,draft,{sector:to,mode:'posta',intent:'travel',waypoints});
+  const quote=squadTravelStatus(draft,c);assert.ok(!quote.path.includes('buenos_aires'));
+  retain(quote.remaining*3600+1);emit({event:'strengthenedNorthernTravelQuoted',phase,squadId,quote});
+  issue({type:'travel',sector:to,queue:true,mode:'posta',waypoints});
+  while(c.squads.find(q=>q.id===squadId).journey)wait();
+  assert.equal(c.squads.find(q=>q.id===squadId).location,to);
+ };
+ const kitTotal=()=>field.reduce((n,id)=>n+c.operativeState[id].medkits,0);
+ const courierRest=ids=>{
+  for(const operativeId of ids)issue({type:'assignCare',operativeId,assignment:'rest'});
+  const began=clock(c);
+  while(ids.some(id=>{const r=c.operativeState[id];return r.asleep||r.energy<100||r.fatigue;})){
+   for(const id of ids)if(c.operativeState[id].asleep&&c.operativeState[id].energy===100)issue({type:'setSleep',operativeId:id,asleep:false});
+   if(ids.every(id=>!c.operativeState[id].asleep&&c.operativeState[id].energy===100&&!c.operativeState[id].fatigue))break;
+   wait();assert.ok(clock(c)-began<=48*3600);
+  }
+ };
+ const take=(id,site,row,count)=>{
+  const model=sectorInventoryModel(c,site,rosterFor(c),id);assert.equal(model.operativeId,id);
+  assert.ok(model.entries.some(r=>r.key===row.key&&r.expected===row.expected&&r.reachable&&r.count>=count));
+  applyItemQuantity(model.personal,{...JSON.parse(row.expected),count});
+  const time=clock(c),cash=c.resources.treasury;
+  issue({type:'sectorInventory',sector:site,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});
+  assert.equal(clock(c),time);assert.equal(c.resources.treasury,cash);
+  emit({event:'strengthenedNorthernFinitePickup',id,site,sourceKey:row.key,expected:row.expected,count});
+ };
  const stockPreserved=()=>assert.equal(field.reduce((n,id)=>n+c.operativeState[id].medkits,0),plan.carriedDressings+plan.knownDepartureDressings,'Ordinary rest cannot consume the actual departure linen.');
  try{
   // Debit every currently known departure dressing once while the capital is
@@ -65,27 +103,79 @@ export function prepareStrengthenedLivingNorthernRequest(start,{report=()=>{},ta
   phase='actual-return';const groups=[];for(let offset=0;offset<field.length;offset+=6){const ids=field.slice(offset,offset+6);for(const operativeId of ids)issue({type:'assignCare',operativeId,assignment:'active'});groups.push(form(ids,plan.source,'Regreso conservado del Norte'));}retain(5*3600);const departed=clock(c);
   for(const id of groups){issue({type:'selectSquad',id});const quote=previewStrategicRoute(c,id,plan.hospital,'posta');assert.equal(quote.valid,true,quote.reason);assert.deepEqual(quote.path,[plan.source,plan.hospital]);assert.equal(quote.hours,4);assert.equal(quote.action.type,'travel');emit({event:'strengthenedNorthernReturnQuoted',id,quote});issue(quote.action);}
   while(groups.some(id=>c.squads.find(q=>q.id===id).journey)){wait();assert.ok(clock(c)-departed<=4*3600);}assert.equal(clock(c)-departed,4*3600);for(const id of keepers)assert.equal(c.operativeState[id].location,plan.hospital);
-  // Banking is real paid rest, with every current contract retained. It shares
-  // the original600h bound with the later stable wound/morale recovery.
-  phase='paid-rest-bank';const restStart=clock(c);for(const operativeId of keepers)issue({type:'assignCare',operativeId,assignment:'rest'});
-  while(c.resources.treasury<plan.preHireTreasury&&clock(c)-restStart<plan.maxRestHours*3600){for(const id of keepers)if(c.operativeState[id].asleep&&c.operativeState[id].energy===100)issue({type:'setSleep',operativeId:id,asleep:false});wait();stockPreserved();}
-  assert.ok(c.resources.treasury>=plan.preHireTreasury,'Actual banked income must fund the immediate quotes and the complete conservative service horizon.');
+  // Book from the already earned treasury, before any projected income.
+  // Healthy couriers travel while every wounded survivor and arrival rests.
+  const restStart=clock(c);assert.ok(c.resources.treasury>=plan.preHireTreasury);
+  for(const operativeId of keepers)issue({type:'assignCare',operativeId,assignment:'rest'});
   phase='paid-arrivals';for(const row of plan.quotes){const id=row.id,op=rosterFor(c).find(o=>o.id===id),quote=contractQuote(c,op,'week'),old=property(c.operativeState[id]),cash=c.resources.treasury,time=clock(c);assert.equal(civicStatus(c,id).available,true);assert.equal(hiringTravelHours(c,id),0);assert.equal(hiringArrivalReason(c,plan.hospital),null);assert.equal(quote.available,true,quote.reason);assert.equal(quote.total,row.week.total);keepers.push(id);field.push(id);issue({type:'recruitCivic',id,term:'week',destination:plan.hospital});assert.equal(clock(c),time);assert.equal(c.resources.treasury,cash-quote.total);assert.equal(c.operativeState[id].location,plan.hospital);assert.deepEqual(property(c.operativeState[id]),old);assert.equal(c.contracts[id].expiresAt,quote.expiresAt);assert.equal(c.contracts[id].expiresSecond??0,quote.expiresSecond??0);emit({event:'strengthenedNorthernVeteranHired',id,quote,treasuryBefore:cash,treasuryAfter:c.resources.treasury,property:old});}
-  phase='finite-local-gear';form(field.slice(0,6),plan.hospital,'Equipo del Norte');for(const id of plan.quotes.map(row=>row.id))adopt('actual local long gun',(input,r)=>recoverRoutePrimary(input,id,{preferredWeapon:1801,strictPreference:true,replace:true,report:r}));adopt('actual worn protection',(input,r)=>recoverRouteBodywear(input,field,{report:r}));
-  phase='natural-rest';for(const operativeId of keepers)issue({type:'assignCare',operativeId,assignment:'rest'});
-  while(!keepers.every(id=>ready(c,id))&&clock(c)-restStart<plan.maxRestHours*3600){for(const id of keepers)if(c.operativeState[id].asleep&&c.operativeState[id].energy===100)issue({type:'setSleep',operativeId:id,asleep:false});if(keepers.every(id=>ready(c,id)))break;wait();stockPreserved();}
-  assert.ok(keepers.every(id=>ready(c,id)),'All real survivors and paid arrivals must reach unchanged full readiness inside the shared600h rest bound.');stockPreserved();assert.ok(c.resources.treasury>=plan.futureServiceFunds);
-  phase='finite-full-supply';const logisticsStart=clock(c);adopt('unchanged full nine-person finite supply',(input,r)=>prepareLivingCreatedNorthernSupply(input,{report:r}));assert.ok(clock(c)-logisticsStart<=plan.maxLogisticsHours*3600);
-  // The two high-mark veterans collect actual known Bakers and compatible
-  // rounds through owned cities. No occupied-capital or hidden pool is used.
-  phase='finite-rifle-courier';const added=plan.quotes.map(row=>row.id);for(const operativeId of added)issue({type:'assignCare',operativeId,assignment:'active'});const courier=form(added,plan.hospital,'Fusiles del Norte');
-  for(const [index,at]of ['santa_fe','san_nicolas'].entries()){
-   travel(courier,at,at==='san_nicolas'?['santa_fe']:[]);const id=added[index],rows=sectorInventoryModel(c,at,rosterFor(c),id).entries.filter(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).weapon===1803);assert.ok(rows.length,'A real publicly known reachable Baker must exist before the pickup.');adopt('actual finite Baker',(input,r)=>recoverRoutePrimary(input,id,{preferredWeapon:1803,strictPreference:true,replace:true,report:r}));adopt('actual compatible rifle rounds',(input,r)=>supplyRouteAmmunition(input,[id],{target:16,report:r}).campaign);assert.equal(carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]).weapon,1803);assert.ok(clock(c)-logisticsStart<=plan.maxLogisticsHours*3600);
+  const added=plan.quotes.map(row=>row.id);
+  for(const operativeId of added)issue({type:'assignCare',operativeId,assignment:'rest'});
+  // Exact current quotes prepay the remaining bounded horizon. This lets an
+  // ordinary tactical inspection cross an hour without losing a rear keeper.
+  retain(deadline-clock(c)+1);
+  phase='finite-local-clothing';form(field.slice(0,6),plan.hospital,'Equipo del Norte');
+  adopt('actual worn protection',(input,r)=>recoverRouteBodywear(input,field,{report:r}));
+  const logisticsStart=clock(c),deficit=plan.targetDressings-kitTotal();
+  assert.ok(deficit>0&&deficit<=40);
+  const cargoGun=sectorInventoryModel(c,'santa_fe',rosterFor(c)).entries.find(row=>JSON.parse(row.expected).weapon===1802);
+  const cargoAmmo=sectorInventoryModel(c,'santa_fe',rosterFor(c)).entries.find(row=>JSON.parse(row.expected).ammoType==='rifle_62');
+  assert.ok(cargoGun&&cargoAmmo,'Both prospective cargo records must already be publicly known.');
+  const couriers=plan.field.filter(id=>{
+   const r=c.operativeState[id];if(r.hp!==r.maxHp||r.bleeding||r.asleep||r.energy<100||r.fatigue)return false;
+   try{let u=sectorInventoryModel(c,plan.hospital,rosterFor(c),id).personal;u=applyItemQuantity(u,{item:'medkits',count:20,weight:.2});u=applyItemQuantity(u,{...JSON.parse(cargoGun.expected),count:1});applyItemQuantity(u,{...JSON.parse(cargoAmmo.expected),count:32});return true;}catch{return false;}
+  }).sort((a,b)=>inventoryUsage(sectorInventoryModel(c,plan.hospital,rosterFor(c),b).personal).free-inventoryUsage(sectorInventoryModel(c,plan.hospital,rosterFor(c),a).personal).free||a-b).slice(0,2);
+  assert.equal(couriers.length,2,'Two real healthy courier inventories must admit all prospective cargo.');
+  const initial=Object.fromEntries(couriers.map(id=>[id,c.operativeState[id].medkits])),cargo=[],courier=form(couriers,plan.hospital,'Vendas y fusiles reales');
+  const sources=Object.keys(c.sectors).filter(at=>at!==plan.hospital&&c.sectors[at].owner==='patriot'&&!occupied(c,at)).map(sector=>({sector,known:sectorInventorySites(c,sector).flatMap(site=>sectorInventoryModel(c,site.id,rosterFor(c)).entries.filter(row=>row.count>0&&JSON.parse(row.expected).item==='medkits')).reduce((n,row)=>n+row.count,0)})).filter(row=>row.known>0).sort((a,b)=>b.known-a.known||a.sector.localeCompare(b.sector));
+  // Inventory queries without a present carrier still expose known finite
+  // rows; reach and capacity are proved again only after real arrival.
+  for(const source of sources){
+   if(kitTotal()>=plan.targetDressings&&cargo.length===added.length)break;
+   phase='concurrent-courier';for(const operativeId of couriers)issue({type:'assignCare',operativeId,assignment:'active'});
+   issue({type:'selectSquad',id:courier});
+   const detour=saltaBatteryWaypoints(c,source.sector);
+   if(detour.length)adopt('actual capital-bypass courier',(input,r)=>prepareRouteBattery(input,[],{destination:source.sector,keepServing:keepers,waypointsFor:saltaBatteryWaypoints,report:r}).campaign);
+   else travel(courier,source.sector);
+   courierRest(couriers);
+   if(['santa_fe','san_nicolas'].includes(source.sector)&&cargo.length<added.length){
+    const id=couriers[cargo.length],row=sectorInventorySites(c,source.sector).flatMap(site=>sectorInventoryModel(c,site.id,rosterFor(c),id).entries.filter(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).weapon===1802).map(row=>({site:site.id,...row})))[0];
+    assert.ok(row,'A real known Baker must be reachable at its actual scene.');
+    const keys=new Set(Object.keys(c.operativeState[id].inventory));take(id,row.site,row,1);
+    const carried=sectorInventoryModel(c,source.sector,rosterFor(c),id).carried.find(row=>row.inventoryKey&&!keys.has(row.inventoryKey)&&JSON.parse(row.expected).weapon===1802);assert.ok(carried);
+    cargo.push({carrier:id,recipient:added[cargo.length],record:JSON.parse(carried.expected)});
+    // Santa Fe has58 known compatible loose rounds. Carry32 only through
+    // exact finite pool debit, then donate16 to each actual rifle recipient.
+    if(source.sector==='santa_fe'){
+     let remaining=32;
+     while(remaining){const ammo=sectorInventorySites(c,source.sector).flatMap(site=>sectorInventoryModel(c,site.id,rosterFor(c),id).entries.filter(row=>row.reachable&&row.count>0&&JSON.parse(row.expected).ammoType==='rifle_62').map(row=>({site:site.id,...row})))[0];assert.ok(ammo);const count=Math.min(remaining,ammo.count);take(id,ammo.site,ammo,count);remaining-=count;}
+    }
+   }
+   for(const id of couriers){
+    let remaining=Math.min(plan.targetDressings-kitTotal(),20-(c.operativeState[id].medkits-initial[id]));
+    while(remaining>0){const row=medical(c,source.sector,id)[0];if(!row)break;const pool=medical(c,source.sector,id).reduce((n,row)=>n+row.count,0),old=c.operativeState[id].medkits,model=sectorInventoryModel(c,row.site,rosterFor(c),id);let count=Math.min(remaining,row.count);while(count>0){try{applyItemQuantity(model.personal,{...JSON.parse(row.expected),count});break;}catch{count--;}}assert.ok(count);take(id,row.site,row,count);assert.equal(c.operativeState[id].medkits,old+count);assert.equal(medical(c,source.sector,id).reduce((n,row)=>n+row.count,0),pool-count);emit({event:'strengthenedNorthernCourierLinen',id,site:row.site,count,poolBefore:pool,poolAfter:pool-count});remaining-=count;}
+    if(remaining>0){adopt('ordinary visible-remains inspection',(input,r)=>recoverVisibleRouteDressings(input,id,remaining,{report:r}).campaign);courierRest([id]);}
+   }
+   if(source.sector==='santa_fe')adopt('actual finite musket reserves',(input,r)=>supplyRouteAmmunition(input,couriers,{target:32,report:r}).campaign);
+   assert.ok(clock(c)-logisticsStart<=plan.maxLogisticsHours*3600,'Concurrent courier must finish inside its120h budget.');
   }
-  travel(courier,plan.hospital,['santa_fe']);for(const operativeId of keepers)issue({type:'assignCare',operativeId,assignment:'rest'});
-  while(!keepers.every(id=>ready(c,id))){for(const id of keepers)if(c.operativeState[id].asleep&&c.operativeState[id].energy===100)issue({type:'setSleep',operativeId:id,asleep:false});wait();assert.ok(clock(c)-logisticsStart<=plan.maxLogisticsHours*3600);}
+  assert.equal(cargo.length,added.length);for(const id of plan.field)assert.equal(carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]).weapon,carriedAmmunition(rosterFor(start).find(op=>op.id===id),start.operativeState[id]).weapon,'Courier cargo cannot replace an original survivor firearm.');assert.equal(kitTotal(),plan.targetDressings,'Unproved linen remains a shortage until actual public inspection and pickup.');
+  phase='actual-courier-return';for(const operativeId of couriers)issue({type:'assignCare',operativeId,assignment:'active'});issue({type:'selectSquad',id:courier});
+  if(saltaBatteryWaypoints(c,plan.hospital).length)adopt('actual capital-bypass return',(input,r)=>prepareRouteBattery(input,[],{destination:plan.hospital,keepServing:keepers,waypointsFor:saltaBatteryWaypoints,report:r}).campaign);
+  else travel(courier,plan.hospital,['santa_fe']);
+  assert.ok(clock(c)-logisticsStart<=plan.maxLogisticsHours*3600);
+  const courierSeconds=clock(c)-logisticsStart;
+  phase='actual-cargo-donation';
+  for(const row of cargo){const donor=sectorInventoryModel(c,plan.hospital,rosterFor(c),row.carrier).carried.find(item=>item.inventoryKey&&item.expected===JSON.stringify(row.record));assert.ok(donor);issue({type:'sectorInventory',sector:plan.hospital,operativeId:row.carrier,direction:'drop',item:donor.item,count:1});adopt('actual finite Baker donation',(input,r)=>recoverRoutePrimary(input,row.recipient,{preferredWeapon:1802,strictPreference:true,replace:true,report:r}));assert.deepEqual(handRecord(sectorInventoryModel(c,plan.hospital,rosterFor(c),row.recipient).personal,'primary'),row.record);}
+  const rifleCarrier=cargo[0].carrier,rifleBefore=ammoCount(carriedAmmunition(rosterFor(c).find(op=>op.id===rifleCarrier),c.operativeState[rifleCarrier]),'ammoRifle');assert.ok(rifleBefore>=32);issue({type:'ammunition',operativeId:rifleCarrier,family:'ammoRifle',quantity:32,direction:'store'});assert.equal(ammoCount(carriedAmmunition(rosterFor(c).find(op=>op.id===rifleCarrier),c.operativeState[rifleCarrier]),'ammoRifle'),rifleBefore-32);
+  const reserves=Object.fromEntries(field.map(id=>[id,10]));
+  for(const id of field)if(c.operativeState[id].medkits<10)adopt('actual carried linen donation',(input,r)=>supplyRouteDressings(input,id,10,{reserves,report:r}));
+  for(const id of couriers){const u=carriedAmmunition(rosterFor(c).find(op=>op.id===id),c.operativeState[id]),family=ammoTypeFor(u),surplus=u.loaded+ammoCount(u,family)-16;if(surplus>0)issue({type:'ammunition',operativeId:id,family,quantity:surplus,direction:'store'});}
+  for(let offset=0;offset<field.length;offset+=6){const ids=field.slice(offset,offset+6);form(ids,plan.hospital,'Cargas finitas del Norte');adopt('actual sixteen-round field loads',(input,r)=>supplyRouteAmmunition(input,ids,{target:16,report:r}).campaign);}
+  phase='remaining-natural-rest';for(const operativeId of keepers)issue({type:'assignCare',operativeId,assignment:'rest'});
+  while(!keepers.every(id=>ready(c,id))){for(const id of keepers)if(c.operativeState[id].asleep&&c.operativeState[id].energy===100)issue({type:'setSleep',operativeId:id,asleep:false});if(keepers.every(id=>ready(c,id)))break;wait();}
+  emit({event:'strengthenedNorthernConcurrentRecovery',restStart,courierSeconds,elapsedSeconds:clock(c)-restStart,keepers,scope:'Couriers travelled while all actual wounded remained on ordinary Córdoba rest.'});
   phase='loaded-primaries';for(let offset=0;offset<field.length;offset+=6){const ids=field.slice(offset,offset+6);form(ids,plan.hospital,'Columna fuerte del Norte');for(const operativeId of ids)issue({type:'assignCare',operativeId,assignment:'active'});adopt('actual paid reload',(input,r)=>finishReloadsBeforeMarch(input,{report:r}));let next=dispatchCampaign(c,{type:'visitSector'});assert.equal(next.lastError,null);let b=enterSector(next.pendingBattle,next.sectorStates[plan.hospital]);for(const id of ids){const u=b.units.find(u=>u.id===String(id));if(u.activeSlot==='primary')continue;b=actBattle(b,{type:'weapon',unitId:u.id,slot:'primary'});assert.equal(b.lastError,null);emit({event:'strengthenedNorthernPrimaryActivated',id});}const pair=syncBattleTime(next,b);assert.equal(pair.error,null);next=dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:next.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.equal(next.lastError,null);c=next;safe();}
   phase='actual-request';issue({type:'configureArtillery',types:[]});form([plan.commanderId],plan.hospital,'Reserva del mando');const assault=[];for(let offset=0;offset<field.length;offset+=6){const ids=field.slice(offset,offset+6);assault.push(form(ids,plan.hospital,'Norte con refuerzos pagados'));for(const operativeId of ids)issue({type:'assignCare',operativeId,assignment:'active'});issue({type:'attack',sector:target,queue:true,mode:'posta'});}const approached=clock(c);while(!assault.every(id=>c.squads.find(q=>q.id===id).journey?.status==='ready')){wait();assert.ok(clock(c)-approached<=24*3600);}issue({type:'beginAssault',sector:target});assert.equal(c.pendingBattle.sector,target);assert.deepEqual(c.pendingBattle.squad.map(u=>u.id).sort((a,b)=>a-b),field.slice().sort((a,b)=>a-b));assert.ok(c.pendingBattle.assaultSquads.every(q=>q.members.length<=6));assert.deepEqual(c.pendingBattle.artillery,[]);
-  for(const id of field){const r=c.operativeState[id],u=carriedAmmunition(rosterFor(c).find(op=>op.id===id),r);assert.ok(ready(c,id));assert.equal(r.activeSlot,'primary');assert.ok(u.loaded>0&&!u.jammed&&u.loaded+ammoCount(u)>=16&&r.medkits>=10);for(const slot of ['headwear','outfit','legwear'])assert.ok(r[slot].condition>0);}assert.equal(field.reduce((n,id)=>n+c.operativeState[id].medkits,0),plan.targetDressings);assert.ok(clock(c)-logisticsStart<=plan.maxLogisticsHours*3600);safe();assert.deepEqual(start,before);const b=enterSector(c.pendingBattle,c.sectorStates[target]);assert.deepEqual(decodeSave(encodeSave(c,b)),{campaign:c,battle:b});emit({event:'strengthenedNorthernRequestReady',plan,keepers,field,added,restSeconds:logisticsStart-restStart,logisticsSeconds:clock(c)-logisticsStart,campaign:structuredClone(c),scope:'Actual paid nine-person full preparation and official paired request only. No native victory, subsequent north/interior schedule, final coast7, whole fresh ending or48h claim.'});for(const event of events)report(event);return c;
+  for(const id of field){const r=c.operativeState[id],u=carriedAmmunition(rosterFor(c).find(op=>op.id===id),r);assert.ok(ready(c,id));assert.equal(r.activeSlot,'primary');assert.ok(u.loaded>0&&!u.jammed&&u.loaded+ammoCount(u)>=16&&r.medkits>=10);for(const slot of ['headwear','outfit','legwear'])assert.ok(r[slot].condition>0);}assert.equal(field.reduce((n,id)=>n+c.operativeState[id].medkits,0),plan.targetDressings);assert.ok(clock(c)-started<=plan.maxTotalHours*3600);assert.ok(events.filter(e=>e.event==='strengthenedNorthernRenewal').reduce((n,e)=>n+e.quote.price,0)<=plan.futureDays*plan.dailyService,'Actual quoted renewals must fit the already funded service budget.');safe();assert.deepEqual(start,before);const b=enterSector(c.pendingBattle,c.sectorStates[target]);assert.deepEqual(decodeSave(encodeSave(c,b)),{campaign:c,battle:b});emit({event:'strengthenedNorthernRequestReady',plan,keepers,field,added,elapsedSeconds:clock(c)-started,concurrentRecoverySeconds:clock(c)-restStart,courierSeconds,campaign:structuredClone(c),scope:'Actual paid nine-person full preparation and official paired request only. No native victory, subsequent north/interior schedule, final coast7, whole fresh ending or48h claim.'});for(const event of events)report(event);return c;
  }catch(error){assert.deepEqual(start,before);report({event:'strengthenedNorthernPreparationStopped',phase,reason:error.message,attemptReports:events,input:structuredClone(start),lastObservedCampaign:structuredClone(c),scope:'Complete preparation failure evidence only; no returned or adopted campaign.'});throw error;}
 }
