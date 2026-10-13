@@ -6,7 +6,7 @@ import {worldCell} from './world-cells.js';
 import {expandSectorMap} from './sector-expansion.js';
 import {propBlocksAt} from './props.js';
 import {campaignSectors,campaignDefinitions,campaignWorld,campaignPresentation} from './campaign-definition.js';
-import {tacticalLevel,validateTacticalSpace} from './tactical-space.js';
+import {tacticalLevel,validateTacticalSpace,spaceKey} from './tactical-space.js';
 import {campaignTerraces} from './campaign-terraces.js';
 import {connectWorldCellApproaches} from './world-cell-approaches.js';
 import {hasGenericCharacterDefinitions} from './content-character-ids.js';
@@ -14,6 +14,7 @@ import {authoredForceEquipment} from './content-force-equipment.js';
 import {campaignRules} from './campaign-rules.js';
 import {applyCampaignBuildingStyles} from './campaign-building-styles.js';
 import {roadsideDiscoveryProps} from './roadside-discoveries.js';
+import {artillerySpaceKeys} from './artillery-occupancy.js';
 
 // Authored tactical plans. Buildings are solid footprints, never walkable painted facades.
 // The strategic grid is schematic; these tactical layouts are original gameplay maps,
@@ -42,14 +43,14 @@ function buildCompactSectorMap(request={},restorePrevious=false){
  // Fresh upper posts must be admitted at their authored coordinates before cloning.
  if(!restorePrevious)validateTacticalSpace({...authored,width:WIDTH,height:HEIGHT,...elevation,units:(request.enemies??[]).filter(unit=>tacticalLevel(unit)!==0)});
  const open=tiles.filter(t=>!t.blocked&&!propBlocksAt(authored,t.x,t.y));const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0],authored.props,authored.wallEdges);
- const reserved=new Set(),choose=(preferred,side)=>{
-   const candidates=open.filter(t=>component.has(key(t))&&!reserved.has(key(t)));
+ const reserved=artillerySpaceKeys({artillery:(request.artillery??[]).filter(gun=>gun.stationed)}),choose=(preferred,side)=>{
+   const candidates=open.filter(t=>component.has(key(t))&&!reserved.has(spaceKey(t)));
    candidates.sort((a,b)=>{
      const da=Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y),db=Math.abs(b.x-preferred.x)+Math.abs(b.y-preferred.y);
      return da-db||(side==='player'?a.x-b.x:b.x-a.x)||a.y-b.y;
    });
    if(!candidates.length)throw Error('El mapa no tiene posiciones de despliegue suficientes.');
-   reserved.add(key(candidates[0]));return{x:candidates[0].x,y:candidates[0].y};
+   reserved.add(spaceKey(candidates[0]));return{x:candidates[0].x,y:candidates[0].y};
  };
  const squad=(request.squad??[]).map((op,i)=>{const anchor=playerAnchors[i%playerAnchors.length];return {...clone(op),...choose({x:anchor.x,y:anchor.y+Math.floor(i/playerAnchors.length)},'player')};});
  const content=campaignDefinitions(request),generic=hasGenericCharacterDefinitions(content),forceState={contentCampaign:{package:content}};

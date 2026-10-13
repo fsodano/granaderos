@@ -6,6 +6,7 @@ import {propCells} from './props.js';
 import {directionTo, approximateHeardPosition} from './tactical-awareness.js';
 import {applyCivilianHarm} from './civilian-harm.js';
 import {recoverEnergy} from './fatigue.js';
+import {artillerySpaceKeys} from './artillery-occupancy.js';
 
 // Local, deterministic state machines. No network, hidden enemy positions or RNG.
 export const NPC_ACTIVITIES = ['roaming','home','working','socializing','meeting','hiding','fleeing','following','waiting'];
@@ -23,7 +24,8 @@ export function npcRoutes(s,n,{stopWhen}={}) {
   const tiles=new Map([...s.tiles,...(s.upperSurfaces??[])].map(t=>[key(t),t]));
   const occupied=new Set([...(s.npcs??[]).filter(v=>v!==n&&v.id!==n.id&&(v.hp??100)>0&&!v.departure&&!v.fled),...s.units.filter(v=>v.id!==n.id&&v.hp>0&&!v.departure&&!v.fled)].map(key));
   for(const p of s.props??[])if(p.blocksMovement!==false)for(const cell of propCells(p))occupied.add(key(cell));
-  const usable=t=>t&&!occupied.has(key(t))&&(!t.blocked||t.type==='door'&&!t.locked&&!t.jammed);
+  const artillery=artillerySpaceKeys(s);
+  const usable=t=>t&&!occupied.has(key(t))&&!artillery.has(spaceKey(t))&&(!t.blocked||t.type==='door'&&!t.locked&&!t.jammed);
   const records=new Map([[key(n),{...point(n),path:[]}]]),queue=[point(n)];
   for(let i=0;i<queue.length;i++){
     const from=queue[i],record=records.get(key(from));
