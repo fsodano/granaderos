@@ -86,9 +86,15 @@ The complete unchanged recovery on `3aa8f281` passes Mendoza, then finishes
 controlled, reachable bronze piece is available. It does not reach either
 mountain-pass assault. All 14,699 frozen pins and 394 actual inputs remain
 unchanged, with no skips or cancellations. The older complete `d5632100`
-recovery 0/1 and ending 0/2 failures remain recorded. Both complete new-source
-fresh endings, saved 48-hour continuation and final browser/full-release
-acceptance remain open.
+recovery 0/1 and ending 0/2 failures remain recorded.
+
+The complete unchanged ending file on `ecbb783b` also finishes 0/2. Loose seed
+8 stops during Salta on a refused medical-slot order for a knocked-down actor.
+Installed seed 1812 passes Salta, Yatasto and Cuyo, then stops before Uspallata
+combat on the paid-recruit treasury equality: actual 104,030 versus expected
+104,096 pesos. All 14,705 frozen pins and 627 unique actual inputs remain
+unchanged, with no skips or cancellations. Both fresh endings, their saved
+48-hour continuation and final browser/full-release acceptance remain open.
 Earlier ordinary-start checkpoints retain their separate [stock campaign evidence](stock-campaign-route-2026-10-04.md).
 Separate 32,000-peso funded fixtures do not establish ordinary-start acceptance.
 
