@@ -3,7 +3,8 @@
 **Current status — 12 October 2026:** The completion figures and methods below
 describe the dated September source. Read the [shipping campaign status](../plans/core-campaign-v0.1.md)
 for current checks. Merged PR #401 proves an earned twelve-person capital
-victory; PR #407 proves an earned paid northern reunion. These separate
+victory; PR #407 proves an earned paid northern reunion, and PR #410 proves
+finite recapture care and the living cohort's return. These separate
 receipts do not prove either complete fresh ending, its 48-hour continuation
 or release acceptance. The latest complete original recovery on `58bf21cf`
 fails when a proposed tactical move is refused during the Salta assault;
