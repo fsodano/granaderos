@@ -1,0 +1,51 @@
+{
+  "scope": "Retained actual Mendoza arguments from the complete original funded fresh recovery at d563. Not an independently captured pre-execution pair, not a full route or victory proof. The regression reconstructs the ordinary enterSector admission and checks official save admission before native orders.",
+  "sourceRevision": "d563210054afefa1e070a5448a84ad4104f5eafe",
+  "testFile": "tests/fresh-campaign-recovery.test.mjs",
+  "sourceTestSha256": "7bc4dcf3005784d937a735ca32e44dbff5c590b78d2e9ea8f310befdb84edb0a",
+  "sourcePath": ".cache/core-campaign-2026-10-13/original-recovery-main-d563-v1/passive-captures/99088-1-mendoza-872-2591988814-5ON3py/native-input.json",
+  "sourceCapturePhase": "retained arguments after execution and reporting",
+  "preExecutionInputIndependentlyCaptured": false,
+  "sourceOutcome": "retreat",
+  "sourceTurns": 17,
+  "sourceActions": 267,
+  "sourceElapsedSeconds": 164,
+  "fullOriginalReceiptPath": ".cache/core-campaign-2026-10-13/original-recovery-main-d563-v1/receipt.json",
+  "fullOriginalLogSha256": "0ab2e366cf8d31e87db9c7bb3568c1e4358a8abe6c3a69e2153fc0f0a936f0f5",
+  "runtimeVersion": "v25.1.0",
+  "runtimeSha256": "6341aad90f8f6d2fc9203ea509131b36cbd4529ec83167d3976be11ee7784430",
+  "hour": 872,
+  "secondOfHour": 3474,
+  "treasury": 62765,
+  "fieldIds": [
+    1,
+    0,
+    8,
+    137,
+    114,
+    142,
+    124,
+    146,
+    1000,
+    10,
+    4,
+    9,
+    11
+  ],
+  "gun": {
+    "id": "arsenal:buenos_aires:1",
+    "type": "bronze4",
+    "side": "player",
+    "loaded": true,
+    "ammo": 6
+  },
+  "carriedDressings": 2,
+  "files": {
+    "earned-original-mendoza-readiness.native-input.json.gz": {
+      "gzipSha256": "1629fafef215fa9210f251d5847248d431b68a66a506e82c0ecd8ba239daaaee",
+      "gzipBytes": 336050,
+      "rawSha256": "16db14b08bd38ee88093d774208411b99886ce59fb306f1727a88b16bc2bf6b9",
+      "rawBytes": 9350598
+    }
+  }
+}
