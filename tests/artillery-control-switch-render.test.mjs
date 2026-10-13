@@ -5,6 +5,8 @@ import assert from 'node:assert/strict';
 import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
 import {createElement as h,useState,act} from '../web/node_modules/react/index.js';
 import {actBattle,actionCosts,artilleryCosts,artilleryCrewPlan,initializeBattlePerception} from '../game/tactical.js';
+import {runBattleJob} from '../game/battle-job.js';
+import {tacticalGridLabel} from '../game/tactical-grid.js';
 import {formatAP} from '../game/action-points.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {crewField} from './artillery-crew-fixture.mjs';
@@ -15,11 +17,13 @@ const point=body=>[body.x,body.y,body.tacticalLevel??0];
 
 // Declared tactical arena, not an earned campaign or an acquisition route.
 // Use the existing finite crew fixture, with the selected operator at the
-// actual cannon cell and a durable target for both kinds of native fire.
+// cell beside the cannon and a durable target for both kinds of native fire.
 function arena(change=()=>{}){
  const battle=crewField('bronze4');
  const gun=battle.artillery[0];gun.loaded=true;
- Object.assign(actor(battle),{x:gun.x,y:gun.y});
+ Object.assign(actor(battle),{x:2,y:2});
+ Object.assign(actor(battle,'21'),{x:1,y:3});
+ Object.assign(actor(battle,'22'),{x:1,y:2});
  Object.assign(actor(battle,'e'),{x:8,y:3,hp:300,maxHp:300,bandaged:0,morale:100});
  change(battle);
  // Rebuild native public contact after declared fixture placement, before any
@@ -27,9 +31,11 @@ function arena(change=()=>{}){
  return validateBattleSnapshot(initializeBattlePerception(battle));
 }
 
-async function mount(t,battle){
+async function mount(t,battle,{workers=false}={}){
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'http://localhost/',pretendToBeVisual:true});
- const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),ResizeObserver:class{observe(){}disconnect(){}},IS_REACT_ACT_ENVIRONMENT:true};
+ const pending=[];
+ class Worker{postMessage(message){pending.push({worker:this,...message});}terminate(){this.closed=true;}}
+ const globals={...(workers?{Worker}:{}),window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),ResizeObserver:class{observe(){}disconnect(){}},IS_REACT_ACT_ENVIRONMENT:true};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
  for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
  const {default:Battlefield}=await import('../web/app/Battlefield.tsx');
@@ -72,7 +78,18 @@ async function mount(t,battle){
   // comparison; no simulated pixel coordinate chooses another body part.
   await act(async()=>element.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
  };
- return {doc,read:()=>current,commits,button,menu,select,open,close,choose,click,fireAtTarget,until:timers.until,settle:()=>timers.settle(doc)};
+ const moveTo=async(x,y)=>{
+  const label=tacticalGridLabel(x,y),cell=[...doc.querySelectorAll('[data-surface-level="0"]')].find(el=>el.getAttribute('aria-label')?.startsWith(label+','));
+  assert.ok(cell,'the native ground cell exists');
+  await act(async()=>cell.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
+ };
+ const jobs=()=>pending.filter(message=>!message.worker.closed);
+ const deliver=async kind=>{
+  const index=pending.findIndex(message=>!message.worker.closed&&message.job?.kind===kind);assert.ok(index>=0,'the native worker job exists');
+  const {worker,id,job}=pending.splice(index,1)[0],result=runBattleJob(job);
+  await act(async()=>worker.onmessage({data:{id,battle:result}}));return result;
+ };
+ return {moveTo,jobs,deliver,doc,read:()=>current,commits,button,menu,select,open,close,choose,click,fireAtTarget,until:timers.until,settle:()=>timers.settle(doc)};
 }
 
 function assertCrew(m,battle){
@@ -91,22 +108,10 @@ function assertMenuExited(m){
  assert.equal(m.doc.querySelector('.ja2-artillery-active'),null);
 }
 
-for(const [placement,change]of [
- ['same-cell',()=>{}],
- ['adjacent-cell',battle=>{
-  // Declared orthogonally adjacent operator, with distinct nearby helpers
-  // behind the muzzle. No clock, HP, ammunition or RNG field is changed.
-  Object.assign(actor(battle),{x:2,y:2});
-  Object.assign(actor(battle,'21'),{x:1,y:3});
-  Object.assign(actor(battle,'22'),{x:1,y:2});
- }],
-])test(`visible ${placement} controls switch personal fire and cannon fire with their exact native ammunition and crew costs`,async t=>{
- const initial=arena(change),original=structuredClone(initial),m=await mount(t,initial);
- if(placement==='same-cell')assert.deepEqual(point(actor(initial)),point(initial.artillery[0]));
- else{
-  const unit=actor(initial),gun=initial.artillery[0];assert.equal(Math.abs(unit.x-gun.x)+Math.abs(unit.y-gun.y),1);
-  assert.equal(new Set(initial.units.filter(member=>member.side==='player').map(member=>point(member).join(','))).size,3);
- }
+test('visible adjacent controls switch personal fire and cannon fire with their exact native ammunition and crew costs',async t=>{
+ const initial=arena(),original=structuredClone(initial),m=await mount(t,initial);
+ const unit=actor(initial),piece=initial.artillery[0];assert.equal(Math.abs(unit.x-piece.x)+Math.abs(unit.y-piece.y),1);
+ assert.equal(new Set([...initial.units.filter(member=>member.side==='player'),piece].map(member=>point(member).join(','))).size,4);
  await m.choose();assertCrew(m,initial);
  assert.equal(m.commits.length,0,'selecting the cannon is a UI choice');
  await m.click(m.button('Arma personal'));
@@ -139,6 +144,19 @@ for(const [placement,change]of [
  for(const member of cannonBefore.units.filter(unit=>unit.side==='player'&&!crew.includes(unit.id)))assert.deepEqual(actor(m.read(),member.id),member);
  for(const member of cannonBefore.units.filter(unit=>unit.side==='player'))assert.deepEqual(point(actor(m.read(),member.id)),point(member));
  assert.deepEqual(validateBattleSnapshot(m.read()),m.read());assert.deepEqual(initial,original,'the declared input is immutable');
+});
+
+test('the visible movement cursor refuses entry into the cannon cell through the real native worker',async t=>{
+ const initial=arena(),original=structuredClone(initial),m=await mount(t,initial,{workers:true}),gun=initial.artillery[0];
+ await m.moveTo(gun.x,gun.y);await m.until(()=>m.jobs().some(message=>message.job?.kind==='movement-step'));
+ const job=m.jobs().find(message=>message.job?.kind==='movement-step').job;
+ assert.equal(job.action.type,'move');assert.equal(job.action.unitId,'20');assert.equal(job.action.x,gun.x);assert.equal(job.action.y,gun.y);
+ const expected=runBattleJob(job);assert.equal(expected.status,'stopped');assert.ok(expected.state.lastError);
+ await m.deliver('movement-step');await m.until(()=>m.commits.length===1);
+ assert.deepEqual(m.read(),expected.state);
+ assert.deepEqual({...m.read(),lastError:initial.lastError,log:initial.log},initial,'refusal spends no AP, time, ammunition or RNG');
+ assert.deepEqual(point(actor(m.read())),point(actor(initial)));assert.deepEqual(m.read().artillery,initial.artillery);
+ assert.deepEqual(validateBattleSnapshot(m.read()),m.read());assert.deepEqual(initial,original);
 });
 
 test('compact operator and personal switch stay visible while optional leave clears the cursor without an order or cost',async t=>{
